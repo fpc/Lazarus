@@ -3126,39 +3126,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_GETITEMS :
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETITEMS');
-      end;
-      {$Else}
-      begin
-        case TControl(Sender).fCompStyle of
-          csCListBox:
-            begin
-              Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-
-              Data := TGtkCListStringList.Create(PGtkCList(Widget));
-              if Sender is TCustomListBox then
-                TGtkCListStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
-              Result := integer(Data);
-            end;
-
-          csCheckListBox, csListBox:
-            begin
-              Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-              Data:= TGtkListStringList.Create(PGtkList(Widget),
-                TWinControl(Sender), TControl(Sender).fCompStyle = csCheckListBox);
-              if Sender is TCustomListBox then
-                TGtkListStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
-              Result:= Integer(Data);
-            end;
-        else
-          raise Exception.Create('Message LM_GETITEMS - Not implemented');
-        end;
-      end;
-      {$EndIf}
-
       LM_GETITEMINDEX :
       begin
         case TControl(Sender).fCompStyle of
@@ -8190,6 +8157,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.569  2004/09/15 14:45:39  micha
+  convert LM_GETITEMS message to interface method
+
   Revision 1.568  2004/09/15 07:57:59  micha
   convert LM_SETFORMICON message to interface method
 

@@ -27,13 +27,13 @@ unit GtkWSStdCtrls;
 interface
 
 uses
-  StdCtrls,
+  StdCtrls, SysUtils,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, GtkInt, Classes,
+  WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType,
   GTKWinApiWindow, gtkglobals, gtkproc;
 
 
@@ -97,6 +97,7 @@ type
   private
   protected
   public
+    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
   end;
 
   { TGtkWSListBox }
@@ -247,6 +248,40 @@ begin
   end;
 end;
 
+{ TGtkWSCustomListBox }
+
+function  TGtkWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+var
+  Widget      : PGtkWidget;            // pointer to gtk-widget
+  Handle: HWND;
+begin
+  {$ifdef GTK2}
+  DebugLn('TODO: TGtkWSCustomListBox.GetStrings');
+  {$else}
+  Handle := ACustomListBox.Handle;
+  case ACustomListBox.fCompStyle of
+    csCListBox:
+      begin
+        Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+
+        Result := TGtkCListStringList.Create(PGtkCList(Widget));
+        if ACustomListBox is TCustomListBox then
+          TGtkCListStringList(Result).Sorted := TCustomListBox(ACustomListBox).Sorted;
+      end;
+
+    csCheckListBox, csListBox:
+      begin
+        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+        Result := TGtkListStringList.Create(PGtkList(Widget),
+          ACustomListBox, ACustomListBox.fCompStyle = csCheckListBox);
+        if ACustomListBox is TCustomListBox then
+          TGtkListStringList(Result).Sorted := ACustomListBox.Sorted;
+      end;
+  else
+    raise Exception.Create('TGtkWSCustomListBox.GetStrings');
+  end;
+  {$endif}
+end;
 
 { TGtkWSCustomComboBox }
 

@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, Classes, Windows;
+  WSStdCtrls, WSLCLClasses, Classes, Windows, Win32Int, InterfaceBase, LCLType;
 
 type
 
@@ -98,6 +98,7 @@ type
   protected
   public
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
+    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
   end;
     
   { TWin32WSListBox }
@@ -229,10 +230,20 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
 implementation
 
-uses
-  Win32Int, InterfaceBase;
-
 { TWin32WSCustomListBox }
+
+function  TWin32WSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+var
+  Handle: HWND;
+begin
+  Handle := ACustomListBox.Handle;
+  if ACustomListBox.fCompStyle = csCListBox
+    then Result := TWin32CListStringList.Create(Handle, ACustomListBox)
+  else
+  if ACustomListBox.fCompStyle = csCheckListBox then 
+    Result := TWin32CheckListBoxStrings.Create(Handle, ACustomListBox);
+  Windows.SetProp(Handle, 'List', dword(Result));
+end;
 
 procedure TWin32WSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin

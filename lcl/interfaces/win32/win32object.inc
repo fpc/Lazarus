@@ -330,17 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_GETITEMS :
-      Begin
-        If (Sender as TControl).fCompStyle = csCListBox
-          Then Data := TWin32CListStringList.Create(Handle,TWinControl(Sender))
-        Else
-          If (Sender Is TCheckListBox)
-            Then Data := TWin32CheckListBoxStrings.Create(Handle,TWinControl(Sender))
-          Else Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
-        Result := Integer(Data);
-        Windows.SetProp(Handle, 'List', Result);
-      End;
       LM_GETITEMINDEX :
       Begin
         Case (Sender as TControl).FCompStyle Of
@@ -2235,6 +2224,9 @@ End;
 
 {
   $Log$
+  Revision 1.262  2004/09/15 14:45:39  micha
+  convert LM_GETITEMS message to interface method
+
   Revision 1.261  2004/09/15 07:58:00  micha
   convert LM_SETFORMICON message to interface method
 

@@ -69,7 +69,7 @@ begin
   CNSendMessage(LM_SETBORDER, Self, nil);
 
   // fetch the interface item list
-  NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
+  NewStrings := TWSCustomListBoxClass(WidgetSetClass).GetStrings(Self);
   // copy the items (text+objects)
   NewStrings.Assign(Items);
   OldItems := FItems as TExtendedStringList;
