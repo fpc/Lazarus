@@ -97,7 +97,6 @@ object DirSelDlg: TDirSelDlg
     Constraints.MinHeight = 100
     Constraints.MinWidth = 100
     DefaultItemHeight = 17
-    DragCursor = crDefault
     ParentColor = True
     ParentCtl3D = False
     ParentFont = True

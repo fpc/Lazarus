@@ -25,7 +25,7 @@ type
     idedRunFlags       // Flags for run. See TIDEDirRunFlag
     );
   TIDEDirectives = set of TIDEDirective;
-  
+
   TIDEDirBuildScanFlag = (
     idedbsfNone,
     idedbsfFPC, // scan for FPC messages. FPC+ means on (default) and FPC- off.

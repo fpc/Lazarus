@@ -678,6 +678,7 @@ type
     procedure SetClientWidth(Value: Integer);
     procedure SetConstraints(const Value : TSizeConstraints);
     procedure SetCursor(Value : TCursor);
+    procedure SetDragCursor(const AValue: TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
     procedure SetHelpContext(const AValue: THelpContext);
@@ -803,7 +804,7 @@ type
   protected
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
-    property DragCursor: TCursor read FDragCursor write FDragCursor default crDrag;
+    property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
     property IsControl: Boolean read FIsControl write FIsControl;
@@ -1853,6 +1854,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.164  2004/01/03 18:16:25  mattias
+  set DragCursor props to default
+
   Revision 1.163  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

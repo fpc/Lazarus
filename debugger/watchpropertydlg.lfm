@@ -1,66 +1,86 @@
-object TWatchPropertyDlg
-  CAPTION = 'Watch Properties'
-  POSITION = poscreencenter
-  HEIGHT = 200
-  WIDTH = 420
-  object lblExpression: TLABEL
-    CAPTION = 'Expression:'
-    LEFT = 15
-    HEIGHT = 17
-    TOP = 20
-    WIDTH = 65
+object WatchPropertyDlg: TWatchPropertyDlg
+  Caption = 'Watch Properties'
+  ClientHeight = 200
+  ClientWidth = 420
+  Position = POSCREENCENTER
+  HorzScrollBar.Page = 421
+  VertScrollBar.Page = 201
+  Height = 200
+  Width = 420
+  object lblExpression: TLabel
+    Caption = 'Expression:'
+    Layout = TLTOP
+    Left = 15
+    Height = 17
+    Top = 20
+    Width = 65
   end
-  object txtExpression: TEDIT
-    LEFT = 105
-    TOP = 17
-    WIDTH = 300
+  object txtExpression: TEdit
+    TabOrder = 2
+    Left = 105
+    Height = 1
+    Top = 17
+    Width = 300
   end
-  object lblRepCount: TLABEL
-    CAPTION = 'Repeat Count:'
-    LEFT = 15
-    HEIGHT = 17
-    TOP = 45
-    WIDTH = 80
+  object lblRepCount: TLabel
+    Caption = 'Repeat Count:'
+    Layout = TLTOP
+    Left = 15
+    Height = 17
+    Top = 45
+    Width = 80
   end
-  object txtRepCount: TEDIT
-    TEXT = '0'
-    LEFT = 105
-    TOP = 42
-    WIDTH = 60
+  object txtRepCount: TEdit
+    Text = '0'
+    TabOrder = 4
+    Left = 105
+    Height = 1
+    Top = 42
+    Width = 60
   end
-  object lblDigits: TLABEL
-    CAPTION = 'Digits:'
-    LEFT = 175
-    HEIGHT = 17
-    TOP = 45
-    WIDTH = 40
+  object lblDigits: TLabel
+    Caption = 'Digits:'
+    Layout = TLTOP
+    Left = 175
+    Height = 17
+    Top = 45
+    Width = 40
   end
-  object txtDigits: TEDIT
-    TEXT = '0'
-    LEFT = 225
-    TOP = 45
-    WIDTH = 180
+  object txtDigits: TEdit
+    Text = '0'
+    TabOrder = 6
+    Left = 225
+    Height = 1
+    Top = 45
+    Width = 180
   end
-  object chkEnabled: TCHECKBOX
-    CAPTION = 'Enabled'
-    STATE = cbchecked
-    DRAGCURSOR = 0
-    TABORDER = 0
-    LEFT = 15
-    TOP = 65
-    WIDTH = 60
+  object chkEnabled: TCheckBox
+    AllowGrayed = True
+    AutoSize = True
+    Caption = 'Enabled'
+    DragCursor = 65524
+    TabOrder = 7
+    Left = 15
+    Height = 20
+    Top = 65
+    Width = 60
   end
-  object chkAllowFunc: TCHECKBOX
-    CAPTION = 'Allow Function Calls'
-    DRAGCURSOR = 0
-    TABORDER = 0
-    LEFT = 105
-    TOP = 65
+  object chkAllowFunc: TCheckBox
+    AllowGrayed = True
+    AutoSize = True
+    Caption = 'Allow Function Calls'
+    DragCursor = 65524
+    TabOrder = 0
+    Left = 105
+    Height = 20
+    Top = 65
+    Width = 1
   end
-  object rgStyle: TRADIOGROUP
-    CAPTION = 'Style'
-    ITEMINDEX = 7
-    ITEMS.Strings = (
+  object rgStyle: TRadioGroup
+    Caption = 'Style'
+    Columns = 3
+    ItemIndex = 7
+    Items.Strings = (
       'Character'
       'String'
       'Decimal'
@@ -71,34 +91,36 @@ object TWatchPropertyDlg
       'Default'
       'Memory Dump'
     )
-    COLUMNS = 3
-    LEFT = 15
-    HEIGHT = 70
-    TOP = 90
-    WIDTH = 390
+    Left = 15
+    Height = 70
+    Top = 90
+    Width = 390
   end
-  object btnOK: TBUTTON
-    MODALRESULT = 1
-    CAPTION = 'OK'
-    LEFT = 170
-    HEIGHT = 25
-    TOP = 170
-    WIDTH = 75  
+  object btnOK: TButton
+    ModalResult = 1
+    Caption = 'OK'
+    TabOrder = 9
     OnClick = btnOKClick
+    Left = 170
+    Height = 25
+    Top = 170
+    Width = 75
   end
-  object btnCancel: TBUTTON
-    MODALRESULT = 2
-    CAPTION = 'Cancel'
-    LEFT = 250
-    HEIGHT = 25
-    TOP = 170
-    WIDTH = 75
+  object btnCancel: TButton
+    ModalResult = 2
+    Caption = 'Cancel'
+    TabOrder = 10
+    Left = 250
+    Height = 25
+    Top = 170
+    Width = 75
   end
-  object btnHelp: TBUTTON
-    CAPTION = 'Help'
-    LEFT = 330
-    HEIGHT = 25
-    TOP = 170
-    WIDTH = 75
+  object btnHelp: TButton
+    Caption = 'Help'
+    TabOrder = 11
+    Left = 330
+    Height = 25
+    Top = 170
+    Width = 75
   end
 end

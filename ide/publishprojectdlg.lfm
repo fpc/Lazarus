@@ -3,7 +3,7 @@ object PublishProjectDialog: TPublishProjectDialog
   ClientHeight = 462
   ClientWidth = 469
   OnResize = PublishProjectDialogRESIZE
-  Position = poscreencenter
+  Position = POSCREENCENTER
   HorzScrollBar.Page = 470
   VertScrollBar.Page = 463
   Left = 307
@@ -11,7 +11,7 @@ object PublishProjectDialog: TPublishProjectDialog
   Top = 165
   Width = 469
   object OkButton: TButton
-    Anchors = [aktop, akright]
+    Anchors = [AKTOP, AKRIGHT]
     ModalResult = 1
     Caption = 'Ok'
     TabStop = True
@@ -23,7 +23,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Width = 75
   end
   object CancelButton: TButton
-    Anchors = [aktop, akright]
+    Anchors = [AKTOP, AKRIGHT]
     ModalResult = 2
     Caption = 'Cancel'
     TabStop = True
@@ -37,6 +37,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Caption = 'Destination directory'
     ClientHeight = 94
     ClientWidth = 446
+    ParentColor = True
     ParentCtl3D = False
     TabOrder = 2
     OnResize = DestDirGroupBoxRESIZE
@@ -83,7 +84,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object CommandAfterLabel: TLabel
       Caption = 'Command after:'
-      Layout = tltop
+      Layout = TLTOP
       Left = 6
       Height = 17
       Top = 33
@@ -94,6 +95,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Caption = 'Files'
     ClientHeight = 27
     ClientWidth = 446
+    ParentColor = True
     ParentCtl3D = False
     TabOrder = 3
     OnResize = FilesGroupboxRESIZE
@@ -105,7 +107,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Ignore binaries'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 0
       TabStop = True
       Left = 6
@@ -118,6 +120,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Caption = 'Project Information'
     ClientHeight = 52
     ClientWidth = 446
+    ParentColor = True
     ParentCtl3D = False
     TabOrder = 4
     OnResize = ProjectInfoGroupboxRESIZE
@@ -129,7 +132,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Save editor info of closed files'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 0
       TabStop = True
       Left = 4
@@ -141,7 +144,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Save editor info of non project files'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       Left = 4
@@ -151,7 +154,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
   end
   object SaveSettingsButton: TButton
-    Anchors = [aktop, akright]
+    Anchors = [AKTOP, AKRIGHT]
     Caption = 'Save settings'
     TabStop = True
     TabOrder = 5
@@ -165,6 +168,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Caption = 'Include Filter'
     ClientHeight = 58
     ClientWidth = 446
+    ParentColor = True
     ParentCtl3D = False
     TabOrder = 6
     TabStop = True
@@ -177,7 +181,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Use Include Filter'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 0
       TabStop = True
       Left = 6
@@ -189,7 +193,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Simple Syntax'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       Left = 196
@@ -213,6 +217,7 @@ object PublishProjectDialog: TPublishProjectDialog
     Caption = 'Exclude Filter'
     ClientHeight = 62
     ClientWidth = 444
+    ParentColor = True
     ParentCtl3D = False
     TabOrder = 7
     TabStop = True
@@ -225,7 +230,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Use Exclude Filter'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 0
       TabStop = True
       Left = 6
@@ -237,7 +242,7 @@ object PublishProjectDialog: TPublishProjectDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Simple Syntax'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       Left = 199

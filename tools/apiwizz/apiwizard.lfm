@@ -101,7 +101,6 @@ object ApiWizForm: TApiWizForm
       Caption = 'Independent'
       Checked = True
       State = cbchecked
-      DragCursor = crDefault
       TabOrder = 1
       TabStop = True
       OnClick = rbPlatformDependencyClick
@@ -114,7 +113,6 @@ object ApiWizForm: TApiWizForm
       AutoSize = True
       AllowGrayed = True
       Caption = 'Dependent'
-      DragCursor = crDefault
       TabOrder = 2
       TabStop = True
       OnClick = rbPlatformDependencyClick

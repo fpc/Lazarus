@@ -30,7 +30,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Width = 97
   end
   object DirGroupbox: TGroupBox
-    Anchors = [aktop, akleft, akright]
+    Anchors = [AKTOP, AKLEFT, AKRIGHT]
     Caption = 'Directory'
     ClientHeight = 63
     ClientWidth = 482
@@ -42,7 +42,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 8
     Width = 486
     object DirCombobox: TComboBox
-      Anchors = [aktop, akleft, akright]
+      Anchors = [AKTOP, AKLEFT, AKRIGHT]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -55,10 +55,10 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
     object SubDirsCheckbox: TCheckBox
       AllowGrayed = True
-      Anchors = [aktop, akleft, akright]
+      Anchors = [AKTOP, AKLEFT, AKRIGHT]
       AutoSize = True
       Caption = 'Clean sub directories'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       Left = 6
@@ -68,7 +68,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
   end
   object RemoveGroupbox: TGroupBox
-    Anchors = [aktop, akleft, akright]
+    Anchors = [AKTOP, AKLEFT, AKRIGHT]
     Caption = 'Remove files matching filter:'
     ClientHeight = 68
     ClientWidth = 482
@@ -80,7 +80,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 96
     Width = 486
     object RemoveCombobox: TComboBox
-      Anchors = [aktop, akleft, akright]
+      Anchors = [AKTOP, AKLEFT, AKRIGHT]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -95,7 +95,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Simple syntax (e.g. * instead of .*)'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       Left = 6
@@ -105,7 +105,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
   end
   object KeepGroupbox: TGroupBox
-    Anchors = [aktop, akleft, akright]
+    Anchors = [AKTOP, AKLEFT, AKRIGHT]
     Caption = 'Keep files matching filter:'
     ClientHeight = 89
     ClientWidth = 482
@@ -117,7 +117,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 190
     Width = 486
     object KeepCombobox: TComboBox
-      Anchors = [aktop, akleft, akright]
+      Anchors = [AKTOP, AKLEFT, AKRIGHT]
       MaxLength = 0
       ParentCtl3D = False
       TabOrder = 0
@@ -132,7 +132,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Simple syntax (e.g. * instead of .*)'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 1
       TabStop = True
       Left = 6
@@ -144,7 +144,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AllowGrayed = True
       AutoSize = True
       Caption = 'Keep Text Files'
-      DragCursor = crDefault
+      DragCursor = 65524
       TabOrder = 2
       TabStop = True
       Left = 6

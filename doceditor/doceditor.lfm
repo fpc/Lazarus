@@ -22,7 +22,6 @@ object DocEditorWnd: TDocEditorWnd
   object ContextTreeview: TTreeView
     Align = alleft
     DefaultItemHeight = 17
-    DragCursor = crDefault
     ParentCtl3D = False
     TabOrder = 1
     Height = 368

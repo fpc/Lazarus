@@ -1632,6 +1632,12 @@ begin
   end;
 end;
 
+procedure TControl.SetDragCursor(const AValue: TCursor);
+begin
+  if FDragCursor=AValue then exit;
+  FDragCursor:=AValue;
+end;
+
 procedure TControl.SetFont(Value: TFont);
 begin
   FFont.Assign(Value);
@@ -2610,6 +2616,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.162  2004/01/03 18:16:25  mattias
+  set DragCursor props to default
+
   Revision 1.161  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

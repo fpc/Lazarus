@@ -11,7 +11,7 @@ object TabOrderDialog: TTabOrderDialog
   Top = 167
   Width = 310
   object UpSpeedbutton: TSpeedButton
-    Anchors = [aktop, akright]
+    Anchors = [AKTOP, AKRIGHT]
     NumGlyphs = 0
     OnClick = UpSpeedbuttonCLICK
     ShowHint = True
@@ -23,7 +23,7 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
   end
   object DownSpeedbutton: TSpeedButton
-    Anchors = [aktop, akright]
+    Anchors = [AKTOP, AKRIGHT]
     NumGlyphs = 0
     OnClick = DownSpeedbuttonCLICK
     ShowHint = True
@@ -35,7 +35,7 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
   end
   object OkButton: TButton
-    Anchors = [akright, akbottom]
+    Anchors = [AKRIGHT, AKBOTTOM]
     Caption = 'Ok'
     TabStop = True
     TabOrder = 0
@@ -46,7 +46,7 @@ object TabOrderDialog: TTabOrderDialog
     Width = 75
   end
   object CancelButton: TButton
-    Anchors = [akright, akbottom]
+    Anchors = [AKRIGHT, AKBOTTOM]
     ModalResult = 2
     Caption = 'Cancel'
     TabStop = True
@@ -57,14 +57,14 @@ object TabOrderDialog: TTabOrderDialog
     Width = 75
   end
   object ItemTreeview: TTreeView
-    Anchors = [aktop, akleft, akright, akbottom]
+    Anchors = [AKTOP, AKLEFT, AKRIGHT, AKBOTTOM]
     DefaultItemHeight = 17
-    DragCursor = crDefault
+    DragCursor = 65524
     HideSelection = False
     ParentCtl3D = False
     RightClickSelect = True
     TabOrder = 2
-    Options = [tvoautoitemheight, tvokeepcollapsednodes, tvorightclickselect, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    Options = [TVOAUTOITEMHEIGHT, TVOKEEPCOLLAPSEDNODES, TVORIGHTCLICKSELECT, TVOSHOWBUTTONS, TVOSHOWLINES, TVOSHOWROOT, TVOTOOLTIPS]
     Left = 9
     Height = 304
     Top = 8
@@ -72,10 +72,10 @@ object TabOrderDialog: TTabOrderDialog
   end
   object ShowOldValuesCheckbox: TCheckBox
     AllowGrayed = True
-    Anchors = [akleft, akbottom]
+    Anchors = [AKLEFT, AKBOTTOM]
     AutoSize = True
     Caption = 'ShowOldValuesCheckbox'
-    DragCursor = crDefault
+    DragCursor = 65524
     OnClick = ShowOldValuesCheckboxCLICK
     TabOrder = 3
     TabStop = True

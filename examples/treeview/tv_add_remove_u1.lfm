@@ -14,7 +14,6 @@ object Form1: TForm1
   object tv_eg1: TTreeView
     Align = alleft
     DefaultItemHeight = 17
-    DragCursor = crDefault
     HideSelection = False
     Indent = 19
     ParentCtl3D = False

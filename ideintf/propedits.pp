@@ -612,7 +612,7 @@ type
   TModalResultPropertyEditor = class(TIntegerPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue:ansistring); override;
   end;
@@ -630,7 +630,7 @@ type
   end;
 
 { TTabOrderPropertyEditor
-  Property editor for the TabOrder property.  Prevents the property from being
+  Property editor for the TabOrder property. Prevents the property from being
   displayed when more than one component is selected. }
 
   TTabOrderPropertyEditor = class(TIntegerPropertyEditor)
@@ -639,7 +639,7 @@ type
   end;
 
 { TCaptionPropertyEditor
-  Property editor for the Caption and Text properties.  Updates the value of
+  Property editor for the Caption and Text properties. Updates the value of
   the property for each change instead on when the property is approved. }
 
   TCaptionPropertyEditor = class(TStringPropertyEditor)
@@ -648,8 +648,8 @@ type
   end;
 
 { TCaptionMultilinePropertyEditor
-  PropertyEditor editor for the Caption property when the Caption can be multiline.
-  Brings up the dialog for entering text. }
+  PropertyEditor editor for the Caption property when the Caption can be
+  multiline. Brings up the dialog for entering text. }
 
   TCaptionMultilinePropertyEditor = class(TCaptionPropertyEditor)
   public
@@ -684,7 +684,7 @@ type
   TCursorPropertyEditor = class(TIntegerPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -3843,14 +3843,15 @@ const
 
 function TModalResultPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paRevertable];
+  Result := [paMultiSelect, paValueList, paRevertable, paHasDefaultValue];
 end;
 
-function TModalResultPropertyEditor.GetValue: ansistring;
+function TModalResultPropertyEditor.OrdValueToVisualValue(OrdValue: longint
+  ): string;
 var
   CurValue: Longint;
 begin
-  CurValue := GetOrdValue;
+  CurValue := OrdValue;
   case CurValue of
     Low(ModalResults)..High(ModalResults):
       Result := ModalResults[CurValue];
@@ -4206,12 +4207,13 @@ end;
 
 function TCursorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paSortList, paValueList, paRevertable];
+  Result:=[paMultiSelect,paSortList,paValueList,paRevertable,paHasDefaultValue];
 end;
 
-function TCursorPropertyEditor.GetValue: ansistring;
+function TCursorPropertyEditor.OrdValueToVisualValue(OrdValue: longint
+  ): string;
 begin
-  Result := CursorToString(TCursor(GetOrdValue));
+  Result := CursorToString(TCursor(OrdValue));
 end;
 
 procedure TCursorPropertyEditor.GetValues(Proc: TGetStringProc);

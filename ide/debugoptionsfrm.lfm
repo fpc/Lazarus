@@ -144,7 +144,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Clear log on run'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 0
           TabStop = True
           Left = 4
@@ -156,7 +156,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Limit linecount to'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 1
           TabStop = True
           Left = 4
@@ -192,7 +192,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Breakpoint'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 0
           TabStop = True
           Left = 4
@@ -204,7 +204,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Process'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 1
           TabStop = True
           Left = 4
@@ -216,7 +216,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Thread'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 2
           TabStop = True
           Left = 4
@@ -228,7 +228,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Module'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 3
           TabStop = True
           Left = 4
@@ -240,7 +240,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Output'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 4
           TabStop = True
           Left = 4
@@ -252,7 +252,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Window'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 5
           TabStop = True
           Left = 4
@@ -264,7 +264,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AllowGrayed = True
           AutoSize = True
           Caption = 'Interface'
-          DragCursor = crDefault
+          DragCursor = 65524
           TabOrder = 6
           TabStop = True
           Left = 4
@@ -329,7 +329,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         AllowGrayed = True
         AutoSize = True
         Caption = 'Break on Lazarus Exceptions'
-        DragCursor = crDefault
+        DragCursor = 65524
         TabOrder = 1
         TabStop = True
         Left = 2

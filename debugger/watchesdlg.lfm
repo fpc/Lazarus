@@ -1,66 +1,70 @@
 object WatchesDlg: TWatchesDlg
+  Caption = 'Watch list'
+  ClientHeight = 200
+  ClientWidth = 500
+  HorzScrollBar.Page = 501
+  VertScrollBar.Page = 201
   Left = 359
+  Height = 200
   Top = 126
   Width = 500
-  Height = 200
-  Caption = 'Watch list'
   object lvWatches: TListView
-    Left = 0
-    Top = 0
-    Width = 484
-    Height = 200
-    Align = alClient
-    Columns = <
+    Align = ALCLIENT
+    Columns = <    
       item
         Caption = 'Expression'
+        Visible = True
         Width = 150
-      end
+      end    
       item
         Caption = 'Value'
+        Visible = True
         Width = 400
       end>
-    PopupMenu = mnuPopup
     MultiSelect = True
-    ViewStyle = vsReport
+    PopupMenu = mnuPopup
+    ViewStyle = VSREPORT
     OnClick = lvWatchesClick
     OnSelectItem = lvWatchesSelectItem
+    Height = 200
+    Width = 500
   end
   object mnuPopup: TPopupMenu
-    Left = 100
-    Top = 96
+    left = 100
+    top = 96
     object popAdd: TMenuItem
       Caption = '&Add'
-      OnClick = popAddClick 
+      OnClick = popAddClick
     end
     object N1: TMenuItem
       Caption = '-'
     end
     object popProperties: TMenuItem
       Caption = '&Properties'
-      OnClick = popPropertiesClick 
+      OnClick = popPropertiesClick
     end
     object popEnabled: TMenuItem
       Caption = '&Enabled'
-      OnClick = popEnabledClick 
+      OnClick = popEnabledClick
     end
     object popDelete: TMenuItem
       Caption = '&Delete'
-      OnClick = popDeleteClick 
+      OnClick = popDeleteClick
     end
     object N2: TMenuItem
       Caption = '-'
     end
     object popDisableAll: TMenuItem
       Caption = 'D&isable All'
-      OnClick = popDisableAllClick 
+      OnClick = popDisableAllClick
     end
     object popEnableAll: TMenuItem
       Caption = 'E&nable All'
-      OnClick = popEnableAllClick 
+      OnClick = popEnableAllClick
     end
     object popDeleteAll: TMenuItem
       Caption = 'De&lete All'
-      OnClick = popDeleteAllClick 
+      OnClick = popDeleteAllClick
     end
   end
-end 
+end

@@ -31,7 +31,6 @@ object CodeExplorerView: TCodeExplorerView
   object CodeTreeview: TTreeView
     Align = albottom
     DefaultItemHeight = 17
-    DragCursor = crDefault
     HideSelection = False
     Images = Imagelist1
     Indent = 15
