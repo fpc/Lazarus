@@ -273,30 +273,28 @@ Begin
   // remove all child controls owned by the form
   if (AComponent is TWinControl) then begin
     AWinControl:=TWinControl(AComponent);
-    if (csAcceptsControls in AWinControl.ControlStyle) then begin
-      i:=AWinControl.ControlCount-1;
-      while (i>=0) do begin
-        ChildControl:=AWinControl.Controls[i];
-        if ChildControl.Owner=Form then begin
-          RemoveComponent(ChildControl);
-          // the component list of the form has changed
-          // -> restart the search
-          i:=AWinControl.ControlCount-1;
-          continue;
-        end;
+    i:=AWinControl.ControlCount-1;
+    while (i>=0) do begin
+      ChildControl:=AWinControl.Controls[i];
+      if ChildControl.Owner=Form then begin
+        RemoveComponent(ChildControl);
+        // the component list of the form has changed
+        // -> restart the search
+        i:=AWinControl.ControlCount-1;
+        continue;
       end;
-      dec(i);
     end;
+    dec(i);
   end;
   // remove component
   if Assigned(FOnRemoveComponent) then
     FOnRemoveComponent(Self,AComponent);
-  // this sends a message to notification and removes it from the controlselection
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.RemoveControl] C ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
   if not (AComponent is TControl) then
     Form.Invalidate;
+  // this sends a message to notification and removes it from the controlselection
   TheFormEditor.DeleteControl(AComponent);
 end;
 
