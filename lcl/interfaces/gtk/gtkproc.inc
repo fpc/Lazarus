@@ -684,8 +684,8 @@ var ShiftState: TShiftState;
 begin
   VirtualKey := VK_UNKNOWN;
   KeyCode := $FFFF;
-  SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
   ShiftState := GTKEventState2ShiftState(Event^.State);
+  SysKey := (ssAlt in ShiftState);
   Extended := False;
   Toggle := False;
   
@@ -694,12 +694,14 @@ begin
       ' Event^.Length=',Event^.Length,' ',ord(Event^.theString[0])
     );
   end;}
+  
+  //writeln('GetGTKKeyInfo ',Event^.KeyVal);
 
   case Event^.KeyVal of
     // Normal ASCII chars
     32..255:
       begin
-        { Assign key code}
+        // Assign key code
         KeyCode := Event^.KeyVal;
         
         //TODO: create VK_ code --> [*] and [8] have a different KeyCode but same VK_ code on US keyboard
@@ -717,7 +719,7 @@ begin
           '-': VirtualKey := VK_SUBTRACT;
           '.': VirtualKey := VK_POINT;
         end;
-        { look for control code }
+        // look for control code
         if (ssCtrl in ShiftState) and (Chr(KeyCode) in ['@'..'Z']) then
           Dec(KeyCode, Ord('@'));
       end;
@@ -732,26 +734,31 @@ begin
         KeyCode := VK_SPACE;
         VirtualKey := VK_SPACE;
       end;
+
     GDK_KP_Tab:
       begin
         KeyCode := VK_TAB;
         VirtualKey := VK_TAB;
       end;
+
     GDK_KP_Enter:
       begin
         KeyCode := VK_Return;
         VirtualKey := VK_Return;
       end;
+
     GDK_Tab:
       begin
         KeyCode := VK_TAB;
         VirtualKey := VK_TAB;
       end;
+
     GDK_Return:
       begin
         KeyCode := VK_RETURN;
         VirtualKey := VK_RETURN;
       end;
+
     GDK_Linefeed: 
       begin
         KeyCode := $0A;
@@ -764,41 +771,49 @@ begin
         VirtualKey := VK_INSERT;
         Extended := True;
       end;
+
     GDK_Home:           
       begin
         VirtualKey := VK_HOME;
         Extended := True;
       end;
+
     GDK_Left:           
       begin
         VirtualKey := VK_LEFT;
         Extended := True;
       end;
+
     GDK_Up:             
       begin
         VirtualKey := VK_UP;
         Extended := True;
       end;
+
     GDK_Right:          
       begin
         VirtualKey := VK_RIGHT;
         Extended := True;
       end;
+
     GDK_Down:           
       begin
         VirtualKey := VK_DOWN;
         Extended := True;
       end;
+
     GDK_Page_Up:        
       begin
         VirtualKey := VK_PRIOR;
         Extended := True;
       end;
+
     GDK_Page_Down:      
       begin
         VirtualKey := VK_NEXT;
         Extended := True;
       end;
+
     GDK_End:            
       begin
         VirtualKey := VK_END;
@@ -826,37 +841,44 @@ begin
         VirtualKey := VK_EQUAL;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('=');
       end;
+
     GDK_KP_Multiply:      
       begin
         VirtualKey := VK_MULTIPLY;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('*');
       end;
+
     GDK_KP_Add:      
       begin
         VirtualKey := VK_ADD;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('+');
       end;
+
     GDK_KP_Separator:      
       begin
         VirtualKey := VK_SEPARATOR;
 //        if not CtrlDown then KeyCode := Ord('????'); 
       end;
+
     GDK_KP_Subtract:      
       begin
         VirtualKey := VK_SUBTRACT;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('-');
       end;
+
     GDK_KP_Decimal:      
       begin
         VirtualKey := VK_DECIMAL;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('.');
       end;
+
     GDK_KP_Divide:      
       begin
         VirtualKey := VK_DIVIDE;
         Extended := True;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('/');
       end;
+
     GDK_KP_0..GDK_KP_9: 
       begin
         VirtualKey := VK_NUMPAD0 + (Event^.KeyVal - GDK_KP_0);
@@ -865,7 +887,6 @@ begin
       end;
 
     GDK_BackSpace:      VirtualKey := VK_BACK;
-
 
     GDK_Clear_Key:      VirtualKey := VK_CLEAR;
     GDK_Pause:          VirtualKey := VK_PAUSE;
@@ -919,25 +940,30 @@ begin
       begin
         VirtualKey := VK_SHIFT;
       end;
+
     GDK_Shift_R:
       begin
         VirtualKey := VK_SHIFT;
         Extended := True;
       end;
+
     GDK_Control_L:
       begin
         VirtualKey := VK_CONTROL;
       end;
+
     GDK_Control_R:
       begin
         VirtualKey := VK_CONTROL;
         Extended := True;
       end;
+
     GDK_Alt_L:
       begin
         SysKey := True;
         VirtualKey:= VK_MENU; 
       end; 
+
     GDK_Alt_R:
       begin
         SysKey := True;
@@ -952,7 +978,7 @@ begin
     GDK_cyrillic_io..GDK_cyrillic_Capital_hardsign: 
      KeyCode := Event^.KeyVal mod $100;
   end;
-  
+
   if VirtualKey=VK_UNKNOWN then begin
     // map all other keys to VK_IRREGULAR + KeyCode
     if ShortInt(KeyCode)>=0 then
@@ -960,6 +986,7 @@ begin
     else
       VirtualKey := VK_IRREGULAR;
   end;
+  //writeln('GetGTKKeyInfo END ',VirtualKey,' VK_L=',VK_L);
 end;
 
 {------------------------------------------------------------------------------
@@ -3958,6 +3985,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.159  2003/02/18 22:56:23  mattias
+  fixed key grabbing
+
   Revision 1.158  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
