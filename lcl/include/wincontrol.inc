@@ -1006,7 +1006,7 @@ var
   TempControl : TCOntrol;
 begin
 //writeln('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
-  // Controls taht are not TWinControl, have no handle of their own, and so
+  // Controls that are not TWinControl, have no handle of their own, and so
   // they are repainted as part of the parent:
   if FControls <> nil then
   begin
@@ -2581,6 +2581,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2003/02/09 18:07:42  mattias
+  cleanup
+
   Revision 1.116  2003/01/24 13:53:53  mattias
   fixed TRadioGroup.Items editing in IDE
 
