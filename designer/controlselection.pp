@@ -332,7 +332,8 @@ type
     property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
     procedure SelectWithRubberBand(ACustomForm:TCustomForm;
-      ClearBefore, ExclusiveOr: boolean; var SelectionChanged: boolean);
+      ClearBefore, ExclusiveOr: boolean; var SelectionChanged: boolean;
+      MaxParentControl: TControl);
 
     procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read FVisible write SetVisible;
@@ -778,7 +779,7 @@ begin
   Result:=false;
   if AComponent=nil then exit;
   if AComponent is TControl then begin
-    if csNoDesignVisible in TControl(AComponent).ControlStyle then exit;
+    if not ControlIsDesignerVisible(TControl(AComponent)) then exit;
     if Count>0 then begin
       if OnlyNonVisualComponentsSelected then exit;
     end;
@@ -1643,26 +1644,26 @@ var
 
 // DrawRubberband
 begin
-  if (FCustomForm=nil) then exit;
   Diff:=DC.FormOrigin;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left-Diff.X,Top-Diff.Y,Right-Diff.X,Bottom-Diff.Y);
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
-  ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean);
+  ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean;
+  MaxParentControl: TControl);
 var i:integer;
 
   function ControlInRubberBand(AComponent:TComponent):boolean;
   var ALeft,ATop,ARight,ABottom:integer;
     Origin:TPoint;
   begin
-    if (AComponent is TMenuItem)
-    or ((AComponent is TControl)
-      and (csNoDesignVisible in TControl(AComponent).ControlStyle))
-    then begin
-      Result:=false;
-      exit;
+    Result:=false;
+    if (AComponent is TMenuItem) then exit;
+    if (AComponent is TControl) then begin
+      if not ControlIsDesignerVisible(TControl(AComponent)) then exit;
+      if (MaxParentControl<>nil)
+      and (not MaxParentControl.IsParentOf(TControl(AComponent))) then exit;
     end;
     Origin:=GetParentFormRelativeTopLeft(AComponent);
     ALeft:=Origin.X;

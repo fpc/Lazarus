@@ -217,9 +217,8 @@ begin
   APage.Parent := fNotebook;
   if NewZPosition>=0 then
     fNoteBook.SetControlIndex(APage,NewZPosition);
-
-  // this is workaround til visible=true is default in TControl
   APage.Visible:=true;
+  fNoteBook.UpdateDesignerFlags(Index);
 
   if FNoteBook.HandleAllocated
   and (not (csLoading in FNoteBook.ComponentState))
@@ -462,6 +461,7 @@ procedure TCustomNotebook.SetPageIndex(Value: Integer);
 begin
   if fPageIndex = Value then exit;
   fPageIndex := Value;
+  UpdateAllDesignerFlags;
   DoSendPageIndex;
 end;
 
@@ -473,6 +473,9 @@ begin
   Result := fPageIndex;
 end;
 
+{------------------------------------------------------------------------------
+  function TCustomNotebook.IsStoredActivePage: boolean;
+ ------------------------------------------------------------------------------}
 function TCustomNotebook.IsStoredActivePage: boolean;
 begin
   Result:=false;
@@ -522,6 +525,30 @@ begin
   if fTabPosition = tabPos then exit;
   fTabPosition := tabPos;
   DoSendTabPosition;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomNotebook.UpdateAllDesignerFlags;
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.UpdateAllDesignerFlags;
+var
+  i: integer;
+begin
+  for i:=0 to PageCount-1 do
+    UpdateDesignerFlags(i);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomNotebook.UpdateDesignerFlags(APageIndex: integer);
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.UpdateDesignerFlags(APageIndex: integer);
+begin
+  if APageIndex<>fPageIndex then
+    Page[APageIndex].ControlStyle:=
+      Page[APageIndex].ControlStyle+[csNoDesignVisible]
+  else
+    Page[APageIndex].ControlStyle:=
+      Page[APageIndex].ControlStyle-[csNoDesignVisible];
 end;
 
 {------------------------------------------------------------------------------
@@ -606,6 +633,7 @@ Begin
             FPageIndex := NMHDR^.idfrom;
             if FPageIndex>=PageCount then
               FPageIndex:=-1;
+            UpdateAllDesignerFlags;
             Change;
             if csDesigning in ComponentState then
               OwnerFormDesignerModified(Self);
@@ -630,8 +658,11 @@ begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
-  if (FPageIndex<0) and (PageCount>0) then fPageIndex:=0;
-  Msg.Page := FPageIndex;
+  if (FPageIndex<0) and (PageCount>0) then begin
+    fPageIndex:=0;
+    UpdateAllDesignerFlags;
+  end;
+  Msg.Page := fPageIndex;
   {$IFDEF NOTEBOOK_DEBUG}
   writeln('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
   {$ENDIF}
@@ -703,6 +734,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/11/18 17:06:29  mattias
+  improved designer rubberband
+
   Revision 1.26  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 

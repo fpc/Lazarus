@@ -96,6 +96,8 @@ function GetComponentHeight(AComponent: TComponent): integer;
 
 function GetParentLevel(AControl: TControl): integer;
 
+function ControlIsDesignerVisible(AControl: TControl): boolean;
+
 implementation
 
 
@@ -250,6 +252,18 @@ begin
   Result:=0;
   while AControl<>nil do begin
     inc(Result);
+    AControl:=AControl.Parent;
+  end;
+end;
+
+function ControlIsDesignerVisible(AControl: TControl): boolean;
+begin
+  Result:=true;
+  while AControl<>nil do begin
+    if csNoDesignVisible in AControl.ControlStyle then begin
+      Result:=false;
+      exit;
+    end;
     AControl:=AControl.Parent;
   end;
 end;
