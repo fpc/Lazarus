@@ -1,18 +1,17 @@
 object AboutForm: TAboutForm
-  CAPTION = 'About Lazarus'
-  CLIENTHEIGHT = 245
-  CLIENTWIDTH = 577
-  POSITION = poscreencenter
-  HORZSCROLLBAR.PAGE = 578
-  VERTSCROLLBAR.PAGE = 246
-  LEFT = 351
-  HEIGHT = 245
-  TOP = 389
-  WIDTH = 577
-  object Memo1: TMEMO
-    ANCHORS = [aktop, akleft]
-    COLOR = -2147483643
-    LINES.Strings = (
+  Caption = 'About Lazarus'
+  ClientHeight = 245
+  ClientWidth = 577
+  Position = poscreencenter
+  HorzScrollBar.Page = 578
+  VertScrollBar.Page = 246
+  Left = 351
+  Height = 245
+  Top = 389
+  Width = 577
+  object Memo1: TMemo
+    Color = -2147483643
+    Lines.Strings = (
       'License: GPL/LGPL'
       ' '
       'Lazarus are the class libraries for Free Pascal that'
@@ -28,31 +27,29 @@ object AboutForm: TAboutForm
       ' '
       'As Lazarus is growing we need more developers.'
     )
-    WORDWRAP = True
-    LEFT = 225
-    HEIGHT = 219
-    TOP = 14
-    WIDTH = 339
+    WordWrap = True
+    Left = 225
+    Height = 219
+    Top = 14
+    Width = 339
   end
-  object Button1: TBUTTON
-    ANCHORS = [aktop, akleft]
-    MODALRESULT = 1
-    CAPTION = 'Close'
-    TABORDER = 1
-    LEFT = 78
-    HEIGHT = 25
-    TOP = 184
-    WIDTH = 75
+  object Button1: TButton
+    ModalResult = 1
+    Caption = 'Close'
+    TabOrder = 1
+    Left = 78
+    Height = 25
+    Top = 184
+    Width = 75
   end
-  object Label1: TLABEL
-    ALIGNMENT = tacenter
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Version #:'
-    COLOR = -2147483643
-    LAYOUT = tltop
-    LEFT = 14
-    HEIGHT = 17
-    TOP = 6
-    WIDTH = 200
+  object Label1: TLabel
+    Alignment = tacenter
+    Caption = 'Version #:'
+    Color = -2147483643
+    Layout = tltop
+    Left = 14
+    Height = 17
+    Top = 6
+    Width = 200
   end
 end
