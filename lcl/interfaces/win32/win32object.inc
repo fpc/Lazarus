@@ -2391,6 +2391,10 @@ Begin
         TLMCalendar(Data^).Date := StrToDate(IntToStr(WMonth) + '/' + IntToStr(WDay) + '/' + IntToStr(WYear));
       End;
     End;
+    csSpinEdit:
+    Begin
+      Integer(Data^) := SendMessage(Handle, UDM_GETPOS, 0, 0);
+    End;
     Else
       Assert (True, Format('WARNING:[TWin32Object.GetValue]] failed for %S', [Sender.ClassName]));
   End;
@@ -2542,9 +2546,9 @@ begin
             With LVC Do
             Begin
               Mask := LVCF_FMT Or LVCF_TEXT Or LVCF_WIDTH;
-              Fmt := Integer(Columns.Item[I].Alignment);
-              CX := Columns.Item[I].Width;
-              PSzText := PChar(Columns.Item[I].Caption);
+              Fmt := Integer(Columns.Items[I].Alignment);
+              CX := Columns.Items[I].Width;
+              PSzText := PChar(Columns.Items[I].Caption);
             End;
             ListView_SetColumn(Handle, I, LVC);
           End;
@@ -2553,8 +2557,8 @@ begin
           //ListView_SortItems(Handle, @CompareFunc, 0);
         If MultiSelect Then
           SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not LVS_SINGLESEL);
-        If Images <> Nil Then
-          ListView_SetImageList(Handle, Images.Handle, LVSIL_NORMAL);
+        If SmallImages <> Nil Then
+          ListView_SetImageList(Handle, SmallImages.Handle, LVSIL_NORMAL);
       End;
     End;
     csProgressBar:
@@ -2606,6 +2610,10 @@ begin
         End;
         Assert(False, 'Trace:TODO: [TWin32Object.SetProperties] Set up step and page increments for csScrollBar');
       End;
+    csSpinEdit:
+    Begin
+      SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(TSpinEdit(Sender).Value), 0));
+    End;
     csTrackbar: 
       With(TTrackBar(Sender)) Do
       Begin
@@ -3101,6 +3109,9 @@ End;
 
 {
   $Log$
+  Revision 1.17  2002/03/17 21:36:52  lazarus
+  Keith: Fixed Win32 compilation problems
+
   Revision 1.16  2002/02/07 08:35:12  lazarus
   Keith: Fixed persistent label captions and a few less noticable things
 

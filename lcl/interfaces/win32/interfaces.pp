@@ -46,5 +46,6 @@ Application.Free;
 Application := Nil;
 
 InterfaceObject.Free;
+InterfaceObject := Nil;
 
 End.
