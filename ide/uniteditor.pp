@@ -2466,7 +2466,7 @@ begin
   TabIndex:=NoteBook.TabIndexAtClientPos(
                                       Notebook.ScreenToClient(Mouse.CursorPos));
   if TabIndex<0 then exit;
-  ASrcEdit:=Editors[TabIndex];
+  ASrcEdit:=FindSourceEditorWithPageIndex(TabIndex);
   if ASrcEdit=nil then exit;
   if ASrcEdit.CodeBuffer<>nil then begin
     PHintInfo(HintInfo)^.HintStr:=ASrcEdit.CodeBuffer.Filename;
