@@ -174,29 +174,37 @@ function BEtoN(const AValue: SmallInt): SmallInt;
 function BEtoN(const AValue: Word): Word;
 function BEtoN(const AValue: LongInt): LongInt;
 function BEtoN(const AValue: DWord): DWord;
+{$IFNDEF VER1_0} // fpc 1.0.x can't handle 64 bits constants
 function BEtoN(const AValue: Int64): Int64;
 function BEtoN(const AValue: QWord): QWord;
+{$ENDIF}
 
 function LEtoN(const AValue: SmallInt): SmallInt;
 function LEtoN(const AValue: Word): Word;
 function LEtoN(const AValue: LongInt): LongInt;
 function LEtoN(const AValue: DWord): DWord;
+{$IFNDEF VER1_0} // fpc 1.0.x can't handle 64 bits constants
 function LEtoN(const AValue: Int64): Int64;
 function LEtoN(const AValue: QWord): QWord;
+{$ENDIF}
 
 function NtoBE(const AValue: SmallInt): SmallInt;
 function NtoBE(const AValue: Word): Word;
 function NtoBE(const AValue: LongInt): LongInt;
 function NtoBE(const AValue: DWord): DWord;
+{$IFNDEF VER1_0} // fpc 1.0.x can't handle 64 bits constants
 function NtoBE(const AValue: Int64): Int64;
 function NtoBE(const AValue: QWord): QWord;
+{$ENDIF}
 
 function NtoLE(const AValue: SmallInt): SmallInt;
 function NtoLE(const AValue: Word): Word;
 function NtoLE(const AValue: LongInt): LongInt;
 function NtoLE(const AValue: DWord): DWord;
+{$IFNDEF VER1_0} // fpc 1.0.x can't handle 64 bits constants
 function NtoLE(const AValue: Int64): Int64;
 function NtoLE(const AValue: QWord): QWord;
+{$ENDIF}
 
 
 implementation
@@ -1310,6 +1318,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF VER1_0}
 function BEtoN(const AValue: Int64): Int64;
 begin
   {$IFDEF ENDIAN_BIG}
@@ -1341,6 +1350,7 @@ begin
            or (AValue shr 56);
   {$ENDIF}
 end;
+{$ENDIF}
 
 function LEtoN(const AValue: SmallInt): SmallInt;
 begin
@@ -1384,6 +1394,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF VER1_0}
 function LEtoN(const AValue: Int64): Int64;
 begin
   {$IFDEF ENDIAN_LITTLE}
@@ -1415,6 +1426,7 @@ begin
            or (AValue shr 56);
   {$ENDIF}
 end;
+{$ENDIF}
 
 function NtoBE(const AValue: SmallInt): SmallInt;
 begin
@@ -1458,6 +1470,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF VER1_0}
 function NtoBE(const AValue: Int64): Int64;
 begin
   {$IFDEF ENDIAN_BIG}
@@ -1489,6 +1502,7 @@ begin
            or (AValue shr 56);
   {$ENDIF}
 end;
+{$ENDIF}
 
 function NtoLE(const AValue: SmallInt): SmallInt;
 begin
@@ -1520,7 +1534,7 @@ begin
   {$ENDIF}
 end;
 
-function NtoLE(const AValue: Cardinal): Cardinal;
+function NtoLE(const AValue: DWord): DWord;
 begin
   {$IFDEF ENDIAN_LITTLE}
     Result := AValue;
@@ -1532,6 +1546,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF VER1_0}
 function NtoLE(const AValue: Int64): Int64;
 begin
   {$IFDEF ENDIAN_LITTLE}
@@ -1563,6 +1578,7 @@ begin
            or (AValue shr 56);
   {$ENDIF}
 end;
+{$ENDIF}
 
 initialization
   InitializeDebugOutput;
