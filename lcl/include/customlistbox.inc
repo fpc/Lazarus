@@ -418,6 +418,7 @@ begin
   BorderStyle:= bsSingle;
   FItems := TExtendedStringList.Create(GetCachedDataSize);
   FCacheValid := True;
+  FClickOnSelChange:= True;
   FItemIndex:=-1;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
