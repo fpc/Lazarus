@@ -79,7 +79,8 @@ begin
   // initiate creation of subitems
   // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
   for i:=0 to Items.Count-1 do
-    Items[i].HandleNeeded;
+    if Items[i].Visible then
+      Items[i].HandleNeeded;
 end;
 
 procedure TMenu.DestroyHandle;
@@ -244,6 +245,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/01/07 13:04:08  vincents
+  don't create handle for unvisible menu item
+
   Revision 1.28  2004/12/05 13:25:47  mattias
   destroying clean up
 
