@@ -535,6 +535,7 @@ type
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
     function IsHelpContextStored: boolean;
+    function IsHelpKeyWordStored: boolean;
     procedure SetAlign(Value : TAlign);
     procedure SetBoundsRect(const Rect : TRect);
     procedure SetClientHeight(Value: Integer);
@@ -675,7 +676,6 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
-
   public
     FCompStyle : LongInt;
     Function PerformTab : Boolean; Virtual;
@@ -733,9 +733,6 @@ type
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
-    property HelpType: THelpType read FHelpType write FHelpType default htContext;
-    property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpContextStored;
-    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
   published
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
@@ -743,6 +740,9 @@ type
     property Hint: String read FHint write SetHint;
     property Top: Integer read FTop write SetTop;
     property Width: Integer read FWidth write SetWidth;
+    property HelpType: THelpType read FHelpType write FHelpType default htContext;
+    property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpKeyWordStored;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
   end;
 
 
@@ -761,6 +761,14 @@ type
   TBorderWidth = 0..MaxInt;
 
   TGetChildProc = procedure(Child: TComponent) of Object;
+
+
+  { TWinControlActionLink }
+
+  TWinControlActionLink = class(TControlActionLink)
+  end;
+
+  TWinControlActionLinkClass = class of TWinControlActionLink;
 
 
   { TWinControl }
@@ -1453,6 +1461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.115  2003/04/11 08:09:26  mattias
+  published TControl help properties
+
   Revision 1.114  2003/04/07 01:59:25  mattias
   implemented package iterations
 

@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {******************************************************************************
                                      TControl
  ******************************************************************************
@@ -252,9 +254,26 @@ begin
   Result := ClientRect.Right;
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.IsHelpContextStored: boolean;
+------------------------------------------------------------------------------}
 function TControl.IsHelpContextStored: boolean;
 begin
-  Result:=false;
+  if ActionLink=nil then
+    Result := HelpContext<>0
+  else
+    Result := not ActionLink.IsHelpContextLinked;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.IsHelpKeyWordStored: boolean;
+------------------------------------------------------------------------------}
+function TControl.IsHelpKeyWordStored: boolean;
+begin
+  if ActionLink=nil then
+    Result := HelpKeyword<>''
+  else
+    Result := not ActionLink.IsHelpContextLinked;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1602,9 +1621,9 @@ begin
 
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetHeight                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetHeight
+------------------------------------------------------------------------------}
 procedure TControl.SetHeight(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
@@ -1613,21 +1632,27 @@ begin
   SetBounds(FLeft, FTop, FWidth, Value);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.SetHelpContext(const AValue: THelpContext);
+------------------------------------------------------------------------------}
 procedure TControl.SetHelpContext(const AValue: THelpContext);
 begin
   if FHelpContext=AValue then exit;
   FHelpContext:=AValue;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.SetHelpKeyword(const AValue: String);
+------------------------------------------------------------------------------}
 procedure TControl.SetHelpKeyword(const AValue: String);
 begin
   if FHelpKeyword=AValue then exit;
   FHelpKeyword:=AValue;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetParent                                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  Procedure TControl.SetParent(AParent : TWinControl);
+------------------------------------------------------------------------------}
 Procedure TControl.SetParent(AParent : TWinControl);
 begin
 {  if AParent = nil
@@ -2077,8 +2102,13 @@ end;
   {$C-}
 {$ENDIF}
 
+// included by controls.pp
+
 { =============================================================================
   $Log$
+  Revision 1.122  2003/04/11 08:09:26  mattias
+  published TControl help properties
+
   Revision 1.121  2003/04/10 09:22:42  mattias
   implemented changing dependency version
 
