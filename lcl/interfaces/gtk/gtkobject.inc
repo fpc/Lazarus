@@ -99,6 +99,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TgtkObject.FreeAllStyles;
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.FreeAllStyles;
+var
+  I : Integer;
+begin
+  If Assigned(Styles) then
+    Try
+      For I := Styles.Count - 1 downto 0 do
+        ReleaseStyle(Styles[I]);
+      Styles.Free;
+    Except
+    End;
+  Styles := Nil;
+end;
+
+{------------------------------------------------------------------------------
   Method: Tgtkobject.Destroy
   Params:  None
   Returns: Nothing
@@ -118,6 +135,15 @@ var
   HashItem: PDynHashArrayItem;
   QueueItem, OldQueueItem: PLazQueueItem;
 begin
+  FreeAllStyles;
+  FreeGDKCursors;
+  FreeStockItems;
+
+  if FGTKToolTips<>nil then begin
+    gtk_object_unref(PGTKObject(FGTKToolTips));
+    FGTKToolTips := nil;
+  end;
+
   // tidy up the messages
   QueueItem:=FMessageQueue.First;
   while (QueueItem<>nil) do begin
@@ -817,26 +843,8 @@ end;
   *Note: Tells GTK Engine to halt and destroy
  ------------------------------------------------------------------------------}
 procedure TGtkObject.AppTerminate;
-var
-  I : Integer;
 begin
-  If Assigned(Styles) then
-    Try
-      For I := Styles.Count - 1 downto 0 do
-        ReleaseStyle(Styles[I]);
-      Styles.Free;
-    Except
-    End;
-  Styles := Nil;
-
-  FreeGDKCursors;
-
-  if FGTKToolTips<>nil then begin
-    gtk_object_unref(PGTKObject(FGTKToolTips));
-    FGTKToolTips := nil;
-  end;
-   
-  FreeStockItems;
+  FreeAllStyles;
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
@@ -6718,6 +6726,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.301  2002/12/17 16:32:12  mattias
+  freeing GDIObjects without AppTerminate
+
   Revision 1.300  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 
