@@ -1750,17 +1750,12 @@ end;
 
 {$IFDEF CPUPowerPC}
 function ReadLRSExtentedAndConvertToExtended(s: TStream): Extended;
-// TODO - does not work
-const
-  F: extended = 1.0/65536.0 ;
-var
-  le: array [1..5] of word;
-begin { Ignores NaN & Inf }
-  s.Read(le[1],10);
-  ReverseBytes(@le[1],10);
-  Result := 2.0 * (((le[2]*F+le[3])*F+le[4])*F+le[5])*F;
-  if le[1]>32767 then Result := -Result ;
-  Result:=intpower(2,integer(le[1] and $7fff)-$4000);
+// TODO
+begin
+  s.Read(Result,4);
+  s.Read(Result,4);
+  s.Read(Result,2);
+  Result:=0;
 end;
 {$ENDIF}
 
