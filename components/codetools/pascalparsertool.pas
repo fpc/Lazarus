@@ -2348,8 +2348,7 @@ begin
         and AtomIsKeyWord then
           SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,
                                 ['constant',GetAtom]);
-      until (CurPos.Flag in
-                      [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose]);
+      until (CurPos.Flag in [cafSemicolon]);
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
