@@ -107,7 +107,8 @@ begin
 end;
 
 
-function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus; data: gPointer) : GBoolean; cdecl;
+function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMActivate;
 begin
@@ -116,7 +117,8 @@ begin
    Result := DeliverPostMessage(Data, Mess);
 end;
 
-function gtkfrmdeactivate( widget: PGtkWidget; Event : TgdkEventFocus; data: gPointer) : GBoolean; cdecl;
+function gtkfrmdeactivate( widget: PGtkWidget; Event : TgdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMActivate;
 begin
@@ -131,7 +133,8 @@ begin
    EventTrace('map', data);
 end;
 
-function GTKExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose; Data: gPointer): GBoolean; cdecl;
+function GTKExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
 var
 //  Mess : TLMessage;
 //  fWindow : pgdkWindow;
@@ -142,6 +145,7 @@ var
 begin
   Result := True;
   EventTrace('expose-event', data);
+  if (Event^.Count > 0) then exit;
   
   msg.msg := LM_PAINT; 
   MSG.DC := GetDC(THandle(Widget));
@@ -654,7 +658,8 @@ Writeln('***********************');
   
 end;
 
-function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer; data: gPointer) : GBoolean; cdecl;
+function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
+  data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMNotify;
    T : tagNMHDR;
@@ -671,7 +676,8 @@ begin
 end;
 
 
-function gtkconfigureevent( widget: PGtkWidget; event : PgdkEventConfigure; data: gPointer) : GBoolean; cdecl;
+function gtkconfigureevent( widget: PGtkWidget; event : PgdkEventConfigure;
+  data: gPointer) : GBoolean; cdecl;
 var 
   Allocation : PGtkAllocation;
 begin
@@ -1139,8 +1145,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.33  2001/09/30 08:34:51  lazarus
-  MG: fixed mem leaks and fixed range check errors
+  Revision 1.34  2001/10/03 21:03:02  lazarus
+  MG: reduced repaints
 
   Revision 1.32  2001/06/16 09:14:38  lazarus
   MG: added lazqueue and used it for the messagequeue
