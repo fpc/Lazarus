@@ -148,18 +148,19 @@ type
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
+    function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
+    function PackageIsNeeded(APackage: TLazPackage): boolean;
+    function PackageNameExists(const PkgName: string;
+                               IgnorePackage: TLazPackage): boolean;
+    procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
+                                     var List: TList);
+    procedure GetConnectionsTree(FirstDependency: TPkgDependency;
+                                 var Tree: TPkgPairTree);
     function GetAutoCompilationOrder(APackage: TLazPackage;
                                      FirstDependency: TPkgDependency;
                                      Policies: TPackageUpdatePolicies): TList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TList;
-    function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
-    function PackageIsNeeded(APackage: TLazPackage): boolean;
-    function PackageNameExists(const PkgName: string;
-                               IgnorePackage: TLazPackage): boolean;
-    procedure ConsistencyCheck;
-    procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
-                                     var List: TList);
     procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
     procedure IterateComponentClasses(APackage: TLazPackage;
                                Event: TIterateComponentClassesEvent;
@@ -170,6 +171,7 @@ type
                                     Event: TIteratePackagesEvent);
     procedure MarkAllPackagesAsNotVisited;
     procedure MarkNeededPackages;
+    procedure ConsistencyCheck;
   public
     // packages handling
     function CreateNewPackage(const Prefix: string): TLazPackage;
@@ -1332,18 +1334,64 @@ end;
 
 function TLazPackageGraph.FindAmbigiousUnits(APackage: TLazPackage;
   FirstDependency: TPkgDependency; var File1, File2: TPkgFile): boolean;
+// check if two connected packages have units with the same name
+// Connected means here: a Package1 is directly required by a Package2
+// or: a Package1 and a Package2 are directly required by a Package3
+// return strue, if ambigious units found
+
+  function FindAmbigiousUnitsBetween2Packages(Pkg1,Pkg2: TLazPackage): boolean;
+  var
+    i: Integer;
+    PkgFile1: TPkgFile;
+    j: Integer;
+    PkgFile2: TPkgFile;
+  begin
+    Result:=false;
+    for i:=0 to Pkg1.FileCount-1 do begin
+      PkgFile1:=Pkg1.Files[i];
+      for j:=0 to Pkg2.FileCount-1 do begin
+        PkgFile2:=Pkg2.Files[j];
+        if (PkgFile1.FileType in PkgFileUnitTypes)
+        and (PkgFile2.FileType in PkgFileUnitTypes)
+        and (PkgFile1.UnitName<>'')
+        and (AnsiCompareText(PkgFile1.UnitName,PkgFile1.UnitName)=0) then
+        begin
+          File1:=PkgFile1;
+          File2:=PkgFile2;
+          Result:=true;
+        end;
+      end;
+    end;
+  end;
+
+var
+  ConnectionsTree: TPkgPairTree;
+  ANode: TAVLTreeNode;
+  Pair: TPkgPair;
 begin
   Result:=false;
+  exit;
+  
   if APackage<>nil then begin
     FirstDependency:=APackage.FirstRequiredDependency;
   end;
   File1:=nil;
   File2:=nil;
-
-  // ToDo: check if two connected packages have units with the same name
-  // Connected means: a Package1 is directly required by a Package2
-  // or: a Package1 and a Package2 are directly required by a Package3
-  
+  ConnectionsTree:=nil;
+  GetConnectionsTree(FirstDependency,ConnectionsTree);
+  if ConnectionsTree=nil then exit;
+  try
+    ANode:=ConnectionsTree.FindLowest;
+    while ANode<>nil do begin
+      Pair:=TPkgPair(ANode.Data);
+      Result:=FindAmbigiousUnitsBetween2Packages(Pair.Package1,Pair.Package2);
+      if Result then exit;
+      ANode:=ConnectionsTree.FindSuccessor(ANode);
+    end;
+  finally
+    ConnectionsTree.Free;
+  end;
+  Result:=false;
 end;
 
 function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
@@ -1851,6 +1899,67 @@ begin
   end;
   // clean up
   FreeMem(PkgStack);
+end;
+
+procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;
+  var Tree: TPkgPairTree);
+  
+  procedure AddConnection(Pkg1, Pkg2: TLazPackage);
+  begin
+    if Tree=nil then
+      Tree:=TPkgPairTree.Create;
+    Tree.AddPairIfNotExists(Pkg1,Pkg2);
+  end;
+  
+  procedure AddConnections(StartDependency: TPkgDependency);
+  // add every connection between owner and required package
+  // and between two childs
+  var
+    OwnerPackage: TLazPackage;
+    Dependency1: TPkgDependency;
+    Dependency2: TPkgDependency;
+    Pkg1: TLazPackage;
+    Pkg2: TLazPackage;
+  begin
+    if StartDependency=nil then exit;
+    if (StartDependency.Owner is TLazPackage) then
+      OwnerPackage:=TLazPackage(StartDependency.Owner)
+    else
+      OwnerPackage:=nil;
+    Dependency1:=StartDependency;
+    while Dependency1<>nil do begin
+      Pkg1:=Dependency1.RequiredPackage;
+      if Pkg1<>nil then begin
+        // add connection between owner and required package
+        if OwnerPackage<>nil then
+          AddConnection(OwnerPackage,Pkg1);
+        // add connections between any two direct required packages
+        Dependency2:=StartDependency;
+        while Dependency2<>nil do begin
+          Pkg2:=Dependency2.RequiredPackage;
+          if Pkg2<>nil then
+            AddConnection(Pkg1,Pkg2);
+          Dependency2:=Dependency2.NextDependency[pdlRequires];
+        end;
+      end;
+      Dependency1:=Dependency1.NextDependency[pdlRequires];
+    end;
+  end;
+  
+var
+  List: TList;
+  i: Integer;
+  Pkg: TLazPackage;
+begin
+  List:=nil;
+  if Tree<>nil then Tree.FreeAndClear;
+  GetAllRequiredPackages(FirstDependency,List);
+  if List=nil then exit;
+  AddConnections(FirstDependency);
+  for i:=0 to List.Count-1 do begin
+    Pkg:=TLazPackage(List[i]);
+    AddConnections(Pkg.FirstRequiredDependency);
+  end;
 end;
 
 initialization

@@ -124,7 +124,11 @@ type
     pftBinary   // file is something else
     );
   TPkgFileTypes = set of TPkgFileType;
-
+  
+const
+  PkgFileUnitTypes = [pftUnit,pftVirtualUnit];
+  
+type
   TPkgFileFlag = (
     pffHasRegisterProc,  // file is unit and has a 'register' procedure
     pffReportedAsRemoved // file has been reported as removed
@@ -188,6 +192,14 @@ type
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
+  end;
+  
+  
+  { TPkgFileTree }
+  
+  TPkgFileTree = class(TAVLTree)
+  public
+    constructor Create;
   end;
   
   
@@ -3316,6 +3328,13 @@ end;
 function TPkgPair.Compare(PkgPair: TPkgPair): integer;
 begin
   Result:=ComparePair(PkgPair.Package1,PkgPair.Package2);
+end;
+
+{ TPkgFileTree }
+
+constructor TPkgFileTree.Create;
+begin
+  inherited
 end;
 
 initialization
