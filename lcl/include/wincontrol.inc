@@ -2488,9 +2488,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
-{  if (TWinControl(Self).HandleAllocated) or (Self is TCustomForm) then}
-  CNSendMessage(LM_ShowHide, Self, nil);
-  
+  if HandleAllocated then
+    CNSendMessage(LM_ShowHide, Self, nil);
 //  SetWindowPos(FHandle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
 {------------------------------------------------------------------------------
@@ -2513,6 +2512,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2002/11/10 21:49:28  lazarus
+  MG: added smart hints in edit mode
+
   Revision 1.99  2002/11/09 18:13:33  lazarus
   MG: fixed gdkwindow checks
 
