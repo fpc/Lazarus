@@ -52,6 +52,7 @@ type
   TOutputFilter = class
   private
     FCompilerOptions: TBaseCompilerOptions;
+    FBufferingOutputLock: integer;
     fCurrentDirectory: string;
     fFilteredOutput: TStringList;
     fOnReadLine: TOnOutputString;
@@ -64,6 +65,8 @@ type
     fOnOutputString: TOnOutputString;
     fOptions: TOuputFilterOptions;
     FStopExecute: boolean;
+    FLastOutputLine: integer;
+    fLastOutputTime: TDateTime;
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -85,6 +88,9 @@ type
     procedure ReadLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
     function ReadMakeLine(const s: string): boolean;
+    procedure WriteOutput(Flush: boolean);
+    procedure BeginBufferingOutput;
+    procedure EndBufferingOutput;
   public
     property CurrentDirectory: string read fCurrentDirectory;
     property FilteredLines: TStringList read fFilteredOutput;
@@ -137,6 +143,7 @@ end;
 procedure TOutputFilter.Clear;
 begin
   fOutput.Clear;
+  FLastOutputLine:=-1;
   fFilteredOutput.Clear;
   if fCompilingHistory<>nil then fCompilingHistory.Clear;
   if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
@@ -161,52 +168,58 @@ begin
   OutputLine:='';
   ErrorExists:=true;
   Aborted:=false;
-  repeat
-    Application.ProcessMessages;
-    if StopExecute then begin
-      TheProcess.Terminate(0);
-      Aborted:=true;
-      Result:=false;
-      ReadLine('aborted',true);
-      break;
-    end;
-    
-    if TheProcess.Output<>nil then
-      Count:=TheProcess.Output.Read(Buf[1],length(Buf))
-    else
-      Count:=0;
-    LineStart:=1;
-    i:=1;
-    while i<=Count do begin
-      if Buf[i] in [#10,#13] then begin
-        OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
-        ReadLine(OutputLine,false);
-        if fLastErrorType in [etFatal, etPanic, etError] then begin
-          Result:=false;
-        end;
-        OutputLine:='';
-        if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
-        then
-          inc(i);
-        LineStart:=i+1;
+  try
+    BeginBufferingOutput;
+    repeat
+      Application.ProcessMessages;
+      if StopExecute then begin
+        TheProcess.Terminate(0);
+        Aborted:=true;
+        Result:=false;
+        ReadLine('aborted',true);
+        break;
       end;
-      inc(i);
-    end;
-    OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
-  until Count=0;
-  TheProcess.WaitOnExit;
-  if TheProcess.ExitStatus=0 then
-    ErrorExists:=false;
-  if ErrorExists and (ofoExceptionOnError in Options) then
-    raise EOutputFilterError.Create('there was an error');
+
+      if TheProcess.Output<>nil then
+        Count:=TheProcess.Output.Read(Buf[1],length(Buf))
+      else
+        Count:=0;
+      LineStart:=1;
+      i:=1;
+      while i<=Count do begin
+        if Buf[i] in [#10,#13] then begin
+          OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
+          ReadLine(OutputLine,false);
+          if fLastErrorType in [etFatal, etPanic, etError] then begin
+            Result:=false;
+          end;
+          OutputLine:='';
+          if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
+          then
+            inc(i);
+          LineStart:=i+1;
+        end;
+        inc(i);
+      end;
+      OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
+    until Count=0;
+    TheProcess.WaitOnExit;
+    if TheProcess.ExitStatus=0 then
+      ErrorExists:=false;
+    if ErrorExists and (ofoExceptionOnError in Options) then
+      raise EOutputFilterError.Create('there was an error');
+  finally
+    EndBufferingOutput;
+  end;
 end;
 
 procedure TOutputFilter.ReadLine(const s: string; DontFilterLine: boolean);
 begin
-  writeln('TOutputFilter: "',s,'"');
+  //writeln('TOutputFilter: "',s,'"');
   fLastMessageType:=omtNone;
   fLastErrorType:=etNone;
   fOutput.Add(s);
+  WriteOutput(false);
   if Assigned(OnReadLine) then
     OnReadLine(s,fCurrentDirectory);
 
@@ -781,6 +794,38 @@ begin
         raise EOutputFilterError.Create(s);
     exit;
   end;
+end;
+
+procedure TOutputFilter.WriteOutput(Flush: boolean);
+// write output in blocks. This way slow terminals don't slow down the IDE.
+var
+  CurTime: Double;
+  s: String;
+begin
+  CurTime:=Now;
+  if ((CurTime-fLastOutputTime)>500) or Flush or (FBufferingOutputLock<=0) then
+  begin
+    s:='';
+    while FLastOutputLine<fOutput.Count-1 do begin
+      inc(FLastOutputLine);
+      s:=s+fOutput[FLastOutputLine]+LineEnding;
+    end;
+    if s<>'' then write(s);
+  end;
+  fLastOutputTime:=CurTime;
+end;
+
+procedure TOutputFilter.BeginBufferingOutput;
+begin
+  inc(FBufferingOutputLock);
+end;
+
+procedure TOutputFilter.EndBufferingOutput;
+begin
+  dec(FBufferingOutputLock);
+  if FBufferingOutputLock<0 then RaiseException('');
+  if FBufferingOutputLock=0 then
+    WriteOutput(true);
 end;
 
 
