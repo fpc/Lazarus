@@ -882,8 +882,11 @@ begin
   -Xc = Link with C library (LINUX only)
        
 }
-  if (TargetFilename <> '') or (MainSourceFilename<>'') then
-    switches := switches + ' -o' + CreateTargetFilename(MainSourceFilename);
+  if (TargetFilename <> '') or (MainSourceFilename<>'') then begin
+    tempsw:=CreateTargetFilename(MainSourceFilename);
+    if tempsw <> ChangeFileExt(MainSourceFilename,'') then
+      switches := switches + ' -o' + tempsw;
+  end;
 
   { Setting this to a default for now to allow the compiler to compile, until I get 
     the above completed. }
