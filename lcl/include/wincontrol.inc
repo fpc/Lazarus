@@ -1302,7 +1302,7 @@ begin
 //    Assert(False, Format('Trace:[TWinControl.Insert] %s(%s) --> Insert: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
     if AControl is TWinControl then
     begin
-      ListAdd(FWInControls, AControl);
+      ListAdd(FWinControls, AControl);
       ListAdd(FTabList, AControl);
     end;
 //    else
@@ -1373,7 +1373,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.InsertControl(AControl : TControl);
 Begin
- AControl.ValidateContainer(Self);
+  AControl.ValidateContainer(Self);
   Perform(CM_CONTROLLISTCHANGE, Integer(AControl), Integer(True));
   Insert(AControl);
   if not (csReadingState in AControl.ControlState) then
@@ -2293,6 +2293,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/08/05 07:43:28  lazarus
+  MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
+
   Revision 1.74  2002/06/21 15:41:56  lazarus
   MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
 
