@@ -871,8 +871,11 @@ End;
 
 Function TCustomGrid.Getcolwidths(Acol: Integer): Integer;
 Begin
-  Result:=Integer(FCols[aCol]);
-  if result<0 then Result:=fDefColWidth;
+  if aCol<ColCount then begin
+    Result:=Integer(FCols[aCol]);
+    if result<0 then Result:=fDefColWidth;
+  end else
+    Result:=0;
 End;
 
 procedure TCustomGrid.SetEditor(AValue: TWinControl);
@@ -1267,7 +1270,7 @@ begin
 end;
 
 // The visible grid Depends on  TopLeft and ClientWidht,ClientHeight,
-// Col/Row Count, So it Should be called inmediately after any change
+// Col/Row Count, So it Should be called immediately after any change
 // like that
 function TCustomGrid.GetVisibleGrid: TRect;
 Var
@@ -1527,7 +1530,7 @@ Var
   Rs: Boolean;
   R: TRect;
 begin
-
+  if (RowCount=0) or (ColCount=0) then exit;
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
   
   // Draw columns in this row
@@ -1929,8 +1932,13 @@ begin
       ValidGrid:=(Left>=0)And(Top>=0)And(Right>=Left)And(Bottom>=Top);
     If Not ValidGrid Then MaxClientXY:=Point(0,0)
     Else begin
-      R:=ColRowToClientCellrect(VisibleGrid.Right, VisibleGrid.Bottom);
-      MaxClientXY:=R.BottomRight;
+      if (VisibleGrid.Right<ColCount)
+      and (VisibleGrid.Bottom<RowCount) then begin
+        R:=ColRowToClientCellrect(VisibleGrid.Right, VisibleGrid.Bottom);
+        MaxClientXY:=R.BottomRight;
+      end else begin
+        MaxClientXY:=Point(0,0);
+      end;
     End;
   End;
 end;
@@ -2125,7 +2133,8 @@ begin
   End;
 end;
 
-function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; Index:Integer; Var Ini,Fin:Integer): Boolean;
+function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; Index:Integer;
+  Var Ini,Fin:Integer): Boolean;
 Var
   Dim: Integer;
 begin
@@ -2527,7 +2536,7 @@ begin
 end;
 
 
-{ Returns a reactagle corresponding to a fisical cell[aCol,aRow] }
+{ Returns a rectangle corresponding to a fisical cell[aCol,aRow] }
 function TCustomGrid.ColRowToClientCellRect(aCol, aRow: Integer): TRect;
 begin
   ColRowToOffset(True, True, ACol, Result.Left, Result.Right);

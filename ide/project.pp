@@ -2645,14 +2645,20 @@ end;
 procedure TProjectDefineTemplates.UpdateGlobalValues;
 var
   NewProjectDir: String;
+  Changed: Boolean;
 begin
-  CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',
-    Owner.CompilerOptions.LCLWidgetType);
+  Changed:=false;
+  Changed:=Changed or CodeToolBoss.SetGlobalValue(
+                           ExternalMacroStart+'LCLWidgetType',
+                           Owner.CompilerOptions.LCLWidgetType);
   if Owner.IsVirtual then
     NewProjectDir:=VirtualDirectory
   else
     NewProjectDir:=Owner.ProjectDirectory;
-  CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',NewProjectDir);
+  Changed:=Changed or CodeToolBoss.SetGlobalValue(
+                                   ExternalMacroStart+'ProjPath',NewProjectDir);
+  if Changed then
+    IncreaseCompilerParseStamp;
 end;
 
 end.
@@ -2661,6 +2667,9 @@ end.
 
 {
   $Log$
+  Revision 1.131  2003/07/08 17:30:19  mattias
+  fixed changing widget set and TStringGrid exceptions on ColCount=0
+
   Revision 1.130  2003/06/25 17:22:47  mattias
   added automatic linux-windows file conversions
 
