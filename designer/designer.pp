@@ -134,6 +134,7 @@ type
     LastFormCursor: TCursor;
     DeletingComponents: TList;
 
+    // event handlers for designed components
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
     function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
     function MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
@@ -143,6 +144,7 @@ type
     Procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
     Procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
 
+    // procedures for working with components
     procedure DoDeleteSelectedComponents;
     procedure DoDeleteComponent(AComponent: TComponent; FreeComponent: boolean);
     procedure MarkComponentForDeletion(AComponent: TComponent);
@@ -152,6 +154,7 @@ type
     Procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
 
+    // popup menu
     procedure BuildPopupMenu;
     procedure OnAlignPopupMenuClick(Sender: TObject);
     procedure OnMirrorHorizontalPopupMenuClick(Sender: TObject);
@@ -164,6 +167,7 @@ type
     Procedure OnFormActivated;
     procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
 
+    // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
   public
     ControlSelection : TControlSelection;
@@ -491,10 +495,11 @@ function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
 begin
   Result:=true;
   Sender.Dispatch(TheMessage);
+  //writeln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
   if ControlSelection.SelectionForm=Form then begin
     if not ControlSelection.IsResizing then begin
       if (ControlSelection.IsSelected(Sender)) then begin
-        //    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+        //writeln('***  TDesigner.MoveControl ',Sender.Name,':',Sender.ClassName,' ',Assigned(FOnPropertiesChanged));
         ControlSelection.UpdateBounds;
         if Assigned(FOnPropertiesChanged) then
           FOnPropertiesChanged(Self);
