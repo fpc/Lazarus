@@ -53,6 +53,8 @@ type
     function FindDeclarationInUsesSection(UsesNode: TCodeTreeNode;
       CleanPos: integer;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
+      var IncludeCode: TCodeBuffer): boolean;
   public
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -95,11 +97,25 @@ writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos)
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
   if CursorNode=nil then
     RaiseException('no node found at cursor');
+  if IsIncludeDirectiveAtPos(CleanCursorPos,CursorNode.StartPos,NewPos.Code)
+  then begin
+    NewPos.X:=1;
+    NewPos.Y:=1;
+    NewTopLine:=1;
+    Result:=true;
+    exit;
+  end;
   if CursorNode.Desc=ctnUsesSection then begin
     Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                          NewPos,NewTopLine);
   end else begin
-
+    { ToDo:
+      1. if in begin..end block then parse for with and case statements
+      2. search recursively and create/fill caches
+      3. if possible use ppu files
+      4. create a protocol for identifier completion
+      ...
+    }
   end;
 end;
 
@@ -328,6 +344,26 @@ writeln('TFindDeclarationTool.FindUnitSource Search in search path=',UnitSrcSear
         Result:=SearchUnitInUnitLinks(AnUnitName);
       end;
     end;
+  end;
+end;
+
+function TFindDeclarationTool.IsIncludeDirectiveAtPos(CleanPos,
+  CleanCodePosInFront: integer; var IncludeCode: TCodeBuffer): boolean;
+var LinkIndex, CommentStart, CommentEnd: integer;
+  SrcLink: TSourceLink;
+begin
+  Result:=false;
+  if (Scanner=nil) then exit;
+  LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanPos);
+  if (LinkIndex<0) or (LinkIndex>=Scanner.LinkCount-1) then exit;
+  SrcLink:=Scanner.Links[LinkIndex+1];
+  if (SrcLink.Code=nil) or (SrcLink.Code=Scanner.Links[LinkIndex].Code) then
+    exit;
+  if CleanPosIsInComment(CleanPos,CleanCodePosInFront,CommentStart,CommentEnd)
+  and (CommentEnd=SrcLink.CleanedPos) then begin
+    IncludeCode:=TCodeBuffer(SrcLink.Code);
+    Result:=true;
+    exit;
   end;
 end;
 

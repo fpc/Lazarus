@@ -854,7 +854,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(P: integer): TCodeTreeNode;
     if ANode<>nil then begin
 //writeln('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
 //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
-//' "',copy(Src,ANode.StartPos,20),'"');
+//' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
       if (ANode.StartPos<=P) and ((ANode.EndPos>P) or (ANode.EndPos<1)) then
       begin
         // first search in childs

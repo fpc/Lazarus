@@ -157,10 +157,11 @@ type
     ImplementationSectionFound: boolean;
     EndOfSourceFound: boolean;
 
-    function DoAtom: boolean; override;
+    function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
+        var CommentStart, CommentEnd: integer): boolean;
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
-    function GetSourceType: TCodeTreeNodeDesc;
+    function DoAtom: boolean; override;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractProcName(ProcNode: TCodeTreeNode;
@@ -187,6 +188,7 @@ type
     function FindImplementationNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
+    function GetSourceType: TCodeTreeNodeDesc;
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
     constructor Create;
@@ -1303,7 +1305,7 @@ begin
       if not ((CurSection=ctnInterface) and UpAtomIs('IMPLEMENTATION')) then
         RaiseException('syntax error: unexpected keyword '+GetAtom+' found');
       // close interface section node
-      CurNode.EndPos:=CurPos.EndPos;
+      CurNode.EndPos:=CurPos.StartPos;
       EndChildNode;
       ImplementationSectionFound:=true;
       // start implementation section node
@@ -2649,6 +2651,90 @@ begin
     until (ANode=nil) or (ANode.Desc=NodeDesc);
   end;
   Result:=(ANode<>nil);
+end;
+
+function TPascalParserTool.CleanPosIsInComment(CleanPos,
+  CleanCodePosInFront: integer; var CommentStart, CommentEnd: integer): boolean;
+var CommentLvl, CurCommentPos: integer;
+begin
+  Result:=false;
+  if CleanPos>SrcLen then exit;
+  if CleanCodePosInFront>CleanPos then
+    RaiseException(
+      'TPascalParserTool.CleanPosIsInComment CleanCodePosInFront>CleanPos');
+  MoveCursorToCleanPos(CleanCodePosInFront);
+  repeat
+    ReadNextAtom;
+    if CurPos.StartPos>CleanPos then begin
+      // CleanPos between two atoms -> parse space between for comments
+      CommentStart:=CleanCodePosInFront;
+      CommentEnd:=CurPos.StartPos;
+      if CommentEnd>SrcLen then CommentEnd:=SrcLen+1;
+      while CommentStart<CommentEnd do begin
+        if IsCommentStartChar[Src[CommentStart]] then begin
+          CurCommentPos:=CommentStart;
+          case Src[CurCommentPos] of
+          '{': // pascal comment
+            begin
+              CommentLvl:=1;
+              inc(CurCommentPos);
+              while (CurCommentPos<CommentEnd) and (CommentLvl>0) do begin
+                case Src[CurCommentPos] of
+                '{': if Scanner.NestedComments then inc(CommentLvl);
+                '}': dec(CommentLvl);
+                end;
+                inc(CurCommentPos);
+              end;
+            end;
+          '/':  // Delphi comment
+            if (CurCommentPos<CommentEnd-1) and (Src[CurCommentPos+1]='/') then
+            begin
+              inc(CurCommentPos,2);
+              while (CurCommentPos<CommentEnd)
+              and (not (Src[CurCommentPos] in [#10,#13])) do
+                inc(CurCommentPos);
+              inc(CurCommentPos);
+              if (CurCommentPos<CommentEnd)
+              and (Src[CurCommentPos] in [#10,#13])
+              and (Src[CurCommentPos-1]<>Src[CurCommentPos]) then
+                inc(CurCommentPos);
+            end else
+              break;
+          '(': // old turbo pascal comment
+            if (CurCommentPos<CommentEnd-1) and (Src[CurCommentPos+1]='*') then
+            begin
+              inc(CurCommentPos,3);
+              while (CurCommentPos<CommentEnd)
+              and ((Src[CurCommentPos-1]<>'*') or (Src[CurCommentPos]<>')'))
+              do
+                inc(CurCommentPos);
+              inc(CurCommentPos);
+            end else
+              break;
+          end;
+          if (CurCommentPos>CommentStart) and (CleanPos<CurCommentPos) then
+          begin
+            // CleanPos in comment
+            CommentEnd:=CurCommentPos;
+            Result:=true;
+            exit;
+          end;
+          CommentStart:=CurCommentPos;
+        end else if IsSpaceChar[Src[CommentStart]] then begin
+          repeat
+            inc(CommentStart);
+          until (CommentStart>=CommentEnd)
+          or (not (IsSpaceChar[Src[CommentStart]]));
+        end else begin
+          break;
+        end;
+      end;
+    end else if CurPos.EndPos>CleanPos then begin
+      // CleanPos not in a comment
+      exit;
+    end;
+    CleanCodePosInFront:=CurPos.EndPos;
+  until CurPos.StartPos>=SrcLen;
 end;
 
 end.

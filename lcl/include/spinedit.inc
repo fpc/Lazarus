@@ -1,3 +1,5 @@
+// included by spin.pp
+
 {-----------------------------------------------------------------------------}
 procedure TSpinEdit.SetClimbRate(Num : Single);
 begin
