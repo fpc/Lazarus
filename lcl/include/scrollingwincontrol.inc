@@ -252,7 +252,6 @@ begin
   with Message do
   begin
     NewPos := FPosition;
-writeln('TControlScrollBar.ScrollHandler A ',FControl.Name,':',FControl.ClassName,' FPosition=',FPosition);
     case ScrollCode of
       SB_LINEUP:
         Dec(NewPos, FIncrement);
@@ -271,7 +270,6 @@ writeln('TControlScrollBar.ScrollHandler A ',FControl.Name,':',FControl.ClassNam
     end;
     if NewPos < 0 then NewPos := 0;
     if NewPos > Range then NewPos := Range;
-writeln('TControlScrollBar.ScrollHandler B ',FControl.Name,':',FControl.ClassName,' NewPos=',NewPos);
     SetPosition(NewPos);
   end;
 end;
