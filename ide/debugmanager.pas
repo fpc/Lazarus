@@ -56,16 +56,18 @@ type
     ddtLocals,
     ddtCallStack
     );
-
+    
   TDebugManager = class(TBaseDebugManager)
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender : TObject);
 
     // SrcNotebook events
-    procedure OnSrcNotebookAddWatchesAtCursor(Sender: TObject);
-    procedure OnSrcNotebookCreateBreakPoint(Sender: TObject; Line: Integer);
-    procedure OnSrcNotebookDeleteBreakPoint(Sender: TObject; Line: Integer);
+    function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
+    function OnSrcNotebookCreateBreakPoint(Sender: TObject;
+                                           Line: Integer): boolean;
+    function OnSrcNotebookDeleteBreakPoint(Sender: TObject;
+                                           Line: Integer): boolean;
 
     // Debugger events
     procedure OnDebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
@@ -76,6 +78,7 @@ type
                                   const AExceptionText: String);
   private
     FDebugger: TDebugger;
+    FDebuggerUpdateLock: integer;
     // When no debugger is created the IDE stores all debugger settings in its
     // own variables. When the debugger object is created these items point
     // to the corresponding items in the FDebugger object.
@@ -107,12 +110,19 @@ type
     function DoStepOverProject: TModalResult; override;
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
-    
+    function DoBeginChangeDebugger: TModalResult;
+    function DoEndChangeDebugger: TModalResult;
+
     procedure RunDebugger; override;
     procedure EndDebugging; override;
     function Evaluate(const AExpression: String;
                       var AResult: String): Boolean; override;
 
+    function DoCreateBreakPoint(const AFilename: string;
+                                Line: integer): TModalResult;
+    function DoDeleteBreakPoint(const AFilename: string;
+                                Line: integer): TModalResult;
+    function DoCreateWatch(const VariableName: string): TModalResult;
   end;
   
   
@@ -145,52 +155,48 @@ end;
 // ScrNoteBook events
 //-----------------------------------------------------------------------------
 
-procedure TDebugManager.OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
+function TDebugManager.OnSrcNotebookAddWatchesAtCursor(Sender : TObject
+  ): boolean;
 var
   SE: TSourceEditor;
   WatchVar: String;
-  NewWatch: TdbgWatch;
 begin
-  if FDebugger = nil then Exit;
+  Result:=false;
 
-  //get the sourceEditor.
-  SE := TSourceNotebook(sender).GetActiveSE;
+  // get the sourceEditor.
+  SE := TSourceNotebook(Sender).GetActiveSE;
   if not Assigned(SE) then Exit;
   WatchVar := SE.GetWordAtCurrentCaret;
   if WatchVar = ''  then Exit;
 
-  NewWatch := FWatches.Add(WatchVar);
-  NewWatch.Enabled := True;
-  NewWatch.InitialEnabled := True;
-  Project1.Modified:=true;
+  if DoCreateWatch(WatchVar)<>mrOk then exit;
+  Result:=true;
 end;
 
-procedure TDebugManager.OnSrcNotebookCreateBreakPoint(Sender: TObject;
-  Line: Integer);
+function TDebugManager.OnSrcNotebookCreateBreakPoint(Sender: TObject;
+  Line: Integer): boolean;
 var
-  NewBreak: TDBGBreakPoint;
+  AFilename: String;
 begin
+  Result:=false;
   if SourceNotebook.Notebook = nil then Exit;
 
-  NewBreak := FBreakPoints.Add(TSourceNotebook(Sender).GetActiveSE.FileName,
-                  Line);
-  NewBreak.InitialEnabled := True;
-  NewBreak.Enabled := True;
-  Project1.Modified:=true;
+  AFilename:=TSourceNotebook(Sender).GetActiveSE.FileName;
+  if DoCreateBreakPoint(AFilename,Line)<>mrOk then exit;
+  Result:=true;
 end;
 
-procedure TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject;
-  Line: Integer);
+function TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject;
+  Line: Integer): boolean;
 var
-  OldBreakPoint: TDBGBreakPoint;
+  AFilename: String;
 begin
+  Result:=false;
   if SourceNotebook.Notebook = nil then Exit;
 
-  OldBreakPoint:=FBreakPoints.Find(TSourceNotebook(Sender).GetActiveSE.FileName,
-                                   Line);
-  if OldBreakPoint=nil then exit;
-  OldBreakPoint.Free;
-  Project1.Modified:=true;
+  AFilename:=TSourceNotebook(Sender).GetActiveSE.FileName;
+  if DoDeleteBreakPoint(AFilename,Line)<>mrOk then exit;
+  Result:=true;
 end;
 
 //-----------------------------------------------------------------------------
@@ -754,6 +760,47 @@ begin
   Result := mrOk;
 end;
 
+function TDebugManager.DoBeginChangeDebugger: TModalResult;
+begin
+  inc(FDebuggerUpdateLock);
+  if FDebuggerUpdateLock=1 then begin
+    // the update has begun
+    if FDebugger<>nil then begin
+      // switch the debugger into a state, where the IDE can change its items
+
+      // quick hack: simply forbid editing during run
+      if FDebugger.State in dsRunStates then begin
+        Result:=mrCancel;
+        MessageDlg('Program is running',
+          'You can not change any debugger item while the program is running.'#13
+          +'Stop it first.',mtError,[mbCancel],0);
+      end else
+        Result:=mrOk;
+      if Result<>mrOk then begin
+        dec(FDebuggerUpdateLock);
+        exit;
+      end;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
+function TDebugManager.DoEndChangeDebugger: TModalResult;
+begin
+  if FDebuggerUpdateLock<=0 then
+    RaiseException('TDebugManager.DoEndChangeDebugger');
+  dec(FDebuggerUpdateLock);
+  if FDebuggerUpdateLock=0 then begin
+    // the update has ended -> restore the debugger state
+    if FDebugger<>nil then begin
+      Result:=mrOk;
+      
+      if Result<>mrOk then exit;
+    end;
+  end;
+  Result:=mrOk;
+end;
+
 procedure TDebugManager.RunDebugger;
 begin
   if FDebugger <> nil then FDebugger.Run;
@@ -764,12 +811,54 @@ begin
   if FDebugger <> nil then FDebugger.Done;
 end;
 
-function TDebugManager.Evaluate(const AExpression: String; var AResult: String): Boolean;
+function TDebugManager.Evaluate(const AExpression: String;
+  var AResult: String): Boolean;
 begin
   Result := (MainIDE.ToolStatus = itDebugger)
         and (dcEvaluate in DebugBoss.Commands)
         and (FDebugger <> nil)
         and FDebugger.Evaluate(AExpression, AResult);
+end;
+
+function TDebugManager.DoCreateBreakPoint(const AFilename: string; Line: integer
+  ): TModalResult;
+var
+  NewBreak: TDBGBreakPoint;
+begin
+  Result:=DoBeginChangeDebugger;
+  if Result<>mrOk then exit;
+  NewBreak := FBreakPoints.Add(AFilename,Line);
+  NewBreak.InitialEnabled := True;
+  NewBreak.Enabled := True;
+  Project1.Modified:=true;
+  Result:=DoEndChangeDebugger;
+end;
+
+function TDebugManager.DoDeleteBreakPoint(const AFilename: string; Line: integer
+  ): TModalResult;
+var
+  OldBreakPoint: TDBGBreakPoint;
+begin
+  Result:=DoBeginChangeDebugger;
+  if Result<>mrOk then exit;
+  OldBreakPoint:=FBreakPoints.Find(AFilename,Line);
+  if OldBreakPoint=nil then exit;
+  OldBreakPoint.Free;
+  Project1.Modified:=true;
+  Result:=DoEndChangeDebugger;
+end;
+
+function TDebugManager.DoCreateWatch(const VariableName: string): TModalResult;
+var
+  NewWatch: TDBGWatch;
+begin
+  Result:=DoBeginChangeDebugger;
+  if Result<>mrOk then exit;
+  NewWatch := FWatches.Add(VariableName);
+  NewWatch.Enabled := True;
+  NewWatch.InitialEnabled := True;
+  Project1.Modified:=true;
+  Result:=DoEndChangeDebugger;
 end;
 
 function TDebugManager.DoRunToCursor: TModalResult;
@@ -823,6 +912,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.20  2003/05/23 16:46:13  mattias
+  added message, that debugger is readonly while running
+
   Revision 1.19  2003/05/23 14:12:50  mattias
   implemented restoring breakpoints
 

@@ -108,6 +108,7 @@ type
 
 const
   dcRunCommands = [dcRun,dcStepInto,dcStepOver,dcRunTo];
+  dsRunStates = [dsRun];
 
   XMLBreakPointsNode = 'BreakPoints';
   XMLBreakPointGroupsNode = 'BreakPointGroups';
@@ -550,9 +551,9 @@ type
     procedure RunTo(const ASource: String; const ALine: Integer); virtual;       // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer); virtual;      // No execute, only set exec point
 
-    function Evaluate(const AExpression: String; var AResult: String): Boolean;  // Evaluates the given expression, returns true if valid
-    function Modify(const AExpression, AValue: String): Boolean;                 // Modifies the given expression, returns true if valid
-    function TargetIsStarted: boolean; virtual;
+    function  Evaluate(const AExpression: String; var AResult: String): Boolean;  // Evaluates the given expression, returns true if valid
+    function  Modify(const AExpression, AValue: String): Boolean;                 // Modifies the given expression, returns true if valid
+    function  TargetIsStarted: boolean; virtual;
 
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnLoadFilename: TOnLoadFilenameFromConfig); virtual;
@@ -2130,6 +2131,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.24  2003/05/23 16:46:13  mattias
+  added message, that debugger is readonly while running
+
   Revision 1.23  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 
