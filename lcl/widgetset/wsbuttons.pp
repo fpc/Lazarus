@@ -49,10 +49,14 @@ uses
   WSLCLClasses, WSStdCtrls, WSControls;
 
 type
+
   { TWSButton }
 
   TWSButton = class(TWSButtonControl)
+  public
+    class procedure DefaultButtonChanged(const AButton: TCustomButton); virtual;
   end;
+  TWSButtonClass = class of TWSButton;
 
   { TWSBitBtn } 
   
@@ -73,6 +77,14 @@ type
 implementation 
 
 // TODO: Can't be virtual abstract ?
+
+{ TWSButton }
+
+procedure TWSButton.DefaultButtonChanged(const AButton: TCustomButton);
+begin
+end;
+
+{ TWSCustomBitBtn }
 
 procedure TWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
@@ -101,7 +113,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(CustomTButton, TWSButton);
+//  RegisterWSComponent(TCustomButton, TWSButton);
 //  RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
 ////////////////////////////////////////////////////

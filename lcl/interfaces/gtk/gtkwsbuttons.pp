@@ -57,7 +57,8 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
+    class function  CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
+    class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
@@ -132,6 +133,21 @@ begin
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
+procedure TGtkWSButton.DefaultButtonChanged(const AButton: TCustomButton);
+begin
+  if (AButton.Default)
+  and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(AButton.Handle))) then
+    //gtk_widget_grab_default(pgtkwidget(handle))
+  else begin
+    {DebugLn('LM_BTNDEFAULT_CHANGED ',TCustomButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
+      ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
+      ' realized=',GTK_WIDGET_REALIZED(PGtkWidget(Handle)),
+      ' mapped=',GTK_WIDGET_MAPPED(PGtkWidget(Handle)),
+      '');}
+    //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
+  end;
+end;
+    
 function TGtkWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
 begin             
   // The button text is static, so let the LCL fallback to FCaption

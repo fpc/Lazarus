@@ -74,8 +74,6 @@ const
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
   LM_DELETETOOLBUTTON = LM_ComUser+47;
 
-  LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
-
   LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
   //LM_SETENABLED   = LM_COMUSER+54;
@@ -873,8 +871,6 @@ begin
   LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
   LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
 
-  LM_BTNDEFAULT_CHANGED :Result:='LM_BTNDEFAULT_CHANGED';
-
   LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
 
   //LM_SETENABLED   :Result:='LM_SETENABLED';
@@ -1015,6 +1011,9 @@ end.
 
 {
   $Log$
+  Revision 1.86  2004/09/11 14:54:01  micha
+  convert LM_BTNDEFAULT_CHANGED message to interface method
+
   Revision 1.85  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls

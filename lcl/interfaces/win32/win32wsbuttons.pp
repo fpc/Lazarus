@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
   end;
 
   { TWin32WSBitBtn }
@@ -71,6 +72,20 @@ implementation
 uses
   Win32Int, InterfaceBase;
 
+{ TWin32WSButton }
+
+procedure TWin32WSButton.DefaultButtonChanged(const AButton: TCustomButton);
+var
+  WindowStyle: dword;
+begin
+  WindowStyle := Windows.GetWindowLong(AButton.Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
+  If AButton.Default then
+    WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
+  else
+    WindowStyle := WindowStyle or BS_PUSHBUTTON;
+  Windows.SendMessage(AButton.Handle, BM_SETSTYLE, WindowStyle, 1);
+end;
+    
 { TWin32WSBitBtn }
 
 const
@@ -346,7 +361,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomButton, TWin32WSButton);
+  RegisterWSComponent(TCustomButton, TWin32WSButton);
   RegisterWSComponent(TCustomBitBtn, TWin32WSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TWin32WSSpeedButton);
 ////////////////////////////////////////////////////

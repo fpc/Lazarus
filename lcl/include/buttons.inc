@@ -61,7 +61,7 @@ end;
 procedure TCustomButton.DoSendBtnDefault;
 begin
   if HandleAllocated then
-    CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
+    TWSButtonClass(WidgetSetClass).DefaultButtonChanged(Self);
 end;
 
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
@@ -224,6 +224,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2004/09/11 14:54:01  micha
+  convert LM_BTNDEFAULT_CHANGED message to interface method
+
   Revision 1.34  2004/08/26 19:09:34  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 

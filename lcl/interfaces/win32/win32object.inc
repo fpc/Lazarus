@@ -308,15 +308,6 @@ Begin
       Exit;
     End;
     Case LM_Message of
-      LM_BTNDEFAULT_CHANGED:
-      Begin
-        WindowStyle := Windows.GetWindowLong(Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
-        If TCustomButton(Sender).Default then
-          WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
-        else
-          WindowStyle := WindowStyle or BS_PUSHBUTTON;
-        Windows.SendMessage(Handle, BM_SETSTYLE, WindowStyle, 1);
-      End;
       LM_DESTROY:
       Begin
         If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then
@@ -2575,6 +2566,9 @@ End;
 
 {
   $Log$
+  Revision 1.244  2004/09/11 14:54:01  micha
+  convert LM_BTNDEFAULT_CHANGED message to interface method
+
   Revision 1.243  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls

@@ -3164,21 +3164,6 @@ begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
 
-      LM_BTNDEFAULT_CHANGED :
-      Begin
-        if (TCustomButton(Sender).Default)
-        and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
-          //gtk_widget_grab_default(pgtkwidget(handle))
-        else begin
-          {DebugLn('LM_BTNDEFAULT_CHANGED ',TCustomButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
-            ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
-            ' realized=',GTK_WIDGET_REALIZED(PGtkWidget(Handle)),
-            ' mapped=',GTK_WIDGET_MAPPED(PGtkWidget(Handle)),
-            '');}
-          //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
-        end;
-      end;
-
       LM_DESTROY :
         DestroyLCLComponent(Sender);
 
@@ -8651,6 +8636,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.552  2004/09/11 14:54:01  micha
+  convert LM_BTNDEFAULT_CHANGED message to interface method
+
   Revision 1.551  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls
