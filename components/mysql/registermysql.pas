@@ -22,7 +22,13 @@ unit RegisterMySQL;
 interface
 
 uses
-  Classes, SysUtils, LResources, MySQLDB, LazarusPackageIntf;
+  Classes, SysUtils, LResources,
+  {$IFDEF MySQL3}
+  MySQLDB3,
+  {$ELSE}
+  MySQLDB4,
+  {$ENDIF}
+  LazarusPackageIntf;
 
 procedure Register;
 
@@ -35,7 +41,11 @@ end;
 
 procedure Register;
 begin
-  RegisterUnit('MySQLDB',@RegisterUnitMySQLDB);
+  {$IFDEF MySQL3}
+  RegisterUnit('MySQLDB3',@RegisterUnitMySQLDB);
+  {$ELSE}
+  RegisterUnit('MySQLDB4',@RegisterUnitMySQLDB);
+  {$ENDIF}
 end;
 
 initialization

@@ -1,17 +1,23 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <Name Value="MySQLLaz"/>
+    <Name Value="MySQL4Laz"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
+      <Version Value="2"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib4"/>
       </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
       <Other>
+        <CustomOptions Value="-dMySQL4"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Lazarus package for MySQL"/>
+    <Description Value="Lazarus package for MySQL4
+The MySQL3 units are part of FreePascal"/>
     <License Value="LGPL"/>
     <Version Minor="1" Release="1"/>
     <Files Count="3">
@@ -25,9 +31,9 @@
         <UnitName Value="RegisterMySQL"/>
       </Item2>
       <Item3>
-        <Filename Value="mysqldb.pp"/>
+        <Filename Value="mysqldb4.pp"/>
         <Type Value="Virtual Unit"/>
-        <UnitName Value="MySQLDB"/>
+        <UnitName Value="MySQLDB4"/>
       </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
@@ -37,6 +43,7 @@
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
+      <CustomOptions Value="-dMySQL4"/>
       <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
