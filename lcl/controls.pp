@@ -472,20 +472,26 @@ type
     );
   TControlFlags = set of TControlFlag;
 
+  TControlHandlerType = (
+    chtOnResize,
+    chtOnChangeBounds
+    );
+  TControlHandlerTypes = set of TControlHandlerType;
 
   TControl = class(TComponent)
   private
     FActionLink: TControlActionLink;
-    FAnchors : TAnchors;
     FAlign : TAlign;
+    FAnchors : TAnchors;
     FAutoSize : Boolean;
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
     FCaption : TCaption;
     FColor : TColor;
-    FControlFlags: TControlFlags;
     FConstraints : TSizeConstraints;
+    FControlFlags: TControlFlags;
+    FControlHandlers: array[TControlHandlerType] of TMethodList;
     FControlStyle: TControlStyle;
     FCtl3D : Boolean;
     FCursor : TCursor;
@@ -498,33 +504,35 @@ type
     FHelpContext: THelpContext;
     FHelpKeyword: String;
     FHelpType: THelpType;
-    FHostDockSite : TWinControl;
     FHint : String;
+    FHostDockSite : TWinControl;
     FIsControl : Boolean;
     fLastAlignedBounds: TRect;
-    FLastResizeHeight: integer;
-    FLastResizeWidth: integer;
+    FLastChangeboundRect: TRect;
+    FLastDoChangeBounds: TRect;
     FLastResizeClientHeight: integer;
     FLastResizeClientWidth: integer;
-    FLastChangeboundRect: TRect;
+    FLastResizeHeight: integer;
+    FLastResizeWidth: integer;
     FLeft: Integer;
     FMouseEntered: boolean;
-    FOnResize: TNotifyEvent;
+    FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnConstrainedResize : TConstrainedResizeEvent;
     FOnDblClick : TNotifyEvent;
-    FOnShowHint: TControlShowHintEvent;
-    FOnTripleClick : TNotifyEvent;
-    FOnQuadClick : TNotifyEvent;
     FOnDragDrop : TDragDropEvent;
     FOnDragOver : TDragOverEvent;
     FOnEndDrag : TEndDragEvent;
     FOnMouseDown : TMouseEvent;
-    FOnMouseMove : TMouseMoveEvent;
-    FOnMouseUp: TMouseEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
+    FOnMouseMove : TMouseMoveEvent;
+    FOnMouseUp: TMouseEvent;
+    FOnQuadClick : TNotifyEvent;
+    FOnResize: TNotifyEvent;
+    FOnShowHint: TControlShowHintEvent;
     FOnStartDrag: TStartDragEvent;
+    FOnTripleClick : TNotifyEvent;
     FParent: TWinControl;
     FParentColor : Boolean;
     FParentFont : Boolean;
@@ -532,21 +540,28 @@ type
     FPopupMenu : TPopupMenu;
     FShowHint : Boolean;
     FSizeLock: integer;
-    FText : TCaption;
-    FTop: Integer;
-    FWidth: Integer;
-    FWindowProc: TWndMethod;
-    FVisible: Boolean;
     FTabOrder: integer;
     FTabStop : Boolean;
-    procedure DoBeforeMouseMessage;
-    procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
-    procedure CheckMenuPopup(const P : TSmallPoint);
+    FText : TCaption;
+    FTop: Integer;
+    FVisible: Boolean;
+    FWidth: Integer;
+    FWindowProc: TWndMethod;
+    function GetBoundsRect : TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
+    function GetMouseCapture : Boolean;
+    Function  GetTabOrder: TTabOrder;
     function IsAnchorsStored: boolean;
+    function IsCaptionStored : Boolean;
     function IsHelpContextStored: boolean;
     function IsHelpKeyWordStored: boolean;
+    procedure CheckMenuPopup(const P : TSmallPoint);
+    procedure DoBeforeMouseMessage;
+    procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
+    procedure DoDragMsg(var Dragmsg : TCMDrag);
+    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
+    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetAlign(Value : TAlign);
     procedure SetBoundsRect(const ARect : TRect);
     procedure SetClientHeight(Value: Integer);
@@ -563,18 +578,11 @@ type
     procedure SetParentShowHint(Value : Boolean);
     procedure SetPopupMenu(Value : TPopupMenu);
     procedure SetShowHint(Value : Boolean);
+    Procedure SetTabOrder(Value : TTabOrder);
+    procedure SetTabStop(Value : Boolean);
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    function GetBoundsRect : TRect;
-    function GetMouseCapture : Boolean;
-    function IsCaptionStored : Boolean;
-    procedure DoDragMsg(var Dragmsg : TCMDrag);
-    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
-    procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
-    Function  GetTabOrder: TTabOrder;
-    Procedure SetTabOrder(Value : TTabOrder);
-    procedure SetTabStop(Value : Boolean);
     Procedure UpdateTaborder(value : TTabOrder);
   protected
     AutoSizing : Boolean;
@@ -616,6 +624,7 @@ type
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     function  GetPalette: HPalette; virtual;
     procedure DoOnResize; virtual;
+    procedure DoOnChangeBounds; virtual;
     procedure Resize; virtual;
     procedure Loaded; override;
     procedure RequestAlign; dynamic;
@@ -667,6 +676,10 @@ type
     procedure DoOnShowHint(HintInfo: Pointer);
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure VisibleChanging; dynamic;
+    procedure AddControlHandler(HandlerType: TControlHandlerType;
+                                AMethod: TMethod; AsLast: boolean);
+    procedure RemoveControlHandler(HandlerType: TControlHandlerType;
+                                   AMethod: TMethod);
   protected
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
@@ -726,6 +739,14 @@ type
     Procedure SetZOrder(Topmost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
   public
+    // Event lists
+    procedure RemoveAllControlHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnResize(OnResizeEvent: TNotifyEvent; AsLast: boolean);
+    procedure RemoveHandlerOnResize(OnResizeEvent: TNotifyEvent);
+    procedure AddHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent;
+                                       AsLast: boolean);
+    procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
+  public
     property Anchors: TAnchors read FAnchors write FAnchors stored IsAnchorsStored;
     property Align: TAlign read FAlign write SetAlign;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
@@ -751,6 +772,7 @@ type
     property TabOrder : TTabOrder read GetTabOrder write SetTaborder;
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
   published
@@ -1508,6 +1530,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.126  2003/06/13 12:53:51  mattias
+  fixed TUpDown and added handler lists for TControl
+
   Revision 1.125  2003/06/11 22:29:42  mattias
   fixed realizing bounds after loading form
 
