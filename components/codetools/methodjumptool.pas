@@ -163,26 +163,26 @@ begin
   Result:=false;
   NewPos:=CursorPos;
   // build code tree
-  //   scan for classes, objects and procedure definitions.
-  //   there will be no nodes in a class/object
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint A CursorPos=',CursorPos.X,',',CursorPos.Y);
 {$ENDIF}
   BuildTree(false);
-  if not EndOfSourceFound then exit;
+  if not EndOfSourceFound then 
+    RaiseException('End Of Source not found');
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint B');
 {$ENDIF}
   // find the CursorPos in cleaned source
   r:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (r<>0) and (r<>-1) then exit;
+  if (r<>0) and (r<>-1) then 
+    RaiseException('Cursor outside of code');
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
   if CursorNode=nil then
-    exit;
+    RaiseException('no node found at cursor');
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
