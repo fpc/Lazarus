@@ -40,7 +40,7 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, LclLinux, LCLType, LCLProc, StdCtrls,
   ExtCtrls, vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin,
-  CommCtrl, Buttons;
+  CommCtrl, Buttons, Math;
 
 type
   TStatusPanelStyle = (psText, psOwnerDraw);
@@ -1724,6 +1724,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2003/03/06 17:15:39  ajgenius
+  added Math to uses. new updown arrow code uses max
+
   Revision 1.64  2003/02/24 19:00:42  mattias
   added TlistView.SubItem improvements from Olivier Guilbaud
 
