@@ -3083,8 +3083,6 @@ begin
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
 
-  LM_SETPROPERTIES: Result := SetProperties(Sender);
-
   LM_SETDESIGNING :
     // Used by the form editor to set anything specifically needed
     // when setting controls to Designing.
@@ -4644,7 +4642,8 @@ begin
 
   Set_RC_Name(ALCLObject, AGTKObject);
 
-  if ASetupProps then SetProperties(ALCLObject);
+  if ASetupProps then 
+    { TODO: call this in CreateHandle when converted: SetProperties(ALCLObject) };
 
   if AGTKObject <> nil then begin
     {$IFNDEF NoStyle}
@@ -6228,69 +6227,6 @@ end;
 }
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetProperties
-  Params:  Sender : the lcl object which called this func via SenMessage
-  Returns: currently always 0
-
-  Depending on the compStyle, this function will apply all properties of
-  the calling object to the corresponding GTK object.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.SetProperties(Sender : TObject) : integer;
-const
-  cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
-  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
-  cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
-var
-  Widget   : PGtkWidget;
-  wHandle    : Pointer;
-
-begin
-  Result := 0;     // default if nobody sets it
-
-  if Sender is TWinControl
-  then
-    Assert(False, Format('Trace:  [TGtkWidgetSet.SetProperties] %s', [Sender.ClassName]))
-  else
-    RaiseException('TGtkWidgetSet.SetProperties: '+DbgSName(Sender));
-
-  wHandle:= Pointer(TWinControl(Sender).Handle);
-  Widget:= GTK_WIDGET(wHandle);
-
-  case TControl(Sender).fCompStyle of
-
-  csTrackbar   :
-     with (TCustomTrackBar (Sender)) do
-     begin
-        Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
-        GTK_ADJUSTMENT(Widget)^.lower := Min;
-        GTK_ADJUSTMENT(Widget)^.Upper := Max;
-        GTK_ADJUSTMENT(Widget)^.Value := Position;
-        GTK_ADJUSTMENT(Widget)^.step_increment := LineSize;
-        GTK_ADJUSTMENT(Widget)^.page_increment := PageSize;
-        { now do some of the more sophisticated features }
-        { Hint: For some unknown reason we have to disable the draw_value first,
-          otherwise it's set always to true }
-        gtk_scale_set_draw_value (GTK_SCALE (wHandle), false);
-
-        if ShowScale then
-        begin
-           gtk_scale_set_draw_value (GTK_SCALE (wHandle), ShowScale);
-           case ScalePos of
-              trLeft  : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_LEFT);
-              trRight : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_RIGHT);
-              trTop   : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_TOP);
-              trBottom: gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_BOTTOM);
-           end;
-        end;
-        //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
-     end;
-
-  else
-    Assert (true, Format ('WARNING:[TGtkWidgetSet.SetProperties] failed for %s', [Sender.ClassName]));
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Function: IsValidDC
   Params:  DC: a (LCL) devicecontext
   Returns: True if valid
@@ -7424,6 +7360,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.597  2004/09/24 07:52:35  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
+  remove message LM_SETPROPERTIES, conversion done
+
   Revision 1.596  2004/09/23 21:16:45  micha
   convert LM_SETPROPERTIES message to interface method for TCustomSpinEdit
 

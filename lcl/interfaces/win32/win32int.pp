@@ -124,7 +124,6 @@ Type
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
     Procedure SetText(Window: HWND; Data: Pointer);
-    Function SetProperties(Sender: TObject): Integer;
 
     Procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
@@ -265,6 +264,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.117  2004/09/24 07:52:35  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
+  remove message LM_SETPROPERTIES, conversion done
+
   Revision 1.116  2004/09/22 14:50:18  micha
   convert LM_SETPROPERTIES message for tcustomlabel to interface methods
 

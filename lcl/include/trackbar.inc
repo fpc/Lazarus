@@ -279,7 +279,7 @@ end;
 procedure TCustomTrackBar.ApplyChanges;
 begin
   if HandleAllocated and (not (csLoading in ComponentState))
-  then CNSendMessage (LM_SETPROPERTIES, Self, nil);
+  then TWSTrackBarClass(WidgetSetClass).ApplyChanges(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -331,6 +331,10 @@ end;
 { -------------------- unimplemented stuff below ------------------------------}
 {
   $Log$
+  Revision 1.16  2004/09/24 07:52:35  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
+  remove message LM_SETPROPERTIES, conversion done
+
   Revision 1.15  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 

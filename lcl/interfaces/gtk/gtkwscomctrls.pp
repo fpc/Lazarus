@@ -161,6 +161,7 @@ type
   private
   protected
   public
+    class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
@@ -982,6 +983,39 @@ end;
 {$endif}
 
 { TGtkWSTrackBar }
+
+procedure TGtkWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+var
+  wHandle: HWND;
+  Widget: PGtkWidget;
+begin
+  with ATrackBar do
+  begin
+    wHandle := Handle;
+    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
+    GTK_ADJUSTMENT(Widget)^.lower := Min;
+    GTK_ADJUSTMENT(Widget)^.Upper := Max;
+    GTK_ADJUSTMENT(Widget)^.Value := Position;
+    GTK_ADJUSTMENT(Widget)^.step_increment := LineSize;
+    GTK_ADJUSTMENT(Widget)^.page_increment := PageSize;
+    { now do some of the more sophisticated features }
+    { Hint: For some unknown reason we have to disable the draw_value first,
+      otherwise it's set always to true }
+    gtk_scale_set_draw_value (GTK_SCALE (wHandle), false);
+
+    if ShowScale then
+    begin
+       gtk_scale_set_draw_value (GTK_SCALE (wHandle), ShowScale);
+       case ScalePos of
+          trLeft  : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_LEFT);
+          trRight : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_RIGHT);
+          trTop   : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_TOP);
+          trBottom: gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_BOTTOM);
+       end;
+    end;
+    //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
+  end;
+end;
 
 function  TGtkWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin

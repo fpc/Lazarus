@@ -245,7 +245,6 @@ type
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
-    function  SetProperties (Sender: TObject) : integer;virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
     procedure UpdateStatusBarPanels(StatusBar: TObject;
@@ -453,6 +452,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.211  2004/09/24 07:52:35  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
+  remove message LM_SETPROPERTIES, conversion done
+
   Revision 1.210  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 

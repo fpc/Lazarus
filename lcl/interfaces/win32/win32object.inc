@@ -265,8 +265,6 @@ Begin
   Case LM_Message Of
     LM_CREATE:
       CreateComponent(Sender);
-    LM_SETPROPERTIES:
-      Result := SetProperties(Sender);
     LM_SETDESIGNING:
       if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
   End; // end of 1st case
@@ -1676,65 +1674,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetProperties
-  Params:  Sender - the lcl object which called this func via SenMessage
-  Returns: currently always 0
-
-  Depending on the compStyle, this function will apply all properties of
-  the calling object to the corresponding Window.
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetProperties(Sender: TObject): Integer;
-Var
-  Handle: HWND;
-begin
-  Result := 0; // default if nobody sets it
-
-  If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32WidgetSet.SetProperties] %S', [Sender.ClassName]))
-  Else
-    Assert(False, Format('Trace:WARNING: [TWin32WidgetSet.SetProperties] %S --> No Decendant of TWinControl', [Sender.ClassName]));
-
-  Handle := TWinControl(Sender).Handle;
-  If Handle = HWND(Nil) Then
-    Assert (False, 'Trace:WARNING: [TWin32WidgetSet.SetProperties] --> got nil pointer');
-
-  Case TControl(Sender).FCompStyle Of
-
-  csTrackbar:
-    With(TCustomTrackBar(Sender)) Do
-    Begin
-      Windows.SendMessage(Handle, TBM_SETRANGEMAX, Windows.WPARAM(True), Max);
-      Windows.SendMessage(Handle, TBM_SETRANGEMIN, Windows.WPARAM(True), Min);
-      Windows.SendMessage(Handle, TBM_SETPOS, Windows.WPARAM(True), Position);
-      Windows.SendMessage(Handle, TBM_SETLINESIZE, 0, LineSize);
-      Windows.SendMessage(Handle, TBM_SETPAGESIZE, 0, PageSize);
-      Case Orientation Of
-        trVertical:
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_VERT);
-        trHorizontal:
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_HORZ);
-      End;
-      If ShowScale Then
-      Begin
-        Case ScalePos of
-          trLeft:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_LEFT Or TBS_VERT);
-          trRight:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_RIGHT Or TBS_VERT);
-          trTop:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_TOP Or TBS_HORZ);
-          trBottom:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_BOTTOM Or TBS_HORZ);
-        End;
-      End;
-      //Not here (Delphi compatibility)
-    End;
-  Else
-    Assert (True, Format('WARNING: [TWin32WidgetSet.SetProperties] failed for %S', [Sender.ClassName]));
-  End;
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetOwner
   Params: Window - Window to which an owner will be set
           Owner  - The owner to set
@@ -1754,6 +1693,10 @@ End;
 
 {
   $Log$
+  Revision 1.285  2004/09/24 07:52:35  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
+  remove message LM_SETPROPERTIES, conversion done
+
   Revision 1.284  2004/09/23 21:16:46  micha
   convert LM_SETPROPERTIES message to interface method for TCustomSpinEdit
 

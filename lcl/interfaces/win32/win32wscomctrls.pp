@@ -152,6 +152,7 @@ type
   private
   protected
   public
+    class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
@@ -605,6 +606,41 @@ end;
 {$endif}
 
 { TWin32WSTrackBar }
+
+procedure TWin32WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+var
+  wHandle: HWND;
+begin
+  with ATrackBar do
+  begin
+    { cache handle }
+    wHandle := Handle;
+    Windows.SendMessage(wHandle, TBM_SETRANGEMAX, Windows.WPARAM(true), Max);
+    Windows.SendMessage(wHandle, TBM_SETRANGEMIN, Windows.WPARAM(true), Min);
+    Windows.SendMessage(wHandle, TBM_SETPOS, Windows.WPARAM(true), Position);
+    Windows.SendMessage(wHandle, TBM_SETLINESIZE, 0, LineSize);
+    Windows.SendMessage(wHandle, TBM_SETPAGESIZE, 0, PageSize);
+    case Orientation of
+      trVertical:
+        SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_VERT);
+      trHorizontal:
+        SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_HORZ);
+    end;
+    if ShowScale then
+    begin
+      case ScalePos of
+        trLeft:
+          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_LEFT or TBS_VERT);
+        trRight:
+          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_RIGHT or TBS_VERT);
+        trTop:
+          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_TOP or TBS_HORZ);
+        trBottom:
+          SetWindowLong(wHandle, GWL_STYLE, GetWindowLong(wHandle, GWL_STYLE) or TBS_BOTTOM or TBS_HORZ);
+      end;
+    end;
+  end;
+end;
 
 function  TWin32WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 var

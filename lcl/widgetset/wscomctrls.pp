@@ -139,6 +139,7 @@ type
 
   TWSTrackBarClass = class of TWSTrackBar;
   TWSTrackBar = class(TWSWinControl)
+    class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); virtual;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
   end;
@@ -271,6 +272,10 @@ end;
 {$endif}
 
 { TWSTrackBar }
+
+procedure TWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+begin
+end;
 
 function  TWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin

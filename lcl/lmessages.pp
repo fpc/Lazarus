@@ -56,8 +56,6 @@ const
   LM_RESIZECHILDREN = LM_ComUser+13;
   LM_CANVASCREATE   = LM_ComUser+19;
 
-  LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
-
   LM_MINIMIZE       = LM_COMUSER+59;
 
   LM_SETDESIGNING   = LM_COMUSER+60;
@@ -775,8 +773,6 @@ begin
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
 
-  LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
-
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
   LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
@@ -893,6 +889,10 @@ end.
 
 {
   $Log$
+  Revision 1.117  2004/09/24 07:52:35  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
+  remove message LM_SETPROPERTIES, conversion done
+
   Revision 1.116  2004/09/19 19:39:10  micha
   undo removal of LM_SETDESIGNING; used by lazarus ide (main.pp)
 
