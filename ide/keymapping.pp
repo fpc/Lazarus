@@ -126,13 +126,14 @@ const
   ecExtToolLast          = ecUserFirst + 599;
 
   ecNewProject           = ecUserFirst + 700;
-  ecOpenProject          = ecUserFirst + 701;
-  ecSaveProject          = ecUserFirst + 702;
-  ecSaveProjectAs        = ecUserFirst + 703;
-  ecAddCurUnitToProj     = ecUserFirst + 704;
-  ecRemoveFromProj       = ecUserFirst + 705;
-  ecViewProjectSource    = ecUserFirst + 706;
-  ecProjectOptions       = ecUserFirst + 707;
+  ecNewProjectFromFile   = ecUserFirst + 701;
+  ecOpenProject          = ecUserFirst + 702;
+  ecSaveProject          = ecUserFirst + 703;
+  ecSaveProjectAs        = ecUserFirst + 704;
+  ecAddCurUnitToProj     = ecUserFirst + 705;
+  ecRemoveFromProj       = ecUserFirst + 706;
+  ecViewProjectSource    = ecUserFirst + 707;
+  ecProjectOptions       = ecUserFirst + 708;
 
   ecRunParameters        = ecUserFirst + 800;
   ecCompilerOptions      = ecUserFirst + 801;
@@ -533,6 +534,17 @@ begin
     ecFindDeclaration: Result:='find declaration';
     ecFindBlockOtherEnd: Result:='find block other end';
     ecFindBlockStart: Result:='find block start';
+
+    // project
+    ecNewProject: Result:='New project';
+    ecNewProjectFromFile: Result:='New project from file';
+    ecOpenProject: Result:='Open project';
+    ecSaveProject: Result:='Save project';
+    ecSaveProjectAs: Result:='Save project as';
+    ecAddCurUnitToProj: Result:='Add active unit to project';
+    ecRemoveFromProj: Result:='Remove active unit from project';
+    ecViewProjectSource: Result:='View project source';
+    ecProjectOptions: Result:='View project options';
 
     // run menu
     ecBuild: Result:= 'build program/project';
@@ -1274,6 +1286,7 @@ begin
   // project menu
   C:=Categories[AddCategory('ProjectMenu','Project menu commands',caAll)];
   Add(C,'New project',ecNewProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'New project from file',ecNewProjectFromFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Save project as',ecSaveProjectAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);

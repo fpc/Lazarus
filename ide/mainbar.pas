@@ -181,6 +181,7 @@ type
     itmViewToggleFormUnit: TMenuItem;
 
     itmProjectNew: TMenuItem;
+    itmProjectNewFromFile: TMenuItem;
     itmProjectOpen: TMenuItem;
     itmProjectRecentOpen: TMenuItem;
     itmProjectSave: TMenuItem;
@@ -663,6 +664,11 @@ begin
   itmProjectNew.Caption := lisMenuNewProject;
   mnuProject.Add(itmProjectNew);
 
+  itmProjectNewFromFile := TMenuItem.Create(Self);
+  itmProjectNewFromFile.Name:='itmProjectNewFromFile';
+  itmProjectNewFromFile.Caption := lisMenuNewProjectFromFile;
+  mnuProject.Add(itmProjectNewFromFile);
+
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := lisMenuOpenProject;
@@ -897,6 +903,7 @@ begin
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
 
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
+    itmProjectNewFromFile.ShortCut:=CommandToShortCut(ecNewProjectFromFile);
     itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
     //itmProjectRecentOpen.ShortCut:=CommandToShortCut(ec);
     itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);

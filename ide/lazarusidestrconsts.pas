@@ -148,6 +148,7 @@ ResourceString
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewDebugOutput = 'Debug output';
   lisMenuNewProject = 'New Project';
+  lisMenuNewProjectFromFile = 'New Project from file';
   lisMenuOpenProject = 'Open Project';
   lisMenuOpenRecentProject = 'Open Recent Project';
   lisMenuSaveProject = 'Save Project';
