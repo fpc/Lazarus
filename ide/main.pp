@@ -3178,6 +3178,7 @@ begin
   FormEditor1.ClearSelection;
 
   // Figure out where we want to put the new form
+  // if there is more place left of the OI put it left, otherwise right
   new_x:=ObjectInspector1.Left+ObjectInspector1.Width; //+60;
   new_y:=MainIDEBar.Top+MainIDEBar.Height; //+80;
   if screen.width-new_x>=ObjectInspector1.left then inc(new_x, 60) else new_x:=16;
@@ -11330,6 +11331,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.823  2005/01/07 21:09:18  mattias
+  improved placing new forms  by Jan
+
   Revision 1.822  2005/01/07 21:02:59  mattias
   TFont, TBrush, TPen can now be used with fpCanvas
 

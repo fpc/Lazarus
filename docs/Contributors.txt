@@ -16,6 +16,7 @@ Eric Chapman
 GongYu
 Hans-Joachim Ott
 Ido Kanner
+Jan Foster
 Jason King
 Jeffrey A. Wormsley
 Jeroen van Idekinge
