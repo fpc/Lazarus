@@ -109,23 +109,23 @@ type
   }
   TCustomNotebook = class(TCustomControl)
   private
-    fPageList: TList;  // TList of TPage
     fAccess: TStrings; // TNBPages
     fPageIndex: Integer;
+    fPageList: TList;  // List of TPage
+    //fMultiLine: boolean;
     fOnPageChanged: TNotifyEvent;
-
-    { Extra variables not in Delphi }
     fShowTabs: Boolean;
     fTabPosition: TTabPosition;
 
+    Procedure CNNotify(var Message : TLMNotify); message CN_NOTIFY;
     function GetActivePage: String;
+    function GetPage(aIndex: Integer): TPage;
     function GetPageIndex: Integer;
+    //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
+    //procedure SetMultiLine(Value: boolean);
     procedure SetPageIndex(Value: Integer);
     procedure SetPages(Value: TStrings);
-    Procedure CNNotify(var Message : TLMNotify); message CN_NOTIFY;
-    { Extra private methods not in Delphi }
-    function GetPage(aIndex: Integer): TPage;
     procedure SetShowTabs(Value: Boolean);
     procedure SetTabPosition(tabPos: TTabPosition);
   protected
@@ -138,13 +138,12 @@ type
     procedure ShowControl(AControl: TControl); override;
 
     property ActivePage: String read GetActivePage write SetActivePage;
+    //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
+    property Page[Index: Integer]: TPage read GetPage;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default 0;
+    property PageList: TList read fPageList;
     property Pages: TStrings read fAccess write SetPages;
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
-
-    { Extra properties not in Delphi - Move to TabbedNotebook when it is created }
-    property Page[Index: Integer]: TPage read GetPage;
-    property PageList: TList read fPageList;
     property ShowTabs: Boolean read fShowTabs write SetShowTabs;
     property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
   public
@@ -166,9 +165,11 @@ type
     property Pages;
   published
     property ActivePage;
+    //property MultiLine;
+    property OnPageChanged;
     property PageIndex;
     property PageList;
-    property OnPageChanged;
+    property ShowTabs;
   end;
 
 
@@ -334,8 +335,8 @@ end.
 
  {
   $Log$
-  Revision 1.13  2001/10/19 14:27:43  lazarus
-  MG: fixed customradiogroup OnClick + ItemIndex
+  Revision 1.14  2001/11/05 18:18:19  lazarus
+  added popupmenu+arrows to notebooks, added target filename
 
   Revision 1.12  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages

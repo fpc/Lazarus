@@ -2157,6 +2157,8 @@ begin
       csNotebook :
       begin
          P := gtk_notebook_new();
+         gtk_notebook_set_scrollable(P, true);
+         gtk_notebook_popup_enable(P);
          gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
 
          {
@@ -3113,6 +3115,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.66  2001/11/05 18:18:19  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.65  2001/11/01 21:30:35  lazarus
   Changes to Messagebox.
   Added line to CodeTools to prevent duplicate USES entries.

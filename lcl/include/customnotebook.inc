@@ -1,3 +1,5 @@
+// included by extctrls.pp
+
 {******************************************************************************
                                    TNBPages
  ******************************************************************************}
@@ -237,8 +239,7 @@ writeln('[TCustomNotebook.CreateWnd] B');
 {$ENDIF}
 
   Assert(False, 'Trace:[TCustomNotebook.CreateWnd] add pages');
-  for n := 0 to FPageList.Count -1 do
-  begin
+  for n := 0 to FPageList.Count -1 do begin
     // this is workaround til visible=true is default in TControl
     TControl(FPageList[n]).Visible:=true;
     Msg.Parent := Self;
@@ -496,10 +497,37 @@ Begin
     end;
 end;
 
+{------------------------------------------------------------------------------
+  TCustomNotebook InternalSetMultiLine
+ ------------------------------------------------------------------------------}
+{function TCustomNotebook.InternalSetMultiLine(Value: boolean): boolean;
+begin
+  Result := FMultiLine <> Value;
+  if Result then begin
+    if not Value and ((TabPosition = tpLeft) or (TabPosition = tpRight)) then
+      raise Exception.Create(
+        'TCustomNotebook.InternalSetMultiLine: Tab must be multiline');
+    FMultiLine := Value;
+    //if not Value then FScrollOpposite := False;
+  end;
+end;}
+
+{------------------------------------------------------------------------------
+  TCustomNotebook SetMultiLine
+ ------------------------------------------------------------------------------}
+{procedure TCustomNotebook.SetMultiLine(Value: boolean);
+begin
+  if InternalSetMultiLine(Value) then RecreateWnd;
+end;}
+
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/11/05 18:18:19  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.10  2001/10/16 10:51:10  lazarus
   MG: added clicked event to TButton, MessageDialog reacts to return key
 

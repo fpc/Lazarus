@@ -951,7 +951,7 @@ end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
 begin
-writeln('[TSourceEditor.SetErrorLine] ',NewLine,',',fErrorLine);
+//writeln('[TSourceEditor.SetErrorLine] ',NewLine,',',fErrorLine);
   if fErrorLine=NewLine then exit;
   fErrorLine:=NewLine;
   fErrorColumn:=EditorComponent.CaretX;

@@ -215,14 +215,16 @@ type
     fUnitList: TList;  // list of TUnitInfo
     fUnitOutputDirectory: String;
 
+    function GetProjectInfoFile: string;
+    function GetTargetFilename: string;
     function GetUnits(Index:integer):TUnitInfo;
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetProjectFile(const NewProjectFilename: string);
+    procedure SetProjectInfoFile(const NewFilename:string);
+    procedure SetTargetFilename(const NewTargetFilename: string);
+    procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
     function OnUnitFileBackup(const Filename:string;
                               IsPartOfProject:boolean):TModalResult;
-    function GetProjectInfoFile:string;
-    procedure SetProjectInfoFile(const NewFilename:string);
-    procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
        const OldUnitName, NewUnitName: string;  var Allowed: boolean);
   public
@@ -274,6 +276,7 @@ type
        read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
+    property TargetFilename: string read GetTargetFilename write SetTargetFilename;
     property Title: String read fTitle write fTitle;
     property UnitOutputDirectory: String
        read fUnitOutputDirectory write fUnitOutputDirectory;
@@ -1394,19 +1397,20 @@ begin
   Modified:=true;
 end;
 
+function TProject.GetTargetFilename: string;
+begin
+  Result:=fCompilerOptions.TargetFilename;
+end;
+
+procedure TProject.SetTargetFilename(const NewTargetFilename: string);
+begin
+  fCompilerOptions.TargetFilename:=NewTargetFilename;
+end;
+
 procedure TProject.SetProjectFile(const NewProjectFilename: string);
 begin
   fProjectFile:=NewProjectFilename;
   Modified:=true;
-end;
-
-function TProject.OnUnitFileBackup(const Filename:string;
-  IsPartOfProject:boolean):TModalResult;
-begin
-  if Assigned(fOnFileBackup) then
-    Result:=fOnFileBackup(Filename,IsPartOfProject)
-  else
-    Result:=mrOk;
 end;
 
 function TProject.GetProjectInfoFile:string;
@@ -1419,6 +1423,15 @@ procedure TProject.SetProjectInfoFile(const NewFilename:string);
 begin
   if NewFilename='' then exit;
   ProjectFile:=ChangeFileExt(NewFilename,ProjectDefaultExt[ProjectType]);
+end;
+
+function TProject.OnUnitFileBackup(const Filename:string;
+  IsPartOfProject:boolean):TModalResult;
+begin
+  if Assigned(fOnFileBackup) then
+    Result:=fOnFileBackup(Filename,IsPartOfProject)
+  else
+    Result:=mrOk;
 end;
 
 procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
@@ -1476,6 +1489,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2001/11/05 18:18:18  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.33  2001/11/03 08:37:35  lazarus
   MG: fixed errorline showing, resource adding and published var editing and added make cleanall
 

@@ -79,6 +79,7 @@ type
     mnuSearch: TMenuItem;
     mnuView: TMenuItem; 
     mnuProject: TMenuItem; 
+    mnuRun: TMenuItem; 
     mnuEnvironment:TMenuItem;
 
     itmSeperator: TMenuItem;
@@ -101,6 +102,8 @@ type
     itmProjectAddTo: TMenuItem;
     itmProjectRemoveFrom: TMenuItem;
     itmProjectViewSource: TMenuItem;
+    itmProjectOptions: TMenuItem;
+    
     itmProjectBuild: TMenuItem;
     itmProjectRun: TMenuItem;
     itmProjectPause: TMenuItem;
@@ -108,7 +111,6 @@ type
     itmProjectStepOver: TMenuItem;
     itmProjectRunToCursor: TMenuItem;
     itmProjectStop: TMenuItem;
-    itmProjectOptions: TMenuItem;
     itmProjectCompilerSettings: TMenuItem;
 
     itmEditUndo: TMenuItem; 
@@ -621,6 +623,8 @@ writeln('[TMainIDE.Destroy] A');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
+  TheDebugger.Free;
+  TheDebugger:=nil;
   if Project<>nil then begin
     Project.Free;
     Project:=nil;
@@ -851,6 +855,11 @@ begin
   mnuProject.Name:='mnuProject';
   mnuProject.Caption := '&Project';
   mnuMain.Items.Add(mnuProject);
+
+  mnuRun := TMenuItem.Create(Self);
+  mnuRun.Name:='mnuRun';
+  mnuRun.Caption := '&Run';
+  mnuMain.Items.Add(mnuRun);
 
   mnuEnvironment := TMenuItem.Create(Self);
   mnuEnvironment.Name:='mnuEnvironment';
@@ -1090,63 +1099,67 @@ begin
 
   mnuProject.Add(CreateSeperator);
 
-  itmProjectBuild := TMenuItem.Create(Self);
-  itmProjectBuild.Name:='itmProjectBuild';
-  itmProjectBuild.Caption := 'Build';
-  itmProjectBuild.OnClick := @mnuBuildProjectClicked;
-  mnuProject.Add(itmProjectBuild);
-
-  itmProjectRun := TMenuItem.Create(Self);
-  itmProjectRun.Name:='itmProjectRun';
-  itmProjectRun.Caption := 'Run';
-  itmProjectRun.OnClick := @mnuRunProjectClicked;
-  mnuProject.Add(itmProjectRun);
-
-  itmProjectPause := TMenuItem.Create(Self);
-  itmProjectPause.Name:='itmProjectPause';
-  itmProjectPause.Caption := 'Pause';
-  itmProjectPause.OnClick := @mnuPauseProjectClicked;
-  itmProjectPause.Enabled := false;
-  mnuProject.Add(itmProjectPause);
-
-  itmProjectStepInto := TMenuItem.Create(Self);
-  itmProjectStepInto.Name:='itmProjectStepInto';
-  itmProjectStepInto.Caption := 'Step into';
-  itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
-  mnuProject.Add(itmProjectStepInto);
-
-  itmProjectStepOver := TMenuItem.Create(Self);
-  itmProjectStepOver.Name:='itmProjectStepOver';
-  itmProjectStepOver.Caption := 'Step over';
-  itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
-  mnuProject.Add(itmProjectStepOver);
-
-  itmProjectRunToCursor := TMenuItem.Create(Self);
-  itmProjectRunToCursor.Name:='itmProjectRunToCursor';
-  itmProjectRunToCursor.Caption := 'Run to cursor';
-  itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
-  mnuProject.Add(itmProjectRunToCursor);
-
-  itmProjectStop := TMenuItem.Create(Self);
-  itmProjectStop.Name:='itmProjectStop';
-  itmProjectStop.Caption := 'Stop';
-  itmProjectStop.OnClick := @mnuStopProjectClicked;
-  mnuProject.Add(itmProjectStop);
-
-  mnuProject.Add(CreateSeperator);
-
-  itmProjectCompilerSettings := TMenuItem.Create(Self);
-  itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
-  itmProjectCompilerSettings.Caption := 'Compiler Options...';
-  itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
-  mnuProject.Add(itmProjectCompilerSettings);
-  
   itmProjectOptions := TMenuItem.Create(Self);
   itmProjectOptions.Name:='itmProjectOptions';
   itmProjectOptions.Caption := 'Project Options...';
   itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
   mnuProject.Add(itmProjectOptions);
 
+//--------------
+// Run
+//--------------
+
+  itmProjectBuild := TMenuItem.Create(Self);
+  itmProjectBuild.Name:='itmProjectBuild';
+  itmProjectBuild.Caption := 'Build';
+  itmProjectBuild.OnClick := @mnuBuildProjectClicked;
+  mnuRun.Add(itmProjectBuild);
+
+  itmProjectRun := TMenuItem.Create(Self);
+  itmProjectRun.Name:='itmProjectRun';
+  itmProjectRun.Caption := 'Run';
+  itmProjectRun.OnClick := @mnuRunProjectClicked;
+  mnuRun.Add(itmProjectRun);
+
+  itmProjectPause := TMenuItem.Create(Self);
+  itmProjectPause.Name:='itmProjectPause';
+  itmProjectPause.Caption := 'Pause';
+  itmProjectPause.OnClick := @mnuPauseProjectClicked;
+  itmProjectPause.Enabled := false;
+  mnuRun.Add(itmProjectPause);
+
+  itmProjectStepInto := TMenuItem.Create(Self);
+  itmProjectStepInto.Name:='itmProjectStepInto';
+  itmProjectStepInto.Caption := 'Step into';
+  itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
+  mnuRun.Add(itmProjectStepInto);
+
+  itmProjectStepOver := TMenuItem.Create(Self);
+  itmProjectStepOver.Name:='itmProjectStepOver';
+  itmProjectStepOver.Caption := 'Step over';
+  itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
+  mnuRun.Add(itmProjectStepOver);
+
+  itmProjectRunToCursor := TMenuItem.Create(Self);
+  itmProjectRunToCursor.Name:='itmProjectRunToCursor';
+  itmProjectRunToCursor.Caption := 'Run to cursor';
+  itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
+  mnuRun.Add(itmProjectRunToCursor);
+
+  itmProjectStop := TMenuItem.Create(Self);
+  itmProjectStop.Name:='itmProjectStop';
+  itmProjectStop.Caption := 'Stop';
+  itmProjectStop.OnClick := @mnuStopProjectClicked;
+  mnuRun.Add(itmProjectStop);
+
+  mnuRun.Add(CreateSeperator);
+
+  itmProjectCompilerSettings := TMenuItem.Create(Self);
+  itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
+  itmProjectCompilerSettings.Caption := 'Compiler Options...';
+  itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
+  mnuRun.Add(itmProjectCompilerSettings);
+  
 //--------------
 // Environment
 //--------------
@@ -2074,6 +2087,11 @@ if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename)
               ChangeFileExt(NewFilename,'.lfm'),LFMCode) then
                 LFMCode:=nil;
           end;
+        end else begin
+          // removing support files
+          // The IDE automatically opens lfm files. SaveAs makes sure, that there
+          // is no old lfm file left, which does not belong to the file
+          DeleteFile(ChangeFileExt(NewFilename,'.lfm'));
         end;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
@@ -2101,8 +2119,11 @@ writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
   end;
   TestFilename:='';
   if not SaveToTestDir then begin
-    if ActiveUnitInfo.Modified and not SaveAs then begin
+    if ActiveUnitInfo.Modified then begin
       // save source
+{writeln('');
+writeln(ActiveUnitInfo.Source.Source);
+writeln('');}
       Result:=ActiveUnitInfo.WriteUnitSource;
       if Result=mrAbort then exit;
     end;
@@ -3190,6 +3211,30 @@ Begin
   Result:=mrOk;
 end;
 
+function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
+begin
+  Result:=mrCancel;
+  if (EnvironmentOptions.TestBuildDirectory='')
+  or (not DirectoryExists(EnvironmentOptions.TestBuildDirectory)) then begin
+    if (EnvironmentOptions.TestBuildDirectory<>'') then begin
+      MessageDlg('The Test Directory could not be found:'#13
+             +'"'+EnvironmentOptions.TestBuildDirectory+'"'#13
+             +'(see environment options)',mtError,[mbCancel],0);
+      Result:=mrCancel;
+      exit;
+    end;
+    Result:=MessageDlg('Build new project',
+       'The project must be saved before building'#13
+      +'If you set the Test Directory in the environment options,'#13
+      +'you can create new projects and build them at once.'#13
+      +'Save project?',mtInformation,[mbOk,mbCancel],0);
+    if Result<>mrOk then exit;
+    Result:=DoSaveAll;
+    exit;
+  end;
+  Result:=DoSaveProject(false,true);
+end;
+
 function TMainIDE.DoBuildProject: TModalResult;
 var ActiveSrcEdit: TSourceEditor;
   DefaultFilename: string;
@@ -3206,12 +3251,12 @@ begin
   try
     if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
     then exit;
-    if Project.ProjectFile<>'' then
+    if not Project.IsVirtual then
       Result:=DoSaveAll
     else
       Result:=DoSaveProjectToTestDirectory;
     if Result<>mrOk then exit;
-    if Project.ProjectFile<>'' then
+    if not Project.IsVirtual then
       DefaultFilename:=''
     else
       DefaultFilename:=GetTestUnitFilename(Project.Units[Project.MainUnit]);
@@ -3239,25 +3284,10 @@ begin
   end;
 end;
 
-function TMainIDE.DoSaveProjectToTestDirectory: TModalResult;
-begin
-  Result:=mrCancel;
-  if (EnvironmentOptions.TestBuildDirectory='')
-  or (not DirectoryExists(EnvironmentOptions.TestBuildDirectory)) then begin
-    Result:=DoSaveAll;
-    exit;
-  end;
-  Result:=DoSaveProject(false,true);
-end;
-
 function TMainIDE.DoRunProject: TModalResult;
-// quick hack to start programs
 // ToDo:
-//  -switch the IDE mode to running and free the process when program terminates
-//  -implement a better messages form for vast amount of output
-//  -target filename
+//  -implement a better messages-form for vast amount of output
 //  -command line parameters
-//  -connect program to debugger
 var
   TheProcess : TProcess;
   ProgramFilename, AText : String;
@@ -3274,10 +3304,13 @@ writeln('[TMainIDE.DoRunProject] A');
     exit;
 
   MainUnitInfo:=Project.Units[Project.MainUnit];
-  if MainUnitInfo.IsVirtual then
+  if Project.IsVirtual then
     ProgramFilename:=GetTestProjectFilename
-  else
-    ProgramFilename:=ChangeFileExt(MainUnitInfo.Filename,Project.TargetFileExt);
+  else begin
+    ProgramFilename:=
+      Project.CompilerOptions.CreateTargetFilename(MainUnitInfo.Filename);
+    
+  end;
 
   if not FileExists(ProgramFilename) then begin
     AText:='No program file "'+ProgramFilename+'" found!';
@@ -3987,18 +4020,12 @@ begin
 end;
 
 function TMainIDE.GetTestProjectFilename: string;
-var TestDir: string;
 begin
   Result:='';
   if (Project.MainUnit<0) then exit;
-  Result:=lowercase(
-               CodeToolBoss.GetSourceName(Project.Units[Project.MainUnit].Source));
-  if (Result='') then exit;
-  TestDir:=EnvironmentOptions.TestBuildDirectory;
-  if (TestDir='') then exit;
-  if TestDir[length(TestDir)]<>OSDirSeparator then
-    TestDir:=TestDir+OSDirSeparator;
-  Result:=TestDir+Result;
+  Result:=GetTestUnitFilename(Project.Units[Project.MainUnit]);
+  if Result='' then exit;
+  Result:=Project.CompilerOptions.CreateTargetFilename(Result);
 end;
 
 function TMainIDE.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
@@ -4382,6 +4409,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2001/11/05 18:18:13  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.134  2001/11/05 00:12:50  lazarus
   MWE: First steps of a debugger.
 
@@ -9012,6 +9042,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2001/11/05 18:18:13  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.134  2001/11/05 00:12:50  lazarus
   MWE: First steps of a debugger.
 

@@ -199,7 +199,6 @@ begin
     Top:=1;
     Width:=100;
     Height:=23;
-    Enabled:=false;
     Caption:='Target file name:';
     Visible:=true;
   end;
@@ -212,7 +211,6 @@ begin
     Top:=TargetFileLabel.Top+4;
     Width:=OutputSettingsGroupBox.Width-Left-10;
     Text:='';
-    Enabled:=false;
     Visible:=true;
   end;
 end;
@@ -343,6 +341,7 @@ begin
   if AProject=nil then exit;
   with AProject do begin
     TitleEdit.Text:=Title;
+    TargetFileEdit.Text:=TargetFilename;
   end;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
@@ -352,6 +351,7 @@ procedure TProjectOptionsDialog.OkButtonClick(Sender: TObject);
 begin
   with FProject do begin
     Title:=TitleEdit.Text;
+    TargetFilename:=TargetFileEdit.Text;
   end;
   SetAutoCreateForms;
   ModalResult:=mrOk;
@@ -557,7 +557,8 @@ begin
   try
     if OldList.Count=FormsAutoCreatedListBox.Items.Count then begin
       i:=OldList.Count-1;
-      while AnsiCompareText(OldList[i],FormsAutoCreatedListBox.Items[i])=0 do
+      while (i>=0) 
+      and (AnsiCompareText(OldList[i],FormsAutoCreatedListBox.Items[i])=0) do
         dec(i);
       if i<0 then exit;
     end;

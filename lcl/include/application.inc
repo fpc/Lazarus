@@ -17,7 +17,9 @@ begin
   FIcon := nil;
    
   inherited Create(AOwner);
-  ExceptProc := @ExceptionOccurred;
+  // MG: if you prefer message boxes instead of terminal error messages uncomment
+  // the following line
+  //ExceptProc := @ExceptionOccurred;
 end;
 
 {------------------------------------------------------------------------------}
@@ -343,6 +345,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/11/05 18:18:19  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.12  2001/11/01 21:30:35  lazarus
   Changes to Messagebox.
   Added line to CodeTools to prevent duplicate USES entries.

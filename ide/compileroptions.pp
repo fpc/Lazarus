@@ -31,8 +31,8 @@ unit compileroptions;
 interface
 
 uses
-  forms, classes, SysUtils, comctrls, buttons, stdctrls, extctrls, lazconf,
-  xmlcfg, filectrl;
+  Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
+  XMLCfg, FileCtrl;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -42,6 +42,7 @@ type
     xmlcfg: TXMLConfig;
 
     fProjectFile: String;
+    fTargetFilename: string;
     fLoaded: Boolean;
 
     fStyle: Integer;
@@ -111,11 +112,14 @@ type
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     function MakeOptionsString: String;
+    function MakeOptionsString(const MainSourceFileName: string): String;
     function ParseSearchPaths(const switch, paths: String): String;
     function GetXMLConfigPath: String;
     procedure Clear;
+    function CreateTargetFilename(const MainSourceFileName: string): string;
 
     property ProjectFile: String read fProjectFile write fProjectFile;
+    property TargetFilename: String read fTargetFilename write fTargetFilename;
     property XMLConfigFile: TXMLConfig read xmlcfg write xmlcfg;
     property Loaded: Boolean read fLoaded write fLoaded;
     
@@ -375,6 +379,9 @@ procedure TCompilerOptions.LoadTheCompilerOptions;
 begin
   { Load the compiler options from the XML file }
 
+  { Target }
+  TargetFilename := XMLConfigFile.GetValue('CompilerOptions/Target/Filename/Value', '');
+
   { Parsing }
   Style := XMLConfigFile.GetValue('CompilerOptions/Parsing/Style/Value', 1);
 
@@ -467,6 +474,10 @@ end;
 procedure TCompilerOptions.SaveTheCompilerOptions;
 begin
   { Save the compiler options to the XML file }
+  
+  { Target }
+  XMLConfigFile.GetValue('CompilerOptions/Target/Filename/Value', TargetFilename);
+
   { Parsing }
   XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
@@ -534,9 +545,39 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TCompilerOptions CreateTargetFilename                                       }
+{------------------------------------------------------------------------------}
+function TCompilerOptions.CreateTargetFilename(
+  const MainSourceFileName: string): string;
+var Ext: string;
+begin
+  if (TargetFilename <> '') then begin
+    Result:=ExtractFilePath(MainSourceFileName)+TargetFilename;
+  end else begin
+    if MainSourceFileName<>'' then begin
+      Result:=ExtractFileName(MainSourceFileName);
+      Ext:=ExtractFileExt(Result);
+      Result:=copy(Result,1,length(Result)-length(Ext));
+      Result:=lowercase(Result);
+      {$IFDEF win32}
+      Result:=Result+'.exe';
+      {$ENDIF}
+      Result:=ExtractFilePath(MainSourceFileName)+Result;
+    end else
+      Result:='';
+  end;
+end;
+
+{------------------------------------------------------------------------------}
 {  TCompilerOptions MakeOptionsString                                          }
 {------------------------------------------------------------------------------}
 function TCompilerOptions.MakeOptionsString: String;
+begin
+  Result:=MakeOptionsString('')
+end;
+
+function TCompilerOptions.MakeOptionsString(
+  const MainSourceFilename: string): String;
 var
   switches, tempsw: String;
 begin
@@ -808,7 +849,6 @@ begin
       
 
   -oprogramname   = executable filename
-  -pg      = generate profiler code
 
   -a = Delete generated assembler files
   -al = Include source code lines in assembler files as comments
@@ -842,6 +882,8 @@ begin
   -Xc = Link with C library (LINUX only)
        
 }
+  if (TargetFilename <> '') or (MainSourceFilename<>'') then
+    switches := switches + ' -o' + CreateTargetFilename(MainSourceFilename);
 
   { Setting this to a default for now to allow the compiler to compile, until I get 
     the above completed. }

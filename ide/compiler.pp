@@ -144,6 +144,7 @@ writeln('[TCompiler.Compile] Output="',OutputLine,'"');
     end;
     if (WriteMessage) and Assigned(OnOutputString) then
       OnOutputString(OutputLine);
+    WriteMessage := false;
 
     Application.ProcessMessages;
     OutputLine:='';
@@ -154,7 +155,7 @@ begin
   Result:=mrCancel;
   if AProject.MainUnit<0 then exit;
   OldCurDir:=GetCurrentDir;
-  if AProject.Units[AProject.MainUnit].IsVirtual then
+  if Aproject.IsVirtual then
     ProjectFilename:=DefaultFilename
   else
     ProjectFilename:=AProject.Units[AProject.MainUnit].Filename;
@@ -165,6 +166,7 @@ begin
     FOutputList.Clear;
     SetLength(Buf,BufSize);
     CmdLine := AProject.CompilerOptions.CompilerPath;
+    
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
       FOnCmdLineCreate(CmdLine,Abort);
@@ -194,8 +196,9 @@ begin
       exit;
     end;
     {$ENDIF linux}
-    CmdLine := CmdLine + ' '+ AProject.CompilerOptions.MakeOptionsString;
-    CmdLine := CmdLine + ' '+ ProjectFilename;
+    CmdLine := CmdLine
+                 + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename)
+                 + ' '+ ProjectFilename;
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
       FOnCmdLineCreate(CmdLine,Abort);
@@ -325,6 +328,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2001/11/05 18:18:13  lazarus
+  added popupmenu+arrows to notebooks, added target filename
+
   Revision 1.15  2001/10/23 09:13:50  lazarus
   MG: fixed TestProject
 
