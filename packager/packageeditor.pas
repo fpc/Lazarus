@@ -169,7 +169,8 @@ type
     function GetCurrentFile(var Removed: boolean): TPkgFile;
     function StoreCurrentTreeSelection: TStringList;
     procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
-    procedure ExtendUnitPathForNewUnit(const AFilename: string);
+    procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
+      AnIncludeFile: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -794,7 +795,8 @@ end;
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 var
   AddParams: TAddToPkgResult;
-  NewFilename: String;
+  NewLFMFilename: String;
+  NewLRSFilename: String;
 begin
   if LazPackage.ReadOnly then begin
     UpdateButtons;
@@ -812,24 +814,30 @@ begin
 
   d2ptUnit:
     begin
-      ExtendUnitPathForNewUnit(AddParams.UnitFilename);
-      // add unit file
-      with AddParams do
-        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      NewLFMFilename:='';
+      NewLRSFilename:='';
       // add lfm file
       if AddParams.AutoAddLFMFile then begin
-        NewFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
-        if FileExists(NewFilename)
-        and (LazPackage.FindPkgFile(NewFilename,false,true)=nil) then
-          LazPackage.AddFile(NewFilename,'',pftLFM,[],cpNormal);
+        NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
+        if FileExists(NewLFMFilename)
+        and (LazPackage.FindPkgFile(NewLFMFilename,false,true)=nil) then
+          LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
+        else
+          NewLFMFilename:='';
       end;
       // add lrs file
       if AddParams.AutoAddLRSFile then begin
-        NewFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
-        if FileExists(NewFilename)
-        and (LazPackage.FindPkgFile(NewFilename,false,true)=nil) then
-          LazPackage.AddFile(NewFilename,'',pftLRS,[],cpNormal);
+        NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
+        if FileExists(NewLRSFilename)
+        and (LazPackage.FindPkgFile(NewLRSFilename,false,true)=nil) then
+          LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
+        else
+          NewLRSFilename:='';
       end;
+      ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
+      // add unit file
+      with AddParams do
+        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
       PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
       UpdateAll;
     end;
@@ -845,7 +853,7 @@ begin
 
   d2ptNewComponent:
     begin
-      ExtendUnitPathForNewUnit(AddParams.UnitFilename);
+      ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
       // add file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
@@ -1635,34 +1643,53 @@ begin
   if FreeList then ASelection.Free;
 end;
 
-procedure TPackageEditorForm.ExtendUnitPathForNewUnit(const AFilename: string);
+procedure TPackageEditorForm.ExtendUnitIncPathForNewUnit(const AnUnitFilename,
+  AnIncludeFile: string);
 var
   NewDirectory: String;
   UnitPath: String;
-  i: Integer;
   ShortDirectory: String;
+  NewIncDirectory: String;
+  ShortIncDirectory: String;
+  IncPath: String;
+  UnitPathPos: Integer;
+  IncPathPos: Integer;
 begin
   if LazPackage=nil then exit;
   // check if directory is already in the unit path of the package
-  NewDirectory:=ExtractFilePath(AFilename);
+  NewDirectory:=ExtractFilePath(AnUnitFilename);
   ShortDirectory:=NewDirectory;
   LazPackage.ShortenFilename(ShortDirectory);
   if ShortDirectory='' then exit;
   UnitPath:=LazPackage.GetUnitPath(false);
-  i:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
-  if i>=1 then begin
-    // directory is there
-    exit;
+  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
+  IncPathPos:=1;
+  if AnIncludeFile<>'' then begin
+    NewIncDirectory:=ExtractFilePath(AnIncludeFile);
+    ShortIncDirectory:=NewIncDirectory;
+    LazPackage.ShortenFilename(ShortIncDirectory);
+    if ShortIncDirectory<>'' then begin
+      IncPath:=LazPackage.GetIncludePath(false);
+      IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewIncDirectory,1);
+    end;
   end;
-  // ask user to add the unit path
-  if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
-      Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
-        AFilename, '"', #13, #13, #13, '"', ShortDirectory, '"']),
-      mtConfirmation,[mbYes,mbNo],0)<>mrYes
-  then exit;
-  // add path
-  with LazPackage.CompilerOptions do
-    OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,NewDirectory);
+  if UnitPathPos<1 then begin
+    // ask user to add the unit path
+    if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
+        Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
+          AnUnitFilename, '"', #13, #13, #13, '"', ShortDirectory, '"']),
+        mtConfirmation,[mbYes,mbNo],0)<>mrYes
+    then exit;
+    // add path
+    with LazPackage.CompilerOptions do
+      OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDirectory);
+  end;
+  if IncPathPos<1 then begin
+    // the unit is in untipath, but the include file not in the incpath
+    // -> auto extend the include path
+    with LazPackage.CompilerOptions do
+      IncludeFiles:=MergeSearchPaths(IncludeFiles,ShortIncDirectory);
+  end;
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
