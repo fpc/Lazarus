@@ -981,6 +981,7 @@ begin
   end;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
+    //writeln('TPkgManager.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExists(CurFile.Filename),' ',StateFileAge<FileAge(CurFile.Filename));
     if FileExists(CurFile.Filename)
     and (StateFileAge<FileAge(CurFile.Filename)) then begin
       writeln('TPkgManager.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);

@@ -20,25 +20,55 @@ unit GTKGLArea;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LMessages, VCLGlobals, GTKGLArea_Int,
-  InterfaceBase, GTKInt, LResources, NVGLX;
+  Classes, SysUtils, Controls, Graphics, LMessages, VCLGlobals,
+  InterfaceBase, GTKInt, LResources, GLib, NVGL, NVGLX, GTKGLArea_Int;
   
 type
   TCustomGTKGLAreaControl = class(TWinControl)
   private
     FCanvas: TCanvas; // only valid at designtime
+    FOnPaint: TNotifyEvent;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
     procedure CreateComponent(TheOwner: TComponent); override;
   public
-    property Widget: PGtkGLArea read GetWidget;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    Procedure Paint; virtual;
+    procedure DoOnResize; override;
+  public
+    property Widget: PGtkGLArea read GetWidget;
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   end;
   
   TGTKGLAreaControl = class(TCustomGTKGLAreaControl)
   published
+    property Align;
+    property Anchors;
+    property Enabled;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnPaint;
+    property OnResize;
+    property OnShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
   end;
   
 procedure Register;
@@ -84,6 +114,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TCustomGTKGLAreaControl.Paint;
+begin
+  if Assigned(OnPaint) then OnPaint(Self);
+end;
+
+procedure TCustomGTKGLAreaControl.DoOnResize;
+begin
+  if (gint(True) = gtk_gl_area_make_current(Widget)) then
+    glViewport (0, 0, Width, Height);
+  inherited DoOnResize;
+end;
+
 procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
 begin
   Include(FControlState, csCustomPaint);
@@ -98,6 +140,10 @@ begin
       MoveTo(0,Height);
       LineTo(Width,0);
     end;
+  end else begin
+    if (Widget<>nil)
+    and (gint(True) = gtk_gl_area_make_current(Widget)) then
+      Paint;
   end;
   Exclude(FControlState, csCustomPaint);
 end;
