@@ -5743,7 +5743,7 @@ end;
 procedure TMainIDE.UpdateCaption;
 var NewCaption:string;
 begin
-  NewCaption := 'Lazarus Editor v'+Version_String;
+  NewCaption := 'Lazarus Editor v'+lisLazarusVersionString;
   if Project1<>nil then begin
     if Project1.Title<>'' then
       NewCaption:=NewCaption +' - '+Project1.Title
@@ -6915,6 +6915,8 @@ var
   SectionCaretXY: TPoint;
   InsertAlphabetically: boolean;
   DummyResult: Boolean;
+  SelectedStartPos: TPoint;
+  SelectedEndPos: TPoint;
 begin
   FOpenEditorsOnCodeToolChange:=true;
   try
@@ -6957,8 +6959,10 @@ begin
       end else begin
         // the user has selected text
         // -> check if the selection is only part of the maximum bounds
-        if (CompareCaret(ActiveSrcEdit.EditorComponent.BlockBegin,StartPos)<0)
-        or (CompareCaret(ActiveSrcEdit.EditorComponent.BlockEnd,EndPos)>0)
+        SelectedStartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
+        SelectedEndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
+        if (CompareCaret(SelectedStartPos,StartPos)>0)
+        or (CompareCaret(SelectedEndPos,EndPos)<0)
         then begin
           MessageDlg('Selection exceeds string constant',
           'Hint: The Make Resourcestring Function expects a string constant.'#13
@@ -6966,6 +6970,8 @@ begin
           mtError,[mbCancel],0);
           exit;
         end;
+        StartPos:=SelectedStartPos;
+        EndPos:=SelectedEndPos;
       end;
     end else begin
       DoJumpToCodeToolBossError;
@@ -7881,6 +7887,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.484  2003/03/13 10:11:41  mattias
+  fixed TControl.Show in design mode
+
   Revision 1.483  2003/03/11 22:56:41  mattias
   added visiblechanging
 
