@@ -522,56 +522,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.UpdateStatusBarPanel
-  Params: StatusPanel - StatusPanel which needs to be update
-  Returns: Nothing
-
-  Called by StatusBarPanelUpdate and StatusBarSetText
-  Everything is updated except the panel width
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.UpdateStatusBarPanel(StatusPanel: TStatusPanel);
-var
-  BevelType: integer;
-  Text: string;
-begin
-  Text := StatusPanel.Text;
-  case StatusPanel.Alignment of
-    taCenter: Text := #9 + Text;
-    taRightJustify: Text := #9#9 + Text;
-  end;
-  case StatusPanel.Bevel of
-    pbNone: BevelType := Windows.SBT_NOBORDERS;
-    pbLowered: BevelType := 0;
-    pbRaised: BevelType := Windows.SBT_POPOUT;
-  end;
-  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
-end;
-
-procedure TWin32WidgetSet.UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
-var
-  Rights: PInteger;
-  PanelIndex: integer;
-  CurrentRight: integer;
-begin
-  if StatusBar.Panels.Count=0 then begin
-    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, 0, 0);
-    exit;
-  end;
-  Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
-  try
-    CurrentRight := 0;
-    for PanelIndex := 0 to StatusBar.Panels.Count-2 do begin
-      CurrentRight := CurrentRight + StatusBar.Panels[PanelIndex].Width;
-      Rights[PanelIndex] := CurrentRight;
-    end;
-    Rights[StatusBar.Panels.Count-1] := -1; //Last extends to end;
-    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, StatusBar.Panels.Count, LPARAM(Rights));
-  finally
-    Freemem(Rights);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.ResizeChild
   Params:  Sender                   - the object which invoked this function
            Left, Top, Width ,Height - new dimensions for the control
@@ -782,6 +732,9 @@ end;
 
 {
   $Log$
+  Revision 1.292  2004/10/16 10:17:21  micha
+  remove statusbar helper methods from general widgetset object
+
   Revision 1.291  2004/10/15 09:51:09  micha
   splitup of CreateComponent to widgetset CreateHandle methods
 

@@ -134,9 +134,6 @@ Type
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
     
-    procedure UpdateStatusBarPanel(StatusPanel: TStatusPanel);
-    procedure UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
-
   Public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -270,6 +267,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2004/10/16 10:17:21  micha
+  remove statusbar helper methods from general widgetset object
+
   Revision 1.121  2004/10/15 09:51:09  micha
   splitup of CreateComponent to widgetset CreateHandle methods
 
