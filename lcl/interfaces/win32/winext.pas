@@ -24,7 +24,7 @@ Unit WinExt;
 
 Interface
 
-Uses Classes, RegExpr, Windows;
+Uses Classes, Windows;
 
 { Types not included in system.pp }
 Type
