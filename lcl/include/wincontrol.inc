@@ -616,10 +616,19 @@ end;
   (for an example see TScrollingWincontrol).
 ------------------------------------------------------------------------------}
 function TWinControl.GetChildsRect(Scrolled: boolean): TRect;
+var
+  ScrolledOffset: TPoint;
 begin
-  if HandleAllocated then
-    LCLLinux.GetClientBounds(Handle,Result)
-  else
+  if HandleAllocated then begin
+    LCLLinux.GetClientBounds(Handle,Result);
+    if Scrolled then begin
+      ScrolledOffset:=GetClientScrollOffset;
+      inc(Result.Left,ScrolledOffset.X);
+      inc(Result.Top,ScrolledOffset.Y);
+      inc(Result.Right,ScrolledOffset.X);
+      inc(Result.Bottom,ScrolledOffset.Y);
+    end;
+  end else
     Result:=inherited GetChildsRect(Scrolled);
 end;
 
@@ -1066,7 +1075,6 @@ var
         Result:=PtInRect(ControlClientBounds,ControlPos);
       end;
       
-      //MWE: rewrote it a bit to get it more readable
       Result:= Result
               and (
                    (
@@ -1085,7 +1093,7 @@ var
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
-      {writeln('BBB GetControlAtPos ',Name,
+      {writeln('GetControlAtPos ',Name,
       ' Pos=',Pos.X,',',Pos.Y,
       ' P=',P.X,',',P.Y,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
@@ -1097,17 +1105,19 @@ var
     end;
   end;
 
+var
+  ScrolledOffset: TPoint;
 begin
   // check if Pos in visible client area
-  ClientBounds:=GetChildsRect(false);
+  ClientBounds:=GetClientRect;
   if not PtInRect(ClientBounds,Pos) then begin
     Result:=nil;
     exit;
   end;
-
+  
   // map Pos to logical client area
-  ClientBounds:=GetChildsRect(true);
-  P:=Point(Pos.X-ClientBounds.Left,Pos.Y-ClientBounds.Top);
+  ScrolledOffset:=GetClientScrollOffset;
+  P:=Point(Pos.X+ScrolledOffset.X,Pos.Y+ScrolledOffset.Y);
 
   LControl := nil;
   // check wincontrols
@@ -2505,6 +2515,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2002/11/03 22:40:28  lazarus
+  MG: fixed ControlAtPos
+
   Revision 1.97  2002/11/01 14:40:31  lazarus
   MG: fixed mouse coords on scrolling wincontrols
 

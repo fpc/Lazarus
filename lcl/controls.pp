@@ -588,7 +588,9 @@ type
     Procedure SetFocus; virtual;
     Function GetClientOrigin : TPoint; virtual;
     Function GetClientRect: TRect; virtual;
+    Function GetScrolledClientRect: TRect; virtual;
     function GetChildsRect(Scrolled: boolean): TRect; virtual;
+    function GetClientScrollOffset: TPoint; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
@@ -1384,6 +1386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2002/11/03 22:40:28  lazarus
+  MG: fixed ControlAtPos
+
   Revision 1.84  2002/11/01 14:40:30  lazarus
   MG: fixed mouse coords on scrolling wincontrols
 
