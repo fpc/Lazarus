@@ -405,6 +405,9 @@ type
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveFileResources(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+    function DoRenameUnit(AnUnitInfo: TUnitInfo;
+        NewFilename, NewUnitName: string;
+        var ResourceCode: TCodeBuffer): TModalresult;
 
     // methods for 'open unit' and 'open main unit'
     function DoOpenNotExistingFile(const AFileName:string;
@@ -534,6 +537,8 @@ type
                               Flags: TLoadBufferFlags): TModalResult; override;
     function DoBackupFile(const Filename:string;
                           IsPartOfProject:boolean): TModalResult; override;
+    function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
+                                   AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk: TModalResult; override;
     function DoPublishModul(Options: TPublishModuleOptions;
                             const SrcDirectory, DestDirectory: string
@@ -2783,24 +2788,14 @@ function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
-  NewResFilename, NewResFilePath, OldFilePath, NewLFMFilename,
   AlternativeUnitName: string;
   ACaption, AText: string;
   SrcEdit: TSourceEditor;
-  NewSource: TCodeBuffer;
-  NewHighlighter: TLazSyntaxHighlighter;
   FileWithoutPath: String;
-  AmbigiousFiles: TStringList;
-  i: Integer;
-  AmbigiousFilename: String;
   PkgDefaultDirectory: String;
-  OldFilename: String;
-  OldSource: String;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
-  OldFilePath:=ExtractFilePath(AnUnitInfo.Filename);
-  OldFilename:=AnUnitInfo.Filename;
-  
+
   // try to keep the old filename and extension
   SaveAsFileExt:=ExtractFileExt(AnUnitInfo.FileName);
   if SaveAsFileExt='' then begin
@@ -2925,139 +2920,7 @@ begin
     if Result=mrCancel then exit;
   end;
   
-  // check ambigious files
-  NewFilePath:=ExtractFilePath(NewFilename);
-  AmbigiousFiles:=
-    FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
-  if AmbigiousFiles<>nil then begin
-    Result:=MessageDlg(lisAmbigiousFilesFound,
-      Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName, [#13, #13,
-        AmbigiousFiles.Text, #13]),
-      mtWarning,[mbYes,mbNo,mbAbort],0);
-    if Result=mrAbort then exit;
-    if Result=mrYes then begin
-      NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
-      for i:=0 to AmbigiousFiles.Count-1 do begin
-        AmbigiousFilename:=NewFilePath+AmbigiousFiles[i];
-        if (FileExists(AmbigiousFilename))
-        and (not DeleteFile(AmbigiousFilename))
-        and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-          ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=
-          mrCancel) then
-        begin
-          Result:=mrCancel;
-          exit;
-        end;
-      end;
-    end;
-  end;
-  
-  // check new resource file
-  if AnUnitInfo.ComponentName='' then begin
-    // unit has no component
-    // -> remove lfm file, so that it will not be auto loaded on next open
-    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
-    if (FileExists(NewLFMFilename))
-    and (not DeleteFile(NewLFMFilename))
-    and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
-      '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=mrCancel)
-      then
-    begin
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
-  
-  // create new source in the new position
-  OldSource:=AnUnitInfo.Source.Source;
-  NewSource:=CodeToolBoss.CreateFile(NewFilename);
-  NewSource.Source:=OldSource;
-  if NewSource=nil then begin
-    Result:=MessageDlg(lisUnableToCreateFile,
-      Format(lisCanNotCreateFile, ['"', NewFilename, '"']),
-      mtError,[mbCancel,mbAbort],0);
-    exit;
-  end;
-  // get final filename
-  NewFilename:=NewSource.Filename;
-  NewFilePath:=ExtractFilePath(NewFilename);
-  EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
-  SetRecentFilesMenu;
-
-  // rename Resource file
-  if (ResourceCode<>nil) then begin
-    // the resource include line in the code will be changed later after
-    // changing the unitname
-    NewResFilePath:=ExtractFilePath(ResourceCode.Filename);
-    if FilenameIsAbsolute(OldFilePath)
-    and (OldFilePath=copy(NewResFilePath,1,length(OldFilePath))) then
-    begin
-      // resource code was in the same or in a sub directory of source
-      // -> try to keep this relationship
-      NewResFilePath:=NewFilePath
-                       +copy(ResourceCode.Filename,length(OldFilePath)+1,
-                         length(ResourceCode.Filename));
-      if not DirectoryExists(NewResFilePath) then
-        NewResFilePath:=NewFilePath;
-    end else begin
-      // resource code was not in the same or in a sub dircetoy of source
-      // copy resource into the same directory as the source
-      NewResFilePath:=NewFilePath;
-    end;
-    NewResFilename:=NewResFilePath
-                    +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
-    CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
-    if ResourceCode<>nil then
-      AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
-
-    {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.ShowSaveFileAsDialog D ',ResourceCode<>nil);
-    writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewresFilename,'"');
-    if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
-    {$ENDIF}
-  end else begin
-    NewResFilename:='';
-  end;
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.ShowSaveFileAsDialog C ',ResourceCode<>nil);
-  {$ENDIF}
-
-  // set new codebuffer in unitinfo and sourceeditor
-  AnUnitInfo.Source:=NewSource;
-  AnUnitInfo.Modified:=false;
-  SrcEdit.CodeBuffer:=NewSource; // the code is not changed,
-                                 // therefore the marks are kept
-                                       
-  // change unitname in project and in source
-  AnUnitInfo.UnitName:=NewUnitName;
-  if ResourceCode<>nil then begin
-    // change resource filename in the source include directive
-    CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
-      ExtractRelativePath(NewFilePath,NewResFilename),false);
-  end;
-  
-  // change unitname on SourceNotebook
-  UpdateSourceNames;
-
-  // change syntax highlighter
-  if not AnUnitInfo.CustomHighlighter then begin
-    NewHighlighter:=
-      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
-    if NewHighlighter<>AnUnitInfo.SyntaxHighlighter then begin
-      AnUnitInfo.SyntaxHighlighter:=NewHighlighter;
-      SrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
-    end;
-  end;
-  
-  // save file
-  Result:=DoSaveCodeBufferToFile(NewSource,NewSource.Filename,
-                                 AnUnitInfo.IsPartOfProject);
-  if Result<>mrOk then exit;
-
-  // change packages containing the file
-  Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename);
-
-  Result:=mrOk;
+  Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
 end;
 
 function TMainIDE.DoSaveFileResources(AnUnitInfo: TUnitInfo;
@@ -3263,6 +3126,199 @@ begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.SaveFileResources G ',LFMCode<>nil);
   {$ENDIF}
+end;
+
+function TMainIDE.DoRenameUnit(AnUnitInfo: TUnitInfo;
+  NewFilename, NewUnitName: string;
+  var ResourceCode: TCodeBuffer): TModalresult;
+var
+  NewLFMFilename: String;
+  OldSource: String;
+  NewSource: TCodeBuffer;
+  NewFilePath: String;
+  NewResFilePath: String;
+  OldFilePath: String;
+  OldResFilePath: String;
+  SrcEdit: TSourceEditor;
+  OldFilename: String;
+  NewResFilename: String;
+  NewHighlighter: TLazSyntaxHighlighter;
+  AmbigiousFiles: TStringList;
+  AmbigiousText: string;
+  i: Integer;
+  AmbigiousFilename: String;
+begin
+  OldFilename:=AnUnitInfo.Filename;
+  OldFilePath:=ExtractFilePath(OldFilename);
+  SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
+  if NewUnitName='' then
+    NewUnitName:=AnUnitInfo.UnitName;
+
+  // check new resource file
+  if AnUnitInfo.ComponentName='' then begin
+    // unit has no component
+    // -> remove lfm file, so that it will not be auto loaded on next open
+    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
+    if (FileExists(NewLFMFilename))
+    and (not DeleteFile(NewLFMFilename))
+    and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
+      '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=mrCancel)
+      then
+    begin
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  // check new resource file
+  if AnUnitInfo.ComponentName='' then begin
+    // unit has no component
+    // -> remove lfm file, so that it will not be auto loaded on next open
+    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
+    if (FileExists(NewLFMFilename))
+    and (not DeleteFile(NewLFMFilename))
+    and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
+      '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=mrCancel)
+      then
+    begin
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  // create new source with the new filename
+  OldSource:=AnUnitInfo.Source.Source;
+  NewSource:=CodeToolBoss.CreateFile(NewFilename);
+  NewSource.Source:=OldSource;
+  if NewSource=nil then begin
+    Result:=MessageDlg(lisUnableToCreateFile,
+      Format(lisCanNotCreateFile, ['"', NewFilename, '"']),
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  // get final filename
+  NewFilename:=NewSource.Filename;
+  NewFilePath:=ExtractFilePath(NewFilename);
+  EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
+  SetRecentFilesMenu;
+
+  // rename Resource file
+  if (ResourceCode<>nil) then begin
+    // the resource include line in the code will be changed later after
+    // changing the unitname
+    OldResFilePath:=ExtractFilePath(ResourceCode.Filename);
+    NewResFilePath:=OldResFilePath;
+    if FilenameIsAbsolute(OldFilePath)
+    and FileIsInPath(OldResFilePath,OldFilePath) then begin
+      // resource code was in the same or in a sub directory of source
+      // -> try to keep this relationship
+      NewResFilePath:=NewFilePath
+                       +copy(ResourceCode.Filename,length(OldFilePath)+1,
+                         length(ResourceCode.Filename));
+      if not DirectoryExists(NewResFilePath) then
+        NewResFilePath:=NewFilePath;
+    end else begin
+      // resource code was not in the same or in a sub dircetoy of source
+      // copy resource into the same directory as the source
+      NewResFilePath:=NewFilePath;
+    end;
+    NewResFilename:=NewResFilePath
+                    +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
+    CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
+    if ResourceCode<>nil then
+      AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
+
+    {$IFDEF IDE_DEBUG}
+    writeln('TMainIDE.DoRenameUnit C ',ResourceCode<>nil);
+    writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewResFilename,'"');
+    if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
+    {$ENDIF}
+  end else begin
+    NewResFilename:='';
+  end;
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.DoRenameUnit D ',ResourceCode<>nil);
+  {$ENDIF}
+
+  // set new codebuffer in unitinfo and sourceeditor
+  AnUnitInfo.Source:=NewSource;
+  AnUnitInfo.Modified:=false;
+  if SrcEdit<>nil then
+    SrcEdit.CodeBuffer:=NewSource; // the code is not changed,
+                                   // therefore the marks are kept
+
+  // change unitname in project and in source
+  AnUnitInfo.UnitName:=NewUnitName;
+  if ResourceCode<>nil then begin
+    // change resource filename in the source include directive
+    CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
+      ExtractRelativePath(NewFilePath,NewResFilename),false);
+  end;
+
+  // change unitname on SourceNotebook
+  if SrcEdit<>nil then
+    UpdateSourceNames;
+
+  // change syntax highlighter
+  if not AnUnitInfo.CustomHighlighter then begin
+    NewHighlighter:=
+      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
+    if NewHighlighter<>AnUnitInfo.SyntaxHighlighter then begin
+      AnUnitInfo.SyntaxHighlighter:=NewHighlighter;
+      if SrcEdit<>nil then
+        SrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
+    end;
+  end;
+
+  // save file
+  Result:=DoSaveCodeBufferToFile(NewSource,NewSource.Filename,
+                                 AnUnitInfo.IsPartOfProject);
+  if Result<>mrOk then exit;
+
+  // change packages containing the file
+  Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename);
+  if Result=mrAbort then exit;
+
+  // delete ambigious files
+  NewFilePath:=ExtractFilePath(NewFilename);
+  AmbigiousFiles:=
+    FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
+  if AmbigiousFiles<>nil then begin
+    try
+      if (AmbigiousFiles.Count=1)
+      and (CompareFilenames(OldFilePath,NewFilePath)=0)
+      and (CompareFilenames(AmbigiousFiles[0],ExtractFilename(OldFilename))=0)
+      then
+        AmbigiousText:=Format(lisDeleteOldFile, ['"', ExtractFilename(
+          OldFilename), '"'])
+      else
+        AmbigiousText:=
+          Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
+                 [#13, #13, AmbigiousFiles.Text, #13]);
+      Result:=MessageDlg(lisAmbigiousFilesFound, AmbigiousText,
+        mtWarning,[mbYes,mbNo,mbAbort],0);
+      if Result=mrAbort then exit;
+      if Result=mrYes then begin
+        NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
+        for i:=0 to AmbigiousFiles.Count-1 do begin
+          AmbigiousFilename:=NewFilePath+AmbigiousFiles[i];
+          if (FileExists(AmbigiousFilename))
+          and (not DeleteFile(AmbigiousFilename))
+          and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
+            ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)=
+            mrCancel) then
+          begin
+            Result:=mrCancel;
+            exit;
+          end;
+        end;
+      end;
+    finally
+      AmbigiousFiles.Free;
+    end;
+  end;
+
+  Result:=mrOk;
 end;
 
 function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
@@ -5279,14 +5335,17 @@ begin
           mbCancel], 0)
           =mrOk then
         begin
+          Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
+          if Result=mrIgnore then Result:=mrOk;
+          if Result<>mrOk then exit;
           ActiveUnitInfo.IsPartOfProject:=true;
-          if (ActiveUnitInfo.UnitName<>'')
+          if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
           and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
             ActiveUnitInfo.ReadUnitNameFromSource;
-            ShortUnitName:=ActiveUnitInfo.UnitName;
+            ShortUnitName:=ActiveUnitInfo.CreateUnitName;
             if (ShortUnitName<>'') then begin
               if CodeToolBoss.AddUnitToMainUsesSection(
-                 Project1.MainUnitInfo.Source,ShortUnitName,'')
+                Project1.MainUnitInfo.Source,ShortUnitName,'')
               then
                 Project1.MainUnitInfo.Modified:=true;
             end;
@@ -6159,6 +6218,45 @@ begin
       if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
+end;
+
+function TMainIDE.DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
+  AskUser: boolean): TModalresult;
+var
+  OldFilename: String;
+  OldShortFilename: String;
+  NewFilename: String;
+  NewShortFilename: String;
+  ResourceCode: TCodeBuffer;
+  NewUnitName: String;
+begin
+  Result:=mrOk;
+  OldFilename:=AnUnitInfo.Filename;
+  // check if file is unit
+  if not FilenameIsPascalUnit(OldFilename) then exit;
+  // check if file is already lowercase (or it does not matter in current OS)
+  OldShortFilename:=ExtractFilename(OldFilename);
+  NewShortFilename:=lowercase(OldShortFilename);
+  if CompareFilenames(OldShortFilename,NewShortFilename)=0 then exit;
+  // create new filename
+  NewFilename:=ExtractFilePath(OldFilename)+NewShortFilename;
+
+  // rename unit
+  if AskUser then begin
+    Result:=MessageDlg(lisFileNotLowercase,
+      Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler10XNeeds, ['"',
+        OldFilename, '"', #13, #13, #13]),
+      mtConfirmation,[mbYes,mbNo,mbAbort],0);
+    if Result=mrNo then Result:=mrIgnore;
+    if Result<>mrYes then exit;
+  end;
+  NewUnitName:=AnUnitInfo.UnitName;
+  if NewUnitName='' then begin
+    AnUnitInfo.ReadUnitNameFromSource;
+    NewUnitName:=AnUnitInfo.CreateUnitName;
+  end;
+  ResourceCode:=nil;
+  Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
 end;
 
 function TMainIDE.DoCheckFilesOnDisk: TModalResult;
@@ -9032,6 +9130,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.601  2003/06/08 11:05:45  mattias
+  implemented filename case check before adding to project
+
   Revision 1.600  2003/06/06 08:46:12  mattias
   showing all palette components when no form shown
 
