@@ -20,6 +20,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TBitbtn.Destroy;
 Begin
+  FCanvas.Free;
   FGlyph.Free;
   inherited Destroy;
 end;

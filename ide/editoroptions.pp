@@ -17,7 +17,7 @@ unit editoroptions;
    - create LFM file
 }
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -374,7 +374,7 @@ type
 
     procedure ShowCurAttribute;
     procedure FindCurHighlightElement;
-    procedure FontDialogNameToFont(FontDialogName:string;AFont:TFont);
+    procedure FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
     procedure InvalidatePreviews;
     procedure ShowCurCodeTemplate;
   public
@@ -543,6 +543,8 @@ begin
   fEnabledBreakPointElement.Free;
   fDisabledBreakPointElement.Free;
   fErrorLineElement.Free;
+
+  fKeyMap.Free;
 
   XMLConfig.Free;
   inherited Destroy;
@@ -1226,7 +1228,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.FontDialogNameToFont(FontDialogName:string;AFont:TFont);
+procedure TEditorOptionsForm.FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
 var TmpFont:TFont;
   p,p2,index:integer;
   s:shortstring;

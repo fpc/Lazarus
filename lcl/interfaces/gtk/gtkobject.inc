@@ -53,6 +53,7 @@ begin
     if p^.Message=LM_PAINT then begin
       //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
       ReleaseDC(0,P^.WParam);
+      Dispose(p);
       FMessageQueue.Delete(n);
     end;
     dec(n);
@@ -118,6 +119,7 @@ end;
 procedure TgtkObject.HandleEvents;
 var
   Msg: TMsg; 
+  p: pMsg;
 begin
   //gtk_main;
   gtk_main_iteration_do(True);
@@ -126,7 +128,8 @@ begin
   with FMessageQueue do
     while Count > 0 do
     begin
-      Msg := PMsg(Items[0])^;
+      p := PMsg(Items[0]);
+      Msg := p^;
       Delete(0);
       with Msg do
         SendMessage(hWND, Message, WParam, LParam);
@@ -134,6 +137,7 @@ begin
        LM_PAINT:
          ReleaseDC(0,Msg.WParam);
       end;
+      Dispose(p);
     end;
 end;
 
@@ -2664,7 +2668,7 @@ begin
   then begin
     if ADC^.SavedContext <> nil 
     then begin
-writeln('[TgtkObject.FreeDC] WARNING: there is an unused saved context left!');
+      writeln('[TgtkObject.FreeDC] WARNING: there is an unused saved context left!');
       FreeDC(ADC^.SavedContext);
     end;
 
@@ -2709,6 +2713,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDefaultBrush: PGdiObject;
 begin
+//write('  TgtkObject.CreateDefaultBrush ->');
   Result := NewGDIObject(gdiBrush);
   Result^.GDIBrushFill := GDK_SOLID;
   gdk_color_white(gdk_colormap_get_system, @Result^.GDIBrushColor);
@@ -2723,6 +2728,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
+//write('  TgtkObject.CreateDefaultFont ->');
   Result := NewGDIObject(gdiFont);
   Result^.GDIFontObject := gdk_font_load('-*-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-1');
 end;
@@ -2736,6 +2742,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDefaultPen: PGdiObject;
 begin
+//write('  TgtkObject.CreateDefaultPen ->');
   Result := NewGDIObject(gdiPen);
   Result^.GDIPenStyle := PS_SOLID;
   gdk_color_black(gdk_colormap_get_system, @Result^.GDIPenColor);
@@ -2750,6 +2757,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.37  2001/03/21 00:20:29  lazarus
+  MG: fixed memory leaks
+
   Revision 1.36  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion
 

@@ -175,10 +175,6 @@ begin
   {create the control}
   fCompStyle := csNoteBook;
 
-  Canvas := TControlCanvas.Create;
-  TControlCanvas(Canvas).Control := Self;
-
-
   fPageList := TList.Create;
 
   fAccess := TNBPages.Create(fPageList, Self);
@@ -443,6 +439,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/03/21 00:20:29  lazarus
+  MG: fixed memory leaks
+
   Revision 1.3  2001/01/12 18:27:32  lazarus
   Streaming additions by MAttias
   Shane

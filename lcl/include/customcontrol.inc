@@ -11,10 +11,10 @@
  ------------------------------------------------------------------------------}
 constructor TCustomControl.Create(AOwner: TComponent);                                            
 begin                                                                                             
-   inherited create (AOwner);       
+  inherited create (AOwner);       
   
-   FCanvas := TControlCanvas.Create;
-   TControlCanvas(FCanvas).Control := Self;
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
 end;                                                                                              
 
 {------------------------------------------------------------------------------
@@ -61,6 +61,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/03/21 00:20:29  lazarus
+  MG: fixed memory leaks
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

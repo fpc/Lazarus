@@ -650,8 +650,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.8  2001/03/20 16:59:15  lazarus
-  MG: fixed many bugs (mem leaks, canvas)
+  Revision 1.9  2001/03/21 00:20:29  lazarus
+  MG: fixed memory leaks
 
   Revision 1.7  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

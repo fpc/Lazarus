@@ -10,7 +10,7 @@ unit keymapping;
   ToDo:
 }
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 

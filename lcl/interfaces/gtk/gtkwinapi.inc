@@ -306,6 +306,7 @@ begin
   end;
   
   Result := HBITMAP(GdiObject);
+writeln('[TgtkObject.CreateBitmap] ',HexStr(Result,8));
   Assert(False, Format('Trace:< [TgtkObject.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
@@ -354,20 +355,39 @@ begin
         begin
           GObject^.GDIBrushFill := GDK_STIPPLED;
           case lbHatch of
-            HS_BDIAGONAL:  GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_BDIAGONAL, 8, 8);
-            HS_CROSS:      GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_CROSS, 8, 8);
-            HS_DIAGCROSS:  GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_DIAGCROSS, 8, 8);
-            HS_FDIAGONAL:  GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_FDIAGONAL, 8, 8);
-            HS_HORIZONTAL: GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_HORIZONTAL, 8, 8);
-            HS_VERTICAL:   GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_VERTICAL, 8, 8);
+            HS_BDIAGONAL:
+              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                 nil, @HATCH_BDIAGONAL, 8, 8);
+            HS_CROSS:
+              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                 nil, @HATCH_CROSS, 8, 8);
+            HS_DIAGCROSS:
+              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                 nil, @HATCH_DIAGCROSS, 8, 8);
+            HS_FDIAGONAL:
+              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                 nil, @HATCH_FDIAGONAL, 8, 8);
+            HS_HORIZONTAL:
+              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                 nil, @HATCH_HORIZONTAL, 8, 8);
+            HS_VERTICAL:
+              GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(
+                 nil, @HATCH_VERTICAL, 8, 8);
             else
               sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Hatch %d', [lbHatch]);
           end;
 
         end;
-      BS_DIBPATTERN,     // A pattern brush defined by a device-independent bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the lbHatch member contains a handle to a packed DIB.Windows 95: Creating brushes from bitmaps or DIBs larger than 8x8 pixels is not supported. If a larger bitmap is given, only a portion of the bitmap is used.
+      BS_DIBPATTERN,     // A pattern brush defined by a device-independent
+           // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
+           // lbHatch member contains a handle to a packed DIB.Windows 95:
+           // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
+           // is not supported. If a larger bitmap is given, only a portion
+           // of the bitmap is used.
       BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
-      BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the lbHatch member contains a pointer to a packed DIB.
+      BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
+           // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
+           // lbHatch member contains a pointer to a packed DIB.
       BS_PATTERN,        // Pattern brush defined by a memory bitmap.
       BS_PATTERN8X8:     // Same as BS_PATTERN.
         begin
@@ -377,7 +397,8 @@ begin
           else sError := 'WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported bitmap';
         end;
       else
-        sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Style %d', [lbStyle]);
+        sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Style %d'
+                        , [lbStyle]);
     end;
 
     with GObject^.GDIBrushColor do
@@ -797,10 +818,12 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+var GDIObjectExists: boolean;
 begin
   { Find out if we want to release internal GDI object }
+  GDIObjectExists:=FGDIObjects.Contains(PGDIObject(GDIObject));
   Result:= IsValidGDIObject(GDIObject);
-  if Result or (PGdiObject(GDIObject) <> nil) 
+  if Result or GDIObjectExists 
   then 
     with PGdiObject(GDIObject)^ do
     begin
@@ -827,6 +850,7 @@ begin
           end;
         else begin
           Result:= false;
+          writeln('[TgtkObject.DeleteObject] TODO : Unimplemented GDI type');
           Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
           Exit;
         end;
@@ -834,9 +858,8 @@ begin
     end;
     
   { Dispose of the GDI object }
-  if PGDIObject(GDIObject) <> nil
-  then begin
-//writeln('[TgtkObject.DeleteObject] ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
+//writeln('[TgtkObject.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
+  if GDIObjectExists then begin
     FGDIObjects.Remove(PGDIObject(GDIObject));
     Dispose(PGDIObject(GDIObject));
   end;
@@ -2388,7 +2411,8 @@ end;
 
   Returns: Boolean if an event was there
  ------------------------------------------------------------------------------}
-function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
+function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND;
+  wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 var
   Message: PMSG;
 begin 
@@ -2400,7 +2424,9 @@ begin
     Message := FMessageQueue.Items[0];
     lpMsg := Message^;
     if (wRemoveMsg and PM_REMOVE) = PM_REMOVE 
-    then FMessageQueue.Delete(0);
+    then begin
+      FMessageQueue.Delete(0);
+    end;
   end;
 
 end;
@@ -3393,8 +3419,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.27  2001/03/20 16:59:15  lazarus
-  MG: fixed many bugs (mem leaks, canvas)
+  Revision 1.28  2001/03/21 00:20:29  lazarus
+  MG: fixed memory leaks
 
   Revision 1.26  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

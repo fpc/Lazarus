@@ -1596,7 +1596,7 @@ begin
   GotoDialog := TfrmGoto.Create(self);
 
   CodeCompletionTimer := TTimer.Create(self);
-  CodeCOmpletionTimer.Enabled := False;
+  CodeCompletionTimer.Enabled := False;
   CodeCompletionTimer.Interval := 500;
 
 
@@ -1604,7 +1604,14 @@ begin
 end;
 
 destructor TSourceNotebook.Destroy;
+var i: integer;
 begin
+  for i:=FSourceEditorList.Count-1 downto 0 do
+    Editors[EditorCount-1].Free;
+  if Notebook<>nil then begin
+    Notebook.Free;
+    NoteBook:=nil;
+  end;
   FCodeTemplateModul.Free;
   FSourceEditorList.Free;
   Gotodialog.free;
@@ -2378,10 +2385,8 @@ Begin
   //create a new page
 writeln('[TSourceNotebook.NewFile] 1');
   TempEditor := NewSE(-1);
-writeln('[TSourceNotebook.NewFile] 2');
   TempEditor.Unitname := Unitname;
   TempEditor.Source := Source;
-writeln('[TSourceNotebook.NewFile] 3');
   Notebook.Pages[Notebook.PageIndex] :=
     FindUniquePageName(UnitName,Notebook.PageIndex);
 writeln('[TSourceNotebook.NewFile] end');
@@ -2396,7 +2401,6 @@ writeln('TSourceNotebook.CloseFile 1  PageIndex=',PageIndex);
   TempEditor.Close;
   FSourceEditorList.Remove(TempEditor);
   TempEditor.Free;
-writeln('TSourceNotebook.CloseFile 2  PageCount=',Notebook.Pages.Count);
   if Notebook.Pages.Count>1 then begin
     Notebook.Pages.Delete(PageIndex);
     UpdateStatusBar;
@@ -2405,7 +2409,7 @@ writeln('TSourceNotebook.CloseFile 2  PageCount=',Notebook.Pages.Count);
     Notebook:=nil;
     Hide;
   end;
-writeln('TSourceNotebook.CloseFile end');
+writeln('TSourceNotebook.CloseFile END');
 end;
 
 Procedure TSourceNotebook.OpenFile(FileName: String; aVisible : Boolean);
@@ -2758,6 +2762,13 @@ initialization
   AWordCompletion:=nil;
 
 {$I designer/bookmark.lrs}
+
+finalization
+  if aWordCompletion<>nil then begin
+    aWordCompletion.Free;
+    aWordCompletion:=nil;
+  end;
+
 
 end.
 

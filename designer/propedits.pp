@@ -3011,7 +3011,8 @@ var DummyClassForPropTypes:TDummyClassForPropTypes;
 
 //******************************************************************************
 
-initialization
+procedure InitPropEdits;
+begin
   PropertyClassList:=TList.Create;
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
@@ -3037,12 +3038,37 @@ initialization
     nil,'Lines',TStringsPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
     nil,'ModalResult',TModalResultPropertyEditor);
+end;
 
-finalization
-  PropertyEditorMapperList.Free;  PropertyEditorMapperList:=nil;
-  PropertyClassList.Free;  PropertyClassList:=nil;
+procedure FinalPropEdits;
+var i: integer;
+  pm: PPropertyEditorMapperRec;
+  pc: PPropertyClassRec;
+begin
+  for i:=0 to PropertyEditorMapperList.Count-1 do begin
+    pm:=PPropertyEditorMapperRec(PropertyEditorMapperList.Items[i]);
+    Dispose(pm);
+  end;
+  PropertyEditorMapperList.Free;
+  PropertyEditorMapperList:=nil;
+
+  for i:=0 to PropertyClassList.Count-1 do begin
+    pc:=PPropertyClassRec(PropertyClassList[i]);
+    Dispose(pc);
+  end;
+  PropertyClassList.Free;
+  PropertyClassList:=nil;
+
   // XXX workaround for missing typeinfo function
   DummyClassForPropTypes.Free;
+end;
+
+
+initialization
+  InitPropEdits;
+
+finalization
+  FinalPropEdits;
 
 end.
 

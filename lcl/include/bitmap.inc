@@ -42,7 +42,6 @@ procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
 end;
 
-
 function TBitmap.GetHandle: HBITMAP;
 begin
   HandleNeeded;
@@ -317,6 +316,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/03/21 00:20:29  lazarus
+  MG: fixed memory leaks
+
   Revision 1.5  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

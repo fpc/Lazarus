@@ -22,8 +22,7 @@
 }
 unit Main;
 
-{$mode objfpc}
-{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -211,6 +210,8 @@ type
     function DoOpenProjectFile(AFileName:string):TModalResult;
     function DoBuildProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
+    function DoCreateProjectForProgram(ProgramFilename
+       ,ProgramSource: string): TModalResult;
 
     // helpful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
@@ -399,6 +400,7 @@ begin
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
         IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
         IDEComponent.SpeedButton.ShowHint := True;
+        IDECompList.Add(IDEComponent);
       end;
       inc(PageCount);
     end;
@@ -635,6 +637,8 @@ begin
   end;
   TheControlSelection.Free;
   FormEditor1.Free;
+  PropertyEditorHook1.Free;
+  Compiler1.Free;
   MacroList.Free;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
@@ -1554,7 +1558,6 @@ writeln('TMainIDE.DoNewEditorUnit 1');
   if NewUnitType in [nuForm, nuUnit] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
   end;
-writeln('TMainIDE.DoNewEditorUnit 2');
 
   if NewUnitType in [nuForm] then begin
     // clear formeditor
@@ -1573,20 +1576,16 @@ writeln('TMainIDE.DoNewEditorUnit 2');
 
     NewUnitInfo.FormName:=TempForm.Name;
   end;
-writeln('TMainIDE.DoNewEditorUnit 3');
 
   // create source code
   NewUnitInfo.CreateStartCode(NewUnitType);
 
   // create a new sourceeditor
-writeln('TMainIDE.DoNewEditorUnit 4');
   SourceNotebook.NewFile(NewUnitInfo.UnitName,NewUnitInfo.Source);
-writeln('TMainIDE.DoNewEditorUnit 5');
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
   NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
-writeln('TMainIDE.DoNewEditorUnit 6');
 
   if NewUnitType in [nuForm] then begin
     // show form
@@ -1666,12 +1665,9 @@ writeln('TMainIDE.DoSaveCurUnit 1');
   end else
     ResourceCode:='';
 
-
-writeln('TMainIDE.DoSaveCurUnit 2');
   SaveAllParts:=false;
   if ActiveUnitInfo.Filename='' then SaveAs:=true;
   if SaveAs then begin
-writeln('TMainIDE.DoSaveCurUnit 2.1');
     // let user choose a filename
     SaveDialog:=TSaveDialog.Create(Application);
     try
@@ -1713,22 +1709,17 @@ writeln('TMainIDE.DoSaveCurUnit 2.1');
       SaveDialog.Free;
     end;
   end;
-writeln('TMainIDE.DoSaveCurUnit 3');
   if ActiveUnitInfo.Modified or SaveAllParts then begin
     // save source
     Result:=ActiveUnitInfo.WriteUnitSource;
     if Result=mrAbort then exit;
   end;
-writeln('TMainIDE.DoSaveCurUnit 4');
 
   // ToDo: save resources only if modified
 
   if ActiveUnitInfo.HasResources then begin
-writeln('TMainIDE.DoSaveCurUnit 4.1');
     LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm');
     ResourceFileName:=Project.SearchResourceFilename(ActiveUnitInfo);
-
-writeln('TMainIDE.DoSaveCurUnit 4.2 ResourceFileName="',ResourceFileName,'"');
 
     // save lrs - lazarus resource file and lfm - lazarus form text file
 
@@ -1758,7 +1749,6 @@ writeln('TMainIDE.DoSaveCurUnit 4.2 ResourceFileName="',ResourceFileName,'"');
           if Result=mrIgnore then Result:=mrOk;
         end;
       until Result<>mrRetry;
-writeln('TMainIDE.DoSaveCurUnit 4.3');
       // create lazarus form resource code
       MemStream:=TMemoryStream.Create;
       try
@@ -1771,7 +1761,6 @@ writeln('TMainIDE.DoSaveCurUnit 4.3');
       finally
         MemStream.Free;
       end;
-writeln('TMainIDE.DoSaveCurUnit 4.4  ',length(CompResourceCode));
       // replace lazarus form resource code
       if not AddResourceCode(ResourceCode,CompResourceCode) then begin
         ACaption:='Resource error';
@@ -1782,7 +1771,6 @@ writeln('TMainIDE.DoSaveCurUnit 4.4  ',length(CompResourceCode));
         if Result=mrCancel then Result:=mrAbort;
         exit;
       end;
-writeln('TMainIDE.DoSaveCurUnit 4.5  ',length(ResourceCode));
       repeat
         try
           // transform binary to text
@@ -1810,11 +1798,9 @@ writeln('TMainIDE.DoSaveCurUnit 4.5  ',length(ResourceCode));
     finally
       BinCompStream.Free;
     end;
-writeln('TMainIDE.DoSaveCurUnit 4.6');
 
     // save resource file
     DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
-writeln('TMainIDE.DoSaveCurUnit 4.7 ResourceFileName=',ResourceFileName);
     repeat
       try
         FileStream:=TFileStream.Create(ResourceFileName,fmCreate);
@@ -1832,7 +1818,6 @@ writeln('TMainIDE.DoSaveCurUnit 4.7 ResourceFileName=',ResourceFileName);
         if Result=mrIgnore then Result:=mrOk;
       end;
     until Result<>mrRetry;
-writeln('TMainIDE.DoSaveCurUnit 4.8');
   end;
   ActiveUnitInfo.Modified:=false;
   ActiveSrcEdit.Modified:=false;
@@ -1873,7 +1858,6 @@ writeln('TMainIDE.DoCloseEditorUnit 1');
     end;
     Result:=mrOk;
   end;
-writeln('TMainIDE.DoCloseEditorUnit 2');
   // close form
   if ActiveUnitInfo.Form<>nil then begin
     OldDesigner:=TDesigner(TCustomForm(ActiveUnitInfo.Form).Designer);
@@ -1881,10 +1865,8 @@ writeln('TMainIDE.DoCloseEditorUnit 2');
     OldDesigner.Free;
     ActiveUnitInfo.Form:=nil;
   end;
-writeln('TMainIDE.DoCloseEditorUnit 3');
   // close source editor
   SourceNoteBook.CloseFile(SourceNoteBook.NoteBook.PageIndex);
-writeln('TMainIDE.DoCloseEditorUnit 4');
   // close project file (not remove)
   Project.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
@@ -1900,12 +1882,12 @@ end;
 function TMainIDE.DoOpenEditorFile(AFileName:string; 
   ProjectLoading:boolean):TModalResult;
 var Ext,ACaption,AText:string;
-  i:integer;
+  i,ProgramNameStart,ProgramNameEnd:integer;
   ReOpen:boolean;
   NewUnitInfo:TUnitInfo;
-  NewPageName, NewLFMFilename: string;
+  NewPageName, NewLFMFilename, NewProgramName, NewSource: string;
   NewSrcEdit: TSourceEditor;
-  TxtLFMStream,BinLFMStream:TMemoryStream;
+  TxtLFMStream, BinLFMStream, SrcStream:TMemoryStream;
   CInterface: TComponentInterface;
   TempForm: TCustomForm;
 begin
@@ -1931,11 +1913,48 @@ writeln('TMainIDE.DoOpenEditorFile');
       exit;
     end;
   end else begin
+    SrcStream:=TMemoryStream.Create;
+    try
+      Result:=DoLoadMemoryStreamFromFile(SrcStream,AFilename);
+      if Result=mrAbort then exit;
+      SetLength(NewSource,SrcStream.Size);
+      SrcStream.Read(NewSource[1],length(NewSource));
+      // check if unit is a program
+      if (not ProjectLoading) and (not ReOpen)
+      and ((Ext='.pp') or (Ext='.pas') or (Ext='.dpr')) then begin
+        NewProgramName:=FindProgramNameInSource(NewSource,
+           ProgramNameStart,ProgramNameEnd);
+        if NewProgramName<>'' then begin
+          if FileExists(ChangeFileExt(AFilename,'.lpi')) then begin
+            AText:='The file "'+AFilename+'"'
+               +' seems to be the program file of an existing lazarus project.'
+               +' Open project?';
+            ACaption:='Project info file detected';
+            if Application.MessageBox(PChar(AText),PChar(ACaption)
+                ,MB_OKCANCEL)=mrOk then begin
+              Result:=DoOpenProjectFile(ChangeFileExt(AFilename,'.lpi'));
+              exit;
+            end;
+          end else begin
+            AText:='The file "'+AFilename+'"'
+              +' seems to be a program. Close current project'
+              +' and create a new lazarus project for this program?';
+            ACaption:='Program detected';
+            if Application.MessageBox(PChar(AText),PChar(ACaption)
+               ,MB_OKCANCEL)=mrOK then begin
+              Result:=DoCreateProjectForProgram(AFilename,NewSource);
+              exit;
+            end;
+          end;
+        end;
+      end;
+    finally
+      SrcStream.Free;
+    end;
     NewUnitInfo:=TUnitInfo.Create;
     NewUnitInfo.Filename:=AFilename;
     Project.AddUnit(NewUnitInfo,false);
   end;
-  NewUnitInfo.Loaded:=true;
   Result:=NewUnitInfo.ReadUnitSource((Ext='.pp') or (Ext='.pas'));
   if Result<>mrOk then begin
     if not ReOpen then begin
@@ -1960,6 +1979,7 @@ writeln('TMainIDE.DoOpenEditorFile');
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
+  NewUnitInfo.Loaded:=true;
   // read form data
   if (NewUnitInfo.Unitname<>'') then begin
     // this is a unit -> try to find the lfm file
@@ -1993,12 +2013,10 @@ writeln('TMainIDE.DoOpenEditorFile');
         finally
           TxtLFMStream.Free;
         end;
-writeln('TMainIDE.DoOpenEditorFile  LFM 1');
         if not Assigned(FormEditor1) then
           FormEditor1 := TFormEditor.Create;
         if not ProjectLoading then FormEditor1.ClearSelected;
 
-writeln('TMainIDE.DoOpenEditorFile  LFM 2');
         // create jitform
         CInterface := TComponentInterface(
           FormEditor1.CreateFormFromStream(BinLFMStream));
@@ -2013,24 +2031,19 @@ writeln('TMainIDE.DoOpenEditorFile  LFM 2');
             exit;
           end;
         end;
-writeln('TMainIDE.DoOpenEditorFile  LFM 3 ');
         TempForm:=TForm(CInterface.Control);
         NewUnitInfo.Form:=TempForm;
-writeln('TMainIDE.DoOpenEditorFile  LFM 3.1');
         SetDefaultsForForm(TempForm);
-writeln('TMainIDE.DoOpenEditorFile  LFM 3.2');
         NewUnitInfo.FormName:=TempForm.Name;
         // show form
         TDesigner(TempForm.Designer).SourceEditor := SourceNoteBook.GetActiveSE;
 
         if not ProjectLoading then begin
-writeln('TMainIDE.DoOpenEditorFile  LFM 4');
           TempForm.Show;
           FCodeLastActivated:=false;
         end;
         SetDesigning(TempForm,True);
         
-writeln('TMainIDE.DoOpenEditorFile  LFM 5');
         // select the new form (object inspector, formeditor, control selection)
         if not ProjectLoading then begin
           PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
@@ -2061,7 +2074,6 @@ writeln('TMainIDE.DoOpenMainUnit 1');
     Result:=mrOk;
     exit;
   end;
-writeln('TMainIDE.DoOpenMainUnit 2');
   // MainUnit not loaded -> create source editor
   NewPageName:=MainUnitInfo.Unitname;
   if NewPageName='' then begin
@@ -2076,7 +2088,6 @@ writeln('TMainIDE.DoOpenMainUnit 2');
   if NewpageName='' then begin
     NewPageName:='mainunit';
   end;
-writeln('TMainIDE.DoOpenMainUnit 3');
   SourceNotebook.NewFile(NewPageName,MainUnitInfo.Source);
   if not ProjectLoading then
     Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
@@ -2098,7 +2109,6 @@ var UnitList: TList;
 Begin
   UnitList:= TList.Create;
   try
-writeln('TMainIDE.mnuViewUnitsClicked 1');
     for i:=0 to Project.UnitCount-1 do begin
       if Project.Units[i].IsPartOfProject then begin
         if OnlyForms then begin
@@ -2128,7 +2138,6 @@ writeln('TMainIDE.mnuViewUnitsClicked 1');
         end;
       end;
     end;
-writeln('TMainIDE.mnuViewUnitsClicked 2');
     if ShowViewUnitsDlg(UnitList,true)=mrOk then begin
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
@@ -2143,7 +2152,6 @@ writeln('TMainIDE.mnuViewUnitsClicked 2');
       FCodeLastActivated:=not OnlyForms;
       DoBringToFrontFormOrUnit;
     end;
-writeln('TMainIDE.mnuViewUnitsClicked 3');
   finally
     UnitList.Free;
   end;
@@ -2174,20 +2182,17 @@ writeln('TMainIDE.DoNewProject 1');
         end;
       end;
     end;
-writeln('TMainIDE.DoNewProject 2');
     if DoCloseProject=mrAbort then begin
       Result:=mrAbort;
       exit;
     end;
   end;
-writeln('TMainIDE.DoNewProject 3');
 
   Project:=TProject.Create(NewProjectType);
   Project.OnFileBackup:=@DoBackupFile;
   Project.Title := 'Project1';
   SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
 
-writeln('TMainIDE.DoNewProject 4');
   case NewProjectType of
    ptApplication:
     begin
@@ -2247,7 +2252,6 @@ writeln('TMainIDE.DoSaveProject 1');
     end;
   end else
     MainUnitInfo:=nil;
-writeln('TMainIDE.DoSaveProject 2');
   // save some information of the loaded files
   for i:=0 to Project.UnitCount-1 do begin
     AnUnitInfo:=Project.Units[i];
@@ -2258,7 +2262,6 @@ writeln('TMainIDE.DoSaveProject 2');
       AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
     end;
   end;
-writeln('TMainIDE.DoSaveProject 3');
   SaveAs:=SaveAs or (Project.ProjectFile='');
   if SaveAs then begin
     // let user choose a filename
@@ -2273,7 +2276,6 @@ writeln('TMainIDE.DoSaveProject 3');
         SaveDialog.Filename:='Project1.lpi';
       repeat
         if SaveDialog.Execute then begin
-writeln('TMainIDE.DoSaveProject 3.1');
           NewFilename:=ExpandFilename(SaveDialog.Filename);
           if ExtractFileExt(NewFilename)='' then
             NewFilename:=NewFilename+'.lpi';
@@ -2312,10 +2314,8 @@ writeln('TMainIDE.DoSaveProject 3.1');
           if Result=mrCancel then exit;
         end;
       end;
-writeln('TMainIDE.DoSaveProject 4 ',NewFilename);
       Project.ProjectFile:=NewFilename;
       if (MainUnitInfo<>nil) and (MainUnitInfo.Loaded) then begin
-writeln('TMainIDE.DoSaveProject 5 ',MainUnitInfo.Filename);
         // update source editor of main unit
         MainUnitSrcEdit.Source.Assign(MainUnitInfo.Source);
         MainUnitSrcEdit.Filename:=MainUnitInfo.Filename;
@@ -2327,13 +2327,11 @@ writeln('TMainIDE.DoSaveProject 5 ',MainUnitInfo.Filename);
         SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
           NewPageName;
       end;
-writeln('TMainIDE.DoSaveProject 6');
     finally
       SaveDialog.Free;
     end;
   end;
   Result:=Project.WriteProject;
-writeln('TMainIDE.DoSaveProject 7');
   // save source
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
@@ -2346,7 +2344,6 @@ writeln('TMainIDE.DoSaveProject 7');
   end;
   EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
   EnvironmentOptions.Save(false);
-writeln('TMainIDE.DoSaveProject 8');
   if Result=mrOk then begin
     if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
     if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
@@ -2364,7 +2361,6 @@ writeln('TMainIDE.DoCloseProject 1');
     Result:=DoCloseEditorUnit(SourceNotebook.Notebook.Pages.Count-1,false);
     if Result=mrAbort then exit;
   end;
-writeln('TMainIDE.DoCloseProject 2');
   // close Project
   Project.Free;
   Project:=nil;
@@ -2408,13 +2404,10 @@ writeln('TMainIDE.DoOpenProjectFile 1');
   end;
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
-writeln('TMainIDE.DoOpenProjectFile 2');
   // create a new one
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
-writeln('TMainIDE.DoOpenProjectFile 3');
   Project.ReadProject(LPIFilename);
-writeln('TMainIDE.DoOpenProjectFile 4');
   UpdateCaption;
   // restore files
   LastEditorIndex:=-1;
@@ -2441,7 +2434,6 @@ writeln('TMainIDE.DoOpenProjectFile 4');
       LastEditorIndex:=LowestEditorIndex;
     end;
   until LowestEditorIndex<0;
-writeln('TMainIDE.DoOpenProjectFile 5');
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
   and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count) then
@@ -2455,6 +2447,58 @@ writeln('TMainIDE.DoOpenProjectFile 5');
 
 writeln('TMainIDE.DoOpenProjectFile end ');
 
+end;
+
+function TMainIDE.DoCreateProjectForProgram(ProgramFilename
+  ,ProgramSource: string): TModalResult;
+var NewProjectType:TProjectType;
+  ProgramTitle, Ext: string;
+  MainUnitInfo: TUnitInfo;
+begin
+writeln('[TMainIDE.DoCreateProjectForProgram] 1');
+  Result:=mrCancel;
+
+  if SomethingOfProjectIsModified then begin
+    if Application.MessageBox('Save changes to project?','Project changed'
+        ,MB_OKCANCEL)=mrOK then begin
+      if DoSaveProject(false)=mrAbort then begin
+        Result:=mrAbort;
+        exit;
+      end;
+    end;
+  end;
+
+  // let user choose the program type
+  if ChooseNewProject(NewProjectType)=mrCancel then exit;
+
+  // close old project
+  If Project<>nil then begin
+    if DoCloseProject=mrAbort then begin
+      Result:=mrAbort;
+      exit;
+    end;
+  end;
+
+  // create a new project
+  Project:=TProject.Create(NewProjectType);
+  Project.OnFileBackup:=@DoBackupFile;
+  ProgramTitle:=ExtractFileName(ProgramFilename);
+  Ext:=ExtractFileExt(ProgramTitle);
+  ProgramTitle:=copy(ProgramTitle,1,length(ProgramTitle)-length(Ext));
+  Project.Title:=ProgramTitle;
+  SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
+  MainUnitInfo:=Project.Units[Project.MainUnit];
+  MainUnitInfo.Source.Text:=ProgramSource;
+  Project.ProjectFile:=ProgramFilename;
+
+  // show program unit
+  Result:=DoOpenMainUnit(false);
+  if Result=mrAbort then exit;
+ 
+  UpdateCaption;
+
+writeln('[TMainIDE.DoCreateProjectForProgram] END');
+  Result:=mrOk;
 end;
 
 function TMainIDE.DoBuildProject: TModalResult;
@@ -2890,8 +2934,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.76  2001/03/20 16:59:14  lazarus
-  MG: fixed many bugs (mem leaks, canvas)
+  Revision 1.77  2001/03/21 00:20:28  lazarus
+  MG: fixed memory leaks
 
   Revision 1.75  2001/03/19 14:00:46  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

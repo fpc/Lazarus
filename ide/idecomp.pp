@@ -19,16 +19,15 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit idecomp;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  classes,LclLinux,stdctrls,forms,buttons,menus,comctrls,
-  Spin, sysutils,Controls,compreg,Graphics,extctrls;
+  Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls;
 
 
 type
@@ -54,13 +53,13 @@ type
      {Public access to @link(FSpeedbutton)}
      property SpeedButton : TSpeedButton  read FSpeedButton write FSPeedbutton;
      {Public access to @link(FRegisteredComponent)}
-     property RegisteredComponent : TRegisteredComponent read FRegisteredComponent write FRegisteredComponent;
-
+     property RegisteredComponent : TRegisteredComponent
+        read FRegisteredComponent write FRegisteredComponent;
    end;
 
    {-------------------------------------------
    Created by Shane Miller
-   This class keeps a list of TIDeComponents
+   This class keeps a list of TIDEComponents
    --------------------------------------------}
    TIdeCompList = Class(TObject)
    private
@@ -103,92 +102,92 @@ type
 
 
 var
-IDECompList : TIDECompList;
-RegCompList:TRegisteredComponentList;
+  IDECompList : TIDECompList;
+  RegCompList:TRegisteredComponentList;
 
 implementation
 
-uses Project,LResources;
+uses Project, LResources;
 
 
 { TIDECompList }
 
 constructor TIDECompList.Create;
 begin
-inherited create;
-FItems := TList.Create;
+  inherited create;
+  FItems := TList.Create;
 end;
 
-destructor TIDECompList.destroy;
+destructor TIDECompList.Destroy;
+var i: integer;
 begin
-FItems.Destroy;
-inherited;
+  for i:=0 to FItems.Count-1 do FindCompbyIndex(i).Free;
+  FItems.Free;
+  inherited Destroy;
 end;
 
 function TIdeCompList.GetCount : Integer;
 Begin
-Result := FItems.Count;
+  Result := FItems.Count;
 end;
 
 function TIDECompList.FindCompbyIndex(Value : Integer) : TIDEComponent;
 Begin
-if Value < FItems.Count then
-   Result := TIDEComponent(FITems[Value]) else
-   Result := nil;
-
+  if Value < FItems.Count then
+    Result := TIDEComponent(FITems[Value])
+  else
+    Result := nil;
 end;
-
 
 function TIDECompList.FindCompbySpeedbutton(Value : TSpeedButton) : TIDEComponent;
 var
-I : Integer;
+  I : Integer;
 Begin
-for I := 0 to Count-1 do
-   Begin
-   Result := TIDeComponent(FItems[i]);
-   if (Result.SpeedButton = Value) then exit;
-   end;
-   Result := nil;
-
+  for I := 0 to Count-1 do
+  Begin
+    Result := TIDeComponent(FItems[i]);
+    if (Result.SpeedButton = Value) then exit;
+  end;
+  Result := nil;
 end;
 
 function TIDECompList.FindCompbyRegComponent(Value : TRegisteredComponent) : TIDEComponent;
 var
-I : Integer;
+  I : Integer;
 Begin
-for I := 0 to Count-1 do
-   Begin
-   Result := TIDeComponent(FItems[i]);
-   if (Result.RegisteredComponent = Value) then exit;
-   end;
-   Result := nil;
-
+  for I := 0 to Count-1 do
+  Begin
+    Result := TIDeComponent(FItems[i]);
+    if (Result.RegisteredComponent = Value) then exit;
+  end;
+  Result := nil;
 end;
-
 
 function TIdeCompList.Add(Value : TObject) : Integer;
 Begin
-Result := FItems.Add(Value);
+  Result := FItems.Add(Value);
 end;
 
 function TIdeCompList.Delete(Value : TObject) : Boolean;
+var i: integer;
 Begin
-result := (FItems.IndexOf(Value) >= 0);
-if Result then FItems.Delete(FItems.IndexOf(Value));
+  i:=FItems.IndexOf(Value);
+  Result := (i >= 0);
+  if Result then FItems.Delete(i);
 end;
 
 { TIDECOMPONENT }
 
 constructor TIDEComponent.Create;
 begin
-inherited create;
-IDECompList.Add(self);
+  inherited create;
+  IDECompList.Add(self);
 end;
 
 destructor TIDEComponent.destroy;
 begin
-IDECompList.Delete(self);
-inherited;
+  IDECompList.Delete(self);
+  inherited Destroy;
 end;
 
 Function TIDEComponent._Speedbutton(aowner : TComponent; nParent : TWinControl): TSpeedButton;
@@ -274,6 +273,9 @@ begin
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
   RegisterComponents('System','ExtCtrls',[TTimer]);
+
+  // unselectable components
+  // components that are streamed but not selectable in the IDE
   RegisterComponents('','ExtCtrls',[TPage]);
 
   RegisterComponentsProc:=nil;
@@ -285,14 +287,15 @@ end;
 
 
 initialization
+
 {$I designer/lazarus_control_images.lrs}
-RegCompList := TRegisteredComponentList.Create;
-RegisterStandardComponents(RegCompList);
 
-IdeCompList := TIDECompList.Create;
-
+  RegCompList := TRegisteredComponentList.Create;
+  RegisterStandardComponents(RegCompList);
+  IdeCompList := TIDECompList.Create;
 
 finalization
-IdeCompList.Destroy;
-RegCompList.Destroy;
+  IdeCompList.Destroy;
+  RegCompList.Destroy;
+
 end.
