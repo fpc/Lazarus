@@ -1795,31 +1795,20 @@ begin
   end;
 end;
 
-function TObjectInspector.ComponentToString(c:TComponent):string;
+function TObjectInspector.ComponentToString(c: TComponent): string;
 begin
-  Try
-    Result:=c.GetNamePath+': '+c.ClassName;
-  except
-    Result := '';
-    Raise EObjectInspectorException.Create(
-      'Exception in ObjectInspector ComponentToString');
-  end;
+  Result:=c.GetNamePath+': '+c.ClassName;
 end;
 
-procedure TObjectInspector.AddComponentToAvailComboBox(AComponent:TComponent);
+procedure TObjectInspector.AddComponentToAvailComboBox(AComponent: TComponent);
 var Allowed:boolean;
 begin
-  try
-    Allowed:=true;
-    if Assigned(FOnAddAvailableComponent) then
-      FOnAddAvailableComponent(AComponent,Allowed);
-    if Allowed then
-      AvailCompsComboBox.Items.AddObject(
-        ComponentToString(AComponent),AComponent);
-  except
-    raise EObjectInspectorException.Create(
-      'Exception: ObjectInspector AddComponentToAvailComboBox');
-  end;
+  Allowed:=true;
+  if Assigned(FOnAddAvailableComponent) then
+    FOnAddAvailableComponent(AComponent,Allowed);
+  if Allowed then
+    AvailCompsComboBox.Items.AddObject(
+      ComponentToString(AComponent),AComponent);
 end;
 
 procedure TObjectInspector.PropEditLookupRootChange;

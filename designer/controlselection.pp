@@ -118,7 +118,9 @@ type
   TComponentSizing = (cssNone, cssShrinkToSmallest, cssGrowToLargest, cssFixed);
   TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
   
-  TControlSelState = (cssOnlyNonVisualNeedsUpdate);
+  TControlSelState = (cssOnlyNonVisualNeedsUpdate,
+                      cssBoundsNeedsUpdate,
+                      cssBoundsNeedsSaving);
   TControlSelStates = set of TControlSelState;
   
   TNearestInt = record
@@ -609,13 +611,9 @@ begin
   if FUpdateLock<=0 then exit;
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
-    try
-      if FChangedDuringLock then DoChange;
-    except
-      on E: Exception do
-        raise EGenException.Create(
-          'Exception Occured in ControlSelection EndUpdate '+E.Message);
-    end;
+    if cssBoundsNeedsUpdate in FStates then UpdateBounds;
+    if cssBoundsNeedsSaving in FStates then SaveBounds;
+    if FChangedDuringLock then DoChange;
   end;
 end;
 
@@ -666,11 +664,16 @@ end;
 procedure TControlSelection.UpdateBounds;
 begin
   if IsResizing then exit;
+  if FUpdateLock>0 then begin
+    Include(FStates,cssBoundsNeedsUpdate);
+    exit;
+  end;
   UpdateRealBounds;
   FLeft:=FRealLeft;
   FTop:=FRealTop;
   FWidth:=FRealWidth;
   FHeight:=FRealHeight;
+  Exclude(FStates,cssBoundsNeedsUpdate);
 end;
 
 procedure TControlSelection.AdjustGrabbers;
@@ -1147,18 +1150,12 @@ end;
 
 procedure TControlSelection.DoChange;
 begin
-  try
-    if (FUpdateLock>0) then
-      FChangedDuringLock:=true
-    else
-    begin
-      if Assigned(fOnChange) then fOnChange(Self);
-      FChangedDuringLock:=false;
-    end;
-  except
-    on E: Exception do
-      raise EGenException.Create(
-        'Exception Occured in ControlSelection DoChange '+E.Message);
+  if (FUpdateLock>0) then
+    FChangedDuringLock:=true
+  else
+  begin
+    FChangedDuringLock:=false;
+    if Assigned(fOnChange) then fOnChange(Self);
   end;
 end;
 
@@ -1189,6 +1186,10 @@ var i:integer;
   g:TGrabIndex;
 begin
   if FNotSaveBounds then exit;
+  if FUpdateLock>0 then begin
+    Include(FStates,cssBoundsNeedsSaving);
+    exit;
+  end;
 //writeln('TControlSelection.SaveBounds');
   for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
@@ -1196,6 +1197,7 @@ begin
   FOldTop:=FRealTop;
   FOldWidth:=FRealWidth;
   FOldHeight:=FRealHeight;
+  Exclude(FStates,cssBoundsNeedsSaving);
 end;
 
 function TControlSelection.IsResizing: boolean;
