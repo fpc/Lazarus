@@ -75,7 +75,6 @@ designer/abstractformeditor.pp svneol=native#text/pascal
 designer/controlselection.pp svneol=native#text/pascal
 designer/customeditor.pp svneol=native#text/pascal
 designer/designer.pp svneol=native#text/pascal
-designer/designerform.pp svneol=native#text/pascal
 designer/designerwidget.pp svneol=native#text/pascal
 designer/filesystem.pp svneol=native#text/pascal
 designer/object_inspector.pp svneol=native#text/pascal
