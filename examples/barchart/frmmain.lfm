@@ -1,0 +1,25 @@
+object Form1: TForm1
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnShow = Form1Show
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 301
+  Left = 440
+  Height = 300
+  Top = 209
+  Width = 400
+  object BarChart1: TBarChart
+    Depth = 20
+    Caption = 'My Data'
+    ClientHeight = 256
+    ClientWidth = 368
+    FullRepaint = False
+    TabOrder = 0
+    Left = 16
+    Height = 256
+    Top = 16
+    Width = 368
+  end
+end
