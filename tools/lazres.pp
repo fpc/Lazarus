@@ -89,67 +89,80 @@ begin
   if ParamCount<2 then begin
     writeln('Usage: ',ExtractFileName(ParamStr(0))
        ,' resourcefilename filename1 [filename2 ... filenameN]');
-  end else begin
-    ResourceFilename:=ParamStr(1);
-    try
-      ResFileStream:=TFileStream.Create(ResourceFilename,fmCreate);
-    except
-      writeln('ERROR: unable to create file '''+ResourceFilename+'''');
-      halt(1);
+    exit;
+  end;
+
+  // check that all resources exists and are not the destination file
+  for a:=2 to ParamCount do begin
+    if not FileExists(ParamStr(a)) then begin
+      writeln('ERROR: file not found: ',ParamStr(a));
+      exit;
     end;
-    ResMemStream:=TMemoryStream.Create;
-    try
-      for a:=2 to ParamCount do begin
-        BinFilename:=ParamStr(a);
-        write(BinFilename);
+    if ExpandFileName(ParamStr(a))=ExpandFileName(ParamStr(1)) then begin
+      writeln('ERROR: resourcefilename = file',a);
+      exit;
+    end;
+  end;
+
+  ResourceFilename:=ParamStr(1);
+  try
+    ResFileStream:=TFileStream.Create(ResourceFilename,fmCreate);
+  except
+    writeln('ERROR: unable to create file '''+ResourceFilename+'''');
+    halt(1);
+  end;
+  ResMemStream:=TMemoryStream.Create;
+  try
+    for a:=2 to ParamCount do begin
+      BinFilename:=ParamStr(a);
+      write(BinFilename);
+      try
+        BinFileStream:=TFileStream.Create(BinFilename,fmOpenRead);
+        BinMemStream:=TMemoryStream.Create;
         try
-          BinFileStream:=TFileStream.Create(BinFilename,fmOpenRead);
-          BinMemStream:=TMemoryStream.Create;
-          try
-            BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
-            BinMemStream.Position:=0;
-            BinExt:=uppercase(ExtractFileExt(BinFilename));
-            if (BinExt='.LFM') or (BinExt='.DFM') or (BinExt='.XFM') then begin
-              ResourceType:='FORMDATA';
-              ConvertFormToText(BinMemStream);
-              ResourceName:=FindLFMClassName(BinMemStream);
-              if ResourceName='' then begin
-                writeln(' ERROR: no resourcename');
-                halt(2);
-              end;
-              write(' ResourceName='''+ResourceName
-                    +''' Type='''+ResourceType+'''');
-              LFMtoLRSstream(BinMemStream,ResMemStream);
-            end else begin
-              ResourceType:=copy(BinExt,2,length(BinExt)-1);
-              ResourceName:=ExtractFileName(BinFilename);
-              ResourceName:=copy(ResourceName,1
-                 ,length(ResourceName)-length(BinExt));
-              if ResourceName='' then begin
-                writeln(' ERROR: no resourcename');
-                halt(2);
-              end;
-              write(
-                ' ResourceName='''+ResourceName+''' Type='''+ResourceType+'''');
-              BinaryToLazarusResourceCode(BinMemStream,ResMemStream
-                 ,ResourceName,ResourceType);
+          BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
+          BinMemStream.Position:=0;
+          BinExt:=uppercase(ExtractFileExt(BinFilename));
+          if (BinExt='.LFM') or (BinExt='.DFM') or (BinExt='.XFM') then begin
+            ResourceType:='FORMDATA';
+            ConvertFormToText(BinMemStream);
+            ResourceName:=FindLFMClassName(BinMemStream);
+            if ResourceName='' then begin
+              writeln(' ERROR: no resourcename');
+              halt(2);
             end;
-          finally
-            BinFileStream.Free;
-            BinMemStream.Free;
+            write(' ResourceName='''+ResourceName
+                  +''' Type='''+ResourceType+'''');
+            LFMtoLRSstream(BinMemStream,ResMemStream);
+          end else begin
+            ResourceType:=copy(BinExt,2,length(BinExt)-1);
+            ResourceName:=ExtractFileName(BinFilename);
+            ResourceName:=copy(ResourceName,1
+               ,length(ResourceName)-length(BinExt));
+            if ResourceName='' then begin
+              writeln(' ERROR: no resourcename');
+              halt(2);
+            end;
+            write(
+              ' ResourceName='''+ResourceName+''' Type='''+ResourceType+'''');
+            BinaryToLazarusResourceCode(BinMemStream,ResMemStream
+               ,ResourceName,ResourceType);
           end;
-        except
-          writeln('  ERROR: unable to read file '''+BinFilename+'''');
-          halt(3);
+        finally
+          BinFileStream.Free;
+          BinMemStream.Free;
         end;
-        writeln('');
+      except
+        writeln('  ERROR: unable to read file '''+BinFilename+'''');
+        halt(3);
       end;
-      ResMemStream.Position:=0;
-      ResFileStream.CopyFrom(ResMemStream,ResMemStream.Size);
-    finally
-      ResMemStream.Free;
-      ResFileStream.Free;
+      writeln('');
     end;
+    ResMemStream.Position:=0;
+    ResFileStream.CopyFrom(ResMemStream,ResMemStream.Size);
+  finally
+    ResMemStream.Free;
+    ResFileStream.Free;
   end;
 end.
 
