@@ -132,7 +132,8 @@ type
     function FindAutoInstallDependencyPath(ChildPackage: TLazPackage): TList;
     function FindAmbigiousUnits(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
-                                var File1, File2: TPkgFile): boolean;
+                                var File1, File2: TPkgFile;
+                                var ConflictPkg: TLazPackage): boolean;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -1333,11 +1334,14 @@ begin
 end;
 
 function TLazPackageGraph.FindAmbigiousUnits(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; var File1, File2: TPkgFile): boolean;
+  FirstDependency: TPkgDependency; var File1, File2: TPkgFile;
+  var ConflictPkg: TLazPackage): boolean;
 // check if two connected packages have units with the same name
 // Connected means here: a Package1 is directly required by a Package2
 // or: a Package1 and a Package2 are directly required by a Package3
 // returns true, if ambigious units found
+// There can either be a conflict between two files (File1,File2)
+// or between a file and a package (File1,ConflictPkg)
 var
   PackageTreeOfUnitTrees: TAVLTree; // tree of TPkgUnitsTree
   
@@ -1377,14 +1381,30 @@ var
     if Pkg1=Pkg2 then exit;
     if (Pkg1.FileCount=0) or (Pkg2.FileCount=0) then exit;
     UnitsTreeOfPkg2:=GetUnitsTreeOfPackage(Pkg2);
+    // check if a unit of Pkg2 has the same name as Pkg1
+    PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(Pkg1.Name);
+    if PkgFile2<>nil then begin
+      File1:=PkgFile2;
+      ConflictPkg:=Pkg1;
+      Result:=true;
+      exit;
+    end;
     for i:=0 to Pkg1.FileCount-1 do begin
       PkgFile1:=Pkg1.Files[i];
       if (PkgFile1.FileType in PkgFileUnitTypes)
       and (PkgFile1.UnitName<>'') then begin
+        // check if a unit of Pkg1 exists in Pkg2
         PkgFile2:=UnitsTreeOfPkg2.FindPkgFileWithUnitName(PkgFile1.UnitName);
         if PkgFile2<>nil then begin
           File1:=PkgFile1;
           File2:=PkgFile2;
+          Result:=true;
+          exit;
+        end;
+        // check if a unit of Pkg1 has the same name as Pkg2
+        if AnsiCompareText(PkgFile1.UnitName,Pkg2.Name)=0 then begin
+          File1:=PkgFile1;
+          ConflictPkg:=Pkg2;
           Result:=true;
           exit;
         end;
@@ -1404,6 +1424,7 @@ begin
   end;
   File1:=nil;
   File2:=nil;
+  ConflictPkg:=nil;
   ConnectionsTree:=nil;
   PkgList:=nil;
   PackageTreeOfUnitTrees:=nil;

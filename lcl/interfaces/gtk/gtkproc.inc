@@ -4470,8 +4470,8 @@ end;
 Function CreateFormContents(AForm: TCustomForm;
   var FormWidget: Pointer): Pointer;
 var
-  ScrolledWidget,
-  ClientAreaWidget: Pointer;
+  ScrolledWidget, ClientAreaWidget: PGtkWidget;
+  WindowStyle: PGtkStyle;
 begin
   // Create the VBox. We need that to place controls outside
   // the client area (like menu)
@@ -4479,21 +4479,16 @@ begin
   If FormWidget = nil then
     FormWidget := Result;
 
-  // Create the form client area
-  if {$IFDEF PolymorphClientArea}(AForm=nil) or AForm.HasVisibleScrollbars
-     {$ELSE}true{$ENDIF}
-  then begin
-    ScrolledWidget := gtk_scrolled_window_new(nil,nil);
-    gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
-    gtk_widget_show(ScrolledWidget);
-    ClientAreaWidget := gtk_layout_new(nil, nil);
-    gtk_container_add(ScrolledWidget, ClientAreaWidget);
-  end else begin
-    ScrolledWidget:=nil;
-    ClientAreaWidget := gtk_fixed_new;
-    gtk_box_pack_end(Result, ClientAreaWidget, True, True, 0);
-  end;
-  
+  // Create the form client area (a scrolled window with a gtklayout
+  // with the style of a window)
+  ScrolledWidget := gtk_scrolled_window_new(nil,nil);
+  gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
+  gtk_widget_show(ScrolledWidget);
+  ClientAreaWidget := gtk_layout_new(nil, nil);
+  WindowStyle:=GetStyle('window');
+  gtk_widget_set_style(ClientAreaWidget,WindowStyle);
+  gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
+
   gtk_object_set_data(FormWidget,odnScrollArea,ScrolledWidget);
 
   gtk_widget_show(ClientAreaWidget);
@@ -4621,7 +4616,7 @@ begin
         NoName:=nil;
         StyleObject^.Widget :=
           // GTK2 does not allow to instantiate the abstract base Widget
-          // so we use the "invisible" widget, which  should never be defined
+          // so we use the "invisible" widget, which should never be defined
           // by the theme
           GTK_WIDGET_NEW(
             {$IFDEF Gtk2}GTK_TYPE_INVISIBLE{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
@@ -4671,6 +4666,14 @@ begin
     If (StyleObject^.Widget <> nil) then begin
       gtk_widget_ensure_style(StyleObject^.Widget);
       StyleObject^.Style:=GTK_RC_GET_STYLE(StyleObject^.Widget);
+      // ToDo: find out, why sometimes the style is not initialized.
+      // for example: why the following occurs:
+       If AnsiCompareText(WName,'button')=0 then begin
+        if StyleObject^.Style^.light_gc[GTK_STATE_NORMAL]=nil then begin
+          //if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_TYPE) then begin
+          //end;
+        end;
+      end;
     end;
     If StyleObject^.Style <> nil then
       If AnsiCompareText(WName,'gtk_default')<>0 then
@@ -4679,7 +4682,8 @@ begin
     if StyleObject^.Style <> nil then begin
       Styles.AddObject(WName, TObject(StyleObject));
       Result:=StyleObject^.Style;
-      If StyleObject^.Widget <> nil then
+      If (StyleObject^.Widget <> nil)
+      and (AnsiCompareText(WName,'window')=0) then
         UpdateSysColorMap(StyleObject^.Widget);
     end
     else begin
@@ -4769,6 +4773,26 @@ begin
 end;
 {$EndIf}
 
+procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
+var
+  AllocResult: gboolean;
+begin
+  if ColorMap=nil then ColorMap:=gdk_colormap_get_system;
+  if (Color^.pixel = 0)
+  and ((Color^.red<>0) or (Color^.blue<>0) or (Color^.green<>0)) then
+    gdk_colormap_alloc_colors(ColorMap, Color, 1, false, true, @AllocResult)
+  else
+    gdk_colormap_query_color(ColorMap,Color^.pixel, Color);
+end;
+
+procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
+begin
+  if (Style<>nil) then
+    RealizeGDKColor(Style^.ColorMap,Color)
+  else
+    RealizeGDKColor(nil,Color);
+end;
+
 Function GetSysGCValues(Color: TColorRef;
   ThemeWidget: PGtkWidget): TGDKGCValues;
 // ThemeWidget can be nil
@@ -4793,7 +4817,6 @@ var
   SysColor: TColorRef;
   BaseColor: TColorRef;
   Red, Green, Blue: byte;
-  success: Boolean;
 begin
   BaseColor := Color and $FF;
 
@@ -5042,23 +5065,8 @@ begin
       end;
     ?????????????????}
   end;
-  
-  if (result.foreground.pixel = 0) and ((result.foreground.red <> 0) or
-     (result.foreground.blue <> 0) or (result.foreground.green <> 0)) then
-   begin
-     if (style <> nil) and (style^.colormap <> nil) then
-         gdk_colormap_alloc_colors(style^.colormap, @result.foreground, 1,
-           false, true, nil)
-       else
-         gdk_colormap_alloc_colors(gdk_colormap_get_system(),
-           @result.foreground, 1, false, true, @success);
-   end else
-     if (style <> nil) and (style^.colormap <> nil) then
-       gdk_colormap_query_color(style^.colormap,result.foreground.pixel,
-         @result.foreground)
-     else
-       gdk_colormap_query_color(gdk_colormap_get_system(),
-         result.foreground.pixel, @result.foreground);
+
+  RealizeGtkStyleColor(Style,@Result.foreground);
 end;
 
 Function StyleForegroundColor(Color: TColorRef;
@@ -5139,10 +5147,7 @@ begin
     Result := DefaultColor;
 
   if (Result <> nil) and (Result <> DefaultColor) then
-    if  (style^.colormap <> nil) then
-      gdk_colormap_query_color(style^.colormap,result^.pixel, result)
-    else
-      gdk_colormap_query_color(gdk_colormap_get_system(),result^.pixel, result)
+    RealizeGtkStyleColor(Style,Result);
 end;
 
 Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
@@ -5615,6 +5620,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.231  2003/11/29 13:17:38  mattias
+  made gtklayout using window theme at start
+
   Revision 1.230  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

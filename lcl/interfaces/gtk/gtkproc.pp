@@ -515,7 +515,9 @@ function LoadDefaultFontDesc: PPangoFontDescription;
 function LoadDefaultFont: PGDKFont;
 {$EndIf}
 
-Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget) : TGDKGCValues;
+procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
+procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
+Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
 
 {$Ifdef GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
@@ -532,7 +534,7 @@ Procedure FillScreenFonts(ScreenFonts : TStrings);
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
 
-// functions for easier GTK2<->GTK1 Compatibility/Consistancy  ---->
+// functions for easier GTK2<->GTK1 Compatibility/Consistency  ---->
 function gtk_widget_get_xthickness(Style : PGTKStyle) : gint; overload;
 function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 

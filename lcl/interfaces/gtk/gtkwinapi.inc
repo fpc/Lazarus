@@ -5758,10 +5758,10 @@ begin
         if (CurrentPen^.IsNullPen) then exit;
 
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        BeginGDKErrorTrap;
+        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
         gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
                       X+DCOrigin.X, Y+DCOrigin.Y);
-        EndGDKErrorTrap;
+        {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
         PenPos:= Point(X, Y);
       end else
         Result := False;
@@ -9032,6 +9032,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.303  2003/11/29 13:17:38  mattias
+  made gtklayout using window theme at start
+
   Revision 1.302  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

@@ -7578,10 +7578,10 @@ procedure TGTKObject.SelectGDKPenProps(DC: HDC);
 
   procedure SetDashes(const Dashes: array of gint8);
   begin
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     laz_gdk_gc_set_dashes(TDeviceContext(DC).GC,0,Pgint8(@Dashes[Low(Dashes)]),
       High(Dashes)-Low(Dashes)+1);
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 
 begin
@@ -7601,12 +7601,12 @@ begin
         IsNullPen := GDIPenStyle = PS_NULL;
         if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
         then begin
-          BeginGDKErrorTrap;
+          {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
           gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-          EndGDKErrorTrap;
+          {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
         end
         else begin
-          BeginGDKErrorTrap;
+          {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
           gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,GDK_CAP_NOT_LAST,GDK_JOIN_MITER);
           case GDIPenStyle of
             {$IfDef GTK2}
@@ -7623,7 +7623,7 @@ begin
             //This is DEADLY!!!
             //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
-          EndGDKErrorTrap;
+          {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
         end;
       end;
       Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
@@ -8465,6 +8465,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.439  2003/11/29 13:17:38  mattias
+  made gtklayout using window theme at start
+
   Revision 1.438  2003/11/28 11:25:49  mattias
   added BitOrder for RawImages
 

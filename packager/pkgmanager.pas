@@ -741,6 +741,8 @@ var
   PathList: TList;
   Dependency: TPkgDependency;
   PkgFile1,PkgFile2: TPkgFile;
+  ConflictPkg: TLazPackage;
+  s: String;
 begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckPackageGraphForCompilation A');
@@ -792,17 +794,26 @@ begin
     end;
 
     // check for ambigious units
-    if PackageGraph.FindAmbigiousUnits(APackage,FirstDependency,PkgFile1,PkgFile2)
+    if PackageGraph.FindAmbigiousUnits(APackage,FirstDependency,
+      PkgFile1,PkgFile2,ConflictPkg)
     then begin
-      Result:=MessageDlg('Ambigious units found',
-        'There are two units with the same name:'#13
-        +#13
-        +'1. "'+PkgFile1.Filename+'" from '+PkgFile1.LazPackage.IDAsString+#13
-        +'2. "'+PkgFile2.Filename+'" from '+PkgFile2.LazPackage.IDAsString+#13
-        +#13
-        +'Both packages are connected. This means, either one package uses '
-        +'the other, or they are both used by a third package.',
-        mtError,[mbCancel,mbAbort],0);
+      if PkgFile2<>nil then begin
+        s:='There are two units with the same name:'#13
+          +#13
+          +'1. "'+PkgFile1.Filename+'" from '+PkgFile1.LazPackage.IDAsString+#13
+          +'2. "'+PkgFile2.Filename+'" from '+PkgFile2.LazPackage.IDAsString+#13
+          +#13;
+      end else begin
+        s:='There is a unit with the same name as a package:'#13
+          +#13
+          +'1. "'+PkgFile1.Filename+'" from '+PkgFile1.LazPackage.IDAsString+#13
+          +'2. "'+ConflictPkg.IDAsString+#13
+          +#13;
+      end;
+      Result:=MessageDlg('Ambigious units found',s
+          +'Both packages are connected. This means, either one package uses '
+          +'the other, or they are both used by a third package.',
+          mtError,[mbCancel,mbAbort],0);
       exit;
     end;
 
