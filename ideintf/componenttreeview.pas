@@ -28,7 +28,8 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits, Menus, LResources;
+  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits, Menus,
+  LResources;
   
 type
   { TComponentTreeView }
@@ -61,9 +62,6 @@ type
   end;
 
 implementation
-
-uses
-  Dialogs;
 
 type
   TComponentCandidate = class
@@ -160,23 +158,36 @@ procedure TComponentTreeView.AcceptDrop(Sender, Source: TObject; X, Y: Integer; 
 var
   Node:TTreeNode;
   AnObject:TObject;
+  AContainer,AControl:TControl;
   AcceptControl, AcceptContainer:Boolean;
 begin
-  AcceptControl := True;
-  Node := GetFirstMultiSelected;
-  while Assigned(Node) do begin
-    AnObject:=TObject(Node.Data);
-    AcceptControl := AcceptControl and (AnObject is TControl);
-    Node := Node.GetNextMultiSelected;
-  end;
-
   AcceptContainer := False;
   Node:=GetNodeAt(X, Y);
   if Assigned(Node) and Assigned(Node.Data) then begin
     AnObject:=TObject(Node.Data);
     if AnObject is TWinControl and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
+    begin
+      AContainer := TWinControl(AnObject);
       AcceptContainer := True;
+    end;
   end;
+  
+  AcceptControl := True;
+  Node := GetFirstMultiSelected;
+  while Assigned(Node) do begin
+    AnObject:=TObject(Node.Data);
+    AcceptControl := AcceptControl and (AnObject is TControl);
+    // Check if one of the parent of the containder is the control itself
+    if AcceptControl and AcceptContainer then begin
+      while Assigned(AContainer) do begin
+        AControl:=TControl(AnObject);
+        AcceptControl := AcceptControl and (AControl <> AContainer);
+        AContainer := AContainer.Parent;
+      end;
+    end;
+    Node := Node.GetNextMultiSelected;
+  end;
+
   Accept := AcceptContainer and AcceptControl;
 end;
 
