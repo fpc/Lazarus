@@ -1510,7 +1510,6 @@ begin
       Assert(False, 'Trace:[TControl.SetParent] EInvalidOperation --> FParent = Self');
       raise EInvalidOperation.Create('A control can''t have itself as parent');
     end;
-
     if FParent <> nil then FParent.RemoveControl(Self);
     if AParent <> nil then AParent.InsertControl(Self);
   end;
@@ -1941,6 +1940,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.95  2002/10/30 13:20:10  lazarus
+  MG: fixed example
+
   Revision 1.94  2002/10/22 12:12:08  lazarus
   MG: accelerators are now shared between non modal forms
 
