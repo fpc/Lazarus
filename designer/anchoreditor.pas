@@ -309,7 +309,10 @@ begin
         TopAnchoredCheckBox.State:=cbGrayed
       else
         TopAnchoredCheckBox.Checked:=CurSide.Enabled;
-      TopBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
+      if CurSide.AmbigiousBorderSpace then
+        TopBorderSpaceSpinEdit.Value:=-1
+      else
+        TopBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
       Sibling:=CurSide.Sibling;
       TopSiblingComboBox.Text:=Sibling;
       TopRefBottomSpeedButton.Enabled:=Sibling<>'';
