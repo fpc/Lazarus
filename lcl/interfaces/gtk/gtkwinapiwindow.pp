@@ -213,10 +213,6 @@ function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
   Event: PGdkEventFocus): gint; cdecl;
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_FocusIn]');
-Writeln('------------------------');
-Writeln('FOCUSIN');
-Writeln('------------------------');
-
   gtk_widget_set_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -226,9 +222,6 @@ function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
   Event: PGdkEventFocus): gint; cdecl;
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_FocusOut]');
-Writeln('------------------------');
-Writeln('FOCUSOUT');
-Writeln('------------------------');
   gtk_widget_unset_flags(Widget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(Widget));
   Result := gtk_False;
@@ -725,6 +718,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/03/15 13:15:24  lazarus
+  Removed FOCUSIN messages
+  Removed Bitbtn created message
+  Shane
+
   Revision 1.22  2002/03/14 20:28:50  lazarus
   Bug fix for Mattias.
   Fixed spinedit so you can now get the value and set the value.
