@@ -302,10 +302,6 @@ msgstr "Fonts del Free Pascal, %s"
 msgid "gnome interface directory"
 msgstr "directori d'interfície gnome"
 
-#: codetoolsstrconsts:ctsgtkintfdirectory
-msgid "gtk interface directory"
-msgstr "directori d'interfície gtk"
-
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr "directori d'interfície gtk2"
@@ -337,6 +333,10 @@ msgstr "If LCLWidgetType=gnome2 then"
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "If LCLWidgetType=gtk2 then"
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr ""
 
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
@@ -381,6 +381,10 @@ msgstr "la paraula clau Inherited només és permesa dins dels mètodes"
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "memòria insuficient"
+
+#: codetoolsstrconsts:ctsintfdirectory
+msgid "interface directory"
+msgstr ""
 
 #: codetoolsstrconsts:ctsinterfacesectionnotfound
 msgid "interface section not found"

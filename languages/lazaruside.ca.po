@@ -222,10 +222,6 @@ msgstr "\" no existeix"
 msgid "\" is not writable."
 msgstr "\" no es pot escriure"
 
-#: lazarusidestrconsts:rslanguagerussian
-msgid "\362\325\323\323\313\311\312"
-msgstr "\362\325\323\323\313\311\312"
-
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr ""
@@ -586,6 +582,10 @@ msgstr "Interrompre línia i moure el cursor"
 msgid "Break line, leave cursor"
 msgstr "Interrompre línia, deixar el cursor"
 
+#: lazarusidestrconsts:lismenubeaklinesinselection
+msgid "Break Lines in selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Punts de ruptura"
@@ -722,6 +722,10 @@ msgstr "No distingir entre majúscules i minúscules"
 msgid "Case Sensitive"
 msgstr "Distingir entre majúscules i minúscules"
 
+#: lazarusidestrconsts:rslanguagecatalan
+msgid "Catalan"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Centra la línia del cursor"
@@ -754,6 +758,10 @@ msgstr ""
 msgid "Check consistency"
 msgstr "Verificar consistència"
 
+#: lazarusidestrconsts:lismenuchecklfm
+msgid "Check LFM file in editor"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
 msgstr "Comprovacions:"
@@ -773,6 +781,10 @@ msgstr "Escollir nom de compilador (ppc386)"
 #: lazarusidestrconsts:lischoosedebuggerpath
 msgid "Choose debugger filename"
 msgstr "Escollir nom del depurador"
+
+#: lazarusidestrconsts:lischoosedelphiunit
+msgid "Choose Delphi unit"
+msgstr ""
 
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
@@ -1098,6 +1110,10 @@ msgstr "Opcions de conversió"
 msgid "Convert"
 msgstr "Convertir"
 
+#: lazarusidestrconsts:lismenuconvertdelphiunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
 msgstr "Convertir fitxer DFM a LFM"
@@ -1141,6 +1157,10 @@ msgstr "Copyright (C) <year> <name of author>%sThis program is free software; yo
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Comptador (.pp;1)"
+
+#: lazarusidestrconsts:lisnewcreateanewcgiapplicationtheprogramfileismaintained
+msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateaneweditorfilechooseatype
 msgid "Create a new editor file.%sChoose a type."
@@ -1782,10 +1802,6 @@ msgstr "Error: compilador no vàlid: %s"
 msgid "Escape"
 msgstr "Escapament"
 
-#: lazarusidestrconsts:rslanguagespanish
-msgid "Espa\361ol"
-msgstr "Espanyol"
-
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
 msgstr "Executar"
@@ -1841,6 +1857,10 @@ msgstr "Paràmetres de les eines exteriors"
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
 msgstr "Espaiat extra entre línies"
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -2860,6 +2880,10 @@ msgstr "Irregular"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Is required by:"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageitalian
+msgid "Italian"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedital
@@ -4394,6 +4418,10 @@ msgstr ""
 msgid "Runtime only"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagerussian
+msgid "Russian"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
 msgstr "Mateix nom (a un sub-directori)"
@@ -4546,9 +4574,21 @@ msgstr ""
 msgid "Search paths:"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewsearchresults
+msgid "Search Results"
+msgstr ""
+
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "No trobo la cadena '%s'"
+
+#: lazarusidestrconsts:dlgsearchabort
+msgid "Search terminated by user."
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchcaption
+msgid "Searching..."
+msgstr ""
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
@@ -4953,6 +4993,10 @@ msgstr "Espai"
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
 msgstr "Tecla d'espai"
+
+#: lazarusidestrconsts:rslanguagespanish
+msgid "Spanish"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -5666,10 +5710,6 @@ msgstr ""
 msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletobuildformfromfile
-msgid "Unable to build form from file %s%s%s%s."
-msgstr ""
-
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
 msgstr "No puc canviar la llista de les formes creades automàticament en el codi font del programa. %s Sisplau arregla els errors primer."
@@ -6197,6 +6237,10 @@ msgstr "Mostrar les formes del projecte"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Mostrar les unitats del projecte"
+
+#: lazarusidestrconsts:srkmectogglesearchresults
+msgid "View Search Results"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"

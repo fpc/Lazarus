@@ -290,6 +290,10 @@ msgstr ""
 msgid "Sort selection"
 msgstr ""
 
+#: lazarusidestrconsts:lismenubeaklinesinselection
+msgid "Break Lines in selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
 msgstr ""
@@ -332,6 +336,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertgplnotice
@@ -448,6 +456,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewsearchresults
+msgid "Search Results"
 msgstr ""
 
 #: lazarusidestrconsts:lismenudebugwindows
@@ -638,6 +650,14 @@ msgstr ""
 msgid "Convert DFM file to LFM"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuchecklfm
+msgid "Check LFM file in editor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconvertdelphiunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr ""
@@ -700,6 +720,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosedelphiunit
+msgid "Choose Delphi unit"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfileerror
@@ -828,10 +852,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisformloaderror
 msgid "Form load error"
-msgstr ""
-
-#: lazarusidestrconsts:lisunabletobuildformfromfile
-msgid "Unable to build form from file %s%s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lissaveprojectlpi
@@ -1392,6 +1412,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgbakdirectory
 msgid "(no subdirectoy)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchcaption
+msgid "Searching..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchabort
+msgid "Search terminated by user."
 msgstr ""
 
 #: lazarusidestrconsts:dlgdesktop
@@ -3538,6 +3566,10 @@ msgstr ""
 msgid "View messages"
 msgstr ""
 
+#: lazarusidestrconsts:srkmectogglesearchresults
+msgid "View Search Results"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
 msgstr ""
@@ -3576,6 +3608,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccompletecode
 msgid "Complete code"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecextractproc
+msgid "Extract procedure"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecsyntaxcheck
@@ -3931,7 +3967,7 @@ msgid "Deutsch"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagespanish
-msgid "Espa\361ol"
+msgid "Spanish"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagefrench
@@ -3939,11 +3975,19 @@ msgid "French"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagerussian
-msgid "\362\325\323\323\313\311\312"
+msgid "Russian"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "polski"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageitalian
+msgid "Italian"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagecatalan
+msgid "Catalan"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
@@ -4988,6 +5032,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
+msgstr ""
+
+#: lazarusidestrconsts:lisnewcreateanewcgiapplicationtheprogramfileismaintained
+msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewstandardpackageapackageisacollectionofun

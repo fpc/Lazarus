@@ -232,10 +232,6 @@ msgstr "\" nie istnieje."
 msgid "\" is not writable."
 msgstr "\" nie jest zapisywalny"
 
-#: lazarusidestrconsts:rslanguagerussian
-msgid "\362\325\323\323\313\311\312"
-msgstr "Rosyjski"
-
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Plik %s%s%s ju¿ istnieje.%sChcesz go zast±piæ?"
@@ -596,6 +592,10 @@ msgstr "Zawiñ wiersz i przenie¶ kursor"
 msgid "Break line, leave cursor"
 msgstr "Zawiñ wiersz i pozostaw kursor"
 
+#: lazarusidestrconsts:lismenubeaklinesinselection
+msgid "Break Lines in selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Pu³apki"
@@ -732,6 +732,10 @@ msgstr "Bez rozró¿niania wielko¶ci liter"
 msgid "Case Sensitive"
 msgstr "Rozró¿niaj wielko¶æ liter"
 
+#: lazarusidestrconsts:rslanguagecatalan
+msgid "Catalan"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Wy¶rodkuj aktualny wiersz"
@@ -764,6 +768,10 @@ msgstr ""
 msgid "Check consistency"
 msgstr "Sprawd¼ spójno¶æ"
 
+#: lazarusidestrconsts:lismenuchecklfm
+msgid "Check LFM file in editor"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
 msgstr "Sprawdzaj:"
@@ -783,6 +791,10 @@ msgstr "Wybierz nazwê pliku kompilatora (ppc386)"
 #: lazarusidestrconsts:lischoosedebuggerpath
 msgid "Choose debugger filename"
 msgstr "Wybierz nazwê pliku odpluskwiacza"
+
+#: lazarusidestrconsts:lischoosedelphiunit
+msgid "Choose Delphi unit"
+msgstr ""
 
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
@@ -1108,6 +1120,10 @@ msgstr "Opcje konwersji"
 msgid "Convert"
 msgstr "Konwertuj"
 
+#: lazarusidestrconsts:lismenuconvertdelphiunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
 msgstr "Konwertuj DFM na LFM"
@@ -1151,6 +1167,10 @@ msgstr "Prawa autorskie (C) <year> <name of author>%sTen program jest wolnym opr
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Licznik (.pp;1)"
+
+#: lazarusidestrconsts:lisnewcreateanewcgiapplicationtheprogramfileismaintained
+msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateaneweditorfilechooseatype
 msgid "Create a new editor file.%sChoose a type."
@@ -1792,10 +1812,6 @@ msgstr "B³±d: nieprawid³owy kompilator: %s"
 msgid "Escape"
 msgstr "Escape"
 
-#: lazarusidestrconsts:rslanguagespanish
-msgid "Espa\361ol"
-msgstr "Hiszpañski"
-
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
 msgstr "Uruchom"
@@ -1851,6 +1867,10 @@ msgstr "Ustawienia zewnêtrznych narzêdzi"
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
 msgstr "Dod. odstêp miêdzy wierszami"
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -2871,6 +2891,10 @@ msgstr "Nieregularny "
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Is required by:"
 msgstr "Jest wymagany przez:"
+
+#: lazarusidestrconsts:rslanguageitalian
+msgid "Italian"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
@@ -4404,6 +4428,10 @@ msgstr "Id¼-do nie zadzia³a³o"
 msgid "Runtime only"
 msgstr "Tylko uruchomieniowy"
 
+#: lazarusidestrconsts:rslanguagerussian
+msgid "Russian"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
 msgstr "Taka sama nazwa (w podkatalogu)"
@@ -4556,9 +4584,21 @@ msgstr "szukaj w katalogach"
 msgid "Search paths:"
 msgstr "¦cie¿ki poszukiwañ"
 
+#: lazarusidestrconsts:lismenuviewsearchresults
+msgid "Search Results"
+msgstr ""
+
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
 msgstr "Nie znalaz³em wyra¿enia '%s'!"
+
+#: lazarusidestrconsts:dlgsearchabort
+msgid "Search terminated by user."
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchcaption
+msgid "Searching..."
+msgstr ""
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
@@ -4963,6 +5003,10 @@ msgstr "Odstêp"
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
 msgstr "PRzycisk odstêpu"
+
+#: lazarusidestrconsts:rslanguagespanish
+msgid "Spanish"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -5676,10 +5720,6 @@ msgstr "Nie mo¿na dodaæ zasobu T%s:FORMDATA do pliku z zasobami %s%s%s%s.%sPrawd
 msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "Nie mogê utworzyæ kopii zapasowej pliku %s%s%s jako %s%s%s!"
 
-#: lazarusidestrconsts:lisunabletobuildformfromfile
-msgid "Unable to build form from file %s%s%s%s."
-msgstr "Nie mogê utworzyæ formularza z pliku %s%s%s%s."
-
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
 msgstr "Unable to change the auto create form list in the program source.%sPlz fix errors first."
@@ -6207,6 +6247,10 @@ msgstr "Poka¿ formularze projektu"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Poka¿ modu³y projektu"
+
+#: lazarusidestrconsts:srkmectogglesearchresults
+msgid "View Search Results"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"

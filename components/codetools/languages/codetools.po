@@ -494,12 +494,16 @@ msgstr ""
 msgid "Widget Directory"
 msgstr ""
 
-#: codetoolsstrconsts:ctsgtkintfdirectory
-msgid "gtk interface directory"
+#: codetoolsstrconsts:ctsintfdirectory
+msgid "interface directory"
 msgstr ""
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
 msgstr ""
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2

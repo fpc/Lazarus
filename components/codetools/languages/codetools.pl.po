@@ -312,10 +312,6 @@ msgstr "¬ród³a Free Pascal, %s"
 msgid "gnome interface directory"
 msgstr "katalog interfejsu gnome"
 
-#: codetoolsstrconsts:ctsgtkintfdirectory
-msgid "gtk interface directory"
-msgstr "katalog interfejsu gtk"
-
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr "katalog interfejsu gtk2"
@@ -347,6 +343,10 @@ msgstr "If LCLWidgetType=gnome2 then"
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "If LCLWidgetType=gtk2 then"
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
+msgstr ""
 
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
@@ -391,6 +391,10 @@ msgstr "s³owa kluczowego inherited mo¿na u¿ywaæ tyklko przy metodach"
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
 msgstr "brak pamiêci"
+
+#: codetoolsstrconsts:ctsintfdirectory
+msgid "interface directory"
+msgstr ""
 
 #: codetoolsstrconsts:ctsinterfacesectionnotfound
 msgid "interface section not found"

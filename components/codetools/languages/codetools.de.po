@@ -302,10 +302,6 @@ msgstr ""
 msgid "gnome interface directory"
 msgstr ""
 
-#: codetoolsstrconsts:ctsgtkintfdirectory
-msgid "gtk interface directory"
-msgstr ""
-
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr ""
@@ -336,6 +332,10 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotwin32
+msgid "If TargetOS<>win32 then"
 msgstr ""
 
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
@@ -380,6 +380,10 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsintfdirectory
+msgid "interface directory"
 msgstr ""
 
 #: codetoolsstrconsts:ctsinterfacesectionnotfound

@@ -232,10 +232,6 @@ msgstr "\" nicht gefunden."
 msgid "\" is not writable."
 msgstr "\" ist schreibgeschuetzt."
 
-#: lazarusidestrconsts:rslanguagerussian
-msgid "\362\325\323\323\313\311\312"
-msgstr ""
-
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
 msgstr "Die Datei %s%s%s exitiert bereits.%sErsetzen?"
@@ -596,6 +592,10 @@ msgstr ""
 msgid "Break line, leave cursor"
 msgstr ""
 
+#: lazarusidestrconsts:lismenubeaklinesinselection
+msgid "Break Lines in selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
 msgstr "Haltepunkte"
@@ -732,6 +732,10 @@ msgstr ""
 msgid "Case Sensitive"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagecatalan
+msgid "Catalan"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr ""
@@ -764,6 +768,10 @@ msgstr ""
 msgid "Check consistency"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuchecklfm
+msgid "Check LFM file in editor"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
 msgstr ""
@@ -782,6 +790,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lischoosedebuggerpath
 msgid "Choose debugger filename"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosedelphiunit
+msgid "Choose Delphi unit"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosedirectory
@@ -1108,6 +1120,10 @@ msgstr ""
 msgid "Convert"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconvertdelphiunit
+msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
 msgstr ""
@@ -1150,6 +1166,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
+msgstr ""
+
+#: lazarusidestrconsts:lisnewcreateanewcgiapplicationtheprogramfileismaintained
+msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateaneweditorfilechooseatype
@@ -1792,10 +1812,6 @@ msgstr ""
 msgid "Escape"
 msgstr ""
 
-#: lazarusidestrconsts:rslanguagespanish
-msgid "Espa\361ol"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
 msgstr ""
@@ -1850,6 +1866,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuextractproc
+msgid "Extract procedure"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -2870,6 +2890,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Is required by:"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageitalian
+msgid "Italian"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedital
@@ -4404,6 +4428,10 @@ msgstr ""
 msgid "Runtime only"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagerussian
+msgid "Russian"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"
 msgstr ""
@@ -4556,8 +4584,20 @@ msgstr ""
 msgid "Search paths:"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewsearchresults
+msgid "Search Results"
+msgstr ""
+
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchabort
+msgid "Search terminated by user."
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchcaption
+msgid "Searching..."
 msgstr ""
 
 #: lazarusidestrconsts:lisuesearching
@@ -4962,6 +5002,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagespanish
+msgid "Spanish"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidsrc
@@ -5676,10 +5720,6 @@ msgstr ""
 msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletobuildformfromfile
-msgid "Unable to build form from file %s%s%s%s."
-msgstr ""
-
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
 msgstr ""
@@ -6206,6 +6246,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglesearchresults
+msgid "View Search Results"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsource
