@@ -21,7 +21,6 @@ var
   NoteBookWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   TabWidget: PGtkWidget;
-  TabImageWidget: PGtkWidget;
 begin
   NoteBook:=Page.Parent as TCustomNotebook;
   if (NoteBook.Images=nil) or (Page.ImageIndex<0)
@@ -36,9 +35,6 @@ begin
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
   if TabWidget=nil then exit;
-  TabImageWidget:=PGtkWidget(gtk_object_get_data(PGtkObject(TabWidget),
-                                                 'TabImage'));
-  //writeln('DrawNotebookPageIcon B ',Page.Name,' ',GetWidgetDebugReport(TabImageWidget));
   DrawImageListIconOnWidget(NoteBook.Images,Page.ImageIndex,Widget);
 end;
 
