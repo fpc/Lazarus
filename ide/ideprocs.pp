@@ -75,6 +75,7 @@ const
 
 // files
 function BackupFile(const Filename, BackupFilename: string): boolean;
+function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(const Filename1, Filename2: string;
   ResolveLinks: boolean): integer;
@@ -663,6 +664,29 @@ begin
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 
+  Result:=true;
+end;
+
+{-------------------------------------------------------------------------------
+  function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
+-------------------------------------------------------------------------------}
+function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
+var
+  fs: TFileStream;
+begin
+  if FileExists(Filename) then begin
+    try
+      fs:=TFileStream.Create(Filename,fmOpenWrite);
+      fs.Size:=0;
+      fs.Free;
+    except
+      on E: Exception do begin
+        Result:=false;
+        if RaiseOnError then raise;
+        exit;
+      end;
+    end;
+  end;
   Result:=true;
 end;
 
