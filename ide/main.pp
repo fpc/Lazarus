@@ -31,7 +31,7 @@ uses
   classes,LclLinux,compiler, stdctrls,forms,buttons,menus,comctrls,
   Spin, project,sysutils, global,
   compileroptions,Controls,graphics,extctrls, Dialogs,dlgMEssage,
-  designerform,process,idecomp,Find_dlg,FormEditor,CustomFormEditor,Object_Inspector;
+  Designer,process,idecomp,Find_dlg,FormEditor,CustomFormEditor,Object_Inspector;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -145,11 +145,9 @@ type
 
     procedure ControlClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
-    procedure DesignFormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); 
 private
     Function CreateSeperator : TMenuItem;
     Procedure SetBtnDefaults(Control : Pointer;I,Page : Integer);
-    function CreateNewForm : TDesignerForm;
     Function ReturnActiveUnitList : TUnitInfo;
     Function Create_LFM(SList : TUnitInfo) : Boolean;
     Function SavebyUnit(SList : TUnitInfo) : Boolean;
@@ -194,6 +192,7 @@ var
 Form1 : TForm1;
 FormEditor1 : TFormEditor;
 ObjectInspector1 : TObjectInspector;
+
 Taginc : Integer;
 implementation
 uses
@@ -1330,81 +1329,6 @@ For I := 0 to Project1.UnitList.Count-1  do
 End;
 
 
-procedure TForm1.DesignFormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  NewObj : TControl;
-  i: Integer;
-begin
-  if (Button = mbLeft)
-  then begin
-
-    // OK for the sake of showing something I'll use this
-    // WE NEED SOMETHING ELSE
-    NewObj := TIdeComponent(ideComplist.items[bpressed-1]).CreateMethod(TDesignerForm(Sender));
-    if NewObj <> nil 
-    then begin
-      TDesignerForm(Sender).AddControl(NewObj, X, Y);
-  
-      //this resets it to the mouse.
-      ControlClick(Notebook1);  
-   
-      //add line into source for the control.
-      for i := 0 to Project1.Unitlist.Count-1 do
-      begin
-        if TUnitInfo(Project1.Unitlist.items[i]).Formname = TForm(sender).name 
-        then Break;
-      end;
-      if I < Project1.Unitlist.Count 
-      then begin
-        TUnitInfo(Project1.Unitlist.items[i]).AddControlLine(NewObj.name + ': ' + NewObj.ClassName);
-      end;
-    end;
-  end;
-end;
-
-
-(*
-{
-------------------------------------------------------------------------
-------------------------------------------------------------------------
--------------------ClickOnForm-----------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-}
-procedure TForm1.ClickonForm(Sender : TObject);
-var
-MOusePos : TPoint;
-NewObj : TControl;
-I : Integer;
-Begin
-
-NewObj := TideComponent(ideComplist.items[bpressed-1]).CreateMethod(TDesignerForm(Sender));
-
-if (newobj <> nil)  then
-       begin
-         if (NewOBj is TWinControl) then
-           TDesignerForm(Sender).AddDesignerWinControl(NewObj)
-           else
-           TDesignerForm(Sender).AddDesignerControl(NewObj);
-
-           ControlClick(Notebook1);  //this resets it to the mouse.
-           //add line into source for the control.
-           for i := 0 to Project1.Unitlist.Count-1 do
-               begin
-               if TUnitInfo(Project1.Unitlist.items[i]).Formname = TForm(sender).name then break;
-               end;
-            if I < Project1.Unitlist.Count then
-               Begin
-                TUnitInfo(Project1.Unitlist.items[i]).AddControlLine(NewObj.name+': '+NewObj.ClassName);
-               end;
-
-
-	end;
-
-
-end;
-*)
-
 
 
 {
@@ -1541,6 +1465,7 @@ Begin
 //otherwise we drop a control and call the CreateComponent function.
 if BPressed = 1 then
    Begin //mouse button pressed.
+
       FormEditor1.ClearSelected;
       Writeln('Clicked on the control!!!!!  Control name is '+TControl(sender).name);
       FormEditor1.AddSelected(TComponent(Sender));
@@ -1549,7 +1474,7 @@ if BPressed = 1 then
    Begin  //add a new control
      CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
                          TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),-1,-1,-1,-1));
-     TControl(CInterface.Control).Visible := True;
+     CInterface.Setpropbyname('Visible',True);//Control).Visible := True;
 
      //set the ONCLICK event so we know when the control is selected;
      TControl(CInterface.Control).OnClick := @ClickOnControl;
@@ -1642,15 +1567,15 @@ if (X >= 0) and (X <= TControl(sender).Width) and
            else
         CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
                          TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),Mouse_Down.X,Mouse_Down.Y,-1,-1));
-
-
-     TControl(CInterface.Control).Visible := True;
+ //    CInterface.Setpropbyname('Visible',True);//Control).Visible := True;
 
      //set the ONCLICK event so we know when the control is selected;
+     TControl(CInterface.Control).Visible := True;
      TControl(CInterface.Control).OnClick := @ClickOnControl;
       FormEditor1.ClearSelected;
       FormEditor1.AddSelected(TComponent(Cinterface.Control));
       ObjectInspector1.RootComponent := TForm(sender);
+      ObjectInspector1.FillComponentComboBox;
 
    end;
 //TIdeComponent(ideComplist.items[bpressed-1]).
@@ -1680,8 +1605,10 @@ begin
   if not Assigned(FormEditor1) then
   FormEditor1 := TFormEditor.Create;
   FormEditor1.SelectedComponents.Clear;
+
   CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,TForm,50,50,300,400));
   TForm(CInterface.Control).Name := 'Form1';
+  TForm(CInterface.Control).Designer := TDesigner.Create(TCustomForm(CInterface.Control));
   TForm(CInterface.Control).Show;
 
 //set the ONCLICK event so we know when a control is dropped onto the form.
@@ -1690,46 +1617,6 @@ begin
   FormEditor1.ClearSelected;
   FormEditor1.AddSelected(TComponent(CInterface.Control));
 
-end;
-
-function TForm1.CreateNewForm : TDesignerForm;
-var
-NewName : String;
-I : Integer;
-Num : Integer;
-Found : Boolean;
-Form : TDesignerForm;
-Begin
-NewName := 'TForm';
-delete(Newname,1,1);
-Found := false;
-Num := 1;
-while not found do
-  Begin
-  Found := true;
-if ControlCount > 0 then
-for i := 0 to ControlCount-1 do
-  begin
-   if Controls[i].name = (Newname+inttostr(Num)) then
-      Begin
-        inc(num);
-        Found := False;
-        break;
-      end;
-  end;
-  end;  //while
-
-  Form := TDesignerForm.Create(self);
-  Form.parent := Self;
-  Form.Name := NewName+inttostr(num);
-  Form.Position:= poDesigned;
-  Form.OnMouseUp := @DesignFormMouseUp;
-  Form.Show;
-  Form.Caption := Form.name;
-  Form.Top := Top+Height;
-  Form.Left := 150;
-  //Create lfm file
-result := Form;
 end;
 
 
@@ -2072,189 +1959,24 @@ var
   SList : TUnitInfo;
 Begin
   Assert(False, 'Trace:New Project Clicked');
-  if Project1.UnitList.Count > 0 then
-  Begin  //project already loaded
-    //save other project and such
-    Project1.UnitList.Clear;
-  end;
-
-Assert(False, 'Trace:*************************************************************************');
-  Project1.Name := 'Project1';
-  Caption := 'Lazarus - '+Project1.Name;
-  SList := TUnitInfo.Create;
-  SList.Name := 'Project1.lpr';
-  SList.FormName := '';
-  SList.Flags := pfPRoject;
-  with SList.Source do
-  Begin
-    //Add the default lines
-    Add('Program Project1;');
-    Add('');
-    Add('uses');
-    Add('  Forms,');
-//    Add('  Unit1 in ''Unit1.pp'' {Form1};');
-    Add(' Unit1;');
-    Add('');
-    Add('begin');
-    Add('  Application.Initialize;');
-    Add('  Application.CreateForm(TForm1, Form1);');
-    Add('  Application.Run;');
-    Add('end.');
-  end;
-  SList.Filename := '';
-  SList.Page := -1;
-  Project1.AddUnit(SList);
-  Assert(False, 'Trace:Project1.UnitList.count = '+inttostr(Project1.UnitList.Count));
-
-  //Create first unit, then display it.
-  SList := TUnitInfo.Create;
-  SList.Name := 'Unit1.pp';
-  SList.Form := CreateNewForm;
-  SList.Formname := SList.Form.Name;
-  SList.Flags := pfForm;
-  with SList.Source do
-  Begin
-    //Add the default lines
-    Add('unit Unit1;');
-    Add('');
-    Add('{$mode objfpc}');
-    Add('');
-    Add('interface');
-    Add('');
-    Add('uses');
-    Add('Classes, Messages, SysUtils, Graphics, Controls, Forms, Dialogs;');
-    Add('');
-    Add('type');
-    Add('  T'+SList.Formname+' = class(TForm)');
-    Add('  private');
-    Add('    { Private declarations }');
-    Add('  public');
-    Add('    { Public declarations }');
-    Add('  end;');
-    Add('');
-    Add('var');
-    Add('  '+SList.FormName+': TForm1;');
-    Add('');
-    Add('implementation');
-    Add('');
-    Add('end.');
-  end;
-
-  SList.Filename := '';
-
-  //display unit1
-  
-  //fill ViewUnits Listbox
-  ideEditor1.AddPage(SList.Name,SList.Source);
-  SList.Page := ideEditor1.Notebook1.Pageindex;
-  Project1.AddUnit(SList);
-  UpdateViewDialogs;
-Assert(False, 'Trace:*************************************************************************');
-  ideEditor1.Show;
-
 end;
 
 {------------------------------------------------------------}
 
 Procedure TForm1.mnuOpenProjectClicked(Sender : TObject);
-Var
-I : Integer;
-pName : String;
 Begin
-OpenDialog1.Filter := '*.lpr';
-OpenDialog1.Title := 'Open Project file:';
-If OpenDialog1.Execute then
-   Begin
-    if Project1.UnitList.Count > 0 then
-       Begin  //project already loaded
-        //save other project and such
-        Project1.UnitList.Clear;
-        //Clear all notebook pages
-        for I := 0 to ideEditor1.Notebook1.Pages.count-1 do
-                 IdeEditor1.DeletePage(0);
-
-       end;
-    PName := ExtractFilePath(OpenDialog1.Filename)+Copy(ExtractFileName(OpenDialog1.Filename),1,pos('.',ExtractFileName(OpenDialog1.Filename))-1);
-    if Project1.OpenProject(PName) then
-       Begin
-        Project1.Name := Copy(ExtractFileName(OpenDialog1.Filename),1,pos('.',OpenDialog1.Filename)-1);
-        Caption := 'Lazarus - '+Project1.Name;
-        UpdateViewDialogs;
-       end;
-   End;
-
 
 end;
 
 Procedure TForm1.mnuSaveProjectClicked(Sender : TObject);
-Var
-I : Integer;
-PName : String;
 Begin
-if Project1.UnitList.Count <= 0 then exit;
 
-SaveDialog1.Filter := '*.lpr';
-SaveDialog1.Filename := '*.lpr';
-SaveDialog1.Title := 'Save project as:';
-//Determine if the Savedialog is needed to save the project file
-for I := 0 to Project1.UnitList.Count-1 do
-           Begin
-     //Save each unit
-           if (TUnitInfo(Project1.UnitList.Items[I]).Flags = pfProject) and
-               (TUnitInfo(Project1.UnitList.Items[I]).filename = '') then
-             Begin
-              if SaveDialog1.Execute then
-                  Begin
-                  TUnitInfo(Project1.UnitList.Items[I]).FileName := SaveDialog1.Filename;
-                  TUnitInfo(Project1.UnitList.Items[i]).Name := Copy(ExtractFileName(SaveDialog1.Filename),1,pos('.',ExtractFileName(SaveDialog1.Filename))-1);
-                  PName := ExtractFilePath(SaveDialog1.Filename)+Copy(ExtractFileName(SaveDialog1.Filename),1,pos('.',ExtractFileName(SaveDialog1.Filename))-1);
-                  SaveDialog1.Filename := ExtractFilePath(Savedialog1.Filename)+TUnitInfo(Project1.UnitList.Items[i]).Name;
-                  Project1.Name := SaveDialog1.Filename;
-                  end
-                  else
-                  Exit;
-              break;
-              end
-              else
-           if (TUnitInfo(Project1.UnitList.Items[I]).Flags = pfProject) and
-               (TUnitInfo(Project1.UnitList.Items[I]).filename <> '') then
-                pName := ExtractFilePath(TUnitInfo(Project1.UnitList.Items[I]).filename)+Copy(ExtractFileName(TUnitInfo(Project1.UnitList.Items[I]).filename),1,pos('.',ExtractFileName(TUnitInfo(Project1.UnitList.Items[I]).filename))-1);
-             end;
-        for I := 0 to Project1.UnitList.Count-1 do
-           Begin
-           //Save each unit
-           if not(SavebyUnit(TUnitInfo(Project1.Unitlist.Items[I]))) then exit;
-           end;
-   Assert(False, 'Trace:PNAME = '+pname);
-   Project1.SaveProject(pname);
-   UpdateViewDialogs;
 end;
 
 
 Procedure TForm1.mnuBuildProjectClicked(Sender : TObject);
-Const
-  BufSize = 1024;
-Var
-  TheProgram : String;
-  Buf : Array[1..BUFSIZE] of char;
-  I,Count : longint;
-  Texts : String;
-  NUm : Integer;
-  WriteMessage : Boolean;
 Begin
-if not(messagedlg.visible) then
-MessageDlg.Show;
-Messagedlg.Clear;
 
-if Project1.UnitList.Count = 0 then Exit;  //no project loaded
-mnuSaveProjectClicked(self);
-if TUnitInfo(Project1.UnitList[0]).FileName = '' then Exit;
-MEssageDlg.Caption := 'Compiler Messages - Compiling.............';
-Application.ProcessMessages;
-
-Compiler1.Compile;
-
-MessageDlg.Caption := 'Compiler Messages';
 end;
 
 
@@ -2471,8 +2193,10 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.12  2000/11/29 21:22:35  lazarus
-  New Object Inspector code
+  Revision 1.13  2000/11/30 21:43:38  lazarus
+  Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
+  It's created in main.pp when New Form is selected.
+
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus

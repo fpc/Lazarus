@@ -159,13 +159,16 @@ PP : PPropList;
 PI : PTypeInfo;
 I  : Longint;
 Begin
-  PT:=GetTypeData(FControl.ClassInfo);
+  Name := Uppercase(name);
+  PI := FControl.ClassInfo;
+  PT:=GetTypeData(PI);
+  if PT <> nil then Writeln('PT is NOT nil') else Writeln('PT is NIL');
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
   I := -1;
   repeat
    inc(i);
-  until (PP^[i]^.Name = Name) or (i > PT^.PropCount-1);
+  until (PP^[i]^.Name = Name) or (i = PT^.PropCount-1);
 
   if PP^[i]^.Name = Name then
         Result:=PP^[i]
@@ -377,19 +380,26 @@ Function TComponentInterface.SetPropbyName(Name : String; const Value) : Boolean
 var
 PRI : PPropInfo;
 Begin
+Writeln('*************');
+Writeln('SetPropByName');
   Result := False;
-  PRI := GetPPropInfoByName(Name);
+  PRI := GetPPropInfoByName(Uppercase(Name));
+  Writeln('Back from GetPPropInfobyName');
   if PRI <> nil then
         with PRI^ do
             Begin
              if SetProc <> nil then
                 Begin  //call the procedure passing Value
+                 Writeln('Assigning the procedure');
                  MySetProc := TSetProc(SetProc^);
+                 Writeln('Calling the procedure');
                  MySetProc(Value);
                  Result := True;
                 end;
             end;
 
+Writeln('SetPropByName Exiting...');
+Writeln('*************');
 end;
 
 

@@ -261,6 +261,30 @@ begin
   if Assigned (FOnPaint) and not(Isresizing) then FOnPaint(Self);
 end;                                                                                              
 
+{------------------------------------------------------------------------------
+  Method: TCustomForm.PaintWindow
+  Params:   none
+  Returns:  nothing
+
+  Calls user handler
+ ------------------------------------------------------------------------------}
+Procedure TCustomForm.PaintWindow(DC : Hdc);
+begin
+//  FCanvas.Lock;
+   try
+    FCanvas.Handle := DC;
+      try
+       if FDesigner <> nil then FDesigner.PaintGrid else Paint;
+      finally
+      FCanvas.Handle := 0;
+      end;
+
+    finally
+//    FCanvas.Unlock;
+   end;
+
+end;
+
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.RequestAlign
@@ -283,7 +307,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm SetDesigner                                          }
 {------------------------------------------------------------------------------}
-Procedure TCustomForm.SetDesigner(Value : TDesigner);
+Procedure TCustomForm.SetDesigner(Value : TIDesigner);
 Begin
 FDesigner := Value;
 end;
@@ -782,6 +806,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/11/30 21:43:38  lazarus
+  Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
+  It's created in main.pp when New Form is selected.
+
+  Shane
+
   Revision 1.5  2000/11/21 17:33:37  lazarus
   Added TCustomForm.Notification so the TDesigner is notified of actions.
 

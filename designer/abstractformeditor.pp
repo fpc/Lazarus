@@ -66,6 +66,21 @@ or use TPropertyType
   end;
 
 
+  TIFormInterface = class
+    public
+      Function Filename            : String; virtual; abstract;
+      Function FormModified        : Boolean; virtual; abstract;
+      Function MArkModified        : Boolean; virtual; abstract;
+      Function GetFormComponent    : TIComponentInterface; virtual; abstract;
+      Function FindComponent	   : TIComponentInterface; virtual; abstract;
+      Function GetComponentfromHandle(ComponentHandle:Pointer): TIComponentInterface; virtual; abstract;
+
+      Function GetSelCount: Integer; virtual; abstract;
+      Function GetSelComponent(Index : Integer): TIComponentInterface; virtual; abstract;
+     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
+                             X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
+    end;
+
 {
   Created by Shane Miller
   This unit defines the layout for the forms editor.  The forms editor is responsible

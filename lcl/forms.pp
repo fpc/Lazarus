@@ -57,7 +57,7 @@ type
     FAutoScroll    : Boolean;
   end;
 
-  TDesigner = class;
+  TIDesigner = class;
 
     
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
@@ -71,7 +71,7 @@ type
     FActiveControl : TWinControl;
     FBorderStyle : TFormBorderStyle;
     FCanvas : TControlCanvas;
-    FDesigner : TDesigner;
+    FDesigner : TIDesigner;
     FFormStyle : TFormStyle;
     FKeyPreview: Boolean;
     FMenu : TMainMenu;
@@ -90,7 +90,7 @@ type
     procedure DoDestroy;
     Procedure SetActiveControl(Value : TWinControl);
     Procedure SetBorderStyle(value : TFORMBorderStyle);
-    Procedure SetDesigner(Value : TDesigner);
+    Procedure SetDesigner(Value : TIDesigner);
     Procedure SetMenu(value : TMainMenu);
     Procedure SetFormStyle(Value : TFormStyle);
     Procedure SetPosition(value : TPosition); 
@@ -115,6 +115,7 @@ type
     Function GetClientRect : TRect ; Override;
     Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
+    Procedure PaintWindow(dc : Hdc); override;
     Procedure RequestAlign; Override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
@@ -146,7 +147,7 @@ type
     property BorderStyle : TFormBorderStyle read FBorderStyle write SetBorderStyle default bsSizeable;
     property Canvas: TControlCanvas read GetCanvas;
     property Caption stored IsForm;
-    property Designer : TDesigner read FDesigner write SetDesigner;
+    property Designer : TIDesigner read FDesigner write SetDesigner;
     property FormState : TFormState read FFormState;
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview;
     property Menu : TMainMenu read FMenu write SetMenu;
@@ -176,6 +177,11 @@ type
 //      property WindowState;
       property OnCreate;
       property OnDestroy;
+      property OnShow;
+      property OnHide;
+      property OnPaint;
+      property OnClose;
+      property OnCloseQuery;
    end;
 
   TFormClass = class of TForm;
@@ -239,11 +245,7 @@ type
       property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
    end;
 
-  TDesigner = class(TObject)
-  private
-    FCustomForm: TCustomForm;
-    function GetIsControl: Boolean;
-    procedure SetIsControl(Value: Boolean);
+  TIDesigner = class(TObject)
   public
     function IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
       virtual; abstract;
@@ -253,9 +255,7 @@ type
     procedure PaintGrid; virtual; abstract;
     procedure ValidateRename(AComponent: TComponent;
       const CurName, NewName: string); virtual; abstract;
-    property IsControl: Boolean read GetIsControl write SetIsControl;
-    property Form: TCustomForm read FCustomForm write FCustomForm;
-  end;
+    end;
 
 
 
@@ -279,7 +279,7 @@ implementation
 
 
 uses 
-  buttons,stdctrls,interfaces;
+  buttons,stdctrls,interfaces,designer;
 
 var
   FocusMessages : Boolean; //Should set it to TRUE by defualt but fpc does not handle that yet.
@@ -321,7 +321,7 @@ end;
 {$I Customform.inc}
 {$I screen.inc}
 {$I application.inc}
-{$I designer.inc}
+
 initialization
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);

@@ -1123,8 +1123,10 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.4  2000/11/29 21:22:35  lazarus
-  New Object Inspector code
+  Revision 1.5  2000/11/30 21:43:38  lazarus
+  Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
+  It's created in main.pp when New Form is selected.
+
   Shane
 
   Revision 1.3  2000/11/27 18:52:37  lazarus

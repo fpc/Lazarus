@@ -379,9 +379,11 @@ begin
 
 //Assert(False, Format('Trace:[TControl.WndPRoc] %s --> Message = %d',[CLASSNAME, Message.msg]));
 //Assert(False, 'Trace:-----------IN TCONTROL WNDPROC----------');
-  if (csDesigning in ComponentState)
-  then begin
-
+  if (csDesigning in ComponentState) then
+  begin
+      Form := GetParentForm(Self);
+      if (Form <> nil) and (Form.Designer <> nil) and
+          Form.Designer.IsDesignMsg(Self,MEssage) then Exit;
   end
   else
   begin
@@ -712,6 +714,7 @@ procedure TControl.Notification( AComponent : TComponent; Operation : TOperation
 begin
    inherited Notification(AComponent, Operation);
    if Operation = opRemove then
+       if AComponent = PopupMenu then PopupMenu := nil;
 
 end;
 
@@ -1239,6 +1242,12 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.4  2000/11/30 21:43:38  lazarus
+  Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
+  It's created in main.pp when New Form is selected.
+
+  Shane
+
   Revision 1.3  2000/11/29 21:22:35  lazarus
   New Object Inspector code
   Shane
