@@ -2637,22 +2637,35 @@ end;
 { TViewColumnsPropertyEditor }
 
 procedure TViewColumnsPropertyEditor.Edit;
-var ColumnDlg: TColumnDlg1;
+var
+
+  ViewColumns : TViewColumns;
+  Column : TViewColumn;
+  ColumnDlg: TColumnDlg;
+  I,X        : Integer;
 begin
-  ColumnDlg:=TColumnDlg1.Create(Application);
+  ColumnDlg:=TColumnDlg.Create(Application);
   try
-    {
-      For Shane:
-        Every property of type TViewColumns can be edited by this proc.
-        The current TViewColumns instance can be found in 
-        
-          TViewColumns(GetOrdValue)
-          
-        You must somehow assign its values to the ColumnDlg and assign it back
-        on mrOk. Or u can simply work with it, so that changes are shown at once.
-    }
-    
-    ColumnDlg.ShowModal;
+    ViewColumns := TViewColumns(GetOrdValue);
+    ColumnDlg.Clear;
+    for I := 0 to ViewColumns.Count-1 do
+       Begin
+         X := ColumnDlg.Add(ViewColumns.Item[i].Caption);
+         ColumnDlg.Item[x].Width :=ViewColumns.Item[i].Width;
+         ColumnDlg.Item[x].Alignment :=ViewColumns.Item[i].Alignment;
+       end;
+       
+    if ColumnDlg.ShowModal = mrOK then
+       Begin
+         ViewColumns.Clear;
+         for I := 0 to ColumnDlg.Count-1 do
+           Begin
+             Column := TViewColumn(ColumnDlg.Item[i]);
+             X := ViewColumns.Add(Column.Caption);
+             ViewColumns.Item[x].Width := Column.Width;
+             ViewColumns.Item[x].Alignment := Column.Alignment;
+           End;
+        end;
   finally
     ColumnDlg.Free;
   end;

@@ -3,7 +3,7 @@
 constructor TViewColumn.Create;
 begin
    inherited;
-   FAlignment :=caLEft;
+   FAlignment :=caLeft;
    FCaption := '';
    FWidth := 50;
 end;

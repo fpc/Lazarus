@@ -3656,6 +3656,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.98  2002/01/03 15:31:27  lazarus
+  Added changes to propedit so the colum editor changes effect the TListView.
+  Shane
+
   Revision 1.97  2002/01/01 15:50:16  lazarus
   MG: fixed initial component aligning
 

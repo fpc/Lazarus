@@ -6,10 +6,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls, Arrow;
+  StdCtrls, Buttons, ExtCtrls;
 
 type
-  TColumnDlg1 = class(TForm)
+  TColumnDlg = class(TForm)
     Listbox1: TLISTBOX;
     Label1: TLABEL;
     Edit1: TEDIT;
@@ -26,6 +26,8 @@ type
     { private declarations }
     FItems : TList;
     FSelectedIndex : Integer;
+    function GetCount: Integer;
+    function GetItem(Index : Integer): TViewColumn;
     Procedure DisplayColumn(Value : Integer);
   protected
     procedure Button1OnClick(sender : TObject);
@@ -40,23 +42,28 @@ type
   public
     { public declarations }
     constructor Create(AOwner : TComponent); override;
-    property Items : TList read FItems write FItems;
+    procedure Clear;
+    Function  Add(S : String) : Integer;
+    property Count : Integer read GetCount;
+    property Item[Index : Integer]: TViewColumn read GetItem; default;
+//    property Items : TList read FItems write FItems;
   end;
 
-var
-  ColumnDlg1: TColumnDlg1;
 
 implementation
 
-constructor TColumnDlg1.Create(AOwner : TComponent);
+{ TColumnDlg }
+
+constructor TColumnDlg.Create(AOwner : TComponent);
 Begin
   inherited;
 //  if LazarusResources.Find(Classname)=nil then
   begin
      Caption := 'Column Editor';
      Width := 400;
-     Height := 345;
+     Height := 300;
      OnShow := @FormOnShow;
+     Position := poScreenCenter;
      Listbox1 := TListBox.Create(self);
      with Listbox1 do
        Begin
@@ -64,7 +71,7 @@ Begin
          left := 1;
          Width := 170;
          Top := 1;
-         Height := 300;
+         Height := 210;
          Visible := True;
          OnClick := @Listbox1OnClick;
        end;
@@ -203,7 +210,7 @@ Begin
 end;
 
 
-procedure TColumnDlg1.Button1OnClick(sender : TObject);
+procedure TColumnDlg.Button1OnClick(sender : TObject);
 var
   ViewColumn : TViewColumn;
 Begin
@@ -216,7 +223,7 @@ Begin
   DisplayColumn(FSelectedIndex);
 end;
 
-procedure TColumnDlg1.Listbox1OnClick(sender : TObject);
+procedure TColumnDlg.Listbox1OnClick(sender : TObject);
 var
   I : Integer;
 begin
@@ -231,7 +238,7 @@ begin
   
 end;
 
-Procedure TColumnDlg1.Edit1OnChange(Sender : TObject);
+Procedure TColumnDlg.Edit1OnChange(Sender : TObject);
 Var
   ViewColumn : TViewColumn;
 begin
@@ -242,7 +249,7 @@ begin
   Listbox1.Selected[FSelectedIndex] := True;
 end;
 
-Procedure TColumnDlg1.Edit2OnChange(Sender : TObject);
+Procedure TColumnDlg.Edit2OnChange(Sender : TObject);
 Var
   ViewColumn : TViewColumn;
 begin
@@ -259,7 +266,7 @@ begin
     end;
 end;
 
-procedure TColumnDlg1.Button2OnClick(sender : TObject);
+procedure TColumnDlg.Button2OnClick(sender : TObject);
 var
   Index : Integer;
 begin
@@ -275,7 +282,7 @@ begin
 
 end;
 
-procedure TColumnDlg1.Button3OnClick(sender : TObject);
+procedure TColumnDlg.Button3OnClick(sender : TObject);
 Var
   ViewColumn : TViewColumn;
   Index : Integer;
@@ -295,7 +302,7 @@ begin
 
 end;
 
-procedure TColumnDlg1.Button4OnClick(sender : TObject);
+procedure TColumnDlg.Button4OnClick(sender : TObject);
 Var
   ViewColumn : TViewColumn;
   Index : Integer;
@@ -317,7 +324,7 @@ begin
   DisplayColumn(Index+1);
 end;
 
-Procedure TColumnDlg1.DisplayColumn(Value : Integer);
+Procedure TColumnDlg.DisplayColumn(Value : Integer);
 Var
   ViewColumn : TViewColumn;
 begin
@@ -338,7 +345,7 @@ begin
   
 end;
 
-procedure TColumnDlg1.RadioGroup1OnClick(sender : TObject);
+procedure TColumnDlg.RadioGroup1OnClick(sender : TObject);
 Var
   ViewColumn : TViewColumn;
 begin
@@ -351,7 +358,7 @@ begin
   end;
 end;
 
-Procedure TColumnDlg1.FormOnShow(Sender : TObject);
+Procedure TColumnDlg.FormOnShow(Sender : TObject);
 var
   I : Integer;
   ViewColumn : TViewColumn;
@@ -371,6 +378,31 @@ begin
   
 end;
 
+procedure TColumnDlg.Clear;
+begin
+  FItems.Clear;
+end;
+
+function TColumnDlg.GetItem(Index : Integer): TViewColumn;
+begin
+    Result := nil;
+    if Index > FItems.Count-1 then exit;
+    Result := TViewColumn(FItems.Items[Index]);
+end;
+
+function TColumnDlg.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+Function TColumnDlg.Add(S : String) : Integer;
+var
+  ViewColumn : TViewColumn;
+begin
+    ViewColumn := TViewColumn.Create;
+    ViewColumn.Caption := S;
+    Result := FItems.Add(ViewColumn);
+end;
 
 initialization
   { $I columndlg.lrs}
