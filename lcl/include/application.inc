@@ -7,12 +7,14 @@
 {------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-
   FTerminate := False;
   FMainForm := nil;
   FMouseControl := nil;
+  FHandle := 0;
+  FList := nil;
+  FOnIdle := nil;
    
+  inherited Create(AOwner);
 end;
 
 {------------------------------------------------------------------------------}
@@ -20,7 +22,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 begin
-  if FList <> nil then FList.Free;
+  FList.Free;
   inherited Destroy;
 end;
 
@@ -238,6 +240,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/24 23:26:40  lazarus
+  MWE:
+    = moved some types to gtkdef
+    + added WinWidgetInfo
+    + added some initialization to Application.Create
+
   Revision 1.2  2000/09/10 19:58:47  lazarus
   MWE:
     * Updated makefiles for FPC release 1.0  binary units

@@ -30,76 +30,9 @@ interface
  
 uses 
   InterfaceBase, gtk, gdk, glib, sysutils, lmessages, Classes, Controls,
-  extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, LCLLinux;
- 
-
+  extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, LCLLinux, gtkdef;
 
 type
-  TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
-  TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
-  
-  PGDIRGB = ^TGDIRGB;
-  TGDIRGB = record
-    Red,
-    Green,
-    Blue: Byte;
-  end;
-
-  PGDIRawImage = ^TGDIRawImage;
-  TGDIRawImage = record
-    Height,
-    Width: Integer;
-    Depth: Byte;
-    Data: array[0..0] of TGDIRGB;
-  end;
-  
-  PGDIObject = ^TGDIObject;
-  TGDIObject = record
-    case GDIType: TGDIType of
-      gdiBitmap: (
-        GDIBitmapMaskObject: PGdkPixmap;
-        case GDIBitmapType: TGDIBitmapType of
-          gbBitmap: (GDIBitmapObject: PGdkBitmap); 
-          gbPixmap: (GDIPixmapObject: PGdkPixmap);
-          gbImage : (GDIRawImageObject: PGDIRawImage);
-      );
-      gdiBrush: ( 
-        GDIBrushColor: TGdkColor;
-        GDIBrushFill: TGdkFill;
-        GDIBrushPixMap: PGdkPixmap;
-      ); 
-      gdiFont: (
-        GDIFontObject: PGdkFont;
-        LogFont: TLogFont;  // for now font info is stored as well, later query font params
-      ); 
-      gdiPen: (
-        GDIPenColor: TGdkColor;
-        GDIPenWidth: Integer;
-        GDIPenStyle: Word;
-      ); 
-      gdiRegion: (
-      ); 
-  end;
-
-
-  // move to class ??
-  PDeviceContext = ^TDeviceContext;
-  TDeviceContext = record
-    hWnd: HWND; 
-    GC: pgdkGC;
-    Drawable: PGDKDrawable;
-    PenPos: TPoint;
-    CurrentBitmap: PGdiObject;
-    CurrentFont: PGdiObject;
-    CurrentPen: PGdiObject;
-    CurrentBrush: PGdiObject;
-    CurrentTextColor: TGdkColor;
-    CurrentBackColor: TGdkColor;
-    SavedContext: PDeviceContext; // linked list of saved DCs
-  end;
-  
-type
-
    TgtkObject = class(TInterfaceBase)
    private
       FKeyStateList: TList; // Keeps track of which keys are pressed
@@ -162,21 +95,18 @@ type
       procedure HandleEvents; override;
       procedure AppTerminate; override;
       procedure Init; override;
-      function UpdateHint(Sender: TObject): Integer; override;
+      function  UpdateHint(Sender: TObject): Integer; override;
       
       {$I gtkwinapih.inc}
 
    end;
 
-//procedure EventTrace(message : string; data : pointer);
-
 {$I gtklistslh.inc}
 
+implementation
 
-
-Implementation
-
-uses Graphics, buttons, Menus, GTKWinApiWindow, CListBox;
+uses 
+  Graphics, buttons, Menus, GTKWinApiWindow, CListBox;
 
 {$I gtklistsl.inc}
 
@@ -185,7 +115,7 @@ const
   TARGET_ENTRYS = 3;
   
 var
-  target_table : Array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
+  target_table : array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
 
   //drag icons
   TrashCan_Open : PgdkPixmap;
@@ -308,6 +238,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/01/24 23:26:40  lazarus
+  MWE:
+    = moved some types to gtkdef
+    + added WinWidgetInfo
+    + added some initialization to Application.Create
+
   Revision 1.3  2001/01/23 23:33:55  lazarus
   MWE:
     - Removed old LM_InvalidateRect

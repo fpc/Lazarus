@@ -1449,22 +1449,22 @@ const
 //unused:   Tpixdata = Array[1..20] of String;
 
 var
-   caption : string;                // the caption of "Sender"
-   StrTemp : PChar;                // same as "caption" but as PChar
-   TempWidget : PGTKWidget;        // pointer to gtk-widget (local use when neccessary)
-   p              : pointer;                // ptr to the newly created GtkWidget
-   CompStyle,                        // componentstyle (type) of GtkWidget which will be created
-   TempInt   : Integer;                // local use when neccessary
-   Adjustment: PGTKAdjustment;        // currently only used for csFixed
+   caption : string;              // the caption of "Sender"
+   StrTemp : PChar;               // same as "caption" but as PChar
+   TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+   p          : pointer;          // ptr to the newly created GtkWidget
+   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
+   TempInt   : Integer;           // local use when neccessary
+   Adjustment: PGTKAdjustment;    // currently only used for csFixed
    // - for csBitBtn
    box1      : pgtkWidget;        // currently only used for TBitBtn
    pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
    pixmapwid : pGtkWidget;        // currently only used for TBitBtn
    mask      : pGDKBitmap;        // currently only used for TBitBtn
-   style     : pgtkStyle;        // currently only used for TBitBtn
+   style     : pgtkStyle;         // currently only used for TBitBtn
    label1    : pgtkwidget;        // currently only used for TBitBtn
-   TempStr   : String;                // currently only used for TBitBtn to load default pixmap
-   pStr      : PChar;                // currently only used for TBitBtn to load default pixmap
+   TempStr   : String;            // currently only used for TBitBtn to load default pixmap
+   pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
 
 begin
    Assert(False, 'Trace:In CreateComponet');
@@ -1518,6 +1518,7 @@ begin
          style := gtk_widget_get_style(pGTKWidget(p));
 
              // is this neccessary?
+             // MWE: nope, if needeid, it should be done static
              TempStr := './images/menu.xpm';
              pStr := StrAlloc(length(TempStr) + 1);
              StrPCopy(pStr, TempStr);
@@ -1573,7 +1574,12 @@ begin
          gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
          gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));  
          gtk_widget_show(TempWidget);
+         
+         //--------------------------
+         // MWE: will be obsoleted
          SetCoreChildWidget(p, TempWidget);
+         //--------------------------
+         GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
          SetMainWidget(p, TempWidget);
       end;
 
@@ -1600,7 +1606,11 @@ begin
          end;
          gtk_widget_show(TempWidget);
 
+         //--------------------------
+         // MWE: will be obsoleted
          SetCoreChildWidget(p, TempWidget);
+         //--------------------------
+         GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
          SetMainWidget(p, TempWidget);
       end;
 
@@ -1710,7 +1720,11 @@ begin
          gtk_box_pack_start(PGtkBox(P), TempWidget, true, true, 0);
          gtk_widget_show(TempWidget);
 
+         //--------------------------
+         // MWE: will be obsoleted
          SetCoreChildWidget(p, TempWidget);
+         //--------------------------
+         GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
          SetMainWidget(p, TempWidget);
 
          case (Sender as TCustomMemo).Scrollbars of
@@ -1917,7 +1931,7 @@ begin
    else if (Sender is TCommonDialog)
      then TCommonDialog(Sender).Handle:= THandle(p);
 
-
+// MWE: next will be obsoleted by WinWidgetInfo
 //Set these for functions like GetWindowLong  Added 01/07/2000
 {}
    SetLCLObject(p, Sender);
@@ -1929,6 +1943,8 @@ begin
 
 
 {}
+//--------------------------
+
    StrDispose(StrTemp);
 
    Assert(False, 'Trace:Leaving CreateComponent');
@@ -2571,6 +2587,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.21  2001/01/24 23:26:40  lazarus
+  MWE:
+    = moved some types to gtkdef
+    + added WinWidgetInfo
+    + added some initialization to Application.Create
+
   Revision 1.20  2001/01/24 03:21:03  lazarus
   Removed gtkDrawDefualt signal function from gtkcallback.inc
   It was no longer used.

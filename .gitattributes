@@ -190,6 +190,7 @@ lcl/include/wincontrol.inc svneol=native#text/pascal
 lcl/interfacebase.pp svneol=native#text/pascal
 lcl/interfaces/gtk/dragicons.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkcallback.inc svneol=native#text/pascal
+lcl/interfaces/gtk/gtkdef.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkdragcallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkint.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtklistsl.inc svneol=native#text/pascal

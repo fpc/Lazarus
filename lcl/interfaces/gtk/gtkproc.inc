@@ -524,6 +524,40 @@ end;
 (***********************************************************************
   Widget member functions
 ************************************************************************)
+
+// ----------------------------------------------------------------------
+// Creates a WinWidget info structure for the given widget
+// Info needed by the API of a HWND (=Widget) 
+//
+// This structure obsoletes:
+//   "core-child", "fixed", "class"
+// ----------------------------------------------------------------------
+function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+begin
+  if Widget = nil
+  then begin
+    Result := nil;
+  end
+  else begin
+    New(Result);
+    FillChar(Result, SizeOf(Result^), 0);
+    gtk_object_set_data(Widget, 'widgetinfo', Result);
+  end;
+end;
+
+function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
+begin
+  if Widget = nil
+  then begin
+    Result := nil;
+  end
+  else begin
+    Result := gtk_object_get_data(Widget, 'widgetinfo');
+    if (Result = nil) and Create 
+    then Result := CreateWidgetInfo(Widget);
+  end;
+end;
+
 // ----------------------------------------------------------------------
 // the core_child widget points to the actual widget which implements the 
 // functionality we needed. It is mainly used in composed controls like
@@ -689,6 +723,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/24 23:26:40  lazarus
+  MWE:
+    = moved some types to gtkdef
+    + added WinWidgetInfo
+    + added some initialization to Application.Create
+
   Revision 1.8  2001/01/23 23:33:55  lazarus
   MWE:
     - Removed old LM_InvalidateRect

@@ -297,12 +297,18 @@ end;
 
 function gtkdestroyCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+   Mess: TLMessage;
+   Info: PWinWidgetInfo;
 begin
    Result := True;
    EventTrace('destroy', data);
    Mess.msg := LM_DESTROY;
    Result := DeliverMessage(Data, Mess) = 0;
+   
+   // NOTE: if the destroy message is posted
+   // we should post a info destroy message as well
+   Info := GetWidgetInfo(widget, False);
+   if Info <> nil then Dispose(Info);
 end;
 
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent; data : gPointer) : GBoolean; cdecl;
@@ -1092,6 +1098,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/01/24 23:26:40  lazarus
+  MWE:
+    = moved some types to gtkdef
+    + added WinWidgetInfo
+    + added some initialization to Application.Create
+
   Revision 1.17  2001/01/24 03:21:03  lazarus
   Removed gtkDrawDefualt signal function from gtkcallback.inc
   It was no longer used.

@@ -129,6 +129,9 @@ var
 
 procedure SetCaptureGrabber(AGrabber:TGrabber);
 begin
+  Write('SETCAPTUREGRABBER to.... ');
+  if AGrabber <> nil then Writeln(Format('0x%x', [AGrabber.handle])) else writeln('nil');
+
   CaptureGrabber:=AGrabber;
 end;
 
