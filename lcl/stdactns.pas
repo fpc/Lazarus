@@ -36,11 +36,7 @@ type
 
   { Hint actions }
 
-  THintAction = class(TCustomAction)
-  public
-    constructor Create(TheOwner: TComponent); override;
-  published
-    property Hint;
+  THintAction = class(TCustomHintAction)
   end;
   
 
@@ -471,13 +467,6 @@ type
   end;}
 
 implementation
-
-{ THintAction }
-
-constructor THintAction.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-end;
 
 { TEditAction }
 

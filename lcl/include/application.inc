@@ -150,10 +150,9 @@ begin
   InterfaceObject.AppBringToFront;
 end;
 
-
-{------------------------------------------------------------------------------}
-{       TApplication Messagebox     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication Messagebox
+------------------------------------------------------------------------------}
 function TApplication.MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
 begin
   if Assigned(MessageBoxFunction) then
@@ -571,6 +570,9 @@ var
 begin
   if not FShowHint then exit;
 
+  //debugln('TApplication.ShowHintWindow A OldHint="',Hint,'" NewHint="',GetShortHint(Info.Control.Hint),'"');
+  Hint := GetShortHint(Info.Control.Hint);
+
   CurHeight:=GetCursorHeightMargin;
   HintInfo.HintControl := FHintControl;
   HintInfo.HintPos := Info.MousePos;
@@ -591,7 +593,7 @@ begin
   OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
     ParentOrigin.Y - ClientOrigin.Y);
   HintInfo.CursorPos := FHintControl.ScreenToClient(Info.MousePos);
-  HintInfo.HintStr := GetShortHint(Info.Control.Hint);
+  HintInfo.HintStr := Hint;
   HintInfo.ReshowTimeout := 0;
   HintInfo.HideTimeout := FHintHidePause
                           +FHintHidePausePerChar*length(HintInfo.HintStr);
@@ -1041,14 +1043,14 @@ begin
     FOnHint(Self)
   else begin
     // Send THintAction
-    {with THintAction.Create(Self) do begin
-      Hint := Value;
+    with TCustomHintAction.Create(Self) do begin
+      Hint := FHint;
       try
         Execute;
       finally
         Free;
       end;
-    end;}
+    end;
   end;
 end;
 
@@ -1436,6 +1438,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2005/03/02 11:30:16  mattias
+  implemented updating TApplication.Hint
+
   Revision 1.105  2005/02/28 16:52:24  mattias
   TApplication now frees only its components before finalization, not itself
 

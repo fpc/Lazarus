@@ -81,6 +81,14 @@ type
   TScrollingWinControl = class;
 
 
+  { Hint actions }
+
+  TCustomHintAction = class(TCustomAction)
+  published
+    property Hint;
+  end;
+
+
   { TControlScrollBar }
 
   TScrollBarKind = (sbHorizontal, sbVertical);
