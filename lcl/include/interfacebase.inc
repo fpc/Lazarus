@@ -230,6 +230,11 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.GetCmdLineParamDescForInterface: string;
+begin
+  Result := '';
+end;
+
 function TInterfaceBase.GetCursorPos(var lpPoint: TPoint): Boolean;
 begin
   Result := False;
@@ -569,6 +574,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/05/27 17:58:41  lazarus
+  MG: added command line help
+
   Revision 1.29  2002/05/24 07:16:31  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 
