@@ -2303,9 +2303,16 @@ var
 Begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
+  
     ctIdentCompletion:
       begin
+        // add to history
+        CodeToolBoss.IdentifierHistory.Add(
+          CodeToolBoss.IdentifierList.FilteredItems[aCompletion.Position]);
         NewValue:=GetIdentCompletionValue(aCompletion,ValueType);
+        
+        // ToDo: check if there is no @ in front and no bracket behind
+        
         case ValueType of
         icvProcWithParams:
           NewValue:=NewValue+'()';
@@ -2321,9 +2328,6 @@ Begin
         end;
         ccSelection := '';
         Value:='';
-
-        // ToDo: add to history
-
       end;
 
     ctTemplateCompletion:
