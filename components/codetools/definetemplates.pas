@@ -457,6 +457,7 @@ type
     UnitName: string;
     Filename: string;
     DefaultMacroCount: integer;
+    Priority: integer;
   end;
 
 // some useful functions
@@ -2993,6 +2994,7 @@ var
       NewUnitLink, OldUnitLink: TUnitNameLink;
       i: integer;
       DefaultMacroCount: integer;
+      Priority: Integer;
     begin
       {$IFDEF VerboseFPCSrcScan}
       DebugLn('Browse ',ADirPath);
@@ -3000,6 +3002,11 @@ var
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
+      // set directory priority
+      Priority:=0;
+      if System.Pos(FPCSrcDir+PathDelim+'rtl'+PathDelim,ADirPath)>0 then
+        Priority:=1;
+      // search sources .pp,.pas
       if FindFirst(ADirPath+FileMask,faAnyFile,FileInfo)=0 then begin
         repeat
           AFilename:=FileInfo.Name;
@@ -3030,6 +3037,7 @@ var
                   NewUnitLink.UnitName:=UnitName;
                   NewUnitLink.FileName:=MacroFileName;
                   NewUnitLink.DefaultMacroCount:=DefaultMacroCount;
+                  NewUnitLink.Priority:=Priority;
                   UnitTree.Add(NewUnitLink);
                 end else begin
                   { there is another unit with this name
@@ -3049,6 +3057,9 @@ var
                      
                      For example:
                        classes.pp can be found in several places
+                       In fpc 1.0.x:
+
+                        <FPCSrcDir>/rtl/amiga/classes.pp
                         <FPCSrcDir>/fcl/amiga/classes.pp
                         <FPCSrcDir>/fcl/beos/classes.pp
                         <FPCSrcDir>/fcl/qnx/classes.pp
@@ -3062,19 +3073,54 @@ var
                         <FPCSrcDir>/fcl/classes/os2/classes.pp
                         <FPCSrcDir>/fcl/classes/win32/classes.pp
 
-                       This means, there are two possible macro filenames:
+                       In fpc 1.9.x/2.0.x:
+                        <FPCSrcDir>/rtl/win32/classes.pp
+                        <FPCSrcDir>/rtl/watcom/classes.pp
+                        <FPCSrcDir>/rtl/go32v2/classes.pp
+                        <FPCSrcDir>/rtl/netwlibc/classes.pp
+                        <FPCSrcDir>/rtl/netbsd/classes.pp
+                        <FPCSrcDir>/rtl/linux/classes.pp
+                        <FPCSrcDir>/rtl/os2/classes.pp
+                        <FPCSrcDir>/rtl/freebsd/classes.pp
+                        <FPCSrcDir>/rtl/openbsd/classes.pp
+                        <FPCSrcDir>/rtl/netware/classes.pp
+                        <FPCSrcDir>/rtl/darwin/classes.pp
+                        <FPCSrcDir>/rtl/morphos/classes.pp
+                        <FPCSrcDir>/fcl/sunos/classes.pp
+                        <FPCSrcDir>/fcl/beos/classes.pp
+                        <FPCSrcDir>/fcl/qnx/classes.pp
+                        <FPCSrcDir>/fcl/classes/win32/classes.pp
+                        <FPCSrcDir>/fcl/classes/go32v2/classes.pp
+                        <FPCSrcDir>/fcl/classes/netbsd/classes.pp
+                        <FPCSrcDir>/fcl/classes/linux/classes.pp
+                        <FPCSrcDir>/fcl/classes/os2/classes.pp
+                        <FPCSrcDir>/fcl/classes/freebsd/classes.pp
+                        <FPCSrcDir>/fcl/classes/openbsd/classes.pp
+                        <FPCSrcDir>/fcl/template/classes.pp
+                        <FPCSrcDir>/fcl/amiga/classes.pp
+
+                       This means, there are several possible macro filenames:
+                        $(#FPCSrcDir)/rtl/$(#TargetOS)/classes.pp
                         $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
                         $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
                         
-                       Which one is taken, depends on your defaults. For linux:
-                        $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
-                       will be taken.
+                       Rulez:
+                        - a filename with macros is preferred above one without
+                          This skips the templates.
+                        - A unit in the rtl is preferred before the fcl
+                        - A macro fitting better with the current settings
+                          is preferred. For example:
+                          If the current OS is linux then on fpc 1.0.x:
+                            $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
                   }
-                  if (FileNameMacroCount(OldUnitLink.Filename)=0)
-                  or (OldUnitLink.DefaultMacroCount<DefaultMacroCount) then begin
-                    // old filename has no macros -> take the macro filename
+                  if (Priority>=OldUnitLink.Priority)
+                  and ((FileNameMacroCount(OldUnitLink.Filename)=0)
+                       or (OldUnitLink.DefaultMacroCount<DefaultMacroCount))
+                  then begin
+                    // take the new macro filename
                     OldUnitLink.Filename:=MacroFileName;
                     OldUnitLink.DefaultMacroCount:=DefaultMacroCount;
+                    OldUnitLink.Priority:=Priority;
                   end;
                 end;
               end;
