@@ -4112,8 +4112,9 @@ end;
 
 function TgtkObject.CreateAPIWidget(
   AWinControl: TWinControl): PGtkWidget;
+// currently only used for csFixed
 var
-  Adjustment: PGTKAdjustment;    // currently only used for csFixed
+  Adjustment: PGTKAdjustment;
   WinWidgetInfo: PWinWidgetInfo;
 begin
   Result := GTKAPIWidget_New;
@@ -6857,6 +6858,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.325  2003/02/24 22:47:28  mattias
+  fixed setting TTreeView.ScrollBars
+
   Revision 1.324  2003/02/24 11:51:44  mattias
   combobox height can now be set, added OI item height option
 
