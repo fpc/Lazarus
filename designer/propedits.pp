@@ -2908,7 +2908,7 @@ begin
 end;
 
 { TStringsPropertyEditor }
-
+{**}
 type
   TStringsPropEditor = class(TForm)
     public
@@ -2985,6 +2985,22 @@ Count := 0;
          if (TheDialog.ShowModal = mrOK) then
             begin
             //what do I do here?
+//what do I do here?
+                StringsType := GetPropType;
+                writeln('StringsType.Name is '+StringsType^.Name);
+                with GetTypeData(StringsType)^ do
+                Begin
+                 if TheDialog.Memo1.Lines.Count > 0 then
+                    begin
+                       for I := 0 to TheDialog.Memo1.Lines.Count-1 do
+                        Begin
+                        Writeln('i= '+inttostr(i));
+                        with FPropList^[0] do
+                             SetStrProp(Instance,PropInfo,TheDialog.Memo1.Lines[i]);
+                        Writeln('i= '+inttostr(i));
+                        end;
+                    end;
+                end;
             end;
        finally
         TheDialog.Free;
@@ -3007,8 +3023,15 @@ begin
 Writeln('GETVALUES');
 //what do I do here?
   StringsType := GetPropType;
+  writeln('StringsType.Name is '+StringsType^.Name);
   with GetTypeData(StringsType)^ do
-    for I := MinValue to MaxValue do Proc(GetStrValueAt(I));
+    Begin
+    if PropCount > 0 then
+        begin
+        for I := 0 to PropCount-1 do
+          with FPropList^[i] do proc(GetStrProp(Instance,PropInfo));
+        end;
+    end;
 end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -3019,7 +3042,6 @@ end;
 
 function  TStringsPropertyEditor.GetValue: string;
 Begin
-Writeln('GETVALUE');
 Result := '(TStrings)';
 end;
 
@@ -3028,6 +3050,7 @@ var
   I: Integer;
 begin
 Writeln('SETVALUES');
+Writeln('Newvalue = '+NewValue);
 {  I := GetStrValueA(GetPropType, NewValue);
   if I < 0 then begin
     {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
