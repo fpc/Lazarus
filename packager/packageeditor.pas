@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, Graphics, LCLType, Menus, Dialogs, LazarusIDEStrConsts,
+  LResources, Graphics, LCLType, Menus, Dialogs, IDEProcs, LazarusIDEStrConsts,
   IDEOptionDefs, IDEDefs, ComponentReg, PackageDefs, AddToPackageDlg,
   PackageSystem;
   
@@ -76,16 +76,20 @@ type
     MinVersionEdit: TEdit;
     UseMaxVersionCheckBox: TCheckBox;
     MaxVersionEdit: TEdit;
+    ApplyDependencyButton: TButton;
     // statusbar
     StatusBar: TStatusBar;
     // hidden components
     ImageList: TImageList;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
+    procedure MaxVersionEditChange(Sender: TObject);
+    procedure MinVersionEditChange(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure PackageEditorFormResize(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
@@ -110,7 +114,10 @@ type
     procedure UpdateFiles;
     procedure UpdateRequiredPkgs;
     procedure UpdateSelectedFile;
+    procedure UpdateApplyDependencyButton;
     procedure UpdateStatusBar;
+    function GetCurrentDependency(var Removed: boolean): TPkgDependency;
+    function GetCurrentFile(var Removed: boolean): TPkgFile;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -222,28 +229,26 @@ end;
 
 procedure TPackageEditorForm.ReAddMenuItemClick(Sender: TObject);
 var
-  CurNode: TTreeNode;
-  NodeIndex: Integer;
   PkgFile: TPkgFile;
   AFilename: String;
   Dependency: TPkgDependency;
+  Removed: boolean;
 begin
-  CurNode:=FilesTreeView.Selected;
-  if CurNode=nil then exit;
-  NodeIndex:=CurNode.Index;
-  if CurNode.Parent<>nil then begin
-    if (CurNode.Parent=RemovedFilesNode) then begin
+  PkgFile:=GetCurrentFile(Removed);
+  if (PkgFile<>nil) then begin
+    if Removed then begin
       // re-add file
-      PkgFile:=LazPackage.RemovedFiles[NodeIndex];
       AFilename:=PkgFile.Filename;
       if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
         PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
       PkgFile.Filename:=AFilename;
       LazPackage.UnremovePkgFile(PkgFile);
       UpdateAll;
-    end else if (CurNode.Parent=RemovedRequiredNode) then begin
+    end;
+  end else begin
+    Dependency:=GetCurrentDependency(Removed);
+    if (Dependency<>nil) and (Removed) then begin
       // re-add dependency
-      Dependency:=LazPackage.RemovedRequiredPkgs[NodeIndex];
       if not CheckAddingDependency(LazPackage,Dependency) then exit;
       LazPackage.UnremoveRequiredPkg(Dependency);
       UpdateAll;
@@ -300,6 +305,16 @@ procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateSelectedFile;
   UpdateButtons;
+end;
+
+procedure TPackageEditorForm.MaxVersionEditChange(Sender: TObject);
+begin
+  UpdateApplyDependencyButton;
+end;
+
+procedure TPackageEditorForm.MinVersionEditChange(Sender: TObject);
+begin
+  UpdateApplyDependencyButton;
 end;
 
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
@@ -424,11 +439,13 @@ end;
 procedure TPackageEditorForm.UseMaxVersionCheckBoxClick(Sender: TObject);
 begin
   MaxVersionEdit.Enabled:=UseMaxVersionCheckBox.Checked;
+  UpdateApplyDependencyButton;
 end;
 
 procedure TPackageEditorForm.UseMinVersionCheckBoxClick(Sender: TObject);
 begin
   MinVersionEdit.Enabled:=UseMinVersionCheckBox.Checked;
+  UpdateApplyDependencyButton;
 end;
 
 procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
@@ -462,6 +479,11 @@ begin
 
   with MaxVersionEdit do
     SetBounds(x,y,MinVersionEdit.Width,Height);
+    
+  x:=MinVersionEdit.Left+MinVersionEdit.Width+30;
+  y:=5;
+  with ApplyDependencyButton do
+    SetBounds(x,y,150,Height);
 end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
@@ -510,6 +532,54 @@ begin
   LazPackage.Modified:=true;
   
   UpdateAll;
+end;
+
+procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+  Removed: boolean;
+  NewDependency: TPkgDependency;
+begin
+  NewDependency:=TPkgDependency.Create;
+  
+  // read minimum version
+  if UseMinVersionCheckBox.Checked then begin
+    NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
+    if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
+      MessageDlg('Invalid minimum version',
+        'The minimum version "'+MinVersionEdit.Text+'" '
+        +'is not a valid package version.'#13
+        +'(good example 1.2.3.4)',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end else begin
+    NewDependency.Flags:=NewDependency.Flags-[pdfMinVersion];
+  end;
+  
+  // read maximum version
+  if UseMaxVersionCheckBox.Checked then begin
+    NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
+    if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
+      MessageDlg('Invalid maximum version',
+        'The maximum version "'+MaxVersionEdit.Text+'" '
+        +'is not a valid package version.'#13
+        +'(good example 1.2.3.4)',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+  end else begin
+    NewDependency.Flags:=NewDependency.Flags-[pdfMaxVersion];
+  end;
+  
+  CurDependency:=GetCurrentDependency(Removed);
+  if (CurDependency=nil) or Removed then exit;
+  
+  // ToDo: consistency check
+  
+  CurDependency.Assign(NewDependency);
+  
+  NewDependency.Free;
 end;
 
 procedure TPackageEditorForm.CallRegisterProcCheckBoxClick(Sender: TObject);
@@ -681,6 +751,7 @@ begin
     Name:='CallRegisterProcCheckBox';
     Parent:=FilePropsGroupBox;
     Caption:='Register unit';
+    UseOnChange:=true;
     OnClick:=@CallRegisterProcCheckBoxClick;
   end;
 
@@ -705,6 +776,7 @@ begin
     Name:='UseMinVersionCheckBox';
     Parent:=FilePropsGroupBox;
     Caption:='Minimum Version:';
+    UseOnChange:=true;
     OnClick:=@UseMinVersionCheckBoxClick;
   end;
   
@@ -713,6 +785,7 @@ begin
     Name:='MinVersionEdit';
     Parent:=FilePropsGroupBox;
     Text:='';
+    OnChange:=@MinVersionEditChange;
   end;
 
   UseMaxVersionCheckBox:=TCheckBox.Create(Self);
@@ -720,6 +793,7 @@ begin
     Name:='UseMaxVersionCheckBox';
     Parent:=FilePropsGroupBox;
     Caption:='Maximum Version:';
+    UseOnChange:=true;
     OnClick:=@UseMaxVersionCheckBoxClick;
   end;
 
@@ -728,6 +802,15 @@ begin
     Name:='MaxVersionEdit';
     Parent:=FilePropsGroupBox;
     Text:='';
+    OnChange:=@MaxVersionEditChange;
+  end;
+  
+  ApplyDependencyButton:=TButton.Create(Self);
+  with ApplyDependencyButton do begin
+    Name:='ApplyDependencyButton';
+    Parent:=FilePropsGroupBox;
+    Caption:='Apply changes';
+    OnClick:=@ApplyDependencyButtonClick;
   end;
 
   StatusBar:=TStatusBar.Create(Self);
@@ -914,8 +997,6 @@ end;
 
 procedure TPackageEditorForm.UpdateSelectedFile;
 var
-  CurNode: TTreeNode;
-  NodeIndex: Integer;
   CurFile: TPkgFile;
   i: Integer;
   CurComponent: TPkgComponent;
@@ -923,35 +1004,19 @@ var
   CurListIndex: Integer;
   RegCompCnt: Integer;
   Dependency: TPkgDependency;
+  Removed: boolean;
 begin
-  CurNode:=FilesTreeView.Selected;
   FPlugins.Clear;
-  CurFile:=nil;
-  Dependency:=nil;
-  if CurNode<>nil then begin
-    NodeIndex:=CurNode.Index;
-    if CurNode.Parent<>nil then begin
-      if CurNode.Parent=FilesNode then begin
-        // get current file
-        CurFile:=LazPackage.Files[NodeIndex];
-      end else if (CurNode.Parent=RequiredPackagesNode) then begin
-        // get current dependency
-        Dependency:=LazPackage.RequiredPkgs[NodeIndex];
-      end else if (CurNode.Parent=RemovedFilesNode) then begin
-        // get current removed file
-        CurFile:=LazPackage.RemovedFiles[NodeIndex];
-      end else if (CurNode.Parent=RemovedRequiredNode) then begin
-        // get current removed dependency
-        Dependency:=LazPackage.RemovedRequiredPkgs[NodeIndex];
-      end;
-    end;
-  end;
-    
+  CurFile:=GetCurrentFile(Removed);
+  if CurFile=nil then
+    Dependency:=GetCurrentDependency(Removed);
+
   // make components visible
   UseMinVersionCheckBox.Visible:=Dependency<>nil;
   MinVersionEdit.Visible:=Dependency<>nil;
   UseMaxVersionCheckBox.Visible:=Dependency<>nil;
   MaxVersionEdit.Visible:=Dependency<>nil;
+  ApplyDependencyButton.Visible:=Dependency<>nil;
   CallRegisterProcCheckBox.Visible:=CurFile<>nil;
   RegisteredPluginsGroupBox.Visible:=CurFile<>nil;
 
@@ -973,7 +1038,7 @@ begin
     // put them in the RegisteredListBox
     RegisteredListBox.Items.Assign(FPlugins);
   end else if Dependency<>nil then begin
-    FilePropsGroupBox.Enabled:=true;
+    FilePropsGroupBox.Enabled:=not Removed;
     FilePropsGroupBox.Caption:='Dependency Properties';
     UseMinVersionCheckBox.Checked:=pdfMinVersion in Dependency.Flags;
     MinVersionEdit.Text:=Dependency.MinVersion.AsString;
@@ -981,9 +1046,52 @@ begin
     UseMaxVersionCheckBox.Checked:=pdfMaxVersion in Dependency.Flags;
     MaxVersionEdit.Text:=Dependency.MaxVersion.AsString;
     MaxVersionEdit.Enabled:=pdfMaxVersion in Dependency.Flags;
+    UpdateApplyDependencyButton;
   end else begin
     FilePropsGroupBox.Enabled:=false;
   end;
+end;
+
+procedure TPackageEditorForm.UpdateApplyDependencyButton;
+var
+  DepencyChanged: Boolean;
+  CurDependency: TPkgDependency;
+  AVersion: TPkgVersion;
+  Removed: boolean;
+begin
+  DepencyChanged:=false;
+  CurDependency:=GetCurrentDependency(Removed);
+  if (CurDependency<>nil) then begin
+    // check min version
+    if UseMinVersionCheckBox.Checked
+    <>(pdfMinVersion in CurDependency.Flags)
+    then begin
+      DepencyChanged:=true;
+    end;
+    if UseMinVersionCheckBox.Checked then begin
+      AVersion:=TPkgVersion.Create;
+      if AVersion.ReadString(MinVersionEdit.Text)
+      and (AVersion.Compare(CurDependency.MinVersion)<>0) then begin
+        DepencyChanged:=true;
+      end;
+      AVersion.Free;
+    end;
+    // check max version
+    if UseMaxVersionCheckBox.Checked
+    <>(pdfMaxVersion in CurDependency.Flags)
+    then begin
+      DepencyChanged:=true;
+    end;
+    if UseMaxVersionCheckBox.Checked then begin
+      AVersion:=TPkgVersion.Create;
+      if AVersion.ReadString(MaxVersionEdit.Text)
+      and (AVersion.Compare(CurDependency.MaxVersion)<>0) then begin
+        DepencyChanged:=true;
+      end;
+      AVersion.Free;
+    end;
+  end;
+  ApplyDependencyButton.Enabled:=DepencyChanged;
 end;
 
 procedure TPackageEditorForm.UpdateStatusBar;
@@ -1000,6 +1108,45 @@ begin
   if LazPackage.Modified then
     StatusText:='Modified: '+StatusText;
   StatusBar.SimpleText:=StatusText;
+end;
+
+function TPackageEditorForm.GetCurrentDependency(var Removed: boolean
+  ): TPkgDependency;
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+begin
+  Result:=nil;
+  CurNode:=FilesTreeView.Selected;
+  if (CurNode<>nil) and (CurNode.Parent<>nil) then begin
+    NodeIndex:=CurNode.Index;
+    if CurNode.Parent=RequiredPackagesNode then begin
+      Result:=LazPackage.RequiredPkgs[NodeIndex];
+      Removed:=false;
+    end else if CurNode.Parent=RemovedRequiredNode then begin
+      Result:=LazPackage.RemovedRequiredPkgs[NodeIndex];
+      Removed:=true;
+    end;
+  end;
+end;
+
+function TPackageEditorForm.GetCurrentFile(var Removed: boolean): TPkgFile;
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+begin
+  Result:=nil;
+  CurNode:=FilesTreeView.Selected;
+  if (CurNode<>nil) and (CurNode.Parent<>nil) then begin
+    NodeIndex:=CurNode.Index;
+    if CurNode.Parent=FilesNode then begin
+      Result:=LazPackage.Files[NodeIndex];
+      Removed:=false;
+    end else if CurNode.Parent=RemovedFilesNode then begin
+      Result:=LazPackage.RemovedFiles[NodeIndex];
+      Removed:=true;
+    end;
+  end;
 end;
 
 procedure TPackageEditorForm.DoSave;

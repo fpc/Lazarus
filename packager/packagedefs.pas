@@ -194,6 +194,7 @@ type
     function IsCompatible(const PkgName: string;
       const Version: TPkgVersion): boolean;
     function Compare(Dependency2: TPkgDependency): integer;
+    procedure Assign(Source: TPkgDependency);
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackage): boolean;
     function AsString: string;
@@ -429,6 +430,7 @@ procedure SortDependencyList(Dependencies: TList);
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackage(Key, Data: Pointer): integer;
 function CompareLazPackageName(Data1, Data2: Pointer): integer;
+
 
 implementation
 
@@ -799,6 +801,14 @@ begin
   Result:=MaxVersion.Compare(Dependency2.MaxVersion);
 end;
 
+procedure TPkgDependency.Assign(Source: TPkgDependency);
+begin
+  PackageName:=Source.PackageName;
+  Flags:=Source.Flags;
+  MinVersion.Assign(Source.MinVersion);
+  MaxVersion.Assign(Source.MaxVersion);
+end;
+
 procedure TPkgDependency.ConsistencyCheck;
 begin
 
@@ -878,10 +888,10 @@ var
   StartPos: Integer;
 begin
   Result:=false;
+  CurPos:=1;
   for i:=Low(ints) to High(ints) do begin
     // read int
-    StartPos:=1;
-    CurPos:=StartPos;
+    StartPos:=CurPos;
     ints[i]:=0;
     while (CurPos<=length(s)) and (s[CurPos] in ['0'..'9']) do begin
       ints[i]:=ints[i]*10+ord(s[CurPos])-ord('0');
