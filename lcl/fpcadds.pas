@@ -37,8 +37,22 @@ type
   {$IFDEF VER1_0}
   PCardinal = ^Cardinal;
   {$ENDIF}
+  
+function StrToWord(const s: string): word;
 
 implementation
+
+function StrToWord(const s: string): word;
+var
+  p: Integer;
+begin
+  Result:=0;
+  p:=1;
+  while (p<=length(s)) do begin
+    Result:=Result*10+ord(s[p])-ord('0');
+    inc(p);
+  end;
+end;
 
 end.
 
