@@ -1199,7 +1199,7 @@ Begin
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMKey.CharCode <> VK_UNKNOWN;
-      WParam := LMChar.CharCode;
+      WParam := LMKey.CharCode;
     end;
     
   else
@@ -1455,6 +1455,9 @@ end;
 
 {
   $Log$
+  Revision 1.163  2004/11/16 12:21:51  vincents
+  fix copy/paste error in key handler.
+
   Revision 1.162  2004/11/15 15:52:48  vincents
   fix crash when dropping down a owner drawn combobox
 
