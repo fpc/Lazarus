@@ -41,6 +41,9 @@ type
 const
   DefaultXPMMimeType = 'image/xpm';
 
+procedure Register;
+procedure UnRegister;
+
 implementation
 
 { TXPMImage }
@@ -95,13 +98,16 @@ begin
   Result:='xpm';
 end;
 
-initialization
+procedure Register;
+begin
   TPicture.RegisterFileFormat('xpm', 'XPM Image File', TXPMImage);
   TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultXPMMimeType),
     TXPMImage);
+end;
 
-finalization
+procedure UnRegister;
+begin
   TPicture.UnregisterGraphicClass(TXPMImage);
+end;
 
 end.
-

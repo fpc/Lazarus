@@ -42,6 +42,9 @@ type
 const
   DefaultBMPMimeType = 'image/bmp';
 
+procedure Register;
+procedure UnRegister;
+
 implementation
 
 { TBMPImage }
@@ -95,13 +98,16 @@ begin
   Result:='bmp';
 end;
 
-initialization
+procedure Register;
+begin
   TPicture.RegisterFileFormat('bmp', 'BMP Image File', TBMPImage);
   TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultBMPMimeType),
     TBMPImage);
+end;
 
-finalization
+procedure UnRegister;
+begin
   TPicture.UnregisterGraphicClass(TBMPImage);
+end;
 
 end.
-

@@ -40,6 +40,9 @@ const
   DefaultPGMMimeType = 'image/pgm';
   DefaultPBMMimeType = 'image/pbm';
 
+procedure Register;
+procedure UnRegister;
+
 implementation
 
 { TPNMImage }
@@ -64,7 +67,8 @@ begin
   Result:='ppm;pgm;pbm';
 end;
 
-initialization
+procedure Register;
+begin
   TPicture.RegisterFileFormat('ppm', 'PNM Image File', TPNMImage);
   TPicture.RegisterFileFormat('pgm', 'PNM Image File', TPNMImage);
   TPicture.RegisterFileFormat('pbm', 'PNM Image File', TPNMImage);
@@ -74,9 +78,12 @@ initialization
     TPNMImage);
   TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultPBMMimeType),
     TPNMImage);
+end;
 
-finalization
+procedure UnRegister;
+begin
   TPicture.UnregisterGraphicClass(TPNMImage);
+end;
 
 end.
 

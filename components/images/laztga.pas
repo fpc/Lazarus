@@ -41,6 +41,9 @@ type
 const
   DefaultTGAMimeType = 'image/tga';
 
+procedure Register;
+procedure UnRegister;
+
 implementation
 
 { TTGAImage }
@@ -95,13 +98,17 @@ begin
   Result:='tga';
 end;
 
-initialization
+procedure Register;
+begin
   TPicture.RegisterFileFormat('tga', 'TGA Image File', TTGAImage);
   TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultTGAMimeType),
     TTGAImage);
+end;
 
-finalization
+procedure UnRegister;
+begin
   TPicture.UnregisterGraphicClass(TTGAImage);
+end;
 
 end.
 

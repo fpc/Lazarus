@@ -2,12 +2,12 @@ object ImagesExampleForm: TImagesExampleForm
   Caption = 'Example for package "Images For Lazarus"'
   ClientHeight = 416
   ClientWidth = 425
-  PixelsPerInch = 101
+  PixelsPerInch = 95
   HorzScrollBar.Page = 426
   VertScrollBar.Page = 417
-  Left = 544
+  Left = 516
   Height = 416
-  Top = 187
+  Top = 160
   Width = 425
   object ImageGroupBox: TGroupBox
     Align = alTop

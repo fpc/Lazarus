@@ -14,6 +14,9 @@ implementation
 
 procedure Register; 
 begin
+  RegisterUnit('LazPNM', @LazPNM.Register); 
+  RegisterUnit('LazJPG', @LazJPG.Register); 
+  RegisterUnit('LazTGA', @LazTGA.Register); 
 end; 
 
 initialization

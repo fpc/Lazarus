@@ -9,8 +9,14 @@
         <UnitOutputDirectory Value="lib/"/>
       </SearchPaths>
       <CodeGeneration>
+        <UnitStyle Value="0"/>
         <Generate Value="Faster"/>
       </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -23,7 +29,7 @@
     <Files Count="7">
       <Item1>
         <Filename Value="lazpng.pas"/>
-        <UnitName Value="Lazpng"/>
+        <UnitName Value="LazPNG"/>
       </Item1>
       <Item2>
         <Filename Value="readme.txt"/>
@@ -31,11 +37,13 @@
       </Item2>
       <Item3>
         <Filename Value="lazpnm.pas"/>
-        <UnitName Value="Lazpnm"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LazPNM"/>
       </Item3>
       <Item4>
         <Filename Value="lazjpg.pas"/>
-        <UnitName Value="Lazjpg"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LazJPG"/>
       </Item4>
       <Item5>
         <Filename Value="lazbmp.pas"/>
@@ -43,6 +51,7 @@
       </Item5>
       <Item6>
         <Filename Value="laztga.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="LazTGA"/>
       </Item6>
       <Item7>

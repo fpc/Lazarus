@@ -58,10 +58,8 @@ var
 implementation
 
 uses
-{Load for all package units : LazPNG, LazPNM, LazJPG, LazBMP, LazTGA, LazXPM}
-  ImagesForLazarus,
-{Need LazJPG to use TJPGImage class}
-  LazJPG;
+{Units of package "Images For Lazarus"}
+  LazPNM, LazJPG, LazTGA, LazPNG, LazXPM, LazBMP;
 
 { TImagesExampleForm }
 
@@ -93,8 +91,6 @@ begin
 end;
 
 procedure TImagesExampleForm.LoadImageButtonClick(Sender: TObject);
-var
-  JPEG: TJPGImage;
 begin
   OpenPictureDialog1.Options:=OpenPictureDialog1.Options+[ofFileMustExist];
   if not OpenPictureDialog1.Execute then exit;
@@ -150,8 +146,6 @@ begin
 end;
 
 procedure TImagesExampleForm.SaveImageButtonClick(Sender: TObject);
-var
-  JPEG: TJPGImage;
 begin
   if Image1.Picture.Graphic=nil then begin
     MessageDlg('No image','Please open an image, before save',mtError,
@@ -193,7 +187,21 @@ begin
 end;
 
 initialization
+//  LazPNG.Register;
+//  LazXPM.Register;
+  LazBMP.Register;
+  LazPNM.Register;
+  LazTGA.Register;
+  LazJPG.Register;
   {$I mainform.lrs}
+
+finalization
+//  LazPNG.UnRegister;
+//  LazXPM.UnRegister;
+  LazBMP.UnRegister;
+  LazPNM.UnRegister;
+  LazTGA.UnRegister;
+  LazJPG.UnRegister;
 
 end.
 

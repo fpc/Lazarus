@@ -38,6 +38,9 @@ type
 const
   DefaultPNGMimeType = 'image/png';
 
+procedure Register;
+procedure UnRegister;
+
 implementation
 
 { TPNGImage }
@@ -62,12 +65,16 @@ begin
   Result:='png';
 end;
 
-initialization
+procedure Register;
+begin
   TPicture.RegisterFileFormat('png', 'PNG Image File', TPNGImage);
   TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultPNGMimeType),
     TPNGImage);
-finalization
+end;
+
+procedure UnRegister;
+begin
   TPicture.UnregisterGraphicClass(TPNGImage);
+end;
 
 end.
-

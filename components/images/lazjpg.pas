@@ -52,6 +52,9 @@ type
 const
   DefaultJPGMimeType = 'image/jpeg';
 
+procedure Register;
+procedure UnRegister;
+
 implementation
 
 { TJPGImage }
@@ -114,14 +117,18 @@ begin
   Result:='jpg;jpeg';
 end;
 
-initialization
+procedure Register;
+begin
   TPicture.RegisterFileFormat('jpg', 'JPEG Image File', TJPGImage);
   TPicture.RegisterFileFormat('jpeg', 'JPEG Image File', TJPGImage);
   TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultJPGMimeType),
     TJPGImage);
+end;
 
-finalization
+procedure UnRegister;
+begin
   TPicture.UnregisterGraphicClass(TJPGImage);
+end;
 
 end.
 
