@@ -123,6 +123,8 @@ begin
           {gdk_window_set_transient_for(MainWindow,TheWindow)};
       end;
     end;
+    
+    RealizeAccelerator(TComponent(Data),Widget);
   end;
 end;
 
@@ -1164,8 +1166,11 @@ begin
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-    if DesignOnlySignal then exit;
-    if not ControlGetsMouseUpBefore(TControl(Data)) then exit;
+    if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
+    begin
+      ReleaseMouseCapture(true);
+      exit;
+    end;
   end else begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
@@ -2500,6 +2505,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.152  2002/10/20 21:49:09  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.151  2002/10/20 19:03:56  lazarus
   AJ: minor fixes for FPC 1.1
 
