@@ -28,7 +28,7 @@ interface
 
 uses        
   // FCL
-  Classes, Windows, SysUtils, WinExt,
+  Windows, Classes, SysUtils, WinExt,
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
   ImgList, StdCtrls,
