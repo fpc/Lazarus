@@ -3293,6 +3293,14 @@ msgstr ""
 msgid "Invalid version"
 msgstr ""
 
+#: lazarusidestrconsts:ueminvertattribution
+msgid "Invert Attribution"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinvertattribution
+msgid "Invert attribution"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr ""
@@ -7101,6 +7109,10 @@ msgstr ""
 msgid "Vertical grid step size"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewanchoreditor
+msgid "View Anchor Editor"
+msgstr ""
+
 #: lazarusidestrconsts:uemviewcallstackcursor
 msgid "View Call Stack"
 msgstr ""
@@ -7155,6 +7167,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecviewanchoreditor
+msgid "View anchor editor"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints

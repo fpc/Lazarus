@@ -3293,6 +3293,14 @@ msgstr "B³êdna nazwa zmiennej"
 msgid "Invalid version"
 msgstr "Nieodpowiednia wersja"
 
+#: lazarusidestrconsts:ueminvertattribution
+msgid "Invert Attribution"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinvertattribution
+msgid "Invert attribution"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Nieregularny "
@@ -7101,6 +7109,10 @@ msgstr ""
 msgid "Vertical grid step size"
 msgstr "Odstêpy pionowe siatki"
 
+#: lazarusidestrconsts:lismenuviewanchoreditor
+msgid "View Anchor Editor"
+msgstr ""
+
 #: lazarusidestrconsts:uemviewcallstackcursor
 msgid "View Call Stack"
 msgstr "Poka¿ stos wywo³añ"
@@ -7156,6 +7168,10 @@ msgstr ""
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
 msgstr "Poka¿ modu³y"
+
+#: lazarusidestrconsts:srkmecviewanchoreditor
+msgid "View anchor editor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

@@ -3282,6 +3282,14 @@ msgstr ""
 msgid "Invalid version"
 msgstr ""
 
+#: lazarusidestrconsts:ueminvertattribution
+msgid "Invert Attribution"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinvertattribution
+msgid "Invert attribution"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr ""
@@ -7090,6 +7098,10 @@ msgstr ""
 msgid "Vertical grid step size"
 msgstr "Apupisteiden välinen etäisyys pystysuunnassa"
 
+#: lazarusidestrconsts:lismenuviewanchoreditor
+msgid "View Anchor Editor"
+msgstr ""
+
 #: lazarusidestrconsts:uemviewcallstackcursor
 msgid "View Call Stack"
 msgstr ""
@@ -7145,6 +7157,10 @@ msgstr "Näytä käännösyksikön (Unit) tietoja"
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
 msgstr "Näytä käännösyksiköt (Unit)"
+
+#: lazarusidestrconsts:srkmecviewanchoreditor
+msgid "View anchor editor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

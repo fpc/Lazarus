@@ -3282,6 +3282,14 @@ msgstr "Неправильное имя переменной"
 msgid "Invalid version"
 msgstr "Неправильная версия"
 
+#: lazarusidestrconsts:ueminvertattribution
+msgid "Invert Attribution"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinvertattribution
+msgid "Invert attribution"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Нерегулярный "
@@ -7090,6 +7098,10 @@ msgstr ""
 msgid "Vertical grid step size"
 msgstr "Вертикальный шаг сетки"
 
+#: lazarusidestrconsts:lismenuviewanchoreditor
+msgid "View Anchor Editor"
+msgstr ""
+
 #: lazarusidestrconsts:uemviewcallstackcursor
 msgid "View Call Stack"
 msgstr ""
@@ -7145,6 +7157,10 @@ msgstr "Посмотреть сведения о модуле"
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
 msgstr "Показать модули"
+
+#: lazarusidestrconsts:srkmecviewanchoreditor
+msgid "View anchor editor"
+msgstr ""
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

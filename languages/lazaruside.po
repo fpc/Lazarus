@@ -526,6 +526,10 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewanchoreditor
+msgid "View Anchor Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
 msgstr ""
@@ -3370,6 +3374,10 @@ msgstr ""
 msgid "Extract Procedure"
 msgstr ""
 
+#: lazarusidestrconsts:ueminvertattribution
+msgid "Invert Attribution"
+msgstr ""
+
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
 msgstr ""
@@ -4042,6 +4050,10 @@ msgstr ""
 msgid "View unit information"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecviewanchoreditor
+msgid "View anchor editor"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecwordcompletion
 msgid "Word completion"
 msgstr ""
@@ -4060,6 +4072,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecrenameidentifier
 msgid "Rename identifier"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinvertattribution
+msgid "Invert attribution"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecsyntaxcheck
