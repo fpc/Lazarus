@@ -128,7 +128,7 @@ begin
         LastLine:=S+LineEnding;
         if (CurText<>'') and (not (CurText[length(CurText)] in [#10,#13])) then
           LastLine:=LineEnding+LastLine;
-        FMemo.SendMsgToInterface(LM_APPENDTEXT, FMemo, PChar(LastLine))
+        CNSendMessage(LM_APPENDTEXT, FMemo, PChar(LastLine))
       end else begin
         TempStrings.Insert(Index, S);
         FMemo.Text:=TempStrings.Text;
@@ -148,8 +148,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.8  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.9  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.7  2003/04/16 06:27:12  mattias
   fixed appending text to TMemo

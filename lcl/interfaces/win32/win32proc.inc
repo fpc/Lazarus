@@ -728,12 +728,6 @@ Begin
   dec(Top,TopOffset);
 End;
 
-function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
-begin
-  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
-end;
-
-
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -742,8 +736,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.38  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.39  2004/02/23 08:19:05  micha
+  revert intf split
 
   Revision 1.37  2004/01/20 22:14:27  micha
   REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)

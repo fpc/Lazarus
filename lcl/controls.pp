@@ -930,12 +930,6 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
-  protected
-    // interface method
-    class function SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
-    {$define INTF_CONTROL}
-    {$i lclintfh.inc}
-    {$undef INTF_CONTROL}
   public
     FCompStyle: Byte;       // enables (valid) use of 'IN' operator
     Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
@@ -1674,6 +1668,7 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
 
 
+function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer) : integer;
 Function FindDragTarget(const Pos: TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 Function FindControl(Handle: hwnd): TWinControl;
@@ -1722,6 +1717,15 @@ var
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TImageList]);
+end;
+
+{------------------------------------------------------------------------------}
+{  CNSendMessage                                                               }
+{------------------------------------------------------------------------------}
+function CNSendMessage(LM_Message: integer; Sender: TObject;
+  Data: pointer): integer;
+begin
+  Result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
 
 {------------------------------------------------------------------------------
@@ -2362,8 +2366,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.180  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.181  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.179  2004/02/22 15:39:43  mattias
   fixed error handling on saving lpi file

@@ -32,7 +32,7 @@ end;
 function TCommonDialog.Execute : boolean;
 begin
   FUserChoice := mrNone;
-  SendMsgToInterface(LM_CREATE, Self, nil);
+  CNSendMessage(LM_CREATE, Self, nil);
   Result:= DoExecute;
   Close;
 end;
@@ -41,7 +41,7 @@ procedure TCommonDialog.Close;
 begin
   //writeln('TCommonDialog.Close-------------------------------------------------------',Name);
   DoClose;
-  SendMsgToInterface(LM_DESTROY, Self, nil);
+  CNSendMessage(LM_DESTROY, Self, nil);
   FHandle := 0;
 end;
 
@@ -81,7 +81,7 @@ function TCommonDialog.DoExecute : boolean;
 var CanClose: boolean;
 begin
   if Assigned(FOnShow) then FOnShow(Self);
-  SendMsgToInterface(LM_SHOWMODAL, Self, nil);
+  CNSendMessage(LM_SHOWMODAL, Self, nil);
   repeat
     Application.HandleMessage;
     if (FUserChoice <> mrNone) and (Handle<>0)
@@ -95,18 +95,11 @@ begin
   if Assigned(FOnClose) then FOnClose(Self);
 end;
 
-function TCommonDialog.SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
-begin
-  Result := InterfaceObject.GetIntfDialog.IntSendMessage3(LM_Message, Sender, Data);
-end;
-
-
-
 { =============================================================================
 
   $Log$
-  Revision 1.11  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.12  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.10  2003/09/04 10:51:30  mattias
   fixed default size of preview widget

@@ -18,7 +18,7 @@
 
 constructor TGraphic.Create;
 begin
-  inherited Create;
+  Inherited Create;
 end;
 
 procedure TGraphic.DefineProperties(Filer: TFiler);
@@ -198,11 +198,6 @@ begin
   Result:=nil;
 end;
 {$ENDIF}
-
-function TGraphic.SendIntfMessage(LM_Message: integer; Sender: TObject; Data: pointer): integer;
-begin
-  Result := InterfaceObject.GetIntfGraphic.IntSendMessage3(LM_Message, Sender, Data);
-end;
 
 procedure TGraphic.SetTransparent(Value: Boolean);
 begin

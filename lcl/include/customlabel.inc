@@ -69,7 +69,7 @@ begin
     fAlignment:= value;
     if HandleAllocated then begin
       Invalidate;
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
     end;
   end;
 end;
@@ -121,7 +121,7 @@ begin
   if FLayout <> Value then begin
     FLayout:= Value;
     if HandleAllocated then
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -135,7 +135,7 @@ procedure TCustomLabel.SetShowAccelChar(Val : boolean);
 begin
   if Val <> FShowAccelChar then begin
     FShowAccelChar:= Val;
-    if HandleAllocated then SendMsgToInterface(LM_SETLABEL, Self, PChar(Caption));
+    if HandleAllocated then CNSendMessage(LM_SETLABEL, Self, PChar(Caption));
   end;
 end;
 
@@ -151,7 +151,7 @@ begin
     fWordWrap:= value;
     if HandleAllocated then begin
       Invalidate;
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
     end;
   end;
 end;
@@ -174,8 +174,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.10  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.11  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.9  2003/02/28 19:10:25  mattias
   added new ... dialog

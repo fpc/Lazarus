@@ -181,7 +181,7 @@ End;
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
   if HandleAllocated {and (BorderStyle<>bsDialog)} then
-    SendMsgToInterface(LM_SETFORMICON,Self,Pointer(GetIconHandle));
+    CNSendMessage(LM_SETFORMICON,Self,Pointer(GetIconHandle));
 end;
 
 {------------------------------------------------------------------------------
@@ -966,7 +966,7 @@ begin
     if HandleAllocated and (not (csLoading in ComponentState)) then
     begin
       FMenu.HandleNeeded;
-      AttachMenuToWindow(FMenu);
+      InterfaceObject.AttachMenuToWindow(FMenu);
     end;
   end;
 end;
@@ -1378,7 +1378,7 @@ begin
   //writeln('TCustomForm.CreateWnd START ',ClassName);
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
-  SendMsgToInterface(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
   DC:=GetDC(Handle);
   FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
   ReleaseDC(Handle,DC);
@@ -1387,7 +1387,7 @@ begin
   if FMenu <> nil then
   begin
     FMenu.HandleNeeded;
-    AttachMenuToWindow(FMenu);
+    InterfaceObject.AttachMenuToWindow(FMenu);
   end;
 
   // activate focus if visible
@@ -1538,7 +1538,7 @@ begin
   try
     Show;
     try
-      SendMsgToInterface(LM_SHOWMODAL, Self, nil);
+      CNSendMessage(LM_SHOWMODAL, Self, nil);
       repeat
         { Delphi calls Application.HandleMessage
           But HandleMessage processes all pending events and then calls idle,
@@ -1582,8 +1582,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.127  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.128  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.126  2004/02/10 02:00:13  mattias
   activated Idle actions

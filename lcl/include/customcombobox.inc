@@ -33,7 +33,7 @@ begin
   inherited CreateWnd;
 
   // get the interface based item list
-  NewStrings:= TStrings(Pointer(SendMsgToInterface(LM_GETITEMS, Self, nil)));
+  NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // then delete internal list
   if (FItems<>NewStrings) and (FItems<>nil) then begin
     NewStrings.Assign(FItems);
@@ -44,8 +44,8 @@ begin
   ParentColor := false;
 
   if FItemIndex <> -1 then
-    SendMsgToInterface(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
-  SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+  CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 
@@ -143,7 +143,7 @@ begin
   if Val<>MaxLength then begin
     fMaxlength:=Val;
     if HandleAllocated then
-      SendMsgToInterface(LM_SETLIMITTEXT, Self, @Val);
+      CNSendMessage(LM_SETLIMITTEXT, Self, @Val);
   end;
 end;
 
@@ -157,7 +157,7 @@ end;
 function TCustomComboBox.GetMaxLength : integer;
 begin
   if HandleAllocated then
-    fMaxLength := SendMsgToInterface(LM_GETLIMITTEXT, Self, nil);
+    fMaxLength := CNSendMessage(LM_GETLIMITTEXT, Self, nil);
   Result:=fMaxLength;
 end;
 
@@ -278,7 +278,7 @@ end;
 function TCustomComboBox.GetSelStart : integer;
 begin
   if HandleAllocated then
-    fSelStart:=SendMsgToInterface(LM_GETSELSTART, Self, nil);
+    fSelStart:=CNSendMessage(LM_GETSELSTART, Self, nil);
   Result:=fSelStart;
 end;
 
@@ -293,7 +293,7 @@ procedure TCustomComboBox.SetSelStart(Val : integer);
 begin
   fSelStart:=Val;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETSELSTART, Self, Pointer(Val));
+    CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
 end;
 
 {------------------------------------------------------------------------------
@@ -306,7 +306,7 @@ end;
 function TCustomComboBox.GetSelLength : integer;
 begin
   if HandleAllocated then
-    fSelLength := SendMsgToInterface(LM_GETSELLEN, Self, nil);
+    fSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
   Result:=fSelLength;
 end;
 
@@ -321,7 +321,7 @@ procedure TCustomComboBox.SetSelLength(Val : integer);
 begin
   fSelLength:=Val;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETSELLEN, Self, Pointer(Val));
+    CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
 end;
 
 {------------------------------------------------------------------------------
@@ -351,7 +351,7 @@ begin
   if Val <> FStyle then begin
     FStyle:= Val;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -360,7 +360,7 @@ begin
   if Value <> FArrowKeysTraverseList then begin
     FArrowKeysTraverseList := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
    end;
 end;
 
@@ -678,7 +678,7 @@ end;
 function TCustomComboBox.GetItemIndex : integer;
 begin
   if HandleAllocated then
-    FItemIndex:= SendMsgToInterface(LM_GETITEMINDEX, Self, nil);
+    FItemIndex:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
   Result:=FItemIndex;
 end;
 
@@ -696,7 +696,7 @@ begin
   //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
   //  Text:=FItems[FItemIndex];
   if HandleAllocated then
-    SendMsgToInterface(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 end;
 
 {------------------------------------------------------------------------------
@@ -782,15 +782,15 @@ begin
     List:= Items;
     IsSorted:= FSorted;
   end;
-  SendMsgToInterface(LM_SORT, Self, @AMessage);
+  CNSendMessage(LM_SORT, Self, @AMessage);
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
-  Revision 1.36  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.37  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.35  2004/02/13 18:21:31  mattias
   fixed combo chane

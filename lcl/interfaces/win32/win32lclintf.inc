@@ -28,7 +28,7 @@
 
 //##apiwiz##sps##   // Do not remove
 
-procedure TWin32IntfControl.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+procedure TWin32Object.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
   Windows.DrawFrameControl(TCanvas(Canvas).Handle, 
 {$ifdef VER1_0}
@@ -59,7 +59,7 @@ end;
   Updates the constraints object (e.g. TSizeConstraints) with interface specific
   bounds.
  ------------------------------------------------------------------------------}
-function TWin32IntfControl.GetControlConstraints(Constraints: TObject): boolean;
+function TWin32Object.GetControlConstraints(Constraints: TObject): boolean;
 var
   SizeConstraints: TSizeConstraints;
   SizeRect: TRect;
@@ -89,7 +89,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TWin32IntfControl.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+function TWin32Object.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
 begin
   Result := -1;
   if ListBox is TCustomListBox then begin
@@ -107,7 +107,7 @@ end;
 
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32IntfMenuItem.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
+Function TWin32Object.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
 var
   CheckFlag: Integer;
   AMenuItem: TMenuItem;
@@ -126,7 +126,7 @@ End;
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32IntfMenuItem.MenuItemSetEnable(BaseMenuItem: TComponent): Boolean;
+Function TWin32Object.MenuItemSetEnable(BaseMenuItem: TComponent): Boolean;
 Var
   EnableFlag: Integer;
   AMenuItem: TMenuItem;
@@ -145,7 +145,7 @@ End;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TWin32IntfControl.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
+procedure TWIN32Object.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
 var
   TheStatusBar: TStatusBar;
 begin
@@ -162,7 +162,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TWin32IntfControl.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
+procedure TWIN32Object.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
 var
   TheStatusBar: TStatusBar;
 begin
@@ -179,7 +179,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TWin32IntfControl.StatusBarUpdate(StatusBar: TObject);
+procedure TWIN32Object.StatusBarUpdate(StatusBar: TObject);
 var
   TheStatusBar: TStatusBar;
   PanelIndex: integer;
@@ -200,8 +200,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.13  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.14  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.12  2004/02/22 15:47:58  micha
   fp 1.0 compatiblity

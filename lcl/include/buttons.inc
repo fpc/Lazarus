@@ -59,7 +59,7 @@ end;
 procedure TButton.DoSendBtnDefault;
 begin
   if HandleAllocated and (not (csDesigning in ComponentState)) then
-    SendMsgToInterface(LM_BTNDEFAULT_CHANGED,Self,nil);
+    CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ begin
       OldKey := NewKey;
       NewKey := Char2VK(ParseStr[AccelIndex]);
     end;
-    SendMsgToInterface(LM_SETSHORTCUT, Self, @FShortcut);
+    CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
   end;
 end;
 
@@ -173,8 +173,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.18  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.19  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.17  2004/02/22 10:43:20  mattias
   added child-parent checks

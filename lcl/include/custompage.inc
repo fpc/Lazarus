@@ -48,7 +48,7 @@ begin
   if FImageIndex=AValue then exit;
   FImageIndex:=AValue;
   if not HandleAllocated or (csLoading in ComponentState) then exit;
-  SendMsgToInterface(LM_NB_UpdateTab, Self, nil);
+  CNSendMessage(LM_NB_UpdateTab, Self, nil);
 end;
 
 function TCustomPage.GetTabVisible: Boolean;

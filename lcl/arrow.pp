@@ -113,7 +113,7 @@ end;
 
 procedure TArrow.Paint;
 begin
-  DrawArrow(Self, Canvas);
+  InterfaceObject.DrawArrow(Self, Canvas);
   inherited Paint;
 end;
 
@@ -147,7 +147,7 @@ begin
   begin
     Temp.ArrowType := FArrowType;
     Temp.ShadowType := FShadowType;
-    SendMsgToInterface(LM_SetValue,self,@Temp);
+    CNSendMessage(LM_SetValue,self,@Temp);
   end;
 end;
 

@@ -41,7 +41,7 @@ end;
 procedure TCustomEdit.CreateWnd;
 begin
   inherited CreateWnd;
-  SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+  CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ end;
 function TCustomEdit.GetSelStart : integer;
 begin
   if HandleAllocated then
-    FSelStart:= SendMsgToInterface(LM_GETSELSTART, Self, nil);
+    FSelStart:= CNSendMessage(LM_GETSELSTART, Self, nil);
   Result:= FSelStart;
 end;
 
@@ -118,7 +118,7 @@ procedure TCustomEdit.SetSelStart(Val : integer);
 begin
   FSelStart:= Val;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETSELSTART, Self, Pointer(Val));
+    CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
 end;
 
 {------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ end;
 function TCustomEdit.GetSelLength : integer;
 begin
   if HandleAllocated then
-    FSelLength := SendMsgToInterface(LM_GETSELLEN, Self, nil);
+    FSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
   Result:= FSelLength;
 end;
 
@@ -146,7 +146,7 @@ procedure TCustomEdit.SetSelLength(Val : integer);
 begin
   FSelLength:= Val;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETSELLEN, Self, Pointer(Val));
+    CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
 end;
 
 {------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ begin
   if Value=MaxLength then exit;
   FMaxLength := Value;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -264,7 +264,7 @@ begin
   if FPasswordChar=AValue then exit;
   FPasswordChar:=AValue;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -277,7 +277,7 @@ begin
   if (Val <> FEchoMode) then begin
     FEchoMode:= Val;
     if HandleAllocated then
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -291,7 +291,7 @@ begin
   if FreadOnly <> Value then begin
     FReadOnly := Value;
     if HandleAllocated then
-      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -366,8 +366,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.24  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.25  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.23  2004/02/22 10:43:20  mattias
   added child-parent checks

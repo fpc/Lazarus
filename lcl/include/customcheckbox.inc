@@ -69,7 +69,7 @@ end;
 function TCustomCheckBox.GetState : TCheckBoxState;
 begin
   if HandleAllocated
-  then SendMsgToInterface (LM_GETVALUE, Self, @fState);	// get the actual state of the component
+  then CNSendMessage (LM_GETVALUE, Self, @fState);	// get the actual state of the component
   GetState := fState;
 end;
 
@@ -168,7 +168,7 @@ end;
 procedure TCustomCheckBox.ApplyChanges;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then begin
-    SendMsgToInterface(LM_SetValue,Self,@fState);
+    CNSendMessage(LM_SetValue,Self,@fState);
   end;
 end;
 
@@ -190,7 +190,7 @@ begin
       OldKey := NewKey;
       NewKey := Char2VK(ParseStr[AccelIndex]);
     end;
-    SendMsgToInterface(LM_SETSHORTCUT, Self, @FShortcut);
+    CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
   end;
 end;
 
@@ -198,8 +198,8 @@ end;
 
 {
   $Log$
-  Revision 1.17  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.18  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.16  2004/02/05 09:45:33  mattias
   implemented Actions for TSpeedButton, TMenuItem, TCheckBox

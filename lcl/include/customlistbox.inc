@@ -57,10 +57,10 @@ begin
   inherited CreateHandle;
   //writeln('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
   // create
-  SendMsgToInterface(LM_SETBORDER, Self, nil);
+  CNSendMessage(LM_SETBORDER, Self, nil);
 
   // fetch the interface item list
-  NewStrings:= TStrings(Pointer(SendMsgToInterface(LM_GETITEMS, Self, nil)));
+  NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // copy the items (text+objects)
   NewStrings.Assign(Items);
   OldItems := FItems as TExtendedStringList;
@@ -69,7 +69,7 @@ begin
   FItems:= NewStrings;
   FCacheValid := False;
 
-  SendMsgToInterface(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 
   // copy items attributes
   cnt := OldItems.Count;
@@ -118,7 +118,7 @@ procedure TCustomListBox.SetBorderStyle(Val : TBorderStyle);
 begin
   if FBorderStyle <> Val then begin
     FBorderStyle:= Val;
-    if HandleAllocated then SendMsgToInterface(LM_SETBORDER, Self, nil);
+    if HandleAllocated then CNSendMessage(LM_SETBORDER, Self, nil);
   end;
 end;
 
@@ -132,7 +132,7 @@ begin
   if not HandleAllocated then exit;
   Msg.ExtendedSelect:= ExtendedSelect;
   Msg.MultiSelect:= MultiSelect;
-  SendMsgToInterface(LM_SETSELMODE, Self, @Msg);
+  CNSendMessage(LM_SETSELMODE, Self, @Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ end;
 function TCustomListBox.GetTopIndex: Integer;
 begin
   if HandleAllocated then
-    FTopIndex:=SendMsgToInterface(LM_LB_GETTOPINDEX, Self, nil);
+    FTopIndex:=CNSendMessage(LM_LB_GETTOPINDEX, Self, nil);
   Result := FTopIndex;
 end;
 
@@ -154,7 +154,7 @@ begin
   // will make it complete visible.
   FTopIndex:=AValue;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
-    SendMsgToInterface(LM_LB_SETTOPINDEX, Self, Pointer(FTopIndex));
+    CNSendMessage(LM_LB_SETTOPINDEX, Self, Pointer(FTopIndex));
 end;
 
 {------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ begin
     List:= FItems;
     IsSorted:= FSorted;
   end;
-  SendMsgToInterface(LM_SORT, Self, @AMessage);
+  CNSendMessage(LM_SORT, Self, @AMessage);
 end;
 
 {------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ begin
   if HandleAllocated then begin
     Msg.Index:= Index;
     Msg.Selected:= IsSelected;
-    SendMsgToInterface(LM_SETSEL, Self, @Msg);
+    CNSendMessage(LM_SETSEL, Self, @Msg);
   end;
 end;
 
@@ -265,7 +265,7 @@ function TCustomListBox.GetSelected(Index : integer) : boolean;
 begin
   CheckIndex(Index);
   if HandleAllocated then
-    Result:= (SendMsgToInterface(LM_GETSEL, Self, @Index) > 0)
+    Result:= (CNSendMessage(LM_GETSEL, Self, @Index) > 0)
   else
     Result:= PCustomListBoxItemRecord(GetCachedData(Index))^.Selected;
 end;
@@ -276,7 +276,7 @@ end;
 function TCustomListBox.GetSelCount : integer;
 begin
   if HandleAllocated then
-    Result:= SendMsgToInterface(LM_GETSELCOUNT, Self, nil)
+    Result:= CNSendMessage(LM_GETSELCOUNT, Self, nil)
   else
     Result:=0;
 end;
@@ -409,7 +409,7 @@ function TCustomListBox.GetItemIndex : integer;
 begin
 //writeln('[TCustomListBox.GetItemIndex] A ',FItems.ClassName);
   if HandleAllocated then begin
-    Result:= SendMsgToInterface(LM_GETITEMINDEX, Self, nil);
+    Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
     FItemIndex:=Result;
   end else
     Result:=FItemIndex;
@@ -424,7 +424,7 @@ begin
 //writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
   if HandleAllocated then
-    SendMsgToInterface(LM_SETITEMINDEX, Self, Pointer(Val));
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
 //writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 

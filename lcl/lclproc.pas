@@ -65,10 +65,15 @@ type
     function(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
   TOwnerFormDesignerModifiedProc =
     procedure(AComponent: TComponent);
+  TSendMessageToInterfaceFunction =
+    function(LM_Message: Integer; Sender: TObject; data: pointer): integer
+             of object;
 
 var
   SendApplicationMessageFunction: TSendApplicationMessageFunction;
   OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc;
+  // SendMsgToInterface is set in interfacebase.pp
+  SendMsgToInterface: TSendMessageToInterfaceFunction;
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);

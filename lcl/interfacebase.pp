@@ -38,53 +38,6 @@ uses
 
 type
 
-  TIntfClass = class of TIntfObject;
-  TIntfObject = class(TObject)
-  public
-    class function  IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
-    {$define INTF_OBJECT}
-    {$I lclintfh.inc}
-    {$undef INTF_OBJECT}
-  end;
-
-  TIntfControlClass = class of TIntfControl;
-  TIntfControl = class(TIntfObject)
-  public
-    {$define INTF_CONTROL}
-    {$I lclintfh.inc}
-    {$undef INTF_CONTROL}
-  end;
-
-  TIntfCanvasClass = class of TIntfCanvas;
-  TIntfCanvas = class(TIntfObject)
-  public
-
-  end;
-
-  TIntfGraphicClass = class of TIntfGraphic;
-  TIntfGraphic = class(TIntfObject)
-  public
-
-  end;
-
-  TIntfMenuClass = class of TIntfMenu;
-  TIntfMenu = class(TIntfObject)
-
-  end;
-
-  TIntfMenuItemClass = class of TIntfMenuItem;
-  TIntfMenuItem = class(TIntfObject)
-  public
-    {$define INTF_MENUITEM}
-    {$i lclintfh.inc}
-    {$undef INTF_MENUITEM}
-  end;
-
-  TIntfDialogClass = class of TIntfDialog;
-  TIntfDialog = class(TIntfObject)
-  
-  end;
-
   { TInterfaceBase }
 
   TInterfaceBase = class(TObject)
@@ -98,22 +51,16 @@ type
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
+    function  IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; virtual; abstract;
     function DestroyTimer(TimerHandle: integer): boolean; virtual; abstract;
 
-    function GetIntfControl: TIntfControlClass; virtual; abstract;
-    function GetIntfCanvas: TIntfCanvasClass; virtual; abstract;
-    function GetIntfGraphic: TIntfGraphicClass; virtual; abstract;
-    function GetIntfMenu: TIntfMenuClass; virtual; abstract;
-    function GetIntfMenuItem: TIntfMenuItemClass; virtual; abstract;
-    function GetIntfDialog: TIntfDialogClass; virtual; abstract;
-
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}
+    {$I lclintfh.inc}
     {$UNDEF IF_BASE_MEMBER}
   end;
-
 
 type
   EInterfaceException = class(Exception);
@@ -164,8 +111,8 @@ end.
 
 {
   $Log$
-  Revision 1.43  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.44  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.42  2004/02/10 00:38:43  mattias
   deactivated fpImage or fpc 1.0.10

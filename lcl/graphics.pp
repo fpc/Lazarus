@@ -43,7 +43,7 @@ uses
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
-  GraphType, GraphMath, InterfaceBase;
+  GraphType, GraphMath;
 
 type
   PColor = ^TColor;
@@ -535,6 +535,7 @@ type
     property ClipRect : TRect read GetClipRect write SetClipRect;
   end;
 
+
   { TGraphic }
 
   { The TGraphic class is an abstract base class for dealing with graphic images
@@ -591,8 +592,6 @@ type
     procedure SetWidth(Value: Integer); virtual; abstract;
     procedure SetModified(Value: Boolean);
     procedure WriteData(Stream: TStream); virtual;
-  protected
-    class function SendIntfMessage(LM_Message: integer; Sender: TObject; Data: pointer): integer;
   public
     constructor Create; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
@@ -787,8 +786,6 @@ type
     procedure RequiredState(ReqState: TCanvasState);
     procedure Changed; virtual;
     procedure Changing; virtual;
-  protected
-    class function SendIntfMessage(LM_Message: integer; Sender: TObject; Data: pointer): integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1181,6 +1178,12 @@ const
 implementation
 
 
+function SendIntfMessage(LM_Message : integer; Sender : TObject;
+  Data : pointer) : integer;
+begin
+  result := SendMsgToInterface(LM_Message, Sender, Data);
+end;
+
 const
   GraphicsFinalized: boolean = false;
 
@@ -1448,8 +1451,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.118  2004/02/22 22:52:57  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.119  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.117  2004/02/21 15:17:43  micha
   fixed: compiler doesn't know what function to call using ver 1.9.2

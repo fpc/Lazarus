@@ -81,7 +81,7 @@ begin
     {$IFDEF NOTEBOOK_DEBUG}
     writeln('[TNBPages.Put] A ',fNoteBook.Name,' ',Index,' ',S);
     {$ENDIF}
-    FNotebook.SendMsgToInterface(LM_SetLabel, fNotebook, @Msg);
+    CNSendMessage(LM_SetLabel, fNotebook, @Msg);
     {$IFDEF NOTEBOOK_DEBUG}
     writeln('[TNBPages.Put] B ',fNoteBook.Name);
     {$ENDIF}
@@ -127,7 +127,7 @@ begin
       Msg.Parent := fNotebook;
       Msg.fCompStyle := fNotebook.fCompStyle;
       Msg.Page := Index;
-      FNotebook.SendMsgToInterface(LM_REMOVEPAGE, fNotebook, @Msg);
+      CNSendMessage(LM_REMOVEPAGE, fNotebook, @Msg);
     end;
     fPageList.Delete(Index);
     APage.Parent:=nil;
@@ -238,7 +238,7 @@ begin
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Page := Index;
 
-    FNotebook.SendMsgToInterface(LM_ADDPAGE, fNotebook, @Msg);
+    CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
     Include(APage.FFlags,pfAdded);
     if fNoteBook.PageIndex = Index then
       fNoteBook.DoSendPageIndex
@@ -296,7 +296,7 @@ begin
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Page := NewIndex;
 
-    FNotebook.SendMsgToInterface(LM_MOVEPAGE, fNotebook, @Msg);
+    CNSendMessage(LM_MOVEPAGE, fNotebook, @Msg);
   end;
 
   // update PageIndex
@@ -369,7 +369,7 @@ begin
       Msg.Child := TControl(FPageList[i]);
       Msg.fCompStyle := FCompStyle;
       Msg.Page := i;
-      SendMsgToInterface(LM_ADDPAGE, Self, @Msg);
+      CNSendMessage(LM_ADDPAGE, Self, @Msg);
       Include(Page[i].FFlags,pfAdded);
     end;
   end;
@@ -408,7 +408,7 @@ end;
 function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
 begin
   if HandleAllocated then
-    Result:=GetNotebookTabIndexAtPos(Handle,ClientPos)
+    Result:=LCLIntf.GetNotebookTabIndexAtPos(Handle,ClientPos)
   else
     Result:=-1;
 end;
@@ -652,7 +652,7 @@ var i: integer;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   for i := 0 to PageCount - 1 do
-    SendMsgToInterface(LM_NB_UpdateTab, Page[i], nil);
+    CNSendMessage(LM_NB_UpdateTab, Page[i], nil);
 end;
 
 function TCustomNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
@@ -724,7 +724,7 @@ begin
   {$IFDEF NOTEBOOK_DEBUG}
   writeln('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
   {$ENDIF}
-  SendMsgToInterface(LM_SETITEMINDEX, Self, @Msg);
+  CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
   writeln('[TCustomNotebook.DoSendPageIndex] B');
   {$ENDIF}
@@ -744,7 +744,7 @@ begin
   {$IFDEF NOTEBOOK_DEBUG}
   writeln('[TCustomNotebook.DoSendShowTabs] A ',Name);
   {$ENDIF}
-  SendMsgToInterface(LM_SHOWTABS, Self, @Msg);
+  CNSendMessage(LM_SHOWTABS, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
   writeln('[TCustomNotebook.DoSendShowTabs] B ',Name);
   {$ENDIF}
@@ -761,7 +761,7 @@ begin
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
   Msg.TabPosition := @fTabPosition;
-  SendMsgToInterface(LM_SetTabPosition, Self, @Msg);
+  CNSendMessage(LM_SetTabPosition, Self, @Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -792,8 +792,8 @@ end;}
 { =============================================================================
 
   $Log$
-  Revision 1.43  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.44  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.42  2004/02/22 10:43:20  mattias
   added child-parent checks
@@ -1004,7 +1004,7 @@ end;}
   *** empty log message ***
 
   Revision 1.2  1999/09/13 03:25:00  lazarus
-  Modified to utilize the new gtkint IntSendMsgToInterface3 function.       caw
+  Modified to utilize the new gtkint IntCNSendMessage3 function.       caw
 
   Revision 1.1  1999/08/04 05:24:21  lazarus
   Added new TCustomNotebook component.        CAW

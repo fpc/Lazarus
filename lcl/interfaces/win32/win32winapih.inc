@@ -28,6 +28,7 @@ Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; Override;
 Function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; Override;
 Function BringWindowToTop(HWnd: HWND): Boolean; Override;
 
+procedure CallDefaultWndHandler(Sender: TObject; var Message); Override;
 Function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam: WParam; LParam: LParam): Integer; Override;
 Function CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam: WParam; LParam: LParam): Integer; Override;
 Function ClientToScreen(Handle: HWND; Var P: TPoint): Boolean; Override;
@@ -84,11 +85,12 @@ function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
 function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; Override;
 
-function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 Function GetActiveWindow: HWND; Override;
 Function GetCapture: HWND; Override;
 Function GetCaretPos(Var LPPoint: TPoint): Boolean; Override;
 Function GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean; Override;
+function GetClientBounds(Handle: HWND; Var Rect: TRect): Boolean; Override;
+Function GetClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; Override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 function GetCursorPos(var LPPoint: TPoint): Boolean; override;
@@ -158,6 +160,7 @@ Function SetBkMode(DC: HDC; BkMode: Integer): Integer; Override;
 Function SetCapture(Value: LongInt): LongInt; Override;
 Function SetCaretPos(X, Y: Integer): Boolean; Override;
 Function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
+Function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
 Function SetFocus(HWnd: HWND): HWND; Override;
 Function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; Override;
 Function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; Override;
@@ -187,8 +190,8 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
-  Revision 1.47  2004/02/22 22:52:59  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.48  2004/02/23 08:19:05  micha
+  revert intf split
 
   Revision 1.46  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed

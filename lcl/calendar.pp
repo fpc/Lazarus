@@ -216,7 +216,7 @@ var
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    SendMsgToInterface(LM_GETVALUE, Self, @temp);	// Get the info
+    CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
     FDate := Temp.Date;
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
@@ -238,7 +238,7 @@ begin
     {$IFDEF VerboseCalenderSetDate}
     writeln('TCalendar.SetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
-    SendMsgToInterface(LM_SETVALUE, Self, @temp);	// Get the info
+    CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
   End else begin
     FPropsChanged:=true;
   end;

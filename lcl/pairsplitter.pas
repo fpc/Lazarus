@@ -356,9 +356,7 @@ end;
 
 function TCustomPairSplitter.IsSupportedByInterface: boolean;
 begin
-  // TODO: MAJOR MEMORY LEAK HERE, NEED DESIGN FIX
-  //  CLASS METHODS
-  Result:=(Self.Create(nil)).PairSplitterGetInterfaceInfo;
+  Result:=PairSplitterGetInterfaceInfo;
 end;
 
 function TCustomPairSplitter.ChildClassAllowed(ChildClass: TClass): boolean;

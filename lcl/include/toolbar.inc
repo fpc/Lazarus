@@ -1438,7 +1438,7 @@ function TToolBar.InternalButtonCount: Integer;
 begin
 //  Result := Perform(TB_BUTTONCOUNT, 0, 0);
   if HandleAllocated then
-    Result := SendMsgToInterface(LM_TB_BUTTONCOUNT,Self,Nil)
+    Result := CNSendMessage(LM_TB_BUTTONCOUNT,Self,Nil)
   else Result := 0;
 end;
 
@@ -1767,13 +1767,13 @@ Begin
   case Message.msg of
     TB_INSERTBUTTON :
       if HandleAllocated then
-        SendMsgToInterface(LM_INSERTTOOLBUTTON,
+        CNSendMessage(LM_INSERTTOOLBUTTON,
                       TControl(TTBButton(Pointer(Message.lParam)^).dwData),
                       nil);
 
     TB_DELETEBUTTON :
       if HandleAllocated then
-        SendMsgToInterface(LM_DELETETOOLBUTTON,
+        CNSendMessage(LM_DELETETOOLBUTTON,
                       TControl(FButtons[Message.wparam]),nil);
     end;
 
@@ -2001,8 +2001,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.22  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.23  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.21  2004/02/22 15:39:43  mattias
   fixed error handling on saving lpi file

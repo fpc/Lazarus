@@ -119,7 +119,7 @@ begin
       if HandleAllocated then
       begin
 //TODO: Use "RecreateWnd;" instead of the calls below!
-	 SendMsgToInterface (LM_Destroy, Self, nil);
+	 CNSendMessage (LM_Destroy, Self, nil);
          CreateComponent (Owner);
          SetBounds (Left, Top, Width, Height);
 //         AttachSignals;
@@ -161,7 +161,7 @@ begin
    begin
       FPosition := Value;
       if HandleAllocated
-         then SendMsgToInterface (LM_SetValue, self, @FPosition);
+         then CNSendMessage (LM_SetValue, self, @FPosition);
    end;
 end;
 
@@ -297,7 +297,7 @@ end;
 procedure TTrackBar.ApplyChanges;
 begin
    if HandleAllocated
-      then SendMsgToInterface (LM_SETPROPERTIES, Self, nil);
+      then CNSendMessage (LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -311,7 +311,7 @@ procedure TTrackBar.DoChange(var msg);
 var
    tmpPosition : longint;
 begin
-   SendMsgToInterface (LM_GetValue, Self, @tmpPosition);
+   CNSendMessage (LM_GetValue, Self, @tmpPosition);
    Assert(True, 'Trace:Trackbar received a message -CHANGE');
    FPosition := TmpPosition;
    if Assigned (FOnChange)
@@ -382,8 +382,8 @@ end;
 
 {
   $Log$
-  Revision 1.8  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.9  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.7  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf

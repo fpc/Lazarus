@@ -638,7 +638,7 @@ begin
     End Else
     If (aCol=0)And(aRow=Row) Then
       // draw row headers (selected/editing/* record)
-      DbGrids.DrawArrow(Canvas, aRect, FDataLink.Dataset.State)
+      DrawArrow(Canvas, aRect, FDataLink.Dataset.State)
   End Else begin
     // Draw the other cells
     F:=FDataLink.Fields[Acol-FixedCols];

@@ -373,36 +373,6 @@ Begin
   Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
 End;
 
-function TWin32Object.GetIntfControl: TIntfControlClass;
-begin
-  Result := TWin32IntfControl;
-end;
-
-function TWin32Object.GetIntfCanvas: TIntfCanvasClass;
-begin
-  Result := TWin32IntfCanvas;
-end;
-
-function TWin32Object.GetIntfGraphic: TIntfGraphicClass;
-begin
-  Result := TWin32IntfGraphic;
-end;
-
-function TWin32Object.GetIntfMenu: TIntfMenuClass;
-begin
-  Result := TWin32IntfMenu;
-end;
-
-function TWin32Object.GetIntfMenuItem: TIntfMenuItemClass;
-begin
-  Result := TWin32IntfMenuItem;
-end;
-
-function TWin32Object.GetIntfDialog: TIntfDialogClass;
-begin
-  Result := TWin32IntfDialog;
-end;
-
 {------------------------------------------------------------------------------
   Method: TWin32Object.IntSendMessage3
   Params:  LM_Message - message to be processed
@@ -1300,7 +1270,7 @@ begin
   Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
-procedure TWin32IntfControl.AttachMenuToWindow(AMenuObject: TComponent);
+procedure TWin32Object.AttachMenuToWindow(AMenuObject: TComponent);
 var
   AMenu: TMenu;
 begin
@@ -1729,7 +1699,7 @@ End;
   Called by StatusBarPanelUpdate and StatusBarSetText
   Everything is updated except the panel width
  ------------------------------------------------------------------------------}
-procedure TWin32IntfControl.UpdateStatusBarPanel(StatusPanel: TStatusPanel);
+procedure TWin32Object.UpdateStatusBarPanel(StatusPanel: TStatusPanel);
 var
   BevelType: integer;
   Text: string;
@@ -1747,7 +1717,7 @@ begin
   Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
 end;
 
-procedure TWin32IntfControl.UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
+procedure TWin32Object.UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
 var
   Rights: PInteger;
   PanelIndex: integer;
@@ -2437,7 +2407,7 @@ Begin
     csPage:
       ShowWindow(Window, SW_HIDE);
     csStatusBar:
-      TWin32IntfControl.StatusBarUpdate(Sender);
+      StatusBarUpdate(Sender);
   end;
 
   Assert(False, 'Trace:Leaving CreateComponent');
@@ -2521,7 +2491,7 @@ Begin
     // Set page caption in tabcontrol
     SetLabel(NewPage, PChar(PageCaption));
     // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
-    TWin32IntfControl.GetIntfClientRect(Handle, R);
+    Self.GetClientRect(Handle, R);
     IntSendMessage3(LM_SETSIZE, NewPage, @R);
     // Do the page switch. The are no tabcontrol notifications so we have to
     // do the hiding and showing ourselves.
@@ -3035,8 +3005,8 @@ End;
 
 {
   $Log$
-  Revision 1.173  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.174  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.172  2004/02/21 13:35:15  micha
   fixed: name clash SetCursor (message LM_SETCURSOR), and inherited SetCursor (winapi)

@@ -231,18 +231,13 @@ Begin
   Result := False;
 end;
 
-function TMenu.SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
-begin
-  Result := InterfaceObject.GetIntfMenu.IntSendMessage3(LM_Message, Sender, Data);
-end;
-
 // included by menus.pp
 
 { =============================================================================
 
   $Log$
-  Revision 1.22  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.23  2004/02/23 08:19:04  micha
+  revert intf split
 
   Revision 1.21  2003/12/18 08:50:13  micha
   attachmenutowindow cleanup

@@ -140,7 +140,7 @@ End;
   Called by TWinControl.DefaultHandler to let the interface call some default
   functions for the message.
  ------------------------------------------------------------------------------}
-Procedure TWin32IntfControl.CallDefaultWndHandler(Sender: TObject; var Message);
+Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
 var
   PrevWndProc: pointer;
   Handle: HWND;
@@ -156,7 +156,7 @@ var
     // -> move the windoworigin
     ClientBoundRect:=Rect(0,0,0,0);
     if Sender is TWinControl then
-      if not GetIntfClientBounds(Handle,ClientBoundRect) then exit;
+      if not GetClientBounds(Handle,ClientBoundRect) then exit;
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call win32 paint handler
@@ -1225,7 +1225,7 @@ End;
 
   Retrieves the coordinates of a window's client area.
  ------------------------------------------------------------------------------}
-function TWin32IntfControl.GetIntfClientBounds(Handle: HWND; Var Rect: TRect): Boolean;
+function TWin32Object.GetClientBounds(Handle: HWND; Var Rect: TRect): Boolean;
 var
   LeftOffset, TopOffset: integer;
 begin
@@ -1244,7 +1244,7 @@ end;
   Retrieves the dimension of a window's client area.
   Left and Top are always 0,0
  ------------------------------------------------------------------------------}
-Function TWin32IntfControl.GetIntfClientRect(Handle: HWND; Var Rect: TRect): Boolean;
+Function TWin32Object.GetClientRect(Handle: HWND; Var Rect: TRect): Boolean;
 var
   OwnerObject: TObject;
   TheWinControl: TWinControl;
@@ -2561,7 +2561,7 @@ End;
   Returns: true on success
 
  ------------------------------------------------------------------------------}
-Function TWin32IntfControl.SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean;
+Function TWin32Object.SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean;
 Begin
   If ShowHideOnFocus Then
     Result := ShowCaret(Handle)
@@ -2917,8 +2917,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.100  2004/02/22 22:52:58  micha
-  split interface into non-lcl and lcl-component dependent parts
+  Revision 1.101  2004/02/23 08:19:05  micha
+  revert intf split
 
   Revision 1.99  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed
