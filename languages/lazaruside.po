@@ -3374,3 +3374,255 @@ msgstr ""
 msgid "Create Defines for Free Pascal CVS Sources"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetoolsdefsthefreepascalcvssourcedir
+msgid "The Free Pascal CVS source directory."
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefscreatedefinesforlazarusdir
+msgid "Create Defines for Lazarus Directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefslazarusdirectory
+msgid "Lazarus Directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
+msgid "The Lazarus main directory."
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
+msgid "Create Defines for %s Directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdirectory
+msgid "%s directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectorydesc
+msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefscreatedefinesforproject
+msgid "Create Defines for %s Project"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
+msgid "%s project directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefstheprojectdirectory
+msgid "The %s project directory,%swhich contains the .dpr, dpk file."
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectoryforproject
+msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsexit
+msgid "Exit"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefssaveandexit
+msgid "Save and Exit"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsexitwithoutsave
+msgid "Exit without Save"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsedit
+msgid "Edit"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsmovenodeup
+msgid "Move node up"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsmovenodedown
+msgid "Move node down"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsmovenodeonelevelup
+msgid "Move node one level up"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsmovenodeoneleveldown
+msgid "Move node one level down"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
+msgid "Insert node below"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
+msgid "Insert node as child"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdeletenode
+msgid "Delete node"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsconvertnode
+msgid "Convert node"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdefine
+msgid "Define"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdefinerecurse
+msgid "Define Recurse"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsundefine
+msgid "Undefine"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsundefinerecurse
+msgid "Undefine Recurse"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsundefineall
+msgid "Undefine All"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsblock
+msgid "Block"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
+msgid "Directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsif
+msgid "If"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsifdef
+msgid "IfDef"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsifndef
+msgid "IfNDef"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefselseif
+msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefselse
+msgid "Else"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinserttemplate
+msgid "Insert Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalprojectte
+msgid "Insert Free Pascal Project Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcompilert
+msgid "Insert Free Pascal Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcvssource
+msgid "Insert Free Pascal CVS Source Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertlazarusdirectorytem
+msgid "Insert Lazarus Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi5compilertemp
+msgid "Insert Delphi 5 Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi5directorytem
+msgid "Insert Delphi 5 Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi5projecttempl
+msgid "Insert Delphi 5 Project Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi6compilertemp
+msgid "Insert Delphi 6 Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi6directorytem
+msgid "Insert Delphi 6 Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi6projecttempl
+msgid "Insert Delphi 6 Project Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsselectednode
+msgid "Selected Node:"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
+msgid "Node and its children are only valid for this project"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsname
+msgid "Name:"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsdescription
+msgid "Description:"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsvariable
+msgid "Variable:"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsvalueastext
+msgid "Value as Text"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsvalueasfilepaths
+msgid "Value as File Paths"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsaction
+msgid "Action: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsautogenerated
+msgid "%s, auto generated"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsprojectspecific
+msgid "%s, project specific"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsnoneselected
+msgid "none selected"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinvalidparent
+msgid "Invalid parent"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsautocreatednodesreadonly
+msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinvalidparentnode
+msgid "Invalid parent node"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsparentnodecannotcontainch
+msgid "Parent node can not contain child nodes."
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsnewnode
+msgid "NewNode"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefscodetoolsdefineseditor
+msgid "CodeTools Defines Editor"
+msgstr ""
+
