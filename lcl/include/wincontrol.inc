@@ -1753,6 +1753,7 @@ begin
   end;
 
   FBrush.Free;
+  FBrush:=nil;
   //writeln('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
   //writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
@@ -2202,7 +2203,8 @@ begin
       if (Parent <> nil) then
         Parent.HandleNeeded;
     end;
-    CreateHandle;
+    if not HandleAllocated then
+      CreateHandle;
   end;
 end;
 
@@ -2455,6 +2457,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2002/10/04 14:24:15  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.89  2002/09/29 15:08:38  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
