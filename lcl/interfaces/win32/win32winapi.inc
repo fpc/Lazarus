@@ -1,4 +1,4 @@
-// included by win32int.pp
+
 
 {******************************************************************************
                          All Windows API implementations.
@@ -171,6 +171,32 @@ var
     end;
   end;
 
+  procedure CallMouseWheelHandler;
+  var
+    ScrollInfo: Windows.tagScrollInfo;
+    WParam: Windows.WParam;
+  begin
+    if not TWinControl(Sender).HandleAllocated then
+      exit;
+  
+    FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
+    ScrollInfo.cbSize := sizeof(ScrollInfo);
+    ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
+    if Windows.GetScrollInfo(TWinControl(Sender).Handle, SB_VERT, ScrollInfo) then
+    begin
+      with TLMMouseEvent(Message) do
+      begin
+	WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage) * 4) div (120 * 10));
+	if WParam > ScrollInfo.nMax then
+	  WParam := ScrollInfo.nMax;
+	if WParam < ScrollInfo.nMin then
+	  WParam := ScrollInfo.nMin;
+	WParam := SB_THUMBPOSITION or (WParam shl 16);
+      end;
+      Windows.PostMessage(TWinControl(Sender).Handle, WM_VSCROLL, WParam, HWND(nil));
+    end;
+  end;
+
   procedure DrawOwnerButton(Data: PDrawItemStruct);
   var Flags:integer; // How the button looks like (pressed or not pressed)
       BitmapHandle: HBITMAP; // Handle of the button glyph
@@ -321,6 +347,13 @@ begin
         end;
       end;
     end;
+
+    LM_MOUSEWHEEL:
+    begin
+      // provide default wheel scrolling functionality
+      CallMouseWheelHandler;
+    end;
+    
   end;
 end;
 
@@ -2941,6 +2974,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2004/04/10 17:54:52  micha
+  - added: [win32] mousewheel default handler sends scrollbar messages
+  - fixed: lmsetcursor; partial todo
+
   Revision 1.105  2004/03/25 23:08:22  vincents
   added Trace: to assert message
 

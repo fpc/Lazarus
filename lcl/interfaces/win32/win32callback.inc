@@ -123,6 +123,7 @@ Var
   LMessage: TLMessage;
   PLMsg: PLMessage;
   R: TRect;
+  P: TPoint;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
   LeftOffset, TopOffset: Integer;
   OwnerObject: TObject;
@@ -627,12 +628,29 @@ Begin
       PLMsg:=@LMMouseEvent;
       With LMMouseEvent Do
       Begin
-        Msg := LM_MOUSEWHEEL;
-        WheelDelta := SmallInt(Hi(WParam));
         X := SmallInt(Lo(LParam));
         Y := SmallInt(Hi(LParam));
-        State := GetShiftState;
-        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+	// check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
+	if GetWindowRect(Window, R) <> 0 then
+	begin
+	  if (X < R.Left) or (R.Right < X)
+	    or (Y < R.Top) or (R.Bottom < Y) then
+	  begin
+	    P.X := X;
+	    P.Y := Y;
+	    Window := TWin32WidgetSet(InterfaceObject).WindowFromPoint(P);
+	    if Window = HWND(nil) then
+	      exit;
+
+	    PostMessage(Window, WM_MOUSEWHEEL, WParam, LParam);
+	    exit;
+	  end;
+	end;
+
+	Msg := LM_MOUSEWHEEL;
+        WheelDelta := SmallInt(Hi(WParam));
+	State := GetShiftState;
+	UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -936,8 +954,6 @@ End;
  ------------------------------------------------------------------------------}
 function OverlayWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
-var
-  PS: PAINTSTRUCT;
 begin
   case Msg of
     WM_ERASEBKGND:
@@ -1110,6 +1126,10 @@ end;
 
 {
   $Log$
+  Revision 1.99  2004/04/10 17:54:52  micha
+  - added: [win32] mousewheel default handler sends scrollbar messages
+  - fixed: lmsetcursor; partial todo
+
   Revision 1.98  2004/03/05 18:37:46  micha
   prevent selection invalid page
 

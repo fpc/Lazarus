@@ -78,7 +78,7 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
-    Procedure LmSetCursor(Sender: TObject);
+    Procedure LmSetCursor(Sender: TObject; Data: Pointer);
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
@@ -224,6 +224,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2004/04/10 17:54:52  micha
+  - added: [win32] mousewheel default handler sends scrollbar messages
+  - fixed: lmsetcursor; partial todo
+
   Revision 1.75  2004/03/26 21:20:54  vincents
   Fixed line endings
 

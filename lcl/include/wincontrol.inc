@@ -2871,6 +2871,8 @@ begin
   Shift := [ssMiddle];
 
   DoMouseWheel(Shift, Message.WheelDelta, MousePos);
+
+  inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -3446,6 +3448,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.217  2004/04/10 17:54:52  micha
+  - added: [win32] mousewheel default handler sends scrollbar messages
+  - fixed: lmsetcursor; partial todo
+
   Revision 1.216  2004/04/09 23:52:01  mattias
   fixed hiding uninitialized controls
 

@@ -423,7 +423,7 @@ Begin
       ShowHide(Sender);
     End;
     LM_SETCURSOR:
-      LmSetCursor(Sender);
+      LmSetCursor(Sender, Data);
     LM_SETLABEL:
       SetLabel(Sender, Data);
     LM_GETVALUE:
@@ -1781,18 +1781,18 @@ const
 
   WARNING: Sender will be casted to TControl, CLEANUP!
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.LmSetCursor(Sender: TObject);
+Procedure TWin32WidgetSet.LmSetCursor(Sender: TObject; Data: Pointer);
 Var
   Cursor: PChar;
-  Res: HCURSOR;
 Begin
   Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Start');
   Assert(False, Format('Trace:TWin32WidgetSet.LmSetCursor - Sender --> %S', [Sender.ClassName]));
   Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Getting the cursor');
-  Cursor := LclCursorToWin32CursorMap[TControl(Sender).Cursor];
+  if Data = nil then
+    Data := Pointer(Integer(crDefault));
+  Cursor := LclCursorToWin32CursorMap[Integer(Data)];
   Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Loading the cursor');
-  Res := LoadCursor(0, Cursor);
-  Assert(False, Format('Trace:Cursor handle --> 0x%X', [Res]));
+  Windows.SetCursor(Windows.LoadCursor(0, Cursor));
   Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Exit');
 End;
 
@@ -2092,6 +2092,9 @@ Begin
       pClassName := @ClsName;
       WindowTitle := StrCaption;
       SubClassWndProc := nil;
+      if Sender is TTreeView then
+        if TTreeView(Sender).BorderStyle = bsSingle then
+	  FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     End;
     csForm:
     Begin
@@ -3024,6 +3027,10 @@ End;
 
 {
   $Log$
+  Revision 1.184  2004/04/10 17:54:52  micha
+  - added: [win32] mousewheel default handler sends scrollbar messages
+  - fixed: lmsetcursor; partial todo
+
   Revision 1.183  2004/03/18 22:26:24  mattias
   fixed grids TComboBox from Jesus
 
