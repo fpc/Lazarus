@@ -80,7 +80,6 @@ Type
   published
     Property Date : String read GetDate write SetDate;
     property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
-//    Property Date : TDate read GetDate write SetDate;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
     property Visible;
 //    property OnChange;

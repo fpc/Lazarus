@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, DB, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  MaskEdit, LMessages, ExtCtrls;
+  MaskEdit, LMessages, ExtCtrls, Calendar;
 
 Type
   { TFieldDataLink }
@@ -607,6 +607,55 @@ Type
   end;
   
 
+  { TDBCalender }
+
+  TDBCalendar = class(TCalendar)
+    FDataLink: TFieldDataLink;
+
+    procedure DataChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
+    procedure FocusRequest(Sender: TObject);
+
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+
+    function GetReadOnly: Boolean;
+    procedure SetReadOnly(Value: Boolean);
+
+    procedure SetDate(const AValue: String);
+
+    procedure SetDataField(Value: string);
+    procedure SetDataSource(Value: TDataSource);
+  protected
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property Field: TField read GetField;
+  published
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+
+    Property Date write SetDate;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+
+    property DisplaySettings;
+    property Visible;
+    property OnClick;
+    property OnMouseMove;
+    property OnMouseDown;
+    property OnDayChanged;
+    property OnMonthChanged;
+    property OnYearChanged;
+  end;
+
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
@@ -961,12 +1010,16 @@ end;
 {$Include dbcombobox.inc}
 {$Include dbmemo.inc}
 {$Include dbgroupbox.inc}
+{$Include dbcalendar.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/09/18 15:27:07  ajgenius
+  added initial TDBCalendar
+
   Revision 1.9  2003/09/18 14:36:17  ajgenius
   added TFieldDataLink.FocusControl/OnFocusRequest
 
