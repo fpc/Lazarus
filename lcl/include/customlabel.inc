@@ -115,6 +115,7 @@ begin
                    csReplicatable];
   Width := 65;
   Height := 17;
+  FShowAccelChar := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -201,6 +202,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2005/01/08 22:13:21  vincents
+  TLabel.ShowAccelChar default value is True
+
   Revision 1.20  2005/01/07 20:51:11  micha
   swap TCustomStaticText and TCustomLabel
 

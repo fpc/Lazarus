@@ -1107,7 +1107,7 @@ type
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
-    property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar;
+    property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1216,6 +1216,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.181  2005/01/08 22:13:21  vincents
+  TLabel.ShowAccelChar default value is True
+
   Revision 1.180  2005/01/07 21:53:48  micha
   label can not bew focused anymore, hide tabstop/taborder
 
