@@ -1319,7 +1319,7 @@ begin
       if (Sender is TListView) then
       begin
         ListViewAddItem(Sender);
-        ListViewChangeItem(Sender,Num);
+        ListViewChangeItem(Sender,TListView(Sender).Items.Count-1);
       end;
 
       LM_LV_SELECTITEM:
@@ -6631,6 +6631,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.290  2002/11/18 13:56:33  mattias
+  fixed TListView.Items.Add
+
   Revision 1.289  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 
