@@ -538,31 +538,30 @@ function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
 begin
   fErrorMsg:=AnException.Message;
+  fErrorTopLine:=0;
   if not ((AnException is ELinkScannerError) or (AnException is ECodeToolError))
   then begin
     FErrorMsg:=AnException.ClassName+': '+FErrorMsg;
   end;
   if (AnException is ELinkScannerError) then begin
     fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
-    if fErrorCode<>nil then
+    if fErrorCode<>nil then begin
       fErrorCode.AbsoluteToLineCol(
         ELinkScannerError(AnException).Sender.SrcPos,fErrorLine,fErrorColumn);
+    end;
   end else if (AnException is ECodeToolError) then begin
     ErrorSrcTool:=ECodeToolError(AnException).Sender;
     fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
     fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
     fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
-    fErrorTopLine:=fErrorLine;
-    if JumpCentered then begin
-      dec(fErrorTopLine,VisibleEditorLines div 2);
-      if fErrorTopLine<1 then fErrorTopLine:=1;
-    end;
   end else if FCurCodeTool<>nil then begin
     fErrorCode:=FCurCodeTool.ErrorPosition.Code;
     fErrorColumn:=FCurCodeTool.ErrorPosition.X;
     fErrorLine:=FCurCodeTool.ErrorPosition.Y;
+  end;
+  if (fErrorCode<>nil) and (fErrorTopLine<1) then begin
     fErrorTopLine:=fErrorLine;
-    if JumpCentered then begin
+    if (fErrorTopLine>0) and JumpCentered then begin
       dec(fErrorTopLine,VisibleEditorLines div 2);
       if fErrorTopLine<1 then fErrorTopLine:=1;
     end;

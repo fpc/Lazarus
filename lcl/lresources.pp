@@ -83,6 +83,14 @@ var LazarusResources:TLResourceList;
 
 implementation
 
+
+const LineEnd:ShortString={$IFDEF win32}#13+{$ENDIF}#10;
+
+{function UTF8Decode(const S: UTF8String): WideString;
+begin
+
+end;}
+
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
   ResourceName, ResourceType:AnsiString);
 { example ResStream:
@@ -91,7 +99,6 @@ procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
     +#83#187#6#78#83
   );
 }
-const LineEnd:ShortString={$IFDEF win32}#13+{$ENDIF}#10;
 var s, Indent: ShortString;
   p, x: integer;
   c, h: char;
@@ -405,12 +412,391 @@ begin
   Add(Name,ValueType,[Value]);
 end;
 
+//------------------------------------------------------------------------------
+// Delphi object streams
+
+type
+  TDelphiValueType = (dvaNull, dvaList, dvaInt8, dvaInt16, dvaInt32, dvaExtended,
+    dvaString, dvaIdent, dvaFalse, dvaTrue, dvaBinary, dvaSet, dvaLString,
+    dvaNil, dvaCollection, dvaSingle, dvaCurrency, dvaDate, dvaWString,
+    dvaInt64, dvaUTF8String);
+    
+  UTF8String = ansistring;
+
+  TDelphiReader = class
+  private
+    FStream: TStream;
+  protected
+    procedure SkipBytes(Count: Integer);
+    procedure SkipSetBody;
+    procedure SkipProperty;
+  public
+    constructor Create(Stream: TStream);
+    procedure ReadSignature;
+    procedure Read(var Buf; Count: Longint);
+    function ReadInteger: Longint;
+    function ReadValue: TDelphiValueType;
+    function NextValue: TDelphiValueType;
+    function ReadStr: string;
+    function EndOfList: Boolean;
+    procedure SkipValue;
+    procedure CheckValue(Value: TDelphiValueType);
+    procedure ReadListEnd;
+    procedure ReadPrefix(var Flags: TFilerFlags; var AChildPos: Integer); virtual;
+    function ReadFloat: Extended;
+    function ReadSingle: Single;
+    function ReadCurrency: Currency;
+    function ReadDate: TDateTime;
+    function ReadString: string;
+    //function ReadWideString: WideString;
+    function ReadInt64: Int64;
+    function ReadIdent: string;
+  end;
+
+  TDelphiWriter = class
+  private
+    FStream: TStream;
+  public
+    constructor Create(Stream: TStream);
+    procedure Write(const Buf; Count: Longint);
+  end;
+
+{ TDelphiReader }
+
+procedure ReadError(Msg: string);
+begin
+  raise EReadError.Create(Msg);
+end;
+
+procedure PropValueError;
+begin
+  ReadError('Invalid property value' {@SInvalidPropertyValue});
+end;
+
+procedure PropertyNotFound(const Name: string);
+begin
+  raise EReadError.CreateFmt('Property %s does not exist' {@SUnknownProperty},
+                             [Name]);
+end;
+
+procedure TDelphiReader.SkipBytes(Count: Integer);
+begin
+  FStream.Position:=FStream.Position+Count;
+end;
+
+procedure TDelphiReader.SkipSetBody;
+begin
+  while ReadStr <> '' do ;
+end;
+
+procedure TDelphiReader.SkipProperty;
+begin
+  ReadStr; { Skips property name }
+  SkipValue;
+end;
+
+constructor TDelphiReader.Create(Stream: TStream);
+begin
+  FStream:=Stream;
+end;
+
+procedure TDelphiReader.ReadSignature;
+var
+  Signature: Longint;
+begin
+  Read(Signature, SizeOf(Signature));
+  if Signature <> Longint(FilerSignature) then
+    ReadError('Invalid stream format'{@SInvalidImage});
+end;
+
+procedure TDelphiReader.Read(var Buf; Count: Longint);
+begin
+  FStream.Read(Buf,Count);
+end;
+
+function TDelphiReader.ReadInteger: Longint;
+var
+  S: Shortint;
+  I: Smallint;
+begin
+  case ReadValue of
+    dvaInt8:
+      begin
+        Read(S, SizeOf(Shortint));
+        Result := S;
+      end;
+    dvaInt16:
+      begin
+        Read(I, SizeOf(I));
+        Result := I;
+      end;
+    dvaInt32:
+      Read(Result, SizeOf(Result));
+  else
+    PropValueError;
+  end;
+end;
+
+function TDelphiReader.ReadValue: TDelphiValueType;
+var b: byte;
+begin
+  Read(b,1);
+  Result:=TDelphiValueType(b);
+end;
+
+function TDelphiReader.NextValue: TDelphiValueType;
+begin
+  Result := ReadValue;
+  FStream.Position:=FStream.Position-1;
+end;
+
+function TDelphiReader.ReadStr: string;
+var
+  L: Byte;
+begin
+  Read(L, SizeOf(Byte));
+  SetLength(Result, L);
+  if L>0 then
+    Read(Result[1], L);
+end;
+
+function TDelphiReader.EndOfList: Boolean;
+begin
+  Result := (ReadValue = dvaNull);
+  FStream.Position:=FStream.Position-1;
+end;
+
+procedure TDelphiReader.SkipValue;
+
+  procedure SkipList;
+  begin
+    while not EndOfList do SkipValue;
+    ReadListEnd;
+  end;
+
+  procedure SkipBinary(BytesPerUnit: Integer);
+  var
+    Count: Longint;
+  begin
+    Read(Count, SizeOf(Count));
+    SkipBytes(Count * BytesPerUnit);
+  end;
+
+  procedure SkipCollection;
+  begin
+    while not EndOfList do
+    begin
+      if NextValue in [dvaInt8, dvaInt16, dvaInt32] then SkipValue;
+      SkipBytes(1);
+      while not EndOfList do SkipProperty;
+      ReadListEnd;
+    end;
+    ReadListEnd;
+  end;
+
+begin
+  case ReadValue of
+    dvaNull: { no value field, just an identifier };
+    dvaList: SkipList;
+    dvaInt8: SkipBytes(SizeOf(Byte));
+    dvaInt16: SkipBytes(SizeOf(Word));
+    dvaInt32: SkipBytes(SizeOf(LongInt));
+    dvaExtended: SkipBytes(SizeOf(Extended));
+    dvaString, dvaIdent: ReadStr;
+    dvaFalse, dvaTrue: { no value field, just an identifier };
+    dvaBinary: SkipBinary(1);
+    dvaSet: SkipSetBody;
+    dvaLString: SkipBinary(1);
+    dvaCollection: SkipCollection;
+    dvaSingle: SkipBytes(Sizeof(Single));
+    dvaCurrency: SkipBytes(SizeOf(Currency));
+    dvaDate: SkipBytes(Sizeof(TDateTime));
+    dvaWString: SkipBinary(Sizeof(WideChar));
+    dvaInt64: SkipBytes(Sizeof(Int64));
+    dvaUTF8String: SkipBinary(1);
+  end;
+end;
+
+procedure TDelphiReader.CheckValue(Value: TDelphiValueType);
+begin
+  if ReadValue <> Value then
+  begin
+    FStream.Position:=FStream.Position-1;
+    SkipValue;
+    PropValueError;
+  end;
+end;
+
+procedure TDelphiReader.ReadListEnd;
+begin
+  CheckValue(dvaNull);
+end;
+
+procedure TDelphiReader.ReadPrefix(var Flags: TFilerFlags;
+  var AChildPos: Integer);
+var
+  Prefix: Byte;
+begin
+  Flags := [];
+  if Byte(NextValue) and $F0 = $F0 then
+  begin
+    Prefix := Byte(ReadValue);
+    if (Prefix and $01)>0 then
+      Include(Flags,ffInherited);
+    if (Prefix and $02)>0 then
+      Include(Flags,ffChildPos);
+    if (Prefix and $04)>0 then
+      Include(Flags,ffInline);
+    if ffChildPos in Flags then AChildPos := ReadInteger;
+  end;
+end;
+
+function TDelphiReader.ReadFloat: Extended;
+begin
+  if ReadValue = dvaExtended then
+    Read(Result, SizeOf(Result))
+  else begin
+    FStream.Position:=FStream.Position-1;
+    Result := ReadInteger;
+  end;
+end;
+
+function TDelphiReader.ReadSingle: Single;
+begin
+  if ReadValue = dvaSingle then
+    Read(Result, SizeOf(Result))
+  else begin
+    FStream.Position:=FStream.Position-1;
+    Result := ReadInteger;
+  end;
+end;
+
+function TDelphiReader.ReadCurrency: Currency;
+begin
+  if ReadValue = dvaCurrency then
+    Read(Result, SizeOf(Result))
+  else begin
+    FStream.Position:=FStream.Position-1;
+    Result := ReadInteger;
+  end;
+end;
+
+function TDelphiReader.ReadDate: TDateTime;
+begin
+  if ReadValue = dvaDate then
+    Read(Result, SizeOf(Result))
+  else begin
+    FStream.Position:=FStream.Position-1;
+    Result := ReadInteger;
+  end;
+end;
+
+function TDelphiReader.ReadString: string;
+var
+  L: Integer;
+begin
+  if NextValue in [dvaWString, dvaUTF8String] then begin
+    ReadError('TDelphiReader.ReadString: not implemented yet: NextValue is a wide or utf8 string');
+    //Result := ReadWideString;
+  end else
+  begin
+    L := 0;
+    case ReadValue of
+      dvaString:
+        Read(L, SizeOf(Byte));
+      dvaLString:
+        Read(L, SizeOf(Integer));
+    else
+      PropValueError;
+    end;
+    SetLength(Result, L);
+    Read(Pointer(Result)^, L);
+  end;
+end;
+
+{function TDelphiReader.ReadWideString: WideString;
+var
+  L: Integer;
+  Temp: UTF8String;
+begin
+  if NextValue in [dvaString, dvaLString] then
+    Result := ReadString
+  else
+  begin
+    L := 0;
+    case ReadValue of
+      dvaWString:
+        begin
+          Read(L, SizeOf(Integer));
+          SetLength(Result, L);
+          Read(Pointer(Result)^, L * 2);
+        end;
+      dvaUtf8String:
+        begin
+          Read(L, SizeOf(Integer));
+          SetLength(Temp, L);
+          Read(Pointer(Temp)^, L);
+          Result := Utf8Decode(Temp);
+        end;
+    else
+      PropValueError;
+    end;
+  end;
+end;}
+
+function TDelphiReader.ReadInt64: Int64;
+begin
+  if NextValue = dvaInt64 then
+  begin
+    ReadValue;
+    Read(Result, Sizeof(Result));
+  end
+  else
+    Result := ReadInteger;
+end;
+
+function TDelphiReader.ReadIdent: string;
+var
+  L: Byte;
+begin
+  case ReadValue of
+    dvaIdent:
+      begin
+        Read(L, SizeOf(Byte));
+        SetLength(Result, L);
+        Read(Result[1], L);
+      end;
+    dvaFalse:
+      Result := 'False';
+    dvaTrue:
+      Result := 'True';
+    dvaNil:
+      Result := 'nil';
+    dvaNull:
+      Result := 'Null';
+  else
+    PropValueError;
+  end;
+end;
+
+{ TDelphiWriter }
+
+constructor TDelphiWriter.Create(Stream: TStream);
+begin
+  FStream:=Stream;
+end;
+
+procedure TDelphiWriter.Write(const Buf; Count: Longint);
+begin
+  FStream.Write(Buf,Count);
+end;
+
 procedure DelphiObjectBinaryToText(Input, Output: TStream);
-(*var
+var
   NestingLevel: Integer;
   SaveSeparator: Char;
-  Reader: TReader;
-  Writer: TWriter;
+  Reader: TDelphiReader;
+  Writer: TDelphiWriter;
   ObjectName, PropName: string;
 
   procedure WriteIndent;
@@ -429,7 +815,7 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
 
   procedure NewLine;
   begin
-    WriteStr(sLineBreak);
+    WriteStr(LineEnd);
     WriteIndent;
   end;
 
@@ -467,7 +853,21 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
     if ObjectName = '' then
       ObjectName := ClassName;  // save for error reporting
 
-    WriteStr(sLineBreak);
+    WriteStr(LineEnd);
+  end;
+
+  procedure BinToHex(Buffer, Text: PChar; BufSize: Integer);
+  const
+    Convert: array[0..15] of Char = '0123456789ABCDEF';
+  var
+    I: Integer;
+  begin
+    for I := 0 to BufSize - 1 do
+    begin
+      Text[0] := Convert[Byte(Buffer[I]) shr 4];
+      Text[1] := Convert[Byte(Buffer[I]) and $F];
+      Inc(Text, 2);
+    end;
   end;
 
   procedure ConvertBinary;
@@ -506,11 +906,11 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
   var
     I, J, K, L: Integer;
     S: string;
-    W: WideString;
+    //W: WideString;
     LineBreak: Boolean;
   begin
     case Reader.NextValue of
-      vaList:
+      dvaList:
         begin
           Reader.ReadValue;
           WriteStr('(');
@@ -524,20 +924,21 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
           Dec(NestingLevel);
           WriteStr(')');
         end;
-      vaInt8, vaInt16, vaInt32:
+      dvaInt8, dvaInt16, dvaInt32:
         WriteStr(IntToStr(Reader.ReadInteger));
-      vaExtended:
+      dvaExtended:
         WriteStr(FloatToStr(Reader.ReadFloat));
-      vaSingle:
+      dvaSingle:
         WriteStr(FloatToStr(Reader.ReadSingle) + 's');
-      vaCurrency:
+      dvaCurrency:
         WriteStr(FloatToStr(Reader.ReadCurrency * 10000) + 'c');
-      vaDate:
+      dvaDate:
         WriteStr(FloatToStr(Reader.ReadDate) + 'd');
-      vaWString, vaUTF8String:
+      dvaWString, dvaUTF8String:
         begin
-          W := Reader.ReadWideString;
-          L := Length(W);
+          ReadError('TDelphiReader: not implemented yet: wide/utf8 string support');
+          {W := Reader.ReadWideString;
+          ToDo: L := Length(W);
           if L = 0 then WriteStr('''''') else
           begin
             I := 1;
@@ -558,14 +959,14 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
                   WriteStr('''');
                   while J < I do
                   begin
-                    WriteStr(Char(W[J]));
+                    //ToDo: WriteStr(Char(W[J]));
                     Inc(J);
                   end;
                   WriteStr('''');
                 end else
                 begin
                   WriteStr('#');
-                  WriteStr(IntToStr(Ord(W[I])));
+                  //ToDo: WriteStr(IntToStr(Ord(W[I])));
                   Inc(I);
                   if ((I - K) >= LineLength) then LineBreak := True;
                 end;
@@ -579,9 +980,9 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
             finally
               Dec(NestingLevel);
             end;
-          end;
+          end;}
         end;
-      vaString, vaLString:
+      dvaString, dvaLString:
         begin
           S := Reader.ReadString;
           L := Length(S);
@@ -604,7 +1005,7 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
                   if ((I - K) >= LineLength) then
                   begin
                     LIneBreak := True;
-                    if ByteType(S, I) = mbTrailByte then Dec(I);
+                    //ToDo: if ByteType(S, I) = mbTrailByte then Dec(I);
                   end;
                   WriteStr('''');
                   Writer.Write(S[J], I - J);
@@ -628,11 +1029,11 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
             end;
           end;
         end;
-      vaIdent, vaFalse, vaTrue, vaNil, vaNull:
+      dvaIdent, dvaFalse, dvaTrue, dvaNil, dvaNull:
         WriteStr(Reader.ReadIdent);
-      vaBinary:
+      dvaBinary:
         ConvertBinary;
-      vaSet:
+      dvaSet:
         begin
           Reader.ReadValue;
           WriteStr('[');
@@ -647,7 +1048,7 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
           end;
           WriteStr(']');
         end;
-      vaCollection:
+      dvaCollection:
         begin
           Reader.ReadValue;
           WriteStr('<');
@@ -656,14 +1057,14 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
           begin
             NewLine;
             WriteStr('item');
-            if Reader.NextValue in [vaInt8, vaInt16, vaInt32] then
+            if Reader.NextValue in [dvaInt8, dvaInt16, dvaInt32] then
             begin
               WriteStr(' [');
               ConvertValue;
               WriteStr(']');
             end;
-            WriteStr(sLineBreak);
-            Reader.CheckValue(vaList);
+            WriteStr(LineEnd);
+            Reader.CheckValue(dvaList);
             Inc(NestingLevel);
             while not Reader.EndOfList do ConvertProperty;
             Reader.ReadListEnd;
@@ -675,11 +1076,11 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
           Dec(NestingLevel);
           WriteStr('>');
         end;
-      vaInt64:
+      dvaInt64:
         WriteStr(IntToStr(Reader.ReadInt64));
     else
-      raise EReadError.CreateResFmt(@sPropertyException,
-        [ObjectName, DotSep, PropName, Ord(Reader.NextValue)]);
+      raise EReadError.CreateFmt('Error reading %s%s%s: %s'{@sPropertyException},
+        [ObjectName, '.', PropName, Ord(Reader.NextValue)]);
     end;
   end;
 
@@ -690,7 +1091,7 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
     WriteStr(PropName);
     WriteStr(' = ');
     ConvertValue;
-    WriteStr(sLineBreak);
+    WriteStr(LineEnd);
   end;
 
   procedure ConvertObject;
@@ -703,16 +1104,16 @@ procedure DelphiObjectBinaryToText(Input, Output: TStream);
     Reader.ReadListEnd;
     Dec(NestingLevel);
     WriteIndent;
-    WriteStr('end' + sLineBreak);
+    WriteStr('end' + LineEnd);
   end;
-*)
+
 begin
-(*  NestingLevel := 0;
-  Reader := TReader.Create(Input, 4096);
+  NestingLevel := 0;
+  Reader := TDelphiReader.Create(Input);
   SaveSeparator := DecimalSeparator;
   DecimalSeparator := '.';
   try
-    Writer := TWriter.Create(Output, 4096);
+    Writer := TDelphiWriter.Create(Output);
     try
       Reader.ReadSignature;
       ConvertObject;
@@ -722,7 +1123,7 @@ begin
   finally
     DecimalSeparator := SaveSeparator;
     Reader.Free;
-  end;*)
+  end;
 end;
 
 function TestDelphiStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;

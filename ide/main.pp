@@ -393,13 +393,13 @@ type
       ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
       AddJumpPoint: boolean): TModalResult;
+    procedure DoJumpToCodeToolBossError;
     procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer);
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
     procedure DoCompleteCodeAtCursor;
-    procedure DoJumpToCodeToolBossError;
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
@@ -6704,6 +6704,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.328  2002/07/31 09:00:03  lazarus
+  MG: fixed undefined editor topline on codetool error
+
   Revision 1.327  2002/07/29 13:26:54  lazarus
   MG: source notebook pagenames are now updated more often
 
