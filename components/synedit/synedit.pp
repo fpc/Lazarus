@@ -6604,6 +6604,8 @@ begin
         nFound := fTSearch.Results[n];
         {$IFDEF SYN_LAZARUS}
         nSearchLen := fTSearch.ResultLengths[n];
+        CurReplace := fTSearch.GetReplace(n);
+        nReplaceLen := Length(CurReplace);
         {$ENDIF}
         if bBackward then Dec(n) else Inc(n);
         Dec(nInLine);
@@ -6620,14 +6622,10 @@ begin
         if not bBackward then CaretXY := ptCurrent;
         // If it's a search only we can leave the procedure now.
         if not (bReplace or bReplaceAll) then exit;
-        {$IFDEF SYN_LAZARUS}
-        nSearchLen := fTSearch.ResultLengths[n];
-        CurReplace := fTSearch.GetReplace(n);
-        nReplaceLen := Length(CurReplace);
-        {$ENDIF}
         // Prompt and replace or replace all.  If user chooses to replace
         // all after prompting, turn off prompting.
         if bPrompt and Assigned(fOnReplaceText) then begin
+          EnsureCursorPosVisible;
           nAction := DoOnReplaceText(ASearch,
             {$IFDEF SYN_LAZARUS}CurReplace{$ELSE}AReplace{$ENDIF},
             ptCurrent.Y, nFound);
