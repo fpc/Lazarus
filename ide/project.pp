@@ -1618,7 +1618,8 @@ procedure TProject.MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
     end;
   end;
 
-var i:integer;
+var
+  i:integer;
   AnUnitInfo: TUnitInfo;
 begin
   if OldEditorIndex=NewEditorIndex then exit;
@@ -1980,6 +1981,9 @@ end.
 
 {
   $Log$
+  Revision 1.77  2002/09/20 13:11:11  lazarus
+  MG: fixed TPanel and Frame3D
+
   Revision 1.76  2002/09/20 11:40:07  lazarus
   MG: added Move Page Left/Right for sourcenotebook
 
