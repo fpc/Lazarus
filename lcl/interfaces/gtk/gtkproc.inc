@@ -776,6 +776,21 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+ Some need the HiddenLCLobject which created a parent of this widget.
+
+-------------------------------------------------------------------------------}
+procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
+begin
+  if (Widget <> nil) then
+    gtk_object_set_data(Widget, 'LCLHiddenClass', Pointer(AnObject));
+end;
+
+function GetHiddenLCLObject(const Widget: Pointer): TObject;
+begin
+  Result := TObject(gtk_object_get_data(Widget, 'LCLHiddenClass'));
+end;
+
+{-------------------------------------------------------------------------------
   TranslateGdkPointToClientArea
 
   Translates SourcePos relative to SourceWindow to a coordinate relative to the
@@ -845,11 +860,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetCursor
-  Params:  Sender - the control which invoked this method
+  procedure: SetCursor
+  Params:  AWinControl : TWinControl
   Returns: Nothing
 
-  Sets the cursor for a widget
+  Sets the cursor for a widget.
  ------------------------------------------------------------------------------}
 procedure SetCursor(AWinControl : TWinControl);
 
@@ -858,6 +873,7 @@ procedure SetCursor(AWinControl : TWinControl);
     ChildWindows, ListEntry: PGList;
   begin
     gdk_window_set_cursor(AWindow, Cursor_StdArrow);
+    
     ChildWindows:=gdk_window_get_children(AWindow);
     ListEntry:=ChildWindows;
     while ListEntry<>nil do begin
@@ -876,16 +892,19 @@ begin
   then exit;
   
   AWidget:=PGtkWidget(AWinControl.Handle);
-  FixWidget:=GetFixedWidget(AWidget);
-  if FixWidget<>nil then
-    AWindow:=FixWidget^.Window
-  else
-    AWindow:=AWidget^.Window;
-  if AWindow=nil then exit;
 
   if csDesigning in AWinControl.ComponentState then begin
+    AWindow:=AWidget^.Window;
+    if AWindow=nil then exit;
     SetDesigningCursor(AWindow);
   end else begin
+    FixWidget:=GetFixedWidget(AWidget);
+    if FixWidget<>nil then
+      AWindow:=FixWidget^.Window
+    else
+      AWindow:=AWidget^.Window;
+    if AWindow=nil then exit;
+
     case AWinControl.Cursor of
     crAppStart : gdk_window_set_cursor (AWindow, Cursor_Watch);
     crArrow    : gdk_window_set_cursor (AWindow, Cursor_Arrow);
@@ -906,6 +925,131 @@ begin
   end;
 end;
 
+
+{------------------------------------------------------------------------------
+  procedure: ConnectHiddenWidgetsSignals
+  Params:  AWinControl: TWinControl
+  Returns: Nothing
+
+  Connects hidden child widgets signals.
+  Many widgets create internally used child widgets (e.g. scrollbars). In
+  Design mode these widgets should not auto react themselves, but send messages
+  to the lcl. Therefore these widgets are also connected to our signal handlers.
+ ------------------------------------------------------------------------------}
+procedure ConnectHiddenWidgetsSignals(AWinControl: TWinControl);
+
+  procedure ConnectHiddenChilds(AWidget: PGtkWidget); forward;
+
+  procedure ConnectSignal(AWidget: PGtkWidget; SignalName: PChar;
+    const ACallBackProc: Pointer; ConnectBefore: boolean);
+  var
+    SignalID: guint;
+    TheGtkObject: PGtkObject;
+  begin
+    TheGtkObject:=PGtkObject(AWidget);
+    // check if widget supports this signal
+    SignalID := gtk_signal_lookup(SignalName, GTK_OBJECT_TYPE(TheGtkObject));
+    if SignalID=0 then exit;
+    // connect signal
+    if ConnectBefore then
+      gtk_signal_connect      (TheGtkObject,SignalName,
+                               TGTKSignalFunc(@ACallBackProc),AWinControl)
+    else
+      gtk_signal_connect_after(TheGtkObject,SignalName,
+                               TGTKSignalFunc(@ACallBackProc),AWinControl);
+  end;
+
+  procedure HiddenWidgetConnectSignals(ChildWidget: PGtkWidget);
+  var
+    WinWidgetInfo: PWinWidgetInfo;
+  begin
+    if ChildWidget=nil then exit;
+    
+  writeln('BBB1 CONNECT ',AWinControl.Name,':',AWinControl.ClassName,' ',HexStr(Cardinal(ChildWidget),8));
+    // check if hidden widget is already connected
+    if GetHiddenLCLObject(ChildWidget)<>nil then exit;
+    
+    // check if widget is a LCL widget
+    WinWidgetInfo:=GetWidgetInfo(ChildWidget,false);
+    if (WinWidgetInfo<>nil) then begin
+      // this is a LCL widget => not a hidden widget
+      // -> skip
+      exit;
+    end;
+    
+//if csDesigning in AWinControl.ComponentState then
+  writeln('BBB2 CONNECT ',AWinControl.Name,':',AWinControl.ClassName,' ',HexStr(Cardinal(ChildWidget),8));
+    // mark widget as 'hidden'
+    SetHiddenLCLObject(ChildWidget, AWinControl);
+  writeln('BBB3 CONNECT ',HexStr(Cardinal(GetHiddenLCLObject(ChildWidget)),8));
+
+    // connect signals needed for design mode:
+      // realize after
+      // ToDo: TListBox crashes if a realize after signal is connected - Strange
+      //ConnectSignal(ChildWidget,'realize',@GTKHiddenRealizeAfterCB,false);
+      // mouse press
+      ConnectSignal(ChildWidget,'button-press-event', @gtkMouseBtnPress, true);
+      // mouse motion
+      ConnectSignal(ChildWidget,'motion-notify-event', @GTKMotionNotify, true);
+      // mouse release
+      ConnectSignal(ChildWidget,'button-release-event',@gtkMouseBtnRelease,true);
+
+    // connect recursively ...
+    ConnectHiddenChilds(ChildWidget);
+  end;
+
+  procedure ConnectHiddenChilds(AWidget: PGtkWidget);
+  var
+    ContainerWidget: PGtkContainer;
+    ScrolledWindow: PGtkScrolledWindow;
+    BinWidget: PGtkBin;
+    ChildEntry: PGSList;
+    ChildWidget: PGtkWidget;
+  begin
+    if (AWidget=nil) then exit;
+    if csDesigning in AWinControl.ComponentState then begin
+      writeln('AAA1 ',AWinControl.Name,':',AWinControl.ClassName,' ',HexStr(Cardinal(AWidget),8));
+      if AWinControl.Parent<>nil then begin
+        writeln(' Parent=',AWinControl.Parent.Name,':',AWinControl.Parent.ClassName);
+      end;
+    end;
+    if GTK_IS_CONTAINER(AWidget) then begin
+//if csDesigning in AWinControl.ComponentState then
+  writeln('AAA2 ',AWinControl.Name,':',AWinControl.ClassName,' is container');
+      // this is a container widget -> connect all childs
+      ContainerWidget:=PGtkContainer(AWidget);
+      ChildEntry:=ContainerWidget^.resize_widgets;
+      while ChildEntry<>nil do begin
+        ChildWidget:=PGtkWidget(ChildEntry^.Data);
+        HiddenWidgetConnectSignals(ChildWidget);
+        ChildEntry:=ChildEntry^.Next;
+      end;
+    end;
+    if GTK_IS_SCROLLED_WINDOW(AWidget) then begin
+//if csDesigning in AWinControl.ComponentState then
+  writeln('AAA3 ',AWinControl.Name,':',AWinControl.ClassName,' is scrolled window');
+      ScrolledWindow:=PGtkScrolledWindow(AWidget);
+      HiddenWidgetConnectSignals(ScrolledWindow^.hscrollbar);
+      HiddenWidgetConnectSignals(ScrolledWindow^.vscrollbar);
+    end;
+    if GTK_IS_BIN(AWidget) then begin
+//if csDesigning in AWinControl.ComponentState then
+  writeln('AAA4 ',AWinControl.Name,':',AWinControl.ClassName,' is bin');
+      BinWidget:=PGtkBin(AWidget);
+      HiddenWidgetConnectSignals(BinWidget^.child);
+    end;
+  end;
+
+var
+  MainWidget: PGtkWidget;
+begin
+  // ToDo: activate when tested
+  exit;
+  
+  if (AWinControl=nil) or (not AWinControl.HandleAllocated) then exit;
+  MainWidget:=PGtkWidget(AWinControl.Handle);
+  ConnectHiddenChilds(MainWidget);
+end;
 
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
@@ -1494,6 +1638,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.51  2002/06/26 15:11:10  lazarus
+  MG: added new tool: Guess misplaced $IFDEF/$ENDIF
+
   Revision 1.50  2002/06/21 18:27:28  lazarus
   MG: non visual component icons are now centered
 
