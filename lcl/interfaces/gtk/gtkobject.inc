@@ -46,7 +46,6 @@ begin
   FWidgetsWithResizeRequest := TDynHashArray.Create(-1);
   FWidgetsResized := TDynHashArray.Create(-1);
   FFixWidgetsResized := TDynHashArray.Create(-1);
-  FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
   FDefaultFont:= nil;
   FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
@@ -171,8 +170,7 @@ begin
   FGDIObjects.Free;
   FKeyStateList.Free;
   FTimerData.Free;
-  gtk_accel_group_unref(FAccelGroup);
-
+  
   inherited Destroy;
 end;
 
@@ -1426,11 +1424,13 @@ begin
          try
            pLabel := gtk_label_new(pStr);
            Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
-           if Accel <> GDK_VOIDSYMBOL then begin
-             // ToDo: use accelerator group of Form
+           
+           Accelerate(TBitBtn(Sender),PGtkWidget(TBitBtn(Sender).Handle),
+             Accel,0,'clicked');
+           {if Accel <> GDK_VOIDSYMBOL then begin
              gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0,
                GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
-           end;
+           end;}
          finally
            StrDispose(pStr);
          end;  
@@ -2068,17 +2068,22 @@ begin
         with TLMShortcut(data^) do begin
           Widget:= PGtkWidget(Handle);
         end;
-        case TControl(Sender).fCompStyle of
-          csBitBtn,
-          csButton,
-          csToolButton,
-          csRadioButton,
-          csCheckBox:
-            // ToDo: use accelerator group of Form
-            Accelerate(Widget, TLMShortcut(data^), 'clicked');
-          else
-            // ToDo: use accelerator group of Form
-            Accelerate(Widget, TLMShortcut(data^), 'activate_item');
+        if Sender is TControl then begin
+          case TControl(Sender).fCompStyle of
+            csBitBtn,
+            csButton,
+            csToolButton,
+            csRadioButton,
+            csCheckBox:
+              // ToDo: use accelerator group of Form
+              Accelerate(TComponent(Sender), Widget, TLMShortcut(data^), 'clicked');
+            else
+              // ToDo: use accelerator group of Form
+              Accelerate(TComponent(Sender), Widget, TLMShortcut(data^), 'activate_item');
+          end;
+        end else if Sender is TMenuItem then begin
+          Accelerate(TComponent(Sender), Widget, TLMShortcut(data^),
+            'activate_item');
         end;
       end;
 
@@ -2198,11 +2203,12 @@ procedure TgtkObject.AddChild(Parent,Child : Pointer; Left,Top: Integer);
 var
   pFixed: PGTKWidget;
 begin
-Assert(False, 'Trace:ADDCHILD');
-   pFixed := GetFixedWidget(PGtkWidget(Parent));
-   if pFixed <> Parent then
-     FixedPutControl(pFixed, Child, Left, Top);
-//   gtk_object_set_data(PgtkObject(Child),'Owner',Parent);
+  pFixed := GetFixedWidget(PGtkWidget(Parent));
+  if pFixed <> Parent then begin
+    // parent changed for child
+    FixedPutControl(pFixed, Child, Left, Top);
+    RegroupAccelerator(Child);
+  end;
 end;
 
 
@@ -2220,18 +2226,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetText(Child, Data: Pointer);
 type
-   pMsg = ^TLMSetControlText;
+  pMsg = ^TLMSetControlText;
 var
-   num : Integer;
+  num : Integer;
 begin
-   case pMsg(Data)^.fCompStyle of
-      csStatusBar : begin
-                    num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),PChar(inttostr(pMsg(Data)^.panel)));
-                    gtk_statusbar_push(PGTKStatusBar(Child),num,pMsg(Data)^.Userdata);
-                    end
-   else        
-      writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
-   end;
+  case pMsg(Data)^.fCompStyle of
+  csStatusBar :
+    begin
+      num := gtk_statusbar_get_context_id(PGTKStatusBar(Child),PChar(inttostr(pMsg(Data)^.panel)));
+      gtk_statusbar_push(PGTKStatusBar(Child),num,pMsg(Data)^.Userdata);
+    end
+  else
+    writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
+  end;
 {STOPPOK: Code seems superfluous, see SetLabel instead}
 end;
 
@@ -2338,7 +2345,8 @@ begin
           gtk_label_set_text(pgtkLabel(Child), aLabel);
         end;
         //If Accel <> -1 then
-        gtk_label_parse_uline(PGtkLabel(Child), aLabel);
+        AccelKey:=gtk_label_parse_uline(PGtkLabel(Child), aLabel);
+        Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       Finally
         StrDispose(aLabel);
       end;
@@ -2349,12 +2357,8 @@ begin
   csColorDialog,
   csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
-  csLabel       :
+  csLabel:
     begin
-      AccelKey:= GetAccelKey(p);
-      if AccelKey <> 0 then
-        gtk_widget_remove_accelerators(p, 'grab_focus', false);
-		    
       if TLabel(Sender).ShowAccelChar then begin
         If TLabel(sender).WordWrap then begin
           DC := GetDC(TLabel(Sender).Handle);
@@ -2363,14 +2367,15 @@ begin
         end
         else
           aLabel:= Ampersands2Underscore(pLabel);
-	try
+        try
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
-	  SetAccelKey(p, AccelKey);
+          Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'grab_focus');
+	  {SetAccelKey(p, AccelKey);
 	  if AccelKey <> 0 then begin
             // ToDo: use accelerator group of Form
 	    gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
 	      AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-          end;
+          end;}
         finally
 	  StrDispose(aLabel);
 	end;
@@ -3022,9 +3027,11 @@ begin
       AccelEntry:= Accelerators^.data;
       Accelerators:= Accelerators^.next;
       with AccelEntry^ do 
-        gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods, PGtkObject(Handle));
+        gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods,
+                               PGtkObject(Handle));
     end;
-  end;  
+  end;
+  ClearAccelKey(Widget);
 
   RemoveCallbacks(Sender);
 
@@ -3781,7 +3788,8 @@ var
   //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
   //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
   ParentForm: TCustomForm;
-  Accel : PChar;
+  AccelText : PChar;
+  AccelKey  : guint;
   SetupProps : boolean;
   Titles: PPGChar;
   ABorderStyle: TFormBorderStyle;
@@ -3884,12 +3892,11 @@ begin
 
   csButton :
     begin
-      Accel := Ampersands2Underscore(StrTemp);
-      p := gtk_button_new_with_label(Accel);
-      //If Accel <> -1 then
-        With PGTKButton(P)^ do
-          gtk_label_parse_uline(PGtkLabel(Child), Accel);
-      StrDispose(Accel);
+      AccelText := Ampersands2Underscore(StrTemp);
+      p := gtk_button_new_with_label(AccelText);
+      AccelKey:=gtk_label_parse_uline(PGtkLabel(PGTKButton(P)^.Child), AccelText);
+      Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'clicked');
+      StrDispose(AccelText);
     end;
 
   csCalendar :
@@ -4180,8 +4187,7 @@ begin
         RaiseException('form has already a MainMenu');
       Box := PGTKBin(ParentForm.Handle)^.Child;
       gtk_box_pack_start(Box, p, False, False, 0);
-      // ToDo: use accelerator group of Form
-      SetAccelGroup(p, gtk_accel_group_get_default);
+      //SetAccelGroup(p, gtk_accel_group_get_default);
       gtk_widget_show(p);
     end;
 
@@ -4215,8 +4221,7 @@ begin
        gtk_container_add(
          GTK_Container(
            GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
-       // ToDo: use accelerator group of Form
-       SetAccelGroup(p, gtk_accel_group_get_default);
+       //SetAccelGroup(p, gtk_accel_group_get_default);
        gtk_widget_show(p);
     end;
 
@@ -4285,14 +4290,17 @@ begin
           end;  
         end;
       end;
-      Accel := Ampersands2Underscore(StrTemp);
+      AccelText := Ampersands2Underscore(StrTemp);
       if TempWidget <> nil then
-        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group, Accel)
+        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,
+                                            AccelText)
       else  
-        P:= gtk_radio_button_new_with_label(nil, Accel);
-      With PGTKToggleButton(P)^ do
-        gtk_label_parse_uline(pGtkLabel(Button.Child), Accel);
-      StrDispose(Accel);
+        P:= gtk_radio_button_new_with_label(nil, AccelText);
+      AccelKey:=gtk_label_parse_uline(
+                                   pGtkLabel(PGTKToggleButton(P)^.Button.Child),
+                                   AccelText);
+      Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
+      StrDispose(AccelText);
     end;
 
   csScrollBar :
@@ -4349,16 +4357,17 @@ begin
 
   csToolButton:
     begin
-      Accel := Ampersands2Underscore(StrTemp);
+      AccelText := Ampersands2Underscore(StrTemp);
       //p := gtk_button_new_with_label(StrTemp);
-      p := gtk_button_new_with_label(Accel);
+      p := gtk_button_new_with_label(AccelText);
       if TToolButton(Sender).Style = tbsButton then
       Begin
         //If Accel <> -1 then
-          With PGTKButton(P)^ do
-            gtk_label_parse_uline(PGtkLabel(Child), Accel);
+        AccelKey:=gtk_label_parse_uline(PGtkLabel(PGTKButton(P)^.Child),
+                                        AccelText);
+        Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       end;
-      StrDispose(Accel);
+      StrDispose(AccelText);
       gtk_widget_show (P);
     end;
 
@@ -5554,8 +5563,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkObject.AttachMenu(Sender: TObject);
 var
-  AccelKey: Integer;
-  AccelGroup: PGTKAccelGroup;
+  //AccelKey: Integer;
+  //AccelGroup: PGTKAccelGroup;
   MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
   LCLMenuItem: TMenuItem;
   
@@ -5605,9 +5614,8 @@ begin
                               ContainerMenu);
           gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
 
-          AccelGroup := gtk_accel_group_new;
-          gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
-          SetAccelGroup(ContainerMenu, AccelGroup);
+          //AccelGroup := GetAccelGroup(ContainerMenu,true);
+          //gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
         end;
       end;
       gtk_menu_insert(PGtkMenu(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
@@ -5618,14 +5626,14 @@ begin
     if GtkWidgetIsA(MenuItem,GTK_RADIO_MENU_ITEM_TYPE) then
       RegroupMenuItem(HMENU(MenuItem),GroupIndex);
 
-    // Add accelerators
-    AccelGroup := GetAccelGroup(ContainerMenu);
+    {// Add accelerators
+    AccelGroup := GetAccelGroup(ContainerMenu,false);
     AccelKey := GetAccelKey(MenuItem);
     if (AccelGroup <> nil) and (AccelKey <> 0) then begin
       gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
                           GTK_ACCEL_LOCKED, PGtkObject(MenuItem),
                           'activate_item');
-    end;
+    end;}
   end;
   //writeln('TGtkObject.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
 end;
@@ -6535,6 +6543,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.256  2002/10/20 21:49:10  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.255  2002/10/20 19:03:56  lazarus
   AJ: minor fixes for FPC 1.1
 
