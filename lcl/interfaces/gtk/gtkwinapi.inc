@@ -1744,28 +1744,35 @@ begin
     ColorMap:=gdk_window_get_colormap(Window)
   else
     ColorMap:=gdk_colormap_get_system;
-  GdiObject^.GDIPixmapObject :=
-    gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
-           @(GdiObject^.GDIBitmapMaskObject), p, Data);
+  try
+    GdiObject^.GDIPixmapObject :=
+      gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
+             @(GdiObject^.GDIBitmapMaskObject), p, Data);
 
-  gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
+    gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
 
-  If GdiObject^.Visual <> nil then
-    GDK_Visual_UnRef(GdiObject^.Visual);
+    If GdiObject^.Visual <> nil then
+      GDK_Visual_UnRef(GdiObject^.Visual);
 
-  GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+    GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
 
-  If GdiObject^.Visual = nil then
-    GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
-  else
-    gdk_visual_ref(GdiObject^.Visual);
+    If GdiObject^.Visual = nil then
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
+    else
+      gdk_visual_ref(GdiObject^.Visual);
 
-  If GdiObject^.Colormap <> nil then
-    GDK_Colormap_UnRef(GdiObject^.Colormap);
+    If GdiObject^.Colormap <> nil then
+      GDK_Colormap_UnRef(GdiObject^.Colormap);
 
-  GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
-  
-  GdiObject^.GDIBitmapType:=gbPixmap;
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+
+    GdiObject^.GDIBitmapType:=gbPixmap;
+  except
+    on E: Exception do begin
+      DisposeGDIObject(GdiObject);
+      GdiObject:=nil;
+    end;
+  end;
   Result := HBITMAP(GdiObject);
 end;
 
@@ -2932,8 +2939,8 @@ begin
       UseFont:=nil;
       if (Str<>nil) and (Count>0) then begin
         if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-          UseFont := GetDefaultFont;
-          UnRef := True;
+          UseFont := GetDefaultFont(false);
+          UnRef := false;
           UnderLine := false;
         end else begin
           UseFont := CurrentFont^.GDIFontObject;
@@ -2941,10 +2948,7 @@ begin
           UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
         end;
 
-        if UseFont = nil then begin
-          WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
-          Result := False;
-        end else begin
+        if UseFont <> nil then begin
           if (Options and ETO_CLIPPED) <> 0 then
           begin
             X := Rect^.Left;
@@ -2962,6 +2966,9 @@ begin
           LineHeight := DCTextMetric.TextMetric.tmAscent;
           {$EndIf}
           TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+        end else begin
+          WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
+          Result := False;
         end;
       end;
       
@@ -4135,7 +4142,7 @@ var
   GDIObj : PGDIObject;
 begin
   GDIObj := NewGDIObject(gdiFont);
-  GDIObj^.GDIFontObject:= GetDefaultFont;
+  GDIObj^.GDIFontObject:= GetDefaultFont(true);
   Result := hFont(GDIObj);
 end;
 
@@ -4577,7 +4584,7 @@ begin
   begin
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
-      UseFont := GetDefaultFont;
+      UseFont := GetDefaultFont(true);
       UnRef := True;
     end
     else begin
@@ -7788,16 +7795,16 @@ begin
     else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        UseFont := GetDefaultFont;
+        UseFont := GetDefaultFont(true);
+        UnRef := True;
         Underline := False;
         StrikeOut := False;
-        UnRef := True;
       end
       else begin
         UseFont := CurrentFont^.GDIFontObject;
+        UnRef := False;
         Underline := LongBool(CurrentFont^.LogFont.lfUnderline);
         StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
-        UnRef := False;
       end;
       If UseFont = nil then
         WriteLn('WARNING: [TgtkObject.TextOut] Missing Font')
@@ -8035,6 +8042,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.230  2003/04/03 17:42:13  mattias
+  added exception handling for createpixmapindirect
+
   Revision 1.229  2003/04/02 13:23:24  mattias
   fixed default font
 
