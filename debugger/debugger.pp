@@ -554,7 +554,7 @@ type
     procedure DoDbgOutput(const AText: String);
     procedure DoException(const AExceptionClass: String; const AExceptionText: String);
     procedure DoOutput(const AText: String);
-    procedure DoState(const OldState: TDBGState);
+    procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
     function  GetCommands: TDBGCommands;
     function  GetSupportedCommands: TDBGCommands; virtual;
@@ -2287,6 +2287,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.35  2003/06/02 21:37:30  mattias
+  fixed debugger stop
+
   Revision 1.34  2003/05/29 18:47:27  mattias
   fixed reposition sourcemark
 

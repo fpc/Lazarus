@@ -640,12 +640,16 @@ type
     ControlHasHint: boolean;
   end;
 
-  TApplicationFlag = (AppWaiting, AppIdleEndSent);
+  TApplicationFlag = (
+    AppWaiting,
+    AppIdleEndSent,
+    AppHandlingException
+    );
   TApplicationFlags = set of TApplicationFlag;
 
   TApplication = class(TComponent)
   private
-    FFlag: TApplicationFlags;
+    FFlags: TApplicationFlags;
     FHandle : THandle;
     //FHelpSystem : IHelpSystem;
     FHelpFile: string;
@@ -1133,7 +1137,6 @@ end;
 
 constructor TDataModule.Create(TheOwner: TComponent);
 begin
-  writeln('TDataModule.Create START');
   //GlobalNameSpace.BeginWrite;
   try
     CreateNew(TheOwner,0);
@@ -1145,7 +1148,6 @@ begin
       end;
       if OldCreateOrder then DoCreate;
     end;
-    writeln('TDataModule.Create END');
   finally
     //GlobalNameSpace.EndWrite;
   end;
@@ -1153,33 +1155,27 @@ end;
 
 procedure TDataModule.AfterConstruction;
 begin
-  writeln('TDataModule.AfterConstruction');
   if not OldCreateOrder then DoCreate;
 end;
 
 constructor TDataModule.CreateNew(TheOwner: TComponent; CreateMode: Integer);
 begin
-  writeln('TDataModule.CreateNew START');
   inherited Create(TheOwner);
 
   if Assigned(AddDataModule) and (CreateMode >= 0) then
     AddDataModule(Self);
-  writeln('TDataModule.CreateNew END');
 end;
 
 procedure TDataModule.BeforeDestruction;
 begin
-  writeln('TDataModule.BeforeDestruction START');
   //GlobalNameSpace.BeginWrite;
   Destroying;
   RemoveFixupReferences(Self, '');
   if not OldCreateOrder then DoDestroy;
-  writeln('TDataModule.BeforeDestruction END');
 end;
 
 destructor TDataModule.Destroy;
 begin
-  writeln('TDataModule.Destroy START');
   if not (csDestroying in ComponentState) then
     ; //GlobalNameSpace.BeginWrite;
   try
@@ -1190,7 +1186,6 @@ begin
   finally
     //GlobalNameSpace.EndWrite;
   end;
-  writeln('TDataModule.Destroy END');
 end;
 
 procedure TDataModule.DoCreate;
@@ -1200,7 +1195,6 @@ begin
     FOnCreate(Self);
   except
     begin
-      writeln('TDataModule.DoCreate A');
       if not HandleCreateException then
         raise;
     end;
@@ -1214,7 +1208,6 @@ begin
     FOnDestroy(Self);
   except
     begin
-      writeln('TDataModule.DoDestroy A');
       if Assigned(ApplicationHandleException) then
         ApplicationHandleException(Self);
     end;
@@ -1279,7 +1272,6 @@ end;
 
 function TDataModule.HandleCreateException: Boolean;
 begin
-  writeln('TDataModule.HandleCreateException A');
   if Assigned(ApplicationHandleException) then
   begin
     ApplicationHandleException(Self);

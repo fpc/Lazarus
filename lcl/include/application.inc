@@ -277,11 +277,11 @@ begin
   NotifyIdleHandler;
   if Done then begin
     // wait till something happens
-    Include(FFlag,AppWaiting);
-    Exclude(FFlag,AppIdleEndSent);
+    Include(FFlags,AppWaiting);
+    Exclude(FFlags,AppIdleEndSent);
     InterfaceObject.WaitMessage;
     DoOnIdleEnd;
-    Exclude(FFlag,AppWaiting);
+    Exclude(FFlags,AppWaiting);
   end;
 end;
 
@@ -646,6 +646,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
 begin
+  if AppHandlingException in FFlags then begin
+    // there was an exception during showing the exception -> break the circle
+    writeln('TApplication.HandleException: ',
+      'there was a second exception during showing the first exception');
+    exit;
+  end;
+  Include(FFlags,AppHandlingException);
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
   if ExceptObject is Exception then begin
     writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
@@ -656,6 +663,7 @@ begin
         ShowException(Exception(ExceptObject));
   end else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
+  Exclude(FFlags,AppHandlingException);
 end;
 
 {------------------------------------------------------------------------------
@@ -720,7 +728,7 @@ end;
 ------------------------------------------------------------------------------}
 function TApplication.IsWaiting: boolean;
 begin
-  Result:=AppWaiting in FFlag;
+  Result:=AppWaiting in FFlags;
 end;
 
 {------------------------------------------------------------------------------
@@ -807,10 +815,10 @@ end;
 
 procedure TApplication.DoOnIdleEnd;
 begin
-  if (AppIdleEndSent in FFlag) then exit;
+  if (AppIdleEndSent in FFlags) then exit;
   if Assigned(OnIdleEnd) then OnIdleEnd(Self);
   NotifyIdleEndHandler;
-  Include(FFlag,AppIdleEndSent);
+  Include(FFlags,AppIdleEndSent);
 end;
 
 {------------------------------------------------------------------------------
@@ -836,7 +844,10 @@ var
 begin
   Msg := E.Message;
   if (Msg <> '') and (Msg[length(Msg)] > '.') then Msg := Msg + '.';
-  MessageBox(PChar(Msg), PChar(GetTitle), MB_OK + MB_ICONERROR);
+  if (not FTerminate) and (Self<>nil) then
+    MessageBox(PChar(Msg), PChar(GetTitle), MB_OK + MB_ICONERROR)
+  else
+    SysUtils.ShowException(ExceptObject, ExceptAddr);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1016,6 +1027,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2003/06/02 21:37:30  mattias
+  fixed debugger stop
+
   Revision 1.55  2003/05/31 10:07:33  mattias
   changed projects forms into components
 
