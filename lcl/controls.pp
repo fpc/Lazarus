@@ -497,7 +497,6 @@ type
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    procedure SetZOrderPosition(Position : Integer);
     function GetBoundsRect : TRect;
     function GetMouseCapture : Boolean;
     function IsCaptionStored : Boolean;
@@ -560,9 +559,8 @@ type
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetHint(const Value: String); virtual;
     procedure SetName(const Value: TComponentName); override;
-    procedure SetParent(AParent : TWinControl); virtual;
-    Procedure SetParentComponent(Value : TComponent); override;
-    Procedure SetZOrder(Topmost: Boolean) ; dynamic;
+    procedure SetParent(AParent: TWinControl); virtual;
+    Procedure SetParentComponent(Value: TComponent); override;
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var TheMessage : TLMessage); virtual;
@@ -576,14 +574,14 @@ type
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
-    property AutoSize : Boolean read FAutoSize write SetAutoSize default FALSE;
-    property DragCursor : TCursor read FDragCursor write FDragCursor default crDrag;
-    property DragKind : TDragKind read FDragKind write FDragKind default dkDrag;
-    property DragMode : TDragMode read fDragMode write SetDragMode default dmManual;
-    property IsControl : Boolean read FIsControl write FIsControl;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
+    property DragCursor: TCursor read FDragCursor write FDragCursor default crDrag;
+    property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
+    property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
+    property IsControl: Boolean read FIsControl write FIsControl;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
-    property ParentFont : Boolean  read FParentFont write FParentFont;
-    property ParentColor : Boolean  read FParentColor write FParentColor;
+    property ParentFont: Boolean  read FParentFont write FParentFont;
+    property ParentColor: Boolean  read FParentColor write FParentColor;
     property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
     property PopupMenu : TPopupmenu read GetPopupmenu write SetPopupMenu;
     property Text: TCaption read GetText write SetText;
@@ -623,6 +621,8 @@ type
     Function  Dragging : Boolean;
     procedure Show;
     procedure Update; //override;   //pbd
+    procedure SetZOrderPosition(Position : Integer); virtual;
+    Procedure SetZOrder(Topmost: Boolean); virtual;
   public
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
     property Align : TAlign read FAlign write SetAlign;
@@ -782,7 +782,6 @@ type
     procedure InitializeWnd; virtual; //gets called after the window is created
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
-    procedure SetZOrder(Topmost: Boolean); override;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
@@ -795,6 +794,9 @@ type
     function  GetClientRect: TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
+    procedure SetZOrderPosition(Position: Integer); override;
+    procedure SetZOrder(Topmost: Boolean); override;
+
     property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
     property  IsResizing : Boolean read GetIsResizing;
@@ -822,6 +824,8 @@ type
       AllowDisabled, AllowWinControls: Boolean): TControl;
     Function ControlAtPos(const Pos : TPoint;
       AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl;
+    function GetControlIndex(AControl: TControl): integer;
+    procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache;
     Function Focused : Boolean; dynamic;
@@ -1338,6 +1342,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/09/05 12:11:42  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.66  2002/09/03 08:07:17  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
