@@ -934,7 +934,6 @@ var
   Form : TForm;
   Prompt : TLabel;
   Edit : TEdit;
-  T : String;
   ButtonTop, ButtonWidth, ButtonHeight : Integer;
   Avg : TPoint;
 begin
@@ -1002,17 +1001,14 @@ begin
       Visible := True;
       TabOrder := 2;
     end;
-    Show;
     Edit.SetFocus;
-    Hide;
     If ShowModal = mrOk then
     begin
-      T := Edit.Text;
+      Value := Edit.Text;
       Result := True;
-    End;
-    Form.Close;
+    end;
+    Form.Free;
   end;
-  Value := T;
 end;
 
 function TInterfaceBase.KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
@@ -1085,7 +1081,7 @@ type
   public
     TheDefaultIndex : Longint;
 
-    FImage : TImage;
+    FBitmap : TBitmap;
     FLabel : TLabel;
     MSG : AnsiString;
     NumButtons : Longint;
@@ -1098,6 +1094,7 @@ type
     procedure Paint; override;
     constructor CreateMessageDialog(const ACaption, aMsg: string;
       DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
+    Destructor Destroy; Override;
   end;
 
 procedure TMessageBox.MessageBoxKeyDown(Sender: TObject; var Key: Word;
@@ -1107,17 +1104,9 @@ begin
     ModalResult := -1;
 end;
 
-procedure TMessageBox.Paint;
-begin
-  Inherited Paint;
-  Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
-end;
-
 const
   cBitmapX  = 10;      // x-position for bitmap in messagedialog
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
-  cBitmapWidth = 32;   // width of the dialogs icon
-  cBitmapHeight= 32;   // height of the dialogs icon
   cLabelSpacing= 10;   // distance between icon & label
 
   DialogResult : Array[mrNone..mrYesToAll] of Longint = (
@@ -1137,6 +1126,15 @@ const
     rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);
 
 
+procedure TMessageBox.Paint;
+begin
+  Inherited Paint;
+  Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
+  if assigned (FBitmap) then
+    Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,FBitmap.Width,FBitmap.Height),
+                    FBitmap.Canvas, Rect(0,0,FBitmap.Width,FBitmap.Height));
+end;
+
 constructor TMessageBox.CreateMessageDialog(const ACaption, aMsg: string;
   DialogType : longint; TheButtons: PLongint; ButtonCount, DefaultIndex : Longint);
 begin
@@ -1151,10 +1149,7 @@ begin
   Height      := 100;
   MSG         := AMSG;
   Buttons     := nil;
-  FImage := TImage.Create(self);
-  FImage.Parent := Self;
-  FImage.SetBounds(cBitmapX, cBitmapY,cBitmapWidth,cBitmapHeight);
-
+  FBitmap := nil;
   FLabel := TLabel.Create(Self);
   FLabel.Parent := Self;
   FLabel.Caption := '';
@@ -1165,20 +1160,20 @@ begin
     idDialogWarning,
     idDialogError :
       begin
-        FImage.Picture.Bitmap.Handle := LoadStockPixmap(DialogType);
-        FImage.Show;
+        FBitmap := TBitmap.Create;
+        FBitmap.Handle := LoadStockPixmap(DialogType);
         If ACaption <> '' then
           Caption := ACaption
         else
           Caption := DialogCaption[DialogType];
       end;
     else begin
-      FImage.Picture.Bitmap.Handle := LoadStockPixmap(idDialogInfo);
-      FImage.Show;
+      FBitmap := TBitmap.Create;
+      FBitmap.Handle := LoadStockPixmap(idDialogInfo);
       If ACaption <> '' then
         Caption := ACaption
       else
-        Caption := rsmtInformation;//Should be Application.Title, when we have one
+        Caption := Application.Title;
     end
   end;
   NumButtons := ButtonCount;
@@ -1194,19 +1189,24 @@ begin
   LayoutDialog;
 end;
 
+Destructor TMessageBox.Destroy;
+begin
+  FBitmap.Free;
+  inherited destroy;
+end;
+
 procedure TMessageBox.LayoutDialog;
 Const
   AVGBuffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
   cBtnCalcWidth  = 50;
   cBtnCalcHeight = 13;
   cBtnCalcSpace   = 4;
-  cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
 var
-  aBitmap     : TBitmap;    // temp. variable to create bitmaps for buttons
   curBtn      : Longint; // variable to loop through TMsgDlgButtons
   cBtnWidth,
   cBtnHeight,
   curBtnWidth,
+  cMinLeft,
   cBtnDist,
   ButtonLeft  : integer;    // left position of button(s)
   reqBtnWidth : integer;    // width neccessary to display buttons
@@ -1224,6 +1224,8 @@ begin
   end;
 
   // calculate the width & height we need to display the Message
+  If MSG = '' then
+    MSG := '   ';
   TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
   SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
@@ -1253,12 +1255,19 @@ begin
 
   // patch positions to center label and buttons
   reqWidth:= reqBtnWidth;
+
+  If FBitmap <> nil then
+    cMinLeft := cBitmapX + 32 + cLabelSpacing
+  else
+    cMinLeft := cLabelSpacing;
+
   if reqWidth < (TextBox.Right + cMinLeft) then reqWidth:= TextBox.Right + cMinLeft;
 
   ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
 
   reqHeight:= TextBox.Bottom;
-  if reqHeight < cBitmapHeight then reqHeight:= cBitmapHeight;
+
+  if reqHeight < 32 then reqHeight := 32;
 
   OffsetRect(TextBox, ((reqWidth - cMinLeft - TextBox.Right) div 2) + cMinLeft, cLabelSpacing);
 
@@ -1283,9 +1292,7 @@ begin
           idButtonYesToAll,
           idButtonNoToAll :
             begin
-              aBitmap := TBitmap.Create;
-              aBitmap.Handle := LoadStockPixmap(Buttons[curBtn]);
-              Glyph   := aBitmap;
+              Glyph.Handle := LoadStockPixmap(Buttons[curBtn]);
               If Buttons[curBtn] = idButtonYesToAll then begin
                 ModalResult := mrYesToAll;
                 Caption := rsmbYesToAll;
@@ -1771,6 +1778,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/10/23 20:47:26  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.58  2002/10/23 14:36:52  lazarus
   AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
      fixed TGraphicPropertyEditor for when Property is nil.
