@@ -52,7 +52,7 @@ uses
   // synedit
   SynEditKeyCmds,
   // compile
-  Compiler, CompilerOptions, CheckCompilerOpts,
+  Compiler, CompilerOptions, CheckCompilerOpts, ImExportCompilerOpts,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   ProjectInspector,
@@ -323,6 +323,7 @@ type
       
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
+    procedure OnCompilerOptionsImExport(Sender: TObject);
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -463,7 +464,6 @@ type
       Data: TObject);
     procedure OnCopyError(const ErrorData: TCopyErrorData;
       var Handled: boolean; Data: TObject);
-
   public
     CustomExtToolMenuSeparator: TMenuItem;
     CurDefinesCompilerFilename: String;
@@ -2368,7 +2368,8 @@ begin
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
-var frmCompilerOptions:TfrmCompilerOptions;
+var
+  frmCompilerOptions:TfrmCompilerOptions;
   NewCaption: String;
 begin
   frmCompilerOptions:=TfrmCompilerOptions.Create(Application);
@@ -2381,6 +2382,7 @@ begin
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
     frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
+    frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
       RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
@@ -9212,6 +9214,23 @@ begin
   DoTestCompilerSettings(Sender as TCompilerOptions);
 end;
 
+procedure TMainIDE.OnCompilerOptionsImExport(Sender: TObject);
+var
+  CompOptsDialog: TfrmCompilerOptions;
+  ImExportResult: TImExportCompOptsResult;
+  Filename: string;
+begin
+  if not (Sender is TfrmCompilerOptions) then exit;
+  CompOptsDialog:=TfrmCompilerOptions(Sender);
+  ImExportResult:=ShowImExportCompilerOptionsDialog(
+                                          CompOptsDialog.CompilerOpts,Filename);
+  if (ImExportResult=iecorCancel) or (Filename='') then exit;
+  if ImExportResult=iecorImport then
+    DoImportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,Filename)
+  else if ImExportResult=iecorExport then
+    DoExportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,Filename);
+end;
+
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
 var
   CurUnitInfo: TUnitInfo;
@@ -9763,6 +9782,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.646  2003/09/10 12:13:48  mattias
+  implemented Import and Export of compiler options
+
   Revision 1.645  2003/09/06 22:00:24  mattias
   added ToolStatus check for package compilation
 

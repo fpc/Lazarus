@@ -632,18 +632,18 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     btnCheck: TButton;
+    btnLoadSave: TButton;
 
-    { Procedures }
     procedure ButtonOKClicked(Sender: TObject);
     procedure ButtonCancelClicked(Sender: TObject);
     procedure ButtonCheckClicked(Sender: TObject);
+    procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
     procedure ExecuteAfterGroupBoxResize(Sender: TObject);
     procedure ExecuteBeforeGroupBoxResize(Sender: TObject);
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure InheritedPageResize(Sender: TObject);
-    procedure LCLWidgetTypeRadioGroupClick(Sender: TObject);
     procedure chkAdditionalConfigFileClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -661,6 +661,7 @@ type
     procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
   private
+    FOnImExportCompilerOptions: TNotifyEvent;
     FOnTest: TNotifyEvent;
     FReadOnly: boolean;
     ImageIndexPackage: integer;
@@ -677,17 +678,20 @@ type
     destructor Destroy; override;
 
     procedure GetCompilerOptions;
+    procedure GetCompilerOptions(SrcCompilerOptions: TBaseCompilerOptions);
     procedure PutCompilerOptions;
+    procedure PutCompilerOptions(DestCompilerOptions: TBaseCompilerOptions);
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property OnTest: TNotifyEvent read FOnTest write FOnTest;
+    property OnImExportCompilerOptions: TNotifyEvent
+               read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
 
 type
   TCompilerGraphStampIncreasedEvent = procedure of object;
 
 var
-  frmCompilerOptions: TfrmCompilerOptions;
   CompilerParseStamp: integer;
   CompilerGraphStamp: integer;
   OnParseString: TParseStringEvent;
@@ -983,14 +987,14 @@ var
 begin
   if (UseExistingFile and (XMLConfigFile <> nil)) then
   begin
-    LoadTheCompilerOptions('');
+    LoadTheCompilerOptions('CompilerOptions');
   end
   else
   begin
     confPath := GetXMLConfigPath;
     try
       XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-      LoadTheCompilerOptions('');
+      LoadTheCompilerOptions('CompilerOptions');
       XMLConfigFile.Free;
       XMLConfigFile := nil;
     except
@@ -1123,18 +1127,15 @@ var
   
 begin
   { Load the compiler options from the XML file }
-  if Path='' then
-    p:='CompilerOptions/Target/'
-  else
-    p:=Path;
-
+  p:=Path;
   PathDelimChanged:=XMLConfigFile.GetValue(p+'PathDelim/Value', '/')<>PathDelim;
 
   { Target }
+  p:=Path+'Target/';
   TargetFilename := XMLConfigFile.GetValue(p+'Filename/Value', '');
 
   { SearchPaths }
-  p:='CompilerOptions/SearchPaths/';
+  p:=Path+'SearchPaths/';
   IncludeFiles := f(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
   Libraries := f(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
   OtherUnitFiles := f(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
@@ -1144,7 +1145,7 @@ begin
   SrcPath := f(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
   { Parsing }
-  p:='CompilerOptions/Parsing/';
+  p:=Path+'Parsing/';
   Style := XMLConfigFile.GetValue(p+'Style/Value', 1);
   D2Extensions := XMLConfigFile.GetValue(p+'SymantecChecking/D2Extensions/Value', true);
   CStyleOperators := XMLConfigFile.GetValue(p+'SymantecChecking/CStyleOperator/Value', true);
@@ -1160,7 +1161,7 @@ begin
   GPCCompat := XMLConfigFile.GetValue(p+'SymantecChecking/GPCCompat/Value', false);
 
   { CodeGeneration }
-  p:='CompilerOptions/CodeGeneration/';
+  p:=Path+'CodeGeneration/';
   UnitStyle := XMLConfigFile.GetValue(p+'UnitStyle/Value', 1);
   IOChecks := XMLConfigFile.GetValue(p+'Checks/IOChecks/Value', false);
   RangeChecks := XMLConfigFile.GetValue(p+'Checks/RangeChecks/Value', false);
@@ -1177,7 +1178,7 @@ begin
   TargetOS := XMLConfigFile.GetValue(p+'TargetOS/Value', '');
 
   { Linking }
-  p:='CompilerOptions/Linking/';
+  p:=Path+'Linking/';
   GenerateDebugInfo := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
   GenerateDebugDBX := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugDBX/Value', false);
   UseLineInfoUnit := XMLConfigFile.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
@@ -1189,7 +1190,7 @@ begin
   LinkerOptions := f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', ''));
     
   { Messages }
-  p:='CompilerOptions/Other/';
+  p:=Path+'Other/';
   ShowErrors := XMLConfigFile.GetValue(p+'Verbosity/ShowErrors/Value', true);
   ShowWarn := XMLConfigFile.GetValue(p+'Verbosity/ShowWarn/Value', true);
   ShowNotes := XMLConfigFile.GetValue(p+'Verbosity/ShowNotes/Value', true);
@@ -1210,7 +1211,7 @@ begin
   StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
   { Other }
-  p:='CompilerOptions/Other/';
+  p:=Path+'Other/';
   DontUseConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
   AdditionalConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false);
   ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg'));
@@ -1232,14 +1233,14 @@ var
 begin
   if ((UseExistingFile) and (XMLConfigFile <> nil)) then
   begin
-    SaveTheCompilerOptions('');
+    SaveTheCompilerOptions('CompilerOptions');
   end
   else
   begin
     confPath := GetXMLConfigPath;
     try
       XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-      SaveTheCompilerOptions('');
+      SaveTheCompilerOptions('CompilerOptions');
       XMLConfigFile.Free;
       XMLConfigFile := nil;
     except
@@ -1259,18 +1260,15 @@ var
   P: string;
 begin
   { Save the compiler options to the XML file }
-  if Path='' then
-    p:='CompilerOptions/Target/'
-  else
-    p:=Path;
-    
+  p:=Path;
   XMLConfigFile.SetDeleteValue(p+'PathDelim/Value', PathDelim, '/');
 
   { Target }
+  p:=Path+'Target/';
   XMLConfigFile.SetDeleteValue(p+'Filename/Value', TargetFilename,'');
 
   { SearchPaths }
-  p:='CompilerOptions/SearchPaths/';
+  p:=Path+'SearchPaths/';
   XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', IncludeFiles,'');
   XMLConfigFile.SetDeleteValue(p+'Libraries/Value', Libraries,'');
   XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', OtherUnitFiles,'');
@@ -1280,7 +1278,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', SrcPath,'');
 
   { Parsing }
-  p:='CompilerOptions/Parsing/';
+  p:=Path+'Parsing/';
   XMLConfigFile.SetDeleteValue(p+'Style/Value', Style,1);
   XMLConfigFile.SetDeleteValue(p+'SymantecChecking/D2Extensions/Value', D2Extensions,true);
   XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CStyleOperator/Value', CStyleOperators,true);
@@ -1296,7 +1294,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'SymantecChecking/GPCCompat/Value', GPCCompat,false);
   
   { CodeGeneration }
-  p:='CompilerOptions/CodeGeneration/';
+  p:=Path+'CodeGeneration/';
   XMLConfigFile.SetDeleteValue(p+'UnitStyle/Value', UnitStyle,1);
   XMLConfigFile.SetDeleteValue(p+'Checks/IOChecks/Value', IOChecks,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
@@ -1314,7 +1312,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'LinkStyle/Value', LinkStyle,1);
 
   { Linking }
-  p:='CompilerOptions/Linking/';
+  p:=Path+'Linking/';
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugDBX/Value', GenerateDebugDBX,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
@@ -1325,7 +1323,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
     
   { Messages }
-  p:='CompilerOptions/Other/';
+  p:=Path+'Other/';
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
@@ -1346,7 +1344,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
   { Other }
-  p:='CompilerOptions/Other/';
+  p:=Path+'Other/';
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile,false);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'./fpc.cfg');
@@ -2473,6 +2471,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TfrmCompilerOptions.GetCompilerOptions;
+begin
+  GetCompilerOptions(nil);
+end;
+
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions ButtonOKClicked                                         }
 {------------------------------------------------------------------------------}
@@ -2649,326 +2652,342 @@ begin
                         InheritedPage.ClientWidth,InheritedPage.ClientHeight-y);
 end;
 
-procedure TfrmCompilerOptions.LCLWidgetTypeRadioGroupClick(Sender: TObject);
+procedure TfrmCompilerOptions.ButtonLoadSaveClick(Sender: TObject);
 begin
-
+  if Assigned(OnImExportCompilerOptions) then
+    OnImExportCompilerOptions(Self);
 end;
 
 {------------------------------------------------------------------------------
   TfrmCompilerOptions GetCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.GetCompilerOptions;
+procedure TfrmCompilerOptions.GetCompilerOptions(
+  SrcCompilerOptions: TBaseCompilerOptions);
 var
   i: integer;
   EnabledLinkerOpts: Boolean;
+  Options: TBaseCompilerOptions;
 begin
-  EnabledLinkerOpts:=CompilerOpts.NeedsLinkerOpts;
+  if SrcCompilerOptions<>nil then
+    Options:=SrcCompilerOptions
+  else
+    Options:=CompilerOpts;
+    
+  EnabledLinkerOpts:=Options.NeedsLinkerOpts;
   
   { Get the compiler options and apply them to the dialog }
 
   // paths
-  edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
-  edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
-  edtLibraries.Text := CompilerOpts.Libraries;
+  edtOtherUnits.Text := Options.OtherUnitFiles;
+  edtIncludeFiles.Text := Options.IncludeFiles;
+  edtLibraries.Text := Options.Libraries;
   grpLibraries.Enabled:=EnabledLinkerOpts;
-  edtOtherSources.Text := CompilerOpts.SrcPath;
-  edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
-  edtDebugPath.Text := CompilerOpts.DebugPath;
+  edtOtherSources.Text := Options.SrcPath;
+  edtUnitOutputDir.Text := Options.UnitOutputDirectory;
+  edtDebugPath.Text := Options.DebugPath;
 
-  i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
+  i:=LCLWidgetTypeRadioGroup.Items.IndexOf(Options.LCLWidgetType);
   if i<0 then i:=0;
   LCLWidgetTypeRadioGroup.ItemIndex:=i;
-  i:=TargetOSComboBox.Items.IndexOf(CompilerOpts.TargetOS);
+  i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
   if i<0 then i:=0;
   TargetOSComboBox.ItemIndex:=i;
-  TargetOSComboBox.Text:=CompilerOpts.TargetOS;
+  TargetOSComboBox.Text:=Options.TargetOS;
 
   // parsing
-  case CompilerOpts.Style of
+  case Options.Style of
     1: radStyleIntel.Checked := true;
     2: radStyleATT.Checked := true;
     3: radStyleATT.Checked := true;
   end;
 
-  chkSymD2Ext.Checked := CompilerOpts.D2Extensions;
-  chkSymCOper.Checked := CompilerOpts.CStyleOperators;
-  chkSymIncludeAssertions.Checked := CompilerOpts.IncludeAssertionCode;
-  chkSymAllowLab.Checked := CompilerOpts.AllowLabel;
-  chkSymCPPInline.Checked := CompilerOpts.CPPInline;
-  chkSymCMacros.Checked := CompilerOpts.CStyleMacros;
-  chkSymTP7Compat.Checked := CompilerOpts.TPCompatible;
-  chkSymConstInit.Checked := CompilerOpts.InitConstructor;
-  chkSymStaticKwd.Checked := CompilerOpts.StaticKeyword;
-  chkSymDelphiCompat.Checked := CompilerOpts.DelphiCompat;
-  chkSymUseAnsiStrings.Checked := CompilerOpts.UseAnsiStrings;
-  chkSymGPCCompat.Checked := CompilerOpts.GPCCompat;
+  chkSymD2Ext.Checked := Options.D2Extensions;
+  chkSymCOper.Checked := Options.CStyleOperators;
+  chkSymIncludeAssertions.Checked := Options.IncludeAssertionCode;
+  chkSymAllowLab.Checked := Options.AllowLabel;
+  chkSymCPPInline.Checked := Options.CPPInline;
+  chkSymCMacros.Checked := Options.CStyleMacros;
+  chkSymTP7Compat.Checked := Options.TPCompatible;
+  chkSymConstInit.Checked := Options.InitConstructor;
+  chkSymStaticKwd.Checked := Options.StaticKeyword;
+  chkSymDelphiCompat.Checked := Options.DelphiCompat;
+  chkSymUseAnsiStrings.Checked := Options.UseAnsiStrings;
+  chkSymGPCCompat.Checked := Options.GPCCompat;
 
   // code generation
-  grpUnitStyle.ItemIndex:=CompilerOpts.UnitStyle;
+  grpUnitStyle.ItemIndex:=Options.UnitStyle;
 
-  chkChecksIO.Checked := CompilerOpts.IOChecks;
-  chkChecksRange.Checked := CompilerOpts.RangeChecks;
-  chkChecksOverflow.Checked := CompilerOpts.OverflowChecks;
-  chkChecksStack.Checked := CompilerOpts.StackChecks;
+  chkChecksIO.Checked := Options.IOChecks;
+  chkChecksRange.Checked := Options.RangeChecks;
+  chkChecksOverflow.Checked := Options.OverflowChecks;
+  chkChecksStack.Checked := Options.StackChecks;
 
   grpHeapSize.Enabled:=EnabledLinkerOpts;
-  edtHeapSize.Text := IntToStr(CompilerOpts.HeapSize);
+  edtHeapSize.Text := IntToStr(Options.HeapSize);
 
-  case CompilerOpts.Generate of
+  case Options.Generate of
       1: radGenFaster.Checked := true;
       2: radGenSmaller.Checked := true;
   end;
 
-  case CompilerOpts.TargetProcessor of
+  case Options.TargetProcessor of
     1: radTarget386.Checked := true;
     2: radTargetPent.Checked := true;
     3: radTargetPentPro.Checked := true;
   end;
 
-  chkOptVarsInReg.Checked := CompilerOpts.VariablesInRegisters;
-  chkOptUncertain.Checked := CompilerOpts.UncertainOptimizations;
+  chkOptVarsInReg.Checked := Options.VariablesInRegisters;
+  chkOptUncertain.Checked := Options.UncertainOptimizations;
 
-  case CompilerOpts.OptimizationLevel of
+  case Options.OptimizationLevel of
     1: radOptLevel1.Checked := true;
     2: radOptLevel2.Checked := true;
     3: radOptLevel3.Checked := true;
   end;
 
   // linking
-  chkDebugGDB.Checked := CompilerOpts.GenerateDebugInfo;
-  chkDebugDBX.Checked := CompilerOpts.GenerateDebugDBX;
-  chkUseLineInfoUnit.Checked := CompilerOpts.UseLineInfoUnit;
-  chkUseHeaptrc.Checked := CompilerOpts.UseHeaptrc;
-  chkGenGProfCode.Checked := CompilerOpts.GenGProfCode;
-  chkSymbolsStrip.Checked := CompilerOpts.StripSymbols;
+  chkDebugGDB.Checked := Options.GenerateDebugInfo;
+  chkDebugDBX.Checked := Options.GenerateDebugDBX;
+  chkUseLineInfoUnit.Checked := Options.UseLineInfoUnit;
+  chkUseHeaptrc.Checked := Options.UseHeaptrc;
+  chkGenGProfCode.Checked := Options.GenGProfCode;
+  chkSymbolsStrip.Checked := Options.StripSymbols;
   chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
 
-  case CompilerOpts.LinkStyle of
+  case Options.LinkStyle of
     1: radLibsLinkDynamic.Checked := true;
     2: radLibsLinkStatic.Checked := true;
     3: radLibsLinkSmart.Checked := true;
   end;
   grpLinkLibraries.Enabled:=EnabledLinkerOpts;
 
-  chkOptionsLinkOpt.Checked := CompilerOpts.PassLinkerOptions;
-  edtOptionsLinkOpt.Text := CompilerOpts.LinkerOptions;
+  chkOptionsLinkOpt.Checked := Options.PassLinkerOptions;
+  edtOptionsLinkOpt.Text := Options.LinkerOptions;
   grpOptions.Enabled:=EnabledLinkerOpts;
 
   // messages
-  chkErrors.Checked := CompilerOpts.ShowErrors;
-  chkWarnings.Checked := CompilerOpts.ShowWarn;
-  chkNotes.Checked := CompilerOpts.ShowNotes;
-  chkHints.Checked := CompilerOpts.ShowHints;
-  chkGeneralInfo.Checked := CompilerOpts.ShowGenInfo;
-  chkLineNumbers.Checked := CompilerOpts.ShowLineNum;
-  chkEverything.Checked := CompilerOpts.ShowAll;
-  chkAllProcsOnError.Checked := CompilerOpts.ShowAllProcsOnError;
-  chkDebugInfo.Checked := CompilerOpts.ShowDebugInfo;
-  chkUsedFiles.Checked := CompilerOpts.ShowUsedFiles;
-  chkTriedFiles.Checked := CompilerOpts.ShowTriedFiles;
-  chkDefinedMacros.Checked := CompilerOpts.ShowDefMacros;
-  chkCompiledProc.Checked := CompilerOpts.ShowCompProc;
-  chkConditionals.Checked := CompilerOpts.ShowCond;
-  chkNothing.Checked := CompilerOpts.ShowNothing;
+  chkErrors.Checked := Options.ShowErrors;
+  chkWarnings.Checked := Options.ShowWarn;
+  chkNotes.Checked := Options.ShowNotes;
+  chkHints.Checked := Options.ShowHints;
+  chkGeneralInfo.Checked := Options.ShowGenInfo;
+  chkLineNumbers.Checked := Options.ShowLineNum;
+  chkEverything.Checked := Options.ShowAll;
+  chkAllProcsOnError.Checked := Options.ShowAllProcsOnError;
+  chkDebugInfo.Checked := Options.ShowDebugInfo;
+  chkUsedFiles.Checked := Options.ShowUsedFiles;
+  chkTriedFiles.Checked := Options.ShowTriedFiles;
+  chkDefinedMacros.Checked := Options.ShowDefMacros;
+  chkCompiledProc.Checked := Options.ShowCompProc;
+  chkConditionals.Checked := Options.ShowCond;
+  chkNothing.Checked := Options.ShowNothing;
   chkHintsForUnusedProjectUnits.Checked :=
-    CompilerOpts.ShowHintsForUnusedProjectUnits;
+    Options.ShowHintsForUnusedProjectUnits;
 
-  chkFPCLogo.Checked := CompilerOpts.WriteFPCLogo;
+  chkFPCLogo.Checked := Options.WriteFPCLogo;
 
   // other
-  chkConfigFile.Checked := not CompilerOpts.DontUseConfigFile;
-  chkAdditionalConfigFile.Checked := CompilerOpts.AdditionalConfigFile;
+  chkConfigFile.Checked := not Options.DontUseConfigFile;
+  chkAdditionalConfigFile.Checked := Options.AdditionalConfigFile;
   edtConfigPath.Enabled := chkAdditionalConfigFile.Checked;
-  edtConfigPath.Text := CompilerOpts.ConfigFilePath;
-  memCustomOptions.Text := CompilerOpts.CustomOptions;
+  edtConfigPath.Text := Options.ConfigFilePath;
+  memCustomOptions.Text := Options.CustomOptions;
   
-  edtErrorCnt.Text := IntToStr(CompilerOpts.StopAfterErrCount);
+  edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
   // inherited tab
   UpdateInheritedTab;
 
   // compilation
-  ExecuteBeforeCommandEdit.Text:=CompilerOpts.ExecuteBefore.Command;
-  ExecuteBeforeScanFPCCheckBox.Checked:=
-                                  CompilerOpts.ExecuteBefore.ScanForFPCMessages;
+  ExecuteBeforeCommandEdit.Text:=Options.ExecuteBefore.Command;
+  ExecuteBeforeScanFPCCheckBox.Checked:=Options.ExecuteBefore.ScanForFPCMessages;
   ExecuteBeforeScanMakeCheckBox.Checked:=
-                                 CompilerOpts.ExecuteBefore.ScanForMakeMessages;
-  edtCompiler.Text := CompilerOpts.CompilerPath;
-  chkSkipCompiler.Checked := CompilerOpts.SkipCompiler;
-  ExecuteAfterCommandEdit.Text:=CompilerOpts.ExecuteAfter.Command;
-  ExecuteAfterScanFPCCheckBox.Checked:=
-                                   CompilerOpts.ExecuteAfter.ScanForFPCMessages;
-  ExecuteAfterScanMakeCheckBox.Checked:=
-                                  CompilerOpts.ExecuteAfter.ScanForMakeMessages;
+                                      Options.ExecuteBefore.ScanForMakeMessages;
+  edtCompiler.Text := Options.CompilerPath;
+  chkSkipCompiler.Checked := Options.SkipCompiler;
+  ExecuteAfterCommandEdit.Text:=Options.ExecuteAfter.Command;
+  ExecuteAfterScanFPCCheckBox.Checked:=Options.ExecuteAfter.ScanForFPCMessages;
+  ExecuteAfterScanMakeCheckBox.Checked:=Options.ExecuteAfter.ScanForMakeMessages;
 end;
 
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions PutCompilerOptions                                      }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.PutCompilerOptions;
+procedure TfrmCompilerOptions.PutCompilerOptions(
+  DestCompilerOptions: TBaseCompilerOptions);
 var
   code: LongInt;
   hs: LongInt;
   i: integer;
   OldCompOpts: TBaseCompilerOptions;
   NewTargetOS: String;
+  Options: TBaseCompilerOptions;
 begin
   { Put the compiler options into the TCompilerOptions class to be saved }
-  if ReadOnly then exit;
+  if DestCompilerOptions<>nil then
+    Options:=DestCompilerOptions
+  else
+    Options:=CompilerOpts;
+  if ReadOnly and (Options=CompilerOpts) then exit;
   
   OldCompOpts:=TBaseCompilerOptions.Create(nil);
-  OldCompOpts.Assign(CompilerOpts);
+  OldCompOpts.Assign(Options);
 
   // paths
-  CompilerOpts.IncludeFiles := edtIncludeFiles.Text;
-  CompilerOpts.Libraries := edtLibraries.Text;
-  CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
-  CompilerOpts.SrcPath := edtOtherSources.Text;
-  CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
-  CompilerOpts.DebugPath := edtDebugPath.Text;
+  Options.IncludeFiles := edtIncludeFiles.Text;
+  Options.Libraries := edtLibraries.Text;
+  Options.OtherUnitFiles := edtOtherUnits.Text;
+  Options.SrcPath := edtOtherSources.Text;
+  Options.UnitOutputDirectory := edtUnitOutputDir.Text;
+  Options.DebugPath := edtDebugPath.Text;
 
   i:=LCLWidgetTypeRadioGroup.Itemindex;
   if i<0 then i:=0;
-  CompilerOpts.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
+  Options.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
 
   // parsing
   if (radStyleIntel.Checked) then
-    CompilerOpts.Style := 1
+    Options.Style := 1
   else if (radStyleATT.Checked) then
-    CompilerOpts.Style := 2
+    Options.Style := 2
   else if (radStyleAsIs.Checked) then
-    CompilerOpts.Style := 3
+    Options.Style := 3
   else
-    CompilerOpts.Style := 1;
+    Options.Style := 1;
 
-  CompilerOpts.D2Extensions := chkSymD2Ext.Checked;
-  CompilerOpts.CStyleOperators := chkSymCOper.Checked;
-  CompilerOpts.IncludeAssertionCode := chkSymIncludeAssertions.Checked;
-  CompilerOpts.AllowLabel := chkSymAllowLab.Checked;
-  CompilerOpts.CPPInline := chkSymCPPInline.Checked;
-  CompilerOpts.CStyleMacros := chkSymCMacros.Checked;
-  CompilerOpts.TPCompatible := chkSymTP7Compat.Checked;
-  CompilerOpts.InitConstructor := chkSymConstInit.Checked;
-  CompilerOpts.StaticKeyword := chkSymStaticKwd.Checked;
-  CompilerOpts.DelphiCompat := chkSymDelphiCompat.Checked;
-  CompilerOpts.UseAnsiStrings := chkSymUseAnsiStrings.Checked;
-  CompilerOpts.GPCCompat := chkSymGPCCompat.Checked;
+  Options.D2Extensions := chkSymD2Ext.Checked;
+  Options.CStyleOperators := chkSymCOper.Checked;
+  Options.IncludeAssertionCode := chkSymIncludeAssertions.Checked;
+  Options.AllowLabel := chkSymAllowLab.Checked;
+  Options.CPPInline := chkSymCPPInline.Checked;
+  Options.CStyleMacros := chkSymCMacros.Checked;
+  Options.TPCompatible := chkSymTP7Compat.Checked;
+  Options.InitConstructor := chkSymConstInit.Checked;
+  Options.StaticKeyword := chkSymStaticKwd.Checked;
+  Options.DelphiCompat := chkSymDelphiCompat.Checked;
+  Options.UseAnsiStrings := chkSymUseAnsiStrings.Checked;
+  Options.GPCCompat := chkSymGPCCompat.Checked;
 
   // code generation
-  CompilerOpts.UnitStyle := grpUnitStyle.ItemIndex;
+  Options.UnitStyle := grpUnitStyle.ItemIndex;
 
-  CompilerOpts.IOChecks := chkChecksIO.Checked;
-  CompilerOpts.RangeChecks := chkChecksRange.Checked;
-  CompilerOpts.OverflowChecks := chkChecksOverflow.Checked;
-  CompilerOpts.StackChecks := chkChecksStack.Checked;
+  Options.IOChecks := chkChecksIO.Checked;
+  Options.RangeChecks := chkChecksRange.Checked;
+  Options.OverflowChecks := chkChecksOverflow.Checked;
+  Options.StackChecks := chkChecksStack.Checked;
 
   Val(edtHeapSize.Text, hs, code);
   if (code <> 0) then
-    CompilerOpts.HeapSize := 8000000
+    Options.HeapSize := 8000000
   else
-    CompilerOpts.HeapSize := hs;
+    Options.HeapSize := hs;
 
   if (radGenFaster.Checked) then
-    CompilerOpts.Generate := 1
+    Options.Generate := 1
   else if (radGenSmaller.Checked) then
-    CompilerOpts.Generate := 2
+    Options.Generate := 2
   else
-    CompilerOpts.Generate := 1;
+    Options.Generate := 1;
 
   if (radTarget386.Checked) then
-    CompilerOpts.TargetProcessor := 1
+    Options.TargetProcessor := 1
   else if (radTargetPent.Checked) then
-    CompilerOpts.TargetProcessor := 2
+    Options.TargetProcessor := 2
   else if (radTargetPentPro.Checked) then
-    CompilerOpts.TargetProcessor := 3
+    Options.TargetProcessor := 3
   else
-    CompilerOpts.TargetProcessor := 1;
+    Options.TargetProcessor := 1;
 
-  CompilerOpts.VariablesInRegisters := chkOptVarsInReg.Checked;
-  CompilerOpts.UncertainOptimizations := chkOptUncertain.Checked;
+  Options.VariablesInRegisters := chkOptVarsInReg.Checked;
+  Options.UncertainOptimizations := chkOptUncertain.Checked;
 
   if (radOptLevel1.Checked) then
-    CompilerOpts.OptimizationLevel := 1
+    Options.OptimizationLevel := 1
   else if (radOptLevel2.Checked) then
-    CompilerOpts.OptimizationLevel := 2
+    Options.OptimizationLevel := 2
   else if (radOptLevel3.Checked) then
-    CompilerOpts.OptimizationLevel := 3
+    Options.OptimizationLevel := 3
   else
-    CompilerOpts.OptimizationLevel := 1;
+    Options.OptimizationLevel := 1;
 
   // linking
-  CompilerOpts.GenerateDebugInfo := chkDebugGDB.Checked;
-  CompilerOpts.GenerateDebugDBX := chkDebugDBX.Checked;
-  CompilerOpts.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
-  CompilerOpts.UseHeaptrc := chkUseHeaptrc.Checked;
-  CompilerOpts.GenGProfCode := chkGenGProfCode.Checked;
-  CompilerOpts.StripSymbols := chkSymbolsStrip.Checked;
+  Options.GenerateDebugInfo := chkDebugGDB.Checked;
+  Options.GenerateDebugDBX := chkDebugDBX.Checked;
+  Options.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
+  Options.UseHeaptrc := chkUseHeaptrc.Checked;
+  Options.GenGProfCode := chkGenGProfCode.Checked;
+  Options.StripSymbols := chkSymbolsStrip.Checked;
 
-  CompilerOpts.PassLinkerOptions := chkOptionsLinkOpt.Checked;
-  CompilerOpts.LinkerOptions := edtOptionsLinkOpt.Text;
+  Options.PassLinkerOptions := chkOptionsLinkOpt.Checked;
+  Options.LinkerOptions := edtOptionsLinkOpt.Text;
 
   if (radLibsLinkDynamic.Checked) then
-    CompilerOpts.LinkStyle := 1
+    Options.LinkStyle := 1
   else if (radLibsLinkStatic.Checked) then
-    CompilerOpts.LinkStyle := 2
+    Options.LinkStyle := 2
   else if (radLibsLinkSmart.Checked) then
-    CompilerOpts.LinkStyle := 3
+    Options.LinkStyle := 3
   else
-    CompilerOpts.LinkStyle := 1;
+    Options.LinkStyle := 1;
   
   // messages
-  CompilerOpts.ShowErrors := chkErrors.Checked;
-  CompilerOpts.ShowWarn := chkWarnings.Checked;
-  CompilerOpts.ShowNotes := chkNotes.Checked;
-  CompilerOpts.ShowHints := chkHints.Checked;
-  CompilerOpts.ShowGenInfo := chkGeneralInfo.Checked;
-  CompilerOpts.ShowLineNum := chkLineNumbers.Checked;
-  CompilerOpts.ShowAll := chkEverything.Checked;
-  CompilerOpts.ShowAllProcsOnError := chkAllProcsOnError.Checked;
-  CompilerOpts.ShowDebugInfo := chkDebugInfo.Checked;
-  CompilerOpts.ShowUsedFiles := chkUsedFiles.Checked;
-  CompilerOpts.ShowTriedFiles := chkTriedFiles.Checked;
-  CompilerOpts.ShowDefMacros := chkDefinedMacros.Checked;
-  CompilerOpts.ShowCompProc := chkCompiledProc.Checked;
-  CompilerOpts.ShowCond := chkConditionals.Checked;
-  CompilerOpts.ShowNothing := chkNothing.Checked;
-  CompilerOpts.ShowHintsForUnusedProjectUnits := chkHintsForUnusedProjectUnits.Checked;
+  Options.ShowErrors := chkErrors.Checked;
+  Options.ShowWarn := chkWarnings.Checked;
+  Options.ShowNotes := chkNotes.Checked;
+  Options.ShowHints := chkHints.Checked;
+  Options.ShowGenInfo := chkGeneralInfo.Checked;
+  Options.ShowLineNum := chkLineNumbers.Checked;
+  Options.ShowAll := chkEverything.Checked;
+  Options.ShowAllProcsOnError := chkAllProcsOnError.Checked;
+  Options.ShowDebugInfo := chkDebugInfo.Checked;
+  Options.ShowUsedFiles := chkUsedFiles.Checked;
+  Options.ShowTriedFiles := chkTriedFiles.Checked;
+  Options.ShowDefMacros := chkDefinedMacros.Checked;
+  Options.ShowCompProc := chkCompiledProc.Checked;
+  Options.ShowCond := chkConditionals.Checked;
+  Options.ShowNothing := chkNothing.Checked;
+  Options.ShowHintsForUnusedProjectUnits := chkHintsForUnusedProjectUnits.Checked;
 
-  CompilerOpts.WriteFPCLogo := chkFPCLogo.Checked;
+  Options.WriteFPCLogo := chkFPCLogo.Checked;
 
   // other
-  CompilerOpts.DontUseConfigFile := not chkConfigFile.Checked;
-  CompilerOpts.AdditionalConfigFile := chkAdditionalConfigFile.Checked;
-  CompilerOpts.ConfigFilePath := edtConfigPath.Text;
-  CompilerOpts.CustomOptions := memCustomOptions.Text;
+  Options.DontUseConfigFile := not chkConfigFile.Checked;
+  Options.AdditionalConfigFile := chkAdditionalConfigFile.Checked;
+  Options.ConfigFilePath := edtConfigPath.Text;
+  Options.CustomOptions := memCustomOptions.Text;
   
-  CompilerOpts.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
+  Options.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
     
     
   NewTargetOS:=TargetOSComboBox.Text;
   if (NewTargetOS<>'') and (not IsValidIdent(NewTargetOS)) then
     NewTargetOS:='';
-  CompilerOpts.TargetOS:=NewTargetOS;
+  Options.TargetOS:=NewTargetOS;
 
   // compilation
-  CompilerOpts.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
-  CompilerOpts.ExecuteBefore.ScanForFPCMessages :=
+  Options.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;
+  Options.ExecuteBefore.ScanForFPCMessages :=
                                            ExecuteBeforeScanFPCCheckBox.Checked;
-  CompilerOpts.ExecuteBefore.ScanForMakeMessages :=
+  Options.ExecuteBefore.ScanForMakeMessages :=
                                           ExecuteBeforeScanMakeCheckBox.Checked;
-  CompilerOpts.CompilerPath := edtCompiler.Text;
-  CompilerOpts.SkipCompiler := chkSkipCompiler.Checked;
-  CompilerOpts.ExecuteAfter.Command := ExecuteAfterCommandEdit.Text;
-  CompilerOpts.ExecuteAfter.ScanForFPCMessages :=
+  Options.CompilerPath := edtCompiler.Text;
+  Options.SkipCompiler := chkSkipCompiler.Checked;
+  Options.ExecuteAfter.Command := ExecuteAfterCommandEdit.Text;
+  Options.ExecuteAfter.ScanForFPCMessages :=
                                             ExecuteAfterScanFPCCheckBox.Checked;
-  CompilerOpts.ExecuteAfter.ScanForMakeMessages :=
+  Options.ExecuteAfter.ScanForMakeMessages :=
                                            ExecuteAfterScanMakeCheckBox.Checked;
 
 
   // check for change and save
-  if not OldCompOpts.IsEqual(CompilerOpts) then
-    CompilerOpts.Modified:=true;
+  if not OldCompOpts.IsEqual(Options) then
+    Options.Modified:=true;
   OldCompOpts.Free;
+end;
+
+procedure TfrmCompilerOptions.PutCompilerOptions;
+begin
+  PutCompilerOptions(nil);
 end;
 
 procedure TfrmCompilerOptions.UpdateInheritedTab;
@@ -3074,6 +3093,7 @@ begin
       Dispose(ChildData);
     end;
     InheritedChildDatas.Free;
+    InheritedChildDatas:=nil;
   end;
   InhTreeView.Items.Clear;
   InhTreeView.EndUpdate;
@@ -4470,7 +4490,6 @@ begin
     end;
     Columns:=Items.Count;
     ItemIndex:=1;
-    OnClick:=@LCLWidgetTypeRadioGroupClick;
   end;
 end;
 
@@ -4482,52 +4501,44 @@ begin
   // Setup the Button Bar
   Assert(False, 'Trace:Setting up compiler options button bar');
 
-  btnCheck := TButton.Create(Self);
-  with btnCheck do
+  btnOK := TButton.Create(Self);
+  with btnOK do
   begin
     Parent := Self;
-    Width := 70;
-    Height := 23; 
-    Top := Self.Height - btnCheck.Height - 15;
-    Left := Self.Width - btnCheck.Width - 10;
-    Caption := lisCompTest;
-    OnClick := @ButtonCheckClicked;
+    Caption := 'OK';
+    OnClick := @ButtonOKClicked;
   end;
 
   btnCancel := TButton.Create(Self);
   with btnCancel do
   begin
     Parent := Self;
-    Width := 70;
-    Height := 23; 
-    Top := Self.Height - btnCancel.Height - 15;
-    Left := btnCheck.Left - btnCancel.Width - 5;
     Caption := dlgCancel ;
     OnClick := @ButtonCancelClicked;
-  end;
-
-  btnOK := TButton.Create(Self);
-  with btnOK do
-  begin
-    Parent := Self;
-    Width := 70;
-    Height := 23; 
-    Top := Self.Height - btnOK.Height - 15;
-    Left := btnCancel.Left - btnOK.Width - 5;
-    Caption := 'OK';
-    OnClick := @ButtonOKClicked;
   end;
 
   btnShowOptions := TButton.Create(Self);
   with btnShowOptions do
   begin
     Parent := Self;
-    Width := 110;
-    Height := 23; 
-    Top := Self.Height - btnShowOptions.Height - 15;
-    Left := btnOK.Left - btnShowOptions.Width - 5;
     Caption := dlgCOShowOptions;
     OnClick := @ButtonShowOptionsClicked;
+  end;
+
+  btnCheck := TButton.Create(Self);
+  with btnCheck do
+  begin
+    Parent := Self;
+    Caption := lisCompTest;
+    OnClick := @ButtonCheckClicked;
+  end;
+
+  btnLoadSave := TButton.Create(Self);
+  with btnLoadSave do
+  begin
+    Parent := Self;
+    Caption := dlgCOLoadSave;
+    OnClick := @ButtonLoadSaveClick;
   end;
 end;
 
@@ -4626,11 +4637,20 @@ begin
     SetBounds(0,0,Parent.ClientWidth,Parent.ClientHeight-45);
 
   x:=Width - 10;
-  y:=Height - btnCheck.Height - 15;
+  y:=Height - btnCheck.Height - 12;
+
+  with btnLoadSave do
+    SetBounds(x-120,y,120,Height);
+  dec(x,btnLoadSave.Width+10);
+
   with btnCheck do
     SetBounds(x-70,y,70,Height);
   dec(x,btnCheck.Width+10);
-  
+
+  with btnShowOptions do
+    SetBounds(x-120,y,120,Height);
+  dec(x,btnShowOptions.Width+10);
+
   with btnCancel do
     SetBounds(x-70,y,70,Height);
   dec(x,btnCancel.Width+10);
@@ -4638,9 +4658,6 @@ begin
   with btnOK do
     SetBounds(x-70,y,70,Height);
   dec(x,btnOk.Width+10);
-
-  with btnShowOptions do
-    SetBounds(x-120,y,120,Height);
 end;
 
 procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);

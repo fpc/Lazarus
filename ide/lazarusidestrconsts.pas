@@ -876,6 +876,7 @@ resourcestring
   dlgLCLWidgetType = 'LCL Widget Type';
   dlgButApply = 'Apply';
   dlgCOShowOptions = 'Show Options';
+  dlgCOLoadSave = 'Load/Save';
   dlgMainViewForms = 'View project forms';
   dlgMainViewUnits = 'View project units';
   dlgMulti = 'Multi';

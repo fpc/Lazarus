@@ -48,6 +48,7 @@ const
   hlMakeResourceStringPrefixes = 'MakeResourceStringPrefixes';
   hlMakeResourceStringLengths = 'MakeResourceStringLengths';
   hlCodeToolsDirectories = 'CodeToolsDirectories';
+  hlCompilerOptsImExport = 'CompilerOptsImExport';
 
 type
   TFileDialogSettings = record

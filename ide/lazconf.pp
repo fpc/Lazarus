@@ -56,7 +56,7 @@ uses
     The secondary config path is for templates. The IDE will never write to it.
     If a config file is not found in the primary config file, Lazarus will
     copy the template file from the secondary config file. If there is no
-    template file, the IDE will create a default file.
+    template file, the IDE will use defaults.
   }
   function GetPrimaryConfigPath: String;
   function GetSecondaryConfigPath: String;
@@ -138,6 +138,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2003/09/10 12:13:48  mattias
+  implemented Import and Export of compiler options
+
   Revision 1.17  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

@@ -1416,8 +1416,7 @@ begin
       SaveUnits;
 
       // Save the compiler options
-      CompilerOptions.XMLConfigFile := xmlconfig;
-      CompilerOptions.SaveCompilerOptions(true);
+      CompilerOptions.SaveToXMLConfig(XMLConfig,'');
       
       // save the Publish Options
       PublishOptions.SaveToXMLConfig(xmlconfig,
@@ -1524,8 +1523,7 @@ begin
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
       // Load the compiler options
-      CompilerOptions.XMLConfigFile := xmlconfig;
-      CompilerOptions.LoadCompilerOptions(true);
+      CompilerOptions.LoadFromXMLConfig(xmlconfig,'');
       if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
 
       // load the Publish Options
@@ -2695,6 +2693,9 @@ end.
 
 {
   $Log$
+  Revision 1.135  2003/09/10 12:13:48  mattias
+  implemented Import and Export of compiler options
+
   Revision 1.134  2003/08/20 15:06:57  mattias
   implemented Build+Run File
 
