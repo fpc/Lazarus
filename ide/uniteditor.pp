@@ -295,13 +295,15 @@ type
     APageIndex: integer; DeleteForwardHistory: boolean) of object;
   TOnMovingPage = procedure(Sender: TObject;
     OldPageIndex, NewPageIndex: integer) of object;
+  TOnShowHintForSource = procedure(SrcEdit: TSourceEditor; ClientPos: TPoint;
+    CaretPos: TPoint) of object;
 
   TSourceNotebook = class(TForm)
-    // popup menu
     ReadOnlyMenuItem: TMenuItem;
     ShowLineNumbersMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
     MoveEditorRightMenuItem: TMenuItem;
+    procedure NotebookShowHint(Sender: TObject; HintInfo: Pointer);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     Procedure BookMarkClicked(Sender : TObject);
     Procedure BookMarkGotoClicked(Sender : TObject);
@@ -328,10 +330,12 @@ type
     FKeyStrokes: TSynEditKeyStrokes;
     FUnUsedEditorComponents: TList; // list of TSynEdit
     FProcessingCommand: boolean;
-
+  private
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnAddWatchAtCursor: TNotifyEvent;
     FOnCloseClicked: TNotifyEvent;
+    FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
+    FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorVisibleChanged: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
@@ -345,14 +349,13 @@ type
     FOnSaveAsClicked: TNotifyEvent;
     FOnSaveAllClicked: TNotifyEvent;
     FOnSaveClicked: TNotifyEvent;
+    FOnShowHintForSource: TOnShowHintForSource;
     FOnShowUnitInfo: TNotifyEvent;
     FOnToggleFormUnitClicked: TNotifyEvent;
     FOnToggleObjectInspClicked: TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
 
-    FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
-    FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
 
     // colors for the completion form (popup form, e.g. word completion)
     FActiveEditDefaultFGColor: TColor;
@@ -387,17 +390,19 @@ type
     procedure OnSynCompletionSearchPosition(var APosition:integer);
     procedure DeactivateCompletionForm;
 
-    
+    Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate;
+       X,Y : Integer);
+    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton;
+       Shift: TShiftstate; X,Y : Integer);
+    Procedure EditorMouseUp(Sender : TObject; Button : TMouseButton;
+       Shift: TShiftstate; X,Y : Integer);
+
     //hintwindow stuff
     FHintWindow : THintWindow;
     FHintTimer : TTimer;
     Procedure HintTimer(sender : TObject);
-    Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate;
-       X,Y : Integer);
-    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; 
-       Shift: TShiftstate; X,Y : Integer);
-    Procedure EditorMouseUp(Sender : TObject; Button : TMouseButton;
-       Shift: TShiftstate; X,Y : Integer);
+    procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
+    procedure ShowSynEditHint(const MousePos: TPoint);
 
     Procedure NextEditor;
     Procedure PrevEditor;
@@ -527,6 +532,8 @@ type
        read FOnSaveAllClicked write FOnSaveAllClicked;
     property OnSaveClicked : TNotifyEvent
        read FOnSaveClicked write FOnSaveClicked;
+    property OnShowHintForSource: TOnShowHintForSource
+       read FOnShowHintForSource write FOnShowHintForSource;
     property OnShowUnitInfo: TNotifyEvent 
        read FOnShowUnitInfo write FOnShowUnitInfo;
     property OnToggleFormUnitClicked : TNotifyEvent 
@@ -1686,7 +1693,6 @@ var
   LineHeight : Integer;
   LineNum : Integer;
   XLine : Integer;
-  //EditorLine,Texts : String;
 begin
   //Figure out the line number
   TopLine := FEditor.TopLine;
@@ -1800,6 +1806,7 @@ var
   ALayout: TIDEWindowLayout;
 begin
   inherited Create(AOwner);
+  Visible:=false;
   Name:=DefaultSourceNoteBookName;
   Caption := locwndSrcEditor;
   FProcessingCommand := false;
@@ -1842,7 +1849,7 @@ begin
   for I := 0 to 9 do Begin
     Pixmap1:=TPixMap.Create;
     Pixmap1.TransparentColor:=clBtnFace;
-    Pixmap1.LoadFromLazarusResource('bookmark'+inttostr(i));
+    Pixmap1.LoadFromLazarusResource('bookmark'+IntToStr(i));
     MarksImgList.Add(Pixmap1,nil);
   end;
   // load active breakpoint image
@@ -1910,21 +1917,24 @@ begin
   IdentCompletionTimer.Enabled := False;
   IdentCompletionTimer.Interval := 500;
 
-  Visible:=false;
-
-//hinttimer
+  // HintTimer
   FHintTimer := TTimer.Create(nil);
-  FHintTimer.Interval := 500;
-  FHintTimer.Enabled := False;
-  FHintTimer.OnTimer := @HintTimer;
+  with FHintTimer do begin
+    Interval := 500;
+    Enabled := False;
+    OnTimer := @HintTimer;
+  end;
 
+  // HintWindow
   FHintWindow := THintWindow.Create(nil);
-
-  FHintWindow.Visible := False;
-  FHintWindow.Caption := '';
-  FHintWindow.HideInterval := 4000;
-  FHintWindow.AutoHide := False;
-
+  with FHintWindow do begin
+    Visible := False;
+    Caption := '';
+    HideInterval := 4000;
+    AutoHide := False;
+  end;
+  
+  Application.AddOnUserInputHandler(@OnApplicationUserInput);
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -1936,18 +1946,15 @@ begin
   ClearUnUsedEditorComponents(true);
   FUnUsedEditorComponents.Free;
   if Notebook<>nil then begin
-    Notebook.Free;
-    NoteBook:=nil;
+    FreeThenNil(Notebook);
   end;
   FKeyStrokes.Free;
   FCodeTemplateModul.Free;
   FSourceEditorList.Free;
   Gotodialog.free;
   
-  FHintTimer.free;
-  FHintTimer:=nil;
-  FHintWindow.Free;
-  FHintWindow:=nil;
+  FreeThenNil(FHintTimer);
+  FreeThenNil(FHintWindow);
 
   inherited Destroy;
 end;
@@ -2368,6 +2375,8 @@ Begin
             Options:=Options-[nboShowCloseButtons];
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseClicked;
+          ShowHint:=true;
+          OnShowHint:=@NotebookShowHint;
           {$IFDEF IDE_DEBUG}
           writeln('[TSourceNotebook.CreateNotebook] E');
           {$ENDIF}
@@ -2421,6 +2430,22 @@ begin
   end;
   MoveEditorLeftMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
   MoveEditorRightMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
+end;
+
+procedure TSourceNotebook.NotebookShowHint(Sender: TObject; HintInfo: Pointer);
+var
+  Tabindex: integer;
+  ASrcEdit: TSourceEditor;
+begin
+  if (NoteBook=nil) or (HintInfo=nil) then exit;
+  TabIndex:=NoteBook.TabIndexAtClientPos(
+                                      Notebook.ScreenToClient(Mouse.CursorPos));
+  if TabIndex<0 then exit;
+  ASrcEdit:=Editors[TabIndex];
+  if ASrcEdit=nil then exit;
+  if ASrcEdit.CodeBuffer<>nil then begin
+    PHintInfo(HintInfo)^.HintStr:=ASrcEdit.CodeBuffer.Filename;
+  end;
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
@@ -2608,7 +2633,6 @@ Begin
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
-  Result.OnMouseUp := @EditorMouseUp;
   Result.OnCreateBreakPoint := @BreakPointCreated;
   Result.OnDeleteBreakPoint := @BreakPointDeleted;
   {$IFDEF IDE_DEBUG}
@@ -3456,11 +3480,6 @@ var i, Command: integer;
 Begin
   inherited KeyDown(Key,Shift);
 
-  if FHIntWindow.Visible then
-     FHintWindow.Visible := False;
-
-  FHintTimer.Enabled := False;
-  
   i := FKeyStrokes.FindKeycode(Key, Shift);
   if i>=0 then begin
     Command:=FKeyStrokes[i].Command;
@@ -3477,26 +3496,87 @@ end;
 Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
   X,Y : Integer);
 begin
-  if FHintWIndow.Visible then
-    FHintWindow.Visible := False;
-
+  // restart hint timer
   FHintTimer.Enabled := False;
   FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools;
 end;
 
+procedure TSourceNotebook.EditorMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
+begin
+
+end;
+
 Procedure TSourceNotebook.HintTimer(sender : TObject);
 var
-  Rect : TRect;
-  AHint, HintEval : String;
-  cPosition : TPoint;
-  TextPosition : TPoint;
-  SE : TSourceEditor;
-  WIndow : TWInControl;
-  Caret : TPoint;
+  MousePos : TPoint;
+  AControl: TControl;
 begin
   FHintTimer.Enabled := False;
-  cPosition := Mouse.CursorPos;
-  Window := FindLCLWindow(cPosition);
+  MousePos := Mouse.CursorPos;
+  AControl:=FindLCLControl(MousePos);
+  if (AControl=nil) or (GetParentForm(AControl)<>Self) then exit;
+  if AControl is TSynEdit then
+    ShowSynEditHint(MousePos);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject;
+    Msg: Cardinal);
+------------------------------------------------------------------------------}
+procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal
+  );
+begin
+  FHintTimer.Enabled:=false;
+  IdentCompletionTimer.Enabled:=false;
+end;
+
+procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftstate; X, Y: Integer);
+begin
+  if GetKeyShiftState=[ssCtrl] then begin
+    // Control+MouseUp = Find Declaration
+    if Assigned(FOnCtrlMouseUp) then begin
+      FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
+    end;
+  end;
+end;
+
+procedure TSourceNotebook.ShowSynEditHint(const MousePos: TPoint);
+var
+  EditPos: TPoint;
+  ASrcEdit: TSourceEditor;
+  ASynEdit: TSynEdit;
+  EditCaret: TPoint;
+  LineMarks: TSynEditMarks;
+  LineMark: TSynEditMark;
+begin
+  // hide other hints
+  Application.HideHint;
+  //
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  ASynEdit:=ASrcEdit.EditorComponent;
+  EditPos:=ASynEdit.ScreenToClient(MousePos);
+  if not PtInRect(ASynEdit.ClientRect,EditPos) then exit;
+  EditCaret:=ASynEdit.PixelsToRowColumn(EditPos);
+  if (EditCaret.Y<1) then exit;
+  if EditPos.X<ASynEdit.Gutter.Width then begin
+    // hint for a gutter item
+    ASynEdit.Marks.GetMarksForLine(EditCaret.Y,LineMarks);
+    LineMark:=LineMarks[Low(TSynEditMarks)];
+    if LineMark<>nil then begin
+
+      // ToDo: give a hint about the mark (e.g. breakpoint properties)
+
+    end;
+  end else begin
+    // hint for source
+    if Assigned(OnShowHintForSource) then
+      OnShowHintForSource(ASrcEdit,EditPos,EditCaret);
+  end;
+
+  (*Window := FindLCLWindow(cPosition);
   if not(Assigned(window)) then Exit;
 
   //get the parent until parent is nil
@@ -3514,18 +3594,18 @@ begin
   //Account for the gutter and tabs
   TextPosition.x := cPosition.X-EditorOPts.GutterWidth;
   TextPosition.Y := cPosition.Y - 28;
-  
+
   if (dcEvaluate in DebugBoss.Commands)
   and SE.EditorComponent.SelAvail
-  then AHint := SE.EditorComponent.SelText 
+  then AHint := SE.EditorComponent.SelText
   else AHint := '';
   if AHint = ''
   then AHint := SE.GetWordFromCaretEx(
-    SE.GetCaretPosFromCursorPos(TextPosition), 
+    SE.GetCaretPosFromCursorPos(TextPosition),
     [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '='],
     [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '=', '.']
   );
-  
+
   //If no hint, then Exit
   if AHint = '' then Exit;
 
@@ -3538,7 +3618,7 @@ begin
   else
   if DebugBoss.Evaluate(AHint, HintEval) then
     AHint := AHint + ' = ' + HintEval;
-    
+
 
   Caret := SE.GetCaretPosfromCursorPos(TextPosition);
   AHint := inttostr(Caret.Y)+','+Inttostr(Caret.X)+' : '+aHint;
@@ -3550,29 +3630,7 @@ begin
   Rect.Right := Rect.Left + Rect.Right+3;
   Rect.Bottom := Rect.Top + Rect.Bottom+3;
   FHintWindow.ActivateHint(Rect,AHint);
-end;
-
-Procedure TSourceNotebook.EditorMouseDown(Sender : TObject; 
-  Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
-begin
-  if FHIntWindow.Visible then
-    FHintWindow.Visible := False;
-     
-  FHintTimer.Enabled := False;
-end;
-
-procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftstate; X, Y: Integer);
-var Handled: boolean;
-begin
-  if GetKeyShiftState=[ssCtrl] then begin
-    // Control+MouseUp = Find Declaration
-    if Assigned(FOnCtrlMouseUp) then begin
-      Handled:=false;
-      FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
-      if Handled then ;
-    end;
-  end;
+  *)
 end;
 
 Procedure TSourceNotebook.AddWatchAtCursor(Sender : TObject);

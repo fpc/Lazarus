@@ -70,7 +70,20 @@ type
   {
     @abstract(Contains a list of images)
     Introduced by Marc Weustink <weus@quicknet.nl>
-    Currently maintained by Marc Weustink <weus@quicknet.nl>
+
+    ToDo:
+      Delphis TCustomImageList has internally only one bitmap to hold all
+      images. This reduces handle allocation, which is a problem under win9x,
+      but it is not very fast.
+      Because the LCL runs on many platforms, that do not have this limitations,
+      the TCustomImageList should also support a one handle per image mode.
+      The TCustomImageList should ask the interface, if handle allocation
+      should be reduced and if so do it like Delphi.
+      
+      The current TCustomImageList is simply a list of bitmaps. The masks are
+      not saved at all.
+      
+      So a lot ToDo.
   }
   TCustomImageList = Class(TComponent)
   private
@@ -112,6 +125,7 @@ type
     destructor Destroy; override;
     procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean{=True});
     procedure GetBitmap(Index: Integer; Image: TBitmap);
+    procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap);
     function GetHotSpot: TPoint; virtual;
     procedure GetIcon(Index: Integer; Image: TIcon);
     function HandleAllocated: Boolean;
@@ -150,6 +164,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.7  2002/08/06 19:57:39  lazarus
   MG: added actnlist.pp
 
