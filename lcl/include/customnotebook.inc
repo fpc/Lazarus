@@ -660,10 +660,6 @@ begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
-  if (FPageIndex<0) and (PageCount>0) then begin
-    fPageIndex:=0;
-    UpdateAllDesignerFlags;
-  end;
   Msg.Page := fPageIndex;
   {$IFDEF NOTEBOOK_DEBUG}
   writeln('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
@@ -736,6 +732,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/12/16 09:17:20  mattias
+  notebook pageindex can be set to -1, if interface supports it
+
   Revision 1.28  2002/12/16 09:02:27  mattias
   applied win32 notebook patch from Vincent
 
