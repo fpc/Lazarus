@@ -534,6 +534,7 @@ type
     {$IFDEF SYN_LAZARUS}
     procedure StartPaintBuffer(const ClipRect: TRect);
     procedure EndPaintBuffer(const ClipRect: TRect);
+    procedure EraseBackground(DC: HDC); override;
     {$ENDIF}
     procedure RecalcCharExtent;
     procedure RedoItem;                                                         //sbs 2000-11-19
@@ -3235,6 +3236,11 @@ begin
   Canvas.CopyRect(ClipRect,BufferBitmap.Canvas,ClipRect);
   //writeln('TCustomSynEdit.EndPaintBuffer END');
   {$ENDIF}
+end;
+
+procedure TCustomSynEdit.EraseBackground(DC: HDC);
+begin
+  // we are painting everything ourselves, so not need to erase background
 end;
 {$ENDIF}
 

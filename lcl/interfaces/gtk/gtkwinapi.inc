@@ -688,7 +688,8 @@ begin
     {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetOwnerShip] C');
     {$EndIf}
-    if gtk_selection_owner_set(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],0)=GdkFalse
+    if gtk_selection_owner_set(ClipboardWidget,
+      ClipboardTypeAtoms[ClipboardType],0)=GdkFalse
     then begin
       {$IfDef DEBUG_CLIPBOARD}
       writeln('[TgtkObject.ClipboardGetOwnerShip] D FAILED');
@@ -9099,6 +9100,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.312  2004/01/10 00:46:46  mattias
+  fixed DestroyComponent
+
   Revision 1.311  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 

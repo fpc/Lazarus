@@ -305,6 +305,7 @@ begin
 end;
 
 function TDesignerDeviceContext.GetFormClientOrigin: TPoint;
+// returns the Form Client Origin on desktop
 begin
   if not (ddcFormClientOriginValid in FFlags) then begin
     FFormClientOrigin:=FForm.ClientOrigin;
@@ -314,6 +315,8 @@ begin
 end;
 
 function TDesignerDeviceContext.GetFormOrigin: TPoint;
+// returns the DC origin relative to the form client origin
+// For example: The DC of the client area of the form itself will return 0,0
 var
   FormClientOrig, DCOrig: TPoint;
 begin

@@ -4500,6 +4500,8 @@ begin
   end;
 
   FixWidget:=GetFixedWidget(Widget);
+  
+  // clipboard widget
 
   // Remove control accelerators - has to be done due to GTK+ bug?
   {$IFNDef GTK2}
@@ -4528,6 +4530,24 @@ begin
     SetComboBoxText(PGtkCombo(Widget),nil);
     FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
     FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
+  end;
+
+  // update mouse capturing
+  if (MouseCaptureWidget=Widget) or (MouseCaptureWidget=FixWidget) then
+    MouseCaptureWidget:=nil;
+
+  // update clipboard widget
+  if (ClipboardWidget=Widget) or (ClipboardWidget=FixWidget) then
+  begin
+    // clipboard widget destroyed
+    if (Application<>nil) and (Application.MainForm<>nil)
+    and (Application.MainForm.HandleAllocated)
+    and (PGtkWidget(Application.MainForm.Handle)<>Widget) then
+      // there is still the main form left -> use it for clipboard
+      SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
+    else
+      // program closed -> close clipboard
+      SetClipboardWidget(nil);
   end;
 
   // update caret
@@ -8577,6 +8597,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.448  2004/01/10 00:46:46  mattias
+  fixed DestroyComponent
+
   Revision 1.447  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 
