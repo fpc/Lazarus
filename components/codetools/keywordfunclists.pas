@@ -84,6 +84,9 @@ var
   WordIsTermOperator,
   WordIsPropertySpecifier,
   WordIsBlockKeyWord,
+  EndKeyWordFuncList,
+  PackedTypesKeyWordFuncList,
+  BlockStatementStartKeyWordFuncList,
   WordIsLogicalBlockStart,
   WordIsBinaryOperator,
   WordIsLvl1Operator, WordIsLvl2Operator, WordIsLvl3Operator, WordIsLvl4Operator,
@@ -709,6 +712,34 @@ begin
     Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  EndKeyWordFuncList:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(EndKeyWordFuncList);
+  with EndKeyWordFuncList do begin
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  PackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(PackedTypesKeyWordFuncList);
+  with PackedTypesKeyWordFuncList do begin
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  BlockStatementStartKeyWordFuncList:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(BlockStatementStartKeyWordFuncList);
+  with BlockStatementStartKeyWordFuncList do begin
+    Add('BEGIN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   UnexpectedKeyWordInBeginBlock:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(UnexpectedKeyWordInBeginBlock);

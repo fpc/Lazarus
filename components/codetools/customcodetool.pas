@@ -109,6 +109,7 @@ type
     function DoAtom: boolean; virtual;
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
+    procedure ReadPriorAtom;
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean;
@@ -138,7 +139,6 @@ type
     function CompareSrcIdentifiers(CleanStartPos: integer;
       AnIdentifier: PChar): boolean;
     function ExtractIdentifier(CleanStartPos: integer): string;
-    procedure ReadPriorAtom;
 
     procedure CreateChildNode;
     procedure EndChildNode;
@@ -683,12 +683,16 @@ begin
         c2:=Src[CurPos.EndPos];
         // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
         if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-        or ((c1='<') and (c2='>'))
+        or ((c1='<') and (c2='>')) // not equal
         or ((c1='>') and (c2='<'))
-        or ((c1='.') and (c2='.'))
+        or ((c1='.') and (c2='.')) // subrange
         or ((c1='*') and (c2='*'))
-        or ((c1='@') and (c2='@'))
         then inc(CurPos.EndPos);
+        if ((c1='@') and (c2='@')) then begin
+          repeat
+            inc(CurPos.EndPos);
+          until (CurPos.EndPos>SrcLen) or (not IsIdentChar[Src[CurPos.EndPos]]);
+        end;
       end;
   end;
 end;
@@ -887,6 +891,9 @@ begin
         while (CurPos.StartPos>1)
         and (IsIdentChar[UpperSrc[CurPos.StartPos-1]]) do
           dec(CurPos.StartPos);
+        if (CurPos.StartPos>2)
+        and (Src[CurPos.StartPos-1]='@') and (Src[CurPos.StartPos-2]='@') then
+          dec(CurPos.StartPos,2);
       end;
     '''':
       begin
@@ -957,6 +964,17 @@ begin
               // binary number found
               if (ntBinary in ForbiddenNumberTypes) then
                 inc(CurPos.StartPos);
+              break;
+            end;
+          '@':
+            begin
+              if (CurPos.StartPos=1) or (Src[CurPos.StartPos-1]<>'@')
+              or (([ntIdentifier,ntDecimal]*ForbiddenNumberTypes)=[]) then
+                // atom start found
+                inc(CurPos.StartPos)
+              else
+                // label found
+                dec(CurPos.StartPos);
               break;
             end;
           else

@@ -65,7 +65,8 @@ const
   ctnVarSection      = 11;
   ctnConstSection    = 12;
   ctnResStrSection   = 13;
-  ctnUsesSection     = 14;
+  ctnLabelSection    = 14;
+  ctnUsesSection     = 15;
 
   ctnTypeDefinition  = 20;
   ctnVarDefinition   = 21;
@@ -118,7 +119,8 @@ const
   AllClassSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
   AllDefinitionSections =
-     [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection];
+     [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
+      ctnLabelSection];
   AllIdentifierDefinitions =
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
   AllPascalTypes =

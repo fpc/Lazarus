@@ -2503,6 +2503,8 @@ begin
       'Define makro DELPHI','DELPHI','',da_DefineRecurse));
   MainDirTempl.AddChild(TDefineTemplate.Create('Define makro FPC_DELPHI',
       'Define makro FPC_DELPHI','FPC_DELPHI','',da_DefineRecurse));
+  MainDirTempl.AddChild(TDefineTemplate.Create('Define makro VER_130',
+      'Define makro VER_130','VER_130','',da_DefineRecurse));
   MainDirTempl.AddChild(TDefineTemplate.Create(
      'Define '+ExternalMacroStart+'Compiler',
      'Define '+ExternalMacroStart+'Compiler variable',

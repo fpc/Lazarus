@@ -1059,6 +1059,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
+        ctnLabelSection,
         ctnInterface, ctnImplementation,
         ctnClassPublic, ctnClassPrivate, ctnClassProtected, ctnClassPublished,
         ctnClass,
@@ -1316,6 +1317,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
             case ContextNode.Desc of
             
             ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
+            ctnLabelSection,
             ctnInterface, ctnImplementation,
             ctnClassPublished,ctnClassPublic,ctnClassProtected, ctnClassPrivate,
             ctnRecordCase, ctnRecordVariant,

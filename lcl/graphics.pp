@@ -232,10 +232,31 @@ type
 
   TCanvas = class;
 
-  {
-    TGraphic is the mother of all graphic formats like TBitmap, TPixmap and
-    TIcon. It defines properties and methods for width, height and streaming.
-  }
+  { The TGraphic class is an abstract base class for dealing with graphic images
+    such as bitmaps, pixmaps, icons, and other image formats.
+      LoadFromFile - Read the graphic from the file system.  The old contents of
+        the graphic are lost.  If the file is not of the right format, an
+        exception will be generated.
+      SaveToFile - Writes the graphic to disk in the file provided.
+      LoadFromStream - Like LoadFromFile except source is a stream (e.g.
+        TBlobStream).
+      SaveToStream - stream analogue of SaveToFile.
+      LoadFromClipboardFormat - Replaces the current image with the data
+        provided.  If the TGraphic does not support that format it will generate
+        an exception.
+      SaveToClipboardFormats - Converts the image to a clipboard format.  If the
+        image does not support being translated into a clipboard format it
+        will generate an exception.
+      Height - The native, unstretched, height of the graphic.
+      Palette - Color palette of image.  Zero if graphic doesn't need/use palettes.
+      Transparent - Image does not completely cover its rectangular area
+      Width - The native, unstretched, width of the graphic.
+      OnChange - Called whenever the graphic changes
+      PaletteModified - Indicates in OnChange whether color palette has changed.
+        Stays true until whoever's responsible for realizing this new palette
+        (ex: TImage) sets it to False.
+      OnProgress - Generic progress indicator event. Propagates out to TPicture
+        and TImage OnProgress events.}
   TGraphic = class(TPersistent)
   private
     FModified: Boolean;
@@ -282,7 +303,7 @@ type
   { TPicture is a TGraphic container.  It is used in place of a TGraphic if the
     graphic can be of any TGraphic class.  LoadFromFile and SaveToFile are
     polymorphic. For example, if the TPicture is holding an Icon, you can
-    LoadFromFile a bitmap file, where if the class was TIcon you could only read
+    LoadFromFile a bitmap file, where if the class is TIcon you could only read
     .ICO files.
       LoadFromFile - Reads a picture from disk.  The TGraphic class created
         determined by the file extension of the file.  If the file extension is
@@ -304,6 +325,8 @@ type
       Graphic - The TGraphic object contained by the TPicture
       Bitmap - Returns a bitmap.  If the contents is not already a bitmap, the
         contents are thrown away and a blank bitmap is returned.
+      Pixmap - Returns a pixmap.  If the contents is not already a pixmap, the
+        contents are thrown away and a blank pixmap is returned.
       Icon - Returns an icon.  If the contents is not already an icon, the
         contents are thrown away and a blank icon is returned.
       }
@@ -393,7 +416,7 @@ type
   public
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
     Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
-        TransparentColor :TColor);
+                        TransparentColor :TColor);
     constructor Create;
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
@@ -402,26 +425,28 @@ type
     procedure Ellipse(const Rect: TRect); 
     procedure Pie(x,y,width,height,angle1,angle2 : Integer);
     procedure Polygon(const Points: array of TPoint; 
-      Winding: Boolean{$IFDEF VER1_1} = False{$ENDIF};
-      StartIndex: Integer{$IFDEF VER1_1} = 0{$ENDIF};
-      NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
+                      Winding: Boolean{$IFDEF VER1_1} = False{$ENDIF};
+                      StartIndex: Integer{$IFDEF VER1_1} = 0{$ENDIF};
+                      NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polygon(Points: PPoint; NumPts: Integer; 
-      Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
+                      Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
     procedure Polyline(const Points: array of TPoint;
-      StartIndex: Integer {$IFDEF VER1_1} = 0{$ENDIF};
-      NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
+                       StartIndex: Integer {$IFDEF VER1_1} = 0{$ENDIF};
+                       NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
     Procedure FillRect(const Rect : TRect);
-    procedure Frame3d(var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut);
+    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
+    procedure Frame3d(var Rect : TRect; const FrameWidth : integer;
+                      const Style : TBevelCut);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer); 
     Procedure Rectangle(const Rect: TRect); 
     Procedure Line(X1,Y1,X2,Y2 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
     Procedure LineTo(X1,Y1 : Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
-    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);
- overload;
-    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string; const Style : TTextStyle); overload;
+    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);// overload;
+    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string;
+                       const Style : TTextStyle); //overload;
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
@@ -698,6 +723,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/03/08 16:16:55  lazarus
+  MG: fixed parser of end blocks in initialization section added label sections
+
   Revision 1.23  2002/03/08 09:30:30  lazarus
   MG: nicer parameter names
 

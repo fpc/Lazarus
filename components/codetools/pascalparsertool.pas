@@ -101,12 +101,9 @@ type
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
   protected
-    EndKeyWordFuncList: TKeyWordFunctionList;
     TypeKeyWordFuncList: TKeyWordFunctionList;
-    PackedTypesKeyWordFuncList: TKeyWordFunctionList;
     InnerClassKeyWordFuncList: TKeyWordFunctionList;
     ClassVarTypeKeyWordFuncList: TKeyWordFunctionList;
-    BlockStatementStartKeyWordFuncList: TKeyWordFunctionList;
     ExtractMemStream: TMemoryStream;
     ExtractSearchPos: integer;
     ExtractFoundPos: integer;
@@ -122,6 +119,7 @@ type
     function KeyWordFuncVar: boolean;
     function KeyWordFuncConst: boolean;
     function KeyWordFuncResourceString: boolean;
+    function KeyWordFuncLabel: boolean;
     // types
     function KeyWordFuncClass: boolean;
     function KeyWordFuncTypePacked: boolean;
@@ -153,12 +151,9 @@ type
     function KeyWordFuncClassVarTypeIdent: boolean;
     // keyword lists
     procedure BuildDefaultKeyWordFunctions; override;
-    procedure BuildEndKeyWordFunctions; virtual;
     procedure BuildTypeKeyWordFunctions; virtual;
-    procedure BuildPackedTypesKeyWordFunctions; virtual;
     procedure BuildInnerClassKeyWordFunctions; virtual;
     procedure BuildClassVarTypeKeyWordFunctions; virtual;
-    procedure BuildBlockStatementStartKeyWordFuncList; virtual;
     function UnexpectedKeyWord: boolean;
     // read functions
     function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType, IsOperator,
@@ -247,7 +242,7 @@ type
   TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat, ebtRecord,
                    ebtClass, ebtObject);
   TTryType = (ttNone, ttFinally, ttExcept);
-  
+
 
 { TMultiKeyWordListCodeTool }
 
@@ -313,17 +308,10 @@ end;
 constructor TPascalParserTool.Create;
 begin
   inherited Create;
-  // KeyWord functions for parsing blocks (e.g. begin..end)
-  EndKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildEndKeyWordFunctions;
-  AddKeyWordFuncList(EndKeyWordFuncList);
   // keywords for parsing types
   TypeKeyWordFuncList:=TKeyWordFunctionList.Create;
   BuildTypeKeyWordFunctions;
   AddKeyWordFuncList(TypeKeyWordFuncList);
-  PackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildPackedTypesKeyWordFunctions;
-  AddKeyWordFuncList(PackedTypesKeyWordFuncList);
   // KeyWord functions for parsing in a class
   InnerClassKeyWordFuncList:=TKeyWordFunctionList.Create;
   BuildInnerClassKeyWordFunctions;
@@ -331,10 +319,6 @@ begin
   ClassVarTypeKeyWordFuncList:=TKeyWordFunctionList.Create;
   BuildClassVarTypeKeyWordFunctions;
   AddKeyWordFuncList(ClassVarTypeKeyWordFuncList);
-  // keywords for statements
-  BlockStatementStartKeyWordFuncList:=TKeyWordFunctionList.Create;
-  BuildBlockStatementStartKeyWordFuncList;
-  AddKeyWordFuncList(BlockStatementStartKeyWordFuncList);
 end;
 
 destructor TPascalParserTool.Destroy;
@@ -364,7 +348,8 @@ begin
     Add('VAR',{$ifdef FPC}@{$endif}KeyWordFuncVar);
     Add('CONST',{$ifdef FPC}@{$endif}KeyWordFuncConst);
     Add('RESOURCESTRING',{$ifdef FPC}@{$endif}KeyWordFuncResourceString);
-    
+    Add('LABEL',{$ifdef FPC}@{$endif}KeyWordFuncLabel);
+
     Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncProc);
     Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncProc);
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
@@ -376,18 +361,6 @@ begin
     Add('ASM',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
     
     DefaultKeyWordFunction:={$ifdef FPC}@{$endif}UnexpectedKeyWord;
-  end;
-end;
-
-procedure TPascalParserTool.BuildEndKeyWordFunctions;
-// KeyWordFunctions for parsing end - blocks
-begin
-  with EndKeyWordFuncList do begin
-    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -411,19 +384,6 @@ begin
     Add('^',{$ifdef FPC}@{$endif}KeyWordFuncTypePointer);
     
     DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncTypeDefault;
-  end;
-end;
-
-procedure TPascalParserTool.BuildPackedTypesKeyWordFunctions;
-// KeyWordFunctions for valid packed types
-begin
-  with PackedTypesKeyWordFuncList do begin
-    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -465,17 +425,6 @@ begin
     Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeProc);
 
     DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeIdent;
-  end;
-end;
-
-procedure TPascalParserTool.BuildBlockStatementStartKeyWordFuncList;
-begin
-  with BlockStatementStartKeyWordFuncList do begin
-    Add('BEGIN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('TRY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ASM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CASE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -1142,7 +1091,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    external <id or number> index <id>
    [alias: <string constant>]
 }
-var IsSpecifier, EndSemicolonFound: boolean;
+var IsSpecifier: boolean;
   Attr: TProcHeadAttributes;
 begin
 //writeln('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
@@ -1198,12 +1147,8 @@ begin
     UndoReadNextAtom;
     exit;
   end;
-  if AtomIsChar(';') then begin
+  if AtomIsChar(';') then
     ReadNextAtom;
-    EndSemicolonFound:=true;
-  end else begin
-    EndSemicolonFound:=false;
-  end;
   if (CurPos.StartPos>SrcLen) then
     RaiseException('semicolon not found');
   repeat
@@ -1565,6 +1510,10 @@ begin
           CreateChildNode;
           CurNode.Desc:=ctnFinalization;
           CurSection:=CurNode.Desc;
+        end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+          CurPos.EndPos-CurPos.StartPos) then
+        begin
+          ReadTilBlockEnd(false,false);
         end else if UpAtomIs('END') then begin
           Result:=KeyWordFuncEndPoint;
           break;
@@ -1730,6 +1679,7 @@ begin
     if (CurPos.StartPos>SrcLen) then begin
       RaiseExceptionWithBlockStartHint('"end" not found')
     end else if (UpAtomIs('END')) then begin
+
       if BlockType=ebtRepeat then
         RaiseExceptionWithBlockStartHint(
           '"until" expected, but "'+GetAtom+'" found');
@@ -2148,7 +2098,7 @@ function TPascalParserTool.KeyWordFuncType: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom+' in type section');
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnTypeSection;
   // read all type definitions  Name = Type;
@@ -2195,7 +2145,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom+' in var section');
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnVarSection;
   // read all variable definitions  Name : Type; [cvar;] [public [name '']]
@@ -2243,7 +2193,7 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom+' in const section');
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnConstSection;
   // read all constants  Name = <Const>; or Name : type = <Const>;
@@ -2297,7 +2247,7 @@ function TPascalParserTool.KeyWordFuncResourceString: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom+' in resourcestring section');
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnResStrSection;
   // read all string constants Name = 'abc';
@@ -2321,6 +2271,38 @@ begin
     end else begin
       UndoReadNextAtom;
       break;
+    end;
+  until false;
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncLabel: boolean;
+{
+  examples:
+    label a, 23, b;
+}
+begin
+  if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
+    RaiseException('unexpected keyword '+GetAtom);
+  CreateChildNode;
+  CurNode.Desc:=ctnLabelSection;
+  // read all constants
+  repeat
+    ReadNextAtom;  // identifier or number
+    if not AtomIsIdentifier(false) or AtomIsNumber then begin
+      RaiseException('identifier expected, but '+GetAtom+' found');
+    end;
+    CreateChildNode;
+    CurNode.Desc:=ctnLabelType;
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+    ReadNextAtom;
+    if AtomIsChar(';') then begin
+      break;
+    end else if not AtomIsChar(',') then begin
+      RaiseException('; expected, but '+GetAtom+' found');
     end;
   until false;
   CurNode.EndPos:=CurPos.EndPos;
