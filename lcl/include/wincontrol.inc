@@ -1927,7 +1927,7 @@ end;
 procedure TWinControl.WMDestroy(var Message: TLMDestroy);
 begin            
   Assert(False, Format('Trace: [TWinControl.LMDestroy] %s', [ClassName]));
-  
+  //writeln('TWinControl.WMDestroy ',Name,':',ClassName);
   // Our widget/window doesn't exist anymore
   FHandle := 0;
 end;                          
@@ -2511,6 +2511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2002/11/30 08:35:42  mattias
+  TCustomForm.WMDestroy does not Free anymore
+
   Revision 1.103  2002/11/29 15:14:48  mattias
   replaced many invalidates by invalidaterect
 
