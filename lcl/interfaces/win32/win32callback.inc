@@ -341,7 +341,7 @@ Begin
       Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
-        MoveType := Size_SourceIsInterface;
+        MoveType := Move_SourceIsInterface;
         XPos := R.Left;
         YPos := R.Top;
       End;
@@ -560,6 +560,9 @@ end;
 
 {
   $Log$
+  Revision 1.38  2003/07/06 21:35:55  mattias
+  fixed typo
+
   Revision 1.37  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 
