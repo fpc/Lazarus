@@ -1917,6 +1917,12 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    OpenDialog.Filter:='Lazarus unit (*.pas;*.pp)|*.pas;*.pp'
+                 +'|Lazarus project (*.lpi)|*.lpi'
+                 +'|Lazarus form (*.lfm)|*.lfm'
+                 +'|Lazarus package (*.lpk)|*.lpk'
+                 +'|Lazarus project source (*.lpr)|*.lpr'
+                 +'|All files ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
@@ -2608,7 +2614,8 @@ begin
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
-      OpenDialog.Filter := lisLazarusProjectInfoLpiLpiAllFiles;
+      OpenDialog.Filter := 'Lazarus Project Info (*.lpi)|*.lpi|'
+                          +'All Files|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         DoOpenProjectFile(AFilename,[ofAddToRecent]);
@@ -11402,6 +11409,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.848  2005/02/25 21:55:44  mattias
+  added filter for open package/project/file
+
   Revision 1.847  2005/02/25 20:19:46  mattias
   added RTTI check for unitname of design components
 

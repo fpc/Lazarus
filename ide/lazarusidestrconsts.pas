@@ -281,8 +281,6 @@ resourcestring
   lisChooseProgramSourcePpPasLpr = 'Choose program source (*.pp,*.pas,*.lpr)';
   lisProgramSourceMustHaveAPascalExtensionLikePasPpOrLp = 'Program source '
     +'must have a pascal extension like .pas, .pp or .lpr';
-  lisLazarusProjectInfoLpiLpiAllFiles = 'Lazarus Project Info (*.lpi)|*.lpi|'
-    +'All Files|*.*';
   lisCompilerOptionsForProject = 'Compiler Options for Project: %s';
   lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
   lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
