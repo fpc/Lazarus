@@ -893,6 +893,7 @@ end;
 
 initialization
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
+  RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
 
 finalization
   GraphicsFinalized:=true;
@@ -905,6 +906,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/10/01 18:00:03  lazarus
+  AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
+
   Revision 1.47  2002/09/27 20:52:21  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
