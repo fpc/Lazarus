@@ -209,7 +209,7 @@ msgstr "Demander"
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
-msgstr ""
+msgstr "Créer automatiquement la fiche à l'ouverture de l'unité"
 
 #: lazarusidestrconsts:dlgautodel
 msgid "Auto delete file"
@@ -2413,7 +2413,7 @@ msgstr "Voir les options"
 
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
-msgstr ""
+msgstr "Voir les options d'édition de fiche"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
@@ -2941,7 +2941,7 @@ msgstr "Points de suivi"
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
-msgstr ""
+msgstr "Ajouter les nouvelles fiches à celles créées automatiquement"
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"

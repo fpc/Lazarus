@@ -10,19 +10,19 @@ msgstr ""
 
 #: lclstrconsts:rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr ""
+msgstr "ATTENTION : il y a %d messages en file d'attente ! Ils seront supprimés."
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr ""
+msgstr " ATTENTION: Il y a %d structures TimerInfo, elles seront supprimées."
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
-msgstr ""
+msgstr " ATTENTION : Il y a %d DCs non libérés, en voici le détail : "
 
 #: lclstrconsts:rswarningunreleasedgdiobjectsdump
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr ""
+msgstr " ATTENTION : Il y a %d GDIObjects non libérés, en voici le détail : "
 
 #: lclstrconsts:rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
@@ -34,7 +34,7 @@ msgstr ""
 
 #: lclstrconsts:rsisalreadyassociatedwith
 msgid "%s is already associated with %s"
-msgstr ""
+msgstr "%s est déjà associé avec %s"
 
 #: lclstrconsts:rsmball
 msgid "&All"
@@ -118,7 +118,7 @@ msgstr ""
 
 #: lclstrconsts:rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as parent"
-msgstr ""
+msgstr "Un control ne peut pas être son propre parent"
 
 #: lclstrconsts:rsmbabort
 msgid "Abort"
@@ -126,7 +126,7 @@ msgstr "Abandonner"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
-msgstr ""
+msgstr "Blanc"
 
 #: lclstrconsts:rsmbcancel
 msgid "Cancel"
@@ -134,11 +134,11 @@ msgstr "Annuler"
 
 #: lclstrconsts:scannotfocus
 msgid "Cannot focus a disabled or invisible window"
-msgstr ""
+msgstr "Impossible de focaliser une fenêtre invisible ou désactivée"
 
 #: lclstrconsts:rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
-msgstr ""
+msgstr "Dessin sur le Canvas non autorisé"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
@@ -154,7 +154,7 @@ msgstr "Personalisé"
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
-msgstr ""
+msgstr "Menus doublons"
 
 #: lclstrconsts:rsmterror
 msgid "Error"
@@ -162,27 +162,27 @@ msgstr "Erreur"
 
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
-msgstr ""
+msgstr "Erreur en créant le contexte de dispositif pour %s.%s"
 
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
-msgstr ""
+msgstr "ERREUR dans LCL: "
 
 #: lclstrconsts:rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
-msgstr ""
+msgstr "Une erreur s'est produite dans %s à %s l'adresse %s%s page %s"
 
 #: lclstrconsts:rserrorreadingproperty
 msgid "Error reading %s%s%s: %s"
-msgstr ""
+msgstr "Erreur de lecture %s%s%s: %s"
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
-msgstr ""
+msgstr "Erreur:"
 
 #: lclstrconsts:rsexception
 msgid "Exception"
-msgstr ""
+msgstr "Exception"
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
@@ -198,27 +198,27 @@ msgstr "Le fichier doit exister"
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
-msgstr ""
+msgstr "FixedCols ne peut pas être supérieur à ColCount"
 
 #: lclstrconsts:rsfixedrowstoobig
 msgid "FixedRows can't be >= RowCount"
-msgstr ""
+msgstr "FixedRows ne peut pas être supérieur à RowCount"
 
 #: lclstrconsts:rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
-msgstr ""
+msgstr "le flux de fiche \"%s\" erreur %s"
 
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
-msgstr ""
+msgstr "Le fichier Grid n'existe pas"
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr ""
+msgstr "GoupIndex ne peut pas être inferieur au GroupIndex des élémens précédents"
 
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr ""
+msgstr "Index hors limite Cell[Col=%d Row=%d]"
 
 #: lclstrconsts:rsmtinformation
 msgid "Information"
@@ -226,63 +226,63 @@ msgstr "Information"
 
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
-msgstr ""
+msgstr "Création non valide d'action"
 
 #: lclstrconsts:sinvalidactionenumeration
 msgid "Invalid action enumeration"
-msgstr ""
+msgstr "Enumération d'action non valide"
 
 #: lclstrconsts:sinvalidactionregistration
 msgid "Invalid action registration"
-msgstr ""
+msgstr "Référencement d'action non valide"
 
 #: lclstrconsts:sinvalidactionunregistration
 msgid "Invalid action unregistration"
-msgstr ""
+msgstr "Déréférencement d'action non valide"
 
 #: lclstrconsts:rsinvaliddate
 msgid "Invalid Date :%s"
-msgstr ""
+msgstr "Date %s non valide"
 
 #: lclstrconsts:rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr ""
+msgstr "Flux d'objet fiche non valide"
 
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
-msgstr ""
+msgstr "Taille d'image non valide"
 
 #: lclstrconsts:sinvalidindex
 msgid "Invalid ImageList Index"
-msgstr ""
+msgstr "Index de liste d'image non valide"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr ""
+msgstr "Valeur de propriété incorrecte"
 
 #: lclstrconsts:rsinvalidstreamformat
 msgid "Invalid stream format"
-msgstr ""
+msgstr "Format de flux incorrecte"
 
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
-msgstr ""
+msgstr "List doit être vide"
 
 #: lclstrconsts:smenuindexerror
 msgid "Menu index out of range"
-msgstr ""
+msgstr "Index de menu hors limite"
 
 #: lclstrconsts:smenuitemisnil
 msgid "MenuItem is nil"
-msgstr ""
+msgstr "MenuItem est non assigné (nil)"
 
 #: lclstrconsts:rsnointerfaceobject
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr ""
+msgstr "Pas d'objet d'interface. Vérifiez si l'unité \"iterfaces\" est présente dans la clause Uses du programme."
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
-msgstr ""
+msgstr "Aucuns temporisateurs disponibles"
 
 #: lclstrconsts:rsmbnotoall
 msgid "No to all"
@@ -290,79 +290,79 @@ msgstr "Non pour tout"
 
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
-msgstr ""
+msgstr "N'est pas un fichier de grille correcte"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
-msgstr ""
+msgstr "Ouvrir un fichier existant"
 
 #: lclstrconsts:rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr ""
+msgstr "Ecraser le fichier ?"
 
 #: lclstrconsts:rsfdpathmustexist
 msgid "Path must exist"
-msgstr ""
+msgstr "Le répertoire doit exister"
 
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
-msgstr ""
+msgstr "permission utilisateur groupe taille date heure"
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
-msgstr ""
+msgstr "La propriété %s n'existe pas"
 
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
-msgstr ""
+msgstr "Enregistrer le fichier sous"
 
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
-msgstr ""
+msgstr "Propriété ScrollBar hors limite"
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"
-msgstr ""
+msgstr "Choisir une police"
 
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
-msgstr ""
+msgstr "Choisir une couleur"
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
-msgstr ""
+msgstr "le Sous menu n'es pas dans le menu"
 
 #: lclstrconsts:rsfdfilealreadyexists
 msgid "The file \"%s\" already exists.\015Overwrite ?"
-msgstr ""
+msgstr "Le ficher \"%s\" existe déjà. \015Ecraser ?"
 
 #: lclstrconsts:rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
-msgstr ""
+msgstr "Le fichier \"%s\" n'existe pas"
 
 #: lclstrconsts:rsfdfilereadonly
 msgid "The file \"%s\" is not writable."
-msgstr ""
+msgstr "Le fichier \"%s\" est en lecture seule"
 
 #: lclstrconsts:rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr ""
+msgstr "Le répertoire \"%s\" n'existe pas"
 
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
-msgstr ""
+msgstr "Impossible de charger la police par défaut"
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
-msgstr ""
+msgstr "Type d'image inconnue"
 
 #: lclstrconsts:rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
-msgstr ""
+msgstr "Format de bitmap non supporté."
 
 #: lclstrconsts:rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
-msgstr ""
+msgstr "Format %s de presse papier non supporté"
 
 #: lclstrconsts:rsmtwarning
 msgid "Warning"
@@ -370,7 +370,7 @@ msgstr "Avertissement"
 
 #: lclstrconsts:rswin32warning
 msgid "Warning:"
-msgstr ""
+msgstr "Attention:"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"

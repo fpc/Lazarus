@@ -1,0 +1,16 @@
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
+msgstr "Peut seulement pendant l'enregistrement"
+
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
+msgstr "Peut redémarrer seulement après une pause"
+
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Impossible d'exécuter une macro pendant l'enregistrement"
+
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Impossible d'enregistrer une macro pendant un enregistrement"
+
