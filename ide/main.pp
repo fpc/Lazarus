@@ -5797,7 +5797,7 @@ begin
   end;
   if TheOutputFilter.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
-        
+
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if not IsTestUnitFilename(Filename) then
       SearchedFilename := FindUnitFile(Filename)
@@ -5815,6 +5815,8 @@ begin
           // set caret position
           SourceNotebook.AddJumpPointClicked(Self);
           SrcEdit:=SourceNoteBook.GetActiveSE;
+          if CaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
+            CaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
           TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
           if TopLine<1 then TopLine:=1;
           if FocusEditor then begin
@@ -7518,6 +7520,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.442  2002/12/25 13:30:36  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.441  2002/12/23 13:41:48  mattias
   remove from project now extracts project path
 
