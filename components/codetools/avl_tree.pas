@@ -1067,7 +1067,6 @@ initialization
 NodeMemManager:=TAVLTreeNodeMemManager.Create;
 
 finalization
-writeln('avl_tree.pas finalization');
 
 NodeMemManager.Free;
 NodeMemManager:=nil;

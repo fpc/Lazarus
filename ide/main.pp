@@ -693,11 +693,11 @@ begin
   FreeThenNil(HintTimer1);
   FreeThenNil(HintWindow1);
 
-  writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
+  //writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
-  writeln('[TMainIDE.Destroy] END');
+  //writeln('[TMainIDE.Destroy] END');
 end;
 
 procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
@@ -6803,6 +6803,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.331  2002/08/01 08:06:25  lazarus
+  MG: reduced output
+
   Revision 1.330  2002/08/01 08:03:01  lazarus
   MG: accelerated searches in project
 

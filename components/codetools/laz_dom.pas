@@ -1607,14 +1607,15 @@ begin
   inherited Create(AOwner);
 end;
 
-finalization
-writeln('laz_dom.pas finalization');
 
 end.
 
 
 {
   $Log$
+  Revision 1.3  2002/08/01 08:06:27  lazarus
+  MG: reduced output
+
   Revision 1.2  2002/07/30 14:36:27  lazarus
   MG: accelerated xmlread and xmlwrite
 
