@@ -207,7 +207,7 @@ type
     property Height : Integer read GetHeight write SetHeight;
     property Name : TFontName read GetName write SetName stored IsNameStored;
     property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
-    property Size: Integer read GetSize write SetSize;
+    property Size: Integer read GetSize write SetSize stored false;
     property Style : TFontStyles read GetStyle write SetStyle;
   end;
 
@@ -906,6 +906,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/10/14 06:39:12  lazarus
+  MG: fixed storing TFont.Size
+
   Revision 1.49  2002/10/08 16:15:43  lazarus
   MG: fixed small typos and accelerated TDynHashArray.Contains
 
