@@ -94,7 +94,6 @@ if [ "$PkgType" = "deb" ]; then
     sed -e 's/^\(.*mv .*\)uncgi\( .*examples.*\)$/\1???*\2/' \
         -e 's/^.*logs\/Changes\.fcl.*$//' \
         -e 's/^.*logs\/Changes\.utils.*$//' \
-        -e 's/^\(BUILDOPTS=.*\)$/\1 -dHasUnix/' \
     > rules.laz
   cp rules.laz rules # use cp to preserve file attribs
   rm rules.laz
