@@ -2327,14 +2327,14 @@ Begin
   writeln('[TSourceNotebook.CreateNotebook] START');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
-  CheckHeap('[TSourceNotebook.CreateNotebook] A '+IntToStr(GetMem_Cnt));
+  CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
   ClearUnUsedEditorComponents(false);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] A');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
-  CheckHeap('[TSourceNotebook.CreateNotebook] B '+IntToStr(GetMem_Cnt));
+  CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] B ');
   {$ENDIF}
   Result := False;
   if not assigned(Notebook) then
@@ -2348,7 +2348,7 @@ Begin
       writeln('[TSourceNotebook.CreateNotebook] C');
       {$ENDIF}
       {$IFDEF IDE_MEM_CHECK}
-      CheckHeap('[TSourceNotebook.CreateNotebook] C '+IntToStr(GetMem_Cnt));
+      CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] C ');
       {$ENDIF}
       with Notebook do
         Begin
@@ -2381,7 +2381,7 @@ Begin
           writeln('[TSourceNotebook.CreateNotebook] F');
           {$ENDIF}
           {$IFDEF IDE_MEM_CHECK}
-          CheckHeap('[TSourceNotebook.CreateNotebook] F '+IntToStr(GetMem_Cnt));
+          CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] F ');
           {$ENDIF}
         end; //with
       Show;  //used to display the code form
@@ -2390,7 +2390,7 @@ Begin
   writeln('[TSourceNotebook.CreateNotebook] END');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
-  CheckHeap('[TSourceNotebook.CreateNotebook] END '+IntToStr(GetMem_Cnt));
+  CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] END ');
   {$ENDIF}
 End;
 
