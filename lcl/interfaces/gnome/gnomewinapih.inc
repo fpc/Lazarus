@@ -18,8 +18,6 @@
  *****************************************************************************
 }
 
-function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
-
 Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint;
   Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint; override;
 Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint;
@@ -31,6 +29,9 @@ Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Bool
 
 {
   $Log$
+  Revision 1.7  2002/10/21 03:23:35  lazarus
+  AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
+
   Revision 1.6  2002/10/14 18:36:57  lazarus
   AJ: Improvements/Fixes to new PromptUser API
 
