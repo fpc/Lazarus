@@ -191,6 +191,10 @@ var
   NodeImageIndex: Integer;
 begin
   if CodeNode=nil then exit;
+  // don't show statements, parameter lists
+  if (CodeNode.Desc in AllPascalStatements)
+  or (CodeNode.Desc in [ctnProcedureHead,ctnParameterList]) then exit;
+
   NodeData:=TViewNodeData.Create(CodeNode);
   NodeText:=GetNodeDescription(ACodeTool,CodeNode);
   NodeImageIndex:=0;
@@ -269,11 +273,23 @@ procedure TCodeExplorerView.JumpToSelection;
 var
   CurItem: TTreeNode;
   CurNode: TViewNodeData;
+  Caret: TCodeXYPosition;
+  NewTopLine: integer;
 begin
   CurItem:=CodeTreeview.Selected;
   if CurItem=nil then exit;
   CurNode:=TViewNodeData(CurItem.Data);
+  if CurNode.StartPos<1 then exit;
 
+  CodeBuffer:=CodeToolBoss.FindFile(MainFilename);
+  if CodeBuffer=nil then exit;
+  ACodeTool:=nil;
+  CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
+  if ACodeTool=nil then exit;
+  ACodeTool.CleanPosToCaretAndTopLine(CurNode.StartPos,
+        );
+  
+  
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,MainFilename,CurNode.StartPos);
 end;
