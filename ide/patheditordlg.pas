@@ -44,7 +44,7 @@ type
     AddTemplateButton: TButton;
     OkButton: TButton;
     CancelButton: TButton;
-    OpenDialog: TOpenDialog;
+    BrowseDialog: TSelectDirectoryDialog;
     procedure AddTemplateButtonClick(Sender: TObject);
     procedure BrowseButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
@@ -118,17 +118,17 @@ end;
 
 procedure TPathEditorDialog.BrowseButtonClick(Sender: TObject);
 var y: integer;
-  NewPath: string;
 begin
-  if OpenDialog=nil then OpenDialog:=TOpenDialog.Create(Self);
-  with OpenDialog do begin
+  if BrowseDialog=nil then begin
+    BrowseDialog:=TSelectDirectoryDialog.Create(Self);
+    BrowseDialog.Options := BrowseDialog.Options + [ofFileMustExist];
+  end;
+  with BrowseDialog do begin
     Title:=lisPathEditSelectDirectory;
     if (not Execute) then exit;
-    NewPath:=ExtractFilePath(Trim(Filename));
-    if (not DirPathExists(NewPath)) then exit;
     y:=PathEdit.CaretY;
     if y>PathEdit.Lines.Count then y:=PathEdit.Lines.Count;
-    PathEdit.Lines.Insert(y,NewPath);
+    PathEdit.Lines.Insert(y,Trim(Filename));
     PathEdit.CaretY:=y+1;
   end;
   SelectCurrentPath;
