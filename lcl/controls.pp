@@ -1134,6 +1134,10 @@ type
                                     ExceptionOnInvalid: boolean): boolean;
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
+    procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
+                                Sibling: TControl);
+    procedure AnchorHorizontalCenterTo(Sibling: TControl);
+    procedure AnchorVerticalCenterTo(Sibling: TControl);
     procedure SetTempCursor(Value: TCursor);
     procedure UpdateRolesForForm; virtual;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
@@ -2816,6 +2820,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.267  2005/01/17 11:53:39  mattias
+  added showing all four sides to AnchorEditor
+
   Revision 1.266  2005/01/13 22:07:10  mattias
   added mouse cursors for 8 uni directions, imlemented for gtk
 

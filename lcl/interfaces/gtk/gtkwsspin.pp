@@ -81,6 +81,9 @@ end;
 
 { TGtkWSCustomSpinEdit }
 
+//const
+//  GtkValueEmpty: array[boolean] of integer = (0,1);
+
 function TGtkWSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit
   ): integer;
 begin
@@ -118,10 +121,11 @@ procedure TGtkWSCustomSpinEdit.UpdateControl(
 var
   AnAdjustment: PGtkAdjustment;
   wHandle: HWND;
+  SpinWidget: PGtkSpinButton;
 begin
   wHandle := ACustomSpinEdit.Handle;
-  AnAdjustment:=
-              gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(Pointer(wHandle)));
+  SpinWidget:=GTK_SPIN_BUTTON(Pointer(wHandle));
+  AnAdjustment:=gtk_spin_button_get_adjustment(SpinWidget);
   if (AnAdjustment^.lower<>ACustomSpinEdit.MinValue)
   or (AnAdjustment^.upper<>ACustomSpinEdit.MaxValue) then
   begin
@@ -129,11 +133,11 @@ begin
     AnAdjustment^.upper:=ACustomSpinEdit.MaxValue;
     gtk_adjustment_changed(AnAdjustment);
   end;
-  gtk_spin_button_set_digits(GTK_SPIN_BUTTON(Pointer(wHandle)),
-                             ACustomSpinEdit.Decimal_Places);
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(Pointer(wHandle)),
-                            ACustomSpinEdit.Value);
-  GTK_SPIN_BUTTON(Pointer(wHandle))^.climb_rate:=ACustomSpinEdit.Climb_Rate;
+  gtk_spin_button_set_digits(SpinWidget,ACustomSpinEdit.Decimal_Places);
+  gtk_spin_button_set_value(SpinWidget,ACustomSpinEdit.Value);
+  //gtk_object_set_data(PGtkObject(SpinWidget), 'Empty',
+  //                    Pointer(GtkValueEmpty[ACustomSpinEdit.ValueEmpty]));
+  SpinWidget^.climb_rate:=ACustomSpinEdit.Climb_Rate;
 end;
 
 initialization

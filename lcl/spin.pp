@@ -47,6 +47,7 @@ type
     FSelLength: integer;
     FSelStart: integer;
     fValue: Single;
+    FValueEmpty: boolean;
     fValueNeedsUpdate: boolean;
     function Climb_RateIsStored: boolean;
     function GetModified: Boolean;
@@ -61,14 +62,15 @@ type
     procedure SetSelLength(const AValue: integer);
     procedure SetSelStart(const AValue: integer);
     procedure SetSelText(const AValue: String);
+    procedure SetValueEmpty(const AValue: boolean);
     Procedure UpdateControl;
     function ValueIsStored: boolean;
   protected
     procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
     procedure SetDecimals(Num: Integer);
     Function GetValue: Single;
-    procedure SetValue(Num: Single);
-    procedure SetClimbRate(Num: Single);
+    procedure SetValue(const Num: Single);
+    procedure SetClimbRate(const Num: Single);
     procedure InitializeWnd; override;
     procedure Loaded; override;
     procedure Change; dynamic;
@@ -87,12 +89,13 @@ type
     property Modified: Boolean read GetModified write SetModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Text;
-  published
+  public
     property Decimal_Places: Integer read fDecimals write SetDecimals default 2;
     property Climb_Rate : Single read fClimbRate write SetClimbRate stored Climb_RateIsStored;
     property MinValue: single read FMinValue write SetMinValue stored MinValueIsStored;
     property MaxValue: single read FMaxValue write SetMaxValue stored MaxValueIsStored;
     property Value: Single read GetValue write SetValue stored ValueIsStored;
+    property ValueEmpty: boolean read FValueEmpty write SetValueEmpty default False;
   end;
   
   

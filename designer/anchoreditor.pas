@@ -140,6 +140,8 @@ type
     FSelection: TPersistentSelectionList;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure FillComboBoxWithSiblings(AComboBox: TComboBox);
+    function AnchorDesignerNoSiblingText: string;
   public
     SrcTypeImageList: TImageList;
     procedure Refresh(Force: boolean);
@@ -151,7 +153,7 @@ type
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     property Selection: TPersistentSelectionList read FSelection;
   end;
-
+  
 var
   AnchorDesigner: TAnchorDesigner;
 
@@ -243,18 +245,15 @@ begin
   end;
   
   // autosizing
-  BottomSiblingLabel.AnchorSide[akLeft].Side:=asrRight;
-  BottomSiblingLabel.BorderSpacing.Left:=10;
-  BottomSiblingLabel.AnchorSide[akLeft].Control:=BottomAnchoredCheckBox;
-  BottomSiblingComboBox.AnchorSide[akLeft].Side:=asrRight;
-  BottomSiblingComboBox.AnchorSide[akLeft].Control:=BottomSiblingLabel;
-  TopSiblingLabel.AnchorSide[akLeft].Side:=asrRight;
-  TopSiblingLabel.BorderSpacing.Left:=BottomSiblingLabel.BorderSpacing.Left;
-  TopSiblingLabel.AnchorSide[akLeft].Control:=TopAnchoredCheckBox;
-  TopSiblingComboBox.AnchorSide[akLeft].Side:=asrRight;
-  TopSiblingComboBox.AnchorSide[akLeft].Control:=TopSiblingLabel;
-  
-  
+  BottomSiblingLabel.AnchorToNeighbour(akLeft,10,BottomAnchoredCheckBox);
+  BottomSiblingComboBox.AnchorToNeighbour(akLeft,5,BottomSiblingLabel);
+  BottomSiblingLabel.AnchorVerticalCenterTo(BottomSiblingComboBox);
+  BottomAnchoredCheckBox.AnchorVerticalCenterTo(BottomSiblingComboBox);
+  TopSiblingLabel.AnchorToNeighbour(akLeft,10,TopAnchoredCheckBox);
+  TopSiblingComboBox.AnchorToNeighbour(akLeft,5,TopSiblingLabel);
+  TopSiblingLabel.AnchorVerticalCenterTo(TopSiblingComboBox);
+  TopAnchoredCheckBox.AnchorVerticalCenterTo(TopSiblingComboBox);
+
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
 end;
@@ -262,7 +261,7 @@ end;
 procedure TAnchorDesigner.AnchorDesignerDestroy(Sender: TObject);
 begin
   GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  FreeThenNil(FSelection);
+  FreeAndNil(FSelection);
 end;
 
 procedure TAnchorDesigner.AnchorDesignerShow(Sender: TObject);
@@ -274,6 +273,40 @@ procedure TAnchorDesigner.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+end;
+
+procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);
+var
+  sl: TStringList;
+  i: Integer;
+  CurControl: TControl;
+  j: Integer;
+  Sibling: TControl;
+begin
+  sl:=TStringList.Create;
+  sl.Add(AnchorDesignerNoSiblingText);
+  if FSelection<>nil then begin
+    for i:=0 to FSelection.Count-1 do begin
+      if FSelection[i] is TControl then begin
+        CurControl:=TControl(FSelection[i]);
+        if CurControl.Parent<>nil then begin
+          for j:=0 to CurControl.Parent.ControlCount-1 do begin
+            Sibling:=CurControl.Parent.Controls[j];
+            if Sibling<>CurControl then
+              sl.Add(ControlToStr(Sibling));
+          end;
+        end;
+        break;
+      end;
+    end;
+  end;
+  AComboBox.Items.Assign(sl);
+  sl.Free;
+end;
+
+function TAnchorDesigner.AnchorDesignerNoSiblingText: string;
+begin
+  Result:='(parent borders)';
 end;
 
 procedure TAnchorDesigner.Refresh(Force: boolean);
@@ -294,17 +327,25 @@ begin
     CollectValues(FSelection,Values,SelectedControlCount);
     debugln('TAnchorDesigner.Refresh B ',dbgs(SelectedControlCount));
 
-    LeftGroupBox.Enabled:=false;
-    RightGroupBox.Enabled:=false;
-    BottomGroupBox.Enabled:=false;
-
     if (Values=nil) then begin
       Caption:='Anchor Editor - no control selected';
       TopGroupBox.Enabled:=false;
+      LeftGroupBox.Enabled:=false;
+      RightGroupBox.Enabled:=false;
+      BottomGroupBox.Enabled:=false;
     end else begin
       Caption:='Anchors of selected controls';
+
+      // all
+      if Values.AmbigiousBorderspaceAround then
+        AroundBorderSpaceSpinEdit.Value:=-1
+      else
+        AroundBorderSpaceSpinEdit.Value:=Values.BorderspaceAround;
+
+      // Top
       TopGroupBox.Enabled:=true;
       CurSide:=Values.Sides[akTop];
+      TopAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
       if CurSide.AmbigiousEnabled then
         TopAnchoredCheckBox.State:=cbGrayed
       else
@@ -313,14 +354,85 @@ begin
         TopBorderSpaceSpinEdit.Value:=-1
       else
         TopBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
+      TopBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
       Sibling:=CurSide.Sibling;
       TopSiblingComboBox.Text:=Sibling;
+      FillComboBoxWithSiblings(TopSiblingComboBox);
       TopRefBottomSpeedButton.Enabled:=Sibling<>'';
       TopRefBottomSpeedButton.Down:=(CurSide.Side=asrBottom);
       TopRefCenterSpeedButton.Enabled:=Sibling<>'';
       TopRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
       TopRefTopSpeedButton.Enabled:=Sibling<>'';
       TopRefTopSpeedButton.Down:=(CurSide.Side=asrTop);
+
+      // Bottom
+      BottomGroupBox.Enabled:=true;
+      CurSide:=Values.Sides[akBottom];
+      BottomAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
+      if CurSide.AmbigiousEnabled then
+        BottomAnchoredCheckBox.State:=cbGrayed
+      else
+        BottomAnchoredCheckBox.Checked:=CurSide.Enabled;
+      if CurSide.AmbigiousBorderSpace then
+        BottomBorderSpaceSpinEdit.Value:=-1
+      else
+        BottomBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
+      BottomBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      Sibling:=CurSide.Sibling;
+      BottomSiblingComboBox.Text:=Sibling;
+      FillComboBoxWithSiblings(BottomSiblingComboBox);
+      BottomRefBottomSpeedButton.Enabled:=Sibling<>'';
+      BottomRefBottomSpeedButton.Down:=(CurSide.Side=asrBottom);
+      BottomRefCenterSpeedButton.Enabled:=Sibling<>'';
+      BottomRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
+      BottomRefTopSpeedButton.Enabled:=Sibling<>'';
+      BottomRefTopSpeedButton.Down:=(CurSide.Side=asrTop);
+
+      // Left
+      LeftGroupBox.Enabled:=true;
+      CurSide:=Values.Sides[akLeft];
+      LeftAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
+      if CurSide.AmbigiousEnabled then
+        LeftAnchoredCheckBox.State:=cbGrayed
+      else
+        LeftAnchoredCheckBox.Checked:=CurSide.Enabled;
+      if CurSide.AmbigiousBorderSpace then
+        LeftBorderSpaceSpinEdit.Value:=-1
+      else
+        LeftBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
+      LeftBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      Sibling:=CurSide.Sibling;
+      LeftSiblingComboBox.Text:=Sibling;
+      FillComboBoxWithSiblings(LeftSiblingComboBox);
+      LeftRefRightSpeedButton.Enabled:=Sibling<>'';
+      LeftRefRightSpeedButton.Down:=(CurSide.Side=asrBottom);
+      LeftRefCenterSpeedButton.Enabled:=Sibling<>'';
+      LeftRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
+      LeftRefLeftSpeedButton.Enabled:=Sibling<>'';
+      LeftRefLeftSpeedButton.Down:=(CurSide.Side=asrTop);
+
+      // Right
+      RightGroupBox.Enabled:=true;
+      CurSide:=Values.Sides[akRight];
+      RightAnchoredCheckBox.AllowGrayed:=CurSide.AmbigiousEnabled;
+      if CurSide.AmbigiousEnabled then
+        RightAnchoredCheckBox.State:=cbGrayed
+      else
+        RightAnchoredCheckBox.Checked:=CurSide.Enabled;
+      if CurSide.AmbigiousBorderSpace then
+        RightBorderSpaceSpinEdit.Value:=-1
+      else
+        RightBorderSpaceSpinEdit.Value:=CurSide.BorderSpace;
+      RightBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
+      Sibling:=CurSide.Sibling;
+      RightSiblingComboBox.Text:=Sibling;
+      FillComboBoxWithSiblings(RightSiblingComboBox);
+      RightRefRightSpeedButton.Enabled:=Sibling<>'';
+      RightRefRightSpeedButton.Down:=(CurSide.Side=asrBottom);
+      RightRefCenterSpeedButton.Enabled:=Sibling<>'';
+      RightRefCenterSpeedButton.Down:=(CurSide.Side=asrCenter);
+      RightRefLeftSpeedButton.Enabled:=Sibling<>'';
+      RightRefLeftSpeedButton.Down:=(CurSide.Side=asrTop);
     end;
   finally
     Values.Free;

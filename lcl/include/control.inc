@@ -3285,6 +3285,51 @@ begin
   SetZOrder(false);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: integer;
+    Sibling: TControl);
+
+  Setup AnchorSide to anchor one side to the side of a neighbour sibling.
+  For example Right side to Left side, or Top side to Bottom.
+ ------------------------------------------------------------------------------}
+procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: integer;
+  Sibling: TControl);
+begin
+  case Side of
+  akLeft: BorderSpacing.Left:=Space;
+  akTop: BorderSpacing.Top:=Space;
+  akRight: BorderSpacing.Right:=Space;
+  akBottom: BorderSpacing.Bottom:=Space;
+  end;
+  AnchorSide[Side].Side:=DefaultSideForAnchorKind[Side];
+  AnchorSide[Side].Control:=Sibling;
+  Anchors:=Anchors+[Side];
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.AnchorHorizontalCenterTo(Sibling: TControl);
+
+  Setup AnchorSide to center the control horizontally relative to a sibling.
+ ------------------------------------------------------------------------------}
+procedure TControl.AnchorHorizontalCenterTo(Sibling: TControl);
+begin
+  AnchorSide[akLeft].Side:=asrCenter;
+  AnchorSide[akLeft].Control:=Sibling;
+  Anchors:=Anchors+[akLeft]-[akRight];
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.AnchorVerticalCenterTo(Sibling: TControl);
+
+  Setup AnchorSide to center the control vertically relative to a sibling.
+ ------------------------------------------------------------------------------}
+procedure TControl.AnchorVerticalCenterTo(Sibling: TControl);
+begin
+  AnchorSide[akTop].Side:=asrCenter;
+  AnchorSide[akTop].Control:=Sibling;
+  Anchors:=Anchors+[akTop]-[akBottom];
+end;
+
 procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
   //DebugLn('TControl.SetInitialBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
@@ -3432,6 +3477,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.236  2005/01/17 11:53:39  mattias
+  added showing all four sides to AnchorEditor
+
   Revision 1.235  2005/01/13 20:21:41  mattias
   added desgntime check for TControl.Width/Height for high values
 

@@ -4,8 +4,8 @@
                                 graphtype.pp
                                 ------------
                     Graphic related platform independent types
-		    and utility functions.
-                   Initial Revision  : Sat Feb 02 0:02:58 2002
+                    and utility functions.
+                    Initial Revision  : Sat Feb 02 0:02:58 2002
 
  ***************************************************************************/
 
@@ -775,6 +775,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2005/01/17 11:53:39  mattias
+  added showing all four sides to AnchorEditor
+
   Revision 1.34  2004/12/11 01:28:58  mattias
   implemented bvSpace of TBevelCut
 

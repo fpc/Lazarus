@@ -41,6 +41,7 @@ begin
   if Value=fLastValueOnChange then exit;
   fLastValueOnChange:=Value;
   Modified := True;
+  FValueEmpty:=false;
   if HandleAllocated and (not (csLoading in ComponentState)) then Change;
 end;
 
@@ -129,7 +130,14 @@ begin
   Text:=NewText;
 end;
 
-procedure TCustomSpinEdit.SetClimbRate(Num : Single);
+procedure TCustomSpinEdit.SetValueEmpty(const AValue: boolean);
+begin
+  if FValueEmpty=AValue then exit;
+  FValueEmpty:=AValue;
+  UpdateControl;
+end;
+
+procedure TCustomSpinEdit.SetClimbRate(const Num : Single);
 begin
   if fClimbRate = Num then exit;
   fClimbRate := Num;
@@ -164,7 +172,7 @@ begin
 end;
 
 {-----------------------------------------------------------------------------}
-Procedure TCustomSpinEdit.SetValue(num : Single);
+Procedure TCustomSpinEdit.SetValue(const num : Single);
 begin
   if FValue = Num then exit;
   FValue := Num;
