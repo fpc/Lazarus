@@ -77,7 +77,6 @@ begin
 
   FMainForm := nil;
   FMouseControl := nil;
-  FHandle := 0;
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
   FHintShortCuts := True;
@@ -1449,21 +1448,14 @@ begin
   if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction,Result);
 end;
 
-{------------------------------------------------------------------------------
-  function TApplication.HandleAllocated: boolean;
-
-  Checks if Handle is allocated.
-------------------------------------------------------------------------------}
-function TApplication.HandleAllocated: boolean;
-begin
-  Result:=FHandle<>0;
-end;
-
 // included by forms.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.112  2005/03/26 11:24:55  micha
+  remove TApplication.Handle (not cross-platform)
+
   Revision 1.111  2005/03/25 08:58:11  micha
   implement ShowInTaskBar for win32 intf
 

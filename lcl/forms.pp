@@ -886,7 +886,6 @@ type
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
     FCaptureExceptions: boolean;
     FFlags: TApplicationFlags;
-    FHandle : THandle;
     FHint: string;
     FHintColor: TColor;
     FHintControl: TControl;
@@ -970,7 +969,6 @@ type
     procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function UpdateAction(TheAction: TBasicAction): Boolean; override;
-    function HandleAllocated: boolean;
     procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
     function HelpCommand(Command: Word; Data: Longint): Boolean;
@@ -1026,7 +1024,6 @@ type
     procedure DoTabKey(AControl: TWinControl; var Key: Word;Shift: TShiftState);
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
-    property Handle: THandle read FHandle;
     //property HelpSystem : IHelpSystem read FHelpSystem;
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor;
