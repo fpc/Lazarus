@@ -1301,11 +1301,6 @@ begin
     FOnContextPopup(Self, MousePos, Handled);
 end;
 
-function TControl.GetTextBufWithoutOverride: boolean;
-begin
-  Result:= TMethod(@Self.GetTextBuf).Code=Pointer(@TControl.GetTextBuf);
-end;
-
 procedure TControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 var
   NewAction: TCustomAction;
@@ -2023,7 +2018,7 @@ var
 begin
   // Check if GetTextBuf is overridden, otherwise
   // we can call RealGetText directly
-  if GetTextBufWithoutOverride
+  if Pointer(@Self.GetTextBuf) = Pointer(@TControl.GetTextBuf)
   then begin
     Result := RealGetText;
   end
@@ -2974,7 +2969,7 @@ begin
   
   // Check if SetTextBuf is overridden, otherwise
   // we can call RealSetText directly
-  if GetTextBufWithoutOverride
+  if Pointer(@Self.SetTextBuf) = Pointer(@TControl.SetTextBuf)
   then begin
     RealSetText(Value);
   end
@@ -3196,6 +3191,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.199  2004/06/28 23:46:40  marc
+  * Fixed compilation on 1.0.10
+  * Fixed check for override of GetTextBuf and SetTextBuf
+
   Revision 1.198  2004/06/28 09:48:46  mattias
   added valgrind flag to compiler options
 

@@ -949,7 +949,6 @@ type
     procedure RemoveControlHandler(HandlerType: TControlHandlerType;
                                    AMethod: TMethod);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
-    function GetTextBufWithoutOverride: boolean;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; dynamic;
@@ -2323,6 +2322,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.215  2004/06/28 23:46:40  marc
+  * Fixed compilation on 1.0.10
+  * Fixed check for override of GetTextBuf and SetTextBuf
+
   Revision 1.214  2004/06/28 18:47:30  mattias
   further fixed GetControlAtPos
 
