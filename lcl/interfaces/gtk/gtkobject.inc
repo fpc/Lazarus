@@ -598,6 +598,12 @@ var
       ForAllChilds(PGtkCombo(PaintWidget)^.entry);
       ForAllChilds(PGtkCombo(PaintWidget)^.button);
     end;
+    if GtkWidgetIsA(PaintWidget,GTK_RANGE_TYPE) then begin
+      SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.slider);
+      SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.trough);
+      SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_forw);
+      SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_back);
+    end;
   end;
 
 begin
@@ -2514,7 +2520,9 @@ begin
       if (Sender is TCustomForm) then begin
         ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivate);
         ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
-      end else
+      end else if Sender is TMemo then
+        ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
+      else
         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
     end;
 
@@ -4146,15 +4154,22 @@ begin
       P := gtk_scrolled_window_new(nil, nil);
       TempWidget := gtk_text_new(nil, nil);
       gtk_container_add(p, TempWidget);
-      gtk_text_set_adjustments(PGtkText(TempWidget), PGtkAdjustment(PGtkScrolledWindow(P)^.hscrollbar),
-        PGtkAdjustment(PGtkScrolledWindow(P)^.vscrollbar));
+
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                     GTK_POLICY_AUTOMATIC,
+                                     GTK_POLICY_AUTOMATIC);
+      gtk_text_set_adjustments(PGtkText(TempWidget),
+        gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)),
+        gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
 
       SetMainWidget(p, TempWidget);
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
 
-      gtk_widget_show(P);
-      gtk_widget_show(TempWidget);
-      
+      gtk_widget_show_all(TempWidget);
+      gtk_widget_show_all(P);
+
       SetupProps:= true;
     end;
 
@@ -6208,6 +6223,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.244  2002/10/10 09:44:30  lazarus
+  MG: fixed gtk warnings on creating TMemo
+
   Revision 1.243  2002/10/10 08:51:13  lazarus
   MG: added paint messages for some gtk internal widgets
 
