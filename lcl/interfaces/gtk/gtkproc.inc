@@ -596,6 +596,7 @@ begin
   Result := TLMessage(Message).Result;
 end;
 
+
 {------------------------------------------------------------------------------
   Function: ObjectToGTKObject
   Params: AObject: A LCL Object
@@ -802,6 +803,45 @@ begin
   Src2ClientAreaVector.Y:=ClientAreaWindowOrigin.Y-SrcWindowOrigin.Y;
   Result.X:=SourcePos.X-Src2ClientAreaVector.X;
   Result.Y:=SourcePos.Y-Src2ClientAreaVector.Y;
+end;
+
+{------------------------------------------------------------------------------
+  Function: UpdateMouseCaptureControl
+  Params: none
+  Returns:  none
+
+  Sets MCaptureControl to the current capturing widget.
+ ------------------------------------------------------------------------------}
+procedure UpdateMouseCaptureControl;
+var
+  OldMouseCaptureHandle,
+  CurMouseCaptureHandle: PGtkWidget;
+
+  procedure NotifyCurCaptureControl;
+  var
+    CurControl: TObject;
+    CaptureChangedMsg: TLMessage;
+  begin
+    if CurMouseCaptureHandle=nil then exit;
+    CurControl:=GetLCLObject(CurMouseCaptureHandle);
+    if CurControl=nil then exit;
+    with CaptureChangedMsg do begin
+      Msg := Msg;
+      WParam := LM_CAPTURECHANGED;
+      LParam := 0;
+      Result := longint(OldMouseCaptureHandle); // ToDo: 64bit faulty
+    end;
+    DeliverMessage(CurControl,CaptureChangedMsg);
+  end;
+
+begin
+  OldMouseCaptureHandle:=PGtkWidget(MCaptureHandle);
+  CurMouseCaptureHandle:=gtk_grab_get_current;
+  if OldMouseCaptureHandle<>CurMouseCaptureHandle then begin
+    // mouse capture widget has changed
+    MCaptureHandle:=longint(CurMouseCaptureHandle); // ToDo: 64bit faulty
+    NotifyCurCaptureControl;
+  end;
 end;
 
 // ----------------------------------------------------------------------
@@ -1391,6 +1431,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.47  2002/06/19 19:46:10  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.46  2002/06/14 14:57:07  lazarus
   MG: fixed open file at cursor search path
 
