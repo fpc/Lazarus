@@ -330,6 +330,7 @@ type
     ShowOptionsPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
+    procedure NoteBookResize(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
@@ -2245,6 +2246,7 @@ begin
     Pages.Add(oisEvents);
     PageIndex:=0;
     PopupMenu:=MainPopupMenu;
+    OnResize:=@NoteBookResize;
   end;
 
   // property grid
@@ -2505,6 +2507,13 @@ begin
   RefreshSelections;
   if Assigned(FOnSelectComponentsInOI) then
     FOnSelectComponentsInOI(Self);
+end;
+
+procedure TObjectInspector.NoteBookResize(Sender: TObject);
+begin
+  {$IFDEF CompTree}
+  writeln('TObjectInspector.NoteBookResize A ',Left,',',Top,',',Width,',',Height);
+  {$ENDIF}
 end;
 
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
