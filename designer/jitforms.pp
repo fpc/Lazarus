@@ -524,12 +524,11 @@ begin
       try
         Reader.Driver.BeginRootComponent;
         NewComponent:=Reader.ReadComponent(nil);
-          NewComponent.Name,':',NewComponent.ClassName,' ',
-          csDesigning in NewComponent.ComponentState);
         Reader.FixupReferences;
       finally
         Reader.EndReferences;
       end;
+      writeln('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
 
       {$IFDEF IDE_VERBOSE}
       writeln('[TJITComponentList.AddJITChildComponentFromStream] D');
