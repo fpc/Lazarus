@@ -406,6 +406,56 @@ Type
     property Visible;
   end;
   
+  
+  { TDBMemo }
+
+  TDBMemo = class(TCustomMemo)
+  private
+    FDataLink: TFieldDataLink;
+    FAutoDisplay: Boolean;
+    FDBMemoFocused: Boolean;
+    FDBMemoLoaded: Boolean;
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    procedure SetAutoDisplay(const AValue: Boolean);
+    procedure SetDataField(const AValue: string);
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetReadOnly(const AValue: Boolean);
+  protected
+    function WordWrapIsStored: boolean; virtual;
+    procedure DataChange(Sender: TObject); virtual;
+    procedure EditingChange(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject); virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadMemo; virtual;
+    property Field: TField read GetField;
+  published
+    property Align;
+    property Anchors;
+    property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
+    property Color;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property Font;
+    property Lines;
+    property MaxLength;
+    property OnChange;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property PopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ScrollBars;
+    property Tabstop;
+    property Visible;
+    property WordWrap stored WordWrapIsStored;
+  end;
 
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
@@ -738,12 +788,16 @@ end;
 {$Include dbradiogroup.inc}
 {$Include dbcheckbox.inc}
 {$Include dbcombobox.inc}
+{$Include dbmemo.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/09/18 11:24:29  mattias
+  started TDBMemo
+
   Revision 1.5  2003/09/18 10:50:05  mattias
   started TDBComboBox
 

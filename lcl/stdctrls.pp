@@ -567,7 +567,6 @@ type
     property ShowHint;
     property Text;
     property Visible;
-
   end;
   
   
@@ -595,7 +594,6 @@ type
     property Tabstop;
     property Visible;
     property WordWrap stored WordWrapIsStored;
-
   end;
 
 
@@ -1464,6 +1462,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2003/09/18 11:24:29  mattias
+  started TDBMemo
+
   Revision 1.104  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

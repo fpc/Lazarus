@@ -18,40 +18,40 @@
 
 function TDBComboBox.GetDataField: string;
 begin
-  Result := FDataLink.FieldName;
+  Result:=FDataLink.FieldName;
 end;
 
 function TDBComboBox.GetDataSource: TDataSource;
 begin
-  Result := FDataLink.DataSource;
+  Result:=FDataLink.DataSource;
 end;
 
 function TDBComboBox.GetField: TField;
 begin
-  Result := FDataLink.Field;
+  Result:=FDataLink.Field;
 end;
 
 function TDBComboBox.GetReadOnly: Boolean;
 begin
-  Result := FDataLink.ReadOnly;
+  Result:=FDataLink.ReadOnly;
 end;
 
 procedure TDBComboBox.SetDataField(const AValue: string);
 begin
-  FDataLink.FieldName := AValue;
+  FDataLink.FieldName:=AValue;
 end;
 
 procedure TDBComboBox.SetDataSource(const AValue: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
-    FDataLink.DataSource := AValue;
+    FDataLink.DataSource:=AValue;
   if AValue <> nil then
     AValue.FreeNotification(Self);
 end;
 
 procedure TDBComboBox.SetReadOnly(const AValue: Boolean);
 begin
-  FDataLink.ReadOnly := AValue;
+  FDataLink.ReadOnly:=AValue;
 end;
 
 function TDBComboBox.GetComboText: string;
@@ -63,9 +63,9 @@ begin
   else begin
     i:=ItemIndex;
     if i<0 then
-      Result := ''
+      Result:=''
     else
-      Result := Items[i];
+      Result:=Items[i];
   end;
 end;
 
@@ -85,7 +85,7 @@ end;
 
 procedure TDBComboBox.DataChange(Sender: TObject);
 begin
-  if not (Style = csSimple) and DroppedDown then Exit;
+  if not (Style=csSimple) and DroppedDown then Exit;
   if FDataLink.Field <> nil then
     // ToDo: use Field.Text
     SetComboText(FDataLink.Field.DisplayText)
@@ -110,18 +110,18 @@ end;
 constructor TDBComboBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  ControlStyle := ControlStyle+[csReplicatable];
-  FDataLink := TFieldDataLink.Create;
-  FDataLink.Control := Self;
-  FDataLink.OnDataChange := @DataChange;
-  FDataLink.OnUpdateData := @UpdateData;
-  FDataLink.OnEditingChange := @EditingChange;
+  ControlStyle:=ControlStyle+[csReplicatable];
+  FDataLink:=TFieldDataLink.Create;
+  FDataLink.Control:=Self;
+  FDataLink.OnDataChange:=@DataChange;
+  FDataLink.OnUpdateData:=@UpdateData;
+  FDataLink.OnEditingChange:=@EditingChange;
 end;
 
 destructor TDBComboBox.Destroy;
 begin
   FDataLink.Free;
-  FDataLink := nil;
+  FDataLink:=nil;
   inherited Destroy;
 end;
 
