@@ -195,6 +195,7 @@ type
   TLRSStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
   
 procedure LRSObjectBinaryToText(Input, Output: TStream);
+procedure LRSObjectTextToBinary(Input, Output: TStream);
 procedure LRSObjectToText(Input, Output: TStream;
   var OriginalFormat: TLRSStreamOriginalFormat);
 
@@ -530,7 +531,7 @@ begin
     FormClassName:=FindLFMClassName(LFMStream);
     BinStream:=TMemoryStream.Create;
     try
-      ObjectTextToBinary(LFMStream,BinStream);
+      LRSObjectTextToBinary(LFMStream,BinStream);
       BinStream.Position:=0;
       BinaryToLazarusResourceCode(BinStream,LRSStream,FormClassName
         ,'FORMDATA');
@@ -1142,7 +1143,7 @@ begin
     try
       // transform binary to text
       BinStream.Position:=0;
-      ObjectBinaryToText(BinStream,LFMStream);
+      LRSObjectBinaryToText(BinStream,LFMStream);
     except
       Result:=-2;
       exit;
@@ -1153,338 +1154,278 @@ begin
 end;
 
 procedure LRSObjectBinaryToText(Input, Output: TStream);
-var
-  NestingLevel: Integer;
-  SaveSeparator: Char;
-  Reader: TDelphiReader;
-  Writer: TDelphiWriter;
-  ObjectName, PropName: string;
 
-  procedure WriteIndent;
-  const
-    Blanks: array[0..1] of Char = '  ';
+  procedure OutStr(const s: String);
   var
-    I: Integer;
+    i: Integer;
   begin
-    for I := 1 to NestingLevel do Writer.Write(Blanks, SizeOf(Blanks));
-  end;
-
-  procedure WriteStr(const S: string);
-  begin
-    Writer.Write(S[1], Length(S));
-  end;
-
-  procedure NewLine;
-  begin
-    WriteStr(LineEnd);
-    WriteIndent;
-  end;
-
-  procedure ConvertValue; forward;
-
-  procedure ConvertHeader;
-  var
-    ClassName: string;
-    Flags: TFilerFlags;
-    Position: Integer;
-  begin
-    Reader.ReadPrefix(Flags, Position);
-    ClassName := Reader.ReadStr;
-    ObjectName := Reader.ReadStr;
-    WriteIndent;
-    if ffInherited in Flags then
-      WriteStr('inherited ')
-    else if ffInline in Flags then
-      WriteStr('inline ')
-    else
-      WriteStr('object ');
-    if ObjectName <> '' then
-    begin
-      WriteStr(ObjectName);
-      WriteStr(': ');
+    for i:=1 to length(s) do begin
+      if (s[i] in [#0..#8,#11..#12,#14..#31]) then begin
+        DbgOut('#'+IntToStr(ord(s[i])));
+        RaiseGDBException('ObjectLRSToText: Invalid character');
+      end else
+        DbgOut(s[i]);
     end;
-    WriteStr(ClassName);
-    if ffChildPos in Flags then
-    begin
-      WriteStr(' [');
-      WriteStr(IntToStr(Position));
-      WriteStr(']');
-    end;
-
-    if ObjectName = '' then
-      ObjectName := ClassName;  // save for error reporting
-
-    WriteStr(LineEnd);
+    if Length(s) > 0 then
+      Output.Write(s[1], Length(s));
   end;
 
-  procedure BinToHex(Buffer, Text: PChar; BufSize: Integer);
-  const
-    Convert: array[0..15] of Char = '0123456789ABCDEF';
-  var
-    I: Integer;
+  procedure OutLn(const s: String);
   begin
-    for I := 0 to BufSize - 1 do
-    begin
-      Text[0] := Convert[Byte(Buffer[I]) shr 4];
-      Text[1] := Convert[Byte(Buffer[I]) and $F];
-      Inc(Text, 2);
-    end;
+    OutStr(s + #13#10);
   end;
 
-  procedure ConvertBinary;
-  const
-    BytesPerLine = 32;
+  procedure OutString(const s: String);
   var
-    MultiLine: Boolean;
-    I: Integer;
-    Count: Longint;
-    Buffer: array[0..BytesPerLine - 1] of Char;
-    Text: array[0..BytesPerLine * 2 - 1] of Char;
+    res, NewStr: String;
+    i: Integer;
+    InString, NewInString: Boolean;
   begin
-    Reader.ReadValue;
-    WriteStr('{');
-    Inc(NestingLevel);
-    Reader.Read(Count, SizeOf(Count));
-    MultiLine := Count >= BytesPerLine;
-    while Count > 0 do
-    begin
-      if MultiLine then NewLine;
-      if Count >= 32 then I := 32 else I := Count;
-      Reader.Read(Buffer, I);
-      BinToHex(Buffer, Text, I);
-      Writer.Write(Text, I * 2);
-      Dec(Count, I);
-    end;
-    Dec(NestingLevel);
-    WriteStr('}');
-  end;
-
-  procedure ConvertProperty; forward;
-
-  procedure ConvertValue;
-  const
-    LineLength = 64;
-  var
-    I, J, K, L: Integer;
-    S: string;
-    //W: WideString;
-    LineBreak: Boolean;
-  begin
-    case Reader.NextValue of
-      dvaList:
-        begin
-          Reader.ReadValue;
-          WriteStr('(');
-          Inc(NestingLevel);
-          while not Reader.EndOfList do
-          begin
-            NewLine;
-            ConvertValue;
+    res := '';
+    InString := False;
+    for i := 1 to Length(s) do begin
+      NewInString := InString;
+      case s[i] of
+        #0..#31: begin
+            if InString then
+              NewInString := False;
+            NewStr := '#' + IntToStr(Ord(s[i]));
           end;
-          Reader.ReadListEnd;
-          Dec(NestingLevel);
-          WriteStr(')');
+        '''':
+            if InString then NewStr := ''''''
+            else NewStr := '''''''';
+        else begin
+          if not InString then
+            NewInString := True;
+          NewStr := s[i];
         end;
-      dvaInt8, dvaInt16, dvaInt32:
-        WriteStr(IntToStr(Reader.ReadInteger));
-      dvaExtended:
-        WriteStr(FloatToStr(Reader.ReadFloat));
-      dvaSingle:
-        WriteStr(FloatToStr(Reader.ReadSingle) + 's');
-      dvaCurrency:
-        WriteStr(FloatToStr(Reader.ReadCurrency * 10000) + 'c');
-      dvaDate:
-        WriteStr(FloatToStr(Reader.ReadDate) + 'd');
-      dvaWString, dvaUTF8String:
-        begin
-          ReadError('TDelphiReader: not implemented yet: wide/utf8 string support');
-          {W := Reader.ReadWideString;
-          ToDo: L := Length(W);
-          if L = 0 then WriteStr('''''') else
-          begin
-            I := 1;
-            Inc(NestingLevel);
-            try
-              if L > LineLength then NewLine;
-              K := I;
-              repeat
-                LineBreak := False;
-                if (W[I] >= ' ') and (W[I] <> '''') and (Ord(W[i]) <= 127) then
-                begin
-                  J := I;
-                  repeat
-                    Inc(I)
-                  until (I > L) or (W[I] < ' ') or (W[I] = '''') or
-                    ((I - K) >= LineLength) or (Ord(W[i]) > 127);
-                  if ((I - K) >= LineLength) then LineBreak := True;
-                  WriteStr('''');
-                  while J < I do
-                  begin
-                    WriteStr(Char(W[J]));
-                    Inc(J);
-                  end;
-                  WriteStr('''');
-                end else
-                begin
-                  WriteStr('#');
-                  WriteStr(IntToStr(Ord(W[I])));
-                  Inc(I);
-                  if ((I - K) >= LineLength) then LineBreak := True;
-                end;
-                if LineBreak and (I <= L) then
-                begin
-                  WriteStr(' +');
-                  NewLine;
-                  K := I;
-                end;
-              until I > L;
-            finally
-              Dec(NestingLevel);
+      end;
+      if NewInString <> InString then begin
+        NewStr := '''' + NewStr;
+        InString := NewInString;
+      end;
+      res := res + NewStr;
+    end;
+    if InString then res := res + '''';
+    OutStr(res);
+  end;
+
+  function ReadInt(ValueType: TValueType): LongInt;
+  var
+    w: Word;
+  begin
+    case ValueType of
+      vaInt8: Result := ShortInt(Input.ReadByte);
+      vaInt16: begin
+          w:=ReadLRSWord(Input);
+          writeln('ReadInt vaInt16 w=',w);
+          Result := SmallInt(ReadLRSWord(Input));
+        end;
+      vaInt32: Result := ReadLRSInteger(Input);
+    end;
+  end;
+
+  function ReadInt: LongInt;
+  begin
+    Result := ReadInt(TValueType(Input.ReadByte));
+  end;
+
+  function ReadShortString: String;
+  var
+    len: Byte;
+  begin
+    len := Input.ReadByte;
+    SetLength(Result, len);
+    Input.Read(Result[1], len);
+  end;
+
+  function ReadLongString: String;
+  var
+    len: integer;
+  begin
+    len := ReadLRSInteger(Input);
+    SetLength(Result, len);
+    Input.Read(Result[1], len);
+  end;
+
+  procedure ReadPropList(const indent: String);
+
+    procedure ProcessValue(ValueType: TValueType; const Indent: String);
+
+      procedure Stop(const s: String);
+      begin
+        RaiseGDBException('ObjectLRSToText Unimplemented '+s);
+      end;
+
+      procedure ProcessBinary;
+      var
+        ToDo, DoNow, i: LongInt;
+        lbuf: array[0..31] of Byte;
+        s: String;
+      begin
+        ToDo := Input.ReadDWord;
+        OutLn('{');
+        while ToDo > 0 do begin
+          DoNow := ToDo;
+          if DoNow > 32 then DoNow := 32;
+          Dec(ToDo, DoNow);
+          s := Indent + '  ';
+          Input.Read(lbuf, DoNow);
+          for i := 0 to DoNow - 1 do
+            s := s + IntToHex(lbuf[i], 2);
+          OutLn(s);
+        end;
+        OutStr(indent);
+        OutLn('}');
+      end;
+
+    var
+      s: String;
+      IsFirst: Boolean;
+      ext: Extended;
+      ASingle: single;
+      ADate: TDateTime;
+      ACurrency: Currency;
+      AWideString: WideString;
+
+    begin
+      case ValueType of
+        vaList: begin
+            OutStr('(');
+            IsFirst := True;
+            while True do begin
+              ValueType := TValueType(Input.ReadByte);
+              if ValueType = vaNull then break;
+              if IsFirst then begin
+                OutLn('');
+                IsFirst := False;
+              end;
+              OutStr(Indent + '  ');
+              ProcessValue(ValueType, Indent + '  ');
             end;
-          end;}
-        end;
-      dvaString, dvaLString:
-        begin
-          S := Reader.ReadString;
-          L := Length(S);
-          if L = 0 then WriteStr('''''') else
-          begin
-            I := 1;
-            Inc(NestingLevel);
-            try
-              if L > LineLength then NewLine;
-              K := I;
-              repeat
-                LineBreak := False;
-                if (S[I] >= ' ') and (S[I] <> '''') then
-                begin
-                  J := I;
-                  repeat
-                    Inc(I)
-                  until (I > L) or (S[I] < ' ') or (S[I] = '''') or
-                    ((I - K) >= LineLength);
-                  if ((I - K) >= LineLength) then
-                  begin
-                    LineBreak := True;
-                    if ByteType(S, I) = mbTrailByte then Dec(I);
-                  end;
-                  WriteStr('''');
-                  Writer.Write(S[J], I - J);
-                  WriteStr('''');
-                end else
-                begin
-                  WriteStr('#');
-                  WriteStr(IntToStr(Ord(S[I])));
-                  Inc(I);
-                  if ((I - K) >= LineLength) then LineBreak := True;
-                end;
-                if LineBreak and (I <= L) then
-                begin
-                  WriteStr(' +');
-                  NewLine;
-                  K := I;
-                end;
-              until I > L;
-            finally
-              Dec(NestingLevel);
+            OutLn(Indent + ')');
+          end;
+        vaInt8: OutLn(IntToStr(ShortInt(Input.ReadByte)));
+        vaInt16: OutLn(IntToStr(SmallInt(ReadLRSWord(Input))));
+        vaInt32: OutLn(IntToStr(ReadLRSInteger(Input)));
+        vaInt64: OutLn(IntToStr(ReadLRSInt64(Input)));
+        vaExtended: begin
+            ext:=ReadLRSExtended(Input);
+            OutLn(FloatToStr(ext));
+          end;
+        vaString: begin
+            OutString(ReadShortString);
+            OutLn('');
+          end;
+        vaIdent: OutLn(ReadShortString);
+        vaFalse: OutLn('False');
+        vaTrue: OutLn('True');
+        vaBinary: ProcessBinary;
+        vaSet: begin
+            OutStr('[');
+            IsFirst := True;
+            while True do begin
+              s := ReadShortString;
+              if Length(s) = 0 then break;
+              if not IsFirst then OutStr(', ');
+              IsFirst := False;
+              OutStr(s);
             end;
+            OutLn(']');
           end;
-        end;
-      dvaIdent, dvaFalse, dvaTrue, dvaNil, dvaNull:
-        WriteStr(Reader.ReadIdent);
-      dvaBinary:
-        ConvertBinary;
-      dvaSet:
-        begin
-          Reader.ReadValue;
-          WriteStr('[');
-          I := 0;
-          while True do
-          begin
-            S := Reader.ReadStr;
-            if S = '' then Break;
-            if I > 0 then WriteStr(', ');
-            WriteStr(S);
-            Inc(I);
+        vaLString: begin
+            OutString(ReadLongString);
+            OutLn('');
           end;
-          WriteStr(']');
-        end;
-      dvaCollection:
-        begin
-          Reader.ReadValue;
-          WriteStr('<');
-          Inc(NestingLevel);
-          while not Reader.EndOfList do
-          begin
-            NewLine;
-            WriteStr('item');
-            if Reader.NextValue in [dvaInt8, dvaInt16, dvaInt32] then
-            begin
-              WriteStr(' [');
-              ConvertValue;
-              WriteStr(']');
+        vaNil:
+          OutLn('nil');
+        vaCollection: begin
+            OutStr('<');
+            while Input.ReadByte <> 0 do begin
+              OutLn(Indent);
+              Input.Seek(-1, soFromCurrent);
+              OutStr(indent + '  item');
+              ValueType := TValueType(Input.ReadByte);
+              if ValueType <> vaList then
+                OutStr('[' + IntToStr(ReadInt(ValueType)) + ']');
+              OutLn('');
+              ReadPropList(indent + '    ');
+              OutStr(indent + '  end');
             end;
-            WriteStr(LineEnd);
-            Reader.CheckValue(dvaList);
-            Inc(NestingLevel);
-            while not Reader.EndOfList do ConvertProperty;
-            Reader.ReadListEnd;
-            Dec(NestingLevel);
-            WriteIndent;
-            WriteStr('end');
+            OutLn('>');
           end;
-          Reader.ReadListEnd;
-          Dec(NestingLevel);
-          WriteStr('>');
+        vaSingle: begin
+            ASingle:=ReadLRSSingle(Input);
+            OutLn(FloatToStr(ASingle));
+          end;
+        vaDate: begin
+            ADate:=TDateTime(ReadLRSDouble(Input));
+            OutLn(FloatToStr(ADate));
+          end;
+        vaCurrency: begin
+            ACurrency:=ReadLRSCurrency(Input);
+            OutLn(FloatToStr(ACurrency));
+          end;
+        vaWString: begin
+            AWideString:=ReadLRSWideString(Input);
+            OutLn(AWideString);
+          end;
+        else begin
+          debugln('Unknown ValueType=',dbgs(Ord(ValueType)),' vaInt16=',dbgs(Ord(vaInt16)));
+          Stop(IntToStr(Ord(ValueType)));
         end;
-      dvaInt64:
-        WriteStr(IntToStr(Reader.ReadInt64));
-    else
-      ReadError(Format(rsErrorReadingProperty,
-        [ObjectName, '.', PropName, Ord(Reader.NextValue)]));
+      end;
+    end;
+
+  begin
+    while Input.ReadByte <> 0 do begin
+      Input.Seek(-1, soFromCurrent);
+      OutStr(indent + ReadShortString + ' = ');
+      ProcessValue(TValueType(Input.ReadByte), Indent);
     end;
   end;
 
-  procedure ConvertProperty;
+  procedure ReadObject(const indent: String);
+  var
+    b: Byte;
+    ObjClassName, ObjName: String;
+    ChildPos: LongInt;
   begin
-    WriteIndent;
-    PropName := Reader.ReadStr;  // save for error reporting
-    WriteStr(PropName);
-    WriteStr(' = ');
-    ConvertValue;
-    WriteStr(LineEnd);
-  end;
+    // Check for FilerFlags
+    b := Input.ReadByte;
+    if (b and $f0) = $f0 then begin
+      if (b and 2) <> 0 then ChildPos := ReadInt;
+    end else begin
+      b := 0;
+      Input.Seek(-1, soFromCurrent);
+    end;
 
-  procedure ConvertObject;
-  begin
-    ConvertHeader;
-    Inc(NestingLevel);
-    while not Reader.EndOfList do ConvertProperty;
-    Reader.ReadListEnd;
-    while not Reader.EndOfList do ConvertObject;
-    Reader.ReadListEnd;
-    Dec(NestingLevel);
-    WriteIndent;
-    WriteStr('end' + LineEnd);
+    ObjClassName := ReadShortString;
+    ObjName := ReadShortString;
+
+    OutStr(Indent);
+    if (b and 1) <> 0 then OutStr('inherited')
+    else OutStr('object');
+    OutStr(' ');
+    if ObjName <> '' then
+      OutStr(ObjName + ': ');
+    OutStr(ObjClassName);
+    if (b and 2) <> 0 then OutStr('[' + IntToStr(ChildPos) + ']');
+    OutLn('');
+
+    ReadPropList(indent + '  ');
+
+    while Input.ReadByte <> 0 do begin
+      Input.Seek(-1, soFromCurrent);
+      ReadObject(indent + '  ');
+    end;
+    OutLn(indent + 'end');
   end;
 
 begin
-  NestingLevel := 0;
-  Reader := TDelphiReader.Create(Input);
-  SaveSeparator := DecimalSeparator;
-  DecimalSeparator := '.';
-  try
-    Writer := TDelphiWriter.Create(Output);
-    try
-      Reader.ReadSignature;
-      ConvertObject;
-    finally
-      Writer.Free;
-    end;
-  finally
-    DecimalSeparator := SaveSeparator;
-    Reader.Free;
-  end;
+  if Input.ReadDWord <> PLongWord(@FilerSignature[1])^ then
+    raise EReadError.Create('Illegal stream image' {###SInvalidImage});
+  ReadObject('');
 end;
 
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
@@ -1552,6 +1493,252 @@ begin
       if OriginalFormat = sofText then
         Output.CopyFrom(Input, Input.Size - Input.Position);
     end;
+  end;
+end;
+
+procedure LRSObjectTextToBinary(Input, Output: TStream);
+var
+  parser: TParser;
+
+  procedure WriteShortString(const s: String);
+  var
+    Size: Integer;
+  begin
+    Size:=length(s);
+    if Size>255 then Size:=255;
+    Output.WriteByte(byte(Size));
+    if Size > 0 then
+      Output.Write(s[1], Size);
+  end;
+
+  procedure WriteLongString(const s: String);
+  begin
+    WriteLRSInteger(Output,Length(s));
+    if Length(s) > 0 then
+      Output.Write(s[1], Length(s));
+  end;
+
+  procedure WriteInteger(value: LongInt);
+  begin
+    if (value >= -128) and (value <= 127) then begin
+      Output.WriteByte(Ord(vaInt8));
+      Output.WriteByte(Byte(value));
+    end else if (value >= -32768) and (value <= 32767) then begin
+      Output.WriteByte(Ord(vaInt16));
+      WriteLRSWord(Output,Word(value));
+    end else begin
+      Output.WriteByte(ord(vaInt32));
+      WriteLRSInteger(Output,value);
+    end;
+  end;
+
+  procedure WriteInt64(const Value: Int64);
+  begin
+    if (Value >= -$80000000) and (Value <= $7fffffff) then
+      WriteInteger(Integer(Value))
+    else begin
+      Output.WriteByte(ord(vaInt64));
+      WriteLRSInt64(Output,Value);
+    end;
+  end;
+
+  procedure WriteIntegerStr(const s: string);
+  begin
+    if length(s)>7 then
+      WriteInt64(StrToInt64(s))
+    else
+      WriteInteger(StrToInt(s));
+  end;
+
+  procedure ProcessProperty; forward;
+
+  procedure ProcessValue;
+  var
+    flt: Extended;
+    s: String;
+    stream: TMemoryStream;
+    BinDataSize: LongInt;
+  begin
+    case parser.Token of
+      toInteger:
+        begin
+          WriteIntegerStr(parser.TokenString);
+          parser.NextToken;
+        end;
+      toFloat:
+        begin
+          Output.WriteByte(Ord(vaExtended));
+          flt := Parser.TokenFloat;
+          WriteLRSExtended(Output,flt);
+          parser.NextToken;
+        end;
+      toString:
+        begin
+          s := parser.TokenString;
+          while parser.NextToken = '+' do
+          begin
+            parser.NextToken;   // Get next string fragment
+            parser.CheckToken(toString);
+            s := s + parser.TokenString;
+          end;
+          if length(s)<256 then begin
+            Output.WriteByte(Ord(vaString));
+            WriteShortString(s);
+          end else begin
+            Output.WriteByte(Ord(vaLString));
+            WriteLongString(s);
+          end;
+        end;
+      toSymbol:
+        begin
+          if CompareText(parser.TokenString, 'True') = 0 then
+            Output.WriteByte(Ord(vaTrue))
+          else if CompareText(parser.TokenString, 'False') = 0 then
+            Output.WriteByte(Ord(vaFalse))
+          else if CompareText(parser.TokenString, 'nil') = 0 then
+            Output.WriteByte(Ord(vaNil))
+          else
+          begin
+            Output.WriteByte(Ord(vaIdent));
+            WriteShortString(parser.TokenComponentIdent);
+          end;
+          Parser.NextToken;
+        end;
+      // Set
+      '[':
+        begin
+          parser.NextToken;
+          Output.WriteByte(Ord(vaSet));
+          if parser.Token <> ']' then
+            while True do
+            begin
+              parser.CheckToken(toSymbol);
+              WriteShortString(parser.TokenString);
+              parser.NextToken;
+              if parser.Token = ']' then
+                break;
+              parser.CheckToken(',');
+              parser.NextToken;
+            end;
+          Output.WriteByte(0);
+          parser.NextToken;
+        end;
+      // List
+      '(':
+        begin
+          parser.NextToken;
+          Output.WriteByte(Ord(vaList));
+          while parser.Token <> ')' do
+            ProcessValue;
+          Output.WriteByte(0);
+          parser.NextToken;
+        end;
+      // Collection
+      '<':
+        begin
+          parser.NextToken;
+          Output.WriteByte(Ord(vaCollection));
+          while parser.Token <> '>' do
+          begin
+            parser.CheckTokenSymbol('item');
+            parser.NextToken;
+            // ConvertOrder
+            Output.WriteByte(Ord(vaList));
+            while not parser.TokenSymbolIs('end') do
+              ProcessProperty;
+            parser.NextToken;   // Skip 'end'
+            Output.WriteByte(0);
+          end;
+          Output.WriteByte(0);
+          parser.NextToken;
+        end;
+      // Binary data
+      '{':
+        begin
+          Output.WriteByte(Ord(vaBinary));
+          stream := TMemoryStream.Create;
+          try
+            parser.HexToBinary(stream);
+            BinDataSize:=integer(stream.Size);
+            WriteLRSInteger(Output,BinDataSize);
+            Output.Write(Stream.Memory^, BinDataSize);
+          finally
+            stream.Free;
+          end;
+          parser.NextToken;
+        end;
+      else
+        parser.Error(SInvalidProperty);
+    end;
+  end;
+
+  procedure ProcessProperty;
+  var
+    name: String;
+  begin
+    // Get name of property
+    parser.CheckToken(toSymbol);
+    name := parser.TokenString;
+    while True do begin
+      parser.NextToken;
+      if parser.Token <> '.' then break;
+      parser.NextToken;
+      parser.CheckToken(toSymbol);
+      name := name + '.' + parser.TokenString;
+    end;
+    WriteShortString(name);
+    parser.CheckToken('=');
+    parser.NextToken;
+    ProcessValue;
+  end;
+
+  procedure ProcessObject;
+  var
+    IsInherited: Boolean;
+    ObjectName, ObjectType: String;
+  begin
+    if parser.TokenSymbolIs('OBJECT') then
+      IsInherited := False
+    else begin
+      parser.CheckTokenSymbol('INHERITED');
+      IsInherited := True;
+    end;
+    if IsInherited then ;
+    parser.NextToken;
+    parser.CheckToken(toSymbol);
+    ObjectName := '';
+    ObjectType := parser.TokenString;
+    parser.NextToken;
+    if parser.Token = ':' then begin
+      parser.NextToken;
+      parser.CheckToken(toSymbol);
+      ObjectName := ObjectType;
+      ObjectType := parser.TokenString;
+      parser.NextToken;
+    end;
+    WriteShortString(ObjectType);
+    WriteShortString(ObjectName);
+
+    // Convert property list
+    while not (parser.TokenSymbolIs('END') or
+      parser.TokenSymbolIs('OBJECT') or
+      parser.TokenSymbolIs('INHERITED')) do
+      ProcessProperty;
+    Output.WriteByte(0);        // Terminate property list
+
+    // Convert child objects
+    while not parser.TokenSymbolIs('END') do ProcessObject;
+    parser.NextToken;           // Skip end token
+    Output.WriteByte(0);        // Terminate property list
+  end;
+
+begin
+  parser := TParser.Create(Input);
+  try
+    Output.Write(FilerSignature, SizeOf(FilerSignature));
+    ProcessObject;
+  finally
+    parser.Free;
   end;
 end;
 

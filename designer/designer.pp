@@ -493,7 +493,7 @@ begin
       BinCompStream.Position:=0;
       // convert binary to text stream
       try
-        ObjectBinaryToText(BinCompStream,TxtCompStream);
+        LRSObjectBinaryToText(BinCompStream,TxtCompStream);
       except
         on E: Exception do begin
           MessageDlg(lisUnableConvertBinaryStreamToText,

@@ -3342,7 +3342,7 @@ begin
                                           +BufSize;
                 try
                   BinCompStream.Position:=0;
-                  ObjectBinaryToText(BinCompStream,TxtCompStream);
+                  LRSObjectBinaryToText(BinCompStream,TxtCompStream);
                   AnUnitInfo.ComponentLastLFMStreamSize:=TxtCompStream.Size;
                   // stream text to file
                   TxtCompStream.Position:=0;
@@ -3784,7 +3784,7 @@ begin
       try
         if AnUnitInfo.ComponentLastBinStreamSize>0 then
           BinLFMStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
-        ObjectTextToBinary(TxtLFMStream,BinLFMStream);
+        LRSObjectTextToBinary(TxtLFMStream,BinLFMStream);
         AnUnitInfo.ComponentLastBinStreamSize:=BinLFMStream.Size;
         BinLFMStream.Position:=0;
         Result:=mrOk;
@@ -8264,7 +8264,7 @@ begin
   BinCompStream:=TMemoryStream.Create;
   try
     try
-      ObjectTextToBinary(TxtCompStream,BinCompStream);
+      LRSObjectTextToBinary(TxtCompStream,BinCompStream);
     except
       on E: Exception do begin
         MessageDlg(lisConversionError,
@@ -10582,6 +10582,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.754  2004/08/15 17:53:32  mattias
+  implemented endian independent object Text <-> Binary converter
+
   Revision 1.753  2004/08/15 14:39:36  mattias
   implemented platform independent binary object streamer
 
