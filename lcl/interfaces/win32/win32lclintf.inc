@@ -109,6 +109,28 @@ end;
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
+
+  function doCheckMenuItem(aMI: TMenuItem; CF: Integer): boolean;
+  begin
+    Result := Windows.CheckMenuItem(aMI.Parent.Handle, aMI.Command, CF) <> DWORD($FFFFFFFF);
+  end;
+  
+  procedure InterfaceTurnSiblingsOff(aMI: TMenuItem);
+  var
+    aParent, aSibling: TMenuItem;
+    i: integer;
+  begin
+    // Just check all siblings that are in the same group
+    // TMenuItem.TurnSiblingsOff should have modified internal flags
+    aParent := aMI.Parent;
+    if aParent <> nil then
+      for i := 0 to aParent.Count-1 do 
+      begin
+        aSibling := aParent.Items[i];
+        if (aSibling <> aMI) and aSibling.RadioItem and (aSibling.GroupIndex=aMI.GroupIndex) then
+          doCheckMenuItem(aParent[i], MF_UNCHECKED or MF_BYCOMMAND);
+      end;
+  end;
 var
   CheckFlag: Integer;
   AMenuItem: TMenuItem;
@@ -117,7 +139,11 @@ Begin
   if AMenuItem.Checked then CheckFlag := MF_CHECKED
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
-  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> DWORD($FFFFFFFF);
+  if (CheckFlag and MF_CHECKED <> 0) and
+    (AMenuItem.GroupIndex <> 0) and AMenuItem.RadioItem
+  then
+    InterfaceTurnSiblingsOff(aMenuItem);
+  Result := doCheckMenuItem(aMenuItem, CheckFlag);
 End;
 
 {------------------------------------------------------------------------------
@@ -201,6 +227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/04/15 08:03:07  micha
+  fix radiogroup menuitem, uncheck others in same group (from jreyes)
+
   Revision 1.17  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 
