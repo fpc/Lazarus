@@ -583,10 +583,10 @@ Function ObjectToHWND(Const AObject: TObject): HWND;
 Var
   Handle: HWND;
 Begin
+  Handle:=0;
   If Integer(AObject) = 0 Then
   Begin
     Assert (False, 'TRACE:[ObjectToHWND] Object not assigned');
-    Handle := 0
   End
   Else If (AObject Is TWinControl) Then
   Begin
@@ -611,10 +611,9 @@ Begin
   Else
   Begin
     Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName])); 
-    Handle := 0;
   End;
   Result := Handle;
-  If handle = 0 Then
+  If Handle = 0 Then
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 End;
 
@@ -671,6 +670,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.9  2002/11/17 15:01:38  mattias
+  fixed uninitialised handle
+
   Revision 1.8  2002/05/10 07:43:49  lazarus
   MG: updated licenses
 
