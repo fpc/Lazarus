@@ -1952,6 +1952,15 @@ end;
 function TPropertyEditor.GetName:shortstring;
 begin
   Result:=FPropList^[0].PropInfo^.Name;
+  {$IFDEF Ver1_0}
+  // the 1.0.x fpc has only uppercase RTTI
+  // -> make it a little bit nicer
+  Result:=lowercase(Result);
+  if length(Result)>0 then
+    Result[1]:=upcase(Result[1]);
+  if (length(Result)>2) and (Result[1]='O') and (Result[2]='n') then
+    Result[3]:=upcase(Result[3]);
+  {$ENDIF}
 end;
 
 function TPropertyEditor.GetOrdValue:Longint;
