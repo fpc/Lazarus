@@ -1321,7 +1321,7 @@ begin
       if not (UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')) then
         RaiseException('syntax error: unexpected keyword '+GetAtom+' found');
       // close implementation section node
-      CurNode.EndPos:=CurPos.EndPos;
+      CurNode.EndPos:=CurPos.StartPos;
       EndChildNode;
       // start initialization / finalization section node
       CreateChildNode;
