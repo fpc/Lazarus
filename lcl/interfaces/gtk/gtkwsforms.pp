@@ -78,6 +78,7 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: Boolean); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
@@ -155,6 +156,25 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TGtkWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+  const AValue: Boolean);
+{$IFDEF GTK1}
+var
+AWindow: PGdkWindowPrivate;
+{$ENDIF}
+begin
+  if (AForm.Parent<>nil) or not(AForm.HandleAllocated) then exit;
+  
+  {$IFDEF GTK1}
+  AWindow := PGdkWindowPrivate(PGtkWidget(AForm.Handle)^.window);
+  GDK_WINDOW_SHOW_IN_TASKBAR(AWindow,AValue);
+  {$ENDIF}
+  
+  {$IFDEF GTK2}
+  gtk_window_set_skip_taskbar_hint(PGtkWindow(AForm.Handle), not AValue);
+  {$ENDIF}
 end;
 
 procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);

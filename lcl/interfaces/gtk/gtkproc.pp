@@ -73,6 +73,7 @@ const
   procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
   procedure GDK_WINDOW_MAXIMIZE(Window: PGdkWindowPrivate);
   procedure GDK_WINDOW_MINIMIZE(Window: PGdkWindowPrivate);
+  procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
 {$ENDIF}
   
 
@@ -1259,6 +1260,36 @@ begin
   end;
   
   XIconifyWindow(XDisplay, XWindow, XScreenNumberOfScreen(XScreen));
+end;
+
+
+procedure GDK_WINDOW_SHOW_IN_TASKBAR(Window: PGdkWindowPrivate; Show: Boolean);
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XRootWindow,
+  XWindow: TWindow;
+  XEvent: TXClientMessageEvent;
+  _NET_WM_STATE,
+  _NET_WM_STATE_SKIP_TASKBAR: clong;
+
+begin
+  XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  XScreen := XDefaultScreenOfDisplay(xdisplay);
+  XRootWindow := XRootWindowOfScreen(xscreen);
+  XWindow := GDK_WINDOW_XWINDOW (Window);
+
+  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
+  _NET_WM_STATE_SKIP_TASKBAR := XInternAtom(xdisplay, '_NET_WM_STATE_SKIP_TASKBAR', false);
+
+  XEvent._type := ClientMessage;
+  XEvent.window := XWindow;
+  XEvent.message_type := _NET_WM_STATE;
+  XEvent.format := 32;
+  XEvent.data.l[0] := Ord(not(Show)); // 0=Remove 1=Add 2=Toggle
+  XEvent.data.l[1] := _NET_WM_STATE_SKIP_TASKBAR;
+
+  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
 end;
 
 

@@ -1185,12 +1185,20 @@ begin
   end;
 end;
 
+procedure TCustomForm.SetShowInTaskbar(Value: Boolean);
+begin
+  if Value = FShowInTaskbar then exit;
+  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
+  FShowInTaskbar := Value;
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm Constructor
 ------------------------------------------------------------------------------}
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
+  FShowInTaskbar := True;
   BeginFormUpdate;
   try
     CreateNew(AOwner, 1);
@@ -1897,6 +1905,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.180  2005/03/19 23:36:26  mattias
+  implemented TCustomForm.ShowInTaskBar for gtk1+2  from Andrew Haines
+
   Revision 1.179  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

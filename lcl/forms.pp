@@ -402,6 +402,7 @@ type
     FRestoredTop: integer;
     FRestoredWidth: integer;
     FRestoredHeight: integer;
+    FShowInTaskbar: Boolean;
     FWindowState: TWindowState;
     function IsForm : Boolean;
     function IsHelpFileStored: boolean;
@@ -424,6 +425,7 @@ type
     procedure SetMenu(Value : TMainMenu);
     procedure SetModalResult(const AValue: TModalResult);
     procedure SetPosition(Value : TPosition);
+    procedure SetShowInTaskbar(Value: Boolean);
     procedure SetVisible(Value: boolean);
     procedure SetWindowFocus;
     procedure SetWindowState(Value : TWIndowState);
@@ -552,6 +554,8 @@ type
     property RestoredTop: integer read FRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
+    property ShowInTaskBar: Boolean read FShowInTaskbar write SetShowInTaskBar
+                                    default True;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
     property Visible write SetVisible stored VisibleIsStored default false;
@@ -619,6 +623,7 @@ type
     property Position;
     property SessionProperties;
     property ShowHint;
+    property ShowInTaskBar;
     property TextHeight;
     property UseDockManager;
     property Visible;

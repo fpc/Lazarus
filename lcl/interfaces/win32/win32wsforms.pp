@@ -90,6 +90,7 @@ type
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
           AWidth, AHeight: Integer); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
+    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: Boolean); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
 
@@ -315,6 +316,12 @@ begin
   else
     iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
   SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
+end;
+
+procedure TWin32WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+  const AValue: Boolean);
+begin
+  {$Warning TODO: TWin32WSCustomForm.SetShowInTaskbar}
 end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
