@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Extctrls, Debugger;
+  Buttons, Extctrls, Debugger, BaseDebugManager, Menus;
 
 type
 
@@ -59,19 +59,10 @@ type
     txtDigits: TEdit;
     procedure btnOKClick(Sender: TObject);
   private
-    FWatch: TDBGWatch;
-    FDebugger: TDebugger;
+    FWatch: TIDEWatch;
   public
-    constructor Create(AOWner: TComponent; const AWatch: TDBGWatch;
-      const ADebugger: TDebugger); overload;
+    constructor Create(AOWner: TComponent; const AWatch: TIDEWatch); overload;
     destructor Destroy; override;
-  published
-    // publish some properties until fpcbug #1888 is fixed
-    property Top;
-    property Left;
-    property Width; 
-    property Height; 
-    property Caption;
   end;
   
 implementation
@@ -82,21 +73,24 @@ procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
 begin
   if FWatch = nil
   then begin
-    if FDebugger = nil then Exit;
-    FWatch := FDebugger.Watches.Add(txtExpression.Text);
+    FWatch := DebugBoss.Watches.Add(txtExpression.Text);
+  end
+  else begin
+    FWatch.Expression := txtExpression.Text;
   end;
   
-  FWatch.Expression := txtExpression.Text;
   FWatch.Enabled := chkEnabled.Checked;
 end;
 
-constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TDBGWatch; const ADebugger: TDebugger);
+constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch);
 begin
   FWatch := AWatch;
-  FDebugger := ADebugger;
   inherited Create(AOwner);
-  if FWatch <> nil
+  if FWatch = nil
   then begin 
+    chkEnabled.Checked := True;
+  end
+  else begin
     txtExpression.Text := FWatch.Expression;
     chkEnabled.Checked := FWatch.Enabled;
   end;

@@ -188,10 +188,10 @@ type
     procedure AddLocals(const AParams:String);
   protected
     procedure DoStateChange; override;
+    function GetCount: Integer; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
   public
-    function Count: Integer; override;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
   end;
@@ -213,13 +213,10 @@ type
   
   TGDBMICallStack = class(TDBGCallStack)
   private
-    FCount: Integer;  // -1 means uninitialized
   protected
-    function CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry; override; 
-    procedure DoStateChange; override;
-    function GetCount: Integer; override;
+    function CheckCount: Boolean; override;
+    function CreateStackEntry(const AIndex: Integer): TCallStackEntry; override;
   public
-    constructor Create(const ADebugger: TDebugger); 
   end;
 
   TGDBMIExpression = class(TObject)
@@ -1150,7 +1147,6 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     Location.SrcFile := Frame.Values['file'];
     Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
-    TGDBMILocals(Locals).AddLocals(Frame.Values['args']);
     Frame.Free;
 
     DoCurrent(Location);
@@ -1752,17 +1748,6 @@ begin
   FreeAndNil(LocList);
 end;
 
-function TGDBMILocals.Count: Integer;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then begin
-    LocalsNeeded;
-    Result := FLocals.Count;
-  end
-  else Result := 0;
-end;
-
 constructor TGDBMILocals.Create(const ADebugger: TDebugger);
 begin
   FLocals := TStringList.Create;
@@ -1788,6 +1773,17 @@ begin
     FLocalsValid := False;
     FLocals.Clear;
   end;
+end;
+
+function TGDBMILocals.GetCount: Integer;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then begin
+    LocalsNeeded;
+    Result := FLocals.Count;
+  end
+  else Result := 0;
 end;
 
 function TGDBMILocals.GetName(const AnIndex: Integer): String;
@@ -1821,6 +1817,16 @@ begin
   if Debugger = nil then Exit;
   if not FLocalsValid
   then begin
+    // args
+    TGDBMIDebugger(Debugger).ExecuteCommand('frame', S, []);
+    List := CreateMIValueList(S);
+    S := List.Values['frame'];
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    AddLocals(List.Values['args']);
+    FreeAndNil(List);
+
+    // variables
     TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', S, []);
     List := CreateMIValueList(S);
     AddLocals(List.Values['locals']);
@@ -1856,7 +1862,7 @@ begin
 
   if Debugger.State in [dsPause, dsStop]
   then FEvaluated := False;
-  if Debugger.State = dsPause then Changed(False);
+  if Debugger.State = dsPause then Changed;
 end;
 
 procedure TGDBMIWatch.EvaluationNeeded;
@@ -1903,13 +1909,22 @@ end;
 { TGDBMICallStack }
 { =========================================================================== }
 
-constructor TGDBMICallStack.Create(const ADebugger: TDebugger); 
+function TGDBMICallStack.CheckCount: Boolean;
+var
+  S: String;
+  List: TStrings;
 begin
-  FCount := -1;
-  inherited;
+  Result := inherited CheckCount;
+
+  if not Result then Exit;
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', S, []);
+  List := CreateMIValueList(S);
+  SetCount(StrToIntDef(List.Values['depth'], 0));
+  FreeAndNil(List);
 end;
 
-function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry;
+function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntry;
 var                 
   n: Integer;
   S: String;
@@ -1948,7 +1963,7 @@ begin
   S := List.Values['frame'];
   FreeAndNil(List);
   List := CreateMIValueList(S);   
-  Result := TDBGCallStackEntry.Create(
+  Result := TCallStackEntry.Create(
     AIndex, 
     Pointer(StrToIntDef(List.Values['addr'], 0)),
     Arguments,
@@ -1959,33 +1974,6 @@ begin
   
   FreeAndNil(List);
   Arguments.Free;
-end;
-
-procedure TGDBMICallStack.DoStateChange; 
-begin
-  if Debugger.State <> dsPause 
-  then FCount := -1;    
-  inherited;
-end;
-
-function TGDBMICallStack.GetCount: Integer;
-var
-  S: String;
-  List: TStrings;
-begin
-  if FCount = -1 
-  then begin
-    if Debugger = nil 
-    then FCount := 0
-    else begin
-      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', S, []);
-      List := CreateMIValueList(S);
-      FCount := StrToIntDef(List.Values['depth'], 0);
-      FreeAndNil(List);
-    end;
-  end;
-  
-  Result := FCount;
 end;
 
 { =========================================================================== }
@@ -2262,6 +2250,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.48  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.47  2004/07/19 22:29:46  marc
   * Temp (?) fix for FPC 1.9.5 [2004/07/15]
 

@@ -138,7 +138,8 @@ type
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
   TIDEBreakPointGroups = class;
-  TDBGWatches = class;
+  TIDEWatches = class;
+  TIDELocals = class;
   TDebugger = class;
 
   TOnSaveFilenameToConfig = procedure(var Filename: string) of object;
@@ -186,12 +187,14 @@ type
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetValid(const AValue: TValidState);
 
+  protected
     // virtual properties
     function GetEnabled: Boolean; virtual;
     function GetExpression: String; virtual;
     function GetHitCount: Integer; virtual;
     function GetLine: Integer; virtual;
     function GetSource: String; virtual;
+    function GetSourceLine: Integer; virtual;
     function GetValid: TValidState; virtual;
 
     procedure SetEnabled(const AValue: Boolean); virtual;
@@ -199,13 +202,15 @@ type
     procedure SetInitialEnabled(const AValue: Boolean); virtual;
   public
     constructor Create(ACollection: TCollection); override;
-    function GetSourceLine: integer; virtual;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
     property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
     property Line: Integer read GetLine;
     property Source: String read GetSource;
+    property SourceLine: Integer read GetSourceLine; // the current line of this breakpoint in the source
+                                                     // this may differ from th location set
+                                                     // todo: move to manager ?
     property Valid: TValidState read GetValid;
   end;
   TBaseBreakPointClass = class of TBaseBreakPoint;
@@ -227,6 +232,7 @@ type
                                   const AGroupList: TList);
     procedure ClearGroupList(const AGroupList: TList);
     procedure ClearAllGroupLists;
+  protected
     // virtual properties
     function GetActions: TIDEBreakPointActions; virtual;
     function GetGroup: TIDEBreakPointGroup; virtual;
@@ -242,7 +248,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnLoadFilename: TOnLoadFilenameFromConfig;
                       const OnGetGroup: TOnGetGroupByName); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
   public
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
@@ -298,11 +304,11 @@ type
   TIDEBreakPoints = class(TBaseBreakPoints)
   private
     FNotificationList: TList;
-    procedure NotifyRemove(const ABreakpoint: TIDEBreakPoint); // called by breakpoint when destructed
-    procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint);    // called when a breakpoint is added
     function GetItem(const AnIndex: Integer): TIDEBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TIDEBreakPoint);
   protected
+    procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint); virtual;    // called when a breakpoint is added
+    procedure NotifyRemove(const ABreakpoint: TIDEBreakPoint); virtual; // called by breakpoint when destructed
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(const ABreakPointClass: TIDEBreakPointClass);
@@ -328,7 +334,7 @@ type
     function GetItem(const AnIndex: Integer): TDBGBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
   protected
-    procedure DoDebuggerStateChange; virtual;
+    procedure DoStateChange; virtual;
     procedure InitTargetStart; virtual;
     property  Debugger: TDebugger read FDebugger;
   public
@@ -414,88 +420,138 @@ type
 (******************************************************************************)
 (******************************************************************************)
 
-  { TDBGWatch }
+  { TBaseWatch }
 
-  TDBGWatch = class(TCollectionItem)
+  TBaseWatch = class(TDelayedUdateItem)
   private
     FEnabled: Boolean;
     FExpression: String;
-    FInitialEnabled: Boolean;
     FValid: TValidState;
-    function  GetDebugger: TDebugger;
-    procedure SetEnabled(const AValue: Boolean);
-    procedure SetExpression(const AValue: String);
-    procedure SetInitialEnabled(const AValue: Boolean);
+    function GetEnabled: Boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoEnableChange; virtual;
     procedure DoExpressionChange; virtual;
-    procedure DoStateChange; virtual;
-    function  GetValue: String; virtual;
-    function  GetValid: TValidState; virtual;
     procedure SetValid(const AValue: TValidState);
-    property  Debugger: TDebugger read GetDebugger;
+    
+  protected
+    // virtual properties
+    function GetExpression: String; virtual;
+    function GetValid: TValidState; virtual;
+    function GetValue: String; virtual;
+
+    procedure SetEnabled(const AValue: Boolean); virtual;
+    procedure SetExpression(const AValue: String); virtual;
   public
     constructor Create(ACollection: TCollection); override;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
-                                const Path: string); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
-                              const Path: string); virtual;
   public
-    property Enabled: Boolean read FEnabled write SetEnabled;
-    property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
-    property Expression: String read FExpression write SetExpression;
+    property Enabled: Boolean read GetEnabled write SetEnabled;
+    property Expression: String read GetExpression write SetExpression;
     property Valid: TValidState read GetValid;
     property Value: String read GetValue;
   end;
+  TBaseWatchClass = class of TBaseWatch;
+  
+  TIDEWatch = class(TBaseWatch)
+  private
+  protected
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure LoadFromXMLConfig(const AConfig: TXMLConfig;
+                                const APath: string); virtual;
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig;
+                              const APath: string); virtual;
+  end;
+  TIDEWatchClass = class of TIDEWatch;
 
+  TDBGWatch = class(TBaseWatch)
+  private
+    FSlave: TBaseWatch;
+    function GetDebugger: TDebugger;
+  protected
+    procedure DoChanged; override;
+    procedure DoStateChange; virtual;
+    procedure InitTargetStart; virtual;
+    property Debugger: TDebugger read GetDebugger;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    property Slave: TBaseWatch read FSlave write FSlave;
+  end;
   TDBGWatchClass = class of TDBGWatch;
 
 
-  { TDBGWatches }
+  { TBaseWatches }
 
-  TDBGWatchesEvent =
-       procedure(const ASender: TDBGWatches; const AWatch: TDBGWatch) of object;
+  TIDEWatchesEvent =
+       procedure(const ASender: TIDEWatches; const AWatch: TIDEWatch) of object;
        
-  TDBGWatchesNotification = class(TDebuggerNotification)
+  TIDEWatchesNotification = class(TDebuggerNotification)
   private
-    FOnAdd:    TDBGWatchesEvent;
-    FOnUpdate: TDBGWatchesEvent;//Item will be nil in case all items need to be updated
-    FOnRemove: TDBGWatchesEvent;
+    FOnAdd:    TIDEWatchesEvent;
+    FOnUpdate: TIDEWatchesEvent;//Item will be nil in case all items need to be updated
+    FOnRemove: TIDEWatchesEvent;
   public
-    property OnAdd:    TDBGWatchesEvent read FOnAdd    write FOnAdd;
-    property OnUpdate: TDBGWatchesEvent read FOnUpdate write FOnUpdate;
-    property OnRemove: TDBGWatchesEvent read FOnRemove write FonRemove;
+    property OnAdd:    TIDEWatchesEvent read FOnAdd    write FOnAdd;
+    property OnUpdate: TIDEWatchesEvent read FOnUpdate write FOnUpdate;
+    property OnRemove: TIDEWatchesEvent read FOnRemove write FonRemove;
   end;
 
-  TDBGWatches = class(TCollection)
+  TBaseWatches = class(TCollection)
+  private
+  protected
+  public
+    constructor Create(const AWatchClass: TBaseWatchClass);
+    function Add(const AExpression: String): TBaseWatch;
+    function Find(const AExpression: String): TBaseWatch;
+    // no items property needed, it is "overridden" anyhow
+  end;
+  
+  TIDEWatches = class(TBaseWatches)
+  private
+    FNotificationList: TList;
+    function GetItem(const AnIndex: Integer): TIDEWatch;
+    procedure SetItem(const AnIndex: Integer; const AValue: TIDEWatch);
+  protected
+    procedure NotifyAdd(const AWatch: TIDEWatch); virtual;    // called when a watch is added
+    procedure NotifyRemove(const AWatch: TIDEWatch); virtual; // called by watch when destructed
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(const AWatchClass: TIDEWatchClass);
+    destructor Destroy; override;
+    // Watch
+    function Add(const AExpression: String): TIDEWatch;
+    function Find(const AExpression: String): TIDEWatch;
+    // IDE
+    procedure AddNotification(const ANotification: TIDEWatchesNotification);
+    procedure RemoveNotification(const ANotification: TIDEWatchesNotification);
+    procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string); virtual;
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string); virtual;
+  public
+    property Items[const AnIndex: Integer]: TIDEWatch read GetItem
+                                                      write SetItem; default;
+  end;
+
+  TDBGWatches = class(TBaseWatches)
   private
     FDebugger: TDebugger;  // reference to our debugger
-    FNotificationList: TList;
     function GetItem(const AnIndex: Integer): TDBGWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
-    procedure Removed(const AWatch: TDBGWatch); // called by watch when destructed
   protected
     procedure DoStateChange; virtual;
-    procedure Update(Item: TCollectionItem); override;
+    procedure InitTargetStart; virtual;
+    property  Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger;
                        const AWatchClass: TDBGWatchClass);
-    destructor Destroy; override;
+    // Watch
     function Add(const AExpression: String): TDBGWatch;
     function Find(const AExpression: String): TDBGWatch;
-    procedure AddNotification(const ANotification: TDBGWatchesNotification);
-    procedure RemoveNotification(const ANotification: TDBGWatchesNotification);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
-                                const Path: string); virtual;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
-                              const Path: string); virtual;
-    procedure InitTargetStart; virtual;
   public
     property Items[const AnIndex: Integer]: TDBGWatch read GetItem
                                                       write SetItem; default;
   end;
-  
   
 (******************************************************************************)
 (******************************************************************************)
@@ -505,25 +561,57 @@ type
 (******************************************************************************)
 (******************************************************************************)
 
+  { TBaseLocals }
+
+  TBaseLocals = class(TObject)
+  private
+  protected
+    function GetName(const AnIndex: Integer): String; virtual;
+    function GetValue(const AnIndex: Integer): String; virtual;
+  public
+    constructor Create;
+    function Count: Integer; virtual;
+  public
+    property Names[const AnIndex: Integer]: String read GetName;
+    property Values[const AnIndex: Integer]: String read GetValue;
+  end;
+
+  { TIDELocals }
+
+  TIDELocalsNotification = class(TDebuggerNotification)
+  private
+    FOnChange: TNotifyEvent;
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  TIDELocals = class(TBaseLocals)
+  private
+    FNotificationList: TList;
+  protected
+    procedure NotifyChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TIDELocalsNotification);
+    procedure RemoveNotification(const ANotification: TIDELocalsNotification);
+  end;
+
   { TDBGLocals }
 
-  TDBGLocals = class(TObject)
+  TDBGLocals = class(TBaseLocals)
   private
     FDebugger: TDebugger;  // reference to our debugger
     FOnChange: TNotifyEvent;
   protected
     procedure DoChange;
     procedure DoStateChange; virtual;
-    function GetName(const AnIndex: Integer): String; virtual;
-    function GetValue(const AnIndex: Integer): String; virtual;
+    function GetCount: Integer; virtual;
     property Debugger: TDebugger read FDebugger;
   public
+    function Count: Integer; override;
     constructor Create(const ADebugger: TDebugger);
-    function Count: Integer; virtual;
-  public
-    property Names[const AnIndex: Integer]: String read GetName;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property Values[const AnIndex: Integer]: String read GetValue;
   end;
   
   
@@ -534,10 +622,15 @@ type
 (**                                                                          **)
 (******************************************************************************)
 (******************************************************************************)
+(* The entries for the callstack are created on demand. This way when the     *)
+(* first entry is needed, it isn't required to create the whole stack         *)
+(*                                                                            *)
+(* TCallStackEntry needs to stay a readonly object so its data can be shared  *)
+(******************************************************************************)
 
-  { TDBGCallStackEntry }
+  { TCallStackEntry }
 
-  TDBGCallStackEntry = class(TObject)
+  TCallStackEntry = class(TObject)
   private
     FIndex: Integer;
     FAdress: Pointer;
@@ -553,6 +646,7 @@ type
     constructor Create(const AIndex:Integer; const AnAdress: Pointer;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const ASource: String; const ALine: Integer);
+    constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
     property Adress: Pointer read FAdress;
     property ArgumentCount: Integer read GetArgumentCount;
@@ -563,31 +657,67 @@ type
     property Source: String read FSource;
   end;
   
-  
-  { TDBGCallStack }
+  { TBaseCallStack }
 
-  TDBGCallStack = class(TObject)
+  TBaseCallStack = class(TObject)
   private
-    FDebugger: TDebugger;  // reference to our debugger
     FEntries: TList;       // list of created entries
-    FOldState: TDBGState;  // records the previous debugger state 
-    FOnChange: TNotifyEvent;
-    procedure Clear;
-    function GetStackEntry(const AIndex: Integer): TDBGCallStackEntry;
+    FEntryIndex: TList;    // index to created entries
+    FCount: Integer;
+    function GetEntry(const AIndex: Integer): TCallStackEntry;
   protected
-    procedure DoChange;
-    function CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry; virtual; 
-    procedure DoStateChange; virtual;
-    function GetCount: Integer; virtual;
-    property Debugger: TDebugger read FDebugger;
-  public   
+    function CheckCount: Boolean; virtual;
+    procedure Clear;
+    function CreateStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
+    function GetStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
+    procedure SetCount(const ACount: Integer); virtual;
+  public
     function Count: Integer;
-    constructor Create(const ADebugger: TDebugger); 
+    constructor Create;
     destructor Destroy; override;
-    property Entries[const AIndex: Integer]: TDBGCallStackEntry read GetStackEntry;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Entries[const AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
   
+  { TIDECallStack }
+
+  TIDECallStackNotification = class(TDebuggerNotification)
+  private
+    FOnChange: TNotifyEvent;
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  TIDECallStack = class(TBaseCallStack)
+  private
+    FNotificationList: TList;
+  protected
+    procedure NotifyChange;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TIDECallStackNotification);
+    procedure RemoveNotification(const ANotification: TIDECallStackNotification);
+  end;
+
+  { TDBGCallStack }
+
+  TDBGCallStack = class(TBaseCallStack)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FOldState: TDBGState;
+    FOnChange: TNotifyEvent;
+    FOnClear: TNotifyEvent;
+  protected
+    function CheckCount: Boolean; override;
+    procedure DoStateChange; virtual;
+    property Debugger: TDebugger read FDebugger;
+  public
+    constructor Create(const ADebugger: TDebugger);
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnClear: TNotifyEvent read FOnClear write FOnClear;
+  end;
+
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -1376,7 +1506,7 @@ begin
   then begin
     OldState := FState;
     FState := AValue;
-    FBreakpoints.DoDebuggerStateChange;
+    FBreakpoints.DoStateChange;
     FLocals.DoStateChange;
     FCallStack.DoStateChange;
     FWatches.DoStateChange;
@@ -1420,13 +1550,6 @@ end;
   TBaseBreakPoint
   =========================================================================== }
 
-procedure TBaseBreakPoint.SetInitialEnabled(const AValue: Boolean);
-begin
-  if FInitialEnabled=AValue then exit;
-  //writeln('TBaseBreakPoint.SetInitialEnabled A Self=',HexStr(Cardinal(Self),8),' ',ClassName,' Line=',Line,' AValue=',AValue);
-  FInitialEnabled:=AValue;
-end;
-
 procedure TBaseBreakPoint.AssignTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint;
@@ -1438,7 +1561,6 @@ begin
     DestBreakPoint.SetLocation(FSource, FLine);
     DestBreakPoint.SetExpression(FExpression);
     DestBreakPoint.SetEnabled(FEnabled);
-    //writeln('TBaseBreakPoint.AssignTo A ',Line,' Enabled=',Enabled,' InitialEnabled=',InitialEnabled);
     DestBreakPoint.InitialEnabled := FInitialEnabled;
   end
   else inherited;
@@ -1471,11 +1593,6 @@ begin
   SetHitCount(ACount);
 end;
 
-function TBaseBreakPoint.GetSourceLine: integer;
-begin
-  Result:=Line;
-end;
-
 function TBaseBreakPoint.GetEnabled: Boolean;
 begin
   Result := FEnabled;
@@ -1499,6 +1616,11 @@ end;
 function TBaseBreakPoint.GetSource: String;
 begin
   Result := FSource;
+end;
+
+function TBaseBreakPoint.GetSourceLine: Integer;
+begin
+  Result := Line;
 end;
 
 function TBaseBreakPoint.GetValid: TValidState;
@@ -1531,6 +1653,12 @@ begin
     FHitCount := AValue;
     Changed;
   end;
+end;
+
+procedure TBaseBreakPoint.SetInitialEnabled(const AValue: Boolean);
+begin
+  if FInitialEnabled=AValue then exit;
+  FInitialEnabled:=AValue;
 end;
 
 procedure TBaseBreakPoint.SetLocation (const ASource: String; const ALine: Integer );
@@ -1661,16 +1789,6 @@ begin
   Result := FGroup;
 end;
 
-procedure TIDEBreakPoint.RemoveDisableGroup(const AGroup: TIDEBreakPointGroup);
-begin
-  RemoveFromGroupList(AGroup,FDisableGroupList);
-end;
-
-procedure TIDEBreakPoint.RemoveEnableGroup(const AGroup: TIDEBreakPointGroup);
-begin
-  RemoveFromGroupList(AGroup,FEnableGroupList);
-end;
-
 procedure TIDEBreakPoint.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; const OnLoadFilename: TOnLoadFilenameFromConfig;
   const OnGetGroup: TOnGetGroupByName);
@@ -1728,19 +1846,38 @@ begin
   end;
 end;
 
-procedure TIDEBreakPoint.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; const OnSaveFilename: TOnSaveFilenameToConfig);
+procedure TIDEBreakPoint.RemoveDisableGroup(const AGroup: TIDEBreakPointGroup);
+begin
+  RemoveFromGroupList(AGroup,FDisableGroupList);
+end;
+
+procedure TIDEBreakPoint.RemoveEnableGroup(const AGroup: TIDEBreakPointGroup);
+begin
+  RemoveFromGroupList(AGroup,FEnableGroupList);
+end;
+
+procedure TIDEBreakPoint.RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
+  const AGroupList: TList);
+begin
+  if (AGroup = nil) then Exit;
+  AGroupList.Remove(AGroup);
+  AGroup.RemoveReference(Self);
+end;
+
+procedure TIDEBreakPoint.SaveToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; const OnSaveFilename: TOnSaveFilenameToConfig);
   
-  procedure SaveGroupList(GroupList: TList; const ListPath: string);
+  procedure SaveGroupList(const AList: TList; const AListPath: string);
   var
     i: Integer;
     CurGroup: TIDEBreakPointGroup;
   begin
-    XMLConfig.SetDeleteValue(ListPath+'Count',GroupList.Count,0);
-    for i:=0 to GroupList.Count-1 do begin
-      CurGroup:=TIDEBreakPointGroup(GroupList[i]);
-      XMLConfig.SetDeleteValue(ListPath+'Group'+IntToStr(i+1)+'/Name',
-        CurGroup.Name,'');
+    AConfig.SetDeleteValue(AListPath + 'Count', AList.Count,0);
+    for i := 0 to AList.Count - 1 do
+    begin
+      CurGroup := TIDEBreakPointGroup(AList[i]);
+      AConfig.SetDeleteValue(Format('$%sGroup%d/Name', [AListPath, i+1]),
+        CurGroup.Name, '');
     end;
   end;
   
@@ -1748,20 +1885,26 @@ var
   Filename: String;
   CurAction: TIDEBreakPointAction;
 begin
-  if Group<>nil then
-    XMLConfig.SetDeleteValue(Path+'Group/Name',Group.Name,'');
-  XMLConfig.SetDeleteValue(Path+'Expression/Value',Expression,'');
-  Filename:=Source;
+  if Group <> nil
+  then AConfig.SetDeleteValue(APath+'Group/Name',Group.Name,'');
+  
+  AConfig.SetDeleteValue(APath+'Expression/Value',Expression,'');
+
+  Filename := Source;
   if Assigned(OnSaveFilename) then OnSaveFilename(Filename);
-  XMLConfig.SetDeleteValue(Path+'Source/Value',Filename,'');
-  XMLConfig.SetDeleteValue(Path+'InitialEnabled/Value',InitialEnabled,true);
-  XMLConfig.SetDeleteValue(Path+'Line/Value',Line,-1);
-  for CurAction:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
-    XMLConfig.SetDeleteValue(
-        Path+'Actions/'+DBGBreakPointActionNames[CurAction],
-        CurAction in Actions,CurAction in [bpaStop]);
-  SaveGroupList(FDisableGroupList,Path+'DisableGroups/');
-  SaveGroupList(FEnableGroupList,Path+'EnableGroups/');
+  
+  AConfig.SetDeleteValue(APath+'Source/Value',Filename,'');
+  AConfig.SetDeleteValue(APath+'InitialEnabled/Value',InitialEnabled,true);
+  AConfig.SetDeleteValue(APath+'Line/Value',Line,-1);
+
+  for CurAction := Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
+  begin
+    AConfig.SetDeleteValue(
+        APath+'Actions/'+DBGBreakPointActionNames[CurAction],
+        CurAction in Actions, CurAction in [bpaStop]);
+  end;
+  SaveGroupList(FDisableGroupList, APath + 'DisableGroups/');
+  SaveGroupList(FEnableGroupList, APath + 'EnableGroups/');
 end;
 
 procedure TIDEBreakPoint.SetActions(const AValue: TIDEBreakPointActions);
@@ -1793,14 +1936,6 @@ begin
     end;
     Changed;
   end;
-end;
-
-procedure TIDEBreakPoint.RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
-  const AGroupList: TList);
-begin
-  if (AGroup = nil) then Exit;
-  AGroupList.Remove(AGroup);
-  AGroup.RemoveReference(Self);
 end;
 
 (*
@@ -2049,7 +2184,7 @@ begin
   inherited Create(ABreakPointClass);
 end;
 
-procedure TDBGBreakPoints.DoDebuggerStateChange;
+procedure TDBGBreakPoints.DoStateChange;
 var
   n: Integer;
 begin
@@ -2352,77 +2487,67 @@ end;
 (******************************************************************************)
 
 { =========================================================================== }
-{ TDBGWatch }
+{ TBaseWatch }
 { =========================================================================== }
 
-procedure TDBGWatch.AssignTo(Dest: TPersistent);
+procedure TBaseWatch.AssignTo(Dest: TPersistent);
 begin
-  if Dest is TDBGWatch
+  if Dest is TBaseWatch
   then begin
-    TDBGWatch(Dest).SetExpression(FExpression);
-    TDBGWatch(Dest).SetEnabled(FEnabled);
+    TBaseWatch(Dest).SetExpression(FExpression);
+    TBaseWatch(Dest).SetEnabled(FEnabled);
   end
   else inherited;
 end;
 
-constructor TDBGWatch.Create(ACollection: TCollection);
+constructor TBaseWatch.Create(ACollection: TCollection);
 begin
-  inherited Create(ACollection);
   FEnabled := False;
+  FValid := vsUnknown;
+  inherited Create(ACollection);
 end;
 
-procedure TDBGWatch.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string
-  );
+
+procedure TBaseWatch.DoEnableChange;
 begin
-  Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
-  InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
-  FEnabled:=FInitialEnabled;
+  Changed;
 end;
 
-procedure TDBGWatch.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TBaseWatch.DoExpressionChange;
 begin
-  XMLConfig.SetDeleteValue(Path+'Expression/Value',Expression,'');
-  XMLConfig.SetDeleteValue(Path+'InitialEnabled/Value',InitialEnabled,true);
+  Changed;
 end;
 
-procedure TDBGWatch.DoEnableChange;
+function TBaseWatch.GetEnabled: Boolean;
 begin
-  Changed(False);
+  Result := FEnabled;
 end;
 
-procedure TDBGWatch.DoExpressionChange;
+function TBaseWatch.GetExpression: String;
 begin
-  Changed(False);
+  Result := FExpression;
 end;
 
-procedure TDBGWatch.DoStateChange;
-begin    
-end;
-
-function TDBGWatch.GetDebugger: TDebugger;
-begin
-  Result := TDBGWatches(Collection).FDebugger;
-end;
-
-function TDBGWatch.GetValid: TValidState;
+function TBaseWatch.GetValid: TValidState;
 begin
   Result := vsUnknown;
 end;
 
-function TDBGWatch.GetValue: String;
+function TBaseWatch.GetValue: String;
 begin       
   if not Enabled
   then Result := '<disabled>'
-  else
+  else begin
     case Valid of
-    vsValid:   Result := '<valid>';
-    vsInvalid: Result := '<invalid>';
+      vsValid:   Result := '<valid>';
+      vsInvalid: Result := '<invalid>';
     else
     {vsUnknown:}Result := '<unknown>';
     end;
+  end;
 end;
 
-procedure TDBGWatch.SetEnabled(const AValue: Boolean);
+procedure TBaseWatch.SetEnabled(const AValue: Boolean);
 begin
   if FEnabled <> AValue
   then begin
@@ -2431,7 +2556,7 @@ begin
   end;
 end;
 
-procedure TDBGWatch.SetExpression(const AValue: String);
+procedure TBaseWatch.SetExpression(const AValue: String);
 begin
   if AValue <> FExpression
   then begin
@@ -2440,59 +2565,138 @@ begin
   end;
 end;
 
-procedure TDBGWatch.SetInitialEnabled(const AValue: Boolean);
-begin
-  if FInitialEnabled=AValue then exit;
-  FInitialEnabled:=AValue;
-end;
-
-procedure TDBGWatch.SetValid(const AValue: TValidState);
+procedure TBaseWatch.SetValid(const AValue: TValidState);
 begin
   if FValid <> AValue
   then begin
     FValid := AValue;
-    Changed(False);
+    Changed;
   end;
 end;
 
 { =========================================================================== }
-{ TDBGWatches }
+{ TIDEWatch }
 { =========================================================================== }
 
-function TDBGWatches.Add(const AExpression: String): TDBGWatch;
+constructor TIDEWatch.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+end;
+
+destructor TIDEWatch.Destroy;
+begin
+  if (TIDEWatches(Collection) <> nil)
+  then TIDEWatches(Collection).NotifyRemove(Self);
+  inherited Destroy;
+end;
+
+procedure TIDEWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  Expression := AConfig.GetValue(APath + 'Expression/Value', '');
+  Enabled := AConfig.GetValue(APath + 'Enabled/Value', true);
+end;
+
+procedure TIDEWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  AConfig.SetDeleteValue(APath + 'Expression/Value', Expression, '');
+  AConfig.SetDeleteValue(APath + 'Enabled/Value', Enabled, true);
+end;
+
+
+{ =========================================================================== }
+{ TDBGWatch }
+{ =========================================================================== }
+
+constructor TDBGWatch.Create(ACollection: TCollection);
+begin
+  FSlave := nil;
+  inherited Create(ACollection);
+end;
+
+destructor TDBGWatch.Destroy;
+var
+  SW: TBaseWatch;
+begin
+  SW := FSlave;
+  FSlave := nil;
+  if SW <> nil
+  then SW.Changed;
+  inherited Destroy;
+end;
+
+procedure TDBGWatch.DoChanged;
+begin
+  inherited DoChanged;
+  if FSlave <> nil
+  then FSlave.Changed;
+end;
+
+procedure TDBGWatch.DoStateChange;
+begin
+end;
+
+function TDBGWatch.GetDebugger: TDebugger;
+begin
+  Result := TDBGWatches(Collection).FDebugger;
+end;
+
+procedure TDBGWatch.InitTargetStart;
+begin
+end;
+
+{ =========================================================================== }
+{ TBaseWatches }
+{ =========================================================================== }
+
+function TBaseWatches.Add(const AExpression: String): TBaseWatch;
+begin
+  Result := TBaseWatch(inherited Add);
+  Result.Expression := AExpression;
+end;
+
+constructor TBaseWatches.Create(const AWatchClass: TBaseWatchClass);
+begin
+  inherited Create(AWatchClass);
+end;
+
+function TBaseWatches.Find(const AExpression: String): TBaseWatch;
 var
   n: Integer;
-  Notification: TDBGWatchesNotification;
+  S: String;
 begin
-  Result := Find(AExpression);
-  if Result <> nil then Exit;
-
-  Result := TDBGWatch(inherited Add);
-  Result.Expression := AExpression;
-  for n := 0 to FNotificationList.Count - 1 do
+  S := UpperCase(AExpression);
+  for n := 0 to Count - 1 do
   begin
-    Notification := TDBGWatchesNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnAdd)
-    then Notification.FOnAdd(Self, Result);
+    Result := TBaseWatch(GetItem(n));
+    if UpperCase(Result.Expression) = S
+    then Exit;
   end;
+  Result := nil;
 end;
 
-procedure TDBGWatches.AddNotification(
-  const ANotification: TDBGWatchesNotification);
+{ =========================================================================== }
+{ TIDEWatches }
+{ =========================================================================== }
+
+function TIDEWatches.Add(const AExpression: String): TIDEWatch;
+begin
+  Result := TIDEWatch(inherited Add(AExpression));
+  NotifyAdd(Result);
+end;
+
+procedure TIDEWatches.AddNotification(const ANotification: TIDEWatchesNotification);
 begin
   FNotificationList.Add(ANotification);
   ANotification.AddReference;
 end;
 
-constructor TDBGWatches.Create(const ADebugger: TDebugger;
-  const AWatchClass: TDBGWatchClass);
+constructor TIDEWatches.Create(const AWatchClass: TIDEWatchClass);
 begin
-  FDebugger := ADebugger;
   FNotificationList := TList.Create;
   inherited Create(AWatchClass);
 end;
 
-destructor TDBGWatches.Destroy;
+destructor TIDEWatches.Destroy;
 var
   n: Integer;
 begin
@@ -2504,6 +2708,113 @@ begin
   FreeAndNil(FNotificationList);
 end;
 
+
+function TIDEWatches.Find(const AExpression: String): TIDEWatch;
+begin
+  Result := TIDEWatch(inherited Find(AExpression));
+end;
+
+function TIDEWatches.GetItem(const AnIndex: Integer): TIDEWatch;
+begin
+  Result := TIDEWatch(inherited GetItem(AnIndex));
+end;
+
+procedure TIDEWatches.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+var
+  NewCount: Integer;
+  i: Integer;
+  Watch: TIDEWatch;
+begin
+  Clear;
+  NewCount := AConfig.GetValue(APath + 'Count', 0);
+  for i := 0 to NewCount-1 do
+  begin
+    Watch := TIDEWatch(inherited Add(''));
+    Watch.LoadFromXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
+  end;
+end;
+
+procedure TIDEWatches.NotifyAdd(const AWatch: TIDEWatch);
+var
+  n: Integer;
+  Notification: TIDEWatchesNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDEWatchesNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnAdd)
+    then Notification.FOnAdd(Self, AWatch);
+  end;
+end;
+
+procedure TIDEWatches.NotifyRemove(const AWatch: TIDEWatch);
+var
+  n: Integer;
+  Notification: TIDEWatchesNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDEWatchesNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnRemove)
+    then Notification.FOnRemove(Self, AWatch);
+  end;
+end;
+
+procedure TIDEWatches.RemoveNotification(const ANotification: TIDEWatchesNotification);
+begin
+  FNotificationList.Remove(ANotification);
+  ANotification.ReleaseReference;
+end;
+
+procedure TIDEWatches.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+var
+  Cnt: Integer;
+  i: Integer;
+  Watch: TIDEWatch;
+begin
+  Cnt := Count;
+  AConfig.SetDeleteValue(APath + 'Count', Cnt, 0);
+  for i := 0 to Cnt - 1 do
+  begin
+    Watch := Items[i];
+    Watch.SaveToXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
+  end;
+end;
+
+procedure TIDEWatches.SetItem(const AnIndex: Integer; const AValue: TIDEWatch);
+begin
+  inherited SetItem(AnIndex, AValue);
+end;
+
+procedure TIDEWatches.Update(Item: TCollectionItem);
+var
+  n: Integer;
+  Notification: TIDEWatchesNotification;
+begin
+  // Note: Item will be nil in case all items need to be updated
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDEWatchesNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnUpdate)
+    then Notification.FOnUpdate(Self, TIDEWatch(Item));
+  end;
+end;
+
+{ =========================================================================== }
+{ TDBGWatches }
+{ =========================================================================== }
+
+function TDBGWatches.Add(const AExpression: String): TDBGWatch;
+begin
+  Result := TDBGWatch(inherited Add(AExpression));
+end;
+
+constructor TDBGWatches.Create(const ADebugger: TDebugger; const AWatchClass: TDBGWatchClass);
+begin
+  FDebugger := ADebugger;
+  inherited Create(AWatchClass);
+end;
+
 procedure TDBGWatches.DoStateChange;
 var
   n: Integer;
@@ -2513,18 +2824,8 @@ begin
 end;
 
 function TDBGWatches.Find(const AExpression: String): TDBGWatch;
-var
-  n: Integer;
-  S: String;
 begin
-  S := UpperCase(AExpression);
-  for n := 0 to Count - 1 do
-  begin
-    Result := GetItem(n);
-    if UpperCase(Result.Expression) = S
-    then Exit;
-  end;
-  Result := nil;
+  Result := TDBGWatch(inherited Find(AExpression));
 end;
 
 function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
@@ -2532,62 +2833,12 @@ begin
   Result := TDBGWatch(inherited GetItem(AnIndex));
 end;
 
-procedure TDBGWatches.Removed(const AWatch: TDBGWatch);
-var
-  n: Integer;
-  Notification: TDBGWatchesNotification;
-begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TDBGWatchesNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnRemove)
-    then Notification.FOnRemove(Self, AWatch);
-  end;
-end;
-
-procedure TDBGWatches.RemoveNotification(
-  const ANotification: TDBGWatchesNotification);
-begin
-  FNotificationList.Remove(ANotification);
-  ANotification.ReleaseReference;
-end;
-
-procedure TDBGWatches.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-var
-  NewCount: Integer;
-  i: Integer;
-  NewWatch: TDBGWatch;
-begin
-  Clear;
-  NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  for i:=0 to NewCount-1 do begin
-    NewWatch:=TDBGWatch(inherited Add);
-    NewWatch.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i+1)+'/');
-  end;
-end;
-
-procedure TDBGWatches.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
-  );
-var
-  Cnt: Integer;
-  i: Integer;
-  CutWatch: TDBGWatch;
-begin
-  Cnt:=Count;
-  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
-  for i:=0 to Cnt-1 do begin
-    CutWatch:=Items[i];
-    CutWatch.SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i+1)+'/');
-  end;
-end;
-
 procedure TDBGWatches.InitTargetStart;
 var
   i: Integer;
 begin
-  for i:=0 to Count-1 do
-    Items[i].Enabled:=Items[i].InitialEnabled;
+  for i := 0 to Count - 1 do
+    Items[i].InitTargetStart;
 end;
 
 procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
@@ -2595,19 +2846,6 @@ begin
   inherited SetItem(AnIndex, AValue);
 end;
 
-procedure TDBGWatches.Update(Item: TCollectionItem);
-var
-  n: Integer;
-  Notification: TDBGWatchesNotification;
-begin
-  // Note: Item will be nil in case all items need to be updated
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TDBGWatchesNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnUpdate)
-    then Notification.FOnUpdate(Self, TDBGWatch(Item));
-  end;
-end;
 
 (******************************************************************************)
 (******************************************************************************)
@@ -2618,12 +2856,86 @@ end;
 (******************************************************************************)
 
 { =========================================================================== }
+{ TBaseLocals }
+{ =========================================================================== }
+
+function TBaseLocals.Count: Integer;
+begin
+  Result := 0;
+end;
+
+constructor TBaseLocals.Create;
+begin
+  inherited Create;
+end;
+
+function TBaseLocals.GetName(const AnIndex: Integer): String;
+begin
+  Result := '';
+end;
+
+function TBaseLocals.GetValue(const AnIndex: Integer): String;
+begin
+  Result := '';
+end;
+
+{ =========================================================================== }
+{ TIDELocals }
+{ =========================================================================== }
+
+procedure TIDELocals.AddNotification(const ANotification: TIDELocalsNotification);
+begin
+  FNotificationList.Add(ANotification);
+  ANotification.AddReference;
+end;
+
+constructor TIDELocals.Create;
+begin
+  FNotificationList := TList.Create;
+  inherited Create;
+end;
+
+destructor TIDELocals.Destroy;
+var
+  n: Integer;
+begin
+  for n := FNotificationList.Count - 1 downto 0 do
+    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
+
+  inherited;
+
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TIDELocals.NotifyChange;
+var
+  n: Integer;
+  Notification: TIDELocalsNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDELocalsNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnChange)
+    then Notification.FOnChange(Self);
+  end;
+end;
+
+procedure TIDELocals.RemoveNotification(const ANotification: TIDELocalsNotification);
+begin
+  FNotificationList.Remove(ANotification);
+  ANotification.ReleaseReference;
+end;
+
+{ =========================================================================== }
 { TDBGLocals }
 { =========================================================================== }
 
 function TDBGLocals.Count: Integer;
 begin
-  Result := 0;
+  if  (FDebugger <> nil)
+  and (FDebugger.State = dsPause)
+  then Result := GetCount
+  else Result := 0;
 end;
 
 constructor TDBGLocals.Create(const ADebugger: TDebugger);
@@ -2641,14 +2953,9 @@ procedure TDBGLocals.DoStateChange;
 begin
 end;
 
-function TDBGLocals.GetName(const AnIndex: Integer): String;
+function TDBGLocals.GetCount: Integer;
 begin
-  Result := '';
-end;
-
-function TDBGLocals.GetValue(const AnIndex: Integer): String;
-begin
-  Result := '';
+  Result := 0;
 end;
 
 (******************************************************************************)
@@ -2663,7 +2970,7 @@ end;
 { TDBGCallStackEntry }
 { =========================================================================== }
 
-constructor TDBGCallStackEntry.Create(const AIndex: Integer;
+constructor TCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: Pointer; const AnArguments: TStrings;
   const AFunctionName: String; const ASource: String; const ALine: Integer);
 begin
@@ -2677,113 +2984,204 @@ begin
   FLine := ALine;
 end;
 
-destructor TDBGCallStackEntry.Destroy;
+constructor TCallStackEntry.CreateCopy(const ASource: TCallStackEntry);
+begin
+  Create(ASource.FIndex, ASource.FAdress, ASource.FArguments,
+         ASource.FunctionName, ASource.FSource, ASource.FLine);
+end;
+
+destructor TCallStackEntry.Destroy;
 begin
   inherited;
   FreeAndNil(FArguments);
 end;
 
-function TDBGCallStackEntry.GetArgumentCount: Integer; 
+function TCallStackEntry.GetArgumentCount: Integer;
 begin
   Result := FArguments.Count;
 end;
 
-function TDBGCallStackEntry.GetArgumentName(const AnIndex: Integer): String;
+function TCallStackEntry.GetArgumentName(const AnIndex: Integer): String;
 begin
   Result := FArguments.Names[AnIndex];
 end;
 
-function TDBGCallStackEntry.GetArgumentValue(const AnIndex: Integer): String;
+function TCallStackEntry.GetArgumentValue(const AnIndex: Integer): String;
 begin                        
   Result := FArguments[AnIndex];
   Result := GetPart('=', '', Result);
 end;
 
 { =========================================================================== }
-{ TDBGCallStack }
+{ TBaseCallStack }
 { =========================================================================== }
 
-procedure TDBGCallStack.Clear;
+function TBaseCallStack.CheckCount: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TBaseCallStack.Clear;
 var
   n:Integer;
 begin
-  for n := 0 to FEntries.Count - 1 do 
+  for n := 0 to FEntries.Count - 1 do
     TObject(FEntries[n]).Free;
-    
-  FEntries.Clear;  
+
+  FEntries.Clear;
+  FEntryIndex.Clear;
+  FCount := -1;
 end;
 
-function TDBGCallStack.Count: Integer;
+function TBaseCallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntry;
 begin
-  if  (FDebugger <> nil) 
-  and (FDebugger.State = dsPause)
-  then Result := GetCount
-  else Result := 0;
+  Result := nil;
+end;
+
+function TBaseCallStack.Count: Integer;
+begin
+  if (FCount = -1)
+  and not CheckCount
+  then Result := 0
+  else Result := FCount;
+end;
+
+constructor TBaseCallStack.Create;
+begin
+  FEntries := TList.Create;
+  FEntryIndex := TList.Create;
+  inherited Create;
+end;
+
+destructor TBaseCallStack.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FEntries);
+  FreeAndNil(FEntryIndex);
+end;
+
+function TBaseCallStack.GetEntry(const AIndex: Integer): TCallStackEntry;
+begin
+  if (AIndex < 0)
+  or (AIndex >= Count)
+  then raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+
+  Result := GetStackEntry(AIndex);
+end;
+
+function TBaseCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
+var
+  idx: Integer;
+begin
+  idx := Integer(FEntryIndex[AIndex]);
+  if idx = -1
+  then begin
+    // not created yet
+    Result := CreateStackEntry(AIndex);
+    if Result = nil then Exit;
+    idx := FEntries.Add(Result);
+    FEntryIndex[AIndex] := Pointer(idx);
+  end
+  else begin
+    Result := TCallStackEntry(FEntries[idx]);
+  end;
+end;
+
+procedure TBaseCallStack.SetCount(const ACount: Integer);
+var
+  n: integer;
+begin
+  if FCount = ACount then Exit;
+  Assert(ACount >= 0);
+
+  FEntryIndex.Count := ACount;
+  if FCount < 0 then FCount := 0;
+  for n := FCount to ACount - 1 do
+    FEntryIndex[n] := Pointer(-1);
+  
+  FCount := ACount;
+end;
+
+{ =========================================================================== }
+{ TIDECallStack }
+{ =========================================================================== }
+
+procedure TIDECallStack.AddNotification(const ANotification: TIDECallStackNotification);
+begin
+  FNotificationList.Add(ANotification);
+  ANotification.AddReference;
+end;
+
+constructor TIDECallStack.Create;
+begin
+  FNotificationList := TList.Create;
+  inherited Create;
+end;
+
+destructor TIDECallStack.Destroy;
+var
+  n: Integer;
+begin
+  for n := FNotificationList.Count - 1 downto 0 do
+    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
+
+  inherited;
+
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TIDECallStack.NotifyChange;
+var
+  n: Integer;
+  Notification: TIDECallStackNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDECallStackNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnChange)
+    then Notification.FOnChange(Self);
+  end;
+end;
+
+procedure TIDECallStack.RemoveNotification(const ANotification: TIDECallStackNotification);
+begin
+  FNotificationList.Remove(ANotification);
+  ANotification.ReleaseReference;
+end;
+
+{ =========================================================================== }
+{ TDBGCallStack }
+{ =========================================================================== }
+
+function TDBGCallStack.CheckCount: Boolean;
+begin
+  Result := (FDebugger <> nil)
+        and (FDebugger.State = dsPause);
+  if Result then SetCount(0);
 end;
 
 constructor TDBGCallStack.Create(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger;
-  FEntries := TList.Create;
   FOldState := FDebugger.State;
   inherited Create;
 end;
 
-function TDBGCallStack.CreateStackEntry(
-  const AIndex: Integer): TDBGCallStackEntry;
-begin
-  Result := nil;
-end;
-
-destructor TDBGCallStack.Destroy;
-begin
-  Clear;
-  inherited;
-  FreeAndNil(FEntries);
-end;
-
-procedure TDBGCallStack.DoChange; 
-begin
-  if Assigned(FOnChange) then FOnChange(Self);
-end;
-
-procedure TDBGCallStack.DoStateChange; 
+procedure TDBGCallStack.DoStateChange;
 begin
   if FDebugger.State = dsPause
-  then DoChange
+  then begin
+    if Assigned(FOnChange) then FOnChange(Self);
+  end
   else begin
     if FOldState = dsPause
     then begin 
       Clear;
-      DoChange;
+      if Assigned(FOnClear) then FOnClear(Self);
     end;
   end;          
   FOldState := FDebugger.State;
-end;
-
-function TDBGCallStack.GetCount: Integer;
-begin
-  Result := 0;
-end;
-
-function TDBGCallStack.GetStackEntry(const AIndex: Integer): TDBGCallStackEntry;
-var
-  n: Integer;
-begin
-  if (AIndex < 0) 
-  or (AIndex >= Count)
-  then raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
-  
-  for n := 0 to FEntries.Count - 1 do
-  begin
-    Result := TDBGCallStackEntry(FEntries[n]);
-    if Result.FIndex = AIndex 
-    then Exit;
-  end;
-  
-  Result := CreateStackEntry(AIndex);
-  if Result <> nil 
-  then FEntries.Add(Result);
 end;
 
 
@@ -3174,6 +3572,10 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.60  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.59  2004/06/16 21:36:27  marc
   * Fixed function in debugger environment
 

@@ -1,13 +1,13 @@
 object WatchPropertyDlg: TWatchPropertyDlg
   Caption = 'Watch Properties'
-  ClientHeight = 200
+  ClientHeight = 206
   ClientWidth = 420
   Position = poScreenCenter
   HorzScrollBar.Page = 421
-  VertScrollBar.Page = 201
-  Left = 339
-  Height = 200
-  Top = 283
+  VertScrollBar.Page = 207
+  Left = 358
+  Height = 206
+  Top = 238
   Width = 420
   object lblExpression: TLabel
     Caption = 'Expression:'
@@ -93,28 +93,31 @@ object WatchPropertyDlg: TWatchPropertyDlg
       'Default'
       'Memory Dump'
     )
+    ParentColor = True
     Left = 15
-    Height = 70
+    Height = 78
     Top = 90
     Width = 390
   end
   object btnOK: TButton
-    ModalResult = 1
     Caption = 'OK'
-    TabOrder = 9
+    Default = True
+    ModalResult = 1
     OnClick = btnOKClick
+    TabOrder = 9
     Left = 170
     Height = 25
-    Top = 170
+    Top = 176
     Width = 75
   end
   object btnCancel: TButton
-    ModalResult = 2
+    Cancel = True
     Caption = 'Cancel'
+    ModalResult = 2
     TabOrder = 10
     Left = 250
     Height = 25
-    Top = 170
+    Top = 176
     Width = 75
   end
   object btnHelp: TButton
@@ -122,7 +125,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     TabOrder = 11
     Left = 330
     Height = 25
-    Top = 170
+    Top = 176
     Width = 75
   end
 end

@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, WatchPropertyDlg;
+  Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, BaseDebugManager;
 
 type
   TWatchesDlg = class(TDebuggerDlg)
@@ -63,20 +63,22 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
-  private 
-    FWatchesNotification: TDBGWatchesNotification;
-    function GetSelected: TDBGWatch;
-    procedure WatchAdd(const ASender: TDBGWatches; const AWatch: TDBGWatch);
-    procedure WatchUpdate(const ASender: TDBGWatches; const AWatch: TDBGWatch);
-    procedure WatchRemove(const ASender: TDBGWatches; const AWatch: TDBGWatch);
+  private
+    FWatches: TIDEWatches;
+    FWatchesNotification: TIDEWatchesNotification;
+    function GetSelected: TIDEWatch;
+    procedure SetWatches(const AValue: TIDEWatches);
+    procedure WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
+    procedure WatchUpdate(const ASender: TIDEWatches; const AWatch: TIDEWatch);
+    procedure WatchRemove(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 
-    procedure UpdateItem(const AItem: TListItem; const AWatch: TDBGWatch);
+    procedure UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
   protected
-    procedure SetDebugger(const ADebugger: TDebugger); override;
   public
-    procedure WatchesUpdate(const TheWatches: TDBGWatches);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    property Watches: TIDEWatches read FWatches write SetWatches;
   end;
 
 
@@ -89,7 +91,7 @@ constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Name:='WatchesDlg';
-  FWatchesNotification := TDBGWatchesNotification.Create;
+  FWatchesNotification := TIDEWatchesNotification.Create;
   FWatchesNotification.AddReference;
   FWatchesNotification.OnAdd := @WatchAdd;
   FWatchesNotification.OnUpdate := @WatchUpdate;
@@ -98,7 +100,7 @@ end;
 
 destructor TWatchesDlg.Destroy;
 begin
-  SetDebugger(nil);
+  SetWatches(nil);
   FWatchesNotification.OnAdd := nil;
   FWatchesNotification.OnUpdate := nil;
   FWatchesNotification.OnRemove := nil;
@@ -106,14 +108,44 @@ begin
   inherited;
 end;
           
-function TWatchesDlg.GetSelected: TDBGWatch;
+function TWatchesDlg.GetSelected: TIDEWatch;
 var
   Item: TListItem;
 begin
   Item := lvWatches.Selected;
   if Item = nil
   then Result := nil
-  else Result := TDBGWatch(Item.Data);
+  else Result := TIDEWatch(Item.Data);
+end;
+
+procedure TWatchesDlg.SetWatches(const AValue: TIDEWatches);
+var
+  i: Integer;
+begin
+  if FWatches = AValue then Exit;
+
+  BeginUpdate;
+  try
+    lvWatches.Items.Clear;
+
+    if FWatches <> nil
+    then begin
+      FWatches.RemoveNotification(FWatchesNotification);
+    end;
+
+    FWatches:=AValue;
+
+    if FWatches <> nil
+    then begin
+      FWatches.AddNotification(FWatchesNotification);
+
+      for i:=0 to FWatches.Count-1 do
+        WatchUpdate(FWatches, FWatches.Items[i]);
+    end;
+    
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TWatchesDlg.lvWatchesClick(Sender: TObject);
@@ -123,7 +155,7 @@ end;
 procedure TWatchesDlg.lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
 var
   Enable: Boolean;
-  Watch: TDBGWatch;
+  Watch: TIDEWatch;
 begin
   Watch := GetSelected;
   Enable := Watch <> nil;
@@ -135,11 +167,7 @@ end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);
 begin
-  with TWatchPropertyDlg.Create(Self, nil, Debugger) do
-  begin
-    ShowModal;
-    Free;
-  end;
+  DebugBoss.ShowWatchProperties(nil);
 end;
 
 procedure TWatchesDlg.popDeleteAllClick(Sender: TObject);
@@ -147,7 +175,7 @@ var
   n: Integer;
 begin                                    
   for n := lvWatches.Items.Count - 1 downto 0 do
-    TDBGWatch(lvWatches.Items[n].Data).Free;
+    TIDEWatch(lvWatches.Items[n].Data).Free;
 end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
@@ -164,7 +192,7 @@ begin
   begin
     Item := lvWatches.Items[n];
     if Item.Data <> nil
-    then TDBGWatch(Item.Data).Enabled := False;
+    then TIDEWatch(Item.Data).Enabled := False;
   end;
 end;
 
@@ -177,13 +205,13 @@ begin
   begin
     Item := lvWatches.Items[n];
     if Item.Data <> nil
-    then TDBGWatch(Item.Data).Enabled := True;
+    then TIDEWatch(Item.Data).Enabled := True;
   end;
 end;
 
 procedure TWatchesDlg.popEnabledClick(Sender: TObject);
 var
-  Watch: TDBGWatch;
+  Watch: TIDEWatch;
 begin
   Watch := GetSelected;
   if Watch = nil then Exit;
@@ -193,14 +221,10 @@ end;
 
 procedure TWatchesDlg.popPropertiesClick(Sender: TObject);
 begin
-  with TWatchPropertyDlg.Create(Self, GetSelected, Debugger) do
-  begin
-    ShowModal;
-    Free;
-  end;
+  DebugBoss.ShowWatchProperties(GetSelected);
 end;
 
-procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TDBGWatch);
+procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
 begin
 // Expression
 // Result
@@ -208,32 +232,7 @@ begin
   AItem.SubItems[0] := AWatch.Value;
 end;
 
-procedure TWatchesDlg.SetDebugger(const ADebugger: TDebugger);
-begin
-  if ADebugger <> Debugger
-  then begin
-    if Debugger <> nil
-    then begin
-      Debugger.Watches.RemoveNotification(FWatchesNotification);
-    end;
-    inherited;
-    if Debugger <> nil
-    then begin
-      Debugger.Watches.AddNotification(FWatchesNotification);
-    end;
-  end
-  else inherited;
-end;
-
-procedure TWatchesDlg.WatchesUpdate(const TheWatches: TDBGWatches);
-var
-  i: Integer;
-begin
-  for i:=0 to TheWatches.Count-1 do
-    WatchUpdate(TheWatches,TheWatches[i]);
-end;
-
-procedure TWatchesDlg.WatchAdd(const ASender: TDBGWatches; const AWatch: TDBGWatch);
+procedure TWatchesDlg.WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 var
   Item: TListItem;
 begin
@@ -248,7 +247,7 @@ begin
   UpdateItem(Item, AWatch);
 end;
 
-procedure TWatchesDlg.WatchUpdate(const ASender: TDBGWatches; const AWatch: TDBGWatch);
+procedure TWatchesDlg.WatchUpdate(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 var
   Item: TListItem;
 begin
@@ -260,7 +259,7 @@ begin
   else UpdateItem(Item, AWatch);
 end;
 
-procedure TWatchesDlg.WatchRemove(const ASender: TDBGWatches; const AWatch: TDBGWatch);
+procedure TWatchesDlg.WatchRemove(const ASender: TIDEWatches; const AWatch: TIDEWatch);
 begin
   lvWatches.Items.FindData(AWatch).Free;
 end;
@@ -272,6 +271,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.8  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.7  2004/05/02 12:01:15  mattias
   removed unneeded units in uses sections
 

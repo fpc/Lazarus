@@ -52,17 +52,14 @@ type
   
   TDebuggerDlg = class(TForm)
   private
-    FDebugger: TDebugger;
     FOnGetFullDebugFilename: TGetFullDebugFilenameEvent;
     FOnJumpToCodePos: TJumpToCodePosEvent;
     FUpdateCount: integer;
   protected                                              
-    procedure SetDebugger(const ADebugger: TDebugger); virtual;
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate; virtual;
   public
-    destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdateCount: integer;
@@ -70,7 +67,6 @@ type
                              ): TModalresult;
     function DoGetFullDebugFilename(var Filename: string; AskUser: boolean
                                     ): TModalresult;
-    property Debugger: TDebugger read FDebugger write SetDebugger;
     property OnJumpToCodePos: TJumpToCodePosEvent read FOnJumpToCodePos
                                                   write FOnJumpToCodePos;
     property OnGetFullDebugFilename: TGetFullDebugFilenameEvent
@@ -81,27 +77,22 @@ implementation
           
 { TDebuggerDlg }          
           
-destructor TDebuggerDlg.Destroy; 
-begin
-  Debugger := nil;
-  inherited;
-end;
-
 procedure TDebuggerDlg.BeginUpdate;
 begin
-  inc(FUpdateCount);
+  Inc(FUpdateCount);
+  if FUpdateCount = 1 then DoBeginUpdate;
 end;
 
 procedure TDebuggerDlg.EndUpdate;
 begin
-  if FUpdateCount<1 then RaiseException('TDebuggerDlg.EndUpdate');
-  dec(FUpdateCount);
-  if FUpdateCount=0 then DoEndUpdate;
+  if FUpdateCount < 1 then RaiseException('TDebuggerDlg.EndUpdate');
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then DoEndUpdate;
 end;
 
 function TDebuggerDlg.UpdateCount: integer;
 begin
-  Result:=FUpdateCount;
+  Result := FUpdateCount;
 end;
 
 function TDebuggerDlg.DoJumpToCodePos(const Filename: string; Line,
@@ -122,11 +113,12 @@ begin
     Result:=mrCancel;
 end;
 
+(*
 procedure TDebuggerDlg.SetDebugger(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger; 
 end;
-
+*)
 procedure TDebuggerDlg.DoClose(var CloseAction: TCloseAction);
 begin
   CloseAction := caFree; // we default to free
@@ -146,6 +138,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.10  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.9  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 

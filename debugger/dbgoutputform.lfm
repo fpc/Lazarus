@@ -1,23 +1,29 @@
-object DbgOutputForm1: TDbgOutputForm
-  CAPTION = 'Debug output'
+object DbgOutputForm: TDbgOutputForm
+  Caption = 'Debug output'
+  ClientHeight = 200
+  ClientWidth = 400
   OnClose = FormClose
   OnCreate = FormCreate
-  HEIGHT = 200
-  WIDTH = 400
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 201
+  Left = 108
+  Height = 200
+  Top = 140
+  Width = 400
   object txtOutput: TMemo
-    Left = 8
-    Top = 104
-    Width = 600
-    Height = 150
     Align = alClient
     PopupMenu = mnuPopup
+    PopupMenu = mnuPopup
+    TabOrder = 0
+    Height = 200
+    Width = 400
   end
   object mnuPopup: TPopupMenu
-    Left = 400
-    Top = 96
+    left = 400
+    top = 96
     object popClear: TMenuItem
       Caption = '&Clear'
-      OnClick = popClearClick 
+      OnClick = popClearClick
     end
   end
 end

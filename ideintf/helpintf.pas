@@ -430,7 +430,7 @@ type
     property Items[Index: integer]: THelpDatabase read GetItems; default;
   public
     function FindDatabase(ID: THelpDatabaseID): THelpDatabase;
-    function GetDatabase(ID: THelpDatabaseID; HelpDB: THelpDatabase;
+    function GetDatabase(ID: THelpDatabaseID; var HelpDB: THelpDatabase;
                          var HelpResult: TShowHelpResult; var ErrMsg: string): boolean;
     function IndexOf(ID: THelpDatabaseID): integer;
     function CreateUniqueDatabaseID(const WishID: string): THelpDatabaseID;
@@ -1196,7 +1196,7 @@ begin
     Result:=nil;
 end;
 
-function THelpDatabases.GetDatabase(ID: THelpDatabaseID; HelpDB: THelpDatabase;
+function THelpDatabases.GetDatabase(ID: THelpDatabaseID; var HelpDB: THelpDatabase;
   var HelpResult: TShowHelpResult; var ErrMsg: string): boolean;
 begin
   HelpDB:=FindDatabase(ID);

@@ -42,24 +42,40 @@ uses
 type
   TLocalsDlg = class(TDebuggerDlg)
     lvLocals: TListView;
-  private  
+  private
+    FLocals: TIDELocals;
+    FLocalsNotification: TIDELocalsNotification;
     procedure LocalsChanged(Sender: TObject);
+    procedure SetLocals(const AValue: TIDELocals);
   protected
-    procedure SetDebugger(const ADebugger: TDebugger); override;
+    procedure DoBeginUpdate; override;
+    procedure DoEndUpdate; override;
   public
-  published         
-    // publish some properties until fpcbug #1888 is fixed
-    property Top;
-    property Left;
-    property Width; 
-    property Height; 
-    property Caption;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property Locals: TIDELocals read FLocals write SetLocals;
   end;
 
 
 implementation
 
 { TLocalsDlg }
+
+constructor TLocalsDlg.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLocalsNotification := TIDELocalsNotification.Create;
+  FLocalsNotification.AddReference;
+  FLocalsNotification.OnChange := @LocalsChanged;
+end;
+
+destructor TLocalsDlg.Destroy;
+begin
+  FLocalsNotification.OnChange := nil;
+  FLocalsNotification.ReleaseReference;
+  inherited Destroy;
+end;
 
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
 var
@@ -69,57 +85,87 @@ var
   S: String;
 begin                                        
   List := TStringList.Create;
-  //Get existing items
-  for n := 0 to lvLocals.Items.Count - 1 do  
-  begin
-    Item := lvLocals.Items[n];
-    S := Item.Caption;
-    S := UpperCase(S);
-    List.AddObject(S, Item);
-  end;                                 
-  
-  // add/update entries
-  for n := 0 to Debugger.Locals.Count - 1 do
-  begin
-    idx := List.IndexOf(Uppercase(Debugger.Locals.Names[n]));
-    if idx = -1 
-    then begin
-      // New entry
-      Item := lvLocals.Items.Add;
-      Item.Caption := Debugger.Locals.Names[n];
-      Item.SubItems.Add(Debugger.Locals.Values[n]);
-    end
-    else begin
-      // Existing entry
-      Item := TListItem(List.Objects[idx]);
-      Item.SubItems[0] := Debugger.Locals.Values[n];
-      List.Delete(idx);
-    end;
-  end;
-  
-  // remove obsolete entries
-  for n := 0 to List.Count - 1 do 
-    lvLocals.Items.Delete(TListItem(List.Objects[n]).Index);
+  try
+    BeginUpdate;
+    try
+      if FLocals = nil
+      then begin
+        lvLocals.Items.Clear;
+        Exit;
+      end;
     
-  List.Free;
+      //Get existing items
+      for n := 0 to lvLocals.Items.Count - 1 do
+      begin
+        Item := lvLocals.Items[n];
+        S := Item.Caption;
+        S := UpperCase(S);
+        List.AddObject(S, Item);
+      end;
+
+      // add/update entries
+      for n := 0 to FLocals.Count - 1 do
+      begin
+        idx := List.IndexOf(Uppercase(FLocals.Names[n]));
+        if idx = -1
+        then begin
+          // New entry
+          Item := lvLocals.Items.Add;
+          Item.Caption := FLocals.Names[n];
+          Item.SubItems.Add(FLocals.Values[n]);
+        end
+        else begin
+          // Existing entry
+          Item := TListItem(List.Objects[idx]);
+          Item.SubItems[0] := FLocals.Values[n];
+          List.Delete(idx);
+        end;
+      end;
+
+      // remove obsolete entries
+      for n := 0 to List.Count - 1 do
+        lvLocals.Items.Delete(TListItem(List.Objects[n]).Index);
+
+    finally
+      EndUpdate;
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
-procedure TLocalsDlg.SetDebugger(const ADebugger: TDebugger); 
+procedure TLocalsDlg.SetLocals(const AValue: TIDELocals);
 begin
-  if ADebugger <> Debugger
-  then begin
-    if Debugger <> nil
+  if FLocals = AValue then Exit;
+
+  BeginUpdate;
+  try
+    if FLocals <> nil
     then begin
-      Debugger.Locals.OnChange := nil;
+      FLocals.RemoveNotification(FLocalsNotification);
     end;
-    inherited;
-    if Debugger <> nil
+
+    FLocals := AValue;
+
+    if FLocals <> nil
     then begin
-      Debugger.Locals.OnChange := @LocalsChanged;
-      LocalsChanged(Debugger.Locals);
+      FLocals.AddNotification(FLocalsNotification);
     end;
-  end
-  else inherited;
+    
+    LocalsChanged(FLocals);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TLocalsDlg.DoBeginUpdate;
+begin
+  lvLocals.BeginUpdate;
+end;
+
+procedure TLocalsDlg.DoEndUpdate;
+begin
+  lvLocals.EndUpdate;
 end;
 
 initialization
@@ -129,6 +175,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.5  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.4  2004/05/02 12:01:15  mattias
   removed unneeded units in uses sections
 

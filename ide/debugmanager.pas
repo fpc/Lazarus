@@ -46,8 +46,9 @@ uses
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseDebugManager,
   SourceMarks,
-  DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm,
-  GDBMIDebugger, CallStackDlg, SSHGDBMIDebugger;
+  DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, WatchPropertyDlg,
+  CallStackDlg, DBGOutputForm,
+  GDBMIDebugger, SSHGDBMIDebugger;
 
 
 type
@@ -83,14 +84,7 @@ type
     function DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
       var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
-    //FDebugger: TDebugger;
-    FBreakpointsNotification: TIDEBreakPointsNotification;
-
-    // When no debugger is created the IDE stores all debugger settings in its
-    // own variables. When the debugger object is created these items point
-    // to the corresponding items in the FDebugger object.
     FBreakPointGroups: TIDEBreakPointGroups;
-    FWatches: TDBGWatches;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
     // When a source file is not found, the user can choose one
@@ -98,13 +92,11 @@ type
     FUserSourceFiles: TStringList;
     
     // when the debug output log is not open, store the debug log internally
-    fHiddenDebugOutputLog: TStringList;
+    FHiddenDebugOutputLog: TStringList;
+    
+    procedure SetDebugger(const ADebugger: TDebugger);
 
     // Breakpoint routines
-    procedure BreakpointAdded(const ASender: TIDEBreakPoints;
-                              const ABreakpoint: TIDEBreakPoint);
-    procedure BreakpointRemoved(const ASender: TIDEBreakPoints;
-                                const ABreakpoint: TIDEBreakPoint);
     procedure CreateSourceMarkForBreakPoint(const ABreakpoint: TIDEBreakPoint;
                                             ASrcEdit: TSourceEditor);
     procedure GetSourceEditorForBreakPoint(const ABreakpoint: TIDEBreakPoint;
@@ -133,8 +125,6 @@ type
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
-    procedure BeginUpdateDialogs;
-    procedure EndUpdateDialogs;
     procedure ClearDebugOutputLog;
 
     function DoInitDebugger: TModalResult; override;
@@ -152,12 +142,14 @@ type
 
     function DoCreateBreakPoint(const AFilename: string;
                                 ALine: integer): TModalResult; override;
+
     function DoDeleteBreakPoint(const AFilename: string;
                                 ALine: integer): TModalResult; override;
     function DoDeleteBreakPointAtMark(
                         const ASourceMark: TSourceMark): TModalResult; override;
-    function DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint): TModalresult; override;
-    function DoCreateWatch(const AExpression: string): TModalResult; override;
+
+    function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
+    function ShowWatchProperties(const AWatch: TIDEWatch): TModalresult; override;
   end;
   
 
@@ -174,11 +166,6 @@ type
   private
     FMaster: TDBGBreakPoint;
     FSourceMark: TSourceMark;
-  protected
-    function GetHitCount: Integer; override;
-    function GetValid: TValidState; override;
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure DoChanged; override;
     procedure OnSourceMarkBeforeFree(Sender: TObject);
     procedure OnSourceMarkCreatePopupMenu(SenderMark: TSourceMark;
                                           const AddMenuItem: TAddMenuItemProc);
@@ -187,6 +174,11 @@ type
     procedure OnToggleEnableMenuItemClick(Sender: TObject);
     procedure OnDeleteMenuItemClick(Sender: TObject);
     procedure OnViewPropertiesMenuItemClick(Sender: TObject);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure DoChanged; override;
+    function GetHitCount: Integer; override;
+    function GetValid: TValidState; override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetInitialEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
@@ -207,13 +199,67 @@ type
   TManagedBreakPoints = class(TIDEBreakPoints)
   private
     FMaster: TDBGBreakPoints;
+    FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGBreakPoints);
+  protected
+    procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint); override;
+    procedure NotifyRemove(const ABreakPoint: TIDEBreakPoint); override;
   public
-    constructor Create;
-    destructor Destroy; override;
+    constructor Create(const AManager: TDebugManager);
     property Master: TDBGBreakPoints read FMaster write SetMaster;
   end;
   
+  TManagedWatch = class(TIDEWatch)
+  private
+    FMaster: TDBGWatch;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    function GetValid: TValidState; override;
+    function GetValue: String; override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    procedure ResetMaster;
+  end;
+
+  TManagedWatches = class(TIDEWatches)
+  private
+    FMaster: TDBGWatches;
+    FManager: TDebugManager;
+    procedure SetMaster(const AMaster: TDBGWatches);
+  protected
+    procedure NotifyAdd(const AWatch: TIDEWatch); override;
+    procedure NotifyRemove(const AWatch: TIDEWatch); override;
+  public
+    constructor Create(const AManager: TDebugManager);
+    property Master: TDBGWatches read FMaster write SetMaster;
+  end;
+  
+  TManagedLocals = class(TIDELocals)
+  private
+    FMaster: TDBGLocals;
+    procedure LocalsChanged(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGLocals);
+  protected
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+  public
+    function Count: Integer; override;
+    property Master: TDBGLocals read FMaster write SetMaster;
+  end;
+
+  TManagedCallStack = class(TIDECallStack)
+  private
+    FMaster: TDBGCallStack;
+    procedure CallStackChanged(Sender: TObject);
+    procedure CallStackClear(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGCallStack);
+  protected
+    function CheckCount: Boolean; override;
+    function GetStackEntry(const AIndex: Integer): TCallStackEntry; override;
+  public
+    property Master: TDBGCallStack read FMaster write SetMaster;
+  end;
+
   TManagedSignal = class(TIDESignal)
   private
     FMaster: TDBGSignal;
@@ -227,10 +273,11 @@ type
   TManagedSignals = class(TIDESignals)
   private
     FMaster: TDBGSignals;
+    FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGSignals);
   protected
   public
-    constructor Create;
+    constructor Create(const AManager: TDebugManager);
     property Master: TDBGSignals read FMaster write SetMaster;
   end;
 
@@ -247,12 +294,207 @@ type
   TManagedExceptions = class(TIDEExceptions)
   private
     FMaster: TDBGExceptions;
+    FManager: TDebugManager;
     procedure SetMaster(const AValue: TDBGExceptions);
   protected
   public
-    constructor Create;
+    constructor Create(const AManager: TDebugManager);
     property Master: TDBGExceptions read FMaster write SetMaster;
   end;
+
+{ TManagedCallStack }
+
+procedure TManagedCallStack.CallStackChanged(Sender: TObject);
+begin
+  // Clear it first to force the count update
+  Clear;
+  NotifyChange;
+end;
+
+procedure TManagedCallStack.CallStackClear(Sender: TObject);
+begin
+  // Don't clear, set it to 0 so there are no entries shown
+  SetCount(0);
+  NotifyChange;
+end;
+
+function TManagedCallStack.CheckCount: Boolean;
+begin
+  Result := Master <> nil;
+  if Result
+  then SetCount(Master.Count);
+end;
+
+function TManagedCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
+begin
+  Assert(FMaster <> nil);
+  
+  Result := FMaster.GetStackEntry(AIndex);
+end;
+
+procedure TManagedCallStack.SetMaster(const AMaster: TDBGCallStack);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    FMaster.OnClear := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+
+  if FMaster = nil
+  then begin
+    SetCount(0);
+  end
+  else begin
+    FMaster.OnChange := @CallStackChanged;
+    FMaster.OnClear := @CallStackClear;
+    DoNotify := DoNotify or FMaster.Count <> 0;
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
+{ TManagedLocals }
+
+procedure TManagedLocals.LocalsChanged(Sender: TObject);
+begin
+  NotifyChange;
+end;
+
+procedure TManagedLocals.SetMaster(const AMaster: TDBGLocals);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+  
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @LocalsChanged;
+    DoNotify := DoNotify or FMaster.Count <> 0;
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
+function TManagedLocals.GetName(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetName(AnIndex)
+  else Result := Master.GetName(AnIndex);
+end;
+
+function TManagedLocals.GetValue(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetValue(AnIndex)
+  else Result := Master.GetValue(AnIndex);
+end;
+
+function TManagedLocals.Count: Integer;
+begin
+  if Master = nil
+  then Result := 0
+  else Result := Master.Count;
+end;
+
+{ TManagedWatch }
+
+procedure TManagedWatch.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if (TManagedWatches(GetOwner).FMaster <> nil)
+  and (Dest is TDBGWatch)
+  then begin
+    FMaster := TDBGWatch(Dest);
+    FMaster.Slave := Self;
+  end;
+end;
+
+function TManagedWatch.GetValid: TValidState;
+begin
+  if FMaster = nil
+  then Result := inherited GetValid
+  else Result := FMaster.GetValid;
+end;
+
+function TManagedWatch.GetValue: String;
+begin
+  if FMaster = nil
+  then Result := inherited GetValue
+  else Result := FMaster.GetValue;
+end;
+
+constructor TManagedWatch.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+end;
+
+procedure TManagedWatch.ResetMaster;
+begin
+  FMaster := nil;
+end;
+
+{ TManagedWatches }
+
+procedure TManagedWatches.SetMaster(const AMaster: TDBGWatches);
+var
+  n: Integer;
+begin
+  if FMaster = AMaster then Exit;
+
+  FMaster := AMaster;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      TManagedWatch(Items[n]).ResetMaster;
+  end
+  else begin
+    FMaster.Assign(Self);
+  end;
+end;
+
+procedure TManagedWatches.NotifyAdd(const AWatch: TIDEWatch);
+var
+  W: TDBGWatch;
+begin
+  inherited;
+
+  if FManager.FDebugger <> nil
+  then begin
+    W := FManager.FDebugger.Watches.Add(AWatch.Expression);
+    W.Assign(AWatch);
+  end;
+end;
+
+procedure TManagedWatches.NotifyRemove(const AWatch: TIDEWatch);
+begin
+  inherited NotifyRemove(AWatch);
+end;
+
+constructor TManagedWatches.Create(const AManager: TDebugManager);
+begin
+  FMaster := nil;
+  FManager := AManager;
+  inherited Create(TManagedWatch);
+end;
 
 { TManagedException }
 
@@ -284,10 +526,14 @@ end;
 
 { TManagedExceptions }
 
-constructor TManagedExceptions.Create;
+constructor TManagedExceptions.Create(const AManager: TDebugManager);
 begin
   FMaster := nil;
+  FManager := AManager;
   inherited Create(TManagedException);
+
+  Add('ECodetoolError');
+  Add('EFOpenError');
 end;
 
 procedure TManagedExceptions.SetMaster(const AValue: TDBGExceptions);
@@ -338,9 +584,10 @@ end;
 
 { TManagedSignals }
 
-constructor TManagedSignals.Create;
+constructor TManagedSignals.Create(const AManager: TDebugManager);
 begin
   FMaster := nil;
+  FManager := AManager;
   inherited Create(TManagedSignal);
 end;
 
@@ -362,15 +609,11 @@ end;
 
 { TManagedBreakPoints }
 
-constructor TManagedBreakPoints.Create;
+constructor TManagedBreakPoints.Create(const AManager: TDebugManager);
 begin
   FMaster := nil;
+  FManager := AManager;
   inherited Create(TManagedBreakPoint);
-end;
-
-destructor TManagedBreakPoints.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TManagedBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
@@ -388,6 +631,37 @@ begin
   else begin
     FMaster.Assign(Self);
   end;
+end;
+
+procedure TManagedBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
+var
+  BP: TBaseBreakPoint;
+begin
+  writeln('TManagedBreakPoints.NotifyAdd A ',ABreakpoint.Source,' ',ABreakpoint.Line);
+  ABreakpoint.InitialEnabled := True;
+  ABreakpoint.Enabled := True;
+
+  inherited;
+
+  if FManager.FDebugger <> nil
+  then begin
+    BP := FManager.FDebugger.BreakPoints.Add(ABreakpoint.Source, ABreakpoint.Line);
+    BP.Assign(ABreakPoint);
+  end;
+  FManager.CreateSourceMarkForBreakPoint(ABreakpoint,nil);
+  Project1.Modified := True;
+end;
+
+procedure TManagedBreakPoints.NotifyRemove(const ABreakPoint: TIDEBreakPoint);
+begin
+  writeln('TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark <> nil);
+
+  inherited;
+
+  TManagedBreakPoint(ABreakpoint).SourceMark.Free;
+
+  if Project1 <> nil
+  then Project1.Modified := True;
 end;
 
 
@@ -432,7 +706,7 @@ end;
 
 procedure TManagedBreakPoint.OnViewPropertiesMenuItemClick(Sender: TObject);
 begin
-  DebugBoss.DoViewBreakPointProperties(Self);
+  DebugBoss.ShowBreakPointProperties(Self);
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
@@ -738,7 +1012,10 @@ begin
   WatchVar := SE.GetWordAtCurrentCaret;
   if WatchVar = ''  then Exit;
 
-  if DoCreateWatch(WatchVar)<>mrOk then exit;
+  if (Watches.Find(WatchVar) = nil)
+  and (Watches.Add(WatchVar) = nil)
+  then Exit;
+  
   Result:=true;
 end;
 
@@ -799,10 +1076,11 @@ begin
   if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then
     exit;
   
-  if FDebugger.State=dsError then begin
+  if FDebugger.State=dsError
+  then begin
     Include(FManagerStates,dmsDebuggerObjectBroken);
-    if dmsInitializingDebuggerObject in FManagerStates then
-      Include(FManagerStates,dmsInitializingDebuggerObjectFailed);
+    if dmsInitializingDebuggerObject in FManagerStates
+    then Include(FManagerStates,dmsInitializingDebuggerObjectFailed);
   end;
 
   WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
@@ -813,17 +1091,19 @@ begin
   // -------------------
 
   UpdateButtonsAndMenuItems;
-  if MainIDE.ToolStatus in [itNone,itDebugger] then
-    MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
+  if MainIDE.ToolStatus in [itNone,itDebugger]
+  then MainIDE.ToolStatus := TOOLSTATEMAP[FDebugger.State];
 
-  if (FDebugger.State in [dsRun]) then begin
+  if (FDebugger.State in [dsRun])
+  then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger)
-    then
-      MainIDE.HideIDE;
-  end else if (OldState in [dsRun]) then begin
-    // unhide IDE
-    MainIDE.UnhideIDE;
+    if EnvironmentOptions.HideIDEOnRun
+    and (MainIDE.ToolStatus=itDebugger)
+    then MainIDE.HideIDE;
+  end
+  else begin
+    if (OldState in [dsRun])
+    then MainIDE.UnhideIDE;
   end;
   
   // unmark execution line
@@ -867,7 +1147,7 @@ var
   Editor: TSourceEditor;
   SrcLine: Integer;
   i: Integer;
-  StackEntry: TDBGCallStackEntry;
+  StackEntry: TCallStackEntry;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if Destroying then exit;
@@ -972,16 +1252,17 @@ begin
     CurDialog.OnGetFullDebugFilename:=@DebuggerDlgGetFullFilename;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
     case ADialogType of
-    ddtOutput:      InitDebugOutputDlg;
-    ddtBreakpoints: InitBreakPointDlg;
-    ddtWatches:     InitWatchesDlg;
-    ddtLocals:      InitLocalsDlg;
-    ddtCallStack:   InitCallStackDlg;
+      ddtOutput:      InitDebugOutputDlg;
+      ddtBreakpoints: InitBreakPointDlg;
+      ddtWatches:     InitWatchesDlg;
+      ddtLocals:      InitLocalsDlg;
+      ddtCallStack:   InitCallStackDlg;
     end;
-    CurDialog.Debugger := FDebugger;
-  end else begin
+  end
+  else begin
     CurDialog:=FDialogs[ADialogType];
-    if (CurDialog is TBreakPointsDlg) then begin
+    if (CurDialog is TBreakPointsDlg)
+    then begin
       if (Project1<>nil) then
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
@@ -994,7 +1275,6 @@ procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);
 begin
   if FDialogs[ADialogType] = nil then Exit;
   FDialogs[ADialogType].OnDestroy := nil;
-  FDialogs[ADialogType].Debugger := nil;
   FDialogs[ADialogType].Free;
   FDialogs[ADialogType] := nil;
 end;
@@ -1003,10 +1283,11 @@ procedure TDebugManager.InitDebugOutputDlg;
 var
   TheDialog: TDbgOutputForm;
 begin
-  TheDialog:=TDbgOutputForm(FDialogs[ddtOutput]);
-  if fHiddenDebugOutputLog<>nil then begin
-    TheDialog.SetLogText(fHiddenDebugOutputLog);
-    FreeThenNil(fHiddenDebugOutputLog);
+  TheDialog := TDbgOutputForm(FDialogs[ddtOutput]);
+  if FHiddenDebugOutputLog <> nil
+  then begin
+    TheDialog.SetLogText(FHiddenDebugOutputLog);
+    FreeAndNil(FHiddenDebugOutputLog);
   end;
 end;
 
@@ -1015,25 +1296,33 @@ var
   TheDialog: TBreakPointsDlg;
 begin
   TheDialog:=TBreakPointsDlg(FDialogs[ddtBreakpoints]);
-  if (Project1<>nil) then
-    TheDialog.BaseDirectory:=Project1.ProjectDirectory;
-  TheDialog.BreakPoints:=FBreakPoints;
+  if Project1 <> nil
+  then TheDialog.BaseDirectory := Project1.ProjectDirectory;
+  TheDialog.BreakPoints := FBreakPoints;
 end;
 
 procedure TDebugManager.InitWatchesDlg;
 var
   TheDialog: TWatchesDlg;
 begin
-  TheDialog:=TWatchesDlg(FDialogs[ddtWatches]);
-  TheDialog.WatchesUpdate(FWatches);
+  TheDialog := TWatchesDlg(FDialogs[ddtWatches]);
+  TheDialog.Watches := FWatches;
 end;
 
 procedure TDebugManager.InitLocalsDlg;
+var
+  TheDialog: TLocalsDlg;
 begin
+  TheDialog := TLocalsDlg(FDialogs[ddtLocals]);
+  TheDialog.Locals := FLocals;
 end;
 
 procedure TDebugManager.InitCallStackDlg;
+var
+  TheDialog: TCallStackDlg;
 begin
+  TheDialog := TCallStackDlg(FDialogs[ddtCallStack]);
+  TheDialog.CallStack := FCallStack;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
@@ -1044,22 +1333,14 @@ begin
     FDialogs[DialogType] := nil; 
 
   FDebugger := nil;
-  FBreakPoints := TManagedBreakPoints.Create;
-  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
-  FBreakpointsNotification.AddReference;
-  FBreakpointsNotification.OnAdd := @BreakpointAdded;
-  FBreakpointsNotification.OnRemove := @BreakpointRemoved;
-  FBreakPoints.AddNotification(FBreakpointsNotification);
-  
+  FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
-  FWatches := TDBGWatches.Create(nil, TDBGWatch);
-  
-  FExceptions := TManagedExceptions.Create;
-  // Temp hack
-  FExceptions.Add('ECodetoolError');
-  FExceptions.Add('EFOpenError');
 
-  FSignals := TManagedSignals.Create;
+  FWatches := TManagedWatches.Create(Self);
+  FExceptions := TManagedExceptions.Create(Self);
+  FSignals := TManagedSignals.Create(Self);
+  FLocals := TManagedLocals.Create;
+  FCallStack := TManagedCallStack.Create;
 
   FUserSourceFiles := TStringList.Create;
   
@@ -1075,24 +1356,18 @@ begin
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
     DestroyDebugDialog(DialogType);
   
-  TManagedBreakpoints(FBreakpoints).Master := nil;
+  SetDebugger(nil);
 
-  if FDebugger <> nil
-  then begin
-    if FDebugger.Watches = FWatches
-    then FWatches := nil;
-  
-    FreeAndNil(FDebugger);
-  end;
   FreeAndNil(FWatches);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FBreakPointGroups);
-  FreeAndNil(FBreakpointsNotification);
+  FreeAndNil(FCallStack);
   FreeAndNil(FExceptions);
   FreeAndNil(FSignals);
+  FreeAndNil(FLocals);
 
   FreeAndNil(FUserSourceFiles);
-  FreeAndNil(fHiddenDebugOutputLog);
+  FreeAndNil(FHiddenDebugOutputLog);
 
   inherited Destroy;
 end;
@@ -1210,44 +1485,6 @@ begin
   end;
 end;
 
-procedure TDebugManager.BeginUpdateDialogs;
-var
-  DialogType: TDebugDialogType;
-  CurDialog: TDebuggerDlg;
-begin
-  for DialogType:=Low(FDialogs) to High(FDialogs) do begin
-    CurDialog:=FDialogs[DialogType];
-    if CurDialog<>nil then CurDialog.BeginUpdate;
-  end;
-end;
-
-procedure TDebugManager.BreakpointAdded(const ASender: TIDEBreakPoints;
-  const ABreakpoint: TIDEBreakPoint);
-var
-  BP: TBaseBreakPoint;
-begin
-  writeln('TDebugManager.BreakpointAdded A ',ABreakpoint.Source,' ',ABreakpoint.Line);
-  ABreakpoint.InitialEnabled := True;
-  ABreakpoint.Enabled := True;
-  if FDebugger <> nil
-  then begin
-    BP := FDebugger.BreakPoints.Add(ABreakpoint.Source, ABreakpoint.Line);
-    BP.Assign(ABreakPoint);
-  end;
-  CreateSourceMarkForBreakPoint(ABreakpoint,nil);
-  Project1.Modified := True;
-end;
-
-procedure TDebugManager.BreakpointRemoved(const ASender: TIDEBreakPoints;
-  const ABreakpoint: TIDEBreakPoint);
-begin
-  writeln('TDebugManager.BreakpointRemoved A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark<>nil);
-  if TManagedBreakPoint(ABreakpoint).SourceMark<>nil then
-    TManagedBreakPoint(ABreakpoint).SourceMark.Free;
-  if Project1<>nil then
-    Project1.Modified := True;
-end;
-
 procedure TDebugManager.CreateSourceMarkForBreakPoint(
   const ABreakpoint: TIDEBreakPoint; ASrcEdit: TSourceEditor);
 var
@@ -1280,17 +1517,6 @@ begin
     ASrcEdit:=nil;
 end;
 
-procedure TDebugManager.EndUpdateDialogs;
-var
-  DialogType: TDebugDialogType;
-  CurDialog: TDebuggerDlg;
-begin
-  for DialogType:=Low(FDialogs) to High(FDialogs) do begin
-    CurDialog:=FDialogs[DialogType];
-    if CurDialog<>nil then CurDialog.EndUpdate;
-  end;
-end;
-
 procedure TDebugManager.ClearDebugOutputLog;
 begin
   if FDialogs[ddtOutput] <> nil then
@@ -1304,64 +1530,16 @@ end;
 //-----------------------------------------------------------------------------
 
 function TDebugManager.DoInitDebugger: TModalResult;
-var
-  OldWatches: TDBGWatches;
-  
-  procedure SaveDebuggerItems;
-  begin
-    // copy the watches
-    if (FDebugger<>nil)
-    and (FDebugger.Watches=FWatches) then begin
-      // wtaches belongs to the current debugger
-      // -> create debugger independent watches and copy watches
-      OldWatches := TDBGWatches.Create(nil, TDBGWatch);
-      OldWatches.Assign(FWatches);
-    end else begin
-      // watches are already independent of debugger
-      // -> keep watches
-      OldWatches:=FWatches;
-    end;
-    FWatches := nil;
-  end;
-  
-  procedure RestoreDebuggerItems;
-  begin
-    // restore the watches
-    if (OldWatches<>nil) then begin
-      if FWatches=nil then
-        FWatches:=OldWatches
-      else if FWatches<>OldWatches then
-        FWatches.Assign(OldWatches);
-    end;
-  end;
-  
-  procedure ResetDialogs;
-  var
-    DialogType: TDebugDialogType;
-  begin
-    for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
-    begin
-      if FDialogs[DialogType] <> nil
-      then FDialogs[DialogType].Debugger := FDebugger;
-    end;
-  end;
-
   procedure FreeDebugger;
+  var
+    dbg: TDebugger;
   begin
-    TManagedBreakPoints(FBreakPoints).Master := nil;
-    TManagedSignals(FSignals).Master := nil;
-    TManagedExceptions(FExceptions).Master := nil;;
-    FreeAndNil(FDebugger);
+    dbg := FDebugger;
+    SetDebugger(nil);
+    dbg.Free;
     Exclude(FManagerStates,dmsDebuggerObjectBroken);
-    ResetDialogs;
   end;
 
-  procedure SaveAndFreeDebugger;
-  begin
-    SaveDebuggerItems;
-    FreeDebugger;
-  end;
-  
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
@@ -1384,84 +1562,70 @@ begin
     exit;
   end;
   
-  OldWatches := nil;
-
-  BeginUpdateDialogs;
-  try
-    try
-      DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
-      if DebuggerClass = nil
-      then begin
-        if FDebugger <> nil
-        then SaveAndFreeDebugger;
-        Exit;
-      end;
-      
-      if (dmsDebuggerObjectBroken in FManagerStates) then
-        SaveAndFreeDebugger;
-
-      // check if debugger is already created with the right type
-      if (FDebugger <> nil)
-      and (not (FDebugger is DebuggerClass)
-            or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
-          )
-      then begin
-        // the current debugger is the wrong type -> free it
-        SaveAndFreeDebugger;
-      end;
-
-      // create debugger object
-      if FDebugger = nil
-      then begin
-        SaveDebuggerItems;
-        FDebugger := DebuggerClass.Create(EnvironmentOptions.DebuggerFilename);
-
-        TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints;
-        TManagedSignals(FSignals).Master := FDebugger.Signals;
-        TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
-
-        FWatches := FDebugger.Watches;
-        ResetDialogs;
-
-        // restore debugger items
-        RestoreDebuggerItems;
-      end;
-    finally
-      if FWatches<>OldWatches then
-        OldWatches.Free;
-    end;
-
-    ClearDebugOutputLog;
-
-    FDebugger.OnState     := @OnDebuggerChangeState;
-    FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
-    FDebugger.OnDbgOutput := @OnDebuggerOutput;
-    FDebugger.OnException := @OnDebuggerException;
-    if FDebugger.State = dsNone then begin
-      Include(FManagerStates,dmsInitializingDebuggerObject);
-      Exclude(FManagerStates,dmsInitializingDebuggerObjectFailed);
-      FDebugger.Init;
-      Exclude(FManagerStates,dmsInitializingDebuggerObject);
-      if dmsInitializingDebuggerObjectFailed in FManagerStates then begin
-        Result:=mrCancel;
-        exit;
-      end;
-    end;
-
-    FDebugger.FileName := LaunchingApplication;
-    FDebugger.Arguments := LaunchingParams;
-    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-    NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
-    if NewWorkingDir='' then
-      NewWorkingDir:=Project1.ProjectDirectory;
-    FDebugger.WorkingDir:=NewWorkingDir;
-  finally
-    EndUpdateDialogs;
+  DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
+  if DebuggerClass = nil
+  then begin
+    if FDebugger <> nil
+    then FreeDebugger;
+    Exit;
   end;
+  
+  if (dmsDebuggerObjectBroken in FManagerStates)
+  then FreeDebugger;
+
+  // check if debugger is already created with the right type
+  if (FDebugger <> nil)
+  and (not (FDebugger is DebuggerClass)
+        or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+      )
+  then begin
+    // the current debugger is the wrong type -> free it
+    FreeDebugger;
+  end;
+
+  // create debugger object
+  if FDebugger = nil
+  then SetDebugger(DebuggerClass.Create(EnvironmentOptions.DebuggerFilename));
+
+  if FDebugger = nil
+  then begin
+    // something went wrong
+    Result := mrCancel;
+    exit;
+  end;
+
+  ClearDebugOutputLog;
+
+  FDebugger.OnState     := @OnDebuggerChangeState;
+  FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
+  FDebugger.OnDbgOutput := @OnDebuggerOutput;
+  FDebugger.OnException := @OnDebuggerException;
+
+  if FDebugger.State = dsNone
+  then begin
+    Include(FManagerStates,dmsInitializingDebuggerObject);
+    Exclude(FManagerStates,dmsInitializingDebuggerObjectFailed);
+    FDebugger.Init;
+    Exclude(FManagerStates,dmsInitializingDebuggerObject);
+    if dmsInitializingDebuggerObjectFailed in FManagerStates
+    then begin
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  FDebugger.FileName := LaunchingApplication;
+  FDebugger.Arguments := LaunchingParams;
+  Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
+  NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
+  if NewWorkingDir=''
+  then NewWorkingDir:=Project1.ProjectDirectory;
+  FDebugger.WorkingDir:=NewWorkingDir;
 
   // check if debugging needs restart
   if ((FDebugger=nil) or (dmsDebuggerObjectBroken in FManagerStates))
-  and (MainIDE.ToolStatus=itDebugger) then begin
+  and (MainIDE.ToolStatus=itDebugger)
+  then begin
     MainIDE.ToolStatus:=itNone;
     Result:=mrCancel;
     exit;
@@ -1604,24 +1768,6 @@ writeln('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,' ',
   Result := mrOK
 end;
 
-function TDebugManager.DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint
-  ): TModalresult;
-begin
-  Result:=mrCancel;
-  // ToDo
-end;
-
-function TDebugManager.DoCreateWatch(const AExpression: string): TModalResult;
-var
-  NewWatch: TDBGWatch;
-begin
-  NewWatch := FWatches.Add(AExpression);
-  NewWatch.Enabled := True;
-  NewWatch.InitialEnabled := True;
-  Project1.Modified:=true;
-  Result := mrOK
-end;
-
 function TDebugManager.DoRunToCursor: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -1675,10 +1821,52 @@ begin
   else Result := FDebugger.Commands;
 end;
 
+function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;
+begin
+  Result:=mrCancel;
+  // ToDo
+end;
+
+function TDebugManager.ShowWatchProperties(const AWatch: TIDEWatch): TModalresult;
+begin
+  with TWatchPropertyDlg.Create(Self, AWatch) do
+  begin
+    Result := ShowModal;
+    Free;
+  end;
+end;
+
+procedure TDebugManager.SetDebugger(const ADebugger: TDebugger);
+begin
+  if FDebugger = ADebugger then Exit;
+  FDebugger := ADebugger;
+  if FDebugger = nil
+  then begin
+    TManagedBreakpoints(FBreakpoints).Master := nil;
+    TManagedWatches(FWatches).Master := nil;
+    TManagedLocals(FLocals).Master := nil;
+    TManagedCallStack(FCallStack).Master := nil;
+    TManagedExceptions(FExceptions).Master := nil;
+    TManagedSignals(FSignals).Master := nil;
+  end
+  else begin
+    TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
+    TManagedWatches(FWatches).Master := FDebugger.Watches;
+    TManagedLocals(FLocals).Master := FDebugger.Locals;
+    TManagedCallStack(FCallStack).Master := FDebugger.CallStack;
+    TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
+    TManagedSignals(FSignals).Master := FDebugger.Signals;
+  end;
+end;
+
 end.
 
 { =============================================================================
   $Log$
+  Revision 1.70  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.69  2004/08/08 18:02:44  mattias
   splitted TMainIDE (main control instance) and TMainIDEBar (IDE menu and palette), added mainbase.pas and mainintf.pas
 

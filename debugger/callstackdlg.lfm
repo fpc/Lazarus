@@ -1,36 +1,52 @@
 object CallStackDlg: TCallStackDlg
-  CAPTION = 'CallStack'
-  CLIENTHEIGHT = 200
-  CLIENTWIDTH = 500
-  VISIBLE = True
-  HORZSCROLLBAR.PAGE = 501
-  VERTSCROLLBAR.PAGE = 201
-  LEFT = 359
-  HEIGHT = 200
-  TOP = 126
-  WIDTH = 500
-  object lvCallStack: TLISTVIEW
-    ALIGN = alclient
-    ANCHORS = [aktop, akleft]
-    COLUMNS = <    
+  Caption = 'CallStack'
+  ClientHeight = 200
+  ClientWidth = 500
+  Visible = True
+  HorzScrollBar.Page = 501
+  VertScrollBar.Page = 201
+  Left = 843
+  Height = 200
+  Top = 202
+  Width = 500
+  object lvCallStack: TListView
+    Align = alClient
+    Columns = <    
       item
-        CAPTION = 'Source'
-        VISIBLE = True
-        WIDTH = 150
+        Caption = 'Source'
+        ImageIndex = -1
+        Visible = True
+        Width = 150
       end    
       item
-        CAPTION = 'Line'
-        VISIBLE = True
-        WIDTH = 50
+        Caption = 'Line'
+        ImageIndex = -1
+        Visible = True
+        Width = 50
       end    
       item
-        CAPTION = 'Function'
-        VISIBLE = True
-        WIDTH = 300
+        Caption = 'Function'
+        ImageIndex = -1
+        Visible = True
       end>
-    VIEWSTYLE = vsreport
-    ONDBLCLICK = lvCallStackDBLCLICK
-    HEIGHT = 200
-    WIDTH = 500
+    ViewStyle = vsReport
+    OnDblClick = lvCallStackDBLCLICK
+    Height = 200
+    Width = 500
+  end
+  object mnuPopup: TPopupMenu
+    left = 66
+    top = 88
+    object popShow: TMenuItem
+      Caption = 'Show'
+      Default = True
+      OnClick = popShowClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object popSetAsCurrent: TMenuItem
+      Caption = 'Set as current'
+    end
   end
 end

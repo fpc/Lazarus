@@ -58,9 +58,12 @@ type
   protected
     FDestroying: boolean;
     FDebugger: TDebugger;
+    FCallStack: TIDECallStack;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
+    FLocals: TIDELocals;
+    FWatches: TIDEWatches;
     FManagerStates: TDebugManagerStates;
     function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
@@ -73,6 +76,9 @@ type
 
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); virtual; abstract;
+
+    function  DebuggerCount: Integer;
+
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
 
     function DoInitDebugger: TModalResult; virtual; abstract;
@@ -94,18 +100,22 @@ type
                                 ): TModalResult; virtual; abstract;
     function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
                                      ): TModalResult; virtual; abstract;
-    function DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
-    function DoCreateWatch(const AExpression: string): TModalResult; virtual; abstract;
-    
-    function  DebuggerCount: Integer;
+
+    function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
+    function ShowWatchProperties(const AWatch: TIDEWatch): TModalresult; virtual; abstract;
+
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
     property Destroying: boolean read FDestroying;
     property State: TDBGState read GetState;           // The current state of the debugger
-    property BreakPoints: TIDEBreakPoints read FBreakpoints;
-    property Exceptions: TIDEExceptions read FExceptions;                        // A list of exceptions we should ignore
-    property Signals: TIDESignals read FSignals;                                 // A list of actions for signals we know of
+
+    property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
+    property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
+    property CallStack: TIDECallStack read FCallStack;
+    property Locals: TIDELocals read FLocals;
+    property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
+    property Watches: TIDEWatches read FWatches;
   end;
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
@@ -159,6 +169,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.20  2004/08/26 23:50:04  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.19  2004/01/05 15:22:41  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 

@@ -37,24 +37,31 @@ interface
 
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Debugger, DebuggerDlg;
+  ComCtrls, Debugger, DebuggerDlg, Menus;
 
 type
   TCallStackDlg = class(TDebuggerDlg)
     lvCallStack: TListView;
+    N1: TMenuItem;
+    popSetAsCurrent: TMenuItem;
+    popShow: TMenuItem;
+    mnuPopup: TPopupMenu;
     procedure lvCallStackDBLCLICK(Sender: TObject);
-  private  
+    procedure popShowClick(Sender: TObject);
+  private
+    FCallStack: TIDECallStack;
+    FCallStackNotification: TIDECallStackNotification;
     procedure CallStackChanged(Sender: TObject);
+    procedure SetCallStack(const AValue: TIDECallStack);
+    procedure JumpToSource;
   protected
-    procedure SetDebugger(const ADebugger: TDebugger); override;
+    procedure DoBeginUpdate; override;
+    procedure DoEndUpdate; override;
   public
-  published         
-    // publish some properties until fpcbug #1888 is fixed
-    property Top;
-    property Left;
-    property Width; 
-    property Height; 
-    property Caption;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property CallStack: TIDECallStack read FCallStack write SetCallStack;
   end;
 
 
@@ -62,7 +69,81 @@ implementation
 
 { TCallStackDlg }
 
-procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
+constructor TCallStackDlg.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCallStackNotification := TIDECallStackNotification.Create;
+  FCallStackNotification.AddReference;
+  FCallStackNotification.OnChange := @CallStackChanged;
+end;
+
+procedure TCallStackDlg.CallStackChanged(Sender: TObject);
+var
+  n, m: Integer;                               
+  Item: TListItem;
+  S: String;   
+  Entry: TCallStackEntry;
+begin       
+  BeginUpdate;
+  try
+    if CallStack = nil
+    then begin
+      lvCallStack.Items.Clear;
+      exit;
+    end;
+
+    // Reuse entries, so add and remove only
+    // Remove unneded
+    for n := lvCallStack.Items.Count - 1 downto CallStack.Count do
+      lvCallStack.Items.Delete(n);
+
+    // Add needed
+    for n := lvCallStack.Items.Count to CallStack.Count - 1 do
+    begin
+      Item := lvCallStack.Items.Add;
+      Item.SubItems.Add('');
+      Item.SubItems.Add('');
+    end;
+
+    for n := 0 to lvCallStack.Items.Count - 1 do
+    begin
+      Item := lvCallStack.Items[n];
+      Entry := CallStack.Entries[n];
+      Item.Caption := Entry.Source;
+      Item.SubItems[0] := IntToStr(Entry.Line);
+      S := '';
+      for m := 0 to Entry.ArgumentCount - 1 do
+      begin
+        if S <> ''
+        then S := S + ', ';
+        S := S + Entry.ArgumentValues[m];
+      end;
+      if S <> ''
+      then S := '(' + S + ')';
+      Item.SubItems[1] := Entry.FunctionName + S;
+    end;
+    
+  finally
+    EndUpdate;
+  end;
+end;
+
+destructor TCallStackDlg.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCallStackDlg.DoBeginUpdate;
+begin
+  lvCallStack.BeginUpdate;
+end;
+
+procedure TCallStackDlg.DoEndUpdate;
+begin
+  lvCallStack.EndUpdate;
+end;
+
+procedure TCallStackDlg.JumpToSource;
 var
   CurItem: TListItem;
   Filename: String;
@@ -76,66 +157,38 @@ begin
   DoJumpToCodePos(Filename,Line,0);
 end;
 
-procedure TCallStackDlg.CallStackChanged(Sender: TObject);
-var
-  n, m: Integer;                               
-  Item: TListItem;
-  S: String;   
-  Entry: TDBGCallStackEntry;
-begin       
-  if Debugger=nil then begin
-    lvCallStack.Items.Clear;
-    exit;
-  end;
-
-  // Reuse entries, so add and remove only                    
-  // Remove unneded
-  for n := lvCallStack.Items.Count - 1 downto Debugger.CallStack.Count do
-    lvCallStack.Items.Delete(n);
-
-  // Add needed
-  for n := lvCallStack.Items.Count to Debugger.CallStack.Count - 1 do
-  begin
-    Item := lvCallStack.Items.Add;
-    Item.SubItems.Add('');
-    Item.SubItems.Add('');
-  end;
-
-  for n := 0 to lvCallStack.Items.Count - 1 do  
-  begin
-    Item := lvCallStack.Items[n];
-    Entry := Debugger.CallStack.Entries[n];
-    Item.Caption := Entry.Source;
-    Item.SubItems[0] := IntToStr(Entry.Line);
-    S := '';
-    for m := 0 to Entry.ArgumentCount - 1 do
-    begin
-      if S <> '' 
-      then S := S + ', ';
-      S := S + Entry.ArgumentValues[m];
-    end;                               
-    if S <> ''
-    then S := '(' + S + ')';
-    Item.SubItems[1] := Entry.FunctionName + S;
-  end;                                 
+procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
+begin
+  JumpToSource;
 end;
 
-procedure TCallStackDlg.SetDebugger(const ADebugger: TDebugger); 
+procedure TCallStackDlg.popShowClick(Sender: TObject);
 begin
-  if ADebugger <> Debugger
-  then begin
-    if Debugger <> nil
+  JumpToSource;
+end;
+
+procedure TCallStackDlg.SetCallStack(const AValue: TIDECallStack);
+begin
+  if FCallStack = AValue then Exit;
+
+  BeginUpdate;
+  try
+    if FCallStack <> nil
     then begin
-      Debugger.CallStack.OnChange := nil;
+      FCallStack.RemoveNotification(FCallStackNotification);
     end;
-    inherited;
-    if Debugger <> nil
+
+    FCallStack := AValue;
+
+    if FCallStack <> nil
     then begin
-      Debugger.CallStack.OnChange := @CallStackChanged;
-      CallStackChanged(Debugger.CallStack);
+      FCallStack.AddNotification(FCallStackNotification);
     end;
-  end
-  else inherited;
+
+    CallStackChanged(FCallStack);
+  finally
+    EndUpdate;
+  end;
 end;
 
 initialization
@@ -145,6 +198,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.5  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.4  2004/05/02 12:01:15  mattias
   removed unneeded units in uses sections
 

@@ -49,6 +49,8 @@ type
 
   TBreakPointsDlg = class(TDebuggerDlg)
     lvBreakPoints: TListView;
+    N0: TMenuItem;
+    popShow: TMenuItem;
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
     popAddSourceBP: TMenuItem;
@@ -80,6 +82,7 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
+    procedure popShowClick(Sender: TObject);
   private
     FBaseDirectory: string;
     FBreakPoints: TIDEBreakPoints;
@@ -92,6 +95,7 @@ type
     procedure BreakPointRemove(const ASender: TIDEBreakPoints;
                                const ABreakpoint: TIDEBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
+
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
 
     procedure UpdateItem(const AnItem: TListItem;
@@ -99,8 +103,7 @@ type
     procedure UpdateAll;
   protected
     procedure DoEndUpdate; override;
-    procedure BreakPointsUpdate; virtual;
-    procedure DoJumpToCurrentBreakPoint; virtual;
+    procedure JumpToCurrentBreakPoint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -118,7 +121,7 @@ implementation
 function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   //                 enabled  valid
-  DEBUG_STATE: array[Boolean, TValidState] of String = (
+  DEBUG_STATE: array[Boolean, TValidState] of ShortString = (
                 {vsUnknown,     vsValid,   vsInvalid}
     {Disabled} ('? (Off)','Disabled','Invalid (Off)'),
     {Endabled} ('? (On)', 'Enabled', 'Invalid (On)'));
@@ -128,7 +131,7 @@ end;
 
 function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 const
-  DEBUG_ACTION: array[TIDEBreakPointAction] of string =
+  DEBUG_ACTION: array[TIDEBreakPointAction] of ShortString =
     ('Break', 'Enable Group', 'Disable Group');
 
 var
@@ -198,15 +201,30 @@ begin
 end;
 
 procedure TBreakPointsDlg.SetBreakPoints(const AValue: TIDEBreakPoints);
+var
+  i: Integer;
 begin
-  if FBreakPoints=AValue then exit;
-  lvBreakPoints.Items.Clear;
-  if FBreakPoints<>nil then
-    FBreakPoints.RemoveNotification(FBreakpointsNotification);
-  FBreakPoints:=AValue;
-  if FBreakPoints<>nil then begin
-    FBreakPoints.AddNotification(FBreakpointsNotification);
-    BreakPointsUpdate;
+  if FBreakPoints = AValue then Exit;
+
+  BeginUpdate;
+  try
+    lvBreakPoints.Items.Clear;
+    if FBreakPoints <> nil
+    then begin
+      FBreakPoints.RemoveNotification(FBreakpointsNotification);
+    end;
+
+    FBreakPoints:=AValue;
+
+    if FBreakPoints <> nil
+    then begin
+      FBreakPoints.AddNotification(FBreakpointsNotification);
+
+      for i:=0 to FBreakPoints.Count-1 do
+        BreakPointUpdate(FBreakPoints, FBreakPoints.Items[i]);
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -223,7 +241,7 @@ end;
 
 destructor TBreakPointsDlg.Destroy;
 begin
-  SetDebugger(nil);
+  SetBreakPoints(nil);
   FBreakpointsNotification.OnAdd := nil;
   FBreakpointsNotification.OnUpdate := nil;
   FBreakpointsNotification.OnRemove := nil;
@@ -231,16 +249,7 @@ begin
   inherited;
 end;
 
-procedure TBreakPointsDlg.BreakPointsUpdate;
-var
-  i: Integer;
-begin
-  if FBreakPoints=nil then exit;
-  for i:=0 to FBreakPoints.Count-1 do
-    BreakPointUpdate(FBreakPoints,FBreakPoints.Items[i]);
-end;
-
-procedure TBreakPointsDlg.DoJumpToCurrentBreakPoint;
+procedure TBreakPointsDlg.JumpToCurrentBreakPoint;
 var
   CurItem: TListItem;
   CurBreakPoint: TIDEBreakPoint;
@@ -262,7 +271,7 @@ end;
 
 procedure TBreakPointsDlg.lvBreakPointsDBLCLICK(Sender: TObject);
 begin
-  DoJumpToCurrentBreakPoint;
+  JumpToCurrentBreakPoint;
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject;
@@ -380,6 +389,11 @@ begin
     TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
 end;
 
+procedure TBreakPointsDlg.popShowClick(Sender: TObject);
+begin
+  JumpToCurrentBreakPoint;
+end;
+
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
 var
   CurItem: TListItem;
@@ -464,7 +478,7 @@ begin
   
   // line
   if ABreakpoint.Line > 0
-  then AnItem.SubItems[1] := IntToStr(ABreakpoint.GetSourceLine)
+  then AnItem.SubItems[1] := IntToStr(ABreakpoint.SourceLine)
   else AnItem.SubItems[1] := '';
   
   // expression
@@ -506,6 +520,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.22  2004/08/26 23:50:05  marc
+  * Restructured debugger view classes
+  * Fixed help
+
   Revision 1.21  2004/05/02 12:01:15  mattias
   removed unneeded units in uses sections
 
