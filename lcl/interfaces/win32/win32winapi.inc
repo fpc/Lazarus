@@ -1390,6 +1390,8 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetSysColor(NIndex: Integer): DWORD;
 Begin
+  if NIndex = COLOR_FORM then
+    NIndex := COLOR_BTNFACE;
   Result := Windows.GetSysColor(nIndex);
 End;
 
@@ -2474,6 +2476,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2003/10/16 16:55:16  ajgenius
+  translate COLOR_FORM to COLOR_BTNFACE
+
   Revision 1.63  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 
