@@ -124,19 +124,21 @@ End;
 
   Initialize Windows
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.AppInit;
-Var
+procedure TWin32WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  ICC: TINITCOMMONCONTROLSEX;
   LogBrush: TLOGBRUSH;
   SysMenu: HMENU;
-  ICC: TINITCOMMONCONTROLSEX;
-Begin
+  Handle: HWND;
+  DC: HDC;
+begin
   Assert(False, 'Trace:Win32Object.Init - Start');
-  If Not WinRegister then
-  Begin
+  if not WinRegister then
+  begin
     Assert(False, 'Trace:Win32Object.Init - Register Failed');
     DebugLn('Trace:Win32Object.Init - Register Failed');
     Exit;
-  End;
+  end;
 
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL;
@@ -184,8 +186,16 @@ Begin
   Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
   
+  // initialize ScreenInfo
+  Handle := GetDesktopWindow;
+  DC := Windows.GetDC(Handle);
+  ScreenInfo.PixelsPerInchX := GetDeviceCaps(DC, LOGPIXELSX);
+  ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
+  ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
+  ReleaseDC(Handle, DC);
+
   Assert(False, 'Trace:Win32Object.Init - Exit');
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppMinimize
@@ -251,7 +261,6 @@ Function TWin32WidgetSet.IntSendMessage3(LM_Message: Integer; Sender: TObject; D
 Var
   //Bitmap: HBITMAP; // Pixel map type image
   //CBI: COMBOBOXINFO;
-  DC: HDC;
   Handle: HWND;
   AMenu: TMenu;
   AccelTable: HACCEL;
@@ -274,18 +283,6 @@ Begin
     LM_RECREATEWND:
       Result := RecreateWnd(TWinControl(Sender));
         //SH: think of TBitmap.handle!!!!
-    LM_SCREENINIT:
-    Begin
-      if Sender=nil then Handle := GetDesktopWindow
-      else Handle := ObjectToHwnd(Sender);
-      DC := Windows.GetDC(Handle);
-      //WriteLn('LM_SCREENINIT called --> should go to TWin32WidgetSet.Init');
-      //WriteLn('TODO: check this');
-      PLMScreenInit(Data)^.PixelsPerInchX := GetDeviceCaps(DC, LogPixelsX);
-      PLMScreenInit(Data)^.PixelsPerInchY := GetDeviceCaps(DC, LogPixelsY);
-      PLMScreenInit(Data)^.ColorDepth := GetDeviceCaps(DC, BitsPixel);
-      ReleaseDC(Handle, DC);
-    End;
   Else
   Begin
     Handle := ObjectToHWND(Sender);
@@ -2072,6 +2069,9 @@ End;
 
 {
   $Log$
+  Revision 1.272  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.271  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 

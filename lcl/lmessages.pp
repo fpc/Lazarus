@@ -138,7 +138,6 @@ const
   //LM_MOUSEBTNPRESS  = LM_USER+41;
   //LM_MOUSEBTNRELEASE  = LM_USER+42;
   LM_EXIT           = LM_USER+60;
-  LM_SCREENINIT     = LM_USER+61;
   LM_CLOSEQUERY     = LM_USER+62;
   LM_DRAGSTART      = LM_USER+63;
   LM_DEACTIVATE     = LM_USER+64;  //used when a form is no longer in front
@@ -338,14 +337,6 @@ type
 {$else}
   TLMNoParams = TWMNoParams;
 {$endif}
-
-  TLMScreenInit = record
-    PixelsPerInchX : Integer;
-    PixelsPerInchY : Integer;
-    ColorDepth : Integer;
-  end;
-
-  PLMScreenInit = ^TLMScreenInit;
 
   TLMCanvasCreate = Record
      pparent : Pointer;
@@ -869,7 +860,6 @@ begin
   //LM_MOUSEBTNPRESS  :Result:='LM_MOUSEBTNPRESS';
   //LM_MOUSEBTNRELEASE  :Result:='LM_MOUSEBTNRELEASE';
   LM_EXIT           :Result:='LM_EXIT';
-  LM_SCREENINIT     :Result:='LM_SCREENINIT';
   LM_CLOSEQUERY     :Result:='LM_CLOSEQUERY';
   LM_DRAGSTART      :Result:='LM_DRAGSTART';
   LM_DEACTIVATE     :Result:='LM_DEACTIVATE';
@@ -911,6 +901,9 @@ end.
 
 {
   $Log$
+  Revision 1.111  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.110  2004/09/17 10:56:24  micha
   convert LM_SHORTCUT message to interface methods
 

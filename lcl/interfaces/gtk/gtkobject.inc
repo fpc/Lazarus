@@ -1507,11 +1507,17 @@ end;
   (is called by TApplication.Initialize which is typically after all
    finalization sections)
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.AppInit;
+procedure TGtkWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
   If Assigned(Screen) then
     FillScreenFonts(Screen.Fonts);
   InitKeyboardTables;
+  { Compute pixels per inch variable }
+  ScreenInfo.PixelsPerInchX :=
+    RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+  ScreenInfo.PixelsPerInchY :=
+    RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+  ScreenInfo.ColorDepth := gdk_visual_get_system^.depth;
 end;
 
 {------------------------------------------------------------------------------
@@ -3111,16 +3117,6 @@ begin
           MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
             TLMNotebookEvent(Data^).Page);
         end;
-
-      LM_SCREENINIT :
-      begin
-        { Compute pixels per inch variable }
-        PLMScreenInit(Data)^.PixelsPerInchX:=
-          RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
-        PLMScreenInit(Data)^.PixelsPerInchY:=
-          RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
-        PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
-      end;
 
       LM_SETGEOMETRY :
       begin
@@ -7896,6 +7892,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.581  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.580  2004/09/18 01:18:00  mattias
   removed unneeded handle
 

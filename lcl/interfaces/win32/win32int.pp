@@ -165,7 +165,7 @@ Type
     { Destructor of the class }
     Destructor Destroy; Override;
     { Initialize the API }
-    Procedure AppInit; Override;
+    procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
@@ -277,6 +277,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.112  2004/09/15 17:21:22  micha
   convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
 

@@ -845,6 +845,13 @@ type
   TNMHdr = tagNMHDR;
   NMHDR = tagNMHDR;
 
+  PScreenInfo = ^TScreenInfo;
+  TScreenInfo = record
+    PixelsPerInchX : Integer;
+    PixelsPerInchY : Integer;
+    ColorDepth : Integer;
+  end;
+
 {painting stuff}
 
   PDrawItemStruct = ^TDrawItemStruct;
@@ -2241,6 +2248,9 @@ end.
 
 {
   $Log$
+  Revision 1.67  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.66  2004/09/02 09:16:59  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

@@ -48,7 +48,7 @@ type
     destructor Destroy; override;
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
-    procedure AppInit; virtual; abstract;
+    procedure AppInit(var ScreenInfo: TScreenInfo); virtual; abstract;
     procedure AppTerminate; virtual; abstract;
     procedure AppMinimize; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
@@ -119,6 +119,9 @@ end.
 
 {
   $Log$
+  Revision 1.53  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.52  2004/09/14 10:06:25  micha
   convert LM_REDRAW message to interface method (in twidgetset)
 

@@ -245,8 +245,7 @@ begin
     DebugLn('ERROR: ',rsNoInterfaceObject);
     raise Exception.Create(rsNoInterfaceObject);
   end;
-  InterfaceObject.AppInit;
-  CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
+  InterfaceObject.AppInit(ScreenInfo);
   Screen.UpdateScreen;
   // application icon
   if LazarusResources.Find('MAINICON')<>nil then begin
@@ -1340,6 +1339,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.91  2004/09/15 07:57:59  micha
   convert LM_SETFORMICON message to interface method
 

@@ -1253,7 +1253,7 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
 
 var
   { Stores information about the current screen }
-  ScreenInfo: TLMScreenInit;
+  ScreenInfo: TScreenInfo;
   
   FontResourceCache: TFontHandleCache;
   PenResourceCache: TPenHandleCache;
@@ -1756,6 +1756,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.151  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.150  2004/09/14 18:02:44  mattias
   made TCanvas methods virtual
 

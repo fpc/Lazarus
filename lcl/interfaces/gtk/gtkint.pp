@@ -284,7 +284,7 @@ type
     procedure WaitMessage; override;
     procedure SendCachedLCLMessages; override;
     procedure AppTerminate; override;
-    procedure AppInit; override;
+    procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -455,6 +455,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.207  2004/09/18 10:52:48  micha
+  convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
+
   Revision 1.206  2004/09/16 14:32:31  micha
   convert LM_SETSELMODE message to interface method
 
