@@ -499,7 +499,7 @@ begin
     ecMoveEditorLeft        : Result:= srkmecMoveEditorLeft;
     ecMoveEditorRight       : Result:= srkmecMoveEditorRight;
     ecGotoEditor1..
-    ecGotoEditor0           : Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
+    ecGotoEditor0           : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
 
     // file menu
     ecNew                   : Result:= srkmecNew;
@@ -1368,15 +1368,15 @@ begin
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caAll)];
   Add(C,'Go to next editor',ecNextEditor, VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   Add(C,'Go to prior editor',ecPrevEditor, VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
-  Add(C,'Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 3',ecGotoEditor0,VK_3,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 4',ecGotoEditor0,VK_4,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 5',ecGotoEditor0,VK_5,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 6',ecGotoEditor0,VK_6,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 7',ecGotoEditor0,VK_7,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 8',ecGotoEditor0,VK_8,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 9',ecGotoEditor0,VK_9,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 1',ecGotoEditor1,VK_1,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 2',ecGotoEditor2,VK_2,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 3',ecGotoEditor3,VK_3,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 4',ecGotoEditor4,VK_4,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 5',ecGotoEditor5,VK_5,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 6',ecGotoEditor6,VK_6,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 7',ecGotoEditor7,VK_7,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 8',ecGotoEditor8,VK_8,[ssAlt],VK_UNKNOWN,[]);
+  Add(C,'Go to source editor 9',ecGotoEditor9,VK_9,[ssAlt],VK_UNKNOWN,[]);
   Add(C,'Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
   Add(C,'Move editor left',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
   Add(C,'Move editor right',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
