@@ -1511,9 +1511,11 @@ procedure TMainIDE.mnuOpenClicked(Sender : TObject);
     SaveEnvironment;
   end;
 
-var OpenDialog: TOpenDialog;
+var
+  OpenDialog: TOpenDialog;
   AFilename: string;
-  I  : Integer;
+  I: Integer;
+  OpenFlags: TOpenFlags;
 begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
@@ -1521,10 +1523,13 @@ begin
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      OpenFlags:=[ofAddToRecent];
+      if OpenDialog.Files.Count>1 then
+        Include(OpenFlags,ofRegularFile);
       For I := 0 to OpenDialog.Files.Count-1 do
         Begin
           AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-          if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
+          if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrOk then begin
           
           end;
         end;
@@ -3417,7 +3422,7 @@ begin
     MainUnitInfo.Source:=NewBuf;
     if MainUnitSrcEdit<>nil then
       MainUnitSrcEdit.CodeBuffer:=NewBuf;
-      
+
     // change program name
     MainUnitInfo.UnitName:=NewProgramName;
 
@@ -4315,9 +4320,6 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   else
     Project1.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
 
-  // update source notebook page names
-  UpdateSourceNames;
-
   // find mainunit
   GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
 
@@ -4377,11 +4379,15 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
       if (Project1.MainUnit<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
         Result:=DoSaveEditorFile(i,[sfProjectSaving]
-                        +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
+                                +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
         if Result=mrAbort then exit;
       end;
     end;
   end;
+
+  // update source notebook page names
+  UpdateSourceNames;
+
 writeln('TMainIDE.DoSaveProject End');
 end;
 
@@ -7415,6 +7421,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.418  2002/10/30 17:29:42  lazarus
+  MG: multi open file now skips checking for special files
+
   Revision 1.417  2002/10/23 14:12:01  lazarus
   MG: implemented indirect deletion of designed components
 
