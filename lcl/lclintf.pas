@@ -49,9 +49,9 @@ uses
 {$endif}
 {$DEFINE ClientRectBugFix}
 
-// All winapi related stuff
+// All winapi related stuff (Delphi compatible)
 {$I winapih.inc}
-// All interface communication
+// All interface communication (Our additions)
 {$I lclintfh.inc}
 
 
@@ -151,6 +151,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.6  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

@@ -156,6 +156,21 @@ begin
   Result := InterfaceObject.GetCmdLineParamDescForInterface;
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetControlConstraints
+  Params: Constraints: TObject
+  Returns: true on success
+
+  Updates the constraints object (e.g. TSizeConstraints) with interface specific
+  bounds. For instance, vertical scrollbars under gtk are fixed in width. So,
+  it sets MinInterfaceWidth and MaxInterfaceWidth. This is used by the auto
+  aligning/sizing algorithms of the LCL.
+ ------------------------------------------------------------------------------}
+function GetControlConstraints(Constraints: TObject): boolean;
+begin
+  Result := InterfaceObject.GetControlConstraints(Constraints);
+end;
+
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND;
   var OriginDiff: TPoint): boolean;
 begin
@@ -486,6 +501,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.11  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

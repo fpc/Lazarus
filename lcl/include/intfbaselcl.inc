@@ -242,6 +242,11 @@ begin
   Result := false;
 end;
 
+function TInterfaceBase.GetControlConstraints(Constraints: TObject): boolean;
+begin
+  Result:=true;
+end;
+
 function TInterfaceBase.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 begin
@@ -592,6 +597,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.13  2004/01/12 13:43:12  mattias
   improved and activated new statusbar
 

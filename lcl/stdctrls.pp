@@ -86,15 +86,13 @@ type
     procedure CreateWnd; override;
     procedure Change; dynamic;
     procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); dynamic;
-    procedure SetAlign(Value: TAlign); override;
-    procedure SetAnchors(const AValue: TAnchors); override;
-    procedure CheckAutoAlignment;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetParams(APosition, AMin, AMax: Integer);
   published
     property Align;
     property Anchors;
+    property Constraints;
     property Ctl3D;
     property DragCursor;
     property DragKind;
@@ -1478,6 +1476,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.120  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.119  2004/02/02 00:41:06  mattias
   TScrollBar now automatically checks Align and Anchors for useful values
 

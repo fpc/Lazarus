@@ -76,13 +76,18 @@ begin
 end;
 
 procedure TScrollBar.SetKind(Value: TScrollBarKind);
+var
+  OldWidth: Integer;
+  OldHeight: Integer;
 begin
   if FKind <> Value then
   begin
     FKind := Value;
-    if HandleAllocated then
-      RecreateWnd;
-    CheckAutoAlignment;
+    // switch width and height
+    OldWidth:=Width;
+    OldHeight:=Height;
+    RecreateWnd;
+    SetBounds(Left,Top,OldHeight,OldWidth);
   end;
 end;
 
@@ -152,36 +157,6 @@ end;
 procedure TScrollBar.Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer);
 begin
   if Assigned(FOnScroll) then FOnScroll(Self, ScrollCode, ScrollPos);
-end;
-
-procedure TScrollBar.SetAlign(Value: TAlign);
-begin
-  if Align=Value then exit;
-  inherited SetAlign(Value);
-  CheckAutoAlignment;
-end;
-
-procedure TScrollBar.SetAnchors(const AValue: TAnchors);
-begin
-  if Anchors=AValue then exit;
-  inherited SetAnchors(AValue);
-  CheckAutoAlignment;
-end;
-
-procedure TScrollBar.CheckAutoAlignment;
-begin
-  // scrollbars are fixed in width
-  if Kind=sbHorizontal then begin
-    if Align=alBottom then
-      Anchors:=Anchors-[akTop]+[akBottom]
-    else if Align=alTop then
-      Anchors:=Anchors+[akTop]-[akBottom];
-  end else begin
-    if Align=alRight then
-      Anchors:=Anchors-[akLeft]+[akRight]
-    else if Align=alLeft then
-      Anchors:=Anchors+[akLeft]-[akRight];
-  end;
 end;
 
 procedure TScrollBar.DoScroll(var Message: TLMScroll);

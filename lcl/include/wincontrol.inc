@@ -98,14 +98,16 @@ var
     function ConstraintWidth(NewWidth: integer): integer;
     begin
       Result:=NewWidth;
-      if (MaxWidth>MinWidth) and (Result>MaxWidth) then Result:=MaxWidth;
+      if (MaxWidth>=MinWidth) and (Result>MaxWidth) and (MaxWidth>0) then
+        Result:=MaxWidth;
       if Result<MinWidth then Result:=MinWidth;
     end;
 
     function ConstraintHeight(NewHeight: integer): integer;
     begin
       Result:=NewHeight;
-      if (MaxHeight>MinHeight) and (Result>MaxHeight) then Result:=MaxHeight;
+      if (MaxHeight>=MinHeight) and (Result>MaxHeight) and (MaxHeight>0) then
+        Result:=MaxHeight;
       if Result<MinHeight then Result:=MinHeight;
     end;
 
@@ -119,13 +121,13 @@ var
 
     with Control do begin
       // get constraints
-      MinWidth:=Constraints.MinWidth;
+      MinWidth:=Constraints.EffectiveMinWidth;
       if MinWidth<0 then MinWidth:=0;
-      MaxWidth:=Constraints.MaxWidth;
-      MinHeight:=Constraints.MinHeight;
+      MaxWidth:=Constraints.EffectiveMaxWidth;
+      MinHeight:=Constraints.EffectiveMinHeight;
       if MinHeight<0 then MinHeight:=0;
-      MaxHeight:=Constraints.MaxHeight;
-
+      MaxHeight:=Constraints.EffectiveMaxHeight;
+      
       // get default bounds
       NewLeft:=Left;
       NewTop:=Top;
@@ -2885,6 +2887,7 @@ begin
   if HandleAllocated then
     RaiseError('Handle already created');
   CNSendMessage(LM_CREATE, Self, nil);
+  Constraints.UpdateInterfaceConstraints;
   FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   if not HandleAllocated then
     RaiseError('Handle creation failed');
@@ -3266,6 +3269,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.195  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.194  2004/02/02 11:07:43  mattias
   constraints and aligning now work together
 

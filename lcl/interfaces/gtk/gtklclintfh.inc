@@ -31,6 +31,7 @@
 
 //##apiwiz##sps##   // Do not remove
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
+function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
@@ -45,6 +46,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.9  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

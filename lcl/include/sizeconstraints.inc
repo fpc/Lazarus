@@ -35,6 +35,70 @@ begin
   FMaxHeight:= 0;
   FMinWidth:= 0;
   FMinHeight:= 0;
+  
+  UpdateInterfaceConstraints;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TSizeConstraints.UpdateInterfaceConstraints;
+
+  Asks interface for constraints.
+ ------------------------------------------------------------------------------}
+procedure TSizeConstraints.UpdateInterfaceConstraints;
+begin
+  GetControlConstraints(Self);
+end;
+
+procedure TSizeConstraints.SetInterfaceConstraints(MinW, MinH,
+  MaxW, MaxH: integer);
+begin
+  if (FMinInterfaceWidth=MinW)
+  and (FMinInterfaceHeight=MinH)
+  and (FMaxInterfaceWidth=MaxW)
+  and (FMaxInterfaceHeight=MaxH) then exit;
+  
+  FMinInterfaceWidth:=MinW;
+  FMinInterfaceHeight:=MinH;
+  FMaxInterfaceWidth:=MaxW;
+  FMaxInterfaceHeight:=MaxH;
+  
+  FControl.RequestAlign;
+end;
+
+function TSizeConstraints.EffectiveMinWidth: integer;
+begin
+  if (MinInterfaceWidth=0)
+  or ((MinWidth>MinInterfaceWidth) and (MinWidth<=MaxInterfaceWidth)) then
+    Result:=MinWidth
+  else
+    Result:=MinInterfaceWidth;
+end;
+
+function TSizeConstraints.EffectiveMinHeight: integer;
+begin
+  if (MinInterfaceHeight=0)
+  or ((MinHeight>MinInterfaceHeight) and (MinHeight<=MaxInterfaceHeight)) then
+    Result:=MinHeight
+  else
+    Result:=MinInterfaceHeight;
+end;
+
+function TSizeConstraints.EffectiveMaxWidth: integer;
+begin
+  if (MaxInterfaceWidth=0)
+  or ((MaxWidth<MaxInterfaceWidth) and (MaxWidth>=MinInterfaceWidth)) then
+    Result:=MaxWidth
+  else
+    Result:=MaxInterfaceWidth;
+end;
+
+function TSizeConstraints.EffectiveMaxHeight: integer;
+begin
+  if (MaxInterfaceHeight=0)
+  or ((MaxHeight<MaxInterfaceHeight) and (MaxHeight>=MinInterfaceHeight)) then
+    Result:=MaxHeight
+  else
+    Result:=MaxInterfaceHeight;
 end;
 
 {------------------------------------------------------------------------------

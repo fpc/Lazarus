@@ -497,21 +497,36 @@ type
   private
     FControl: TControl;
     FMaxHeight: TConstraintSize;
+    FMaxInterfaceHeight: integer;
+    FMaxInterfaceWidth: integer;
     FMaxWidth: TConstraintSize;
     FMinHeight: TConstraintSize;
+    FMinInterfaceHeight: integer;
+    FMinInterfaceWidth: integer;
     FMinWidth: TConstraintSize;
     FOnChange: TNotifyEvent;
   protected
     procedure Change; dynamic;
     procedure AssignTo(Dest: TPersistent); override;
-    property Control: TControl read FControl;
     procedure SetMaxHeight(Value: TConstraintSize); virtual;
     procedure SetMaxWidth(Value: TConstraintSize); virtual;
     procedure SetMinHeight(Value: TConstraintSize); virtual;
     procedure SetMinWidth(Value: TConstraintSize); virtual;
   public
     constructor Create(AControl: TControl); virtual;
+    procedure UpdateInterfaceConstraints; virtual;
+    procedure SetInterfaceConstraints(MinW, MinH, MaxW, MaxH: integer); virtual;
+    function EffectiveMinWidth: integer; virtual;
+    function EffectiveMinHeight: integer; virtual;
+    function EffectiveMaxWidth: integer; virtual;
+    function EffectiveMaxHeight: integer; virtual;
+  public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property MaxInterfaceHeight: integer read FMaxInterfaceHeight;
+    property MaxInterfaceWidth: integer read FMaxInterfaceWidth;
+    property MinInterfaceHeight: integer read FMinInterfaceHeight;
+    property MinInterfaceWidth: integer read FMinInterfaceWidth;
+    property Control: TControl read FControl;
   published
     property MaxHeight: TConstraintSize read FMaxHeight write SetMaxHeight default 0;
     property MaxWidth: TConstraintSize read FMaxWidth write SetMaxWidth default 0;
@@ -1862,6 +1877,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.171  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.170  2004/02/02 11:07:43  mattias
   constraints and aligning now work together
 

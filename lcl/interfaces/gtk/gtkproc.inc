@@ -5067,6 +5067,7 @@ var
   VBox: PGtkWidget;
   AddToStyleWindow: Boolean;
   StyleWindowWidget: PGtkWidget;
+  Requisition: TGtkRequisition;
 begin
   Result := nil;
   if Styles=nil then exit;
@@ -5144,9 +5145,14 @@ begin
         StyleObject^.Widget := GTK_LIST_NEW;
       end
     else
-      If AnsiCompareText(WName,LazGtkStyleNames[lgsScrollbar])=0 then begin
-        lgs:=lgsScrollbar;
-        StyleObject^.Widget := gtk_hscrollbar_new(nil);//can't dif. between Horiz/Vert. Styles
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsVerticalScrollbar])=0 then begin
+        lgs:=lgsVerticalScrollbar;
+        StyleObject^.Widget := gtk_vscrollbar_new(nil);
+      end
+    else
+      If AnsiCompareText(WName,LazGtkStyleNames[lgsHorizontalScrollbar])=0 then begin
+        lgs:=lgsHorizontalScrollbar;
+        StyleObject^.Widget := gtk_hscrollbar_new(nil);
       end
     else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsTooltip])=0 then begin
@@ -5192,6 +5198,7 @@ begin
       WidgetName:='LazStyle'+WName;
       gtk_widget_set_name(StyleObject^.Widget,PChar(WidgetName));
       gtk_widget_ensure_style(StyleObject^.Widget);
+      gtk_widget_size_request(StyleObject^.widget, @Requisition);
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
@@ -5491,7 +5498,7 @@ begin
           COLOR_FORM: Style := GetStyle(lgsWindow);
           COLOR_BTNFACE: Style := GetStyle(lgsButton);
           COLOR_MENU: Style := GetStyle(lgsMenu);
-          COLOR_SCROLLBAR: Style := GetStyle(lgsScrollbar);
+          COLOR_SCROLLBAR: Style := GetStyle(lgsHorizontalScrollbar);
         end;
         If Style = nil then
           exit;
@@ -6302,6 +6309,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.253  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.252  2004/02/02 00:41:06  mattias
   TScrollBar now automatically checks Align and Anchors for useful values
 

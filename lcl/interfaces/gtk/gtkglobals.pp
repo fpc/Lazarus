@@ -93,7 +93,8 @@ type
     lgsMenu,
     lgsMenuitem,
     lgsList,
-    lgsScrollbar,
+    lgsVerticalScrollbar,
+    lgsHorizontalScrollbar,
     lgsTooltip,
     lgsUserDefined
     );
@@ -109,7 +110,8 @@ const
     'menu',
     'menuitem',
     'list',
-    'scrollbar',
+    'vertical scrollbar',
+    'horizontal scrollbar',
     'tooltip',
     ''
     );

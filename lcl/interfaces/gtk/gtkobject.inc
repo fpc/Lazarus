@@ -1101,7 +1101,7 @@ begin
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
   begin
     // the width of a scrollbar is fixed and depends only on the theme
-    gtk_widget_size_request (widget, @Requisition);
+    gtk_widget_size_request(widget, @Requisition);
     if GtkWidgetIsA(Widget, GTK_TYPE_HSCROLLBAR) then
     begin
       NewHeight:=Requisition.height;
@@ -9184,6 +9184,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.459  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.458  2004/02/02 00:41:06  mattias
   TScrollBar now automatically checks Align and Anchors for useful values
 

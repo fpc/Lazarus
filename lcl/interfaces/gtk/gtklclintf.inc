@@ -42,6 +42,45 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetControlConstraints
+  Params: Constraints: TObject
+  Returns: true on success
+
+  Updates the constraints object (e.g. TSizeConstraints) with interface specific
+  bounds.
+ ------------------------------------------------------------------------------}
+function TGTKObject.GetControlConstraints(Constraints: TObject): boolean;
+var
+  SizeConstraints: TSizeConstraints;
+  Widget: PGtkWidget;
+  MinWidth: Integer;
+  MinHeight: Integer;
+begin
+  Result:=true;
+  if Constraints is TSizeConstraints then begin
+    SizeConstraints:=TSizeConstraints(Constraints);
+
+    if (SizeConstraints.Control=nil) then exit;
+
+    // TScrollBar
+    if SizeConstraints.Control is TScrollBar then begin
+      MinWidth := 0;
+      MinHeight := 0;
+      if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
+        Widget:=GetStyleWidget(lgsHorizontalScrollbar);
+        MinHeight:=Widget^.requisition.Height;
+      end else begin
+        Widget:=GetStyleWidget(lgsVerticalScrollbar);
+        MinWidth:=Widget^.requisition.Width;
+      end;
+      SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
+                                              MinWidth,MinHeight);
+    end;
+    
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetListBoxIndexAtY
   Params: ListBox:
           y:
@@ -293,6 +332,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.12  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

@@ -5107,17 +5107,13 @@ begin
       end;
     SM_CXHSCROLL:
       begin
-        P := GTK_hscrollbar_new(nil);
-        gtk_widget_show(P);
+        P:=GetStyleWidget(lgsVerticalScrollbar);
         Result := GTK_Widget(P)^.requisition.Width;
-        GTK_Widget_Destroy(P);
       end;
     SM_CYHSCROLL:
       begin
-        P := GTK_hscrollbar_new(nil);
-        gtk_widget_show(P);
+        P:=GetStyleWidget(lgsHorizontalScrollbar);
         Result := GTK_Widget(P)^.requisition.Height;
-        GTK_Widget_Destroy(P);
       end;
     SM_CXHTHUMB:
       begin
@@ -5245,17 +5241,13 @@ begin
       end;
     SM_CXVSCROLL:
       begin
-        P := GTK_vscrollbar_new(nil);
-        gtk_widget_show(P);
+        P:=GetStyleWidget(lgsVerticalScrollbar);
         Result := GTK_Widget(P)^.requisition.Width;
-        GTK_Widget_Destroy(P);
       end;
     SM_CYVSCROLL:
       begin
-        P := GTK_vscrollbar_new(nil);
-        gtk_widget_show(P);
+        P:=GetStyleWidget(lgsHorizontalScrollbar);
         Result := GTK_Widget(P)^.requisition.Height;
-        GTK_Widget_Destroy(P);
       end;
     SM_CYCAPTION:
       begin
@@ -8701,6 +8693,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.323  2004/02/02 12:44:45  mattias
+  implemented interface constraints
+
   Revision 1.322  2004/01/26 11:55:35  mattias
   fixed resizing synedit
 
