@@ -108,6 +108,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCanvas.RealizeAutoRedraw;
+ ------------------------------------------------------------------------------}
+procedure TCanvas.RealizeAutoRedraw;
+begin
+  if FAutoRedraw and HandleAllocated then
+    InterfaceObject.DCRedraw(Handle);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.CreateBrush
   Params:   None
   Returns:  Nothing
@@ -192,9 +201,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetAutoRedraw(Value : Boolean);
 begin
+  if FAutoRedraw=Value then exit;
   FAutoRedraw := Value;
-  if FAutoRedraw and HandleAllocated then
-    InterfaceObject.DCRedraw(Handle);
+  RealizeAutoRedraw;
 end;
 
 {------------------------------------------------------------------------------
@@ -203,9 +212,17 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.SetPenPos(Value : TPoint);
+procedure TCanvas.SetPenPos(const Value : TPoint);
 begin
   MoveTo(Value.X, Value.Y);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCanvas.SetInternalPenPos(const Value: TPoint);
+ ------------------------------------------------------------------------------}
+procedure TCanvas.SetInternalPenPos(const Value: TPoint);
+begin
+  FPenPos:=Value;
 end;
 
 {------------------------------------------------------------------------------
@@ -814,10 +831,11 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.MoveTo(X1, Y1 : Integer);
+Procedure TCanvas.MoveTo(X1, Y1: Integer);
 begin
   RequiredState([csHandleValid]);
-  if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then FPenPos:= Point(X1, Y1);
+  if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then
+    SetInternalPenPos(Point(X1, Y1));
 End;
 
 {------------------------------------------------------------------------------
@@ -830,7 +848,8 @@ procedure TCanvas.LineTo(X1, Y1 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  if LCLIntf.LineTo(FHandle, X1, Y1) then FPenPos:= Point(X1, Y1);
+  if LCLIntf.LineTo(FHandle, X1, Y1) then
+    SetInternalPenPos(Point(X1, Y1));
   Changed;
 end;
 
@@ -1240,6 +1259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2004/09/20 23:13:46  mattias
+  moved remaining TCanvas handle dependent methods to protected
+
   Revision 1.79  2004/09/14 18:02:44  mattias
   made TCanvas methods virtual
 

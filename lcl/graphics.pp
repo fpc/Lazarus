@@ -812,31 +812,33 @@ type
     FLockCount: Integer;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
-    procedure PenChanging(APen: TObject);
     procedure PenChanged(APen: TObject);
     procedure RegionChanged(ARegion: TObject);
-    procedure DeselectHandles;
-    function GetCanvasClipRect: TRect;
     Function GetColor: TColor;
     function GetHandle: HDC;
     Function GetPenPos: TPoint;
-    Function GetPixel(X,Y: Integer): TColor;
-    Procedure SetAutoRedraw(Value: Boolean);
-    Procedure SetColor(c: TColor);
+    Procedure SetAutoRedraw(Value: Boolean); virtual;
     Procedure SetBrush(value: TBrush);
+    Procedure SetColor(c: TColor);
     Procedure SetFont(value: TFont);
     Procedure SetPen(value: TPen);
-    Procedure SetPenPos(Value: TPoint);
-    Procedure SetPixel(X,Y: Integer; Value: TColor);
-    Procedure SetRegion(value: TRegion);
+    procedure SetPenPos(const Value: TPoint);
+    Procedure SetRegion(Value: TRegion);
   protected
-    procedure CreateFont; virtual;
+    function GetCanvasClipRect: TRect; virtual;
+    Function GetPixel(X,Y: Integer): TColor; virtual;
     procedure CreateBrush; virtual;
+    procedure CreateFont; virtual;
+    procedure CreateHandle; virtual;
     Procedure CreatePen; virtual;
     Procedure CreateRegion; virtual;
-    procedure CreateHandle; virtual;
+    procedure DeselectHandles; virtual;
+    procedure PenChanging(APen: TObject); virtual;
+    procedure RealizeAutoRedraw; virtual;
     procedure RequiredState(ReqState: TCanvasState); virtual;
     procedure SetHandle(NewHandle: HDC); virtual;
+    procedure SetInternalPenPos(const Value: TPoint); virtual;
+    Procedure SetPixel(X,Y: Integer; Value: TColor); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1756,6 +1758,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.152  2004/09/20 23:13:46  mattias
+  moved remaining TCanvas handle dependent methods to protected
+
   Revision 1.151  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

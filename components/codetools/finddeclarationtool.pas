@@ -808,6 +808,8 @@ begin
     Result:=xtShortInt
   else if CompareIdentifiers(Identifier,'BYTE')=0 then
     Result:=xtByte
+  else if CompareIdentifiers(Identifier,'PCHAR')=0 then
+    Result:=xtPChar
   else
     Result:=xtNone;
 end;

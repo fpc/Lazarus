@@ -1255,6 +1255,7 @@ begin
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PCHAR'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
