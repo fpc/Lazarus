@@ -31,6 +31,10 @@ begin
 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
+  // custom controls are painted by the LCL, not the interface, so enable
+  // double buffering. It's up to the interface to do the actual
+  // doublebuffering.
+  DoubleBuffered:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -92,7 +96,7 @@ procedure TCustomControl.PaintWindow(DC: HDC);
 var
   DCChanged: boolean;
 begin
-  DCChanged:=(FCanvas.Handle<>DC);
+  DCChanged:=(not FCanvas.HandleAllocated) or (FCanvas.Handle<>DC);
   if DCChanged then
     FCanvas.Handle := DC;
   try
@@ -107,6 +111,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.8  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

@@ -627,6 +627,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
+    var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
+
+  Find main widget and if it is a API widget, hide caret.
+ ------------------------------------------------------------------------------}
+procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
+  var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
+var
+  LCLObject: TObject;
+  IsAPIWidget: Boolean;
+begin
+  MainWidget:=ChildWidget;
+  LCLObject:=GetParentLCLObject(ChildWidget);
+  if (LCLObject is TWinControl) then
+    MainWidget:=PGtkWidget(TWinControl(LCLObject).Handle);
+  IsAPIWidget:=GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType);
+  CaretWasVisible:=false;
+  if IsAPIWidget then
+    GTKAPIWidget_HideCaret(PGTKAPIWidget(MainWidget),CaretWasVisible);
+end;
+
+{------------------------------------------------------------------------------
   procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
 
   Sets the text of the combobox entry.
@@ -2507,6 +2529,8 @@ begin
   if Widget=nil then exit;
   WinWidgetInfo := gtk_object_get_data(Widget, 'widgetinfo');
   if WinWidgetInfo<>nil then begin
+    if WinWidgetInfo^.DoubleBuffer<>nil then
+      gdk_pixmap_unref(WinWidgetInfo^.DoubleBuffer);
     Dispose(WinWidgetInfo);
     gtk_object_set_data(Widget,'widgetinfo',nil);
   end;
@@ -5704,6 +5728,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.241  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.240  2004/01/09 13:49:43  mattias
   improved gtk intf key fetching and OI keyboard navigation
 

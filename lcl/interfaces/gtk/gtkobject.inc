@@ -7904,6 +7904,87 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.GetDoubleBufferedDC(Handle: HWND): HDC;
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetDoubleBufferedDC(Handle: HWND): HDC;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWinWidgetInfo;
+  AWindow: PGdkWindow;
+  Width, Height: integer;
+  BufferWidth, BufferHeight: integer;
+  DoubleBuffer: PGdkPixmap;
+  BufferCreated: Boolean;
+  DevContext: TDeviceContext;
+  CaretWasVisible: Boolean;
+  MainWidget: PGtkWidget;
+begin
+  Result:=0;
+  Widget:=PGtkWidget(Handle);
+  {$IFDEF VerboseDoubleBuffer}
+  writeln('TgtkObject.GetDoubleBufferedDC ',GetWidgetClassName(Widget));
+  {$ENDIF}
+  WidgetInfo:=GetWidgetInfo(Widget,true);
+  AWindow:=Widget^.Window;
+  gdk_window_get_size(AWindow,@Width,@Height);
+  // create or resize DoubleBuffer
+  DoubleBuffer:=WidgetInfo^.DoubleBuffer;
+  if DoubleBuffer<>nil then begin
+    gdk_window_get_size(DoubleBuffer,@BufferWidth,@BufferHeight);
+    {$IFDEF VerboseDoubleBuffer}
+    writeln('TgtkObject.GetDoubleBufferedDC Checking ',
+      ' Width=',Width,' Height=',Height,
+      ' BufferWidth=',BufferWidth,' BufferHeight=',BufferHeight
+      );
+    {$ENDIF}
+    // make sure buffer is not too small and not too big
+    if (BufferWidth<Width) or (BufferHeight<Height)
+    or (BufferWidth>(Width*2+20)) or (BufferHeight>(Height*2+20))
+    then begin
+      {$IFDEF VerboseDoubleBuffer}
+      writeln('TgtkObject.GetDoubleBufferedDC Destroying old double buffer ');
+      {$ENDIF}
+      gdk_pixmap_unref(DoubleBuffer);
+      DoubleBuffer:=nil;
+      WidgetInfo^.DoubleBuffer:=nil;
+    end;
+  end;
+  BufferCreated:=false;
+  if DoubleBuffer=nil then begin
+    // create DoubleBuffer
+    {$IFDEF VerboseDoubleBuffer}
+    writeln('TgtkObject.GetDoubleBufferedDC Creating double buffer ',
+      ' Width=',Width,' Height=',Height);
+    {$ENDIF}
+    DoubleBuffer:=gdk_pixmap_new(AWindow,Width,Height,-1);
+    WidgetInfo^.DoubleBuffer:=DoubleBuffer;
+    BufferCreated:=true;
+  end;
+
+  // create DC for double buffer
+  Result:=CreateDCForWidget(Widget,PGDKWindow(DoubleBuffer),false);
+
+  if BufferCreated then begin
+    // copy old context to buffer
+    DevContext:=TDeviceContext(Result);
+    gdk_gc_set_clip_region(DevContext.GC, nil);
+    gdk_gc_set_clip_rectangle(DevContext.GC, nil);
+
+    // hide caret
+    HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
+    // copy
+    gdk_window_copy_area(DoubleBuffer, DevContext.GC,0,0, Widget^.Window,
+      0, 0, Width, Height);
+    // restore caret
+    if CaretWasVisible then
+      GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
+  end;
+  {$IFDEF VerboseDoubleBuffer}
+  writeln('TgtkObject.GetDoubleBufferedDC DC=',HexStr(Cardinal(Result),8));
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
   Function: NewGDIObject
   Params:  none
   Returns: a gtkwinapi DeviceContext
@@ -8597,6 +8678,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.449  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.448  2004/01/10 00:46:46  mattias
   fixed DestroyComponent
 

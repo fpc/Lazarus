@@ -284,6 +284,9 @@ function GetParentFixedWidget(Child: PGtkWidget): PGtkWidget;
 function FindFixedChild(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
 procedure MoveGListLinkBehind(First, Item, After: PGList);
 
+procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
+  var MainWidget: PGtkWidget; var CaretWasVisible: boolean);
+
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);

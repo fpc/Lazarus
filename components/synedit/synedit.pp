@@ -56,6 +56,10 @@ unit SynEdit;
 
 {$I synedit.inc}
 
+{$IFDEF UseGTKDoubleBuf}
+{$DEFINE DisableDoubleBuf}
+{$ENDIF}
+
 interface
 
 { $DEFINE VerboseKeys}
@@ -554,8 +558,8 @@ type
     fInternalImage: TSynInternalImage;
     {$IFNDEF DisableDoubleBuf}
     BufferBitmap: TBitmap; // the double buffer
-    SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
     {$ENDIF}
+    SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
     procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
     procedure DoOnCommandProcessed(Command: TSynEditorCommand; AChar: char;
       Data: pointer); virtual;
@@ -2329,12 +2333,12 @@ begin
   // the gutter separator if visible
   if AClip.Right >= fGutterWidth - 2 then
     with Canvas do begin
-      Pen.Color := clBtnHighlight;
+      Pen.Color := {$IFDEF SYN_LAZARUS}clWhite{$ELSE}clBtnHighlight{$ENDIF};
       Pen.Width := 1;
       with AClip do begin
         MoveTo(fGutterWidth - 2, Top);
         LineTo(fGutterWidth - 2, Bottom);
-        Pen.Color := clBtnShadow;
+        Pen.Color := {$IFDEF SYN_LAZARUS}clDkGray{$ELSE}clBtnShadow{$ENDIF};
         MoveTo(fGutterWidth - 1, Top);
         LineTo(fGutterWidth - 1, Bottom);
       end;

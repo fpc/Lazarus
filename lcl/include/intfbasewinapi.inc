@@ -58,7 +58,7 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+function TInterfaceBase.BeginPaint(Handle: hWnd; Var PS: TPaintStruct): hdc;
 begin
   Result:=GetDC(Handle);
 end;
@@ -1397,6 +1397,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.3  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

@@ -211,9 +211,10 @@ type
     WndProc: Integer;                 // window data 
     Style: Integer;                   
     ExStyle: Integer;
-    UserData: Integer;
     EventMask: TGdkEventMask;
+    DoubleBuffer: PGdkPixmap;
     Flags: TWinWidgetInfoFlags;
+    UserData: Integer;
   end;
   
 // clipboard
@@ -545,6 +546,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.50  2003/10/17 03:21:21  ajgenius
   fix GTK2 compiling for new Keyboard changes
 

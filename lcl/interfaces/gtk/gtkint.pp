@@ -163,6 +163,7 @@ type
     procedure DisposeDC(aDC: TDeviceContext);virtual;
     function CreateDCForWidget(TheWidget: PGtkWidget; TheWindow: PGdkWindow;
       WithChildWindows: boolean): HDC;
+    function GetDoubleBufferedDC(Handle: HWND): HDC;
 
     // GDIObjects
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;virtual;
@@ -417,6 +418,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.166  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.165  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 

@@ -122,8 +122,28 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+{$IFDEF Gtk1}
+var
+  Widget: PGtkWidget;
+  TargetObject: TObject;
+  IsDoubleBuffered: Boolean;
+{$ENDIF}
 begin
-  PS.hDC:=GetDC(Handle);
+  {$IFDEF Gtk1}
+  Widget:=PGtkWidget(Handle);
+  TargetObject:=GetParentLCLObject(Widget);
+  IsDoubleBuffered:=(TargetObject is TWinControl)
+                    and TWinControl(TargetObject).DoubleBuffered;
+  {$IFNDEF UseGTKDoubleBuf}
+  IsDoubleBuffered:=false;
+  {$ENDIF}
+  {$ELSE}
+  IsDoubleBuffered:=false;
+  {$ENDIF}
+  if IsDoubleBuffered then
+    PS.hDC:=GetDoubleBufferedDC(Handle)
+  else
+    PS.hDC:=GetDC(Handle);
   Result := PS.hDC;
 end;
 
@@ -772,13 +792,13 @@ begin
       GdiObject^.GDIBitmapType := gbBitmap;
       GdiObject^.GDIBitmapObject :=
         gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end
     else begin
       GdiObject^.GDIBitmapType := gbPixmap;
       GdiObject^.GDIPixmapObject :=
         gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
-      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     end;
 
     If GdiObject^.Visual <> nil then
@@ -2212,7 +2232,8 @@ var
     else begin
       If State = GTK_STATE_SELECTED then
         State := GTK_STATE_ACTIVE;
-      aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
+      // MG: You can't assign a style to any window. Why it is needed anyway?
+      //aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
     end;
 
     if aStyle<>nil then begin
@@ -2782,11 +2803,49 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+function TgtkObject.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
+{$IFDEF Gtk1}
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWinWidgetInfo;
+  IsDoubleBuffer: Boolean;
+  DCDrawable: PGdkDrawable;
+  Width, Height: integer;
+  DevContext: TDeviceContext;
+  CaretWasVisible: Boolean;
+  MainWidget: PGtkWidget;
+{$ENDIF}
 begin
   Result:=1;
-  if PS.HDC <> 0 then
+  if PS.HDC <> 0 then begin
+    {$IFDEF Gtk1}
+    Widget:=PGtkWidget(Handle);
+    WidgetInfo:=GetWidgetInfo(Widget,false);
+    DevContext:=TDeviceContext(PS.HDC);
+    DCDrawable:=DevContext.Drawable;
+    IsDoubleBuffer:=(WidgetInfo<>nil) and (WidgetInfo^.DoubleBuffer<>nil)
+                    and (WidgetInfo^.DoubleBuffer=DCDrawable);
+    if IsDoubleBuffer then begin
+      // copy
+      gdk_window_get_size(DCDrawable,@Width,@Height);
+      {$IFDEF VerboseDoubleBuffer}
+      writeln('TgtkObject.EndPaint Copying from buffer to window: ',Width,' ',Height);
+      {$ENDIF}
+      gdk_gc_set_clip_region(DevContext.GC, nil);
+      gdk_gc_set_clip_rectangle(DevContext.GC, nil);
+
+      // hide caret
+      HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
+      // draw
+      gdk_window_copy_area(Widget^.Window, DevContext.GC,0,0, DCDrawable,
+        0, 0, Width, Height);
+      // restore caret
+      if CaretWasVisible then
+        GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
+    end;
+    {$ENDIF}
     ReleaseDC(Handle, PS.HDC);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3296,7 +3355,6 @@ var
   Widget, ClientWidget: PGtkWidget;
   i : integer;
   DCOrigin: TPoint;
-  AWindow: PGdkWindow;
   TheStyle: PGtkStyle;
   Area: TGdkRectangle;
   ShadowType: Integer;
@@ -3317,10 +3375,6 @@ begin
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget=nil then
       ClientWidget:=Widget;
-    AWindow:=GetControlWindow(ClientWidget);
-    if AWindow=nil then begin
-      exit;
-    end;
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     Area.X:=ARect.Left+DCOrigin.X;
     Area.Y:=ARect.Top+DCOrigin.Y;
@@ -3368,7 +3422,7 @@ begin
                  ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
                  ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
       gtk_paint_shadow(TheStyle,
-                       AWindow, GTK_STATE_NORMAL,
+                       Drawable, GTK_STATE_NORMAL,
                        ShadowType,
                        @Area,
                        ClientWidget,
@@ -5679,6 +5733,7 @@ end;
 function TgtkObject.HideCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
+  WasVisible: boolean;
 begin
 //writeln('[TgtkObject.HideCaret] A');
   Assert(False, Format('Trace:  [TgtkObject.HideCaret] HWND: 0x%x', [hWnd]));
@@ -5691,7 +5746,7 @@ begin
   then begin
     if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
-      GTKAPIWidget_HideCaret(PGTKAPIWidget(GTKObject));
+      GTKAPIWidget_HideCaret(PGTKAPIWidget(GTKObject),WasVisible);
     end
 //    else if // TODO: other widgettypes
     else begin
@@ -7278,14 +7333,105 @@ end;
 function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam;
   lParam: LParam): LResult;
 var
+  OldMsg: Cardinal;
+  
+  procedure PreparePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
+  var
+    PaintDC: HDC;
+    GtkPaintData: TLMGtkPaintData;
+    DCOrigin: TPoint;
+  begin
+    (* MG: old trick. Not used anymore, but it might be, that someday there
+           will be component, that works better with this, so it is kept.
+    { The LCL repaints controls in a top-down hierachy. But the gtk sends
+      gtkdraw events bottom-up. So, controls at the bottom are repainted
+      many times. To avoid this the queue is checked for LM_PAINT messages
+      for the parent control. If there is a parent LM_PAINT, this message
+      is ignored.}
+    if (Target is TControl) then begin
+      ParentControl:=TControl(Target).Parent;
+      while ParentControl<>nil do begin
+        ParentHandle:=TWinControl(ParentControl).Handle;
+        if FindPaintMessage(ParentHandle)<>nil then begin
+          {$IFDEF VerboseDsgnPaintMsg}
+          if (csDesigning in TComponent(Target).ComponentState) then begin
+            writeln('TGTKObject.SendMessage A ',
+              TComponent(Target).Name,':',Target.ClassName,
+              ' Parent Message found: ',ParentControl.Name,':',ParentControl.ClassName
+              );
+          end;
+          {$ENDIF}
+          if Msg=LM_PAINT then
+            ReleaseDC(0,AMessage.WParam);
+          //exit;
+        end;
+        ParentControl:=ParentControl.Parent;
+      end;
+    end; *)
+    {$IFDEF VerboseDsgnPaintMsg}
+    if (csDesigning in TComponent(Target).ComponentState) then begin
+      write('TGTKObject.SendMessage B ',
+        TComponent(Target).Name,':',Target.ClassName,
+        ' GtkPaint=',AMessage.Msg=LM_GtkPAINT);
+      if AMessage.Msg=LM_GtkPAINT then begin
+        if AMessage.wParam<>0 then begin
+          with TLMGtkPaintData(AMessage.wParam) do begin
+            write(' GtkPaintData(',
+              ' Widget=',HexStr(Cardinal(Widget),8),
+              ' State=',State,
+              ' Rect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom,
+              ' RepaintAll=',RepaintAll,
+              ')');
+          end;
+        end else begin
+          write(' GtkPaintData=nil');
+        end;
+      end;
+      writeln('');
+    end;
+    {$ENDIF}
+    if AMessage.Msg=LM_GtkPAINT then begin
+      GtkPaintData:=TLMGtkPaintData(AMessage.wParam);
+      // convert LM_GtkPAINT to LM_PAINT
+      AMessage := TLMessage(GtkPaintMessageToPaintMessage(
+                                                TLMGtkPaint(AMessage), True));
+      {$IfNDef GTK2}
+      if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
+        PaintDC:=TLMPaint(AMessage).DC;
+        DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
+        with GtkPaintData.Rect do
+          IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
+                            Right-DCOrigin.X,Bottom-DCOrigin.Y);
+      end;
+      {$EndIf}
+    end;
+  end;
+  
+  procedure DisposePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
+  begin
+    if OldMsg=LM_GtkPAINT then begin
+      FinalizePaintMessage(@AMessage);
+      if (csDesigning in TComponent(TargetObject).ComponentState)
+      and (TargetObject is TWinControl) then
+        SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
+    end else
+    if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
+      // free DC
+      ReleaseDC(0,AMessage.WParam);
+      AMessage.WParam:=0;
+
+      if (csDesigning in TComponent(TargetObject).ComponentState)
+      and (TargetObject is TWinControl) then
+        SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
+    end;
+  end;
+  
+var
   AMessage: TLMessage;
   Target: TObject;
-  PaintDC: HDC;
-  GtkPaintData: TLMGtkPaintData;
-  DCOrigin: TPoint;
-  //ParentControl: TWinControl;
-  //ParentHandle: HWnd;
 begin
+  OldMsg:=Msg;
+
   AMessage.Msg := Msg;
   AMessage.WParam := WParam;
   AMessage.LParam := LParam;
@@ -7295,90 +7441,14 @@ begin
 
   if Target<>nil then begin
     if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
-
-      (* MG: old trick. Not used anymore, but it might be, that someday there
-             will be component, that works better with this, so it is kept.
-      { The LCL repaints controls in a top-down hierachy. But the gtk sends
-        gtkdraw events bottom-up. So, controls at the bottom are repainted
-        many times. To avoid this the queue is checked for LM_PAINT messages
-        for the parent control. If there is a parent LM_PAINT, this message
-        is ignored.}
-      if (Target is TControl) then begin
-        ParentControl:=TControl(Target).Parent;
-        while ParentControl<>nil do begin
-          ParentHandle:=TWinControl(ParentControl).Handle;
-          if FindPaintMessage(ParentHandle)<>nil then begin
-            {$IFDEF VerboseDsgnPaintMsg}
-            if (csDesigning in TComponent(Target).ComponentState) then begin
-              writeln('TGTKObject.SendMessage A ',
-                TComponent(Target).Name,':',Target.ClassName,
-                ' Parent Message found: ',ParentControl.Name,':',ParentControl.ClassName
-                );
-            end;
-            {$ENDIF}
-            if Msg=LM_PAINT then
-              ReleaseDC(0,AMessage.WParam);
-            //exit;
-          end;
-          ParentControl:=ParentControl.Parent;
-        end;
-      end; *)
-      {$IFDEF VerboseDsgnPaintMsg}
-      if (csDesigning in TComponent(Target).ComponentState) then begin
-        write('TGTKObject.SendMessage B ',
-          TComponent(Target).Name,':',Target.ClassName,
-          ' GtkPaint=',Msg=LM_GtkPAINT);
-        if Msg=LM_GtkPAINT then begin
-          if AMessage.wParam<>0 then begin
-            with TLMGtkPaintData(AMessage.wParam) do begin
-              write(' GtkPaintData(',
-                ' Widget=',HexStr(Cardinal(Widget),8),
-                ' State=',State,
-                ' Rect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom,
-                ' RepaintAll=',RepaintAll,
-                ')');
-            end;
-          end else begin
-            write(' GtkPaintData=nil');
-          end;
-        end;
-        writeln('');
-      end;
-      {$ENDIF}
-      if Msg=LM_GtkPAINT then begin
-        GtkPaintData:=TLMGtkPaintData(AMessage.wParam);
-        // convert LM_GtkPAINT to LM_PAINT
-        AMessage := TLMessage(GtkPaintMessageToPaintMessage(
-                                                  TLMGtkPaint(AMessage), True));
-        {$IfNDef GTK2}
-        if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
-          PaintDC:=TLMPaint(AMessage).DC;
-          DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
-          with GtkPaintData.Rect do
-            IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
-                              Right-DCOrigin.X,Bottom-DCOrigin.Y);
-        end;
-        {$EndIf}
-      end;
+      PreparePaintMessage(Target,AMessage);
     end;
 
     // deliver it
     Result := DeliverMessage(Target, AMessage);
-
-    if Msg=LM_GtkPAINT then begin
-      FinalizePaintMessage(@AMessage);
-      if (csDesigning in TComponent(Target).ComponentState)
-      and (TObject(Target) is TWinControl) then
-        SendPaintMessagesForInternalWidgets(TWinControl(Target));
-    end else
-    if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
-      // free DC
-      ReleaseDC(0,AMessage.WParam);
-      AMessage.WParam:=0;
-
-      if (csDesigning in TComponent(Target).ComponentState)
-      and (TObject(Target) is TWinControl) then
-        SendPaintMessagesForInternalWidgets(TWinControl(Target));
+    
+    if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
+      DisposePaintMessage(Target,AMessage);
     end;
   end;
 end;
@@ -9121,6 +9191,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.314  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.313  2004/01/10 18:00:42  mattias
   fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
 

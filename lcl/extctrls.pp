@@ -768,7 +768,7 @@ type
     property Caption;
     property ClientHeight;
     property ClientWidth;
-    property Color default clBackground;
+    property Color;
     property DragMode;
     property Enabled;
     property Font;
@@ -836,6 +836,9 @@ end.
 
  {
   $Log$
+  Revision 1.89  2004/01/10 22:34:20  mattias
+  started double buffering for gtk intf
+
   Revision 1.88  2004/01/10 18:00:42  mattias
   fixed GetWindowOrgEx, added GetDCOriginRelativeToWindow
 
