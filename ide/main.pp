@@ -5159,6 +5159,7 @@ function TMainIDE.DoShowProjectInspector: TModalResult;
 begin
   if ProjInspector=nil then begin
     ProjInspector:=TProjectInspectorForm.Create(Self);
+    ProjInspector.LazProject:=Project1;
   end;
   ProjInspector.ShowOnTop;
   Result:=mrOk;
@@ -8366,6 +8367,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.527  2003/04/19 17:54:37  mattias
+  improved new menueditor from Martin Patik
+
   Revision 1.526  2003/04/19 16:55:38  mattias
   started project inspector
 
