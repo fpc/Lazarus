@@ -52,7 +52,8 @@ Type
   
   TCalendar = class(TWinControl)
   private
-    FDate : String;
+    FDateAsString : String;
+    FDate: TDateTime; // last valid date
     FDisplaySettings : TDisplaySettings;
     FReadOnly: Boolean;
     FDayChanged: TNotifyEvent;
@@ -138,18 +139,22 @@ function TCalendar.GetDate: String;
 begin
   Result := '';
   GetProps;
-  Result := FDate;
+  Result := FDateAsString;
 end;
 
 procedure TCalendar.SetDate(const AValue: String);
+var
+  NewDate: TDateTime;
 begin
-  if FDate=AValue then exit;
+  if FDateAsString=AValue then exit;
   try
     {$IFDEF VerboseCalenderSetDate}
-    writeln('TCalendar.SetDate AValue=',AValue,' ShortDateFormat=',ShortDateFormat);
+    writeln('TCalendar.SetDate AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
     {$ENDIF}
-    StrToDate(AValue);  //test to see if date valid ....
-    FDate := AValue;
+    NewDate:=StrToDate(AValue);  //test to see if date valid ....
+    // no exception => set valid date
+    FDateAsString := AValue;
+    FDate := NewDate;
   except
     raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue]);
   end;
@@ -189,7 +194,8 @@ begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
   begin
     CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
-    FDate := FormatDateTime(ShortDateFormat,Temp.Date);
+    FDate := Temp.Date;
+    FDateAsString := FormatDateTime(ShortDateFormat,FDate);
   end;
 end;
 
@@ -200,7 +206,10 @@ begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
   begin
     FPropsChanged:=false;
-    Temp.Date := StrToDate(FDate);
+    {$IFDEF VerboseCalenderSetDate}
+    writeln('TCalendar.SetProps FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
+    {$ENDIF}
+    Temp.Date := FDate;
     Temp.DisplaySettings := FDisplaySettings;
     Temp.ReadOnly := fReadOnly;
     CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
@@ -212,19 +221,19 @@ end;
 procedure TCalendar.LMDAYChanged(var Message: TLMessage);
 begin
   if Assigned(OnDayChanged) then
-     OnDayChanged(self);
+    OnDayChanged(self);
 end;
 
 procedure TCalendar.LMMonthChanged(var Message: TLMessage);
 begin
   if Assigned(OnMonthChanged) then
-     OnMonthChanged(self);
+    OnMonthChanged(self);
 end;
 
 procedure TCalendar.LMYEARChanged(var Message: TLMessage);
 begin
   if Assigned(OnYearChanged) then
-     OnYearChanged(self);
+    OnYearChanged(self);
 end;
 
 
