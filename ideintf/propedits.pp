@@ -885,11 +885,11 @@ type
   TBackupComponentList = class
   private
     FComponentList: TList;
-    FLookupRoot: TComponent;
+    FLookupRoot: TPersistent;
     FSelection: TComponentSelectionList;
     function GetComponents(Index: integer): TComponent;
     procedure SetComponents(Index: integer; const AValue: TComponent);
-    procedure SetLookupRoot(const AValue: TComponent);
+    procedure SetLookupRoot(const AValue: TPersistent);
     procedure SetSelection(const AValue: TComponentSelectionList);
   protected
   public
@@ -898,10 +898,10 @@ type
     function IndexOf(AComponent: TComponent): integer;
     procedure Clear;
     function ComponentCount: integer;
-    function IsEqual(ALookupRoot: TComponent;
+    function IsEqual(ALookupRoot: TPersistent;
                      ASelection: TComponentSelectionList): boolean;
   public
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+    property LookupRoot: TPersistent read FLookupRoot write SetLookupRoot;
     property Components[Index: integer]: TComponent read GetComponents write SetComponents;
     property Selection: TComponentSelectionList read FSelection write SetSelection;
   end;
@@ -991,9 +991,9 @@ type
   private
     FHandlers: array[TPropHookType] of TMethodList;
     // lookup root
-    FLookupRoot: TComponent;
+    FLookupRoot: TPersistent;
 
-    procedure SetLookupRoot(AComponent:TComponent);
+    procedure SetLookupRoot(APersistent: TPersistent);
     procedure AddHandler(HookType: TPropHookType; const Handler: TMethod);
     procedure RemoveHandler(HookType: TPropHookType; const Handler: TMethod);
     function GetHandlerCount(HookType: TPropHookType): integer;
@@ -1005,7 +1005,7 @@ type
     destructor Destroy; override;
 
     // lookup root
-    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+    property LookupRoot: TPersistent read FLookupRoot write SetLookupRoot;
     // methods
     function CreateMethod(const Name:ShortString; ATypeInfo:PTypeInfo): TMethod;
     function GetMethodName(const Method:TMethod): ShortString;
@@ -1126,7 +1126,7 @@ type
                        OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
   end;
 
-function GetLookupRootForComponent(AComponent: TComponent): TComponent;
+function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 
 //==============================================================================
 
@@ -4417,8 +4417,8 @@ begin
   i:=GetHandlerCount(htGetComponent);
   while GetNextHandlerIndex(htGetComponent,i) and (Result=nil) do
     Result:=TPropHookGetComponent(FHandlers[htGetComponent][i])(Name);
-  if Result=nil then
-    Result:=LookupRoot.FindComponent(Name);
+  if (Result=nil) and (LookupRoot is TComponent) then
+    Result:=TComponent(LookupRoot).FindComponent(Name);
 end;
 
 function TPropertyEditorHook.GetComponentName(
@@ -4450,10 +4450,10 @@ begin
       Handler:=TPropHookGetComponentNames(FHandlers[htGetComponentNames][i]);
       Handler(TypeData,Proc);
     end;
-  end else begin
-    for i:=0 to LookupRoot.ComponentCount-1 do
-      if (LookupRoot.Components[i] is TypeData^.ClassType) then
-        Proc(LookupRoot.Components[i].Name);
+  end else if LookupRoot is TComponent then begin
+    for i:=0 to TComponent(LookupRoot).ComponentCount-1 do
+      if (TComponent(LookupRoot).Components[i] is TypeData^.ClassType) then
+        Proc(TComponent(LookupRoot).Components[i].Name);
   end;
 end;
 
@@ -4585,7 +4585,7 @@ begin
   i:=GetHandlerCount(htModified);
   while GetNextHandlerIndex(htModified,i) do
     TPropHookModified(FHandlers[htModified][i])(Sender);
-  if FLookupRoot<>nil then begin
+  if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then begin
     AForm:=GetDesignerForm(FLookupRoot);
     if (AForm<>nil) and (AForm.Designer<>nil) then
       AForm.Designer.Modified;
@@ -4919,12 +4919,12 @@ begin
   RemoveHandler(htRefreshPropertyValues,TMethod(OnRefreshPropertyValues));
 end;
 
-procedure TPropertyEditorHook.SetLookupRoot(AComponent:TComponent);
+procedure TPropertyEditorHook.SetLookupRoot(APersistent: TPersistent);
 var
   i: Integer;
 begin
-  if FLookupRoot=AComponent then exit;
-  FLookupRoot:=AComponent;
+  if FLookupRoot=APersistent then exit;
+  FLookupRoot:=APersistent;
   i:=GetHandlerCount(htChangeLookupRoot);
   while GetNextHandlerIndex(htChangeLookupRoot,i) do
     TPropHookChangeLookupRoot(FHandlers[htChangeLookupRoot][i])();
@@ -5007,10 +5007,12 @@ var
 
 //******************************************************************************
 
-function GetLookupRootForComponent(AComponent: TComponent): TComponent;
+function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
 begin
-  Result:=AComponent;
-  if (Result<>nil) and (Result.Owner<>nil) then Result:=Result.Owner;
+  Result:=APersistent;
+  if (Result<>nil) and (Result is TComponent)
+  and (TComponent(Result).Owner<>nil) then
+    Result:=TComponent(Result).Owner;
 end;
 
 Function ClassTypeInfo(Value: TClass): PTypeInfo;
@@ -5098,15 +5100,15 @@ begin
   FComponentList[Index]:=AValue;
 end;
 
-procedure TBackupComponentList.SetLookupRoot(const AValue: TComponent);
+procedure TBackupComponentList.SetLookupRoot(const AValue: TPersistent);
 var
   i: Integer;
 begin
   FLookupRoot:=AValue;
   FComponentList.Clear;
-  if FLookupRoot<>nil then
-    for i:=0 to FLookupRoot.ComponentCount-1 do
-      FComponentList.Add(FLookupRoot.Components[i]);
+  if (FLookupRoot<>nil) and (FLookupRoot is TComponent) then
+    for i:=0 to TComponent(FLookupRoot).ComponentCount-1 do
+      FComponentList.Add(TComponent(FLookupRoot).Components[i]);
   FSelection.Clear;
 end;
 
@@ -5145,7 +5147,7 @@ begin
   Result:=FComponentList.Count;
 end;
 
-function TBackupComponentList.IsEqual(ALookupRoot: TComponent;
+function TBackupComponentList.IsEqual(ALookupRoot: TPersistent;
   ASelection: TComponentSelectionList): boolean;
 var
   i: Integer;
@@ -5153,10 +5155,11 @@ begin
   Result:=false;
   if ALookupRoot<>LookupRoot then exit;
   if not FSelection.IsEqual(ASelection) then exit;
-  if ALookupRoot<>nil then begin
-    if ComponentCount<>ALookupRoot.ComponentCount then exit;
+  if (ALookupRoot<>nil) and (FLookupRoot is TComponent) then begin
+    if ComponentCount<>TComponent(ALookupRoot).ComponentCount then exit;
     for i:=0 to FComponentList.Count-1 do
-      if TComponent(FComponentList[i])<>ALookupRoot.Components[i] then exit;
+      if TComponent(FComponentList[i])<>TComponent(ALookupRoot).Components[i]
+      then exit;
   end;
   Result:=true;
 end;

@@ -183,7 +183,7 @@ type
     FNameFont,FValueFont:TFont;
     FCurrentEdit:TWinControl;  // nil or ValueEdit or ValueComboBox
     FCurrentButton:TWinControl; // nil or ValueButton
-    FCurrentEditorLookupRoot: TComponent;
+    FCurrentEditorLookupRoot: TPersistent;
     FDragging:boolean;
     FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
@@ -2335,8 +2335,9 @@ begin
       Root:=FPropertyEditorHook.LookupRoot;
       AddComponentToList(Root,NewList);
   //writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
-      for a:=0 to Root.ComponentCount-1 do
-        AddComponentToList(Root.Components[a],NewList);
+      if Root is TComponent then
+        for a:=0 to TComponent(Root).ComponentCount-1 do
+          AddComponentToList(TComponent(Root).Components[a],NewList);
     end;
 
     if AvailCompsComboBox.Items.Equals(NewList) then exit;
@@ -2434,7 +2435,8 @@ begin
   if (FPropertyEditorHook=nil) or (FPropertyEditorHook.LookupRoot=nil) then
     exit;
   Root:=FPropertyEditorHook.LookupRoot;
-  if AvailCompsComboBox.Text=ComponentToString(Root)
+  if (not (Root is TComponent))
+  or (AvailCompsComboBox.Text=ComponentToString(Root))
   then begin
     SetSelectedComponent(Root);
   end else begin

@@ -191,9 +191,9 @@ procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
 var
   i: Integer;
   AMemo: TMemo;
-//var
-//  Selection: TComponentSelectionList;
+  //Selection: TComponentSelectionList;
 begin
+
   {ThePropertyEditorHook.LookupRoot:=FCurDebuggerObject;
   Selection:=TComponentSelectionList.Create;
   if FCurDebuggerObject<>nil then
@@ -220,7 +220,7 @@ begin
     begin
       Name:='DebOptsSpecMemo1';
       Parent:=gbDebuggerSpecific;
-      SetBounds(5,5,Parent.Width-15,100);
+      SetBounds(5,5,Parent.Width-15,Parent.Height-40);
       WordWrap:=true;
       ReadOnly:=true;
       Caption:='The GNU debugger through ssh allows to remote debug via a ssh'
@@ -252,13 +252,13 @@ begin
   FCurDebuggerClass := AClass;
   FetchDebuggerSpecificOptions;
   // destroy, replace or destroy Debugger instance
-  if (FCurDebuggerObject<>nil)
+  {if (FCurDebuggerObject<>nil)
   and ((FCurDebuggerClass=nil)
     or (not (FCurDebuggerObject is FCurDebuggerClass)))
   then
     FreeAndNil(FCurDebuggerObject);
   if (FCurDebuggerObject=nil) and (FCurDebuggerClass<>nil) then
-    FCurDebuggerObject:=FCurDebuggerClass.Create('');
+    FCurDebuggerObject:=FCurDebuggerClass.Create('');}
 end;
 
 procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
@@ -402,6 +402,7 @@ begin
       25);
   with PropertyGrid do begin
     Name:='PropertyGrid';
+    Visible:=false;
     Parent:=gbDebuggerSpecific;
     Align:=alClient;
     SplitterX:=120;
