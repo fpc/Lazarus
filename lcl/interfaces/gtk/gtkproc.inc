@@ -454,8 +454,9 @@ begin
   
   if VirtualKey=VK_UNKNOWN then begin
     // map all other keys to VK_IRREGULAR + KeyCode
-    VirtualKey := VK_IRREGULAR + KeyCode;
-    if VirtualKey<VK_IRREGULAR then
+    if ShortInt(KeyCode)>=0 then
+      VirtualKey := VK_IRREGULAR + KeyCode
+    else
       VirtualKey := VK_IRREGULAR;
   end;
 
@@ -744,6 +745,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.20  2001/09/30 08:34:52  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.19  2001/06/20 17:34:37  lazarus
   MG: fixed unknown special key code
 

@@ -567,6 +567,11 @@ begin
   // A true-type font will have ABC widths but others like raster type will not
   // so if the function fails then use TextMetric.tmAveCharWidth.
   GetTextMetrics(DC, TM);
+  {$IFDEF FPC}
+  // the next two lines are only to suppress the stupid FPC warnings:
+  ABC.abcA:=0;
+  ABC2.abcA:=0;
+  {$ENDIF}
   HasABC := GetCharABCWidths(DC, Ord('M'), Ord('M'), ABC);
   if not HasABC then
   begin

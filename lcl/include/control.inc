@@ -716,11 +716,7 @@ end;
 {  TControl SetMouseCapture                                                 }
 {------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
-const
-  BOOLTXT: array[Boolean] of String = ('False', 'True');
 begin
-
-Writeln('SetMouseCapture '+Self.Classname);
   if MouseCapture <> Value 
   then begin
     if Value 
@@ -1158,6 +1154,7 @@ var
   S: string;
 begin
   S := GetText;
+  if BufSize<=0 then exit;
   if length(S) >= BufSize
   then begin
     StrPCopy(Buffer, copy(S, 1, BufSize-1));
@@ -1328,6 +1325,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.24  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.23  2001/08/07 11:05:51  lazarus
   MG: small bugfixes
 

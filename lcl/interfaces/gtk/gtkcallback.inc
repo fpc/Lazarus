@@ -261,7 +261,7 @@ begin
    Result := DeliverMessage(Data,  Mess) = 0;
 end;
 
-function GTKKillFocusCB( widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
+function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
@@ -273,7 +273,7 @@ begin
    Result := DeliverMessage(Data,  Mess) = 0;
 end;
 
-function gtkdestroyCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess: TLMessage;
    Info: PWinWidgetInfo;
@@ -284,7 +284,7 @@ begin
    Result := DeliverMessage(Data, Mess) = 0;
    
    // NOTE: if the destroy message is posted
-   // we should post a info destroy message as well
+   // we should post an info destroy message as well
    Info := GetWidgetInfo(widget, False);
    if Info <> nil then Dispose(Info);
 end;
@@ -522,11 +522,10 @@ begin
    Result := True;
    theDialog := TCommonDialog(data);
 //   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
- {  if theDialog is TFileDialog then
+   if theDialog is TFileDialog then
    begin
-      TFileDialog(data).FileName := '';
+     // TFileDialog(data).FileName := '';
    end;
-}
   theDialog.UserChoice := -1;
 end;
 
@@ -931,6 +930,7 @@ begin
   end
   else begin
      result := 0;       // stop timer
+     FOldTimerData.Remove(Data);
      dispose (PGtkITimerinfo(Data));     // free memory with timer data
   end;
 end;
@@ -965,8 +965,8 @@ function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cde
 var
   Msg: TLMHScroll;
   OldValue,
-  V, U, L,
-  StepI, PageI, Page: Integer;
+  V, U, {L,}
+  StepI, PageI{, Page}: Integer;
   Scroll: PGTKHScrollBar;  
   X, Y: GInt;
   Mask: TGdkModifierType;
@@ -982,10 +982,10 @@ begin
   begin
     V := Round(Value);
     U := Round(Upper);
-    L := Round(Lower);
+    //L := Round(Lower);
     StepI := Round(Step_Increment);
     PageI := Round(Page_Increment);
-    Page := Round(Page_Size);
+    //Page := Round(Page_Size);
   end;
   
   // get keystates
@@ -1019,8 +1019,8 @@ function GTKVScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cde
 var
   Msg: TLMVScroll;
   OldValue,
-  V, U, L,
-  StepI, PageI, Page: Integer;
+  V, U, {L,}
+  StepI, PageI{, Page}: Integer;
   Scroll: PGTKHScrollBar;  
   X, Y: GInt;
   Mask: TGdkModifierType;
@@ -1036,10 +1036,10 @@ begin
   begin
     V := Round(Value);
     U := Round(Upper);
-    L := Round(Lower);
+    //L := Round(Lower);
     StepI := Round(Step_Increment);
     PageI := Round(Page_Increment);
-    Page := Round(Page_Size);
+    //Page := Round(Page_Size);
   end;
   
   // get keystates
@@ -1139,6 +1139,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2001/09/30 08:34:51  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.32  2001/06/16 09:14:38  lazarus
   MG: added lazqueue and used it for the messagequeue
 

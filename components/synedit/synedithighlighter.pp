@@ -141,6 +141,9 @@ type
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
+    {$IFDEF SYN_LAZARUS}
+    procedure GetTokenEx(var StartPos, EndPos: integer); virtual; abstract;
+    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract;

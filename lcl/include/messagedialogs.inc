@@ -13,60 +13,56 @@
    - the interface is almost like in delphi 5
      
   TODO:
-    - add a line for every newline character in message
     - calculate the size required for the dialog based on the 
       current font and the length of the text to be displayed
     - remove all those nasty constants (cBitmapWidth...)
     - use better strategy to set default button in function SetButtons 
     - Help-button    
 
-  Bugs:
-    - TBitmap seems to have a bug, the size of the bitmap is always 0
-      in the Paint function.
 }
 type
 
-   { TMessageBox
+  { TMessageBox
    
-     Internal class used to build a MessageBox. 
-   }
-   TMessageBox = class (TForm)
-   private
-      FBitmap : TBitmap;
-      FLabel  : TLabel;
-      FDlgType : TMsgDlgType;
-      FButtons : TMsgDlgButtons;
-      FRelayoutNeeded: boolean;
-      FUpdateCounter: integer;
-      FCaption: string;
-      procedure SetText (const value : string); 
-      procedure SetDialogType (const value : TMsgDlgType);
-      procedure SetButtons (const value : TMsgDlgButtons);
-      procedure ReLayout;
-   public
-      constructor Create (AOwner : TComponent); override;
-      destructor Destroy; override;
-      procedure Paint; override;
-      property TheMessage : string write SetText;
-      property DialogType : TMsgDlgType write SetDialogType;
-      property Buttons : TMsgDlgButtons write SetButtons;
-      procedure BeginUpdate;
-      procedure EndUpdate;
-   end;
+    Internal class used to build a MessageBox. 
+  }
+  TMessageBox = class (TForm)
+  private
+    FBitmap : TBitmap;
+    FDlgType : TMsgDlgType;
+    FButtons : TMsgDlgButtons;
+    FRelayoutNeeded: boolean;
+    FUpdateCounter: integer;
+    FMsgLines: TStringList;
+    procedure SetMessage(const value : string); 
+    function GetMessage: string; 
+    procedure SetDialogType (const value : TMsgDlgType);
+    procedure SetButtons (const value : TMsgDlgButtons);
+    procedure ReLayout;
+    function LineWidth(Index: integer): integer;
+    function LineHeight: integer;
+  public
+    constructor Create (AOwner : TComponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
+    property TheMessage : string read GetMessage write SetMessage;
+    property DialogType : TMsgDlgType write SetDialogType;
+    property Buttons : TMsgDlgButtons write SetButtons;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  end;
 
 const
-   //
-   //TODO: all the constants below should be replaced in the future
-   //      their only purpose id to overcome some current design flaws &
-   //      missing features in the GTK libraries
-   //
-   cBitmapX  = 10;      // x-position for bitmap in messagedialog
-   cBitmapY  = 10;      // y-position for bitmap in messagedialog
-   cBitmapWidth = 32;   // width of the dialogs icon
-   cBitmapHeight= 32;   // height of the dialogs icon
-   cLabelSpacing= 10;   // distance between icon & label
-   cLabelHeight = 40;   // default height of the (multiline) label
-   cLabelWidth  = 130;  // default width of the label
+  //
+  //TODO: all the constants below should be replaced in the future
+  //      their only purpose is to overcome some current design flaws &
+  //      missing features in the GTK libraries
+  //
+  cBitmapX  = 10;      // x-position for bitmap in messagedialog
+  cBitmapY  = 10;      // y-position for bitmap in messagedialog
+  cBitmapWidth = 32;   // width of the dialogs icon
+  cBitmapHeight= 32;   // height of the dialogs icon
+  cLabelSpacing= 10;   // distance between icon & label
 
 {------------------------------------------------------------------------------
   Method: TMessageBox.Create
@@ -79,29 +75,17 @@ constructor TMessageBox.Create (AOwner : TComponent);
 begin
   inherited Create (AOwner);
    
+  FMsgLines   := TStringList.Create;
+  ControlStyle:= ControlStyle-[csSetCaption];
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
   Width       := 200;
   Height      := 100;
   FDlgType    := mtInformation;
-  Caption     := cMtCaption[FDlgType];
   FBitmap     := nil;
-  FButtons    := [];
+  FButtons    := [mbOk];
   FRelayoutNeeded := false;
   FUpdateCounter := 0;
-  
-  FLabel := TLabel.Create(self);
-  with FLabel do begin
-    Name      := 'FLabel';
-    Parent    := self;
-    Font.Size := 5;
-    Top       := 10;
-    Left      := cBitmapX + cBitmapWidth + cLabelSpacing;
-    Height    := cLabelHeight;
-    Width     := cLabelWidth;
-    WordWrap  := true;
-    Visible   := true;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -114,6 +98,7 @@ end;
 destructor TMessageBox.Destroy;
 begin
   FBitmap.Free;
+  FMsgLines.Free;
   inherited Destroy;
 end;
 
@@ -127,64 +112,64 @@ end;
 procedure TMessageBox.Paint;
 begin
   inherited Paint;
-//TODO: use real width of the icon (Currently FBitmap.Width /Height are always 0,
-//seems to be a bug somewhere)
   if assigned (FBitmap) then
-    Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,
-                           cBitmapWidth{FBitmap.width+1},
-                           cBitmapHeight{FBitmap.Height+1}),
+    Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,cBitmapWidth,cBitmapHeight),
                     FBitmap.Canvas,
-                    Rect(0,0,
-                         cBitmapWidth{FBitmap.width+1},
-                         cBitmapHeight{FBitmap.Height+1}));
+                    Rect(0,0,cBitmapWidth,cBitmapHeight));
 end;
 
 {------------------------------------------------------------------------------
-  Method: TMessageBox.SetText
+  Method: TMessageBox.LineWidth
+  Params:  Index - index of the line to check the width
+  Returns: Text width of the line
+ ------------------------------------------------------------------------------}
+function TMessageBox.LineWidth(Index: integer): integer;
+begin
+  if (Index>=0) and (Index<FMsgLines.Count) then
+    Result:=Canvas.TextWidth(FMsgLines[Index])
+  else
+    Result:=0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TMessageBox.LineHeight
+  Params:  nothing
+  Returns: Text height of the line
+ ------------------------------------------------------------------------------}
+function TMessageBox.LineHeight: integer;
+begin
+  Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZ')+8;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TMessageBox.SetMessage
   Params:  value - text to be displayed in the message box
   Returns: Nothing
 
   Sets the Text in MessageBox
-  Cuts long lines in shorter ones and resizes the label
  ------------------------------------------------------------------------------}
-procedure TMessageBox.SetText (const Value : string);
-var TheText: string;
-  i, LineStart, LineWidth, LineCount: integer;
-  FTextHeight: integer;
-  FTextWidth: integer;
+procedure TMessageBox.SetMessage (const Value : string);
 begin
-// TODO: use Font to calculate TextWidth
-  LineCount:=1;
-  FTextWidth:=0;
-  i:=1;
-  LineStart:=i;
-  TheText:=Value;
-  while i<=length(TheText) do begin
-    if TheText[i]=#13 then begin
-      LineWidth:=8*length(copy(TheText,LineStart,i-LineStart));
-      if LineWidth>FTextWidth then FTextWidth:=LineWidth;
-      inc(LineCount);
-      while (i<=length(TheText)) and (TheText[i] in [#10,#13,#0]) do
-        inc(i);
-      LineStart:=i;
-    end else if i-LineStart>=80 then begin
-      LineWidth:=8*length(copy(TheText,LineStart,i-LineStart));
-      if LineWidth>FTextWidth then FTextWidth:=LineWidth;
-      inc(LineCount);
-      LineStart:=i;
-    end;
-    inc(i);
-  end;
-  if LineCount=1 then
-    FTextWidth:=8*length(TheText);
-  FTextHeight:=LineCount*25;
-  FLabel.Caption := TheText;
-  FLabel.Width:=FTextWidth;
-  FLabel.Height:=FTextHeight;
+  if Value=FMsgLines.Text then exit;
+  FMsgLines.Text:=Value;
   FRelayoutNeeded:=true;
   ReLayout;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TMessageBox.GetMessage
+  Params: Nothing
+  Returns: Message Text
+
+  Sets the Text in MessageBox
+ ------------------------------------------------------------------------------}
+function TMessageBox.GetMessage: string;
+begin
+  if FMsgLines<>nil then
+    Result:=FMsgLines.Text
+  else
+    Result:='';
+end;
 {------------------------------------------------------------------------------
   Method: TMessageBox.SetDialogType
   Params:  value - the type of dialog to be shown
@@ -192,15 +177,18 @@ end;
 
   Sets the type of dialog.
  ------------------------------------------------------------------------------}
-procedure TMessageBox.SetDialogType (const value : TMsgDlgType);
+procedure TMessageBox.SetDialogType (const Value : TMsgDlgType);
+var DefaultCaption: boolean;
 begin
   if (value = FDlgType) and (assigned (FBitmap)) then exit;
+  DefaultCaption:=(Caption=cMtCaption[FDlgType]) or (Caption='');
   FDlgType := value;
   FBitmap.Free;
   FBitmap := TBitmap.Create; 
   FBitmap.Handle := CreatePixmapIndirect(@mtImages[FDlgType],
                          ColorToRGB(clBtnFace));
-  Caption := cMtCaption[FDlgType];
+  if DefaultCaption then
+    Caption := cMtCaption[FDlgType];
 end;
 
 {------------------------------------------------------------------------------
@@ -215,10 +203,16 @@ procedure TMessageBox.SetButtons(const value : TMsgDlgButtons);
 begin
   if FButtons = Value then exit;
   FButtons := Value;
+  if FButtons=[] then FButtons:=[mbOk];
   FRelayoutNeeded:=true;
   ReLayout;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TMessageBox.ReLayout
+  Params:  nothing
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
 procedure TMessageBox.ReLayout;
 const
   cBtnWidth  = 85;     //TODO: Take into account different languages; button width may vary!
@@ -226,16 +220,28 @@ const
   cBtnHeight = 32;
   cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
 var
-  aButton     : TBitBtn;         // temp. variable to create buttons
-  aBitmap     : TBitmap;         // temp. variable to create bitmaps for buttons
-  curBtn      : TMsgDlgBtn;      // variable to loop through TMsgDlgButtons
-  ButtonLeft  : integer;         // left position of button(s)
-  LabelLeft   : integer;         // left position of label
-  reqBtnWidth : integer;         // width neccessary to display buttons
-  reqWidth    : integer;         // width neccessary to display all
-  i: integer;
+  aButton     : TBitBtn;    // temp. variable to create buttons
+  aBitmap     : TBitmap;    // temp. variable to create bitmaps for buttons
+  curBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
+  ButtonLeft  : integer;    // left position of button(s)
+  LabelLeft   : integer;    // left position of labels
+  reqBtnWidth : integer;    // width neccessary to display buttons
+  reqWidth    : integer;    // width neccessary to display all
+  LabelWidth  : integer;    // max width of labels
+  LabelHeight : integer;
+  TempLabel   : TLabel;     // temporary label components
+  LabelIndex  : integer;
+  i, j        : integer;
 begin
   if FUpdateCounter>0 then exit;
+  
+  // calculate label width
+  LabelWidth:=0;
+  for i:=0 to FMsgLines.Count-1 do begin
+    j:=LineWidth(i);
+    if j>LabelWidth then LabelWidth:=j;
+  end;
+  LabelHeight:=LineHeight;
   
   // destroy old BitBtns
   for i:=ComponentCount-1 downto 0 do
@@ -249,16 +255,46 @@ begin
     
   // patch positions to center label and buttons
   reqWidth:=reqBtnWidth;
-  if reqWidth < FLabel.Width then reqWidth:=FLabel.Width;
-  LabelLeft := ((reqWidth - FLabel.Width) div 2) + cMinLeft;
-  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cMinLeft;
+  if reqWidth < LabelWidth then reqWidth:=LabelWidth;
+  LabelLeft := ((reqWidth - LabelWidth) div 2) + cMinLeft;
+  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cMinLeft + (25 div 2);
 
   // set size of form
   SetBounds(Left,Top,reqWidth+cMinLeft+cLabelSpacing,
-            4*cLabelSpacing+FLabel.Height+cBtnHeight);
+        4*cLabelSpacing+FMsgLines.Count*(LabelHeight+cLabelSpacing)+cBtnHeight);
   
-  // position the label
-  FLabel.Left := LabelLeft;
+  // create and position the labels
+  i:=0;
+  LabelIndex:=0;
+  while (i<ComponentCount) and (LabelIndex<FMsgLines.Count) do begin
+    if (Components[i] is TLabel) then begin
+      TempLabel:=TLabel(Components[i]);
+      with TempLabel do begin
+        SetBounds(LabelLeft,
+                  cLabelSpacing+(cLabelSpacing+LabelHeight)*LabelIndex,
+                  LabelWidth,LabelHeight);
+        Caption:=FMsgLines[LabelIndex];
+        Visible:=true;
+      end;
+      inc(LabelIndex);
+    end else
+      inc(i);
+  end;
+  while (i<ComponentCount) do
+    if (Components[i] is TLabel) then Components[i].Free;
+  while LabelIndex<FMsgLines.Count do begin
+    TempLabel:=TLabel.Create(Self);
+    with TempLabel do begin
+      Parent  := Self;
+      Name:='MsgLabel'+IntToStr(LabelIndex);
+      SetBounds(LabelLeft,
+                cLabelSpacing+(cLabelSpacing+LabelHeight)*LabelIndex,
+                LabelWidth,LabelHeight);
+      Caption:=FMsgLines[LabelIndex];
+      Visible:=true;
+    end;
+    inc(LabelIndex);
+  end;
   
   // create the buttons
   for curBtn := low(TMsgDlgBtn) to high(TMsgDlgBtn) do begin
@@ -266,10 +302,11 @@ begin
       aButton := TBitBtn.Create(self);
       With aButton do begin
         Parent  := Self;
-        SetBounds (ButtonLeft, 3*cLabelSpacing+FLabel.Height
-                   , cBtnWidth, cBtnHeight);
+        SetBounds (ButtonLeft,
+                   3*cLabelSpacing+(cLabelSpacing+LabelHeight)*FMsgLines.Count,
+                   cBtnWidth, cBtnHeight);
         inc(ButtonLeft, cBtnDist);
-        layout  := blGlyphLeft;
+        Layout  := blGlyphLeft;
         // ToDo: when TBitmap streaming is working, load image from resource 
         aBitmap := TBitmap.Create;
         aBitmap.Handle := CreatePixmapIndirect(@mbImages [curBtn],
@@ -324,7 +361,9 @@ begin
   msgbox.theMessage := aMsg;
   msgBox.DialogType := DlgType;
   msgBox.Buttons    := buttons;
-  msgBox.caption    := aCaption;
+writeln('CreateMessageDialogWithCap A');
+  msgBox.Caption    := aCaption;
+writeln('CreateMessageDialogWithCap B');
   msgbox.EndUpdate;
   Result := msgbox;
 end;
@@ -335,8 +374,11 @@ var
   aDialog : TForm;
 begin
   aDialog := CreateMessageDialog (aMsg, DlgType, buttons);
-  Result := aDialog.ShowModal;
-  aDialog.Free;
+  try
+    Result := aDialog.ShowModal;
+  finally
+    aDialog.Free;
+  end;
 end;
 
 function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
@@ -344,9 +386,12 @@ function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
 var
   aDialog : TForm;
 begin
-  aDialog := CreateMessageDialogWithCap (aCaption, aMsg, DlgType, buttons);
-  Result := aDialog.ShowModal;
-  aDialog.Free;
+  aDialog := CreateMessageDialogWithCap(aCaption, aMsg, DlgType, buttons);
+  try
+    Result := aDialog.ShowModal;
+  finally
+    aDialog.Free;
+  end;
 end;
 
 function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
@@ -388,6 +433,9 @@ end;
 
 {
    $Log$
+   Revision 1.5  2001/09/30 08:34:49  lazarus
+   MG: fixed mem leaks and fixed range check errors
+
    Revision 1.4  2001/07/31 18:40:24  lazarus
    MG: added unit info, arrow xpms, and many changes from jens arm
 

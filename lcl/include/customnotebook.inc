@@ -17,6 +17,7 @@ end;
  ------------------------------------------------------------------------------}
 function TNBPages.Get(Index: Integer): String;
 begin
+//writeln('TNBPages.Get Index=',Index);
   Result := TPage(fPageList[Index]).Caption;
 end;
 
@@ -77,7 +78,8 @@ var
   NewPageIndex: integer;
 begin
   // Make sure Index is in the range of valid pages to delete 
-//writeln('TNBPages.Delete A Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+//writeln('TNBPages.Delete A Index=',Index);
+//writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
@@ -237,8 +239,10 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomNotebook.Destroy;
 begin
-  fPageList.Free;
   fAccess.Free;
+  fAccess:=nil;
+  fPageList.Free;
+  fPageList:=nil;
   inherited Destroy;
 end;
 
@@ -440,6 +444,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.8  2001/08/07 11:05:51  lazarus
   MG: small bugfixes
 

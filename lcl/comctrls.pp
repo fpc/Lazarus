@@ -900,8 +900,9 @@ var
   //ToolMenuKeyHook: HHOOK;
   //ToolMenuHook: HHOOK;
   //InitDone: Boolean;
-  MenuToolBar, MenuToolBar2: TToolBar;
-  MenuButtonIndex: Integer;
+  //MenuToolBar: TToolBar;
+  //MenuToolBar2: TToolBar;
+  //MenuButtonIndex: Integer;
   //LastMenuItem: TMenuItem;
   //LastMousePos: TPoint;
   StillModal: Boolean;
@@ -934,6 +935,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.4  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

@@ -24,7 +24,6 @@ interface
 //uses
 //  glib,gdk,gtk;
 
-
 const
 
 {These should be moved to the correct area eventually}
@@ -125,6 +124,12 @@ const
 {$I hkeys.inc}
 
 implementation
+
+initialization
+//writeln('vclglobals.pp - initialization');
+
+finalization
+//writeln('vclglobals.pp - finalization');
 
 end.
 

@@ -61,28 +61,28 @@ end;
 
 Procedure TBitBtn.SetKind(Value : TBitBtnKind);
 var
-Bitmap1 : TBitmap;
+  Bitmap1 : TBitmap;
 Begin
-HandleNeeded;
-FKind := Value;
-Assert(False, 'Trace:SETKIND');
-if FKind = bkCustom then Exit;
+  HandleNeeded;
+  FKind := Value;
+  Assert(False, 'Trace:SETKIND');
+  if FKind = bkCustom then Exit;
 
-if Glyph <> nil then Glyph.free;
-Bitmap1 := TBitmap.Create;
-Bitmap1.Handle := CreatePixmapIndirect(@BitBtnImages[FKInd], ColorToRGB(clBtnFace));
+  if Glyph <> nil then Glyph.free;
+  Bitmap1 := TBitmap.Create;
+  Bitmap1.Handle := 
+    CreatePixmapIndirect(@BitBtnImages[FKInd], ColorToRGB(clBtnFace));
 
-Caption := BitBtnCaption[fKind];
+  Caption := BitBtnCaption[fKind];
 
-Glyph := Bitmap1;
-ModalResult := BitBtnModalResults[Value];
+  Glyph := Bitmap1;
+  ModalResult := BitBtnModalResults[Value];
 
-if (FKind = bkOK) or (FKind = bkYes) then
+  if (FKind = bkOK) or (FKind = bkYes) then
     Default := True
-    else
+  else
     Default := False;
-
-End;
+end;
 
 Procedure TBitBtn.SetLayout(Value : TButtonLayout);
 Begin

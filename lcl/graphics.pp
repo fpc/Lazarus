@@ -122,7 +122,7 @@ type
   TFOntStylesbase = set of TFontStyle;
 
   TFontData = record
-    Handle : HWND;
+    Handle : HFont;
     Height : Integer;
     Pitch : TFontPitch;
     Style : TFontStylesBase;
@@ -137,7 +137,7 @@ type
              );
 
   TPenData = record
-    Handle : LongInt;
+    Handle : HPen;
     Color : TColor;
     Width : Integer;
     Style : TPenStyle;
@@ -148,7 +148,7 @@ type
   TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal, bsBDiagonal, bsCross, bsDiagCross);
 
   TBrushData = record
-    Handle : LongInt;
+    Handle : HBrush;
     Color : TColor;
     Bitmap : TBitmap;
     Style : TBrushStyle;
@@ -310,7 +310,7 @@ type
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
     procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
-    constructor Create; virtual;
+    constructor Create; // virtual;
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
@@ -545,8 +545,8 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
   public
-    constructor Create; override;
-    destructor Destroy ; Override;
+    constructor Create; // override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
     property Handle: HBITMAP read GetHandle write SetHandle;
@@ -743,6 +743,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.12  2001/08/05 10:14:50  lazarus
   MG: removed double props in OI, small bugfixes
 

@@ -639,24 +639,35 @@ activate_time :	the time at which the activation event occurred.
 
       LM_SETFILTER :
       begin 
-         pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1); 
-         StrPCopy(pStr, TFileDialog(Sender).Filter); 
-         gtk_file_selection_complete(PGtkFileSelection(Handle), pstr);
-         StrDispose(pStr); 
+        if Sender is TFileDialog then begin
+          pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1); 
+          try
+            StrPCopy(pStr, TFileDialog(Sender).Filter); 
+            gtk_file_selection_complete(PGtkFileSelection(Handle), pstr);
+          finally
+            StrDispose(pStr); 
+          end;
+        end;
       end; 
  
       LM_SETFILENAME : 
       begin 
-         pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1); 
-         StrPCopy(pStr, TFileDialog(Sender).Filename); 
-         gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr); 
-         StrDispose(pStr); 
+        if Sender is TFileDialog then begin
+          pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1); 
+          try
+            StrPCopy(pStr, TFileDialog(Sender).Filename); 
+            gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr); 
+          finally
+            StrDispose(pStr); 
+          end;
+        end;
       end; 
 
-      LM_SETFOCUS: if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
-                   gtk_widget_grab_focus(PgtkWidget(handle))
-                   else
-                   Writeln('This control '+TControl(Sender).name+' can not get focus');
+      LM_SETFOCUS:
+        if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
+          gtk_widget_grab_focus(PgtkWidget(handle))
+        else
+          Writeln('The control '+TControl(Sender).name+' can not get focus');
 
       LM_SetSize :
       begin
@@ -669,27 +680,27 @@ activate_time :	the time at which the activation event occurred.
 
       LM_ShowModal :
       begin
-         if Sender is TCommonDialog then
-         begin
-            // Should be done elsewhere (eg via SetLabel) not here!
-            pStr:= StrAlloc(Length(TCommonDialog(Sender).Title) + 1);
-            try
-               StrPCopy(pStr, TCommonDialog(Sender).Title);
-               gtk_window_set_title(PGtkWindow(handle), pStr);
-            finally
-               StrDispose(pStr);
-            end;
-         end;
-         gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
-         gtk_widget_show(PGtkWidget(handle));
-         gtk_window_set_modal(PGtkWindow(handle), true);
+        if Sender is TCommonDialog then
+        begin
+          // Should be done elsewhere (eg via SetLabel) not here!
+          pStr:= StrAlloc(Length(TCommonDialog(Sender).Title) + 1);
+          try
+            StrPCopy(pStr, TCommonDialog(Sender).Title);
+            gtk_window_set_title(PGtkWindow(handle), pStr);
+          finally
+             StrDispose(pStr);
+          end;
+        end;
+        gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
+        gtk_widget_show(PGtkWidget(handle));
+        gtk_window_set_modal(PGtkWindow(handle), true);
       end;
 
       LM_TB_BUTTONCOUNT:
       begin
          if (Sender is TToolbar)
-            then Result := pgtkToolbar(handle)^.num_Children
-            else Result := -1;
+           then Result := pgtkToolbar(handle)^.num_Children
+           else Result := -1;
       end;
 
 //SH: think of TCanvas.handle!!!!
@@ -699,9 +710,10 @@ activate_time :	the time at which the activation event occurred.
         if (Sender is TCanvas) then 
           ReDraw(PgtkWidget((Sender as TCanvas).Handle))
         else
-          if not (sender is TSpeedbutton) then
-            ReDraw(PgtkWidget(Handle))
-          else
+          if not (sender is TSpeedbutton) then begin
+            if Sender is TControl then
+              ReDraw(PgtkWidget(Handle))
+          end else
             If TSpeedbutton(sender).Visible then
               (Sender as TSpeedButton).Perform(LM_PAINT,0,0)
             else
@@ -713,28 +725,33 @@ activate_time :	the time at which the activation event occurred.
 
       LM_AddPage :
       begin
-        Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-        AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, TLMNotebookEvent(Data^).Page);
+        if Sender is TControl then begin
+          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
+          AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, 
+            TLMNotebookEvent(Data^).Page);
+        end;
       end;
 
       LM_RemovePage :
       begin
-        RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
+        if Sender is TControl then
+          RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
       end;
 
       LM_ShowTabs :
       begin
-        gtk_notebook_set_show_tabs(PGtkNotebook(Handle), Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
+        gtk_notebook_set_show_tabs(PGtkNotebook(Handle), 
+          Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
       end;
 
       LM_SetTabPosition :
       begin
-         case TTabPosition(TLMNotebookEvent(Data^).TabPosition^) of
-            tpTop   : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_TOP);
-            tpBottom: gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_BOTTOM);
-            tpLeft  : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_LEFT);
-            tpRight : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_RIGHT);
-         end;
+        case TTabPosition(TLMNotebookEvent(Data^).TabPosition^) of
+          tpTop   : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_TOP);
+          tpBottom: gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_BOTTOM);
+          tpLeft  : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_LEFT);
+          tpRight : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_RIGHT);
+        end;
       end;
 
 
@@ -746,9 +763,12 @@ activate_time :	the time at which the activation event occurred.
          If (SENDER is TWINCONTROL) Then
          Begin
             pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
-            StrPCopy(pStr,TToolbutton(SENDER).Caption);
-            pStr2 := StrAlloc(Length(TControl(Sender).Hint)+1);
-            StrPCopy(pStr2,TControl(Sender).Hint);
+            try
+              StrPCopy(pStr,TToolbutton(SENDER).Caption);
+              pStr2 := StrAlloc(Length(TControl(Sender).Hint)+1);
+            finally
+              StrPCopy(pStr2,TControl(Sender).Hint);
+            end;
          end 
          else Begin
             raise Exception.Create('Can not assign this control to the toolbar');
@@ -816,8 +836,10 @@ activate_time :	the time at which the activation event occurred.
       LM_SCREENINIT :
       begin
         { Compute pixels per inch variable }
-        PLMScreenInit(Data)^.PixelsPerInchX:= Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
-        PLMScreenInit(Data)^.PixelsPerInchY:= Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+        PLMScreenInit(Data)^.PixelsPerInchX:= 
+          Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+        PLMScreenInit(Data)^.PixelsPerInchY:= 
+          Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;  
 
@@ -843,8 +865,8 @@ activate_time :	the time at which the activation event occurred.
 
       LM_GETTEXT :
       begin
-         Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_GETTEXT superfluous, use interface-function GetText instead'); 
-         Result := integer (nil);
+        Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_GETTEXT superfluous, use interface-function GetText instead'); 
+        Result := integer (nil);
       end;
 
       LM_GETITEMINDEX :
@@ -853,27 +875,32 @@ activate_time :	the time at which the activation event occurred.
            csListBox: 
              begin
                 if TListBox(Sender).MultiSelect then 
-                   Widget:= PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.last_focus_child
+                   Widget:= PGtkList(
+                      GetCoreChildWidget(PGtkWidget(Handle)))^.last_focus_child
                 else begin
-                   GList:= PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
+                   GList:= PGtkList(
+                      GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
                    if GList = nil 
                       then Widget:= nil
                       else Widget:= PGtkWidget(GList^.data);
                 end;  
                 if Widget = nil 
                    then Result:= -1
-                   else Result:= gtk_list_child_position(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Widget);
+                   else Result:= gtk_list_child_position(
+                     PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Widget);
              end;
            csCListBox:
              begin
-               GList:= PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
+               GList:= 
+                 PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
                if GList = nil
                   then Result := -1
                   else Result := integer(GList^.Data);
              end;
            csNotebook:
              begin
-                TLMNotebookEvent(Data^).Page := gtk_notebook_get_current_page(PGtkNotebook(Handle));
+               TLMNotebookEvent(Data^).Page := 
+                 gtk_notebook_get_current_page(PGtkNotebook(Handle));
              end;
         end;
       end;
@@ -1346,7 +1373,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
 
-  procedure ConnectSignal(const AObject:gtk_Object; const ASignal: PChar; const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
+  procedure ConnectSignal(const AObject:gtk_Object; const ASignal: PChar; 
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
   var
     RealizeHandler, Handler: PGTKHandler;
     RealizeID, SignalID: guint;
@@ -1387,13 +1415,18 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       if ReqSignalMask <> 0 then
       begin
         if RealizeHandler = nil 
-           then gtk_signal_connect(AObject, 'realize', TGTKSignalFunc(@GTKRealizeCB), Pointer(ReqSignalMask))
-           else TGdkEventMask(RealizeHandler^.func_data) := TGdkEventMask(RealizeHandler^.func_data) or ReqSignalMask;
+           then
+             gtk_signal_connect(AObject, 'realize', 
+               TGTKSignalFunc(@GTKRealizeCB), Pointer(ReqSignalMask))
+           else
+             TGdkEventMask(RealizeHandler^.func_data) := 
+               TGdkEventMask(RealizeHandler^.func_data) or ReqSignalMask;
       end;
     end;
   end;
 
-  procedure ConnectSignal(const AObject:gtk_Object; const ASignal: PChar; const ACallBackProc: Pointer);
+  procedure ConnectSignal(const AObject:gtk_Object; const ASignal: PChar; 
+    const ACallBackProc: Pointer);
   begin
     ConnectSignal(AObject, ASignal, ACallBackProc, 0);
   end;
@@ -1670,7 +1703,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TGTKObject.RemoveCallBacks
-  Params:   sender - object for which ro remove callbacks
+  Params:   sender - object for which to remove callbacks
   Returns:  nothing
 
   Removes Call Back Signals from the sender
@@ -1678,11 +1711,19 @@ end;
 procedure TGTKObject.RemoveCallbacks(Sender : TObject);
 var
   gObject : gtk_Object;
+  Info: PWinWidgetInfo;
+  Widget: pointer;
 begin
   gObject := ObjectToGTKObject(Sender);
-    
   if gObject = nil then Exit;
 
+  if (Sender is TWinControl) and (TWinControl(Sender).HandleAllocated) then
+  begin
+    Widget:=Pointer(TWinControl(Sender).Handle);
+    Info := GetWidgetInfo(Widget, False);
+    if Info <> nil then Dispose(Info);
+    gtk_object_set_data(Widget, 'widgetinfo', nil);
+  end;
   gtk_signal_handlers_destroy(gObject);
 end;
 
@@ -1719,7 +1760,7 @@ var
    //pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
    pixmapwid : pGtkWidget;        // currently only used for TBitBtn
    //mask      : pGDKBitmap;        // currently only used for TBitBtn
-   style     : pgtkStyle;         // currently only used for TBitBtn
+   //style     : pgtkStyle;         // currently only used for TBitBtn
    label1    : pgtkwidget;        // currently only used for TBitBtn
    //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
@@ -1779,7 +1820,7 @@ begin
           Box := gtk_vbox_new(False,0);
         end;
         gtk_container_set_border_width(PgtkContainer(Box),2);
-        style := gtk_widget_get_style(pGTKWidget(p));
+        //style := gtk_widget_get_style(pGTKWidget(p));
         {
              // is this neccessary?
              // MWE: nope, if needed, it should be done static
@@ -2377,7 +2418,7 @@ var
    fWindow :pGdkWindow;
    widget : PgtkWIdget;
    PixMap : pgdkPixMap;
-   gc : PGDKGc;
+   //gc : PGDKGc;
 begin
    Assert(False, 'Trace:In AutoRedraw in GTKObject');
 
@@ -2385,7 +2426,7 @@ begin
    pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
    if PixMap = nil then Exit;
    fWindow := pGtkWidget(widget)^.window;
-   gc := gdk_gc_new(PgdkWindow(fWindow));
+   //gc := gdk_gc_new(PgdkWindow(fWindow));
 
    gdk_draw_pixmap(fwindow,PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)], 
     pixmap,
@@ -2405,7 +2446,7 @@ end;
 procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
 var
    fWindow : pGdkWindow;
-   gc      : pgdkGC;
+   //gc      : pgdkGC;
    Image   : pGDKImage;
    widget  : PgtkWidget;
 begin
@@ -2413,16 +2454,19 @@ begin
 
    Image := gtk_Object_get_data(pgtkobject(widget),'Image');
    if Image = nil 
-      then Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,widget^.allocation.width,widget^.allocation.height);
+      then Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,
+                            widget^.allocation.width,widget^.allocation.height);
 
-   gdk_image_put_pixel(Image,TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,TLMSetGetPixel(data^).PixColor);
+   gdk_image_put_pixel(Image,TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
+                         TLMSetGetPixel(data^).PixColor);
 
    gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
 
    widget  := GetFixedWidget(Widget);
    fWindow := pGtkWidget(widget)^.window;
-   gc      := gdk_gc_new(PgdkWindow(fWindow));
-   gdk_draw_image(fwindow,PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)], 
+   //gc      := gdk_gc_new(PgdkWindow(fWindow));
+   gdk_draw_image(fwindow,
+      PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)], 
       Image,
       TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
       TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
@@ -2994,6 +3038,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.56  2001/09/30 08:34:52  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.55  2001/08/07 11:05:51  lazarus
   MG: small bugfixes
 

@@ -220,6 +220,9 @@ type
     function GetTokenID: TtkTokenKind;
     procedure SetLine(const NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
+    {$IFDEF SYN_LAZARUS}
+    procedure GetTokenEx(var StartPos, EndPos: integer); override;
+    {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -1419,6 +1422,14 @@ begin
   Len := Run - fTokenPos;
   SetString(Result, (FLine + fTokenPos), Len);
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynCppSyn.GetTokenEx(var StartPos, EndPos: integer);
+begin
+  StartPos:=integer(fTokenPos)-integer(FLine);
+  EndPos:=integer(Run)-integer(FLine);
+end;
+{$ENDIF}
 
 function TSynCppSyn.GetTokenID: TtkTokenKind;
 begin

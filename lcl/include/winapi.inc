@@ -537,7 +537,7 @@ begin
     lfClipPrecision := ClipPrecision;
     lfQuality := Quality;
     lfPitchAndFamily := PitchAndFamily;
-    StrLCopy(@lfFaceName, FaceName, SizeOf(lfFaceName));
+    StrLCopy(@lfFaceName, FaceName, SizeOf(lfFaceName)-1);
   end;
 
   Result := CreateFontIndirect(LogFont);
@@ -980,6 +980,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/09/30 08:34:50  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.15  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

@@ -81,8 +81,17 @@ function ConvertTabs(const Line: AnsiString; TabWidth: integer): AnsiString;
 type
   TConvertTabsProcEx = function(const Line: AnsiString; TabWidth: integer;
     var HasTabs: boolean): AnsiString;
+  {$IFDEF SYN_LAZARUS}
+  TSimulateConvertTabsProcEx = function(const Line: AnsiString;
+    TabWidth: integer; var HasTabs: boolean): integer; 
+    // returns length of converted string
+  {$ENDIF}
 
 function GetBestConvertTabsProcEx(TabWidth: integer): TConvertTabsProcEx;
+{$IFDEF SYN_LAZARUS}
+function GetBestSimulateConvertTabsProcEx(
+  TabWidth:integer): TSimulateConvertTabsProcEx;
+{$ENDIF}
 // This is the slowest conversion function which can handle TabWidth <> 2^n.
 function ConvertTabsEx(const Line: AnsiString; TabWidth: integer;
   var HasTabs: boolean): AnsiString;
@@ -106,6 +115,9 @@ function GetEOL(Line: PChar): PChar;
 // Remove all '/' characters from string by changing them into '\.'.
 // Change all '\' characters into '\\' to allow for unique decoding.
 function EncodeString(s: string): string;
+{$IFDEF SYN_LAZARUS}
+function EncodeStringLength(s: string): integer;
+{$ENDIF}
 
 // Decodes string, encoded with EncodeString.
 function DecodeString(s: string): string;
@@ -203,6 +215,19 @@ begin
     Result := FALSE;
 end;
 
+{$IFDEF SYN_LAZARUS}
+function StringHasTabs(const Line: string; var CharsBefore: integer): boolean;
+var LineLen: integer;
+begin
+  LineLen:=length(Line);
+  CharsBefore := 1;
+  while (CharsBefore<=LineLen) and (Line[CharsBefore]<>#9) do
+    inc(CharsBefore);
+  Result:=CharsBefore<=LineLen;
+  dec(CharsBefore);
+end;
+{$ENDIF}
+
 {begin}                                                                         //mh 2000-10-19
 function ConvertTabs1Ex(const Line: AnsiString; TabWidth: integer;
   var HasTabs: boolean): AnsiString;
@@ -223,6 +248,20 @@ begin
   end else
     HasTabs := FALSE;
 end;
+
+{$IFDEF SYN_LAZARUS}
+function SimulateConvertTabs1Ex(const Line: AnsiString; TabWidth: integer;
+  var HasTabs: boolean): integer;
+// TabWidth=1
+var
+  i: integer;
+begin
+  Result:=length(Line);
+  i:=1;
+  while (i<=Result) and (Line[i]<>#9) do inc(i);
+  HasTabs:=(i<=Result);
+end;
+{$ENDIF}
 
 function ConvertTabs1(const Line: AnsiString; TabWidth: integer): AnsiString;
 var
@@ -290,6 +329,35 @@ begin
     HasTabs := FALSE;
 end;
 
+{$IFDEF SYN_LAZARUS}
+function SimulateConvertTabs2nEx(const Line: AnsiString; TabWidth: integer;
+  var HasTabs: boolean): integer;
+var
+  LineLen, DestLen, SrcPos, TabMask: integer;
+begin
+  LineLen:=length(Line);
+  if StringHasTabs(Line, DestLen) then begin
+    HasTabs := TRUE;
+    SrcPos:=DestLen+1;
+    // We have at least one tab in the string, and the tab width equals 2^n.
+    // pSrc points to the first tab char in Line. We get the number of tabs
+    // and the length of the expanded string now.
+    TabMask := (TabWidth - 1) xor $7FFFFFFF;
+    repeat
+      if (Line[SrcPos] = #9) then 
+        DestLen := (DestLen + TabWidth) and TabMask
+      else
+        Inc(DestLen);
+      Inc(SrcPos);
+    until (SrcPos>LineLen);
+    Result:=DestLen;
+  end else begin
+    Result := LineLen;
+    HasTabs := FALSE;
+  end;
+end;
+{$ENDIF}
+
 function ConvertTabs2n(const Line: AnsiString; TabWidth: integer): AnsiString;
 var
   HasTabs: boolean;
@@ -353,6 +421,34 @@ begin
     HasTabs := FALSE;
 end;
 
+{$IFDEF SYN_LAZARUS}
+function SimulateConvertTabsEx(const Line: AnsiString; TabWidth: integer;
+  var HasTabs: boolean): integer;
+var
+  LineLen, DestLen, SrcPos: integer;
+begin
+  LineLen:=length(Line);
+  if StringHasTabs(Line, DestLen) then begin
+    HasTabs := TRUE;
+    SrcPos := DestLen+1;
+    // We have at least one tab in the string, and the tab width is greater
+    // than 1. pSrc points to the first tab char in Line. We get the number
+    // of tabs and the length of the expanded string now.
+    repeat
+      if (Line[SrcPos] = #9) then
+        DestLen := DestLen + TabWidth - DestLen mod TabWidth
+      else
+        Inc(DestLen);
+      Inc(SrcPos);
+    until (SrcPos > LineLen);
+    Result:=DestLen;
+  end else begin
+    Result:=LineLen;
+    HasTabs := FALSE;
+  end;
+end;
+{$ENDIF}
+
 function ConvertTabs(const Line: AnsiString; TabWidth: integer): AnsiString;
 var
   HasTabs: boolean;
@@ -383,13 +479,27 @@ end;
 
 function GetBestConvertTabsProcEx(TabWidth: integer): TConvertTabsProcEx;
 begin
-  if (TabWidth < 2) then Result := TConvertTabsProcEx(@ConvertTabs1Ex)
-    else if IsPowerOfTwo(TabWidth) then
-      Result := TConvertTabsProcEx(@ConvertTabs2nEx)
-    else
-      Result := TConvertTabsProcEx(@ConvertTabsEx);
+  if (TabWidth < 2) then
+    Result := TConvertTabsProcEx(@ConvertTabs1Ex)
+  else if IsPowerOfTwo(TabWidth) then
+    Result := TConvertTabsProcEx(@ConvertTabs2nEx)
+  else
+    Result := TConvertTabsProcEx(@ConvertTabsEx);
 end;
 {end}                                                                           //mh 2000-10-19
+
+{$IFDEF SYN_LAZARUS}
+function GetBestSimulateConvertTabsProcEx(
+  TabWidth:integer): TSimulateConvertTabsProcEx;
+begin
+  if (TabWidth < 2) then Result := 
+    TSimulateConvertTabsProcEx(@SimulateConvertTabs1Ex)
+  else if IsPowerOfTwo(TabWidth) then
+    Result := TSimulateConvertTabsProcEx(@SimulateConvertTabs2nEx)
+  else
+    Result := TSimulateConvertTabsProcEx(@SimulateConvertTabsEx);
+end;
+{$ENDIF}
 
 {***}
 
@@ -532,23 +642,52 @@ function EncodeString(s: string): string;
 var
   i, j: integer;
 begin
+  {$IFDEF SYN_LAZARUS}
+  SetLength(Result, EncodeStringLength(s));
+  {$ELSE}
   SetLength(Result, 2 * Length(s)); // worst case
+  {$ENDIF}
   j := 0;
   for i := 1 to Length(s) do begin
     Inc(j);
     if s[i] = '\' then begin
       Result[j] := '\';
+      {$IFDEF SYN_LAZARUS}
+      Inc(j);
+      Result[j] := '\';
+      {$ELSE}
       Result[j + 1] := '\';
       Inc(j);
+      {$ENDIF}
     end else if s[i] = '/' then begin
       Result[j] := '\';
+      {$IFDEF SYN_LAZARUS}
+      Inc(j);
+      Result[j] := '.';
+      {$ELSE}
       Result[j + 1] := '.';
       Inc(j);
+      {$ENDIF}
     end else
       Result[j] := s[i];
   end; //for
+  {$IFNDEF SYN_LAZARUS}
   SetLength(Result, j);
+  {$ENDIF}
 end; { EncodeString }
+
+{$IFDEF SYN_LAZARUS}
+function EncodeStringLength(s: string): integer;
+var
+  i, len: integer;
+begin
+  len:=length(s);
+  Result := len;
+  for i := 1 to len do
+    if (s[i] in ['\','/']) then
+      Inc(Result);
+end;
+{$ENDIF}
 
 function DecodeString(s: string): string;
 var

@@ -90,6 +90,9 @@ type
     fDosFileFormat: boolean;
 {begin}                                                                         //mh 2000-10-19
     fConvertTabsProc: TConvertTabsProcEx;
+    {$IFDEF SYN_LAZARUS}
+    fSimulateConvertTabsProc: TSimulateConvertTabsProcEx;
+    {$ENDIF}
     fIndexOfLongestLine: integer;
     fTabWidth: integer;
 {end}                                                                           //mh 2000-10-19
@@ -97,6 +100,9 @@ type
     fOnChanging: TNotifyEvent;
 {begin}                                                                         //mh 2000-10-19
     function ExpandedString(Index: integer): string;
+    {$IFDEF SYN_LAZARUS}
+    function ExpandedStringLength(Index: integer): integer;
+    {$ENDIF}
     function GetExpandedString(Index: integer): string;
     function GetLengthOfLongestLine: integer;
 {end}                                                                           //mh 2000-10-19
@@ -435,13 +441,16 @@ begin
 end;
 
 destructor TSynEditStringList.Destroy;
+{$IFDEF FPC}
+var i: integer;
+{$ENDIF}
 begin
   fOnChange := nil;
   fOnChanging := nil;
   inherited Destroy;
-// FOR LAZARUS
-//  if fCount <> 0 then
-//    Finalize(fList^[0], fCount);
+  {$IFDEF FPC}
+  for i:=0 to fCount-1 do fList^[i].fString:='';
+  {$ENDIF}
   fCount := 0;
   SetCapacity(0);
 end;
@@ -490,11 +499,15 @@ begin
 end;
 
 procedure TSynEditStringList.Clear;
+{$IFDEF FPC}
+var i: integer;
+{$ENDIF}
 begin
   if fCount <> 0 then begin
     BeginUpdate;
-// FOR LAZARUS
-//    Finalize(fList^[0], fCount);
+    {$IFDEF FPC}
+    for i:=0 to fCount-1 do fList^[i].fString:='';
+    {$ENDIF}
     fCount := 0;
     SetCapacity(0);
     if Assigned(fOnCleared) then
@@ -509,8 +522,9 @@ begin
   if (Index < 0) or (Index > fCount) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
-// FOR LAZARUS
-//  Finalize(fList^[Index]);
+  {$IFDEF FPC}
+  fList^[Index].fString:='';
+  {$ENDIF}
   Dec(fCount);
   if Index < fCount then begin
     System.Move(fList^[Index + 1], fList^[Index],
@@ -526,6 +540,9 @@ end;
 procedure TSynEditStringList.DeleteLines(Index, NumLines: Integer);
 var
   LinesAfter: integer;
+  {$IFDEF FPC}
+  i: integer;
+  {$ENDIF}
 begin
   if NumLines > 0 then begin
     if (Index < 0) or (Index > fCount) then
@@ -533,9 +550,10 @@ begin
     LinesAfter := fCount - (Index + NumLines - 1);
     if LinesAfter < 0 then
       NumLines := fCount - Index - 1;
-// FOR LAZARUS
-//    Finalize(fList^[Index], NumLines);
-
+    {$IFDEF FPC}
+    for i:=Index to Index+NumLines-1 do
+      fList^[i].fString:='';
+    {$ENDIF}
     if LinesAfter > 0 then begin
       BeginUpdate;
       try
@@ -599,6 +617,32 @@ begin
 end;
 {end}                                                                           //mh 2000-10-19
 
+{$IFDEF SYN_LAZARUS}
+function TSynEditStringList.ExpandedStringLength(Index: integer): integer;
+var
+  HasTabs: boolean;
+begin
+  with fList^[Index] do
+    if length(fString) = 0 then begin
+      Result := 0;
+      Exclude(fFlags, sfExpandedLengthUnknown);
+      Exclude(fFlags, sfHasTabs);
+      Include(fFlags, sfHasNoTabs);
+      fExpandedLength := 0;
+    end else begin
+      Result := fSimulateConvertTabsProc(fString, fTabWidth, HasTabs);
+      fExpandedLength := Result;
+      Exclude(fFlags, sfExpandedLengthUnknown);
+      Exclude(fFlags, sfHasTabs);
+      Exclude(fFlags, sfHasNoTabs);
+      if HasTabs then
+        Include(fFlags, sfHasTabs)
+      else
+        Include(fFlags, sfHasNoTabs);
+    end;
+end;
+{$ENDIF}
+
 function TSynEditStringList.Get(Index: integer): string;
 begin
   if (Index >= 0) and (Index < fCount) then
@@ -633,8 +677,6 @@ function TSynEditStringList.GetLengthOfLongestLine: integer;                    
 var
   i, MaxLen: integer;
   PRec: PSynEditStringRec;
-// FOR LAZARUS
-//  s: string;
 begin
   if fIndexOfLongestLine < 0 then begin
     MaxLen := 0;
@@ -642,9 +684,11 @@ begin
       PRec := @fList^[0];
       for i := 0 to fCount - 1 do begin
         if sfExpandedLengthUnknown in PRec^.fFlags then
-// FOR LAZARUS
-//          s := ExpandedString(i);
+          {$IFDEF SYN_LAZARUS}
+          ExpandedStringLength(i);
+          {$ELSE}
           ExpandedString(i);
+          {$ENDIF}
         if PRec^.fExpandedLength > MaxLen then begin
           MaxLen := PRec^.fExpandedLength;
           fIndexOfLongestLine := i;
@@ -728,7 +772,10 @@ begin
   if NumLines > 0 then begin
     BeginUpdate;
     try
-      SetCapacity(fCount + NumLines);
+      {$IFDEF FPC}
+      if FCapacity<fCount + NumLines then
+      {$ENDIF}
+        SetCapacity(fCount + NumLines);
       if Index < fCount then begin
         System.Move(fList^[Index], fList^[Index + NumLines],
           (fCount - Index) * SynEditStringRecSize);
@@ -852,6 +899,9 @@ begin
   if Value <> fTabWidth then begin
     fTabWidth := Value;
     fConvertTabsProc := GetBestConvertTabsProcEx(fTabWidth);
+    {$IFDEF SYN_LAZARUS}
+    fSimulateConvertTabsProc := GetBestSimulateConvertTabsProcEx(fTabWidth);
+    {$ENDIF}
     fIndexOfLongestLine := -1;
 {begin}                                                                         //mh 2000-11-08
     for i := 0 to fCount - 1 do

@@ -43,14 +43,17 @@ Begin
     Texts := TCustomEdit(data).Text;
     Assert(False, 'Trace:0');
     strTemp := StrAlloc(length(Texts) + 1);
-    StrPCopy(strTemp, Texts);
-    Assert(False, 'Trace:1');
-    gtk_selection_data_set(selection_data,selection_data^.target,
+    try
+      StrPCopy(strTemp, Texts);
+      Assert(False, 'Trace:1');
+      gtk_selection_data_set(selection_data,selection_data^.target,
                     8,
                     strtemp,
                     length(Texts)+1);
-    Assert(False, 'Trace:2');
-    strDispose(strTemp);
+      Assert(False, 'Trace:2');
+    finally
+      strDispose(strTemp);
+    end;
     Assert(False,'Trace:3');
   end;
 end;

@@ -52,7 +52,8 @@ end;
 procedure TToolBar.CreateParams(var Params: TCreateParams);
 const
   TBSTYLE_TRANSPARENT = $8000;  // IE4 style -this is not valid but still needed as a holder
-  DefaultStyles = CCS_NOPARENTALIGN or CCS_NOMOVEY or CCS_NORESIZE or CCS_NODIVIDER;
+  DefaultStyles =
+    CCS_NOPARENTALIGN or CCS_NOMOVEY or CCS_NORESIZE or CCS_NODIVIDER;
   ListStyles: array[Boolean] of DWORD = (0, TBSTYLE_LIST);
   FlatStyles: array[Boolean] of DWORD = (0, TBSTYLE_FLAT);
   TransparentStyles: array[Boolean] of DWORD = (0, TBSTYLE_TRANSPARENT);
@@ -62,10 +63,12 @@ begin
   CreateSubClass(Params, TOOLBARCLASSNAME);
   with Params do
   begin
-    Style := Style or DefaultStyles or FlatStyles[FFlat] or ListStyles[FList] or TransparentStyles[FTransparent];
+    Style := Style or DefaultStyles or FlatStyles[FFlat] or ListStyles[FList]
+             or TransparentStyles[FTransparent];
     if ShowCaptions then
       Style := Style or TBSTYLE_TRANSPARENT;
-    WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
+    WindowClass.style := WindowClass.style and 
+                           not Cardinal(CS_HREDRAW or CS_VREDRAW);
   end;
 end;
 
@@ -316,7 +319,7 @@ var
   Control: TControl;
   Button: TTBButton;
   CaptionText: string;
-  Buffer: array[0..4095] of Char;
+  Buffer: PChar;
 begin
   Control := TControl(FButtons[FromIndex]);
   if Control is TToolButton then
@@ -354,10 +357,15 @@ begin
             captions.  If any one button's caption is empty (-1) then none of
             the buttons' captions will not be displayed. }
           CaptionText := ' ';
-        StrPCopy(Buffer, CaptionText);
-        { TB_ADDSTRING requires two null terminators }
-        Buffer[Length(CaptionText) + 1] := #0;
-        Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
+        Buffer:=StrAlloc(length(CaptionText)+2);
+        try
+          StrPCopy(Buffer, CaptionText);
+          { TB_ADDSTRING requires two null terminators }
+          Buffer[Length(CaptionText) + 1] := #0;
+          Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
+        finally
+          StrDispose(Buffer);
+        end;
       end
       else
         Button.iString := -1;
@@ -382,7 +390,7 @@ var
   Control: TControl;
   Button: TTBButtonInfo;
   CaptionText: string;
-  Buffer: array[0..4095] of Char;
+  Buffer: PChar;
 begin
   Control := TControl(FButtons[FromIndex]);
   FillChar(Button, SizeOf(Button), 0);
@@ -422,10 +430,15 @@ begin
             captions.  If any one button's caption is empty (-1) then none of
             the buttons' captions will not be displayed. }
           CaptionText := ' ';
-        StrPCopy(Buffer, CaptionText);
-        { TB_ADDSTRING requires two null terminators }
-        Buffer[Length(CaptionText) + 1] := #0;
-        //Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
+        Buffer:=StrAlloc(length(CaptionText)+2);
+        try
+          StrPCopy(Buffer, CaptionText);
+          { TB_ADDSTRING requires two null terminators }
+          Buffer[Length(CaptionText) + 1] := #0;
+          //Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
+        finally
+          StrDispose(Buffer);
+        end;
         Button.pszText := Buffer;
         Button.cchText := Length(CaptionText);
         Button.dwMask := Button.dwMask or TBIF_TEXT;
@@ -1348,8 +1361,8 @@ begin
     Hook := Button.Grouped or (Button.MenuItem <> nil);
     if Hook then
     begin
-      MenuButtonIndex := Button.Index;
-      MenuToolBar := Self;
+      //MenuButtonIndex := Button.Index;
+      //MenuToolBar := Self;
       InitToolMenuHooks;
     end;
     Perform(TB_SETHOTITEM, -1, 0);
@@ -1407,7 +1420,7 @@ end;
 
 procedure TToolBar.InitMenu(Button: TToolButton);
 begin
-  MenuToolBar2 := Self;
+  //MenuToolBar2 := Self;
   MouseCapture := True;
   InitToolMenuKeyHooks;
   if Button <> nil then
@@ -1465,6 +1478,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/09/30 08:34:50  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.4  2001/06/14 23:13:30  lazarus
   MWE:
     * Fixed some syntax errors for the latest 1.0.5 compiler

@@ -333,7 +333,7 @@ end;
 function LoadSpeedBtnPixMap(const ResourceName:string):TPixmap;
 begin
   Result:=TPixmap.Create;
-  //Result.TransparentColor:=clNone;
+  Result.TransparentColor:=clBtnFace;
   if not LoadPixmapRes(ResourceName,Result) then
     LoadPixmapRes('default',Result);
 end;
@@ -3723,6 +3723,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.114  2001/09/30 08:34:47  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.113  2001/07/31 18:57:48  lazarus
   MG: fixed source ediotr statusbar filename
 

@@ -20,8 +20,7 @@
 }
 unit controls;
      
-{$mode objfpc}
-{$LONGSTRINGS ON}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -36,8 +35,8 @@ interface
 {$ENDIF}
 
 uses
-  sysutils,Classes,vclglobals, Graphics,LMessages, LCLLinux,
-  imglist,utrace, Menus;
+  Classes, SysUtils, vclglobals, Graphics, LMessages, LCLLinux, ImgList, UTrace,
+  Menus;
 
 
 // Cursor constants
@@ -414,7 +413,6 @@ TCMDialogKey = TLMKEY;
     Procedure SetZOrderPosition(Position : Integer);
     Function GetBoundsRect : TRect;
     Function GetMouseCapture : Boolean;
-    function GetText: TCaption;
     Function IsCaptionStored : Boolean;
     Procedure DoDragMsg(var Dragmsg : TCMDrag);
     Procedure DoMouseDown(var Message: TLMMouse; Button: TMOuseButton; Shift:TShiftState);
@@ -467,6 +465,7 @@ TCMDialogKey = TLMKEY;
     procedure SetCallback(Msg : LongInt);
     Procedure SetZOrder(Topmost: Boolean) ; dynamic;
     procedure RemoveCallbacks;
+    function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var Message : TLMessage); virtual;
     Procedure MouseDown(Button: TMOuseButton; Shift:TShiftState; X,Y:Integer); dynamic;
@@ -560,8 +559,8 @@ TCMDialogKey = TLMKEY;
 
   TCreateParams = record
     Caption: PChar;
-    Style: Longint;
-    ExStyle: Longint;
+    Style: Cardinal;
+    ExStyle: Cardinal;
     X, Y: Integer;
     Width, Height: Integer;
     WndParent: HWnd;
@@ -837,7 +836,7 @@ var
   DragObject : TDragObject;
   //DragSaveCursor : HCURSOR;
   DragStartPos : TPoint;
-  DragThreshold : Integer;
+  //DragThreshold : Integer;
   
 {------------------------------------------------------------------------------}
 {  MoveWindowOrg                                                                 }
@@ -912,7 +911,7 @@ Begin
   GetCursorPos(DragStartPos);
   DragObject.DragPos := DragStartPos;
   DragCapture := DragObject.Capture;
-  DragThreshold := Threshold;
+  //DragThreshold := Threshold;
   //save the cursor yet
 end;
 
@@ -1127,16 +1126,23 @@ end;
 {$I mouse.inc}
 {$I dragobject.inc}
 initialization
+
+writeln('controls.pp - initialization');
   Mouse := TMouse.create;
   DragControl := nil;
   CaptureControl := nil;
+
 finalization
   Mouse.Free;
+  
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.20  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

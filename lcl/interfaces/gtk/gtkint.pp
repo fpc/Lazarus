@@ -44,7 +44,7 @@ type
       FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem 
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
-      FTimerData : TList;       // keeps track of timer evenet structures
+      FTimerData : TList;       // keeps track of timer event structures
 
       FStockNullBrush: HBRUSH;
       FStockBlackBrush: HBRUSH;
@@ -127,11 +127,12 @@ uses
 {$I gtklistsl.inc}
 
 
-const
+{const
   TARGET_ENTRYS = 3;
-  
+}
+
 var
-  target_table : array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
+//  target_table : array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
 
   //drag icons
   //TrashCan_Open : PgdkPixmap;
@@ -212,14 +213,15 @@ type
   PGtkITimerInfo = ^TGtkITimerinfo;
   TGtkITimerInfo = record
     Handle   : hWND;
-    IDEvent  : Integer;
+    IDEvent  : Cardinal;
     TimerFunc: TFNTimerProc;
   end;
+  
   
 var
   //Event : TGDKEVENTCONFIGURE;
   gtk_handler_quark: TGQuark;
-
+  FOldTimerData: TList; // list of PGtkITimerinfo
 
 
 const
@@ -233,11 +235,10 @@ const
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
 
-
-
-initialization
+procedure InternalInit;
+begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
-
+{
   Target_Table[0].Target := 'STRING';
   Target_Table[0].Flags := 0;
   Target_Table[0].Info := TARGET_STRING;
@@ -247,15 +248,39 @@ initialization
   Target_Table[2].Target := 'application/x-rootwin-drop';
   Target_Table[2].Flags := 0;
   Target_Table[2].Info := TARGET_ROOTWIN;
-
+}
   MCaptureHandle := 0;
+  FOldTimerData:=TList.Create;
+end;
 
+procedure InternalFinal;
+var i: integer;
+  t: PGtkITimerinfo;
+begin
+  for i:=0 to FOldTimerData.Count-1 do begin
+    t:=PGtkITimerinfo(FOldTimerData[i]);
+    dispose(t);
+  end;
+  FOldTimerData.Free;
+  FOldTimerData:=nil;
+end;
+
+
+initialization
+writeln('gtkint.pp - initialization');
+  InternalInit;
+
+finalization
+  InternalFinal;
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/09/30 08:34:51  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.18  2001/07/01 23:33:13  lazarus
   MG: added WaitMessage and HandleEvents is now non blocking
 

@@ -8,6 +8,7 @@
   {$DEFINE H_PLUS} 
 {$ELSE}
   {$H+}
+  {$UNDEF H_PLUS}
 {$ENDIF} 
 
 {*************************************************************}
@@ -76,7 +77,8 @@ begin
   { Do not call inherited Assign as it does things we do not want to happen }
   if Source is TStrings then begin
     Clear;
-    for Counter:= TStrings(Source).Count - 1 downto 0 do Insert(0, TStrings(Source)[Counter]);
+    for Counter:= TStrings(Source).Count - 1 downto 0 do 
+      Insert(0, TStrings(Source)[Counter]);
   end else inherited Assign(Source);
 end;
 
@@ -93,13 +95,14 @@ var Item : PChar;
 begin
   if (Index < 0) or (Index >= Count) then raise Exception.Create('Out of bounds.')
   else begin
-      ListItem:= g_list_nth_data(FGtkList^.children, Index);
-      ALabel:= PGtkBin(ListItem)^.child;
-      if ALabel = nil then Result:= ''
-      else begin
-          gtk_label_get (PGtkLabel(ALabel), @Item);
-          Result:= StrPas(Item);
-      end;  
+    ListItem:= g_list_nth_data(FGtkList^.children, Index);
+    ALabel:= PGtkBin(ListItem)^.child;
+    if ALabel = nil then Result:= ''
+    else begin
+      Item:=nil;
+      gtk_label_get (PGtkLabel(ALabel), @Item);
+      Result:= StrPas(Item);
+    end;  
   end;      
 end;
 
@@ -295,22 +298,21 @@ var
   CSize: integer;
   K:     integer;
 begin
-  CSize := sizeof(TCSArr)+length(S);
-  getmem(CS, CSize);
-  fillchar(CS^, sizeof(TCSArr), 0);
+  CSize := sizeof(TCSArr)+length(S)+1;
+  GetMem(CS, CSize);
+  FillChar(CS^, sizeof(TCSArr), 0);
   StrPCopy(CS^.Str, S);
   CS^.Arr[0] := @CS^.Str;
-  for K := 1 to 15
-  do begin
+  for K := 1 to 15 do begin
     CS^.Arr[K] := StrScan(CS^.Arr[K-1], #9);
-    if Assigned(CS^.Arr[K])
-    then begin
+    if Assigned(CS^.Arr[K]) then begin
       CS^.Arr[K][0] := #0;
       inc(integer(CS^.Arr[K]));
-    end else break;
+    end else
+      break;
   end;
   gtk_clist_insert(FGtkCList, Index, PPGChar(CS));
-  freemem(CS, CSize);
+  FreeMem(CS);
 end;
 
 {------------------------------------------------------------------------------
@@ -333,6 +335,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/09/30 08:34:52  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 

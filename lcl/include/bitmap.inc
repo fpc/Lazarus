@@ -118,10 +118,12 @@ var
 Begin
   HandleNeeded;
   pStr := StrAlloc(length(Filename) + 1);
-  StrPCopy(pStr, Filename);
-
-  CNSendMessage(LM_LOADXPM,Self,pstr);
-  StrDispose(pStr);
+  try
+    StrPCopy(pStr, Filename);
+    CNSendMessage(LM_LOADXPM,Self,pstr);
+  finally
+    StrDispose(pStr);
+  end;
 end;
 
 
@@ -190,7 +192,7 @@ var
   ImgSize:longint;
   Bits:PBitsObj;
   InfoSize: integer;
-  BmpWidth,BmpHeight:integer;
+  //BmpWidth,BmpHeight:integer;
   BitsPerPixel,ColorsUsed:integer;
 begin
   FreeContext;
@@ -202,9 +204,9 @@ begin
   else
   begin
     ReadSize:=Stream.Read(BmpHead, sizeof(BmpHead));
-    if (BmpHead.bfType <> $4D42) or (BmpHead.bfOffBits<ReadSize) then begin
+    if (BmpHead.bfType <> Word($4D42)) or (BmpHead.bfOffBits<DWORD(ReadSize))
+    then
       raise EInOutError.Create('Invalid windows bitmap (header)');
-    end;
     InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
     GetMem(BmpInfo,InfoSize);
     try
@@ -225,8 +227,10 @@ begin
       end;
       // Palette is fake now. Then it'll be better!
       // EInOutError.Create('Only truecolor is supported yet.');
-      BmpHeight:=BmpInfo^.bmiHeader.biHeight;
-      BmpWidth:=BmpInfo^.bmiHeader.biWidth;
+      
+      //BmpHeight:=BmpInfo^.bmiHeader.biHeight;
+      //BmpWidth:=BmpInfo^.bmiHeader.biWidth;
+      
       ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
       GetMem(Bits,ImgSize);
       try
@@ -337,6 +341,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.9  2001/06/26 00:08:35  lazarus
   MG: added code for form icons from Rene E. Beszon
 

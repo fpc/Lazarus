@@ -714,7 +714,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------}
-{  TCustomForm CreateParams                                                      }
+{  TCustomForm CreateParams                                                    }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.CreateParams(var Params : TCreateParams);
 begin
@@ -725,9 +725,9 @@ begin
     begin
 //    WndParent := Application.Handle;
       { TODO : No application handle }
-      Style := Style and not (WS_CHILD or WS_GROUP or WS_TABSTOP);
+      Style := Style and not Cardinal(WS_CHILD or WS_GROUP or WS_TABSTOP);
     end;
-  end;  
+  end;
 end;
 
 
@@ -939,6 +939,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.24  2001/07/10 13:25:49  lazarus
   MG: repaints reduced
 

@@ -562,7 +562,7 @@ begin
 
   pStr := StrAlloc(Length(Text)+1);
   try
-    StrPcopy(pStr, Text);
+    StrPCopy(pStr, Text);
     GetTextExtentPoint(FHandle, pStr, Length(Text), Result);
   finally
     StrDispose(PStr);
@@ -596,6 +596,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.8  2001/03/24 18:05:58  lazarus
   MG: canvas size enlarged
 

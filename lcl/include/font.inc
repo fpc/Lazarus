@@ -231,7 +231,12 @@ begin
     lfCharSet := Byte(FFontData.Charset);
     if AnsiCompareText(Name, 'Default') = 0 
     then StrPCopy(lfFaceName, 'helvetica') //TODO: change this to a more flexible default
-    else StrPCopy(lfFaceName, Name);
+    else begin
+      if length(Name)+1<=SizeOf(lfFaceName) then
+        StrPCopy(lfFaceName, Name)
+      else
+        StrPCopy(lfFaceName, LeftStr(Name,SizeOf(lfFaceName)-1));
+    end;
 
     lfQuality := DEFAULT_QUALITY;
     lfOutPrecision := OUT_DEFAULT_PRECIS;
@@ -270,6 +275,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.3  2001/03/19 14:40:49  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

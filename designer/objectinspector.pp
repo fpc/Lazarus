@@ -376,7 +376,7 @@ begin
       or WS_CLIPCHILDREN;
     {$R+}
     if NewStyleControls and Ctl3D and (fBorderStyle = bsSingle) then begin
-      Style := Style and not WS_BORDER;
+      Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
   end;

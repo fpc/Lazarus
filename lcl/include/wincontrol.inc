@@ -990,7 +990,7 @@ begin
 //    Assert(False, Format('Trace:[TWinControl.Insert] %s(%s) --> Insert: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
     if AControl is TWinControl then
     begin
-      ListAdd(FWInControls, ACOntrol);
+      ListAdd(FWInControls, AControl);
       ListAdd(FTabList, AControl);
     end;
 //    else
@@ -1948,6 +1948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2001/09/30 08:34:50  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.35  2001/08/07 11:05:51  lazarus
   MG: small bugfixes
 

@@ -72,9 +72,7 @@ end;
 procedure TTimer.KillTimer;
 begin
   Assert(False, 'Trace:In TTimer.KillTimer');
-  if FTimerID <> cIdNoTimer then
-  begin
-     FEnabled := false;
+  if FTimerID <> cIdNoTimer then begin
      InterfaceObject.KillTimer (integer(Self), FTimerID);
   end;
   FTimerID := cIdNoTimer;
@@ -158,6 +156,9 @@ end;
 
  {
   $Log$
+  Revision 1.3  2001/09/30 08:34:50  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.2  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 

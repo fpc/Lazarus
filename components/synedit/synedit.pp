@@ -376,7 +376,7 @@ type
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
     function GetSelText: string;
-    function GetText: string;
+    function GetText: string; override;
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
@@ -423,7 +423,7 @@ type
     procedure SetSelText(const Value: string);
     procedure SetSelTextExternal(const Value: string);
     procedure SetTabWidth(Value: integer);
-    procedure SetText(const Value: string);
+    procedure SetText(const Value: string); override;
     procedure SetTopLine(Value: Integer);
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
@@ -756,6 +756,7 @@ type
     property OnStatusChange;
   end;
 
+
 implementation
 
 // { $R SynEdit.res}
@@ -1079,7 +1080,7 @@ begin
       or WS_CLIPCHILDREN;
     {$R+}
     if NewStyleControls and Ctl3D and (fBorderStyle = bsSingle) then begin
-      Style := Style and not WS_BORDER;
+      Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
   end;
@@ -1115,20 +1116,32 @@ begin
       TSynEditPlugin(fPlugins[i]).Free;
     fPlugins.Free;
   end;
-  fScrollTimer.Free;                                             
+  fScrollTimer.Free; 
+  {$IFDEF SYN_LAZARUS}fScrollTimer:=nil;{$ENDIF}
   fTSearch.Free;
+  {$IFDEF SYN_LAZARUS}fTSearch:=nil;{$ENDIF}
   fMarkList.Free;
+  {$IFDEF SYN_LAZARUS}fMarkList:=nil;{$ENDIF}
   fBookMarkOpt.Free;
   fBookMarkOpt := nil;
   fKeyStrokes.Free;
+  {$IFDEF SYN_LAZARUS}fKeyStrokes:=nil;{$ENDIF}
   fSelectedColor.Free;
+  {$IFDEF SYN_LAZARUS}fSelectedColor:=nil;{$ENDIF}
   fUndoList.Free;
+  {$IFDEF SYN_LAZARUS}fUndoList:=nil;{$ENDIF}
   fRedoList.Free;
+  {$IFDEF SYN_LAZARUS}fRedoList:=nil;{$ENDIF}
   fGutter.Free;
+  {$IFDEF SYN_LAZARUS}fGutter:=nil;{$ENDIF}
   fTextDrawer.Free;
+  {$IFDEF SYN_LAZARUS}fTextDrawer:=nil;{$ENDIF}
   fInternalImage.Free;
+  {$IFDEF SYN_LAZARUS}fInternalImage:=nil;{$ENDIF}
   fFontDummy.Free;
+  {$IFDEF SYN_LAZARUS}fFontDummy:=nil;{$ENDIF}
   Lines.Free;
+  {$IFDEF SYN_LAZARUS}fLines:=nil;{$ENDIF}
   inherited Destroy;
 end;
 
@@ -1206,7 +1219,7 @@ function TCustomSynEdit.GetSelText: string;
       SetLength(Result, DstLen);
       P := PChar(Result);
       StrPCopy(P, Copy(S, Index, Count));
-      Inc(P, Length(S));
+      Inc(P, SrcLen);
       FillChar(P^, DstLen - Srclen, $20);
     end;
   end;
@@ -6282,19 +6295,22 @@ begin
     InsertStrLen := (FTabWidth + 2) * (e - BB.y) + FTabWidth + 1;
     //               chars per line * lines-1    + last line + null char
     StrToInsert := StrAlloc(InsertStrLen);
-    Run := StrToInsert;
-    Spaces := StringOfChar(#32, FTabWidth);
-    for i := BB.Y to e-1 do
-    begin
-      StrPCopy(Run, Spaces+#13#10);
-      Inc(Run,FTabWidth+2);
-    end;
-    StrPCopy(Run, Spaces);
+    try
+      Run := StrToInsert;
+      Spaces := StringOfChar(#32, FTabWidth);
+      for i := BB.Y to e-1 do
+      begin
+        StrPCopy(Run, Spaces+#13#10);
+        Inc(Run,FTabWidth+2);
+      end;
+      StrPCopy(Run, Spaces);
 
-    InsertBlock(Point(1,BB.y),Point(1,BB.y),StrToInsert);
-    fUndoList.AddChange(crIndent, BB, BE, '', smColumn);
+      InsertBlock(Point(1,BB.y),Point(1,BB.y),StrToInsert);
+      fUndoList.AddChange(crIndent, BB, BE, '', smColumn);
+    finally
+      StrDispose(StrToInsert);
+    end;
   finally
-    StrDispose(StrToInsert);
     fSelectionMode := OrgSelectionMode;
     SetCaretAndSelection(OrgCaretPos, Point(BB.x + fTabWidth, BB.y),
       Point(x, BE.y));
@@ -6305,8 +6321,12 @@ procedure TCustomSynEdit.DoBlockUnindent;
 var
   OrgCaretPos,
   BB, BE: TPoint;
+  {$IFDEF FPC}
+  FullStrToDelete: AnsiString;
+  {$ELSE}
+  FullStrToDelete: PChar;
+  {$ENDIF}
   Line, Run,
-  FullStrToDelete,
   StrToDelete: PChar;
   Len,
   x, StrToDeleteLen,
@@ -6349,57 +6369,61 @@ begin
 
     // build string to delete
     StrToDeleteLen := (FTabWidth + 2) * (e - BB.y) + FTabWidth + 1;
-    //                chars per line * lines-1    + last line + null char
+    //                 chars per line * lines-1    + last line + null char
     StrToDelete := StrAlloc(StrToDeleteLen);
-    StrToDelete[0] := #0;
-    SomethingToDelete := False;
-    for x := BB.Y to e-1 do
-    begin
-       Line := PChar(Lines[x-1]);
-       TempString:=StringOfChar(' ', GetDelLen);
-       StrCat(StrToDelete,PChar(TempString));
-       StrCat(StrToDelete, PChar(#13#10));
-    end;
-    Line := PChar(Lines[e-1]);
-    TempString:=StringOfChar(' ', GetDelLen);
-    StrCat(StrToDelete,PChar(TempString));
+    try
+      StrToDelete[0] := #0;
+      SomethingToDelete := False;
+      for x := BB.Y to e-1 do
+      begin
+        Line := PChar(Lines[x-1]);
+        TempString:=StringOfChar(' ', GetDelLen);
+        StrCat(StrToDelete,PChar(TempString));
+        StrCat(StrToDelete,PChar(#13#10));
+      end;
+      Line := PChar(Lines[e-1]);
+      TempString:=StringOfChar(' ', GetDelLen);
+      StrCat(StrToDelete,PChar(TempString));
 
-    FirstIndent := -1;
-    // Delete string
-    if SomethingToDelete then
-    begin
-      FullStrToDelete := StrToDelete;
-      CaretY := BB.Y;
-      repeat
-        Run := GetEOL(StrToDelete);
-        if Run <> StrToDelete then
-        begin
-          Len := Run - StrToDelete;
-          if FirstIndent = -1 then
-            FirstIndent := Len;
-          TempString := Lines[CaretY - 1];
-          if Len > 0 then
-            Delete(TempString, 1, Len);
-          Lines[CaretY - 1] := TempString;
-        end;
-        if Run^ = #13 then
-        begin
-          Inc(Run);
-          if Run^ = #10 then
+      FirstIndent := -1;
+      // Delete string
+      if SomethingToDelete then
+      begin
+        FullStrToDelete := StrToDelete;
+        CaretY := BB.Y;
+        repeat
+          Run := GetEOL(StrToDelete);
+          if Run <> StrToDelete then
+          begin
+            Len := Run - StrToDelete;
+            if FirstIndent = -1 then
+              FirstIndent := Len;
+            TempString := Lines[CaretY - 1];
+            if Len > 0 then
+              Delete(TempString, 1, Len);
+            Lines[CaretY - 1] := TempString;
+          end;
+          if Run^ = #13 then
+          begin
             Inc(Run);
-          Inc(fCaretY);
-        end;
-        StrToDelete := Run;
-      until Run^ = #0;
-      LastIndent := Len;
-      fUndoList.AddChange(crUnindent, BB, BE, FullStrToDelete, smColumn);
+            if Run^ = #10 then
+              Inc(Run);
+            Inc(fCaretY);
+          end;
+          StrToDelete := Run;
+        until Run^ = #0;
+        LastIndent := Len;
+        fUndoList.AddChange(crUnindent, BB, BE, FullStrToDelete, smColumn);
+      end;
+      // restore selection
+      fSelectionMode := OrgSelectionMode;
+      if FirstIndent = -1 then
+        FirstIndent := 0;
+      SetCaretAndSelection(OrgCaretPos, Point(BB.x - FirstIndent, BB.Y),
+        Point(BE.x - LastIndent, BE.y));
+    finally
+      StrDispose(StrToDelete);
     end;
-    // restore selection
-    fSelectionMode := OrgSelectionMode;
-    if FirstIndent = -1 then
-      FirstIndent := 0;
-    SetCaretAndSelection(OrgCaretPos, Point(BB.x - FirstIndent, BB.Y),
-      Point(BE.x - LastIndent, BE.y));
   end;
 end;
 

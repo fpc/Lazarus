@@ -417,6 +417,7 @@ begin
   else begin
     Assert(False, 'Trace:' + sError);
     Result := 0;
+    FGDIObjects.Remove(GObject);
     Dispose(GObject);
   end;
   Assert(False, Format('Trace:< [TgtkObject.CreateBrushIndirect] Got --> %x', [Result]));
@@ -761,17 +762,15 @@ function TgtkObject.CreatePixmapIndirect(const Data: Pointer;
   const TransColor: Longint): HBITMAP;
 var
   GdiObject: PGdiObject;
-  GDKColor: TGDKCOlor;
+  GDKColor: TGDKColor;
   P: Pointer;
 begin
-//write('TgtkObject.CreatePixmapIndirect->');
   GdiObject := NewGDIObject(gdiBitmap); 
-  if TransColor >= 0 
-  then begin
-    GDKColor := AllocGDKColor(TransColor);
-    p := @GDKColor;
-  end
-  else p := nil;
+  if TransColor >= 0 then
+    GDKColor := AllocGDKColor(TransColor)
+  else
+    GDKColor := AllocGDKColor(ColorToRGB(clRed)); 
+  p := @GDKColor;
   GdiObject^.GDIBitmapObject := gdk_pixmap_colormap_create_from_xpm_d(nil,
            gdk_colormap_get_system, @(GdiObject^.GDIBitmapMaskObject), p, data);
   Result := HBITMAP(GdiObject);
@@ -855,7 +854,6 @@ begin
           Result:= false;
           writeln('[TgtkObject.DeleteObject] TODO : Unimplemented GDI type');
           Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
-          Exit;
         end;
       end;
     end;
@@ -2238,12 +2236,13 @@ begin
     dec (n);
     p := PGtkITimerinfo (FTimerData.Items[n]);
     if ((pointer (hWnd) <> nil) and (hWnd = p^.Handle)) or
-      ((pointer(hWnd) = nil)  and (uIDEvent = p^.IDEvent)) then
+      ((pointer(hWnd) = nil) and (uIDEvent = p^.IDEvent)) then
     begin
       gtk_timeout_remove (uIDEvent);
-      FTimerData.Delete (n);
       pointer (p^.Handle) := nil;     // mark as invalid
       p^.TimerFunc        := nil;
+      FTimerData.Delete (n);
+      FOldTimerData.Add(p);
 //      Dispose (p);                  // this will be done in gtkTimerCB!
     end;
   end;
@@ -3559,6 +3558,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2001/09/30 08:34:52  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.40  2001/07/01 23:33:13  lazarus
   MG: added WaitMessage and HandleEvents is now non blocking
 

@@ -95,6 +95,7 @@ end;
 Function TClipboard.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
 begin
   Result := 0;
+  if BufSize<=0 then exit;
   if FUseText then
   begin
      if (Length(AsText)+1) > BufSize then begin
@@ -166,6 +167,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2001/09/30 08:34:49  lazarus
+  MG: fixed mem leaks and fixed range check errors
+
   Revision 1.2  2001/08/07 11:05:51  lazarus
   MG: small bugfixes
 
