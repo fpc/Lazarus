@@ -80,6 +80,7 @@ type
     procedure SetRecentPackagesMenu; virtual; abstract;
     procedure SaveSettings; virtual; abstract;
     procedure UpdateVisibleComponentPalette; virtual; abstract;
+    procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;

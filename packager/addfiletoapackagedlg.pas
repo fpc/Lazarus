@@ -93,7 +93,7 @@ function ShowAddFileToAPackageDlg(const Filename, UnitName: string;
 var
   Dialog: TAddFileToAPackageDlg;
 begin
-  Dialog:=TAddFileToAPackageDlg.Create(Application);
+  Dialog:=TAddFileToAPackageDlg.Create(nil);
   Dialog.Filename:=Filename;
   Dialog.UnitName:=UnitName;
   Dialog.HasRegisterProc:=HasRegisterProc;

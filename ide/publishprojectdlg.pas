@@ -108,7 +108,7 @@ function ShowPublishProjectDialog(
 var
   PublishProjectDialog: TPublishProjectDialog;
 begin
-  PublishProjectDialog:=TPublishProjectDialog.Create(Application);
+  PublishProjectDialog:=TPublishProjectDialog.Create(nil);
   with PublishProjectDialog do begin
     Options:=PublishOptions;
     Result:=ShowModal;

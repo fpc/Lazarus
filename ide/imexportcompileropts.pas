@@ -96,7 +96,7 @@ var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
 begin
   Result:=iecorCancel;
-  ImExportCompOptsDlg:=TImExportCompOptsDlg.Create(Application);
+  ImExportCompOptsDlg:=TImExportCompOptsDlg.Create(nil);
   if ImExportCompOptsDlg.ShowModal=mrOk then begin
     Result:=ImExportCompOptsDlg.ImExportResult;
     Filename:=ImExportCompOptsDlg.Filename;
@@ -238,7 +238,7 @@ var
   OpenDialog: TOpenDialog;
 begin
   AFilename:='';
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
@@ -278,7 +278,7 @@ var
   SaveDialog: TSaveDialog;
 begin
   AFilename:='';
-  SaveDialog:=TSaveDialog.Create(Application);
+  SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisOpenFile;

@@ -464,9 +464,5 @@ begin
   if Assigned(OnExecuted) then OnExecuted(Self);
 end;
 
-//------------------------------------------------------------------------------
-finalization
-  FreeAndNil(PathEditor);
-
 end.
 

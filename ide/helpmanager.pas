@@ -250,7 +250,7 @@ var
 begin
   Selection:=nil;
   Result:=shrNone;
-  Dialog:=THelpSelectorDialog.Create(Application);
+  Dialog:=THelpSelectorDialog.Create(nil);
   try
     Dialog.Nodes:=Nodes;
     if Dialog.ShowModal=mrOk then begin

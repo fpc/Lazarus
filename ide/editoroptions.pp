@@ -563,7 +563,7 @@ var
   EditorOptionsForm: TEditorOptionsForm;
 begin
   Result:=mrCancel;
-  EditorOptionsForm:=TEditorOptionsForm.Create(Application);
+  EditorOptionsForm:=TEditorOptionsForm.Create(nil);
   try
     Result:=EditorOptionsForm.ShowModal;
   finally
@@ -2585,7 +2585,7 @@ procedure TEditorOptionsForm.EditorFontButtonClick(Sender:TObject);
 var
   FontDialog:TFontDialog;
 begin
-  FontDialog:=TFontDialog.Create(Application);
+  FontDialog:=TFontDialog.Create(nil);
   try
     with FontDialog do begin
       Options:=Options+[fdApplyButton];
@@ -2890,7 +2890,7 @@ begin
     ErrorCount:=KeyStrokesConsistencyErrors(DisplayPreview.KeyStrokes
         ,Protocol, Index1, Index2);
     if ErrorCount>0 then begin
-      KeyMapErrorsForm:=TKeyMapErrorsForm.Create(Application);
+      KeyMapErrorsForm:=TKeyMapErrorsForm.Create(nil);
       try
         KeyMapErrorsForm.ListBox.Items.Assign(Protocol);
         KeyMapErrorsForm.ShowModal;
@@ -3338,7 +3338,7 @@ end;
 procedure TEditorOptionsForm.CodeTemplateFileNameButtonClick(Sender:TObject);
 var OpenDialog:TOpenDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     with OpenDialog do begin

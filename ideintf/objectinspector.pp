@@ -2733,7 +2733,7 @@ end;
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
 var ColorDialog:TColorDialog;
 begin
-  ColorDialog:=TColorDialog.Create(Application);
+  ColorDialog:=TColorDialog.Create(nil);
   try
     with ColorDialog do begin
       Color:=PropertyGrid.BackgroundColor;

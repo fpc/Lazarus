@@ -833,7 +833,7 @@ Var Dlg : TStringGridEditorDlg;
     Hook: TPropertyEditorHook;
     aGrid: TStringGrid;
 begin
-  Dlg:=TStringGridEditorDlg.Create(Application);
+  Dlg:=TStringGridEditorDlg.Create(nil);
   try
     If GetComponent is TStringGrid then
     begin

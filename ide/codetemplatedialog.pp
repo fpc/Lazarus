@@ -63,7 +63,7 @@ var
   CodeTemplateEditForm:TCodeTemplateEditForm;
 begin
   Result:=mrCancel;
-  CodeTemplateEditForm:=TCodeTemplateEditForm.Create(Application);
+  CodeTemplateEditForm:=TCodeTemplateEditForm.Create(nil);
   try
     CodeTemplateEditForm.SynAutoComplete:=ASynAutoComplete;
     CodeTemplateEditForm.TemplateIndex:=ASynAutoComplete.Completions.Count;
@@ -88,7 +88,7 @@ var
 begin
   Result:=mrCancel;
   if (Index<0) or (Index>=ASynAutoComplete.Completions.Count) then exit;
-  CodeTemplateEditForm:=TCodeTemplateEditForm.Create(Application);
+  CodeTemplateEditForm:=TCodeTemplateEditForm.Create(nil);
   try
     CodeTemplateEditForm.SynAutoComplete:=ASynAutoComplete;
     CodeTemplateEditForm.TemplateIndex:=Index;

@@ -70,6 +70,8 @@ type
   TPackageLink = class(TLazPackageID)
   private
     FAutoCheckExists: boolean;
+    FFileDate: TDateTime;
+    FFileDateValid: boolean;
     FFilename: string;
     FLastCheck: TDateTime;
     FLastCheckValid: boolean;
@@ -88,6 +90,8 @@ type
     property NotFoundCount: integer read FNotFoundCount write FNotFoundCount;
     property LastCheckValid: boolean read FLastCheckValid write FLastCheckValid;
     property LastCheck: TDateTime read FLastCheck write FLastCheck;
+    property FileDateValid: boolean read FFileDateValid write FFileDateValid;
+    property FileDate: TDateTime read FFileDate write FFileDate;
   end;
 
 
@@ -109,7 +113,9 @@ type
     FDependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename;
     FGlobalLinks: TAVLTree; // tree of global TPackageLink sorted for ID
     FModified: boolean;
-    FUserLinks: TAVLTree; // tree of user TPackageLink sorted for ID
+    FUserLinksSortID: TAVLTree; // tree of user TPackageLink sorted for ID
+    FUserLinksSortFile: TAVLTree; // tree of user TPackageLink sorted for
+                                  // Filename and FileDate
     fUpdateLock: integer;
     FStates: TPkgLinksStates;
     function FindLeftMostNode(LinkTree: TAVLTree;
@@ -133,6 +139,7 @@ type
     procedure UpdateGlobalLinks;
     procedure UpdateUserLinks;
     procedure UpdateAll;
+    procedure RemoveOldUserLinks;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure SaveUserLinks;
@@ -140,7 +147,7 @@ type
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent);
-    procedure AddUserLink(APackage: TLazPackage);
+    function AddUserLink(APackage: TLazPackage): TPackageLink;
     procedure RemoveLink(APackageID: TLazPackageID);
   public
     property Modified: boolean read FModified write SetModified;
@@ -192,6 +199,36 @@ begin
     Link:=TPackageLink(Data);
     Result:=AnsiCompareText(PkgName,Link.Name);
   end;
+end;
+
+function CompareLinksForFilenameAndFileAge(Data1, Data2: Pointer): integer;
+var
+  Link1: TPackageLink;
+  Link2: TPackageLink;
+begin
+  Link1:=TPackageLink(Data1);
+  Link2:=TPackageLink(Data2);
+  // first compare filenames
+  Result:=CompareFilenames(Link1.Filename,Link2.Filename);
+  if Result<>0 then exit;
+  // then compare file date
+  if Link1.FileDateValid then begin
+    if Link2.FileDateValid then begin
+      if Link1.FileDate>Link2.FileDate then
+        Result:=1
+      else if Link1.FileDate<Link2.FileDate then
+        Result:=-1;
+    end else begin
+      Result:=1;
+    end;
+  end else begin
+    if Link2.FileDateValid then begin
+      Result:=-1;
+    end;
+  end;
+  if Result<>0 then exit;
+  // finally compare version and name
+  Result:=Link1.Compare(Link2);
 end;
 
 { TPackageLink }
@@ -253,21 +290,24 @@ constructor TPackageLinks.Create;
 begin
   UserLinkLoadTimeValid:=false;
   FGlobalLinks:=TAVLTree.Create(@ComparePackageLinks);
-  FUserLinks:=TAVLTree.Create(@ComparePackageLinks);
+  FUserLinksSortID:=TAVLTree.Create(@ComparePackageLinks);
+  FUserLinksSortFile:=TAVLTree.Create(@CompareLinksForFilenameAndFileAge);
 end;
 
 destructor TPackageLinks.Destroy;
 begin
   Clear;
   FGlobalLinks.Free;
-  FUserLinks.Free;
+  FUserLinksSortID.Free;
+  FUserLinksSortFile.Free;
   inherited Destroy;
 end;
 
 procedure TPackageLinks.Clear;
 begin
   FGlobalLinks.FreeAndClear;
-  FUserLinks.FreeAndClear;
+  FUserLinksSortID.FreeAndClear;
+  FUserLinksSortFile.Clear;
   FStates:=[plsUserLinksNeedUpdate,plsGlobalLinksNeedUpdate];
 end;
 
@@ -412,7 +452,8 @@ begin
   and (FileAge(ConfigFilename)=UserLinkLoadTime) then
     exit;
   
-  FUserLinks.FreeAndClear;
+  FUserLinksSortID.FreeAndClear;
+  FUserLinksSortFile.Clear;
   XMLConfig:=nil;
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
@@ -429,19 +470,30 @@ begin
       NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
       NewPkgLink.AutoCheckExists:=
                       XMLConfig.GetValue(ItemPath+'AutoCheckExists/Value',true);
+                      
       NewPkgLink.LastCheckValid:=
-                       XMLConfig.GetValue(ItemPath+'LastCheckValid/Value',false);
+                      XMLConfig.GetValue(ItemPath+'LastCheckValid/Value',false);
       if NewPkgLink.LastCheckValid then begin
         NewPkgLink.LastCheckValid:=
-          CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastCheck/Value',''),
-          NewPkgLink.FLastCheck);
+                 CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastCheck/Value',''),
+                              NewPkgLink.FLastCheck);
       end;
+      
+      NewPkgLink.FileDateValid:=
+                       XMLConfig.GetValue(ItemPath+'FileDateValid/Value',false);
+      if NewPkgLink.FileDateValid then begin
+        NewPkgLink.FileDateValid:=
+                  CfgStrToDate(XMLConfig.GetValue(ItemPath+'FileDate/Value',''),
+                               NewPkgLink.FFileDate);
+      end;
+      
       NewPkgLink.NotFoundCount:=
                            XMLConfig.GetValue(ItemPath+'NotFoundCount/Value',0);
 
-      if NewPkgLink.MakeSense then
-        FUserLinks.Add(NewPkgLink)
-      else
+      if NewPkgLink.MakeSense then begin
+        FUserLinksSortID.Add(NewPkgLink);
+        FUserLinksSortFile.Add(NewPkgLink);
+      end else
         NewPkgLink.Free;
     end;
     XMLConfig.Free;
@@ -454,6 +506,7 @@ begin
       exit;
     end;
   end;
+  RemoveOldUserLinks;
   Modified:=false;
 end;
 
@@ -461,6 +514,33 @@ procedure TPackageLinks.UpdateAll;
 begin
   UpdateGlobalLinks;
   UpdateUserLinks;
+end;
+
+procedure TPackageLinks.RemoveOldUserLinks;
+// search for links pointing to the same file but older version
+var
+  ANode: TAVLTreeNode;
+  NextNode: TAVLTreeNode;
+  OldPkgLink: TPackageLink;
+  NewPkgLink: TPackageLink;
+begin
+  // sort UserLinks for filename
+  ANode:=FUserLinksSortFile.FindLowest;
+  while ANode<>nil do begin
+    NextNode:=FUserLinksSortFile.FindSuccessor(ANode);
+    if NextNode=nil then break;
+    OldPkgLink:=TPackageLink(ANode.Data);
+    NewPkgLink:=TPackageLink(NextNode.Data);
+    if CompareFilenames(OldPkgLink.Filename,NewPkgLink.Filename)=0 then begin
+      // 2 links to the same file -> delete the older
+      //debugln('TPackageLinks.RemoveOldUserLinks Newer=',NewPkgLink.IDAsString,
+      // ' Older=',OldPkgLink.IDAsString);
+      FUserLinksSortID.Remove(OldPkgLink);
+      FUserLinksSortFile.Remove(OldPkgLink);
+      OldPkgLink.Free;
+    end;
+    ANode:=NextNode;
+  end;
 end;
 
 procedure TPackageLinks.BeginUpdate;
@@ -499,7 +579,7 @@ begin
     XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
 
     Path:='UserPkgLinks/';
-    ANode:=FUserLinks.FindLowest;
+    ANode:=FUserLinksSortID.FindLowest;
     i:=0;
     while ANode<>nil do begin
       inc(i);
@@ -516,9 +596,9 @@ begin
       XMLConfig.SetDeleteValue(ItemPath+'NotFoundCount/Value',
                                CurPkgLink.NotFoundCount,0);
 
-      ANode:=FUserLinks.FindSuccessor(ANode);
+      ANode:=FUserLinksSortID.FindSuccessor(ANode);
     end;
-    XMLConfig.SetDeleteValue(Path+'Count',FUserLinks.Count,0);
+    XMLConfig.SetDeleteValue(Path+'Count',FUserLinksSortID.Count,0);
     
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -607,7 +687,7 @@ end;
 
 function TPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
 begin
-  Result:=FindLinkWithPkgNameInTree(FUserLinks,PkgName);
+  Result:=FindLinkWithPkgNameInTree(FUserLinksSortID,PkgName);
   if Result=nil then
     Result:=FindLinkWithPkgNameInTree(FGlobalLinks,PkgName);
 end;
@@ -615,19 +695,19 @@ end;
 function TPackageLinks.FindLinkWithDependency(Dependency: TPkgDependency
   ): TPackageLink;
 begin
-  Result:=FindLinkWithDependencyInTree(FUserLinks,Dependency);
+  Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency);
   if Result=nil then
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
   // finally try the history lists of the Dependency Owner (Project/Package)
   if (Result=nil) and (Dependency.Owner<>nil)
   and DependencyOwnerGetPkgFilename(Self,Dependency) then
-    Result:=FindLinkWithDependencyInTree(FUserLinks,Dependency);
+    Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency);
 end;
 
 function TPackageLinks.FindLinkWithPackageID(APackageID: TLazPackageID
   ): TPackageLink;
 begin
-  Result:=FindLinkWithPackageIDInTree(FUserLinks,APackageID);
+  Result:=FindLinkWithPackageIDInTree(FUserLinksSortID,APackageID);
   if Result=nil then
     Result:=FindLinkWithPackageIDInTree(FGlobalLinks,APackageID);
 end;
@@ -635,11 +715,11 @@ end;
 procedure TPackageLinks.IteratePackages(MustExist: boolean;
   Event: TIteratePackagesEvent);
 begin
-  IteratePackagesInTree(MustExist,FUserLinks,Event);
+  IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
   IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;
 
-procedure TPackageLinks.AddUserLink(APackage: TLazPackage);
+function TPackageLinks.AddUserLink(APackage: TLazPackage): TPackageLink;
 var
   OldLink: TPackageLink;
   NewLink: TPackageLink;
@@ -650,7 +730,10 @@ begin
   if (OldLink<>nil) then begin
     // link exists -> check if it is already the right value
     if (OldLink.Compare(APackage)=0)
-    and (OldLink.Filename=APackage.Filename) then exit;
+    and (OldLink.Filename=APackage.Filename) then begin
+      Result:=OldLink;
+      exit;
+    end;
     RemoveLink(APackage);
   end;
   // add user link
@@ -658,11 +741,15 @@ begin
   NewLink.AssignID(APackage);
   NewLink.Filename:=APackage.Filename;
   if NewLink.MakeSense then begin
-    FUserLinks.Add(NewLink);
+    FUserLinksSortID.Add(NewLink);
+    FUserLinksSortFile.Add(NewLink);
     Modified:=true;
-  end else
-    FUserLinks.Free;
+  end else begin
+    NewLink.Free;
+    NewLink:=nil;
+  end;
   EndUpdate;
+  Result:=NewLink;
 end;
 
 procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);
@@ -672,10 +759,11 @@ var
 begin
   BeginUpdate;
   // remove from user links
-  ANode:=FUserLinks.FindKey(APackageID,@ComparePackageIDAndLink);
+  ANode:=FUserLinksSortID.FindKey(APackageID,@ComparePackageIDAndLink);
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
-    FUserLinks.Delete(ANode);
+    FUserLinksSortID.Delete(ANode);
+    FUserLinksSortFile.Remove(OldLink);
     OldLink.Free;
     Modified:=true;
   end;

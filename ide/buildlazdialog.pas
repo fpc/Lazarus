@@ -261,7 +261,7 @@ function ShowConfigureBuildLazarusDlg(
 var ConfigBuildLazDlg: TConfigureBuildLazarusDlg;
 begin
   Result:=mrCancel;
-  ConfigBuildLazDlg:=TConfigureBuildLazarusDlg.Create(Application);
+  ConfigBuildLazDlg:=TConfigureBuildLazarusDlg.Create(nil);
   try
     ConfigBuildLazDlg.Load(Options);
     Result:=ConfigBuildLazDlg.ShowModal;
@@ -829,7 +829,7 @@ var
   AFilename: String;
   DirDialog: TSelectDirectoryDialog;
 begin
-  DirDialog:=TSelectDirectoryDialog.Create(Application);
+  DirDialog:=TSelectDirectoryDialog.Create(nil);
   try
     DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
     DirDialog.Title:='Choose output directory of the IDE executable '

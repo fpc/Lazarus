@@ -49,7 +49,7 @@ var
   CodeToolsDefinesDialog: TCodeToolsDefinesDialog;
 begin
   //writeln('ShowCodeToolsDefinesValuesDialog ',InitialDirectory);
-  CodeToolsDefinesDialog:=TCodeToolsDefinesDialog.Create(Application);
+  CodeToolsDefinesDialog:=TCodeToolsDefinesDialog.Create(nil);
   if InitialDirectory<>'' then
     CodeToolsDefinesDialog.SetComboBox(CodeToolsDefinesDialog.DirectoryCombobox,
       InitialDirectory);
@@ -196,7 +196,7 @@ var
   OpenDialog: TOpenDialog;
   Filename: string;
 begin
-  OpenDialog:=TSelectDirectoryDialog.Create(Application);
+  OpenDialog:=TSelectDirectoryDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisCTDefChooseDirectory;

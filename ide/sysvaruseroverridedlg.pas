@@ -64,7 +64,7 @@ implementation
 function ShowSysVarUserOverrideDialog(var Variable, Value: string): TModalResult;
 var SysVarUserOverrideDialog: TSysVarUserOverrideDialog;
 begin
-  SysVarUserOverrideDialog:=TSysVarUserOverrideDialog.Create(Application);
+  SysVarUserOverrideDialog:=TSysVarUserOverrideDialog.Create(nil);
   with SysVarUserOverrideDialog do begin
     VariableEdit.Text:=Variable;
     ValueEdit.Text:=Value;

@@ -66,7 +66,7 @@ function ShowMacroPromptDialog(var InitParam: string): TModalResult;
 var MacroPrompDialog: TMacroPrompDialog;
 begin
   Result:=mrCancel;
-  MacroPrompDialog:=TMacroPrompDialog.Create(Application);
+  MacroPrompDialog:=TMacroPrompDialog.Create(nil);
   try
     MacroPrompDialog.DataEdit.Text:=InitParam;
     Result:=MacroPrompDialog.ShowModal;

@@ -30,8 +30,8 @@ unit ScaleCompsDlg;
 interface
 
 uses
-  Classes, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
-  LResources;
+  Classes, SysUtils, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls,
+  ExtCtrls, LResources;
 
 type
   TScaleComponentsDialog = class(TForm)
@@ -47,26 +47,23 @@ type
     constructor Create(AOwner: TComponent);  override;
   end;
 
-var ScaleComponentsDialog: TScaleComponentsDialog;
 
-function ShowScaleComponentsDialog: TModalResult;
+function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
 
 implementation
 
-function ShowScaleComponentsDialog: TModalResult;
+function ShowScaleComponentsDialog(var ScaleInPercent: integer): TModalResult;
+var ScaleComponentsDialog: TScaleComponentsDialog;
 begin
-  DebugLn('[ShowScaleComponentsDialog] A');
-  if ScaleComponentsDialog=nil then
-    ScaleComponentsDialog:=TScaleComponentsDialog.Create(Application);
-
-  DebugLn('[ShowScaleComponentsDialog] B');
+  ScaleComponentsDialog:=TScaleComponentsDialog.Create(nil);
   with ScaleComponentsDialog do begin
     SetBounds((Screen.Width-270) div 2,(Screen.Height-110) div 2,260,100);
     PercentEdit.Text:='100';
     Result:=ShowModal;
+    ScaleInPercent:=StrToIntDef(ScaleComponentsDialog.PercentEdit.Text,100);
+    Free;
   end;
 end;
-
 
 { TScaleComponentsDialog }
 
@@ -161,8 +158,5 @@ procedure TScaleComponentsDialog.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
-
-initialization
-  ScaleComponentsDialog:=nil;
 
 end.

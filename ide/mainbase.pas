@@ -624,6 +624,7 @@ begin
     ParentMI.Add(CreateMenuSeparator);
 
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_packagegraph');
+    CreateMenuItem(ParentMI,itmPkgEditInstallPkgs,'itmPkgEditInstallPkgs',lisMenuEditInstallPkgs,'pkg_package_install');
 
     {$IFDEF CustomIDEComps}
     ParentMI.Add(CreateMenuSeparator);
@@ -832,6 +833,7 @@ begin
     itmPkgOpenPackageOfCurUnit.ShortCut:=CommandToShortCut(ecOpenPackageOfCurUnit);
     itmPkgAddCurUnitToPkg.ShortCut:=CommandToShortCut(ecAddCurUnitToPkg);
     itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
+    itmPkgEditInstallPkgs.ShortCut:=CommandToShortCut(ecEditInstallPkgs);
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
     {$ENDIF}

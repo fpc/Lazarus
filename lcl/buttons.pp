@@ -96,6 +96,7 @@ type
     property Action;
     property Align;
     property Anchors;
+    property AutoSize;
     property Cancel;
     property Caption;
     property Constraints;
@@ -379,6 +380,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2004/12/18 10:20:22  mattias
+  updatepofiles is now case sensitive,
+  replaced many places, where Application was needlessly Owner
+  updated po files, started Configure IDE Install Package dialog,
+  implemented removing double file package links
+
   Revision 1.82  2004/12/12 23:40:55  mattias
   published TSpeedButton.OnDoubleClick
 

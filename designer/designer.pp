@@ -2441,10 +2441,12 @@ begin
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
-var HorizAlignment, VertAlignment: TComponentAlignment;
+var
+  HorizAlignment, VertAlignment: TComponentAlignment;
+  HorizAlignID, VertAlignID: integer;
 begin
-  if ShowAlignComponentsDialog=mrOk then begin
-    case AlignComponentsDialog.HorizontalRadioGroup.ItemIndex of
+  if ShowAlignComponentsDialog(HorizAlignID,VertAlignID)=mrOk then begin
+    case HorizAlignID of
      0: HorizAlignment:=csaNone;
      1: HorizAlignment:=csaSides1;
      2: HorizAlignment:=csaCenters;
@@ -2454,7 +2456,7 @@ begin
      6: HorizAlignment:=csaSide1SpaceEqually;
      7: HorizAlignment:=csaSide2SpaceEqually;
     end;
-    case AlignComponentsDialog.VerticalRadioGroup.ItemIndex of
+    case VertAlignID of
      0: VertAlignment:=csaNone;
      1: VertAlignment:=csaSides1;
      2: VertAlignment:=csaCenters;
@@ -2482,39 +2484,35 @@ begin
 end;
 
 procedure TDesigner.OnScalePopupMenuClick(Sender: TObject);
+var
+  ScaleInPercent: integer;
 begin
-  if ShowScaleComponentsDialog=mrOk then begin
-    ControlSelection.ScaleComponents(
-      StrToIntDef(ScaleComponentsDialog.PercentEdit.Text,100));
+  if ShowScaleComponentsDialog(ScaleInPercent)=mrOk then begin
+    ControlSelection.ScaleComponents(ScaleInPercent);
   end;
   ControlSelection.SaveBounds;
 end;
 
 procedure TDesigner.OnSizePopupMenuClick(Sender: TObject);
-var HorizSizing, VertSizing: TComponentSizing;
+var
+  HorizSizing, VertSizing: TComponentSizing;
+  HorizSizingID, VertSizingID: integer;
   AWidth, AHeight: integer;
 begin
-  if ShowSizeComponentsDialog=mrOk then begin
-    case SizeComponentsDialog.WidthRadioGroup.ItemIndex of
+  if ShowSizeComponentsDialog(HorizSizingID,AWidth,VertSizingID,AHeight)=mrOk
+  then begin
+    case HorizSizingID of
      0: HorizSizing:=cssNone;
      1: HorizSizing:=cssShrinkToSmallest;
      2: HorizSizing:=cssGrowToLargest;
      3: HorizSizing:=cssFixed;
     end;
-    case SizeComponentsDialog.HeightRadioGroup.ItemIndex of
+    case VertSizingID of
      0: VertSizing:=cssNone;
      1: VertSizing:=cssShrinkToSmallest;
      2: VertSizing:=cssGrowToLargest;
      3: VertSizing:=cssFixed;
     end;
-    if HorizSizing=cssFixed then
-      AWidth:=StrToIntDef(SizeComponentsDialog.WidthEdit.Text,0)
-    else
-      AWidth:=0;
-    if VertSizing=cssFixed then
-      AHeight:=StrToIntDef(SizeComponentsDialog.HeightEdit.Text,0)
-    else
-      AHeight:=0;
     ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
   end;
   ControlSelection.SaveBounds;

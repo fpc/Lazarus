@@ -113,7 +113,7 @@ implementation
 
 function ShowProjectOptionsDialog(AProject: TProject): TModalResult;
 begin
-  with TProjectOptionsDialog.Create(Application) do try
+  with TProjectOptionsDialog.Create(nil) do try
     Project:= AProject;
     Result:= ShowModal;
   finally

@@ -176,14 +176,6 @@ msgstr "Eventos"
 msgid "Float"
 msgstr ""
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Contexto de ayuda %s no encontrado in la Base de datos %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Contexto de ayuda %s no encontrado."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Base de datos de ayuda %s%s%s no encontró un visor para una página de ayuda de tipo %s"
@@ -191,6 +183,14 @@ msgstr "Base de datos de ayuda %s%s%s no encontró un visor para una página de ay
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Base de datos de ayuda %s%s%s no encontrada"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Contexto de ayuda %s no encontrado in la Base de datos %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Contexto de ayuda %s no encontrado."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."

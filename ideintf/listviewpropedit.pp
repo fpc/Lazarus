@@ -152,7 +152,7 @@ Var Dlg     : TListViewItemsPropertyEditorDlg;
     Hook    : TPropertyEditorHook;
     TN,TN2  : TTreeNode;
 begin
-  Dlg:=TListViewItemsPropertyEditorDlg.Create(Application);
+  Dlg:=TListViewItemsPropertyEditorDlg.Create(nil);
   try
     C:=GetComponent;
     if C is TListView then LV:=TListView(C);

@@ -176,20 +176,20 @@ msgstr "Eventi"
 msgid "Float"
 msgstr "Virgola mobile"
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr ""
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr ""
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
 msgstr ""
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase

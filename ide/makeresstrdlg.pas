@@ -152,7 +152,7 @@ var
   Section: PCodeXYPosition;
   ResourcestringSectionID: Integer;
 begin
-  MakeResStrDialog:=TMakeResStrDialog.Create(Application);
+  MakeResStrDialog:=TMakeResStrDialog.Create(nil);
   MakeResStrDialog.Positions:=CodeToolBoss.Positions.CreateCopy;
   MakeResStrDialog.SetSource(Code,StartPos,EndPos);
   MakeResStrDialog.Init;

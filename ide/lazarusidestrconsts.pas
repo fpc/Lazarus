@@ -237,6 +237,7 @@ resourcestring
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
   lisMenuPackageGraph = 'Package Graph';
+  lisMenuEditInstallPkgs = 'Configure installed packages';
   lisMenuConfigCustomComps = 'Configure custom components';
 
   lisMenuSettings = 'Configure custom tools ...';
@@ -1764,7 +1765,7 @@ resourcestring
   lisSVUOOk = 'Ok';
   
   // sort selection dialog
-  lisSortSelSortSelection = 'Sort Selection';
+  lisSortSelSortSelection = 'Sort selection';
   lisSortSelPreview = 'Preview';
   lisSortSelAscending = 'Ascending';
   lisSortSelDescending = 'Descending';

@@ -354,7 +354,7 @@ var
   Ext : String;
 begin
   ABitmap := TBitmap(GetOrdValue);
-  TheDialog := TGraphicPropertyEditorForm.Create(Application);
+  TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
     If (ABitmap <> nil) and not ABitmap.Empty then begin
       With TheDialog.Preview.Picture.Bitmap do begin
@@ -414,7 +414,7 @@ var
   Picture : TPicture;
 begin
   Picture := TPicture(GetOrdValue);
-  TheDialog := TGraphicPropertyEditorForm.Create(Application);
+  TheDialog := TGraphicPropertyEditorForm.Create(nil);
   If (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then begin
     TheDialog.Preview.Picture.Bitmap.Width := Picture.Width;
     TheDialog.Preview.Picture.Bitmap.Height := Picture.Height;
@@ -471,7 +471,7 @@ var
   
 begin
   ABitmap := TBitmap(GetOrdValue);
-  TheDialog := TGraphicPropertyEditorForm.Create(Application);
+  TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
     If not ABitmap.Empty then begin
       With TheDialog.Preview.Picture.Bitmap do begin
@@ -506,7 +506,7 @@ procedure TColorPropertyEditor.Edit;
 var
   ColorDialog: TColorDialog;
 begin
-  ColorDialog := TColorDialog.Create(Application);
+  ColorDialog := TColorDialog.Create(nil);
   try
     ColorDialog.Color := GetOrdValue;
     if ColorDialog.Execute then SetOrdValue(ColorDialog.Color);
@@ -784,7 +784,7 @@ end;
 procedure TFontPropertyEditor.Edit;
 var FontDialog: TFontDialog;
 begin
-  FontDialog := TFontDialog.Create(Application);
+  FontDialog := TFontDialog.Create(nil);
   try
     FontDialog.Font := TFont(GetOrdValue);
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];

@@ -99,7 +99,7 @@ var
   CondForm: TCondForm;
 begin
   Result := '';
-  CondForm := TCondForm.Create(Application);
+  CondForm := TCondForm.Create(nil);
   try
     CondForm.ActiveControl := CondForm.ListBox;
     DialogResult := CondForm.ShowModal;

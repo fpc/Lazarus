@@ -235,7 +235,7 @@ procedure TUnitDependenciesView.SelectUnitButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;

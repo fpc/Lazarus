@@ -1,9 +1,9 @@
-#: lclstrconsts:rswarningunreleasedmessagesinqueue
-msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr ""
-
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
+msgstr ""
+
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
 msgstr ""
 
 #: lclstrconsts:rswarningunreleaseddcsdump
@@ -126,10 +126,6 @@ msgstr "Hyväksy"
 msgid "All files (%s)|%s|%s"
 msgstr ""
 
-#: lclstrconsts:ifsvk_apps
-msgid "application key"
-msgstr ""
-
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -202,6 +198,10 @@ msgstr ""
 msgid "Duplicate menus"
 msgstr ""
 
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr ""
+
 #: lclstrconsts:ifsvk_end
 msgid "End"
 msgstr ""
@@ -212,10 +212,6 @@ msgstr "Virhe"
 
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
-msgstr ""
-
-#: lclstrconsts:rserrorinlcl
-msgid "ERROR in LCL: "
 msgstr ""
 
 #: lclstrconsts:rserroroccurredinataddressframe
@@ -302,6 +298,14 @@ msgstr "Informaatio"
 msgid "Insert"
 msgstr ""
 
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date :%s"
+msgstr ""
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr ""
+
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
 msgstr ""
@@ -318,20 +322,8 @@ msgstr ""
 msgid "Invalid action unregistration"
 msgstr ""
 
-#: lclstrconsts:rsinvaliddate
-msgid "Invalid Date :%s"
-msgstr ""
-
-#: lclstrconsts:rsinvalidformobjectstream
-msgid "invalid Form object stream"
-msgstr ""
-
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
-msgstr ""
-
-#: lclstrconsts:sinvalidindex
-msgid "Invalid ImageList Index"
 msgstr ""
 
 #: lclstrconsts:rsinvalidpropertyvalue
@@ -352,10 +344,6 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
-msgstr ""
-
-#: lclstrconsts:ifsvk_lwin
-msgid "left windows key"
 msgstr ""
 
 #: lclstrconsts:rslistindexexceedsbounds
@@ -398,12 +386,12 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr ""
-
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
+msgstr ""
+
+#: lclstrconsts:rsnointerfaceobject
+msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr ""
 
 #: lclstrconsts:snotimers
@@ -446,10 +434,6 @@ msgstr ""
 msgid "Pause key"
 msgstr ""
 
-#: lclstrconsts:rsdefaultfileinfovalue
-msgid "permissions user group size date time"
-msgstr ""
-
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr ""
@@ -474,10 +458,6 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: lclstrconsts:ifsvk_rwin
-msgid "right windows key"
-msgstr ""
-
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Tallenna nimellä"
@@ -494,6 +474,10 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
+
 #: lclstrconsts:rspickdate
 msgid "Select a date"
 msgstr "Valitse päivä"
@@ -505,10 +489,6 @@ msgstr "Valitse fontti"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Valitse väri"
-
-#: lclstrconsts:rsfdselectdirectory
-msgid "Select Directory"
-msgstr ""
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
@@ -585,4 +565,24 @@ msgstr "Varoitus:"
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
 msgstr "Kyllä kaikkiin"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
 

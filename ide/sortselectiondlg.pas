@@ -105,7 +105,7 @@ function ShowSortSelectionDialog(const TheText: string;
 var
   SortSelectionDialog: TSortSelectionDialog;
 begin
-  SortSelectionDialog:=TSortSelectionDialog.Create(Application);
+  SortSelectionDialog:=TSortSelectionDialog.Create(nil);
   SortSelectionDialog.BeginUpdate;
   SortSelectionDialog.TheText:=TheText;
   SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;

@@ -72,7 +72,7 @@ function ShowOpenInstalledPkgDlg(var OpenPackage: TLazPackage): TModalResult;
 var
   OpenInstalledPackagesDlg: TOpenInstalledPackagesDlg;
 begin
-  OpenInstalledPackagesDlg:=TOpenInstalledPackagesDlg.Create(Application);
+  OpenInstalledPackagesDlg:=TOpenInstalledPackagesDlg.Create(nil);
   OpenInstalledPackagesDlg.UpdatePackageList;
   OpenInstalledPackagesDlg.UpdateSelection;
   Result:=OpenInstalledPackagesDlg.ShowModal;

@@ -216,7 +216,7 @@ var
   CheckLFMDialog: TCheckLFMDialog;
 begin
   Result:=mrCancel;
-  CheckLFMDialog:=TCheckLFMDialog.Create(Application);
+  CheckLFMDialog:=TCheckLFMDialog.Create(nil);
   CheckLFMDialog.LFMTree:=LFMTree;
   CheckLFMDialog.LFMSource:=LFMBuffer;
   CheckLFMDialog.LoadLFM;

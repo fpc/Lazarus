@@ -225,6 +225,7 @@ type
     itmPkgOpenRecent: TMenuItem;
     itmPkgAddCurUnitToPkg: TMenuItem;
     itmPkgPkgGraph: TMenuItem;
+    itmPkgEditInstallPkgs: TMenuItem;
     {$IFDEF CustomIDEComps}
     itmCompsConfigCustomComps: TMenuItem;
     {$ENDIF}

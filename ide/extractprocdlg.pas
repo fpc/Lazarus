@@ -71,7 +71,7 @@ begin
   end;
   
   // ask user how to extract
-  ExtractProcDialog:=TExtractProcDialog.Create(Application);
+  ExtractProcDialog:=TExtractProcDialog.Create(nil);
   try
     ExtractProcDialog.MethodPossible:=MethodPossible;
     ExtractProcDialog.SubProcSameLvlPossible:=SubProcSameLvlPossible;

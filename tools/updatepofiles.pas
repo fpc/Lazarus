@@ -53,7 +53,7 @@ var
 begin
   MsgItem1:=PMsgItem(Data1);
   MsgItem2:=PMsgItem(Data2);
-  Result:=AnsiCompareText(MsgItem1^.ID,MsgItem2^.ID);
+  Result:=AnsiCompareStr(MsgItem1^.ID,MsgItem2^.ID);
 end;
 
 procedure DisposeMsgTree(var Tree: TAVLTree);

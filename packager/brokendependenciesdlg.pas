@@ -81,7 +81,7 @@ function ShowBrokenDependencies(DependencyList: TList;
 var
   BrokenDependenciesDialog: TBrokenDependenciesDialog;
 begin
-  BrokenDependenciesDialog:=TBrokenDependenciesDialog.Create(Application);
+  BrokenDependenciesDialog:=TBrokenDependenciesDialog.Create(nil);
   BrokenDependenciesDialog.DependencyList:=DependencyList;
   with BrokenDependenciesDialog do begin
     CreateButtons(BtnSet);

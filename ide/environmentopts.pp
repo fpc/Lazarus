@@ -3091,7 +3091,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
@@ -3132,7 +3132,7 @@ var
   OpenDialog: TSelectDirectoryDialog;
   ADirectoryName: string;
 begin
-  OpenDialog:=TSelectDirectoryDialog.Create(Application);
+  OpenDialog:=TSelectDirectoryDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
@@ -3493,7 +3493,7 @@ procedure TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick(
 var AnEnvironmentOptions: TEnvironmentOptions;
   SaveDialog: TSaveDialog;
 begin
-  SaveDialog:=TSaveDialog.Create(Application);
+  SaveDialog:=TSaveDialog.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
@@ -3528,7 +3528,7 @@ procedure TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick(
 var AnEnvironmentOptions: TEnvironmentOptions;
   OpenDialog: TOpenDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);

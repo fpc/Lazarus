@@ -90,7 +90,7 @@ function ShowConfigureCustomComponentDlg(
 var
   FrmComponentMan: TFrmComponentMan;
 begin
-  FrmComponentMan:=TFrmComponentMan.Create(Application);
+  FrmComponentMan:=TFrmComponentMan.Create(nil);
   FrmComponentMan.SetLazPath(LazarusDir);
   Result:=FrmComponentMan.ShowModal;
   FrmComponentMan.Free;

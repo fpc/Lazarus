@@ -56,7 +56,7 @@ function ShowAboutForm: TModalResult;
 var
   AboutForm: TAboutForm;
 begin
-  AboutForm:=TAboutForm.Create(Application);
+  AboutForm:=TAboutForm.Create(nil);
   Result:=AboutForm.ShowModal;
   AboutForm.Free;
 end;

@@ -44,7 +44,7 @@ function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
 var
   TabOrderDialog: TTabOrderDialog;
 begin
-  TabOrderDialog:=TTabOrderDialog.Create(Application);
+  TabOrderDialog:=TTabOrderDialog.Create(nil);
   TabOrderDialog.LookupRoot:=LookupRoot;
   Result:=TabOrderDialog.ShowModal;
   TabOrderDialog.Free;

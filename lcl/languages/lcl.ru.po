@@ -1,10 +1,10 @@
-#: lclstrconsts:rswarningunreleasedmessagesinqueue
-msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " ВНИМАНИЕ: В очереди осталось %d сообщений! Я их удаляю"
-
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " ВНИМАНИЕ: Осталось %d структур TimerInfo, я их освобождаю"
+
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr " ВНИМАНИЕ: В очереди осталось %d сообщений! Я их удаляю"
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -126,10 +126,6 @@ msgstr ""
 msgid "All files (%s)|%s|%s"
 msgstr ""
 
-#: lclstrconsts:ifsvk_apps
-msgid "application key"
-msgstr ""
-
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -202,6 +198,10 @@ msgstr ""
 msgid "Duplicate menus"
 msgstr "Повторяющиеся меню"
 
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "ОШИБКА в LCL:"
+
 #: lclstrconsts:ifsvk_end
 msgid "End"
 msgstr ""
@@ -213,10 +213,6 @@ msgstr "Ошибка"
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Ошибка создания контекста устройства для %s.%s"
-
-#: lclstrconsts:rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "ОШИБКА в LCL:"
 
 #: lclstrconsts:rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -302,6 +298,14 @@ msgstr "Сведения"
 msgid "Insert"
 msgstr ""
 
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date :%s"
+msgstr "Неправильная дата :%s"
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Неправильный индекс ImageList"
+
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
 msgstr "Неправильное создание действия"
@@ -318,21 +322,9 @@ msgstr "Неправильная регистрация действия"
 msgid "Invalid action unregistration"
 msgstr "Неправильная разрегистрация действия"
 
-#: lclstrconsts:rsinvaliddate
-msgid "Invalid Date :%s"
-msgstr "Неправильная дата :%s"
-
-#: lclstrconsts:rsinvalidformobjectstream
-msgid "invalid Form object stream"
-msgstr "неправильный поток объекта Формы"
-
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Неправильный размер рисунка"
-
-#: lclstrconsts:sinvalidindex
-msgid "Invalid ImageList Index"
-msgstr "Неправильный индекс ImageList"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -352,10 +344,6 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
-msgstr ""
-
-#: lclstrconsts:ifsvk_lwin
-msgid "left windows key"
 msgstr ""
 
 #: lclstrconsts:rslistindexexceedsbounds
@@ -398,13 +386,13 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Нет объекта интерфейса. Проверьте, был ли модуль \"interfaces\" добавлен к секции uses программы."
-
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
 msgstr ""
+
+#: lclstrconsts:rsnointerfaceobject
+msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr "Нет объекта интерфейса. Проверьте, был ли модуль \"interfaces\" добавлен к секции uses программы."
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -446,10 +434,6 @@ msgstr "Путь должен существовать"
 msgid "Pause key"
 msgstr ""
 
-#: lclstrconsts:rsdefaultfileinfovalue
-msgid "permissions user group size date time"
-msgstr "разрешения пользователь группа дата время"
-
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr ""
@@ -474,10 +458,6 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: lclstrconsts:ifsvk_rwin
-msgid "right windows key"
-msgstr ""
-
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Сохранить файл как"
@@ -494,6 +474,10 @@ msgstr "свойство ScrollBar вне диапазона"
 msgid "Select"
 msgstr ""
 
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr "Выберите каталог"
+
 #: lclstrconsts:rspickdate
 msgid "Select a date"
 msgstr "Выберите дату"
@@ -505,10 +489,6 @@ msgstr "Выбрать шрифт"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Выбрать цвет"
-
-#: lclstrconsts:rsfdselectdirectory
-msgid "Select Directory"
-msgstr "Выберите каталог"
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
@@ -585,4 +565,24 @@ msgstr "Предупреждение:"
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
 msgstr "Да для всех"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "неправильный поток объекта Формы"
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "разрешения пользователь группа дата время"
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
 

@@ -76,7 +76,7 @@ function ShowViewUnitsDlg(Entries: TList;
 var ViewUnits: TViewUnits;
   i: integer;
 begin
-  ViewUnits:=TViewUnits.Create(Application);
+  ViewUnits:=TViewUnits.Create(nil);
   try
     ViewUnits.Caption:=Caption;
     ViewUnits.MultiselectCheckBox.Enabled:=MultiSelect;
@@ -152,6 +152,12 @@ initialization
 end.
 {
   $Log$
+  Revision 1.18  2004/12/18 10:20:18  mattias
+  updatepofiles is now case sensitive,
+  replaced many places, where Application was needlessly Owner
+  updated po files, started Configure IDE Install Package dialog,
+  implemented removing double file package links
+
   Revision 1.17  2004/04/03 13:35:14  mattias
   fixed view unit dialog using lfm
 

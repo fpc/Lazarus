@@ -28,7 +28,7 @@ function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
 var
   ChooseKeySchemeDlg: TChooseKeySchemeDlg;
 begin
-  ChooseKeySchemeDlg:=TChooseKeySchemeDlg.Create(Application);
+  ChooseKeySchemeDlg:=TChooseKeySchemeDlg.Create(nil);
   Result:=ChooseKeySchemeDlg.ShowModal;
   if Result=mrOk then
     NewScheme:=ChooseKeySchemeDlg.GetKeymapScheme;

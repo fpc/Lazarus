@@ -220,7 +220,7 @@ function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
 var
   AddDlg: TAddToPackageDlg;
 begin
-  AddDlg:=TAddToPackageDlg.Create(Application);
+  AddDlg:=TAddToPackageDlg.Create(nil);
   AddDlg.LazPackage:=Pkg;
   AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
   AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
@@ -540,7 +540,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=
@@ -609,7 +609,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=
@@ -748,7 +748,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=
@@ -863,7 +863,7 @@ var
   NewListItem: TListItem;
   NewPgkFileType: TPkgFileType;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.InitialDir:=

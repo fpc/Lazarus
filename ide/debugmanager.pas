@@ -963,7 +963,7 @@ begin
     then Exit;
 
     repeat
-      OpenDialog:=TOpenDialog.Create(Application);
+      OpenDialog:=TOpenDialog.Create(nil);
       try
         InputHistories.ApplyFileDialogSettings(OpenDialog);
         OpenDialog.Title:=lisOpenFile+' '+SrcFile;
@@ -1008,7 +1008,7 @@ procedure TDebugManager.mnuDebuggerOptionsClick(Sender: TObject);
 var
   DebuggerOptionsForm: TDebuggerOptionsForm;
 begin
-  DebuggerOptionsForm := TDebuggerOptionsForm.Create(Application);
+  DebuggerOptionsForm := TDebuggerOptionsForm.Create(nil);
   if DebuggerOptionsForm.ShowModal=mrOk then begin
     // save to disk
     EnvironmentOptions.Save(false);
@@ -1943,6 +1943,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.81  2004/12/18 10:20:17  mattias
+  updatepofiles is now case sensitive,
+  replaced many places, where Application was needlessly Owner
+  updated po files, started Configure IDE Install Package dialog,
+  implemented removing double file package links
+
   Revision 1.80  2004/12/03 14:35:30  vincents
   implemented TIDEExceptions.LoadFromXMLConfig and SaveToXMLConfig
 

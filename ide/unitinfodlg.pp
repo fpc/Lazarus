@@ -97,7 +97,7 @@ function ShowUnitInfoDlg(const AnUnitName, AType: string;
   const UnitPath, IncludePath, SrcPath: string): TModalResult;
 var Dlg: TUnitInfoDlg;
 begin
-  Dlg:=TUnitInfoDlg.Create(Application);
+  Dlg:=TUnitInfoDlg.Create(nil);
   with Dlg do begin
     Caption:=Format(lisInformationAboutUnit, [AnUnitName]);
     setFilePath(FilePath);

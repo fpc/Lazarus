@@ -156,7 +156,7 @@ var
   DiffDlg: TDiffDialog;
 begin
   OpenDiffInEditor:=false;
-  DiffDlg:=TDiffDialog.Create(Application);
+  DiffDlg:=TDiffDialog.Create(nil);
   DiffDlg.BeginUpdate;
   DiffDlg.OnGetDiffFile:=OnGetDiffFile;
   DiffDlg.Files:=Files;

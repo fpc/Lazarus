@@ -44,21 +44,24 @@ type
     constructor Create(AOwner: TComponent);  override;
   end;
 
-var AlignComponentsDialog: TAlignComponentsDialog;
 
-function ShowAlignComponentsDialog: TModalResult;
+function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer
+  ): TModalResult;
 
 implementation
 
-function ShowAlignComponentsDialog: TModalResult;
+function ShowAlignComponentsDialog(var HorizAlignID, VertAlignID: integer
+  ): TModalResult;
+var AlignComponentsDialog: TAlignComponentsDialog;
 begin
-  if AlignComponentsDialog=nil then
-    AlignComponentsDialog:=TAlignComponentsDialog.Create(Application);
+  AlignComponentsDialog:=TAlignComponentsDialog.Create(nil);
   with AlignComponentsDialog do begin
     SetBounds((Screen.Width-365) div 2,(Screen.Height-225) div 2,355,215);
     HorizontalRadioGroup.ItemIndex:=0;
     VerticalRadioGroup.ItemIndex:=0;
     Result:=ShowModal;
+    HorizAlignID:=AlignComponentsDialog.HorizontalRadioGroup.ItemIndex;
+    VertAlignID:=AlignComponentsDialog.VerticalRadioGroup.ItemIndex;
   end;
 end;
 
@@ -157,8 +160,5 @@ procedure TAlignComponentsDialog.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
-
-initialization
-  AlignComponentsDialog:=nil;
 
 end.

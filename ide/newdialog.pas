@@ -156,7 +156,7 @@ var
   NewOtherDialog: TNewOtherDialog;
 begin
   NewItem:=nil;
-  NewOtherDialog:=TNewOtherDialog.Create(Application);
+  NewOtherDialog:=TNewOtherDialog.Create(nil);
   Result:=NewOtherDialog.ShowModal;
   if Result=mrOk then begin
     NewItem:=NewOtherDialog.GetNewItem;

@@ -179,7 +179,7 @@ var
   RunParamsOptsForm: TRunParamsOptsDlg;
 begin
   Result:=mrCancel;
-  RunParamsOptsForm:=TRunParamsOptsDlg.Create(Application);
+  RunParamsOptsForm:=TRunParamsOptsDlg.Create(nil);
   try
     RunParamsOptsForm.Options:=RunParamsOptions;
     Result:=RunParamsOptsForm.ShowModal;

@@ -87,7 +87,7 @@ begin
     Result:=mrIgnore;
     exit;
   end;
-  DiskDiffsDlg:=TDiskDiffsDlg.Create(Application);
+  DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
   DiskDiffsDlg.UnitList:=AnUnitList;
   Result:=DiskDiffsDlg.ShowModal;
   DiskDiffsDlg.Free;

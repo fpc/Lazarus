@@ -1772,7 +1772,7 @@ function ShowCodeToolsOptions(Options: TCodeToolsOptions;
 var CodeToolsOptsDlg: TCodeToolsOptsDlg;
 begin
   Result:=mrCancel;
-  CodeToolsOptsDlg:=TCodeToolsOptsDlg.Create(Application);
+  CodeToolsOptsDlg:=TCodeToolsOptsDlg.Create(nil);
   try
     CodeToolsOptsDlg.ReadSettings(Options);
     CodeToolsOptsDlg.OnGetSynEditSettings:=OnGetSynEditSettings;

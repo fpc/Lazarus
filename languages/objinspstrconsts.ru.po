@@ -176,14 +176,6 @@ msgstr "События"
 msgid "Float"
 msgstr ""
 
-#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
-msgstr "Контекст справки %s не найден в Базе данных %s%s%s."
-
-#: objinspstrconsts:oishelphelpcontextnotfound
-msgid "Help context %s not found."
-msgstr "Контекст справки %s не найден."
-
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Справочная база %s%s%s не нашла просмотрщика для страницы справки типа %s"
@@ -191,6 +183,14 @@ msgstr "Справочная база %s%s%s не нашла просмотрщика для страницы справки типа %
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
 msgstr "Справочная база %s%s%s не найдена"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Контекст справки %s не найден в Базе данных %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Контекст справки %s не найден."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."

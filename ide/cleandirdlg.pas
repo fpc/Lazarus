@@ -87,7 +87,7 @@ function ShowCleanDirectoryDialog(const DefaultDirectory: string;
 var
   CleanDirectoryDialog: TCleanDirectoryDialog;
 begin
-  CleanDirectoryDialog:=TCleanDirectoryDialog.Create(Application);
+  CleanDirectoryDialog:=TCleanDirectoryDialog.Create(nil);
   CleanDirectoryDialog.Macros:=Macros;
   CleanDirectoryDialog.LoadSettings;
   CleanDirectoryDialog.AddDirectory(DefaultDirectory);

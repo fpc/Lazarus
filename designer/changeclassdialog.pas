@@ -93,7 +93,7 @@ begin
   //MessageDlg('Not implemented yet','Not implemented yet',mtInformation,[mbOk],0);
   //exit;
   
-  ChangeClassDlg:=TChangeClassDlg.Create(Application);
+  ChangeClassDlg:=TChangeClassDlg.Create(nil);
   try
     ChangeClassDlg.ThePersistent:=APersistent;
     ChangeClassDlg.FillNewClassComboBox;

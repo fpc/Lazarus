@@ -8,13 +8,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: lclstrconsts:rswarningunreleasedmessagesinqueue
-msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr "ATTENTION : il y a %d messages en file d'attente ! Ils seront supprimés."
-
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " ATTENTION: Il y a %d structures TimerInfo, elles seront supprimées."
+
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr "ATTENTION : il y a %d messages en file d'attente ! Ils seront supprimés."
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -136,10 +136,6 @@ msgstr ""
 msgid "All files (%s)|%s|%s"
 msgstr ""
 
-#: lclstrconsts:ifsvk_apps
-msgid "application key"
-msgstr ""
-
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -212,6 +208,10 @@ msgstr ""
 msgid "Duplicate menus"
 msgstr "Menus doublons"
 
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "ERREUR dans LCL: "
+
 #: lclstrconsts:ifsvk_end
 msgid "End"
 msgstr ""
@@ -223,10 +223,6 @@ msgstr "Erreur"
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Erreur en créant le contexte de dispositif pour %s.%s"
-
-#: lclstrconsts:rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "ERREUR dans LCL: "
 
 #: lclstrconsts:rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -312,6 +308,14 @@ msgstr "Information"
 msgid "Insert"
 msgstr ""
 
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date :%s"
+msgstr "Date %s non valide"
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Index de liste d'image non valide"
+
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
 msgstr "Création non valide d'action"
@@ -328,21 +332,9 @@ msgstr "Référencement d'action non valide"
 msgid "Invalid action unregistration"
 msgstr "Déréférencement d'action non valide"
 
-#: lclstrconsts:rsinvaliddate
-msgid "Invalid Date :%s"
-msgstr "Date %s non valide"
-
-#: lclstrconsts:rsinvalidformobjectstream
-msgid "invalid Form object stream"
-msgstr "Flux d'objet fiche non valide"
-
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Taille d'image non valide"
-
-#: lclstrconsts:sinvalidindex
-msgid "Invalid ImageList Index"
-msgstr "Index de liste d'image non valide"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -362,10 +354,6 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
-msgstr ""
-
-#: lclstrconsts:ifsvk_lwin
-msgid "left windows key"
 msgstr ""
 
 #: lclstrconsts:rslistindexexceedsbounds
@@ -408,13 +396,13 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Pas d'objet d'interface. Vérifiez si l'unité \"iterfaces\" est présente dans la clause Uses du programme."
-
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
 msgstr ""
+
+#: lclstrconsts:rsnointerfaceobject
+msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr "Pas d'objet d'interface. Vérifiez si l'unité \"iterfaces\" est présente dans la clause Uses du programme."
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -456,10 +444,6 @@ msgstr "Le répertoire doit exister"
 msgid "Pause key"
 msgstr ""
 
-#: lclstrconsts:rsdefaultfileinfovalue
-msgid "permissions user group size date time"
-msgstr "permission utilisateur groupe taille date heure"
-
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr ""
@@ -484,10 +468,6 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: lclstrconsts:ifsvk_rwin
-msgid "right windows key"
-msgstr ""
-
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Enregistrer le fichier sous"
@@ -504,6 +484,10 @@ msgstr "Propriété ScrollBar hors limite"
 msgid "Select"
 msgstr ""
 
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
+
 #: lclstrconsts:rspickdate
 msgid "Select a date"
 msgstr ""
@@ -515,10 +499,6 @@ msgstr "Choisir une police"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Choisir une couleur"
-
-#: lclstrconsts:rsfdselectdirectory
-msgid "Select Directory"
-msgstr ""
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
@@ -595,4 +575,24 @@ msgstr "Attention:"
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
 msgstr "Oui pour tout"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "Flux d'objet fiche non valide"
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "permission utilisateur groupe taille date heure"
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
 

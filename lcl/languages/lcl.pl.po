@@ -9,13 +9,13 @@ msgstr ""
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: lclstrconsts:rswarningunreleasedmessagesinqueue
-msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " UWAGA: Pozostało %d komunikatów w kolejce! Zostaną usunięte."
-
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " UWAGA: Pozostało %d struktur TimerInfo zostaną usunięte"
+
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr " UWAGA: Pozostało %d komunikatów w kolejce! Zostaną usunięte."
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -137,10 +137,6 @@ msgstr ""
 msgid "All files (%s)|%s|%s"
 msgstr ""
 
-#: lclstrconsts:ifsvk_apps
-msgid "application key"
-msgstr ""
-
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -213,6 +209,10 @@ msgstr ""
 msgid "Duplicate menus"
 msgstr "Zdublowane menu"
 
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "BŁĄD w LCL: "
+
 #: lclstrconsts:ifsvk_end
 msgid "End"
 msgstr ""
@@ -224,10 +224,6 @@ msgstr "Błąd"
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Błąd przy tworzeniu \"device context\" dla %s.%s"
-
-#: lclstrconsts:rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "BŁĄD w LCL: "
 
 #: lclstrconsts:rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -313,6 +309,14 @@ msgstr "Informacja"
 msgid "Insert"
 msgstr ""
 
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date :%s"
+msgstr "Błędna data :%s"
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Błędny indeks ImageList"
+
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
 msgstr "Błędne tworzenie akcji"
@@ -329,21 +333,9 @@ msgstr "Błędna rejestracja akcji"
 msgid "Invalid action unregistration"
 msgstr "Błędne wyrejestrowanie akcji"
 
-#: lclstrconsts:rsinvaliddate
-msgid "Invalid Date :%s"
-msgstr "Błędna data :%s"
-
-#: lclstrconsts:rsinvalidformobjectstream
-msgid "invalid Form object stream"
-msgstr "błędny strumień obiektu formularza"
-
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Błędny rozmiar obrazka"
-
-#: lclstrconsts:sinvalidindex
-msgid "Invalid ImageList Index"
-msgstr "Błędny indeks ImageList"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -363,10 +355,6 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
-msgstr ""
-
-#: lclstrconsts:ifsvk_lwin
-msgid "left windows key"
 msgstr ""
 
 #: lclstrconsts:rslistindexexceedsbounds
@@ -409,13 +397,13 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Brak obiektu interfejsu. Sprawdź czy moduł \"interfaces\" był dodany do programu przez \"uses\"."
-
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
 msgstr ""
+
+#: lclstrconsts:rsnointerfaceobject
+msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr "Brak obiektu interfejsu. Sprawdź czy moduł \"interfaces\" był dodany do programu przez \"uses\"."
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -457,10 +445,6 @@ msgstr "Ścieżka musi istnieć"
 msgid "Pause key"
 msgstr ""
 
-#: lclstrconsts:rsdefaultfileinfovalue
-msgid "permissions user group size date time"
-msgstr "uprawnienia użytkownik grupa rozmiar data czas"
-
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr ""
@@ -485,10 +469,6 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: lclstrconsts:ifsvk_rwin
-msgid "right windows key"
-msgstr ""
-
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Zapisz plik jako"
@@ -505,6 +485,10 @@ msgstr "Właściwość ScrollBar'u poza zakresem"
 msgid "Select"
 msgstr ""
 
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr "Wybierz katalog"
+
 #: lclstrconsts:rspickdate
 msgid "Select a date"
 msgstr "Wybierz datę"
@@ -516,10 +500,6 @@ msgstr "Wybierz czcionkę"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Wybierz kolor"
-
-#: lclstrconsts:rsfdselectdirectory
-msgid "Select Directory"
-msgstr "Wybierz katalog"
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
@@ -596,4 +576,24 @@ msgstr "Ostrzeżenie:"
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
 msgstr "Tak na wszystkie"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "błędny strumień obiektu formularza"
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "uprawnienia użytkownik grupa rozmiar data czas"
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
 

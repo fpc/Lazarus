@@ -2155,8 +2155,9 @@ begin
 
   else
     Handled:=false;
-    
     DebugBoss.ProcessCommand(Command,Handled);
+    if Handled then exit;
+    PkgBoss.ProcessCommand(Command,Handled);
   end;
 end;
 
@@ -2475,7 +2476,7 @@ var
   AFilename: string;
   PreReadBuf: TCodeBuffer;
 Begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
@@ -2508,7 +2509,7 @@ var
   AFileName: string;
 begin
   if Sender=MainIDEBar.itmProjectOpen then begin
-    OpenDialog:=TOpenDialog.Create(Application);
+    OpenDialog:=TOpenDialog.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
@@ -2636,7 +2637,7 @@ var
   frmCompilerOptions: TfrmCompilerOptions;
   NewCaption: String;
 begin
-  frmCompilerOptions:=TfrmCompilerOptions.Create(Application);
+  frmCompilerOptions:=TfrmCompilerOptions.Create(nil);
   try
     NewCaption:=Project1.Title;
     if NewCaption='' then
@@ -2741,7 +2742,7 @@ var
   AFilename: string;
   i: Integer;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
@@ -2773,7 +2774,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
@@ -2940,7 +2941,7 @@ var
   end;
 
 Begin
-  EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
+  EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(nil);
   try
     EnvironmentOptionsDialog.CategoryPage:=StartPage;
     // update EnvironmentOptions (save current window positions)
@@ -2990,7 +2991,7 @@ End;
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
 var EditorOptionsForm: TEditorOptionsForm;
 Begin
-  EditorOptionsForm:=TEditorOptionsForm.Create(Application);
+  EditorOptionsForm:=TEditorOptionsForm.Create(nil);
   try
     if EditorOptionsForm.ShowModal=mrOk then begin
       SourceNotebook.ReloadEditorOptions;
@@ -3184,7 +3185,7 @@ begin
     SaveAsFilename:=lisnoname;
 
   // let user choose a filename
-  SaveDialog:=TSaveDialog.Create(Application);
+  SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
@@ -4096,7 +4097,7 @@ var
 begin
   OldProjectPath:=Project1.ProjectDirectory;
 
-  SaveDialog:=TSaveDialog.Create(Application);
+  SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=Format(lisSaveProjectLpi, [Project1.Title]);
@@ -6009,7 +6010,7 @@ begin
   if (Project1=nil) or (ToolStatus<>itNone) then exit;
 
   // change tool status
-  CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(Application);
+  CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(nil);
   try
     CheckCompilerOptsDlg.Options:=TheCompilerOptions;
     CheckCompilerOptsDlg.MacroList:=MacroList;
@@ -10981,6 +10982,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.810  2004/12/18 10:20:17  mattias
+  updatepofiles is now case sensitive,
+  replaced many places, where Application was needlessly Owner
+  updated po files, started Configure IDE Install Package dialog,
+  implemented removing double file package links
+
   Revision 1.809  2004/12/16 22:09:52  mattias
   added global package links for lazarus cvs packages
 

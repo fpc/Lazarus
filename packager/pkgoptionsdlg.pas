@@ -134,7 +134,7 @@ function ShowPackageOptionsDlg(APackage: TLazPackage): TModalResult;
 var
   PkgOptsDlg: TPackageOptionsDialog;
 begin
-  PkgOptsDlg:=TPackageOptionsDialog.Create(Application);
+  PkgOptsDlg:=TPackageOptionsDialog.Create(nil);
   PkgOptsDlg.LazPackage:=APackage;
   Result:=PkgOptsDlg.ShowModal;
   PkgOptsDlg.Free;

@@ -62,7 +62,7 @@ var
   NewProjectDialog: TNewProjectDialog;
 begin
   ProjectDesc:=nil;
-  NewProjectDialog:=TNewProjectDialog.Create(Application);
+  NewProjectDialog:=TNewProjectDialog.Create(nil);
   try
     Result:=NewProjectDialog.ShowModal;
     if Result=mrOk then

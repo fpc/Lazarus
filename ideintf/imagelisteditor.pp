@@ -540,7 +540,7 @@ Var Dlg: TImageListEditorDlg;
     Hook: TPropertyEditorHook;
     aImg: TImageList;
 begin
-  Dlg:=TImageListEditorDlg.Create(Application);
+  Dlg:=TImageListEditorDlg.Create(nil);
   try
     If GetComponent is TImageList then
     begin

@@ -106,7 +106,7 @@ function ShowAddToProjectDlg(AProject: TProject;
 var
   AddToProjectDialog: TAddToProjectDialog;
 begin
-  AddToProjectDialog:=TAddToProjectDialog.Create(Application);
+  AddToProjectDialog:=TAddToProjectDialog.Create(nil);
   AddToProjectDialog.TheProject:=AProject;
   AddToProjectDialog.UpdateAvailableFiles;
   AddToProjectDialog.UpdateAvailableDependencyNames;

@@ -4713,7 +4713,7 @@ var
   AString : string;
 begin
   AString:= GetStrValue;
-  TheDialog:= TStringsPropEditorDlg.Create(Application);
+  TheDialog:= TStringsPropEditorDlg.Create(nil);
   try
     TheDialog.Editor:=Self;
     TheDialog.Memo.Text:=AString;
@@ -4736,7 +4736,7 @@ var
   ListColumns : TListColumns;
   ColumnDlg: TColumnDlg;
 begin
-  ColumnDlg:=TColumnDlg.Create(Application);
+  ColumnDlg:=TColumnDlg.Create(nil);
   try
     ListColumns := TListColumns(GetObjectValue);
     ColumnDlg.Columns.Assign(ListColumns);
@@ -4793,7 +4793,7 @@ end;
 
 procedure TFileNamePropertyEditor.Edit;
 begin
-  With TOpenDialog.Create(Application) do
+  With TOpenDialog.Create(nil) do
     Try
       Filter:=GetFilter;
       Options:=GetDialogOptions;
@@ -4841,7 +4841,7 @@ var
   i: Integer;
   c: Char;
 begin
-  Dialog:=TStringsPropEditorDlg.Create(Application);
+  Dialog:=TStringsPropEditorDlg.Create(nil);
   try
     Dialog.Editor:=Self;
     s:=GetStrValue;

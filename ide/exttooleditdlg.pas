@@ -165,7 +165,7 @@ function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
 var ExternalToolOptionDlg: TExternalToolOptionDlg;
 begin
   Result:=mrCancel;
-  ExternalToolOptionDlg:=TExternalToolOptionDlg.Create(Application);
+  ExternalToolOptionDlg:=TExternalToolOptionDlg.Create(nil);
   try
     ExternalToolOptionDlg.Options:=ExternalToolOptions;
     ExternalToolOptionDlg.MacroList:=TransferMacroList;

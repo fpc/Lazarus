@@ -85,7 +85,7 @@ function ShowCharacterMap(var s: string): boolean;
 var
   CharacterMapDialog: TCharacterMapDialog;
 begin
-  CharacterMapDialog:=TCharacterMapDialog.Create(Application);
+  CharacterMapDialog:=TCharacterMapDialog.Create(nil);
   Result:=CharacterMapDialog.ShowModal=mrOk;
   if Result then
     s:=CharacterMapDialog.Characters;

@@ -121,7 +121,7 @@ var InputFileDlg: TInputFileDialog;
 function GetInputFileDialog: TInputFileDialog;
 begin
   if InputFileDlg=nil then
-    InputFileDlg:=TInputFileDialog.Create(Application);
+    InputFileDlg:=TInputFileDialog.Create(nil);
   Result:=InputFileDlg;
 end;
 

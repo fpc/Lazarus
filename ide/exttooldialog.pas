@@ -144,7 +144,7 @@ function ShowExtToolDialog(ExtToolList: TExternalToolList;
 var ExternalToolDialog: TExternalToolDialog;
 begin
   Result:=mrCancel;
-  ExternalToolDialog:=TExternalToolDialog.Create(Application);
+  ExternalToolDialog:=TExternalToolDialog.Create(nil);
   try
     ExternalToolDialog.TransferMacros:=TransferMacros;
     ExternalToolDialog.ExtToolList:=ExtToolList;

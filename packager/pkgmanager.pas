@@ -58,7 +58,7 @@ uses
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
   MsgView, BuildLazDialog, DefineTemplates, NewDialog,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
-  LazarusPackageIntf, PublishProjectDlg,
+  LazarusPackageIntf, PublishProjectDlg, InstallPkgSetDlg,
   // bosses
   BasePkgManager,
   MainBar, MainIntf, MainBase;
@@ -118,11 +118,12 @@ type
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
+    procedure MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
     procedure MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
-    procedure mnuPkgOpenPackageOfCurUnitClicked(Sender: TObject);
-    procedure mnuConfigCustomCompsClicked(Sender: TObject);
-    procedure mnuOpenRecentPackageClicked(Sender: TObject);
-    procedure mnuPkgOpenPackageClicked(Sender: TObject);
+    procedure MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
+    procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
+    procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
+    procedure MainIDEitmPkgOpenPackageClicked(Sender: TObject);
 
     // component palette
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
@@ -178,6 +179,7 @@ type
     procedure AddFileToRecentPackages(const Filename: string);
     procedure SaveSettings; override;
     procedure UpdateVisibleComponentPalette; override;
+    procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
@@ -301,7 +303,7 @@ var
   I: Integer;
   OpenFlags: TPkgOpenFlags;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenPackageFile;
@@ -325,6 +327,28 @@ end;
 procedure TPkgManager.MainIDEitmPkgPkgGraphClick(Sender: TObject);
 begin
   DoShowPackageGraph;
+end;
+
+procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
+var
+  RebuildIDE: Boolean;
+  i: Integer;
+  List: TList;
+begin
+  RebuildIDE:=false;
+  List:=nil;
+  try
+    if ShowEditInstallPkgsDialog(FirstAutoInstallDependency,List,RebuildIDE)
+      <>mrOk
+    then exit;
+    // TODO: rebuild auto install list
+    // TODO: rebuild IDE
+  finally
+    if List<>nil then begin
+      for i:=0 to List.Count-1 do TObject(List[i]).Free;
+      List.Free;
+    end;
+  end;
 end;
 
 procedure TPkgManager.IDEComponentPaletteEndUpdate(Sender: TObject;
@@ -393,7 +417,7 @@ begin
   DoAddActiveUnitToAPackage;
 end;
 
-procedure TPkgManager.mnuPkgOpenPackageOfCurUnitClicked(Sender: TObject);
+procedure TPkgManager.MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -643,17 +667,17 @@ begin
   
 end;
 
-procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
+procedure TPkgManager.MainIDEitmConfigCustomCompsClicked(Sender: TObject);
 begin
   ShowConfigureCustomComponents;
 end;
 
-procedure TPkgManager.mnuPkgOpenPackageClicked(Sender: TObject);
+procedure TPkgManager.MainIDEitmPkgOpenPackageClicked(Sender: TObject);
 begin
   DoShowOpenInstalledPckDlg;
 end;
 
-procedure TPkgManager.mnuOpenRecentPackageClicked(Sender: TObject);
+procedure TPkgManager.MainIDEitmOpenRecentPackageClicked(Sender: TObject);
 
   procedure UpdateEnvironment;
   begin
@@ -699,7 +723,7 @@ var
 begin
   OldPkgFilename:=APackage.Filename;
 
-  SaveDialog:=TSaveDialog.Create(Application);
+  SaveDialog:=TSaveDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=Format(lisPkgMangSavePackageLpk, [APackage.IDAsString]);
@@ -1656,13 +1680,18 @@ end;
 procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
-    itmPkgOpenPackage.OnClick :=@mnuPkgOpenPackageClicked;
+    itmPkgOpenPackage.OnClick :=@MainIDEitmPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
-    itmPkgOpenPackageOfCurUnit.OnClick :=@mnuPkgOpenPackageOfCurUnitClicked;
+    itmPkgOpenPackageOfCurUnit.OnClick :=@MainIDEitmPkgOpenPackageOfCurUnitClicked;
     itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
+    itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
+    {$IFNDEF EnableInstallPkgDlg}
+    itmPkgEditInstallPkgs.Visible:=false;
+    itmPkgEditInstallPkgs.Enabled:=false;
+    {$ENDIF}
     {$IFDEF CustomIDEComps}
-    itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
+    itmCompsConfigCustomComps.OnClick :=@MainIDEitmConfigCustomCompsClicked;
     {$ENDIF}
   end;
   
@@ -1682,7 +1711,7 @@ end;
 procedure TPkgManager.SetRecentPackagesMenu;
 begin
   MainIDE.SetRecentSubMenu(MainIDEBar.itmPkgOpenRecent,
-            EnvironmentOptions.RecentPackageFiles,@mnuOpenRecentPackageClicked);
+     EnvironmentOptions.RecentPackageFiles,@MainIDEitmOpenRecentPackageClicked);
 end;
 
 procedure TPkgManager.AddFileToRecentPackages(const Filename: string);
@@ -1756,6 +1785,21 @@ procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
   TComponentPalette(IDEComponentPalette).NoteBook:=MainIDEBar.ComponentNotebook;
   TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
+end;
+
+procedure TPkgManager.ProcessCommand(Command: word; var Handled: boolean);
+begin
+  Handled:=true;
+  case Command of
+  ecOpenPackage: MainIDEitmPkgOpenPackageClicked(Self);
+  ecOpenPackageFile: MainIDEitmPkgOpenPackageFileClick(Self);
+  ecOpenPackageOfCurUnit: MainIDEitmPkgOpenPackageOfCurUnitClicked(Self);
+  ecAddCurUnitToPkg: MainIDEitmPkgAddCurUnitToPkgClick(Self);
+  ecPackageGraph: MainIDEitmPkgPkgGraphClick(Self);
+  ecEditInstallPkgs: MainIDEitmPkgEditInstallPkgsClick(Self);
+  else
+    Handled:=false;
+  end;
 end;
 
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage;
@@ -2044,6 +2088,7 @@ function TPkgManager.DoSavePackage(APackage: TLazPackage;
   Flags: TPkgSaveFlags): TModalResult;
 var
   XMLConfig: TXMLConfig;
+  PkgLink: TPackageLink;
 begin
   // do not save during compilation
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
@@ -2094,9 +2139,13 @@ begin
     try
       XMLConfig.Clear;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
-      PkgLinks.AddUserLink(APackage);
-      PkgLinks.SaveUserLinks;
       XMLConfig.Flush;
+      PkgLink:=PkgLinks.AddUserLink(APackage);
+      if PkgLink<>nil then begin
+        PkgLink.FileDate:=FileDateToDateTime(FileAge(APackage.Filename));
+        PkgLink.FileDateValid:=true;
+        PkgLinks.SaveUserLinks;
+      end;
     finally
       XMLConfig.Free;
     end;

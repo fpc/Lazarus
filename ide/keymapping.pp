@@ -217,7 +217,8 @@ const
   ecOpenPackageOfCurUnit = ecUserFirst + 602;
   ecAddCurUnitToPkg      = ecUserFirst + 603;
   ecPackageGraph         = ecUserFirst + 604;
-  ecConfigCustomComps    = ecUserFirst + 605;
+  ecEditInstallPkgs      = ecUserFirst + 605;
+  ecConfigCustomComps    = ecUserFirst + 606;
 
   // custom tools menu
   ecExtToolFirst         = ecUserFirst + 700;
@@ -675,6 +676,7 @@ begin
   ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddCurUnitToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPackageGraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditInstallPkgs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigCustomComps: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
@@ -968,7 +970,7 @@ function ShowKeyMappingEditForm(Index:integer;
 begin
   Result:=mrCancel;
   if KeyMappingEditForm<>nil then exit;
-  KeyMappingEditForm:=TKeyMappingEditForm.Create(Application);
+  KeyMappingEditForm:=TKeyMappingEditForm.Create(nil);
   with KeyMappingEditForm do
     try
       KeyCommandRelationList:=AKeyCommandRelationList;
@@ -1227,6 +1229,7 @@ begin
     ecOpenPackageOfCurUnit  : Result:= lisMenuOpenPackageOfCurUnit;
     ecAddCurUnitToPkg       : Result:= lisMenuAddCurUnitToPkg;
     ecPackageGraph          : Result:= lisMenuPackageGraph;
+    ecEditInstallPkgs       : Result:= lisMenuEditInstallPkgs;
     ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
 
     // tools menu
@@ -2099,6 +2102,7 @@ begin
   AddDefault(C,'Open package of current unit',ecOpenPackageOfCurUnit);
   AddDefault(C,'Add active unit to a package',ecAddCurUnitToPkg);
   AddDefault(C,'Package graph',ecPackageGraph);
+  AddDefault(C,'Configure installed packages',ecEditInstallPkgs);
   AddDefault(C,'Configure custom components',ecConfigCustomComps);
 
   // tools menu

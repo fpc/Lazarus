@@ -244,7 +244,7 @@ function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions; Macros: TTransferMacroList): TModalResult;
 var CodeToolsDefinesEditor: TCodeToolsDefinesEditor;
 begin
-  CodeToolsDefinesEditor:=TCodeToolsDefinesEditor.Create(Application);
+  CodeToolsDefinesEditor:=TCodeToolsDefinesEditor.Create(nil);
   CodeToolsDefinesEditor.SetOptions(ACodeToolBoss,Options);
   CodeToolsDefinesEditor.Macros:=Macros;
   Result:=CodeToolsDefinesEditor.ShowModal;

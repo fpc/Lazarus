@@ -346,8 +346,13 @@ begin
   BeginUpdate(false);
   try
     AFilename:=PkgLink.Filename;
-    if not FileExists(AFilename) then exit;
+    if not FileExists(AFilename) then begin
+      PkgLink.FileDateValid:=false;
+      exit;
+    end;
     try
+      PkgLink.FileDate:=FileDateToDateTime(FileAge(AFilename));
+      PkgLink.FileDateValid:=true;
       XMLConfig:=TXMLConfig.Create(AFilename);
       NewPackage:=TLazPackage.Create;
       NewPackage.Filename:=AFilename;

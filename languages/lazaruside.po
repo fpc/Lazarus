@@ -1,5 +1,5 @@
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.2 beta"
+msgid "0.9.3 beta"
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
@@ -680,6 +680,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupackagegraph
 msgid "Package Graph"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditinstallpkgs
+msgid "Configure installed packages"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
@@ -2638,16 +2642,8 @@ msgstr ""
 msgid "Unit Style:"
 msgstr ""
 
-#: lazarusidestrconsts:dlgstatic
-msgid "Static"
-msgstr ""
-
-#: lazarusidestrconsts:dlgdynamic
-msgid "Dynamic"
-msgstr ""
-
-#: lazarusidestrconsts:dlgcosmart
-msgid "Smart"
+#: lazarusidestrconsts:dlgcosmartlinkable
+msgid "Smart Linkable"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcochecks
@@ -2755,15 +2751,7 @@ msgid "Strip Symbols From Executable"
 msgstr ""
 
 #: lazarusidestrconsts:dlglinklibraries
-msgid "Link Libraries:"
-msgstr ""
-
-#: lazarusidestrconsts:dlglinkdinlibs
-msgid "Link With Dynamic Libraries"
-msgstr ""
-
-#: lazarusidestrconsts:dlglinkstatlibs
-msgid "Link With Static Libraries"
+msgid "Link Style:"
 msgstr ""
 
 #: lazarusidestrconsts:dlglinksmart
@@ -5162,6 +5150,34 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: lazarusidestrconsts:lishelpdatabasenotfound
+msgid "Help Database not found"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpcontextnotfound
+msgid "Help Context not found"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpviewernotfound
+msgid "Help Viewer not found"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpnotfound
+msgid "Help not found"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpviewererror
+msgid "Help Viewer Error"
+msgstr ""
+
+#: lazarusidestrconsts:lishelpselectorerror
+msgid "Help Selector Error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunknownerrorpleasereportthisbug
+msgid "Unknown Error, please report this bug"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresourcestring
 msgid "Make ResourceString"
 msgstr ""
@@ -5471,7 +5487,7 @@ msgid "Ok"
 msgstr ""
 
 #: lazarusidestrconsts:lissortselsortselection
-msgid "Sort Selection"
+msgid "Sort selection"
 msgstr ""
 
 #: lazarusidestrconsts:lissortselpreview
@@ -7704,5 +7720,17 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisselectahelpitem
+msgid "Select a help item:"
+msgstr ""
+
+#: lazarusidestrconsts:liserrormovingcomponent
+msgid "Error moving component"
+msgstr ""
+
+#: lazarusidestrconsts:liserrormovingcomponent2
+msgid "Error moving component %s:%s"
 msgstr ""
 

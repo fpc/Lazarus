@@ -1,10 +1,10 @@
-#: lclstrconsts:rswarningunreleasedmessagesinqueue
-msgid " WARNING: There are %d messages left in the queue! I'll free them"
-msgstr " Avís: Hi ha %d missatges a la cua!, els allibero"
-
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " Avís: s'ha deixat %s estructures TimerInfo, les allibero"
+
+#: lclstrconsts:rswarningunreleasedmessagesinqueue
+msgid " WARNING: There are %d messages left in the queue! I'll free them"
+msgstr " Avís: Hi ha %d missatges a la cua!, els allibero"
 
 #: lclstrconsts:rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -126,10 +126,6 @@ msgstr ""
 msgid "All files (%s)|%s|%s"
 msgstr ""
 
-#: lclstrconsts:ifsvk_apps
-msgid "application key"
-msgstr ""
-
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
 msgstr ""
@@ -202,6 +198,10 @@ msgstr ""
 msgid "Duplicate menus"
 msgstr "Menús duplicats"
 
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr "Error a la LCL"
+
 #: lclstrconsts:ifsvk_end
 msgid "End"
 msgstr ""
@@ -213,10 +213,6 @@ msgstr "Error"
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Error creant dispositiu de context per %s.%s"
-
-#: lclstrconsts:rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "Error a la LCL"
 
 #: lclstrconsts:rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -302,6 +298,14 @@ msgstr "Informació"
 msgid "Insert"
 msgstr ""
 
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date :%s"
+msgstr "Data no vàlida:%s"
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr "Índex de ImageList no vàlid"
+
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
 msgstr "Acció de creació no vàlida"
@@ -318,21 +322,9 @@ msgstr "Enregistrament d'acció no vàlid"
 msgid "Invalid action unregistration"
 msgstr "Desenregistrament d'acció no vàlid"
 
-#: lclstrconsts:rsinvaliddate
-msgid "Invalid Date :%s"
-msgstr "Data no vàlida:%s"
-
-#: lclstrconsts:rsinvalidformobjectstream
-msgid "invalid Form object stream"
-msgstr "Fluid d'objectes de forma no vàlid"
-
 #: lclstrconsts:sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Tamany d'imatge no vàlid"
-
-#: lclstrconsts:sinvalidindex
-msgid "Invalid ImageList Index"
-msgstr "Índex de ImageList no vàlid"
 
 #: lclstrconsts:rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -352,10 +344,6 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
-msgstr ""
-
-#: lclstrconsts:ifsvk_lwin
-msgid "left windows key"
 msgstr ""
 
 #: lclstrconsts:rslistindexexceedsbounds
@@ -398,13 +386,13 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: lclstrconsts:rsnointerfaceobject
-msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "No hi ha objecte d'interfície. Si us plau, comprova si la unitat \"interfaces\" ha estat afegida a la clàusula Uses"
-
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
 msgstr ""
+
+#: lclstrconsts:rsnointerfaceobject
+msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr "No hi ha objecte d'interfície. Si us plau, comprova si la unitat \"interfaces\" ha estat afegida a la clàusula Uses"
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -446,10 +434,6 @@ msgstr "La trajectòria ha d'existir"
 msgid "Pause key"
 msgstr ""
 
-#: lclstrconsts:rsdefaultfileinfovalue
-msgid "permissions user group size date time"
-msgstr "permisos usuari grup tamany dia hora"
-
 #: lclstrconsts:ifsvk_print
 msgid "Print"
 msgstr ""
@@ -474,10 +458,6 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: lclstrconsts:ifsvk_rwin
-msgid "right windows key"
-msgstr ""
-
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Guardar fitxer com a "
@@ -494,6 +474,10 @@ msgstr "Propietat de la barra desplaçadora fora de rang"
 msgid "Select"
 msgstr ""
 
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
+
 #: lclstrconsts:rspickdate
 msgid "Select a date"
 msgstr ""
@@ -505,10 +489,6 @@ msgstr "Seleccionar una font"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Seleccionar color"
-
-#: lclstrconsts:rsfdselectdirectory
-msgid "Select Directory"
-msgstr ""
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
@@ -585,4 +565,24 @@ msgstr "Avís:"
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
 msgstr "Si a tot"
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr "Fluid d'objectes de forma no vàlid"
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: lclstrconsts:rsdefaultfileinfovalue
+msgid "permissions user group size date time"
+msgstr "permisos usuari grup tamany dia hora"
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
 

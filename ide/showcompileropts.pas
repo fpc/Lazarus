@@ -57,7 +57,7 @@ var
   ShowCompilerOptionsDlg: TShowCompilerOptionsDlg;
 begin
   Result:=mrOk;
-  ShowCompilerOptionsDlg:=TShowCompilerOptionsDlg.Create(Application);
+  ShowCompilerOptionsDlg:=TShowCompilerOptionsDlg.Create(nil);
   with ShowCompilerOptionsDlg do begin
     CmdLineMemo.Lines.Text:=CmdLine;
     ShowModal;

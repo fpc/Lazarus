@@ -30,7 +30,8 @@ unit SizeCompsDlg;
 interface
 
 uses
-  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, StdCtrls, LResources;
+  Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
+  LResources;
 
 type
   TSizeComponentsDialog = class(TForm)
@@ -46,21 +47,26 @@ type
     constructor Create(AOwner: TComponent);  override;
   end;
 
-var SizeComponentsDialog: TSizeComponentsDialog;
 
-function ShowSizeComponentsDialog: TModalResult;
+function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
+  VertSizingID, FixedHeight: integer): TModalResult;
 
 implementation
 
-function ShowSizeComponentsDialog: TModalResult;
+function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
+  VertSizingID, FixedHeight: integer): TModalResult;
+var SizeComponentsDialog: TSizeComponentsDialog;
 begin
-  if SizeComponentsDialog=nil then
-    SizeComponentsDialog:=TSizeComponentsDialog.Create(Application);
+  SizeComponentsDialog:=TSizeComponentsDialog.Create(nil);
   with SizeComponentsDialog do begin
     SetBounds((Screen.Width-365) div 2,(Screen.Height-175) div 2,355,165);
     WidthRadioGroup.ItemIndex:=0;
     HeightRadioGroup.ItemIndex:=0;
     Result:=ShowModal;
+    HorizSizingID:=SizeComponentsDialog.WidthRadioGroup.ItemIndex;
+    FixedWidth:=StrToIntDef(SizeComponentsDialog.WidthEdit.Text,0);
+    VertSizingID:=SizeComponentsDialog.HeightRadioGroup.ItemIndex;
+    FixedHeight:=StrToIntDef(SizeComponentsDialog.HeightEdit.Text,0);
   end;
 end;
 
@@ -173,8 +179,5 @@ procedure TSizeComponentsDialog.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
-
-initialization
-  SizeComponentsDialog:=nil;
 
 end.

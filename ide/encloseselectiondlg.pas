@@ -99,7 +99,7 @@ function ShowEncloseSelectionDialog(var TheType: TEncloseSelectionType
 var
   TheDialog: TEncloseSelectionDialog;
 begin
-  TheDialog:=TEncloseSelectionDialog.Create(Application);
+  TheDialog:=TEncloseSelectionDialog.Create(nil);
   Result:=TheDialog.ShowModal;
   if Result=mrOk then
     TheType:=TheDialog.GetEncloseType;

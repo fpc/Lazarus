@@ -326,7 +326,7 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(Application);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
