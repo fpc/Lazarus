@@ -41,9 +41,12 @@ var
     I: Integer;
   begin
     Result := True;
+
     for I := ControlCount - 1 downto 0 do
+ begin
       if (Controls[I].Align <> alNone) or
          (Controls[I].Anchors <> [akLeft, akTop]) then Exit;
+    end;	 
     Result := False;
   end;
 
@@ -201,7 +204,7 @@ with Control do
     AlignList.Clear;
     if (AControl <> nil) and
        ((AAlign = alNone)
-         or AControl.Visible
+ or AControl.Visible
 	 or (csDesigning in AControl.ComponentState)
 	 and not (csNoDesignVisible in AControl.ControlStyle))
        and (AControl.Align = AAlign) then
@@ -211,11 +214,14 @@ with Control do
     for I := 0 to ControlCount - 1 do
     begin
       Control := Controls[I];
+
       if (Control.Align = AAlign) 
       and ((AAlign = alNone) or (Control.Visible or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
           [csAcceptsControls, csNoDesignVisible])) or (csDesigning in Control.ComponentState) and not (csNoDesignVisible in Control.ControlStyle)) then
       begin
+      
         if Control = AControl then Continue;
+
         X := 0;
         while (X < AlignList.Count) 
         and not InsertBefore(Control, TControl(AlignList[X]), AAlign) do 
@@ -248,6 +254,15 @@ begin
   FLastResize.Y := 0;
 
   if Showing then AdjustSize;
+end;
+
+{------------------------------------------------------------------------------}
+{  TWinControl BroadCast                                                       }
+{------------------------------------------------------------------------------}
+procedure TWinControl.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  Realign;
 end;
 
 {------------------------------------------------------------------------------}
@@ -344,6 +359,17 @@ procedure TWinControl.DisableAlign;
 begin
   Inc(FAlignLevel);
 End;
+
+{------------------------------------------------------------------------------}
+{  TWinControl DoConstraintsChange                                             }
+{------------------------------------------------------------------------------}
+procedure TWinControl.DoConstraintsChange(Sender : TObject);
+begin
+  
+inherited DoConstraintsChange(Sender);
+  InterfaceObject.IntSendMessage3(LM_SETGEOMETRY, Self, nil);
+End;
+
 
 {------------------------------------------------------------------------------}
 {  TWinControl EnableAlign                                                     }
@@ -1123,7 +1149,7 @@ Begin
       AControl.InvalidateControl(AControl.Visible, False);
   Remove(AControl);
 //  Perform(CM_CONTROLLISTCHANGE, Integer(AControl), Integer(False));
-//  Realign;
+  Realign;
 End;
 
 {------------------------------------------------------------------------------}
@@ -1260,15 +1286,6 @@ end;
 procedure TWinControl.Hide;
 begin
    Visible := False;
-end;
-
-{------------------------------------------------------------------------------}
-{  TWinControl Show                                                            }
-{------------------------------------------------------------------------------}
-procedure TWinControl.Show;
-begin
-   Assert(False,Format('Trace: [TWinControl.Show] %s(%s)', [ClassName, Name]));
-   Visible := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1423,54 +1440,6 @@ begin
 end;                          
 
 {------------------------------------------------------------------------------
-  Method: TWinControl.WMSize
-  Params:   Msg: The message
-  Returns:  nothing
-
-  event handler.
-  
-  Message.SizeType=Size_Restored is the default. All other values will force a
-  ReAlign.
- ------------------------------------------------------------------------------}
-procedure TWinControl.WMSize(Var Message : TLMSize);
-begin
-  if (Message.SizeType=Size_Restored) 
-  and (FWidth=Message.Width) and (FHeight=Message.Height) then exit;
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.WMSize] Name=',Name,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
-{$ENDIF}
-  Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
-  { Just coordinate the bounds }
-  FWidth  := Message.Width;
-  FHeight := Message.Height;
-  Realign;
-  RequestAlign;
-  if not (csLoading in ComponentState) then Resize;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TWinControl.LMMove
-  Params:   Msg: The message
-  Returns:  nothing
-
-  event handler.
-  
-  Message.MoveType=0 is the default, all other values will force a RequestAlign.
- ------------------------------------------------------------------------------}
-procedure TWinControl.WMMove(var Message: TLMMove);
-begin
-  if (Message.MoveType=0) and (FLeft=Message.XPos) and (FTop=Message.YPos) then
-    exit;
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.WMMove] Name=',Name,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' Left=',Left,' Top=',Top);
-{$ENDIF}
-  { Just sync the coordinates }
-  FLeft := Message.XPos;
-  FTop  := Message.YPos;
-  RequestAlign;
-end;                          
-
-{------------------------------------------------------------------------------
   Method: TWinControl.WMNofity
   Params:   Msg: The message
   Returns:  nothing
@@ -1608,37 +1577,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWinControl.WMWindowPosChanged
-  Params:   Msg: The message
-  Returns:  nothing
-
-  event handler.
- ------------------------------------------------------------------------------}
-procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
-begin
-{$IFDEF CHECK_POSITION}
-Writeln('[TWinControl.WMWindowPosChanged] ',Name,':',Classname,' Old=',FLeft,',',FTop,',',FWidth,',',FHeight);
-{$ENDIF}
-  if Message.WindowPos <> nil then
-  with Message.WindowPos^ do
-  begin
-    FLeft := X;
-    FWidth := cX;
-    FTop := Y;
-    FHeight := cY;
-{$IFDEF CHECK_POSITION}
-Writeln('[TWinControl.WMWindowPosChanged] B ',Name,':',Classname,' New=',FLeft,',',FTop,',',FWidth,',',FHeight);
-{$ENDIF}
-    Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
-    Message.Result := 1; // message handled
-  end
-  else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
-
-  inherited WMWindowPosChanged(Message);
-end;
-
-
-{------------------------------------------------------------------------------
   Function: TWinControl.HandleAllocated
   Params:   None
   Returns:  True is handle is allocated
@@ -1702,8 +1640,7 @@ begin
   if FWinControls <> nil then begin
     for n := 0 to FWinControls.Count - 1 do
       with TWinControl(FWinControls.Items[n]) do
-        if Visible then
-          HandleNeeded;
+        if Visible then HandleNeeded;
   end;
 //writeln('[TWinControl.CreateWnd] END ',Classname);
 end;
@@ -1850,24 +1787,26 @@ procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
 var
   R : TRect;
 begin
-  if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
-  then Exit;
+  { Ignore the request if in the middle of resizing }
+  { Does not have effect if resize messages are queued and not processed immediately }
+  if FResizeLock or ((ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)) then Exit;
+
+  FResizeLock:= true;
+  try
 {$IFDEF CHECK_POSITION}
 writeln('[TWinControl.SetBounds] ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight);
 {$ENDIF}
-//if (ALeft=0) and (ATop=0) and (AWidth=0) and (AHeight=0) then Halt;
-  FLeft := aLeft;
-  FTop := aTop;
-  FWidth := aWidth;
-  FHeight := aHeight;
+    inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 
-  if HandleAllocated
-  then begin
-    R:= Rect(ALeft, ATop, AWidth, AHeight);
-//writeln('[TWinControl.SetBounds] ',name,':',Classname,' ',Height);
-    CNSendMessage(LM_SetSize, Self, @R);
+    if HandleAllocated
+ then begin
+      R:= Rect(Left, Top, Width, Height);
+      CNSendMessage(LM_SetSize, Self, @R);
+    end;    
+  finally
+    FResizeLock:= false;
   end
-  else inherited SetBounds(aLeft, aTop, aWidth, aHeight);
+;
 end;
 
 {------------------------------------------------------------------------------
@@ -1995,6 +1934,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.49  2002/01/21 14:17:47  lazarus
   MG: added find-block-start and renamed find-block-other-end
 
