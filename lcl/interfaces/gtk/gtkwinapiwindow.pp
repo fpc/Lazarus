@@ -209,11 +209,7 @@ begin
   gtk_style_set_background (Widget^.theStyle, Widget^.Window, GTK_STATE_NORMAL);
 //  gdk_window_set_background(Widget^.Window, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
 //  gdk_window_set_background (Client^.OtherWindow, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
-  {$IFDEF VER1_0}
   gdk_window_set_back_pixmap(Widget^.Window,nil,0);
-  {$ELSE}
-  gdk_window_set_back_pixmap(Widget^.Window,nil,false);
-  {$ENDIF}
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl;
@@ -781,6 +777,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/12/23 10:28:02  mattias
+  fixed setting background
+
   Revision 1.41  2002/12/23 10:23:45  mattias
   fix for fpc 1.0.7
 
