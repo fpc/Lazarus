@@ -93,8 +93,10 @@ type
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
     FVisible : Boolean;
     FOnMouseMove: TMouseMoveEvent;
+    FOnMouseDown: TMouseEvent;
 
     Procedure EditorMouseMoved(Sender : TObject;Shift : TShiftState; X,Y : Integer);
+    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
     Function FindFile(const Value : String) : String;
 
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
@@ -201,6 +203,7 @@ type
     property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
        read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
     property OnMouseMove : TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
 
   end;
 
@@ -260,7 +263,8 @@ type
     FHintWIndow : THintWindow;
     FHintTimer : TTimer;
     Procedure HintTimer(sender : TObject);
-    Procedure OnMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+    Procedure MouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+    Procedure MouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X,Y : Integer);
 
     Procedure NextEditor;
     Procedure PrevEditor;
@@ -1093,6 +1097,7 @@ writeln('TSourceEditor.CreateEditor  A ');
       OnGutterClick := @Self.OnGutterClick;
       OnSpecialLineColors:=@OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
+      OnMouseDown := @EditorMouseDown;
       Show;
     end;
     if FCodeTemplates<>nil then
@@ -1388,12 +1393,14 @@ begin
   Result := '';
   //Figure out the line number
   TopLine := FEditor.TopLine;
+  Writeln('TOPLINE = ',TopLine);
   LineHeight := FEditor.LineHeight;
 //  Writeln('GetWord...,',position.X,',',Position.Y);
   if Position.Y > 1 then
      LineNum := Position.Y div LineHeight
      else
      LineNum := 1;
+  LineNum := LineNUm + (TopLine-1);
   XLine := Position.X div FEditor.CharWidth;
   if XLine = 0 then inc(XLine);
   
@@ -1436,6 +1443,13 @@ begin
 
   Result := Texts;
 
+end;
+
+Procedure TSourceEditor.EditorMouseDown(Sender : TObject; Button : TMouseButton;
+   Shift : TShiftState; X, Y : Integer);
+begin
+  if Assigned(OnMouseDown) then
+     OnMouseDown(Sender, Button, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------}
@@ -2171,13 +2185,9 @@ writeln('TSourceNotebook.NewSE C ');
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
-  writeln('ASSIGNING ONMOUSEMOVE');
-  Result.OnMouseMove := @OnMouseMove;
-  Writeln('-------------------------------------------');
-  Writeln('-------------------------------------------');
-  Writeln('-------------------------------------------');
-  Writeln('-------------------------------------------');
-  Writeln('-------------------------------------------');
+  Result.OnMouseMove := @MouseMove;
+  Result.OnMouseDown := @MouseDown;
+
 {$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE end ');
 {$ENDIF}
@@ -2862,7 +2872,7 @@ Begin
   end;
 end;
 
-Procedure TSourceNotebook.OnMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+Procedure TSourceNotebook.MouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
 begin
 //writeln('MOUSEMOVE');
     if FHintWIndow.Visible then
@@ -2884,13 +2894,16 @@ begin
   cPosition := Mouse.CursorPos;
 
   cPosition := ScreenToClient(cPosition);
+  //Check to see if we are in the windows bounds
   if ((cPosition.X <=EditorOpts.GutterWidth) or (cPosition.X >= Width) or (cPosition.Y <= 25)
   or (cPosition.Y >= Height)) then
     Exit;
 
+  //Get the active SourceEditor
   Se := GetActiveSE;
   if Not Assigned(se) then Exit;
   
+  //Account for the gutter and tabs
   TextPosition.x := cPosition.X-EditorOPts.GutterWidth;
   TextPosition.Y := cPosition.Y - 28;
   AHint := SE.GetWordAtPosition(TextPosition);
@@ -2903,6 +2916,7 @@ begin
      AHint := 'type System.Real: Double -system.pas';
 
 
+  //If no hint, then Exit
   if AHint = '' then Exit;
   
 //  Writeln('cPosition ius ',cPosition.x,',',cPosition.y);
@@ -2917,6 +2931,13 @@ begin
 
   FHintWindow.ActivateHint(Rect,AHint);
 
+end;
+
+Procedure TSourceNotebook.MouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X, Y
+   : Integer);
+begin
+  if FHIntWindow.Visible then
+     FHintWindow.Visible := False;
 end;
 
 
