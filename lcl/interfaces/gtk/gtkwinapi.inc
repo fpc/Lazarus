@@ -2141,10 +2141,10 @@ end;
 function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  pStr: PChar;
+  LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
-  NewText,oldText : String;
-  AY, NUm : Integer;
+  //NewText,oldText : String;
+  AY, Num : Integer;
   Line : Integer;
   TXTPt : TPoint;
   TM  : TTextMetric;
@@ -2168,64 +2168,74 @@ begin
     else begin
       // TODO: implement other parameters.
       ADC := SaveDC(DC);
-      pStr := StrAlloc(Count + 1);
-      try
-        StrLCopy(pStr, Str, Count);
-        pStr[Count] := #0;
-        if (Options and ETO_OPAQUE) <> 0 then
-        begin
-          Width := Rect^.Right - Rect^.Left;
-          Height := Rect^.Bottom - Rect^.Top;
-          gdk_gc_set_fill(GC, GDK_SOLID);
-          gdk_gc_set_foreground(GC, @CurrentBackColor);
-          gdk_draw_rectangle(Drawable, GC, 1, Rect^.Left, Rect^.Top, Width, Height);
-        end;
-        SelectGDKTextProps(DC);
-        if (Options and ETO_CLIPPED) <> 0 then
-        begin
-          X := Rect^.Left;
-          Y := Rect^.Top;
-          IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
-            Rect^.Bottom);
-        end;
-        Line := 1;
-        OldText := StrPas(pStr);
-        Num := pos(#10,OldText);
-        AY := Y;
-        GetTextMetrics(DC, TM);
-	      TxtPt.X := X;
-	      TxtPt.Y := AY + TM.tmAscent;
-	      if Num = 0 then begin
-	        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                        TxtPt.X, TxtPt.Y, pStr, Count);
-        end else
-        Begin  //write multiple lines
-          while Num > 0 do begin
-            NewText := Copy(OldText,1,Num);
-            Case OldText[Num] of
-              #13,#10 : Delete(NewText,Num,1);
-            end;
-            If Num -1 > 0 then
-              Case OldText[Num-1] of
-                #13,#10 : Delete(NewText,Num-1,1);
-              end;
-            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                           TxtPt.X, TxtPt.Y, pchar(NewText), Length(NewText));
-            AY := TxtPt.Y;
-            TxtPt.Y := AY + TM.tmAscent;
-            Delete(OldText,1,Num);
-            Num := pos(#10,OldText);
-            inc(line);
-          end;
-          if OldText <> '' then begin
-            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                          TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
-          end;
-        end;
-      finally
-        RestoreDC(DC, ADC);
-        StrDispose(pStr);
+      //pStr := StrAlloc(Count + 1);
+      //StrLCopy(pStr, Str, Count);
+      //pStr[Count] := #0;
+      if (Options and ETO_OPAQUE) <> 0 then
+      begin
+        Width := Rect^.Right - Rect^.Left;
+        Height := Rect^.Bottom - Rect^.Top;
+        gdk_gc_set_fill(GC, GDK_SOLID);
+        gdk_gc_set_foreground(GC, @CurrentBackColor);
+        gdk_draw_rectangle(Drawable, GC, 1,
+                           Rect^.Left, Rect^.Top, Width, Height);
       end;
+      SelectGDKTextProps(DC);
+      if (Options and ETO_CLIPPED) <> 0 then
+      begin
+        X := Rect^.Left;
+        Y := Rect^.Top;
+        IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
+          Rect^.Bottom);
+      end;
+      Line := 1;
+      //OldText := StrPas(pStr);
+      Num := FindChar(#10,Str,Count);
+      AY := Y;
+      GetTextMetrics(DC, TM);
+      TxtPt.X := X;
+      TxtPt.Y := AY + TM.tmAscent;
+      if Num < 0 then begin
+        if Count> 0 then
+          gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                        TxtPt.X, TxtPt.Y, Str, Count);
+      end else
+      Begin  //write multiple lines
+        LineStart:=Str;
+        StrEnd:=Str+Count;
+        while LineStart < StrEnd do begin
+          //NewText := Copy(OldText,1,Num);
+          //Case OldText[Num] of
+          //  #13,#10 : Delete(NewText,Num,1);
+          //end;
+          //If Num -1 > 0 then
+          //  Case OldText[Num-1] of
+          //    #13,#10 : Delete(NewText,Num-1,1);
+          //  end;
+          LineEnd:=LineStart+Num;
+          if Num>0 then
+            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                           TxtPt.X, TxtPt.Y, LineStart, Num);
+          AY := TxtPt.Y;
+          TxtPt.Y := AY + TM.tmAscent;
+          //Delete(OldText,1,Num);
+          //Num := pos(#10,OldText);
+          LineStart:=LineEnd+1; // skip #10
+          if (LineStart<StrEnd) and (LineStart^=#13) then
+            inc(LineStart); // skip #10
+          Count:=StrEnd-LineStart;
+          Num:=FindChar(#10,LineStart,Count);
+          if Num<0 then
+            Num:=Count;
+          //inc(line);
+        end;
+        //if OldText <> '' then begin
+        //  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+        //                TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
+        //end;
+      end;
+      RestoreDC(DC, ADC);
+      //StrDispose(pStr);
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
@@ -2685,7 +2695,6 @@ begin
   then begin
     if Values.Font <> nil
     then begin
-//write('GetDC->');
       GdiObject:=NewGDIObject(gdiFont);
       GdiObject^.GDIFontObject := Values.Font;
       gdk_font_ref(Values.Font);
@@ -5980,6 +5989,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2002/08/21 13:35:25  lazarus
+  MG: accelerations for synedit
+
   Revision 1.99  2002/08/21 11:29:36  lazarus
   MG: fixed mem some leaks in ide and gtk
 
