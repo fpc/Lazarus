@@ -321,7 +321,7 @@ type
     MoveEditorRightMenuItem: TMenuItem;
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: Pointer);
     procedure SrcPopUpMenuPopup(Sender: TObject);
-    Procedure BookMarkClicked(Sender : TObject);
+    Procedure BookMarkSetClicked(Sender : TObject);
     Procedure BookMarkGotoClicked(Sender : TObject);
     Procedure ReadOnlyClicked(Sender : TObject);
     Procedure ShowUnitInfo(Sender : TObject);
@@ -1896,15 +1896,14 @@ procedure TSourceEditor.LinesDeleted(sender : TObject; FirstLine,
   Count : Integer);
 begin
   //notify the notebook that lines were deleted.
-  //bookmarks will use this to update themselves
+  //marks will use this to update themselves
 end;
 
 procedure TSourceEditor.LinesInserted(sender : TObject; FirstLine,
   Count : Integer);
 begin
   //notify the notebook that lines were Inserted.
-  //bookmarks will use this to update themselves
-
+  //marks will use this to update themselves
 end;
 
 procedure TSourceEditor.SetVisible(Value: boolean);
@@ -2622,7 +2621,10 @@ end;
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
-  i: integer;
+  BookMarkID, BookMarkX, BookMarkY: integer;
+  MarkSrcEdit: TSourceEditor;
+  MarkDesc: String;
+  MarkEditorIndex: Integer;
 begin
   if not (Sender is TPopupMenu) then exit;
   ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
@@ -2630,10 +2632,25 @@ begin
   ReadOnlyMenuItem.Checked:=ASrcEdit.ReadOnly;
   ShowLineNumbersMenuItem.Checked:=
     ASrcEdit.EditorComponent.Gutter.ShowLineNumbers;
-  for i:=0 to 9 do begin
-    SetBookmarkMenuItem[i].Checked:=(FindBookmark(i)<>nil);
-    GotoBookmarkMenuItem[i].Checked:=SetBookmarkMenuItem[i].Checked;
+    
+  // bookmarks
+  for BookMarkID:=0 to 9 do begin
+    MarkDesc:=' '+IntToStr(BookMarkID);
+    MarkSrcEdit:=FindBookmark(BookMarkID);
+    if (MarkSrcEdit<>nil)
+    and MarkSrcEdit.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY)
+    then begin
+      MarkEditorIndex:=FindPageWithEditor(MarkSrcEdit);
+      MarkDesc:=MarkDesc+': '+Notebook.Pages[MarkEditorIndex]
+        +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+    end;
+    SetBookmarkMenuItem[BookMarkID].Checked:=(MarkSrcEdit<>nil);
+    SetBookmarkMenuItem[BookMarkID].Caption:=uemSetBookmark+MarkDesc;
+    GotoBookmarkMenuItem[BookMarkID].Checked:=
+      SetBookmarkMenuItem[BookMarkID].Checked;
+    GotoBookmarkMenuItem[BookMarkID].Caption:=uemBookmarkN+MarkDesc;
   end;
+  
   MoveEditorLeftMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
   MoveEditorRightMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
 end;
@@ -2701,7 +2718,7 @@ Begin
     Begin
       SubMenuItem := TMenuItem.Create(Self);
       SubmenuItem.Name:='GotoBookmark'+IntToStr(I)+'MenuItem';
-      SubMenuItem.Caption := uemBookmarkN+inttostr(i);
+      SubMenuItem.Caption := uemBookmarkN+IntToStr(i);
       SubMenuItem.OnClick := @BookmarkGotoClicked;
       GotoBookmarkMenuItem.Add(SubMenuItem);
     end;
@@ -2715,8 +2732,8 @@ Begin
     Begin
       SubMenuItem := TMenuItem.Create(Self);
       SubMenuItem.Name:='SubSetBookmarkMenuItem'+IntToStr(I);
-      SubMenuItem.Caption := uemBookmarkN+inttostr(i);
-      SubMenuItem.OnClick := @BookmarkClicked;
+      SubMenuItem.Caption := uemBookmarkN+IntToStr(i);
+      SubMenuItem.OnClick := @BookmarkSetClicked;
       SetBookmarkMenuItem.Add(SubMenuItem);
     end;
 
@@ -3193,7 +3210,7 @@ begin
   FHintWindow.ActivateHint(HintWinRect,TheHint);
 end;
 
-Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);
+Procedure TSourceNotebook.BookMarkSetClicked(Sender : TObject);
 // popup menu:  set bookmark clicked
 var
   MenuItem : TMenuItem;
