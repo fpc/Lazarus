@@ -362,6 +362,29 @@ begin
   //TODO: TMENUITEM.SETINDEXINDEX
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TMenuItem.SetParentComponent
+  Params:  Value:
+  Returns: Nothing
+
+  Enables a menuItem.
+ ------------------------------------------------------------------------------}
+Procedure TMenuItem.SetParentComponent(Value : TComponent);
+begin
+   if assigned (FParent) and (FParent = Value) 
+      then exit;
+
+   if assigned (FParent) and (FParent <> Value) 
+      then TMenuItem (FParent).Remove (self);
+  
+   if (Value is TMenu) 
+      then TMenu (value).Items.Add (self)
+   else if (Value is TMenuItem) 
+      then TMenuItem (value).Add (self)
+   else
+      raise Exception.Create ('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.SetShortCut
@@ -426,6 +449,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/05/19 08:27:43  lazarus
+  + added helper functions to enabled streaming of TMenu /TMenuItem
+    stoppok
+
   Revision 1.12  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 
@@ -489,6 +516,10 @@ end;
 
 
   $Log$
+  Revision 1.13  2002/05/19 08:27:43  lazarus
+  + added helper functions to enabled streaming of TMenu /TMenuItem
+    stoppok
+
   Revision 1.12  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 

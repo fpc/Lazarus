@@ -91,6 +91,23 @@ begin
   Result := FItems.Handle;
 end;
 
+
+{------------------------------------------------------------------------------
+  Function: TMenu.GetChildren
+  Params:   proc
+  	    root
+  Returns:  nothing
+
+  Helper function for streaming.
+ ------------------------------------------------------------------------------}
+procedure TMenu.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+   i : integer;	
+begin
+   for i := 0 to FItems.Count - 1 
+      do Proc (FItems[i]); 
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenu.HandleAllocated
   Params:   None
@@ -133,6 +150,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/05/19 08:27:43  lazarus
+  + added helper functions to enabled streaming of TMenu /TMenuItem
+    stoppok
+
   Revision 1.8  2002/05/16 14:23:20  lazarus
   MG: reuced output
 
