@@ -1653,6 +1653,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TControl.HasParent
+  Params:  
+  Returns: True - the item has a parent responsible for streaming
+
+  This function will be called during streaming to decide if a component has
+  to be streamed by it's owner or parent.
+ ------------------------------------------------------------------------------}
+function TControl.HasParent : Boolean;
+begin
+   Result := (FParent <> nil);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TControl.SendToBack
   Params:  None
   Returns: Nothing
@@ -1739,6 +1752,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.54  2002/05/30 21:17:27  lazarus
+  lcl/controls.pp
+
   Revision 1.53  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
