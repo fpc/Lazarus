@@ -157,7 +157,7 @@ begin
     if GdkWindow<>nil then begin
       AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
       if (AForm<>nil) and (AForm is TCustomForm) then
-        Screen.MoveFormToFront(AForm);
+        Screen.MoveFormToZFront(AForm);
       gdk_window_raise(GdkWindow);
       // how to set the keyboard focus to the raised window?
       //gtk_window_activate_focus(PGtkWindow(hWnd));
@@ -8078,6 +8078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.235  2003/04/16 22:11:35  mattias
+  fixed codetools Makefile, fixed default prop not found error
+
   Revision 1.234  2003/04/16 17:20:24  mattias
   implemented package check broken dependency on compile
 

@@ -16,7 +16,7 @@ implicitunits=winext win32def win32int
 
 [compiler]
 options=-gl -S2 -Sh
-unitdir=../../units
+unitdir=../../units .
 unittargetdir=../../units/win32
 
 [clean]
