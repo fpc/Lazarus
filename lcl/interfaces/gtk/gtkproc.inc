@@ -791,29 +791,58 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  GetWidgetScreenPos
+
+  Returns the absolute left top position of a widget on the screen.
+-------------------------------------------------------------------------------}
+function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
+var
+  TheWindow: PGdkWindow;
+begin
+  TheWindow:=TheWidget^.Window;
+  gdk_window_get_origin(TheWindow,@Result.X,@Result.Y);
+  // check if the gdkwindow is the clientwindow of the parent
+  if gtk_widget_get_parent_window(TheWidget)=TheWindow then begin
+    // the widget is using its parent window
+    // -> adjust the coordinates
+    inc(Result.X,TheWidget^.Allocation.X);
+    inc(Result.Y,TheWidget^.Allocation.Y);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  GetWidgetClientScreenPos
+
+  Returns the absolute left top position of a widget's client area
+  on the screen.
+-------------------------------------------------------------------------------}
+function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
+var
+  ClientWidget: PGtkWidget;
+begin
+  ClientWidget:=GetFixedWidget(TheWidget);
+  if ClientWidget<>nil then begin
+    gdk_window_get_origin(ClientWidget^.Window,@Result.X,@Result.Y);
+  end else begin
+    Result:=GetWidgetOrigin(TheWidget);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   TranslateGdkPointToClientArea
 
   Translates SourcePos relative to SourceWindow to a coordinate relative to the
-  client area of the DestinationWidget.
+  client area of the LCL WinControl.
 -------------------------------------------------------------------------------}
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
-  SourcePos: TPoint;
-  DestinationWidget: PGtkWidget): TPoint;
+  SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
 var
   SrcWindowOrigin: TPoint;
-  ClientWidget: PGtkWidget;
-  ClientAreaWindow: PGdkWindow;
   ClientAreaWindowOrigin: TPoint;
   Src2ClientAreaVector: TPoint;
 begin
   gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
-  ClientWidget:=GetFixedWidget(DestinationWidget);
-  if ClientWidget<>nil then
-    ClientAreaWindow:=ClientWidget^.Window
-  else
-    ClientAreaWindow:=DestinationWidget^.Window;
-  gdk_window_get_origin(ClientAreaWindow,
-                        @ClientAreaWindowOrigin.X,@ClientAreaWindowOrigin.Y);
+  ClientAreaWindowOrigin:=GetWidgetClientOrigin(DestinationWidget);
   Src2ClientAreaVector.X:=ClientAreaWindowOrigin.X-SrcWindowOrigin.X;
   Src2ClientAreaVector.Y:=ClientAreaWindowOrigin.Y-SrcWindowOrigin.Y;
   Result.X:=SourcePos.X-Src2ClientAreaVector.X;
@@ -1637,6 +1666,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.54  2002/07/23 07:40:52  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.53  2002/07/20 13:47:04  lazarus
   MG: fixed eventmask for realized windows
 
