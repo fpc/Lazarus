@@ -783,6 +783,7 @@ ide/helpoptions.pas svneol=native#text/pascal
 ide/idedefs.pas svneol=native#text/pascal
 ide/ideoptiondefs.pas svneol=native#text/pascal
 ide/ideprocs.pp svneol=native#text/pascal
+ide/ideprotocol.pas svneol=native#text/pascal
 ide/imexportcompileropts.lfm svneol=native#text/plain
 ide/imexportcompileropts.lrs svneol=native#text/pascal
 ide/imexportcompileropts.pas svneol=native#text/pascal

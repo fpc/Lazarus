@@ -1207,41 +1207,30 @@ begin
        ,FAutoSaveIntervalInSecs,600);
     XMLConfig.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile'
        ,FLastSavedProjectFile,'');
-    XMLConfig.SetDeleteValue(
-       Path+'AutoSave/OpenLastProjectAtStart',
+    XMLConfig.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',
        FOpenLastProjectAtStart,true);
 
     // windows
-    FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,
-      Path+'Desktop/');
-    FIDEDialogLayoutList.SaveToXMLConfig(XMLConfig,
-      Path+'Desktop/Dialogs');
-    XMLConfig.SetDeleteValue(
-      Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
+    FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/');
+    FIDEDialogLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/Dialogs');
+    XMLConfig.SetDeleteValue(Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
       FMinimizeAllOnMinimizeMain,true);
-    XMLConfig.SetDeleteValue(
-      Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,false);
+    XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
+      false);
 
     // form editor
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/ShowGrid',FShowGrid,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/GridColor',FGridColor,clBlack);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/GridSizeX',FGridSizeX,8);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/GridSizeY',FGridSizeY,8);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/ShowGuideLines',FShowGuideLines,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/SnapToGuideLines',FSnapToGuideLines,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/GuideLineColorLeftTop',
+    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,8);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,8);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGuideLines',FShowGuideLines,
+                             true);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGuideLines',
+                             FSnapToGuideLines,true);
+    XMLConfig.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',
        FGuideLineColorLeftTop,clGreen);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/GuideLineColorRightBottom',
+    XMLConfig.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',
        FGuideLineColorRightBottom,clBlue);
     XMLConfig.SetDeleteValue(Path+'FormEditor/ShowComponentCaptions',
        FShowComponentCaptions,true);

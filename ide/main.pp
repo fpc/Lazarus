@@ -73,6 +73,8 @@ uses
   NewItemIntf, PackageIntf, ProjectIntf, LazIDEIntf,
   // synedit
   SynEditKeyCmds,
+  // protocol
+  IDEProtocol,
   // compile
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
   ImExportCompilerOpts,
@@ -454,6 +456,7 @@ type
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
 
     // methods for start
+    procedure StartProtocol;
     procedure LoadGlobalOptions;
     procedure SetupMainMenu; override;
     procedure SetupStandardProjectTypes;
@@ -954,6 +957,7 @@ begin
   
   // load options
   CreatePrimaryConfigPath;
+  StartProtocol;
   LoadGlobalOptions;
 
   // set the IDE mode to none (= editing mode)
@@ -1082,6 +1086,8 @@ begin
   FreeThenNil(SourceNotebook);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
+
+  FreeThenNil(IDEProtocolOpts);
   DebugLn('[TMainIDE.Destroy] END');
 end;
 
@@ -1501,6 +1507,14 @@ procedure TMainIDE.SetupStartProject;
       dec(i);
     end;
   end;
+  
+  function AskIfLoadLastFailingProject: boolean;
+  begin
+    Result:=MessageDlg('An error occured at last startup while loading '
+      +EnvironmentOptions.LastSavedProjectFile+ '!'#13
+      +#13
+      +'Load this project again?', mtWarning, [mbYes,mbNo],0)=mrYes;
+  end;
 
 var
   ProjectLoaded: Boolean;
@@ -1511,7 +1525,7 @@ var
   AFilename: String;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.Create A ***********');
+  writeln('TMainIDE.SetupStartProject A ***********');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
@@ -1531,13 +1545,24 @@ begin
       end;
     end;
 
-    // try loading last project
+    // try loading last project if lazarus didn't fail last time
     if (not ProjectLoaded)
     and (not SkipAutoLoadingLastProject)
     and (EnvironmentOptions.OpenLastProjectAtStart)
     and (FileExists(EnvironmentOptions.LastSavedProjectFile)) then begin
-      ProjectLoaded:=
-        (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
+      if (not IDEProtocolOpts.LastProjectLoadingCrashed)
+      or AskIfLoadLastFailingProject then begin
+        // protocol that the IDE is trying to load the last project and did not
+        // yet succeed
+        IDEProtocolOpts.LastProjectLoadingCrashed := True;
+        IDEProtocolOpts.Save;
+        // try loading the project
+        ProjectLoaded:=
+          (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
+        // protocol that the IDE was able to open the project without crashing
+        IDEProtocolOpts.LastProjectLoadingCrashed := false;
+        IDEProtocolOpts.Save;
+      end;
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
 
@@ -5705,6 +5730,7 @@ begin
     Result:=Project1.WriteProject([],'');
     if Result=mrAbort then exit;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
+    IDEProtocolOpts.LastProjectLoadingCrashed := False;
     AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
     SaveIncludeLinks;
     UpdateCaption;
@@ -5971,6 +5997,7 @@ begin
   Project1.Modified:=false;
 
   IncreaseCompilerParseStamp;
+  IDEProtocolOpts.LastProjectLoadingCrashed := False;
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
   debugln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
@@ -11465,6 +11492,12 @@ begin
   SaveEnvironment;
 end;
 
+procedure TMainIDE.StartProtocol;
+begin
+  IDEProtocolOpts:=TIDEProtocol.Create;
+  IDEProtocolOpts.Load;
+end;
+
 procedure TMainIDE.mnuSearchFindBlockOtherEnd(Sender: TObject);
 begin
   DoGoToPascalBlockOtherEnd;
@@ -11493,6 +11526,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.860  2005/03/21 11:12:25  mattias
+  implemented IDE start protocol and avoiding loading a crashing project twice  from Andrew Haines
+
   Revision 1.859  2005/03/16 12:03:40  mattias
   added check for UpdateCaption if MainIDEBar is already destroyed
 
