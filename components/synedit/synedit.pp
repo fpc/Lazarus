@@ -2726,7 +2726,7 @@ var
       SetLength(ExpandedPaintToken,LengthNeeded+CharsInWindow);
     SrcPos:=0;
     DestPos:=0;
-    ScreenPos:=1;
+    ScreenPos:=PhysicalStartPos;
     Dest:=PChar(ExpandedPaintToken);
     while SrcPos<Count do begin
       c:=p[SrcPos];
@@ -2751,6 +2751,7 @@ var
         begin
           // tab char
           SpaceCount:=TabWidth - ((ScreenPos-1) mod TabWidth);
+          //debugln('ExpandSpecialChars SpaceCount=',dbgs(SpaceCount),' TabWidth=',dbgs(TabWidth),' ScreenPos=',dbgs(ScreenPos));
           for i:=1 to SpaceCount do begin
             Dest[DestPos]:=FTabChar;
             inc(DestPos);
@@ -2771,7 +2772,7 @@ var
     end;
     p:=PChar(ExpandedPaintToken);
     Count:=DestPos;
-    //debugln('Token with Tabs: "',copy(ExpandedPaintToken,1,Count),'"');
+    //debugln('ExpandSpecialChars Token with Tabs: "',DbgStr(copy(ExpandedPaintToken,1,Count)),'"');
   end;
 
   procedure PaintToken(
@@ -8804,7 +8805,9 @@ begin
 {begin}                                                                         //mh 2000-10-01
   StartOfBlock := CaretXY;
   NewCaretX := StartOfBlock.X + i;
+  //debugln('TCustomSynEdit.DoTabKey Before SetSelText Line="',DbgStr(GetLineText),'"');
   SetSelText(Spaces);
+  //debugln('TCustomSynEdit.DoTabKey After SetSelText Line="',DbgStr(GetLineText),'"');
   ChangeScroll := not (eoScrollPastEol in fOptions);
   try
     Include(fOptions, eoScrollPastEol);

@@ -34,16 +34,17 @@ uses
   Classes, SysUtils,
   {$IfNDef GTK2_2}
     {$IfNDef Win32}
-     X, XLib, XUtil,
+     XLib, //X, XUtil,
     {$EndIf}
   {$EndIf}
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
 
   LMessages, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
-  DynHashArray, LazLinkedList, GraphType, GraphMath, Graphics, Buttons, Menus,
-  GTKWinApiWindow, StdCtrls, ComCtrls, CListBox, Calendar, Arrow, Spin,
-  CommCtrl, ExtCtrls, Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals,
+  DynHashArray, GraphType, GraphMath, Graphics, Menus,
+  GTKWinApiWindow, StdCtrls, ComCtrls,
+  Dialogs, ExtDlgs, LResources, Math, GTKGlobals,
+  {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
   gtkDef, gtkInt;
 
 type
@@ -247,8 +248,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.ConnectItemCallbacks(Li: TGtkTreeIter);
 begin
-  {gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
-  gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);}
+  {gtk_object_set_data(PGtkObject(li.user_data),GtkListItemLCLListTag,Self);
+  gtk_object_set_data(PGtkObject(li.user_data),GtkListItemGtkListTag,FGtkList);}
 end;
 
 {------------------------------------------------------------------------------
@@ -594,6 +595,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2005/01/23 11:43:38  mattias
+  fixed expandingtabs in synedit painting
+
   Revision 1.36  2005/01/22 23:53:43  mattias
   fixed gtk2 intf  from Peter Vreman
 

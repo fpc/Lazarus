@@ -30,9 +30,6 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$EndIf}
 
-const
-  BOOL_TEXT: array[Boolean] of string = ('False', 'True');
-
 //##apiwiz##sps##   // Do not remove
 
 
@@ -395,37 +392,9 @@ var
   end;
 
   procedure DrawTextLine;
-  var
-    UnderLineLen, Y: integer;
-    CurDistX: PInteger;
-    CharsWritten, CurX, i: integer;
-    LinePos: PChar;
   begin
     with TDeviceContext(DC) do begin
-{$IFDEF GTK1}
-      if (Dx=nil) then begin
-        // no dist array -> write as one block
-        //fix me... do we even need to do it this way with pango?
-        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-      end else begin
-        // dist array -> write each char separately
-        CharsWritten:=integer(LineStart-Str);
-        if DCTextMetric.IsDoubleByteChar then
-          CharsWritten:=CharsWritten div 2;
-        CurDistX:=Dx+CharsWritten*SizeOf(Integer);
-        CurX:=TxtPt.X;
-        LinePos:=LineStart;
-        for i:=1 to LineLen do begin
-          //fix me... do we even need to do it this way with pango?
-          DoTextOut(CurX, TxtPt.Y, LinePos, 1);
-          inc(LinePos);
-          inc(CurX,CurDistX^);
-          inc(CurDistX);
-        end;
-      end;
-{$ELSE GTK1}
       DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-{$ENDIF GTK1}
     end;
   end;
 
@@ -615,9 +584,6 @@ end;
 function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
-  DCOrigin: TPoint;
-  aRect : TRect;
-
   UnRef,
   Underline,
   StrikeOut : Boolean;
@@ -650,7 +616,6 @@ begin
       If UseFontDesc = nil then
         DebugLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font')
       else begin
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetStyle(lgsdefault);
         Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
@@ -830,6 +795,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2005/01/23 11:43:38  mattias
+  fixed expandingtabs in synedit painting
+
   Revision 1.11  2004/11/08 19:11:55  mattias
   disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
 

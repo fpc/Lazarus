@@ -211,11 +211,7 @@ var
   Box       : Pointer;           // currently only used for TCustomBitBtn
   pixmapwid : pGtkWidget;        // currently only used for TCustomBitBtn
   label1    : pgtkwidget;        // currently only used for TCustomBitBtn
-  ParentForm: TCustomForm;
-  AccelText : PChar;
-  AccelKey  : guint;
   SetupProps : boolean;
-  AWindow: PGdkWindow;
   liststore : PGtkListStore;
   renderer : PGtkCellRenderer;
   column : PGtkTreeViewColumn;
@@ -858,7 +854,7 @@ procedure TGTK2WidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTK
   end;
 
 var
-  gObject, gFixed, gCore, Scroll: PGTKObject;
+  gObject, gFixed, gCore: PGTKObject;
 begin
   gObject := AGTKObject;
   if gObject = nil then Exit;
@@ -1255,7 +1251,6 @@ const
   TestString = '{Am|g_}';
 var
   XT : TSize;
-  dummy: LongInt;
   UseFontDesc : PPangoFontDescription;
   UnRef : Boolean;
   AVGBuffer: array[#32..#126] of char;
@@ -1299,7 +1294,6 @@ begin
         If (AttrList = nil) then
           AttrList := pango_attr_list_new();
 
-        //fix me... what about &&, can we strip and do do markup substitution?
         If Underline then
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
         else
@@ -1316,12 +1310,6 @@ begin
         pango_layout_set_width(Layout, -1);
 
         pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
-
-        //fix me... and what about UTF-8 conversion?
-        //this could be a massive problem since we
-        //will need to know before hand what the current
-        //locale is, and if we stored UTF-8 string this would break
-        //cross-compatibility with GTK1.2 and win32 interfaces.....
 
         pango_layout_set_text(Layout,  TestString, length(TestString));
 
@@ -1380,6 +1368,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.21  2005/01/23 11:43:38  mattias
+  fixed expandingtabs in synedit painting
+
   Revision 1.20  2005/01/22 23:53:43  mattias
   fixed gtk2 intf  from Peter Vreman
 
