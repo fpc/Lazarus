@@ -542,9 +542,7 @@ Begin
     Writeln(', No CTRL down');
   {$ENDIF}
 
-  SelectedCompClass:=nil;
-  if Assigned(FOnGetSelectedComponentClass) then
-    FOnGetSelectedComponentClass(Self,SelectedCompClass);
+  SelectedCompClass:=GetSelectedComponentClass;
 
   NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
   if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
@@ -558,11 +556,12 @@ Begin
     if SelectedCompClass = nil then begin
       // selection mode
       if ControlSelection.ActiveGrabber=nil then begin
+        // no grabber resizing
 
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if (TheMessage.Keys and MK_SHIFT)>0 then begin
-
           // shift key pressed (multiselection)
+
           if CompIndex<0 then begin
             // not selected
             // add component to selection
@@ -582,8 +581,8 @@ Begin
             InvalidateWithParent(MouseDownComponent);
           end;
         end else begin
-        
           // no shift key (single selection)
+
           if (CompIndex<0) then begin
             // select only this component
             
@@ -800,12 +799,10 @@ Begin
   
   ControlSelection.ActiveGrabber:=nil;
   RubberBandWasActive:=ControlSelection.RubberBandActive;
-  
-  GetShift;
-
-  MouseUpPos:=GetFormRelativeMousePosition(Form);
-
   SelectedCompClass:=GetSelectedComponentClass;
+
+  GetShift;
+  MouseUpPos:=GetFormRelativeMousePosition(Form);
 
   {$IFDEF VerboseDesigner}
   writeln('************************************************************');
@@ -923,9 +920,11 @@ begin
         FCustomForm.Invalidate;
         if Assigned(OnModified) then OnModified(Self);
       end else begin
+        // no grabber resizing
         if (not ComponentIsTopLvl(MouseDownComponent))
         and (ControlSelection.Count>=1)
-        and not (ControlSelection[0].Component is TCustomForm) then
+        and not (ControlSelection.IsSelected(Form))
+        and (GetSelectedComponentClass=nil) then
         begin
           // move selection
           if not (dfHasSized in FFlags) then begin
