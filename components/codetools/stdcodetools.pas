@@ -1205,6 +1205,7 @@ var
     var IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
+    IdentifierNotPublished: Boolean;
   begin
     Result:=false;
     IdentContext:=CleanFindContext;
@@ -1215,18 +1216,18 @@ var
     Params:=TFindDeclarationParams.Create;
     try
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound,
-        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
-        fdfIgnoreOverloadedProcs];
+                     fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
+                     fdfIgnoreOverloadedProcs];
       Params.ContextNode:=ClassContext.Node;
       Params.SetIdentifier(ClassContext.Tool,PChar(IdentName),nil);
       try
-        {DebugLn('FindLFMIdentifier A ',
-          ' Ident=',
-          '"',GetIdentifier(Params.Identifier),'"',
-          ' Context="',ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20)),'"',
-          ' File="',ExtractFilename(ClassContext.Tool.MainFilename)+'"',
-          ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
-          );}
+        //DebugLn('FindLFMIdentifier A ',
+        //  ' Ident=',
+        //  '"'+GetIdentifier(Params.Identifier)+'"',
+        //  ' Context="'+ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20))+'"',
+        //  ' File="'+ExtractFilename(ClassContext.Tool.MainFilename)+'"',
+        //  ' Flags=['+FindDeclarationFlagsAsString(Params.Flags)+']'
+        //  );
         if ClassContext.Tool.FindIdentifierInContext(Params) then begin
           IdentContext:=CreateFindContext(Params);
         end;
@@ -1237,21 +1238,22 @@ var
     finally
       Params.Free;
     end;
-    
-    if IdentContext.Node<>nil then begin
-      Result:=true;
+
+    IdentifierNotPublished:=false;
+    if (IdentContext.Node<>nil) then begin
       if (IdentContext.Node.Parent<>nil)
       and (IdentContext.Node.Parent.Desc<>ctnClassPublished)
-      then begin
-        LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
-                         'identifier '+IdentName+' is not published',
-                         DefaultErrorPosition);
-        exit;
-      end;
-    end else begin
-      // no node found
+      then
+        IdentifierNotPublished:=true
+      else
+        Result:=true;
+    end;
+
+    if (IdentContext.Node=nil) or IdentifierNotPublished then begin
+      // no proper node found
       // -> search in DefineProperties
       if SearchAlsoInDefineProperties then begin
+        //debugln('FindLFMIdentifier A SearchAlsoInDefineProperties=',dbgs(SearchAlsoInDefineProperties));
         if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
           IdentName,ClassContext)
         then begin
@@ -1260,10 +1262,17 @@ var
       end;
     end;
     if (not Result) and ErrorOnNotFound then begin
-      LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
-                       'identifier '+IdentName+' not found',
-                       DefaultErrorPosition);
-      exit;
+      if (IdentContext.Node<>nil) and IdentifierNotPublished then begin
+        LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
+                         'identifier '+IdentName+' is not published in class '
+                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false)+'"',
+                         DefaultErrorPosition);
+      end else begin
+        LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
+                         'identifier '+IdentName+' not found in class '
+                         +'"'+ClassContext.Tool.ExtractClassName(ClassContext.Node,false)+'"',
+                         DefaultErrorPosition);
+      end;
     end;
   end;
   
@@ -1301,8 +1310,9 @@ var
       Params.Free;
     end;
     if Result.Node=nil then begin
+      // FindClassNodeForLFMObject
       LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
-                       'identifier '+GetIdentifier(Identifier)+' not found',
+                       'class '+GetIdentifier(Identifier)+' not found',
                        DefaultErrorPosition);
       exit;
     end;

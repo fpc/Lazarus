@@ -67,11 +67,9 @@ each control that's dropped onto the form
     Function FSetProp(PRI : PPropInfo; const Value) : Boolean;
     Function FGetProp(PRI : PPropInfo; var Value) : Boolean;
     function GetDesigner: TComponentEditorDesigner;
-
   protected
-    Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
-    Function GetPPropInfobyName(Name : ShortString) : PPropInfo;
-
+    Function GetPPropInfoByIndex(Index : Integer) : PPropInfo;
+    Function GetPPropInfoByName(Name : ShortString) : PPropInfo;
   public
     constructor Create;
     constructor Create(AComponent: TComponent);
@@ -273,6 +271,8 @@ function CompareComponentAndInterface(Key, Data: Pointer): integer;
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): integer;
 function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
+procedure RegisterStandardClasses;
+
 
 implementation
 
@@ -307,6 +307,11 @@ function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 begin
   Result:=CompareText(AnsiString(Key),Item.PersistentClassname);
+end;
+
+procedure RegisterStandardClasses;
+begin
+  RegisterClasses([TStrings]);
 end;
 
 { TComponentInterface }
@@ -1464,6 +1469,8 @@ var
     const APersistentClass: TPersistentClass): boolean;
   begin
     Result:=false;
+    if APersistent<>nil then
+      RaiseGDBException('TCustomFormEditor.FindDefineProperty.CreateTempPersistent Inconsistency');
     try
       if APersistentClass.InheritsFrom(TComponent) then
         APersistent:=TComponentClass(APersistentClass).Create(nil)
@@ -1530,11 +1537,16 @@ var
   end;
   
 begin
+  //debugln('TCustomFormEditor.GetDefineProperties ',
+  //  ' APersistentClassName="',APersistentClassName,'"',
+  //  ' AncestorClassName="',AncestorClassName,'"',
+  //  ' Identifier="',Identifier,'"');
   IsDefined:=false;
   if FDefineProperties=nil then
-    FDefineProperties:=TAVLTree.Create(TListSortCompare(@CompareDefPropCacheItems));
+    FDefineProperties:=
+                   TAVLTree.Create(TListSortCompare(@CompareDefPropCacheItems));
   ANode:=FDefineProperties.FindKey(PChar(APersistentClassName),
-                        TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
+                    TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
   if ANode=nil then begin
     // cache component class, try to retrieve the define properties
     CacheItem:=TDefinePropertiesCacheItem.Create;
@@ -1922,7 +1934,7 @@ end;
 
 procedure TDefinePropertiesReader.AddPropertyName(const Name: string);
 begin
-  //debugln('TDefinePropertiesReader.AddPropertyName Name="',Name,'"');
+  debugln('TDefinePropertiesReader.AddPropertyName Name="',Name,'"');
   if FDefinePropertyNames=nil then FDefinePropertyNames:=TStringList.Create;
   if FDefinePropertyNames.IndexOf(Name)<=0 then
     FDefinePropertyNames.Add(Name);
@@ -1955,10 +1967,13 @@ end;
 
 procedure TDefinePropertiesPersistent.PublicDefineProperties(Filer: TFiler);
 begin
-  //debugln('TDefinePropertiesPersistent.PublicDefineProperties A ',ClassName);
+  debugln('TDefinePropertiesPersistent.PublicDefineProperties A ',ClassName,' ',dbgsName(FTarget));
   Target.DefineProperties(Filer);
-  //debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName);
+  debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName,' ',dbgsName(FTarget));
 end;
+
+initialization
+  RegisterStandardClasses;
 
 end.
 

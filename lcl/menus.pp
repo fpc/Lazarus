@@ -313,7 +313,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure PopUp(X, Y : Integer);
+    procedure PopUp(X, Y: Integer);
     property PopupComponent: TComponent read FPopupComponent
                                         write FPopupComponent;
     property PopupPoint: TPoint read FPopupPoint;
@@ -403,6 +403,9 @@ end.
 
 {
   $Log$
+  Revision 1.76  2004/12/12 03:54:09  mattias
+  implemented open project after open standard windows
+
   Revision 1.75  2004/12/10 21:36:27  mattias
   implemented TMenuItem.SetVisible
 

@@ -533,8 +533,9 @@ type
     class procedure ParseCmdLineOptions;
 
     constructor Create(TheOwner: TComponent); override;
-    procedure CreateOftenUsedForms; override;
+    procedure StartIDE; override;
     destructor Destroy; override;
+    procedure CreateOftenUsedForms; override;
     procedure CreateSearchResultWindow;
     procedure UpdateDefaultPascalFileExtensions;
 
@@ -987,18 +988,21 @@ begin
   HelpBoss.LoadHelpOptions;
 
   UpdateWindowsMenu;
+end;
+
+procedure TMainIDE.StartIDE;
+begin
+  // set OnIdle handlers
+  Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
+  Application.AddOnIdleHandler(@OnApplicationIdle,true);
+  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm,true);
+  SetupHints;
 
   // Now load a project
   SetupStartProject;
 
   // reopen extra windows
   ReOpenIDEWindows;
-
-  // set OnIdle handlers
-  Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
-  Application.AddOnIdleHandler(@OnApplicationIdle,true);
-  Screen.AddHandlerRemoveForm(@OnScreenRemoveForm,true);
-  SetupHints;
 end;
 
 destructor TMainIDE.Destroy;
@@ -6757,7 +6761,8 @@ begin
 
   // open messages window
   SourceNotebook.ClearErrorLines;
-  MessagesView.Clear;
+  if MessagesView<>nil then
+    MessagesView.Clear;
   DoArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
@@ -10971,6 +10976,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.808  2004/12/12 03:54:08  mattias
+  implemented open project after open standard windows
+
   Revision 1.807  2004/12/11 01:17:22  mattias
   implemented global debugger search path
 

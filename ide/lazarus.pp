@@ -73,6 +73,7 @@ begin
 
   MainIDE:=TMainIDE.Create(Application);
   MainIDE.CreateOftenUsedForms;
+  MainIDE.StartIDE;
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
   {$ENDIF}
@@ -99,6 +100,9 @@ end.
 
 {
   $Log$
+  Revision 1.64  2004/12/12 03:54:08  mattias
+  implemented open project after open standard windows
+
   Revision 1.63  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 

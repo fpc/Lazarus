@@ -118,6 +118,7 @@ type
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
 
     constructor Create(TheOwner: TComponent); override;
+    procedure StartIDE; virtual; abstract;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
 

@@ -42,7 +42,7 @@
  ------------------------------------------------------------------------------}
 constructor TProgressBar.Create (AOwner : TComponent);
 begin
-  inherited Create (AOwner);
+  inherited Create(AOwner);
   fCompStyle := csProgressBar;
   FPosition  := 0;
   FStep      := 10;
@@ -302,6 +302,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2004/12/12 03:54:09  mattias
+  implemented open project after open standard windows
+
   Revision 1.10  2004/09/23 14:50:47  micha
   convert LM_SETPROPERTIES message to interface method for TProgressBar
 

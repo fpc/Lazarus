@@ -264,7 +264,7 @@ type
     end;
 
 type
-  TCustomGrid=class(TCustomControl)
+  TCustomGrid = class(TCustomControl)
   private
     FAutoAdvance: TAutoAdvance;
     FDefaultDrawing: Boolean;
@@ -545,7 +545,7 @@ type
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
 
-  TDrawGrid=class(TCustomGrid)
+  TDrawGrid = class(TCustomGrid)
   private
     FOnColRowDeleted: TgridOperationEvent;
     FOnColRowExchanged: TgridOperationEvent;
