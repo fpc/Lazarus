@@ -320,10 +320,19 @@ begin
 end;
 
 procedure TRunParamsOptions.AssignEnvironmentTo(Strings: TStrings);
+var
+  idx: Integer;
 begin
   IDEProcs.AssignEnvironmentTo(Strings,UserOverrides);
-  if UseDisplay then
-    Strings.Values['DISPLAY']:=Display;
+  if UseDisplay
+  then begin
+    // assignment is not allowed in a sorted list
+    // Strings.Values['DISPLAY']:=Display;
+    idx := Strings.IndexOfName('DISPLAY');
+    if idx <> -1
+    then Strings.Delete(idx);
+    Strings.Add('DISPLAY=' + Display)
+  end;
 end;
 
 
