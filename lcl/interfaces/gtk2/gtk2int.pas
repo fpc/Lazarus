@@ -275,11 +275,12 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.RemoveItemCallbacks(Index: integer);
-var
-  ListItem: TGtkTreeIter;
+//var
+//  ListItem: TGtkTreeIter;
 begin
   UpdateItemCache;
-  ListItem:=FCachedItems[Index];
+  debugln('TGtkListStoreStringList.RemoveItemCallbacks TODO');
+  //ListItem:=FCachedItems[Index];
   {gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
   gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);}
 end;
@@ -310,20 +311,22 @@ begin
   ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCount);
   if FGtkListStore<>nil then
     For I := 0 to FCachedCount - 1 do
-      gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(FGtkListStore), @FCachedItems[i], nil, I);
+      gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(FGtkListStore),
+        @FCachedItems[i], nil, I);
   Exclude(FStates,glsItemCacheNeedsUpdate);
 end;
 
 procedure TGtkListStoreStringList.PutObject(Index: Integer; AnObject: TObject);
-var
-  ListItem : TGtkTreeIter;
+//var
+//  ListItem : TGtkTreeIter;
 begin
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStoreStringList.PutObject Out of bounds.')
   else if FGtkListStore<>nil then begin
     UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    {if ListItem <> nil then begin
+    debugln('TGtkListStoreStringList.PutObject TODO');
+    {ListItem:=FCachedItems[Index];
+    if ListItem <> nil then begin
       gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
     end;}
   end;
@@ -599,6 +602,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2005/02/16 23:56:51  mattias
+  fixed some gtk2 intf mem leaks, clean ups
+
   Revision 1.40  2005/02/08 18:31:56  mattias
   further completions for gtk2 listbox and listview
 

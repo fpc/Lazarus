@@ -202,15 +202,10 @@ function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
-  TempWidget,
-  TempWidget2 : PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
-  p          : pointer;          // ptr to the newly created GtkWidget
+  TempWidget: PGtkWidget;
+  p: PGtkWidget;                 // ptr to the newly created GtkWidget
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
-  // - for csBitBtn
-  Box       : Pointer;           // currently only used for TCustomBitBtn
-  pixmapwid : pGtkWidget;        // currently only used for TCustomBitBtn
-  label1    : pgtkwidget;        // currently only used for TCustomBitBtn
   SetupProps : boolean;
   liststore : PGtkListStore;
   renderer : PGtkCellRenderer;
@@ -289,7 +284,7 @@ begin
     begin
       P := gtk_scrolled_window_new(nil, nil);
       TempWidget := gtk_text_view_new();
-      gtk_container_add(p, TempWidget);
+      gtk_container_add(PGtkContainer(p), TempWidget);
 
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
@@ -323,45 +318,45 @@ end;
 
 function TGtk2WidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
 var
-GtkTreeView: PGtkWidget;
-ListStore: PGtkListStore;
-nColumns: Integer;
-ListView: TCustomListView;
-GTypeArray: PGType;
-i: Integer;
-renderer: PGtkCellRenderer;
-Column: PGtkTreeViewColumn;
-         procedure RefreshItems(const ListStore: PGtkListStore);
-         var
-          Iter: TGtkTreeIter;
-          Str: String;
-          ColCount: Integer;
-          i, x: Integer;
-          Item: TListItem;
-         begin
-           gtk_list_store_clear(ListStore);
-           for i := 0 to ListView.Items.Count-1 do begin
-             Item := ListView.Items.Item[i];
+  GtkTreeView: PGtkWidget;
+  ListStore: PGtkListStore;
+  nColumns: Integer;
+  ListView: TCustomListView;
+  GTypeArray: PGType;
+  i: Integer;
+  renderer: PGtkCellRenderer;
+  Column: PGtkTreeViewColumn;
 
-             // Figure out how many columns are needed
-             if not(ListView.ViewStyle = vsReport) then begin
-               gtk_list_store_append(ListStore, @Iter);
-               gtk_list_store_set(ListStore, @Iter,[1, PChar(Item.Caption),-1]);
-             end
-             else begin
-               ColCount := ListView.Columns.Count;
-               if ColCount > (1 + Item.SubItems.Count) then
-                 ColCount := 1 + Item.SubItems.Count;
-               if ColCount < 0 then ColCount := 1;
-               gtk_list_store_append(ListStore, @Iter);
-               gtk_list_store_set(ListStore, @Iter,[1, PChar(Item.Caption),-1]);
-               for x := 1 to ColCount-1 do begin
-                 gtk_list_store_set(ListStore, @Iter, [X+1, PChar(Item.SubItems.Strings[X-1]), -1]);
-               end;
-             end;
-           end;
+  procedure RefreshItems(const ListStore: PGtkListStore);
+  var
+    Iter: TGtkTreeIter;
+    ColCount: Integer;
+    i, x: Integer;
+    Item: TListItem;
+  begin
+    gtk_list_store_clear(ListStore);
+    for i := 0 to ListView.Items.Count-1 do begin
+      Item := ListView.Items.Item[i];
 
-end;
+      // Figure out how many columns are needed
+      if not(ListView.ViewStyle = vsReport) then begin
+        gtk_list_store_append(ListStore, @Iter);
+        gtk_list_store_set(ListStore, @Iter,[1, PChar(Item.Caption),-1]);
+      end
+      else begin
+        ColCount := ListView.Columns.Count;
+        if ColCount > (1 + Item.SubItems.Count) then
+          ColCount := 1 + Item.SubItems.Count;
+        if ColCount < 0 then ColCount := 1;
+        gtk_list_store_append(ListStore, @Iter);
+        gtk_list_store_set(ListStore, @Iter,[1, PChar(Item.Caption),-1]);
+        for x := 1 to ColCount-1 do begin
+          gtk_list_store_set(ListStore, @Iter, [X+1, PChar(Item.SubItems.Strings[X-1]), -1]);
+        end;
+      end;
+    end;
+  end;
+  
 begin
   Result := gtk_scrolled_window_new(nil, nil);
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(Result)^.hscrollbar, GTK_CAN_FOCUS);
@@ -386,7 +381,7 @@ begin
   for i := 1 to nColumns do begin
     GTypeArray[i] := G_TYPE_STRING;
   end;
-  GTypeArray[nColumns+1] := -1;
+  GTypeArray[nColumns+1] := 0; // -1;
   ListStore := gtk_list_store_newv(nColumns, GTypeArray);
   ReAllocMem(GTypeArray, 0);
   
@@ -1504,6 +1499,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.24  2005/02/16 23:56:51  mattias
+  fixed some gtk2 intf mem leaks, clean ups
+
   Revision 1.23  2005/02/08 18:31:56  mattias
   further completions for gtk2 listbox and listview
 

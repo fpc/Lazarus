@@ -1520,8 +1520,9 @@ begin
         While FileList^ <> nil do
         begin
           fileInfo := FileList^;
-          CurFilename:=AnsiString(fileInfo);
+          CurFilename:=fileInfo; // convert PChar to AnsiString (not typecast)
           if (CurFilename<>'') and (Files.IndexOf(CurFilename)<0) then begin
+            CurFilename:=DirName+fileInfo;
             Result:=CheckOpenedFilename(CurFilename);
             if not Result then exit;
             Files.Add(CurFilename);
@@ -1829,7 +1830,8 @@ begin
   if (Data=nil) or (BEvent=nil) or (Column=0) or (Row=0) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
-    if (bevent <> nil) and (bevent^.thetype = GDK_2BUTTON_PRESS) and (PGtkFileSelection(theDialog.Handle)^.dir_list = widget) then begin
+    if (bevent <> nil) and (gdk_event_get_type(bevent) = GDK_2BUTTON_PRESS)
+    and (PGtkFileSelection(theDialog.Handle)^.dir_list = widget) then begin
       MenuWidget := gtk_object_get_data(PGtkObject(theDialog.Handle), 'LCLFilterMenu');
       if MenuWidget <> nil then begin
         AFilterEntry := gtk_object_get_data(PGtkObject(gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
@@ -2977,6 +2979,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.265  2005/02/16 23:56:51  mattias
+  fixed some gtk2 intf mem leaks, clean ups
+
   Revision 1.264  2005/02/16 23:31:16  mattias
   fixed define templates quotes
 

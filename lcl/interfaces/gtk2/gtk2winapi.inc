@@ -120,13 +120,13 @@ begin
         Exit;
       end;
 
-      if (FamilyName = '') or (AnsiCompareText(FamilyName,'*')=0) then begin
+      if (FamilyName = '') or (CompareText(FamilyName,'*')=0) then begin
         FamilyName := StrPas(lfFaceName);
-        if AnsiCompareText(FamilyName,'default')=0 then begin
+        if CompareText(FamilyName,'default')=0 then begin
           LoadDefaultFont;
           exit;
         end;
-        FullString := AnsiString(FamilyName);
+        FullString := FamilyName;
         if IsFontNameXLogicalFontDesc(LongFontName) then
           if Abs(lfHeight)=0 then
              FullString := FullString + ' 12'
@@ -134,22 +134,39 @@ begin
             FullString := FullString + ' ' + IntToStr(Abs(lfHeight));
       end
       else begin
-        FullString := AnsiString(FamilyName);
+        FullString := FamilyName;
         if IsFontNameXLogicalFontDesc(LongFontName) then
-          if (PointSize = '') or (AnsiCompareText(PointSize,'*')=0) then
+          if (PointSize = '') or (CompareText(PointSize,'*')=0) then
             FullString := FullString + ' 12'
           else
             FullString := FullString + ' ' + IntToStr(StrToInt(PointSize) div 10);
       end;
+      
+      if FontNameRegistry='' then ;
+      if Foundry='' then ;
+      if WeightName='' then ;
+      if Slant='' then ;
+      if SetwidthName='' then ;
+      if AddStyleName='' then ;
+      if PixelSize='' then ;
+      if ResolutionX='' then ;
+      if ResolutionY='' then ;
+      if Spacing='' then ;
+      if AverageWidth='' then ;
+      if CharSetCoding='' then ;
+      if CharSetRegistry='' then ;
 
-      GdiObject^.GDIFontObject := pango_font_description_from_string(PChar(FullString));
+      GdiObject^.GDIFontObject :=
+                          pango_font_description_from_string(PChar(FullString));
       If lfWeight <> FW_DONTCARE then
         pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
 
       if lfItalic = 0 then
-        pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_NORMAL)
+        pango_font_description_set_style(GdiObject^.GDIFontObject,
+                                         PANGO_STYLE_NORMAL)
       else
-        pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_ITALIC);
+        pango_font_description_set_style(GdiObject^.GDIFontObject,
+                                         PANGO_STYLE_ITALIC);
 
       GdiObject^.StrikeOut := lfStrikeOut <> 0;
       GdiObject^.Underline := lfUnderline <> 0;
@@ -450,14 +467,14 @@ begin
           If (AttrList = nil) then
             AttrList := pango_attr_list_new();
 
-          If CurrentFont^.Underline then
+          If Underline then
             Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
           else
             Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
 
           pango_attr_list_change(AttrList,Attr);
 
-          Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
+          Attr := pango_attr_strikethrough_new(StrikeOut);
           pango_attr_list_change(AttrList,Attr);
 
           if (Options and ETO_CLIPPED) <> 0 then
@@ -795,6 +812,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2005/02/16 23:56:51  mattias
+  fixed some gtk2 intf mem leaks, clean ups
+
   Revision 1.12  2005/01/23 11:43:38  mattias
   fixed expandingtabs in synedit painting
 
