@@ -707,7 +707,9 @@ var
 begin
   I := FItems.IndexOf(AValue);
   if I >= 0 then
-    ItemIndex := I;
+    ItemIndex := I
+  else if (not (csLoading in ComponentState)) then
+    FItemIndex := -1;
   inherited;
 end;
 
@@ -720,6 +722,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
+  //if CompareText(Name,'TextToFindComboBox')=0 then
+  //  debugln('TCustomComboBox.SetItemIndex A ',DbgSName(Self),' Text="',Text,'"');
   if Val=GetItemIndex then exit;
   if Val>=Items.Count then exit;
 
@@ -733,6 +737,8 @@ begin
     // remember text, in case one reads text without creating handle
     Text := FItems.Strings[FItemIndex];
   end;
+  //if CompareText(Name,'TextToFindComboBox')=0 then
+  //  debugln('TCustomComboBox.SetItemIndex END ',DbgSName(Self),' Text="',Text,'"');
 end;
 
 {------------------------------------------------------------------------------
@@ -796,6 +802,9 @@ end;
 
 {
   $Log$
+  Revision 1.57  2005/03/07 18:46:36  mattias
+  fixed unsetting ItemIndex on changing TComboBox.Text
+
   Revision 1.56  2005/02/15 22:01:54  micha
   compilation fixes
 

@@ -38,8 +38,9 @@ unit FindReplaceDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit, LazarusIdeStrConsts;
+  Classes, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
+  ExtCtrls, LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit,
+  LazarusIdeStrConsts;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -583,11 +584,12 @@ begin
   Result:=TextToFindComboBox.Text;
 end;
 
-procedure TLazFindReplaceDialog.SetFindText(const NewFindText:AnsiString);
+procedure TLazFindReplaceDialog.SetFindText(const NewFindText: AnsiString);
 begin
 //  SetComboBoxText(TextToFindComboBox,NewFindText);
-  TextToFindComboBox.Text:= NewFindText;
+  TextToFindComboBox.Text:=NewFindText;
   TextToFindComboBox.SelectAll;
+  //debugln('TLazFindReplaceDialog.SetFindText A TextToFindComboBox.SelStart=',dbgs(TextToFindComboBox.SelStart),' TextToFindComboBox.SelLength=',dbgs(TextToFindComboBox.SelLength),' TextToFindComboBox.Text="',TextToFindComboBox.Text,'" NewFindText="',DbgStr(NewFindText),'"');
 end;
 
 function TLazFindReplaceDialog.GetReplaceText:AnsiString;

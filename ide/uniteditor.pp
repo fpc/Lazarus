@@ -793,13 +793,18 @@ begin
     FindReplaceDlg.ReplaceTextComboBox.Items.Assign(
                                                  InputHistories.ReplaceHistory);
 
+  FindReplaceDlg.FindText := 'test';
   with EditorComponent do begin
     if EditorOpts.FindTextAtCursor then begin
-      if SelAvail and (BlockBegin.Y = BlockEnd.Y) then
+      if SelAvail and (BlockBegin.Y = BlockEnd.Y) then begin
+        //debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor SelAvail');
         FindReplaceDlg.FindText := SelText
-      else
-        FindReplaceDlg.FindText := GetWordAtRowCol(LogicalCaretXY);
+      end else begin
+        debugln('TSourceEditor.StartFindAndReplace B FindTextAtCursor not SelAvail');
+        //FindReplaceDlg.FindText := GetWordAtRowCol(LogicalCaretXY);
+      end;
     end else begin
+      //debugln('TSourceEditor.StartFindAndReplace B not FindTextAtCursor');
       FindReplaceDlg.FindText:='';
     end;
   end;
@@ -3490,8 +3495,12 @@ begin
     begin
       TextToFindComboBox.Items.Assign(FindHistory);
       if not EditorOpts.FindTextAtCursor then begin
-        if TextToFindComboBox.Items.Count>0 then
+        if TextToFindComboBox.Items.Count>0 then begin
+          //debugln('TSourceNotebook.LoadFindInFilesHistory A TextToFindComboBox.Text=',TextToFindComboBox.Text);
           TextToFindComboBox.ItemIndex:=0;
+          TextToFindComboBox.SelectAll;
+          //debugln('TSourceNotebook.LoadFindInFilesHistory B TextToFindComboBox.Text=',TextToFindComboBox.Text);
+        end;
       end;
       AssignToComboBox(DirectoryComboBox, FindInFilesPathHistory);
       AssignToComboBox(FileMaskComboBox, FindInFilesMaskHistory);

@@ -1530,8 +1530,17 @@ end;
   Minimizes the application
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.AppMinimize;
+var
+  i: Integer;
+  AForm: TCustomForm;
 begin
-  // TODO: Implement me!
+  if Screen=nil then exit;
+  for i:=0 to Screen.CustomFormCount-1 do begin
+    AForm:=Screen.CustomForms[i];
+    if (AForm.Parent=nil) and AForm.HandleAllocated then begin
+      ShowWindow(AForm.Handle, WS_MINIMIZE);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6886,6 +6895,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.640  2005/03/07 18:46:36  mattias
+  fixed unsetting ItemIndex on changing TComboBox.Text
+
   Revision 1.639  2005/03/07 16:01:06  mattias
   hiding secondary form from taskbar in gtk2.2  from Sergio
 

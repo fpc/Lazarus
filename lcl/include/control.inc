@@ -3128,7 +3128,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetText(const Value: TCaption);
 begin
-  //if CompareText(ClassName,'TMEMO')=0 then
+  //if CompareText(Name,'TextToFindComboBox')=0 then
   //  debugln('TControl.SetText A ',DbgSName(Self),' GetText="',GetText,'" Value="',Value,'" FCaption="',FCaption,'"');
   if GetText = Value then Exit;
   
@@ -3497,6 +3497,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.249  2005/03/07 18:46:36  mattias
+  fixed unsetting ItemIndex on changing TComboBox.Text
+
   Revision 1.248  2005/03/05 14:42:01  mattias
   Click events are now created after MouseUp  from C Western
 

@@ -7875,7 +7875,7 @@ begin
   end;
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
   if (CmdAfterExe<>'') then begin
-    DebugLn('TMainIDE.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
+    //DebugLn('TMainIDE.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
     CmdAfterExe:=FindDefaultExecutablePath(CmdAfterExe);
     if not FileIsExecutableCached(CmdAfterExe) then begin
       MessageDlg(lisCommandAfterInvalid,
@@ -11483,6 +11483,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.855  2005/03/07 18:46:35  mattias
+  fixed unsetting ItemIndex on changing TComboBox.Text
+
   Revision 1.854  2005/03/07 17:33:54  mattias
   added check for overwriting source directory on ublish module
 
