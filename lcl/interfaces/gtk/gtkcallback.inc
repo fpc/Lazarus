@@ -424,8 +424,6 @@ begin
   Result:=true;
   
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
-  NotifyApplicationUserInput;
-
   FillChar(Msg,SizeOf(Msg),0);
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
   Flags := 0;
@@ -454,6 +452,7 @@ begin
       // send the message directly to the LCL
       Msg.Result:=0;
       Code := Msg.CharCode;
+      NotifyApplicationUserInput(Msg.Msg);
       Result := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
@@ -496,6 +495,7 @@ begin
       Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
       Code := Msg.CharCode;
       // send the message directly to the LCL
+      NotifyApplicationUserInput(Msg.Msg);
       Result := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
@@ -713,7 +713,7 @@ begin
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
-  NotifyApplicationUserInput;
+  NotifyApplicationUserInput(Msg.Msg);
   DeliverMessage(AWinControl, Msg);
 end;
 
@@ -958,7 +958,7 @@ begin
     MessE.Button := 0;
 
     // send the message directly to the LCL
-    NotifyApplicationUserInput;
+    NotifyApplicationUserInput(MessE.Msg);
     DeliverMessage(AWinControl, MessE);
   end
   else begin
@@ -999,7 +999,7 @@ begin
 
     MessI.Result:=0;
     // send the message directly to the LCL
-    NotifyApplicationUserInput;
+    NotifyApplicationUserInput(MessI.Msg);
     DeliverMessage(AWinControl, MessI);
   end;
 end;
@@ -1164,7 +1164,7 @@ begin
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
     MessI.Result := 0;
-    NotifyApplicationUserInput;
+    NotifyApplicationUserInput(MessI.Msg);
     DeliverMessage(AWinControl, MessI);
   end;
 end;
@@ -2539,6 +2539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.157  2002/11/05 20:03:42  lazarus
+  MG: implemented hints
+
   Revision 1.156  2002/11/02 22:25:36  lazarus
   MG: implemented TMethodList and Application Idle handlers
 
