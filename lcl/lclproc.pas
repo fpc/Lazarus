@@ -166,9 +166,17 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 
 
+// ======================================================================
 // Endian utility functions
 // MWE: maybe to RTL ?
 // inline ?
+//
+// These functions convert a BigEndian or LittleEndian number to 
+// a machine Native number and vice versa.
+//
+// Note: Lazarus resources are streamed using LE. So when writing data
+//       use NtoLE(your_value), when reading use LEtoN(read_value)
+// ======================================================================
 
 function BEtoN(const AValue: SmallInt): SmallInt;
 function BEtoN(const AValue: Word): Word;
