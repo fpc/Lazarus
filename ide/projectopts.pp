@@ -63,10 +63,15 @@ type
     FormsMoveAutoCreatedFormDownBtn: TSpeedButton;
     FormsAutoCreateNewFormsCheckBox: TCheckBox;
     
-    // Info
+    // Misc
     SaveClosedUnitInfoCheckBox: TCheckBox;
     SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
-    
+    MainUnitIsPascalSourceCheckBox: TCheckBox;
+    MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox;
+    MainUnitHasCreateFormStatementsCheckBox: TCheckBox;
+    MainUnitHasTitleStatementCheckBox: TCheckBox;
+    RunnableCheckBox: TCheckBox;
+
     // buttons at bottom
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
@@ -84,7 +89,7 @@ type
     procedure SetProject(AProject: TProject);
     procedure SetupApplicationPage;
     procedure SetupFormsPage;
-    procedure SetupInfoPage;
+    procedure SetupMiscPage;
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: string): integer;
@@ -139,13 +144,13 @@ begin
     else
       Pages.Add(dlgPOApplication);
     Pages.Add(dlgPOFroms);
-    Pages.Add(dlgPOInfo);
+    Pages.Add(dlgPOMisc);
     PageIndex:=0;
   end;
 
   SetupFormsPage;
   SetupApplicationPage;
-  SetupInfoPage;
+  SetupMiscPage;
 
   CancelButton:=TBitBtn.Create(Self);
   with CancelButton do begin
@@ -338,24 +343,74 @@ begin
   end;
 end;
 
-procedure TProjectOptionsDialog.SetupInfoPage;
+procedure TProjectOptionsDialog.SetupMiscPage;
+var
+  w: Integer;
+  x: Integer;
+  y: Integer;
+  NewParent: TPage;
 begin
-  SaveClosedUnitInfoCheckBox:= TCheckBox.Create(Self);
+  w:=350;
+  x:=10;
+  y:=10;
+  NewParent:=NoteBook.Page[2];
+
+  SaveClosedUnitInfoCheckBox:=TCheckBox.Create(Self);
   with SaveClosedUnitInfoCheckBox do begin
-    Parent:= NoteBook.Page[2];
-    Left:= 10;
-    Top:= 10;
-    Width:= 350;
+    Parent:= NewParent;
     Caption:= dlgSaveEditorInfo;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
   end;
   
-  SaveOnlyProjectUnitInfoCheckBox:= TCheckBox.Create(Self);
+  SaveOnlyProjectUnitInfoCheckBox:=TCheckBox.Create(Self);
   with SaveOnlyProjectUnitInfoCheckBox do begin
-    Parent:= NoteBook.Page[2];
-    Left:= SaveClosedUnitInfoCheckBox.Left;
-    Top:= SaveClosedUnitInfoCheckBox.Top+SaveClosedUnitInfoCheckBox.Height+10;
-    Width:= SaveClosedUnitInfoCheckBox.Width;
+    Parent:= NewParent;
     Caption:= dlgSaveEditorInfoProject;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  inc(y,10);
+
+  MainUnitIsPascalSourceCheckBox:=TCheckBox.Create(Self);
+  with MainUnitIsPascalSourceCheckBox do begin
+    Parent:= NewParent;
+    Caption:= lisMainUnitIsPascalSource;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+  
+  MainUnitHasUsesSectionForAllUnitsCheckBox:=TCheckBox.Create(Self);
+  with MainUnitHasUsesSectionForAllUnitsCheckBox do begin
+    Parent:= NewParent;
+    Caption:= lisMainUnitHasUsesSectionContainingAllUnitsOfProject;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  MainUnitHasCreateFormStatementsCheckBox:=TCheckBox.Create(Self);
+  with MainUnitHasCreateFormStatementsCheckBox do begin
+    Parent:= NewParent;
+    Caption:= lisMainUnitHasApplicationCreateFormStatements;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  MainUnitHasTitleStatementCheckBox:=TCheckBox.Create(Self);
+  with MainUnitHasTitleStatementCheckBox do begin
+    Parent:= NewParent;
+    Caption:= lisMainUnitHasApplicationTitleStatements;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  RunnableCheckBox:=TCheckBox.Create(Self);
+  with RunnableCheckBox do begin
+    Parent:= NewParent;
+    Caption:= lisProjectIsRunnable;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
   end;
 end;
 
@@ -371,15 +426,36 @@ begin
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
   
+  FormsAutoCreateNewFormsCheckBox.Checked:=Project.AutoCreateForms;
+
   SaveClosedUnitInfoCheckBox.Checked:=(pfSaveClosedUnits in AProject.Flags);
   SaveOnlyProjectUnitInfoCheckBox.Checked:=
     (pfSaveOnlyProjectUnits in AProject.Flags);
-  FormsAutoCreateNewFormsCheckBox.Checked:=Project.AutoCreateForms;
+
+  MainUnitIsPascalSourceCheckBox.Checked:=
+    (pfMainUnitIsPascalSource in AProject.Flags);
+  MainUnitHasUsesSectionForAllUnitsCheckBox.Checked:=
+    (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags);
+  MainUnitHasCreateFormStatementsCheckBox.Checked:=
+    (pfMainUnitHasCreateFormStatements in AProject.Flags);
+  MainUnitHasTitleStatementCheckBox.Checked:=
+    (pfMainUnitHasTitleStatement in AProject.Flags);
+  RunnableCheckBox.Checked:=(pfRunnable in AProject.Flags);
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
-var NewFlags: TProjectFlags;
+var
+  NewFlags: TProjectFlags;
+
+  procedure SetProjectFlag(AFlag: TProjectFlag; AValue: boolean);
+  begin
+    if AValue then
+      Include(NewFlags,AFlag)
+    else
+      Exclude(NewFlags,AFlag);
+  end;
+
 begin
   if ModalResult = mrOk then begin  
 
@@ -390,14 +466,18 @@ begin
   
     // flags
     NewFlags:=Project.Flags;
-    if SaveClosedUnitInfoCheckBox.Checked then
-      Include(NewFlags,pfSaveClosedUnits)
-    else
-      Exclude(NewFlags,pfSaveClosedUnits);
-    if SaveOnlyProjectUnitInfoCheckBox.Checked then
-      Include(NewFlags,pfSaveOnlyProjectUnits)
-    else
-      Exclude(NewFlags,pfSaveOnlyProjectUnits);
+    SetProjectFlag(pfSaveClosedUnits,SaveClosedUnitInfoCheckBox.Checked);
+    SetProjectFlag(pfSaveOnlyProjectUnits,
+                   SaveOnlyProjectUnitInfoCheckBox.Checked);
+    SetProjectFlag(pfMainUnitIsPascalSource,
+                   MainUnitIsPascalSourceCheckBox.Checked);
+    SetProjectFlag(pfMainUnitHasUsesSectionForAllUnits,
+                   MainUnitHasUsesSectionForAllUnitsCheckBox.Checked);
+    SetProjectFlag(pfMainUnitHasCreateFormStatements,
+                   MainUnitHasCreateFormStatementsCheckBox.Checked);
+    SetProjectFlag(pfMainUnitHasTitleStatement,
+                   MainUnitHasTitleStatementCheckBox.Checked);
+    SetProjectFlag(pfRunnable,RunnableCheckBox.Checked);
     Project.Flags:=NewFlags;
     
     Project.AutoCreateForms:=FormsAutoCreateNewFormsCheckBox.Checked;

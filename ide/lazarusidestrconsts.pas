@@ -984,7 +984,7 @@ resourcestring
   dlgProjectOptions = 'Project Options';
   dlgPOApplication = 'Application';
   dlgPOFroms = 'Forms';
-  dlgPOInfo = 'Info';
+  dlgPOMisc = 'Misc';
   dlgApplicationSettings = 'Application Settings';
   dlgPOTitle = 'Title:';
   dlgPOOutputSettings = 'Output Settings';
@@ -994,6 +994,14 @@ resourcestring
   dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';
   dlgSaveEditorInfo = 'Save editor info for closed files';
   dlgSaveEditorInfoProject = 'Save editor info only for project files';
+  lisMainUnitIsPascalSource = 'Main Unit is Pascal Source';
+  lisMainUnitHasUsesSectionContainingAllUnitsOfProject = 'Main Unit has Uses '
+    +'Section containing all Units of project';
+  lisMainUnitHasApplicationCreateFormStatements = 'Main Unit has Application.'
+    +'CreateForm statements';
+  lisMainUnitHasApplicationTitleStatements = 'Main Unit has Application.Title '
+    +'statements';
+  lisProjectIsRunnable = 'Project is runnable';
   dlgRunParameters = 'Run parameters';
   dlgRunOLocal = 'Local';
   dlgRunOEnvironment = 'Environment';
