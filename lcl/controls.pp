@@ -545,10 +545,10 @@ TCMDialogKey = TLMKEY;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
   published
     property Left: Integer read FLeft write SetLeft;
-    property Top: Integer read FTop write SetTop;
     property Height: Integer read FHeight write SetHeight;
-    property Width: Integer read FWidth write SetWidth;
     property Hint: String read FHint write SetHint;
+    property Top: Integer read FTop write SetTop;
+    property Width: Integer read FWidth write SetWidth;
   end;
 
   TLMEnter = TLMNoPara;
@@ -1123,6 +1123,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/12/01 15:50:39  lazarus
+  changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
+  Shane
+
   Revision 1.5  2000/11/30 21:43:38  lazarus
   Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
   It's created in main.pp when New Form is selected.

@@ -383,11 +383,12 @@ Begin
 Writeln('*************');
 Writeln('SetPropByName');
   Result := False;
-  PRI := GetPPropInfoByName(Uppercase(Name));
+{  PRI := GetPPropInfoByName(Uppercase(Name));
   Writeln('Back from GetPPropInfobyName');
   if PRI <> nil then
         with PRI^ do
             Begin
+              if kind = tkBool then Writeln('111111111111111');
              if SetProc <> nil then
                 Begin  //call the procedure passing Value
                  Writeln('Assigning the procedure');
@@ -397,7 +398,28 @@ Writeln('SetPropByName');
                  Result := True;
                 end;
             end;
+ }
+PRI := GetPropInfo(FControl.ClassInfo,Name);
+if PRI <> nil then
+   Begin
+       if PRI^.Proptype^.kind = tkBool then Writeln('111111111111111');
+       case PRI^.PropType^.Kind of
+       tkBool: SetOrdProp(FControl,PRI,longint(Value));
+       tkSString,
+       tkLString,
+       tkAString,
+       tkWString : Begin
+                    Writeln('String...');
+                    SetStrProp(FControl,PRI,String(Value));
+                   end;
+       tkInteger,
+       tkInt64   : Begin
+                    Writeln('Int64...');
+                    SetInt64Prop(FControl,PRI,Int64(Value));
+                   end;
 
+       end;//case
+   end;
 Writeln('SetPropByName Exiting...');
 Writeln('*************');
 end;

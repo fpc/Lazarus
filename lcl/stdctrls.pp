@@ -229,6 +229,7 @@ type
       property Lines;
       property ReadOnly;
       property Tabstop;
+      property Visible;
       property OnChange;
    end;
 
@@ -476,6 +477,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/12/01 15:50:39  lazarus
+  changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
+  Shane
+
   Revision 1.3  2000/11/29 21:22:35  lazarus
   New Object Inspector code
   Shane

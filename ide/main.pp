@@ -1088,52 +1088,7 @@ end;
 
 
 Function TForm1.Create_LFM(SList : TUnitInfo) : Boolean;
-var
-F : TStringlist;
-I,Count : Integer;
-Spacer : String;
-Form : TForm;
-aControl : TControl;
 Begin
-Writeln('SAVING LFM FILE*************');
-F := TStringlist.Create;
-Count := 0;
-Spacer := '  ';
-Form := SLIst.Form;
-F.Add(spacer+'Object '+Form.Name+': TForm');
-Spacer := '    ';
-inc(count);
-F.Add(spacer+'Left = '+inttostr(Form.Left));
-F.Add(spacer+'Top = '+inttostr(Form.Top));
-F.Add(spacer+'Width = '+inttostr(Form.Width));
-F.Add(spacer+'Height = '+inttostr(Form.Height));
-F.Add(spacer+'Caption = '+Form.Caption);
-//walk through the controls on the form and the controls on the controls...
-for i := 0 to Form.ControlCount-1 do
-  Begin
-  Spacer := '';
-  while length (spacer) < 2*(I+2) do
-  Spacer := Spacer + ' ';
-  aControl := Form.Controls[i];
-  F.Add(Spacer+'Object '+aControl.Name+': '+aControl.Classname);
-  F.Add(Spacer+'  Left = '+inttostr(aControl.Left));
-  F.Add(Spacer+'  Top = '+inttostr(aControl.Top));
-  F.Add(Spacer+'  Width = '+inttostr(aControl.Width));
-  F.Add(Spacer+'  Height = '+inttostr(aControl.Height));
-  F.Add(Spacer+'  Text = '+aControl.Text);
-
-  end;
-
-Spacer := '';
-for I := 0 to count-1 do
-begin
-while length (spacer) < 2*I do
-Spacer := Spacer + ' ';
-F.Add(spacer+'end');
-end;
-
-F.SaveToFile(ExtractFilePath(Slist.Filename)+SList.FormName+'.lfm');
-F.Free;
 end;
 
 Function TForm1.SavebyUnit(SList : TUnitInfo) : Boolean;
@@ -1510,16 +1465,8 @@ var
 NewLeft1, NewTop1 : Integer;
 NewLeft2, NewTop2 : Integer;
 Begin
-Writeln('Mouse up at '+inttostr(x)+'   '+inttostr(y));
-Writeln('LEft is'+inttostr(left));
-Writeln('Top is'+inttostr(Top));
-Writeln('Width is'+inttostr(Width));
-Writeln('Height is'+inttostr(Height));
-Writeln('------');
-Writeln('senders LEft is'+inttostr(TControl(Sender).left));
-Writeln('Top is'+inttostr(TControl(Sender).Top));
-Writeln('Width is'+inttostr(TControl(Sender).Width));
-Writeln('Height is'+inttostr(TControl(Sender).Height));
+
+//see if they moved the mouse or simply clicked on the form
 if (X >= 0) and (X <= TControl(sender).Width) and
    (Y >= 0) and (Y <= TControl(sender).Height) then
    begin
@@ -1567,10 +1514,17 @@ if (X >= 0) and (X <= TControl(sender).Width) and
            else
         CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
                          TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),Mouse_Down.X,Mouse_Down.Y,-1,-1));
- //    CInterface.Setpropbyname('Visible',True);//Control).Visible := True;
+
+     {Set up some default values for the control here}
+     {    CInterface is a TComponentInterface defined in CustomFormEditor.pp}
+     CInterface.SetPropByName('VISIBLE',True);
+//     CInterface.SetPropByName('NAME','PLEASEWORK1');
+//     CInterface.SetPropbyName('CAPTION','Click me!');
+     CInterface.SetPropByName('HINT','Click');
+     CInterface.SetPropbyName('TOP',10);
+
 
      //set the ONCLICK event so we know when the control is selected;
-     TControl(CInterface.Control).Visible := True;
      TControl(CInterface.Control).OnClick := @ClickOnControl;
       FormEditor1.ClearSelected;
       FormEditor1.AddSelected(TComponent(Cinterface.Control));
@@ -2193,10 +2147,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.13  2000/11/30 21:43:38  lazarus
-  Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
-  It's created in main.pp when New Form is selected.
-
+  Revision 1.14  2000/12/01 15:50:39  lazarus
+  changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus

@@ -65,6 +65,7 @@ type
     property Default : Boolean read FDefault write SetDefault default false;
     property ModalResult : TModalResult read FModalResult write FModalResult default 0;
     property Cancel : Boolean read FCancel write FCancel default False;
+    property Caption;
     property Font;
 
     property Visible;
@@ -72,7 +73,7 @@ type
     property OnExit;
     property OnKeyDown;
     property OnKeyPress;
- //   property OnKeyUp;
+    property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -212,6 +213,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/12/01 15:50:39  lazarus
+  changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
+  Shane
+
   Revision 1.3  2000/11/29 21:22:35  lazarus
   New Object Inspector code
   Shane

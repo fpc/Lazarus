@@ -23,7 +23,7 @@ unit global;
 
 interface
 uses 
-   Classes,designerform,sysutils;
+   Classes,sysutils;
 
 type
    TPRojFlags = (pfProject, pfForm, pfSource, pfNone);
@@ -36,7 +36,7 @@ type
       FFlags : TProjFlags;
       FSource : TStringList;
       FPage : Integer;
-      FForm  : TDesignerForm;
+ //     FForm  : TDesignerForm;
       Procedure SetFormName(Value : String);
       Function GetFormName : String;
       Procedure SetPage(Value : Integer);
@@ -53,7 +53,7 @@ type
       Property Page : Integer read GetPage write SetPage;
       Property FileName : String read FFileName write FFilename;
       Property Flags : TProjFlags read FFlags write FFLags;
-      property Form  : TDesignerForm read fform write fform;
+//      property Form  : TDesignerForm read fform write fform;
 
    end;
 
@@ -73,6 +73,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/12/01 15:50:39  lazarus
+  changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
+  Shane
+
   Revision 1.1  2000/07/13 10:27:47  michael
   + Initial import
 
