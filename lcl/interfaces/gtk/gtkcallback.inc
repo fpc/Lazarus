@@ -428,12 +428,13 @@ var
   KeyCode: Word;
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
+  ShiftState: TShiftState;
 begin
   Result:=true;
   
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
   FillChar(Msg,SizeOf(Msg),0);
-  GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
+  GetGTKKeyInfo(Event,KeyCode,Msg.CharCode,SysKey,Extended,Toggle,ShiftState);
   Flags := 0;
   if Extended then Flags := KF_EXTENDED;
   if SysKey then Flags := Flags or KF_ALTDOWN;
@@ -2373,12 +2374,11 @@ end;
  ------------------------------------------------------------------------------}
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
-type
-  PList = ^TList;
 var
   //Msg: TLMKey;
   KeyCode, VirtKeyCode: Word;
   ListCode: Integer;
+  ListCodeToggle: integer;
   Toggle, Extended, SysKey: Boolean;
   ShiftState: TShiftState;
   KeyStateList: TList;
@@ -2386,7 +2386,7 @@ var
   procedure UpdateExtraKeyState(ListCode: integer; Pressed: boolean);
   begin
     if Pressed then begin
-      if KeyStateList.IndexOf(Pointer(ListCode)) = -1 then begin
+      if KeyStateList.IndexOf(Pointer(ListCode)) <0 then begin
         KeyStateList.Add(Pointer(ListCode));
       end;
     end else begin
@@ -2397,48 +2397,50 @@ var
       KeyStateList.Remove(Pointer(ListCode or KEYMAP_EXTENDED));
     end;
   end;
-  
-begin
-  GetGTKKeyInfo(Event, KeyCode, VirtKeyCode, SysKey, Extended, Toggle);
-  KeyStateList:=PList(FuncData)^;
-  
-  // update extra keys like Ctrl, Shift, Alt
-  ShiftState := GTKEventState2ShiftState(Event^.State);
-  UpdateExtraKeyState(VK_CONTROL,ssCtrl in ShiftState);
-  UpdateExtraKeyState(VK_SHIFT,ssShift in ShiftState);
-  UpdateExtraKeyState(VK_MENU,ssAlt in ShiftState);
 
-  with Event^ do
+  procedure CheckExtraKeyState(ListCode: integer; Pressed: boolean);
   begin
-    ListCode:=KeyToListCode(KeyCode, VirtKeyCode, Extended);
+    if VirtKeyCode<>ListCode then
+      UpdateExtraKeyState(ListCode,Pressed)
+    else if Event^.theType=GDK_KEY_PRESS then
+      UpdateExtraKeyState(ListCode,true)
+    else if Event^.theType=GDK_KEY_RELEASE then
+      UpdateExtraKeyState(ListCode,false);
+  end;
 
-    case theType of
-      GDK_KEY_PRESS:
-        begin
-          if KeyStateList.IndexOf(Pointer(ListCode)) = -1
-          then begin
-            KeyStateList.Add(Pointer(ListCode));
-            if Toggle then KeyStateList.Add(Pointer(ListCode or KEYMAP_TOGGLE));
-          end;
-          //else WriteLn(Format('WARNING: [GTKKeySnooper] Pressed key (0x%x) already pressed (LC=0x%x)', [KeyCode, ListCode]));
-        end;
-      GDK_KEY_RELEASE:
-        begin
-          {if KeyStateList.Remove(Pointer(ListCode)) = -1 then
-            WriteLn(Format('WARNING: [GTKKeySnooper] Released key (0x%x) not pressed (LC=0x%x)', [KeyCode, ListCode]));}
-          KeyStateList.Remove(Pointer(ListCode));
-          // just remove the togglekey if present
-          KeyStateList.Remove(Pointer(ListCode or KEYMAP_TOGGLE));
-        end;
-    else
-      WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d', [theType]));  
-    end;
+begin
+  GetGTKKeyInfo(Event,KeyCode,VirtKeyCode,SysKey,Extended,Toggle,ShiftState);
+  KeyStateList:=TList(FuncData);
+  ListCode:=KeyToListCode(KeyCode, VirtKeyCode, Extended);
 
-    Assert(False, Format('trace:' +
-//    WriteLN(Format(
-      '[GTKKeySnooper] Type %d, window $%x, send_event %d, time %d, state %d, keyval %d, length %d, string %s', 
-      [ thetype, Integer(window), send_event, time, state, keyval, length, thestring])
-    );
+  // update Ctrl, Shift, Alt
+  CheckExtraKeyState(VK_CONTROL,ssCtrl in ShiftState);
+  CheckExtraKeyState(VK_SHIFT,ssShift in ShiftState);
+  CheckExtraKeyState(VK_MENU,ssAlt in ShiftState);
+
+  case Event^.theType of
+    GDK_KEY_PRESS:
+      begin
+        if KeyStateList.IndexOf(Pointer(ListCode)) <0
+        then begin
+          KeyStateList.Add(Pointer(ListCode));
+          ListCodeToggle:=ListCode or KEYMAP_TOGGLE;
+          if Toggle
+          and (KeyStateList.IndexOf(Pointer(ListCodeToggle)) <0) then
+            KeyStateList.Add(Pointer(ListCodeToggle));
+        end;
+        //else WriteLn(Format('WARNING: [GTKKeySnooper] Pressed key (0x%x) already pressed (LC=0x%x)', [KeyCode, ListCode]));
+      end;
+    GDK_KEY_RELEASE:
+      begin
+        {if KeyStateList.Remove(Pointer(ListCode)) = -1 then
+          WriteLn(Format('WARNING: [GTKKeySnooper] Released key (0x%x) not pressed (LC=0x%x)', [KeyCode, ListCode]));}
+        KeyStateList.Remove(Pointer(ListCode));
+        // just remove the togglekey if present
+        KeyStateList.Remove(Pointer(ListCode or KEYMAP_TOGGLE));
+      end;
+  else
+    WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d', [Event^.theType]));
   end;
   Result := 0;
 end;
@@ -2674,6 +2676,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.178  2003/04/26 10:45:34  mattias
+  fixed right control release
+
   Revision 1.177  2003/04/16 22:11:35  mattias
   fixed codetools Makefile, fixed default prop not found error
 
