@@ -142,7 +142,12 @@ Begin
       Case Hi(WParam) Of
         0:
         Begin
-          LMessage.Msg := LM_CLICKED;
+          If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
+            CallEvent(OwnerObject, TControl(OwnerObject).OnClick, Nil, etNotify)
+          Else If OwnerObject Is TMenuItem Then
+            LMessage.Msg := LM_ACTIVATE
+          Else
+            LMessage.Msg := LM_CLICKED;
         End;
         BN_KILLFOCUS, EN_KILLFOCUS:
         Begin
@@ -1485,6 +1490,9 @@ end;}
 
 {
   $Log$
+  Revision 1.10  2002/02/07 08:35:12  lazarus
+  Keith: Fixed persistent label captions and a few less noticable things
+
   Revision 1.9  2002/02/04 10:54:33  lazarus
   Keith:
     * Fixes for Win32

@@ -439,7 +439,7 @@ Const
     Begin
       Try
         Elem := String(PixmapArray^[I]);
-        Idx := Length(Elem) - 6;
+        Idx := Length(Elem) - 7;
         With ColorMap Do
         Begin
           Alias := Copy(Elem, 1, AliasLen);
@@ -1510,7 +1510,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetCaretPos(X, Y: Integer): Boolean;
 Begin
-  Result := SetCaretPosEx(GetFocus, X, Y);  
+  Result := Windows.SetCaretPos(X, Y);
 End;
 
 {------------------------------------------------------------------------------
@@ -1524,7 +1524,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetCaretPosEx(Handle: HWND; X, Y: Integer): Boolean;
 Begin
-  Result := ShowCaret(Handle) And Windows.SetCaretPos(X, Y);
+  Result := ShowCaret(Handle) And SetCaretPos(X, Y);
 End;
 
 {------------------------------------------------------------------------------
@@ -1534,7 +1534,7 @@ End;
   Returns: true on success
 
  ------------------------------------------------------------------------------}
-Function TWin32Object.SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: boolean): Boolean;
+Function TWin32Object.SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean;
 Begin
   If ShowHideOnFocus Then
     Result := ShowCaret(Handle)
@@ -1850,6 +1850,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/02/07 08:35:12  lazarus
+  Keith: Fixed persistent label captions and a few less noticable things
+
   Revision 1.6  2002/02/03 06:06:26  lazarus
   Keith: Fixed Win32 compilation problems
 

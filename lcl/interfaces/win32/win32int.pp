@@ -249,6 +249,8 @@ Type
     Reserved: Pointer;
   End;
 
+  TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
+
   { Linked list of objects for events }
   PLazObject = ^TLazObject;
   TLazObject = Record
@@ -333,6 +335,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/02/07 08:35:12  lazarus
+  Keith: Fixed persistent label captions and a few less noticable things
+
   Revision 1.10  2002/02/03 06:06:25  lazarus
   Keith: Fixed Win32 compilation problems
 

@@ -157,9 +157,10 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
 Var
-  Handle, Wnd: HWnd;
+  Handle, HOwner, Wnd: HWnd;
   I: Integer;
   P: Pointer;
+  R: TRect;
   TbBI: TBBUTTONINFO;
   TCI: TC_ITEM;
   PLabel: PChar;
@@ -172,6 +173,7 @@ Begin
     Assert(False, Format('Trace:WARNING: [TWin32Object.SetLabel] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := (Sender As TWinControl).Handle;
+  HOwner := GetAncestor(Handle, GA_ROOTOWNER);
   P := Pointer(Handle);
   Wnd := PWin32Control(@Sender)^.Window;
   Assert(P = Nil, 'Trace:WARNING: [TWin32Object.SetLabel] --> Got nil pointer');
@@ -220,6 +222,14 @@ Begin
     End;
     Else
       SetWindowText(Handle, Data);
+
+    If TControl(Sender).FCompStyle = csLabel Then
+    Begin
+      GetClientRect(HOwner, R);
+      InvalidateRect(HOwner, @R, True);
+      UpdateWindow(HOwner);
+    End;
+
     Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
   End;
 End;
@@ -1338,7 +1348,7 @@ Var
   End;
 Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Start');
-  Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [TCommonDialog(Sender).ClassName]));
+  Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
   If Sender Is TColorDialog Then
   Begin
     CC := LPChooseColor(@Sender)^;
@@ -2199,18 +2209,22 @@ end;
   Shows or hides a control
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.ShowHide(Sender: TObject);
+Var
+  Handle: HWND;
 Begin
+  Handle := ObjectToHWND(Sender);
+
   If TControl(Sender).Visible Then
   Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
-    ShowWindow(TWinControl(Sender).Handle, SW_SHOW);
+    ShowWindow(Handle, SW_SHOW);
     If (Sender Is TCustomForm) Then
-      SetClassLong(TWinControl(Sender).Handle, GCL_HIcon, TCustomForm(Sender).GetIconHandle);
+      SetClassLong(Handle, GCL_HIcon, TCustomForm(Sender).GetIconHandle);
   End
   Else
   Begin
     Assert(False, 'TRACE: [TWin32Object.ShowHide] Hiding the window');
-    ShowWindow(TWinControl(Sender).Handle, SW_HIDE);
+    ShowWindow(Handle, SW_HIDE);
   End;
 End;
 
@@ -3087,6 +3101,9 @@ End;
 
 {
   $Log$
+  Revision 1.16  2002/02/07 08:35:12  lazarus
+  Keith: Fixed persistent label captions and a few less noticable things
+
   Revision 1.15  2002/02/04 10:54:33  lazarus
   Keith:
     * Fixes for Win32

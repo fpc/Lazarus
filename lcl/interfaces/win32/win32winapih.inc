@@ -50,6 +50,7 @@ Function EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean; Override;
 Function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: PChar; Count: LongInt; Dx: PInteger): Boolean; Override;
 
 Function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
+{ Draws a 3D border in GTK native style. }
 Function Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 
 Function GetActiveWindow: HWND; Override;
@@ -132,6 +133,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/02/07 08:35:13  lazarus
+  Keith: Fixed persistent label captions and a few less noticable things
+
   Revision 1.4  2002/02/03 06:06:26  lazarus
   Keith: Fixed Win32 compilation problems
 

@@ -613,7 +613,6 @@ Begin
   Result := GetShiftState;
 End;
 
-
 {------------------------------------------------------------------------------
   Procedure: GetWin32KeyInfo
   Params:  Event      - Requested info  
@@ -685,6 +684,29 @@ Begin
   Else
     Target.Dispatch(Message);
   Result := Message.Result;
+End;
+
+{-----------------------------------------------------------------------------
+  Procedure: CallEvent
+  Params: Target    - the object for which the event will be called
+          Event     - event to call
+          Data      - misc data
+          EventType - the type of event
+  Returns: Nothing
+
+  Calls an event
+-------------------------------------------------------------------------------}
+Procedure CallEvent(Const Target: TObject; Event: TNotifyEvent; Const Data: Pointer; Const EventType: TEventType);
+Begin
+  If Assigned(Target) And Assigned(Event) Then
+  Begin
+    Case EventType Of
+      etNotify:
+      Begin
+        Event(Target);
+      End;
+    End;
+  End;
 End;
 
 {------------------------------------------------------------------------------
@@ -899,6 +921,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.6  2002/02/07 08:35:12  lazarus
+  Keith: Fixed persistent label captions and a few less noticable things
+
   Revision 1.5  2002/01/18 09:07:44  lazarus
   Keith: Fixed menu creation
 
