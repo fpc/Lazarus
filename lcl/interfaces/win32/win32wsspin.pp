@@ -71,6 +71,22 @@ implementation
 
 { TWin32WSCustomSpinEdit }
 
+procedure UpdateSpinEditControl(const Handle: HWND; const ASpinEdit: TCustomSpinEdit);
+var
+  minval, maxval: integer;
+begin
+  // initialize extremes
+  minval := Trunc(ASpinEdit.MinValue);
+  maxval := Trunc(ASpinEdit.MaxValue);
+  if (minval = 0) and (maxval = 0) then
+  begin
+    minval := low(integer);
+    maxval := high(integer);
+  end;
+  SendMessage(Handle, UDM_SETRANGE32, minval, maxval);
+  SendMessage(Handle, UDM_SETPOS32, 0, LParam(Trunc(ASpinEdit.Value)));
+end;
+  
 function TWin32WSCustomSpinEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -81,15 +97,13 @@ begin
   // customization of Params
   with Params do
   begin
-    //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
     Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT),
       0, 0,       // pos -  ignored for buddy
       0, 0,       // size - ignored for buddy
       Parent, 0, HInstance, Buddy,
-      Trunc(TSpinEdit(AWinControl).MaxValue),
-      Trunc(TSpinEdit(AWinControl).MinValue),
-      Trunc(TSpinEdit(AWinControl).Value));
+      0, 0, 0);
+    UpdateSpinEditControl(Window, TCustomSpinEdit(AWinControl));
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, true);
@@ -126,13 +140,8 @@ begin
 end;
 
 procedure TWin32WSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);
-var
-  Handle: HWND;
 begin
-  Handle := ACustomSpinEdit.Handle;
-  SendMessage(Handle, UDM_SETRANGE32, WParam(Trunc(ACustomSpinEdit.MaxValue)),
-    LParam(Trunc(ACustomSpinEdit.MinValue)));
-  SendMessage(Handle, UDM_SETPOS32, 0, LParam(Trunc(ACustomSpinEdit.Value)));
+  UpdateSpinEditControl(ACustomSpinEdit.Handle, ACustomSpinEdit);
 end;
 
 initialization
