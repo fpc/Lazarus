@@ -1867,7 +1867,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Contructor for the class.
+
  ------------------------------------------------------------------------------}
 Procedure TControl.SetTextBuf(Buffer : PChar);
 Begin
@@ -2079,6 +2079,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.121  2003/04/10 09:22:42  mattias
+  implemented changing dependency version
+
   Revision 1.120  2003/03/25 10:45:40  mattias
   reduced focus handling and improved focus setting
 
