@@ -493,7 +493,7 @@ begin
           Event^.theString[0] := Char(Msg.CharCode);
           {$EndIf}
           Event^.KeyVal := Msg.CharCode;
-          If Msg.CharCode <> 0 then
+          If Msg.CharCode <> VK_UNKNOWN then
             KeyCode := Msg.CharCode
           else
             KeyCode := $FFFF;
@@ -519,7 +519,9 @@ begin
         TObject(Data).Dispatch(Msg);
         Result := (Msg.Result=0);
         {$ENDIF}
-        If Msg.CharCode <> KeyCode then
+        If Msg.CharCode <> KeyCode then begin
+          // key was handled by lcl
+          gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_press_event');
           If ((Msg.CharCode >= 31) and (Msg.CharCode <= 255))
           or (Msg.CharCode = 0) then
           begin
@@ -528,6 +530,7 @@ begin
             {$EndIf}
             Event^.KeyVal := Msg.CharCode;
           end;
+        end;
       end;
       //This is disabled on account of the
       //strange behaviour in TSynEdit
@@ -2461,6 +2464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.141  2002/10/06 20:24:27  lazarus
+  MG: fixed stopping keypress event if handled by LCL
+
   Revision 1.140  2002/10/04 20:46:52  lazarus
   MG: improved TComboBox.SetItemIndex
 
