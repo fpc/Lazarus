@@ -21,8 +21,9 @@ uses
 
 const
   // editor commands constants. see syneditkeycmds.pp for more
-  ecFind               = ecUserFirst + 1;
+  ecFind                = ecUserFirst + 1;
   ecFindAgain          = ecUserFirst + 2;
+  ecFindNext           = ecFindAgain;
   ecReplace            = ecUserFirst + 3;
   ecFindProcedureDefinition = ecUserFirst + 4;
   ecFindProcedureMethod = ecUserFirst + 5;
@@ -31,7 +32,10 @@ const
   ecNextEditor         = ecUserFirst + 7;
   ecPrevEditor         = ecUserFirst + 8;
 
-  ecPeriod             = ecUserFirst + 9;
+  ecPeriod              = ecUserFirst + 9;
+
+  ecFindPrevious      = ecUserFirst + 10;
+  ecFindInFiles       = ecUserFirst + 11;
 
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
@@ -287,7 +291,9 @@ begin
     ecSetMarker9: Result:= 'SetMarker9';
 
     ecFind: Result:= 'Find text';
-    ecFindAgain: Result:= 'Find again';
+    ecFindNext: Result:= 'Find next';
+    ecFindPrevious: Result:= 'Find previous';
+    ecFindInFiles: Result:= 'Find in files';
     ecReplace: Result:= 'Replace text';
     ecFindProcedureDefinition: Result:= 'find procedure definition';
     ecFindProcedureMethod: Result:= 'find procedure method';
@@ -704,10 +710,7 @@ begin
     ACaption:='No No No';
     AText:=' The key "'+KeyAndShiftStateToStr(NewKey2,NewShiftState2)+'"'
             +' is already connected to "'+DummyRelation.Name+'".';
-
-//    Application.MessageBox(PChar(AText),PChar(ACaption),0);
     MessageDlg(ACaption,AText,mterror,[mbok],0);
-
     exit;
   end;
   if NewKey1=VK_UNKNOWN then begin
@@ -877,7 +880,9 @@ begin
   Add('Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
 
   Add('Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
-  Add('Find text again',ecFindAgain,VK_F3,[],VK_UNKNOWN,[]);
+  Add('Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
+  Add('Find previous',ecFindPrevious,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Find in files',ecFindInFiles,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Replace text',ecReplace,VK_R,[SSCtrl],VK_UNKNOWN,[]);
   Add('Find procedure definiton',ecFindProcedureDefinition,
                                  VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);

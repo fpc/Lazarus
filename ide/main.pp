@@ -109,7 +109,9 @@ type
     itmEditPaste: TMenuItem; 
 
     itmSearchFind: TMenuItem;
-    itmSearchFindAgain: TMenuItem;
+    itmSearchFindNext: TMenuItem;
+    itmSearchFindPrevious: TMenuItem;
+    itmSearchFindInFiles: TMenuItem;
     itmSearchReplace: TMenuItem;
     itmGotoLineNumber: TMenuItem;
 
@@ -527,7 +529,9 @@ begin
 
   // find / replace dialog
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
-  itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
+  itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
+  itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
+  itmSearchFindInFiles.OnClick := @SourceNotebook.FindInFilesClicked;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
 
   // message view
@@ -924,11 +928,23 @@ begin
   itmSearchFind.Caption := 'Find';
   mnuSearch.add(itmSearchFind);
 
-  itmSearchFindAgain := TMenuItem.Create(nil);
-  itmSearchFindAgain.Name:='itmSearchFindAgain';
-  itmSearchFindAgain.caption := 'Find &Again';
-  itmSearchFindAgain.Enabled := False;
-  mnuSearch.add(itmSearchFindAgain);
+  itmSearchFindNext := TMenuItem.Create(nil);
+  itmSearchFindNext.Name:='itmSearchFindNext';
+  itmSearchFindNext.Caption := 'Find &Next';
+  itmSearchFindNext.Enabled := False;
+  mnuSearch.add(itmSearchFindNext);
+
+  itmSearchFindPrevious := TMenuItem.Create(nil);
+  itmSearchFindPrevious.Name:='itmSearchFindPrevious';
+  itmSearchFindPrevious.Caption := 'Find &Previous';
+  itmSearchFindPrevious.Enabled := False;
+  mnuSearch.add(itmSearchFindPrevious);
+
+  itmSearchFindInFiles := TMenuItem.Create(nil);
+  itmSearchFindInFiles.Name:='itmSearchFindInFiles';
+  itmSearchFindInFiles.Caption := 'Find &in files';
+  itmSearchFindInFiles.Enabled := False;
+  mnuSearch.add(itmSearchFindInFiles);
 
   itmSearchReplace := TMenuItem.Create(nil);
   itmSearchReplace.Name:='itmSearchReplace';
@@ -4004,6 +4020,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2001/10/17 13:43:15  lazarus
+  MG: added find previous to source editor
+
   Revision 1.122  2001/10/16 14:19:10  lazarus
   MG: added nvidia opengl support and a new opengl example from satan
 

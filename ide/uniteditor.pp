@@ -162,7 +162,8 @@ type
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
     procedure DoFindAndReplace;
-    procedure FindAgain;
+    procedure FindNext;
+    procedure FindPrevious;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
     
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -299,8 +300,10 @@ type
     procedure ToggleFormUnitClicked(Sender: TObject);
 
     procedure FindClicked(Sender : TObject);
+    procedure FindNextClicked(Sender : TObject);
+    procedure FindPreviousClicked(Sender : TObject);
+    procedure FindInFilesClicked(Sender : TObject);
     procedure ReplaceClicked(Sender : TObject);
-    procedure FindAgainClicked(Sender : TObject);
 
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
     Procedure CloseFile(PageIndex:integer);
@@ -647,11 +650,25 @@ Begin
 End;
 
 {------------------------------F I N D  A G A I N ----------------------------}
-procedure TSourceEditor.FindAgain;
+procedure TSourceEditor.FindNext;
 var OldOptions: TSynSearchOptions;
 Begin
   OldOptions:=FindReplaceDlg.Options;
   FindReplaceDlg.Options:=FindReplaceDlg.Options-[ssoEntireScope];
+  DoFindAndReplace;
+  FindReplaceDlg.Options:=OldOptions;
+End;
+
+{---------------------------F I N D   P R E V I O U S ------------------------}
+procedure TSourceEditor.FindPrevious;
+var OldOptions: TSynSearchOptions;
+Begin
+  OldOptions:=FindReplaceDlg.Options;
+  FindReplaceDlg.Options:=FindReplaceDlg.Options-[ssoEntireScope];
+  if ssoBackwards in FindReplaceDlg.Options then
+    FindReplaceDlg.Options:=FindReplaceDlg.Options-[ssoBackwards]
+  else
+    FindReplaceDlg.Options:=FindReplaceDlg.Options+[ssoBackwards];
   DoFindAndReplace;
   FindReplaceDlg.Options:=OldOptions;
 End;
@@ -662,17 +679,20 @@ var OldCaretXY:TPoint;
   TopLine: integer;
 begin
   OldCaretXY:=EditorComponent.CaretXY;
+  if EditorComponent.SelAvail then begin
+    if ssoBackwards in FindReplaceDlg.Options then
+      EditorComponent.CaretXY:=EditorComponent.BlockBegin
+    else
+      EditorComponent.CaretXY:=EditorComponent.BlockEnd
+  end;
   EditorComponent.SearchReplace(
     FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);
   if (OldCaretXY.X=EditorComponent.CaretX)
   and (OldCaretXY.Y=EditorComponent.CaretY)
   and not (ssoReplaceAll in FindReplaceDlg.Options) then begin
-    ACaption:='Message';
+    ACaption:='Not found';
     AText:='Search string '''+FindReplaceDlg.FindText+''' not found!';
-
-//    Application.MessageBox(PChar(AText),PChar(ACaption),MB_OK);
-    MessageDlg(ACaption,AText,mtinformation,[mbok],0);
-
+    MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
   end else begin
     TopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
     if TopLine < 1 then TopLine:=1;
@@ -762,11 +782,18 @@ Begin
       aCompletion.Execute(TextS2,P.X,P.Y);
     end;
 
-  ecFind :
+  ecFind:
     StartFindAndReplace(false);
 
-  ecFindAgain :
-    FindAgain;
+  ecFindNext:
+    FindNext;
+
+  ecFindPrevious:
+    FindPrevious;
+
+  ecFindInFiles:
+    // ToDo
+    ;
 
   ecReplace:
     StartFindAndReplace(true);
@@ -2322,11 +2349,25 @@ Begin
   if TempEditor <> nil then TempEditor.StartFindAndReplace(true);
 End;
 
-Procedure TSourceNotebook.FindAgainClicked(Sender : TObject);
+Procedure TSourceNotebook.FindNextClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSe;
-  if TempEditor <> nil then TempEditor.FindAgain;
+  if TempEditor <> nil then TempEditor.FindNext;
+End;
+
+Procedure TSourceNotebook.FindPreviousClicked(Sender : TObject);
+var TempEditor:TSourceEditor;
+Begin
+  TempEditor:=GetActiveSe;
+  if TempEditor <> nil then TempEditor.FindPrevious;
+End;
+
+Procedure TSourceNotebook.FindInFilesClicked(Sender : TObject);
+Begin
+  MessageDlg('Not implemented yet',
+    'If you can help us to implement this feature, mail to'#13
+    +'lazarus@miraclec.com', mtInformation,[mbCancel],0);
 End;
 
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);

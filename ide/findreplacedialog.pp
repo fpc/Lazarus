@@ -14,11 +14,11 @@
         - mrCancel for Cancel
 
   ToDo:
-    -regular expression checkbox
+  
 }
 unit findreplacedialog;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -52,7 +52,7 @@ type
     OkButton:TButton;
     ReplaceAllButton:TButton;
     CancelButton:TButton;
-    procedure TextToFindeditKeyDown(Sender: TObject; var Key:Word;
+    procedure TextToFindEditKeyDown(Sender: TObject; var Key:Word;
        Shift:TShiftState);
     procedure OkButtonClick(Sender:TObject);
     procedure ReplaceAllButtonClick(Sender:TObject);
@@ -117,9 +117,9 @@ begin
       Show;
     end;
 
-    ReplaceTextedit:=Tedit.Create(Self);
-    with ReplaceTextedit do begin
-      Name:='ReplaceTextedit';
+    ReplaceTextEdit:=Tedit.Create(Self);
+    with ReplaceTextEdit do begin
+      Name:='ReplaceTextEdit';
       Parent:=Self;
       Left:=90;
       Top:=28;
@@ -299,6 +299,10 @@ procedure TLazFindReplaceDialog.TextToFindeditKeyDown(
 begin
   if (Key=VK_RETURN) then OkButtonClick(Sender);
   if (Key=VK_ESCAPE) then CancelButtonClick(Sender);
+  if Key=VK_TAB then begin
+    if Sender=TextToFindEdit then
+      ReplaceTextEdit.SetFocus;
+  end;
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
@@ -334,7 +338,7 @@ begin
     then DirectionRadioGroup.ItemIndex:=0
     else DirectionRadioGroup.ItemIndex:=1;
   ReplaceAllButton.Enabled:=ssoReplace in NewOptions;
-  ReplaceTextedit.Enabled:=ReplaceAllButton.Enabled;
+  ReplaceTextEdit.Enabled:=ReplaceAllButton.Enabled;
   ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Enabled;
   if ssoReplace in NewOptions then begin
@@ -372,12 +376,12 @@ end;
 
 function TLazFindReplaceDialog.GetReplaceText:AnsiString;
 begin
-  Result:=ReplaceTextedit.Text;
+  Result:=ReplaceTextEdit.Text;
 end;
 
 procedure TLazFindReplaceDialog.SetReplaceText(NewReplaceText:AnsiString);
 begin
-  ReplaceTextedit.Text:=NewReplaceText;
+  ReplaceTextEdit.Text:=NewReplaceText;
 end;
 
 end.
