@@ -580,7 +580,7 @@ var
     if EventString <> nil
     then begin
       EventString^ := #0;
-      EventString^ := #0;
+      // MG: should we set Event^.length := 0; or is this used for mem allocation?
     end;
     {MWE:.$EndIf}
     
@@ -793,6 +793,7 @@ begin
 
         if (EventString<>nil) and (Msg.CharCode <> ord(EventString^))
         then begin
+        writeln('HandleGTKKeyUpDown A');
           // key was changed by lcl
           if Msg.CharCode=0 then
             StopKeyEvent('key_press_event')
@@ -3111,6 +3112,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.237  2004/07/07 17:10:02  mattias
+  added hint for unimplemented IDE directives for non pascal sources
+
   Revision 1.236  2004/06/29 21:25:52  marc
   * Fixed compilation for gtk2
 

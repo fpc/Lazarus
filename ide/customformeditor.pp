@@ -76,16 +76,16 @@ each control that's dropped onto the form
     constructor Create(AComponent: TComponent);
     destructor Destroy; override;
 
-    Function GetComponentType    : ShortString; override;
-    Function GetComponentHandle  : LongInt; override;
-    Function GetParent           : TIComponentInterface; override;
-    Function IsTControl          : Boolean; override;
-    Function GetPropCount	   : Integer; override;
-    Function GetPropType(Index : Integer) : TTypeKind; override;
-    Function GetPropTypeInfo(Index : Integer) : PTypeInfo;
-    Function GetPropName(Index : Integer) : ShortString; override;
-    Function GetPropTypeName(Index : Integer) : ShortString; override;
-    Function GetPropTypebyName(Name : ShortString) : TTypeKind; override;
+    Function GetComponentType: ShortString; override;
+    Function GetComponentHandle: LongInt; override;
+    Function GetParent: TIComponentInterface; override;
+    Function IsTControl: Boolean; override;
+    Function GetPropCount: Integer; override;
+    Function GetPropType(Index: Integer): TTypeKind; override;
+    Function GetPropTypeInfo(Index: Integer): PTypeInfo;
+    Function GetPropName(Index: Integer): ShortString; override;
+    Function GetPropTypeName(Index: Integer): ShortString; override;
+    Function GetPropTypebyName(Name: ShortString): TTypeKind; override;
 
     Function GetPropValue(Index : Integer; var Value) : Boolean; override;
     Function GetPropValuebyName(Name: ShortString; var Value) : Boolean; override;
@@ -127,6 +127,9 @@ each control that's dropped onto the form
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
     procedure JITListReaderError(Sender: TObject; ErrorType: TJITFormError;
           var Action: TModalResult); virtual;
+    procedure JITListPropertyNotFound(Sender: TObject; Reader: TReader;
+      Instance: TPersistent; var PropName: string; IsPath: boolean;
+      var Handled, Skip: Boolean);
 
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonControlFormNode(LookupRoot: TComponent): TAVLTreeNode;
@@ -651,10 +654,12 @@ begin
   
   JITFormList := TJITForms.Create;
   JITFormList.OnReaderError:=@JITListReaderError;
-  
+  JITFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
+
   JITDataModuleList := TJITDataModules.Create;
   JITDataModuleList.OnReaderError:=@JITListReaderError;
-  
+  JITDataModuleList.OnPropertyNotFound:=@JITListPropertyNotFound;
+
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
 end;
@@ -1228,6 +1233,14 @@ function TCustomFormEditor.FindNonControlFormNode(LookupRoot: TComponent
 begin
   Result:=FNonControlForms.FindKey(Pointer(LookupRoot),
                                    @CompareLookupRootAndNonControlForm);
+end;
+
+procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;
+  Reader: TReader; Instance: TPersistent; var PropName: string;
+  IsPath: boolean; var Handled, Skip: Boolean);
+begin
+  writeln('TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
+    ' Instance=',Instance.ClassName,' PropName="',PropName,'" IsPath=',IsPath);
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;

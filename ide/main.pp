@@ -6429,6 +6429,9 @@ begin
 
   end else begin
     // ToDo: load .lfi file
+    MessageDlg('Not implemented',
+      'Sorry, IDE directives are only implemented for pascal sources',
+      mtInformation,[mbCancel],0);
     exit;
   end;
   Result:=mrOk;
@@ -8770,7 +8773,10 @@ function TMainIDE.BeginCodeTool(ADesigner: TDesigner;
 begin
   Result:=false;
   if (SourceNoteBook.NoteBook=nil)
-  or (ToolStatus in [itCodeTools,itCodeToolAborting]) then exit;
+  or (ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
+    debugln('TMainIDE.BeginCodeTool impossible ',dbgs(ord(ToolStatus)));
+    exit;
+  end;
   if ctfSwitchToFormSource in Flags then
     DoSwitchToFormSrc(ADesigner,ActiveSrcEdit,ActiveUnitInfo)
   else if Designer<>nil then
@@ -10448,6 +10454,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.736  2004/07/07 17:10:02  mattias
+  added hint for unimplemented IDE directives for non pascal sources
+
   Revision 1.735  2004/07/03 15:10:57  mattias
   added insert IFDEF tool from Colin
 

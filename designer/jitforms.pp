@@ -63,6 +63,9 @@ type
   
   TJITReaderErrorEvent = procedure(Sender: TObject; ErrorType: TJITFormError;
     var Action: TModalResult) of object;
+  TJITPropertyNotFoundEvent = procedure(Sender: TObject; Reader: TReader;
+    Instance: TPersistent; var PropName: string; IsPath: boolean;
+    var Handled, Skip: Boolean) of object;
 
 
   { TJITComponentList }
@@ -77,6 +80,7 @@ type
     FComponentPrefix: string;
     FCurUnknownClass: string;
     FCurUnknownProperty: string;
+    FOnPropertyNotFound: TJITPropertyNotFoundEvent;
     procedure SetComponentPrefix(const AValue: string);
   protected
     FCurReadErrorMsg: string;
@@ -160,6 +164,8 @@ type
     BaseJITClass: TJITClass;
     property OnReaderError: TJITReaderErrorEvent
                                        read FOnReaderError write FOnReaderError;
+    property OnPropertyNotFound: TJITPropertyNotFoundEvent
+                             read FOnPropertyNotFound write FOnPropertyNotFound;
     property CurReadJITComponent:TComponent read FCurReadJITComponent;
     property CurReadClass:TClass read FCurReadClass;
     property CurReadChild: TComponent read FCurReadChild;
@@ -822,13 +828,13 @@ end;
 
 {
   TReader events.
-  If a LFM is streamed back into the corresponfing TForm descendent, all methods
-  and components are published members and TReader can set these values.
+  Normally at runtime a LFM is streamed back into the corresponding TForm
+  descendent, all methods and components are published members and TReader can
+  set these values.
   But at design time we do not have the corresponding TForm descendent. And
   there is no compiled code, thus it must be produced it at runtime
   (just-in-time).
 }
-
 procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
 var NewMethod: TMethod;
@@ -850,8 +856,12 @@ procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);
 begin
-  // this is pretty normal for extra properties in DefineProperties
-  //writeln('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
+  // FCL in VER1_9_4 and below creates this event for DefineProperties too
+  {$IFNDEF VER1_9_4}
+  writeln('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
+  if Assigned(OnPropertyNotFound) then
+    OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip);
+  {$ENDIF}
 end;
 
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
