@@ -68,6 +68,10 @@ msgstr "%s fa già parte del progetto."
 msgid "%s project directory"
 msgstr "directory progetto %s"
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s non è un nome progetto valido.%sScegliere un altro nome (per es. progetto1.lpi)"
@@ -471,6 +475,10 @@ msgstr "Applica"
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
 msgstr "Applica i cambiamenti"
+
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
@@ -2616,6 +2624,10 @@ msgstr "Ins"
 msgid "Insert"
 msgstr "Inserisci"
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Inserisci in ordine alfabetico"
@@ -4515,6 +4527,10 @@ msgstr "Destra"
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
 msgstr "Fai click sul tasto destro del mouse sull'albero degli elementi per ottenere una finestra con tutte le funzioni disponibili nel pacchetto."
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
@@ -6599,8 +6615,4 @@ msgstr "sì"
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
 msgstr "Impossibile fare una build di lazarus durante un debug o una compilazione."
-
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
-msgstr "(Questo file è stato creato automaticamente da Lazarus. Non modificarlo!%s  Questo sorgente viene utilizzato solo per compilare ed installare%s  il pacchetto %s.%s)%s"
 

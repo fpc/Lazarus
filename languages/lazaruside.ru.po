@@ -58,6 +58,10 @@ msgstr "%s - уже часть проекта."
 msgid "%s project directory"
 msgstr "Каталог проекта %s"
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s - некорректное имя проекта.%s Выберите другое (напр., project1.lpi)"
@@ -461,6 +465,10 @@ msgstr "Применить"
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
 msgstr "Применить"
+
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
@@ -2606,6 +2614,10 @@ msgstr "ВСТ"
 msgid "Insert"
 msgstr "Вставить"
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Вставить по алфавиту"
@@ -4505,6 +4517,10 @@ msgstr "Справа"
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
 msgstr "Правый щелчок на элементе дерева даст меню со всеми доступными функциями пакета."
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
@@ -6589,8 +6605,4 @@ msgstr "да"
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
 msgstr "Вы не можете перебрать lazarus при отладке или компиляции."
-
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
-msgstr "{ Этот файл был создан lazarus автоматически. Не редактируйте!%s Этот исходник используется только для компиляции и установки%s пакета %s.%s}%s"
 

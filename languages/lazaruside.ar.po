@@ -1,5 +1,3 @@
-# translation of lazaruside.po to Arabic
-# Mazen NEIFER <m.neifer@enertecgroup.com>, 2004.
 msgid ""
 msgstr ""
 "Last-Translator: Mazen NEIFER <m.neifer@enertecgroup.com>\n"
@@ -69,6 +67,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
@@ -473,6 +475,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoasis
@@ -2619,6 +2625,10 @@ msgstr ""
 msgid "Insert"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr ""
@@ -4517,6 +4527,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
@@ -6602,8 +6616,4 @@ msgstr ""
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
 msgstr ""
-
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
-msgstr "{��������������� ����� }"
 

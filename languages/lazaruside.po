@@ -290,6 +290,10 @@ msgstr ""
 msgid "Uncomment selection"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
 msgstr ""
@@ -1728,6 +1732,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
 msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
@@ -4134,6 +4142,10 @@ msgstr ""
 msgid "Hebrew"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""
@@ -5915,7 +5927,7 @@ msgid "Package %s%s%s has no valid output directory:%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagemainsourcefile

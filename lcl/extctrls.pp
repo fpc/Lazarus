@@ -587,15 +587,15 @@ type
 
   TCustomRadioGroup = class(TCustomGroupBox)
   private
-    FButtonList : TList; // list of TRadioButton
+    FButtonList: TList; // list of TRadioButton
     FColumnLayout: TColumnLayout;
     FHiddenButton: TRadioButton;
     FCreatingWnd: boolean;
-    FItems      : TStrings;
-    FItemIndex  : integer;
-    FColumns    : integer;
-    FReading    : boolean;
-    FOnClick    : TNotifyEvent;
+    FItems: TStrings;
+    FItemIndex: integer;
+    FColumns: integer;
+    FReading: boolean;
+    FOnClick: TNotifyEvent;
     procedure ItemsChanged(Sender: TObject);
     procedure Clicked(Sender: TObject); virtual;
     procedure DoPositionButtons;
@@ -945,6 +945,9 @@ end.
 
  {
   $Log$
+  Revision 1.110  2004/07/11 23:08:43  mattias
+  updated russian translation  from vasily
+
   Revision 1.109  2004/07/11 13:03:53  mattias
   extended RolesForForm to manage multiple roles for on control
 

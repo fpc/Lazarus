@@ -58,6 +58,10 @@ msgstr "%s - уже часть проекта."
 msgid "%s project directory"
 msgstr "Каталог проекта %s"
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s - некорректное имя проекта.%s Выберите другое (напр., project1.lpi)"
@@ -268,7 +272,7 @@ msgstr "Действие: %s"
 
 #: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
-msgstr ""
+msgstr "Активировать синтаксис регулярных выражений для текста и замены (почти как в perl)"
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
@@ -292,7 +296,7 @@ msgstr "Добавить элемент"
 
 #: lazarusidestrconsts:srkmecaddbreakpoint
 msgid "add break point"
-msgstr ""
+msgstr "добавить точку останова"
 
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
@@ -384,7 +388,7 @@ msgstr "Разрешить LABEL и GOTO"
 
 #: lazarusidestrconsts:lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
-msgstr ""
+msgstr "Разрешить поиск для нескольких строк"
 
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
@@ -462,6 +466,10 @@ msgstr "Применить"
 msgid "Apply changes"
 msgstr "Применить"
 
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
 msgstr "Как-есть"
@@ -476,7 +484,7 @@ msgstr "Спросить"
 
 #: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
-msgstr ""
+msgstr "Спросить перед заменой каждого фрагмента"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1356,7 +1364,7 @@ msgstr "Доступ к данным"
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
-msgstr ""
+msgstr "Дата"
 
 #: lazarusidestrconsts:uemdebugword
 msgid "Debug"
@@ -1636,7 +1644,7 @@ msgstr "Выдать номера строк в ошибках времени исполнения"
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
-msgstr ""
+msgstr "Различать регистр букв, например, А и а"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -2000,7 +2008,7 @@ msgstr "Файл используется"
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
-msgstr ""
+msgstr "Маска файла (*;*.*;*.bak?)"
 
 #: lazarusidestrconsts:srkmcatfilemenu
 msgid "File menu commands"
@@ -2606,6 +2614,10 @@ msgstr "ВСТ"
 msgid "Insert"
 msgstr "Вставить"
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Вставить по алфавиту"
@@ -2984,11 +2996,11 @@ msgstr "Переход вперед"
 
 #: lazarusidestrconsts:lismenujumptonexterror
 msgid "Jump to next error"
-msgstr ""
+msgstr "Переход к след. ошибке"
 
 #: lazarusidestrconsts:lismenujumptopreverror
 msgid "Jump to previous error"
-msgstr ""
+msgstr "Переход к пред. ошибке"
 
 #: lazarusidestrconsts:dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -4348,7 +4360,7 @@ msgstr "Удалить все некорректные свойства"
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
-msgstr ""
+msgstr "удалить точку останова"
 
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
@@ -4505,6 +4517,10 @@ msgstr "Справа"
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
 msgstr "Правый щелчок на элементе дерева даст меню со всеми доступными функциями пакета."
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
@@ -4864,7 +4880,7 @@ msgstr "Выделить элемент:"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
-msgstr ""
+msgstr "Выбранный пакет нужен для:"
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"
@@ -5724,7 +5740,7 @@ msgstr "Модуль %s%s%s не в нижнем регистре.%sКомпилятор FreePascal 1.0.x требует
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
-msgstr ""
+msgstr "Модуль уже называется %s%s%s. Идентификаторы паскаля должны быть уникальны."
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
@@ -5808,7 +5824,7 @@ msgstr "Уже загружен пакет %s%s%s %sиз файла %s%s%s.%sСм. Компоненты -> Диаграмм
 
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
-msgstr ""
+msgstr "Уже есть модуль, называемый %s%s%s. Идентификаторы паскаля должны быть уникальны."
 
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
 msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
@@ -6024,7 +6040,7 @@ msgstr "Не могу найти файл %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
-msgstr ""
+msgstr "Не могу найти файл %s%s%s.%sПроверьте путь поиска в%sПроект->Параметры компилятора...->Пути->Другие файлы модулей"
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
@@ -6589,8 +6605,4 @@ msgstr "да"
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
 msgstr "Вы не можете перебрать lazarus при отладке или компиляции."
-
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
-msgstr "{ Этот файл был создан lazarus автоматически. Не редактируйте!%s Этот исходник используется только для компиляции и установки%s пакета %s.%s}%s"
 

@@ -68,6 +68,10 @@ msgstr "%s ist bereits im Projekt"
 msgid "%s project directory"
 msgstr "%s Projekt Verzeichnis"
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s ist kein gueltiger Projekt Name.%s(Gueltig ist zum Beispiel: project1.lpi)"
@@ -470,6 +474,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoasis
@@ -2616,6 +2624,10 @@ msgstr ""
 msgid "Insert"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr ""
@@ -4514,6 +4526,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
@@ -6598,9 +6614,5 @@ msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
-msgstr ""
-
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
 msgstr ""
 

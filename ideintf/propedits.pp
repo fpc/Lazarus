@@ -667,11 +667,12 @@ type
   end;
 
 
-{ TCaptionMultilinePropertyEditor
-  PropertyEditor editor for the Caption property when the Caption can be
-  multiline. Brings up the dialog for entering text. }
+{ TStringMultilinePropertyEditor
+  PropertyEditor editor for a string property when the string can be
+  multiline (e.g. TLabel.Caption, TControl.Hint).
+  Brings up the dialog for entering text. }
 
-  TCaptionMultilinePropertyEditor = class(TCaptionPropertyEditor)
+  TStringMultilinePropertyEditor = class(TCaptionPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -4369,9 +4370,9 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
-{ TCaptionMultilinePropertyEditor }
+{ TStringMultilinePropertyEditor }
 
-procedure TCaptionMultilinePropertyEditor.Edit;
+procedure TStringMultilinePropertyEditor.Edit;
 var
   TheDialog : TStringsPropEditorDlg;
   AString : string;
@@ -4387,7 +4388,7 @@ begin
   end;
 end;
 
-function TCaptionMultilinePropertyEditor.GetAttributes: TPropertyAttributes;
+function TStringMultilinePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paRevertable, paAutoUpdate];
 end;
@@ -5467,7 +5468,9 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     nil,'Name',TComponentNamePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TCustomLabel, 'Caption', TCaptionMultilinePropertyEditor);
+    TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TControl, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
     nil,'Tag',TTabOrderPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),

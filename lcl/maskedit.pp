@@ -68,6 +68,7 @@ type
   TMaskedState = set of (msMasked, msReEnter, msDBSetText);
   
   { TCustomMaskEdit }
+  
   TCustomMaskEdit = class(TCustomEdit)
   private
     FEditMask: string;
@@ -141,6 +142,7 @@ type
 
   TMaskEdit = class(TCustomMaskEdit)
   published
+    property Align;
     property Anchors;
     property AutoSize;
     property CharCase;

@@ -69,6 +69,10 @@ msgstr "כבר חלק מהמיזם. %s"
 msgid "%s project directory"
 msgstr "ספריית המיזם %s"
 
+#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
+msgid "%s This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "(למשל) בבקשה בחר בשם אחר project1.lpi%s.שם המיזם אינו תקים %s%s%s"
@@ -472,6 +476,10 @@ msgstr "החל"
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
 msgstr "החל שינויים"
+
+#: lazarusidestrconsts:rslanguagearabic
+msgid "Arabic"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoasis
 msgid "As-Is"
@@ -2617,6 +2625,10 @@ msgstr ""
 msgid "Insert"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconditionalselection
+msgid "Insert $IFDEF..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr ""
@@ -4515,6 +4527,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
 msgid "Right click on the items tree to get the popupmenu with all available package functions."
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightclickselects
+msgid "Right Click selects"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
@@ -6600,8 +6616,4 @@ msgstr "כן"
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
 msgstr ".אינך יכול לבנות את לזרוס כאשר אתה מנפה או מהדר"
-
-#: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "{ This file was automatically created by Lazarus. Do not edit!%s  This source is only used to compile and install%s  the package %s.%s}%s"
-msgstr ""
 
