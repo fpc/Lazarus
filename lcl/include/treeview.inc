@@ -223,6 +223,19 @@ begin
     Result := 0;
 end;
 
+function TTreeNode.GetParentNodeOfAbsoluteLevel(AAbsoluteLevel:integer):TTreeNode;
+var i, x : integer;
+begin
+  if (AAbsoluteLevel > Level) OR (AAbsoluteLevel < 0) then
+    Result := nil
+  else
+  begin
+    Result := Self;
+    for i := AAbsoluteLevel to Level-1 do
+      Result := Result.Parent;
+  end;
+end;
+
 function TTreeNode.GetTreeNodes: TTreeNodes;
 begin
   if (Owner<>nil) and (Owner is TTreeNodes) then

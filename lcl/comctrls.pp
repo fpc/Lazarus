@@ -1627,6 +1627,7 @@ type
     procedure ExpandParents;
     function Bottom: integer;
     function BottomExpanded: integer;
+    function GetParentNodeOfAbsoluteLevel(AAbsoluteLevel:integer):TTreeNode;
     function GetFirstChild: TTreeNode;
     function GetHandle: THandle;
     function GetLastSibling: TTreeNode;
@@ -2292,6 +2293,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.159  2005/01/27 10:10:25  mattias
+  added TTreeNode.GetParentNodeOfAbsoluteLevel  from Sergio
+
   Revision 1.158  2005/01/25 01:18:09  mattias
   added TTreeView.ExpandSignColor  from Sergio
 

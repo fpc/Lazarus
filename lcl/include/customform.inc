@@ -1160,7 +1160,7 @@ end;
 Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
 Begin
   if FFormStyle = Value then exit;
-  if Value in [fsMDIChild, fsMDIForm] then
+  if (Value in [fsMDIChild, fsMDIForm]) then
     raise Exception.Create('TCustomForm.SetFormStyle MDI forms are not implemented yet');
   FFormStyle := Value;
   Include(FFormState,fsFormStyleChanged);
@@ -1866,6 +1866,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.175  2005/01/27 10:10:25  mattias
+  added TTreeNode.GetParentNodeOfAbsoluteLevel  from Sergio
+
   Revision 1.174  2005/01/26 23:23:11  mattias
   added error when setting FormStyle to MDI
 

@@ -127,8 +127,9 @@ begin
       if Result<>mrIgnore then exit;
     end;
     
-    
-    
+    // TODO: compiler check: check if compiler paths includes base units
+    // TODO: compiler check: check if compiler is older than fpc units (ppu version)
+
     // compile bogus file
     FTest:=cotCompileBogusFiles;
     TestGroupbox.Caption:='Test: Compiling an empty file ...';
