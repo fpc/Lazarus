@@ -108,6 +108,7 @@ type
     InsertDelphi5CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertDelphi5DirectoryTemplateMenuItem: TMenuItem;
     InsertDelphi5ProjectTemplateMenuItem: TMenuItem;
+    
 
     // define tree
     DefineTreeView: TTreeView;
@@ -723,12 +724,14 @@ begin
     BeginUpdate;
     Caption:='Create Defines for Delphi5 Directory';
     FileCount:=1;
+    
     FileTitles[0]:='Delphi5 directory';
     FileDescs[0]:='The Delphi5 main directory,'#13
           +'where Borland has installed all Delphi5 sources.'#13
           +'For example: C:/Programme/Borland/Delphi5';
     FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
     FileFlags[0]:=[iftDirectory,iftNotEmpty];
+    
     EndUpdate;
     if ShowModal=mrCancel then exit;
     InsertTemplate(Boss.DefinePool.CreateDelphi5DirectoryTemplate(
@@ -738,10 +741,34 @@ end;
 
 procedure TCodeToolsDefinesEditor.InsertDelphi5ProjectTemplateMenuItemClick(
   Sender: TObject);
+var InputFileDlg: TInputFileDialog;
 begin
-  InsertTemplate(Boss.DefinePool.CreateDelphi5ProjectTemplate(
-                   SetDirSeparators('/YourDelphi5ProjectDir'),
-                   SetDirSeparators('/Borland/Delphi5')));
+  InputFileDlg:=GetInputFileDialog;
+  with InputFileDlg do begin
+    BeginUpdate;
+    Caption:='Create Defines for Delphi5 Project';
+
+    FileCount:=2;
+    
+    FileTitles[0]:='Delphi5 project directory';
+    FileDescs[0]:='The Delphi5 project directory,'#13
+          +'which contains the .dpr, dpk file.';
+    FileNames[0]:=SetDirSeparators('C:/Programme/Borland/Delphi5/YourProject');
+    FileFlags[0]:=[iftDirectory,iftNotEmpty];
+    
+    FileTitles[1]:='Delphi5 directory';
+    FileDescs[1]:='The Delphi5 main directory,'#13
+          +'where Borland has installed all Delphi5 sources,'#13
+          +'which are used by the Delphi5 project.'#13
+          +'For example: C:/Programme/Borland/Delphi5';
+    FileNames[1]:=SetDirSeparators('C:/Programme/Borland/Delphi5');
+    FileFlags[1]:=[iftDirectory,iftNotEmpty];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    InsertTemplate(Boss.DefinePool.CreateDelphi5ProjectTemplate(FileNames[0],
+                                                                Filenames[1]));
+  end;
 end;
 
 procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);

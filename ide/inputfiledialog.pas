@@ -22,7 +22,7 @@ uses
   LResources;
 
 type
-  TInputFileFlag = (iftDirectory, iftFilename, iftNotEmpty);
+  TInputFileFlag = (iftDirectory, iftFilename, iftNotEmpty, iftMustExist);
   TInputFileFlags = set of TInputFileFlag;
 
   TInputFileDialog = class(TForm)
@@ -64,10 +64,11 @@ type
     function LabelListCount(Index: integer): integer;
     function FileIndexOfFileDlgBtn(Button: TButton): integer;
     procedure CreateInputComponents;
-    procedure CreateGroupBoxes;
+    procedure CreateMissingGroupBoxes;
     procedure CreateEditComponents;
     procedure CreateFileDlgButtonComponents;
     procedure CreateLabelComponents;
+    procedure DeleteUnusedGroupBoxes;
     procedure DeleteLabelList(Index: integer);
     procedure DeleteAllLabels;
     procedure ResizeComponents;
@@ -128,6 +129,7 @@ begin
       else
         exit;
     end;
+    FFileNames[i]:=CurEdit.Text;
   end;
   ModalResult:=mrOk
 end;
@@ -198,7 +200,7 @@ begin
   SetStringListCount(FFileTitles);
   if FFileFlags<>nil then begin
     FreeMem(FFileFlags);
-    FFileTitles:=nil;
+    FFileFlags:=nil;
   end;
   if AValue>0 then begin
     Getmem(FFileFlags,SizeOf(TInputFileFlags)*AValue);
@@ -247,14 +249,16 @@ var CurFileFlags: TInputFileFlags;
 begin
   Result:=false;
   CurFileFlags:=FileFlags[Index];
-  if (not (iftDirectory in CurFileFlags))
-  and DirectoryExists(Filename)
-  then
-    exit;
-  if (not (iftFilename in CurFileFlags))
-  and FileExists(Filename)
-  then
-    exit;
+  if (iftNotEmpty in CurFileFlags) and (Filename='') then exit;
+  if (iftMustExist in CurFileFlags) then begin
+    if (not (iftDirectory in CurFileFlags)) and DirectoryExists(Filename)
+    then
+      exit;
+    if (not (iftFilename in CurFileFlags)) and FileExists(Filename)
+    and (not DirectoryExists(Filename))
+    then
+      exit;
+  end;
   Result:=true;
 end;
 
@@ -318,16 +322,16 @@ end;
 
 procedure TInputFileDialog.CreateInputComponents;
 begin
-  CreateGroupBoxes;
+  CreateMissingGroupBoxes;
   CreateEditComponents;
   CreateFileDlgButtonComponents;
   CreateLabelComponents;
+  DeleteUnusedGroupBoxes;
 end;
 
-procedure TInputFileDialog.CreateGroupBoxes;
+procedure TInputFileDialog.CreateMissingGroupBoxes;
 var
   NewGroupBox: TGroupBox;
-  i: integer;
 begin
   // add new TGroupBoxes
   while FInputGroupboxes.Count<FFileCount do begin
@@ -339,14 +343,6 @@ begin
     end;
     FInputGroupboxes.Add(NewGroupBox);
   end;
-  // remove old unused TGroupBoxes
-  while FInputGroupboxes.Count>FFileCount do begin
-    GetGroupBox(FInputGroupboxes.Count-1).Free;
-    FInputGroupboxes.Delete(FInputGroupboxes.Count-1);
-  end;
-  // upadte existing TGroupBoxes
-  for i:=0 to FInputGroupboxes.Count-1 do
-    GetGroupBox(i).Caption:=FFileTitles[i];
 end;
 
 procedure TInputFileDialog.CreateEditComponents;
@@ -356,10 +352,11 @@ var
 begin
   // add new TEdits
   while FInputEdits.Count<FFileCount do begin
+    i:=FInputEdits.Count;
     NewEdit:=TEdit.Create(Self);
     with NewEdit do begin
-      Name:='InputEdit'+IntToStr(FInputEdits.Count);
-      Parent:=Self;
+      Name:='InputEdit'+IntToStr(i);
+      Parent:=GetGroupBox(i);
       Visible:=true;
     end;
     FInputEdits.Add(NewEdit);
@@ -376,13 +373,15 @@ end;
 
 procedure TInputFileDialog.CreateFileDlgButtonComponents;
 var NewButton: TButton;
+  i: integer;
 begin
   // add new TButtons
   while FInputFileDlgButtons.Count<FFileCount do begin
+    i:=FInputFileDlgButtons.Count;
     NewButton:=TButton.Create(Self);
     with NewButton do begin
-      Name:='InputFileDlgButtin'+IntToStr(FInputFileDlgButtons.Count);
-      Parent:=Self;
+      Name:='InputFileDlgButtin'+IntToStr(i);
+      Parent:=GetGroupBox(i);
       Caption:='...';
       OnClick:=@InputFileDlgButtonClick;
       Visible:=true;
@@ -415,7 +414,7 @@ begin
       NewLabel:=TLabel.Create(Self);
       with NewLabel do begin
         Name:='NewLabel'+IntToStr(FInputLabels.Count)+'_'+IntToStr(i);
-        Parent:=Self;
+        Parent:=GetGroupBox(ListIndex);
         Visible:=true;
       end;
       NewLabelList.Add(NewLabel);
@@ -435,6 +434,20 @@ begin
     end;
   end;
   LabelsAsText.Free;
+end;
+
+procedure TInputFileDialog.DeleteUnusedGroupBoxes;
+var
+  i: integer;
+begin
+  // remove old unused TGroupBoxes
+  while FInputGroupboxes.Count>FFileCount do begin
+    GetGroupBox(FInputGroupboxes.Count-1).Free;
+    FInputGroupboxes.Delete(FInputGroupboxes.Count-1);
+  end;
+  // update existing TGroupBoxes
+  for i:=0 to FInputGroupboxes.Count-1 do
+    GetGroupBox(i).Caption:=FFileTitles[i];
 end;
 
 procedure TInputFileDialog.DeleteLabelList(Index: integer);
@@ -459,7 +472,7 @@ var
   CurEdit: TEdit;
   CurButton: TButton;
 begin
-  GroupBoxSpacing:=5;
+  GroupBoxSpacing:=10;
   GroupBoxLeft:=GroupBoxSpacing;
   GroupBoxWidth:=ClientWidth-GroupBoxLeft*2;
   y:=GroupBoxSpacing;
@@ -468,9 +481,9 @@ begin
   for FileIndex:=0 to FileCount-1 do begin
     GroupBoxHeight:=60+LabelListCount(FileIndex)*LabelHeight;
     GetGroupBox(FileIndex).SetBounds(
-                                 GroupBoxLeft,y,GroupBoxWidth,y+GroupBoxHeight);
-    LabelTop:=2;
-    LabelLeft:=5;
+                                 GroupBoxLeft,y,GroupBoxWidth,GroupBoxHeight);
+    LabelTop:=7;
+    LabelLeft:=10;
     LabelWidth:=GroupBoxWidth-LabelLeft*2;
     for LabelIndex:=0 to LabelListCount(FileIndex)-1 do begin
       CurLabel:=GetLabel(FileIndex,LabelIndex);

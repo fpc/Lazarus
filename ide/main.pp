@@ -3603,48 +3603,47 @@ Begin
     MainUnitIndex:=-1; // if main unit is also shown, then this is the index of
                        // the main unit
     for i:=0 to Project1.UnitCount-1 do begin
-      if Project1.Units[i].IsPartOfProject then begin
-        if OnlyForms then begin
-          // add all form names of project
+      if not Project1.Units[i].IsPartOfProject then continue;
+      if OnlyForms then begin
+        // add all form names of project
+        if Project1.MainUnit=i then MainUnitIndex:=i;
+        if Project1.Units[i].FormName<>'' then
+          UnitList.Add(TViewUnitsEntry.Create(
+            Project1.Units[i].FormName,i,Project1.Units[i]=ActiveUnitInfo));
+      end else begin
+        // add all unit names of project
+        if (Project1.Units[i].UnitName<>'') then begin
           if Project1.MainUnit=i then MainUnitIndex:=i;
-          if Project1.Units[i].FormName<>'' then
-            UnitList.Add(TViewUnitsEntry.Create(
-              Project1.Units[i].FormName,i,Project1.Units[i]=ActiveUnitInfo));
-        end else begin
-          // add all unit names of project
-          if (Project1.Units[i].UnitName<>'') then begin
-            if Project1.MainUnit=i then MainUnitIndex:=i;
-            UnitList.Add(TViewUnitsEntry.Create(
-              Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
-          end else if Project1.MainUnit=i then begin
-            MainUnitInfo:=Project1.MainUnitInfo;
-            if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
-            then begin
-              if (MainUnitInfo.Loaded) then
-                MainUnitName:=SourceNoteBook.NoteBook.Pages[
-                  MainUnitInfo.EditorIndex];
-              if MainUnitName='' then begin
-                MainUnitName:=CodeToolBoss.GetSourceName(MainUnitInfo.Source);
-              end;
-              if MainUnitName='' then begin
-                MainUnitName:=ExtractFileName(MainUnitInfo.Filename);
-                Ext:=ExtractFileExt(MainUnitName);
-                MainUnitName:=copy(MainUnitName,1,length(MainUnitName)-length(Ext));
-              end;
-              if MainUnitName<>'' then begin
-                MainUnitIndex:=UnitList.Count;
-                UnitList.Add(TViewUnitsEntry.Create(
-                  MainUnitName,i,MainUnitInfo=ActiveUnitInfo));
-              end;
+          UnitList.Add(TViewUnitsEntry.Create(
+            Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
+        end else if Project1.MainUnit=i then begin
+          MainUnitInfo:=Project1.MainUnitInfo;
+          if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
+          then begin
+            if (MainUnitInfo.Loaded) then
+              MainUnitName:=SourceNoteBook.NoteBook.Pages[
+                MainUnitInfo.EditorIndex];
+            if MainUnitName='' then begin
+              MainUnitName:=CodeToolBoss.GetSourceName(MainUnitInfo.Source);
+            end;
+            if MainUnitName='' then begin
+              MainUnitName:=ExtractFileName(MainUnitInfo.Filename);
+              Ext:=ExtractFileExt(MainUnitName);
+              MainUnitName:=copy(MainUnitName,1,length(MainUnitName)-length(Ext));
+            end;
+            if MainUnitName<>'' then begin
+              MainUnitIndex:=UnitList.Count;
+              UnitList.Add(TViewUnitsEntry.Create(
+                MainUnitName,i,MainUnitInfo=ActiveUnitInfo));
             end;
           end;
         end;
       end;
     end;
     if OnlyForms then
-      DlgCaption:='View forms'
+      DlgCaption:='View project forms'
     else
-      DlgCaption:='View units';
+      DlgCaption:='View project units';
     if ShowViewUnitsDlg(UnitList,true,DlgCaption)=mrOk then begin
       AnUnitInfo:=nil;
       for i:=0 to UnitList.Count-1 do begin
@@ -4247,11 +4246,9 @@ Begin
       AnUnitInfo:=Project1.Units[i];
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnit) then begin
         AName:=AnUnitInfo.FileName;
-        if (AnUnitInfo.IsVirtual) and (AnUnitInfo.Loaded) then begin
+        if (AnUnitInfo.EditorIndex>=0) then
           AName:=SourceNotebook.NoteBook.Pages[AnUnitInfo.EditorIndex];
-        end;
-        if not AnUnitInfo.IsVirtual then
-          UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
+        UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
     if ShowViewUnitsDlg(UnitList,true,'Remove from project')=mrOk then begin
@@ -6206,6 +6203,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.273  2002/04/05 18:17:59  lazarus
+  MG: fixed removing virtual units
+
   Revision 1.272  2002/04/05 16:34:13  lazarus
   MG: fixed autocreate form editing in project opts
 
