@@ -478,7 +478,7 @@ type
     function DoOpenProjectFile(AFileName:string; Flags: TOpenFlags):TModalResult;
     function DoPublishProject(Flags: TSaveFlags;
       ShowDialog: boolean):TModalResult;
-    function DoShowProjectInspector: TModalResult;
+    function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbigiousFiles;
@@ -6364,7 +6364,6 @@ begin
   end else if MacroName='comppath' then begin
     Handled:=true;
     s:=EnvironmentOptions.CompilerFilename;
-writeln('TMainIDE.OnMacroSubstitution "',s,'"');
   end else if MacroName='params' then begin
     Handled:=true;
     if Project1<>nil then
@@ -8605,6 +8604,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.541  2003/04/27 20:31:53  mattias
+  implemented open package for component palette
+
   Revision 1.540  2003/04/27 12:53:57  mattias
   implemented saving auto install packages
 
