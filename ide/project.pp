@@ -241,7 +241,7 @@ type
     function UnitIsUsed(AUnitName:string):boolean;
     function GetResourceFilename(AnUnitInfo: TUnitInfo; Index:integer):string;
     function SearchIncludeFile(AnUnitInfo: TUnitInfo; Filename:string):string;
-    function SearchFile(Filename,SearchPaths:string):string;
+    function SearchFile(Filename,SearchPaths,InitialDir:string):string;
     function SearchResourceFilename(AnUnitInfo: TUnitInfo):string;
 
     property ActiveEditorIndexAtStart: integer 
@@ -672,7 +672,7 @@ begin
 end;
 
 procedure TUnitInfo.SetUnitName(NewUnitName:string);
-var OldIncludeFilename,NewIncludeFilename:string;
+var NewIncludeFilename:string;
   IncludeStart,IncludeEnd:integer;
   Allowed:boolean;
 begin
@@ -686,10 +686,7 @@ begin
       if FindIncludeDirective(Source.Source,'initialization',1
          ,IncludeStart,IncludeEnd) then
       begin
-        OldIncludeFilename:=copy(Source.Source,IncludeStart
-          ,IncludeEnd-IncludeStart);
-        NewIncludeFilename:=
-          ExtractFilePath(OldIncludeFilename)+NewUnitName+ResourceFileExt;
+        NewIncludeFilename:=NewUnitName+ResourceFileExt;
         Source.Replace(IncludeStart,IncludeEnd-IncludeStart,
               '{$I '+NewIncludeFilename+'}');
       end;
@@ -1194,26 +1191,34 @@ begin
   Result:=ExtractFilePath(AnUnitInfo.Filename)+Filename;
   if FileExists(Result) then exit;
   // search in all include paths
-  Result:=SearchFile(Filename,CompilerOptions.IncludeFiles);
+  Result:=SearchFile(Filename,CompilerOptions.IncludeFiles
+      ,ExtractFilePath(AnUnitInfo.Filename));
 end;
 
-function TProject.SearchFile(Filename,SearchPaths:string):string;
+function TProject.SearchFile(Filename,SearchPaths,InitialDir:string):string;
 var StartPos,EndPos:integer;
-  CurPath:string;
+  CurPath: string;
+  OldDir: string;
 begin
-  StartPos:=1;
-  while StartPos<=length(SearchPaths) do begin
-    EndPos:=Startpos;
-    while (EndPos<=length(SearchPaths)) and (SearchPaths[EndPos]<>';') do 
-      inc(EndPos);
-    CurPath:=copy(SearchPaths,Startpos,EndPos-StartPos);
-    if CurPath<>'' then begin
-      if CurPath[length(CurPath)]<>OSDirSeparator then
-        CurPath:=CurPath+OSDirSeparator;
-      Result:=CurPath+Filename;
-      if FileExists(Result) then exit;
+  OldDir:=GetCurrentDir;
+  SetCurrentDir(ExtractFilePath(InitialDir));
+  try
+    StartPos:=1;
+    while StartPos<=length(SearchPaths) do begin
+      EndPos:=Startpos;
+      while (EndPos<=length(SearchPaths)) and (SearchPaths[EndPos]<>';') do 
+        inc(EndPos);
+      CurPath:=copy(SearchPaths,Startpos,EndPos-StartPos);
+      if CurPath<>'' then begin
+        if CurPath[length(CurPath)]<>OSDirSeparator then
+          CurPath:=CurPath+OSDirSeparator;
+        Result:=CurPath+Filename;
+        if FileExists(Result) then exit;
+      end;
+      StartPos:=EndPos+1;
     end;
-    StartPos:=EndPos+1;
+  finally
+    SetCurrentDir(OldDir);
   end;
   Result:='';
 end;
@@ -1392,6 +1397,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2001/03/29 12:38:59  lazarus
+  MG: new environment opts, ptApplication bugfixes
+
   Revision 1.17  2001/03/26 14:52:30  lazarus
   MG: TSourceLog + compiling bugfixes
 

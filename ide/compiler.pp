@@ -173,7 +173,8 @@ begin
         OutputLine:='unable to execute "'+CmdLine+'"';
       end;
       OutputLine:='Error: '+OutputLine;
-      ProcessOutputLine;
+      if Assigned(OnOutputString) then
+        OnOutputString(OutputLine);
       exit;
     end;
     {$ENDIF linux}
@@ -280,6 +281,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2001/03/29 12:38:58  lazarus
+  MG: new environment opts, ptApplication bugfixes
+
   Revision 1.9  2001/03/26 14:52:30  lazarus
   MG: TSourceLog + compiling bugfixes
 

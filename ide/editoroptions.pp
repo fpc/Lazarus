@@ -565,7 +565,7 @@ begin
   // set defaults
 
   // General options
-  fSyntaxExtensions:='pp;inc;lfm;lrs;pas;dpr;dfm;dpk';
+  fSyntaxExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
 
   // Display options
   fEditorFont:='courier';
@@ -610,108 +610,112 @@ procedure TEditorOptions.Load;
 var SynEditOpt:TSynEditorOption;
   SynEditOptName:ansistring;
 begin
-  // general options
-  for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
-    case SynEditOpt of
-      eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
-      eoAutoIndent:SynEditOptName:='AutoIndent';
-      eoDragDropEditing:SynEditOptName:='DragDropEditing';
-      eoDropFiles:SynEditOptName:='DropFiles';
-      eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
-      eoKeepCaretX:SynEditOptName:='KeepCaretX';
-      eoNoCaret:SynEditOptName:='NoCaret';
-      eoNoSelection:SynEditOptName:='NoSelection';
-      eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
-      eoScrollPastEof:SynEditOptName:='ScrollPastEof';
-      eoScrollPastEol:SynEditOptName:='ScrollPastEol';
-      eoShowScrollHint:SynEditOptName:='ShowScrollHint';
-      eoSmartTabs:SynEditOptName:='SmartTabs';
-      eoTabsToSpaces:SynEditOptName:='TabsToSpaces';
-      eoTrimTrailingSpaces:SynEditOptName:='TrimTrailingSpaces';
-    else
-      SynEditOptName:='';
-    end;
-    if SynEditOptName<>'' then begin
-      if XMLConfig.GetValue('EditorOptions/General/Editor/'+SynEditOptName,
-          SynEditOpt in SYNEDIT_DEFAULT_OPTIONS) then
-        Include(fSynEditOptions,SynEditOpt)
+  try
+    // general options
+    for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
+      case SynEditOpt of
+        eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
+        eoAutoIndent:SynEditOptName:='AutoIndent';
+        eoDragDropEditing:SynEditOptName:='DragDropEditing';
+        eoDropFiles:SynEditOptName:='DropFiles';
+        eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
+        eoKeepCaretX:SynEditOptName:='KeepCaretX';
+        eoNoCaret:SynEditOptName:='NoCaret';
+        eoNoSelection:SynEditOptName:='NoSelection';
+        eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
+        eoScrollPastEof:SynEditOptName:='ScrollPastEof';
+        eoScrollPastEol:SynEditOptName:='ScrollPastEol';
+        eoShowScrollHint:SynEditOptName:='ShowScrollHint';
+        eoSmartTabs:SynEditOptName:='SmartTabs';
+        eoTabsToSpaces:SynEditOptName:='TabsToSpaces';
+        eoTrimTrailingSpaces:SynEditOptName:='TrimTrailingSpaces';
       else
-        Exclude(fSynEditOptions,SynEditOpt);
+        SynEditOptName:='';
+      end;
+      if SynEditOptName<>'' then begin
+        if XMLConfig.GetValue('EditorOptions/General/Editor/'+SynEditOptName,
+            SynEditOpt in SYNEDIT_DEFAULT_OPTIONS) then
+          Include(fSynEditOptions,SynEditOpt)
+        else
+          Exclude(fSynEditOptions,SynEditOpt);
+      end;
     end;
+
+    fUndoAfterSave:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
+    fDoubleClickLine:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickLine',false);
+    fFindTextAtCursor:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/FindTextAtCursor',true);
+    fUseSyntaxHighlight:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/UseSyntaxHighlight',true);
+    fCreateBackupFiles:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/CreateBackupFiles',true);
+    fBlockIndent:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',2);
+    fUndoLimit:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',32767);
+    fTabWidths:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidths',8);
+    fSyntaxExtensions:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/SyntaxExtensions'
+        ,'pp;inc;lfc;pas;dpr;dpk');
+
+    // Display options
+    fVisibleRightMargin:=
+      XMLConfig.GetValue('EditorOptions/Display/VisibleRightMargin',true);
+    fVisibleGutter:=
+      XMLConfig.GetValue('EditorOptions/Display/VisibleGutter',true);
+    fShowLineNumbers:=
+      XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers',false);
+    fGutterColor:=
+      XMLConfig.GetValue('EditorOptions/Display/GutterColor',clBtnFace);
+    fGutterWidth:=
+      XMLConfig.GetValue('EditorOptions/Display/GutterWidth',30);
+    fRightMargin:=
+      XMLConfig.GetValue('EditorOptions/Display/RightMargin',80);
+    fRightMarginColor:=
+      XMLConfig.GetValue('EditorOptions/Display/VisibleRightMarginColor'
+     ,clBtnFace);
+    fEditorFont:=
+      XMLConfig.GetValue('EditorOptions/Display/EditorFont','courier');
+    fEditorFontHeight:=
+      XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight',12);
+    fExtraLineSpacing:=
+      XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing',1);
+
+    // Key Mappings options
+    fKeyMappingScheme:=
+      XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
+    fKeyMap.LoadFromXMLConfig(XMLConfig
+      ,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
+
+    // Color options
+    fColorScheme:=
+      XMLConfig.GetValue('EditorOptions/Color/ColorScheme','Default');
+    ReadAttribute(fTextBlockElement);
+    ReadAttribute(fExecutionPointElement);
+    ReadAttribute(fEnabledBreakPointElement);
+    ReadAttribute(fDisabledBreakPointElement);
+    ReadAttribute(fErrorLineElement);
+
+    // Code Tools options
+    fAutoCodeCompletion:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeCompletion',true);
+    fAutoCodeParameters:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters',true);
+    fAutoToolTipExprEval:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipExprEval',true);
+    fAutoToolTipSymbTools:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools',true);
+    fAutoDelayInMSec:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec',1000);
+    fCodeTemplateFileName:=
+      XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
+        ,SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'));
+  except
+    writeln('[TEditorOptions.Load] ERROR');
   end;
-
-  fUndoAfterSave:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
-  fDoubleClickLine:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickLine',false);
-  fFindTextAtCursor:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/FindTextAtCursor',true);
-  fUseSyntaxHighlight:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/UseSyntaxHighlight',true);
-  fCreateBackupFiles:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/CreateBackupFiles',true);
-  fBlockIndent:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',2);
-  fUndoLimit:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',32767);
-  fTabWidths:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/TabWidths',8);
-  fSyntaxExtensions:=
-    XMLConfig.GetValue('EditorOptions/General/Editor/SyntaxExtensions'
-      ,'pp;inc;lfm;lfc;pas;dpr;dfm;dpk');
-
-  // Display options
-  fVisibleRightMargin:=
-    XMLConfig.GetValue('EditorOptions/Display/VisibleRightMargin',true);
-  fVisibleGutter:=
-    XMLConfig.GetValue('EditorOptions/Display/VisibleGutter',true);
-  fShowLineNumbers:=
-    XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers',false);
-  fGutterColor:=
-    XMLConfig.GetValue('EditorOptions/Display/GutterColor',clBtnFace);
-  fGutterWidth:=
-    XMLConfig.GetValue('EditorOptions/Display/GutterWidth',30);
-  fRightMargin:=
-    XMLConfig.GetValue('EditorOptions/Display/RightMargin',80);
-  fRightMarginColor:=
-    XMLConfig.GetValue('EditorOptions/Display/VisibleRightMarginColor'
-   ,clBtnFace);
-  fEditorFont:=
-    XMLConfig.GetValue('EditorOptions/Display/EditorFont','courier');
-  fEditorFontHeight:=
-    XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight',12);
-  fExtraLineSpacing:=
-    XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing',1);
-
-  // Key Mappings options
-  fKeyMappingScheme:=
-    XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
-  fKeyMap.LoadFromXMLConfig(XMLConfig
-    ,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
-
-  // Color options
-  fColorScheme:=
-    XMLConfig.GetValue('EditorOptions/Color/ColorScheme','Default');
-  ReadAttribute(fTextBlockElement);
-  ReadAttribute(fExecutionPointElement);
-  ReadAttribute(fEnabledBreakPointElement);
-  ReadAttribute(fDisabledBreakPointElement);
-  ReadAttribute(fErrorLineElement);
-
-  // Code Tools options
-  fAutoCodeCompletion:=
-    XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeCompletion',true);
-  fAutoCodeParameters:=
-    XMLConfig.GetValue('EditorOptions/CodeTools/AutoCodeParameters',true);
-  fAutoToolTipExprEval:=
-    XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipExprEval',true);
-  fAutoToolTipSymbTools:=
-    XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools',true);
-  fAutoDelayInMSec:=
-    XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec',1000);
-  fCodeTemplateFileName:=
-    XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
-      ,SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'));
 end;
 
 procedure TEditorOptions.Save;
@@ -719,95 +723,99 @@ procedure TEditorOptions.Save;
 var SynEditOpt:TSynEditorOption;
   SynEditOptName:ansistring;
 begin
-  // general options
-  for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
-    case SynEditOpt of
-      eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
-      eoAutoIndent:SynEditOptName:='AutoIndent';
-      eoDragDropEditing:SynEditOptName:='DragDropEditing';
-      eoDropFiles:SynEditOptName:='DropFiles';
-      eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
-      eoKeepCaretX:SynEditOptName:='KeepCaretX';
-      eoNoCaret:SynEditOptName:='NoCaret';
-      eoNoSelection:SynEditOptName:='NoSelection';
-      eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
-      eoScrollPastEof:SynEditOptName:='ScrollPastEof';
-      eoScrollPastEol:SynEditOptName:='ScrollPastEol';
-      eoShowScrollHint:SynEditOptName:='ShowScrollHint';
-      eoSmartTabs:SynEditOptName:='SmartTabs';
-      eoTabsToSpaces:SynEditOptName:='TabsToSpaces';
-      eoTrimTrailingSpaces:SynEditOptName:='TrimTrailingSpaces';
-    else
-      SynEditOptName:='';
+  try
+    // general options
+    for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
+      case SynEditOpt of
+        eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
+        eoAutoIndent:SynEditOptName:='AutoIndent';
+        eoDragDropEditing:SynEditOptName:='DragDropEditing';
+        eoDropFiles:SynEditOptName:='DropFiles';
+        eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
+        eoKeepCaretX:SynEditOptName:='KeepCaretX';
+        eoNoCaret:SynEditOptName:='NoCaret';
+        eoNoSelection:SynEditOptName:='NoSelection';
+        eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
+        eoScrollPastEof:SynEditOptName:='ScrollPastEof';
+        eoScrollPastEol:SynEditOptName:='ScrollPastEol';
+        eoShowScrollHint:SynEditOptName:='ShowScrollHint';
+        eoSmartTabs:SynEditOptName:='SmartTabs';
+        eoTabsToSpaces:SynEditOptName:='TabsToSpaces';
+        eoTrimTrailingSpaces:SynEditOptName:='TrimTrailingSpaces';
+      else
+        SynEditOptName:='';
+      end;
+      if SynEditOptName<>'' then begin
+        XMLConfig.SetValue('EditorOptions/General/Editor/'+SynEditOptName,
+            SynEditOpt in fSynEditOptions);
+      end;
     end;
-    if SynEditOptName<>'' then begin
-      XMLConfig.SetValue('EditorOptions/General/Editor/'+SynEditOptName,
-          SynEditOpt in fSynEditOptions);
-    end;
+
+    XMLConfig.SetValue('EditorOptions/General/Editor/UndoAfterSave'
+      ,fUndoAfterSave);
+    XMLConfig.SetValue('EditorOptions/General/Editor/DoubleClickLine'
+      ,fDoubleClickLine);
+    XMLConfig.SetValue('EditorOptions/General/Editor/FindTextAtCursor'
+      ,fFindTextAtCursor);
+    XMLConfig.SetValue('EditorOptions/General/Editor/UseSyntaxHighlight'
+      ,fUseSyntaxHighlight);
+    XMLConfig.SetValue('EditorOptions/General/Editor/CreateBackupFiles'
+      ,fCreateBackupFiles);
+    XMLConfig.SetValue('EditorOptions/General/Editor/BlockIndent'
+      ,fBlockIndent);
+    XMLConfig.SetValue('EditorOptions/General/Editor/UndoLimit'
+      ,fUndoLimit);
+    XMLConfig.SetValue('EditorOptions/General/Editor/TabWidths'
+      ,fTabWidths);
+    XMLConfig.SetValue('EditorOptions/General/Editor/SyntaxExtensions'
+      ,fSyntaxExtensions);
+
+    // Display options
+    XMLConfig.SetValue('EditorOptions/Display/VisibleRightMargin'
+      ,fVisibleRightMargin);
+    XMLConfig.SetValue('EditorOptions/Display/VisibleGutter',fVisibleGutter);
+    XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers',fShowLineNumbers);
+    XMLConfig.GetValue('EditorOptions/Display/GutterColor',fGutterColor);
+    XMLConfig.SetValue('EditorOptions/Display/GutterWidth',fGutterWidth);
+    XMLConfig.SetValue('EditorOptions/Display/RightMargin',fRightMargin);
+    XMLConfig.SetValue('EditorOptions/Display/RightMarginColor',fRightMarginColor);
+    XMLConfig.SetValue('EditorOptions/Display/EditorFont',fEditorFont);
+    XMLConfig.SetValue('EditorOptions/Display/EditorFontHeight'
+      ,fEditorFontHeight);
+    XMLConfig.SetValue('EditorOptions/Display/ExtraLineSpacing'
+      ,fExtraLineSpacing);
+
+    // Key Mappings options
+    XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
+    fKeyMap.SaveToXMLConfig(
+       XMLConfig,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
+
+    // Color options
+    XMLConfig.SetValue('EditorOptions/Color/ColorScheme',fColorScheme);
+    WriteAttribute(fTextBlockElement);
+    WriteAttribute(fExecutionPointElement);
+    WriteAttribute(fEnabledBreakPointElement);
+    WriteAttribute(fDisabledBreakPointElement);
+    WriteAttribute(fErrorLineElement);
+
+    // Code Tools options
+    XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeCompletion'
+      ,fAutoCodeCompletion);
+    XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeParameters'
+      ,fAutoCodeParameters);
+    XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipExprEval'
+      ,fAutoToolTipExprEval);
+    XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipSymbTools'
+      ,fAutoToolTipSymbTools);
+    XMLConfig.SetValue('EditorOptions/CodeTools/AutoDelayInMSec'
+      ,fAutoDelayInMSec);
+    XMLConfig.SetValue('EditorOptions/CodeTools/CodeTemplateFileName'
+      ,fCodeTemplateFileName);
+
+    XMLConfig.Flush;
+  except
+    writeln('[TEditorOptions.Save] ERROR: unable to write xml file');
   end;
-
-  XMLConfig.SetValue('EditorOptions/General/Editor/UndoAfterSave'
-    ,fUndoAfterSave);
-  XMLConfig.SetValue('EditorOptions/General/Editor/DoubleClickLine'
-    ,fDoubleClickLine);
-  XMLConfig.SetValue('EditorOptions/General/Editor/FindTextAtCursor'
-    ,fFindTextAtCursor);
-  XMLConfig.SetValue('EditorOptions/General/Editor/UseSyntaxHighlight'
-    ,fUseSyntaxHighlight);
-  XMLConfig.SetValue('EditorOptions/General/Editor/CreateBackupFiles'
-    ,fCreateBackupFiles);
-  XMLConfig.SetValue('EditorOptions/General/Editor/BlockIndent'
-    ,fBlockIndent);
-  XMLConfig.SetValue('EditorOptions/General/Editor/UndoLimit'
-    ,fUndoLimit);
-  XMLConfig.SetValue('EditorOptions/General/Editor/TabWidths'
-    ,fTabWidths);
-  XMLConfig.SetValue('EditorOptions/General/Editor/SyntaxExtensions'
-    ,fSyntaxExtensions);
-
-  // Display options
-  XMLConfig.SetValue('EditorOptions/Display/VisibleRightMargin'
-    ,fVisibleRightMargin);
-  XMLConfig.SetValue('EditorOptions/Display/VisibleGutter',fVisibleGutter);
-  XMLConfig.GetValue('EditorOptions/Display/ShowLineNumbers',fShowLineNumbers);
-  XMLConfig.GetValue('EditorOptions/Display/GutterColor',fGutterColor);
-  XMLConfig.SetValue('EditorOptions/Display/GutterWidth',fGutterWidth);
-  XMLConfig.SetValue('EditorOptions/Display/RightMargin',fRightMargin);
-  XMLConfig.SetValue('EditorOptions/Display/RightMarginColor',fRightMarginColor);
-  XMLConfig.SetValue('EditorOptions/Display/EditorFont',fEditorFont);
-  XMLConfig.SetValue('EditorOptions/Display/EditorFontHeight'
-    ,fEditorFontHeight);
-  XMLConfig.SetValue('EditorOptions/Display/ExtraLineSpacing'
-    ,fExtraLineSpacing);
-
-  // Key Mappings options
-  XMLConfig.SetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
-  fKeyMap.SaveToXMLConfig(
-     XMLConfig,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
-
-  // Color options
-  XMLConfig.SetValue('EditorOptions/Color/ColorScheme',fColorScheme);
-  WriteAttribute(fTextBlockElement);
-  WriteAttribute(fExecutionPointElement);
-  WriteAttribute(fEnabledBreakPointElement);
-  WriteAttribute(fDisabledBreakPointElement);
-  WriteAttribute(fErrorLineElement);
-
-  // Code Tools options
-  XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeCompletion'
-    ,fAutoCodeCompletion);
-  XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeParameters'
-    ,fAutoCodeParameters);
-  XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipExprEval'
-    ,fAutoToolTipExprEval);
-  XMLConfig.SetValue('EditorOptions/CodeTools/AutoToolTipSymbTools'
-    ,fAutoToolTipSymbTools);
-  XMLConfig.SetValue('EditorOptions/CodeTools/AutoDelayInMSec'
-    ,fAutoDelayInMSec);
-  XMLConfig.SetValue('EditorOptions/CodeTools/CodeTemplateFileName'
-    ,fCodeTemplateFileName);
-
-  XMLConfig.Flush;
 end;
 
 procedure TEditorOptions.ReadAttribute(Attri:TSynHighlightElement);
@@ -1059,7 +1067,7 @@ begin
       Parent:=Self;
       Top:=0;
       Left:=0;
-      Width:=Self.Width-4;
+      Width:=Self.Width;
       Height:=Self.Height-50;
       Pages.Strings[0]:='General';
       Pages.Add('Display');
@@ -2219,10 +2227,11 @@ begin
     Parent:=MainNoteBook.Page[0];
     Top:=TabWidthsComboBox.Top+TabWidthsComboBox.Height+5;
     Left:=TabWidthsComboBox.Left;
-    Width:=200;
+    Width:=300;
     Items.BeginUpdate;
-    Items.Add('pp;pas;inc;lfm;lrs;dpr;dpm;dpk');
-    Items.Add('pp;pas;inc;dpr;dpm;dpk');
+    Items.Add('pp;pas;inc;lpr;lfm;lrs;dpr;dfm;dpk');
+    Items.Add('pp;pas;inc;lpr;lrs;dpr;dpk');
+    Items.Add('pp;pas;inc;lpr;lrs');
     Items.Add('pp;pas;inc');
     Items.EndUpdate;
     SetComboBoxText(SyntaxExtensionsComboBox,EditorOpts.SyntaxExtensions);

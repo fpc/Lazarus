@@ -1602,6 +1602,7 @@ writeln('TMainIDE.DoNewEditorUnit 1');
     SetDefaultsForForm(TempForm);
 
     NewUnitInfo.FormName:=TempForm.Name;
+    Project.AddCreateFormToProjectFile(TempForm.Name,TempForm.ClassName);
   end;
 
   // create source code
@@ -1649,7 +1650,7 @@ var ActiveSrcEdit:TSourceEditor;
   ResourceCode: TSourceLog;
   FileStream:TFileStream;
 begin
-writeln('TMainIDE.DoSaveCurUnit 1');
+writeln('TMainIDE.DoSaveEditorUnit 1');
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
     Result:=mrAbort;
@@ -1657,6 +1658,12 @@ writeln('TMainIDE.DoSaveCurUnit 1');
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
+  if (Project.MainUnit>=0) and (Project.Units[Project.MainUnit]=ActiveUnitInfo)
+  and (ActiveUnitInfo.Filename='') then begin
+    Result:=DoSaveProject(false);
+    exit;
+  end;
+
   ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
   if ActiveUnitInfo.ReadOnly then begin
     Result:=mrOk;
@@ -1665,15 +1672,6 @@ writeln('TMainIDE.DoSaveCurUnit 1');
   if ActiveSrcEdit.Modified then begin
     ActiveUnitInfo.Source.Source:=ActiveSrcEdit.Source.Text;
     ActiveUnitInfo.Modified:=true;
-  end;
-
-  if ActiveUnitInfo.Filename='' then begin
-    if (Project.MainUnit>=0) 
-    and (Project.Units[Project.MainUnit]=ActiveUnitInfo) then begin
-      // new project has no name yet -> save project
-      Result:=DoSaveProject(true);
-      exit;
-    end;
   end;
 
   // load old resource file
@@ -1739,6 +1737,8 @@ writeln('TMainIDE.DoSaveCurUnit 1');
             ActiveUnitInfo.Filename,SourceNoteBook.NoteBook.PageIndex);
           SourceNoteBook.NoteBook.Pages[SourceNoteBook.NoteBook.PageIndex]:=
             NewPageName;
+          ResourceFilename:=ChangeFileExt(ActiveUnitInfo.Filename
+              ,ResourceFileExt);
           SaveAllParts:=true;
         end else begin
           // user cancels
@@ -1759,7 +1759,6 @@ writeln('TMainIDE.DoSaveCurUnit 1');
 
     if ActiveUnitInfo.HasResources then begin
       LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm');
-      ResourceFileName:=Project.SearchResourceFilename(ActiveUnitInfo);
 
       // save lrs - lazarus resource file and lfm - lazarus form text file
 
@@ -1768,6 +1767,7 @@ writeln('TMainIDE.DoSaveCurUnit 1');
       try
         repeat
           try
+            BinCompStream.Position:=0;
             Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
             try
               Writer:=TWriter.Create(Driver);
@@ -1819,6 +1819,7 @@ writeln('TMainIDE.DoSaveCurUnit 1');
               BinCompStream.Position:=0;
               ObjectBinaryToText(BinCompStream,TxtCompStream);
               TxtCompStream.Position:=0;
+              // save lfm file
               Result:=DoSaveStreamToFile(TxtCompStream,LFMFilename
                 ,ActiveUnitInfo.IsPartOfProject);
               if Result<>mrOk then exit;
@@ -1838,9 +1839,11 @@ writeln('TMainIDE.DoSaveCurUnit 1');
       finally
         BinCompStream.Free;
       end;
-
+writeln('saving lrs A  ',ResourceFileName);
       // save resource file
-      DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
+      Result:=DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
+      if Result=mrAbort then exit;
+writeln('saving lrs B');
       repeat
         try
           FileStream:=TFileStream.Create(ResourceFileName,fmCreate);
@@ -2162,9 +2165,11 @@ var UnitList: TList;
   i, ProgramNameStart, ProgramNameEnd:integer;
   MainUnitName: string;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
+  MainUnitIndex: integer;
 Begin
   UnitList:= TList.Create;
   try
+    MainUnitIndex:=-1;
     for i:=0 to Project.UnitCount-1 do begin
       if Project.Units[i].IsPartOfProject then begin
         if OnlyForms then begin
@@ -2186,9 +2191,11 @@ Begin
                 MainUnitName:=FindProgramNameInSource(MainUnitInfo.Source.Source
                   ,ProgramNameStart,ProgramNameEnd);
               end;
-              if MainUnitName<>'' then
+              if MainUnitName<>'' then begin
+                MainUnitIndex:=UnitList.Count;
                 UnitList.Add(TViewUnitsEntry.Create(
                   MainUnitName,i,false));
+              end;
             end;
           end;
         end;
@@ -2201,7 +2208,11 @@ Begin
           if AnUnitInfo.Loaded then
             SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex
           else begin
-            if DoOpenEditorFile(AnUnitInfo.Filename,false)=mrAbort then exit;
+            if MainUnitIndex=i then
+              Result:=DoOpenMainUnit(false)
+            else
+              Result:=DoOpenEditorFile(AnUnitInfo.Filename,false);
+            if Result=mrAbort then exit;
           end;
         end;
       end;
@@ -2566,6 +2577,7 @@ writeln('[TMainIDE.DoCreateProjectForProgram] END');
 end;
 
 function TMainIDE.DoBuildProject: TModalResult;
+var ActiveSrcEdit: TSourceEditor;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
@@ -2581,6 +2593,8 @@ begin
       Application.MessageBox('Create a project first!','Error',mb_ok);
       Exit;
     end;
+    ActiveSrcEdit:=SourceNotebook.GetActiveSE;
+    if ActiveSrcEdit<>nil then ActiveSrcEdit.ErrorLine:=-1;
 
     ToolStatus:=itBuilder;
     MessagesView.Clear;
@@ -2647,8 +2661,7 @@ begin
     if ActiveSourceEditor=nil then
       ActiveUnitInfo:=nil
     else 
-      ActiveUnitInfo:=Project.UnitWithEditorIndex(
-         SourceNoteBook.NoteBook.PageIndex);
+      ActiveUnitInfo:=Project.UnitWithEditorIndex(PageIndex);
   end;
 end;
 
@@ -2657,13 +2670,16 @@ function TMainIDE.DoSaveStreamToFile(AStream:TStream;
 // save to file with backup and user interaction
 var fs:TFileStream;
   AText,ACaption:string;
+  OldPos: integer;
 begin
   Result:=DoBackupFile(Filename,IsPartOfProject);
   if Result<>mrOk then exit;
+  OldPos:=AStream.Position;
   repeat
     try
       fs:=TFileStream.Create(Filename,fmCreate);
       try
+        AStream.Position:=OldPos;
         fs.CopyFrom(AStream,AStream.Size-AStream.Position);
       finally
         fs.Free;
@@ -2690,6 +2706,7 @@ begin
     try
       FileStream:=TFileStream.Create(AFilename,fmOpenRead);
       try
+        FileStream.Position:=0;
         MemStream.CopyFrom(FileStream,FileStream.Size);
         MemStream.Position:=0;
       finally
@@ -2727,7 +2744,8 @@ begin
     exit;
   FilePath:=ExtractFilePath(Filename);
   FileExt:=ExtractFileExt(Filename);
-  FileNameOnly:=copy(Filename,1,length(Filename)-length(FileExt));
+  FileNameOnly:=ExtractFilename(Filename);
+  FileNameOnly:=copy(FilenameOnly,1,length(FilenameOnly)-length(FileExt));
   if BackupInfo.SubDirectory<>'' then begin
     SubDir:=FilePath+BackupInfo.SubDirectory;
     repeat
@@ -3183,6 +3201,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.84  2001/03/29 12:38:59  lazarus
+  MG: new environment opts, ptApplication bugfixes
+
   Revision 1.83  2001/03/28 14:08:45  lazarus
   MG: added backup code and fixed removing controls
 

@@ -1467,16 +1467,15 @@ begin
   MaxY:=ClientHeight-20;
 
   // combobox at top (filled with available components)
-  AvailCompsComboBox.SetBounds(0,0,MaxX-4,20);
+  AvailCompsComboBox.SetBounds(0,0,MaxX,20);
 
   // notebook
   NewTop:=AvailCompsComboBox.Top+AvailCompsComboBox.Height+2;
-  NoteBook.SetBounds(0,NewTop,MaxX-4,MaxY-NewTop);
+  NoteBook.SetBounds(0,NewTop,MaxX,MaxY-NewTop);
 end;
 
 procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 begin
-//XXX writeln('OI: SetPropertyEditorHook');
   if FPropertyEditorHook<>NewValue then begin
     FPropertyEditorHook:=NewValue;
     FPropertyEditorHook.OnChangeLookupRoot:=@PropEditLookupRootChange;

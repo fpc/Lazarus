@@ -70,13 +70,21 @@ type
     // object inspector
     FObjectInspectorOptions: TOIOptions;
     
+    // compiler + lazarus files
+    FLazarusDirectory: string;
+    FCompilerFilename: string;
+    FFPCSourceDirectory: string;
+
+    // recent files and directories
+    FRecentOpenFiles: TStringList;
+    FMaxRecentOpenFiles: integer;
+    FRecentProjectFiles: TStringList;
+    FMaxRecentProjectFiles: integer;
+    FLastOpenDialogDir: string;
+
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
     FBackupInfoOtherFiles: TBackupInfo;
-
-    // recent files and directories
-    // ToDo
-    FLastOpenDialogDir: string;
 
     procedure SetFileName(NewFilename: string);
   public
@@ -125,15 +133,31 @@ type
     property ObjectInspectorOptions: TOIOptions
        read FObjectInspectorOptions write FObjectInspectorOptions;
 
+    // files
+    property LazarusDirectory: string
+       read FLazarusDirectory write FLazarusDirectory;
+    property CompilerFilename: string
+       read FCompilerFilename write FCompilerFilename;
+    property FPCSourceDirectory: string
+       read FFPCSourceDirectory write FFPCSourceDirectory;
+
+    // recent files and directories
+    property RecentOpenFiles: TStringList
+       read FRecentOpenFiles write FRecentOpenFiles;
+    property MaxRecentOpenFiles: integer
+       read FMaxRecentOpenFiles write FMaxRecentOpenFiles;
+    property RecentProjectFiles: TStringList
+       read FRecentProjectFiles write FRecentProjectFiles;
+    property MaxRecentProjectFiles: integer
+       read FMaxRecentProjectFiles write FMaxRecentProjectFiles;
+    property LastOpenDialogDir: string
+       read FLastOpenDialogDir write FLastOpenDialogDir;
+
     // backup
     property BackupInfoProjectFiles: TBackupInfo 
        read FBackupInfoProjectFiles write FBackupInfoProjectFiles;
     property BackupInfoOtherFiles: TBackupInfo
        read FBackupInfoOtherFiles write FBackupInfoOtherFiles;
-
-    // recent files and directories
-    property LastOpenDialogDir: string
-       read FLastOpenDialogDir write FLastOpenDialogDir;
   end;
 
   //----------------------------------------------------------------------------
@@ -150,6 +174,7 @@ type
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
     procedure SetupDesktopPage;
     procedure SetupBackupPage;
+    procedure SetupFilesPage;
     procedure SetComboBoxText(AComboBox:TComboBox; AText:AnsiString);
 
   published
@@ -206,6 +231,18 @@ type
     BakOtherMaxCounterComboBox: TComboBox;
     BakOtherSubDirLabel: TLabel;
     BakOtherSubDirComboBox: TComboBox;
+
+    // Files
+    MaxRecentOpenFilesLabel: TLabel;
+    MaxRecentOpenFilesComboBox: TComboBox;
+    MaxRecentProjectFilesLabel: TLabel;
+    MaxRecentProjectFilesComboBox: TComboBox;
+    LazarusDirLabel: TLabel;
+    LazarusDirComboBox: TComboBox;
+    CompilerPathLabel: TLabel;
+    CompilerPathComboBox: TComboBox;
+    FPCSourceDirLabel: TLabel;
+    FPCSourceDirComboBox: TComboBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -275,6 +312,18 @@ begin
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
 
+  // files
+  FLazarusDirectory:='';
+  FCompilerFilename:='';
+  FFPCSourceDirectory:='';
+
+  // recent files and directories
+  FRecentOpenFiles:=TStringList.Create;
+  FMaxRecentOpenFiles:=10;
+  FRecentProjectFiles:=TStringList.Create;
+  FMaxRecentProjectFiles:=5;
+  FLastOpenDialogDir:='';
+
   // backup
   with FBackupInfoProjectFiles do begin
     BackupType:=bakSameName;
@@ -288,13 +337,12 @@ begin
     MaxCounter:=3;               // for bakCounter
     SubDirectory:='';
   end;
-
-  // recent files and directories
-  FLastOpenDialogDir:='';
 end;
 
 destructor TEnvironmentOptions.Destroy;
 begin
+  FRecentOpenFiles.Free;
+  FRecentProjectFiles.Free;
   FObjectInspectorOptions.Free;
   inherited Destroy;
 end;
@@ -358,6 +406,18 @@ var XMLConfig: TXMLConfig;
     end;
   end;
 
+  procedure LoadRecentList(List: TStringList; Path: string);
+  var i,Count: integer;
+    s: string;
+  begin
+    Count:=XMLConfig.GetValue(Path+'Count',0);
+    List.Clear;
+    for i:=1 to Count do begin
+      s:=XMLConfig.GetValue(Path+'Item'+IntToStr(i)+'/Value','');
+      if s<>'' then List.Add(s);
+    end;
+  end;
+
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
@@ -408,6 +468,14 @@ begin
        'EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
 
     if not OnlyDesktop then begin
+      // files
+      FLazarusDirectory:=XMLConfig.GetValue(
+         'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory);
+      FCompilerFilename:=XMLConfig.GetValue(
+         'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
+      FFPCSourceDirectory:=XMLConfig.GetValue(
+         'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+
       // backup
       LoadBackupInfo(FBackupInfoProjectFiles
         ,'EnvironmentOptions/BackupProjectFiles/');
@@ -416,6 +484,12 @@ begin
     end;
 
     // recent files and directories
+    FMaxRecentOpenFiles:=XMLConfig.GetValue(
+       'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+    LoadRecentList(FRecentOpenFiles,'EnvironmentOptions/Recent/OpenFiles/');
+    FMaxRecentProjectFiles:=XMLConfig.GetValue(
+       'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+    LoadRecentList(FRecentProjectFiles,'EnvironmentOptions/Recent/ProjectFiles/');
     FLastOpenDialogDir:=XMLConfig.GetValue(
        'EnvironmentOptions/Recent/LastOpenDialogDir/Value',FLastOpenDialogDir);
 
@@ -461,6 +535,14 @@ var XMLConfig: TXMLConfig;
     end;
   end;
 
+  procedure SaveRecentList(List: TStringList; Path: string);
+  var i: integer;
+  begin
+    XMLConfig.SetValue(Path+'Count',List.Count);
+    for i:=0 to List.Count-1 do
+      XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
+  end;
+
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
@@ -504,6 +586,14 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
 
     if not OnlyDesktop then begin
+      // files
+      XMLConfig.SetValue(
+         'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory);
+      XMLConfig.SetValue(
+         'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
+      XMLConfig.SetValue(
+         'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+
       // backup
       SaveBackupInfo(FBackupInfoProjectFiles
         ,'EnvironmentOptions/BackupProjectFiles/');
@@ -512,6 +602,12 @@ begin
     end;
 
     // recent files and directories
+    XMLConfig.SetValue(
+       'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+    SaveRecentList(FRecentOpenFiles,'EnvironmentOptions/Recent/OpenFiles/');
+    XMLConfig.SetValue(
+       'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+    SaveRecentList(FRecentProjectFiles,'EnvironmentOptions/Recent/ProjectFiles/');
     XMLConfig.SetValue('EnvironmentOptions/Recent/LastOpenDialogDir/Value'
         ,FLastOpenDialogDir);
 
@@ -544,12 +640,14 @@ begin
     with NoteBook do begin
       Name:='NoteBook';
       Parent:=Self;
-      SetBounds(0,0,Self.ClientWidth-4,Self.ClientHeight-50);
+      SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       Pages[0]:='Desktop';
+      Pages.Add('Files');
       Pages.Add('Backup');
     end;
 
     SetupDesktopPage;
+    SetupFilesPage;
     SetupBackupPage;
     
     NoteBook.Show;
@@ -910,7 +1008,7 @@ begin
   BackupHelpLabel:=TLabel.Create(Self);
   with BackupHelpLabel do begin
     Name:='BackupHelpLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[2];
     Left:=5;
     Top:=2;
     Width:=MaxX-Left*2;
@@ -922,7 +1020,7 @@ begin
   BackupProjectGroupBox:=TGroupBox.Create(Self);
   with BackupProjectGroupBox do begin
     Name:='BackupProjectGroupBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[2];
     Left:=4;
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
     Width:=(MaxX div 2) - 11;
@@ -1048,7 +1146,7 @@ begin
   BackupOtherGroupBox:=TGroupBox.Create(Self);
   with BackupOtherGroupBox do begin
     Name:='BackupOtherGroupBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[2];
     Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
     Width:=(MaxX div 2) - 11;
@@ -1166,6 +1264,162 @@ begin
       BeginUpdate;
       Add('(no subdirectoy)');
       Add('backup');
+      EndUpdate;
+    end;
+    Show;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.SetupFilesPage;
+var MaxX:integer;
+begin
+  MaxX:=ClientWidth-5;
+
+  MaxRecentOpenFilesLabel:=TLabel.Create(Self);
+  with MaxRecentOpenFilesLabel do begin
+    Name:='MaxRecentOpenFilesLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=4;
+    Top:=4;
+    Width:=150;
+    Height:=23;
+    Caption:='Max recent files';
+    Show;
+  end;
+
+  MaxRecentOpenFilesComboBox:=TComboBox.Create(Self);
+  with MaxRecentOpenFilesComboBox do begin
+    Name:='MaxRecentOpenFilesComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
+    Top:=MaxRecentOpenFilesLabel.Top;
+    Width:=60;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('5');
+      Add('10');
+      Add('15');
+      Add('20');
+      Add('25');
+      Add('30');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  MaxRecentProjectFilesLabel:=TLabel.Create(Self);
+  with MaxRecentProjectFilesLabel do begin
+    Name:='MaxRecentProjectFilesLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=MaxRecentOpenFilesLabel.Left;
+    Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
+    Width:=MaxRecentOpenFilesLabel.Width;
+    Height:=MaxRecentOpenFilesLabel.Height;
+    Caption:='Max recent project files';
+    Show;
+  end;
+
+  MaxRecentProjectFilesComboBox:=TComboBox.Create(Self);
+  with MaxRecentProjectFilesComboBox do begin
+    Name:='MaxRecentProjectFilesComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
+    Top:=MaxRecentProjectFilesLabel.Top;
+    Width:=60;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('5');
+      Add('10');
+      Add('15');
+      Add('20');
+      Add('25');
+      Add('30');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  LazarusDirLabel:=TLabel.Create(Self);
+  with LazarusDirLabel do begin
+    Name:='LazarusDirLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=4;
+    Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
+    Width:=MaxX-10;
+    Height:=23;
+    Caption:='Lazarus directory (default for all projects)';
+    Show;
+  end;
+
+  LazarusDirComboBox:=TComboBox.Create(Self);
+  with LazarusDirComboBox do begin
+    Name:='LazarusDirComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=LazarusDirLabel.Top+LazarusDirLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  CompilerPathLabel:=TLabel.Create(Self);
+  with CompilerPathLabel do begin
+    Name:='CompilerPathLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=LazarusDirComboBox.Top+LazarusDirComboBox.Height;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+    Caption:='Compiler path (ppc386)';
+    Show;
+  end;
+
+  CompilerPathComboBox:=TComboBox.Create(Self);
+  with CompilerPathComboBox do begin
+    Name:='CompilerPathComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=CompilerPathLabel.Top+CompilerPathLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('/usr/bin/ppc386');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  FPCSourceDirLabel:=TLabel.Create(Self);
+  with FPCSourceDirLabel do begin
+    Name:='FPCSourceDirLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=CompilerPathComboBox.Top+CompilerPathComboBox.Height;
+    Width:=LazarusDirLabel.Width;
+    Height:=23;
+    Caption:='FPC source directory';
+    Show;
+  end;
+
+  FPCSourceDirComboBox:=TComboBox.Create(Self);
+  with FPCSourceDirComboBox do begin
+    Name:='FPCSourceDirComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=FPCSourceDirLabel.Top+FPCSourceDirLabel.Height+2;
+    Width:=LazarusDirLabel.Width;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      Add('');
       EndUpdate;
     end;
     Show;
@@ -1291,6 +1545,15 @@ begin
     SetComboBoxText(GridSizeXComboBox,IntToStr(GridSizeX));
     SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
 
+    // files
+    SetComboBoxText(LazarusDirComboBox,LazarusDirectory);
+    SetComboBoxText(CompilerPathComboBox,CompilerFilename);
+    SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory);
+
+    // recent files and directories
+    SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
+    SetComboBoxText(MaxRecentProjectFilesComboBox,IntToStr(MaxRecentProjectFiles));
+
     // backup
     with BackupInfoProjectFiles do begin
       case BackupType of
@@ -1360,6 +1623,17 @@ begin
     AutoCreateForms:=AutoCreateFormsCheckBox.Checked;
     GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
     GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
+
+    // files
+    LazarusDirectory:=LazarusDirComboBox.Text;
+    CompilerFilename:=CompilerPathComboBox.Text;
+    FPCSourceDirectory:=FPCSourceDirComboBox.Text;
+
+    // recent files and directories
+    MaxRecentOpenFiles:=StrToIntDef(
+        MaxRecentOpenFilesComboBox.Text,MaxRecentOpenFiles);
+    MaxRecentProjectFiles:=StrToIntDef(
+        MaxRecentProjectFilesComboBox.Text,MaxRecentProjectFiles);
 
     // backup
     with BackupInfoProjectFiles do begin

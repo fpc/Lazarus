@@ -918,7 +918,9 @@ begin
     Result:=true;
     exit;
   end;
+  if Source='' then exit;
   // search "LazarusResources.Add('<ResourceName>',"
+  FindPosition:=1;
   repeat
     Atom:=ReadNextPascalAtom(Source,FindPosition,FindAtomStart);
   until (Atom='') or (Atom=',');
