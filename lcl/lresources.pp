@@ -75,7 +75,13 @@ type
 procedure DelphiObjectBinaryToText(Input, Output: TStream);
 procedure DelphiObjectToText(Input, Output: TStream;
   var OriginalFormat: TDelphiStreamOriginalFormat);
-function TestDelphiStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
+
+procedure DelphiObjectResourceToText(Input, Output: TStream);
+procedure DelphiObjectResToText(Input, Output: TStream;
+  var OriginalFormat: TDelphiStreamOriginalFormat);
+  
+function TestFormStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
+procedure FormDataToText(FormStream, TextStream: TStream);
 
 
 var LazarusResources:TLResourceList;
@@ -1156,7 +1162,7 @@ begin
   end;
 end;
 
-function TestDelphiStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
+function TestFormStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
 var
   Pos: Integer;
   Signature: Integer;
@@ -1229,6 +1235,33 @@ procedure DelphiObjectToText(Input, Output: TStream;
 begin
   InternalDelphiBinaryToText(Input, Output, OriginalFormat,
     @DelphiObjectBinaryToText, Integer(FilerSignature), sizeof(Integer));
+end;
+
+procedure DelphiObjectResToText(Input, Output: TStream;
+  var OriginalFormat: TDelphiStreamOriginalFormat);
+begin
+  InternalDelphiBinaryToText(Input, Output, OriginalFormat,
+    @DelphiObjectResourceToText, $FF, 1);
+end;
+
+procedure DelphiObjectResourceToText(Input, Output: TStream);
+begin
+  Input.ReadResHeader;
+  DelphiObjectBinaryToText(Input, Output);
+end;
+
+procedure FormDataToText(FormStream, TextStream: TStream);
+begin
+  case TestFormStreamFormat(FormStream) of
+  sofBinary:
+    DelphiObjectResourceToText(FormStream, TextStream);
+
+  sofText:
+    TextStream.CopyFrom(FormStream,FormStream.Size);
+
+  else
+    raise Exception.Create('invalid Form object stream');
+  end;
 end;
 
 //------------------------------------------------------------------------------

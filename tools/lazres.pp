@@ -62,6 +62,23 @@ begin
   Stream.Position:=OldPos;
 end;
 
+procedure ConvertFormToText(Stream: TMemoryStream);
+var TextStream: TMemoryStream;
+begin
+  try
+    TextStream:=TMemoryStream.Create;
+    FormDataToText(Stream,TextStream);
+    TextStream.Position:=0;
+    Stream.Clear;
+    Stream.CopyFrom(TextStream,TextStream.Size);
+    Stream.Position:=0;
+  except
+    on E: Exception do begin
+      writeln('ERROR: unable to convert Delphi form to text: '+E.Message);
+    end;
+  end;
+end;
+
 var
   ResourceFilename,BinFilename,BinExt,ResourceName,ResourceType:String;
   a:integer;
@@ -94,19 +111,15 @@ begin
             BinExt:=uppercase(ExtractFileExt(BinFilename));
             if (BinExt='.LFM') or (BinExt='.DFM') or (BinExt='.XFM') then begin
               ResourceType:='FORMDATA';
-              if StreamIsFormInTextFormat(BinMemStream) then begin
-                ResourceName:=FindLFMClassName(BinMemStream);
-                if ResourceName='' then begin
-                  writeln(' ERROR: no resourcename');
-                  halt(2);
-                end;
-                write(' ResourceName='''+ResourceName
-                      +''' Type='''+ResourceType+'''');
-                LFMtoLRSstream(BinMemStream,ResMemStream);
-              end else begin
-                writeln(' ERROR: form data is not in text format.');
+              ConvertFormToText(BinMemStream);
+              ResourceName:=FindLFMClassName(BinMemStream);
+              if ResourceName='' then begin
+                writeln(' ERROR: no resourcename');
                 halt(2);
               end;
+              write(' ResourceName='''+ResourceName
+                    +''' Type='''+ResourceType+'''');
+              LFMtoLRSstream(BinMemStream,ResMemStream);
             end else begin
               ResourceType:=copy(BinExt,2,length(BinExt)-1);
               ResourceName:=ExtractFileName(BinFilename);
