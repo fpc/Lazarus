@@ -115,11 +115,13 @@ type
     FStockWhitePen: HPEN;
 
     {$Ifdef GTK2}
-    FDefaultFontDesc : PPangoFontDescription;
+    FDefaultFontDesc: PPangoFontDescription;
     {$Else}
-    FDefaultFont : PGdkFont;
+    FDefaultFont: PGdkFont;
     {$EndIf}
-    FStockSystemFont : HFONT;
+    FStockSystemFont: HFONT;
+    FExtUTF8OutCache: Pointer;
+    FExtUTF8OutCacheSize: integer;
 
     Function CreateSystemFont : hFont;
 
@@ -460,6 +462,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.188  2004/09/02 09:16:59  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.187  2004/08/27 08:55:22  micha
   implement tapplication.minimize for win32, stub for gtk
 

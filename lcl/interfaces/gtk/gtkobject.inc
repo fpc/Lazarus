@@ -281,6 +281,9 @@ var
   QueueItem  : TGtkMessageQueueItem;
   NextQueueItem : TGtkMessageQueueItem;
 begin
+  ReAllocMem(FExtUTF8OutCache,0);
+  FExtUTF8OutCacheSize:=0;
+  
   FreeAllStyles;
   FreeGDKCursors;
   FreeStockItems;
@@ -8641,14 +8644,21 @@ begin
 end;
 {$Else}
 const
-  TestString = '{Am|g_}';
+  TestString: array[boolean] of string = (
+    // single byte char font
+    '{ABCDEFGHIJKLMNOPQRSTUVWXYZXYZabcdefghijklmnopqrstuvwxyz|_}',
+    // double byte char font
+    #0'{'#0'A'#0'B'#0'C'#0'D'#0'E'#0'F'#0'G'#0'H'#0'I'#0'J'#0'K'#0'L'#0'M'#0'N'
+    +#0'O'#0'P'#0'Q'#0'R'#0'S'#0'T'#0'U'#0'V'#0'W'#0'X'#0'Y'#0'Z'#0'X'#0'Y'#0'Z'
+    +#0'a'#0'b'#0'c'#0'd'#0'e'#0'f'#0'g'#0'h'#0'i'#0'j'#0'k'#0'l'#0'm'#0'n'#0'o'
+    +#0'p'#0'q'#0'r'#0's'#0't'#0'u'#0'v'#0'w'#0'x'#0'y'#0'z'#0'|'#0'_'#0'}'
+    );
 var
-  XT : TSize;
-  dummy: LongInt;
   UseFont : PGDKFont;
   UnRef : Boolean;
   AvgTxtLen: Integer;
   CachedFont: TGdkFontCacheItem;
+  width: LongInt;
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
@@ -8675,35 +8685,45 @@ begin
         end
         else with DCTextMetric do begin
           IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
-          gdk_text_extents(UseFont, TestString,
-            length(TestString), @lbearing, @rBearing, @dummy,
-            @TextMetric.tmAscent, @TextMetric.tmDescent);
-          if IsDoubleByteChar then
-            // Quick hack for double byte char fonts
-            AvgTxtLen:=AvgFontCharsBufLen div 2
-          else
-            AvgTxtLen:=AvgFontCharsBufLen;
-          GetTextExtentPoint(HDC(DC),
-                             @AvgFontCharsBuffer[Low(AvgFontCharsBuffer)],
-                             AvgTxtLen, XT);
-          if not IsDoubleByteChar then
-            XT.cX := XT.cX div AvgTxtLen
-          else
-            XT.cX := XT.cX div AvgTxtLen;
-          TextMetric.tmHeight := XT.cY;
-          TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
-          TextMetric.tmAveCharWidth := XT.cX;
+          AvgTxtLen:=length(TestString[false]);
+          if IsDoubleByteChar then begin
+            gdk_text_extents_wc(UseFont, PGdkWChar(TestString[IsDoubleByteChar]),
+              AvgTxtLen*2, @lBearing, @rBearing, @Width,
+              @TextMetric.tmAscent, @TextMetric.tmDescent);
+            TextMetric.tmHeight := gdk_text_height(UseFont,
+                                     PChar(TestString[IsDoubleByteChar]),
+                                     AvgTxtLen*2)
+                           {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
+          end else begin
+            gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
+              AvgTxtLen, @lBearing, @rBearing, @Width,
+              @TextMetric.tmAscent, @TextMetric.tmDescent);
+            TextMetric.tmHeight := gdk_text_height(UseFont,
+                                     PChar(TestString[IsDoubleByteChar]),
+                                     AvgTxtLen)
+                           {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
+          end;
+          //TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
+          TextMetric.tmAveCharWidth := Width div AvgTxtLen;
           if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
           TextMetric.tmMaxCharWidth :=
             Max(gdk_char_width(UseFont, 'W'),
                 gdk_char_width(UseFont, 'M')); // temp hack
-          if TextMetric.tmMaxCharWidth<1 then
-            TextMetric.tmMaxCharWidth:=1;
+          if TextMetric.tmMaxCharWidth<TextMetric.tmAveCharWidth then
+            TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
+          {debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),
+            ' lbearing=',dbgs(lBearing),' rbearing=',dbgs(rBearing),
+            ' width='+dbgs(width),' tmAscent='+dbgs(TextMetric.tmAscent),
+            ' tmDescent='+dbgs(TextMetric.tmdescent),
+            ' tmHeight='+dbgs(TextMetric.tmHeight),
+            ' AvgTxtLen='+dbgs(AvgTxtLen),
+            ' tmMaxCharWidth='+dbgs(TextMetric.tmMaxCharWidth),
+            ' tmAveCharWidth='+dbgs(TextMetric.tmAveCharWidth));}
           if (CachedFont<>nil) then begin
-            CachedFont.lBearing:=DCTextMetric.lBearing;
-            CachedFont.rBearing:=DCTextMetric.rBearing;
-            CachedFont.IsDoubleByteChar:=DCTextMetric.IsDoubleByteChar;
-            CachedFont.TextMetric:=DCTextMetric.TextMetric;
+            CachedFont.lBearing:=lBearing;
+            CachedFont.rBearing:=rBearing;
+            CachedFont.IsDoubleByteChar:=IsDoubleByteChar;
+            CachedFont.TextMetric:=TextMetric;
             CachedFont.MetricsValid:=true;
           end;
         end;
@@ -9254,6 +9274,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.537  2004/09/02 09:17:00  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.536  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

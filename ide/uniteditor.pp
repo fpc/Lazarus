@@ -41,6 +41,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  {$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi,
+  {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileCtrl,
   Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Extctrls, Menus,
@@ -169,11 +172,11 @@ type
     Procedure ReParent(AParent: TWinControl);
 
     Procedure ProcessCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     Procedure ProcessUserCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     Procedure UserCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
     Procedure ccOnTimer(sender: TObject);
     Procedure ccAddMessage(Texts: String);
 
@@ -458,10 +461,10 @@ type
     procedure MoveActivePageLeft;
     procedure MoveActivePageRight;
     Procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
     Procedure ParentCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+       var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
 
     // marks
@@ -906,7 +909,7 @@ begin
 end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 // these are normal commands for synedit, define extra actions here
 // otherwise use ProcessUserCommand
 begin
@@ -957,16 +960,11 @@ begin
       end;
     end;
 
-  else
-    if (CurCompletionControl<>nil)
-    and (not (AChar in ['a'..'z','A'..'Z','0'..'9',#128..#255])) then begin
-
-    end;
   end;
 end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 // define all extra keys here, that should are not handled by synedit
 var
   I: Integer;
@@ -1136,7 +1134,7 @@ Begin
 end;
 
 Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer);
 var Handled: boolean;
 begin
   Handled:=true;
@@ -3863,15 +3861,13 @@ end;
 procedure TSourceNotebook.ViewCallStackClick(Sender: TObject);
 var
   Command: TSynEditorCommand;
-  AChar: char;
-  Data: pointer;
+  AChar: TUTF8Char;
   Handled: boolean;
 begin
   Command:=ecToggleCallStack;
   AChar:=#0;
-  Data:=nil;
   Handled:=false;
-  ProcessParentCommand(Self,Command,AChar,Data,Handled);
+  ProcessParentCommand(Self,Command,AChar,nil,Handled);
 end;
 
 Procedure TSourceNotebook.BookMarkSet(Value: Integer);
@@ -4197,7 +4193,7 @@ Begin
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
 begin
   FProcessingCommand:=true;
@@ -4270,7 +4266,7 @@ begin
 end;
 
 Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   var Handled: boolean);
 begin
   if Assigned(FOnUserCommandProcessed) then begin

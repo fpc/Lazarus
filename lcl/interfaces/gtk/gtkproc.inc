@@ -1896,6 +1896,7 @@ var
   EventStopped: Boolean;
   EventString: PChar; // GTK1 and GTK2 workaround
                       // (and easy access to bytes)
+  Character: TUTF8Char;
 
   procedure StopKeyEvent(const AnEventName: PChar);
   begin
@@ -1945,11 +1946,7 @@ var
       end;
       Exit;
     end;
-{$IFDEF GTK2}
     Result := Event^.KeyVal < $F000;
-{$ELSE GTK2}
-    Result := (Event^.Length = 1) and (EventString <> nil);
-{$ENDIF GTK2}
   end;
 
 var
@@ -1963,6 +1960,7 @@ var
   HandledByLCL: Boolean;
   TargetWidget: PGtkWidget;
   TargetData: gPointer;
+  KeyPressesChar: char;
 begin
   Result := True;
   EventStopped := False;
@@ -2102,49 +2100,88 @@ begin
         StopKeyEvent('key_press_event');
       end;
 
-      if not EventStopped and CanSendChar
+      if (not EventStopped) and (not BeforeEvent) and CanSendChar
       then begin
         EventTrace('char', data);
-        FillChar(Msg,SizeOf(Msg),0);
 
-        Msg.KeyData := CommonKeyData;
-
-        if BeforeEvent then begin
-          if SysKey
-          then Msg.msg := CN_SYSCHAR
-          else Msg.msg := CN_CHAR
-        end else begin
-          if SysKey
-          then Msg.msg := LM_SYSCHAR
-          else Msg.msg := LM_CHAR;
-        end;
-
-        if Event^.Length = 0 then begin
+        KeyPressesChar:=#0;
+        if Event^.Length = 1 then begin
+          // ASCII key was pressed
+          KeyPressesChar := EventString^;
+        end else if Event^.KeyVal<128 then begin
           // non ASCII key was pressed
-          {$IFDEF GTK2}
-          Msg.CharCode := gdk_keyval_to_unicode(Event^.KeyVal);
-          {$ELSE}
-          Msg.CharCode := Event^.KeyVal;
-          {$ENDIF}
-        end else
-          Msg.CharCode := ord(EventString^);
-        Msg.Result:=0;
-        // send the message directly (not queued) to the LCL
-        Result := DeliverMessage(TargetData, Msg) = 0;
+          //{$IFDEF GTK2}
+          //Msg.CharCode := gdk_keyval_to_unicode(Event^.KeyVal);
+          //{$ELSE}
+          KeyPressesChar := chr(byte(Event^.KeyVal));
+          //{$ENDIF}
+        end;
+        
+        if KeyPressesChar<>#0 then begin
+          // ASCII key: send a normal KeyPress Event for Delphi compatibility
+          FillChar(Msg,SizeOf(Msg),0);
 
-        if (EventString<>nil) and (Msg.CharCode <> ord(EventString^))
-        then begin
-          //writeln('HandleGTKKeyUpDown A ',Msg.CharCode,' BeforeEvent=',BeforeEvent);
-          // key was changed by lcl
-          if Msg.CharCode=0 then
-            StopKeyEvent('key_press_event')
-          else begin
-            EventString^:=chr(Msg.CharCode);
-            EventString[1]:=#0;
-            gdk_event_key_set_string(Event,EventString);
+          Msg.KeyData := CommonKeyData;
+
+          if BeforeEvent then begin
+            if SysKey
+            then Msg.msg := CN_SYSCHAR
+            else Msg.msg := CN_CHAR
+          end else begin
+            if SysKey
+            then Msg.msg := LM_SYSCHAR
+            else Msg.msg := LM_CHAR;
+          end;
+
+          Msg.Result:=0;
+          Msg.CharCode:=ord(KeyPressesChar);
+          // send the message directly (not queued) to the LCL
+          Result := DeliverMessage(TargetData, Msg) = 0;
+
+          if (ord(KeyPressesChar)<>Msg.CharCode)
+          then begin
+            // key was changed by lcl
+            //writeln('HandleGTKKeyUpDown A ',Msg.CharCode,' BeforeEvent=',BeforeEvent);
+            if (Msg.CharCode=0) or (Msg.CharCode>=128) then
+              // key set to invalid => just stop
+              StopKeyEvent('key_press_event')
+            else begin
+              // try to change the key
+              EventString^:=chr(Msg.CharCode);
+              EventString[1]:=#0;
+              Event^.KeyVal:=Msg.CharCode;
+              gdk_event_key_set_string(Event,EventString);
+            end;
+          end;
+        end;
+        
+      end;
+
+      if (not EventStopped) and (not BeforeEvent) then begin
+        // send the UTF8 keypress
+        // try to get the UTF8 representation of the key
+        Character:='';
+        if (Event^.length>0) and (Event^.length<7) then begin
+          SetLength(Character,Event^.length);
+          System.Move(Event^.thestring^,Character[1],length(Character));
+        end else begin
+          {$IFDEF Gtk2}
+          Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
+          {$ENDIF}
+        end;
+        {$IFDEF VerboseKeyboard}
+        debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
+        {$ENDIF}
+        if Character<>'' then begin
+          LCLObject:=GetNearestLCLObject(TargetWidget);
+          if LCLObject is TWinControl then begin
+            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1);
+            if Result or (Character='') then
+              StopKeyEvent('key_press_event');
           end;
         end;
       end;
+      
     end;
   end;
 //DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
@@ -7198,6 +7235,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.299  2004/09/02 09:17:00  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.298  2004/08/30 15:46:22  mazen
   * Fix a compile problem, still need to find the correct way to fix that.
 

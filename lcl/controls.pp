@@ -331,7 +331,7 @@ type
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
   TKeyPressEvent = procedure(Sender: TObject; var Key: char) of Object;
-  TUTF8KeyPressEvent = procedure(Sender: TObject; var UTF8Key: string) of Object;
+  TUTF8KeyPressEvent = procedure(Sender: TObject; var UTF8Key: TUTF8Char) of Object;
 
   TMouseEvent = Procedure(Sender: TOBject; Button: TMouseButton;
                           Shift: TShiftState; X, Y: Integer) of object;
@@ -1427,7 +1427,7 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
-    function DoUTF8KeyPress(var UTF8Key: string): boolean; dynamic;
+    function DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
     function  DoKeyUp(var Message: TLMKey): Boolean;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
@@ -1435,7 +1435,7 @@ type
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyPress(var Key: char); dynamic;
     procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
-    procedure UTF8KeyPress(var UTF8Key: string); dynamic;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
   protected
     Function  FindNextControl(CurrentControl: TControl; GoForward,
                               CheckTabStop, CheckParent, OnlyWinControls
@@ -1561,7 +1561,8 @@ type
     procedure HandleNeeded;
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
-    function UTF8KeyPressMessage(var UTF8Key: string; RepeatCount: integer): boolean; dynamic;
+    function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
+                              RepeatCount: integer): boolean; dynamic;
   public
     property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read GetBrush;
@@ -2411,6 +2412,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.243  2004/09/02 09:16:58  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.242  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss
 

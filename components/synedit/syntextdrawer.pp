@@ -417,6 +417,7 @@ begin
       DC := GetDC(0);
       hOldFont := SelectObject(DC, ABaseFont.Handle);
       IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
+      //debugln('TheFontsInfoManager.CreateFontsInfo IsDBCSFont=',IsDBCSFont);
       SelectObject(DC, hOldFont);
       ReleaseDC(0, DC);
     except
@@ -718,6 +719,7 @@ begin
     {$ENDIF}
   end;
   {$IFDEF SYN_LAZARUS}
+  //debugln('TheFontStock.InternalCreateFont A ',FBaseFontName);
   Result := CreateFontIndirectEx(FBaseLF,FBaseFontName);
   {$ELSE}
   Result := CreateFontIndirect(FBaseLF);
@@ -844,6 +846,10 @@ begin
   hOldFont := SelectObject(DC, FCrntFont);
 
   // retrieve height and advances of new font
+  {$IFDEF SYN_LAZARUS}
+  FpInfo^.IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
+  //debugln('TheFontStock.SetStyle A IsDBCSFont=',IsDBCSFont);
+  {$ENDIF}
   with FpCrntFontData^ do
   begin
     Handle := FCrntFont;
@@ -958,6 +964,7 @@ begin
     with FFontStock do
     begin
       SetBaseFont(Value);
+      //debugln('TheTextDrawer.SetBaseFont B ',Value.Name);
       Style := FCalcExtentBaseStyle;
       FBaseCharWidth := CharAdvance;
       FBaseCharHeight := CharHeight;
@@ -1080,7 +1087,7 @@ begin
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);
   {$IFDEF SYN_LAZARUS}
-  LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
+  LCLIntf.ExtUTF8Out(FDC, X, Y, fuOptions, @ARect, Text,
     Length, PInteger(FETODist));
   {$ELSE}
   Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,

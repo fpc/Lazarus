@@ -243,6 +243,8 @@ begin
   F.KeyPreview:=true;
   ////TL added 2 @ prefixes
   f.OnKeyPress:=@FormKeyPress;
+{$WARNING TODO Fix UTF8BIDI issue}
+  f.OnUTF8KeyPress:=@FormUTF8KeyPress;
   f.OnKeyDown:=@FormKeyDown;
   f.caption:='Unihighlighter Designer (c) Fantasist, Vit (2002)';
 

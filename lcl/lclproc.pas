@@ -148,8 +148,16 @@ function DbgS(const p: pointer): string;
 function DbgS(const e: extended): string;
 function DbgS(const b: boolean): string;
 function DbgSName(const p: TObject): string;
+function DbgStr(const StringWithSpecialChars: string): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
+
+function UTF8CharacterLength(p: PChar): integer;
+function UTF8Length(const s: string): integer;
+function UTF8Length(p: PChar; Count: integer): integer;
+function UTF8CharacterToUnicode(p: PChar; var CharLen: integer): Cardinal;
+function UTF8ToDoubleByteString(const s: string): string;
+function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
 
 
 implementation
@@ -907,9 +915,172 @@ begin
     Result:=p.ClassName;
 end;
 
+function DbgStr(const StringWithSpecialChars: string): string;
+var
+  i: Integer;
+  s: String;
+begin
+  Result:=StringWithSpecialChars;
+  i:=1;
+  while (i<=length(Result)) do begin
+    case Result[i] of
+    ' '..'z': inc(i);
+    else
+      s:='#'+IntToStr(ord(Result[i]));
+      Result:=copy(Result,1,i-1)+s+copy(Result,i+1,length(Result)-i);
+      inc(i,length(s));
+    end;
+  end;
+end;
+
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
   Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+end;
+
+function UTF8CharacterLength(p: PChar): integer;
+begin
+  if p<>nil then begin
+    if ord(p^)<%11000000 then begin
+      // regular single byte character (#0 is single byte, this is pascal ;)
+      Result:=1;
+    end
+    else if ((ord(p^) and %11100000) = %11000000) then begin
+      // could be 2 byte character
+      if (ord(p[1]) and %11000000) = %10000000 then
+        Result:=2
+      else
+        Result:=1;
+    end
+    else if ((ord(p^) and %11110000) = %11100000) then begin
+      // could be 3 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000) then
+        Result:=3
+      else
+        Result:=1;
+    end
+    else if ((ord(p^) and %11111000) = %11110000) then begin
+      // could be 4 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000)
+      and ((ord(p[3]) and %11000000) = %10000000) then
+        Result:=4
+      else
+        Result:=1;
+    end
+    else
+      Result:=1
+  end else
+    Result:=0;
+end;
+
+function UTF8Length(const s: string): integer;
+begin
+  Result:=UTF8Length(PChar(s),length(s));
+end;
+
+function UTF8Length(p: PChar; Count: integer): integer;
+var
+  CharLen: LongInt;
+begin
+  Result:=0;
+  while (Count>0) do begin
+    inc(Result);
+    CharLen:=UTF8CharacterLength(p);
+    inc(p,CharLen);
+    dec(Count,CharLen);
+  end;
+end;
+
+function UTF8CharacterToUnicode(p: PChar; var CharLen: integer): Cardinal;
+begin
+  if p<>nil then begin
+    if ord(p^)<%11000000 then begin
+      // regular single byte character (#0 is single byte, this is pascal ;)
+      Result:=ord(p^);
+      CharLen:=1;
+    end
+    else if ((ord(p^) and %11100000) = %11000000) then begin
+      // could be double byte character
+      if (ord(p[1]) and %11000000) = %10000000 then begin
+        Result:=((ord(p^) and %00011111) shl 6)
+                or (ord(p[1]) and %00111111);
+        CharLen:=2;
+      end else begin
+        Result:=ord(p^);
+        CharLen:=1;
+      end;
+    end
+    else if ((ord(p^) and %11110000) = %11100000) then begin
+      // could be triple byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000) then begin
+        Result:=((ord(p^) and %00011111) shl 12)
+                or ((ord(p[1]) and %00111111) shl 6)
+                or (ord(p[2]) and %00111111);
+        CharLen:=3;
+      end else begin
+        Result:=ord(p^);
+        CharLen:=1;
+      end;
+    end
+    else if ((ord(p^) and %11111000) = %11110000) then begin
+      // could be 4 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000)
+      and ((ord(p[3]) and %11000000) = %10000000) then begin
+        Result:=((ord(p^) and %00011111) shl 18)
+                or ((ord(p[1]) and %00111111) shl 12)
+                or ((ord(p[2]) and %00111111) shl 6)
+                or (ord(p[3]) and %00111111);
+        CharLen:=4;
+      end else begin
+        Result:=ord(p^);
+        CharLen:=1;
+      end;
+    end
+    else begin
+      Result:=ord(p^);
+      CharLen:=1;
+    end;
+  end else begin
+    Result:=0;
+    CharLen:=0;
+  end;
+end;
+
+function UTF8ToDoubleByteString(const s: string): string;
+var
+  Len: Integer;
+begin
+  Len:=UTF8Length(s);
+  SetLength(Result,Len*2);
+  if Len=0 then exit;
+  UTF8ToDoubleByte(PChar(s),length(s),PByte(Result));
+end;
+
+function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
+// returns number of double bytes
+var
+  SrcPos: PChar;
+  CharLen: LongInt;
+  DestPos: PByte;
+  u: Cardinal;
+begin
+  SrcPos:=UTF8Str;
+  DestPos:=DBStr;
+  Result:=0;
+  while Len>0 do begin
+    u:=UTF8CharacterToUnicode(SrcPos,CharLen);
+    DestPos^:=byte((u shr 8) and $ff);
+    inc(DestPos);
+    DestPos^:=byte(u and $ff);
+    inc(DestPos);
+    inc(SrcPos,CharLen);
+    dec(Len,CharLen);
+    inc(Result);
+  end;
 end;
 
 initialization

@@ -32,11 +32,16 @@
 //##apiwiz##sps##   // Do not remove
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; override;
 
+function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
+  Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
+
+function IntfSendsUTF8KeyPress: boolean; override;
 
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
@@ -52,6 +57,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/09/02 09:17:00  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.17  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

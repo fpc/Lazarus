@@ -45,16 +45,19 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
+  {$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi,
+  {$ENDIF}
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, CommCtrl, ExtCtrls, Dialogs, ExtDlgs,
   FileCtrl, ImgList, GTKGlobals, gtkDef;
 
 
-  {$IFDEF gtk2}
-    const 
-      gdkdll = gdklib;
-  {$ENDIF}
+{$IFDEF gtk2}
+const
+  gdkdll = gdklib;
+{$ENDIF}
   
 
 {$IFNDEF GTK2}
@@ -755,6 +758,7 @@ procedure EndGDKErrorTrap;
 {$EndIf}
 
 implementation
+
 
 const
   VKEY_FLAG_SHIFT    = $01;

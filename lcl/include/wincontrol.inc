@@ -1627,13 +1627,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TWinControl.UTF8KeyPressMessage(var UTF8Key: string;
+  function TWinControl.IntfUTF8KeyPress(var UTF8Key: string;
     RepeatCount: integer): boolean;
 
   Called by the interface after the navigation and specials keys are handled
   (e.g. after KeyDown).
 ------------------------------------------------------------------------------}
-function TWinControl.UTF8KeyPressMessage(var UTF8Key: string;
+function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
   RepeatCount: integer): boolean;
 begin
   Result:=(RepeatCount>0) and DoUTF8KeyPress(UTF8Key)
@@ -2128,7 +2128,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyPress
 ------------------------------------------------------------------------------}
-procedure TWinControl.UTF8KeyPress(var UTF8Key: string);
+procedure TWinControl.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
   if Assigned(FOnUTF8KeyPress) then FOnUTF8KeyPress(Self, UTF8Key);
 end;
@@ -2279,7 +2279,7 @@ End;
 
   Returns True if key handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoUTF8KeyPress(var UTF8Key: string): boolean;
+function TWinControl.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;
 var
   AParent: TWinControl;
   F: TCustomForm;
@@ -3131,8 +3131,18 @@ end;
   WMChar is sent by the interface befor it has handled the keypress by itself.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNChar(var Message: TLMKeyUp);
+var
+  c: TUTF8Char;
 begin
   if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  if not IntfSendsUTF8KeyPress then begin
+    // current interface does not (yet) send UTF8 key press notifications
+    // -> emulate
+    if Message.CharCode < %11000000 then begin
+      c:=chr(Message.CharCode);
+      IntfUTF8KeyPress(c,1);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3898,6 +3908,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.269  2004/09/02 09:16:59  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.268  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss
 

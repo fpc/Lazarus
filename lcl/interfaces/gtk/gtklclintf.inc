@@ -76,6 +76,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TGtkWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
+    Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+
+  As ExtTextOut except that Str is treated as UTF8
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  IsDBCSFont: Boolean;
+  NewCount: Integer;
+begin
+  UpdateDCTextMetric(TDeviceContext(DC));
+  IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
+  if IsDBCSFont then begin
+    NewCount:=Count*2;
+    if FExtUTF8OutCacheSize<NewCount then begin
+      ReAllocMem(FExtUTF8OutCache,NewCount);
+      FExtUTF8OutCacheSize:=NewCount;
+    end;
+    NewCount:=UTF8ToDoubleByte(Str,Count,FExtUTF8OutCache)*2;
+    //debugln('TGtkWidgetSet.ExtUTF8Out Count=',dbgs(Count),' NewCount=',dbgs(NewCount));
+    Result:=ExtTextOut(DC,X,Y,Options,Rect,FExtUTF8OutCache,NewCount,Dx);
+  end else begin
+    Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:
           AShiftState:
@@ -296,6 +324,15 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
+  function TGtkWidgetSet.IntfSendsUTF8KeyPress: boolean;
+
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.IntfSendsUTF8KeyPress: boolean;
+begin
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   Function: MenuItemSetCheck
   Params:  BaseMenuItem
   Returns: Nothing
@@ -464,6 +501,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/09/02 09:17:00  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.29  2004/06/19 21:06:38  mattias
   menu separators are now created disabled
 

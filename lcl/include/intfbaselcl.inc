@@ -114,6 +114,12 @@ procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
 end;
 
+function TWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+begin
+  Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
+end;
+
 function TWidgetSet.Frame(DC: HDC; const ARect: TRect) : integer;
 begin
   Result:= 0;
@@ -345,6 +351,11 @@ end;
 function TWidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 // Returns the current Width and Height
+begin
+  Result:=false;
+end;
+
+function TWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
   Result:=false;
 end;
@@ -630,6 +641,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/09/02 09:16:59  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.28  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

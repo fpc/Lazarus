@@ -48,6 +48,9 @@ uses
   QMenus,
 {$ELSE}
   {$IFDEF SYN_LAZARUS}
+  {$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi,
+  {$ENDIF}
   LCLIntf,
   {$ELSE}
   Windows,
@@ -89,7 +92,8 @@ type
     procedure UnHookEditor(aEditor: TCustomSynEdit;
       aCommandID: TSynEditorCommand; aShortCut: TShortCut);
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var aChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand;
+      var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
       Data: pointer; HandlerData: pointer); virtual; abstract;
   end;
 
@@ -134,7 +138,8 @@ type
   protected
     procedure SetCurrentString(const Value: String); virtual;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var aChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand;
+      var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
       Data: pointer; HandlerData: pointer); override;
     procedure DoExecute; override;
     procedure DoAccept; override;
@@ -485,8 +490,9 @@ end;
 
 procedure TAbstractSynCompletion.OnCommand(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
-  var Command: TSynEditorCommand; var aChar: char; Data,
-  HandlerData: pointer);
+  var Command: TSynEditorCommand;
+  var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+  Data, HandlerData: pointer);
 var
   iString: String;
 begin
@@ -512,9 +518,15 @@ begin
               end
               else
               begin
-                if not(aChar in CurrentEditor.IdentChars) then
+                {$IFDEF SYN_LAZARUS}
+                if (length(aChar)<>1)
+                or (not (aChar[1] in CurrentEditor.IdentChars)) then
+                  Accept;
+                {$ELSE}
+                if not (aChar in CurrentEditor.IdentChars) then
                   Accept;
                 {don't handle the char}
+                {$ENDIF}
               end;
             ecLineBreak:
             begin

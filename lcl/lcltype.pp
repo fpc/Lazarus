@@ -46,12 +46,20 @@ interface
 {$endif}
 
 uses
+{$IFDEF USE_UTF8BIDI_LCL}
+  UTF8BIDI,
+{$ENDIF USE_UTF8BIDI_LCL}
 {$ifdef win32}
   windows,
 {$endif win32}
   Classes, SysUtils;
 
 type
+{$IFDEF USE_UTF8BIDI_LCL}
+  TUTF8Char = UTF8BIDI.TUTF8Char;
+{$ELSE USE_UTF8BIDI_LCL}
+  TUTF8Char = String[7];
+{$ENDIF USE_UTF8BIDI_LCL}
   PRect = ^TRect;
   UINT = LongWord;
   PPoint = ^TPoint;
@@ -2233,6 +2241,9 @@ end.
 
 {
   $Log$
+  Revision 1.66  2004/09/02 09:16:59  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.65  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss
 

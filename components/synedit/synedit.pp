@@ -61,6 +61,9 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
+  {$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi,
+  {$ENDIF}
   FPCAdds, LCLIntf, LCLType, LMessages, LCLProc,
 {$ELSE}
   Windows,
@@ -131,13 +134,16 @@ type
     of object;
 
   THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
-    var Handled: boolean; var Command: TSynEditorCommand; var AChar: char;
+    var Handled: boolean; var Command: TSynEditorCommand;
+    var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
     Data: pointer; HandlerData: pointer) of object;
 
   TPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas) of object;
 
   TProcessCommandEvent = procedure(Sender: TObject;
-    var Command: TSynEditorCommand; var AChar: char; Data: pointer) of object;
+    var Command: TSynEditorCommand;
+    var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+    Data: pointer) of object;
 
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
     string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
@@ -512,6 +518,11 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     {$IFDEF SYN_LAZARUS}
+    procedure UTF8KeyPress(var Key: TUTF8Char); override;
+    {$ELSE}
+    procedure KeyPress(var Key: Char); override;
+    {$ENDIF}
+    {$IFDEF SYN_LAZARUS}
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     {$ENDIF}
     procedure ListAdded(Index: integer);                                        //mh 2000-10-10
@@ -532,7 +543,9 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure NotifyHookedCommandHandlers(AfterProcessing: boolean;
-      var Command: TSynEditorCommand; var AChar: char; Data: pointer); virtual;
+      var Command: TSynEditorCommand;
+      var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      Data: pointer); virtual;
     procedure Paint; override;
     procedure PaintGutter(AClip: TRect; FirstLine, LastLine: integer); virtual;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
@@ -563,14 +576,16 @@ type
     {$ENDIF}
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
     procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
-    procedure DoOnCommandProcessed(Command: TSynEditorCommand; AChar: char;
+    procedure DoOnCommandProcessed(Command: TSynEditorCommand;
+      AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
       Data: pointer); virtual;
     // no method DoOnDropFiles, intercept the WM_DROPFILES instead
     procedure DoOnGutterClick(X, Y: integer); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnPlaceMark(var Mark: TSynEditMark); virtual;
     procedure DoOnProcessCommand(var Command: TSynEditorCommand;
-      var AChar: char; Data: pointer); virtual;
+      var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      Data: pointer); virtual;
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
     function DoOnSpecialLineColors(Line: integer;
@@ -589,8 +604,9 @@ type
     procedure ClearAll;
     procedure ClearBookMark(BookMark: Integer);
     procedure ClearSelection;
-    procedure CommandProcessor(Command: TSynEditorCommand; AChar: char;
-      Data: pointer); virtual;
+    procedure CommandProcessor(Command:TSynEditorCommand;
+      AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      Data:pointer); virtual;
     procedure ClearUndo;
     procedure CopyToClipboard;
     constructor Create(AOwner: TComponent); override;
@@ -604,7 +620,8 @@ type
 {$IFDEF SYN_COMPILER_4_UP}
     function ExecuteAction(ExeAction: TBasicAction): boolean; override;
 {$ENDIF}
-    procedure ExecuteCommand(Command: TSynEditorCommand; AChar: char;
+    procedure ExecuteCommand(Command: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const AChar: TUTF8Char{$ELSE}AChar: Char{$ENDIF};
       Data: pointer); virtual;
     function GetBookMark(BookMark: integer; var X, Y: integer): boolean;
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
@@ -857,9 +874,6 @@ implementation
 // { $R SynEdit.res}
 
 uses
-{$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
-{$ENDIF USE_UTF8BIDI_LCL}
 {$IFDEF SYN_COMPILER_4_UP}
   StdActns,
 {$ENDIF}
@@ -1844,6 +1858,34 @@ begin
     Exclude(fStateFlags, sfIgnoreNextChar);
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
+{$ELSE}
+procedure TCustomSynEdit.KeyPress(var Key: Char);
+{$ENDIF}
+begin
+{$IFDEF SYN_MBCSSUPPORT}
+  if (fImeCount > 0) then begin
+    Dec(fImeCount);
+    Exit;
+  end;
+{$ENDIF}
+  // don't fire the event if key is to be ignored
+  if not (sfIgnoreNextChar in fStateFlags) then begin
+    {$IFDEF SYN_LAZARUS}
+    if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
+    {$ELSE}
+    if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
+    {$ENDIF}
+    CommandProcessor(ecChar, Key, nil);
+    //Key was handled, any way, so eat it!
+    Key:='';
+  end else
+    // don't ignore further keys
+    Exclude(fStateFlags, sfIgnoreNextChar);
+end;
+
+
 function TCustomSynEdit.LeftSpaces(const Line: string): Integer;
 var
   p: PChar;
@@ -2527,7 +2569,12 @@ var
     pszText: PChar;
     nX, nCharsToPaint: integer;
   const
-    ETOOptions = {$IFNDEF SYN_LAZARUS}ETO_CLIPPED or {$ENDIF}ETO_OPAQUE;
+    ETOOptions =
+      {$IFNDEF SYN_LAZARUS}
+      // clipping is slow and not needed for lazarus
+      ETO_CLIPPED or
+      {$ENDIF}
+      ETO_OPAQUE;
   begin
     if (Last >= First) and (rcToken.Right > rcToken.Left) then begin
       nX := ColumnToXValue(First);
@@ -2561,6 +2608,7 @@ var
           pszText, nCharsToPaint);
       end else begin
         // draw text with background
+        //debugln('PaintToken nX=',nX,' Token=',dbgstr(copy(pszText,1,nCharsToPaint)));
         fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
           pszText, nCharsToPaint);
       end;
@@ -2888,11 +2936,11 @@ var
     end;
 {begin}                                                                         //mh 2000-10-19
     // Find the fastest function for the tab expansion.
-//    pConvert := GetBestConvertTabsProc(fTabWidth);
+    // pConvert := GetBestConvertTabsProc(fTabWidth);
     // Now loop through all the lines. The indices are valid for Lines.
     for nLine := FirstLine to LastLine do begin
       // Get the expanded line.
-//      sLine := pConvert(Lines[nLine - 1], fTabWidth);
+      // sLine := pConvert(Lines[nLine - 1], fTabWidth);
       sLine := TSynEditStringList(Lines).ExpandedStrings[nLine - 1];
 {end}                                                                           //mh 2000-10-19
       // Get the information about the line selection. Three different parts
@@ -5788,7 +5836,8 @@ begin
 end;
 
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
-  AChar: char; Data: pointer);
+  AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+  Data: pointer);
 begin
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.CommandProcessor] ',Command
@@ -5810,7 +5859,8 @@ begin
   DoOnCommandProcessed(Command, AChar, Data);
 end;
 
-procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand; AChar: char;
+procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand;
+  {$IFDEF SYN_LAZARUS}const AChar: TUTF8Char{$ELSE}AChar: Char{$ENDIF};
   Data: pointer);
 const
   ALPHANUMERIC = DIGIT + ALPHA_UC + ALPHA_LC;
@@ -6283,18 +6333,18 @@ begin
               if bChangeScroll then Include(fOptions, eoScrollPastEol);
               StartOfBlock := CaretXY;
               if fInserting then begin
-{$IFDEF USE_UTF8BIDI_LCL}
-                Len := CaretX;
-                utf8bidi.insert(AChar, Temp, Len);
-                CaretX := Len;
-{$ELSE USE_UTF8BIDI_LCL}
+                {$IFDEF USE_UTF8BIDI_LCL}
+                CaretNew := CaretX;
+                utf8bidi.Insert(AChar, Temp, CaretNew);
+                CaretX := CaretNew;
+                {$ELSE USE_UTF8BIDI_LCL}
                 Len := Length(Temp);
                 if Len < CaretX then
 //              Temp := Temp + StringOfChar(' ', CaretX - Len);
                   Temp := Temp + StringOfChar(' ', CaretX - Len - Ord(fInserting)); //JGF 2000-09-23
                 System.Insert(AChar, Temp, CaretX);
                 CaretX := CaretX + 1;
-{$ENDIF USE_UTF8BIDI_LCL}
+                {$ENDIF not USE_UTF8BIDI_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
                 fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, '',
                   smNormal);
@@ -6307,7 +6357,11 @@ begin
                 end;
 {$ENDIF}
                 Helper := Copy(Temp, CaretX, counter);
+                {$IFDEF SYN_LAZARUS}
+                Temp[CaretX] := AChar[1];
+                {$ELSE}
                 Temp[CaretX] := AChar;
+                {$ENDIF}
 {$IFDEF SYN_MBCSSUPPORT}
                 if (counter > 1) then begin
                   Temp[CaretX + 1] := ' ';
@@ -6468,14 +6522,15 @@ begin
 end;
 
 procedure TCustomSynEdit.DoOnCommandProcessed(Command: TSynEditorCommand;
-  AChar: char; Data: pointer);
+  AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+  Data: pointer);
 begin
   if Assigned(fOnCommandProcessed) then
     fOnCommandProcessed(Self, Command, AChar, Data);
 end;
 
 procedure TCustomSynEdit.DoOnProcessCommand(var Command: TSynEditorCommand;
-  var AChar: char; Data: pointer);
+  var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer);
 begin
   if Command < ecUserFirst then begin
     if Assigned(FOnProcessCommand) then
@@ -8123,7 +8178,8 @@ begin
 end;
 
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand;
+  var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer);
 var
   Handled: boolean;
   i: integer;

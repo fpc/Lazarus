@@ -64,8 +64,8 @@ function GTK2KeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
   Result := GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) and
-            HandleGtkKeyUpDown(Widget, Event, Data, True) and
-            HandleGtkKeyUpDown(Widget, Event, Data, False);
+            (HandleGtkKeyUpDown(Widget, Event, Data, True) or
+            HandleGtkKeyUpDown(Widget, Event, Data, False));
 end;
 
 function GTK2KillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
@@ -1375,6 +1375,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.15  2004/09/02 09:17:00  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.14  2004/07/30 14:26:11  mazen
   * move HandleGtkKeyUpDown to gtkProc.inc make it visible to gtk2
     this allow saving a call in a hevely called callback

@@ -56,6 +56,9 @@ uses
   StdCtrls,
   Controls,
   {$IFDEF SYN_LAZARUS}
+  {$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi,
+  {$ENDIF}
   LCLIntf, LCLType,
   {$ELSE}
   Windows, Messages,
@@ -86,8 +89,9 @@ type
     procedure InitEventParameters(aStr : string); virtual; abstract;
   public
     constructor Create; {$IFNDEF FPC}virtual;{$ENDIF}
-    procedure Initialize(aCmd: TSynEditorCommand; aChar: Char; aData: Pointer);
-      virtual; abstract;
+    procedure Initialize(aCmd: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      aData: Pointer);  virtual; abstract;
     { the CommandID must not be read inside LoadFromStream/SaveToStream. It's read by the
     MacroRecorder component to decide which MacroEvent class to instanciate }
     procedure LoadFromStream(aStream: TStream); virtual; abstract;
@@ -103,8 +107,9 @@ type
     function GetAsString : string; override;
     procedure InitEventParameters(aStr : string); override;
   public
-    procedure Initialize(aCmd: TSynEditorCommand; aChar: Char; aData: Pointer);
-      override;
+    procedure Initialize(aCmd: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
@@ -114,17 +119,22 @@ type
 
   TSynCharEvent = class(TSynMacroEvent)
   protected
-    fKey: char;
+    fKey: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
     function GetAsString : string; override;
     procedure InitEventParameters(aStr : string); override;
   public
-    procedure Initialize(aCmd: TSynEditorCommand; aChar: Char; aData: Pointer);
-      override;
+    procedure Initialize(aCmd: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
   public
-    property Key: char read fKey write fKey;
+    {$IFDEF SYN_LAZARUS}
+    property Key: TUTF8Char read fKey write fKey;
+    {$ELSE}
+    property Key: Char read fKey write fKey;
+    {$ENDIF}
   end;
 
   TSynStringEvent = class(TSynMacroEvent)
@@ -133,8 +143,9 @@ type
     function GetAsString : string; override;
     procedure InitEventParameters(aStr : string); override;
   public
-    procedure Initialize(aCmd: TSynEditorCommand; aChar: Char; aData: Pointer);
-      override;
+    procedure Initialize(aCmd: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
@@ -148,8 +159,9 @@ type
     function GetAsString : string; override;
     procedure InitEventParameters(aStr : string); override;
   public
-    procedure Initialize(aCmd: TSynEditorCommand; aChar: Char; aData: Pointer);
-      override;
+    procedure Initialize(aCmd: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
@@ -161,8 +173,9 @@ type
   protected
     fData: Pointer;
   public
-    procedure Initialize(aCmd: TSynEditorCommand; aChar: Char; aData: Pointer);
-      override;
+    procedure Initialize(aCmd: TSynEditorCommand;
+      {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+      aData: Pointer); override;
     procedure LoadFromStream(aStream: TStream); override;
     procedure SaveToStream(aStream: TStream); override;
     procedure Playback(aEditor: TCustomSynEdit); override;
@@ -204,7 +217,8 @@ type
     procedure DoAddEditor(aEditor: TCustomSynEdit); override;
     procedure DoRemoveEditor(aEditor: TCustomSynEdit); override;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var aChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand;
+      var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
       Data: pointer; HandlerData: pointer); override;
     function CreateMacroEvent(aCmd: TSynEditorCommand): TSynMacroEvent;
   protected
@@ -279,7 +293,8 @@ uses
 
 { TSynDataEvent }
 
-procedure TSynDataEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;
+procedure TSynDataEvent.Initialize(aCmd: TSynEditorCommand;
+  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
   aData: Pointer);
 begin
   fCommand := aCmd;
@@ -502,7 +517,8 @@ end;
 
 procedure TCustomSynMacroRecorder.OnCommand(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
-  var Command: TSynEditorCommand; var aChar: char; Data,
+  var Command: TSynEditorCommand;
+  var aChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data,
   HandlerData: pointer);
 var
   iEvent: TSynMacroEvent;
@@ -754,7 +770,8 @@ begin
   RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
-procedure TSynBasicEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;
+procedure TSynBasicEvent.Initialize(aCmd: TSynEditorCommand;
+  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
   aData: Pointer);
 begin
   Command := aCmd;
@@ -806,7 +823,8 @@ begin
   RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
-procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;
+procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand;
+  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
   aData: Pointer);
 begin
   Key := aChar;
@@ -876,7 +894,8 @@ begin
 end;
 
 procedure TSynPositionEvent.Initialize(aCmd: TSynEditorCommand;
-  aChar: Char; aData: Pointer);
+  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
+  aData: Pointer);
 begin
   inherited;
   if aData <> nil then
@@ -946,7 +965,8 @@ begin
   RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
-procedure TSynStringEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;
+procedure TSynStringEvent.Initialize(aCmd: TSynEditorCommand;
+  {$IFDEF SYN_LAZARUS}const aChar: TUTF8Char{$ELSE}aChar: Char{$ENDIF};
   aData: Pointer);
 begin
   Value := String(aData);

@@ -1327,7 +1327,7 @@ var
     end;
     
     {$IFDEF VerboseFonts}
-    DebugLn('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
+    DebugLn('  Trying "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
     {$ENDIF}
   end;
 
@@ -1563,43 +1563,45 @@ begin
       if LoadFont then exit;
     end;
 
-    // try instead of mono spaced, character cell spaced
+    // try all weights
+    WeightName := '*';
+    if LoadFont then exit;
+
+    // try one height lower
+    PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
+    if LoadFont then exit;
+
+    // try one height higher
+    PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
+    if LoadFont then exit;
+
+    PixelSize := IntToStr(Abs(LogFont.lfHeight));
+
+    // try instead of mono spaced -> character cell spaced
     if (Spacing='m') then begin
       Spacing:='c';
       if LoadFont then exit;
     end;
 
-    // try instead of italic  oblique
+    // try instead of italic -> oblique
     if (Slant='i') then begin
       Slant := 'o';
-      if GdiObject^.GDIFontObject <> nil then exit;
+      if LoadFont then exit;
     end;
-
-    // try all weights
-    WeightName := '*';
-    if GdiObject^.GDIFontObject <> nil then exit;
 
     // try all slants
     Slant := '*';
-    if GdiObject^.GDIFontObject <> nil then exit;
+    if LoadFont then exit;
 
     // try all spacings
     Spacing := '*';
-    if GdiObject^.GDIFontObject <> nil then exit;
-
-    // try one height lower
-    PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
-    if GdiObject^.GDIFontObject <> nil then exit;
-
-    // try one height higher
-    PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
-    if GdiObject^.GDIFontObject <> nil then exit;
+    if LoadFont then exit;
 
     if (Foundry<>'*') then begin
       // try all Families
       PixelSize := IntToStr(Abs(LogFont.lfHeight));
       FamilyName := '*';
-      if GdiObject^.GDIFontObject <> nil then exit;
+      if LoadFont then exit;
     end;
     
     // nothing exists -> use default
@@ -3135,6 +3137,7 @@ var
     CurDistX: PInteger;
     CharsWritten, CurX, i: integer;
     LinePos: PChar;
+    CharLen: LongInt;
   begin
     {$IFDEF DebugGDKTraps}
     BeginGDKErrorTrap;
@@ -3142,21 +3145,29 @@ var
     with TDeviceContext(DC) do begin
       if (Dx=nil) then begin
         // no dist array -> write as one block
+        //debugln('TGtkWidgetSet.ExtTextOut.DrawTextLine Dx=nil ',dbgs(LineLen),' DCTextMetric.IsDoubleByteChar=',dbgs(DCTextMetric.IsDoubleByteChar));
         gdk_draw_text(Buffer, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
       end else begin
         // dist array -> write each char separately
         CharsWritten:=integer(LineStart-Str);
-        if DCTextMetric.IsDoubleByteChar then
+        if DCTextMetric.IsDoubleByteChar then begin
+          CharLen:=2;
           CharsWritten:=CharsWritten div 2;
+        end else
+          CharLen:=1;
         CurDistX:=Dx+CharsWritten*SizeOf(Integer);
         CurX:=TxtPt.X;
         LinePos:=LineStart;
-        for i:=1 to LineLen do begin
-          gdk_draw_text(Buffer, UseFont, GC, CurX, TxtPt.Y, LinePos, 1);
-          inc(LinePos);
+        //debugln('TGtkWidgetSet.ExtTextOut.DrawTextLine ',dbgs(dx),' DCTextMetric.IsDoubleByteChar=',dbgs(DCTextMetric.IsDoubleByteChar));
+        i:=1;
+        while (i<=LineLen) do begin
+          //debugln('TGtkWidgetSet.ExtTextOut.DrawTextLine ',dbgs(CharLen),' ',dbgs(ord(LinePos^)));
+          gdk_draw_text(Buffer, UseFont, GC, CurX, TxtPt.Y, LinePos, CharLen);
+          inc(LinePos,CharLen);
           inc(CurX,CurDistX^);
           inc(CurDistX);
+          inc(i,CharLen);
         end;
       end;
       if UnderLine then begin
@@ -8718,6 +8729,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.364  2004/09/02 09:17:00  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.363  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

@@ -218,6 +218,7 @@ type
     procedure Cancel(Sender: TObject);
     procedure Validate(Sender: TObject; Shift: TShiftState);
     procedure KeyPress(Sender: TObject; var Key: char);
+    procedure UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: char);
     function GetPreviousToken(FEditor: TCustomSynEdit): string;
@@ -408,12 +409,7 @@ begin
     #33..'z': begin
         if Assigned(OnKeyPress) then
           OnKeyPress(self, Key);
-        {$ifdef SYN_LAZARUS}
-        if Key in [#33..#255] then
-          CurrentString := CurrentString + key;
-        {$else}
         CurrentString := CurrentString + key;
-        {$ENDIF}
       end;
     #8:
       if Assigned(OnKeyPress) then OnKeyPress(self, Key); 
@@ -1032,6 +1028,18 @@ begin
   end;
 end;
 
+procedure TSynCompletion.UTF8KeyPress(Sender: TObject; var Key: TUTF8Char);
+var
+  F: TSynBaseCompletionForm;
+begin
+  F := Sender as TSynBaseCompletionForm;
+  if F.CurrentEditor <> nil then begin
+    with F.CurrentEditor as TCustomSynEdit do begin
+      CommandProcessor(ecChar, Key, nil);
+    end;
+  end;
+end;
+
 procedure TSynCompletion.SetEditor(const Value: TCustomSynEdit);
 begin
   AddEditor(Value);
@@ -1050,6 +1058,7 @@ constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Form.OnKeyPress := {$IFDEF FPC}@{$ENDIF}KeyPress;
+  Form.OnUTF8KeyPress := {$IFDEF FPC}@{$ENDIF}UTF8KeyPress;
   Form.OnKeyDelete := {$IFDEF FPC}@{$ENDIF}Backspace;
   Form.OnValidate := {$IFDEF FPC}@{$ENDIF}Validate;
   Form.OnCancel := {$IFDEF FPC}@{$ENDIF}Cancel;

@@ -112,9 +112,15 @@ begin
   InterfaceObject.DrawArrow(Arrow, Canvas);
 end;
 
+function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
+  Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+begin
+  Result := InterfaceObject.ExtUTF8Out(DC,X,Y,Options,Rect,Str,Count,Dx);
+end;
+
 function Frame(DC: HDC; const ARect: TRect): Integer;
 begin
-  Result:= InterfaceObject.Frame(DC, ARect);
+  Result := InterfaceObject.Frame(DC, ARect);
 end;
 
 function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
@@ -261,6 +267,16 @@ function GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 begin
   Result := InterfaceObject.GetWindowRelativePosition(Handle,Left,Top);
+end;
+
+{------------------------------------------------------------------------------
+  function IntfSendsUTF8KeyPress: Boolean;
+
+  Returns true if interface sends UTF8 KeyPress notifications.
+------------------------------------------------------------------------------}
+function IntfSendsUTF8KeyPress: Boolean;
+begin
+  Result := InterfaceObject.IntfSendsUTF8KeyPress;
 end;
 
 {------------------------------------------------------------------------------
@@ -526,6 +542,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/09/02 09:16:59  mattias
+  improved double byte char fonts for gtk1, started synedit UTF8 support
+
   Revision 1.25  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
