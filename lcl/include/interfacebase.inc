@@ -161,7 +161,12 @@ end;
 
 function TInterfaceBase.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-Result := False;
+  Result := False;
+end;
+
+function TInterfaceBase.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+begin
+  Result:=false;
 end;
 
 function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -317,15 +322,21 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
-begin
-  Result := False;
-end;
-
 function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 Begin
   Result := False;
 End;
+
+function TInterfaceBase.Pie(DC: HDC; 
+  x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
+begin
+  Result := False;
+end;
 
 function TInterfaceBase.RealizePalette(DC: HDC): Cardinal;
 begin
@@ -503,6 +514,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2001/12/28 11:41:51  lazarus
+  MG: added TCanvas.Ellipse, TCanvas.Pie
+
   Revision 1.22  2001/12/27 16:31:28  lazarus
   MG: implemented TCanvas.Arc
 

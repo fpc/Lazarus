@@ -217,11 +217,62 @@ end;
   Params:   x,y,width,height,angle1,angle2
   Returns:  Nothing
 
+  Use Arc to draw an elliptically curved line with the current Pen.
+  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position. 
+
  ------------------------------------------------------------------------------}
 procedure TCanvas.Arc(x,y,width,height,angle1,angle2 : Integer);
 begin
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  RequiredState([csHandleValid, csPenValid]);
   LCLLinux.Arc(FHandle,x,y,width,height,angle1,angle2);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Pie
+  Params:   x,y,width,height,angle1,angle2
+  Returns:  Nothing
+
+  Use Pie to draw a filled pie-shaped wedge on the canvas.
+  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position. 
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Pie(x,y,width,height,angle1,angle2 : Integer);
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.Pie(FHandle,x,y,width,height,angle1,angle2);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Ellipse
+  Params:   X1, Y1, X2, Y2
+  Returns:  Nothing
+  
+  Use Ellipse to draw a filled circle or ellipse on the canvas.
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Ellipse(x1, y1, x2, y2: Integer); 
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.Ellipse(FHandle,x1,y1,x2,y2);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Ellipse
+  Params:   X1, Y1, X2, Y2
+  Returns:  Nothing
+  
+  Use Ellipse to draw a filled circle or ellipse on the canvas.
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Ellipse(const Rect: TRect); 
+begin
+  Ellipse(Rect.Left,Rect.Top,Rect.Right,Rect.Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -623,6 +674,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/12/28 11:41:51  lazarus
+  MG: added TCanvas.Ellipse, TCanvas.Pie
+
   Revision 1.12  2001/12/27 16:31:28  lazarus
   MG: implemented TCanvas.Arc
 

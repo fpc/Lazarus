@@ -32,12 +32,16 @@ const
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
-  Function: Arc
-  Params:  none
-  Returns: Nothing
+  Method:   Arc
+  Params:   x,y,width,height,angle1,angle2
+  Returns:  Nothing
 
-  The Arc function draws an arc. The arc is outlined by using
-  the current pen.
+  Use Arc to draw an elliptically curved line with the current Pen.
+  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position. 
+
  ------------------------------------------------------------------------------}
 function TgtkObject.Arc(DC: HDC; 
   x,y,width,height,angle1,angle2 : Integer): Boolean;
@@ -48,7 +52,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TgtkObject.Rectangle] Uninitialized GC');
+      WriteLn('WARNING: [TgtkObject.Arc] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -60,7 +64,6 @@ begin
     end;
   end;
 end;
-
 
 
 {------------------------------------------------------------------------------
@@ -1624,6 +1627,47 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   Ellipse
+  Params:   X1, Y1, X2, Y2
+  Returns:  Nothing
+  
+  Use Ellipse to draw a filled circle or ellipse.
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.Ellipse(DC: HDC; 
+  x1,y1,x2,y2: Integer): Boolean;
+var x,y,width,height: integer;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.Ellipse] Uninitialized GC');
+      Result := False;
+    end
+    else begin
+      x:=(x1+x2) shr 1;
+      y:=(y1+y2) shr 1;
+      width:=(x2-x1);
+      if width<0 then width:=-width;
+      width:=width shr 1;
+      height:=(y2-y1);
+      if height<0 then height:=-height;
+      height:=height shr 1;
+      // first draw interior in brush color
+      SelectGDKBrushProps(DC);
+      gdk_draw_arc(Drawable, GC, 1, x, y, Width, Height, 0, 360 shl 6);
+      // Draw outline
+      SelectGDKPenProps(DC);
+      gdk_draw_arc(Drawable, GC, 0, x, y, Width, Height, 0, 360 shl 6);
+      Result := True;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
   Returns: Nothing
@@ -2982,6 +3026,44 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   Pie
+  Params:   x,y,width,height,angle1,angle2
+  Returns:  Nothing
+
+  Use Pie to draw a filled pie-shaped wedge on the canvas.
+  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position. 
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.Pie(DC: HDC; 
+  x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.Pie] Uninitialized GC');
+      Result := False;
+    end
+    else begin
+      // first draw interior in brush color
+      SelectGDKBrushProps(DC);
+      gdk_draw_arc(Drawable, GC, 1, X, Y, Width, Height, 
+                   Angle1 shl 2, Angle2 shl 2);
+      // Draw outline
+      SelectGDKPenProps(DC);
+      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height, 
+                   Angle1 shl 2, Angle2 shl 2);
+      Result := True;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: PostMessage
   Params: hWnd:
           Msg:
@@ -4128,6 +4210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2001/12/28 11:41:51  lazarus
+  MG: added TCanvas.Ellipse, TCanvas.Pie
+
   Revision 1.53  2001/12/27 16:31:28  lazarus
   MG: implemented TCanvas.Arc
 

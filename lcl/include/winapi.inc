@@ -21,7 +21,6 @@ begin
   Result := InterfaceObject.Arc(DC,x,y,width,height,angle1,angle2);
 end;
 
-
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
 begin
   Result := InterfaceObject.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
@@ -164,6 +163,11 @@ end;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Result := InterfaceObject.EnableWindow(hWnd, bEnable);
+end;
+
+function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
+begin
+  Result := InterfaceObject.Ellipse(DC,x1,y1,x2,y2);
 end;
 
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -319,6 +323,11 @@ end;
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 begin
   Result := InterfaceObject.PeekMessage(lpMsg,Handle,wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
+end;
+
+function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := InterfaceObject.Pie(DC,x,y,width,height,angle1,angle2);
 end;
 
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
@@ -1033,6 +1042,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/12/28 11:41:51  lazarus
+  MG: added TCanvas.Ellipse, TCanvas.Pie
+
   Revision 1.21  2001/12/27 16:31:28  lazarus
   MG: implemented TCanvas.Arc
 

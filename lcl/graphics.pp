@@ -442,9 +442,12 @@ type
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
+    procedure Ellipse(x1, y1, x2, y2: Integer); 
+    procedure Ellipse(const Rect: TRect); 
+    procedure Pie(x,y,width,height,angle1,angle2 : Integer);
     Procedure FillRect(const Rect : TRect);
-    Procedure Rectangle(X1,Y1,X2,Y2 : Integer); overload;
-    Procedure Rectangle(const Rect: TRect); overload;
+    Procedure Rectangle(X1,Y1,X2,Y2 : Integer); 
+    Procedure Rectangle(const Rect: TRect); 
     Procedure Line(X1,Y1,X2,Y2 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
     Procedure LineTo(X1,Y1 : Integer);
@@ -732,6 +735,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/12/28 11:41:50  lazarus
+  MG: added TCanvas.Ellipse, TCanvas.Pie
+
   Revision 1.18  2001/12/21 18:16:59  lazarus
   Added TImage class
   Shane

@@ -45,6 +45,7 @@ function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal):
 function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
+function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
@@ -83,6 +84,7 @@ function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): inte
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean; override;
 
 function RealizePalette(DC: HDC): Cardinal; override;
@@ -128,6 +130,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/12/28 11:41:51  lazarus
+  MG: added TCanvas.Ellipse, TCanvas.Pie
+
   Revision 1.21  2001/12/27 16:31:28  lazarus
   MG: implemented TCanvas.Arc
 
