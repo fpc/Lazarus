@@ -2743,6 +2743,18 @@ begin
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
   
+  // components/units
+  SubDirTempl:=TDefineTemplate.Create('units',
+    'compiled components for the IDE',
+    '','units',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+     ctsSrcPathForCompiledUnits,
+     ExternalMacroStart+'CompiledSrcPath',
+     '..'+ds+'synedit;'
+     +'..'+ds+'codetools'
+     ,da_Define));
+  DirTempl.AddChild(SubDirTempl);
+
   // components/htmllite
   SubDirTempl:=TDefineTemplate.Create('HTMLLite',
     'HTMLLite',
@@ -2757,6 +2769,12 @@ begin
     '','turbopower_ipro',da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('IP_LAZARUS',
     'Define IP_LAZARUS','IP_LAZARUS','',da_DefineRecurse));
+  SubDirTempl.AddChild(TDefineTemplate.Create('codetools',
+    Format(ctsAddsDirToSourcePath,['../codetools']),
+    ExternalMacroStart+'SrcPath',
+    '..'+ds+'codetools'
+    +';'+SrcPath
+    ,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
 
   // components/custom

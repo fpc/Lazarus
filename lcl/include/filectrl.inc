@@ -787,24 +787,24 @@ var
 begin
 //writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
   if (Filename='') then begin
-    Result:=Filename;
+    Result:='';
     exit;
   end;
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
     if FileExists(Filename) then begin
-      Result:=ExpandFilename(Filename);
+      Result:=CleanAndExpandFilename(Filename);
       exit;
     end else begin
       Result:='';
       exit;
     end;
   end;
-  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  Base:=CleanAndExpandDirectory(BasePath);
   // search in current directory
   if (not (sffDontSearchInBasePath in Flags))
   and FileExists(Base+Filename) then begin
-    Result:=Base+Filename;
+    Result:=CleanAndExpandFilename(Base+Filename);
     exit;
   end;
   // search in search path
@@ -813,11 +813,11 @@ begin
   while StartPos<=l do begin
     p:=StartPos;
     while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
-    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
+    CurPath:=TrimFilename(copy(SearchPath,StartPos,p-StartPos));
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      Result:=ExpandFilename(AppendPathDelim(CurPath)+Filename);
+      Result:=CleanAndExpandFilename(AppendPathDelim(CurPath)+Filename);
       if FileExists(Result) then exit;
     end;
     StartPos:=p+1;
@@ -850,6 +850,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2003/03/30 20:37:15  mattias
+  ipro now shows simple HTML pages
+
   Revision 1.21  2003/03/29 21:41:19  mattias
   fixed path delimiters for environment directories
 

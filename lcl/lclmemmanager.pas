@@ -226,7 +226,7 @@ begin
     GetMem(FCurItem,FCurSize);
     if FItems=nil then FItems:=TList.Create;
     FItems.Add(FCurItem);
-    FEndItem:=Pointer(integer(FCurSize)+FCurSize);
+    FEndItem:=Pointer(integer(FCurItem)+FCurSize);
   end;
   Result:=FCurItem;
   inc(integer(FCurItem),FItemSize);

@@ -40,6 +40,7 @@ interface
 
 uses
   {$IFDEF IP_LAZARUS}
+  //MemCheck,
   VCLGlobals,
   LCLType,
   GraphType,
@@ -3320,7 +3321,6 @@ end;
 
 procedure SetWordRect(Element: PIpHtmlElement; const Value: TRect);
 begin
-writeln('SetWordRect A Element=',HexStr(Cardinal(Element),8),' ',Value.Left,',',Value.Top);
   Element.WordRect2 := Value;
   if Element.ElementType = etObject then begin
     if (Value.Left < Value.Right)
@@ -3737,7 +3737,7 @@ end;
 
 procedure TIpHtmlNode.Enqueue;
 begin
-  writeln('TIpHtmlNode.Enqueue A ',ClassName);
+
 end;
 
 procedure TIpHtmlNode.EnqueueElement(const Entry: PIpHtmlElement);
@@ -4107,9 +4107,7 @@ procedure TIpHtmlNodeMulti.Enqueue;
 var
   i : Integer;
 begin
-writeln('TIpHtmlNodeMulti.Enqueue A ',ClassName);
   for i := 0 to pred(FChildren.Count) do begin
-    writeln('TIpHtmlNodeMulti.Enqueue B ',i,'/',FChildren.Count,' ',HexStr(Cardinal(TIpHtmlNode(FChildren[i])),8),' ',TIpHtmlNode(FChildren[i]).ClassName);
     TIpHtmlNode(FChildren[i]).Enqueue;
   end;
 end;
@@ -4177,14 +4175,12 @@ var
   X, Y : Integer;
   P : TPoint;
 begin
-writeln('TIpHtmlNodeBODY.Render A ',ClassName);
   if ScaleBitmaps then begin                                       {!!.10}
     Owner.Target.Brush.Color := clWhite;
     Owner.Target.FillRect(Owner.ClientRect);
   end else begin
     if BackGround = '' then begin
       Owner.Target.Brush.Color := clWhite;
-writeln('TIpHtmlNodeBODY.Render B BackGround=',BackGround,' ',Owner.ClientRect.Left,',',Owner.ClientRect.Top,',',Owner.ClientRect.Right,',',Owner.ClientRect.Bottom,' ',HexStr(Cardinal(Owner.Target.Handle),8));
       Owner.Target.FillRect(Owner.ClientRect);
     end;
     if BGColor <> $FFFFFFFF then begin
@@ -4294,7 +4290,6 @@ var
   i : Integer;
 begin
   for i := 0 to pred(PropACache.Count) do begin
-writeln('TIpHtml.ClearCache ',i,'/',PropACache.Count,' ',HexStr(Cardinal(TIpHtmlPropA(PropACache[i])),8));
     TIpHtmlPropA(PropACache[i]).Free;
   end;
   PropACache.Free;
@@ -7244,6 +7239,7 @@ end;
 procedure TIpHtml.ParseFrameSet(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
+writeln('TIpHtml.ParseFrameSet A');
   FHasFrames := True;
   while CurToken = IpHtmlTagFRAMESET do begin
     CurFrameSet := TIpHtmlNodeFRAMESET.Create(Parent);
@@ -7283,10 +7279,7 @@ begin
   end;
   {lead token is optional}
   if CurToken = IpHtmlTagBODY then begin
-    writeln('TIpHtml.ParseBody A ',TIpHtmlNodeMulti(HtmlNode).ChildCount);
     TIpHtmlNodeBODY.Create(Parent);
-    writeln('TIpHtml.ParseBody B ',TIpHtmlNodeMulti(HtmlNode).ChildCount,
-      ' ',TIpHtmlNodeMulti(HtmlNode).ChildNode[0].ClassName,' ',HexStr(Cardinal(TIpHtmlNodeMulti(HtmlNode).ChildNode[0]),8));
     with Body do begin
       BgColor := ColorFromString(FindAttribute('BGCOLOR'));
       Text := ColorFromString(FindAttribute('TEXT'));
@@ -7825,15 +7818,12 @@ procedure TIpHtml.RequestImageNodes(Node : TIpHtmlNode);
 var
   i : Integer;
 begin
-writeln('TIpHtml.RequestImageNodes ',Node.ClassName);
   if Node is TIpHtmlNodeIMG then begin
     if TIpHtmlNodeIMG(Node).FPicture = nil then
       TIpHtmlNodeIMG(Node).LoadImage;
   end;
-writeln('TIpHtml.RequestImageNodes B ',Node.ClassName,' ',Node is TIpHtmlNodeMulti);
   if Node is TIpHtmlNodeMulti then
     for i := 0 to pred(TIpHtmlNodeMulti(Node).ChildCount) do begin
-writeln('TIpHtml.RequestImageNodes C ',i,' ',HexStr(Cardinal(TIpHtmlNodeMulti(Node).ChildNode[i]),8));
       RequestImageNodes(TIpHtmlNodeMulti(Node).ChildNode[i]);
     end;
 end;
@@ -7843,8 +7833,6 @@ procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
 var
   i : Integer;
 begin
-  writeln('TIpHtml.Render A ',ClassName,' DoneLoading=',DoneLoading,' ',TIpHtmlNodeMulti(HtmlNode).ChildCount,
-    ' ',TIpHtmlNodeMulti(HtmlNode).ChildNode[0].ClassName,' ',HexStr(Cardinal(TIpHtmlNodeMulti(HtmlNode).ChildNode[0]),8));
   ClientRect.TopLeft := TopLeft; {Point(0, 0);}                        {!!.10}
   ClientRect.Right := TargetPageRect.Right - TargetPageRect.Left;
   ClientRect.Bottom := TargetPageRect.Bottom - TargetPageRect.Top;
@@ -7884,16 +7872,11 @@ begin
     FTarget := TargetCanvas;
   end;
   ClearRectList;
-  writeln('TIpHtml.Render C2 ',TIpHtmlNodeMulti(HtmlNode).ChildCount,
-    ' ',TIpHtmlNodeMulti(HtmlNode).ChildNode[0].ClassName,' ',HexStr(Cardinal(TIpHtmlNodeMulti(HtmlNode).ChildNode[0]),8));
   if FHtml <> nil then
     FHtml.Render(DefaultProps);
-  writeln('TIpHtml.Render D ',TIpHtmlNodeMulti(HtmlNode).ChildCount,
-    ' ',TIpHtmlNodeMulti(HtmlNode).ChildNode[0].ClassName,' ',HexStr(Cardinal(TIpHtmlNodeMulti(HtmlNode).ChildNode[0]),8));
 
   for i := 0 to pred(ControlList.Count) do
     TIpHtmlNode(ControlList[i]).HideUnmarkedControl;
-  writeln('TIpHtml.Render E ',TIpHtmlNodeMulti(HtmlNode).ChildCount);
   PaintSelection;
   if UsePaintBuffer then
     TargetCanvas.CopyRect(ClientRect, PaintBuffer, ClientRect)
@@ -7902,10 +7885,8 @@ begin
       PaintBuffer := PaintBufferBitmap.Canvas
     else
       PaintBuffer := nil;
-  writeln('TIpHtml.Render F ',TIpHtmlNodeMulti(HtmlNode).ChildCount);
   StartGifPaint(TargetCanvas);
   {Request all non-visible images}
-  writeln('TIpHtml.Render G ',TIpHtmlNodeMulti(HtmlNode).ChildCount);
   RequestImageNodes(HtmlNode);
 end;
 
@@ -7975,7 +7956,6 @@ var
   DefPageRect : TRect;
   Min, Max, W, H : Integer;
 begin
-writeln('TIpHtml.GetPageRect A ',ClassName,' ',Width,',',Height,' DoneLoading=',DoneLoading);
   if not DoneLoading then begin
     {$IFDEF IP_LAZARUS}
     SetRectEmpty(Result);
@@ -8010,7 +7990,6 @@ writeln('TIpHtml.GetPageRect A ',ClassName,' ',Width,',',Height,' DoneLoading=',
   end;
   Result := FPageRect;
   DoneLoading := True;
-writeln('TIpHtml.GetPageRect B ',ClassName,' ',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom);
 end;
 
 procedure TIpHtml.InvalidateSize;
@@ -8479,7 +8458,6 @@ var
   Ch : AnsiChar;
   ImplicitLF: Boolean;                                                 {!!.10}
 begin
-writeln('TIpHtmlNodeText.BuildWordList A PropsR.Preformatted=',PropsR.Preformatted);
   First := True;
   ImplicitLF := False;                                                 {!!.10}
   if PropsR.Preformatted then begin
@@ -8545,7 +8523,6 @@ writeln('TIpHtmlNodeText.BuildWordList A PropsR.Preformatted=',PropsR.Preformatt
     end;
   end else begin
     l := length(EscapedText);
-writeln('TIpHtmlNodeText.BuildWordList B l=',l,' EscapedText="',EscapedText,'"');
     if l > 0 then begin
       Getmem(B, l + 1);
       try
@@ -8555,14 +8532,12 @@ writeln('TIpHtmlNodeText.BuildWordList B l=',l,' EscapedText="',EscapedText,'"')
           case N^ of
           LF :
             begin
-writeln('TIpHtmlNodeText.BuildWordList C LF');
               EnqueueElement(Owner.HardLF);
               inc(N);
             end;
           ' ' :
             begin
               if not ElementQueueIsEmpty then begin                    {!!.10}
-writeln('TIpHtmlNodeText.BuildWordList C space Owner=',Owner.ClassName);
                 NewEntry := Owner.NewElement(etWord, Self);
                 NewEntry.AnsiWord := ' ';
                 NewEntry.IsBlank := 1;
@@ -8571,14 +8546,12 @@ writeln('TIpHtmlNodeText.BuildWordList C space Owner=',Owner.ClassName);
                 else
                   NewEntry.Props := nil;
                 EnqueueElement(NewEntry);
-writeln('TIpHtmlNodeText.BuildWordList C2 NewEntry.WordRect2=',NewEntry.WordRect2.Left,',',NewEntry.WordRect2.Top);
                 First := False;
               end;                                                     {!!.10}
               inc(N);
             end;
           else
             begin
-writeln('TIpHtmlNodeText.BuildWordList C char');
               N2 := N;
               while not (N2^ in [#0, ' ', LF]) do
                 inc(N2);
@@ -8809,7 +8782,6 @@ begin
 
   for i := 0 to pred(ElementQueue.Count) do begin
     CurWord := PIpHtmlElement(ElementQueue[i]);
-writeln('TIpHtmlNodeBlock.RenderQueue A ',ClassName,' ',i,'/',ElementQueue.Count);
 
     if (CurWord.Props <> nil) and (CurWord.Props <> LastProp) then begin
 
@@ -8834,18 +8806,13 @@ writeln('TIpHtmlNodeBlock.RenderQueue A ',ClassName,' ',i,'/',ElementQueue.Count
       Owner.Target.Font.EndUpdate;
       {$ENDIF}
       LastProp := CurWord.Props;
-writeln('TIpHtmlNodeBlock.RenderQueue B Font.Name="',Owner.Target.Font.Name,'" Size=',Owner.Target.Font.Size);
     end;
 
-writeln('TIpHtmlNodeBlock.RenderQueue C CurWord.WordRect2=',CurWord.WordRect2.Left,',',CurWord.WordRect2.Top,',',CurWord.WordRect2.Right,',',CurWord.WordRect2.Bottom,
-' Owner.PageViewRect=',Owner.PageViewRect.Left,',',Owner.PageViewRect.Top,',',Owner.PageViewRect.Right,',',Owner.PageViewRect.Bottom,
-' Intersect=',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect));
     if IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect) then
       case CurWord.ElementType of
       etWord :
         begin
           P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
-writeln('TIpHtmlNodeBlock.RenderQueue D etWord CurWord.AnsiWord="',CurWord.AnsiWord,'" P=',P.x,',',P.y);
           Owner.Target.Brush.Style := bsClear;
           Owner.Target.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           Owner.AddRect(CurWord.WordRect2, CurWord, Self);
@@ -8879,15 +8846,12 @@ end;
 procedure TIpHtmlNodeBlock.Render(
   const RenderProps: TIpHtmlProps);
 begin
-writeln('TIpHtmlNodeBlock.Render A ',ClassName);
   if not RenderProps.IsEqualTo(Props) then begin
     SetProps(RenderProps);
     Props.Assign(RenderProps);
   end;
-writeln('TIpHtmlNodeBlock.Render C ElementQueue.Count=',ElementQueue.Count);
   if ElementQueue.Count = 0 then
     Enqueue;
-writeln('TIpHtmlNodeBlock.Render D ElementQueue.Count=',ElementQueue.Count);
   RenderQueue;
 end;
 
@@ -9188,7 +9152,6 @@ end;
 function TIpHtmlNodeBlock.GetHeight(const RenderProps: TIpHtmlProps;
                                     const Width: Integer): Integer;
 begin
-writeln('TIpHtmlNodeBlock.GetHeight A ',ClassName);
   if LastW = Width then begin
     Result := LastH;
     exit;
@@ -9203,7 +9166,6 @@ end;
 procedure TIpHtmlNodeBlock.Layout(const RenderProps: TIpHtmlProps;
   const TargetRect: TRect);
 begin
-writeln('TIpHtmlNodeBlock.Layout A');
   if EqualRect(TargetRect, PageRect) then exit;
   if not RenderProps.IsEqualTo(Props) then begin
     SetProps(RenderProps);
@@ -9223,7 +9185,6 @@ var
   CurElement : PIpHtmlElement;
   R : TRect;
 begin
-writeln('TIpHtmlNodeBlock.RelocateQueue A');
   OffsetRect(FPageRect, dx, dy);
   for i := 0 to pred(ElementQueue.Count) do begin
     CurElement := PIpHtmlElement(ElementQueue[i]);
@@ -9620,7 +9581,6 @@ var
   *)
 
 begin
-writeln('TIpHtmlNodeBlock.LayoutQueue A');
   if ElementQueue.Count = 0 then exit;
   {DumpQueue;} {debug}
   LeftQueue := nil;
@@ -13796,9 +13756,10 @@ var
   i : Integer;
 begin
   for i := 0 to FChildren.Count - 1 do
-    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
+    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then begin
       TIpHtmlNodeBody(FChildren[i]).CalcMinMaxWidth(RenderProps,
         Min, Max);
+    end;
 end;
 
 function TIpHtmlNodeHtml.GetHeight(const RenderProps: TIpHtmlProps;
@@ -13808,9 +13769,10 @@ var
 begin
   Result := 0;
   for i := 0 to FChildren.Count - 1 do
-    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
+    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then begin
       Result := TIpHtmlNodeBody(FChildren[i]).
         GetHeight(RenderProps, Width);
+    end;
 end;
 
 {Begin !!.12}
@@ -13842,7 +13804,6 @@ procedure TIpHtmlNodeHtml.Render(const RenderProps: TIpHtmlProps);
 var
   i : Integer;
 begin
-writeln('TIpHtmlNodeHtml.Render A ',ClassName);
   for i := 0 to FChildren.Count - 1 do
     if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
       TIpHtmlNodeBody(FChildren[i]).
@@ -16400,8 +16361,9 @@ begin
         Parent := HyperPanel;
         Anchor := Html.AnchorList[i];
       end;
-    for i := 0 to pred(Html.ControlList.Count) do
+    for i := 0 to pred(Html.ControlList.Count) do begin
       TIpHtmlNode(Html.ControlList[i]).CreateControl(HyperPanel);
+    end;
     HyperPanel.Hyper := Html;
   end;
 end;
@@ -16846,7 +16808,6 @@ begin
     RelURL := copy(HRef, 2, length(HRef) - 1);
     BaseURL := '';
   end else begin
-writeln('TIpHtmlCustomPanel.InternalOpenURL A ');
     if MasterFrame <> nil then begin
       if Assigned(FDataProvider) then
         URL := FDataProvider.BuildURL(MasterFrame.Html.CURURL, HRef)
@@ -16855,7 +16816,6 @@ writeln('TIpHtmlCustomPanel.InternalOpenURL A ');
     end
     else
       URL := HRef;
-writeln('TIpHtmlCustomPanel.InternalOpenURL B URL=',URL);
     P := CharPos('#', URL);
     if P = 0 then begin
       RelURL := '';
@@ -16865,7 +16825,6 @@ writeln('TIpHtmlCustomPanel.InternalOpenURL B URL=',URL);
       RelURL := copy(URL, P + 1, length(URL));
     end;
   end;
-writeln('TIpHtmlCustomPanel.InternalOpenURL C ',BaseURL);
   if BaseURL <> '' then begin
     if VisitedList.IndexOf(BaseURL) = -1 then
       VisitedList.Add(BaseURL);
@@ -16902,16 +16861,13 @@ writeln('TIpHtmlCustomPanel.InternalOpenURL C ',BaseURL);
       TargetFrame.OpenURL(BaseURL, False);
     end;
   end;
-writeln('TIpHtmlCustomPanel.InternalOpenURL D ');
   if RelURL <> '' then
     MasterFrame.MakeAnchorVisible(RelURL)
   else
     if MasterFrame <> nil then                                         {!!.02}
       MasterFrame.Home;
-writeln('TIpHtmlCustomPanel.InternalOpenURL E ');
   if assigned(FDocumentOpen) then                                      {!!.10}
     FDocumentOpen(Self);                                               {!!.10}
-writeln('TIpHtmlCustomPanel.InternalOpenURL END ');
 end;
 
 procedure TIpHtmlCustomPanel.HotClick(Sender: TObject);
@@ -17592,6 +17548,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.5  2003/03/30 20:37:15  mattias
+  ipro now shows simple HTML pages
+
   Revision 1.4  2003/03/29 23:52:25  mattias
   IpHtmlPanel can show simple HTML pages, but there are mem bugs
 

@@ -148,11 +148,9 @@ var
 begin
   Clear;
   TheProcess.Execute;
-  fCurrentDirectory:=TheProcess.CurrentDirectory;
+  fCurrentDirectory:=TrimFilename(TheProcess.CurrentDirectory);
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
-  if (fCurrentDirectory<>'')
-  and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
-    fCurrentDirectory:=fCurrentDirectory+PathDelim;
+  fCurrentDirectory:=AppendPathDelim(fCurrentDirectory);
   SetLength(Buf,BufSize);
 
   OutputLine:='';
@@ -234,7 +232,7 @@ begin
     i:=length('Compiling ');
     if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
       inc(i,2);
-    fCompilingHistory.Add(copy(s,i+1,length(s)-i));
+    fCompilingHistory.Add(TrimFilename(copy(s,i+1,length(s)-i)));
     exit;
   end;
   if ('Assembling '=copy(s,1,length('Assembling ')))
@@ -341,17 +339,22 @@ begin
         SkipMessage:=false;
       // beautify compiler message
       
-      // the compiler always gives short filenames, even if it has gone into a
+      // the compiler always gives short filenames, even if it went into a
       // subdirectory
       // -> prepend the current subdirectory
       Msg:=s;
       if (fCompilingHistory<>nil) then begin
-        Filename:=copy(Msg,1,FilenameEndPos);
+        Filename:=TrimFilename(copy(Msg,1,FilenameEndPos));
         if not FilenameIsAbsolute(Filename) then begin
+          // filename is relative
+          // the compiler writes a line compiling ./subdir/unit.pas
+          // and then writes the messages without any path
+          // -> prepend this subdirectory
           i:=fCompilingHistory.Count-1;
           while (i>=0) do begin
-            j:=length(fCompilingHistory[i])-FilenameEndPos;
-            if copy(fCompilingHistory[i],j+1,FilenameEndPos)=Filename then
+            j:=length(fCompilingHistory[i])-length(Filename);
+            if CompareFilenames(
+              copy(fCompilingHistory[i],j+1,length(Filename)),Filename)=0 then
             begin
               Msg:=copy(fCompilingHistory[i],1,j)+Msg;
               inc(FilenameEndPos,j);
@@ -360,7 +363,7 @@ begin
             dec(i);
           end;
           if i<0 then begin
-            // this file is not a compiled pascal soure
+            // this file is not a compiled pascal source
             // -> search for include files
             Filename:=SearchIncludeFile(Filename);
             Msg:=Filename+copy(Msg,FileNameEndPos+1,length(Msg)-FileNameEndPos);
@@ -373,7 +376,8 @@ begin
       if (ofoMakeFilenamesAbsolute in Options) then begin
         Filename:=copy(Msg,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
-          Msg:=fCurrentDirectory+Msg;
+          Msg:=TrimFilename(AppendPathDelim(fCurrentDirectory)+Filename)
+            +copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end;
       
@@ -531,12 +535,13 @@ begin
     // try every compiled pascal source
     for p:=fCompilingHistory.Count-1 downto 0 do begin
       RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
-      FullDir:=AppendPathDelim(ExpandFilename(fCurrentDirectory+RelativeDir));
+      FullDir:=CleanAndExpandDirectory(
+                                AppendPathDelim(fCurrentDirectory)+RelativeDir);
       if SearchedDirectories.IndexOf(FullDir)>=0 then continue;
       // new directory start a search
       if FileExists(FullDir+ShortIncFilename) then begin
         // file found in search dir
-        Result:=RelativeDir+ShortIncFilename;
+        Result:=CleanAndExpandFilename(RelativeDir+ShortIncFilename);
         exit;
       end;
       if Assigned(OnGetIncludePath) then begin
@@ -545,7 +550,8 @@ begin
         Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
         if Result<>'' then begin
           if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
-            Result:=RightStr(Result,length(Result)-length(fCurrentDirectory));
+            Result:=TrimFilename(
+                     RightStr(Result,length(Result)-length(fCurrentDirectory)));
           exit;
         end;
       end;
@@ -610,10 +616,7 @@ begin
       if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
       fMakeDirHistory.Add(fCurrentDirectory);
     end;
-    fCurrentDirectory:=copy(s,i,length(s)-i);
-    if (fCurrentDirectory<>'')
-    and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
-      fCurrentDirectory:=fCurrentDirectory+PathDelim;
+    fCurrentDirectory:=AppendPathDelim(copy(s,i,length(s)-i));
     Result:=true;
     exit;
   end;
