@@ -2111,8 +2111,11 @@ var
         end;
       da_IfDef:
         // test if variable is defined
-        if DirDef.Values.IsDefined(DefTempl.Variable) then
-          CalculateIfChilds;
+        begin
+          //writeln('CalculateTemplate A ',DefTempl.Name,' ',DefTempl.Variable,' ',DirDef.Values.IsDefined(DefTempl.Variable),' CurPath="',CurPath,'"');
+          if DirDef.Values.IsDefined(DefTempl.Variable) then
+            CalculateIfChilds;
+        end;
 
       da_IfNDef:
         // test if variable is not defined

@@ -1914,6 +1914,7 @@ resourcestring
   lisPkgDefsOutputDirectory = 'Output directory';
   lisPkgDefsCompiledSrcPathAddition = 'CompiledSrcPath addition';
   lisPkgDefsUnitPath = 'Unit Path';
+  lisPkgDefsSrcDirMark = 'Package Source Directory Mark';
 
   // add active file to package dialog
   lisAF2PInvalidPackage = 'Invalid Package';
