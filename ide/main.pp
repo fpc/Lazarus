@@ -4907,7 +4907,7 @@ begin
     Result:=Project1.WriteProject([],'');
     if Result=mrAbort then exit;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
-    EnvironmentOptions.Save(false);
+    AddRecentProjectFileToEnvironment(Project1.ProjectInfoFile);
     SaveIncludeLinks;
     UpdateCaption;
     if Result=mrAbort then exit;
@@ -5022,12 +5022,9 @@ begin
     if Result=mrAbort then exit;
   end;
   
-  if ofAddToRecent in Flags then begin
-    EnvironmentOptions.AddToRecentProjectFiles(AFileName);
-    SetRecentProjectFilesMenu;
-    SaveEnvironment;
-  end;
-  
+  if ofAddToRecent in Flags then
+    AddRecentProjectFileToEnvironment(AFileName);
+
   // close the old project
   if SomethingOfProjectIsModified then begin
     if MessageDlg(lisProjectChanged,
@@ -5381,7 +5378,7 @@ begin
         s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
       else
         s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
-      s:=Format(lisisAlreadyPartOfTheProject1, [s]);
+      s:=Format(lisisAlreadyPartOfTheProject, [s]);
       MessageDlg(s,mtInformation,[mbOk],0);
     end;
   end else begin
@@ -8668,6 +8665,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.560  2003/05/08 21:29:34  mattias
+  autoedit for grids
+
   Revision 1.559  2003/05/07 18:55:43  mattias
   fixed localization
 
