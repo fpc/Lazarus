@@ -216,20 +216,34 @@ end;
 
 function TCustomCalendar.GetDateTime: TDateTime;
 begin
+  GetProps;
   Result:=FDate;
 end;
 
 procedure TCustomCalendar.SetDateTime(const AValue: TDateTime);
+{$IFDEF WIN32}
 var
-  OldDate: TDateTime;
+  NewestCalendarMinDate,NewestCalendarMaxDate,OldestMinDate,OldestMaxDate:integer;
+{$ENDIF}
 begin
-  OldDate:=FDate;
+  if AValue=FDate then exit;
+  {$IFDEF WIN32}
+  NewestCalendarMinDate:=0;
+  NewestCalendarMaxDate:=trunc(MaxDateTime);
+  OldestMinDate:=4294913499;
+  OldestMaxDate:=4294967295;
+  if not(((AValue>=NewestCalendarMinDate)and(AValue<=NewestCalendarMaxDate))or
+     ((AValue>=OldestMinDate)and(AValue<=OldestMaxDate)))then begin
+    raise EInvalidDate.CreateFmt(rsInvalidDate, ['must be in '+
+      DateToStr(OldestMinDate)+'-'+DateToStr(NewestCalendarMaxDate)]);
+    exit
+  end;
+  {$ENDIF}
   FDate:=AValue;
   FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
   {$IFDEF VerboseCalenderSetDate}
   DebugLn('TCustomCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
   {$ENDIF}
-  if OldDate=FDate then exit;
   SetProps;
 end;
 

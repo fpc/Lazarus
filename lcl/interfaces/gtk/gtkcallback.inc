@@ -1371,11 +1371,11 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
 begin
   Result := CallBackDefaultReturn;
 
-  { $IFDEF VerboseMouseBugfix}
+  {$IFDEF VerboseMouseBugfix}
   DebugLn('[gtkMouseBtnReleaseAfter] ',DbgSName(TObject(Data)),' ',
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),' Btn=',dbgs(event^.Button));
-  { $ENDIF}
+  {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
   g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
@@ -2963,6 +2963,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.268  2005/02/17 18:32:32  mattias
+  fixed TCalendar  from Salvatore
+
   Revision 1.267  2005/02/17 02:10:52  mattias
   fixed gtk2 intf checking if signal already connected
 
