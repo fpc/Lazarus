@@ -185,7 +185,7 @@ var
 begin
   Result.X:=0;
   Result.Y:=0;
-  GetCaretPos(Result);
+  GetCursorPos(Result);
   FormClientOrigin:=Form.ClientOrigin;
   dec(Result.X,FormClientOrigin.X);
   dec(Result.Y,FormClientOrigin.Y);
