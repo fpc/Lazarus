@@ -4733,6 +4733,17 @@
 </element>
 
 <!-- constant Visibility: default -->
+<element name="Move_Default">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
 <element name="Move_SourceIsInterface">
 <short></short>
 <descr>
@@ -10861,6 +10872,28 @@
 
 <!-- constant Visibility: default -->
 <element name="LOGPIXELSY">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="SIZEPALETTE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="NUMRESERVED">
 <short></short>
 <descr>
 </descr>

@@ -4,11 +4,11 @@
 
 <!--
   ====================================================================
-    LazQueue
+    DirSel
   ====================================================================
 -->
 
-<module name="LazQueue">
+<module name="DirSel">
 <short></short>
 <descr>
 </descr>
@@ -35,8 +35,8 @@
 </seealso>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PLazQueueItem">
+<!-- unresolved type reference Visibility: default -->
+<element name="LResources">
 <short></short>
 <descr>
 </descr>
@@ -46,8 +46,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TLazQueueItem">
+<!-- unresolved type reference Visibility: default -->
+<element name="Forms">
 <short></short>
 <descr>
 </descr>
@@ -57,8 +57,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLazQueueItem.Next">
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
 <short></short>
 <descr>
 </descr>
@@ -68,8 +68,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLazQueueItem.Prior">
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
 <short></short>
 <descr>
 </descr>
@@ -79,8 +79,63 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLazQueueItem.Data">
+<!-- unresolved type reference Visibility: default -->
+<element name="Dialogs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Buttons">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="StdCtrls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ComCtrls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ExtCtrls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FileCtrl">
 <short></short>
 <descr>
 </descr>
@@ -91,7 +146,194 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TLazQueue">
+<element name="TDirSelDlg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Button1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Button2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Label1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Panel1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Panel2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Panel3">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.Panel4">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TDirSelDlg.TV">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TDirSelDlg.FormCreate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.FormCreate.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TDirSelDlg.FormShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.FormShow.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TDirSelDlg.TVExpanded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.TVExpanded.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.TVExpanded.Node">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TDirSelDlg.TVItemDoubleClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.TVItemDoubleClick.Sender">
 <short></short>
 <descr>
 </descr>
@@ -102,7 +344,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TLazQueue.FFirstFree">
+<element name="TDirSelDlg.FRootDir">
 <short></short>
 <descr>
 </descr>
@@ -113,7 +355,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TLazQueue.FFreeCount">
+<element name="TDirSelDlg.FDir">
 <short></short>
 <descr>
 </descr>
@@ -124,7 +366,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TLazQueue.FFirst">
+<element name="TDirSelDlg.FShowHidden">
 <short></short>
 <descr>
 </descr>
@@ -134,8 +376,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TLazQueue.FLast">
+<!-- procedure Visibility: private -->
+<element name="TDirSelDlg.AddDirectories">
 <short></short>
 <descr>
 </descr>
@@ -145,8 +387,19 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TLazQueue.FCount">
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.AddDirectories.Node">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.AddDirectories.Dir">
 <short></short>
 <descr>
 </descr>
@@ -157,7 +410,7 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TLazQueue.GetNewItem">
+<element name="TDirSelDlg.GetAbsolutePath">
 <short></short>
 <descr>
 </descr>
@@ -168,7 +421,18 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TLazQueue.GetNewItem.Result">
+<element name="TDirSelDlg.GetAbsolutePath.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDirSelDlg.GetAbsolutePath.Node">
 <short></short>
 <descr>
 </descr>
@@ -179,7 +443,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TLazQueue.DisposeItem">
+<element name="TDirSelDlg.SetDir">
 <short></short>
 <descr>
 </descr>
@@ -190,7 +454,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TLazQueue.DisposeItem.AnItem">
+<element name="TDirSelDlg.SetDir.Value">
 <short></short>
 <descr>
 </descr>
@@ -201,7 +465,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TLazQueue.Unbind">
+<element name="TDirSelDlg.SetRootDir">
 <short></short>
 <descr>
 </descr>
@@ -212,7 +476,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TLazQueue.Unbind.AnItem">
+<element name="TDirSelDlg.SetRootDir.Value">
 <short></short>
 <descr>
 </descr>
@@ -222,8 +486,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TLazQueue.AddAsLast">
+<!-- function Visibility: public -->
+<element name="TDirSelDlg.SelectedDir">
 <short></short>
 <descr>
 </descr>
@@ -233,8 +497,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TLazQueue.AddAsLast.AnItem">
+<!-- function result Visibility: default -->
+<element name="TDirSelDlg.SelectedDir.Result">
 <short></short>
 <descr>
 </descr>
@@ -245,7 +509,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TLazQueue.First">
+<element name="TDirSelDlg.Directory">
 <short></short>
 <descr>
 </descr>
@@ -256,51 +520,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TLazQueue.Last">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazQueue.FirstData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazQueue.FirstData.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazQueue.LastData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazQueue.LastData.Result">
+<element name="TDirSelDlg.RootDirectory">
 <short></short>
 <descr>
 </descr>
@@ -311,7 +531,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TLazQueue.Count">
+<element name="TDirSelDlg.ShowHidden">
 <short></short>
 <descr>
 </descr>
@@ -321,8 +541,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TLazQueue.AddLast">
+<!-- variable Visibility: default -->
+<element name="DirSelDlg">
 <short></short>
 <descr>
 </descr>
@@ -331,160 +551,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
-<element name="TLazQueue.AddLast.Data">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazQueue.Delete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazQueue.Delete.AnItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazQueue.MoveToLast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazQueue.MoveToLast.AnItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazQueue.Find">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazQueue.Find.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazQueue.Find.Data">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazQueue.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TLazQueue.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TLazQueue.ConsistencyCheck.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TLazQueue.WriteDebugReport">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TLazQueue.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TLazQueue.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- LazQueue -->
+</module> <!-- DirSel -->
 </package>
 </fpdoc-descriptions>

@@ -619,6 +619,50 @@
 </element>
 
 <!-- function Visibility: public -->
+<element name="TInterfaceBase.BeginPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.BeginPaint.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.BeginPaint.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.BeginPaint.PS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
 <element name="TInterfaceBase.BitBlt">
 <short></short>
 <descr>
@@ -763,6 +807,39 @@
 
 <!-- argument Visibility: default -->
 <element name="TInterfaceBase.BringWindowToTop.hWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TInterfaceBase.CallDefaultWndHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.CallDefaultWndHandler.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.CallDefaultWndHandler.Message">
 <short></short>
 <descr>
 </descr>
@@ -1444,6 +1521,61 @@
 </element>
 
 <!-- function Visibility: public -->
+<element name="TInterfaceBase.CreateBitmapFromRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.CreateBitmapFromRawImage.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.CreateBitmapFromRawImage.RawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.CreateBitmapFromRawImage.Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.CreateBitmapFromRawImage.MaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
 <element name="TInterfaceBase.CreateBrushIndirect">
 <short></short>
 <descr>
@@ -1752,7 +1884,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.CreateDIBSection.p2">
+<element name="TInterfaceBase.CreateDIBSection.BitmapInfo">
 <short></short>
 <descr>
 </descr>
@@ -1763,7 +1895,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.CreateDIBSection.p3">
+<element name="TInterfaceBase.CreateDIBSection.Usage">
 <short></short>
 <descr>
 </descr>
@@ -1774,7 +1906,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.CreateDIBSection.p4">
+<element name="TInterfaceBase.CreateDIBSection.Bits">
 <short></short>
 <descr>
 </descr>
@@ -1785,7 +1917,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.CreateDIBSection.p5">
+<element name="TInterfaceBase.CreateDIBSection.SectionHandle">
 <short></short>
 <descr>
 </descr>
@@ -1796,7 +1928,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.CreateDIBSection.p6">
+<element name="TInterfaceBase.CreateDIBSection.Offset">
 <short></short>
 <descr>
 </descr>
@@ -2698,6 +2830,50 @@
 </element>
 
 <!-- function Visibility: public -->
+<element name="TInterfaceBase.EndPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.EndPaint.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.EndPaint.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.EndPaint.PS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
 <element name="TInterfaceBase.Ellipse">
 <short></short>
 <descr>
@@ -3457,6 +3633,50 @@
 </element>
 
 <!-- function Visibility: public -->
+<element name="TInterfaceBase.GetBitmapRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.GetBitmapRawImageDescription.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetBitmapRawImageDescription.Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetBitmapRawImageDescription.Desc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
 <element name="TInterfaceBase.GetCapture">
 <short></short>
 <descr>
@@ -3589,7 +3809,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.GetClientBounds.Rect">
+<element name="TInterfaceBase.GetClientBounds.ARect">
 <short></short>
 <descr>
 </descr>
@@ -3920,6 +4140,50 @@
 
 <!-- argument Visibility: default -->
 <element name="TInterfaceBase.GetDeviceCaps.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TInterfaceBase.GetDeviceRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.GetDeviceRawImageDescription.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetDeviceRawImageDescription.DC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetDeviceRawImageDescription.Desc">
 <short></short>
 <descr>
 </descr>
@@ -4426,6 +4690,127 @@
 
 <!-- argument Visibility: default -->
 <element name="TInterfaceBase.GetProp.Str">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TInterfaceBase.GetRawImageFromDevice">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromDevice.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromDevice.SrcDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromDevice.SrcRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromDevice.NewRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TInterfaceBase.GetRawImageFromBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromBitmap.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromBitmap.SrcBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromBitmap.SrcMaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromBitmap.SrcRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetRawImageFromBitmap.NewRawImage">
 <short></short>
 <descr>
 </descr>
@@ -5174,6 +5559,61 @@
 
 <!-- argument Visibility: default -->
 <element name="TInterfaceBase.GetWindowRect.Rect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TInterfaceBase.GetWindowRelativePosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.GetWindowRelativePosition.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetWindowRelativePosition.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetWindowRelativePosition.Left">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.GetWindowRelativePosition.Top">
 <short></short>
 <descr>
 </descr>
@@ -6152,6 +6592,28 @@
 </element>
 
 <!-- function Visibility: public -->
+<element name="TInterfaceBase.PairSplitterGetInterfaceInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.PairSplitterGetInterfaceInfo.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
 <element name="TInterfaceBase.PairSplitterRemoveSide">
 <short></short>
 <descr>
@@ -6361,7 +6823,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.Pie.x">
+<element name="TInterfaceBase.Pie.EllipseX1">
 <short></short>
 <descr>
 </descr>
@@ -6372,7 +6834,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.Pie.y">
+<element name="TInterfaceBase.Pie.EllipseY1">
 <short></short>
 <descr>
 </descr>
@@ -6383,7 +6845,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.Pie.width">
+<element name="TInterfaceBase.Pie.EllipseX2">
 <short></short>
 <descr>
 </descr>
@@ -6394,7 +6856,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.Pie.height">
+<element name="TInterfaceBase.Pie.EllipseY2">
 <short></short>
 <descr>
 </descr>
@@ -6405,7 +6867,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.Pie.angle1">
+<element name="TInterfaceBase.Pie.StartX">
 <short></short>
 <descr>
 </descr>
@@ -6416,7 +6878,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TInterfaceBase.Pie.angle2">
+<element name="TInterfaceBase.Pie.StartY">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.Pie.EndX">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.Pie.EndY">
 <short></short>
 <descr>
 </descr>
@@ -7385,6 +7869,105 @@
 
 <!-- argument Visibility: default -->
 <element name="TInterfaceBase.RadialPie.ey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TInterfaceBase.RadialPieWithAngles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.DC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.Width">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.Height">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.Angle1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TInterfaceBase.RadialPieWithAngles.Angle2">
 <short></short>
 <descr>
 </descr>
@@ -10201,6 +10784,50 @@
 
 <!-- argument Visibility: default -->
 <element name="TInterfaceBase.WindowFromPoint.Point">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="EInterfaceException">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="EInterfaceError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="EInterfaceCritical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="EInterfaceWarning">
 <short></short>
 <descr>
 </descr>

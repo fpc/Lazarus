@@ -4,11 +4,11 @@
 
 <!--
   ====================================================================
-    CheckLst
+    TextStrings
   ====================================================================
 -->
 
-<module name="CheckLst">
+<module name="TextStrings">
 <short></short>
 <descr>
 </descr>
@@ -36,7 +36,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="StdCtrls">
+<element name="LCLStrConsts">
 <short></short>
 <descr>
 </descr>
@@ -46,8 +46,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
+<!-- record type Visibility: default -->
+<element name="TLineRange">
 <short></short>
 <descr>
 </descr>
@@ -57,8 +57,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
+<!-- variable Visibility: default -->
+<element name="TLineRange.StartPos">
 <short></short>
 <descr>
 </descr>
@@ -68,8 +68,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
+<!-- variable Visibility: default -->
+<element name="TLineRange.EndPos">
 <short></short>
 <descr>
 </descr>
@@ -79,8 +79,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
+<!-- variable Visibility: default -->
+<element name="TLineRange.Line">
 <short></short>
 <descr>
 </descr>
@@ -90,8 +90,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
+<!-- variable Visibility: default -->
+<element name="TLineRange.TheObject">
 <short></short>
 <descr>
 </descr>
@@ -102,7 +102,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TCheckListBox">
+<element name="TTextStrings">
 <short></short>
 <descr>
 </descr>
@@ -113,7 +113,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCheckListBox.FItemDataOffset">
+<element name="TTextStrings.FOnChange">
 <short></short>
 <descr>
 </descr>
@@ -123,8 +123,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TCheckListBox.GetChecked">
+<!-- variable Visibility: private -->
+<element name="TTextStrings.FOnChanging">
 <short></short>
 <descr>
 </descr>
@@ -134,8 +134,8 @@
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
-<element name="TCheckListBox.GetChecked.Result">
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FArraysValid">
 <short></short>
 <descr>
 </descr>
@@ -145,8 +145,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.GetChecked.AIndex">
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FLineCount">
 <short></short>
 <descr>
 </descr>
@@ -156,8 +156,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TCheckListBox.SetChecked">
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FLineCapacity">
 <short></short>
 <descr>
 </descr>
@@ -167,8 +167,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.SetChecked.AIndex">
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FLineRanges">
 <short></short>
 <descr>
 </descr>
@@ -178,8 +178,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.SetChecked.AValue">
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FText">
 <short></short>
 <descr>
 </descr>
@@ -189,96 +189,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TCheckListBox.SendItemChecked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.SendItemChecked.AIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.SendItemChecked.AChecked">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCheckListBox.AssignItemDataToCache">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.AssignItemDataToCache.AIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.AssignItemDataToCache.AData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCheckListBox.AssignCacheToItemData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.AssignCacheToItemData.AIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.AssignCacheToItemData.AData">
+<!-- variable Visibility: protected -->
+<element name="TTextStrings.FUpdateCount">
 <short></short>
 <descr>
 </descr>
@@ -289,7 +201,7 @@
 </element>
 
 <!-- function Visibility: protected -->
-<element name="TCheckListBox.GetCachedDataSize">
+<element name="TTextStrings.GetTextStr">
 <short></short>
 <descr>
 </descr>
@@ -300,7 +212,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCheckListBox.GetCachedDataSize.Result">
+<element name="TTextStrings.GetTextStr.Result">
 <short></short>
 <descr>
 </descr>
@@ -310,8 +222,8 @@
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
-<element name="TCheckListBox.Create">
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.SetTextStr">
 <short></short>
 <descr>
 </descr>
@@ -322,7 +234,348 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCheckListBox.Create.AOwner">
+<element name="TTextStrings.SetTextStr.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.BuildArrays">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TTextStrings.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.GetCount.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.Changed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.Changing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TTextStrings.Get">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.Get.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Get.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.ClearArrays">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TTextStrings.GetObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.GetObject.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.GetObject.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTextStrings.PutObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.PutObject.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.PutObject.AnObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TTextStrings.GetLineLen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTextStrings.GetLineLen.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.GetLineLen.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.GetLineLen.IncludeNewLineChars">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TTextStrings.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.SetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.SetText.TheText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Insert.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Insert.S">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Delete.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.Exchange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Exchange.FromIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTextStrings.Exchange.ToIndex">
 <short></short>
 <descr>
 </descr>
@@ -333,7 +586,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TCheckListBox.Checked">
+<element name="TTextStrings.Text">
 <short></short>
 <descr>
 </descr>
@@ -343,8 +596,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TCheckListBox.Checked.AIndex">
+<!-- property Visibility: public -->
+<element name="TTextStrings.OnChange">
 <short></short>
 <descr>
 </descr>
@@ -354,8 +607,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TCheckListBox.Align">
+<!-- property Visibility: public -->
+<element name="TTextStrings.OnChanging">
 <short></short>
 <descr>
 </descr>
@@ -364,303 +617,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.Anchors">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.BorderStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.ExtendedSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.Items">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.ItemHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.MultiSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnDblClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnDrawItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.OnResize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.ShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.Sorted">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.Style">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.TabOrder">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.TabStop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.TopIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCheckListBox.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- CheckLst -->
+</module> <!-- TextStrings -->
 </package>
 </fpdoc-descriptions>

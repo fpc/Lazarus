@@ -4,11 +4,11 @@
 
 <!--
   ====================================================================
-    PostScriptPrinter
+    IntfGraphics
   ====================================================================
 -->
 
-<module name="PostScriptPrinter">
+<module name="IntfGraphics">
 <short></short>
 <descr>
 </descr>
@@ -36,7 +36,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
+<element name="fpImage">
 <short></short>
 <descr>
 </descr>
@@ -47,18 +47,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphMath">
+<element name="AvgLvlTree">
 <short></short>
 <descr>
 </descr>
@@ -80,7 +69,29 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Forms">
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphType">
 <short></short>
 <descr>
 </descr>
@@ -91,106 +102,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TPostScript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPSPaintType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSPaintType.ptColored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSPaintType.ptUncolored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TPSTileType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSTileType.ttConstant">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSTileType.ttNoDistortion">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TPSTileType.ttFast">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPostScriptCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPSPattern">
+<element name="TLazIntfImage">
 <short></short>
 <descr>
 </descr>
@@ -201,7 +113,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FOldName">
+<element name="TLazIntfImage.FAutoCreateMask">
 <short></short>
 <descr>
 </descr>
@@ -212,7 +124,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FOnChange">
+<element name="TLazIntfImage.FDataDescription">
 <short></short>
 <descr>
 </descr>
@@ -223,7 +135,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FBBox">
+<element name="TLazIntfImage.FPixelData">
 <short></short>
 <descr>
 </descr>
@@ -234,7 +146,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FCanvas">
+<element name="TLazIntfImage.FPixelDataSize">
 <short></short>
 <descr>
 </descr>
@@ -245,7 +157,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FName">
+<element name="TLazIntfImage.FMaskData">
 <short></short>
 <descr>
 </descr>
@@ -256,7 +168,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FPaintType">
+<element name="TLazIntfImage.FMaskDataSize">
 <short></short>
 <descr>
 </descr>
@@ -267,7 +179,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FPostScript">
+<element name="TLazIntfImage.FLineStarts">
 <short></short>
 <descr>
 </descr>
@@ -278,7 +190,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FTilingType">
+<element name="TLazIntfImage.FMaskLineStarts">
 <short></short>
 <descr>
 </descr>
@@ -289,7 +201,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FXStep">
+<element name="TLazIntfImage.FUpdateCount">
 <short></short>
 <descr>
 </descr>
@@ -300,7 +212,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPSPattern.FYStep">
+<element name="TLazIntfImage.fCreateAllDataNeeded">
 <short></short>
 <descr>
 </descr>
@@ -310,8 +222,74 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TPSPattern.GetpostScript">
+<!-- procedure Visibility: private -->
+<element name="TLazIntfImage.SetAutoCreateMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetAutoCreateMask.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.SetInternalColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetInternalColor.x">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetInternalColor.y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetInternalColor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazIntfImage.GetInternalColor">
 <short></short>
 <descr>
 </descr>
@@ -322,18 +300,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TPSPattern.GetpostScript.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetBBox">
+<element name="TLazIntfImage.GetInternalColor.Result">
 <short></short>
 <descr>
 </descr>
@@ -344,18 +311,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPSPattern.SetBBox.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetName">
+<element name="TLazIntfImage.GetInternalColor.x">
 <short></short>
 <descr>
 </descr>
@@ -366,7 +322,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPSPattern.SetName.AValue">
+<element name="TLazIntfImage.GetInternalColor.y">
 <short></short>
 <descr>
 </descr>
@@ -376,8 +332,74 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetPaintType">
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.FreeAllData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.FreePixelData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.FreeMaskData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.CreateAllData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.CreatePixelData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.CreateMaskData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.CreateDataAndLineStarts">
 <short></short>
 <descr>
 </descr>
@@ -388,18 +410,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPSPattern.SetPaintType.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetTilingType">
+<element name="TLazIntfImage.CreateDataAndLineStarts.Data">
 <short></short>
 <descr>
 </descr>
@@ -410,18 +421,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPSPattern.SetTilingType.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetXStep">
+<element name="TLazIntfImage.CreateDataAndLineStarts.DataSize">
 <short></short>
 <descr>
 </descr>
@@ -432,18 +432,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPSPattern.SetXStep.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPattern.SetYStep">
+<element name="TLazIntfImage.CreateDataAndLineStarts.TheLineStarts">
 <short></short>
 <descr>
 </descr>
@@ -454,7 +443,40 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPSPattern.SetYStep.AValue">
+<element name="TLazIntfImage.CreateDataAndLineStarts.TheBitsPerPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.CreateDataAndLineStarts.TheLineEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazIntfImage.SetDataDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetDataDescription.NewDescription">
 <short></short>
 <descr>
 </descr>
@@ -465,7 +487,29 @@
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TPSPattern.Create">
+<element name="TLazIntfImage.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.Create.AWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.Create.AHeight">
 <short></short>
 <descr>
 </descr>
@@ -476,7 +520,7 @@
 </element>
 
 <!-- destructor Visibility: public -->
-<element name="TPSPattern.Destroy">
+<element name="TLazIntfImage.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -487,7 +531,359 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPSPattern.Changed">
+<element name="TLazIntfImage.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.EndUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.SetSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetSize.AWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetSize.AHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazIntfImage.CheckDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazIntfImage.CheckDescription.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.CheckDescription.ADescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.CheckDescription.ExceptionOnError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.GetDescriptionFromDevice">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetDescriptionFromDevice.DC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.LoadFromDevice">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.LoadFromDevice.DC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.LoadFromBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.LoadFromBitmap.Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.LoadFromBitmap.MaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.CreateBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.CreateBitmap.Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.CreateBitmap.MaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.SetRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.SetRawImage.RawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.GetRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetRawImage.RawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.FillPixels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.FillPixels.Color">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.GetXYDataPostion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetXYDataPostion.x">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetXYDataPostion.y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetXYDataPostion.Position">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazIntfImage.GetXYMaskPostion">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetXYMaskPostion.x">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetXYMaskPostion.y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazIntfImage.GetXYMaskPostion.Position">
 <short></short>
 <descr>
 </descr>
@@ -498,7 +894,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TPSPattern.BBox">
+<element name="TLazIntfImage.PixelData">
 <short></short>
 <descr>
 </descr>
@@ -509,7 +905,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TPSPattern.PaintType">
+<element name="TLazIntfImage.MaskData">
 <short></short>
 <descr>
 </descr>
@@ -520,7 +916,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TPSPattern.TilingType">
+<element name="TLazIntfImage.DataDescription">
 <short></short>
 <descr>
 </descr>
@@ -531,7 +927,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TPSPattern.XStep">
+<element name="TLazIntfImage.AutoCreateMask">
 <short></short>
 <descr>
 </descr>
@@ -541,8 +937,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPSPattern.YStep">
+<!-- object Visibility: default -->
+<element name="TLazAVLPalette">
 <short></short>
 <descr>
 </descr>
@@ -552,8 +948,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPSPattern.Name">
+<!-- variable Visibility: protected -->
+<element name="TLazAVLPalette.FAVLPalette">
 <short></short>
 <descr>
 </descr>
@@ -563,8 +959,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPSPattern.Canvas">
+<!-- variable Visibility: protected -->
+<element name="TLazAVLPalette.FAVLNodes">
 <short></short>
 <descr>
 </descr>
@@ -574,8 +970,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPSPattern.GetPS">
+<!-- procedure Visibility: protected -->
+<element name="TLazAVLPalette.SetCount">
 <short></short>
 <descr>
 </descr>
@@ -585,8 +981,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPSPattern.OldName">
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.SetCount.NewCount">
 <short></short>
 <descr>
 </descr>
@@ -596,8 +992,217 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPSPattern.OnChange">
+<!-- procedure Visibility: protected -->
+<element name="TLazAVLPalette.SetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.SetColor.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.SetColor.NewColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazAVLPalette.CompareEntries">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazAVLPalette.CompareEntries.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.CompareEntries.Index1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.CompareEntries.Index2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazAVLPalette.CompareColorWithEntries">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazAVLPalette.CompareColorWithEntries.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.CompareColorWithEntries.AColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.CompareColorWithEntries.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazAVLPalette.EnlargeData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazAVLPalette.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazAVLPalette.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazAVLPalette.IndexOf.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.IndexOf.AColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLazAVLPalette.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLazAVLPalette.Add.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazAVLPalette.Add.NewColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLazAVLPalette.CheckConsistency">
 <short></short>
 <descr>
 </descr>
@@ -608,7 +1213,7 @@
 </element>
 
 <!-- pointer type Visibility: default -->
-<element name="PPSPattern">
+<element name="PArrayNode">
 <short></short>
 <descr>
 </descr>
@@ -619,601 +1224,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TPSObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSObject.FOnChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSObject.Changed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSObject.Lock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSObject.UnLock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSObject.OnChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPSPen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPen.FColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPen.FPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPSPen.FWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPSPen.SetPattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.SetPattern.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSPen.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.SetColor.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPSPen.Setwidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.Setwidth.value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPSPen.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TPSPen.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPSPen.Assign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPSPen.Assign.Source">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPen.Color">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPen.Pattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPSPen.Width">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPSPen.AsString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPSPen.AsString.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPostScriptCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FBrush">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FFontFace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FFontSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FLineSpacing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FPen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.LastX">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.LastY">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScriptCanvas.FPostScript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPostScriptCanvas.GetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScriptCanvas.GetColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetBrush">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetBrush.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetFontFace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetFontFace.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetFontSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetFontSize.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.SetPen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.SetPen.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TPostScriptCanvas.TranslateY">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPostScriptCanvas.TranslateY.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TranslateY.Ycoord">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.AddFill">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.ResetPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScriptCanvas.PenChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.PenChanged.Sender">
+<element name="TArrayNode">
 <short></short>
 <descr>
 </descr>
@@ -1224,7 +1235,62 @@
 </element>
 
 <!-- variable Visibility: public -->
-<element name="TPostScriptCanvas.MPostScript">
+<element name="TArrayNode.Parent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TArrayNode.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TArrayNode.Childs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TArrayNode.StartValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TArrayNode.Capacity">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TArrayNode.Data">
 <short></short>
 <descr>
 </descr>
@@ -1235,18 +1301,7 @@
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TPostScriptCanvas.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Create.APostScript">
+<element name="TArrayNode.Create">
 <short></short>
 <descr>
 </descr>
@@ -1257,7 +1312,7 @@
 </element>
 
 <!-- destructor Visibility: public -->
-<element name="TPostScriptCanvas.Destroy">
+<element name="TArrayNode.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -1268,51 +1323,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.PostScript">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.FontFace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.FontSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.LineSpacing">
+<element name="TArrayNode.DeleteChilds">
 <short></short>
 <descr>
 </descr>
@@ -1323,29 +1334,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.MoveTo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.MoveTo.X1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.MoveTo.Y1">
+<element name="TArrayNode.UnbindFromParent">
 <short></short>
 <descr>
 </descr>
@@ -1356,7 +1345,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.LineTo">
+<element name="TArrayNode.CreateChildNode">
 <short></short>
 <descr>
 </descr>
@@ -1367,7 +1356,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.LineTo.X1">
+<element name="TArrayNode.CreateChildNode.ChildValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.GetChildNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.GetChildNode.Result">
 <short></short>
 <descr>
 </descr>
@@ -1378,7 +1389,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.LineTo.Y1">
+<element name="TArrayNode.GetChildNode.ChildValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArrayNode.GetChildNode.CreateIfNotExists">
 <short></short>
 <descr>
 </descr>
@@ -1389,7 +1411,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Line">
+<element name="TArrayNode.Expand">
 <short></short>
 <descr>
 </descr>
@@ -1400,7 +1422,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.X1">
+<element name="TArrayNode.Expand.ValueToInclude">
 <short></short>
 <descr>
 </descr>
@@ -1410,8 +1432,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.Y1">
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindPrevSibling">
 <short></short>
 <descr>
 </descr>
@@ -1421,8 +1443,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.X2">
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindPrevSibling.Result">
 <short></short>
 <descr>
 </descr>
@@ -1432,8 +1454,173 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Line.Y2">
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindNextSibling">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindNextSibling.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindNext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindNext.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindPrev">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindPrev.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindFirstChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindFirstChild.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindLastChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindLastChild.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindLastSubChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindLastSubChild.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindFirstSibling">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindFirstSibling.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TArrayNode.FindLastSibling">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TArrayNode.FindLastSibling.Result">
 <short></short>
 <descr>
 </descr>
@@ -1444,370 +1631,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Rectangle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.X1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.Y1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.X2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.Y2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Rectangle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Rectangle.Rect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Polyline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Polyline.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Polyline.NumPts">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Ellipse">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.x1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.y1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.x2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.y2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Ellipse">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Ellipse.Rect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Pie">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.x">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.y">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.width">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.mheight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.angle1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Pie.angle2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.Writeln">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.Writeln.AString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.TextOut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TextOut.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TextOut.Y">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPostScriptCanvas.TextOut.Text">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Height">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Color">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Pen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPostScriptCanvas.Brush">
+<element name="TArrayNode.ConsistencyCheck">
 <short></short>
 <descr>
 </descr>
@@ -1818,7 +1642,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TPostScript">
+<element name="TArrayNodesTree">
 <short></short>
 <descr>
 </descr>
@@ -1828,8 +1652,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TPostScript.FCanvas">
+<!-- variable Visibility: public -->
+<element name="TArrayNodesTree.Root">
 <short></short>
 <descr>
 </descr>
@@ -1839,8 +1663,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TPostScript.FHeight">
+<!-- function Visibility: public -->
+<element name="TArrayNodesTree.FindNode">
 <short></short>
 <descr>
 </descr>
@@ -1850,85 +1674,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TPostScript.FLineSpacing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FPageNumber">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.FDocument">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.Patterns">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPostScript.NumPatterns">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetHeight">
+<!-- function result Visibility: default -->
+<element name="TArrayNodesTree.FindNode.Result">
 <short></short>
 <descr>
 </descr>
@@ -1939,18 +1686,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.SetHeight.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetLineSpacing">
+<element name="TArrayNodesTree.FindNode.IntArray">
 <short></short>
 <descr>
 </descr>
@@ -1961,7 +1697,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.SetLineSpacing.AValue">
+<element name="TArrayNodesTree.FindNode.Count">
 <short></short>
 <descr>
 </descr>
@@ -1971,8 +1707,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetTitle">
+<!-- function Visibility: public -->
+<element name="TArrayNodesTree.FindData">
 <short></short>
 <descr>
 </descr>
@@ -1982,19 +1718,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TPostScript.SetTitle.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.SetWidth">
+<!-- function result Visibility: default -->
+<element name="TArrayNodesTree.FindData.Result">
 <short></short>
 <descr>
 </descr>
@@ -2005,40 +1730,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.SetWidth.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.GrabCanvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.UpdateBoundingBox">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.PatternChanged">
+<element name="TArrayNodesTree.FindData.IntArray">
 <short></short>
 <descr>
 </descr>
@@ -2049,7 +1741,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.PatternChanged.Sender">
+<element name="TArrayNodesTree.FindData.Count">
 <short></short>
 <descr>
 </descr>
@@ -2059,8 +1751,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TPostScript.InsertPattern">
+<!-- function Visibility: public -->
+<element name="TArrayNodesTree.SetNode">
 <short></short>
 <descr>
 </descr>
@@ -2070,19 +1762,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TPostScript.InsertPattern.APattern">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TPostScript.RemovePattern">
+<!-- function result Visibility: default -->
+<element name="TArrayNodesTree.SetNode.Result">
 <short></short>
 <descr>
 </descr>
@@ -2093,7 +1774,62 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.RemovePattern.APattern">
+<element name="TArrayNodesTree.SetNode.IntArray">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArrayNodesTree.SetNode.Count">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArrayNodesTree.SetNode.Data">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArrayNodesTree.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TArrayNodesTree.Delete.Node">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TArrayNodesTree.Clear">
 <short></short>
 <descr>
 </descr>
@@ -2104,7 +1840,7 @@
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TPostScript.Create">
+<element name="TArrayNodesTree.Create">
 <short></short>
 <descr>
 </descr>
@@ -2115,7 +1851,7 @@
 </element>
 
 <!-- destructor Visibility: public -->
-<element name="TPostScript.Destroy">
+<element name="TArrayNodesTree.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -2126,7 +1862,117 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScript.AddPattern">
+<element name="TArrayNodesTree.ConsistencyCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TLazReaderXPM">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.FWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.FHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.FColorCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.FCharsPerPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.fXHot">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.fYHot">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazReaderXPM.FPixelToColorTree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazReaderXPM.ClearPixelToColorTree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazReaderXPM.InternalRead">
 <short></short>
 <descr>
 </descr>
@@ -2137,7 +1983,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.AddPattern.APSPattern">
+<element name="TLazReaderXPM.InternalRead.Str">
 <short></short>
 <descr>
 </descr>
@@ -2147,8 +1993,19 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TPostScript.FindPattern">
+<!-- argument Visibility: default -->
+<element name="TLazReaderXPM.InternalRead.Img">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TLazReaderXPM.InternalCheck">
 <short></short>
 <descr>
 </descr>
@@ -2159,7 +2016,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TPostScript.FindPattern.Result">
+<element name="TLazReaderXPM.InternalCheck.Result">
 <short></short>
 <descr>
 </descr>
@@ -2170,7 +2027,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.FindPattern.AName">
+<element name="TLazReaderXPM.InternalCheck.Str">
 <short></short>
 <descr>
 </descr>
@@ -2180,8 +2037,283 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TPostScript.DelPattern">
+<!-- constructor Visibility: public -->
+<element name="TLazReaderXPM.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLazReaderXPM.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TLazWriterXPM">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazWriterXPM.FNibblesPerSample">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLazWriterXPM.FRightShiftSample">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TLazWriterXPM.SetNibblesPerSample">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazWriterXPM.SetNibblesPerSample.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TLazWriterXPM.InternalWrite">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazWriterXPM.InternalWrite.Str">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLazWriterXPM.InternalWrite.Img">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TLazWriterXPM.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLazWriterXPM.NibblesPerSample">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CreateRawImageData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageData.Width">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageData.Height">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageData.BitsPerPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageData.LineEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageData.Data">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageData.DataSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CreateRawImageLineStarts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageLineStarts.Width">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageLineStarts.Height">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageLineStarts.BitsPerPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageLineStarts.LineEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateRawImageLineStarts.LineStarts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetBitsPerLine">
 <short></short>
 <descr>
 </descr>
@@ -2192,7 +2324,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TPostScript.DelPattern.Result">
+<element name="GetBitsPerLine.Result">
 <short></short>
 <descr>
 </descr>
@@ -2203,7 +2335,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.DelPattern.AName">
+<element name="GetBitsPerLine.Width">
 <short></short>
 <descr>
 </descr>
@@ -2213,8 +2345,30 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TPostScript.NewPattern">
+<!-- argument Visibility: default -->
+<element name="GetBitsPerLine.BitsPerPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetBitsPerLine.LineEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="ReadCompleteStreamToString">
 <short></short>
 <descr>
 </descr>
@@ -2225,7 +2379,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TPostScript.NewPattern.Result">
+<element name="ReadCompleteStreamToString.Result">
 <short></short>
 <descr>
 </descr>
@@ -2236,7 +2390,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TPostScript.NewPattern.AName">
+<element name="ReadCompleteStreamToString.Str">
 <short></short>
 <descr>
 </descr>
@@ -2246,8 +2400,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.Canvas">
+<!-- argument Visibility: default -->
+<element name="ReadCompleteStreamToString.StartSize">
 <short></short>
 <descr>
 </descr>
@@ -2257,8 +2411,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.Height">
+<!-- procedure Visibility: default -->
+<element name="ReadRawImageBits">
 <short></short>
 <descr>
 </descr>
@@ -2268,8 +2422,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.Width">
+<!-- argument Visibility: default -->
+<element name="ReadRawImageBits.TheData">
 <short></short>
 <descr>
 </descr>
@@ -2279,8 +2433,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.Document">
+<!-- argument Visibility: default -->
+<element name="ReadRawImageBits.Position">
 <short></short>
 <descr>
 </descr>
@@ -2290,8 +2444,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.PageNumber">
+<!-- argument Visibility: default -->
+<element name="ReadRawImageBits.BitsPerPixel">
 <short></short>
 <descr>
 </descr>
@@ -2301,8 +2455,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.Title">
+<!-- argument Visibility: default -->
+<element name="ReadRawImageBits.Prec">
 <short></short>
 <descr>
 </descr>
@@ -2312,8 +2466,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TPostScript.LineSpacing">
+<!-- argument Visibility: default -->
+<element name="ReadRawImageBits.Shift">
 <short></short>
 <descr>
 </descr>
@@ -2323,8 +2477,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TPostScript.BeginDoc">
+<!-- argument Visibility: default -->
+<element name="ReadRawImageBits.Bits">
 <short></short>
 <descr>
 </descr>
@@ -2334,8 +2488,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TPostScript.NewPage">
+<!-- procedure Visibility: default -->
+<element name="WriteRawImageBits">
 <short></short>
 <descr>
 </descr>
@@ -2345,8 +2499,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TPostScript.EndDoc">
+<!-- argument Visibility: default -->
+<element name="WriteRawImageBits.TheData">
 <short></short>
 <descr>
 </descr>
@@ -2355,6 +2509,61 @@
 <seealso>
 </seealso>
 </element>
-</module> <!-- PostScriptPrinter -->
+
+<!-- argument Visibility: default -->
+<element name="WriteRawImageBits.Position">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteRawImageBits.BitsPerPixel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteRawImageBits.Prec">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteRawImageBits.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="WriteRawImageBits.Bits">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- IntfGraphics -->
 </package>
 </fpdoc-descriptions>

@@ -5458,6 +5458,17 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TProgressBar.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TProgressBar.Create">
 <short></short>
@@ -18009,6 +18020,28 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TTreeNodes.IsMultiSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTreeNodes.IsMultiSelection.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TTreeNodes.Delete">
 <short></short>
@@ -18680,6 +18713,17 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TTreeViewState.tvsSelectionChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- set type Visibility: default -->
 <element name="TTreeViewStates">
 <short></short>
@@ -18715,6 +18759,17 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TTreeViewOption.tvoAutoExpand">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTreeViewOption.tvoAutoInsertMark">
 <short></short>
 <descr>
 </descr>
@@ -18900,6 +18955,61 @@
 </seealso>
 </element>
 
+<!-- enumeration type Visibility: default -->
+<element name="TTreeViewInsertMarkType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTreeViewInsertMarkType.tvimNone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTreeViewInsertMarkType.tvimAsFirstChild">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTreeViewInsertMarkType.tvimAsNextSibling">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTreeViewInsertMarkType.tvimAsPrevSibling">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TCustomTreeView">
 <short></short>
@@ -19056,6 +19166,28 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomTreeView.FImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomTreeView.FInsertMarkNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomTreeView.FInsertMarkType">
 <short></short>
 <descr>
 </descr>
@@ -19418,6 +19550,28 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomTreeView.fSelectionChangeEventLock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomTreeView.fSeparatorColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomTreeView.FSortType">
 <short></short>
 <descr>
@@ -19496,17 +19650,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomTreeView.FUpdateCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomTreeView.fSeparatorColor">
 <short></short>
 <descr>
 </descr>
@@ -20320,6 +20463,50 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomTreeView.SetInsertMarkNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.SetInsertMarkNode.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomTreeView.SetInsertMarkType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.SetInsertMarkType.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomTreeView.SetKeepCollapsedNodes">
 <short></short>
 <descr>
@@ -20935,6 +21122,17 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TCustomTreeView.InternalSelectionChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- variable Visibility: protected -->
 <element name="TCustomTreeView.FChangeTimer">
 <short></short>
@@ -21476,6 +21674,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomTreeView.IsNodeVisible.ANode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomTreeView.IsInsertMarkVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomTreeView.IsInsertMarkVisible.Result">
 <short></short>
 <descr>
 </descr>
@@ -22134,6 +22354,50 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.UpdateInsertMark">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.UpdateInsertMark.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.UpdateInsertMark.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.DoSelectionChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: protected -->
 <element name="TCustomTreeView.AutoExpand">
 <short></short>
@@ -22739,6 +23003,127 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: public -->
+<element name="TCustomTreeView.GetInsertMarkAt">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.GetInsertMarkAt.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.GetInsertMarkAt.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.GetInsertMarkAt.AnInsertMarkNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.GetInsertMarkAt.AnInsertMarkType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomTreeView.SetInsertMark">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.SetInsertMark.AnInsertMarkNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.SetInsertMark.AnInsertMarkType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomTreeView.SetInsertMarkAt">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.SetInsertMarkAt.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.SetInsertMarkAt.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: public -->
 <element name="TCustomTreeView.IsEditing">
 <short></short>
@@ -22926,6 +23311,50 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: public -->
+<element name="TCustomTreeView.LockSelectionChangeEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomTreeView.UnlockSelectionChangeEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomTreeView.GetFirstMultiSelected">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomTreeView.GetFirstMultiSelected.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TCustomTreeView.BackgroundColor">
 <short></short>
@@ -22994,6 +23423,28 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomTreeView.ExpandSignType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomTreeView.InsertMarkNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomTreeView.InsertMarkType">
 <short></short>
 <descr>
 </descr>

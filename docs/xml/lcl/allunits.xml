@@ -25,7 +25,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LazQueue">
+<element name="LazLinkedList">
 <short></short>
 <descr>
 </descr>
@@ -113,7 +113,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="InterfaceBase">
+<element name="TextStrings">
 <short></short>
 <descr>
 </descr>
@@ -180,6 +180,17 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="InterfaceBase">
 <short></short>
 <descr>
 </descr>
@@ -466,6 +477,17 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="PairSplitter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="DirSel">
 <short></short>
 <descr>
 </descr>

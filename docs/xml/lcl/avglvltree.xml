@@ -156,6 +156,17 @@
 </seealso>
 </element>
 
+<!-- pointer type Visibility: default -->
+<element name="PAvgLvlTreeNode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TAvgLvlTree">
 <short></short>
@@ -1115,6 +1126,17 @@
 
 <!-- destructor Visibility: public -->
 <element name="TAvgLvlTree.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PAvgLvlTree">
 <short></short>
 <descr>
 </descr>

@@ -3863,6 +3863,17 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TCustomListBox.FCacheValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: private -->
 <element name="TCustomListBox.GetTopIndex">
 <short></short>
@@ -3985,6 +3996,72 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomListBox.AssignItemDataToCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.AssignItemDataToCache.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.AssignItemDataToCache.AData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListBox.AssignCacheToItemData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.AssignCacheToItemData.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.AssignCacheToItemData.AData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomListBox.CreateHandle">
 <short></short>
 <descr>
@@ -3997,6 +4074,28 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomListBox.DestroyHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListBox.CheckIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.CheckIndex.AIndex">
 <short></short>
 <descr>
 </descr>
@@ -4096,6 +4195,61 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomListBox.GetSelected.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomListBox.GetCachedDataSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomListBox.GetCachedDataSize.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomListBox.GetCachedData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomListBox.GetCachedData.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.GetCachedData.AIndex">
 <short></short>
 <descr>
 </descr>
@@ -4358,61 +4512,6 @@
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
-<element name="TCustomListBox.ExtendedSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomListBox.Sorted">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomListBox.Style">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomListBox.ItemHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomListBox.OnDrawItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- constructor Visibility: public -->
 <element name="TCustomListBox.Create">
 <short></short>
@@ -4437,17 +4536,6 @@
 
 <!-- destructor Visibility: public -->
 <element name="TCustomListBox.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomListBox.Clear">
 <short></short>
 <descr>
 </descr>
@@ -4490,6 +4578,17 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: public -->
+<element name="TCustomListBox.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TCustomListBox.BorderStyle">
 <short></short>
@@ -4503,6 +4602,28 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomListBox.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.ExtendedSelect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.ItemHeight">
 <short></short>
 <descr>
 </descr>
@@ -4546,6 +4667,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomListBox.OnDrawItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomListBox.SelCount">
 <short></short>
 <descr>
@@ -4569,6 +4701,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomListBox.Selected.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Sorted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Style">
 <short></short>
 <descr>
 </descr>

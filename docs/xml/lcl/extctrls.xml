@@ -365,6 +365,28 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TPage.CMHitTest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPage.CMHitTest.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TPage.Create">
 <short></short>
@@ -4062,7 +4084,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomRadioGroup.SetItem.value">
+<element name="TCustomRadioGroup.SetItem.Value">
 <short></short>
 <descr>
 </descr>
@@ -4084,7 +4106,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomRadioGroup.SetColumns.value">
+<element name="TCustomRadioGroup.SetColumns.Value">
 <short></short>
 <descr>
 </descr>
@@ -4106,7 +4128,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomRadioGroup.SetItemIndex.value">
+<element name="TCustomRadioGroup.SetItemIndex.Value">
 <short></short>
 <descr>
 </descr>

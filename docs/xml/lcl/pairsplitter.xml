@@ -761,6 +761,28 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TCustomPairSplitter.IsSupportedByInterface">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomPairSplitter.IsSupportedByInterface.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TCustomPairSplitter.Sides">
 <short></short>

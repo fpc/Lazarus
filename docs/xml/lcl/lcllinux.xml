@@ -289,6 +289,50 @@
 </element>
 
 <!-- function Visibility: default -->
+<element name="BeginPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="BeginPaint.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="BeginPaint.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="BeginPaint.PS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
 <element name="BitBlt">
 <short></short>
 <descr>
@@ -433,6 +477,39 @@
 
 <!-- argument Visibility: default -->
 <element name="BringWindowToTop.hWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="CallDefaultWndHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CallDefaultWndHandler.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CallDefaultWndHandler.Message">
 <short></short>
 <descr>
 </descr>
@@ -1114,6 +1191,61 @@
 </element>
 
 <!-- function Visibility: default -->
+<element name="CreateBitmapFromRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="CreateBitmapFromRawImage.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateBitmapFromRawImage.RawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateBitmapFromRawImage.Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="CreateBitmapFromRawImage.MaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
 <element name="CreateBrushIndirect">
 <short></short>
 <descr>
@@ -1422,7 +1554,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CreateDIBSection.p2">
+<element name="CreateDIBSection.BitmapInfo">
 <short></short>
 <descr>
 </descr>
@@ -1433,7 +1565,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CreateDIBSection.p3">
+<element name="CreateDIBSection.Usage">
 <short></short>
 <descr>
 </descr>
@@ -1444,7 +1576,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CreateDIBSection.p4">
+<element name="CreateDIBSection.Bits">
 <short></short>
 <descr>
 </descr>
@@ -1455,7 +1587,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CreateDIBSection.p5">
+<element name="CreateDIBSection.SectionHandle">
 <short></short>
 <descr>
 </descr>
@@ -1466,7 +1598,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CreateDIBSection.p6">
+<element name="CreateDIBSection.Offset">
 <short></short>
 <descr>
 </descr>
@@ -2368,6 +2500,50 @@
 </element>
 
 <!-- function Visibility: default -->
+<element name="EndPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="EndPaint.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EndPaint.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="EndPaint.PS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
 <element name="Ellipse">
 <short></short>
 <descr>
@@ -3171,6 +3347,50 @@
 </element>
 
 <!-- function Visibility: default -->
+<element name="GetBitmapRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetBitmapRawImageDescription.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetBitmapRawImageDescription.Bitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetBitmapRawImageDescription.Desc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
 <element name="GetCapture">
 <short></short>
 <descr>
@@ -3303,7 +3523,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="GetClientBounds.Rect">
+<element name="GetClientBounds.ARect">
 <short></short>
 <descr>
 </descr>
@@ -3634,6 +3854,50 @@
 
 <!-- argument Visibility: default -->
 <element name="GetDeviceCaps.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetDeviceRawImageDescription">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetDeviceRawImageDescription.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDeviceRawImageDescription.DC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetDeviceRawImageDescription.Desc">
 <short></short>
 <descr>
 </descr>
@@ -4140,6 +4404,127 @@
 
 <!-- argument Visibility: default -->
 <element name="GetProp.Str">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetRawImageFromDevice">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetRawImageFromDevice.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromDevice.SrcDC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromDevice.SrcRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromDevice.NewRawImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetRawImageFromBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetRawImageFromBitmap.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromBitmap.SrcBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromBitmap.SrcMaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromBitmap.SrcRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetRawImageFromBitmap.NewRawImage">
 <short></short>
 <descr>
 </descr>
@@ -4888,6 +5273,61 @@
 
 <!-- argument Visibility: default -->
 <element name="GetWindowRect.Rect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="GetWindowRelativePosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="GetWindowRelativePosition.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWindowRelativePosition.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWindowRelativePosition.Left">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="GetWindowRelativePosition.Top">
 <short></short>
 <descr>
 </descr>
@@ -6064,6 +6504,28 @@
 </element>
 
 <!-- function Visibility: default -->
+<element name="PairSplitterGetInterfaceInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="PairSplitterGetInterfaceInfo.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
 <element name="PairSplitterRemoveSide">
 <short></short>
 <descr>
@@ -6273,7 +6735,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Pie.x">
+<element name="Pie.EllipseX1">
 <short></short>
 <descr>
 </descr>
@@ -6284,7 +6746,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Pie.y">
+<element name="Pie.EllipseY1">
 <short></short>
 <descr>
 </descr>
@@ -6295,7 +6757,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Pie.width">
+<element name="Pie.EllipseX2">
 <short></short>
 <descr>
 </descr>
@@ -6306,7 +6768,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Pie.height">
+<element name="Pie.EllipseY2">
 <short></short>
 <descr>
 </descr>
@@ -6317,7 +6779,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Pie.angle1">
+<element name="Pie.StartX">
 <short></short>
 <descr>
 </descr>
@@ -6328,7 +6790,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Pie.angle2">
+<element name="Pie.StartY">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Pie.EndX">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Pie.EndY">
 <short></short>
 <descr>
 </descr>
@@ -7869,6 +8353,105 @@
 
 <!-- argument Visibility: default -->
 <element name="RadialPie.ey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="RadialPieWithAngles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="RadialPieWithAngles.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.DC">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.Width">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.Height">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.Angle1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RadialPieWithAngles.Angle2">
 <short></short>
 <descr>
 </descr>
@@ -10959,50 +11542,6 @@
 </element>
 
 <!-- function Visibility: default -->
-<element name="BeginPaint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="BeginPaint.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BeginPaint.Handle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BeginPaint.PS">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
 <element name="CharLowerBuff">
 <short></short>
 <descr>
@@ -11378,50 +11917,6 @@
 
 <!-- argument Visibility: default -->
 <element name="CreateRectRgnIndirect.ARect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="EndPaint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="EndPaint.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="EndPaint.Handle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="EndPaint.PS">
 <short></short>
 <descr>
 </descr>
@@ -11993,7 +12488,7 @@
 </element>
 
 <!-- function Visibility: default -->
-<element name="PointtoSmallPoint">
+<element name="PointToSmallPoint">
 <short></short>
 <descr>
 </descr>
@@ -12004,7 +12499,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="PointtoSmallPoint.Result">
+<element name="PointToSmallPoint.Result">
 <short></short>
 <descr>
 </descr>
@@ -12015,7 +12510,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="PointtoSmallPoint.P">
+<element name="PointToSmallPoint.P">
 <short></short>
 <descr>
 </descr>
