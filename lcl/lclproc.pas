@@ -47,6 +47,8 @@ type
     procedure Add(AMethod: TMethod);
     procedure Insert(Index: integer; AMethod: TMethod);
     procedure Move(OldIndex, NewIndex: integer);
+    procedure RemoveAllMethodsOfObject(AnObject: TObject);
+  public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
   end;
 
@@ -354,6 +356,17 @@ begin
     System.Move(FItems[NewIndex+1],FItems[NewIndex],
                 SizeOf(TMethod)*(NewIndex-OldIndex));
   FItems[NewIndex]:=MovingMethod;
+end;
+
+procedure TMethodList.RemoveAllMethodsOfObject(AnObject: TObject);
+var
+  i: Integer;
+begin
+  i:=FCount-1;
+  while i>=0 do begin
+    if TObject(FItems[i].Data)=AnObject then Delete(i);
+    dec(i);
+  end;
 end;
 
 {------------------------------------------------------------------------------
