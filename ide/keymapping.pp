@@ -1,4 +1,3 @@
-unit keymapping;
 {
   Author: Mattias Gaertner
 
@@ -9,6 +8,7 @@ unit keymapping;
 
   ToDo:
 }
+unit keymapping;
 
 {$mode objfpc}{$H+}
 
@@ -37,10 +37,10 @@ const
   ecCodeCompletion     = ecUserFirst + 101;
 
   ecSave               = ecUserFirst + 200;
-  ecOpen               = ecSave + 1;
-  ecClose              = ecOpen + 1;
-  ecBuild              = ecClose + 1;
-  ecRun                = ecBuild + 1;
+  ecOpen               = ecSave      + 1;
+  ecClose              = ecOpen      + 1;
+  ecBuild              = ecClose     + 1;
+  ecRun                = ecBuild     + 1;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
@@ -98,21 +98,31 @@ type
   //---------------------------------------------------------------------------
   // form for editing one command - key relationship
   TKeyMappingEditForm = class(TForm)
-    OkButton:TButton;
-    CancelButton:TButton;
-    CommandLabel:TLabel;
-    Key1GroupBox:TGroupBox;
-    Key1CtrlCheckBox:TCheckBox;
-    Key1AltCheckBox:TCheckBox;
-    Key1ShiftCheckBox:TCheckBox;
-    Key1KeyComboBox:TComboBox;
-    Key2GroupBox:TGroupBox;
-    Key2CtrlCheckBox:TCheckBox;
-    Key2AltCheckBox:TCheckBox;
-    Key2ShiftCheckBox:TCheckBox;
-    Key2KeyComboBox:TComboBox;
-    procedure OkButtonClick(Sender:TObject);
-    procedure CancelButtonClick(Sender:TObject);
+    OkButton: TButton;
+    CancelButton: TButton;
+    CommandLabel: TLabel;
+    Key1GroupBox: TGroupBox;
+    Key1CtrlCheckBox: TCheckBox;
+    Key1AltCheckBox: TCheckBox;
+    Key1ShiftCheckBox: TCheckBox;
+    Key1KeyComboBox: TComboBox;
+    Key1GrabButton: TButton;
+    Key2GroupBox: TGroupBox;
+    Key2CtrlCheckBox: TCheckBox;
+    Key2AltCheckBox: TCheckBox;
+    Key2ShiftCheckBox: TCheckBox;
+    Key2KeyComboBox: TComboBox;
+    Key2GrabButton: TButton;
+    procedure OkButtonClick(Sender: TObject);
+    procedure CancelButtonClick(Sender: TObject);
+    procedure Key1GrabButtonClick(Sender: TObject);
+    procedure Key2GrabButtonClick(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
+  private
+    GrabbingKey: integer; // 0=none, 1=Default key, 2=Alternative key
+    procedure ActivateGrabbing(AGrabbingKey: integer);
+    procedure DeactivateGrabbing;
+    procedure SetComboBox(AComboBox: TComboBox; AValue: string);
   public
     constructor Create(AOwner:TComponent); override;
     KeyCommandRelationList:TKeyCommandRelationList;
@@ -275,7 +285,10 @@ begin
     ecSave: Result:= 'save';
     ecOpen: Result:= 'open';
     ecClose: Result:= 'close';
+    ecBuild: Result:= 'build program/project';
+    ecRun: Result:= 'run program';
     ecJumpToEditor: Result:='jump to editor';
+    ecToggleFormUnit: Result:='toggle between form and unit';
     ecGotoEditor1: Result:= 'goto editor 1';
     ecGotoEditor2: Result:= 'goto editor 2';
     ecGotoEditor3: Result:= 'goto editor 3';
@@ -398,6 +411,10 @@ begin
   VK_F1..VK_F24 :Result:=Result+'F'+IntToStr(Key-VK_F1+1);
   VK_NUMLOCK    :Result:=Result+'Numlock';
   VK_SCROLL     :Result:=Result+'Scroll';
+  VK_EQUAL      :Result:=Result+'=';
+  VK_COMMA      :Result:=Result+',';
+  VK_POINT      :Result:=Result+'.';
+  VK_SLASH      :Result:=Result+'/';
   else
     Result:=Result+'Word('''+IntToStr(Key)+''')';
   end;
@@ -411,8 +428,9 @@ var a:integer;
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-200) div 2,(Screen.Height-270) div 2,220,250);
+    SetBounds((Screen.Width-200) div 2,(Screen.Height-270) div 2,216,310);
     Caption:='Edit keys for command';
+    OnKeyUp:=@FormKeyUp;
 
     OkButton:=TButton.Create(Self);
     with OkButton do begin
@@ -443,9 +461,9 @@ begin
       Name:='CommandLabel';
       Parent:=Self;
       Caption:='Command';
-      Left:=10;
+      Left:=5;
       Top:=5;
-      Width:=Self.ClientWidth-Left-Left-4;
+      Width:=Self.ClientWidth-Left-Left;
       Height:=20;
       Show;
     end;
@@ -457,8 +475,8 @@ begin
       Caption:='Key';
       Left:=5;
       Top:=CommandLabel.Top+CommandLabel.Height+8;
-      Width:=Self.ClientWidth-4-Left-Left;
-      Height:=80;
+      Width:=Self.ClientWidth-Left-Left;
+      Height:=110;
       Show;
     end;
 
@@ -502,9 +520,9 @@ begin
     with Key1KeyComboBox do begin
       Name:='Key1KeyComboBox';
       Parent:=Key1GroupBox;
-      Left:=10;
+      Left:=5;
       Top:=Key1CtrlCheckBox.Top+Key1CtrlCheckBox.Height+5;
-      Width:=180;
+      Width:=190;
       Items.BeginUpdate;
       Items.Add('none');
       for a:=1 to 145 do begin
@@ -516,6 +534,19 @@ begin
       ItemIndex:=0;
       Show;
     end;
+    
+    Key1GrabButton:=TButton.Create(Self);
+    with Key1GrabButton do begin
+      Parent:=Key1GroupBox;
+      Left:=5;
+      Top:=Key1KeyComboBox.Top+Key1KeyComboBox.Height+5;
+      Width:=Key1KeyComboBox.Width;
+      Height:=25;
+      Caption:='Grab Key';
+      Name:='Key1GrabButton';
+      OnClick:=@Key1GrabButtonClick;
+      Show;
+    end;
 
     Key2GroupBox:=TGroupBox.Create(Self);
     with Key2GroupBox do begin
@@ -525,7 +556,7 @@ begin
       Left:=5;
       Top:=Key1GroupBox.Top+Key1GroupBox.Height+8;
       Width:=Key1GroupBox.Width;
-      Height:=80;
+      Height:=110;
       Show;
     end;
 
@@ -569,9 +600,9 @@ begin
     with Key2KeyComboBox do begin
       Name:='Key2KeyComboBox';
       Parent:=Key2GroupBox;
-      Left:=10;
+      Left:=5;
       Top:=Key2CtrlCheckBox.Top+Key2CtrlCheckBox.Height+5;
-      Width:=180;
+      Width:=190;
       Items.BeginUpdate;
       Items.Add('none');
       for a:=1 to 145 do begin
@@ -584,7 +615,21 @@ begin
       Show;
     end;
     
+    Key2GrabButton:=TButton.Create(Self);
+    with Key2GrabButton do begin
+      Parent:=Key2GroupBox;
+      Left:=5;
+      Top:=Key2KeyComboBox.Top+Key2KeyComboBox.Height+5;
+      Width:=Key2KeyComboBox.Width;
+      Height:=25;
+      Caption:='Grab Key';
+      Name:='Key2GrabButton';
+      OnClick:=@Key2GrabButtonClick;
+      Show;
+    end;
+
   end;
+  GrabbingKey:=0;
 end;
 
 procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
@@ -654,6 +699,94 @@ end;
 procedure TKeyMappingEditForm.CancelButtonClick(Sender:TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TKeyMappingEditForm.Key1GrabButtonClick(Sender: TObject);
+begin
+  ActivateGrabbing(1);
+end;
+
+procedure TKeyMappingEditForm.Key2GrabButtonClick(Sender: TObject);
+begin
+  ActivateGrabbing(2);
+end;
+
+procedure TKeyMappingEditForm.DeactivateGrabbing;
+var i: integer;
+begin
+  if GrabbingKey=0 then exit;
+  // enable all components
+  for i:=0 to ComponentCount-1 do begin
+    if (Components[i] is TWinControl) then
+      TWinControl(Components[i]).Enabled:=true;
+  end;
+  if GrabbingKey=1 then
+    Key1GrabButton.Caption:='Grab Key'
+  else if GrabbingKey=2 then
+    Key2GrabButton.Caption:='Grab Key';
+  GrabbingKey:=0;
+end;
+
+procedure TKeyMappingEditForm.SetComboBox(AComboBox: TComboBox; AValue: string);
+var i: integer;
+begin
+  i:=AComboBox.Items.IndexOf(AValue);
+  if i>=0 then
+    AComboBox.ItemIndex:=i
+  else begin
+    AComboBox.Items.Add(AValue);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AValue);
+  end;
+end;
+
+procedure TKeyMappingEditForm.ActivateGrabbing(AGrabbingKey: integer);
+var i: integer;
+begin
+  if GrabbingKey>0 then exit;
+  GrabbingKey:=AGrabbingKey;
+  if GrabbingKey=0 then exit;
+  // disable all components
+  for i:=0 to ComponentCount-1 do begin
+    if (Components[i] is TWinControl) then begin
+      if ((GrabbingKey=1) and (Components[i]<>Key1GrabButton)
+      and (Components[i]<>Key1GroupBox))
+      or ((GrabbingKey=2) and (Components[i]<>Key2GrabButton)
+      and (Components[i]<>Key2GroupBox)) then
+        TWinControl(Components[i]).Enabled:=false;
+    end;
+  end;
+  if GrabbingKey=1 then
+    Key1GrabButton.Caption:='Please press a key ...'
+  else if GrabbingKey=2 then
+    Key2GrabButton.Caption:='Please press a key ...';
+end;
+
+procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift:TShiftState);
+begin
+  writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
+     ,' Key=',Key
+     ,' Ctrl=',ssCtrl in Shift
+     ,' Shift=',ssShift in Shift
+     ,' Alt=',ssAlt in Shift
+     ,' AsString=',KeyAndShiftStateToStr(Key,Shift)
+     );
+  if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
+             VK_LSHIFT, VK_RSHIFT] then exit;
+  if (GrabbingKey in [1,2]) then begin
+    if GrabbingKey=1 then begin
+      Key1CtrlCheckBox.Checked:=(ssCtrl in Shift);
+      Key1ShiftCheckBox.Checked:=(ssShift in Shift);
+      Key1AltCheckBox.Checked:=(ssAlt in Shift);
+      SetComboBox(Key1KeyComboBox,KeyAndShiftStateToStr(Key,[]));
+    end else if GrabbingKey=2 then begin
+      Key2CtrlCheckBox.Checked:=(ssCtrl in Shift);
+      Key2ShiftCheckBox.Checked:=(ssShift in Shift);
+      Key2AltCheckBox.Checked:=(ssAlt in Shift);
+      SetComboBox(Key2KeyComboBox,KeyAndShiftStateToStr(Key,[]));
+    end;
+    DeactivateGrabbing;
+  end;
 end;
 
 

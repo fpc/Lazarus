@@ -222,6 +222,9 @@ begin
           '0'..'9', 
           ' ':      VirtualKey := KeyCode;
           'a'..'z': VirtualKey := KeyCode - Ord('a') + Ord('A');
+          '/': VirtualKey := VK_SLASH;
+          ',': VirtualKey := VK_COMMA;
+          '.': VirtualKey := VK_POINT;
         end;
         
         { look for control code }
@@ -325,7 +328,7 @@ begin
 
     GDK_KP_Equal:      
       begin
-        VirtualKey := $BB;
+        VirtualKey := VK_EQUAL;
         if not CtrlDown then KeyCode := Ord('=');
       end;
     GDK_KP_Multiply:      
@@ -449,6 +452,13 @@ begin
     GDK_F1..GDK_F24:    VirtualKey := VK_F1 + (Event^.KeyVal - GDK_F1);
   end;
   
+  if VirtualKey=VK_UNKNOWN then
+    // map all other keys to VK_IRREGULAR + 
+    VirtualKey := VK_IRREGULAR + KeyCode;
+
+writeln('GetGTKKeyInfo KeyCode=',KeyCode,' VirtualKey=',VirtualKey
+,' SysKey=',SysKey,' Extended=',Extended,' Toggle=',Toggle);
+
 //  Assert(False, Format('Trace:[GetGTKKeyInfo] Event^.KeyVal %d, Event^.State %d, KeyCode %d, VirtualKey %d, SysKey %d, Extended %d, CtrlDown %d', [Integer(Event^.KeyVal), Integer(Event^.State), Integer(KeyCode), Integer(VirtualKey), Integer(SysKey), Integer(Extended), Integer(CtrlDown)]));
 end;
 
@@ -730,6 +740,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.17  2001/06/20 13:35:51  lazarus
+  MG: added VK_IRREGULAR and key grabbing
+
   Revision 1.16  2001/06/16 09:14:39  lazarus
   MG: added lazqueue and used it for the messagequeue
 

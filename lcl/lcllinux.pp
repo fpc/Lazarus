@@ -314,6 +314,12 @@ PM_Remove = 1;
   VK_NUMLOCK    = 144;
   VK_SCROLL     = 145;
   
+  // not in VCL defined:
+  VK_EQUAL      = 187;
+  VK_COMMA      = 188;
+  VK_POINT      = 190;
+  VK_SLASH      = 191;
+ 
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
   // Used only as parameters to GetAsyncKeyState() and GetKeyState().
@@ -335,7 +341,9 @@ PM_Remove = 1;
   VK_PA1        = 253;
   VK_OEM_CLEAR  = 254;
   
-
+  // all other keys with no virtial key code are mapped to
+  // VK_IRREGULAR + KeyCode
+  VK_IRREGULAR  = 1000;
 
 const
 
@@ -1379,6 +1387,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2001/06/20 13:35:51  lazarus
+  MG: added VK_IRREGULAR and key grabbing
+
   Revision 1.8  2001/06/15 10:31:06  lazarus
   MG: set longstrings as default
 
