@@ -31,6 +31,7 @@ begin
   fCompStyle := csStaticText;
   fAlignment := taLeftJustify;
   FShowAccelChar:= true;
+  FStaticBorderStyle:=sbsNone;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   SetInitialBounds(0, 0, 65, 17);
 end;
@@ -139,16 +140,19 @@ end;
 {$ENDIF}
 
 Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
+
+  procedure RaiseNotImplemented;
+  begin
+    raise Exception.Create('TCustomStaticText.SetStaticBorderStyle is not implemented yet');
+  end;
+
 begin
   If FStaticBorderStyle <> Value then begin
+    if ([csDesigning,csLoading]*ComponentState=[csDesigning]) then
+      RaiseNotImplemented;
     FStaticBorderStyle := Value;
     Invalidate;
   end;
-end;
-
-Function TCustomStaticText.GetStaticBorderStyle : TStaticBorderStyle;
-begin
-  Result := FStaticBorderStyle;
 end;
 
 {------------------------------------------------------------------------------
@@ -169,6 +173,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2005/01/26 17:36:02  mattias
+  added error message for TStaticText.BorderStyle not implemented during designing
+
   Revision 1.12  2005/01/24 12:23:11  mattias
   fixed TColorButton.Paint
 

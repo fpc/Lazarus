@@ -748,7 +748,6 @@ type
     FStaticBorderStyle: TStaticBorderStyle;
     procedure SetAlignment(Value: TAlignment);
     procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
-    function  GetStaticBorderStyle: TStaticBorderStyle;
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     function GetLabelText: String ; virtual;
@@ -761,9 +760,8 @@ type
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
-
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
+    property BorderStyle: TStaticBorderStyle read FStaticBorderStyle write SetStaticBorderStyle default sbsNone;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
   end;
@@ -1218,6 +1216,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.188  2005/01/26 17:36:02  mattias
+  added error message for TStaticText.BorderStyle not implemented during designing
+
   Revision 1.187  2005/01/21 14:18:11  micha
   implement TCustomLabel.Layout
 
