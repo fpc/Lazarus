@@ -37,13 +37,15 @@ Type
     FDDownCount: Integer;
     //Win32 Flags
     FFlagSort: Cardinal;
-    FFlagGetText:Cardinal;
-    FFlagGetTextLen:Cardinal;
-    FFlagGetCount:Cardinal;
-    FFlagResetContent:Cardinal;
-    FFlagDeleteString:Cardinal;
-    FFlagInsertString:Cardinal;
-    FFlagAddString:Cardinal;
+    FFlagGetText: Cardinal;
+    FFlagGetTextLen: Cardinal;
+    FFlagGetCount: Cardinal;
+    FFlagResetContent: Cardinal;
+    FFlagDeleteString: Cardinal;
+    FFlagInsertString: Cardinal;
+    FFlagAddString: Cardinal;
+    FFlagGetItemData: Cardinal;
+    FFlagSetItemData: Cardinal;
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
@@ -115,6 +117,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/12/26 09:28:05  micha
+  fix itemdata (string+object) for combobox (from vincent)
+
   Revision 1.13  2003/12/21 11:50:39  micha
   fix AV when retrieving object (from vincent)
 

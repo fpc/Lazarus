@@ -74,14 +74,16 @@ Begin
   //Set proper win32 flags for ComboBox/ListBox and get/set Combo Height
   case FSender.FCompStyle of
     csComboBox:begin
-    	       FFlagSort:=CBS_SORT;
-               FFlagGetText:=CB_GETLBTEXT;
-               FFlagGetTextLen:=CB_GETLBTEXTLEN;
-               FFlagGetCount:=CB_GETCOUNT;
-               FFlagResetContent:=CB_RESETCONTENT;
-               FFlagDeleteString:=CB_DELETESTRING;
-               FFlagInsertString:=CB_INSERTSTRING;
-               FFlagAddString:=CB_ADDSTRING;
+    	       FFlagSort := CBS_SORT;
+               FFlagGetText := CB_GETLBTEXT;
+               FFlagGetTextLen := CB_GETLBTEXTLEN;
+               FFlagGetCount := CB_GETCOUNT;
+               FFlagResetContent := CB_RESETCONTENT;
+               FFlagDeleteString := CB_DELETESTRING;
+               FFlagInsertString := CB_INSERTSTRING;
+               FFlagAddString := CB_ADDSTRING;
+               FFlagGetItemData := CB_GETITEMDATA;
+               FFlagSetItemData := CB_SETITEMDATA;
                //Get edit and item sizes
                Windows.GetClientRect(FWin32List,@R);
                FEditHeight:= R.Bottom;
@@ -98,6 +100,8 @@ Begin
               FFlagDeleteString:=LB_DELETESTRING;
               FFlagInsertString:=LB_INSERTSTRING;
               FFlagAddString:=LB_ADDSTRING;
+              FFlagGetItemData:= LB_GETITEMDATA;
+              FFlagSetItemData:= LB_SETITEMDATA;
               end;
   else Raise Exception.Create('Win32ListStringList: Component type not detected');
   end;
@@ -242,7 +246,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32ListStringList.GetObject(Index: Integer): TObject;
 Begin
-  HWND(Result) := Windows.SendMessage(FWin32List, LB_GETITEMDATA, Index, 0);
+  HWND(Result) := Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -271,7 +275,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.PutObject(Index: Integer; AObject: TObject);
 Begin
-  Windows.SendMessage(FWin32List, LB_SETITEMDATA, Index, LPARAM(AObject));
+  Windows.SendMessage(FWin32List, FFlagSetItemData, Index, LPARAM(AObject));
 End;
 
 { TWin32CheckListBoxStrings }
@@ -535,6 +539,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2003/12/26 09:28:05  micha
+  fix itemdata (string+object) for combobox (from vincent)
+
   Revision 1.25  2003/12/21 11:50:39  micha
   fix AV when retrieving object (from vincent)
 
