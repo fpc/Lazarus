@@ -1532,6 +1532,15 @@ begin
   //DebugLn('TCustomForm.CreateWnd END ',ClassName);
 end;
 
+procedure TCustomForm.DestroyWnd;
+begin
+  if FMenu <> nil then
+  begin
+    FMenu.DestroyHandle;
+  end;
+  inherited DestroyWnd;
+end;
+
 procedure TCustomForm.Loaded;
 var
   Control: TWinControl;
@@ -1824,6 +1833,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.164  2004/11/10 20:53:18  vincents
+  Destroy menu handle, when destroying form handle.
+
   Revision 1.163  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 

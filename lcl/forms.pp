@@ -414,6 +414,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Deactivate;dynamic;
+    procedure DestroyWnd; override;
     procedure DoClose(var CloseAction: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;

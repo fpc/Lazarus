@@ -79,6 +79,11 @@ begin
     Items[i].HandleNeeded;
 end;
 
+procedure TMenu.DestroyHandle;
+begin
+  Items.DestroyHandle;
+end;
+
 procedure TMenu.DoChange(Source: TMenuItem; Rebuild: Boolean);
 begin
   if Assigned(FOnChange) then FOnChange(Self, Source, Rebuild);
@@ -236,6 +241,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/11/10 20:53:18  vincents
+  Destroy menu handle, when destroying form handle.
+
   Revision 1.25  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

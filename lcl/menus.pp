@@ -269,6 +269,7 @@ type
     FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DestroyHandle; virtual;
     function FindItem(AValue: Integer; Kind: TFindItemKind) : TMenuItem;
     function HandleAllocated: Boolean;
     Function IsRightToLeft: Boolean;
@@ -400,6 +401,9 @@ end.
 
 {
   $Log$
+  Revision 1.74  2004/11/10 20:53:18  vincents
+  Destroy menu handle, when destroying form handle.
+
   Revision 1.73  2004/10/24 14:50:31  micha
   fix menuitem caption issue (partly by martin smat)
   remove ShortCutToText and TextToShortCut wrapper functions
