@@ -220,7 +220,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Arc(x,y,width,height,angle1,angle2 : Integer);
 begin
-
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.Arc(FHandle,x,y,width,height,angle1,angle2);
 end;
 
 {------------------------------------------------------------------------------
@@ -622,6 +623,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/12/27 16:31:28  lazarus
+  MG: implemented TCanvas.Arc
+
   Revision 1.11  2001/11/09 19:14:23  lazarus
   HintWindow changes
   Shane

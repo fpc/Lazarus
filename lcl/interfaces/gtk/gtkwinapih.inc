@@ -5,6 +5,8 @@
  ******************************************************************************)
 //##apiwiz##sps##   // Do not remove
 
+function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
+
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 Function BringWindowToTop(hWnd : HWND): Boolean; override;
 
@@ -126,6 +128,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/12/27 16:31:28  lazarus
+  MG: implemented TCanvas.Arc
+
   Revision 1.20  2001/12/12 14:23:18  lazarus
   MG: implemented DestroyCaret
 

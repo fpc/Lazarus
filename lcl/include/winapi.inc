@@ -2,7 +2,7 @@
   All Winapi related stuff goes here.
   This file is used by LCLLinux
   If a procedure is platform dependent then it should call:
-    InterfaceObjec.MyDependentProc
+    InterfaceObject.MyDependentProc
 
   If a procedure insn't platform dependent, it is no part of InterfaseBase has
   to be implementerd here
@@ -15,6 +15,12 @@
 
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
+
+function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := InterfaceObject.Arc(DC,x,y,width,height,angle1,angle2);
+end;
+
 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
 begin
@@ -1027,6 +1033,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/12/27 16:31:28  lazarus
+  MG: implemented TCanvas.Arc
+
   Revision 1.20  2001/12/12 14:23:18  lazarus
   MG: implemented DestroyCaret
 

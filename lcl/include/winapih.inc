@@ -18,6 +18,8 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
  
+function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+ 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function BringWindowToTop(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -241,6 +243,9 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/12/27 16:31:28  lazarus
+  MG: implemented TCanvas.Arc
+
   Revision 1.16  2001/12/12 14:23:18  lazarus
   MG: implemented DestroyCaret
 

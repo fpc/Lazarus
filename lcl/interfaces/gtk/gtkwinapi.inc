@@ -32,6 +32,38 @@ const
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
+  Function: Arc
+  Params:  none
+  Returns: Nothing
+
+  The Arc function draws an arc. The arc is outlined by using
+  the current pen.
+ ------------------------------------------------------------------------------}
+function TgtkObject.Arc(DC: HDC; 
+  x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.Rectangle] Uninitialized GC');
+      Result := False;
+    end
+    else begin
+      // Draw outline
+      SelectGDKPenProps(DC);
+      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height, 
+                   Angle1 shl 2, Angle2 shl 2);
+      Result := True;
+    end;
+  end;
+end;
+
+
+
+{------------------------------------------------------------------------------
   Function: BitBlt
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
@@ -4096,6 +4128,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2001/12/27 16:31:28  lazarus
+  MG: implemented TCanvas.Arc
+
   Revision 1.52  2001/12/20 14:41:20  lazarus
   Fixed setfocus for TComboBox and TMemo
   Shane

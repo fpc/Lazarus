@@ -9,6 +9,12 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
+function TInterfaceBase.Arc(DC: HDC; 
+  x,y,width,height,angle1,angle2 : Integer): Boolean;
+begin
+  Result := false;
+end;
+
 function TInterfaceBase.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
 begin
   Result := False;
@@ -16,7 +22,6 @@ end;
 
 Function TInterfaceBase.BringWindowToTop(hWnd : HWND): Boolean;
 begin
-  // Your default here
   Result := false;
 end;
 
@@ -498,6 +503,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/12/27 16:31:28  lazarus
+  MG: implemented TCanvas.Arc
+
   Revision 1.21  2001/12/12 14:23:17  lazarus
   MG: implemented DestroyCaret
 
