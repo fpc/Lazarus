@@ -42,5 +42,6 @@ begin
 end;
 
 initialization
+ {$i registersqldb.lrs}
 
 end.

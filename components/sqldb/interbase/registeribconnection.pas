@@ -41,6 +41,7 @@ begin
 end;
 
 initialization
+  {$i registeribconnection.lrs}
 
 end.
 

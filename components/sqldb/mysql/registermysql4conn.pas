@@ -13,35 +13,35 @@
 
   Author: Joost van der Sluis
 
-  This unit registers the pqconnection component of the FCL.
+  This unit registers the mysqlconnection components of the FCL.
 }
-unit registerpqconnection;
+unit registermysql4conn;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, {$IFNDEF VER1_0}pqconnection,{$ENDIF} LazarusPackageIntf;
+  Classes, SysUtils, LResources, {$IFNDEF VER1_0} mysql4conn,{$ENDIF} LazarusPackageIntf;
 
 procedure Register;
 
 implementation
 
-procedure RegisterUnitPQConnection;
+procedure RegisterUnitMySQL4Conn;
 begin
 {$IFNDEF VER1_0}
-  RegisterComponents('SQLdb',[TPQConnection]);
+  RegisterComponents('SQLdb',[TMySQLConnection]);
 {$ENDIF}
 end;
 
 procedure Register;
 begin
-  RegisterUnit('pqconnection',@RegisterUnitPQConnection);
+  RegisterUnit('mysql4conn',@RegisterUnitMySQL4Conn);
 end;
 
 initialization
-  {$i registerpqconnection.lrs}
+  {$i registermysql4conn.lrs}
 
 end.
 
