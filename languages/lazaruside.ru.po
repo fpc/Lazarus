@@ -84,7 +84,7 @@ msgstr "%s%s%s - некорректное название модуля"
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if are sure to do that."
-msgstr ""
+msgstr "%s%sНажмите ОК, если точно хотите это сделать."
 
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
@@ -130,17 +130,9 @@ msgstr "%sОписание: %s"
 msgid "%sExisting file: %s%s%s"
 msgstr "%sСуществующий файл: %s%s%s"
 
-#: lazarusidestrconsts:dlgpasautolower
-msgid "%sSave As%s always saves pascal files lowercase"
-msgstr "%sСохр. как%s всегда сохр. файлы паскаля в нижнем регистре"
-
-#: lazarusidestrconsts:dlgpasasklower
-msgid "%sSave As%s asks to save pascal files lowercase"
-msgstr "%sСохр. как%s просит сохр. файлы паскаля в нижнем регистре"
-
 #: lazarusidestrconsts:lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
-msgstr ""
+msgstr "%sСм. Проект -> Инспектор проекта"
 
 #: lazarusidestrconsts:lispckexplstate
 msgid "%sState: "
@@ -256,7 +248,7 @@ msgstr "<Не выбрано переменных>"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgstr ""
+msgstr "%s не может содержать компоненты TControl.%sВ него можно помещать только невизуальные компоненты."
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -348,7 +340,7 @@ msgstr "Добавить файл редактора к Проекту"
 
 #: lazarusidestrconsts:lisprojaddeditorfile
 msgid "Add editor files"
-msgstr ""
+msgstr "Добавить файлы редактора"
 
 #: lazarusidestrconsts:lisaf2paddfiletoapackage
 msgid "Add file to a package"
@@ -360,7 +352,7 @@ msgstr "Добавить файл к проекту"
 
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
-msgstr ""
+msgstr "Добавить файлы"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -388,7 +380,7 @@ msgstr "Добавить к пакету"
 
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
-msgstr ""
+msgstr "Добавить к проекту"
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
@@ -448,7 +440,7 @@ msgstr "Alt"
 
 #: lazarusidestrconsts:dlgaltsetclmode
 msgid "Alt-Key sets column mode"
-msgstr ""
+msgstr "Кнопка Alt - режим колонок"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative Key"
@@ -468,11 +460,11 @@ msgstr "Двусмысленное имя модуля"
 
 #: lazarusidestrconsts:lisambigiousunitfound
 msgid "Ambigious Unit found"
-msgstr ""
+msgstr "Найден модуль с тем же именем"
 
 #: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
 msgid "Ambigious additional compiler config file"
-msgstr ""
+msgstr "Найден дополнительный файл настроек компилятора с тем же именем"
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
@@ -568,15 +560,15 @@ msgstr "Автосоздаваемые элементы не могут редактироваться."
 
 #: lazarusidestrconsts:dlgautoident
 msgid "Auto indent"
-msgstr ""
+msgstr "Автовыделение"
 
 #: lazarusidestrconsts:lispckoptsautorebuildwhenrebuildingall
 msgid "Auto rebuild when rebuilding all"
 msgstr "Пересобрать при пересборке всех"
 
 #: lazarusidestrconsts:dlgautoren
-msgid "Auto rename file"
-msgstr "Автопереименование"
+msgid "Auto rename file lowercase"
+msgstr "Автопереименование в нижний регистр"
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
@@ -636,7 +628,7 @@ msgstr "Резервирование не удалось"
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "Backward search"
-msgstr ""
+msgstr "Обратный поиск"
 
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
@@ -672,7 +664,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
-msgstr ""
+msgstr "Подсветка скобок"
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -912,11 +904,11 @@ msgstr "Проверка:"
 
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
-msgstr ""
+msgstr "Выберите проект Delphi (*.dpr)"
 
 #: lazarusidestrconsts:lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
-msgstr ""
+msgstr "Выберите модуль Delphi (*.pas)"
 
 #: lazarusidestrconsts:lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -1136,7 +1128,7 @@ msgstr "Команда"
 
 #: lazarusidestrconsts:liscommandafterinvalid
 msgid "Command after invalid"
-msgstr ""
+msgstr "Команда \"после\" некорректна"
 
 #: lazarusidestrconsts:liscommandafterpublishingmodule
 msgid "Command after publishing module"
@@ -1396,7 +1388,7 @@ msgstr "Счетчик (.pp;1)"
 
 #: lazarusidestrconsts:lisnpcreate
 msgid "Create"
-msgstr ""
+msgstr "Создать"
 
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
@@ -1460,7 +1452,7 @@ msgstr "Создать программу.%sФайл программы поддерживается Lazarus."
 
 #: lazarusidestrconsts:lisnpcreateanewproject
 msgid "Create a new project"
-msgstr ""
+msgstr "Создать новый проект"
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
@@ -1888,7 +1880,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
 msgid "Drop files"
-msgstr ""
+msgstr "Бросить файлы"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -2444,7 +2436,7 @@ msgstr "Финский"
 
 #: lazarusidestrconsts:rslanguagefinnishwin
 msgid "Finnish for MS Windows"
-msgstr ""
+msgstr "Финский для MS Windows"
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
@@ -2480,7 +2472,7 @@ msgstr "Формы..."
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
-msgstr ""
+msgstr "Поиск вперёд"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -2676,7 +2668,7 @@ msgstr "Ширина поля (лев)"
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
-msgstr ""
+msgstr "Прокрутка на половину страницы"
 
 #: lazarusidestrconsts:lismenueditorhandleonclickevent
 msgid "Handle OnClick Event"
@@ -2773,6 +2765,10 @@ msgstr "Подсказки командных кнопок (открыть, сохранить и т.д.)"
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
 msgstr "Home"
+
+#: lazarusidestrconsts:dlghomekeyjumpstoneareststart
+msgid "Home key jumps to nearest start"
+msgstr ""
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -3124,7 +3120,7 @@ msgstr "Вставить текст"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
-msgstr ""
+msgstr "Следить за ..."
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
@@ -3340,11 +3336,11 @@ msgstr "Неправильная версия"
 
 #: lazarusidestrconsts:ueminvertassignment
 msgid "Invert Assignment"
-msgstr ""
+msgstr "Инвертировать присвоение"
 
 #: lazarusidestrconsts:srkmecinvertassignment
 msgid "Invert assignment"
-msgstr ""
+msgstr "Инвертировать присвоение"
 
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
@@ -3396,7 +3392,7 @@ msgstr "Kana"
 
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep X caret"
-msgstr ""
+msgstr "Сохранять Х курсора"
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -3792,7 +3788,7 @@ msgstr "Разное"
 
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
-msgstr ""
+msgstr "Отсутствующие пакеты"
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -4440,7 +4436,7 @@ msgstr "Имя страницы слишком длинное"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr ""
+msgstr "Рисовать элементы дизайнеров только в паузах (уменьшает нагрузку на медленных машинах)"
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
@@ -4508,7 +4504,7 @@ msgstr "Клавиша Pause"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
-msgstr ""
+msgstr "Неподвижный курсор"
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
@@ -4816,7 +4812,7 @@ msgstr "Вернуть"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr ""
+msgstr "Уменьшить прорисовку дизайнеров"
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
@@ -5076,7 +5072,7 @@ msgstr "Цвет правой границы"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
 msgid "Right mouse moves caret"
-msgstr ""
+msgstr "Правая кнопка перемещает курсор"
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -5154,6 +5150,10 @@ msgstr "Сохранить все"
 msgid "Save As"
 msgstr "Сохранить как"
 
+#: lazarusidestrconsts:dlgcharcasefileact
+msgid "Save As - auto rename pascal files lower case"
+msgstr "Сохранить как-автопереименовать в нижний регистр"
+
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
 msgstr "Сохранить как шаблон..."
@@ -5212,7 +5212,7 @@ msgstr "Сохранить изменения в проект %s?"
 
 #: lazarusidestrconsts:lissavechanges
 msgid "Save changes?"
-msgstr ""
+msgstr "Сохранить изменения?"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
@@ -5228,7 +5228,7 @@ msgstr "Сохранять сведения только о файлах проекта"
 
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
-msgstr ""
+msgstr "Сохранить файл %s%s%sперед закрытием формы %s%s%s?"
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5288,11 +5288,11 @@ msgstr "Прокрутить влево 1 символ"
 
 #: lazarusidestrconsts:dlgscrollpastendfile
 msgid "Scroll past end of file"
-msgstr ""
+msgstr "Прокрутить до конца файла"
 
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll past end of line"
-msgstr ""
+msgstr "Прокрутить до конца строки"
 
 #: lazarusidestrconsts:srkmecscrollright
 msgid "Scroll right one char"
@@ -5304,7 +5304,7 @@ msgstr "Прокрутить вверх 1 строку"
 
 #: lazarusidestrconsts:lissearchfor
 msgid "Search For "
-msgstr ""
+msgstr "Искать "
 
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
@@ -5312,7 +5312,7 @@ msgstr "Результаты поиска"
 
 #: lazarusidestrconsts:lissearchagain
 msgid "Search again"
-msgstr ""
+msgstr "Искать снова"
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
@@ -5436,7 +5436,7 @@ msgstr "Выберите элемент"
 
 #: lazarusidestrconsts:lisnpselectaprojecttype
 msgid "Select a project type"
-msgstr ""
+msgstr "Выберите тип проекта"
 
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
@@ -5596,11 +5596,11 @@ msgstr "Все проц-ры при ошибках"
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
-msgstr ""
+msgstr "Показать кнопки закрытия закладок"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show compiled procedures"
-msgstr ""
+msgstr "Показать компилируемые процедуры"
 
 #: lazarusidestrconsts:dlgshowcompileroptions
 msgid "Show compiler options"
@@ -5612,15 +5612,15 @@ msgstr "Показать названия компонентов"
 
 #: lazarusidestrconsts:dlgshowconditionals
 msgid "Show conditionals"
-msgstr ""
+msgstr "Показать условия"
 
 #: lazarusidestrconsts:dlgshowdebuginfo
 msgid "Show debug info"
-msgstr ""
+msgstr "Показать отладочную инф-ю"
 
 #: lazarusidestrconsts:dlgshowdefinedmacros
 msgid "Show defined macros"
-msgstr ""
+msgstr "Показать определённые макросы"
 
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
@@ -5628,11 +5628,11 @@ msgstr "Показвать подсказки редактора"
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
-msgstr ""
+msgstr "Показать всё"
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
-msgstr ""
+msgstr "Показать общие сведения"
 
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
@@ -5648,7 +5648,7 @@ msgstr "Показать номера строк"
 
 #: lazarusidestrconsts:dlgshownothing
 msgid "Show nothing (only errors)"
-msgstr ""
+msgstr "Ничего не показывать(только ошибки)"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
@@ -5656,7 +5656,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
-msgstr ""
+msgstr "Показать обзор"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
@@ -5664,7 +5664,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
-msgstr ""
+msgstr "Показать используемые файлы"
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
@@ -5916,7 +5916,7 @@ msgstr "ТАБ"
 
 #: lazarusidestrconsts:dlgtabindent
 msgid "Tab indents blocks"
-msgstr ""
+msgstr "ТАБ выделяет блоки"
 
 #: lazarusidestrconsts:dlgtabwidths
 msgid "Tab widths:"
@@ -5924,7 +5924,7 @@ msgstr "Ширина табулятора"
 
 #: lazarusidestrconsts:dlgtabstospaces
 msgid "Tabs to spaces"
-msgstr ""
+msgstr "ТАБ в пробелы"
 
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
@@ -6244,7 +6244,7 @@ msgstr "Файл %s%s%s%s похож на файл программы существующего Проекта1 lazarus.%sО
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambigious file?"
-msgstr ""
+msgstr "Файл %s%s%s%sнайден в одном из каталогов исходника пакета %s, и он выглядит как откомпилированный модуль. Такие модули должны быть в специальном каталоге пакета, иначе другие пакеты не смогут правильно использовать пакте.%s%sУдалить такие файлы?"
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
@@ -6276,7 +6276,7 @@ msgstr "Имя файла %s%s%s неоднозначно.%sУкажите полное имя файла (включая путь).
 
 #: lazarusidestrconsts:listhefollowingpackagesfailedtoload
 msgid "The following package(s) failed to load:%s%s"
-msgstr ""
+msgstr "Следующий(ие) пакет(ы) не удалось загрузить:%s%s"
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
@@ -6616,7 +6616,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
-msgstr ""
+msgstr "Обрезать хвостовые пробелы"
 
 #: lazarusidestrconsts:lismenutemplatetutorial
 msgid "Tutorial"
@@ -7112,7 +7112,7 @@ msgstr "Использовать модуль Heaprc"
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"
-msgstr ""
+msgstr "Использовать дополнительный файл настроек компилятора"
 
 #: lazarusidestrconsts:dlgedusedefcolor
 msgid "Use default color"
@@ -7128,7 +7128,7 @@ msgstr "Использовать приложение для запуска"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
-msgstr ""
+msgstr "Использовать стандартный файл настроек (fpc.cfg)"
 
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -7344,7 +7344,7 @@ msgstr "Предупр. при компиляции"
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr ""
+msgstr "Внимание: дополнительный файл настроек компилятора имеет такое же имя, как может называться один из стандартных файлов настроек компилятора FreePascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
@@ -7416,7 +7416,7 @@ msgstr "Ошибка записи"
 
 #: lazarusidestrconsts:dlgwritefpclogo
 msgid "Write an FPC logo"
-msgstr ""
+msgstr "Вывести логотип FPC"
 
 #: lazarusidestrconsts:liscodetoolsdefswriteerror
 msgid "Write error"
@@ -7532,7 +7532,7 @@ msgstr "путь включаемых"
 
 #: lazarusidestrconsts:srkmecinspect
 msgid "inspect"
-msgstr ""
+msgstr "проверить"
 
 #: lazarusidestrconsts:lisoipinstalleddynamic
 msgid "installed dynamic"
@@ -7577,6 +7577,10 @@ msgstr "изменён"
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "нет"
+
+#: lazarusidestrconsts:dlgnoautomaticrenaming
+msgid "no automatic renaming"
+msgstr "без автопереименования"
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"

@@ -140,14 +140,6 @@ msgstr "%sDescription: %s"
 msgid "%sExisting file: %s%s%s"
 msgstr "%sFichier existant: %s%s%s"
 
-#: lazarusidestrconsts:dlgpasautolower
-msgid "%sSave As%s always saves pascal files lowercase"
-msgstr "%sEnregistrer sous%s enregistre toujours les fichers pascal en minuscules"
-
-#: lazarusidestrconsts:dlgpasasklower
-msgid "%sSave As%s asks to save pascal files lowercase"
-msgstr "%sEnregistrer sous%s demander l'enregistrement des fichiers pascal en minuscules"
-
 #: lazarusidestrconsts:lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
 msgstr ""
@@ -585,8 +577,8 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Reconstruction automatique quand reconstruit tout"
 
 #: lazarusidestrconsts:dlgautoren
-msgid "Auto rename file"
-msgstr "Renommer le fichier automatiquement"
+msgid "Auto rename file lowercase"
+msgstr ""
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
@@ -2783,6 +2775,10 @@ msgstr "Aide pour les principaux boutons rapide (Ouvrir,Enregistrer,...) "
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
 msgstr "Début"
+
+#: lazarusidestrconsts:dlghomekeyjumpstoneareststart
+msgid "Home key jumps to nearest start"
+msgstr ""
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -5163,6 +5159,10 @@ msgstr "Enregistrer tout"
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As"
 msgstr "Enregistrer sous"
+
+#: lazarusidestrconsts:dlgcharcasefileact
+msgid "Save As - auto rename pascal files lower case"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -7587,6 +7587,10 @@ msgstr "modifié"
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "non"
+
+#: lazarusidestrconsts:dlgnoautomaticrenaming
+msgid "no automatic renaming"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"

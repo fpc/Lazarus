@@ -130,14 +130,6 @@ msgstr "%sDescripció: %s"
 msgid "%sExisting file: %s%s%s"
 msgstr "%sFitxer existent: %s%s%s"
 
-#: lazarusidestrconsts:dlgpasautolower
-msgid "%sSave As%s always saves pascal files lowercase"
-msgstr "%sGuardar com a %s sempre guarda els fitxers Pascal en minúscules"
-
-#: lazarusidestrconsts:dlgpasasklower
-msgid "%sSave As%s asks to save pascal files lowercase"
-msgstr "%sGuardar com a %s demana guardar els fitxers Pascal en minúscules"
-
 #: lazarusidestrconsts:lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
 msgstr ""
@@ -575,8 +567,8 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Muntar de nou automàticament quan es munti tot"
 
 #: lazarusidestrconsts:dlgautoren
-msgid "Auto rename file"
-msgstr "Canviar el nom del fitxer automàticament"
+msgid "Auto rename file lowercase"
+msgstr ""
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
@@ -2773,6 +2765,10 @@ msgstr "Suggeriments pels botons ràpids principals (obrir, guardar, ...)"
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
 msgstr "Inici"
+
+#: lazarusidestrconsts:dlghomekeyjumpstoneareststart
+msgid "Home key jumps to nearest start"
+msgstr ""
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -5153,6 +5149,10 @@ msgstr "Guardar Tot"
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As"
 msgstr "Guardar com a ..."
+
+#: lazarusidestrconsts:dlgcharcasefileact
+msgid "Save As - auto rename pascal files lower case"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -7577,6 +7577,10 @@ msgstr "modificat"
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "no"
+
+#: lazarusidestrconsts:dlgnoautomaticrenaming
+msgid "no automatic renaming"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"

@@ -142,14 +142,6 @@ msgstr "%sBeschreibung:  %s"
 msgid "%sExisting file: %s%s%s"
 msgstr "%sVorhandene Datei: %s%s%s"
 
-#: lazarusidestrconsts:dlgpasautolower
-msgid "%sSave As%s always saves pascal files lowercase"
-msgstr "%sSpeichern als%s speichert Pascal-Dateien immer mit Kleinbuchstaben"
-
-#: lazarusidestrconsts:dlgpasasklower
-msgid "%sSave As%s asks to save pascal files lowercase"
-msgstr "%sSpeichern als %s fragt nach, ob Pascal-Dateinamen mit Kleinbuchstaben gespeichert werden sollen"
-
 #: lazarusidestrconsts:lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
 msgstr "%sSiehe auch Projekt->Projektinspektor"
@@ -587,8 +579,8 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Automatisches Neuerstellen bei \"Alles neu erstellen\""
 
 #: lazarusidestrconsts:dlgautoren
-msgid "Auto rename file"
-msgstr "Automatisches Umbenennen von Dateien"
+msgid "Auto rename file lowercase"
+msgstr ""
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
@@ -2785,6 +2777,10 @@ msgstr "Hinweise für Hauptabkürzungsknöpfe (Öffnen, Speichern, ...)"
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
 msgstr "Pos1"
+
+#: lazarusidestrconsts:dlghomekeyjumpstoneareststart
+msgid "Home key jumps to nearest start"
+msgstr ""
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -5165,6 +5161,10 @@ msgstr "Alles speichern"
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As"
 msgstr "Speichern unter"
+
+#: lazarusidestrconsts:dlgcharcasefileact
+msgid "Save As - auto rename pascal files lower case"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
@@ -7589,6 +7589,10 @@ msgstr "verändert"
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "Nein"
+
+#: lazarusidestrconsts:dlgnoautomaticrenaming
+msgid "no automatic renaming"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"

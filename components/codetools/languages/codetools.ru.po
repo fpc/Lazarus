@@ -90,6 +90,10 @@ msgstr "Каталог отладчика"
 msgid "Default ppc386 source Operating System"
 msgstr "Операционная система для исходника по умолчанию для ppc386"
 
+#: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
+msgid "Default ppc386 source Operating System 2"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefaultppc386symbol
 msgid "Default ppc386 symbol"
 msgstr "Символ ppc386 по умолчанию"
@@ -188,6 +192,14 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
 msgstr ""
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32

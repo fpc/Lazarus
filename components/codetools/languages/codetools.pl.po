@@ -101,6 +101,10 @@ msgstr "Katalog odpluskwiacza"
 msgid "Default ppc386 source Operating System"
 msgstr "Domyślny system operacyjny źródła ppc386"
 
+#: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
+msgid "Default ppc386 source Operating System 2"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefaultppc386symbol
 msgid "Default ppc386 symbol"
 msgstr "Domyślny symbol ppc386"
@@ -200,6 +204,14 @@ msgstr "If LCLWidgetType=gnome2 then"
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "If LCLWidgetType=gtk2 then"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr ""
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"

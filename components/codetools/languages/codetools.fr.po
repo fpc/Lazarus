@@ -100,6 +100,10 @@ msgstr "Répertoire débogueur"
 msgid "Default ppc386 source Operating System"
 msgstr "OS source par défaut pour ppc386"
 
+#: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
+msgid "Default ppc386 source Operating System 2"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefaultppc386symbol
 msgid "Default ppc386 symbol"
 msgstr "Symbole par défaut de ppc386"
@@ -199,6 +203,14 @@ msgstr ""
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
 msgstr "si LCLWidgetType=gtk2 alors"
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
+msgstr ""
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"

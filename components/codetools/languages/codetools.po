@@ -442,6 +442,10 @@ msgstr ""
 msgid "Default ppc386 source Operating System"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
+msgid "Default ppc386 source Operating System 2"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefaultppc386targetprocessor
 msgid "Default ppc386 target processor"
 msgstr ""
@@ -504,6 +508,14 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsutilsdirectories
 msgid "Utils directories"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos
+msgid "If TargetOS<>SrcOS"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiftargetosisnotsrcos2
+msgid "If TargetOS<>SrcOS2"
 msgstr ""
 
 #: codetoolsstrconsts:ctsinstallerdirectories
