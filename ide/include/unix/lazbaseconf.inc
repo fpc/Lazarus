@@ -133,9 +133,7 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath(GetDefaultCompilerFilename,'',
-                       {$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
-                       [sffDontSearchInBasePath]);
+  Result:=FindDefaultExecutablePath(GetDefaultCompilerFilename);
 end;
 
 {---------------------------------------------------------------------------
@@ -143,9 +141,7 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make','',
-                       {$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
-                       [sffDontSearchInBasePath]);
+  Result:=FindDefaultExecutablePath('make');
 end;
 
 {---------------------------------------------------------------------------

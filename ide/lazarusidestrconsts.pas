@@ -383,6 +383,9 @@ resourcestring
     +'directory %s%s%s is invalid.%sPlease choose a complete path.';
   lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination '
     +'directory';
+  lisCommandAfterInvalid = 'Command after invalid';
+  lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is '
+    +'invalid:%s%s%s%s';
   lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up %s%s%s.%'
     +'sPlease check permissions.';
   lisCommandAfterPublishingModule = 'Command after publishing module';

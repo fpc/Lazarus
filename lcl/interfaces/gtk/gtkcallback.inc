@@ -255,6 +255,9 @@ begin
         ModifyWidgetStyle(TheWinControl,Widget);
         {$ENDIF}
         UpdateWidgetStyleOfControl(TheWinControl);
+        
+        if TheWinControl is TCustomPage then
+          UpdateNotebookPageTab(nil,TheWinControl);
       end;
 
     end;
@@ -2906,6 +2909,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.249  2004/10/15 12:04:09  mattias
+  calling updating notebook tab after realize, needed for close btns
+
   Revision 1.248  2004/09/21 10:05:26  mattias
   fixed disable at designtime and bounding TProgressBar position
 

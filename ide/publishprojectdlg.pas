@@ -146,30 +146,14 @@ end;
 
 procedure TPublishProjectDialog.ExcludeFilterGroupboxRESIZE(Sender: TObject);
 begin
-  with ExcludeFilterCombobox do
-    Width:=ExcludeFilterGroupbox.ClientWidth-2*Left;
 end;
 
 procedure TPublishProjectDialog.FilesGroupboxRESIZE(Sender: TObject);
 begin
-  with FilesGroupbox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with CommandAfterLabel do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with UseIncludeFilterCheckbox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with IncludeFilterCombobox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with UseExcludeFilterCheckbox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with ExcludeFilterCombobox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
 end;
 
 procedure TPublishProjectDialog.IncludeFilterGroupboxRESIZE(Sender: TObject);
 begin
-  with IncludeFilterCombobox do
-    Width:=IncludeFilterGroupbox.ClientWidth-2*Left;
 end;
 
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);
@@ -180,24 +164,10 @@ end;
 
 procedure TPublishProjectDialog.ProjectInfoGroupboxResize(Sender: TObject);
 begin
-  with SaveEditorInfoOfNonProjectFilesCheckbox do
-    SetBounds(Left,Top,Parent.ClientWidth-Left,Height);
-  with SaveClosedEditorFilesInfoCheckbox do
-    SetBounds(Left,Top,Parent.ClientWidth-Left,Height);
 end;
 
 procedure TPublishProjectDialog.PublishProjectDialogResize(Sender: TObject);
 begin
-  with DestDirGroupBox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with FilesGroupbox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with ProjectInfoGroupbox do
-    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with IncludeFilterGroupbox do
-    Width:=Parent.ClientWidth-2*Left;
-  with ExcludeFilterGroupbox do
-    Width:=Parent.ClientWidth-2*Left;
 end;
 
 procedure TPublishProjectDialog.SaveSettingsButtonClick(Sender: TObject);
@@ -218,25 +188,31 @@ var
 begin
   // destination directories
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true);
-  List.AppendEntry('$(TestDir)/publishedproject/');
-  List.AppendEntry('$(TestDir)/publishedpackage/');
-  List.AppendEntry('$(ProjectDir)/published/');
+  List.AppendEntry(SetDirSeparators('$(TestDir)/publishedproject/'));
+  List.AppendEntry(SetDirSeparators('$(TestDir)/publishedpackage/'));
+  List.AppendEntry(SetDirSeparators('$(ProjectDir)/published/'));
   DestDirComboBox.Items.Assign(List);
   
   // command after
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true);
-  List.AppendEntry('/bin/tar czf $(TestDir)/project.tgz -C $(TestDir) publishedproject');
-  List.AppendEntry('/bin/tar czf $(TestDir)/package.tgz -C $(TestDir) publishedpackage');
+  List.AppendEntry(SetDirSeparators(
+                 'tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)'));
+  List.AppendEntry(SetDirSeparators(
+              'tar czf $(TestDir)/project.tgz -C $(TestDir) publishedproject'));
+  List.AppendEntry(SetDirSeparators(
+              'tar czf $(TestDir)/package.tgz -C $(TestDir) publishedpackage'));
   CommandAfterCombobox.Items.Assign(List);
 
   // file filter
-  List:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,
+                                            true);
   if List.Count=0 then begin
     List.Add(DefPublProjIncFilter);
   end;
   IncludeFilterCombobox.Items.Assign(List);
 
-  List:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,
+                                            true);
   if List.Count=0 then begin
     List.Add(DefPublProjExcFilter);
   end;

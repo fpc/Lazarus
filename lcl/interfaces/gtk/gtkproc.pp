@@ -433,6 +433,8 @@ procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
   DummyWidget: PGtkWidget);
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
 function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
+procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
+procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
 
 // coordinate transformation
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;

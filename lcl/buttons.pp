@@ -257,6 +257,8 @@ type
     FShortcut : Longint;
     FSpacing : integer;
     FTransparent : Boolean;
+    FDCNowAvailable : Boolean; //this is for gtk1, DeviceContext not available during creation process????
+    FDownWaiting : Boolean; //when this one is true, need to down button when DC is available
     function GetGlyph : TBitmap;
     procedure UpdateExclusive;
     procedure SetAllowAllUp(Value: Boolean);
@@ -381,6 +383,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2004/10/15 12:04:09  mattias
+  calling updating notebook tab after realize, needed for close btns
+
   Revision 1.79  2004/09/17 10:56:24  micha
   convert LM_SHORTCUT message to interface methods
 

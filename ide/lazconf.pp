@@ -83,6 +83,7 @@ const
   
   function GetDefaultTestBuildDirectory: string;
   
+  function FindDefaultExecutablePath(const Executable: string): string;
   function FindDefaultCompilerPath: string;
   function FindDefaultMakePath: string;
   function FindDefaultFPCSrcDirectory: string;
@@ -117,6 +118,16 @@ const
 implementation
 
 {$I lazconf.inc}
+
+function FindDefaultExecutablePath(const Executable: string): string;
+begin
+  if FilenameIsAbsolute(Executable) then
+    Result:=Executable
+  else
+    Result:=SearchFileInPath(Executable,'',
+                             GetEnvironmentVariable('PATH'),':',
+                             [sffDontSearchInBasePath]);
+end;
 
 function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
 var
@@ -206,6 +217,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2004/10/15 12:04:08  mattias
+  calling updating notebook tab after realize, needed for close btns
+
   Revision 1.31  2004/09/27 22:05:40  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 

@@ -7347,9 +7347,15 @@ begin
     exit;
   end;
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
-  if (CmdAfterExe<>'') and not FileIsExecutable(CmdAfterExe) then begin
-    Result:=mrCancel;
-    exit;
+  if (CmdAfterExe<>'') then begin
+    CmdAfterExe:=FindDefaultExecutablePath(CmdAfterExe);
+    if not FileIsExecutable(CmdAfterExe) then begin
+      MessageDlg(lisCommandAfterInvalid,
+        Format(lisTheCommandAfterPublishingIsInvalid, [#13, '"', CmdAfterExe,
+          '"']), mtError, [mbCancel], 0);
+      Result:=mrCancel;
+      exit;
+    end;
   end;
 
   // clear destination directory
@@ -7374,6 +7380,7 @@ begin
   if not CopyDirectoryWithMethods(SrcDir,DestDir,
     @OnCopyFile,@OnCopyError,Options) then
   begin
+    debugln('TMainIDE.DoPublishModule CopyDirectoryWithMethods failed');
     Result:=mrCancel;
     exit;
   end;
@@ -7385,7 +7392,10 @@ begin
     DeleteFile(NewProjectFilename);
     Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags,
                                     NewProjectFilename);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoPublishModule CurProject.WriteProject failed');
+      exit;
+    end;
   end;
 
   // execute 'CommandAfter'
@@ -10911,6 +10921,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.784  2004/10/15 12:04:08  mattias
+  calling updating notebook tab after realize, needed for close btns
+
   Revision 1.783  2004/10/11 17:48:59  vincents
   Command line help for --debug-log.
 

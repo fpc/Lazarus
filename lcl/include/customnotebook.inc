@@ -756,34 +756,13 @@ begin
   TWSCustomNotebookClass(WidgetSetClass).SetTabPosition(Self, FTabPosition);
 end;
 
-{------------------------------------------------------------------------------
-  TCustomNotebook InternalSetMultiLine
- ------------------------------------------------------------------------------}
-{function TCustomNotebook.InternalSetMultiLine(Value: boolean): boolean;
-begin
-  Result := FMultiLine <> Value;
-  if Result then begin
-    if not Value and ((TabPosition = tpLeft) or (TabPosition = tpRight)) then
-      raise Exception.Create(
-        'TCustomNotebook.InternalSetMultiLine: Tab must be multiline');
-    FMultiLine := Value;
-    //if not Value then FScrollOpposite := False;
-  end;
-end;}
-
-{------------------------------------------------------------------------------
-  TCustomNotebook SetMultiLine
- ------------------------------------------------------------------------------}
-{procedure TCustomNotebook.SetMultiLine(Value: boolean);
-begin
-  if InternalSetMultiLine(Value) then RecreateWnd;
-end;}
-
-
 
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/10/15 12:04:09  mattias
+  calling updating notebook tab after realize, needed for close btns
+
   Revision 1.64  2004/09/24 20:23:33  vincents
   fixed fpc 1.0.x compilation
 

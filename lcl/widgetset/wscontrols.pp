@@ -85,7 +85,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual;
-  end;       
+  end;
   TWSWinControlClass = class of TWSWinControl;
 
   { TWSGraphicControl }

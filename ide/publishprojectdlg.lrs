@@ -2,69 +2,75 @@
 
 LazarusResources.Add('TPublishProjectDialog','FORMDATA',[
   'TPF0'#21'TPublishProjectDialog'#20'PublishProjectDialog'#7'Caption'#6#15'Pub'
-  +'lish Project'#12'ClientHeight'#3#206#1#11'ClientWidth'#3#213#1#8'OnResize'#7
-  +#26'PublishProjectDialogRESIZE'#8'Position'#7#14'poScreenCenter'#18'HorzScro'
-  +'llBar.Page'#3#214#1#18'VertScrollBar.Page'#3#207#1#4'Left'#3'3'#1#6'Height'
-  +#3#206#1#3'Top'#3#165#0#5'Width'#3#213#1#0#7'TButton'#8'OkButton'#7'Anchors'
-  +#11#5'akTop'#7'akRight'#0#11'ModalResult'#2#1#7'Caption'#6#2'Ok'#8'TabOrder'
-  +#2#0#7'OnClick'#7#13'OkButtonCLICK'#4'Left'#2'H'#6'Height'#2#25#3'Top'#3#176
-  +#1#5'Width'#2'K'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#5'akTop'#7'ak'
-  +'Right'#0#11'ModalResult'#2#2#7'Caption'#6#6'Cancel'#8'TabOrder'#2#1#4'Left'
-  +#3's'#1#6'Height'#2#25#3'Top'#3#176#1#5'Width'#2'K'#0#0#9'TGroupBox'#15'Dest'
-  +'DirGroupBox'#7'Caption'#6#21'Destination directory'#12'ClientHeight'#2'^'#11
-  +'ClientWidth'#3#190#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#2#8
-  +'OnResize'#7#21'DestDirGroupBoxRESIZE'#4'Left'#2#8#6'Height'#2'o'#3'Top'#2#8
-  +#5'Width'#3#194#1#0#9'TComboBox'#15'DestDirComboBox'#9'MaxLength'#2#0#11'Par'
-  +'entCtl3D'#8#8'TabOrder'#2#0#4'Text'#6#15'DestDirComboBox'#4'Left'#2#6#6'Hei'
-  +'ght'#2#25#3'Top'#2#1#5'Width'#3'^'#1#0#0#7'TBitBtn'#19'BrowseDestDirBitBtn'
-  +#7'OnClick'#7#24'BrowseDestDirBitBtnCLICK'#7'Caption'#6#6'Browse'#8'TabOrder'
-  +#2#1#7'OnClick'#7#24'BrowseDestDirBitBtnCLICK'#4'Left'#3'n'#1#6'Height'#2#25
-  +#3'Top'#2#1#5'Width'#2'H'#0#0#9'TComboBox'#20'CommandAfterCombobox'#9'MaxLen'
-  +'gth'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#2#4'Text'#6#20'CommandAfterCombobo'
-  +'x'#4'Left'#2#6#6'Height'#2#25#3'Top'#2':'#5'Width'#3#174#1#0#0#6'TLabel'#17
-  +'CommandAfterLabel'#7'Caption'#6#14'Command after:'#4'Left'#2#6#6'Height'#2
-  +#17#3'Top'#2'!'#5'Width'#3#172#1#0#0#0#9'TGroupBox'#13'FilesGroupbox'#7'Capt'
-  +'ion'#6#5'Files'#12'ClientHeight'#2#27#11'ClientWidth'#3#190#1#11'ParentColo'
-  +'r'#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#8'OnResize'#7#19'FilesGroupboxRESIZE'
-  +#4'Left'#2#8#6'Height'#2','#3'Top'#3#128#0#5'Width'#3#194#1#0#9'TCheckBox'#22
-  +'IgnoreBinariesCheckbox'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6#15'Ign'
-  +'ore binaries'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2#0#4'Left'#2#6#6'He'
-  +'ight'#2#20#3'Top'#2#1#5'Width'#3#161#0#0#0#0#9'TGroupBox'#19'ProjectInfoGro'
-  +'upbox'#7'Caption'#6#19'Project Information'#12'ClientHeight'#2'4'#11'Client'
-  +'Width'#3#190#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#4#8'OnResi'
-  +'ze'#7#25'ProjectInfoGroupboxRESIZE'#4'Left'#2#8#6'Height'#2'E'#3'Top'#3'X'#1
-  +#5'Width'#3#194#1#0#9'TCheckBox!SaveClosedEditorFilesInfoCheckbox'#11'AllowG'
-  +'rayed'#9#8'AutoSize'#9#7'Caption'#6' Save editor info of closed files'#10'D'
-  +'ragCursor'#4#244#255#0#0#8'TabOrder'#2#0#4'Left'#2#4#6'Height'#2#20#3'Top'#2
-  +#1#5'Width'#3#176#1#0#0#9'TCheckBox''SaveEditorInfoOfNonProjectFilesCheckbox'
-  +#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6'%Save editor info of non proje'
-  +'ct files'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2#1#4'Left'#2#4#6'Height'
-  +#2#20#3'Top'#2#26#5'Width'#3#176#1#0#0#0#7'TButton'#18'SaveSettingsButton'#7
-  +'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#13'Save settings'#8'TabOrder'
-  +#2#5#7'OnClick'#7#23'SaveSettingsButtonCLICK'#4'Left'#3#198#0#6'Height'#2#25
-  +#3'Top'#3#176#1#5'Width'#2'x'#0#0#9'TGroupBox'#21'IncludeFilterGroupbox'#7'C'
-  +'aption'#6#14'Include Filter'#12'ClientHeight'#2':'#11'ClientWidth'#3#190#1
-  +#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#6#7'TabStop'#9#8'OnResize'
-  +#7#27'IncludeFilterGroupboxRESIZE'#4'Left'#2#8#6'Height'#2'K'#3'Top'#3#176#0
-  +#5'Width'#3#194#1#0#9'TCheckBox'#24'UseIncludeFilterCheckbox'#11'AllowGrayed'
-  +#9#8'AutoSize'#9#7'Caption'#6#18'Use Include Filter'#10'DragCursor'#4#244#255
-  +#0#0#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#20#3'Top'#2#1#5'Width'#3#171#0#0
-  +#0#9'TCheckBox'#29'IncFilterSimpleSyntaxCheckbox'#11'AllowGrayed'#9#8'AutoSi'
-  +'ze'#9#7'Caption'#6#13'Simple Syntax'#10'DragCursor'#4#244#255#0#0#8'TabOrde'
-  +'r'#2#1#4'Left'#3#196#0#6'Height'#2#20#3'Top'#2#2#5'Width'#3#201#0#0#0#9'TCo'
-  +'mboBox'#21'IncludeFilterCombobox'#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabO'
-  +'rder'#2#2#4'Text'#6#21'IncludeFilterCombobox'#4'Left'#2#6#6'Height'#2#25#3
-  +'Top'#2#25#5'Width'#3#174#1#0#0#0#9'TGroupBox'#21'ExcludeFilterGroupbox'#7'C'
-  +'aption'#6#14'Exclude Filter'#12'ClientHeight'#2'>'#11'ClientWidth'#3#188#1
-  +#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#7#7'TabStop'#9#8'OnResize'
-  +#7#27'ExcludeFilterGroupboxRESIZE'#4'Left'#2#8#6'Height'#2'O'#3'Top'#3#0#1#5
-  +'Width'#3#192#1#0#9'TCheckBox'#24'UseExcludeFilterCheckbox'#11'AllowGrayed'#9
-  +#8'AutoSize'#9#7'Caption'#6#18'Use Exclude Filter'#10'DragCursor'#4#244#255#0
-  +#0#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#20#3'Top'#2#5#5'Width'#3#151#0#0#0
-  +#9'TCheckBox'#29'ExcFilterSimpleSyntaxCheckbox'#11'AllowGrayed'#9#8'AutoSize'
-  +#9#7'Caption'#6#13'Simple Syntax'#10'DragCursor'#4#244#255#0#0#8'TabOrder'#2
-  +#1#4'Left'#3#199#0#6'Height'#2#20#3'Top'#2#6#5'Width'#3#212#0#0#0#9'TComboBo'
-  +'x'#21'ExcludeFilterCombobox'#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'
-  ,#2#2#4'Text'#6#21'ExcludeFilterCombobox'#4'Left'#2#6#6'Height'#2#25#3'Top'#2
-  +#30#5'Width'#3#174#1#0#0#0#0
+  +'lish Project'#12'ClientHeight'#3#209#1#11'ClientWidth'#3#213#1#8'OnResize'#7
+  +#26'PublishProjectDialogRESIZE'#13'PixelsPerInch'#2'Z'#8'Position'#7#14'poSc'
+  +'reenCenter'#18'HorzScrollBar.Page'#3#214#1#18'VertScrollBar.Page'#3#210#1#4
+  +'Left'#3'3'#1#6'Height'#3#209#1#3'Top'#3#165#0#5'Width'#3#213#1#0#7'TButton'
+  +#8'OkButton'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#2'Ok'#11'Modal'
+  +'Result'#2#1#7'OnClick'#7#13'OkButtonCLICK'#8'TabOrder'#2#0#4'Left'#2'H'#6'H'
+  +'eight'#2#25#3'Top'#3#176#1#5'Width'#2'K'#0#0#7'TButton'#12'CancelButton'#7
+  +'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2
+  +#8'TabOrder'#2#1#4'Left'#3's'#1#6'Height'#2#25#3'Top'#3#176#1#5'Width'#2'K'#0
+  +#0#9'TGroupBox'#15'DestDirGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRig'
+  +'ht'#0#7'Caption'#6#21'Destination directory'#12'ClientHeight'#2'^'#11'Clien'
+  +'tWidth'#3#190#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#2#8'OnRes'
+  +'ize'#7#21'DestDirGroupBoxRESIZE'#4'Left'#2#8#6'Height'#2'o'#3'Top'#2#8#5'Wi'
+  +'dth'#3#194#1#0#9'TComboBox'#15'DestDirComboBox'#7'Anchors'#11#5'akTop'#6'ak'
+  +'Left'#7'akRight'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#4'Tex'
+  +'t'#6#15'DestDirComboBox'#4'Left'#2#6#6'Height'#2#25#3'Top'#2#1#5'Width'#3'^'
+  +#1#0#0#7'TBitBtn'#19'BrowseDestDirBitBtn'#7'Anchors'#11#5'akTop'#7'akRight'#0
+  +#7'Caption'#6#6'Browse'#7'OnClick'#7#24'BrowseDestDirBitBtnCLICK'#8'TabOrder'
+  +#2#1#4'Left'#3'n'#1#6'Height'#2#25#3'Top'#2#1#5'Width'#2'H'#0#0#9'TComboBox'
+  +#20'CommandAfterCombobox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#9'Ma'
+  +'xLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#2#4'Text'#6#20'CommandAfterCom'
+  +'bobox'#4'Left'#2#6#6'Height'#2#25#3'Top'#2':'#5'Width'#3#174#1#0#0#6'TLabel'
+  +#17'CommandAfterLabel'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Capti'
+  +'on'#6#14'Command after:'#4'Left'#2#6#6'Height'#2#17#3'Top'#2'!'#5'Width'#3
+  +#172#1#0#0#0#9'TGroupBox'#13'FilesGroupbox'#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#0#7'Caption'#6#5'Files'#12'ClientHeight'#2#27#11'ClientWidth'#3
+  +#190#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#8'OnResize'#7#19
+  +'FilesGroupboxRESIZE'#4'Left'#2#8#6'Height'#2','#3'Top'#3#128#0#5'Width'#3
+  +#194#1#0#9'TCheckBox'#22'IgnoreBinariesCheckbox'#11'AllowGrayed'#9#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'#9#7'Caption'#6#15'Ignore bin'
+  +'aries'#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#20#3'Top'#2#1#5'Width'#3#172
+  +#1#0#0#0#9'TGroupBox'#19'ProjectInfoGroupbox'#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#7'akRight'#0#7'Caption'#6#19'Project Information'#12'ClientHeight'#2'4'
+  +#11'ClientWidth'#3#190#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#4
+  +#8'OnResize'#7#25'ProjectInfoGroupboxRESIZE'#4'Left'#2#8#6'Height'#2'E'#3'To'
+  +'p'#3'X'#1#5'Width'#3#194#1#0#9'TCheckBox!SaveClosedEditorFilesInfoCheckbox'
+  +#11'AllowGrayed'#9#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'AutoSize'
+  +#9#7'Caption'#6' Save editor info of closed files'#8'TabOrder'#2#0#4'Left'#2
+  +#4#6'Height'#2#20#3'Top'#2#1#5'Width'#3#176#1#0#0#9'TCheckBox''SaveEditorInf'
+  +'oOfNonProjectFilesCheckbox'#11'AllowGrayed'#9#7'Anchors'#11#5'akTop'#6'akLe'
+  +'ft'#7'akRight'#0#8'AutoSize'#9#7'Caption'#6'%Save editor info of non projec'
+  +'t files'#8'TabOrder'#2#1#4'Left'#2#4#6'Height'#2#20#3'Top'#2#26#5'Width'#3
+  +#176#1#0#0#0#7'TButton'#18'SaveSettingsButton'#7'Anchors'#11#5'akTop'#7'akRi'
+  +'ght'#0#7'Caption'#6#13'Save settings'#7'OnClick'#7#23'SaveSettingsButtonCLI'
+  +'CK'#8'TabOrder'#2#5#4'Left'#3#198#0#6'Height'#2#25#3'Top'#3#176#1#5'Width'#2
+  +'x'#0#0#9'TGroupBox'#21'IncludeFilterGroupbox'#7'Anchors'#11#5'akTop'#6'akLe'
+  +'ft'#7'akRight'#0#7'Caption'#6#14'Include Filter'#12'ClientHeight'#2':'#11'C'
+  +'lientWidth'#3#190#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#6#7'T'
+  +'abStop'#9#8'OnResize'#7#27'IncludeFilterGroupboxRESIZE'#4'Left'#2#8#6'Heigh'
+  +'t'#2'K'#3'Top'#3#176#0#5'Width'#3#194#1#0#9'TCheckBox'#24'UseIncludeFilterC'
+  +'heckbox'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6#18'Use Include Filter'
+  +#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#20#3'Top'#2#1#5'Width'#3#171#0#0#0#9
+  +'TCheckBox'#29'IncFilterSimpleSyntaxCheckbox'#11'AllowGrayed'#9#8'AutoSize'#9
+  +#7'Caption'#6#13'Simple Syntax'#8'TabOrder'#2#1#4'Left'#3#196#0#6'Height'#2
+  +#20#3'Top'#2#2#5'Width'#3#215#0#0#0#9'TComboBox'#21'IncludeFilterCombobox'#7
+  +'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#9'MaxLength'#2#0#11'ParentCtl3D'
+  +#8#8'TabOrder'#2#2#4'Text'#6#21'IncludeFilterCombobox'#4'Left'#2#6#6'Height'
+  +#2#25#3'Top'#2#25#5'Width'#3#174#1#0#0#0#9'TGroupBox'#21'ExcludeFilterGroupb'
+  +'ox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#14'Exclude F'
+  +'ilter'#12'ClientHeight'#2'>'#11'ClientWidth'#3#188#1#11'ParentColor'#9#11'P'
+  +'arentCtl3D'#8#8'TabOrder'#2#7#7'TabStop'#9#8'OnResize'#7#27'ExcludeFilterGr'
+  +'oupboxRESIZE'#4'Left'#2#8#6'Height'#2'O'#3'Top'#3#0#1#5'Width'#3#192#1#0#9
+  +'TCheckBox'#24'UseExcludeFilterCheckbox'#11'AllowGrayed'#9#8'AutoSize'#9#7'C'
+  ,'aption'#6#18'Use Exclude Filter'#8'TabOrder'#2#0#4'Left'#2#6#6'Height'#2#20
+  +#3'Top'#2#5#5'Width'#3#184#0#0#0#9'TCheckBox'#29'ExcFilterSimpleSyntaxCheckb'
+  +'ox'#11'AllowGrayed'#9#8'AutoSize'#9#7'Caption'#6#13'Simple Syntax'#8'TabOrd'
+  +'er'#2#1#4'Left'#3#199#0#6'Height'#2#20#3'Top'#2#6#5'Width'#3#212#0#0#0#9'TC'
+  +'omboBox'#21'ExcludeFilterCombobox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRig'
+  +'ht'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#2#4'Text'#6#21'Exclu'
+  +'deFilterCombobox'#4'Left'#2#6#6'Height'#2#25#3'Top'#2#30#5'Width'#3#174#1#0
+  +#0#0#0
 ]);
