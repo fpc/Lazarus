@@ -2580,7 +2580,7 @@ begin
       AddNodeToStack(@NodeStack,Result.Node);
 
       {$IFDEF ShowTriedBaseContexts}
-      DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
+      DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',DbgS(Result.Node));
       DebugLn('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
       {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
@@ -2952,7 +2952,7 @@ var
     if PosTree=nil then
       PosTree:=TAVLTree.Create;
     p:=@Src[StartPos];
-    //debugln('TFindDeclarationTool.FindReferences.AddReference ',HexStr(Cardinal(p),8),' ',dbgs(PosTree.Find(p)=nil));
+    //debugln('TFindDeclarationTool.FindReferences.AddReference ',DbgS(p),' ',dbgs(PosTree.Find(p)=nil));
     if PosTree.Find(p)=nil then
       PosTree.Add(p);
   end;
@@ -7142,7 +7142,7 @@ end;
 
 procedure TFindDeclarationParams.WriteDebugReport;
 begin
-  DebugLn('TFindDeclarationParams.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  DebugLn('TFindDeclarationParams.WriteDebugReport Self=',DbgS(Self));
 
   // input parameters:
   DebugLn(' Flags=',FindDeclarationFlagsAsString(Flags));

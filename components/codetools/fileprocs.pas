@@ -1098,7 +1098,7 @@ end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=HexStr(Cardinal(p),8);
+  Result:=DbgS(p);
 end;
 
 function DbgS(const e: extended): string;

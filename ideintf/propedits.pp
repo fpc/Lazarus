@@ -1482,7 +1482,7 @@ var
 begin
   TypeInfo:=Instance.ClassInfo;
   TypeData:=GetTypeData(TypeInfo);
-  debugln('WritePublishedProperties Instance=',HexStr(Cardinal(Instance),8),' ',Instance.ClassName,' TypeData^.PropCount=',dbgs(TypeData^.PropCount));
+  debugln('WritePublishedProperties Instance=',DbgS(Instance),' ',Instance.ClassName,' TypeData^.PropCount=',dbgs(TypeData^.PropCount));
   if Instance is TComponent then
     debugln('  TComponent(Instance).Name=',TComponent(Instance).Name);
 
@@ -1495,20 +1495,20 @@ begin
     PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
     // read property count
     CurCount:=PWord(PropInfo)^;
-    inc(Longint(PropInfo),SizeOf(Word));
+    inc(PtrInt(PropInfo),SizeOf(Word));
     debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
 
-    {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',HexStr(Cardinal(TypeData^.ClassType),8));
+    {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
     writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
-    ' TypeInfo=',HexStr(Cardinal(TypeInfo),8),
-    ' TypeData^.ClassType.ClassInfo=',HexStr(Cardinal(TypeData^.ClassType.ClassInfo),8),
-    ' TypeData^.ClassType.ClassParent=',HexStr(Cardinal(TypeData^.ClassType.ClassParent),8),
-    ' TypeData^.ParentInfo=',HexStr(Cardinal(TypeData^.ParentInfo),8),
+    ' TypeInfo=',DbgS(TypeInfo),
+    ' TypeData^.ClassType.ClassInfo=',DbgS(TypeData^.ClassType.ClassInfo),
+    ' TypeData^.ClassType.ClassParent=',DbgS(TypeData^.ClassType.ClassParent),
+    ' TypeData^.ParentInfo=',DbgS(TypeData^.ParentInfo),
     '');
     CurParent:=TypeData^.ClassType.ClassParent;
     if CurParent<>nil then begin
       writeln('TPropInfoList.Create F CurParent.ClassName=',CurParent.ClassName,
-        ' CurParent.ClassInfo=',HexStr(Cardinal(CurParent.ClassInfo),8),
+        ' CurParent.ClassInfo=',DbgS(CurParent.ClassInfo),
         '');
     end;}
 
@@ -1636,19 +1636,19 @@ begin
     PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
     // read property count
     CurCount:=PWord(PropInfo)^;
-    inc(Longint(PropInfo),SizeOf(Word));
+    inc(PtrInt(PropInfo),SizeOf(Word));
 
-    {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',HexStr(Cardinal(TypeData^.ClassType),8));
+    {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
     writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
-    ' TypeInfo=',HexStr(Cardinal(TypeInfo),8),
-    ' TypeData^.ClassType.ClassInfo=',HexStr(Cardinal(TypeData^.ClassType.ClassInfo),8),
-    ' TypeData^.ClassType.ClassParent=',HexStr(Cardinal(TypeData^.ClassType.ClassParent),8),
-    ' TypeData^.ParentInfo=',HexStr(Cardinal(TypeData^.ParentInfo),8),
+    ' TypeInfo=',DbgS(TypeInfo),
+    ' TypeData^.ClassType.ClassInfo=',DbgS(TypeData^.ClassType.ClassInfo),
+    ' TypeData^.ClassType.ClassParent=',DbgS(TypeData^.ClassType.ClassParent),
+    ' TypeData^.ParentInfo=',DbgS(TypeData^.ParentInfo),
     '');
     CurParent:=TypeData^.ClassType.ClassParent;
     if CurParent<>nil then begin
       writeln('TPropInfoList.Create F CurParent.ClassName=',CurParent.ClassName,
-        ' CurParent.ClassInfo=',HexStr(Cardinal(CurParent.ClassInfo),8),
+        ' CurParent.ClassInfo=',DbgS(CurParent.ClassInfo),
         '');
     end;}
 
@@ -2284,7 +2284,7 @@ begin
   case (PropInfo^.PropProcs) and 3 of
     ptfield:
       begin
-        Value:=PMethod(Pointer(Instance)+Longint(PropInfo^.GetProc));
+        Value:=PMethod(Pointer(Instance)+PtrInt(PropInfo^.GetProc));
         if Value<>nil then
           Result:=Value^;
       end;
@@ -2294,7 +2294,7 @@ begin
         if (PropInfo^.PropProcs and 3)=ptStatic then
           AMethod.Code:=PropInfo^.GetProc
         else
-          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^;
+          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+Ptrint(PropInfo^.GetProc))^;
         AMethod.Data:=Instance;
         if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
           Result:=TGetMethodProcIndex(AMethod)(PropInfo^.Index)
@@ -4114,7 +4114,7 @@ begin
   begin
     Result := TPersistentSelectionList.Create;
     for I := 0 to PropCount - 1 do
-      Result.Add(TPersistent(GetOrdValueAt(I)));
+      Result.Add(TPersistent(PtrInt(GetOrdValueAt(I))));
   end;
 end;
 
@@ -4127,7 +4127,7 @@ begin
   LInstance := TPersistent(GetObjectValue);
   if PropCount > 1 then
     for I := 1 to PropCount - 1 do
-      if TPersistent(GetOrdValueAt(I)) <> LInstance then
+      if TPersistent(PtrInt(GetOrdValueAt(I))) <> LInstance then
         Exit;
   Result := LInstance<>nil;
 end;
@@ -4221,7 +4221,7 @@ begin
       end;
     end;
   end;
-  SetOrdValue(Longint(Component));
+  SetOrdValue(Ptrint(Component));
 end;
 
 { TComponentPropertyEditor }

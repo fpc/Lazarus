@@ -536,7 +536,7 @@ function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
   Event: PGDKEventButton): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_ButtonPress ',HexStr(Cardinal(Widget),8));
+  DebugLn('GTKAPIWidgetClient_ButtonPress ',DbgS(Widget));
   {$ENDIF}
   if Event=nil then ;
   if not gtk_widget_has_focus(Widget) then
@@ -549,7 +549,7 @@ function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(AWidget),8),' ',dbgs(event^.thein));
+  DebugLn('GTKAPIWidgetClient_FocusIn ',DbgS(AWidget),' ',dbgs(event^.thein));
   {$ENDIF}
   
   gtk_widget_set_flags(AWidget, GTK_HAS_FOCUS);
@@ -567,7 +567,7 @@ function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(AWidget),8),' ',dbgs(event^.thein));
+  DebugLn('GTKAPIWidgetClient_FocusOut ',DbgS(AWidget),' ',dbgs(event^.thein));
   {$ENDIF}
   
   gtk_widget_unset_flags(AWidget, GTK_HAS_FOCUS);
@@ -583,14 +583,14 @@ end;
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient;
   var OldVisible: boolean);
 begin
-  //DebugLn('[GTKAPIWidgetClient_HideCaret] A Client=',HexStr(Cardinal(Client),8));
+  //DebugLn('[GTKAPIWidgetClient_HideCaret] A Client=',DbgS(Client));
   if Client = nil
   then begin
     DebugLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
     Exit;
   end;
   {$IFDEF VerboseCaret}
-  DebugLn('GTKAPIWidgetClient_HideCaret ',HexStr(Cardinal(Client),8),' ShowHideOnFocus=',Client^.Caret.ShowHideOnFocus);
+  DebugLn('GTKAPIWidgetClient_HideCaret ',DbgS(Client),' ShowHideOnFocus=',Client^.Caret.ShowHideOnFocus);
   {$ENDIF}
   OldVisible:=Client^.Caret.Visible;
   Client^.Caret.Visible := False;
@@ -639,7 +639,7 @@ begin
     if IsDrawn and ((not Visible) or (Blinking and CalledByTimer))
     then begin
       {$IFDEF VerboseCaret}
-      DebugLn('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),
+      DebugLn('GTKAPIWidgetClient_DrawCaret ',DbgS(Client),
         ' Hiding Caret IsDrawn=',IsDrawn,' Visible=',Visible,' Blinking=',Blinking);
       {$ENDIF}
       // hide caret
@@ -689,7 +689,7 @@ begin
 
       // draw caret
       {$IFDEF VerboseCaret}
-      DebugLn('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
+      DebugLn('GTKAPIWidgetClient_DrawCaret B Client=',DbgS(Client)
       ,' ',cardinal(WidgetStyle)
       ,' ',cardinal(Widget^.Window)
       ,' ',Width
@@ -702,11 +702,11 @@ begin
       and (Height>0) 
       then begin
         // set draw function to xor
-        ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
+        ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[PtrInt(Pixmap) <> 1]];
         //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
         //OldGdkFunction:=ForeGroundGCValues.thefunction;
         {$IFDEF VerboseCaret}
-        DebugLn('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),' Real Drawing Caret ');
+        DebugLn('GTKAPIWidgetClient_DrawCaret ',DbgS(Client),' Real Drawing Caret ');
         {$ENDIF}
         gdk_gc_set_function(ForeGroundGC,GDK_invert);
         try
@@ -724,12 +724,12 @@ begin
           gdk_gc_set_function(ForeGroundGC,GDK_COPY);
         end;
       end else
-        DebugLn('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),
+        DebugLn('***: Draw Caret failed: Client=',DbgS(Client),
           ' X='+dbgs(X)+' Y='+dbgs(Y)+' W='+dbgs(Width)+' H='+dbgs(Height),
           ' ',dbgs(Pixmap<>nil),',',dbgs(Widget^.Window),',',dbgs(WidgetStyle));
       IsDrawn := True;
     end;
-    //DebugLn('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height);
+    //DebugLn('GTKAPIWidgetClient_DrawCaret A Client=',DbgS(Client),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height);
     if Visible and Blinking and (Timer = 0) 
     and ((not ShowHideOnFocus) or HasFocus)
     then Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
@@ -738,7 +738,7 @@ end;
 
 procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); 
 begin
-  //DebugLn('[GTKAPIWidgetClient_ShowCaret] A Client=',HexStr(Cardinal(Client),8));
+  //DebugLn('[GTKAPIWidgetClient_ShowCaret] A Client=',DbgS(Client));
   if Client = nil 
   then begin
     DebugLn('WARNING: [GTKAPIWidgetClient_ShowCaret] Got nil client');
@@ -746,7 +746,7 @@ begin
   end;
   
   {$IFDEF VerboseCaret}
-  DebugLn('GTKAPIWidgetClient_ShowCaret ',HexStr(Cardinal(Client),8));
+  DebugLn('GTKAPIWidgetClient_ShowCaret ',DbgS(Client));
   {$ENDIF}
 
   // force restarting time
@@ -778,7 +778,7 @@ var
   WasVisible: boolean;
 begin
   {$IFDEF VerboseCaret}
-  DebugLn('********** [GTKAPIWidgetClient_CreateCaret] A Client=',HexStr(Cardinal(Client),8),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
+  DebugLn('********** [GTKAPIWidgetClient_CreateCaret] A Client=',DbgS(Client),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
   {$ENDIF}
   if Client = nil 
   then begin
@@ -810,7 +810,7 @@ var
   WasVisible: boolean;
 begin
   {$IFDEF VerboseCaret}
-  DebugLn('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  DebugLn('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',DbgS(Client));
   {$ENDIF}
   if Client = nil 
   then begin
@@ -828,7 +828,7 @@ begin
     Pixmap := nil;
   end;
   {$IFDEF VerboseCaret}
-  DebugLn('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  DebugLn('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',DbgS(Client));
   {$ENDIF}
 end;
 
@@ -1130,6 +1130,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.67  2005/03/04 12:25:13  mattias
   fixed gtk2 intf winapiwindow keypress handler result  from Danny Milosavljevic
 

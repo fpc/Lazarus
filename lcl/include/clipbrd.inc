@@ -32,14 +32,14 @@ end;
 
 constructor TClipboard.Create(AClipboardType: TClipboardType);
 begin
-  //DebugLn('[TClipboard.Create] A ',ClipboardTypeName[AClipboardType],' Self=',HexStr(Cardinal(Self),8));
+  //DebugLn('[TClipboard.Create] A ',ClipboardTypeName[AClipboardType],' Self=',DbgS(Self));
   inherited Create;
   FClipboardType:=AClipboardType;
 end;
 
 destructor TClipboard.Destroy;
 begin
-  //DebugLn('[TClipboard.Destroy] A ',ClipboardTypeName[ClipboardType],' Self=',HexStr(Cardinal(Self),8));
+  //DebugLn('[TClipboard.Destroy] A ',ClipboardTypeName[ClipboardType],' Self=',DbgS(Self));
   OnRequest:=nil; // this will notify the owner
   if FAllocated then begin
     ClipboardGetOwnership(ClipboardType,nil,0,nil);
@@ -704,6 +704,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.20  2005/01/03 22:44:31  mattias
   implemented TControl.AnchorSide
 

@@ -523,7 +523,7 @@ end;
 procedure TSourceLog.BuildLineRanges;
 var p,line:integer;
 begin
-  //DebugLn('[TSourceLog.BuildLineRanges] A Self=',HexStr(Cardinal(Self),8),',LineCount=',FLineCount,' Len=',SourceLength);
+  //DebugLn('[TSourceLog.BuildLineRanges] A Self=',DbgS(Self),',LineCount=',FLineCount,' Len=',SourceLength);
   if FLineCount>=0 then exit;
   if FLineRanges<>nil then begin
     FreeMem(FLineRanges);
@@ -659,14 +659,14 @@ begin
     inc(FChangeStep)
   else
     FChangeStep:=-$7fffffff;
-  //DebugLn('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',HexStr(Cardinal(Self),8));
+  //DebugLn('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',DbgS(Self));
 end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
   fs: TFileStream;
 begin
-  //DebugLn('TSourceLog.SaveToFile Self=',HexStr(Cardinal(Self),8));
+  //DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
   Result:=true;
   try
     InvalidateFileStateCache;

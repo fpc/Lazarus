@@ -30,7 +30,7 @@ type
 function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName; Desc: TFontHandleCacheDescriptor): integer;
 begin
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
-  //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
+  //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
   if Result=0 then
     Result:=CompareMemRange(@Key^.LogFont,@Desc.LogFont,SizeOf(Desc.LogFont));
   //writeln('CompareLogFontAndNameWithResDesc END Result=',Result);
@@ -1098,6 +1098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.29  2005/03/05 14:44:00  mattias
   fixed gtk1 font rotating  from C Western
 

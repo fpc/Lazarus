@@ -164,7 +164,7 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
-  //DebugLn('TToolButton.Paint A ',Name,' FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
+  //DebugLn('TToolButton.Paint A ',Name,' FToolBar=',DbgS(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
     PaintRect:=ClientRect; // the whole paint area
 
@@ -737,6 +737,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.23  2004/11/28 00:55:44  mattias
   deactivated sending SYSKey messages in gtk intf - they are not used anyway
 

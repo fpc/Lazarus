@@ -895,7 +895,7 @@ var Node: TAVLTreeNode;
   Entry: PCodeTreeNodeCacheEntry;
 begin
   DebugLn(Prefix+'[TCodeTreeNodeCache.WriteDebugReport] Self='+
-    HexStr(Cardinal(Self),8)+' Consistency=',dbgs(ConsistencyCheck));
+    DbgS(Self)+' Consistency=',dbgs(ConsistencyCheck));
   if FItems<>nil then begin
     Node:=FItems.FindLowest;
     while Node<>nil do begin

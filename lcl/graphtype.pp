@@ -282,7 +282,7 @@ begin
             if p^<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              DebugLn('RawImageMaskIsEmpty FullByte y=',dbgs(y),' x=',dbgs(x),' Byte=',HexStr(Cardinal(p^),2));
+              DebugLn('RawImageMaskIsEmpty FullByte y=',dbgs(y),' x=',dbgs(x),' Byte=',DbgS(p^));
               {$ENDIF}
               exit;
             end;
@@ -471,7 +471,7 @@ begin
   ExtractRawImageDataRect(@SrcRawImage^.Description,SrcRect,SrcRawImage^.Data,
     @DestRawImage^.Description,DestRawImage^.Data,DestRawImage^.DataSize);
   // extract rectangle from separate Alpha
-  //DebugLn'ExtractRawImageDataRect data=',HexStr(Cardinal(DestRawImage^.Data),8),' Size=',DestRawImage^.DataSize);
+  //DebugLn'ExtractRawImageDataRect data=',DbgS(DestRawImage^.Data),' Size=',DestRawImage^.DataSize);
 
   if SrcRawImage^.Description.AlphaSeparate
   and (SrcRawImage^.Mask<>nil) then begin
@@ -527,10 +527,10 @@ begin
   // allocate Data
   DestRawImageDesc^.Width:=SrcWidth;
   DestRawImageDesc^.Height:=SrcHeight;
-  //DebugLn'ExtractRawImageDataRect Src=',SrcWidth,',',SrcHeight,' DestData=',HexStr(Cardinal(DestData),8));
+  //DebugLn'ExtractRawImageDataRect Src=',SrcWidth,',',SrcHeight,' DestData=',DbgS(DestData));
   CreateRawImageData(SrcWidth,SrcHeight,BitsPerPixel,LineEnd,
                      DestData,DestDataSize);
-  //DebugLn'ExtractRawImageDataRect data=',HexStr(Cardinal(DestData),8),' Size=',DestDataSize);
+  //DebugLn'ExtractRawImageDataRect data=',DbgS(DestData),' Size=',DestDataSize);
   if (SrcWidth=TotalWidth) and (TotalHeight=SrcHeight) then begin
     // copy whole source
     System.Move(SrcData^,DestData^,DestDataSize);
@@ -565,15 +565,15 @@ begin
         inc(ByteCount);
       //DebugLn'ExtractRawImageDataRect B ByteCount=',ByteCount);
       System.Move(
-        Pointer(Cardinal(SrcData)+SrcLineStartPosition.Byte)^,
-        Pointer(Cardinal(DestData)+DestLineStartPosition.Byte)^,
+        Pointer(PtrUInt(SrcData)+SrcLineStartPosition.Byte)^,
+        Pointer(PtrUInt(DestData)+DestLineStartPosition.Byte)^,
         ByteCount);
     end else if (DestLineStartPosition.Bit=0) then begin
       // copy and move bits
       ByteCount:=((SrcWidth*BitsPerPixel)+7) shr 3;
       Shift:=8-SrcLineStartPosition.Bit;
-      SrcPos:=PByte(Cardinal(SrcData)+SrcLineStartPosition.Byte);
-      DestPos:=PByte(Cardinal(DestData)+DestLineStartPosition.Byte);
+      SrcPos:=PByte(PtrUInt(SrcData)+SrcLineStartPosition.Byte);
+      DestPos:=PByte(PtrUInt(DestData)+DestLineStartPosition.Byte);
       for x:=0 to ByteCount-1 do begin
         w:=PWord(SrcPos)^;
         w:=w shr Shift;
@@ -699,8 +699,8 @@ begin
   Bits:=Bits shr (16-Prec);
   {DebugLn'WriteDataBits WRITE Position=',Position.Byte,'/',Position.Bit,
     ' Shift=',Shift,' Prec=',Prec,' BitsPerPixel=',BitsPerPixel,
-    ' PrecMask=',HexStr(Cardinal(PrecMask),4),
-    ' Bits=',HexStr(Cardinal(Bits),4),
+    ' PrecMask=',DbgS(PrecMask),
+    ' Bits=',DbgS(Bits),
     '');}
   case BitsPerPixel of
   1,2,4:
@@ -714,7 +714,7 @@ begin
         OneByte:=OneByte and PrecMask; // clear old
         OneByte:=OneByte or (Bits shl ShiftLeft); // set new
         P^:=OneByte;
-        //DebugLn'WriteDataBits 1,2,4 Result=',HexStr(Cardinal(OneByte),2));
+        //DebugLn'WriteDataBits 1,2,4 Result=',DbgS(OneByte));
       end;
   8:  begin
         OneByte:=P^;
@@ -722,7 +722,7 @@ begin
         OneByte:=OneByte and PrecMask; // clear old
         OneByte:=OneByte or (Bits shl Shift); // set new
         P^:=OneByte;
-        //DebugLn'WriteDataBits 8 Result=',HexStr(Cardinal(OneByte),2));
+        //DebugLn'WriteDataBits 8 Result=',DbgS(OneByte));
       end;
   16: begin
         TwoBytes:=PWord(P)^;
@@ -730,7 +730,7 @@ begin
         TwoBytes:=TwoBytes and PrecMask; // clear old
         TwoBytes:=TwoBytes or (Bits shl Shift); // set new
         PWord(P)^:=TwoBytes;
-        //DebugLn'WriteDataBits 16 Result=',HexStr(Cardinal(TwoBytes),4));
+        //DebugLn'WriteDataBits 16 Result=',DbgS(TwoBytes));
       end;
   32: begin
         FourBytes:=PDWord(P)^;
@@ -738,7 +738,7 @@ begin
         FourBytes:=FourBytes and PrecMask; // clear old
         FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
         PDWord(P)^:=FourBytes;
-        //DebugLn'WriteDataBits 32 Result=',HexStr(Cardinal(FourBytes),8));
+        //DebugLn'WriteDataBits 32 Result=',DbgS(FourBytes));
       end;
   end;
 end;
@@ -788,6 +788,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.39  2005/03/05 13:09:27  mattias
   added BitOrder test for RawImageMaskEmpty
 

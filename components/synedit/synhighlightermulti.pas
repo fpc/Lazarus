@@ -349,14 +349,14 @@ begin
   iSchemeIndex := fCurrScheme +2;
   Assert( iSchemeIndex <= MaxSchemeCount );
   if iHL <> nil then begin
-    iSchemeRange := cardinal( iHL.GetRange );
+    iSchemeRange := PtrInt( iHL.GetRange );
     Assert( (iSchemeRange <= MaxSchemeRange) or (iHL is TSynMultiSyn) );
   end else
     iSchemeRange := 0;
   { checks the limit of nested MultiSyns }
   Assert( iSchemeRange shr ((MaxNestedMultiSyn -1)*SchemeIndexSize + SchemeRangeSize) = 0 );
   iSchemeRange := (iSchemeRange shl SchemeIndexSize) or iSchemeIndex;
-  Result := pointer(iSchemeRange);
+  Result := pointer(PtrInt(iSchemeRange));
 end;
 
 function TSynMultiSyn.GetToken: string;
@@ -649,11 +649,11 @@ end;
 
 procedure TSynMultiSyn.SetRange(Value: Pointer);
 var
-  iSchemeRange: integer;
+  iSchemeRange: PtrInt;
 begin
   if Value = nil then
     Exit;
-  iSchemeRange := integer(Value);
+  iSchemeRange := PtrInt(Value);
   fCurrScheme := (iSchemeRange and MaxSchemeCount) -2;
   iSchemeRange := iSchemeRange shr SchemeIndexSize;
   if (CurrScheme < 0) then begin

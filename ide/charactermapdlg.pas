@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  SynEdit, StdCtrls, LCLType, GraphType, LazarusIDEStrConsts, EditorOptions,
+  SynEdit, StdCtrls, LCLType, LCLProc, GraphType, LazarusIDEStrConsts, EditorOptions,
   SynEditHighlighter, SynHighlighterPosition;
 
 type
@@ -159,7 +159,7 @@ var
 begin
   if RowColValid(Row,Col) then begin
     CharOrd:=GetCharOrd(Row,Col);
-    Result:='Dezimal='+IntToStr(CharOrd)+' Hex='+HexStr(CharOrd,2);
+    Result:='Decimal='+IntToStr(CharOrd)+' Hex='+HexStr(CharOrd,2);
   end else begin
     Result:='-';
   end;

@@ -1330,7 +1330,7 @@ Begin
             CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
           DesignOffset:=Point(CompLeft,CompTop);
           DesignSize:=Point(CompWidth,CompHeight);
-          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(Temp.Component),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',HexStr(Cardinal(Temp.Component),8),' ',HexStr(Cardinal(@DesignOffset),8));
+          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(Temp.Component),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',DbgS(Temp.Component),8),' ',DbgS(Cardinal(@DesignOffset));
         end;
       end
       else begin

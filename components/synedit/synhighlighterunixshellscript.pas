@@ -699,7 +699,7 @@ end;
 
 function TSynUNIXShellScriptSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrInt(fRange));
 end;
 
 function TSynUNIXShellScriptSyn.GetToken: string;
@@ -760,7 +760,7 @@ end;
 
 procedure TSynUNIXShellScriptSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(PtrInt(Value));
 end;
 
 procedure TSynUNIXShellScriptSyn.SetSecondKeys(const Value: TStrings);

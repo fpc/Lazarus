@@ -1412,7 +1412,7 @@ end;
 
 function TSynCppSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrInt(fRange));
 end;
 
 function TSynCppSyn.GetToken: String;
@@ -1480,7 +1480,7 @@ end;
 
 procedure TSynCppSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(PtrInt(Value));
 end;
 
 procedure TSynCppSyn.EnumUserSettings(settings: TStrings);

@@ -100,8 +100,8 @@ begin
       DC:=GetDC(HWnd(Widget));
       ItemState:=State;
     end;
-    //DebugLn('gtkListItemDrawCB A LCLList=',HexStr(Cardinal(LCLList),8),' Widget=',HexStr(Cardinal(Widget),8),' ',HexStr(Cardinal(Data),8));
-    //DebugLn('gtkListItemDrawCB B ',LCLList.ClassName,' ',HexStr(Cardinal(LCLList.Owner),8));
+    //DebugLn('gtkListItemDrawCB A LCLList=',DbgS(LCLList),' Widget=',DbgS(Widget),' ',DbgS(Data));
+    //DebugLn('gtkListItemDrawCB B ',LCLList.ClassName,' ',DbgS(LCLList.Owner);
     //DebugLn('gtkListItemDrawCB C ',LCLList.Owner.ClassName);
     Result := DeliverMessage(LCLList.Owner, Msg)=0;
     ReleaseDC(HWnd(Widget),Msg.DrawListItemStruct^.DC);
@@ -143,7 +143,7 @@ begin
     'TGtkListStringList.Create Unspecified owner');
   FOwner:=TheOwner;
   FWithCheckBox := AWithCheckBox;
-  //DebugLn('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
+  //DebugLn('TGtkListStringList.Create Self=',DbgS(Self),' List=',DbgS(List),' Owner=',DbgS(Owner));
   Include(FStates,glsItemCacheNeedsUpdate);
   ConnectAllCallbacks;
   {$IFDEF CheckGtkList}
@@ -159,7 +159,7 @@ begin
   FCachedItems:=nil;
   FCachedCount:=0;
   FCachedCapacity:=0;
-  //DebugLn('TGtkListStringList.Destroy Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(FGtkList),8),' Owner=',HexStr(Cardinal(Owner),8));
+  //DebugLn('TGtkListStringList.Destroy Self=',DbgS(Self),' List=',DbgS(FGtkList),' Owner=',DbgS(Owner));
   inherited Destroy;
 end;
 
@@ -204,10 +204,10 @@ procedure TGtkListStringList.ConnectItemCallbacks(Li: PGtkListItem);
 begin
   gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
   gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);
-  //DebugLn('TGtkListStringList.ConnectItemCallbacks Self=',HexStr(Cardinal(Self),8),
-  //' GtkList=',HexStr(Cardinal(FGtkList),8),
-  //' Owner=',HexStr(Cardinal(Owner),8),'=',Owner.ClassName,
-  //' LI=',HexStr(Cardinal(LI),8),
+  //DebugLn('TGtkListStringList.ConnectItemCallbacks Self=',DbgS(Self),
+  //' GtkList=',DbgS(FGtkList),
+  //' Owner=',DbgS(Owner),'=',Owner.ClassName,
+  //' LI=',DbgS(LI),
   //' ');
   {$ifdef GTK2}
   g_signal_connect_after(G_OBJECT(li), 'expose_event',
@@ -438,7 +438,7 @@ begin
   then
     RaiseException('TGtkListStringList.Assign: There 2 lists with the same FGtkList');
   BeginUpdate;
-//DebugLn('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',HexStr(Cardinal(Self),8),' Source=',HexStr(Cardinal(Source),8));
+//DebugLn('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',DbgS(Self),' Source=',DbgS(Source));
   try
     if Source is TStrings then begin
       // clearing and resetting can change other properties of the widget,
@@ -964,6 +964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.28  2005/02/05 16:09:52  marc
   * first 64bit changes
 

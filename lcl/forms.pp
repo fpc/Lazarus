@@ -1309,7 +1309,7 @@ end;
 
 procedure RestoreFocusState(FocusState: TFocusState);
 begin
-  FocusCount := Integer(FocusState);
+  FocusCount := PtrInt(FocusState);
 end;
 
 {function SendFocusMessage(Window: HWnd; Msg: Word): Boolean;

@@ -2793,7 +2793,7 @@ try
   end;
   {$ENDIF}
 finally
-writeln('TPaintPanel.Paint B Canvas.Handle=',HexStr(Cardinal(Canvas.Handle),8));
+writeln('TPaintPanel.Paint B Canvas.Handle=',DbgS(Canvas.Handle));
   {$IFDEF HL_LAZARUS}
   Canvas2.Handle:=0;
   {$ENDIF}
@@ -2804,12 +2804,12 @@ end;
 procedure TPaintPanel.CreateWnd;
 begin
   inherited CreateWnd;
-  writeln('TPaintPanel.CreateWnd ',HexStr(Cardinal(Self),8),' ',HexStr(Cardinal(Handle),8));
+  writeln('TPaintPanel.CreateWnd ',DbgS(Self),' ',DbgS(Handle));
 end;
 
 procedure TPaintPanel.DestroyWnd;
 begin
-  writeln('TPaintPanel.DestroyWnd ',HexStr(Cardinal(Self),8));
+  writeln('TPaintPanel.DestroyWnd ',DbgS(Self));
   inherited DestroyWnd;
 end;
 
@@ -2824,7 +2824,7 @@ var
   DC: HDC;
   CopyFromDC: boolean;
 begin
-writeln('TPaintPanel.DoBackground A ',HexStr(Cardinal(ACanvas),8));
+writeln('TPaintPanel.DoBackground A ',DbgS(ACanvas));
 DC := ACanvas.handle;
 if DC <> 0 then
   begin

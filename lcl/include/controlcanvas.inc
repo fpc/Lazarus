@@ -79,7 +79,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.CreateHandle;
 begin
-//DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',HexStr(FDeviceContext,8),' WinHandle=',HexStr(FWindowHandle,8));
+//DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',DbgS(FDeviceContext,8),' WinHandle=',DbgS(FWindowHandle,8));
   if FControl = nil
   then inherited CreateHandle
   else begin
@@ -113,6 +113,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.8  2004/07/15 10:43:38  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

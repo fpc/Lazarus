@@ -945,7 +945,7 @@ begin
 
   {$IFDEF VerboseDsgnPaintMsg}
   writeln('***  TDesigner.PaintControl A ',Sender.Name,':',Sender.ClassName,
-          ' DC=',HexStr(Cardinal(TheMessage.DC),8));
+          ' DC=',DbgS(TheMessage.DC));
   {$ENDIF}
   // Set flag
   OldDuringPaintControl:=dfDuringPaintControl in FFlags;
@@ -954,7 +954,7 @@ begin
   // send the Paint message to the control, so that it paints itself
   //writeln('TDesigner.PaintControl B ',Sender.Name);
   Sender.Dispatch(TheMessage);
-  //writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',HexStr(Cardinal(TheMessage.DC),8));
+  //writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',DbgS(TheMessage.DC));
 
   // paint the Designer stuff
   if TheMessage.DC <> 0 then begin
@@ -964,7 +964,7 @@ begin
     DDC.SetDC(Form, TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
-      ' DC=',HexStr(DDC.DC,8),
+      ' DC=',DbgS(DDC.DC,8),
      {' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y,}
       ' DCOrigin=',DDC.DCOrigin.X,',',DDC.DCOrigin.Y,
       ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y,
@@ -973,7 +973,7 @@ begin
     {$ENDIF}
     if LastPaintSender=Sender then begin
       //writeln('NOTE: TDesigner.PaintControl E control painted twice: ',
-      //  Sender.Name,':',Sender.ClassName,' DC=',HexStr(Cardinal(TheMessage.DC),8));
+      //  Sender.Name,':',Sender.ClassName,' DC=',DbgS(TheMessage.DC));
       //RaiseException('');
     end;
     LastPaintSender:=Sender;
@@ -1636,7 +1636,7 @@ begin
   if DeletingPersistent.Count=0 then exit;
   while DeletingPersistent.Count>0 do begin
     APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
-    //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+    //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
     RemovePersistentAndChilds(APersistent);
     //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingPersistent.IndexOf(AComponent));
   end;
@@ -1651,7 +1651,7 @@ procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
 var
   Hook: TPropertyEditorHook;
 begin
-  //writeln('TDesigner.DoDeleteComponent A ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+  //writeln('TDesigner.DoDeleteComponent A ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
   PopupMenuComponentEditor:=nil;
   // unselect component
   ControlSelection.Remove(APersistent);
@@ -1660,7 +1660,7 @@ begin
     // this component is currently in the process of deletion or the component
     // was not properly created
     // -> do not call handlers and simply get rid of the rubbish
-    //writeln('TDesigner.DoDeleteComponent UNKNOWN ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+    //writeln('TDesigner.DoDeleteComponent UNKNOWN ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
     if FreeIt then
       APersistent.Free;
     // unmark component
@@ -1752,7 +1752,7 @@ var
   ChildControl: TControl;
 Begin
   {$IFDEF VerboseDesigner}
-  DebugLn('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',HexStr(Cardinal(APersistent),8));
+  DebugLn('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',DbgS(APersistent));
   {$ENDIF}
   if (APersistent=FLookupRoot) or (APersistent=Form)
   or (IgnoreDeletingPersistent.IndexOf(APersistent)>=0)
@@ -1765,7 +1765,7 @@ Begin
       ChildControl:=AWinControl.Controls[i];
       if (ChildControl.Owner=FLookupRoot)
       and (IgnoreDeletingPersistent.IndexOf(ChildControl)<0) then begin
-        //Writeln('[TDesigner.RemoveComponentAndChilds] B ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8),' Child=',ChildControl.Name,':',ChildControl.ClassName,' i=',i);
+        //Writeln('[TDesigner.RemoveComponentAndChilds] B ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent),' Child=',ChildControl.Name,':',ChildControl.ClassName,' i=',i);
         RemovePersistentAndChilds(ChildControl);
         // the component list of the form has changed
         // -> restart the search
@@ -1785,7 +1785,7 @@ procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then begin
     {$IFDEF VerboseDesigner}
-    DebugLn('opInsert ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+    DebugLn('opInsert ',AComponent.Name,':',AComponent.ClassName,' ',DbgS(AComponent));
     {$ENDIF}
     if dfDeleting in FFlags then begin
       // a component has auto created a new component during deletion

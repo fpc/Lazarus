@@ -361,7 +361,7 @@ begin
     if UseWidth<1 then UseWidth:=1;
     if UseHeight<1 then UseHeight:=1;
     FImage.FHandle:= CreateBitmap(UseWidth, UseHeight, 1, n, nil);
-    //DebugLn('TBitMap.HandleNeeded Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),' n=',n);
+    //DebugLn('TBitMap.HandleNeeded Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle),' n=',n);
     FImage.FDIB.dsbm.bmWidth := Width;
     FImage.FDIB.dsbm.bmHeight := Height;
   end;
@@ -462,7 +462,7 @@ var
   {$ENDIF}
 begin
   if (FImage.RefCount>1) then begin
-    //DebugLn('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
+    //DebugLn('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
     // release old FImage and create a new one
     NewImage:=TBitmapImage.Create;
     try
@@ -486,14 +486,14 @@ begin
       FreeCanvasContext;
       OldImage:=FImage;
       FImage:=NewImage;
-      //DebugLn('TBitMap.UnshareImage Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
+      //DebugLn('TBitMap.UnshareImage Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
       NewImage:=nil; // transaction sucessful
       OldImage.Release;
     finally
       // in case something goes wrong, keep old and free new
       NewImage.Free;
     end;
-    //DebugLn('TBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
+    //DebugLn('TBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
   end;
 end;
 
@@ -1024,7 +1024,7 @@ var
   IntfImg: TLazIntfImage;
   ImgWriter: TFPCustomImageWriter;
 begin
-  //DebugLn('WriteStreamWithFPImage Self=',HexStr(Cardinal(Self),8),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
+  //DebugLn('WriteStreamWithFPImage Self=',DbgS(Self),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0) then begin
     DoWriteOriginal;
     exit;
@@ -1098,7 +1098,7 @@ begin
   FImage.FreeHandle;
   // get the properties from new bitmap
   FImage.FHandle:=Value;
-  //DebugLn('TBitMap.SetHandle Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
+  //DebugLn('TBitMap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
   FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
   if FImage.FHandle <> 0 then
     GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
@@ -1119,16 +1119,16 @@ begin
   FImage.FreeMaskHandle;
   // combine (depending on the interface we will end with one or two handles)
   {$IFDEF VerboseImgMasks}
-  DebugLn('TBitmap.SetMaskHandle Before Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
-    ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
-    ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  DebugLn('TBitmap.SetMaskHandle Before Replace FImage.FHandle=',DbgS(FImage.FHandle),
+    ' FImage.FMaskHandle=',DbgS(FImage.FMaskHandle),
+    ' NewMaskHandle=',DbgS(NewMaskHandle));
   {$ENDIF}
   ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
   FTransparent := FImage.FMaskHandle <> 0;
   {$IFDEF VerboseImgMasks}
-  DebugLn('TBitmap.SetMaskHandle After Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
-    ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
-    ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  DebugLn('TBitmap.SetMaskHandle After Replace FImage.FHandle=',DbgS(FImage.FHandle),
+    ' FImage.FMaskHandle=',DbgS(FImage.FMaskHandle),
+    ' NewMaskHandle=',DbgS(NewMaskHandle));
   {$ENDIF}
   Changed(Self);
 end;
@@ -1278,6 +1278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.95  2005/01/18 22:26:10  mattias
   added workaround for bug 3574
 

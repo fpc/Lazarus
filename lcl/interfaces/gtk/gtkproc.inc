@@ -230,9 +230,9 @@ begin
   Color^.blue := gushort(TruncToCardinal(colorArray[2] * $FFFF));
   {$IFDEF VerboseColorDialog}
   DebugLn('gtk_color_selection_get_current_color ',
-    ' Red=',HexStr(Cardinal(Color^.Red),8),
-    ' Green=',HexStr(Cardinal(Color^.Green),8),
-    ' Blue=',HexStr(Cardinal(Color^.Blue),8),
+    ' Red=',DbgS(Color^.Red),
+    ' Green=',DbgS(Color^.Green),
+    ' Blue=',DbgS(Color^.Blue),
     '');
   {$ENDIF}
 end;
@@ -244,9 +244,9 @@ var
 begin
   {$IFDEF VerboseColorDialog}
   DebugLn('gtk_color_selection_set_current_color ',
-    ' Red=',HexStr(Cardinal(Color^.Red),8),
-    ' Green=',HexStr(Cardinal(Color^.Green),8),
-    ' Blue=',HexStr(Cardinal(Color^.Blue),8),
+    ' Red=',DbgS(Color^.Red),
+    ' Green=',DbgS(Color^.Green),
+    ' Blue=',DbgS(Color^.Blue),
     '');
   {$ENDIF}
   GetMem(SelectionColor,4*SizeOf(GDouble));
@@ -688,7 +688,7 @@ var
   {$endif}
   TypeAsStr: String;
 begin
-  Result:=HexStr(Cardinal(AWindow),8);
+  Result:=DbgS(AWindow);
   if AWindow=nil then exit;
   
   // window type
@@ -718,7 +718,7 @@ begin
       Widget:=PGTKWidget(p);
       Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
     end else begin
-      Result:=Result+'<UserData='+HexStr(Cardinal(p),8)+']>';
+      Result:=Result+'<UserData='+DbgS(p)+']>';
     end;
   end;
 
@@ -745,7 +745,7 @@ begin
   else begin
     Result:=Result+'FG[N]:='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
     Result:=Result+'BG[N]:='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'BG_Pixmap[N]:='+HexStr(Cardinal(AStyle^.bg_pixmap[GTK_STATE_NORMAL]),8)+' ';
+    Result:=Result+'BG_Pixmap[N]:='+DbgS(AStyle^.bg_pixmap[GTK_STATE_NORMAL])+' ';
     Result:=Result+'rc_style='+GetRCStyleDebugReport(AStyle^.rc_style);
   end;
   Result:=Result+']';
@@ -766,7 +766,7 @@ begin
 {$ENDIF GTK1}
     Result:=Result+'bg_pixmap_name[N]="'+AStyle^.bg_pixmap_name[GTK_STATE_NORMAL]+'" ';
 {$IFDEF GTK1}
-    Result:=Result+'engine='+HexStr(Cardinal(AStyle^.engine),8);
+    Result:=Result+'engine='+DbgS(AStyle^.engine);
 {$ELSE GTK1}
     {$WARNING TODO find GTK2 theme engine}
 {$ENDIF GTK1}
@@ -913,12 +913,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 begin
-  //DebugLn('SetComboBoxText ',HexStr(Cardinal(ComboWidget),8),' "',NewText,'"');
+  //DebugLn('SetComboBoxText ',DbgS(ComboWidget),' "',NewText,'"');
   // lock combobox, so that no OnChange event is fired
   LockOnChange(PGtkObject(ComboWidget^.entry),+1);
   // set text
   if NewText = nil then NewText:=#0; // gtk expects at least a #0
-  //DebugLn('SetComboBoxText A ',HexStr(Cardinal(NewText),8));
+  //DebugLn('SetComboBoxText A ',DbgS(NewText));
   gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
   // unlock combobox
   LockOnChange(PGtkObject(ComboWidget^.entry),-1);
@@ -1104,10 +1104,10 @@ var
   //ClipMergeMaskWidth, ClipMergeMaskHeight: integer;
 begin
   {$IFDEF VerboseStretchCopyArea}
-  DebugLn('MergeClipping START DestinationDC=',HexStr(Cardinal(DestinationDC),8),
-    ' DestinationGC=',HexStr(Cardinal(DestinationGC),8),
+  DebugLn('MergeClipping START DestinationDC=',DbgS(DestinationDC),
+    ' DestinationGC=',DbgS(DestinationGC),
     ' X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
-    ' ClipMergeMask=',HexStr(Cardinal(ClipMergeMask),8),
+    ' ClipMergeMask=',DbgS(ClipMergeMask),
     ' ClipMergeMaskX=',ClipMergeMaskX,' ClipMergeMaskY=',ClipMergeMaskY);
   {$ENDIF}
 
@@ -1201,7 +1201,7 @@ var
   {$ENDIF}
 begin
   {$IFDEF VerboseStretchCopyArea}
-  DebugLn('ScalePixmap ScaleGC=',HexStr(Cardinal(ScaleGC),8),
+  DebugLn('ScalePixmap ScaleGC=',DbgS(ScaleGC),
     ' SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
     ' SrcX=',SrcX,' SrcY=',SrcY,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
     ' NewPixmap=[',GetWindowDebugReport(NewPixmap),']',
@@ -1287,8 +1287,8 @@ begin
   // clean up
   {$IFDEF VerboseStretchCopyArea}
   gdk_window_get_size(PGDKWindow(NewPixmap),@NewWholeWidth,@NewWholeHeight);
-  DebugLn('ScalePixmap RESULT NewPixmap=',HexStr(Cardinal(NewPixmap),8),
-    ' DummyMask=',HexStr(Cardinal(DummyMask),8),
+  DebugLn('ScalePixmap RESULT NewPixmap=',DbgS(NewPixmap),
+    ' DummyMask=',DbgS(DummyMask),
     ' NewWidth=',NewWholeWidth,' NewHeight=',NewWholeHeight,
     '');
   {$ENDIF}
@@ -1540,7 +1540,7 @@ function GDKRegionAsString(RGN: PGDKRegion): string;
 var
   aRect: TGDKRectangle;
 begin
-  Result:=HexStr(Cardinal(RGN),8);
+  Result:=DbgS(RGN);
   BeginGDKErrorTrap;
   gdk_region_get_clipbox(RGN,@aRect);
   EndGDKErrorTrap;
@@ -1643,10 +1643,10 @@ var
         then begin
           DebugLn('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
             ' Foreground=',
-            HexStr(Cardinal(Foreground.red),4),',',
-            HexStr(Cardinal(Foreground.green),4),',',
-            HexStr(Cardinal(Foreground.blue),4),
-            ' GDIColor^.ColorRef=',HexStr(Cardinal(GDIColor^.ColorRef),8)
+            DbgS(Foreground.red),',',
+            DbgS(Foreground.green),',',
+            DbgS(Foreground.blue),
+            ' GDIColor^.ColorRef=',DbgS(GDIColor^.ColorRef)
             );
         end;
       gdk_gc_set_foreground(GC, @foreground);
@@ -1674,7 +1674,7 @@ var
   Procedure EnsureAsColor;
   begin
     AllocGDIColor(DC, GDIColor);
-    //DebugLn('EnsureAsColor ',HexStr(Cardinal(GDIColor^.ColorRef),8),' AsBackground=',AsBackground);
+    //DebugLn('EnsureAsColor ',DbgS(GDIColor^.ColorRef),' AsBackground=',AsBackground);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     If AsBackground then
       gdk_gc_set_background(GC, @(GDIColor^.Color))
@@ -3235,7 +3235,7 @@ function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
   if Target=nil then DebugLn('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}
-  DebugLn('DeliverMessage ',HexStr(Cardinal(Target),8),
+  DebugLn('DeliverMessage ',DbgS(Target),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
@@ -3473,8 +3473,8 @@ Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
   begin
     // this is in a separate procedure for optimisation
     DebugLn('[FixedPutControl] WARNING: Invalid Fixed Widget.',
-      ' Parent=',HexStr(Cardinal(Parent),8),
-      ' Child=',HexStr(Cardinal(Child),8)
+      ' Parent=',DbgS(Parent),
+      ' Child=',DbgS(Child)
       );
   end;
 
@@ -3678,7 +3678,7 @@ begin
   Result^.CoreWidget := AWidget;
   Result^.Style := AParams.Style;
   Result^.ExStyle := AParams.ExStyle;
-  Result^.WndProc := Integer(AParams.WindowClass.lpfnWndProc);
+  Result^.WndProc := PtrInt(AParams.WindowClass.lpfnWndProc);
 end;
 
 function GetWidgetInfo(const AWidget: Pointer {; const Create: Boolean = False}): PWidgetInfo;
@@ -4418,8 +4418,8 @@ end;
 
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
 begin
-  Result:=TDesignSignalMask(gtk_object_get_data(PGtkObject(Widget),
-                                                'LCLDesignMask'));
+  Result:=TDesignSignalMask(PtrInt(gtk_object_get_data(PGtkObject(Widget),
+                                                'LCLDesignMask')));
 end;
 
 procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
@@ -4512,7 +4512,7 @@ begin
   
   // if we are here, then no handler was defined yet
   // -> register handler
-  //if (Msg=LM_LBUTTONUP) then DebugLn('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
+  //if (Msg=LM_LBUTTONUP) then DebugLn('CONNECT ',ReqSignalMask,' Widget=',DbgS(AnObject));
   //debugln('ConnectSignal ',DbgSName(ALCLObject),' ',ASignal,' After=',dbgs(csfAfter in ASFlags));
   if csfAfter in ASFlags then
     g_signal_connect_after(AnObject, ASignal,
@@ -4623,7 +4623,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     {$ENDIF}
     ChildWidget: PGtkWidget;
   begin
-    //if AWinControl is TListView then DebugLn('ConnectChilds A ',HexStr(Cardinal(TheWidget),8));
+    //if AWinControl is TListView then DebugLn('ConnectChilds A ',DbgS(TheWidget));
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
       //if AWinControl is TListView then DebugLn('ConnectChilds B ');
       // this is a container widget -> connect all childs
@@ -4668,7 +4668,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     DesignSignalType: TDesignSignalType;
     DesignFlags: TConnectSignalFlags;
   begin
-    //if AWinControl is TListView then DebugLn('ConnectSignals A ',HexStr(Cardinal(TheWidget),8));
+    //if AWinControl is TListView then DebugLn('ConnectSignals A ',DbgS(TheWidget));
     if TheWidget=nil then exit;
     
     // check if TheWidget belongs to another LCL object
@@ -4681,7 +4681,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       exit;
     end;
 
-    //if AWinControl is TListView then DebugLn('ConnectSignals B ',HexStr(Cardinal(TheWidget),8));
+    //if AWinControl is TListView then DebugLn('ConnectSignals B ',DbgS(TheWidget));
     // connect signals needed for design mode:
     for DesignSignalType:=Low(TDesignSignalType) to High(TDesignSignalType) do
     begin
@@ -4721,7 +4721,7 @@ begin
   Result := PGTKAccelGroup(gtk_object_get_data(PGtkObject(Widget),'AccelGroup'));
   if (Result=nil) and CreateIfNotExists then begin
     {$IFDEF VerboseAccelerator}
-    DebugLn('GetAccelGroup CREATING  Widget=',HexStr(Cardinal(Widget),8),' CreateIfNotExists=',CreateIfNotExists);
+    DebugLn('GetAccelGroup CREATING  Widget=',DbgS(Widget),' CreateIfNotExists=',CreateIfNotExists);
     {$ENDIF}
     Result:=gtk_accel_group_new;
     SetAccelGroup(Widget,Result);
@@ -4738,7 +4738,7 @@ begin
   if AnAccelGroup<>nil then begin
     // attach group to widget
     {$IFDEF VerboseAccelerator}
-    DebugLn('SetAccelGroup AnAccelGroup=',HexStr(Cardinal(AnAccelGroup),8),' IsMenu=',GtkWidgetIsA(Widget,GTK_MENU_TYPE));
+    DebugLn('SetAccelGroup AnAccelGroup=',DbgS(AnAccelGroup),' IsMenu=',GtkWidgetIsA(Widget,GTK_MENU_TYPE));
     {$ENDIF}
     if GtkWidgetIsA(Widget,GTK_TYPE_MENU) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
@@ -4760,7 +4760,7 @@ begin
   AccelGroup:=GetAccelGroup(Widget,false);
   if AccelGroup<>nil then begin
     {$IFDEF VerboseAccelerator}
-    DebugLn('FreeAccelGroup  AccelGroup=',HexStr(Cardinal(AccelGroup),8));
+    DebugLn('FreeAccelGroup  AccelGroup=',DbgS(AccelGroup));
     {$ENDIF}
     gtk_accel_group_unref(AccelGroup);
     SetAccelGroup(Widget,nil);
@@ -4922,7 +4922,7 @@ begin
     end;
   end;
   {$IFDEF VerboseAccelerator}
-  DebugLn('GetAccelGroupForComponent END ',Component.Name,':',Component.ClassName,' Result=',HexStr(Cardinal(Result),8));
+  DebugLn('GetAccelGroupForComponent END ',Component.Name,':',Component.ClassName,' Result=',DbgS(Result));
   {$ENDIF}
 end;
 
@@ -4954,9 +4954,9 @@ begin
     Result^.Realized:=false;
   end;
   {$IFDEF VerboseAccelerator}
-  DebugLn('SetAccelKey Widget=',HexStr(Cardinal(Widget),8),
-    ' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),
-    ' Signal="',Signal,'" Result=',HexStr(Cardinal(Result),8));
+  DebugLn('SetAccelKey Widget=',DbgS(Widget),
+    ' Key=',Key,' Mods=',DbgS(Mods),
+    ' Signal="',Signal,'" Result=',DbgS(Result));
   {$ENDIF}
   gtk_object_set_data(PGtkObject(Widget), 'AccelKey', Result);
 end;
@@ -4984,7 +4984,7 @@ begin
       {$IFDEF VerboseAccelerator}
       DebugLn('RealizeAccelerator Add Accelerator ',
         Component.Name,':',Component.ClassName,
-        ' Widget=',HexStr(Cardinal(Widget),8),
+        ' Widget=',DbgS(Widget),
         ' Signal=',AccelKey^.Signal,
         ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
         '');
@@ -5013,7 +5013,7 @@ begin
   if AccelKey^.Signal<>'' then begin
     {$IFDEF VerboseAccelerator}
     DebugLn('UnrealizeAccelerator  ',
-      ' Widget=',HexStr(Cardinal(Widget),8),
+      ' Widget=',DbgS(Widget),
       ' Signal=',AccelKey^.Signal,
       ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
       '');
@@ -5041,7 +5041,7 @@ begin
   if (Component=nil) or (Widget=nil) or (Signal='') then
     RaiseException('Accelerate: invalid input');
   {$IFDEF VerboseAccelerator}
-  DebugLn('Accelerate ',Component.Name,':',Component.ClassName,' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),' Signal=',Signal);
+  DebugLn('Accelerate ',Component.Name,':',Component.ClassName,' Key=',Key,' Mods=',DbgS(Mods),' Signal=',Signal);
   {$ENDIF}
   
   // delete old accelerator key
@@ -5625,7 +5625,7 @@ var
   i: Integer;
   ExpandItem: boolean;
 begin
-  //DebugLn('UpdateStatusBarPanels ',HexStr(Cardinal(StatusBar),8));
+  //DebugLn('UpdateStatusBarPanels ',DbgS(StatusBar));
 
   AStatusBar:=StatusBar as TStatusBar;
   HBox:=PGtkWidget(StatusBarWidget);
@@ -5656,7 +5656,7 @@ begin
 
   // check new panel count
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
-  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',dbgs(NewPanelCount),' CurPanelCount=',dbgs(CurPanelCount));
+  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',Dbgs(StatusBar),' NewPanelCount=',dbgs(NewPanelCount),' CurPanelCount=',dbgs(CurPanelCount));
   if CurPanelCount<>NewPanelCount then
     RaiseGDBException('');
 
@@ -5686,7 +5686,7 @@ var
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
 begin
-  //DebugLn('UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',dbgs(Index));
+  //DebugLn('UpdateStatusBarPanel ',DbgS(StatusBar),' Index=',dbgs(Index));
   AStatusBar:=StatusBar as TStatusBar;
 
   CurPanel:=nil;
@@ -5767,7 +5767,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF VerboseSizeMsg}
-  DbgOut('SaveSizeNotification Widget=',HexStr(Cardinal(Widget),8));
+  DbgOut('SaveSizeNotification Widget=',DbgS(Widget));
   LCLControl:=TWinControl(GetLCLObject(Widget));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then
@@ -5804,25 +5804,25 @@ begin
   {$IFDEF VerboseSizeMsg}
   MainWidget:=GetMainWidget(FixWidget);
   //write('SaveClientSizeNotification',
-  //  ' FixWidget=',HexStr(Cardinal(FixWidget),8),
-  //  ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
+  //  ' FixWidget=',DbgS(FixWidget),
+  //  ' MainWIdget=',DbgS(MainWidget));
   LCLControl:=TWinControl(GetLCLObject(MainWidget));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then begin
       //DebugLn('SaveClientSizeNotification ',LCLControl.Name,':',LCLControl.ClassName,
-      //  ' FixWidget=',HexStr(Cardinal(FixWidget),8),
-      //  ' MainWidget=',HexStr(Cardinal(MainWidget),8));
+      //  ' FixWidget=',DbgS(FixWidget),
+      //  ' MainWidget=',DbgS(MainWidget));
     end else begin
       DbgOut('ERROR: SaveClientSizeNotification ',
         ' LCLControl=',LCLControl.ClassName,
-        ' FixWidget=',HexStr(Cardinal(FixWidget),8),
-        ' MainWidget=',HexStr(Cardinal(MainWidget),8));
+        ' FixWidget=',DbgS(FixWidget),
+        ' MainWidget=',DbgS(MainWidget));
       RaiseGDBException('SaveClientSizeNotification');
     end;
   end else begin
     DbgOut('ERROR: SaveClientSizeNotification LCLControl=nil',
-      ' FixWidget=',HexStr(Cardinal(FixWidget),8),
-      ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
+      ' FixWidget=',DbgS(FixWidget),
+      ' MainWIdget=',DbgS(MainWidget));
     RaiseGDBException('SaveClientSizeNotification');
   end;
   {$ENDIF}
@@ -5874,7 +5874,7 @@ begin
   //DebugLn(' KKK1 HashArray.Count=',HashArray.Count);
   while HashItem<>nil do begin
     TopologicalList[i].Widget:=HashItem^.Item;
-    //DebugLn(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    //DebugLn(' KKK21 i=',i,' Widget=',DbgS(TopologicalList[i].Widget));
     LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
     if (LCLControl=nil) or (not (LCLControl is TControl)) then
       RaiseException('CreateTopologicalSortedWidgets: '
@@ -5909,7 +5909,7 @@ begin
     Lvl:=TopologicalList[i].ParentLevel;
     dec(LevelCounts[Lvl]);
     //DebugLn(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
-    //  ' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    //  ' Widget=',DbgS(TopologicalList[i].Widget));
     Result[LevelCounts[Lvl]]:=TopologicalList[i].Widget;
   end;
   
@@ -5985,11 +5985,11 @@ procedure UpdateSysColorMap(Widget: PGtkWidget);
 {$IFDEF VerboseUpdateSysColorMap}
   function GdkColorAsString(c: TgdkColor): string;
   begin
-    Result:='LCL='+HexStr(Cardinal(TGDKColorToTColor(c)),8)
-             +' Pixel='+HexStr(Cardinal(c.Pixel),8)
-             +' Red='+HexStr(Cardinal(c.Red),8)
-             +' Green='+HexStr(Cardinal(c.Green),8)
-             +' Blue='+HexStr(Cardinal(c.Blue),8)
+    Result:='LCL='+DbgS(TGDKColorToTColor(c))
+             +' Pixel='+DbgS(c.Pixel)
+             +' Red='+DbgS(c.Red)
+             +' Green='+DbgS(c.Green)
+             +' Blue='+DbgS(c.Blue)
              ;
   end;
 {$ENDIF}
@@ -7408,7 +7408,7 @@ begin
           RCStyle^.color_flags[i] or GTK_RC_BG;
       end;}
       
-      //DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Color),8));
+      //DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Color=',DbgS(AWinControl.Color));
     end;
     
     {if (AWinControl is TCustomForm) then begin
@@ -7451,7 +7451,7 @@ begin
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_TEXT;
 
-      //DebugLn('UpdateWidgetStyleOfControl Font Color ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Font.Color),8));
+      //DebugLn('UpdateWidgetStyleOfControl Font Color ',DbgSName(AWinControl),' Color=',DbgS(AWinControl.Font.Color));
     end;
 
     // set font (currently only TCustomLabel)
@@ -8099,6 +8099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.350  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.349  2005/03/05 23:00:16  mattias
   adding panels to statusbar during designing now sets SimplePanel:=false
 

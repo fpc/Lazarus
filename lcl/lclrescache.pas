@@ -486,7 +486,7 @@ var
   begin
     Msg:='TBlockResourceCache.AddResource Descriptor Already Added '#13;
     for i:=0 to DataSize-1 do
-      Msg:=Msg+hexstr(ord(PChar(DescPtr)[i]),2);
+      Msg:=Msg+HexStr(ord(PChar(DescPtr)[i]),2);
     raise Exception.Create(Msg);
   end;
 

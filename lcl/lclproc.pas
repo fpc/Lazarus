@@ -145,7 +145,8 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
 procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
 
 function DbgS(const c: cardinal): string;
-function DbgS(const i: integer): string;
+function DbgS(const i: longint): string;
+function DbgS(const i: int64): string;
 function DbgS(const r: TRect): string;
 function DbgS(const p: TPoint): string;
 function DbgS(const p: pointer): string;
@@ -1041,7 +1042,12 @@ begin
   Result:=IntToStr(c);
 end;
 
-function DbgS(const i: integer): string;
+function DbgS(const i: longint): string;
+begin
+  Result:=IntToStr(i);
+end;
+
+function DbgS(const i: int64): string;
 begin
   Result:=IntToStr(i);
 end;
@@ -1059,7 +1065,7 @@ end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=HexStr(Cardinal(p),8);
+  Result:=HexStr(PtrInt(p),sizeof(PtrInt));
 end;
 
 function DbgS(const e: extended): string;

@@ -194,7 +194,7 @@ end;
 destructor TTreeNode.Destroy;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  DebugLn('[TTreeNode.Destroy] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
+  DebugLn('[TTreeNode.Destroy] Self=',DbgS(Self),' Self.Text=',Text);
   {$ENDIF}
   FDeleting := True;
   // delete childs
@@ -400,7 +400,7 @@ end;
 
 procedure TTreeNode.DoExpand(ExpandIt: Boolean);
 begin
-//DebugLn('[TTreeNode.DoExpand] Self=',HexStr(Cardinal(Self),8),' Text=',Text,
+//DebugLn('[TTreeNode.DoExpand] Self=',DbgS(Self),' Text=',Text,
 //' HasChildren=',HasChildren,' ExpandIt=',ExpandIt,' Expanded=',Expanded);
   if HasChildren and (Expanded<>ExpandIt) then begin
     if (TreeView<>nil) then begin
@@ -603,8 +603,7 @@ procedure TTreeNode.SetHasChildren(AValue: Boolean);
 //var Item: TTVItem;
 begin
   if AValue=HasChildren then exit;
-  //DebugLn('[TTreeNode.SetHasChildren] Self=',HexStr(Cardinal(Self),8),
-  //' Self.Text=',Text,' AValue=',AValue);
+  //DebugLn('[TTreeNode.SetHasChildren] Self=',DbgS(Self),' Self.Text=',Text,' AValue=',AValue);
   if AValue then
     Include(FStates,nsHasChildren)
   else begin
@@ -932,7 +931,7 @@ var OldIndex, i: integer;
   TheTreeView: TCustomTreeView;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  DebugLn('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
+  DebugLn('[TTreeNode.Unbind] Self=',DbgS(Self),' Self.Text=',Text);
   {$ENDIF}
   // remove single select
   Selected:=false;
@@ -1019,7 +1018,7 @@ var HigherNode: TTreeNode;
   NewIndex, NewParentItemSize, i: integer;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  DbgOut('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
+  DbgOut('[TTreeNode.InternalMove]  Self=',DbgS(Self),' Self.Text=',Text
   ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
   if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
@@ -1101,7 +1100,7 @@ begin
     taInsert:
       begin
         // insert node in front of ANode
-        //DebugLn('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',HexStr(Cardinal(ANode),8));
+        //DebugLn('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',DbgS(ANode));
         FNextBrother:=ANode;
         FPrevBrother:=ANode.GetPrevSibling;
         if Owner<>nil then begin
@@ -1118,7 +1117,7 @@ begin
       tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
 
   {$IFDEF TREEVIEW_DEBUG}
-  DbgOut('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
+  DbgOut('[TTreeNode.InternalMove] END Self=',DbgS(Self),' Self.Text=',Text
   ,' ANode=',DbgS(ANode<>nil),' AddMode=',AddModeNames[AddMode]);
   if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
@@ -3222,27 +3221,27 @@ end;
 function TCustomTreeView.IsNodeVisible(ANode: TTreeNode): Boolean;
 begin
   Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
-  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
+  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',DbgS(ANode),
   //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
-    //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
+    //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',DbgS(ANode),
     //  ' ',dbgs(FScrolledTop)+'>=',dbgs(ANode.Top+ANode.Height)+' or =',dbgs(FScrolledTop),'+'+dbgs(ClientHeight)+'<',dbgs(ANode.Top));
     if (FScrolledTop>=ANode.Top+ANode.Height)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth<ANode.Top)
     then
       Result:=false;
   end;
-  //DebugLn('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
+  //DebugLn('[TCustomTreeView.IsNodeVisible] END Node=',DbgS(ANode),
   //' Node.Text=',ANode.Text,' Visible=',Result);
 end;
 
 function TCustomTreeView.IsNodeHeightFullVisible(ANode: TTreeNode): Boolean;
 begin
   Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
-  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
+  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',DbgS(ANode),
   //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
-    //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
+    //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',DbgS(ANode),
     //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
     if (FScrolledTop>ANode.Top)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth
@@ -3250,7 +3249,7 @@ begin
     then
       Result:=false;
   end;
-  //DebugLn('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
+  //DebugLn('[TCustomTreeView.IsNodeVisible] END Node=',DbgS(ANode),
   //' Node.Text=',ANode.Text,' Visible=',Result);
 end;
 
@@ -3666,12 +3665,12 @@ begin
     end;
     // draw nodes
     Node:=TopItem;
-    //write('[TCustomTreeView.DoPaint] A Node=',HexStr(Cardinal(Node),8));
+    //write('[TCustomTreeView.DoPaint] A Node=',DbgS(Node));
     //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
     while Node<>nil do begin
       DoPaintNode(Node);
       Node:=Node.GetNextVisible;
-      //write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
+      //write('[TCustomTreeView.DoPaint] B Node=',DbgS(Node));
       //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
     end;
     // draw insert mark for new root node
@@ -3924,7 +3923,7 @@ begin
     PaintImages:=true;
   end;
   VertMid:=(NodeRect.Top+NodeRect.Bottom) shr 1;
-  //DebugLn('[TCustomTreeView.DoPaintNode] Node=',HexStr(Cardinal(Node),8),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
+  //DebugLn('[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
   with Canvas do begin
     // draw background
     if (tvoRowSelect in FOptions) and NodeSelected then
@@ -4499,8 +4498,8 @@ begin
       Include(FStates,tvsTopsNeedsUpdate);
       UpdateAllTops;
       if OldLastTop<>Items.GetLastSubNode.Top then
-        RaiseGDBException('OldLastTop='+HexStr(Cardinal(OldLastTop),8)
-        +'<>Items.GetLastSubNode.Top='+HexStr(Cardinal(Items.GetLastSubNode.Top),8));
+        RaiseGDBException('OldLastTop='+DbgS(OldLastTop)
+        +'<>Items.GetLastSubNode.Top='+DbgS(Items.GetLastSubNode.Top));
     end;
   end;
   if not (tvsMaxRightNeedsUpdate in FStates) then begin

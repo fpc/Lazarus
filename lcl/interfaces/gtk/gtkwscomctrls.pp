@@ -393,7 +393,7 @@ var
   StatusPanelWidget: PGtkWidget;
   BoxChild: PGtkBoxChild;
 begin
-  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(AStatusBar),8),' PanelIndex=',dbgs(PanelIndex));
+  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',DbgS(AStatusBar),' PanelIndex=',dbgs(PanelIndex));
   if PanelIndex>=0 then begin
     // update one
     HBox:=PGtkWidget(AStatusBar.Handle);
@@ -416,7 +416,7 @@ end;
 
 procedure TGtkWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
-  //DebugLn('TGtkWidgetSet.StatusBarUpdate ',HexStr(Cardinal(AStatusBar),8));
+  //DebugLn('TGtkWidgetSet.StatusBarUpdate ',DbgS(AStatusBar));
   UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
 end;
 

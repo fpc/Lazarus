@@ -373,25 +373,25 @@ function ClassAsString(AClass: TClass): string;
 var
   ParentClass: TClass;
 begin
-  Result:='Class='+HexStr(Cardinal(AClass),8);
+  Result:='Class='+DbgS(AClass);
   if AClass=nil then exit;
   Result:=Result+' Name="'+AClass.ClassName+'"';
   ParentClass:=AClass.ClassParent;
   if ParentClass<>nil then
-    Result:=Result+' Parent='+HexStr(Cardinal(ParentClass),8)+'-"'+ParentClass.ClassName+'"';
+    Result:=Result+' Parent='+DbgS(ParentClass)+'-"'+ParentClass.ClassName+'"';
   Result:=Result+LineEnding;
   Result:=Result+' vmtInstanceSize='+IntToStr(PLongInt(pointer(AClass)+vmtInstanceSize)^);
   Result:=Result+' vmtInstanceSizeNeg='+IntToStr(PLongInt(pointer(AClass)+vmtInstanceSizeNeg)^);
-  Result:=Result+' vmtParent='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtParent)^),8);
+  Result:=Result+' vmtParent='+DbgS(pcardinal(pointer(AClass)+vmtParent)^);
   Result:=Result+' vmtClassName="'+PShortString((Pointer(AClass)+vmtClassName)^)^+'"';
-  Result:=Result+' vmtDynamicTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtDynamicTable)^),8);
-  Result:=Result+' vmtMethodTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtMethodTable)^),8);
-  Result:=Result+' vmtFieldTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtFieldTable)^),8);
-  Result:=Result+' vmtTypeInfo='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtTypeInfo)^),8);
-  Result:=Result+' vmtInitTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtInitTable)^),8);
-  Result:=Result+' vmtAutoTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtAutoTable)^),8);
-  Result:=Result+' vmtIntfTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtIntfTable)^),8);
-  Result:=Result+' vmtMsgStrPtr='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtMsgStrPtr)^),8);
+  Result:=Result+' vmtDynamicTable='+DbgS(pcardinal(pointer(AClass)+vmtDynamicTable)^);
+  Result:=Result+' vmtMethodTable='+DbgS(pcardinal(pointer(AClass)+vmtMethodTable)^);
+  Result:=Result+' vmtFieldTable='+DbgS(pcardinal(pointer(AClass)+vmtFieldTable)^);
+  Result:=Result+' vmtTypeInfo='+DbgS(pcardinal(pointer(AClass)+vmtTypeInfo)^);
+  Result:=Result+' vmtInitTable='+DbgS(pcardinal(pointer(AClass)+vmtInitTable)^);
+  Result:=Result+' vmtAutoTable='+DbgS(pcardinal(pointer(AClass)+vmtAutoTable)^);
+  Result:=Result+' vmtIntfTable='+DbgS(pcardinal(pointer(AClass)+vmtIntfTable)^);
+  Result:=Result+' vmtMsgStrPtr='+DbgS(pcardinal(pointer(AClass)+vmtMsgStrPtr)^);
   Result:=Result+LineEnding;
   Result:=Result+' MethodTable=['+ClassMethodTableAsString(AClass)+']';
   Result:=Result+LineEnding;
@@ -412,7 +412,7 @@ begin
   for i:=0 to MethodTable^.Count-1 do begin
     if i>0 then Result:=Result+',';
     Result:=Result+IntToStr(i)+':"'+(MethodTable^.Entries[i].Name^)+'"'
-      +':'+HexStr(Cardinal(MethodTable^.Entries[i].Addr),8);
+      +':'+DbgS(MethodTable^.Entries[i].Addr);
   end;
 end;
 
@@ -432,17 +432,17 @@ begin
   // read all property infos of current class
   TypeData:=GetTypeData(TypeInfo);
   if TypeData=nil then exit;
-  Result:=Result+' ClassType='+HexStr(Cardinal(TypeData^.ClassType),8);
+  Result:=Result+' ClassType='+DbgS(TypeData^.ClassType);
   if TypeData^.ClassType<>AClass then
     Result:=Result+LineEnding
-      +' WARNING: ClassType<>AClass('+HexStr(Cardinal(AClass),8)+')'+LineEnding;
-  Result:=Result+' ParentInfo='+HexStr(Cardinal(TypeData^.ParentInfo),8);
+      +' WARNING: ClassType<>AClass('+DbgS(AClass)+')'+LineEnding;
+  Result:=Result+' ParentInfo='+DbgS(TypeData^.ParentInfo);
   if (AClass.ClassParent<>nil)
   and (TypeData^.ParentInfo<>AClass.ClassParent.ClassInfo) then
     Result:=Result+LineEnding
       +' WARNING: TypeData^.ParentInfo<>AClass.ClassParent.ClassInfo('
-      +HexStr(Cardinal(TypeData^.ParentInfo),8)+'<>'+
-      +HexStr(Cardinal(AClass.ClassParent.ClassInfo),8)+'<>'+')'+LineEnding;
+      +DbgS(TypeData^.ParentInfo)+'<>'+
+      +DbgS(AClass.ClassParent.ClassInfo)+'<>'+')'+LineEnding;
   Result:=Result+' PropCount='+IntToStr(TypeData^.PropCount);
   Result:=Result+' UnitName="'+TypeData^.UnitName+'"';
 
@@ -479,7 +479,7 @@ begin
   if FieldTable=nil then exit;
   Result:=Result+'FieldCount='+IntToStr(FieldTable^.FieldCount);
   ClassTable:=FieldTable^.ClassTable;
-  Result:=Result+' ClassTable='+HexStr(Cardinal(ClassTable),8);
+  Result:=Result+' ClassTable='+DbgS(ClassTable);
   if ClassTable<>nil then begin
     Result:=Result+'={';
     for i:=0 to ClassTable^.Count-1 do begin
@@ -753,7 +753,7 @@ begin
                                             NewUnitName);
   //debugln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class "'+NewClassName+'" = class('+ParentClass.ClassName+') ...');
   Instance:=TComponent(FCurReadClass.NewInstance);
-  //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',HexStr(Cardinal(Instance),8));
+  //debugln('[TJITForms.DoCreateJITComponent] Initializing new instance ... ',DbgS(Instance));
   TComponent(FCurReadJITComponent):=Instance;
   ok:=false;
   try
@@ -1111,7 +1111,7 @@ begin
   {$R-}
   //for a:=0 to NewMethodTable^.Count-2 do
   //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
-  //    ,HexStr(Integer(NewMethodTable^.Entries[a].Name),8));
+  //    ,DbgS(Integer(NewMethodTable^.Entries[a].Name),8));
   with NewMethodTable^.Entries[NewMethodTable^.Count-1] do begin
     GetMem(Name,256);
     Name^:=AName;
@@ -1119,7 +1119,7 @@ begin
   end;
   //for a:=0 to NewMethodTable^.Count-1 do
   //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
-  //    ,HexStr(Integer(NewMethodTable^.Entries[a].Name),8));
+  //    ,DbgS(Integer(NewMethodTable^.Entries[a].Name),8));
   {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
   PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^):=NewMethodTable;
   if Assigned(OldMethodTable) then
@@ -1213,7 +1213,7 @@ procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
 var NewMethod: TMethod;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',HexStr(Cardinal(Address),8));
+  writeln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',DbgS(Address));
   {$ENDIF}
   if Address=nil then begin
     // there is no method in the ancestor class with this name

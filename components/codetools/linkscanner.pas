@@ -796,7 +796,7 @@ procedure TLinkScanner.SetSource(ACode: pointer);
 
   procedure RaiseUnableToGetCode;
   begin
-    RaiseException('unable to get source with Code='+HexStr(Cardinal(Code),8));
+    RaiseException('unable to get source with Code='+DbgS(Code));
   end;
 
 var SrcLog: TSourceLog;
@@ -1250,7 +1250,7 @@ var l,r,m: integer;
   NewSrcChangeStep: PSourceChangeStep;
   c: pointer;
 begin
-  //DebugLn('[TLinkScanner.AddSourceChangeStep] ',HexStr(Cardinal(ACode),8));
+  //DebugLn('[TLinkScanner.AddSourceChangeStep] ',DbgS(ACode));
   if ACode=nil then
     RaiseCodeNil;
   l:=0;
@@ -1269,7 +1269,7 @@ begin
   NewSrcChangeStep^.ChangeStep:=AChangeStep;
   if (FSourceChangeSteps.Count>0) and (c<ACode) then inc(m);
   FSourceChangeSteps.Insert(m,NewSrcChangeStep);
-  //DebugLn('   ADDING ',HexStr(Cardinal(ACode),8),',',FSourceChangeSteps.Count);
+  //DebugLn('   ADDING ',DbgS(ACode),',',FSourceChangeSteps.Count);
 end;
 
 function TLinkScanner.TokenIs(const AToken: shortstring): boolean;

@@ -122,7 +122,7 @@ var
 begin
   Button := AWinControl as TCustomButton;
 
-  Result := THandle(gtk_button_new_with_label('button'));
+  Result := TLCLIntfHandle(gtk_button_new_with_label('button'));
   if Result = 0 then Exit;
 
   WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
@@ -228,7 +228,7 @@ var
 begin
   BitBtn := AWinControl as TCustomBitBtn;
 
-  Result := THandle(gtk_button_new);
+  Result := TLCLIntfHandle(gtk_button_new);
   if Result = 0 then Exit;
 
   WidgetInfo := CreateWidgetInfo(Pointer(Result), BitBtn, AParams);

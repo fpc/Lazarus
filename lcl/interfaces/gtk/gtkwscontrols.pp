@@ -447,7 +447,7 @@ begin
   csComboBox    :
     begin
       //DebugLn('SetLabel: ',TComboBox(Sender).Name,':',TComboBox(Sender).ClassName,
-      //  ' ',HexStr(Cardinal(TComboBox(Sender).Handle),8),' "',PLabel,'"');
+      //  ' ',DbgS(TComboBox(Sender).Handle),' "',PLabel,'"');
       SetComboBoxText(PGtkCombo(TComboBox(AWinControl).Handle), PLabel);
     end;
 

@@ -44,7 +44,7 @@ var
   ThePage: TPage;
 begin
   Result := false;
-  //DebugLn('PageIconWidgetExposeAfter ',HexStr(Cardinal(Widget),8));
+  //DebugLn('PageIconWidgetExposeAfter ',DbgS(Widget));
   EventTrace('PageIconWidgetExposeAfter', Data);
   if (Event^.Count > 0) then exit;
   ThePage:=TObject(Data) as TPage;
@@ -58,7 +58,7 @@ var
   ThePage: TPage;
 begin
   Result := false;
-  //DebugLn('PageIconWidgetDrawAfter ',HexStr(Cardinal(Widget),8),' ',Area^.x,',',Area^.y);
+  //DebugLn('PageIconWidgetDrawAfter ',DbgS(Widget),' ',Area^.x,',',Area^.y);
   EventTrace('PageIconWidgetDrawAfter', Data);
   ThePage:=TObject(Data) as TPage;
   DrawNotebookPageIcon(ThePage,Widget);

@@ -161,7 +161,7 @@ begin
     DebugLn('WARNING: TApplication.MessageBox: no MessageBoxFunction');
     DebugLn('  Caption="',Caption,'"');
     DebugLn('  Text="',Text,'"');
-    DebugLn('  Flags=',HexStr(Cardinal(Flags),8));
+    DebugLn('  Flags=',DbgS(Flags));
     Result:=0;
   end;
 end;
@@ -1448,6 +1448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.107  2005/03/02 15:16:55  mattias
   fixed fpc 1.9.9 compilation
 

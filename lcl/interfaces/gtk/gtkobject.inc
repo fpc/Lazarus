@@ -325,7 +325,7 @@ begin
     HashItem:=FDeviceContexts.FirstHashItem;
     while (n<7) and (HashItem<>nil) do
     begin
-      DbgOut(' ',HexStr(Cardinal(HashItem^.Item),8));
+      DbgOut(' ',DbgS(HashItem^.Item));
       HashItem:=HashItem^.Next;
       inc(n);
     end;
@@ -345,7 +345,7 @@ begin
     while (HashItem <> nil) do
     begin
       if n < 7
-      then DbgOut(' ',HexStr(Cardinal(HashItem^.Item),8));
+      then DbgOut(' ',DbgS(HashItem^.Item));
 
       Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
       HashItem := HashItem^.Next;
@@ -597,11 +597,11 @@ begin
               ParentTransientWindow^.Component.Name,':',
                 ParentTransientWindow^.Component.ClassName,
               ' Index=',ParentTransientWindow^.SortIndex,
-              ' Wnd=',HexStr(Cardinal(ParentTransientWindow^.GtkWindow),8),
+              ' Wnd=',DbgS(ParentTransientWindow^.GtkWindow),
             ' Child=',ATransientWindow^.Component.Name,':',
                                ATransientWindow^.Component.ClassName,
               ' Index=',ATransientWindow^.SortIndex,
-              ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
+              ' Wnd=',DbgS(ATransientWindow^.GtkWindow),
               '');
             {$ENDIF}
             ATransientWindow^.TransientParent:=ParentTransientWindow^.GtkWindow;
@@ -621,11 +621,11 @@ begin
         if (OldTransientParent<>ATransientWindow^.TransientParent) then begin
           {$IFDEF VerboseTransient}
           DebugLn('Break old TRANSIENT i=',i,'/',AllWindows.Count,
-          ' OldTransientParent=',HexStr(Cardinal(OldTransientParent),8),
+          ' OldTransientParent=',DbgS(OldTransientParent),
           ' Child=',ATransientWindow^.Component.Name,':',
                              ATransientWindow^.Component.ClassName,
             ' Index=',ATransientWindow^.SortIndex,
-            ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
+            ' Wnd=',DbgS(ATransientWindow^.GtkWindow),
             '');
           {$ENDIF}
           gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
@@ -641,8 +641,8 @@ begin
         ' Child=',ATransientWindow^.Component.Name,':',
                            ATransientWindow^.Component.ClassName,
           ' Index=',ATransientWindow^.SortIndex,
-          ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
-          ' Parent=',HexStr(Cardinal(ATransientWindow^.TransientParent),8),
+          ' Wnd=',DbgS(ATransientWindow^.GtkWindow),
+          ' Parent=',DbgS(ATransientWindow^.TransientParent),
           '');
         {$ENDIF}
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
@@ -671,7 +671,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF VerboseTransient}
-  DbgOut('TGtkWidgetSet.UntransientWindow ',HexStr(Cardinal(GtkWindow),8));
+  DbgOut('TGtkWidgetSet.UntransientWindow ',DbgS(GtkWindow));
   LCLObject:=GetLCLObject(PGtkWidget(GtkWindow));
   if LCLObject<>nil then
     DbgOut(' LCLObject=',LCLObject.ClassName)
@@ -719,7 +719,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
     procedure RaiseWidgetWithoutControl;
     begin
       RaiseException('ERROR: TGtkWidgetSet.SendCachedLCLMessages Widget '
-        +HexStr(Cardinal(Widget),8)+' without LCL control');
+        +DbgS(Widget)+' without LCL control');
     end;
 
     procedure WriteWarningParentWidgetNotFound;
@@ -728,7 +728,7 @@ procedure TGtkWidgetSet.SendCachedLCLMessages;
               ,'Parent''s Fixed Widget not found');
       DebugLn('  Control=',LCLControl.Name,':',LCLControl.ClassName,
         ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
-        ' ParentWidget=',HexStr(Cardinal(ParentWidget),8),
+        ' ParentWidget=',DbgS(ParentWidget),
         '');
     end;
 
@@ -1119,13 +1119,13 @@ begin
 
   {$IFDEF VerboseSizeMsg}
   LCLObject:=GetNearestLCLObject(Widget);
-  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+HexStr(Cardinal(Widget),8)+WidgetFlagsToString(Widget)+
+  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+DbgS(Widget)+WidgetFlagsToString(Widget)+
     ' New='+dbgs(NewWidth)+','+dbgs(NewHeight));
   if (LCLObject<>nil) and (LCLObject is TControl) then begin
     with TControl(LCLObject) do
       DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
   end else begin
-    DebugLn(' LCL=',HexStr(Cardinal(LCLObject),8));
+    DebugLn(' LCL=',DbgS(LCLObject));
   end;
   {$ENDIF}
 
@@ -1234,7 +1234,7 @@ var
     gdk_window_get_origin(PaintWindow,@Left,@Top);
     DebugLn('SendInternalPaintMessage ',
       AWinControl.Name,':',AWinControl.ClassName,
-      ' InternalWindow=',HexStr(Cardinal(PaintWindow),8),
+      ' InternalWindow=',DbgS(PaintWindow),
       ' ',Left,',',Top,',',Width,',',Height,
       ' visible=',gdk_window_is_visible(PaintWindow),
       ' viewable=',gdk_window_is_viewable(PaintWindow),
@@ -1342,10 +1342,10 @@ begin
   end;
   {DebugLn('TGtkWidgetSet.SendPaintMessagesForInternalWidgets START ',
     ' ',AWinControl.Name,':',AWinControl.ClassName,
-    ' ',HexStr(Cardinal(Context.MainWidget),8),
-    ' ',HexStr(Cardinal(Context.MainWindow),8),
-    ' ',HexStr(Cardinal(Context.ClientWidget),8),
-    ' ',HexStr(Cardinal(Context.ClientWindow),8),
+    ' ',DbgS(Context.MainWidget),
+    ' ',DbgS(Context.MainWindow),
+    ' ',DbgS(Context.ClientWidget),
+    ' ',DbgS(Context.ClientWindow),
     '');}
 
   ForAllChilds(Context.MainWidget);
@@ -1636,7 +1636,7 @@ begin
     if (TimerInfo^.TimerHandle=guint(TimerHandle)) then
     begin
       {$IFDEF VerboseTimer}
-      DebugLn('TGtkWidgetSet.KillTimer TimerInfo=',HexStr(Cardinal(TimerInfo),8),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+      DebugLn('TGtkWidgetSet.KillTimer TimerInfo=',DbgS(TimerInfo),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
       {$ENDIF}
       gtk_timeout_remove(TimerInfo^.TimerHandle);
       FTimerData.Delete(n);
@@ -2013,7 +2013,7 @@ begin
           {DebugLn('TGtkWidgetSet.InternalGetDIBits A BitSize=',BitSize,
           ' biSizeImage=',biSizeImage,' biHeight=',biHeight,' biWidth=',biWidth,
           ' NumScans=',NumScans,' StartScan=',StartScan,
-          ' Bits=',HexStr(Cardinal(Bits),8),' MemSize(Bits)=',MemSize(Bits),
+          ' Bits=',DbgS(Bits),' MemSize(Bits)=',MemSize(Bits),
           ' biBitCount=',biBitCount);}
           If BitSize <= 0 then
             BitSize := longint(SizeOf(Byte))
@@ -2243,7 +2243,7 @@ begin
 
   // get raw image description
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow Get Desc GdkWindow=',HexStr(Cardinal(GdkWindow),8));
+  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow Get Desc GdkWindow=',DbgS(GdkWindow));
   {$ENDIF}
   if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
   begin
@@ -2267,7 +2267,7 @@ begin
   {$IFDEF VerboseRawImage}
   DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get image ',
     dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),
-    ' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+    ' GDKWindow=',DbgS(GDkWindow));
   {$ENDIF}
   if (NewRawImage.Description.Width<=0) or (NewRawImage.Description.Height<=0)
   then begin
@@ -2313,7 +2313,7 @@ begin
       for x:=0 to AnImage^.Width-1 do begin
         AColor:=gdk_image_get_pixel(AnImage,x,y);
         pGuint(NewRawImage.Data)[i]:=AColor;
-        if (y=5) then DbgOut(' ',HexStr(Cardinal(AColor),8),'@',HexStr(Cardinal(@pGuint(NewRawImage.Data)[i]),8));
+        if (y=5) then DbgOut(' ',DbgS(AColor),8),'@',DbgS(Cardinal(@pGuint(NewRawImage.Data)[i]));
         inc(i);
       end;
     end;
@@ -2336,7 +2336,7 @@ begin
   if MaskBitmap<>nil then begin
     // get mask
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get mask ',dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),' MaskBitmap=',HexStr(Cardinal(MaskBitmap),8));
+    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get mask ',dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),' MaskBitmap=',DbgS(MaskBitmap));
     {$ENDIF}
     if not GetRawImageMaskFromGdkBitmap(MaskBitmap,SourceRect,NewRawImage) then
       exit;
@@ -2475,9 +2475,9 @@ var
   begin
     {$IFDEF VerboseStretchCopyArea}
     
-    DebugLn('ScaleAndROP START DestGC=',HexStr(Cardinal(DestGC),8),
-      ' SrcPixmap=',HexStr(Cardinal(SrcPixmap),8),
-      ' SrcMaskPixmap=',HexStr(Cardinal(SrcMaskPixmap),8));
+    DebugLn('ScaleAndROP START DestGC=',DbgS(DestGC),
+      ' SrcPixmap=',DbgS(SrcPixmap),
+      ' SrcMaskPixmap=',DbgS(SrcMaskPixmap));
     {$ENDIF}
     Result := False;
 
@@ -2626,7 +2626,7 @@ var
       exit;
     end;
     {$IFDEF VerboseStretchCopyArea}
-    DebugLn('SrcDevBitmapToDrawable TempPixmap=',HexStr(Cardinal(TempPixmap),8),' TempMaskPixmap=',HexStr(Cardinal(TempMaskPixmap),8));
+    DebugLn('SrcDevBitmapToDrawable TempPixmap=',DbgS(TempPixmap),' TempMaskPixmap=',DbgS(TempMaskPixmap));
     {$ENDIF}
     if TempPixmap<>nil then begin
       SrcPixmap:=TempPixmap;
@@ -2650,9 +2650,9 @@ var
 
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable ',
-      ' SrcPixmap=',HexStr(Cardinal(SrcPixmap),8),
+      ' SrcPixmap=',DbgS(SrcPixmap),
       ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
-      ' MaskPixmap=',HexStr(Cardinal(MaskPixmap),8),
+      ' MaskPixmap=',DbgS(MaskPixmap),
       ' XMask=',XMask,' YMask=',YMask,
       '');
     {$ENDIF}
@@ -2831,11 +2831,11 @@ begin
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('TGtkWidgetSet.StretchCopyArea BEFORE CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
-    ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
+    ' SrcDrawable=',DbgS(TDeviceContext(SrcDC).Drawable),
     ' SrcOrigin=',SrcDCOrigin.X,',',SrcDCOrigin.Y,
-    ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
+    ' DestDrawable=',DbgS(TDeviceContext(DestDC).Drawable),
     ' DestOrigin=',DestDCOrigin.X,',',DestDCOrigin.Y,
-    ' Mask=',HexStr(Cardinal(Mask),8),' XMask=',XMask,' YMask=',YMask,
+    ' Mask=',DbgS(Mask),' XMask=',XMask,' YMask=',YMask,
     ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
     ' DestWhole=',DestWholeWidth,',',DestWholeHeight,
     ' SrcWhole=',SrcWholeWidth,',',SrcWholeHeight,
@@ -2920,9 +2920,9 @@ begin
   {$IFDEF VerboseStretchCopyArea}
   write('TGtkWidgetSet.StretchCopyArea AFTER CLIPPING X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
-    ' SrcDrawable=',HexStr(Cardinal(TDeviceContext(SrcDC).Drawable),8),
-    ' DestDrawable=',HexStr(Cardinal(TDeviceContext(DestDC).Drawable),8),
-    ' Mask=',HexStr(Cardinal(Mask),8),' XMask=',XMask,' YMask=',YMask,
+    ' SrcDrawable=',DbgS(TDeviceContext(SrcDC).Drawable),
+    ' DestDrawable=',DbgS(TDeviceContext(DestDC).Drawable),
+    ' Mask=',DbgS(Mask),' XMask=',XMask,' YMask=',YMask,
     ' SizeChange=',SizeChange,' ROpIsSpecial=',ROpIsSpecial,
     ' CopyingWholeSrc=',CopyingWholeSrc);
   write(' ROp=');
@@ -5872,7 +5872,7 @@ begin
     BuildColorRefFromGDKColor(CurrentBackColor);
   end;
   FDeviceContexts.Add(Result);
-//DebugLn('[TGtkWidgetSet.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
+//DebugLn('[TGtkWidgetSet.NewDC] ',DbgS(Result),'  ',FDeviceContexts.Count);
 //  Assert(False, Format('Trace:< [TGtkWidgetSet.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
 
@@ -5901,7 +5901,7 @@ function TGtkWidgetSet.CreateDCForWidget(TheWidget: PGtkWidget;
   procedure RaiseWidgetWithoutClientArea;
   begin
     RaiseException('TGtkWidgetSet.CreateWindowDC widget '
-      +HexStr(Cardinal(TheWidget),8)+' has no client area');
+      +DbgS(TheWidget)+' has no client area');
   end;
 
 var
@@ -6068,7 +6068,7 @@ begin
       Widget^.Window,0,0,Width,Height);
 
     {LCLObject:=GetParentLCLObject(Widget);
-    DebugLn('TGtkWidgetSet.GetDoubleBufferedDC ',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),' ',HexStr(Cardinal(LCLObject),8));
+    DebugLn('TGtkWidgetSet.GetDoubleBufferedDC ',DbgS(Widget),8),'=',GetWidgetClassName(Widget),' ',DbgS(Cardinal(LCLObject));
     if (LCLObject is TPanel)
     and (csDesigning in TPanel(LCLObject).ComponentState) then begin
       gdk_window_get_origin(Widget^.Window,@x,@y);
@@ -6083,7 +6083,7 @@ begin
       GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
   end;
   {$IFDEF VerboseDoubleBuffer}
-  DebugLn('TGtkWidgetSet.GetDoubleBufferedDC DC=',HexStr(Cardinal(Result),8));
+  DebugLn('TGtkWidgetSet.GetDoubleBufferedDC DC=',DbgS(Result));
   {$ENDIF}
 end;
 
@@ -6101,7 +6101,7 @@ begin
   Result^.GDIType := GDIType;
   inc(Result^.RefCount);
   FGDIObjects.Add(Result);
-//DebugLn('[TGtkWidgetSet.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
+//DebugLn('[TGtkWidgetSet.NewGDIObject] ',DbgS(Result),'  ',FGDIObjects.Count);
   Assert(False, Format('Trace:< [TGtkWidgetSet.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
 end;
 
@@ -6134,7 +6134,7 @@ begin
 //debugln('  TGtkWidgetSet.CreateDefaultBrush ->');
   Result := NewGDIObject(gdiBrush);
   {$IFDEF DebugGDIBrush}
-  debugln('TGtkWidgetSet.CreateDefaultBrush Created: ',HexStr(Cardinal(Result),8));
+  debugln('TGtkWidgetSet.CreateDefaultBrush Created: ',DbgS(Result));
   {$ENDIF}
   Result^.GDIBrushFill := GDK_SOLID;
   Result^.GDIBrushColor.ColorRef := 0;
@@ -6221,7 +6221,7 @@ var
         2, @lBearing, @rBearing, @CurWidth,
         @tmAscent, @tmDescent);
       debugln('UseWidthHeuristic i=',dbgs(i),' lBearing=',dbgs(lBearing),
-        ' rBearing=',dbgs(rBearing),' CurWidth=',dbgs(CurWidth),' ',HexStr(ord(PC^),8));
+        ' rBearing=',dbgs(rBearing),' CurWidth=',dbgs(CurWidth),' ',DbgS(ord(PC^),8));
     end;
   end;}
 
@@ -6367,7 +6367,7 @@ begin
   GObject := NewGDIObject(gdiRegion);
   GObject^.GDIRegionObject := gdk_region_new;
   Result := HRGN(GObject);
-  //DebugLn('TGtkWidgetSet.CreateEmptyRgn A RGN=',HexStr(Cardinal(Result),8));
+  //DebugLn('TGtkWidgetSet.CreateEmptyRgn A RGN=',DbgS(Result));
 end;
 
 {------------------------------------------------------------------------------
@@ -6443,7 +6443,7 @@ var
 begin
   {$IFDEF VerboseSizeMsg}
   LCLControl:=TWinControl(GetLCLObject(Widget));
-  DbgOut('PPP TGtkWidgetSet.SetResizeRequest Widget=',HexStr(Cardinal(Widget),8));
+  DbgOut('PPP TGtkWidgetSet.SetResizeRequest Widget=',DbgS(Widget));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then
       DebugLn(' ',LCLControl.Name,':',LCLControl.ClassName)
@@ -6895,6 +6895,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.641  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.640  2005/03/07 18:46:36  mattias
   fixed unsetting ItemIndex on changing TComboBox.Text
 

@@ -266,7 +266,7 @@ end;
 procedure TControl.SetAction(Value: TBasicAction);
 begin
   if (Value=Action) then exit;
-  //debugln('TControl.SetAction A ',Name,':',ClassName,' Old=',HexStr(Cardinal(Action),8),' New=',HexStr(Cardinal(Value),8));
+  //debugln('TControl.SetAction A ',Name,':',ClassName,' Old=',DbgS(Action),' New=',DbgS(Value));
   if Value = nil then begin
     ActionLink.Free;
     ActionLink:=nil;
@@ -3497,6 +3497,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.250  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.249  2005/03/07 18:46:36  mattias
   fixed unsetting ItemIndex on changing TComboBox.Text
 

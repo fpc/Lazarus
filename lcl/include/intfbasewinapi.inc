@@ -294,7 +294,7 @@ var
       exit;
     If Breaks.IndexOf(Pointer(PtrInt(Index))) >= Breaks.Count - 1 then
       exit;
-    Result := Longint(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]);
+    Result := Ptrint(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]);
   end;
 
   Function GetBreakablePoints(const Source : String) : TList;
@@ -680,7 +680,7 @@ var
   RRGN : hRGN;
 begin
   If DCClipRegionValid(DC) then begin
-    //DebugLn('TWidgetSet.ExcludeClipRect A DC=',HexStr(Cardinal(DC),8),' Rect=',Left,',',Top,',',Right,',',Bottom);
+    //DebugLn('TWidgetSet.ExcludeClipRect A DC=',DbgS(DC),' Rect=',Left,',',Top,',',Right,',',Bottom);
     // create the rectangle region, that should be excluded
     RRGN := CreateRectRgn(Left,Top,Right,Bottom);
     Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
@@ -703,8 +703,8 @@ begin
   OldC := CreateEmptyRegion;
   GetClipRGN(DC, OldC);
   Clip := CreateEmptyRegion;
-  //DebugLn('TWidgetSet.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
-  //  ' Clip=',HexStr(Cardinal(Clip),8),' RGn=',HexStr(Cardinal(RGN),8),' Mode=',dbgs(Mode));
+  //DebugLn('TWidgetSet.ExtSelectClipRGN A OldC=',DbgS(OldC),
+  //  ' Clip=',DbgS(Clip),8),' RGn=',DbgS(Cardinal(RGN),' Mode=',dbgs(Mode));
   Result := CombineRGN(Clip, OldC, RGN, Mode);
   //DebugLn('TWidgetSet.ExtSelectClipRGN B Result=',Result);
   If Result <> ERROR then
@@ -962,7 +962,7 @@ var
   RRGN : hRGN;
 begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  //DebugLn('TWidgetSet.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),
+  //DebugLn('TWidgetSet.IntersectClipRect A RGN=',DbgS(RRGN),
   //  ' ',dbgs(Left),',',dbgs(Top),',',dbgs(Right),',',dbgs(Bottom));
   If not DCClipRegionValid(DC) then
     Result := SelectClipRGN(DC, RRGN)
@@ -1426,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.21  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

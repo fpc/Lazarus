@@ -1630,7 +1630,7 @@ end;
 
 function TPascalParserTool.DoAtom: boolean;
 begin
-//DebugLn('[TPascalParserTool.DoAtom] A ',HexStr(Cardinal(CurKeyWordFuncList),8));
+//DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
       Result:=CurKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,

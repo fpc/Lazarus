@@ -482,7 +482,7 @@ end;
 
 function TSynLFMSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrInt(fRange));
 end;
 
 function TSynLFMSyn.GetTokenID: TtkTokenKind;
@@ -539,7 +539,7 @@ end;
 
 procedure TSynLFMSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(PtrInt(Value));
 end;
 
 function TSynLFMSyn.GetIdentChars: TSynIdentChars;

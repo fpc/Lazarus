@@ -466,7 +466,7 @@ end;
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
-  //DebugLn('TCustomImageList.GetBitmap Index=',Index,' Image=',HexStr(Cardinal(Image),8),' Bitmap=',HexStr(Cardinal(FImageList.Items[Index]),8));
+  //DebugLn('TCustomImageList.GetBitmap Index=',Index,' Image=',DbgS(Image),' Bitmap=',DbgS(FImageList.Items[Index]));
   Image.Assign(TBitMap(FImageList.Items[Index]));
 end;
 
@@ -899,7 +899,7 @@ var
             false)
           then
             raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
-          //DebugLn('CreateImagesFromRawImage A ',HexStr(Cardinal(SubRawImage.Data),8),' ',SubRawImage.DataSize);
+          //DebugLn('CreateImagesFromRawImage A ',DbgS(SubRawImage.Data),' ',SubRawImage.DataSize);
           FreeRawImageData(@SubRawImage);
           Img := TBitmap.Create;
           Img.Handle:=ImgHandle;
@@ -1262,6 +1262,9 @@ end;
 {
 
   $Log$
+  Revision 1.41  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.40  2004/08/15 17:00:58  mattias
   improved DefineProperties to read/write endian independent
 

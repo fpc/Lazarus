@@ -363,7 +363,7 @@ begin
   {$ENDIF}
 
   if index <> -1 then
-    Result := TtkTokenKind (FKeywords.Objects[index])
+    Result := TtkTokenKind (PtrInt(FKeywords.Objects[index]))
 
   // Check if it is a system identifier (__*__)
   else if (fStringLen >= 5) and
@@ -1181,7 +1181,7 @@ end;
 
 function TSynPythonSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrInt(fRange));
 end;
 
 function TSynPythonSyn.GetToken: string;
@@ -1236,7 +1236,7 @@ end;
 
 procedure TSynPythonSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(PtrInt(Value));
 end;
 
 function TSynPythonSyn.GetIdentChars: TSynIdentChars;

@@ -1802,7 +1802,7 @@ begin
     while ArrNode<>nil do begin
       Entry:=PXPMPixelToColorEntry(ArrNode.Data);
       if Entry<>nil then begin
-        //DebugLn('TLazReaderXPM.ClearPixelToColorTree A ',HexStr(Cardinal(ArrNode),8),' ',HexStr(Cardinal(Entry),8));
+        //DebugLn('TLazReaderXPM.ClearPixelToColorTree A ',DbgS(ArrNode),' ',DbgS(Entry));
         Dispose(Entry);
       end;
       ArrNode:=ArrNode.FindNext;
@@ -2053,10 +2053,10 @@ var
     i: Integer;
   begin
     {DebugLn('TLazReaderXPM.InternalRead.AddColor A "',PixelString,'"=',
-      HexStr(Cardinal(AColor.Red),4),',',
-      HexStr(Cardinal(AColor.Green),4),',',
-      HexStr(Cardinal(AColor.Blue),4),',',
-      HexStr(Cardinal(AColor.Alpha),4));}
+      DbgS(AColor.Red),',',
+      DbgS(AColor.Green),',',
+      DbgS(AColor.Blue),',',
+      DbgS(AColor.Alpha));}
     New(NewEntry);
     NewEntry^.Color:=AColor;
     // add entry to Array Tree
@@ -2144,26 +2144,26 @@ var
           DebugLn('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
             ' RefPixel=',CurEntry^.Pixel,
             ' Color=',
-            HexStr(Cardinal(CurColor.Red),4),',',
-            HexStr(Cardinal(CurColor.Green),4),',',
-            HexStr(Cardinal(CurColor.Blue),4),',',
-            HexStr(Cardinal(CurColor.Alpha),4));
+            DbgS(CurColor.Red),',',
+            DbgS(CurColor.Green),',',
+            DbgS(CurColor.Blue),',',
+            DbgS(CurColor.Alpha));
           DebugLn('Entry2: Pixel=',CurEntry2^.Pixel,
             ' RefPixel=',CurEntry2^.Pixel,
             ' Color=',
-            HexStr(Cardinal(CurEntry2^.Color.Red),4),',',
-            HexStr(Cardinal(CurEntry2^.Color.Green),4),',',
-            HexStr(Cardinal(CurEntry2^.Color.Blue),4),',',
-            HexStr(Cardinal(CurEntry2^.Color.Alpha),4));
+            DbgS(CurEntry2^.Color.Red),',',
+            DbgS(CurEntry2^.Color.Green),',',
+            DbgS(CurEntry2^.Color.Blue),',',
+            DbgS(CurEntry2^.Color.Alpha));
         end;}
 
         {DebugLn('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
           ' RefPixel=',PXPMPixelToColorEntry(Node.Data)^.Pixel,
           ' Color=',
-          HexStr(Cardinal(CurColor.Red),4),',',
-          HexStr(Cardinal(CurColor.Green),4),',',
-          HexStr(Cardinal(CurColor.Blue),4),',',
-          HexStr(Cardinal(CurColor.Alpha),4));}
+          DbgS(CurColor.Red),',',
+          DbgS(CurColor.Green),',',
+          DbgS(CurColor.Blue),',',
+          DbgS(CurColor.Alpha));}
         Img.Colors[x,y]:=CurColor;
       end;
       if ProgressCount>0 then begin
@@ -2619,7 +2619,7 @@ end;
 
 constructor TArrayNode.Create;
 begin
-  //DebugLn('TArrayNode.Create ',Capacity,' Self=',HexStr(Cardinal(Self),8));
+  //DebugLn('TArrayNode.Create ',Capacity,' Self=',DbgS(Self));
 end;
 
 destructor TArrayNode.Destroy;
@@ -2908,7 +2908,7 @@ begin
     Root:=TArrayNode.Create;
   Result:=Root;
   for i:=0 to Count-1 do begin
-    //DebugLn('TArrayNodesTree.SetNode A ',HexStr(Cardinal(Result),8));
+    //DebugLn('TArrayNodesTree.SetNode A ',DbgS(Result));
     Result:=Result.GetChildNode(IntArray[i],true);
   end;
   Result.Data:=Data;

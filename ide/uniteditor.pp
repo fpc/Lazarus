@@ -2651,10 +2651,10 @@ Begin
       clSelect:=FActiveEditSelectedBGColor;
       TextColor:=FActiveEditDefaultFGColor;
       TextSelectedColor:=FActiveEditSelectedFGColor;
-      //writeln('TSourceNotebook.ccExecute A Color=',HexStr(Cardinal(Color),8),
-      // ' clSelect=',HexStr(Cardinal(clSelect),8),
-      // ' TextColor=',HexStr(Cardinal(TextColor),8),
-      // ' TextSelectedColor=',HexStr(Cardinal(TextSelectedColor),8),
+      //writeln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
+      // ' clSelect=',DbgS(clSelect),
+      // ' TextColor=',DbgS(TextColor),
+      // ' TextSelectedColor=',DbgS(TextSelectedColor),
       // '');
     end;
   end;

@@ -193,7 +193,7 @@ var
   AForm: TCustomForm;
 begin
   {$IFDEF VerboseFocus}
-  DbgOut('TGtkWidgetSet.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
+  DbgOut('TGtkWidgetSet.BringWindowToTop hWnd=',DbgS(hWnd));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
   if LCLObject<>nil then
     DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
@@ -348,7 +348,7 @@ var FormatAtom, FormatTry: Cardinal;
       Result:=false;
       AllID:=gdk_atom_intern('TARGETS',GdkFalse);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
-      {DebugLn('IsFormatSupported A ',HexStr(Cardinal(SelData.Selection),8),
+      {DebugLn('IsFormatSupported A ',Dbgs(SelData.Selection),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
       ' SelData.Target='+dbgs(SelData.Target),' AllID='+dbgs(AllID),
       ' SelData.TheType='+dbgs(SelData.TheType),' '+dbgs(gdk_atom_intern('ATOM',0)),
@@ -377,7 +377,7 @@ var FormatAtom, FormatTry: Cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  DebugLn('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' FormatID=',ClipboardFormatToMimeType(FormatID),' Now=',dbgs(Now));
+  DebugLn('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',Dbgs(ClipboardWidget),' FormatID=',ClipboardFormatToMimeType(FormatID),' Now=',dbgs(Now));
   {$EndIf}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
@@ -532,7 +532,7 @@ var AllID: cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  DebugLn('[TGtkWidgetSet.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',dbgs(Now));
+  DebugLn('[TGtkWidgetSet.ClipboardGetFormats] A ClipboardWidget=',Dbgs(ClipboardWidget),' Now=',dbgs(Now));
   {$EndIf}
   Result:=false;
   Count:=0;
@@ -555,7 +555,7 @@ begin
                 ' "'+gdk_atom_name(SelData.theType)+'"',
       ' Length='+dbgs(SelData.Length),
       ' Format='+dbgs(SelData.Format),
-      ' Data='+HexStr(Cardinal(SelData.Data),8),
+      ' Data='+Dbgs(SelData.Data),
       ' Now='+dbgs(Now)
       );
     {$EndIf}
@@ -876,7 +876,7 @@ begin
   end;}
 
   Result := HBITMAP(GdiObject);
-//DebugLn('[TGtkWidgetSet.CreateBitmap] ',HexStr(Result,8));
+//DebugLn('[TGtkWidgetSet.CreateBitmap] ',DbgS(Result,8));
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
@@ -915,11 +915,11 @@ begin
       ' Depth='+dbgs(RawImage.Description.Depth),
       ' Width='+dbgs(RawImage.Description.Width),
       ' Height='+dbgs(RawImage.Description.Height),
-      ' Data='+HexStr(Cardinal(RawImage.Data),8),
+      ' Data='+DbgS(RawImage.Data),
       ' DataSize='+dbgs(RawImage.DataSize)+
-      ' Mask='+HexStr(Cardinal(RawImage.Mask),8)+
+      ' Mask='+DbgS(RawImage.Mask)+
       ' MaskSize='+dbgs(RawImage.MaskSize)+
-      ' Palette='+HexStr(Cardinal(RawImage.Palette),8)+
+      ' Palette='+DbgS(RawImage.Palette)+
       ' PaletteSize='+dbgs(RawImage.PaletteSize)+
       ' BitsPerPixel='+dbgs(RawImage.Description.BitsPerPixel)+
       '');
@@ -1046,7 +1046,7 @@ begin
   GObject := NewGDIObject(gdiBrush);
   try
     {$IFDEF DebugGDIBrush}
-    DebugLn('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+    DebugLn('[TGtkWidgetSet.CreateBrushIndirect] ',DbgS(GObject));
     {$ENDIF}
     GObject^.IsNullBrush := False;
     with LogBrush do
@@ -1743,7 +1743,7 @@ begin
     if GdiObject^.GDIFontObject = nil
     then begin
       {$IFDEF VerboseFonts}
-      DebugLn('[TGtkWidgetSet.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
+      DebugLn('[TGtkWidgetSet.CreateFontIndirect] ',DbgS(GdiObject),'  ',FGDIObjects.Count);
       {$ENDIF}
       DisposeGDIObject(GdiObject);
       Result := 0;
@@ -2226,7 +2226,7 @@ function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 
   procedure RaiseInvalidGDIObject;
   begin
-    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+HexStr(Cardinal(GdiObject),8));
+    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+DbgS(GdiObject));
   end;
 
 var
@@ -2261,7 +2261,7 @@ begin
           BeginGDKErrorTrap;
           {$ENDIF}
           {$IFDEF DebugGDIBrush}
-          debugln('TGtkWidgetSet.DeleteObject gdiBrush: ',HexStr(Cardinal(GdiObject),8));
+          debugln('TGtkWidgetSet.DeleteObject gdiBrush: ',DbgS(GdiObject));
           //if Cardinal(GdiObject)=$404826F4 then RaiseGDBException('');
           {$ENDIF}
           if (GDIBrushPixmap <> nil)
@@ -2321,7 +2321,7 @@ begin
   end;
 
   { Dispose of the GDI object }
-  //DebugLn('[TGtkWidgetSet.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
+  //DebugLn('[TGtkWidgetSet.DeleteObject] ',Result,'  ',DbgS(GDIObject,8),'  ',FGDIObjects.Count);
   DisposeGDIObject(PGDIObject(GDIObject));
 end;
 
@@ -2630,7 +2630,7 @@ Var
   R: TRect;
   DCOrigin: TPoint;
 begin
-  //DebugLn('TGtkWidgetSet.DrawEdge Edge=',HexStr(Cardinal(Edge),8),' grfFlags=',HexStr(Cardinal(grfFlags),8));
+  //DebugLn('TGtkWidgetSet.DrawEdge Edge=',DbgS(Edge),8),' grfFlags=',DbgS(Cardinal(grfFlags));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
@@ -3476,7 +3476,7 @@ begin
         CurrentBrush := PGdiObject(Brush);
         SelectedColors:=dcscCustom;
       end;
-      //DebugLn('TGtkWidgetSet.FillRect Color=',HexStr(Cardinal(CurrentBrush^.GDIBrushColor.ColorRef),8));
+      //DebugLn('TGtkWidgetSet.FillRect Color=',DbgS(CurrentBrush^.GDIBrushColor.ColorRef));
 
       SelectGDKBrushProps(DC);
       
@@ -3562,7 +3562,7 @@ begin
   if not Result then exit;
   if FrameWidth=0 then exit;
   TheStyle:=GetStyle(lgsButton);
-  //DebugLn('TGtkWidgetSet.Frame3d A ',HexStr(Cardinal(TheStyle),8));
+  //DebugLn('TGtkWidgetSet.Frame3d A ',DbgS(TheStyle));
   if TheStyle=nil then exit;
 
   with TDeviceContext(DC) do
@@ -3589,8 +3589,8 @@ begin
     else
       ShadowType:=GTKStrongShadowType[Style];
     //DebugLn('ShadowType ',ShadowType,
-    //' dark_gc=',HexStr(Cardinal(TheStyle^.dark_gc[GTK_STATE_NORMAL]),8),
-    //' light_gc=',HexStr(Cardinal(TheStyle^.light_gc[GTK_STATE_NORMAL]),8),
+    //' dark_gc=',DbgS(TheStyle^.dark_gc[GTK_STATE_NORMAL]),
+    //' light_gc=',DbgS(TheStyle^.light_gc[GTK_STATE_NORMAL]),
     //'');
 
     for i:= 1 to FrameWidth do begin
@@ -3963,14 +3963,14 @@ begin
   end;
   {$IfDef VerboseGetClientRect}
   if ClientWidget<>nil then begin
-    DebugLn('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
-       ' Client=',HexStr(Cardinal(ClientWidget),8),
+    DebugLn('GetClientRect  Widget=',DbgS(handle),
+       ' Client=',DbgS(ClientWidget),
        ' WindowSize=',ARect.Right,',',ARect.Bottom,
        ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
        );
   end else begin
-    DebugLn('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
-       ' Client=',HexStr(Cardinal(ClientWidget),8),
+    DebugLn('GetClientRect  Widget=',DbgS(handle),
+       ' Client=',DbgS(ClientWidget),
        ' WindowSize=',ARect.Right,',',ARect.Bottom,
        ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
        );
@@ -4149,7 +4149,7 @@ begin
     PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
 
     Result := RegionType(ClipRegionWithDCOffset);
-    //DebugLn('TGtkWidgetSet.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
+    //DebugLn('TGtkWidgetSet.GetClipRGN B DC=',DbgS(DC),
     //  ' DCOrigin=',dbgs(DCOrigin),' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',dbgs(Result));
     If Result = NULLREGION then
       Result := 0
@@ -4390,8 +4390,8 @@ begin
       RaiseException('TGtkWidgetSet.GetDeviceSize Window=nil');
       {$ENDIF}
       DebugLn('TGtkWidgetSet.GetDeviceSize:',
-        ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
-        ' Widget=',HexStr(Cardinal(wnd),8));
+        ' WARNING: DC ',DbgS(DC),' without gdkwindow.',
+        ' Widget=',DbgS(wnd));
     end;
   end;
 end;
@@ -4416,8 +4416,8 @@ function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
     RaiseException('TGtkWidgetSet.GetDCOriginRelativeToWindow Window=nil');
     {$ENDIF}
     DebugLn('TGtkWidgetSet.GetDCOriginRelativeToWindow:',
-      ' WARNING: PaintDC ',HexStr(Cardinal(PaintDC),8),' without gdkwindow.',
-      ' Widget=',HexStr(Cardinal(TDeviceContext(PaintDC).wnd),8));
+      ' WARNING: PaintDC ',DbgS(PaintDC),' without gdkwindow.',
+      ' Widget=',DbgS(TDeviceContext(PaintDC).wnd));
   end;
 
 var
@@ -4749,7 +4749,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
 begin
-  //DebugLn('TGtkWidgetSet.GetParent ',HexStr(Cardinal(Handle),8));
+  //DebugLn('TGtkWidgetSet.GetParent ',DbgS(Handle));
   Result:=0;
   if Handle<>0 then
     Result:=HWnd(PGtkWidget(Handle)^.Parent);
@@ -4835,7 +4835,7 @@ begin
       exit;
     end;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
+    DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',DbgS(GdkPixmap),8),' SrcMaskBitmap=',DbgS(Cardinal(SrcMaskBitmap));
     {$ENDIF}
 
     GDIMaskImg:=nil;
@@ -6226,7 +6226,7 @@ begin
   Result:=IsValidDC(DC);
   if Result then
   with TDeviceContext(DC) do begin
-    //DebugLn('[TGtkWidgetSet.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
+    //DebugLn('[TGtkWidgetSet.MoveWindowOrgEx] B DC=',DbgS(DC),
     //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ');
     inc(Origin.X,dX);
     inc(Origin.Y,dY);
@@ -6914,7 +6914,7 @@ end;
       then begin
         Result:=gtk_radio_menu_item_group(
                                  GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
-        //DebugLn('TGtkWidgetSet.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',HexStr(Cardinal(Result),8));
+        //DebugLn('TGtkWidgetSet.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',DbgS(Result));
         exit;
       end;
     end;
@@ -6944,7 +6944,7 @@ begin
         //DebugLn('TGtkWidgetSet.RegroupMenuItem B i=',i,' ',ParentMenuItem[i].Name,
         //' GrpIndex=',ParentMenuItem[i].GroupIndex,
         //' LastRadioGroupStart=',LastRadioGroupStart,
-        //' LastGroup=',HexStr(Cardinal(gtk_radio_menu_item_group(
+        //' LastGroup=',DbgS(Cardinal(gtk_radio_menu_item_group(
         //                                 GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle))),8)
         //);
         if (ParentMenuItem[i].GroupIndex<>0) then begin
@@ -7005,7 +7005,7 @@ function TGtkWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   aDC, pSavedDC: TDeviceContext;
 begin
-//DebugLn('[TGtkWidgetSet.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
+//DebugLn('[TGtkWidgetSet.ReleaseDC] ',DbgS(DC,8),'  ',FDeviceContexts.Count);
   Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
@@ -7386,15 +7386,15 @@ begin
   Result := 0;
 
   {if not IsValidDC(DC) then begin
-    DebugLn('TGtkWidgetSet.SelectObject invalid DC ',HexStr(Cardinal(DC),8));
+    DebugLn('TGtkWidgetSet.SelectObject invalid DC ',DbgS(DC));
   end;
   if not IsValidGDIObject(GDIObj) then begin
-    DebugLn('TGtkWidgetSet.SelectObject invalid GDIObj ',HexStr(Cardinal(GDIObj),8));
+    DebugLn('TGtkWidgetSet.SelectObject invalid GDIObj ',DbgS(GDIObj));
   end;}
 
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
   then begin
-    //DebugLn('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIObj=',HexStr(Cardinal(GDIObj),8),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion));
+    //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIObj=',DbgS(Cardinal(GDIObj),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion));
     case PGdiObject(GDIObj)^.GDIType of
 
       gdiBitmap:
@@ -7415,8 +7415,8 @@ begin
             else
               Drawable := nil;
             end;
-          //DebugLn('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIBitmap=',HexStr(Cardinal(CurrentBitmap),8),
-          //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',HexStr(Cardinal(Drawable),8));
+          //DebugLn('TGtkWidgetSet.SelectObject DC=',DbgS(DC),8),' GDIBitmap=',DbgS(Cardinal(CurrentBitmap),
+          //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',DbgS(Drawable));
 
           GC := gdk_gc_new(Drawable);
 
@@ -7482,8 +7482,8 @@ begin
       RaiseInvalidGDIType;
     end;
   end;
-//DebugLn('[TGtkWidgetSet.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
-// ,'  Old=',Hexstr(Cardinal(Result),8));
+//DebugLn('[TGtkWidgetSet.SelectObject] GDI=',DbgS(GDIObj)
+// ,'  Old=',DbgS(Result));
 end;
 
 {------------------------------------------------------------------------------
@@ -7562,7 +7562,7 @@ var
         if AMessage.wParam<>0 then begin
           with TLMGtkPaintData(AMessage.wParam) do begin
             write(' GtkPaintData(',
-              ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
+              ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
               ' State=',State,
               ' Rect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom,
               ' RepaintAll=',RepaintAll,
@@ -7881,7 +7881,7 @@ begin
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
   Debugln('[TGtkWidgetSet.SetFocus] B');
-  DbgOut('   TopLevel=',HexStr(Cardinal(TopLevel),8));
+  DbgOut('   TopLevel=',DbgS(TopLevel));
   DbgOut(' OldFocus=',GetWidgetDebugReport(PGtkWidget(Result)));
   DebugLn('');
   if not GTK_WIDGET_VISIBLE(Widget) then
@@ -7896,7 +7896,7 @@ begin
     {$IfDef VerboseFocus}
     AWinControl:=TWinControl(GetNearestLCLObject(PGtkWindow(TopLevel)^.focus_widget));
     write('  C  TopLevel is a gtkwindow ');
-    write(' focus_widget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.focus_widget),8));
+    write(' focus_widget=',DbgS(PGtkWindow(TopLevel)^.focus_widget));
     if AWinControl<>nil then
       write(' LCLParent=',AWinControl.Name,':',AWinControl.ClassName)
     else
@@ -7932,7 +7932,7 @@ begin
       {$EndIf}
     end;
     {$IfDef VerboseFocus}
-    write('  G NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+    write('  G NewFocusWidget=',DbgS(NewFocusWidget));
     write(' WidVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(NewFocusWidget)));
     write(' WidRealized=',GTK_WIDGET_REALIZED(PGtkWidget(NewFocusWidget)));
     write(' WidMapped=',GTK_WIDGET_MAPPED(PGtkWidget(NewFocusWidget)));
@@ -7944,11 +7944,11 @@ begin
       if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
       then begin
         {$IfDef VerboseFocus}
-        DebugLn('  H SETTING NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+        DebugLn('  H SETTING NewFocusWidget=',DbgS(NewFocusWidget));
         {$EndIf}
         gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
         {$IfDef VerboseFocus}
-        DebugLn('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
+        DebugLn('  I NewTopLevel FocusWidget=',DbgS(PGtkWindow(TopLevel)^.Focus_Widget),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
         {$EndIf}
       end;
     end;
@@ -7975,9 +7975,9 @@ begin
   end;
 
   {$IfDef VerboseFocus}
-  write('[TGtkWidgetSet.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
+  write('[TGtkWidgetSet.SetFocus] END hWnd=',DbgS(hWnd));
   NewFocusWidget:=PGtkWidget(GetFocus);
-  write(' NewFocus=',HexStr(Cardinal(NewFocusWidget),8));
+  write(' NewFocus=',DbgS(NewFocusWidget));
   AWinControl:=TWinControl(GetNearestLCLObject(NewFocusWidget));
   if AWinControl<>nil then
     write(' NewLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
@@ -8150,7 +8150,7 @@ begin
     ' Page_Size=',RoundToInt(Page_Size),
     ' Page_Increment=',RoundToInt(Page_Increment),
     ' bRedraw=',bRedraw,
-    ' Handle=',HexStr(Cardinal(Handle),8));}
+    ' Handle=',DbgS(Handle));}
 
     // do we have to set this always ?
     if bRedraw then
@@ -8952,6 +8952,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.406  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.405  2005/03/05 14:44:01  mattias
   fixed gtk1 font rotating  from C Western
 

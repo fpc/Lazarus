@@ -1415,11 +1415,11 @@ procedure TDefineTemplate.WriteDebugReport(OnlyMarked: boolean);
     if ANode=nil then exit;
     if (not OnlyMarked) or (ANode.Marked) then begin
       ActionStr:=DefineActionNames[ANode.Action];
-      DebugLn(Prefix+'Self='+HexStr(Cardinal(ANode),8),
+      DebugLn(Prefix+'Self='+DbgS(ANode),
         ' Name="'+ANode.Name,'"',
         ' Consistency='+dbgs(ANode.ConsistencyCheck),
-        ' Next='+HexStr(Cardinal(ANode.Next),8),
-        ' Prior='+HexStr(Cardinal(ANode.Prior),8),
+        ' Next='+DbgS(ANode.Next),
+        ' Prior='+DbgS(ANode.Prior),
         ' Action='+ActionStr,
         ' Flags=['+DefineTemplateFlagsToString(ANode.Flags),']',
         ' Marked='+dbgs(ANode.Marked)

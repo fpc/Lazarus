@@ -406,7 +406,7 @@ end;
 function TCodeCache.OnScannerGetSource(Sender: TObject;
   Code: pointer): TSourceLog;
 begin
-//DebugLn('[TCodeCache.OnScannerGetSource] A ',HexStr(Cardinal(Code),8),'/',Count);
+//DebugLn('[TCodeCache.OnScannerGetSource] A ',DbgS(Code),'/',Count);
   if (Code<>nil) then
     Result:=TSourceLog(Code)
   else

@@ -1648,7 +1648,7 @@ end;
 
 function TSynCssSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrInt(fRange));
 end;
 
 function TSynCssSyn.GetToken: string;
@@ -1707,7 +1707,7 @@ end;
 
 procedure TSynCssSyn.SetRange(Value: Pointer);
 begin
-  FRange := TRangeState(Value);
+  FRange := TRangeState(PtrInt(Value));
 end;
 
 function TSynCssSyn.GetIdentChars: TSynIdentChars;

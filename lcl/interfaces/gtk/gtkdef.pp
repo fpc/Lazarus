@@ -419,7 +419,7 @@ end;
 
 procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
 begin
-  //DebugLn('TGDIObjectMemManager.DisposeGDIObject ',HexStr(Cardinal(AGDIObject),8));
+  //DebugLn('TGDIObjectMemManager.DisposeGDIObject ',DbgS(AGDIObject));
   if AGDIObject^.RefCount>0 then
     RaiseGDBException('');
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
@@ -456,7 +456,7 @@ begin
   end;
   FillChar(Result^, SizeOf(TGDIObject), 0);
   inc(FCount);
-  //DebugLn('TGDIObjectMemManager.NewGDIObject ',HexStr(Cardinal(Result),8));
+  //DebugLn('TGDIObjectMemManager.NewGDIObject ',DbgS(Result));
 end;
 
 
@@ -582,6 +582,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.65  2005/03/04 12:21:55  mattias
   fixed TShape FPCanvas issue
 

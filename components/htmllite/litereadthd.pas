@@ -153,7 +153,7 @@ end;
 
 procedure TFakeThread.DoTerminate;
 begin
-writeln('TFakeThread.DoTerminate ',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.DoTerminate ',DbgS(Self));
   CallOnTerminate;
   FFinished:=true;
   if FFreeOnTerminate then Free;
@@ -162,20 +162,20 @@ end;
 
 procedure TFakeThread.Synchronize(Method: TThreadMethod);
 begin
-writeln('TFakeThread.Synchronize ',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.Synchronize ',DbgS(Self));
   Method();
 end;
 
 constructor TFakeThread.Create(CreateSuspended: Boolean);
 begin
-writeln('TFakeThread.Create CreateSuspended=',CreateSuspended,' ',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.Create CreateSuspended=',CreateSuspended,' ',DbgS(Self));
   inherited Create;
   if CreateSuspended then Suspend else DoExecute;
 end;
 
 destructor TFakeThread.Destroy;
 begin
-writeln('TFakeThread.Destroy ',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.Destroy ',DbgS(Self));
   if not FFinished and not Suspended then
    begin
      Terminate;
@@ -186,25 +186,25 @@ end;
 
 procedure TFakeThread.Resume;
 begin
-writeln('TFakeThread.Resume Self=',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.Resume Self=',DbgS(Self));
   DoExecute;
 end;
 
 procedure TFakeThread.Suspend;
 begin
-writeln('TFakeThread.Suspend Self=',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.Suspend Self=',DbgS(Self));
   FSuspended:=true;
 end;
 
 procedure TFakeThread.Terminate;
 begin
-writeln('TFakeThread.Terminate Self=',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.Terminate Self=',DbgS(Self));
   DoTerminate;
 end;
 
 function TFakeThread.WaitFor: Integer;
 begin
-writeln('TFakeThread.WaitFor Self=',HexStr(Cardinal(Self),8));
+writeln('TFakeThread.WaitFor Self=',DbgS(Self));
   Result:=0;
 end;
 

@@ -1661,7 +1661,7 @@ var
   ControlsNeedsClipping: boolean;
   CurControl: TControl;
 begin
-  //DebugLn('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(TheMessage.DC,8));
+  //DebugLn('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',DbgS(TheMessage.DC,8));
   if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
@@ -1711,7 +1711,7 @@ begin
     if TheMessage.DC = 0 then EndPaint(Handle, PS);
   end;
   Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
-//DebugLn('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
+//DebugLn('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',DbgS(Message.DC,8));
 end;
 
 procedure TWinControl.PaintControls(DC: HDC; First: TControl);
@@ -1724,7 +1724,7 @@ var
   P: TPoint;
   {$ENDIF}
 begin
-//DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
+//DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',DbgS(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
@@ -1799,14 +1799,14 @@ begin
           DeleteObject(FrameBrush);
           }
         end;
-//DebugLn('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',HexStr(DC,8));
+//DebugLn('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',DbgS(DC,8));
 end;
 
 procedure TWinControl.PaintWindow(DC: HDC);
 var
   Message: TLMessage;
 begin
-//DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',HexStr(DC,8));
+//DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',DbgS(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
@@ -3299,7 +3299,7 @@ var
   PS : TPaintStruct;
   ClientBoundRect: TRect;
 begin
-  //DebugLn('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
+  //DebugLn('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',DbgS(Msg.DC,8));
   if ([csDestroying,csLoading]*ComponentState<>[]) or (not HandleAllocated) then
     exit;
 
@@ -4383,7 +4383,7 @@ end;
 function TWinControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
 begin
   Result := GetDC(Handle);
-  //DebugLn('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
+  //DebugLn('[TWinControl.GetDeviceContext] ',ClassName,' DC=',DbgS(Result,8),' Handle=',DbgS(FHandle));
   if Result = 0
   then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
     ClassName]);
@@ -4486,6 +4486,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.317  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.316  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

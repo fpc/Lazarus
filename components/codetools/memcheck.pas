@@ -54,7 +54,7 @@ type
 
 { Allows to add info pre memory block, see ppheap.pas of the compiler
   for example source }
-procedure SetHeapExtraInfo( size : longint;fillproc : tfillextrainfoproc;displayproc : tdisplayextrainfoproc);
+procedure SetHeapExtraInfo( size : ptrint;fillproc : tfillextrainfoproc;displayproc : tdisplayextrainfoproc);
 
 { Redirection of the output to a file }
 procedure SetHeapTraceOutput(const name : string);
@@ -255,7 +255,7 @@ procedure call_stack(pp : pheap_mem_info;var ptext : text);
 var
   i  : ptrint;
 begin
-  writeln(ptext,'Call trace for block $',hexstr(ptrint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
+  writeln(ptext,'Call trace for block $',HexStr(ptrint(pointer(pp)+sizeof(theap_mem_info)),sizeof(PtrInt)),' size ',pp^.size);
   for i:=1 to tracesize do
    if pp^.calls[i]<>nil then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
@@ -271,7 +271,7 @@ procedure call_free_stack(pp : pheap_mem_info;var ptext : text);
 var
   i  : ptrint;
 begin
-  writeln(ptext,'Call trace for block at $',hexstr(ptrint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
+  writeln(ptext,'Call trace for block at $',HexStr(ptrint(pointer(pp)+sizeof(theap_mem_info)),sizeof(ptrint)),' size ',pp^.size);
   for i:=1 to tracesize div 2 do
    if pp^.calls[i]<>nil then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
@@ -289,7 +289,7 @@ end;
 
 procedure dump_already_free(p : pheap_mem_info;var ptext : text);
 begin
-  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' released');
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),sizeof(ptrint)),' released');
   call_free_stack(p,ptext);
   Writeln(ptext,'freed again at');
   dump_stack(ptext,get_caller_frame(get_frame));
@@ -297,8 +297,8 @@ end;
 
 procedure dump_error(p : pheap_mem_info;var ptext : text);
 begin
-  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
-  Writeln(ptext,'Wrong signature $',hexstr(p^.sig,8),' instead of ',hexstr(calculate_sig(p),8));
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),sizeof(ptrint)),' invalid');
+  Writeln(ptext,'Wrong signature $',HexStr(p^.sig,sizeof(ptrint)),' instead of ',HexStr(calculate_sig(p),sizeof(ptrint)));
   dump_stack(ptext,get_caller_frame(get_frame));
 end;
 
@@ -307,20 +307,20 @@ procedure dump_change_after(p : pheap_mem_info;var ptext : text);
  var pp : pchar;
      i : ptrint;
 begin
-  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
-  Writeln(ptext,'Wrong release CRC $',hexstr(p^.release_sig,8),' instead of ',hexstr(calculate_release_sig(p),8));
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),sizeof(ptrint)),' invalid');
+  Writeln(ptext,'Wrong release CRC $',HexStr(p^.release_sig,sizeof(ptrint)),' instead of ',HexStr(calculate_release_sig(p),sizeof(ptrint)));
   Writeln(ptext,'This memory was changed after call to freemem !');
   call_free_stack(p,ptext);
   pp:=pointer(p)+sizeof(theap_mem_info);
   for i:=0 to p^.size-1 do
     if byte(pp[i])<>$F0 then
-      Writeln(ptext,'offset',i,':$',hexstr(i,8),'"',pp[i],'"');
+      Writeln(ptext,'offset',i,':$',HexStr(i,sizeof(ptrint)),'"',pp[i],'"');
 end;
 {$endif EXTRA}
 
 procedure dump_wrong_size(p : pheap_mem_info;size : ptrint;var ptext : text);
 begin
-  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
+  Writeln(ptext,'Marked memory at $',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),sizeof(ptrint)),' invalid');
   Writeln(ptext,'Wrong size : ',p^.size,' allocated ',size,' freed');
   dump_stack(ptext,get_caller_frame(get_frame));
   { the check is done to be sure that the procvar is not overwritten }
@@ -855,7 +855,7 @@ begin
           goto _exit
        else
          begin
-            writeln(ptext^,'pointer $',hexstr(ptrint(p),8),' points into invalid memory block');
+            writeln(ptext^,'pointer $',HexStr(ptrint(p),sizeof(ptrint)),' points into invalid memory block');
             dump_error(pp,ptext^);
             runerror(204);
          end;
@@ -867,7 +867,7 @@ begin
          halt(1);
       end;
    end;
-  writeln(ptext^,'pointer $',hexstr(ptrint(p),8),' does not point to valid memory block');
+  writeln(ptext^,'pointer $',HexStr(ptrint(p),sizeof(ptrint)),' does not point to valid memory block');
   runerror(204);
 _exit:
 end;
@@ -1417,7 +1417,7 @@ begin
   for i:=1 to InLen do
    begin
      InitCrc:=Crc32Tbl[byte(InitCrc) xor byte(p^)] xor (InitCrc shr 8);
-     inc(longint(p));
+     inc(ptrint(p));
    end;
   UpdateCrc32:=InitCrc;
 end;
@@ -1480,15 +1480,15 @@ var
   i  : longint;
 begin
   writeln(ptext,'Call trace for block 0x',
-    hexstr(longint(pointer(pp)+sizeof(theap_mem_info)
-    +extra_info_size),8),' size ',pp^.size);
+    HexStr(ptrint(pointer(pp)+sizeof(theap_mem_info)
+    +extra_info_size),sizeof(ptrint)),' size ',pp^.size);
   for i:=1 to tracesize do
    if pp^.calls[i]<>0 then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   if assigned(extra_info_string_func) then
     writeln(ptext,extra_info_string_func(@pp^.extra_info))
   else for i:=0 to (exact_info_size div 4)-1 do
-    writeln(ptext,'info ',i,'=',plongint(pointer(@pp^.extra_info)+4*i)^);
+    writeln(ptext,'info ',i,'=',pptrint(pointer(@pp^.extra_info)+4*i)^);
 end;
 
 procedure call_free_stack(pp : pheap_mem_info;var ptext : text);
@@ -1496,8 +1496,8 @@ var
   i  : longint;
 begin
   writeln(ptext,'Call trace for block at 0x',
-    hexstr(longint(pointer(pp)+sizeof(theap_mem_info))
-    +extra_info_size,8),' size ',pp^.size);
+    HexStr(ptrint(pointer(pp)+sizeof(theap_mem_info))
+    +extra_info_size,sizeof(ptrint)),' size ',pp^.size);
   for i:=1 to tracesize div 2 do
    if pp^.calls[i]<>0 then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
@@ -1506,15 +1506,15 @@ begin
    if pp^.calls[i]<>0 then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   for i:=0 to (exact_info_size div 4)-1 do
-    writeln(ptext,'info ',i,'=',plongint(pointer(@pp^.extra_info)+4*i)^);
+    writeln(ptext,'info ',i,'=',pptrint(pointer(@pp^.extra_info)+4*i)^);
 end;
 
 
 procedure dump_already_free(p : pheap_mem_info;var ptext : text);
 begin
   Writeln(ptext,'Marked memory at 0x',
-    HexStr(longint(pointer(p)+sizeof(theap_mem_info))
-    +extra_info_size,8),' released');
+    HexStr(ptrint(pointer(p)+sizeof(theap_mem_info))
+    +extra_info_size,sizeof(ptrint)),' released');
   call_free_stack(p,ptext);
   Writeln(ptext,'freed again at');
   dump_stack(ptext,get_caller_frame(get_frame));
@@ -1523,10 +1523,10 @@ end;
 procedure dump_error(p : pheap_mem_info;var ptext : text);
 begin
   Writeln(ptext,'Marked memory at 0x',
-    HexStr(longint(pointer(p)+sizeof(theap_mem_info))
-    +extra_info_size,8),' invalid');
-  Writeln(ptext,'Wrong signature $',hexstr(p^.sig,8)
-    ,' instead of ',hexstr(calculate_sig(p),8));
+    HexStr(ptrint(pointer(p)+sizeof(theap_mem_info))
+    +extra_info_size,sizeof(ptrint)),' invalid');
+  Writeln(ptext,'Wrong signature $',HexStr(p^.sig,sizeof(ptrint))
+    ,' instead of ',HexStr(calculate_sig(p),sizeof(ptrint)));
   dump_stack(ptext,get_caller_frame(get_frame));
 end;
 
@@ -1536,16 +1536,16 @@ procedure dump_change_after(p : pheap_mem_info;var ptext : text);
      i : longint;
 begin
   Writeln(ptext,'Marked memory at 0x',
-    HexStr(longint(pointer(p)+sizeof(theap_mem_info))
-    +extra_info_size,8),' invalid');
-  Writeln(ptext,'Wrong release CRC $',hexstr(p^.release_sig,8)
-    ,' instead of ',hexstr(calculate_release_sig(p),8));
+    HexStr(ptrint(pointer(p)+sizeof(theap_mem_info))
+    +extra_info_size,sizeof(ptrint)),' invalid');
+  Writeln(ptext,'Wrong release CRC $',HexStr(p^.release_sig,sizeof(ptrint))
+    ,' instead of ',HexStr(calculate_release_sig(p),sizeof(ptrint)));
   Writeln(ptext,'This memory was changed after call to freemem !');
   call_free_stack(p,ptext);
   pp:=pointer(p)+sizeof(theap_mem_info)+extra_info_size;
   for i:=0 to p^.size-1 do
     if byte(pp[i])<>$F0 then
-      Writeln(ptext,'offset',i,':$',hexstr(i,8),'"',pp[i],'"');
+      Writeln(ptext,'offset',i,':$',HexStr(i,sizeof(ptrint)),'"',pp[i],'"');
 end;
 {$endif EXTRA}
 
@@ -1553,11 +1553,11 @@ procedure dump_wrong_size(p : pheap_mem_info;size : longint;var ptext : text);
 var
   i : longint;
 begin
-  Writeln(ptext,'Marked memory at 0x',HexStr(longint(pointer(p)+sizeof(theap_mem_info)),8),' invalid');
+  Writeln(ptext,'Marked memory at 0x',HexStr(ptrint(pointer(p)+sizeof(theap_mem_info)),sizeof(ptrint)),' invalid');
   Writeln(ptext,'Wrong size : ',p^.size,' allocated ',size,' freed');
   dump_stack(ptext,get_caller_frame(get_frame));
   for i:=0 to (exact_info_size div 4)-1 do
-    writeln(ptext,'info ',i,'=',plongint(@p^.extra_info+4*i)^);
+    writeln(ptext,'info ',i,'=',pptrint(@p^.extra_info+4*i)^);
   call_stack(p,ptext);
 end;
 
@@ -2118,7 +2118,7 @@ begin
           goto _exit
        else
          begin
-            writeln(ptext^,'pointer $',hexstr(longint(p),8),' points into invalid memory block');
+            writeln(ptext^,'pointer $',HexStr(ptrint(p),sizeof(ptrint)),' points into invalid memory block');
             dump_error(pp,ptext^);
             // MG: changes for codetools:
             runerror(214);
@@ -2144,14 +2144,14 @@ begin
       (MemInfo.Protect <> PAGE_EXECUTE_READWRITE) and
       (MemInfo.Protect <> PAGE_EXECUTE_WRITECOPY)) then
     begin
-      writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
+      writeln(ptext^,'pointer $',HexStr(ptrint(p),sizeof(ptrint)),' does not point to valid memory block');
       // MG: changes for codetools:
       runerror(214);
     end
   else
     exit;
 {$else not win32}
-  writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
+  writeln(ptext^,'pointer $',HexStr(ptrint(p),sizeof(ptrint)),' does not point to valid memory block');
 
   // MG: changes for codetools:
   runerror(214);
@@ -2391,6 +2391,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2005/03/07 21:59:43  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.40  2005/03/05 00:51:07  marc
   * Fixed compilation
 

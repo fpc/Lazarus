@@ -1227,7 +1227,7 @@ function RegExprSubExpressions (const ARegExpr : string;
            with Stack [StackIdx] do begin
              SubExprLen := i - StartPos + 1;
              ASubExprs.Objects [SubExprIdx] :=
-              TObject (StartPos or (SubExprLen ShL 16));
+              TObject (PtrInt(StartPos or (SubExprLen ShL 16)));
              ASubExprs [SubExprIdx] := System.Copy (
               ARegExpr, StartPos + 1, SubExprLen - 2); // add without brackets
             end;
@@ -1270,11 +1270,11 @@ function RegExprSubExpressions (const ARegExpr : string;
 
   // check if entire r.e. added
   if (ASubExprs.Count = 0)
-   or ((integer (ASubExprs.Objects [0]) and $FFFF) <> 1)
-   or (((integer (ASubExprs.Objects [0]) ShR 16) and $FFFF) <> Len)
+   or ((PtrInt (ASubExprs.Objects [0]) and $FFFF) <> 1)
+   or (((PtrInt (ASubExprs.Objects [0]) ShR 16) and $FFFF) <> Len)
     // whole r.e. wasn't added because it isn't bracketed
     // well, we add it now:
-    then ASubExprs.InsertObject (0, ARegExpr, TObject ((Len ShL 16) or 1));
+    then ASubExprs.InsertObject (0, ARegExpr, TObject (PtrInt(Len ShL 16) or 1));
 
   finally FreeMem (Stack);
   end;

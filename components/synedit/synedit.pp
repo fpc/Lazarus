@@ -6777,7 +6777,7 @@ procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
 begin
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.CommandProcessor] ',Command
-    ,' AChar=',AChar,' Data=',HexStr(Cardinal(Data),8));
+    ,' AChar=',AChar,' Data=',DbgS(Data));
   {$ENDIF}
   // first the program event handler gets a chance to process the command
   DoOnProcessCommand(Command, AChar, Data);

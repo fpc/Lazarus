@@ -63,8 +63,8 @@ begin
   end;
 
   Handle := DC;
-  //DebugLn('TBitmapCanvas.CreateHandle END Self=',HexStr(Cardinal(Self),8),' DC=',HexStr(Cardinal(DC),8),
-  //  ' Handle=',HexStr(Cardinal(GetUpdatedHandle([csHandleValid])),8));
+  //DebugLn('TBitmapCanvas.CreateHandle END Self=',DbgS(Self),' DC=',DbgS(DC),
+  //  ' Handle=',DbgS(GetUpdatedHandle([csHandleValid])));
 end;
 
 procedure TBitmapCanvas.DeselectHandles;
@@ -109,7 +109,7 @@ var
   OldHandle: HBITMAP;
 begin
   if not HandleAllocated then exit;
-  //DebugLn('TBitmapCanvas.FreeDC START Self=',HexStr(Cardinal(Self),8),' FBitmap=',HexStr(Cardinal(FBitmap),8));
+  //DebugLn('TBitmapCanvas.FreeDC START Self=',DbgS(Self),' FBitmap=',DbgS(FBitmap));
   if FBitmap<>nil then begin
     OldHandle := FHandle;
     Handle := 0;
@@ -124,6 +124,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.13  2004/10/01 13:16:44  mattias
   fixed unselecting TCanvas objects
 

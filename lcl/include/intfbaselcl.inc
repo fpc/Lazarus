@@ -105,7 +105,7 @@ var
   Clip: hRGN;
 begin
   // If the interface has a better way to check a region it can override this
-  //debugln('TWidgetSet.DCClipRegionValid DC=',HexStr(Cardinal(DC),8));
+  //debugln('TWidgetSet.DCClipRegionValid DC=',DbgS(DC));
   Clip:=CreateEmptyRegion;
   Result:=GetClipRGN(DC,Clip)>=0;
   DeleteObject(Clip);
@@ -633,6 +633,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.32  2005/01/16 11:40:10  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
 

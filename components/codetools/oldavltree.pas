@@ -879,7 +879,7 @@ var RealCount: integer;
         Result:=-2;  exit;
       end;
       if fOnCompare(ANode.Left.Data,ANode.Data)>0 then begin
-        //DebugLn('CCC-3 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Left.Data),8));
+        //DebugLn('CCC-3 ',hexstr(ANode.Data),' ',hexstr(ANode.Left.Data));
         Result:=-3;  exit;
       end;
       Result:=CheckNode(ANode.Left);
@@ -891,7 +891,7 @@ var RealCount: integer;
         Result:=-4;  exit;
       end;
       if fOnCompare(ANode.Data,ANode.Right.Data)>0 then begin
-        //DebugLn('CCC-5 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Right.Data),8));
+        //DebugLn('CCC-5 ',hexstr(ANode.Data),' ',hexstr(ANode.Right.Data));
         Result:=-5;  exit;
       end;
       Result:=CheckNode(ANode.Right);
@@ -967,9 +967,9 @@ var h: string;
   begin
     if ANode=nil then exit;
     WriteTreeNode(ANode.Right,Prefix+'  ');
-    b:=Prefix+HexStr(Cardinal(ANode.Data),8)+'    '
-        +'  Self='+HexStr(Cardinal(ANode),8)
-        +'  Parent='+HexStr(Cardinal(ANode.Parent),8)
+    b:=Prefix+hexstr(PtrInt(ANode.Data),sizeof(Pointer))+'    '
+        +'  Self='+hexstr(PtrInt(ANode),sizeof(Pointer))
+        +'  Parent='+hexstr(PtrInt(ANode.Parent),sizeof(Pointer))
         +'  Balance='+IntToStr(ANode.Balance)
         +#13#10;
     WriteStr(b);

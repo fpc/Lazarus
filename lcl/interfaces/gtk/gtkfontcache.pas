@@ -106,7 +106,7 @@ begin
     +' Width='+dbgs(LogFont.lfWidth)
     +#13#10;
   for i:=0 to SizeOf(LogFont)-1 do
-    Result:=Result+hexstr(ord(PChar(@LogFont)[i]),2);
+    Result:=Result+HexStr(ord(PChar(@LogFont)[i]),2);
   Result:=Result+#13#10;
 end;
 
@@ -123,7 +123,7 @@ function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
   Desc: TGdkFontCacheDescriptor): integer;
 begin
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
-  //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
+  //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
   if Result=0 then
     Result:=CompareMemRange(@Key^.LogFont,@Desc.LogFont,SizeOf(Desc.LogFont));
   //debugln('CompareLogFontAndNameWithResDesc END Result=',Result);
@@ -275,7 +275,7 @@ end;
 procedure TGdkFontCacheItem.WarnReferenceHigh;
 begin
   inherited WarnReferenceHigh;
-  debugln(' GdkFont='+HexStr(Cardinal(GdkFont),8));
+  debugln(' GdkFont='+DbgS(GdkFont));
   if FirstDescriptor<>nil then
     debugln('  '+TGdkFontCacheDescriptor(FirstDescriptor).LongFontName
             +' '+LogFontToString(TGdkFontCacheDescriptor(FirstDescriptor).LogFont));

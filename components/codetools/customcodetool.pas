@@ -1933,12 +1933,12 @@ procedure TCustomCodeTool.WriteDebugTreeReport;
         DbgOut(' End='+DbgS(EndPos)+' ');
         WriteSrcSubString(EndPos-5,5);
         {$ifdef fpc}
-        DbgOut(' Self=',HexStr(Cardinal(RootNode),8));
-        DbgOut(' P=',HexStr(Cardinal(Parent),8));
-        DbgOut(' NB=',HexStr(Cardinal(NextBrother),8));
-        //write(' PB=',HexStr(Cardinal(PriorBrother),8));
-        //write(' FC=',HexStr(Cardinal(FirstChild),8));
-        //write(' LC=',HexStr(Cardinal(LastChild),8));
+        DbgOut(' Self=',DbgS(RootNode));
+        DbgOut(' P=',DbgS(Parent));
+        DbgOut(' NB=',DbgS(NextBrother));
+        //write(' PB=',DbgS(PriorBrother));
+        //write(' FC=',DbgS(FirstChild));
+        //write(' LC=',DbgS(LastChild));
         {$endif}
       end;
       DebugLn('');

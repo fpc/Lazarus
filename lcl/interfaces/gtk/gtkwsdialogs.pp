@@ -118,11 +118,11 @@ var
   colorSel : PGTKCOLORSELECTION;
 begin
   {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Start Color=',HexStr(Cardinal(Color),8));
+  DebugLn('TGtkWidgetSet.SetColorDialogColor Start Color=',DbgS(Color));
   {$ENDIF}
   Color:=ColorToRGB(Color);
   {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Converted Color=',HexStr(Cardinal(Color),8));
+  DebugLn('TGtkWidgetSet.SetColorDialogColor Converted Color=',DbgS(Color));
   {$ENDIF}
   SelectionColor.Pixel := 0;
   SelectionColor.Red :=  Red(Color) shl 8;

@@ -125,10 +125,10 @@ end;
 procedure TCanvas.CreateBrush;
 var OldHandle: HBRUSH;
 begin
-//DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Self),8)
-// ,'  Brush=',HexStr(Cardinal(Pointer(Brush)),8));
+//DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',DbgS(Self)
+// ,'  Brush=',DbgS(Brush));
   OldHandle:=SelectObject(FHandle, Brush.Handle);
-  //debugln('TCanvas.CreateBrush ',ClassName,' Self=',HexStr(Cardinal(Self),8),' OldHandle=',HexStr(Cardinal(OldHandle),8),' NewHandle=',HexStr(Cardinal(Brush.Handle),8),' FSavedBrushHandle=',HexStr(Cardinal(FSavedBrushHandle),8));
+  //debugln('TCanvas.CreateBrush ',ClassName,' Self=',DbgS(Self),' OldHandle=',DbgS(OldHandle),8),' NewHandle=',DbgS(Brush.Handle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
@@ -154,8 +154,8 @@ const PenModes:Array[TPenMode] of Integer =
               pmMask, pmNotMask, pmXor, pmNotXor
 }
 begin
-//DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
-// ,'  Pen=',HexStr(Cardinal(Pointer(Pen)),8));
+//DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',DbgS(Self)
+// ,'  Pen=',DbgS(Pen));
   OldHandle:=SelectObject(FHandle, Pen.Handle);
   if (OldHandle<>Pen.Handle) and (FSavedPenHandle=0) then
     FSavedPenHandle:=OldHandle;
@@ -1298,7 +1298,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCanvas.Destroy;
 begin
-//DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',HexStr(Cardinal(Pointer(Self)),8));
+//DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',DbgS(Self));
   Handle := 0;
   {$IFNDEF UseFPCanvas}
   FreeThenNil(FFont);
@@ -1341,7 +1341,7 @@ end;
 procedure TCanvas.SetHandle(NewHandle: HDC);
 begin
   if FHandle<>NewHandle then begin
-    //DebugLn('[TCanvas.SetHandle] Self=',HexStr(Cardinal(Self),8),' Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
+    //DebugLn('[TCanvas.SetHandle] Self=',DbgS(Self),' Old=',DbgS(FHandle,8),' New=',DbgS(NewHandle,8));
     if FHandle <> 0 then
     begin
       DeselectHandles;
@@ -1353,7 +1353,7 @@ begin
       Include(FState, csHandleValid);
       FHandle := NewHandle;
     end;
-    //DebugLn('[TCanvas.SetHandle] END Self=',HexStr(Cardinal(Self),8),' Handle=',HexStr(FHandle,8));
+    //DebugLn('[TCanvas.SetHandle] END Self=',DbgS(Self),' Handle=',DbgS(FHandle,8));
   end;
 end;
 
@@ -1366,7 +1366,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.DeselectHandles;
 begin
-  //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',HexStr(Cardinal(Self),8),' Handle=',HexStr(Cardinal(FHandle),8),' FSavedBrushHandle=',HexStr(Cardinal(FSavedBrushHandle),8));
+  //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',DbgS(Self),' Handle=',DbgS(FHandle),8),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
   if (FHandle<>0) then begin
     // select default sub handles in the device context without deleting owns
     if FSavedBrushHandle<>0 then begin
@@ -1535,6 +1535,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.91  2005/03/04 13:50:08  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

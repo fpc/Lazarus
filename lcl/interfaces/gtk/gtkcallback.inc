@@ -206,8 +206,8 @@ begin
       // set extra signal masks after the widget window is created
       // define extra events we're interrested in
       //write('GTKRealizeAfterCB ');
-      //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
-      //DebugLn(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
+      //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
+      //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
       if (TheWinControl<>nil) then begin
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
@@ -220,7 +220,7 @@ begin
                         or WinWidgetInfo^.EventMask;
           gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
-        //DebugLn('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
+        //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
         {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       end;
 
@@ -396,7 +396,7 @@ begin
   end else begin
     {$IFDEF VerboseDesignerDraw}
     DebugLn('gtkDrawAfter',
-      ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
+      ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',area^.x,',',area^.y,',',area^.width,',',area^.height,
       '');
@@ -422,7 +422,7 @@ begin
   end else begin
     {$IFDEF VerboseDesignerDraw}
     DebugLn('gtkExposeAfter',
-      ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
+      ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',Event^.area.x,',',Event^.area.y,',',Event^.area.width,',',Event^.area.height,
       '');
@@ -447,7 +447,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   FillChar(Mess,SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
-  write('gtkfrmactivateAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -460,7 +460,7 @@ begin
   DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
@@ -500,8 +500,8 @@ begin
   EventTrace('deactivate after', data);
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('gtkfrmdeactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
-        ' GetFocus=',HexStr(Cardinal(Widget),8));
+  write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^.theIn,
+        ' GetFocus=',DbgS(Widget));
   LCLObject:=TControl(GetLCLObject(Widget));
   if LCLObject<>nil then
     DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
@@ -546,7 +546,7 @@ begin
   EventTrace('focus', data);
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('GTKFocusCB Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -559,7 +559,7 @@ begin
   DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
@@ -590,7 +590,7 @@ begin
   EventTrace('focus', data);
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('GTKFocusCBAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -603,7 +603,7 @@ begin
   DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
@@ -640,7 +640,7 @@ begin
   EventTrace('killfocus', data);
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCB Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -653,7 +653,7 @@ begin
   DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
@@ -684,7 +684,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   EventTrace('killfocus', data);
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCBAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -697,7 +697,7 @@ begin
   DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
-    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    write(' GetFocus=',DbgS(CurFocusWidget));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
@@ -875,7 +875,7 @@ begin
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
   DebugLn('[GTKMotionNotify] ',
     DbgSName(TControl(Data)),
-    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' Widget=',DbgS(Widget),
     ' DSO=',dbgs(DesignOnlySignal),
     ' Event^.X=',dbgs(TruncToInt(Event^.X)),' Event^.Y=',dbgs(TruncToInt(Event^.Y))
     );
@@ -1157,20 +1157,20 @@ begin
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   WriteLn('[gtkMouseBtnPress] ',
     DbgSName(TObject(Data)),
-    ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ControlWidget='+HexStr(Cardinal(TWinControl(Data).Handle),8),
+    ' Widget=',DbgS(Widget),
+    ' ControlWidget=',DbgS(TWinControl(Data).Handle),
     ' DSO='+dbgs(DesignOnlySignal),
     ' '+dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),
     ' Type='+dbgs(gdk_event_get_type(Event)));
   {$ENDIF}
-  //DebugLn('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
-  //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
-  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
-  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8),
-  //' Window=',HexStr(Cardinal(Widget^.Window),8)
+  //DebugLn('DDD1 MousePress Widget=',DbgS(Widget),
+  //' ClientWidget=',DbgS(GetFixedWidget(Widget)),
+  //' EventMask=',DbgS(gdk_window_get_events(Widget^.Window)),
+  //' GDK_BUTTON_RELEASE_MASK=',DbgS(GDK_BUTTON_RELEASE_MASK),
+  //' Window=',DbgS(Widget^.Window)
   //);
   //if GetFixedWidget(Widget)<>nil then
-  //  DebugLn('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
+  //  DebugLn('DDD2 ClientWindow=',DbgS(PGtkWidget(GetFixedWidget(Widget))^.Window));
 
   EventTrace('Mouse button Press', data);
 
@@ -1214,7 +1214,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   debugln('[gtkMouseBtnPressAfter] ',
     DbgSName(TObject(Data)),
-    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' Widget=',DbgS(Widget),
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)));
   {$ENDIF}
 
@@ -1333,14 +1333,14 @@ begin
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
   DebugLn('[gtkMouseBtnRelease] A ',DbgSName(TObject(Data)),' ',
-    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' Widget=',DbgS(Widget),
     ' DSO=',dbgs(DesignOnlySignal),
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),' Btn=',dbgs(event^.Button));
   {$ENDIF}
 
-  //DebugLn('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
-  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
-  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
+  //DebugLn('EEE1 MouseRelease Widget=',DbgS(Widget),
+  //' EventMask=',DbgS(gdk_window_get_events(Widget^.Window)),
+  //' GDK_BUTTON_RELEASE_MASK=',DbgS(GDK_BUTTON_RELEASE_MASK));
 
   UpdateMouseCaptureControl;
 
@@ -1377,7 +1377,7 @@ begin
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[gtkMouseBtnReleaseAfter] ',DbgSName(TObject(Data)),' ',
-    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' Widget=',DbgS(Widget),
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)),' Btn=',dbgs(event^.Button));
   {$ENDIF}
 
@@ -1602,7 +1602,7 @@ begin
     gtk_color_selection_get_current_color(colorsel, @newColor);
     TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
     {$IFDEF VerboseColorDialog}
-    DebugLn('gtkDialogOKclickedCB ',HexStr(Cardinal(TColorDialog(theDialog).Color),8));
+    DebugLn('gtkDialogOKclickedCB ',DbgS(TColorDialog(theDialog).Color));
     {$ENDIF}
   end
   else if theDialog is TFontDialog then
@@ -1990,7 +1990,7 @@ begin
   if not (TObject(Data) is TControl) then begin
     // owner is not TControl -> ignore
     DebugLn('WARNING: gtksize_allocateCB: Data is not TControl. Data=',
-            HexStr(Cardinal(Data),8),' ',GetWidgetClassName(Widget));
+            DbgS(Data),' ',GetWidgetClassName(Widget));
     if Data<>nil then
       DebugLn('  Data=',TObject(Data).ClassName);
     RaiseException('');
@@ -2007,8 +2007,8 @@ begin
   {$IFDEF VerboseSizeMsg}
   DebugLn('gtksize_allocateCB: ',
     TControl(Data).Name+':'+TControl(Data).ClassName,
-    ' widget='+HexStr(Cardinal(Widget),8)+WidgetFlagsToString(widget)+
-    ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
+    ' widget='+DbgS(Widget)+WidgetFlagsToString(widget)+
+    ' fixwidget=',DbgS(GetFixedWidget(Widget)),
     ' GtkPos=',dbgs(Widget^.allocation.x)+','+dbgs(Widget^.allocation.y),
                ','+dbgs(Widget^.allocation.width)+'x'+dbgs(Widget^.allocation.width)+
     ' LCLPos='+dbgs(TControl(Data).Left)+','+dbgs(TControl(Data).Top),
@@ -2035,7 +2035,7 @@ begin
     {$IFDEF VerboseSizeMsg}
     DebugLn('gtksize_allocate_client: ',
       TControl(Data).Name,':',TControl(Data).ClassName,
-      ' widget=',HexStr(Cardinal(Widget),8),
+      ' widget=',DbgS(Widget),
       ' NewSize=',dbgs(Size^.Width),',',dbgs(Size^.Height),
       ' Allocation='+dbgs(widget^.Allocation.Width)+'x'+dbgs(Widget^.Allocation.Height),
       ' Requisiton='+dbgs(widget^.Requisition.Width)+'x'+dbgs(Widget^.Requisition.Height)
@@ -2051,7 +2051,7 @@ begin
   end else begin
     // owner is not TWinControl -> ignore
     DebugLn('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
-            HexStr(Cardinal(Data),8));
+            DbgS(Data));
     exit;
   end;
 end;
@@ -2077,7 +2077,7 @@ begin
   Mess.Msg := LM_NOTIFY;
   FillChar(NMHdr,SizeOf(NMHdr),0);
   NMHdr.code := TCN_SELCHANGING;
-  NMHdr.hwndfrom := longint(widget);
+  NMHdr.hwndfrom := PtrInt(widget);
   NMHdr.idfrom := pagenum;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   Mess.Result := 0;
@@ -2317,13 +2317,13 @@ begin
 
   if (FTimerData=nil) or (FTimerData.IndexOf(Data)<0) then begin
     {$IFDEF VerboseTimer}
-    DebugLn('gtkTimerCB Timer was killed: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    DebugLn('gtkTimerCB Timer was killed: TimerInfo=',DbgS(TimerInfo));
     {$ENDIF}
     // timer was killed
     Result:=GdkFalse; // stop timer
   end else begin
     {$IFDEF VerboseTimer}
-    DebugLn('gtkTimerCB Timer Event: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    DebugLn('gtkTimerCB Timer Event: TimerInfo=',DbgS(TimerInfo));
     {$ENDIF}
     if TimerInfo^.TimerFunc <> nil
     then begin
@@ -2344,7 +2344,7 @@ begin
 
   if Result=GdkFalse then begin
     {$IFDEF VerboseTimer}
-    DebugLn('gtkTimerCB Timer was STOPPED: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    DebugLn('gtkTimerCB Timer was STOPPED: TimerInfo=',DbgS(TimerInfo));
     {$ENDIF}
     // timer will be stopped
     // -> free timer data, if not already done
@@ -2909,7 +2909,7 @@ function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
 var ClipboardType: TClipboardType;
 begin
   if (Data=nil) or (TargetWidget=nil) then ;
-  //DebugLn('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
+  //DebugLn('*** [ClipboardSelectionLostOwnershipHandler] ',DbgS(targetwidget));
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if EventSelection^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
       {$IFDEF DEBUG_CLIPBOARD}
@@ -2976,6 +2976,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.274  2005/03/07 21:59:45  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.273  2005/03/04 12:28:11  mattias
   fixed gtk2 intf scrollbar handling  from Danny Milosavljevic
 

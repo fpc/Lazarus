@@ -97,8 +97,8 @@ function TSynEditRegexSearch.FindAll(const NewText: string): integer;
 
   procedure AddResult(const aPos, aLength: integer);
   begin
-    fPositions.Add( pointer(aPos) );
-    fLengths.Add( pointer(aLength) );
+    fPositions.Add( pointer(PtrInt(aPos)) );
+    fLengths.Add( pointer(PtrInt(aLength)) );
   end;
 
 begin
@@ -120,7 +120,7 @@ end;
 
 function TSynEditRegexSearch.GetLength(aIndex: integer): integer;
 begin
-  Result := integer( fLengths[ aIndex ] );
+  Result := PtrInt( fLengths[ aIndex ] );
 end;
 
 function TSynEditRegexSearch.GetPattern: string;
@@ -130,7 +130,7 @@ end;
 
 function TSynEditRegexSearch.GetResult(aIndex: integer): integer;
 begin
-  Result := integer( fPositions[ aIndex ] );
+  Result := PtrInt( fPositions[ aIndex ] );
 end;
 
 function TSynEditRegexSearch.GetResultCount: integer;

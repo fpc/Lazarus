@@ -296,7 +296,7 @@ begin
     if HashItem<>nil then begin
       DbgOut('  Index=',IntToStr(i));
       while HashItem<>nil do begin
-        DbgOut(' ',HexStr(Cardinal(HashItem^.Item),8));
+        DbgOut(' ',Dbgs(HashItem^.Item));
         RealHashIndex:=IndexOf(HashItem^.Item);
         if RealHashIndex<>i then DbgOut('(H='+dbgs(RealHashIndex)+')');
         HashItem:=HashItem^.Next;
@@ -307,10 +307,10 @@ begin
   end;
   HashItem:=FFirstItem;
   while HashItem<>nil do begin
-    DebugLn('  ',HexStr(Cardinal(HashItem^.Prior),8),'<-'
-                ,HexStr(Cardinal(HashItem),8)
-                ,'(',HexStr(Cardinal(HashItem^.Item),8),')'
-                ,'->',HexStr(Cardinal(HashItem^.Next),8));
+    DebugLn('  ',Dbgs(HashItem^.Prior),'<-'
+                ,Dbgs(HashItem)
+                ,'(',Dbgs(HashItem^.Item),')'
+                ,'->',Dbgs(HashItem^.Next));
     HashItem:=HashItem^.Next;
   end;
 end;
@@ -440,14 +440,14 @@ begin
       exit(FHashCacheIndex);
     if not Assigned(FCustomHashFunction) then begin
       if not Assigned(FOwnerHashFunction) then begin
-        Result:=Integer((Cardinal(Key)+(Cardinal(Key) mod 17)) mod Cardinal(FCapacity));
+        Result:=Integer((PtrUInt(Key)+(PtrUint(Key) mod 17)) mod Cardinal(FCapacity));
       end else
         Result:=FOwnerHashFunction(Key);
     end else
       Result:=FCustomHashFunction(Self,Key);
     {if (Key=FHashCacheItem) and (FHashCacheIndex>=0)
     and (Result<>FHashCacheIndex) then begin
-      DebugLn(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
+      DebugLn(' DAMN: ',HexStr(PtrInt(Key),8),' ',FHashCacheIndex,'<>',Result);
       raise Exception.Create('GROSSER MIST');
     end;}
     // Check if the owner or custon function has returned something valid
@@ -505,9 +505,9 @@ end;
 function TDynHashArray.SlowAlternativeHashMethod(Sender: TDynHashArray;
   Item: Pointer): integer;
 begin
-  Result:=integer((Cardinal(Item) mod Cardinal(PrimeNumber))
-          +(Cardinal(Item) mod 17)+(Cardinal(Item) mod 173)
-          +(Cardinal(Item) mod 521)
+  Result:=integer((PtrUInt(Item) mod Cardinal(PrimeNumber))
+          +(PtrUInt(Item) mod 17)+(PtrUInt(Item) mod 173)
+          +(PtrUInt(Item) mod 521)
            ) mod FCapacity;
 end;
 

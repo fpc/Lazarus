@@ -489,7 +489,7 @@ begin
     end;
     if IsUnderScoreOrNumberChar[ToHash^] then
       inc(ToHash);
-    fStringLen := integer(ToHash) - integer(Start);
+    fStringLen := PtrInt(ToHash) - PtrInt(Start);
   end else begin
     fStringLen := 0;
   end;
@@ -1560,12 +1560,12 @@ end;
 
 function TSynPasSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(PtrInt(fRange));
 end;
 
 procedure TSynPasSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(PtrInt(Value));
 end;
 
 procedure TSynPasSyn.ResetRange;

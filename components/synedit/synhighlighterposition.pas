@@ -169,7 +169,7 @@ end;
 
 function TSynPositionHighlighter.GetRange: Pointer;
 begin
-  Result := Pointer(fLineNumber);
+  Result := Pointer(PtrInt(fLineNumber));
 end;
 
 function TSynPositionHighlighter.GetToken: string;

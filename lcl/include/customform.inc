@@ -728,7 +728,7 @@ begin
   // FCanvas.Lock;
   try
     FCanvas.Handle := DC;
-    //DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',HexStr(DC,8),'  ',HexStr(FCanvas.Handle,8));
+    //DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',DbgS(DC,8),'  ',DbgS(FCanvas.Handle,8));
     try
       if FDesigner <> nil then FDesigner.PaintGrid else Paint;
     finally
@@ -1897,6 +1897,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.179  2005/03/07 21:59:44  vincents
+  changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
+
   Revision 1.178  2005/03/04 13:50:08  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 
