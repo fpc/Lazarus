@@ -22,6 +22,95 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+function GTK2FocusCB( widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
+var
+  Status : gBoolean;
+begin
+  Status := GTKFocusCB(Widget, Event, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
+function GTK2FocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
+var
+  Status : gBoolean;
+begin
+  Status := GTKFocusCBAfter(Widget, Event, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
+function gtk2HideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+   Status : GBoolean;
+begin
+  Status := gtkHideCB(Widget, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
+function GTK2KeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
+var
+  Status : gBoolean;
+begin
+  Status := GTKKeyUpDown(Widget, Event, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
+function GTK2KillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
+var
+  Status : gBoolean;
+begin
+  Status := GTKKillFocusCB(Widget, Event, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
+function GTK2KillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
+var
+  Status : gBoolean;
+begin
+  Status := GTKKillFocusCBAfter(Widget, Event, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
+function gtk2showCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+   Status : GBoolean;
+begin
+  Status := gtkshowCB(Widget, Data);
+
+  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
+    Result := Status
+  else
+    Result := False;
+end;
+
 Procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
                          WinControl: TWinControl); cdecl;
 var
@@ -744,6 +833,113 @@ begin
 //  end;   // end of 1st case
 end;
 
+{------------------------------------------------------------------------------
+  Function: TGTK2Object.SetCallback
+  Params: Msg - message for which to set a callback
+          sender - object to which callback will be send
+  Returns:  nothing
+
+  Applies a Message to the sender
+ ------------------------------------------------------------------------------}
+procedure TGTK2Object.SetCallback(Msg : LongInt; Sender: TObject);
+
+  procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
+    const ACallBackProc: Pointer);
+  begin
+    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+  end;
+
+  procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
+    const ASignal: PChar; const ACallBackProc: Pointer);
+  begin
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+  end;
+
+  procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
+  begin
+    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender),
+                  ReqSignalMask);
+  end;
+
+  procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
+    const ASignal: PChar; const ACallBackProc: Pointer;
+    const ReqSignalMask: TGdkEventMask);
+  begin
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender),
+                       ReqSignalMask);
+  end;
+
+  procedure ConnectFocusEvents(const AnObject: PGTKObject);
+  begin
+    ConnectSenderSignal(AnObject, 'focus-in-event', @gtk2FocusCB);
+    ConnectSenderSignalAfter(AnObject, 'focus-in-event', @gtk2FocusCBAfter);
+    ConnectSenderSignal(AnObject, 'focus-out-event', @gtk2KillFocusCB);
+    ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtk2KillFocusCBAfter);
+  end;
+
+var
+  gObject, gFixed, gCore, Scroll: PGTKObject;
+begin
+  gObject := ObjectToGTKObject(Sender);
+  if gObject = nil then Exit;
+
+  // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
+  gFixed := PGTKObject(GetFixedWidget(gObject));
+  if gFixed = nil then gFixed := gObject;
+
+  // gCore is the main widget (e.g. TListView has this)
+  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.ImplementationWidget);
+
+  case Msg of
+    LM_FOCUS :
+    begin
+      if (Sender is TCustomComboBox) then begin
+        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
+        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
+      end else begin
+        ConnectFocusEvents(gCore);
+      end;
+    end;
+
+    LM_CHAR,
+    LM_KEYDOWN,
+    LM_KEYUP,
+
+    LM_SYSCHAR,
+    LM_SYSKEYDOWN,
+    LM_SYSKEYUP:
+    begin
+      if (Sender is TCustomComboBox) then begin
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+          'key-press-event', @GTK2KeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+          'key-release-event', @GTK2KeyUpDown, GDK_KEY_RELEASE_MASK);
+      end
+      else if (Sender is TCustomForm) then begin
+        ConnectSenderSignal(gObject, 'key-press-event', @GTK2KeyUpDown,
+                            GDK_KEY_PRESS_MASK);
+        ConnectSenderSignal(gObject, 'key-release-event', @GTK2KeyUpDown,
+                            GDK_KEY_RELEASE_MASK);
+      end;
+      ConnectSenderSignal(gCore, 'key-press-event', @GTK2KeyUpDown,
+                          GDK_KEY_PRESS_MASK);
+      ConnectSenderSignal(gCore, 'key-release-event', @GTK2KeyUpDown,
+                          GDK_KEY_RELEASE_MASK);
+    end;
+
+
+    LM_SHOWWINDOW :
+    begin
+      ConnectSenderSignal(gObject, 'show', @gtk2showCB);
+      ConnectSenderSignal(gObject, 'hide', @gtk2hideCB);
+    end;
+
+  else
+    Inherited SetCallback(Msg, Sender);
+  end;
+end;
+
 Function TGtk2Object.LoadStockPixmap(StockID: longint) : HBitmap;
 var
   Pixmap : PGDIObject;
@@ -1160,6 +1356,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.5  2003/10/03 01:25:01  ajgenius
+  add more gtk1i<->gtk2 key & event wrappers,
+  move more GTK2 workarounds from gtk to gtk2 interface,
+  start GTK2 interface SetCallback
+
   Revision 1.4  2003/10/02 18:15:44  ajgenius
   more gtk2 (check)ListBox implementation
 

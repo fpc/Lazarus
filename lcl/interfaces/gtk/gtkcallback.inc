@@ -173,7 +173,6 @@ end;
   the initialization of a widget.
 
 -------------------------------------------------------------------------------}
-
   {$IFDEF CustomFonts}
   procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
   {$IFDEF Win32}
@@ -184,6 +183,7 @@ end;
   var
     RCStyle: PGtkRcStyle;
   begin
+    {$IfDef GTK1}
     {$IFDEF NoStyle}
     exit;
     {$ENDIF}
@@ -198,6 +198,7 @@ end;
     g_free(RCStyle^.font_name);
     RCStyle^.font_name:=nil;
     gtk_rc_style_unref(RCStyle);
+    {$EndIf}
   end;
   {$ENDIF not win32}
   {$ENDIF CustomFonts}
@@ -275,13 +276,8 @@ end;
 function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMShowWindow;
-   Status : GBoolean;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
   Result := True;
-  {$endif}
 
   EventTrace('show', data);
   if Widget=nil then ;
@@ -289,38 +285,21 @@ begin
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := True;
 
-  Status := DeliverMessage(Data, Mess) = 0;
-
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
-  Result := Status;
-  {$endif}
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 function gtkHideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMShowWindow;
-  Status : GBoolean;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
   Result := True;
-  {$endif}
 
   EventTrace('hide', data);
   if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := False;
-  Status := DeliverMessage(Data, Mess) = 0;
-
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
-  Result := Status;
-  {$endif}
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -601,27 +580,21 @@ var
   ShiftState: TShiftState;
   EventStopped: Boolean;
   TopLevel: PGtkWidget;
-  Status : GBoolean;
-  
+  theString : PPgChar;
+
   procedure StopKeyEvent(const EventName: PChar);
   begin
     if not EventStopped then begin
       g_signal_stop_emission_by_name (GTK_OBJECT (Widget), EventName);
       EventStopped:=true;
     end;
+    gdk_event_key_get_string(Event, theString);
     If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
       {$IfNDef Win32}
-      {$IfDef GTK2}
-      If Event^._string <> nil then begin
-        Event^._string[0] := Char(Msg.CharCode);
-        Event^._string[1] := #0;
+      If theString^ <> nil then begin
+        theString^[0] := Char(Msg.CharCode);
+        theString^[1] := #0;
       end;
-      {$else}
-      If Event^.theString <> nil then begin
-        Event^.theString[0] := Char(Msg.CharCode);
-        Event^.theString[1] := #0;
-      end;
-      {$EndIf}
       {$EndIf}
       Event^.KeyVal := Msg.CharCode;
       If Msg.CharCode <> VK_UNKNOWN then
@@ -635,7 +608,7 @@ var
   end;
   
 begin
-  Status := true;
+  Result := true;
   
   EventStopped:=false;
   
@@ -650,11 +623,7 @@ begin
 
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
 
-{$ifdef GTK2}
-  case Event^._Type of
-{$else}
-  case Event^.theType of
-{$endif}
+  case gdk_event_get_type(Event) of
   GDK_KEY_RELEASE:
     begin
       {writeln('[GTKKeyUpDown] RELEASE ',TControl(Data).Name,':',TControl(Data).ClassName,
@@ -673,7 +642,7 @@ begin
       Msg.Result:=0;
       Code := Msg.CharCode;
       NotifyApplicationUserInput(Msg.Msg);
-      Status := DeliverMessage(Data, Msg)=0;
+      Result := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
         // key was handled by LCL
@@ -708,7 +677,7 @@ begin
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
       //writeln('GTKKeyUpDown Key Send to ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Code=VK_TAB);
-      status := DeliverMessage(Data, Msg)=0;
+      Result := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
         // key was changed by LCL
@@ -728,7 +697,7 @@ begin
         Msg.CharCode := KeyCode;
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
-        status:=DeliverMessage(Data, Msg)=0;
+        Result:=DeliverMessage(Data, Msg)=0;
         If Msg.CharCode <> KeyCode then begin
           // key was handled by lcl
           //writeln('GTKKeyUpDown Key CHANGED 2 ',TControl(Data).Name,':',TControl(Data).ClassName);
@@ -744,14 +713,11 @@ begin
           and (PGtkWindow(TopLevel)^.focus_widget=Widget) then begin
             StopKeyEvent('key_press_event');
             //writeln('GTKKeyUpDown ',TControl(Data).Name,':',TControl(Data).ClassName);
-            Status:=TControl(Data).PerformTab(not (ssShift in ShiftState));
-            If Status then begin
+            Result:=TControl(Data).PerformTab(not (ssShift in ShiftState));
+            If Result then begin
               {$IfNDef Win32}
-              {$ifdef GTK2}
-              Event^._String[0] := #0;
-              {$else}
-              Event^.theString[0] := #0;
-              {$EndIf}
+              gdk_event_key_get_string(Event, theString);
+              theString^[0] := #0;
               {$EndIf}
               Event^.KeyVal := 0;
             end;
@@ -760,13 +726,6 @@ begin
     end;
   end;
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
-
-  {$ifdef GTK2}
-  if not GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
-    Status := False;//for now only handle custom widgets
-  {$endif}
-
-  Result := Status;
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
@@ -809,11 +768,7 @@ begin
   writeln('');
   {$ENDIF}
 
-  {$IfDef GTK2}
-  Result:=False;
-  {$Else}
   Result:=true;
-  {$EndIF}
 end;
 
 function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -863,11 +818,7 @@ begin
   Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
   DeliverMessage(Data,  Mess);
 
-  {$IfDef GTK2}
-  Result:=False;
-  {$Else}
   Result:=true;
-  {$EndIF}
 end;
 
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
@@ -910,11 +861,7 @@ begin
   writeln('');
   {$ENDIF}
 
-  {$IfDef GTK2}
-  Result:=False;
-  {$Else}
   Result:=true;
-  {$EndIF}
 end;
 
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -964,11 +911,7 @@ begin
   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
   DeliverMessage(Data,  Mess);
 
-  {$IfDef GTK2}
-  Result:=False;
-  {$Else}
   Result:=true;
-  {$EndIF}
 end;
 
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1268,8 +1211,7 @@ var
 
 
     if (LastMouse.Down) and
-      (not (Event^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF}
-            in [gdk_2button_press,gdk_3button_press]))
+      (not (gdk_event_get_type(Event) in [gdk_2button_press,gdk_3button_press]))
     then begin
       {$IFDEF VerboseMouseBugfix}
       writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
@@ -1282,12 +1224,8 @@ var
 
     IsMultiClick:=TestIfMultiClick;
 
-   {$ifdef GTK2}
-    case Event^._Type of
-   {$ELSE}
-    case Event^.theType of
-   {$ENDIF}
-   
+    case gdk_event_get_type(Event) of
+
     gdk_2button_press:
       // the gtk itself has detected a double click
       if (LastMouse.ClickCount>=2)
@@ -2006,15 +1944,11 @@ begin
   Result:=false;
 
   if (Widget=nil) then ;
-  {$ifdef GTK2}
-  case Event^._Type of
-  {$else}
-  case Event^.theType of
-  {$endif}
-  
+  case gdk_event_get_type(Event) of
+
   GDK_KEY_RELEASE, GDK_KEY_PRESS:
     begin
-      if Event^.KeyVal={$ifdef GTK2}GDK_KEY_Escape{$else}GDK_Escape{$EndIf}
+      if Event^.KeyVal=GDK_KEY_Escape
       then begin
         StoreCommonDialogSetup(TCommonDialog(data));
         TCommonDialog(data).UserChoice:=mrCancel;
@@ -2880,17 +2814,10 @@ var
   begin
     if VirtKeyCode<>ListCode then
       UpdateExtraKeyState(ListCode,Pressed)
-    {$ifdef GTK2}
-    else if Event^._Type=GDK_KEY_PRESS then
+    else if gdk_event_get_type(Event)=GDK_KEY_PRESS then
       UpdateExtraKeyState(ListCode,true)
-    else if Event^._Type=GDK_KEY_RELEASE then
+    else if gdk_event_get_type(Event)=GDK_KEY_RELEASE then
       UpdateExtraKeyState(ListCode,false);
-    {$else}
-    else if Event^.theType=GDK_KEY_PRESS then
-      UpdateExtraKeyState(ListCode,true)
-    else if Event^.theType=GDK_KEY_RELEASE then
-      UpdateExtraKeyState(ListCode,false);
-    {$endif}
   end;
 
 begin
@@ -2904,11 +2831,7 @@ begin
   CheckExtraKeyState(VK_SHIFT,ssShift in ShiftState);
   CheckExtraKeyState(VK_MENU,ssAlt in ShiftState);
 
-  {$ifdef GTK2}
-  case Event^._Type of
-  {$else}
-  case Event^.theType of
-  {$endif}
+  case gdk_event_get_type(Event) of
     GDK_KEY_PRESS:
       begin
         if KeyStateList.IndexOf(Pointer(ListCode)) <0
@@ -2930,8 +2853,7 @@ begin
         KeyStateList.Remove(Pointer(ListCode or KEYMAP_TOGGLE));
       end;
   else
-    WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d',[
-    {$ifdef GTK2}Event^._Type{$else}Event^.theType{$endif}]));
+    WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d',[gdk_event_get_type(Event)]));
   end;
   Result := 0;
 end;
@@ -3185,6 +3107,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.201  2003/10/03 01:25:01  ajgenius
+  add more gtk1i<->gtk2 key & event wrappers,
+  move more GTK2 workarounds from gtk to gtk2 interface,
+  start GTK2 interface SetCallback
+
   Revision 1.200  2003/10/02 03:35:29  ajgenius
   more fixes for GTK2, synedit now mostly-useable
 

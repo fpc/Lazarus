@@ -58,6 +58,7 @@ type
     procedure HookSignals(Sender: TObject); override;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
+    procedure SetCallback(Msg : LongInt; Sender: TObject); override;
     procedure SetLabel(Sender : TObject; Data : Pointer); override;
     function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
@@ -561,6 +562,11 @@ end.
 
 {
   $Log$
+  Revision 1.24  2003/10/03 01:25:01  ajgenius
+  add more gtk1i<->gtk2 key & event wrappers,
+  move more GTK2 workarounds from gtk to gtk2 interface,
+  start GTK2 interface SetCallback
+
   Revision 1.23  2003/10/02 18:15:44  ajgenius
   more gtk2 (check)ListBox implementation
 

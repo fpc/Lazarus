@@ -64,6 +64,24 @@ begin
   result := gtk_widget_get_ythickness(gtk_widget_get_style(Style));
 end;
 
+procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : PPgchar);
+begin
+  {$IfDef GTK2}
+  theString := @Event^._String;
+  {$Else}
+  theString := @Event^.TheString;
+  {$EndIF}
+end;
+
+function gdk_event_get_type(Event : Pointer) : guint;
+begin
+  {$IfDef GTK2}
+  result := PGdkEvent(Event)^._type;
+  {$Else}
+  result := PGdkEvent(Event)^.TheType;
+  {$EndIF}
+end;
+
 {$Ifdef GTK1}
 function gtk_class_get_type(aclass : Pointer) : TGtkType;
 begin
@@ -1275,200 +1293,192 @@ begin
           Dec(KeyCode, Ord('@'));
       end;
       
-    {$ifdef GTK2}GDK_key_dead_circumflex{$else}GDK_dead_circumflex{$EndIf}:
+    GDK_key_dead_circumflex:
       begin
         KeyCode := Ord('^');
       end;
       
-    {$ifdef GTK2}GDK_KEY_KP_Space{$else}GDK_KP_Space{$EndIf}:
+    GDK_KEY_KP_Space:
       begin
         KeyCode := VK_SPACE;
         VirtualKey := VK_SPACE;
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_ENTER{$else}GDK_KP_ENTER{$EndIf}:
+    GDK_KEY_KP_ENTER:
      begin
         KeyCode := VK_Return;
         VirtualKey := VK_Return;
       end;
 
-    {$ifdef GTK2}
-    GDK_KEY_Tab, GDK_KEY_ISO_Left_Tab, GDK_KEY_KP_Tab
-    {$else}
-    GDK_Tab, GDK_ISO_Left_Tab, GDK_KP_Tab
-    {$EndIf}:
+    GDK_KEY_Tab, GDK_KEY_ISO_Left_Tab, GDK_KEY_KP_Tab:
       begin
         KeyCode := VK_TAB;
         VirtualKey := VK_TAB;
       end;
 
-    {$ifdef GTK2}GDK_KEY_RETURN{$else}GDK_Return{$EndIf}:
+    GDK_KEY_RETURN:
       begin
         KeyCode := VK_RETURN;
         VirtualKey := VK_RETURN;
       end;
 
-    {$ifdef GTK2}GDK_KEY_LINEFEED{$else}GDK_LINEFEED{$EndIf}:
+    GDK_KEY_LINEFEED:
       begin
         KeyCode := $0A;
         VirtualKey := $0A;
       end;
  
     // Cursor block / keypad
-    {$ifdef GTK2}GDK_KEY_INSERT{$else}GDK_INSERT{$EndIf}:
+    GDK_KEY_INSERT:
       begin
         VirtualKey := VK_INSERT;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_HOME{$else}GDK_HOME{$EndIf}:
+    GDK_KEY_HOME:
       begin
         VirtualKey := VK_HOME;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_LEFT{$else}GDK_LEFT{$EndIf}:
+    GDK_KEY_LEFT:
       begin
         VirtualKey := VK_LEFT;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_UP{$else}GDK_UP{$EndIf}:
+    GDK_KEY_UP:
       begin
         VirtualKey := VK_UP;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_RIGHT{$else}GDK_RIGHT{$EndIf}:
+    GDK_KEY_RIGHT:
       begin
         VirtualKey := VK_RIGHT;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_DOWN{$else}GDK_DOWN{$EndIf}:
+    GDK_KEY_DOWN:
       begin
         VirtualKey := VK_DOWN;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_Page_Up{$else}GDK_Page_Up{$EndIf}:
+    GDK_KEY_Page_Up:
       begin
         VirtualKey := VK_PRIOR;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_Page_Down{$else}GDK_Page_Down{$EndIf}:
+    GDK_KEY_Page_Down:
       begin
         VirtualKey := VK_NEXT;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_KEY_End{$else}GDK_End{$EndIf}:
+    GDK_KEY_End:
       begin
         VirtualKey := VK_END;
         Extended := True;
       end;
     
-    {$ifdef GTK2}GDK_KEY_KP_INSERT{$else}GDK_KP_INSERT{$EndIf}:      
+    GDK_KEY_KP_INSERT:
       VirtualKey := VK_INSERT;
-    {$ifdef GTK2}GDK_KEY_KP_HOME{$else}GDK_KP_HOME{$EndIf}:      
+    GDK_KEY_KP_HOME:
       VirtualKey := VK_HOME;
-    {$ifdef GTK2}GDK_KEY_KP_LEFT{$else}GDK_KP_LEFT{$EndIf}:      
+    GDK_KEY_KP_LEFT:
       VirtualKey := VK_LEFT;
-    {$ifdef GTK2}GDK_KEY_KP_UP{$else}GDK_KP_UP{$EndIf}:      
+    GDK_KEY_KP_UP:
       VirtualKey := VK_UP;
-    {$ifdef GTK2}GDK_KEY_KP_RIGHT{$else}GDK_KP_RIGHT{$EndIf}:      
+    GDK_KEY_KP_RIGHT:
       VirtualKey := VK_RIGHT;
-    {$ifdef GTK2}GDK_KEY_KP_DOWN{$else}GDK_KP_DOWN{$EndIf}:      
+    GDK_KEY_KP_DOWN:
       VirtualKey := VK_DOWN;
-    {$ifdef GTK2}GDK_KEY_KP_PAGE_UP{$else}GDK_KP_PAGE_UP{$EndIf}:      
+    GDK_KEY_KP_PAGE_UP:
       VirtualKey := VK_PRIOR;
-    {$ifdef GTK2}GDK_KEY_KP_PAGE_DOWN{$else}GDK_KP_PAGE_DOWN{$EndIf}:      
+    GDK_KEY_KP_PAGE_DOWN:
       VirtualKey := VK_NEXT;
-    {$ifdef GTK2}GDK_KEY_KP_END{$else}GDK_KP_END{$EndIf}:      
+    GDK_KEY_KP_END:
       VirtualKey := VK_END;
 
-    {$ifdef GTK2}GDK_KEY_Num_Lock{$else}GDK_Num_Lock{$EndIf}:      
+    GDK_KEY_Num_Lock:
       VirtualKey := VK_NUMLOCK;
-    {$ifdef GTK2}GDK_KEY_KP_F1{$else}GDK_KP_F1{$EndIf}:      
+    GDK_KEY_KP_F1:
       VirtualKey := VK_F1;
-    {$ifdef GTK2}GDK_KEY_KP_F2{$else}GDK_KP_F2{$EndIf}:      
+    GDK_KEY_KP_F2:
       VirtualKey := VK_F2;
-    {$ifdef GTK2}GDK_KEY_KP_F3{$else}GDK_KP_F3{$EndIf}:      
+    GDK_KEY_KP_F3:
       VirtualKey := VK_F3;
-    {$ifdef GTK2}GDK_KEY_KP_F4{$else}GDK_KP_F4{$EndIf}:      
+    GDK_KEY_KP_F4:
       VirtualKey := VK_F4;
 
-    {$ifdef GTK2}GDK_KEY_KP_EQUAL{$else}GDK_KP_EQUAL{$EndIf}:      
+    GDK_KEY_KP_EQUAL:
       begin
         VirtualKey := VK_EQUAL;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('=');
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_Multiply{$else}GDK_KP_Multiply{$EndIf}:      
+    GDK_KEY_KP_Multiply:
       begin
         VirtualKey := VK_MULTIPLY;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('*');
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_Add{$else}GDK_KP_Add{$EndIf}:      
+    GDK_KEY_KP_Add:
       begin
         VirtualKey := VK_ADD;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('+');
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_Separator{$else}GDK_KP_Separator{$EndIf}:      
+    GDK_KEY_KP_Separator:
       begin
         VirtualKey := VK_SEPARATOR;
 //        if not CtrlDown then KeyCode := Ord('????'); 
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_Subtract{$else}GDK_KP_Subtract{$EndIf}:      
+    GDK_KEY_KP_Subtract:
       begin
         VirtualKey := VK_SUBTRACT;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('-');
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_Decimal{$else}GDK_KP_Decimal{$EndIf}:      
+    GDK_KEY_KP_Decimal:
       begin
         VirtualKey := VK_DECIMAL;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('.');
       end;
 
-    {$ifdef GTK2}GDK_KEY_KP_Divide{$else}GDK_KP_Divide{$EndIf}:      
+    GDK_KEY_KP_Divide:
       begin
         VirtualKey := VK_DIVIDE;
         Extended := True;
         if not (ssCtrl in ShiftState) then KeyCode := Ord('/');
       end;
 
-    {$ifdef GTK2}
-    GDK_KEY_KP_0..GDK_KEY_KP_9
-    {$else}
-    GDK_KP_0..GDK_KP_9
-    {$EndIf}:      
+    GDK_KEY_KP_0..GDK_KEY_KP_9:
       begin
         VirtualKey := VK_NUMPAD0 + (Event^.KeyVal -
-                              {$ifdef GTK2}GDK_KEY_KP_0{$else}GDK_KP_0{$EndIf});
+                              GDK_KEY_KP_0);
         if not (ssCtrl in ShiftState) then
           KeyCode := Ord('0') + (Event^.KeyVal -
-                              {$ifdef GTK2}GDK_KEY_KP_0{$else}GDK_KP_0{$EndIf});
+                              GDK_KEY_KP_0);
       end;
 
-    {$ifdef GTK2}GDK_KEY_BackSpace{$else}GDK_BackSpace{$EndIf}:      
+    GDK_KEY_BackSpace:
       VirtualKey := VK_BACK;
 
-    {$ifdef GTK2}GDK_KEY_Clear{$else}GDK_Clear_Key{$EndIf}:      
+    GDK_KEY_Clear:
       VirtualKey := VK_CLEAR;
-    {$ifdef GTK2}GDK_KEY_Pause{$else}GDK_Pause{$EndIf}:      
+    GDK_KEY_Pause:
       VirtualKey := VK_PAUSE;
-    {$ifdef GTK2}GDK_KEY_Scroll_Lock{$else}GDK_Scroll_Lock{$EndIf}:      
+    GDK_KEY_Scroll_Lock:
       VirtualKey := VK_SCROLL;
-    {$ifdef GTK2}GDK_KEY_Sys_Req{$else}GDK_Sys_Req{$EndIf}:      
+    GDK_KEY_Sys_Req:
       VirtualKey := VK_SNAPSHOT;
-    {$ifdef GTK2}GDK_KEY_Escape{$else}GDK_Escape{$EndIf}:
+    GDK_KEY_Escape:
       VirtualKey := VK_ESCAPE;
-    {$ifdef GTK2}GDK_KEY_Delete{$else}GDK_Delete_Key{$EndIf}:      
+    GDK_KEY_Delete:
       VirtualKey := VK_DELETE;
     
 //    GDK_Multi_key = $FF20;
@@ -1476,7 +1486,7 @@ begin
 //    GDK_MultipleCandidate = $FF3D;
 //    GDK_PreviousCandidate = $FF3E;
 
-    {$ifdef GTK2}GDK_KEY_Kanji{$else}GDK_Kanji{$EndIf}:      
+    GDK_KEY_Kanji:
       VirtualKey := VK_KANJI;
 
 //    GDK_Muhenkan = $FF22;
@@ -1498,59 +1508,59 @@ begin
 //    GDK_Zen_Koho = $FF3D;
 //    GDK_Mae_Koho = $FF3E;
 
-    {$ifdef GTK2}GDK_Key_Select{$else}GDK_Select{$EndIf}:      
+    GDK_KEY_Select:
       VirtualKey := VK_SELECT;
-    {$ifdef GTK2}GDK_Key_Print{$else}GDK_Print{$EndIf}:      
+    GDK_KEY_Print:
       VirtualKey := VK_PRINT;
-    {$ifdef GTK2}GDK_Key_Execute{$else}GDK_Execute{$EndIf}:      
+    GDK_KEY_Execute:
       VirtualKey := VK_EXECUTE;
 
-    {$ifdef GTK2}GDK_Key_Menu{$else}GDK_Menu{$EndIf}:      
+    GDK_KEY_Menu:
       VirtualKey := VK_MENU;
 //    GDK_Find = $FF68;
-    {$ifdef GTK2}GDK_Key_Cancel{$else}GDK_Cancel{$EndIf}:      
+    GDK_KEY_Cancel:
       VirtualKey := VK_CANCEL;
-    {$ifdef GTK2}GDK_Key_Help{$else}GDK_Help{$EndIf}:      
+    GDK_KEY_Help:
       VirtualKey := VK_HELP;
-    {$ifdef GTK2}GDK_Key_Break{$else}GDK_Break{$EndIf}:      
+    GDK_KEY_Break:
       VirtualKey := VK_CANCEL;
-    {$ifdef GTK2}GDK_Key_Mode_switch{$else}GDK_Mode_switch{$EndIf}:      
+    GDK_KEY_Mode_switch:
       VirtualKey := VK_MODECHANGE;
 //    GDK_script_switch = $FF7E;
 
-    {$ifdef GTK2}GDK_Key_Caps_Lock{$else}GDK_Caps_Lock{$EndIf}:      
+    GDK_KEY_Caps_Lock:
       VirtualKey := VK_CAPITAL;
 //    GDK_Shift_Lock = $FFE6;
 
-    {$ifdef GTK2}GDK_Key_Shift_L{$else}GDK_Shift_L{$EndIf}:      
+    GDK_KEY_Shift_L:
       begin
         VirtualKey := VK_SHIFT;
       end;
 
-    {$ifdef GTK2}GDK_Key_Shift_R{$else}GDK_Shift_R{$EndIf}:      
+    GDK_KEY_Shift_R:
       begin
         VirtualKey := VK_SHIFT;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_Key_Control_L{$else}GDK_Control_L{$EndIf}:      
+    GDK_KEY_Control_L:
       begin
         VirtualKey := VK_CONTROL;
       end;
 
-    {$ifdef GTK2}GDK_Key_Control_R{$else}GDK_Control_R{$EndIf}:      
+    GDK_KEY_Control_R:
       begin
         VirtualKey := VK_CONTROL;
         Extended := True;
       end;
 
-    {$ifdef GTK2}GDK_Key_Alt_L{$else}GDK_Alt_L{$EndIf}:      
+    GDK_KEY_Alt_L:
       begin
         SysKey := True;
         VirtualKey:= VK_MENU; 
       end; 
 
-    {$ifdef GTK2}GDK_Key_Alt_R{$else}GDK_Alt_R{$EndIf}:      
+    GDK_KEY_Alt_R:
       begin
         SysKey := True;
         VirtualKey:= VK_MENU; 
@@ -1558,21 +1568,13 @@ begin
       end;
     
     // Function keys
-    {$ifdef GTK2}
-      GDK_KEY_F1..GDK_KEY_F24   
-    {$else}
-      GDK_F1..GDK_F24
-    {$EndIf}:      
+      GDK_KEY_F1..GDK_KEY_F24:
       VirtualKey := VK_F1 + (Event^.KeyVal -
-                                  {$ifdef GTK2}GDK_Key_F1{$else}GDK_F1{$EndIf});
+                                  GDK_KEY_F1);
 
     //By VVI - fixing cyrillic keys
     //GDK_* is like a koi8-r, it is KOI8-R code +$600.
-    {$ifdef GTK2}
-      GDK_KEY_cyrillic_io..GDK_KEY_cyrillic_Capital_hardsign
-    {$else}
-      GDK_cyrillic_io..GDK_cyrillic_Capital_hardsign
-    {$EndIf}:      
+      GDK_KEY_cyrillic_io..GDK_KEY_cyrillic_Capital_hardsign:
      KeyCode := Event^.KeyVal mod $100;
   end;
 
@@ -4897,6 +4899,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.214  2003/10/03 01:25:01  ajgenius
+  add more gtk1i<->gtk2 key & event wrappers,
+  move more GTK2 workarounds from gtk to gtk2 interface,
+  start GTK2 interface SetCallback
+
   Revision 1.213  2003/09/25 20:44:42  ajgenius
   minor changes for gtk2
 
