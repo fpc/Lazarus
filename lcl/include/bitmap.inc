@@ -53,6 +53,7 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
+    Changing(Self);
     //DebugLn('TBitMap.Assign ',ClassName,' ',Source.ClassName);
     // TBitmap can share image data
     // -> check if already shared
@@ -69,8 +70,10 @@ begin
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
     //DebugLn('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
+    Changed(Self);
   {$IFNDEF DisableFPImage}
   end else if Source is TFPCustomImage then begin
+    Changing(Self);
     SrcFPImage:=TFPCustomImage(Source);
     IntfImage:=TLazIntfImage.Create(0,0);
     try
@@ -85,6 +88,7 @@ begin
     finally
       IntfImage.Free;
     end;
+    Changed(Self);
   {$ENDIF}
   end else
     inherited Assign(Source);
@@ -1247,6 +1251,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2005/01/14 15:43:48  mattias
+  added Changed and Changing to TBitmpa.Assign
+
   Revision 1.92  2004/12/27 17:42:01  micha
   fix transparency while drawing (bug 462)
 
