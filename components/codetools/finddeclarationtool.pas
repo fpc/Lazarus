@@ -55,7 +55,7 @@ interface
 
 // verbosity
 { $DEFINE CTDEBUG}
-{$DEFINE ShowTriedFiles}
+{ $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedBaseContexts}
 { $DEFINE ShowTriedParentContexts}

@@ -153,7 +153,7 @@ end;
 function TFileDescPascalUnitWithCGIDataModule.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+',cgiModules';
+  Result:=Result+',LResources,cgiModules';
 end;
 
 function TFileDescPascalUnitWithCGIDataModule.GetLocalizedName: string;

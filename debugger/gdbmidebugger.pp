@@ -1533,9 +1533,9 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   var
     S: String;
     ObjAddr, ExceptionName, ExceptionMessage: String;
-    ResultList: TStringList;
+    //ResultList: TStringList;
     Location: TDBGLocationRec;
-    OK: Boolean;
+    //OK: Boolean;
   begin
     if tfRTLUsesRegCall in FTargetFlags
     then  ObjAddr := '$eax'
@@ -2654,6 +2654,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.57  2004/11/22 22:00:21  mattias
+  fixed cgilazide uses clause
+
   Revision 1.56  2004/11/22 08:08:36  vincents
   fixed fpc 1.0.x compilation
 
