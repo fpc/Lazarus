@@ -48,9 +48,6 @@ end;
   starts immediately.
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
-
-
-
 var
   P : TPoint;
 begin
@@ -2887,6 +2884,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.177  2004/03/08 22:36:01  mattias
+  added TWinControl.ParentFormInitializeWnd
+
   Revision 1.176  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

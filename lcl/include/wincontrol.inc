@@ -3061,7 +3061,7 @@ end;
   Params:  none
   Returns: Nothing
 
-  Gets called after the window is created, but before the owned controls are
+  Gets called after the window is created, but before the child controls are
   created. Place cached property code here.
  ------------------------------------------------------------------------------}
 procedure TWinControl.InitializeWnd;
@@ -3095,6 +3095,16 @@ begin
 
   // send pending resize event
   Resize;
+end;
+
+procedure TWinControl.ParentFormInitializeWnd;
+var
+  i: Integer;
+begin
+  if FWinControls <> nil then begin
+    for i := 0 to FWinControls.Count - 1 do
+      TWinControl(FWinControls.Items[i]).ParentFormInitializeWnd;
+  end;
 end;
 
 function TWinControl.ParentHandlesAllocated: boolean;
@@ -3447,6 +3457,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.212  2004/03/08 22:36:01  mattias
+  added TWinControl.ParentFormInitializeWnd
+
   Revision 1.211  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

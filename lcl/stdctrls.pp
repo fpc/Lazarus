@@ -660,7 +660,7 @@ type
   protected
     function GetLabelText: String ; virtual;
     procedure DoAutoSize; Override;
-    procedure InitializeWnd; override;
+    procedure ParentFormInitializeWnd; override;
     procedure Notification(AComponent : TComponent; Operation : TOperation); override;
     procedure SetFocusControl(Val : TWinControl); virtual;
     procedure SetShowAccelChar(Val : boolean); virtual;
@@ -1520,6 +1520,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2004/03/08 22:36:01  mattias
+  added TWinControl.ParentFormInitializeWnd
+
   Revision 1.137  2004/03/08 00:48:05  mattias
   moved TOnwerDrawState to StdCtrls
 

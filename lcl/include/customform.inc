@@ -1431,6 +1431,13 @@ begin
     Visible:=true;
 end;
 
+procedure TCustomForm.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  if Parent<>nil then
+    ParentFormInitializeWnd;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomForm.BeginFormUpdate;
  ------------------------------------------------------------------------------}
@@ -1592,6 +1599,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.131  2004/03/08 22:36:01  mattias
+  added TWinControl.ParentFormInitializeWnd
+
   Revision 1.130  2004/03/06 14:39:50  micha
   although loading, attach menu to form if handle already created, if this is not wanted, then prevent creation of handle somehow
   fixes bug #197

@@ -1344,6 +1344,7 @@ type
     function CreateWindowHandle(const AParams: TCreateParams): THandle; virtual;
     procedure CreateWnd; virtual; //creates the window
     procedure InitializeWnd; virtual; //gets called after the window is created
+    procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
     function ParentHandlesAllocated: boolean; override;
     procedure Loaded; override;
     procedure DestroyWnd; virtual;
@@ -2233,6 +2234,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.188  2004/03/08 22:36:01  mattias
+  added TWinControl.ParentFormInitializeWnd
+
   Revision 1.187  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

@@ -404,6 +404,7 @@ type
     procedure EndFormUpdate;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Loaded; override;
+    procedure InitializeWnd; override;
     // Delphi needs GetClientRect for win32 specific things, LCL not
     // Function GetClientRect : TRect ; Override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
