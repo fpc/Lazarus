@@ -774,6 +774,7 @@ ideintf/idecommands.pas svneol=native#text/pascal
 ideintf/imagelisteditor.pp svneol=native#text/pascal
 ideintf/lazideintf.pas svneol=native#text/pascal
 ideintf/listviewpropedit.pp svneol=native#text/pascal
+ideintf/macrointf.pas svneol=native#text/pascal
 ideintf/newitemintf.pas svneol=native#text/pascal
 ideintf/objectinspector.pp svneol=native#text/pascal
 ideintf/objinspstrconsts.pas svneol=native#text/pascal

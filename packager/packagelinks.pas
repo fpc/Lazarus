@@ -93,14 +93,20 @@ type
 
   { TPackageLinks }
   
+  TPackageLinks = class;
+
   TPkgLinksState = (
     plsUserLinksNeedUpdate,
     plsGlobalLinksNeedUpdate
     );
   TPkgLinksStates = set of TPkgLinksState;
+  
+  TDependencyOwnerGetPkgFilename = function(PkgLinks: TPackageLinks;
+                                 Dependency: TPkgDependency): boolean of object;
 
   TPackageLinks = class
   private
+    FDependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename;
     FGlobalLinks: TAVLTree; // tree of global TPackageLink sorted for ID
     FModified: boolean;
     FUserLinks: TAVLTree; // tree of user TPackageLink sorted for ID
@@ -138,6 +144,9 @@ type
     procedure RemoveLink(APackageID: TLazPackageID);
   public
     property Modified: boolean read FModified write SetModified;
+    property DependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename
+                                           read FDependencyOwnerGetPkgFilename
+                                           write FDependencyOwnerGetPkgFilename;
   end;
   
 var
@@ -609,6 +618,10 @@ begin
   Result:=FindLinkWithDependencyInTree(FUserLinks,Dependency);
   if Result=nil then
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
+  // finally try the history lists of the Dependency Owner (Project/Package)
+  if (Result=nil) and (Dependency.Owner<>nil)
+  and DependencyOwnerGetPkgFilename(Self,Dependency) then
+    Result:=FindLinkWithDependencyInTree(FUserLinks,Dependency);
 end;
 
 function TPackageLinks.FindLinkWithPackageID(APackageID: TLazPackageID

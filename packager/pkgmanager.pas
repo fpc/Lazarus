@@ -111,6 +111,9 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PackageGraphFindFPCUnit(const UnitName, Directory: string;
                                       var Filename: string);
+    // package links
+    function PkgLinksDependencyOwnerGetPkgFilename(PkgLinks: TPackageLinks;
+      Dependency: TPkgDependency): boolean;
 
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
@@ -630,6 +633,14 @@ function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoUninstallPackage(APackage);
+end;
+
+function TPkgManager.PkgLinksDependencyOwnerGetPkgFilename(
+  PkgLinks: TPackageLinks; Dependency: TPkgDependency): boolean;
+begin
+  Result:=false;
+  // TODO search in Project/Package history list of dependencies
+  
 end;
 
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
@@ -1577,6 +1588,7 @@ begin
   // package links
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
+  PkgLinks.DependencyOwnerGetPkgFilename:=@PkgLinksDependencyOwnerGetPkgFilename;
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;

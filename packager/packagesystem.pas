@@ -2196,7 +2196,9 @@ begin
           PkgLinks.RemoveLink(PkgLink);
         until false;
       end else begin
-        // there is already a package with this name open
+        // there is already a package with this name, but wrong version open
+        // -> unable to load this dependency due to conflict
+        Dependency.LoadPackageResult:=lprLoadError;
       end;
     end;
     fChanged:=true;
