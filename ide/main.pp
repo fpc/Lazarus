@@ -254,8 +254,10 @@ type
     
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
-    function UnitDependenciesViewOnGetProjectMainFilename(
+    function UnitDependenciesViewGetProjectMainFilename(
       Sender: TObject): string;
+    procedure UnitDependenciesViewOpenFile(Sender: TObject;
+      const Filename: string);
 
     // CodeToolBoss events
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
@@ -3986,7 +3988,8 @@ begin
     UnitDependenciesView.OnAccessingSources:=
       @UnitDependenciesViewAccessingSources;
     UnitDependenciesView.OnGetProjectMainFilename:=
-      @UnitDependenciesViewOnGetProjectMainFilename;
+      @UnitDependenciesViewGetProjectMainFilename;
+    UnitDependenciesView.OnOpenFile:=@UnitDependenciesViewOpenFile;
     WasVisible:=false;
   end else
     WasVisible:=UnitDependenciesView.Visible;
@@ -5832,11 +5835,17 @@ begin
   SaveSourceEditorChangesToCodeCache(-1);
 end;
 
-function TMainIDE.UnitDependenciesViewOnGetProjectMainFilename(Sender: TObject
+function TMainIDE.UnitDependenciesViewGetProjectMainFilename(Sender: TObject
   ): string;
 begin
   if Project1.MainUnit>=0 then
     Result:=Project1.MainUnitInfo.Filename;
+end;
+
+procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject;
+  const Filename: string);
+begin
+  DoOpenEditorFile(Filename,-1,[]);
 end;
 
 // -----------------------------------------------------------------------------
@@ -7121,6 +7130,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.382  2002/09/14 17:27:44  lazarus
+  MG: double click on unit dependencies now opens the file
+
   Revision 1.381  2002/09/14 17:04:23  lazarus
   MG: unnit dependencies basically working
 
