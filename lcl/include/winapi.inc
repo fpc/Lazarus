@@ -189,6 +189,11 @@ Begin
   Result := InterfaceObject.DrawEdge(DC, Rect, edge, grfFlags);
 end;
 
+function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+begin
+  Result := InterfaceObject.DrawText(DC, Str, Count, Rect, Flags);
+end;
+
 function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
 begin
   Result := InterfaceObject.EnableMenuItem(hndMenu, uIDEnableItem, bEnable);
@@ -387,6 +392,11 @@ end;
 function GetSystemMetrics(nIndex: Integer): Integer;
 begin
   Result := InterfaceObject.GetSystemMetrics(nIndex);
+end;
+
+function GetTextColor(DC: HDC) : TColorRef;
+begin
+  Result := InterfaceObject.GetTextColor(DC);
 end;
 
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
@@ -714,6 +724,26 @@ end;
 function WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := InterfaceObject.WindowFromPoint(Point);
+end;
+
+Procedure InitializeCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.InitializeCriticalSection(CritSection);
+end;
+
+Procedure EnterCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.EnterCriticalSection(CritSection);
+end;
+
+Procedure LeaveCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.LeaveCriticalSection(CritSection);
+end;
+
+Procedure DeleteCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.DeleteCriticalSection(CritSection);
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -1189,6 +1219,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.42  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 
