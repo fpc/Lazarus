@@ -820,7 +820,8 @@ end;
 //------------------------------------------------------------------------------
 procedure TForm1.MEnter(Sender : TObject);
 begin
-  If Sender = BitBtn1 then
+
+{  If Sender = BitBtn1 then
     CoEvent.Items.Add(F+'BitBtn1.OnMouseEnter')
   Else If Sender = BitBtn2 then
     CoEvent.Items.Add(F+'BitBtn2.OnMouseEnter')
@@ -836,6 +837,9 @@ begin
     CoEvent.Items.Add(F+'Button1.OnMouseEnter')
   Else If Sender = btnWriteIni then
     CoEvent.Items.Add(F+'btnWriteIni.OnMouseEnter');
+}
+  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseEnter');
+
   EventWatch;
 end;
 //------------------------------------------------------------------------------
@@ -843,7 +847,7 @@ end;
 //------------------------------------------------------------------------------
 procedure TForm1.MLeave(Sender : TObject);
 begin
-  If Sender = BitBtn1 then
+{  If Sender = BitBtn1 then
     CoEvent.Items.Add(F+'BitBtn1.OnMouseLeave')
   Else If Sender = BitBtn2 then
     CoEvent.Items.Add(F+'BitBtn2.OnMouseLeave')
@@ -858,7 +862,10 @@ begin
   Else If Sender = Button1 then
     CoEvent.Items.Add(F+'Button1.OnMouseLeave')
   Else If Sender = btnWriteIni then
-    CoEvent.Items.Add(F+'btnWriteIni.OnMouseLeave');
+    CoEvent.Items.Add(F+'btnWriteIni.OnMouseLeave');}
+
+  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseLeave');
+
   EventWatch;
 end;
 //------------------------------------------------------------------------------
@@ -866,7 +873,7 @@ end;
 //------------------------------------------------------------------------------
 procedure TForm1.MDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
 begin
-  If Sender = BitBtn1 then
+{  If Sender = BitBtn1 then
     CoEvent.Items.Add(F+'BitBtn1.OnMouseDown')
   else if Sender = BitBtn2 then
     CoEvent.Items.Add(F+'BitBtn2.OnMouseDown')
@@ -876,6 +883,9 @@ begin
     CoEvent.Items.Add(F+'BitBtn6.OnMouseDown')
   else if Sender = Button1 then
     CoEvent.Items.Add(F+'Button1.OnMouseDown');
+}
+  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseDown');
+
   EventWatch;
 end;
 //------------------------------------------------------------------------------
@@ -890,7 +900,7 @@ end;
 //------------------------------------------------------------------------------
 procedure TForm1.MUp(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
 begin
-  If Sender = BitBtn1 then
+{  If Sender = BitBtn1 then
     CoEvent.Items.Add(F+'BitBtn1.OnMouseUp')
   else if Sender = BitBtn2 then
     CoEvent.Items.Add(F+'BitBtn2.OnMouseUp')
@@ -899,7 +909,10 @@ begin
   else if Sender = BitBtn6 then
     CoEvent.Items.Add(F+'BitBtn6.OnMouseUp')
   else if Sender = Button1 then
-    CoEvent.Items.Add(F+'Button1.OnMouseUp');
+   CoEvent.Items.Add(F+'Button1.OnMouseUp');
+}
+  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseUp');
+
   EventWatch;
 end;
 
@@ -930,24 +943,9 @@ end;
 procedure TForm1.WhenClick(Sender : TObject);
 begin
   CoProp.Clear;
-  If Sender=BitBtn1 then
-    CoProperties(BitBtn1)
-  else if Sender=BitBtn2 then
-    CoProperties(BitBtn2)
-  else if Sender=BitBtn4 then
-    CoProperties(BitBtn4)
-  else if Sender=BitBtn6 then
-    CoProperties(BitBtn6)
-  else if Sender=Button1 then
-    CoProperties(Button1)
-  else if Sender=Button2 then
-    CoProperties(Button2)
-  else if Sender=CheckBox1 then
-    CoProperties(CheckBox1)
-  else if Sender=CheckBox2 then
-    CoProperties(CheckBox2);
-  //else if Sender=Form1 then
-    //CoProperties(Form1);
+  If (Sender is TBitBtn) or (Sender is TButton) or (Sender is TCheckBox) then
+     CoProperties(TControl(Sender));
+
 end;
 
 procedure TForm1.NextClick(Sender : TObject);
@@ -1139,6 +1137,12 @@ begin
 end;
 {
   $Log$
+  Revision 1.2  2000/08/07 13:17:35  lazarus
+  Cleaned up the Testtools.inc file a bit.  Used Sender.name instead of checking each one in the Mouseup event, Mouse down, leave and enter.
+  Also changed the WhenClick procedure.
+
+  Shane
+
   Revision 1.1  2000/07/31 20:33:33  lazarus
   + added "testall" demo provided by <christer.t.johansson@se.abb.com>
   stoppok
