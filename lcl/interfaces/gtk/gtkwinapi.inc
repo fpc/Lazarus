@@ -63,7 +63,7 @@ var
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -82,7 +82,7 @@ begin
         Exit;//Skip out.
       end;
 
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       inc(X,DCOrigin.X);
       inc(Y,DCOrigin.Y);
       gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
@@ -109,7 +109,7 @@ function TgtkObject.AngleChord(DC: HDC;
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -959,9 +959,9 @@ begin
 
   Depth := -1;
 
-  if (IsValidDC(DC) and (PDeviceContext(DC)^.Drawable <> nil))
+  if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil))
   then begin
-    gdk_window_get_geometry(PDeviceContext(DC)^.Drawable, nil, nil, nil,
+    gdk_window_get_geometry(TDeviceContext(DC).Drawable, nil, nil, nil,
       nil, @Depth);
     If Depth = -1 then
       Depth := gdk_visual_get_system^.Depth;
@@ -1189,7 +1189,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateCompatibleDC(DC: HDC): HDC;
 var
-  pNewDC: PDeviceContext;
+  pNewDC: TDeviceContext;
 begin
   Result := 0;
   pNewDC := NewDC;
@@ -1198,7 +1198,7 @@ begin
   // In a compatible DC you have to select a bitmap into it
 (*
   if IsValidDC(DC) then
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC)^ do
     begin
       pNewDC^.hWnd := hWnd;
       pNewDC^.Drawable := Drawable;
@@ -1210,9 +1210,9 @@ begin
   end;
 *)
 
-  pNewDC^.CurrentFont := CreateDefaultFont;
-  pNewDC^.CurrentBrush := CreateDefaultBrush;
-  pNewDC^.CurrentPen := CreateDefaultPen;
+  pNewDC.CurrentFont := CreateDefaultFont;
+  pNewDC.CurrentBrush := CreateDefaultBrush;
+  pNewDC.CurrentPen := CreateDefaultPen;
   
   Result := HDC(pNewDC);
 
@@ -1844,7 +1844,7 @@ begin
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -2019,7 +2019,7 @@ var
     State: TGtkStateType;
     Shadow: TGtkShadowType;
     aStyle : PGTKStyle;
-    pDC: PDeviceContext;
+    aDC: TDeviceContext;
     DCOrigin: TPoint;
   begin
     //if Widget<>nil then begin
@@ -2072,11 +2072,11 @@ var
         If State = GTK_STATE_SELECTED then
           State := GTK_STATE_ACTIVE;
           
-      pDC:=PDeviceContext(DC);
-      DCOrigin:=GetDCOffset(pDC);
+      aDC:=TDeviceContext(DC);
+      DCOrigin:=GetDCOffset(aDC);
 
       If (DFCS_FLAT and uState)<>0 then
-        gtk_paint_flat_box(aStyle,pDC^.Drawable,
+        gtk_paint_flat_box(aStyle,aDC.Drawable,
            State,
            Shadow,
            nil,
@@ -2085,7 +2085,7 @@ var
            Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
            Rect.Right-Rect.Left,Rect.Bottom-Rect.Top)
       else
-        gtk_paint_box(aStyle,pDC^.Drawable,
+        gtk_paint_box(aStyle,aDC.Drawable,
            State,
            Shadow,
            nil,
@@ -2100,7 +2100,7 @@ var
   var
     State: TGtkStateType;
     Shadow: TGtkShadowType;
-    pDC: PDeviceContext;
+    aDC: TDeviceContext;
     DCOrigin: TPoint;
     Style : PGTKStyle;
     Widget : PGTKWidget;
@@ -2125,17 +2125,17 @@ var
         end;
     end;
 
-    pDC:=PDeviceContext(DC);
-    DCOrigin:=GetDCOffset(pDC);
+    aDC:=TDeviceContext(DC);
+    DCOrigin:=GetDCOffset(aDC);
 
-    Style := gtk_style_attach(GetStyle('checkbox'),pDC^.Drawable);
+    Style := gtk_style_attach(GetStyle('checkbox'),aDC.Drawable);
     Widget := GetStyleWidget('checkbox');
 
     // Do we really need to set this?
     GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
 
-    Widget^.Window := pDC^.Drawable;
-    gtk_paint_check(Style,pDC^.Drawable, State,
+    Widget^.Window := aDC.Drawable;
+    gtk_paint_check(Style,aDC.Drawable, State,
       Shadow, nil, Widget, 'checkbutton',
       Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
       Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
@@ -2146,7 +2146,7 @@ var ClientWidget: PGtkWidget;
 begin
   Result := False;
   if IsValidDC(DC) then begin
-    Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd);
+    Widget:=PGtkWidget(TDeviceContext(DC).hWnd);
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget<>nil then
       Widget:=ClientWidget;
@@ -2225,7 +2225,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -2326,7 +2326,7 @@ begin
         Width := R.Right - R.Left + 1;
         Height := R.Bottom - R.Top + 1;
         SelectGDKBrushProps(DC);
-        DCOrigin:=GetDCOffset(PDeviceContext(DC));
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
                            Width, Height);
       end;
@@ -2353,7 +2353,7 @@ begin
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
   Result := Longint(IsValidDC(DC));
   if Boolean(Result)
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     If (FLAGS and DT_CalcRect) = DT_CalcRect then
       Result := Inherited DrawText(DC, Str, Count, Rect, Flags)
@@ -2440,7 +2440,7 @@ var
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -2458,7 +2458,7 @@ begin
       height:=height shr 1;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
       // Draw outline
@@ -2503,7 +2503,7 @@ begin
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -2538,7 +2538,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
@@ -2565,7 +2565,7 @@ begin
     end else begin
       // TODO: implement other parameters.
       //ADC := SaveDC(DC);
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       if ((Options and ETO_OPAQUE) <> 0) then
       begin
         Width := Rect^.Right - Rect^.Left;
@@ -2646,7 +2646,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -2661,7 +2661,7 @@ begin
       OldCurrentBrush := CurrentBrush;
       CurrentBrush := PGdiObject(Brush);
       SelectGDKBrushProps(DC);
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_draw_rectangle(Drawable, GC, 1,
                          Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                          Width, Height);
@@ -2694,17 +2694,17 @@ var
 begin
   Result := IsValidDC(DC);
   if Result then
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC) do
     begin
       if GC = nil then begin
         Result:= False;
       end
       else begin
-        Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd);
+        Widget:=PGtkWidget(TDeviceContext(DC).hWnd);
         ClientWidget:=GetFixedWidget(Widget);
         if ClientWidget=nil then
           ClientWidget:=Widget;
-        DCOrigin:=GetDCOffset(PDeviceContext(DC));
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         for i:= 1 to FrameWidth do begin
           gtk_draw_shadow(ClientWidget^.thestyle,
                           GetControlWindow(ClientWidget), GTK_STATE_NORMAL,
@@ -2948,9 +2948,9 @@ begin
   If lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
   if Result <> ERROR
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
-    DCOrigin:=GetDCOffset(PDeviceContext(DC));
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
     If Not IsValidGDIObject(ClipRegion) then begin
       gdk_window_get_size(Drawable, @X, @Y);  
       lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X, Y);
@@ -3029,7 +3029,7 @@ begin
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     If Not IsValidGDIObject(RGN) then begin
       Result := ERROR;
@@ -3116,19 +3116,20 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetDC(hWnd: HWND): HDC;
 var
-  p: PDeviceContext;
+  aDC: TDeviceContext;
   ClientWidget: PGtkWidget;
   GdiObject: PGdiObject;
   Values: TGdkGCValues;
   X,Y : Longint;
 begin
   Assert(False, Format('trace:> [TgtkObject.GetDC] hWND: 0x%x', [hWnd]));
-  p := nil;
+  aDC := nil;
+
+  aDC := NewDC;
+  aDC.hWnd := hWnd;
 
   if hWnd = 0
   then begin
-    P := NewDC;
-    p^.hWnd := hWnd;
     FillChar(Values, SizeOf(Values), #0);
   end
   else begin
@@ -3140,24 +3141,22 @@ begin
     end;
 
     // create a new devicecontext for this window
-    P := NewDC;
-    p^.hWnd := hWnd;
-    p^.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
+    aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     if GetControlWindow(ClientWidget) = nil
     then begin
       Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
       //force creation
       gtk_widget_realize(ClientWidget);
     end;
-    p^.Drawable := GetControlWindow(ClientWidget);
-    p^.GC := gdk_gc_new(p^.Drawable);
-    gdk_window_get_size(P^.Drawable, @X, @Y);
-    gdk_gc_set_function(p^.GC, GDK_COPY);
+    aDC.Drawable := GetControlWindow(ClientWidget);
+    aDC.GC := gdk_gc_new(aDC.Drawable);
+    gdk_window_get_size(aDC.Drawable, @X, @Y);
+    gdk_gc_set_function(aDC.GC, GDK_COPY);
 
-    gdk_gc_get_values(p^.GC, @Values);
+    gdk_gc_get_values(aDC.GC, @Values);
   end;
 
-  if p <> nil
+  if aDC <> nil
   then begin
     if Values.Font <> nil
     then begin
@@ -3167,13 +3166,13 @@ begin
     end
     else GdiObject := CreateDefaultFont;
 
-    p^.CurrentFont := GdiObject;
-    p^.CurrentBrush := CreateDefaultBrush;
-    p^.CurrentPen := CreateDefaultPen;
+    aDC.CurrentFont := GdiObject;
+    aDC.CurrentBrush := CreateDefaultBrush;
+    aDC.CurrentPen := CreateDefaultPen;
   end;
   
 
-  Result := HDC(p);
+  Result := HDC(aDC);
   Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
 end;
 
@@ -3188,7 +3187,7 @@ begin
     ReleaseDC(0, DC);
   end;
   if IsValidDC(DC)
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     Case Index of
       //The important ones I know how to do
@@ -3243,7 +3242,7 @@ begin
   Result := false;
   P := Point(0,0);
   If IsValidDC(DC) then
-  with PDeviceContext(DC)^ do begin
+  with TDeviceContext(DC) do begin
     if Drawable<>nil then begin
       gdk_window_get_size(PGdkWindow(Drawable), @P.X, @P.Y);
       Result := true;
@@ -3938,7 +3937,7 @@ function TgtkObject.GetTextColor(DC: HDC) : TColorRef;
 begin
   Result := 0;
   if IsValidDC(DC) then
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC) do
     begin
       Result := CurrentTextColor.ColorRef;
     end;
@@ -3961,7 +3960,7 @@ begin
   Assert(False, 'trace:> [TgtkObject.GetTextExtentPoint]');
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
@@ -4010,7 +4009,7 @@ begin
 
   Result := IsValidDC(DC);
   if Result then
-    with PDeviceContext(DC)^ do begin
+    with TDeviceContext(DC) do begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
         UseFont := GetDefaultFont;
@@ -4122,16 +4121,16 @@ function TgtkObject.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 var
   DCOrigin: TPoint;
 begin
-//  gdk_window_get_deskrelative_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
+//  gdk_window_get_deskrelative_origin(pgtkwidget(TDeviceContext(DC).hwnd)^.window, @P.X, @P.Y);
 //write('[TgtkObject.GetWindowOrgEx] ',p.x,' ',p.y);
-//  gdk_window_get_root_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
+//  gdk_window_get_root_origin(pgtkwidget(TDeviceContext(DC).hwnd)^.window, @P.X, @P.Y);
 //write(' / ',p.x,' ',p.y);
   Result := 0;
   P := Point(0,0);
   // ToDo: fix this, when Designer is ready
   If IsValidDC(DC) then
-  with PDeviceContext(DC)^ do begin
-    DCOrigin:=GetDCOffset(PDeviceContext(DC));
+  with TDeviceContext(DC) do begin
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
     if Drawable<>nil then begin
       gdk_window_get_origin(PGdkWindow(Drawable), @P.X, @P.Y);
       inc(P.X,DCOrigin.X);
@@ -4437,7 +4436,7 @@ begin
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -4534,7 +4533,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -4542,7 +4541,7 @@ begin
       Result := False;
     end
     else begin
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       SelectGDKPenProps(DC);
 
       If not IsValidGDIObject(hPen(CurrentPen)) then
@@ -4713,7 +4712,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if OldPoint <> nil then OldPoint^ := PenPos;
     PenPos := Point(X, Y);
@@ -4733,7 +4732,7 @@ function TgtkObject.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
 begin
   Result:=IsValidDC(DC);
   if Result then
-  with PDeviceContext(DC)^ do begin
+  with TDeviceContext(DC) do begin
     //writeln('[TgtkObject.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
     //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ');
     inc(Origin.X,dX);
@@ -4792,7 +4791,7 @@ function TgtkObject.Pie(DC: HDC;
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -4827,7 +4826,7 @@ Function TgtkObject.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
 Begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -4868,7 +4867,7 @@ var
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -4876,7 +4875,7 @@ begin
       Result := False;
     end
     else begin
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       if NumPts<=0 then exit;
       
       GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
@@ -4940,7 +4939,7 @@ var i: integer;
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -4949,7 +4948,7 @@ begin
     end
     else begin
       if NumPts<=0 then exit;
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
       for i:=0 to NumPts-1 do begin
         PointArray[i].x:=Points[i].x+DCOrigin.X;
@@ -5080,7 +5079,7 @@ function TgtkObject.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): 
 Begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -5106,7 +5105,7 @@ function TgtkObject.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer)
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -5132,7 +5131,7 @@ function TgtkObject.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): 
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -5175,7 +5174,7 @@ begin
   Assert(False, 'Trace:FINISH: [TgtkObject.RealizePalette]');
   Result := 0;
   if IsValidDC(DC)
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
   
   end;
@@ -5197,7 +5196,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -5221,7 +5220,7 @@ begin
       end;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
 
@@ -5300,7 +5299,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
-  pDC, pSavedDC: PDeviceContext;
+  aDC, pSavedDC: TDeviceContext;
 begin
 //writeln('[TgtkObject.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
   Assert(False, Format('trace:> [TgtkObject.ReleaseDC] DC:0x%x', [DC]));
@@ -5310,40 +5309,40 @@ begin
   then begin
     if FDeviceContexts.Contains(Pointer(DC))
     then begin
-      pDC := PDeviceContext(DC);
+      aDC := TDeviceContext(DC);
       { Release all saved device contexts }
-      pSavedDC:=pDC^.SavedContext;
+      pSavedDC:=aDC.SavedContext;
       if pSavedDC<>nil then begin
-        if pSavedDC^.CurrentBitmap = pDC^.CurrentBitmap 
-        then pDC^.CurrentBitmap := nil;  
-        if pSavedDC^.CurrentFont = pDC^.CurrentFont 
-        then pDC^.CurrentFont := nil;    
-        if pSavedDC^.CurrentPen = pDC^.CurrentPen 
-        then pDC^.CurrentPen := nil;     
-        if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
-        then pDC^.CurrentBrush := nil;   
-        {if pSavedDC^.CurrentPalette = pDC^.CurrentPalette
-        then pDC^.CurrentPalette := nil;}
-        if pSavedDC^.ClipRegion = pDC^.ClipRegion
-        then pSavedDC^.ClipRegion := 0;
+        if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
+        then aDC.CurrentBitmap := nil;
+        if pSavedDC.CurrentFont = aDC.CurrentFont
+        then aDC.CurrentFont := nil;
+        if pSavedDC.CurrentPen = aDC.CurrentPen
+        then aDC.CurrentPen := nil;
+        if pSavedDC.CurrentBrush = aDC.CurrentBrush
+        then aDC.CurrentBrush := nil;
+        {if pSavedDC.CurrentPalette = aDC.CurrentPalette
+        then aDC.CurrentPalette := nil;}
+        if pSavedDC.ClipRegion = aDC.ClipRegion
+        then pSavedDC.ClipRegion := 0;
         ReleaseDC(0,HDC(pSavedDC));
-        pDC^.SavedContext:=nil;
+        aDC.SavedContext:=nil;
       end;
       { Release all graphic objects }
-      DeleteObject(HGDIObj(pDC^.CurrentBrush));
-      DeleteObject(HGDIObj(pDC^.CurrentPen));
-      DeleteObject(HGDIObj(pDC^.CurrentFont));
-      DeleteObject(HGDIObj(pDC^.CurrentBitmap));
-      //DeleteObject(HGDIObj(pDC^.CurrentPalette));
-      DeleteObject(HGDIObj(pDC^.ClipRegion));
-      {FreeGDIColor(pDC^.CurrentTextColor);
-      FreeGDIColor(pDC^.CurrentBackColor);}
+      DeleteObject(HGDIObj(aDC.CurrentBrush));
+      DeleteObject(HGDIObj(aDC.CurrentPen));
+      DeleteObject(HGDIObj(aDC.CurrentFont));
+      DeleteObject(HGDIObj(aDC.CurrentBitmap));
+      //DeleteObject(HGDIObj(aDC.CurrentPalette));
+      DeleteObject(HGDIObj(aDC.ClipRegion));
+      {FreeGDIColor(aDC.CurrentTextColor);
+      FreeGDIColor(aDC.CurrentBackColor);}
       
       try
         { On root window, we don't allocate a graphics context and so we dont free}
-        if pDC^.GC <> nil then begin
-          gdk_gc_unref(pDC^.GC);
-          pDC^.GC:=nil;
+        if aDC.GC <> nil then begin
+          gdk_gc_unref(aDC.GC);
+          aDC.GC:=nil;
         end;
       except
         on E:Exception do begin
@@ -5353,7 +5352,7 @@ begin
         end;
       end;
       
-      DisposeDC(pDC);
+      DisposeDC(aDC);
       Result := 1;
     end;
   end;
@@ -5369,57 +5368,57 @@ end;
 -------------------------------------------------------------------------------}
 function TgtkObject.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
-  pDC, pSavedDC: PDeviceContext;
+  aDC, pSavedDC: TDeviceContext;
   Count: Integer;
 begin
   Assert(False, Format('Trace:> [TgtkObject.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
   if Result 
   then begin
-    pSavedDC := PDeviceContext(DC);
+    pSavedDC := TDeviceContext(DC);
     Count:=Abs(SavedDC);
     while (Count>0) and (pSavedDC<>nil) do begin
-      pDC:=pSavedDC;
-      pSavedDC:=pDC^.SavedContext;
+      aDC:=pSavedDC;
+      pSavedDC:=aDC.SavedContext;
       dec(Count);
     end;
 
     // TODO copy bitmap also 
     
-    if (pDC^.ClipRegion<>0) and (pSavedDC^.ClipRegion <> pDC^.ClipRegion) then
+    if (aDC.ClipRegion<>0) and (pSavedDC.ClipRegion <> aDC.ClipRegion) then
     begin
       // clipping region has changed
       // clipping regions are extraordinary gdiobjects. Users can not set them
       // or read them. If a clipping region is changed, it is always created new
       // -> destroy the current clipping region
-      DeleteObject(pDC^.ClipRegion);
-      pDC^.ClipRegion := 0;
+      DeleteObject(aDC.ClipRegion);
+      aDC.ClipRegion := 0;
     end;
       
-    if pDC^.GC<>nil then begin
-      gdk_gc_unref(pDC^.GC);
-      pDC^.GC:=nil;
+    if aDC.GC<>nil then begin
+      gdk_gc_unref(aDC.GC);
+      aDC.GC:=nil;
     end;
     
-    Result := CopyDCData(pDC, pSavedDC);
-    pDC^.SavedContext := pSavedDC^.SavedContext;
-    pSavedDC^.SavedContext := nil;
+    Result := CopyDCData(aDC, pSavedDC);
+    aDC.SavedContext := pSavedDC.SavedContext;
+    pSavedDC.SavedContext := nil;
 
     //prevent deleting of copied objects:
-    if pSavedDC^.CurrentBitmap = pDC^.CurrentBitmap 
-    then pSavedDC^.CurrentBitmap := nil;  
-    if pSavedDC^.CurrentFont = pDC^.CurrentFont 
-    then pSavedDC^.CurrentFont := nil;    
-    if pSavedDC^.CurrentPen = pDC^.CurrentPen 
-    then pSavedDC^.CurrentPen := nil;     
-    if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
-    then pSavedDC^.CurrentBrush := nil;   
-    if pSavedDC^.CurrentBrush = pDC^.CurrentBrush
-    then pSavedDC^.CurrentBrush := nil;
-    {if pSavedDC^.CurrentPalette = pDC^.CurrentPalette
-    then pSavedDC^.CurrentPalette := nil;}
-    if pSavedDC^.ClipRegion = pDC^.ClipRegion
-    then pSavedDC^.ClipRegion := 0;
+    if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
+    then pSavedDC.CurrentBitmap := nil;
+    if pSavedDC.CurrentFont = aDC.CurrentFont
+    then pSavedDC.CurrentFont := nil;
+    if pSavedDC.CurrentPen = aDC.CurrentPen
+    then pSavedDC.CurrentPen := nil;
+    if pSavedDC.CurrentBrush = aDC.CurrentBrush
+    then pSavedDC.CurrentBrush := nil;
+    if pSavedDC.CurrentBrush = aDC.CurrentBrush
+    then pSavedDC.CurrentBrush := nil;
+    {if pSavedDC.CurrentPalette = aDC.CurrentPalette
+    then pSavedDC.CurrentPalette := nil;}
+    if pSavedDC.ClipRegion = aDC.ClipRegion
+    then pSavedDC.ClipRegion := 0;
 
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
@@ -5461,7 +5460,7 @@ begin
   Assert(False, Format('trace:> [TgtkObject.RoundRect] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d, RX:%d, RY:%d', [DC, X1, Y1, X2, Y2, RX, RY]));
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -5485,18 +5484,18 @@ end;
 -------------------------------------------------------------------------------}
 function TgtkObject.SaveDC(DC: HDC): Integer;
 var
-  pDC, pSavedDC: PDeviceContext;
+  aDC, aSavedDC: TDeviceContext;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SaveDC]  0x%x', [Integer(DC)]));
   
   Result := 0;
   if IsValidDC(DC)
   then begin
-    pDC := PDeviceContext(DC);
-    pSavedDC := NewDC;
-    CopyDCData(pSavedDC, pDC);
-    pSavedDC^.SavedContext:=pDC^.SavedContext;
-    pDC^.SavedContext:= pSavedDC;
+    aDC := TDeviceContext(DC);
+    aSavedDC := NewDC;
+    CopyDCData(aSavedDC, aDC);
+    aSavedDC.SavedContext:=aDC.SavedContext;
+    aDC.SavedContext:= aSavedDC;
     Result:=1;
   end;
   
@@ -5590,7 +5589,7 @@ begin
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR then
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC) do
     begin
       if (GC = nil) and (RGN <> 0)
       then begin
@@ -5638,7 +5637,7 @@ begin
   then begin
     case PGdiObject(GDIObj)^.GDIType of
       gdiBitmap:
-        with PDeviceContext(DC)^ do
+        with TDeviceContext(DC) do
         begin
           Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Bitmap', [DC]));
           Result := HBITMAP(CurrentBitmap);
@@ -5658,7 +5657,7 @@ begin
 
         end;
       gdiBrush:
-        with PDeviceContext(DC)^, PGdiObject(GDIObj)^ do
+        with TDeviceContext(DC), PGdiObject(GDIObj)^ do
         begin
           Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Brush', [DC]));
           Result := HBRUSH(CurrentBrush);
@@ -5673,7 +5672,7 @@ begin
           end;
         end;
       gdiFont:
-        with PDeviceContext(DC)^ do
+        with TDeviceContext(DC) do
         begin
           Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Font', [DC]));
           Result := HFONT(CurrentFont);
@@ -5684,7 +5683,7 @@ begin
           end;
         end;
       gdiPen:
-        with PDeviceContext(DC)^ do
+        with TDeviceContext(DC) do
         begin
           Result := HPEN(CurrentPen);
           CurrentPen := PGDIObject(GDIObj);
@@ -5692,7 +5691,7 @@ begin
         end;
       gdiRegion:
       begin
-        with PDeviceContext(DC)^ do
+        with TDeviceContext(DC) do
         begin
           Result := ClipRegion;
           ClipRegion := 0;
@@ -5807,7 +5806,7 @@ begin
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC) do
     begin
       Result := CurrentBackColor.ColorRef;
       CurrentBackColor.ColorRef := Color;
@@ -6270,7 +6269,7 @@ begin
   Result := CLR_INVALID;
   if IsValidDC(DC)
   then begin
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC) do
     begin
       Result := CurrentTextColor.ColorRef;
       CurrentTextColor.ColorRef := Color;
@@ -6483,7 +6482,7 @@ type
   TBltFunction = function: Boolean;
 var
   fGC : PGDKGC;
-  SrcDevContext, DestDevContext: PDeviceContext;
+  SrcDevContext, DestDevContext: TDeviceContext;
   SrcGDIBitmap: PGdiObject;
   ScaleBMP : hBITMAP;
   Scale : PGdiObject;
@@ -6659,7 +6658,7 @@ var
     OldCurrentBrush: PGdiObject;
     Brush : hBrush;
   begin
-    with PDeviceContext(DC)^ do
+    with TDeviceContext(DC) do
     begin
       // Temporarily hold the old brush to
       // replace it with the given brush
@@ -6678,15 +6677,15 @@ var
 
   function DrawableToDrawable: Boolean;
   begin
-    SrcDevContext:=PDeviceContext(SrcDC);
-    DestDevContext:=PDeviceContext(DestDC);
-    SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
+    SrcDevContext:=TDeviceContext(SrcDC);
+    DestDevContext:=TDeviceContext(DestDC);
+    SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
 
-    fGC := GDK_GC_New(DestDevContext^.Drawable);
+    fGC := GDK_GC_New(DestDevContext.Drawable);
 
     // perform raster operation and scaling in a buffer
-    If not ScaleAndROP(DestDevContext^.GC,
-      SrcDevContext^.Drawable, SrcGDIBitmap)
+    If not ScaleAndROP(DestDevContext.GC,
+      SrcDevContext.Drawable, SrcGDIBitmap)
     then
       exit;
 
@@ -6698,18 +6697,18 @@ var
     end;
 
     // set clipping mask for transparency
-    SetClipping(DestDevContext^.GC, Scale);
+    SetClipping(DestDevContext.GC, Scale);
 
     // draw image
-    gdk_window_copy_area(DestDevContext^.Drawable,
-      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject,
+    gdk_window_copy_area(DestDevContext.Drawable,
+      DestDevContext.GC,X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
 
     // unset clipping mask for transparency
-    ResetClipping(DestDevContext^.GC);
+    ResetClipping(DestDevContext.GC);
 
     // restore raster operation to SRCCOPY
-    GDK_GC_Set_Function(DestDevContext^.GC, GDK_Copy);
+    GDK_GC_Set_Function(DestDevContext.GC, GDK_Copy);
 
     // Delete buffer
     DeleteObject(ScaleBMP);
@@ -6719,14 +6718,14 @@ var
 
   function PixmapToDrawable: Boolean;
   begin
-    SrcDevContext:=PDeviceContext(SrcDC);
-    DestDevContext:=PDeviceContext(DestDC);
-    SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
+    SrcDevContext:=TDeviceContext(SrcDC);
+    DestDevContext:=TDeviceContext(DestDC);
+    SrcGDIBitmap:=SrcDevContext.CurrentBitmap;
 
-    fGC := GDK_GC_New(SrcDevContext^.Drawable);
+    fGC := GDK_GC_New(SrcDevContext.Drawable);
 
     // perform raster operation and scaling in a buffer
-    If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable,
+    If not ScaleAndROP(DestDevContext.GC, SrcDevContext.Drawable,
       SrcGDIBitmap)
     then
       exit;
@@ -6739,18 +6738,18 @@ var
     end;
 
     // set clipping mask for transparency
-    SetClipping(DestDevContext^.GC, Scale);
+    SetClipping(DestDevContext.GC, Scale);
 
     // draw image
-    gdk_window_copy_area(DestDevContext^.Drawable,
-      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject,
+    gdk_window_copy_area(DestDevContext.Drawable,
+      DestDevContext.GC,X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
 
     // unset clipping mask for transparency
-    ResetClipping(DestDevContext^.GC);
+    ResetClipping(DestDevContext.GC);
 
     // restore raster operation to SRCCOPY
-    GDK_GC_Set_Function(DestDevContext^.GC, GDK_Copy);
+    GDK_GC_Set_Function(DestDevContext.GC, GDK_Copy);
 
     // Delete buffer
     DeleteObject(ScaleBMP);
@@ -6816,12 +6815,12 @@ var
       (@ImageToBitmap, @ImageToDrawable, @ImageToImage)
     );
   begin
-    If (PDeviceContext(SrcDC)^.CurrentBitmap <> nil) and
-      (PDeviceContext(DestDC)^.CurrentBitmap <> nil)
+    If (TDeviceContext(SrcDC).CurrentBitmap <> nil) and
+      (TDeviceContext(DestDC).CurrentBitmap <> nil)
     then
       Result := BLT_MATRIX[
-        PDeviceContext(SrcDC)^.CurrentBitmap^.GDIBitmapType,
-        PDeviceContext(DestDC)^.CurrentBitmap^.GDIBitmapType
+        TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType,
+        TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType
       ]()
     else
       Result := Unsupported;
@@ -6833,9 +6832,9 @@ var
       @PixmapToDrawable, @PixmapToDrawable, @ImageToDrawable
     );
   begin
-    If PDeviceContext(SrcDC)^.CurrentBitmap <> nil then
+    If TDeviceContext(SrcDC).CurrentBitmap <> nil then
       Result := BLT_FUNCTION[
-        PDeviceContext(SrcDC)^.CurrentBitmap^.GDIBitmapType
+        TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType
       ]()
     else
       Result := Unsupported;
@@ -6847,9 +6846,9 @@ var
       @Unsupported, @Unsupported, @Unsupported
     );
   begin
-    If PDeviceContext(DestDC)^.CurrentBitmap <> nil then
+    If TDeviceContext(DestDC).CurrentBitmap <> nil then
       Result := BLT_FUNCTION[
-        PDeviceContext(DestDC)^.CurrentBitmap^.GDIBitmapType
+        TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType
       ]()
     else
       Result := Unsupported;
@@ -6867,13 +6866,13 @@ begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
-    with PDeviceContext(DestDC)^ do begin
-      DCOrigin:=GetDCOffset(PDeviceContext(DestDC));
+    with TDeviceContext(DestDC) do begin
+      DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
       Inc(X,DCOrigin.X);
       Inc(Y,DCOrigin.Y);
     end;
-    with PDeviceContext(SrcDC)^ do begin
-      DCOrigin:=GetDCOffset(PDeviceContext(SrcDC));
+    with TDeviceContext(SrcDC) do begin
+      DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
       Inc(XSrc,DCOrigin.X);
       Inc(YSrc,DCOrigin.Y);
     end;
@@ -6881,14 +6880,14 @@ begin
     //writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     //  ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight);
 
-    If PDeviceContext(SrcDC)^.Drawable = nil then begin
-      If PDeviceContext(DestDC)^.Drawable = nil then
+    If TDeviceContext(SrcDC).Drawable = nil then begin
+      If TDeviceContext(DestDC).Drawable = nil then
         Result := NoDrawableToNoDrawable
       else
         Result := NoDrawableToDrawable;
     end
     else begin
-      If PDeviceContext(DestDC)^.Drawable = nil then
+      If TDeviceContext(DestDC).Drawable = nil then
         Result := DrawableToNoDrawable
       else
         Result := DrawableToDrawable;
@@ -6946,7 +6945,7 @@ var
 begin
   Result := IsValidDC(DC);
   if Result
-  then with PDeviceContext(DC)^ do
+  then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -6965,7 +6964,7 @@ begin
       If UseFont = nil then
         WriteLn('WARNING: [TgtkObject.TextOut] Missing Font')
       else begin
-        DCOrigin:=GetDCOffset(PDeviceContext(DC));
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetTextExtentPoint(DC, Str, Count, Sz);
         aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
         FillRect(DC,aRect,hBrush(CurrentBrush));
@@ -7168,6 +7167,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.140  2002/10/01 10:05:50  lazarus
+  MG: changed PDeviceContext into class TDeviceContext
+
   Revision 1.139  2002/09/30 20:19:14  lazarus
   MG: fixed flickering of modal forms
 
