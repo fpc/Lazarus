@@ -989,7 +989,7 @@ begin
   // MWE: IMO the arguments can't work since we supply the adjustments as nil
   //      for gtk2 newv doesn't exist so the decision is easy
   //      TODO: check if we still need to pass the args in gtk1
-  Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
+  Result := gtk_widget_new(GTKAPIWidget_GetType, nil, []);
 {$ENDIF}
 
   APIWidget := PGTKAPIWidget(Result);
@@ -1110,6 +1110,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/08/30 15:47:29  mazen
+  * Fix parameters in function call
+
   Revision 1.64  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 
