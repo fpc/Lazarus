@@ -33,7 +33,7 @@ interface
 
 uses
   GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLLinux,
-  LResources;
+  LResources, GraphicsMath;
 
 
 const
@@ -271,6 +271,34 @@ type
     property Style: TBrushStyle read FBrushData.Style write SetStyle default bsSolid;
   end;
 
+  { TRegion }
+
+  TRegionData = record
+    Handle : HRgn;
+    Rect : TRect;
+    
+    {Polygon Region Info - not used yet}
+    Polygon : PPoint;//Polygon Points
+    NumPoints : Longint;//Number of Points
+    Winding : Boolean;//Use Winding mode
+  end;
+
+  TRegion = class(TGraphicsObject)
+  private
+    FRegionData : TRegionData;
+    procedure FreeHandle;
+  protected
+    function GetHandle: HRGN;
+    procedure SetHandle(const Value: HRGN);
+    procedure SetClipRect(value : TRect);
+    Function GetClipRect : TRect;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    property Handle : HRGN read GetHandle write SetHandle;
+    property ClipRect : TRect read GetClipRect write SetClipRect;
+  end;
 
   TCanvas = class;
 
@@ -454,6 +482,8 @@ type
     FSavedPenHandle: HPen;
     FBrush: TBrush;
     FSavedBrushHandle: HBrush;
+    FRegion: TRegion;
+    FSavedRegionHandle: HRGN;
     FPenPos : TPoint;
     FCopyMode : TCopyMode;
     FHandle : HDC;
@@ -464,9 +494,11 @@ type
     FLockCount: Integer;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
+    procedure RegionChanged(ARegion: TObject);
     procedure CreateBrush;
     procedure CreateFont;
     Procedure CreatePen;
+    Procedure CreateRegion;
     procedure DeselectHandles;
     function GetCanvasClipRect: TRect;
     Function GetColor: TColor;
@@ -482,6 +514,7 @@ type
     Procedure SetPen(value : TPen);
     Procedure SetPenPos(Value : TPoint);
     Procedure SetPixel(X,Y : Integer; Value : TColor);
+    Procedure SetRegion(value : TRegion);
   protected
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
@@ -556,6 +589,7 @@ type
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
+    property Region: TRegion read FRegion write SetRegion;
     property Color: TColor read GetColor write SetColor;
   end;
 
@@ -851,6 +885,7 @@ end;
 {$I bitmapcanvas.inc}
 {$I pen.inc}
 {$I brush.inc}
+{$I region.inc}
 {$I font.inc}
 {$I canvas.inc}
 {$I pixmap.inc}
@@ -870,6 +905,69 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/09/27 20:52:21  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.46  2002/09/19 19:56:13  lazarus
   MG: accelerated designer drawings
 
