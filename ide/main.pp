@@ -203,6 +203,7 @@ type
        TheEnvironmentOptions: TEnvironmentOptions);
     procedure OnSaveEnvironmentSettings(Sender: TObject;
        TheEnvironmentOptions: TEnvironmentOptions);
+    procedure DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
 
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender : TObject);
@@ -236,6 +237,7 @@ type
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectComponent(AComponent:TComponent);
+    procedure OIOnShowOptions(AComponent:TComponent);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
       TypeData: PTypeData;
@@ -822,6 +824,11 @@ begin
     TControl(AComponent.Owner).Invalidate;
 end;
 
+procedure TMainIDE.OIOnShowOptions(AComponent: TComponent);
+begin
+  DoShowEnvGeneralOptions(eodpObjectInspector);
+end;
+
 procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
   Proc:TGetStringProc);
 var ActiveSrcEdit: TSourceEditor;
@@ -1067,9 +1074,12 @@ begin
 end;
 
 procedure TMainIDE.SetupObjectInspector;
+
 begin
   ObjectInspector1 := TObjectInspector.Create(Self);
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
+  ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
+  
   PropertyEditorHook1:=TPropertyEditorHook.Create;
   PropertyEditorHook1.OnGetMethods:=@OnPropHookGetMethods;
   PropertyEditorHook1.OnMethodExists:=@OnPropHookMethodExists;
@@ -2286,6 +2296,11 @@ begin
   DoRunExternalTool(Index);
 end;
 
+procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender: TObject);
+begin
+  DoShowEnvGeneralOptions(eodpFiles);
+end;
+
 //------------------------------------------------------------------------------
 
 procedure TMainIDE.SaveDesktopSettings(
@@ -2393,7 +2408,7 @@ begin
   SaveDesktopSettings(TheEnvironmentOptions);
 end;
 
-procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender : TObject);
+procedure TMainIDE.DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
 var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
   MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
   OldCompilerFilename, CompilerUnitSearchPath, CompilerUnitLinks: string;
@@ -2464,9 +2479,15 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
     InvalidateAllDesignerForms;
   end;
   
+  procedure UpdateObjectInspector;
+  begin
+    EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  end;
+  
 Begin
   EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
   try
+    EnvironmentOptionsDialog.CategoryPage:=StartPage;
     // update EnvironmentOptions (save current window positions)
     SaveDesktopSettings(EnvironmentOptions);
     with EnvironmentOptionsDialog do begin
@@ -2480,6 +2501,7 @@ Begin
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
       UpdateDefaultPascalFileExtensions;
+      
       // set global variables
       UpdateEnglishErrorMsgFilename;
       MacroValueChanged:=false;
@@ -2499,6 +2521,7 @@ Begin
       
       // update environment
       UpdateDesigners;
+      UpdateObjectInspector;
       SetupHints;
     end;
   finally
@@ -7739,6 +7762,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.468  2003/02/24 11:51:44  mattias
+  combobox height can now be set, added OI item height option
+
   Revision 1.467  2003/02/23 09:03:15  mattias
   fixed save as with no filename
 
