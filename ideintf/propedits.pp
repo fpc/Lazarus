@@ -34,6 +34,9 @@ unit PropEdits;
 
 {$mode objfpc}{$H+}
 
+// This unit contains a lot of base type conversions. Disable range checking.
+{$R-}
+
 interface
 
 {$DEFINE NewListPropEdit}
@@ -344,6 +347,8 @@ type
                             AState:TPropEditDrawState); dynamic;
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
+    function IsDefaultValue: boolean; virtual;
+    function IsNotDefaultValue: boolean; virtual;
     property PropertyHook:TPropertyEditorHook read FPropertyHook;
     property PrivateDirectory:ansistring read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
@@ -2370,6 +2375,18 @@ end;
 function TPropertyEditor.SubPropertiesNeedsUpdate: boolean;
 begin
   Result:=false;
+end;
+
+function TPropertyEditor.IsDefaultValue: boolean;
+begin
+  Result:=(paHasDefaultValue in GetAttributes)
+      and (GetDefaultValue=GetVisualValue);
+end;
+
+function TPropertyEditor.IsNotDefaultValue: boolean;
+begin
+  Result:=(paHasDefaultValue in GetAttributes)
+           and (GetDefaultValue<>GetVisualValue);
 end;
 
 { TOrdinalPropertyEditor }

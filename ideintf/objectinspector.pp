@@ -181,7 +181,7 @@ type
     FPreferredSplitterX: integer; // best splitter position
     FIndent:integer;
     FBackgroundColor:TColor;
-    FNameFont,FValueFont:TFont;
+    FNameFont,FDefaultValueFont,FValueFont:TFont;
     FCurrentEdit:TWinControl;  // nil or ValueEdit or ValueComboBox
     FCurrentButton:TWinControl; // nil or ValueButton
     FCurrentEditorLookupRoot: TPersistent;
@@ -232,7 +232,7 @@ type
     procedure RefreshValueEdit;
     Procedure ValueEditDblClick(Sender : TObject);
     procedure ValueEditMouseDown(Sender: TObject; Button:TMouseButton;
-      Shift:TShiftState; X,Y:integer);
+      Shift: TShiftState; X,Y:integer);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
@@ -290,6 +290,7 @@ type
        read FBackgroundColor write SetBackgroundColor default clBtnFace;
     property NameFont:TFont read FNameFont write FNameFont;
     property ValueFont:TFont read FValueFont write FValueFont;
+    property DefaultValueFont:TFont read FDefaultValueFont write FDefaultValueFont;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
        default bsSingle;
     property ItemIndex:integer read FItemIndex write SetItemIndex;
@@ -470,7 +471,9 @@ begin
   FNameFont:=TFont.Create;
   FNameFont.Color:=clWindowText;
   FValueFont:=TFont.Create;
-  FValueFont.Color:=clActiveCaption;
+  FValueFont.Color:=clMaroon;
+  FDefaultValueFont:=TFont.Create;
+  FDefaultValueFont.Color:=clActiveCaption;
   fBorderStyle := bsSingle;
 
   // create sub components
@@ -616,6 +619,7 @@ begin
   FreeAndNil(FRows);
   FreeAndNil(FSelection);
   FreeAndNil(FValueFont);
+  FreeAndNil(FDefaultValueFont);
   FreeAndNil(FNameFont);
   FreeAndNil(FExpandedProperties);
   FreeAndNil(FHintTimer);
@@ -1487,7 +1491,10 @@ begin
     // draw value
     if ARow<>ItemIndex then begin
       OldFont:=Font;
-      Font:=FValueFont;
+      if CurRow.Editor.IsNotDefaultValue then
+        Font:=FValueFont
+      else
+        Font:=FDefaultValueFont;
       CurRow.Editor.PropDrawValue(Canvas,ValueRect,DrawState);
       Font:=OldFont;
     end;
