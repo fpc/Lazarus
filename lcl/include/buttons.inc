@@ -113,8 +113,8 @@ procedure TButton.CMMouseEnter(var Message: TMessage);
 begin 
   Assert(False,'Trace:[TButton.CMMouseEnter]');
   inherited CMMouseEnter(Message);
-  If assigned(FOnEnter) then
-    FOnEnter(Self);
+  If assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
 end; 
 
 {------------------------------------------------------------------------------
@@ -122,14 +122,14 @@ end;
   Params:  None
   Returns: Nothing
 
-  Handles the event when the button Leaves
+  Handles the event when the mouse leaves the button
  ------------------------------------------------------------------------------}
 procedure TButton.CMMouseLeave(var Message: TMessage); 
 begin 
   Assert(False,'Trace:[TButton.CMMouseLeave]');
   inherited CMMouseLeave(Message);
-  If assigned(FOnLeave) then
-    FOnLeave(Self);
+  If assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end; 
 
 {------------------------------------------------------------------------------
@@ -165,6 +165,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/10/22 18:43:23  mattias
+  prepared image sharing
+
   Revision 1.13  2003/06/10 00:46:16  mattias
   fixed aligning controls
 

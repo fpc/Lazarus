@@ -65,8 +65,8 @@ type
     //fOwner: TControl;
     //FOnPressed: TNotifyEvent;
     //FOnReleased: TNotifyEvent;
-    FOnLeave: TNotifyEvent;
-    FOnEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
     //FOnResize: TNotifyEvent;
     FShortCut : TLMShortcut;
     Procedure SetDefault(Value : Boolean);
@@ -79,8 +79,8 @@ type
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
 
-    property OnMouseEnter : TNotifyEvent read FOnEnter write FOnEnter;
-    property OnMouseLeave : TNotifyEvent read FOnLeave write FOnLeave;
+    property OnMouseEnter : TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave : TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetText(const Value: TCaption); override;
   public
@@ -117,24 +117,23 @@ type
 
   TButtonGlyph = class
   private
-    FOriginal : TBitmap;
-    FNumGlyphs : TNumGlyphs;
-
-    FOnChange  : TNotifyEvent;
-    procedure SetGlyph(Value : TBitmap);
-    procedure SetNumGlyphs(Value : TNumGlyphs);
+    FOriginal: TBitmap;
+    FNumGlyphs: TNumGlyphs;
+    FOnChange: TNotifyEvent;
+    procedure SetGlyph(Value: TBitmap);
+    procedure SetNumGlyphs(Value: TNumGlyphs);
   protected
-    procedure GlyphChanged(Sender : TObject);
+    procedure GlyphChanged(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
-
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
-      State: TButtonState; Transparent: Boolean; BiDiFlags: Longint): TRect;
-    property Glyph : TBitmap read FOriginal write SetGlyph;
-    property NumGlyphs : TNumGlyphs read FNumGlyphs write SetNumGlyphs;
-
-    property OnChange : TNotifyEvent read FOnChange write FOnChange;
+                  State: TButtonState; Transparent: Boolean;
+                  BiDiFlags: Longint): TRect;
+    property Glyph: TBitmap read FOriginal write SetGlyph;
+    property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
 
@@ -307,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2003/10/22 18:43:23  mattias
+  prepared image sharing
+
   Revision 1.51  2003/09/27 09:49:30  mattias
   fix for speedbutton from Micha
 

@@ -62,6 +62,7 @@ type
     FOnOpenUnit: TNotifyEvent;
     FSelected: TRegisteredComponent;
     fUnregisteredIcon: TBitmap;
+    fSelectButtonIcon: TBitmap;
     fUpdatingNotebook: boolean;
     procedure SetNoteBook(const AValue: TNotebook);
     procedure SelectionToolClick(Sender: TObject);
@@ -284,6 +285,10 @@ begin
     fUnregisteredIcon.Free;
     fUnregisteredIcon:=nil;
   end;
+  if fSelectButtonIcon<>nil then begin
+    fSelectButtonIcon.Free;
+    fSelectButtonIcon:=nil;
+  end;
   PopupMenu.Free;
   PopupMenu:=nil;
   inherited Destroy;
@@ -310,9 +315,12 @@ end;
 
 function TComponentPalette.GetSelectButtonIcon: TBitmap;
 begin
-  Result:=TPixmap.Create;
-  Result.TransparentColor:=clWhite;
-  Result.LoadFromLazarusResource('tmouse');
+  if fSelectButtonIcon=nil then begin
+    fSelectButtonIcon:=TPixmap.Create;
+    fSelectButtonIcon.TransparentColor:=clWhite;
+    fSelectButtonIcon.LoadFromLazarusResource('tmouse');
+  end;
+  Result:=fSelectButtonIcon;
 end;
 
 procedure TComponentPalette.ClearButtons;
@@ -396,7 +404,7 @@ begin
         Name:='PaletteSelectBtn'+IntToStr(i);
         Parent:=CurNoteBookPage;
         OnClick := @SelectionToolClick;
-        Glyph:=GetSelectButtonIcon;
+        Glyph.LoadFromLazarusResource('tmouse');
         Flat := True;
         GroupIndex:= 1;
         Down := True;
@@ -417,7 +425,7 @@ begin
             Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                   +'_'+CurComponent.ComponentClass.ClassName;
             Parent := CurNoteBookPage;
-            Glyph:=CurComponent.GetIconCopy;
+            Glyph := CurComponent.Icon;
             Width := ComponentPaletteBtnWidth;
             Height := ComponentPaletteBtnHeight;
             GroupIndex := 1;

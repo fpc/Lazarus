@@ -2652,11 +2652,12 @@ var
   ResName: string;
   res: TLResource;
 begin
-  Result:=TPixmap.Create;
+  Result:=TBitmap.Create;
   Result.TransparentColor:=clWhite;
   ResName:=ComponentClass.ClassName;
   res:=LazarusResources.Find(ResName);
-  if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
+  if (res<>nil) and (res.Value<>'')
+  and Result.LazarusResourceTypeValid(res.ValueType) then begin
     Result.LoadFromLazarusResource(ResName);
   end else begin
     Result.LoadFromLazarusResource('default');

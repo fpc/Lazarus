@@ -52,12 +52,13 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
-    //writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
+    writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
     // TBitmap can share image data
     // -> check if already shared
     SrcBitmap:=TBitmap(Source);
     if SrcBitmap.FImage=FImage then exit;
     
+    writeln('TBitMap.Assign A  RefCount=',FImage.RefCount);
     // image is not shared => new image data
     // -> free canvas (interface handles)
     FreeCanvasContext;
@@ -66,6 +67,7 @@ begin
     // share FImage with assign graphic
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
+    writeln('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
   {$IFDEF UseFPImage}
   end else if Source is TFPCustomImage then begin
     SrcFPImage:=TFPCustomImage(Source);
@@ -149,7 +151,9 @@ end;
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
-  Result:=true;
+  Result:=((ClassType=TBitmap) or (ClassType=TPixmap))
+     and ((AnsiCompareText(ResourceType,'XPM')=0)
+       or (AnsiCompareText(ResourceType,'BMP')=0));
 end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
@@ -949,6 +953,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/10/22 18:43:23  mattias
+  prepared image sharing
+
   Revision 1.48  2003/10/22 17:50:16  mattias
   updated rpm scripts
 

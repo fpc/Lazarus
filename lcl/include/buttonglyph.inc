@@ -43,12 +43,19 @@ var
   GlyphCount : integer;
 begin
   if FOriginal = Value then exit;
-//  FOriginal.Assign(Value);
+  {$IFDEF BitmapSharingWorks}
+  if FOriginal=nil then begin
+    FOriginal:=TBitmap.Create;
+  end;
+  FOriginal.OnChange:=nil;
+  FOriginal.Assign(Value);
+  {$ELSE}
   if FOriginal<>nil then begin
     FOriginal.OnChange:=nil;
     FOriginal.Free;
   end;
   FOriginal:= Value;
+  {$ENDIF}
   FOriginal.OnChange := @GlyphChanged;
   FNumGlyphs:=1;
   if (FOriginal <> nil) and (FOriginal.Height > 0) then begin
