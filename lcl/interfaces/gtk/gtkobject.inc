@@ -40,6 +40,7 @@ begin
   FMessageQueue := TLazQueue.Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
+  WaitingForMessages := false;
   FWidgetsWithResizeRequest := TDynHashArray.Create(-1);
   FWidgetsResized := TDynHashArray.Create(-1);
   FFixWidgetsResized := TDynHashArray.Create(-1);
@@ -708,8 +709,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.WaitMessage;
 begin
-  SendCachedLCLMessages;
+  // process messages already in the queues
+  HandleEvents;
+  // wait till something happens
+  WaitingForMessages:=true;
   gtk_main_iteration_do(True);
+  WaitingForMessages:=false;
+  // process new messages
+  HandleEvents;
 end;
 
 
@@ -6528,6 +6535,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.276  2002/11/02 22:25:36  lazarus
+  MG: implemented TMethodList and Application Idle handlers
+
   Revision 1.275  2002/10/31 18:54:17  lazarus
   MG: fixed loop
 
