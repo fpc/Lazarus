@@ -540,7 +540,7 @@ begin
   end
   else begin
     New(Result);
-    FillChar(Result, SizeOf(Result^), 0);
+    FillChar(Result^, SizeOf(Result^), 0);
     gtk_object_set_data(Widget, 'widgetinfo', Result);
   end;
 end;
@@ -723,6 +723,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.10  2001/01/25 21:38:57  lazarus
+  MWE:
+    * fixed lil bug I commetted yesterday (listbox crash)
+
   Revision 1.9  2001/01/24 23:26:40  lazarus
   MWE:
     = moved some types to gtkdef

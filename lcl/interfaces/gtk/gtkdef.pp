@@ -111,6 +111,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/01/25 21:38:57  lazarus
+  MWE:
+    * fixed lil bug I commetted yesterday (listbox crash)
+
   Revision 1.1  2001/01/24 23:26:40  lazarus
   MWE:
     = moved some types to gtkdef
