@@ -1793,7 +1793,7 @@ begin
           // this is an indexed property
           exit;
         end;
-        if CurPos.Flag=cafPoint then begin
+        if CurPos.Flag=cafColon then begin
           ReadNextAtom;
           AtomIsIdentifier(true);
           OldPos:=CurPos.StartPos;
