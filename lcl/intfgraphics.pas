@@ -146,22 +146,25 @@ type
                                       TheLineEnd: TRawImageLineEnd); virtual;
     procedure SetDataDescription(const NewDescription: TRawImageDescription); virtual;
     procedure ChooseGetSetColorFunctions; virtual;
-    procedure GenericGetColor(x, y: integer; var Value: TFPColor);
-    procedure GenericSetColor(x, y: integer; const Value: TFPColor);
     procedure ChooseRawBitsProc(BitsPerPixel: cardinal; BitOrder: TRawImageBitOrder;
                                 var ProcReadRawImageBits: TOnReadRawImageBits;
                                 var ProcWriteRawImageBits: TOnWriteRawImageBits);
+    // get color functions
+    procedure GenericGetColor(x, y: integer; var Value: TFPColor);
     procedure GetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; var Value: TFPColor);
     procedure GetColor_NoPalette_RGBA_Alpha_Sep_NoMask(x, y: integer; var Value: TFPColor);
     procedure GetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; var Value: TFPColor);
     procedure GetColor_NoPalette_RGBA_NoAlpha(x, y: integer; var Value: TFPColor);
     procedure GetColor_NoPalette_Gray(x, y: integer; var Value: TFPColor);
     procedure GetColor_NULL(x, y: integer; var Value: TFPColor);
+    // set color functions
+    procedure GenericSetColor(x, y: integer; const Value: TFPColor);
     procedure SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; const Value: TFPColor);
     procedure SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; const Value: TFPColor);
     procedure SetColor_NoPalette_RGBA_NoAlpha(x, y: integer; const Value: TFPColor);
     procedure SetColor_NoPalette_Gray(x, y: integer; const Value: TFPColor);
     procedure SetColor_NULL(x, y: integer; const Value: TFPColor);
+    procedure SetColor_BPP32_R8G8B8_A1_BIO_LSB_TTB(x, y: integer; const Value: TFPColor);
   public
     constructor Create(AWidth, AHeight: integer); override;
     destructor Destroy; override;
@@ -841,6 +844,53 @@ begin
 end;
 
 procedure TLazIntfImage.ChooseGetSetColorFunctions;
+
+  procedure ChooseRGBAFunctions;
+  begin
+    //writeln('ChooseRGBAFunctions ',RawImageDescriptionAsString(@FDataDescription));
+    ChooseRawBitsProc(FDataDescription.BitsPerPixel,
+                      FDataDescription.BitOrder,
+                      FReadRawImageBits, FWriteRawImageBits);
+
+    if FDataDescription.AlphaPrec>0 then
+    begin
+      if FDataDescription.AlphaSeparate then
+      begin
+        if (FMaskData<>nil) then
+        begin
+          OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_Mask;
+          OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_Sep_Mask;
+          with FDataDescription do begin
+            if (BitsPerPixel=32) and (Depth=24) and (BitOrder=riboBitsInOrder)
+            and (ByteOrder=riboLSBFirst) and (LineOrder=riloTopToBottom)
+            and (LineEnd=rileDWordBoundary)
+            and (RedPrec=8) and (RedShift=16)
+            and (GreenPrec=8) and (GreenShift=8)
+            and (BluePrec=8) and (BlueShift=0)
+            then begin
+              OnSetInternalColor:=@SetColor_BPP32_R8G8B8_A1_BIO_LSB_TTB;
+            end;
+          end;
+        end else begin
+          OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_NoMask;
+          OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
+        end;
+        ChooseRawBitsProc(FDataDescription.AlphaBitsPerPixel,
+                          FDataDescription.AlphaBitOrder,
+                          FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
+      end else begin
+        OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_NoSep;
+        OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_NoSep;
+        ChooseRawBitsProc(FDataDescription.BitsPerPixel,
+          FDataDescription.AlphaBitOrder,
+          FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
+      end;
+    end else begin
+      OnGetInternalColor:=@GetColor_NoPalette_RGBA_NoAlpha;
+      OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
+    end;
+  end;
+
 begin
   // Default: use the generic functions, that can handle all kinds of RawImages
   OnGetInternalColor:=@GenericGetColor;
@@ -857,45 +907,8 @@ begin
     case FDataDescription.Format of
 
     ricfRGBA:
-      begin
-        {writeln('TLazIntfImage.ChooseGetSetColorFunctions BitsPerPixel=',FDataDescription.BitsPerPixel,
-        ' BitOrder=',ord(FDataDescription.BitOrder),
-        ' AlphaPrec=',FDataDescription.AlphaPrec,
-        ' AlphaSeparate=',FDataDescription.AlphaSeparate,
-        ' FMaskData=',HexStr(Cardinal(FMaskData),8),
-        '');}
-        ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-                          FDataDescription.BitOrder,
-                          FReadRawImageBits, FWriteRawImageBits);
+      ChooseRGBAFunctions;
 
-        if FDataDescription.AlphaPrec>0 then
-        begin
-          if FDataDescription.AlphaSeparate then
-          begin
-            if (FMaskData<>nil) then
-            begin
-              OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_Mask;
-              OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_Sep_Mask;
-            end else begin
-              OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_NoMask;
-              OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
-            end;
-            ChooseRawBitsProc(FDataDescription.AlphaBitsPerPixel,
-                              FDataDescription.AlphaBitOrder,
-                              FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
-          end else begin
-            OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_NoSep;
-            OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_NoSep;
-            ChooseRawBitsProc(FDataDescription.BitsPerPixel,
-              FDataDescription.AlphaBitOrder,
-              FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
-          end;
-        end else begin
-          OnGetInternalColor:=@GetColor_NoPalette_RGBA_NoAlpha;
-          OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
-        end;
-      end;
-      
     ricfGray:
       begin
         OnGetInternalColor:=@GetColor_NoPalette_Gray;
@@ -1136,7 +1149,8 @@ begin
   Value.Alpha:=0;
 end;
 
-procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; const Value: TFPColor);
+procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer;
+  const Value: TFPColor);
 var
   Position: TRawImagePosition;
   MaskPosition: TRawImagePosition;
@@ -1159,7 +1173,8 @@ begin
                 Value.Alpha);
 end;
 
-procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; const Value: TFPColor);
+procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer;
+  const Value: TFPColor);
 var
   Position: TRawImagePosition;
 begin
@@ -1211,6 +1226,31 @@ end;
 procedure TLazIntfImage.SetColor_NULL(x, y: integer; const Value: TFPColor);
 begin
   // NULL, not implemented
+end;
+
+procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_LSB_TTB(x, y: integer;
+  const Value: TFPColor);
+// Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
+// BitOrder=riboBitsInOrder ByteOrder=riboLSBFirst LineOrder=riloTopToBottom
+// BitsPerPixel=32 LineEnd=rileDWordBoundary
+// RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
+// AlphaSeparate=true
+var
+  MaskPosition: TRawImagePosition;
+  Position: PCardinal;
+  Pixel: Cardinal;
+begin
+  Position:=PCardinal(FPixelData+FLineStarts[y].Byte+(x shl 2));
+  Pixel:=((Value.Red shr 8) shl 16)
+         +((Value.Green shr 8) shl 8)
+         +(Value.Blue shr 8);
+  Position^:=Pixel;
+
+  GetXYMaskPostion(x,y,MaskPosition);
+  FAlphaWriteRawImageBits(FMaskData,MaskPosition,
+                FDataDescription.AlphaPrec,
+                FDataDescription.AlphaShift,
+                Value.Alpha);
 end;
 
 procedure TLazIntfImage.SetAutoCreateMask(const AValue: boolean);
