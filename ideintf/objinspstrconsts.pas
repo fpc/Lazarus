@@ -114,6 +114,7 @@ resourcestring
   oisHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
     +'Database %s%s%s.';
   oisHelpHelpContextNotFound = 'Help context %s not found.';
+  oisHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
   oisLoadImageDialog = 'Load Image Dialog';
   oisOK = '&OK';
   oisCancel = '&Cancel';

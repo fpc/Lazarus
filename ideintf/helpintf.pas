@@ -1469,9 +1469,9 @@ begin
     // check if at least one node found
     if (Nodes<>nil) then Nodes.Pack;
     if (Nodes=nil) or (Nodes.Count=0) then begin
-      // no node found for the source is not a bug
-      Result:=shrSuccess;
-      ErrMsg:='';
+      Result:=shrHelpNotFound;
+      ErrMsg:=format(oisHelpNoHelpFoundForSource,
+        [Query.SourcePosition.y, Query.SourcePosition.x, Query.Filename]);
       exit;
     end;
 
