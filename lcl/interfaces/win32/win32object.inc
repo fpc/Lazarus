@@ -2460,9 +2460,7 @@ Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
-      //  NOTE: for some reason, 1.9.x generates the wrong constant here...
-      //  NOTE: same for 1.0.11 (FIXES_1_0_0 branch), 1.0.10 does seem to work
-      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, $253{SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER});
+      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
     end else begin
       Windows.ShowWindow(Handle, SW_SHOW);
     end;
@@ -3035,6 +3033,9 @@ End;
 
 {
   $Log$
+  Revision 1.178  2004/03/04 21:16:15  micha
+  remove workaround; fpc bug fixed
+
   Revision 1.177  2004/02/28 14:38:47  micha
   fix transparent images for menuitems
 

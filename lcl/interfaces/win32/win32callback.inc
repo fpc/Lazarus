@@ -312,7 +312,7 @@ Begin
     Begin
       if WParam <> 0 then
         if Window = TWin32Object(InterfaceObject).AppHandle then
-          Windows.SetWindowPos(TWin32Object(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, $13{SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE});
+          Windows.SetWindowPos(TWin32Object(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -1108,6 +1108,9 @@ end;
 
 {
   $Log$
+  Revision 1.95  2004/03/04 21:16:15  micha
+  remove workaround; fpc bug fixed
+
   Revision 1.94  2004/02/26 21:01:42  micha
   fixed: focussing issue combobox
 
