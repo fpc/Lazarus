@@ -659,7 +659,7 @@ activate_time :	the time at which the activation event occurred.
               if TheWinControl.Parent.HandleAllocated then
               begin
                 Windows.SendMessage(TheWinControl.Parent.Handle,
-                                    TCM_AdjustRect, 0, LPARAM(@R));
+                                    TCM_AdjustRect, 0, LPARAM(@NewRect));
               end
             end
             else if TheWinControl.FCompStyle = csComboBox then
@@ -2797,6 +2797,9 @@ End;
 
 {
   $Log$
+  Revision 1.90  2003/08/19 13:15:18  mattias
+  fixed notebook size from Micha
+
   Revision 1.89  2003/08/17 12:51:35  mattias
   added directory selection dialog from Vincent
 
