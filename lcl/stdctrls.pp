@@ -606,7 +606,7 @@ type
     procedure SetScrollBars(const Value : TScrollStyle);
     procedure InitializeWnd; override;
     procedure Loaded; override;
-    function WordWrapIsStored: boolean;
+    function WordWrapIsStored: boolean; virtual;
     procedure ControlKeyDown(var Key: Word; Shift : TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1158,6 +1158,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.159  2004/08/15 22:31:51  mattias
+  fixed fpc 1.0.10 compilation
+
   Revision 1.158  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 

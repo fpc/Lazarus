@@ -34,7 +34,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, TypInfo, RTLConst, LCLProc, LCLStrConsts;
+  Classes, SysUtils, FPCAdds, TypInfo, LCLProc, LCLStrConsts;
 
 type
   { TLResourceList }
@@ -1289,8 +1289,12 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       ext: Extended;
       ASingle: single;
       ADate: TDateTime;
+      {$ifdef HASCURRENCY}
       ACurrency: Currency;
+      {$endif HASCURRENCY}
+      {$ifdef HASWIDESTRING}
       AWideString: WideString;
+      {$endif HASWIDESTRING}
 
     begin
       case ValueType of
@@ -1366,14 +1370,18 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             ADate:=TDateTime(ReadLRSDouble(Input));
             OutLn(FloatToStr(ADate));
           end;
+        {$ifdef HASCURRENCY}
         vaCurrency: begin
             ACurrency:=ReadLRSCurrency(Input);
             OutLn(FloatToStr(ACurrency));
           end;
+        {$endif HASCURRENCY}
+        {$ifdef HASWIDESTRING}
         vaWString: begin
             AWideString:=ReadLRSWideString(Input);
             OutLn(AWideString);
           end;
+        {$endif HASWIDESTRING}
         else begin
           debugln('Unknown ValueType=',dbgs(Ord(ValueType)),' vaInt16=',dbgs(Ord(vaInt16)));
           Stop(IntToStr(Ord(ValueType)));
@@ -1427,7 +1435,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
   end;
 
 begin
-  if Input.ReadDWord <> PLongWord(@FilerSignature[1])^ then
+  if Input.ReadDWord <> PCardinal(@FilerSignature[1])^ then
     raise EReadError.Create('Illegal stream image' {###SInvalidImage});
   ReadObject('');
 end;
@@ -1672,7 +1680,7 @@ var
           parser.NextToken;
         end;
       else
-        parser.Error(SInvalidProperty);
+        parser.Error('Invalid Property');
     end;
   end;
 
@@ -2160,7 +2168,7 @@ begin
     begin
       FBufEnd := FStream.Read(FBuffer^, FBufSize);
       if FBufEnd = 0 then
-        raise EReadError.Create(SReadError);
+        raise EReadError.Create('Read Error');
       FBufPos := 0;
     end;
     CopyNow := FBufEnd - FBufPos;
@@ -2235,7 +2243,7 @@ begin
   { Read filer signature }
   Read(Signature,4);
   if Signature <> LongInt(FilerSignature) then
-    raise EReadError.Create(SInvalidImage);
+    raise EReadError.Create('Invalid Filer Signature');
 end;
 
 procedure TLRSObjectReader.BeginComponent(var Flags: TFilerFlags;
@@ -2261,7 +2269,7 @@ begin
         vaInt32:
           AChildPos := ReadInt32;
         else
-          raise EReadError.Create(SInvalidPropertyValue);
+          raise EReadError.Create('Invalid Property Value');
       end;
     end;
   end;
@@ -2392,7 +2400,7 @@ begin
         break;
       Value := GetEnumValue(PTypeInfo(EnumType), Name);
       if Value = -1 then
-        raise EReadError.Create(SInvalidPropertyValue);
+        raise EReadError.Create('Invalid Property Value');
       Result := Result or (1 shl Value);
     end;
   except

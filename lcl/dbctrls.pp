@@ -521,7 +521,7 @@ Type
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetReadOnly(const AValue: Boolean);
   protected
-    function WordWrapIsStored: boolean; virtual;
+    function WordWrapIsStored: boolean; override;
     procedure DataChange(Sender: TObject); virtual;
     procedure EditingChange(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
@@ -1248,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/08/15 22:31:51  mattias
+  fixed fpc 1.0.10 compilation
+
   Revision 1.17  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 
