@@ -174,7 +174,7 @@ begin
   {$IFDEF win32}
   // windows
   Result:=((length(TheFilename)>=2) and (TheFilename[1] in ['A'..'Z','a'..'z'])
-           and (TheFilename[2])=':'))
+           and (TheFilename[2]=':'))
      or ((length(TheFilename)>=2)
          and (TheFilename[1]='\') and (TheFilename[2]='\'));
   {$ELSE}
