@@ -12,6 +12,15 @@ BuildRoot: %{_tmppath}/fpcsrc-build%{version}
 %define fpcsrcdir %{_datadir}/fpcsrc
 %define destdir %{buildroot}%{fpcsrcdir}/
 
+# The normal redhat rpm scripts tests every installed file for requirements.
+# We install only sources, so we don't need the requirements.
+%define __find_provides /tmp/do_nothing.sh
+%define __find_requires /tmp/do_nothing.sh
+
+# The normal redhat rpm scripts does not recognize properly, what files to strip
+# Hook our own strip command
+%define __strip /tmp/smart_strip.sh
+
 %description
 The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 32bit
 Pascal Compiler. It comes with fully TP 7.0 compatible run-time library.

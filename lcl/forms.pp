@@ -40,14 +40,10 @@ interface
 { $DEFINE UseFCLDataModule}
 {$ENDIF}
 
-{$DEFINE UseCustApp  This flag will soon become permanent and be deleted}
-
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
   LCLIntf, InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer,
-  ActnList, ClipBrd
-  {$IFDEF UseCustApp},CustApp{$ENDIF}
-  ;
+  ActnList, ClipBrd,CustApp;
 
 type
   TProcedure = procedure;
@@ -729,11 +725,7 @@ type
     );
   TApplicationFlags = set of TApplicationFlag;
 
-  {$IFDEF UseCustApp}
   TApplication = class(TCustomApplication)
-  {$ELSE}
-  TApplication = class(TComponent)
-  {$ENDIF}
   private
     FCaptureExceptions: boolean;
     FFlags: TApplicationFlags;
@@ -764,12 +756,6 @@ type
     FOnUserInput: TOnUserInputEvent;
     FOnUserInputHandler: TMethodList;
     FShowHint: Boolean;
-    {$IFNDEF UseCustApp}
-    FHelpFile: string;
-    FTerminate : Boolean;
-    FTitle : String;
-    FOnException: TExceptionEvent;
-    {$ENDIF}
     procedure DoOnIdleEnd;
     function GetCurrentHelpFile: string;
     function GetExename: String;
@@ -788,16 +774,14 @@ type
     function  ValidateHelpSystem: Boolean;
     procedure WndProc(var AMessage : TLMessage);
   protected
-    {$IFDEF UseCustApp}
     Function GetConsoleApplication: boolean; override;
-    {$ENDIF}
     procedure NotifyIdleHandler;
     procedure NotifyIdleEndHandler;
     function IsHintMsg(var Msg: TMsg): Boolean;
     procedure DoOnMouseMove; virtual;
     procedure ShowHintWindow(const Info: THintInfoAtMouse);
     procedure OnHintTimer(Sender: TObject);
-    procedure SetTitle(const AValue: String); {$IFDEF UseCustApp}override;{$ENDIF}
+    procedure SetTitle(const AValue: String); override;
     procedure StartHintTimer(Interval: integer; TimerType: TAppHintTimerType);
     procedure UpdateVisible;
   public
@@ -807,7 +791,7 @@ type
     Procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; var Reference);
     function HandleAllocated: boolean;
-    procedure HandleException(Sender: TObject); {$IFDEF UseCustApp}override;{$ENDIF}
+    procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
     function HelpCommand(Command: Integer; Data: Longint): Boolean;
     function HelpContext(Context: THelpContext): Boolean;
@@ -819,13 +803,13 @@ type
     procedure HideHint;
     procedure HintMouseMessage(Control : TControl; var AMessage: TLMessage);
     property Icon: TIcon read FIcon write SetIcon;
-    procedure Initialize; {$IFDEF UseCustApp}override;{$ENDIF}
+    procedure Initialize; override;
     function MessageBox(Text, Caption: PChar; Flags: Longint): Integer;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Procedure ProcessMessages;
     procedure Run;
-    procedure ShowException(E: Exception); {$IFDEF UseCustApp}override;{$ENDIF}
-    procedure Terminate; {$IFDEF UseCustApp}override;{$ENDIF}
+    procedure ShowException(E: Exception); override;
+    procedure Terminate; override;
     procedure NotifyUserInputHandler(Msg: Cardinal);
     procedure NotifyKeyDownHandler(Sender: TObject;
                                    var Key : Word; Shift : TShiftState);
@@ -858,12 +842,6 @@ type
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property Title: String read GetTitle write SetTitle;
-    {$IFNDEF UseCustApp}
-    property Exename: String read GetExeName;
-    property HelpFile: string read FHelpFile write FHelpFile;
-    property Terminated: Boolean read FTerminate;
-    property OnException: TExceptionEvent read FOnException write FOnException;
-    {$ENDIF}
   end;
   
   

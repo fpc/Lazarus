@@ -173,8 +173,10 @@ begin
   DoDirSeparators(TheFilename);
   {$IFDEF win32}
   // windows
-  Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and
-     (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
+  Result:=((length(TheFilename)>=2) and (TheFilename[1] in ['A'..'Z','a'..'z'])
+           and (TheFilename[2])=':'))
+     or ((length(TheFilename)>=2)
+         and (TheFilename[1]='\') and (TheFilename[2]='\'));
   {$ELSE}
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
   {$ENDIF}

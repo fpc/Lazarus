@@ -210,9 +210,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
-  {$IFDEF UseCustApp}
   inherited Initialize;
-  {$ENDIF}
   // interface object and screen
   if (InterfaceObject=nil)
   or (AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0) then begin
@@ -387,9 +385,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.SetTitle(const AValue: String);
 begin
-  {$IFDEF UseCustApp}
   inherited SetTitle(AValue);
-  {$ENDIF}
   // ToDo: tell the interface
 end;
 
@@ -691,10 +687,8 @@ begin
     Halt;
   end;
   Include(FFlags,AppHandlingException);
-  {$IFDEF UseCustApp}
   if StopOnException then
     inherited Terminate;
-  {$ENDIF}
   // before we do anything, write it down
   if ExceptObject is Exception then begin
     writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
@@ -865,12 +859,10 @@ begin
 
 end;
 
-{$IFDEF UseCustApp}
 function TApplication.GetConsoleApplication: boolean;
 begin
   Result:=false;
 end;
-{$ENDIF}
 
 procedure TApplication.SetHint(const AValue: string);
 begin
@@ -933,7 +925,7 @@ begin
   if AppNoExceptionMessages in FFlags then exit;
   Msg := E.Message;
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
-  if (not {$IFDEF UseCustApp}Terminated{$ELSE}FTerminate{$ENDIF})
+  if (not Terminated)
   and (Self<>nil) then begin
     MsgResult:=MessageBox(PChar(Msg),PChar(GetTitle),
                           MB_OKCANCEL + MB_ICONERROR);
@@ -943,11 +935,7 @@ begin
       Halt;
     end;
   end else
-    {$IFDEF UseCustApp}
     inherited ShowException(E);
-    {$ELSE}
-    SysUtils.ShowException(ExceptObject, ExceptAddr);
-    {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -956,11 +944,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Terminate;
 begin
-  {$IFDEF UseCustApp}
   inherited Terminate;
-  {$ELSE}
-  FTerminate := True;
-  {$ENDIF}
   InterfaceObject.AppTerminate;
 end;
 
@@ -1131,6 +1115,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/10/21 18:44:10  mattias
+  removed CustApp defines
+
   Revision 1.62  2003/08/22 13:51:25  mattias
   fixed TApplication.GetTitle
 
