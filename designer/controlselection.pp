@@ -1601,8 +1601,8 @@ var
       //c:=DC.Canvas.Pixels[x,y];
       //c:=c xor $ffffff;
       //DC.Canvas.Pixels[x,y]:=c;
-      DC.Canvas.MoveTo(x-Diff.X,y-Diff.Y);
-      DC.Canvas.LineTo(x-Diff.X+1,y-Diff.Y);
+      DC.Canvas.MoveTo(x,y);
+      DC.Canvas.LineTo(x+1,y);
     end;
     
     procedure DrawRubberLine(StartX, StartY, EndX, EndY: integer);
@@ -1646,7 +1646,7 @@ begin
   if (FCustomForm=nil) then exit;
   Diff:=DC.FormOrigin;
   with FRubberBandBounds do
-    DrawInvertFrameRect(Left,Top,Right,Bottom);
+    DrawInvertFrameRect(Left-Diff.X,Top-Diff.Y,Right-Diff.X,Bottom-Diff.Y);
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 

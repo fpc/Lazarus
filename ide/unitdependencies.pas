@@ -212,8 +212,8 @@ type
     property RootShortFilename: string read FRootShortFilename write SetRootShortFilename;
   end;
   
-const
-  UnitDependenciesView: TUnitDependenciesView = nil;
+var
+  UnitDependenciesView: TUnitDependenciesView;
 
 implementation
 
@@ -948,6 +948,7 @@ begin
 end;
 
 initialization
+  UnitDependenciesView:=nil;
   {$I unitdependencies.lrs}
 
 end.

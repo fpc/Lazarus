@@ -914,22 +914,26 @@ begin
   itmProjectRun := TMenuItem.Create(Self);
   itmProjectRun.Name:='itmProjectRun';
   itmProjectRun.Caption := lisMenuProjectRun;
+  itmProjectRun.Graphic:=LoadPixmap('menu_run');
   mnuRun.Add(itmProjectRun);
 
   itmProjectPause := TMenuItem.Create(Self);
   itmProjectPause.Name:='itmProjectPause';
   itmProjectPause.Caption := lisMenuPause;
   itmProjectPause.Enabled := false;
+  itmProjectPause.Graphic:=LoadPixmap('menu_pause');
   mnuRun.Add(itmProjectPause);
 
   itmProjectStepInto := TMenuItem.Create(Self);
   itmProjectStepInto.Name:='itmProjectStepInto';
   itmProjectStepInto.Caption := lisMenuStepInto;
+  itmProjectStepInto.Graphic:=LoadPixmap('menu_stepinto');
   mnuRun.Add(itmProjectStepInto);
 
   itmProjectStepOver := TMenuItem.Create(Self);
   itmProjectStepOver.Name:='itmProjectStepOver';
   itmProjectStepOver.Caption := lisMenuStepOver;
+  itmProjectStepOver.Graphic:=LoadPixmap('menu_stepover');
   mnuRun.Add(itmProjectStepOver);
 
   itmProjectRunToCursor := TMenuItem.Create(Self);
