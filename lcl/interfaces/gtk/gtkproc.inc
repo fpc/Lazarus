@@ -1609,52 +1609,6 @@ end;
     
   Connects a gtk signal handler.
 -------------------------------------------------------------------------------}
-type
-  TConnectSignalFlag = (
-    csfAfter,            // connect after signal
-    csfConnectRealize,   // auto connect realize handler
-    csfUpdateSignalMask, // extend signal mask for gdkwindow
-    csfDesignOnly        // mark signal as design only
-    );
-  TConnectSignalFlags = set of TConnectSignalFlag;
-
-  TDesignSignalType = (
-    dstUnknown,
-    dstMousePress,
-    dstMouseMotion,
-    dstMouseRelease,
-    dstDrawAfter,
-    dstExposeAfter
-    );
-  TDesignSignalTypes = set of TDesignSignalType;
-  
-  TDesignSignalMask = longint;
-  
-const
-  DesignSignalNames: array[TDesignSignalType] of PChar = (
-    '',
-    'button-press-event',
-    'motion-notify-event',
-    'button-release-event',
-    'draw',
-    'expose-event'
-    );
-    
-  DesignSignalAfter: array[TDesignSignalType] of boolean =
-    (false,false,false,false,true,true);
-    
-  DesignSignalFuncs: array[TDesignSignalType] of Pointer = (
-    nil,
-    @gtkMouseBtnPress,
-    @gtkMotionNotify,
-    @gtkMouseBtnRelease,
-    @gtkDrawAfter,
-    @gtkExposeEventAfter
-    );
-    
-var
-  DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
-
 procedure InitDesignSignalMasks;
 var
   SignalType: TDesignSignalType;
@@ -3493,6 +3447,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.119  2002/10/08 23:44:00  lazarus
+  AJ: started GNOME interface & modified gtk interface so everything is public/protected
+
   Revision 1.118  2002/10/08 14:10:02  lazarus
   MG: added TDeviceContext.SelectedColors
 
