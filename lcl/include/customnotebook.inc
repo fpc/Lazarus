@@ -173,11 +173,7 @@ begin
   fNoteBook.SetControlIndex(APage,NewControlIndex);
 
   // move Page in notebook handle
-  if FNoteBook.HandleAllocated
-  and (not (csLoading in FNoteBook.ComponentState))
-  then begin
-    TWSCustomNotebookClass(FNotebook.WidgetSetClass).MovePage(FNotebook, APage, NewIndex);
-  end;
+  FNotebook.WSMovePage(APage, NewIndex);
 
   // update PageIndex
   fNoteBook.PageIndex:=NewPageIndex;
@@ -475,6 +471,12 @@ begin
     TNBPages(fAccess).Move(TCustomPage(Sender).PageIndex,NewIndex);
   end
   else ; //raise exception?
+end;
+
+procedure TCustomNotebook.WSMovePage(APage: TCustomPage; NewIndex: Integer);
+begin
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+    TWSCustomNotebookClass(WidgetSetClass).MovePage(Self, APage, NewIndex);
 end;
 
 procedure TCustomNotebook.RemovePage(Index: Integer);
@@ -782,6 +784,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.64  2004/09/24 20:23:33  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.63  2004/09/24 19:02:38  micha
   convert LM_MOVEPAGE message to interface method
 

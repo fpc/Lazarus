@@ -146,6 +146,7 @@ type
     procedure InsertPage(APage: TCustomPage; Index: Integer);
     function IsStoredActivePage: boolean;
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
+    procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
     procedure RemovePage(Index: Integer);
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
@@ -969,6 +970,9 @@ end.
 
  {
   $Log$
+  Revision 1.123  2004/09/24 20:23:33  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.122  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 
