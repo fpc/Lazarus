@@ -62,7 +62,8 @@ type
     blfOnlyIDE,
     blfQuick,
     blfWithStaticPackages,
-    blfUseMakeIDECfg
+    blfUseMakeIDECfg,
+    blfDontClean
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
   
@@ -320,19 +321,22 @@ begin
       CurItem:=Options.Items[i];
       // calculate make mode
       CurMakeMode:=CurItem.MakeMode;
-      if (blfOnlyIDE in Flags) then
-        if (CurItem=Options.ItemIDE) then
-          CurMakeMode:=mmCleanBuild
-        else
+      if (blfOnlyIDE in Flags) then begin
+        if (CurItem=Options.ItemIDE) then begin
+          CurMakeMode:=mmCleanBuild;
+        end else
           CurMakeMode:=mmNone;
+      end;
       if (blfQuick in Flags) and (CurMakeMode=mmCleanBuild) then
         CurMakeMode:=mmBuild;
       if CurMakeMode=mmNone then continue;
+      if (CurMakeMode=mmCleanBuild) and (blfDontClean in Flags) then
+        CurMakeMode:=mmBuild;
       Tool.Title:=CurItem.Description;
       if (CurItem=Options.ItemIDE) and (blfWithoutLinkingIDE in Flags) then
         Tool.Title:=lisCompileIDEWithoutLinking;
       Tool.WorkingDirectory:='$(LazarusDir)/'+CurItem.Directory;
-      Tool.CmdLineParams:=CurItem.Commands[CurItem.MakeMode];
+      Tool.CmdLineParams:=CurItem.Commands[CurMakeMode];
       // append extra options
       ExtraOptions:='';
       Result:=CreateBuildLazarusOptions(Options,i,Macros,PackageOptions,Flags,

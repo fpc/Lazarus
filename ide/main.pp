@@ -5901,7 +5901,7 @@ begin
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
-                         PkgOptions,IDEBuildFlags+[blfUseMakeIDECfg]);
+                         PkgOptions,IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
     if Result<>mrOk then exit;
   finally
     DoCheckFilesOnDisk;
@@ -9926,6 +9926,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.661  2003/10/30 20:15:45  mattias
+  fixed building IDE clean
+
   Revision 1.660  2003/10/28 14:25:37  mattias
   fixed unit circle
 
