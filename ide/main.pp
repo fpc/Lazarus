@@ -1912,6 +1912,7 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
+      //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
       if OpenDialog.Files.Count>1 then
         Include(OpenFlags,ofRegularFile);
       For I := 0 to OpenDialog.Files.Count-1 do
@@ -5012,7 +5013,7 @@ begin
         exit;
       end;
     end;
-    // check if file is a lazarus package (.lpi)
+    // check if file is a lazarus package (.lpk)
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       if MessageDlg(lisOpenPackage,
         Format(lisOpenThePackageAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
@@ -11375,6 +11376,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.827  2005/01/11 19:01:51  mattias
+  fixed adding main file in gtk filediaog twice
+
   Revision 1.826  2005/01/09 23:28:18  mattias
   fixed loading no unit at start
 

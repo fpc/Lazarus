@@ -1504,6 +1504,15 @@ var
       if not Result then exit;
     end;
   end;
+  
+  procedure AddFile(List: TStrings; const NewFile: string);
+  var
+    i: Integer;
+  begin
+    for i:=0 to List.Count-1 do
+      if List[i]=NewFile then exit;
+    List.Add(NewFile);
+  end;
 
 begin
   Result := True;
@@ -1527,7 +1536,7 @@ begin
         if (Filename<>'') then begin
           Result:=CheckOpenedFilename(Filename);
           if not Result then exit;
-          Files.Add(FileName);
+          AddFile(Files,FileName);
         end;
         {$IfDef GTK2}
         fileList := gtk_file_selection_get_selections(PGtkFileSelection(FPointer));
@@ -1560,7 +1569,7 @@ begin
               CurFilename:=DirName+fileInfo;
               Result:=CheckOpenedFilename(CurFilename);
               if not Result then exit;
-              Files.Add(DirName+fileInfo);
+              AddFile(Files,CurFilename);
             end;
           end;
           // get next row from list
@@ -2960,6 +2969,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.258  2005/01/11 19:01:51  mattias
+  fixed adding main file in gtk filediaog twice
+
   Revision 1.257  2005/01/07 01:31:44  mattias
   implemented TCheckBox.State=cbGrayed for gtk intf without visual representation
 
