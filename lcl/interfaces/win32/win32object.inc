@@ -197,6 +197,11 @@ begin
   ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
   ReleaseDC(Handle, DC);
+  
+  // Thread.Synchronize support
+  {$IFNDEF VER1_0}{$IFNDEF VER1_9_8}
+  WakeMainThread := @HandleWakeMainThread;
+  {$ENDIF}{$ENDIF}
 
   Assert(False, 'Trace:Win32Object.Init - Exit');
 end;
@@ -417,6 +422,12 @@ begin
     end;
   end;
   Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
+end;
+
+procedure TWin32WidgetSet.HandleWakeMainThread(Sender: TObject);
+begin
+  // wake up GUI thread by sending a message to it
+  Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
 end;
 
 procedure TWin32WidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
@@ -726,6 +737,9 @@ end;
 
 {
   $Log$
+  Revision 1.308  2005/03/03 13:13:51  vincents
+  fixed thread synchronize support for fpc 1.9.9 using WakeMainThread
+
   Revision 1.307  2005/02/07 16:19:14  micha
   force default width and height for calendar control
 

@@ -174,6 +174,9 @@ Type
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: Integer) : boolean; override;
+    
+    // thread synchronize support
+    procedure HandleWakeMainThread(Sender: TObject);
 
     {$I win32winapih.inc}
     {$I win32lclintfh.inc}
@@ -273,7 +276,9 @@ Initialization
 
 {$ifndef VER1_0}
   { TThread.Synchronize support }
+  {$ifdef ver1_9_8}
   SynchronizeMethodProc := @PrepareSynchronize;
+  {$endif}
 {$endif}
 
 Finalization
@@ -285,6 +290,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2005/03/03 13:13:51  vincents
+  fixed thread synchronize support for fpc 1.9.9 using WakeMainThread
+
   Revision 1.134  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

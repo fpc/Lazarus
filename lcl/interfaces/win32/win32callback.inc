@@ -26,8 +26,7 @@
 
 procedure PrepareSynchronize;
 begin
-  // wake up GUI thread by sending a message to it
-  Windows.PostMessage(TWin32WidgetSet(InterfaceObject).AppHandle, WM_NULL, 0, 0);
+  TWin32WidgetSet(InterfaceObject).HandleWakeMainThread(nil);
 end;
 
 { addition XP messages }
@@ -1523,6 +1522,9 @@ end;
 
 {
   $Log$
+  Revision 1.194  2005/03/03 13:13:51  vincents
+  fixed thread synchronize support for fpc 1.9.9 using WakeMainThread
+
   Revision 1.193  2005/02/10 21:07:29  micha
   let general WindowProc also handle childedit of combobox, reduces code duplication, implements doubleclick for combobox
 
