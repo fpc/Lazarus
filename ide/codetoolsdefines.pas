@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview,
-  TransferMacros, InputFileDialog;
+  TransferMacros, InputFileDialog, IDEOptionDefs;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -371,6 +371,7 @@ end;
 
 procedure TCodeToolsDefinesEditor.SaveAndExitMenuItemClick(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   SaveSelectedValues;
   FLastSelectedNode:=nil;
   ModalResult:=mrOk;
@@ -378,6 +379,7 @@ end;
 
 procedure TCodeToolsDefinesEditor.DontSaveAndExitMenuItemClick(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
 end;
 
@@ -1931,7 +1933,8 @@ constructor TCodeToolsDefinesEditor.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-500) div 2,(Screen.Height-460) div 2, 500, 460);
+    Position:=poScreenCenter;
+    IDEDialogLayoutList.ApplyLayout(Self,500, 460);
     Caption:='CodeTools Defines Editor';
     OnResize:=@FormResize;
     
