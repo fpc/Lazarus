@@ -228,6 +228,12 @@ const
   caDesignOnly = [caDesigner];
   
 type
+  TKeyMapScheme = (
+    kmsLazarus,
+    kmsClassic,
+    kmsCustom
+    );
+
   //---------------------------------------------------------------------------
   // TKeyCommandCategory is used to divide the key commands in handy packets
   TKeyCommandCategory = class(TList)
@@ -260,6 +266,8 @@ type
       ACommand: word;
       AKey1:Word; AShift1:TShiftState; AKey2:Word; AShift2:TShiftState);
     function AsShortCut: TShortCut;
+    procedure GetDefaultValues(var AKey1:Word; var AShift1:TShiftState;
+                               var AKey2:Word; var AShift2:TShiftState);
     function LocalizedName: string;
   end;
 
@@ -278,25 +286,31 @@ type
        Command:word;
        Key1:Word; Shift1:TShiftState; 
        Key2:Word; Shift2:TShiftState):integer;
-    function ShiftStateToStr(Shift:TShiftState):AnsiString;
+    function AddDefault(Category: TKeyCommandCategory; const Name:shortstring;
+       Command:word):integer;
     procedure SetExtToolCount(NewCount: integer);
   public
+    constructor Create;
+    destructor Destroy; override;
+    procedure CreateDefaultMapping;
+    procedure Clear;
     function Count: integer;
     function CategoryCount: integer;
     function Find(AKey:Word; AShiftState:TShiftState;
-      Areas: TCommandAreas): TKeyCommandRelation;
+                  Areas: TCommandAreas): TKeyCommandRelation;
     function FindByCommand(ACommand:word): TKeyCommandRelation;
     function FindCategoryByName(const CategoryName: string): TKeyCommandCategory;
     function TranslateKey(AKey:Word; AShiftState:TShiftState;
-      Areas: TCommandAreas): word;
+                          Areas: TCommandAreas): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
     function LoadFromXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     function SaveToXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
-      Areas: TCommandAreas);
-    constructor Create;
-    destructor Destroy; override;
+                       Areas: TCommandAreas);
+    procedure Assign(List: TKeyCommandRelationList);
+    procedure LoadScheme(const SchemeName: string);
+  public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
     property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
@@ -346,6 +360,18 @@ function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 function StrToVKCode(const s: string): integer;
 
+procedure GetDefaultKeyForCommand(Command: word;
+  var Key1: word; var Shift1: TShiftState;
+  var Key2: word; var Shift2: TShiftState);
+procedure GetDefaultKeyForClassicScheme(Command: word;
+  var Key1: word; var Shift1: TShiftState;
+  var Key2: word; var Shift2: TShiftState);
+function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
+
+function ShiftStateToStr(Shift:TShiftState):AnsiString;
+function KeyValuesToStr(Key1: word; Shift1: TShiftState;
+  Key2: word; Shift2: TShiftState): string;
+
 var KeyMappingEditForm: TKeyMappingEditForm;
 
 const
@@ -392,6 +418,501 @@ begin
   Data:=VirtualKeyStrings.Data[s];
   if Data<>nil then
     Result:=integer(Data);
+end;
+
+procedure GetDefaultKeyForCommand(Command: word;
+  var Key1: word; var Shift1: TShiftState;
+  var Key2: word; var Shift2: TShiftState);
+
+  procedure SetResult(NewKey1: word; NewShift1: TShiftState;
+    NewKey2: word; NewShift2: TShiftState);
+  begin
+    Key1:=NewKey1;
+    Shift1:=NewShift1;
+    Key2:=NewKey2;
+    Shift2:=NewShift2;
+  end;
+
+  procedure SetResult(NewKey1: word; NewShift1: TShiftState);
+  begin
+    SetResult(NewKey1,NewShift1,VK_UNKNOWN,[]);
+  end;
+
+begin
+  SetResult(VK_UNKNOWN,[]);
+
+  case Command of
+  // moving
+  ecWordLeft: SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
+  ecWordRight: SetResult(VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
+  ecLineStart: SetResult(VK_HOME, [],VK_UNKNOWN,[]);
+  ecLineEnd: SetResult(VK_END, [],VK_UNKNOWN,[]);
+  ecPageUp: SetResult(VK_PRIOR, [],VK_UNKNOWN,[]);
+  ecPageDown: SetResult(VK_NEXT, [],VK_UNKNOWN,[]);
+  ecPageLeft: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPageRight: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPageTop: SetResult(VK_PRIOR, [ssCtrl],VK_UNKNOWN,[]);
+  ecPageBottom: SetResult(VK_NEXT, [ssCtrl],VK_UNKNOWN,[]);
+  ecEditorTop: SetResult(VK_HOME,[ssCtrl],VK_UNKNOWN,[]);
+  ecEditorBottom: SetResult(VK_END,[ssCtrl],VK_UNKNOWN,[]);
+  ecScrollUp: SetResult(VK_UP, [ssCtrl],VK_UNKNOWN,[]);
+  ecScrollDown: SetResult(VK_DOWN, [ssCtrl],VK_UNKNOWN,[]);
+  ecScrollLeft: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecScrollRight: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+
+  // selection
+  ecCopy: SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
+  ecCut: SetResult(VK_X,[ssCtrl],VK_Delete,[ssShift]);
+  ecPaste: SetResult(VK_V,[ssCtrl],VK_Insert,[ssShift]);
+  ecNormalSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecColumnSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecLineSelect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelWordLeft: SetResult(VK_LEFT,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecSelWordRight: SetResult(VK_RIGHT,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecSelLineStart: SetResult(VK_HOME,[ssShift],VK_UNKNOWN,[]);
+  ecSelLineEnd: SetResult(VK_END,[ssShift],VK_UNKNOWN,[]);
+  ecSelPageTop: SetResult(VK_PRIOR, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelPageBottom: SetResult(VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelEditorTop: SetResult(VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelEditorBottom: SetResult(VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelectAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectToBrace: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectCodeBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectLine: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectParagraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSelectionUpperCase: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionLowerCase: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+
+  // editing
+  ecBlockIndent: SetResult(VK_I,[ssCtrl],VK_UNKNOWN,[]);
+  ecBlockUnindent: SetResult(VK_U,[ssCtrl],VK_UNKNOWN,[]);
+  ecDeleteLastChar: SetResult(VK_BACK, [],VK_BACK, [ssShift]);
+  ecDeleteChar: SetResult(VK_DELETE,[],VK_UNKNOWN,[]);
+  ecDeleteWord: SetResult(VK_T,[ssCtrl],VK_UNKNOWN,[]);
+  ecDeleteLastWord: SetResult(VK_BACK,[ssCtrl],VK_UNKNOWN,[]);
+  ecDeleteBOL: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDeleteEOL: SetResult(VK_Y,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecDeleteLine: SetResult(VK_Y,[ssCtrl],VK_UNKNOWN,[]);
+  ecClearAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecLineBreak: SetResult(VK_RETURN,[],VK_UNKNOWN,[]);
+  ecInsertLine: SetResult(VK_N,[ssCtrl],VK_UNKNOWN,[]);
+  ecInsertCharacter: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertLGPLNotice: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertUserName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertDateTime: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertChangeLogEntry: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSAuthor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSDate: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSHeader: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSID: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSLog: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // command commands
+  ecUndo: SetResult(VK_Z,[ssCtrl],VK_UNKNOWN,[]);
+  ecRedo: SetResult(VK_Z,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+
+  // search & replace
+  ecMatchBracket: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFind: SetResult(VK_F,[SSCtrl],VK_UNKNOWN,[]);
+  ecFindNext: SetResult(VK_F3,[],VK_UNKNOWN,[]);
+  ecFindPrevious: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindInFiles: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecReplace: SetResult(VK_R,[SSCtrl],VK_UNKNOWN,[]);
+  ecIncrementalFind: SetResult(VK_E,[SSCtrl],VK_UNKNOWN,[]);
+  ecGotoLineNumber: SetResult(VK_G,[ssCtrl],VK_UNKNOWN,[]);
+  ecJumpBack: SetResult(VK_H,[ssCtrl],VK_UNKNOWN,[]);
+  ecJumpForward: SetResult(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
+
+  // marker
+  ecGotoMarker0: SetResult(VK_0,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker1: SetResult(VK_1,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker2: SetResult(VK_2,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker3: SetResult(VK_3,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker4: SetResult(VK_4,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker5: SetResult(VK_5,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker6: SetResult(VK_6,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker7: SetResult(VK_7,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker8: SetResult(VK_8,[ssCtrl],VK_UNKNOWN,[]);
+  ecGotoMarker9: SetResult(VK_9,[ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker0: SetResult(VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker1: SetResult(VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker2: SetResult(VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker3: SetResult(VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker4: SetResult(VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker5: SetResult(VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker6: SetResult(VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker7: SetResult(VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker8: SetResult(VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSetMarker9: SetResult(VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+
+  // codetools
+  ecAutoCompletion: SetResult(VK_J,[ssCtrl],VK_UNKNOWN,[]);
+  ecWordCompletion: SetResult(VK_W,[ssCtrl],VK_UNKNOWN,[]);
+  ecCompleteCode: SetResult(VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecIdentCompletion: SetResult(VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+  ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConvertDFM2LFM: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindProcedureDefinition: SetResult(
+                                 VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  ecFindProcedureMethod: SetResult(
+                                 VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
+  ecFindDeclaration: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindBlockOtherEnd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindBlockStart: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // source notebook
+  ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
+  ecPrevEditor: SetResult(VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor4: SetResult(VK_4,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor5: SetResult(VK_5,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor6: SetResult(VK_6,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor7: SetResult(VK_7,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor8: SetResult(VK_8,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[]);
+  ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[]);
+  ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+
+  // file menu
+  ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewForm: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpen: SetResult(VK_O,[ssCtrl],VK_UNKNOWN,[]);
+  ecRevert: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSave: SetResult(VK_S,[ssCtrl],VK_UNKNOWN,[]);
+  ecSaveAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveAll: SetResult(VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecClose: SetResult(VK_F4,[ssCtrl],VK_UNKNOWN,[]);
+  ecCloseAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecQuit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // view menu
+  ecToggleObjectInsp: SetResult(VK_F11,[],VK_UNKNOWN,[]);
+  ecToggleSourceEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[]);
+  ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
+  ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
+
+  // project menu
+  ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecNewProjectFromFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenProject: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[]);
+  ecSaveProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecSaveProjectAs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPublishProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProjectInspector: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[]);
+  ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectTodos: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+
+  // run menu
+  ecBuild: SetResult(VK_F9,[ssCtrl],VK_UNKNOWN,[]);
+  ecBuildAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAbortBuild: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRun: SetResult(VK_F9,[],VK_UNKNOWN,[]);
+  ecPause: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecStepInto: SetResult(VK_F7,[],VK_UNKNOWN,[]);
+  ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[]);
+  ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
+  ecStopProgram: SetResult(VK_F2,[SSCtrl],VK_UNKNOWN,[]);
+  ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRunFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // components menu
+  ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurUnitToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecPackageGraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigCustomComps: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // tools menu
+  ecExtToolSettings: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecConfigBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMakeResourceString: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecDiff: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // environment menu
+  ecEnvironmentOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // help menu
+  ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  // designer
+  ecCopyComponents: SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
+  ecCutComponents: SetResult(VK_X,[ssCtrl],VK_Delete,[ssShift]);
+  ecPasteComponents: SetResult(VK_V,[ssCtrl],VK_Insert,[ssShift]);
+  ecSelectParentComponent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+  end;
+end;
+
+procedure GetDefaultKeyForClassicScheme(Command: word;
+  var Key1: word; var Shift1: TShiftState;
+  var Key2: word; var Shift2: TShiftState);
+  
+  procedure SetResult(NewKey1: word; NewShift1: TShiftState;
+    NewKey2: word; NewShift2: TShiftState);
+  begin
+    Key1:=NewKey1;
+    Shift1:=NewShift1;
+    Key2:=NewKey2;
+    Shift2:=NewShift2;
+  end;
+  
+  procedure SetResult(NewKey1: word; NewShift1: TShiftState);
+  begin
+    SetResult(NewKey1,NewShift1,VK_UNKNOWN,[]);
+  end;
+  
+begin
+  SetResult(VK_UNKNOWN,[]);
+
+  case Command of
+//F1                      Topic Search
+//Ctrl+F1                Topic Search
+  ecNextEditor: SetResult(VK_F6,[]);
+  ecPrevEditor: SetResult(VK_F6,[ssShift]);
+  ecWordLeft:   SetResult(VK_A,[ssCtrl],VK_LEFT,[ssCtrl]);
+  ecPageDown:   SetResult(VK_C,[ssCtrl],VK_NEXT,[]);
+//Ctrl+D                 Moves the cursor right one column, accounting for the
+//autoindent setting
+//Ctrl+E                 Moves the cursor up one line
+//Ctrl+F                 Moves one word right
+//Ctrl+G                 Deletes the character to the right of the cursor
+//Ctrl+H                 Deletes the character to the left of the cursor
+//Ctrl+I                  Inserts a tab
+//Ctrl+L                 Search|Search Again
+//Ctrl+N                 Inserts a new line
+//Ctrl+P                 Causes next character to be interpreted as an ASCII
+//sequence
+//Ctrl+R                 Moves up one screen
+//Ctrl+S                 Moves the cursor left one column, accounting for the
+//autoindent setting
+//Ctrl+T                 Deletes a word
+//Ctrl+V                 Turns insert mode on/off
+//Ctrl+W                Moves down one screen
+//Ctrl+X                 Moves the cursor down one line
+//Ctrl+Y                 Deletes a line
+//Ctrl+Z                 Moves the cursor up one line
+//Ctrl+Shift+S          Performs an incremental search
+
+//Block commands:
+//---------------
+//Ctrl+K+B      Marks the beginning of a block
+//Ctrl+K+C      Copies a selected block
+//Ctrl+K+H      Hides/shows a selected block
+//Ctrl+K+I       Indents a block by the amount specified in the Block Indent
+//combo box on the General page of the Editor Options dialog box.
+//Ctrl+K+K      Marks the end of a block
+//Ctrl+K+L       Marks the current line as a block
+//Ctrl+K+N      Changes a block to uppercase
+//Ctrl+K+O      Changes a block to lowercase
+//Ctrl+K+P      Prints selected block
+//Ctrl+K+R      Reads a block from a file
+//Ctrl+K+T       Marks a word as a block
+//Ctrl+K+U      Outdents a block by the amount specified in the Block Indent
+//combo box on the General page of the Editor Options dialog box.
+//Ctrl+K+V      Moves a selected block
+//Ctrl+K+W      Writes a selected block to a file
+//Ctrl+K+Y      Deletes a selected block
+//Ctrl+O+C      Turns on column blocking
+//Ctrl+O+I       Marks an inclusive block
+//Ctrl+O+K      Turns off column blocking
+//Ctrl+O+L      Marks a line as a block
+//Shift+Alt+arrow Selects column-oriented blocks
+//Click+Alt+mousemv Selects column-oriented blocks
+//Ctrl+Q+B      Moves to the beginning of a block
+//Ctrl+Q+K      Moves to the end of a block
+
+//Miscellaneous commands:
+//-----------------------
+//Ctrl+K+D      Accesses the menu bar
+//Ctrl+K+E       Changes a word to lowercase
+//Ctrl+K+F       Changes a word to uppercase
+//Ctrl+K+S      File|Save (Default and IDE Classic only)
+//Ctrl+Q+A      Search|Replace
+//Ctrl+Q+F      Search|Find
+//Ctrl+Q+Y      Deletes to the end of a line
+//Ctrl+Q+[       Finds the matching delimiter (forward)
+//Ctrl+Q+Ctrl+[ Finds the matching delimiter (forward)
+//Ctrl+Q+]       Finds the matching delimiter (backward)
+//Ctrl+Q+Ctrl+] Finds the matching delimiter (backward)
+//Ctrl+O+A      Open file at cursor
+//Ctrl+O+B      Browse symbol at cursor (Delphi only)
+//Alt+right arrow  For code browsing
+//Alt +left arrow For code browsing
+//Ctrl+O+G      Search|Go to line number
+//Ctrl+O+O      Inserts compiler options and directives
+//Ctrl+O+U      Toggles case
+//Bookmark commands:
+//------------------
+//Shortcut       Action
+//Ctrl+K+0       Sets bookmark 0
+//Ctrl+K+1       Sets bookmark 1
+//Ctrl+K+2       Sets bookmark 2
+//Ctrl+K+3       Sets bookmark 3
+//Ctrl+K+4       Sets bookmark 4
+//Ctrl+K+5       Sets bookmark 5
+//Ctrl+K+6       Sets bookmark 6
+//Ctrl+K+7       Sets bookmark 7
+//Ctrl+K+8       Sets bookmark 8
+//Ctrl+K+9       Sets bookmark 9
+//Ctrl+K+Ctrl+0 Sets bookmark 0
+//Ctrl+K+Ctrl+1 Sets bookmark 1
+//Ctrl+K+Ctrl+2 Sets bookmark 2
+//Ctrl+K+Ctrl+3 Sets bookmark 3
+//Ctrl+K+Ctrl+4 Sets bookmark 4
+//Ctrl+K+Ctrl+5 Sets bookmark 5
+//Ctrl+K+Ctrl+6 Sets bookmark 6
+//Ctrl+K+Ctrl+7 Sets bookmark 7
+//Ctrl+K+Ctrl+8 Sets bookmark 8
+//Ctrl+K+Ctrl+9 Sets bookmark 9
+//Ctrl+Q+0       Goes to bookmark 0
+//Ctrl+Q+1       Goes to bookmark 1
+//Ctrl+Q+2       Goes to bookmark 2
+//Ctrl+Q+3       Goes to bookmark 3
+//Ctrl+Q+4       Goes to bookmark 4
+//Ctrl+Q+5       Goes to bookmark 5
+//Ctrl+Q+6       Goes to bookmark 6
+//Ctrl+Q+7       Goes to bookmark 7
+//Ctrl+Q+8       Goes to bookmark 8
+//Ctrl+Q+9       Goes to bookmark 9
+//Ctrl+Q+Ctrl+0 Goes to bookmark 0
+//Ctrl+Q+Ctrl+1 Goes to bookmark 1
+//Ctrl+Q+Ctrl+2 Goes to bookmark 2
+//Ctrl+Q+Ctrl+3 Goes to bookmark 3
+//Ctrl+Q+Ctrl+4 Goes to bookmark 4
+//Ctrl+Q+Ctrl+5 Goes to bookmark 5
+//Ctrl+Q+Ctrl+6 Goes to bookmark 6
+//Ctrl+Q+Ctrl+7 Goes to bookmark 7
+//Ctrl+Q+Ctrl+8 Goes to bookmark 8
+//Ctrl+Q+Ctrl+9 Goes to bookmark 9
+//Cursor movement:
+//----------------
+//Ctrl+Q+B      Moves to the beginning of a block
+//Ctrl+Q+C      Moves to end of a file
+//Ctrl+Q+D      Moves to the end of a line
+//Ctrl+Q+E      Moves the cursor to the top of the window
+//Ctrl+Q+K      Moves to the end of a block
+//Ctrl+Q+P      Moves to previous position
+//Ctrl+Q+R      Moves to the beginning of a file
+//Ctrl+Q+S      Moves to the beginning of a line
+//Ctrl+Q+T      Moves the viewing editor so that the current line is placed at
+//the top of the window
+//Ctrl+Q+U      Moves the viewing editor so that the current line is placed at
+//the bottom of the window, if possible
+//Ctrl+Q+X      Moves the cursor to the bottom of the window
+//System keys:
+//------------
+
+//F1              Displays context-sensitive Help
+//F2              File|Save
+//F3              File|Open
+//F4              Run to Cursor
+//F5              Zooms window
+//F6              Displays the next page
+//F7              Run|Trace Into
+//F8              Run|Step Over
+//F9              Run|Run
+//F11             View|Object Inspector
+//F12             View|Toggle Form/Unit
+//Alt+0           View|Window List
+//Alt+F2          View|CPU
+//Alt+F3          File|Close
+//Alt+F7          Displays previous error in Message view
+//Alt+F8          Displays next error in Message view
+//Alt+F11        File|Use Unit (Delphi)
+//Alt+F11        File|Include Unit Hdr (C++)
+//Alt+F12        Displays the Code editor
+//Alt+X           File|Exit
+//Alt+right arrow  For code browsing forward
+//Alt +left arrow For code browsing backward
+//Alt +up arrow  For code browsing Ctrl-click on identifier
+//Alt+Page Down Goes to the next tab
+//Alt+Page Up   Goes to the previous tab
+//Ctrl+F1        Topic Search
+//Ctrl+F2        Run|Program Reset
+//Ctrl+F3        View|Call Stack
+//Ctrl+F6        Open Source/Header file (C++)
+//Ctrl+F7        Add Watch at Cursor
+//Ctrl+F8        Toggle Breakpoint
+//Ctrl+F9        Project|Compile project (Delphi)
+//Ctrl+F9        Project|Make project (C++)
+//Ctrl+F11       File|Open Project
+//Ctrl+F12       View|Units
+//Shift+F7       Run|Trace To Next Source Line
+//Shift+F11      Project|Add To Project
+//Shift+F12      View|Forms
+//Ctrl+D         Descends item (replaces Inspector window)
+//Ctrl+N         Opens a new Inspector window
+//Ctrl+S          Incremental search
+//Ctrl+T          Displays the Type Cast dialog
+  else
+    GetDefaultKeyForCommand(Command,Key1,Shift1,Key2,Shift2);
+  end;
+end;
+
+function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
+begin
+  if (SchemeName='') or (AnsiCompareText(SchemeName,'Default')=0) then
+    Result:=kmsLazarus
+  else if (AnsiCompareText(SchemeName,'Classic')=0) then
+    Result:=kmsClassic
+  else
+    Result:=kmsCustom;
+end;
+
+function ShiftStateToStr(Shift:TShiftState):AnsiString;
+var i:integer;
+begin
+  i:=0;
+  if ssCtrl in Shift then inc(i,1);
+  if ssShift in Shift then inc(i,2);
+  if ssAlt in Shift then inc(i,4);
+  Result:=IntToStr(i);
+end;
+
+function KeyValuesToStr(Key1: word; Shift1: TShiftState;
+  Key2: word; Shift2: TShiftState): string;
+begin
+  Result:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
+        +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
 end;
 
 function ShowKeyMappingEditForm(Index:integer;
@@ -1264,6 +1785,12 @@ begin
     Result:=Result+scAlt;
 end;
 
+procedure TKeyCommandRelation.GetDefaultValues(var AKey1: Word;
+  var AShift1: TShiftState; var AKey2: Word; var AShift2: TShiftState);
+begin
+  GetDefaultKeyForCommand(Command,AKey1,AShift1,AKey2,AShift2);
+end;
+
 function TKeyCommandRelation.LocalizedName: string;
 begin
   Result:=EditorCommandLocalizedName(Command,Name);
@@ -1272,281 +1799,292 @@ end;
 { TKeyCommandRelationList }
 
 constructor TKeyCommandRelationList.Create;
-var C: TKeyCommandCategory;
 begin
   inherited Create;
   FRelations:=TList.Create;
   fCategories:=TList.Create;
   fExtToolCount:=0;
+end;
 
+destructor TKeyCommandRelationList.Destroy;
+begin
+  Clear;
+  FRelations.Free;
+  fCategories.Free;
+  inherited Destroy;
+end;
+
+procedure TKeyCommandRelationList.CreateDefaultMapping;
+var
+  C: TKeyCommandCategory;
+begin
+  Clear;
+  
   // create default keymapping
 
   // moving
   C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,caSrcEditOnly)];
-  Add(C,'Move cursor word left',ecWordLeft, VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Move cursor word right',ecWordRight, VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Move cursor to line start',ecLineStart, VK_HOME, [],VK_UNKNOWN,[]);
-  Add(C,'Move cursor to line end',ecLineEnd, VK_END, [],VK_UNKNOWN,[]);
-  Add(C,'Move cursor up one page',ecPageUp, VK_PRIOR, [],VK_UNKNOWN,[]);
-  Add(C,'Move cursor down one page',ecPageDown, VK_NEXT, [],VK_UNKNOWN,[]);
-  Add(C,'Move cursor left one page',ecPageLeft,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Move cursor right one page',ecPageRight,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Move cursor to top of page',ecPageTop, VK_PRIOR, [ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Move cursor to bottom of page',ecPageBottom, VK_NEXT, [ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Move cursor to absolute beginning',ecEditorTop,VK_HOME,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Move cursor to absolute end',ecEditorBottom,VK_END,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Scroll up one line',ecScrollUp, VK_UP, [ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Scroll down one line',ecScrollDown, VK_DOWN, [ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Scroll left one char',ecScrollLeft, VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Scroll right one char',ecScrollRight, VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  AddDefault(C,'Move cursor word left',ecWordLeft);
+  AddDefault(C,'Move cursor word right',ecWordRight);
+  AddDefault(C,'Move cursor to line start',ecLineStart);
+  AddDefault(C,'Move cursor to line end',ecLineEnd);
+  AddDefault(C,'Move cursor up one page',ecPageUp);
+  AddDefault(C,'Move cursor down one page',ecPageDown);
+  AddDefault(C,'Move cursor left one page',ecPageLeft);
+  AddDefault(C,'Move cursor right one page',ecPageRight);
+  AddDefault(C,'Move cursor to top of page',ecPageTop);
+  AddDefault(C,'Move cursor to bottom of page',ecPageBottom);
+  AddDefault(C,'Move cursor to absolute beginning',ecEditorTop);
+  AddDefault(C,'Move cursor to absolute end',ecEditorBottom);
+  AddDefault(C,'Scroll up one line',ecScrollUp);
+  AddDefault(C,'Scroll down one line',ecScrollDown);
+  AddDefault(C,'Scroll left one char',ecScrollLeft);
+  AddDefault(C,'Scroll right one char',ecScrollRight);
 
   // selection
   C:=Categories[AddCategory('Selection',srkmCatSelection,caSrcEditOnly)];
-  Add(C,'Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
-  Add(C,'Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
-  Add(C,'Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_Insert,[ssShift]);
-  Add(C,'Normal selection mode',ecNormalSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Column selection mode',ecColumnSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Line selection mode',ecLineSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Select word left',ecSelWordLeft,VK_LEFT,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add(C,'Select word right',ecSelWordRight,VK_RIGHT,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add(C,'Select line start',ecSelLineStart,VK_HOME,[ssShift],VK_UNKNOWN,[]);
-  Add(C,'Select line end',ecSelLineEnd,VK_END,[ssShift],VK_UNKNOWN,[]);
-  Add(C,'Select page top',ecSelPageTop,VK_PRIOR, [ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Select page bottom',ecSelPageBottom,VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Select to absolute beginning',ecSelEditorTop,VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Select to absolute end',ecSelEditorBottom,VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Select all',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Select to brace',ecSelectToBrace,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Select code block',ecSelectCodeBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Select line',ecSelectLine,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Select paragraph',ecSelectParagraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Enclose selection',ecSelectionEnclose,VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Comment selection',ecSelectionComment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Uncomment selection',ecSelectionUncomment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  Add(C,'Sort selection',ecSelectionSort,VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  AddDefault(C,'Copy selection to clipboard',ecCopy);
+  AddDefault(C,'Cut selection to clipboard',ecCut);
+  AddDefault(C,'Paste clipboard to current position',ecPaste);
+  AddDefault(C,'Normal selection mode',ecNormalSelect);
+  AddDefault(C,'Column selection mode',ecColumnSelect);
+  AddDefault(C,'Line selection mode',ecLineSelect);
+  AddDefault(C,'Select word left',ecSelWordLeft);
+  AddDefault(C,'Select word right',ecSelWordRight);
+  AddDefault(C,'Select line start',ecSelLineStart);
+  AddDefault(C,'Select line end',ecSelLineEnd);
+  AddDefault(C,'Select page top',ecSelPageTop);
+  AddDefault(C,'Select page bottom',ecSelPageBottom);
+  AddDefault(C,'Select to absolute beginning',ecSelEditorTop);
+  AddDefault(C,'Select to absolute end',ecSelEditorBottom);
+  AddDefault(C,'Select all',ecSelectAll);
+  AddDefault(C,'Select to brace',ecSelectToBrace);
+  AddDefault(C,'Select code block',ecSelectCodeBlock);
+  AddDefault(C,'Select line',ecSelectLine);
+  AddDefault(C,'Select paragraph',ecSelectParagraph);
+  AddDefault(C,'Uppercase selection',ecSelectionUpperCase);
+  AddDefault(C,'Lowercase selection',ecSelectionLowerCase);
+  AddDefault(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces);
+  AddDefault(C,'Enclose selection',ecSelectionEnclose);
+  AddDefault(C,'Comment selection',ecSelectionComment);
+  AddDefault(C,'Uncomment selection',ecSelectionUncomment);
+  AddDefault(C,'Sort selection',ecSelectionSort);
 
   // editing
   C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEditOnly)];
-  Add(C,'Indent block',ecBlockIndent,VK_I,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Unindent block',ecBlockUnindent,VK_U,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Delete last char',ecDeleteLastChar,VK_BACK, [],VK_BACK, [ssShift]);
-  Add(C,'Delete char at cursor',ecDeleteChar,VK_DELETE,[],VK_UNKNOWN,[]);
-  Add(C,'Delete to end of word',ecDeleteWord,VK_T,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Delete to start of word',ecDeleteLastWord,VK_BACK,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Delete to beginning of line',ecDeleteBOL,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Delete to end of line',ecDeleteEOL,VK_Y,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add(C,'Delete current line',ecDeleteLine,VK_Y,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Delete whole text',ecClearAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Break line and move cursor',ecLineBreak,VK_RETURN,[],VK_UNKNOWN,[]);
-  Add(C,'Break line, leave cursor',ecInsertLine,VK_N,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Insert from Character Map',ecInsertCharacter,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert LGPL notice',ecInsertLGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert username',ecInsertUserName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert date and time',ecInsertDateTime,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert ChangeLog entry',ecInsertChangeLogEntry,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword Author',ecInsertCVSAuthor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword Date',ecInsertCVSDate,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword Header',ecInsertCVSHeader,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword ID',ecInsertCVSID,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword Log',ecInsertCVSLog,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword Name',ecInsertCVSName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert CVS keyword Revision',ecInsertCVSRevision,VK_UNKNOWN,[],VK_UNKNOWN,[]);;
-  Add(C,'Insert CVS keyword Source',ecInsertCVSSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'Indent block',ecBlockIndent);
+  AddDefault(C,'Unindent block',ecBlockUnindent);
+  AddDefault(C,'Delete last char',ecDeleteLastChar);
+  AddDefault(C,'Delete char at cursor',ecDeleteChar);
+  AddDefault(C,'Delete to end of word',ecDeleteWord);
+  AddDefault(C,'Delete to start of word',ecDeleteLastWord);
+  AddDefault(C,'Delete to beginning of line',ecDeleteBOL);
+  AddDefault(C,'Delete to end of line',ecDeleteEOL);
+  AddDefault(C,'Delete current line',ecDeleteLine);
+  AddDefault(C,'Delete whole text',ecClearAll);
+  AddDefault(C,'Break line and move cursor',ecLineBreak);
+  AddDefault(C,'Break line, leave cursor',ecInsertLine);
+  AddDefault(C,'Insert from Character Map',ecInsertCharacter);
+  AddDefault(C,'Insert GPL notice',ecInsertGPLNotice);
+  AddDefault(C,'Insert LGPL notice',ecInsertLGPLNotice);
+  AddDefault(C,'Insert username',ecInsertUserName);
+  AddDefault(C,'Insert date and time',ecInsertDateTime);
+  AddDefault(C,'Insert ChangeLog entry',ecInsertChangeLogEntry);
+  AddDefault(C,'Insert CVS keyword Author',ecInsertCVSAuthor);
+  AddDefault(C,'Insert CVS keyword Date',ecInsertCVSDate);
+  AddDefault(C,'Insert CVS keyword Header',ecInsertCVSHeader);
+  AddDefault(C,'Insert CVS keyword ID',ecInsertCVSID);
+  AddDefault(C,'Insert CVS keyword Log',ecInsertCVSLog);
+  AddDefault(C,'Insert CVS keyword Name',ecInsertCVSName);
+  AddDefault(C,'Insert CVS keyword Revision',ecInsertCVSRevision);;
+  AddDefault(C,'Insert CVS keyword Source',ecInsertCVSSource);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,caAll)];
-  Add(C,'Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Redo',ecRedo,VK_Z,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  AddDefault(C,'Undo',ecUndo);
+  AddDefault(C,'Redo',ecRedo);
 
   // search & replace
   C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,caSrcEditOnly)];
-  Add(C,'Go to matching bracket',ecMatchBracket,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
-  Add(C,'Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
-  Add(C,'Find previous',ecFindPrevious,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Find in files',ecFindInFiles,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Replace text',ecReplace,VK_R,[SSCtrl],VK_UNKNOWN,[]);
-  Add(C,'Find incremental',ecIncrementalFind,VK_E,[SSCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add(C,'Add jump point',ecAddJumpPoint,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'View jump history',ecViewJumpHistory,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Open file at cursor',ecOpenFileAtCursor,VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
+  AddDefault(C,'Go to matching bracket',ecMatchBracket);
+  AddDefault(C,'Find text',ecFind);
+  AddDefault(C,'Find next',ecFindNext);
+  AddDefault(C,'Find previous',ecFindPrevious);
+  AddDefault(C,'Find in files',ecFindInFiles);
+  AddDefault(C,'Replace text',ecReplace);
+  AddDefault(C,'Find incremental',ecIncrementalFind);
+  AddDefault(C,'Go to line number',ecGotoLineNumber);
+  AddDefault(C,'Jump back',ecJumpBack);
+  AddDefault(C,'Jump forward',ecJumpForward);
+  AddDefault(C,'Add jump point',ecAddJumpPoint);
+  AddDefault(C,'View jump history',ecViewJumpHistory);
+  AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
 
   // marker
   C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEditOnly)];
-  Add(C,'Go to marker 0',ecGotoMarker0,VK_0,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 1',ecGotoMarker1,VK_1,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 2',ecGotoMarker2,VK_2,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 3',ecGotoMarker3,VK_3,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 4',ecGotoMarker4,VK_4,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 5',ecGotoMarker5,VK_5,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 6',ecGotoMarker6,VK_6,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 7',ecGotoMarker7,VK_7,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 8',ecGotoMarker8,VK_8,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Go to marker 9',ecGotoMarker9,VK_9,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 0',ecSetMarker0,VK_0,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 1',ecSetMarker1,VK_1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 2',ecSetMarker2,VK_2,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 3',ecSetMarker3,VK_3,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 4',ecSetMarker4,VK_4,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 5',ecSetMarker5,VK_5,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 6',ecSetMarker6,VK_6,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 7',ecSetMarker7,VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 8',ecSetMarker8,VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Set marker 9',ecSetMarker9,VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  AddDefault(C,'Go to marker 0',ecGotoMarker0);
+  AddDefault(C,'Go to marker 1',ecGotoMarker1);
+  AddDefault(C,'Go to marker 2',ecGotoMarker2);
+  AddDefault(C,'Go to marker 3',ecGotoMarker3);
+  AddDefault(C,'Go to marker 4',ecGotoMarker4);
+  AddDefault(C,'Go to marker 5',ecGotoMarker5);
+  AddDefault(C,'Go to marker 6',ecGotoMarker6);
+  AddDefault(C,'Go to marker 7',ecGotoMarker7);
+  AddDefault(C,'Go to marker 8',ecGotoMarker8);
+  AddDefault(C,'Go to marker 9',ecGotoMarker9);
+  AddDefault(C,'Set marker 0',ecSetMarker0);
+  AddDefault(C,'Set marker 1',ecSetMarker1);
+  AddDefault(C,'Set marker 2',ecSetMarker2);
+  AddDefault(C,'Set marker 3',ecSetMarker3);
+  AddDefault(C,'Set marker 4',ecSetMarker4);
+  AddDefault(C,'Set marker 5',ecSetMarker5);
+  AddDefault(C,'Set marker 6',ecSetMarker6);
+  AddDefault(C,'Set marker 7',ecSetMarker7);
+  AddDefault(C,'Set marker 8',ecSetMarker8);
+  AddDefault(C,'Set marker 9',ecSetMarker9);
 
   // codetools
   C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,caSrcEditOnly)];
-  Add(C,'Code template completion',ecAutoCompletion,VK_J,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add(C,'Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Guess unclosed block',ecGuessUnclosedBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Convert DFM file to LFM',ecConvertDFM2LFM,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Find procedure definiton',ecFindProcedureDefinition,
-                                 VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
-  Add(C,'Find procedure method',ecFindProcedureMethod,
-                                 VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
-  Add(C,'Find declaration',ecFindDeclaration,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Find block other end',ecFindBlockOtherEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Find block start',ecFindBlockStart,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Goto include directive',ecGotoIncludeDirective,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'Code template completion',ecAutoCompletion);
+  AddDefault(C,'Word completion',ecWordCompletion);
+  AddDefault(C,'Complete code',ecCompleteCode);
+  AddDefault(C,'Identifier completion',ecIdentCompletion);
+  AddDefault(C,'Syntax check',ecSyntaxCheck);
+  AddDefault(C,'Guess unclosed block',ecGuessUnclosedBlock);
+  AddDefault(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF);
+  AddDefault(C,'Convert DFM file to LFM',ecConvertDFM2LFM);
+  AddDefault(C,'Find procedure definiton',ecFindProcedureDefinition);
+  AddDefault(C,'Find procedure method',ecFindProcedureMethod);
+  AddDefault(C,'Find declaration',ecFindDeclaration);
+  AddDefault(C,'Find block other end',ecFindBlockOtherEnd);
+  AddDefault(C,'Find block start',ecFindBlockStart);
+  AddDefault(C,'Goto include directive',ecGotoIncludeDirective);
 
   // source notebook
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caAll)];
-  Add(C,'Go to next editor',ecNextEditor, VK_TAB, [ssCtrl], VK_UNKNOWN, []);
-  Add(C,'Go to prior editor',ecPrevEditor, VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
-  Add(C,'Go to source editor 1',ecGotoEditor1,VK_1,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 2',ecGotoEditor2,VK_2,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 3',ecGotoEditor3,VK_3,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 4',ecGotoEditor4,VK_4,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 5',ecGotoEditor5,VK_5,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 6',ecGotoEditor6,VK_6,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 7',ecGotoEditor7,VK_7,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 8',ecGotoEditor8,VK_8,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 9',ecGotoEditor9,VK_9,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Go to source editor 10',ecGotoEditor0,VK_0,[ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Move editor left',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
-  Add(C,'Move editor right',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
+  AddDefault(C,'Go to next editor',ecNextEditor);
+  AddDefault(C,'Go to prior editor',ecPrevEditor);
+  AddDefault(C,'Go to source editor 1',ecGotoEditor1);
+  AddDefault(C,'Go to source editor 2',ecGotoEditor2);
+  AddDefault(C,'Go to source editor 3',ecGotoEditor3);
+  AddDefault(C,'Go to source editor 4',ecGotoEditor4);
+  AddDefault(C,'Go to source editor 5',ecGotoEditor5);
+  AddDefault(C,'Go to source editor 6',ecGotoEditor6);
+  AddDefault(C,'Go to source editor 7',ecGotoEditor7);
+  AddDefault(C,'Go to source editor 8',ecGotoEditor8);
+  AddDefault(C,'Go to source editor 9',ecGotoEditor9);
+  AddDefault(C,'Go to source editor 10',ecGotoEditor0);
+  AddDefault(C,'Move editor left',ecMoveEditorLeft);
+  AddDefault(C,'Move editor right',ecMoveEditorRight);
 
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,caAll)];
-  Add(C,'New',ecNew,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'NewUnit',ecNewUnit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'NewForm',ecNewForm,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Revert',ecRevert,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Save',ecSave,VK_S,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'SaveAs',ecSaveAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'SaveAll',ecSaveAll,VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  Add(C,'Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'CloseAll',ecCloseAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Quit',ecQuit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'New',ecNew);
+  AddDefault(C,'NewUnit',ecNewUnit);
+  AddDefault(C,'NewForm',ecNewForm);
+  AddDefault(C,'Open',ecOpen);
+  AddDefault(C,'Revert',ecRevert);
+  AddDefault(C,'Save',ecSave);
+  AddDefault(C,'SaveAs',ecSaveAs);
+  AddDefault(C,'SaveAll',ecSaveAll);
+  AddDefault(C,'Close',ecClose);
+  AddDefault(C,'CloseAll',ecCloseAll);
+  AddDefault(C,'Quit',ecQuit);
 
   // view menu
   C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,caAll)];
-  Add(C,'Toggle view Object Inspector',ecToggleObjectInsp,VK_F11,[],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Source Editor',ecToggleSourceEditor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Code Explorer',ecToggleCodeExpl,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Messages',ecToggleMessages,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Watches',ecToggleWatches,VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Breakpoints',ecToggleBreakPoints,VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Local Variables',ecToggleLocals,VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Call Stack',ecToggleCallStack,VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Debugger Output',ecToggleDebuggerOut,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'View Units',ecViewUnits,VK_F12,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'View Forms',ecViewForms,VK_F12,[ssShift],VK_UNKNOWN,[]);
-  Add(C,'View Unit Dependencies',ecViewUnitDependencies,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Focus to source editor',ecJumpToEditor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
+  AddDefault(C,'Toggle view Object Inspector',ecToggleObjectInsp);
+  AddDefault(C,'Toggle view Source Editor',ecToggleSourceEditor);
+  AddDefault(C,'Toggle view Code Explorer',ecToggleCodeExpl);
+  AddDefault(C,'Toggle view Messages',ecToggleMessages);
+  AddDefault(C,'Toggle view Watches',ecToggleWatches);
+  AddDefault(C,'Toggle view Breakpoints',ecToggleBreakPoints);
+  AddDefault(C,'Toggle view Local Variables',ecToggleLocals);
+  AddDefault(C,'Toggle view Call Stack',ecToggleCallStack);
+  AddDefault(C,'Toggle view Debugger Output',ecToggleDebuggerOut);
+  AddDefault(C,'View Units',ecViewUnits);
+  AddDefault(C,'View Forms',ecViewForms);
+  AddDefault(C,'View Unit Dependencies',ecViewUnitDependencies);
+  AddDefault(C,'Focus to source editor',ecJumpToEditor);
+  AddDefault(C,'Toggle between Unit and Form',ecToggleFormUnit);
 
   // project menu
   C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,caAll)];
-  Add(C,'New project',ecNewProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'New project from file',ecNewProjectFromFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Save project as',ecSaveProjectAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Publish project',ecPublishProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Project Inspector',ecProjectInspector,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
-  Add(C,'Remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'View project source',ecViewProjectSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'View project ToDo list',ecViewProjectTodos,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'View project options',ecProjectOptions,VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
+  AddDefault(C,'New project',ecNewProject);
+  AddDefault(C,'New project from file',ecNewProjectFromFile);
+  AddDefault(C,'Open project',ecOpenProject);
+  AddDefault(C,'Save project',ecSaveProject);
+  AddDefault(C,'Save project as',ecSaveProjectAs);
+  AddDefault(C,'Publish project',ecPublishProject);
+  AddDefault(C,'Project Inspector',ecProjectInspector);
+  AddDefault(C,'Add active unit to project',ecAddCurUnitToProj);
+  AddDefault(C,'Remove active unit from project',ecRemoveFromProj);
+  AddDefault(C,'View project source',ecViewProjectSource);
+  AddDefault(C,'View project ToDo list',ecViewProjectTodos);
+  AddDefault(C,'View project options',ecProjectOptions);
 
   // run menu
   C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,caAll)];
-  Add(C,'Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
-  Add(C,'Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Abort building',ecAbortBuild,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
-  Add(C,'Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
-  Add(C,'Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
-  Add(C,'Run to cursor',ecRunToCursor,VK_F4,[],VK_UNKNOWN,[]);
-  Add(C,'Stop program',ecStopProgram,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
-  Add(C,'Reset debugger',ecResetDebugger,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Compiler options',ecCompilerOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Build File',ecBuildFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Run File',ecRunFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Config "Build File"',ecConfigBuildFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'Build project/program',ecBuild);
+  AddDefault(C,'Build all files of project/program',ecBuildAll);
+  AddDefault(C,'Abort building',ecAbortBuild);
+  AddDefault(C,'Run program',ecRun);
+  AddDefault(C,'Pause program',ecPause);
+  AddDefault(C,'Step into',ecStepInto);
+  AddDefault(C,'Step over',ecStepOver);
+  AddDefault(C,'Run to cursor',ecRunToCursor);
+  AddDefault(C,'Stop program',ecStopProgram);
+  AddDefault(C,'Reset debugger',ecResetDebugger);
+  AddDefault(C,'Compiler options',ecCompilerOptions);
+  AddDefault(C,'Run parameters',ecRunParameters);
+  AddDefault(C,'Build File',ecBuildFile);
+  AddDefault(C,'Run File',ecRunFile);
+  AddDefault(C,'Config "Build File"',ecConfigBuildFile);
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
-  Add(C,'Open package',ecOpenPackage,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Open package file',ecOpenPackageFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Add active unit to a package',ecAddCurUnitToPkg,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Package graph',ecPackageGraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'Open package',ecOpenPackage);
+  AddDefault(C,'Open package file',ecOpenPackageFile);
+  AddDefault(C,'Add active unit to a package',ecAddCurUnitToPkg);
+  AddDefault(C,'Package graph',ecPackageGraph);
+  AddDefault(C,'Configure custom components',ecConfigCustomComps);
 
   // tools menu
   C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];
-  Add(C,'External Tools settings',ecExtToolSettings,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Configure "Build Lazarus"',ecConfigBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Make resource string',ecMakeResourceString,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Diff editor files',ecDiff,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'External Tools settings',ecExtToolSettings);
+  AddDefault(C,'Build Lazarus',ecBuildLazarus);
+  AddDefault(C,'Configure "Build Lazarus"',ecConfigBuildLazarus);
+  AddDefault(C,'Make resource string',ecMakeResourceString);
+  AddDefault(C,'Diff editor files',ecDiff);
 
   // environment menu
   C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];
-  Add(C,'General environment options',ecEnvironmentOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Editor options',ecEditorOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'CodeTools options',ecCodeToolsOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'CodeTools defines editor',ecCodeToolsDefinesEd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  AddDefault(C,'General environment options',ecEnvironmentOptions);
+  AddDefault(C,'Editor options',ecEditorOptions);
+  AddDefault(C,'CodeTools options',ecCodeToolsOptions);
+  AddDefault(C,'CodeTools defines editor',ecCodeToolsDefinesEd);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,caAll)];
-  Add(C,'About Lazarus',ecAboutLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  
+  AddDefault(C,'About Lazarus',ecAboutLazarus);
+
   // designer
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesignOnly)];
-  Add(C,'Copy selected Components to clipboard',ecCopyComponents,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
-  Add(C,'Cut selected Components to clipboard',ecCutComponents,VK_X,[ssCtrl],VK_Delete,[ssShift]);
-  Add(C,'Paste Components from clipboard',ecPasteComponents,VK_V,[ssCtrl],VK_Insert,[ssShift]);
-  Add(C,'Select parent component',ecSelectParentComponent,VK_ESCAPE,[],VK_UNKNOWN,[]);
+  AddDefault(C,'Copy selected Components to clipboard',ecCopyComponents);
+  AddDefault(C,'Cut selected Components to clipboard',ecCutComponents);
+  AddDefault(C,'Paste Components from clipboard',ecPasteComponents);
+  AddDefault(C,'Select parent component',ecSelectParentComponent);
 end;
 
-destructor TKeyCommandRelationList.Destroy;
+procedure TKeyCommandRelationList.Clear;
 var a:integer;
 begin
   for a:=0 to FRelations.Count-1 do
     Relations[a].Free;
-  FRelations.Free;
+  FRelations.Clear;
   for a:=0 to fCategories.Count-1 do
     Categories[a].Free;
-  fCategories.Free;
-  inherited Destroy;
+  fCategories.Clear;
 end;
 
 function TKeyCommandRelationList.GetRelation(
@@ -1574,6 +2112,16 @@ function TKeyCommandRelationList.Add(Category: TKeyCommandCategory;
 begin
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command
       ,Key1,Shift1,Key2,Shift2));
+end;
+
+function TKeyCommandRelationList.AddDefault(Category: TKeyCommandCategory;
+  const Name: shortstring; Command: word): integer;
+var
+  Key1:Word; Shift1:TShiftState;
+  Key2:Word; Shift2:TShiftState;
+begin
+  GetDefaultKeyForCommand(Command,Key1,Shift1,Key2,Shift2);
+  Result:=Add(Category,Name,Command,Key1,Shift1,Key2,Shift2);
 end;
 
 procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
@@ -1664,32 +2212,28 @@ end;
 
 function TKeyCommandRelationList.SaveToXMLConfig(
   XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
-var a,b:integer;
-  Name:ShortString;
-  s:AnsiString;
+var a,b: integer;
+  Name: String;
+  CurKeyStr: String;
+  DefaultKeyStr: string;
+  AKey1:Word; AShift1:TShiftState;
+  AKey2:Word; AShift2:TShiftState;
 begin
   XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
-  XMLConfig.SetValue(Prefix+'ExternalToolCount/Value',ExtToolCount);
+  XMLConfig.SetDeleteValue(Prefix+'ExternalToolCount/Value',ExtToolCount,0);
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
-    with Relations[a] do
-      s:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
-        +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
-    XMLConfig.SetValue(Prefix+Name+'/Value',s);
+    with Relations[a] do begin
+      CurKeyStr:=KeyValuesToStr(Key1,Shift1,Key2,Shift2);
+      GetDefaultValues(AKey1,AShift1,AKey2,AShift2);
+      DefaultKeyStr:=KeyValuesToStr(AKey1,AShift1,AKey2,AShift2);;
+    end;
+    writeln('TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr);
+    XMLConfig.SetDeleteValue(Prefix+Name+'/Value',CurKeyStr,DefaultKeyStr);
   end;
   Result:=true;
-end;
-
-function TKeyCommandRelationList.ShiftStateToStr(Shift:TShiftState):AnsiString;
-var i:integer;
-begin
-  i:=0;
-  if ssCtrl in Shift then inc(i,1);
-  if ssShift in Shift then inc(i,2);
-  if ssAlt in Shift then inc(i,4);
-  Result:=IntToStr(i);
 end;
 
 function TKeyCommandRelationList.Find(AKey:Word; AShiftState:TShiftState;
@@ -1778,6 +2322,58 @@ begin
       Key.Shift2:=[];
       inc(KeyCnt);
     end;
+  end;
+end;
+
+procedure TKeyCommandRelationList.Assign(List: TKeyCommandRelationList);
+var
+  i: Integer;
+  CurCategory: TKeyCommandCategory;
+  CurRelation: TKeyCommandRelation;
+begin
+  Clear;
+  
+  // copy categories
+  for i:=0 to List.CategoryCount-1 do begin
+    CurCategory:=List.Categories[i];
+    AddCategory(CurCategory.Name,CurCategory.Description,CurCategory.Areas);
+  end;
+  
+  // copy keys
+  for i:=0 to List.Count-1 do begin
+    CurRelation:=List.Relations[i];
+    CurCategory:=FindCategoryByName(CurRelation.fParent.Name);
+    Add(CurCategory,CurRelation.Name,CurRelation.Command,
+      CurRelation.Key1,CurRelation.Shift1,CurRelation.Key2,CurRelation.Shift2);
+  end;
+
+  // copy ExtToolCount
+  fExtToolCount:=List.ExtToolCount;
+end;
+
+procedure TKeyCommandRelationList.LoadScheme(const SchemeName: string);
+var
+  i: Integer;
+  CurRelation: TKeyCommandRelation;
+  NewScheme: TKeyMapScheme;
+  Key1: word; Shift1: TShiftState;
+  Key2: word; Shift2: TShiftState;
+begin
+  NewScheme:=KeySchemeNameToSchemeType(SchemeName);
+  // set all keys to new scheme
+  for i:=0 to Count-1 do begin
+    CurRelation:=Relations[i];
+    case NewScheme of
+    kmsLazarus: GetDefaultKeyForCommand(CurRelation.Command,
+                                        Key1,Shift1,Key2,Shift2);
+    kmsClassic: GetDefaultKeyForClassicScheme(CurRelation.Command,
+                                        Key1,Shift1,Key2,Shift2);
+    kmsCustom: ;
+    end;
+    CurRelation.Key1:=Key1;
+    CurRelation.Shift1:=Shift1;
+    CurRelation.Key2:=Key2;
+    CurRelation.Shift2:=Shift2;
   end;
 end;
 

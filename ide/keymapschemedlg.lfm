@@ -1,0 +1,54 @@
+object ChooseKeySchemeDlg: TChooseKeySchemeDlg
+  CAPTION = 'ChooseKeySchemeDlg'
+  CLIENTHEIGHT = 185
+  CLIENTWIDTH = 400
+  ONCREATE = ChooseKeySchemeDlgCREATE
+  POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 401
+  VERTSCROLLBAR.PAGE = 186
+  LEFT = 406
+  HEIGHT = 185
+  TOP = 307
+  WIDTH = 400
+  object NoteLabel: TLABEL
+    CAPTION = 'NoteLabel'
+    LAYOUT = tltop
+    WORDWRAP = True
+    LEFT = 8
+    HEIGHT = 40
+    TOP = 8
+    WIDTH = 384
+  end
+  object OkButton: TBUTTON
+    MODALRESULT = 1
+    CAPTION = 'Ok'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 112
+    HEIGHT = 25
+    TOP = 152
+    WIDTH = 75
+  end
+  object CancelButton: TBUTTON
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 2
+    LEFT = 216
+    HEIGHT = 25
+    TOP = 152
+    WIDTH = 75
+  end
+  object SchemeRadiogroup: TRADIOGROUP
+    CAPTION = 'Scheme'
+    ITEMINDEX = 0
+    ITEMS.Strings = (
+      'Default (Lazarus)'
+      'Classic (TP)'
+    )
+    LEFT = 8
+    HEIGHT = 82
+    TOP = 56
+    WIDTH = 384
+  end
+end

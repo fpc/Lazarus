@@ -701,6 +701,7 @@ resourcestring
   dlgExtraLineSpacing = 'Extra line spacing';
   dlgKeyMappingScheme = 'Key Mapping Scheme';
   dlgCheckConsistency = 'Check consistency';
+  lisEdOptsChooseScheme = 'Choose Scheme';
   dlgEdHintCommand = 'Hint: click on the command you want to edit';
   dlgLang = 'Language:';
   dlgClrScheme = 'Color Scheme:';

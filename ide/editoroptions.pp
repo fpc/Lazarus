@@ -46,7 +46,7 @@ uses
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
   SynHighlighterUNIXShellScript,
   Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, KeymapSchemeDlg;
 
 type
   TPreviewEditor = TSynEdit;
@@ -345,8 +345,7 @@ type
     DisplayPreview:TPreviewEditor;
 
     // Key Mappings
-    KeyMappingSchemeLabel:TLabel;
-    KeyMappingSchemeComboBox:TComboBox;
+    KeyMappingChooseSchemeButton:TButton;
     KeyMappingHelpLabel:TLabel;
     KeyMappingTreeView:TTreeView;
     KeyMappingConsistencyCheckButton:TButton;
@@ -417,6 +416,7 @@ type
     procedure EditorFontButtonClick(Sender:TObject);
 
     // key mapping
+    procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
     procedure KeyMappingTreeViewMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
@@ -452,8 +452,9 @@ type
     fHighlighterList: TStringList; // list of "ColorScheme" Data=TCustomSyn
     fColorSchemes: TStringList; // list of LanguageName=ColorScheme
     fFileExtensions: TStringList; // list of LanguageName=FileExtensions
+    EditingKeyMap: TKeyCommandRelationList;
 
-    procedure SetComboBoxText(AComboBox:TComboBox;AText:AnsiString);
+    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
     procedure FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
     procedure InvalidatePreviews;
     procedure SetPreviewSynInAllPreviews;
@@ -1064,14 +1065,15 @@ begin
   inherited Create;
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EditOptsConfFileName);
   CopySecondaryConfigFile(EditOptsConfFileName);
-  if (not FileExists(ConfFileName)) then begin
-    writeln('NOTE: editor options config file not found - using defaults');
-  end;
   try
-    XMLConfig:=TXMLConfig.Create(ConfFileName);
+    if (not FileExists(ConfFileName)) then begin
+      writeln('NOTE: editor options config file not found - using defaults');
+      XMLConfig:=TXMLConfig.CreateClean(ConfFileName);
+    end else
+      XMLConfig:=TXMLConfig.Create(ConfFileName);
   except
     on E: Exception do begin
-      writeln('WARNING: unable to read ',ConfFileName);
+      writeln('WARNING: unable to read ',ConfFileName,' ',E.Message);
       XMLConfig:=nil;
     end;
   end;
@@ -1093,6 +1095,7 @@ begin
   // Key Mappings
   fKeyMappingScheme:='default';
   fKeyMap:=TKeyCommandRelationList.Create;
+  fKeyMap.CreateDefaultMapping;
 
   // Color options
   fHighlighterList:=TEditOptLangList.Create;
@@ -1116,7 +1119,6 @@ begin
       end;
     end;
   end;
-  
 end;
 
 destructor TEditorOptions.Destroy;
@@ -1947,14 +1949,14 @@ begin
       Width:=Self.Width;
       Height:=Self.Height-50;
       if PageCount>0 then
-        Pages.Strings[0]:=lisMenuInsertGeneral//by VVI - it will solve a problem
+        Pages.Strings[0]:=lisMenuInsertGeneral
       else
         Pages.Add(lisMenuInsertGeneral);
         
       Pages.Add(dlgEdDisplay);
       Pages.Add(dlgKeyMapping);
       Pages.Add(dlgEdColor);
-      Pages.Add(dlgCodeToolsTab); //by VVI - it seems to be a proper name
+      Pages.Add(dlgCodeToolsTab);
       PageIndex:=0;
     end;
     
@@ -1978,6 +1980,10 @@ begin
 
   UpdatingColor:=false;
   CurHighlightElement:=nil;
+  
+  // create a temporary copy of the keymap for editing
+  EditingKeyMap:=TKeyCommandRelationList.Create;
+  EditingKeyMap.Assign(EditorOpts.KeyMap);
 
   // initialize previews
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
@@ -1998,7 +2004,7 @@ begin
         if EditorOpts.UseSyntaxHighlight then
           Highlighter:=PreviewSyn;
         EditorOpts.GetSynEditSettings(PreviewEdits[a]);
-        EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes,[caSourceEditor]);
+        EditingKeyMap.AssignTo(PreviewEdits[a].KeyStrokes,[caSourceEditor]);
         if a<>3 then
         begin
           Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
@@ -2057,6 +2063,7 @@ begin
   ClearHighlighters;
   fColorSchemes.Free;
   fFileExtensions.Free;
+  EditingKeyMap.Free;
   inherited Destroy;
 end;
 
@@ -2375,6 +2382,15 @@ begin
   end;
 end;
 
+procedure TEditorOptionsForm.KeyMappingChooseSchemeButtonClick(Sender: TObject);
+var
+  NewScheme: string;
+begin
+  if ShowChooseKeySchemeDialog(NewScheme)<>mrOk then exit;
+  EditingKeyMap.LoadScheme(NewScheme);
+  FillKeyMappingTreeView;
+end;
+
 procedure TEditorOptionsForm.ComboBoxOnExit(Sender:TObject);
 var NewVal,a:integer;
   Box: TComboBox;
@@ -2603,13 +2619,13 @@ begin
   if (ANode<>nil) and (ANode.Data<>nil)
   and (TObject(ANode.Data) is TKeyCommandRelation) then begin
     ARelation:=TKeyCommandRelation(ANode.Data);
-    i:=EditorOpts.KeyMap.IndexOf(ARelation);
+    i:=EditingKeyMap.IndexOf(ARelation);
     if (i>=0)
-    and (ShowKeyMappingEditForm(i,EditorOpts.KeyMap)=mrOk) then begin
+    and (ShowKeyMappingEditForm(i,EditingKeyMap)=mrOk) then begin
       ANode.Text:=KeyMappingRelationToString(ARelation);
       for i:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i]<>nil then
-          EditorOpts.KeyMap.AssignTo(PreviewEdits[i].KeyStrokes,[caSourceEditor]);
+          EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes,[caSourceEditor]);
     end;
   end;
 end;
@@ -2927,7 +2943,7 @@ end;
 function TEditorOptionsForm.KeyMappingRelationToString(
   Index:integer):String;
 begin
-  Result:=KeyMappingRelationToString(EditorOpts.KeyMap.Relations[Index]);
+  Result:=KeyMappingRelationToString(EditingKeyMap.Relations[Index]);
 end;
 
 function TEditorOptionsForm.KeyMappingRelationToString(
@@ -2961,8 +2977,8 @@ begin
   with KeyMappingTreeView do begin
     BeginUpdate;
     Items.Clear;
-    for i:=0 to EditorOpts.KeyMap.CategoryCount-1 do begin
-      CurCategory:=EditorOpts.KeyMap.Categories[i];
+    for i:=0 to EditingKeyMap.CategoryCount-1 do begin
+      CurCategory:=EditingKeyMap.Categories[i];
       NewCategoryNode:=Items.AddObject(nil,CurCategory.Description,CurCategory);
       NewCategoryNode.ImageIndex:=0;
       NewCategoryNode.SelectedIndex:=NewCategoryNode.ImageIndex;
@@ -2973,13 +2989,10 @@ begin
         NewKeyNode.ImageIndex:=1;
         NewKeyNode.SelectedIndex:=NewKeyNode.ImageIndex;
       end;
-      //NewCategoryNode.Expanded:=true;
     end;
     EndUpdate;
   end;
 end;
-
-// code tools
 
 procedure TEditorOptionsForm.ShowCurCodeTemplate;
 var i,sp,ep:integer;
@@ -3125,7 +3138,7 @@ end;
 // useful functions
 
 procedure TEditorOptionsForm.SetComboBoxText(AComboBox:TComboBox;
-  AText:AnsiString);
+  const AText:AnsiString);
 var a:integer;
 begin
   a:=AComboBox.Items.IndexOf(AText);
@@ -3388,7 +3401,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:=dlgTrimTrailingSpaces ;
+    Caption:=dlgTrimTrailingSpaces;
     Checked:=eoTrimTrailingSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
@@ -3790,7 +3803,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=ChkBoxW;
-    Caption:=dlgVisibleRightMargin ;
+    Caption:=dlgVisibleRightMargin;
     Height:=23;
     Checked:=EditorOpts.VisibleRightMargin;
     OnClick:=@GeneralCheckBoxOnClick;
@@ -3818,7 +3831,7 @@ begin
     Left:=VisibleGutterCheckBox.Left;
     Width:=ChkBoxW;
     Height:=VisibleRightMarginCheckBox.Height;
-    Caption:=dlgShowLineNumbers ;
+    Caption:=dlgShowLineNumbers;
     Checked:=EditorOpts.ShowLineNumbers;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
@@ -3848,7 +3861,7 @@ begin
     Top:=2;
     Left:=RightMarginComboBox.Left+2;
     Width:=150;
-    Caption:=dlgRightMargin ;
+    Caption:=dlgRightMargin;
   end;
 
   RightMarginColorButton:=TColorButton.Create(Self);
@@ -3871,7 +3884,7 @@ begin
     Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
     Left:=RightMarginComboBox.Left+2;
     Width:=150;
-    Caption:=dlgRightMarginColor ;
+    Caption:=dlgRightMarginColor;
   end;
 
   GutterWidthComboBox:=TComboBox.Create(Self);
@@ -3902,7 +3915,7 @@ begin
     Top:=2;
     Left:=GutterWidthComboBox.Left+2;
     Width:=130;
-    Caption:=dlgGutterWidth ;
+    Caption:=dlgGutterWidth;
   end;
 
   GutterColorButton:=TColorButton.Create(Self);
@@ -3925,7 +3938,7 @@ begin
     Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height;
     Left:=GutterWidthComboBox.Left+2;
     Width:=130;
-    Caption:=dlgGutterColor ;
+    Caption:=dlgGutterColor;
   end;
 
   EditorFontGroupBox:=TGroupBox.Create(Self);
@@ -3971,7 +3984,7 @@ begin
     Top:=5;
     Left:=EditorFontComboBox.Left+2;
     Width:=130;
-    Caption:=dlgEditorFont ;
+    Caption:=dlgEditorFont;
   end;
 
   EditorFontHeightComboBox:=TComboBox.Create(Self);
@@ -4003,7 +4016,7 @@ begin
     Top:=EditorFontHeightComboBox.Top-18;
     Left:=EditorFontHeightComboBox.Left+2;
     Width:=150;
-    Caption:=dlgEditorFontHeight ;
+    Caption:=dlgEditorFontHeight;
   end;
 
   ExtraLineSpacingComboBox:=TComboBox.Create(Self);
@@ -4032,7 +4045,7 @@ begin
     Top:=ExtraLineSpacingComboBox.Top-18;
     Left:=ExtraLineSpacingComboBox.Left+2;
     Width:=150;
-    Caption:=dlgExtraLineSpacing ;
+    Caption:=dlgExtraLineSpacing;
   end;
 
   DisplayPreview:=TPreviewEditor.Create(Self);
@@ -4198,29 +4211,16 @@ begin
   MaxX:=Width-9;
   MaxY:=374;
 
-  KeyMappingSchemeComboBox:=TComboBox.Create(Self);
-  with KeyMappingSchemeComboBox do begin
-    Name:='KeyMappingSchemeComboBox';
+  KeyMappingChooseSchemeButton:=TButton.Create(Self);
+  with KeyMappingChooseSchemeButton do begin
+    Name:='KeyMappingChooseSchemeButton';
     Parent:=MainNoteBook.Page[2];
     Top:=5;
-    Left:=170;
-    Width:=100;
-    Height:=16;
-    Text:=EditorOpts.KeyMappingScheme;
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  KeyMappingSchemeLabel:=TLabel.Create(Self);
-  with KeyMappingSchemeLabel do begin
-    Name:='KeyMappingSchemeLabel';
-    Parent:=MainNoteBook.Page[2];
-    Top:=5;
-    Left:=5;
-    Width:=KeyMappingSchemeComboBox.Left-Left;
-    Height:=16;
-    Caption:=dlgKeyMappingScheme ;
-    Visible:=true;
+    Left:=100;
+    Width:=200;
+    Height:=23;
+    Text:=lisEdOptsChooseScheme;
+    OnClick:=@KeyMappingChooseSchemeButtonClick;
   end;
 
   KeyMappingConsistencyCheckButton:=TButton.Create(Self);
@@ -4228,25 +4228,23 @@ begin
     Name:='KeyMappingConsistencyCheckButton';
     Parent:=MainNoteBook.Page[2];
     Top:=5;
-    Left:=Max(KeyMappingSchemeComboBox.Left+KeyMappingSchemeComboBox.Width
-            ,MaxX-150);
+    Left:=Max(KeyMappingChooseSchemeButton.Left+KeyMappingChooseSchemeButton.Width
+              ,MaxX-150);
     Width:=130;
     Height:=23;
-    Caption:=dlgCheckConsistency ;
+    Caption:=dlgCheckConsistency;
     OnClick:=@KeyMappingConsistencyCheckButtonClick;
-    Visible:=true;
   end;
 
   KeyMappingHelpLabel:=TLabel.Create(Self);
   with KeyMappingHelpLabel do begin
     Name:='KeyMappingHelpLabel';
     Parent:=MainNoteBook.Page[2];
-    Top:=KeyMappingSchemeComboBox.Top+KeepCaretXCheckBox.Height+10;
+    Top:=KeyMappingChooseSchemeButton.Top+KeepCaretXCheckBox.Height+10;
     Left:=5;
     Width:=MaxX-Left-Left;
     Height:=16;
     Caption:=dlgEdHintCommand;
-    Visible:=true;
   end;
 
   KeyMappingTreeView:=TTreeView.Create(Self);
@@ -4261,7 +4259,6 @@ begin
       tvoShowLines, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators];
     OnMouseUp:=@KeyMappingTreeViewMouseUp;
     Images:=Self.ImageList;
-    Visible:=true;
   end;
 end;
 
@@ -4271,30 +4268,22 @@ begin
   MaxX:=Width-9;
   MaxY:=ClientHeight-82;
 
-  with KeyMappingSchemeComboBox do begin
+  with KeyMappingChooseSchemeButton do begin
     Top:=5;
     Left:=170;
     Width:=100;
-    Height:=16;
-  end;
-
-  with KeyMappingSchemeLabel do begin
-    Top:=5;
-    Left:=5;
-    Width:=KeyMappingSchemeComboBox.Left-Left;
-    Height:=16;
   end;
 
   with KeyMappingConsistencyCheckButton do begin
     Top:=5;
-    Left:=Max(KeyMappingSchemeComboBox.Left+KeyMappingSchemeComboBox.Width
+    Left:=Max(KeyMappingChooseSchemeButton.Left+KeyMappingChooseSchemeButton.Width
             ,MaxX-150);
     Width:=130;
     Height:=23;
   end;
 
   with KeyMappingHelpLabel do begin
-    Top:=KeyMappingSchemeComboBox.Top+KeepCaretXCheckBox.Height+10;
+    Top:=KeyMappingChooseSchemeButton.Top+KeepCaretXCheckBox.Height+10;
     Left:=5;
     Width:=MaxX-Left-Left;
     Height:=16;
@@ -4381,7 +4370,7 @@ begin
     Left:=ColorSchemeComboBox.Left-80;
     Width:=ColorSchemeComboBox.Left-Left;
     Height:=16;
-    Caption:=dlgClrScheme ;
+    Caption:=dlgClrScheme;
     Visible:=true;
   end;
 
@@ -4414,7 +4403,7 @@ begin
     Top:=FileExtensionsComboBox.Top+2;
     Left:=5;
     Width:=FileExtensionsComboBox.Left-Left-2;
-    Caption:=dlgFileExts ;
+    Caption:=dlgFileExts;
     Visible:=true;
   end;
 
@@ -4426,7 +4415,7 @@ begin
     Left:=5;
     Width:=180;
     Height:=16;
-    Caption:=dlgEdElement ;
+    Caption:=dlgEdElement;
     Visible:=true;
   end;
 
@@ -4453,7 +4442,7 @@ begin
     Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
     Width:=MaxX-5-Left;
     Height:=23;
-    Caption:=dlgSetElementDefault ;
+    Caption:=dlgSetElementDefault;
     OnClick:=@SetAttributeToDefaultButtonClick;
     Visible:=true;
   end;
@@ -4510,7 +4499,7 @@ begin
     Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
     Width:=ForeGroundGroupBox.Width-Left-Left;
     Height:=16;
-    Caption:=dlgEdUseDefColor ;
+    Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4524,7 +4513,7 @@ begin
     Left:=ForeGroundGroupBox.Left;
     Width:=ForeGroundGroupBox.Width;
     Height:=ForeGroundGroupBox.Height;
-    Caption:=dlgBackColor ;
+    Caption:=dlgBackColor;
     Visible:=true;
   end;
 
@@ -4566,7 +4555,7 @@ begin
     Left:=ForeGroundGroupBox.Left;
     Width:=ForeGroundGroupBox.Width;
     Height:=43;
-    Caption:=dlgTextAttributes ;
+    Caption:=dlgTextAttributes;
     Visible:=true;
   end;
 
@@ -4593,7 +4582,7 @@ begin
     Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
     Width:=95;
     Height:=TextBoldCheckBox.Height;
-    Caption:=dlgEdItal ;
+    Caption:=dlgEdItal;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4607,7 +4596,7 @@ begin
     Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+20;
     Width:=75;
     Height:=TextItalicCheckBox.Height;
-    Caption:=dlgEdUnder ;
+    Caption:=dlgEdUnder;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4807,7 +4796,7 @@ begin
     Left:=5;
     Width:=200;
     Height:=20;
-    Caption:=dlgEdIdComlet ;
+    Caption:=dlgEdIdComlet;
     Checked:=EditorOpts.AutoIdentifierCompletion;
     Enabled:=false;
     Visible:=true;
@@ -4822,7 +4811,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left;
     Width:=AutoIdentifierCompletionCheckBox.Width;
     Height:=AutoIdentifierCompletionCheckBox.Height;
-    Caption:=dlgEdCodeParams ;
+    Caption:=dlgEdCodeParams;
     Checked:=EditorOpts.AutoCodeParameters;
     Enabled:=false;
     Visible:=true;
@@ -4836,7 +4825,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left;
     Width:=AutoIdentifierCompletionCheckBox.Width;
     Height:=AutoIdentifierCompletionCheckBox.Height;
-    Caption:=dlgTooltipEval ;
+    Caption:=dlgTooltipEval;
     Checked:=EditorOpts.AutoToolTipExprEval;
     Enabled:=false;
     Visible:=true;
@@ -4850,7 +4839,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left;
     Width:=AutoIdentifierCompletionCheckBox.Width;
     Height:=AutoIdentifierCompletionCheckBox.Height;
-    Caption:=dlgTooltipTools ;
+    Caption:=dlgTooltipTools;
     Checked:=EditorOpts.AutoToolTipSymbTools;
     Visible:=true;
   end;
@@ -4863,7 +4852,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left
           +AutoIdentifierCompletionCheckBox.Width+17;
     Width:=70;
-    Caption:=dlgEdDelay ;
+    Caption:=dlgEdDelay;
     Visible:=true;
   end;
 
@@ -4902,7 +4891,7 @@ begin
     Top:=AutoDelayMinLabel.Top;
     Left:=AutoDelayTrackBar.Left+AutoDelayTrackBar.Width-30;
     Width:=70;
-    Caption:='1.5 '+ dlgTimeSecondUnit ;
+    Caption:='1.5 '+ dlgTimeSecondUnit;
     Visible:=true;
   end;
 
@@ -4926,7 +4915,7 @@ begin
     Top:=5;
     Left:=7;
     Width:=110;
-    Caption:=dlgTplFName ;
+    Caption:=dlgTplFName;
     Visible:=true;
   end;
 
@@ -4991,7 +4980,7 @@ begin
     Left:=CodeTemplateAddButton.Left;
     Width:=CodeTemplateAddButton.Width;
     Height:=CodeTemplateAddButton.Height;
-    Caption:=dlgEdDelete ;
+    Caption:=dlgEdDelete;
     OnClick:=@CodeTemplateButtonClick;
     Visible:=true;
   end;
@@ -5052,7 +5041,7 @@ begin
     Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
     Width:=CodeTemplateCodePreview.Left-Left-8;
     Height:=70;
-    Caption:=dlgIndentCodeTo ;
+    Caption:=dlgIndentCodeTo;
     with Items do begin
       BeginUpdate;
       Add('Token start');
@@ -5196,6 +5185,7 @@ begin
   SaveCurCodeTemplate;
   
   // save all values
+  EditorOpts.KeyMap.Assign(EditingKeyMap);
   SynOptions:=PreviewEdits[1].Options-[eoNoSelection,eoNoCaret];
   if BracketHighlightCheckBox.Checked then
     Include(SynOptions,eoBracketHighlight)

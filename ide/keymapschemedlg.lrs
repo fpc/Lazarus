@@ -1,0 +1,18 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TChooseKeySchemeDlg','FORMDATA',[
+  'TPF0'#19'TChooseKeySchemeDlg'#18'ChooseKeySchemeDlg'#7'CAPTION'#6#18'ChooseK'
+  +'eySchemeDlg'#12'CLIENTHEIGHT'#3#185#0#11'CLIENTWIDTH'#3#144#1#8'ONCREATE'#7
+  +#24'ChooseKeySchemeDlgCREATE'#8'POSITION'#7#14'poscreencenter'#18'HORZSCROLL'
+  +'BAR.PAGE'#3#145#1#18'VERTSCROLLBAR.PAGE'#3#186#0#4'LEFT'#3#150#1#6'HEIGHT'#3
+  +#185#0#3'TOP'#3'3'#1#5'WIDTH'#3#144#1#0#6'TLABEL'#9'NoteLabel'#7'CAPTION'#6#9
+  +'NoteLabel'#6'LAYOUT'#7#5'tltop'#8'WORDWRAP'#9#4'LEFT'#2#8#6'HEIGHT'#2'('#3
+  +'TOP'#2#8#5'WIDTH'#3#128#1#0#0#7'TBUTTON'#8'OkButton'#11'MODALRESULT'#2#1#7
+  +'CAPTION'#6#2'Ok'#7'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#2'p'#6'HEIGHT'#2#25#3
+  +'TOP'#3#152#0#5'WIDTH'#2'K'#0#0#7'TBUTTON'#12'CancelButton'#11'MODALRESULT'#2
+  +#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#2#4'LEFT'#3#216#0#6'HEI'
+  +'GHT'#2#25#3'TOP'#3#152#0#5'WIDTH'#2'K'#0#0#11'TRADIOGROUP'#16'SchemeRadiogr'
+  +'oup'#7'CAPTION'#6#6'Scheme'#9'ITEMINDEX'#2#0#13'ITEMS.Strings'#1#6#17'Defau'
+  +'lt (Lazarus)'#6#12'Classic (TP)'#0#4'LEFT'#2#8#6'HEIGHT'#2'R'#3'TOP'#2'8'#5
+  +'WIDTH'#3#128#1#0#0#0
+]);
