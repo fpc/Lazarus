@@ -1214,9 +1214,9 @@ begin
     end;
 
     // handle special navigation keys
-    DoTabKey(AControl, Shift, Key);
-    DoReturnKey(AControl, Shift, Key);
-    DoEscapeKey(AControl, Shift, Key);
+    DoTabKey(AControl, Key, Shift);
+    DoReturnKey(AControl, Key, Shift);
+    DoEscapeKey(AControl, Key, Shift);
   end;
 end;
 
@@ -1306,8 +1306,8 @@ begin
     Result := FMainForm.IsShortcut(Message);
 end;
 
-procedure TApplication.DoEscapeKey(AControl: TWinControl; Shift: TShiftState;
-  var Key: Word);
+procedure TApplication.DoEscapeKey(AControl: TWinControl; var Key: Word;
+  Shift: TShiftState);
 var
   Form: TCustomForm;
 begin
@@ -1326,8 +1326,8 @@ begin
   end;
 end;
 
-procedure TApplication.DoReturnKey(AControl: TWinControl; Shift: TShiftState;
-  var Key: Word);
+procedure TApplication.DoReturnKey(AControl: TWinControl; var Key: Word;
+  Shift: TShiftState);
 var
   Form: TCustomForm;
 begin
@@ -1345,8 +1345,8 @@ begin
   end;
 end;
 
-procedure TApplication.DoTabKey(AControl: TWinControl; Shift: TShiftState;
-  var Key: Word);
+procedure TApplication.DoTabKey(AControl: TWinControl; var Key: Word;
+  Shift: TShiftState);
 begin
   if (Key=VK_Tab) and ((Shift-[ssShift])=[])
   and (anoTabToSelectNext in Navigation)
@@ -1464,6 +1464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2005/03/10 09:02:11  mattias
+  handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
+
   Revision 1.109  2005/03/08 00:28:03  mattias
   implemented gtk2 AppMinimize
 

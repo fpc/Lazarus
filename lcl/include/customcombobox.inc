@@ -414,14 +414,20 @@ begin
     if not (Key in [VK_UP,VK_DOWN,VK_END,VK_HOME,VK_PRIOR,VK_NEXT,VK_TAB,
       VK_RETURN])
     then begin
-      Key:=0;
+      Skip := True;
     end;
   end;
 
   if Skip then
-    Key := 0
+    Key := VK_UNKNOWN
   else
     inherited KeyDown(Key, Shift);
+end;
+
+procedure TCustomComboBox.ControlKeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if Application<>nil then Application.DoTabKey(Self,Key,Shift);
+  inherited ControlKeyDown(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -802,6 +808,9 @@ end;
 
 {
   $Log$
+  Revision 1.58  2005/03/10 09:02:11  mattias
+  handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
+
   Revision 1.57  2005/03/07 18:46:36  mattias
   fixed unsetting ItemIndex on changing TComboBox.Text
 

@@ -314,6 +314,12 @@ begin
   Result:=false;
 end;
 
+procedure TCustomEdit.ControlKeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if Application<>nil then Application.DoTabKey(Self,Key,Shift);
+  inherited ControlKeyDown(Key, Shift);
+end;
+
 procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
@@ -369,6 +375,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2005/03/10 09:02:11  mattias
+  handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
+
   Revision 1.38  2005/03/08 10:32:47  mattias
   BorderStyle for TCustomEdit in win32 intf  from Jesus
 

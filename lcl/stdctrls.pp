@@ -219,6 +219,8 @@ type
   TMeasureItemEvent = procedure(Control: TWinControl; Index: Integer;
     var Height: Integer) of object;
 
+  { TCustomComboBox }
+
   TCustomComboBox = class(TWinControl)
   private
     FAutoDropDown: Boolean;
@@ -283,6 +285,7 @@ type
     procedure SetStyle(Val: TComboBoxStyle); virtual;
     procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
@@ -550,6 +553,8 @@ type
   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
   TEchoMode = (emNormal, emNone, emPassword);
 
+  { TCustomEdit }
+
   TCustomEdit = class(TWinControl)
   private
     FCharCase: TEditCharCase;
@@ -582,6 +587,7 @@ type
     procedure SetSelText(const Val: string); virtual;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1227,6 +1233,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.198  2005/03/10 09:02:11  mattias
+  handle tab key in ControlKeyDown in TCustomEdit and TCustomComboBox
+
   Revision 1.197  2005/03/08 10:32:47  mattias
   BorderStyle for TCustomEdit in win32 intf  from Jesus
 
