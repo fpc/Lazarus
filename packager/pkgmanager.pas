@@ -50,7 +50,7 @@ uses
   IDEProcs, ProjectDefs, InputHistory, IDEDefs, Project, ComponentReg,
   UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks,
   PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
-  CompilerOptions, ExtToolDialog, ExtToolEditDlg, EditDefineTree,
+  CompilerOptions, ExtToolDialog, ExtToolEditDlg, EditDefineTree, MsgView,
   BuildLazDialog, DefineTemplates, LazConf, ProjectInspector, ComponentPalette,
   UnitEditor, AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg,
   BasePkgManager, MainBar;
@@ -1960,83 +1960,88 @@ begin
     
     // auto increase version
     // ToDo
-
-    Result:=DoPreparePackageOutputDirectory(APackage);
-    if Result<>mrOk then exit;
-
-    // create package main source file
-    Result:=DoSavePackageMainSource(APackage,Flags);
-    if Result<>mrOk then exit;
     
-    // check ambigious units
-    Result:=CheckAmbigiousPackageUnits(APackage);
-    if Result<>mrOk then exit;
-    
-    // run compilation tool 'Before'
-    Result:=MainIDE.DoExecuteCompilationTool(
-      APackage.CompilerOptions.ExecuteBefore,
-      APackage.Directory,'Executing command before');
-    if Result<>mrOk then exit;
+    MessagesView.BeginBlock;
+    try
+      Result:=DoPreparePackageOutputDirectory(APackage);
+      if Result<>mrOk then exit;
 
-    // create external tool to run the compiler
-    writeln('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
-    writeln('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
-    writeln('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
+      // create package main source file
+      Result:=DoSavePackageMainSource(APackage,Flags);
+      if Result<>mrOk then exit;
 
-    if not APackage.CompilerOptions.SkipCompiler then begin
-      // check compiler filename
-      try
-        CheckIfFileIsExecutable(CompilerFilename);
-      except
-        on e: Exception do begin
-          Result:=MessageDlg(lisPkgManginvalidCompilerFilename,
-            Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
-              APackage.IDAsString, #13, E.Message]),
-            mtError,[mbCancel,mbAbort],0);
-          exit;
+      // check ambigious units
+      Result:=CheckAmbigiousPackageUnits(APackage);
+      if Result<>mrOk then exit;
+
+      // run compilation tool 'Before'
+      Result:=MainIDE.DoExecuteCompilationTool(
+        APackage.CompilerOptions.ExecuteBefore,
+        APackage.Directory,'Executing command before');
+      if Result<>mrOk then exit;
+
+      // create external tool to run the compiler
+      writeln('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
+      writeln('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
+      writeln('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
+
+      if not APackage.CompilerOptions.SkipCompiler then begin
+        // check compiler filename
+        try
+          CheckIfFileIsExecutable(CompilerFilename);
+        except
+          on e: Exception do begin
+            Result:=MessageDlg(lisPkgManginvalidCompilerFilename,
+              Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
+                APackage.IDAsString, #13, E.Message]),
+              mtError,[mbCancel,mbAbort],0);
+            exit;
+          end;
+        end;
+
+        // change compiler parameters for compiling clean
+        EffektiveCompilerParams:=CompilerParams;
+        if pcfCleanCompile in Flags then begin
+          if EffektiveCompilerParams<>'' then
+            EffektiveCompilerParams:='-B '+EffektiveCompilerParams
+          else
+            EffektiveCompilerParams:='-B';
+        end;
+
+        PkgCompileTool:=TExternalToolOptions.Create;
+        try
+          PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
+          PkgCompileTool.ScanOutputForFPCMessages:=true;
+          PkgCompileTool.ScanOutputForMakeMessages:=true;
+          PkgCompileTool.WorkingDirectory:=APackage.Directory;
+          PkgCompileTool.Filename:=CompilerFilename;
+          PkgCompileTool.CmdLineParams:=EffektiveCompilerParams;
+
+          // clear old errors
+          SourceNotebook.ClearErrorLines;
+
+          // compile package
+          Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,
+                                                       MainIDE.MacroList);
+          if Result<>mrOk then exit;
+          // compilation succeded -> write state file
+          Result:=DoSavePackageCompiledState(APackage,
+                                             CompilerFilename,CompilerParams);
+          if Result<>mrOk then exit;
+        finally
+          // clean up
+          PkgCompileTool.Free;
         end;
       end;
 
-      // change compiler parameters for compiling clean
-      EffektiveCompilerParams:=CompilerParams;
-      if pcfCleanCompile in Flags then begin
-        if EffektiveCompilerParams<>'' then
-          EffektiveCompilerParams:='-B '+EffektiveCompilerParams
-        else
-          EffektiveCompilerParams:='-B';
-      end;
-
-      PkgCompileTool:=TExternalToolOptions.Create;
-      try
-        PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
-        PkgCompileTool.ScanOutputForFPCMessages:=true;
-        PkgCompileTool.ScanOutputForMakeMessages:=true;
-        PkgCompileTool.WorkingDirectory:=APackage.Directory;
-        PkgCompileTool.Filename:=CompilerFilename;
-        PkgCompileTool.CmdLineParams:=EffektiveCompilerParams;
-
-        // clear old errors
-        SourceNotebook.ClearErrorLines;
-
-        // compile package
-        Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,
-                                                     MainIDE.MacroList);
-        if Result<>mrOk then exit;
-        // compilation succeded -> write state file
-        Result:=DoSavePackageCompiledState(APackage,
-                                           CompilerFilename,CompilerParams);
-        if Result<>mrOk then exit;
-      finally
-        // clean up
-        PkgCompileTool.Free;
-      end;
+      // run compilation tool 'After'
+      Result:=MainIDE.DoExecuteCompilationTool(
+        APackage.CompilerOptions.ExecuteAfter,
+        APackage.Directory,'Executing command after');
+      if Result<>mrOk then exit;
+    finally
+      MessagesView.EndBlock;
     end;
-
-    // run compilation tool 'After'
-    Result:=MainIDE.DoExecuteCompilationTool(
-      APackage.CompilerOptions.ExecuteAfter,
-      APackage.Directory,'Executing command after');
-    if Result<>mrOk then exit;
 
   finally
     if not (pcfDoNotSaveEditorFiles in Flags) then begin

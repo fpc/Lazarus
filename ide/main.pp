@@ -5548,23 +5548,24 @@ begin
   Result:=DoSaveForBuild;
   if Result<>mrOk then exit;
 
-  // compile required packages
-  Result:=PkgBoss.DoCompileProjectDependencies(Project1,[pcfDoNotSaveEditorFiles]);
-  if Result<>mrOk then exit;
-
-  // get main source filename
-  if not Project1.IsVirtual then
-    DefaultFilename:=''
-  else
-    DefaultFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
-
-  // clear old error lines
-  SourceNotebook.ClearErrorLines;
-
   // show messages
   MessagesView.Clear;
   MessagesView.BeginBlock;
   try
+    // compile required packages
+    Result:=PkgBoss.DoCompileProjectDependencies(Project1,
+                                                 [pcfDoNotSaveEditorFiles]);
+    if Result<>mrOk then exit;
+
+    // get main source filename
+    if not Project1.IsVirtual then
+      DefaultFilename:=''
+    else
+      DefaultFilename:=GetTestUnitFilename(Project1.MainUnitInfo);
+
+    // clear old error lines
+    SourceNotebook.ClearErrorLines;
+
     DoArrangeSourceEditorAndMessageView(false);
 
     // warn ambigious files
@@ -9413,6 +9414,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.637  2003/08/15 16:19:53  mattias
+  implemented message blocks for package compilation
+
   Revision 1.636  2003/08/15 16:10:12  mattias
   implemented message blocks
 

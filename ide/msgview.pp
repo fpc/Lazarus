@@ -212,6 +212,7 @@ end;
 
 procedure TMessagesView.BeginBlock;
 begin
+  Clear;
   inc(fBlockCount);
 end;
 
