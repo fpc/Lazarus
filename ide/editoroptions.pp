@@ -3392,8 +3392,7 @@ begin
     Parent:=MarginAndGutterGroupBox;
     Top:=2;
     Left:=RightMarginComboBox.Left+2;
-    Width:=RightMarginComboBox.Width;
-    Height:=16;
+    Width:=150;
     Caption:='Right margin';
     Show;
   end;
@@ -3418,7 +3417,7 @@ begin
     Parent:=MarginAndGutterGroupBox;
     Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
     Left:=RightMarginComboBox.Left+2;
-    Width:=120;
+    Width:=150;
     Caption:='Right margin color';
     Show;
   end;
@@ -3449,8 +3448,7 @@ begin
     Parent:=MarginAndGutterGroupBox;
     Top:=2;
     Left:=GutterWidthComboBox.Left+2;
-    Width:=GutterWidthComboBox.Width;
-    Height:=16;
+    Width:=130;
     Caption:='Gutter width';
     Show;
   end;
@@ -3475,7 +3473,7 @@ begin
     Parent:=MarginAndGutterGroupBox;
     Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height;
     Left:=GutterWidthComboBox.Left+2;
-    Width:=100;
+    Width:=130;
     Caption:='Gutter color';
     Show;
   end;
@@ -3525,7 +3523,7 @@ begin
     Parent:=EditorFontGroupBox;
     Top:=5;
     Left:=EditorFontComboBox.Left+2;
-    Width:=EditorFontComboBox.Width;
+    Width:=130;
     Caption:='Editor font';
     Show;
   end;
@@ -3559,7 +3557,7 @@ begin
     Parent:=EditorFontGroupBox;
     Top:=EditorFontHeightComboBox.Top-18;
     Left:=EditorFontHeightComboBox.Left+2;
-    Width:=100;
+    Width:=150;
     Caption:='Editor font height';
     Show;
   end;
@@ -3590,7 +3588,7 @@ begin
     Parent:=EditorFontGroupBox;
     Top:=ExtraLineSpacingComboBox.Top-18;
     Left:=ExtraLineSpacingComboBox.Left+2;
-    Width:=100;
+    Width:=150;
     Caption:='Extra line spacing';
     Show;
   end;

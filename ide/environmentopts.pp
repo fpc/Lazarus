@@ -1099,7 +1099,7 @@ begin
     Parent:=NoteBook.Page[Page];
     Left:=DesktopFilesGroupBox.Left;
     Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+100;
-    Width:=250;
+    Width:=Parent.ClientWidth-Left;
     Height:=20;
     Caption:='Hints for component palette';
     Visible:=true;
@@ -1112,7 +1112,7 @@ begin
     Left:=ShowHintsForComponentPaletteCheckBox.Left;
     Top:=ShowHintsForComponentPaletteCheckBox.Top
          +ShowHintsForComponentPaletteCheckBox.Height+5;
-    Width:=300;
+    Width:=Parent.ClientWidth-Left;
     Height:=20;
     Caption:='Hints for main speed buttons (open, save, ...)';
     Visible:=true;
@@ -1439,7 +1439,7 @@ begin
     Parent:=NoteBook.Page[Page];
     Left:=4;
     Top:=4;
-    Width:=150;
+    Width:=170;
     Height:=23;
     Caption:='Max recent files';
     Visible:=true;
@@ -1821,7 +1821,7 @@ begin
     Parent:=NoteBook.Page[Page];
     Left:=5;
     Top:=4;
-    Width:=150;
+    Width:=200;
     Height:=80;
     Caption:='Default pascal extension';
     with Items do begin
@@ -1840,7 +1840,7 @@ begin
     Parent:=NoteBook.Page[Page];
     Left:=PascalFileExtRadiogroup.Left;
     Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
-    Width:=250;
+    Width:=300;
     Caption:='Save pascal files lowercase';
     Visible:=true;
   end;
