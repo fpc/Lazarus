@@ -3809,7 +3809,7 @@ begin
           AFilename, '"', #13, #13]);
         ACaption:=lisProgramDetected;
         if MessageDlg(ACaption, AText, mtConfirmation,
-            [mbOk, mbCancel], 0)=mrOk then
+            [mbYes, mbNo], 0)=mrYes then
         begin
           Result:=DoCreateProjectForProgram(PreReadBuf);
           Handled:=true;
@@ -10968,6 +10968,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.790  2004/11/15 12:25:00  mattias
+  added some fpc src paths and changed auto create project for program a Yes/No question
+
   Revision 1.789  2004/11/06 19:49:11  mattias
   renamed avl_tree.pas to oldavltree.pas for new fpc 1.9.5
 

@@ -334,7 +334,7 @@ resourcestring
   lisProjectInfoFileDetected = 'Project info file detected';
   lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file %s%s%s%sseems to '
     +'be a program. Close current project and create a new lazarus project '
-    +'for this program?%sCancel will load the file as normal source.';
+    +'for this program?%s"No" will load the file as normal source.';
   lisProgramDetected = 'Program detected';
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
     +'text form data of file %s%s%s%s%sinto binary stream. (%s)';

@@ -183,6 +183,7 @@ ResourceString
   ctsIncludeDirectoriesPlusDirs = 'include directories: %s';
   ctsPackageDirectories = 'Package directories';
   ctsUtilsDirectories = 'Utils directories';
+  ctsInstallerDirectories = 'Installer directories';
   ctsDefsForLazarusSources = 'Definitions for the Lazarus Sources';
   ctsAddsDirToSourcePath = 'adds %s to SrcPath';
   ctsSetsIncPathTo = 'sets IncPath to %s';

@@ -3194,6 +3194,7 @@ var
   FCLDBDir: TDefineTemplate;
   FCLDBInterbaseDir: TDefineTemplate;
   SrcPathMacro: String;
+  InstallerDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -3243,8 +3244,11 @@ begin
   // compiler
   CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
      da_Directory);
-  MainDir.AddChild(CompilerDir);
   AddProcessorTypeDefine(CompilerDir);
+  CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+    ExternalMacroStart+'SrcPath',
+    SrcPathMacro+';'+Dir+TargetProcessor,da_Define));
+  MainDir.AddChild(CompilerDir);
 
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
@@ -3344,6 +3348,14 @@ begin
   DebugSvrDir.AddChild(TDefineTemplate.Create('Interface Path',
     Format(ctsAddsDirToSourcePath,['..']),ExternalMacroStart+'SrcPath',
     '..;'+ExternalMacroStart+'SrcPath',da_DefineRecurse));
+
+  // packages
+  InstallerDir:=TDefineTemplate.Create('Installer',ctsInstallerDirectories,'',
+     'installer',da_Directory);
+  InstallerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
+    ExternalMacroStart+'SrcPath',
+    SrcPathMacro+';'+Dir+'ide;'+Dir+'fv',da_Define));
+  MainDir.AddChild(InstallerDir);
 
   // clean up
   if UnitTree<>nil then begin
