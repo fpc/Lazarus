@@ -1,3 +1,17 @@
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 unit gtkglobals;
 
 {$mode objfpc}{$H+}
@@ -171,14 +185,17 @@ var
 
 // Internal Paint message:
 const
-  LM_GTKPaint = LM_INTERFACEFIRST;
+  LM_GTKPaint         = LM_INTERFACEFIRST + 0;
+  
+  GtkPaint_LCLWidget = 1;
+  GtkPaint_GtkWidget = 2;
 
 type
   TLMGtkPaint = packed record
     Msg: Cardinal;
     Widget: PGtkWidget;
-    Unused1: integer;
-    Unused2: integer;
+    State: integer; // see GtkPaint_xxx
+    Unused: integer;
   end;
 
 
@@ -248,6 +265,7 @@ const
   OldCheckMenuItemDrawProc: TCheckMenuItemDrawProc = nil;
   OldMenuSizeRequestProc: TMenuSizeRequestProc = nil;
   OldCheckMenuItemToggleSize: integer = 0;
+
 
 implementation
 
