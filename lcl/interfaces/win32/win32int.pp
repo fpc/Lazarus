@@ -52,7 +52,7 @@ Type
   End;
 
   { Win32 interface-object class }
-  TWin32Object = Class(TWidgetSet)
+  TWin32WidgetSet = Class(TWidgetSet)
   Private
     FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
                          // Assoc. windowproc also acts as handler for popup menus
@@ -191,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2004/03/05 01:04:21  marc
+  * Renamed TWin32Object to TWin32WidgetSet
+
   Revision 1.70  2004/03/05 00:14:02  marc
   * Renamed TInterfaceBase to TWidgetSet
 

@@ -311,8 +311,8 @@ Begin
     WM_ACTIVATEAPP:
     Begin
       if WParam <> 0 then
-        if Window = TWin32Object(InterfaceObject).AppHandle then
-          Windows.SetWindowPos(TWin32Object(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        if Window = TWin32WidgetSet(InterfaceObject).AppHandle then
+          Windows.SetWindowPos(TWin32WidgetSet(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -1108,6 +1108,9 @@ end;
 
 {
   $Log$
+  Revision 1.96  2004/03/05 01:04:21  marc
+  * Renamed TWin32Object to TWin32WidgetSet
+
   Revision 1.95  2004/03/04 21:16:15  micha
   remove workaround; fpc bug fixed
 

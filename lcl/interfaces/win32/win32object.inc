@@ -22,13 +22,13 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.Create
+  Method: TWin32WidgetSet.Create
   Params:  None
   Returns: Nothing
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-Constructor TWin32Object.Create;
+Constructor TWin32WidgetSet.Create;
 Begin
   Inherited Create;
   FTimerData  := TList.Create;
@@ -43,23 +43,23 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.Destroy
+  Method: TWin32WidgetSet.Destroy
   Params:  None
   Returns: Nothing
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-Destructor TWin32Object.Destroy;
+Destructor TWin32WidgetSet.Destroy;
 var
   n: integer;
   TimerInfo : PWin32TimerInfo;
 Begin
-  Assert(False, 'Trace:TWin32Object is being destroyed');
+  Assert(False, 'Trace:TWin32WidgetSet is being destroyed');
 
   n := FTimerData.Count;
   if (n > 0) then
   begin
-    Writeln(Format('[TWin32Object.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    Writeln(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
     while (n > 0) do
     begin
       dec(n);
@@ -97,13 +97,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.AppInit
+  Method: TWin32WidgetSet.AppInit
   Params:  None
   Returns: Nothing
 
   Initialize Windows
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AppInit;
+Procedure TWin32WidgetSet.AppInit;
 Var
   LogBrush: TLOGBRUSH;
   SysMenu: HMENU;
@@ -164,14 +164,14 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.GetOwnerHandle
+  Method: TWin32WidgetSet.GetOwnerHandle
   Params:  ADialog - dialog to get 'guiding parent' window handle for
   Returns: A window handle
 
   Returns window handle to be used as 'owner handle', ie. so that the user must
   finish the dialog before continuing
  ------------------------------------------------------------------------------}
-function TWin32Object.GetOwnerHandle(ADialog : TCommonDialog): HWND;
+function TWin32WidgetSet.GetOwnerHandle(ADialog : TCommonDialog): HWND;
 begin
   with ADialog do
   begin
@@ -188,7 +188,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.GetText
+  Method: TWin32WidgetSet.GetText
   Params:  Sender - The control to retrieve the text from
            Data   - Holds the string
   Returns: Whether the text has been retrieved
@@ -196,14 +196,14 @@ end;
   Retrieves the text from a Windows control. This is a replacement for
   the LM_GetText message.
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean;
+Function TWin32WidgetSet.GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean;
 Var
   CapLen: Cardinal;
   Caption: PChar;
   Ctrl: TCustomNotebook;
   TCI: TC_ITEM;
 Begin
-  Assert(False, Format('Trace:TWin32Object.GetText - Start --> %S', [Sender.ClassName]));
+  Assert(False, Format('Trace:TWin32WidgetSet.GetText - Start --> %S', [Sender.ClassName]));
   Data := '';
   Result := True;
   Case TControl(Sender).FCompStyle Of
@@ -226,23 +226,23 @@ Begin
     End;
     csPage:
     Begin
-      Assert(False, 'Trace:TWin32Object.GetText - csPage: Start');
+      Assert(False, 'Trace:TWin32WidgetSet.GetText - csPage: Start');
       Ctrl := (TCustomPage(Sender).Parent As TCustomNotebook);
       Caption := StrAlloc(MAX_PATH);
       try
         TCI.mask := TCIF_TEXT;
         TCI.cchTextMax := MAX_PATH;
         TCI.pszText := Caption;
-        Assert(False, 'Trace:TWin32Object.GetText - Getting the text');
+        Assert(False, 'Trace:TWin32WidgetSet.GetText - Getting the text');
         Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM,
           TCustomPage(Sender).PageIndex, LPARAM(@TCI))<>0);
         if Result
           then Data := StrPas(Caption);
-        Assert(False, Format('Trace:TWin32Object.GetText - Returning the text --> %S', [Data]));
+        Assert(False, Format('Trace:TWin32WidgetSet.GetText - Returning the text --> %S', [Data]));
       finally
         StrDispose(Caption);
       end;
-      Assert(False, 'Trace:TWin32Object.GetText - csPage: Exit');
+      Assert(False, 'Trace:TWin32WidgetSet.GetText - csPage: Exit');
     End;
     Else
       Result := False;
@@ -250,14 +250,14 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetLabel
+  Method: TWin32WidgetSet.SetLabel
   Params:   Sender - The object to which to apply the label
             Data   - Pointer to the label
   Returns: Nothing
 
   Sets the label text on a window
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
+Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
 
   Procedure SetMenuItemCaption;
   var MenuInfo: MENUITEMINFO;
@@ -302,13 +302,13 @@ Begin
     exit;
   end;
   If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> label %S', [Sender.ClassName, TControl(Sender).Caption]))
+    Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> label %S', [Sender.ClassName, TControl(Sender).Caption]))
   Else
-    Assert(False, Format('Trace:WARNING: [TWin32Object.SetLabel] %S --> No Decendant of TWinControl', [Sender.ClassName]));
+    Assert(False, Format('Trace:WARNING: [TWin32WidgetSet.SetLabel] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := (Sender As TWinControl).Handle;
-  Assert(Handle<>0,'Trace:WARNING: [TWin32Object.SetLabel] --> Got NULL handle');
-  Assert(False, 'Trace:Setting the label in TWin32Object.SetLabel');
+  Assert(Handle<>0,'Trace:WARNING: [TWin32WidgetSet.SetLabel] --> Got NULL handle');
+  Assert(False, 'Trace:Setting the label in TWin32WidgetSet.SetLabel');
 
   Case TControl(Sender).FCompStyle Of
     csBitBtn:
@@ -316,19 +316,19 @@ Begin
     csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
     csColorDialog, csFontDialog:
     Begin
-      Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
-      Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
+      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
+      Assert(False, 'Trace:TWin32WidgetSet.SetLabel - I''m not sure if this''ll work');
       Assert(False, Format('Trace:Is Sender a TCommonDialog - %S', [BOOL_RESULT[Sender Is TCommonDialog]]));
       If Sender Is TCommonDialog Then
         TCommonDialog(Sender).Title := StrPas(Data)
       Else
         TWinControl(Sender).Caption := StrPas(Data);
-      Assert(False, Format('Trace:TWin32Object.SetLabel - Leaving %S', [CS_To_String(TControl(Sender).FCompStyle)]));
+      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Leaving %S', [CS_To_String(TControl(Sender).FCompStyle)]));
     End;
     csComboBox:
     Begin
-      Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
-      Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
+      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
+      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
       if TCustomComboBox(Sender).Style = csDropDownList then
         Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(Data))
       else
@@ -340,23 +340,23 @@ Begin
     End;
     csNotebook:
     Begin
-      Assert(False, 'Trace: TWin32Object.SetLabel - Got csNotebook');
+      Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csNotebook');
       with TLMNotebookEvent(Data^) do
       if Parent=Sender then
       begin
         TCI.mask := TCIF_TEXT;
-        Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [Str]));
+        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [Str]));
         TCI.pszText := PChar(Str);
         Windows.SendMessage(TCustomNotebook(Sender).Handle, TCM_SETITEM, Page, LPARAM(@TCI));
       end
     End;
     csPage:
     begin
-      Assert(False, 'Trace: TWin32Object.SetLabel - Got csPage');
+      Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csPage');
       // We can't set label of a page not yet added
       if TCustomPage(Sender).PageIndex < Windows.SendMessage(TCustomPage(Sender).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
       begin
-        Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
+        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
         TCI.mask := TCIF_TEXT;
         TCI.pszText := Data;
         Windows.SendMessage(TCustomPage(Sender).Parent.Handle, TCM_SETITEM, TCustomPage(Sender).PageIndex, LPARAM(@TCI));
@@ -370,11 +370,11 @@ Begin
   Else
     Windows.SetWindowText(Handle, Data);
   End;
-  Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
+  Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> END', [Sender.ClassName]));
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.IntSendMessage3
+  Method: TWin32WidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed
            Sender     - sending control
            Data       - pointer to message-specific data (optional)
@@ -385,7 +385,7 @@ End;
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
  ------------------------------------------------------------------------------}
-Function TWin32Object.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+Function TWin32WidgetSet.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
 Var
   XPMFIle : TFileStream;
   //Bitmap: HBITMAP; // Pixel map type image
@@ -419,7 +419,7 @@ Begin
       GetPixel(Sender, Data);
     LM_SHOWHIDE:
     Begin
-      Assert(False, Format('Trace:  [TWin32Object.IntSendMessage3] %s --> Show/Hide', [Sender.ClassName]));
+      Assert(False, Format('Trace:  [TWin32WidgetSet.IntSendMessage3] %s --> Show/Hide', [Sender.ClassName]));
       ShowHide(Sender);
     End;
     LM_SETCURSOR:
@@ -453,7 +453,7 @@ Begin
       if Sender=nil then Handle := GetDesktopWindow
       else Handle := ObjectToHwnd(Sender);
       DC := Windows.GetDC(Handle);
-      //WriteLn('LM_SCREENINIT called --> should go to TWin32Object.Init');
+      //WriteLn('LM_SCREENINIT called --> should go to TWin32WidgetSet.Init');
       //WriteLn('TODO: check this');
       PLMScreenInit(Data)^.PixelsPerInchX := GetDeviceCaps(DC, LogPixelsX);
       PLMScreenInit(Data)^.PixelsPerInchY := GetDeviceCaps(DC, LogPixelsY);
@@ -488,10 +488,10 @@ Begin
     Handle := ObjectToHWND(Sender);
     If Handle = HWND(Nil) Then
     Begin
-      //Assert (False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> got Handle = Nil', [Sender.ClassName]));
+      //Assert (False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> got Handle = Nil', [Sender.ClassName]));
       //Handle := (Sender As TWinControl).Handle;
       //TWinControl(Sender).Handle := Handle;
-      //Assert(False, Format('Trace:[TWin32Object.IntSendMessag3] Sender is %S', [Sender.ClassName]));
+      //Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessag3] Sender is %S', [Sender.ClassName]));
       Exit;
     End;
     Case LM_Message of
@@ -508,7 +508,7 @@ Begin
         Begin
           With (Sender As TWinControl) Do
           Begin
-            Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
+            Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
             AddChild(Parent.Handle, Handle);
           End;
         End;
@@ -581,7 +581,7 @@ Begin
       End;
       LM_BRINGTOFRONT:
       Begin
-        Assert(False, 'Trace:TODO: [TWin32Object.IntSendMessage3] - LM_BRINGTOFRONT');
+        Assert(False, 'Trace:TODO: [TWin32WidgetSet.IntSendMessage3] - LM_BRINGTOFRONT');
         BringWindowToTop(Handle);
       End;
       LM_BTNDEFAULT_CHANGED:
@@ -723,7 +723,7 @@ activate_time :	the time at which the activation event occurred.
       //SH: think of TCanvas.handle!!!!
       LM_REDRAW:
       Begin
-        Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
+        Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
         If Sender Is TCanvas Then
           ReDraw(TCanvas(Sender))
         Else If Not (Sender Is TSpeedbutton) Then
@@ -739,7 +739,7 @@ activate_time :	the time at which the activation event occurred.
       End;
       LM_ADDPAGE:
       Begin
-        Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
+        Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
         AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TCustomPage, TLMNotebookEvent(Data^).Page);
       End;
       LM_REMOVEPAGE:
@@ -852,7 +852,7 @@ activate_time :	the time at which the activation event occurred.
             Result := SendMessage(Handle, CB_GETCURSEL, 0, 0);
             if Result = LB_ERR Then
             Begin
-              Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+              Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
               Result := -1;
             End;
           End;
@@ -861,7 +861,7 @@ activate_time :	the time at which the activation event occurred.
             Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
             If Result = LB_ERR Then
             Begin
-              Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+              Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
               Result := -1;
             End;
           End;
@@ -1051,23 +1051,23 @@ activate_time :	the time at which the activation event occurred.
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetCallback
+  Method: TWin32WidgetSet.SetCallback
   Params: Msg    - message for which to set a callback
           Sender - object to which callback will be sent
   Returns:  nothing
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetCallback(Msg: LongInt; Sender: TObject);
+Procedure TWin32WidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
 Var
   {$IFDEF VER1_1_MSG}
   List: TMsgArray;
   {$ENDIF}
   Window: HWnd;
 Begin
-  Assert(False, 'Trace:TWin32Object.SetCallback - Start');
-  Assert(False, Format('Trace:TWin32Object.SetCallback - Class Name --> %S', [Sender.ClassName]));
-  Assert(False, Format('Trace:TWin32Object.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
+  Assert(False, 'Trace:TWin32WidgetSet.SetCallback - Start');
+  Assert(False, Format('Trace:TWin32WidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
+  Assert(False, Format('Trace:TWin32WidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
   If Sender Is TControlCanvas Then
     Window := TControlCanvas(Sender).Handle
   Else If Sender Is TCustomForm Then
@@ -1083,17 +1083,17 @@ Begin
     SetProp(Window, 'MsgList', Pointer(List));
   {$ENDIF}
 
-  Assert(False, 'Trace:TWin32Object.SetCallback - Exit');
+  Assert(False, 'Trace:TWin32WidgetSet.SetCallback - Exit');
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.RemoveCallbacks
+  Method: TWin32WidgetSet.RemoveCallbacks
   Params:   Sender - object from which to remove callbacks
   Returns:  nothing
 
   Removes Call Back Signals from the sender
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.RemoveCallbacks(Sender: TObject);
+Procedure TWin32WidgetSet.RemoveCallbacks(Sender: TObject);
 Var
   {$IFDEF VER1_1_MSG}
   List: TMsgArray;
@@ -1115,7 +1115,7 @@ Begin
   {$ENDIF}
 End;
 
-function TWin32Object.InitHintFont(HintFont: TObject): Boolean;
+function TWin32WidgetSet.InitHintFont(HintFont: TObject): Boolean;
 begin
   TFont(HintFont).Name := FMetrics.lfStatusFont.lfFaceName;
   TFont(HintFont).Style := [];
@@ -1126,13 +1126,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.HandleEvents
+  Method: TWin32WidgetSet.HandleEvents
   Params:  None
   Returns: Nothing
 
   Handle all pending messages
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.HandleEvents;
+Procedure TWin32WidgetSet.HandleEvents;
 var
   AMessage: TMsg;
   AccelTable: HACCEL;
@@ -1165,40 +1165,40 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.WaitMessage
+  Method: TWin32WidgetSet.WaitMessage
   Params:  None
   Returns: Nothing
 
   Passes execution control to Windows
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.WaitMessage;
+Procedure TWin32WidgetSet.WaitMessage;
 Begin
-  Assert(False, 'Trace:TWin32Object.WaitMessage - Start');
+  Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
   Windows.WaitMessage;
   Assert(False,'Trace:Leave wait message');
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.AppTerminate
+  Method: TWin32WidgetSet.AppTerminate
   Params:  None
   Returns: Nothing
 
   Tells Windows to halt and destroy
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AppTerminate;
+Procedure TWin32WidgetSet.AppTerminate;
 Begin
-  Assert(False, 'Trace:TWin32Object.AppTerminate - Start');
+  Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.RecreateWnd
+  Method: TWin32WidgetSet.RecreateWnd
   Params: Sender - The sending object
   Returns: 0
 
   Creates a window again
  ------------------------------------------------------------------------------}
 
-Function TWin32Object.RecreateWnd(Sender: TWinControl): Integer;
+Function TWin32WidgetSet.RecreateWnd(Sender: TWinControl): Integer;
 Var
   AParent : TWinControl;
 Begin
@@ -1224,7 +1224,7 @@ End;
   Design: A timer which calls TimerCallBackProc, is created.
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
-function TWin32Object.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
+function TWin32WidgetSet.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
 var
   TimerInfo: PWin32TimerInfo;
 begin
@@ -1249,7 +1249,7 @@ end;
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
-function TWin32Object.DestroyTimer(TimerHandle: Integer) : boolean;
+function TWin32WidgetSet.DestroyTimer(TimerHandle: Integer) : boolean;
 var
   n : integer;
   TimerInfo : PWin32Timerinfo;
@@ -1270,7 +1270,7 @@ begin
   Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
-procedure TWin32Object.AttachMenuToWindow(AMenuObject: TComponent);
+procedure TWin32WidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 var
   AMenu: TMenu;
 begin
@@ -1282,13 +1282,13 @@ end;
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.WinRegister
+  Method: TWin32WidgetSet.WinRegister
   Params: None
   Returns: If the window was successfully regitered
 
   Registers the main window class
  ------------------------------------------------------------------------------}
-Function TWin32Object.WinRegister: Boolean;
+Function TWin32WidgetSet.WinRegister: Boolean;
 Var
   WindowClass: WndClass;
 Begin
@@ -1310,7 +1310,7 @@ Begin
   Assert(False, 'Trace:WinRegister - Exit');
 End;
 
-Function TWin32Object.ToolBtnWinRegister: boolean;
+Function TWin32WidgetSet.ToolBtnWinRegister: boolean;
 var WinClass: WndClass;
 begin
   with WinClass do begin
@@ -1329,14 +1329,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.PaintPixmap
+  Method: TWin32WidgetSet.PaintPixmap
   Params: Surface    - The surface onto which to paint the pixmap
           PixmapData - Data necessary in drawing the pixmap
   Returns: Nothing
 
   Paints a pixmap on a surface (control).
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.PaintPixmap(Surface: TObject; PixmapData: Pointer);
+Procedure TWin32WidgetSet.PaintPixmap(Surface: TObject; PixmapData: Pointer);
 Var
   DC: HDC;
   Pixmap: HIcon;
@@ -1349,13 +1349,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.NormalizeIconName
+  Method: TWin32WidgetSet.NormalizeIconName
   Params: IconName - The name of the icon to normalize
   Returns: Nothing
 
   Adjusts an icon name to the proper format
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.NormalizeIconName(Var IconName: String);
+Procedure TWin32WidgetSet.NormalizeIconName(Var IconName: String);
 Var
   IcoLen: Integer;
 Begin
@@ -1368,7 +1368,7 @@ Begin
   End
 End;
 
-Procedure TWin32Object.NormalizeIconName(Var IconName: PChar);
+Procedure TWin32WidgetSet.NormalizeIconName(Var IconName: PChar);
 Var
   Str: String;
 Begin
@@ -1378,14 +1378,14 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetLimitText
+  Method: TWin32WidgetSet.SetLimitText
   Params: Window - The window that has the text to be limited
           Limit  - Number of characters to limit the text to
   Returns: Nothing
 
   Sets the text limit
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetLimitText(Window: HWND; Limit: Word);
+Procedure TWin32WidgetSet.SetLimitText(Window: HWND; Limit: Word);
 Var
   Cls: array[0..5] of Char;
   Msg: Cardinal;
@@ -1405,13 +1405,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.CreateCommonDialog
+  Method: TWin32WidgetSet.CreateCommonDialog
   Params: Sender - The sending object
   Returns: Nothing
 
   Creates a common dialog
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
+Procedure TWin32WidgetSet.CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
 Const
   { 16 basic RGB colors; names listed in comments for debugging }
   CustomColors: Array[1..16] Of DWord = (
@@ -1534,8 +1534,8 @@ Var
   end;
 
 Begin
-  Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Start');
-  Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
+  Assert(False, 'Trace:TWin32WidgetSet.CreateCommonDialog - Start');
+  Assert(False, Format('Trace:TWin32WidgetSet.CreateCommonDialog - class name --> ', [Sender.ClassName]));
   case CompStyle of
   csColorDialog:
   Begin
@@ -1638,17 +1638,17 @@ Begin
   Else
     Sender.UserChoice := mrCancel;
 
-  Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Exit');
+  Assert(False, 'Trace:TWin32WidgetSet.CreateCommonDialog - Exit');
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.CreateSelectDirectoryDialog
+  Method: TWin32WidgetSet.CreateSelectDirectoryDialog
   Params: Sender - The sending object: a TSelectDirectoryDialog object
   Returns: Nothing
 
   Creates a common dialog
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
+Procedure TWin32WidgetSet.CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
 var
   bi : TBrowseInfo;
   Buffer : PChar;
@@ -1692,14 +1692,14 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.UpdateStatusBarPanel
+  Method: TWin32WidgetSet.UpdateStatusBarPanel
   Params: StatusPanel - StatusPanel which needs to be update
   Returns: Nothing
 
   Called by StatusBarPanelUpdate and StatusBarSetText
   Everything is updated except the panel width
  ------------------------------------------------------------------------------}
-procedure TWin32Object.UpdateStatusBarPanel(StatusPanel: TStatusPanel);
+procedure TWin32WidgetSet.UpdateStatusBarPanel(StatusPanel: TStatusPanel);
 var
   BevelType: integer;
   Text: string;
@@ -1717,7 +1717,7 @@ begin
   Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
 end;
 
-procedure TWin32Object.UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
+procedure TWin32WidgetSet.UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
 var
   Rights: PInteger;
   PanelIndex: integer;
@@ -1774,7 +1774,7 @@ const
      IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.LmSetCursor
+  Method: TWin32WidgetSet.LmSetCursor
   Params:  Sender - the control which invoked this method
   Returns: Nothing
 
@@ -1782,30 +1782,30 @@ const
 
   WARNING: Sender will be casted to TControl, CLEANUP!
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.LmSetCursor(Sender: TObject);
+Procedure TWin32WidgetSet.LmSetCursor(Sender: TObject);
 Var
   Cursor: PChar;
   Res: HCURSOR;
 Begin
-  Assert(False, 'Trace:TWin32Object.LmSetCursor - Start');
-  Assert(False, Format('Trace:TWin32Object.LmSetCursor - Sender --> %S', [Sender.ClassName]));
-  Assert(False, 'Trace:TWin32Object.LmSetCursor - Getting the cursor');
+  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Start');
+  Assert(False, Format('Trace:TWin32WidgetSet.LmSetCursor - Sender --> %S', [Sender.ClassName]));
+  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Getting the cursor');
   Cursor := LclCursorToWin32CursorMap[TControl(Sender).Cursor];
-  Assert(False, 'Trace:TWin32Object.LmSetCursor - Loading the cursor');
+  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Loading the cursor');
   Res := LoadCursor(0, Cursor);
   Assert(False, Format('Trace:Cursor handle --> 0x%X', [Res]));
-  Assert(False, 'Trace:TWin32Object.LmSetCursor - Exit');
+  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Exit');
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.ResizeChild
+  Method: TWin32WidgetSet.ResizeChild
   Params:  Sender                   - the object which invoked this function
            Left, Top, Width ,Height - new dimensions for the control
   Returns: Nothing
 
   Resize a window
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.ResizeChild(Sender: TWinControl;
+Procedure TWin32WidgetSet.ResizeChild(Sender: TWinControl;
   Left, Top, Width, Height: Integer);
 
 Var
@@ -1822,7 +1822,7 @@ Begin
   {$ENDIF}
   LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
   {$IFDEF VerboseSizeMsg}
-  writeln('TWin32Object.ResizeChild A ',AWinControl.Name,':',AWinControl.ClassName,
+  writeln('TWin32WidgetSet.ResizeChild A ',AWinControl.Name,':',AWinControl.ClassName,
     ' LCL=',OldLeft,',',OldTop,',',Width,',',Height,
     ' Win32=',Left,',',Top,',',Width,',',Height,
     '');
@@ -1842,14 +1842,14 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.AddChild
+  Method: TWin32WidgetSet.AddChild
   Params:  Parent - Parent to which the child will be added
            Child  - Child to add
   Returns: Nothing
 
   Adds A Child to a Parent
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AddChild(Parent, Child: HWND);
+Procedure TWin32WidgetSet.AddChild(Parent, Child: HWND);
 Begin
   Assert(False, 'Trace:AddChild - Parent Window Handle is $' + IntToHex(LongInt(Parent), 8));
   Assert(False, 'Trace:AddChild - Child Window Handle is $' + IntToHex(LongInt(Child), 8));
@@ -1857,7 +1857,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetText
+  Method: TWin32WidgetSet.SetText
   Params:  Child - Window to add the text
            Data  - The text to add
   Returns: Nothing
@@ -1868,7 +1868,7 @@ End;
            It's only left in here for TStatusBar right now cause it
            may be nice to use it with different panels.
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetText(Window: HWND; Data: Pointer);
+Procedure TWin32WidgetSet.SetText(Window: HWND; Data: Pointer);
 Begin
   Case PLMSetControlText(Data)^.FCompStyle Of
     csStatusBar:
@@ -1877,30 +1877,30 @@ Begin
         Windows.LParam(LPSTR(PLMSetControlText(Data)^.UserData)));
     End
     Else
-      AssertEx('STOPPOK: [TWin32Object.SetText] Possible superfluous use of SetText, use SetLabel instead!', False, 2);
+      AssertEx('STOPPOK: [TWin32WidgetSet.SetText] Possible superfluous use of SetText, use SetLabel instead!', False, 2);
   End;
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object SetColor
+  Method: TWin32WidgetSet SetColor
   Params: Sender - The sending object
   Returns: Nothing
 
   Changes the form's default background color
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetColor(Sender: TObject);
+Procedure TWin32WidgetSet.SetColor(Sender: TObject);
 Begin
 
 End;
 
 {------------------------------------------------------------------------------
-  Function: TWin32Object.CreateComponent
+  Function: TWin32WidgetSet.CreateComponent
   Params:   Sender - object for which to create visual representation
   Returns:  nothing
 
   Tells Windows to create a control
  ------------------------------------------------------------------------------}
-Function TWin32Object.CreateComponent(Sender: TObject): THandle;
+Function TWin32WidgetSet.CreateComponent(Sender: TObject): THandle;
 Var
   Buddy, Parent, Handle, Window: HWnd;
   CompStyle, Left, Top, Height, Width: Integer;
@@ -1935,9 +1935,9 @@ Begin
 
   If (Sender Is TWinControl) And (TWinControl(Sender).Parent <> Nil) Then
   Begin
-    Assert(False, Format('Trace:TWin32Object.CreateComponent - %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
+    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
     Parent := TWinControl(Sender).Parent.Handle;
-    Assert(False, Format('Trace:TWin32Object.CreateComponent - parent handle --> 0x%X', [Parent]));
+    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - parent handle --> 0x%X', [Parent]));
     Assert(False, 'Trace:Setting parent');
   End
   Else
@@ -1968,16 +1968,16 @@ Begin
     Assert(False, 'Trace:Setting dimentions');
     LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
     {$IFDEF VerboseSizeMsg}
-    writeln('TWin32Object.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
+    writeln('TWin32WidgetSet.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
   End
   Else If (Sender Is TMenuItem) Then
   Begin
-    Assert(False, 'Trace:[TWin32Object.CreateComponent] - Sender is a menu item');
+    Assert(False, 'Trace:[TWin32WidgetSet.CreateComponent] - Sender is a menu item');
     Caption := TMenuItem(Sender).Caption;
-    Assert(False, Format('Trace:[TWin32Object.CreateComponent] - Caption set to %S', [Caption]));
+    Assert(False, Format('Trace:[TWin32WidgetSet.CreateComponent] - Caption set to %S', [Caption]));
     CompStyle := TMenuItem(Sender).FCompStyle;
-    Assert(False, Format('Trace:[TWin32Object.CreateComponent] - CompStyle set to %S', [CS_To_String(CompStyle)]));
+    Assert(False, Format('Trace:[TWin32WidgetSet.CreateComponent] - CompStyle set to %S', [CS_To_String(CompStyle)]));
   End
   Else If (Sender Is TMenu) { Or (Sender Is TPopupMenu) } Then
     CompStyle := TMenu(Sender).FCompStyle
@@ -1987,8 +1987,8 @@ Begin
   If Caption = '' Then
     Caption := CS_To_String(CompStyle);
 
-  Assert(False, Format('Trace:TWin32Object.CreateComponent - Creating component %S with the caption of %S', [Sender.ClassName, Caption]));
-  Assert(False, Format('Trace:TWin32Object.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
+  Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [Sender.ClassName, Caption]));
+  Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
 
   // until here remove when debug not needed
   If Caption = '' Then
@@ -2166,7 +2166,7 @@ Begin
     End;
     csMemo:
     Begin
-      Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a MEMO...');
+      Assert(False, 'Trace:TWin32WidgetSet.CreateComponent - Creating a MEMO...');
       Flags := Flags Or ES_AUTOVSCROLL Or ES_MULTILINE Or ES_WANTRETURN;
       If TCustomMemo(Sender).ReadOnly Then
         Flags := Flags Or ES_READONLY;
@@ -2430,26 +2430,26 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.AssignSelf
+  Method: TWin32WidgetSet.AssignSelf
   Params: Window - The window to assign
           Data   - The data to assign to the window
   Returns: Nothing
 
   Assigns data to a window
  ------------------------------------------------------------------------------}
-procedure TWin32Object.AssignSelf(Window: HWnd; Data: Pointer);
+procedure TWin32WidgetSet.AssignSelf(Window: HWnd; Data: Pointer);
 begin
-  Assert(False, 'Trace:[TWin32Object.AssignSelf] Trying to code it.  It''s probably wrong.');
+  Assert(False, 'Trace:[TWin32WidgetSet.AssignSelf] Trying to code it.  It''s probably wrong.');
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.ShowHide
+  Method: TWin32WidgetSet.ShowHide
   Params: Sender - The sending object
   Returns: Nothing
 
   Shows or hides a control
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.ShowHide(Sender: TObject);
+Procedure TWin32WidgetSet.ShowHide(Sender: TObject);
 Var
   Handle: HWND;
 Begin
@@ -2457,7 +2457,7 @@ Begin
   Handle := ObjectToHWND(Sender);
   If TControl(Sender).HandleObjectShouldBeVisible Then
   Begin
-    Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
+    Assert(False, 'Trace: [TWin32WidgetSet.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
@@ -2469,7 +2469,7 @@ Begin
   End
   Else
   Begin
-    Assert(False, 'TRACE: [TWin32Object.ShowHide] Hiding the window');
+    Assert(False, 'TRACE: [TWin32WidgetSet.ShowHide] Hiding the window');
     If Sender Is TCustomForm then
       If fsModal in TCustomForm(Sender).FormState then
         EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@EnableWindowsProc, Handle);
@@ -2478,7 +2478,7 @@ Begin
 End;
 
 { -----------------------------------------------------------------------------
-  Method: TWin32Object.AddNBPage
+  Method: TWin32WidgetSet.AddNBPage
   Params: Notebook - A notebook control
           NewPage - Page to insert
           Index  - The position in the notebook to insert the page
@@ -2486,14 +2486,14 @@ End;
 
   Adds a new page to a notebook
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
+Procedure TWin32WidgetSet.AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
 Var
   TabControlItem: TC_ITEM;
   PageCaption: string;
   OldPageIndex: integer;
   R: TRect;
 Begin
-  Assert(False, 'Trace:TWin32Object.AddNBPage - Start');
+  Assert(False, 'Trace:TWin32WidgetSet.AddNBPage - Start');
   With Notebook, TabControlItem do
   Begin
     Mask := 0;
@@ -2518,50 +2518,50 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.RemoveNBPage
+  Method: TWin32WidgetSet.RemoveNBPage
   Params: Parent - The notebook control
           Index  - The page to delete
   Returns: Nothing
 
   Removes a page from a notebook control
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.RemoveNBPage(Parent: TObject; Index: Integer);
+Procedure TWin32WidgetSet.RemoveNBPage(Parent: TObject; Index: Integer);
 Begin
   Assert(false, 'Trace:Removing a notebook page');
   Windows.SendMessage((Parent As TCustomNotebook).Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.ReDraw
+  Method: TWin32WidgetSet.ReDraw
   Params: Child - Component to redraw
   Returns: Nothing
 
   Redraws a component
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.ReDraw(Child: TObject);
+Procedure TWin32WidgetSet.ReDraw(Child: TObject);
 Begin
-  Assert(False, 'TRACE:[TWin32Object.ReDraw] Redrawing...');
+  Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Redrawing...');
   Assert(False, 'TRACE:Invalidating the window');
   IntSendMessage3(LM_INVALIDATE, Child, Nil);
   Assert(False, 'TRACE:Updating the window');
   UpdateWindow(TWinControl(Child).Handle);
-  Assert(False, 'TRACE:[TWin32Object.ReDraw] Finished redrawing');
+  Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Finished redrawing');
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetPixel
+  Method: TWin32WidgetSet.SetPixel
   Params:  Sender - the lcl object which called this func via SendMessage
            Data   - pointer to a TLMSetGetPixel record
   Returns: nothing
 
   Set the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetPixel(Sender: TObject; Data: Pointer);
+Procedure TWin32WidgetSet.SetPixel(Sender: TObject; Data: Pointer);
 Var
   DC: HDC;
   Handle: HWnd;
 Begin
-  Assert(False, 'Trace:TODO: Implement TWin32Object.SetPixel');
+  Assert(False, 'Trace:TODO: Implement TWin32WidgetSet.SetPixel');
   Handle :=(Sender As TWinControl).Handle;
   DC := GetDC(Handle);
   With TLMSetGetPixel(Data^) Do
@@ -2570,14 +2570,14 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.GetPixel
+  Method: TWin32WidgetSet.GetPixel
   Params:  Sender - the lcl object which called this func via SenMessage
            Data   - pointer to a TLMSetGetPixel record
   Returns: nothing
 
   Get the color of the specified pixel on the window?screen?object?
  -----------------------------------------------------------------------------}
-Procedure TWin32Object.GetPixel(Sender: TObject; Data: Pointer);
+Procedure TWin32WidgetSet.GetPixel(Sender: TObject; Data: Pointer);
 Var
   DC: HDC;
   Handle: HWnd;
@@ -2590,7 +2590,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.GetValue
+  Method: TWin32WidgetSet.GetValue
   Params:  Sender - the lcl object which called this func via SenMessage
            Data   - pointer to component specific variable
   Returns: currently always 0
@@ -2601,7 +2601,7 @@ End;
   This function should be used to synchronize the state of an lcl-object
   with the corresponding Windows object.
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetValue(Sender: TObject; Data: Pointer): Integer;
+Function TWin32WidgetSet.GetValue(Sender: TObject; Data: Pointer): Integer;
 Var
   Handle: HWnd;
   ST: SystemTime;
@@ -2609,12 +2609,12 @@ Begin
   Result := 0;     // default if nobody sets it
 
   If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32Object.GetValue] %S', [Sender.ClassName]))
+    Assert(False, Format('Trace:[TWin32WidgetSet.GetValue] %S', [Sender.ClassName]))
   Else
-    Assert(False, Format('Trace:WARNING: [TWin32Object.GetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
+    Assert(False, Format('Trace:WARNING: [TWin32WidgetSet.GetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := TWinControl(Sender).Handle;
-  Assert (Handle = 0, 'Trace:WARNING: TWin32Object.GetValue --> got no window');
+  Assert (Handle = 0, 'Trace:WARNING: TWin32WidgetSet.GetValue --> got no window');
 
   Case TControl(Sender).FCompStyle Of
     csTrackbar:
@@ -2641,12 +2641,12 @@ Begin
       Single(Data^) := SendMessage(Handle, UDM_GETPOS, 0, 0);
     End;
     Else
-      Assert (True, Format('WARNING:[TWin32Object.GetValue]] failed for %S', [Sender.ClassName]));
+      Assert (True, Format('WARNING:[TWin32WidgetSet.GetValue]] failed for %S', [Sender.ClassName]));
   End;
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetValue
+  Method: TWin32WidgetSet.SetValue
   Params:  Sender - the lcl object which called this func via SendMessage
            Data   - pointer to component specific variable
   Returns: currently always 0
@@ -2658,7 +2658,7 @@ End;
   of an object has changed (e.g. the position of a trackbar). If more than
   one property changed use the SetProperties function instead;
  ------------------------------------------------------------------------------}
-Function TWin32Object.SetValue(Sender: TObject; Data: Pointer): Integer;
+Function TWin32WidgetSet.SetValue(Sender: TObject; Data: Pointer): Integer;
 Var
   Cur: PChar;
   Handle: HWnd;
@@ -2668,13 +2668,13 @@ Begin
   Result := 0;     // default if nobody sets it
 
   If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32Object.SetValue] %S', [Sender.ClassName]))
+    Assert(False, Format('Trace:[TWin32WidgetSet.SetValue] %S', [Sender.ClassName]))
   Else
-    Assert(False, Format('Trace:WARNING:[TWin32Object.SetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
+    Assert(False, Format('Trace:WARNING:[TWin32WidgetSet.SetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := TWinControl(Sender).Handle;
   If Handle = HWnd(Nil) Then
-    Assert (False, 'Trace:WARNING:[TWin32Object.SetValue] --> got no window');
+    Assert (False, 'Trace:WARNING:[TWin32WidgetSet.SetValue] --> got no window');
 
   Case TControl(Sender).FCompStyle Of
     csArrow:
@@ -2714,19 +2714,19 @@ Begin
         Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_INDETERMINATE), 0);
     End
     Else
-      Assert (True, Format('Trace:WARNING: [TWin32Object.SetValue] failed for %S', [Sender.ClassName]));
+      Assert (True, Format('Trace:WARNING: [TWin32WidgetSet.SetValue] failed for %S', [Sender.ClassName]));
   End;
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetProperties
+  Method: TWin32WidgetSet.SetProperties
   Params:  Sender - the lcl object which called this func via SenMessage
   Returns: currently always 0
 
   Depending on the compStyle, this function will apply all properties of
   the calling object to the corresponding Window.
  ------------------------------------------------------------------------------}
-Function TWin32Object.SetProperties(Sender: TObject): Integer;
+Function TWin32WidgetSet.SetProperties(Sender: TObject): Integer;
 Var
   Handle: HWND;
   I: Integer;
@@ -2736,13 +2736,13 @@ begin
   Result := 0; // default if nobody sets it
 
   If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32Object.SetProperties] %S', [Sender.ClassName]))
+    Assert(False, Format('Trace:[TWin32WidgetSet.SetProperties] %S', [Sender.ClassName]))
   Else
-    Assert(False, Format('Trace:WARNING: [TWin32Object.SetProperties] %S --> No Decendant of TWinControl', [Sender.ClassName]));
+    Assert(False, Format('Trace:WARNING: [TWin32WidgetSet.SetProperties] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := TWinControl(Sender).Handle;
   If Handle = HWND(Nil) Then
-    Assert (False, 'Trace:WARNING: [TWin32Object.SetProperties] --> got nil pointer');
+    Assert (False, 'Trace:WARNING: [TWin32WidgetSet.SetProperties] --> got nil pointer');
 
   Case TControl(Sender).FCompStyle Of
 
@@ -2812,7 +2812,7 @@ begin
         sbVertical:
           SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_VERT);
       End;
-      Assert(False, 'Trace:TODO: [TWin32Object.SetProperties] Set up step and page increments for csScrollBar');
+      Assert(False, 'Trace:TODO: [TWin32WidgetSet.SetProperties] Set up step and page increments for csScrollBar');
     End;
 
   csSpinEdit:
@@ -2885,18 +2885,18 @@ begin
       Assert(False, 'Trace:TODO: Code wordwrapping labels');
     End;
   Else
-    Assert (True, Format('WARNING: [TWin32Object.SetProperties] failed for %S', [Sender.ClassName]));
+    Assert (True, Format('WARNING: [TWin32WidgetSet.SetProperties] failed for %S', [Sender.ClassName]));
   End;
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.AttachMenu
+  Method: TWin32WidgetSet.AttachMenu
   Params:  Sender - the lcl object which called this func
   Returns: nothing
 
   Attaches the calling Menu to its Parent
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AttachMenu(Sender: TObject);
+Procedure TWin32WidgetSet.AttachMenu(Sender: TObject);
 var MenuInfo: MENUITEMINFO;
     MenuHandle: HMenu;
     ParentMenuHandle: HMenu;
@@ -3014,14 +3014,14 @@ End;
 
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.SetOwner
+  Method: TWin32WidgetSet.SetOwner
   Params: Window - Window to which an owner will be set
           Owner  - The owner to set
   Returns: Nothing
 
   Assigns an owner object to a window
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.SetOwner(Window: HWND; Owner: TObject);
+Procedure TWin32WidgetSet.SetOwner(Window: HWND; Owner: TObject);
 Begin
   SetProp(Window, 'MsgList', Nil);
 End;
@@ -3033,6 +3033,9 @@ End;
 
 {
   $Log$
+  Revision 1.179  2004/03/05 01:04:21  marc
+  * Renamed TWin32Object to TWin32WidgetSet
+
   Revision 1.178  2004/03/04 21:16:15  micha
   remove workaround; fpc bug fixed
 

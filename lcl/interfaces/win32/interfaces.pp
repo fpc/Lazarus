@@ -37,7 +37,7 @@ uses
   Win32Int, Forms;
 
 Initialization
-  InterfaceObject := TWin32Object.Create;
+  InterfaceObject := TWin32WidgetSet.Create;
 
 Finalization
   FreeInterfaceObject;
