@@ -262,7 +262,8 @@ begin
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
-function gtkdraw(Widget: PGtkWidget; area: PGDKRectangle; data: gPointer) : GBoolean; cdecl;
+function gtkdraw(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMPaint;
 begin
@@ -355,8 +356,10 @@ begin
         Flags := Flags or KF_UP or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
-        Result := DeliverPostMessage(data, msg);
-
+        // send the message directly to the LCL
+        // (Posting the message via queue
+        //  has the risk of getting out of sync with the gtk)
+        Result := DeliverMessage(Data, Msg) = 0;
       end;
     GDK_KEY_PRESS:
       begin
@@ -384,7 +387,10 @@ begin
         // Flags := Flags or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
-        Result := DeliverPostMessage(data, msg);
+        // send the message directly to the LCL
+        // (Posting the message via queue
+        //  has the risk of getting out of sync with the gtk)
+        Result := DeliverMessage(Data, Msg) = 0;
 
         if KeyCode <> $FFFF
         then begin
@@ -392,7 +398,10 @@ begin
           if SysKey then Msg.msg := LM_SYSCHAR
           else Msg.msg := LM_CHAR;
           Msg.CharCode := KeyCode;
-          Result := DeliverPostMessage(data, msg);
+          // send the message directly to the LCL
+          // (Posting the message via queue
+          //  has the risk of getting out of sync with the gtk)
+          Result := DeliverMessage(Data, Msg) = 0;
         end;
       end;
   end;
@@ -553,7 +562,10 @@ begin
     if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
   end;
 
-  DeliverPostMessage(Data, Msg);
+  // send the message directly to the LCL
+  // (Posting the message via queue
+  //  has the risk of getting out of sync with the gtk)
+  DeliverMessage(Data, Msg);
 
   if (MCaptureHandle <> 0) and (Pointer(MCaptureHandle) <> widget) then
   begin
@@ -687,7 +699,10 @@ begin
     MessE.Y := MappedXY.Y;
     MessE.State := ShiftState;
     MessE.UserData := Data;
-    DeliverPostMessage(Data, MessE);
+    // send the message directly to the LCL
+    // (Posting the message via queue
+    //  has the risk of getting out of sync with the gtk)
+    DeliverMessage(Data, MessE);
   end
   else begin
     // a normal mouse button is pressed
@@ -722,7 +737,10 @@ begin
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
     
-    DeliverPostMessage(Data, MessI);
+    // send the message directly to the LCL
+    // (Posting the message via queue
+    //  has the risk of getting out of sync with the gtk)
+    DeliverMessage(Data, MessI);
   end;
   Result:=true;
 end;
@@ -839,7 +857,10 @@ begin
   if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
 
   if MessI.Msg <> LM_NULL then
-    DeliverPostMessage(Data, MessI);
+    // send the message directly to the LCL
+    // (Posting the message via queue
+    //  has the risk of getting out of sync with the gtk)
+    DeliverMessage(Data, MessI);
   Result:=true;
 end;
 
@@ -1894,7 +1915,7 @@ begin
   Result := 0;
 end;
 
-function gtkyearchanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkYearChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
 begin
@@ -2098,6 +2119,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2002/08/22 12:13:01  lazarus
+  MG: changed user input events from queue to direct
+
   Revision 1.101  2002/08/19 18:00:02  lazarus
   MG: design signals for gtk internal widgets
 
