@@ -3886,19 +3886,22 @@ end;
 function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 var
-  Message: PMsg;
+  AMessage: PMsg;
 begin 
   //TODO Filtering
   
   Result := FMessageQueue.Count > 0;
   if Result 
   then begin
-    Message := FMessageQueue.First^.Data;
-    lpMsg := Message^;
+    AMessage := FMessageQueue.First^.Data;
+    lpMsg := AMessage^;
     if (wRemoveMsg and PM_REMOVE) = PM_REMOVE 
     then begin
-      if Message^.Message=LM_PAINT then
+      if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then
+      begin
         FPaintMessages.Remove(FMessageQueue.First);
+        // don't free the DC, this is work for the caller
+      end;
       FMessageQueue.Delete(FMessageQueue.First);
     end;
   end;
@@ -4081,7 +4084,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: PostMessage
-  Params: hWnd:
+  Params: Handle:
           Msg:
           wParam:
           lParam:
@@ -4090,36 +4093,81 @@ end;
   The PostMessage function places (posts) a message in the message queue and 
   then returns without waiting.
  ------------------------------------------------------------------------------}
-function TGTKObject.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt;
+function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
   lParam: LongInt): Boolean;
-var
-  Message, OldMessage: PMsg;
-  OldPaintMessage: PLazQueueItem;
-begin
-  New(Message);
-  Message^.HWnd := hWnd;
-  Message^.Message := Msg;
-  Message^.WParam := WParam;
-  Message^.LParam := LParam;
-//  Message^.Time := 
-  if Message^.Message=LM_PAINT then begin
-
-    OldPaintMessage:=FindPaintMessage(hWnd);
+  
+  procedure DeletePaintMessageForHandle(hnd: HWnd);
+  var
+    OldPaintMessage: PLazQueueItem;
+    OldMessage: PMsg;
+  begin
+    if (hnd=0) then exit;
+    OldPaintMessage:=FindPaintMessage(hnd);
     if OldPaintMessage<>nil then begin
-      // delete old message from queue, so that the widget repaints only once
+      // delete paint message from queue
       OldMessage:=PMsg(OldPaintMessage^.Data);
       FPaintMessages.Remove(OldPaintMessage);
       FMessageQueue.Delete(OldPaintMessage);
-      ReleaseDC(0,OldMessage^.WParam);
+      if OldMessage^.Message=LM_PAINT then
+        ReleaseDC(0,OldMessage^.WParam);
       Dispose(OldMessage);
     end;
-    
-    FMessageQueue.AddLast(Message);
+  end;
+  
+  function ParentPaintMessageInQueue: boolean;
+  var
+    Target: TControl;
+    Parent: TWinControl;
+    ParentHandle: hWnd;
+  begin
+    Result:=false;
+    Target:=TControl(GetLCLObject(Pointer(Handle)));
+    if not (Target is TControl) then exit;
+    Parent:=Target.Parent;
+    if (Target is TControl) then begin
+      Parent:=Target.Parent;
+      while Parent<>nil do begin
+        ParentHandle:=Parent.Handle;
+        if FindPaintMessage(ParentHandle)<>nil then begin
+          Result:=true;
+        end;
+        Parent:=Parent.Parent;
+      end;
+    end;
+  end;
+  
+var
+  AMessage: PMsg;
+begin
+  Result := True;
+
+  New(AMessage);
+  AMessage^.HWnd := Handle; // this is normally a gtk widget
+  AMessage^.Message := Msg;
+  AMessage^.WParam := WParam;
+  AMessage^.LParam := LParam;
+//  Message^.Time := 
+
+  if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then begin
+    // paint messages are the most expensive messages in the LCL
+    // A paint message to a control will also repaint all child controls.
+    // -> check if there is already a paint message for one of its parents
+    // if yes, then skip this message
+    if ParentPaintMessageInQueue then begin
+      if AMessage^.Message=LM_PAINT then
+        ReleaseDC(0,AMessage^.WParam);
+      exit;
+    end;
+  
+    // delete old paint message to this widget,
+    // so that the widget repaints only once
+    DeletePaintMessageForHandle(Handle);
+
+    FMessageQueue.AddLast(AMessage);
     FPaintMessages.Add(FMessageQueue.Last);
   end else begin
-    FMessageQueue.AddLast(Message);
+    FMessageQueue.AddLast(AMessage);
   end;
-  Result := True;  
 end;
 
 {------------------------------------------------------------------------------
@@ -4721,20 +4769,20 @@ end;
 function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt;
   lParam: LongInt): Integer;
 var
-  Message: TLMessage;
+  AMessage: TLMessage;
   Target: TObject;
   ParentControl: TWinControl;
   ParentHandle: HWnd;
 begin
-  Message.Msg := Msg;
-  Message.WParam := WParam;
-  Message.LParam := LParam;
-  Message.Result := 0;
+  AMessage.Msg := Msg;
+  AMessage.WParam := WParam;
+  AMessage.LParam := LParam;
+  AMessage.Result := 0;
   
   Target := GetLCLObject(Pointer(HandleWnd));
 
   if Target<>nil then begin
-    if Msg=LM_PAINT then begin
+    if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
       // The LCL repaints controls in a top-down hierachy. But the gtk sends
       // gtkdraw events bottom-up. So, controls at the bottom are repainted
       // many times. To avoid this the queue is checked for LM_PAINT messages
@@ -4744,13 +4792,27 @@ begin
         ParentControl:=TControl(Target).Parent;
         while ParentControl<>nil do begin
           ParentHandle:=TWinControl(ParentControl).Handle;
-          if FindPaintMessage(ParentHandle)<>nil then
+          if FindPaintMessage(ParentHandle)<>nil then begin
+            if Msg=LM_PAINT then
+              ReleaseDC(0,AMessage.WParam);
             exit;
+          end;
           ParentControl:=ParentControl.Parent;
         end;
       end;
+      if Msg=LM_GtkPAINT then begin
+        // convert LM_GtkPAINT to LM_PAINT
+        AMessage.Msg := LM_PAINT;
+        AMessage.WParam := GetDC(THandle(HandleWnd));
+      end;
     end;
-    Result := DeliverMessage(Target, Message);
+
+    // deliver it
+    Result := DeliverMessage(Target, AMessage);
+    
+    // free DC
+    if AMessage.Msg=LM_PAINT then
+      ReleaseDC(0,AMessage.WParam);
   end;
 end;
 
@@ -6134,6 +6196,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2002/08/28 09:40:50  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.113  2002/08/27 18:45:15  lazarus
   MG: propedits text improvements from Andrew, uncapturing, improved comobobox
 
