@@ -30,8 +30,8 @@ begin
 // quick cheat to get code working
      Result.Left := 0;
      Result.Top := 0;
-     Result.Right := 1000;
-     Result.Bottom := 1000;
+     Result.Right := 2000;
+     Result.Bottom := 2000;
 end;
 
 
@@ -596,8 +596,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.7  2001/03/22 22:46:18  lazarus
-  MG: fixed unreleased handle bug
+  Revision 1.8  2001/03/24 18:05:58  lazarus
+  MG: canvas size enlarged
 
   Revision 1.4  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
