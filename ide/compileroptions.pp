@@ -450,9 +450,11 @@ type
 
     grpCompiler: TGroupBox;
     edtCompiler: TEdit;
+    btnCompiler: TButton;
 
     grpUnitOutputDir: TGroupBox;
     edtUnitOutputDir: TEdit;
+    btnUnitOutputDir: TButton;
 
     LCLWidgetTypeRadioGroup: TRadioGroup;
 
@@ -577,6 +579,7 @@ type
     procedure ButtonCancelClicked(Sender: TObject);
     procedure ButtonApplyClicked(Sender: TObject);
     procedure ButtonTestClicked(Sender: TObject);
+    procedure FileBrowseBtnClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure InheritedPageResize(Sender: TObject);
     procedure chkAdditionalConfigFileClick(Sender: TObject);
@@ -2382,6 +2385,38 @@ begin
     [mbOk],0);
 end;
 
+procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  DefaultFilename: String;
+begin
+  OpenDialog:=TOpenDialog.Create(Self);
+  try
+    if Sender=btnCompiler then begin
+      OpenDialog.Title:='Browse for Compiler (ppc386)';
+      DefaultFilename:=FindDefaultCompilerPath;
+      OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    end else if Sender=btnUnitOutputDir then begin
+      OpenDialog.Title:='Unit Output directory';
+      DefaultFilename:='';
+      OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    end else
+      exit;
+    OpenDialog.Filename:=ExtractFilename(DefaultFilename);
+    if DefaultFilename<>'' then
+      OpenDialog.InitialDir:=ExtractFilePath(DefaultFilename);
+    if OpenDialog.Execute then begin
+      if Sender=btnCompiler then begin
+        edtCompiler.Text:=OpenDialog.Filename;
+      end else if Sender=btnUnitOutputDir then begin
+        edtUnitOutputDir.Text:=OpenDialog.Filename;
+      end;
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
 procedure TfrmCompilerOptions.InhTreeViewSelectionChanged(Sender: TObject);
 var
   ANode: TTreeNode;
@@ -3959,10 +3994,22 @@ begin
     Parent := grpCompiler;
     Left := edtOtherUnits.Left;
     Top := edtOtherUnits.Top;
-    Width := Parent.ClientWidth-2*Left;
+    Width := Parent.ClientWidth-Left-37;
     Text := '';
   end;
   
+  btnCompiler:=TButton.Create(Self);
+  with btnCompiler do begin
+    Name:='btnCompiler';
+    Parent:=grpCompiler;
+    Left:=edtCompiler.Left+edtCompiler.Width+3;
+    Top:=edtCompiler.Top;
+    Width:=25;
+    Height:=edtCompiler.Height;
+    Caption:='...';
+    OnClick:=@FileBrowseBtnClick;
+  end;
+
   {------------------------------------------------------------}
 
   grpUnitOutputDir := TGroupBox.Create(Self);
@@ -3982,12 +4029,24 @@ begin
     Parent := grpUnitOutputDir;
     Left := edtOtherUnits.Left;
     Top := edtOtherUnits.Top;
-    Width := Parent.ClientWidth-2*Left;
+    Width := Parent.ClientWidth-Left-37;
     Text := '';
   end;
   
+  btnUnitOutputDir:=TButton.Create(Self);
+  with btnUnitOutputDir do begin
+    Name:='btnUnitOutputDir';
+    Parent:=grpUnitOutputDir;
+    Left:=edtUnitOutputDir.Left+edtUnitOutputDir.Width+3;
+    Top:=edtUnitOutputDir.Top;
+    Width:=25;
+    Height:=edtUnitOutputDir.Height;
+    Caption:='...';
+    OnClick:=@FileBrowseBtnClick;
+  end;
+
   {------------------------------------------------------------}
-  
+
   LCLWidgetTypeRadioGroup:=TRadioGroup.Create(Self);
   with LCLWidgetTypeRadioGroup do begin
     Name:='LCLWidgetTypeRadioGroup';
@@ -3996,7 +4055,7 @@ begin
     Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
     Width:=300;
     Height:=45;
-    Caption:=dlgLCLWidgetType ;
+    Caption:=dlgLCLWidgetType;
     with Items do begin
       Add('gnome');
       Add('gtk');
