@@ -7107,7 +7107,8 @@ begin
   if ActiveSrcEdit=nil then exit;
   
   Files:=SourceNoteBook.GetDiffFiles;
-  Result:=ShowDiffDialog(Files,ActiveSrcEdit.PageIndex,@SourceNotebook.GetText,
+  Result:=ShowDiffDialog(Files,ActiveSrcEdit.PageIndex,
+                         @SourceNotebook.GetSourceText,
                          OpenDiffInEditor,DiffText);
   Files.Free;
   if OpenDiffInEditor then begin
@@ -7985,6 +7986,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.489  2003/03/15 13:26:07  mattias
+  fixes for fpc 1.1
+
   Revision 1.488  2003/03/14 23:27:46  mattias
   launching in terminal now keeps terminal open after execution
 
