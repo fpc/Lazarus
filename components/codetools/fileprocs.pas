@@ -43,6 +43,14 @@ uses
 const
   // ToDo: find the constant in the fpc units.
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
+  {$ifdef win32}
+  SpecialChar = '/'; // used to use PathDelim, e.g. /\
+  {$else}
+  SpecialChar = '\';
+  {$endif}
+  {$ifdef win32}
+  {$define CaseInsensitiveFilenames}
+  {$endif}
 
 
 // files
@@ -58,8 +66,12 @@ function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function TrimFilename(const AFilename: string): string;
 function AppendPathDelim(const Path: string): string;
+function ChompPathDelim(const Path: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string; SearchLoUpCase: boolean): string;
+function FilenameIsMatching(const Mask, Filename: string;
+  MatchExactly: boolean): boolean;
+
 
 implementation
 
@@ -131,7 +143,7 @@ begin
   DoDirSeparators(TheFilename);
   {$IFDEF win32}
   // windows
-  Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and 
+  Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and
      (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
   {$ELSE}
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
@@ -165,6 +177,7 @@ begin
         if not Result then exit;
       end;
     end;
+    inc(i);
   end;
   Result:=true;
 end;
@@ -349,6 +362,14 @@ begin
     Result:=Path;
 end;
 
+function ChompPathDelim(const Path: string): string;
+begin
+  if (Path<>'') and (Path[length(Path)]=PathDelim) then
+    Result:=LeftStr(Path,length(Path)-1)
+  else
+    Result:=Path;
+end;
+
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; SearchLoUpCase: boolean): string;
   
@@ -411,6 +432,199 @@ begin
   Result:='';
 end;
 
+
+function FilenameIsMatching(const Mask, Filename: string;
+  MatchExactly: boolean): boolean;
+(*
+  check if Filename matches Mask
+  if MatchExactly then the complete Filename must match, else only the
+  start
+
+  Filename matches exactly or is a file/directory in a subdirectory of mask
+  Mask can contain the wildcards * and ? and the set operator {,}
+  The wildcards will _not_ match PathDelim
+  If you need the asterisk, the question mark or the PathDelim as character
+  just put the SpecialChar character in front of it.
+
+  Examples:
+    /abc           matches /abc, /abc/p, /abc/xyz/filename
+                   but not /abcd
+    /abc/x?z/www   matches /abc/xyz/www, /abc/xaz/www
+                   but not /abc/x/z/www
+    /abc/x*z/www   matches /abc/xz/www, /abc/xyz/www, /abc/xAAAz/www
+                   but not /abc/x/z/www
+    /abc/x\*z/www  matches /abc/x*z/www, /abc/x*z/www/ttt
+
+    /a{b,c,d}e     matches /abe, /ace, /ade
+*)
+
+  function FindDirectoryStart(const AFilename: string;
+    CurPos: integer): integer;
+  begin
+    Result:=CurPos;
+    while (Result<=length(AFilename))
+    and (AFilename[Result]=PathDelim) do
+      inc(Result);
+  end;
+
+  function FindDirectoryEnd(const AFilename: string; CurPos: integer): integer;
+  begin
+    Result:=CurPos;
+    while (Result<=length(AFilename)) do begin
+      if AFilename[Result]=SpecialChar then
+        inc(Result,2)
+      else if (AFilename[Result]=PathDelim) then
+        break
+      else
+        inc(Result);
+    end;
+  end;
+
+  function CharsEqual(c1, c2: char): boolean;
+  begin
+    {$ifdef CaseInsensitiveFilenames}
+    Result:=(UpChars[c1]=UpChars[c2]);
+    {$else}
+    Result:=(c1=c2);
+    {$endif}
+  end;
+
+var
+  DirStartMask, DirEndMask,
+  DirStartFile, DirEndFile,
+  AsteriskPos,
+  BracketMaskPos, BracketFilePos: integer;
+begin
+  //writeln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
+  Result:=false;
+  if (Filename='') then exit;
+  if (Mask='') then begin
+    Result:=true;  exit;
+  end;
+  // test every directory
+  DirStartMask:=1;
+  DirStartFile:=1;
+  repeat
+    // find start of directories
+    DirStartMask:=FindDirectoryStart(Mask,DirStartMask);
+    DirStartFile:=FindDirectoryStart(Filename,DirStartFile);
+    // find ends of directories
+    DirEndMask:=FindDirectoryEnd(Mask,DirStartMask);
+    DirEndFile:=FindDirectoryEnd(Filename,DirStartFile);
+    // writeln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
+    //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
+    // compare directories
+    AsteriskPos:=0;
+    BracketMaskPos:=0;
+    while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
+//writeln('AAA1 ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
+      case Mask[DirStartMask] of
+      '?':
+        begin
+          inc(DirStartMask);
+          inc(DirStartFile);
+          continue;
+        end;
+      '*':
+        begin
+          inc(DirStartMask);
+          AsteriskPos:=DirStartMask;
+          continue;
+        end;
+      '{':
+        if BracketMaskPos<1 then begin
+          inc(DirStartMask);
+          BracketMaskPos:=DirStartMask;
+          BracketFilePos:=DirStartFile;
+          continue;
+        end;
+      ',':
+        if BracketMaskPos>0 then begin
+          // Bracket operator fits complete
+          // -> skip rest of Bracket operator
+          repeat
+            inc(DirStartMask);
+            if DirStartMask>=DirEndMask then exit; // error, missing }
+            if Mask[DirStartMask]=SpecialChar then begin
+              // special char -> next char is normal char
+              inc(DirStartMask);
+            end else if Mask[DirStartMask]='}' then begin
+              // bracket found (= end of Or operator)
+              inc(DirStartMask);
+              break;
+            end;
+          until false;
+          BracketMaskPos:=0;
+          continue;
+        end;
+      '}':
+        begin
+          if BracketMaskPos>0 then begin
+            // Bracket operator fits complete
+            inc(DirStartMask);
+            BracketMaskPos:=0;
+            continue;
+          end;
+        end;
+      end;
+      if Mask[DirStartMask]=SpecialChar then begin
+        inc(DirStartMask);
+        if (DirStartMask>=DirEndMask) then exit;
+      end;
+      // compare char
+      if CharsEqual(Mask[DirStartMask],Filename[DirStartFile]) then begin
+        inc(DirStartMask);
+        inc(DirStartFile);
+      end else begin
+        // chars different
+        if BracketMaskPos>0 then begin
+          // try next Or
+          repeat
+            inc(DirStartMask);
+            if DirStartMask>=DirEndMask then exit; // error, missing }
+            if Mask[DirStartMask]=SpecialChar then begin
+              // special char -> next char is normal char
+              inc(DirStartMask);
+            end else if Mask[DirStartMask]='}' then begin
+              // bracket found (= end of Or operator)
+              // -> filename does not match
+              exit;
+            end else if Mask[DirStartMask]=',' then begin
+              // next Or found
+              // -> reset filename position and compare
+              inc(DirStartMask);
+              DirStartFile:=BracketFilePos;
+              break;
+            end;
+          until false;
+        end else if AsteriskPos>0 then begin
+          // * operator always fits
+          inc(DirStartFile);
+        end else begin
+          // filename does not match
+          exit;
+        end;
+      end;
+    end;
+    if BracketMaskPos>0 then exit;
+    if (DirStartMask<DirEndmask) or (DirStartFile<DirEndFile) then exit;
+    // find starts of next directories
+    DirStartMask:=DirEndMask+1;
+    DirStartFile:=DirEndFile+1;
+  until (DirStartFile>length(Filename)) or (DirStartMask>length(Mask));
+
+  DirStartMask:=FindDirectoryStart(Mask,DirStartMask);
+
+  // check that complete mask matches
+  Result:=(DirStartMask>length(Mask));
+
+  if MatchExactly then begin
+    DirStartFile:=FindDirectoryStart(Filename,DirStartFile);
+    // check that the complete Filename matches
+    Result:=(Result and (DirStartFile>length(Filename)));
+  end;
+  //writeln('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
+end;
 
 
 end.

@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, IDEProcs, CodeToolManager, DefineTemplates,
-  CompilerOptions, TransferMacros, LinkScanner;
+  CompilerOptions, TransferMacros, LinkScanner, FileProcs;
 
 procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions;
   const SrcPath: string);

@@ -75,6 +75,8 @@ type
     function MF_Path(const Filename:string; var Abort: boolean):string; virtual;
     function MF_Name(const Filename:string; var Abort: boolean):string; virtual;
     function MF_NameOnly(const Filename:string; var Abort: boolean):string; virtual;
+    function MF_MakeDir(const Filename:string; var Abort: boolean):string; virtual;
+    function MF_MakeFile(const Filename:string; var Abort: boolean):string; virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -119,6 +121,10 @@ begin
                                     @MF_Name,[]));
   Add(TTransferMacro.Create('NameOnly','','Function: extract file name only',
                                     @MF_NameOnly,[]));
+  Add(TTransferMacro.Create('MakeDir','','Function: append path delimiter',
+                                    @MF_MakeDir,[]));
+  Add(TTransferMacro.Create('MakeFile','','Function: chomp path delimiter',
+                                    @MF_MakeFile,[]));
 end;
 
 destructor TTransferMacroList.Destroy;
@@ -196,16 +202,13 @@ begin
   MacroStart:=1;
   repeat
     while (MacroStart<=length(s)) do begin
-      if s[MacroStart]='$' then begin
-        if (MacroStart>1) and (s[MacroStart-1]='\') then begin
-          System.Delete(s,MacroStart-1,1);  
-        end else begin
-          break;
-        end;
-      end else
+      if (s[MacroStart]='$') and ((MacroStart=1) or (s[MacroStart-1]<>'\')) then
+        break
+      else
         inc(MacroStart);
     end;
-    if MacroStart>length(s) then exit;
+    if MacroStart>length(s) then break;
+    
     MacroEnd:=MacroStart+1;
     while (MacroEnd<=length(s)) 
     and (s[MacroEnd] in ['a'..'z','A'..'Z','0'..'9','_']) do
@@ -213,7 +216,7 @@ begin
     MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
     if (MacroEnd<length(s)) and (s[MacroEnd] in ['(','{']) then begin
       MacroEnd:=SearchBracketClose(MacroEnd)+1;
-      if MacroEnd>length(s)+1 then exit;
+      if MacroEnd>length(s)+1 then break;
       MacroStr:=copy(s,MacroStart,MacroEnd-MacroStart);
       // Macro found
       Handled:=false;
@@ -252,14 +255,28 @@ begin
           Result:=false;
           exit;
         end;
-        if (not Handled) and (AMacro<>nil) then
+        if (not Handled) and (AMacro<>nil) then begin
+          // standard macro
           MacroStr:=AMacro.Value;
+          Handled:=true;
+        end;
+        if not Handled then
+          MacroStr:='(unknown macro: '+MacroStr+')';
       end;
       s:=copy(s,1,MacroStart-1)+MacroStr+copy(s,MacroEnd,length(s)-MacroEnd+1);
       MacroEnd:=MacroStart+length(MacroStr);
     end;
     MacroStart:=MacroEnd;
   until false;
+  
+  // convert \$ chars
+  MacroStart:=2;
+  while (MacroStart<=length(s)) do begin
+    if (s[MacroStart]='$') and (s[MacroStart-1]='\') then begin
+      System.Delete(s,MacroStart-1,1);
+    end else
+      inc(MacroStart);
+  end;
 end;
 
 function TTransferMacroList.FindByName(MacroName: string): TTransferMacro;
@@ -299,6 +316,28 @@ begin
   Result:=ExtractFileName(Filename);
   Ext:=ExtractFileExt(Result);
   Result:=copy(Result,1,length(Result)-length(Ext));
+end;
+
+function TTransferMacroList.MF_MakeDir(const Filename: string;
+  var Abort: boolean): string;
+begin
+  Result:=Filename;
+  if (Result<>'') and (Result[length(Result)]<>PathDelim) then
+    Result:=Result+PathDelim;
+end;
+
+function TTransferMacroList.MF_MakeFile(const Filename: string;
+  var Abort: boolean): string;
+var
+  ChompLen: integer;
+begin
+  Result:=Filename;
+  ChompLen:=0;
+  while (length(Filename)>ChompLen)
+  and (Filename[length(Filename)-ChompLen]=PathDelim) do
+    inc(ChompLen);
+  if ChompLen>0 then
+    Result:=LeftStr(Result,length(Filename)-ChompLen);
 end;
 
 

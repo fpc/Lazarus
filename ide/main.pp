@@ -369,6 +369,12 @@ type
     
     // methods for open project, create project from source
     function DoCompleteLoadingProjectInfo: TModalResult;
+    
+    // methods for publish project
+    procedure OnCopyFile(const Filename: string; var Copy: boolean;
+      Data: TObject);
+    procedure OnCopyError(const ErrorData: TCopyErrorData;
+      var Handled: boolean; Data: TObject);
 
   public
     class procedure ParseCmdLineOptions;
@@ -494,6 +500,7 @@ type
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
     function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetRunCommandLine: string; override;
+    function GetProjPublishDir: string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
@@ -1138,8 +1145,12 @@ begin
                     lisTargetFilenameOfProject,nil,[]));
   MacroList.Add(TTransferMacro.Create('TargetCmdLine','',
                     lisTargetFilenamePlusParams,nil,[]));
+  MacroList.Add(TTransferMacro.Create('TestDir','',
+                    lisTestDirectory,nil,[]));
   MacroList.Add(TTransferMacro.Create('RunCmdLine','',
                     lisLaunchingCmdLine,nil,[]));
+  MacroList.Add(TTransferMacro.Create('ProjPublishDir','',
+                    lisPublishProjDir,nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
 end;
 
@@ -3428,6 +3439,36 @@ begin
                                Project1.ProjectInfoFile);
 end;
 
+procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean;
+  Data: TObject);
+begin
+  if Data=nil then exit;
+  if Data is TPublishProjectOptions then begin
+    Copy:=TPublishProjectOptions(Data).FileCanBePublished(Filename);
+    //writeln('TMainIDE.OnCopyFile "',Filename,'" ',Copy);
+  end;
+end;
+
+procedure TMainIDE.OnCopyError(const ErrorData: TCopyErrorData;
+  var Handled: boolean; Data: TObject);
+begin
+  case ErrorData.Error of
+    ceSrcDirDoesNotExists:
+      MessageDlg('Copy error',
+        'Source directory "'+ErrorData.Param1+'" does not exists.',
+        mtError,[mbCancel],0);
+    ceCreatingDirectory:
+      MessageDlg('Copy error',
+        'Unable to create directory "'+ErrorData.Param1+'".',
+        mtError,[mbCancel],0);
+    ceCopyFileError:
+      MessageDlg('Copy error',
+        'Unable to copy file "'+ErrorData.Param1+'"'#13
+        +'to "'+ErrorData.Param1+'"',
+        mtError,[mbCancel],0);
+  end;
+end;
+
 function TMainIDE.DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
   PageIndex: integer; Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
@@ -4303,7 +4344,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   
   // save project info file
   if not (sfSaveToTestDir in Flags) then begin
-    Result:=Project1.WriteProject;
+    Result:=Project1.WriteProject([],'');
     if Result=mrAbort then exit;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
     EnvironmentOptions.Save(false);
@@ -4540,22 +4581,19 @@ end;
 
 function TMainIDE.DoPublishProject(Flags: TSaveFlags;
   ShowDialog: boolean): TModalResult;
-  
-  procedure OnCopyFile(const Filename: string; var Copy: boolean);
-  begin
-
-    // ToDo
-
-  end;
-  
-  procedure OnCopyError(const ErrorMsg: string; var Handled: boolean);
-  begin
-    Handled:=MessageDlg(lisCopyError,ErrorMsg,mtError,[mbIgnore,mbAbort],0)
-               =mrIgnore;
-  end;
-  
 var
   SrcDir, DestDir: string;
+  NewProjectFilename: string;
+  Tool: TExternalToolOptions;
+  CommandAfter, CmdAfterExe, CmdAfterParams: string;
+  
+  procedure ShowErrorForCommandAfter;
+  begin
+    MessageDlg('Invalid command',
+      'The command after "'+CmdAfterExe+'" is not executable.',
+      mtError,[mbCancel],0);
+  end;
+  
 begin
   // save project
   Result:=DoSaveProject(Flags);
@@ -4567,23 +4605,61 @@ begin
     if Result<>mrOk then exit;
   end;
   
+  // check command after
+  CommandAfter:=Project1.PublishOptions.CommandAfter;
+  if not MacroList.SubstituteStr(CommandAfter) then begin
+    Result:=mrCancel;
+    exit;
+  end;
+writeln('TMainIDE.DoPublishProject A "',CommandAfter,'"');
+  SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
+writeln('TMainIDE.DoPublishProject B "',CmdAfterExe,'" "',CmdAfterParams,'"');
+  if (CmdAfterExe<>'') and not FileIsExecutable(CmdAfterExe) then begin
+    ShowErrorForCommandAfter;
+    Result:=mrCancel;
+    exit;
+  end;
+
   // copy the project directory
-  SrcDir:=Project1.ProjectDirectory;
-  MacroList.SubstituteStr(SrcDir);
-  SrcDir:=ExpandFilename(SrcDir);
-  DestDir:=Project1.PublishOptions.DestinationDirectory;
-  MacroList.SubstituteStr(DestDir);
-  DestDir:=ExpandFilename(DestDir);
-  {if not CopyDirectory(SrcDir,DestDir,@OnCopyFile,@OnCopyError) then
+  SrcDir:=AppendPathDelim(Project1.ProjectDirectory);
+  DestDir:=GetProjPublishDir;
+writeln('TMainIDE.DoPublishProject C ',DestDir);
+  if (DestDir='') then begin
+    MessageDlg('Invalid destination directory',
+      'Destination directory "'+DestDir+'" is invalid.'#13
+      +'Please choose a complete path.',
+      mtError,[mbOk],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  if not CopyDirectoryWithMethods(SrcDir,DestDir,
+    @OnCopyFile,@OnCopyError,Project1.PublishOptions) then
   begin
     Result:=mrCancel;
     exit;
-  end;}
+  end;
 
   // write a filtered .lpi file
+  NewProjectFilename:=DestDir+ExtractFilename(Project1.ProjectInfoFile);
+writeln('TMainIDE.DoPublishProject C ',NewProjectFilename);
+  Result:=Project1.WriteProject(Project1.PublishOptions.WriteFlags,
+                                NewProjectFilename);
+  if Result<>mrOk then exit;
   
   // execute 'CommandAfter'
-  
+  if (CmdAfterExe<>'') and FileIsExecutable(CmdAfterExe) then begin
+    Tool:=TExternalToolOptions.Create;
+    Tool.Filename:=CmdAfterExe;
+    Tool.Title:='Command after publishing project';
+    Tool.WorkingDirectory:=DestDir;
+    Tool.CmdLineParams:=CmdAfterParams;
+    Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
+    if Result<>mrOk then exit;
+  end else begin
+    ShowErrorForCommandAfter;
+    Result:=mrCancel;
+    exit;
+  end;
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -4905,7 +4981,10 @@ begin
       WorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
       if WorkingDir='' then
         WorkingDir:=ExtractFilePath(GetProjectTargetFilename);
-      MacroList.SubstituteStr(WorkingDir);
+      if not MacroList.SubstituteStr(WorkingDir) then begin
+        Result:=mrCancel;
+        exit;
+      end;
       FRunProcess.CurrentDirectory:=ExpandFilename(WorkingDir);
       Project1.RunParameterOptions.AssignEnvironmentTo(FRunProcess.Environment);
 
@@ -5501,7 +5580,13 @@ procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
   var Handled, Abort: boolean);
 var MacroName:string;
 begin
-  if TheMacro=nil then exit;
+  if TheMacro=nil then begin
+    MessageDlg('Unknown Macro',
+      'Macro not defined: "'+s+'".',
+      mtError,[mbAbort],0);
+    Abort:=true;
+    exit;
+  end;
   MacroName:=lowercase(TheMacro.Name);
   if MacroName='save' then begin
     Handled:=true;
@@ -5574,6 +5659,9 @@ begin
   end else if MacroName='runcmdline' then begin
     Handled:=true;
     s:=GetRunCommandLine;
+  end else if MacroName='projpublishdir' then begin
+    Handled:=true;
+    s:=GetProjPublishDir;
   end;
 end;
 
@@ -5781,6 +5869,20 @@ begin
       Result:='';
   end else begin
     if not MacroList.SubstituteStr(Result) then Result:='';
+  end;
+end;
+
+function TMainIDE.GetProjPublishDir: string;
+begin
+  Result:=Project1.PublishOptions.DestinationDirectory;
+  if MacroList.SubstituteStr(Result) then begin
+    if FilenameIsAbsolute(Result) then begin
+      Result:=AppendPathDelim(TrimFilename(Result));
+    end else begin
+      Result:='';
+    end;
+  end else begin
+    Result:='';
   end;
 end;
 
@@ -7287,6 +7389,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.409  2002/10/13 09:35:34  lazarus
+  MG: added publish project
+
   Revision 1.408  2002/10/09 20:08:39  lazarus
   Cleanups
 
