@@ -27,7 +27,13 @@ unit GtkWSExtCtrls;
 interface
 
 uses
-  LCLProc, Controls, gtk, GtkGlobals, GtkProc, ExtCtrls,
+  LCLProc, Controls,
+{$IFDEF GTK2}
+  gtk2,
+{$ELSE GTK2}
+  gtk,
+{$ENDIF GTK2}
+  GtkGlobals, GtkProc, ExtCtrls,
   WSExtCtrls, WSLCLClasses;
 
 type
@@ -232,9 +238,11 @@ begin
     Page:=PGtkNoteBook(NBWidget)^.cur_page;
 
   Result:=BorderWidth;
+{$IFDEF GTK2}
+  {$WARNING TODO}
+{$ELSE GTK2}
   if (NBWidget^.thestyle<>nil) and (PGtkStyle(NBWidget^.thestyle)^.klass<>nil) then
     inc(Result,PGtkStyle(NBWidget^.thestyle)^.klass^.ythickness);
-
   if (Page<>nil) and (Page^.child<>nil) then begin
     gtk_widget_size_request(Page^.Child, @Requisition);
     gtk_widget_map(Page^.child);
@@ -244,6 +252,7 @@ begin
   end;
   debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight END ',dbgs(Result),' ',
     GetWidgetDebugReport(NBWidget));
+{$ENDIF GTK2}
 end;
 
 function TGtkWSCustomNotebook.GetNotebookMinTabWidth(

@@ -648,8 +648,8 @@ function LoadDefaultFontDesc: PPangoFontDescription;
 Procedure GetTextExtentIgnoringAmpersands(FontDesc: PPangoFontDescription; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
 {$ENDIF}
-{$IFDEF GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+{$IFDEF GTK1}
 function LoadDefaultFont: PGDKFont;
 Procedure GetTextExtentIgnoringAmpersands(Font: PGDKFont; Str: PChar;
   LineLength: Longint; lbearing, rbearing, width, ascent, descent: Pgint);
