@@ -195,7 +195,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(Cursor
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint C2 ',NodeDescriptionAsString(ClassNode.Desc));
 {$ENDIF}
-    if ClassNode.SubDesc=ctnsForwardDeclaration then exit;
+    if (ClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint D ',CleanCursorPos,', |',copy(Src,CleanCursorPos,8));
@@ -291,7 +291,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint N ',DiffTxtPos);
 writeln('TMethodJumpingCodeTool.FindJumpPoint 2A ',ProcNode<>nil);
 {$ENDIF}
   if ProcNode<>nil then begin
-    if ProcNode.SubDesc=ctnsForwardDeclaration then begin
+    if (ProcNode.SubDesc and ctnsForwardDeclaration)>0 then begin
       // forward declaration -> search procedure
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint 2B ');
@@ -494,7 +494,7 @@ begin
 //writeln('[TMethodJumpingCodeTool.GatherProcNodes] A ',NodeDescriptionAsString(ANode.Desc));
     if ANode.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
-           and (ANode.SubDesc=ctnsForwardDeclaration)))
+           and ((ANode.SubDesc and ctnsForwardDeclaration)>0)))
       and (not ((phpIgnoreProcsWithBody in Attr)
             and (FindProcBody(ANode)<>nil))) then
       begin

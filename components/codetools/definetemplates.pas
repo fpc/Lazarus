@@ -1323,8 +1323,7 @@ end;
 
 function TDefinePool.CreateFPCSrcTemplate(
   const FPCSrcDir, UnitSearchPath: string): TDefineTemplate;
-var DefTempl, MainDir,
-  FCLDir, RTLDir, PackagesDir, CompilerDir: TDefineTemplate;
+var
   Dir, TargetOS, SrcOS, TargetProcessor, UnitLinks, UnitLinkList,
   IncPathMacro: string;
   DS: char;
@@ -1571,6 +1570,8 @@ var DefTempl, MainDir,
 
 // function TDefinePool.CreateFPCSrcTemplate(
 //   const FPCSrcDir: string): TDefineTemplate;
+var
+  DefTempl, MainDir, FCLDir, RTLDir, PackagesDir, CompilerDir: TDefineTemplate;
 begin
   Result:=nil;
   if (FPCSrcDir='') or (not DirectoryExists(FPCSrcDir)) then exit;
@@ -1620,6 +1621,7 @@ begin
     +';'+Dir+'rtl/objpas/'
     +';'+Dir+'rtl/inc/'
     +';'+Dir+'rtl/'+TargetProcessor+'/'
+    +';'+Dir+'rtl/'+SrcOS+'/'
     ,da_DefineAll));
 
   // fcl
@@ -1663,8 +1665,10 @@ begin
     'lcl;lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('Component path addition',
-    'adds designer and synedit to SrcPath',ExternalMacroStart+'SrcPath',
-    'components'+ds+'synedit;components'+ds+'codetools;designer;'+SrcPath
+    'adds designer, debugger, synedit and codetools to SrcPath',
+    ExternalMacroStart+'SrcPath',
+    'components'+ds+'synedit;components'+ds+'codetools;designer;debugger;'
+      +SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
@@ -1685,9 +1689,9 @@ begin
   DirTempl:=TDefineTemplate.Create('LCL','LCL Directory',
     '','lcl',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('WidgetPath',
-     'adds widget path to SrcPath'
+     'adds abstract widget path to SrcPath'
     ,ExternalMacroStart+'SrcPath',
-    'interfaces'+ds+WidgetType+';'+SrcPath
+    'interfaces'+ds+'abstract'+ds+';'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('IncludePath',
      'adds include to IncPaty',ExternalMacroStart+'IncPath',
@@ -1703,10 +1707,10 @@ begin
   DirTempl.AddChild(SubDirTempl);
   
   // components
-  DirTempl:=TDefineTemplate.Create('Components','Components Dircetory',
+  DirTempl:=TDefineTemplate.Create('Components','Components Directory',
     '','components',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL Path','adds lcl to SrcPath',
-    'SrcPath',
+    ExternalMacroStart+'SrcPath',
     LazarusSrcDir+ds+'lcl'
     +';'+LazarusSrcDir+ds+'lcl'+ds+'interfaces'+ds+WidgetType
     +';'+SrcPath
@@ -1714,7 +1718,15 @@ begin
   MainDir.AddChild(DirTempl);
 
   // tools
-  
+  DirTempl:=TDefineTemplate.Create('Tools','Tools Directory',
+    '','tools',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    'adds lcl to SrcPath',
+    ExternalMacroStart+'SrcPath',
+    '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
+    ,da_Define));
+  MainDir.AddChild(DirTempl);
+
   // include
   
   // designer

@@ -121,12 +121,16 @@ const
       ctnIdentifier,ctnArrayType,ctnRecordType,ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumType,ctnLabelType,
       ctnTypeType,ctnFileType,ctnPointerType,ctnClassOfType];
+  AllSourceTypes =
+     [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
+  AllUsableSoureTypes =
+     [ctnUnit];
 
 
   // CodeTreeNodeSubDescriptors
-  ctnsNone                 = 0;
-  ctnsForwardDeclaration   = 1;
-  ctnsProcHeadNodesCreated = 2;
+  ctnsNone               = 0;
+  ctnsForwardDeclaration = 1;
+  ctnsNeedJITParsing     = 2;
   
 type
   TCodeTreeNode = class

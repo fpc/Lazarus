@@ -40,7 +40,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeCompletionTool, CodeTree, CodeAtom, SourceChanger,
-  DefineTemplates, CodeCache, ExprEval, LinkScanner, KeywordFuncLists, TypInfo;
+  DefineTemplates, CodeCache, ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
+  AVL_Tree, CustomCodeTool, FindDeclarationTool;
 
 type
   TCodeToolManager = class;
@@ -54,7 +55,7 @@ type
   private
     FCatchExceptions: boolean;
     FCheckFilesOnDisk: boolean;
-    FCodeTool: TCodeCompletionCodeTool;
+    FCurCodeTool: TCodeCompletionCodeTool; // current codetool
     FCursorBeyondEOL: boolean;
     FErrorCode: TCodeBuffer;
     FErrorColumn: integer;
@@ -66,6 +67,7 @@ type
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
+    FSourceTools: TAVLTree; // tree of TCustomCodeTool
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
     function OnScannerGetInitValues(Code: Pointer): TExpressionEvaluator;
@@ -73,7 +75,10 @@ type
                                     var Value: string);
     procedure OnGlobalValuesChanged;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
-    function InitCodeTool(Code: TCodeBuffer): boolean;
+    function InitCurCodeTool(Code: TCodeBuffer): boolean;
+    function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
+    function GetCodeToolForSource(Code: TCodeBuffer;
+      ExceptionOnError: boolean): TCustomCodeTool;
     procedure SetCheckFilesOnDisk(NewValue: boolean);
     procedure SetIndentSize(NewValue: integer);
     procedure SetVisibleEditorLines(NewValue: integer);
@@ -82,6 +87,8 @@ type
     procedure BeforeApplyingChanges(var Abort: boolean);
     procedure AfterApplyingChanges;
     function HandleException(AnException: Exception): boolean;
+    function OnGetCodeToolForBuffer(Sender: TObject;
+      Code: TCodeBuffer): TFindDeclarationTool;
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -142,6 +149,9 @@ type
           
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
+    function FindBlockStart(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function GuessUnclosedBlock(Code: TCodeBuffer; X,Y: integer;
@@ -241,6 +251,21 @@ var CodeToolBoss: TCodeToolManager;
 implementation
 
 
+function CompareCodeToolMainSources(Data1, Data2: Pointer): integer;
+var
+  Src1, Src2: integer;
+begin
+  Src1:=Integer(TCustomCodeTool(Data1).Scanner.MainCode);
+  Src2:=Integer(TCustomCodeTool(Data2).Scanner.MainCode);
+  if Src1<Src2 then
+    Result:=-1
+  else if Src1>Src2 then
+    Result:=+1
+  else
+    Result:=0;
+end;
+
+
 { TCodeToolManager }
 
 constructor TCodeToolManager.Create;
@@ -262,6 +287,7 @@ begin
   FVisibleEditorLines:=20;
   FJumpCentered:=true;
   FCursorBeyondEOL:=true;
+  FSourceTools:=TAVLTree.Create(@CompareCodeToolMainSources);
 end;
 
 destructor TCodeToolManager.Destroy;
@@ -273,7 +299,8 @@ writeln('[TCodeToolManager.Destroy] A');
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.Destroy] B');
 {$ENDIF}
-  FCodeTool.Free;
+  FSourceTools.FreeAndClear;
+  FSourceTools.Free;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.Destroy] C');
 {$ENDIF}
@@ -410,7 +437,7 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TCodeToolManager.InitCodeTool(Code: TCodeBuffer): boolean;
+function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
 var MainCode: TCodeBuffer;
 begin
   Result:=false;
@@ -419,23 +446,15 @@ begin
   fErrorLine:=-1;
   MainCode:=GetMainCode(Code);
   if MainCode=nil then begin
-    fErrorMsg:='TCodeToolManager.InitCodeTool MainCode=nil';
+    fErrorMsg:='TCodeToolManager.InitCurCodeTool MainCode=nil';
     exit;
   end;
-  if FCodeTool=nil then begin
-    FCodeTool:=TCodeCompletionCodeTool.Create;
-    FCodeTool.CheckFilesOnDisk:=FCheckFilesOnDisk;
-    FCodeTool.IndentSize:=FIndentSize;
-    FCodeTool.VisibleEditorLines:=FVisibleEditorLines;
-    FCodeTool.JumpCentered:=FJumpCentered;
-    FCodeTool.CursorBeyondEOL:=FCursorBeyondEOL;
-  end;
-  FCodeTool.ErrorPosition.Code:=nil;
-  FCodeTool.Scanner:=MainCode.Scanner;
+  FCurCodeTool:=TCodeCompletionCodeTool(GetCodeToolForSource(MainCode,true));
+  FCurCodeTool.ErrorPosition.Code:=nil;
 {$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.InitCodeTool] ',Code.Filename,' ',Code.SourceLength);
+writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}
-  Result:=(FCodeTool.Scanner<>nil);
+  Result:=(FCurCodeTool.Scanner<>nil);
   if not Result then begin
     fErrorCode:=MainCode;
     fErrorMsg:='No scanner available';
@@ -443,26 +462,36 @@ writeln('[TCodeToolManager.InitCodeTool] ',Code.Filename,' ',Code.SourceLength);
 end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
+var ErrorSrcTool: TCustomCodeTool;
 begin
   fErrorMsg:=AnException.Message;
-  if FCodeTool<>nil then begin
-    fErrorCode:=FCodeTool.ErrorPosition.Code;
-    fErrorColumn:=FCodeTool.ErrorPosition.X;
-    fErrorLine:=FCodeTool.ErrorPosition.Y;
+  if (AnException is ELinkScannerError)
+  and (FCurCodeTool<>nil) and (FCurCodeTool.Scanner<>nil)
+  and (FCurCodeTool.Scanner.Code<>nil)
+  and (FCurCodeTool.Scanner.LinkCount>0) then begin
+    fErrorCode:=TCodeBuffer(FCurCodeTool.Scanner.Code);
+    if fErrorCode<>nil then
+      fErrorCode.AbsoluteToLineCol(
+        FCurCodeTool.Scanner.SrcPos,fErrorLine,fErrorColumn);
+  end else if (AnException is ECodeToolError) then begin
+    ErrorSrcTool:=ECodeToolError(AnException).Sender;
+    fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
+    fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
+    fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
     fErrorTopLine:=fErrorLine;
     if JumpCentered then begin
       dec(fErrorTopLine,VisibleEditorLines div 2);
       if fErrorTopLine<1 then fErrorTopLine:=1;
     end;
-  end;
-  if (AnException is ELinkScannerError)
-  and (FCodeTool<>nil) and (FCodeTool.Scanner<>nil)
-  and (FCodeTool.Scanner.Code<>nil)
-  and (FCodeTool.Scanner.LinkCount>0) then begin
-    fErrorCode:=TCodeBuffer(FCodeTool.Scanner.Code);
-    if fErrorCode<>nil then
-      fErrorCode.AbsoluteToLineCol(
-        FCodeTool.Scanner.SrcPos,fErrorLine,fErrorColumn);
+  end else if FCurCodeTool<>nil then begin
+    fErrorCode:=FCurCodeTool.ErrorPosition.Code;
+    fErrorColumn:=FCurCodeTool.ErrorPosition.X;
+    fErrorLine:=FCurCodeTool.ErrorPosition.Y;
+    fErrorTopLine:=fErrorLine;
+    if JumpCentered then begin
+      dec(fErrorTopLine,VisibleEditorLines div 2);
+      if fErrorTopLine<1 then fErrorTopLine:=1;
+    end;
   end;
   if FWriteExceptions then begin
 {$IFDEF CTDEBUG}
@@ -485,8 +514,8 @@ function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
 begin
   Result:=false;
   try
-    if InitCodeTool(Code) then begin
-      FCodeTool.BuildTree(false);
+    if InitCurCodeTool(Code) then begin
+      FCurCodeTool.BuildTree(false);
       Result:=true;
     end;
   except
@@ -509,15 +538,15 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.JumpToMethod A ',Code.Filename,' x=',x,' y=',y);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.JumpToMethod B ',FCodeTool.Scanner<>nil);
+writeln('TCodeToolManager.JumpToMethod B ',FCurCodeTool.Scanner<>nil);
 {$ENDIF}
   try
-    Result:=FCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -542,15 +571,15 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',x,' y=',y);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindDeclaration B ',FCodeTool.Scanner<>nil);
+writeln('TCodeToolManager.FindDeclaration B ',FCurCodeTool.Scanner<>nil);
 {$ENDIF}
   try
-    Result:=FCodeTool.FindDeclaration(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindDeclaration(CursorPos,NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -575,15 +604,15 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindBlockCounterPart A ',Code.Filename,' x=',x,' y=',y);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindBlockCounterPart B ',FCodeTool.Scanner<>nil);
+writeln('TCodeToolManager.FindBlockCounterPart B ',FCurCodeTool.Scanner<>nil);
 {$ENDIF}
   try
-    Result:=FCodeTool.FindBlockCounterPart(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindBlockCounterPart(CursorPos,NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -597,6 +626,39 @@ writeln('TCodeToolManager.FindBlockCounterPart END ');
 {$ENDIF}
 end;
 
+function TCodeToolManager.FindBlockStart(Code: TCodeBuffer;
+  X, Y: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindBlockStart A ',Code.Filename,' x=',x,' y=',y);
+{$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindBlockStart B ',FCurCodeTool.Scanner<>nil);
+{$ENDIF}
+  try
+    Result:=FCurCodeTool.FindBlockStart(CursorPos,NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindBlockStart END ');
+{$ENDIF}
+end;
+
 function TCodeToolManager.GuessUnclosedBlock(Code: TCodeBuffer; X, Y: integer;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
 var
@@ -607,15 +669,15 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.GuessUnclosedBlock A ',Code.Filename,' x=',x,' y=',y);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
 {$IFDEF CTDEBUG}
-writeln('TCodeToolManager.GuessUnclosedBlock B ',FCodeTool.Scanner<>nil);
+writeln('TCodeToolManager.GuessUnclosedBlock B ',FCurCodeTool.Scanner<>nil);
 {$ENDIF}
   try
-    Result:=FCodeTool.GuessUnclosedBlock(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.GuessUnclosedBlock(CursorPos,NewPos,NewTopLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -635,9 +697,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.GetCompatibleMethods A ',Code.Filename,' Classname=',AClassname);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    FCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
+    FCurCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
        TypeData,Proc);
   except
     on e: Exception do HandleException(e);
@@ -650,10 +712,10 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.MethodExists A ',Code.Filename,' ',AClassName,':',AMethodName);
 {$ENDIF}
-  Result:=InitCodeTool(Code);
+  Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
-    Result:=FCodeTool.PublishedMethodExists(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.PublishedMethodExists(UpperCaseStr(AClassName),
               UpperCaseStr(AMethodName),TypeData);
   except
     on e: Exception do Result:=HandleException(e);
@@ -668,10 +730,10 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.JumpToMethodBody A ',Code.Filename,' ',AClassName,':',AMethodName);
 {$ENDIF}
-  Result:=InitCodeTool(Code);
+  Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
-    Result:=FCodeTool.JumpToPublishedMethodBody(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.JumpToPublishedMethodBody(UpperCaseStr(AClassName),
               UpperCaseStr(AMethodName),TypeData,NewPos,NewTopLine);
     if Result then begin
       NewCode:=NewPos.Code;
@@ -689,11 +751,11 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RenameMethod A');
 {$ENDIF}
-  Result:=InitCodeTool(Code);
+  Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
     SourceChangeCache.Clear;
-    Result:=FCodeTool.RenamePublishedMethod(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.RenamePublishedMethod(UpperCaseStr(AClassName),
               UpperCaseStr(OldMethodName),NewMethodName,TypeData,
               SourceChangeCache);
   except
@@ -707,11 +769,11 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.CreateMethod A');
 {$ENDIF}
-  Result:=InitCodeTool(Code);
+  Result:=InitCurCodeTool(Code);
   if not Result then exit;
   try
     SourceChangeCache.Clear;
-    Result:=FCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
               NewMethodName,TypeData,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -728,12 +790,12 @@ begin
 writeln('TCodeToolManager.CompleteCode A ',Code.Filename,' x=',x,' y=',y);
 {$ENDIF}
   Result:=false;
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCodeTool.CompleteCode(CursorPos,NewPos,NewTopLine,SourceChangeCache);
+    Result:=FCurCodeTool.CompleteCode(CursorPos,NewPos,NewTopLine,SourceChangeCache);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -753,9 +815,9 @@ writeln('TCodeToolManager.GetSourceName A ',Code.Filename,' ',Code.SourceLength)
 {$IFDEF MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.GetSourceName;
+    Result:=FCurCodeTool.GetSourceName;
   except
     on e: Exception do HandleException(e);
   end;
@@ -774,11 +836,11 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.GetSourceType A ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
     // GetSourceType does not parse the code -> parse it with GetSourceName
-    FCodeTool.GetSourceName;
-    case FCodeTool.GetSourceType of
+    FCurCodeTool.GetSourceName;
+    case FCurCodeTool.GetSourceType of
       ctnProgram: Result:='PROGRAM';
       ctnPackage: Result:='PACKAGE';
       ctnLibrary: Result:='LIBRARY';
@@ -805,9 +867,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RenameSource A ',Code.Filename,' NewName=',NewName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.RenameSource(NewName,SourceChangeCache);
+    Result:=FCurCodeTool.RenameSource(NewName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -822,12 +884,12 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
 {$ENDIF}
   try
-    Result:=FCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
+    Result:=FCurCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
                 NameAtomPos, InAtomPos);
     if Result then begin
       NamePos:=NameAtomPos.StartPos;
@@ -845,9 +907,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.RenameUsedUnit(UpperCaseStr(OldUnitName),NewUnitName,
+    Result:=FCurCodeTool.RenameUsedUnit(UpperCaseStr(OldUnitName),NewUnitName,
                   NewUnitInFile,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -861,9 +923,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.AddUnitToMainUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
+    Result:=FCurCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
                     SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -877,9 +939,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AnUnitName),
+    Result:=FCurCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AnUnitName),
                 SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -895,10 +957,10 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindLFMFileName A ',Code.Filename);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
     LinkIndex:=-1;
-    CurCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
+    CurCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     while (CurCode<>nil) do begin
       if UpperCaseStr(ExtractFileExt(CurCode.Filename))='.LRS' then begin
         Result:=CurCode.Filename;
@@ -906,7 +968,7 @@ writeln('TCodeToolManager.FindLFMFileName A ',Code.Filename);
         Result:=copy(Result,1,length(Result)-length(Ext))+'.lfm';
         exit;
       end;
-      CurCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
+      CurCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     end;
   except
     on e: Exception do HandleException(e);
@@ -920,9 +982,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindNextResourceFile A ',Code.Filename);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
+    Result:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
   except
     on e: Exception do HandleException(e);
   end;
@@ -935,9 +997,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.FindLazarusResource(ResourceName);
+    Result:=FCurCodeTool.FindLazarusResource(ResourceName);
   except
     on e: Exception do HandleException(e);
   end;
@@ -952,15 +1014,15 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',ResourceName,' ',length(ResourceData));
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.AddLazarusResource B ');
 {$ENDIF}
   try
     LinkIndex:=-1;
-    ResCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
+    ResCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     if ResCode=nil then exit;
-    Result:=FCodeTool.AddLazarusResource(Rescode,ResourceName,ResourceData,
+    Result:=FCurCodeTool.AddLazarusResource(Rescode,ResourceName,ResourceData,
                   SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -976,12 +1038,12 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
     LinkIndex:=-1;
-    ResCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
+    ResCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
     if ResCode=nil then exit;
-    Result:=FCodeTool.RemoveLazarusResource(ResCode,ResourceName,
+    Result:=FCurCodeTool.RemoveLazarusResource(ResCode,ResourceName,
                        SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -996,11 +1058,11 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
     LinkIndex:=-1;
-    if FCodeTool.FindNextIncludeInInitialization(LinkIndex)=nil then exit;
-    Result:=FCodeTool.RenameInclude(LinkIndex,NewFilename,KeepPath,
+    if FCurCodeTool.FindNextIncludeInInitialization(LinkIndex)=nil then exit;
+    Result:=FCurCodeTool.RenameInclude(LinkIndex,NewFilename,KeepPath,
                        SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -1018,9 +1080,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindCreateFormStatement A ',Code.Filename,' StartPos=',StartPos,' ',AClassName,':',AVarName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.FindCreateFormStatement(StartPos,UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.FindCreateFormStatement(StartPos,UpperCaseStr(AClassName),
                  UpperCaseStr(AVarName),PosAtom);
     if Result<>-1 then
       Position:=PosAtom.StartPos;
@@ -1036,9 +1098,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.AddCreateFormStatement A ',Code.Filename,' ',AClassName,':',AVarName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.AddCreateFormStatement(AClassName,AVarName,
+    Result:=FCurCodeTool.AddCreateFormStatement(AClassName,AVarName,
                     SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -1052,9 +1114,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RemoveCreateFormStatement A ',Code.Filename,' ',AVarName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.RemoveCreateFormStatement(UpperCaseStr(AVarName),
+    Result:=FCurCodeTool.RemoveCreateFormStatement(UpperCaseStr(AVarName),
                     SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -1068,9 +1130,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.ListAllCreateFormStatements A ',Code.Filename);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.ListAllCreateFormStatements;
+    Result:=FCurCodeTool.ListAllCreateFormStatements;
   except
     on e: Exception do HandleException(e);
   end;
@@ -1083,9 +1145,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.SetAllCreateFromStatements A ',Code.Filename);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
+    Result:=FCurCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1098,9 +1160,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.PublishedVariableExists A ',Code.Filename,' ',AClassName,':',AVarName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.FindPublishedVariable(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.FindPublishedVariable(UpperCaseStr(AClassName),
                  UpperCaseStr(AVarName))<>nil;
   except
     on e: Exception do Result:=HandleException(e);
@@ -1114,9 +1176,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.AddPublishedVariable A ',Code.Filename,' ',AClassName,':',VarName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.AddPublishedVariable(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.AddPublishedVariable(UpperCaseStr(AClassName),
                       VarName,VarType,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -1130,9 +1192,9 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassName,':',AVarName);
 {$ENDIF}
-  if not InitCodeTool(Code) then exit;
+  if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCodeTool.RemovePublishedVariable(UpperCaseStr(AClassName),
+    Result:=FCurCodeTool.RemovePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(AVarName),SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
@@ -1168,40 +1230,40 @@ procedure TCodeToolManager.SetCheckFilesOnDisk(NewValue: boolean);
 begin
   if NewValue=FCheckFilesOnDisk then exit;
   FCheckFilesOnDisk:=NewValue;
-  if FCodeTool<>nil then
-    FCodeTool.CheckFilesOnDisk:=NewValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.CheckFilesOnDisk:=NewValue;
 end;
 
 procedure TCodeToolManager.SetIndentSize(NewValue: integer);
 begin
   if NewValue=FIndentSize then exit;
   FIndentSize:=NewValue;
-  if FCodeTool<>nil then
-    FCodeTool.IndentSize:=NewValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.IndentSize:=NewValue;
 end;
 
 procedure TCodeToolManager.SetVisibleEditorLines(NewValue: integer);
 begin
   if NewValue=FVisibleEditorLines then exit;
   FVisibleEditorLines:=NewValue;
-  if FCodeTool<>nil then
-    FCodeTool.VisibleEditorLines:=NewValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.VisibleEditorLines:=NewValue;
 end;
 
 procedure TCodeToolManager.SetJumpCentered(NewValue: boolean);
 begin
   if NewValue=FJumpCentered then exit;
   FJumpCentered:=NewValue;
-  if FCodeTool<>nil then
-    FCodeTool.JumpCentered:=NewValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.JumpCentered:=NewValue;
 end;
 
 procedure TCodeToolManager.SetCursorBeyondEOL(NewValue: boolean);
 begin
   if NewValue=FCursorBeyondEOL then exit;
   FCursorBeyondEOL:=NewValue;
-  if FCodeTool<>nil then
-    FCodeTool.CursorBeyondEOL:=NewValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.CursorBeyondEOL:=NewValue;
 end;
 
 procedure TCodeToolManager.BeforeApplyingChanges(var Abort: boolean);
@@ -1216,13 +1278,78 @@ begin
     FOnAfterApplyChanges(Self);
 end;
 
+function TCodeToolManager.FindCodeToolForSource(Code: TCodeBuffer
+  ): TCustomCodeTool;
+var ANode: TAVLTreeNode;
+  CurSrc, SearchedSrc: integer;
+begin
+  ANode:=FSourceTools.Root;
+  SearchedSrc:=integer(Code);
+  while (ANode<>nil) do begin
+    CurSrc:=integer(TCustomCodeTool(ANode.Data).Scanner.MainCode);
+    if CurSrc>SearchedSrc then
+      ANode:=ANode.Left
+    else if CurSrc<SearchedSrc then
+      ANode:=ANode.Right
+    else begin
+      Result:=TCustomCodeTool(ANode.Data);
+      exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+function TCodeToolManager.GetCodeToolForSource(Code: TCodeBuffer;
+  ExceptionOnError: boolean): TCustomCodeTool;
+// return a codetool for the source
+var MainCode: TCodeBuffer;
+begin
+  Result:=nil;
+  if Code=nil then begin
+    if ExceptionOnError then
+      raise Exception.Create('TCodeToolManager.GetCodeToolForSource '
+        +'internal error: Code=nil');
+    exit;
+  end;
+  Result:=FindCodeToolForSource(Code);
+  if Result=nil then begin
+    MainCode:=GetMainCode(Code);   // create a scanner
+    if (MainCode<>Code) then begin
+      if ExceptionOnError then
+        raise Exception.Create('the source file "'+Code.Filename+'"'
+          +' is an include file of "'+Code.Filename+'"');
+      exit;
+    end;
+    Result:=TCodeCompletionCodeTool.Create;
+    Result.Scanner:=Code.Scanner;
+    FSourceTools.Add(Result);
+  end;
+  Result.CheckFilesOnDisk:=FCheckFilesOnDisk;
+  Result.IndentSize:=FIndentSize;
+  Result.VisibleEditorLines:=FVisibleEditorLines;
+  Result.JumpCentered:=FJumpCentered;
+  Result.CursorBeyondEOL:=FCursorBeyondEOL;
+  TFindDeclarationTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+end;
+
+function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
+  Code: TCodeBuffer): TFindDeclarationTool;
+begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeToolManager.OnGetCodeToolForBuffer]'
+  ,' Sender=',TCustomCodeTool(Sender).Scanner.MainSource.Filename
+  ,' Code=',Code.Filename);
+{$ENDIF}
+  Result:=TFindDeclarationTool(GetCodeToolForSource(Code,true));
+end;
+
 function TCodeToolManager.ConsistencyCheck: integer;
 // 0 = ok
 begin
   try
     Result:=0;
-    if FCodeTool<>nil then begin
-      Result:=FCodeTool.ConsistencyCheck;
+    if FCurCodeTool<>nil then begin
+      Result:=FCurCodeTool.ConsistencyCheck;
       if Result<>0 then begin
         dec(Result,1000);  exit;
       end;
@@ -1247,6 +1374,10 @@ begin
     if Result<>0 then begin
       dec(Result,6000);  exit;
     end;
+    Result:=FSourceTools.ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,7000);  exit;
+    end;
   finally
     if (Result<>0) and (FCatchExceptions=false) then
       raise Exception.Create(
@@ -1259,11 +1390,11 @@ procedure TCodeToolManager.WriteDebugReport(WriteTool,
   WriteDefPool, WriteDefTree, WriteCache, WriteGlobalValues: boolean);
 begin
   writeln('[TCodeToolManager.WriteDebugReport] Consistency=',ConsistencyCheck);
-  if FCodeTool<>nil then begin
+  if FCurCodeTool<>nil then begin
     if WriteTool then
-      FCodeTool.WriteDebugTreeReport
+      FCurCodeTool.WriteDebugTreeReport
     else
-      writeln('  FCodeTool.ConsistencyCheck=',FCodeTool.ConsistencyCheck);
+      writeln('  FCurCodeTool.ConsistencyCheck=',FCurCodeTool.ConsistencyCheck);
   end;
   if WriteDefPool then
     DefinePool.WriteDebugReport

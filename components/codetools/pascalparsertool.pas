@@ -100,7 +100,7 @@ type
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
     // sections
     function KeyWordFuncSection: boolean;
-    function KeyWordFuncEnd: boolean;
+    function KeyWordFuncEndPoint: boolean;
     // type/var/const/resourcestring
     function KeyWordFuncType: boolean;
     function KeyWordFuncVar: boolean;
@@ -117,6 +117,7 @@ type
     function KeyWordFuncTypeFile: boolean;
     function KeyWordFuncTypePointer: boolean;
     function KeyWordFuncTypeRecord: boolean;
+    function KeyWordFuncTypeRecordCase: boolean;
     function KeyWordFuncTypeDefault: boolean;
     // procedures/functions/methods
     function KeyWordFuncProc: boolean;
@@ -144,7 +145,7 @@ type
     procedure BuildBlockStatementStartKeyWordFuncList; virtual;
     function UnexpectedKeyWord: boolean;
     // read functions
-    function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType,
+    function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType, IsOperator,
         CreateNodes: boolean;
         var HasForwardModifier: boolean): boolean;
     function ReadConstant(ExceptionOnError, Extract: boolean;
@@ -216,9 +217,8 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+
   
-
-
 
 implementation
 
@@ -337,7 +337,8 @@ begin
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}KeyWordFuncSection);
     Add('FINALIZATION',{$ifdef FPC}@{$endif}KeyWordFuncSection);
 
-    Add('END',{$ifdef FPC}@{$endif}KeyWordFuncEnd);
+    Add('END',{$ifdef FPC}@{$endif}KeyWordFuncEndPoint);
+    Add('.',{$ifdef FPC}@{$endif}KeyWordFuncEndPoint);
 
     Add('TYPE',{$ifdef FPC}@{$endif}KeyWordFuncType);
     Add('VAR',{$ifdef FPC}@{$endif}KeyWordFuncVar);
@@ -461,12 +462,13 @@ end;
 function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
-  RaiseException('syntax error: unexpected word "'+GetAtom+'"');
+  RaiseException('unexpected word "'+GetAtom+'"');
 end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
-writeln('TPascalParserTool.BuildTree A OnlyInterfaceNeeded=',OnlyInterfaceNeeded);
+writeln('TPascalParserTool.BuildTree A OnlyInterfaceNeeded=',OnlyInterfaceNeeded,
+  TcodeBuffer(Scanner.MainCode).Filename);
 {$IFDEF MEM_CHECK}
 CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -490,21 +492,21 @@ writeln('TPascalParserTool.BuildTree B');
     CurSection:=ctnLibrary
   else
     RaiseException(
-      'syntax error: no pascal code found (first token is '+GetAtom+')');
+      'no pascal code found (first token is '+GetAtom+')');
   CreateChildNode;
   CurNode.Desc:=CurSection;
   ReadNextAtom; // read source name
   AtomIsIdentifier(true);
   ReadNextAtom; // read ';'
   if not AtomIsChar(';') then
-    RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+    RaiseException('; expected, but '+GetAtom+' found');
   if CurSection=ctnUnit then begin
     ReadNextAtom;
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
     if not UpAtomIs('INTERFACE') then
       RaiseException(
-        'syntax error: ''interface'' expected, but '+GetAtom+' found');
+        '''interface'' expected, but '+GetAtom+' found');
     CreateChildNode;
     CurSection:=ctnInterface;
     CurNode.Desc:=CurSection;
@@ -537,7 +539,8 @@ begin
   if ClassNode=nil then
     RaiseException(
        'TPascalParserTool.BuildSubTreeForClass: Classnode=nil');
-  if ClassNode.FirstChild<>nil then
+  if (ClassNode.FirstChild<>nil)
+  or ((ClassNode.SubDesc and ctnsNeedJITParsing)=0) then
     // class already parsed
     exit;
   if ClassNode.Desc<>ctnClass then
@@ -604,6 +607,7 @@ begin
   finally
     CurKeyWordFuncList:=DefaultKeyWordFuncList;
   end;
+  ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
 end;
 
 procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
@@ -618,7 +622,8 @@ begin
     RaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
        +BeginNode.DescAsString);
-  if BeginNode.FirstChild<>nil then
+  if (BeginNode.FirstChild<>nil)
+  or ((BeginNode.SubDesc and ctnsNeedJITParsing)=0) then
     // block already parsed
     exit;
   // set CursorPos on 'begin'
@@ -640,6 +645,7 @@ begin
       // ToDo
     end;
   until (CurPos.StartPos>=MaxPos);
+  BeginNode.SubDesc:=ctnNone;
 end;
 
 function TPascalParserTool.GetSourceType: TCodeTreeNodeDesc;
@@ -705,45 +711,9 @@ begin
     ReadNextAtom;
   end;
   if not AtomIsChar(':') then
-    RaiseException('syntax error: : expected, but '+GetAtom+' found');
+    RaiseException(': expected, but '+GetAtom+' found');
   // read type
   ReadVariableType;
-{  ReadNextAtom;
-  if (CurPos.StartPos>SrcLen) then
-    RaiseException('syntax error: variable type definition not found');
-  // create type body node
-  CreateChildNode;
-  CurNode.Desc:=ctnTypeDefinition;
-  // parse type body
-  if AtomIsChar('^') then begin
-    // parse pointer type
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-  end else if (Src[CurPos.StartPos] in ['(','-','+']) or AtomIsNumber then begin
-    // parse enum or range type
-    while (CurPos.StartPos<=SrcLen) do begin
-      if Src[CurPos.StartPos] in ['(','['] then
-        ReadTilBracketClose(true);
-      if AtomIsChar(';') or UpAtomIs('END') then begin
-        UndoReadNextAtom;
-        break;
-      end;
-      ReadNextAtom;
-    end;
-  end else
-    Result:=ClassVarTypeKeyWordFuncList.DoItUpperCase(UpperSrc,
-      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
-  ReadNextAtom;
-  if (UpAtomIs('END')) then
-    UndoReadNextAtom
-  else if not AtomIsChar(';') then
-    RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-  // end type body
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
-  // end variable definition
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;}
   Result:=true;
 end;
 
@@ -751,7 +721,7 @@ function TPascalParserTool.KeyWordFuncClassVarTypeClass: boolean;
 // class and object as type are not allowed, because they would have no name
 begin
   RaiseException(
-    'syntax error: Anonym '+GetAtom+' definitions are not allowed');
+    'Anonym '+GetAtom+' definitions are not allowed');
   Result:=false;
 end;
 
@@ -762,7 +732,7 @@ begin
   if UpAtomIs('RECORD') then
     Result:=KeyWordFuncClassVarTypeRecord
   else begin
-    RaiseException('syntax error: ''record'' expected, but '+GetAtom+' found');
+    RaiseException(' ''record'' expected, but '+GetAtom+' found');
     Result:=true;
   end;
 end;
@@ -795,7 +765,7 @@ begin
     else if UpAtomIs('END') then dec(Level);
   end;
   if CurPos.StartPos>SrcLen then
-    RaiseException('syntax error: end for record not found.');
+    RaiseException('end for record not found.');
   Result:=true;
 end;
 
@@ -813,7 +783,7 @@ begin
     ReadNextAtom;
   end;
   if not UpAtomIs('OF') then
-    RaiseException('syntax error: [ expected, but '+GetAtom+' found');
+    RaiseException('[ expected, but '+GetAtom+' found');
   ReadNextAtom;
 //writeln('TPascalParserTool.KeyWordFuncClassVarTypeArray ',GetAtom);
   Result:=ClassVarTypeKeyWordFuncList.DoItUpperCase(UpperSrc,
@@ -830,10 +800,10 @@ function TPascalParserTool.KeyWordFuncClassVarTypeSet: boolean;
 begin
   ReadNextAtom;
   if not UpAtomIs('OF') then
-    RaiseException('syntax error: ''of'' expected, but '+GetAtom+' found');
+    RaiseException('''of'' expected, but '+GetAtom+' found');
   ReadNextAtom;
   if CurPos.StartPos>SrcLen then
-    RaiseException('syntax error: missing enum list');
+    RaiseException('missing enum list');
   if UpperSrc[CurPos.StartPos] in ['A'..'Z','_'] then
     // set of identifier
   else if AtomIsChar('(') then
@@ -856,7 +826,7 @@ begin
   IsFunction:=UpAtomIs('FUNCTION');
   ReadNextAtom;
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(true,IsFunction,true,false,HasForwardModifier);
+  ReadTilProcedureHeadEnd(true,IsFunction,true,false,false,HasForwardModifier);
   Result:=true;
 end;
 
@@ -864,11 +834,11 @@ function TPascalParserTool.KeyWordFuncClassVarTypeIdent: boolean;
 // read variable type <identfier>
 begin
   if CurPos.StartPos>SrcLen then
-    RaiseException('syntax error: missing type identifier');
+    RaiseException('missing type identifier');
   if UpperSrc[CurPos.StartPos] in ['A'..'Z','_'] then
     // identifier
   else
-    RaiseException('syntax error: missing type identifier');
+    RaiseException('missing type identifier');
   Result:=true;
 end;
 
@@ -919,7 +889,7 @@ begin
     ReadNextAtom;
     if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) then begin
       RaiseException(
-        'syntax error: procedure or function expected, but '+GetAtom+' found');
+        'procedure or function expected, but '+GetAtom+' found');
     end;
   end;
   IsFunction:=UpAtomIs('FUNCTION');
@@ -929,13 +899,13 @@ begin
   if (CurPos.StartPos>SrcLen)
   or (not (UpperSrc[CurPos.StartPos] in ['A'..'Z','_']))
   then
-    RaiseException('syntax error: method name expected, but '+GetAtom+' found');
+    RaiseException('method name expected, but '+GetAtom+' found');
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
   // read rest
   ReadNextAtom;
-  ReadTilProcedureHeadEnd(true,IsFunction,false,false,HasForwardModifier);
+  ReadTilProcedureHeadEnd(true,IsFunction,false,false,false,HasForwardModifier);
   // close procedure header
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -1025,13 +995,13 @@ begin
     if (CurPos.StartPos>SrcLen) then
       if ExceptionOnError then
         RaiseException(
-          'syntax error: '+CloseBracket+' expected, but '+GetAtom+' found')
+          ''+CloseBracket+' expected, but '+GetAtom+' found')
       else exit;
     if (Src[CurPos.StartPos] in [')',']']) then break;
     if (Src[CurPos.StartPos]<>';') then
       if ExceptionOnError then
         RaiseException(
-          'syntax error: '+CloseBracket+' expected, but '+GetAtom+' found')
+          ''+CloseBracket+' expected, but '+GetAtom+' found')
       else exit;
     if not Extract then
       ReadNextAtom
@@ -1042,7 +1012,7 @@ begin
     if Src[CurPos.StartPos]<>CloseBracket then
       if ExceptionOnError then
         RaiseException(
-          'syntax error: '+CloseBracket+' expected, but '+GetAtom+' found')
+          ''+CloseBracket+' expected, but '+GetAtom+' found')
       else exit;
     if (phpCreateNodes in Attr) then begin
       CurNode.EndPos:=CurPos.EndPos;
@@ -1069,7 +1039,7 @@ begin
       if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
       if not UpAtomIs('OF') then
         if ExceptionOnError then
-          RaiseException('syntax error: ''of'' expected, but '+GetAtom+' found')
+          RaiseException('''of'' expected, but '+GetAtom+' found')
         else exit;
       ReadNextAtom;
       if UpAtomIs('CONST') then begin
@@ -1101,14 +1071,14 @@ begin
   end else begin
     if ExceptionOnError then
       RaiseException(
-        'syntax error: identifier expected, but '+GetAtom+' found')
+        'identifier expected, but '+GetAtom+' found')
     else exit;
   end;
   Result:=true;
 end;
 
 function TPascalParserTool.ReadTilProcedureHeadEnd(
-  IsMethod, IsFunction, IsType, CreateNodes: boolean;
+  IsMethod, IsFunction, IsType, IsOperator, CreateNodes: boolean;
   var HasForwardModifier: boolean): boolean;
 { parse parameter list, result type, of object, method specifiers
 
@@ -1145,10 +1115,21 @@ begin
       Include(Attr,phpCreateNodes);
     ReadParamList(true,false,Attr);
   end;
-  if IsFunction then begin
+  if IsOperator and (not AtomIsChar(':')) then begin
+    // read operator result identifier
+    AtomIsIdentifier(true);
+    if CreateNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnVarDefinition;
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end;
+    ReadNextAtom;
+  end;
+  if IsFunction or IsOperator then begin
     // read function result type
     if not AtomIsChar(':') then
-      RaiseException('syntax error: : expected, but '+GetAtom+' found');
+      RaiseException(': expected, but '+GetAtom+' found');
     ReadNextAtom;
     AtomIsIdentifier(true);
     if CreateNodes then begin
@@ -1163,10 +1144,10 @@ begin
     // read 'of object'
     if not IsType then
       RaiseException(
-        'syntax error: expected ;, but '+GetAtom+' found');
+        '; expected, but '+GetAtom+' found');
     ReadNextAtom;
     if not UpAtomIs('OBJECT') then
-      RaiseException('syntax error: "object" expected, but '+GetAtom+' found');
+      RaiseException('"object" expected, but '+GetAtom+' found');
     ReadNextAtom;
   end;
   // read procedures/method specifiers
@@ -1175,9 +1156,9 @@ begin
     exit;
   end;
   if not AtomIsChar(';') then
-    RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+    RaiseException('; expected, but '+GetAtom+' found');
   if (CurPos.StartPos>SrcLen) then
-    RaiseException('syntax error: semicolon not found');
+    RaiseException('semicolon not found');
   repeat
     ReadNextAtom;
     if IsMethod then
@@ -1189,6 +1170,8 @@ begin
     if IsSpecifier then begin
       // read specifier
       if UpAtomIs('MESSAGE') or UpAtomIs('EXTERNAL') then begin
+        if UpAtomIs('EXTERNAL') then
+          HasForwardModifier:=true;
         repeat
           ReadNextAtom;
           if UpAtomIs('END') then begin
@@ -1196,16 +1179,31 @@ begin
             exit;
           end;
         until (CurPos.Startpos>SrcLen) or AtomIsChar(';');
-      end else if AtomIsChar(';') then begin
-        // read assembler alias   [alias: 'alternative name']
-        if not ReadNextUpAtomIs('ALIAS') then
-          RaiseException('alias keyword expected, but '+GetAtom+' found');
-        if not ReadNextAtomIsChar(':') then
-          RaiseException('; expected, but '+GetAtom+' found');
-        ReadNextAtom;
-        if not AtomIsStringConstant then
-          RaiseException('string constant expected, but '+GetAtom+' found');
-        if not ReadNextAtomIsChar(']') then
+      end else if AtomIsChar('[') then begin
+        // read assembler alias   [public,alias: 'alternative name']
+        repeat
+          ReadNextAtom;
+          if not AtomIsWord then
+            RaiseException('keyword expected, but '+GetAtom+' found');
+          if not IsKeyWordProcedureBracketSpecifier.DoItUppercase(UpperSrc,
+            CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+          then
+            RaiseException('keyword (e.g. alias) expected, but '+GetAtom+' found');
+          if UpAtomIs('INTERNPROC') then
+            HasForwardModifier:=true;
+          ReadNextAtom;
+          if AtomIsChar(':') or AtomIsChar(']') then
+            break;
+          if not AtomIsChar(',') then
+            RaiseException(': expected, but '+GetAtom+' found');
+        until false;
+        if AtomIsChar(':') then begin
+          ReadNextAtom;
+          if (not AtomIsStringConstant) and (not AtomIsIdentifier(false)) then
+            RaiseException('string constant expected, but '+GetAtom+' found');
+          ReadConstant(true,false,[]);
+        end;
+        if not AtomIsChar(']') then
           RaiseException('] expected, but '+GetAtom+' found');
         ReadNextAtom;
         if UpAtomIs('END') then begin
@@ -1222,7 +1220,7 @@ begin
         end;
       end;
       if not AtomIsChar(';') then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+        RaiseException('; expected, but '+GetAtom+' found');
     end else begin
       // current atom does not belong to procedure/method declaration
       UndoReadNextAtom;
@@ -1242,7 +1240,7 @@ begin
     if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then begin
       if ExceptionOnError then
-        RaiseException('syntax error: unexpected keyword '+GetAtom+' found')
+        RaiseException('unexpected keyword '+GetAtom+' found')
       else exit;
     end;
     if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
@@ -1260,11 +1258,11 @@ begin
       if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
       if (c='(') and (not AtomIsChar(')')) then
         if ExceptionOnError then
-          RaiseException('syntax error: ( expected, but '+GetAtom+' found')
+          RaiseException('( expected, but '+GetAtom+' found')
         else exit;
       if (c='[') and (not AtomIsChar(']')) then
         if ExceptionOnError then
-          RaiseException('syntax error: [ expected, but '+GetAtom+' found')
+          RaiseException('[ expected, but '+GetAtom+' found')
         else exit;
       if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
     end;
@@ -1291,12 +1289,12 @@ begin
             if (c='(') and (not AtomIsChar(')')) then
               if ExceptionOnError then
                 RaiseException(
-                  'syntax error: ( expected, but '+GetAtom+' found')
+                  '( expected, but '+GetAtom+' found')
               else exit;
             if (c='[') and (not AtomIsChar(']')) then
               if ExceptionOnError then
                 RaiseException(
-                  'syntax error: [ expected, but '+GetAtom+' found')
+                  '[ expected, but '+GetAtom+' found')
               else exit;
             if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
             if WordIsTermOperator.DoItUpperCase(UpperSrc,
@@ -1317,14 +1315,14 @@ begin
       else
         if ExceptionOnError then
           RaiseException(
-            'syntax error: constant expected, but '+GetAtom+' found')
+            'constant expected, but '+GetAtom+' found')
         else exit;
       end;
     end else
       // syntax error
       if ExceptionOnError then
         RaiseException(
-          'syntax error: constant expected, but '+GetAtom+' found')
+          'constant expected, but '+GetAtom+' found')
       else exit;
   end;
   Result:=true;
@@ -1351,7 +1349,7 @@ begin
       if not AtomIsStringConstant then
         if ExceptionOnError then
           RaiseException(
-            'syntax error: string constant expected, but '+GetAtom+' found')
+            'string constant expected, but '+GetAtom+' found')
         else exit;
       ReadNextAtom;
     end;
@@ -1359,7 +1357,7 @@ begin
     if not AtomIsChar(',') then
       if ExceptionOnError then
         RaiseException(
-          'syntax error: ; expected, but '+GetAtom+' found')
+          '; expected, but '+GetAtom+' found')
       else exit;
   until (CurPos.StartPos>SrcLen);
   CurNode.EndPos:=CurPos.EndPos;
@@ -1385,7 +1383,7 @@ begin
     or AtomIsChar(':') then break;
     if AtomIs('..') then begin
       if RangeOpFound then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+        RaiseException('; expected, but '+GetAtom+' found');
       RangeOpFound:=true;
     end else if AtomIsChar('(') or AtomIsChar('[') then
       ReadTilBracketClose(ExceptionOnError);
@@ -1429,11 +1427,11 @@ begin
   ReadNextAtom;
   if UpAtomIs('DEFAULT') then begin
     if not ReadNextAtomIsChar(';') then
-      RaiseException('syntax error: ; expected after "default" property '
+      RaiseException('; expected after "default" property '
           +'specifier, but '+GetAtom+' found');
   end else if UpAtomIs('NODEFAULT') then begin
     if not ReadNextAtomIsChar(';') then
-      RaiseException('syntax error: ; expected after "nodefault" property '
+      RaiseException('; expected after "nodefault" property '
           +'specifier, but '+GetAtom+' found');
   end else
     UndoReadNextAtom;
@@ -1469,7 +1467,7 @@ begin
         exit;
       end;
       if not ((CurSection=ctnInterface) and UpAtomIs('IMPLEMENTATION')) then
-        RaiseException('syntax error: unexpected keyword '+GetAtom+' found');
+        RaiseException('unexpected keyword '+GetAtom+' found');
       // close interface section node
       CurNode.EndPos:=CurPos.StartPos;
       EndChildNode;
@@ -1487,7 +1485,7 @@ begin
    ctnImplementation:
     begin
       if not (UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')) then
-        RaiseException('syntax error: unexpected keyword '+GetAtom+' found');
+        RaiseException('unexpected keyword '+GetAtom+' found');
       // close implementation section node
       CurNode.EndPos:=CurPos.StartPos;
       EndChildNode;
@@ -1508,7 +1506,7 @@ begin
           CurNode.Desc:=ctnFinalization;
           CurSection:=CurNode.Desc;
         end else if UpAtomIs('END') then begin
-          Result:=KeyWordFuncEnd;
+          Result:=KeyWordFuncEndPoint;
           break;
         end;
       until (CurPos.StartPos>SrcLen);
@@ -1516,22 +1514,37 @@ begin
     end;
   else
     begin
-      RaiseException('syntax error: unexpected keyword '+GetAtom+' found');
+      RaiseException('unexpected keyword '+GetAtom+' found');
       Result:=false;
     end;
   end;
 end;
 
-function TPascalParserTool.KeyWordFuncEnd: boolean;
-// keyword 'end'  (source end.)
+function TPascalParserTool.KeyWordFuncEndPoint: boolean;
+// keyword 'end' or '.'  (source end.)
 begin
-  if LastAtomIs(0,'@') then
-    RaiseException('syntax error: identifier expected but keyword end found');
-  if LastAtomIs(0,'@@') then begin
-    // for Delphi compatibility @@end is allowed
-    Result:=true;
-    exit;
-  end;
+  if AtomIsChar('.') then begin
+    if not LastUpAtomIs(0,'END') then
+      RaiseException('illegal qualifier');
+    UndoReadNextAtom;
+    if CurNode.Desc in [ctnInterface] then
+      RaiseException('implementation expected, but '+GetAtom+' found');
+    if not (CurNode.Desc in [ctnImplementation,ctnInitialization,
+      ctnFinalization,ctnProgram])
+    then begin
+      ReadNextAtom;
+      RaiseException('unexpected end of source');
+    end;
+  end else if UpAtomIs('END') then begin
+    if LastAtomIs(0,'@') then
+      RaiseException('identifier expected but keyword end found');
+    if LastAtomIs(0,'@@') then begin
+      // for Delphi compatibility @@end is allowed
+      Result:=true;
+      exit;
+    end;
+  end else
+    RaiseException('[TPascalParserTool.KeyWordFuncEndPoint] internal error');
   if CurNode.Desc in [ctnImplementation,ctnInterface] then
     CurNode.EndPos:=CurPos.StartPos
   else
@@ -1547,19 +1560,19 @@ end;
 function TPascalParserTool.KeyWordFuncProc: boolean;
 // procedure, function, constructor, destructor, operator
 var ChildCreated: boolean;
-  IsFunction, HasForwardModifier, IsClassProc: boolean;
+  IsFunction, HasForwardModifier, IsClassProc, IsOperator: boolean;
   ProcNode: TCodeTreeNode;
 begin
   if UpAtomIs('CLASS') then begin
     if CurSection<>ctnImplementation then
       RaiseException(
-        'syntax error: identifier expected, but '+GetAtom+' found');
+        'identifier expected, but '+GetAtom+' found');
     ReadNextAtom;
     if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then
       IsClassProc:=true
     else
       RaiseException(
-        'syntax error: "procedure" expected, but '+GetAtom+' found');
+        '"procedure" expected, but '+GetAtom+' found');
   end else
     IsClassProc:=false;
   ChildCreated:=true;
@@ -1574,12 +1587,14 @@ begin
       ProcNode.SubDesc:=ctnsForwardDeclaration;
   end;
   IsFunction:=UpAtomIs('FUNCTION');
+  IsOperator:=UpAtomIs('OPERATOR');
   ReadNextAtom;// read first atom of head (= name + parameterlist + resulttype;)
-  AtomIsIdentifier(true);
+  if not IsOperator then AtomIsIdentifier(true);
   if ChildCreated then begin
     // create node for procedure head
     CreateChildNode;
     CurNode.Desc:=ctnProcedureHead;
+    CurNode.SubDesc:=ctnsNeedJITParsing;
   end;
   ReadNextAtom;
   if (CurSection<>ctnInterface) and (AtomIsChar('.')) then begin
@@ -1590,7 +1605,8 @@ begin
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(false,IsFunction,false,false,HasForwardModifier);
+  ReadTilProcedureHeadEnd(false,IsFunction,false,IsOperator,false,
+                          HasForwardModifier);
   if ChildCreated then begin
     if HasForwardModifier then
       ProcNode.SubDesc:=ctnsForwardDeclaration;
@@ -1598,7 +1614,7 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end;
-  if ChildCreated and (ProcNode.SubDesc=ctnsForwardDeclaration) then begin
+  if ChildCreated and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
     // close method
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
@@ -1611,6 +1627,25 @@ function TPascalParserTool.ReadTilBlockEnd(
 // after reading cursor will be on the keyword ending the block (e.g. 'end')
 var BlockType: TEndBlockType;
   TryType: TTryType;
+  BlockStartPos: integer;
+  
+  procedure RaiseExceptionWithBlockStartHint(const AMessage: string);
+  var CaretXY: TCodeXYPosition;
+  begin
+    if (CleanPosToCaret(BlockStartPos,CaretXY))
+    and (CaretXY.Code<>nil) then begin
+      if CaretXY.Code=TCodeBuffer(Scanner.MainCode) then
+        RaiseException(AMessage+'. start at '
+          +'('+IntToStr(CaretXY.Y)+','+IntToStr(CaretXY.X)+')')
+      else
+        RaiseException(AMessage+'. start at '
+          +TCodeBuffer(CaretXY.Code).Filename
+          +'('+IntToStr(CaretXY.Y)+','+IntToStr(CaretXY.X)+')');
+    end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
+      RaiseException(AMessage);
+    end;
+  end;
+  
 begin
   Result:=true;
   TryType:=ttNone;
@@ -1629,47 +1664,65 @@ begin
   else
     RaiseException('internal codetool error in '
       +'TPascalParserTool.ReadTilBlockEnd: unkown block type');
+  BlockStartPos:=CurPos.StartPos;
   repeat
     ReadNextAtom;
     if (CurPos.StartPos>SrcLen) then begin
-      RaiseException('syntax error: "end" not found.')
+      RaiseExceptionWithBlockStartHint('"end" not found')
     end else if (UpAtomIs('END')) then begin
       if BlockType=ebtRepeat then
-        RaiseException(
-          'syntax error: "until" expected, but "'+GetAtom+'" found');
+        RaiseExceptionWithBlockStartHint(
+          '"until" expected, but "'+GetAtom+'" found');
       if (BlockType=ebtTry) and (TryType=ttNone) then
-        RaiseException(
-          'syntax error: "finally" expected, but "'+GetAtom+'" found');
+        RaiseExceptionWithBlockStartHint(
+          '"finally" expected, but "'+GetAtom+'" found');
+      ReadNextAtom;
+      if AtomIsChar('.')
+      and (BlockType<>ebtBegin) then begin
+        RaiseExceptionWithBlockStartHint('; expected, but . found');
+      end;
+      UndoReadNextAtom;
       break;
     end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos)
       or UpAtomIs('REPEAT') then
     begin
       if BlockType=ebtAsm then
-        RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
+        RaiseException('unexpected keyword "'+GetAtom+'" found');
       if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
         ReadTilBlockEnd(false,CreateNodes);
     end else if UpAtomIs('UNTIL') then begin
       if BlockType=ebtRepeat then
         break;
-      RaiseException(
-        'syntax error: "end" expected, but "'+GetAtom+'" found');
+      RaiseExceptionWithBlockStartHint(
+        '"end" expected, but "'+GetAtom+'" found');
     end else if UpAtomIs('FINALLY') then begin
       if (BlockType=ebtTry) and (TryType=ttNone) then begin
         if StopOnBlockMiddlePart then break;
         TryType:=ttFinally;
       end else
-        RaiseException(
-          'syntax error: "end" expected, but "'+GetAtom+'" found');
+        RaiseExceptionWithBlockStartHint(
+          '"end" expected, but "'+GetAtom+'" found');
     end else if UpAtomIs('EXCEPT') then begin
       if (BlockType=ebtTry) and (TryType=ttNone) then begin
         if StopOnBlockMiddlePart then break;
         TryType:=ttExcept;
       end else
-        RaiseException(
-          'syntax error: "end" expected, but "'+GetAtom+'" found');
+        RaiseExceptionWithBlockStartHint(
+          '"end" expected, but "'+GetAtom+'" found');
     end else if CreateNodes and UpAtomIs('WITH') then begin
       ReadWithStatement(true,CreateNodes);
+    end else begin
+      // check for unexpected keywords
+      case BlockType of
+      
+      ebtBegin,ebtAsm,ebtTry,ebtCase,ebtRepeat:
+        if UnexpectedKeyWordInBeginBlock.DoItUppercase(UpperSrc,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+        then
+          RaiseException('unexpected keyword '+GetAtom+' found');
+          
+      end;
     end;
   until false;
 end;
@@ -1684,19 +1737,20 @@ var BlockType: TEndBlockType;
   begin
     case BlockType of
       ebtBegin:
-        RaiseException('syntax error: "begin" expected, but "'
+        RaiseException('"begin" expected, but "'
                        +GetAtom+'" found');
       ebtTry:
-        RaiseException('syntax error: "try" expected, but "'
+        RaiseException('"try" expected, but "'
                        +GetAtom+'" found');
       ebtRepeat:
-        RaiseException('syntax error: "repeat" expected, but "'
+        RaiseException('"repeat" expected, but "'
                        +GetAtom+'" found');
     else
-      RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
+      RaiseException('unexpected keyword "'+GetAtom+'" found');
     end;
   end;
 
+var OldAtom: TAtomPosition;
 begin
   Result:=true;
   if UpAtomIs('END') then
@@ -1711,33 +1765,82 @@ begin
   repeat
     ReadPriorAtom;
     if (CurPos.StartPos<1) then begin
-      RaiseException('syntax error: "begin" not found.')
-    end else if UpAtomIs('END') or (UpAtomIs('UNTIL')) then begin
-      ReadBackTilBlockEnd(false);
-    end else if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
-      or UpAtomIs('RECORD') then
+      RaiseException('"begin" not found.')
+    end else if WordIsBlockKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos) then
     begin
-      // Todo: case could also be in a record, then it should not close the block
-      if BlockType=ebtBegin then
-        break
-      else
-        RaiseBlockError;
-    end else if UpAtomIs('REPEAT') then begin
-      if BlockType=ebtRepeat then
-        break
-      else
-        RaiseBlockError;
-    end else if UpAtomIs('FINALLY') or UpAtomIs('EXCEPT') then begin
-      if BlockType=ebtBegin then begin
-        if StopOnBlockMiddlePart then break;
-        BlockType:=ebtTry;
-      end else
-        RaiseBlockError;
-    end else if UpAtomIs('TRY') then begin
-      if BlockType=ebtTry then
-        break
-      else
-        RaiseBlockError;
+      if UpAtomIs('END') or (UpAtomIs('UNTIL')) then begin
+        ReadBackTilBlockEnd(false);
+      end else if UpAtomIs('BEGIN') or UpAtomIs('ASM') or UpAtomIs('RECORD')
+      then begin
+        if BlockType=ebtBegin then
+          break
+        else
+          RaiseBlockError;
+      end else if UpAtomIs('OBJECT') then begin
+        if BlockType=ebtBegin then begin
+          // could also be 'of object'
+          OldAtom:=CurPos;
+          ReadPriorAtom;
+          if not UpAtomIs('OF') then begin
+            CurPos:=OldAtom;
+            break;
+          end;
+        end else
+          RaiseBlockError;
+      end else if UpAtomIs('CLASS') then begin
+        ReadNextAtom;
+        if UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE') or AtomIsChar(';')
+        or UpAtomIs('OF') then
+          UndoReadNextAtom
+        else begin
+          UndoReadNextAtom;
+          break;
+        end;
+      end else if UpAtomIs('CASE') then begin
+        // case could also be in a record, then it should not close the block
+        if BlockType=ebtBegin then begin
+          // check if case in a record
+          OldAtom:=CurPos;
+          repeat
+            ReadPriorAtom;
+            if WordIsBlockKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+              CurPos.EndPos-CurPos.StartPos) then
+            begin
+              if UpAtomIs('CASE') then begin
+                // could be another variant record, -> read further ...
+              end else if UpAtomIs('RECORD') then begin
+                // record start found -> the case is a variant record
+                // block start found
+                break;
+              end else begin
+                // this is not a variant record
+                MoveCursorToCleanPos(OldAtom.StartPos);
+                CurPos.EndPos:=OldAtom.EndPos;
+                break;
+              end;
+            end;
+          until (CurPos.StartPos<1);
+          break;
+        end else
+          RaiseBlockError;
+      end else if UpAtomIs('REPEAT') then begin
+        if BlockType=ebtRepeat then
+          break
+        else
+          RaiseBlockError;
+      end else if UpAtomIs('FINALLY') or UpAtomIs('EXCEPT') then begin
+        if BlockType=ebtBegin then begin
+          if StopOnBlockMiddlePart then break;
+          BlockType:=ebtTry;
+        end else
+          RaiseBlockError;
+      end else if UpAtomIs('TRY') then begin
+        if BlockType=ebtTry then
+          break
+        else
+          RaiseBlockError;
+      end;
     end;
   until false;
 end;
@@ -1820,7 +1923,7 @@ begin
   end;
   if not UpAtomIs('DO') then begin
     if ExceptionOnError then
-      RaiseException('syntax error: do expected, but '+GetAtom+' found')
+      RaiseException('do expected, but '+GetAtom+' found')
     else begin
       Result:=false;
       exit;
@@ -1860,34 +1963,75 @@ begin
       if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
       and (UpAtomIs('END') or AtomIsKeyWord) then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+        RaiseException('; expected, but '+GetAtom+' found');
     until AtomIsChar(';');
   end;
   // read ;
   if not AtomIsChar(';') then
-    RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-  if not ReadNextUpAtomIs('CVAR') then
-    UndoReadNextAtom
-  else
+    RaiseException('; expected, but '+GetAtom+' found');
+  ReadNextAtom;
+  if UpAtomIs('CVAR') then begin
+    // for example: 'var a: char; cvar;'
     if not ReadNextAtomIsChar(';') then
-      RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+      RaiseException('; expected, but '+GetAtom+' found');
+  end else if UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL') then begin
+    if NodeHasParentOfType(CurNode,ctnClass) then
+      // class visibility keyword 'public'
+      UndoReadNextAtom
+    else begin
+      // for example 'var a: char; public;'
+      ReadNextAtom;
+      if UpAtomIs('NAME') then begin
+        // for example 'var a: char; public name 'b' ;'
+        ReadNextAtom;
+        if not AtomIsStringConstant then
+          RaiseException('string constant expected, but '
+                         +GetAtom+' found');
+        ReadConstant(true,false,[]);
+        UndoReadNextAtom;
+      end;
+      if not ReadNextAtomIsChar(';') then
+        RaiseException('; expected, but '+GetAtom+' found');
+    end;
+  end else
+    UndoReadNextAtom;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
 end;
 
 function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 // Keyword: begin, asm
-var BeginKeyWord: shortstring;
+
+  procedure RaiseExceptionWithHint;
+  var CaretXY: TCodeXYPosition;
+    AMessage: string;
+  begin
+    AMessage:='; expected, but . found';
+    if (CleanPosToCaret(CurNode.StartPos,CaretXY))
+    and (CaretXY.Code<>nil) then begin
+      if CaretXY.Code=TCodeBuffer(Scanner.MainCode) then
+        RaiseException(AMessage+'.  Hint: proc start at '
+          +'('+IntToStr(CaretXY.Y)+','+IntToStr(CaretXY.X)+')')
+      else
+        RaiseException(AMessage+'.  Hint: proc start at '
+          +TCodeBuffer(CaretXY.Code).Filename
+          +'('+IntToStr(CaretXY.Y)+','+IntToStr(CaretXY.X)+')');
+    end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
+      RaiseException(AMessage);
+    end;
+  end;
+
+var
   ChildNodeCreated: boolean;
 begin
-  BeginKeyWord:=GetUpAtom;
-  ChildNodeCreated:=(BeginKeyWord='BEGIN') or (BeginKeyWord='ASM');
+  ChildNodeCreated:=UpAtomIs('BEGIN') or UpAtomIs('ASM');
   if ChildNodeCreated then begin
     CreateChildNode;
-    if BeginKeyWord='BEGIN' then
+    if UpAtomIs('BEGIN') then
       CurNode.Desc:=ctnBeginBlock
     else
       CurNode.Desc:=ctnAsmBlock;
+    CurNode.SubDesc:=ctnsNeedJITParsing;
   end;
   // search "end"
   ReadTilBlockEnd(false,false);
@@ -1900,11 +2044,15 @@ begin
   and (CurNode<>nil) and (CurNode.Desc=ctnProcedure) then begin
     // close procedure
     CurNode.EndPos:=CurPos.EndPos;
+    ReadNextAtom;
+    if AtomIsChar('.') then
+      RaiseExceptionWithHint;
+    UndoReadNextAtom;
     EndChildNode;
-  end else if (CurNode.Desc in [ctnProgram]) then begin
+  end else if (CurNode.Desc in [ctnProgram,ctnImplementation]) then begin
     ReadNextAtom;
     if not AtomIsChar('.') then
-      RaiseException('syntax error: missing . after program end');
+      RaiseException('missing . after end');
     // close program
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
@@ -1927,7 +2075,7 @@ function TPascalParserTool.KeyWordFuncType: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('syntax error: unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnTypeSection;
   // read all type definitions  Name = Type;
@@ -1937,14 +2085,14 @@ begin
       CreateChildNode;
       CurNode.Desc:=ctnTypeDefinition;
       if not ReadNextAtomIsChar('=') then
-        RaiseException('syntax error: = expected, but '+GetAtom+' found');
+        RaiseException('= expected, but '+GetAtom+' found');
       // read type
       ReadNextAtom;
       TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos);
       // read ;
       if not AtomIsChar(';') then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+        RaiseException('; expected, but '+GetAtom+' found');
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -1964,6 +2112,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
     interface
       var a:b;
         a:b; cvar;
+        a:b; public name 'string constant';
 
     implementation
 
@@ -1973,10 +2122,10 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('syntax error: unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnVarSection;
-  // read all variable definitions  Name : Type; [cvar;]
+  // read all variable definitions  Name : Type; [cvar;] [public [name '']]
   repeat
     ReadNextAtom;  // name
     if AtomIsIdentifier(false) then begin
@@ -1994,7 +2143,7 @@ begin
         ReadNextAtom;
       end;
       if not AtomIsChar(':') then
-        RaiseException('syntax error: : expected, but '+GetAtom+' found');
+        RaiseException(': expected, but '+GetAtom+' found');
       // read type
       ReadVariableType;
     end else begin
@@ -2021,7 +2170,7 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('syntax error: unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnConstSection;
   // read all constants  Name = <Const>; or Name : type = <Const>;
@@ -2038,7 +2187,7 @@ begin
           CurPos.EndPos-CurPos.StartPos);
       end;
       if not AtomIsChar('=') then
-        RaiseException('syntax error: = expected, but '+GetAtom+' found');
+        RaiseException('= expected, but '+GetAtom+' found');
       // read constant
       repeat
         ReadNextAtom;
@@ -2047,7 +2196,7 @@ begin
         if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and (UpAtomIs('END') or AtomIsKeyWord) then
-          RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+          RaiseException('; expected, but '+GetAtom+' found');
       until AtomIsChar(';');
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
@@ -2075,7 +2224,7 @@ function TPascalParserTool.KeyWordFuncResourceString: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('syntax error: unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom);
   CreateChildNode;
   CurNode.Desc:=ctnResStrSection;
   // read all string constants Name = 'abc';
@@ -2085,15 +2234,15 @@ begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
       if not ReadNextAtomIsChar('=') then
-        RaiseException('syntax error: = expected, but '+GetAtom+' found');
+        RaiseException('= expected, but '+GetAtom+' found');
       // read string constant
       ReadNextAtom;
       if not AtomIsStringConstant then
         RaiseException(
-          'syntax error: string constant expected, but '+GetAtom+' found');
+          'string constant expected, but '+GetAtom+' found');
       // read ;
       if not ReadNextAtomIsChar(';') then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+        RaiseException('; expected, but '+GetAtom+' found');
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -2111,7 +2260,7 @@ begin
   ReadNextAtom;
   if not PackedTypesKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
     CurPos.EndPos-CurPos.StartPos) then
-    RaiseException('syntax error: ''record'' expected, but '+GetAtom+' found');
+    RaiseException('''record'' expected, but '+GetAtom+' found');
   Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos);
 end;
@@ -2127,14 +2276,14 @@ var
   Level: integer;
 begin
   if CurNode.Desc<>ctnTypeDefinition then
-    RaiseException('syntax error: anonym classes are forbidden');
+    RaiseException('anonym classes are forbidden');
   if (LastUpAtomIs(0,'PACKED')) then begin
     if not LastAtomIs(1,'=') then
-      RaiseException('syntax error: anonym classes are not allowed');
+      RaiseException('anonym classes are not allowed');
     ClassAtomPos:=LastAtoms.GetValueAt(1);
   end else begin
     if not LastAtomIs(0,'=') then
-      RaiseException('syntax error: anonym classes are not allowed');
+      RaiseException('anonym classes are not allowed');
     ClassAtomPos:=CurPos;
   end;
   // class start found
@@ -2150,17 +2299,18 @@ begin
     ReadNextAtom;
     AtomIsIdentifier(true);
     if not ReadNextAtomIsChar(';') then
-      RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+      RaiseException('; expected, but '+GetAtom+' found');
     if ChildCreated then CurNode.Desc:=ctnClassOfType;
   end else if AtomIsChar('(') then begin
     // read inheritage brackets
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
+  CurNode.SubDesc:=ctnsNeedJITParsing; // will not create sub nodes now
   if AtomIsChar(';') then begin
     if ChildCreated and (CurNode.Desc=ctnClass) then begin
       // forward class definition found
-      CurNode.SubDesc:=ctnsForwardDeclaration;
+      CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
     end;
   end else begin
     Level:=1;
@@ -2172,7 +2322,7 @@ begin
       ReadNextAtom;
     end;
     if (CurPos.StartPos>SrcLen) then
-      RaiseException('syntax error: "end" for class/object not found');
+      RaiseException('"end" for class/object not found');
   end;
   if ChildCreated then begin
     // close class
@@ -2203,12 +2353,12 @@ begin
       EndChildNode;
       if AtomIsChar(']') then break;
       if not AtomIsChar(',') then
-        RaiseException('syntax error: ] expected, but '+GetAtom+' found');
+        RaiseException('] expected, but '+GetAtom+' found');
     until false;
     ReadNextAtom;
   end;
   if not UpAtomIs('OF') then
-    RaiseException('syntax error: ''of'' expected, but '+GetAtom+' found');
+    RaiseException('''of'' expected, but '+GetAtom+' found');
   ReadNextAtom;
   Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos);
@@ -2238,7 +2388,7 @@ begin
   end;
   if IsFunction then begin
     if not AtomIsChar(':') then
-      RaiseException('syntax error: : expected, but '+GetAtom+' found');
+      RaiseException(': expected, but '+GetAtom+' found');
     ReadNextAtom;
     AtomIsIdentifier(true);
     ReadNextAtom;
@@ -2246,23 +2396,27 @@ begin
   if UpAtomIs('OF') then begin
     if not ReadNextUpAtomIs('OBJECT') then
       RaiseException(
-        'syntax error: ''object'' expected, but '+GetAtom+' found');
+        '''object'' expected, but '+GetAtom+' found');
     ReadNextAtom;
   end;
-  if not AtomIsChar(';') then
-    RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-  // read modifiers
-  repeat
-    ReadNextAtom;
-    if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then begin
-      UndoReadNextAtom;
-      break;
-    end else begin
-      if not ReadNextAtomIsChar(';') then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-    end;
-  until false;
+  if AtomIsChar('=') and NodeHasParentOfType(CurNode,ctnConstDefinition) then
+  begin
+  end else begin
+    if not AtomIsChar(';') then
+      RaiseException('; expected, but '+GetAtom+' found');
+    // read modifiers
+    repeat
+      ReadNextAtom;
+      if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+          CurPos.EndPos-CurPos.StartPos) then begin
+        UndoReadNextAtom;
+        break;
+      end else begin
+        if not ReadNextAtomIsChar(';') then
+          RaiseException('; expected, but '+GetAtom+' found');
+      end;
+    until false;
+  end;
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
   Result:=true;
@@ -2278,7 +2432,7 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnSetType;
   if not ReadNextUpAtomIs('OF') then
-    RaiseException('syntax error: ''of'' expected, but '+GetAtom+' found');
+    RaiseException('''of'' expected, but '+GetAtom+' found');
   ReadNextAtom;
   Result:=KeyWordFuncTypeDefault;
   CurNode.EndPos:=CurPos.EndPos;
@@ -2301,7 +2455,7 @@ function TPascalParserTool.KeyWordFuncTypeType: boolean;
 // 'type identifier'
 begin
   if not LastAtomIs(0,'=') then
-    RaiseException('syntax error: identfier expected, but ''type'' found');
+    RaiseException('identfier expected, but ''type'' found');
   CreateChildNode;
   CurNode.Desc:=ctnTypeType;
   ReadNextAtom;
@@ -2331,7 +2485,7 @@ function TPascalParserTool.KeyWordFuncTypePointer: boolean;
 // '^Identfier'
 begin
   if not (LastAtomIs(0,'=') or LastAtomIs(0,':')) then
-    RaiseException('syntax error: identifier expected, but ^ found');
+    RaiseException('identifier expected, but ^ found');
   CreateChildNode;
   CurNode.Desc:=ctnPointerType;
   ReadNextAtom;
@@ -2365,7 +2519,7 @@ var SubRangeOperatorFound: boolean;
       else if AtomIs('..') then begin
         if SubRangeOperatorFound then
           RaiseException(
-            'syntax error: unexpected subrange operator ''..'' found');
+            'unexpected subrange operator ''..'' found');
         SubRangeOperatorFound:=true;
       end;
       ReadNextAtom;
@@ -2398,7 +2552,7 @@ begin
       CurNode.Desc:=ctnRangeType;
       ReadTillTypeEnd;
       if not SubRangeOperatorFound then
-        RaiseException('syntax error: invalid subrange');
+        RaiseException('invalid subrange');
       CurNode.EndPos:=CurPos.StartPos;
     end;
   end else begin
@@ -2431,19 +2585,19 @@ begin
                 break
               else if AtomIsKeyWord then
                 RaiseException(
-                  'syntax error: unexpected keyword '+GetAtom+' found');
+                  'unexpected keyword '+GetAtom+' found');
             until CurPos.StartPos>SrcLen;
             CurNode.EndPos:=CurPos.StartPos;
           end;
           EndChildNode; // close enum node
           if AtomIsChar(')') then break;
           if not AtomIsChar(',') then
-            RaiseException('syntax error: ) expected, but '+GetAtom+' found');
+            RaiseException(') expected, but '+GetAtom+' found');
         until false;
         CurNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
       end else
-        RaiseException('syntax error: invalid type');
+        RaiseException('invalid type');
     end;
   end;
   EndChildNode;
@@ -2458,7 +2612,7 @@ function TPascalParserTool.KeyWordFuncTypeRecord: boolean;
       i: packed record
            j: integer;
            k: record end;
-           case integer of
+           case y: integer of
              0: (a: integer);
              1,2,3: (b: array[char] of char; c: char);
              3: ( d: record
@@ -2466,9 +2620,14 @@ function TPascalParserTool.KeyWordFuncTypeRecord: boolean;
                          10: (i: integer; );
                          11: (y: byte);
                      end; );
+             4: (e: integer;
+                   case z of
+                   8: (f: integer)
+                 );
          end;
     end;
 }
+// function TPascalParserTool.KeyWordFuncTypeRecord: boolean;
 begin
   CreateChildNode;
   CurNode.Desc:=ctnRecordType;
@@ -2479,70 +2638,7 @@ begin
     ReadNextAtom;
     if UpAtomIs('END') then break;
     if UpAtomIs('CASE') then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnRecordCase;
-      ReadNextAtom; // read ordinal type
-      AtomIsIdentifier(true);
-      if not ReadNextUpAtomIs('OF') then // read 'of'
-        RaiseException('syntax error: ''of'' expected, but '+GetAtom+' found');
-      // read all variants
-      repeat
-        ReadNextAtom;  // read constant (variant identifier)
-        if UpAtomIs('END') then break;
-        CreateChildNode;
-        CurNode.Desc:=ctnRecordVariant;
-        repeat
-          ReadNextAtom;  // read till ':'
-          if AtomIsChar(':') then break
-          else if AtomIsChar('(') or AtomIsChar('[') then
-            ReadTilBracketClose(true)
-          else if UpAtomIs('END') or AtomIsChar(')') or AtomIsKeyWord then
-            RaiseException('syntax error: : expected, but '+GetAtom+' found');
-        until false;
-        ReadNextAtom;  // read '('
-        if not AtomIsChar('(') then
-          RaiseException('syntax error: ( expected, but '+GetAtom+' found');
-        // read all variables
-        ReadNextAtom; // read first variable name
-        repeat
-          if AtomIsChar(')') then break;
-          repeat
-            AtomIsIdentifier(true);
-            CreateChildNode;
-            CurNode.Desc:=ctnVarDefinition;
-            CurNode.EndPos:=CurPos.EndPos;
-            ReadNextAtom;
-            if AtomIsChar(':') then break;
-            if not AtomIsChar(',') then
-              RaiseException(
-                'syntax error: '','' expected, but '+GetAtom+' found');
-            EndChildNode;
-            ReadNextAtom; // read next variable name
-          until false;
-          ReadNextAtom; // read type
-          Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-             CurPos.EndPos-CurPos.StartPos);
-          if not Result then exit;
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode; // close variable definition
-          if AtomIsChar(')') then break;
-          if not AtomIsChar(';') then
-            RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-          ReadNextAtom;
-        until false;
-        ReadNextAtom;
-        if UpAtomIs('END') then begin
-          CurNode.EndPos:=CurPos.StartPos;
-          EndChildNode; // close variant
-          break;
-        end;
-        if not AtomIsChar(';') then
-          RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode; // close variant
-      until false;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode; // close case
+      KeyWordFuncTypeRecordCase;
       break;
     end else begin
       // read variable names
@@ -2554,7 +2650,7 @@ begin
         ReadNextAtom;
         if AtomIsChar(':') then break;
         if not AtomIsChar(',') then
-          RaiseException('syntax error: : expected, but '+GetAtom+' found');
+          RaiseException(': expected, but '+GetAtom+' found');
         EndChildNode; // close variable
         ReadNextAtom; // read next variable name
       until false;
@@ -2564,11 +2660,102 @@ begin
       if not Result then exit;
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode; // close variable
+      if UpAtomIs('END') then break;
     end;
   until false;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close record
   ReadNextAtom;
+  Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncTypeRecordCase: boolean;
+begin
+  if not UpAtomIs('CASE') then
+    RaiseException('[TPascalParserTool.KeyWordFuncTypeRecordCase] '
+      +'internal error');
+  CreateChildNode;
+  CurNode.Desc:=ctnRecordCase;
+  ReadNextAtom; // read ordinal type
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if AtomIsChar(':') then begin
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+  end;
+  if not UpAtomIs('OF') then // read 'of'
+    RaiseException('''of'' expected, but '+GetAtom+' found');
+  // read all variants
+  repeat
+    ReadNextAtom;  // read constant (variant identifier)
+    if UpAtomIs('END') then break;
+    CreateChildNode;
+    CurNode.Desc:=ctnRecordVariant;
+    repeat
+      ReadNextAtom;  // read till ':'
+      if AtomIsChar(':') then break
+      else if AtomIsChar('(') or AtomIsChar('[') then
+        ReadTilBracketClose(true)
+      else if UpAtomIs('END') or AtomIsChar(')') or AtomIsKeyWord then
+        RaiseException(': expected, but '+GetAtom+' found');
+    until false;
+    ReadNextAtom;  // read '('
+    if not AtomIsChar('(') then
+      RaiseException('( expected, but '+GetAtom+' found');
+    // read all variables
+    ReadNextAtom; // read first variable name
+    repeat
+      if AtomIsChar(')') then begin
+        // end of variant record
+        break;
+      end else if UpAtomIs('CASE') then begin
+        // sub record variant
+        KeyWordFuncTypeRecordCase();
+        break;
+      end else begin
+        // sub identifier
+        repeat
+          AtomIsIdentifier(true);
+          CreateChildNode;
+          CurNode.Desc:=ctnVarDefinition;
+          CurNode.EndPos:=CurPos.EndPos;
+          ReadNextAtom;
+          if AtomIsChar(':') then break;
+          if not AtomIsChar(',') then
+            RaiseException(
+              ''','' expected, but '+GetAtom+' found');
+          EndChildNode;
+          ReadNextAtom; // read next variable name
+        until false;
+        ReadNextAtom; // read type
+        Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+           CurPos.EndPos-CurPos.StartPos);
+        if not Result then exit;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode; // close variable definition
+      end;
+      if AtomIsChar(')') then break;
+      if not AtomIsChar(';') then
+        RaiseException('; expected, but '+GetAtom+' found');
+      ReadNextAtom;
+    until false;
+    if not AtomIsChar(')') then
+      RaiseException(') expected, but '+GetAtom+' found');
+    ReadNextAtom;
+    if UpAtomIs('END') or AtomIsChar(')') then begin
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode; // close variant
+      break;
+    end;
+    if not AtomIsChar(';') then
+      RaiseException('; expected, but '+GetAtom+' found');
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode; // close variant
+    // read next variant
+  until false;
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode; // close case
   Result:=true;
 end;
 
@@ -2792,7 +2979,7 @@ begin
 //writeln('TPascalParserTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
     if Result.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
-               and (Result.SubDesc=ctnsForwardDeclaration)))
+               and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
       and (not ((phpIgnoreProcsWithBody in Attr)
             and (FindProcBody(Result)<>nil))) then begin
         CurProcHead:=ExtractProcHead(Result,Attr);
@@ -2902,9 +3089,10 @@ begin
       CurClassNode:=ANode.FirstChild;
       if (CurClassNode<>nil) and (CurClassNode.Desc=ctnClass) then begin
         if (not (IgnoreForwards
-                 and (CurClassNode.SubDesc=ctnsForwardDeclaration)))
+                 and ((CurClassNode.SubDesc and ctnsForwardDeclaration)>0)))
         and (not (IgnoreNonForwards
-                 and (CurClassNode.SubDesc<>ctnsForwardDeclaration))) then begin
+                 and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
+        then begin
           MoveCursorToNodeStart(ANode);
           ReadNextAtom;
           CurClassName:=GetUpAtom;
@@ -2977,11 +3165,13 @@ function TPascalParserTool.FindMainBeginEndNode: TCodeTreeNode;
 begin
   Result:=Tree.Root;
   if (Result=nil) then exit;
-  if (Result.Desc<>ctnProgram) then begin
-    Result:=nil;
-    exit;
+  if (Result.Desc=ctnProgram) then
+    Result:=Result.LastChild
+  else begin
+    Result:=FindImplementationNode;
+    if Result<>nil then
+      Result:=Result.LastChild;
   end;
-  Result:=Result.LastChild;
   if Result=nil then exit;
   if Result.Desc<>ctnBeginBlock then Result:=nil;
 end;
@@ -3125,7 +3315,7 @@ begin
     ReadNextAtom;
   end;
   if not AtomIsChar(':') then
-    RaiseException('syntax error: : expected, but '+GetAtom+' found');
+    RaiseException(': expected, but '+GetAtom+' found');
   ReadNextAtom; // read type
   AtomIsIdentifier(true);
 end;
@@ -3143,23 +3333,24 @@ begin
 end;
 
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
-var HasForwardModifier, IsFunction: boolean;
+var HasForwardModifier, IsFunction, IsOperator: boolean;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
   or (ProcNode.FirstChild=nil) then
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
-  if ProcNode.FirstChild.SubDesc=ctnsProcHeadNodesCreated then exit;
+  if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
   if UpAtomIs('CLASS') then
     ReadNextAtom;
   IsFunction:=UpAtomIs('FUNCTION');
+  IsOperator:=UpAtomIs('OPERATOR');
   // read procedure head (= name + parameterlist + resulttype;)
   CurNode:=ProcNode.FirstChild;
   ReadNextAtom;// read first atom of head
-  AtomIsIdentifier(true);
+  if not IsOperator then AtomIsIdentifier(true);
   ReadNextAtom;
   if AtomIsChar('.') then begin
     // read procedure name of a class method (the name after the . )
@@ -3169,8 +3360,9 @@ begin
   end;
   // read rest of procedure head and build nodes
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(false,IsFunction,false,true,HasForwardModifier);
-  ProcNode.FirstChild.SubDesc:=ctnsProcHeadNodesCreated;
+  ReadTilProcedureHeadEnd(false,IsFunction,false,IsOperator,true,
+                          HasForwardModifier);
+  ProcNode.FirstChild.SubDesc:=ctnsNone;
 end;
 
 

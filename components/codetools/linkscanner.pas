@@ -141,6 +141,7 @@ type
     FIncludeStack: TList; // list of TSourceLink
     FSkippingTillEndif: boolean;
     FSkipIfLevel: integer;
+    FCompilerMode: TCompilerMode;
     procedure SkipTillEndifElse;
     function SkipIfDirective: boolean;
     function IfdefDirective: boolean;
@@ -210,6 +211,7 @@ type
         read FInitValues write FInitValues;
     property MainCode: pointer read FMainCode write SetMainCode;
     property NestedComments: boolean read FNestedComments;
+    property CompilerMode: TCompilerMode read FCompilerMode write FCompilerMode;
     property ScanTillInterfaceEnd: boolean
         read FScanTillInterfaceEnd write SetScanTillInterfaceEnd;
     procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
@@ -588,6 +590,7 @@ writeln('TLinkScanner.Scan C ',SrcLen);
   EndOfSourceFound:=false;
   CommentStyle:=CommentNone;
   CommentLevel:=0;
+  CompilerMode:=cmFPC;
   IfLevel:=0;
   FSkippingTillEndif:=false;
   if Assigned(FOnGetInitValues) then
@@ -991,12 +994,17 @@ begin
   // undefine all mode macros
   for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
     Values.Undefine('FPC_'+CompilerModeNames[AMode]);
+  CompilerMode:=cmFPC;
   // define new mode macro
   if (ValueStr='DEFAULT') then begin
+  
+    // ToDo: set mode to cmdline mode
+  
   end else begin
     ModeValid:=false;
     for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
       if CompilerModeNames[AMode]=ValueStr then begin
+        CompilerMode:=AMode;
         Values.Variables['FPC_'+CompilerModeNames[AMode]]:='1';
         ModeValid:=true;
         break;
@@ -1320,7 +1328,7 @@ begin
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
   if Values.ErrorPosition>=0 then
-    raise ELinkScannerError.Create('syntax error in directive expression ')
+    raise ELinkScannerError.Create('in directive expression ')
   else if ResultStr='0' then
     SkipTillEndifElse
   else

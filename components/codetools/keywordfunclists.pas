@@ -73,12 +73,16 @@ var
   IsKeyWordMethodSpecifier,
   IsKeyWordProcedureSpecifier,
   IsKeyWordProcedureTypeSpecifier,
+  IsKeyWordProcedureBracketSpecifier,
   IsKeyWordSection,
   IsKeyWordInConstAllowed,
   WordIsKeyWord,
   IsKeyWordBuiltInFunc,
   WordIsTermOperator,
-  WordIsPropertySpecifier: TKeyWordFunctionList;
+  WordIsPropertySpecifier,
+  WordIsBlockKeyWord,
+  WordIsLogicalBlockStart,
+  UnexpectedKeyWordInBeginBlock: TKeyWordFunctionList;
   UpChars: array[char] of char;
 
 function UpperCaseStr(const s: string): string;
@@ -377,6 +381,8 @@ end;
 
 //-----------------------------------------------------------------------------
 
+var KeyWordLists: TList;
+
 procedure InternalInit;
 var c: char;
 begin
@@ -388,7 +394,9 @@ begin
     end;
     UpChars[c]:=upcase(c);
   end;
+  KeyWordLists:=TList.Create;
   IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordMethodSpecifier);
   with IsKeyWordMethodSpecifier do begin
     Add('STDCALL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -403,6 +411,7 @@ begin
     Add('MESSAGE' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordProcedureSpecifier);
   with IsKeyWordProcedureSpecifier do begin
     Add('STDCALL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -414,8 +423,21 @@ begin
     Add('FORWARD' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASSEMBLER',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('['       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordProcedureBracketSpecifier);
+  with IsKeyWordProcedureBracketSpecifier do begin
+    Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERNPROC'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERNCONST'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordProcedureTypeSpecifier);
   with IsKeyWordProcedureTypeSpecifier do begin
     Add('STDCALL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -424,6 +446,7 @@ begin
     Add('PASCAL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordSection:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordSection);
   with IsKeyWordSection do begin
     Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -435,7 +458,9 @@ begin
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordInConstAllowed:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordInConstAllowed);
   with IsKeyWordInConstAllowed do begin
+    Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -449,6 +474,7 @@ begin
     Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsKeyWord:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsKeyWord);
   with WordIsKeyWord do begin
     Add('ABSOLUTE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -470,7 +496,6 @@ begin
     Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPORTS',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('FILE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FOR',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -517,12 +542,14 @@ begin
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordBuiltInFunc:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordBuiltInFunc);
   with IsKeyWordBuiltInFunc do begin
     Add('LOW',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsTermOperator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsTermOperator);
   with WordIsTermOperator do begin
     Add('+',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('-',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -532,11 +559,14 @@ begin
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPropertySpecifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsPropertySpecifier);
   with WordIsPropertySpecifier do begin
     Add('INDEX',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('READ',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -546,30 +576,95 @@ begin
     Add('DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NODEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  WordIsBlockKeyWord:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsBlockKeyWord);
+  with WordIsBlockKeyWord do begin
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  UnexpectedKeyWordInBeginBlock:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(UnexpectedKeyWordInBeginBlock);
+  with UnexpectedKeyWordInBeginBlock do begin
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PACKAGE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RESOURCESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TYPE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsLogicalBlockStart:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLogicalBlockStart);
+  with WordIsLogicalBlockStart do begin
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('[',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('{',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('(',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FUNCTION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPINTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PRIVATE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PUBLISHED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PUBLIC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROTECTED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PACKAGE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
 end;
+
+procedure InternalFinal;
+var i: integer;
+begin
+  for i:=0 to KeyWordLists.Count-1 do
+    TKeyWordFunctionList(KeyWordLists[i]).Free;
+  KeyWordLists.Free;
+  KeyWordLists:=nil;
+end;
+
 
 initialization
   InternalInit;
   
 finalization
-  IsKeyWordMethodSpecifier.Free;
-  IsKeyWordMethodSpecifier:=nil;
-  IsKeyWordProcedureSpecifier.Free;
-  IsKeyWordProcedureSpecifier:=nil;
-  IsKeyWordProcedureTypeSpecifier.Free;
-  IsKeyWordProcedureTypeSpecifier:=nil;
-  IsKeyWordSection.Free;
-  IsKeyWordSection:=nil;
-  IsKeyWordInConstAllowed.Free;
-  IsKeyWordInConstAllowed:=nil;
-  WordIsKeyWord.Free;
-  WordIsKeyWord:=nil;
-  IsKeyWordBuiltInFunc.Free;
-  IsKeyWordBuiltInFunc:=nil;
-  WordIsTermOperator.Free;
-  WordIsTermOperator:=nil;
-  WordIsPropertySpecifier.Free;
-  WordIsPropertySpecifier:=nil;
-
+  InternalFinal;
+  
 end.
 

@@ -773,6 +773,9 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
     // gather existing class proc definitions
     ClassProcs:=GatherProcNodes(StartNode,[phpInUpperCase,phpAddClassName],
        ExtractClassName(ClassNode,true));
+       
+    // ToDo: check for double defined methods in ClassProcs
+       
     // add new class parts to ClassProcs
     CurNode:=FirstExistingProcBody;
     ANodeExt:=FirstInsert;
@@ -805,7 +808,13 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         if ImplementationNode=nil then 
           RaiseException('implementation node not found');
         Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-        InsertPos:=ImplementationNode.EndPos;
+        if (ImplementationNode.LastChild=nil)
+        or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
+          InsertPos:=ImplementationNode.EndPos
+        else begin
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
+             ImplementationNode.LastChild.StartPos,Scanner.NestedComments);
+        end;
       end else begin
         // class is not in interface section
         // -> insert at the end of the type section
@@ -959,7 +968,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',CleanCursorPos,
 writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(ClassNode.Desc));
 {$ENDIF}
     // cursor is in class/object definition
-    if CursorNode.SubDesc=ctnsForwardDeclaration then exit;
+    if (CursorNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode C ',CleanCursorPos,', |',copy(Src,CleanCursorPos,8));
@@ -1079,7 +1088,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode not in-a-class ... ');
     ProcNode:=CursorNode;
     if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
     if (ProcNode.Desc=ctnProcedure)
-    and (ProcNode.SubDesc=ctnsForwardDeclaration) then begin
+    and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
       // Node is forward Proc
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode in a forward procedure ... ');
@@ -1097,16 +1106,15 @@ writeln('TCodeCompletionCodeTool.CompleteCode Body not found -> create it ... ')
       // -> create proc body at end of implementation
 
       Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-      if ImplementationNode.Desc=ctnImplementation then
+      if (ImplementationNode.LastChild=nil)
+      or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
+        // insert at end of code
         InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
            ImplementationNode.EndPos,Scanner.NestedComments)
       else begin
         // insert in front of main program begin..end.
-        StartNode:=ImplementationNode.LastChild;
-        if (StartNode=nil) or (StartNode.Desc<>ctnBeginBlock) then 
-          RaiseException('main Begin..End block not found');
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,StartNode.StartPos,
-           Scanner.NestedComments);
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
+           ImplementationNode.LastChild.StartPos,Scanner.NestedComments);
       end;
 
       // build nice proc

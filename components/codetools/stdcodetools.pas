@@ -52,8 +52,6 @@ uses
 type
   TStandardCodeTool = class(TFindDeclarationTool)
   private
-    BlockKeywordFuncList: TKeyWordFunctionList;
-    procedure BuildBlockKeyWordFuncList;
     function ReadTilGuessedUnclosedBlock(MinCleanPos: integer;
       ReadOnlyOneBlock: boolean): boolean;
     function ReadForwardTilAnyBracketClose: boolean;
@@ -126,12 +124,15 @@ type
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindBlockStart(CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function GuessUnclosedBlock(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
   end;
 
 
 implementation
+
 
 type
   TBlockKeyword = (bkwNone, bkwBegin, bkwAsm, bkwTry, bkwCase, bkwRepeat,
@@ -146,6 +147,19 @@ const
       'EXCEPT'
     );
 
+var
+  BlockKeywordFuncList: TKeyWordFunctionList;
+
+procedure BuildBlockKeyWordFuncList;
+var BlockWord: TBlockKeyword;
+begin
+  if BlockKeywordFuncList=nil then begin
+    BlockKeywordFuncList:=TKeyWordFunctionList.Create;
+    for BlockWord:=Low(TBlockKeyword) to High(TBlockKeyword) do
+      with BlockKeywordFuncList do
+        Add(BlockKeywords[BlockWord],{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+end;
 
 
 { TStandardCodeTool }
@@ -229,11 +243,11 @@ begin
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
     ctnPackage,ctnLibrary,ctnInterface,ctnImplementation]) do begin
-    if SectionNode.Desc in [ctnProgram, ctnPackage,ctnLibrary, ctnInterface,
-       ctnImplementation] then
+    if SectionNode.Desc in [ctnProgram, ctnInterface, ctnImplementation] then
     begin
       UsesNode:=SectionNode.FirstChild;
-      if FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
+      if (UsesNode.Desc=ctnUsesSection)
+      and FindUnitInUsesSection(UsesNode,UpperUnitName,NamePos,InPos) then begin
         Result:=true;
         exit;
       end;
@@ -436,8 +450,8 @@ begin
   Result:=true;
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
-    if (SectionNode.Desc in [ctnProgram,ctnPackage,ctnLibrary,ctnInterface,
-         ctnImplementation]) then begin
+    if (SectionNode.Desc in [ctnProgram,ctnInterface,ctnImplementation]) then
+    begin
       if RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
          SourceChangeCache) then begin
         Result:=RemoveUnitFromAllUsesSections(UpperUnitName,SourceChangeCache);
@@ -971,6 +985,8 @@ end;
 
 function TStandardCodeTool.FindBlockCounterPart(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+// jump from bracket-open to bracket-close or 'begin' to 'end'
+// or 'until' to 'repeat' ...
 var Dummy, CleanCursorPos: integer;
 begin
   Result:=false;
@@ -1021,6 +1037,63 @@ writeln('TStandardCodeTool.FindBlockCounterPart C  Word=',GetAtom);
   Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
 end;
 
+function TStandardCodeTool.FindBlockStart(CursorPos: TCodeXYPosition;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+// jump to beginning of current block
+// e.g. bracket open, 'begin', 'repeat', ...
+var Dummy, CleanCursorPos: integer;
+begin
+  Result:=false;
+  // scan code
+{$IFDEF CTDEBUG}
+writeln('TStandardCodeTool.FindBlockStart A CursorPos=',CursorPos.X,',',CursorPos.Y);
+{$ENDIF}
+  if UpdateNeeded(false) then BeginParsing(true,false);
+  // find the CursorPos in cleaned source
+  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
+  if (Dummy<>0) and (Dummy<>-1) then
+    RaiseException('cursor pos outside of code');
+  // read word at cursor
+  MoveCursorToCleanPos(CleanCursorPos);
+  while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
+    dec(CurPos.StartPos);
+  while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
+    inc(CurPos.EndPos);
+  try
+    repeat
+      ReadPriorAtom;
+      if (CurPos.StartPos<0) then begin
+        // start of source found -> this is always a block start
+        CurPos.StartPos:=1;
+        Result:=true;
+        exit;
+      end
+      else if Src[CurPos.StartPos] in [')',']','}'] then begin
+        // jump backward to matching bracket
+        CurPos.EndPos:=CurPos.StartPos+1;
+        if not ReadBackwardTilAnyBracketClose then exit;
+      end
+      else if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
+        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+      begin
+        // block start found
+        Result:=true;
+        exit;
+      end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+      or UpAtomIs('UNTIL') then
+      begin
+        // read backward till BEGIN, CASE, ASM, RECORD, REPEAT
+        ReadBackTilBlockEnd(true);
+      end;
+    until false;
+  finally
+    if Result then begin
+      // CursorPos now contains the counter block keyword
+      Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
+    end;
+  end;
+end;
+
 function TStandardCodeTool.GuessUnclosedBlock(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 { search a block (e.g. begin..end) that looks unclosed, i.e. 'begin'
@@ -1037,6 +1110,8 @@ function TStandardCodeTool.GuessUnclosedBlock(CursorPos: TCodeXYPosition;
     
     if expr then begin  // first char in line is relevant, not the block keyword
     end
+    
+    class;
 
         
   Examples for bad blocks:
@@ -1071,6 +1146,7 @@ writeln('TStandardCodeTool.GuessUnclosedBlock A CursorPos=',CursorPos.X,',',Curs
   BuildBlockKeyWordFuncList;
   if ReadTilGuessedUnclosedBlock(CleanCursorPos,false) then
     Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
+ WriteDebugTreeReport;
 end;
 
 function TStandardCodeTool.ReadTilGuessedUnclosedBlock(
@@ -1112,14 +1188,30 @@ begin
       if BlockType=bkwNone then begin
         case CurBlockWord of
 
-        bkwBegin,bkwRepeat,bkwCase,bkwTry,bkwRecord,bkwClass,bkwObject,
-        bkwInterface,bkwDispInterface:
+        bkwBegin, bkwAsm, bkwRepeat, bkwCase, bkwTry, bkwRecord:
           begin
             BlockType:=CurBlockWord;
             BlockStart:=CurPos.StartPos;
           end;
+          
+        bkwClass, bkwObject, bkwInterface, bkwDispInterface:
+          begin
+            ReadNextAtom;
+            if AtomIsChar(';')
+            or ((CurBlockWord=bkwClass) and UpAtomIs('OF'))
+            or ((CurBlockWord=bkwClass)
+                and (UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE')))
+            or ((CurBlockWord=bkwObject) and LastUpAtomIs(0,'OF')) then
+            begin
+              // forward class or 'class of' or class method or 'of object'
+            end else begin
+              UndoReadNextAtom;
+              BlockType:=CurBlockWord;
+              BlockStart:=CurPos.StartPos;
+            end;
+          end;
 
-        bkwEnd,bkwUntil:
+        bkwEnd, bkwUntil:
           begin
             // close block keywords found, but no block was opened
             //  -> unclosed block found
@@ -1149,6 +1241,10 @@ begin
           exit;
         end;
         // end block
+        if (BlockType=bkwRecord) and (CurBlockWord=bkwCase) then begin
+          // the 'end' keyword is the end for the case block and the record block
+          UndoReadNextAtom;
+        end;
         BlockType:=bkwNone;
         if ReadOnlyOneBlock then break;
       end
@@ -1172,7 +1268,7 @@ begin
       else
       if ((BlockType in [bkwBegin,bkwRepeat,bkwTry,bkwFinally,bkwExcept,
           bkwCase])
-        and (CurBlockWord in [bkwBegin,bkwRepeat,bkwTry,bkwCase]))
+        and (CurBlockWord in [bkwBegin,bkwRepeat,bkwTry,bkwCase,bkwAsm]))
       or ((BlockType in [bkwClass,bkwInterface,bkwDispInterface,bkwObject,
           bkwRecord])
         and (CurBlockWord in [bkwRecord])) then
@@ -1184,6 +1280,10 @@ begin
       else
       if (BlockType=bkwRecord) and (CurBlockWord=bkwCase) then begin
         // variant record
+      end
+      else
+      if (BlockType=bkwClass) and (CurBlockWord=bkwClass) then begin
+        // class method
       end
       else
       begin
@@ -1199,18 +1299,6 @@ begin
       end;
     end;
     ReadNextAtom;
-  end;
-end;
-
-procedure TStandardCodeTool.BuildBlockKeyWordFuncList;
-var BlockWord: TBlockKeyword;
-begin
-  if BlockKeywordFuncList=nil then begin
-    BlockKeywordFuncList:=TKeyWordFunctionList.Create;
-    for BlockWord:=Low(TBlockKeyword) to High(TBlockKeyword) do
-      with BlockKeywordFuncList do
-        Add(BlockKeywords[BlockWord],{$ifdef FPC}@{$endif}AllwaysTrue);
-    AddKeyWordFuncList(BlockKeywordFuncList);
   end;
 end;
 

@@ -94,6 +94,8 @@ type
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
     procedure MoveCursorToCleanPos(ACleanPos: integer);
+    procedure MoveCursorToCleanPos(ACleanPos: PChar);
+    function IsPCharInSrc(ACleanPos: PChar): boolean;
     function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBracketClose(ExceptionOnNotFound: boolean): boolean;
@@ -125,6 +127,11 @@ type
       CleanStartPos1, CleanStartPos2: integer): boolean;
     function CompareSrcIdentifier(CleanStartPos: integer;
       const Identifier: string): boolean;
+    function CompareSrcIdentifiers(Identifier1, Identifier2: PChar): boolean;
+    function CompareSrcIdentifiers(CleanStartPos: integer;
+      AnIdentifier: PChar): boolean;
+    function GetIdentifier(Identifier: PChar): string;
+    function GetIdentifier(CleanStartPos: integer): string;
     procedure ReadPriorAtom;
 
     procedure CreateChildNode;
@@ -139,7 +146,10 @@ type
     destructor Destroy; override;
   end;
 
-  ECodeToolError = class(Exception);
+  ECodeToolError = class(Exception)
+    Sender: TCustomCodeTool;
+    constructor Create(ASender: TCustomCodeTool; const AMessage: string);
+  end;
 
 
 implementation
@@ -180,16 +190,19 @@ end;
 
 procedure TCustomCodeTool.RaiseException(const AMessage: string);
 var CaretXY: TCodeXYPosition;
+  CursorPos: integer;
 begin
   ErrorPosition.Code:=nil;
-  if (CleanPosToCaret(CurPos.StartPos,CaretXY))
+  CursorPos:=CurPos.StartPos;
+  if (CursorPos>SrcLen) and (SrcLen>0) then CursorPos:=SrcLen;
+  if (CleanPosToCaret(CursorPos,CaretXY))
   and (CaretXY.Code<>nil) then begin
     ErrorPosition:=CaretXY;
   end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
     ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
     ErrorPosition.Y:=-1;
   end;
-  raise ECodeToolError.Create(AMessage);
+  raise ECodeToolError.Create(Self,AMessage);
 end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
@@ -215,18 +228,18 @@ begin
     Result:='';
   case Desc of
   ctnProcedure:
-    case SubDesc of
-    // CodeTreeNodeSubDescriptors
-    ctnsForwardDeclaration : Result:='Forward';
+    begin
+      if (SubDesc and ctnsForwardDeclaration)>0 then Result:='Forward';
+    end;
+  ctnProcedureHead, ctnBeginBlock:
+    begin
+      if (SubDesc and ctnsNeedJITParsing)>0 then Result:='Unparsed';
     end;
   ctnClass:
-    case SubDesc of
-    // CodeTreeNodeSubDescriptors
-    ctnsForwardDeclaration : Result:='Forward';
-    end;
-  ctnProcedureHead:
-    case SubDesc of
-    ctnsProcHeadNodesCreated: Result:='Nodes Created';
+    begin
+      Result:='';
+      if (SubDesc and ctnsForwardDeclaration)>0 then Result:='Forward';
+      if (SubDesc and ctnsNeedJITParsing)>0 then Result:=Result+'Unparsed';
     end;
   end;
 end;
@@ -380,14 +393,14 @@ begin
       else begin
         if ExceptionOnNotFound then
           RaiseException(
-            'syntax error: identifier expected, but keyword '+GetAtom+' found')
+            'identifier expected, but keyword '+GetAtom+' found')
         else
           Result:=false;
       end;
     end else begin
       if ExceptionOnNotFound then
         RaiseException(
-          'syntax error: identifier expected, but '+GetAtom+' found')
+          'identifier expected, but '+GetAtom+' found')
       else
         Result:=false;
     end;
@@ -548,10 +561,22 @@ begin
           '''':
             begin
               inc(CurPos.EndPos);
-              while (CurPos.EndPos<=SrcLen)
-              and (Src[CurPos.EndPos]<>'''') do
-                inc(CurPos.EndPos);
-              inc(CurPos.EndPos);
+              while (CurPos.EndPos<=SrcLen) do begin
+                case Src[CurPos.EndPos] of
+                
+                '''':
+                  begin
+                    inc(CurPos.EndPos);
+                    break;
+                  end;
+                  
+                #10,#13:
+                  break;
+                  
+                else
+                  inc(CurPos.EndPos);
+                end;
+              end;
             end;
           else
             break;
@@ -653,7 +678,8 @@ const
     ntIdentifier, ntCharConstant, ntFloat, ntFloatWithExponent];
 
 var c1, c2: char;
-  CommentLvl, PrePos: integer;
+  CommentLvl, PrePos, OldPrePos: integer;
+  IsStringConstant: boolean;
   ForbiddenNumberTypes: TNumberTypes;
 begin
   if LastAtoms.Count>0 then begin
@@ -663,9 +689,12 @@ begin
   // Skip all spaces and comments
   CommentLvl:=0;
   dec(CurPos.StartPos);
+  IsStringConstant:=false;
+  OldPrePos:=0;
   while CurPos.StartPos>=1 do begin
     if IsCommentEndChar[Src[CurPos.StartPos]] then begin
       case Src[CurPos.StartPos] of
+      
       '}': // pascal comment
         begin
           CommentLvl:=1;
@@ -678,29 +707,89 @@ begin
             dec(CurPos.StartPos);
           end;
         end;
+        
       #10,#13: // possible Delphi comment
         begin
-          // read backwards till line start or comment start
           dec(CurPos.StartPos);
           if (CurPos.StartPos>=1) and (Src[CurPos.StartPos] in [#10,#13])
           and (Src[CurPos.StartPos+1]<>Src[CurPos.StartPos]) then
             dec(CurPos.StartPos);
+          // read backwards till line start
           PrePos:=CurPos.StartPos;
-          while (PrePos>1) do begin
+          while (PrePos>=1) and (not (Src[PrePos] in [#10,#13])) do
+            dec(PrePos);
+          // read line forward to find out,
+          // if line ends in comment or string constant
+          repeat
+            inc(PrePos);
             case Src[PrePos] of
+            
             '/':
-              if Src[PrePos-1]='/' then begin
+              if Src[PrePos+1]='/' then begin
                 // this was a delphi comment -> skip comment
-                CurPos.StartPos:=PrePos-2;
+                CurPos.StartPos:=PrePos-1;
                 break;
               end;
+              
+            '{':
+              begin
+                // skip pascal comment
+                CommentLvl:=1;
+                inc(PrePos);
+                while (PrePos<=CurPos.StartPos) and (CommentLvl>0) do begin
+                  case Src[PrePos] of
+                  '{': if Scanner.NestedComments then inc(CommentLvl);
+                  '}': dec(CommentLvl);
+                  end;
+                  inc(PrePos);
+                end;
+              end;
+              
+            '(':
+              begin
+                inc(PrePos);
+                if Src[PrePos]='*' then begin
+                  // skip turbo pascal comment
+                  inc(PrePos);
+                  while (PrePos<CurPos.StartPos)
+                  and ((Src[PrePos]<>'*') or (Src[PrePos+1]<>')')) do
+                    inc(PrePos);
+                  inc(PrePos);
+                end;
+              end;
+              
+            '''':
+              begin
+                // a string constant -> skip it
+                OldPrePos:=PrePos;
+                repeat
+                  inc(PrePos);
+                  case Src[PrePos] of
+                  
+                  '''':
+                    break;
+
+                  #10,#13:
+                    begin
+                      // string constant right border is the line end
+                      // -> last atom of line found
+                      IsStringConstant:=true;
+                      break;
+                    end;
+
+                  end;
+                until false;
+                if IsStringConstant then break;
+              end;
+              
             #10,#13:
-              // it was just a line break
+              // no comment and no string constant found
               break;
+
             end;
-            dec(PrePos);
-          end;
-        end;
+          until PrePos>=CurPos.StartPos;
+        end; // end of possible Delphi comment
+        
       ')': // old turbo pascal comment
         if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='*') then begin
           dec(CurPos.StartPos,3);
@@ -710,6 +799,7 @@ begin
           dec(CurPos.StartPos);
         end else
           break;
+          
       end;
     end else if IsSpaceChar[Src[CurPos.StartPos]] then begin
       repeat
@@ -725,6 +815,13 @@ begin
   if CurPos.StartPos<1 then
     exit;
   // read atom
+  if IsStringConstant then begin
+    CurPos.StartPos:=OldPrePos;
+    if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='''') then begin
+      ReadStringConstantBackward;
+    end;
+    exit;
+  end;
   c2:=UpperSrc[CurPos.StartPos];
   case c2 of
     '_','A'..'Z':
@@ -901,7 +998,7 @@ begin
   end else begin
     if ExceptionOnNotFound then
       RaiseException(
-        'syntax error: bracket open expected, but '+GetAtom+' found');
+        'bracket open expected, but '+GetAtom+' found');
     exit;
   end;
   Start:=CurPos;
@@ -913,7 +1010,7 @@ begin
       CurPos:=Start;
       if ExceptionOnNotFound then
         RaiseException(
-          'syntax error: bracket '+CloseBracket+' not found');
+          'bracket '+CloseBracket+' not found');
       exit;
     end;
     if (AtomIsChar('(')) or (AtomIsChar('[')) then begin
@@ -939,7 +1036,7 @@ begin
   end else begin
     if ExceptionOnNotFound then
       RaiseException(
-        'syntax error: bracket close expected, but '+GetAtom+' found');
+        'bracket close expected, but '+GetAtom+' found');
     exit;
   end;
   Start:=CurPos;
@@ -951,7 +1048,7 @@ begin
       CurPos:=Start;
       if ExceptionOnNotFound then
         RaiseException(
-          'syntax error: bracket '+CloseBracket+' not found');
+          'bracket '+CloseBracket+' not found');
       exit;
     end;
     if (AtomIsChar(')')) or (AtomIsChar(']')) then begin
@@ -965,10 +1062,13 @@ procedure TCustomCodeTool.BeginParsing(DeleteNodes,
   OnlyInterfaceNeeded: boolean);
 begin
   Scanner.Scan(OnlyInterfaceNeeded,CheckFilesOnDisk);
-  Src:=Scanner.CleanedSrc;
-  FLastScannerChangeStep:=Scanner.ChangeStep;
-  UpperSrc:=UpperCaseStr(Src);
-  SrcLen:=length(Src);
+  if FLastScannerChangeStep<>Scanner.ChangeStep then begin
+    FLastScannerChangeStep:=Scanner.ChangeStep;
+    Src:=Scanner.CleanedSrc;
+    UpperSrc:=UpperCaseStr(Src);
+    SrcLen:=length(Src);
+    FForceUpdateNeeded:=true;
+  end;
   CurPos.StartPos:=1;
   CurPos.EndPos:=1;
   LastAtoms.Clear;
@@ -990,6 +1090,28 @@ begin
   CurPos.EndPos:=ACleanPos;
   LastAtoms.Clear;
   CurNode:=nil;
+end;
+
+procedure TCustomCodeTool.MoveCursorToCleanPos(ACleanPos: PChar);
+var NewPos: integer;
+begin
+  if Src='' then
+    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] Src empty');
+  NewPos:=Integer(ACleanPos)-Integer(@Src[1])+1;
+  if (NewPos<1) or (NewPos>SrcLen) then
+    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] '
+      +'CleanPos not in Src');
+  MoveCursorToCleanPos(NewPos);
+end;
+
+function TCustomCodeTool.IsPCharInSrc(ACleanPos: PChar): boolean;
+var NewPos: integer;
+begin
+  Result:=false;
+  if Src='' then exit;
+  NewPos:=Integer(ACleanPos)-Integer(@Src[1])+1;
+  if (NewPos<1) or (NewPos>SrcLen) then exit;
+  Result:=true;
 end;
 
 procedure TCustomCodeTool.CreateChildNode;
@@ -1229,5 +1351,74 @@ begin
     and ((CleanStartPos>Srclen) or (not IsIdentChar[Src[CleanStartPos]]));
 end;
 
+function TCustomCodeTool.CompareSrcIdentifiers(Identifier1, Identifier2: PChar
+  ): boolean;
+begin
+  Result:=false;
+  if (Identifier1=nil) or (Identifier2=nil) then exit;
+  while IsIdentChar[Identifier1[0]] do begin
+    if (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) then begin
+      inc(Identifier1);
+      inc(Identifier2);
+    end else
+      exit;
+  end;
+  Result:=(not IsIdentChar[Identifier2[0]]);
+end;
+
+function TCustomCodeTool.CompareSrcIdentifiers(CleanStartPos: integer;
+  AnIdentifier: PChar): boolean;
+begin
+  Result:=false;
+  if (AnIdentifier=nil) or (CleanStartPos<1) or (CleanStartPos>SrcLen) then
+    exit;
+  while IsIdentChar[AnIdentifier[0]] do begin
+    if (UpChars[AnIdentifier[0]]=UpperSrc[CleanStartPos]) then begin
+      inc(AnIdentifier);
+      inc(CleanStartPos);
+      if CleanStartPos>SrcLen then break;
+    end else
+      exit;
+  end;
+  Result:=(CleanStartPos>SrcLen) or (not IsIdentChar[Src[CleanStartPos]]);
+end;
+
+function TCustomCodeTool.GetIdentifier(Identifier: PChar): string;
+var len: integer;
+begin
+  if Identifier<>nil then begin
+    len:=0;
+    while (IsIdentChar[Identifier[len]]) do inc(len);
+    SetLength(Result,len);
+    if len>0 then
+      Move(Identifier[0],Result[1],len);
+  end else
+    Result:='';
+end;
+
+function TCustomCodeTool.GetIdentifier(CleanStartPos: integer): string;
+var len: integer;
+begin
+  if (CleanStartPos>=1) then begin
+    len:=0;
+    while (CleanStartPos<=SrcLen)
+    and (IsIdentChar[Src[CleanStartPos+len]]) do
+      inc(len);
+    SetLength(Result,len);
+    if len>0 then
+      Move(Src[CleanStartPos],Result[1],len);
+  end else
+    Result:='';
+end;
+
+
+{ ECodeToolError }
+
+constructor ECodeToolError.Create(ASender: TCustomCodeTool;
+  const AMessage: string);
+begin
+  inherited Create(AMessage);
+  Sender:=ASender;
+end;
 
 end.
