@@ -2983,6 +2983,7 @@ begin
   FCreatingHandle := True;
   try
     FHandle := WidgetSetClass.CreateHandle(Self, Params);
+    Constraints.UpdateInterfaceConstraints;
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
     if not HandleAllocated then
       RaiseGDBException('Handle creation failed');
@@ -3445,6 +3446,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.214  2004/03/30 20:38:14  mattias
+  fixed interface constraints, fixed syncompletion colors
+
   Revision 1.213  2004/03/19 00:03:15  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

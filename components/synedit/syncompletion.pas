@@ -78,6 +78,7 @@ type
     FClSelect: TColor;
     FAnsi: boolean;
     {$IFDEF SYN_LAZARUS}
+    FBackgroundColor: TColor;
     FOnSearchPosition:TSynBaseCompletionSearchPosition;
     FOnKeyCompletePrefix: TNotifyEvent;
     FTextColor: TColor;
@@ -127,6 +128,7 @@ type
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
     property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;
+    property BackgroundColor: TColor read FBackgroundColor write FBackgroundColor;
     property TextColor: TColor read FTextColor write FTextColor;
     property TextSelectedColor: TColor
       read FTextSelectedColor write FTextSelectedColor;
@@ -311,15 +313,19 @@ begin
   Scroll.Width := 10;
   {$IFDEF SYN_LAZARUS}
   Scroll.Visible := True;
-  Scroll.Anchors:=[akRight];
+  Scroll.Anchors:=[akTop,akRight];
   Scroll.Align:=alRight;
   FTextColor:=clBlack;
   FTextSelectedColor:=clWhite;
   Caption:='Completion';
+  Color:=clNone;
+  FBackgroundColor:=clWhite;
   {$ENDIF}
   Visible := false;
   FFontHeight := Canvas.TextHeight('Cyrille de Brebisson')+2;
+  {$IFNDEF SYN_LAZARUS}
   Color := clWindow;
+  {$ENDIF}
   ClSelect := clHighlight;
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
   bitmap := TBitmap.Create;
@@ -446,18 +452,17 @@ begin
   {$ENDIF}
   Scroll.LargeChange := NbLinesInWindow;
 
-  {$IFNDEF SYN_LAZARUS}
-  // bitmap.canvas.draw is unfinished in lcl
   with bitmap do begin
-    canvas.pen.color := color;
+    {$IFNDEF SYN_LAZARUS}
+    canvas.pen.color := fbcolor;
     canvas.brush.color := color;
     canvas.Rectangle(0, 0, Width, Height);
-  {$ENDIF}
+    {$ENDIF}
     for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - 1) do begin
       if i + Scroll.Position = Position then begin
         Canvas.Brush.Color := clSelect;
         Canvas.Pen.Color := clSelect;
-        Canvas.Rectangle(0, (FFontHeight * i)+1, width, (FFontHeight * (i + 1))+1);
+        Canvas.Rectangle(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1);
         Canvas.Pen.Color := clBlack;
         {$IFDEF SYN_LAZARUS}
         Canvas.Font.Color := TextSelectedColor;
@@ -468,11 +473,12 @@ begin
       end
       else
         Begin
-          Canvas.Brush.Color := Color;
           {$IFDEF SYN_LAZARUS}
+          Canvas.Brush.Color := BackgroundColor;
           Canvas.Font.Color := TextColor;
-          Canvas.FillRect(Rect(0, (FFontHeight * i)+1, width, (FFontHeight * (i + 1))+1));
+          Canvas.FillRect(Rect(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1));
           {$ELSE}
+          Canvas.Brush.Color := Color;
           Canvas.Font.Color := clBlack;
           {$ENDIF}
         end;
@@ -480,7 +486,7 @@ begin
       if not Assigned(OnPaintItem)
       or not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
           {$IFDEF SYN_LAZARUS}
-          1, FFontHeight * i +1, i + Scroll.Position = Position,
+          0, FFontHeight * i, i + Scroll.Position = Position,
           i + Scroll.Position
           {$ELSE}
           0, FFontHeight * i
@@ -499,11 +505,9 @@ begin
       canvas.FillRect(Rect(0, i, Width, Height));
     end;
     {$ENDIF}
-  {$IFNDEF SYN_LAZARUS}
   end;
   Canvas.Draw(1, 1, bitmap);
   // draw a rectangle around the window
-  {$ENDIF}
   {$IFDEF SYN_LAZARUS}
   Canvas.Pen.Color := TextColor;
   {$ELSE}

@@ -86,7 +86,8 @@ begin
     // switch width and height
     OldWidth:=Width;
     OldHeight:=Height;
-    RecreateWnd;
+    if HandleAllocated then
+      RecreateWnd;
     SetBounds(Left,Top,OldHeight,OldWidth);
   end;
 end;
@@ -116,7 +117,7 @@ begin
   end;
 
   if HandleAllocated then
-    CNSendMEssage(LM_SetProperties,Self,nil);
+    CNSendMessage(LM_SetProperties,Self,nil);
 end;
 
 procedure TScrollBar.SetPosition(Value: Integer);

@@ -4167,7 +4167,6 @@ begin
     ReleaseDC(0, DC);
   end;
   if not IsValidDC(DC) then exit;
-  BeginGDKErrorTrap;
   with TDeviceContext(DC) do
   Case Index of
   HORZRES : { Horizontal width in pixels }
@@ -4225,7 +4224,6 @@ begin
   else
     writeln('TGtkWidgetSet.GetDeviceCaps not supported: Type=',Index);
   end;
-  EndGDKErrorTrap;
 end;
 
 {------------------------------------------------------------------------------
@@ -8748,6 +8746,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.343  2004/03/30 20:38:14  mattias
+  fixed interface constraints, fixed syncompletion colors
+
   Revision 1.342  2004/03/28 12:49:23  mattias
   implemented mask merge and extraction for raw images
 

@@ -58,21 +58,34 @@ implementation
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
-  
+var
+  BGRed: Integer;
+  BGGreen: Integer;
+  BGBlue: Integer;
+
   function InvertColor(AColor: TColor): TColor;
   var Red, Green, Blue: integer;
   begin
-    Result:=clWhite;
     Red:=(AColor shr 16) and $ff;
     Green:=(AColor shr 8) and $ff;
     Blue:=AColor and $ff;
-    if Red+Green+Blue>$180 then
-      Result:=clBlack;
+    Red:=Red+$a0;
+    Green:=Green+$a0;
+    Blue:=Blue+$a0;
+    Result:=((Red and $ff) shl 16)+((Green and $ff) shl 8)+(Blue and $ff);
   end;
 
   procedure SetFontColor(NewColor: TColor);
+  var
+    FGRed: Integer;
+    FGGreen: Integer;
+    FGBlue: Integer;
   begin
-    if ItemSelected then NewColor:=InvertColor(NewColor);
+    FGRed:=(NewColor shr 16) and $ff;
+    FGGreen:=(NewColor shr 8) and $ff;
+    FGBlue:=NewColor and $ff;
+    if Abs(FGRed-BGRed)+Abs(FGGreen-BGGreen)+Abs(FGBlue-BGBlue)<$180 then
+      NewColor:=InvertColor(NewColor);
     ACanvas.Font.Color:=NewColor;
   end;
   
@@ -82,6 +95,7 @@ var
   IdentItem: TIdentifierListItem;
   AColor: TColor;
   ANode: TCodeTreeNode;
+  BackgroundColor: TColor;
 begin
   if CurrentCompletionType=ctIdentCompletion then begin
     // draw
@@ -90,6 +104,11 @@ begin
       ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
       exit;
     end;
+    BackgroundColor:=ACanvas.Brush.Color;
+    BGRed:=(BackgroundColor shr 16) and $ff;
+    BGGreen:=(BackgroundColor shr 8) and $ff;
+    BGBlue:=BackgroundColor and $ff;
+
     // first write the type
     // var, procedure, property, function, type, const
     case IdentItem.GetDesc of
@@ -132,7 +151,7 @@ begin
       AColor:=clGray;
       s:='';
     end;
-    
+
     SetFontColor(AColor);
     ACanvas.TextOut(x+1,y,s);
     inc(x,ACanvas.TextWidth('procedure '));

@@ -1482,7 +1482,7 @@ begin
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
   EditorOpts.GetSynEditSelectedColor(FEditor);
-  TSourceNoteBook(FAOwner).UpdateActiveEditColors;
+  SourceNoteBook.UpdateActiveEditColors;
 end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
@@ -1501,11 +1501,12 @@ begin
   EditorComponent.Invalidate;
 end;
 
-Function TSourceEditor.RefreshEditorSettings : Boolean;
+Function TSourceEditor.RefreshEditorSettings: Boolean;
 Begin
   Result:=true;
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
+  SourceNoteBook.UpdateActiveEditColors;
   if EditorOpts.CtrlMouseLinks then
     FEditor.Options:=FEditor.Options+[eoShowCtrlMouseLinks]
   else
@@ -2668,10 +2669,15 @@ Begin
   // set colors
   if (ActiveEditor<>nil) and (CurCompletionControl.TheForm<>nil) then begin
     with CurCompletionControl.TheForm do begin
-      Color:=FActiveEditDefaultBGColor;
+      BackgroundColor:=FActiveEditDefaultBGColor;
       clSelect:=FActiveEditSelectedBGColor;
       TextColor:=FActiveEditDefaultFGColor;
       TextSelectedColor:=FActiveEditSelectedFGColor;
+      //writeln('TSourceNotebook.ccExecute A Color=',HexStr(Cardinal(Color),8),
+      // ' clSelect=',HexStr(Cardinal(clSelect),8),
+      // ' TextColor=',HexStr(Cardinal(TextColor),8),
+      // ' TextSelectedColor=',HexStr(Cardinal(TextSelectedColor),8),
+      // '');
     end;
   end;
 End;

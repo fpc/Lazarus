@@ -120,6 +120,7 @@ begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
         MinWidth:=Widget^.requisition.Width;
       end;
+      writeln('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
     end;
@@ -462,6 +463,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/03/30 20:38:14  mattias
+  fixed interface constraints, fixed syncompletion colors
+
   Revision 1.24  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 
