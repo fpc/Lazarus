@@ -92,6 +92,7 @@ type
     hWnd: HWND; 
     GC: pgdkGC;
     Drawable: PGDKDrawable;
+    Origin: TPoint;
     PenPos: TPoint;
     CurrentBitmap: PGdiObject;
     CurrentFont: PGdiObject;
@@ -324,6 +325,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/08/30 12:32:22  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.14  2002/08/21 14:44:18  lazarus
   MG: accelerated synedit
 

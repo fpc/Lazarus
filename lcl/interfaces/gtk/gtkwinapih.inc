@@ -26,10 +26,10 @@ function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 Function BringWindowToTop(hWnd : HWND): Boolean; override;
 
-function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
+function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; override;
 function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; override;
-Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;override;
+Function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 
 // clipboard
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;
@@ -113,6 +113,7 @@ function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
+function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
@@ -155,7 +156,7 @@ Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; overri
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt; override;
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean; override;
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var OldPoint: TPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 function ShowCaret(hWnd: HWND): Boolean; override;
@@ -178,6 +179,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/08/30 12:32:25  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.42  2002/08/28 09:40:52  lazarus
   MG: reduced paint messages and DC getting/releasing
 
