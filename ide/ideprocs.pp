@@ -48,7 +48,13 @@ var AText: string;
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
-  {$IFDEF linux}if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+  if not FileExists(AFilename) then begin
+writeln('BBBBBBBB2');
+writeln('BBBBBBBB3 "',AFilename,'"');
+    raise Exception('file "'+AFilename+'" does not exist');
+  end;
+  {$IFDEF linux}
+  if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
   begin
     AText:='"'+AFilename+'"';

@@ -172,10 +172,17 @@ begin
       end;
     end;
     try
-      CheckIfFileIsExecutable(CmdLine);
+      try
+        CheckIfFileIsExecutable(CmdLine);
+      except
+        writeln('BBBBBBBB');
+      end;
     except
       on E: Exception do begin
+writeln('********** A ');
+writeln('********** B ',E<>nil);
         OutputLine:='Error: '+E.Message;
+writeln('********** ',OutputLine);
         if Assigned(OnOutputString) then
           OnOutputString(OutputLine);
         exit;
@@ -321,6 +328,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2001/12/10 07:47:00  lazarus
+  MG: minor fixes
+
   Revision 1.22  2001/11/21 13:09:49  lazarus
   MG: moved executable check to ideprocs.pp
 

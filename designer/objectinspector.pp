@@ -142,12 +142,13 @@ type
     FHintTimer : TTimer;
     FHintWindow : THintWindow;
     FLastMouseMovePos : TPoint;
-    Procedure HintTimer(sender : TObject);
-    Procedure ResetHintTimer(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
-    procedure CurrentEditMouseDown(Sender : TObject;Button:TMouseButton; Shift:TShiftState; X,Y:integer);
+    Procedure HintTimer(sender: TObject);
+    Procedure ResetHintTimer(Sender: TObject; Shift: TShiftstate; X,Y: Integer);
+    procedure CurrentEditMouseDown(Sender: TObject; Button:TMouseButton;
+      Shift:TShiftState; X,Y:integer);
 
 
-    PRocedure CurrentEditDblClick(Sender : TObject);
+    Procedure CurrentEditDblClick(Sender : TObject);
 
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;

@@ -1155,7 +1155,7 @@ While RandCH < 1 do
   RandCH := Random(35);  
 end;
 //+++++++++++++++++++++++++++++++++++++ Clipboard1 ++++++++++++++++++++++++++++++++++
-ClipBoard1 := TClipBoard.Create; //BenchForm[7]  Don´t know how to use !?!
+//ClipBoard1 := TClipBoard.Create; //BenchForm[7]  Don´t know how to use !?!
 //+++++++++++++++++++++++++++++++++++++ CListBox1 +++++++++++++++++++++++++++++++++++
 CListBox1 := TCListBox.Create(Self);
   with CListBox1 do
@@ -2535,11 +2535,14 @@ END;
 
 initialization
    {$I ../images/laz_images.lrs}
-   {$I ../designer/lazarus_control_images.lrs}
+   {$I ../images/components_images.lrs}
 END.
 
 {
   $Log$
+  Revision 1.5  2001/12/10 07:47:00  lazarus
+  MG: minor fixes
+
   Revision 1.4  2001/04/17 21:36:15  lazarus
   * enhanced testdialog for TBevel
   * basic test for TPaintBox
