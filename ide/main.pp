@@ -1201,13 +1201,13 @@ begin
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   
   PropertyEditorHook1:=TPropertyEditorHook.Create;
-  PropertyEditorHook1.OnGetMethods:=@OnPropHookGetMethods;
-  PropertyEditorHook1.OnMethodExists:=@OnPropHookMethodExists;
-  PropertyEditorHook1.OnCreateMethod:=@OnPropHookCreateMethod;
-  PropertyEditorHook1.OnShowMethod:=@OnPropHookShowMethod;
-  PropertyEditorHook1.OnRenameMethod:=@OnPropHookRenameMethod;
-  PropertyEditorHook1.OnComponentRenamed:=@OnPropHookComponentRenamed;
-  PropertyEditorHook1.OnComponentAdded:=@OnPropHookComponentAdded;
+  PropertyEditorHook1.AddHandlerGetMethods(@OnPropHookGetMethods);
+  PropertyEditorHook1.AddHandlerMethodExists(@OnPropHookMethodExists);
+  PropertyEditorHook1.AddHandlerCreateMethod(@OnPropHookCreateMethod);
+  PropertyEditorHook1.AddHandlerShowMethod(@OnPropHookShowMethod);
+  PropertyEditorHook1.AddHandlerRenameMethod(@OnPropHookRenameMethod);
+  PropertyEditorHook1.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
+  PropertyEditorHook1.AddHandlerComponentAdded(@OnPropHookComponentAdded);
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
                                                DefaultObjectInspectorName);
@@ -8637,6 +8637,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.568  2003/05/19 15:16:49  mattias
+  implemented handler lists for property hooks
+
   Revision 1.567  2003/05/18 10:42:57  mattias
   implemented deleting empty submenus
 
