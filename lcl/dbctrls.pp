@@ -37,7 +37,8 @@ interface
 
 uses
   Classes, SysUtils, DB, LCLProc, LMessages, GraphType, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar;
+  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar,
+  LCLType;
 
 Type
   { TFieldDataLink }
@@ -1247,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/08/30 16:11:02  mattias
+  changed GTK2 IFDEF to USE_UTF8BIDI_LCL
+
   Revision 1.20  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

@@ -56,7 +56,8 @@ uses
 {$ENDIF}
   SynEdit,
   SynEditKeyCmds,
-  Controls;
+  Controls,
+  LCLType;
 
 type
   TAbstractSynPlugin = class(TComponent)

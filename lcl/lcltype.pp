@@ -52,6 +52,11 @@ uses
   Classes, SysUtils;
 
 type
+{$IFDEF USE_UTF8BIDI_LCL}
+  TCharacter = WideChar;
+{$ELSE USE_UTF8BIDI_LCL}
+  TCharacter = Char;
+{$ENDIF USE_UTF8BIDI_LCL}
   PRect = ^TRect;
   UINT = LongWord;
   PPoint = ^TPoint;
@@ -2233,6 +2238,9 @@ end.
 
 {
   $Log$
+  Revision 1.64  2004/08/30 16:11:02  mattias
+  changed GTK2 IFDEF to USE_UTF8BIDI_LCL
+
   Revision 1.63  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

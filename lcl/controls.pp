@@ -159,11 +159,6 @@ const
 
 
 type
-{$IFDEF GTK2}
-  TCharacter = WideChar;
-{$ELSE GTK2}
-  TCharacter = Char;
-{$ENDIF GTK2}
   TWinControl = class;
   TControl = class;
   TWinControlClass = class of TWinControl;
@@ -2410,6 +2405,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.241  2004/08/30 16:11:02  mattias
+  changed GTK2 IFDEF to USE_UTF8BIDI_LCL
+
   Revision 1.240  2004/08/26 19:09:33  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 
