@@ -3197,17 +3197,27 @@ end;
   Params: none
   Returns: Returns the default Font
 
-  For Text/Font Routines: if the Font is invalid, this can be used instead.
+  For Text/Font Routines: if the Font is invalid, this can be used instead, or
+  if the DT_internal flag is used(aka use system font) this is used. This is
+  also the font returned by GetStockObject(SYSTEM_FONT).
+
   It attempts to get the font from the default Style, or if none is available,
-  gets a generic fixed font. If the result is not nil it MUST be
-  GDK_FONT_UNREF'd when done.
+  a new style(aka try and get GTK builtin values), if that fails tries to get
+  a generic fixed font, if THAT fails, it gets whatever font is available.
+  If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
 function GetDefaultFont : PGDKFont;
 var
   Style : PGTKStyle;
+  UnRefStyle : Boolean;
 begin
   Result := nil;
   Style := GetStyle('default');
+  UnRefStyle := False;
+  if Style = nil then begin
+    Style := gtk_style_new;
+    UnRefStyle := True;
+  end;
   If Style <> nil then begin
     If Style^.Font <> nil then
        Result := Style^.Font
@@ -3224,6 +3234,9 @@ begin
 
   If Result <> nil then
     Result := gdk_font_ref(Result);
+
+  If (Style <> nil) and UnRefStyle then
+    gtk_style_unref(Style);
 end;
 
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
@@ -3811,6 +3824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.136  2002/10/21 13:51:58  lazarus
+  AJ: GetDefaultFont - try to get GTK builtin value if style fails
+
   Revision 1.135  2002/10/21 13:15:24  lazarus
   AJ:Try and fall back on default style if nil(aka default theme)
 
