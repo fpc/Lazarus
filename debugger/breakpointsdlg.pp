@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Extctrls, Menus, ComCtrls, Debugger, DebuggerDlg;
+  Buttons, Extctrls, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg;
 
 type
   TBreakPointsDlg = class(TDebuggerDlg)
@@ -65,7 +65,8 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
-  private 
+  private
+    FBaseDirectory: string;
     FBreakpointsNotification: TDBGBreakPointsNotification;
     procedure BreakPointAdd(const ASender: TDBGBreakPoints;
                             const ABreakpoint: TDBGBreakPoint);
@@ -73,14 +74,17 @@ type
                                const ABreakpoint: TDBGBreakPoint);
     procedure BreakPointRemove(const ASender: TDBGBreakPoints;
                                const ABreakpoint: TDBGBreakPoint);
+    procedure SetBaseDirectory(const AValue: string);
 
     procedure UpdateItem(const AItem: TListItem;
       const ABreakpoint: TDBGBreakPoint);
+    procedure UpdateAll;
   protected
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
   end;
 
 
@@ -121,6 +125,13 @@ procedure TBreakPointsDlg.BreakPointRemove(const ASender: TDBGBreakPoints;
   const ABreakpoint: TDBGBreakPoint);
 begin
   lvBreakPoints.Items.FindData(ABreakpoint).Free;
+end;
+
+procedure TBreakPointsDlg.SetBaseDirectory(const AValue: string);
+begin
+  if FBaseDirectory=AValue then exit;
+  FBaseDirectory:=AValue;
+  UpdateAll;
 end;
 
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
@@ -240,20 +251,33 @@ const
 var
   Action: TDBGBreakPointAction;
   S: String;
+  Filename: String;
 begin
-// Filename/Address
-// Line/Length
-// Condition
-// Action
-// Pass Count
-// Group
+  // Filename/Address
+  // Line/Length
+  // Condition
+  // Action
+  // Pass Count
+  // Group
 
+  // state
   AItem.Caption := DEBUG_STATE[ABreakpoint.Enabled, ABreakpoint.Valid];
-  AItem.SubItems[0] := ABreakpoint.Source;
+  
+  // filename
+  Filename:=ABreakpoint.Source;
+  if BaseDirectory<>'' then
+    Filename:=CreateRelativePath(Filename,BaseDirectory);
+  AItem.SubItems[0] := Filename;
+  
+  // line
   if ABreakpoint.Line > 0
   then AItem.SubItems[1] := IntToStr(ABreakpoint.Line)
   else AItem.SubItems[1] := '';
+  
+  // expression
   AItem.SubItems[2] := ABreakpoint.Expression;
+  
+  // actions
   S := '';
   for Action := Low(Action) to High(Action) do
     if Action in ABreakpoint.Actions
@@ -262,10 +286,19 @@ begin
       S := S + DEBUG_ACTION[Action]
     end;
   AItem.SubItems[3]  := S;
+  
+  // hitcount
   AItem.SubItems[4] := IntToStr(ABreakpoint.HitCount);
+  
+  // group
   if ABreakpoint.Group = nil
   then AItem.SubItems[5] := ''
   else AItem.SubItems[5] := ABreakpoint.Group.Name;
+end;
+
+procedure TBreakPointsDlg.UpdateAll;
+begin
+
 end;
 
 
@@ -276,6 +309,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.12  2003/05/27 15:04:00  mattias
+  small fixes for debugger without file
+
   Revision 1.11  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 

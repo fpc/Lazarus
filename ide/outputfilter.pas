@@ -142,7 +142,7 @@ end;
 
 function TOutputFilter.Execute(TheProcess: TProcess): boolean;
 const
-  BufSize = 1024;
+  BufSize = 100;
 var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
@@ -156,7 +156,7 @@ begin
   SetLength(Buf,BufSize);
 
   OutputLine:='';
-  ErrorExists:=false;
+  ErrorExists:=true;
   repeat
     Application.ProcessMessages;
     if StopExecute then exit;
@@ -172,7 +172,6 @@ begin
         OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
         ReadLine(OutputLine,false);
         if fLastErrorType in [etFatal, etPanic, etError] then begin
-          ErrorExists:=true;
           Result:=false;
         end;
         OutputLine:='';
@@ -186,8 +185,8 @@ begin
     OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
   until Count=0;
   TheProcess.WaitOnExit;
-  if TheProcess.ExitStatus<>0 then
-    ErrorExists:=true;
+  if TheProcess.ExitStatus=0 then
+    ErrorExists:=false;
   if ErrorExists and (ofoExceptionOnError in Options) then
     raise EOutputFilterError.Create('there was an error');
 end;
@@ -598,7 +597,9 @@ end;
 function TOutputFilter.SearchIncludeFile(const ShortIncFilename: string
   ): string;
 // search the include file and make it relative to the current start directory
-var SearchedDirectories: TStringList;
+var
+  AlreadySearchedPaths: string;
+  AlreadySearchedIncPaths: string;
   FullDir, RelativeDir, IncludePath: string;
   p: integer;
 begin
@@ -606,26 +607,30 @@ begin
     Result:=ShortIncFilename;
     exit;
   end;
-  SearchedDirectories:=TStringList.Create;
-  try
-    // try every compiled pascal source
-    for p:=fCompilingHistory.Count-1 downto 0 do begin
-      RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
-      FullDir:=RelativeDir;
-      if not FilenameIsAbsolute(FullDir) then
-        FullDir:=fCurrentDirectory+FullDir;
-      FullDir:=TrimFilename(FullDir);
-      if SearchedDirectories.IndexOf(FullDir)>=0 then continue;
-      // new directory start a search
-      Result:=FullDir+ShortIncFilename;
-      if FileExists(Result) then begin
-        // file found in search dir
-        Result:=CleanAndExpandFilename(FullDir+ShortIncFilename);
-        exit;
-      end;
-      if Assigned(OnGetIncludePath) then begin
-        // search with include path of directory
-        IncludePath:=OnGetIncludePath(FullDir);
+  AlreadySearchedPaths:='';
+  AlreadySearchedIncPaths:='';
+  // try every compiled pascal source
+  for p:=fCompilingHistory.Count-1 downto 0 do begin
+    RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
+    FullDir:=RelativeDir;
+    if not FilenameIsAbsolute(FullDir) then
+      FullDir:=fCurrentDirectory+FullDir;
+    FullDir:=TrimFilename(FullDir);
+    if SearchDirectoryInSearchPath(AlreadySearchedPaths,FullDir,1)>0 then
+      continue;
+    // new directory start a search
+    Result:=FullDir+ShortIncFilename;
+    if FileExists(Result) then begin
+      // file found in search dir
+      Result:=CleanAndExpandFilename(FullDir+ShortIncFilename);
+      exit;
+    end;
+    AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);
+    // search with include path of directory
+    if Assigned(OnGetIncludePath) then begin
+      IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir),FullDir);
+      IncludePath:=RemoveSearchPaths(IncludePath,AlreadySearchedIncPaths);
+      if IncludePath<>'' then begin
         Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
         if Result<>'' then begin
           if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
@@ -633,11 +638,10 @@ begin
                      RightStr(Result,length(Result)-length(fCurrentDirectory)));
           exit;
         end;
+        AlreadySearchedIncPaths:=MergeSearchPaths(AlreadySearchedIncPaths,
+                                                  IncludePath);
       end;
-      SearchedDirectories.Add(FullDir);
     end;
-  finally
-    SearchedDirectories.Free;
   end;
   Result:=ShortIncFilename;
 end;

@@ -400,12 +400,22 @@ begin
   then begin
     FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
     CurDialog:=FDialogs[ADialogType];
+    if (CurDialog is TBreakPointsDlg) then begin
+      if (Project1<>nil) then
+        TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
+    end;
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
     DoInitDebugger;
     CurDialog.Debugger := FDebugger;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
+  end else begin
+    CurDialog:=FDialogs[ADialogType];
+    if (CurDialog is TBreakPointsDlg) then begin
+      if (Project1<>nil) then
+        TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
+    end;
   end;
   FDialogs[ADialogType].Show;
   FDialogs[ADialogType].BringToFront;
@@ -566,6 +576,7 @@ begin
   for i:=0 to FBreakpoints.Count-1 do begin
     CurBreakPoint:=FBreakpoints[i];
     if CompareFileNames(CurBreakPoint.Source,SrcFilename)=0 then begin
+    
       if CurBreakPoint.Enabled then begin
         if CurBreakPoint.Valid in [vsValid,vsUnknown] then
           CurType:=semActiveBreakPoint
@@ -573,7 +584,7 @@ begin
           CurType:=semInvalidBreakPoint;
       end else
         CurType:=semInactiveBreakPoint;
-      ASrcEdit.SetBreakPoint(CurBreakPoint.Line,CurType);
+      ASrcEdit.SetBreakPointMark(CurBreakPoint.Line,CurType);
     end;
   end;
 end;
@@ -656,13 +667,13 @@ begin
 
   LaunchingCmdLine:=MainIDE.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
+  if (not FileExists(LaunchingApplication)) then exit;
 
   OldBreakpoints := nil;
   OldBreakPointGroups := nil;
   OldWatches := nil;
-  
-  try
 
+  try
     case EnvironmentOptions.DebuggerType of
       dtGnuDebugger: begin
         // check if debugger already created with the right type
@@ -927,6 +938,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.29  2003/05/27 15:04:00  mattias
+  small fixes for debugger without file
+
   Revision 1.28  2003/05/27 08:01:31  marc
   MWE: + Added exception break
        * Reworked adding/removing breakpoints
