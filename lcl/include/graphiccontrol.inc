@@ -40,11 +40,26 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGraphicControl.WMPaint(var Message: TLMPaint);
 begin
-//  Canvas.Lock;
-  try
+  // tspeedbutton is buggy: this is a workaround
+  if lowercase(Classname)='tspeedbutton' then begin
     Paint;
-  finally
-//    Canvas.Unlock;
+    exit;
+  end;
+  // end of workaround
+
+  if Message.DC <> 0 then
+  begin
+//    Canvas.Lock;
+    try
+      Canvas.Handle := Message.DC;
+      try
+        Paint;
+      finally
+        Canvas.Handle := 0;
+      end;
+    finally
+//      Canvas.Unlock;
+    end;
   end;
 end;
 
@@ -63,6 +78,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/04/02 14:45:26  lazarus
+  MG: bugfixes for TBevel
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

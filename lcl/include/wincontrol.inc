@@ -1589,7 +1589,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
 begin
-Writeln('[TWINCONTROL].WMWINDOWPOSCHANGED');
+//Writeln('[TWINCONTROL].WMWINDOWPOSCHANGED');
   if Message.WindowPos <> nil then
   with Message.WindowPos^ do
    begin
@@ -1965,6 +1965,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2001/04/02 14:45:26  lazarus
+  MG: bugfixes for TBevel
+
   Revision 1.27  2001/03/27 14:27:43  lazarus
   Changes from Nagy Zsolt
   Shane

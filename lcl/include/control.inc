@@ -746,13 +746,15 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetName(const Value: TComponentName);
 var
-   ChangeText: Boolean;
-
+  ChangeText: Boolean;
 begin
-   ChangeText := (csSetCaption in ControlStyle) and (Name = text);
+  ChangeText := (csSetCaption in ControlStyle) and
+    not (csLoading in ComponentState) and (Name = Text) and
+    ((Owner = nil) or not (Owner is TControl) or
+     not (csLoading in TControl(Owner).ComponentState));
 
-   inherited SetName(Value);
-   if ChangeText then text := Value;
+  inherited SetName(Value);
+  if ChangeText then Text := Value;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1077,11 +1079,12 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetVisible(Value : Boolean);
 begin
-   if FVisible <> Value then
-   begin
-      FVisible := Value;
-      Perform(CM_VISIBLECHANGED, Ord(Value), 0);
-   end;
+if classname='TBEVEL' then writeln('[TControl.SetVisible] ',Value,' ',FVisible);
+  if FVisible <> Value then
+  begin
+    FVisible := Value;
+    Perform(CM_VISIBLECHANGED, Ord(Value), 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1308,6 +1311,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.19  2001/04/02 14:45:26  lazarus
+  MG: bugfixes for TBevel
+
   Revision 1.18  2001/03/27 21:12:53  lazarus
   MWE:
     + Turned on longstrings

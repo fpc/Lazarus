@@ -1,8 +1,11 @@
 Constructor TBevel.Create(AOwner:TComponent);
 Begin
-  Inherited Create(aOwner);
+  Inherited Create(AOwner);
+  ControlStyle:=ControlStyle-[csSetCaption];
   FStyle:=bsLowered;
   FShape:=bsBox;
+
+  SetBounds(0,0,50,50);
 End;
 
 Destructor TBevel.Destroy;
@@ -43,7 +46,7 @@ Begin
   End;
 End;
 
-(*Procedure TBevel.Paint;
+Procedure TBevel.Paint;
 Var
   Colora, Colorb:TColor;
 Begin
@@ -133,8 +136,8 @@ Begin
   End;
 End;
 
-  *)
 
+{
 Procedure TBevel.Paint;
 Var
   Colora, Colorb:TColor;
@@ -221,9 +224,13 @@ Begin
     End;
   End;
 End;
+}
 
 {
   $Log$
+  Revision 1.3  2001/04/02 14:45:26  lazarus
+  MG: bugfixes for TBevel
+
   Revision 1.2  2001/03/27 14:27:43  lazarus
   Changes from Nagy Zsolt
   Shane
