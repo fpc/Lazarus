@@ -4862,16 +4862,21 @@ begin
       // find the menu container
       ContainerMenu := PGtkWidget(gtk_object_get_data(PGtkObject(Parent.Handle),
                                                       'ContainerMenu'));
-      if ContainerMenu = nil then
-      begin
-        ContainerMenu := gtk_menu_new;
-        gtk_object_set_data(PGtkObject(Parent.Handle), 'ContainerMenu',
-                            ContainerMenu);
-        gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuItem), ContainerMenu);
-        
-        AccelGroup := gtk_accel_group_new;
-        gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
-        SetAccelGroup(ContainerMenu, AccelGroup);
+      if ContainerMenu = nil then begin
+        if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then begin
+          ContainerMenu:=PGtkWidget(GetParentMenu.Handle);
+          gtk_object_set_data(PGtkObject(ContainerMenu), 'ContainerMenu',
+                              ContainerMenu);
+        end else begin
+          ContainerMenu := gtk_menu_new;
+          gtk_object_set_data(PGtkObject(Parent.Handle), 'ContainerMenu',
+                              ContainerMenu);
+          gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuItem), ContainerMenu);
+
+          AccelGroup := gtk_accel_group_new;
+          gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
+          SetAccelGroup(ContainerMenu, AccelGroup);
+        end;
       end;
       gtk_menu_insert(PGtkMenu(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
     end;
@@ -5324,6 +5329,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.157  2002/08/08 10:33:50  lazarus
+  MG: main bar speedbar open arrow now shows recent projects and files
+
   Revision 1.156  2002/08/08 09:38:36  lazarus
   MG: recent file menus are now updated instantly
 
