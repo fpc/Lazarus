@@ -444,7 +444,7 @@ var
 begin
   Result:=true;
   
-  //writeln('***  TDesigner.PaintControl A ',Sender.Name);
+  //writeln('***  TDesigner.PaintControl A ',Sender.Name,':',Sender.ClassName);
   // Set flag
   OldDuringPaintControl:=dfDuringPaintControl in FFlags;
   Include(FFlags,dfDuringPaintControl);
@@ -560,6 +560,9 @@ Begin
   MouseDownPos:=GetFormRelativeMousePosition(Form);
   LastMouseMovePos:=MouseDownPos;
 
+  MouseDownComponent:=nil;
+  MouseDownSender:=nil;
+  
   NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
   if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
 
@@ -721,6 +724,7 @@ var
     ControlSelection.Clear;
 
     // find a parent for the new component
+writeln('AddComponent A ',FLookupRoot is TCustomForm);
     if FLookupRoot is TCustomForm then begin
       if MouseDownComponent is TWinControl then
         NewParentControl:=TWinControl(MouseDownComponent)
@@ -740,6 +744,14 @@ var
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
     
+    if not PropertyEditorHook.BeforeAddComponent(Self,
+                                     SelectedCompClass.ComponentClass,NewParent)
+    then begin
+      writeln('TDesigner.AddComponent ',
+              SelectedCompClass.ComponentClass.ClassName,' not possible');
+      exit;
+    end;
+
     // calculate initial bounds
     ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
     NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
@@ -761,7 +773,7 @@ var
     NewCI := TComponentInterface(TheFormEditor.CreateComponent(
        ParentCI,SelectedCompClass.ComponentClass
       ,NewLeft,NewTop,NewWidth,NewHeight));
-      
+
     // set initial properties
     if NewCI.Component is TControl then
       TControl(NewCI.Component).Visible:=true;
@@ -1276,6 +1288,10 @@ end;
 procedure TDesigner.PaintGrid;
 begin
   // This is done in PaintControls
+  if FLookupRoot<>FForm then begin
+    // this is a special designer form -> lets draw itself
+    FForm.Paint;
+  end;
 end;
 
 procedure TDesigner.PaintClientGrid(AWinControl: TWinControl;
@@ -1557,7 +1573,7 @@ function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
 begin
   Result:=AComponent;
   if AComponent=Form then begin
-    AComponent:=FLookupRoot;
+    Result:=FLookupRoot;
   end else begin
     while (Result<>nil)
     and (Result<>FLookupRoot)
