@@ -1,0 +1,303 @@
+Contents:
+
+1. LCL
+     1.1 Components
+     1.2 gnome interface
+     1.3 gtk interface
+     1.4 gtk2 interface
+     1.5 win32 interface
+2. IDE
+3. Docs
+4. Miscellaneous
+
+===============================================================================
+
+1. LCL
+
+  Graphics
+    State: loading bmp and xpm works for 16/24 depth
+           saving is not implemented, so streaming does not work
+           Palettes basically implemented in gtk-interface
+    Skills: knowledge of LCL, VCL, deep knowledge of interfaces
+    Difficulty: high
+
+  Docking (= the combination of forms)
+    State: not implemented
+    Skills: deep knowledge of LCL, VCL and probably also the interfaces
+    Difficulty: high
+  
+  Frames (= forms as childs)
+    State: not implemented
+    Skills: deep knowledge of LCL, VCL, interfaces and IDE
+    Difficulty: high
+
+  TControl.Font
+    State: not implemented. In contrary to the VCL the LCL should use the
+           current Theme of the user. So, the Font property should only work,
+           if explicitly set
+    Skills: knowledge of LCL, gtk, win32
+    Difficulty: medium
+
+-------------------------------------------------------------------------------
+
+1.1 Components
+
+  TArrow
+    State: working
+
+  TBevel
+    State: working
+
+  TBitBtn
+    State: working
+    
+  TBitmap:
+    State: see LCL - Graphics
+
+  TButton
+    State: working
+    
+  TBrush
+    State: working
+
+  TCalendar
+    State: working
+
+  TCheckBox
+    State: working
+
+  TCheckGroup
+    State: working
+
+  TColorDialog
+    State: working
+
+  TComboBox
+    State: working
+
+  TDrawGrid
+    State: working
+
+  TEdit
+    State: working
+    
+  TFont
+    State: working
+
+  TFontDialog
+    State: working
+
+  TGraphic:
+    State: see LCL - Graphics
+
+  TGroupBox
+    State: working
+    
+  TIcon:
+    State: not implemented
+
+  TIdleTimer
+    State: working
+
+  TImage
+    State: see LCL - Graphics
+
+  TImageList
+    State: see LCL - Graphics
+
+  TLabel
+    State: working
+
+  TListBox
+    State: working, Bug: Scrollbars do not always correspond to items
+
+  TListView
+    State: working
+
+  TMainMenu
+    State: working
+
+  TMaskEdit
+    State: working
+
+  TMemo
+    State: working
+
+  TMenuItem
+    State: working
+
+  TNoteBook
+    State: working
+
+  TOpenDialog
+    State: almost working, Filter does not work in gtk-interface, see there
+
+  TPage
+    State: working
+
+  TPaintBox
+    State: working
+
+  TPanel
+    State: working
+    
+  TPen:
+    State: working
+    
+  TPixmap:
+    State: see LCL - Graphics
+
+  TPopupMenu
+    State: working
+
+  TProgressBar
+    State: working
+
+  TRadioButton
+    State: working
+
+  TRadioGroup
+    State: working
+
+  TSaveDialog
+    State: working
+
+  TScrollBar
+    State: working
+
+  TScrollBox
+    State: working
+
+  TShape
+    State: working
+
+  TSpeedButton
+    State: working,
+           Bug: mouse down, mouse move out of button, mouse up
+           does not react properly
+
+  TSpinEdit
+    State: working
+
+  TStaticText
+    State: working
+
+  TStatusBar
+    State: working
+
+  TStringGrid
+    State: working
+
+  TTimer
+    State: working
+
+  TToggleBox
+    State: working
+
+  TToolBar
+    State: needs redesign. The current design is too win32 specific.
+           It should delegate at least half the work to the interfaces, which
+           should create the interface specific toolbar and buttons.
+    Skills: LCL, gtk, little win32
+    Difficulty: medium
+
+  TToolbutton
+    State: see TToolBar
+
+  TTrackbar
+    State: working
+
+  TTreeView
+    State: working, Bug: Property 'Scrollbars' does not work properly
+
+  TUpDown
+    State: working
+
+
+  
+-------------------------------------------------------------------------------
+1.2 gnome interface
+
+  Applets
+    State: not implemented
+    Skills: gtk, libpanel, LCL
+    Difficulty: medium
+
+-------------------------------------------------------------------------------
+1.3 gtk interface
+
+  FileDialog
+    State: Filter does not work
+    Skills: gtk
+    Difficulty: medium
+    
+  Special keys - for example Ctrl-Shift-1
+    State: not implemented
+    Skills: gtk, X
+    Difficulty: medium
+
+  Graphics
+    see LCL - Graphics
+    
+  Focus
+    State: switching focus between windows. Might be impossible due to
+           windowmanagers and limitations of gtk1
+    Skills: gtk, X
+    Difficulty: medium
+    
+  Minimizing windows
+    State: not implemented
+    Skills: gtk, X
+    Difficulty: medium
+    
+  Doublebuffering
+    State: not implemented in gtk1. This is a feature for the gtk2 interface
+    
+  Paint Messages with clipping area
+    State: At the moment paint messages are collected and only sent after all
+           other messages. This reduces flickering in general. But the paint
+           messages dont reduce the clipping area and so all TControls without
+           handle redraws everytime.
+    Skills: deep knowledge of LCL, gtk-interface and gtk
+    Difficulty: high
+
+
+-------------------------------------------------------------------------------
+1.4 gtk2 interface
+
+  State: Bindings complete and exists as package
+         -> see lcl/interfaces/gtk2/README
+         does not compile, because incomplete
+  Skills: deep knowledge of gtk, gtk2, LCL
+  Difficulty: medium
+
+-------------------------------------------------------------------------------
+1.5 win32 interface
+
+  State: Examples already works, IDE does not work. Most things implemented.
+         Needs debugging
+  Skills: Knowledge of LCL, win32 api
+  Difficulty: medium
+
+
+===============================================================================
+
+2. IDE
+
+  State: always under development, will never be complete. If you want to add
+         a feature, just ask on the list.
+
+
+===============================================================================
+
+3. Docs
+
+  State: basic structure is under construction by Mattias
+
+
+
+===============================================================================
+
+4. Miscellaneous
+
+
