@@ -95,6 +95,7 @@ function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; ov
 Function GetParent(Handle : HWND): HWND; override;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
+function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): LongInt; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
@@ -191,6 +192,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/10/31 21:29:49  lazarus
+  MG: implemented TControlScrollBar.Size
+
   Revision 1.51  2002/10/03 14:47:34  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
