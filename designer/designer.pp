@@ -28,6 +28,8 @@ uses
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls;
 
 type
+  TDesigner = class;
+
   TOnGetSelectedComponentClass = procedure(Sender: TObject; 
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
@@ -38,6 +40,8 @@ type
     of object;
   TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
     AComponent: TComponent; var IconCanvas: TCanvas) of object;
+  TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
+    const NewName: string) of object;
 
   TDesigner = class(TIDesigner)
   private
@@ -57,6 +61,7 @@ type
     FOnSetDesigning: TOnSetDesigning;
     FOnUnselectComponentClass: TNotifyEvent;
     FOnActivated: TNotifyEvent;
+    FOnRenameComponent: TOnRenameComponent;
     FPopupMenu: TPopupMenu;
     FAlignMenuItem: TMenuItem;
     FMirrorHorizontalMenuItem: TMenuItem;
@@ -133,6 +138,8 @@ type
        read FOnUnselectComponentClass write FOnUnselectComponentClass;
     property OnActivated: TNotifyEvent
        read FOnActivated write FOnActivated;
+    property OnRenameComponent: TOnRenameComponent
+       read FOnRenameComponent write FOnRenameComponent;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     procedure DrawNonVisualComponents(DC: HDC);
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
@@ -802,7 +809,11 @@ end;
 procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
 Begin
-  writeln('ToDo: TDesigner.ValidateRename ',CurName,', ',NewName);
+  if AComponent=nil then AComponent:=FCustomForm;
+  if CurName<>AComponent.Name then
+    writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
+  if Assigned(OnRenameComponent) then
+    OnRenameComponent(Self,AComponent,NewName);
 end;
 
 function TDesigner.GetIsControl: Boolean;

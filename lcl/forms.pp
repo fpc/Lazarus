@@ -322,13 +322,11 @@ type
     procedure PaintGrid; virtual; abstract;
     procedure ValidateRename(AComponent: TComponent;
       const CurName, NewName: string); virtual; abstract;
-    end;
-
+  end;
 
 
 
   TProcedure = procedure;
-
 
 
 function KeysToShiftState(Keys:Word): TShiftState;

@@ -45,9 +45,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, FindDeclarationTool, PascalParserTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, SourceChanger;
+  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
+  FindDeclarationTool, PascalParserTool, SourceLog, KeywordFuncLists,
+  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
   TStandardCodeTool = class(TFindDeclarationTool)
@@ -120,7 +120,10 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemovePublishedVariable(const UpperClassName, UpperVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
-          
+    function RenamePublishedVariable(const UpperClassName,
+          UpperOldVarName: string; const NewVarName, VarType: shortstring;
+          SourceChangeCache: TSourceChangeCache): boolean;
+
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -997,6 +1000,43 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then exit;
   Result:=SourceChangeCache.Apply;
+end;
+
+function TStandardCodeTool.RenamePublishedVariable(const UpperClassName,
+  UpperOldVarName: string; const NewVarName, VarType: shortstring;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var TypeNode, VarNode: TCodeTreeNode;
+begin
+  Result:=false;
+  VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName);
+  if VarNode<>nil then begin
+    // old variable found
+    // check type
+    TypeNode:=FindTypeNodeOfDefinition(VarNode);
+    MoveCursorToNodeStart(TypeNode);
+    ReadNextAtom;
+    if AtomIs(VarType) then begin
+      // rename the identifier
+      MoveCursorToNodeStart(VarNode);
+      ReadNextAtom;
+      SourceChangeCache.MainScanner:=Scanner;
+      if not SourceChangeCache.Replace(gtNone,gtNone,
+        CurPos.StartPos,CurPos.EndPos,NewVarName)
+      then
+        exit;
+    end else begin
+      // auto correct type
+
+      // ToDo: auto correct
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[VarType,GetAtom]);
+      
+    end;
+    Result:=SourceChangeCache.Apply;
+  end else begin
+    // old variable not found -> add it
+    Result:=AddPublishedVariable(UpperClassName,NewVarName, VarType,
+                                 SourceChangeCache);
+  end;
 end;
 
 function TStandardCodeTool.FindBlockCounterPart(CursorPos: TCodeXYPosition;

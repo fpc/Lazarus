@@ -272,6 +272,9 @@ type
           const AClassName,VarName, VarType: string): boolean;
     function RemovePublishedVariable(Code: TCodeBuffer;
           const AClassName, AVarName: string): boolean;
+    function RenamePublishedVariable(Code: TCodeBuffer;
+          const AClassName, OldVariableName, NewVarName,
+          VarType: shortstring): boolean;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1304,13 +1307,30 @@ function TCodeToolManager.RemovePublishedVariable(Code: TCodeBuffer;
   const AClassName, AVarName: string): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassName,':',AVarName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassName,':',AVarName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RemovePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(AVarName),SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RenamePublishedVariable(Code: TCodeBuffer;
+  const AClassName, OldVariableName, NewVarName, VarType: shortstring): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RenamePublishedVariable A ',Code.Filename,' ',AClassName,' OldVar=',OldVarName,' NewVar=',NewVarName);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RenamePublishedVariable(UpperCaseStr(AClassName),
+               UpperCaseStr(OldVariableName),NewVarName,VarType,
+               SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1322,7 +1342,7 @@ begin
   Result:=nil;
   AChangeStep:=DefineTree.ChangeStep;
   if Code=nil then exit;
-//DefineTree.WriteDebugReport;
+  //DefineTree.WriteDebugReport;
   if not TCodeBuffer(Code).IsVirtual then
     Result:=DefineTree.GetDefinesForDirectory(
       ExtractFilePath(TCodeBuffer(Code).Filename))
@@ -1334,7 +1354,7 @@ procedure TCodeToolManager.OnDefineTreeReadValue(Sender: TObject;
   const VariableName: string; var Value: string);
 begin
   Value:=GlobalValues[VariableName];
-//writeln('[TCodeToolManager.OnDefineTreeReadValue] Name="',VariableName,'" = "',Value,'"');
+  //writeln('[TCodeToolManager.OnDefineTreeReadValue] Name="',VariableName,'" = "',Value,'"');
 end;
 
 procedure TCodeToolManager.OnGlobalValuesChanged;

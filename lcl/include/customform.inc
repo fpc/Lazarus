@@ -465,7 +465,8 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm ValidateRename                                          }
+{       TCustomForm ValidateRename                                             }
+{  if AComponent is nil, then the name of Self is changed                      }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.ValidateRename(AComponent: TComponent;
   const CurName, NewName: String);
@@ -476,7 +477,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm WndProc                                          }
+{       TCustomForm WndProc                                                    }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.WndProc(Var Message : TLMessage);
 var
@@ -1014,6 +1015,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/04/27 18:56:50  lazarus
+  MG: started component renaming
+
   Revision 1.41  2002/04/27 15:35:50  lazarus
   MG: fixed window shrinking
 

@@ -118,13 +118,15 @@ type
   end;
 
   //----------------------------------------------------------------------------
+  TOIPropertyGridState = (pgsChangingItemIndex, pgsApplyingValue);
+  TOIPropertyGridStates = set of TOIPropertyGridState;
+  
   TOIPropertyGrid = class(TCustomControl)
   private
     FComponentList: TComponentSelectionList;
     FPropertyEditorHook:TPropertyEditorHook;
     FFilter: TTypeKinds;
     FItemIndex:integer;
-    FChangingItemIndex:boolean;
     FRows:TList;
     FExpandingRow:TOIPropertyGridRow;
     FTopY:integer;
@@ -141,6 +143,7 @@ type
     FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
     FBorderStyle:TBorderStyle;
+    FStates: TOIPropertyGridStates;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -319,7 +322,7 @@ begin
   FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
   FItemIndex:=-1;
-  FChangingItemIndex:=false;
+  FStates:=[];
   FRows:=TList.Create;
   FExpandingRow:=nil;
   FDragging:=false;
@@ -560,7 +563,8 @@ procedure TOIPropertyGrid.SetRowValue;
 var CurRow:TOIPropertyGridRow;
   NewValue:string;
 begin
-  if (FChangingItemIndex=false) and (FCurrentEdit<>nil)
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[])
+  and (FCurrentEdit<>nil)
   and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
     CurRow:=Rows[FItemIndex];
     if FCurrentEdit=ValueEdit then
@@ -570,12 +574,19 @@ begin
     if length(NewValue)>CurRow.Editor.GetEditLimit then
       NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
     if NewValue<>CurRow.Editor.GetVisualValue then begin
+      Include(FStates,pgsApplyingValue);
       try
         CurRow.Editor.SetValue(NewValue);
       except
-        on E: Exception do
-          MessageDlg(E.Message,mtError,[mbOk],0);
+        on E: Exception do begin
+          MessageDlg('Error',E.Message,mtError,[mbOk],0);
+          if FCurrentEdit=ValueEdit then
+            ValueEdit.Text:=CurRow.Editor.GetVisualValue
+          else
+            ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
+        end;
       end;
+      Exclude(FStates,pgsApplyingValue);
       if Assigned(FOnModified) then FOnModified(Self);
     end;
   end;
@@ -584,11 +595,16 @@ end;
 procedure TOIPropertyGrid.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key=VK_UP) and (FItemIndex>0) then begin
-    ItemIndex:=ItemIndex-1;
-  end;
-  if (Key=VK_Down) and (FItemIndex<FRows.Count-1) then begin
-    ItemIndex:=ItemIndex+1;
+  case Key of
+  VK_UP:
+    if (FItemIndex>0) then ItemIndex:=ItemIndex-1;
+
+  VK_Down:
+    if (FItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+    
+  VK_RETURN:
+    SetRowValue;
+
   end;
 end;
 
@@ -653,7 +669,7 @@ var NewRow:TOIPropertyGridRow;
   NewValue:string;
 begin
   SetRowValue;
-  FChangingItemIndex:=true;
+  Include(FStates,pgsChangingItemIndex);
   if (FItemIndex<>NewIndex) then begin
     if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
       Rows[FItemIndex].Editor.Deactivate;
@@ -706,7 +722,7 @@ begin
         FCurrentButton.Enabled:=true;
     end;
   end;
-  FChangingItemIndex:=false;
+  Exclude(FStates,pgsChangingItemIndex);
 end;
 
 function TOIPropertyGrid.GetRowCount:integer;

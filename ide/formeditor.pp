@@ -47,12 +47,12 @@ implementation
 
 constructor TFormEditor.Create;
 Begin
-inherited;
+  inherited;
 end;
 
 destructor TFormEditor.destroy;
 Begin
-inherited;
+  inherited;
 end;
 
 end.

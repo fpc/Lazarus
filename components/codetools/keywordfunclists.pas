@@ -652,6 +652,7 @@ begin
     Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RAISE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RESOURCESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);

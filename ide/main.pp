@@ -36,14 +36,14 @@ uses
   Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
   Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager, CodeCache,
   DefineTemplates, MsgView, NewProjectDlg, IDEComp, AbstractFormEditor,
-  FormEditor, CustomFormEditor, ObjectInspector, PropEdits, ControlSelection,
-  UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
-  SynEditKeyCmds, KeyMapping, ProjectOpts, IDEProcs, Process, UnitInfoDlg,
-  Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, ExtToolDialog,
-  MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
-  OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg,
-  InputHistory,
+  Designer, FormEditor, CustomFormEditor, ObjectInspector, PropEdits,
+  ControlSelection, UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts,
+  TransferMacros, SynEditKeyCmds, KeyMapping, ProjectOpts, IDEProcs, Process,
+  UnitInfoDlg, Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts,
+  ExtToolDialog, MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg,
+  BreakPointsdlg, ColumnDlg, OutputFilter, BuildLazDialog, MiscOptions,
+  EditDefineTree, CodeToolsOptions, TypInfo, IDEOptionDefs, CodeToolsDefines,
+  LocalsDlg, DebuggerDlg, InputHistory,
   BaseDebugManager, DebugManager, MainBar;
 
 type
@@ -176,6 +176,23 @@ type
       ATypeInfo:PTypeInfo): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
+
+    // designer
+    procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
+      var RegisteredComponent: TRegisteredComponent);
+    procedure OnDesignerUnselectComponentClass(Sender: TObject);
+    procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
+      Value: boolean);
+    procedure OnDesignerComponentListChanged(Sender: TObject);
+    procedure OnDesignerPropertiesChanged(Sender: TObject);
+    procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
+      ComponentClass: TRegisteredComponent);
+    procedure OnDesignerRemoveComponent(Sender: TObject; Component: TComponent);
+    procedure OnDesignerModified(Sender: TObject);
+    Procedure OnDesignerActivated(Sender : TObject);
+    procedure OnDesignerRenameComponent(ADesigner: TDesigner;
+      AComponent: TComponent; const NewName: string);
+    procedure OnControlSelectionChanged(Sender: TObject);
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject; 
@@ -354,7 +371,7 @@ type
       ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
       AddJumpPoint: boolean): TModalResult;
-    procedure SaveSourceEditorChangesToCodeCache;
+    procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer);
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
@@ -384,19 +401,6 @@ type
     // form editor and designer
     property SelectedComponent : TRegisteredComponent 
       read FSelectedComponent write FSelectedComponent;
-    procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
-      var RegisteredComponent: TRegisteredComponent);
-    procedure OnDesignerUnselectComponentClass(Sender: TObject);
-    procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
-      Value: boolean);
-    procedure OnDesignerComponentListChanged(Sender: TObject);
-    procedure OnDesignerPropertiesChanged(Sender: TObject);
-    procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
-      ComponentClass: TRegisteredComponent);
-    procedure OnDesignerRemoveComponent(Sender: TObject; Component: TComponent);
-    procedure OnDesignerModified(Sender: TObject);
-    Procedure OnDesignerActivated(Sender : TObject);
-    procedure OnControlSelectionChanged(Sender: TObject);
     procedure DoBringToFrontFormOrUnit;
     procedure SetDesigning(Control : TComponent; Value : Boolean);
 
@@ -414,7 +418,7 @@ const
 implementation
 
 uses
-  ViewUnit_dlg, Math, LResources, Designer;
+  ViewUnit_dlg, Math, LResources;
 
 //==============================================================================
 {
@@ -1903,7 +1907,8 @@ Begin
     OnRemoveComponent:=@OnDesignerRemoveComponent;
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
     OnModified:=@OnDesignerModified;
-    OnActivated := @OnDesignerActivated;
+    OnActivated:=@OnDesignerActivated;
+    OnRenameComponent:=@OnDesignerRenameComponent;
     ShowHints:=EnvironmentOptions.ShowEditorHints;
   end;
 end;
@@ -3268,8 +3273,9 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
   Result:=CreateNewCodeBuffer(NewUnitType,NewFilename,NewBuffer,NewUnitName);
   if Result<>mrOk then exit;
   Result:=mrCancel;
+  SaveSourceEditorChangesToCodeCache(-1);
+  
   NewFilename:=NewBuffer.Filename;
-
   NewUnitInfo:=TUnitInfo.Create(NewBuffer);
 
   // create source code
@@ -3332,7 +3338,9 @@ begin
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-  
+  if not (sfProjectSaving in Flags) then
+    SaveSourceEditorChangesToCodeCache(-1);
+
   // if this file is part of the project and the project is virtual then save
   // project first
   if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
@@ -3885,6 +3893,7 @@ begin
     Result:=mrAbort;
     exit;
   end;
+  SaveSourceEditorChangesToCodeCache(-1);
 writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
 
   // check that all new units are saved first to get valid filenames
@@ -4506,8 +4515,8 @@ begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveUnitInfo=nil) or (ActiveUnitInfo.Source=nil)
   or (ActiveSrcEdit=nil) then exit;
+  SaveSourceEditorChangesToCodeCache(-1);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-  SaveSourceEditorChangesToCodeCache;
   if not CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
   begin
@@ -5356,22 +5365,30 @@ begin
   SourceNoteBook.UnlockAllEditorsInSourceChangeCache;
 end;
 
-procedure TMainIDE.SaveSourceEditorChangesToCodeCache;
+procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
 // save all open sources to code tools cache
 var i: integer;
-  CurUnitInfo: TUnitInfo;
-  SrcEdit: TSourceEditor;
-begin
-  for i:=0 to Project1.UnitCount-1 do begin
-    CurUnitInfo:=Project1.Units[i];
-    if CurUnitInfo.EditorIndex>=0 then begin
-      SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
-        CurUnitInfo.EditorIndex);
-      if SrcEdit.Modified then begin
-        SrcEdit.UpdateCodeBuffer;
-        CurUnitInfo.Modified:=true;
-      end;
+
+  procedure SaveChanges(APageIndex: integer);
+  var
+    SrcEdit: TSourceEditor;
+    AnUnitInfo: TUnitInfo;
+  begin
+    GetUnitWithPageIndex(APageIndex,SrcEdit,AnUnitInfo);
+    if (SrcEdit<>nil) and (AnUnitInfo<>nil) and (SrcEdit.Modified) then begin
+      SrcEdit.UpdateCodeBuffer;
+      AnUnitInfo.Modified:=true;
     end;
+  end;
+  
+begin
+  if PageIndex<0 then begin
+    if (SourceNotebook.NoteBook<>nil) then begin
+      for i:=0 to SourceNotebook.NoteBook.PageCount-1 do
+        SaveChanges(i);
+    end;
+  end else begin
+    SaveChanges(PageIndex);
   end;
 end;
 
@@ -5385,7 +5402,7 @@ begin
   else
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  SaveSourceEditorChangesToCodeCache;
+  SaveSourceEditorChangesToCodeCache(-1);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
   Result:=true;
 end;
@@ -5681,6 +5698,37 @@ Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
 begin
   FCodeLastActivated:=False;
   FLastFormActivated := TCustomForm(Sender);
+end;
+
+procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
+  AComponent: TComponent; const NewName: string);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false);
+  if AComponent.Owner<>nil then begin
+    // rename published variable in form source
+    ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
+    if CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
+      ADesigner.Form.ClassName,
+      AComponent.Name,NewName,AComponent.ClassName) then
+    begin
+      ApplyCodeToolChanges;
+    end else begin
+      ApplyCodeToolChanges;
+      DoJumpToCodeToolBossError;
+      raise Exception.Create('Unable to rename variable in source.'#13
+                            +'See messages.');
+    end;
+  end else if AComponent=ADesigner.Form then begin
+    // rename form in source, form variable and createform statement
+    MessageDlg('Not implemented yet.',
+               'Form renaming in source is not implemented yet.',
+               mtInformation,[mbOk],0);
+  end else begin
+    raise Exception.Create('TMainIDE.OnDesignerRenameComponent internal error');
+  end;
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; 
@@ -6237,6 +6285,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.287  2002/04/27 18:56:47  lazarus
+  MG: started component renaming
+
   Revision 1.286  2002/04/26 13:50:14  lazarus
   MG: IDE and codetools work now with trimmed filenames
 
