@@ -11294,24 +11294,19 @@ begin
   if (ALayout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
   then begin
     case ALayout.WindowState of
-    iwsMinimized:
-      begin
-        ALayout.Form.WindowState:=wsMinimized;
-        exit;
-      end;
-    iwsMaximized:
-      begin
-        ALayout.Form.WindowState:=wsMaximized;
-        exit;
-      end;
-    else
-      if (ALayout.CustomCoordinatesAreValid) then begin
-        // explicit position
-        ALayout.Form.SetBounds(
-          ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
-        exit;
-      end;
+    iwsMinimized: ALayout.Form.WindowState:=wsMinimized;
+    iwsMaximized: ALayout.Form.WindowState:=wsMaximized;
     end;
+
+    if (ALayout.CustomCoordinatesAreValid) then begin
+      // explicit position
+      ALayout.Form.SetRestoredBounds(
+        ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+      exit;
+    end;
+
+    if ALayout.WindowState in [iwsMinimized, iwsMaximized] then
+      exit;
   end else if ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]
   then begin
     exit;
@@ -11382,6 +11377,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.836  2005/01/21 22:08:11  micha
+  implement restored size, let lazarus ide store restored size
+
   Revision 1.835  2005/01/16 19:02:02  micha
   fix bug 506: pass quoted files and paths to gdb that possibly contain spaces
 

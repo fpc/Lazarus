@@ -526,14 +526,19 @@ begin
   if not (csDesigning in ComponentState) then begin
     OldState:=FWindowState;
     Case (Message.SizeType and not SIZE_SourceIsInterface) of
-      SIZENORMAL : FWindowState := wsNormal;
+      SIZENORMAL : 
+        if Showing then
+          FWindowState := wsNormal;
       SIZEICONIC : 
-        begin
+      begin
+        if Showing then
           FWindowState := wsMinimized;
-          if Application.MainForm = Self then
-            Application.Minimize;
-        end;
-      SIZEFULLSCREEN : FWindowState := wsMaximized;
+        if Application.MainForm = Self then
+          Application.Minimize;
+      end;
+      SIZEFULLSCREEN: 
+        if Showing then
+          FWindowState := wsMaximized;
     end;
     if OldState<>FWindowState then begin
       //if Assigned(OnWindowStateChanged) then OnWindowStateChanged(Self);
@@ -541,6 +546,14 @@ begin
   end;
 
   inherited WMSize(Message);
+
+  if (Message.SizeType and not Size_SourceIsInterface) = Size_Restored then
+  begin
+    FRestoredLeft := Left;
+    FRestoredTop := Top;
+    FRestoredWidth := Width;
+    FRestoredHeight := Height;
+  end;
 End;
 
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
@@ -1082,6 +1095,17 @@ begin
     if not (csDesigning in ComponentState) and Showing then
       ShowWindow(Handle, ShowCommands[Value]);
   end;
+end;
+
+procedure TCustomForm.SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  prevWindowState: TWindowState;
+begin
+  // temporarily go to normal window state to store restored bounds
+  prevWindowState := WindowState;
+  WindowState := wsNormal;
+  SetBounds(ALeft, ATop, AWidth, AHeight);
+  WindowState := prevWindowState;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1828,6 +1852,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.172  2005/01/21 22:08:11  micha
+  implement restored size, let lazarus ide store restored size
+
   Revision 1.171  2005/01/18 18:46:59  mattias
   improved invert assignment tool by multilines   from Andrew Haines
 

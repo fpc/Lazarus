@@ -370,6 +370,10 @@ type
     FOnWindowStateChanged: TNotifyEvent;
     FPixelsPerInch: Longint;
     FPosition: TPosition;
+    FRestoredLeft: integer;
+    FRestoredTop: integer;
+    FRestoredWidth: integer;
+    FRestoredHeight: integer;
     FWindowState: TWindowState;
     function IsForm : Boolean;
     function IsHelpFileStored: boolean;
@@ -465,6 +469,7 @@ type
     function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl: TWinControl);
     function ShowModal: Integer;
+    procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
     function GetRolesForControl(AControl: TControl): TControlRolesForForm;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
@@ -512,6 +517,10 @@ type
                          read fOnWindowStateChanged write fOnWindowStateChanged;
     property PixelsPerInch: Longint read FPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
+    property RestoredLeft: integer read FRestoredLeft;
+    property RestoredTop: integer read FRestoredTop;
+    property RestoredWidth: integer read FRestoredWidth;
+    property RestoredHeight: integer read FRestoredHeight;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
     property Visible write SetVisible stored VisibleIsStored default false;
