@@ -129,7 +129,8 @@ type
     FExpandingRow:TOIPropertyGridRow;
     FTopY:integer;
     FDefaultItemHeight:integer;
-    FSplitterX:integer;
+    FSplitterX:integer; // current splitter position
+    FPreferredSplitterX: integer; // best splitter position
     FIndent:integer;
     FBackgroundColor:TColor;
     FNameFont,FValueFont:TFont;
@@ -215,6 +216,7 @@ type
     function TopMax:integer;
     property DefaultItemHeight:integer read FDefaultItemHeight write FDefaultItemHeight;
     property SplitterX:integer read FSplitterX write SetSplitterX;
+    property PrefferedSplitterX:integer read FPreferredSplitterX write FPreferredSplitterX;
     property Indent:integer read FIndent write FIndent;
     property BackgroundColor:TColor
        read FBackgroundColor write SetBackgroundColor default clBtnFace;
@@ -326,6 +328,7 @@ begin
   // visible values
   FTopY:=0;
   FSplitterX:=100;
+  FPreferredSplitterX:=FSplitterX;
   FIndent:=9;
   FBackgroundColor:=clBtnFace;
   FNameFont:=TFont.Create;
@@ -403,9 +406,9 @@ begin
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
     ScrollInfo.nMin := 0;
     ScrollInfo.nTrackPos := 0;
-    ScrollInfo.nMax := TopMax+ClientWidth;
-    ScrollInfo.nPage := ClientWidth;
-    if ScrollInfo.nPage<=0 then ScrollInfo.nPage:=1;
+    ScrollInfo.nMax := TopMax+ClientHeight;
+    ScrollInfo.nPage := ClientHeight;
+    if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
     ScrollInfo.nPos := TopY;
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
     ShowScrollBar(Handle,SB_VERT,True);
@@ -941,6 +944,7 @@ begin
   if FDragging then begin
     Cursor:=crDefault;
     FDragging:=false;
+    FPreferredSplitterX:=FSplitterX;
     if FCurrentEdit<>nil then FCurrentEdit.SetFocus;
   end;
 end;
@@ -977,7 +981,7 @@ begin
     if (SplitterX<5) and (aWidth>20) then
       SplitterX:=100
     else
-      SplitterX:=SplitterX;
+      SplitterX:=FPreferredSplitterX;
     AlignEditComponents;
   end;
 end;
@@ -1589,8 +1593,8 @@ begin
   FTop:=AnObjInspector.Top;
   FWidth:=AnObjInspector.Width;
   FHeight:=AnObjInspector.Height;
-  FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.SplitterX;
-  FEventGridSplitterX:=AnObjInspector.EventGrid.SplitterX;
+  FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.PrefferedSplitterX;
+  FEventGridSplitterX:=AnObjInspector.EventGrid.PrefferedSplitterX;
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
   FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
 end;
@@ -1598,12 +1602,12 @@ end;
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
 begin
   if FSaveBounds then begin
-writeln('[TOIOptions.AssignTo] ',AnObjInspector.Name,' ',FLeft,',',FTop,',',FWidth,',',FHeight);
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
     AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
+    AnObjInspector.PropertyGrid.PrefferedSplitterX:=FPropertyGridSplitterX;
     AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
+    AnObjInspector.EventGrid.PrefferedSplitterX:=FPropertyGridSplitterX;
   end;
-writeln(' RRRR ',FGridBackgroundColor);
   AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
   AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
   AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
