@@ -2699,6 +2699,20 @@ CheckHeap(IntToStr(GetMem_Cnt));
     Result:=DoOpenMainUnit(ProjectLoading);
     exit;
   end;
+  // check if the project knows this file
+  i:=Project.UnitCount-1;
+  while (i>=0) and (CompareFilenames(Project.Units[i].Filename,AFileName)<>0) do
+    dec(i);
+  ReOpen:=(i>=0);
+  if ReOpen then begin
+    NewUnitInfo:=Project.Units[i];
+    if (not ProjectLoading) and NewUnitInfo.Loaded then begin
+      // file already open -> change to page
+      SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
+      Result:=mrOk;
+      exit;
+    end;
+  end;
   if (not FileExists(AFilename)) then begin
     if ProjectLoading then begin
       Result:=MessageDlg('File not found',
@@ -2727,18 +2741,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
     end;
   end;
   Ext:=lowercase(ExtractFileExt(AFilename));
-  // check if the project knows this file
-  i:=Project.UnitCount-1;
-  while (i>=0) and (Project.Units[i].Filename<>AFileName) do dec(i);
-  ReOpen:=(i>=0);
   if ReOpen then begin
     NewUnitInfo:=Project.Units[i];
-    if (not ProjectLoading) and NewUnitInfo.Loaded then begin
-      // file already open -> change to page
-      SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
-      Result:=mrOk;
-      exit;
-    end;
     Result:=DoLoadCodeBuffer(NewBuf,AFileName,true,true);
     if Result<>mrOk then exit;
     NewUnitInfo.Source:=NewBuf;
@@ -5311,6 +5315,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.182  2001/12/15 22:58:09  lazarus
+  MG: fixed code completion in virtual files
+
   Revision 1.181  2001/12/15 10:57:48  lazarus
   MG: added hint checkboxes to environment options
 
