@@ -688,7 +688,7 @@ end;
 function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 begin
   if VirtKeyCode = VK_UNKNOWN then
-    Result := KEYMAP_VKUNKNOWN and KeyCode
+    Result := KEYMAP_VKUNKNOWN or KeyCode
   else
     Result := VirtKeyCode;
   if Extended then
@@ -708,8 +708,7 @@ end;
   GetGTKKeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
 procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
-  var SysKey, Extended, Toggle: Boolean);
-var ShiftState: TShiftState;
+  var SysKey, Extended, Toggle: Boolean; var ShiftState: TShiftState);
 begin
   VirtualKey := VK_UNKNOWN;
   KeyCode := $FFFF;
@@ -4069,6 +4068,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.170  2003/04/26 10:45:34  mattias
+  fixed right control release
+
   Revision 1.169  2003/04/20 20:32:40  mattias
   implemented removing, re-adding, updating project dependencies
 
