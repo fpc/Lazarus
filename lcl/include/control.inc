@@ -1684,7 +1684,7 @@ end;
 Procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
 Begin
   {$IFDEF VerboseMouseBugfix}
-  writeln('[TControl.WMMouseMove] ',Name,':',ClassName);
+  writeln('[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos);
   {$ENDIF}
   DoBeforeMouseMessage;
   if not (csNoStdEvents in ControlStyle)
@@ -2055,6 +2055,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.115  2003/01/18 21:31:43  mattias
+  fixed scrolling offset of TScrollingWinControl
+
   Revision 1.114  2003/01/01 13:01:01  mattias
   fixed setcolor for streamed components
 
