@@ -63,7 +63,7 @@ type
                           APackage: TLazPackage;
                           CompileClean, CompileRequired: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
-                                   const Params: TAddToPkgResult): TModalResult;
+                                       Params: TAddToPkgResult): TModalResult;
     function OnPackageEditorDeleteAmbigiousFiles(Sender: TObject;
       APackage: TLazPackage; const Filename: string): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
@@ -306,7 +306,7 @@ begin
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
-  const Params: TAddToPkgResult): TModalResult;
+  Params: TAddToPkgResult): TModalResult;
 var
   LE: String;
   UsesLine: String;
@@ -329,7 +329,7 @@ begin
     +'  '+UsesLine+';'+LE
     +LE
     +'type'+LE
-    +'  '+Params.ClassName+' = class('+Params.AncestorType+')'+LE
+    +'  '+Params.NewClassName+' = class('+Params.AncestorType+')'+LE
     +'  private'+LE
     +'    { Private declarations }'+LE
     +'  protected'+LE
@@ -346,7 +346,7 @@ begin
     +LE
     +'procedure Register;'+LE
     +'begin'+LE
-    +'  RegisterComponents('''+Params.PageName+''',['+Params.ClassName+']);'+LE
+    +'  RegisterComponents('''+Params.PageName+''',['+Params.NewClassName+']);'+LE
     +'end;'+LE
     +LE
     +'end.'+LE;

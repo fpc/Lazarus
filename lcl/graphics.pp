@@ -32,8 +32,12 @@ interface
 {$endif}
 
 uses
-  GraphType, SysUtils, LCLStrConsts, Classes, vclGlobals, LMessages, LCLType,
-  LCLProc, LCLLinux, LResources, GraphMath;
+  GraphType, SysUtils, Classes, LCLStrConsts, vclGlobals, LMessages, LCLType,
+  LCLProc, LCLLinux, LResources,
+  {$IFDEF UseFPImage}
+  FPImage,
+  {$ENDIF}
+  GraphMath;
 
 
 const
@@ -244,7 +248,7 @@ type
     Style : TBrushStyle;
   end;
 
-  TBrush = class(TgraphicsObject)
+  TBrush = class(TGraphicsObject)
   private
     FBrushData : TBrushData;
     procedure FreeHandle;
@@ -255,7 +259,7 @@ type
     procedure SetHandle(const Value: HBRUSH);
     Procedure SetStyle(value : TBrushStyle);
   public
-    procedure Assign(Source : Tpersistent); override;
+    procedure Assign(Source : TPersistent); override;
     constructor Create;
     destructor Destroy; override;
     property Bitmap: TBitmap read FBrushData.Bitmap write SetBitmap;
@@ -699,7 +703,7 @@ type
     function GetCanvas: TCanvas;
     procedure CreateCanvas;
     Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
-       const NDIB : TDIBSection; OS2Format : Boolean);
+                       const NDIB : TDIBSection; OS2Format : Boolean);
     procedure SetHandle(Value: HBITMAP);
     procedure SetMaskHandle(Value: HBITMAP);
     function GetHandleType: TBitmapHandleType;
@@ -744,7 +748,7 @@ type
     Procedure LoadFromXPMFile(const Filename : String);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
-    Function ReleaseHandle : HBITMAP;
+    Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
     property Canvas: TCanvas read GetCanvas write FCanvas;
     property Handle: HBITMAP read GetHandle write SetHandle;
@@ -1025,6 +1029,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2003/06/30 14:58:29  mattias
+  implemented multi file add to package editor
+
   Revision 1.71  2003/06/30 10:09:46  mattias
   fixed Get/SetPixel for DC without widget
 

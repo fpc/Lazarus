@@ -1290,11 +1290,11 @@ begin
             and not (csNoDesignVisible in ControlStyle)))
         then begin
          //TODO: CreateSolidBrush and FrameRect
-         {FrameBrush := CreateSolidBrush(ColorToRGB(clBtnShadow));
+         {FrameBrush := CreateSolidBrush(clBtnShadow);
           FrameRect(DC, Rect(Left - 1, Top - 1, Left + Width, Top + Height),
             FrameBrush);
           DeleteObject(FrameBrush);
-          FrameBrush := CreateSolidBrush(ColorToRGB(clBtnHighlight));
+          FrameBrush := CreateSolidBrush(clBtnHighlight);
           FrameRect(DC, Rect(Left, Top, Left + Width + 1, Top + Height + 1),
             FrameBrush);
           DeleteObject(FrameBrush);
@@ -1324,6 +1324,13 @@ begin
   DefaultHandler(Message);
 end;
 
+procedure TWinControl.CreateBrush;
+begin
+  if FBrush<>nil then exit;
+  FBrush:=TBrush.Create;
+  FBrush.Color:=Color;
+  // ToDo: ParentColor
+end;
 
 {------------------------------------------------------------------------------
   TWinControl ControlAtPos
@@ -2085,7 +2092,7 @@ constructor TWinControl.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csFixed;
-  FBrush := nil;
+  FBrush := nil; // Brush will be created on demand. Only few controls need it.
 end;
 
 {------------------------------------------------------------------------------}
@@ -2248,6 +2255,7 @@ begin
     ReleaseDC(0, DC);
     MemDC := CreateCompatibleDC(0);
     OldBitmap := SelectObject(MemDC, MemBitmap);
+    Include(FFlags,wcfEraseBackground);
     try
       DC := BeginPaint(Handle, PS);
       // ToDo: get rid of this hack (2 times MemDC)
@@ -2259,6 +2267,7 @@ begin
       BitBlt(DC, 0, 0, ClientRect.Right, ClientRect.Bottom, MemDC, 0, 0, SRCCOPY);
       EndPaint(Handle, PS);
     finally
+      Exclude(FFlags,wcfEraseBackground);
       SelectObject(MemDC, OldBitmap);
       DeleteDC(MemDC);
       DeleteObject(MemBitmap);
@@ -2381,10 +2390,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin            
-  if {not FDoubleBuffered or}
-    (Message.DC <>0) and (Message.DC = Message.Unused) // ToDo: get rid of this hack
-  then
-    FillRect(Message.DC, ClientRect, FBrush.Handle);
+  if {not FDoubleBuffered or} (Message.DC<>0) and (wcfEraseBackground in FFlags)
+  then begin
+    CreateBrush;
+    FillRect(Message.DC, ClientRect, FBrush.Handle)
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2876,6 +2886,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.148  2003/06/30 14:58:29  mattias
+  implemented multi file add to package editor
+
   Revision 1.147  2003/06/30 07:05:30  mattias
   activated EraseBKGND hack
 

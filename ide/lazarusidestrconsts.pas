@@ -552,6 +552,7 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   dlgCancel = 'Cancel';
+  lisA2PFilename2 = 'Filename';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto save';
   dlgEdFiles = 'Editor files';
@@ -714,6 +715,7 @@ resourcestring
   dlgEdAdd = 'Add...';
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
+  lisA2PAddFilesToPackage = 'Add files to package';
   dlgIndentCodeTo = 'Indent code to';
   dlgCodeToolsTab = 'Code Tools';
   
@@ -1981,6 +1983,7 @@ resourcestring
   lisA2PAddUnit = 'Add Unit';
   lisA2PNewComponent = 'New Component';
   lisA2PAddFile = 'Add File';
+  lisA2PAddFiles = 'Add Files';
   lisA2PUnitFileName = 'Unit file name:';
   lisA2PchooseAnExistingFile = '<choose an existing file>';
   lisA2PAddLFMLRSFilesIfTheyExist = 'Add LFM, LRS files, if they exist';

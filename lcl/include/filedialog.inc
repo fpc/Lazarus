@@ -121,6 +121,71 @@ function TOpenDialog.DoExecute: boolean;
       end;
     end;
   end;
+  
+  function CheckFile(var AFilename: string): boolean;
+  begin
+    Result:=true;
+    if (DefaultExt<>'') and (ExtractFileExt(AFilename)='')
+    and (not FileExists(AFilename)) then begin
+      AFilename:=AFilename+DefaultExt;
+    end;
+    if (ofOverwritePrompt in Options) and FileExists(AFilename) then
+    begin
+      Result:=MessageDlg(rsfdOverwriteFile,
+                         Format(rsfdFileAlreadyExists,[AFileName]),
+                         mtConfirmation,[mbOk,mbCancel],0)=mrOk;
+      if not Result then exit;
+    end;
+    if (ofPathMustExist in Options)
+    and (not FileExists(ExtractFilePath(AFilename))) then begin
+      Result:=false;
+      MessageDlg(rsfdPathMustExist,
+                 Format(rsfdPathNoExist,[ExtractFilePath(AFilename)]),
+                 mtError,[mbCancel],0);
+      exit;
+    end;
+    if (ofFileMustExist in Options)
+    and (not FileExists(AFilename)) then begin
+      Result:=false;
+      MessageDlg(rsfdFileMustExist,
+                 Format(rsfdFileNotExist,[AFileName]),mtError,
+                 [mbCancel],0);
+      exit;
+    end;
+    if (ofNoReadOnlyReturn in Options)
+    and (not FileIsWritable(AFilename)) then begin
+      Result:=false;
+      MessageDlg(rsfdFileReadOnlyTitle,
+                 Format(rsfdFileReadOnly,[AFileName]),
+                 mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+  
+  function CheckAllFiles: boolean;
+  var
+    AFilename: String;
+    i: Integer;
+  begin
+    Result:=true;
+    
+    AFilename:=Filename;
+    if (AFilename<>'')
+    or (not (ofAllowMultiSelect in Options)) then begin
+      Result:=CheckFile(AFilename);
+      Filename:=AFilename;
+      if not Result then exit;
+    end;
+    
+    if ofAllowMultiSelect in Options then begin
+      for i:=0 to Files.Count-1 do begin
+        AFilename:=Files[i];
+        Result:=CheckFile(AFilename);
+        Files[i]:=AFilename;
+        if not Result then exit;
+      end;
+    end;
+  end;
 
 begin
   Result:=inherited DoExecute;
@@ -133,38 +198,8 @@ begin
     else if (Files.Count>0) and (ExtractFilePath(Files[0])<>'') then
       InitialDir:=ExtractFilePath(Files[0]);
   end;
-  if Result then begin
-    if (DefaultExt<>'') and (ExtractFileExt(Filename)='')
-    and (not FileExists(Filename)) then begin
-      Filename:=Filename+DefaultExt;
-    end;
-    if (ofOverwritePrompt in Options) and FileExists(Filename) then
-    begin
-      Result:=MessageDlg(rsfdOverwriteFile,Format(rsfdFileAlreadyExists,[FileName]),
-               mtConfirmation,[mbOk,mbCancel],0)=mrOk;
-      if not Result then exit;
-    end;
-    if (ofPathMustExist in Options)
-    and (not FileExists(ExtractFilePath(Filename))) then begin
-      Result:=false;
-      MessageDlg(rsfdPathMustExist,Format(rsfdPathNoExist,[ExtractFilePath(Filename)]),
-                 mtError,[mbCancel],0);
-      exit;
-    end;
-    if (ofFileMustExist in Options)
-    and (not FileExists(Filename)) then
-    begin
-      Result:=false;
-      MessageDlg(rsfdFileMustExist,Format(rsfdFileNotExist,[FileName]),mtError,[mbCancel],0);
-      exit;
-    end;
-    if (ofNoReadOnlyReturn in Options)
-    and (not FileIsWritable(Filename)) then begin
-      Result:=false;
-      MessageDlg(rsfdFileReadOnlyTitle,Format(rsfdFileReadOnly,[FileName]),mtError,[mbCancel],0);
-      exit;
-    end;
-  end;
+  if not Result then exit;
+  Result:=CheckAllFiles;
 end;
 
 {------------------------------------------------------------------------------
@@ -201,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/06/30 14:58:29  mattias
+  implemented multi file add to package editor
+
   Revision 1.7  2003/02/28 10:21:16  mattias
   lcl localization from Olivier
 

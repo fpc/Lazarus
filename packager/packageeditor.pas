@@ -64,8 +64,7 @@ type
   TOnUninstallPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCreateNewPkgFile =
-    function(Sender: TObject;
-             const Params: TAddToPkgResult): TModalResult  of object;
+    function(Sender: TObject; Params: TAddToPkgResult): TModalResult  of object;
   TOnDeleteAmbigiousFiles =
     function(Sender: TObject; APackage: TLazPackage;
              const Filename: string): TModalResult of object;
@@ -225,8 +224,7 @@ type
     function OpenDependency(Sender: TObject;
                             Dependency: TPkgDependency): TModalResult;
     procedure DoFreeEditor(Pkg: TLazPackage);
-    function CreateNewFile(Sender: TObject;
-                           const Params: TAddToPkgResult): TModalResult;
+    function CreateNewFile(Sender: TObject; Params: TAddToPkgResult): TModalResult;
     function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
     function RevertPackage(APackage: TLazPackage): TModalResult;
     function PublishPackage(APackage: TLazPackage): TModalResult;
@@ -818,6 +816,7 @@ var
   AddParams: TAddToPkgResult;
   NewLFMFilename: String;
   NewLRSFilename: String;
+  OldParams: TAddToPkgResult;
 begin
   if LazPackage.ReadOnly then begin
     UpdateButtons;
@@ -831,77 +830,84 @@ begin
     exit;
 
   PackageGraph.BeginUpdate(false);
-  case AddParams.AddType of
+  while AddParams<>nil do begin
+    case AddParams.AddType of
 
-  d2ptUnit:
-    begin
-      NewLFMFilename:='';
-      NewLRSFilename:='';
-      // add lfm file
-      if AddParams.AutoAddLFMFile then begin
-        NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
-        if FileExists(NewLFMFilename)
-        and (LazPackage.FindPkgFile(NewLFMFilename,false,true)=nil) then
-          LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
-        else
-          NewLFMFilename:='';
+    d2ptUnit:
+      begin
+        NewLFMFilename:='';
+        NewLRSFilename:='';
+        // add lfm file
+        if AddParams.AutoAddLFMFile then begin
+          NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
+          if FileExists(NewLFMFilename)
+          and (LazPackage.FindPkgFile(NewLFMFilename,false,true)=nil) then
+            LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
+          else
+            NewLFMFilename:='';
+        end;
+        // add lrs file
+        if AddParams.AutoAddLRSFile then begin
+          NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
+          if FileExists(NewLRSFilename)
+          and (LazPackage.FindPkgFile(NewLRSFilename,false,true)=nil) then
+            LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
+          else
+            NewLRSFilename:='';
+        end;
+        ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
+        // add unit file
+        with AddParams do
+          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+        PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
+        UpdateAll;
       end;
-      // add lrs file
-      if AddParams.AutoAddLRSFile then begin
-        NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
-        if FileExists(NewLRSFilename)
-        and (LazPackage.FindPkgFile(NewLRSFilename,false,true)=nil) then
-          LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
-        else
-          NewLRSFilename:='';
+
+    d2ptVirtualUnit:
+      begin
+        // add virtual unit file
+        with AddParams do
+          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+        PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
+        UpdateAll;
       end;
-      ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename);
-      // add unit file
-      with AddParams do
-        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-      PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
-      UpdateAll;
-    end;
 
-  d2ptVirtualUnit:
-    begin
-      // add virtual unit file
-      with AddParams do
-        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-      PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
-      UpdateAll;
-    end;
+    d2ptNewComponent:
+      begin
+        ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
+        // add file
+        with AddParams do
+          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+        // add dependency
+        if AddParams.Dependency<>nil then begin
+          PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
+        end;
+        // open file in editor
+        PackageEditors.CreateNewFile(Self,AddParams);
+        UpdateAll;
+      end;
 
-  d2ptNewComponent:
-    begin
-      ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'');
-      // add file
-      with AddParams do
-        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-      // add dependency
-      if AddParams.Dependency<>nil then begin
+    d2ptRequiredPkg:
+      begin
+        // add dependency
         PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
       end;
-      // open file in editor
-      PackageEditors.CreateNewFile(Self,AddParams);
-      UpdateAll;
-    end;
 
-  d2ptRequiredPkg:
-    begin
-      // add dependency
-      PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    end;
+    d2ptFile:
+      begin
+        // add file
+        with AddParams do
+          LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+        UpdateAll;
+      end;
 
-  d2ptFile:
-    begin
-      // add file
-      with AddParams do
-        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
-      UpdateAll;
     end;
-  
+    OldParams:=AddParams;
+    AddParams:=AddParams.Next;
+    OldParams.Next:=nil;
+    OldParams.Free;
   end;
+  AddParams.Free;
   LazPackage.Modified:=true;
   PackageGraph.EndUpdate;
 end;
@@ -2007,7 +2013,7 @@ begin
 end;
 
 function TPackageEditors.CreateNewFile(Sender: TObject;
-  const Params: TAddToPkgResult): TModalResult;
+  Params: TAddToPkgResult): TModalResult;
 begin
   Result:=mrCancel;
   if Assigned(OnCreateNewFile) then

@@ -331,11 +331,11 @@ var
   var
     BmpHead: TBitmapFileHeader;
     ReadSize: integer;
-    BmpInfo:PBitmapInfo;
-    ImgSize:longint;
-    Bits:PBitsObj;
+    BmpInfo: PBitmapInfo;
+    ImgSize: longint;
+    Bits: PBitsObj;
     InfoSize: integer;
-    BitsPerPixel,ColorsUsed:integer;
+    BitsPerPixel, ColorsUsed: integer;
   begin
     FillChar(BmpHead,SizeOf(BmpHead),0);
     ReadSize:=MemStream.Read(BmpHead, SizeOf(BmpHead));
@@ -572,29 +572,31 @@ Type
   
   procedure DoWriteOriginal;
   begin
-  writeln('DoWriteOriginal A');
     DoWriteStreamSize(FImage.SaveStream.Size);
     FImage.SaveStream.Position:=0;
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   end;
   
 var
-  Bits : PByte;
-  Header : TBitmapHeader;
+  Bits: PByte;
+  Header: TBitmapHeader;
 begin
-  writeln('TBitmap.WriteStream A ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType));
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
   and (FImage.SaveStreamType<>bnNone) then begin
     DoWriteOriginal;
     exit;
   end;
 
-  FillBitmapInfo(Handle, Bits, Header);
-  DoWriteSize(Header);
-  WriteBitmapHeader(Header);
-  WriteColorMap(Header);
-  WritePixels(Bits, Header);
-  ReallocMem(Bits, 0);
+  Bits:=nil;
+  try
+    FillBitmapInfo(Handle, Bits, Header);
+    DoWriteSize(Header);
+    WriteBitmapHeader(Header);
+    WriteColorMap(Header);
+    WritePixels(Bits, Header);
+  finally
+    ReallocMem(Bits, 0);
+  end;
 end;
 
 procedure TBitMap.SaveToStream(Stream: TStream);
@@ -710,6 +712,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/06/30 14:58:29  mattias
+  implemented multi file add to package editor
+
   Revision 1.32  2003/06/30 10:09:46  mattias
   fixed Get/SetPixel for DC without widget
 

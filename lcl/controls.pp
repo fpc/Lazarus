@@ -912,7 +912,8 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfReAlignNeeded,
-    wcfAligningControls
+    wcfAligningControls,
+    wcfEraseBackground
     );
   TWinControlFlags = set of TWinControlFlag;
 
@@ -924,28 +925,28 @@ type
     FBoundsRealized: TRect;
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
-    FControls : TList;
-    FDefWndProc : Pointer;
-    //FDockSite : Boolean;
-    FClientWidth : Integer;
-    FClientHeight : Integer;
+    FControls: TList;
+    FDefWndProc: Pointer;
+    //FDockSite: Boolean;
+    FClientWidth: Integer;
+    FClientHeight: Integer;
     FFlags: TWinControlFlags;
     //FUseDockManager : Boolean;
-    FOnKeyDown : TKeyEvent;
+    FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
-    FOnKeyUp : TKeyEvent;
+    FOnKeyUp: TKeyEvent;
     FOnMouseWheel: TMouseWheelEvent;
     FOnMouseWheelDown: TMouseWheelUpDownEvent;
     FOnMouseWheelUp: TMouseWheelUpDownEvent;
-    FOnEnter : TNotifyEvent;
-    FOnExit  : TNotifyEvent;
-    FParentWindow : hwnd;
-    FParentCtl3D : Boolean;
+    FOnEnter: TNotifyEvent;
+    FOnExit: TNotifyEvent;
+    FParentWindow: hwnd;
+    FParentCtl3D: Boolean;
     FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
-    FShowing : Boolean;
+    FShowing: Boolean;
     FTabList: TList;
-    FWinControls : TList;
+    FWinControls: TList;
     procedure AlignControl(AControl : TControl);
     function  GetControl(const Index: Integer): TControl;
     function  GetControlCount: Integer;
@@ -976,6 +977,7 @@ type
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
+    procedure CreateBrush; virtual;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
@@ -1625,6 +1627,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2003/06/30 14:58:29  mattias
+  implemented multi file add to package editor
+
   Revision 1.134  2003/06/27 23:42:38  mattias
   fixed TScrollBar resizing
 

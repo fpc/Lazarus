@@ -156,10 +156,22 @@ type
   
   TBevelCut = (bvNone, bvLowered, bvRaised);
 
-  TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit,
-                  pf32bit, pfCustom);
+  TPixelFormat = (
+    pfDevice,
+    pf1bit,
+    pf4bit,
+    pf8bit,
+    pf15bit,
+    pf16bit,
+    pf24bit,
+    pf32bit,
+    pfCustom
+    );
                   
-  TTransparentMode = (tmAuto, tmFixed);
+  TTransparentMode = (
+    tmAuto,
+    tmFixed
+    );
 
 implementation
 
@@ -168,6 +180,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/06/30 14:58:29  mattias
+  implemented multi file add to package editor
+
   Revision 1.10  2002/08/18 04:57:01  mattias
   fixed csDashDot
 
