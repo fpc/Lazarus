@@ -2,7 +2,7 @@
 Implementation for winprinter
 ***************************************************************}
 
-Uses WinUtilPrn;
+Uses WinUtilPrn, InterfaceBase, Win32Int;
 
 Const
   Win32Orientations: array [TPrinterOrientation] of Integer = (
@@ -81,7 +81,7 @@ begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
       Flags:=PD_COLLATE or PD_USEDEVMODECOPIES; //PD_PRINTSETUP ;
-      hWndOwner:=Application.Handle;
+      hWndOwner:=TWin32WidgetSet(InterfaceObject).AppHandle;
 
       PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
