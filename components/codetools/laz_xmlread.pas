@@ -66,7 +66,7 @@ const
 
   NmToken: set of Char = Letter + Digit + ['.', '-', '_', ':'];
 
-function CompareIPChar(p1, p2: PChar): boolean;
+function ComparePChar(p1, p2: PChar): boolean;
 begin
   if p1<>p2 then begin
     if (p1<>nil) and (p2<>nil) then begin
@@ -93,12 +93,67 @@ begin
   end;
 end;
 
-function CompareLIPChar(p1, p2: PChar; Max: integer): boolean;
+function CompareLPChar(p1, p2: PChar; Max: integer): boolean;
 begin
   if p1<>p2 then begin
     if (p1<>nil) and (p2<>nil) then begin
       while Max>0 do begin
         if (p1^=p2^) then begin
+          if (p1^<>#0) then begin
+            inc(p1);
+            inc(p2);
+            dec(Max);
+          end else begin
+            Result:=true;
+            exit;
+          end;
+        end else begin
+          Result:=false;
+          exit;
+        end;
+      end;
+      Result:=true;
+    end else begin
+      Result:=false;
+    end;
+  end else begin
+    Result:=true;
+  end;
+end;
+
+function CompareIPChar(p1, p2: PChar): boolean;
+begin
+  if p1<>p2 then begin
+    if (p1<>nil) and (p2<>nil) then begin
+      while true do begin
+        if (p1^=p2^) or (upcase(p1^)=upcase(p2^)) then begin
+          if p1^<>#0 then begin
+            inc(p1);
+            inc(p2);
+          end else begin
+            Result:=true;
+            exit;
+          end;
+        end else begin
+          Result:=false;
+          exit;
+        end;
+      end;
+      Result:=true;
+    end else begin
+      Result:=false;
+    end;
+  end else begin
+    Result:=true;
+  end;
+end;
+
+function CompareLIPChar(p1, p2: PChar; Max: integer): boolean;
+begin
+  if p1<>p2 then begin
+    if (p1<>nil) and (p2<>nil) then begin
+      while Max>0 do begin
+        if (p1^=p2^) or (upcase(p1^)=upcase(p2^)) then begin
           if (p1^<>#0) then begin
             inc(p1);
             inc(p2);
@@ -263,7 +318,7 @@ end;
 function TXMLReader.CheckFor(s: PChar): Boolean;
 begin
   if buf[0] <> #0 then begin
-    if (buf[0]=s[0]) and (StrLComp(buf, s, StrLen(s)) = 0) then begin
+    if (buf[0]=s[0]) and (CompareLPChar(buf, s, StrLen(s))) then begin
       Inc(buf, StrLen(s));
       Result := True;
     end else
@@ -1363,6 +1418,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2003/12/19 09:06:07  mattias
+  replaced StrLComp by CompareLPChar
+
   Revision 1.9  2003/12/18 23:47:03  mattias
   added classes incpath
 
