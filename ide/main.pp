@@ -3457,7 +3457,9 @@ var ActiveSrcEdit:TSourceEditor;
   TestFilename: string;
   ResourceCode, LFMCode: TCodeBuffer;
 begin
+  {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
@@ -3550,8 +3552,10 @@ begin
     ActiveSrcEdit.Modified:=false;
   end;
   SourceNoteBook.UpdateStatusBar;
-  
+
+  {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoSaveEditorUnit END');
+  {$ENDIF}
   Result:=mrOk;
 end;
 
@@ -3634,8 +3638,10 @@ var
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
 begin
+  {$IFDEF IDE_VERBOSE}
   writeln('');
   writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
   if ExtractFilenameOnly(AFilename)='' then exit;
@@ -3739,7 +3745,9 @@ begin
 
   // build a nice pagename for the sourcenotebook
   Result:=mrOk;
+  {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoOpenMainUnit] END');
+  {$ENDIF}
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -4108,7 +4116,9 @@ end;
 
 function TMainIDE.DoCloseProject:TModalResult;
 begin
-writeln('TMainIDE.DoCloseProject A');
+  {$IFDEF IDE_VERBOSE}
+  writeln('TMainIDE.DoCloseProject A');
+  {$ENDIF}
   // close all loaded files
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   while SourceNotebook.NoteBook<>nil do begin
@@ -4120,7 +4130,9 @@ writeln('TMainIDE.DoCloseProject A');
   FreeThenNil(Project1);
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrOk;
-writeln('TMainIDE.DoCloseProject end ',CodeToolBoss.ConsistencyCheck);
+  {$IFDEF IDE_VERBOSE}
+  writeln('TMainIDE.DoCloseProject end ',CodeToolBoss.ConsistencyCheck);
+  {$ENDIF}
 end;
 
 function TMainIDE.DoOpenProjectFile(AFileName:string):TModalResult;
@@ -4128,7 +4140,9 @@ var Ext,AText,ACaption: string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
 begin
-writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
+  {$IFDEF IDE_VERBOSE}
+  writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
   if ExtractFileNameOnly(AFileName)='' then exit;
@@ -4175,7 +4189,9 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   if Result=mrAbort then exit;
   
   // create a new project
-writeln('TMainIDE.DoOpenProjectFile B');
+  {$IFDEF IDE_VERBOSE}
+  writeln('TMainIDE.DoOpenProjectFile B');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Project1:=TProject.Create(ptProgram);
   Project1.OnFileBackup:=@DoBackupFile;
@@ -4192,9 +4208,9 @@ writeln('TMainIDE.DoOpenProjectFile B');
     if Result=mrAbort then exit;
     Project1.MainUnitInfo.Source:=NewBuf;
   end;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.DoOpenProjectFile C');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.DoOpenProjectFile C');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 
   // restore files
@@ -4246,9 +4262,9 @@ writeln('TMainIDE.DoOpenProjectFile C');
     end;
   until LowestEditorIndex<0;
   Result:=mrCancel;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.DoOpenProjectFile D');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.DoOpenProjectFile D');
+  {$ENDIF}
 
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project1.ActiveEditorIndexAtStart>=0)
@@ -4270,7 +4286,9 @@ writeln('TMainIDE.DoOpenProjectFile D');
   Project1.Modified:=false;
   
   Result:=mrOk;
-writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
+  {$IFDEF IDE_VERBOSE}
+  writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
@@ -4279,7 +4297,9 @@ function TMainIDE.DoCreateProjectForProgram(
 var NewProjectType:TProjectType;
   MainUnitInfo: TUnitInfo;
 begin
-writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
+  {$ENDIF}
   Result:=mrCancel;
 
   if SomethingOfProjectIsModified then begin
@@ -4332,7 +4352,9 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   Result:=DoOpenMainUnit(false);
   if Result=mrAbort then exit;
 
-writeln('[TMainIDE.DoCreateProjectForProgram] END');
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TMainIDE.DoCreateProjectForProgram] END');
+  {$ENDIF}
   Result:=mrOk;
 end;
 
@@ -6440,6 +6462,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.311  2002/06/12 14:27:15  lazarus
+  MG: reduced IDE output
+
   Revision 1.310  2002/06/12 14:14:50  lazarus
   MG: fixed working directory of running programms
 

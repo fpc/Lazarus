@@ -19,6 +19,8 @@
  ***************************************************************************
 }
 
+{ $DEFINE IDE_VERBOSE}
+
 { $DEFINE IDE_MEM_CHECK}
 
 { $DEFINE IDE_DEBUG}

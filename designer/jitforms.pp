@@ -227,18 +227,18 @@ var
 begin
   Result:=-1;
   // create new class and an instance
-//writeln('[TJITForms.DoCreateJITForm] Creating new JIT class '''+NewClassName+''' ...');
+  //writeln('[TJITForms.DoCreateJITForm] Creating new JIT class '''+NewClassName+''' ...');
   Pointer(FCurReadClass):=CreateVMTCopy(TJITForm,'TJITForm');
-//writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewClassName+''' ...');
+  //writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewClassName+''' ...');
   Instance:=TComponent(FCurReadClass.NewInstance);
-//writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
+  //writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
   TComponent(FCurReadForm):=Instance;
   try
     Instance.Create(nil);
     if NewFormName<>'' then
       Instance.Name:=NewFormName;
     DoRenameClass(FCurReadClass,NewClassName);
-//writeln('[TJITForms.DoCreateJITForm] Initialization was successful! FormName="',NewFormName,'"');
+  //writeln('[TJITForms.DoCreateJITForm] Initialization was successful! FormName="',NewFormName,'"');
   except
     TComponent(FCurReadForm):=nil;
     writeln('[TJITForms.DoCreateJITForm] Error while creating instance');
@@ -250,9 +250,13 @@ end;
 function TJITForms.AddNewJITForm:integer;
 var NewFormName,NewClassName:shortstring;
 begin
+  {$IFDEF IDE_VERBOSE}
   Writeln('[TJITForms] AddNewJITForm');
+  {$ENDIF}
   GetUnusedNames(NewFormName,NewClassName);
+  {$IFDEF IDE_VERBOSE}
   Writeln('NewFormName is ',NewFormname,', NewClassName is ',NewClassName);
+  {$ENDIF}
   Result:=DoCreateJITForm(NewFormName,NewClassName);
 end;
 
@@ -288,21 +292,27 @@ begin
   NewClassName:=GetClassNameFromStream(BinStream);
   if NewClassName='' then begin
 
-//    Application.MessageBox('No classname in form stream found.','',mb_OK);
+    // Application.MessageBox('No classname in form stream found.','',mb_OK);
     MessageDlg('No classname in form stream found.',mterror,[mbOK],0);
 
     exit;
   end;
-writeln('[TJITForms.AddJITFormFromStream] 1');
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITForms.AddJITFormFromStream] 1');
+  {$ENDIF}
   try
     Result:=DoCreateJITForm('',NewClassName);
-writeln('[TJITForms.AddJITFormFromStream] 2');
+    {$IFDEF IDE_VERBOSE}
+    writeln('[TJITForms.AddJITFormFromStream] 2');
+    {$ENDIF}
 
     Reader:=TReader.Create(BinStream,4096);
     MyFindGlobalComponentProc:=@OnFindGlobalComponent;
     FindGlobalComponent:=@MyFindGlobalComponent;
 
-writeln('[TJITForms.AddJITFormFromStream] 3');
+    {$IFDEF IDE_VERBOSE}
+    writeln('[TJITForms.AddJITFormFromStream] 3');
+    {$ENDIF}
     try
       // connect TReader events
       Reader.OnError:=@ReaderError;
@@ -313,10 +323,14 @@ writeln('[TJITForms.AddJITFormFromStream] 3');
       Reader.OnCreateComponent:=@ReaderCreateComponent;
       Reader.OnFindComponentClass:=@ReaderFindComponentClass;
 
-writeln('[TJITForms.AddJITFormFromStream] 4');
+      {$IFDEF IDE_VERBOSE}
+      writeln('[TJITForms.AddJITFormFromStream] 4');
+      {$ENDIF}
       Reader.ReadRootComponent(FCurReadForm);
 
-writeln('[TJITForms.AddJITFormFromStream] 5');
+      {$IFDEF IDE_VERBOSE}
+      writeln('[TJITForms.AddJITFormFromStream] 5');
+      {$ENDIF}
       // MG: workaround til visible=true is default
       for a:=0 to FCurReadForm.ComponentCount-1 do begin
         if FCurReadForm.Components[a] is TControl then
@@ -324,7 +338,9 @@ writeln('[TJITForms.AddJITFormFromStream] 5');
       end;
       // MG: end of workaround
 
-writeln('[TJITForms.AddJITFormFromStream] 6');
+      {$IFDEF IDE_VERBOSE}
+      writeln('[TJITForms.AddJITFormFromStream] 6');
+      {$ENDIF}
       FCurReadForm.Show;
     finally
       FindGlobalComponent:=nil;
@@ -458,7 +474,7 @@ procedure TJITForms.FreevmtCopy(vmtCopy:Pointer);
 var MethodTable : PMethodNameTable;
   ClassNamePtr: Pointer;
 begin
-//writeln('[TJITForms.FreevmtCopy] ClassName='''+TClass(vmtCopy).ClassName+'''');
+  //writeln('[TJITForms.FreevmtCopy] ClassName='''+TClass(vmtCopy).ClassName+'''');
   if vmtCopy=nil then exit;
   // free copy of methodtable
   MethodTable:=PMethodNameTable((Pointer(vmtCopy)+vmtMethodTable)^);
@@ -475,7 +491,7 @@ procedure TJITForms.DoAddNewMethod(JITClass:TClass;
 var OldMethodTable,NewMethodTable: PMethodNameTable;
   NewMethodTableSize:integer;
 begin
-//writeln('[TJITForms.AddNewMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  //writeln('[TJITForms.AddNewMethod] '''+JITClass.ClassName+'.'+AName+'''');
   OldMethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   if Assigned(OldMethodTable) then begin
     NewMethodTableSize:=SizeOf(DWord)+
@@ -515,7 +531,9 @@ var OldMethodTable, NewMethodTable: PMethodNameTable;
   NewMethodTableSize:integer;
   a:cardinal;
 begin
-writeln('[TJITForms.RemoveMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITForms.DoRemoveMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  {$ENDIF}
   AName:=uppercase(AName);
   OldMethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   OldCode:=nil;
@@ -553,8 +571,10 @@ procedure TJITForms.DoRenameMethod(JITClass:TClass;
 var MethodTable: PMethodNameTable;
   a:integer;
 begin
-writeln('[TJITForms.RenameMethod] ClassName='''+JITClass.ClassName+''''
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITForms.DoRenameMethod] ClassName='''+JITClass.ClassName+''''
     +' OldName='''+OldName+''' NewName='''+OldName+'''');
+  {$ENDIF}
   OldName:=uppercase(OldName);
   MethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   if Assigned(MethodTable) then begin
@@ -567,8 +587,10 @@ end;
 
 procedure TJITForms.DoRenameClass(JITClass:TClass; NewName:ShortString);
 begin
-writeln('[TJITForms.RenameClass] OldName='''+JITClass.ClassName
- +''' NewName='''+NewName+''' ');
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITForms.DoRenameClass] OldName='''+JITClass.ClassName
+    +''' NewName='''+NewName+''' ');
+  {$ENDIF}
   PShortString((Pointer(JITClass)+vmtClassName)^)^:=NewName;
 end;
 
