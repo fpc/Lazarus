@@ -890,8 +890,10 @@ type
     FMouseControl: TControl;
     FNavigation: TApplicationNavigationOptions;
     FOldExceptProc: TExceptProc;
+    FOldExitProc: Pointer;
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
+    FOnDestroy: TNotifyEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
@@ -1020,6 +1022,7 @@ type
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
+    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property Title: String read GetTitle write SetTitle;
   end;
@@ -1252,7 +1255,8 @@ end;
 {$IFDEF ExceptionHasNoFrames}
 procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
 {$ELSE}
-procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount:Longint; Frames: PPointer);
+procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount: Longint;
+  Frames: PPointer);
 var
   FrameNumber: integer;
 {$ENDIF}
@@ -1275,6 +1279,12 @@ Begin
   if Application<>nil then
     Application.HandleException(Sender);
   HandlingException:=false;
+end;
+
+procedure BeforeFinalization;
+// This is our ExitProc handler.
+begin
+  FreeInterfaceObject;
 end;
 
 //------------------------------------------------------------------------------
@@ -1430,6 +1440,7 @@ end;
 procedure FreeInterfaceObject;
 begin
   //debugln('FreeInterfaceObject');
+  if Application=nil then exit;
   Application.Free;
   Application:=nil;
   FreeAllClipBoards;

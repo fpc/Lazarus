@@ -96,6 +96,8 @@ begin
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
+  FOldExitProc:=ExitProc;
+  ExitProc:=@BeforeFinalization;
 end;
 
 {------------------------------------------------------------------------------
@@ -105,7 +107,14 @@ destructor TApplication.Destroy;
 var
   HandlerType: TApplicationHandlerType;
 begin
+  if Self=nil then
+    RaiseGDBException('TApplication.Destroy Self=nil');
   Include(FFlags,AppDestroying);
+  
+  if Assigned(FOnDestroy) then FOnDestroy(Self);
+  
+  ExitProc:=FOldExitProc;
+  
   DoFreeReleaseComponents;
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
@@ -1409,6 +1418,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2005/02/26 20:43:54  mattias
+  TApplication now uses ExitProc to free itself before all finaizations
+
   Revision 1.103  2005/02/26 20:26:03  mattias
   fixed hint size and activate
 
