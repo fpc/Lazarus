@@ -59,7 +59,7 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   ProjectInspector,
   // designer
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   ComponentPalette, ComponentReg,
   {$ELSE}
   CompReg, IDEComp,
@@ -222,7 +222,7 @@ type
 
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     procedure ControlClick(Sender : TObject);
     {$ENDIF}
 
@@ -352,7 +352,7 @@ type
     FDisplayState : TDisplayState;
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     FSelectedComponent : TRegisteredComponent;
     {$ENDIF}
     FOpenEditorsOnCodeToolChange: boolean;
@@ -386,7 +386,7 @@ type
     procedure ConnectMainBarEvents;
     procedure SetupSpeedButtons;
     procedure SetupComponentNoteBook;
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     procedure SetupComponentTabs;
     {$ENDIF}
     procedure SetupHints;
@@ -600,7 +600,7 @@ type
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
     // form editor and designer
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     property SelectedComponent : TRegisteredComponent
       read FSelectedComponent write FSelectedComponent;
     {$ENDIF}
@@ -834,7 +834,7 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(Self),Name);
   OnResize:=@MainIDEResize;
 
-  {$IFNDEF EnablePkgs}
+  {$IFDEF DisablePkgs}
   InitIDEComponents;
   {$ENDIF}
   if LazarusResources.Find(ClassName)=nil then begin
@@ -858,7 +858,7 @@ begin
   SetupSourceNotebook;
   SetupTransferMacros;
   SetupControlSelection;
-  {$IFNDEF EnablePkgs}
+  {$IFDEF DisablePkgs}
   SetupComponentTabs;
   {$ENDIF}
 
@@ -1110,7 +1110,7 @@ begin
   end;
 end;
 
-{$IFNDEF EnablePkgs}
+{$IFDEF DisablePkgs}
 procedure TMainIDE.SetupComponentTabs;
 var
   PageCount, I, X: integer;
@@ -1641,7 +1641,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{$IFNDEF EnablePkgs}
+{$IFDEF DisablePkgs}
 procedure TMainIDE.ControlClick(Sender : TObject);
 var
   IDECOmp : TIDEComponent;
@@ -2096,11 +2096,11 @@ Begin
     OnActivated:=@OnDesignerActivated;
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnComponentDeleted:=@OnDesignerComponentDeleted;
-    {$IFDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
+    OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
+    {$ELSE}
     OnGetNonVisualCompIconCanvas:=
       @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
-    {$ELSE}
-    OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
     {$ENDIF}
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
@@ -4332,7 +4332,7 @@ begin
         exit;
       end;
     end;
-    {$IFDEF EnablePkgs}
+    {$IFNDEF DisablePkgs}
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       if MessageDlg(lisOpenPackage,
         Format(lisOpenThePackageAnswerNoToLoadItAsXmlFile, [AFilename, #13]),
@@ -5449,7 +5449,7 @@ begin
   if Result<>mrOk then exit;
 
   // compile required packages
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   Result:=PkgBoss.DoCompileProjectDependencies(Project1,[pcfDoNotSaveEditorFiles]);
   if Result<>mrOk then exit;
   {$ENDIF}
@@ -5642,7 +5642,7 @@ begin
 
     // prepare static auto install packages
     PkgOptions:='';
-    {$IFDEF EnablePkgs}
+    {$IFNDEF DisablePkgs}
     if (blfWithStaticPackages in Flags)
     or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
       // compile auto install static packages
@@ -6720,19 +6720,19 @@ end;
 procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
   var RegisteredComponent: TRegisteredComponent);
 begin
-  {$IFDEF EnablePkgs}
-  RegisteredComponent:=TComponentPalette(IDEComponentPalette).Selected;
-  {$ELSE}
+  {$IFDEF DisablePkgs}
   RegisteredComponent:=SelectedComponent;
+  {$ELSE}
+  RegisteredComponent:=TComponentPalette(IDEComponentPalette).Selected;
   {$ENDIF}
 end;
 
 procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
 begin
-  {$IFDEF EnablePkgs}
-  TComponentPalette(IDEComponentPalette).Selected:=nil;
-  {$ELSE}
+  {$IFDEF DisablePkgs}
   ControlClick(ComponentNoteBook);
+  {$ELSE}
+  TComponentPalette(IDEComponentPalette).Selected:=nil;
   {$ENDIF}
 end;
 
@@ -6768,12 +6768,12 @@ begin
                 [ctfSwitchToFormSource]);
 
   // add needed package to required packages
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
   {$ENDIF}
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-      AComponentClass.{$IFDEF EnablePkgs}GetUnitName{$ELSE}UnitName{$ENDIF},'');
+      AComponentClass.{$IFNDEF DisablePkgs}GetUnitName{$ELSE}UnitName{$ENDIF},'');
   ActiveUnitInfo.Modified:=true;
   // add component definition to form source
   FormClassName:=TDesigner(Sender).Form.ClassName;
@@ -8340,10 +8340,10 @@ var
   ADesigner: TIDesigner;
 begin
 writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.ClassName);
-  {$IFDEF EnablePkgs}
-  ComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
-  {$ELSE}
+  {$IFDEF DisablePkgs}
   ComponentClass:=FindRegsiteredComponentClass(AComponent.ClassName);
+  {$ELSE}
+  ComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
   {$ENDIF}
   if ComponentClass=nil then begin
     writeln('TMainIDE.OnPropHookComponentAdded ',AComponent.ClassName,
@@ -8639,6 +8639,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.565  2003/05/12 19:36:25  mattias
+  activated the package system
+
   Revision 1.564  2003/05/12 13:11:34  mattias
   implemented publish package
 
