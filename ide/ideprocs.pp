@@ -528,7 +528,8 @@ begin
     repeat
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
-      if CompareFileExt(Directory,Ext,false)=0 then begin
+      // check extension
+      if CompareFileExt(FileInfo.Name,Ext,false)=0 then begin
         Result:=AppendPathDelim(Directory)+FileInfo.Name;
         break;
       end;
