@@ -62,7 +62,8 @@ type
     procedure GDBStepInto;          
     procedure GDBRunTo(const ASource: String; const ALine: Integer); 
     procedure GDBJumpTo(const ASource: String; const ALine: Integer);
-    function  SendCommand(const ACommand: String; Values: array of const): TStrings; // internally used by breakpoits and watches
+    function  SendCommand(const ACommand: String;
+      Values: array of const): TStrings; // internally used by breakpoints and watches
     procedure RunCommand(const ACommand: String);
     function  GetLocation: TDBGLocationRec;
     function  GetProgramInfo(const AHandleResult: Boolean): TGDBProgramInfo;
@@ -446,7 +447,8 @@ begin
   GetProgramInfo(True);
 end;
 
-function TGDBDebugger.SendCommand(const ACommand: String; Values: array of const): TStrings;
+function TGDBDebugger.SendCommand(const ACommand: String;
+  Values: array of const): TStrings;
 begin
   SendCmdLn(ACommand, Values, True);
   Result := OutputLines;
@@ -549,6 +551,7 @@ end;
   
 procedure TGDBBreakPoint.SetLocation(const ASource: String; const ALine: Integer); 
 begin  
+  if (FSource = ASource) and (FLine = ALine) then exit;
   inherited;
   if TGDBDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
   then SetBreakpoint;
@@ -592,6 +595,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.10  2003/05/23 14:12:51  mattias
+  implemented restoring breakpoints
+
   Revision 1.9  2002/05/10 06:57:48  lazarus
   MG: updated licenses
 

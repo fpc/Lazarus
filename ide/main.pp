@@ -71,7 +71,7 @@ uses
   MenuPropEdit,
   {$ENDIF}
   // debugger
-  RunParamsOpts, BaseDebugManager, DebugManager, Debugger,
+  RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
   PkgManager, BasePkgManager,
   // source editing
@@ -191,7 +191,6 @@ type
     procedure mnuStepOverProjectClicked(Sender : TObject);
     procedure mnuRunToCursorProjectClicked(Sender : TObject);
     procedure mnuStopProjectClicked(Sender : TObject);
-    procedure mnuResetDebuggerClicked(Sender : TObject);
     procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
     
@@ -483,7 +482,7 @@ type
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string; Flags: TOpenFlags):TModalResult;
     function DoPublishProject(Flags: TSaveFlags;
-      ShowDialog: boolean):TModalResult;
+                              ShowDialog: boolean):TModalResult;
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
@@ -510,13 +509,13 @@ type
 
     // useful information methods
     procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
-      var ActiveUnitInfo: TUnitInfo); override;
+                             var ActiveUnitInfo: TUnitInfo); override;
     procedure GetUnitWithPageIndex(PageIndex: integer;
-      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     procedure GetDesignerUnit(ADesigner: TDesigner;
-      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     procedure GetUnitWithForm(AForm: TCustomForm;
-      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
     procedure UpdateDefaultPascalFileExtensions;
     function CreateSrcEditPageName(const AnUnitName, AFilename: string;
@@ -524,6 +523,7 @@ type
 
     // useful file methods
     function FindUnitFile(const AFilename: string): string; override;
+    function FindSourceFile(const AFilename: string): string; override;
     function DoSaveStreamToFile(AStream:TStream; const Filename:string;
                                 IsPartOfProject:boolean): TModalResult;
     function DoSaveStringToFile(const Filename, Src,
@@ -1577,7 +1577,6 @@ begin
   itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
   itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
   itmProjectStop.OnClick := @mnuStopProjectClicked;
-  itmProjectResetDebugger.OnClick := @mnuResetDebuggerClicked;
   itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   itmProjectRunParameters.OnClick := @mnuRunParametersClicked;
 end;
@@ -2364,14 +2363,6 @@ end;
 Procedure TMainIDE.mnuStopProjectClicked(Sender : TObject);
 begin
   DebugBoss.DoStopProject;
-end;
-
-procedure TMainIDE.mnuResetDebuggerClicked(Sender : TObject);
-begin
-  if DebugBoss.State = dsNone then Exit;
-  
-  DebugBoss.EndDebugging;
-  DebugBoss.DoInitDebugger;
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
@@ -3627,7 +3618,8 @@ end;
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig);
 begin
-
+  if TheProject=Project1 then
+    DebugBoss.LoadProjectSpecificInfo(XMLConfig);
 end;
 
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
@@ -3936,12 +3928,14 @@ begin
     SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
       AFilename,-1),AnUnitInfo.Source,false);
     NewSrcEdit:=SourceNotebook.GetActiveSE;
+    NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEditorCreated:=true;
     itmFileClose.Enabled:=True;
     itmFileCloseAll.Enabled:=True;
   end else begin
     // revert code in existing source editor
     NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
+    NewSrcEdit.EditorComponent.BeginUpdate;
     NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     NewSrcEdit.Modified:=false;
     AnUnitInfo.Modified:=false;
@@ -3954,6 +3948,7 @@ begin
 
   // restore source editor settings
   DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
+  DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=AnUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=AnUnitInfo.TopLine;
@@ -3961,13 +3956,14 @@ begin
   NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
 
   // mark unit as loaded
+  NewSrcEdit.EditorComponent.EndUpdate;
   AnUnitInfo.Loaded:=true;
   
   // update statusbar and focus editor
   if (not (ofProjectLoading in Flags)) then
     SourceNotebook.FocusEditor;
   SourceNoteBook.UpdateStatusBar;
-    
+
   Result:=mrOk;
 end;
   
@@ -5061,7 +5057,7 @@ begin
 
   // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
-    // load instead of lazarus program file the project info file
+    // load instead of program file the project info file
     AFileName:=ChangeFileExt(AFileName,'.lpi');
     Ext:='.lpi';
   end;
@@ -6745,10 +6741,46 @@ function TMainIDE.FindUnitFile(const AFilename: string): string;
 var 
   SearchPath, ProjectDir: string;
 begin
+  if FilenameIsAbsolute(AFilename) then begin
+    Result:=AFilename;
+    exit;
+  end;
+  // ToDo: use the CodeTools way to find the pascal source
   ProjectDir:=Project1.ProjectDirectory;
   SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
             +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
   Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
+end;
+
+{------------------------------------------------------------------------------
+  function TMainIDE.FindSourceFile(const AFilename: string): string;
+
+  AFilename can be an absolute or relative filename, of a source file or a
+  compiled unit (.ppu, .ppw).
+  Find the source filename (pascal source or include file) and returns
+  the absolute path.
+  
+  ToDo:
+  First it searches in the current projects src path, then its unit path, then
+  its include path. Then all used package source directories are searched.
+  Finally the fpc sources are searched.
+------------------------------------------------------------------------------}
+function TMainIDE.FindSourceFile(const AFilename: string): string;
+var
+  SearchFile: String;
+  ProjectDir: String;
+  SearchPath: String;
+begin
+  if FilenameIsAbsolute(AFilename) then begin
+    Result:=AFilename;
+    exit;
+  end;
+  SearchFile:=ExtractFilename(AFilename);
+  // ToDo: use the CodeTools way to find the pascal source
+  ProjectDir:=Project1.ProjectDirectory;
+  SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
+            +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
+  Result:=SearchFileInPath(SearchFile,ProjectDir,SearchPath,';',[]);
 end;
 
 //------------------------------------------------------------------------------
@@ -8674,6 +8706,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.574  2003/05/23 14:12:50  mattias
+  implemented restoring breakpoints
+
   Revision 1.573  2003/05/22 23:05:26  marc
   MWE: Added "Reset Debuuger" menu command
 
