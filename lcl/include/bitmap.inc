@@ -509,8 +509,16 @@ procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
 
   procedure RaiseInvalidBitmapHeader;
   begin
+    debugln('TBitmap.ReadStream.RaiseInvalidBitmapHeader');
     raise EInOutError.Create(
-      'TBitmap.ReadStream: Invalid windows bitmap (header)');
+      'TBitmap.ReadStream: Invalid bitmap format (bmp,xpm,ico)');
+  end;
+  
+  procedure RaiseInvalidSize;
+  begin
+    debugln('TBitmap.ReadStream.RaiseInvalidSize');
+    raise EInOutError.Create(
+      'TBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico)');
   end;
 
 {$IFNDEF DisableFPImage}
@@ -518,7 +526,9 @@ var
   CacheStream: TStream;
   StreamType: TBitmapNativeType;
   ReaderClass: TFPCustomImageReaderClass;
+  MemStream: TCustomMemoryStream;
 begin
+  //debugln('TBitmap.ReadStream Stream=',DbgSName(Stream),' Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
   CacheStream:=nil;
   try
     // create mem stream if not already done (to read the image type)
@@ -534,10 +544,14 @@ begin
       CacheStream:=Stream;
     end;
     // get image type
-    if CacheStream is TCustomMemoryStream then
-      StreamType:=TestStreamBitmapNativeType(TCustomMemoryStream(CacheStream))
-    else
+    if CacheStream is TCustomMemoryStream then begin
+      MemStream:=TCustomMemoryStream(CacheStream);
+      if UseSize and (Size>MemStream.Size-MemStream.Position) then
+        RaiseInvalidSize;
+      StreamType:=TestStreamBitmapNativeType(MemStream);
+    end else
       StreamType:=bnWinBitmap;
+    //debugln('TBitmap.ReadStream ',dbgs(ord(StreamType)),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size),' Stream=',DbgSName(Stream));
     ReaderClass:=nil;
     case StreamType of
     bnWinBitmap:  ReaderClass:=TLazReaderBMP;
@@ -886,6 +900,7 @@ var
 begin
   if Stream<>FImage.SaveStream then begin
     MemStream:=TMemoryStream.Create;
+    //debugln('TBitmap.StoreOriginalStream Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),' Stream.Size=',dbgs(Stream.Size));
     MemStream.CopyFrom(Stream,Size);
     FreeSaveStream;
     FImage.FSaveStream:=MemStream;
@@ -926,6 +941,8 @@ var
   end;
   
 begin
+  //debugln('TBitmap.ReadStreamWithFPImage Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
+
   UnshareImage(false);
   if UseSize and (Size = 0) then begin
     Width:=0;
@@ -1251,6 +1268,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2005/01/18 19:46:41  mattias
+  added stream size check for TBitmap
+
   Revision 1.93  2005/01/14 15:43:48  mattias
   added Changed and Changing to TBitmpa.Assign
 
