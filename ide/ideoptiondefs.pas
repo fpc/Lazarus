@@ -274,6 +274,8 @@ type
     property Items[Index: integer]: TIDEDialogLayout read GetItems;
   end;
 
+function CreateNiceWindowPosition(Width, Height: integer): TRect;
+
 var
   IDEDialogLayoutList: TIDEDialogLayoutList;
 
@@ -300,6 +302,56 @@ begin
   for Result:=Low(TIDEWindowState) to High(TIDEWindowState) do
     if AnsiCompareText(s,IDEWindowStateNames[Result])=0 then exit;
   Result:=iwsNormal;
+end;
+
+function CreateNiceWindowPosition(Width, Height: integer): TRect;
+
+  function FindFormAt(x,y: integer): TCustomForm;
+  var
+    i: Integer;
+  begin
+    for i:=0 to Screen.CustomFormCount-1 do begin
+      Result:=Screen.CustomForms[i];
+      if Result.HandleAllocated and Result.Visible
+      and (Result.Left>=x-5) and (Result.Left<=x+5)
+      and (Result.Top>=y-5) and (Result.Top<=y+5)
+      then
+        exit;
+    end;
+    Result:=nil;
+  end;
+
+var
+  MinX: Integer;
+  MinY: Integer;
+  MaxX: Integer;
+  MaxY: Integer;
+  x: Integer;
+  y: Integer;
+  MidX: Integer;
+  MidY: Integer;
+  Step: Integer;
+begin
+  MinX:=0;
+  MinY:=0;
+  MaxX:=Screen.Width-Width-10;
+  if MaxX<MinX+10 then MaxX:=MinX+10;
+  MaxY:=SCreen.Height-Height-100;
+  if MaxY<MinY+10 then MaxY:=MinY+10;
+  MidX:=(MaxX+MinX) div 2;
+  MidY:=(MaxY+MinY) div 2;
+  Step:=0;
+  repeat
+    x:=MidX-Step*20;
+    y:=MidY-Step*20;
+    if (x<MinX) or (x>MaxX) or (y<MinY) or (y>MaxY) then break;
+    if (FindFormAt(x,y)=nil) or (Step>1000) then break;
+    inc(Step);
+  until false;
+  Result.Left:=x;
+  Result.Top:=y;
+  Result.Right:=x+Width;
+  Result.Bottom:=y+Height;
 end;
 
 { TIDEWindowLayout }

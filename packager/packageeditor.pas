@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, LazarusIDEStrConsts, PackageDefs, AddToPackageDlg;
+  LResources, LazarusIDEStrConsts, IDEOptionDefs, PackageDefs, AddToPackageDlg;
   
 type
   { TPackageEditorForm }
@@ -161,10 +161,19 @@ begin
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
+var
+  ARect: TRect;
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;
   FLazPackage.Editor:=Self;
+  // find a nice position for the editor
+  ARect:=FLazPackage.EditorRect;
+  if (ARect.Bottom<ARect.Top+50) or (ARect.Right<ARect.Left+50) then
+    ARect:=CreateNiceWindowPosition(400,400);
+  SetBounds(ARect.Left,ARect.Top,
+            ARect.Right-ARect.Left,ARect.Bottom-ARect.Top);
+  // update components
   UpdateAll;
 end;
 
@@ -172,36 +181,42 @@ procedure TPackageEditorForm.SetupComponents;
 begin
   CompileBitBtn:=TBitBtn.Create(Self);
   with CompileBitBtn do begin
+    Name:='CompileBitBtn';
     Parent:=Self;
     Caption:='Compile';
   end;
   
   AddBitBtn:=TBitBtn.Create(Self);
   with AddBitBtn do begin
+    Name:='AddBitBtn';
     Parent:=Self;
     Caption:='Add';
   end;
 
   RemoveBitBtn:=TBitBtn.Create(Self);
   with RemoveBitBtn do begin
+    Name:='RemoveBitBtn';
     Parent:=Self;
     Caption:='Remove';
   end;
 
   InstallBitBtn:=TBitBtn.Create(Self);
   with InstallBitBtn do begin
+    Name:='InstallBitBtn';
     Parent:=Self;
     Caption:='Install';
   end;
 
   OptionsBitBtn:=TBitBtn.Create(Self);
   with OptionsBitBtn do begin
+    Name:='OptionsBitBtn';
     Parent:=Self;
     Caption:='Options';
   end;
 
   FilesTreeView:=TTreeView.Create(Self);
   with FilesTreeView do begin
+    Name:='FilesTreeView';
     Parent:=Self;
     FilesNode:=Items.Add(nil,'Files');
     RequiredPackagesNode:=Items.Add(nil,'Required packages');
@@ -210,6 +225,7 @@ begin
 
   FilePropsGroupBox:=TGroupBox.Create(Self);
   with FilePropsGroupBox do begin
+    Name:='FilePropsGroupBox';
     Parent:=Self;
     Caption:='File Properties';
     OnResize:=@FilePropsGroupBoxResize;
@@ -217,24 +233,28 @@ begin
 
   CallRegisterProcCheckBox:=TCheckBox.Create(Self);
   with CallRegisterProcCheckBox do begin
+    Name:='CallRegisterProcCheckBox';
     Parent:=FilePropsGroupBox;
     Caption:='Call Register procedure of unit';
   end;
 
   RegisteredPluginsGroupBox:=TGroupBox.Create(Self);
   with RegisteredPluginsGroupBox do begin
+    Name:='RegisteredPluginsGroupBox';
     Parent:=FilePropsGroupBox;
     Caption:='Registered plugins';
   end;
 
   RegisteredListView:=TListView.Create(Self);
   with RegisteredListView do begin
+    Name:='RegisteredListView';
     Parent:=RegisteredPluginsGroupBox;
     Align:=alClient;
   end;
 
   StatusBar:=TStatusBar.Create(Self);
   with StatusBar do begin
+    Name:='StatusBar';
     Parent:=Self;
     Align:=alBottom;
   end;
@@ -298,12 +318,8 @@ end;
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Position:=poScreenCenter;
-  Width:=400;
-  Height:=400;
   SetupComponents;
   OnResize:=@PackageEditorFormResize;
-  OnResize(Self);
 end;
 
 destructor TPackageEditorForm.Destroy;

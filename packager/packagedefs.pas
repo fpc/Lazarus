@@ -201,6 +201,7 @@ type
     FComponents: TList; // TList of TPkgComponent
     FDescription: string;
     FDirectory: string;
+    FEditorRect: TRect;
     FInstalled: boolean;
     FLoaded: boolean;
     FPackageEditor: TBasePackageEditor;
@@ -232,6 +233,7 @@ type
     procedure SetAutoLoad(const AValue: boolean);
     procedure SetAutoUpdate(const AValue: boolean);
     procedure SetDescription(const AValue: string);
+    procedure SetEditorRect(const AValue: TRect);
     procedure SetFilename(const AValue: string);
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetIconFile(const AValue: string);
@@ -288,6 +290,7 @@ type
     property Version: TPkgVersion read FVersion;
     property Open: boolean read GetOpen write SetOpen; // a packageeditor is open in the IDE
     property Editor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
+    property EditorRect: TRect read FEditorRect write SetEditorRect;
   end;
   
   
@@ -720,6 +723,11 @@ begin
   if FDescription=AValue then exit;
   FDescription:=AValue;
   Modified:=true;
+end;
+
+procedure TLazPackage.SetEditorRect(const AValue: TRect);
+begin
+  FEditorRect:=AValue;
 end;
 
 procedure TLazPackage.SetFilename(const AValue: string);
