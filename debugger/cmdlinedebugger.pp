@@ -69,7 +69,7 @@ type
     property LineEnds: TStringList read FLineEnds;
   end;
 
-procedure SendBreak(const AHandle: Integer);
+procedure SendBreak(const APID: Integer);
 
 implementation
 
@@ -79,7 +79,9 @@ implementation
 //////////////////////////////////////////////////
 
 uses
-{.$IFDEF Linux}
+{$IFDEF WIN32}
+  Windows,
+{$ENDIF}
 {$IFDEF UNIX}
  {$IFDEF Ver1_0}
    Linux,
@@ -91,15 +93,17 @@ uses
   
 {------------------------------------------------------------------------------
   Function: SendBreak
-  Params:   AHandle              THe handle of the proces tosend break to
+  Params:   APID                  The proces ID to send break to
   Returns:  
  ------------------------------------------------------------------------------}
-procedure SendBreak(const AHandle: Integer);
+procedure SendBreak(const APID: Integer);
 begin
-{.$IFDEF Linux}
+  if APID = 0 then Exit;
 {$IFDEF UNIX}
-  if AHandle <> 0
-  then {$IFDEF Ver1_0}Kill{$ELSE}FpKill{$ENDIF}(AHandle, SIGINT);
+  {$IFDEF Ver1_0}Kill{$ELSE}FpKill{$ENDIF}(APID, SIGINT);
+{$ENDIF}
+{$IFDEF WIN32}
+   GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, APID);
 {$ENDIF}
 end;
 
@@ -147,6 +151,7 @@ begin
     R := {$IFDEF Ver1_0}Select{$ELSE}FpSelect{$ENDIF}(Max + 1, @FDSWait,
                                                       nil, nil, TimeOut);
     Application.ProcessMessages;
+    if Application.Terminated then Break;
   until R <> 0;
 
   // set bits for all changed handles
@@ -164,12 +169,55 @@ begin
         Dec(R);
         if R=0 then Break;
       end;
-end;
-{$ELSE}
+  end;
+{$ELSE linux}
+{$IFDEF WIN32}
+var
+  Count: Integer;
+  TimeOut: Integer;
+  R: Integer;
+  P: Pointer;
+begin
+  Result := 0;
+  Count := High(AHandles);
+  if Count < 0 then Exit;
+  if Count > 31 then Count :=  31;
+  // I know MAXIMUM_WAIT_OBJECTS is 64, but that wont fit in an int :)
+
+  while True do
+  begin
+    // Wait infinite, since if there are messages, we wake up
+    TimeOut := INFINITE;
+    P := @AHandles[0];
+    R := Windows.MsgWaitForMultipleObjects(Count, P, False, TimeOut, QS_ALLINPUT);
+    if (R >= WAIT_OBJECT_0) and (R < WAIT_OBJECT_0 + Count)
+    then begin
+      // A handle is signalled
+      Result := 1 shl (R - WAIT_OBJECT_0);
+      Break;
+    end;
+    if (R = WAIT_OBJECT_0 + Count)
+    then begin
+      // we got a message
+      Application.ProcessMessages;
+      if Application.Terminated then Break;
+    end;
+    if (R >= WAIT_ABANDONED_0) and (R < WAIT_ABANDONED_0 + Count)
+    then begin
+      // A handle is abandoned
+      // don't know exacly what to do
+      // Fo now return unset
+      Result := 0;
+      Break;
+    end;
+  end;
+
+{$ELSE win32}
 begin
   writeln('ToDo: implement WaitForHandles for this OS');
   Result := 0;
-{$ENDIF}
+{$ENDIF win32}
+{$ENDIF linux}
 end;
 
 //////////////////////////////////////////////////
@@ -389,6 +437,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.28  2004/02/12 01:09:42  marc
+  + added the first conceptual code for WaitForHandles on Win32
+
   Revision 1.27  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 
