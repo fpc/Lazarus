@@ -71,7 +71,7 @@ if [ "$PkgType" = "deb" ]; then
 
   # change debian files
   DebianRulezDir=$TmpDir/install/debian/
-  Date=Sun Jul 13 16:02:44 CEST 2003
+  Date='Sun Jul 13 16:02:44 CEST 2003'
 
   # prepend changelog information, needed for version
   cd $DebianRulezDir
