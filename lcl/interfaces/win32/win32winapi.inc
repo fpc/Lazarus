@@ -265,7 +265,8 @@ begin
         end else
         if Sender is TCheckListBox then
         begin
-          if DrawItemStruct^.ItemID >= 0 then
+          // ItemID not UINT(-1)
+          if DrawItemStruct^.ItemID <> $FFFFFFFF then
             DrawCheckListBoxItem(TCheckListBox(Sender).Checked[DrawItemStruct^.ItemID],
               PChar(TCheckListBox(Sender).Items[DrawItemStruct^.ItemID]), DrawItemStruct);
         end;
@@ -2841,6 +2842,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2003/12/16 08:33:31  micha
+  UINT(-1) fix causing "Out of bounds." exception
+
   Revision 1.81  2003/12/13 19:44:42  micha
   hintwindow, color, rectangle size fixes
 
