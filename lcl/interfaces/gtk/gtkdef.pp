@@ -148,7 +148,8 @@ type
   TDeviceContextsFlag = (
     dcfPenSelected, // pen changed and needs selecting
     dcfPenInvalid,  // pen is not a valid GDIObject
-    dcfTextMetricsValid
+    dcfTextMetricsValid,
+    dcfDoubleBuffer // Drawable is a double buffer
     );
   TDeviceContextsFlags = set of TDeviceContextsFlag;
   
@@ -173,6 +174,7 @@ type
     Wnd: HWND; // the owner PGtkWidget
     GC: pgdkGC;
     Drawable: PGDKDrawable;
+    OriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
     
     // origins
     Origin: TPoint;
@@ -546,6 +548,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2004/01/12 23:56:10  mattias
+  improved double buffering, only one issue left: parent gdkwindow paint messages
+
   Revision 1.51  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

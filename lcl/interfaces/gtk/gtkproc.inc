@@ -2474,7 +2474,6 @@ begin
     if (DC.SpecialOrigin) and (DC.Wnd<>0) then begin
       Fixed := GetFixedWidget(PGTKWidget(DC.Wnd));
       if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
-        // ToDo: add comment
         Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
         if Adjustment<>nil then
           dec(Result.X,Trunc(Adjustment^.Value-Adjustment^.Lower));
@@ -5731,6 +5730,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.243  2004/01/12 23:56:10  mattias
+  improved double buffering, only one issue left: parent gdkwindow paint messages
+
   Revision 1.242  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines

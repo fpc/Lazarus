@@ -1929,9 +1929,7 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
     popup  := GTK_SCROLLED_WINDOW (combo^.popup);
     popwin := GTK_BIN (combo^.popwin);
 
-    BeginGDKErrorTrap;
     gdk_window_get_origin (combo^.entry^.window, @x, @y);
-    EndGDKErrorTrap;
 
     real_height := MIN (combo^.entry^.requisition.height,
                     combo^.entry^.allocation.height);
@@ -2807,24 +2805,25 @@ function TgtkObject.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
 {$IFDEF Gtk1}
 var
   Widget: PGtkWidget;
-  WidgetInfo: PWinWidgetInfo;
   IsDoubleBuffer: Boolean;
   DCDrawable: PGdkDrawable;
   Width, Height: integer;
   DevContext: TDeviceContext;
   CaretWasVisible: Boolean;
   MainWidget: PGtkWidget;
+  //LCLObject: TObject;
+  //x, y: integer;
 {$ENDIF}
 begin
   Result:=1;
   if PS.HDC <> 0 then begin
     {$IFDEF Gtk1}
     Widget:=PGtkWidget(Handle);
-    WidgetInfo:=GetWidgetInfo(Widget,false);
     DevContext:=TDeviceContext(PS.HDC);
+    if Widget<>PGtkWidget(DevContext.Wnd) then
+      RaiseException('');
     DCDrawable:=DevContext.Drawable;
-    IsDoubleBuffer:=(WidgetInfo<>nil) and (WidgetInfo^.DoubleBuffer<>nil)
-                    and (WidgetInfo^.DoubleBuffer=DCDrawable);
+    IsDoubleBuffer:=dcfDoubleBuffer in DevContext.DCFlags;
     if IsDoubleBuffer then begin
       // copy
       gdk_window_get_size(DCDrawable,@Width,@Height);
@@ -2837,8 +2836,19 @@ begin
       // hide caret
       HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
       // draw
-      gdk_window_copy_area(Widget^.Window, DevContext.GC,0,0, DCDrawable,
-        0, 0, Width, Height);
+      gdk_window_copy_area(Widget^.Window, DevContext.GC, 0,0,
+        DCDrawable, 0, 0, Width, Height);
+        
+      {LCLObject:=GetParentLCLObject(Widget);
+      if (LCLObject is TPanel)
+      and (csDesigning in TPanel(LCLObject).ComponentState) then begin
+        gdk_window_get_origin(Widget^.Window,@x,@y);
+        writeln('TgtkObject.EndPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
+          ' Widget=',GetWidgetClassName(Widget),
+          ' Origin=',x,',',y,
+          ' ',Widget^.allocation.x,',',Widget^.allocation.y);
+      end;}
+        
       // restore caret
       if CaretWasVisible then
         GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
@@ -3704,7 +3714,6 @@ begin
   if Handle = 0 then Exit;
   Widget := pgtkwidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
-  BeginGDKErrorTrap;
   if (ClientWidget <> Widget) then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     MainWindow:=GetControlWindow(Widget);
@@ -3756,7 +3765,6 @@ begin
     with Widget^.Allocation do
       ARect := Rect(0,0,Width,Height);
   end;
-  EndGDKErrorTrap;
   Result:=true;
 end;
 
@@ -4240,13 +4248,17 @@ var
   DCScreenOrigin: TPoint;
   WindowScreenOrigin: TPoint;
   Widget: PGtkWidget;
+  ScreenDrawable: PGdkDrawable;
 begin
   Result := false;
   OriginDiff := Point(0,0);
   If not IsValidDC(PaintDC) then exit;
   with TDeviceContext(PaintDC) do begin
     DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
-    if Drawable=nil then
+    ScreenDrawable:=Drawable;
+    if (dcfDoubleBuffer in DCFlags) then
+      ScreenDrawable:=OriginalDrawable;
+    if ScreenDrawable=nil then
       InvalidDrawable;
     gdk_window_get_origin(PGdkWindow(Drawable),
                           @(DCScreenOrigin.X), @(DCScreenOrigin.Y));
@@ -5494,10 +5506,8 @@ begin
     Widget := pgtkwidget(Handle);
     Window:=GetControlWindow(Widget);
     if Window <> nil then Begin
-      BeginGDKErrorTrap;
       gdk_window_get_origin(Window, @X, @Y);
       gdk_window_get_size(Window, @W, @H);
-      EndGDKErrorTrap;
     end
     else
     Begin
@@ -7369,15 +7379,15 @@ var
       end;
     end; *)
     {$IFDEF VerboseDsgnPaintMsg}
-    if (csDesigning in TComponent(Target).ComponentState) then begin
+    if (csDesigning in TComponent(TargetObject).ComponentState) then begin
       write('TGTKObject.SendMessage B ',
-        TComponent(Target).Name,':',Target.ClassName,
+        TComponent(TargetObject).Name,':',TargetObject.ClassName,
         ' GtkPaint=',AMessage.Msg=LM_GtkPAINT);
       if AMessage.Msg=LM_GtkPAINT then begin
         if AMessage.wParam<>0 then begin
           with TLMGtkPaintData(AMessage.wParam) do begin
             write(' GtkPaintData(',
-              ' Widget=',HexStr(Cardinal(Widget),8),
+              ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
               ' State=',State,
               ' Rect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom,
               ' RepaintAll=',RepaintAll,
@@ -7411,18 +7421,19 @@ var
   begin
     if OldMsg=LM_GtkPAINT then begin
       FinalizePaintMessage(@AMessage);
-      if (csDesigning in TComponent(TargetObject).ComponentState)
-      and (TargetObject is TWinControl) then
-        SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
+      
+      //if (csDesigning in TComponent(TargetObject).ComponentState)
+      //and (TargetObject is TWinControl) then
+      //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
     end else
     if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
       // free DC
       ReleaseDC(0,AMessage.WParam);
       AMessage.WParam:=0;
 
-      if (csDesigning in TComponent(TargetObject).ComponentState)
-      and (TargetObject is TWinControl) then
-        SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
+      //if (csDesigning in TComponent(TargetObject).ComponentState)
+      //and (TargetObject is TWinControl) then
+      //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
     end;
   end;
   
@@ -9191,6 +9202,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.315  2004/01/12 23:56:10  mattias
+  improved double buffering, only one issue left: parent gdkwindow paint messages
+
   Revision 1.314  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

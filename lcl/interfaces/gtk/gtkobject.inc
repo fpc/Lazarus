@@ -1179,7 +1179,6 @@ var
     AMessage.Result := 0;
 
     {$IFDEF VerboseDsgnPaintMsg}
-    BeginGDKErrorTrap;
     gdk_window_get_size(PaintWindow,@Width,@Height);
     gdk_window_get_origin(PaintWindow,@Left,@Top);
     writeln('SendInternalPaintMessage ',
@@ -1189,7 +1188,6 @@ var
       ' visible=',gdk_window_is_visible(PaintWindow),
       ' viewable=',gdk_window_is_viewable(PaintWindow),
       '');
-    EndGDKErrorTrap;
     {$ENDIF}
     DeliverMessage(AWinControl,AMessage);
 
@@ -7821,7 +7819,6 @@ var
   ClientWidget: PGtkWidget;
   GdiObject: PGdiObject;
   GCValues: TGdkGCValues;
-  X,Y : Longint;
 begin
   aDC := nil;
 
@@ -7851,7 +7848,6 @@ begin
       ClientWidget:=TheWidget;
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     aDC.Drawable := TheWindow;
-    BeginGDKErrorTrap;
     // create GC
     if WithChildWindows then begin
       //writeln('TgtkObject.CreateDCForWidget A WithChildWindows');
@@ -7862,12 +7858,11 @@ begin
     end else begin
       aDC.GC := gdk_gc_new(aDC.Drawable);
     end;
-    gdk_window_get_size(aDC.Drawable, @X, @Y);
     gdk_gc_set_function(aDC.GC, GDK_COPY);
 
     gdk_gc_get_values(aDC.GC, @GCValues);
-    EndGDKErrorTrap;
     {$Ifdef GTK2}
+    // ToDo: create font on demand
     if (gtk_widget_get_style(ClientWidget)<>nil) and
       (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
     then begin
@@ -7918,6 +7913,8 @@ var
   DevContext: TDeviceContext;
   CaretWasVisible: Boolean;
   MainWidget: PGtkWidget;
+  //LCLObject: TObject;
+  //x, y: integer;
 begin
   Result:=0;
   Widget:=PGtkWidget(Handle);
@@ -7926,7 +7923,8 @@ begin
   {$ENDIF}
   WidgetInfo:=GetWidgetInfo(Widget,true);
   AWindow:=Widget^.Window;
-  gdk_window_get_size(AWindow,@Width,@Height);
+  Width:=Widget^.allocation.width;
+  Height:=Widget^.allocation.height;
   // create or resize DoubleBuffer
   DoubleBuffer:=WidgetInfo^.DoubleBuffer;
   if DoubleBuffer<>nil then begin
@@ -7937,7 +7935,7 @@ begin
       ' BufferWidth=',BufferWidth,' BufferHeight=',BufferHeight
       );
     {$ENDIF}
-    // make sure buffer is not too small and not too big
+    // lazy update of buffer
     if (BufferWidth<Width) or (BufferHeight<Height)
     or (BufferWidth>(Width*2+20)) or (BufferHeight>(Height*2+20))
     then begin
@@ -7963,18 +7961,32 @@ begin
 
   // create DC for double buffer
   Result:=CreateDCForWidget(Widget,PGDKWindow(DoubleBuffer),false);
+  DevContext:=TDeviceContext(Result);
+  DevContext.OriginalDrawable:=Widget^.Window;
+  Include(DevContext.DCFlags,dcfDoubleBuffer);
 
   if BufferCreated then begin
     // copy old context to buffer
-    DevContext:=TDeviceContext(Result);
     gdk_gc_set_clip_region(DevContext.GC, nil);
     gdk_gc_set_clip_rectangle(DevContext.GC, nil);
 
     // hide caret
     HideCaretOfWidgetGroup(Widget,MainWidget,CaretWasVisible);
     // copy
-    gdk_window_copy_area(DoubleBuffer, DevContext.GC,0,0, Widget^.Window,
-      0, 0, Width, Height);
+    gdk_window_copy_area(DoubleBuffer, DevContext.GC,0,0,
+      Widget^.Window,0,0,Width,Height);
+
+    {LCLObject:=GetParentLCLObject(Widget);
+    writeln('TgtkObject.GetDoubleBufferedDC ',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),' ',HexStr(Cardinal(LCLObject),8));
+    if (LCLObject is TPanel)
+    and (csDesigning in TPanel(LCLObject).ComponentState) then begin
+      gdk_window_get_origin(Widget^.Window,@x,@y);
+      writeln('TgtkObject.BeginPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
+        ' Widget=',GetWidgetClassName(Widget),
+        ' Origin=',x,',',y,
+        ' ',Widget^.allocation.x,',',Widget^.allocation.y);
+    end;}
+
     // restore caret
     if CaretWasVisible then
       GTKAPIWidget_ShowCaret(PGTKAPIWidget(MainWidget));
@@ -8678,6 +8690,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.451  2004/01/12 23:56:10  mattias
+  improved double buffering, only one issue left: parent gdkwindow paint messages
+
   Revision 1.450  2004/01/12 13:43:12  mattias
   improved and activated new statusbar
 
