@@ -1035,7 +1035,7 @@ begin
     if fdfSearchInAncestors in Params.Flags then
       Include(NodeCacheEntryFlags,ncefSearchedInAncestors);
 {$IFDEF ShowTriedContexts}
-writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
+writeln('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
 '"',GetIdentifier(Params.Identifier),'"',
 ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
 ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
@@ -1043,7 +1043,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
 {$ENDIF}
     repeat
 {$IFDEF ShowTriedIdentifiers}
-writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
+writeln('[TFindDeclarationTool.FindIdentifierInContext] Loop Ident=',
 '"',GetIdentifier(Params.Identifier),'"',
 ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
 ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
@@ -1296,7 +1296,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible
             else
               ContextNode:=ContextNode.NextBrother;
 {$IFDEF ShowTriedIdentifiers}
-writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in PriorBrother  ContextNode=',ContextNode.DescAsString);
+writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Brother  ContextNode=',ContextNode.DescAsString);
 {$ENDIF}
             // it is not always allowed to search in every node on the same lvl:
 
@@ -3218,21 +3218,26 @@ writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
     // 'set' constant
     SubStartPos:=CurPos.StartPos;
     ReadNextAtom;
-    Result:=ReadOperandTypeAtCursor(Params);
+    if not AtomIsChar(']') then begin
+      Result:=ReadOperandTypeAtCursor(Params);
 {$IFDEF ShowExprEval}
 writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] Set of ',
 ExpressionTypeDescNames[Result.Desc]);
 if Result.Desc=xtContext then
   writeln('  Result.Context.Node=',Result.Context.Node.DescAsString);
 {$ENDIF}
-    if not (Result.Desc in [xtConstOrdInteger,xtChar])
-    and ((Result.Desc=xtContext)
-      and (Result.Context.Node.Desc<>ctnEnumerationType)) then
-    begin
-      MoveCursorToCleanPos(SubStartPos);
-      ReadNextAtom; // read '['
-      ReadNextAtom;
-      RaiseException('constant expected, but '+GetAtom+' found');
+      if not (Result.Desc in [xtConstOrdInteger,xtChar])
+      and ((Result.Desc=xtContext)
+        and (Result.Context.Node.Desc<>ctnEnumerationType)) then
+      begin
+        MoveCursorToCleanPos(SubStartPos);
+        ReadNextAtom; // read '['
+        ReadNextAtom;
+        RaiseException('constant expected, but '+GetAtom+' found');
+      end;
+    end else begin
+      // empty set '[]'
+      Result.Desc:=xtNone;
     end;
     Result.SubDesc:=Result.Desc;
     Result.Desc:=xtConstSet;
@@ -3468,6 +3473,7 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
       // this is not the first proc found
       // -> identifier will be handled by the first call
       Result:=ifrSuccess;
+      Include(Params.NewFlags,fdfDoNotCache);
     end else begin
       if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then begin
         // this is the first proc found
@@ -3505,6 +3511,7 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
           if ParamCompatibility=tcExact then begin
             // the first proc fits exactly -> stop the search
             Result:=ifrSuccess;
+            Include(Params.NewFlags,fdfDoNotCache);
             exit;
           end;
           // search the other procs
@@ -3523,8 +3530,8 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier] Search next overloaded proc '
             Exclude(Params.Flags,fdfExceptionOnNotFound);
             if Params.NewCodeTool.FindIdentifierInContext(Params) then begin
 {$IFDEF ShowFoundIdentifier}
-writeln('[TFindDeclarationTool.CheckSrcIdentifier] next overloaded proc ',
-' Ident="',GetIdentifier(Params.Identifier),'" found '
+writeln('[TFindDeclarationTool.CheckSrcIdentifier] next overloaded ident found',
+' Ident="',GetIdentifier(Params.Identifier),'" '
 );
 {$ENDIF}
               if Params.NewNode.Desc=ctnProcedure then begin
@@ -3538,7 +3545,7 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier] next overloaded proc ',
                   ExprInputList,fdfIgnoreMissingParams in Params.Flags,
                   Params,CurCompatibilityList);
 {$IFDEF ShowFoundIdentifier}
-writeln('[TFindDeclarationTool.CheckSrcIdentifier] next overloaded proc ',
+writeln('[TFindDeclarationTool.CheckSrcIdentifier] next overloaded proc found',
 ' Ident="',GetIdentifier(Params.Identifier),'" compatibility=',
 TypeCompatibilityNames[NewComp],
 ' OldCompatibility=',TypeCompatibilityNames[ParamCompatibility],
@@ -3597,13 +3604,12 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier] no next overloaded proc ',
                     +'"'+GetIdentifier(Params.Identifier)+'"');
                 end else begin
                   Result:=ifrAbortSearch;
-                  exit;
                 end;
               end else begin
                 // proc found
                 Result:=ifrSuccess;
-                exit;
               end;
+              exit;
             end;
           until false;
         finally
@@ -3622,6 +3628,7 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier] no next overloaded proc ',
               FoundContext.Node:=FoundContext.Node.FirstChild;
             Params.SetResult(FoundContext);
           end;
+          Include(Params.NewFlags,fdfDoNotCache);
         end;
       end else begin
         // Params.Identifier is not in the source of this tool
@@ -3669,14 +3676,18 @@ writeln('[TFindDeclarationTool.IsCompatible] FindContext.Node.Desc=ctnSetType',
     if (ExpressionType.Desc<>xtConstSet) then
       exit;
     // both are sets, compare type of sets
-    // -> read operand type of set type of node
-    
-    // ToDo: ppu, ppw, dcu
-    
-    FindContext.Tool.MoveCursorToNodeStart(FindContext.Node.FirstChild);
-    NodeExprType:=ReadOperandTypeAtCursor(Params);
-    ExpressionType.Desc:=ExpressionType.SubDesc;
-    Result:=IsCompatible(NodeExprType,ExpressionType,Params);
+    if ExpressionType.SubDesc<>xtNone then begin
+      // -> read operand type of set type of node
+
+      // ToDo: ppu, ppw, dcu
+
+      FindContext.Tool.MoveCursorToNodeStart(FindContext.Node.FirstChild);
+      NodeExprType:=ReadOperandTypeAtCursor(Params);
+      ExpressionType.Desc:=ExpressionType.SubDesc;
+      Result:=IsCompatible(NodeExprType,ExpressionType,Params);
+    end else
+      // the empty set is compatible to all kinds of sets
+      Result:=tcExact;
     exit;
   end;
   // compare node base type and ExpressionType
@@ -3725,11 +3736,10 @@ writeln('[TFindDeclarationTool.CreateParamExprList] ',
         ExprStartPos:=CurPos.StartPos;
         // read til comma or bracket close
         repeat
-          ReadNextAtom;
           if AtomIsChar('(') or AtomIsChar('[') then begin
             ReadTilBracketClose(true);
-            ReadNextAtom;
           end;
+          ReadNextAtom;
           if (CurPos.StartPos>SrcLen)
           or ((CurPos.EndPos=CurPos.StartPos+1)
             and (Src[CurPos.StartPos] in [')',']',',']))
@@ -3746,7 +3756,7 @@ writeln('[TFindDeclarationTool.CreateParamExprList] ',
         if AtomIsChar(BracketClose) then break;
         if not AtomIsChar(',') then
           RaiseException(BracketClose+' expected, but '+GetAtom+' found');
-        CurPos.StartPos:=CurPos.EndPos;
+        ReadNextAtom;
       end;
     end;
   end;
