@@ -2313,7 +2313,7 @@ begin
       ObjectInspector1.Left+ObjectInspector1.Width+60,Top+Height+80,400,300));
   FormEditor1.SetFormNameAndClass(CInterface,
     NewUnitInfo.FormName,'T'+NewUnitInfo.FormName);
-  NewForm:=TForm(CInterface.Control);
+  NewForm:=TForm(CInterface.Component);
   NewUnitInfo.Form:=NewForm;
   SetDefaultsForForm(NewForm);
 
@@ -2958,7 +2958,7 @@ begin
           TempForm:=nil;
           AnUnitInfo.Form:=TempForm;
         end else begin
-          TempForm:=TForm(CInterface.Control);
+          TempForm:=TForm(CInterface.Component);
           AnUnitInfo.Form:=TempForm;
           SetDefaultsForForm(TempForm);
           AnUnitInfo.FormName:=TempForm.Name;
@@ -5538,7 +5538,8 @@ begin
 end;
 
 procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
-var NewSelectedComponents : TComponentSelectionList;
+var
+  NewSelectedComponents : TComponentSelectionList;
   i: integer;
 begin
   {$IFDEF IDE_DEBUG}
@@ -5546,9 +5547,8 @@ begin
   {$ENDIF}
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
   NewSelectedComponents:=TComponentSelectionList.Create;
-  for i:=0 to TheControlSelection.Count-1 do begin
+  for i:=0 to TheControlSelection.Count-1 do
     NewSelectedComponents.Add(TheControlSelection[i].Component);
-  end;
   FormEditor1.SelectedComponents:=NewSelectedComponents;
   NewSelectedComponents.Free;
   {$IFDEF IDE_DEBUG}
@@ -6676,6 +6676,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.351  2002/08/24 15:49:55  lazarus
+  MG: loading forms now creates all TComponentInterfaces, fixed removing components
+
   Revision 1.350  2002/08/24 13:41:27  lazarus
   MG: fixed TSpeedButton.SetDown and Invalidate
 

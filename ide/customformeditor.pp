@@ -52,7 +52,7 @@ each control that's dropped onto the form
 
   TComponentInterface = class(TIComponentInterface)
   private
-    FControl : TComponent;
+    FComponent : TComponent;
     FFormEditor : TCustomFormEditor;  //used to call it's functions
     Function FSetProp(PRI : PPropInfo; const Value) : Boolean;
     Function FGetProp(PRI : PPropInfo; var Value) : Boolean;
@@ -63,6 +63,7 @@ each control that's dropped onto the form
 
   public
     constructor Create;
+    constructor Create(AComponent: TComponent);
     destructor Destroy; override;
 
     Function GetComponentType    : ShortString; override;
@@ -91,7 +92,7 @@ each control that's dropped onto the form
     Function Select : Boolean; override;
     Function Focus : Boolean; override;
     Function Delete : Boolean; override;
-    property Control : TComponent read FCOntrol;
+    property Component : TComponent read FComponent;
   end;
 
 {
@@ -124,7 +125,7 @@ TCustomFormEditor
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     Function GetFormComponent : TIComponentInterface; override;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
-    Function CreateControlComponentInterface(Control: TCOmponent) : TIComponentInterface;
+    Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
 
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
@@ -150,6 +151,12 @@ begin
   inherited Create;
 end;
 
+constructor TComponentInterface.Create(AComponent: TComponent);
+begin
+  inherited Create;
+  FComponent:=AComponent;
+end;
+
 destructor TComponentInterface.Destroy;
 begin
   inherited Destroy;
@@ -162,7 +169,7 @@ Begin
   case PRI^.PropType^.Kind of
   tkBool: Begin
              //Writeln('Boolean....');
-             SetOrdProp(FControl,PRI,longint(Value));
+             SetOrdProp(FComponent,PRI,longint(Value));
              Result := True;
              end;
   tkSString,
@@ -170,28 +177,28 @@ Begin
   tkAString,
   tkWString : Begin
               //Writeln('String...');
-              SetStrProp(FControl,PRI,ShortString(Value));
+              SetStrProp(FComponent,PRI,ShortString(Value));
               Result := True;
              end;
   tkInteger,
   tkInt64   : Begin
               //Writeln('Int64...');
-              SetInt64Prop(FControl,PRI,Int64(Value));
+              SetInt64Prop(FComponent,PRI,Int64(Value));
               Result := True;
              end;
   tkFloat  : Begin
               //Writeln('Float...');
-              SetFloatProp(FControl,PRI,Extended(Value));
+              SetFloatProp(FComponent,PRI,Extended(Value));
               Result := True;
              end;
   tkVariant  : Begin
               //Writeln('Variant...');
-              SetVariantProp(FControl,PRI,Variant(Value));
+              SetVariantProp(FComponent,PRI,Variant(Value));
               Result := True;
              end;
   tkMethod  : Begin
               //Writeln('Method...');
-              SetMethodProp(FControl,PRI,TMethod(value));
+              SetMethodProp(FComponent,PRI,TMethod(value));
               Result := True;
              end;
   else
@@ -203,32 +210,32 @@ Function TComponentInterface.FGetProp(PRI : PPropInfo; var Value) : Boolean;
 Begin
 Result := True;
        case PRI^.PropType^.Kind of
-       tkBool    : Longint(Value) := GetOrdProp(FControl,PRI);
+       tkBool    : Longint(Value) := GetOrdProp(FComponent,PRI);
        tkSString,
        tkLString,
        tkAString,
        tkWString : Begin
                     //Writeln('Get String...');
-                    ShortString(Value) := GetStrProp(FControl,PRI);
+                    ShortString(Value) := GetStrProp(FComponent,PRI);
                     Writeln('The string returned is '+String(value));
                     Writeln('*Get String...');
                    end;
        tkInteger,
        tkInt64   : Begin
                     //Writeln('Get Int64...');
-                    Int64(Value) := GetInt64Prop(FControl,PRI);
+                    Int64(Value) := GetInt64Prop(FComponent,PRI);
                    end;
        tkFloat  : Begin
                     //Writeln('Get Float...');
-                    Extended(Value) := GetFloatProp(FControl,PRI);
+                    Extended(Value) := GetFloatProp(FComponent,PRI);
                    end;
        tkVariant  : Begin
                     //Writeln('Get Variant...');
-                    Variant(Value) := GetVariantProp(FControl,PRI);
+                    Variant(Value) := GetVariantProp(FComponent,PRI);
                    end;
        tkMethod  : Begin
                     //Writeln('Get Method...');
-                    TMethod(Value) := GetMethodProp(FControl,PRI);
+                    TMethod(Value) := GetMethodProp(FComponent,PRI);
                    end;
          else
           Result := False;
@@ -242,7 +249,7 @@ var
   PP : PPropList;
   PI : PTypeInfo;
 Begin
-  PI := FControl.ClassInfo;
+  PI := FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -262,7 +269,7 @@ var
   I  : Longint;
 Begin
   Name := Uppercase(name);
-  PI := FControl.ClassInfo;
+  PI := FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -281,36 +288,36 @@ end;
 
 Function TComponentInterface.GetComponentType    : ShortString;
 Begin
-  Result:=FControl.ClassName;
+  Result:=FComponent.ClassName;
 end;
 
 Function TComponentInterface.GetComponentHandle  : LongInt;
 Begin
 //return the TWinControl handle?
-  if (FControl is TWinControl) then
-  Result := TWinControl(FControl).Handle;
+  if (Component is TWinControl) then
+  Result := TWinControl(Component).Handle;
 end;
 
 Function TComponentInterface.GetParent : TIComponentInterface;
 Begin
   result := nil;
-  if (FCOntrol is TControl) then
-  if TControl(FControl).Parent <> nil then
+  if (FComponent is TControl) then
+  if TControl(FComponent).Parent <> nil then
   begin
-     Result := FFormEditor.FindComponent(TControl(FControl).Parent);
+     Result := FFormEditor.FindComponent(TControl(FComponent).Parent);
   end;
 end;
 
 Function TComponentInterface.IsTControl : Boolean;
 Begin
-  Result := (FControl is TControl);
+  Result := (FComponent is TControl);
 end;
 
 Function TComponentInterface.GetPropCount : Integer;
 var
   PT : PTypeData;
 Begin
-  PT:=GetTypeData(FControl.ClassInfo);
+  PT:=GetTypeData(FComponent.ClassInfo);
   Result := PT^.PropCount;
 end;
 
@@ -320,7 +327,7 @@ PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
 Begin
-  PI:=FControl.ClassInfo;
+  PI:=FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -338,7 +345,7 @@ PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
 Begin
-  PI:=FControl.ClassInfo;
+  PI:=FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -357,7 +364,7 @@ var
   PP : PPropList;
   PI : PTypeInfo;
 Begin
-  PI:=FControl.ClassInfo;
+  PI:=FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -376,7 +383,7 @@ PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
 Begin
-  PI:=FControl.ClassInfo;
+  PI:=FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -395,7 +402,7 @@ var
   PI  : PTypeInfo;
   I   : Longint;
 Begin
-  PI:=FControl.ClassInfo;
+  PI:=FComponent.ClassInfo;
   PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
@@ -453,7 +460,7 @@ Begin
   //Writeln('SetPropByName Name='''+Name+'''');
   Result := False;
 
-  PRI := GetPropInfo(FControl.ClassInfo,Name);
+  PRI := GetPropInfo(FComponent.ClassInfo,Name);
   if PRI <> nil then
   Begin
     Result :=FSetProp(PRI,Value);
@@ -493,22 +500,23 @@ end;
 Function TComponentInterface.Focus : Boolean;
 Begin
   Result := False;
-  if (FCOntrol is TWinControl) and (TWinControl(FControl).CanFocus) then
+  if (FComponent is TWinControl) and (TWinControl(FComponent).CanFocus) then
   Begin
-    TWinControl(FControl).SetFocus;
+    TWinControl(FComponent).SetFocus;
     Result := True;
   end;
 end;
 
 Function TComponentInterface.Delete : Boolean;
 Begin
-   Control.Destroy;
-   Destroy;
-   Result := True;
+writeln('TComponentInterface.Delete  ',Component.Name,':',Component.ClassName);
+  Component.Free;
+  Destroy;
+  Result := True;
 end;
 
 
-{TCustomFormEditor}
+{ TCustomFormEditor }
 
 constructor TCustomFormEditor.Create;
 begin
@@ -521,7 +529,7 @@ end;
 
 destructor TCustomFormEditor.Destroy;
 begin
-  JITFormList.Destroy;
+  JITFormList.Free;
   FComponentInterfaceList.Free;
   FSelectedComponents.Free;
   inherited;
@@ -530,24 +538,19 @@ end;
 procedure TCustomFormEditor.SetSelectedComponents(
   TheSelectedComponents : TComponentSelectionList);
 begin
-try
-  if FSelectedComponents.Count>0 then
-   begin
-    if FSelectedComponents[0].Owner<>nil then
-     begin
-      Obj_Inspector.PropertyEditorHook.LookupRoot:= FSelectedComponents[0].Owner;
-     end
-     else
-     begin
-      Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0];
-     end;
-   end;
   FSelectedComponents.Assign(TheSelectedComponents);
+  if FSelectedComponents.Count>0 then
+  begin
+    if FSelectedComponents[0].Owner<>nil then
+    begin
+      Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0].Owner;
+    end
+    else
+    begin
+      Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0];
+    end;
+  end;
   Obj_Inspector.Selections := FSelectedComponents;
-except
-Writeln('Exception in CustomFormEditor SetSelectedComponents');
-end;
-
 end;
 
 Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
@@ -563,15 +566,15 @@ var
 Begin
   Temp := TComponentInterface(FindComponent(Value));
   if Temp <> nil then
-     begin
-       RemoveFromComponentInterfaceList(Temp);
-       if (Value is TCustomForm) then begin
-         JITFormList.DestroyJITFOrm(TForm(Value));
-         Temp.Destroy;
-       end
-       else
-         Temp.Delete;
-     end;
+  begin
+    RemoveFromComponentInterfaceList(Temp);
+    if (Value is TCustomForm) then begin
+      JITFormList.DestroyJITForm(TForm(Value));
+      Temp.Destroy;
+    end
+    else
+      Temp.Delete;
+  end;
 end;
 
 
@@ -589,7 +592,7 @@ Begin
   While Num < FComponentInterfaceList.Count do
   Begin
     Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
-    if Upcase(TComponentInterface(Result).FControl.Name) = UpCase(Name) then
+    if AnsiCompareText(TComponentInterface(Result).Component.Name,Name)=0 then
       exit;
     inc(num);
   end;
@@ -604,7 +607,8 @@ Begin
   While Num < FComponentInterfaceList.Count do
   Begin
     Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
-    if TComponentInterface(Result).FControl = AComponent then exit;
+writeln('TCustomFormEditor.FindComponent ',TComponentInterface(Result).Component.Name);
+    if TComponentInterface(Result).Component = AComponent then exit;
     inc(num);
   end;
   Result:=nil;
@@ -619,6 +623,7 @@ Var
   I, Num,NewFormIndex : Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
   DummyComponent:TComponent;
+  ParentComponent: TComponent;
 Begin
   writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent A '+IntToStr(GetMem_Cnt));{$ENDIF}
@@ -626,83 +631,88 @@ Begin
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent B '+IntToStr(GetMem_Cnt));{$ENDIF}
   if Assigned(ParentCI) then
   begin
-    if (not(TComponentInterface(ParentCI).FControl is TCustomForm))
-    and Assigned(TComponentInterface(ParentCI).FControl.Owner)
+    ParentComponent:=TComponentInterface(ParentCI).Component;
+    if (not(ParentComponent is TCustomForm))
+    and Assigned(ParentComponent.Owner)
     then
-      Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl.Owner)
+      Temp.FComponent := TypeClass.Create(ParentComponent.Owner)
     else
-      Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl);
+      Temp.FComponent := TypeClass.Create(ParentComponent);
   end else begin
     //this should be a form
+    ParentComponent:=nil;
     {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent B2 '+IntToStr(GetMem_Cnt));{$ENDIF}
     NewFormIndex := JITFormList.AddNewJITForm;
     {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent B3 '+IntToStr(GetMem_Cnt));{$ENDIF}
     if NewFormIndex >= 0 then
-      Temp.FControl := JITFormList[NewFormIndex]
+      Temp.FComponent := JITFormList[NewFormIndex]
     else begin
-      Temp:=nil;
+      Result:=nil;
       exit;
     end;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent C '+IntToStr(GetMem_Cnt));{$ENDIF}
 
-  if Assigned(ParentCI) and (Temp.FControl is TControl) then
+  if Assigned(ParentCI) and (Temp.Component is TControl) then
     Begin
-      if (TComponentInterface(ParentCI).FControl is TWinControl)
+      if (ParentComponent is TWinControl)
       and (csAcceptsControls in
-        TWinControl(TComponentInterface(ParentCI).FControl).ControlStyle) then
+        TWinControl(ParentComponent).ControlStyle) then
       begin
-        TWinControl(Temp.FControl).Parent :=
-          TWinControl(TComponentInterface(ParentCI).FControl);
-        writeln('Parent is '''+TWinControl(Temp.FControl).Parent.Name+'''');
+        TWinControl(Temp.Component).Parent :=
+          TWinControl(ParentComponent);
+        writeln('Parent is '''+TWinControl(Temp.Component).Parent.Name+'''');
       end
       else begin
-        TControl(Temp.FControl).Parent :=
-          TControl(TComponentInterface(ParentCI).FControl).Parent;
-        writeln('Parent is '''+TControl(Temp.FControl).Parent.Name+'''');
+        TControl(Temp.Component).Parent :=
+          TControl(ParentComponent).Parent;
+        writeln('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
       end;
     end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));{$ENDIF}
   if ParentCI <> nil then Begin
-    TempName := Temp.FControl.ClassName;
+    TempName := Temp.Component.ClassName;
     delete(TempName,1,1);
+    {$IfNDef VER1_1}
     //make it more presentable
     TempName := TempName[1] + lowercase(Copy(TempName,2,length(tempname)));
+    {$EndIf}
     Num := 0;
     Found := True;
     While Found do Begin
       Found := False;
       inc(num);
-      for I := 0 to Temp.FControl.Owner.ComponentCount-1 do
+      for I := 0 to Temp.Component.Owner.ComponentCount-1 do
       begin
-        DummyComponent:=Temp.FControl.Owner.Components[i];
-        if UpCase(DummyComponent.Name)=UpCase(TempName+IntToStr(Num)) then
+        DummyComponent:=Temp.Component.Owner.Components[i];
+writeln('AAA1 ',DummyComponent.Name,' ',TempName+IntToStr(Num));
+        if AnsiCompareText(DummyComponent.Name,TempName+IntToStr(Num))=0 then
         begin
           Found := True;
           break;
         end;
       end;
     end;
-    Temp.FControl.Name := TempName+IntToStr(Num);
+    Temp.Component.Name := TempName+IntToStr(Num);
   end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent E '+IntToStr(GetMem_Cnt));{$ENDIF}
-  if (Temp.FControl is TControl) then
+  if (Temp.Component is TControl) then
   Begin
     CompLeft:=X;
     CompTop:=Y;
     CompWidth:=W;
     CompHeight:=H;
-    if CompWidth<=0 then CompWidth:=TControl(Temp.FControl).Width;
-    if CompHeight<=0 then CompHeight:=TControl(Temp.FControl).Height;
+    if CompWidth<=0 then CompWidth:=TControl(Temp.Component).Width;
+    if CompHeight<=0 then CompHeight:=TControl(Temp.Component).Height;
     if CompLeft<0 then
-      CompLeft:=(TControl(Temp.FControl).Parent.Width + CompWidth) div 2;
+      CompLeft:=(TControl(Temp.Component).Parent.Width + CompWidth) div 2;
     if CompTop<0 then
-      CompTop:=(TControl(Temp.FControl).Parent.Height+ CompHeight) div 2;
-    TControl(Temp.FControl).SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+      CompTop:=(TControl(Temp.Component).Parent.Height+ CompHeight) div 2;
+    TControl(Temp.Component).SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
   end else begin
-    with LongRec(Temp.FControl.DesignInfo) do begin
+    with LongRec(Temp.Component.DesignInfo) do begin
       Lo:=X;
       Hi:=Y;
     end;
@@ -716,27 +726,32 @@ end;
 
 Function TCustomFormEditor.CreateFormFromStream(
   BinStream: TStream): TIComponentInterface;
-var NewFormIndex: integer;
-  Temp : TComponentInterface;
+var
+  NewFormIndex: integer;
+  i: integer;
+  NewForm: TCustomForm;
 begin
-  Temp := TComponentInterface.Create;
+  // create JITForm
   NewFormIndex := JITFormList.AddJITFormFromStream(BinStream);
-  if NewFormIndex >= 0 then
-    Temp.FControl := JITFormList[NewFormIndex]
-  else begin
-    Temp:=nil;
+  if NewFormIndex < 0 then begin
+    Result:=nil;
     exit;
   end;
-  FComponentInterfaceList.Add(Temp);
+  NewForm:=JITFormList[NewFormIndex];
+  
+  // create a component interface for the form
+  Result:=CreateComponentInterface(NewForm);
 
-  Result := Temp;
+  // create component interfaces for the form components
+  for i:=0 to NewForm.ComponentCount-1 do
+    CreateComponentInterface(NewForm.Components[i]);
 end;
 
 Procedure TCustomFormEditor.SetFormNameAndClass(CI: TIComponentInterface;
   const NewFormName, NewClassName: shortstring);
 var AComponent: TComponent;
 begin
-  AComponent:=TComponentInterface(CI).FControl;
+  AComponent:=TComponentInterface(CI).Component;
   if (AComponent<>nil) and (AComponent is TForm) then begin
     JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
     TForm(AComponent).Name:=NewFormName;
@@ -747,7 +762,7 @@ Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(
   Value :TIComponentInterface);
 Begin
   if (FComponentInterfaceList.IndexOf(Value) <> -1) then
-      FComponentInterfaceList.Delete(FComponentInterfaceList.IndexOf(Value));
+    FComponentInterfaceList.Delete(FComponentInterfaceList.IndexOf(Value));
 end;
 
 Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
@@ -761,16 +776,11 @@ Begin
   FSelectedComponents.Clear;
 end;
 
-Function TCustomFormEditor.CreateControlComponentInterface(
-  Control: TComponent) :TIComponentInterface;
-var
-  Temp : TComponentInterface;
-
+Function TCustomFormEditor.CreateComponentInterface(
+  AComponent: TComponent): TIComponentInterface;
 Begin
-  Temp := TComponentInterface.Create;
-  Temp.FControl := Control;
-  FComponentInterfaceList.Add(Temp);
-  Result := Temp;
+  Result := TComponentInterface.Create(AComponent);
+  FComponentInterfaceList.Add(Result);
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);
