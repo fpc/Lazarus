@@ -44,6 +44,13 @@ uses
   Project;
   
 type
+  TProjectInspectorFlag = (
+    pifItemsChanged,
+    pifButtonsChanged,
+    pifTitleChanged
+    );
+  TProjectInspectorFlags = set of TProjectInspectorFlag;
+
   TProjectInspectorForm = class(TForm)
     OpenBitBtn: TBitBtn;
     AddBitBtn: TBitBtn;
@@ -67,12 +74,19 @@ type
     ImageIndexFiles: integer;
     ImageIndexRequired: integer;
     ImageIndexRemovedRequired: integer;
+    ImageIndexProject: integer;
     ImageIndexUnit: integer;
     ImageIndexRegisterUnit: integer;
     ImageIndexText: integer;
     ImageIndexBinary: integer;
+    FFlags: TProjectInspectorFlags;
     procedure SetLazProject(const AValue: TProject);
     procedure SetupComponents;
+    procedure UpdateProjectItems;
+    procedure UpdateRequiredPackages;
+    procedure UpdateRemovedRequiredPackages;
+    function GetImageIndexOfFile(AFile: TUnitInfo): integer;
+    function GetSelectedFile: TUnitInfo;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -131,12 +145,12 @@ end;
 
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
-
+  OpenBitBtnClick(Self);
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
-
+  UpdateButtons;
 end;
 
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
@@ -194,6 +208,8 @@ begin
     AddResImg('pkg_required');
     ImageIndexRemovedRequired:=Count;
     AddResImg('pkg_removedrequired');
+    ImageIndexProject:=Count;
+    AddResImg('pkg_project');
     ImageIndexUnit:=Count;
     AddResImg('pkg_unit');
     ImageIndexRegisterUnit:=Count;
@@ -253,6 +269,78 @@ begin
   end;
 end;
 
+procedure TProjectInspectorForm.UpdateProjectItems;
+var
+  CurFile: TUnitInfo;
+  i: Integer;
+  CurNode: TTreeNode;
+  NodeText: String;
+begin
+  ItemsTreeView.BeginUpdate;
+  if LazProject<>nil then begin
+    CurFile:=LazProject.FirstPartOfProject;
+    i:=0;
+    while CurFile<>nil do begin
+      NodeText:=
+        CreateRelativePath(CurFile.Filename,LazProject.ProjectDirectory);
+      if i<FilesNode.Count then begin
+        CurNode:=FilesNode.Items[i];
+        CurNode.Text:=NodeText;
+      end else
+        CurNode:=ItemsTreeView.Items.AddChild(FilesNode,NodeText);
+      CurNode.ImageIndex:=GetImageIndexOfFile(CurFile);
+      CurNode.SelectedIndex:=CurNode.ImageIndex;
+      CurFile:=CurFile.NextPartOfProject;
+      inc(i);
+    end;
+    while FilesNode.Count>i do FilesNode.Items[FilesNode.Count-1].Free;
+    FilesNode.Expanded:=true;
+  end else begin
+    // delete file nodes
+    FilesNode.HasChildren:=false;
+  end;
+  ItemsTreeView.EndUpdate;
+end;
+
+procedure TProjectInspectorForm.UpdateRequiredPackages;
+begin
+  ItemsTreeView.BeginUpdate;
+  ItemsTreeView.EndUpdate;
+end;
+
+procedure TProjectInspectorForm.UpdateRemovedRequiredPackages;
+begin
+  ItemsTreeView.BeginUpdate;
+  ItemsTreeView.EndUpdate;
+end;
+
+function TProjectInspectorForm.GetImageIndexOfFile(AFile: TUnitInfo): integer;
+begin
+  if FilenameIsPascalUnit(AFile.Filename) then
+    Result:=ImageIndexUnit
+  else if (LazProject<>nil) and (LazProject.MainUnitinfo=AFile) then
+    Result:=ImageIndexProject
+  else
+    Result:=ImageIndexText;
+end;
+
+function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+begin
+  Result:=nil;
+  if LazProject=nil then exit;
+  CurNode:=ItemsTreeView.Selected;
+  if (CurNode=nil) or (CurNode.Parent<>FilesNode) then exit;
+  NodeIndex:=CurNode.Index;
+  Result:=LazProject.FirstPartOfProject;
+  while (NodeIndex>0) and (Result<>nil) do begin
+    Result:=Result.NextPartOfProject;
+    dec(NodeIndex);
+  end;
+end;
+
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
 var
   ALayout: TIDEWindowLayout;
@@ -273,6 +361,8 @@ end;
 
 destructor TProjectInspectorForm.Destroy;
 begin
+  BeginUpdate;
+  LazProject:=nil;
   inherited Destroy;
 end;
 
@@ -306,32 +396,56 @@ procedure TProjectInspectorForm.UpdateTitle;
 var
   NewCaption: String;
 begin
+  if FUpdateLock>0 then begin
+    Include(FFlags,pifTitleChanged);
+    exit;
+  end;
+  Exclude(FFlags,pifTitleChanged);
   if LazProject=nil then
     Caption:='Project Inspector'
   else begin
     NewCaption:=LazProject.Title;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
-    Caption:=NewCaption;
+    Caption:='Project Inspector - '+NewCaption;
   end;
 end;
 
 procedure TProjectInspectorForm.UpdateButtons;
+var
+  CurFile: TUnitInfo;
 begin
-  AddBitBtn.Enabled:=true;
-  RemoveBitBtn.Enabled:=true;
-  OpenBitBtn.Enabled:=true;
-  OptionsBitBtn.Enabled:=true;
+  if FUpdateLock>0 then begin
+    Include(FFlags,pifButtonsChanged);
+    exit;
+  end;
+  Exclude(FFlags,pifButtonsChanged);
+  if LazProject<>nil then begin
+    AddBitBtn.Enabled:=true;
+    CurFile:=GetSelectedFile;
+    RemoveBitBtn.Enabled:=(CurFile<>nil) and (CurFile<>LazProject.MainUnitInfo);
+    OpenBitBtn.Enabled:=(CurFile<>nil);
+    OptionsBitBtn.Enabled:=true;
+  end else begin
+    AddBitBtn.Enabled:=false;
+    RemoveBitBtn.Enabled:=false;
+    OpenBitBtn.Enabled:=false;
+    OptionsBitBtn.Enabled:=false;
+  end;
 end;
 
 procedure TProjectInspectorForm.UpdateItems;
 begin
-  // update project files
-  
-  // update required packages
-  
-  // update removed required packages
-  
+  if FUpdateLock>0 then begin
+    Include(FFlags,pifItemsChanged);
+    exit;
+  end;
+  Exclude(FFlags,pifItemsChanged);
+  ItemsTreeView.BeginUpdate;
+  UpdateProjectItems;
+  UpdateRequiredPackages;
+  UpdateRemovedRequiredPackages;
+  ItemsTreeView.EndUpdate;
 end;
 
 

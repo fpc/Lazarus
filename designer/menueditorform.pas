@@ -44,49 +44,65 @@ type
 
   TMainMenuEditorForm = class(TForm)
   private
-    FDesignerMainMenu: TDesignerMainMenu;
+    fDesignerMainMenu: TDesignerMainMenu;
+    fPanel: TPanel;
+  //  fEditor: TComponentEditor;
   public
-    constructor CreateWithMenu(TheOwner: TComponent; AMenu: TMainMenu);
+    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor);
     destructor Destroy; override;
     procedure Paint; override;
-    procedure MouseDownClick(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X,Y: Integer);
-    property DesignerMainMenu: TDesignerMainMenu read FDesignerMainMenu
-                                                 write FDesignerMainMenu;
+    
+    property DesignerMainMenu: TDesignerMainMenu read fDesignerMainMenu write fDesignerMainMenu;
+    property Panel: TPanel read FPanel write FPanel;
+//    property Editor: TComponentEditor read fEditor write fEditor;
   end;
 
 { TMenuComponentEditor
   The default component editor for TMenu. }
-  TMainMenuComponentEditor = class(TDefaultComponentEditor)
+  TMainMenuComponentEditor = class(TComponentEditor)
   private
-    FMenu: TMainMenu;
+    fMenu: TMainMenu;
   protected
   public
-    constructor Create(AComponent: TComponent;
-                       ADesigner: TComponentEditorDesigner); override;
+    constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
     procedure Edit; override;
-    property Menu: TMainMenu read FMenu write FMenu;
+    property Menu: TMainMenu read fMenu write fMenu;
+    
+//    function Menu: TMenu;
   end;
 
 implementation
 
 { TMainMenuEditorForm }
 
-constructor TMainMenuEditorForm.CreateWithMenu(TheOwner: TComponent;
-  AMenu: TMainMenu);
+constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor);
+var
+  Cmp: TPanel;
 begin
-  inherited Create(TheOwner);
-  width:=800;
-  height:=600;
-  position:=poDesktopCenter;
-  OnMouseDown:=@MouseDownClick;
+  inherited Create(AOwner);
   
-  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self,AMenu);
+  width:=400;
+  height:=200;
+  position:=poDesktopCenter;
+  
+  Cmp:=TPanel.Create(self);
+  with Cmp do
+  begin
+   Parent:=self;
+   Align:=alClient;
+   Bevelouter:=bvnone;
+   Bevelwidth:=0;
+  end;
+  
+  Panel:=Cmp;
+
+  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self,aMenu,aEditor);
   with DesignerMainMenu do
   begin    
     Parent:=Self;
+    ParentCanvas:=Canvas;
     LoadMainMenu;
-    SetCoordinates(1,1,DesignerMainMenu.Root);
+    SetCoordinates(1,1,0,DesignerMainMenu.Root);
   end;
 end;
 
@@ -98,79 +114,29 @@ end;
 procedure TMainMenuEditorForm.Paint;
 begin
   inherited Paint;
-  DesignerMainMenu.Erase(DesignerMainmenu.Root,Canvas);
-  DesignerMainMenu.Draw(DesignerMainMenu.Root,Canvas);
-end;
-
-procedure TMainMenuEditorForm.MouseDownClick(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X,Y: Integer);
-begin
-  DesignerMainMenu.MouseDownClick(DesignerMainMenu.Root,X,Y);
-  Paint;
+  DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
 end;
 
 { TMainMenuComponentEditor}
 
-constructor TMainMenuComponentEditor.Create(AComponent: TComponent;
-  ADesigner: TComponentEditorDesigner);
-var
-  m1: TMenuItem;
-  m2: TMenuItem;
-  m3: TMenuItem;
-  m4: TMenuItem;
-  m5: TMenuItem;
-  m6: TMenuItem;
-  m7: TMenuItem;
-  m8: TMenuItem;
+constructor TMainMenuComponentEditor.Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent,ADesigner);
-  Menu:=TMainMenu.Create(AComponent);
-  
-  m1:=TMenuItem.Create(AComponent);
-  m1.Caption:='File';
-  Menu.Items.Add(m1);
-  
-  m2:=TMenuItem.Create(AComponent);
-  m2.Caption:='Power';
-  Menu.Items.Add(m2);
-  
-  m3:=TMenuItem.Create(AComponent);
-  m3.Caption:='Settings';
-  Menu.Items.Add(m3);
-  
-  m4:=TMenuItem.Create(AComponent);
-  m4.Caption:='New';
-  m1.Add(m4);
-  
-  m5:=TMenuItem.Create(AComponent);
-  m5.Caption:='Wizard';
-  m1.Add(m5);
-  
-  m6:=TMenuItem.Create(AComponent);
-  m6.Caption:='Project';
-  m5.Add(m6);
-  
-  m7:=TMenuItem.Create(AComponent);
-  m7.Caption:='Power On';
-  m2.Add(m7);
-  
-  m8:=TMenuItem.Create(AComponent);
-  m8.Caption:='Another Caption';
-  m6.Add(m8);
 end;
 
 procedure TMainMenuComponentEditor.Edit;
 var
   MainMenuEditorForm: TMainMenuEditorForm;
 begin
-  if Menu=nil then RaiseGDBException('TMainMenuComponentEditor.Edit Menu=nil');
-  MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,Menu);
-  MainMenuEditorForm.ShowModal;
-  MainMenuEditorForm.Free;
+  //if Menu=nil then RaiseGDBException('TMainMenuComponentEditor.Edit Menu=nil');
+  MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,TMenu(GetComponent),Self);
+  MainMenuEditorForm.Show;
+  //MainMenuEditorForm.Free;
 end;
+
 { //TMainMenuComponentEditor}
 
 initialization
   RegisterComponentEditor(TMainMenu,TMainMenuComponentEditor);
-
+  RegisterComponentEditor(TPopupMenu,TMainMenuComponentEditor);
 end.
