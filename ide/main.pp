@@ -93,7 +93,6 @@ type
     //procedure FormShow(Sender : TObject);
     procedure MainIDEFormClose(Sender : TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender : TObject; var CanClose: boolean);
-    procedure MainIDEResize(Sender: TObject);
     //procedure FormPaint(Sender : TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
@@ -865,7 +864,6 @@ begin
   // build and position the MainIDE form
   Name := NonModalIDEWindowNames[nmiwMainIDEName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-  OnResize:=@MainIDEResize;
   HiddenWindowsOnRun:=TList.Create;
 
   if LazarusResources.Find(ClassName)=nil then begin
@@ -1064,19 +1062,6 @@ begin
   CanClose:=(DoCloseProject <> mrAbort);
 end;
 
-procedure TMainIDE.MainIDEResize(Sender: TObject);
-begin
-  if ComponentNotebook<>nil then begin
-    with ComponentNotebook do
-      SetBounds(Left,0,
-                Parent.ClientWidth-ComponentNotebook.Left,Parent.CLientHeight);
-  end;
-  if pnlSpeedButtons<>nil then begin
-    with pnlSpeedButtons do
-      SetBounds(0,0,Width,Parent.ClientHeight);
-  end;
-end;
-
 {------------------------------------------------------------------------------}
 type
   TMoveFlags = set of (mfTop, mfLeft);
@@ -1113,6 +1098,7 @@ begin
   with pnlSpeedButtons do begin
     Name := 'pnlSpeedButtons';
     Parent:= Self;
+    Align := alLeft;
     Top := 0;
     Left:= 0;
     Caption:= '';
@@ -1166,6 +1152,7 @@ begin
   with ComponentNotebook do begin
     Parent := Self;
     Name := 'ComponentNotebook';
+    Align := alClient;
     Left := pnlSpeedButtons.Left + pnlSpeedButtons.Width;
     Top := 0;
     Width := Self.ClientWidth - Left;
@@ -10292,6 +10279,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.723  2004/05/12 16:19:28  micha
+  use align property instead of resize event
+
   Revision 1.722  2004/05/02 12:01:14  mattias
   removed unneeded units in uses sections
 
