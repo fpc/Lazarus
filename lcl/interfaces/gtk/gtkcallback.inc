@@ -18,6 +18,8 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+{$DEFINE ASSERT_IS_ON}
+
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 var
   PaintMsg: TLMPaint;
@@ -2038,7 +2040,6 @@ begin
   Result := DeliverPostMessage(Data, MSG);
 end;
 
-
 {------------------------------------------------------------------------------
   ClipboardSelectionReceivedHandler
 
@@ -2246,7 +2247,6 @@ end;
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}
 
-
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -2256,6 +2256,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.124  2002/09/06 19:45:10  lazarus
+  Cleanups plus a fix to TPanel parent/drawing problem.
+
   Revision 1.123  2002/09/06 15:57:34  lazarus
   MG: fixed notebook client area, send messages and minor bugs
 
