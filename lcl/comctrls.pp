@@ -1773,6 +1773,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/03/11 23:21:14  lazarus
+  *** empty log message ***
+
   Revision 1.25  2002/03/11 23:07:23  lazarus
   MWE:
     * Made TListview more Delphi compatible
