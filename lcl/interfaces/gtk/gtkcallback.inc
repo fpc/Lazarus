@@ -201,6 +201,7 @@ var
 begin
   Result := True;
   EventTrace('show', data);
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := True;
 
@@ -213,6 +214,7 @@ var
 begin
   Result := True;
   EventTrace('hide', data);
+  FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := False;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -2417,6 +2419,7 @@ end;
 
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}
+{$I gtkComboBoxCallback.inc}
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -2427,6 +2430,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.138  2002/10/03 14:47:31  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.137  2002/09/30 22:42:54  lazarus
   MG: deactivated transient modal forms
 
