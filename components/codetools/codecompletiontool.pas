@@ -1257,7 +1257,7 @@ begin
   // insert all nodes of specific type
   while ANodeExt<>nil do begin
     IsVariable:=NodeExtIsVariable(ANodeExt);
-    if (ord(PartType)=ANodeExt.Flags) then begin
+    if (cardinal(ord(PartType))=ANodeExt.Flags) then begin
       // search a destination section
       if NodeExtIsPrivate(ANodeExt) then begin
         // search a privat section in front of the node

@@ -161,13 +161,13 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateFont;
-var OldHandle: HPEN;
+var OldHandle: HFONT;
 begin
   OldHandle:=SelectObject(FHandle, Font.Handle);
   if (OldHandle<>Font.Handle) and (FSavedFontHandle=0) then
     FSavedFontHandle:=OldHandle;
   Include(FState, csFontValid);
-  SetTextColor(FHandle, Font.Color);
+  SetTextColor(FHandle, TColorRef(Font.Color));
 end;
 
 {------------------------------------------------------------------------------
@@ -1066,15 +1066,16 @@ procedure TCanvas.RequiredState(ReqState: TCanvasState);
 var
   Needed: TCanvasState;
 begin
-//writeln('[TCanvas.RequiredState] ',csHandleValid in ReqState,' ',csHandleValid in FState);
   Needed := ReqState - FState;
+  //writeln('[TCanvas.RequiredState] ',ClassName,' ',csHandleValid in ReqState,' ',csHandleValid in FState,' Needed=',Needed<>[]);
   if Needed <> [] then
   begin
+    //writeln('[TCanvas.RequiredState] B ',ClassName,' ',csHandleValid in Needed,',',csFontValid in Needed,',',csPenValid in Needed,',',csBrushValid in Needed);
     if csHandleValid in Needed then
     begin
       CreateHandle;
-      if FHandle = 0
-      then raise EInvalidOperation.Create(rsCanvasDoesNotAllowDrawing);
+      if FHandle = 0 then
+        raise EInvalidOperation.Create(rsCanvasDoesNotAllowDrawing);
       Include(FState, csHandleValid);
     end;
     if csFontValid in Needed then CreateFont;
@@ -1096,20 +1097,12 @@ end;
   Gets the width and height of a text
  ------------------------------------------------------------------------------}
 function TCanvas.TextExtent(const Text: string): TSize;
-var
-  pStr: PChar;
 begin
   Result.cX := 0;
   Result.cY := 0;
+  if Text='' then exit;
   RequiredState([csHandleValid, csFontValid]);
-
-  pStr := StrAlloc(Length(Text)+1);
-  try
-    StrPCopy(pStr, Text);
-    GetTextExtentPoint(FHandle, pStr, Length(Text), Result);
-  finally
-    StrDispose(PStr);
-  end;
+  GetTextExtentPoint(FHandle, PChar(Text), Length(Text), Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -1169,6 +1162,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/08/18 16:50:09  mattias
+  fixes for debugging
+
   Revision 1.46  2002/08/18 04:57:01  mattias
   fixed csDashDot
 

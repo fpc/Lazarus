@@ -270,10 +270,10 @@ begin
   case fCaseSensitive of
   True:
     for I:= Len -1 downto 0 do
-      inc(Result, Ord(P[I]) shl I);
+      inc(Result, cardinal(ord(P[I])) shl I);
   False:
     for I:= Len -1 downto 0 do
-      inc(Result, ord(UpperCaseChars[P[I]]) shl I);
+      inc(Result, cardinal(ord(UpperCaseChars[P[I]])) shl I);
   end;
 end;
 

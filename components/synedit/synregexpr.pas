@@ -1946,7 +1946,7 @@ function TRegExpr.CompileRegExpr (exp : PRegExprChar) : boolean;
 // of the structure of the compiled regexp.
  var
   scan, longest : PRegExprChar;
-  len : cardinal;
+  len : integer;
   flags : integer;
  begin
   Result := false; // life too dark

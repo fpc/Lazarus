@@ -1092,7 +1092,7 @@ end;
 
 function TDOMCharacterData.SubstringData(offset, count: LongWord): DOMString;
 begin
-  if (offset < 0) or (offset > Length) or (count < 0) then
+  if (offset < 0) or (longint(offset) > Length) or (count < 0) then
     raise EDOMIndexSize.Create('CharacterData.SubstringData');
   Result := Copy(FNodeValue, offset + 1, count);
 end;
@@ -1104,7 +1104,7 @@ end;
 
 procedure TDOMCharacterData.InsertData(offset: LongWord; const arg: DOMString);
 begin
-  if (offset < 0) or (offset > Length) then
+  if (offset < 0) or (longint(offset) > Length) then
     raise EDOMIndexSize.Create('CharacterData.InsertData');
 
   FNodeValue := Copy(FNodeValue, 1, offset) + arg +
@@ -1113,7 +1113,7 @@ end;
 
 procedure TDOMCharacterData.DeleteData(offset, count: LongWord);
 begin
-  if (offset < 0) or (offset > Length) or (count < 0) then
+  if (offset < 0) or (longint(offset) > Length) or (count < 0) then
     raise EDOMIndexSize.Create('CharacterData.DeleteData');
 
   FNodeValue := Copy(FNodeValue, 1, offset) +
@@ -1511,7 +1511,7 @@ end;
 
 function TDOMText.SplitText(offset: LongWord): TDOMText;
 begin
-  if offset > Length then
+  if longint(offset) > Length then
     raise EDOMIndexSize.Create('Text.SplitText');
 
   Result := TDOMText.Create(FOwnerDocument);
@@ -1633,6 +1633,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/08/18 16:50:09  mattias
+  fixes for debugging
+
   Revision 1.5  2002/12/18 17:52:18  mattias
   fixed lazarus xml files for fpc 1.1
 

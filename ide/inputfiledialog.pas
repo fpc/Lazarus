@@ -90,7 +90,7 @@ type
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    procedure Update;
+    procedure UpdateDlg;
     function FilenameIsValidForFileIndex(Filename: string;
       Index: integer): boolean;
   public
@@ -231,26 +231,26 @@ procedure TInputFileDialog.SetFileDescriptions(Index: integer;
   const AValue: string);
 begin
   FFileDescs[Index]:=AValue;
-  Update;
+  UpdateDlg;
 end;
 
 procedure TInputFileDialog.SetFileTitles(Index: integer; const AValue: string);
 begin
   FFileTitles[Index]:=AValue;
-  Update;
+  UpdateDlg;
 end;
 
 procedure TInputFileDialog.SetFileFlags(Index: integer;
   const AValue: TInputFileFlags);
 begin
   FFileFlags[Index]:=AValue;
-  Update;
+  UpdateDlg;
 end;
 
 procedure TInputFileDialog.SetFilenames(Index: integer; const AValue: string);
 begin
   FFileNames[Index]:=AValue;
-  Update;
+  UpdateDlg;
 end;
 
 procedure TInputFileDialog.SetTransferMacros(const AValue: TTransferMacroList);
@@ -258,7 +258,7 @@ begin
   FTransferMacros:=AValue;
 end;
 
-procedure TInputFileDialog.Update;
+procedure TInputFileDialog.UpdateDlg;
 begin
   if (FUpdateCount<>0) or (not UpdateNeeded) then exit;
   CreateInputComponents;
@@ -617,7 +617,7 @@ begin
   if FUpdateCount<=0 then exit;
   dec(FUpdateCount);
   if FUpdateCount=0 then
-    Update;
+    UpdateDlg;
 end;
 
 end.

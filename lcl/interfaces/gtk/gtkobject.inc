@@ -1354,7 +1354,7 @@ begin
   while (n > 0) do begin
     dec (n);
     TimerInfo := PGtkITimerinfo(FTimerData.Items[n]);
-    if (TimerInfo^.TimerHandle=TimerHandle) then
+    if (TimerInfo^.TimerHandle=guint(TimerHandle)) then
     begin
       {$IFDEF VerboseTimer}
       writeln('TGTKObject.KillTimer TimerInfo=',HexStr(Cardinal(TimerInfo),8),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
@@ -7420,6 +7420,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.380  2002/08/18 16:50:09  mattias
+  fixes for debugging
+
   Revision 1.379  2002/08/18 04:57:01  mattias
   fixed csDashDot
 

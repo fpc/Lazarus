@@ -571,7 +571,7 @@ begin
       clWindow,
       clWindowText,
       clMenuText,
-      clGrayText ://should never have a BK Pixmap
+      clGrayText://should never have a BK Pixmap
         EnsureAsGCValues;
       else
         EnsureAsColor;
@@ -4259,6 +4259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.186  2002/08/18 16:50:09  mattias
+  fixes for debugging
+
   Revision 1.185  2002/08/17 23:41:35  mattias
   many clipping fixes
 

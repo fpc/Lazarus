@@ -587,7 +587,7 @@ function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   Formats: PClipboardFormat): boolean;
 var TargetEntries: PGtkTargetEntry;
   
-  function IsFormatSupported(FormatID: integer): boolean;
+  function IsFormatSupported(FormatID: cardinal): boolean;
   var i: integer;
   begin
     if FormatID=0 then begin
@@ -1199,8 +1199,9 @@ begin
           ' Bits=',HexStr(Cardinal(Bits),8),' MemSize(Bits)=',MemSize(Bits),
           ' biBitCount=',biBitCount);}
           If BitSize <= 0 then
-            BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)
-                                   *(NumScans + StartScan);
+            BitSize := longint(SizeOf(Byte))
+                       *(longint(biSizeImage) div biHeight)
+                       *longint(NumScans + StartScan);
           If MemSize(Bits) < BitSize then begin
             writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
             exit;
@@ -1246,7 +1247,7 @@ begin
                 if Y<=0 then break;
               end else begin
                 inc(y);
-                if Y>=NumScans - 1 then break;
+                if Y>=longint(NumScans) - 1 then break;
               end;
             until false;
           end
@@ -1979,17 +1980,17 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
       list_requisition^.height := list_requisition^.height + EMPTY_LIST_HEIGHT;
 
     alloc_width := (widget^.allocation.width -
-      2 * PGtkStyle(popwin^.child^.thestyle)^.klass^.xthickness -
+      2 * cardinal(PGtkStyle(popwin^.child^.thestyle)^.klass^.xthickness) -
       2 * border_width(GTK_CONTAINER (popwin^.child)^) -
       2 * border_width(GTK_CONTAINER (combo^.popup)^) -
       2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) -
-      2 * PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness);
+      2 * cardinal(PGtkStyle(GTK_BIN(popup)^.child^.thestyle)^.klass^.xthickness));
 
-    work_height := (2 * (PGtkStyle(popwin^.child^.thestyle)^.klass^.ythickness) +
-                 2 * border_width(GTK_CONTAINER (popwin^.child)^) +
-                 2 * border_width(GTK_CONTAINER (combo^.popup)^) +
-                 2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) +
-                 2 * PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness);
+    work_height := (2 * cardinal(PGtkStyle(popwin^.child^.thestyle)^.klass^.ythickness) +
+      2 * border_width(GTK_CONTAINER (popwin^.child)^) +
+      2 * border_width(GTK_CONTAINER (combo^.popup)^) +
+      2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) +
+      2 * cardinal(PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness));
 
     repeat
       okay_to_exit := True;
@@ -4809,7 +4810,6 @@ var
   UseFont : PGDKFont;
   UnRef : Boolean;
 begin
-  Assert(False, 'trace:> [TgtkObject.GetTextExtentPoint]');
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
@@ -8436,6 +8436,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.249  2002/08/18 16:50:09  mattias
+  fixes for debugging
+
   Revision 1.248  2002/08/18 04:57:01  mattias
   fixed csDashDot
 
