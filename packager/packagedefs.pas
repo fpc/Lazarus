@@ -345,7 +345,7 @@ type
     function GetDefaultMainSourceFileName: string; override;
     function CreateTargetFilename(const MainSourceFileName: string): string; override;
 
-    procedure Assign(CompOpts: TBaseCompilerOptions); override;
+    procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
@@ -3143,12 +3143,12 @@ begin
   Result:='';
 end;
 
-procedure TPkgCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
+procedure TPkgCompilerOptions.Assign(Source: TPersistent);
 begin
-  inherited Assign(CompOpts);
-  if CompOpts is TPkgCompilerOptions
+  inherited Assign(Source);
+  if Source is TPkgCompilerOptions
   then begin
-    FSkipCompiler := TPkgCompilerOptions(CompOpts).FSkipCompiler;
+    FSkipCompiler := TPkgCompilerOptions(Source).FSkipCompiler;
   end
   else begin
     FSkipCompiler := False;

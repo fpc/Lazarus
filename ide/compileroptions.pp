@@ -42,9 +42,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc,
-  Laz_XMLCfg,
-  IDEProcs, LazConf,
-  TransferMacros;
+  Laz_XMLCfg, ProjectIntf,
+  IDEProcs, LazConf, TransferMacros;
 
 type
 
@@ -167,14 +166,8 @@ type
   end;
   TCompilationToolClass = class of TCompilationTool;
 
-  TCompilationGenerateCode = (
-    cgcNormalCode,
-    cgcFasterCode,
-    cgcSmallerCode
-    );
-
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
-  TBaseCompilerOptions = class
+  TBaseCompilerOptions = class(TLazCompilerOptions)
   private
     FBaseDirectory: string;
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
@@ -183,9 +176,7 @@ type
     fInheritedOptGraphStamps: integer;
     fLoaded: Boolean;
     FModified: boolean;
-    FOnModified: TNotifyEvent;
     fOptionsString: String;
-    fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
     fTargetFilename: string;
     FWin32GraphicApp: boolean;
@@ -278,30 +269,29 @@ type
     fCompilerPath: String;
     fExecuteBefore: TCompilationTool;
     fExecuteAfter: TCompilationTool;
-
   protected
-    procedure SetBaseDirectory(const AValue: string); virtual;
-    procedure SetCompilerPath(const AValue: String); virtual;
-    procedure SetCustomOptions(const AValue: string); virtual;
-    procedure SetIncludeFiles(const AValue: String); virtual;
-    procedure SetLibraries(const AValue: String); virtual;
-    procedure SetLinkerOptions(const AValue: String); virtual;
-    procedure SetOtherUnitFiles(const AValue: String); virtual;
-    procedure SetUnitOutputDir(const AValue: string); virtual;
-    procedure SetObjectPath(const AValue: string); virtual;
-    procedure SetSrcPath(const AValue: string); virtual;
-    procedure SetDebugPath(const AValue: string); virtual;
-    procedure SetTargetCPU(const AValue: string); virtual;
-    procedure SetTargetProc(const AValue: Integer); virtual;
-    procedure SetTargetOS(const AValue: string); virtual;
+    procedure SetBaseDirectory(const AValue: string); override;
+    procedure SetCompilerPath(const AValue: String); override;
+    procedure SetCustomOptions(const AValue: string); override;
+    procedure SetIncludeFiles(const AValue: String); override;
+    procedure SetLibraries(const AValue: String); override;
+    procedure SetLinkerOptions(const AValue: String); override;
+    procedure SetOtherUnitFiles(const AValue: String); override;
+    procedure SetUnitOutputDir(const AValue: string); override;
+    procedure SetObjectPath(const AValue: string); override;
+    procedure SetSrcPath(const AValue: string); override;
+    procedure SetDebugPath(const AValue: string); override;
+    procedure SetTargetCPU(const AValue: string); override;
+    procedure SetTargetProc(const AValue: Integer); override;
+    procedure SetTargetOS(const AValue: string); override;
+    procedure SetModified(const AValue: boolean); override;
   protected
     procedure LoadTheCompilerOptions(const Path: string); virtual;
     procedure SaveTheCompilerOptions(const Path: string); virtual;
-    procedure SetModified(const AValue: boolean); virtual;
     procedure ClearInheritedOptions;
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
-    constructor Create(const AOwner: TObject); virtual;
+    constructor Create(const AOwner: TObject); override;
     constructor Create(const AOwner: TObject; const AToolClass: TCompilationToolClass);
     destructor Destroy; override;
     procedure Clear; virtual;
@@ -311,7 +301,7 @@ type
     
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
-    procedure Assign(CompOpts: TBaseCompilerOptions); virtual;
+    procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     
     function MakeOptionsString(Globals: TGlobalCompilerOptions;
@@ -341,9 +331,6 @@ type
     function GetEffectiveLCLWidgetType: string;
   public
     { Properties }
-    property Owner: TObject read fOwner write fOwner;
-    property Modified: boolean read FModified write SetModified;
-    property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
@@ -787,8 +774,7 @@ end;
 constructor TBaseCompilerOptions.Create(const AOwner: TObject;
   const AToolClass: TCompilationToolClass);
 begin
-  inherited Create;
-  FOwner := AOwner;
+  inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create;
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
@@ -2143,8 +2129,15 @@ begin
   fExecuteAfter.Clear;
 end;
 
-procedure TBaseCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
+procedure TBaseCompilerOptions.Assign(Source: TPersistent);
+var
+  CompOpts: TBaseCompilerOptions;
 begin
+  if not (Source is TBaseCompilerOptions) then begin
+    inherited Assign(Source);
+    exit;
+  end;
+  CompOpts:=TBaseCompilerOptions(Source);
   fOptionsString := CompOpts.fOptionsString;
   fLoaded := CompOpts.fLoaded;
 

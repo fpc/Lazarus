@@ -258,7 +258,7 @@ type
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
-    procedure Assign(CompOpts: TBaseCompilerOptions); override;
+    procedure Assign(Source: TPersistent); override;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
   public
     property OwnerProject: TProject read FOwnerProject;
@@ -401,6 +401,7 @@ type
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
+    procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
     procedure SetModified(const AValue: boolean);
     procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
@@ -534,7 +535,7 @@ type
                                          write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TProjectCompilerOptions
-                                   read fCompilerOptions write fCompilerOptions;
+                                 read fCompilerOptions write SetCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property Destroying: boolean read fDestroying;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
@@ -1180,7 +1181,7 @@ begin
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
   fBookmarks := TProjectBookmarkList.Create;
-  fCompilerOptions := TProjectCompilerOptions.Create(Self);
+  CompilerOptions := TProjectCompilerOptions.Create(Self);
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
   fIconPath := '';
@@ -2511,6 +2512,12 @@ begin
   FAutoOpenDesignerFormsDisabled:=AValue;
 end;
 
+procedure TProject.SetCompilerOptions(const AValue: TProjectCompilerOptions);
+begin
+  fCompilerOptions:=AValue;
+  inherited SetLazCompilerOptions(AValue);
+end;
+
 function TProject.JumpHistoryCheckPosition(
   APosition:TProjectJumpHistoryPosition): boolean;
 var i: integer;
@@ -2773,11 +2780,11 @@ begin
   FGlobals.TargetOS:=TargetOS;
 end;
 
-procedure TProjectCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
+procedure TProjectCompilerOptions.Assign(Source: TPersistent);
 begin
-  inherited Assign(CompOpts);
-  if CompOpts is TProjectCompilerOptions
-  then FCompileReasons := TProjectCompilerOptions(CompOpts).FCompileReasons
+  inherited Assign(Source);
+  if Source is TProjectCompilerOptions
+  then FCompileReasons := TProjectCompilerOptions(Source).FCompileReasons
   else FCompileReasons := [crCompile, crBuild, crRun];
   
   UpdateGlobals;
@@ -3050,6 +3057,7 @@ begin
   AProject.AddSrcPath('$(LazarusDir)/lcl;'
                +'$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
   AProject.AddPackageDependency('LCL');
+  AProject.LazCompilerOptions.Win32GraphicApp:=true;
 end;
 
 procedure TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
@@ -3121,6 +3129,9 @@ end.
 
 {
   $Log$
+  Revision 1.168  2004/10/09 13:24:18  mattias
+  added compiler options to IDEIntf and made Win32GraphicApp default for application projects
+
   Revision 1.167  2004/10/01 13:18:41  mattias
   removed uneeded function TProject.AddNewFile
 

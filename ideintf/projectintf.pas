@@ -35,6 +35,200 @@ const
   ProjDescNameCustomProgram = 'custom program';
 
 type
+  { TLazCompilerOptions }
+  
+  TCompilationGenerateCode = (
+    cgcNormalCode,
+    cgcFasterCode,
+    cgcSmallerCode
+    );
+
+  TLazCompilerOptions = class(TPersistent)
+  private
+    fAdditionalConfigFile: Boolean;
+    fAllowLabel: Boolean;
+    fAssemblerStyle: Integer;
+    fCMacros: Boolean;
+    fConfigFilePath: String;
+    fCPPInline: Boolean;
+    fCStyleOp: Boolean;
+    fCustomOptions: string;
+    fD2Ext: Boolean;
+    FDebugPath: string;
+    fDelphiCompat: Boolean;
+    fDontUseConfigFile: Boolean;
+    FEmulatedFloatOpcodes: boolean;
+    fGenDebugDBX: Boolean;
+    fGenDebugInfo: Boolean;
+    fGenerate: TCompilationGenerateCode;
+    fGenGProfCode: Boolean;
+    fGPCCompat: Boolean;
+    fHeapSize: Integer;
+    fIncludeAssertionCode: Boolean;
+    fIncludeFiles: String;
+    fInitConst: Boolean;
+    fIOChecks: Boolean;
+    fLCLWidgetType: string;
+    fLibraries: String;
+    fLinkerOptions: String;
+    fLinkStyle: Integer;
+    FModified: boolean;
+    FObjectPath: string;
+    FOnModified: TNotifyEvent;
+    fOptLevel: Integer;
+    fOtherUnitFiles: String;
+    fOverflowChecks: Boolean;
+    fOwner: TObject;
+    fPassLinkerOpt: Boolean;
+    fRangeChecks: Boolean;
+    fShowAll: Boolean;
+    fShowAllProcsOnError: Boolean;
+    fShowCompProc: Boolean;
+    fShowCond: Boolean;
+    fShowDebugInfo: Boolean;
+    fShowDefMacros: Boolean;
+    fShowErrors: Boolean;
+    fShowGenInfo: Boolean;
+    fShowHints: Boolean;
+    fShowHintsForUnusedUnitsInMainSrc: Boolean;
+    fShowLineNum: Boolean;
+    fShowNotes: Boolean;
+    fShowNothing: Boolean;
+    fShowTriedFiles: Boolean;
+    fShowUsedFiles: Boolean;
+    fShowWarn: Boolean;
+    FSrcPath: string;
+    fStackChecks: Boolean;
+    fStaticKwd: Boolean;
+    fStopAfterErrCount: integer;
+    fStripSymbols: Boolean;
+    fTargetCPU: string;
+    fTargetOS: string;
+    fTargetProc: Integer;
+    fTPCompat: Boolean;
+    fUncertainOpt: Boolean;
+    fUnitOutputDir: string;
+    fUnitStyle: Integer;
+    fUseAnsiStr: Boolean;
+    fUseHeaptrc: Boolean;
+    fUseLineInfoUnit: Boolean;
+    fUseValgrind: Boolean;
+    fVarsInReg: Boolean;
+    FWin32GraphicApp: boolean;
+    fWriteFPCLogo: Boolean;
+  protected
+    procedure SetBaseDirectory(const AValue: string); virtual; abstract;
+    procedure SetCompilerPath(const AValue: String); virtual; abstract;
+    procedure SetCustomOptions(const AValue: string); virtual; abstract;
+    procedure SetIncludeFiles(const AValue: String); virtual; abstract;
+    procedure SetLibraries(const AValue: String); virtual; abstract;
+    procedure SetLinkerOptions(const AValue: String); virtual; abstract;
+    procedure SetOtherUnitFiles(const AValue: String); virtual; abstract;
+    procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
+    procedure SetObjectPath(const AValue: string); virtual; abstract;
+    procedure SetSrcPath(const AValue: string); virtual; abstract;
+    procedure SetDebugPath(const AValue: string); virtual; abstract;
+    procedure SetTargetCPU(const AValue: string); virtual; abstract;
+    procedure SetTargetProc(const AValue: Integer); virtual; abstract;
+    procedure SetTargetOS(const AValue: string); virtual; abstract;
+    procedure SetModified(const AValue: boolean); virtual; abstract;
+  public
+    constructor Create(const TheOwner: TObject); virtual;
+  public
+    property Owner: TObject read fOwner write fOwner;
+    property Modified: boolean read FModified write SetModified;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
+
+    // search paths:
+    property IncludeFiles: String read fIncludeFiles write SetIncludeFiles;
+    property Libraries: String read fLibraries write SetLibraries;
+    property OtherUnitFiles: String read fOtherUnitFiles write SetOtherUnitFiles;
+    property ObjectPath: string read FObjectPath write SetObjectPath;
+    property SrcPath: string read FSrcPath write SetSrcPath;
+    property UnitOutputDirectory: string read fUnitOutputDir write SetUnitOutputDir;
+    property DebugPath: string read FDebugPath write SetDebugPath;
+    property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
+
+    // parsing:
+    property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
+    property D2Extensions: Boolean read fD2Ext write fD2Ext;
+    property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
+    property IncludeAssertionCode: Boolean
+                         read fIncludeAssertionCode write fIncludeAssertionCode;
+    property DelphiCompat: Boolean read fDelphiCompat write fDelphiCompat;
+    property AllowLabel: Boolean read fAllowLabel write fAllowLabel;
+    property UseAnsiStrings: Boolean read fUseAnsiStr write fUseAnsiStr;
+    property CPPInline: Boolean read fCPPInline write fCPPInline;
+    property CStyleMacros: Boolean read fCMacros write fCMacros;
+    property TPCompatible: Boolean read fTPCompat write fTPCompat;
+    property GPCCompat: Boolean read fGPCCompat write fGPCCompat;
+    property InitConstructor: Boolean read fInitConst write fInitConst;
+    property StaticKeyword: Boolean read fStaticKwd write fStaticKwd;
+
+    // code generation:
+    property UnitStyle: Integer read fUnitStyle write fUnitStyle;
+    property IOChecks: Boolean read fIOChecks write fIOChecks;
+    property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
+    property OverflowChecks: Boolean read fOverflowChecks write fOverflowChecks;
+    property StackChecks: Boolean read fStackChecks write fStackChecks;
+    property EmulatedFloatOpcodes: boolean read FEmulatedFloatOpcodes
+                                           write FEmulatedFloatOpcodes;
+    property HeapSize: Integer read fHeapSize write fHeapSize;
+    property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes
+                                          write FEmulatedFloatOpcodes;
+    property Generate: TCompilationGenerateCode read fGenerate write fGenerate;
+    property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
+    property TargetProcessor: Integer read fTargetProc write SetTargetProc; // specific
+    property TargetOS: string read fTargetOS write SetTargetOS;
+    property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
+    property UncertainOptimizations: Boolean read fUncertainOpt write fUncertainOpt;
+    property OptimizationLevel: Integer read fOptLevel write fOptLevel;
+
+    // linking:
+    property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
+    property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
+    property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
+    property UseHeaptrc: Boolean read fUseHeaptrc write fUseHeaptrc;
+    property UseValgrind: Boolean read fUseValgrind write fUseValgrind;
+    property GenGProfCode: Boolean read fGenGProfCode write fGenGProfCode;
+    property StripSymbols: Boolean read fStripSymbols write fStripSymbols;
+    property LinkStyle: Integer read fLinkStyle write fLinkStyle;
+    property PassLinkerOptions: Boolean read fPassLinkerOpt write fPassLinkerOpt;
+    property LinkerOptions: String read fLinkerOptions write SetLinkerOptions;
+    property Win32GraphicApp: boolean read FWin32GraphicApp write FWin32GraphicApp;
+
+    // messages:
+    property ShowErrors: Boolean read fShowErrors write fShowErrors;
+    property ShowWarn: Boolean read fShowWarn write fShowWarn;
+    property ShowNotes: Boolean read fShowNotes write fShowNotes;
+    property ShowHints: Boolean read fShowHints write fShowHints;
+    property ShowGenInfo: Boolean read fShowGenInfo write fShowGenInfo;
+    property ShowLineNum: Boolean read fShowLineNum write fShowLineNum;
+    property ShowAll: Boolean read fShowAll write fShowAll;
+    property ShowAllProcsOnError: Boolean
+      read fShowAllProcsOnError write fShowAllProcsOnError;
+    property ShowDebugInfo: Boolean read fShowDebugInfo write fShowDebugInfo;
+    property ShowUsedFiles: Boolean read fShowUsedFiles write fShowUsedFiles;
+    property ShowTriedFiles: Boolean read fShowTriedFiles write fShowTriedFiles;
+    property ShowDefMacros: Boolean read fShowDefMacros write fShowDefMacros;
+    property ShowCompProc: Boolean read fShowCompProc write fShowCompProc;
+    property ShowCond: Boolean read fShowCond write fShowCond;
+    property ShowNothing: Boolean read fShowNothing write fShowNothing;
+    property ShowHintsForUnusedUnitsInMainSrc: Boolean
+      read fShowHintsForUnusedUnitsInMainSrc write fShowHintsForUnusedUnitsInMainSrc;
+    property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;
+    property StopAfterErrCount: integer
+      read fStopAfterErrCount write fStopAfterErrCount;
+
+    // other
+    property DontUseConfigFile: Boolean read fDontUseConfigFile
+                                        write fDontUseConfigFile;
+    property AdditionalConfigFile: Boolean read fAdditionalConfigFile
+                                           write fAdditionalConfigFile;
+    property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
+    property CustomOptions: string read fCustomOptions write SetCustomOptions;
+  end;
+
   { TLazProjectFile }
 
   TLazProjectFile = class(TPersistent)
@@ -204,8 +398,10 @@ type
   TLazProject = class(TPersistent)
   private
     FFlags: TProjectFlags;
+    FLazCompilerOptions: TLazCompilerOptions;
     fTitle: String;
   protected
+    procedure SetLazCompilerOptions(const AValue: TLazCompilerOptions);
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
@@ -230,6 +426,8 @@ type
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read fTitle write SetTitle;
     property Flags: TProjectFlags read FFlags write SetFlags;
+    property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions
+                                                     write SetLazCompilerOptions;
   end;
 
 
@@ -588,6 +786,12 @@ begin
   FFlags:=AValue;
 end;
 
+procedure TLazProject.SetLazCompilerOptions(const AValue: TLazCompilerOptions);
+begin
+  if FLazCompilerOptions=AValue then exit;
+  FLazCompilerOptions:=AValue;
+end;
+
 procedure TLazProject.SetTitle(const AValue: String);
 begin
   if fTitle=AValue then exit;
@@ -604,6 +808,14 @@ end;
 procedure TLazProjectFile.SetIsPartOfProject(const AValue: boolean);
 begin
   FIsPartOfProject:=AValue;
+end;
+
+{ TLazCompilerOptions }
+
+constructor TLazCompilerOptions.Create(const TheOwner: TObject);
+begin
+  inherited Create;
+  FOwner := TheOwner;
 end;
 
 initialization
