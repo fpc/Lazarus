@@ -257,20 +257,10 @@ begin
 end;
 
 procedure TTreeNode.SetText(const S: string);
-//var Item: TTVItem;
 begin
   if S=FText then exit;
   FText := S;
   if TreeView=nil then exit;
-  // ToDo:
-  {
-  with Item do begin
-    mask := TVIF_TEXT;
-    hItem := ItemId;
-    pszText := LPSTR_TEXTCALLBACK;
-  end;
-  TreeView_SetItem(Handle, Item);
-  }
   Include(TreeView.FStates,tvsMaxRightNeedsUpdate);
   if (TreeView.SortType in [stText, stBoth]) and FInTree then begin
     if (Parent <> nil) then Parent.AlphaSort
@@ -295,25 +285,8 @@ begin
 end;
 
 function TTreeNode.GetState(NodeState: TNodeState): Boolean;
-//var Item: TTVItem;
 begin
-  // ToDo:
   Result:=NodeState in FStates;
-  {
-  Result := False;
-  with Item do begin
-    mask := TVIF_STATE;
-    hItem := ItemId;
-    if TreeView_GetItem(Handle, Item) then
-      case NodeState of
-        nsCut: Result := (state and TVIS_CUT) <> 0;
-        nsFocused: Result := (state and TVIS_FOCUSED) <> 0;
-        nsSelected: Result := (state and TVIS_SELECTED) <> 0;
-        nsExpanded: Result := (state and TVIS_EXPANDED) <> 0;
-        nsDropHilited: Result := (state and TVIS_DROPHILITED) <> 0;
-      end;
-  end;
-  }
 end;
 
 procedure TTreeNode.SetHeight(AValue: integer);
@@ -327,79 +300,31 @@ begin
 end;
 
 procedure TTreeNode.SetImageIndex(AValue: integer);
-//var Item: TTVItem;
 begin
   if FImageIndex=AValue then exit;
   FImageIndex := AValue;
   Update;
-  // ToDo
-  {
-  with Item do
-  begin
-    mask := TVIF_IMAGE or TVIF_HANDLE;
-    hItem := ItemId;
-    if Assigned(TCustomTreeView(Owner.Owner).OnGetImageIndex) then
-      iImage := I_IMAGECALLBACK
-    else
-      iImage := FImageIndex;
-  end;
-  TreeView_SetItem(Handle, Item);
-  }
 end;
 
 procedure TTreeNode.SetSelectedIndex(AValue: Integer);
-//var Item: TTVItem;
 begin
   if FSelectedIndex = AValue then exit;
   FSelectedIndex := AValue;
   Update;
-  { ToDo:
-  with Item do begin
-    mask := TVIF_SELECTEDIMAGE or TVIF_HANDLE;
-    hItem := ItemId;
-    if Assigned(TCustomTreeView(Owner.Owner).OnGetSelectedIndex) then
-      iSelectedImage := I_IMAGECALLBACK
-    else
-      iSelectedImage := FSelectedIndex;
-  end;
-  TreeView_SetItem(Handle, Item);
-  }
 end;
 
 procedure TTreeNode.SetOverlayIndex(AValue: Integer);
-//var Item: TTVItem;
 begin
   if FOverlayIndex = AValue then exit;
   FOverlayIndex := AValue;
   Update;
-  { ToDo:
-  with Item do begin
-    mask := TVIF_STATE or TVIF_HANDLE;
-    stateMask := TVIS_OVERLAYMASK;
-    hItem := ItemId;
-    state := IndexToOverlayMask(FOverlayIndex + 1);
-  end;
-  TreeView_SetItem(Handle, Item);
-  }
 end;
 
 procedure TTreeNode.SetStateIndex(AValue: Integer);
-//var Item: TTVItem;
 begin
   if FStateIndex = AValue then exit;
   FStateIndex := AValue;
   Update;
-  { ToDo:
-  if Value >= 0 then Dec(Value);
-  with Item do
-  begin
-    mask := TVIF_STATE or TVIF_HANDLE;
-    stateMask := TVIS_STATEIMAGEMASK;
-    hItem := ItemId;
-    state := IndexToStateImageMask(Value + 1);
-  end;
-  TreeView_SetItem(Handle, Item);
-  }
 end;
 
 function TTreeNode.AreParentsExpanded: Boolean;
@@ -556,12 +481,18 @@ begin
   if AValue=GetSelected then exit;
   if AValue then begin
     Include(FStates,nsSelected);
-    if (TreeView<>nil) and (TreeView.Selected=nil) then
+    if (TreeView<>nil) and (TreeView.Selected=nil) then begin
       TreeView.Selected:=Self;
+      if TreeView.Selected<>Self then
+        Exclude(FStates,nsSelected);
+    end;
   end else begin
     Exclude(FStates,nsSelected);
-    if (TreeView<>nil) and (TreeView.Selected=Self) then
+    if (TreeView<>nil) and (TreeView.Selected=Self) then begin
       TreeView.Selected:=nil;
+      if TreeView.Selected=Self then
+        Include(FStates,nsSelected);
+    end;
   end;
   Update;
 end;
@@ -572,9 +503,6 @@ begin
 end;
 
 procedure TTreeNode.SetCut(AValue: Boolean);
-{var
-  Item: TTVItem;
-  Template: DWORD;}
 begin
   if AValue=Cut then exit;
   // ToDo
@@ -582,17 +510,6 @@ begin
     Include(FStates,nsCut)
   else
     Exclude(FStates,nsCut);
-{  if Value then
-    Template := DWORD(-1)
-  else
-    Template := 0;
-  with Item do begin
-    mask := TVIF_STATE;
-    hItem := ItemId;
-    stateMask := TVIS_CUT;
-    state := stateMask and Template;
-  end;
-  TreeView_SetItem(Handle, Item);}
 end;
 
 function TTreeNode.GetDropTarget: Boolean;
@@ -2592,7 +2509,7 @@ begin
   FIndent:=15;
   FChangeTimer := TTimer.Create(Self);
   FChangeTimer.Enabled := False;
-  FChangeTimer.Interval := 0;
+  FChangeTimer.Interval := 1;
   FChangeTimer.OnTimer := @OnChangeTimer;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
@@ -2705,20 +2622,12 @@ begin
 end;
 
 function TCustomTreeView.CustomSort(SortProc: TTreeNodeCompare): Boolean;
-//var SortCB: TTVSortCB;
 var Node: TTreeNode;
 begin
   Result := False;
   if HandleAllocated then begin
     // ToDo: sort root nodes
 
-    {with SortCB do begin
-      if not Assigned(SortProc) then lpfnCompare := @DefaultTreeViewSort
-      else lpfnCompare := SortProc;
-      hParent := TVI_ROOT;
-      lParam := Data;
-      Result := TreeView_SortChildrenCB(Handle, SortCB, 0);
-    end;}
     Node := FTreeNodes.GetFirstNode;
     while Node <> nil do begin
       if Node.HasChildren then Node.CustomSort(SortProc);
@@ -2735,7 +2644,6 @@ begin
       Include(FOptions,tvoAutoExpand)
     else
       Exclude(FOptions,tvoAutoExpand);
-    //SetComCtlStyle(Self, TVS_SINGLEEXPAND, Value);
   end;
 end;
 
@@ -2746,7 +2654,6 @@ begin
       Include(FOptions,tvoHotTrack)
     else
       Exclude(FOptions,tvoHotTrack);
-    //SetComCtlStyle(Self, TVS_TRACKSELECT, Value);
   end;
 end;
 
@@ -2759,7 +2666,6 @@ begin
       Exclude(FOptions,tvoRowSelect);
     if FSelectedNode<>nil then
       Invalidate;
-    //SetComCtlStyle(Self, TVS_FULLROWSELECT, Value);
   end;
 end;
 
@@ -2775,7 +2681,6 @@ end;
 
 procedure TCustomTreeView.SetScrolledLeft(AValue: integer);
 begin
-//DebugLn('@@@@@ ',FScrolledTop,',',AValue);
   if AValue<0 then AValue:=0;
   if AValue=FScrolledLeft then exit;
   if AValue>GetMaxScrollLeft then AValue:=GetMaxScrollLeft;
@@ -2787,7 +2692,6 @@ end;
 
 procedure TCustomTreeView.SetScrolledTop(AValue: integer);
 begin
-//DebugLn('$$$$$ ',FScrolledTop,',',AValue);
   if FScrolledTop=AValue then exit;
   if AValue<0 then AValue:=0;
   if AValue>GetMaxScrollTop then AValue:=GetMaxScrollTop;
@@ -2805,7 +2709,6 @@ begin
       Include(FOptions,tvoToolTips)
     else
       Exclude(FOptions,tvoToolTips);
-    //SetComCtlStyle(Self, TVS_NOTOOLTIPS, not Value);
   end;
 end;
 
@@ -2950,7 +2853,7 @@ end;
 
 procedure TCustomTreeView.UpdateTopItem;
 begin
-//DebugLn('TCustomTreeView.UpdateTopItem tvsTopItemNeedsUpdate in FStates=',tvsTopItemNeedsUpdate in FStates);
+  //DebugLn('TCustomTreeView.UpdateTopItem tvsTopItemNeedsUpdate in FStates=',tvsTopItemNeedsUpdate in FStates);
   if (FStates*[tvsTopItemNeedsUpdate,tvsTopsNeedsUpdate]=[]) then exit;
   FTopItem:=GetNodeAtY(BorderWidth);
   Exclude(FStates,tvsTopItemNeedsUpdate);
@@ -2973,7 +2876,6 @@ begin
   if HandleAllocated and (Value <> nil) then begin
     Value.MakeVisible;
     ScrolledTop:=Value.Top+Value.Height-(ClientHeight-ScrollBarWidth);
-    //TreeView_SelectSetFirstVisible(Handle, Value.ItemId);
   end;
 end;
 
@@ -2985,7 +2887,6 @@ begin
     else
       Exclude(FOptions,tvoShowButtons);
     Invalidate;
-    //SetComCtlStyle(Self, TVS_HASBUTTONS, Value);
   end;
 end;
 
@@ -2997,7 +2898,6 @@ begin
     else
       Exclude(FOptions,tvoShowLines);
     Invalidate;
-    //SetComCtlStyle(Self, TVS_HASLINES, Value);
   end;
 end;
 
@@ -3009,7 +2909,6 @@ begin
     else
       Exclude(FOptions,tvoShowRoot);
     Invalidate;
-    //SetComCtlStyle(Self, TVS_LINESATROOT, Value);
   end;
 end;
 
@@ -3042,7 +2941,6 @@ begin
     else
       Exclude(FOptions,tvoRightClickSelect);
     if not Value then EndEditing;
-    //SetComCtlStyle(Self, TVS_EDITLABELS, not Value);
   end;
 end;
 
@@ -3061,7 +2959,6 @@ begin
       Include(FOptions,tvoHideSelection)
     else
       Exclude(FOptions,tvoHideSelection);
-    //SetComCtlStyle(Self, TVS_SHOWSELALWAYS, not Value);
     if FSelectedNode<>nil then Invalidate;
   end;
 end;
@@ -3088,7 +2985,7 @@ begin
   else begin
     Result:=LastVisibleNode.Top+LastVisibleNode.Height
              -(ClientHeight-ScrollBarWidth)+2*BorderWidth;
-//DebugLn('>>> ',LastVisibleNode.Text,' ',Result);
+    //DebugLn('>>> ',LastVisibleNode.Text,' ',Result);
     if Result<0 then Result:=0;
   end;
 end;
@@ -3227,10 +3124,8 @@ begin
 end;
 
 function TCustomTreeView.GetHitTestInfoAt(X, Y: Integer): THitTests;
-//var HitTest: TTVHitTestInfo;
 var Node: TTreeNode;
 begin
-  // ToDo
   Result := [];
   if (X>=0) and (X<ClientWidth) and (Y>=0) and (Y<(ClientHeight-ScrollBarWidth))
   then begin
@@ -3251,28 +3146,6 @@ begin
     end else
       Include(Result,htNowhere);
   end;
-  {with HitTest do begin
-    pt.X := X;
-    pt.Y := Y;
-    TreeView_HitTest(Handle, HitTest);
-    if (flags and TVHT_ABOVE) <> 0 then Include(Result, htAbove);
-    if (flags and TVHT_BELOW) <> 0 then Include(Result, htBelow);
-    if (flags and TVHT_NOWHERE) <> 0 then Include(Result, htNowhere);
-    if (flags and TVHT_ONITEM) = TVHT_ONITEM then
-      Include(Result, htOnItem)
-    else
-    begin
-      if (flags and TVHT_ONITEM) <> 0 then Include(Result, htOnItem);
-      if (flags and TVHT_ONITEMICON) <> 0 then Include(Result, htOnIcon);
-      if (flags and TVHT_ONITEMLABEL) <> 0 then Include(Result, htOnLabel);
-      if (flags and TVHT_ONITEMSTATEICON) <> 0 then Include(Result, htOnStateIcon);
-    end;
-    if (flags and TVHT_ONITEMBUTTON) <> 0 then Include(Result, htOnButton);
-    if (flags and TVHT_ONITEMINDENT) <> 0 then Include(Result, htOnIndent);
-    if (flags and TVHT_ONITEMRIGHT) <> 0 then Include(Result, htOnRight);
-    if (flags and TVHT_TOLEFT) <> 0 then Include(Result, htToLeft);
-    if (flags and TVHT_TORIGHT) <> 0 then Include(Result, htToRight);
-  end;}
 end;
 
 procedure TCustomTreeView.SetTreeLineColor(Value: TColor);
@@ -3293,7 +3166,6 @@ begin
   if Value <> Indent then begin
     FIndent := Value;
     Invalidate;
-    //TreeView_SetIndent(Handle, Value);
   end;
 end;
 
@@ -3402,13 +3274,13 @@ begin
   if HandleAllocated and (Value <> nil) then begin
     Value.MakeVisible;
     ScrolledTop:=Value.Top;
-    //TreeView_SelectSetFirstVisible(Handle, Value.ItemId);
   end;
 end;
 
 procedure TCustomTreeView.OnChangeTimer(Sender: TObject);
 begin
   FChangeTimer.Enabled := False;
+  //debugln('TCustomTreeView.OnChangeTimer');
   Change(FSelectedNode);
 end;
 
@@ -3515,6 +3387,8 @@ procedure TCustomTreeView.SetSelection(Value: TTreeNode);
 var OldNode: TTreeNode;
 begin
   if FSelectedNode=Value then exit;
+  if not CanChange(FSelectedNode) then
+    exit;
   OldNode:=FSelectedNode;
   FSelectedNode:=Value;
   if OldNode<>nil then begin
@@ -3598,8 +3472,6 @@ function TCustomTreeView.GetDropTarget: TTreeNode;
 begin
   if HandleAllocated then
   begin
-    //Result := Items.GetNode(TreeView_GetDropHilite(Handle));
-    //if Result = nil then Result := FLastDropTarget;
     Result := FLastDropTarget;
   end
   else
@@ -3645,21 +3517,9 @@ begin
       TreeView_SelectDropTarget(Handle, nil);}
 end;
 
-{function TCustomTreeView.GetNodeFromItem(const Item: TTVItem): TTreeNode;
-begin
-  Result := nil;
-  if Items <> nil then
-    with Item do
-      if (state and TVIF_PARAM) <> 0 then Result := Pointer(lParam)
-      else Result := Items.GetNode(hItem);
-end;
-}
 function TCustomTreeView.IsEditing: Boolean;
-//var ControlHand: HWnd;
 begin
   Result:=tvsIsEditing in FStates;
-  //ControlHand := TreeView_GetEditControl(Handle);
-  //Result := (ControlHand <> 0) and IsWindowVisible(ControlHand);
 end;
 
 function TCustomTreeView.GetDragImages: TDragImageList;
@@ -4178,20 +4038,6 @@ begin
   if Assigned(FOnEditing) then FOnEditing(Self, Node, Result);
 end;
 
-{procedure TCustomTreeView.Edit(const Item: TTVItem);
-var
-  S: string;
-  Node: TTreeNode;
-begin
-  with Item do
-    if pszText <> nil then begin
-      S := pszText;
-      Node := GetNodeFromItem(Item);
-      if Assigned(FOnEdited) then FOnEdited(Self, Node, S);
-      if Node <> nil then Node.Text := S;
-    end;
-end;}
-
 procedure TCustomTreeView.EndEditing;
 begin
   if not (tvsIsEditing in FStates) then exit;
@@ -4221,28 +4067,9 @@ begin
   Result := TTreeNode.Create(Items);
 end;
 
-{procedure TCustomTreeView.SetImageList(Value: HImageList; Flags: Integer);
-begin
-  if HandleAllocated then TreeView_SetImageList(Handle, Value, Flags);
-end;}
-
 procedure TCustomTreeView.ImageListChange(Sender: TObject);
-//var ImageHandle: HImageList;
 begin
-  // ToDo
   Invalidate;
-  {Delphi:
-  if HandleAllocated then
-  begin
-    if TCustomImageList(Sender).HandleAllocated then
-      ImageHandle := TCustomImageList(Sender).Handle
-    else
-      ImageHandle := 0;
-    if Sender = Images then
-      SetImageList(ImageHandle, TVSIL_NORMAL)
-    else if Sender = StateImages then
-      SetImageList(ImageHandle, TVSIL_STATE);
-  end;}
 end;
 
 procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -4374,11 +4201,9 @@ begin
   if Images <> nil then begin
     Images.RegisterChanges(FImageChangeLink);
     Images.FreeNotification(Self);
-    //SetImageList(Images.Handle, TVSIL_NORMAL)
     if DefaultItemHeight<Images.Height+2 then
       DefaultItemHeight:=Images.Height+2;
   end;
-  //else SetImageList(0, TVSIL_NORMAL);
   Invalidate;
 end;
 
@@ -4414,11 +4239,9 @@ begin
   if StateImages <> nil then begin
     StateImages.RegisterChanges(FStateChangeLink);
     StateImages.FreeNotification(Self);
-    //SetImageList(StateImages.Handle, TVSIL_STATE)
     if DefaultItemHeight<StateImages.Height+2 then
       DefaultItemHeight:=StateImages.Height+2;
   end;
-  //else SetImageList(0, TVSIL_STATE);
   Invalidate;
 end;
 
@@ -4465,17 +4288,6 @@ begin
       Free;
   end;
 end;
-
-{procedure TCustomTreeView.WMContextMenu(var Message: TWMContextMenu);
-var
-  R: TRect;
-begin
-  if (Message.XPos < 0) and (Selected <> nil) then begin
-    R := Selected.DisplayRect(True);
-    Message.Pos := PointToSmallPoint(ClientToScreen(Point(R.Left, R.Bottom)));
-  end;
-  inherited;
-end;}
 
 procedure TCustomTreeView.WMVScroll(var Msg: TLMScroll);
 begin
@@ -4535,7 +4347,7 @@ begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
   {$ENDIF}
-  {
+  { ToDo
   FDragNode := nil;
   try
     inherited;
@@ -4563,38 +4375,7 @@ begin
 end;
 
 procedure TCustomTreeView.WMNotify(var AMessage: TLMNotify);
-{var
-  Node: TTreeNode;
-  MaxTextLen: Integer;
-  Pt: TPoint;}
 begin
-  {with Message do
-    if NMHdr^.code = TTN_NEEDTEXTW then
-    begin
-      // Work around NT COMCTL32 problem with tool tips >= 80 characters
-      GetCursorPos(Pt);
-      Pt := ScreenToClient(Pt);
-      Node := GetNodeAt(Pt.X, Pt.Y);
-      if (Node = nil) or (Node.Text = '') or
-        (PToolTipTextW(NMHdr)^.uFlags and TTF_IDISHWND = 0) then Exit;
-      if (GetComCtlVersion >= ComCtlVersionIE4) and (Length(Node.Text) < 80) then
-      begin
-        inherited;
-        Exit;
-      end;
-      FWideText := Node.Text;
-      MaxTextLen := SizeOf(PToolTipTextW(NMHdr)^.szText) div SizeOf(WideChar);
-      if Length(FWideText) >= MaxTextLen then
-        SetLength(FWideText, MaxTextLen - 1);
-      PToolTipTextW(NMHdr)^.lpszText := PWideChar(FWideText);
-      FillChar(PToolTipTextW(NMHdr)^.szText, MaxTextLen, 0);
-      Move(Pointer(FWideText)^, PToolTipTextW(NMHdr)^.szText, Length(FWideText) * SizeOf(WideChar));
-      PToolTipTextW(NMHdr)^.hInst := 0;
-      SetWindowPos(NMHdr^.hwndFrom, HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE or
-        SWP_NOSIZE or SWP_NOMOVE or SWP_NOOWNERZORDER);
-      Result := 1;
-    end
-    else}
   inherited WMNotify(AMessage);
 end;
 
@@ -4614,6 +4395,7 @@ begin
     DoSelectionChanged;
     FChangeTimer.Enabled := false;
     FChangeTimer.Enabled := true;
+    //debugln('TCustomTreeView.InternalSelectionChanged');
   end;
 end;
 
