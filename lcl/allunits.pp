@@ -33,7 +33,7 @@ uses
   LMessages,      StdCtrls,      Arrow,         Controls,
   Imglist,        Menus,         Toolwin,       Dialogs,
   Messages,       UTrace,        Clistbox,      ActnList,
-  DynamicArray,   Grids;
+  DynamicArray,   Grids,         Printers,      PostScriptPrinter;
 
 implementation
 
@@ -42,6 +42,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/03/25 18:40:56  mattias
+  added Tonys printer units
+
   Revision 1.18  2003/01/04 20:46:32  mattias
   added grids.pas from Jesus Reyes A.
 
