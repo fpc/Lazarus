@@ -932,6 +932,8 @@ begin
   DebugBoss.ConnectMainBarEvents;
   PkgBoss:=TPkgManager.Create(Self);
   PkgBoss.ConnectMainBarEvents;
+  HelpBoss:=THelpManager.Create(Self);
+  HelpBoss.ConnectMainBarEvents;
   // setup the IDE components
   LoadMenuShortCuts;
   SetupOutputFilter;
@@ -993,6 +995,7 @@ begin
   // free IDE parts
   FreeFormEditor;
   FreeThenNil(PkgBoss);
+  FreeThenNil(HelpBoss);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
@@ -10575,6 +10578,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.752  2004/08/13 12:05:02  mattias
+  implemented THelpSelectorDialog
+
   Revision 1.751  2004/08/12 10:50:14  mattias
   Open unit of component palette component now jumps to declaration
 

@@ -16,7 +16,7 @@
   !!! ONLY A DESIGN STUDY !!!
 
   Abstract:
-   This unit defines various base classes for the Help System used by the IDE.
+    This unit defines various base classes for the Help System used by the IDE.
 }
 unit HelpIntf;
 
@@ -64,7 +64,9 @@ type
 
   THelpDatabase = class;
 
-  { THelpNode }
+  { THelpNode
+    A help node is a position/place in a help database.
+    For example it points to Help file or to a Link on a HTML file. }
   
   THelpNodeType = (
     hntFile,     // Filename valid, ignore Link and ID
@@ -99,7 +101,9 @@ type
 
 
   { THelpDBSearchItem
-    Base class for registered search items associated with a THelpDatabase. }
+    Base class for registered search items associated with a THelpDatabase.
+    See THelpDBSISourceDirectory for an example.
+    Node is optional, pointing to a help page about the help item. }
 
   THelpDBSearchItem = class(TPersistent)
   private
@@ -111,7 +115,8 @@ type
   
   { THelpDBSISourceFile
     Used by the IDE to search for help for a sourcefile
-    If Filename is relative the BasePathObject is used to get a base directory.
+    If Filename is relative, the BasePathObject is used to get a base directory.
+    
     For example: If BasePathObject is a TLazPackage the Filename is relative to
     the directory of the .lpk file }
 
@@ -128,7 +133,11 @@ type
   { THelpDBSISourceDirectory
     As THelpDBSISourceFile, except that Filename is a directory and
     the item is valid for all source files fitting the FileMask.
-    FileMask can be for example '*.pp;*.pas;*.inc' }
+    FileMask can be for example '*.pp;*.pas;*.inc'
+
+    For example: A package providing help for all its source files registers
+    a THelpDBSISourceDirectory. Node points to the fpdoc main page.
+    }
 
   THelpDBSISourceDirectory = class(THelpDBSISourceFile)
   private
@@ -157,7 +166,7 @@ type
 
   { THelpDatabase
     Base class for a collection of help files or entries.
-    BasePathObject: THelpDatabase can be created by packages and/or projects.
+    BasePathObject: THelpDatabase can be created by packages.
                     The IDE will set BasePathObject accordingly. }
 
   THelpDatabaseID = string;
@@ -261,7 +270,8 @@ type
   end;
   
   
-  { THelpViewer }
+  { THelpViewer
+    base class for all Help viewers }
   
   THelpViewer = class(TPersistent)
   private
@@ -284,6 +294,7 @@ type
 
   THelpViewerClass = class of THelpViewer;
   
+  
   { THelpViewers }
   
   THelpViewers = class
@@ -301,7 +312,8 @@ type
   public
     property Items[Index: integer]: THelpViewer read GetItems;
   end;
-
+  
+  
 var
   HelpDatabases: THelpDatabases; // initialized by the IDE
   HelpViewers: THelpViewers; // initialized by the IDE
@@ -512,6 +524,8 @@ end;
 
 procedure THelpDatabase.Release;
 begin
+  if FRefCount=0 then
+    raise EHelpSystemException.Create('THelpDatabase.Release');
   dec(FRefCount);
   if FRefCount=0 then Free;
 end;
@@ -709,7 +723,7 @@ end;
 
 function THelpDatabases.GetNodesForKeyword(const HelpKeyword: string;
   var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
-// if ListOfNodes<>nil new nodes will be appended
+// if ListOfNodes<>nil then new nodes will be appended
 // if ListOfNodes=nil and nodes exists a new list will be created
 var
   i: Integer;
@@ -723,7 +737,7 @@ end;
 
 function THelpDatabases.GetNodesForContext(HelpContext: THelpContext;
   var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
-// if ListOfNodes<>nil new nodes will be appended
+// if ListOfNodes<>nil then new nodes will be appended
 // if ListOfNodes=nil and nodes exists a new list will be created
 var
   i: Integer;
@@ -737,6 +751,7 @@ end;
 
 function THelpDatabases.ShowHelpSelector(Nodes: TList; var ErrMsg: string;
   var Selection: THelpNode): TShowHelpResult;
+// Nodes is a list of THelpNode
 begin
   Result:=shrSelectorError;
   // TODO
