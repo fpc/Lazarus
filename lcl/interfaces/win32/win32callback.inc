@@ -618,7 +618,6 @@ Begin
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
         Windows.DestroyWindow(WindowInfo^.Overlay);
-      EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
     End;
@@ -1225,6 +1224,7 @@ Begin
         // free our own data associated with window
         if DisposeWindowInfo(Window) then
           WindowInfo := nil;
+        EnumProps(Window, @PropEnumProc);
       end;
     end;
   end; 
@@ -1290,7 +1290,7 @@ End;
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
-  writeln(MessageStackDepth, 'WindowProc called for window=', window,' msg=', msg,' wparam=', wparam, ' lparam=',lparam);
+  writeln(MessageStackDepth, 'WindowProc called for window=', window,' msg=', WM_To_String(msg),' wparam=', wparam, ' lparam=',lparam);
   MessageStackDepth := MessageStackDepth + ' ';
 
   Result := RealWindowProc(Window, Msg, WParam, LParam);
@@ -1473,6 +1473,10 @@ end;
 
 {
   $Log$
+  Revision 1.167  2004/11/21 21:09:29  vincents
+  use message name instead of number in debug message.
+  postponed removing properties until wm_ncdestroy.
+
   Revision 1.166  2004/11/18 14:58:06  vincents
   destroy overlay window, when destroying the owner
 
