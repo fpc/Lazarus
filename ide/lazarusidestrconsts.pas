@@ -754,6 +754,7 @@ resourcestring
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCaretX = 'Keep X caret';
   dlgPersistentCaret = 'Persistent caret';
+  dlgRightMouseMovesCursor = 'Right mouse moves caret';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
   dlgScrollPastEndLine = 'Scroll past end of line';
@@ -763,6 +764,7 @@ resourcestring
   dlgShowGutterHints = 'Show gutter hints';
   dlgSmartTabs = 'Smart tabs';
   dlgTabsToSpaces = 'Tabs to spaces';
+  dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';
   dlgUndoAfterSave = 'Undo after save';
   dlgDoubleClickLine = 'Double click line';

@@ -299,6 +299,7 @@ type
     HalfPageScrollCheckBox:TCheckBox;
     KeepCaretXCheckBox:TCheckBox;
     PersistentCaretCheckBox:TCheckBox;
+    RightMouseMovesCursorCheckBox:TCheckBox;
     ScrollByOneLessCheckBox:TCheckBox;
     ScrollPastEofCheckBox:TCheckBox;
     ScrollPastEolCheckBox:TCheckBox;
@@ -306,6 +307,7 @@ type
     ShowScrollHintCheckBox:TCheckBox;
     SmartTabsCheckBox:TCheckBox;
     TabsToSpacesCheckBox:TCheckBox;
+    TabIndentCheckBox:TCheckBox;
     TrimTrailingSpacesCheckBox:TCheckBox;
     UndoAfterSaveCheckBox:TCheckBox;
     DoubleClickLineCheckBox:TCheckBox;
@@ -2408,6 +2410,7 @@ begin
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
   SetOption(KeepCaretXCheckBox,eoKeepCaretX);
   SetOption(PersistentCaretCheckBox,eoPersistentCaret);
+  SetOption(RightMouseMovesCursorCheckBox,eoRightMouseMovesCursor);
   // not for Preview: SetOption(NoSelectionCheckBox,eoNoSelection);
   SetOption(ScrollByOneLessCheckBox,eoScrollByOneLess);
   SetOption(ScrollPastEoFCheckBox,eoScrollPastEoF);
@@ -2415,6 +2418,7 @@ begin
   SetOption(ShowScrollHintCheckBox,eoShowScrollHint);
   SetOption(SmartTabsCheckBox,eoSmartTabs);
   SetOption(TabsToSpacesCheckBox,eoTabsToSpaces);
+  SetOption(TabIndentCheckBox,eoTabIndent);
   SetOption(TrimTrailingSpacesCheckBox,eoTrimTrailingSpaces);
 
   for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
@@ -3382,7 +3386,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=24*12; // 24 pixels per line
+    Height:=21*13+13; // 21 pixels per line
     Caption:=lismenueditoroptions;
   end;
 
@@ -3478,6 +3482,17 @@ begin
     SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgPersistentCaret;
     Checked:=eoPersistentCaret in EditorOpts.SynEditOptions;
+    OnClick:=@GeneralCheckBoxOnClick;
+  end;
+  inc(y,ChkBoxH);
+
+  RightMouseMovesCursorCheckBox:=TCheckBox.Create(Self);
+  with RightMouseMovesCursorCheckBox do begin
+    Name:='RightMouseMovesCursorCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    SetBounds(x,y,ChkBoxW,Height);
+    Caption:=dlgRightMouseMovesCursor;
+    Checked:=eoRightMouseMovesCursor in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
   inc(y,ChkBoxH);
@@ -3579,6 +3594,17 @@ begin
     SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgTabsToSpaces;
     Checked:=eoTabsToSpaces in EditorOpts.SynEditOptions;
+    OnClick:=@GeneralCheckBoxOnClick;
+  end;
+  inc(y,ChkBoxH);
+
+  TabIndentCheckBox:=TCheckBox.Create(Self);
+  with TabIndentCheckBox do begin
+    Name:='TabIndentCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    SetBounds(x,y,ChkBoxW,Height);
+    Caption:=dlgTabIndent;
+    Checked:=eoTabIndent in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
   inc(y,ChkBoxH);
@@ -3752,7 +3778,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=21*12+31; // 21 pixels per option
+    Height:=21*13+31; // 21 pixels per option
   end;
 
   // many, many checkboxes ...
@@ -3796,6 +3822,11 @@ begin
   inc(y,ChkBoxH);
 
   with PersistentCaretCheckBox do begin
+    SetBounds(x,y,ChkBoxW,Height);
+  end;
+  inc(y,ChkBoxH);
+
+  with RightMouseMovesCursorCheckBox do begin
     SetBounds(x,y,ChkBoxW,Height);
   end;
   inc(y,ChkBoxH);
@@ -3845,6 +3876,11 @@ begin
   inc(y,ChkBoxH);
 
   with TabsToSpacesCheckBox do begin
+    SetBounds(x,y,ChkBoxW,Height);
+  end;
+  inc(y,ChkBoxH);
+
+  with TabIndentCheckBox do begin
     SetBounds(x,y,ChkBoxW,Height);
   end;
   inc(y,ChkBoxH);
