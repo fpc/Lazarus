@@ -58,7 +58,6 @@ const
   LM_AssignSelf     = LM_ComUser+11;
   LM_SetName        = LM_ComUser+12;
   LM_RESIZECHILDREN = LM_ComUser+13;
-  LM_ShowHide       = LM_ComUser+14;
   LM_AddPage        = LM_ComUser+15;
   LM_GetLineCount   = LM_ComUser+16;
   LM_SETTEXT        = LM_ComUser+17;
@@ -872,7 +871,6 @@ begin
   LM_AssignSelf     :Result:='LM_AssignSelf';
   LM_SetName        :Result:='LM_SetName';
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
-  LM_ShowHide       :Result:='LM_ShowHide';
   LM_AddPage        :Result:='LM_AddPage';
   LM_GetLineCount   :Result:='LM_GetLineCount';
   LM_SETTEXT        :Result:='LM_SETTEXT';
@@ -1042,6 +1040,9 @@ end.
 
 {
   $Log$
+  Revision 1.76  2004/09/08 20:47:16  micha
+  convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
+
   Revision 1.75  2004/09/08 19:09:34  micha
   convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
 

@@ -3446,7 +3446,7 @@ begin
   SetProp(Handle,'Control',TControl(Self));
 
   DoSendBoundsToInterface;
-  CNSendMessage(LM_SHOWHIDE, Self, nil);
+  TWSWinControlClass(WidgetSetClass).ShowHide(Self);
 
   if [wcfColorChanged,wcfFontChanged]*FFLags<>[] 
   then begin
@@ -3887,7 +3887,7 @@ procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
   // ToDo: do not send this while loading, send it after loading.
   if HandleAllocated and ([csDestroying]*ComponentState=[])then
-    CNSendMessage(LM_ShowHide, Self, nil);
+    TWSWinControlClass(WidgetSetClass).ShowHide(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -3911,6 +3911,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.274  2004/09/08 20:47:16  micha
+  convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
+
   Revision 1.273  2004/09/08 19:09:34  micha
   convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
 

@@ -36,7 +36,7 @@ uses
 ////////////////////////////////////////////////////
   Controls,
 ////////////////////////////////////////////////////
-  Classes, LMessages,
+  Classes, LMessages, InterfaceBase,
   WSControls, WSLCLClasses;
 
 type
@@ -72,6 +72,8 @@ type
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSGraphicControl }
@@ -193,6 +195,12 @@ end;
 procedure TGtkWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
   UpdateWidgetStyleOfControl(AWinControl);
+end;
+
+procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
+begin
+  // other methods use ShowHide also, can't move code
+  TGtkWidgetSet(InterfaceObject).ShowHide(AWinControl);
 end;
 
 initialization

@@ -133,10 +133,6 @@ type
     procedure FreeAllStyles; virtual;
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
 
-    // show, hide and invalidate
-    procedure ReDraw(Child : Pointer);virtual;
-    procedure ShowHide(Sender : TObject);virtual;
-
     // create and destroy
     function CreateComboBox(ComboBoxObject: TObject): Pointer;
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
@@ -295,6 +291,10 @@ type
                                 NewWidth, NewHeight: integer); virtual;
     procedure FinishComponentCreate(const ALCLObject: TObject;
               const AGTKObject: Pointer; const ASetupProps : Boolean); virtual;
+
+    // show, hide and invalidate
+    procedure ReDraw(Child : Pointer);virtual;
+    procedure ShowHide(Sender : TObject);virtual;
 
     // control functions for messages, callbacks
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
@@ -461,6 +461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.192  2004/09/08 20:47:17  micha
+  convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
+
   Revision 1.191  2004/09/08 19:09:34  micha
   convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
 

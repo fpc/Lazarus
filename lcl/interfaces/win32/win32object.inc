@@ -444,11 +444,6 @@ Begin
       SetPixel(Sender, Data);
     LM_GETPIXEL:
       GetPixel(Sender, Data);
-    LM_SHOWHIDE:
-    Begin
-      Assert(False, Format('Trace:  [TWin32WidgetSet.IntSendMessage3] %s --> Show/Hide', [Sender.ClassName]));
-      ShowHide(Sender);
-    End;
     LM_SETLABEL:
       SetLabel(Sender, Data);
     LM_GETVALUE:
@@ -2965,6 +2960,9 @@ End;
 
 {
   $Log$
+  Revision 1.235  2004/09/08 20:47:17  micha
+  convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
+
   Revision 1.234  2004/09/08 19:09:34  micha
   convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
 

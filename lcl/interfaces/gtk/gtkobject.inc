@@ -3127,12 +3127,6 @@ begin
 
   LM_GETPixel : GetPixel(Sender,Data);
 
-  LM_ShowHide :
-    begin
-      //DebugLn('LM_ShowHide');
-      ShowHide(Sender);
-    end;
-
   LM_SetLabel  : SetLabel(Sender,Data);
 
   LM_GETVALUE  : Result := GetValue(Sender, data);
@@ -9143,6 +9137,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.542  2004/09/08 20:47:17  micha
+  convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
+
   Revision 1.541  2004/09/08 19:09:34  micha
   convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
 

@@ -138,7 +138,6 @@ Type
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
 
-    Procedure ShowHide(Sender: TObject);
     procedure ChangeActivePage(const Data: TLMNotebookEvent);
     procedure AddAllNBPages(Notebook: TCustomNotebook);
     procedure RemoveAllNBPages(Notebook: TCustomNotebook);
@@ -185,6 +184,7 @@ Type
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
+    procedure ShowHide(Sender: TObject);
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
     Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
@@ -283,6 +283,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2004/09/08 20:47:17  micha
+  convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
+
   Revision 1.98  2004/09/08 19:09:34  micha
   convert LM_SETCOLOR message to new intf method TWSWinControl.SetColor
 
