@@ -247,6 +247,8 @@ begin
     Name:='FImageCtrl';
     Parent:=FPictureGroupBox;
     Align:=alClient;
+    Center:=true;
+    Proportional:=true;
   end;
 end;
 

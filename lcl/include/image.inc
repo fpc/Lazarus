@@ -83,6 +83,13 @@ begin
   PictureChanged(Self);
 end;
 
+procedure TImage.SetProportional(const AValue: Boolean);
+begin
+  if FProportional=AValue then exit;
+  FProportional:=AValue;
+  PictureChanged(Self);
+end;
+
 Procedure TImage.PictureChanged(Sender : TObject);
 begin
   If AutoSize then begin
@@ -90,6 +97,43 @@ begin
     SetAutoSize(True);
   end;
   Invalidate;
+end;
+
+function TImage.DestRect: TRect;
+var
+  PicWidth: Integer;
+  PicHeight: Integer;
+  ImgWidth: Integer;
+  ImgHeight: Integer;
+  w: Integer;
+  h: Integer;
+begin
+  PicWidth := Picture.Width;
+  PicHeight := Picture.Height;
+  ImgWidth := ClientWidth;
+  ImgHeight := ClientHeight;
+  if Stretch or (Proportional
+  and ((PicWidth > ImgWidth) or (PicHeight > ImgHeight))) then begin
+    if Proportional and (PicWidth > 0) and (PicHeight > 0) then begin
+      w:=ImgWidth;
+      h:=round(PicHeight*(w/PicWidth));
+      if h>ImgHeight then begin
+        h:=ImgHeight;
+        w:=round(PicWidth*(h/PicHeight));
+      end;
+      PicWidth:=w;
+      PicHeight:=h;
+    end
+    else begin
+      PicWidth := ImgWidth;
+      PicHeight := ImgHeight;
+    end;
+  end;
+
+  Result:=Rect(0,0,PicWidth,PicHeight);
+
+  if Center then
+    OffsetRect(Result,(ImgWidth-PicWidth) div 2,(ImgHeight-PicHeight) div 2);
 end;
 
 Procedure TImage.Paint;
@@ -120,17 +164,8 @@ begin
     DrawFrame;
     If Picture.Graphic = nil then
       exit;
-    If Stretch then
-      iRect := Rect(0, 0, Width + 1, Height + 1)
-    else begin
-      iRect := Rect(0,0, Picture.Width, Picture.Height);
-      If Center then
-        OffsetRect(iRect,
-          (Width + 1) div 2 - (iRect.Right - iRect.Left) div 2,
-          (Height + 1) div 2 - (iRect.Bottom -iRect.Top) div 2);
-    end;
-    If Picture.Graphic.Transparent and not Transparent then
-    begin
+    iRect:=DestRect;
+    If Picture.Graphic.Transparent and not Transparent then begin
       If Picture.Graphic is TBitmap then
         Brush.Color := TBitmap(Picture.Graphic).TransparentColor
       else

@@ -349,15 +349,18 @@ type
   TImage = class(TGraphicControl)
   private
     FPicture: TPicture;
-    FCenter,
-    FTransparent,
-    FStretch : Boolean;
+    FCenter: Boolean;
+    FProportional: Boolean;
+    FTransparent: Boolean;
+    FStretch: Boolean;
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(Value : Boolean);
+    procedure SetProportional(const AValue: Boolean);
     procedure SetStretch(Value : Boolean);
     procedure SetTransparent(Value : Boolean);
     procedure PictureChanged(SEnder : TObject);
   protected
+    function DestRect: TRect; virtual;
     procedure DoAutoSize; Override;
     Procedure Paint; Override;
   public
@@ -376,6 +379,7 @@ type
     property OnMouseUp;
     property Stretch: Boolean read FStretch write SetStretch;
     property Transparent: Boolean read FTransparent write SetTransparent;
+    property Proportional: Boolean read FProportional write SetProportional default false;
   end;
 
 
@@ -752,6 +756,9 @@ end.
 
  {
   $Log$
+  Revision 1.70  2003/09/03 08:53:39  mattias
+  implemented TImage.Proportional
+
   Revision 1.69  2003/08/26 14:33:40  mattias
   implemented component tree for OI
 
