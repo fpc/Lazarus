@@ -71,7 +71,8 @@ type
 
   TParticleEngine = class
     //x, y, z: GLfloat;
-    Particle: array [1..500] of TParticle;
+    xspawn: GLfloat;
+    Particle: array [1..501] of TParticle;
     procedure MoveParticles;
     procedure DrawParticles;
     //procedure Init;
@@ -87,13 +88,15 @@ var AnExampleForm: TExampleForm;
     front, left1: GLuint;
     rx, ry, rz, rrx, rry, rrz: single;
     LightAmbient : array [0..3] of GLfloat;
-    checked, blended, MoveCube, MoveBackground: boolean;
+    checked, blended, lighted, ParticleBlended, MoveCube, MoveBackground: boolean;
     textures       : array [0..2] of GLuint;    // Storage For 3 Textures
     MyglTextures   : array [0..2] of TglTexture;
-    lightamb, lightdif, lightpos, light2pos, light2dif, light3pos, light3dif, light4pos, light4dif, fogcolor: array [0..3] of GLfloat;
+    lightamb, lightdif, lightpos, light2pos, light2dif, 
+    light3pos, light3dif, light4pos, light4dif, fogcolor: array [0..3] of GLfloat;
     ParticleEngine: TParticleEngine;
-    drops: GLuint;
-    
+    ParticleList, CubeList, BackList: GLuint;
+
+var direction: boolean;
 
 
 implementation
@@ -117,7 +120,8 @@ begin
   end;  
 end;
 
-function LoadglTexImage2DFromBitmapFile(Filename:string; var Image:TglTexture): boolean;
+function LoadglTexImage2DFromBitmapFile(Filename:string; 
+  var Image:TglTexture): boolean;
 type
   TBITMAPFILEHEADER = packed record
     bfType: Word;
@@ -177,7 +181,10 @@ var
 begin
   Result:=false;
   MemStream:=LoadFileToMemStream(Filename);
-  if MemStream=nil then exit;
+  if MemStream=nil then begin
+    writeln('Unable to load "',Filename,'"');
+    exit;
+  end;
   try
     if (MemStream.Read(BmpHead, sizeof(BmpHead))<sizeof(BmpHead))
     or (BmpHead.bfType <> $4D42) then begin
@@ -216,16 +223,14 @@ begin
       try
         for i:=0 to PixelCount-1 do begin
           MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));
-          {$IFOPT R+}{$DEFINE RangeCheck}{$ENDIF}
+          {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
           {$R-}
           with PRawImage(Image.Data)^ do begin
             p[i*3+0]:=AnRGBQuad.rgbRed;
             p[i*3+1]:=AnRGBQuad.rgbGreen;
             p[i*3+2]:=AnRGBQuad.rgbBlue;
           end;
-          {$IFDEF RangeCheck}
-          {$R+}
-          {$ENDIF}
+          {$IFDEF RangeCheckOn}{$R+}{$ELSE}{$R-}{$ENDIF}
         end;
       except
         writeln('Error converting bitmap');
@@ -254,6 +259,7 @@ begin
     Application.OnIdle:=@IdleFunc;
     OnResize:=@FormResize;
     blended:=false;
+    lighted:=false;
     ParticleEngine:=TParticleEngine.Create;
     
     ExitButton1:=TButton.Create(Self);
@@ -324,7 +330,7 @@ begin
       Name:='RotateZButton2';
       Parent:=Self;
       SetBounds(320,10,80,25);
-      Caption:='Rotate Z -';
+      Caption:='P. Blending';
       Checked:=false;
       OnClick:=@RotateZButton2Click;
       Visible:=true;
@@ -340,7 +346,7 @@ begin
     end;
     
     Resize;
-
+    
     AreaInitialized:=false;
     GTKGLAreaControl1:=TGTKGLAreaControl.Create(Self);
     with GTKGLAreaControl1 do begin
@@ -362,7 +368,8 @@ end;
 constructor TParticleEngine.Create;
 var i: integer; 
 begin
-  for i:=1 to 500 do Particle[i]:=TParticle.Create;
+  for i:=1 to 501 do Particle[i]:=TParticle.Create;
+  xspawn:=0;
 end;
 
 procedure TParticleEngine.DrawParticles;
@@ -370,9 +377,9 @@ var i: integer;
 begin
   //if blended then glEnable(GL_DEPTH_TEST) else glEnable(GL_BLEND);
   glBindTexture(GL_TEXTURE_2D, textures[0]);
-  for i:=1 to 500 do begin
+  for i:=1 to 501 do begin
     glTranslatef(Particle[i].x, Particle[i].y, Particle[i].z);
-    glCallList(drops);
+    glCallList(ParticleList);
     {glBegin(GL_TRIANGLE_STRIP);
       glNormal3f( 0.0, 0.0, 1.0);
       glTexCoord2f( 1.0, 1.0);     glVertex3f(Particle[i].x+0.03, Particle[i].y+0.03, Particle[i].z);
@@ -387,24 +394,27 @@ end;
 
 procedure TParticleEngine.RespawnParticle(i: integer);
 begin
-  Particle[i].x:=0;
-  Particle[i].y:=0;
+  {if (xspawn>2) and (direction=true) then direction:=false;
+  if (xspawn<-2) and (direction=false) then direction:=true;
+  if direction then xspawn:=xspawn+0.005 else xspawn:=xspawn-0.005;}
+  Particle[i].x:=xspawn;
+  Particle[i].y:=-0.5;
   Particle[i].z:=0;
-  Particle[i].vx:=-0.0025+random(1000)/200000;
-  Particle[i].vy:=0.02+random(750)/100000;
-  Particle[i].vz:=-0.0025+random(1000)/200000;
-  Particle[i].life:=random(10000)/2500+0.75;
+  Particle[i].vx:=-0.005+random(2000)/200000;
+  Particle[i].vy:=0.03+random(750)/100000;
+  Particle[i].vz:=-0.005+random(2000)/200000;
+  Particle[i].life:=random(1250)/1000+1;
 end;
 
 procedure TParticleEngine.MoveParticles;
 var i: integer;
 begin
-  for i:=1 to 500 do begin
+  for i:=1 to 501 do begin
     if Particle[i].life>0 then begin
       Particle[i].life:=Particle[i].life-0.01;
       Particle[i].x:=Particle[i].x+Particle[i].vx;
       
-      Particle[i].vy:=Particle[i].vy-0.0002; // gravity
+      Particle[i].vy:=Particle[i].vy-0.00035; // gravity
       Particle[i].y:=Particle[i].y+Particle[i].vy;
       
       Particle[i].z:=Particle[i].z+Particle[i].vz;
@@ -417,7 +427,7 @@ end;
 procedure TParticleEngine.Start;
 var i: integer;
 begin
-  for i:=1 to 500 do begin
+  for i:=1 to 501 do begin
     RespawnParticle(i);
   end;
 end;
@@ -437,27 +447,23 @@ end;}
 procedure TExampleForm.IdleFunc(Sender: TObject; var Done: Boolean);
 begin
   GTKGLAreaControl1Paint(Self);
-  Done:=false; // don't wait, come back as fast as possible
+  Done:=false; // tell lcl to handle messages and return immediatly
 end;
+
+// --------------------------------------------------------------------------
+//                                 Buttons
+// --------------------------------------------------------------------------
 
 procedure TExampleForm.LightingButton1Click(Sender: TObject);
 begin
-  if glIsEnabled(GL_LIGHTING)=GL_TRUE then glDisable(GL_LIGHTING) else glEnable(GL_LIGHTING);
+  if lighted then glDisable(GL_LIGHTING) else glEnable(GL_LIGHTING);
+  lighted:=not lighted;
   GTKGLAreaControl1Paint(Self);
 end;
 
 procedure TExampleForm.BlendButton1Click(Sender: TObject);
 begin
-  if glIsEnabled(GL_BLEND)=GL_TRUE then begin
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    blended:=true;
-  end
-  else begin
-    glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
-    blended:=false;
-  end;  
+  blended:=not blended;
   GTKGLAreaControl1Paint(Self);
 end;
 
@@ -479,28 +485,28 @@ begin
 end;
 
 procedure TExampleForm.RotateZButton2Click(Sender: TObject);
-var i: integer;
 begin
-  for i:=1 to 300 do begin
-    rz:=rz-0.05;
-    GTKGLAreaControl1Paint(Self);
-    glFlush;
-  end;
+  ParticleBlended:=not ParticleBlended;
+  GTKGLAreaControl1Paint(Self);
 end;
+
+// ---------------------------------------------------------------------------
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ---------------------------------------------------------------------------
 
 procedure TExampleForm.FormResize(Sender: TObject);
 begin
-  //GTKGLAreaControl1.Width:=AnExampleForm.Width-100;
-  //GTKGLAreaControl1.Height:=AnExampleForm.Height-100;
+  //GTKGLAreaControl1.Width:=Width-100;
+  //GTKGLAreaControl1.Height:=Height-100;
   if GTKGLAreaControl1<>nil then
     GTKGLAreaControl1.SetBounds(10, 30, Width-120, Height-40);
   ExitButton1.SetBounds(Width-90, 5, 80, 25);
-  LightingButton1.SetBounds(Width-90, 50, 80, 25);
-  BlendButton1.SetBounds(Width-90, 80, 80, 25);
-  MoveCubeButton1.SetBounds(Width-90, 115, 80, 25);
-  MoveBackgroundButton1.SetBounds(Width-90, 145, 80, 25);
-  RotateZButton1.SetBounds(Width-90, 180, 80, 25);
-  RotateZButton2.SetBounds(Width-90, 215, 80, 25);
+  LightingButton1.SetBounds(Width-90, 180, 80, 25);
+  BlendButton1.SetBounds(Width-90, 210, 80, 25);
+  MoveCubeButton1.SetBounds(Width-90, 50, 80, 25);
+  MoveBackgroundButton1.SetBounds(Width-90, 80, 80, 25);
+  RotateZButton1.SetBounds(Width-90, 115, 80, 25);
+  RotateZButton2.SetBounds(Width-90, 145, 80, 25);
   HintLabel1.SetBounds(10, 0, 80, 25);
   //writeln('Form: ',ExitButton1.Width);
   //writeln('GTKGLarea: ',GTKGLareaControl1.Height);
@@ -520,9 +526,9 @@ procedure TExampleForm.GTKGLAreaControl1Paint(Sender: TObject);
     //xrotspeed:=0; yrotspeed:=0; zrotspeed:=0;
     {init lighting variables}
     {ambient color}
-    lightamb[0]:=0.6;
-    lightamb[1]:=0.6;
-    lightamb[2]:=0.6;
+    lightamb[0]:=0.5;
+    lightamb[1]:=0.5;
+    lightamb[2]:=0.5;
     lightamb[3]:=1.0;
     {diffuse color}
     lightdif[0]:=0.8;
@@ -588,15 +594,12 @@ begin
     MyglTextures[i]:=TglTexture.Create;
   end;
   {loading the texture and setting its parameters}
-  if not LoadglTexImage2DFromBitmapFile('data/texture1.bmp',MyglTextures[0]) then begin
+  if not LoadglTexImage2DFromBitmapFile('data/particle.bmp',MyglTextures[0]) then 
     Halt;
-  end;
-  if not LoadglTexImage2DFromBitmapFile('data/texture2.bmp',MyglTextures[1]) then begin
+  if not LoadglTexImage2DFromBitmapFile('data/texture2.bmp',MyglTextures[1]) then
     Halt;
-  end;
-  if not LoadglTexImage2DFromBitmapFile('data/texture3.bmp',MyglTextures[2]) then begin
+  if not LoadglTexImage2DFromBitmapFile('data/texture3.bmp',MyglTextures[2]) then
     Halt;
-  end;  
   glGenTextures(3, textures[0]);
   for i:=0 to 2 do begin
     glBindTexture(GL_TEXTURE_2D, Textures[i]);
@@ -620,7 +623,8 @@ begin
   glColor4f(1.0,1.0,1.0,0.5);			// Full Brightness, 50% Alpha ( NEW )
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   //glDisable(GL_DEPTH_TEST);
-  glLightModelf(GL_LIGHT_MODEL_AMBIENT, 1.0);
+  //glLightModelf(GL_LIGHT_MODEL_AMBIENT, 1.0);
+  glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
   {fog}
   glFogi(GL_FOG_MODE,GL_LINEAR);	  // Fog Mode
   glFogfv(GL_FOG_COLOR,fogColor);	  // Set Fog Color
@@ -635,9 +639,10 @@ begin
   glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);    
   //glEnable(GL_LIGHTING);
   
-  // creating display list for particles
-  drops:=glGenLists(1);
-  glNewList(drops, GL_COMPILE);
+  // creating display lists
+  
+  ParticleList:=glGenLists(3);
+  glNewList(ParticleList, GL_COMPILE);
     glBegin(GL_TRIANGLE_STRIP);
       glNormal3f( 0.0, 0.0, 1.0);
       glTexCoord2f( 1.0, 1.0);     glVertex3f(+0.025, +0.025, 0);
@@ -647,45 +652,8 @@ begin
     glEnd;
   glEndList;
   
-end;
-
-begin
-  if (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.Widget)) then
-  begin
-    if not AreaInitialized then begin
-      myInit;
-      InitGL;
-      glMatrixMode (GL_PROJECTION);    { prepare for and then } 
-      glLoadIdentity ();               { define the projection }
-      glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 20.0); { transformation } 
-      glMatrixMode (GL_MODELVIEW);  { back to modelview matrix }
-      glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);      { define the viewport }
-      AreaInitialized:=true;
-    end;
-    
-    ParticleEngine.MoveParticles;
-    
-    glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity;             { clear the matrix }
-    glTranslatef (0.0, 0.0,-2.5); { viewing transformation }
-    glScalef (1.0, 1.0, 1.0);      { modeling transformation }
-    {rotate}
-
-    //yrot:=yrot+yrotspeed;
-    //zrot:=zrot+zrotspeed;
-    
-    glPushMatrix;
-
-    if MoveBackground then begin
-      rrx:=rrx-0.5;
-      rry:=rry-0.25;
-      rrz:=rrz-0.4;
-    end;
-    
-    glRotatef(rrx,1.0,0.0,0.0);
-    glRotatef(rry,0.0,1.0,0.0);
-    glRotatef(rrz,0.0,0.0,1.0);
-
+  BackList:=ParticleList+1;
+  glNewList(BackList, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, textures[2]);
     glBegin(GL_QUADS);
       glNormal3f( 0.0, 0.0, 1.0);
@@ -727,23 +695,10 @@ begin
       glTexCoord2f( 1.0, 0.0);     glVertex3f(-2.5,-2.5, 2.5);
  
     glEnd;
-    
-    glRotatef(-rrz,0.0,0.0,1.0);
-    glRotatef(-rry,0.0,1.0,0.0);
-    glRotatef(-rrx,1.0,0.0,0.0);
-       
-    glPushMatrix;
-
-    if MoveCube then begin
-      rx:=rx+0.5;
-      ry:=ry+0.25;
-      rz:=rz+0.8;
-    end;
-    
-    glRotatef(rx,1.0,0.0,0.0);
-    glRotatef(ry,0.0,1.0,0.0);
-    glRotatef(rz,0.0,0.0,1.0);
-    
+  glEndList;
+  
+  CubeList:=BackList+1;
+  glNewList(CubeList, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, textures[1]);
     glBegin(GL_QUADS);
       {Front Face}
@@ -790,26 +745,96 @@ begin
       glTexCoord2f( 0.0, 0.0);     glVertex3f( 0.5,-0.5, 0.5);
       glTexCoord2f( 1.0, 0.0);     glVertex3f(-0.5,-0.5, 0.5);
     glEnd;
+  glEndList;
+  
+end;
+
+begin
+  if (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.Widget)) then
+  begin
+    if not AreaInitialized then begin
+      myInit;
+      InitGL;
+      glMatrixMode (GL_PROJECTION);    { prepare for and then } 
+      glLoadIdentity ();               { define the projection }
+      glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 20.0); { transformation } 
+      glMatrixMode (GL_MODELVIEW);  { back to modelview matrix }
+      glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);      { define the viewport }
+      AreaInitialized:=true;
+    end;
     
+    ParticleEngine.MoveParticles;
+    
+    glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity;             { clear the matrix }
+    glTranslatef (0.0, 0.0,-2.5);  // -2.5); { viewing transformation }
+    glScalef (1.0, 1.0, 1.0);      { modeling transformation }
+    {rotate}
+
+    //yrot:=yrot+yrotspeed;
+    //zrot:=zrot+zrotspeed;
+    
+    glPushMatrix;
+
+    if MoveBackground then begin
+      rrx:=rrx-0.6;
+      rry:=rry-0.5;
+      rrz:=rrz-0.3;
+    end;
+    
+    glRotatef(rrx,1.0,0.0,0.0);
+    glRotatef(rry,0.0,1.0,0.0);
+    glRotatef(rrz,0.0,0.0,1.0);
+
+    // draw background
+    if blended then begin
+      glEnable(GL_BLEND);
+      glDisable(GL_DEPTH_TEST);
+    end;
+    glCallList(BackList);    
+    
+    glPopMatrix;
+    
+    {glRotatef(-rrz,0.0,0.0,1.0);
+    glRotatef(-rry,0.0,1.0,0.0);
+    glRotatef(-rrx,1.0,0.0,0.0);}
+       
+    glPushMatrix;
+
+    if MoveCube then begin
+      rx:=rx+0.5;
+      ry:=ry+0.25;
+      rz:=rz+0.8;
+    end;
+    
+    glRotatef(rx,1.0,0.0,0.0);
+    glRotatef(ry,0.0,1.0,0.0);
+    glRotatef(rz,0.0,0.0,1.0);
+    
+    // draw cube
+    
+    
+    glCallList(CubeList);
+    if blended then begin
+      glDisable(GL_BLEND);
+      glEnable(GL_DEPTH_TEST);
+    end;
     // draw particles here for dynamic particle system
     
     //ParticleEngine.DrawParticles;
     
-    glRotatef(-rz,0.0,0.0,1.0);
-    glRotatef(-ry,0.0,1.0,0.0);
-    glRotatef(-rx,1.0,0.0,0.0);
+    glPopMatrix;
     
-    glpushMatrix;
+    {glRotatef(-rz,0.0,0.0,1.0);
+    glRotatef(-ry,0.0,1.0,0.0);
+    glRotatef(-rx,1.0,0.0,0.0);}
     
     // draw particles here for static particle system
-    
+    if ParticleBlended then glEnable(GL_BLEND);
     ParticleEngine.DrawParticles;
-        
-    glPopMatrix;
-    glPopMatrix;
-    glPopMatrix;
-    glFlush;
-        
+    if ParticleBlended then glDisable(GL_BLEND);    
+    //glFlush;
+    glFinish;    
     // Swap backbuffer to front
     gtk_gl_area_swap_buffers(PGtkGLArea(GTKGLAreaControl1.Widget));
   end;
@@ -821,7 +846,7 @@ begin
     {glViewport(0, 0, PGtkWidget(GTKGLAreaControl1.Widget)^.allocation.width,
       PGtkWidget(GTKGLAreaControl1.Widget)^.allocation.height);}
     glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);  
-  end;
-  
-  
+end;
+
+
 end.

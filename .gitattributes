@@ -13,6 +13,7 @@ components/codetools/linkscanner.pas svneol=native#text/pascal
 components/codetools/memcheck.pas svneol=native#text/pascal
 components/codetools/sourcechanger.pas svneol=native#text/pascal
 components/codetools/sourcelog.pas svneol=native#text/pascal
+components/gtk/gtkglarea/data/particle.bmp -text svneol=native#image/bmp
 components/gtk/gtkglarea/data/texture1.bmp -text svneol=native#image/bmp
 components/gtk/gtkglarea/data/texture2.bmp -text svneol=native#image/bmp
 components/gtk/gtkglarea/data/texture3.bmp -text svneol=native#image/bmp
