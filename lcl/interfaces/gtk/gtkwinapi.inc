@@ -757,7 +757,8 @@ end;
 
   Creates a bitmap from raw pixmap data.
  ------------------------------------------------------------------------------}
-function TgtkObject.CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
+function TgtkObject.CreatePixmapIndirect(const Data: Pointer;
+  const TransColor: Longint): HBITMAP;
 var
   GdiObject: PGdiObject;
   GDKColor: TGDKCOlor;
@@ -771,7 +772,8 @@ begin
     p := @GDKColor;
   end
   else p := nil;
-  GdiObject^.GDIBitmapObject := gdk_pixmap_colormap_create_from_xpm_d(nil, gdk_colormap_get_system, @(GdiObject^.GDIBitmapMaskObject), p, data);
+  GdiObject^.GDIBitmapObject := gdk_pixmap_colormap_create_from_xpm_d(nil,
+           gdk_colormap_get_system, @(GdiObject^.GDIBitmapMaskObject), p, data);
   Result := HBITMAP(GdiObject);
 end;
 
@@ -2227,25 +2229,25 @@ end;
  ------------------------------------------------------------------------------}
 function TGTKObject.KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
 var
-   n : integer;
-   p : PGtkITimerinfo;
+  n : integer;
+  p : PGtkITimerinfo;
 begin
-   Assert(False, 'Trace:removing timer!!!');
-   n := FTimerData.Count;
-   while (n > 0) do
-   begin
-     dec (n);
-     p := PGtkITimerinfo (FTimerData.Items[n]);
-     if ((pointer (hWnd) <> nil) and (hWnd = p^.Handle)) or
-        ((pointer(hWnd) = nil)  and (uIDEvent = p^.IDEvent)) then
-     begin
-        gtk_timeout_remove (uIDEvent);
-        FTimerData.Delete (n);
-        pointer (p^.Handle) := nil;     // mark as invalid
-        p^.TimerFunc        := nil;
-//        Dispose (p);                  // this will be done in gtkTimerCB!
-     end;
-   end;
+  Assert(False, 'Trace:removing timer!!!');
+  n := FTimerData.Count;
+  while (n > 0) do begin
+    dec (n);
+    p := PGtkITimerinfo (FTimerData.Items[n]);
+    if ((pointer (hWnd) <> nil) and (hWnd = p^.Handle)) or
+      ((pointer(hWnd) = nil)  and (uIDEvent = p^.IDEvent)) then
+    begin
+      gtk_timeout_remove (uIDEvent);
+      FTimerData.Delete (n);
+      pointer (p^.Handle) := nil;     // mark as invalid
+      p^.TimerFunc        := nil;
+//      Dispose (p);                  // this will be done in gtkTimerCB!
+    end;
+  end;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -3405,30 +3407,34 @@ end;
   Sizing is done according to the stretching mode currently set in the 
   destination device context.
  ------------------------------------------------------------------------------}
-function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
+function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 var
   pixmap : PgdkPixmap;
   pixmapwid : pgtkWidget;
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
-  if Result
-  then begin
+  if Result then begin
     gdk_gc_set_function(PDeviceContext(DestDC)^.GC, GDK_COPY);
     // TODO: Add scaling and ROP
     //first create a pixmap with transparency
-{  THIS is test code for transparency
-    pixmap := pgdkPixmap(PgdiObject(Srcdc)^.GDIBitmapObject);
-    if PgdiObject(SRCdc)^.GDIBitmapMaskObject <> nil then
-    pixmapwid := gtk_pixmap_new(pixmap,PgdiObject(SRCdc)^.GDIBitmapMAskObject);
+    if PgdiObject(SRCdc)^.GDIBitmapMaskObject <> nil then begin
+//  THIS is test code for transparency
+{      pixmap := pgdkPixmap(PgdiObject(Srcdc)^.GDIBitmapObject);
+      pixmapwid := gtk_pixmap_new(pixmap,PgdiObject(SRCdc)^.GDIBitmapMAskObject);
 
-    gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC, PgdkDrawable(pixmapwid^.window),
-      XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
-}
-
-    gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
-      XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
-
+      gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,PDeviceContext(DestDC)^.GC,
+        PgdkDrawable(pixmapwid^.window),
+        XSrc, YSrc, X, Y, SrcWidth, SrcHeight);}
+      gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
+        PDeviceContext(SrcDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
+        XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
+    end else begin
+      gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
+        PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
+        XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
+    end;
   end;
   Assert(True, Format('trace:< [TgtkObject.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 end;
@@ -3514,7 +3520,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2001/06/06 12:30:41  lazarus
+  MG: bugfixes
+
   Revision 1.33  2001/04/13 13:22:23  lazarus
+
        Made fix to buttonglyph to use the correct size of single glyph
        Made fix to StretchBlt to use the correct height and width
        Both of these corrected the Win32 Speedbutton problem        MAH

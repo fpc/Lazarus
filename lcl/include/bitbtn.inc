@@ -25,39 +25,38 @@ Begin
   inherited Destroy;
 end;
 
-
-
 Procedure TBitBtn.Click;
 var
-Form : TCustomForm;
+  Form : TCustomForm;
 Begin
-    if FKind = bkClose then
-      Begin
-         Form := GetParentForm(Self);
-         if Form <> nil then Form.Close
-         else
-         inherited click;
-      end
-      else
-      inherited Click;
+  if FKind = bkClose then Begin
+    Form := GetParentForm(Self);
+    if Form <> nil then Form.Close
+    else
+      inherited click;
+  end
+  else
+    inherited Click;
 End;
 
 Function TBitbtn.GetGlyph : TBitmap;
 Begin
-Result := TButtonGlyph(FGlyph).Glyph;
+  Result := TButtonGlyph(FGlyph).Glyph;
 end;
 
 Function TBitBtn.IsCustom : Boolean;
 Begin
-Result := Kind = bkCustom;
+  Result := Kind = bkCustom;
 end;
 
 Procedure TBitbtn.SetGlyph(Value : TBitmap);
 Begin
-Assert(False, 'Trace:SETGLYPH');
-TButtonGlyph(FGlyph).Glyph := Value;
-CNSendMessage(LM_IMAGECHANGED,Self,nil);
-Invalidate;
+  Assert(False, 'Trace:SETGLYPH');
+  TButtonGlyph(FGlyph).Glyph := Value;
+  if HandleAllocated then begin
+    CNSendMessage(LM_IMAGECHANGED,Self,nil);
+    Invalidate;
+  end;
 end;
 
 Procedure TBitBtn.SetKind(Value : TBitBtnKind);

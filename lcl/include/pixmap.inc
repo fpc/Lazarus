@@ -25,7 +25,7 @@ begin
   FreeContext;
 
   // Convert a XPM filedata format to a XPM memory format
-  // by filling an array of PChar whith the contents between 
+  // by filling an array of PChar with the contents between 
   // the ""'s in the file 
 
   S := TStringList.Create;
@@ -35,34 +35,33 @@ begin
     BufPtr := Pointer(Buf);
     try
       for n := 0 to S.Count - 1 do
-      if S.Strings[n][1] = '"'
-      then begin
-        //Debug info
-        p := @S.Strings[n][2]; 
-        //---
-        BufPtr^ := @S.Strings[n][2];
-        P := StrScan(BufPtr^, '"');
-        if p <>  nil then p^ := #0;
-        Inc(BufPtr);
-      end;
-      if FTransparentColor = clNone 
-      then Handle := CreatePixmapIndirect(Buf, -1)
-      else Handle := CreatePixmapIndirect(Buf, ColorToRGB(FTransparentColor));
+        if (S[n]<>'') and (S[n][1] = '"') then begin
+          BufPtr^ := @S[n][2];
+          P := StrScan(BufPtr^, '"');
+          if p <> nil then p^ := #0;
+          Inc(BufPtr);
+        end;
+      if FTransparentColor = clNone then
+        // create an transparent pixmap (with mask)
+        Handle := CreatePixmapIndirect(Buf, -1)
+      else
+        // create an opaque pixmap.
+        // Transparent pixels are filled with FTransparentColor
+        Handle := CreatePixmapIndirect(Buf, ColorToRGB(FTransparentColor));
 
       //set width and height
-
       try
-        t := S.Strings[2];  //this line contains the width and height
+        t := S[2];  //this line contains the width and height
         //remove the initial quote
-        delete(t,1,1);
-        Delete(t,pos(' ',t),length(t));
-        Width := strtoint(t);
+        System.Delete(t,1,1);
+        System.Delete(t,pos(' ',t),length(t));
+        FWidth := StrToIntDef(t,1);
 
-        t := S.Strings[2];  //this line contains the width and height
-        delete(t,1,1);
-        Delete(t,1,pos(' ',t));
-        Delete(t,pos(' ',t),length(t));
-        Height := strtoint(t);
+        t := S[2];  //this line contains the width and height
+        System.Delete(t,1,1);
+        System.Delete(t,1,pos(' ',t));
+        System.Delete(t,pos(' ',t),length(t));
+        FHeight := StrToIntDef(t,1);
       except
       end;
 
@@ -77,6 +76,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/06/06 12:30:41  lazarus
+  MG: bugfixes
+
   Revision 1.8  2001/03/19 14:40:49  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

@@ -1187,7 +1187,7 @@ procedure TMainIDE.mnuOpenClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
   AFilename: string;
 begin
-  if Sender=itmFileOpen then begin
+  if (Sender=itmFileOpen) or (Sender=OpenFileSpeedBtn) then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
       OpenDialog.Title:='Open file';
@@ -3453,8 +3453,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.101  2001/06/05 16:48:18  lazarus
-  MG: added recent file sub menus
+  Revision 1.102  2001/06/06 12:30:40  lazarus
+  MG: bugfixes
 
   Revision 1.100  2001/06/05 10:27:50  lazarus
   MG: saving recent file lists

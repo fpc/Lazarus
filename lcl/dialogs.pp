@@ -29,7 +29,7 @@ Detailed description of the Unit.
 
 unit dialogs;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -203,6 +203,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/06/06 12:30:41  lazarus
+  MG: bugfixes
+
   Revision 1.5  2001/03/27 11:11:13  lazarus
   MG: fixed mouse msg, added filedialog initialdir
 

@@ -24,7 +24,7 @@
 
 unit Buttons;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 
 interface
@@ -235,6 +235,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/06/06 12:30:41  lazarus
+  MG: bugfixes
+
   Revision 1.7  2001/01/09 21:06:06  lazarus
   Started taking KeyDown messages in TDesigner
   Shane

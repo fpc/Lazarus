@@ -8,19 +8,13 @@
 
 constructor TButton.Create(AOwner: TComponent);
 begin
-
   Inherited Create(AOwner);
   {set the component style to csButton}
   fCompStyle := csButton;
-
   {set default alignment}
   Align := alNone;
-
   {setup default sizes}
-
-  SetBounds(1, 1, 50, 25);
-
-
+  SetBounds(1, 1, 75, 25);
 end;
 
 {------------------------------------------------------------------------------
@@ -47,7 +41,8 @@ begin
   if FDefault = Value then Exit;
 
   FDefault := Value;
-  CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
+  if HandleAllocated then
+    CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
 End;
 
 {------------------------------------------------------------------------------
@@ -102,6 +97,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/06/06 12:30:41  lazarus
+  MG: bugfixes
+
   Revision 1.2  2000/07/16 12:37:52  lazarus
    Added OnMouseEnter, OnMouseLeave property
    (code from christer, added by stoppok)
