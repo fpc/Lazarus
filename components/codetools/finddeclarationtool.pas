@@ -67,6 +67,7 @@ interface
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
+{$IFDEF ShowTriedContexts}{$DEFINE DebugPrefix}{$ENDIF}
 
 // new features
 { $DEFINE IgnoreErrorAfterCursor}
@@ -2890,11 +2891,12 @@ var
       +' internal error: unknown precedence lvl for operator '+GetAtom);
   end;
   
-var OldFlags: TFindDeclarationFlags;
+var
+  OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.FindExpressionResultType] ',
-  '"',copy(Src,StartPos,EndPos-StartPos),'"');
+  '"',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=CleanExpressionType;
   OldFlags:=Params.Flags;
@@ -3694,15 +3696,16 @@ var
         end else begin
           // it's a constructor -> keep the class
         end;
+        Params.Load(OldInput);
       end else begin
         // predefined identifier
+        Params.Load(OldInput);
         ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
                                                            Params);
       end;
 
       // ToDo: check if identifier in 'Protected' section
 
-      Params.Load(OldInput);
     end;
     ResolveBaseTypeOfIdentifier;
   end;
@@ -4169,6 +4172,8 @@ var EndPos, SubStartPos: integer;
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
   end;
 
+var
+  OldFlags: TFindDeclarationFlags;
 begin
   Result:=CleanExpressionType;
 
@@ -4184,8 +4189,10 @@ begin
     // read variable
     SubStartPos:=CurPos.StartPos;
     EndPos:=FindEndOfVariable(SubStartPos,false);
-    Params.Flags:=Params.Flags+[fdfFunctionResult]-[fdfIgnoreOverloadedProcs];
+    OldFlags:=Params.Flags;
+    Params.Flags:=(Params.Flags*fdfGlobals)+[fdfFunctionResult];
     Result:=FindExpressionTypeOfVariable(SubStartPos,EndPos,Params);
+    Params.Flags:=OldFlags;
     MoveCursorToCleanPos(EndPos);
   end
   else if UpAtomIs('NIL') then begin
@@ -4213,7 +4220,6 @@ begin
   end
   else if AtomIsChar('@') then begin
     // a simple pointer or an PChar or an event
-    Params.Flags:=Params.Flags-[fdfFunctionResult]+[fdfIgnoreOverloadedProcs];
     MoveCursorToCleanPos(CurPos.EndPos);
     Result:=ReadOperandTypeAtCursor(Params);
     if (Result.Desc=xtContext)
@@ -4249,9 +4255,9 @@ function TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier(
 var
   IdentPos: PChar;
   ParamList: TExprTypeList;
+  ParamNode: TCodeTreeNode;
 begin
   Result:=CleanExpressionType;
-  //Result.Desc:=PredefinedIdentToExprTypeDesc(@Src[StartPos]);
   IdentPos:=@Src[StartPos];
   Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos);
   case Result.Desc of
@@ -4272,14 +4278,27 @@ begin
       else if (CompareIdentifiers(IdentPos,'LOW')=0)
            or (CompareIdentifiers(IdentPos,'HIGH')=0) then
       begin
-        { examles:
-           Low(array)  has type of the array items
-           Low(enum)   has the same type as the enum
-           Low(set)    has type of the enums
+        { examples:
+           Low(ordinal type)  is the ordinal type
+           Low(array)         has type of the array items
+           Low(set)           has type of the enums
         }
-
+        if ParamList.Count<>1 then exit;
+        Result:=ParamList.Items[0];
+        if Result.Desc<>xtContext then exit;
+        ParamNode:=Result.Context.Node;
+        case ParamNode.Desc of
+        ctnEnumerationType:
+          // Low(enum)   has the type of the enum
+          if (ParamNode.Parent<>nil)
+          and (ParamNode.Parent.Desc=ctnTypeDefinition) then
+            Result.Context.Node:=ParamNode.Parent;
+        else
+          writeln('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
+        end;
       end;
     end;
+    
   xtString:
     begin
       // ToDo: ask scanner for shortstring, ansistring, widestring
@@ -4849,7 +4868,7 @@ var ExprType: TExpressionType;
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.CreateParamExprList] ',
-  '"',copy(Src,StartPos,40),'"');
+  '"',copy(Src,StartPos,40),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=TExprTypeList.Create;
   MoveCursorToCleanPos(StartPos);
@@ -5527,7 +5546,16 @@ begin
           Result:=GetIdentifier(
                        @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
 
-        else
+        ctnEnumerationType:
+          if (FindContext.Node.Parent<>nil)
+          and (FindContext.Node.Parent.Desc=ctnTypeDefinition)
+          then
+            Result:=GetIdentifier(
+                     @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
+
+        end;
+        
+        if Result='' then begin
           writeln('TCodeCompletionCodeTool.FindTermTypeAsString ContextNode=',
             FindContext.Node.DescAsString);
           RaiseTermNotSimple;
