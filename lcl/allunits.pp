@@ -25,13 +25,15 @@ unit AllUnits;
 interface
 
 uses
-  InterfaceBase, Interfaces,      LCLStrConsts, StringHashList,
-  Buttons,       Extctrls,        Registry,     VCLGlobals,   Calendar,
-  Clipbrd,       Filectrl,        Forms,        LCLLinux,     Spin,
-  Comctrls,      Graphics,        LMessages,    Stdctrls,     Arrow,
-  Controls,      Imglist,         Menus,        Toolwin,      Dialogs,
-  Messages,      UTrace,          DynHashArray, Clistbox,     Lazqueue,
-  ActnList,      GraphicsMath,    LCLMemManager;
+  InterfaceBase,  Interfaces,    LCLStrConsts,  Lazqueue,
+  StringHashList, DynHashArray,  LCLMemManager, ExtendedStrings,
+  Buttons,        Extctrls,      Registry,      VCLGlobals,
+  Calendar,       Clipbrd,       FileCtrl,      Forms,
+  LCLLinux,       Spin,          Comctrls,      Graphics,
+  LMessages,      Stdctrls,      Arrow,         Controls,
+  Imglist,        Menus,         Toolwin,       Dialogs,
+  Messages,       UTrace,        Clistbox,      ActnList,
+  GraphicsMath;
 
 implementation
 
@@ -40,6 +42,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/10/04 14:24:14  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.15  2002/09/11 15:04:49  lazarus
   MG: added stringhashlist.pas
 
