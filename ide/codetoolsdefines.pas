@@ -931,7 +931,7 @@ begin
     EndUpdate;
     if ShowModal=mrCancel then exit;
     LazTemplate:=Boss.DefinePool.CreateLazarusSrcTemplate(FileNames[0],
-                                     '$('+ExternalMacroStart+'LCLWidgetType)');
+                               '$('+ExternalMacroStart+'LCLWidgetType)','');
     if LazTemplate=nil then exit;
     LazTemplate.Name:='Lazarus Directory ('+FileNames[0]+')';
     InsertTemplate(LazTemplate);

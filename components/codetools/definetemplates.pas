@@ -61,8 +61,10 @@ const
   StdDefTemplFPC = 'Free Pascal Compiler';
   StdDefTemplFPCSrc = 'Free Pascal Sources';
   StdDefTemplLazarusSources = 'Lazarus Sources';
+  StdDefTemplLazarusSrcDir = 'Lazarus Source Directory';
+  StdDefTemplLazarusBuildOpts = 'Build options';
   StdDefTemplLCLProject = 'LCL Project';
-  
+
   // Standard macros
   DefinePathMacroName  = ExternalMacroStart+'DefinePath';
   UnitPathMacroName    = ExternalMacroStart+'UnitPath';
@@ -251,10 +253,14 @@ type
     procedure AddFirst(ADefineTemplate: TDefineTemplate);
     procedure Add(ADefineTemplate: TDefineTemplate);
     function  FindDefineTemplateByName(const AName: string;
-      OnlyRoots: boolean): TDefineTemplate;
+        OnlyRoots: boolean): TDefineTemplate;
+    procedure ReplaceRootSameName(const Name: string;
+        ADefineTemplate: TDefineTemplate);
     procedure ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
     procedure ReplaceRootSameNameAddFirst(ADefineTemplate: TDefineTemplate);
     procedure RemoveRootDefineTemplateByName(const AName: string);
+    procedure ReplaceChild(ParentTemplate, NewDefineTemplate: TDefineTemplate;
+        const ChildName: string);
     function  LoadFromXMLConfig(XMLConfig: TXMLConfig;
         const Path: string; Policy: TDefineTreeLoadPolicy;
         const NewNamePrefix: string): boolean;
@@ -269,13 +275,13 @@ type
     procedure RemoveProjectSpecificOnly;
     procedure RemoveProjectSpecificAndParents;
     procedure RemoveNonAutoCreated;
-    function GetUnitPathForDirectory(const Directory: string): string;
-    function GetIncludePathForDirectory(const Directory: string): string;
-    function GetSrcPathForDirectory(const Directory: string): string;
-    function GetPPUSrcPathForDirectory(const Directory: string): string;
-    function GetPPWSrcPathForDirectory(const Directory: string): string;
-    function GetDCUSrcPathForDirectory(const Directory: string): string;
-    function ReadValue(const DirDef: TDirectoryDefines;
+    function  GetUnitPathForDirectory(const Directory: string): string;
+    function  GetIncludePathForDirectory(const Directory: string): string;
+    function  GetSrcPathForDirectory(const Directory: string): string;
+    function  GetPPUSrcPathForDirectory(const Directory: string): string;
+    function  GetPPWSrcPathForDirectory(const Directory: string): string;
+    function  GetDCUSrcPathForDirectory(const Directory: string): string;
+    function  ReadValue(const DirDef: TDirectoryDefines;
         const PreValue, CurDefinePath: string): string;
     constructor Create;
     destructor Destroy; override;
@@ -305,7 +311,7 @@ type
         UnitSearchPath: string;
         UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
     function CreateLazarusSrcTemplate(
-        const LazarusSrcDir, WidgetType: string): TDefineTemplate;
+        const LazarusSrcDir, WidgetType, ExtraOptions: string): TDefineTemplate;
     function CreateLCLProjectTemplate(const LazarusSrcDir, WidgetType,
         ProjectDir: string): TDefineTemplate;
     function CreateDelphiSrcPath(DelphiVersion: integer;
@@ -317,6 +323,8 @@ type
     function CreateDelphiProjectTemplate(
         const ProjectDir, DelphiDirectory: string;
         DelphiVersion: integer): TDefineTemplate;
+    function CreateFPCCommandLineDefines(const Name,
+        CmdLine: string): TDefineTemplate;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -1707,6 +1715,28 @@ begin
     Result:=nil;
 end;
 
+procedure TDefineTree.ReplaceRootSameName(const Name: string;
+  ADefineTemplate: TDefineTemplate);
+// if there is a DefineTemplate with the same name then replace it
+// else add as last
+var OldDefineTemplate: TDefineTemplate;
+begin
+  if (Name='') then exit;
+  OldDefineTemplate:=FindDefineTemplateByName(Name,true);
+  if OldDefineTemplate<>nil then begin
+    if not OldDefineTemplate.IsEqual(ADefineTemplate,true,false) then begin
+      ClearCache;
+    end;
+    if ADefineTemplate<>nil then
+      ADefineTemplate.InsertBehind(OldDefineTemplate);
+    if OldDefineTemplate=FFirstDefineTemplate then
+      FFirstDefineTemplate:=FFirstDefineTemplate.Next;
+    OldDefineTemplate.Unbind;
+    OldDefineTemplate.Free;
+  end else
+    Add(ADefineTemplate);
+end;
+
 procedure TDefineTree.RemoveRootDefineTemplateByName(const AName: string);
 var ADefTempl: TDefineTemplate;
 begin
@@ -1719,24 +1749,34 @@ begin
   end;
 end;
 
-procedure TDefineTree.ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
+procedure TDefineTree.ReplaceChild(ParentTemplate,
+  NewDefineTemplate: TDefineTemplate; const ChildName: string);
 // if there is a DefineTemplate with the same name then replace it
 // else add as last
 var OldDefineTemplate: TDefineTemplate;
 begin
-  if (ADefineTemplate=nil) then exit;
-  OldDefineTemplate:=FindDefineTemplateByName(ADefineTemplate.Name,true);
+  if (ChildName='') or (ParentTemplate=nil) then exit;
+  OldDefineTemplate:=ParentTemplate.FindChildByName(ChildName);
   if OldDefineTemplate<>nil then begin
-    if not OldDefineTemplate.IsEqual(ADefineTemplate,true,false) then begin
+    if not OldDefineTemplate.IsEqual(NewDefineTemplate,true,false) then begin
       ClearCache;
     end;
-    ADefineTemplate.InsertBehind(OldDefineTemplate);
+    if NewDefineTemplate<>nil then
+      NewDefineTemplate.InsertBehind(OldDefineTemplate);
     if OldDefineTemplate=FFirstDefineTemplate then
       FFirstDefineTemplate:=FFirstDefineTemplate.Next;
     OldDefineTemplate.Unbind;
     OldDefineTemplate.Free;
-  end else
-    Add(ADefineTemplate);
+  end else begin
+    ClearCache;
+    ParentTemplate.AddChild(NewDefineTemplate);
+  end;
+end;
+
+procedure TDefineTree.ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
+begin
+  if (ADefineTemplate=nil) then exit;
+  ReplaceRootSameName(ADefineTemplate.Name,ADefineTemplate);
 end;
 
 procedure TDefineTree.ReplaceRootSameNameAddFirst(
@@ -2451,12 +2491,12 @@ begin
 end;
 
 function TDefinePool.CreateLazarusSrcTemplate(
-  const LazarusSrcDir, WidgetType: string): TDefineTemplate;
+  const LazarusSrcDir, WidgetType, ExtraOptions: string): TDefineTemplate;
 const
   ds: char = PathDelim;
 var
-  MainDir, DirTempl, SubDirTempl, IntfDirTemplate,
-  IfTemplate: TDefineTemplate;
+  MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate,
+  SubTempl: TDefineTemplate;
   TargetOS, SrcPath: string;
 begin
   Result:=nil;
@@ -2466,8 +2506,8 @@ begin
 
   // <LazarusSrcDir>
   MainDir:=TDefineTemplate.Create(
-    'Lazarus Source Directory',
-    ctsDefsForLazarusSources,'',LazarusSrcDir,da_Directory);
+    StdDefTemplLazarusSrcDir, ctsDefsForLazarusSources,'',LazarusSrcDir,
+    da_Directory);
   MainDir.AddChild(TDefineTemplate.Create(
     'LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
@@ -2630,6 +2670,13 @@ begin
   IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
     Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
     '..'+ds+'gtk;'+SrcPath,da_Define));
+    // if LCLWidgetType=gnome2
+    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=gnome2',
+      ctsIfLCLWidgetTypeEqualsGnome2,'',WidgetType+'=gnome2',da_If);
+      // then define gnome2
+      IfTemplate.AddChild(TDefineTemplate.Create('Define gnome2',
+        ctsDefineMacroGTK2,'gnome2','',da_Define));
+    IntfDirTemplate.AddChild(IfTemplate);
   SubDirTempl.AddChild(IntfDirTemplate);
 
   // lcl/interfaces/win32
@@ -2680,7 +2727,12 @@ begin
     +';'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
+  
+  // extra options
+  SubTempl:=CreateFPCCommandLineDefines(StdDefTemplLazarusBuildOpts,ExtraOptions);
+  MainDir.AddChild(SubTempl);
 
+  // put it all into a block
   if MainDir<>nil then begin
     Result:=TDefineTemplate.Create(StdDefTemplLazarusSources,
        ctsLazarusSources,'','',da_Block);
@@ -2801,6 +2853,58 @@ begin
       da_DefineRecurse));
 
   Result:=MainDirTempl;
+end;
+
+function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string
+  ): TDefineTemplate;
+  
+  function ReadNextParam(LastEndPos: integer;
+    var StartPos, EndPos: integer): boolean;
+  begin
+    StartPos:=LastEndPos;
+    while (StartPos<=length(CmdLine)) and (CmdLine[StartPos] in [' ',#9]) do
+      inc(StartPos);
+    EndPos:=StartPos;
+    while (EndPos<=length(CmdLine)) and (not (CmdLine[EndPos] in [' ',#9])) do
+      inc(EndPos);
+    Result:=StartPos<=length(CmdLine);
+  end;
+  
+  procedure AddDefine(const AName, ADescription, AVariable, AValue: string;
+    AnAction: TDefineAction);
+  var
+    NewTempl: TDefineTemplate;
+  begin
+    if AName='' then exit;
+    NewTempl:=TDefineTemplate.Create(AName, ADescription, AVariable, AValue,
+                                     AnAction);
+    if Result=nil then
+      Result:=TDefineTemplate.Create(Name,ctsCommandLineParameters,'','',
+                                     da_Block);
+    Result.AddChild(NewTempl);
+  end;
+  
+var
+  StartPos, EndPos: Integer;
+  s: string;
+begin
+  Result:=nil;
+  EndPos:=1;
+  while ReadNextParam(EndPos,StartPos,EndPos) do begin
+    if (StartPos<length(CmdLine)) and (CmdLine[StartPos]='-') then begin
+      // a parameter
+      case CmdLine[StartPos+1] of
+
+      'd':
+        begin
+          // define
+          s:=copy(CmdLine,StartPos+2,EndPos-StartPos-2);
+          AddDefine('Define '+s,ctsDefine+s,s,'',da_DefineRecurse);
+        end;
+
+      end;
+    end;
+  end;
 end;
 
 function TDefinePool.ConsistencyCheck: integer;

@@ -2269,7 +2269,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Parent:=FormEditMiscGroupBox;
       Top:=5;
       Left:=5;
-      Width:=Parent.ClientWidth-2*Left;
+      Width:=240;
       Caption:=dlgShowCaps;
     end;
 
@@ -2290,7 +2290,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Parent:=FormEditMiscGroupBox;
       Top:=ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5;
       Left:=ShowEditorHintsCheckBox.Left;
-      Width:=ShowEditorHintsCheckBox.Width;
+      Width:=ShowEditorHintsCheckBox.Width+100;
       Caption:=dlgAutoForm;
     end;
 

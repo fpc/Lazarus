@@ -176,7 +176,9 @@ ResourceString
   ctsWidgetDirectory = 'Widget Directory';
   ctsGtkIntfDirectory = 'gtk interface directory';
   ctsIfLCLWidgetTypeEqualsGtk2 = 'If LCLWidgetType=gtk2 then';
+  ctsIfLCLWidgetTypeEqualsGnome2 = 'If LCLWidgetType=gnome2 then';
   ctsDefineMacroGTK2 = 'Define macro gtk2';
+  ctsDefineMacroGnome2 = 'Define macro gnome2';
   ctsGtk2IntfDirectory = 'gtk2 interface directory';
   ctsGnomeIntfDirectory = 'gnome interface directory';
   ctsComponentsDirectory = 'Components Directory';
@@ -192,7 +194,9 @@ ResourceString
   ctsResetAllDefines = 'Reset all defines';
   ctsDefineMacroName = 'Define Macro %s';
   ctsNamedProject = '%s Project';
-  
+  ctsDefine = 'Define ';
+  ctsCommandLineParameters = 'Command line parameters';
+
   // eventcodetool
   ctsMethodTypeDefinitionNotFound = 'method type definition not found';
   ctsOldMethodNotFound = 'old method not found: %s';

@@ -510,6 +510,7 @@ type
     property CustomFormCount: Integer read GetCustomFormCount;
     property CustomForms[Index: Integer]: TCustomForm read GetCustomForms;
     property CustomFormsZOrdered[Index: Integer]: TCustomForm read GetCustomFormsZOrdered;
+    property FocusedForm: TCustomForm read FFocusedForm;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property Fonts : TStrings read GetFonts;
