@@ -1391,8 +1391,8 @@ begin
     Result:='';
 end;
 
-Procedure TSourceEditor.EditorMouseMoved(Sender : TObject; Shift : TShiftState; X,Y : Integer);
-var a:integer;
+Procedure TSourceEditor.EditorMouseMoved(Sender : TObject; 
+  Shift : TShiftState; X,Y : Integer);
 begin
 //  Writeln('MOuseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
