@@ -2102,9 +2102,11 @@ Begin
     csMemo:
     Begin
       Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a MEMO...');
-      Flags := Flags Or ES_AUTOHSCROLL Or ES_AUTOVSCROLL Or ES_MULTILINE;
-      If TMemo(Sender).ReadOnly Then
-        Flags := Flags Or ES_ReadOnly;
+      Flags := Flags Or ES_AUTOVSCROLL Or ES_MULTILINE;
+      If TCustomMemo(Sender).ReadOnly Then
+        Flags := Flags Or ES_READONLY;
+      If not TCustomMemo(Sender).WordWrap Then
+        Flags := Flags Or ES_AUTOHSCROLL;
       Case TCustomMemo(Sender).ScrollBars Of
         ssHorizontal:
           Flags := Flags Or WS_HSCROLL;
@@ -2841,6 +2843,9 @@ End;
 
 {
   $Log$
+  Revision 1.113  2003/09/24 20:43:27  mattias
+  fixed wordwrap from Micha
+
   Revision 1.112  2003/09/21 10:42:48  mattias
   implemented TBitBtn Text+Caption from Micha
 

@@ -88,6 +88,7 @@ Var
   R: TRect;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
   OwnerObject: TObject;
+  MsgObject: TObject;
   TheWinControl: TWinControl;
   WinProcess: Boolean;
   PrevWndProc: Pointer;
@@ -294,6 +295,18 @@ Begin
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_CREATE');
       LMessage.Msg := LM_CREATE;
+    End;
+    WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
+    Begin
+      MsgObject := TObject(GetProp(LParam, 'Lazarus'));
+      if MsgObject is TWinControl then
+      begin
+        Windows.SetTextColor(WParam, ColorToRGB(TWinControl(MsgObject).Font.Color));
+        Windows.SetBkColor(WParam, ColorToRGB(TWinControl(MsgObject).Brush.Color));
+        Result := TWinControl(MsgObject).Brush.Handle;
+        // Override default handling
+        WinProcess := false;
+      end;
     End;
     WM_COPY:
     Begin
@@ -762,6 +775,9 @@ end;
 
 {
   $Log$
+  Revision 1.60  2003/09/24 20:43:27  mattias
+  fixed wordwrap from Micha
+
   Revision 1.59  2003/09/21 10:42:48  mattias
   implemented TBitBtn Text+Caption from Micha
 
