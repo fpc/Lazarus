@@ -293,6 +293,7 @@ type
     procedure DoCreate;
     procedure DoDestroy;
     procedure IconChanged(Sender: TObject);
+    function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetBorderStyle(Value : TFormBorderStyle);
@@ -382,7 +383,7 @@ type
     property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
     property FormState : TFormState read FFormState;
     property HelpFile: string read FHelpFile write FHelpFile stored IsHelpFileStored;
-    property KeyPreview: Boolean read FKeyPreview write FKeyPreview;
+    property KeyPreview: Boolean read FKeyPreview write FKeyPreview stored IsKeyPreviewStored;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
     property Visible write SetVisible default False;
@@ -414,6 +415,7 @@ type
     property FormStyle;
     property HelpFile;
     property Icon;
+    property KeyPreview;
     property Menu;
     property OnActivate;
     property OnClose;

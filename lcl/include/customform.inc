@@ -182,6 +182,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomForm.IsKeyPreviewStored: boolean;
+ ------------------------------------------------------------------------------}
+function TCustomForm.IsKeyPreviewStored: boolean;
+begin
+  Result:=FKeyPreview=true;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomForm.SetIcon
   Params: the new icon
  ------------------------------------------------------------------------------}
@@ -1406,6 +1414,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2003/04/20 16:32:58  mattias
+  published keypreview
+
   Revision 1.96  2003/04/16 22:11:35  mattias
   fixed codetools Makefile, fixed default prop not found error
 

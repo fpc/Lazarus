@@ -590,6 +590,7 @@ end;
 procedure TProjectInspectorForm.UpdateButtons;
 var
   CurFile: TUnitInfo;
+  CurDependency: TPkgDependency;
 begin
   if (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifButtonsChanged);
@@ -599,8 +600,11 @@ begin
   if LazProject<>nil then begin
     AddBitBtn.Enabled:=true;
     CurFile:=GetSelectedFile;
-    RemoveBitBtn.Enabled:=(CurFile<>nil) and (CurFile<>LazProject.MainUnitInfo);
-    OpenBitBtn.Enabled:=(CurFile<>nil);
+    CurDependency:=GetSelectedDependency;
+    RemoveBitBtn.Enabled:=((CurFile<>nil) and (CurFile<>LazProject.MainUnitInfo))
+                      or ((CurDependency<>nil) and (not CurDependency.Removed));
+    OpenBitBtn.Enabled:=((CurFile<>nil)
+                     or ((CurDependency<>nil) and (not CurDependency.Removed)));
     OptionsBitBtn.Enabled:=true;
   end else begin
     AddBitBtn.Enabled:=false;
