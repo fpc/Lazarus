@@ -123,6 +123,8 @@ type
       csaSide2SpaceEqually);
   TComponentSizing = (cssNone, cssShrinkToSmallest, cssGrowToLargest, cssFixed);
   TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
+  TOnSelectionFormChanged = procedure(Sender: TObject;
+    OldForm, NewForm: TCustomForm) of object;
   
   TControlSelState = (cssOnlyNonVisualNeedsUpdate,
                       cssOnlyVisualNeedsUpdate,
@@ -144,6 +146,7 @@ type
     // These are the values set by the user
     // But due to snapping and lcl aligning the components can have other bounds
     FLeft: Integer;
+    FOnSelectionFormChanged: TOnSelectionFormChanged;
     FSavedHeight: integer;
     FSavedLeft: integer;
     FSavedTop: integer;
@@ -306,6 +309,10 @@ type
     property Visible:boolean read FVisible write SetVisible;
     function OnlyNonVisualComponentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
+    
+    property SelectionForm: TCustomForm read FCustomForm;
+    property OnSelectionFormChanged: TOnSelectionFormChanged
+      read FOnSelectionFormChanged write FOnSelectionFormChanged;
   end;
 
 
@@ -523,14 +530,18 @@ begin
 end;
 
 procedure TControlSelection.SetCustomForm;
-var NewCustomForm:TCustomForm;
+var
+  OldCustomForm, NewCustomForm: TCustomForm;
 begin
   if Count>0 then
     NewCustomForm:=Items[0].ParentForm
   else
     NewCustomForm:=nil;
   if NewCustomForm=FCustomForm then exit;
+  OldCustomForm:=FCustomForm;
   FCustomForm:=NewCustomForm;
+  if Assigned(FOnSelectionFormChanged) then
+    FOnSelectionFormChanged(Self,OldCustomForm,NewCustomForm);
 end;
 
 function TControlSelection.GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
@@ -1260,15 +1271,15 @@ begin
   if gpLeft in GrabberPos then begin
     FLeft:=FLeft+dx;
     FWidth:=FWidth-dx;
-  end;
-  if gpRight in GrabberPos then begin
+  end
+  else if gpRight in GrabberPos then begin
     FWidth:=FWidth+dx;
   end;
   if gpTop in GrabberPos then begin
     FTop:=FTop+dy;
     FHeight:=FHeight-dy;
-  end;
-  if gpBottom in GrabberPos then begin
+  end
+  else if gpBottom in GrabberPos then begin
     FHeight:=FHeight+dy;
   end;
   EndResizing(true);

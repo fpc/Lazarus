@@ -236,6 +236,8 @@ type
        read FPropertyEditorHook write SetPropertyEditorHook;
     procedure BuildPropertyList;
     procedure RefreshPropertyValues;
+    
+    procedure PropEditLookupRootChange;
 
     property RowCount:integer read GetRowCount;
     property Rows[Index:integer]:TOIPropertyGridRow read GetRow;
@@ -1292,6 +1294,13 @@ begin
   DoPaint(true);
 end;
 
+procedure TOIPropertyGrid.PropEditLookupRootChange;
+begin
+  // When the LookupRoot changes, no changes can be made
+  // -> undo the value editor changes
+  RefreshValueEdit;
+end;
+
 function TOIPropertyGrid.RowRect(ARow:integer):TRect;
 begin
   Result.Left:=BorderWidth;
@@ -1971,6 +1980,8 @@ end;
 
 procedure TObjectInspector.PropEditLookupRootChange;
 begin
+  PropertyGrid.PropEditLookupRootChange;
+  EventGrid.PropEditLookupRootChange;
   FillComponentComboBox;
 end;
 

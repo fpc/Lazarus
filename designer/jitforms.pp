@@ -422,6 +422,8 @@ begin
   if IndexOf(JITForm)<0 then
     raise Exception.Create('TJITForms.RemoveMethod JITForm.ClassName='+
       JITForm.ClassName);
+  if (AName='') or (not IsValidIdent(AName)) then
+    raise Exception.Create('TJITForms.RemoveMethod invalid name: "'+AName+'"');
   OldCode:=nil;
   DoRemoveMethod(JITForm.ClassType,AName,OldCode);
   FreeMem(OldCode);
@@ -434,6 +436,8 @@ begin
   if IndexOf(JITForm)<0 then
     raise Exception.Create('TJITForms.RenameMethod JITForm.ClassName='+
       JITForm.ClassName);
+  if (NewName='') or (not IsValidIdent(NewName)) then
+    raise Exception.Create('TJITForms.RenameMethod invalid name: "'+NewName+'"');
   DoRenameMethod(JITForm.ClassType,OldName,NewName);
 end;
 
@@ -444,6 +448,8 @@ begin
   if IndexOf(JITForm)<0 then
     raise Exception.Create('TJITForms.RenameFormClass JITForm.ClassName='+
       JITForm.ClassName);
+  if (NewName='') or (not IsValidIdent(NewName)) then
+    raise Exception.Create('TJITForms.RenameFormClass invalid name: "'+NewName+'"');
   DoRenameClass(JITForm.ClassType,NewName);
 end;
 
@@ -457,6 +463,8 @@ begin
   if IndexOf(JITForm)<0 then
     raise Exception.Create('TJITForms.CreateNewMethod JITForm.ClassName='+
       JITForm.ClassName);
+  if (AName='') or (not IsValidIdent(AName)) then
+    raise Exception.Create('TJITForms.CreateNewMethod invalid name: "'+AName+'"');
   OldCode:=JITForm.MethodAddress(AName);
   if OldCode<>nil then begin
     Result.Data:=JITForm;
@@ -476,19 +484,19 @@ end;
 // adding, removing and renaming of classes and methods at runtime
 
 type
-   // these definitions are copied from objpas.inc
+  // these definitions are copied from objpas.inc
 
-   TMethodNameRec = packed record
-      Name : PShortString;
-      Addr : Pointer;
-   end;
+  TMethodNameRec = packed record
+    Name : PShortString;
+    Addr : Pointer;
+  end;
 
-   TMethodNameTable = packed record
-     Count : DWord;
-     Entries : packed array[0..0] of TMethodNameRec;
-   end;
+  TMethodNameTable = packed record
+    Count : DWord;
+    Entries : packed array[0..0] of TMethodNameRec;
+  end;
 
-   PMethodNameTable =  ^TMethodNameTable;
+  PMethodNameTable =  ^TMethodNameTable;
 
 
 function TJITForms.CreateVMTCopy(SourceClass:TClass;
