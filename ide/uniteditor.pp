@@ -44,7 +44,7 @@ type
 
   TSourceEditor = class
   private
-    FAOwner : TComponent;  //this will likeley be the notebook page it's on
+    FAOwner : TComponent; //Owned by a TSourceNotebook
 {$ifdef NEW_EDITOR_SYNEDIT}
     FHighlighter: TSynPasSyn;
     FEditor     : TSynEditor
@@ -75,6 +75,9 @@ type
     Procedure SetCurrentCursorYLine(num : Integer);
     Function GetAncestor : String;
     Function GetModified : Boolean;
+
+    Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
+
   protected
     Procedure DisplayControl;
     Procedure ReParent(AParent : TWinControl);
@@ -149,12 +152,33 @@ uses
 
 { TSourceEditor }
 
+
 constructor TSourceEditor.create(AOwner : TComponent; AParent : TWinControl);
 Begin
 inherited Create;
 FAOwner := AOwner;
 
 FSource := TStringList.create;
+CreateEditor(AOwner,AParent);
+
+end;
+
+destructor TSourceEditor.destroy;
+begin
+  FHighlighter.free;
+  FEditor.Free;
+  FSource.free;
+  inherited;
+end;
+
+
+Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
+Begin
+if assigned(FEditor) then
+   Begin
+   FSource.Assign(FEditor.Lines);
+   FEditor.Free;
+   end;
 
 FEditor := TmwCustomEdit.Create(FAOwner);
   with FEditor do
@@ -187,18 +211,9 @@ FEditor := TmwCustomEdit.Create(FAOwner);
          end;
       OnKeyPress := @KeyPRessed;
   end;
-
+FEditor.Lines.Assign(FSource);
 
 end;
-
-destructor TSourceEditor.destroy;
-begin
-  FHighlighter.free;
-  FEditor.Free;
-  FSource.free;
-  inherited;
-end;
-
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
 var
@@ -319,6 +334,8 @@ Begin
 Result := FSource <> FEditor.Lines;
 end;
 
+//Get's the ancestor of the FControl.
+//For example the ancestor of a TForm1 = class(xxxx) is the xxxx
 Function TSourceEditor.GetAncestor : String;
 var
   PI : PTypeInfo;
@@ -356,7 +373,7 @@ Begin
      Add('type');
      Add(Format('     T%s = class(T%s)', [nmForm,nmAncestor]));
      Add('     private');
-     Add('     { private declarations}');
+     Add('     { private declarations }');
      Add('     public');
      Add('     { public declarations }');
      Add('     end;');
@@ -448,15 +465,7 @@ end;
 
 Procedure TSourceEditor.ReParent(AParent : TWInControl);
 Begin
-with FEditor do
-   Begin
-    Parent := AParent;
-    Top := 25;
-    Left := 0;
-    Align := alClient;
-    Width := TWinControl(FAOwner).ClientWidth - 10;//clientwidth;//500;
-    Height :=TWinControl(FAOwner).ClientHeight -10;//clientheight;//250;
-   end;
+CreateEditor(FAOwner,AParent);
 End;
 
 
@@ -515,7 +524,8 @@ Var
   Notebook_Just_Created : Boolean;
   PageIndex : Integer;
 begin
-  Notebook_Just_Created := (not assigned(Notebook1)) or (Notebook1.Pages.Count = 0);
+  Notebook_Just_Created := (not assigned(Notebook1)) or
+                           (Notebook1.Pages.Count = 0);
 
   if Notebook_Just_Created then
   TempSourceEditor := NewSe(0)
@@ -535,7 +545,7 @@ Function TSOurceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
 Begin
  if CreateNotebook then Pagenum := 0;
 
-if Pagenum = -1 then
+if Pagenum = -1 then //add a new page
   Pagenum := Notebook1.Pages.Add('title');
   Result := TSourceEditor.Create(Self,Notebook1.Page[PageNum]);
   Notebook1.Pageindex := Pagenum;
@@ -586,10 +596,15 @@ Begin
                      TempEditor := Controls[I];
                      Break;
                   end;
-          if SE.Editor = TempEditor then Break;
+          if SE.Editor = TempEditor then Begin
+              Writeln('The editor was found on page '+inttostr(x));
+              Break;
+              end;
         End;
 
-    if X < Notebook1.Pages.Count then
+Writeln('X = '+inttostr(x));
+
+    if SE.Editor = TempEditor then
        Begin
           Notebook1.PageIndex := X;
          //Bringtofront does not work yet.

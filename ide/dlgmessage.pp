@@ -36,7 +36,7 @@ TMessageDlg = class(TForm)
    private
      Function GetMessage : String;
    public
-     constructor Create(AOwner : TComponent);
+     constructor Create(AOwner : TComponent); override;
      Procedure Add(Texts : String);
      Procedure Clear;
      Function GetSelectedLineIndex : Integer;
@@ -78,7 +78,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure  TMessageDlg.Clear;
 Begin
-MEssageView.Items.Clear;
+MEssageView.Clear;
 end;
 
 {------------------------------------------------------------------------------}
