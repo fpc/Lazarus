@@ -1366,7 +1366,7 @@ begin
       inc(i);
       if (i<=length(Txt)) and (Txt[i] in [#10,#13]) and (Txt[i-1]<>Txt[i]) then
         inc(i);
-      LastLineEndPos:=i;
+      LastLineEndPos:=i-1;
     end else
       inc(i);
   end;

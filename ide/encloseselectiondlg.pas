@@ -113,39 +113,39 @@ begin
              +'  <selection>'+LineBreak
              +'finally'+LineBreak
              +'  |'+LineBreak
-             +'end;';
+             +'end;'+LineBreak;
 
   estTryExcept:
     Template:='try'+LineBreak
              +'  <selection>'+LineBreak
              +'except'+LineBreak
              +'  |'+LineBreak
-             +'end;';
+             +'end;'+LineBreak;
 
   estBeginEnd:
     Template:='begin'+LineBreak
              +'  |<selection>'+LineBreak
-             +'end;';
+             +'end;'+LineBreak;
 
   estForBeginEnd:
     Template:='for | do begin'+LineBreak
              +'  <selection>'+LineBreak
-             +'end;';
+             +'end;'+LineBreak;
 
   estWhileDoBeginEnd:
     Template:='while | do begin'+LineBreak
              +'  <selection>'+LineBreak
-             +'end;';
+             +'end;'+LineBreak;
 
   estRepeatUntil:
     Template:='repeat'+LineBreak
              +'  <selection>'+LineBreak
-             +'until |;';
+             +'until |;'+LineBreak;
 
   estPascalComment:
     Template:='{'+LineBreak
              +'  |<selection>'+LineBreak
-             +'}';
+             +'}'+LineBreak;
 
   else
     RaiseException('GetEnclosedSelectionParams');
@@ -157,7 +157,7 @@ procedure EncloseTextSelection(const Template: string; Source: TStrings;
   Indent: integer;
   var NewSelection: string; var NewCursor: TPoint);
 const
-  TemplateIndent = 2;
+  TemplateBaseIndent = 2;
 var
   TemplateLen: Integer;
   TemplatePos: Integer;
@@ -165,29 +165,54 @@ var
   NewSelect: TMemoryStream;
   Y: Integer;
   X: Integer;
-  ExtraIndent: Integer;
+  OldSelectionIndent: Integer;
+  TemplateIndent: Integer;
+  CutLastLineBreak: Boolean;
+  CutPos: Integer;
 
   procedure AddBeautified(const s: string);
   var
     NewStr: String;
     LengthOfLastLine: integer;
     LineEndCnt: Integer;
+    CurIndent: Integer;
+    FirstLineIndent: Integer;
+    EndPos: Integer;
   begin
     if s='' then exit;
     NewStr:=s;
-    writeln('AddBeautified A X=',X,' Y=',Y,' ExtraIndent=',ExtraIndent,' NewSTr="',NewSTr,'"');
+    CurIndent:=OldSelectionIndent;
+    if NewSelect.Position=0 then begin
+      FirstLineIndent:=OldSelectionIndent-SelectionStart.X+1;
+      if FirstLineIndent<0 then FirstLineIndent:=0;
+      NewStr:=GetIndentStr(FirstLineIndent)+NewStr;
+      dec(CurIndent,FirstLineIndent);
+      if CurIndent<0 then CurIndent:=0;
+    end;
+    //writeln('AddBeautified A X=',X,' Y=',Y,' CurIndent=',CurIndent,' NewStr="',NewStr,'"');
+    dec(CurIndent,GetLineIndent(NewStr,1));
+    if CurIndent<0 then CurIndent:=0;
     NewStr:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                NewStr,ExtraIndent,
+                NewStr,CurIndent,
                 [bcfIndentExistingLineBreaks,bcfDoNotIndentFirstLine]);
     LineEndCnt:=LineEndCount(NewStr,LengthOfLastLine);
+    if (TemplatePos>TemplateLen) then begin
+      // cut indent at end of template
+      if LineEndCnt>0 then begin
+        EndPos:=length(NewStr);
+        while (EndPos>=1) and (NewStr[EndPos]=' ') do dec(EndPos);
+        NewStr:=copy(NewStr,1,length(NewStr)-CurIndent);
+        LineEndCnt:=LineEndCount(NewStr,LengthOfLastLine);
+      end;
+    end;
     inc(Y,LineEndCnt);
     if LineEndCnt=0 then
       inc(X,LengthOfLastLine)
-    else begin
+    else
       X:=LengthOfLastLine+1;
-      ExtraIndent:=GetLineIndent(NewStr,length(NewStr)+1);
-    end;
-    writeln('AddBeautified B X=',X,' Y=',Y,' ExtraIndent=',ExtraIndent,' NewSTr="',NewSTr,'"');
+    if (LineEndCnt>0) or (NewSelect.Position=0) then
+      TemplateIndent:=GetLineIndent(NewStr,length(NewStr)+1);
+    //writeln('AddBeautified B X=',X,' Y=',Y,' TemplateIndent=',TemplateIndent,' LengthOfLastLine=',LengthOfLastLine,' NewStr="',NewSTr,'"');
     NewSelect.Write(NewStr[1],length(NewStr));
   end;
   
@@ -217,24 +242,38 @@ var
     MinX: Integer;
     MaxX: Integer;
   begin
-    IndentStr:=GetIndentStr(ExtraIndent);
+    IndentStr:=GetIndentStr(TemplateIndent-OldSelectionIndent);
     for CurY:=SelectionStart.Y to SelectionEnd.Y do begin
       CurLine:=Source[CurY-1];
       MinX:=1;
       MaxX:=length(CurLine);
       if (CurY=SelectionStart.Y) then begin
         MinX:=SelectionStart.X;
+        if MinX<=OldSelectionIndent then
+          MinX:=OldSelectionIndent+1;
         if MinX>MaxX then
           MinX:=MaxX;
       end;
       if (CurY=SelectionEnd.Y) and (MaxX>SelectionEnd.X) then
         MaxX:=SelectionEnd.X;
+      //writeln('InsertSelection CurY=',CurY,' Range=',MinX,'-',MaxX,' Indent=',length(IndentStr),' "',copy(CurLine,MinX,MaxX-MinX+1),'"');
+      X:=1;
       // write indent
-      if (IndentStr<>'') and (CurY<>SelectionStart.Y) then
+      if (IndentStr<>'') and (CurY<>SelectionStart.Y) then begin
         NewSelect.Write(IndentStr[1],length(IndentStr));
+        inc(X,length(IndentStr));
+      end;
       // write line
-      if MaxX>MinX then
+      if MaxX>MinX then begin
         NewSelect.Write(CurLine[MinX],MaxX-MinX+1);
+        inc(X,MaxX-MinX+1);
+      end;
+      // write line break and adjust cursor
+      if CurY<SelectionEnd.Y then begin
+        NewSelect.Write(EndOfLine[1],length(EndOfLine));
+        inc(Y);
+        X:=1;
+      end;
     end;
   end;
   
@@ -266,17 +305,40 @@ var
     end;
   end;
   
+  procedure GetOldSelectionIndent;
+  var
+    CurY: Integer;
+    CurLine: string;
+    CurIndent: Integer;
+  begin
+    OldSelectionIndent:=0;
+    CurY:=SelectionStart.Y;
+    while CurY<Source.Count do begin
+      CurLine:=Source[CurY-1];
+      CurIndent:=GetLineIndent(CurLine,1);
+      if CurIndent<length(CurLine) then begin
+        OldSelectionIndent:=CurIndent;
+        break;
+      end;
+    end;
+  end;
+  
 begin
-  writeln('EncloseTextSelection A ',SelectionStart.X,',',SelectionStart.Y,'-',SelectionEnd.X,',',SelectionEnd.Y,
-    ' indent=',Indent,' Template="',Template,'"');
+  //writeln('EncloseTextSelection A ',SelectionStart.X,',',SelectionStart.Y,'-',SelectionEnd.X,',',SelectionEnd.Y,
+  //  ' indent=',Indent,' Template="',Template,'"');
+  CutLastLineBreak:=true;
+  if (SelectionEnd.X=1) and (SelectionEnd.Y>SelectionStart.Y) then begin
+    CutLastLineBreak:=false;
+    dec(SelectionEnd.Y);
+    if SelectionEnd.Y<Source.Count then
+      SelectionEnd.X:=length(Source[SelectionEnd.Y-1])+1;
+  end;
   NewSelect:=TMemoryStream.Create;
   NewCursor:=SelectionStart;
   X:=NewCursor.X;
   Y:=NewCursor.Y;
-  ExtraIndent:=0;
-  if Y<Source.Count then
-    ExtraIndent:=GetLineIndent(Source[Y-1],X);
-  writeln('AAA1 ',X,',',Y,' ',ExtraIndent,' "',Source[Y-1],'"');
+  GetOldSelectionIndent;
+  TemplateIndent:=OldSelectionIndent;
   try
     TemplateLen:=length(Template);
     TemplatePos:=1;
@@ -311,6 +373,17 @@ begin
     if NewSelection<>'' then begin
       NewSelect.Position:=0;
       NewSelect.Read(NewSelection[1],length(NewSelection));
+      if CutLastLineBreak then begin
+        CutPos:=length(NewSelection);
+        if NewSelection[CutPos] in [#10,#13] then begin
+          dec(CutPos);
+          if (CutPos>=1) and (NewSelection[CutPos] in [#10,#13])
+          and (NewSelection[CutPos]<>NewSelection[CutPos+1]) then begin
+            dec(CutPos);
+          end;
+          NewSelection:=copy(NewSelection,1,CutPos);
+        end;
+      end;
     end;
     NewSelect.Free;
   end;

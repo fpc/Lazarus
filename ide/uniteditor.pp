@@ -1757,8 +1757,8 @@ begin
                        FEditor.BlockBegin,FEditor.BlockEnd,
                        FEditor.BlockIndent,
                        NewSelection,NewCaretXY);
-  writeln('TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,
-    ' "',NewSelection,'"');
+  //writeln('TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,
+  //  ' "',NewSelection,'"');
   FEditor.SelText:=NewSelection;
   FEditor.CaretXY:=NewCaretXY;
 end;
