@@ -1265,6 +1265,7 @@ begin
   // delete unused menuitems
   while ParentMenuItem.Count>FileList.Count do
     ParentMenuItem.Items[ParentMenuItem.Count-1].Free;
+  ParentMenuItem.Enabled:=(ParentMenuItem.Count>0);
   // set captions and event
   for i:=0 to FileList.Count-1 do begin
     AMenuItem:=ParentMenuItem.Items[i];
