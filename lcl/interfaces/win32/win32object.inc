@@ -421,7 +421,7 @@ var
   AWinControl: TWinControl;
 begin
   AMenu := AMenuObject as TMenu;
-  if AMenu.FCompStyle = csMainMenu then
+  if AMenu is TMainMenu then
   begin
     AWinControl := TWinControl(AMenu.Owner);
     Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
@@ -736,6 +736,9 @@ end;
 
 {
   $Log$
+  Revision 1.297  2004/11/02 17:48:19  micha
+  remove usage of fcompstyle
+
   Revision 1.296  2004/11/01 18:20:21  micha
   set default icon instead of lcl icon which actually is a bitmap
 

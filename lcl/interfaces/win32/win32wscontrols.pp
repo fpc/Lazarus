@@ -291,27 +291,8 @@ begin
 end;
 
 procedure TWin32WSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
-var
-  SizeRect: Windows.RECT;
 begin
-  with SizeRect do
-  begin
-    Left := ALeft;
-    Top := ATop;
-    Right := ALeft + AWidth;
-    Bottom := ATop + AHeight;
-  end;
-  case AWinControl.FCompStyle of
-    csForm:
-    begin
-      // the LCL defines the size of a form without border, win32 with.
-      // -> adjust size according to BorderStyle
-      Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(TCustomForm(AWinControl).BorderStyle), false,
-          BorderStyleToWin32FlagsEx(TCustomForm(AWinControl).BorderStyle));
-    end;
-  end;
-  TWin32WidgetSet(InterfaceObject).ResizeChild(AWinControl, ALeft, ATop,
-     SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
+  TWin32WidgetSet(InterfaceObject).ResizeChild(AWinControl, ALeft, ATop, AWidth, AHeight);
 end;
 
 procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);

@@ -84,6 +84,8 @@ type
           const ABorderIcons: TBorderIcons); override;
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
+          AWidth, AHeight: Integer); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
@@ -233,6 +235,29 @@ procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
+end;
+
+procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl; 
+    const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  SizeRect: Windows.RECT;
+begin
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to BorderStyle
+  with SizeRect do
+  begin
+    Left := ALeft;
+    Top := ATop;
+    Right := ALeft + AWidth;
+    Bottom := ATop + AHeight;
+  end;
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+      TCustomForm(AWinControl).BorderStyle), false,
+      BorderStyleToWin32FlagsEx(TCustomForm(AWinControl).BorderStyle));
+      
+  // rect adjusted, pass to inherited to do real work
+  TWin32WSWinControl.SetBounds(AWinControl, ALeft, ATop, SizeRect.Right - SizeRect.Left, 
+    SizeRect.Bottom - SizeRect.Top);
 end;
 
 procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
