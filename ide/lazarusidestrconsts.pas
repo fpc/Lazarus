@@ -1291,6 +1291,7 @@ resourcestring
   lisBuildComponent = 'Build Component';
   lisBuildCodeTools = 'Build CodeTools';
   lisBuildSynEdit = 'Build SynEdit';
+  lisBuildIDEIntf = 'Build IDE Interface';
   lisBuildJITForm = 'Build JIT Form';
   lisBuildPkgReg = 'Build Package Registration';
   lisBuildIDE = 'Build IDE';

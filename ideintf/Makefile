@@ -203,37 +203,14 @@ else
 UNITSDIR:=$(wildcard $(FPCDIR)/units/$(OS_TARGET))
 endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
-override PACKAGE_NAME=lazarus
+override PACKAGE_NAME=ideintf
 override PACKAGE_VERSION=0.9b
-RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-LCL_PLATFORM=gtk
-override COMPILER_UNITDIR+=lcl/nonwin32
-endif
-endif
-export LCL_PLATFORM
-ifndef LAZARUS_CONFIG_DIR
-ifeq ($(OS_TARGET),win32)
-LAZARUS_CONFIG_DIR=
-else
-LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
-endif
-endif
-export LAZARUS_CONFIG_DIR
-LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
-override TARGET_DIRS+=lcl components designer packager ideintf
-override TARGET_PROGRAMS+=lazarus
-override TARGET_EXAMPLEDIRS+=examples
-override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
-override INSTALL_BASEDIR=share/lazarus
-override DIST_DESTDIR=$(BASEDIR)/dist
+override TARGET_UNITS+=allideintf
+override TARGET_IMPLICITUNITS+=idecommands propedits objinspstrconsts objectinspector columndlg componenteditors graphpropedits listviewpropedit imagelisteditor componenttreeview
+override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))
 override COMPILER_OPTIONS+=-gl
-override COMPILER_INCLUDEDIR+=include include/$(OS_TARGET)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)/$(OS_TARGET) lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) components/units/$(CPU_TARGET)/$(OS_TARGET) components/custom components/mpaslex designer designer/units debugger ideintf ideintf/units packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
-override COMPILER_TARGETDIR+=.
+override COMPILER_UNITDIR+=../lcl/units/$(CPU_TARGET)/$(OS_TARGET) ../components/units/$(CPU_TARGET)/$(OS_TARGET) .
+override COMPILER_UNITTARGETDIR+=units
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
 endif
@@ -932,7 +909,7 @@ else
 TAROPT=vz
 TAREXT=.tar.gz
 endif
-override REQUIRE_PACKAGES=rtl fcl regexpr
+override REQUIRE_PACKAGES=rtl fcl
 ifeq ($(OS_TARGET),linux)
 ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
@@ -941,7 +918,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -955,7 +931,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -969,7 +944,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -983,7 +957,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -997,7 +970,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1008,7 +980,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1019,7 +990,6 @@ REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1031,7 +1001,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1044,7 +1013,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1058,7 +1026,6 @@ REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_PTHREADS=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1069,7 +1036,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1081,7 +1047,6 @@ REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1094,7 +1059,6 @@ REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1105,7 +1069,6 @@ ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1115,7 +1078,6 @@ ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1125,7 +1087,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1135,7 +1096,6 @@ ifeq ($(CPU_TARGET),sparc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1145,7 +1105,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1155,7 +1114,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1167,7 +1125,6 @@ REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1180,7 +1137,6 @@ REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
 REQUIRE_PACKAGES_SQLITE=1
@@ -1191,7 +1147,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1201,7 +1156,6 @@ ifeq ($(CPU_TARGET),m68k)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1211,7 +1165,6 @@ ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1221,7 +1174,6 @@ ifeq ($(CPU_TARGET),powerpc)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1231,7 +1183,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1241,7 +1192,6 @@ ifeq ($(CPU_TARGET),i386)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_REGEXPR=1
 REQUIRE_PACKAGES_NETDB=1
 REQUIRE_PACKAGES_LIBASYNC=1
 endif
@@ -1400,32 +1350,6 @@ endif
 endif
 ifdef UNITDIR_FCL
 override COMPILER_UNITDIR+=$(UNITDIR_FCL)
-endif
-endif
-ifdef REQUIRE_PACKAGES_REGEXPR
-PACKAGEDIR_REGEXPR:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /regexpr/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_REGEXPR),)
-ifneq ($(wildcard $(PACKAGEDIR_REGEXPR)/$(OS_TARGET)),)
-UNITDIR_REGEXPR=$(PACKAGEDIR_REGEXPR)/$(OS_TARGET)
-else
-UNITDIR_REGEXPR=$(PACKAGEDIR_REGEXPR)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_REGEXPR)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_REGEXPR) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_REGEXPR)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_REGEXPR=
-UNITDIR_REGEXPR:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /regexpr/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_REGEXPR),)
-UNITDIR_REGEXPR:=$(firstword $(UNITDIR_REGEXPR))
-else
-UNITDIR_REGEXPR=
-endif
-endif
-ifdef UNITDIR_REGEXPR
-override COMPILER_UNITDIR+=$(UNITDIR_REGEXPR)
 endif
 endif
 ifdef REQUIRE_PACKAGES_MYSQL
@@ -1637,43 +1561,19 @@ ifeq ($(FULL_SOURCE),$(FULL_TARGET))
 EXECPPAS:=@$(PPAS)
 endif
 endif
-.PHONY: fpc_exes
-ifdef TARGET_PROGRAMS
-override EXEFILES=$(addsuffix $(EXEEXT),$(TARGET_PROGRAMS))
-override EXEOFILES:=$(addsuffix $(OEXT),$(TARGET_PROGRAMS)) $(addprefix $(STATICLIBPREFIX),$(addsuffix $(STATICLIBEXT),$(TARGET_PROGRAMS)))
-override ALLTARGET+=fpc_exes
-override INSTALLEXEFILES+=$(EXEFILES)
-override CLEANEXEFILES+=$(EXEFILES) $(EXEOFILES)
-ifeq ($(OS_TARGET),os2)
-override CLEANEXEFILES+=$(addsuffix $(AOUTEXT),$(TARGET_PROGRAMS))
+.PHONY: fpc_units
+ifdef TARGET_UNITS
+override ALLTARGET+=fpc_units
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_UNITS))
+override IMPLICITUNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_IMPLICITUNITS))
+override INSTALLPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
 endif
-ifeq ($(OS_TARGET),emx)
-override CLEANEXEFILES+=$(addsuffix $(AOUTEXT),$(TARGET_PROGRAMS))
-endif
-endif
-fpc_exes: $(EXEFILES)
+fpc_units: $(UNITPPUFILES)
 ifdef TARGET_RSTS
 override RSTFILES=$(addsuffix $(RSTEXT),$(TARGET_RSTS))
 override CLEANRSTFILES+=$(RSTFILES)
 endif
-.PHONY: fpc_examples
-ifdef TARGET_EXAMPLES
-HASEXAMPLES=1
-override EXAMPLESOURCEFILES:=$(wildcard $(addsuffix .pp,$(TARGET_EXAMPLES)) $(addsuffix .pas,$(TARGET_EXAMPLES)) $(addsuffix .dpr,$(TARGET_EXAMPLES)))
-override EXAMPLEFILES:=$(addsuffix $(EXEEXT),$(TARGET_EXAMPLES))
-override EXAMPLEOFILES:=$(addsuffix $(OEXT),$(TARGET_EXAMPLES)) $(addprefix $(STATICLIBPREFIX),$(addsuffix $(STATICLIBEXT),$(TARGET_EXAMPLES)))
-override CLEANEXEFILES+=$(EXAMPLEFILES) $(EXAMPLEOFILES)
-ifeq ($(OS_TARGET),os2)
-override CLEANEXEFILES+=$(addsuffix $(AOUTEXT),$(TARGET_EXAMPLES))
-endif
-ifeq ($(OS_TARGET),emx)
-override CLEANEXEFILES+=$(addsuffix $(AOUTEXT),$(TARGET_EXAMPLES))
-endif
-endif
-ifdef TARGET_EXAMPLEDIRS
-HASEXAMPLES=1
-endif
-fpc_examples: all $(EXAMPLEFILES) $(addsuffix _all,$(TARGET_EXAMPLEDIRS))
 .PHONY: fpc_all fpc_smart fpc_debug fpc_release
 $(FPCMADE): $(ALLDEPENDENCIES) $(ALLTARGET)
 	@$(ECHOREDIR) Compiled > $(FPCMADE)
@@ -1999,319 +1899,29 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
-TARGET_DIRS_LCL=1
-TARGET_DIRS_COMPONENTS=1
-TARGET_DIRS_DESIGNER=1
-TARGET_DIRS_PACKAGER=1
-TARGET_DIRS_IDEINTF=1
-ifdef TARGET_DIRS_LCL
-lcl_all:
-	$(MAKE) -C lcl all
-lcl_debug:
-	$(MAKE) -C lcl debug
-lcl_smart:
-	$(MAKE) -C lcl smart
-lcl_release:
-	$(MAKE) -C lcl release
-lcl_examples:
-	$(MAKE) -C lcl examples
-lcl_shared:
-	$(MAKE) -C lcl shared
-lcl_install:
-	$(MAKE) -C lcl install
-lcl_sourceinstall:
-	$(MAKE) -C lcl sourceinstall
-lcl_exampleinstall:
-	$(MAKE) -C lcl exampleinstall
-lcl_distinstall:
-	$(MAKE) -C lcl distinstall
-lcl_zipinstall:
-	$(MAKE) -C lcl zipinstall
-lcl_zipsourceinstall:
-	$(MAKE) -C lcl zipsourceinstall
-lcl_zipexampleinstall:
-	$(MAKE) -C lcl zipexampleinstall
-lcl_zipdistinstall:
-	$(MAKE) -C lcl zipdistinstall
-lcl_clean:
-	$(MAKE) -C lcl clean
-lcl_distclean:
-	$(MAKE) -C lcl distclean
-lcl_cleanall:
-	$(MAKE) -C lcl cleanall
-lcl_info:
-	$(MAKE) -C lcl info
-lcl_makefiles:
-	$(MAKE) -C lcl makefiles
-lcl:
-	$(MAKE) -C lcl all
-.PHONY: lcl_all lcl_debug lcl_smart lcl_release lcl_examples lcl_shared lcl_install lcl_sourceinstall lcl_exampleinstall lcl_distinstall lcl_zipinstall lcl_zipsourceinstall lcl_zipexampleinstall lcl_zipdistinstall lcl_clean lcl_distclean lcl_cleanall lcl_info lcl_makefiles lcl
-endif
-ifdef TARGET_DIRS_COMPONENTS
-components_all:
-	$(MAKE) -C components all
-components_debug:
-	$(MAKE) -C components debug
-components_smart:
-	$(MAKE) -C components smart
-components_release:
-	$(MAKE) -C components release
-components_examples:
-	$(MAKE) -C components examples
-components_shared:
-	$(MAKE) -C components shared
-components_install:
-	$(MAKE) -C components install
-components_sourceinstall:
-	$(MAKE) -C components sourceinstall
-components_exampleinstall:
-	$(MAKE) -C components exampleinstall
-components_distinstall:
-	$(MAKE) -C components distinstall
-components_zipinstall:
-	$(MAKE) -C components zipinstall
-components_zipsourceinstall:
-	$(MAKE) -C components zipsourceinstall
-components_zipexampleinstall:
-	$(MAKE) -C components zipexampleinstall
-components_zipdistinstall:
-	$(MAKE) -C components zipdistinstall
-components_clean:
-	$(MAKE) -C components clean
-components_distclean:
-	$(MAKE) -C components distclean
-components_cleanall:
-	$(MAKE) -C components cleanall
-components_info:
-	$(MAKE) -C components info
-components_makefiles:
-	$(MAKE) -C components makefiles
-components:
-	$(MAKE) -C components all
-.PHONY: components_all components_debug components_smart components_release components_examples components_shared components_install components_sourceinstall components_exampleinstall components_distinstall components_zipinstall components_zipsourceinstall components_zipexampleinstall components_zipdistinstall components_clean components_distclean components_cleanall components_info components_makefiles components
-endif
-ifdef TARGET_DIRS_DESIGNER
-designer_all:
-	$(MAKE) -C designer all
-designer_debug:
-	$(MAKE) -C designer debug
-designer_smart:
-	$(MAKE) -C designer smart
-designer_release:
-	$(MAKE) -C designer release
-designer_examples:
-	$(MAKE) -C designer examples
-designer_shared:
-	$(MAKE) -C designer shared
-designer_install:
-	$(MAKE) -C designer install
-designer_sourceinstall:
-	$(MAKE) -C designer sourceinstall
-designer_exampleinstall:
-	$(MAKE) -C designer exampleinstall
-designer_distinstall:
-	$(MAKE) -C designer distinstall
-designer_zipinstall:
-	$(MAKE) -C designer zipinstall
-designer_zipsourceinstall:
-	$(MAKE) -C designer zipsourceinstall
-designer_zipexampleinstall:
-	$(MAKE) -C designer zipexampleinstall
-designer_zipdistinstall:
-	$(MAKE) -C designer zipdistinstall
-designer_clean:
-	$(MAKE) -C designer clean
-designer_distclean:
-	$(MAKE) -C designer distclean
-designer_cleanall:
-	$(MAKE) -C designer cleanall
-designer_info:
-	$(MAKE) -C designer info
-designer_makefiles:
-	$(MAKE) -C designer makefiles
-designer:
-	$(MAKE) -C designer all
-.PHONY: designer_all designer_debug designer_smart designer_release designer_examples designer_shared designer_install designer_sourceinstall designer_exampleinstall designer_distinstall designer_zipinstall designer_zipsourceinstall designer_zipexampleinstall designer_zipdistinstall designer_clean designer_distclean designer_cleanall designer_info designer_makefiles designer
-endif
-ifdef TARGET_DIRS_PACKAGER
-packager_all:
-	$(MAKE) -C packager all
-packager_debug:
-	$(MAKE) -C packager debug
-packager_smart:
-	$(MAKE) -C packager smart
-packager_release:
-	$(MAKE) -C packager release
-packager_examples:
-	$(MAKE) -C packager examples
-packager_shared:
-	$(MAKE) -C packager shared
-packager_install:
-	$(MAKE) -C packager install
-packager_sourceinstall:
-	$(MAKE) -C packager sourceinstall
-packager_exampleinstall:
-	$(MAKE) -C packager exampleinstall
-packager_distinstall:
-	$(MAKE) -C packager distinstall
-packager_zipinstall:
-	$(MAKE) -C packager zipinstall
-packager_zipsourceinstall:
-	$(MAKE) -C packager zipsourceinstall
-packager_zipexampleinstall:
-	$(MAKE) -C packager zipexampleinstall
-packager_zipdistinstall:
-	$(MAKE) -C packager zipdistinstall
-packager_clean:
-	$(MAKE) -C packager clean
-packager_distclean:
-	$(MAKE) -C packager distclean
-packager_cleanall:
-	$(MAKE) -C packager cleanall
-packager_info:
-	$(MAKE) -C packager info
-packager_makefiles:
-	$(MAKE) -C packager makefiles
-packager:
-	$(MAKE) -C packager all
-.PHONY: packager_all packager_debug packager_smart packager_release packager_examples packager_shared packager_install packager_sourceinstall packager_exampleinstall packager_distinstall packager_zipinstall packager_zipsourceinstall packager_zipexampleinstall packager_zipdistinstall packager_clean packager_distclean packager_cleanall packager_info packager_makefiles packager
-endif
-ifdef TARGET_DIRS_IDEINTF
-ideintf_all:
-	$(MAKE) -C ideintf all
-ideintf_debug:
-	$(MAKE) -C ideintf debug
-ideintf_smart:
-	$(MAKE) -C ideintf smart
-ideintf_release:
-	$(MAKE) -C ideintf release
-ideintf_examples:
-	$(MAKE) -C ideintf examples
-ideintf_shared:
-	$(MAKE) -C ideintf shared
-ideintf_install:
-	$(MAKE) -C ideintf install
-ideintf_sourceinstall:
-	$(MAKE) -C ideintf sourceinstall
-ideintf_exampleinstall:
-	$(MAKE) -C ideintf exampleinstall
-ideintf_distinstall:
-	$(MAKE) -C ideintf distinstall
-ideintf_zipinstall:
-	$(MAKE) -C ideintf zipinstall
-ideintf_zipsourceinstall:
-	$(MAKE) -C ideintf zipsourceinstall
-ideintf_zipexampleinstall:
-	$(MAKE) -C ideintf zipexampleinstall
-ideintf_zipdistinstall:
-	$(MAKE) -C ideintf zipdistinstall
-ideintf_clean:
-	$(MAKE) -C ideintf clean
-ideintf_distclean:
-	$(MAKE) -C ideintf distclean
-ideintf_cleanall:
-	$(MAKE) -C ideintf cleanall
-ideintf_info:
-	$(MAKE) -C ideintf info
-ideintf_makefiles:
-	$(MAKE) -C ideintf makefiles
-ideintf:
-	$(MAKE) -C ideintf all
-.PHONY: ideintf_all ideintf_debug ideintf_smart ideintf_release ideintf_examples ideintf_shared ideintf_install ideintf_sourceinstall ideintf_exampleinstall ideintf_distinstall ideintf_zipinstall ideintf_zipsourceinstall ideintf_zipexampleinstall ideintf_zipdistinstall ideintf_clean ideintf_distclean ideintf_cleanall ideintf_info ideintf_makefiles ideintf
-endif
-TARGET_EXAMPLEDIRS_EXAMPLES=1
-ifdef TARGET_EXAMPLEDIRS_EXAMPLES
-examples_all:
-	$(MAKE) -C examples all
-examples_debug:
-	$(MAKE) -C examples debug
-examples_smart:
-	$(MAKE) -C examples smart
-examples_release:
-	$(MAKE) -C examples release
-examples_examples:
-	$(MAKE) -C examples examples
-examples_shared:
-	$(MAKE) -C examples shared
-examples_install:
-	$(MAKE) -C examples install
-examples_sourceinstall:
-	$(MAKE) -C examples sourceinstall
-examples_exampleinstall:
-	$(MAKE) -C examples exampleinstall
-examples_distinstall:
-	$(MAKE) -C examples distinstall
-examples_zipinstall:
-	$(MAKE) -C examples zipinstall
-examples_zipsourceinstall:
-	$(MAKE) -C examples zipsourceinstall
-examples_zipexampleinstall:
-	$(MAKE) -C examples zipexampleinstall
-examples_zipdistinstall:
-	$(MAKE) -C examples zipdistinstall
-examples_clean:
-	$(MAKE) -C examples clean
-examples_distclean:
-	$(MAKE) -C examples distclean
-examples_cleanall:
-	$(MAKE) -C examples cleanall
-examples_info:
-	$(MAKE) -C examples info
-examples_makefiles:
-	$(MAKE) -C examples makefiles
-examples:
-	$(MAKE) -C examples all
-.PHONY: examples_all examples_debug examples_smart examples_release examples_examples examples_shared examples_install examples_sourceinstall examples_exampleinstall examples_distinstall examples_zipinstall examples_zipsourceinstall examples_zipexampleinstall examples_zipdistinstall examples_clean examples_distclean examples_cleanall examples_info examples_makefiles examples
-endif
 debug: fpc_debug
 smart: fpc_smart
 release: fpc_release
-examples: fpc_examples $(addsuffix _examples,$(TARGET_DIRS))
-shared: $(addsuffix _shared,$(TARGET_DIRS))
-install: fpc_install $(addsuffix _install,$(TARGET_DIRS))
+examples:
+shared:
+install: fpc_install
 sourceinstall: fpc_sourceinstall
-exampleinstall: fpc_exampleinstall $(addsuffix _exampleinstall,$(TARGET_DIRS))
+exampleinstall: fpc_exampleinstall
 distinstall: fpc_distinstall
 zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
-zipexampleinstall: fpc_zipexampleinstall $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
+zipexampleinstall: fpc_zipexampleinstall
 zipdistinstall: fpc_zipdistinstall
-distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
-cleanall: fpc_cleanall $(addsuffix _cleanall,$(TARGET_DIRS))
+clean: fpc_clean
+distclean: fpc_distclean
+cleanall: fpc_cleanall
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall distclean cleanall info makefiles
+.PHONY: debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: lcl components ide idepkg tools all clean
-.SUFFIXES: .rc .res
-%.res: %.rc
-	windres -i $< -o $@ --preprocessor $(RCPP)
-ide:
-ifeq ($(OS_TARGET), win32)
-	$(MAKE) lazarus.res
-endif
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
-idepkg:
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) @$(LAZARUS_IDE_CONFIG)'
-tools: lcl components
-	$(MAKE) -C tools
-all: lcl components designer packager ide
-cleanide:
-	$(DEL) $(wildcard *$(OEXT))
-	$(DEL) $(wildcard *$(PPUEXT))
-	$(DEL) $(wildcard *$(RSTEXT))
-	$(DEL) $(wildcard ./designer/*$(OEXT))
-	$(DEL) $(wildcard ./designer/*$(PPUEXT))
-	$(DEL) $(wildcard ./debugger/*$(OEXT))
-	$(DEL) $(wildcard ./debugger/*$(PPUEXT))
-	$(DEL) $(wildcard ./packager/*$(OEXT))
-	$(DEL) $(wildcard ./packager/*$(PPUEXT))
-	$(DEL) $(wildcard ./doceditor/*$(OEXT))
-	$(DEL) $(wildcard ./doceditor/*$(PPUEXT))
-ifeq ($(OS_TARGET), win32)
-	$(DEL) $(wildcard *.res)
-	$(DEL) lazarus.owr
-endif
-clean: cleanall cleanide
+.PHONY: cleartarget all
+cleartarget:
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/allideintf$(PPUEXT)
+all: cleartarget allideintf$(PPUEXT)

@@ -1,0 +1,43 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+name=ideintf
+version=0.9b
+
+[compiler]
+unitdir=../lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
+        ../components/units/$(CPU_TARGET)/$(OS_TARGET) .
+unittargetdir=units
+options=-gl
+
+[target]
+units=allideintf
+implicitunits=idecommands propedits objinspstrconsts objectinspector columndlg \
+  componenteditors graphpropedits listviewpropedit imagelisteditor \
+  componenttreeview
+
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \
+      $(wildcard ./units/*$(OEXT)) \
+      $(wildcard ./units/*$(PPUEXT)) \
+      $(wildcard ./units/*$(RSTEXT))
+
+[require]
+packages=fcl
+
+[default]
+lcldir=../lcl
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allideintf$(PPUEXT)
+
+all: cleartarget allideintf$(PPUEXT)
+
+# end.
+

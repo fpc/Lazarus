@@ -192,6 +192,7 @@ ResourceString
   ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';
   ctsDesignerDirectory = 'Designer Directory';
+  ctsIDEIntfDirectory = 'IDEIntf Directory';
   ctsJITFormDirectory = 'JITForm Directory';
   ctsDesignerUnitsDirectory = 'Designer Units';
   ctsCompiledSrcPath = 'Compiled SrcPath';

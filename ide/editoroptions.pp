@@ -44,8 +44,8 @@ uses
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
-  SynHighlighterUNIXShellScript,
-  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
+  SynHighlighterUNIXShellScript, Laz_XMLCfg,
+  IDECommands, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
 
 type

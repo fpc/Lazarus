@@ -41,19 +41,19 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, Controls, LCLProc, LCLType, LCLIntf, FileCtrl, LMessages, Forms,
-  Buttons, ComCtrls, SysUtils, Dialogs, StdCtrls, GraphType, Graphics, Extctrls,
-  Menus,
+  Classes, SysUtils, TypInfo,Controls, LCLProc, LCLType, LCLIntf, FileCtrl,
+  LMessages, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
+  Extctrls, Menus,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
-  SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynHighlighterPas,
+  SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, //SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   // IDE units
-  EditorOptions, CustomFormEditor, KeyMapping, FormEditor, Project,
+  IDECommands, EditorOptions, CustomFormEditor, KeyMapping, FormEditor, Project,
   FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
-  TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
+  MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts,
+  BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts, Compiler,
   SortSelectionDlg, EncloseSelectionDlg, ClipBoardHistory, DiffDialog,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch;
 
@@ -2465,7 +2465,7 @@ begin
            NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
         tkSString :
            NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-        tkUnKnown,tkLString,tkWString,tkAString,tkVariant :
+        tkUnknown,tkLString,tkWString,tkAString,tkVariant :
            NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
       end;
 

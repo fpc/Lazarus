@@ -35,7 +35,7 @@ uses
   LCLIntf, LCLType,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, IDECommands;
 
 const
   { editor commands constants. see syneditkeycmds.pp for more
@@ -238,10 +238,6 @@ const
   ecCustomToolLast       = ecUserFirst + 2999;
 
 
-type
-  TCommandArea = (caSourceEditor, caDesigner);
-  TCommandAreas = set of TCommandArea;
-  
 const
   caAll = [caSourceEditor, caDesigner];
   caSrcEditOnly = [caSourceEditor];
@@ -256,14 +252,10 @@ type
 
   //---------------------------------------------------------------------------
   // TKeyCommandCategory is used to divide the key commands in handy packets
-  TKeyCommandCategory = class(TList)
+  TKeyCommandCategory = class(TIDECommandCategory)
   public
-    Name: string;
-    Description: string;
-    Parent: TKeyCommandCategory;
-    Areas: TCommandAreas;
     procedure Clear; override;
-    procedure Delete(Index: Integer);
+    procedure Delete(Index: Integer); override;
     constructor Create(const AName, ADescription: string;
       TheAreas: TCommandAreas);
   end;
@@ -1628,10 +1620,13 @@ var NewKey1,NewKey2:integer;
   AText:AnsiString;
   DummyRelation, CurRelation:TKeyCommandRelation;
 begin
+  // set defaults
   NewKey1:=VK_UNKNOWN;
   NewShiftState1:=[];
   NewKey2:=VK_UNKNOWN;
   NewShiftState2:=[];
+  
+  // get settings for key1
   NewKey1:=EditorKeyStringToVKCode(Key1KeyComboBox.Text);
   if NewKey1<>VK_UNKNOWN then
   begin
@@ -1640,7 +1635,10 @@ begin
     if Key1ShiftCheckBox.Checked then include(NewShiftState1,ssShift);
   end;
 
+  // get old relation
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
+  
+  // search for conflict
   DummyRelation:=KeyCommandRelationList.Find(NewKey1,NewShiftState1,
                                                       CurRelation.Parent.Areas);
   if (DummyRelation<>nil) 
@@ -2531,8 +2529,8 @@ end;
 
 procedure TKeyCommandCategory.Clear;
 begin
-  Name:='';
-  Description:='';
+  fName:='';
+  fDescription:='';
   inherited Clear;
 end;
 
@@ -2546,9 +2544,9 @@ constructor TKeyCommandCategory.Create(const AName, ADescription: string;
   TheAreas: TCommandAreas);
 begin
   inherited Create;
-  Name:=AName;
-  Description:=ADescription;
-  Areas:=TheAreas;
+  FName:=AName;
+  FDescription:=ADescription;
+  FAreas:=TheAreas;
 end;
 
 

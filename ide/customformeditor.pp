@@ -38,10 +38,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Math, AbstractFormeditor, Controls, PropEdits, TypInfo,
-  Forms, Menus, Dialogs, AVL_Tree, ObjectInspector, JITForms, NonControlForms,
-  ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
-  Designerprocs;
+  // LCL+FCL
+  Classes, SysUtils, TypInfo, Math, Controls, Forms, Menus, Dialogs,
+  // components
+  AVL_Tree, PropEdits, ObjectInspector, IDECommands,
+  // IDE
+  JITForms, NonControlForms, AbstractFormEditor, ComponentReg, IDEProcs,
+  ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 

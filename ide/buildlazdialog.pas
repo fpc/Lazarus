@@ -107,6 +107,7 @@ type
     FItemCodeTools: TBuildLazarusItem;
     FItemExamples: TBuildLazarusItem;
     FItemIDE: TBuildLazarusItem;
+    FItemIDEIntf: TBuildLazarusItem;
     FItemJITForm: TBuildLazarusItem;
     FItemLCL: TBuildLazarusItem;
     FItemPkgReg: TBuildLazarusItem;
@@ -143,6 +144,7 @@ type
     property ItemSynEdit: TBuildLazarusItem read FItemSynEdit;
     property ItemCodeTools: TBuildLazarusItem read FItemCodeTools;
     property ItemPkgReg: TBuildLazarusItem read FItemPkgReg;
+    property ItemIDEIntf: TBuildLazarusItem read FItemIDEIntf;
     property ItemJITForm: TBuildLazarusItem read FItemJITForm;
     property ItemIDE: TBuildLazarusItem read FItemIDE;
     property ItemExamples: TBuildLazarusItem read FItemExamples;
@@ -984,6 +986,7 @@ begin
   FItemSynEdit:=FindName('SynEdit');
   FItemCodeTools:=FindName('CodeTools');
   FItemPkgReg:=FindName('PkgReg');
+  FItemIDEIntf:=FindName('IDEIntf');
   FItemJITForm:=FindName('JITForm');
   FItemIDE:=FindName('IDE');
   FItemExamples:=FindName('Examples');
@@ -1118,6 +1121,7 @@ begin
   FItemSynEdit:=nil;
   FItemCodeTools:=nil;
   FItemPkgReg:=nil;
+  FItemIDEIntf:=nil;
   FItemJITForm:=nil;
   FItemIDE:=nil;
   FItemExamples:=nil;
@@ -1145,6 +1149,11 @@ begin
     'PackageRegistration',lisBuildPkgReg,'packager/registration',
     mmBuild);
   fItems.Add(FItemPkgReg);
+
+  // IDE Interface
+  FItemIDEIntf:=TBuildLazarusItem.Create(
+    'IDEIntf',lisBuildIDEIntf,'ideintf',mmBuild);
+  fItems.Add(FItemIDEIntf);
 
   // JITForm
   FItemJITForm:=TBuildLazarusItem.Create(
