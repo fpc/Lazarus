@@ -89,8 +89,9 @@ begin
     
   ImgID:=0;
   case State of
-    bsDisabled: if NumGlyphs>1 then ImgID:=1;
-    bsDown:  if NumGlyphs>2 then ImgID:=2;
+    bsDisabled:  if NumGlyphs>1 then ImgID:=1;
+    bsDown:      if NumGlyphs>2 then ImgID:=2;
+    bsExclusive: if NumGlyphs>3 then ImgID:=3;
   end;
 
   Result := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
