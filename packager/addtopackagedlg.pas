@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
   Dialogs, FileUtil, ComCtrls, LazarusIDEStrConsts, IDEOptionDefs, InputHistory,
-  AVL_Tree, CodeToolManager, IDEDefs, IDEProcs, EnvironmentOpts, PackageSystem,
+  OldAvLTree, CodeToolManager, IDEDefs, IDEProcs, EnvironmentOpts, PackageSystem,
   PackageDefs, ComponentReg;
   
 type

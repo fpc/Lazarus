@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, LFMTrees,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, OldAvLTree, LFMTrees,
   SourceChanger, CustomCodeTool, CodeToolsStructs;
 
 type

@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LazarusIDEStrConsts, Dialogs, AVL_Tree, FileUtil, IDEProcs, IDEOptionDefs,
+  LazarusIDEStrConsts, Dialogs, OldAvLTree, FileUtil, IDEProcs, IDEOptionDefs,
   ComponentReg, PackageDefs, PackageSystem;
   
 type

@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
+  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, OldAvLTree,
   IDECommands,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, PackageDefs, PackageSystem, PackageEditor;

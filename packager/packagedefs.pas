@@ -45,7 +45,7 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, AVL_Tree,
+  Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, OldAvLTree,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
   FileUtil, LazarusIDEStrConsts, IDEProcs, ComponentReg, TransferMacros,
   FileReferenceList, PublishModule;

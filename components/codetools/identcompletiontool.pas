@@ -55,7 +55,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree, CodeToolMemManager,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, OldAvLTree, CodeToolMemManager,
   SourceChanger, FindDeclarationTool, PascalParserTool;
   
 

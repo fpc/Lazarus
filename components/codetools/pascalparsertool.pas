@@ -43,7 +43,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree;
+  BasicCodeTools, LinkScanner, CodeCache, OldAvLTree;
 
 type
   TProcHeadAttribute = (

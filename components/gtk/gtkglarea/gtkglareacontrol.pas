@@ -20,8 +20,8 @@ unit GTKGLAreaControl;
 interface
 
 uses
-  Classes, SysUtils, LCLType, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
-  Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
+  Classes, SysUtils, LCLType, LCLIntf, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
+  Forms, Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
   LResources, GTKInt, GLib, Gtk, NVGL, GTKGLArea_Int;
   
 type
@@ -328,14 +328,13 @@ procedure TCustomGTKGLAreaControl.UpdateFrameTimeDiff;
 var
   hour, minutes, secs, msecs, usecs: word;
 begin
-  GetTime(hour, minutes, secs, msecs, usecs);
-  FCurrentFrameTime:=(((minutes*60)+secs) * 1000)+msecs;
+  FCurrentFrameTime:=GetTickCount;
   if FLastFrameTime=0 then
     FLastFrameTime:=FCurrentFrameTime;
   // calculate time since last call:
   FFrameDiffTime:=FCurrentFrameTime-FLastFrameTime;
-  // if the hour changed, the minutes restarts:
-  if (FFrameDiffTime<0) then inc(FFrameDiffTime,60*60*1000);
+  // if the counter is reset restart:
+  if (FFrameDiffTime<0) then FFrameDiffTime:=1;
   FLastFrameTime:=FCurrentFrameTime;
 end;
 

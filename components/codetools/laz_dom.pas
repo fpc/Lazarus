@@ -47,7 +47,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, AVL_Tree;
+  SysUtils, Classes, OldAvLTree;
 
 
 type
@@ -1633,6 +1633,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2004/11/06 19:49:12  mattias
+  renamed avl_tree.pas to oldavltree.pas for new fpc 1.9.5
+
   Revision 1.7  2004/10/28 09:38:16  mattias
   fixed COPYING.modifiedLGPL links
 

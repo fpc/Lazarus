@@ -39,7 +39,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeTree, CodeAtom, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, SourceChanger, CustomCodeTool, CodeToolsStructs,
+  LinkScanner, OldAvLTree, SourceChanger, CustomCodeTool, CodeToolsStructs,
   StdCodeTools;
 
 type

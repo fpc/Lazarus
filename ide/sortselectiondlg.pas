@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, SynEdit, Buttons, StdCtrls,
-  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, TextTools,
+  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, OldAvLTree, TextTools,
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
   
 type

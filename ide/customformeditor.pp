@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, TypInfo, Math, LCLProc, Graphics, Controls, Forms, Menus,
   Dialogs,
   // components
-  AVL_Tree, PropEdits, ObjectInspector, IDECommands,
+  OldAvLTree, PropEdits, ObjectInspector, IDECommands,
   // IDE
   JITForms, NonControlForms, FormEditingIntf, ComponentReg, IDEProcs,
   ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;

@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools, AVL_Tree,
+  Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools, OldAvLTree,
   CodeToolMemManager;
 
 //-----------------------------------------------------------------------------

@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, TypInfo, SourceChanger, FindDeclarationTool,
+  LinkScanner, OldAvLTree, TypInfo, SourceChanger, FindDeclarationTool,
   ExtractProcTool;
 
 type

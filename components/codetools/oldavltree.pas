@@ -25,7 +25,7 @@
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
 }
-unit AVL_Tree;
+unit OldAvLTree;
 
 {$ifdef FPC}{$mode objfpc}{$endif}{$H+}
 

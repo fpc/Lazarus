@@ -42,7 +42,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, PascalParserTool,
   StdCodeTools, CodeTemplatesTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree;
+  LinkScanner, OldAvLTree;
 
 
 type

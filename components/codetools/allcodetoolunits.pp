@@ -19,7 +19,7 @@ uses
   FindDeclarationTool, StdCodeTools, MethodJumpTool, EventCodeTool,
   CodeCompletionTool, LinkScanner, FindDeclarationCache, BasicCodeTools,
   CodeTree, CodeAtom, SourceChanger, CodeToolMemManager, CodeCache,
-  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, AVL_Tree,
+  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, OldAvLTree,
   CodeToolsStrConsts, MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs,
   // fast xml units
   laz_dom, laz_xmlcfg, laz_xmlread, laz_xmlwrite;
@@ -32,6 +32,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/11/06 19:49:11  mattias
+  renamed avl_tree.pas to oldavltree.pas for new fpc 1.9.5
+
   Revision 1.15  2004/07/10 18:17:28  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

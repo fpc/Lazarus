@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, GraphType, Controls, Menus,
-  AVL_Tree, SynEdit, IDEProcs, EditorOptions;
+  OldAvLTree, SynEdit, IDEProcs, EditorOptions;
   
 type
   TSourceMarks = class;

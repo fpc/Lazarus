@@ -47,7 +47,7 @@ uses
   // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
   // codetools
-  CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
+  CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, OldAvLTree,
   // IDE Interface
   ProjectIntf, LazIDEIntf,
   // IDE

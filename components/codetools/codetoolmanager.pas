@@ -42,7 +42,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
-  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, LFMTrees,
+  ExprEval, LinkScanner, KeywordFuncLists, TypInfo, OldAvLTree, LFMTrees,
   CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
   ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 

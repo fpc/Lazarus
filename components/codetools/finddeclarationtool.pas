@@ -82,7 +82,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, OldAvLTree,
   PascalParserTool, PascalReaderTool, FileProcs, DefineTemplates,
   FindDeclarationCache;
 

@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls,
-  AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
+  OldAvLTree, CodeAtom, CodeCache, CodeToolManager,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, MiscOptions, DialogProcs,
   InputHistory, SearchResultView;
 

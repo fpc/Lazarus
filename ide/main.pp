@@ -66,7 +66,7 @@ uses
   Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
   Dialogs, InterfaceBase, {SetDesigning}
   // codetools
-  AVL_Tree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
+  OldAvLTree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
   DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, IDECommands, SrcEditorIntf,
@@ -10968,6 +10968,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.789  2004/11/06 19:49:11  mattias
+  renamed avl_tree.pas to oldavltree.pas for new fpc 1.9.5
+
   Revision 1.788  2004/11/05 22:05:41  vincents
   Use symbolic constant for restart exitcode.
 

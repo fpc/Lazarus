@@ -1010,7 +1010,7 @@ begin
     Path:='EnvironmentOptions/';
     
     FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
-    
+
     // language
     LoadLanguage;
 
