@@ -351,7 +351,7 @@ begin
                                         ExtraOptions);
       if Result<>mrOk then exit;
       if ExtraOptions<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OPT='''+ExtraOptions+'''';
+        Tool.CmdLineParams:=Tool.CmdLineParams+' OPT="'+ExtraOptions+'"';
       // append target OS
       if Options.TargetOS<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
