@@ -1825,6 +1825,10 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       ConnectSignals(ScrolledWindow^.hscrollbar);
       ConnectSignals(ScrolledWindow^.vscrollbar);
     end;
+    if GtkWidgetIsA(TheWidget,GTK_COMBO_TYPE) then begin
+      ConnectSignals(PGtkCombo(TheWidget)^.entry);
+      ConnectSignals(PGtkCombo(TheWidget)^.button);
+    end;
   end;
 
   procedure ConnectSignals(TheWidget: PGtkWidget);
@@ -1861,7 +1865,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     ConnectChilds(TheWidget);
   end;
   
-
 begin
   if (AWinControl=nil) or (AWidget=nil)
   or (not (csDesigning in AWinControl.ComponentState)) then exit;
@@ -3445,6 +3448,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.121  2002/10/10 08:51:15  lazarus
+  MG: added paint messages for some gtk internal widgets
+
   Revision 1.120  2002/10/09 10:22:55  lazarus
   MG: fixed client origin coordinates
 
