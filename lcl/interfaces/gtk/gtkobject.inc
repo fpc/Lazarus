@@ -334,7 +334,8 @@ procedure TgtkObject.SendCachedLCLMessages;
             ' Control=',LCLControl.Name,':',LCLControl.ClassName,
             ' NewSize=',LCLWidth,',',LCLHeight);
         end;
-        gtk_widget_set_usize(Widget, LCLWidth, LCLHeight);
+        RealizeWidgetSize(Widget,LCLWidth, LCLHeight);
+
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
@@ -601,6 +602,22 @@ procedure TGtkObject.SendCachedGtkMessages;
 
 begin
   SendCachedGtkResizeNotifications;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
+    NewHeight: integer);
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
+  NewHeight: integer);
+begin
+  gtk_widget_set_usize(Widget, NewWidth, NewHeight);
+  if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
+    // the combobox has an entry, which height is not resized
+    // automatically. Do it manually.
+    gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
+      PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4773,7 +4790,7 @@ begin
         SetWindowSizeAndPosition(PgtkWindow(SenderWidget),TWinControl(Sender));
       end else if (LCLControl.Parent<>nil) then begin
         // resize widget
-        gtk_widget_set_usize(SenderWidget,LCLControl.Width,LCLControl.Height);
+        RealizeWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
@@ -5571,6 +5588,7 @@ var
    I,X         : Integer;
    pRowText : PChar;
    BitImage : TBitMap;
+   AnAdjustment: PGtkAdjustment;
 begin
   Result := 0;     // default if nobody sets it
 
@@ -5808,11 +5826,19 @@ begin
            
     csSpinEdit:
       Begin
-        // ToDo: set climb_rate
+        AnAdjustment:=gtk_spin_button_get_adjustment(PgtkSpinButton(Handle));
+        if (AnAdjustment^.lower<>TSpinEdit(Sender).MinValue)
+        or (AnAdjustment^.upper<>TSpinEdit(Sender).MaxValue) then
+        begin
+          AnAdjustment^.lower:=TSpinEdit(Sender).MinValue;
+          AnAdjustment^.upper:=TSpinEdit(Sender).MaxValue;
+          gtk_adjustment_changed(AnAdjustment);
+        end;
         gtk_spin_button_set_digits(PgtkSpinButton(Handle),
                                    TSpinEdit(Sender).Decimal_Places);
         gtk_spin_button_set_value(PgtkSpinButton(Handle),
                                   TSpinEdit(Sender).Value);
+        PgtkSpinButton(Handle)^.climb_rate:=TSpinEdit(Sender).Climb_Rate;
       End;
 
     else
@@ -6831,6 +6857,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.324  2003/02/24 11:51:44  mattias
+  combobox height can now be set, added OI item height option
+
   Revision 1.323  2003/02/23 10:42:06  mattias
   implemented changing TMenuItem.GroupIndex at runtime
 
