@@ -68,6 +68,9 @@ function CharUpper(c: char): char;
 function GetTickCount: DWord; stdcall; external 'kernel32.dll' name 'GetTickCount';
 {$ELSE}
 function GetTickCount: DWord;
+{$ENDIF}
+
+{$IFDEF DebugLCL}
 function GetTickStep: DWord;
 {$ENDIF}
 
@@ -86,8 +89,6 @@ var
     array[TPredefinedClipboardFormat] of TClipboardFormat;
   LowerCaseChars: array[char] of char;
   UpperCaseChars: array[char] of char;
-  LastTickValid: boolean;
-  LastTick: DWord;
 
 {$IFNDEF Win32}
 function GetTickCount: DWord;
@@ -97,6 +98,12 @@ begin
   GetTime(hour, minutes, secs, msecs, usecs);
   Result:=(((hour*60)+minutes)*60+secs)*1000+msecs;
 end;
+{$ENDIF}
+
+{$IFDEF DebugLCL}
+var
+  LastTickValid: boolean;
+  LastTick: DWord;
 
 function GetTickStep: DWord;
 var
@@ -164,7 +171,9 @@ begin
     LowerCaseChars[c]:=s[1];
     UpperCaseChars[c]:=upcase(c);
   end;
+  {$IFDEF DebugLCL}
   LastTickValid:=false;
+  {$ENDIF}
 end;
 
 initialization
@@ -175,6 +184,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2004/02/19 09:57:03  mattias
+  moved GetTickStep to IFDEF DebugLCL
+
   Revision 1.10  2004/02/19 05:07:16  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 
