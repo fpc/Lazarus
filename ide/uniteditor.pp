@@ -49,7 +49,7 @@ uses
   Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
   InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl,
   LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts,
-  SourceEditProcs, SortSelectionDlg;
+  SourceEditProcs, SortSelectionDlg, ClipBoardHistory;
 
 type
   TSourceNoteBook = class;
