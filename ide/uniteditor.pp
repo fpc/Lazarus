@@ -481,6 +481,7 @@ type
     
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
     Procedure CloseFile(PageIndex:integer);
+    procedure FocusEditor;
 
     Procedure ToggleBookmark(Value : Integer);
     Procedure SetBookmark(Value : Integer);
@@ -2843,6 +2844,7 @@ Begin
     Notebook.PageIndex := Notebook.PageIndex+1
   else
     NoteBook.PageIndex := 0;
+  FocusEditor;
 End;
 
 Procedure TSourceNotebook.PrevEditor;
@@ -2852,6 +2854,7 @@ Begin
     Notebook.PageIndex := Notebook.PageIndex-1
   else
     NoteBook.PageIndex := NoteBook.PageCount-1;
+  FocusEditor;
 End;
 
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);
@@ -3222,6 +3225,16 @@ Begin
   {$ENDIF}
 end;
 
+procedure TSourceNotebook.FocusEditor;
+var
+  SrcEdit: TSourceEditor;
+begin
+  if NoteBook=nil then exit;
+  SrcEdit:=FindSourceEditorWithPageIndex(NoteBook.PageIndex);
+  if SrcEdit<>nil then exit;
+  SrcEdit.FocusEditor;
+end;
+
 Procedure TSourceNotebook.NewClicked(Sender: TObject);
 Begin
   if Assigned(FOnNewClicked) then FOnNewClicked(Sender);
@@ -3408,6 +3421,8 @@ Begin
   TempEditor:=GetActiveSE;
   if TempEditor <> nil then
   begin
+    //writeln('TSourceNotebook.NotebookPageChanged ',
+    //  NoteBook.Pages[FindPageWithEditor(TempEditor)]);
     TempEditor.FocusEditor;
     UpdateStatusBar;
     UpdateActiveEditColors;
