@@ -53,6 +53,7 @@ uses
 type
   TStandardCodeTool = class(TIdentCompletionTool)
   private
+    CachedSourceName: string;
     function ReadTilGuessedUnclosedBlock(MinCleanPos: integer;
       ReadOnlyOneBlock: boolean): boolean;
     function ReadForwardTilAnyBracketClose: boolean;
@@ -235,7 +236,8 @@ var NamePos: TAtomPosition;
 begin
   Result:='';
   if not GetSourceNamePos(NamePos) then exit;
-  Result:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
+  CachedSourceName:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
+  Result:=CachedSourceName;
 end;
 
 {-------------------------------------------------------------------------------
@@ -250,13 +252,14 @@ end;
 -------------------------------------------------------------------------------}
 function TStandardCodeTool.GetCachedSourceName: string;
 begin
-  Result:='';
-  if Tree.Root=nil then exit;
-  MoveCursorToNodeStart(Tree.Root);
-  ReadNextAtom; // read source type 'program', 'unit' ...
-  ReadNextAtom; // read name
-  if (CurPos.StartPos<=SrcLen) then
-    Result:=GetAtom;
+  if Tree.Root<>nil then begin
+    MoveCursorToNodeStart(Tree.Root);
+    ReadNextAtom; // read source type 'program', 'unit' ...
+    ReadNextAtom; // read name
+    if (CurPos.StartPos<=SrcLen) then
+      CachedSourceName:=GetAtom;
+  end;
+  Result:=CachedSourceName;
 end;
 
 function TStandardCodeTool.RenameSource(const NewName: string;
@@ -270,6 +273,7 @@ begin
   SourceChangeCache.Replace(gtNone,gtNone,NamePos.StartPos,NamePos.EndPos,
     NewName);
   if not SourceChangeCache.Apply then exit;
+  CachedSourceName:=NewName;
   Result:=true;
 end;
 
