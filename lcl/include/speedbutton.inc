@@ -494,7 +494,6 @@ procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  
   if csDesigning in ComponentState then exit;
   
   if (Button = mbLeft) and Enabled
@@ -667,7 +666,7 @@ begin
   if csDesigning in ComponentState then exit;
   
   if not FMouseInControl
-  and Enabled and (GetCapture = 0) 
+  and Enabled and (GetCapture = 0)
   then begin
     FMouseInControl := True;
     UpdateState(true);
@@ -682,11 +681,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.CMMouseLeave(var Message :TLMessage);
 begin
+writeln('TSpeedButton.CMMouseLeave A ',FMouseInControl,' ',Enabled,' ',FDragging);
   inherited CMMouseLeave(Message);
   if csDesigning in ComponentState then exit;
 
   if FMouseInControl
-  and Enabled and not FDragging
+  and Enabled {and not FDragging}
   then begin
     FMouseInControl := False;
     UpdateState(true);
@@ -705,6 +705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/02/06 06:33:57  mattias
+  fixed message
+
   Revision 1.32  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
