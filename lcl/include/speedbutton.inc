@@ -400,8 +400,6 @@ begin
 
   FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if Caption <> '' then begin
-    Canvas.Brush.Color:=clBlue;
-    Canvas.FillRect(PaintRect);
     TXTStyle := Canvas.TextStyle;
     TXTStyle.Opaque := False;
     TXTStyle.Clipping := True;
@@ -659,6 +657,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/09/12 15:53:10  lazarus
+  MG: small bugfixes
+
   Revision 1.26  2002/09/12 15:35:57  lazarus
   MG: small bugfixes
 
