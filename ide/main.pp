@@ -302,6 +302,8 @@ type
     procedure ProjInspectorOpen(Sender: TObject);
     function ProjInspectorAddUnitToProject(Sender: TObject;
       AnUnitInfo: TUnitInfo): TModalresult;
+    function ProjInspectorRemoveFile(Sender: TObject;
+      AnUnitInfo: TUnitInfo): TModalresult;
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -2296,15 +2298,18 @@ end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
 var frmCompilerOptions:TfrmCompilerOptions;
+  NewCaption: String;
 begin
   frmCompilerOptions:=TfrmCompilerOptions.Create(Application);
   try
+    NewCaption:=Project1.Title;
+    if NewCaption='' then
+      NewCaption:=ExtractFilenameOnly(Project1.ProjectInfoFile);
+    frmCompilerOptions.Caption:='Compiler Options for Project: '+NewCaption;
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
-    frmCompilerOptions.OtherSourcePath:=Project1.SrcPath;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      Project1.SrcPath:=frmCompilerOptions.OtherSourcePath;
-      CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
+      CreateProjectDefineTemplate(Project1.CompilerOptions);
     end;
   finally
     frmCompilerOptions.Free;
@@ -4336,7 +4341,8 @@ begin
     // project knows this file => all the meta data is known
     // -> just load the source
     NewUnitInfo:=Project1.Units[UnitIndex];
-    LoadBufferFlags:=[lbfCheckIfText,lbfUpdateFromDisk];
+    LoadBufferFlags:=[lbfCheckIfText];
+    if not (ofUseCache in Flags) then Include(LoadBufferFlags,lbfUpdateFromDisk);
     if ofRevert in Flags then Include(LoadBufferFlags,lbfRevert);
     Result:=DoLoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
     if Result<>mrOk then exit;
@@ -4749,7 +4755,7 @@ writeln('TMainIDE.DoNewProject A');
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
     Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
-    CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
+    CreateProjectDefineTemplate(Project1.CompilerOptions);
   finally
     Project1.EndUpdate;
   end;
@@ -5167,7 +5173,8 @@ begin
     ProjInspector.OnOpen:=@ProjInspectorOpen;
     ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
-    
+    ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
+
     ProjInspector.LazProject:=Project1;
   end;
   ProjInspector.ShowOnTop;
@@ -7128,7 +7135,8 @@ begin
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
-    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,[ofOnlyIfExists])=mrOk
+    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,
+      [ofOnlyIfExists,ofUseCache])=mrOk
     then begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       MessagesView.ShowOnTop;
@@ -7888,6 +7896,45 @@ begin
   Project1.Modified:=true;
 end;
 
+function TMainIDE.ProjInspectorRemoveFile(Sender: TObject; AnUnitInfo: TUnitInfo
+  ): TModalresult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  ShortUnitName: String;
+  Dummy: Boolean;
+begin
+  Result:=mrOk;
+  AnUnitInfo.IsPartOfProject:=false;
+  if (Project1.MainUnitID>=0)
+  and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
+    BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
+    ShortUnitName:=AnUnitInfo.UnitName;
+    if (ShortUnitName<>'') then begin
+      Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
+        Project1.MainUnitInfo.Source,ShortUnitName);
+      if not Dummy then begin
+        ApplyCodeToolChanges;
+        DoJumpToCodeToolBossError;
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
+    if (AnUnitInfo.FormName<>'') then begin
+      Dummy:=Project1.RemoveCreateFormFromProjectFile(
+          'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
+      if not Dummy then begin
+        ApplyCodeToolChanges;
+        DoJumpToCodeToolBossError;
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
+    ApplyCodeToolChanges;
+  end;
+  Project1.Modified:=true;
+end;
+
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
 var
   CurUnitInfo: TUnitInfo;
@@ -8400,6 +8447,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.530  2003/04/20 23:10:03  mattias
+  implemented inherited project compiler options
+
   Revision 1.529  2003/04/20 20:32:40  mattias
   implemented removing, re-adding, updating project dependencies
 
