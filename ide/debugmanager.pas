@@ -83,13 +83,13 @@ type
   private
     FDebugger: TDebugger;
     FDebuggerUpdateLock: integer;
-    FBreakpointsNotification: TDBGBreakPointsNotification;// Notification for
+    FBreakpointsNotification: TIDEBreakPointsNotification;// Notification for
       // our BreakPoints
 
     // When no debugger is created the IDE stores all debugger settings in its
     // own variables. When the debugger object is created these items point
     // to the corresponding items in the FDebugger object.
-    FBreakPointGroups: TDBGBreakPointGroups;
+    FBreakPointGroups: TIDEBreakPointGroups;
     FWatches: TDBGWatches;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
@@ -98,13 +98,13 @@ type
     FUserSourceFiles: TStringList;
 
     // Breakpoint routines
-    procedure BreakpointAdded(const ASender: TDBGBreakPoints;
-                              const ABreakpoint: TDBGBreakPoint);
-    procedure BreakpointRemoved(const ASender: TDBGBreakPoints;
-                                const ABreakpoint: TDBGBreakPoint);
-    procedure CreateSourceMarkForBreakPoint(const ABreakpoint: TDBGBreakPoint;
+    procedure BreakpointAdded(const ASender: TIDEBreakPoints;
+                              const ABreakpoint: TIDEBreakPoint);
+    procedure BreakpointRemoved(const ASender: TIDEBreakPoints;
+                                const ABreakpoint: TIDEBreakPoint);
+    procedure CreateSourceMarkForBreakPoint(const ABreakpoint: TIDEBreakPoint;
                                             ASrcEdit: TSourceEditor);
-    procedure GetSourceEditorForBreakPoint(const ABreakpoint: TDBGBreakPoint;
+    procedure GetSourceEditorForBreakPoint(const ABreakpoint: TIDEBreakPoint;
                                            var ASrcEdit: TSourceEditor);
 
     // Dialog routines
@@ -164,7 +164,7 @@ const
   );
   
 type
-  TManagedBreakPoint = class(TDBGBreakPoint)
+  TManagedBreakPoint = class(TIDEBreakPoint)
   private
     FMaster: TDBGBreakPoint;
     FSourceMark: TSourceMark;
@@ -173,9 +173,9 @@ type
     procedure OnSourceMarkBeforeFree(Sender: TObject);
   protected
     procedure AssignTo(Dest: TPersistent); override;
+    procedure DoChanged; override;
     function GetHitCount: Integer; override;
     function GetValid: TValidState; override;
-    procedure SetActions(const AValue: TDBGBreakPointActions); override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
     procedure UpdateSourceMarkImage;
@@ -188,13 +188,10 @@ type
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
   
-  TManagedBreakPoints = class(TDBGBreakPoints)
+  TManagedBreakPoints = class(TIDEBreakPoints)
   private
     FMaster: TDBGBreakPoints;
-    FMasterNotification: TDBGBreakPointsNotification;
     procedure SetMaster(const AValue: TDBGBreakPoints);
-    procedure MasterUpdate(const ASender: TDBGBreakPoints;
-                           const ABreakpoint: TDBGBreakPoint);
   public
     constructor Create;
     destructor Destroy; override;
@@ -206,54 +203,12 @@ type
 constructor TManagedBreakPoints.Create;
 begin
   FMaster := nil;
-  FMasterNotification := TDBGBreakPointsNotification.Create;
-  FMasterNotification.AddReference;
-  FMasterNotification.OnUpdate := @MasterUpdate;
-
-  inherited Create(nil, TManagedBreakPoint);
+  inherited Create(TManagedBreakPoint);
 end;
 
 destructor TManagedBreakPoints.Destroy;
 begin
-  FreeThenNil(FMasterNotification);
   inherited Destroy;
-end;
-
-procedure TManagedBreakPoints.MasterUpdate(const ASender: TDBGBreakPoints;
-  const ABreakpoint: TDBGBreakPoint);
-
-  function FindItem: TManagedBreakPoint;
-  var
-    n: Integer;
-  begin
-    for n := 0 to Count - 1 do
-    begin
-      Result := TManagedBreakPoint(Items[n]);
-      if Result.FMaster = ABreakPoint
-      then Exit;
-    end;
-    Result := nil;
-  end;
-  
-var
-  bp: TManagedBreakPoint;
-begin
-  if ABreakPoint = nil
-  then begin
-    Update(nil);
-  end
-  else begin
-    bp := FindItem;
-writeln('TManagedBreakPoints.MasterUpdate B ',ABreakpoint.ClassName,' ',
-  ABreakpoint.Source,' ',ABreakpoint.Line,' ',bp <> nil);
-    if bp <> nil then begin
-      bp.UpdateSourceMark;
-      Update(bp);
-    end else begin
-      writeln('WARNING: TManagedBreakPoints.MasterUpdate unknown breakpoint: ',
-              ABreakpoint.Source,' ',ABreakpoint.Line);
-    end;
-  end;
 end;
 
 procedure TManagedBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
@@ -262,9 +217,6 @@ var
 begin
   if FMaster = AValue then Exit;
   
-  if FMaster <> nil
-  then FMaster.RemoveNotification(FMasterNotification);
-  
   FMaster := AValue;
   if FMaster = nil
   then begin
@@ -272,7 +224,6 @@ begin
       TManagedBreakPoint(Items[n]).ResetMaster;
   end
   else begin
-    FMaster.AddNotification(FMasterNotification);
     FMaster.Assign(Self);
   end;
 end;
@@ -295,13 +246,12 @@ begin
     FSourceMark.IsBreakPoint:=true;
     FSourceMark.Line:=Line;
     FSourceMark.Visible:=true;
-    UpdateSourceMarkImage;
+    UpdateSourceMark;
   end;
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkPositionChanged(Sender: TObject);
 begin
-
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
@@ -312,11 +262,15 @@ end;
 procedure TManagedBreakPoint.AssignTo(Dest: TPersistent);
 begin
   inherited AssignTo(Dest);
-  if TManagedBreakPoints(GetOwner).FMaster <> nil
-  then FMaster := TDBGBreakpoint(Dest);
+  if (TManagedBreakPoints(GetOwner).FMaster <> nil)
+  and (Dest is TDBGBreakPoint)
+  then begin
+    FMaster := TDBGBreakPoint(Dest);
+    FMaster.Slave := Self;
+  end;
 end;
 
-constructor TManagedBreakPoint.Create (ACollection: TCollection );
+constructor TManagedBreakPoint.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FMaster := nil;
@@ -324,8 +278,22 @@ end;
 
 destructor TManagedBreakPoint.Destroy;
 begin
-  FreeAndNil(FMaster);
+  if FMaster <> nil
+  then begin
+    FMaster.Slave := nil;
+    FreeAndNil(FMaster);
+  end;
   inherited Destroy;
+end;
+
+procedure TManagedBreakPoint.DoChanged;
+begin
+  if (FMaster <> nil)
+  and (FMaster.Slave = nil)
+  then FMaster := nil;
+
+  inherited DoChanged;
+  UpdateSourceMark;
 end;
 
 function TManagedBreakPoint.GetHitCount: Integer;
@@ -345,22 +313,16 @@ end;
 procedure TManagedBreakPoint.ResetMaster;
 begin
   FMaster := nil;
-  Changed(False);
-end;
-
-procedure TManagedBreakPoint.SetActions(const AValue: TDBGBreakPointActions);
-begin
-  if Actions=AValue then exit;
-  inherited SetActions(AValue);
-  if FMaster <> nil then FMaster.Actions := AValue;
+  Changed;
 end;
 
 procedure TManagedBreakPoint.SetEnabled(const AValue: Boolean);
 begin
-  if Enabled=AValue then exit;
+  if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
   if FMaster <> nil then FMaster.Enabled := AValue;
-  UpdateSourceMarkImage;
+  // Handled by changed
+  // UpdateSourceMarkImage;
 end;
 
 procedure TManagedBreakPoint.SetExpression(const AValue: String);
@@ -797,13 +759,13 @@ begin
 
   FDebugger := nil;
   FBreakPoints := TManagedBreakPoints.Create;
-  FBreakpointsNotification := TDBGBreakPointsNotification.Create;
+  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
   FBreakpointsNotification.AddReference;
   FBreakpointsNotification.OnAdd := @BreakpointAdded;
   FBreakpointsNotification.OnRemove := @BreakpointRemoved;
   FBreakPoints.AddNotification(FBreakpointsNotification);
   
-  FBreakPointGroups := TDBGBreakPointGroups.Create;
+  FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TDBGWatches.Create(nil, TDBGWatch);
   
   FUserSourceFiles := TStringList.Create;
@@ -824,22 +786,17 @@ begin
 
   if FDebugger <> nil
   then begin
-//@@    if FDebugger.BreakPoints = FBreakPoints
-//@@    then FBreakPoints := nil;
-    if FDebugger.BreakPointGroups = FBreakPointGroups
-    then FBreakPointGroups := nil;
     if FDebugger.Watches = FWatches
     then FWatches := nil;
   
     FreeThenNil(FDebugger);
   end
   else begin
-//@@    FreeThenNil(FBreakPoints);
-    FreeThenNil(FBreakPointGroups);
     FreeThenNil(FWatches);
   end;
   
   FreeThenNil(FBreakPoints);
+  FreeThenNil(FBreakPointGroups);
   FreeThenNil(FBreakpointsNotification);
   FreeThenNil(FUserSourceFiles);
 
@@ -888,16 +845,12 @@ end;
 ------------------------------------------------------------------------------}
 procedure TDebugManager.LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
 begin
-  if FDebugger=nil then begin
-    FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
-                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
-    FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
+  FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
+                                     'Debugging/'+XMLBreakPointGroupsNode+'/');
+  FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
                                  @Project1.LongenFilename,
                                  @FBreakPointGroups.GetGroupByName);
-    FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
-  end else begin
-    FDebugger.LoadFromXMLConfig(XMLConfig,'Debugging/',@Project1.LongenFilename);
-  end;
+  FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
 end;
 
 {------------------------------------------------------------------------------
@@ -907,22 +860,18 @@ end;
 ------------------------------------------------------------------------------}
 procedure TDebugManager.SaveProjectSpecificInfo(XMLConfig: TXMLConfig);
 begin
-  if FDebugger=nil then begin
-    FBreakPointGroups.SaveToXMLConfig(XMLConfig,
-                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
-    FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
-                                 @Project1.ShortenFilename);
-    FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
-  end else begin
-    FDebugger.SaveToXMLConfig(XMLConfig,'Debugging/',@Project1.ShortenFilename);
-  end;
+  FBreakPointGroups.SaveToXMLConfig(XMLConfig,
+                                    'Debugging/'+XMLBreakPointGroupsNode+'/');
+  FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
+                               @Project1.ShortenFilename);
+  FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
 end;
 
 procedure TDebugManager.DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);
 var
   ASrcEdit: TSourceEditor;
   i: Integer;
-  CurBreakPoint: TDBGBreakPoint;
+  CurBreakPoint: TIDEBreakPoint;
   SrcFilename: String;
 begin
   if (AnUnitInfo.EditorIndex<0) or Destroying then exit;
@@ -947,10 +896,10 @@ begin
   end;
 end;
 
-procedure TDebugManager.BreakpointAdded(const ASender: TDBGBreakPoints;
-  const ABreakpoint: TDBGBreakPoint);
+procedure TDebugManager.BreakpointAdded(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
 var
-  BP: TDBGBreakPoint;
+  BP: TBaseBreakPoint;
 begin
 writeln('TDebugManager.BreakpointAdded A ',ABreakpoint.Source,' ',ABreakpoint.Line);
   ABreakpoint.InitialEnabled := True;
@@ -964,8 +913,8 @@ writeln('TDebugManager.BreakpointAdded A ',ABreakpoint.Source,' ',ABreakpoint.Li
   Project1.Modified := True;
 end;
 
-procedure TDebugManager.BreakpointRemoved(const ASender: TDBGBreakPoints;
-  const ABreakpoint: TDBGBreakPoint);
+procedure TDebugManager.BreakpointRemoved(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
 begin
 writeln('TDebugManager.BreakpointRemoved A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark<>nil);
   if TManagedBreakPoint(ABreakpoint).SourceMark<>nil then
@@ -975,7 +924,7 @@ writeln('TDebugManager.BreakpointRemoved A ',ABreakpoint.Source,' ',ABreakpoint.
 end;
 
 procedure TDebugManager.CreateSourceMarkForBreakPoint(
-  const ABreakpoint: TDBGBreakPoint; ASrcEdit: TSourceEditor);
+  const ABreakpoint: TIDEBreakPoint; ASrcEdit: TSourceEditor);
 var
   ManagedBreakPoint: TManagedBreakPoint;
   NewSrcMark: TSourceMark;
@@ -995,7 +944,7 @@ begin
 end;
 
 procedure TDebugManager.GetSourceEditorForBreakPoint(
-  const ABreakpoint: TDBGBreakPoint; var ASrcEdit: TSourceEditor);
+  const ABreakpoint: TIDEBreakPoint; var ASrcEdit: TSourceEditor);
 var
   Filename: String;
 begin
@@ -1023,7 +972,7 @@ end;
 
 function TDebugManager.DoInitDebugger: TModalResult;
 var
-//@@  OldBreakpoints: TDBGBreakpoints;
+//@@  OldBreakpoints: TDBGBreakPoints;
 //@@  OldBreakPointGroups: TDBGBreakPointGroups;
   OldWatches: TDBGWatches;
   
@@ -1043,7 +992,7 @@ var
     // copy the break point list without the group references
 //@@    OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
 //@@    OldBreakpoints.Assign(FBreakPoints);
-    
+
     // copy the groups and all group references
 //@@    OldBreakPointGroups := TDBGBreakPointGroups.Create;
 //@@    OldBreakPointGroups.Regroup(FBreakPointGroups,FBreakPoints,OldBreakPoints);
@@ -1300,7 +1249,7 @@ end;
 function TDebugManager.DoDeleteBreakPoint(const AFilename: string;
   ALine: integer): TModalResult;
 var
-  OldBreakPoint: TDBGBreakPoint;
+  OldBreakPoint: TIDEBreakPoint;
 begin
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
@@ -1314,17 +1263,17 @@ end;
 function TDebugManager.DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
   ): TModalResult;
 var
-  OldBreakPoint: TDBGBreakPoint;
+  OldBreakPoint: TIDEBreakPoint;
 begin
   // consistency check
   if (ASourceMark=nil) or (not ASourceMark.IsBreakPoint)
-  or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TDBGBreakPoint)) then
+  or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
     RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
   
 writeln('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,' ',ASourceMark.Line);
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
-  OldBreakPoint:=TDBGBreakPoint(ASourceMark.Data);
+  OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
 writeln('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,' ',OldBreakPoint.Source,' ',OldBreakPoint.Line);
   OldBreakPoint.Free;
   Project1.Modified:=true;
@@ -1396,6 +1345,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.41  2003/06/03 01:35:39  marc
+  MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
+         TDBGBreakPoint
+
   Revision 1.40  2003/05/30 08:10:51  mattias
   added try except to Application.Run, message on changing debugger items during compile
 

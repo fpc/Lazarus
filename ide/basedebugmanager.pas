@@ -46,7 +46,7 @@ type
   TBaseDebugManager = class(TComponent)
   protected
     FDestroying: boolean;
-    FBreakPoints: TDBGBreakPoints;
+    FBreakPoints: TIDEBreakPoints;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
   public
@@ -81,7 +81,7 @@ type
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property State: TDBGState read GetState;           // The current state of the debugger
-    property BreakPoints: TDBGBreakPoints read FBreakpoints;
+    property BreakPoints: TIDEBreakPoints read FBreakpoints;
     property Destroying: boolean read FDestroying;
   end;
 

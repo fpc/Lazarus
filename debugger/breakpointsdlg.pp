@@ -74,20 +74,20 @@ type
     procedure popDeleteAllClick(Sender: TObject);
   private
     FBaseDirectory: string;
-    FBreakPoints: TDBGBreakPoints;
-    FBreakpointsNotification: TDBGBreakPointsNotification;
+    FBreakPoints: TIDEBreakPoints;
+    FBreakpointsNotification: TIDEBreakPointsNotification;
     FStates: TBreakPointsDlgStates;
-    procedure BreakPointAdd(const ASender: TDBGBreakPoints;
-                            const ABreakpoint: TDBGBreakPoint);
-    procedure BreakPointUpdate(const ASender: TDBGBreakPoints;
-                               const ABreakpoint: TDBGBreakPoint);
-    procedure BreakPointRemove(const ASender: TDBGBreakPoints;
-                               const ABreakpoint: TDBGBreakPoint);
+    procedure BreakPointAdd(const ASender: TIDEBreakPoints;
+                            const ABreakpoint: TIDEBreakPoint);
+    procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
+                               const ABreakpoint: TIDEBreakPoint);
+    procedure BreakPointRemove(const ASender: TIDEBreakPoints;
+                               const ABreakpoint: TIDEBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
-    procedure SetBreakPoints(const AValue: TDBGBreakPoints);
+    procedure SetBreakPoints(const AValue: TIDEBreakPoints);
 
     procedure UpdateItem(const AnItem: TListItem;
-                         const ABreakpoint: TDBGBreakPoint);
+                         const ABreakpoint: TIDEBreakPoint);
     procedure UpdateAll;
   protected
     procedure DoEndUpdate; override;
@@ -98,14 +98,14 @@ type
     destructor Destroy; override;
   public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
-    property BreakPoints: TDBGBreakPoints read FBreakPoints write SetBreakPoints;
+    property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
   end;
 
 
 implementation
 
-procedure TBreakPointsDlg.BreakPointAdd(const ASender: TDBGBreakPoints;
-  const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.BreakPointAdd(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
 var
   Item: TListItem;
   n: Integer;
@@ -122,8 +122,8 @@ begin
   UpdateItem(Item, ABreakPoint);
 end;
 
-procedure TBreakPointsDlg.BreakPointUpdate(const ASender: TDBGBreakPoints;
-  const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.BreakPointUpdate(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
 var
   Item: TListItem;
 begin
@@ -141,8 +141,8 @@ begin
   end;
 end;
 
-procedure TBreakPointsDlg.BreakPointRemove(const ASender: TDBGBreakPoints;
-  const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.BreakPointRemove(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
 begin
   lvBreakPoints.Items.FindData(ABreakpoint).Free;
 end;
@@ -154,7 +154,7 @@ begin
   UpdateAll;
 end;
 
-procedure TBreakPointsDlg.SetBreakPoints(const AValue: TDBGBreakPoints);
+procedure TBreakPointsDlg.SetBreakPoints(const AValue: TIDEBreakPoints);
 begin
   if FBreakPoints=AValue then exit;
   lvBreakPoints.Items.Clear;
@@ -171,7 +171,7 @@ constructor TBreakPointsDlg.Create(AOwner: TComponent);
 begin
   inherited;
   Name:='BreakPointsDlg';
-  FBreakpointsNotification := TDBGBreakPointsNotification.Create;
+  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
   FBreakpointsNotification.AddReference;
   FBreakpointsNotification.OnAdd := @BreakPointAdd;
   FBreakpointsNotification.OnUpdate := @BreakPointUpdate;
@@ -200,11 +200,11 @@ end;
 procedure TBreakPointsDlg.DoJumpToCurrentBreakPoint;
 var
   CurItem: TListItem;
-  CurBreakPoint: TDBGBreakPoint;
+  CurBreakPoint: TIDEBreakPoint;
 begin
   CurItem:=lvBreakPoints.Selected;
   if CurItem=nil then exit;
-  CurBreakPoint:=TDBGBreakPoint(CurItem.Data);
+  CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
   DoJumpToCodePos(CurBreakPoint.Source,CurBreakPoint.Line,0);
 end;
 
@@ -225,11 +225,11 @@ end;
 procedure TBreakPointsDlg.mnuPopupPopup(Sender: TObject);
 var
   Enable: Boolean;
-  CurBreakPoint: TDBGBreakPoint;
+  CurBreakPoint: TIDEBreakPoint;
 begin
   Enable := lvBreakPoints.Selected <> nil;
   if Enable then
-    CurBreakPoint:=TDBGBreakPoint(lvBreakPoints.Selected.Data)
+    CurBreakPoint:=TIDEBreakPoint(lvBreakPoints.Selected.Data)
   else
     CurBreakPoint:=nil;
   popProperties.Enabled := Enable;
@@ -255,17 +255,17 @@ var
   n: Integer;
 begin                                    
   for n := lvBreakPoints.Items.Count - 1 downto 0 do
-    TDBGBreakPoint(lvBreakPoints.Items[n].Data).Free;
+    TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
 var
   CurItem: TListItem;
-  CurBreakPoint: TDBGBreakPoint;
+  CurBreakPoint: TIDEBreakPoint;
 begin
   CurItem:=lvBreakPoints.Selected;
   if CurItem=nil then exit;
-  CurBreakPoint:=TDBGBreakPoint(CurItem.Data);
+  CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
   if MessageDlg('Delete breakpoint?',
     'Delete breakpoint at'#13
     +'"'+CurBreakPoint.Source+'" line '+IntToStr(CurBreakPoint.Line)+'?',
@@ -283,7 +283,7 @@ begin
   begin
     Item := lvBreakPoints.Items[n];
     if Item.Data <> nil
-    then TDBGBreakPoint(Item.Data).Enabled := False;
+    then TIDEBreakPoint(Item.Data).Enabled := False;
   end;
 end;
 
@@ -296,7 +296,7 @@ begin
   begin
     Item := lvBreakPoints.Items[n];
     if Item.Data <> nil
-    then TDBGBreakPoint(Item.Data).Enabled := True;
+    then TIDEBreakPoint(Item.Data).Enabled := True;
   end;
 end;
 
@@ -306,7 +306,7 @@ var
 begin
   CurItem:=lvBreakPoints.Selected;
   if (CurItem=nil) then exit;
-  TDBGBreakPoint(CurItem.Data).Enabled:=not TDBGBreakPoint(CurItem.Data).Enabled;
+  TIDEBreakPoint(CurItem.Data).Enabled:=not TIDEBreakPoint(CurItem.Data).Enabled;
 end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
@@ -320,9 +320,9 @@ begin
 end;
 
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
-  const ABreakpoint: TDBGBreakPoint);
+  const ABreakpoint: TIDEBreakPoint);
 const
-  DEBUG_ACTION: array[TDBGBreakPointAction] of string =
+  DEBUG_ACTION: array[TIDEBreakPointAction] of string =
     ('Break', 'Enable Group', 'Disable Group');
     
   //                 enabled  valid
@@ -331,7 +331,7 @@ const
     {Disabled} ('?',    'Disabled','Invalid'),
     {Endabled} ('?',    'Enabled', 'Invalid'));
 var
-  Action: TDBGBreakPointAction;
+  Action: TIDEBreakPointAction;
   S: String;
   Filename: String;
 begin
@@ -390,7 +390,7 @@ begin
   Exclude(FStates,bpdsItemsNeedUpdate);
   for i:=0 to lvBreakPoints.Items.Count-1 do begin
     CurItem:=lvBreakPoints.Items[i];
-    UpdateItem(CurItem,TDBGBreakPoint(CurItem.Data));
+    UpdateItem(CurItem,TIDEBreakPoint(CurItem.Data));
   end;
 end;
 
@@ -402,6 +402,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.17  2003/06/03 01:35:39  marc
+  MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
+         TDBGBreakPoint
+
   Revision 1.16  2003/05/29 23:14:17  mattias
   implemented jump to code on double click for breakpoints and callstack dlg
 
