@@ -6,8 +6,6 @@
 {*                 All rights reserved.                  *}
 {*********************************************************}
 
-{$DEFINE HL_LAZARUS}
-
 {$i LiteCons.inc}
 
 unit HTMLLite;
@@ -1394,7 +1392,7 @@ else if (FSectionList.FindCursor(PaintPanel.Canvas, X, Y+FSectionList.YOff-FMarg
   NextCursor := Cursor;
 
 PaintPanel.Cursor := NextCursor;
-SetCursor(Screen.Cursors[NextCursor]);
+Cursor:=Screen.Cursors[NextCursor];
 
 if ((NextCursor = HandCursor) or (SectionList.ActiveImage <> Nil)) then
   HTMLTimer.Enabled := True

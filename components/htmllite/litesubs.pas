@@ -627,7 +627,7 @@ const
   ImageSpace = 5;   {extra space for left, right images}
 
 var
-  ListIndent: integer = 35;  {defines successive indents}  
+  ListIndent: integer{$IFNDEF HL_LAZARUS} = 35{$ENDIF};  {defines successive indents}
 
 implementation
 
@@ -5893,6 +5893,11 @@ Fonts.UpdateFonts;
 DefFont.UpdateFont(ParentSectionList, ParentSectionList.FontColor);
 inherited UpdateFonts;
 end;
+
+{$IFDEF HL_LAZARUS}
+initialization
+  ListIndent:=35;
+{$ENDIF}
 
 end.
 
