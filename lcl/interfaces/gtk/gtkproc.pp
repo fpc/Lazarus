@@ -32,6 +32,9 @@ interface
 uses
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
+{$ifdef USE_SYNCHRONIZE}
+  baseunix, unix,
+{$endif}
   {$IFDEF GTK1}
   // MWE:
   // TODO: check if the new keyboard routines require X on GTK2
@@ -918,6 +921,32 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
+{$ifdef USE_SYNCHRONIZE}
+
+var
+  threadsync_pipein, threadsync_pipeout: cint;
+  threadsync_giochannel: pgiochannel;
+
+procedure PrepareSynchronize;
+begin
+  // wake up GUI thread by send a byte through the threadsync pipe
+  fpwrite(threadsync_pipeout, ' ', 1);
+end;
+
+function threadsync_iocallback(source: PGIOChannel; condition: TGIOCondition; 
+  data: gpointer): gboolean; cdecl;
+var
+  thrashspace: char;
+begin
+  // read the sent byte
+  fpread(threadsync_pipein, thrashspace, 1);
+  // execute the to-be synchronized method
+  CheckSynchronize;
+  Result := true;
+end;
+
+{$endif}
+
 procedure InitGTKProc;
 var
   lgs: TLazGtkStyle;
@@ -941,6 +970,14 @@ begin
 
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;
+
+{$ifdef USE_SYNCHRONIZE}
+  { TThread.Synchronize ``glue'' }
+  SynchronizeMethodProc := @PrepareSynchronize;
+  assignpipe(threadsync_pipein, threadsync_pipeout);
+  threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
+  g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, nil);
+{$endif}
 end;
 
 procedure DoneGTKProc;
@@ -955,6 +992,10 @@ begin
   {$ENDIF}
 
   DoneKeyboardTables;
+
+{$ifdef USE_SYNCHRONIZE}
+  SynchronizeMethodProc := nil;
+{$endif}
 end;
 
 initialization
