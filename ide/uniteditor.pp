@@ -2357,7 +2357,6 @@ begin
    TempEditor := GetActiveSE;
    if TempEditor = nil then Exit;
    TempEditor.ErrorLine:=-1;
-writeln('TSourceNotebook.UpdateStatusBar ',TempEditor.Filename);
    Statusbar.Panels[3].Text := TempEditor.Filename;
 
    If TempEditor.Modified then
