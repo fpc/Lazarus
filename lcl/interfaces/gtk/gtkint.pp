@@ -100,7 +100,6 @@ type
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyLCLControl(Sender : TObject);virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
-    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure AssignSelf(Child ,Data : Pointer);virtual;
     procedure ReDraw(Child : Pointer);virtual;
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
@@ -162,23 +161,28 @@ type
     procedure AttachMenu(Sender: TObject);virtual;
     procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
       Color: TColor);virtual;
-    procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
-      var Lines: PPChar; var LineCount: integer);
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
     function HashPaintMessage(p: pointer): integer;virtual;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;virtual;
     
+    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
 
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
+    procedure RemoveCallbacks(Sender : TObject); override;
+    function  RecreateWnd(Sender: TObject): Integer; override;
+  public
+    // for gtk specific components:
+    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
+    procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
-    procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
-    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-    procedure RemoveCallbacks(Sender : TObject); override;
+
+    procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
+      var Lines: PPChar; var LineCount: integer);
   public
     constructor Create; 
     destructor Destroy; override;
@@ -192,7 +196,6 @@ type
     procedure AppTerminate; override;
     procedure Init; override;
     function  UpdateHint(Sender: TObject): Integer; override;
-    function  RecreateWnd(Sender: TObject): Integer; override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -303,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.108  2002/12/03 09:11:36  mattias
+  cleaned up
+
   Revision 1.107  2002/11/25 11:37:19  mattias
   applied patch from Vasily
 

@@ -2471,7 +2471,7 @@ end;
   Params:  Message : not used
   Returns: nothing
 
-  Notifies that the hint visibility is changed
+  Notifies that the hint visibility has changed
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowHintChanged(var Message: TLMessage);
 begin
@@ -2511,6 +2511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2002/12/03 09:28:31  mattias
+  cleaned up
+
   Revision 1.104  2002/11/30 08:35:42  mattias
   TCustomForm.WMDestroy does not Free anymore
 
