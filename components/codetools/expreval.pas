@@ -251,11 +251,29 @@ begin
         else if (Result='') then ErrorPos:=CurPos
         else Result:='0';
         exit;
+      end else if (CompAtom('DEFINED')) then begin
+        // read DEFINED(identifier)
+        if (Result<>'') or (not ReadNextAtom) or (CompAtom('(')=false)
+        or (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
+        Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
+        if Result<>'' then
+          Result:='1'
+        else
+          Result:='0';
+        if (not ReadNextAtom) then begin
+          ErrorPos:=CurPos;
+          exit;
+        end;
       end else begin
         // Identifier
         if (Result<>'') then begin
-          ErrorPos:=CurPos;  exit;
-        end else Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
+          ErrorPos:=CurPos;
+          exit;
+        end else
+          Result:=Variables[copy(Expr,AtomStart,AtomEnd-AtomStart)];
       end;
     end else if IsNumberBeginChar[c] then begin
       // number
