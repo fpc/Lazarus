@@ -100,6 +100,8 @@ type
     );
   TSelectedControlFlags = set of TSelectedControlFlag;
 
+  { TSelectedControl }
+
   TSelectedControl = class
   private
     FCachedFormRelativeLeftTop: TPoint;
@@ -123,6 +125,10 @@ type
     FOwner: TControlSelection;
     FPersistent: TPersistent;
     FUseCache: boolean;
+    FUsedHeight: integer;
+    FUsedLeft: integer;
+    FUsedTop: integer;
+    FUsedWidth: integer;
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
     function GetTop: integer;
@@ -139,6 +145,9 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure GetFormRelativeBounds(var ALeft, ATop, AWidth, AHeight: integer);
+    procedure GetFormRelativeBounds(var ALeft, ATop, AWidth, AHeight: integer;
+                                    StoreAsUsed: boolean);
+    procedure SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
     procedure UpdateCache;
     function IsTopLvl: boolean;
@@ -156,8 +165,12 @@ type
     property OldTop:integer read FOldTop write FOldTop;
     property OldWidth:integer read FOldWidth write FOldWidth;
     property OldHeight:integer read FOldHeight write FOldHeight;
-    property OldFormRelativeLeftTop: TPoint
-      read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
+    property OldFormRelativeLeftTop: TPoint read FOldFormRelativeLeftTop
+                                            write FOldFormRelativeLeftTop;
+    property UsedLeft: integer read FUsedLeft write FUsedLeft;
+    property UsedTop: integer read FUsedTop write FUsedTop;
+    property UsedWidth: integer read FUsedWidth write FUsedWidth;
+    property UsedHeight: integer read FUsedHeight write FUsedHeight;
     property Flags: TSelectedControlFlags read FFlags write FFlags;
     property UseCache: boolean read FUseCache write SetUseCache;
     property IsVisible: boolean read FIsVisible;
@@ -359,6 +372,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure OnIdle(Sender: TObject);
 
     // items
     property Items[Index:integer]:TSelectedControl
@@ -405,6 +419,7 @@ type
     procedure SizeComponents(HorizSizing: TComponentSizing; AWidth: integer;
                              VertSizing: TComponentSizing; AHeight: integer);
     procedure ScaleComponents(Percent: integer);
+    function CheckForLCLChanges(Update: boolean): boolean;
 
     // snapping
     function FindNearestSnapLeft(ALeft, AWidth: integer): integer;
@@ -610,6 +625,23 @@ begin
   end;
 end;
 
+procedure TSelectedControl.GetFormRelativeBounds(var ALeft, ATop, AWidth,
+  AHeight: integer; StoreAsUsed: boolean);
+begin
+  GetFormRelativeBounds(ALeft, ATop, AWidth, AHeight);
+  if StoreAsUsed then
+    SetUsedBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+procedure TSelectedControl.SetUsedBounds(ALeft, ATop, AWidth, AHeight: integer
+  );
+begin
+  FUsedLeft:=ALeft;
+  FUsedTop:=ATop;
+  FUsedWidth:=AWidth;
+  FUsedHeight:=AHeight;
+end;
+
 procedure TSelectedControl.SaveBounds;
 begin
   if not FIsTComponent then exit;
@@ -782,15 +814,22 @@ begin
   FRubberbandType:=rbtSelection;
   FRubberbandCreationColor:=clMaroon;
   FRubberbandSelectionColor:=clNavy;
+  Application.AddOnIdleHandler(@OnIdle);
 end;
 
 destructor TControlSelection.Destroy;
 var g:TGrabIndex;
 begin
+  Application.RemoveAllHandlersOfObject(Self);
   Clear;
   FControls.Free;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].Free;
   inherited Destroy;
+end;
+
+procedure TControlSelection.OnIdle(Sender: TObject);
+begin
+  CheckForLCLChanges(true);
 end;
 
 procedure TControlSelection.BeginUpdate;
@@ -1070,10 +1109,11 @@ var
   NextRealLeft, NextRealTop, NextRealHeight, NextRealWidth: integer;
 begin
   if FControls.Count>=1 then begin
-    Items[0].GetFormRelativeBounds(FRealLeft,FRealTop,FRealWidth,FRealHeight);
+    Items[0].GetFormRelativeBounds(FRealLeft,FRealTop,FRealWidth,FRealHeight,
+                                   true);
     for i:=1 to FControls.Count-1 do begin
       Items[i].GetFormRelativeBounds(
-                         NextRealLeft,NextRealTop,NextRealWidth,NextRealHeight);
+                    NextRealLeft,NextRealTop,NextRealWidth,NextRealHeight,true);
       if FRealLeft>NextRealLeft then begin
         inc(FRealWidth,FRealLeft-NextRealLeft);
         FRealLeft:=NextRealLeft;
@@ -2778,6 +2818,43 @@ begin
   end;
 
   EndResizing(false);
+end;
+
+function TControlSelection.CheckForLCLChanges(Update: boolean): boolean;
+
+  function BoundsChanged(CurItem: TSelectedControl): boolean;
+  var CurLeft, CurTop, CurWidth, CurHeight: integer;
+  begin
+    CurItem.GetFormRelativeBounds(CurLeft,CurTop,CurWidth,CurHeight);
+    Result:=(CurLeft<>CurItem.UsedLeft)
+          or (CurTop<>CurItem.UsedTop)
+          or (CurWidth<>CurItem.UsedWidth)
+          or (CurHeight<>CurItem.UsedHeight);
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=false;
+  if FControls.Count>=1 then begin
+    for i:=0 to FControls.Count-1 do begin
+      if BoundsChanged(Items[i]) then begin
+        Result:=true;
+        break;
+      end;
+    end;
+  end;
+  if Result and Update then begin
+    //debugln('TControlSelection.CheckForLCLChanges');
+    for i:=0 to FControls.Count-1 do
+      if Items[i].IsTComponent and BoundsChanged(Items[i]) then
+        InvalidateMarkersForComponent(TComponent(Items[i].Persistent));
+    if not IsResizing then begin
+      UpdateBounds;
+      DoChangeProperties;
+    end;
+    InvalidateGuideLinesCache;
+  end;
 end;
 
 procedure TControlSelection.DrawGuideLines(DC: TDesignerDeviceContext);

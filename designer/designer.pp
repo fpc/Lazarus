@@ -218,7 +218,7 @@ type
     destructor Destroy; override;
 
     procedure Modified; override;
-    Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
+    procedure SelectOnlyThisComponent(AComponent:TComponent); override;
     function CopySelection: boolean; override;
     function CutSelection: boolean; override;
     function CanPaste: Boolean; override;
@@ -997,17 +997,7 @@ begin
   Result:=true;
   Sender.Dispatch(TheMessage);
   if ControlSelection.SelectionForm=Form then begin
-    if not ControlSelection.IsResizing then begin
-      {debugln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
-        ' ',Sender.Width,',',Sender.Height,
-        ' Type=',TheMessage.SizeType
-        ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
-      ControlSelection.UpdateBounds;
-      if Assigned(FOnPropertiesChanged) then
-        FOnPropertiesChanged(Self);
-    end;
-    ControlSelection.InvalidateGuideLinesCache;
-    ControlSelection.InvalidateMarkersForComponent(Sender);
+    ControlSelection.CheckForLCLChanges(true);
   end;
 end;
 
@@ -1017,14 +1007,7 @@ begin
   Sender.Dispatch(TheMessage);
   //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
   if ControlSelection.SelectionForm=Form then begin
-    if not ControlSelection.IsResizing then begin
-      //debugln('***  TDesigner.MoveControl ',Sender.Name,':',Sender.ClassName,' ',Assigned(FOnPropertiesChanged));
-      ControlSelection.UpdateBounds;
-      if Assigned(FOnPropertiesChanged) then
-        FOnPropertiesChanged(Self);
-    end;
-    ControlSelection.InvalidateGuideLinesCache;
-    ControlSelection.InvalidateMarkersForComponent(Sender);
+    ControlSelection.CheckForLCLChanges(true);
   end;
 end;
 
