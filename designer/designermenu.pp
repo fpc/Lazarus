@@ -110,6 +110,7 @@ type
     property SelectedDesignerMenuItem: string read FSelectedDesignerMenuItem write FSelectedDesignerMenuItem;
     property Editor: TComponentEditor read fEditor write fEditor;
     property ParentCanvas: TCanvas read FParentCanvas write FParentCanvas;
+    property MainPopupMenu: TPopupMenu read DesignerPopupMenu;
 
     // Loading menu functions and initialization function
     procedure LoadMainMenu;
@@ -143,7 +144,7 @@ type
     function MoveUp(DesignerMenuItem: PDesignerMenuItem; Ident: string): Integer;
     function MoveDown(DesignerMenuItem: PDesignerMenuItem; Ident: string): Integer;
     function DeleteItem(DesignerMenuItem: PDesignerMenuItem): Integer;
-    function ChangeCaption(DesignerMenuItem: PDesignerMenuItem; newcaption: string): Integer;
+    function ChangeCaption(DesignerMenuItem: PDesignerMenuItem; const newcaption: string): Integer;
     procedure InsertFromTemplate(Item,Ident: string);
     procedure SaveAsTemplate(Item,Ident: string);
     procedure ReplaceInTemplate(old_Item, new_Item: string);
@@ -157,7 +158,7 @@ type
     function UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind,Action: Integer): TMenuItem;
     
     procedure HideDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem);
-    function GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
+    function GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; const Ident: string): PDesignerMenuItem;
   end;
   
 
@@ -722,9 +723,6 @@ begin
 
   Parent.Invalidate;
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
-  
-  if (Button = mbRight) then
-    Parent.PopupMenu:=DesignerPopupMenu;
 end;
 
 // -------------------------------------------------------------//
@@ -1233,14 +1231,35 @@ end;
 // Some property og some object has changed -> we need to know if caption of some menuitem has changed ----------//
 // --------------------------------------------------------------------------------------------------------------//
 procedure TDesignerMainMenu.OnComponentModified(Sender: TComponent);
+var
+  SelectedComponents: TComponentSelectionList;
+  i: Integer;
+  AComponent: TComponent;
+  AMenuItem: TMenuItem;
+  InvalidateNeeded: Boolean;
+  ADesignerMenuItem: PDesignerMenuItem;
 begin
-   writeln('Hovadoooooo');
-   writeln(Sender.Name);
-  if (Sender is TMenuItem) then
-  begin
-    ChangeCaption(GetDesignerMenuItem(Root, SelectedDesignerMenuItem), TMenuItem(Sender).Caption);
-    writeln(TMenuItem(Sender).Caption);
-    Parent.Invalidate;
+  SelectedComponents:=TComponentSelectionList.Create;
+  GlobalDesignHook.GetSelectedComponents(SelectedComponents);
+  try
+    InvalidateNeeded:=false;
+    for i:=SelectedComponents.Count-1 downto 0 do begin
+      AComponent:=SelectedComponents[i];
+      if AComponent is TMenuItem then begin
+        AMenuItem:=TMenuItem(AComponent);
+        // ToDo
+        // how to get the Designer menu item?
+        ADesignerMenuItem:=GetDesignerMenuItem(Root, AMenuItem.Name);
+        if ADesignerMenuItem<>nil then begin
+          ChangeCaption(ADesignerMenuItem,AMenuItem.Caption);
+          InvalidateNeeded:=true;
+        end;
+      end;
+    end;
+    if InvalidateNeeded then
+      Parent.Invalidate;
+  finally
+    SelectedComponents.Free;
   end;
 end;
 
@@ -1555,7 +1574,8 @@ end;
 
 // ------------------------------------------------------------------------------//
 // ------------------------------------------------------------------------------//
-function TDesignerMainMenu.ChangeCaption(DesignerMenuItem: PDesignerMenuItem; newcaption: string): Integer;
+function TDesignerMainMenu.ChangeCaption(DesignerMenuItem: PDesignerMenuItem;
+  const newcaption: string): Integer;
 begin
   Result:=0;
   InitIndexSequence;
@@ -1583,10 +1603,11 @@ end;
 // -------------------------------------------------------------------------------------------------------------------
 // Finds DesignerMenuItem with identification Ident and returns a pointer to it
 // -------------------------------------------------------------------------------------------------------------------
-function TDesignerMainMenu.GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
+function TDesignerMainMenu.GetDesignerMenuItem(
+  DesignerMenuItem: PDesignerMenuItem; const Ident: string): PDesignerMenuItem;
 begin
   Result:=nil;
-  if (DesignerMenuItem^.ID = Ident) then
+  if (AnsiCompareText(DesignerMenuItem^.ID,Ident)=0) then
     Result:=DesignerMenuItem
   else
   begin
@@ -1611,7 +1632,8 @@ begin
     index_sequence[i]:=-1;
 end;
 
-function TDEsignerMainMenu.CreateIndexSequence(MenuItem: PDesignerMenuItem; Ident: string; Ind: Integer): Boolean;
+function TDEsignerMainMenu.CreateIndexSequence(MenuItem: PDesignerMenuItem;
+  Ident: string; Ind: Integer): Boolean;
 begin
   Result:=false;
   index_sequence[Ind]:=MenuItem^.Index;
