@@ -29,6 +29,7 @@ end;
 
 procedure TSpinEdit.SetMaxValue(const AValue: single);
 begin
+writeln('TSpinEdit.SetMaxValue ',AValue);
   if FMaxValue=AValue then exit;
   FMaxValue:=AValue;
   UpdateControl;

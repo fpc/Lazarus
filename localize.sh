@@ -28,7 +28,7 @@ for lang in de ru es fr; do
   msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
 done
 
-# objectinspector
+# Object Inspector
 rstconv -i objinspstrconsts.rst -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
 for lang in de es fr ru; do
@@ -43,6 +43,24 @@ rstconv -i components/units/codetoolsstrconsts.rst \
 for lang in de fr; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
+done
+
+# SynEdit
+rstconv -i components/units/syneditstrconst.rst \
+  -o components/synedit/languages/synedit.po
+./tools/updatepofiles components/synedit/languages/synedit.po
+for lang in de; do
+  msgfmt components/synedit/languages/synedit.$lang.po \
+    -o components/synedit/languages/synedit.$lang.mo
+done
+
+# SynMacroRecorder
+rstconv -i components/units/synmacrorecorder.rst \
+  -o components/synedit/languages/synmacrorecorder.po
+./tools/updatepofiles components/synedit/languages/synmacrorecorder.po
+for lang in de; do
+  msgfmt components/synedit/languages/synmacrorecorder.$lang.po \
+    -o components/synedit/languages/synmacrorecorder.$lang.mo
 done
 
 # LCL

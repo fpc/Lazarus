@@ -295,10 +295,10 @@ type
     function GetStrValueAt(Index:Integer):AnsiString;
     function GetVarValue:Variant;
     function GetVarValueAt(Index:Integer):Variant;
-    procedure SetFloatValue(NewValue:Extended);
+    procedure SetFloatValue(const NewValue:Extended);
     procedure SetMethodValue(const NewValue:TMethod);
-    procedure SetInt64Value(NewValue:Int64);
-    procedure SetOrdValue(NewValue:Longint);
+    procedure SetInt64Value(const NewValue:Int64);
+    procedure SetOrdValue(const NewValue:Longint);
     procedure SetStrValue(const NewValue:AnsiString);
     procedure SetVarValue(const NewValue:Variant);
     procedure Modified;
@@ -1683,10 +1683,120 @@ begin
     PropertyHook.Modified;
 end;
 
-procedure TPropertyEditor.SetFloatValue(NewValue:Extended);
+procedure TPropertyEditor.SetFloatValue(const NewValue:Extended);
 var
   I:Integer;
   Changed: boolean;
+  
+  Function CallExtendedProc(s : Pointer;Address : Pointer;Value : Extended; INdex,IVAlue : Longint) : Integer;assembler;
+    asm
+       movl S,%esi
+       movl Address,%edi
+       // Push value to set
+       leal Value,%eax
+       pushl (%eax)
+       pushl 4(%eax)
+       pushl 8(%eax)
+       // ? Indexed Procedure
+       movl Index,%eax
+       testl %eax,%eax
+       je .LIPNoPush
+       movl IValue,%eax
+       pushl %eax
+    .LIPNoPush:
+       push %esi
+       call %edi
+    end;
+
+  Function CallSingleProc(s : Pointer;Address : Pointer;Value : Single; INdex,IVAlue : Longint) : Integer;assembler;
+    asm
+       movl S,%esi
+       movl Address,%edi
+       // Push value to set
+       leal Value,%eax
+       pushl (%eax)
+       // ? Indexed Procedure
+       movl Index,%eax
+       testl %eax,%eax
+       je .LIPNoPush
+       movl IValue,%eax
+       pushl %eax
+    .LIPNoPush:
+       push %esi
+       call %edi
+    end;
+
+  Function CallDoubleProc(s : Pointer;Address : Pointer;Value : Double; INdex,IVAlue : Longint) : Integer;assembler;
+    asm
+       movl S,%esi
+       movl Address,%edi
+       // Push value to set
+       leal Value,%eax
+       pushl (%eax)
+       pushl (%eax)
+       // ? Indexed Procedure
+       movl Index,%eax
+       testl %eax,%eax
+       je .LIPNoPush
+       movl IValue,%eax
+       pushl %eax
+    .LIPNoPush:
+       push %esi
+       call %edi
+    end;
+
+  Procedure SetIndexValues (P: PPRopInfo; Var Index,IValue : Longint);
+
+  begin
+    Index:=((P^.PropProcs shr 6) and 1);
+    If Index<>0 then
+      IValue:=P^.Index
+    else
+      IValue:=0;
+  end;
+
+  Procedure MySetFloatProp(Instance : TObject;PropInfo : PPropInfo;
+    Value : Extended);
+
+   Var IValue,Index : longint;
+
+  begin
+    SetIndexValues(PropInfo,Index,Ivalue);
+writeln('MySetFloatProp A ',Index,' ',IValue,' ',(PropInfo^.PropProcs shr 2) and 3,' ',ftSingle=GetTypeData(PropInfo^.PropType)^.FloatType,' ',Value);
+    case (PropInfo^.PropProcs shr 2) and 3 of
+      ptfield:
+        Case GetTypeData(PropInfo^.PropType)^.FloatType of
+          ftSingle:
+            PSingle(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+          ftDouble:
+            PDouble(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+          ftExtended:
+            PExtended(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+  {$ifndef m68k}
+         ftcomp:
+            PComp(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Comp(Value);
+  {$endif m68k}
+          { Uncommenting this code results in a internal error!!
+         ftFixed16:
+           PFixed16(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+         ftfixed32:
+           PFixed32(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+         }
+         end;
+      ptstatic:
+        Case GetTypeData(PropInfo^.PropType)^.FloatType of
+          ftSingle:
+            CallSingleProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
+          ftDouble:
+            CallDoubleProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
+          ftExtended:
+            CallExtendedProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
+        end;
+      ptvirtual:
+        CallExtendedProc(Instance,PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^,Value,Index,IValue);
+    end;
+  end;
+
 begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
@@ -1694,7 +1804,7 @@ begin
       Changed:=Changed or (GetFloatProp(Instance,PropInfo)<>NewValue);
   if Changed then begin
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do SetFloatProp(Instance,PropInfo,NewValue);
+      with FPropList^[I] do MySetFloatProp(Instance,PropInfo,NewValue);
     Modified;
   end;
 end;
@@ -1718,7 +1828,7 @@ begin
   end;
 end;
 
-procedure TPropertyEditor.SetOrdValue(NewValue:Longint);
+procedure TPropertyEditor.SetOrdValue(const NewValue:Longint);
 var
   I:Integer;
   Changed: boolean;
@@ -1816,7 +1926,7 @@ begin
   with FPropList^[Index] do Result:=GetInt64Prop(Instance,PropInfo);
 end;
 
-procedure TPropertyEditor.SetInt64Value(NewValue:Int64);
+procedure TPropertyEditor.SetInt64Value(const NewValue:Int64);
 var
   I:Integer;
   Changed: boolean;
@@ -2172,7 +2282,9 @@ end;
 
 procedure TFloatPropertyEditor.SetValue(const NewValue: ansistring);
 begin
+writeln('TFloatPropertyEditor.SetValue A ',NewValue,'  ',StrToFloat(NewValue));
   SetFloatValue(StrToFloat(NewValue));
+writeln('TFloatPropertyEditor.SetValue B ',GetValue);
 end;
 
 { TStringPropertyEditor }
