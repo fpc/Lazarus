@@ -165,22 +165,22 @@ end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
 begin
-
+  writeln('ToDo: TBitMap.LoadFromResourceName');
 end;
 
 procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
 begin
-
+  writeln('ToDo: TBitMap.LoadFromResourceID');
 end;
 
 procedure TBitmap.LoadFromClipboardFormat(FormatID: TClipboardFormat);
 begin
-  // ToDo
+  writeln('ToDo: TBitMap.LoadFromClipboardFormat');
 end;
 
 procedure TBitmap.SaveToClipboardFormat(FormatID: TClipboardFormat);
 begin
-  // ToDo
+  writeln('ToDo: TBitmap.SaveToClipboardFormat');
 end;
 
 Procedure TBitmap.LoadFromXPMFile(const Filename : String);
@@ -261,7 +261,7 @@ begin
       if BitsPerPixel<>24 then begin
         ColorsUsed:=BmpInfo^.bmiHeader.biClrUsed;
         if ColorsUsed=0 then ColorsUsed:=1 shl ColorsUsed;
-        // s:=SizeOf(TLogPalette)+(CoorsUsed-1)*SizeOf(TPaletteEntry);
+        // s:=SizeOf(TLogPalette)+(ColorsUsed-1)*SizeOf(TPaletteEntry);
       end;
       // Palette is fake now. Then it'll be better!
       // EInOutError.Create('Only truecolor is supported yet.');
@@ -528,6 +528,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2003/02/04 14:36:19  mattias
+  fixed set method in OI
+
   Revision 1.25  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 

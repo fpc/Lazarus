@@ -1709,7 +1709,7 @@ begin
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
       AMethod:=GetMethodProp(Instance,PropInfo);
-      Changed:=Changed or CompareMem(@AMethod,@NewValue,SizeOf(TMethod));
+      Changed:=Changed or not CompareMem(@AMethod,@NewValue,SizeOf(TMethod));
     end;
   if Changed then begin
     for I:=0 to FPropCount-1 do
