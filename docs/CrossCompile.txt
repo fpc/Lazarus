@@ -62,9 +62,9 @@ Install the units:
 This will create the correct directory structure, but probably in the wrong
 directory. Move the /usr/local/lib/fpc/<version>/i386-win32/units directory to
 your fpc install directory. For example if your linux units (e.g. classes.ppu)
-is located in /usr/lib/fpc/1.0.8/units/linux/ then do
-[]$ rm -rf /usr/lib/fpc/1.0.8/units/win32
-[]$ mv /usr/local/lib/fpc/<version>/i386-win32/units /usr/lib/fpc/1.0.8/units/win32
+is located in /usr/lib/fpc/1.0.10/units/linux/ then do
+[]$ rm -rf /usr/lib/fpc/<version>/units/win32
+[]$ mv /usr/local/lib/fpc/<version>/cross/i386-win32/units /usr/lib/fpc/<version>/units/win32
 
 
 3. Making /etc/fpc.cfg target independent:

@@ -341,7 +341,7 @@ Begin
       Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
-        MoveType := 0;
+        MoveType := Size_SourceIsInterface;
         XPos := R.Left;
         YPos := R.Top;
       End;
@@ -437,7 +437,7 @@ Begin
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
-        SizeType := WParam;
+        SizeType := Size_SourceIsInterface; //WParam;
         Width := R.Right - R.Left;
         Height := R.Bottom - R.Top;
       End;
@@ -560,6 +560,9 @@ end;
 
 {
   $Log$
+  Revision 1.37  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.36  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

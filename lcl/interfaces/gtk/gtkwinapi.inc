@@ -5100,6 +5100,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetWindowRelativePosition
+  Params:  Handle : hwnd;
+  Returns: true on success
+
+  returns the current widget Left, Top, relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetWindowRelativePosition(Handle : hwnd;
+  var Left, Top: integer): boolean;
+begin
+  if GtkWidgetIsA(PGtkWidget(Handle),GTk_WIDGET_TYPE) then begin
+    Result:=true;
+    Left:=PGtkWidget(Handle)^.Allocation.X;
+    Top:=PGtkWidget(Handle)^.Allocation.Y;
+  end else
+    Result:=false;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetWindowSize
   Params:  Handle : hwnd;
   Returns: true on success
@@ -8571,6 +8590,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.260  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.259  2003/07/04 22:06:49  mattias
   implemented interface graphics
 

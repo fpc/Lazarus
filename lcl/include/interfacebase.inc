@@ -955,7 +955,7 @@ end;
 
 Function TInterfaceBase.GetParent(Handle : HWND): HWND;
 begin
-Result := 0;
+  Result := 0;
 end;
 
 Function TInterfaceBase.GetProp(Handle : hwnd; Str : PChar): Pointer;
@@ -1062,6 +1062,29 @@ end;
 function TInterfaceBase.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
   Result := 0;
+end;
+
+function TInterfaceBase.GetWindowRelativePosition(Handle : hwnd;
+  var Left, Top: integer): boolean;
+// return the position of the left, top coordinate relative to the clientorigin
+// of its parent. This is normally the Left, Top of a TWinControl. But not
+// during moving/sizing
+var
+  ChildRect: TRect;
+  ParentLeftTop: TPoint;
+  ParentHandle: hWnd;
+begin
+  Result:=false;
+  GetWindowRect(Handle,ChildRect);
+  Left:=ChildRect.Left;
+  Top:=ChildRect.Top;
+  ParentHandle:=GetParent(Handle);
+  if ParentHandle<>0 then begin
+    if not ClientToScreen(ParentHandle,ParentLeftTop) then exit;
+    dec(Left,ParentLeftTop.X);
+    dec(Top,ParentLeftTop.Y);
+  end;
+  Result := true;
 end;
 
 Function TInterfaceBase.GetWindowSize(Handle : hwnd;
@@ -1780,6 +1803,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.95  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

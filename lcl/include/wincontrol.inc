@@ -2304,14 +2304,25 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMove(var Message: TLMMove);
+var
+  NewWidth, NewHeight: integer;
 begin
+  {$IFDEF VerboseSizeMsg}
+  writeln('TWinControl.WMMove A ',Name,':',ClassName,' Message=',Message.XPos,',',Message.YPos,
+    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top);
+  {$ENDIF}
+  NewWidth:=Width;
+  NewHeight:=Height;
   if Message.MoveType=Move_SourceIsInterface then begin
     // interface widget has moved
-    FBoundsRealized:=Bounds(Message.XPos,Message.YPos,
-                            FBoundsRealized.Right-FBoundsRealized.Left,
-                            FBoundsRealized.Bottom-FBoundsRealized.Top);
+    // -> update size and realized bounds
+    NewWidth:=FBoundsRealized.Right-FBoundsRealized.Left;
+    NewHeight:=FBoundsRealized.Bottom-FBoundsRealized.Top;
+    if HandleAllocated then
+      GetWindowSize(Handle,NewWidth,NewHeight);
+    FBoundsRealized:=Bounds(Message.XPos,Message.YPos,NewWidth,NewHeight);
   end;
-  inherited WMMove(Message);
+  SetBoundsKeepBase(Message.XPos,Message.YPos,NewWidth,NewHeight,Parent<>nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -2325,13 +2336,26 @@ end;
   in FBoundsRealized to avoid sending a size message back to the interface.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSize(var Message: TLMSize);
+var
+  NewLeft, NewTop: integer;
 begin
+  {$IFDEF VerboseSizeMsg}
+  writeln('TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
+    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top);
+  {$ENDIF}
+  NewLeft:=Left;
+  NewTop:=Top;
   if Message.SizeType=Size_SourceIsInterface then begin
     // interface widget has resized
-    FBoundsRealized.Right:=FBoundsRealized.Left+Message.Width;
-    FBoundsRealized.Bottom:=FBoundsRealized.Top+Message.Height;
+    // -> update position and realized bounds
+    NewLeft:=FBoundsRealized.Left;
+    NewTop:=FBoundsRealized.Top;
+    if HandleAllocated then
+      GetWindowRelativePosition(Handle,NewLeft,NewTop);
+    FBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
   end;
-  inherited WMSize(Message);
+  
+  SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -2890,6 +2914,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.152  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.151  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

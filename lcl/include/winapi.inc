@@ -600,6 +600,12 @@ begin
   Result := InterfaceObject.GetWindowRect(Handle, Rect);
 end;
 
+function GetWindowRelativePosition(Handle : hwnd;
+  var Left, Top: integer): boolean;
+begin
+  Result := InterfaceObject.GetWindowRelativePosition(Handle,Left,Top);
+end;
+
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
 begin
   Result := InterfaceObject.GetWindowSize(Handle, Width, Height);
@@ -1634,6 +1640,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.89  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

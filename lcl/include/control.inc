@@ -2435,7 +2435,7 @@ var
   Locked: boolean;
 begin
   if (Message.SizeType = Size_Restored)
-    and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
+  and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
 
   {$IFDEF CHECK_POSITION}
   writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
@@ -2483,6 +2483,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.141  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.140  2003/07/06 17:53:34  mattias
   updated polish localization
 

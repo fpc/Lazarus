@@ -120,6 +120,7 @@ function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
 Function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
+function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; override;
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; Override;
@@ -210,6 +211,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2003/07/06 20:40:34  mattias
+  TWinControl.WmSize/Move now updates interface messages smarter
+
   Revision 1.72  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 
