@@ -427,6 +427,28 @@ Begin
   Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
 
+function TWinControl.GetClientRect: TRect;
+{$IFDEF NewClientRect}
+var r: TRect;
+begin
+  Result:=inherited GetClientRect;
+  if not HandleAllocated then exit;
+  LCLLinux.GetClientRect(Handle, r);
+  if (r.Left<>Result.Left)
+  or (r.Top<>Result.Top)
+  or (r.Right<>Result.Right)
+  or (r.Bottom<>Result.Bottom) then begin
+    writeln(' TWinControl.GetClientRect ',Name,':',ClassName,
+      ' Old=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom,
+      ' New=',r.Left,',',r.Top,',',r.Right,',',r.Bottom);
+  end;
+end;
+{$ELSE}
+begin
+  Result:=inherited GetClientRect;
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------}
 {  TWinControl ReCreateWnd                                                     }
 {------------------------------------------------------------------------------}
@@ -2049,6 +2071,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/04/24 16:11:17  lazarus
+  MG: started new client rectangle
+
   Revision 1.59  2002/04/22 13:07:45  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 
