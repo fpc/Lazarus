@@ -321,9 +321,9 @@ type
 
 { TMyComponent }
 
-function TMyComponent.GetValidateRenameAddress: pointer;
+class function TMyComponent.GetValidateRenameAddress: pointer;
 begin
-  Result := @ValidateRename;
+  Result := @TComponent.ValidateRename;
 end;
 {$ENDIF}
 
@@ -331,7 +331,7 @@ function GetTComponentValidateRenameVMTOffset: integer;
 begin
   Result:=GetVMTVirtualMethodOffset(TComponent,
     {$IFNDEF VER1_0}@TComponent.ValidateRename
-    {$ELSE}@TMyComponent.GetValidateRenameAddress{$ENDIF},
+    {$ELSE}TMyComponent.GetValidateRenameAddress{$ENDIF},
     TComponentWithOverrideValidateRename,
     @TComponentWithOverrideValidateRename.ValidateRename);
 end;

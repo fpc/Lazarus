@@ -44,7 +44,7 @@ type
     function GetCount: integer; virtual; abstract;
     function GetItems(Index: integer): TNewIDEItemTemplate; virtual; abstract;
   public
-    constructor Create(const AName: string); virtual; abstract;
+    constructor Create(const AName: string); virtual; {$IFNDEF VER1_0}abstract;{$ENDIF}
     procedure Clear; virtual; abstract;
     procedure Add(ATemplate: TNewIDEItemTemplate); virtual; abstract;
     function LocalizedName: string;  virtual; abstract;
@@ -131,6 +131,16 @@ begin
   NewIDEItems.UnregisterItem(NewItem);
 end;
 
+
+{$IFDEF VER1_0}
+//fpc 1.0 doesn't support virtual abstract constructors,
+//so we just make it virtual
+
+{ TNewIDEItemCategory }
+constructor TNewIDEItemCategory.Create(const AName: string);
+begin
+end;
+{$ENDIF}
 
 { TNewIDEItemTemplate }
 

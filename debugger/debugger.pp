@@ -40,7 +40,8 @@ uses
   Classes, SysUtils, LCLProc, Laz_XMLCfg, IDEProcs, DBGUtils;
 
 type
-  TDBGPtr = type QWord; // datatype pointing to data on the target
+  // datatype pointing to data on the target
+  TDBGPtr = type {$IFNDEF VER1_0}QWord{$ELSE}DWord{$ENDIF};
 
   TDBGLocationRec = record
     Address: TDBGPtr;
@@ -3551,6 +3552,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.65  2004/11/23 12:25:47  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.64  2004/11/21 18:52:47  marc
   * fixed resetting internal breakpoints
 
