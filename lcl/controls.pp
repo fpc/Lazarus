@@ -500,7 +500,6 @@ type
     FLastWidth : Integer;
     FLeft: Integer;
     FMouseEntered: boolean;
-    FOnActivate : TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnConstrainedResize : TConstrainedResizeEvent;
@@ -662,7 +661,7 @@ type
     property ParentColor: Boolean  read FParentColor write FParentColor;
     property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
     property Text: TCaption read GetText write SetText;
-    property OnConstrainedResize : TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
+    property OnConstrainedResize: TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
     property OnTripleClick: TNotifyEvent read FOnTripleClick write FOnTripleClick;
     property OnQuadClick: TNotifyEvent read FOnQuadClick write FOnQuadClick;
@@ -742,7 +741,7 @@ type
     property Width: Integer read FWidth write SetWidth;
     property HelpType: THelpType read FHelpType write FHelpType default htContext;
     property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpKeyWordStored;
-    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored;
   end;
 
 
@@ -1461,6 +1460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.117  2003/05/09 14:21:25  mattias
+  added published properties for gtkglarea
+
   Revision 1.116  2003/05/03 09:53:33  mattias
   fixed popupmenu for component palette
 
