@@ -52,7 +52,6 @@ type
   { TWSCustomSpinEdit }
 
   TWSCustomSpinEdit = class(TWSWinControl)
-  public
     class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; virtual;
     class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; virtual;
     class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; virtual;

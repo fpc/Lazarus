@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  StdCtrls,
+  StdCtrls, Controls,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses, Classes, Windows, Win32Int, InterfaceBase, LCLType;
 
@@ -102,6 +102,7 @@ type
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
       AMultiSelect: boolean); override;
@@ -299,6 +300,20 @@ procedure TWin32WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox;
 begin
   if ACustomListBox.FCompStyle = csListBox then
     Windows.SendMessage(ACustomListBox.Handle, LB_SELITEMRANGE, Windows.WParam(ASelected), Windows.LParam(MakeLParam(AIndex, AIndex)))
+end;
+
+procedure TWin32WSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+var
+  Handle: HWND;
+begin
+  if ACustomListBox.FCompStyle in [csListBox, csCListBox] then
+  begin
+    Handle := ACustomListBox.Handle;
+    if ACustomListBox.BorderStyle = TBorderStyle(bsSingle) Then
+      SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_CLIENTEDGE)
+    else
+      SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) and not WS_EX_CLIENTEDGE);
+  end;
 end;
 
 procedure TWin32WSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);

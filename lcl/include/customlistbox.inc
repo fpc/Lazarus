@@ -66,7 +66,7 @@ begin
   inherited CreateHandle;
   //DebugLn('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
   // create
-  CNSendMessage(LM_SETBORDER, Self, nil);
+  TWSCustomListBoxClass(WidgetSetClass).SetBorder(Self);
 
   // fetch the interface item list
   NewStrings := TWSCustomListBoxClass(WidgetSetClass).GetStrings(Self);

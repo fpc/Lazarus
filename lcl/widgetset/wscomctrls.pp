@@ -123,7 +123,6 @@ type
 
   TWSToolbarClass = class of TWSToolbar;
   TWSToolBar = class(TWSToolWindow)
-  public
 {$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; virtual;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); virtual;

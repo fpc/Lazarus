@@ -53,7 +53,6 @@ type
 
   TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
-  public
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
   end;
 

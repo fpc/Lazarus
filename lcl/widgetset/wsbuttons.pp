@@ -53,7 +53,6 @@ type
   { TWSButton }
 
   TWSButton = class(TWSButtonControl)
-  public
     class procedure DefaultButtonChanged(const AButton: TCustomButton); virtual;
   end;
   TWSButtonClass = class of TWSButton;

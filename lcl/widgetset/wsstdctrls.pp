@@ -67,7 +67,6 @@ type
   { TWSCustomComboBox }
 
   TWSCustomComboBox = class(TWSWinControl)
-  public
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; virtual;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; virtual;
@@ -91,12 +90,12 @@ type
   { TWSCustomListBox }
 
   TWSCustomListBox = class(TWSWinControl)
-  public
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; virtual;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); virtual;
+    class procedure SetBorder(const ACustomListBox: TCustomListBox); virtual;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, 
       AMultiSelect: boolean); virtual;
@@ -113,7 +112,6 @@ type
   { TWSCustomEdit }
 
   TWSCustomEdit = class(TWSWinControl)
-  public
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
 
@@ -125,7 +123,6 @@ type
   { TWSCustomMemo }
 
   TWSCustomMemo = class(TWSCustomEdit)
-  public
     class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); virtual;
   end;
   TWSCustomMemoClass = class of TWSCustomMemo;
@@ -143,7 +140,6 @@ type
   { TWSCustomLabel }
 
   TWSCustomLabel = class(TWSWinControl)
-  public
   end;
   TWSCustomLabelClass = class of TWSCustomLabel;
 
@@ -213,6 +209,10 @@ begin
 end;
 
 procedure TWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+begin
+end;
+
+procedure TWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
 begin
 end;
 
@@ -315,12 +315,12 @@ initialization
 //  RegisterWSComponent(TScrollBar, TWSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWSGroupBox);
-  RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
+//  RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWSComboBox);
-  RegisterWSComponent(TCustomListBox, TWSCustomListBox);
+//  RegisterWSComponent(TCustomListBox, TWSCustomListBox);
 //  RegisterWSComponent(TListBox, TWSListBox);
-  RegisterWSComponent(TCustomEdit, TWSCustomEdit);
-  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
+//  RegisterWSComponent(TCustomEdit, TWSCustomEdit);
+//  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
 //  RegisterWSComponent(TEdit, TWSEdit);
 //  RegisterWSComponent(TMemo, TWSMemo);
 //  RegisterWSComponent(TCustomLabel, TWSCustomLabel);

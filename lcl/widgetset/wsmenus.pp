@@ -52,7 +52,6 @@ type
   { TWSMenuItem }
 
   TWSMenuItem = class(TWSLCLComponent)
-  public
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
   end;
@@ -71,7 +70,6 @@ type
   { TWSPopupMenu }
 
   TWSPopupMenu = class(TWSMenu)
-  public
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); virtual;
   end;
   TWSPopupMenuClass = class of TWSPopupMenu;

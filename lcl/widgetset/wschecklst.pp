@@ -52,7 +52,6 @@ type
   { TWSCheckListBox }
 
   TWSCustomCheckListBox = class(TWSCustomListBox)
-  public
     class function  GetChecked(const ACheckListBox: TCustomCheckListBox; 
       const AIndex: integer): boolean; virtual;
     class procedure SetChecked(const ACheckListBox: TCustomCheckListBox; 
@@ -80,6 +79,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
+//  RegisterWSComponent(TCustomCheckListBox, TWSCustomCheckListBox);
 ////////////////////////////////////////////////////
 end.

@@ -3124,39 +3124,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_SETBORDER:
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETBORDER');
-      end;
-      {$Else}
-      begin
-        if (Sender is TControl) then
-        begin
-          if (TControl(Sender).fCompStyle in [csListBox, csCheckListBox]) then
-            begin
-              { In TempWidget, a viewport is stored }
-              Widget:= PGtkWidget(PGtkBin(Handle)^.child);
-              if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
-              then
-                gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
-              else
-                gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
-            end
-            else if TControl(Sender).fCompStyle = csCListBox then
-            begin
-              if TCListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
-              then
-                gtk_viewport_set_shadow_type(
-                  PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_NONE)
-              else
-                gtk_viewport_set_shadow_type(
-                  PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_IN);
-            end;
-         end;
-      end;
-      {$Endif}
-
       LM_SETSHORTCUT :
       begin
         with TLMShortcut(data^) do begin
@@ -7956,6 +7923,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.577  2004/09/17 07:55:13  micha
+  convert LM_SETBORDER message to interface method
+  fix widgetsets virtual methods to be published
+  fix compilation debugging widgetset registration
+
   Revision 1.576  2004/09/16 14:32:31  micha
   convert LM_SETSELMODE message to interface method
 

@@ -27,7 +27,7 @@ unit GtkWSStdCtrls;
 interface
 
 uses
-  StdCtrls, SysUtils,
+  StdCtrls, SysUtils, Controls,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
@@ -102,6 +102,7 @@ type
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
       AMultiSelect: boolean); override;
@@ -421,6 +422,38 @@ begin
         then gtk_clist_select_row(PGtkCList(Widget), AIndex, 0)
         else gtk_clist_unselect_row(PGtkCList(Widget), AIndex, 0);
       end;
+  end;
+  {$Endif}
+end;
+
+procedure TGtkWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
+var
+  Handle: HWND;
+  Widget      : PGtkWidget;            // pointer to gtk-widget
+begin
+  {$IFdef GTK2}
+  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETBORDER');
+  {$Else}
+  Handle := ACustomListBox.Handle;
+  if (ACustomListBox.fCompStyle in [csListBox, csCheckListBox]) then
+  begin
+    { In TempWidget, a viewport is stored }
+    Widget:= PGtkWidget(PGtkBin(Handle)^.child);
+    if ACustomListBox.BorderStyle = TBorderStyle(bsSingle)
+    then
+      gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
+    else
+      gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
+  end else 
+  if ACustomListBox.fCompStyle = csCListBox then
+  begin
+    if ACustomListBox.BorderStyle = TBorderStyle(bsSingle)
+    then
+      gtk_viewport_set_shadow_type(
+        PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_NONE)
+    else
+      gtk_viewport_set_shadow_type(
+        PGtkViewPort(PGtkBin(Handle)^.Child), GTK_SHADOW_IN);
   end;
   {$Endif}
 end;

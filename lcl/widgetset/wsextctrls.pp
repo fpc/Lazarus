@@ -57,7 +57,6 @@ type
   { TWSCustomNotebook }
 
   TWSCustomNotebook = class(TWSWinControl)
-  public
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); virtual;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
 

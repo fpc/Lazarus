@@ -72,7 +72,6 @@ const
 
   LM_GETSELTEXT     = LM_COMUSER+66;
   LM_SETSELTEXT     = LM_COMUSER+67;
-  LM_SETBORDER      = LM_COMUSER+79;
 
   // TComboBox
   LM_CB_FIRST       = LM_COMUSER+90;  // LM_COMUSER+90
@@ -815,7 +814,6 @@ begin
 
   LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
   LM_SETSELTEXT     :Result:='LM_SETSELTEXT';
-  LM_SETBORDER      :Result:='LM_SETBORDER';
 
   // TComboBox
   //LM_CB_FIRST       :Result:='LM_CB_FIRST';
@@ -925,6 +923,11 @@ end.
 
 {
   $Log$
+  Revision 1.109  2004/09/17 07:55:13  micha
+  convert LM_SETBORDER message to interface method
+  fix widgetsets virtual methods to be published
+  fix compilation debugging widgetset registration
+
   Revision 1.108  2004/09/16 14:32:31  micha
   convert LM_SETSELMODE message to interface method
 

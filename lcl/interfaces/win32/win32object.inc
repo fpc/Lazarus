@@ -330,20 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETBORDER:
-      Begin
-        If Sender is TControl Then
-        Begin
-          If (TControl(Sender).FCompStyle = csListBox)
-          Or (TControl(Sender).FCompStyle = csCListBox) Then
-          Begin
-            If TCustomListBox(Sender).BorderStyle = TBorderStyle(bsSingle) Then
-              SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_CLIENTEDGE)
-            Else
-              SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_CLIENTEDGE);
-          End
-        End;
-      End;
       LM_SETSHORTCUT:
       Begin
         If Sender is TMenuItem Then
@@ -2099,6 +2085,11 @@ End;
 
 {
   $Log$
+  Revision 1.270  2004/09/17 07:55:13  micha
+  convert LM_SETBORDER message to interface method
+  fix widgetsets virtual methods to be published
+  fix compilation debugging widgetset registration
+
   Revision 1.269  2004/09/16 14:32:31  micha
   convert LM_SETSELMODE message to interface method
 

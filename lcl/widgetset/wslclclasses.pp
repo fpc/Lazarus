@@ -249,7 +249,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       if Cmnt <> nil
       then begin
         {$IFDEF VerboseWSRegistration}
-        DebugLn(Indent, '*', CommonClass.Classname, ' method count: ', Cmnt^.Count);
+        DebugLn(Indent, '*', CommonClass.Classname, ' method count: ', IntToStr(Cmnt^.Count));
         Indent := Indent + ' ';
         {$ENDIF}
 
@@ -269,7 +269,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
             if Cvmt^[idx] = SearchAddr
             then begin
               {$IFDEF VerboseWSRegistration}
-              DebugLn(Indent, 'Found at index: ', idx);
+              DebugLn(Indent, 'Found at index: ', IntToStr(idx));
               {$ENDIF}          
               
               if Processed[idx] 
