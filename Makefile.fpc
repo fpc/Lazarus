@@ -12,7 +12,7 @@ packages=fcl regexpr
 
 [target]
 programs=lazarus
-dirs=lcl components designer packager ideintf
+dirs=lcl components ideintf designer packager
 exampledirs=examples
 
 [compiler]
@@ -82,7 +82,7 @@ idepkg:
 tools: lcl components
         $(MAKE) -C tools
 
-all: lcl components designer packager ide
+all: lcl components ideintf designer packager ide
 
 cleanide:
         $(DEL) $(wildcard *$(OEXT))

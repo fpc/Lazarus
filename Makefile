@@ -224,7 +224,7 @@ endif
 endif
 export LAZARUS_CONFIG_DIR
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
-override TARGET_DIRS+=lcl components designer packager ideintf
+override TARGET_DIRS+=lcl components ideintf designer packager
 override TARGET_PROGRAMS+=lazarus
 override TARGET_EXAMPLEDIRS+=examples
 override CLEAN_FILES+=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT)) $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
@@ -2001,9 +2001,9 @@ fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
 TARGET_DIRS_LCL=1
 TARGET_DIRS_COMPONENTS=1
+TARGET_DIRS_IDEINTF=1
 TARGET_DIRS_DESIGNER=1
 TARGET_DIRS_PACKAGER=1
-TARGET_DIRS_IDEINTF=1
 ifdef TARGET_DIRS_LCL
 lcl_all:
 	$(MAKE) -C lcl all
@@ -2089,6 +2089,49 @@ components_makefiles:
 components:
 	$(MAKE) -C components all
 .PHONY: components_all components_debug components_smart components_release components_examples components_shared components_install components_sourceinstall components_exampleinstall components_distinstall components_zipinstall components_zipsourceinstall components_zipexampleinstall components_zipdistinstall components_clean components_distclean components_cleanall components_info components_makefiles components
+endif
+ifdef TARGET_DIRS_IDEINTF
+ideintf_all:
+	$(MAKE) -C ideintf all
+ideintf_debug:
+	$(MAKE) -C ideintf debug
+ideintf_smart:
+	$(MAKE) -C ideintf smart
+ideintf_release:
+	$(MAKE) -C ideintf release
+ideintf_examples:
+	$(MAKE) -C ideintf examples
+ideintf_shared:
+	$(MAKE) -C ideintf shared
+ideintf_install:
+	$(MAKE) -C ideintf install
+ideintf_sourceinstall:
+	$(MAKE) -C ideintf sourceinstall
+ideintf_exampleinstall:
+	$(MAKE) -C ideintf exampleinstall
+ideintf_distinstall:
+	$(MAKE) -C ideintf distinstall
+ideintf_zipinstall:
+	$(MAKE) -C ideintf zipinstall
+ideintf_zipsourceinstall:
+	$(MAKE) -C ideintf zipsourceinstall
+ideintf_zipexampleinstall:
+	$(MAKE) -C ideintf zipexampleinstall
+ideintf_zipdistinstall:
+	$(MAKE) -C ideintf zipdistinstall
+ideintf_clean:
+	$(MAKE) -C ideintf clean
+ideintf_distclean:
+	$(MAKE) -C ideintf distclean
+ideintf_cleanall:
+	$(MAKE) -C ideintf cleanall
+ideintf_info:
+	$(MAKE) -C ideintf info
+ideintf_makefiles:
+	$(MAKE) -C ideintf makefiles
+ideintf:
+	$(MAKE) -C ideintf all
+.PHONY: ideintf_all ideintf_debug ideintf_smart ideintf_release ideintf_examples ideintf_shared ideintf_install ideintf_sourceinstall ideintf_exampleinstall ideintf_distinstall ideintf_zipinstall ideintf_zipsourceinstall ideintf_zipexampleinstall ideintf_zipdistinstall ideintf_clean ideintf_distclean ideintf_cleanall ideintf_info ideintf_makefiles ideintf
 endif
 ifdef TARGET_DIRS_DESIGNER
 designer_all:
@@ -2176,49 +2219,6 @@ packager:
 	$(MAKE) -C packager all
 .PHONY: packager_all packager_debug packager_smart packager_release packager_examples packager_shared packager_install packager_sourceinstall packager_exampleinstall packager_distinstall packager_zipinstall packager_zipsourceinstall packager_zipexampleinstall packager_zipdistinstall packager_clean packager_distclean packager_cleanall packager_info packager_makefiles packager
 endif
-ifdef TARGET_DIRS_IDEINTF
-ideintf_all:
-	$(MAKE) -C ideintf all
-ideintf_debug:
-	$(MAKE) -C ideintf debug
-ideintf_smart:
-	$(MAKE) -C ideintf smart
-ideintf_release:
-	$(MAKE) -C ideintf release
-ideintf_examples:
-	$(MAKE) -C ideintf examples
-ideintf_shared:
-	$(MAKE) -C ideintf shared
-ideintf_install:
-	$(MAKE) -C ideintf install
-ideintf_sourceinstall:
-	$(MAKE) -C ideintf sourceinstall
-ideintf_exampleinstall:
-	$(MAKE) -C ideintf exampleinstall
-ideintf_distinstall:
-	$(MAKE) -C ideintf distinstall
-ideintf_zipinstall:
-	$(MAKE) -C ideintf zipinstall
-ideintf_zipsourceinstall:
-	$(MAKE) -C ideintf zipsourceinstall
-ideintf_zipexampleinstall:
-	$(MAKE) -C ideintf zipexampleinstall
-ideintf_zipdistinstall:
-	$(MAKE) -C ideintf zipdistinstall
-ideintf_clean:
-	$(MAKE) -C ideintf clean
-ideintf_distclean:
-	$(MAKE) -C ideintf distclean
-ideintf_cleanall:
-	$(MAKE) -C ideintf cleanall
-ideintf_info:
-	$(MAKE) -C ideintf info
-ideintf_makefiles:
-	$(MAKE) -C ideintf makefiles
-ideintf:
-	$(MAKE) -C ideintf all
-.PHONY: ideintf_all ideintf_debug ideintf_smart ideintf_release ideintf_examples ideintf_shared ideintf_install ideintf_sourceinstall ideintf_exampleinstall ideintf_distinstall ideintf_zipinstall ideintf_zipsourceinstall ideintf_zipexampleinstall ideintf_zipdistinstall ideintf_clean ideintf_distclean ideintf_cleanall ideintf_info ideintf_makefiles ideintf
-endif
 TARGET_EXAMPLEDIRS_EXAMPLES=1
 ifdef TARGET_EXAMPLEDIRS_EXAMPLES
 examples_all:
@@ -2297,7 +2297,7 @@ idepkg:
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) @$(LAZARUS_IDE_CONFIG)'
 tools: lcl components
 	$(MAKE) -C tools
-all: lcl components designer packager ide
+all: lcl components ideintf designer packager ide
 cleanide:
 	$(DEL) $(wildcard *$(OEXT))
 	$(DEL) $(wildcard *$(PPUEXT))
