@@ -343,9 +343,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Run;
 begin
-  if FMainForm <> nil 
+  if FMainForm <> nil
   then FMainForm.Show;
-   
+
   repeat 
     HandleMessage;
     if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel) 
@@ -411,6 +411,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/05/24 07:16:31  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.22  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 
