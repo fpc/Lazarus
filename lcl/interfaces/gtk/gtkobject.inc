@@ -184,8 +184,7 @@ begin
     if (p^.Message=LM_PAINT) or (p^.Message=LM_GtkPAINT) then begin
       //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
       FPaintMessages.Remove(QueueItem);
-      if p^.Message=LM_PAINT then
-        ReleaseDC(0,P^.WParam);
+      FinalizePaintTagMsg(p);
       Dispose(P);
       OldQueueItem:=QueueItem;
       QueueItem:=QueueItem^.Next;
@@ -967,6 +966,12 @@ var
   procedure SendPaintMessageForGDkWindow(PaintWindow: PGdkWindow);
   var
     AMessage: TLMessage;
+    {$IFDEF VerboseDsgnPaintMsg}
+    Left, Top, Width, Height: integer;
+    {$ENDIF}
+    //Child: PGList;
+    UserData: Pointer;
+    LCLObject: TObject;
   begin
     if PaintWindow=nil then exit;
     // check if PaintWindow is only used internally
@@ -977,22 +982,51 @@ var
       and (Context.WindowList.IndexOf(PaintWindow)>=0))
     then exit;
 
+    if Context.WindowList=nil then
+      Context.WindowList:=TList.Create;
+    Context.WindowList.Add(PaintWindow);
+
+    if (not gdk_window_is_visible(PaintWindow))
+    or (not gdk_window_is_viewable(PaintWindow)) then exit;
+
+    // check if window belongs to another LCL control
+    gdk_window_get_user_data(PaintWindow,@UserData);
+    if (UserData<>nil) and (GtkWidgetIsA(PGtkWidget(UserData),GTK_WIDGET_TYPE))
+    then begin
+      LCLObject:=GetLCLObject(UserData);
+      if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
+    end;
+
     AMessage.Msg := LM_INTERNALPAINT;
     AMessage.WParam := CreateDCForWidget(Context.MainWidget,PaintWindow);
     AMessage.LParam := 0;
     AMessage.Result := 0;
 
-    if Context.WindowList=nil then
-      Context.WindowList:=TList.Create;
-    Context.WindowList.Add(PaintWindow);
-
-    {writeln('SendInternalPaintMessage ',
+    {$IFDEF VerboseDsgnPaintMsg}
+    gdk_window_get_size(PaintWindow,@Width,@Height);
+    gdk_window_get_origin(PaintWindow,@Left,@Top);
+    writeln('SendInternalPaintMessage ',
       AWinControl.Name,':',AWinControl.ClassName,
-      ' InternalWindow=',HexStr(Cardinal(PaintWindow),8));}
+      ' InternalWindow=',HexStr(Cardinal(PaintWindow),8),
+      ' ',Left,',',Top,',',Width,',',Height,
+      ' visible=',gdk_window_is_visible(PaintWindow),
+      ' viewable=',gdk_window_is_viewable(PaintWindow),
+      '');
+    {$ENDIF}
     DeliverMessage(AWinControl,AMessage);
 
     if AMessage.WParam<>0 then
       ReleaseDC(0,HDC(AMessage.WParam));
+      
+    { Normally the childwindows should be explored too, but there are some
+      widgets with bad gdkwindows. ToDo: find a way to determine, if a
+      gdkwindow is good
+
+    Child:=gdk_window_get_children(PaintWindow);
+    while Child<>nil do begin
+      SendPaintMessageForGDkWindow(PGdkWindow(Child^.Data));
+      Child:=Child^.Next;
+    end;}
   end;
   
   procedure ForAllChilds(PaintWidget: PgtkWidget);
@@ -1032,6 +1066,12 @@ var
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.trough);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_forw);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_back);
+    end;
+    if GtkWidgetIsA(PaintWidget,GTK_TEXT_TYPE) then begin
+      SendPaintMessageForGDkWindow(PGtkText(PaintWidget)^.text_area);
+    end;
+    if GtkWidgetIsA(PaintWidget,GTK_ENTRY_TYPE) then begin
+      SendPaintMessageForGDkWindow(PGtkEntry(PaintWidget)^.text_area);
     end;
   end;
 
@@ -3722,8 +3762,7 @@ begin
       // remove message
       if (MsgPtr^.Message=LM_PAINT) or (MsgPtr^.Message=LM_GtkPAINT) then begin
         FPaintMessages.Remove(QueueItem);
-        if MsgPtr^.Message=LM_PAINT then
-          ReleaseDC(0,MsgPtr^.WParam);
+        FinalizePaintTagMsg(MsgPtr);
       end;
       Dispose(MsgPtr);
       OldQueueItem:=QueueItem;
@@ -6651,7 +6690,6 @@ begin
       end;
     end else
       ClientWidget:=TheWidget;
-
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     aDC.Drawable := TheWindow;
     aDC.GC := gdk_gc_new(aDC.Drawable);
@@ -6675,7 +6713,6 @@ begin
     aDC.CurrentBrush := CreateDefaultBrush;
     aDC.CurrentPen := CreateDefaultPen;
   end;
-
 
   Result := HDC(aDC);
   Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
@@ -6848,6 +6885,36 @@ begin
     gdk_font_ref(Result);
 end;
 
+function TgtkObject.CreateRegionCopy(SrcRGN: hRGN): hRGN;
+var
+  GDIObject: PGDIObject;
+begin
+  GDIObject := NewGDIObject(gdiRegion);
+  GDIObject^.GDIRegionObject:=CopyGDKRegion(PGdiObject(SrcRGN)^.GDIRegionObject);
+  Result := hRgn(GDIObject);
+end;
+
+function TgtkObject.DCClipRegionValid(DC: HDC): boolean;
+var
+  ClipRegion: hRGN;
+begin
+  Result:=false;
+  if not IsValidDC(DC) then exit;
+  ClipRegion:=TDeviceContext(DC).ClipRegion;
+  if (ClipRegion<>0) and (not IsValidGDIObject(ClipRegion)) then exit;
+  Result:=true;
+end;
+
+function TgtkObject.CreateEmptyRegion: hRGN;
+var
+  GObject: PGdiObject;
+begin
+  GObject := NewGDIObject(gdiRegion);
+  GObject^.GDIRegionObject := gdk_region_new;
+  Result := HRGN(GObject);
+  //writeln('TgtkObject.CreateEmptyRgn A RGN=',HexStr(Cardinal(Result),8));
+end;
+
 {------------------------------------------------------------------------------
   Function: SetRCFilename
   Params:  const AValue: string
@@ -6955,7 +7022,7 @@ end;
   requests not immediately, but _after_ all requests. This results in changing
   the widget size four times and everytime the LCL gets a message. If the
   control has childs, this will result resizing the childs four times.
-  Therefore LCL size requests for a widget are cached and only the last one is
+  Therefore LCL size requests for a widget are cached and only the final one is
   sent.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetResizeRequest(Widget: PGtkWidget);
@@ -7353,6 +7420,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.378  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.377  2003/06/20 01:37:47  marc
   + Added TCheckListBox component
 

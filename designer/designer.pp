@@ -845,7 +845,10 @@ var
 begin
   Result:=true;
   
-  //writeln('***  TDesigner.PaintControl A ',Sender.Name,':',Sender.ClassName);
+  {$IFDEF VerboseDsgnPaintMsg}
+  writeln('***  TDesigner.PaintControl A ',Sender.Name,':',Sender.ClassName,
+          ' DC=',HexStr(Cardinal(TheMessage.DC),8));
+  {$ENDIF}
   // Set flag
   OldDuringPaintControl:=dfDuringPaintControl in FFlags;
   Include(FFlags,dfDuringPaintControl);
@@ -869,7 +872,8 @@ begin
       );
     {$ENDIF}
     if LastPaintSender=Sender then begin
-      writeln('NOTE: TDesigner.PaintControl E control painted twice: ',Sender.Name,':',Sender.ClassName);
+      //writeln('NOTE: TDesigner.PaintControl E control painted twice: ',
+      //  Sender.Name,':',Sender.ClassName,' DC=',HexStr(Cardinal(TheMessage.DC),8));
       //RaiseException('');
     end;
     LastPaintSender:=Sender;

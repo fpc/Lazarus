@@ -7,7 +7,8 @@ codetoolsdefines.lrs - Icons for CodeTools Defines Editor
 components_images.lrs - Icons and pics for lcl components
 editoroptions.lrs - Icons for editor options
 mainicon.lrs - This is the IDE program icon.
-laz_images.lrs - The icons for the speedbuttons and the menu (Open, Save,...)
+laz_images.lrs - The icons for the speedbuttons, the menu (Open, Save,...),
+                 package windows, codeexplorer
 splash.lrs - the lazarus logo at IDE start
 unitdependencies.lrs - Icons for the unit dependencies.
 
@@ -51,7 +52,7 @@ cd <lazarusdir>/images/
 6. laz_images.lrs
 
 cd <lazarusdir>/images/
-../tools/lazres laz_images.lrs btn_*.xpm pkg_*.xpm menu/menu_*.xpm
+../tools/lazres laz_images.lrs btn_*.xpm pkg_*.xpm menu/menu_*.xpm codeexplorer/*.xpm
 
 
 7. splash.lrs

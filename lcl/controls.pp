@@ -738,7 +738,7 @@ type
     Function  ClientToScreen(const Point : TPoint) : TPoint;
     Function  Dragging : Boolean;
     procedure Show;
-    procedure Update; //override;   //pbd
+    procedure Update; virtual;
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
@@ -924,6 +924,7 @@ type
     procedure Loaded; override;
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
+    procedure Update; override;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
@@ -1098,11 +1099,11 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
 
 
-function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) : integer;
-Function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
+function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer) : integer;
+Function FindDragTarget(const Pos: TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 Function FindControl(Handle : hwnd) : TWinControl;
-function FindLCLControl(const ScreenPos : TPoint) : TControl;
+function FindLCLControl(const ScreenPos: TPoint) : TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
 Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
@@ -1150,8 +1151,8 @@ end;
 {------------------------------------------------------------------------------}
 {  CNSendMessage                                                               }
 {------------------------------------------------------------------------------}
-function CNSendMessage(LM_Message : integer; Sender : TObject;
-  Data : pointer) : integer;
+function CNSendMessage(LM_Message: integer; Sender: TObject;
+  Data: pointer): integer;
 begin
   Result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
@@ -1535,6 +1536,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.129  2003/06/18 11:21:06  mattias
   fixed taborder=0, implemented TabOrder Editor
 

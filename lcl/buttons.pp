@@ -256,6 +256,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnPaint;
     property OnResize;
     property ShowHint;
     property ParentShowHint;
@@ -306,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.45  2003/06/18 11:21:06  mattias
   fixed taborder=0, implemented TabOrder Editor
 

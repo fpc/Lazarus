@@ -198,11 +198,19 @@ const
   GtkPaint_GtkWidget = 2;
 
 type
-  TLMGtkPaint = packed record
-    Msg: Cardinal;
+  TLMGtkPaintData = class
+  public
     Widget: PGtkWidget;
     State: integer; // see GtkPaint_xxx
-    Unused: integer;
+    RepaintAll: boolean;
+    Rect: TRect;
+  end;
+
+  TLMGtkPaint = packed record
+    Msg: Cardinal;
+    Data: TLMGtkPaintData; // WParam
+    Unused: longint;       // LParam
+    Result: longint;
   end;
 
 var

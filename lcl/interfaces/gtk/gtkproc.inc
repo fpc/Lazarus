@@ -219,16 +219,46 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+  function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
+    FreeGtkPaintMsg: boolean): TLMPaint;
 
   Converts a LM_GtkPaint message to a LM_PAINT message
  ------------------------------------------------------------------------------}
-function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
+  FreeGtkPaintMsg: boolean): TLMPaint;
 begin
   Result.Msg:=LM_PAINT;
-  Result.DC:=GetDC(THandle(GtkPaintMsg.Widget));
+  Result.DC:=GetDC(THandle(GtkPaintMsg.Data.Widget));
   Result.Unused:=0;
   Result.Result:=0;
+  if FreeGtkPaintMsg then
+    GtkPaintMsg.Data.Free;
+end;
+
+procedure FinalizePaintMessage(Msg: PLMessage);
+begin
+  if Msg^.Msg=LM_PAINT then begin
+    if Msg^.WParam<>0 then begin
+      ReleaseDC(0,Msg^.WParam);
+      Msg^.WParam:=0;
+    end;
+  end else
+  if Msg^.Msg=LM_GtkPAINT then begin
+    FreeThenNil(TLMGtkPaint(Msg^).Data);
+  end;
+end;
+
+procedure FinalizePaintTagMsg(Msg: PMsg);
+begin
+  if Msg^.Message=LM_PAINT then begin
+    if Msg^.WParam<>0 then begin
+      ReleaseDC(0,Msg^.WParam);
+      Msg^.WParam:=0;
+    end;
+  end else
+  if Msg^.Message=LM_GtkPAINT then begin
+    FreeThenNil(TObject(Msg^.WParam));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -325,10 +355,11 @@ begin
   Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
 end;
 
-Function RegionType(RGN : PGDKRegion) : Longint;
+Function RegionType(RGN: PGDKRegion) : Longint;
 var
   aRect : TGDKRectangle;
-  rRGN  : hRGN;
+  SimpleRGN: PGdkRegion;
+  EmptyRGN: PGdkRegion;
 begin
   If RGN = nil then
     Result := ERROR
@@ -337,13 +368,14 @@ begin
       Result := NULLREGION
   else begin
     gdk_region_get_clipbox(RGN,@aRect);
-    With aRect do
-      rRGN := CreateRectRgn(X, Y, X + Width, Y + Height);
-    if gdk_region_equal(PGDIObject(rRGN)^.GDIRegionObject, RGN) then
+    EmptyRGN:=gdk_region_new;
+    SimpleRGN:=gdk_region_union_with_rect(EmptyRGN,@aRect);
+    if gdk_region_equal(SimpleRGN, RGN) then
       Result := SIMPLEREGION
     else
       Result := COMPLEXREGION;
-    DeleteObject(rRGN);
+    gdk_region_destroy(SimpleRGN);
+    gdk_region_destroy(EmptyRGN);
   end;
 end;
 
@@ -356,7 +388,6 @@ end;
 Procedure SelectGDIRegion(const DC: HDC);
 var
   Region: PGdiObject;
-  DCOrigin: TPoint;
   RGNType : Longint;
 begin
   with TDeviceContext(DC) do
@@ -367,15 +398,44 @@ begin
       Region:=PGDIObject(ClipRegion);
       RGNType := RegionType(Region^.GDIRegionObject);
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
-          gdk_region_offset(Region^.GDIRegionObject,DCOrigin.X,DCOrigin.Y);
         gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
-        if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
-          gdk_region_offset(Region^.GDIRegionObject,-DCOrigin.X,-DCOrigin.Y);
       end;
     end;
   end;
+end;
+
+function CopyGDKRegion(RGN: PGDKRegion): PGDKRegion;
+var
+  EmptyRegion: PGdkRegion;
+begin
+  EmptyRegion := gdk_region_new;
+  Result := gdk_regions_union(RGN, EmptyRegion);
+  gdk_region_destroy(EmptyRegion);
+end;
+
+function GDKRegionAsString(RGN: PGDKRegion): string;
+var
+  aRect: TGDKRectangle;
+begin
+  Result:=HexStr(Cardinal(RGN),8);
+  gdk_region_get_clipbox(RGN,@aRect);
+  Result:=Result+'('+IntToStr(aRect.x)+','+IntToStr(aRect.y)+','
+                    +IntToStr(aRect.Width)+','+IntToStr(aRect.Height)+' '
+                    +'Type='+IntToStr(RegionType(RGN))+')';
+end;
+
+function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
+var
+  EmptyRegion: PGdkRegion;
+  GDkRect: TGDKRectangle;
+begin
+  EmptyRegion := gdk_region_new;
+  GDkRect.x:=ARect.Left;
+  GDkRect.y:=ARect.Top;
+  GDkRect.Width:=ARect.Right-ARect.Left;
+  GDkRect.Height:=ARect.Bottom-ARect.Top;
+  Result := gdk_region_union_with_rect(EmptyRegion,@GDkRect);
+  gdk_region_destroy(EmptyRegion);
 end;
 
 Procedure FreeGDIColor(GDIColor: PGDIColor);
@@ -4199,6 +4259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.185  2002/08/17 23:41:35  mattias
+  many clipping fixes
+
   Revision 1.184  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 

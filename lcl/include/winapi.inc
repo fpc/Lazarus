@@ -714,7 +714,7 @@ begin
   Result := InterfaceObject.Rectangle(DC, X1, Y1, X2, Y2);
 end;
 
-function RectVisible(dc : hdc; ARect: TRect) : Boolean;
+function RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := InterfaceObject.RectVisible(dc,ARect);
 end;
@@ -998,9 +998,11 @@ begin
   InterfaceObject.Sleep(dwMilliseconds);
 end;
 
-function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
+function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
-  Result := InterfaceObject.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop)
+  Result := InterfaceObject.StretchBlt(DestDC, X, Y, Width, Height,
+                                   SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
 end;
 
 function StretchDIBits(DC: HDC; DestX, DestY, DestWidth, DestHeight, SrcX,
@@ -1011,14 +1013,22 @@ begin
                           SrcX,SrcY,SrcWidth,SrcHeight,Bits,BitsInfo,Usage,Rop);
 end;
 
-function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
-  Result := InterfaceObject.StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
+  Result := InterfaceObject.StretchMaskBlt(DestDC, X, Y, Width, Height,
+               SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
 end;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result := InterfaceObject.TextOut(DC, X, Y, Str, Count);
+end;
+
+function UpdateWindow(Handle: HWND): Boolean;
+begin
+  Result := InterfaceObject.UpdateWindow(Handle);
 end;
 
 function WindowFromPoint(Point : TPoint) : HWND;
@@ -1584,6 +1594,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.81  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 

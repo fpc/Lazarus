@@ -45,8 +45,25 @@ type
     FOnGetCodeTree: TOnGetCodeTree;
     FOnJumpToCode: TOnJumpToCode;
     FUpdateCount: integer;
+    ImgIDDefault: integer;
+    ImgIDProgram: Integer;
+    ImgIDUnit: Integer;
+    ImgIDInterfaceSection: Integer;
+    ImgIDImplementation: Integer;
+    ImgIDInitialization: Integer;
+    ImgIDFinalization: Integer;
+    ImgIDTypeSection: Integer;
+    ImgIDType: Integer;
+    ImgIDVarSection: Integer;
+    ImgIDVariable: Integer;
+    ImgIDConstSection: Integer;
+    ImgIDConst: Integer;
+    ImgIDClass: Integer;
+    ImgIDProc: Integer;
+    ImgIDProperty: Integer;
     function GetNodeDescription(ACodeTool: TCodeTool;
                                 CodeNode: TCodeTreeNode): string;
+    function GetNodeImage(CodeNode: TCodeTreeNode): integer;
     procedure CreateNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
            ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
   public
@@ -107,7 +124,38 @@ begin
   RefreshButton.Caption:=dlgUnitDepRefresh;
   OptionsButton.Caption:=dlgFROpts;
   
-  AddResImg(Imagelist1,'srctype_unknown_22x22');
+  ImgIDDefault:=0;
+  AddResImg(Imagelist1,'ce_default');
+  ImgIDProgram:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_program');
+  ImgIDUnit:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_unit');
+  ImgIDInterfaceSection:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_interface');
+  ImgIDImplementation:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_implementation');
+  ImgIDInitialization:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_initialization');
+  ImgIDFinalization:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_finalization');
+  ImgIDTypeSection:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_type');
+  ImgIDType:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_type');
+  ImgIDVarSection:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_variable');
+  ImgIDVariable:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_variable');
+  ImgIDConstSection:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_const');
+  ImgIDConst:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_const');
+  ImgIDClass:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_class');
+  ImgIDProc:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_procedure');
+  ImgIDProperty:=Imagelist1.Count;
+  AddResImg(Imagelist1,'ce_property');
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewRESIZE(Sender: TObject);
@@ -187,6 +235,44 @@ begin
   end;
 end;
 
+function TCodeExplorerView.GetNodeImage(CodeNode: TCodeTreeNode): integer;
+begin
+  case CodeNode.Desc of
+  ctnProgram,ctnLibrary,ctnPackage:
+    Result:=ImgIDProgram;
+  ctnUnit:
+    Result:=ImgIDUnit;
+  ctnInterface:
+    Result:=ImgIDInterfaceSection;
+  ctnImplementation:
+    Result:=ImgIDImplementation;
+  ctnInitialization:
+    Result:=ImgIDInitialization;
+  ctnFinalization:
+    Result:=ImgIDFinalization;
+  ctnTypeSection:
+    Result:=ImgIDTypeSection;
+  ctnTypeDefinition:
+    Result:=ImgIDType;
+  ctnVarSection:
+    Result:=ImgIDVarSection;
+  ctnVarDefinition:
+    Result:=ImgIDVariable;
+  ctnConstSection,ctnResStrSection:
+    Result:=ImgIDConstSection;
+  ctnConstDefinition:
+    Result:=ImgIDConst;
+  ctnClass:
+    Result:=ImgIDClass;
+  ctnProcedure:
+    Result:=ImgIDProc;
+  ctnProperty:
+    Result:=ImgIDProperty;
+  else
+    Result:=ImgIDDefault;
+  end;
+end;
+
 procedure TCodeExplorerView.CreateNodes(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode;
   ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
@@ -205,7 +291,7 @@ begin
   if CodeNode.FirstChild=CodeNode.LastChild then begin
     // node has no childs or one child
     // don't show boring details
-    if CodeNode.Desc in [ctnIdentifier,ctnEnumerationType,ctnRangedArrayType,
+    if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
       ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
       ctnVariantType]
     then begin
@@ -217,7 +303,7 @@ begin
 
   NodeData:=TViewNodeData.Create(CodeNode);
   NodeText:=GetNodeDescription(ACodeTool,CodeNode);
-  NodeImageIndex:=0;
+  NodeImageIndex:=GetNodeImage(CodeNode);
   if InFrontViewNode<>nil then
     ViewNode:=CodeTreeview.Items.InsertObjectBehind(
                                               InFrontViewNode,NodeText,NodeData)

@@ -73,10 +73,10 @@ begin
   Result := 0;
 end;
 
-Function TInterfaceBase.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
-  Msg : UINT; wParam : longint; lParam : longint) : Integer;
+function TInterfaceBase.CallWindowProc(lpPrevWndFunc: TFarProc; Handle: HWND;
+  Msg: UINT; wParam, lParam: LongInt): Integer;
 begin
-  Result := 0;
+  Result:=0;
 end;
 
 function TInterfaceBase.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
@@ -721,23 +721,17 @@ end;
 function TInterfaceBase.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 var
-  Clip, RRGN : hRGN;
-  R : TRect;
+  RRGN : hRGN;
 begin
-  Clip := CreateRectRGN(0,0,0,0);
-  If GetClipRGN(DC, Clip) < 0 then begin
-    GetClipBox(DC, @R);
-    RRGN := CreateRectRgn(R.Left,R.Top,R.Right, R.Bottom);
-    Result := SelectClipRGN(DC, RRGN);
+  If DCClipRegionValid(DC) then begin
+    //writeln('TInterfaceBase.ExcludeClipRect A DC=',HexStr(Cardinal(DC),8),' Rect=',Left,',',Top,',',Right,',',Bottom);
+    // create the rectangle region, that should be excluded
+    RRGN := CreateRectRgn(Left,Top,Right,Bottom);
+    Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
+    //writeln('TInterfaceBase.ExcludeClipRect B Result=',Result);
     DeleteObject(RRGN);
   end else
     Result:=ERROR;
-  DeleteObject(Clip);
-  If Result <> ERROR then begin
-    RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-    Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
-    DeleteObject(RRGN);
-  end;
 end;
 
 function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -745,19 +739,22 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
-  Mode : Longint) : Integer;
+function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint
+  ): Integer;
 var
   OldC, Clip : hRGN;
 begin
-  OldC := CreateRectRGN(0,0,1,1);
+  OldC := CreateEmptyRegion;
   GetClipRGN(DC, OldC);
-  Clip := CreateRectRGN(0,0,1,1);
+  Clip := CreateEmptyRegion;
+  //writeln('TInterfaceBase.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
+  //  ' Clip=',HexStr(Cardinal(Clip),8),' RGn=',HexStr(Cardinal(RGN),8),' Mode=',Mode);
   Result := CombineRGN(Clip, OldC, RGN, Mode);
+  //writeln('TInterfaceBase.ExtSelectClipRGN B Result=',Result);
   If Result <> ERROR then
     Result := SelectClipRGN(DC, Clip);
   DeleteObject(Clip);
-  DeleteObject(oldC);
+  DeleteObject(OldC);
 end;
 
 function TInterfaceBase.FillRect(DC: HDC; const Rect: TRect;
@@ -1041,16 +1038,15 @@ end;
 function TInterfaceBase.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
 var
-  Clip, RRGN : hRGN;
+  RRGN : hRGN;
 begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  Clip := CreateRectRgn(0,0,0,0);
-  If GetClipRGN(DC, Clip) < 0 then
+  //writeln('TInterfaceBase.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),' ',Left,',',Top,',',Right,',',Bottom);
+  If not DCClipRegionValid(DC) then
     Result := ExtSelectClipRGN(DC, RRGN, RGN_COPY)
   else
     Result := ExtSelectClipRGN(DC, RRGN, RGN_AND);
   DeleteObject(RRGN);
-  DeleteObject(Clip);
 end;
 
 Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
@@ -1177,6 +1173,28 @@ end;
 procedure TInterfaceBase.PassCmdLineOptions;
 begin
 
+end;
+
+function TInterfaceBase.CreateRegionCopy(SrcRGN: hRGN): hRGN;
+begin
+  // If the interface has a better way to create a copy it can override this
+  Result:=CreateEmptyRegion;
+  CombineRGN(Result,SrcRGN,SrcRGN,RGN_COPY);
+end;
+
+function TInterfaceBase.DCClipRegionValid(DC: HDC): boolean;
+var
+  Clip: hRGN;
+begin
+  // If the interface has a better way to check a region it can override this
+  Clip:=CreateEmptyRegion;
+  Result:=GetClipRGN(DC,Clip)>=0;
+  DeleteObject(Clip);
+end;
+
+function TInterfaceBase.CreateEmptyRegion: hRGN;
+begin
+  Result:=CreateRectRGN(0,0,0,0);
 end;
 
 Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String;
@@ -1322,9 +1340,32 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.RectVisible(dc : hdc; ARect: TRect) : Boolean;
+{------------------------------------------------------------------------------
+  Function: RectVisible
+  Params:  dc : hdc; ARect: TRect
+  Returns: True if ARect is not completely clipped away.
+ ------------------------------------------------------------------------------}
+function TInterfaceBase.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+var
+  ClipRGN, RectRgn: hRGN;
+  Intersection: Cardinal;
+  CombineResult: Integer;
 begin
-  Result := true;
+  Result:=false;
+  if (ARect.Left>=ARect.Right) or (ARect.Top>ARect.Bottom)
+    or not DCClipRegionValid(DC)
+  then exit;
+  ClipRGN:=CreateEmptyRegion;
+  if GetClipRGN(DC,ClipRGN)>0 then begin
+    RectRgn:=CreateRectRGN(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom);
+    Intersection:=CreateEmptyRegion;
+    CombineResult:=CombineRGN(Intersection,RectRGN,ClipRGN,RGN_AND);
+    if CombineResult in [SimpleRegion,ComplexRegion] then
+      Result:=true;
+    DeleteObject(Intersection);
+    DeleteObject(RectRgn);
+  end;
+  DeleteObject(ClipRGN);
 end;
 
 function TInterfaceBase.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
@@ -1637,13 +1678,16 @@ end;
 
 Function TInterfaceBase.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
-  // Your default here
+  Result := false;
+end;
+
+function TInterfaceBase.UpdateWindow(Handle: HWND): Boolean;
+begin
   Result := false;
 end;
 
 Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
 begin
-  // Your default here
   Result := 0;
 end;
 
@@ -1671,6 +1715,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.87  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 

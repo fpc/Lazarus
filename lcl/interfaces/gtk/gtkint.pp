@@ -139,6 +139,9 @@ type
     function CreateDefaultPen: PGdiObject;virtual;
     procedure UpdateDCTextMetric(DC: TDeviceContext);
     function GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+    function CreateRegionCopy(SrcRGN: hRGN): hRGN; override;
+    function DCClipRegionValid(DC: HDC): boolean; override;
+    function CreateEmptyRegion: hRGN; override;
 
     // images
     procedure LoadXPMFromLazResource(const ResourceName: string;
@@ -340,6 +343,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.129  2003/06/03 10:29:22  mattias
   implemented updates between source marks and breakpoints
 

@@ -67,11 +67,12 @@ type
     procedure(AComponent: TComponent);
   TSendMessageToInterfaceFunction =
     function(LM_Message: Integer; Sender: TObject; data: pointer): integer
-    of object;
+             of object;
 
 var
   SendApplicationMessageFunction: TSendApplicationMessageFunction;
   OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc;
+  // SendMsgToInterface is set in interfacebase.pp
   SendMsgToInterface: TSendMessageToInterfaceFunction;
 
 function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;

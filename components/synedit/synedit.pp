@@ -38,7 +38,6 @@ Known Issues:
   -Registry
   -mouse wheel
   -TBasicAction
-  -TControl.Update
   -Constraints
   -Docking
   -StdActions
@@ -48,8 +47,6 @@ Known Issues:
   -DropFiles
   -WMGetDlgCode
   -THintWindow
-  -TScreenCursors
-  -WMSetCursor
   -DragAcceptFiles
   -Font DBCS / MBCS  double, multi byte character set
 
@@ -675,8 +672,7 @@ type
     property Text: string read GetText write SetText;
     property TopLine: Integer read fTopLine write SetTopLine;                   
     {$IFDEF SYN_LAZARUS}
-    // ToDo: TControl.Update
-    procedure Update; 
+    procedure Update; override;
     {$ENDIF}
   public
     property OnKeyDown;
@@ -3132,8 +3128,8 @@ begin
   Invalidate;
   {$ELSE}
   Paint;
-  {$ENDIF}
   inherited Update;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.PasteFromClipboard;

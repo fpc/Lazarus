@@ -316,7 +316,7 @@ var FormatAtom, FormatTry: Cardinal;
       Result:=false;
       AllID:=gdk_atom_intern('TARGETS',0);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
-      {writeln('BBB2.2 ',HexStr(Cardinal(SelData.Selection),8),
+      {writeln('IsFormatSupported A ',HexStr(Cardinal(SelData.Selection),8),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
       ' SelData.Target=',SelData.Target,' AllID=',AllID,
       ' SelData.TheType=',SelData.TheType,' ',gdk_atom_intern('ATOM',0),
@@ -1838,19 +1838,22 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 var
-  R : TGDKRectangle;
-  RRGN : PGDKRegion;
+  R: TGDKRectangle;
+  RRGN: PGDKRegion;
   GObject: PGdiObject;
+  RegionObj: PGdkRegion;
 begin
   GObject := NewGDIObject(gdiRegion);
   R.X := X1;
   R.Y := Y1;
   R.Width := X2 - X1;
   R.Height := Y2 - Y1;
-  RRGN := GDK_Region_New;
-  GObject^.GDIRegionObject := gdk_region_union_with_rect(RRGN,@R);
+  RRGN := gdk_region_new;
+  RegionObj:=gdk_region_union_with_rect(RRGN,@R);
+  GObject^.GDIRegionObject := RegionObj;
   gdk_region_destroy(RRGN);
   Result := HRGN(GObject);
+  //writeln('TgtkObject.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
 {------------------------------------------------------------------------------
@@ -1888,7 +1891,6 @@ Function TgtkObject.CombineRgn(Dest, Src1, Src2 : HRGN;
 var
   Continue : Boolean;
   D, S1, S2 : PGDKRegion;
-  Tmp1 : PGDKRegion;
   DObj, S1Obj, S2Obj : PGDIObject;
 begin
   Result := SIMPLEREGION;
@@ -1903,20 +1905,17 @@ begin
   end
   else begin
     If DObj^.GDIRegionObject <> nil then begin
-      GDK_Region_Destroy(DObj^.GDIRegionObject);
+      gdk_region_destroy(DObj^.GDIRegionObject);
       DObj^.GDIRegionObject:=nil;
     end;
     S1 := S1Obj^.GDIRegionObject;
     S2 := S2Obj^.GDIRegionObject;
+    //writeln('TgtkObject.CombineRgn A fnCombineMode=',fnCombineMode);
     Case fnCombineMode of
       RGN_AND :
         D := gdk_regions_intersect(S1, S2);
       RGN_COPY :
-        begin
-          Tmp1 := gdk_region_new;
-          D := gdk_regions_union(S1, Tmp1);
-          gdk_region_destroy(Tmp1);
-        end;
+        D := CopyGDKRegion(S1);
       RGN_DIFF :
         D := gdk_regions_subtract(S1, S2);
       RGN_OR :
@@ -1930,6 +1929,8 @@ begin
     end;
     DObj^.GDIRegionObject := D;
     Result := RegionType(D);
+    //writeln('TgtkObject.CombineRgn B Mode=',fnCombineMode,
+    //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
   end;
 end;
 
@@ -2072,7 +2073,7 @@ end;
       RGN_COPY : an exact copy of the source region, same as SelectClipRGN
 
       RGN_DIFF : all points which are in the Clipping Region but
-                 but not in the Source.(Clip - RGN)
+                 not in the Source.(Clip - RGN)
 
       RGN_OR   : all points which are in either the Clip Region or
                  in the Source.(Clip + RGN)
@@ -2085,21 +2086,18 @@ end;
       NullRegion
       SimpleRegion
       ComplexRegion
-
-
  ------------------------------------------------------------------------------}
 function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
   Mode : Longint) : Integer;
 var
-  OldC, Clip,
+  Clip,
   Tmp : hRGN;
   X, Y : Longint;
 begin
   Result := SIMPLEREGION;
   If not IsValidDC(DC) then
-    Result := ERROR;
-  if Result <> ERROR
-  then with TDeviceContext(DC) do
+    Result := ERROR
+  else with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -2107,16 +2105,16 @@ begin
       Result := ERROR;
     end
     else begin
-      OldC := CreateRectRGN(0,0,1,1);
-      If GetClipRGN(DC, OldC) <= 0 then begin
+      //writeln('TgtkObject.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
+      //  ' Mode=',Mode,' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
+      If ClipRegion=0 then begin
+        // there is no clipping region in the DC
         Case Mode of
           RGN_COPY:
             begin
-              Clip := CreateRectRGN(0,0,1,1);
-              Result := CombineRGN(Clip, RGN, RGN, Mode);
+              Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
               If Result <> ERROR then
-                Result := SelectClipRGN(DC, Clip);
-              DeleteObject(Clip);
+                Result := SelectClipRGN(DC, RGN);
             end;
           RGN_OR,
           RGN_XOR,
@@ -2125,7 +2123,7 @@ begin
             begin
               GDK_Window_Get_Size(Drawable, @X, @Y);
               Clip := CreateRectRGN(0,0,X,Y);
-              Tmp := CreateRectRGN(0,0,1,1);
+              Tmp := CreateEmptyRegion;
               Result := CombineRGN(Tmp, Clip, RGN, mode);
               DeleteObject(Clip);
               SelectClipRGN(DC, Tmp);
@@ -2135,7 +2133,6 @@ begin
         end
       else
         Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
-      DeleteObject(OldC);
     end;
   end;
 end;
@@ -2982,10 +2979,9 @@ function TgtkObject.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 begin
   Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
-    Result := ERROR;
-  if Result <> ERROR
-  then with TDeviceContext(DC) do
+  If (not IsValidDC(DC)) then
+    Result := ERROR
+  else with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -3627,8 +3623,6 @@ end;
       NullRegion
       SimpleRegion
       ComplexRegion
-
-
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 var
@@ -3636,16 +3630,18 @@ var
   X, Y : Longint;
   DCOrigin: Tpoint;
 begin
+  // set default values
   Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
-    Result := ERROR;
   If lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
+
+  If not IsValidDC(DC) then
+    Result := ERROR;
   if Result <> ERROR
   then with TDeviceContext(DC) do
   begin
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
     If Not IsValidGDIObject(ClipRegion) then begin
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_window_get_size(Drawable, @X, @Y);
       lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X-DCOrigin.X, Y-DCOrigin.Y);
       Result := SIMPLEREGION;
@@ -3654,10 +3650,8 @@ begin
       Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
-      // the GDIRegionObject is not mapped by the DCOrigin, so we don't need
-      // subtract the DCOffset.
-      lpRect^.Left   := CRect.X;
-      lpRect^.Top    := CRect.Y;
+      lpRect^.Left   := CRect.X-DCOrigin.X;
+      lpRect^.Top    := CRect.Y-DCOrigin.Y;
       lpRect^.Right  := lpRect^.Left + CRect.Width;
       lpRect^.Bottom := lpRect^.Top + CRect.Height;
     end;
@@ -3709,41 +3703,69 @@ end;
   Params: dc, rgn
   Returns: Integer
  
-  Returns the current Clipping Region.
+  Returns a copy of the current Clipping Region.
 
   The result can be one of the following constants
-      Error
-      NullRegion
-      SimpleRegion
-      ComplexRegion
-
-
+     0 = no clipping set
+     1 = ok
+    -1 = error
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
+
+  function GetDefaultClipRgn: longint;
+  var
+    ARect: TRect;
+    GdiObject: PGDIObject;
+  begin
+    Result:=SimpleRegion;
+    GetClipBox(DC,@ARect);
+    GdiObject:=PGdiObject(RGN);
+    if GdiObject^.GDIRegionObject<>nil then
+      gdk_region_destroy(GdiObject^.GDIRegionObject);
+    GdiObject^.GDIRegionObject:=CreateRectGDKRegion(ARect);
+    //writeln('TGTKObject.GetClipRGN A DC=',HexStr(Cardinal(DC),8),
+    //  ' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject),
+    //  ' Result=',Result);
+  end;
+
+var
+  DCOrigin: TPoint;
+  ClipRegionWithDCOffset: PGdkRegion;
 begin
   Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
+  If (not IsValidDC(DC)) then
+    Result := ERROR
+  else If Not IsValidGDIObject(RGN) then begin
     Result := ERROR;
-  if Result <> ERROR
-  then with TDeviceContext(DC) do
+    WriteLn('WARNING: [TGTKObject.GetClipRGN] Invalid HRGN');
+  end
+  else if TDeviceContext(DC).ClipRegion=0 then
+    Result:=GetDefaultClipRgn
+  else if (not IsValidGDIObject(TDeviceContext(DC).ClipRegion)) then
+    Result := ERROR
+  else with TDeviceContext(DC) do
   begin
-    If Not IsValidGDIObject(RGN) then begin
-      Result := ERROR;
-      WriteLn('WARNING: [TgtkObject.CombineRgn] Invalid HRGN');
-    end
-    else begin
-      If Not IsValidGDIObject(ClipRegion) then begin
-        Result := 0;
-      end
-      else begin
-        Result := CombineRGN(RGN, ClipRegion, ClipRegion, RGN_COPY);
-        If Result = NULLREGION then
-          Result := 0
-        else
-          If Result <> ERROR then
-            Result := 1;  
-      end;
-    end;  
+    // create a copy of the current clipregion
+    ClipRegionWithDCOffset:=
+                         CopyGDKRegion(PGdiObject(ClipRegion)^.GDIRegionObject);
+    // move it to the DC offset
+    // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
+    //          then the ClipRegion must be moved to 0,0
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    gdk_region_offset(ClipRegionWithDCOffset,-DCOrigin.x,-DCOrigin.Y);
+    // free the old region in RGN
+    if PGdiObject(RGN)^.GDIRegionObject<>nil then
+      gdk_region_destroy(PGdiObject(RGN)^.GDIRegionObject);
+    // set the new region in RGN
+    PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
+    
+    Result := RegionType(ClipRegionWithDCOffset);
+    //writeln('TGTKObject.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
+    //  ' DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',Result);
+    If Result = NULLREGION then
+      Result := 0
+    else If Result <> ERROR then
+      Result := 1;
   end;
   If Result = ERROR then
     Result := -1;  
@@ -5235,9 +5257,8 @@ function TGTKObject.IntersectClipRect(dc: hdc;
 begin
   Result := SIMPLEREGION;
   If not IsValidDC(DC) then
-    Result := ERROR;
-  if Result <> ERROR
-  then with TDeviceContext(DC) do
+    Result := ERROR
+  else with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
@@ -5268,13 +5289,26 @@ var
   AWindow: PGdkWindow;
   {$EndIf}
 begin
-//  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
+  //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
   LCLObject:=GetLCLObject(Widget);
-  if (LCLObject<>nil) and (LCLObject=CurrentSentPaintMessageTarget) then begin
-    writeln('NOTE: TGTKObject.InvalidateRect during paint message: ',
-      LCLObject.ClassName);
-    //RaiseException('Double paint');
+  if (LCLObject<>nil) then begin
+    if (LCLObject=CurrentSentPaintMessageTarget) then begin
+      writeln('NOTE: TGTKObject.InvalidateRect during paint message: ',
+        LCLObject.ClassName);
+      //RaiseException('Double paint');
+    end;
+    {$IFDEF VerboseDsgnPaintMsg}
+    if (LCLObject is TComponent)
+    and (csDesigning in TComponent(LCLObject).ComponentState) then begin
+      write('TGTKObject.InvalidateRect A ');
+      write(TComponent(LCLObject).Name,':');
+      write(LCLObject.ClassName);
+      with Rect^ do
+        write(' Rect=',Left,',',Top,',',Right,',',Bottom);
+      writeln(' Erase=',bErase);
+    end;
+    {$ENDIF}
   end;
   Result := True;
   gdkRect.X := Rect^.Left;
@@ -5555,7 +5589,10 @@ begin
       if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then
       begin
         FPaintMessages.Remove(FMessageQueue.First);
-        // don't free the DC, this is work for the caller
+        // don't free the DC, this is work for the caller.
+        // Free the data of our internal gtk messages
+        if AMessage^.Message=LM_GtkPAINT then
+          FinalizePaintTagMsg(AMessage);
       end;
       FMessageQueue.Delete(FMessageQueue.First);
     end;
@@ -5667,6 +5704,7 @@ begin
     else begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
+      // create the PointsArray, which is a copy of Points moved by the DCOrigin
       GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
       for i:=0 to NumPts-1 do begin
         PointArray[i].x:=Points[i].x;
@@ -5690,13 +5728,17 @@ begin
 
       If not CurrentBrush^.IsNullBrush then
         if Winding then begin
-          Tmp := CreateRectRGN(0,0,0,0);
+          // store old clipping
+          Tmp := CreateEmptyRegion;
           GetClipRGN(DC, Tmp);
+          // apply new clipping
           RGN := CreatePolygonRgn(Points, OldNumPts, LCLType.Winding);
           ExtSelectClipRGN(DC, RGN, RGN_AND);
           DeleteObject(RGN);
           GetClipBox(DC, @ClipRect);
+          // draw polygon area
           FillRect(DC, ClipRect, HBrush(CurrentBrush));
+          // restore old clipping
           SelectClipRGN(DC, Tmp);
           DeleteObject(Tmp);
         end else
@@ -5773,24 +5815,6 @@ end;
 function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
   lParam: LongInt): Boolean;
   
-  procedure DeletePaintMessageForHandle(hnd: HWnd);
-  var
-    OldPaintMessage: PLazQueueItem;
-    OldMessage: PMsg;
-  begin
-    if (hnd=0) then exit;
-    OldPaintMessage:=FindPaintMessage(hnd);
-    if OldPaintMessage<>nil then begin
-      // delete paint message from queue
-      OldMessage:=PMsg(OldPaintMessage^.Data);
-      FPaintMessages.Remove(OldPaintMessage);
-      FMessageQueue.Delete(OldPaintMessage);
-      if OldMessage^.Message=LM_PAINT then
-        ReleaseDC(0,OldMessage^.WParam);
-      Dispose(OldMessage);
-    end;
-  end;
-  
   function ParentPaintMessageInQueue: boolean;
   var
     Target: TControl;
@@ -5813,8 +5837,58 @@ function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
     end;
   end;
   
+  function ExtractPaintMessageForHandle(hnd: HWnd): PMsg;
+  var
+    OldPaintMessage: PLazQueueItem;
+  begin
+    Result:=nil;
+    if (hnd=0) then exit;
+    OldPaintMessage:=FindPaintMessage(hnd);
+    if OldPaintMessage<>nil then begin
+      // delete paint message from queue
+      Result:=PMsg(OldPaintMessage^.Data);
+      FPaintMessages.Remove(OldPaintMessage);
+      FMessageQueue.Delete(OldPaintMessage);
+    end;
+  end;
+
+  procedure CombinePaintMessages(NewMsg, OldMsg: PMsg);
+  // combine NewMsg and OldMsg paint message into NewMsg and free OldMsg
+  var
+    NewData: TLMGtkPaintData;
+    OldData: TLMGtkPaintData;
+  begin
+    if OldMsg=nil then exit;
+    if (NewMsg^.Message=LM_PAINT) or (OldMsg^.Message=LM_PAINT) then begin
+      // LM_PAINT means: repaint all
+      // convert NewMsg into a LM_PAINT if not already done
+      if NewMsg^.Message<>LM_PAINT then begin
+        FinalizePaintTagMsg(NewMsg);
+        NewMsg^.Message:=LM_PAINT;
+      end;
+    end else if (NewMsg^.Message<>LM_GtkPAINT) then begin
+      RaiseException('CombinePaintMessages A unknown paint message');
+    end else if (OldMsg^.Message<>LM_GtkPAINT) then begin
+      RaiseException('CombinePaintMessages B unknown paint message');
+    end else begin
+      // combine the two LM_GtkPAINT messages
+      NewData:=TLMGtkPaintData(NewMsg^.WParam);
+      OldData:=TLMGtkPaintData(OldMsg^.WParam);
+      NewData.RepaintAll:=NewData.RepaintAll or OldData.RepaintAll;
+      if not NewData.RepaintAll then begin
+        NewData.Rect.Left:=Min(NewData.Rect.Left,OldData.Rect.Left);
+        NewData.Rect.Top:=Min(NewData.Rect.Top,OldData.Rect.Top);
+        NewData.Rect.Right:=Max(NewData.Rect.Right,OldData.Rect.Right);
+        NewData.Rect.Bottom:=Max(NewData.Rect.Bottom,OldData.Rect.Bottom);
+      end;
+    end;
+    FinalizePaintTagMsg(OldMsg);
+    Dispose(OldMsg);
+  end;
+  
 var
   AMessage: PMsg;
+  OldPaintMsg: PMsg;
 begin
   Result := True;
 
@@ -5831,14 +5905,14 @@ begin
     // -> check if there is already a paint message for one of its parents
     // if yes, then skip this message
     {if ParentPaintMessageInQueue then begin
-      if AMessage^.Message=LM_PAINT then
-        ReleaseDC(0,AMessage^.WParam);
+      FinalizePaintTagMsg(AMessage^);
       exit;
     end;}
   
     // delete old paint message to this widget,
     // so that the widget repaints only once
-    DeletePaintMessageForHandle(Handle);
+    OldPaintMsg:=ExtractPaintMessageForHandle(Handle);
+    CombinePaintMessages(AMessage,OldPaintMsg);
 
     FMessageQueue.AddLast(AMessage);
     FPaintMessages.Add(FMessageQueue.Last);
@@ -6015,9 +6089,9 @@ end;
   Params:  dc : hdc; ARect: TRect
   Returns: True if ARect is not completely clipped away.
  ------------------------------------------------------------------------------}
-function TgtkObject.RectVisible(dc : hdc; ARect: TRect) : Boolean;
+function TgtkObject.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  Result:=true;
+  Result := inherited RectVisible(dc,ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -6212,6 +6286,7 @@ function TgtkObject.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
   aDC, pSavedDC: TDeviceContext;
   Count: Integer;
+  ClipRegionChanged: Boolean;
 begin
   Assert(False, Format('Trace:> [TgtkObject.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
@@ -6227,13 +6302,12 @@ begin
 
     // TODO copy bitmap also 
     
+    ClipRegionChanged:=false;
     if (aDC.ClipRegion<>0) and (pSavedDC.ClipRegion <> aDC.ClipRegion) then
     begin
       // clipping region has changed
-      // clipping regions are extraordinary gdiobjects. Users can not set them
-      // or read them. If a clipping region is changed, it is always created new
-      // -> destroy the current clipping region
       DeleteObject(aDC.ClipRegion);
+      ClipRegionChanged:=true;
       aDC.ClipRegion := 0;
     end;
       
@@ -6245,6 +6319,12 @@ begin
     Result := CopyDCData(aDC, pSavedDC);
     aDC.SavedContext := pSavedDC.SavedContext;
     pSavedDC.SavedContext := nil;
+    if ClipRegionChanged then
+      SelectGDIRegion(HDC(aDC));
+    //writeln('TgtkObject.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
+
+    
+    // free saved DC
 
     //prevent deleting of copied objects:
     if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
@@ -6433,38 +6513,47 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TgtkObject.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+var
+  RegObj: PGdkRegion;
+  DCOrigin: TPoint;
 begin
   Result := SIMPLEREGION;
   If not IsValidDC(DC) then
-    Result := ERROR;
-  if Result <> ERROR then
-    with TDeviceContext(DC) do
-    begin
-      if (GC = nil) and (RGN <> 0)
-      then begin
-        WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
-        Result := ERROR;
+    Result := ERROR
+  else with TDeviceContext(DC) do
+  begin
+    if (GC = nil) and (RGN <> 0)
+    then begin
+      WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
+      Result := ERROR;
+    end
+    else begin
+      // clear old clipregion
+      if (ClipRegion<>0)
+      and ((SavedContext=nil) or (SavedContext.ClipRegion<>ClipRegion)) then
+        DeleteObject(ClipRegion);
+      ClipRegion := 0;
+      
+      If (GC = nil) or (RGN = 0) then begin
+        if GC<>nil then
+          SelectGDIRegion(DC);
       end
-      else begin
-        If (GC = nil) or (RGN = 0) then begin
-          DeleteObject(ClipRegion);
-          ClipRegion := 0;
-          if GC<>nil then
-            SelectGDIRegion(DC);
+      else
+        If IsValidGDIObject(RGN) then begin
+          ClipRegion := CreateRegionCopy(RGN);
+          RegObj:=PGdiObject(ClipRegion)^.GDIRegionObject;
+          DCOrigin:=GetDCOffset(TDeviceContext(DC));
+          gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
+          Result := RegionType(RegObj);
+          //writeln('TgtkObject.SelectClipRGN RGN=',GDKRegionAsString(RegObj),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
+          SelectGDIRegion(DC);
         end
-        else
-          If IsValidGDIObject(RGN) then begin
-            DeleteObject(ClipRegion);
-            ClipRegion := CreateRectRGN(0,0,0,0);
-            Result := CombineRGN(ClipRegion, RGN, RGN, RGN_COPY);
-            SelectGDIRegion(DC);
-          end
-          else begin
-            Result := ERROR;
-            WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');
-          end;
-      end;
+        else begin
+          Result := ERROR;
+          WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');
+        end;
     end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6552,8 +6641,10 @@ begin
         with TDeviceContext(DC) do
         begin
           Result := ClipRegion;
-          ClipRegion := 0;
-          if GC <> nil then SelectClipRGN(DC, GDIObj);
+          if GC <> nil then
+            SelectClipRGN(DC, GDIObj)
+          else
+            ClipRegion:=0;
         end;
       end;
     end;
@@ -6594,6 +6685,9 @@ function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt;
 var
   AMessage: TLMessage;
   Target: TObject;
+  PaintDC: HDC;
+  GtkPaintData: TLMGtkPaintData;
+  DCOrigin: TPoint;
   //ParentControl: TWinControl;
   //ParentHandle: HWnd;
 begin
@@ -6606,30 +6700,70 @@ begin
 
   if Target<>nil then begin
     if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
+
       (* MG: old trick. Not used anymore, but it might be, that someday there
              will be component, that works better with this, so it is kept.
-      
-        The LCL repaints controls in a top-down hierachy. But the gtk sends
+      { The LCL repaints controls in a top-down hierachy. But the gtk sends
         gtkdraw events bottom-up. So, controls at the bottom are repainted
         many times. To avoid this the queue is checked for LM_PAINT messages
         for the parent control. If there is a parent LM_PAINT, this message
-        is ignored.
-      {if (Target is TControl) then begin
+        is ignored.}
+      if (Target is TControl) then begin
         ParentControl:=TControl(Target).Parent;
         while ParentControl<>nil do begin
           ParentHandle:=TWinControl(ParentControl).Handle;
           if FindPaintMessage(ParentHandle)<>nil then begin
+            {$IFDEF VerboseDsgnPaintMsg}
+            if (csDesigning in TComponent(Target).ComponentState) then begin
+              writeln('TGTKObject.SendMessage A ',
+                TComponent(Target).Name,':',Target.ClassName,
+                ' Parent Message found: ',ParentControl.Name,':',ParentControl.ClassName
+                );
+            end;
+            {$ENDIF}
             if Msg=LM_PAINT then
               ReleaseDC(0,AMessage.WParam);
-            exit;
+            //exit;
           end;
           ParentControl:=ParentControl.Parent;
         end;
-      end;} *)
+      end; *)
+      {$IFDEF VerboseDsgnPaintMsg}
+      if (csDesigning in TComponent(Target).ComponentState) then begin
+        write('TGTKObject.SendMessage B ',
+          TComponent(Target).Name,':',Target.ClassName,
+          ' GtkPaint=',Msg=LM_GtkPAINT);
+        if Msg=LM_GtkPAINT then begin
+          if AMessage.wParam<>0 then begin
+            with TLMGtkPaintData(AMessage.wParam) do begin
+              write(' GtkPaintData(',
+                ' Widget=',HexStr(Cardinal(Widget),8),
+                ' State=',State,
+                ' Rect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom,
+                ' RepaintAll=',RepaintAll,
+                ')');
+            end;
+          end else begin
+            write(' GtkPaintData=nil');
+          end;
+        end;
+        writeln('');
+      end;
+      {$ENDIF}
       if Msg=LM_GtkPAINT then begin
         // convert LM_GtkPAINT to LM_PAINT
+        GtkPaintData:=TLMGtkPaintData(AMessage.wParam);
         AMessage.Msg := LM_PAINT;
-        AMessage.WParam := GetDC(THandle(HandleWnd));
+        PaintDC:= GetDC(THandle(HandleWnd));
+        AMessage.WParam := PaintDC;
+        if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
+          DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
+          //writeln('TGTKObject.SendMessage C ',DCOrigin.X,',',DCOrigin.Y);
+          with GtkPaintData.Rect do
+            IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
+                              Right-DCOrigin.X,Bottom-DCOrigin.Y);
+        end;
+        GtkPaintData.Free;
       end;
     end;
 
@@ -6639,6 +6773,7 @@ begin
     if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
       // free DC
       ReleaseDC(0,AMessage.WParam);
+      AMessage.WParam:=0;
       
       if (csDesigning in TComponent(Target).ComponentState)
       and (TObject(Target) is TWinControl) then
@@ -7511,7 +7646,7 @@ var
     temp_color : TGDKColor;
     Region: PGdiObject;
     RGNType : Longint;
-    DCOrigin: TPoint;
+    //DCOrigin: TPoint;
     OffsetXY: TPoint;
   begin
     // activate clipping region of destination
@@ -7535,7 +7670,6 @@ var
       gdk_draw_rectangle(temp_mask, temp_gc, 0, 0, 0, width, height);
 
       // copy the destination clipping mask into the temporary mask
-      DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
       with TDeviceContext(DestDC) do
       begin
         If (ClipRegion <> 0) then begin
@@ -7546,9 +7680,9 @@ var
             // -> copy the destination clipping mask to the temporary mask
             //    The X,Y coordinate in the destination relates to
             //    0,0 in the temporary mask.
-            //    The region is already relative to the DCOrigin, so don't apply
-            //    it twice.
-            OffsetXY:=Point(-X+DCOrigin.X,-Y+DCOrigin.Y);
+            //    The clip region of dest is always at 0,0 in dest
+            //DCOrigin:=GetDCOffset(TDeviceContext(DestDC));
+            OffsetXY:=Point(-X,-Y);
             // 1. Move the region
             gdk_region_offset(Region^.GDIRegionObject,OffsetXY.X,OffsetXY.Y);
             // 2. Apply region to temporary mask
@@ -8066,6 +8200,7 @@ begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetTextExtentPoint(DC, Str, Count, Sz);
         aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
+        //writeln('TGTKObject.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
         FillRect(DC,aRect,hBrush(CurrentBrush));
         UpdateDCTextMetric(TDeviceContext(DC));
         TxtPt.X := X;
@@ -8296,6 +8431,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.247  2002/08/17 23:41:35  mattias
+  many clipping fixes
+
   Revision 1.246  2003/06/20 12:56:53  mattias
   reduced paint messages on destroy
 

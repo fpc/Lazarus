@@ -452,8 +452,11 @@ begin
     end
     else
       Canvas.Font.Color := clBtnText;
+    //writeln('TSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
     Canvas.TextRect(PaintRect, 0, 0, Caption, TXTStyle);
   end;
+  
+  inherited Paint;
 end;
 
 {------------------------------------------------------------------------------
@@ -569,7 +572,7 @@ begin
     end
     else begin
       SetDown(not FDown);
-      if FDown then Repaint;
+      if FDown then Invalidate;
     end;
     //UpdateTracking;
   end;
@@ -698,6 +701,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.39  2003/06/18 11:21:06  mattias
   fixed taborder=0, implemented TabOrder Editor
 

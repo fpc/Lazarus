@@ -103,6 +103,13 @@ type
       ); 
       gdiRegion: (
         GDIRegionObject: PGdkRegion;
+          { ! Always without the DCOrigin
+            GDIObjects can exists without DCs and so they are independent
+
+            - When the DCOrigin is moved, the region is not moved automatically
+            - Any clipping operation must be mapped, *before* applying it to the
+              GDIRegionObject, and *after* reading it
+          }
       );
       gdiPalette: (
         //Is this the system palette?
@@ -436,6 +443,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.38  2003/06/13 10:09:04  mattias
   fixed Set/GetPixel
 

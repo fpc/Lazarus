@@ -1666,6 +1666,10 @@ begin
   then
     if csOpaque in ControlStyle then
     begin
+      {$IFDEF VerboseDsgnPaintMsg}
+      if csDesigning in ComponentState then
+        writeln('TControl.Repaint A ',Name,':',ClassName);
+      {$ENDIF}
       DC := GetDC(Parent.Handle);
       try
         IntersectClipRect(DC, Left, Top, Left + Width, Top + Height);
@@ -2179,9 +2183,9 @@ end;
 {------------------------------------------------------------------------------}
 {  TControl Update                                                           }
 {------------------------------------------------------------------------------}
-procedure TControl.Update;    //pbd
+procedure TControl.Update;
 begin
-     // Todo
+  if Parent<>nil then Parent.Update;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2269,6 +2273,8 @@ begin
   then raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent window', [Name]);
 
   Result := Parent.GetDeviceContext(WindowHandle);
+  SetWindowOrgEx(Result, Left, Top, nil);
+  IntersectClipRect(Result, 0, 0, Width, Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -2418,6 +2424,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.136  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.135  2003/06/20 12:56:53  mattias
   reduced paint messages on destroy
 

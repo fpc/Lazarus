@@ -16,7 +16,10 @@ units=hello notebk comdialogs progressbar trackbar listboxtest \
 packages=fcl regexpr
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT))
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
+  trackbar toolbar testall speedtest scrollbar progressbar notebooktest \
+  notebk messagedialogs memotest listviewtest listboxtest hello groupbox \
+  edittest comdialogs combobox checkbox bitbutton
 
 [default]
             

@@ -35,7 +35,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  LMessages, Controls, Forms, VclGlobals,
+  LMessages, Controls, Forms, VclGlobals, LCLProc,
   LCLStrConsts, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
   GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
   CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs,
@@ -265,14 +265,20 @@ procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
 
-function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
+  FreeGtkPaintMsg: boolean): TLMPaint;
+procedure FinalizePaintMessage(Msg: PLMessage);
+procedure FinalizePaintTagMsg(Msg: PMsg);
 
 function NewGDIRawImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDIRawImage;
 
 function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 
-Function RegionType(RGN : PGDKRegion) : Longint;
+Function RegionType(RGN: PGDKRegion): Longint;
 Procedure SelectGDIRegion(const DC: HDC);
+function CopyGDKRegion(RGN: PGDKRegion): PGDKRegion;
+function GDKRegionAsString(RGN: PGDKRegion): string;
+function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 
 Procedure FreeGDIColor(GDIColor : PGDIColor);
 Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);

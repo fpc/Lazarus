@@ -55,6 +55,9 @@ type
   TInterfaceBase = Class(TObject)
   protected
     procedure PassCmdLineOptions; virtual;
+    function CreateRegionCopy(SrcRGN: hRGN): hRGN; virtual;
+    function DCClipRegionValid(DC: HDC): boolean; virtual;
+    function CreateEmptyRegion: hRGN; virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -108,6 +111,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.29  2003/02/28 10:14:28  mattias
   started package system (packager)
 

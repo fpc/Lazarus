@@ -915,6 +915,11 @@ begin
   end;
 end;
 
+procedure TWinControl.Update;
+begin
+  if HandleAllocated then UpdateWindow(FHandle);
+end;
+
 {-------------------------------------------------------------------------------
   procedure TWinControl.SetZOrderPosition(Position: Integer);
   
@@ -1143,8 +1148,9 @@ procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
   function ControlMustBeClipped(AControl: TControl): boolean;
   begin
     with AControl do
-      Result:=(Visible or (csDesigning in ComponentState)
-              and not (csNoDesignVisible in ControlStyle))
+      Result:=(Visible
+               or ((csDesigning in ComponentState)
+                   and not (csNoDesignVisible in ControlStyle)))
               and (csOpaque in ControlStyle);
   end;
 
@@ -1157,11 +1163,16 @@ begin
 //writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
   if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
 
+  {$IFDEF VerboseDsgnPaintMsg}
+  if csDesigning in ComponentState then
+    writeln('TWinControl.PaintHandler A ',Name,':',ClassName);
+  {$ENDIF}
+
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
   DC := TheMessage.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   try
-    // check if controls needs clipping
+    // check if child controls needs clipping
     ControlsNeedsClipping:=false;
     if FControls<>nil then
       for I := 0 to FControls.Count - 1 do
@@ -1169,7 +1180,7 @@ begin
           ControlsNeedsClipping:=true;
           break;
         end;
-    // exclude controls and send new paint message
+    // exclude child controls and send new paint message
     if not ControlsNeedsClipping then
       PaintWindow(DC)
     else
@@ -1179,6 +1190,7 @@ begin
       for I := 0 to FControls.Count - 1 do
         if ControlMustBeClipped(TControl(FControls[I])) then
           with TControl(FControls[I]) do begin
+            //writeln('TWinControl.PaintHandler Exclude Child ',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName);
             Clip := ExcludeClipRect(DC, Left, Top, Left + Width, Top + Height);
             if Clip = NullRegion then Break;
           end;
@@ -1206,6 +1218,11 @@ begin
   or ((DC=0) and (not HandleAllocated)) then
     exit;
 
+  {$IFDEF VerboseDsgnPaintMsg}
+  if csDesigning in ComponentState then
+    writeln('TWinControl.PaintControls A ',Name,':',ClassName);
+  {$ENDIF}
+
   // Controls that are not TWinControl, have no handle of their own, and so
   // they are repainted as part of the parent:
   if FControls <> nil then
@@ -1220,15 +1237,18 @@ begin
     while I < Count do
     begin
       TempControl := TControl(FControls.Items[I]);
+      //writeln('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
       with (TempControl) do
-        if (Visible or (csDesigning in ComponentState)
-        and not (csNoDesignVisible in ControlStyle))
+        if (Visible
+        or ((csDesigning in ComponentState)
+            and not (csNoDesignVisible in ControlStyle)))
         and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
         begin
           if csPaintCopy in Self.ControlState then
             Include(FControlState, csPaintCopy);
           SaveIndex := SaveDC(DC);
           MoveWindowOrg(DC, Left, Top);
+          //writeln('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
           IntersectClipRect(DC, 0, 0, Width, Height);
           Perform(LM_PAINT, DC, 0);
           RestoreDC(DC, SaveIndex);
@@ -1242,9 +1262,10 @@ begin
     for I := 0 to FWinControls.Count - 1 do
       with TWinControl(FWinControls.Items[I]) do
         if FCtl3D and (csFramed in ControlStyle)
-        and (Visible or (csDesigning in ComponentState)
-        and not (csNoDesignVisible in ControlStyle)) then
-        begin
+        and (Visible
+        or ((csDesigning in ComponentState)
+            and not (csNoDesignVisible in ControlStyle)))
+        then begin
          //TODO: CreateSolidBrush and FrameRect
          {FrameBrush := CreateSolidBrush(ColorToRGB(clBtnShadow));
           FrameRect(DC, Rect(Left - 1, Top - 1, Left + Width, Top + Height),
@@ -1267,6 +1288,11 @@ begin
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
+
+  {$IFDEF VerboseDsgnPaintMsg}
+  if csDesigning in ComponentState then
+    writeln('TWinControl.PaintWindow A ',Name,':',ClassName);
+  {$ENDIF}
 
   Message.Msg := LM_PAINT;
   Message.WParam := DC;
@@ -1746,10 +1772,14 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.Repaint;
 Begin
-  if HandleAllocated and (not (csDestroying in ComponentState))
-  then begin
-    CNSendMessage(LM_PAINT, Self, nil);
-  end;
+  if (not HandleAllocated) or (csDestroying in ComponentState) then exit;
+  {$IFDEF VerboseDsgnPaintMsg}
+  if csDesigning in ComponentState then
+    writeln('TWinControl.Repaint A ',Name,':',ClassName);
+  {$ENDIF}
+  CNSendMessage(LM_PAINT, Self, nil);
+  // Invalidate;
+  // Update;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2171,6 +2201,11 @@ var
 begin
 //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
   if (csDestroying in ComponentState) then exit;
+
+  {$IFDEF VerboseDsgnPaintMsg}
+  if csDesigning in ComponentState then
+    writeln('TWinControl.WMPaint A ',Name,':',ClassName);
+  {$ENDIF}
 
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
   if (Msg.DC <> 0) then
@@ -2721,28 +2756,13 @@ end;
  ------------------------------------------------------------------------------}
 function TWinControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
 begin
-(*
-  if Handle = 0 
-  then begin
-    // we aren't created yet
-    Result := 0;
-    WindowHandle := 0;
-  end
-  else begin
-    Result := GetDC(FHandle);
-    if Result = 0 
-    then raise EOutOfResources.Create('Error creating device context');
-  end;
-  WindowHandle := FHandle;
-(*)
   Result := GetDC(Handle);
-//writeln('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
+  //writeln('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
   if Result = 0 
   then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
     ClassName]);
 
   WindowHandle := FHandle;
-//*)  
 end;
 
 {------------------------------------------------------------------------------
@@ -2827,6 +2847,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.142  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.141  2003/06/20 12:56:53  mattias
   reduced paint messages on destroy
 

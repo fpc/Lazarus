@@ -145,7 +145,7 @@ function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; ov
 function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
-function RectVisible(dc : hdc; ARect: TRect) : Boolean; override;
+function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 Function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
@@ -202,6 +202,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/08/17 23:41:35  mattias
+  many clipping fixes
+
   Revision 1.67  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 

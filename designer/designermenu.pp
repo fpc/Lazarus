@@ -283,7 +283,8 @@ end;
 
 destructor TDesignerMainMenu.Destroy;
 begin
-  GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  if GlobalDesignHook<>nil then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
   Dispose(Root);
   inherited Destroy;
 end;

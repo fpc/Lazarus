@@ -25,19 +25,28 @@ var
   PaintMsg: TLMPaint;
 begin
   if TLMessage(TheMessage).Msg=LM_GtkPAINT then
-    PaintMsg:= GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage))
+    PaintMsg:= GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage),true)
   else
     PaintMsg:=TLMPaint(TheMessage);
   Result := DeliverMessage(Target,PaintMsg) = 0;
   ReleaseDC(0,PaintMsg.DC);
 end;
 
+{-------------------------------------------------------------------------------
+  function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
+  
+  'TheMessage' is in TLMessage format. Don't confuse this with tagMsg.
+--------------------------------------------------------------------------------}
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 begin
   if TObject(Target) is TWinControl then
   begin
-    Result := PostMessage(TWinControl(Target).Handle, TLMessage(TheMessage).Msg,
-      TLMessage(TheMessage).WParam, TLMessage(TheMessage).LParam);
+    // convert TLMessage into a tagMsg and push on the message queue
+    Result := PostMessage(TWinControl(Target).Handle,
+                          TLMessage(TheMessage).Msg,
+                          TLMessage(TheMessage).WParam,
+                          TLMessage(TheMessage).LParam
+                          );
   end
   else
   begin
@@ -49,20 +58,24 @@ begin
   end;
 end;
 
-function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget): GBoolean;
+function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
+  Area: PGDKRectangle; RepaintAll: boolean): GBoolean;
 var
   MSG: TLMGtkPaint;
   {$IFDEF DirectPaintMsg}
   PaintMsg: TLMPaint;
   {$ENDIF}
 begin
+  if (not RepaintAll) and ((Area^.Width<1) or (Area^.Width<1)) then exit;
   MSG.Msg := LM_GtkPAINT;
-  MSG.Widget := Widget;
-  MSG.State := GtkPaint_LCLWidget;
-  MSG.Unused := 0;
+  MSG.Data:=TLMGtkPaintData.Create;
+  MSG.Data.Widget := Widget;
+  MSG.Data.State := GtkPaint_LCLWidget;
+  Msg.Data.Rect:=Bounds(Area^.x,Area^.y,Area^.Width,Area^.Height);
+  Msg.Data.RepaintAll:=RepaintAll;
 
   {$IFDEF DirectPaintMsg}
-  PaintMsg:= GtkPaintMessageToPaintMessage(Msg);
+  PaintMsg:= GtkPaintMessageToPaintMessage(Msg,true);
   Result := DeliverMessage(Target,PaintMsg) = 0;
   ReleaseDC(0,PaintMsg.DC);
   {$ELSE}
@@ -330,7 +343,6 @@ begin
   EventTrace('day changed', data);
   MSG.Msg := LM_DAYCHANGED;
   Result := DeliverPostMessage(Data, MSG);
-//   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
@@ -348,11 +360,13 @@ begin
     {$IFDEF VerboseDesignerDraw}
     writeln('gtkDrawAfter',
       ' Widget=',HexStr(Cardinal(Widget),8),
-      ' ',TComponent(Data).Name);
+      ' ',TComponent(Data).Name,
+      ' ',area^.x,',',area^.y,',',area^.width,',',area^.height,
+      '');
     {$ENDIF}
   end;
-  
-  DeliverGtkPaintMessage(Data,Widget);
+
+  DeliverGtkPaintMessage(Data,Widget,Area,false);
 end;
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
@@ -371,11 +385,15 @@ begin
     {$IFDEF VerboseDesignerDraw}
     writeln('gtkExposeAfter',
       ' Widget=',HexStr(Cardinal(Widget),8),
-      ' ',TComponent(Data).Name);
+      ' ',TComponent(Data).Name,
+      ' ',Event^.area.x,',',Event^.area.y,',',Event^.area.width,',',Event^.area.height,
+      '');
     {$ENDIF}
   end;
 
-  DeliverGtkPaintMessage(Data,Widget);
+  // the expose area is ok, but some gtk widgets repaints everything on expose
+  // -> maximize the area
+  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true);
 end;
 
 function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
@@ -2763,6 +2781,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.182  2002/08/17 23:41:34  mattias
+  many clipping fixes
+
   Revision 1.181  2003/06/13 14:26:17  ajgenius
   some fixes toward gtk2
 
