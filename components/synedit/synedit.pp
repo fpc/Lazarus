@@ -831,7 +831,9 @@ type
     property OnStatusChange;
   end;
 
+{$IFDEF SYN_LAZARUS}
 function SynEditClipboardFormat: TClipboardFormat;
+{$ENDIF}
 
 implementation
 
