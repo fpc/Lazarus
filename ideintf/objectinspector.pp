@@ -514,7 +514,7 @@ begin
   FValueFont:=TFont.Create;
   FValueFont.Color:=clMaroon;
   FDefaultValueFont:=TFont.Create;
-  FDefaultValueFont.Color:=clCaptionText;
+  FDefaultValueFont.Color:=clWindowText;
 
   SetInitialBounds(0,0,200,130);
   ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
