@@ -2443,22 +2443,10 @@ end;
 procedure TGTKObject.RemoveCallbacks(Sender : TObject);
 var
   gObject : gtk_Object;
-  Info: PWinWidgetInfo;
-  Widget: pointer;
 begin
   gObject := ObjectToGTKObject(Sender);
   if gObject = nil then Exit;
 
-  if (Sender is TWinControl) and (TWinControl(Sender).HandleAllocated) then
-  begin
-    Widget:=Pointer(TWinControl(Sender).Handle);
-    if GtkWidgetIsA(Widget,gtk_object_get_type) then
-    Begin
-      Info := GetWidgetInfo(Widget, False);
-      if Info <> nil then Dispose(Info);
-      gtk_object_set_data(Widget, 'widgetinfo', nil);
-    end;
-  end;
   if not (Sender is TMenuItem) then
     gtk_signal_handlers_destroy(gObject);
 end;
@@ -2477,9 +2465,10 @@ var
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
 begin
-  RemoveCallbacks(Sender);
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
+
+  RemoveCallbacks(Sender);
 
   Widget:=PGtkWidget(Handle);
   FixWidget:=GetFixedWidget(Widget);
@@ -2516,8 +2505,9 @@ begin
   if Sender is TCommonDialog then
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
     
+
   // destroy the widget
-  gtk_widget_destroy(Widget);
+  DestroyWidget(Widget);
   //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
 
   // remove all remaining messages to this component
@@ -3968,14 +3958,14 @@ var
       if TabPixmapWidget<>nil then begin
         // there is a pixmap for an old image in the tab
         // -> remove the pixmap widget
-        gtk_widget_destroy(TabPixmapWidget);
+        DestroyWidget(TabPixmapWidget);
         gtk_object_set_data(PGtkObject(TabWidget), 'TabPixmap', nil);
         TabPixmapWidget:=nil;
       end;
       if MenuPixmapWidget<>nil then begin
         // there is a pixmap for an old image in the menu
         // -> remove the pixmap widget
-        gtk_widget_destroy(MenuPixmapWidget);
+        DestroyWidget(MenuPixmapWidget);
         gtk_object_set_data(PGtkObject(MenuWidget), 'TabPixmap', nil);
         MenuPixmapWidget:=nil;
       end;
@@ -4031,7 +4021,7 @@ var
         // -> remove it
         gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
                             nil);
-        gtk_widget_destroy(TabCloseBtnWidget);
+        DestroyWidget(TabCloseBtnWidget);
         TabCloseBtnWidget:=nil;
       end;
     end;
@@ -5293,6 +5283,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.168  2002/08/21 11:29:35  lazarus
+  MG: fixed mem some leaks in ide and gtk
+
   Revision 1.167  2002/08/21 08:13:37  lazarus
   MG: accelerated new/dispose of gdiobjects
 
