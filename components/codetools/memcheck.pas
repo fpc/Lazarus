@@ -16,9 +16,9 @@ unit MemCheck;
 
 interface
 
-{$IFDEF UseHeapTrc}
+{ $IFDEF UseHeapTrc}
 uses HeapTrc;
-{$ENDIF}
+{ $ENDIF}
 
 procedure CheckHeap;
 procedure CheckHeap(const txt: string);

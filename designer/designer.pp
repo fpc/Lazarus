@@ -122,8 +122,7 @@ type
     function MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
     Procedure MouseDownOnControl(Sender: TControl; TheMessage : TLMMouse);
     Procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
-    Procedure MouseLeftUpOnControl(Sender: TControl; TheMessage:TLMMouse);
-    Procedure MouseRightUpOnControl(Sender: TControl; TheMessage:TLMMouse);
+    Procedure MouseUpOnControl(Sender: TControl; TheMessage:TLMMouse);
     Procedure KeyDown(Sender: TControl; TheMessage:TLMKEY);
     Procedure KeyUp(Sender: TControl; TheMessage:TLMKEY);
 
@@ -582,7 +581,7 @@ Begin
   {$ENDIF}
 End;
 
-procedure TDesigner.MouseLeftUpOnControl(Sender : TControl;
+procedure TDesigner.MouseUpOnControl(Sender : TControl;
   TheMessage:TLMMouse);
 var
   ParentCI, NewCI: TComponentInterface;
@@ -610,72 +609,8 @@ var
       Include(Shift,ssQuad);
   end;
   
-Begin
-  FHintTimer.Enabled := False;
-  SetCaptureControl(nil);
-  
-  // check if the message is for the connected form
-  SenderParentForm:=GetParentForm(Sender);
-  if (MouseDownComponent=nil) or (SenderParentForm=nil)
-  or (SenderParentForm<>Form) then begin
-    MouseDownComponent:=nil;
-    MouseDownSender:=nil;
-    exit;
-  end;
-  
-  ControlSelection.ActiveGrabber:=nil;
-  RubberBandWasActive:=ControlSelection.RubberBandActive;
-  
-  GetShift;
-
-  MouseUpPos:=GetFormRelativeMousePosition(Form);
-  MoveX:=MouseUpPos.X-MouseDownPos.X;
-  MoveY:=MouseUpPos.Y-MouseDownPos.Y;
-
-  SelectedCompClass:=GetSelectedComponentClass;
-
-  {$IFDEF VerboseDesigner}
-  writeln('************************************************************');
-  write('MouseLeftUpOnControl');
-  write(' ',Sender.Name,':',Sender.ClassName);
-  write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
-  write(' Move=',MoveX,',',MoveY);
-  writeln('');
-  {$ENDIF}
-
-  if SelectedCompClass = nil then begin
-    // layout mode (selection, moving and resizing)
-    if not (dfHasSized in FFlags) then begin
-      // new selection
-      if RubberBandWasActive then begin
-        // rubberband selection
-        ControlSelection.BeginUpdate;
-        NewRubberbandSelection:=(not (ssShift in Shift))
-                                and ControlSelection.IsOnlySelected(Form);
-        SelectionChanged:=false;
-        ControlSelection.SelectWithRubberBand(
-          Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged);
-        if ControlSelection.Count=0 then begin
-          ControlSelection.Add(Form);
-          SelectionChanged:=true;
-        end;
-        ControlSelection.RubberbandActive:=false;
-        ControlSelection.EndUpdate;
-        Form.Invalidate;
-      end else begin
-        // point selection
-        if (not (ssShift in Shift)) then begin
-          // select only the mouse down component
-          if ControlSelection.AssignComponent(MouseDownComponent) then
-            Form.Invalidate;
-          if MouseDownClickCount=2 then begin
-            // Double Click -> invoke 'Edit' of the component editor
-            InvokeComponentEditor(MouseDownComponent,-1);
-          end;
-        end;
-      end;
-    end;
-  end else begin
+  procedure AddComponent;
+  begin
     // add a new component
     ControlSelection.RubberbandActive:=false;
     ControlSelection.BeginUpdate;
@@ -700,7 +635,7 @@ Begin
         NewWidth:=0;
         NewHeight:=0;
       end;
-      
+
       NewCI := TComponentInterface(FFormEditor.CreateComponent(
          ParentCI,SelectedCompClass.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
@@ -724,6 +659,106 @@ Begin
     end;
     ControlSelection.EndUpdate;
   end;
+  
+  procedure RubberbandSelect;
+  begin
+    ControlSelection.BeginUpdate;
+    NewRubberbandSelection:=(not (ssShift in Shift))
+                            and ControlSelection.IsOnlySelected(Form);
+    SelectionChanged:=false;
+    ControlSelection.SelectWithRubberBand(
+      Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged);
+    if ControlSelection.Count=0 then begin
+      ControlSelection.Add(Form);
+      SelectionChanged:=true;
+    end;
+    ControlSelection.RubberbandActive:=false;
+    ControlSelection.EndUpdate;
+    Form.Invalidate;
+  end;
+  
+  procedure PointSelect;
+  begin
+    if (not (ssShift in Shift)) then begin
+      // select only the mouse down component
+      if ControlSelection.AssignComponent(MouseDownComponent) then
+        Form.Invalidate;
+      if MouseDownClickCount=2 then begin
+        // Double Click -> invoke 'Edit' of the component editor
+        InvokeComponentEditor(MouseDownComponent,-1);
+      end;
+    end;
+  end;
+  
+  procedure DisableRubberBand;
+  begin
+    if ControlSelection.RubberbandActive then begin
+      ControlSelection.RubberbandActive:=false;
+      Form.Invalidate;
+    end;
+  end;
+  
+Begin
+  FHintTimer.Enabled := False;
+  SetCaptureControl(nil);
+  
+  // check if the message is for the designed form
+  SenderParentForm:=GetParentForm(Sender);
+  if (MouseDownComponent=nil) or (SenderParentForm=nil)
+  or (SenderParentForm<>Form) then begin
+    MouseDownComponent:=nil;
+    MouseDownSender:=nil;
+    exit;
+  end;
+  
+  ControlSelection.ActiveGrabber:=nil;
+  RubberBandWasActive:=ControlSelection.RubberBandActive;
+  
+  GetShift;
+
+  MouseUpPos:=GetFormRelativeMousePosition(Form);
+  MoveX:=MouseUpPos.X-MouseDownPos.X;
+  MoveY:=MouseUpPos.Y-MouseDownPos.Y;
+
+  SelectedCompClass:=GetSelectedComponentClass;
+
+  {$IFDEF VerboseDesigner}
+  writeln('************************************************************');
+  write('MouseUpOnControl');
+  write(' ',Sender.Name,':',Sender.ClassName);
+  write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
+  write(' Move=',MoveX,',',MoveY);
+  writeln('');
+  {$ENDIF}
+
+  if TheMessage.Msg=LM_LBUTTONUP then begin
+    if SelectedCompClass = nil then begin
+      // layout mode (selection, moving and resizing)
+      if not (dfHasSized in FFlags) then begin
+        // new selection
+        if RubberBandWasActive then begin
+          // rubberband selection
+          RubberbandSelect;
+        end else begin
+          // point selection
+          PointSelect;
+        end;
+      end;
+    end else begin
+      // create new a component on the form
+      AddComponent;
+    end;
+  end else if TheMessage.Msg=LM_RBUTTONUP then begin
+    // right click -> popup menu
+    DisableRubberBand;
+    if not ControlSelection.IsSelected(MouseDownComponent) then
+      PointSelect;
+    PopupMenuComponentEditor:=GetComponentEditorForSelection;
+    BuildPopupMenu;
+    FPopupMenu.Popup(MouseUpPos.X,MouseUpPos.Y);
+  end;
+  
+  DisableRubberBand;
 
   LastMouseMovePos.X:=-1;
   Exclude(FFlags,dfHasSized);
@@ -811,17 +846,6 @@ begin
   end;
 end;
 
-procedure TDesigner.MouseRightUpOnControl(Sender : TControl;
-  TheMessage: TLMMouse);
-begin
-  FHintTimer.Enabled := False;
-  SetCaptureControl(nil);
-
-  MouseUpPos:=GetFormRelativeMousePosition(Form);
-  PopupMenuComponentEditor:=GetComponentEditorForSelection;
-  BuildPopupMenu;
-  FPopupMenu.Popup(MouseUpPos.X,MouseUpPos.Y);
-end;
 
 {
 -----------------------------K E Y D O W N -------------------------------
@@ -925,8 +949,8 @@ Begin
       LM_LBUTTONDOWN,
       LM_RBUTTONDOWN,
       LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
-      LM_LBUTTONUP:   MouseLeftUpOnControl(Sender,TLMMouse(TheMessage));
-      LM_RBUTTONUP:   MouseRightUpOnControl(sender,TLMMouse(TheMessage));
+      LM_LBUTTONUP,
+      LM_RBUTTONUP:   MouseUpOnControl(Sender,TLMMouse(TheMessage));
       LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(TheMessage));
       LM_SIZE:    Result:=SizeControl(Sender,TLMSize(TheMessage));
       LM_MOVE:    Result:=MoveControl(Sender,TLMMove(TheMessage));
