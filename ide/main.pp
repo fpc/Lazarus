@@ -40,7 +40,7 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGWatch,RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs,Watchesdlg;
+  LMessages, ProjectDefs, Watchesdlg;
 
 const
   Version_String = '0.8.1 alpha';
@@ -57,20 +57,20 @@ type
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
 
   TMainIDE = class(TForm)
-    ViewUnitsSpeedBtn  : TSpeedButton;
-    ViewFormsSpeedBtn  : TSpeedButton;
-    NewUnitSpeedBtn    : TSpeedButton;
-    OpenFileSpeedBtn   : TSpeedButton;
+    ViewUnitsSpeedBtn   : TSpeedButton;
+    ViewFormsSpeedBtn   : TSpeedButton;
+    NewUnitSpeedBtn     : TSpeedButton;
+    OpenFileSpeedBtn    : TSpeedButton;
     OpenFileArrowSpeedBtn : TSpeedButton;
-    SaveSpeedBtn       : TSpeedButton;
-    SaveAllSpeedBtn    : TSpeedButton;
-    ToggleFormSpeedBtn : TSpeedButton;
-    NewFormSpeedBtn    : TSpeedButton;
-    RunSpeedButton     : TSpeedButton;
-    PauseSpeedButton     : TSpeedButton;
-    StepIntoSpeedButton     : TSpeedButton;
-    StepOverSpeedButton     : TSpeedButton;
-    OpenFilePopUpMenu : TPopupMenu;
+    SaveSpeedBtn        : TSpeedButton;
+    SaveAllSpeedBtn     : TSpeedButton;
+    ToggleFormSpeedBtn  : TSpeedButton;
+    NewFormSpeedBtn     : TSpeedButton;
+    RunSpeedButton      : TSpeedButton;
+    PauseSpeedButton    : TSpeedButton;
+    StepIntoSpeedButton : TSpeedButton;
+    StepOverSpeedButton : TSpeedButton;
+    OpenFilePopUpMenu   : TPopupMenu;
     GlobalMouseSpeedButton : TSpeedButton;
 
     mnuMain: TMainMenu;
@@ -1551,16 +1551,17 @@ begin
       OpenDialog.Title:='Open file';
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       OpenDialog.Options:=[ofAllowMultiSelect];
-      if OpenDialog.Execute then begin
-        For I := 0 to OPenDialog.Files.Count-1 do
+      if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+        For I := 0 to OpenDialog.Files.Count-1 do
           Begin
             AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-            EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
+            if i=0 then
+              EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
             if DoOpenEditorFile(AFilename,false)=mrOk then begin
                EnvironmentOptions.AddToRecentOpenFiles(AFilename);
-            SaveEnvironment;
           end;
         end;
+        SaveEnvironment;
       end;
     finally
       OpenDialog.Free;
@@ -5255,6 +5256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.177  2001/12/12 15:12:31  lazarus
+  MG: added file path to files in TOpenDialog
+
   Revision 1.176  2001/12/12 14:25:03  lazarus
   Changes to allow multiple files being opened in main.pp
   Shane

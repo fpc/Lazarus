@@ -635,6 +635,7 @@ var
    rowNum : gint;
    fileInfo : PGChar;
    fileList : PGTKCList;
+   DirName  : string;
 begin
    Result := True;
    theDialog := TCommonDialog(data);
@@ -647,29 +648,31 @@ begin
          // check extra options
          if ofAllowMultiSelect in TOpenDialog(theDialog).Options then
 	 begin
-            TFileDialog(data).FileName := '';
-            TStringList(TFileDialog(theDialog).Files).Clear;
-            fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
-            rowNum := 0;
-	    cListRow := fileList^.row_list;
-	    while cListRow <> nil do
-	    begin
-	       if PGtkCListRow(cListRow^.data)^.state = GTK_STATE_SELECTED then
-	       begin
-                  if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT then
-		  begin
-		     gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
-                     TStringList(TFileDialog(theDialog).Files).Add(fileInfo);
-		  end;
-	       end;
-	       // get next row from list
-	       rowNum := rowNum + 1;
-	       cListRow := g_list_next(cListRow);
-	    end;
+           DirName:=ExtractFilePath(gtk_file_selection_get_filename(PGtkFileSelection(FPointer)));
+           TFileDialog(data).FileName := '';
+           TStringList(TFileDialog(theDialog).Files).Clear;
+           fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
+           rowNum := 0;
+	   cListRow := fileList^.row_list;
+	   while cListRow <> nil do
+	   begin
+	     if PGtkCListRow(cListRow^.data)^.state = GTK_STATE_SELECTED then
+	     begin
+               if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT
+               then begin
+	         gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
+                 TStringList(TFileDialog(theDialog).Files).Add(DirName+fileInfo);
+               end;
+	     end;
+	     // get next row from list
+	     rowNum := rowNum + 1;
+	     cListRow := g_list_next(cListRow);
+	   end;
          end
 	 else
 	 begin
-            TFileDialog(data).FileName := gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
+            TFileDialog(data).FileName := 
+              gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
          end;
       end
       else
@@ -1536,7 +1539,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2001/12/12 15:12:31  lazarus
+  MG: added file path to files in TOpenDialog
+
   Revision 1.52  2001/12/12 08:29:21  lazarus
+
         Add code to allow TOpenDialog to do multiple line selects.   MAH
 
   Revision 1.51  2001/12/07 20:12:15  lazarus
