@@ -468,7 +468,7 @@ end;
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
 writeln('TPascalParserTool.BuildTree A OnlyInterfaceNeeded=',OnlyInterfaceNeeded,
-  TcodeBuffer(Scanner.MainCode).Filename);
+  '  ',TCodeBuffer(Scanner.MainCode).Filename);
 {$IFDEF MEM_CHECK}
 CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -1232,6 +1232,7 @@ end;
 
 function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
   Attr: TProcHeadAttributes): boolean;
+// after reading, the CurPos will be on the atom after the constant
 var c: char;
 begin
   Result:=false;
@@ -2567,34 +2568,28 @@ begin
       ReadNextAtom;
       if AtomIsChar('(') then begin
         // an enumeration -> read all enums
+        CreateChildNode; // begin enumeration
+        CurNode.Desc:=ctnEnumerationType;
         repeat
           ReadNextAtom; // read enum name
           if AtomIsChar(')') then break;
-          CreateChildNode;
-          CurNode.Desc:=ctnEnumType;
-          CurNode.EndPos:=CurPos.EndPos;
           AtomIsIdentifier(true);
+          CreateChildNode;
+          CurNode.Desc:=ctnEnumIdentifier;
+          CurNode.EndPos:=CurPos.EndPos;
+          EndChildNode; // close enum node
           ReadNextAtom;
           if AtomIs(':=') then begin
             // read ordinal value
-            repeat
-              ReadNextAtom;
-              if AtomIsChar('(') or AtomIsChar('[') then
-                ReadTilBracketClose(true)
-              else if AtomIsChar(')') or AtomIsChar(',') then
-                break
-              else if AtomIsKeyWord then
-                RaiseException(
-                  'unexpected keyword '+GetAtom+' found');
-            until CurPos.StartPos>SrcLen;
-            CurNode.EndPos:=CurPos.StartPos;
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
           end;
-          EndChildNode; // close enum node
           if AtomIsChar(')') then break;
           if not AtomIsChar(',') then
             RaiseException(') expected, but '+GetAtom+' found');
         until false;
         CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode; // close enumeration
         ReadNextAtom;
       end else
         RaiseException('invalid type');

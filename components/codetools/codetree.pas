@@ -92,12 +92,13 @@ const
   ctnProcedureType   = 66;
   ctnSetType         = 67;
   ctnRangeType       = 68;
-  ctnEnumType        = 69;
-  ctnLabelType       = 70;
-  ctnTypeType        = 71;
-  ctnFileType        = 72;
-  ctnPointerType     = 73;
-  ctnClassOfType     = 74;
+  ctnEnumerationType = 69;
+  ctnEnumIdentifier  = 70;
+  ctnLabelType       = 71;
+  ctnTypeType        = 72;
+  ctnFileType        = 73;
+  ctnPointerType     = 74;
+  ctnClassOfType     = 75;
   
   ctnBeginBlock      = 80;
   ctnAsmBlock        = 81;
@@ -122,8 +123,9 @@ const
   AllPascalTypes =
      [ctnClass,
       ctnIdentifier,ctnArrayType,ctnRecordType,ctnRecordCase,ctnRecordVariant,
-      ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumType,ctnLabelType,
-      ctnTypeType,ctnFileType,ctnPointerType,ctnClassOfType];
+      ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
+      ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
+      ctnClassOfType];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSoureTypes =
@@ -290,15 +292,19 @@ begin
   ctnProcedureType: Result:='Procedure Type';
   ctnSetType: Result:='Set Type';
   ctnRangeType: Result:='Subrange Type';
-  ctnEnumType: Result:='Enumeration Type';
+  ctnEnumerationType: Result:='Enumeration Type';
+  ctnEnumIdentifier: Result:='Enumeration Identifier';
   ctnLabelType: Result:='Label Type';
   ctnTypeType: Result:='''Type'' Type';
   ctnFileType: Result:='File Type';
-  ctnPointerType: Result:='Pointer ''^'' Type';
+  ctnPointerType: Result:='Pointer ^ Type';
   ctnClassOfType: Result:='Class Of Type';
 
   ctnWithVariable: Result:='With Variable';
-  ctnWithStatement: Result:='With Statement'
+  ctnWithStatement: Result:='With Statement';
+  ctnCaseBlock: Result:='Case Block';
+  ctnCaseVariable: Result:='Case Variable';
+  ctnCaseStatement: Result:='Case Statement';
 
   else
     Result:='invalid descriptor';

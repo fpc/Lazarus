@@ -42,8 +42,12 @@ uses
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
   TypInfo, SourceChanger;
 
+{ $DEFINE CTDEBUG}
+
 type
   TMethodJumpingCodeTool = class(TStandardCodeTool)
+  private
+    FAdjustTopLineDueToComment: boolean;
   public
     function FindJumpPoint(CursorPos: TCodeXYPosition;
         var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -54,9 +58,15 @@ type
     function FindFirstDifferenceNode(SearchForNodes, SearchInNodes: TAVLTree;
         var DiffTxtPos: integer): TAVLTreeNode;
     function JumpToNode(ANode: TCodeTreeNode;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        IgnoreJumpCentered: boolean): boolean;
+    function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos: integer;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        IgnoreJumpCentered: boolean): boolean;
     function FindNodeInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
+    property AdjustTopLineDueToComment: boolean
+        read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
   end;
 
 
@@ -78,7 +88,6 @@ function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
     FromProcHead, ToProcHead: string;
     Attr: TProcHeadAttributes;
     DiffPos: integer;
-    NewProcCaret: TCodeXYPosition;
     ProcNode: TCodeTreeNode;
   begin
     Result:=false;
@@ -98,11 +107,6 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode A ',ProcNode<>nil
        phpWithParameterNames, phpWithDefaultValues, phpWithResultType,
        phpWithComments];
     SearchForProcAttr:=SearchForProcAttr+[phpWithoutBrackets,
-       phpWithoutParamList];
-    SearchInProcAttr:=SearchInProcAttr-[phpWithVarModifiers,
-       phpWithParameterNames, phpWithDefaultValues, phpWithResultType,
-       phpWithComments];
-    SearchInProcAttr:=SearchInProcAttr+[phpWithoutBrackets,
        phpWithoutParamList];
     SearchedProcHead:=ExtractProcHead(SearchForProcNode,SearchForProcAttr);
     if SearchedProcHead='' then exit;
@@ -138,16 +142,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode C "',FromProcHead
 writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode C ',DiffPos);
 {$ENDIF}
       // move cursor to first difference in procedure head
-      if not CleanPosToCaret(DiffPos,NewPos) then exit;
-      // calculate NewTopLine
-      if not CleanPosToCaret(ProcNode.StartPos,NewProcCaret) then exit;
-      if NewPos.Code=NewProcCaret.Code then
-        NewTopLine:=NewProcCaret.Y
-      else
-        NewTopLine:=1;
-      if NewTopLine<=NewPos.Y-VisibleEditorLines then
-        NewTopLine:=NewPos.Y-VisibleEditorLines+1;
-      Result:=true;
+      Result:=JumpToCleanPos(DiffPos,ProcNode.StartPos,NewPos,NewTopLine,true);
     end;
   end;
   
@@ -158,7 +153,6 @@ var CursorNode, ClassNode, ProcNode, StartNode, TypeSectionNode: TCodeTreeNode;
   SearchedClassname: string;
   SearchForNodes, SearchInNodes: TAVLTree;
   DiffNode: TAVLTreeNode;
-  NewProcCaret: TCodeXYPosition;
 begin
   Result:=false;
   NewPos:=CursorPos;
@@ -261,16 +255,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint N ',DiffTxtPos);
 {$ENDIF}
           if DiffTxtPos>0 then begin
             // move cursor to first difference in procedure head
-            if not CleanPosToCaret(DiffTxtPos,NewPos) then exit;
-            // calculate NewTopLine
-            if not CleanPosToCaret(ProcNode.StartPos,NewProcCaret) then exit;
-            if NewPos.Code=NewProcCaret.Code then
-              NewTopLine:=NewProcCaret.Y
-            else
-              NewTopLine:=1;
-            if NewTopLine<=NewPos.Y-VisibleEditorLines then
-              NewTopLine:=NewPos.Y-VisibleEditorLines+1;
-            Result:=true;
+            Result:=JumpToCleanPos(DiffTxtPos,ProcNode.StartPos,
+                                   NewPos,NewTopLine,true);
           end else
             // find good position in procedure body
             Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
@@ -373,17 +359,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 4G ',DiffNode<>nil);
               DiffTxtPos:=ExtractFoundPos;
               if DiffTxtPos>0 then begin
                 // move cursor to first difference in procedure head
-                if not CleanPosToCaret(DiffTxtPos,NewPos) then exit;
-                // calculate NewTopLine
-                if not CleanPosToCaret(ProcNode.StartPos,NewProcCaret) then
-                  exit;
-                if NewPos.Code=NewProcCaret.Code then
-                  NewTopLine:=NewProcCaret.Y
-                else
-                  NewTopLine:=1;
-                if NewTopLine<=NewPos.Y-VisibleEditorLines then
-                  NewTopLine:=NewPos.Y-VisibleEditorLines+1;
-                Result:=true;
+                Result:=JumpToCleanPos(DiffTxtPos,ProcNode.StartPos,
+                                       NewPos,NewTopLine,true);
               end else
                 // find good position in procedure body
                 Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
@@ -406,14 +383,14 @@ function TMethodJumpingCodeTool.FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 var DestNode: TCodeTreeNode;
   i, NewCleanPos: integer;
-  NewProcCaret: TCodeXYPosition;
 begin
   Result:=false;
   // search method body
   DestNode:=FindProcBody(ProcNode);
   if DestNode=nil then begin
     // proc without body -> jump to proc node header
-    Result:=JumpToNode(ProcNode.FirstChild,NewPos,NewTopLine);
+    Result:=JumpToCleanPos(ProcNode.FirstChild.StartPos,ProcNode.Startpos,
+                           NewPos,NewTopLine,false);
     exit;
   end;
   // search good position
@@ -467,17 +444,10 @@ writeln('[TMethodJumpingCodeTool.FindJumpPointInProcNode] B i=',i,' IndentSize='
   end else
     i:=0;
   if NewCleanPos>SrcLen then NewCleanPos:=SrcLen;
-  if not CleanPosToCaret(NewCleanPos,NewPos) then exit;
+  if not JumpToCleanPos(NewCleanPos,ProcNode.StartPos,NewPos,NewTopLine,true)
+  then exit;
   if CursorBeyondEOL then
     inc(NewPos.x,i);
-  // calculate NewTopLine
-  if not CleanPosToCaret(ProcNode.StartPos,NewProcCaret) then exit;
-  if NewPos.Code=NewProcCaret.Code then
-    NewTopLine:=NewProcCaret.Y
-  else
-    NewTopLine:=1;
-  if NewTopLine<=NewPos.Y-VisibleEditorLines then
-    NewTopLine:=NewPos.Y-VisibleEditorLines+1;
   Result:=true;
 end;
 
@@ -600,17 +570,13 @@ begin
 end;
 
 function TMethodJumpingCodeTool.JumpToNode(ANode: TCodeTreeNode;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  IgnoreJumpCentered: boolean): boolean;
 begin
   Result:=false;
   if (ANode=nil) or (ANode.StartPos<1) then exit;
-  if not CleanPosToCaret(ANode.StartPos,NewPos) then exit;
-  NewTopLine:=NewPos.Y;
-  if JumpCentered then begin
-    dec(NewTopLine,VisibleEditorLines div 2);
-    if NewTopLine<1 then NewTopLine:=1;
-  end;
-  Result:=true;
+  Result:=JumpToCleanPos(ANode.StartPos,ANode.StartPos,
+                         NewPos,NewTopLine,IgnoreJumpCentered);
 end;
 
 function TMethodJumpingCodeTool.FindNodeInTree(ATree: TAVLTree;
@@ -630,6 +596,49 @@ begin
       exit;
   end;
   Result:=nil;
+end;
+
+function TMethodJumpingCodeTool.JumpToCleanPos(NewCleanPos,
+  NewTopLineCleanPos: integer; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer; IgnoreJumpCentered: boolean): boolean;
+var CenteredTopLine: integer;
+  NewTopLinePos: TCodeXYPosition;
+begin
+  Result:=false;
+  // convert clean position to line, column and code
+  if not CleanPosToCaret(NewCleanPos,NewPos) then exit;
+  NewTopLine:=NewPos.Y;
+  if AdjustTopLineDueToComment then begin
+    // if there is a comment in front of the top position, it probably belongs
+    // to the destination code
+    // -> adjust the topline position, so that the comment is visible
+    NewTopLineCleanPos:=FindLineEndOrCodeInFrontOfPosition(Src,
+                         NewTopLineCleanPos,Scanner.NestedComments);
+    if (NewTopLineCleanPos>=1) and (Src[NewTopLineCleanPos] in [#13,#10])
+    then begin
+      inc(NewTopLineCleanPos);
+      if (Src[NewTopLineCleanPos] in [#10,#13])
+      and (Src[NewTopLineCleanPos]<>Src[NewTopLineCleanPos-1]) then
+        inc(NewTopLineCleanPos);
+    end;
+  end;
+  // convert clean top line position to line, column and code
+  if not CleanPosToCaret(NewTopLineCleanPos,NewTopLinePos) then exit;
+  if NewTopLinePos.Code=NewPos.Code then begin
+    // top line position is in the same code as the destination position
+    NewTopLine:=NewTopLinePos.Y;
+    if JumpCentered and (not IgnoreJumpCentered) then begin
+      // center the destination position in the source editor
+      CenteredTopLine:=NewPos.Y-VisibleEditorLines div 2;
+      if CenteredTopLine<NewTopLine then
+        NewTopLine:=CenteredTopLine;
+    end;
+    if NewTopLine<1 then NewTopLine:=1;
+    if NewTopLine<=NewPos.Y-VisibleEditorLines then
+      NewTopLine:=NewPos.Y-VisibleEditorLines+1;
+  end else
+    NewTopLine:=1;
+  Result:=true;
 end;
 
 

@@ -53,6 +53,7 @@ type
 
   TCodeToolManager = class
   private
+    FAdjustTopLineDueToComment: boolean;
     FCatchExceptions: boolean;
     FCheckFilesOnDisk: boolean;
     FCurCodeTool: TCodeCompletionCodeTool; // current codetool
@@ -123,6 +124,8 @@ type
     property ErrorTopLine: integer read fErrorTopLine;
 
     // tool settings
+    property AdjustTopLineDueToComment: boolean
+        read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
     property CheckFilesOnDisk: boolean
           read FCheckFilesOnDisk write SetCheckFilesOnDisk;
     property IndentSize: integer read FIndentSize write SetIndentSize;
@@ -280,13 +283,14 @@ begin
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
   GlobalValues:=TExpressionEvaluator.Create;
-  FSourceExtensions:='.pp;.pas;.lpr;.dpr;.dpk';
+  FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
-  FWriteExceptions:=true;
-  FIndentSize:=2;
-  FVisibleEditorLines:=20;
-  FJumpCentered:=true;
   FCursorBeyondEOL:=true;
+  FIndentSize:=2;
+  FJumpCentered:=true;
+  FSourceExtensions:='.pp;.pas;.lpr;.dpr;.dpk';
+  FVisibleEditorLines:=20;
+  FWriteExceptions:=true;
   FSourceTools:=TAVLTree.Create(@CompareCodeToolMainSources);
 end;
 
@@ -1324,6 +1328,8 @@ begin
     Result.Scanner:=Code.Scanner;
     FSourceTools.Add(Result);
   end;
+  TCodeCompletionCodeTool(Result).AdjustTopLineDueToComment:=
+    FAdjustTopLineDueToComment;
   Result.CheckFilesOnDisk:=FCheckFilesOnDisk;
   Result.IndentSize:=FIndentSize;
   Result.VisibleEditorLines:=FVisibleEditorLines;

@@ -191,9 +191,19 @@ end;
 procedure TCustomCodeTool.RaiseException(const AMessage: string);
 var CaretXY: TCodeXYPosition;
   CursorPos: integer;
+  Node: TCodeTreeNode;
 begin
   ErrorPosition.Code:=nil;
   CursorPos:=CurPos.StartPos;
+  // close all open nodes, so that FindDeepestNodeAtPos works in the code
+  // already parsed
+  Node:=CurNode;
+  while (Node<>nil) do begin
+    if (Node.StartPos>=Node.EndPos) then
+      Node.EndPos:=CursorPos;
+    Node:=Node.Parent;
+  end;
+  // convert cursor pos to caret pos, which is more human readable
   if (CursorPos>SrcLen) and (SrcLen>0) then CursorPos:=SrcLen;
   if (CleanPosToCaret(CursorPos,CaretXY))
   and (CaretXY.Code<>nil) then begin
@@ -202,6 +212,7 @@ begin
     ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
     ErrorPosition.Y:=-1;
   end;
+  // raise the exception
   raise ECodeToolError.Create(Self,AMessage);
 end;
 

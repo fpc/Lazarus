@@ -29,15 +29,15 @@
     - many things, search for 'ToDo'
 
     - Difficulties:
-       1. Searching recursively
+       1. SOLVED. Searching recursively
             - ParentNodes
             - Ancestor Classes/Objects/Interfaces
             - with statements
             - operators: '.', '()', 'A()', '^', 'inherited'
-       2. Searching enums must be searched in sub nodes
+       2. SOLVED. Searching enums must be searched in sub nodes
             -> all classes node trees must be built
-       3. Searching in used units (interface USES and implementation USES)
-       4. Searching forward for pointer types e.g. ^Tralala
+       3. SOLVED. Searching in used units (interface USES and implementation USES)
+       4. SOLVED. Searching forward for pointer types e.g. ^Tralala
        5. Mass Search: searching a compatible proc will result
           in searching every parameter type of every reachable proc
             (implementation section + interface section
@@ -673,7 +673,7 @@ if (ContextNode.Desc=ctnClass) then
             end;
           end;
           
-        ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition, ctnEnumType:
+        ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition:
           begin
             if CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
             then begin
@@ -901,7 +901,7 @@ begin
       BuildSubTreeForClass(Params.ContextNode);
     Params.ContextNode:=Params.ContextNode.FirstChild;
     while Params.ContextNode<>nil do begin
-      if (Params.ContextNode.Desc in [ctnEnumType])
+      if (Params.ContextNode.Desc in [ctnEnumIdentifier])
       and CompareSrcIdentifiers(Params.ContextNode.StartPos,Params.Identifier)
       then begin
         // identifier found
@@ -1219,9 +1219,7 @@ writeln('');
             Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
             Params.Load(OldInput);
           end;
-          
-        // ToDo string, ansistring, widestring, shortstring
-          
+
         else
           MoveCursorToCleanPos(CurAtom.StartPos);
           RaiseException('illegal qualifier');
@@ -1246,7 +1244,7 @@ writeln('');
       if Result.Node<>Params.ContextNode then begin
         // typecast or function
         
-        // ToDo: proc overloading, if parameter types incompatible search next
+        // ToDo: proc overloading, if parameter types incompatible, search next
         
       end else begin
         // expression
@@ -1831,16 +1829,57 @@ end;
 
 function TFindDeclarationTool.FindExpressionResultType(
   Params: TFindDeclarationParams; StartPos, EndPos: integer): TFindContext;
+{
+  ToDo:
+    - operators
+        - mixing ansistring and shortstring gives ansistring
+        - Pointer +,- Pointer gives Pointer
+        - Sets:
+            [enum1] gives  set of enumeration type
+            set *,-,+ set   gives set of same type
+            set <>,=,<,> set  gives boolean
+        - precedence rules table:
+            1. brackets
+            2. not @ sign
+            3. * / div mod and shl shr as
+            4. + - or xor
+            5. < <> > <= >= in is
+        -
+    
+    - operator overloading
+    - internal types. e.g. string[], ansistring[], shortstring[], pchar[] to char
+    - the type of a subrange is the type of the first constant/enum/number/char
+    - predefined types:
+        ordinal:
+          int64, cardinal, QWord, boolean, bytebool, longbool, char
+          
+        real:
+          real, single, double, extended, comp
+          
+    - predefined functions:
+        function pred(ordinal type): ordinal constant of same type;
+        function succ(ordinal type): ordinal constant of same type;
+        function ord(ordinal type): ordinal type;
+        val?
+        function low(array): type of leftmost index type in the array;
+        function high(array): type of leftmost index type in the array;
+        procedure dec(ordinal var);
+        procedure dec(ordinal var; ordinal type);
+        procedure dec(pointer var);
+        procedure dec(pointer var; ordinal type);
+        procedure inc(ordinal var);
+        procedure inc(ordinal var; ordinal type);
+        procedure inc(pointer var);
+        procedure inc(pointer var; ordinal type);
+        procedure write(...);
+        procedure writeln(...);
+        function SizeOf(type): ordinal constant;
+        typeinfo?
+        uniquestring?
+        procedure include(set type,enum identifier);
+        procedure exclude(set type,enum identifier);
+}
 begin
-
-  // ToDo: operators
-  // ToDo: operator overloading
-  // ToDo: internal types. e.g. String[] is of type char
-  
-  // ToDo: constant types: e.g. 1 is constnumber, #1 is constchar,
-  //       '1' is conststring, 1.0 is constreal
-  // ToDo: set types: [], A * B
-
   // This is a quick hack: Just return the type of the last variable.
   MoveCursorToCleanPos(EndPos);
   Result:=FindContextNodeAtCursor(Params);
