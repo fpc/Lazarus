@@ -579,7 +579,7 @@ type
     Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
     procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);
-    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string;
+    procedure TextRect(ARect: TRect; X, Y: integer; const Text : string;
                        const Style : TTextStyle);
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
@@ -961,6 +961,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2003/01/28 12:45:04  mattias
+  fixed broken cvs
+
   Revision 1.59  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
