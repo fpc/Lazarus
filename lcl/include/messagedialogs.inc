@@ -38,11 +38,12 @@ type
    
     Internal class used to build a MessageBox. 
   }
-  TMessageBox = class (TForm)
+  TMessageBox = class(TForm)
     procedure MessageBoxKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
   private
     FBitmap : TBitmap;
+    FLabel : TLabel;
     FDlgType : TMsgDlgType;
     FButtons : TMsgDlgButtons;
     FRelayoutNeeded: boolean;
@@ -91,6 +92,11 @@ begin
   inherited Create (AOwner);
    
   FMsgLines   := TStringList.Create;
+  FLabel      := TLabel.Create(Self);
+  FLabel.Alignment:= taLeftJustify;
+  FLabel.Parent:= Self;
+  FLabel.Visible:= true;
+  
   ControlStyle:= ControlStyle-[csSetCaption];
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
@@ -114,6 +120,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMessageBox.Destroy;
 begin
+  FLabel.Free;
   FBitmap.Free;
   FMsgLines.Free;
   inherited Destroy;
@@ -173,7 +180,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMessageBox.LineHeight: integer;
 begin
-  Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZgp09')+8;
+  Result:=Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZgp09') + 4;
 end;
 
 {------------------------------------------------------------------------------
@@ -200,7 +207,7 @@ end;
 
   Sets the Text in MessageBox
  ------------------------------------------------------------------------------}
-procedure TMessageBox.SetMessage (const Value : string);
+procedure TMessageBox.SetMessage(const Value : string);
 begin
   if Value=FMsgLines.Text then exit;
   FMsgLines.Text:=Value;
@@ -267,9 +274,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMessageBox.ReLayout;
 const
-  cBtnWidth  = 85;     //TODO: Take into account different languages; button width may vary!
-  cBtnDist   = cBtnWidth + 25;
-  cBtnHeight = 32;
+  cBtnWidth  = 90;     //TODO: Take into account different languages; button width may vary!
+  cBtnHeight = 25;
+  cBtnDist   = cBtnWidth + 4;
   cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
 var
   aButton     : TBitBtn;    // temp. variable to create buttons
@@ -278,23 +285,21 @@ var
   ButtonLeft  : integer;    // left position of button(s)
   LabelLeft   : integer;    // left position of labels
   reqBtnWidth : integer;    // width neccessary to display buttons
-  reqWidth    : integer;    // width neccessary to display all
+  reqWidth, reqHeight : integer;    // width and height neccessary to display all
   LabelWidth  : integer;    // max width of labels
   LabelHeight : integer;
-  TempLabel   : TLabel;     // temporary label components
-  LabelIndex  : integer;
-  i, j          : integer;
+  i, j        : integer;
   ButtonIndex : integer;
 begin
   if FUpdateCounter>0 then exit;
   
   // calculate label width
-  LabelWidth:=0;
+  LabelWidth:= 0;
   for i:=0 to FMsgLines.Count-1 do begin
     j:=LineWidth(i);
-    if j>LabelWidth then LabelWidth:=j;
+    if j > LabelWidth then LabelWidth:= j;
   end;
-  LabelHeight:=LineHeight;
+  LabelHeight:= LineHeight * FMsgLines.Count;
   
   // destroy old BitBtns
   for i:=ComponentCount-1 downto 0 do
@@ -303,51 +308,27 @@ begin
 
   // calculate the width we need to display the buttons
   reqBtnWidth := 0;
-  for curBtn := low (TMsgDlgBtn) to high (TMsgDlgBtn) do
+  for curBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
     if curBtn in FButtons then inc(reqBtnWidth, cBtnDist);
+  if reqBtnWidth > 0 then Dec(reqBtnWidth, 4);
     
   // patch positions to center label and buttons
-  reqWidth:=reqBtnWidth;
-  if reqWidth < LabelWidth then reqWidth:=LabelWidth;
-  LabelLeft := ((reqWidth - LabelWidth) div 2) + cMinLeft;
-  ButtonLeft := cMinLeft + ((reqWidth - reqBtnWidth) div 2) + (25 div 2);
+  reqWidth:= reqBtnWidth;
+  if reqWidth < (LabelWidth + cMinLeft) then reqWidth:= LabelWidth + cMinLeft;
+  
+  LabelLeft := ((reqWidth - cMinLeft - LabelWidth) div 2) + cMinLeft;
+  ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
+
+  reqHeight:= LabelHeight;
+  if reqHeight < cBitmapHeight then reqHeight:= cBitmapHeight;
 
   // set size of form
-  SetBounds(Left,Top,reqWidth+cMinLeft+cLabelSpacing,
-        4*cLabelSpacing+FMsgLines.Count*(LabelHeight+cLabelSpacing)+cBtnHeight);
+  SetBounds(Left, Top, reqWidth + 2 * cLabelSpacing,
+        3 * cLabelSpacing + reqHeight + cBtnHeight);
   
-  // create and position the labels
-  i:=0;
-  LabelIndex:=0;
-  while (i<ComponentCount) and (LabelIndex<FMsgLines.Count) do begin
-    if (Components[i] is TLabel) then begin
-      TempLabel:=TLabel(Components[i]);
-      with TempLabel do begin
-        SetBounds(LabelLeft,
-                  cLabelSpacing+(cLabelSpacing+LabelHeight)*LabelIndex,
-                  LabelWidth,LabelHeight);
-        Caption:=FMsgLines[LabelIndex];
-        Visible:=true;
-      end;
-      inc(LabelIndex);
-    end else
-      inc(i);
-  end;
-  while (i<ComponentCount) do
-    if (Components[i] is TLabel) then Components[i].Free;
-  while LabelIndex<FMsgLines.Count do begin
-    TempLabel:=TLabel.Create(Self);
-    with TempLabel do begin
-      Parent  := Self;
-      Name:='MsgLabel'+IntToStr(LabelIndex);
-      SetBounds(LabelLeft,
-                cLabelSpacing+(cLabelSpacing+LabelHeight)*LabelIndex,
-                LabelWidth,LabelHeight);
-      Caption:=FMsgLines[LabelIndex];
-      Visible:=true;
-    end;
-    inc(LabelIndex);
-  end;
+  // set up labels
+  FLabel.SetBounds(LabelLeft, cLabelSpacing, LabelWidth, LabelHeight);
+  Flabel.Caption:= Trim(FMsgLines.Text);
   
   // create the buttons
   ButtonIndex := -1;
@@ -357,9 +338,7 @@ begin
       aButton := TBitBtn.Create(self);
       With aButton do begin
         Parent  := Self;
-        SetBounds (ButtonLeft,
-                   3*cLabelSpacing+(cLabelSpacing+LabelHeight)*FMsgLines.Count,
-                   cBtnWidth, cBtnHeight);
+        SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
         inc(ButtonLeft, cBtnDist);
         Layout  := blGlyphLeft;
         // ToDo: when TBitmap streaming is working, load image from resource 
@@ -495,6 +474,10 @@ end;
 
 {
    $Log$
+   Revision 1.12  2002/08/30 10:06:07  lazarus
+   Fixed alignment of multiline TLabel.
+   Simplified and prettified MessageBoxen.
+
    Revision 1.11  2002/07/29 13:39:07  lazarus
    MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
 

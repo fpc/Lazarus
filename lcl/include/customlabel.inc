@@ -91,9 +91,8 @@ constructor TCustomLabel.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csLabel;
-  FLayout := tlBottom;
+  FLayout := tlTop;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-
   SetBounds(0, 0, 65, 17);
 end;
 
@@ -102,6 +101,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/08/30 10:06:07  lazarus
+  Fixed alignment of multiline TLabel.
+  Simplified and prettified MessageBoxen.
+
   Revision 1.3  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

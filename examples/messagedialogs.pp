@@ -72,7 +72,7 @@ begin
    ShowMessage ('First simple test!');
    MessageDlg  ('Caption', 'Two buttons now...', mtError, [mbOK,mbCancel], 0);
    MessageDlg  ('Warning, not fully implemented', mtWarning, [mbYes, mbNo, mbOK,mbCancel], 0);
-   ShowMessageFmt ('The show will end now'+#13+'%s', [MainForm.Caption]);
+   ShowMessageFmt ('The show will end now'+#13+'%s'+#13+'Good bye!!!', [MainForm.Caption]);
    close;
 end;
 
@@ -84,6 +84,10 @@ begin
 end.
 {
    $Log$
+   Revision 1.4  2002/08/30 10:06:07  lazarus
+   Fixed alignment of multiline TLabel.
+   Simplified and prettified MessageBoxen.
+
    Revision 1.3  2002/05/10 06:57:50  lazarus
    MG: updated licenses
 
