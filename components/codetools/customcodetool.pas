@@ -1493,11 +1493,16 @@ begin
 //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
     if (StartNode.StartPos<=P)
     and ((StartNode.EndPos>P) or (StartNode.EndPos<1)) then begin
-      // first search in childs
+      // StartNode contains P
+      // -> search for a child that contains P
       Result:=FindDeepestNodeAtPos(StartNode.FirstChild,P,false);
-      if Result=nil then
-        // no child found -> take this node
+      if Result=nil then begin
+        // no child found -> search in nextbrothers that contains P
+        while (StartNode.NextBrother<>nil)
+        and (StartNode.NextBrother.StartPos<=P) do
+          StartNode:=StartNode.NextBrother;
         Result:=StartNode;
+      end;
     end else
       // search in next node
       Result:=FindDeepestNodeAtPos(StartNode.NextBrother,P,false);

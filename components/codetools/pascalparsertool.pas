@@ -1973,15 +1973,15 @@ end;
 
 function TPascalParserTool.ReadWithStatement(ExceptionOnError,
   CreateNodes: boolean): boolean;
+var WithVarNode: TCodeTreeNode;
 begin
   ReadNextAtom; // read 'with'
   if CreateNodes then begin
     CreateChildNode;
-    CurNode.Desc:=ctnWithVariable
+    CurNode.Desc:=ctnWithVariable;
   end;
   ReadTilVariableEnd(true);
   while CurPos.Flag=cafComma do begin
-    CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
     if CreateNodes then
       EndChildNode;
     ReadNextAtom;
@@ -2008,8 +2008,14 @@ begin
   if CreateNodes then begin
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode; // ctnWithStatement
+    WithVarNode:=CurNode.PriorBrother;
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode; // ctnWithVariable
+    // set all with variable ends
+    while (WithVarNode<>nil) and (WithVarNode.FirstChild=nil) do begin
+      WithVarNode.EndPos:=CurPos.StartPos;
+      WithVarNode:=WithVarNode.PriorBrother;
+    end;
   end;
   Result:=true;
 end;

@@ -516,6 +516,7 @@ begin
     LoadPixmapRes('default',Result);
 end;
 
+
 //==============================================================================
 
 
@@ -5606,6 +5607,7 @@ begin
   writeln('');
   writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
   {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCursor ',IntToStr(GetMem_Cnt));{$ENDIF}
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -5615,6 +5617,7 @@ begin
       NewSource, NewX, NewY, NewTopLine, true);
   end else 
     DoJumpToCodeToolBossError;
+  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCursor ',IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
 procedure TMainIDE.DoGoToPascalBlockOtherEnd;
@@ -6372,6 +6375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.300  2002/05/27 14:38:32  lazarus
+  MG; fixed find declaration of overloaded procs and expression input types
+
   Revision 1.299  2002/05/24 07:18:14  lazarus
   MG: save is now possible during debugging
 
