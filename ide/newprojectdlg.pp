@@ -48,7 +48,6 @@ TNewProjectDialog = class(TForm)
     procedure ListBoxDblClick(Sender: TObject);
     procedure ListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
-    procedure NewProjectDialogResize(Sender: TObject);
   private
     procedure FillHelpLabel;
     procedure SetupComponents;
@@ -85,9 +84,7 @@ begin
   Height:=240;
   Position:=poScreenCenter;
   Caption:=lisNPCreateANewProject;
-  OnResize:=@NewProjectDialogResize;
   SetupComponents;
-  NewProjectDialogResize(nil);
   FillHelpLabel;
 end;
 
@@ -122,8 +119,9 @@ begin
     Name:='ListBox';
     Left:=5;
     Top:=5;
-    Width:=150;
+    Width:=MaxX-200;
     Height:=MaxY-50;
+    Anchors := [akTop,akLeft,akRight,akBottom];
     with Items do begin
       BeginUpdate;
       for i:=0 to ProjectDescriptors.Count-1 do
@@ -143,6 +141,7 @@ begin
     Top:=ListBox.Top+2;
     Width:=MaxX-5-Left;
     Height:=ListBox.Height-2;
+    Anchors := [akTop,akRight,akBottom];
     WordWrap:=true;
     Caption:=lisNPSelectAProjectType;
   end;
@@ -155,6 +154,7 @@ begin
     Height:=23;
     Left:=Self.ClientWidth-Width*2-2*15;
     Top:=Self.ClientHeight-40;
+    Anchors := [akRight,akBottom];
     OnClick:=@CreateButtonClick;
     Caption:=lisNPCreate;
   end;
@@ -167,6 +167,7 @@ begin
     Height:=23;
     Left:=Self.ClientWidth-Width-15;
     Top:=CreateButton.Top;
+    Anchors := [akRight,akBottom];
     OnClick:=@CancelButtonClick;
     Caption:=dlgCancel;
   end;
@@ -184,49 +185,14 @@ end;
 
 procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);
 begin
-  CreateButtonClick(Self);
+  if ListBox.GetIndexAtY(ListBox.ScreenToClient(Mouse.CursorPos).Y) >= 0
+  then CreateButtonClick(Self);
 end;
 
 procedure TNewProjectDialog.ListBoxMouseUp(Sender:TObject;
   Button: TMouseButton; Shift: TShiftState; X,Y:integer);
 begin
   FillHelpLabel;
-end;
-
-procedure TNewProjectDialog.NewProjectDialogResize(Sender: TObject);
-var
-  MaxX, MaxY:integer;
-begin
-  MaxX:=ClientWidth;
-  MaxY:=ClientHeight;
-
-  with ListBox do begin
-    Left:=5;
-    Top:=5;
-    Width:=MaxX-200;
-    Height:=MaxY-50;
-  end;
-
-  with HelpLabel do begin
-    Left:=ListBox.Left+ListBox.Width+10;
-    Top:=ListBox.Top+2;
-    Width:=MaxX-5-Left;
-    Height:=ListBox.Height-2;
-  end;
-
-  with CreateButton do begin
-    Width:=80;
-    Height:=23;
-    Left:=Self.ClientWidth-Width*2-2*15;
-    Top:=Self.ClientHeight-40;
-  end;
-
-  with CancelButton do begin
-    Width:=80;
-    Height:=23;
-    Left:=Self.ClientWidth-Width-15;
-    Top:=CreateButton.Top;
-  end;
 end;
 
 end.
