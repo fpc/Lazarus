@@ -92,12 +92,14 @@ begin
 end;
 
 { TPersistentWithTemplates }
-
+{$IFOPT S+}{$DEFINE StackCheckOn}{$ENDIF}
+{$S-}
 procedure TPersistentWithTemplates.DoNothing;
 // this is the template procedure for all events of the designed components
 begin
   // !!! do not write any code in here !!!
 end;
+{$IFDEF StackCheckOn}{$S+}{$ENDIF}
 
 { TJITForm }
 
