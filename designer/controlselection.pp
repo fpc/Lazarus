@@ -597,6 +597,7 @@ begin
   else
     NewCustomForm:=nil;
   if NewCustomForm=FCustomForm then exit;
+  // form changed
   OldCustomForm:=FCustomForm;
   FCustomForm:=NewCustomForm;
   if Assigned(FOnSelectionFormChanged) then
@@ -858,7 +859,7 @@ begin
     if IsSelected(AComponent) then continue;
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
     CurDist:=Abs(CurLeft-NearestInt.Level);
-    if CurDist>=MaxDist then continue; // skip components far away
+    if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurLeft);
   end;
 end;
@@ -877,7 +878,7 @@ begin
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
               +GetComponentWidth(AComponent);
     CurDist:=Abs(CurRight-NearestInt.Level);
-    if CurDist>=MaxDist then continue; // skip components far away
+    if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurRight);
   end;
 end;
@@ -895,7 +896,7 @@ begin
     if IsSelected(AComponent) then continue;
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
     CurDist:=Abs(CurTop-NearestInt.Level);
-    if CurDist>=MaxDist then continue; // skip components far away
+    if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurTop);
   end;
 end;
@@ -914,7 +915,7 @@ begin
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
               +GetComponentHeight(AComponent);
     CurDist:=Abs(CurBottom-NearestInt.Level);
-    if CurDist>=MaxDist then continue; // skip components far away
+    if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurBottom);
   end;
 end;
