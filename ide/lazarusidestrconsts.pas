@@ -578,6 +578,9 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   dlgCancel = 'Cancel';
+  lisErrors = 'Errors';
+  lisLFMFile = 'LFM file';
+  lisRemoveAllInvalidProperties = 'Remove all invalid properties';
   lisCompTest = 'Test';
   lisA2PFilename2 = 'Filename';
   dlgEnvLanguage = 'Language';
@@ -2322,6 +2325,11 @@ resourcestring
   lisClDirSimpleSyntaxEGInsteadOf = 'Simple Syntax (e.g. * instead of .*)';
   lisClDirKeepFilesMatchingFilter = 'Keep files matching filter';
   lisClDirCleanDirectory = 'Clean Directory';
+  lisTheLFMLazarusFormFileContainsInvalidPropertiesThis = 'The LFM (Lazarus '
+    +'form) file contains invalid properties. This means for example it '
+    +'contains some properties/classes, which do not exist in the current '
+    +'LCL. The normal fix is to remove these properties from the lfm and fix '
+    +'the pascal code manually.';
 
 implementation
 end.

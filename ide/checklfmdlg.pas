@@ -39,7 +39,7 @@ uses
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
   // IDE
-  OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
+  LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
 
 type
   TCheckLFMDialog = class(TForm)
@@ -213,13 +213,11 @@ end;
 
 procedure TCheckLFMDialog.SetupComponents;
 begin
-  NoteLabel.Caption:='The LFM (Lazarus form) file contains invalid properties. '
-    +'This means for example it contains some properties/classes, which do not exist in the current LCL. '
-    +'The normal fix is to remove these properties from the lfm and fix the pascal code manually.';
-  CancelButton.Caption:='Cancel';
-  ErrorsGroupBox.Caption:='Errors';
-  LFMGroupBox.Caption:='LFM file';
-  RemoveAllButton.Caption:='Remove all invalid properties';
+  NoteLabel.Caption:=lisTheLFMLazarusFormFileContainsInvalidPropertiesThis;
+  CancelButton.Caption:=dlgCancel;
+  ErrorsGroupBox.Caption:=lisErrors;
+  LFMGroupBox.Caption:=lisLFMFile;
+  RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
   
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
