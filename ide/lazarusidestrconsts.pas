@@ -42,7 +42,7 @@ uses
   
 resourcestring
   // version
-  lisLazarusVersionString = '0.9.1 beta';
+  lisLazarusVersionString = '0.9.2 beta';
 
   // command line help
   listhisHelpMessage = 'this help message';

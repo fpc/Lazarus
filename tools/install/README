@@ -139,6 +139,8 @@ Creating the DMG packages for FPC and Lazarus:
    you have)
 5. cd compiler
    sudo make installsymlink INSTALL_PREFIX=~/fpcinst/usr/local
+   Fix sym link:
+   sudo ln -sf /usr/local/lib/fpc/1.9.5/ppcppc ~/fpcinst/usr/local/bin/ppcppc
 6. unzip the <lazarus>/tools/install/macosx/fpc_installer_info.zip somewhere,
    open "fpc 1.9.5.pmsp" (it will open in PackageMaker) change the "resources"
    path so it points to the unzipped fpc_resources directory and the "files"
