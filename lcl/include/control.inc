@@ -2532,6 +2532,10 @@ procedure TControl.SetWidth(Value: Integer);
       raise Exception.Create(
         'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative width '
           +dbgs(Value)+' not allowed.');
+    if Value>=10000 then
+      raise Exception.Create(
+        'TWinControl.SetBounds ('+DbgSName(Self)+'): Width '
+          +dbgs(Value)+' not allowed.');
   end;
 
 begin
@@ -2554,6 +2558,10 @@ procedure TControl.SetHeight(Value: Integer);
     if Value<0 then
       raise Exception.Create(
         'TWinControl.SetHeight ('+DbgSName(Self)+'): Negative height '
+          +dbgs(Value)+' not allowed.');
+    if Value>=10000 then
+      raise Exception.Create(
+        'TWinControl.SetBounds ('+DbgSName(Self)+'): Height '
           +dbgs(Value)+' not allowed.');
   end;
 
@@ -3424,6 +3432,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.235  2005/01/13 20:21:41  mattias
+  added desgntime check for TControl.Width/Height for high values
+
   Revision 1.234  2005/01/13 19:52:50  mattias
   added desgntime check for TControl.Width/Height for negative values
 
