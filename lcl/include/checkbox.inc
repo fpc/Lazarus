@@ -13,27 +13,6 @@
  *                                                                           *
  *****************************************************************************
 }
-{------------------------------------------------------------------------------}
-
-constructor TCheckbox.Create(AOwner : TComponent);
-begin
-  inherited Create(AOwner);
-  AutoSize := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCheckbox.RealSetText
-  Params:  Value : TCaption
-  Returns: nothing
-
-  Change the caption, and then AutoSize
- ------------------------------------------------------------------------------}
-procedure TCheckbox.RealSetText(const Value: TCaption);
-begin
-  if Value=Text then exit;
-  Inherited RealSetText(Value);
-  DoAutoSize;
-end;
 
 {------------------------------------------------------------------------------
   Method: TCheckbox.DoAutoSize
@@ -71,6 +50,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.12  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

@@ -5489,9 +5489,10 @@ begin
     AddToStyleWindow:=true;
     // create a style widget
     If AnsiCompareText(WName,LazGtkStyleNames[lgsButton])=0 then begin
-      StyleObject^.Widget := GTK_BUTTON_NEW;
-      lgs:=lgsButton;
-    end else
+        StyleObject^.Widget := GTK_BUTTON_NEW;
+        lgs:=lgsButton;
+      end
+    else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsLabel])=0 then begin
         StyleObject^.Widget := GTK_LABEL_NEW('StyleLabel');
         lgs:=lgsLabel;
@@ -5535,11 +5536,13 @@ begin
     else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
         lgs:=lgsMenu;
+        AddToStyleWindow:=false;
         StyleObject^.Widget := GTK_MENU_NEW;
       end
     else
       If AnsiCompareText(WName,LazGtkStyleNames[lgsMenuitem])=0 then begin
         lgs:=lgsMenuitem;
+        AddToStyleWindow:=false;
         StyleObject^.Widget := GTK_MENU_ITEM_NEW;
       end
     else
@@ -5587,6 +5590,7 @@ begin
     else begin
       // unknown style name -> bug
       FreeStyleObject(StyleObject);
+      AddToStyleWindow:=false;
       RaiseException('');
     end;
     
@@ -5605,6 +5609,7 @@ begin
         StyleWindowWidget:=GetStyleWidget(lgsWindow);
         VBox:=PGTKWidget(
                      gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
+        //writeln('AddToStyleWindow A ',GetWidgetDebugReport(StyleObject^.Widget));
         gtk_box_pack_end(PGTKBox(VBox), StyleObject^.Widget, True, True, 0);
       end;
 
@@ -6842,6 +6847,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.288  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.287  2004/07/03 11:11:09  mattias
   TGTKListStringList now keeps selection on Put and Move
 

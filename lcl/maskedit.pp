@@ -127,7 +127,7 @@ type
     procedure CheckCursor;
     property EditMask: string read FEditMask write SetEditMask;
     property MaskState: TMaskedState read FMaskState write FMaskState;
-    property MaxLength: Integer read GetMaxLength write SetMaxLength default 0;
+    property MaxLength: Integer read GetMaxLength write SetMaxLength default -1;
   public
     constructor Create(AOwner: TComponent); override;
     procedure ValidateEdit; virtual;
@@ -641,7 +641,7 @@ begin
   if (IsMasked) then
   begin
     FCaretPos := SelStart;
-    if (sellength < 1) and (Message.XPos > FBtnDownX) then
+    if (SelLength < 1) and (Message.XPos > FBtnDownX) then
       FCaretPos := SelStart;
     CheckCursor;
   end;
@@ -797,7 +797,7 @@ begin
   if not HandleAllocated then  Exit;
   if (IsMasked) then
   begin
-    if sellength = 0 then
+    if SelLength = 0 then
       SetCursor(SelStart);
   end;
 end;
@@ -840,7 +840,7 @@ begin
     Exit;
   end;
 
-  if (sellength) > 1 then
+  if (SelLength) > 1 then
   begin
     DeleteKeys(VK_DELETE);
     SelStart := GetNextEditChar(SelStart);
@@ -878,7 +878,7 @@ begin
     if (CharCode = VK_RIGHT) then
     begin
       Inc(FCaretPos);
-      if (sellength = 1) then
+      if (SelLength = 1) then
       begin
         Inc(FCaretPos);
       end;
@@ -887,7 +887,7 @@ begin
     else
     begin
       Dec(FCaretPos);
-      if (sellength = 2) and
+      if (SelLength = 2) and
         (FCaretPos > SelStart) then
       begin
         SelStart := SelStart+1;
@@ -899,9 +899,9 @@ begin
   end
   else
   begin
-    if (sellength) > 1 then
+    if (SelLength) > 1 then
     begin
-      {if ((sellength) = 2) and (EditText[SelStart+1] in LeadBytes) then
+      {if ((SelLength) = 2) and (EditText[SelStart+1] in LeadBytes) then
       begin
         if (CharCode = VK_LEFT) then
           CursorDec(SelStart)
@@ -909,7 +909,7 @@ begin
           CursorInc(SelStart, 2);
         Exit;
       end; }
-      if selstart+sellength = FCaretPos then
+      if selstart+SelLength = FCaretPos then
         Dec(FCaretPos);
       SetCursor(FCaretPos);
     end
@@ -917,7 +917,7 @@ begin
       CursorDec(SelStart)
     else
     begin
-      if sellength = 0 then
+      if SelLength = 0 then
         SetCursor(SelStart)
       else
         {if EditText[SelStart+1] in LeadBytes then
@@ -987,8 +987,8 @@ begin
   begin
     if (ssShift in Shift) then
     begin
-      if (SelStart <> FCaretPos) and (sellength <> 1) then
-        sellength := 1;
+      if (SelStart <> FCaretPos) and (SelLength <> 1) then
+        SelLength := 1;
       CheckCursor;
     end
     else
@@ -999,7 +999,7 @@ begin
   begin
     if (ssShift in Shift) then
     begin
-      if (selstart+sellength <> FCaretPos) and (sellength <> 1) then
+      if (selstart+SelLength <> FCaretPos) and (SelLength <> 1) then
         SelLength := SelLength - 1;
       CheckCursor;
     end
@@ -1017,23 +1017,21 @@ var
 begin
   if ReadOnly then Exit;
   
-  if ((sellength) < 1) and (CharCode = VK_BACK) then
+  if ((SelLength) < 1) and (CharCode = VK_BACK) then
   begin
-
     NuSelStart := SelStart;
     CursorDec(SelStart);
 
     Str := EditText;
     DeleteSelection(Str, SelStart+1, 1);
 
-    
     NuSelStart := SelStart;
     EditText := Str;
     SetCursor(NuSelStart);
     exit;
   end;
 
-  if (sellength) < 1 then Exit;
+  if (SelLength) < 1 then Exit;
   if (selstart) < 1 then exit;
 
   Str := EditText;
@@ -1044,7 +1042,7 @@ begin
      SelLength := 1;
   end;
 
-  DeleteSelection(Str, SelStart, sellength);
+  DeleteSelection(Str, SelStart, SelLength);
   NuSelStart := SelStart-1;
   EditText := Str;
   SelStart := NuSelStart;

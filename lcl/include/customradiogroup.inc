@@ -321,6 +321,7 @@ Procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
   if FCreatingWnd then exit;
   UpdateRadioButtonStates;
+  EditingDone;
   if Assigned (FOnClick) then FOnClick(Self);
 end;
 
@@ -396,6 +397,9 @@ end;
 
 {
   $Log$
+  Revision 1.29  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.28  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

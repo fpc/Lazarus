@@ -55,6 +55,7 @@ begin
   DoPopup(Self);
   if Items.Count=0 then exit;
   ActivePopupMenu:=Self;
+  Items.InitiateActions;
   HandleNeeded;
   SendMsgToInterface(LM_POPUPSHOW, Self, @FPopupPoint);
 end;
@@ -76,6 +77,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.10  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

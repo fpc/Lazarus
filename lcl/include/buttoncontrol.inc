@@ -41,6 +41,7 @@ begin
   if Checked=fLastCheckedOnChange then exit;
   fLastCheckedOnChange:=Checked;
   if csLoading in ComponentState then exit;
+  EditingDone;
   if UseOnChange and Assigned(OnChange) then OnChange(Self);
 end;
 

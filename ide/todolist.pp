@@ -61,7 +61,8 @@ uses
 
 Const
   cTodoFlag = '#todo';
-  
+  cAltTodoFLag = 'TODO';
+
 type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string;
                           const LineNumber: integer) of object;
@@ -105,7 +106,7 @@ var
 implementation
 
 uses
-  FileCtrl;
+  StrUtils, FileCtrl;
 
 Type
    PCharArray   = Array[0..16+5] of PChar;
@@ -528,9 +529,14 @@ Var
   N,J           : Integer;
   ParsingString : string;
   CListItem     : TListItem;
+  TodoFlag      : string;
+  function IsTodoFlag(const Flag: string): boolean;
+  begin
+    TodoFLag := Flag;
+    Result := Pos(UpperCase(Flag),UpperCase(TokenString)) > 1;
+  end;
 begin
-  N:=Pos(UpperCase(cTodoFlag),UpperCase(TokenString));
-  if N>1 then
+  if IsTodoFlag(cTodoFlag) or  IsTodoFlag(cAltTodoFlag) then
   begin
     // We found a token that looks like a TODO comment. Now
     // verify that it *is* one: either a white-space or the
@@ -544,11 +550,11 @@ begin
     ParsingString := Trim(ParsingString);
 
     // The TODO token should be at the beginning of the comment
-    N:=Pos(UpperCase(cTodoFlag),UpperCase(ParsingString));
+    N:=Pos(UpperCase(TodoFlag),UpperCase(ParsingString));
     if N=1 then
     begin
       // Remove token from string
-      Delete(ParsingString, 1, Length(cTodoFlag));
+      Delete(ParsingString, 1, Length(TodoFlag));
       ParsingString := TrimRight(ParsingString);
 
       if EComment<>'' then
@@ -573,6 +579,11 @@ begin
       ClistItem.Caption:=IntToStr(N);
       Delete(ParsingString, 1, j);
       ParsingString := TrimLeft(ParsingString);
+      if (j=0) and AnsiStartsText(':', ParsingString) then begin
+        { Remove Leading : from comment }
+        Delete(ParsingString, 1, 1);
+        ParsingString := TrimLeft(ParsingString);
+      end;
 
       ClistItem.SubItems.Add(ParsingString);
       ClistItem.SubItems.Add(ExtractFileName(aFileName));
@@ -588,9 +599,7 @@ end;
 procedure TfrmToDo.LoadFile(const aFileName: string);
 var
   Parser   : TmwPasLex;
-  FlStream : TFileStream;
   EStream  : TMemoryStream;
-  Err      : Boolean;
   ST       : String;
 begin
   St:=ExtractFileName(aFileName);
@@ -604,18 +613,13 @@ begin
   try
     //Echange of stream
     Try
-      Err:=False;
-      FlStream := TFileStream.Create(aFileName,fmOpenReadWrite);
-      try
-        EStream.LoadFromStream(FlStream)
-      finally
-        FlStream.Free;
-      end;
+      EStream.LoadFromFile(aFileName);
+      EStream.Position := EStream.Size;
+      EStream.WriteByte(0); // Terminate string for TmwPasLex
     Except
-      Err:=True;
-    end;
-
-    if Err then Exit;
+      FreeAndNil(EStream);
+    End;
+    if not Assigned(EStream) then Exit; // Silently ignore failed reads
 
     EStream.Position := 0;
 

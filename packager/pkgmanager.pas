@@ -1136,6 +1136,7 @@ var
   SrcDirs: String;
   PkgDir: String;
   PkgOutputDir: String;
+  YesToAll: Boolean;
 
   function CheckFile(const ShortFilename: string): TModalResult;
   var
@@ -1150,18 +1151,22 @@ var
       AmbigiousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
                                           SearchFlags);
       if (AmbigiousFilename='') then exit;
-      Result:=MessageDlg('Ambigious Unit found',
-        'The file "'+AmbigiousFilename+'"'#13
-        +'was found in one of the source directories of the package '
-          +APackage.IDAsString+' and looks like a compiled unit.'
-        +'Compiled units must be in the output directory of the package, '
-        +'otherwise other packages can get problems using this package.'#13
-        +#13
-        +'Delete ambigious file?',
-        mtWarning,[mbYes,mbNo,mbAbort],0);
+      if not YesToAll then
+        Result:=MessageDlg('Ambigious Unit found',
+          'The file "'+AmbigiousFilename+'"'#13
+          +'was found in one of the source directories of the package '
+            +APackage.IDAsString+' and looks like a compiled unit.'
+          +'Compiled units must be in the output directory of the package, '
+          +'otherwise other packages can get problems using this package.'#13
+          +#13
+          +'Delete ambigious file?',
+          mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort],0)
+      else
+        Result:=mrYesToAll;
       if Result=mrNo then
         Result:=mrOk;
-      if Result=mrYes then begin
+      if Result in [mrYes,mrYesToAll] then begin
+        YesToAll:=Result=mrYesToAll;
         if (not DeleteFile(AmbigiousFilename))
         and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
           ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)
@@ -1178,6 +1183,7 @@ var
   
 begin
   Result:=mrOk;
+  YesToAll:=False;
   // search in every source directory for compiled versions of the units
   // A source directory is a directory with a used unit and it is not the output
   // directory

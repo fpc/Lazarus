@@ -296,6 +296,7 @@ procedure Register;
 
 implementation
 
+uses Controls;
 
 procedure RegisterActions(const CategoryName: string;
   const AClasses: array of TBasicActionClass; Resource: TComponentClass);

@@ -98,6 +98,7 @@ begin
   FAllowGrayed := True;
   TabStop := true;
   Height := 20;
+  AutoSize:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -190,6 +191,7 @@ var
   ParseStr : String;
   AccelIndex : Longint;
 begin
+  if Value=Text then exit;
   Inherited RealSetText(Value);
   If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
   ParseStr := Value;
@@ -202,12 +204,16 @@ begin
     end;
     CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
   end;
+  DoAutoSize;
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.22  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.21  2004/05/30 14:02:30  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 

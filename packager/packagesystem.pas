@@ -1025,12 +1025,13 @@ begin
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
-                     '$(LazarusDir)/ideintf/units/$(TargetCPU)/$(TargetOS)');
+      '$(LazarusDir)/ideintf/units/$(TargetCPU)/$(TargetOS)'
+      +';$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)');
 
-    // use the components/units/$(TargetCPU)/$(TargetOS)/allideintf.o file
+    // use the ideintf/units/$(TargetCPU)/$(TargetOS)/allideintf.o file
     // as indicator, if ideintf has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/allideintf.o');
+      '$(LazarusDir)/ideintf/units/$(TargetCPU)/$(TargetOS)/allideintf.o');
 
     Modified:=false;
   end;

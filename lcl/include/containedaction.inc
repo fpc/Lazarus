@@ -110,9 +110,8 @@ begin
   Result := (ActionList <> nil) and ActionList.ExecuteAction(Self)
     or ((ApplicationActionComponent<>nil)
          and ApplicationActionComponent.ExecuteAction(Self))
-    or inherited Execute;
-    // ToDo:
-    //or (SendApplicationMessage(CM_ACTIONEXECUTE, 0, Longint(Self)) = 1);
+    or inherited Execute
+    or (SendApplicationMessage(CM_ACTIONEXECUTE, 0, Longint(Self)) = 1);
 end;
 
 function TContainedAction.Update: Boolean;
@@ -121,9 +120,8 @@ begin
     and ActionList.UpdateAction(Self)
     or ((ApplicationActionComponent<>nil)
          and ApplicationActionComponent.UpdateAction(Self))
-    or inherited Update;
-    // ToDo:
-    //or (SendApplicationMessage(CM_ACTIONUPDATE, 0, Longint(Self)) = 1);
+    or inherited Update
+    or (SendApplicationMessage(CM_ACTIONUPDATE, 0, Longint(Self)) = 1);
 end;
 
 // included by actnlist.pas

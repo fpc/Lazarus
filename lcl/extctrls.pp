@@ -632,17 +632,31 @@ type
     property Align;
     property Anchors;
     property Caption;
+    property Color;
     property ColumnLayout;
     property Columns;
+    property Constraints;
+    property Ctl3D;
     property Enabled;
     property ItemIndex;
     property Items;
     property OnChangeBounds;
     property OnClick;
+    property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
-    property OnMouseuP;
+    property OnMouseUp;
     property OnResize;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
     property Visible;
   end;
 
@@ -931,6 +945,9 @@ end.
 
  {
   $Log$
+  Revision 1.108  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.107  2004/07/01 18:29:35  mattias
   fixed TSplitter moving for asynchroneous resizing
 

@@ -33,10 +33,11 @@ unit Calendar;
 interface
 
 uses
-  SysUtils, Classes, LCLStrConsts, Controls, vclGlobals, lMessages;
+  SysUtils, Classes, LCLStrConsts, vclGlobals, lMessages, Controls;
   
   
 Type
+  { TCustomCalendar }
 
   TDisplaySetting = (dsShowHeadings, dsShowDayNames, dsNoMonthChange,
                      dsShowWeekNumbers,dsStartMonday);
@@ -50,7 +51,7 @@ Type
   
   EInvalidDate = class(Exception);
   
-  TCalendar = class(TWinControl)
+  TCustomCalendar = class(TWinControl)
   private
     FDateAsString : String;
     FDate: TDateTime; // last valid date
@@ -80,26 +81,50 @@ Type
     destructor Destroy; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
-  published
-    Property Align;
-    Property Anchors;
-    Property Constraints;
-    Property Date: String read GetDate write SetDate stored false;
-    Property DateTime: TDateTime read GetDateTime write SetDateTime;
+    property Date: String read GetDate write SetDate stored false;
+    property DateTime: TDateTime read GetDateTime write SetDateTime;
     property DisplaySettings: TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
-    property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnClick;
-    property OnResize;
-    property OnChangeBounds;
-    property OnMouseUp;
-    property OnMouseMove;
-    property OnMouseDown;
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
   end;
+  
+  
+  { TCalendar }
+  
+  TCalendar = class(TCustomCalendar)
+  published
+    property Align;
+    property Anchors;
+    property Constraints;
+    property Date;
+    property DateTime;
+    property DisplaySettings;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnDayChanged;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMonthChanged;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnYearChanged;
+    property PopupMenu;
+    property ReadOnly;
+    property Tabstop;
+    property Visible;
+  end;
+  
   
 procedure Register;
   
@@ -110,9 +135,9 @@ begin
   RegisterComponents('Misc',[TCalendar]);
 end;
 
-{ TCalendar }
+{ TCustomCalendar }
 
-constructor TCalendar.Create(TheOwner: TComponent);
+constructor TCustomCalendar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csCalendar;
@@ -122,38 +147,38 @@ begin
   Date := FormatDateTime(ShortDateFormat,Now);
 end;
 
-destructor TCalendar.Destroy;
+destructor TCustomCalendar.Destroy;
 begin
   Inherited Destroy;
 end;
 
-procedure TCalendar.Loaded;
+procedure TCustomCalendar.Loaded;
 begin
   inherited Loaded;
   if FPropsChanged then SetProps;
 end;
 
-procedure TCalendar.InitializeWnd;
+procedure TCustomCalendar.InitializeWnd;
 begin
   inherited InitializeWnd;
   if FPropsChanged then SetProps;
 end;
 
-function TCalendar.GetDate: String;
+function TCustomCalendar.GetDate: String;
 begin
   Result := '';
   GetProps;
   Result := FDateAsString;
 end;
 
-procedure TCalendar.SetDate(const AValue: String);
+procedure TCustomCalendar.SetDate(const AValue: String);
 var
   NewDate: TDateTime;
 begin
   if FDateAsString=AValue then exit;
   try
     {$IFDEF VerboseCalenderSetDate}
-    DebugLn('TCalendar.SetDate A AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
+    DebugLn('TCustomCalendar.SetDate A AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
     {$ENDIF}
     NewDate:=StrToDate(AValue);  //test to see if date valid ....
     // no exception => set valid date
@@ -165,19 +190,19 @@ begin
   SetProps;
 end;
 
-function TCalendar.GetDisplaySettings: TDisplaySettings;
+function TCustomCalendar.GetDisplaySettings: TDisplaySettings;
 begin
   Result := FDisplaySettings;
 end;
 
-procedure TCalendar.SetDisplaySettings(const AValue: TDisplaySettings);
+procedure TCustomCalendar.SetDisplaySettings(const AValue: TDisplaySettings);
 begin
   if FDisplaySettings = AValue then exit;
   FDisplaySettings := AValue;
   SetProps;
 end;
 
-procedure TCalendar.SetReadOnly(const AValue: Boolean);
+procedure TCustomCalendar.SetReadOnly(const AValue: Boolean);
 begin
   if (FReadOnly <> aValue) then
   Begin
@@ -186,17 +211,17 @@ begin
   end;
 end;
 
-function TCalendar.ReadOnlyIsStored: boolean;
+function TCustomCalendar.ReadOnlyIsStored: boolean;
 begin
   Result:=FReadOnly;
 end;
 
-function TCalendar.GetDateTime: TDateTime;
+function TCustomCalendar.GetDateTime: TDateTime;
 begin
   Result:=FDate;
 end;
 
-procedure TCalendar.SetDateTime(const AValue: TDateTime);
+procedure TCustomCalendar.SetDateTime(const AValue: TDateTime);
 var
   OldDate: TDateTime;
 begin
@@ -204,13 +229,13 @@ begin
   FDate:=AValue;
   FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
   {$IFDEF VerboseCalenderSetDate}
-  DebugLn('TCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
+  DebugLn('TCustomCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
   {$ENDIF}
   if OldDate=FDate then exit;
   SetProps;
 end;
 
-Procedure TCalendar.GetProps;
+Procedure TCustomCalendar.GetProps;
 var
   Temp : TLMCalendar;
 begin
@@ -220,12 +245,12 @@ begin
     FDate := Temp.Date;
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
-    DebugLn('TCalendar.GetProps A ',FDate,' ',FDateAsString);
+    DebugLn('TCustomCalendar.GetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
   end;
 end;
 
-Procedure TCalendar.SetProps;
+Procedure TCustomCalendar.SetProps;
 var
   Temp : TLMCalendar;
 begin
@@ -236,7 +261,7 @@ begin
     Temp.DisplaySettings := FDisplaySettings;
     Temp.ReadOnly := fReadOnly;
     {$IFDEF VerboseCalenderSetDate}
-    DebugLn('TCalendar.SetProps A ',FDate,' ',FDateAsString);
+    DebugLn('TCustomCalendar.SetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
     CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
   End else begin
@@ -244,19 +269,19 @@ begin
   end;
 end;
 
-procedure TCalendar.LMDAYChanged(var Message: TLMessage);
+procedure TCustomCalendar.LMDAYChanged(var Message: TLMessage);
 begin
   if Assigned(OnDayChanged) then OnDayChanged(self);
   if Assigned(OnChange) then OnChange(self);
 end;
 
-procedure TCalendar.LMMonthChanged(var Message: TLMessage);
+procedure TCustomCalendar.LMMonthChanged(var Message: TLMessage);
 begin
   if Assigned(OnMonthChanged) then OnMonthChanged(self);
   if Assigned(OnChange) then OnChange(self);
 end;
 
-procedure TCalendar.LMYEARChanged(var Message: TLMessage);
+procedure TCustomCalendar.LMYEARChanged(var Message: TLMessage);
 begin
   if Assigned(OnYearChanged) then OnYearChanged(self);
   if Assigned(OnChange) then OnChange(self);

@@ -79,8 +79,6 @@ end;
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
     State: TOwnerDrawState);
-
-
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
@@ -214,6 +212,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.CloseUp;
 begin
+  EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
 end;
 
@@ -549,12 +548,12 @@ end;
 
   Creates the object.
  ------------------------------------------------------------------------------}
-constructor TCustomComboBox.Create(AOwner : TComponent);
+constructor TCustomComboBox.Create(TheOwner : TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
 
   fCompStyle := csComboBox;
-  SetInitialBounds(1,1,100,25);
+  SetInitialBounds(0,0,100,25);
   FItems := TStringlist.Create;
   FItemIndex:=-1;
   FDropDownCount:=8;
@@ -790,6 +789,9 @@ end;
 
 {
   $Log$
+  Revision 1.40  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.39  2004/05/30 08:53:27  mattias
   TComboBox.Clear now clears Text as well
 

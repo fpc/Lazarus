@@ -2659,6 +2659,7 @@ begin
   FChildSizing:=TControlChildSizing.Create(Self);
   FChildSizing.OnChange:=@DoChildSizingChange;
   FBrush := nil; // Brush will be created on demand. Only few controls need it.
+  FParentCtl3D:=true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -3755,6 +3756,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.254  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.253  2004/07/07 22:26:58  mattias
   fixed showing grabers for boundless components
 

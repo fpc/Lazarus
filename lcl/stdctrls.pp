@@ -255,7 +255,7 @@ type
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemIndex: integer read GetItemIndex write SetItemIndex;
     property ItemWidth: Integer read GetItemWidth write SetItemWidth;
-    property MaxLength: integer read GetMaxLength write SetMaxLength default 0;
+    property MaxLength: integer read GetMaxLength write SetMaxLength default -1;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
@@ -265,7 +265,7 @@ type
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property Sorted: boolean read FSorted write SetSorted;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddItem(const Item: String; AnObject: TObject); //override;
     procedure AddHistoryItem(const Item: string; MaxHistoryCount: integer;
@@ -280,8 +280,8 @@ type
 
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
-    property ArrowKeysTraverseList : Boolean
-                           read FArrowKeysTraverseList write SetArrowKeysTraverseList default True;
+    property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
+                                    write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
@@ -309,7 +309,7 @@ type
     property ItemHeight;
     property Items;
     property ItemWidth;
-    property MaxLength default -1;
+    property MaxLength;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -799,9 +799,6 @@ type
   TCheckBox = class(TCustomCheckBox)
   protected
     procedure DoAutoSize; Override;
-    procedure RealSetText(const Value: TCaption); Override;
-  public
-    constructor Create(AOwner: TComponent); override;
   published
     property Action;
     property Align;
@@ -1559,6 +1556,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.152  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.151  2004/07/07 22:26:58  mattias
   fixed showing grabers for boundless components
 

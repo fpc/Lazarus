@@ -111,7 +111,7 @@ type
                                 write FShowHints;
   end;
 
-  TOIPropertyGrid = class;
+  TOICustomPropertyGrid = class;
 
 
   { TOIPropertyGridRow }
@@ -123,7 +123,7 @@ type
     FLvl:integer;
     FName:string;
     FExpanded: boolean;
-    FTree:TOIPropertyGrid;
+    FTree:TOICustomPropertyGrid;
     FChildCount:integer;
     FPriorBrother,
     FFirstChild,
@@ -133,7 +133,7 @@ type
     FEditor: TPropertyEditor;
     procedure GetLvl;
   public
-    constructor Create(PropertyTree:TOIPropertyGrid;  PropEditor:TPropertyEditor;
+    constructor Create(PropertyTree:TOICustomPropertyGrid;  PropEditor:TPropertyEditor;
        ParentNode:TOIPropertyGridRow);
     destructor Destroy; override;
     function ConsistencyCheck: integer;
@@ -153,7 +153,7 @@ type
     property Lvl:integer read FLvl;
     property Name: string read FName;
     property Expanded:boolean read FExpanded;
-    property Tree:TOIPropertyGrid read FTree;
+    property Tree:TOICustomPropertyGrid read FTree;
     property Parent:TOIPropertyGridRow read FParent;
     property ChildCount:integer read FChildCount;
     property FirstChild:TOIPropertyGridRow read FFirstChild;
@@ -166,7 +166,7 @@ type
   TOIPropertyGridState = (pgsChangingItemIndex, pgsApplyingValue);
   TOIPropertyGridStates = set of TOIPropertyGridState;
   
-  TOIPropertyGrid = class(TCustomControl)
+  TOICustomPropertyGrid = class(TCustomControl)
   private
     FBackgroundColor:TColor;
     FChangeStep: integer;
@@ -268,58 +268,93 @@ type
     ValueComboBox:TComboBox;
     ValueButton:TButton;
 
-    property Selection: TPersistentSelectionList read FSelection
-                                                 write SetSelection;
-    property PropertyEditorHook: TPropertyEditorHook
-                           read FPropertyEditorHook write SetPropertyEditorHook;
-    procedure BuildPropertyList;
-    procedure RefreshPropertyValues;
-    
-    procedure PropEditLookupRootChange;
-
-    property RowCount:integer read GetRowCount;
-    property Rows[Index:integer]:TOIPropertyGridRow read GetRow;
-
-    property TopY:integer read FTopY write SetTopY;
-    function GridHeight:integer;
-    function TopMax:integer;
-    property DefaultItemHeight:integer read FDefaultItemHeight
-                                       write FDefaultItemHeight;
-    property SplitterX:integer read FSplitterX write SetSplitterX;
-    property PrefferedSplitterX: integer read FPreferredSplitterX
-                                         write FPreferredSplitterX;
-    property Indent:integer read FIndent write FIndent;
-    property BackgroundColor:TColor
-       read FBackgroundColor write SetBackgroundColor default clBtnFace;
-    property NameFont:TFont read FNameFont write FNameFont;
-    property ValueFont:TFont read FValueFont write FValueFont;
-    property DefaultValueFont:TFont read FDefaultValueFont write FDefaultValueFont;
-    property BorderStyle default bsSingle;
-    property ItemIndex:integer read FItemIndex write SetItemIndex;
-    property ExpandedProperties:TStringList 
-       read FExpandedProperties write FExpandedProperties;
-    function PropertyPath(Index:integer):string;
-    function GetRowByPath(const PropPath:string): TOIPropertyGridRow;
-
-    function MouseToIndex(y:integer;MustExist:boolean):integer;
-    function GetActiveRow: TOIPropertyGridRow;
-    procedure SetCurrentRowValue(const NewValue: string);
-    function CanEditRowValue: boolean;
-    property CurrentEditValue: string read GetCurrentEditValue
-                                      write SetCurrentEditValue;
-    function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
-
-    property OnModified: TNotifyEvent read FOnModified write FOnModified;
-    procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
-    procedure Paint;  override;
-    procedure Clear;
+    constructor Create(TheOwner: TComponent); override;
     constructor CreateWithParams(AnOwner: TComponent;
                                  APropertyEditorHook: TPropertyEditorHook;
                                  TypeFilter: TTypeKinds;
                                  DefItemHeight: integer);
     destructor Destroy;  override;
+    function CanEditRowValue: boolean;
     function ConsistencyCheck: integer;
+    function GetActiveRow: TOIPropertyGridRow;
+    function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
+
+    function GetRowByPath(const PropPath:string): TOIPropertyGridRow;
+    function GridHeight:integer;
+    function MouseToIndex(y:integer;MustExist:boolean):integer;
+    function PropertyPath(Index:integer):string;
+    function TopMax:integer;
+    procedure BuildPropertyList;
+    procedure Clear;
+    procedure Paint;  override;
+    procedure PropEditLookupRootChange;
+    procedure RefreshPropertyValues;
+    procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
+    procedure SetCurrentRowValue(const NewValue: string);
+  public
+    property BackgroundColor: TColor read FBackgroundColor
+                                     write SetBackgroundColor default clBtnFace;
+    property BorderStyle default bsSingle;
+    property CurrentEditValue: string read GetCurrentEditValue
+                                      write SetCurrentEditValue;
+    property DefaultItemHeight:integer read FDefaultItemHeight
+                                       write FDefaultItemHeight default 25;
+    property DefaultValueFont:TFont read FDefaultValueFont write FDefaultValueFont;
+    property ExpandedProperties:TStringList read FExpandedProperties
+                                            write FExpandedProperties;
+    property Indent:integer read FIndent write FIndent default 9;
+    property ItemIndex:integer read FItemIndex write SetItemIndex;
+    property NameFont:TFont read FNameFont write FNameFont;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property PrefferedSplitterX: integer read FPreferredSplitterX
+                                         write FPreferredSplitterX default 100;
+    property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
+                                                    write SetPropertyEditorHook;
+    property RowCount:integer read GetRowCount;
+    property Rows[Index:integer]:TOIPropertyGridRow read GetRow;
+    property Selection: TPersistentSelectionList read FSelection
+                                                 write SetSelection;
+    property SplitterX:integer read FSplitterX write SetSplitterX default 100;
+    property TopY:integer read FTopY write SetTopY default 0;
+    property ValueFont:TFont read FValueFont write FValueFont;
   end;
+  
+  
+  { TOIPropertyGrid }
+  
+  TOIPropertyGrid = class(TOICustomPropertyGrid)
+  published
+    property Align;
+    property Anchors;
+    property BackgroundColor;
+    property BorderStyle;
+    property Constraints;
+    property DefaultItemHeight;
+    property DefaultValueFont;
+    property Indent;
+    property NameFont;
+    property OnChangeBounds;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnModified;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property PopupMenu;
+    property PrefferedSplitterX;
+    property SplitterX;
+    property Tabstop;
+    property ValueFont;
+    property Visible;
+  end;
+  
 
   //============================================================================
   
@@ -339,8 +374,8 @@ type
     PairSplitter1: TPairSplitter;
     ComponentTree: TComponentTreeView;
     NoteBook: TNoteBook;
-    PropertyGrid: TOIPropertyGrid;
-    EventGrid: TOIPropertyGrid;
+    PropertyGrid: TOICustomPropertyGrid;
+    EventGrid: TOICustomPropertyGrid;
     StatusBar: TStatusBar;
     MainPopupMenu: TPopupMenu;
     ColorsPopupMenuItem: TMenuItem;
@@ -405,7 +440,7 @@ type
     procedure FillPersistentComboBox;
     procedure BeginUpdate;
     procedure EndUpdate;
-    function GetActivePropertyGrid: TOIPropertyGrid;
+    function GetActivePropertyGrid: TOICustomPropertyGrid;
     function GetActivePropertyRow: TOIPropertyGridRow;
     function GetCurRowDefaultValue(var DefaultStr: string): boolean;
   public
@@ -445,9 +480,9 @@ begin
 end;
 
 
-{ TOIPropertyGrid }
+{ TOICustomPropertyGrid }
 
-constructor TOIPropertyGrid.CreateWithParams(AnOwner:TComponent;
+constructor TOICustomPropertyGrid.CreateWithParams(AnOwner:TComponent;
   APropertyEditorHook:TPropertyEditorHook; TypeFilter:TTypeKinds;
   DefItemHeight: integer);
 begin
@@ -549,7 +584,7 @@ begin
   Application.AddOnUserInputHandler(@OnUserInput);
 end;
 
-procedure TOIPropertyGrid.UpdateScrollBar;
+procedure TOICustomPropertyGrid.UpdateScrollBar;
 var
   ScrollInfo: TScrollInfo;
 begin
@@ -567,7 +602,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.CreateParams(var Params: TCreateParams);
+procedure TOICustomPropertyGrid.CreateParams(var Params: TCreateParams);
 const
   ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
 begin
@@ -581,7 +616,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.WMVScroll(var Msg: TWMScroll);
+procedure TOICustomPropertyGrid.WMVScroll(var Msg: TWMScroll);
 begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
@@ -601,7 +636,7 @@ begin
   end;
 end;
 
-destructor TOIPropertyGrid.Destroy;
+destructor TOICustomPropertyGrid.Destroy;
 var a:integer;
 begin
   Application.RemoveOnUserInputHandler(@OnUserInput);
@@ -618,7 +653,7 @@ begin
   inherited Destroy;
 end;
 
-function TOIPropertyGrid.ConsistencyCheck: integer;
+function TOICustomPropertyGrid.ConsistencyCheck: integer;
 var
   i: integer;
 begin
@@ -640,7 +675,7 @@ begin
   Result:=0;
 end;
 
-procedure TOIPropertyGrid.SetSelection(
+procedure TOICustomPropertyGrid.SetSelection(
   const ASelection: TPersistentSelectionList);
 var
   CurRow:TOIPropertyGridRow;
@@ -656,7 +691,7 @@ begin
     ItemIndex:=CurRow.Index;
 end;
 
-procedure TOIPropertyGrid.SetPropertyEditorHook(
+procedure TOICustomPropertyGrid.SetPropertyEditorHook(
   NewPropertyEditorHook:TPropertyEditorHook);
 begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
@@ -665,7 +700,7 @@ begin
   SetSelection(FSelection);
 end;
 
-function TOIPropertyGrid.PropertyPath(Index:integer):string;
+function TOICustomPropertyGrid.PropertyPath(Index:integer):string;
 var CurRow:TOIPropertyGridRow;
 begin
   if (Index>=0) and (Index<FRows.Count) then begin
@@ -679,7 +714,7 @@ begin
   end else Result:='';
 end;
 
-function TOIPropertyGrid.GetRowByPath(const PropPath:string):TOIPropertyGridRow;
+function TOICustomPropertyGrid.GetRowByPath(const PropPath:string):TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
 var CurName:string;
   s,e:integer;
@@ -712,7 +747,7 @@ begin
   if s<=length(PropPath) then Result:=nil;
 end;
 
-procedure TOIPropertyGrid.SetRowValue;
+procedure TOICustomPropertyGrid.SetRowValue;
 var
   CurRow: TOIPropertyGridRow;
   NewValue: string;
@@ -734,9 +769,9 @@ begin
       {$IFNDEF DoNotCatchOIExceptions}
       try
       {$ENDIF}
-        //writeln('TOIPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+        //writeln('TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
         CurRow.Editor.SetValue(NewValue);
-        //writeln('TOIPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+        //writeln('TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
       {$IFNDEF DoNotCatchOIExceptions}
       except
         on E: Exception do begin
@@ -764,7 +799,7 @@ begin
         if OldExpanded then
           ExpandRow(FItemIndex);
       end;
-      //writeln('TOIPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      //writeln('TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
     finally
       Exclude(FStates,pgsApplyingValue);
     end;
@@ -773,12 +808,12 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.DoCallEdit;
+procedure TOICustomPropertyGrid.DoCallEdit;
 var
   CurRow:TOIPropertyGridRow;
   OldChangeStep: integer;
 begin
-  //writeln('#################### TOIPropertyGrid.DoCallEdit ...');
+  //writeln('#################### TOICustomPropertyGrid.DoCallEdit ...');
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
   or (FCurrentEdit=nil)
   or (FItemIndex<0)
@@ -796,7 +831,7 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      writeln('#################### TOIPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
+      writeln('#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
       CurRow.Editor.Edit;
     {$IFNDEF DoNotCatchOIExceptions}
     except
@@ -818,7 +853,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.RefreshValueEdit;
+procedure TOICustomPropertyGrid.RefreshValueEdit;
 var
   CurRow: TOIPropertyGridRow;
   NewValue, OldValue: string;
@@ -841,24 +876,24 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.ValueEditKeyDown(Sender: TObject; var Key: Word;
+procedure TOICustomPropertyGrid.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   HandleStandardKeys(Key,Shift);
 end;
 
-procedure TOIPropertyGrid.ValueEditKeyUp(Sender: TObject; var Key: Word;
+procedure TOICustomPropertyGrid.ValueEditKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   HandleKeyUp(Key,Shift);
 end;
 
-procedure TOIPropertyGrid.ValueEditExit(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueEditExit(Sender: TObject);
 begin
   SetRowValue;
 end;
 
-procedure TOIPropertyGrid.ValueEditChange(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueEditChange(Sender: TObject);
 var CurRow:TOIPropertyGridRow;
 begin
   if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
@@ -869,36 +904,36 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxExit(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueComboBoxExit(Sender: TObject);
 begin
   SetRowValue;
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxChange(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueComboBoxChange(Sender: TObject);
 var i:integer;
 begin
   i:=TComboBox(Sender).Items.IndexOf(TComboBox(Sender).Text);
   if i>=0 then SetRowValue;
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
+procedure TOICustomPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   HandleStandardKeys(Key,Shift);
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxKeyUp(Sender: TObject; var Key: Word;
+procedure TOICustomPropertyGrid.ValueComboBoxKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   HandleKeyUp(Key,Shift);
 end;
 
-procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueButtonClick(Sender: TObject);
 begin
   DoCallEdit;
 end;
 
-procedure TOIPropertyGrid.SetItemIndex(NewIndex:integer);
+procedure TOICustomPropertyGrid.SetItemIndex(NewIndex:integer);
 var NewRow:TOIPropertyGridRow;
   NewValue:string;
 begin
@@ -973,12 +1008,12 @@ begin
   Exclude(FStates,pgsChangingItemIndex);
 end;
 
-function TOIPropertyGrid.GetRowCount:integer;
+function TOICustomPropertyGrid.GetRowCount:integer;
 begin
   Result:=FRows.Count;
 end;
 
-procedure TOIPropertyGrid.BuildPropertyList;
+procedure TOICustomPropertyGrid.BuildPropertyList;
 var a:integer;
   CurRow:TOIPropertyGridRow;
   OldSelectedRowPath:string;
@@ -1024,7 +1059,7 @@ begin
   Invalidate;
 end;
 
-procedure TOIPropertyGrid.AddPropertyEditor(PropEditor: TPropertyEditor);
+procedure TOICustomPropertyGrid.AddPropertyEditor(PropEditor: TPropertyEditor);
 var NewRow:TOIPropertyGridRow;
 begin
   NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,nil);
@@ -1035,7 +1070,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.AddStringToComboBox(const s:string);
+procedure TOICustomPropertyGrid.AddStringToComboBox(const s:string);
 var NewIndex:integer;
 begin
   NewIndex:=ValueComboBox.Items.Add(s);
@@ -1043,7 +1078,7 @@ begin
     ValueComboBox.ItemIndex:=NewIndex;
 end;
 
-procedure TOIPropertyGrid.ExpandRow(Index:integer);
+procedure TOICustomPropertyGrid.ExpandRow(Index:integer);
 var a:integer;
   CurPath:string;
   AlreadyInExpandList:boolean;
@@ -1081,7 +1116,7 @@ begin
   Invalidate;
 end;
 
-procedure TOIPropertyGrid.ShrinkRow(Index:integer);
+procedure TOICustomPropertyGrid.ShrinkRow(Index:integer);
 var CurRow, ARow:TOIPropertyGridRow;
   StartIndex,EndIndex,a:integer;
   CurPath:string;
@@ -1121,7 +1156,7 @@ begin
   Invalidate;
 end;
 
-procedure TOIPropertyGrid.AddSubEditor(PropEditor:TPropertyEditor);
+procedure TOICustomPropertyGrid.AddSubEditor(PropEditor:TPropertyEditor);
 var NewRow:TOIPropertyGridRow;
   NewIndex:integer;
 begin
@@ -1137,7 +1172,7 @@ begin
   inc(FExpandingRow.FChildCount);
 end;
 
-function TOIPropertyGrid.MouseToIndex(y:integer;MustExist:boolean):integer;
+function TOICustomPropertyGrid.MouseToIndex(y:integer;MustExist:boolean):integer;
 var l,r,m:integer;
 begin
   l:=0;
@@ -1159,14 +1194,14 @@ begin
   end else Result:=-1;
 end;
 
-function TOIPropertyGrid.GetActiveRow: TOIPropertyGridRow;
+function TOICustomPropertyGrid.GetActiveRow: TOIPropertyGridRow;
 begin
   Result:=nil;
   if ItemIndex<0 then exit;
   Result:=Rows[ItemIndex];
 end;
 
-procedure TOIPropertyGrid.SetCurrentRowValue(const NewValue: string);
+procedure TOICustomPropertyGrid.SetCurrentRowValue(const NewValue: string);
 begin
   if not CanEditRowValue then exit;
   if FCurrentEdit is TComboBox then
@@ -1176,7 +1211,7 @@ begin
   SetRowValue;
 end;
 
-function TOIPropertyGrid.CanEditRowValue: boolean;
+function TOICustomPropertyGrid.CanEditRowValue: boolean;
 begin
   if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
   or (FCurrentEdit=nil)
@@ -1192,7 +1227,7 @@ begin
   end;
 end;
 
-function TOIPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer
+function TOICustomPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer
   ): TPropEditHint;
 var
   IconX: integer;
@@ -1214,7 +1249,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
+procedure TOICustomPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
 begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
@@ -1230,7 +1265,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
+procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
 var SplitDistance:integer;
 begin
   inherited MouseMove(Shift,X,Y);
@@ -1251,7 +1286,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
+procedure TOICustomPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
 var
   IconX,Index:integer;
@@ -1284,13 +1319,13 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TOICustomPropertyGrid.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   HandleStandardKeys(Key,Shift);
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TOIPropertyGrid.HandleStandardKeys(var Key: Word; Shift: TShiftState
+procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word; Shift: TShiftState
   );
 var
   Handled: Boolean;
@@ -1332,28 +1367,33 @@ begin
   if Handled then Key:=VK_UNKNOWN;
 end;
 
-procedure TOIPropertyGrid.HandleKeyUp(var Key: Word; Shift: TShiftState);
+procedure TOICustomPropertyGrid.HandleKeyUp(var Key: Word; Shift: TShiftState);
 begin
   if (Key<>VK_UNKNOWN) and Assigned(OnKeyUp) then OnKeyUp(Self,Key,Shift);
 end;
 
-procedure TOIPropertyGrid.EraseBackground(DC: HDC);
+procedure TOICustomPropertyGrid.EraseBackground(DC: HDC);
 begin
   // everything is painted, so erasing the background is not needed
 end;
 
-procedure TOIPropertyGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TOICustomPropertyGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   UpdateScrollBar;
 end;
 
-procedure TOIPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
+constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
+begin
+  CreateWithParams(TheOwner,nil,AllTypeKinds,25);
+end;
+
+procedure TOICustomPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   ResetHintTimer;
 end;
 
-procedure TOIPropertyGrid.EndDragSplitter;
+procedure TOICustomPropertyGrid.EndDragSplitter;
 begin
   if FDragging then begin
     Cursor:=crDefault;
@@ -1366,7 +1406,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.SetSplitterX(const NewValue:integer);
+procedure TOICustomPropertyGrid.SetSplitterX(const NewValue:integer);
 var AdjustedValue:integer;
 begin
   AdjustedValue:=NewValue;
@@ -1379,7 +1419,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.SetTopY(const NewValue:integer);
+procedure TOICustomPropertyGrid.SetTopY(const NewValue:integer);
 begin
   if FTopY<>NewValue then begin
     FTopY:=NewValue;
@@ -1390,9 +1430,9 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
+procedure TOICustomPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
-//writeln('[TOIPropertyGrid.SetBounds] ',Name,' ',aLeft,',',aTop,',',aWidth,',',aHeight,' Visible=',Visible);
+//writeln('[TOICustomPropertyGrid.SetBounds] ',Name,' ',aLeft,',',aTop,',',aWidth,',',aHeight,' Visible=',Visible);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
     if not FDragging then begin
@@ -1405,18 +1445,18 @@ begin
   end;
 end;
 
-function TOIPropertyGrid.GetTreeIconX(Index:integer):integer;
+function TOICustomPropertyGrid.GetTreeIconX(Index:integer):integer;
 begin
   Result:=Rows[Index].Lvl*Indent+2;
 end;
 
-function TOIPropertyGrid.TopMax:integer;
+function TOICustomPropertyGrid.TopMax:integer;
 begin
   Result:=GridHeight-ClientHeight+2*BorderWidth;
   if Result<0 then Result:=0;
 end;
 
-function TOIPropertyGrid.GridHeight:integer;
+function TOICustomPropertyGrid.GridHeight:integer;
 begin
   if FRows.Count>0 then
     Result:=Rows[FRows.Count-1].Bottom
@@ -1424,7 +1464,7 @@ begin
     Result:=0;
 end;
 
-procedure TOIPropertyGrid.AlignEditComponents;
+procedure TOICustomPropertyGrid.AlignEditComponents;
 var RRect,EditCompRect,EditBtnRect:TRect;
 
   function CompareRectangles(r1,r2:TRect):boolean;
@@ -1465,7 +1505,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.PaintRow(ARow:integer);
+procedure TOICustomPropertyGrid.PaintRow(ARow:integer);
 var ARowRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
   IconX,IconY:integer;
   CurRow:TOIPropertyGridRow;
@@ -1563,7 +1603,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.DoPaint(PaintOnlyChangedValues:boolean);
+procedure TOICustomPropertyGrid.DoPaint(PaintOnlyChangedValues:boolean);
 var a:integer;
   SpaceRect:TRect;
 begin
@@ -1605,26 +1645,26 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.Paint;
+procedure TOICustomPropertyGrid.Paint;
 begin
   inherited Paint;
   DoPaint(false);
 end;
 
-procedure TOIPropertyGrid.RefreshPropertyValues;
+procedure TOICustomPropertyGrid.RefreshPropertyValues;
 begin
   RefreshValueEdit;
   DoPaint(true);
 end;
 
-procedure TOIPropertyGrid.PropEditLookupRootChange;
+procedure TOICustomPropertyGrid.PropEditLookupRootChange;
 begin
-  // When the LookupRoot changes, no changes can be made
+  // When the LookupRoot changes, no changes can be stored
   // -> undo the value editor changes
   RefreshValueEdit;
 end;
 
-function TOIPropertyGrid.RowRect(ARow:integer):TRect;
+function TOICustomPropertyGrid.RowRect(ARow:integer):TRect;
 begin
   Result.Left:=BorderWidth;
   Result.Top:=Rows[ARow].Top-FTopY+BorderWidth;
@@ -1632,7 +1672,7 @@ begin
   Result.Bottom:=Rows[ARow].Bottom-FTopY+BorderWidth;
 end;
 
-procedure TOIPropertyGrid.SetItemsTops;
+procedure TOICustomPropertyGrid.SetItemsTops;
 // compute row tops from row heights
 // set indices of all rows
 var a,scrollmax:integer;
@@ -1653,7 +1693,7 @@ begin
   if scrollmax<10 then scrollmax:=10;
 end;
 
-procedure TOIPropertyGrid.ClearRows;
+procedure TOICustomPropertyGrid.ClearRows;
 var a:integer;
 begin
   IncreaseChangeStep;
@@ -1663,7 +1703,7 @@ begin
   FRows.Clear;
 end;
 
-function TOIPropertyGrid.GetCurrentEditValue: string;
+function TOICustomPropertyGrid.GetCurrentEditValue: string;
 begin
   if FCurrentEdit=ValueEdit then
     Result:=ValueEdit.Text
@@ -1673,7 +1713,7 @@ begin
     Result:='';
 end;
 
-procedure TOIPropertyGrid.SetCurrentEditValue(const AValue: string);
+procedure TOICustomPropertyGrid.SetCurrentEditValue(const AValue: string);
 begin
   if FCurrentEdit=ValueEdit then
     ValueEdit.Text:=AValue
@@ -1681,22 +1721,22 @@ begin
     ValueComboBox.Text:=AValue;
 end;
 
-procedure TOIPropertyGrid.Clear;
+procedure TOICustomPropertyGrid.Clear;
 begin
   ClearRows;
 end;
 
-function TOIPropertyGrid.GetRow(Index:integer):TOIPropertyGridRow;
+function TOICustomPropertyGrid.GetRow(Index:integer):TOIPropertyGridRow;
 begin
   Result:=TOIPropertyGridRow(FRows[Index]);
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxCloseUp(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueComboBoxCloseUp(Sender: TObject);
 begin
   SetRowValue;
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxDropDown(Sender: TObject);
+procedure TOICustomPropertyGrid.ValueComboBoxDropDown(Sender: TObject);
 var
   CurRow: TOIPropertyGridRow;
   MaxItemWidth, CurItemWidth, i, Cnt: integer;
@@ -1718,7 +1758,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.ValueComboBoxDrawItem(Control: TWinControl;
+procedure TOICustomPropertyGrid.ValueComboBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
   CurRow: TOIPropertyGridRow;
@@ -1752,7 +1792,7 @@ begin
   end;
 end;
 
-Procedure TOIPropertyGrid.HintTimer(sender : TObject);
+Procedure TOICustomPropertyGrid.HintTimer(sender : TObject);
 var
   Rect : TRect;
   AHint : String;
@@ -1802,7 +1842,7 @@ begin
   FHintWindow.ActivateHint(Rect,AHint);
 end;
 
-Procedure TOIPropertyGrid.ResetHintTimer;
+Procedure TOICustomPropertyGrid.ResetHintTimer;
 begin
   if FHintWIndow.Visible then
     FHintWindow.Visible := False;
@@ -1811,14 +1851,14 @@ begin
   FHintTimer.Enabled := not FDragging;
 end;
 
-procedure TOIPropertyGrid.ValueEditMouseDown(Sender : TObject;
+procedure TOICustomPropertyGrid.ValueEditMouseDown(Sender : TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   //hide the hint window!
   if FHintWindow.Visible then FHintWindow.Visible := False;
 end;
 
-procedure TOIPropertyGrid.IncreaseChangeStep;
+procedure TOICustomPropertyGrid.IncreaseChangeStep;
 begin
   if FChangeStep<>$7fffffff then
     inc(FChangeStep)
@@ -1826,7 +1866,7 @@ begin
     FChangeStep:=-$7fffffff;
 end;
 
-PRocedure TOIPropertyGrid.ValueEditDblClick(Sender : TObject);
+PRocedure TOICustomPropertyGrid.ValueEditDblClick(Sender : TObject);
 var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
@@ -1871,7 +1911,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.SetBackgroundColor(const AValue: TColor);
+procedure TOICustomPropertyGrid.SetBackgroundColor(const AValue: TColor);
 begin
   if FBackgroundColor=AValue then exit;
   FBackgroundColor:=AValue;
@@ -1882,7 +1922,7 @@ end;
 
 { TOIPropertyGridRow }
 
-constructor TOIPropertyGridRow.Create(PropertyTree: TOIPropertyGrid;
+constructor TOIPropertyGridRow.Create(PropertyTree: TOICustomPropertyGrid;
   PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow);
 begin
   inherited Create;
@@ -2534,7 +2574,7 @@ begin
   end;
 end;
 
-function TObjectInspector.GetActivePropertyGrid: TOIPropertyGrid;
+function TObjectInspector.GetActivePropertyGrid: TOICustomPropertyGrid;
 begin
   Result:=nil;
   if NoteBook=nil then exit;
@@ -2546,7 +2586,7 @@ end;
 
 function TObjectInspector.GetActivePropertyRow: TOIPropertyGridRow;
 var
-  CurGrid: TOIPropertyGrid;
+  CurGrid: TOICustomPropertyGrid;
 begin
   Result:=nil;
   CurGrid:=GetActivePropertyGrid;
@@ -2671,7 +2711,7 @@ end;
 
 procedure TObjectInspector.OnSetDefaultPopupmenuItemClick(Sender: TObject);
 var
-  CurGrid: TOIPropertyGrid;
+  CurGrid: TOICustomPropertyGrid;
   DefaultStr: string;
 begin
   if not GetCurRowDefaultValue(DefaultStr) then exit;
@@ -2683,7 +2723,7 @@ end;
 
 procedure TObjectInspector.OnUndoPopupmenuItemClick(Sender: TObject);
 var
-  CurGrid: TOIPropertyGrid;
+  CurGrid: TOICustomPropertyGrid;
   CurRow: TOIPropertyGridRow;
 begin
   CurGrid:=GetActivePropertyGrid;
@@ -2831,7 +2871,7 @@ begin
   end;
 
   // property grid
-  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook
+  PropertyGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
@@ -2853,7 +2893,7 @@ begin
   end;
 
   // event grid
-  EventGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
+  EventGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
                                               [tkMethod],FDefaultItemHeight);
   with EventGrid do begin
     Name:='EventGrid';
@@ -2873,7 +2913,7 @@ end;
 
 procedure TObjectInspector.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  CurGrid: TOIPropertyGrid;
+  CurGrid: TOICustomPropertyGrid;
 begin
   CurGrid:=GetActivePropertyGrid;
   if CurGrid<>nil then begin
@@ -2910,7 +2950,7 @@ end;
 procedure TObjectInspector.OnMainPopupMenuPopup(Sender: TObject);
 var
   DefaultStr: String;
-  CurGrid: TOIPropertyGrid;
+  CurGrid: TOICustomPropertyGrid;
   CurRow: TOIPropertyGridRow;
 begin
   SetDefaultPopupMenuItem.Enabled:=GetCurRowDefaultValue(DefaultStr);

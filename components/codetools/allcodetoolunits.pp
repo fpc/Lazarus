@@ -20,7 +20,9 @@ uses
   CodeCompletionTool, LinkScanner, FindDeclarationCache, BasicCodeTools,
   CodeTree, CodeAtom, SourceChanger, CodeToolMemManager, CodeCache,
   KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, AVL_Tree,
-  CodeToolsStrConsts, MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs;
+  CodeToolsStrConsts, MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs,
+  // fast xml units
+  laz_dom, laz_xmlcfg, laz_xmlread, laz_xmlwrite;
 
 
 implementation
@@ -30,6 +32,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/07/10 18:17:28  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.14  2003/06/19 16:36:35  mattias
   started codeexplorer
 

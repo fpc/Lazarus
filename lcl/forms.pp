@@ -1230,10 +1230,17 @@ begin
 end;
 
 function SendApplicationMsg(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
+var
+  AMessage: TLMessage;
 begin
-  if (Application<>nil) and (Application.HandleAllocated) then
-    Result := SendMessage(Application.Handle, Msg, WParam, LParam)
-  else
+  if Application<>nil then begin
+    AMessage.Msg := Msg;
+    AMessage.WParam := WParam;
+    AMessage.LParam := LParam;
+    { Can't simply use SendMessage, as the Application does not necessarily have a handle }
+    Application.WndProc(AMessage);
+    Result := AMessage.Result;
+  end else
     Result := 0;
 end;
 

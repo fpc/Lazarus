@@ -158,6 +158,7 @@ end;
 
 procedure TCustomSpinEdit.Change;
 begin
+  EditingDone;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 

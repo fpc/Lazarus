@@ -476,7 +476,17 @@ begin
 end;
 
 //------------------------------------------------------------------------------
+
+procedure RegisterActions (const CategoryName: string; const AClasses: array of TBasicActionClass; Resource: TComponentClass);
+var
+  i: Integer;
+begin
+  for i := 0 to High(AClasses) do
+    RegisterClass(AClasses[i]);
+end;
+
 initialization
+  RegisterActionsProc := @RegisterActions;
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
 end.
 

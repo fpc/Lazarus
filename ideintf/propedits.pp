@@ -290,28 +290,14 @@ type
     FPropertyHook: TPropertyEditorHook;
     FPropCount: Integer;
     FPropList: PInstPropList;
-    function GetPrivateDirectory:ansistring;
+    function GetPrivateDirectory: ansistring;
   protected
-    function GetPropInfo:PPropInfo;
-    function GetFloatValue:Extended;
-    function GetFloatValueAt(Index:Integer):Extended;
-    function GetInt64Value:Int64;
-    function GetInt64ValueAt(Index:Integer):Int64;
-    function GetMethodValue:TMethod;
-    function GetMethodValueAt(Index:Integer):TMethod;
-    function GetOrdValue:Longint;
-    function GetOrdValueAt(Index:Integer):Longint;
-    function GetDefaultOrdValue:Longint;
-    function GetStrValue:AnsiString;
-    function GetStrValueAt(Index:Integer):AnsiString;
-    function GetVarValue:Variant;
-    function GetVarValueAt(Index:Integer):Variant;
-    procedure SetFloatValue(const NewValue:Extended);
-    procedure SetMethodValue(const NewValue:TMethod);
-    procedure SetInt64Value(const NewValue:Int64);
-    procedure SetOrdValue(const NewValue:Longint);
-    procedure SetStrValue(const NewValue:AnsiString);
-    procedure SetVarValue(const NewValue:Variant);
+    procedure SetFloatValue(const NewValue: Extended);
+    procedure SetMethodValue(const NewValue: TMethod);
+    procedure SetInt64Value(const NewValue: Int64);
+    procedure SetOrdValue(const NewValue: Longint);
+    procedure SetStrValue(const NewValue: AnsiString);
+    procedure SetVarValue(const NewValue: Variant);
     procedure Modified;
   public
     constructor Create(Hook:TPropertyEditorHook;
@@ -330,6 +316,22 @@ type
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
     function GetPropType: PTypeInfo;
+    function GetPropInfo: PPropInfo;
+    function GetFloatValue: Extended;
+    function GetFloatValueAt(Index: Integer): Extended;
+    function GetInt64Value: Int64;
+    function GetInt64ValueAt(Index: Integer): Int64;
+    function GetMethodValue: TMethod;
+    function GetMethodValueAt(Index: Integer): TMethod;
+    function GetOrdValue: Longint;
+    function GetOrdValueAt(Index: Integer): Longint;
+    function GetObjectValue: TObject;
+    function GetObjectValueAt(Index: Integer): TObject;
+    function GetDefaultOrdValue: Longint;
+    function GetStrValue: AnsiString;
+    function GetStrValueAt(Index: Integer): AnsiString;
+    function GetVarValue: Variant;
+    function GetVarValueAt(Index: Integer):Variant;
     function GetValue: ansistring; virtual;
     function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
@@ -337,7 +339,7 @@ type
     procedure GetValues(Proc: TGetStringProc); virtual;
     procedure Initialize; virtual;
     procedure Revert; virtual;
-    procedure SetValue(const NewValue:ansistring); virtual;
+    procedure SetValue(const NewValue: ansistring); virtual;
     procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
                            APropInfo: PPropInfo);
     function ValueAvailable: Boolean;
@@ -374,6 +376,7 @@ type
   provide methods to retrieve the default value. }
 
   TOrdinalPropertyEditor = class(TPropertyEditor)
+  public
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -419,6 +422,7 @@ type
   Default property editor for all boolean properties }
 
   TBoolPropertyEditor = class(TEnumPropertyEditor)
+  public
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
@@ -651,6 +655,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
   end;
+  
 
 { TCaptionPropertyEditor
   Property editor for the Caption and Text properties. Updates the value of
@@ -661,6 +666,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+
 { TCaptionMultilinePropertyEditor
   PropertyEditor editor for the Caption property when the Caption can be
   multiline. Brings up the dialog for entering text. }
@@ -670,6 +676,7 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
+
 
 { TStringsPropertyEditor
   PropertyEditor editor for the TStrings properties.
@@ -2141,6 +2148,16 @@ begin
   with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
 end;
 
+function TPropertyEditor.GetObjectValue: TObject;
+begin
+  Result:=GetObjectValueAt(0);
+end;
+
+function TPropertyEditor.GetObjectValueAt(Index: Integer): TObject;
+begin
+  with FPropList^[Index] do Result:=GetObjectProp(Instance,PropInfo);
+end;
+
 function TPropertyEditor.GetDefaultOrdValue: Longint;
 var
   APropInfo: PPropInfo;
@@ -3434,7 +3451,7 @@ begin
   Selection := TPersistentSelectionList.Create;
   try
     for I := 0 to PropCount - 1 do begin
-      SubItem := TPersistent(GetOrdValueAt(I));
+      SubItem := TPersistent(GetObjectValueAt(I));
       if SubItem<>nil then
         Selection.Add(SubItem);
     end;
@@ -4334,7 +4351,7 @@ var
   TheDialog : TStringsPropEditorDlg;
   Strings : TStrings;
 begin
-  Strings:= TStrings(GetOrdValue);
+  Strings:= TStrings(GetObjectValue);
   TheDialog:= TStringsPropEditorDlg.Create(Application);
   try
     TheDialog.Memo.Text:= Strings.Text;
@@ -4831,7 +4848,8 @@ begin
     FreeThenNil(AComponent);
 end;
 
-procedure TPropertyEditorHook.GetSelection(const ASelection: TPersistentSelectionList);
+procedure TPropertyEditorHook.GetSelection(
+  const ASelection: TPersistentSelectionList);
 var
   i: Integer;
   Handler: TPropHookGetSelection;

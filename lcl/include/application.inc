@@ -897,7 +897,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.WndProc(var AMessage : TLMessage);
 begin
-
+  case AMessage.Msg of
+    CM_ACTIONEXECUTE, CM_ACTIONUPDATE: AMessage.Result := LResult(DispatchAction(AMessage.Msg, TBasicAction(AMessage.LParam)));
+  else
+    Dispatch(AMessage);
+  end;
 end;
 
 function TApplication.DispatchAction(Msg: Longint; Action: TBasicAction
@@ -1180,6 +1184,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2004/07/10 18:17:30  mattias
+  added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
+
   Revision 1.80  2004/05/21 18:12:17  mattias
   quick fixed crashing property overloading BorderStyle
 
