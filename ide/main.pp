@@ -4660,8 +4660,7 @@ writeln('TMainIDE.DoPublishProject B "',CmdAfterExe,'" "',CmdAfterParams,'"');
     exit;
   end;
 
-  // copy the project directory
-  SrcDir:=AppendPathDelim(Project1.ProjectDirectory);
+  // clear destination directory
   DestDir:=GetProjPublishDir;
 writeln('TMainIDE.DoPublishProject C ',DestDir);
   if (DestDir='') then begin
@@ -4672,6 +4671,18 @@ writeln('TMainIDE.DoPublishProject C ',DestDir);
     Result:=mrCancel;
     exit;
   end;
+  if DirectoryExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
+  begin
+    MessageDlg('Unable to clean up destination directory',
+      'Unable to clean up "'+DestDir+'".'#13
+      +'Please check permissions.',
+      mtError,[mbOk],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  
+  // copy the project directory
+  SrcDir:=AppendPathDelim(Project1.ProjectDirectory);
   if not CopyDirectoryWithMethods(SrcDir,DestDir,
     @OnCopyFile,@OnCopyError,Project1.PublishOptions) then
   begin
@@ -4681,24 +4692,27 @@ writeln('TMainIDE.DoPublishProject C ',DestDir);
 
   // write a filtered .lpi file
   NewProjectFilename:=DestDir+ExtractFilename(Project1.ProjectInfoFile);
+  DeleteFile(NewProjectFilename);
 writeln('TMainIDE.DoPublishProject C ',NewProjectFilename);
   Result:=Project1.WriteProject(Project1.PublishOptions.WriteFlags,
                                 NewProjectFilename);
   if Result<>mrOk then exit;
   
   // execute 'CommandAfter'
-  if (CmdAfterExe<>'') and FileIsExecutable(CmdAfterExe) then begin
-    Tool:=TExternalToolOptions.Create;
-    Tool.Filename:=CmdAfterExe;
-    Tool.Title:='Command after publishing project';
-    Tool.WorkingDirectory:=DestDir;
-    Tool.CmdLineParams:=CmdAfterParams;
-    Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
-    if Result<>mrOk then exit;
-  end else begin
-    ShowErrorForCommandAfter;
-    Result:=mrCancel;
-    exit;
+  if (CmdAfterExe<>'') then begin
+    if FileIsExecutable(CmdAfterExe) then begin
+      Tool:=TExternalToolOptions.Create;
+      Tool.Filename:=CmdAfterExe;
+      Tool.Title:='Command after publishing project';
+      Tool.WorkingDirectory:=DestDir;
+      Tool.CmdLineParams:=CmdAfterParams;
+      Result:=EnvironmentOptions.ExternalTools.Run(Tool,MacroList);
+      if Result<>mrOk then exit;
+    end else begin
+      ShowErrorForCommandAfter;
+      Result:=mrCancel;
+      exit;
+    end;
   end;
 end;
 
@@ -7506,6 +7520,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.438  2002/12/17 19:49:33  mattias
+  finished publish project
+
   Revision 1.437  2002/12/16 23:27:01  mattias
   fixed command line internationalization
 
