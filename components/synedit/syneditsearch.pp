@@ -131,7 +131,7 @@ begin
     if Sensitive then
       for I := #0 to #255 do CompTable[I] := ord(I)
     else
-      for I := #0 to #255 do CompTable[I] := ord(lowercase(I)[1]);
+      for I := #0 to #255 do CompTable[I] := ord(uppercase(I)[1]);
     {$ELSE}
     for I := #0 to #255 do CompTable[I] := ord(I);
     if not Sensitive then CharLowerBuff(PChar(@CompTable[#0]), 256);

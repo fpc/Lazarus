@@ -975,7 +975,7 @@ var
     Width := gdk_pixbuf_get_width(Src);
     Height := gdk_pixbuf_get_height(Src);
 
-    TMP := CreateCompatibleBitmap(-1, Width, Height);
+    TMP := CreateCompatibleBitmap(0, Width, Height);
     gdk_pixbuf_render_pixmap_and_mask(Src,@PGDIObject(TMP)^.GDIPixmapObject,
       PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject), 0);
 
@@ -6543,6 +6543,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.257  2002/10/20 21:54:03  lazarus
+  MG: fixes for 1.1
+
   Revision 1.256  2002/10/20 21:49:10  lazarus
   MG: fixes for fpc1.1
 
