@@ -4319,11 +4319,13 @@ end;
 
 function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
 begin
+  SourceNotebook.ClearErrorLines;
   Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
 end;
 
 function TMainIDE.DoBuildLazarus: TModalResult;
 begin
+  SourceNotebook.ClearErrorLines;
   Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                        EnvironmentOptions.ExternalTools,MacroList);
 end;
@@ -6027,6 +6029,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.234  2002/02/25 22:56:55  lazarus
+  MG: fixed resetting error line before compiling
+
   Revision 1.233  2002/02/25 19:17:27  lazarus
   MG: fixed restore window positions
 

@@ -356,6 +356,7 @@ type
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
     Procedure ClearUnUsedEditorComponents(Force: boolean);
+    procedure ClearErrorLines;
 
     Procedure DisplayCodefromUnitName(const UnitName : String);
 
@@ -3108,6 +3109,13 @@ begin
   ASynEdit:=TSynEdit(APreviewEditor);
   EditorOpts.GetSynEditPreviewSettings(ASynEdit);
   ASynEdit.Highlighter:=Highlighters[lshFreePascal];
+end;
+
+procedure TSourceNotebook.ClearErrorLines;
+var i: integer;
+begin
+  for i:=0 to EditorCount-1 do
+    Editors[i].ErrorLine:=-1;
 end;
 
 
