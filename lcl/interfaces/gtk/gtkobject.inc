@@ -237,8 +237,9 @@ procedure TgtkObject.SendCachedLCLMessages;
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
-        if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE) then begin
-          gtk_fixed_move(PGtkFixed(ParentFixed), Widget,
+        if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
+        or GtkWidgetIsA(ParentWidget,GTK_LAYOUT_GET_TYPE) then begin
+          FixedMoveControl(ParentFixed, Widget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
           writeln('WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
@@ -248,7 +249,7 @@ procedure TgtkObject.SendCachedLCLMessages;
       else begin
         // resize form
         {$IFDEF VerboseFormPositioning}
-        writeln('VFP SendCachedLCLMessages1 ',Widget^.window<>nil);
+        writeln('VFP SendCachedLCLMessages1 ',GetControlWindow(Widget)<>nil);
         if (LCLControl is TCustomForm) then
           writeln('VFP SendCachedLCLMessages2 ',LCLControl.ClassName,' ',
             LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
@@ -329,8 +330,8 @@ procedure TGtkObject.SendCachedGtkMessages;
         // -> ignore
         exit;
       end;
-      if MainWidget^.window<>nil then begin
-        gdk_window_get_root_origin(MainWidget^.window, @GtkLeft, @GtkTop);
+      if GetControlWindow(MainWidget)<>nil then begin
+        gdk_window_get_root_origin(GetControlWindow(MainWidget), @GtkLeft, @GtkTop);
       end else begin
         GtkLeft:=LCLControl.Left;
         GtkTop:=LCLControl.Top;
@@ -763,7 +764,7 @@ var
   ColorMap: PGdkColormap;
   P: Pointer;
   TheBitmap: TBitmap;
-  Width, Height : Longint;
+  Width, Height, Depth : Longint;
 begin
   if not (Bitmap is TBitmap) then
     raise Exception.Create('TGtkObject.LoadFromXPMFile Bitmap is not TBitmap: '
@@ -784,7 +785,17 @@ begin
     gdk_pixmap_colormap_create_from_xpm(Window,Colormap,
            @(GdiObject^.GDIBitmapMaskObject), p, Filename);
   GdiObject^.GDIBitmapType:=gbPixmap;
-  gdk_window_get_size(GdiObject^.GDIPixmapObject, @Width, @Height);
+  gdk_window_get_geometry(GdiObject^.GDIPixmapObject,
+    nil, nil, @Width, @Height, @Depth);
+
+  GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIpixmapObject);
+  If GdiObject^.Visual = nil then
+    GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
+  else
+    gdk_visual_ref(GdiObject^.Visual);
+
+  GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+
   TheBitmap.Handle := HBITMAP(GdiObject);
   If GdiObject^.GDIBitmapMaskObject <> nil then
     TheBitmap.Transparent := True
@@ -801,7 +812,8 @@ var
   var
     Src : PGDKPixbuf;
     Tmp : hBitmap;
-    Width, Height : Longint;
+    Width, Height,
+    Depth : Longint;
   begin
     Result := False;
     SRC := nil;
@@ -809,10 +821,29 @@ var
     If SRC = nil then
       exit;
     Width := gdk_pixbuf_get_width(Src);
-    Height := gdk_pixbuf_get_width(Src);
+    Height := gdk_pixbuf_get_height(Src);
+
     TMP := CreateCompatibleBitmap(-1, Width, Height);
     gdk_pixbuf_render_pixmap_and_mask(Src,@PGDIObject(TMP)^.GDIPixmapObject,
-      PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject),clWhite);
+      PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject), 0);
+
+    gdk_window_get_geometry(PGDIObject(TMP)^.GDIPixmapObject,
+      nil, nil, nil, nil, @Depth);
+
+    If PGDIObject(TMP)^.Visual <> nil then
+      GDK_Visual_UnRef(PGDIObject(TMP)^.Visual);
+
+    PGDIObject(TMP)^.Visual := gdk_window_get_visual(PGDIObject(TMP)^.GDIPixmapObject);
+    If PGDIObject(TMP)^.Visual = nil then
+      PGDIObject(TMP)^.Visual := gdk_visual_get_best_with_depth(Depth)
+    else
+      GDK_Visual_Ref(PGDIObject(TMP)^.Visual);
+
+    If PGDIObject(TMP)^.Colormap <> nil then
+      GDK_Colormap_UnRef(PGDIObject(TMP)^.Colormap);
+
+    PGDIObject(TMP)^.Colormap := gdk_colormap_new(PGDIObject(TMP)^.Visual, 1);
+
     TheBitmap.Handle := TMP;
     GDK_Pixbuf_Unref(Src);
     Result := True;
@@ -830,6 +861,101 @@ begin
   TheBitmap:=TBitmap(Bitmap);
   if not LoadFile then
     Writeln('WARNING: [TgtkObject.LoadFromPixbufFile] loading file FAILED!');
+end;
+
+procedure TGtkObject.LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);
+Type
+  TBITMAPHEADER = packed record
+    FileHeader : tagBitmapFileHeader;
+    InfoHeader : tagBitmapInfoHeader;
+  end;
+
+  Procedure FillBitmapInfo(Bitmap : hBitmap; Var Header : TBitmapHeader);
+  var
+    DIB : TDIBSection;
+    BitmapHeader : TagBITMAPINFO;
+  begin
+    FillChar(DIB, SizeOf(DIB), 0);
+    GetObject(Bitmap, SizeOf(DIB), @DIB);
+    BitmapHeader.bmiHeader := DIB.dsbmih;
+    With Header, Header.FileHeader, Header.InfoHeader do begin
+      InfoHeader := BitmapHeader.bmiHeader;
+      FillChar(FileHeader, sizeof(FileHeader), 0);
+      bfType      := $4D42;
+      bfSize      := SizeOf(Header) + biSizeImage;
+      bfOffBits   := SizeOf(Header);
+    end;
+  end;
+
+  function LoadData : Boolean;
+  {$Ifndef NoGdkPixbufLib}
+  var
+    Loader : PGdkPixbufLoader;
+    Src : PGDKPixbuf;
+    BMPInfo : TBitmapHeader;
+    Depth : Longint;
+  begin
+    Result := False;
+
+    FillBitmapInfo(Bitmap, BMPInfo);
+
+    Loader := gdk_pixbuf_loader_new;
+    If Loader = nil then
+      exit;
+
+    SRC := nil;
+
+    If gdk_pixbuf_loader_write(Loader, PChar(@BMPInfo), SizeOf(BMPInfo) div
+       SizeOf(Char))
+    then begin
+      If gdk_pixbuf_loader_write(Loader, Pchar(Data), BMPInfo.InfoHeader.biSizeImage) then begin
+          SRC := gdk_pixbuf_loader_get_pixbuf(loader);
+      end
+      else
+        WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Data!');
+    end
+    else
+      WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Bitmap Header!');
+    gdk_pixbuf_loader_close(Loader);
+
+    If SRC = nil then
+      exit;
+
+    With PGDIObject(Bitmap)^ do begin
+      gdk_pixbuf_render_pixmap_and_mask(Src,@GDIPixmapObject,
+        PPGDKBitmap(@GDIBitmapMaskObject), 0);
+
+      gdk_window_get_geometry(GDIPixmapObject,
+        nil, nil, nil, nil, @Depth);
+
+      If Visual <> nil then
+        GDK_Visual_UnRef(Visual);
+
+      Visual := gdk_window_get_visual(GDIPixmapObject);
+      If Visual = nil then
+        Visual := gdk_visual_get_best_with_depth(Depth)
+      else
+        GDK_Visual_Ref(Visual);
+
+      If Colormap <> nil then
+        GDK_Colormap_UnRef(Colormap);
+
+      Colormap := gdk_colormap_new(Visual, 1);
+
+      GDK_Pixbuf_Unref(Src);
+    end;
+
+    Result := True;
+  {$Else not NoGdkPixbufLib}
+  begin
+    WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] GDKPixbuf support has been disabled, unable to load data!');
+    Result := True;
+  {$EndIf}
+  end;
+
+begin
+  if not LoadData then
+    Writeln('WARNING: [TgtkObject.LoadFromPixbufData] loading data FAILED!');
 end;
 
 {------------------------------------------------------------------------------
@@ -1052,7 +1178,7 @@ begin
         if (Sender is TCustomForm) then
         Begin
           Widget := PgtkWidget(TCustomForm(Sender).Handle);
-          gdk_window_raise(Widget^.Window);
+          gdk_window_raise(GetControlWindow(Widget));
         end;
       end;
 
@@ -1122,7 +1248,8 @@ begin
          box1 := gtk_object_get_data(pgtkObject(handle),'HBox');
          if box1 <> nil then
          begin
-            gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(handle),'Label'));
+            gtk_container_remove(PgtkContainer(box1),
+              gtk_object_get_data(pgtkObject(handle),'Label'));
             PixMapWid:=gtk_object_get_data(pgtkObject(handle),'Pixmap');
             if PixMapWid<>nil then
               gtk_container_remove(PgtkContainer(box1),PixMapWid);
@@ -1433,9 +1560,10 @@ begin
           if (Handle<>0) and (Data<>nil) then begin
             FormIconGdiObject:=Data;
             //writeln('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
-            if (FormIconGdiObject<>nil) and (pgtkWidget(Handle)^.Window<>nil)
+            if (FormIconGdiObject<>nil)
+            and (GetControlWindow(PGtkWidget(Handle))<>nil)
             then begin
-              gdk_window_set_icon(pgtkWidget(Handle)^.Window, nil, 
+              gdk_window_set_icon(GetControlWindow(PgtkWidget(Handle)), nil,
                 FormIconGdiObject^.GDIBitmapObject,
                 FormIconGdiObject^.GDIBitmapMaskObject);
               end;
@@ -1893,12 +2021,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.AddChild(Parent,Child : Pointer; Left,Top: Integer);
 var
-  pFixed: PGTKFixed;
+  pFixed: PGTKWidget;
 begin
 Assert(False, 'Trace:ADDCHILD');
    pFixed := GetFixedWidget(PGtkWidget(Parent));
-   if pFixed <> nil 
-      then gtk_fixed_put(pFixed, Child, Left, Top);
+   if pFixed <> nil then
+     FixedPutControl(pFixed, Child, Left, Top);
 //   gtk_object_set_data(PgtkObject(Child),'Owner',Parent);
 end;
 
@@ -2120,7 +2248,9 @@ begin
     if HandleAllocated and ((Color and SYS_COLOR_BASE)=0) then begin
       Widget:=PGtkWidget(Handle);
       FixWidget:=GetFixedWidget(Widget);
-      if FixWidget<>nil then Widget:=FixWidget;
+
+      If FixWidget <> nil then Widget := FixWidget;
+
       RCStyle:=gtk_rc_style_new;
       RCStyle^.bg[GTK_STATE_NORMAL]:=TColortoTGDKColor(Color);
 
@@ -2191,7 +2321,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender: TObject);
   end;
 
 var
-  gObject, gFixed, gCore: PGTKObject;
+  gObject, gFixed, gCore, Scroll: PGTKObject;
 begin
   gObject := ObjectToGTKObject(Sender);
   if gObject = nil then Exit;
@@ -2544,8 +2674,14 @@ begin
       //  ConnectSenderSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
       //end
       //else begin
-      ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
-        PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
+      If Sender is TScrollBox then begin
+        Scroll := gtk_object_get_data(gObject, 'scroll_area');
+        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
+          PGTKScrolledWindow(Scroll))), 'value-changed', @GTKHScrollCB);
+      end
+      else
+        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
+          PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
       //end;
     end;
 
@@ -2556,6 +2692,12 @@ begin
       //  ConnectSenderSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
       //end
       //else begin
+      If Sender is TScrollBox then begin
+        Scroll := gtk_object_get_data(gObject, 'scroll_area');
+        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
+          PGTKScrolledWindow(Scroll))), 'value-changed', @GTKVScrollCB);
+      end
+      else
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
           PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
       //end;
@@ -2835,6 +2977,12 @@ begin
           SetCallback(LVN_ITEMCHANGING,Sender);
           SetCallback(LVN_DELETEITEM,Sender);
           SetCallback(LVN_INSERTITEM,Sender);
+        end;
+
+        csScrollBox :
+        Begin
+          SetCallback(LM_HSCROLL,Sender);
+          SetCallback(LM_VSCROLL,Sender);
         end;
 
       end; //case
@@ -3459,7 +3607,6 @@ var
   end;
 
 begin
-  Assert(False, 'Trace:In CreateComponet');
   p := nil;
   SetupProps:= false;
 
@@ -3972,26 +4119,27 @@ begin
   csScrollBox :
     begin
       Assert(Sender is TScrollBox);
-      P := gtk_scrolled_window_new(nil,nil);
 
-      TempWidget := gtk_viewport_new(nil,Nil);
-      GTK_Viewport_Set_Shadow_Type(PGTKViewport(TempWidget), GTK_Shadow_In);
+      P := gtk_frame_new(nil);
+      gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_IN);
 
-      gtk_container_add(p, TempWidget);
-      gtk_object_set_data(pgtkObject(p),'viewport',TempWidget);
+      TempWidget := gtk_scrolled_window_new(nil,nil);
+      gtk_container_add(PGTKContainer(P), TempWidget);
       gtk_widget_show(TempWidget);
 
-      TempWidget2 := gtk_fixed_new();
+      gtk_object_set_data(P,'scroll_area', TempWidget);
+      
+      TempWidget2 := gtk_layout_new(nil, nil);
       gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
       gtk_widget_show(TempWidget2);
       SetFixedWidget(p, TempWidget2);
       SetMainWidget(p, TempWidget2);
 
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+                                     GTK_POLICY_NEVER,
+                                     GTK_POLICY_NEVER);
     end;
 
   end; //end case
@@ -4075,7 +4223,7 @@ begin
         {$IFDEF VerboseFormPositioning}
         writeln('VFP [TgtkObject.ShowHide] A set bounds ',
           LCLControl.Name,':',LCLControl.ClassName,
-          ' Window=',SenderWidget^.Window<>nil,
+          ' Window=',GetControlWindow(SenderWidget)<>nil,
           ' ',TControl(Sender).Left,',',TControl(Sender).Top,
           ',',TControl(Sender).Width,',',TControl(Sender).Height);
         {$ENDIF}
@@ -4087,7 +4235,7 @@ begin
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
         ParentFixed := GetFixedWidget(ParentWidget);
         if ParentFixed <> nil then begin
-          gtk_fixed_move(PGtkFixed(ParentFixed), SenderWidget,
+          FixedMoveControl(ParentFixed, SenderWidget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
           writeln('WARNING: TgtkObject.ShowHide - no Fixed Widget found');
@@ -4099,10 +4247,10 @@ begin
 
     gtk_widget_show(SenderWidget);
     SetColor(Sender);
-    if (Sender is TCustomForm) and (SenderWidget^.Window<>nil) then begin
+    if (Sender is TCustomForm) and (GetControlWindow(SenderWidget)<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
       if (FormIconGdiObject<>nil) then begin
-        gdk_window_set_icon(SenderWidget^.Window, nil,
+        gdk_window_set_icon(GetControlWindow(SenderWidget), nil,
                 FormIconGdiObject^.GDIBitmapObject,
                 FormIconGdiObject^.GDIBitmapMaskObject);
       end;
@@ -4335,7 +4483,7 @@ var
   var
     Img, Mask: PGdkPixmap;
   begin
-    GetNoteBookCloseBtnPixmap(NoteBookWidget^.Window,Img,Mask);
+    GetNoteBookCloseBtnPixmap(GetControlWindow(NoteBookWidget),Img,Mask);
     if (nboShowCloseButtons in TheNotebook.Options) and (Img<>nil) then begin
       // close buttons enabled
       if TabCloseBtnWidget=nil then begin
@@ -4522,7 +4670,7 @@ begin
   Widget := GetFixedWidget(Child);
   pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
   if PixMap = nil then Exit;
-  fWindow := pGtkWidget(widget)^.window;
+  fWindow := GetControlWindow(widget);
   //gc := gdk_gc_new(PgdkWindow(fWindow));
 
   gdk_draw_pixmap(fwindow,
@@ -4556,7 +4704,7 @@ begin
 
   Image := gtk_Object_get_data(pgtkobject(widget),'Image');
   if Image = nil then begin
-    Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,
+    Image := gdk_image_get(GetControlWindow(widget),0,0,
                             widget^.allocation.width,widget^.allocation.height);
     if Image = nil then exit;
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
@@ -4571,7 +4719,7 @@ begin
 
   pFixed := GetFixedWidget(Widget);
   if pFixed <> nil then Widget:=PgtkWidget(pFixed);
-  fWindow := pGtkWidget(Widget)^.window;
+  fWindow := GetControlWindow(Widget);
   gdk_draw_image(fwindow,
       PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (Widget)], 
       Image,
@@ -4602,7 +4750,7 @@ begin
 
   Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
   if Image = nil then begin
-    Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,
+    Image := gdk_image_get(GetControlWindow(widget),0,0,
       widget^.allocation.width,widget^.allocation.height);
     if Image = nil then exit;
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
@@ -5083,7 +5231,7 @@ begin
       begin
         //Image changed.
         Widget := PgtkWidget(PdeviceContext(TBitmap(Sender).Handle));
-        Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,widget^.allocation.width,widget^.allocation.height);
+        Image := gdk_image_get(GetControlWindow(widget),0,0,widget^.allocation.width,widget^.allocation.height);
         if Handle = nil 
         then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
         else gtk_image_set(PgtkImage(handle),Image,nil);
@@ -5669,6 +5817,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.208  2002/09/10 06:49:20  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.207  2002/09/08 19:09:55  lazarus
   Fixed and simplified TRadioButton
 
