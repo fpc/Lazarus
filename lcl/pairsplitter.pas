@@ -239,7 +239,7 @@ procedure TCustomPairSplitter.SetSplitterType(const AValue: TPairSplitterType);
 begin
   if FSplitterType=AValue then exit;
   FSplitterType:=AValue;
-  RecreateWnd;
+  if HandleAllocated then RecreateWnd;
 end;
 
 procedure TCustomPairSplitter.AddSide(ASide: TPairSplitterSide);

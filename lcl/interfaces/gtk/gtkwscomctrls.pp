@@ -355,6 +355,7 @@ begin
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
 
   //TODO
+  if CListWidget=nil then exit;
 end;
 
 procedure TGtkWSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
