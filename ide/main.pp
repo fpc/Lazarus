@@ -4836,19 +4836,15 @@ Begin
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,[ofOnlyIfExists]);
             if Result=mrAbort then exit;
           end;
+          if OnlyForms and (AnUnitInfo.ComponentName<>'') then begin
+            AForm:=GetFormOfSource(AnUnitInfo,true);
+            if AForm<>nil then
+              ShowDesignerForm(AForm);
+          end;
         end;
       end;
-      if (AnUnitInfo<>nil) then begin
-        AForm:=nil;
-        if OnlyForms and (AnUnitInfo.ComponentName<>'') then begin
-          AForm:=GetFormOfSource(AnUnitInfo,true);
-        end;
-        if AForm=nil then
-          AForm:=SourceNotebook;
-        if csDesigning in AForm.ComponentState then
-          ShowDesignerForm(AForm)
-        else
-          AForm.ShowOnTop;
+      if (AnUnitInfo<>nil) and (not OnlyForms) then begin
+        SourceNotebook.ShowOnTop;
       end;
     end;
   finally
@@ -10272,6 +10268,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.702  2004/01/22 15:24:17  mattias
+  view multiple forms now open all designer forms
+
   Revision 1.701  2004/01/13 22:34:05  mattias
   changed consistency stops during method renaming to errors
 
