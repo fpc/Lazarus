@@ -45,12 +45,11 @@ type
   TMessagesView = class(TForm)
     MessageView : TListBox;
   private
-    Function GetMessage : String;
+    FOnSelectionChanged: TNotifyEvent;
+    Function GetMessage: String;
     Procedure MessageViewClicked(sender : TObject);
-    FOnSelectionChanged : TNotifyEvent;
-    LastSelectedIndex : Integer;
   protected
-    Function GetSelectedLineIndex : Integer;
+    Function GetSelectedLineIndex: Integer;
     procedure SetSelectedLineIndex(const AValue: Integer);
   public
     constructor Create(AOwner : TComponent); override;
@@ -93,7 +92,6 @@ Begin
     end;
   end;
   Name := DefaultMessagesViewName;
-  LastSelectedIndex := -1;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
     ItemByFormID(DefaultMessagesViewName);
   ALayout.Form:=TForm(Self);
@@ -173,16 +171,8 @@ Begin
 end;
 
 Procedure TMessagesView.MessageViewClicked(sender : TObject);
-var
-  Temp : Integer;  //this temporarily holds the line # of the selection
 begin
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-  Begin
-    Temp := GetSelectedLineIndex;
-    if Temp <> LastSelectedIndex then
-    Begin
-      LastSelectedIndex := Temp;
-    end;
+  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then Begin
     If Assigned(OnSelectionChanged) then
       OnSelectionChanged(self);
   end;
