@@ -1856,11 +1856,18 @@ begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
           csComboBox:
-            Result:= gtk_editable_get_position(PGtkEditable(
-                                               PGtkCombo(Handle)^.entry)) + 1;
-          csEdit:
-            Result:= gtk_editable_get_position(PGtkEditable(Handle)) + 1;
+            Widget:= PGtkWidget(PGtkCombo(Handle)^.entry);
+          csEdit, csMemo:
+  	    Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+	  else
+	    Widget:= nil;  
           end;
+	  if Widget <> nil then begin
+            if PGtkEditable(Widget)^.selection_start_pos < PGtkEditable(Widget)^.selection_end_pos then
+              Result:= PGtkEditable(Widget)^.selection_start_pos
+	    else
+	      Result:= PGtkEditable(Widget)^.selection_end_pos
+          end else Result:= 0;
         end;
       end;
           
@@ -1869,11 +1876,13 @@ begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
           csComboBox:
-            Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
-                     - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
-          csEdit:
-            Result:= PGtkEditable(Handle)^.selection_end_pos
-                     - PGtkEditable(Handle)^.selection_start_pos;
+            Result:= Abs(PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
+                     - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos);
+          csEdit, csMemo:
+	    begin
+	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+              Result:= Abs(PGtkEditable(Widget)^.selection_end_pos - PGtkEditable(Widget)^.selection_start_pos);
+	    end;
           end;
         end;
       end;
@@ -1894,9 +1903,12 @@ begin
           csComboBox:
             gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry),
                                       Integer(Data));
-	        csEdit:
-            gtk_editable_set_position(PGtkEditable(Handle), Integer(Data));
-	        end;
+	  csEdit, csMemo: 
+	    begin
+	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+              gtk_editable_set_position(PGtkEditable(Widget), Integer(Data));
+	    end;  
+	  end;
         end;
       end;
           
@@ -6599,6 +6611,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.285  2002/11/13 08:40:44  lazarus
+  MB: Fixed selection start/end/text for edits and combos. Add support for memos.
+
   Revision 1.284  2002/11/12 13:16:05  lazarus
   MG: fixed TListView with more than 2 columns
 
