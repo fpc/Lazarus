@@ -35,7 +35,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Laz_XMLCfg, Buttons, ExtCtrls;
+  Laz_XMLCfg, Buttons, ExtCtrls, FileUtil,
+  LazConf;
 
 type
   { TCodeExplorerOptions }
@@ -86,7 +87,9 @@ type
   
 const
   CodeExplorerVersion = 1;
+
   cerDefault = cerSwitchEditorPage;
+
   CodeExplorerRefreshNames: array[TCodeExplorerRefresh] of string = (
     'Manual',
     'SwitchEditorPage',
@@ -130,7 +133,8 @@ end;
 
 constructor TCodeExplorerOptions.Create;
 begin
-  FOptionsFilename:='codeexploreroptions.xml';
+  FOptionsFilename:=
+                AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
   FRefresh:=cerDefault;
 end;
 

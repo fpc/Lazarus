@@ -376,20 +376,22 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     Procedure ToggleLineNumbersClicked(Sender: TObject);
   private
+    fAutoFocusLock: integer;
     FCodeTemplateModul: TSynEditAutoComplete;
+    fCustomPopupMenuItems: TList;
     fIncrementalSearchStartPos: TPoint;
     FIncrementalSearchStr: string;
     FKeyStrokes: TSynEditKeyStrokes;
-    FProcessingCommand: boolean;
-    FSourceEditorList: TList; // list of TSourceEditor
+    FLastCodeBuffer: TCodeBuffer;
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TNotifyEvent;
     FOnCtrlMouseUp: TMouseEvent;
+    FOnCurrentCodeBufferChanged: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
-    FOnEditorVisibleChanged: TNotifyEvent;
     FOnEditorChanged: TNotifyEvent;
     FOnEditorPropertiesClicked: TNotifyEvent;
+    FOnEditorVisibleChanged: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnInitIdentCompletion: TOnInitIdentCompletion;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
@@ -398,11 +400,14 @@ type
     FOnProcessUserCommand: TOnProcessUserCommand;
     fOnReadOnlyChanged: TNotifyEvent;
     FOnShowHintForSource: TOnShowHintForSource;
+    FOnShowSearchResultsView: TNotifyEvent;
     FOnShowUnitInfo: TNotifyEvent;
     FOnToggleFormUnitClicked: TNotifyEvent;
     FOnToggleObjectInspClicked: TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
+    FProcessingCommand: boolean;
+    FSourceEditorList: TList; // list of TSourceEditor
     FUnUsedEditorComponents: TList; // list of TSynEdit
   private
     // colors for the completion form (popup form, e.g. word completion)
@@ -414,10 +419,6 @@ type
     FActiveEditKeyBGColor: TColor;
     FActiveEditSymbolFGColor: TColor;
     FActiveEditSymbolBGColor: TColor;
-
-    fAutoFocusLock: integer;
-    fCustomPopupMenuItems: TList;
-    FOnShowSearchResultsView: TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -503,6 +504,7 @@ type
     function FindSourceEditorWithFilename(const Filename: string): TSourceEditor;
     Function GetActiveSE: TSourceEditor;
     procedure SetActiveSE(SrcEdit: TSourceEditor);
+    procedure CheckCurrentCodeBufferChanged;
 
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
@@ -582,7 +584,6 @@ type
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                   Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
-
   published
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
@@ -598,6 +599,8 @@ type
                                    read FOnEditorChanged write FOnEditorChanged;
     property OnEditorPropertiesClicked: TNotifyEvent
                read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
+    property OnCurrentCodeBufferChanged: TNotifyEvent
+             read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
     property OnFindDeclarationClicked: TNotifyEvent
                  read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
@@ -3267,6 +3270,17 @@ begin
     NoteBook.PageIndex:=i;
 end;
 
+procedure TSourceNotebook.CheckCurrentCodeBufferChanged;
+var
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSE;
+  if FLastCodeBuffer=SrcEdit.CodeBuffer then exit;
+  FLastCodeBuffer:=SrcEdit.CodeBuffer;
+  if Assigned(OnCurrentCodeBufferChanged) then
+    OnCurrentCodeBufferChanged(Self);
+end;
+
 procedure TSourceNotebook.LockAllEditorsInSourceChangeCache;
 // lock all sourceeditors that are to be modified by the CodeToolBoss
 var i: integer;
@@ -4304,6 +4318,7 @@ Begin
     UpdateActiveEditColors;
     if Assigned(FOnEditorVisibleChanged) then
       FOnEditorVisibleChanged(sender);
+    CheckCurrentCodeBufferChanged;
   end;
 end;
 

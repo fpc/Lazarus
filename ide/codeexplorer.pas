@@ -104,6 +104,8 @@ type
     procedure EndUpdate;
     procedure Refresh;
     procedure JumpToSelection;
+    procedure CurrentCodeBufferChanged;
+  public
     property OnGetCodeTree: TOnGetCodeTree read FOnGetCodeTree
                                            write FOnGetCodeTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
@@ -486,6 +488,12 @@ begin
 
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
+end;
+
+procedure TCodeExplorerView.CurrentCodeBufferChanged;
+begin
+  if CodeExplorerOptions.Refresh=cerSwitchEditorPage then
+    Refresh;
 end;
 
 initialization

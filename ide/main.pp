@@ -298,6 +298,7 @@ type
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
     procedure OnSrcNotebookEditorChanged(Sender: TObject);
+    procedure OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
     procedure OnSrcNotebookFileNew(Sender: TObject);
     procedure OnSrcNotebookFileOpen(Sender: TObject);
     procedure OnSrcNotebookFileOpenAtCursor(Sender: TObject);
@@ -1355,6 +1356,7 @@ begin
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceNotebook.OnCtrlMouseUp := @OnSrcNoteBookCtrlMouseUp;
+  SourceNotebook.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
   SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
@@ -10191,6 +10193,12 @@ begin
   MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
 end;
 
+procedure TMainIDE.OnSrcNotebookCurCodeBufferChanged(Sender: TObject);
+begin
+  if SourceNotebook.Notebook = nil then Exit;
+  if CodeExplorerView<>nil then CodeExplorerView.CurrentCodeBufferChanged;
+end;
+
 procedure TMainIDE.OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
   ClientPos: TPoint; CaretPos: TPoint);
 var
@@ -11265,6 +11273,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.815  2005/01/01 16:04:13  mattias
+  implemented CodeExplorer auto update on switching source editor page
+
   Revision 1.814  2005/01/01 11:32:16  mattias
   fixed New dialog getting new item
 

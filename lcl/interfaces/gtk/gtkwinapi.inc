@@ -2946,6 +2946,7 @@ end;
 function TGtkWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Assert(False, Format('Trace:  [TGtkWidgetSet.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
+  
   if hWnd <> 0 then
     gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
   Result:=true;
@@ -8810,6 +8811,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.381  2005/01/01 16:04:13  mattias
+  implemented CodeExplorer auto update on switching source editor page
+
   Revision 1.380  2004/12/22 19:56:44  mattias
   started TFont mirgration to fpCanvas font
 
