@@ -45,8 +45,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages, GraphType,
-  Graphics, LCLLinux, CustomTimer;
+  SysUtils, Classes, LCLProc, Controls, StdCtrls, vclGlobals, lMessages,
+  GraphType, Graphics, LCLLinux, CustomTimer;
 
 type
   { workaround problem with fcl }
@@ -490,6 +490,9 @@ end.
 
  {
   $Log$
+  Revision 1.41  2002/10/26 15:56:45  lazarus
+  MG: fixed changing notebook pageindex at designtime
+
   Revision 1.40  2002/10/26 11:20:30  lazarus
   MG: broke some interfaces.pp circles
 
