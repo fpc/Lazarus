@@ -55,6 +55,10 @@ uses
   function  GTK_TYPE_COMBO  : TGTKType; cdecl; external gtkdll name 'gtk_combo_get_type';
   function  GTK_TYPE_WINDOW  : TGTKType; cdecl; external gtkdll name 'gtk_window_get_type';
   function  GTK_TYPE_MENU  : TGTKType; cdecl; external gtkdll name 'gtk_menu_get_type';
+  function  GTK_TYPE_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_menu_item_get_type';
+  function  GTK_TYPE_MENU_BAR  : TGTKType; cdecl; external gtkdll name 'gtk_menu_bar_get_type';
+  function  GTK_TYPE_RADIO_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_radio_menu_item_get_type';
+  function  GTK_TYPE_CHECK_MENU_ITEM  : TGTKType; cdecl; external gtkdll name 'gtk_check_menu_item_get_type';
 {$ENDIF}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;

@@ -1708,8 +1708,15 @@ end;
 
 function GtkWindowIsModal(GtkWindow: PGtkWindow): boolean;
 begin
-writeln('GtkWindowIsModal  This test is buggy');
-  Result:=(GtkWindow^.flag0 and bm_modal)<>0;
+  writeln('GtkWindowIsModal  This test is buggy');
+  Result := False;
+  {$IfDef GTK2}
+    if assigned(GtkWindow) then
+      result := gtk_window_get_modal(GtkWindow);
+  {$else}
+    if assigned(GtkWindow) then
+      Result:=(GtkWindow^.flag0 and bm_modal)<>0;
+  {$EndIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1923,7 +1930,10 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       //if AWinControl is TListView then writeln('ConnectChilds B ');
       // this is a container widget -> connect all childs
       ContainerWidget:=PGtkContainer(TheWidget);
+      {$IfDef GTK2}
+      {$else}
       ChildEntry:=ContainerWidget^.resize_widgets;
+      {$endif}
       while ChildEntry<>nil do begin
         ChildWidget:=PGtkWidget(ChildEntry^.Data);
         ConnectSignals(ChildWidget);
@@ -2025,7 +2035,10 @@ begin
     if GtkWidgetIsA(Widget,GTK_TYPE_MENU) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
     else begin
+      {$IfDef GTK2}
+      {$else}
       gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
+      {$endif}
     end;
   end;
 end;
@@ -2048,12 +2061,15 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 
   procedure AttachUnique(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
+    {$IfDef GTK2}
+    {$else}
     if (TheAccelGroup=nil)
     or ((TheAccelGroup^.attach_objects<>nil)
       and (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)<>nil))
     then
       exit;
     gtk_accel_group_attach(TheAccelGroup, PGtkObject(TheWindow));
+    {$endif}
   end;
 
 var
@@ -2108,11 +2124,14 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
   procedure Detach(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
+    {$IfDef GTK2}
+    {$else}
     if (TheAccelGroup=nil)
     or (TheAccelGroup^.attach_objects=nil)
     or (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)=nil) then
       exit;
     gtk_accel_group_detach(TheAccelGroup, PGtkObject(TheWindow));
+    {$endif}
   end;
 
 var
@@ -2190,6 +2209,11 @@ function GetAccelKey(Widget: PGtkWidget): PAcceleratorKey;
 begin
   Result := PAcceleratorKey(gtk_object_get_data(PGtkObject(Widget),'AccelKey'));
 end;
+
+{$Ifdef GTK2}
+const
+  GDK_VOIDSYMBOL = $FFFFFF;
+{$EndIf}
 
 function SetAccelKey(const Widget: PGtkWidget;
   Key: guint; Mods: TGdkModifierType; const Signal: string): PAcceleratorKey;
@@ -2278,7 +2302,10 @@ begin
       ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
       '');
     {$ENDIF}
+    {$Ifdef GTK2}
+    {$else}
     gtk_widget_remove_accelerators(Widget, PChar(AccelKey^.Signal), false);
+    {$EndIf}
   end;
   AccelKey^.Realized:=false;
 end;
@@ -2390,7 +2417,11 @@ end;
  ------------------------------------------------------------------------------}
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 begin
+  {$ifdef GTK2}
+  Result:=GTK_MENU_ITEM_CLASS(gtk_object_get_class(widget));
+  {$else}
   Result:=GTK_MENU_ITEM_CLASS(PGtkObject(widget)^.klass);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2400,7 +2431,11 @@ end;
  ------------------------------------------------------------------------------}
 function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
 begin
+  {$ifdef GTK2}
+  Result:=GTK_CHECK_MENU_ITEM_CLASS(gtk_object_get_class(widget));
+  {$else}
   Result:=GTK_CHECK_MENU_ITEM_CLASS(PGtkObject(widget)^.klass);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2423,10 +2458,10 @@ begin
     and (ParentMenuItem[i]<>LCLMenuItem)
     and ParentMenuItem[i].HandleAllocated
     and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
-                      GTK_RADIO_MENU_ITEM_TYPE) then
+                      GTK_TYPE_RADIO_MENU_ITEM) then
     begin
       Result:=gtk_radio_menu_item_group(
-                                 GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
+                                 GTK_RADIO_MENU_ITEM(Pointer(ParentMenuItem[i].Handle)));
       exit;
     end;
   end;
@@ -2570,8 +2605,11 @@ begin
     end;
     ListItem:=ListItem^.Next;
   end;
+  {$Ifdef GTK2}
+  {$else}
   if CheckMenuItem<>nil then
     MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
+  {$EndIf}
   OldMenuSizeRequestProc(Widget,requisition);
 end;
 
@@ -2604,7 +2642,7 @@ var
     if ShortCutPos <> 0 then begin
       if (LCLMenuItem.Parent<>nil)
       and (LCLMenuItem.Parent.HandleAllocated)
-      and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_MENU_BAR_TYPE)
+      and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_TYPE_MENU_BAR)
       then begin
         // this is a menu item in the main bar of a form
         // -> accelerator should be Alt+Key
@@ -2722,15 +2760,18 @@ begin
     MenuItemWidget:=gtk_check_menu_item_new;
   end else
     MenuItemWidget:=gtk_menu_item_new;
-  if GtkWidgetIsA(MenuItemWidget,GTK_CHECK_MENU_ITEM_TYPE) then begin
+  if GtkWidgetIsA(MenuItemWidget,GTK_TYPE_CHECK_MENU_ITEM) then begin
     // set 'ShowAlwaysCheckable'
     gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(MenuItemWidget),
       LCLMenuItem.ShowAlwaysCheckable);
     // set 'Checked'
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItemWidget),
       LCLMenuItem.Checked);
+    {$ifdef GTK2}
+    {$else}
     if (OldCheckMenuItemToggleSize=0) then
       OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
+    {$endif}
   end;
 
   // set attributes (enabled and rightjustify)
@@ -3137,15 +3178,24 @@ function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 var
   StartTime, CurTime: TSystemTime;
   Timer: cardinal;
+
+  function ValidDateSelection : boolean;
+  begin
+    {$ifdef GTK2}
+    result := c^.Data.Selection<>NIL;
+    {$else}
+    result := c^.Data.Selection<>0;
+    {$endif}
+  end;
   
 begin
   Result:=false;
   {$IFDEF DEBUG_CLIPBOARD}
   writeln('[TgtkObject.WaitForClipboardAnswer] A');
   {$ENDIF}
-  if (c^.Data.Selection<>0) or (c^.Waiting) or (c^.Stopping) then begin
+  if (ValidDateSelection) or (c^.Waiting) or (c^.Stopping) then begin
     //writeln('[TgtkObject.WaitForClipboardAnswer] B');
-    Result:=(c^.Data.Selection<>0);
+    Result:=(ValidDateSelection);
     exit;
   end;
   c^.Waiting:=true;
@@ -3153,9 +3203,9 @@ begin
   //writeln('[TgtkObject.WaitForClipboardAnswer] C');
   Application.ProcessMessages;
   //writeln('[TgtkObject.WaitForClipboardAnswer] D');
-  if (c^.Data.Selection<>0) or (c^.Stopping) then begin
+  if (ValidDateSelection) or (c^.Stopping) then begin
     //writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
-    Result:=(c^.Data.Selection<>0);
+    Result:=(ValidDateSelection);
     exit;
   end;
   //writeln('[TgtkObject.WaitForClipboardAnswer] F');
@@ -3168,11 +3218,11 @@ begin
       writeln('[TgtkObject.WaitForClipboardAnswer] G');
       {$ENDIF}
       Application.HandleMessage;
-      if (c^.Data.Selection<>0) or (c^.Stopping) then begin
+      if (ValidDateSelection) or (c^.Stopping) then begin
         {$IFDEF DEBUG_CLIPBOARD}
         writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
         {$ENDIF}
-        Result:=(c^.Data.Selection<>0);
+        Result:=(ValidDateSelection);
         exit;
       end;
       DateTimeToSystemTime(Time,CurTime);
@@ -4102,6 +4152,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.181  2003/06/13 14:26:17  ajgenius
+  some fixes toward gtk2
+
   Revision 1.180  2003/06/13 10:09:04  mattias
   fixed Set/GetPixel
 
