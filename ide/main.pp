@@ -6244,6 +6244,7 @@ end;
 {$IFDEF UseStartLazarus}
 procedure TMainIDE.DoRestart;
   procedure StartStarter;
+  {$IFNDEF VER1_0}
   var
     StartLazProcess: TProcess;
     ExeName: string;
@@ -6265,6 +6266,11 @@ procedure TMainIDE.DoRestart;
       StartLazProcess.Free;
     end;
   end;
+  {$ELSE}
+  begin
+    DebugLn('Restarting Lazarus not supported with fpc 1.0.x');
+  end;
+  {$ENDIF}
 
 begin
   mnuQuitClicked(Self);
@@ -10968,6 +10974,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.791  2004/11/17 15:41:12  vincents
+  disabled restarting lazarus, if not started by startlazarus, when compiling with fpc 1.0.x. Its system unit doesn't give a process id.
+
   Revision 1.790  2004/11/15 12:25:00  mattias
   added some fpc src paths and changed auto create project for program a Yes/No question
 
