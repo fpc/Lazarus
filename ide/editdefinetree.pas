@@ -31,6 +31,8 @@ uses
 procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions;
   const SrcPath: string);
 procedure SetAdditionalGlobalSrcPathToCodeToolBoss(const SrcPath: string);
+function FindCurrentProjectDirTemplate: TDefineTemplate;
+function FindCurrentProjectDirSrcPathTemplate: TDefineTemplate;
 
 const
   ProjectDirDefTemplName = 'Current Project Directory';

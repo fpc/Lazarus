@@ -3014,14 +3014,19 @@ begin
     SaveDialog.Title:='Save Project '+Project1.Title+' (*.lpi)';
     
     // build a nice project info filename suggestion
-    NewFilename:=ExtractFileName(Project1.ProjectInfoFile);
+    NewFilename:='';
+    if (Project1.MainUnit>=0) then
+      NewFileName:=Project1.MainUnitInfo.UnitName;
+    if NewFilename='' then
+      NewFilename:=ExtractFileName(Project1.ProjectInfoFile);
     if NewFilename='' then
       NewFilename:=ExtractFileName(Project1.MainFilename);
     if NewFilename='' then
       NewFilename:=Trim(Project1.Title);
     if NewFilename='' then
       NewFilename:='project1';
-    if ExtractFileExt(NewFilename)='' then
+    Ext:=lowercase(ExtractFileExt(NewFilename));
+    if (Ext='') or FilenameIsPascalUnit(NewFilename) or (Ext='.dpr') then
       NewFilename:=ChangeFileExt(NewFilename,'.lpi');
     SaveDialog.FileName:=NewFilename;
     
@@ -3069,11 +3074,12 @@ begin
       end;
       
       // apply naming conventions
+      NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
       if EnvironmentOptions.PascalFileLowerCase then
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
-      if Project1.ProjectType in [ptApplication,ptProgram] then begin
+      if Project1.MainUnit>=0 then begin
         // check mainunit filename
         NewProgramFilename:=ChangeFileExt(
           NewFilename,ProjectDefaultExt[Project1.ProjectType]);
@@ -3086,15 +3092,14 @@ begin
           continue; // try again
         end;
         // check programname
-        NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
         if FilenameIsPascalUnit(NewProgramFilename)
         and (Project1.IndexOfUnitWithName(NewProgramName,true,
                                        Project1.MainUnitInfo)>=0) then
         begin
-          ACaption:='Unit identifier already exists';
-          AText:='A unit with the name "'+NewProgramName+'" already exists'
-              +' in the Project1.'#13
-              +'Plz choose different name';
+          ACaption:='Unit identifier exists';
+          AText:='There is a unit with the name "'+NewProgramName+'"'
+              +' in the project.'#13
+              +'Plz choose a different name';
           Result:=MessageDlg(ACaption,AText,mtError,[mbRetry,mbAbort],0);
           if Result=mrAbort then exit;
           continue; // try again
@@ -6170,6 +6175,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.261  2002/03/28 00:11:04  lazarus
+  MG: removed unused
+
   Revision 1.260  2002/03/27 11:35:56  lazarus
   MG: removed ide_debugger.inc
 

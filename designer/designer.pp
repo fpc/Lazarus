@@ -148,7 +148,7 @@ implementation
 
 
 uses
-  Sysutils, Typinfo, Math;
+  Sysutils, Math;
 
 
 const

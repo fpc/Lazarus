@@ -1208,10 +1208,10 @@ end;
 procedure TProject.SetProjectInfoFile(const NewFilename:string);
 begin
   if NewFilename='' then exit;
-  fProjectInfoFile:=NewFilename;
   if (AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectInfoFile))=0)
-  or (fProjectInfoFile='') then
+  or (fProjectInfoFile='') or (fTitle='') then
     fTitle:=ExtractFileNameOnly(NewFilename);
+  fProjectInfoFile:=NewFilename;
 
   Modified:=true;
 end;
@@ -1355,6 +1355,9 @@ end.
 
 {
   $Log$
+  Revision 1.57  2002/03/28 00:11:06  lazarus
+  MG: removed unused
+
   Revision 1.56  2002/03/25 16:48:26  lazarus
   MG: clean ups for main.pp, many minor fixes
 

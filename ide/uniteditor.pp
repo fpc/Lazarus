@@ -466,7 +466,7 @@ implementation
 
 
 uses
-  LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts, UnitInfoDlg;
+  LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts;
 
 type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,
@@ -1001,7 +1001,6 @@ Function TSourceEditor.ccParse(Texts : String) : TStrings;
 const
   symtable = '---Symtable ';
   Level1 = '  ***';
-  Level2 = '    ***';
 
   kdClass = 1;
   kdProcedure = 2;

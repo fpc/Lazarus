@@ -1108,6 +1108,8 @@ begin
     Values.Variables[FDirectiveName]:='PRELOAD'
   else if (FDirectiveName='LOCALSYMBOLS') then
     // ignore link object directive
+  else if (FDirectiveName='RANGECHECKS') then
+    // ignore link object directive
   else begin
     RaiseException(
       'invalid flag value "'+copy(UpperSrc,ValStart,SrcPos-ValStart)+'"'
