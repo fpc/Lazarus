@@ -133,8 +133,13 @@ end;
 Function TComponentInterface.FSetProp(PRI : PPropInfo;
 const Value) : Boolean;
 Begin
+writeln('Index = '+inttostr(PRI^.index));
   case PRI^.PropType^.Kind of
-  tkBool: SetOrdProp(FControl,PRI,longint(Value));
+  tkBool: Begin
+             Writeln('Boolean....');
+             SetOrdProp(FControl,PRI,longint(Value));
+             Result := True;
+             end;
   tkSString,
   tkLString,
   tkAString,
@@ -397,6 +402,12 @@ Begin
   Begin
     Result :=FSetProp(PRI,Value);
   end;
+
+if Result = true then
+Writeln('SETPROPBYNAME result = true')
+else
+Writeln('SETPROPBYNAME result = false');
+
 end;
 
 Function TComponentInterface.GetControlCount: Integer;

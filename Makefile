@@ -168,7 +168,7 @@ endif
 
 # Targets
 
-override DIROBJECTS+=$(wildcard lcl components)
+override DIROBJECTS+=$(wildcard lcl components designer)
 override EXEOBJECTS+=lazarus
 
 # Clean
@@ -1362,7 +1362,7 @@ endif
 # Dir components
 
 ifdef OBJECTDIRCOMPONENTS
-.PHONY:  components_all components_debug components_examples components_test components_smart components_shared components_showinstall components_install components_sourceinstall components_exampleinstall components_zipinstall components_zipsourceinstall components_zipexampleinstall components_clean components_distclean components_cleanall components_require components_info
+.PHONY:  components_all components_debug components_examples components_test components_smart components_shared components_showinstall components_install components_sourceinstall components_exampleinstall components_zipinstall components_zipsourceinstall components_zipexampleinstall components_clean components_distclean components_cleanall components_require components_info designer_clean
 
 components_all:
 	$(MAKE) -C components all
@@ -1417,6 +1417,9 @@ components_require:
 
 components_info:
 	$(MAKE) -C components info
+
+designer_clean:
+	$(MAKE) -C designer clean
 endif
 
 #####################################################################

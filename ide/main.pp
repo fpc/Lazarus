@@ -32,8 +32,8 @@ uses
   Classes, LclLinux, compiler, stdctrls, forms, buttons, menus, comctrls,
   Spin, project,sysutils, global,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
-  Designer, process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
-  CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,CompReg;
+   process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
+  CustomFormEditor,ObjectInspector, ControlSelection, PropEdits, UnitEditor,CompReg;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -153,19 +153,20 @@ type
     Procedure FileOpenedEvent(Sender : TObject; Filename : String);
     Procedure FileSavedEvent(Sender : TObject; Filename : String);
 
-    procedure MouseDownOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
-    procedure MouseMoveOnControl(Sender : TObject; Shift : TShiftState; X, Y: Integer);
-    procedure MouseUpOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
-    procedure ControlClick(Sender : TObject);
+//    procedure MouseDownOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
+//    procedure MouseMoveOnControl(Sender : TObject; Shift : TShiftState; X, Y: Integer);
+//    procedure MouseUpOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
+    Procedure COntrolClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
 
-    function FindDesigner(ChildComponent:TComponent):TDesigner;
-    procedure SelectOnlyThisComponent(AComponent:TComponent);
+//    function FindDesigner(ChildComponent:TComponent):TDesigner;
+//    procedure SelectOnlyThisComponent(AComponent:TComponent);
     procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FControlLastActivated : TObject;
+    FSelectedComponent : TRegisteredComponent;
 
     Function CreateSeperator : TMenuItem;
     Function ReturnActiveUnitList : TUnitInfo;
@@ -179,18 +180,18 @@ type
 //    Procedure Paint; override;
     Function ReturnFormName(Source : TStringList) : String;
 
-    SelectedComponent : TRegisteredComponent;
   public
     constructor Create(AOwner: TComponent); override; 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
     Procedure SetFlags(SLIst : TUnitInfo);
     Procedure SetName_Form(SList : TUnitInfo);
-
+    Procedure SetDesigning(Control : TComponent);
     procedure FormPaint(Sender : TObject);
     //these numbers are used to determine where the mouse was when the button was pressed
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
     MouseDownControl: TObject;
+    property SelectedComponent : TRegisteredComponent read FSelectedComponent write FSelectedComponent;
   end;
 
 
@@ -216,7 +217,7 @@ var
 implementation
 
 uses
-  TestForm, ViewUnit_dlg,ViewForm_dlg, Math,lresources;
+  TestForm, ViewUnit_dlg,ViewForm_dlg, Math,lresources, Designer;
 
 
 { TMainIDE }
@@ -710,8 +711,12 @@ begin
 end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
+var
+Form : TCustomForm;
 begin
-  SelectOnlyThisComponent(AComponent);
+Form := GetParentForm(TControl(AComponent));
+//not implemented yet
+TDesigner(Form.Designer).SelectOnlyThisComponent(AComponent);
 end;
 
 Procedure TMainIDE.ToolButtonCLick(Sender : TObject);
@@ -1135,6 +1140,12 @@ FControlLastActivated := Sender;
 
 end;
 
+Procedure TMainIDE.SetDesigning(Control : TComponent);
+Begin
+Control.SetDesigning(True);
+end;
+
+
 
 {
 ------------------------------------------------------------------------
@@ -1152,8 +1163,13 @@ var
   Speedbutton : TSpeedbutton;
   Temp : TControl;
 begin
+   Writeln('In ControlClick with nil?');
+   if Sender=nil then Writeln('yep, Sender is nil');
+
   if Sender is TSpeedButton then
      Begin
+       Writeln('sender is a speedbutton');
+       Writeln('The name is '+TSpeedbutton(sender).name);
        SpeedButton := TSPeedButton(Sender);
        Writeln('Speedbutton s Name is '+SpeedButton.name);
        //find the IDECOmponent that has this speedbutton
@@ -1176,14 +1192,14 @@ begin
                else
                Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
           end;
-       if IDECOmp <> nil then
-            Begin
+            if IDECOmp <> nil then
+             Begin
               //draw this button down
               SpeedButton.Down := True;
               SelectedComponent := IDEComp.RegisteredComponent;
-            end
-            else
-            begin
+             end
+             else
+             begin
               SelectedComponent := nil;
              Temp := nil;
              for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
@@ -1198,11 +1214,11 @@ begin
                TSpeedButton(Temp).down := True
                else
                Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
-            end;
-
+             end;
      end
      else
      Begin
+     Writeln('must be nil');
         //draw old speedbutton up
        if SelectedComponent <> nil then
           TIDeComponent(IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down := False;
@@ -1222,11 +1238,12 @@ begin
                Writeln('*****************ERROR - Control '+'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
 
      end;
+Writeln('Exiting ControlClick');
 
 end;
 
 
-function TMainIDE.FindDesigner(ChildComponent:TComponent):TDesigner;
+{function TMainIDE.FindDesigner(ChildComponent:TComponent):TDesigner;
 begin
   if ChildComponent is TForm then
     Result:=TDesigner(TForm(ChildComponent).Designer)
@@ -1236,8 +1253,8 @@ begin
   else
     Result:=nil;
 end;
-
-procedure TMainIDE.SelectOnlyThisComponent(AComponent:TComponent);
+ }
+{procedure TMainIDE.SelectOnlyThisComponent(AComponent:TComponent);
 var
   CurDesigner:TDesigner;
 begin
@@ -1251,7 +1268,7 @@ begin
   // this will automatically inform the object inspector
   FormEditor1.AddSelected(AComponent);
 end;
-
+ }
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -1263,7 +1280,7 @@ end;
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
-procedure TMainIDE.MouseDownOnControl(Sender : TObject; Button: TMouseButton;
+{procedure TMainIDE.MouseDownOnControl(Sender : TObject; Button: TMouseButton;
 Shift : TShiftState; X, Y: Integer);
 Begin
   if GetCaptureGrabber<>nil then exit;
@@ -1366,7 +1383,6 @@ Begin
       end;
       NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,SelectedComponent.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
-      NewCI.SetPropByName('Designing',True);
       NewCI.SetPropByName('Visible',True); //Control).Visible := True;
 
       ObjectInspector1.FillComponentComboBox;
@@ -1376,9 +1392,10 @@ Begin
         // set the OnMouseDown and OnMouseUp event so we know when the control
         // is selected or a new control is dropped
 writeln('NewComponent is TControl');
-        NewCI.SetPropByName('OnMouseUp',@MouseUpOnControl);
-        NewCI.SetPropByName('OnMouseDown',@MouseDownOnControl);
-        NewCI.SetPropByName('OnMouseMove',@MouseMoveOnControl);
+        NewCI.Control.SetDesigning(True);
+//        NewCI.SetPropByName('OnMouseUp',@MouseUpOnControl);
+//        NewCI.SetPropByName('OnMouseDown',@MouseDownOnControl);
+//        NewCI.SetPropByName('OnMouseMove',@MouseMoveOnControl);
         SelectOnlyThisComponent(TComponent(NewCI.Control));
       end;
     end;
@@ -1387,7 +1404,7 @@ writeln('NewComponent is TControl');
   MouseDownControl:=nil;
   ControlClick(Notebook1);  //this resets it to the mouse.
 end;
-
+ }
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 var
@@ -1410,19 +1427,25 @@ begin
        ObjectInspector1.Left+ObjectInspector1.Width+5,ObjectInspector1.Top,
        400,300));
 
-  CInterface.SetPropByName('Designing',True);
   TempForm:=TForm(CInterface.Control);
+  //TempForm.SetDesigning(true);
+
   TempForm.Designer :=
     TDesigner.Create(TCustomForm(CInterface.Control));
+
+  TDesigner(TempForm.Designer).MainIDE := Self;
+
   TDesigner(TempForm.Designer).FormEditor := FormEditor1;
 
   TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TempForm);
 
-  TempForm.OnMouseDown := @MouseDownOnControl;
-  TempForm.OnMouseUp := @MouseUpOnControl;
-  TempForm.OnMouseMove := @MouseMoveOnControl;
+  TempForm.OnMouseDown := @TDesigner(TempForm.Designer).MouseDownOnForm;
+  TempForm.OnMouseUp := @TDesigner(TempForm.Designer).MouseUpOnForm;
+  TempForm.OnMouseMove := @TDesigner(TempForm.Designer).MouseMoveOnForm;
   TempForm.OnActivate := @CodeOrFormActivated;
+  Writeln('display form');
   TempForm.Show;
+  Writeln('display form');
 
   PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
   FormEditor1.ClearSelected;
@@ -1869,8 +1892,9 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.34  2001/01/05 18:56:23  lazarus
-  Minor changes
+  Revision 1.35  2001/01/06 06:28:47  lazarus
+  Made Designer control the control movement and such.  I am now using ISDesignMsg to move the controls.
+  Shane
 
   Revision 1.32  2001/01/04 20:33:53  lazarus
   Moved lresources.
