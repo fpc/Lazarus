@@ -395,7 +395,8 @@ type
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string):TModalResult;
-    function DoPublishProject(Flags: TSaveFlags):TModalResult;
+    function DoPublishProject(Flags: TSaveFlags;
+      ShowDialog: boolean):TModalResult;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbigiousFiles;
@@ -2023,7 +2024,7 @@ end;
 
 procedure TMainIDE.mnuPublishProjectClicked(Sender: TObject);
 begin
-  DoPublishProject([]);
+  DoPublishProject([],true);
 end;
 
 procedure TMainIDE.mnuAddToProjectClicked(Sender : TObject);
@@ -4537,9 +4538,16 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile end');{$ENDIF}
 end;
 
-function TMainIDE.DoPublishProject(Flags: TSaveFlags): TModalResult;
+function TMainIDE.DoPublishProject(Flags: TSaveFlags;
+  ShowDialog: boolean): TModalResult;
 begin
-  Result:=mrCancel;
+  if ShowDialog then begin
+    Result:=ShowPublishProjectDialog(Project1.PublishOptions);
+    if Result<>mrOk then exit;
+  end;
+  
+  // ToDo:
+  
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -7208,6 +7216,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.398  2002/10/02 16:16:36  lazarus
+  MG: accelerated unitdependencies
+
   Revision 1.397  2002/10/02 07:56:19  lazarus
   MG: fixed frozen selection in designer on sizing
 
