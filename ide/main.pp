@@ -6649,7 +6649,7 @@ writeln('TMainIDE.OnPropHookComponentAdded B ',AComponent.Name,':',AComponent.Cl
   SetDesigning(AComponent,true);
 writeln('TMainIDE.OnPropHookComponentAdded C ',AComponent.Name,':',AComponent.ClassName);
   // add to source
-  ADesigner:=FindDesigner(AComponent);
+  ADesigner:=FindRootDesigner(AComponent);
   OnDesignerComponentAdded(ADesigner,AComponent,ComponentClass);
 writeln('TMainIDE.OnPropHookComponentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
@@ -6664,7 +6664,7 @@ var
   ADesigner: TDesigner;
 begin
 writeln('TMainIDE.OnPropHookDeleteComponent A ',AComponent.Name,':',AComponent.ClassName);
-  ADesigner:=TDesigner(FindDesigner(AComponent));
+  ADesigner:=TDesigner(FindRootDesigner(AComponent));
   if ADesigner=nil then exit;
   ADesigner.RemoveComponent(AComponent);
 end;
@@ -6814,6 +6814,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.366  2002/09/08 12:23:40  lazarus
+  MG: TComponentPropertyEditor now shows child properties
+
   Revision 1.365  2002/09/08 10:01:54  lazarus
   MG: fixed streaming visible=false
 
