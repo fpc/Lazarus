@@ -3198,7 +3198,7 @@ begin
   gtk_clist_freeze(Files);
   gtk_clist_clear(Files);
   { Add all directories }
-  Add(dirs, '..');
+  Add(dirs, '..'+PathDelim);
   if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
     Info) = 0
   then
@@ -8081,6 +8081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.344  2005/02/26 18:39:56  mattias
+  fixed gtk open dialog go up
+
   Revision 1.343  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

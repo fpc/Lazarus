@@ -4294,17 +4294,6 @@ var
 begin
   FileSelWidget:=GTK_FILE_SELECTION(SelWidget);
 
-  // Multiselection
-  if ofAllowMultiSelect in OpenDialog.Options then
-  begin
-    LastFileSelectRow := -1;
-    g_signal_connect(gtk_object(FileSelWidget^.file_list),
-      'select-row',
-      gtk_signal_func(@gtkOpenDialogRowSelectCB), OpenDialog);
-    gtk_clist_set_selection_mode(
-      PGtkCList(FileSelWidget^.file_list),GTK_SELECTION_MULTIPLE);
-  end;
-
   // Help button
   if (ofShowHelp in OpenDialog.Options)
   and (FileSelWidget^.Help_Button<>nil) then begin
@@ -4334,9 +4323,13 @@ begin
 
   // connect file list (list of files in current directory)
   if (FileSelWidget^.file_list<>nil) then begin
+    LastFileSelectRow := -1;
     SetLCLObject(FileSelWidget^.file_list,OpenDialog);
     g_signal_connect(gtk_object(FileSelWidget^.file_list),
       'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
+    if ofAllowMultiSelect in OpenDialog.Options then
+      gtk_clist_set_selection_mode(
+        PGtkCList(FileSelWidget^.file_list),GTK_SELECTION_MULTIPLE);
   end;
 
   // History List - a frame with an option menu
@@ -6999,6 +6992,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.632  2005/02/26 18:39:56  mattias
+  fixed gtk open dialog go up
+
   Revision 1.631  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

@@ -1404,46 +1404,71 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-function gtkOpenDialogRowSelectCB(widget : PGtkWidget; row : gint;
-  column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
+{-------------------------------------------------------------------------------
+  function GTKDialogSelectRowCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, whenever a row is selected in a commondialog
+-------------------------------------------------------------------------------}
+function gtkDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
+  bevent: pgdkEventButton; data: gPointer): GBoolean; cdecl;
 var
+  theDialog: TCommonDialog;
+  MenuWidget: PGtkWidget;
+  AFilterEntry: PFileSelFilterEntry;
+  FileSelWidget: PGtkFileSelection;
   ShiftState: TShiftState;
   loop : gint;
   startRow : gint;
   endRow : gint;
 begin
-  Result := CallBackDefaultReturn;
-  if (Data=nil) then ;
-   // only process the callback if there is event data. If there isn't any
-   // event data that means it was called due to a direct function call of the
-   // widget and not an actual mouse click on the widget.
-   if event <> nil then
-   begin
-      ShiftState := GTKEventState2ShiftState(Event^.State);
-      if ssShift in ShiftState then
-      begin
-         if LastFileSelectRow <> -1 then
-         begin
-            startRow := LastFileSelectRow;
-     endRow := row;
-            if LastFileSelectRow > row then
-     begin
-        startRow := row;
-        endRow := LastFileSelectRow;
-     end;
-            for loop := startRow to endRow do
-     begin
-               gtk_clist_select_row(PGtkCList(widget), loop, column);
-     end;
-         end;
+  //debugln('GTKDialogSelectRowCB A ');
+  Result:=CallBackDefaultReturn;
+  if (Data=nil) or (BEvent=nil) or (Column=0) or (Row=0) then ;
+  theDialog:=TCommonDialog(GetLCLObject(Widget));
+  if (theDialog is TOpenDialog) then begin
+    // only process the callback if there is event data. If there isn't any
+    // event data that means it was called due to a direct function call of the
+    // widget and not an actual mouse click on the widget.
+    FileSelWidget:=PGtkFileSelection(theDialog.Handle);
+    if (bevent <> nil) and (gdk_event_get_type(bevent) = GDK_2BUTTON_PRESS)
+    and (FileSelWidget^.dir_list = widget) then begin
+      MenuWidget := gtk_object_get_data(PGtkObject(FileSelWidget),
+                                        'LCLFilterMenu');
+      if MenuWidget <> nil then begin
+        AFilterEntry := gtk_object_get_data(PGtkObject(
+             gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
+        if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
+          PopulateFileAndDirectoryLists(FileSelWidget,AFilterEntry^.Mask);
+      end;
+    end
+    else if (bevent <> nil)
+    and (ofAllowMultiSelect in TOpenDialog(theDialog).Options)
+    and (FileSelWidget^.file_list=widget) then begin
+      // multi selection
+      ShiftState := GTKEventState2ShiftState(BEvent^.State);
+      if ssShift in ShiftState then begin
+        if LastFileSelectRow <> -1 then begin
+          startRow := LastFileSelectRow;
+          endRow := row;
+          if LastFileSelectRow > row then begin
+            startRow := row;
+            endRow := LastFileSelectRow;
+          end;
+          for loop := startRow to endRow do begin
+            gtk_clist_select_row(PGtkCList(widget), loop, column);
+          end;
+        end;
       end
-      else if not (ssCtrl in ShiftState) then
-      begin
-         gtk_clist_unselect_all(PGtkCList(widget));
-         gtk_clist_select_row(PGtkCList(widget), row, column);
+      else if not (ssCtrl in ShiftState) then begin
+        gtk_clist_unselect_all(PGtkCList(widget));
+        gtk_clist_select_row(PGtkCList(widget), row, column);
       end;
       LastFileSelectRow := row;
-   end;
+    end;
+    UpdateDetailView(TOpenDialog(theDialog));
+  end;
 end;
 
 function gtkDialogOKclickedCB( widget: PGtkWidget;
@@ -1754,7 +1779,8 @@ end;
 function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  Result:=false;
+  //debugln('GTKDialogKeyUpDownCB A ');
+  Result:=CallBackDefaultReturn;
 
   if (Widget=nil) then ;
   case gdk_event_get_type(Event) of
@@ -1807,42 +1833,11 @@ function GTKDialogFocusInCB(widget: PGtkWidget; data: gPointer): GBoolean;
 var
   theDialog: TCommonDialog;
 begin
-  Result:=false;
+  //debugln('GTKDialogFocusInCB A ');
+  Result:=CallBackDefaultReturn;
   if (Data=nil) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
-    UpdateDetailView(TOpenDialog(theDialog));
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  function GTKDialogSelectRowCB
-  Params: widget: PGtkWidget; data: gPointer
-  Result: GBoolean
-
-  This function is called, whenever a row is selected in a commondialog
--------------------------------------------------------------------------------}
-function GTKDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
-  bevent: pgdkEventButton; data: gPointer): GBoolean; cdecl;
-var
-  theDialog: TCommonDialog;
-  MenuWidget: PGtkWidget;
-  AFilterEntry: PFileSelFilterEntry;
-begin
-  Result:=false;
-  if (Data=nil) or (BEvent=nil) or (Column=0) or (Row=0) then ;
-  theDialog:=TCommonDialog(GetLCLObject(Widget));
-  if (theDialog is TOpenDialog) then begin
-    if (bevent <> nil) and (gdk_event_get_type(bevent) = GDK_2BUTTON_PRESS)
-    and (PGtkFileSelection(theDialog.Handle)^.dir_list = widget) then begin
-      MenuWidget := gtk_object_get_data(PGtkObject(theDialog.Handle), 'LCLFilterMenu');
-      if MenuWidget <> nil then begin
-        AFilterEntry := gtk_object_get_data(PGtkObject(gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
-        if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
-          PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
-                                        AFilterEntry^.Mask);
-      end;
-    end;
     UpdateDetailView(TOpenDialog(theDialog));
   end;
 end;
@@ -2967,6 +2962,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.270  2005/02/26 18:39:56  mattias
+  fixed gtk open dialog go up
+
   Revision 1.269  2005/02/21 20:15:28  mattias
   fixed componentpalette adding via double click
 

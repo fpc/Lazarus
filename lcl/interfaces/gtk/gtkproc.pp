@@ -158,8 +158,8 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event: pgdkEventButton;
                                  data: gPointer): GBoolean; cdecl;
 function gtkclickedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-function gtkOpenDialogRowSelectCB( widget: PGtkWidget; row: gint;
-        column: gint; event: pgdkEventButton; data: gPointer ): GBoolean; cdecl;
+function gtkDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
+  bevent: pgdkEventButton; data: gPointer): GBoolean; cdecl;
 function gtkDialogOKclickedCB( widget: PGtkWidget;
   data: gPointer): GBoolean; cdecl;
 function gtkDialogCancelclickedCB(widget: PGtkWidget; data: gPointer): GBoolean;cdecl;
@@ -171,8 +171,6 @@ function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event: pgdkeventkey;
   Data: gPointer): GBoolean; cdecl;
 function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 function GTKDialogFocusInCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function GTKDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
-  bevent: pgdkEventButton; data: gPointer): GBoolean; cdecl;
 function GTKDialogMenuActivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
