@@ -2318,7 +2318,7 @@ end;
 Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: Pointer); cdecl;
 begin
   EventTrace('style-set', nil);
-  if Data<>nil then begin
+{  if Data<>nil then begin
     if TObject(Data) is TButton then
       ReleaseStyle('button')
     else
@@ -2328,10 +2328,29 @@ begin
       if TObject(Data) is TCheckBox then
         ReleaseStyle('checkbox')
     else
-      ReleaseStyle('default');
-  end
+      if TObject(Data) is TMenu then begin
+        ReleaseStyle('menu');
+        ReleaseStyle('menuitem');
+      end
     else
+      if TObject(Data) is TMenuItem then begin
+        ReleaseStyle('menuitem');
+        ReleaseStyle('menu')
+      end
+   else begin
       ReleaseStyle('default');
+   end;
+  end
+    else begin }
+      ReleaseStyle('button');
+      ReleaseStyle('radiobutton');
+      ReleaseStyle('checkbox');
+      ReleaseStyle('menu');
+      ReleaseStyle('menuitem');
+      ReleaseStyle('scrollbar');
+      ReleaseStyle('tooltip');
+      ReleaseStyle('default');
+    //end;
 end;
 
 {$I gtkDragCallback.inc}
@@ -2346,6 +2365,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.131  2002/09/18 17:07:27  lazarus
+  MG: added patch from Andrew
+
   Revision 1.130  2002/09/16 15:56:01  lazarus
   Resize cursors in designer.
 
