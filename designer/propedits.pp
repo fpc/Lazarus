@@ -1820,7 +1820,7 @@ begin
     ShowPrefix := True;
     WordBreak := False;
     SingleLine := True;
-    SystemFont := true;
+    SystemFont := True;
   end;
   If (pedsInComboList in AState) and not (pedsInEdit in AState)
   then begin
