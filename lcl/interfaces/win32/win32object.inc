@@ -894,7 +894,8 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If Sender is TControl Then
           Begin
-            If (TControl(Sender).fCompStyle = csListBox) Or (TControl(Sender).FCompStyle = csCListBox) Then
+            If (TControl(Sender).fCompStyle = csListBox)
+            Or (TControl(Sender).FCompStyle = csCListBox) Then
             Begin
               If TListBox(Sender).BorderStyle = TBorderStyle(bsSingle) Then
                 SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_CLIENTEDGE)
@@ -2616,6 +2617,9 @@ End;
 
 {
   $Log$
+  Revision 1.37  2002/12/28 21:38:50  mattias
+  cleanups
+
   Revision 1.36  2002/12/28 09:42:12  mattias
   toolbutton patch from Martin Smat
 

@@ -1,3 +1,5 @@
+// included by forms.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -469,4 +471,6 @@ begin
   FreeThenNil(FCanvas);
   inherited Destroy;
 end;
+
+// included by forms.pp
 

@@ -37,9 +37,9 @@ begin
                       TExtendedStringList(ListBoxInternalItems).Records[Index]);
 end;
 
-{------------------------------------------------------------------------------}
-{ procedure TCustomListBox.CreateHandle                                        }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+ procedure TCustomListBox.CreateHandle
+------------------------------------------------------------------------------}
 procedure TCustomListBox.CreateHandle;
 var
   NewStrings : TStrings;
@@ -50,8 +50,6 @@ begin
   //writeln('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
   // create
   CNSendMessage(LM_SETBORDER, Self, nil);
-  UpdateSelectionMode;
-  UpdateSorted;
 
   // fetch the interface item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
@@ -67,6 +65,9 @@ begin
   
   // new item list is the interface item list
   FItems:= NewStrings;
+
+  UpdateSelectionMode;
+  UpdateSorted;
 
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
   //writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
@@ -153,7 +154,7 @@ begin
   if not HandleAllocated then exit;
   with AMessage do begin
     Msg:= LM_SORT;
-    List:= TObject(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
+    List:= FItems;
     IsSorted:= FSorted;
   end;
   CNSendMessage(LM_SORT, Self, @AMessage);

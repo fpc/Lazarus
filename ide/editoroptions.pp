@@ -2925,7 +2925,6 @@ begin
     else
       Result:=Result+KeyAndShiftStateToStr(Key1,Shift1)+'  or  '+
            KeyAndShiftStateToStr(Key2,Shift2);
-    Result:=Result;
   end;
 end;
 
