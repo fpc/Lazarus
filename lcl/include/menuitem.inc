@@ -377,7 +377,7 @@ end;
   Params:   none
   Returns:  The (popup)menu containing this item.
 
-  Description of the function for the class.
+
  ------------------------------------------------------------------------------}
 function TMenuItem.GetParentMenu: TMenu;
 var
@@ -385,7 +385,7 @@ var
 begin
   Item := Self;
   while Item.Parent <> nil do Item := Item.Parent;
-  Result := Item.FMenu
+  Result := Item.FMenu;
 end;
 
 {------------------------------------------------------------------------------
@@ -955,6 +955,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/06/26 17:00:00  mattias
+  fixed result on searching proc in interface
+
   Revision 1.35  2003/06/24 15:57:55  mattias
   applied win32 menu patch from Micha Nelissen
 
@@ -1088,6 +1091,9 @@ end;
 
 
   $Log$
+  Revision 1.36  2003/06/26 17:00:00  mattias
+  fixed result on searching proc in interface
+
   Revision 1.35  2003/06/24 15:57:55  mattias
   applied win32 menu patch from Micha Nelissen
 

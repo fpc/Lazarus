@@ -27,13 +27,13 @@
 
   ToDo:
     - ignore errors behind cursor (implemented, not tested)
-    - high level expression comparison
+    - find declaration in dead code
+    - high type expression evaluation
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
     - caching for procs
     - variants
     - 'class of'
-    - find declaration in dead code
     - multi pass find declaration
     - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
@@ -69,6 +69,7 @@ interface
 { $DEFINE ShowBaseTypeCache}
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
+{ $DEFINE ShowProcSearch}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -1733,7 +1734,7 @@ var
       ' File="',ExtractFilename(MainFilename)+'"',
       ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
       ' NewResult=',NewResult,
-      ' CallOnIdentifierFound=',CallOnIdentifierFound
+      ' CallOnIdentifierFound=',CallOnIdentifierFound,
       );
     end;
     {$ENDIF}
@@ -1750,7 +1751,7 @@ var
         );
         }
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
-                            Params.NewNode);
+                                                                Params.NewNode);
         Result:=IdentFoundResult<>ifrProceedSearch;
         if IdentFoundResult<>ifrAbortSearch then exit;
       end else begin
@@ -1767,6 +1768,10 @@ var
       Params.SetResult(Params.FoundProc^.Context.Tool,
                        Params.FoundProc^.Context.Node);
       FindIdentifierInContext:=true;
+      {$IFDEF ShowProcSearch}
+      writeln('[TFindDeclarationTool.FindIdentifierInContext] PROC Search ended with only one proc:');
+      Params.WriteDebugReport;
+      {$ENDIF}
       exit;
     end;
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
@@ -1968,10 +1973,13 @@ var
         or (ContextNode.HasAsParent(StartContextNode))) then
       begin
         // search next in parent
-        ContextNode:=ContextNode.Parent;
         {$IFDEF ShowTriedParentContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  ContextNode=',ContextNode.DescAsString);
+        writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent ',
+          ' old ContextNode=',ContextNode.DescAsString,
+          ' new ContextNode=',ContextNode.Parent.DescAsString
+          );
         {$ENDIF}
+        ContextNode:=ContextNode.Parent;
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
@@ -3267,8 +3275,7 @@ begin
         FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
           Params.NewCleanPos);
     end else begin
-      // do not save proc identifiers or collect results
-      Result:=false;
+      // do not save proc identifiers or collection results
     end;
   end else begin
     // identifier does not exist in this interface
@@ -4760,9 +4767,15 @@ begin
     // The search must go on, and the most compatible proc is returned.
     
     if not Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then begin
-      // Params.Identifier is not in the source of this tool
+      // Params.Identifier is not in the source of the start tool
       // => impossible to check param list, because the context is unknown
       // -> identifier found
+      {$IFDEF ShowProcSearch}
+      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      ' Indent=',GetIdentifier(Params.Identifier),
+      ' NO SOURCE to check params'
+      );
+      {$ENDIF}
       Result:=ifrSuccess;
       exit;
     end;
@@ -4771,6 +4784,12 @@ begin
     if (Params.FoundProc=nil) then begin
       // this is the first proc found
       // -> save it and proceed the search to find all overloadeded procs
+      {$IFDEF ShowFoundIdentifier}
+      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      ' Indent=',GetIdentifier(Params.Identifier),
+      ' FIRST PROC'
+      );
+      {$ENDIF}
       Params.SetFirstFoundProc(FoundContext);
       exit;
     end;

@@ -20,6 +20,7 @@ constructor TToggleBox.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csToggleBox;
+  SetInitialBounds(0,0,90,25);
 end;
 
 {------------------------------------------------------------------------------}
