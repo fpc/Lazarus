@@ -550,6 +550,7 @@ images/color.ico -text svneol=unset#image/x-icon
 images/color.xpm -text svneol=native#image/x-xpixmap
 images/components/default.ico -text svneol=unset#image/x-icon
 images/components/default.xpm -text svneol=native#image/x-xpixmap
+images/components/tactionlist.xpm -text svneol=native#image/x-xpixmap
 images/components/tapplicationproperties.xpm -text svneol=native#image/x-xpixmap
 images/components/tarrow.ico -text svneol=unset#image/x-icon
 images/components/tarrow.xpm -text svneol=native#image/x-xpixmap
