@@ -8,6 +8,9 @@
         <UnitOutputDirectory Value="units/$(TargetCPU)/$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <Verbosity>
+          <ShowHints Value="False"/>
+        </Verbosity>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>

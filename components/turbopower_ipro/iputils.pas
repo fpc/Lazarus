@@ -36,7 +36,6 @@ interface
 
 uses
   SysUtils,
-  Messages,
   {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
@@ -44,12 +43,13 @@ uses
   LMessages,
   FileCtrl,
   {$ELSE}
+  Messages,
   Windows,
+  ExtCtrls,
   {$ENDIF}
   Classes,
   Controls,
   Registry,
-  ExtCtrls,
   ComCtrls;
 
 const
@@ -896,7 +896,7 @@ asm
 end;
 
 function IpCharCount(const Buffer; BufSize : DWORD; C : AnsiChar) : DWORD;
-  {$IFNDEF IP_LAZARUS}register;{$ENDIF}
+  {$IFNDEF VER1_0  lazarus}register;{$ENDIF}
 asm
   push  ebx
   xor   ebx, ebx
@@ -2669,7 +2669,7 @@ end;
 function DirExists(Dir : string): Boolean;
 {$IFDEF IP_LAZARUS}
 begin
-  Result:=DirectoryExists(Dir);
+  Result:=DirPathExists(Dir);
 end;
 {$ELSE}
 var
@@ -2718,17 +2718,25 @@ end;
 { Append backslash to DOS path if needed }
 function AppendBackSlash(APath : string) : string;
 begin
+{$IFDEF IP_LAZARUS}
+  Result := AppendPathDelim(APath);
+{$ELSE}
   Result := APath;
   if (Result <> '') and (Result[Length(APath)] <> '\') then
     Result := Result + '\';
+{$ENDIF}
 end;
 
 { Remove trailing backslash from a DOS path if needed }
 function RemoveBackSlash(APath: string) : string;
 begin
+{$IFDEF IP_LAZARUS}
+  Result := ChompPathDelim(APath);
+{$ELSE}
   Result := APath;
   if Result[Length(Result)] = '\' then
     Delete(Result, Length(Result), 1);
+{$ENDIF}
 end;
 
 

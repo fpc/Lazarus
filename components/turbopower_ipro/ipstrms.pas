@@ -42,6 +42,7 @@ interface
 
 uses
   {$IFDEF IP_LAZARUS}
+  FPCAdds,
   LCLType,
   GraphType,
   LCLIntf,
@@ -144,7 +145,7 @@ type
       FBufPos  : Longint;
       FBufSize : Longint;
       FDirty   : Boolean;
-      FSize    : Longint;
+      FSize    : {$IFDEF IP_LAZARUS}TStreamSeekType{$ELSE}longint{$ENDIF};
       FStream  : TStream;
 
     protected {- methods }
@@ -167,7 +168,7 @@ type
       function Write(const Buffer; Count : Longint) : Longint; override;
 
     public {-properties }
-      property FastSize : Longint
+      property FastSize: {$IFDEF IP_LAZARUS}TStreamSeekType{$ELSE}longint{$ENDIF}
         read FSize;
       property Stream : TStream
         read FStream write bsSetStream;
@@ -1779,6 +1780,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2004/02/04 22:17:59  mattias
+  TipHtmlPanel can now show fpdoc html output
+
   Revision 1.2  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

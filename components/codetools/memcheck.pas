@@ -1307,9 +1307,9 @@ const
   { tracing level
     splitted in two if memory is released !! }
 {$ifdef EXTRA}
-  tracesize = 16;
+  tracesize = 16; // normal: 16
 {$else EXTRA}
-  tracesize = 8;
+  tracesize = 32; // normal: 8
 {$endif EXTRA}
   { install heaptrc memorymanager }
   useheaptrace : boolean=true;
@@ -2566,6 +2566,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2004/02/04 22:17:59  mattias
+  TipHtmlPanel can now show fpdoc html output
+
   Revision 1.27  2004/01/06 10:53:31  mattias
   fixed default value of TArrow.ArrowType
 

@@ -242,7 +242,7 @@ type
 
     public
 
-      constructor Create; {$IFNDEF IP_LAZARUS}override;{$ENDIF}
+      constructor Create; override;
       destructor Destroy; override;
 
       procedure Assign(Source : TPersistent); override;

@@ -2364,8 +2364,7 @@ type
     {HaveFocus : Boolean;}                                             {!!.12}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(
-      var Message: {$IFDEF IP_LAZARUS}TLMKillFocus{$ELSE}TLMSetFocus{$ENDIF}); message WM_KILLFOCUS;
+    procedure WMKillFocus(var Message: TLMSetFocus); message WM_KILLFOCUS;
   public
     constructor Create(AOwner: TComponent); override;
     property Anchor : TIpHtmlNodeA read FAnchor write FAnchor;
@@ -2611,6 +2610,7 @@ type
     procedure Stop;
   public
     {$IFDEF IP_LAZARUS}
+    // constructor should be public
     constructor Create(Scanner: TIpHtmlCustomScanner;
       DataProvider : TIpAbstractHtmlDataProvider; FlagErrors: Boolean);
     {$ENDIF}
@@ -2872,9 +2872,7 @@ procedure Register;
 implementation
 
 uses
-  {$IFNDEF IP_LAZARUS}
   Printers,
-  {$ENDIF}
   IpHtmlPv; {!!.10}
 
 var
@@ -3012,12 +3010,12 @@ end;
 constructor TIpHtmlPoolManager.Create(TheItemSize, MaxItems : DWord);
 begin
   inherited Create(TheItemSize);
+  ClearOnCreate:=true;
 end;
 
 function TIpHtmlPoolManager.NewItm : Pointer;
 begin
   Result:=NewItem;
-  FillChar(Result^,ItemSize,0);
 end;
 
 {$ELSE IP_LAZARUS}
@@ -3085,11 +3083,15 @@ begin
 end;
 {$ENDIF IP_LAZARUS}
 
+
+{$IFNDEF IP_LAZARUS}
+// workaround for fpc bug: local string constants
 function ParseConstant(const S: string): AnsiChar;
+{$ENDIF}
 Const
   CodeCount = 124;
   {Sorted by Size where size is Length(Name).
-  Make sure you respect this when assing new items}
+  Make sure you respect this when adding new items}
   Codes: array[0..pred(CodeCount)] of record
     Size: Integer;
     Name: String;
@@ -3220,13 +3222,16 @@ Const
     (Size: 6; Name: 'Yacute'; Value: #221),
     (Size: 6; Name: 'yacute'; Value: #253)
     );
+{$IFDEF IP_LAZARUS}
+function ParseConstant(const S: string): AnsiChar;
+{$ENDIF}
 var
   Error: Integer;
   Index1: Integer;
   Index2: Integer;
   Size1: Integer;
   Found: Boolean;
-begin {'Compete boolean eval' must be off}
+begin {'Complete boolean eval' must be off}
   Result := ' ';
   Size1 := Length(S);
   if Size1 = 0 then Exit;
@@ -4181,11 +4186,11 @@ end;
 constructor TIpHtmlNodeBODY.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  FBgColor := $FFFFFFFF;
-  FText := $FFFFFFFF;
-  FLink := $FFFFFFFF;
-  FVLink := $FFFFFFFF;
-  FALink := $FFFFFFFF;
+  FBgColor := -1;
+  FText := -1;
+  FLink := -1;
+  FVLink := -1;
+  FALink := -1;
   Owner.Body := Self;
 end;
 
@@ -4204,7 +4209,7 @@ begin
       Owner.Target.Brush.Color := clWhite;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
-    if BGColor <> $FFFFFFFF then begin
+    if BGColor <> -1 then begin
       Owner.Target.Brush.Color := BGColor;
       Owner.Target.FillRect(Owner.ClientRect);
     end;
@@ -4236,6 +4241,7 @@ begin
   end;
   inherited Render(RenderProps);
   {$IFDEF IP_LAZARUS}
+  // restore style
   Owner.Target.Brush.Style:=bsSolid;
   {$ENDIF}
 end;
@@ -7111,7 +7117,7 @@ function TIpHtml.ColorFromString(S : string) : TColorRef;
 var
   R, G, B, Err : Integer;
 begin
-  Result := $FFFFFFFF;
+  Result := -1;
   if S = '' then
     exit;
   S := UpperCase(S);
@@ -7197,7 +7203,7 @@ begin
       if FlagErrors then
         ReportError(SHtmlInvColor + S)
       else
-        Result := $FFFFFFFF;
+        Result := -1;
     end;
 end;
 
@@ -7686,7 +7692,7 @@ end;
 procedure TIpHtml.SetDefaultProps;
 begin
   {$IFDEF IP_LAZARUS}
-  Defaultprops.FontName := 'Arial';
+  Defaultprops.FontName := 'Default';
   {$ELSE}
   Defaultprops.FontName := 'Times New Roman';
   {$ENDIF}
@@ -7700,19 +7706,19 @@ begin
   DefaultProps.LinkColor := LinkColor;
   DefaultProps.VLinkColor := VLinkColor;
   DefaultProps.ALinkColor := ALinkColor;
-  DefaultProps.BgColor := $FFFFFFFF;
+  DefaultProps.BgColor := -1;
   DefaultProps.Preformatted := False;
   DefaultProps.NoBreak := False;
   if Body <> nil then begin
-    if Body.Text <> $FFFFFFFF then
+    if Body.Text <> -1 then
       DefaultProps.FontColor := Body.Text;
-    if Body.Link <> $FFFFFFFF then
+    if Body.Link <> -1 then
       DefaultProps.LinkColor := Body.Link;
-    if Body.VLink <> $FFFFFFFF then
+    if Body.VLink <> -1 then
       DefaultProps.VLinkColor := Body.VLink;
-    if Body.ALink <> $FFFFFFFF then
+    if Body.ALink <> -1 then
       DefaultProps.ALinkColor := Body.ALink;
-    if Body.BgColor <> $FFFFFFFF then
+    if Body.BgColor <> -1 then
       DefaultProps.BgColor := Body.BgColor;
   end;
 end;
@@ -7979,6 +7985,7 @@ var
 begin
   if not DoneLoading then begin
     {$IFDEF IP_LAZARUS}
+    // always set result
     SetRectEmpty(Result);
     {$ENDIF}
     exit;
@@ -8697,7 +8704,7 @@ begin
         end;
     end;
   end;
-  if Color <> $FFFFFFFF then
+  if Color <> -1 then
     Props.FontColor := Color;
 end;
 
@@ -8966,6 +8973,11 @@ var
           SizeOfHyphen := PropA.KnownSizeOfHyphen;
         end else begin
           SizeOfSpace := Owner.Target.TextExtent(' ');
+          {$IFDEF IP_LAZARUS}
+          if SizeOfSpace.CX=0 then begin
+            writeln('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',Owner.Target.Font.Name,'" Size=',Owner.Target.Font.Size);
+          end;
+          {$ENDIF}
           SizeOfHyphen := Owner.Target.TextExtent('-');
           PropA.SetKnownSizeOfSpace(SizeOfSpace);
           PropA.KnownSizeOfHyphen := SizeOfHyphen;
@@ -10515,7 +10527,7 @@ end;
 constructor TIpHtmlNodeHR.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  FColor := $FFFFFFFF;
+  FColor := -1;
   Align := hiaCenter;
   SizeWidth := TIpHtmlPixels.Create;
 end;
@@ -10535,10 +10547,10 @@ begin
   R.Bottom := TopLeft.y + Dim.cy;
   if not PageRectToScreen(R, R) then
     exit;
-  if NoShade or (Color <> $FFFFFFFF) then begin
+  if NoShade or (Color <> -1) then begin
     SavePenColor := Owner.Target.Pen.Color;
     SaveBrushColor := Owner.Target.Brush.Color;
-    if Color = $FFFFFFFF then begin
+    if Color = -1 then begin
       Owner.Target.Pen.Color := clBlack;
       Owner.Target.Brush.Color := clBlack;
     end else begin
@@ -12050,7 +12062,7 @@ end;
 constructor TIpHtmlNodeTABLE.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  BgColor := $FFFFFFFF;
+  BgColor := -1;
   SizeWidth := TIpHtmlPixels.Create;
   SizeWidth.PixelsType := hpUndefined;
   FColCount := -1;
@@ -12069,7 +12081,7 @@ var
   R : TRect;
   Al : TIpHtmlVAlign3;
 begin
-  if (BGColor <> $FFFFFFFF) and PageRectToScreen(BorderRect, R) then begin
+  if (BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
     Owner.Target.Brush.Color := BGColor;
     Owner.Target.FillRect(R);
   end;
@@ -13391,7 +13403,7 @@ begin
 {$ELSE}
   if FControl is THtmlRadioButton then begin
 {$ENDIF}
-    if Props.BgColor <> $FFFFFFFF then
+    if Props.BgColor <> -1 then
 {$IFDEF VERSION3ONLY}
       TRadioButton(FControl).Color := Props.BgColor;
 {$ELSE}
@@ -13551,9 +13563,7 @@ begin
     FControl.Visible := False;
     FControl.Parent := Parent;
     with TListBox(FControl) do begin
-      {$IFNDEF IP_LAZARUS}
       IntegralHeight := True;
-      {$ENDIF}
       Height := (4 + ItemHeight) * Self.Size;
       MultiSelect := True;
       Enabled := not Self.Disabled;
@@ -14654,7 +14664,7 @@ begin
   if Self is TIpHtmlNodeTH then
     Props.FontStyle := Props.FontStyle + [fsBold];
   Props.VAlignment := VAlign;
-  if BgColor <> $FFFFFFFF then
+  if BgColor <> -1 then
     Props.BgColor := BgColor;
   if NoWrap then
     Props.NoBreak := True;
@@ -14682,7 +14692,7 @@ begin
   if NoWrap then
     Props.NoBreak := True;
   if PageRectToScreen(PadRect, R) then begin
-    if (BgColor <> $FFFFFFFF) then begin
+    if (BgColor <> -1) then begin
       Props.BgColor := BgColor;
       Owner.Target.Brush.Color := BGColor;
       Owner.Target.FillRect(R);
@@ -14699,7 +14709,7 @@ begin
   FAlign := haDefault;
   FVAlign := hva3Middle;
   {FHeight := -1;}                                                     {!!.10}
-  BgColor := $FFFFFFFF;
+  BgColor := -1;
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.Layout(
@@ -14720,7 +14730,7 @@ begin
   else
     Props.VAlignment := VAlign;
   end;
-  if BgColor <> $FFFFFFFF then
+  if BgColor <> -1 then
     Props.BgColor := BgColor;
   inherited Layout(Props, TargetRect);
 end;
@@ -15146,7 +15156,7 @@ end;
 procedure TIpHtmlInternalPanel.BeginPrint;
 {$IFDEF IP_LAZARUS}
 begin
-  writeln('TIpHtmlInternalPanel.BeginPrint not implemented');
+  writeln('ToDo: TIpHtmlInternalPanel.BeginPrint');
 end;
 {$ELSE}
 var
@@ -15192,7 +15202,7 @@ end;
 procedure TIpHtmlInternalPanel.EndPrint;
 {$IFDEF IP_LAZARUS}
 begin
-  writeln('TIpHtmlInternalPanel.EndPrint not implemented');
+  writeln('ToDo: TIpHtmlInternalPanel.BeginPrint');
 end;
 {$ELSE}
 begin
@@ -15211,7 +15221,7 @@ end;
 procedure TIpHtmlInternalPanel.PrintPages(FromPage, ToPage: Integer);
 {$IFDEF IP_LAZARUS}
 begin
-  writeln('TIpHtmlInternalPanel.PrintPages not implemented');
+  writeln('ToDo: TIpHtmlInternalPanel.BeginPrint');
 end;
 {$ELSE}
 var
@@ -15423,7 +15433,7 @@ procedure TIpHtmlInternalPanel.WMHScroll(var Message: TWMHScroll);
 begin
   {$IFDEF IP_LAZARUS}
   if HScroll.Visible then
-    HScroll.ScrollMessage(Message)
+    HScroll.ScrollMessage(Message);
   {$ELSE}
   if (Message.ScrollBar = 0) and HScroll.Visible then
     HScroll.ScrollMessage(Message) else
@@ -15435,7 +15445,7 @@ procedure TIpHtmlInternalPanel.WMVScroll(var Message: TWMVScroll);
 begin
   {$IFDEF IP_LAZARUS}
   if VScroll.Visible then
-    VScroll.ScrollMessage(Message)
+    VScroll.ScrollMessage(Message);
   {$ELSE}
   if (Message.ScrollBar = 0) and VScroll.Visible then
     VScroll.ScrollMessage(Message) else
@@ -15720,8 +15730,7 @@ begin
   Anchor.DoOnFocus;
 end;
 
-procedure TIpHtmlFocusRect.WMKillFocus(
-  var Message: {$IFDEF IP_LAZARUS}TLMKillFocus{$ELSE}TLMSetFocus{$ENDIF});
+procedure TIpHtmlFocusRect.WMKillFocus(var Message: TLMSetFocus);
 begin
   inherited;
   Anchor.DoOnBlur;
@@ -15788,7 +15797,7 @@ end;
 procedure TIpHtmlFrame.InvalidateRect(Sender: TIpHtml; const R: TRect);
 begin
   if HyperPanel <> nil then
-    {$IFDEF IP_LAZARUS}LCLIntF.{$ELSE}Windows.{$ENDIF}
+    {$IFDEF IP_LAZARUS}LCLIntf.{$ELSE}Windows.{$ENDIF}
       InvalidateRect(HyperPanel.Handle, @R, False);
 end;
 
@@ -15957,9 +15966,7 @@ begin
             FramePanel.Align := alClient;
             FramePanel.Parent := FParent;
             FramePanel.OnResize := FramePanelResize;
-            {$IFNDEF IP_LAZARUS}
             FramePanel.FullRepaint := False;
-            {$ENDIF}
             ColW := CalcMultiLength(Html.FrameSet.Cols, FramePanel.ClientWidth,
               ColWCount); {!!.10}
             try
@@ -15978,9 +15985,7 @@ begin
                     Pnl[FrameCount].BevelOuter := bvNone;
                     Pnl[FrameCount].SetBounds(L, T, ColW[C], RowH[R]);
                     Pnl[FrameCount].Parent := FramePanel;
-                    {$IFNDEF IP_LAZARUS}
                     Pnl[FrameCount].FullRepaint := False;
-                    {$ENDIF}
 
                     if CurFrameDef.FrameBorder <> 0 then begin                {!!.02}
                       Pnl[FrameCount].BorderStyle := bsSingle;                {!!.02}
@@ -16229,9 +16234,7 @@ begin
   end;
   TPanel(Control).SetBounds(0, 0, W, H);
   TPanel(Control).Parent := Parent;
-  {$IFNDEF IP_LAZARUS}
   TPanel(Control).FullRepaint := False;
-  {$ENDIF}
   case Frame.Scrolling of
   hfsAuto, hfsYes :
     Scroll := True;
@@ -16300,9 +16303,7 @@ begin
     FramePanel.Align := alClient;
     FramePanel.Parent := FParent;
     FramePanel.OnResize := FramePanelResize;
-    {$IFNDEF IP_LAZARUS}
     FramePanel.FullRepaint := False;
-    {$ENDIF}
     ColW := CalcMultiLength(Html.FrameSet.Cols, FramePanel.ClientWidth,
       ColWCount); {!!.10}
     try
@@ -16321,9 +16322,7 @@ begin
             Pnl[FrameCount].BevelOuter := bvNone;
             Pnl[FrameCount].SetBounds(L, T, ColW[C], RowH[R]);
             Pnl[FrameCount].Parent := FramePanel;
-            {$IFNDEF IP_LAZARUS}
             Pnl[FrameCount].FullRepaint := False;
-            {$ENDIF}
 
             if CurFrameDef.FrameBorder <> 0 then begin                {!!.02}
               Pnl[FrameCount].BorderStyle := bsSingle;                {!!.02}
@@ -17587,6 +17586,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.12  2004/02/04 22:17:59  mattias
+  TipHtmlPanel can now show fpdoc html output
+
   Revision 1.11  2004/01/04 17:29:03  mattias
   added package and cross compilation output dirs
 

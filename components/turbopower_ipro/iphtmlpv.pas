@@ -102,12 +102,11 @@ type
 
 implementation
 
-{$IFNDEF IP_LAZARUS}
 uses
   Printers;
 
+{$IFNDEF IP_LAZARUS}
 {$R *.DFM}
-
 {$ENDIF}
 
 const
