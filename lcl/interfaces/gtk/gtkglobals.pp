@@ -35,6 +35,7 @@ var
   UseTransientForModalWindows: boolean;
   UpdatingTransientWindows: boolean;
 
+  // mouse --------------------------------------------------------------------
 var
   //drag icons
   //TrashCan_Open : PgdkPixmap;
@@ -70,15 +71,17 @@ const
 
 var
   LastLeft, LastMiddle, LastRight: TLastMouseClick;
-  LastFileSelectRow : gint;
-
+  
   // mouse cursors
 var
   GDKMouseCursors:   array[crLow..crHigh] of pGDKCursor;
   // mapping from TCursor to gdk cursor index
   CursorToGDKCursor: array[crLow..crHigh] of integer;
 
-  // styles
+var
+  LastFileSelectRow : gint;
+
+  // styles -------------------------------------------------------------------
 var
   Styles : TStrings;
 
@@ -147,6 +150,8 @@ const
     1  // bsSizeToolWin
   );
 
+
+  // signals ------------------------------------------------------------------
 type
 
   //Defined in gtksignal.c
@@ -200,6 +205,8 @@ type
     Unused: integer;
   end;
 
+var
+  CurrentSentPaintMessageTarget: TObject;
 
 const
   TARGET_STRING = 1;
@@ -289,6 +296,7 @@ initialization
   ModalWindows:=nil;
   UseTransientForModalWindows:=true;
   UpdatingTransientWindows:=false;
+  CurrentSentPaintMessageTarget:=nil;
 
 end.
 
