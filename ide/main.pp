@@ -647,17 +647,14 @@ type
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
 
-    // methods for debugging, compiling and external tools
+    // message view
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
-
-    function DoJumpToSearchResult(FocusEditor: boolean): boolean;
-
-
+    procedure DoJumpToNextError(DirectionDown: boolean);
     procedure DoShowMessagesView;
-    procedure DoShowSearchResultsView;
-
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
+    
+    // methods for debugging, compiling and external tools
     function GetTestBuildDir: string; override;
     function GetProjectTargetFilename: string;
     function GetTargetOS: string;
@@ -676,6 +673,10 @@ type
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
+
+    // search results
+    function DoJumpToSearchResult(FocusEditor: boolean): boolean;
+    procedure DoShowSearchResultsView;
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -1877,7 +1878,7 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   Handled:=true;
-
+  
   case Command of
   ecSave:
     if Sender is TDesigner then begin
@@ -1923,6 +1924,11 @@ begin
   ecStopProgram: DebugBoss.DoStopProject;
   ecToggleCallStack: DebugBoss.DoToggleCallStack;
 
+  ecJumpToPrevError:
+    DoJumpToNextError(true);
+
+  ecJumpToNextError:
+    DoJumpToNextError(false);
 
   ecFindProcedureDefinition,
   ecFindProcedureMethod:
@@ -1936,7 +1942,7 @@ begin
 
   ecFindBlockStart:
     DoGoToPascalBlockStart;
-
+    
   ecGotoIncludeDirective:
     DoGotoIncludeDirective;
 
@@ -7521,6 +7527,51 @@ begin
   end;
 end;
 
+procedure TMainIDE.DoJumpToNextError(DirectionDown: boolean);
+var
+  Index: integer;
+  MaxMessages: integer;
+  CurMsg: String;
+  Filename: string;
+  CaretXY: TPoint;
+  MsgType: TErrorType;
+  OldIndex: integer;
+  RoundCount: Integer;
+begin
+  // search relevant message (next error, fatal or panic)
+  MaxMessages:=MessagesView.VisibleItemCount;
+  OldIndex:=MessagesView.SelectedMessageIndex;
+  Index:=OldIndex;
+  RoundCount:=0;
+  while (Index>=0) and (Index<MaxMessages) do begin
+    // goto to next message
+    if DirectionDown then begin
+      inc(Index);
+      if Index>=MaxMessages then begin
+        inc(RoundCount);
+        Index:=0;
+      end;
+    end else begin
+      dec(Index);
+      if Index<0 then begin
+        inc(RoundCount);
+        Index:=MaxMessages-1;
+      end;
+    end;
+    if(Index=OldIndex) or (RoundCount>1) then exit;
+
+    // check if it is an error
+    CurMsg:=MessagesView.VisibleItems[Index].Msg;
+    if (TheOutputFilter.GetSourcePosition(
+      CurMsg,Filename,CaretXY,MsgType)) then
+    begin
+      if MsgType in [etError,etFatal,etPanic] then break;
+    end;
+  end;
+  MessagesView.SelectedMessageIndex:=Index;
+  DoJumpToCompilerMessage(Index,true);
+end;
+
 function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
 var
   AFileName: string;
@@ -10294,6 +10345,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.726  2004/05/29 14:52:18  mattias
+  implemented go to next/previous error
+
   Revision 1.725  2004/05/29 13:55:28  mattias
   added MaxHeight:=100 for mainbar
 

@@ -167,7 +167,9 @@ resourcestring
   lisMenuFindDeclarationAtCursor = 'Find Declaration at cursor';
   lisMenuOpenFilenameAtCursor = 'Open filename at cursor';
   lisMenuGotoIncludeDirective = 'Goto include directive';
-  
+  lisMenuJumpToNextError = 'Jump to next error';
+  lisMenuJumpToPrevError = 'Jump to previous error';
+
   lisMenuViewObjectInspector = 'Object Inspector';
   lisMenuViewSourceEditor = 'Source Editor';
   lisMenuViewCodeExplorer = 'Code Explorer';

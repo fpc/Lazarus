@@ -69,6 +69,8 @@ const
   ecJumpForward          = ecUserFirst + 11;
   ecAddJumpPoint         = ecUserFirst + 12;
   ecViewJumpHistory      = ecUserFirst + 13;
+  ecJumpToNextError      = ecUserFirst + 14;
+  ecJumpToPrevError      = ecUserFirst + 15;
 
   // search code
   ecFindDeclaration      = ecUserFirst + 20;
@@ -525,6 +527,8 @@ begin
   ecJumpForward: SetResult(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToPrevError: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[]);
+  ecJumpToNextError: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetResult(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
   // marker
@@ -1119,8 +1123,10 @@ begin
     ecJumpForward           : Result:= lismenujumpforward;
     ecAddJumpPoint          : Result:= srkmecAddJumpPoint;
     ecViewJumpHistory       : Result:= lismenuviewjumphistory;
-    ecOpenFileAtCursor      : Result:= srkmecOpenFileAtCursor;
+    ecJumpToNextError       : Result:= lisMenuJumpToNextError;
+    ecJumpToPrevError       : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective  : Result:= srkmecGotoIncludeDirective;
+    ecOpenFileAtCursor      : Result:= srkmecOpenFileAtCursor;
 
     // view menu
     ecToggleFormUnit        : Result:= srkmecToggleFormUnit;
@@ -1890,6 +1896,8 @@ begin
   AddDefault(C,'Jump forward',ecJumpForward);
   AddDefault(C,'Add jump point',ecAddJumpPoint);
   AddDefault(C,'View jump history',ecViewJumpHistory);
+  AddDefault(C,'Jump to next error',ecJumpToNextError);
+  AddDefault(C,'Jump to previous error',ecJumpToPrevError);
   AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
 
   // marker
