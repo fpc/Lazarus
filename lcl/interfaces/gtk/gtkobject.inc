@@ -1324,7 +1324,8 @@ end;
 
   *Note: Resize a child widget on the parents fixed widget
  ------------------------------------------------------------------------------}
-procedure TgtkObject.ResizeChild(Sender : TObject;Left,Top,Width,Height : Integer);
+procedure TgtkObject.ResizeChild(Sender : TObject;
+  Left, Top, Width, Height : Integer);
 { $DEFINE VerboseResizeChild}
 var
   pFixed: PGTKFixed;
@@ -1361,7 +1362,9 @@ begin
         if (DummyWidget <> nil) then begin
           if (DummyWidget^.Window<>nil) then begin
             gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
-            writeln('  OldFixWidSize=',Dummy.X,',',Dummy.Y);
+            writeln('  OldFixWidSize=',Dummy.X,',',Dummy.Y,
+              ' Allocation=',DummyWidget^.Allocation.Width,',',DummyWidget^.Allocation.Height,
+              ' Requisiton=',DummyWidget^.Requisition.Width,',',DummyWidget^.Requisition.Height);
           end else
             writeln('  FixWid^.Window=nil');
         end else begin
@@ -2455,6 +2458,10 @@ begin
       SetFixedWidget(p, TempWidget);
       SetMainWidget(p, TempWidget);
       gtk_widget_show (P);
+{writeln('Create csGroupBox Allocation=',PGtkWidget(p)^.Allocation.Width,',',PGtkWidget(p)^.Allocation.Height,
+               ' Requisiton=',PGtkWidget(p)^.Requisition.Width,',',PGtkWidget(p)^.Requisition.Height);
+writeln('Create csGroupBox FixWidget Allocation=',TempWidget^.Allocation.Width,',',TempWidget^.Allocation.Height,
+               ' Requisiton=',TempWidget^.Requisition.Width,',',TempWidget^.Requisition.Height);}
     end;
 
     csGTKTable  :
@@ -3885,6 +3892,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.117  2002/05/01 11:57:41  lazarus
+  MG: find declaration for delphi pointer shortcut and clientrect tricks
+
   Revision 1.116  2002/04/30 09:57:21  lazarus
   MG: fixed find declaration of default properties
 
