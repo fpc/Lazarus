@@ -221,6 +221,7 @@ type
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoInitProjectRun: TModalResult; virtual; abstract;
     
+    function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
   end;
 
 var

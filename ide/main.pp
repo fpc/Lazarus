@@ -53,7 +53,7 @@ uses
   RunParamsOpts, ExtToolDialog, MacroPromptDlg, LMessages, ProjectDefs,
   Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter, BuildLazDialog,
   MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo, IDEOptionDefs,
-  CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
+  CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory, DiskDiffsDialog,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -339,6 +339,7 @@ type
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoSaveAll: TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
+    function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     
     // project(s)
@@ -365,18 +366,21 @@ type
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoBuildLazarus: TModalResult;
 
-    // useful methods
+    // useful information methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
       var ActiveUnitInfo:TUnitInfo); override;
-    procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
-      var ActiveUnitInfo:TUnitInfo);
-    procedure GetUnitWithPageIndex(PageIndex:integer; 
+    procedure GetUnitWithPageIndex(PageIndex:integer;
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
+    procedure UpdateDefaultPascalFileExtensions;
+    function CreateSrcEditPageName(const AnUnitName, AFilename: string;
+      IgnorePageIndex: integer): string;
+
+    // useful file methods
     function FindUnitFile(const AFilename: string): string; override;
-    function DoSaveStreamToFile(AStream:TStream; const Filename:string; 
+    function DoSaveStreamToFile(AStream:TStream; const Filename:string;
       IsPartOfProject:boolean): TModalResult;
-    function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
+    function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
       const AFilename:string): TModalResult;
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
       const AFilename: string; IsPartOfProject:boolean): TModalResult;
@@ -384,10 +388,12 @@ type
       const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
     function DoBackupFile(const Filename:string;
       IsPartOfProject:boolean): TModalResult;
+    function DoCheckFilesOnDisk: TModalResult; override;
+
+    // useful frontend methods
+    procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
+      var ActiveUnitInfo:TUnitInfo);
     procedure UpdateCaption;
-    procedure UpdateDefaultPascalFileExtensions;
-    function CreateSrcEditPageName(const AnUnitName, AFilename: string;
-      IgnorePageIndex: integer): string;
     function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
     // methods for codetools
@@ -3838,6 +3844,7 @@ begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
     exit;
   end;
+  
   // check if the project knows this file
   if (not (ofRevert in Flags)) then begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
@@ -3961,6 +3968,20 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoOpenMainUnit] END');
   {$ENDIF}
+end;
+
+function TMainIDE.DoRevertMainUnit: TModalResult;
+begin
+  Result:=mrOk;
+  if Project1.MainUnit<0 then exit;
+  if Project1.MainUnitInfo.EditorIndex>=0 then
+    // main unit is loaded, so we can just revert
+    Result:=DoOpenEditorFile('',Project1.MainUnitInfo.EditorIndex,[ofRevert])
+  else begin
+    // main unit is only loaded in background
+    // -> just reload the source and update the source name
+    Result:=Project1.MainUnitInfo.ReadUnitSource(true);
+  end;
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -4754,6 +4775,7 @@ begin
     end else begin
       DoJumpToCompilerMessage(-1,true);
     end;
+    DoCheckFilesOnDisk;
   finally
     ToolStatus:=itNone;
   end;
@@ -4883,6 +4905,7 @@ function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
 begin
   SourceNotebook.ClearErrorLines;
   Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+  DoCheckFilesOnDisk;
 end;
 
 function TMainIDE.DoBuildLazarus: TModalResult;
@@ -4890,6 +4913,7 @@ begin
   SourceNotebook.ClearErrorLines;
   Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                        EnvironmentOptions.ExternalTools,MacroList);
+  DoCheckFilesOnDisk;
 end;
 
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
@@ -4919,6 +4943,7 @@ begin
   finally
     OpenDialog.Free;
   end;
+  DoCheckFilesOnDisk;
 end;
 
 function TMainIDE.DoCheckSyntax: TModalResult;
@@ -5214,6 +5239,33 @@ begin
       if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
+end;
+
+function TMainIDE.DoCheckFilesOnDisk: TModalResult;
+var
+  AnUnitList: TList; // list of TUnitInfo
+  i: integer;
+  CurUnit: TUnitInfo;
+begin
+  Result:=mrOk;
+  Project1.GetUnitsChangedOnDisk(AnUnitList);
+  if AnUnitList=nil then exit;
+  Result:=ShowDiskDiffsDialog(AnUnitList);
+  if Result in [mrYesToAll] then begin
+    for i:=0 to AnUnitList.Count-1 do begin
+      CurUnit:=TUnitInfo(AnUnitList[i]);
+writeln('AAA1 REVERTING ',CurUnit.Filename);
+      if CurUnit.EditorIndex>=0 then begin
+        Result:=DoOpenEditorFile('',CurUnit.EditorIndex,[ofRevert]);
+      end else if CurUnit.IsMainUnit then begin
+        Result:=DoRevertMainUnit;
+      end else
+        Result:=mrIgnore;
+      if Result=mrAbort then exit;
+    end;
+    Result:=mrOk;
+  end;
+  AnUnitList.Free;
 end;
 
 procedure TMainIDE.UpdateCaption;
@@ -6803,6 +6855,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.332  2002/08/01 14:10:28  lazarus
+  MG: started file access monitoring for loaded files
+
   Revision 1.331  2002/08/01 08:06:25  lazarus
   MG: reduced output
 

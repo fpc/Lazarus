@@ -69,6 +69,7 @@ type
   TUnitInfo = class(TObject)
   private
     { Variables }
+    fAutoRevertLockCount: integer;
     fBreakpoints: TProjectBreakPointList;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
@@ -79,6 +80,7 @@ type
         // this attribute contains the formname even if the unit is not loaded
     fHasResources: boolean; // source has resource file
     fIsPartOfProject: boolean;
+    fLastCheckedFileAge: longint;
     fLoaded: Boolean;  // loaded in the source editor
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
@@ -106,8 +108,14 @@ type
     PrevUnitWithEditorIndex: TUnitInfo;
     NextUnitWithForm: TUnitInfo;
     PrevUnitWithForm: TUnitInfo;
+    NextLoadedUnit: TUnitInfo;
+    PrevLoadedUnit: TUnitInfo;
+    NextAutoRevertLockedUnit: TUnitInfo;
+    PrevAutoRevertLockedUnit: TUnitInfo;
     procedure UpdateEditorIndexList;
     procedure UpdateFormList;
+    procedure UpdateLoadedList;
+    procedure UpdateAutoRevertLockedList;
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -122,6 +130,12 @@ type
     procedure CreateStartCode(NewUnitType: TNewUnitType;
          const NewUnitName: string);
     function IsVirtual: boolean;
+    function IsMainUnit: boolean;
+    procedure IncreaseAutoRevertLock;
+    procedure DecreaseAutoRevertLock;
+    function IsAutoRevertLocked: boolean;
+    function ChangedOnDisk: boolean;
+    function ShortFilename: string;
 
     { Properties }
     property Breakpoints: TProjectBreakPointList
@@ -170,6 +184,8 @@ type
     fActiveEditorIndexAtStart: integer;
     fBookmarks: TProjectBookmarkList;
     fCompilerOptions: TCompilerOptions;
+    fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
+    fFirstLoadedUnit: TUnitInfo; // units with Loaded=true
     fFirstUnitWithEditorIndex: TUnitInfo;// units with EditorIndex>=0
     fFirstUnitWithForm: TUnitInfo; // units with Form<>nil
     fIconPath: String;
@@ -191,14 +207,15 @@ type
     function GetMainUnitInfo: TUnitInfo;
     function GetProjectInfoFile: string;
     function GetTargetFilename: string;
-    function GetUnits(Index:integer):TUnitInfo;
+    function GetUnits(Index: integer): TUnitInfo;
     procedure SetFlags(const AValue: TProjectFlags);
+    procedure SetMainUnit(const AValue: Integer);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
-    procedure SetProjectInfoFile(const NewFilename:string);
+    procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
-    procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
-    function OnUnitFileBackup(const Filename:string;
-                              IsPartOfProject:boolean):TModalResult;
+    procedure OnLoadSaveFilename(var AFilename: string; Load: boolean);
+    function OnUnitFileBackup(const Filename: string;
+                              IsPartOfProject:boolean): TModalResult;
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
        const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
        var Allowed: boolean);
@@ -210,6 +227,10 @@ type
     procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
     procedure AddToFormList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromFormList(AnUnitInfo: TUnitInfo);
+    procedure AddToLoadedList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
+    procedure AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -219,13 +240,13 @@ type
 
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
     function UnitCount:integer;
-    function NewUniqueUnitName(NewUnitType:TNewUnitType):string;
-    function NewUniqueFormName(NewUnitType:TNewUnitType):string;
-    procedure AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
-    procedure RemoveUnit(Index:integer);
-    function IndexOf(AUnitInfo: TUnitInfo):integer;
-    function IndexOfUnitWithName(const AnUnitName:string;
-       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
+    function NewUniqueUnitName(NewUnitType:TNewUnitType): string;
+    function NewUniqueFormName(NewUnitType:TNewUnitType): string;
+    procedure AddUnit(AUnit: TUnitInfo; AddToProjectFile: boolean);
+    procedure RemoveUnit(Index: integer);
+    function IndexOf(AUnitInfo: TUnitInfo): integer;
+    function IndexOfUnitWithName(const AnUnitName: string;
+       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfUnitWithForm(AForm: TComponent;
        OnlyProjectUnits:boolean):integer;
     function IndexOfFilename(const AFilename: string): integer;
@@ -236,6 +257,8 @@ type
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
 
     procedure Clear;
     function SomethingModified: boolean;
@@ -250,6 +273,8 @@ type
     function RemoveProjectPathFromFilename(const AFilename: string): string;
     function ProjectDirectory: string;
     function FileIsInProjectDir(const AFilename: string): boolean;
+    
+    procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
 
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
@@ -261,7 +286,7 @@ type
     property JumpHistory: TProjectJumpHistory
        read fJumpHistory write fJumpHistory;
     property MainUnit: Integer //this is the unit index of the program file
-       read fMainUnit write fMainUnit;
+       read fMainUnit write SetMainUnit;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -368,6 +393,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TUnitInfo.Destroy;
 begin
+  Source:=nil;
   fBreakPoints.Free;
   Project:=nil;
   inherited Destroy;
@@ -533,7 +559,7 @@ begin
   fFormName:=XMLConfig.GetValue(Path+'FormName/Value','');
   HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
   fIsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
-  fLoaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
+  Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
   AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
   if Assigned(fOnLoadSaveFilename) then
@@ -585,6 +611,26 @@ begin
   end;
 end;
 
+procedure TUnitInfo.UpdateLoadedList;
+begin
+  if Project<>nil then begin
+    Project.AddToOrRemoveFromLoadedList(Self);
+  end else begin
+    NextLoadedUnit:=nil;
+    PrevLoadedUnit:=nil;
+  end;
+end;
+
+procedure TUnitInfo.UpdateAutoRevertLockedList;
+begin
+  if Project<>nil then begin
+    Project.AddToOrRemoveFromAutoRevertLockedList(Self);
+  end else begin
+    NextAutoRevertLockedUnit:=nil;
+    PrevAutoRevertLockedUnit:=nil;
+  end;
+end;
+
 function TUnitInfo.GetFileName: string;
 begin
   if fSource<>nil then Result:=fSource.Filename
@@ -599,16 +645,67 @@ begin
     Result:=(fFileName<>ExpandFileName(fFileName));
 end;
 
+function TUnitInfo.IsMainUnit: boolean;
+begin
+  Result:=(Project<>nil) and (Project.MainUnitInfo=Self);
+end;
+
+procedure TUnitInfo.IncreaseAutoRevertLock;
+begin
+  inc(fAutoRevertLockCount);
+  if (fAutoRevertLockCount=1) then begin
+    // activate lock
+    if (Source<>nil) then
+      Source.LockAutoDiskRevert;
+    if Project<>nil then
+      Project.AddToOrRemoveFromAutoRevertLockedList(Self);
+  end;
+end;
+
+procedure TUnitInfo.DecreaseAutoRevertLock;
+begin
+  dec(fAutoRevertLockCount);
+  if (fAutoRevertLockCount=0) then begin
+    // deactivate lock
+    if (Source<>nil) then
+      Source.LockAutoDiskRevert;
+    if Project<>nil then
+      Project.AddToOrRemoveFromAutoRevertLockedList(Self);
+  end;
+end;
+
+function TUnitInfo.IsAutoRevertLocked: boolean;
+begin
+  Result:=fAutoRevertLockCount>0;
+end;
+
+function TUnitInfo.ChangedOnDisk: boolean;
+begin
+  Result:=(Source<>nil) and (Source.FileOnDiskHasChanged)
+          and (fLastCheckedFileAge<>Source.FileDateOnDisk);
+  if Result then
+    fLastCheckedFileAge:=Source.FileDateOnDisk;
+end;
+
+function TUnitInfo.ShortFilename: string;
+begin
+  if Project<>nil then begin
+    Result:=Project.RemoveProjectPathFromFilename(Filename);
+  end else begin
+    Result:=Filename;
+  end;
+end;
+
 procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
   if fSource=ABuffer then exit;
-  if (ABuffer<>nil) and Loaded then
-    ABuffer.UnlockAutoDiskRevert;
+  if (fSource<>nil) and IsAutoRevertLocked then
+    fSource.UnlockAutoDiskRevert;
   fSource:=ABuffer;
   if (fSource<>nil) then begin
-    if Loaded then
+    if IsAutoRevertLocked then
       fSource.LockAutoDiskRevert;
-    fFileName:=ABuffer.FileName;
+    fFileName:=fSource.FileName;
   end;
 end;
 
@@ -720,16 +817,21 @@ begin
   UpdateFormList;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TUnitInfo.SetLoaded(const AValue: Boolean);
+
+  Loaded is a flag, that is set, when a unit has finished loading into the
+  editor. It is saved to the project info file and a loaded unit will be
+  reloaded, when the project is opened.
+-------------------------------------------------------------------------------}
 procedure TUnitInfo.SetLoaded(const AValue: Boolean);
 begin
   if fLoaded=AValue then exit;
   fLoaded:=AValue;
-  if fSource<>nil then begin
-    if fLoaded then
-      fSource.LockAutoDiskRevert
-    else
-      fSource.UnlockAutoDiskRevert;
-  end;
+  if fLoaded then
+    IncreaseAutoRevertLock
+  else
+    DecreaseAutoRevertLock;
 end;
 
 procedure TUnitInfo.SetProject(const AValue: TProject);
@@ -738,10 +840,14 @@ begin
   if AValue=nil then begin
     Project.RemoveFromEditorWithIndexList(Self);
     Project.RemoveFromFormList(Self);
+    Project.RemoveFromLoadedList(Self);
+    Project.RemoveFromAutoRevertLockedList(Self);
   end;
   FProject:=AValue;
   UpdateEditorIndexList;
   UpdateFormList;
+  UpdateLoadedList;
+  UpdateAutoRevertLockedList;
 end;
 
 
@@ -820,7 +926,7 @@ begin
         Add('end.');
         Add('');
       end;
-      Units[MainUnit].Source.Assign(NewSource);
+      MainUnitInfo.Source.Assign(NewSource);
     end;
   end;
   NewSource.Free;
@@ -1030,20 +1136,27 @@ end;
   TProject AddUnit
  ------------------------------------------------------------------------------}
 procedure TProject.AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
-var ShortUnitName:string;
+var
+  ShortUnitName:string;
+  NewIndex: integer;
 begin
   if (AUnit = nil) then exit;
+  NewIndex:=UnitCount;
   fUnitList.Add(AUnit);
   AUnit.Project:=Self;
   AUnit.OnFileBackup:=@OnUnitFileBackup;
   AUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
   AUnit.OnUnitNameChange:=@OnUnitNameChange;
+  
+  // check if this is the new Main Unit
+  if MainUnit=NewIndex then
+    MainUnitInfo.IncreaseAutoRevertLock;
 
-  if AddToProjectFile and (MainUnit>=0) then begin
+  if AddToProjectFile and (MainUnit>=0) and (MainUnit<>NewIndex) then begin
     // add unit to uses section
     ShortUnitName:=AUnit.UnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then
-      CodeToolBoss.AddUnitToMainUsesSection(Units[MainUnit].Source,
+      CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
         ShortUnitName,'');
   end;
   Modified:=true;
@@ -1065,7 +1178,7 @@ begin
   OldUnitInfo:=Units[Index];
   Modified:=true;
 
-  if MainUnit>=0 then begin
+  if (MainUnit>=0) then begin
     // remove unit from uses section and from createforms in program file
     if (OldUnitInfo.IsPartOfProject) then begin
       if (OldUnitInfo.UnitName<>'') then
@@ -1126,6 +1239,18 @@ end;
 procedure TProject.SetFlags(const AValue: TProjectFlags);
 begin
   FFlags:=AValue;
+end;
+
+procedure TProject.SetMainUnit(const AValue: Integer);
+begin
+  if fMainUnit=AValue then exit;
+  if (fMainUnit>=0) and (fMainUnit<UnitCount) then begin
+    MainUnitInfo.DecreaseAutoRevertLock;
+  end;
+  fMainUnit:=AValue;
+  if (fMainUnit>=0) and (fMainUnit<UnitCount) then begin
+    MainUnitInfo.IncreaseAutoRevertLock;
+  end;
 end;
 
 procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
@@ -1343,15 +1468,16 @@ end;
 
 procedure TProject.CloseEditorIndex(EditorIndex:integer);
 var i:integer;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo, NextUnitInfo: TUnitInfo;
 begin
   AnUnitInfo:=fFirstUnitWithEditorIndex;
   while AnUnitInfo<>nil do begin
+    NextUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
     if AnUnitInfo.EditorIndex=EditorIndex then
       AnUnitInfo.EditorIndex:=-1
     else if AnUnitInfo.EditorIndex>EditorIndex then
       AnUnitInfo.EditorIndex:=AnUnitInfo.EditorIndex-1;
-    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
+    AnUnitInfo:=NextUnitInfo;
   end;
   i:=Bookmarks.Count-1;
   while (i>=0) do begin
@@ -1401,6 +1527,24 @@ begin
   end;
 end;
 
+procedure TProject.AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
+begin
+  if not AnUnitInfo.Loaded then begin
+    RemoveFromLoadedList(AnUnitInfo);
+  end else begin
+    AddToLoadedList(AnUnitInfo);
+  end;
+end;
+
+procedure TProject.AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+begin
+  if not AnUnitInfo.IsAutoRevertLocked then begin
+    RemoveFromAutoRevertLockedList(AnUnitInfo);
+  end else begin
+    AddToAutoRevertLockedList(AnUnitInfo);
+  end;
+end;
+
 function TProject.GetTargetFilename: string;
 begin
   Result:=fCompilerOptions.TargetFilename;
@@ -1419,7 +1563,10 @@ end;
 
 function TProject.GetMainUnitInfo: TUnitInfo;
 begin
-  if MainUnit>=0 then Result:=Units[MainUnit] else Result:=nil;
+  if (MainUnit>=0) and (MainUnit<UnitCount) then
+    Result:=Units[MainUnit]
+  else
+    Result:=nil;
 end;
 
 function TProject.GetProjectInfoFile:string;
@@ -1503,6 +1650,22 @@ begin
     Result:=true;
 end;
 
+procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TList);
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  AnUnitList:=nil;
+  AnUnitInfo:=fFirstAutoRevertLockedUnit;
+  while (AnUnitInfo<>nil) do begin
+    if AnUnitInfo.ChangedOnDisk then begin
+      if AnUnitList=nil then
+        AnUnitList:=TList.Create;
+      AnUnitList.Add(AnUnitInfo);
+    end;
+    AnUnitInfo:=AnUnitInfo.NextAutoRevertLockedUnit;
+  end;
+end;
+
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
   const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
   var Allowed: boolean);
@@ -1573,6 +1736,7 @@ begin
   and (AnUnitInfo.NextUnitWithEditorIndex=nil)
   and (AnUnitInfo.PrevUnitWithEditorIndex=nil) then begin
     AnUnitInfo.NextUnitWithEditorIndex:=fFirstUnitWithEditorIndex;
+    AnUnitInfo.PrevUnitWithEditorIndex:=nil;
     fFirstUnitWithEditorIndex:=AnUnitInfo;
     if AnUnitInfo.NextUnitWithEditorIndex<>nil then
       AnUnitInfo.NextUnitWithEditorIndex.PrevUnitWithEditorIndex:=AnUnitInfo;
@@ -1601,6 +1765,7 @@ begin
   and (AnUnitInfo.NextUnitWithForm=nil)
   and (AnUnitInfo.PrevUnitWithForm=nil) then begin
     AnUnitInfo.NextUnitWithForm:=fFirstUnitWithForm;
+    AnUnitInfo.PrevUnitWithForm:=nil;
     fFirstUnitWithForm:=AnUnitInfo;
     if AnUnitInfo.NextUnitWithForm<>nil then
       AnUnitInfo.NextUnitWithForm.PrevUnitWithForm:=AnUnitInfo;
@@ -1622,6 +1787,64 @@ begin
   AnUnitInfo.PrevUnitWithForm:=nil;
 end;
 
+procedure TProject.AddToLoadedList(AnUnitInfo: TUnitInfo);
+begin
+  // add to list if AnUnitInfo is not in list
+  if (fFirstLoadedUnit<>AnUnitInfo)
+  and (AnUnitInfo.NextLoadedUnit=nil)
+  and (AnUnitInfo.PrevLoadedUnit=nil) then begin
+    AnUnitInfo.NextLoadedUnit:=fFirstLoadedUnit;
+    AnUnitInfo.PrevLoadedUnit:=nil;
+    fFirstLoadedUnit:=AnUnitInfo;
+    if AnUnitInfo.NextLoadedUnit<>nil then
+      AnUnitInfo.NextLoadedUnit.PrevLoadedUnit:=AnUnitInfo;
+  end;
+end;
+
+procedure TProject.RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
+begin
+  // remove from list if AnUnitInfo is in list
+  if fFirstLoadedUnit=AnUnitInfo then
+    fFirstLoadedUnit:=AnUnitInfo.NextUnitWithForm;
+  if AnUnitInfo.NextLoadedUnit<>nil then
+    AnUnitInfo.NextLoadedUnit.PrevLoadedUnit:=
+      AnUnitInfo.PrevLoadedUnit;
+  if AnUnitInfo.PrevLoadedUnit<>nil then
+    AnUnitInfo.PrevLoadedUnit.NextLoadedUnit:=
+      AnUnitInfo.NextLoadedUnit;
+  AnUnitInfo.NextLoadedUnit:=nil;
+  AnUnitInfo.PrevLoadedUnit:=nil;
+end;
+
+procedure TProject.AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+begin
+  // add to list if AnUnitInfo is not in list
+  if (fFirstAutoRevertLockedUnit<>AnUnitInfo)
+  and (AnUnitInfo.NextAutoRevertLockedUnit=nil)
+  and (AnUnitInfo.PrevAutoRevertLockedUnit=nil) then begin
+    AnUnitInfo.NextAutoRevertLockedUnit:=fFirstAutoRevertLockedUnit;
+    AnUnitInfo.PrevAutoRevertLockedUnit:=nil;
+    fFirstAutoRevertLockedUnit:=AnUnitInfo;
+    if AnUnitInfo.NextAutoRevertLockedUnit<>nil then
+      AnUnitInfo.NextAutoRevertLockedUnit.PrevAutoRevertLockedUnit:=AnUnitInfo;
+  end;
+end;
+
+procedure TProject.RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+begin
+  // remove from list if AnUnitInfo is in list
+  if fFirstAutoRevertLockedUnit=AnUnitInfo then
+    fFirstAutoRevertLockedUnit:=AnUnitInfo.NextAutoRevertLockedUnit;
+  if AnUnitInfo.NextAutoRevertLockedUnit<>nil then
+    AnUnitInfo.NextAutoRevertLockedUnit.PrevAutoRevertLockedUnit:=
+      AnUnitInfo.PrevAutoRevertLockedUnit;
+  if AnUnitInfo.PrevAutoRevertLockedUnit<>nil then
+    AnUnitInfo.PrevAutoRevertLockedUnit.NextAutoRevertLockedUnit:=
+      AnUnitInfo.NextAutoRevertLockedUnit;
+  AnUnitInfo.NextAutoRevertLockedUnit:=nil;
+  AnUnitInfo.PrevAutoRevertLockedUnit:=nil;
+end;
+
 
 end.
 
@@ -1629,6 +1852,9 @@ end.
 
 {
   $Log$
+  Revision 1.70  2002/08/01 14:10:30  lazarus
+  MG: started file access monitoring for loaded files
+
   Revision 1.69  2002/08/01 08:03:03  lazarus
   MG: accelerated searches in project
 

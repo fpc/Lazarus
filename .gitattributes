@@ -154,6 +154,7 @@ ide/compileroptions.pp svneol=native#text/pascal
 ide/compreg.pp svneol=native#text/pascal
 ide/customformeditor.pp svneol=native#text/pascal
 ide/debugmanager.pas svneol=native#text/pascal
+ide/diskdiffsdialog.pas svneol=native#text/pascal
 ide/editdefinetree.pas svneol=native#text/pascal
 ide/editoroptions.lrs svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
