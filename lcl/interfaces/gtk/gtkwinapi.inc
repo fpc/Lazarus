@@ -225,7 +225,9 @@ var
   LCLMenuItem: TMenuItem;
 begin
   if GTK_IS_CHECK_MENU_ITEM(Pointer(hndMenu)) then begin
+    LockOnChange(PgtkObject(hndMenu),1);
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(hndMenu),bChecked);
+    LockOnChange(PgtkObject(hndMenu),-1);
     Result:=true;
   end else begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
@@ -7919,6 +7921,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.217  2003/03/16 09:41:06  mattias
+  fixed checking menuitems
+
   Revision 1.216  2003/03/12 14:39:29  mattias
   fixed clipping origin in stretchblt
 
