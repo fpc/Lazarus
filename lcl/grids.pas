@@ -300,6 +300,7 @@ type
     FOnTopLeftChanged: TNotifyEvent;
     FGSMHBar, FGSMVBar: Integer; // Scrollbar's metrics
     FVSbVisible, FHSbVisible: boolean;
+    FDefaultTextStyle: TTextStyle;
 
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
@@ -457,6 +458,7 @@ type
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth;
     property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
+    property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
@@ -1561,6 +1563,7 @@ end;
 procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState
   );
 begin
+  Canvas.TextStyle := DefaultTextStyle;
   if DefaultDrawing then begin
     if gdSelected in aState then  Canvas.Brush.color:= SelectedColor else
     if gdFixed in aState then     Canvas.Brush.color:= FixedColor
@@ -2475,6 +2478,7 @@ var
   P: TPoint;
   R: TRect;
 begin
+  //debugLn('DoColMoving: FDragDX=',IntToStr(FDragDX), ' Sp.x= ', IntTOStr(FSplitter.X), 'Sp.y= ', IntToStr(FSplitter.y));
   P:=MouseToCell(Point(X,Y));
   if (Abs(FSplitter.Y-X)>fDragDx)and(Cursor<>crMultiDrag) then begin
     Cursor:=crMultiDrag;
@@ -2837,7 +2841,20 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
     Result:=False; // store by default
     for i:=0 to L1.Count-1 do begin
       Result:=L1[i]=L2[i];
-      if Not Result then break;
+      if not Result then break;
+    end;
+  end;
+  function SonDefault(IsColumn: Boolean; L1: TList): boolean;
+  var
+    i: Integer;
+  begin
+    Result := True;
+    for i:=0 to L1.Count-1 do begin
+      if IsColumn then
+        Result := Integer(L1[i]) = DefaultColWidth
+      else
+        Result := Integer(L1[i]) = DefaultRowHeight;
+      if not Result then break;
     end;
   end;
   function NeedWidths: boolean;
@@ -2845,14 +2862,14 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
     if Filer.Ancestor <> nil then
       Result := not SonIguales(TCustomGrid(Filer.Ancestor).FCols, FCols)
     else
-      Result := True;
+      Result := not SonDefault(True, FCols);
   end;
   function NeedHeights: boolean;
   begin
     if Filer.Ancestor <> nil then
       Result := not SonIguales(TCustomGrid(Filer.Ancestor).FRows, FRows)
     else
-      Result := True;
+      Result := not SonDefault(false, FRows);
   end;
 begin
   inherited DefineProperties(Filer);
@@ -3274,7 +3291,10 @@ end;
 
 procedure TCustomGrid.EndUpdate(FullUpdate: Boolean);
 begin
-  EndUpdate(uoFull);
+  if FullUpdate then
+    EndUpdate(uoFull)
+  else
+    EndUpdate(uoQuick);
 end;
 
 function TCustomGrid.IsCellSelected(aCol, aRow: Integer): Boolean;
@@ -3774,6 +3794,7 @@ begin
   Editor:=nil;
   BorderStyle := bsSingle;
   Color:=clWhite;
+  FDefaultTextStyle := Canvas.TextStyle;
 end;
 
 destructor TCustomGrid.Destroy;
@@ -4709,10 +4730,12 @@ begin
   end else begin
     FDefEditor:=nil;
   end;
-  Canvas.TextStyle.Alignment:=taLeftJustify;
-  Canvas.TextStyle.Layout:=tlCenter;
-  //Canvas.TextStyle.Wordbreak:=false;
-  Canvas.TextStyle.Clipping:=True;
+  with DefaultTextStyle do begin
+    Alignment := taLeftJustify;
+    Layout := tlCenter;
+    Clipping := True;
+    //WordBreak := False
+  end;
 end;
 
 destructor TStringGrid.Destroy;
