@@ -2142,7 +2142,7 @@ var ClientWidget: PGtkWidget;
 begin
   Result := False;
   if IsValidDC(DC) then begin
-    Widget:=PGtkWidget(TDeviceContext(DC).hWnd);
+    Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget<>nil then
       Widget:=ClientWidget;
@@ -2905,7 +2905,7 @@ begin
         Result:= False;
       end
       else begin
-        Widget:=PGtkWidget(TDeviceContext(DC).hWnd);
+        Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
         ClientWidget:=GetFixedWidget(Widget);
         if ClientWidget=nil then
           ClientWidget:=Widget;
@@ -3411,7 +3411,7 @@ begin
       {$ENDIF}
       writeln('TgtkObject.GetDeviceSize:',
         ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
-        ' Widget=',HexStr(Cardinal(hwnd),8));
+        ' Widget=',HexStr(Cardinal(wnd),8));
     end;
   end;
 end;
@@ -4265,7 +4265,7 @@ begin
       {$ENDIF}
       writeln('TgtkObject.GetWindowOrgEx:',
         ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
-        ' Widget=',HexStr(Cardinal(hwnd),8));
+        ' Widget=',HexStr(Cardinal(wnd),8));
     end;
   end;
 //writeln(' / ',p.x,' ',p.y);
@@ -7402,6 +7402,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.163  2002/10/20 19:03:57  lazarus
+  AJ: minor fixes for FPC 1.1
+
   Revision 1.162  2002/10/18 16:08:10  lazarus
   AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
 
