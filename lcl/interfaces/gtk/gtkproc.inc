@@ -88,8 +88,11 @@ begin
     SavedText:=nil;
   gtk_object_set_data(PgtkObject(ComboWidget),'LCLOldText',SavedText);
   // set new text
+  //writeln('SetComboBoxText: "',NewText,'"');
   if NewText<>nil then
-    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
+  else
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
 end;
 
 {------------------------------------------------------------------------------
@@ -2633,6 +2636,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.81  2002/08/31 07:58:22  lazarus
+  MG: fixed resetting comobobox text
+
   Revision 1.80  2002/08/30 12:32:23  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
