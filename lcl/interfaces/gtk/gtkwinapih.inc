@@ -79,6 +79,7 @@ function SetFocus(hWnd: HWND): HWND; override;
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
+Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
@@ -93,6 +94,14 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.2  2000/07/30 21:48:34  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

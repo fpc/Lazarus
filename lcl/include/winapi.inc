@@ -336,6 +336,11 @@ begin
   Result := InterfaceObject.SetSysColors(cElements, lpaElements, lpaRgbValues);
 end;
 
+Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
+begin
+  Result := InterfaceObject.SetTextCharacterExtra(_hdc, nCharExtra);
+end;
+
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := InterfaceObject.SetTextColor(DC, Color);
@@ -410,6 +415,20 @@ Function BeginPaint(Handle : hwnd; Var PS : TPaintStruct) : hdc;
 Begin
 //TODO: Finish this.  BEGINPAINT
 Result := Getdc(Handle);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CharLowerBuff
+  Params: pStr:
+          Len:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
+begin
+  // your code here
+//TODO:WINAPI call CHARLOWERBUFF
+Writeln('TODO: WINAPI call CHARLOWERBUFF');
 end;
 
 
@@ -648,6 +667,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: IsCharAlphaNumeric
+  Params: c:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function IsCharAlphaNumeric(c : Char) : Boolean;
+begin
+  // your code here
+  Result := False;
+  Result :=  ((ord(c) >= 65) and (ord(c) <=90) ) or ((ord(c) >= 97) and (ord(c) <=122) );
+end;
+
+{------------------------------------------------------------------------------
   Function: IsRectEmpty
   Params:
   Returns:
@@ -879,6 +911,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.2  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

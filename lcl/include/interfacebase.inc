@@ -331,6 +331,12 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
+begin
+  // Your default here
+  // Result := 
+end;
+
 function TInterfaceBase.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := CLR_INVALID;
@@ -369,13 +375,21 @@ end;
 Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
 begin
   // Your default here
-  // Result := 
+   Result := 0;
 end;
 
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.2  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

@@ -324,6 +324,7 @@ type
   public
 
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
+    Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect; TransparentColor :TColor);
     constructor Create;
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
@@ -510,6 +511,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/08/10 18:56:23  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 

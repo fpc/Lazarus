@@ -2716,6 +2716,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SetTextCharacterExtra
+  Params: _hdc:
+          nCharExtra:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: SetTextColor
   Params:  hdc: Identifies the device context.
            Color: Specifies the color of the text.
@@ -2982,6 +2994,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.4  2000/08/07 17:06:39  lazarus
   Slight modification to CreateFontIndirect.
   I check to see if the GdiObject^.GDIFontObject is nil.  If so After the code to retry the weight and slant I added code to retry the Family and Foundry.

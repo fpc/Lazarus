@@ -5,6 +5,13 @@
 const
   csAllValid = [csHandleValid..csBrushValid];
 
+{-----------------------------------------------}
+{--  TCanvas.BrushCopy --}
+{-----------------------------------------------}
+Procedure TCanvas.BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect; TransparentColor :TColor);
+Begin
+//TODO:TCANVAS.BRUSHCOPY
+end;
 
 {-----------------------------------------------}
 {--  TCanvas.Draw --}
@@ -519,6 +526,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

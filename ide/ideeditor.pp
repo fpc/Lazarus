@@ -19,6 +19,7 @@
 }
 {$H+}
 //{$DEFINE NEW_EDITOR}
+//{$DEFINE NEW_EDITOR_SYNEDIT}
 unit IDEEditor;
 
 {$mode objfpc}
@@ -27,15 +28,29 @@ interface
 
 uses
   classes, Controls, forms,buttons,sysutils,
-	mwcustomedit,mwPasSyn, Graphics,Extctrls;//,TabNotBk;
+{$ifdef NEW_EDITOR_SYNEDIT}
+  synedit,SysHighlighterpas,
+{$else}
+	mwcustomedit,mwPasSyn,
+{$endif}
+       Graphics,Extctrls;
 
 type
+
+{$ifdef NEW_EDITOR_SYNEDIT}
+  TmwCustomEdit = TSynEdit;
+  TmwPasSyn = TSynPasSyn;
+{$endif}
 
   TIDEEditor = class(TFORM)
     Notebook1 : TNotebook;
   private
     FEmpty : Boolean;
+{$ifdef NEW_EDITOR_SYNEDIT}
+    FHighlighter: TSynPasSyn;
+{$else}
     FHighlighter: TmwPasSyn;
+{$endif}
     FCurrentSource : TStrings;
     FCurrentCursorXLine : Integer;
     FCurrentCursorYLine : Integer;

@@ -46,6 +46,7 @@ type
   //TODO: check this against vclglobals
 
 
+
   PLongInt = ^LongInt;
   PInteger = ^Integer;
   PSmallInt = ^SmallInt;
@@ -66,6 +67,12 @@ type
   HINST = type LongWord;
   HICON = type LongWord;
   HCURSOR = HICON;
+  Bool = LongBool;
+  pByte = ^byte;
+var
+  hInstance :HINST;
+
+type
 
   TKeyBoardState = array[0..255] of byte;
   
@@ -1345,6 +1352,14 @@ end.
 
 {
   $Log$
+  Revision 1.2  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 

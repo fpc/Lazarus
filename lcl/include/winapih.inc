@@ -22,6 +22,7 @@
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+//function CharLowerBuff --> independent
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -74,6 +75,7 @@ function HideCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function InflateRect --> independent
 //function IntersectRect --> independent
+//function IsCharAlphaNumeric --> independent
 //function IsRectEmpty --> independent
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -111,6 +113,7 @@ function SetScrollInfo(Handle: HWND; SBStyle : Integer; ScrollInfo: TScrollInfo;
 //function SetScrollPos --> independent
 //function SetScrollRange --> independent
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var Point : TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -159,6 +162,7 @@ function AdjustWindowRectEx( Var Rect: TRect; Style1: Word; MenuExist : Boolean;
 
 Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;
 
+Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 function CopyRect(var lprcDst: TRect; const lprcSrc: TRect): Boolean;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
   Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision,
@@ -175,6 +179,7 @@ function GetScrollRange(Handle: HWND; nBar: Integer; var lpMinPos, lpMaxPos: Int
 function InflateRect(var Rect: TRect; dx, dy: Integer): Boolean;
 function IntersectClipRect(dc: hdc; Leftrect, Toprect, RightREct,Bottomrect : Integer): Integer;
 function IntersectRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean;
+Function IsCharAlphaNumeric(c : Char) : Boolean;
 function IsRectEmpty(const lprc: TRect): Boolean; 
 
 function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
@@ -206,6 +211,14 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/10 18:56:24  lazarus
+  Added some winapi calls.
+  Most don't have code yet.
+  SetTextCharacterExtra
+  CharLowerBuff
+  IsCharAlphaNumeric
+  Shane
+
   Revision 1.2  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit
