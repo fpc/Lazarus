@@ -647,7 +647,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions LoadCompilerOptions
+  TBaseCompilerOptions LoadCompilerOptions
 ------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean);
 var

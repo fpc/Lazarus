@@ -2148,7 +2148,6 @@ begin
 {$ELSE}
   if TMethod(@Self.GetTextBuf).Code = Pointer(@TControl.GetTextBuf)
 {$ENDIF}
-=======
   then begin
     Result := RealGetText;
   end
@@ -3428,6 +3427,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.224  2004/12/07 06:28:09  vincents
+  fixed error because of conflicted merge
+
   Revision 1.223  2004/12/07 03:15:32  vincents
   fixed fpc 1.0.x compilation
 
