@@ -1227,6 +1227,7 @@ var
   PointedRow:TOIpropertyGridRow;
   TypeKind : TTypeKind;
   Window :TWinControl;
+  Window2 : TWInControl;
 begin
   FHintTimer.Enabled := False;
 
@@ -1237,8 +1238,13 @@ begin
   //get the parent until parent is nil
   While Window.Parent <> nil do
   Window := Window.Parent;
-
-  if (window <> Self) then Exit;
+  Writeln('window is ',Window.NAme);
+  
+  Window2 := self;
+  while Window2.Parent <> nil do
+     Window2 := Window2.Parent;
+     
+  if (window <> Window2) then Exit;
 
   if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0)
   or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then
