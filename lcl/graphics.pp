@@ -115,6 +115,16 @@ const
   cmWhiteness = WHITENESS;
 
 
+const  // New TFont instances are initialized with the values in this structure:
+  DefFontData: TFontData = (
+    Handle: 0;
+    Height: 0;
+    Pitch: fpDefault;
+    Style: [];
+    Charset : DEFAULT_CHARSET;
+    Name: 'default');
+
+
 type
   TBitmap = class;
   TPixmap = class;
@@ -153,6 +163,7 @@ type
     FChanged: boolean;
     procedure FreeHandle;
     procedure GetData(var FontData: TFontData);
+    function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
   protected
     procedure Changed; override;
@@ -191,11 +202,11 @@ type
     property Handle : HFONT read GetHandle write SetHandle;
     property PixelsPerInch : Integer read FPixelsPerInch;
   published
-    property CharSet: TFontCharSet read GetCharSet write SetCharSet;
-    property Color : TColor read FColor write SetColor;
+    property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
+    property Color : TColor read FColor write SetColor default clWindowText;
     property Height : Integer read GetHeight write SetHeight;
-    property Name : TFontName read GetName write SetName;
-    property Pitch: TFontPitch read GetPitch write SetPitch;
+    property Name : TFontName read GetName write SetName stored IsNameStored;
+    property Pitch: TFontPitch read GetPitch write SetPitch default fpDefault;
     property Size: Integer read GetSize write SetSize;
     property Style : TFontStyles read GetStyle write SetStyle;
   end;
@@ -221,10 +232,10 @@ type
     procedure Assign(Source: TPersistent); override;
     property Handle : HPEN read GetHandle write SetHandle;
   published
-    property Color: TColor read FPenData.Color write SetColor;
-    property Mode: TPenMode read FMode write SetMode;
-    property Style: TPenStyle read FPenData.Style write SetStyle;
-    property Width: Integer read FPenData.Width write SetWidth;
+    property Color: TColor read FPenData.Color write SetColor default clBlack;
+    property Mode: TPenMode read FMode write SetMode default pmCopy;
+    property Style: TPenStyle read FPenData.Style write SetStyle default psSolid;
+    property Width: Integer read FPenData.Width write SetWidth default 1;
   end;
 
 
@@ -256,9 +267,10 @@ type
     property Bitmap: TBitmap read FBrushData.Bitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle;
   published
-    property Color : TColor read FBrushData.Color write SetColor ;
-    property Style: TBrushStyle read FBrushData.Style write SetStyle;
+    property Color : TColor read FBrushData.Color write SetColor default clWhite;
+    property Style: TBrushStyle read FBrushData.Style write SetStyle default bsSolid;
   end;
+
 
   TCanvas = class;
 
@@ -695,15 +707,6 @@ var
   { Stores information about the current screen }
   ScreenInfo : TLMScreenInit;
 
-const  // New TFont instances are initialized with the values in this structure:
-  DefFontData: TFontData = (
-    Handle: 0;
-    Height: 0;
-    Pitch: fpDefault;
-    Style: [];
-    Charset : DEFAULT_CHARSET;
-    Name: 'default');
-
 
 (***************************************************************************
  ***************************************************************************)
@@ -848,6 +851,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.41  2002/09/03 08:07:18  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
