@@ -2918,7 +2918,7 @@ begin
     Left:=5;
     Top:=2;
     Width:= HalfWidth-15;
-    Height:=180;
+    Height:=200;
   end;
 
   with OIMiscGroupBox do begin
@@ -3902,17 +3902,17 @@ begin
     Left:=5;
     Top:=2;
     Width:= HalfWidth-15;
-    Height:=180;
+    Height:=200;
     Parent:=NoteBook.Page[Page];
     Caption:=dlgEnvColors;
   end;
 
   OIBackgroundColorButton:=CreateColorItem(5, ObjectInspectorColorsGroupBox, dlgBackColor);
-  OISubPropsColorButton:=CreateColorItem(30, ObjectInspectorColorsGroupBox, dlgSubPropkColor);
-  OIReferencesColorButton:=CreateColorItem(55, ObjectInspectorColorsGroupBox, dlgReferenceColor);
-  OIValueColorButton:=CreateColorItem(80, ObjectInspectorColorsGroupBox, dlgValueColor);
-  OIDefaultValueColorButton:=CreateColorItem(105, ObjectInspectorColorsGroupBox, dlgDefValueColor);
-  OIPropNameColorButton:=CreateColorItem(130, ObjectInspectorColorsGroupBox, dlgPropNameColor);
+  OISubPropsColorButton:=CreateColorItem(32, ObjectInspectorColorsGroupBox, dlgSubPropkColor);
+  OIReferencesColorButton:=CreateColorItem(59, ObjectInspectorColorsGroupBox, dlgReferenceColor);
+  OIValueColorButton:=CreateColorItem(86, ObjectInspectorColorsGroupBox, dlgValueColor);
+  OIDefaultValueColorButton:=CreateColorItem(113, ObjectInspectorColorsGroupBox, dlgDefValueColor);
+  OIPropNameColorButton:=CreateColorItem(140, ObjectInspectorColorsGroupBox, dlgPropNameColor);
 
   OIMiscGroupBox:=TGroupBox.Create(Self);
   with OIMiscGroupBox do begin

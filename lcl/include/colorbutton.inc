@@ -40,8 +40,11 @@ begin
   with Canvas do begin
     Frame3d(ARect,FBorderWidth,bvRaised);
     //debugln('TColorButton.Paint A ',dbgs(ARect));
-    InflateRect(ARect,-FBorderWidth,-FBorderWidth);
+    InflateRect(ARect,-FBorderWidth-2,-FBorderWidth-2);
     //debugln('TColorButton.Paint B ',dbgs(ARect));
+    Brush.Color:=clBlack;
+    FillRect(ARect);
+    InflateRect(ARect,-1,-1);
     Brush.Color:=ButtonColor;
     FillRect(ARect);
   end;

@@ -1265,7 +1265,7 @@ End;
 Function TWin32WidgetSet.Frame3D(DC: HDC; var Rect: TRect;
   Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
 Const
-  Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDOUTER, 0);
+  Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDINNER, 0);
 Begin
   Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
 End;
@@ -3120,6 +3120,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.142  2005/04/06 10:39:36  mattias
+  aesthetical improvements for colorbuttons  from Luca Minuti
+
   Revision 1.141  2005/03/25 16:59:38  micha
   fix dc origin to take window origin into account (fixed drawing invisible components on graphiccontrols in designer)
 

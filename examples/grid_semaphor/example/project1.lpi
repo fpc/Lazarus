@@ -25,7 +25,7 @@
         <UsageCount Value="41"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="16" Y="175"/>
+        <CursorPos X="20" Y="185"/>
         <EditorIndex Value="0"/>
         <Filename Value="unit1.pas"/>
         <ComponentName Value="Form1"/>
