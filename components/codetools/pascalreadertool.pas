@@ -509,7 +509,7 @@ var CurProcHead: string;
 begin
   Result:=StartNode;
   while (Result<>nil) do begin
-    //writeln('TPascalParserTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
+    //DebugLn('TPascalParserTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
     if Result.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
                and ((Result.SubDesc and ctnsForwardDeclaration)>0)))
@@ -517,7 +517,7 @@ begin
             and (FindProcBody(Result)<>nil))) then
       begin
         CurProcHead:=ExtractProcHead(Result,Attr);
-        //writeln('TPascalParserTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
+        //DebugLn('TPascalParserTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
         if (CurProcHead<>'')
         and (CompareTextIgnoringSpace(CurProcHead,AProcHead,false)=0) then
           exit;

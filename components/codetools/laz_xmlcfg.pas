@@ -87,7 +87,6 @@ uses SysUtils;
 
 constructor TXMLConfig.Create(const AFilename: String);
 begin
-  //writeln('TXMLConfig.Create ',AFilename);
   inherited Create(nil);
   SetFilename(AFilename);
 end;
@@ -356,6 +355,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.10  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.9  2003/04/29 19:00:43  mattias
   added package gtkopengl
 

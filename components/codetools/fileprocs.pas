@@ -73,6 +73,36 @@ function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 
+
+// debugging
+procedure DebugLn;
+procedure DebugLn(const s: string);
+procedure DebugLn(const s1,s2: string);
+procedure DebugLn(const s1,s2,s3: string);
+procedure DebugLn(const s1,s2,s3,s4: string);
+procedure DebugLn(const s1,s2,s3,s4,s5: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
+
+procedure DbgOut(const s: string);
+procedure DbgOut(const s1,s2: string);
+
+function DbgS(const c: cardinal): string;
+function DbgS(const i: integer): string;
+function DbgS(const r: TRect): string;
+function DbgS(const p: TPoint): string;
+function DbgS(const p: pointer): string;
+function DbgS(const e: extended): string;
+function DbgS(const b: boolean): string;
+
+function DbgS(const i1,i2,i3,i4: integer): string;
+
+
 implementation
 
 // to get more detailed error messages consider the os
@@ -502,7 +532,7 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-//writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
+//debugln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
   if (Filename='') then begin
     Result:=Filename;
     exit;
@@ -604,7 +634,7 @@ var
   AsteriskPos,
   BracketMaskPos, BracketFilePos: integer;
 begin
-  //writeln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
+  //debugln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
   Result:=false;
   if (Filename='') then exit;
   if (Mask='') then begin
@@ -620,13 +650,13 @@ begin
     // find ends of directories
     DirEndMask:=FindDirectoryEnd(Mask,DirStartMask);
     DirEndFile:=FindDirectoryEnd(Filename,DirStartFile);
-    // writeln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
+    // debugln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
     //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
     // compare directories
     AsteriskPos:=0;
     BracketMaskPos:=0;
     while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
-//writeln('AAA1 ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
+//debugl('AAA1 ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
       case Mask[DirStartMask] of
       '?':
         begin
@@ -733,7 +763,7 @@ begin
     // check that the complete Filename matches
     Result:=(Result and (DirStartFile>length(Filename)));
   end;
-  //writeln('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
+  //debugl('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
 end;
 
 function CompareFileExt(const Filename, Ext: string;
@@ -794,7 +824,126 @@ begin
   end;
 end;
 
+procedure DebugLn;
+begin
+  DebugLn('');
+end;
 
+procedure DebugLn(const s: string);
+begin
+  if TextRec(Output).Mode<>fmClosed then
+    writeln(s);
+end;
+
+procedure DebugLn(const s1, s2: string);
+begin
+  DebugLn(s1+s2);
+end;
+
+procedure DebugLn(const s1, s2, s3: string);
+begin
+  DebugLn(s1+s2+s3);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4: string);
+begin
+  DebugLn(s1+s2+s3+s4);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11,
+  s12: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
+end;
+
+procedure DBGOut(const s: string);
+begin
+  if TextRec(Output).Mode<>fmClosed then
+    write(s);
+end;
+
+procedure DBGOut(const s1, s2: string);
+begin
+  DbgOut(s1+s2);
+end;
+
+function DbgS(const c: cardinal): string;
+begin
+  Result:=IntToStr(c);
+end;
+
+function DbgS(const i: integer): string;
+begin
+  Result:=IntToStr(i);
+end;
+
+function DbgS(const r: TRect): string;
+begin
+  Result:=' l='+IntToStr(r.Left)+',t='+IntToStr(r.Top)
+         +',r='+IntToStr(r.Right)+',b='+IntToStr(r.Bottom);
+end;
+
+function DbgS(const p: TPoint): string;
+begin
+  Result:=' x='+IntToStr(p.x)+',y='+IntToStr(p.y);
+end;
+
+function DbgS(const p: pointer): string;
+begin
+  Result:=HexStr(Cardinal(p),8);
+end;
+
+function DbgS(const e: extended): string;
+begin
+  Result:=FloatToStr(e);
+end;
+
+function DbgS(const b: boolean): string;
+begin
+  if b then Result:='True' else Result:='False';
+end;
+
+function DbgS(const i1, i2, i3, i4: integer): string;
+begin
+  Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+end;
+
+//------------------------------------------------------------------------------
 procedure InternalInit;
 var
   c: char;

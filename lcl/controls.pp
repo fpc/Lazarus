@@ -1353,9 +1353,10 @@ type
     procedure DoEnter; dynamic;
     procedure DoExit; dynamic;
     procedure DoFlipChildren; dynamic;
-    procedure KeyDown(var Key : Word; Shift : TShiftState); dynamic;
-    procedure KeyPress(var Key : Char); dynamic;
-    procedure KeyUp(var Key : Word; Shift : TShiftState); dynamic;
+    procedure KeyDown(var Key: Word; Shift : TShiftState); dynamic;
+    procedure KeyPress(var Key: Char); dynamic;
+    procedure KeyUp(var Key: Word; Shift : TShiftState); dynamic;
+    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); dynamic;
     procedure MainWndProc(var Message : TLMessage);
     procedure ReAlign; // realign all childs
     procedure ReCreateWnd;
@@ -2268,6 +2269,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.204  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.203  2004/05/21 18:34:44  mattias
   readded protected TWinControl.BorderStyle
 

@@ -8,7 +8,7 @@ uses
 
 procedure ButtonClickEvent(qwid: longint);cdecl;
 begin
- writeln('Click Event For Hwnd ' + IntToStr(qwid));
+ DebugLn('Click Event For Hwnd ' + IntToStr(qwid));
 end;
 
 

@@ -32,7 +32,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, KeyWordFuncLists;
+  Classes, SysUtils, KeyWordFuncLists, FileProcs;
 
 const
   ExternalMacroStart = '#';
@@ -681,8 +681,8 @@ end;
 
 procedure TExpressionEvaluator.WriteDebugReport;
 begin
-  writeln('[TExpressionEvaluator.WriteDebugReport] Consistency=',
-    ConsistencyCheck);
+  DebugLn('[TExpressionEvaluator.WriteDebugReport] Consistency=',
+    dbgs(ConsistencyCheck));
 end;
 
 initialization

@@ -39,7 +39,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeCache, KeywordFuncLists;
+  Classes, SysUtils, FileProcs, CodeCache, KeywordFuncLists;
 
 type
   TCodePosition = record
@@ -240,14 +240,14 @@ procedure TAtomRing.WriteDebugReport;
 var i: integer;
   p: TAtomPosition;
 begin
-  writeln('[TAtomRing.WriteDebugReport] Size=',FSize
-    ,' Start=',FStart,' Last=',FLast,' Count=',Count);
-  write('ValuesAt: ');
+  DebugLn('[TAtomRing.WriteDebugReport] Size=',dbgs(FSize)
+    ,' Start=',dbgs(FStart),' Last=',dbgs(FLast),' Count=',dbgs(Count));
+  DbgOut('ValuesAt: ');
   for i:=0 to Count-1 do begin
     p:=GetValueAt(i);
-    write(' ',i,'=',p.StartPos,'-',p.EndPos);
+    DbgOut(' '+dbgs(i)+'='+dbgs(p.StartPos)+'-'+dbgs(p.EndPos));
   end;
-  writeln('');
+  DebugLn('');
 end;
 
 { TWordToAtomFlag }

@@ -37,7 +37,7 @@ interface
 { $DEFINE HardExceptions}
 
 uses
-  Classes, SysUtils, BasicCodeTools, AVL_Tree, CodeTree, LinkScanner,
+  Classes, SysUtils, FileProcs, BasicCodeTools, AVL_Tree, CodeTree, LinkScanner,
   PascalParserTool, CodeToolMemManager;
 
 type
@@ -694,7 +694,7 @@ var
   begin
     s:='[TCodeTreeNodeCache.Add] internal error:'+Msg+ParamsDebugReport;
     {$IFDEF HardExceptions}
-    writeln(s);
+    DebugLn(s);
     RaiseCatchableException('TCodeTreeNodeCache.Add A');
     {$ELSE}
     raise Exception.Create(s);
@@ -706,13 +706,13 @@ begin
   if CleanStartPos>=CleanEndPos then
     RaiseConflictException('CleanStartPos>=CleanEndPos');
   {if GetIdentifier(Identifier)='TDefineAction' then begin
-    writeln('[[[[======================================================');
-    writeln('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
+    DebugLn('[[[[======================================================');
+    DebugLn('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
        ' CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos,
        ' Flags=[',NodeCacheEntryFlagsAsString(Flags),']',
        ' NewNode=',NewNode<>nil
        );
-    writeln('======================================================]]]]');
+    DebugLn('======================================================]]]]');
   end;}
   if FItems=nil then
     FItems:=TAVLTree.Create(@CompareTCodeTreeNodeCacheEntry);
@@ -893,8 +893,8 @@ procedure TCodeTreeNodeCache.WriteDebugReport(const Prefix: string);
 var Node: TAVLTreeNode;
   Entry: PCodeTreeNodeCacheEntry;
 begin
-  writeln(Prefix,'[TCodeTreeNodeCache.WriteDebugReport] Self=',
-    HexStr(Cardinal(Self),8),' Consistency=',ConsistencyCheck);
+  DebugLn(Prefix+'[TCodeTreeNodeCache.WriteDebugReport] Self='+
+    HexStr(Cardinal(Self),8)+' Consistency=',dbgs(ConsistencyCheck));
   if FItems<>nil then begin
     Node:=FItems.FindLowest;
     while Node<>nil do begin
@@ -902,7 +902,7 @@ begin
       write(Prefix,' Ident="',GetIdentifier(Entry^.Identifier),'"');
       write(' Flags=[',NodeCacheEntryFlagsAsString(Entry^.Flags),']');
       write(' Node=',Entry^.NewNode<>nil);
-      writeln('');
+      DebugLn('');
       Node:=FItems.FindSuccessor(Node);
     end;
   end;

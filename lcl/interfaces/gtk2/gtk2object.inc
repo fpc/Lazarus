@@ -725,7 +725,7 @@ begin
               begin
     	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
-                Writeln('TODO(GTK2): IntSendMessage3, LM_SETSELSTART, csMemo');
+                Debugln('TODO(GTK2): IntSendMessage3, LM_SETSELSTART, csMemo');
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
                 result := gtk_text_iter_get_offset(@aTextIter1);}
               end;
@@ -756,7 +756,7 @@ begin
     	      begin
     	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
-                Writeln('TODO(GTK2): IntSendMessage3, LM_SETSELLEN, csMemo');
+                Debugln('TODO(GTK2): IntSendMessage3, LM_SETSELLEN, csMemo');
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                 result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));}
   	      end;
@@ -1290,7 +1290,7 @@ begin
         StrikeOut := CurrentFont^.StrikeOut;
       end;
       If UseFontDesc = nil then
-        WriteLn('WARNING: [TGtk2WidgetSet.GetTextMetrics] Missing font')
+        DebugLn('WARNING: [TGtk2WidgetSet.GetTextMetrics] Missing font')
       else begin
         Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
@@ -1380,6 +1380,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.12  2004/05/22 14:35:33  mattias
+  fixed button return key
+
   Revision 1.11  2004/05/11 09:49:47  mattias
   started sending CN_KEYUP
 

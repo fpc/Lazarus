@@ -147,7 +147,7 @@ var
 begin
   Widget := PGtkWidget(AWinControl.Handle);
   if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
-    //writeln('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
+    //DebugLn('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
     APIWidget := PGTKAPIWidget(Widget);
     if (APIWidget^.Frame<>nil) then begin
       case ABorderStyle of

@@ -448,7 +448,6 @@ end;
 
 
 initialization
-  //writeln('gtkint.pp - initialization');
   {$I gtkimages.lrs}
   InternalInit;
 
@@ -460,6 +459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.183  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.182  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 

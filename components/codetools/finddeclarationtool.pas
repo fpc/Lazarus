@@ -966,14 +966,14 @@ begin
   try
     // build code tree
     {$IFDEF CTDEBUG}
-    writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
+    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                   [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}
                    btLoadDirtySource,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
-    writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
+    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
     {$ENDIF}
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
@@ -999,7 +999,7 @@ begin
       // raise exception
       FindDeepestNodeAtPos(CleanCursorPos,true);
     {$IFDEF CTDEBUG}
-    writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',CursorNode.FirstChild<>nil);
+    DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',CursorNode.FirstChild<>nil);
     {$ENDIF}
     if (not IsDirtySrcValid)
     and (CursorNode.Desc=ctnUsesSection) then begin
@@ -1106,7 +1106,7 @@ var UnitName, UnitInFilename: string;
 begin
   Result:=false;
   {$IFDEF ShowTriedContexts}
-  writeln('TFindDeclarationTool.FindDeclarationInUsesSection A');
+  DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection A');
   {$ENDIF}
   // reparse uses section
   MoveCursorToNodeStart(UsesNode);
@@ -1152,7 +1152,7 @@ begin
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
   until (CurPos.StartPos>SrcLen);
   {$IFDEF ShowTriedContexts}
-  writeln('TFindDeclarationTool.FindDeclarationInUsesSection END cursor not on unitname');
+  DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection END cursor not on unitname');
   {$ENDIF}
 end;
 
@@ -1165,7 +1165,7 @@ var
     var NewCode: TCodeBuffer): boolean;
   begin
     {$IFDEF ShowTriedFiles}
-    writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',AFilename);
+    DebugLn('TFindDeclarationTool.FindUnitSource.LoadFile ',AFilename);
     {$ENDIF}
     NewCode:=TCodeBuffer(Scanner.OnLoadSource(
                             Self,ExpandFilename(TrimFilename(AFilename)),true));
@@ -1241,7 +1241,7 @@ var
     Result:=nil;
     UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
     {$IFDEF ShowTriedFiles}
-    writeln('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
+    DebugLn('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
     {$ENDIF}
     UnitLinkStart:=1;
     while UnitLinkStart<=length(UnitLinks) do begin
@@ -1255,7 +1255,7 @@ var
       UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
       if UnitLinkLen>0 then begin
         {$IFDEF ShowTriedFiles}
-        writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',CompareSubStrings(TheUnitName,UnitLinks,1,
+        DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',CompareSubStrings(TheUnitName,UnitLinks,1,
           UnitLinkStart,UnitLinkLen,false));
         {$ENDIF}
         if (UnitLinkLen=length(TheUnitName))
@@ -1319,7 +1319,7 @@ var UnitSrcSearchPath: string;
   
 begin
   {$IFDEF ShowTriedFiles}
-  writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename,' Self="',MainFilename,'"');
+  DebugLn('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename,' Self="',MainFilename,'"');
   {$ENDIF}
   Result:=nil;
   if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
@@ -1333,7 +1333,7 @@ begin
   UnitSrcSearchPath:='';
   CompiledSrcExt:='.ppu';
   CompiledResult:=nil;
-  //writeln('>>>>>',Scanner.Values.AsString,'<<<<<');
+  //DebugLn('>>>>>',Scanner.Values.AsString,'<<<<<');
   MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
   if not MainCodeIsVirtual then begin
     CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
@@ -1360,20 +1360,20 @@ begin
     // normal unit name
     // first source search in current directory (= where the maincode is)
     {$IFDEF ShowTriedFiles}
-    writeln('TFindDeclarationTool.FindUnitSource Search in current dir=',CurDir);
+    DebugLn('TFindDeclarationTool.FindUnitSource Search in current dir=',CurDir);
     {$ENDIF}
     Result:=SearchUnitFileInDir(CurDir,AnUnitName,true);
     if Result=nil then begin
       // search source in search path
       {$IFDEF ShowTriedFiles}
-      writeln('TFindDeclarationTool.FindUnitSource Search in search path=',UnitSrcSearchPath);
+      DebugLn('TFindDeclarationTool.FindUnitSource Search in search path=',UnitSrcSearchPath);
       {$ENDIF}
       InitSrcPath;
       Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,true);
     end;
     if Result=nil then begin
       {$IFDEF ShowTriedFiles}
-      writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
+      DebugLn('TFindDeclarationTool.FindUnitSource Search Compiled unit in current dir=',CurDir);
       {$ENDIF}
 
       // search compiled unit in current directory
@@ -1385,7 +1385,7 @@ begin
       // search compiled unit in src path
       if CompiledResult=nil then begin
         {$IFDEF ShowTriedFiles}
-        writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in src path=',UnitSrcSearchPath);
+        DebugLn('TFindDeclarationTool.FindUnitSource Search Compiled unit in src path=',UnitSrcSearchPath);
         {$ENDIF}
         InitSrcPath;
         CompiledResult:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,false);
@@ -1395,7 +1395,7 @@ begin
       if CompiledResult=nil then begin
         UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
         {$IFDEF ShowTriedFiles}
-        writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in unit path=',UnitSearchPath);
+        DebugLn('TFindDeclarationTool.FindUnitSource Search Compiled unit in unit path=',UnitSearchPath);
         {$ENDIF}
         CompiledResult:=SearchUnitFileInPath(UnitSearchPath,AnUnitName,false);
       end;
@@ -1409,7 +1409,7 @@ begin
           CurDir:=ExtractFilePath(CompiledResult.Filename);
           // search source in search path of compiled unit
           {$IFDEF ShowTriedFiles}
-          writeln('TFindDeclarationTool.FindUnitSource Search in Compiled unit search path=',UnitSrcSearchPath);
+          DebugLn('TFindDeclarationTool.FindUnitSource Search in Compiled unit search path=',UnitSrcSearchPath);
           {$ENDIF}
           Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,true);
         end;
@@ -1488,7 +1488,7 @@ begin
               end;
               
             else
-              writeln('ToDo: TFindDeclarationTool.FindSmartHint TypeNode=',
+              DebugLn('ToDo: TFindDeclarationTool.FindSmartHint TypeNode=',
                 TypeNode.DescAsString);
             end;
           end;
@@ -1540,7 +1540,7 @@ begin
 
 
       else
-        writeln('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
+        DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
       end;
     end;
     // read the identifier if not already done
@@ -1635,7 +1635,7 @@ var
   ExprType: TExpressionType;
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Identifier=',
+  DebugLn('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Identifier=',
     '"',GetIdentifier(Params.Identifier),'"',
     ' ContextNode=',NodeDescriptionAsString(Params.ContextNode.Desc),
     ' "',copy(Src,Params.ContextNode.StartPos,20),'"');
@@ -1663,9 +1663,9 @@ begin
   write('[TFindDeclarationTool.FindDeclarationOfIdentAtCursor] Ident=',
     '"',GetIdentifier(Params.Identifier),'" ');
   if Params.NewNode<>nil then
-    writeln('Node=',Params.NewNode.DescAsString,' ',Params.NewCodeTool.MainFilename)
+    DebugLn('Node=',Params.NewNode.DescAsString,' ',Params.NewCodeTool.MainFilename)
   else
-    writeln('NOT FOUND');
+    DebugLn('NOT FOUND');
   {$ENDIF}
   Result:=true;
 end;
@@ -1760,21 +1760,21 @@ var
       Params.SetResult(LastCacheEntry);
       {$IFDEF ShowNodeCache}
       write(':::: TFindDeclarationTool.FindIdentifierInContext.FindInNodeCache');
-      writeln(' Ident=',GetIdentifier(Params.Identifier),
+      DebugLn(' Ident=',GetIdentifier(Params.Identifier),
                ' Wanted=[',NodeCacheEntryFlagsAsString(NodeCacheEntryFlags),']',
                ' Cache=[',NodeCacheEntryFlagsAsString(LastCacheEntry^.Flags),']'
              );
-      writeln('    ContextNode=',ContextNode.DescAsString,
+      DebugLn('    ContextNode=',ContextNode.DescAsString,
               ' StartPos=',ContextNode.StartPos,
               ' EndPos=',ContextNode.EndPos,
               ' Self=',MainFilename);
-      writeln('  LastCacheEntry(Pos=',LastCacheEntry^.CleanStartPos,
+      DebugLn('  LastCacheEntry(Pos=',LastCacheEntry^.CleanStartPos,
               '-',LastCacheEntry^.CleanEndPos,')');
       if (Params.NewNode<>nil) then
-        writeln('   NewTool=',Params.NewCodeTool.MainFilename,
+        DebugLn('   NewTool=',Params.NewCodeTool.MainFilename,
                 ' NewNode=',Params.NewNode.DescAsString)
       else
-        writeln('   cache says: identifier NOT FOUND');
+        DebugLn('   cache says: identifier NOT FOUND');
       if CompareSrcIdentifiers(Params.Identifier,'TDefineAction') then begin
         NodeCache.WriteDebugReport('NANUNANA: ');
       end;
@@ -1794,7 +1794,7 @@ var
     if (Params.FoundProc<>nil) then exit; // do not cache proc searches
     // cache result
     if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
-      writeln('NOTE: TFindDeclarationTool.FindIdentifierInContext.CacheResult Node is proc');
+      DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInContext.CacheResult Node is proc');
       // ToDo:
       // The search range is from start to end of search.
       // This does not work for overloaded procs.
@@ -1831,7 +1831,7 @@ var
     FindIdentifierInContext:=NewResult;
     {$IFDEF ShowCollect}
     if fdfCollect in Params.Flags then begin
-      writeln('[TFindDeclarationTool.FindIdentifierInContext] COLLECT CheckResult Ident=',
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT CheckResult Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
       ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
@@ -1872,7 +1872,7 @@ var
                        Params.FoundProc^.Context.Node);
       FindIdentifierInContext:=true;
       {$IFDEF ShowProcSearch}
-      writeln('[TFindDeclarationTool.FindIdentifierInContext] PROC Search ended with only one proc:');
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] PROC Search ended with only one proc:');
       Params.WriteDebugReport;
       {$ENDIF}
       exit;
@@ -1916,7 +1916,7 @@ var
     or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
-      writeln('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       // identifier found
       Params.SetResult(Self,ContextNode);
@@ -1943,7 +1943,7 @@ var
     begin
       // identifier found
       {$IFDEF ShowTriedIdentifiers}
-      writeln('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       Params.SetResult(Self,ContextNode,CurPos.StartPos);
       Result:=CheckResult(true,true);
@@ -1969,7 +1969,7 @@ var
       or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
         // identifier found
         {$IFDEF ShowTriedIdentifiers}
-        writeln('  Property Identifier found="',GetIdentifier(Params.Identifier),'"');
+        DebugLn('  Property Identifier found="',GetIdentifier(Params.Identifier),'"');
         {$ENDIF}
         Params.SetResult(Self,ContextNode,CurPos.StartPos);
         Result:=CheckResult(true,true);
@@ -1996,7 +1996,7 @@ var
           // -> there is no prior context accessible any more
           // -> identifier not found
           {$IFDEF ShowTriedContexts}
-          writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible ',
+          DebugLn('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible ',
           ' ContextNode=',ContextNode.DescAsString,
           ' "',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"'
           );
@@ -2013,7 +2013,7 @@ var
     repeat
       // search for prior node
       {$IFDEF ShowTriedIdentifiers}
-      //writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
+      //DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
       {$ENDIF}
       LastSearchedNode:=ContextNode;
 
@@ -2048,7 +2048,7 @@ var
           ContextNode:=ContextNode.NextBrother;
         end;
         {$IFDEF ShowTriedIdentifiers}
-        writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Brother  ContextNode=',ContextNode.DescAsString);
+        DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching in Brother  ContextNode=',ContextNode.DescAsString);
         {$ENDIF}
         // it is not always allowed to search in every node on the same lvl:
 
@@ -2064,7 +2064,7 @@ var
             // a WithVariable ranges from the start of its expression
             // to the end of the with statement
             {$IFDEF ShowExprEval}
-            writeln('SearchNextNode WithVar StartContextNode.StartPos=',StartContextNode.StartPos,
+            DebugLn('SearchNextNode WithVar StartContextNode.StartPos=',StartContextNode.StartPos,
               ' ContextNode=',ContextNode.StartPos,'-',ContextNode.EndPos,
               ' WithStart="',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"');
             {$ENDIF}
@@ -2090,7 +2090,7 @@ var
       begin
         // search next in parent
         {$IFDEF ShowTriedParentContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent ',
+        DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent ',
           ' old ContextNode=',ContextNode.DescAsString,
           ' new ContextNode=',ContextNode.Parent.DescAsString
           );
@@ -2151,7 +2151,7 @@ begin
   InitNodesAndCacheAccess;
 
   {$IFDEF ShowTriedContexts}
-  writeln('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
+  DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
   '"',GetIdentifier(Params.Identifier),'"',
   ' Context="',ContextNode.DescAsString,'" "',StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
   ' File="',ExtractFilename(MainFilename)+'"',
@@ -2160,7 +2160,7 @@ begin
   {$ELSE}
     {$IFDEF ShowCollect}
     if fdfCollect in Params.Flags then begin
-      writeln('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Start Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
       ' File="',ExtractFilename(MainFilename)+'"',
@@ -2174,7 +2174,7 @@ begin
     // search in the Tree of this tool
     repeat
       {$IFDEF ShowTriedIdentifiers}
-      writeln('[TFindDeclarationTool.FindIdentifierInContext] Loop Ident=',
+      DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Loop Ident=',
       '"',GetIdentifier(Params.Identifier),'"',
       ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
       ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
@@ -2182,7 +2182,7 @@ begin
       {$ELSE}
         {$IFDEF ShowCollect}
         if fdfCollect in Params.Flags then begin
-          writeln('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Loop Ident=',
+          DebugLn('[TFindDeclarationTool.FindIdentifierInContext] COLLECT Loop Ident=',
           '"',GetIdentifier(Params.Identifier),'"',
           ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
           ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
@@ -2278,7 +2278,7 @@ begin
       end else begin
         Exclude(Params.Flags,fdfIgnoreCurContextNode);
         {$IFDEF ShowTriedContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext');
+        DebugLn('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext');
         {$ENDIF}
       end;
       if LastContextNode=ContextNode then begin
@@ -2291,9 +2291,9 @@ begin
   {except
     // unexpected exception
     on E: Exception do begin
-      writeln('*** Unexpected Exception during find declaration: ',
+      DebugLn('*** Unexpected Exception during find declaration: ',
         E.ClassName,': ',E.Message);
-      writeln('  MainFilename=',MainFilename);
+      DebugLn('  MainFilename=',MainFilename);
       raise;
     end;
   end;}
@@ -2459,8 +2459,8 @@ begin
       AddNodeToStack(@NodeStack,Result.Node);
 
       {$IFDEF ShowTriedBaseContexts}
-      writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
-      writeln('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
+      DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
+      DebugLn('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
       {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
@@ -2476,7 +2476,7 @@ begin
         // this is a forward defined class
         // -> search the real class
         {$IFDEF ShowTriedBaseContexts}
-        writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
+        DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
         {$ENDIF}
 
         // ToDo: check for circles in ancestor chain
@@ -2510,7 +2510,7 @@ begin
         // this is a 'class of' type
         // -> search the real class
         {$IFDEF ShowTriedBaseContexts}
-        writeln('[TFindDeclarationTool.FindBaseTypeOfNode] "Class Of"');
+        DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] "Class Of"');
         {$ENDIF}
 
         // ToDo: check for circles in ancestor chain
@@ -2713,7 +2713,7 @@ begin
   if Node<>nil then write(Node.DescAsString) else write('NIL');
   write(' Result=');
   if Result.Node<>nil then write(Result.Node.DescAsString) else write('NIL');
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 end;
 
@@ -2742,7 +2742,7 @@ begin
     or CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier)) then begin
       // proc identifier found
       {$IFDEF ShowTriedContexts}
-      writeln('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       Params.SetResult(Self,ProcContextNode,NameAtom.StartPos);
       Result:=ifrSuccess;
@@ -2789,7 +2789,7 @@ begin
         Params.ContextNode:=ProcContextNode;
         Params.SetIdentifier(Self,@Src[ClassNameAtom.StartPos],nil);
         {$IFDEF ShowTriedContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc="',copy(src,ProcContextNode.StartPos,30),'" searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
+        DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc="',copy(src,ProcContextNode.StartPos,30),'" searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
         {$ENDIF}
         FindIdentifierInContext(Params);
         ClassContext:=Params.NewCodeTool.FindBaseTypeOfNode(
@@ -2807,7 +2807,7 @@ begin
                       -[fdfExceptionOnNotFound];
         Params.ContextNode:=ClassContext.Node;
         {$IFDEF ShowTriedContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method');
+        DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  searching identifier in class of method');
         {$ENDIF}
         Result:=ClassContext.Tool.FindIdentifierInContext(Params);
         if Result then
@@ -2822,7 +2822,7 @@ begin
     begin
       // proc identifier found
       {$IFDEF ShowTriedContexts}
-      writeln('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc Identifier found="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       Result:=true;
       Params.SetResult(Self,ProcContextNode,ClassNameAtom.StartPos);
@@ -2841,7 +2841,7 @@ var
   ClassContext: TFindContext;
 begin
   {$IFDEF ShowTriedContexts}
-  writeln('[TFindDeclarationTool.FindClassOfMethod] A ');
+  DebugLn('[TFindDeclarationTool.FindClassOfMethod] A ');
   {$ENDIF}
   Result:=false;
   if ProcNode.Desc=ctnProcedureHead then
@@ -2877,7 +2877,7 @@ begin
     Params.ContextNode:=ProcNode;
     Params.SetIdentifier(Self,@Src[ClassNameAtom.StartPos],nil);
     {$IFDEF ShowTriedContexts}
-    writeln('[TFindDeclarationTool.FindClassOfMethod]  searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
+    DebugLn('[TFindDeclarationTool.FindClassOfMethod]  searching class of method   class="',ExtractIdentifier(ClassNameAtom.StartPos),'"');
     {$ENDIF}
     FindIdentifierInContext(Params);
     if FindClassContext then begin
@@ -2958,7 +2958,7 @@ begin
     if not SearchBaseClass then exit;
   end;
   {$IFDEF ShowTriedContexts}
-  writeln('[TFindDeclarationTool.FindAncestorOfClass] ',
+  DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
   ' search ancestor class = ',GetAtom);
   {$ENDIF}
 
@@ -3031,7 +3031,7 @@ var
   OldInput: TFindDeclarationInput;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindIdentifierInWithVarContext] Ident=',
+  DebugLn('[TFindDeclarationTool.FindIdentifierInWithVarContext] Ident=',
   '"',GetIdentifier(Params.Identifier),'"',
   ' WithStart=',StringToPascalConst(copy(Src,WithVarNode.StartPos,15))
   );
@@ -3139,7 +3139,7 @@ function TFindDeclarationTool.FindExpressionResultType(
     procedure inc(pointer var);
     procedure inc(pointer var; ordinal type);
     procedure write(...);
-    procedure writeln(...);
+    procedure DebugLn(...);
     function SizeOf(type): ordinal constant;
     typeinfo?
     uniquestring?
@@ -3204,7 +3204,7 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindExpressionResultType] Start',
+  DebugLn('[TFindDeclarationTool.FindExpressionResultType] Start',
   ' Pos=',StartPos,'-',EndPos,
   '="',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
@@ -3218,7 +3218,7 @@ begin
     // read operand
     CurExprType:=ReadOperandTypeAtCursor(Params);
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.FindExpressionResultType] Operand: ',
+    DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operand: ',
       ExprTypeToString(CurExprType));
     {$ENDIF}
     // put operand on stack
@@ -3231,7 +3231,7 @@ begin
     // read operator
     ReadNextAtom;
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
+    DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
       GetAtom,' CurPos.EndPos=',CurPos.EndPos,' EndPos=',EndPos);
     {$ENDIF}
     // check if expression completely parsed
@@ -3305,7 +3305,7 @@ begin
     end else begin
       // open the unit
       {$IFDEF ShowTriedUnits}
-      writeln('TFindDeclarationTool.FindIdentifierInUsesSection Self=',MainFilename,
+      DebugLn('TFindDeclarationTool.FindIdentifierInUsesSection Self=',MainFilename,
         ' UnitName=',GetAtom(UnitNameAtom));
       Params.WriteDebugReport;
       {$ENDIF}
@@ -3355,7 +3355,7 @@ begin
   end else begin
     // source found -> get codetool for it
     {$IFDEF ShowTriedFiles}
-    writeln('[TFindDeclarationTool.FindCodeToolForUsedUnit] ',
+    DebugLn('[TFindDeclarationTool.FindCodeToolForUsedUnit] ',
     ' This source is=',TCodeBuffer(Scanner.MainCode).Filename,
     ' NewCode=',NewCode.Filename);
     {$ENDIF}
@@ -3375,7 +3375,7 @@ var InterfaceNode: TCodeTreeNode;
   
   procedure RaiseWrongContext;
   begin
-    writeln('TFindDeclarationTool.FindIdentifierInInterface.RaiseWrongContext');
+    DebugLn('TFindDeclarationTool.FindIdentifierInInterface.RaiseWrongContext');
     Params.WriteDebugReport;
     SaveRaiseException('TFindDeclarationTool.FindIdentifierInInterface '
                       +'Internal Error: Wrong CodeTool');
@@ -3385,7 +3385,7 @@ begin
   Result:=false;
   // build code tree
   {$IFDEF ShowTriedContexts}
-  writeln({$IFDEF DebugPrefix}DebugPrefix,{$ENDIF}
+  DebugLn({$IFDEF DebugPrefix}DebugPrefix,{$ENDIF}
   'TFindDeclarationTool.FindIdentifierInInterface',
   ' Ident="',GetIdentifier(Params.Identifier),'"',
   ' IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags,
@@ -3407,7 +3407,7 @@ begin
     if CacheEntry<>nil then begin
       // identifier in cache found
       {$IFDEF ShowInterfaceCache}
-      writeln('[TFindDeclarationTool.FindIdentifierInInterface] Ident already in cache:',
+      DebugLn('[TFindDeclarationTool.FindIdentifierInInterface] Ident already in cache:',
       ' Exists=',CacheEntry^.Node<>nil);
       {$ENDIF}
       if CacheEntry^.Node=nil then begin
@@ -3455,7 +3455,7 @@ begin
     if ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
     and ([fodDoNotCache]*Params.NewFlags=[]) then begin
       if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
-        //writeln('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
+        //DebugLn('NOTE: TFindDeclarationTool.FindIdentifierInInterface Node is proc');
         // ToDo: add param list to cache
         // -> do not cache
         Result:=false;
@@ -3526,11 +3526,11 @@ begin
       ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),AnUnitName));
   end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
     // Searching again in hidden unit
-    writeln('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
+    DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
   end else begin
     // source found -> get codetool for it
     {$IFDEF ShowTriedContexts}
-    writeln('[TFindDeclarationTool.FindIdentifierInUsedUnit] ',
+    DebugLn('[TFindDeclarationTool.FindIdentifierInUsedUnit] ',
     ' This source is=',TCodeBuffer(Scanner.MainCode).Filename,
     ' NewCode=',NewCode.Filename,' IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags);
     {$ENDIF}
@@ -3567,7 +3567,7 @@ begin
   or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
     // identifier found
     {$IFDEF ShowTriedContexts}
-    writeln('[TFindDeclarationTool.FindIdentifierInRecordCase]  found="',GetIdentifier(Params.Identifier),'"');
+    DebugLn('[TFindDeclarationTool.FindIdentifierInRecordCase]  found="',GetIdentifier(Params.Identifier),'"');
     {$ENDIF}
     Params.SetResult(Self,RecordCaseNode,CurPos.StartPos);
     Result:=true;
@@ -3615,7 +3615,7 @@ var
 begin
   Result:=false;
   {$IFDEF ShowTriedContexts}
-  writeln('[TFindDeclarationTool.FindIdentifierInHiddenUsedUnits] ',
+  DebugLn('[TFindDeclarationTool.FindIdentifierInHiddenUsedUnits] ',
   '"',GetIdentifier(Params.Identifier),'" IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags);
   {$ENDIF}
   if (Tree.Root<>nil) and (not (fdfIgnoreUsedUnits in Params.Flags)) then begin
@@ -3876,7 +3876,7 @@ var
     if (StartPos<1) then
       RaiseInternalError;
     {$IFDEF ShowExprEval}
-    writeln('  InitAtomQueue Expr="',copy(Src,StartPos,EndPos-StartPos),'"');
+    DebugLn('  InitAtomQueue Expr="',copy(Src,StartPos,EndPos-StartPos),'"');
     {$ENDIF}
     MoveCursorToCleanPos(StartPos);
     ReadNextAtom;
@@ -3957,7 +3957,7 @@ var
       // find base type
       Exclude(Params.Flags,fdfFunctionResult);
       {$IFDEF ShowExprEval}
-      writeln('ResolveBaseTypeOfIdentifier ExprType=',ExprTypeToString(ExprType));
+      DebugLn('ResolveBaseTypeOfIdentifier ExprType=',ExprTypeToString(ExprType));
       {$ENDIF}
       ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
                         ExprType.Context.Node,Params);
@@ -4064,7 +4064,7 @@ var
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
       {$IFDEF ShowExprEval}
-      writeln('ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
         if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
@@ -4345,7 +4345,7 @@ var
 
     ReadNextExpressionAtom;
     {$IFDEF ShowExprEval}
-    writeln('    ResolveINHERITED CurAtomType=',
+    DebugLn('    ResolveINHERITED CurAtomType=',
       VariableAtomTypeNames[CurAtomType],
       ' CurAtom="',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"');
     {$ENDIF}
@@ -4386,7 +4386,7 @@ begin
   ExprType.SubDesc:=xtNone;
   ExprType.Context:=StartContext;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
+  DebugLn('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
     ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']',
     ' StartContext=',StartContext.Node.DescAsString
   );
@@ -4395,7 +4395,7 @@ begin
   InitAtomQueue;
   repeat
     {$IFDEF ShowExprEval}
-    writeln('  FindExpressionTypeOfVariable CurAtomType=',
+    DebugLn('  FindExpressionTypeOfVariable CurAtomType=',
       VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
       ' ExprType=',ExprTypeToString(ExprType));
     {$ENDIF}
@@ -4416,7 +4416,7 @@ begin
     Result:=Result.Context.Tool.ConvertNodeToExpressionType(
                  Result.Context.Node,Params);
   {$IFDEF ShowExprEval}
-  writeln('  FindExpressionTypeOfVariable Result=',ExprTypeToString(Result));
+  DebugLn('  FindExpressionTypeOfVariable Result=',ExprTypeToString(Result));
   {$ENDIF}
 end;
 
@@ -4462,7 +4462,7 @@ var
   OldInput: TFindDeclarationInput;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] A',
+  DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] A',
   ' Node=',Node.DescAsString);
   {$ENDIF}
   BaseContext:=FindBaseTypeOfNode(Params,Node);
@@ -4475,7 +4475,7 @@ begin
   Result.Desc:=xtContext;
   Result.Context:=CreateFindContext(Self,Node);
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
+  DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
   ' Node=',Node.DescAsString);
   {$ENDIF}
   if Node.Desc=ctnRangeType then begin
@@ -4531,10 +4531,10 @@ var EndPos, SubStartPos: integer;
     if not AtomIsChar(']') then begin
       Result:=ReadOperandTypeAtCursor(Params);
       {$IFDEF ShowExprEval}
-      writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] Set of ',
+      DebugLn('[TFindDeclarationTool.ReadOperandTypeAtCursor] Set of ',
       ExpressionTypeDescNames[Result.Desc]);
       if Result.Desc=xtContext then
-        writeln('  Result.Context.Node=',Result.Context.Node.DescAsString);
+        DebugLn('  Result.Context.Node=',Result.Context.Node.DescAsString);
       {$ENDIF}
       if not (Result.Desc in [xtConstOrdInteger,xtChar,xtWideChar])
       and ((Result.Desc=xtContext)
@@ -4572,7 +4572,7 @@ begin
   while AtomIsChar('+') or AtomIsChar('-') or UpAtomIs('NOT') do
     ReadNextAtom;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
+  DebugLn('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
   {$ENDIF}
   if (AtomIsIdentifier(false))
   or (CurPos.Flag=cafRoundBracketOpen)
@@ -4637,7 +4637,7 @@ begin
     write(' Context.Node=',Result.Context.Node.DescAsString)
   else
     write(' Context.Node=nil');
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 end;
 
@@ -4701,7 +4701,7 @@ begin
           end;
             
         else
-          writeln('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
+          DebugLn('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
         end;
       end
       else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
@@ -4730,7 +4730,7 @@ function TFindDeclarationTool.CalculateBinaryOperator(LeftOperand,
 begin
   Result:=CleanExpressionType;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CalculateBinaryOperator] A',
+  DebugLn('[TFindDeclarationTool.CalculateBinaryOperator] A',
   ' LeftOperand=',ExpressionTypeDescNames[LeftOperand.Desc],
   ' Operator=',GetAtom(BinaryOperator),
   ' RightOperand=',ExpressionTypeDescNames[RightOperand.Desc]
@@ -4834,7 +4834,7 @@ begin
   end;
 
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] ',
+  DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] ',
   ' ExprParamList.Count=',SourceExprParamList.Count,
   ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
   );
@@ -4856,7 +4856,7 @@ begin
     ParamCompatibility:=IsCompatible(ParamNode,SourceExprParamList.Items[i],
                                      Params);
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] B ',ExprTypeToString(SourceExprParamList.Items[i]));
+    DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] B ',ExprTypeToString(SourceExprParamList.Items[i]));
     {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
@@ -4891,7 +4891,7 @@ begin
   end;
   {$IFDEF ShowExprEval}
     finally
-      writeln('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] END ',
+      DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] END ',
       ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
       );
     end;
@@ -4921,7 +4921,7 @@ begin
   MaxParamCnt:=MinParamCnt;
 
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
+  DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
   ' ExprParamList.Count=',TargetExprParamList.Count,' ',
   ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
   );
@@ -4937,7 +4937,7 @@ begin
   // check each parameter for compatibility
   
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
+  DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
     ' ExprParamList=[',TargetExprParamList.AsString,']');
   {$ENDIF}
   ParamNode:=FirstSourceParameterNode;
@@ -4947,7 +4947,7 @@ begin
     ParamCompatibility:=IsCompatible(TargetExprParamList.Items[i],
                                      SourceExprType,Params);
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',ExprTypeToString(TargetExprParamList.Items[i]));
+    DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',ExprTypeToString(TargetExprParamList.Items[i]));
     {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
@@ -4965,7 +4965,7 @@ begin
     
   {$IFDEF ShowExprEval}
     finally
-      writeln('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] END ',
+      DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] END ',
       ' Result=',TypeCompatibilityNames[Result],' ! ONLY VALID if no error !'
       );
     end;
@@ -5059,7 +5059,7 @@ var
 begin
   // the search has found an identifier with the right name
   {$IFDEF ShowFoundIdentifier}
-  writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+  DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
   ' Ident=',GetIdentifier(Params.Identifier),
   ' FoundContext=',FoundContext.Node.DescAsString,
   ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
@@ -5093,7 +5093,7 @@ begin
       // => impossible to check param list, because the context is unknown
       // -> identifier found
       {$IFDEF ShowProcSearch}
-      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' NO SOURCE to check params'
       );
@@ -5107,7 +5107,7 @@ begin
       // this is the first proc found
       // -> save it and proceed the search to find all overloadeded procs
       {$IFDEF ShowFoundIdentifier}
-      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' FIRST PROC'
       );
@@ -5121,7 +5121,7 @@ begin
     // (the expressions in the brackets are parsed and converted to types)
     if Params.FoundProc^.ExprInputList=nil then begin
       {$IFDEF ShowFoundIdentifier}
-      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' Creating Input Expression List ...'
       );
@@ -5133,7 +5133,7 @@ begin
         if (StartContextNode<>nil) then begin
           if (StartContextNode.Desc in AllPascalStatements) then begin
             {$IFDEF ShowProcSearch}
-            writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+            DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
             ' Ident=',GetIdentifier(Params.Identifier),
             ' Creating Input Expression List for statement ...'
             );
@@ -5152,7 +5152,7 @@ begin
           else if (StartContextNode.Desc in [ctnProcedureHead,ctnProcedure])
           then begin
             {$IFDEF ShowProcSearch}
-            writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+            DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
             ' Ident=',GetIdentifier(Params.Identifier),
             ' Creating Input Expression List for proc node ...'
             );
@@ -5181,7 +5181,7 @@ begin
     // (compare the expression list with the proc param list)
     if not Params.FoundProc^.CacheValid then begin
       {$IFDEF ShowFoundIdentifier}
-      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' Check the first found proc for compatibility ...'
       );
@@ -5200,7 +5200,7 @@ begin
       Params.FoundProc^.ProcCompatibility:=ParamCompatibility;
       Params.FoundProc^.CacheValid:=true;
       {$IFDEF ShowFoundIdentifier}
-      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' First Proc ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]
       );
@@ -5217,7 +5217,7 @@ begin
     // check the current proc for compatibility
     // (compare the expression list with the proc param list)
     {$IFDEF ShowFoundIdentifier}
-    writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+    DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
     ' Ident=',GetIdentifier(Params.Identifier),
     ' Check the current found proc for compatibility ...'
     );
@@ -5239,7 +5239,7 @@ begin
           Params,CurCompatibilityList);
       Params.Load(OldInput);
       {$IFDEF ShowFoundIdentifier}
-      writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+      DebugLn('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Ident=',GetIdentifier(Params.Identifier),
       ' Current Proc ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]
       );
@@ -5301,7 +5301,7 @@ var TargetContext: TFindContext;
   NodeExprType: TExpressionType;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsCompatible] A Node=',TargetNode.DescAsString,
+  DebugLn('[TFindDeclarationTool.IsCompatible] A Node=',TargetNode.DescAsString,
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc]);
   {$ENDIF}
   Result:=tcIncompatible;
@@ -5319,7 +5319,7 @@ begin
   end
   else if (TargetContext.Node.Desc=ctnSetType) then begin
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.IsCompatible] TargetContext.Node.Desc=ctnSetType',
+    DebugLn('[TFindDeclarationTool.IsCompatible] TargetContext.Node.Desc=ctnSetType',
     ' "',copy(TargetContext.Tool.Src,TargetContext.Node.Parent.StartPos,20),'"');
     {$ENDIF}
     if (ExpressionType.Desc=xtConstSet) then begin
@@ -5344,7 +5344,7 @@ begin
     Result:=IsCompatible(NodeExprType,ExpressionType,Params);
   end;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsCompatible] END',
+  DebugLn('[TFindDeclarationTool.IsCompatible] END',
   ' BaseNode=',TargetContext.Node.DescAsString,
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc],
   ' Result=',TypeCompatibilityNames[Result]
@@ -5409,7 +5409,7 @@ var ExprType: TExpressionType;
   
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CreateParamExprListFromStatement] ',
+  DebugLn('[TFindDeclarationTool.CreateParamExprListFromStatement] ',
   '"',copy(Src,StartPos,40),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=TExprTypeList.Create;
@@ -5455,9 +5455,9 @@ begin
     end;
   end;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CreateParamExprListFromStatement] END ',
+  DebugLn('[TFindDeclarationTool.CreateParamExprListFromStatement] END ',
   'ParamCount=',Result.Count,' "',copy(Src,StartPos,40),'"');
-  writeln('  ExprList=[',Result.AsString,']');
+  DebugLn('  ExprList=[',Result.AsString,']');
   {$ENDIF}
 end;
 
@@ -5468,7 +5468,7 @@ var
   ParamNode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CreateParamExprListFromProcNode] ',
+  DebugLn('[TFindDeclarationTool.CreateParamExprListFromProcNode] ',
   '"',copy(Src,ProcNode.StartPos,40),'" Context=',ProcNode.DescAsString);
   {$ENDIF}
   Result:=TExprTypeList.Create;
@@ -5481,9 +5481,9 @@ begin
     ParamNode:=ParamNode.NextBrother;
   end;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CreateParamExprListFromProcNode] END ',
+  DebugLn('[TFindDeclarationTool.CreateParamExprListFromProcNode] END ',
   'ParamCount=',Result.Count,' "',copy(Src,ProcNode.StartPos,40),'"');
-  writeln('  ExprList=[',Result.AsString,']');
+  DebugLn('  ExprList=[',Result.AsString,']');
   {$ENDIF}
 end;
 
@@ -5498,7 +5498,7 @@ begin
   // List1 is better, if first difference is better for List1
   Result:=(i>=0) and (List1[i]=tcExact);
   {$IFDEF ShowFoundIdentifier}
-  writeln('[TFindDeclarationTool.CompatibilityList1IsBetter] END i=',i);
+  DebugLn('[TFindDeclarationTool.CompatibilityList1IsBetter] END i=',i);
   {$ENDIF}
 end;
 
@@ -5517,7 +5517,7 @@ begin
   if not (DescendContext.Node.Desc in [ctnClass,ctnClassInterface]) then
     RaiseInternalError;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.ContextIsDescendOf] ',
+  DebugLn('[TFindDeclarationTool.ContextIsDescendOf] ',
   ' DescendContext="',copy(DescendContext.Tool.Src,DescendContext.Node.Parent.StartPos,15),'"');
   {$ENDIF}
   CurContext:=DescendContext;
@@ -5527,7 +5527,7 @@ begin
     if Result then begin
       CurContext:=CreateFindContext(Params);
       {$IFDEF ShowExprEval}
-      writeln('[TFindDeclarationTool.ContextIsDescendOf] B ',
+      DebugLn('[TFindDeclarationTool.ContextIsDescendOf] B ',
       ' CurContext="',copy(CurContext.Tool.Src,CurContext.Node.Parent.StartPos,15),'"');
       {$ENDIF}
       Result:=FindContextAreEqual(CurContext,AncestorContext);
@@ -5546,7 +5546,7 @@ function TFindDeclarationTool.IsBaseCompatible(const TargetType,
 var TargetNode, ExprNode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsBaseCompatible] B ',
+  DebugLn('[TFindDeclarationTool.IsBaseCompatible] B ',
   ' TargetType=',ExprTypeToString(TargetType),
   ' ExpressionType=',ExprTypeToString(ExpressionType));
   {$ENDIF}
@@ -5561,7 +5561,7 @@ begin
         TargetNode:=TargetType.Context.Node;
         ExprNode:=ExpressionType.Context.Node;
         {$IFDEF ShowExprEval}
-        writeln('[TFindDeclarationTool.IsBaseCompatible] C ',
+        DebugLn('[TFindDeclarationTool.IsBaseCompatible] C ',
         ' TargetContext="',copy(TargetType.Context.Tool.Src,TargetType.Context.Node.StartPos,20),'"',
         ' ExpressionContext="',copy(ExpressionType.Context.Tool.Src,ExpressionType.Context.Node.StartPos,20),'"'
         );
@@ -5639,7 +5639,7 @@ begin
     end;
   end;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsBaseCompatible] END ',
+  DebugLn('[TFindDeclarationTool.IsBaseCompatible] END ',
   ' TargetType=',ExpressionTypeDescNames[TargetType.Desc],
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc],
   ' Result=',TypeCompatibilityNames[Result]
@@ -5702,7 +5702,7 @@ begin
     end;
   end;
   {$IFDEF ShowCacheDependencies}
-  writeln('[TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange] Result=',Result,' ',MainFilename);
+  DebugLn('[TFindDeclarationTool.NodeCacheGlobalWriteLockStepDidNotChange] Result=',Result,' ',MainFilename);
   {$ENDIF}
 end;
 
@@ -5718,7 +5718,7 @@ begin
 
   FCheckingNodeCacheDependencies:=true;
   {$IFDEF ShowCacheDependencies}
-  writeln('[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename);
+  DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename);
   {$ENDIF}
   try
     ANode:=FDependsOnCodeTools.FindLowest;
@@ -5731,7 +5731,7 @@ begin
     Result:=UpdateNeeded(Scanner.ScanTillInterfaceEnd);
   finally
     {$IFDEF ShowCacheDependencies}
-    writeln('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',Result,' ',MainFilename);
+    DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',Result,' ',MainFilename);
     {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
     if Result then ClearNodeCaches(true);
@@ -5761,7 +5761,7 @@ begin
   and ((FDependsOnCodeTools=nil) or (FDependsOnCodeTools.Count=0)) then
     exit;
   {$IFDEF ShowCacheDependencies}
-  writeln('[TFindDeclarationTool.ClearNodeCaches] Force=',Force,' ',MainFilename);
+  DebugLn('[TFindDeclarationTool.ClearNodeCaches] Force=',Force,' ',MainFilename);
   {$ENDIF}
     
   // quick check: check if in the same GlobalWriteLockStep
@@ -5797,7 +5797,7 @@ begin
   if (FDependentCodeTools=nil) or FClearingDependentNodeCaches then exit;
   FClearingDependentNodeCaches:=true;
   {$IFDEF ShowCacheDependencies}
-  writeln('[TFindDeclarationTool.ClearDependentNodeCaches] ',MainFilename);
+  DebugLn('[TFindDeclarationTool.ClearDependentNodeCaches] ',MainFilename);
   {$ENDIF}
   try
     ANode:=FDependentCodeTools.FindLowest;
@@ -5819,7 +5819,7 @@ var
 begin
   if FDependsOnCodeTools=nil then exit;
   {$IFDEF ShowCacheDependencies}
-  writeln('[TFindDeclarationTool.ClearDependsOnToolRelationships] ',MainFilename);
+  DebugLn('[TFindDeclarationTool.ClearDependsOnToolRelationships] ',MainFilename);
   {$ENDIF}
   ANode:=FDependsOnCodeTools.FindLowest;
   while ANode<>nil do begin
@@ -5836,7 +5836,7 @@ procedure TFindDeclarationTool.AddToolDependency(
 // build a relationship: this tool depends on DependOnTool
 begin
   {$IFDEF ShowCacheDependencies}
-  writeln('[TFindDeclarationTool.AddToolDependency] "',MainFilename,'" depends on "',DependOnTool.MainFilename,'"');
+  DebugLn('[TFindDeclarationTool.AddToolDependency] "',MainFilename,'" depends on "',DependOnTool.MainFilename,'"');
   {$ENDIF}
   if DependOnTool.FDependentCodeTools=nil then
     DependOnTool.FDependentCodeTools:=TAVLTree.Create;
@@ -5965,7 +5965,7 @@ begin
   {$IFDEF ShowNodeCache}
   beVerbose:=CompareSrcIdentifiers(Params.Identifier,'InitDecompressor');
   if beVerbose then begin
-    writeln('(((((((((((((((((((((((((((==================');
+    DebugLn('(((((((((((((((((((((((((((==================');
     
     write('TFindDeclarationTool.AddResultToNodeCaches ',
     ' Ident=',GetIdentifier(Params.Identifier));
@@ -5973,14 +5973,14 @@ begin
     write(' Flags=[');
     if ncefSearchedInParents in SearchRangeFlags then write('Parents');
     if ncefSearchedInAncestors in SearchRangeFlags then write(',Ancestors');
-    writeln(']');
+    DebugLn(']');
     
     write('     StartNode=',StartNode.DescAsString,
       '(',StartNode.StartPos,'-',StartNode.EndPos,')=',
       WriteSrcPos(Self,StartNode.StartPos));
     NodeOwner:=FindOwnerOfCodeTreeNode(StartNode);
     if NodeOwner<>Self then write(' StartNodeOwner=',NodeOwnerAsString(NodeOwner));
-    writeln('');
+    DebugLn('');
     
     if EndNode<>nil then
       write(' EndNode=',EndNode.DescAsString,
@@ -5990,21 +5990,21 @@ begin
       write(' EndNode=nil');
     NodeOwner:=FindOwnerOfCodeTreeNode(EndNode);
     if NodeOwner<>Self then write(' EndNodeOwner=',NodeOwnerAsString(NodeOwner));
-    writeln('');
+    DebugLn('');
 
-    writeln('     Self=',ExtractFileName(MainFilename));
+    DebugLn('     Self=',ExtractFileName(MainFilename));
     
     if NewNode<>nil then begin
-      writeln('       NewNode=',NewNode.DescAsString,
+      DebugLn('       NewNode=',NewNode.DescAsString,
               '(',NewNode.StartPos,'-',NewNode.EndPos,')=',
               WriteSrcPos(NewTool,NewNode.StartPos),
                  ' NewTool=',ExtractFileName(NewTool.MainFilename));
     end else begin
-      writeln('       NOT FOUND');
+      DebugLn('       NOT FOUND');
     end;
     
-    writeln('  CleanStartPos=',CleanStartPos,' ',WriteSrcPos(Self,CleanStartPos));
-    writeln('  CleanEndPos=',CleanEndPos,' ',WriteSrcPos(Self,CleanEndPos));
+    DebugLn('  CleanStartPos=',CleanStartPos,' ',WriteSrcPos(Self,CleanStartPos));
+    DebugLn('  CleanEndPos=',CleanEndPos,' ',WriteSrcPos(Self,CleanEndPos));
   end;
   {$ENDIF}
   LastNodeCache:=nil;
@@ -6049,7 +6049,7 @@ begin
   end;
   {$IFDEF ShowNodeCache}
   if BeVerbose then begin
-    writeln('=========================))))))))))))))))))))))))))))))))');
+    DebugLn('=========================))))))))))))))))))))))))))))))))');
   end;
   {$ENDIF}
 end;
@@ -6079,7 +6079,7 @@ begin
   {$IFDEF ShowBaseTypeCache}
   write('[TFindDeclarationTool.CreateBaseTypeCaches] ',
   ' StackPtr=',NodeStack^.StackPtr);
-  writeln(' Self=',MainFilename);
+  DebugLn(' Self=',MainFilename);
   if Result.Node<>nil then
     write(' Result=',Result.Node.DescAsString,
        ' Start=',Result.Node.StartPos,
@@ -6087,14 +6087,14 @@ begin
        ' "',copy(Src,Result.Node.StartPos,15),'" ',Result.Tool.MainFilename)
   else
     write(' Result=nil');
-  writeln('');
+  DebugLn('');
   {$ENDIF}
   for i:=0 to (NodeStack^.StackPtr-1) do begin
     Node:=GetNodeStackEntry(NodeStack,i);
     if (Node.Cache=nil)
     and ((Result.Tool<>Self) or (Result.Node<>Node)) then begin
       {$IFDEF ShowBaseTypeCache}
-      writeln('  i=',i,' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,15),'"');
+      DebugLn('  i=',i,' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,15),'"');
       {$ENDIF}
       BaseTypeCache:=CreateNewBaseTypeCache(Node);
       if BaseTypeCache<>nil then begin
@@ -6142,7 +6142,7 @@ begin
                  fdfTopLvlResolving,fdfFunctionResult];
   ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
   {$IFDEF ShowExprEval}
-  writeln('TFindDeclarationTool.FindTermTypeAsString ExprTypeToString=',
+  DebugLn('TFindDeclarationTool.FindTermTypeAsString ExprTypeToString=',
     ExprTypeToString(ExprType));
   {$ENDIF}
   case ExprType.Desc of
@@ -6202,7 +6202,7 @@ begin
         end;
         
         if Result='' then begin
-          writeln('TFindDeclarationTool.FindTermTypeAsString ContextNode=',
+          DebugLn('TFindDeclarationTool.FindTermTypeAsString ContextNode=',
             FindContext.Node.DescAsString);
           RaiseTermNotSimple;
         end;
@@ -6254,7 +6254,7 @@ begin
     xtNil:
       RaiseTermNotSimple;
   else
-    writeln('TCodeCompletionCodeTool.FindTermTypeAsString ExprTypeToString=',
+    DebugLn('TCodeCompletionCodeTool.FindTermTypeAsString ExprTypeToString=',
       ExprTypeToString(ExprType));
     RaiseTermNotSimple;
   end;
@@ -6376,45 +6376,45 @@ end;
 
 procedure TFindDeclarationParams.WriteDebugReport;
 begin
-  writeln('TFindDeclarationParams.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  DebugLn('TFindDeclarationParams.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
 
   // input parameters:
-  writeln(' Flags=',FindDeclarationFlagsAsString(Flags));
-  writeln(' Identifier=',GetIdentifier(Identifier));
+  DebugLn(' Flags=',FindDeclarationFlagsAsString(Flags));
+  DebugLn(' Identifier=',GetIdentifier(Identifier));
   if ContextNode<>nil then
-    writeln(' ContextNode=',ContextNode.DescAsString)
+    DebugLn(' ContextNode=',ContextNode.DescAsString)
   else
-    writeln(' ContextNode=nil');
+    DebugLn(' ContextNode=nil');
   if OnIdentifierFound<>nil then
-    writeln(' OnIdentifierFound=',TFindDeclarationTool(TMethod(OnIdentifierFound).Data).MainFilename);
+    DebugLn(' OnIdentifierFound=',TFindDeclarationTool(TMethod(OnIdentifierFound).Data).MainFilename);
   if IdentifierTool<>nil then
-    writeln(' IdentifierTool=',IdentifierTool.MainFilename)
+    DebugLn(' IdentifierTool=',IdentifierTool.MainFilename)
   else
-    writeln(' IdentifierTool=nil');
+    DebugLn(' IdentifierTool=nil');
   if FoundProc<>nil then begin
-    writeln(' FoundProc<>nil');
+    DebugLn(' FoundProc<>nil');
   end;
 
   // global params
   if OnTopLvlIdentifierFound<>nil then
-    writeln(' OnTopLvlIdentifierFound=',TFindDeclarationTool(TMethod(OnTopLvlIdentifierFound).Code).MainFilename);
+    DebugLn(' OnTopLvlIdentifierFound=',TFindDeclarationTool(TMethod(OnTopLvlIdentifierFound).Code).MainFilename);
 
   // results:
   if NewNode<>nil then
-    writeln(' NewNode=',NewNode.DescAsString)
+    DebugLn(' NewNode=',NewNode.DescAsString)
   else
-    writeln(' NewNode=nil');
-  writeln(' NewCleanPos=',NewCleanPos);
+    DebugLn(' NewNode=nil');
+  DebugLn(' NewCleanPos=',dbgs(NewCleanPos));
   if NewCodeTool<>nil then
-    writeln(' NewCodeTool=',NewCodeTool.MainFilename)
+    DebugLn(' NewCodeTool=',NewCodeTool.MainFilename)
   else
-    writeln(' NewCodeTool=nil');
+    DebugLn(' NewCodeTool=nil');
   if NewPos.Code<>nil then
-    writeln(' NewPos=',NewPos.Code.Filename,' x=',NewPos.X,' y=',NewPos.Y,' topline=',NewTopLine)
+    DebugLn(' NewPos=',NewPos.Code.Filename,' x=',dbgs(NewPos.X),' y=',dbgs(NewPos.Y),' topline=',dbgs(NewTopLine))
   else
-    writeln(' NewPos=nil');
-  writeln(' NewFlags=',FoundDeclarationFlagsAsString(NewFlags));
-  writeln('');
+    DebugLn(' NewPos=nil');
+  DebugLn(' NewFlags=',FoundDeclarationFlagsAsString(NewFlags));
+  DebugLn('');
 end;
 
 procedure TFindDeclarationParams.SetIdentifier(

@@ -938,7 +938,7 @@ var
     Result:=false;
     IdentContext:=CleanFindContext;
     if (ClassContext.Node=nil) or (ClassContext.Node.Desc<>ctnClass) then begin
-      writeln('TStandardCodeTool.CheckLFM.FindLFMIdentifier Internal error');
+      DebugLn('TStandardCodeTool.CheckLFM.FindLFMIdentifier Internal error');
       exit;
     end;
     Params:=TFindDeclarationParams.Create;
@@ -949,7 +949,7 @@ var
       Params.ContextNode:=ClassContext.Node;
       Params.SetIdentifier(ClassContext.Tool,PChar(IdentName),nil);
       try
-        {writeln('FindLFMIdentifier A ',
+        {DebugLn('FindLFMIdentifier A ',
           ' Ident=',
           '"',GetIdentifier(Params.Identifier),'"',
           ' Context="',ClassContext.Node.DescAsString,'" "',StringToPascalConst(copy(ClassContext.Tool.Src,ClassContext.Node.StartPos,20)),'"',
@@ -1050,7 +1050,7 @@ var
     
     // find identifier in Lookup Root
     LFMObjectName:=LFMObject.Name;
-    //writeln('CheckChildObject A LFMObjectName="',LFMObjectName,'"');
+    //DebugLn('CheckChildObject A LFMObjectName="',LFMObjectName,'"');
     if LFMObjectName='' then begin
       LFMTree.AddError(lfmeObjectNameMissing,LFMObject,'missing object name',
                        LFMObject.StartPos);
@@ -1164,7 +1164,7 @@ var
     SearchContext: TFindContext;
   begin
     // find complete property name
-    //writeln('CheckLFMProperty A LFMProperty Name="',LFMProperty.CompleteName,'"');
+    //DebugLn('CheckLFMProperty A LFMProperty Name="',LFMProperty.CompleteName,'"');
 
     if LFMProperty.CompleteName='' then begin
       LFMTree.AddError(lfmePropertyNameMissing,LFMProperty,
@@ -1203,10 +1203,10 @@ var
   var
     CurLFMNode: TLFMTreeNode;
   begin
-    //writeln('TStandardCodeTool.CheckLFM.CheckLFMObjectValues A ',LFMObject.Name,':',LFMObject.TypeName);
+    //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMObjectValues A ',LFMObject.Name,':',LFMObject.TypeName);
     CurLFMNode:=LFMObject.FirstChild;
     while CurLFMNode<>nil do begin
-      //writeln('TStandardCodeTool.CheckLFM.CheckLFMObjectValues B ',CurLFMNode.ClassName);
+      //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMObjectValues B ',CurLFMNode.ClassName);
       case CurLFMNode.TheType of
       
       lfmnObject:
@@ -1229,7 +1229,7 @@ var
   begin
     Result:=false;
     
-    //writeln('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
+    //DebugLn('TStandardCodeTool.CheckLFM.CheckLFMRoot checking root ...');
     // get root object node
     if (LFMTree.Root=nil) or (not (LFMTree.Root is TLFMObjectNode)) then begin
       LFMTree.AddError(lfmeMissingRoot,nil,'missing root object',1);
@@ -1261,16 +1261,16 @@ var
   
 begin
   Result:=false;
-  //writeln('TStandardCodeTool.CheckLFM A');
+  //DebugLn('TStandardCodeTool.CheckLFM A');
   // create tree from LFM file
   LFMTree:=TLFMTree.Create;
-  //writeln('TStandardCodeTool.CheckLFM parsing LFM ...');
+  //DebugLn('TStandardCodeTool.CheckLFM parsing LFM ...');
   if not LFMTree.Parse(LFMBuf) then exit;
   // parse unit and find LookupRoot
-  //writeln('TStandardCodeTool.CheckLFM parsing unit ...');
+  //DebugLn('TStandardCodeTool.CheckLFM parsing unit ...');
   BuildTree(true);
   // find every identifier
-  //writeln('TStandardCodeTool.CheckLFM checking identifiers ...');
+  //DebugLn('TStandardCodeTool.CheckLFM checking identifiers ...');
   if not CheckLFMRoot then exit;
 
   Result:=LFMTree.FirstError=nil;
@@ -1715,7 +1715,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
     MaxPos:=length(CurSource);
     StartPos:=1;
     // go through all source parts between compiler directives
-    writeln('TStandardCodeTool.ReplaceIdentifiers ',ACode.Filename);
+    DebugLn('TStandardCodeTool.ReplaceIdentifiers ',ACode.Filename);
     repeat
       EndPos:=FindNextCompilerDirective(CurSource,StartPos,
                                         Scanner.NestedComments);
@@ -1733,7 +1733,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
             begin
               // identifier found -> replace
               IdentEnd:=IdentStart+length(IdentList[i]);
-              //writeln('TStandardCodeTool.ReplaceIdentifiers replacing: ',
+              //DebugLn('TStandardCodeTool.ReplaceIdentifiers replacing: ',
               //' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
               //);
               SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
@@ -1869,11 +1869,11 @@ begin
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   {$IFDEF VerboseGetStringConstBounds}
-  writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  DebugLn('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   {$ENDIF}
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
   {$IFDEF VerboseGetStringConstBounds}
-  writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  DebugLn('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
   {$ENDIF}
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
@@ -1882,7 +1882,7 @@ begin
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
   {$IFDEF VerboseGetStringConstBounds}
-  writeln('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
+  DebugLn('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
   {$ENDIF}
   CurrentToken:=GetCurrentTokenType;
   if (CurrentToken=scatNone) then exit;
@@ -1893,7 +1893,7 @@ begin
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
     {$IFDEF VerboseGetStringConstBounds}
-    writeln('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
+    DebugLn('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
     ' LastToken=',StrConstTokenTypeName[LastToken],
     ' CurrentToken=',StrConstTokenTypeName[CurrentToken],
     ' ',StrConstTokenTypeName[GetCurrentTokenType]);
@@ -1942,14 +1942,14 @@ begin
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
   {$IFDEF VerboseGetStringConstBounds}
-  writeln('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
+  DebugLn('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
   {$ENDIF}
   CurrentToken:=GetCurrentTokenType;
   repeat
     StartCleanPos:=CurPos.StartPos;
     ReadPriorAtom;
     {$IFDEF VerboseGetStringConstBounds}
-    writeln('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
+    DebugLn('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
     {$ENDIF}
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
@@ -1993,7 +1993,7 @@ begin
   
   // convert start and end position
   {$IFDEF VerboseGetStringConstBounds}
-  writeln('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'" StringConstantFound=',StringConstantFound);
+  DebugLn('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'" StringConstantFound=',StringConstantFound);
   {$ENDIF}
   if not StringConstantFound then begin
     EndCleanPos:=StartCleanPos;
@@ -2159,7 +2159,7 @@ function TStandardCodeTool.GatherResourceStringSections(
     MoveCursorToUsesEnd(UsesNode);
     repeat
       ReadPriorUsedUnit(UnitNameAtom, InAtom);
-      //writeln('TStandardCodeTool.GatherResourceStringSections Uses ',GetAtom(UnitNameAtom));
+      //DebugLn('TStandardCodeTool.GatherResourceStringSections Uses ',GetAtom(UnitNameAtom));
       // open the unit
       NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
       NewCodeTool.BuildTree(true);
@@ -2171,7 +2171,7 @@ function TStandardCodeTool.GatherResourceStringSections(
           if ANode.Desc=ctnResStrSection then begin
             if not NewCodeTool.CleanPosToCaret(ANode.StartPos,NewCaret) then
               break;
-            //writeln('TStandardCodeTool.GatherResourceStringSections Found Other ',NewCodeTool.MainFilename,' Y=',NewCaret.Y);
+            //DebugLn('TStandardCodeTool.GatherResourceStringSections Found Other ',NewCodeTool.MainFilename,' Y=',NewCaret.Y);
             PositionList.Add(NewCaret);
           end;
           ANode:=ANode.PriorBrother;
@@ -2180,7 +2180,7 @@ function TStandardCodeTool.GatherResourceStringSections(
       // restore the cursor
       MoveCursorToCleanPos(UnitNameAtom.StartPos);
       ReadPriorAtom; // read keyword 'uses' or comma
-      //writeln('TStandardCodeTool.GatherResourceStringSections Uses B ',GetAtom);
+      //DebugLn('TStandardCodeTool.GatherResourceStringSections Uses B ',GetAtom);
     until not AtomIsChar(',');
     Result:=true;
   end;
@@ -2192,7 +2192,7 @@ var
   ANode: TCodeTreeNode;
 begin
   Result:=false;
-  //writeln('TStandardCodeTool.GatherResourceStringSections A ');
+  //DebugLn('TStandardCodeTool.GatherResourceStringSections A ');
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   PositionList.Clear;
@@ -2203,7 +2203,7 @@ begin
     ctnResStrSection:
       begin
         if not CleanPosToCaret(ANode.StartPos,NewCaret) then exit;
-        //writeln('TStandardCodeTool.GatherResourceStringSections Found Same Y=',NewCaret.Y);
+        //DebugLn('TStandardCodeTool.GatherResourceStringSections Found Same Y=',NewCaret.Y);
         PositionList.Add(NewCaret);
       end;
       
@@ -2453,20 +2453,20 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   SourceChangeCache.BeginUpdate;
   try
-    writeln('ConvertDelphiToLazarusSource AddModeDelphiDirective');
+    DebugLn('ConvertDelphiToLazarusSource AddModeDelphiDirective');
     if not AddModeDelphiDirective then exit;
-    writeln('ConvertDelphiToLazarusSource RemoveDFMResourceDirective');
+    DebugLn('ConvertDelphiToLazarusSource RemoveDFMResourceDirective');
     if not RemoveDFMResourceDirective then exit;
-    writeln('ConvertDelphiToLazarusSource AddLRSIncludeDirective');
+    DebugLn('ConvertDelphiToLazarusSource AddLRSIncludeDirective');
     if not AddLRSIncludeDirective then exit;
-    writeln('ConvertDelphiToLazarusSource ConvertUsedUnits');
+    DebugLn('ConvertDelphiToLazarusSource ConvertUsedUnits');
     if not ConvertUsedUnits then exit;
-    writeln('ConvertDelphiToLazarusSource Apply');
+    DebugLn('ConvertDelphiToLazarusSource Apply');
     if not SourceChangeCache.Apply then exit;
   finally
     SourceChangeCache.EndUpdate;
   end;
-  writeln('ConvertDelphiToLazarusSource END');
+  DebugLn('ConvertDelphiToLazarusSource END');
   Result:=true;
 end;
 
@@ -2578,7 +2578,7 @@ function TStandardCodeTool.GatherResourceStringsWithValue(
     // -> add it to position list
     // get x,y position
     if not CleanPosToCaret(ANode.StartPos,NewCaret) then exit;
-    //writeln('TStandardCodeTool.GatherResourceStringsWithValue Found ',MainFilename,' Y=',NewCaret.Y);
+    //DebugLn('TStandardCodeTool.GatherResourceStringsWithValue Found ',MainFilename,' Y=',NewCaret.Y);
     PositionList.Add(NewCaret);
   end;
   
@@ -2680,21 +2680,21 @@ var
   NearestCleanPos: integer;
 begin
   Result:=false;
-  //writeln('TStandardCodeTool.AddResourcestring A ',NewIdentifier,'=',NewValue,' ');
+  //DebugLn('TStandardCodeTool.AddResourcestring A ',NewIdentifier,'=',NewValue,' ');
   if (NewIdentifier='') or (length(NewIdentifier)>255) then exit;
   if SourceChangeCache=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
   // parse source and find clean positions
-  //writeln('TStandardCodeTool.AddResourcestring B');
+  //DebugLn('TStandardCodeTool.AddResourcestring B');
   BuildTreeAndGetCleanPos(trAll,SectionPos,CleanSectionPos,[]);
-  //writeln('TStandardCodeTool.AddResourcestring C');
+  //DebugLn('TStandardCodeTool.AddResourcestring C');
   // find resource string section
   SectionNode:=FindDeepestNodeAtPos(CleanSectionPos,true);
   if (SectionNode=nil) then exit;
   SectionNode:=SectionNode.GetNodeOfType(ctnResStrSection);
   if SectionNode=nil then exit;
   
-  //writeln('TStandardCodeTool.AddResourcestring D SectionChilds=',SectionNode.FirstChild<>nil);
+  //DebugLn('TStandardCodeTool.AddResourcestring D SectionChilds=',SectionNode.FirstChild<>nil);
   // find insert position
   if SectionNode.FirstChild=nil then begin
     // no resourcestring in this section yet -> append as first child
@@ -2763,15 +2763,15 @@ begin
     end;
   end;
 
-  //writeln('TStandardCodeTool.AddResourcestring E Indent=',Indent,' InsertPos=',InsertPos,' ',copy(Src,InsertPos-9,8),'|',copy(Src,InsertPos,8));
+  //DebugLn('TStandardCodeTool.AddResourcestring E Indent=',Indent,' InsertPos=',InsertPos,' ',copy(Src,InsertPos-9,8),'|',copy(Src,InsertPos,8));
   // insert
   InsertSrc:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                      NewIdentifier+' = '+NewValue+';',Indent);
-  //writeln('TStandardCodeTool.AddResourcestring F "',InsertSrc,'"');
+  //DebugLn('TStandardCodeTool.AddResourcestring F "',InsertSrc,'"');
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertSrc);
   SourceChangeCache.Apply;
   Result:=true;
-  //writeln('TStandardCodeTool.AddResourcestring END ',Result);
+  //DebugLn('TStandardCodeTool.AddResourcestring END ',Result);
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

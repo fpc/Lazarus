@@ -1988,6 +1988,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TWinControl ControlKeyUp                                                    }
+{------------------------------------------------------------------------------}
+procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
+begin
+  // handle tab keys
+  if (Key=VK_Tab) and ((Shift=[]) or (Shift=[ssShift])) and Focused then begin
+    Key:=VK_UNKNOWN;
+    PerformTab(not (ssShift in Shift));
+  end;
+end;
+
+{------------------------------------------------------------------------------}
 {  TWinControl KeyPress                                                      }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.KeyPress(var Key: Char);
@@ -2033,11 +2045,8 @@ begin
       Application.NotifyKeyDownHandler(Self, CharCode, ShiftState);
     if CharCode = VK_UNKNOWN then Exit;
 
-    // handle tab keys
-    if (CharCode=VK_Tab) and Focused then begin
-      CharCode:=VK_UNKNOWN;
-      PerformTab(not (ssShift in ShiftState));
-    end;
+    // let controls handle the key
+    ControlKeyDown(CharCode, ShiftState);
   end;
 
   Result := False;
@@ -3545,6 +3554,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.233  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.232  2004/05/21 21:58:01  vincents
   Added if HandleAllocated to SetBorderStyle
 

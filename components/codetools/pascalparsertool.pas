@@ -436,7 +436,7 @@ procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
-  writeln('TPascalParserTool.BuildTree A');
+  DebugLn('TPascalParserTool.BuildTree A');
   {$ENDIF}
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
     // input is the same as last time -> output is the same
@@ -449,7 +449,7 @@ begin
     exit;
   end;
   ClearLastError;
-  writeln('TPascalParserTool.BuildTree B OnlyIntf=',OnlyInterfaceNeeded,'  ',TCodeBuffer(Scanner.MainCode).Filename);
+  DebugLn('TPascalParserTool.BuildTree B OnlyIntf=',dbgs(OnlyInterfaceNeeded),'  ',TCodeBuffer(Scanner.MainCode).Filename);
   //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(GetMem_Cnt));
   
   // scan code
@@ -502,7 +502,7 @@ begin
     if UpAtomIs('USES') then
       ReadUsesSection(true);
     repeat
-      //writeln('[TPascalParserTool.BuildTree] ALL '+GetAtom);
+      //DebugLn('[TPascalParserTool.BuildTree] ALL '+GetAtom);
       if not DoAtom then break;
       if CurSection=ctnNone then begin
         EndOfSourceFound:=true;
@@ -513,17 +513,17 @@ begin
     FForceUpdateNeeded:=false;
   except
     {$IFDEF ShowIgnoreErrorAfter}
-    writeln('TPascalParserTool.BuildTree ',MainFilename,' ERROR: ',LastErrorMessage);
+    DebugLn('TPascalParserTool.BuildTree ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
     if (not IgnoreErrorAfterValid)
     or (not IgnoreErrAfterPositionIsInFrontOfLastErrMessage) then
       raise;
     {$IFDEF ShowIgnoreErrorAfter}
-    writeln('TPascalParserTool.BuildTree ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
+    DebugLn('TPascalParserTool.BuildTree ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
     {$ENDIF}
   end;
   {$IFDEF CTDEBUG}
-  writeln('[TPascalParserTool.BuildTree] END');
+  DebugLn('[TPascalParserTool.BuildTree] END');
   {$ENDIF}
   {$IFDEF MEM_CHECK}
   CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(GetMem_Cnt));
@@ -835,7 +835,7 @@ function TPascalParserTool.KeyWordFuncClassVarTypeProc: boolean;
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
-//writeln('[TPascalParserTool.KeyWordFuncClassVarTypeProc]');
+//DebugLn('[TPascalParserTool.KeyWordFuncClassVarTypeProc]');
   IsFunction:=UpAtomIs('FUNCTION');
   ReadNextAtom;
   HasForwardModifier:=false;
@@ -1205,7 +1205,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
 var IsSpecifier: boolean;
   Attr: TProcHeadAttributes;
 begin
-  //writeln('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
+  //DebugLn('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
   //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
   Result:=true;
   HasForwardModifier:=false;
@@ -1617,7 +1617,7 @@ end;
 
 function TPascalParserTool.DoAtom: boolean;
 begin
-//writeln('[TPascalParserTool.DoAtom] A ',HexStr(Cardinal(CurKeyWordFuncList),8));
+//DebugLn('[TPascalParserTool.DoAtom] A ',HexStr(Cardinal(CurKeyWordFuncList),8));
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
       Result:=CurKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,

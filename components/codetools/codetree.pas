@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStructs, BasicCodeTools, AVL_Tree,
+  Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools, AVL_Tree,
   CodeToolMemManager;
 
 //-----------------------------------------------------------------------------
@@ -641,8 +641,8 @@ end;
 
 procedure TCodeTree.WriteDebugReport;
 begin
-  writeln('[TCodeTree.WriteDebugReport] Consistency=',ConsistencyCheck,
-    ' Root=',Root<>nil);
+  DebugLn('[TCodeTree.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck),
+    ' Root=',dbgs(Root<>nil));
 end;
 
 { TCodeTreeNodeExtension }
@@ -803,7 +803,7 @@ initialization
 
 finalization
 {$IFDEF CTDEBUG}
-writeln('codetree.pp - finalization');
+DebugLn('codetree.pp - finalization');
 {$ENDIF}
 {$IFDEF MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));

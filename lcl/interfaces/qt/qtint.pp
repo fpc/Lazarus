@@ -217,7 +217,7 @@ initialization
 finalization
   if (DeviceContexts.Count > 0) or (GDIObjects.Count > 0)
   then begin
-    WriteLN(Format('[QTInt] WARNING: There are %d unreleased DCs and %d unreleased GDIObjects' ,[DeviceContexts.Count, GDIObjects.Count]));
+    DebugLn(Format('[QTInt] WARNING: There are %d unreleased DCs and %d unreleased GDIObjects' ,[DeviceContexts.Count, GDIObjects.Count]));
   end;
   DeviceContexts.Free;
   GDIObjects.Free;

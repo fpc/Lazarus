@@ -42,7 +42,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree;
 
 const
@@ -412,7 +412,7 @@ var
   BestLinkIndex: Integer;
   BestLink: TSourceLink;
 begin
-  writeln('TCustomCodeTool.LoadDirtySource X=',CursorPos.X,' Y=',CursorPos.Y,
+  DebugLn('TCustomCodeTool.LoadDirtySource X=',dbgs(CursorPos.X),' Y=',dbgs(CursorPos.Y),
     ' ',ExtractFilename(CursorPos.Code.Filename));
   if DirtySrc=nil then DirtySrc:=TDirtySource.Create(Self);
   CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,NewDirtyStartPos);
@@ -1619,7 +1619,7 @@ function TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolea
 var
   IgnoreErrorAfterCleanPos: integer;
 begin
-  //writeln('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',
+  //DebugLn('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',
   //  ' LastErrorCheckedForIgnored=',LastErrorCheckedForIgnored,
   //  ' LastErrorBehindIgnorePosition=',LastErrorBehindIgnorePosition);
   if LastErrorCheckedForIgnored then begin
@@ -1627,7 +1627,7 @@ begin
   end else begin
     if (Scanner<>nil) then begin
       IgnoreErrorAfterCleanPos:=Scanner.IgnoreErrorAfterCleanedPos;
-      //writeln('  IgnoreErrorAfterCleanPos=',IgnoreErrorAfterCleanPos,
+      //DebugLn('  IgnoreErrorAfterCleanPos=',IgnoreErrorAfterCleanPos,
       //  ' LastErrorCurPos.EndPos=',LastErrorCurPos.EndPos,
       //  ' LastErrorPhase>CodeToolPhaseParse=',LastErrorPhase>CodeToolPhaseParse);
       if IgnoreErrorAfterCleanPos>0 then begin
@@ -1646,7 +1646,7 @@ begin
     LastErrorCheckedForIgnored:=true;
   end;
   {$IFDEF ShowIgnoreErrorAfter}
-  writeln('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',Result);
+  DebugLn('TCustomCodeTool.IgnoreErrAfterPositionIsInFrontOfLastErrMessage ',Result);
   {$ENDIF}
 end;
 
@@ -1654,7 +1654,7 @@ function TCustomCodeTool.IgnoreErrorAfterValid: boolean;
 begin
   Result:=(Scanner<>nil) and (Scanner.IgnoreErrorAfterValid);
   {$IFDEF ShowIgnoreErrorAfter}
-  writeln('TCustomCodeTool.IgnoreErrorAfterValid ',Result);
+  DebugLn('TCustomCodeTool.IgnoreErrorAfterValid ',Result);
   {$ENDIF}
 end;
 
@@ -1665,7 +1665,7 @@ begin
   else
     Result:=-1;
   {$IFDEF ShowIgnoreErrorAfter}
-  writeln('TCustomCodeTool.IgnoreErrorAfterCleanedPos ',Result);
+  DebugLn('TCustomCodeTool.IgnoreErrorAfterCleanedPos ',Result);
   {$ENDIF}
 end;
 
@@ -1681,7 +1681,7 @@ begin
   else
     Result:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  writeln('TCustomCodeTool.LastErrorsInFrontOfCleanedPos ACleanedPos=',ACleanedPos,
+  DebugLn('TCustomCodeTool.LastErrorsInFrontOfCleanedPos ACleanedPos=',ACleanedPos,
     Result);
   {$ENDIF}
 end;
@@ -1690,15 +1690,15 @@ procedure TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos(
   ACleanedPos: integer);
 begin
   {$IFDEF ShowIgnoreErrorAfter}
-  writeln('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos A ACleanedPos=',ACleanedPos,
+  DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos A ACleanedPos=',ACleanedPos,
     ' ');
   {$ENDIF}
   if Scanner<>nil then Scanner.RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos);
-  //writeln('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorPhase<CodeToolPhaseTool,' ',LastErrorCurPos.EndPos);
+  //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos B ',LastErrorPhase<CodeToolPhaseTool,' ',LastErrorCurPos.EndPos);
   if LastErrorValid
   and (LastErrorCurPos.EndPos<=ACleanedPos) then
     RaiseLastError;
-  //writeln('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos END ');
+  //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos END ');
 end;
 
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
@@ -1836,7 +1836,7 @@ begin
   else
     write('nil');
   write(' ',FIgnoreErrorAfter.P);
-  writeln('');
+  DebugLn('');
   {$ENDIF}
   if Scanner<>nil then
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
@@ -1927,15 +1927,15 @@ procedure TCustomCodeTool.WriteDebugTreeReport;
         //write(' LC=',HexStr(Cardinal(LastChild),8));
         {$endif}
       end;
-      writeln('');
+      DebugLn('');
       WriteSubTree(RootNode.FirstChild,Indent+'  ');
       RootNode:=RootNode.NextBrother;
     end;
   end;
 
 begin
-  writeln('[TCustomCodeTool.WriteDebugTreeReport] Consistency=',
-     ConsistencyCheck);
+  DebugLn('[TCustomCodeTool.WriteDebugTreeReport] Consistency=',
+     dbgs(ConsistencyCheck));
   WriteSubTree(Tree.Root,'  ');
 end;
 
@@ -1958,7 +1958,7 @@ var
   Brother: TCodeTreeNode;
 begin
   if StartNode<>nil then begin
-//writeln('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
+//DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
 //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
 //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
     if (StartNode.StartPos<=P)
@@ -1993,14 +1993,14 @@ end;
 function TCustomCodeTool.CaretToCleanPos(Caret: TCodeXYPosition;
   var CleanPos: integer): integer;
 begin
-  //writeln('TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Code.SourceLength);
+  //DebugLn('TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Code.SourceLength);
   Caret.Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
-  //writeln('TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X);
+  //DebugLn('TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X);
   if (CleanPos>=1) then
     Result:=Scanner.CursorToCleanPos(CleanPos,Caret.Code,CleanPos)
   else
     Result:=-2; // x,y beyond source
-  //writeln('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
+  //DebugLn('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
 end;
 
 function TCustomCodeTool.CleanPosToCodePos(CleanPos: integer;
@@ -2051,7 +2051,7 @@ begin
   MoveCursorToCleanPos(CodePosInFront);
   repeat
     ReadNextAtom;
-    //writeln('TCustomCodeTool.GetCleanPosInfo A Atom=',GetAtom,' CleanPos=',CleanPos,' CurPos.StartPos=',CurPos.StartPos);
+    //DebugLn('TCustomCodeTool.GetCleanPosInfo A Atom=',GetAtom,' CleanPos=',CleanPos,' CurPos.StartPos=',CurPos.StartPos);
     if (CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos) then begin
       // clean pos on token
       SameArea:=CurPos;
@@ -2068,7 +2068,7 @@ begin
       end;
       SameArea.EndPos:=SameArea.StartPos;
       repeat
-        //writeln('TCustomCodeTool.GetCleanPosInfo B CleanPos=',CleanPos,' SameArea.StartPos=',SameArea.StartPos,' SameArea.EndPos=',SameArea.EndPos);
+        //DebugLn('TCustomCodeTool.GetCleanPosInfo B CleanPos=',CleanPos,' SameArea.StartPos=',SameArea.StartPos,' SameArea.EndPos=',SameArea.EndPos);
         while (SameArea.EndPos<=SrcLen)
         and (IsSpaceChar[Src[SameArea.EndPos]]) do
           inc(SameArea.EndPos);
@@ -2207,7 +2207,7 @@ end;
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FForceUpdateNeeded);
+  DebugLn('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FForceUpdateNeeded);
   {$ENDIF}
   if FForceUpdateNeeded then begin
     Result:=true;
@@ -2217,7 +2217,7 @@ begin
            or (Scanner.UpdateNeeded(OnlyInterfaceNeeded, CheckFilesOnDisk));
   FForceUpdateNeeded:=Result;
   {$IFDEF CTDEBUG}
-  writeln('TCustomCodeTool.UpdateNeeded END  Result=',Result);
+  DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',Result);
   {$ENDIF}
 end;
 
@@ -2393,9 +2393,9 @@ begin
     GapSrc:=copy(Src,GapStart,GapEnd-GapStart);
     GapUpperSrc:=UpperCaseStr(GapSrc);
     {$IFDEF ShowDirtySrc}
-    writeln('TDirtySource.SetGap Owner=',ExtractFilename(Owner.MainFilename),
+    DebugLn('TDirtySource.SetGap Owner=',ExtractFilename(Owner.MainFilename),
       ' Code=',ExtractFilename(Code.Filename),
-      ' Gap(',GapStart,',',StartPos,',',GapEnd,')',
+      ' Gap('+dbgs(GapStart)+','+dbgs(StartPos)+','+dbgs(GapEnd)+')',
       '"',StringToPascalConst(copy(GapSrc,1,20)),'"..',
       '"',StringToPascalConst(copy(GapSrc,length(GapSrc)-19,20)),'"'
       );

@@ -227,7 +227,7 @@ begin
       // set extra signal masks after the widget window is created
       // define extra events we're interrested in
       //write('GTKRealizeAfterCB ');
-      //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
+      //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
       //DebugLn(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
       if (TheWinControl<>nil) then begin
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
@@ -461,21 +461,21 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  DebugLn(''); write('    ');
+  DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
     LCLObject:=GetNearestLCLObject(CurFocusWidget);
     if LCLObject<>nil then begin
       if LCLObject is TComponent then begin
-        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+        DbgOut(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
       end else begin
-        write(' ParentLCLFocus=',LCLObject.ClassName)
+        DbgOut(' ParentLCLFocus=',LCLObject.ClassName)
       end;
     end else
-      write(' LCLObject=nil');
+      DbgOut(' LCLObject=nil');
   end else begin
-    write(' GetFocus=nil');
+    DbgOut(' GetFocus=nil');
   end;
   DebugLn('');
   {$ENDIF}
@@ -530,8 +530,10 @@ begin
   EventTrace('map', data);
 end;
 
+
 function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
   Data: gPointer; BeforeEvent: boolean) : GBoolean; cdecl;
+{off $DEFINE VerboseKeyboard}
 var
   Msg: TLMKey;
   EventStopped: Boolean;
@@ -609,8 +611,8 @@ begin
 
   {$IFDEF VerboseKeyboard}
   DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
-    ' ',Event^.theType,' Widget=',GetWidgetClassName(Widget),
-    ' Before=',BeforeEvent,' HandledByLCL=',HandledByLCL);
+    ' ',dbgs(Event^.theType),' Widget=',GetWidgetClassName(Widget),
+    ' Before=',dbgs(BeforeEvent),' HandledByLCL=',dbgs(HandledByLCL));
   {$ENDIF}
 
   // handle every key event only once
@@ -678,7 +680,7 @@ begin
   GDK_KEY_RELEASE:
     begin
       {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',VKey.VKey);
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',dbgs(VKey.VKey));
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
@@ -711,7 +713,7 @@ begin
   GDK_KEY_PRESS:
     begin
       {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',VKey.VKey);
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey.VKey));
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
@@ -814,7 +816,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  DebugLn(''); write('    ');
+  DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -858,7 +860,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  DebugLn(''); write('    ');
+  DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -908,7 +910,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  DebugLn(''); write('    ');
+  DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -952,7 +954,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  DebugLn(''); write('    ');
+  DebugLn(''); DbgOut('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -3085,6 +3087,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.232  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.231  2004/05/14 12:53:25  mattias
   improved grids e.g. OnPrepareCanvas   patch from Jesus
 

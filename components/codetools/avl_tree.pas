@@ -876,7 +876,7 @@ var RealCount: integer;
         Result:=-2;  exit;
       end;
       if fOnCompare(ANode.Left.Data,ANode.Data)>0 then begin
-        writeln('CCC-3 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Left.Data),8));
+        //DebugLn('CCC-3 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Left.Data),8));
         Result:=-3;  exit;
       end;
       Result:=CheckNode(ANode.Left);
@@ -888,7 +888,7 @@ var RealCount: integer;
         Result:=-4;  exit;
       end;
       if fOnCompare(ANode.Data,ANode.Right.Data)>0 then begin
-        writeln('CCC-5 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Right.Data),8));
+        //DebugLn('CCC-5 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Right.Data),8));
         Result:=-5;  exit;
       end;
       Result:=CheckNode(ANode.Right);

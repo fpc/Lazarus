@@ -54,9 +54,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, CustomCodeTool, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, AVL_Tree, CodeToolMemManager, SourceChanger,
-  FindDeclarationTool, PascalParserTool;
+  Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree, CodeToolMemManager,
+  SourceChanger, FindDeclarationTool, PascalParserTool;
   
 
 type
@@ -415,7 +415,7 @@ begin
   if FFilteredList=nil then FFilteredList:=TList.Create;
   FFilteredList.Clear;
   {$IFDEF CTDEBUG}
-  writeln('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
+  DebugLn('TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"');
   {$ENDIF}
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
@@ -423,14 +423,14 @@ begin
     if (CurItem.Identifier<>nil)
     and ComparePrefixIdent(PChar(Prefix),CurItem.Identifier) then begin
       {$IFDEF ShowFilteredIdents}
-      writeln('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
+      DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
       {$ENDIF}
       FFilteredList.Add(CurItem);
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TIdentifierList.UpdateFilteredList ',FFilteredList.Count,' of ',FItems.Count);
+  DebugLn('TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count));
   {$ENDIF}
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
@@ -513,7 +513,7 @@ begin
     Include(FFlags,ilfFilteredListNeedsUpdate);
   end else begin
     // redefined identifier -> ignore
-    //writeln('TIdentifierList.Add redefined: ',NewItem.AsString);
+    //DebugLn('TIdentifierList.Add redefined: ',NewItem.AsString);
     NewItem.Free;
   end;
 end;
@@ -627,7 +627,7 @@ begin
   Result:=ifrProceedSearch;
 
   {$IFDEF ShowFoundIdents}
-  writeln('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
+  DebugLn('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
     ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
     ,' ',fdfIgnoreUsedUnits in Params.Flags);
   {$ENDIF}
@@ -689,7 +689,7 @@ begin
                             ctnNone);
   
   {$IFDEF ShowFoundIdents}
-  writeln('  IDENT COLLECTED: ',NewItem.AsString);
+  DebugLn('  IDENT COLLECTED: ',NewItem.AsString);
   {$ENDIF}
   
   CurrentIdentifierList.Add(NewItem);
@@ -846,7 +846,7 @@ begin
   try
     // build code tree
     {$IFDEF CTDEBUG}
-    writeln('TIdentCompletionTool.GatherIdentifiers A CursorPos=',CursorPos.X,',',CursorPos.Y);
+    DebugLn('TIdentCompletionTool.GatherIdentifiers A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
              [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos,{$ENDIF}]);
@@ -860,17 +860,17 @@ begin
     
     // find context
     {$IFDEF CTDEBUG}
-    writeln('TIdentCompletionTool.GatherIdentifiers B',
-      ' CleanCursorPos=',CleanCursorPos,
-      ' IdentStartPos=',IdentStartPos,' IdentEndPos=',IdentEndPos,
+    DebugLn('TIdentCompletionTool.GatherIdentifiers B',
+      ' CleanCursorPos=',dbgs(CleanCursorPos),
+      ' IdentStartPos=',dbgs(IdentStartPos),' IdentEndPos=',dbgs(IdentEndPos),
       ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
     ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
 
     {$IFDEF CTDEBUG}
-    writeln('TIdentCompletionTool.GatherIdentifiers C',
-      ' ContextExprStartPos=',ContextExprStartPos,
+    DebugLn('TIdentCompletionTool.GatherIdentifiers C',
+      ' ContextExprStartPos=',dbgs(ContextExprStartPos),
       ' Expr=',StringToPascalConst(copy(Src,ContextExprStartPos,
                     IdentStartPos-ContextExprStartPos)));
     {$ENDIF}
@@ -889,7 +889,7 @@ begin
     // search and gather identifiers in context
     if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
       {$IFDEF CTDEBUG}
-      writeln('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
+      DebugLn('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
         GatherContext.Tool.MainFilename,
         ' ',GatherContext.Node.DescAsString,
         ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
@@ -902,7 +902,7 @@ begin
       if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
         Exclude(Params.Flags,fdfSearchInParentNodes);
       {$IFDEF CTDEBUG}
-      writeln('TIdentCompletionTool.GatherIdentifiers F');
+      DebugLn('TIdentCompletionTool.GatherIdentifiers F');
       {$ENDIF}
       CurrentIdentifierList.Context:=GatherContext;
       GatherContext.Tool.FindIdentifierInContext(Params);
@@ -910,7 +910,7 @@ begin
     
     // add useful identifiers without context
     {$IFDEF CTDEBUG}
-    writeln('TIdentCompletionTool.GatherIdentifiers G');
+    DebugLn('TIdentCompletionTool.GatherIdentifiers G');
     {$ENDIF}
     GatherUsefulIdentifiers(IdentStartPos,GatherContext,BeautifyCodeOptions);
     
@@ -960,7 +960,7 @@ begin
     DeactivateGlobalWriteLock;
   end;
   {$IFDEF CTDEBUG}
-  writeln('TIdentCompletionTool.GatherIdentifiers END');
+  DebugLn('TIdentCompletionTool.GatherIdentifiers END');
   {$ENDIF}
 end;
 
@@ -1154,7 +1154,7 @@ begin
   if NewItem=nil then exit;
   OldAVLNode:=FindItem(NewItem);
   {$IFDEF ShowHistory}
-  writeln('TIdentifierHistoryList.Add Count=',Count,' Found=',OldAVLNode<>nil,
+  DebugLn('TIdentifierHistoryList.Add Count=',Count,' Found=',OldAVLNode<>nil,
     ' ITEM: ',NewItem.AsString);
   {$ENDIF}
   if OldAVLNode<>nil then begin
@@ -1185,7 +1185,7 @@ begin
     FItems.FreeAndDelete(FItems.FindHighest);
   FItems.Add(NewHistItem);
   {$IFDEF ShowHistory}
-  writeln('TIdentifierHistoryList.Added Count=',Count);
+  DebugLn('TIdentifierHistoryList.Added Count=',Count);
   {$ENDIF}
 end;
 

@@ -507,7 +507,7 @@ begin
   Filename:='';
   if TheUnitName='' then exit;
   {$IFDEF ShowTriedFiles}
-  writeln('SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
+  DebugLn('SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
   {$ENDIF}
   if UnitLinkStart<1 then
     UnitLinkStart:=1;
@@ -522,7 +522,7 @@ begin
     UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
     if UnitLinkLen>0 then begin
       {$IFDEF ShowTriedFiles}
-      writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
+      DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
         AnsiStrLIComp(PChar(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen));
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
@@ -1056,9 +1056,9 @@ begin
   { Raises an exception.
     gdb does not catch fpc Exception objects, therefore this procedure raises
     a standard AV which is catched by gdb. }
-  writeln('ERROR in CodeTools: ',Msg);
+  DebugLn('ERROR in CodeTools: ',Msg);
   // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
+  DebugLn('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
@@ -1339,7 +1339,7 @@ begin
     end;
     while DefTempl<>nil do begin
       if DefTempl.Parent<>Self then begin
-        writeln('  C: DefTempl.Parent<>Self: ',Name,',',DefTempl.Name);
+        DebugLn('  C: DefTempl.Parent<>Self: ',Name,',',DefTempl.Name);
         Result:=-3;  exit;
       end;
       if (DefTempl.Next<>nil) and (DefTempl.Next.Prior<>DefTempl) then begin
@@ -1408,18 +1408,18 @@ procedure TDefineTemplate.WriteDebugReport(OnlyMarked: boolean);
     if ANode=nil then exit;
     if (not OnlyMarked) or (ANode.Marked) then begin
       ActionStr:=DefineActionNames[ANode.Action];
-      writeln(Prefix,'Self=',HexStr(Cardinal(ANode),8),
-        ' Name="',ANode.Name,'"',
-        ' Consistency=',ANode.ConsistencyCheck,
-        ' Next=',HexStr(Cardinal(ANode.Next),8),
-        ' Prior=',HexStr(Cardinal(ANode.Prior),8),
-        ' Action=',ActionStr,
-        ' Flags=[',DefineTemplateFlagsToString(ANode.Flags),']',
-        ' Marked=',ANode.Marked
+      DebugLn(Prefix+'Self='+HexStr(Cardinal(ANode),8),
+        ' Name="'+ANode.Name,'"',
+        ' Consistency='+dbgs(ANode.ConsistencyCheck),
+        ' Next='+HexStr(Cardinal(ANode.Next),8),
+        ' Prior='+HexStr(Cardinal(ANode.Prior),8),
+        ' Action='+ActionStr,
+        ' Flags=['+DefineTemplateFlagsToString(ANode.Flags),']',
+        ' Marked='+dbgs(ANode.Marked)
         );
-      writeln(Prefix+'   + Description="',ANode.Description,'"');
-      writeln(Prefix+'   + Variable="',ANode.Variable,'"');
-      writeln(Prefix+'   + Value="',ANode.Value,'"');
+      DebugLn(Prefix+'   + Description="',ANode.Description,'"');
+      DebugLn(Prefix+'   + Variable="',ANode.Variable,'"');
+      DebugLn(Prefix+'   + Value="',ANode.Value,'"');
     end;
     WriteNode(ANode.FirstChild,Prefix+'  ');
     WriteNode(ANode.Next,Prefix);
@@ -1498,7 +1498,8 @@ begin
     end;
     Result:=(SrcNode=nil) and (DestNode=nil);
     if not Result then begin
-writeln('TDefineTemplate.IsEqual DIFF 3 ',Name,' ',ADefineTemplate.Name,' ',ChildCount,' ',ADefineTemplate.ChildCount);
+      DebugLn('TDefineTemplate.IsEqual DIFF 3 ',Name,' ',
+        ADefineTemplate.Name,' ',dbgs(ChildCount),' ',dbgs(ADefineTemplate.ChildCount));
     end;
   end;
 end;
@@ -1657,13 +1658,13 @@ begin
   MarkNonAutoCreated;
   RemoveMarked;
   SrcNonAutoCreated:=SrcDefineTree.ExtractNonAutoCreated;
-writeln('TDefineTree.AssignNonAutoCreated A Front=',SrcNonAutoCreated.MergeNameInFront,' Behind=',SrcNonAutoCreated.MergeNameBehind);
+DebugLn('TDefineTree.AssignNonAutoCreated A Front=',SrcNonAutoCreated.MergeNameInFront,' Behind=',SrcNonAutoCreated.MergeNameBehind);
   if SrcNonAutoCreated=nil then exit;
   MergeTemplates(SrcNonAutoCreated,'');
   SrcNonAutoCreated.Clear(true);
   SrcNonAutoCreated.Free;
   FFirstDefineTemplate.CreateMergeInfo(true,false);
-writeln('TDefineTree.AssignNonAutoCreated B Front=',FFirstDefineTemplate.MergeNameInFront,' Behind=',FFirstDefineTemplate.MergeNameBehind);
+DebugLn('TDefineTree.AssignNonAutoCreated B Front=',FFirstDefineTemplate.MergeNameInFront,' Behind=',FFirstDefineTemplate.MergeNameBehind);
 end;
 
 procedure TDefineTree.ClearCache;
@@ -1729,7 +1730,7 @@ function TDefineTree.GetDirDefinesForDirectory(const Path: string;
 var
   ExpPath: String;
 begin
-  //writeln('[TDefineTree.GetDirDefinesForDirectory] "',Path,'"');
+  //DebugLn('[TDefineTree.GetDirDefinesForDirectory] "',Path,'"');
   if (Path<>'') or (not WithVirtualDir) then begin
     ExpPath:=TrimFilename(Path);
     if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
@@ -1738,12 +1739,12 @@ begin
     if Result=nil then begin
       Result:=TDirectoryDefines.Create;
       Result.Path:=ExpPath;
-      //writeln('[TDefineTree.GetDirDefinesForDirectory] B ',ExpPath,' ');
+      //DebugLn('[TDefineTree.GetDirDefinesForDirectory] B ',ExpPath,' ');
       if Calculate(Result) then begin
-        //writeln('[TDefineTree.GetDirDefinesForDirectory] C success');
+        //DebugLn('[TDefineTree.GetDirDefinesForDirectory] C success');
         FCache.Add(Result);
       end else begin
-        //writeln('[TDefineTree.GetDirDefinesForDirectory] D failed');
+        //DebugLn('[TDefineTree.GetDirDefinesForDirectory] D failed');
         Result.Free;
         Result:=nil;
       end;
@@ -1756,11 +1757,11 @@ end;
 function TDefineTree.GetDirDefinesForVirtualDirectory: TDirectoryDefines;
 begin
   if FVirtualDirCache=nil then begin
-    //writeln('################ TDefineTree.GetDirDefinesForVirtualDirectory');
+    //DebugLn('################ TDefineTree.GetDirDefinesForVirtualDirectory');
     FVirtualDirCache:=TDirectoryDefines.Create;
     FVirtualDirCache.Path:=VirtualDirectory;
     if Calculate(FVirtualDirCache) then begin
-      //writeln('TDefineTree.GetDirDefinesForVirtualDirectory ');
+      //DebugLn('TDefineTree.GetDirDefinesForVirtualDirectory ');
     end else begin
       FVirtualDirCache.Free;
       FVirtualDirCache:=nil;
@@ -1808,7 +1809,7 @@ end;
 procedure TDefineTree.DoClearCache;
 begin
   {$IFDEF VerboseDefineCache}
-  writeln('TDefineTree.DoClearCache A +++++++++');
+  DebugLn('TDefineTree.DoClearCache A +++++++++');
   {$ENDIF}
   if FCache<>nil then FCache.FreeAndClear;
   if FVirtualDirCache<>nil then begin
@@ -2076,8 +2077,8 @@ var
       // Macro variable
       MacroVarName:=copy(CurValue,MacroStart+2,MacroEnd-MacroStart-3);
       MacroStr:=MacroVarName;
-      //writeln('**** MacroVarName=',MacroVarName,' ',DirDef.Values.Variables[MacroVarName]);
-      //writeln('DirDef.Values=',DirDef.Values.AsString);
+      //DebugLn('**** MacroVarName=',MacroVarName,' ',DirDef.Values.Variables[MacroVarName]);
+      //DebugLn('DirDef.Values=',DirDef.Values.AsString);
       if MacroVarName=DefinePathMacroName then begin
         MacroStr:=CurDefinePath;
       end else if DirDef.Values.IsDefined(MacroVarName) then begin
@@ -2131,7 +2132,7 @@ var
 var MacroStart,MacroEnd: integer;
   ValueLen: Integer;
 begin
-  //  writeln('    [ReadValue] A   "',PreValue,'"');
+  //  DebugLn('    [ReadValue] A   "',PreValue,'"');
   NewValue:=PreValue;
   if NewValue='' then exit;
   MacroStart:=1;
@@ -2160,7 +2161,7 @@ begin
     MacroStart:=MacroEnd;
   end;
   if Buffer<>nil then SetNewValue;
-  //  writeln('    [ReadValue] END "',NewValue,'"');
+  //  DebugLn('    [ReadValue] END "',NewValue,'"');
 end;
 
 procedure TDefineTree.MarkTemplatesOwnedBy(TheOwner: TObject; const MustFlags,
@@ -2248,7 +2249,7 @@ var
   var SubPath, TempValue: string;
   begin
     while DefTempl<>nil do begin
-      //writeln('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
+      //DebugLn('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
       case DefTempl.Action of
       da_Block:
         // calculate children
@@ -2297,7 +2298,7 @@ var
       da_IfDef:
         // test if variable is defined
         begin
-          //writeln('CalculateTemplate A ',DefTempl.Name,' ',DefTempl.Variable,' ',DirDef.Values.IsDefined(DefTempl.Variable),' CurPath="',CurPath,'"');
+          //DebugLn('CalculateTemplate A ',DefTempl.Name,' ',DefTempl.Variable,' ',DirDef.Values.IsDefined(DefTempl.Variable),' CurPath="',CurPath,'"');
           if DirDef.Values.IsDefined(DefTempl.Variable) then
             CalculateIfChilds;
         end;
@@ -2335,7 +2336,7 @@ var
 // function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
 begin
   {$IFDEF VerboseDefineCache}
-  writeln('[TDefineTree.Calculate] ++++++ "',DirDef.Path,'"');
+  DebugLn('[TDefineTree.Calculate] ++++++ "',DirDef.Path,'"');
   {$ENDIF}
   Result:=true;
   FErrorTemplate:=nil;
@@ -2531,13 +2532,13 @@ end;
 
 procedure TDefineTree.WriteDebugReport;
 begin
-  writeln('TDefineTree.WriteDebugReport  Consistency=',ConsistencyCheck);
+  DebugLn('TDefineTree.WriteDebugReport  Consistency=',dbgs(ConsistencyCheck));
   if FFirstDefineTemplate<>nil then
     FFirstDefineTemplate.WriteDebugReport(false)
   else
-    writeln('  No templates defined');
-  writeln(FCache.ReportAsString);
-  writeln('');
+    DebugLn('  No templates defined');
+  DebugLn(FCache.ReportAsString);
+  DebugLn('');
 end;
 
     
@@ -2698,7 +2699,7 @@ var
       if not FilenameIsAbsolute(NewPath) then
         NewPath:=ExpandFileName(NewPath);
       {$IFDEF VerboseFPCSrcScan}
-      writeln('Using unit path: "',NewPath,'"');
+      DebugLn('Using unit path: "',NewPath,'"');
       {$ENDIF}
       UnitSearchPath:=UnitSearchPath+NewPath+#13;
     end;
@@ -2713,7 +2714,7 @@ var CmdLine: string;
   NewDefTempl: TDefineTemplate;
   SrcOS: string;
 begin
-  //writeln('CreateFPCTemplate ',PPC386Path,' ',PPCOptions);
+  //DebugLn('CreateFPCTemplate ',PPC386Path,' ',PPCOptions);
   Result:=nil;
   UnitSearchPath:='';
   TargetOS:='';
@@ -2853,7 +2854,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('ERROR: TDefinePool.CreateFPCTemplate: ',E.Message);
+      DebugLn('ERROR: TDefinePool.CreateFPCTemplate: ',E.Message);
     end;
   end;
   if Result<>nil then
@@ -2991,7 +2992,7 @@ var
       DefaultMacroCount: integer;
     begin
       {$IFDEF VerboseFPCSrcScan}
-      writeln('Browse ',ADirPath);
+      DebugLn('Browse ',ADirPath);
       {$ENDIF}
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
@@ -3096,9 +3097,9 @@ var
     {$IFDEF VerboseFPCSrcScan}
     write('AddFPCSourceLinkForUnit ',AnUnitName,' ');
     if UnitLink<>nil then
-      writeln(' -> ',UnitLink.Filename)
+      DebugLn(' -> ',UnitLink.Filename)
     else
-      writeln('MISSING');
+      DebugLn('MISSING');
     {$ENDIF}
     if UnitLink=nil then exit;
     s:=AnUnitName+' '+UnitLink.Filename+LineEnding;
@@ -3112,7 +3113,7 @@ var
     CurMask: String;
   begin
     {$IFDEF VerboseFPCSrcScan}
-    writeln('FindStandardPPUSources ..');
+    DebugLn('FindStandardPPUSources ..');
     {$ENDIF}
     // try every ppu file in every reachable directory (CompUnitPath)
     if UnitLinkListValid then exit;
@@ -3135,7 +3136,7 @@ var
       if PathEnd>PathStart then begin
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
         {$IFDEF VerboseFPCSrcScan}
-        writeln('FindStandardPPUSources Searching ',CurMask,' in ',ADirPath);
+        DebugLn('FindStandardPPUSources Searching ',CurMask,' in ',ADirPath);
         {$ENDIF}
         // search all ppu files in this directory
         if FindFirst(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
@@ -3143,7 +3144,7 @@ var
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
             {$IFDEF VerboseFPCSrcScan}
-            writeln('FindStandardPPUSources Found: ',UnitName);
+            DebugLn('FindStandardPPUSources Found: ',UnitName);
             {$ENDIF}
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
@@ -3168,7 +3169,7 @@ var
   SrcPathMacro: String;
 begin
   {$IFDEF VerboseFPCSrcScan}
-  writeln('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
+  DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
   {$ENDIF}
   Result:=nil;
   if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then exit;
@@ -4100,7 +4101,7 @@ end;
 procedure TDefinePool.WriteDebugReport;
 var i: integer;
 begin
-  writeln('TDefinePool.WriteDebugReport Consistency=',ConsistencyCheck);
+  DebugLn('TDefinePool.WriteDebugReport Consistency=',dbgs(ConsistencyCheck));
   for i:=0 to Count-1 do begin
     Items[i].WriteDebugReport(false);
   end;

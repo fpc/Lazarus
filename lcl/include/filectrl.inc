@@ -854,7 +854,7 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-//writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
+//debugln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
   if (Filename='') then begin
     Result:='';
     exit;
@@ -928,6 +928,9 @@ end;
 
 {
   $Log$
+  Revision 1.45  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.44  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

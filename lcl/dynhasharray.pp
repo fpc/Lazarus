@@ -297,7 +297,7 @@ begin
       while HashItem<>nil do begin
         write(' ',HexStr(Cardinal(HashItem^.Item),8));
         RealHashIndex:=IndexOf(HashItem^.Item);
-        if RealHashIndex<>i then write('(H=',RealHashIndex,')');
+        if RealHashIndex<>i then DbgOut('(H='+dbgs(RealHashIndex)+')');
         HashItem:=HashItem^.Next;
         if (HashItem<>nil) and (HashItem^.IsOverflow=false) then break;
       end;

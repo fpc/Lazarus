@@ -53,23 +53,24 @@ type
     );
 
   {TNumGlyphs holds the number of glyphs in an image.
-    We restrict it to 4 to stay compatable but we don't NEED to.
+    We restrict it to 4 to stay compatible but we don't NEED to.
     If we change this the code in SetNumGlyphs for @link(TSpeedButton) needs to
     be changed }
   TNumGlyphs = 1..4;
 
   TButton = class(TButtonControl)
   private
-    FCancel : Boolean;
-    FDefault : Boolean;
-    FModalResult : TModalResult;
-    FShortCut : TLMShortcut;
+    FCancel: Boolean;
+    FDefault: Boolean;
+    FModalResult: TModalResult;
+    FShortCut: TLMShortcut;
     Procedure SetDefault(Value : Boolean);
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
+    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); override;
 
     procedure SetParent(AParent: TWinControl); override;
     procedure RealSetText(const Value: TCaption); override;
@@ -328,6 +329,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.66  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 

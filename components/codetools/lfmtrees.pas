@@ -30,7 +30,7 @@ unit LFMTrees;
 interface
 
 uses
-  Classes, SysUtils, CodeCache, CodeAtom;
+  Classes, SysUtils, FileProcs, CodeCache, CodeAtom;
   
 type
   { TLFMTreeNode }
@@ -332,7 +332,7 @@ begin
   NewError.Source:=LFMBuffer;
   NewError.Position:=ErrorPosition;
   NewError.Caret:=PositionToCaret(NewError.Position);
-  writeln('TLFMTree.AddError ',NewError.AsString);
+  DebugLn('TLFMTree.AddError ',NewError.AsString);
   NewError.AddToTree(Self);
 end;
 
@@ -509,7 +509,7 @@ var
 begin
   CreateChildNode(TLFMObjectNode);
   ObjectNode:=TLFMObjectNode(CurNode);
-  //writeln('TLFMTree.ProcessObject A ',Parser.TokenString);
+  //DebugLn('TLFMTree.ProcessObject A ',Parser.TokenString);
   if Parser.TokenSymbolIs('OBJECT') then
     ObjectNode.IsInherited := False
   else begin

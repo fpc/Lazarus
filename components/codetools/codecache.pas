@@ -235,7 +235,7 @@ begin
     Result:=TCodeBuffer(ANode.Data);
     c:=CompareFilenames(AFilename,Result.Filename);
     {$IFDEF CTDEBUG}
-    if c=0 then writeln(' File found !!! ',Result.Filename);
+    if c=0 then DebugLn(' File found !!! ',Result.Filename);
     {$ENDIF}
     if c<0 then ANode:=ANode.Left
     else if c>0 then ANode:=ANode.Right
@@ -304,7 +304,7 @@ end;
 function TCodeCache.SaveBufferAs(OldBuffer: TCodeBuffer; 
   const AFilename: string; var NewBuffer: TCodeBuffer): boolean;
 begin
-  //writeln('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
+  //DebugLn('[TCodeCache.SaveBufferAs] ',OldBuffer.Filename,' ',AFilename);
   if (OldBuffer=nil) then begin
     NewBuffer:=nil;
     Result:=false;
@@ -316,14 +316,14 @@ begin
     exit;
   end;
   NewBuffer:=FindFile(AFilename);
-  //writeln('[TCodeCache.SaveBufferAs] B ',NewBuffer=nil);
+  //DebugLn('[TCodeCache.SaveBufferAs] B ',NewBuffer=nil);
   //WriteAllFileNames;
   if NewBuffer=nil then begin
     NewBuffer:=TCodeBuffer.Create;
     NewBuffer.FileName:=AFilename;
     NewBuffer.Source:=OldBuffer.Source;
     Result:=NewBuffer.Save;
-    //writeln('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
+    //DebugLn('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
     if not Result then begin
       NewBuffer.Free;
       NewBuffer:=nil;
@@ -391,7 +391,7 @@ end;
 function TCodeCache.OnScannerGetSource(Sender: TObject;
   Code: pointer): TSourceLog;
 begin
-//writeln('[TCodeCache.OnScannerGetSource] A ',HexStr(Cardinal(Code),8),'/',Count);
+//DebugLn('[TCodeCache.OnScannerGetSource] A ',HexStr(Cardinal(Code),8),'/',Count);
   if (Code<>nil) then
     Result:=TSourceLog(Code)
   else
@@ -416,7 +416,7 @@ function TCodeCache.OnScannerCheckFileOnDisk(Code: pointer): boolean;
 var Buf: TCodeBuffer;
 begin
   Buf:=TCodeBuffer(Code);
-  //writeln('OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoUpdateFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged);
+  //DebugLn('OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoUpdateFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged);
   if Buf.AutoRevertFromDisk then begin
     if GlobalWriteLockIsSet then begin
       if GlobalWriteLockStep<>Buf.GlobalWriteLockStepOnLastLoad then begin
@@ -584,7 +584,7 @@ var
     DiffTime:=CurTime-ALink.LastTimeUsed;
     if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
       {if Index<50 then
-        writeln('TCodeCache.SaveIncludeLinksToXML ',
+        DebugLn('TCodeCache.SaveIncludeLinksToXML ',
           Index,' ',ALink.IncludeFilename,
           ' LastTimeUsed=',FormatDateTime('ddddd', ALink.LastTimeUsed),
           ' CurTime=',FormatDateTime('ddddd',CurTime),
@@ -691,9 +691,9 @@ end;
 
 procedure TCodeCache.WriteDebugReport;
 begin
-  writeln('[TCodeCache.WriteDebugReport] Consistency=',ConsistencyCheck);
-  writeln(FItems.ReportAsString);
-  writeln(FIncludeLinks.ReportAsString);
+  DebugLn('[TCodeCache.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
+  DebugLn(FItems.ReportAsString);
+  DebugLn(FIncludeLinks.ReportAsString);
 end;
 
 procedure TCodeCache.WriteAllFileNames;
@@ -701,12 +701,12 @@ procedure TCodeCache.WriteAllFileNames;
   begin
     if ANode=nil then exit;
     WriteNode(ANode.Left);
-    writeln('  ',TCodeBuffer(ANode.Data).Filename);
+    DebugLn('  ',TCodeBuffer(ANode.Data).Filename);
     WriteNode(ANode.Right);
   end;
 
 begin
-  writeln('TCodeCache.WriteAllFileNames: ',FItems.Count);
+  DebugLn('TCodeCache.WriteAllFileNames: ',dbgs(FItems.Count));
   WriteNode(FItems.Root);
 end;
 
@@ -730,7 +730,7 @@ end;
 
 function TCodeBuffer.LoadFromFile(const AFilename: string): boolean;
 begin
-  //writeln('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
+  //DebugLn('[TCodeBuffer.LoadFromFile] WriteLock=',WriteLock,' ReadOnly=',ReadOnly,
   //' IsVirtual=',IsVirtual,' Old="',Filename,'" ',CompareFilenames(AFilename,Filename));
   if (WriteLock>0) or (ReadOnly) then begin
     Result:=false;
@@ -738,7 +738,7 @@ begin
   end;
   if not IsVirtual then begin
     if CompareFilenames(AFilename,Filename)=0 then begin
-      //writeln('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
+      //DebugLn('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
       if FileNeedsUpdate then begin
         Result:=inherited LoadFromFile(AFilename);
         if Result then MakeFileDateValid;
@@ -756,7 +756,7 @@ end;
 function TCodeBuffer.SaveToFile(const AFilename: string): boolean;
 begin
   Result:=inherited SaveToFile(AFilename);
-  //writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
+  //DebugLn('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if FIsDeleted then FIsDeleted:=not Result;
     if Result then MakeFileDateValid;
@@ -899,7 +899,7 @@ end;
 
 procedure TCodeBuffer.WriteDebugReport;
 begin
-  writeln('[TCodeBuffer.WriteDebugReport] Consistency=',ConsistencyCheck);
+  DebugLn('[TCodeBuffer.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
 end;
 
 { TIncludedByLink }

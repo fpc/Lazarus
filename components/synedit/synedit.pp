@@ -36,7 +36,6 @@ Known Issues:
 
   -TForm.Deactivate
   -Registry
-  -mouse wheel
   -TBasicAction
   -Constraints
   -Docking
@@ -336,9 +335,9 @@ type
     fBookMarkOpt: TSynBookMarkOpt;
 {$ifndef SYN_LAZARUS}
     fBorderStyle: TBorderStyle;
-{$endif}    
-    fHideSelection: boolean;
     fMouseWheelAccumulator: integer;
+{$endif}
+    fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
     fCaretOffset: TPoint;
@@ -6790,31 +6789,36 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-
 procedure TCustomSynEdit.WMMouseWheel(var Msg: TLMMouseEvent);
-var
+{var
   nDelta: integer;
   nWheelClicks: integer;
 const
   LinesToScroll = 3;
   WHEEL_DELTA = 120;
-  WHEEL_PAGESCROLL = $FFFFFFFF;
+  WHEEL_PAGESCROLL = MAXDWORD;}
 begin
   if csDesigning in ComponentState then
     exit;
 
-  if GetKeyState(VK_CONTROL) >= 0 then
+  {if GetKeyState(VK_CONTROL) >= 0 then
     nDelta := LinesToScroll
-  else
-    nDelta := LinesInWindow shr Ord(eoHalfPageScroll in fOptions);
+  else begin
+    nDelta := LinesInWindow;
+    if eoHalfPageScroll in fOptions then
+      nDelta:=nDelta shr 1;
+  end;
 
   Inc(fMouseWheelAccumulator, Msg.WheelDelta);
+  writeln('TCustomSynEdit.WMMouseWheel A fMouseWheelAccumulator=',fMouseWheelAccumulator,
+    ' Msg.WheelDelta=',Msg.WheelDelta,' LinesInWindow=',LinesInWindow,' nDelta=',nDelta);
   nWheelClicks := fMouseWheelAccumulator div WHEEL_DELTA;
   fMouseWheelAccumulator := fMouseWheelAccumulator mod WHEEL_DELTA;
   if (nDelta = integer(WHEEL_PAGESCROLL)) or (nDelta > LinesInWindow) then
     nDelta := LinesInWindow;
+  writeln('TCustomSynEdit.WMMouseWheel B TopLine=',TopLine,' nDelta=',nDelta,' nWheelClicks=',nWheelClicks);
   TopLine := TopLine - (nDelta * nWheelClicks);
-  Update;
+  Update;}
 end;
 
 {$ELSE}

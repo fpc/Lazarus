@@ -32,7 +32,7 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, SourceLog, KeywordFuncLists;
+  Classes, SysUtils, SourceLog, KeywordFuncLists, FileProcs;
 
 //----------------------------------------------------------------------------
 { These functions are used by the codetools
@@ -2843,7 +2843,7 @@ var
     CurIndent: Integer;
   begin
     // move left split side from Src to Result
-    //writeln('Split: SplitPos=',SplitPos,' ',copy(Src,SplitPos-5,6));
+    //DebugLn('Split: SplitPos=',SplitPos,' ',copy(Src,SplitPos-5,6));
     Result:=Result+copy(Src,1,SplitPos-1);
     Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
     if ParsedSrc[SplitPos] in [stctWordStart,stctChar] then begin
@@ -2872,12 +2872,12 @@ begin
   Src:=StringConstant;
   SrcLen:=length(Src);
   CurLineMax:=FirstLineLength;
-  //writeln('SplitStringConstant FirstLineLength=',FirstLineLength,
+  //DebugLn('SplitStringConstant FirstLineLength=',FirstLineLength,
   //' OtherLineLengths=',OtherLineLengths,' Indent=',Indent,' ');
   repeat
-    //writeln('SrcLen=',SrcLen,' CurMaxLine=',CurLineMax);
-    //writeln('Src="',Src,'"');
-    //writeln('Result="',Result,'"');
+    //DebugLn('SrcLen=',SrcLen,' CurMaxLine=',CurLineMax);
+    //DebugLn('Src="',Src,'"');
+    //DebugLn('Result="',Result,'"');
     if SrcLen<=CurLineMax then begin
       // line fits
       Result:=Result+Src;
@@ -2892,8 +2892,8 @@ begin
     SplitDefault;
     Split;
   until false;
-  //writeln('END Result="',Result,'"');
-  //writeln('SplitStringConstant END---------------------------------');
+  //DebugLn('END Result="',Result,'"');
+  //DebugLn('SplitStringConstant END---------------------------------');
 end;
 
 procedure RaiseCatchableException(const Msg: string);
@@ -2901,9 +2901,9 @@ begin
   { Raises an exception.
     gdb does not catch fpc Exception objects, therefore this procedure raises
     a standard AV which is catched by gdb. }
-  writeln('ERROR in CodeTools: ',Msg);
+  DebugLn('ERROR in CodeTools: ',Msg);
   // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
+  DebugLn('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 

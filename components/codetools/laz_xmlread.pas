@@ -373,8 +373,6 @@ begin
 end;
 
 procedure TXMLReader.ProcessXML(ABuf: PChar; const AFilename: String);    // [1]
-//var
-//  LastNodeBeforeDoc: TDOMNode;
 begin
   buf := ABuf;
   BufStart := ABuf;
@@ -383,21 +381,12 @@ begin
   doc := TXMLReaderDocument.Create;
   ExpectProlog;
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ProcessXML A');{$ENDIF}
-  //LastNodeBeforeDoc := doc.LastChild;
   ExpectElement(doc);
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ProcessXML B');{$ENDIF}
   ParseMisc(doc);
 
   if buf[0] <> #0 then
     RaiseExc('Text after end of document element found');
-
-  {
-  if buf[0] <> #0 then begin
-    WriteLn('=== Unparsed: ===');
-    //WriteLn(buf);
-    WriteLn(StrLen(buf), ' chars');
-  end;
-  }
 end;
 
 function TXMLReader.CheckName: Boolean;
@@ -929,9 +918,9 @@ begin
 
   {
   if buf[0] <> #0 then begin
-    WriteLn('=== Unparsed: ===');
-    //WriteLn(buf);
-    WriteLn(StrLen(buf), ' chars');
+    DebugLn('=== Unparsed: ===');
+    //DebugLn(buf);
+    DebugLn(StrLen(buf), ' chars');
   end;
   }
 end;
@@ -1343,7 +1332,7 @@ begin
       MemStream.LoadFromStream(FileStream);
     except
       on E: Exception do begin
-        writeln('ERROR reading file "',AFilename,'": ',E.Message);
+        DebugLn('ERROR reading file "',AFilename,'": ',E.Message);
         exit;
       end;
     end;
@@ -1418,6 +1407,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.11  2003/12/25 14:17:06  mattias
   fixed many range check warnings
 

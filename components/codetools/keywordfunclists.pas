@@ -35,7 +35,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils;
+  Classes, SysUtils, FileProcs;
 
 type
   TKeyWordFunction = function: boolean of object;
@@ -480,25 +480,25 @@ procedure TKeyWordFunctionList.WriteDebugListing;
 var i: integer;
 begin
   Sort;
-  writeln('[TKeyWordFunctionList.WriteDebugListing]');
-  writeln('  ItemsCount=',FCount,'  MaxHash=',FMaxHashIndex
-     ,'  Sorted=',FSorted);
+  DebugLn('[TKeyWordFunctionList.WriteDebugListing]');
+  DebugLn('  ItemsCount=',dbgs(FCount),'  MaxHash=',dbgs(FMaxHashIndex)
+     ,'  Sorted=',dbgs(FSorted));
   for i:=0 to FCount-1 do begin
-    write('    ',i,':');
+    DbgOut('    '+dbgs(i)+':');
     with FItems[i] do begin
-      write(' "',KeyWord,'"');
-      write(' Hash=',KeyWordToHashIndex(KeyWord));
-      write(' IsLast=',IsLast);
-      write(' DoIt=',Assigned(DoIt));
+      DbgOut(' "'+KeyWord+'"');
+      DbgOut(' Hash=',dbgs(KeyWordToHashIndex(KeyWord)));
+      DbgOut(' IsLast=',dbgs(IsLast));
+      DbgOut(' DoIt=',dbgs(Assigned(DoIt)));
     end;
-    writeln('');
+    DebugLn('');
   end;
-  write('  BucketStart array:');
+  DbgOut('  BucketStart array:');
   for i:=0 to FMaxHashIndex do begin
     if FBucketStart[i]>=0 then
-    write(' ',i,'->',FBucketStart[i]);
+    DbgOut(' '+dbgs(i)+'->'+dbgs(FBucketStart[i]));
   end;
-  writeln('');
+  DebugLn('');
 end;
 
 function TKeyWordFunctionList.AllwaysTrue: boolean;

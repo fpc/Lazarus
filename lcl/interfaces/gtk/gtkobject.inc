@@ -335,7 +335,7 @@ begin
     while (HashItem <> nil) do
     begin
       if n < 7
-      then write(' ',HexStr(Cardinal(HashItem^.Item),8));
+      then DbgOut(' ',HexStr(Cardinal(HashItem^.Item),8));
 
       Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
       HashItem := HashItem^.Next;
@@ -2269,7 +2269,7 @@ begin
       for x:=0 to AnImage^.Width-1 do begin
         AColor:=gdk_image_get_pixel(AnImage,x,y);
         pGuint(NewRawImage.Data)[i]:=AColor;
-        if (y=5) then write(' ',HexStr(Cardinal(AColor),8),'@',HexStr(Cardinal(@pGuint(NewRawImage.Data)[i]),8));
+        if (y=5) then DbgOut(' ',HexStr(Cardinal(AColor),8),'@',HexStr(Cardinal(@pGuint(NewRawImage.Data)[i]),8));
         inc(i);
       end;
     end;
@@ -9199,6 +9199,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.504  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.503  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 

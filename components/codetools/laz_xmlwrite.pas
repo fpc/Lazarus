@@ -28,7 +28,7 @@ unit Laz_XMLWrite;
 
 interface
 
-uses Classes, Laz_DOM;
+uses Classes, Laz_DOM, FileProcs;
 
 procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String);
 procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text);
@@ -80,9 +80,9 @@ end;
 
 procedure RaiseException(const Msg: string);
 begin
-  writeln('ERROR in XMLWrite: ',Msg);
+  DebugLn('ERROR in XMLWrite: ',Msg);
   // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
+  DebugLn('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
@@ -115,7 +115,7 @@ begin
   if Count>0 then begin
     SetLength(s,Count);
     System.Move(Buffer,s[1],Count);
-    WriteLn(f^, s);
+    writeln(f^, s);
   end;
 end;
 
@@ -306,7 +306,7 @@ end;
 
 procedure WriteAttribute(node: TDOMNode);
 begin
-  WriteLn('WriteAttribute');
+  DebugLn('WriteAttribute');
   if node=nil then ;
 end;
 
@@ -335,7 +335,7 @@ end;
 
 procedure WriteEntity(node: TDOMNode);
 begin
-  WriteLn('WriteEntity');
+  DebugLn('WriteEntity');
   if node=nil then ;
 end;
 
@@ -361,25 +361,25 @@ end;
 
 procedure WriteDocument(node: TDOMNode);
 begin
-  WriteLn('WriteDocument');
+  DebugLn('WriteDocument');
   if node=nil then ;
 end;
 
 procedure WriteDocumentType(node: TDOMNode);
 begin
-  WriteLn('WriteDocumentType');
+  DebugLn('WriteDocumentType');
   if node=nil then ;
 end;
 
 procedure WriteDocumentFragment(node: TDOMNode);
 begin
-  WriteLn('WriteDocumentFragment');
+  DebugLn('WriteDocumentFragment');
   if node=nil then ;
 end;
 
 procedure WriteNotation(node: TDOMNode);
 begin
-  WriteLn('WriteNotation');
+  DebugLn('WriteNotation');
   if node=nil then ;
 end;
 
@@ -498,6 +498,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.5  2002/09/30 11:01:43  lazarus
   MG: accelerated xmlwriter
 

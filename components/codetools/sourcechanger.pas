@@ -42,7 +42,7 @@ interface
 { $DEFINE CTDEBUG}
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, CodeCache, BasicCodeTools,
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
   LinkScanner, AVL_Tree, KeywordFuncLists;
   
 type
@@ -475,18 +475,18 @@ var
   IntersectionEntry: TSourceChangeCacheEntry;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
+  DebugLn('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
   ' AfterGap=',ord(AfterGap),' CleanPos=',FromPos,'-',ToPos,
   ' Text="',Text,'"');
   if DirectCode<>nil then
-    writeln('DirectCode=',DirectCode.Filename,' DirectPos=',FromDirectPos,'-',ToDirectPos);
+    DebugLn('DirectCode=',DirectCode.Filename,' DirectPos=',FromDirectPos,'-',ToDirectPos);
   {$ENDIF}
   Result:=false;
   IsDirectChange:=DirectCode<>nil;
   if not IsDirectChange then begin
     if (Text='') and (FromPos=ToPos) then begin
       {$IFDEF CTDEBUG}
-      writeln('TSourceChangeCache.ReplaceEx SUCCESS NoOperation');
+      DebugLn('TSourceChangeCache.ReplaceEx SUCCESS NoOperation');
       {$ENDIF}
       Result:=true;
       exit;
@@ -495,7 +495,7 @@ begin
     or (ToPos>MainScanner.CleanedLen+1) then
     begin
       {$IFDEF CTDEBUG}
-      writeln('TSourceChangeCache.ReplaceEx IGNORED, because data invalid');
+      DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because data invalid');
       {$ENDIF}
       RaiseDataInvalid;
       exit;
@@ -503,14 +503,14 @@ begin
   end else begin
     if (Text='') and (FromDirectPos=ToDirectPos) then begin
       {$IFDEF CTDEBUG}
-      writeln('TSourceChangeCache.ReplaceEx SUCCESS NoOperation');
+      DebugLn('TSourceChangeCache.ReplaceEx SUCCESS NoOperation');
       {$ENDIF}
     end;
   end;
   IntersectionEntry:=FindEntryInRange(FromPos,ToPos);
   if IntersectionEntry<>nil then begin
     {$IFDEF CTDEBUG}
-    writeln('TSourceChangeCache.ReplaceEx IGNORED, because intersection found: ',
+    DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because intersection found: ',
       IntersectionEntry.FromPos,'-',IntersectionEntry.ToPos,
       ' IsDelete=',IntersectionEntry.IsDeleteOperation);
     {$ENDIF}
@@ -531,7 +531,7 @@ begin
   if DirectCode=nil then begin
     if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then begin
       {$IFDEF CTDEBUG}
-      writeln('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');
+      DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');
       {$ENDIF}
       RaiseNotInCleanCode;
       exit;
@@ -547,7 +547,7 @@ begin
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
   {$IFDEF CTDEBUG}
-  writeln('TSourceChangeCache.ReplaceEx SUCCESS IsDelete=',NewEntry.IsDeleteOperation);
+  DebugLn('TSourceChangeCache.ReplaceEx SUCCESS IsDelete=',NewEntry.IsDeleteOperation);
   {$ENDIF}
 end;
 
@@ -580,9 +580,9 @@ end;
 
 procedure TSourceChangeCache.WriteDebugReport;
 begin
-  writeln('[TSourceChangeCache.WriteDebugReport] Consistency=',
-    ConsistencyCheck);
-  writeln(FEntries.ReportAsString);
+  DebugLn('[TSourceChangeCache.WriteDebugReport] Consistency=',
+    dbgs(ConsistencyCheck));
+  DebugLn(FEntries.ReportAsString);
   BeautifyCodeOptions.WriteDebugReport;
 end;
 
@@ -716,7 +716,7 @@ var
   Abort: boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
+  DebugLn('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
   {$ENDIF}
   Result:=false;
   if MainScanner=nil then
@@ -745,7 +745,7 @@ begin
     while CurNode<>nil do begin
       FirstEntry:=TSourceChangeCacheEntry(CurNode.Data);
       {$IFDEF CTDEBUG}
-      writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
+      DebugLn('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
       ' Text="',FirstEntry.Text,'"');
       {$ENDIF}
       InsertText:=FirstEntry.Text;
@@ -758,7 +758,7 @@ begin
         PrecEntry:=TSourceChangeCacheEntry(PrecNode.Data);
         if PrecEntry.IsAtSamePos(CurEntry) then begin
           {$IFDEF CTDEBUG}
-          writeln('TSourceChangeCache.Apply EntryAtSamePos Pos=',PrecEntry.FromPos,'-',PrecEntry.ToPos,
+          DebugLn('TSourceChangeCache.Apply EntryAtSamePos Pos=',PrecEntry.FromPos,'-',PrecEntry.ToPos,
           ' InsertText="',InsertText,'"');
           {$ENDIF}
           BetweenGap:=PrecEntry.AfterGap;
@@ -809,7 +809,7 @@ end;
 procedure TSourceChangeCache.DeleteCleanText(CleanFromPos,CleanToPos: integer);
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TSourceChangeCache.DeleteCleanText] Pos=',CleanFromPos,'-',CleanToPos);
+  DebugLn('[TSourceChangeCache.DeleteCleanText] Pos=',CleanFromPos,'-',CleanToPos);
   {$ENDIF}
   if CleanFromPos=CleanToPos then exit;
   MainScanner.DeleteRange(CleanFromPos,CleanToPos);
@@ -819,7 +819,7 @@ procedure TSourceChangeCache.DeleteDirectText(ACode: TCodeBuffer; DirectFromPos,
   DirectToPos: integer);
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TSourceChangeCache.DeleteDirectText] Code=',ACode.Filename,
+  DebugLn('[TSourceChangeCache.DeleteDirectText] Code=',ACode.Filename,
   ' Pos=',DirectFromPos,'-',DirectToPos);
   {$ENDIF}
   if DirectFromPos=DirectToPos then exit;
@@ -830,7 +830,7 @@ procedure TSourceChangeCache.InsertNewText(ACode: TCodeBuffer;
   DirectPos: integer; const InsertText: string);
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
+  DebugLn('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
   ' Pos=',DirectPos,' Text="',InsertText,'"');
   {$ENDIF}
   if InsertText='' then exit;
@@ -882,7 +882,7 @@ var ANode: TAVLTreeNode;
   AnEntry: TSourceChangeCacheEntry;
 begin
   if not FBuffersToModifyNeedsUpdate then exit;
-  //writeln('[TSourceChangeCache.UpdateBuffersToModify]');
+  //DebugLn('[TSourceChangeCache.UpdateBuffersToModify]');
   FBuffersToModify.Clear;
   ANode:=FEntries.FindLowest;
   while ANode<>nil do begin
@@ -930,7 +930,7 @@ var
   IndentLen: Integer;
 begin
   if NewAtom='' then exit;
-  //writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
+  //DebugLn('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
 
   // beautify identifier
   if IsIdentStartChar[NewAtom[1]] then begin
@@ -980,7 +980,7 @@ begin
   and (LastSplitPos>1) then begin
     // new atom does not fit into the line and there is a split position
     // -> split line
-    //writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
+    //DebugLn('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
     RestLineLen:=length(CurCode)-LastSplitPos+1;
     IndentLen:=Indent+GetLineIndent(CurCode,LastSrcLineStart)+HiddenIndent;
     CurCode:=copy(CurCode,1,LastSplitPos-1)+LineEnd
@@ -1143,7 +1143,7 @@ begin
     AddAtom(Result,'end;');
   end;
   {$IFDEF CTDEBUG}
-  writeln('[TBeautifyCodeOptions.BeautifyProc] Result="',Result,'"');
+  DebugLn('[TBeautifyCodeOptions.BeautifyProc] Result="',Result,'"');
   {$ENDIF}
 end;
 
@@ -1152,8 +1152,8 @@ function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
 var CurAtom: string;
   OldIndent: Integer;
 begin
-  //writeln('**********************************************************');
-  //writeln('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
+  //DebugLn('**********************************************************');
+  //DebugLn('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
   // set flags
   CurFlags:=BeautifyFlags;
   OldIndent:=Indent;
@@ -1194,7 +1194,7 @@ begin
       if (not (CurAtomType in DoNotSplitLineInFront))
       and (not (LastAtomType in DoNotSplitLineAfter)) then
         LastSplitPos:=length(Result)+1;
-      {writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
+      {DebugLn('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
       '" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
       '  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
       ' ..."',copy(Result,length(Result)-10,10),'"');}
@@ -1205,8 +1205,8 @@ begin
     Indent:=OldIndent;
     CurFlags:=[];
   end;
-  //writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
-  //writeln('**********************************************************');
+  //DebugLn('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
+  //DebugLn('**********************************************************');
 end;
 
 function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
@@ -1299,8 +1299,8 @@ end;
 
 procedure TBeautifyCodeOptions.WriteDebugReport;
 begin
-  writeln('TBeautifyCodeOptions.WriteDebugReport Consistency=',
-    ConsistencyCheck);
+  DebugLn('TBeautifyCodeOptions.WriteDebugReport Consistency=',
+    dbgs(ConsistencyCheck));
 end;
 
 { ESourceChangeCacheError }

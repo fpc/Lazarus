@@ -503,11 +503,11 @@ end;
 destructor TCodeToolManager.Destroy;
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] A');
+  DebugLn('[TCodeToolManager.Destroy] A');
   {$ENDIF}
   GlobalValues.Free;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] B');
+  DebugLn('[TCodeToolManager.Destroy] B');
   {$ENDIF}
   Positions.Free;
   IdentifierHistory.Free;
@@ -516,24 +516,24 @@ begin
   FSourceTools.Free;
   FResourceTool.Free;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] C');
+  DebugLn('[TCodeToolManager.Destroy] C');
   {$ENDIF}
   DefineTree.Free;
   DefinePool.Free;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] D');
+  DebugLn('[TCodeToolManager.Destroy] D');
   {$ENDIF}
   SourceChangeCache.Free;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] E');
+  DebugLn('[TCodeToolManager.Destroy] E');
   {$ENDIF}
   SourceCache.Free;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] F');
+  DebugLn('[TCodeToolManager.Destroy] F');
   {$ENDIF}
   inherited Destroy;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.Destroy] END');
+  DebugLn('[TCodeToolManager.Destroy] END');
   {$ENDIF}
   {$IFDEF MEM_CHECK}
   CheckHeap('TCodeToolManager.Destroy END');
@@ -559,7 +559,7 @@ function TCodeToolManager.LoadFile(const ExpandedFilename: string;
   UpdateFromDisk, Revert: boolean): TCodeBuffer;
 begin
   {$IFDEF CTDEBUG}
-  writeln('>>>>>> [TCodeToolManager.LoadFile] ',ExpandedFilename,' Update=',UpdateFromDisk,' Revert=',Revert);
+  DebugLn('>>>>>> [TCodeToolManager.LoadFile] ',ExpandedFilename,' Update=',UpdateFromDisk,' Revert=',Revert);
   {$ENDIF}
   Result:=SourceCache.LoadFile(ExpandedFilename);
   if Result<>nil then begin
@@ -574,7 +574,7 @@ function TCodeToolManager.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=SourceCache.CreateFile(AFilename);
   {$IFDEF CTDEBUG}
-  writeln('****** TCodeToolManager.CreateFile "',AFilename,'" ',Result<>nil);
+  DebugLn('****** TCodeToolManager.CreateFile "',AFilename,'" ',Result<>nil);
   {$ENDIF}
 end;
 
@@ -646,14 +646,14 @@ var
 begin
   Result:=nil;
   if Code=nil then exit;
-  //writeln('TCodeToolManager.FindCodeOfMainUnitHint ',Code.Filename);
+  //DebugLn('TCodeToolManager.FindCodeOfMainUnitHint ',Code.Filename);
   if not FindMainUnitHint(Code.Source,MainUnitFilename) then exit;
   MainUnitFilename:=TrimFilename(MainUnitFilename);
   if (not FilenameIsAbsolute(MainUnitFilename))
   and (not Code.IsVirtual) then
     MainUnitFilename:=TrimFilename(ExtractFilePath(Code.Filename)+PathDelim
                                    +MainUnitFilename);
-  //writeln('TCodeToolManager.FindCodeOfMainUnitHint B ');
+  //DebugLn('TCodeToolManager.FindCodeOfMainUnitHint B ');
   Result:=SourceCache.LoadFile(MainUnitFilename);
 end;
 
@@ -897,7 +897,7 @@ begin
   FCurCodeTool:=TCodeTool(GetCodeToolForSource(MainCode,true));
   FCurCodeTool.ErrorPosition.Code:=nil;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
+  DebugLn('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
   {$ENDIF}
   Result:=(FCurCodeTool.Scanner<>nil);
   if not Result then begin
@@ -977,7 +977,7 @@ begin
     if ErrorLine>0 then write(' at Line=',ErrorLine);
     if ErrorColumn>0 then write(' Col=',ErrorColumn);
     if ErrorCode<>nil then write(' in "',ErrorCode.Filename,'"');
-    writeln('');
+    DebugLn('');
   end;
   // raise or catch
   if not FCatchExceptions then raise AnException;
@@ -1008,14 +1008,14 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.JumpToMethod A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.JumpToMethod A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.JumpToMethod B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.JumpToMethod B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine,
@@ -1029,7 +1029,7 @@ begin
     on e: Exception do Result:=HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.JumpToMethod END ');
+  DebugLn('TCodeToolManager.JumpToMethod END ');
   {$ENDIF}
 end;
 
@@ -1042,18 +1042,18 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindDeclaration B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.FindDeclaration B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     {$IFDEF DoNotHandleFindDeclException}
-    writeln('TCodeToolManager.FindDeclaration NOT HANDLING EXCEPTIONS');
+    DebugLn('TCodeToolManager.FindDeclaration NOT HANDLING EXCEPTIONS');
     RaiseUnhandableExceptions:=true;
     {$ENDIF}
     Result:=FCurCodeTool.FindDeclaration(CursorPos,NewPos,NewTopLine);
@@ -1072,7 +1072,7 @@ begin
   end;
   {$ENDIF}
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindDeclaration END ');
+  DebugLn('TCodeToolManager.FindDeclaration END ');
   {$ENDIF}
 end;
 
@@ -1083,14 +1083,14 @@ var
 begin
   Result:='';
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindSmartHint A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.FindSmartHint A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindSmartHint B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.FindSmartHint B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindSmartHint(CursorPos);
@@ -1098,7 +1098,7 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindSmartHint END ');
+  DebugLn('TCodeToolManager.FindSmartHint END ');
   {$ENDIF}
 end;
 
@@ -1109,14 +1109,14 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GatherIdentifiers A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GatherIdentifiers A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GatherIdentifiers B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.GatherIdentifiers B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList,
@@ -1125,7 +1125,7 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GatherIdentifiers END ');
+  DebugLn('TCodeToolManager.GatherIdentifiers END ');
   {$ENDIF}
 end;
 
@@ -1136,7 +1136,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GetIdentifierAt A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   Code.LineColToPosition(Y,X,CleanPos);
   if (CleanPos>0) and (CleanPos<=Code.SourceLength) then begin
@@ -1155,7 +1155,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GatherResourceStringSections A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GatherResourceStringSections A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -1179,7 +1179,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.IdentifierExistsInResourceStringSection A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.IdentifierExistsInResourceStringSection A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -1202,7 +1202,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.CreateIdentifierFromStringConst A ',StartCode.Filename,' x=',StartX,' y=',StartY);
+  DebugLn('TCodeToolManager.CreateIdentifierFromStringConst A ',StartCode.Filename,' x=',StartX,' y=',StartY);
   {$ENDIF}
   if not InitCurCodeTool(StartCode) then exit;
   StartCursorPos.X:=StartX;
@@ -1229,7 +1229,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.StringConstToFormatString A ',StartCode.Filename,' x=',StartX,' y=',StartY);
+  DebugLn('TCodeToolManager.StringConstToFormatString A ',StartCode.Filename,' x=',StartX,' y=',StartY);
   {$ENDIF}
   if not InitCurCodeTool(StartCode) then exit;
   StartCursorPos.X:=StartX;
@@ -1254,7 +1254,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GatherResourceStringsWithValue A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GatherResourceStringsWithValue A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(SectionCode) then exit;
   CursorPos.X:=SectionX;
@@ -1282,7 +1282,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddResourcestring A ',SectionCode.Filename,' x=',Sectionx,' y=',Sectiony);
+  DebugLn('TCodeToolManager.AddResourcestring A ',SectionCode.Filename,' x=',Sectionx,' y=',Sectiony);
   {$ENDIF}
   if not InitCurCodeTool(SectionCode) then exit;
   SectionPos.X:=SectionX;
@@ -1314,7 +1314,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetStringConstBounds A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GetStringConstBounds A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -1343,7 +1343,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.ReplaceCode A ',StartCode.Filename,' x=',StartX,' y=',StartY);
+  DebugLn('TCodeToolManager.ReplaceCode A ',StartCode.Filename,' x=',StartX,' y=',StartY);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   StartCursorPos.X:=StartX;
@@ -1369,7 +1369,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GuessMisplacedIfdefEndif A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GuessMisplacedIfdefEndif A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -1396,7 +1396,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindEnclosingIncludeDirective A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.FindEnclosingIncludeDirective A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -1420,7 +1420,7 @@ function TCodeToolManager.IsKeyword(Code: TCodeBuffer; const KeyWord: string
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.IsKeyword A ',Code.Filename,' Keyword=',KeyWord);
+  DebugLn('TCodeToolManager.IsKeyword A ',Code.Filename,' Keyword=',KeyWord);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1445,14 +1445,14 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindBlockCounterPart A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.FindBlockCounterPart A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindBlockCounterPart B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.FindBlockCounterPart B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindBlockCounterPart(CursorPos,NewPos,NewTopLine);
@@ -1465,7 +1465,7 @@ begin
     on e: Exception do Result:=HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindBlockCounterPart END ');
+  DebugLn('TCodeToolManager.FindBlockCounterPart END ');
   {$ENDIF}
 end;
 
@@ -1478,14 +1478,14 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindBlockStart A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.FindBlockStart A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindBlockStart B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.FindBlockStart B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindBlockStart(CursorPos,NewPos,NewTopLine);
@@ -1498,7 +1498,7 @@ begin
     on e: Exception do Result:=HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindBlockStart END ');
+  DebugLn('TCodeToolManager.FindBlockStart END ');
   {$ENDIF}
 end;
 
@@ -1510,14 +1510,14 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GuessUnclosedBlock A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.GuessUnclosedBlock A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GuessUnclosedBlock B ',FCurCodeTool.Scanner<>nil);
+  DebugLn('TCodeToolManager.GuessUnclosedBlock B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
     Result:=FCurCodeTool.GuessUnclosedBlock(CursorPos,NewPos,NewTopLine);
@@ -1530,7 +1530,7 @@ begin
     on e: Exception do Result:=HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GuessUnclosedBlock END ');
+  DebugLn('TCodeToolManager.GuessUnclosedBlock END ');
   {$ENDIF}
 end;
 
@@ -1538,7 +1538,7 @@ function TCodeToolManager.GetCompatiblePublishedMethods(Code: TCodeBuffer;
   const AClassName: string; TypeData: PTypeData; Proc: TGetStringProc): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname);
+  DebugLn('TCodeToolManager.GetCompatiblePublishedMethods A ',Code.Filename,' Classname=',AClassname);
   {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not InitCurCodeTool(Code) then exit;
@@ -1555,7 +1555,7 @@ function TCodeToolManager.PublishedMethodExists(Code:TCodeBuffer;
   var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.PublishedMethodExists A ',Code.Filename,' ',AClassName,':',AMethodName);
+  DebugLn('TCodeToolManager.PublishedMethodExists A ',Code.Filename,' ',AClassName,':',AMethodName);
   {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
@@ -1574,7 +1574,7 @@ function TCodeToolManager.JumpToPublishedMethodBody(Code: TCodeBuffer;
 var NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.JumpToPublishedMethodBody A ',Code.Filename,' ',AClassName,':',AMethodName);
+  DebugLn('TCodeToolManager.JumpToPublishedMethodBody A ',Code.Filename,' ',AClassName,':',AMethodName);
   {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
@@ -1595,7 +1595,7 @@ function TCodeToolManager.RenamePublishedMethod(Code: TCodeBuffer;
   const AClassName, OldMethodName, NewMethodName: string): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenamePublishedMethod A');
+  DebugLn('TCodeToolManager.RenamePublishedMethod A');
   {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
@@ -1613,7 +1613,7 @@ function TCodeToolManager.CreatePublishedMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.CreatePublishedMethod A');
+  DebugLn('TCodeToolManager.CreatePublishedMethod A');
   {$ENDIF}
   Result:=InitCurCodeTool(Code);
   if not Result then exit;
@@ -1630,7 +1630,7 @@ function TCodeToolManager.GetIDEDirectives(Code: TCodeBuffer;
   DirectiveList: TStrings): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
+  DebugLn('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -1645,7 +1645,7 @@ function TCodeToolManager.SetIDEDirectives(Code: TCodeBuffer;
   DirectiveList: TStrings): boolean;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
+  DebugLn('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -1663,7 +1663,7 @@ var
   NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.CompleteCode A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.CompleteCode A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -1689,7 +1689,7 @@ var
   StartPos, EndPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.CheckExtractProc A ',Code.Filename);
+  DebugLn('TCodeToolManager.CheckExtractProc A ',Code.Filename);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -1715,7 +1715,7 @@ var
   NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.ExtractProc A ',Code.Filename);
+  DebugLn('TCodeToolManager.ExtractProc A ',Code.Filename);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -1748,7 +1748,7 @@ var
   NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.InsertCodeTemplate A ',Code.Filename,' x=',x,' y=',y);
+  DebugLn('TCodeToolManager.InsertCodeTemplate A ',Code.Filename,' x=',x,' y=',y);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -1778,7 +1778,7 @@ begin
   if (Code=nil)
   or ((not SearchMainCode) and (Code.LastIncludedByFile<>'')) then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetSourceName A ',Code.Filename,' ',Code.SourceLength);
+  DebugLn('TCodeToolManager.GetSourceName A ',Code.Filename,' ',Code.SourceLength);
   {$ENDIF}
   {$IFDEF MEM_CHECK}
   CheckHeap(IntToStr(GetMem_Cnt));
@@ -1790,11 +1790,11 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetSourceName B ',Code.Filename,' ',Code.SourceLength);
+  DebugLn('TCodeToolManager.GetSourceName B ',Code.Filename,' ',Code.SourceLength);
   {$IFDEF MEM_CHECK}
   CheckHeap(IntToStr(GetMem_Cnt));
   {$ENDIF}
-  writeln('SourceName=',Result);
+  DebugLn('SourceName=',Result);
   {$ENDIF}
 end;
 
@@ -1804,7 +1804,7 @@ begin
   if (Code=nil)
   or (Code.LastIncludedByFile<>'') then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetCachedSourceName A ',Code.Filename,' ',Code.SourceLength);
+  DebugLn('TCodeToolManager.GetCachedSourceName A ',Code.Filename,' ',Code.SourceLength);
   {$ENDIF}
   {$IFDEF MEM_CHECK}
   CheckHeap(IntToStr(GetMem_Cnt));
@@ -1816,11 +1816,11 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetCachedSourceName B ',Code.Filename,' ',Code.SourceLength);
+  DebugLn('TCodeToolManager.GetCachedSourceName B ',Code.Filename,' ',Code.SourceLength);
   {$IFDEF MEM_CHECK}
   CheckHeap(IntToStr(GetMem_Cnt));
   {$ENDIF}
-  writeln('SourceName=',Result);
+  DebugLn('SourceName=',Result);
   {$ENDIF}
 end;
 
@@ -1831,7 +1831,7 @@ begin
   if (Code=nil)
   or ((not SearchMainCode) and (Code.LastIncludedByFile<>'')) then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetSourceType A ',Code.Filename,' ',Code.SourceLength);
+  DebugLn('TCodeToolManager.GetSourceType A ',Code.Filename,' ',Code.SourceLength);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1849,11 +1849,11 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetSourceType END ',Code.Filename,',',Code.SourceLength);
+  DebugLn('TCodeToolManager.GetSourceType END ',Code.Filename,',',Code.SourceLength);
   {$IFDEF MEM_CHECK}
   CheckHeap(IntToStr(GetMem_Cnt));
   {$ENDIF}
-  writeln('SourceType=',Result);
+  DebugLn('SourceType=',Result);
   {$ENDIF}
 end;
 
@@ -1862,7 +1862,7 @@ function TCodeToolManager.RenameSource(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenameSource A ',Code.Filename,' NewName=',NewName);
+  DebugLn('TCodeToolManager.RenameSource A ',Code.Filename,' NewName=',NewName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1879,11 +1879,11 @@ var NameAtomPos, InAtomPos: TAtomPosition;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
+  DebugLn('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
+  DebugLn('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
@@ -1902,7 +1902,7 @@ function TCodeToolManager.RenameUsedUnit(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
+  DebugLn('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1918,7 +1918,7 @@ function TCodeToolManager.AddUnitToMainUsesSection(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddUnitToMainUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
+  DebugLn('TCodeToolManager.AddUnitToMainUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1934,7 +1934,7 @@ function TCodeToolManager.RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
+  DebugLn('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1950,7 +1950,7 @@ function TCodeToolManager.FindUsedUnits(Code: TCodeBuffer; var MainUsesSection,
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindUsedUnits A ',Code.Filename);
+  DebugLn('TCodeToolManager.FindUsedUnits A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1968,7 +1968,7 @@ var LinkIndex: integer;
 begin
   Result:='';
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindLFMFileName A ',Code.Filename);
+  DebugLn('TCodeToolManager.FindLFMFileName A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -1994,7 +1994,7 @@ function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.CheckLFM A ',UnitCode.Filename,' ',LFMBuf.Filename);
+  DebugLn('TCodeToolManager.CheckLFM A ',UnitCode.Filename,' ',LFMBuf.Filename);
   {$ENDIF}
   if not InitCurCodeTool(UnitCode) then exit;
   try
@@ -2009,7 +2009,7 @@ function TCodeToolManager.FindNextResourceFile(Code: TCodeBuffer;
 begin
   Result:=nil;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindNextResourceFile A ',Code.Filename);
+  DebugLn('TCodeToolManager.FindNextResourceFile A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2025,7 +2025,7 @@ begin
   Result:=false;
   if not InitResourceTool then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddLazarusResourceHeaderComment A ',Code.Filename,' CommentText=',CommentText);
+  DebugLn('TCodeToolManager.AddLazarusResourceHeaderComment A ',Code.Filename,' CommentText=',CommentText);
   {$ENDIF}
   try
     Result:=GetResourceTool.AddLazarusResourceHeaderComment(Code,
@@ -2042,7 +2042,7 @@ begin
   Result.StartPos:=-1;
   if not InitResourceTool then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
+  DebugLn('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
   {$ENDIF}
   try
     Result:=GetResourceTool.FindLazarusResource(Code,ResourceName,-1);
@@ -2056,11 +2056,11 @@ function TCodeToolManager.AddLazarusResource(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',ResourceName,' ',length(ResourceData));
+  DebugLn('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',ResourceName,' ',length(ResourceData));
   {$ENDIF}
   if not InitResourceTool then exit;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddLazarusResource B ');
+  DebugLn('TCodeToolManager.AddLazarusResource B ');
   {$ENDIF}
   try
     Result:=GetResourceTool.AddLazarusResource(Code,ResourceName,ResourceData);
@@ -2074,7 +2074,7 @@ function TCodeToolManager.RemoveLazarusResource(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
+  DebugLn('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
   {$ENDIF}
   if not InitResourceTool then exit;
   try
@@ -2092,7 +2092,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
+  DebugLn('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2115,7 +2115,7 @@ function TCodeToolManager.RenameIncludeDirective(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenameIncludeDirective A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
+  DebugLn('TCodeToolManager.RenameIncludeDirective A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2135,7 +2135,7 @@ var PosAtom: TAtomPosition;
 begin
   Result:=-1;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindCreateFormStatement A ',Code.Filename,' StartPos=',StartPos,' ',AClassName,':',AVarName);
+  DebugLn('TCodeToolManager.FindCreateFormStatement A ',Code.Filename,' StartPos=',StartPos,' ',AClassName,':',AVarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2153,7 +2153,7 @@ function TCodeToolManager.AddCreateFormStatement(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddCreateFormStatement A ',Code.Filename,' ',AClassName,':',AVarName);
+  DebugLn('TCodeToolManager.AddCreateFormStatement A ',Code.Filename,' ',AClassName,':',AVarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2169,7 +2169,7 @@ function TCodeToolManager.RemoveCreateFormStatement(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RemoveCreateFormStatement A ',Code.Filename,' ',AVarName);
+  DebugLn('TCodeToolManager.RemoveCreateFormStatement A ',Code.Filename,' ',AVarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2186,7 +2186,7 @@ function TCodeToolManager.ChangeCreateFormStatement(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.ChangeCreateFormStatement A ',Code.Filename,
+  DebugLn('TCodeToolManager.ChangeCreateFormStatement A ',Code.Filename,
     ' ',OldVarName.':',OldClassName,' -> ',NewVarName.':',NewClassName,
     ' OnlyIfExists=',OnlyIfExists);
   {$ENDIF}
@@ -2205,7 +2205,7 @@ function TCodeToolManager.ListAllCreateFormStatements(
 begin
   Result:=nil;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.ListAllCreateFormStatements A ',Code.Filename);
+  DebugLn('TCodeToolManager.ListAllCreateFormStatements A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2220,7 +2220,7 @@ function TCodeToolManager.SetAllCreateFromStatements(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.SetAllCreateFromStatements A ',Code.Filename);
+  DebugLn('TCodeToolManager.SetAllCreateFromStatements A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2237,7 +2237,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.GetApplicationTitleStatement A ',Code.Filename);
+  DebugLn('TCodeToolManager.GetApplicationTitleStatement A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2255,7 +2255,7 @@ function TCodeToolManager.SetApplicationTitleStatement(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.SetApplicationTitleStatement A ',Code.Filename);
+  DebugLn('TCodeToolManager.SetApplicationTitleStatement A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2271,7 +2271,7 @@ function TCodeToolManager.RemoveApplicationTitleStatement(Code: TCodeBuffer
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RemoveApplicationTitleStatement A ',Code.Filename);
+  DebugLn('TCodeToolManager.RemoveApplicationTitleStatement A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2287,7 +2287,7 @@ function TCodeToolManager.RenameForm(Code: TCodeBuffer; const OldFormName,
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenameForm A ',Code.Filename,
+  DebugLn('TCodeToolManager.RenameForm A ',Code.Filename,
     ' OldFormName=',OldFormName,' OldFormClassName=',OldFormClassName,
     ' NewFormName=',NewFormName,' NewFormClassName=',NewFormClassName);
   {$ENDIF}
@@ -2306,7 +2306,7 @@ function TCodeToolManager.FindFormAncestor(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.FindFormAncestor A ',Code.Filename,' ',FormClassName);
+  DebugLn('TCodeToolManager.FindFormAncestor A ',Code.Filename,' ',FormClassName);
   {$ENDIF}
   AncestorClassName:='';
   if not InitCurCodeTool(Code) then exit;
@@ -2327,7 +2327,7 @@ function TCodeToolManager.CompleteComponent(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.CompleteComponent A ',Code.Filename,' ',AComponent.Name,':',AComponent.ClassName);
+  DebugLn('TCodeToolManager.CompleteComponent A ',Code.Filename,' ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2342,7 +2342,7 @@ function TCodeToolManager.PublishedVariableExists(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.PublishedVariableExists A ',Code.Filename,' ',AClassName,':',AVarName);
+  DebugLn('TCodeToolManager.PublishedVariableExists A ',Code.Filename,' ',AClassName,':',AVarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2358,7 +2358,7 @@ function TCodeToolManager.AddPublishedVariable(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.AddPublishedVariable A ',Code.Filename,' ',AClassName,':',VarName);
+  DebugLn('TCodeToolManager.AddPublishedVariable A ',Code.Filename,' ',AClassName,':',VarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2374,7 +2374,7 @@ function TCodeToolManager.RemovePublishedVariable(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassName,':',AVarName);
+  DebugLn('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassName,':',AVarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2391,7 +2391,7 @@ function TCodeToolManager.RenamePublishedVariable(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.RenamePublishedVariable A ',Code.Filename,' ',AClassName,' OldVar=',OldVarName,' NewVar=',NewVarName);
+  DebugLn('TCodeToolManager.RenamePublishedVariable A ',Code.Filename,' ',AClassName,' OldVar=',OldVarName,' NewVar=',NewVarName);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2408,7 +2408,7 @@ function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
+  DebugLn('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2423,7 +2423,7 @@ function TCodeToolManager.ConvertDelphiToLazarusSource(Code: TCodeBuffer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  writeln('TCodeToolManager.ConvertDelphiToLazarusSource A ',Code.Filename);
+  DebugLn('TCodeToolManager.ConvertDelphiToLazarusSource A ',Code.Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
@@ -2493,7 +2493,7 @@ begin
   Handled:=GlobalValues.IsDefined(VariableName);
   if Handled then
     Value:=GlobalValues[VariableName];
-  //writeln('[TCodeToolManager.OnDefineTreeReadValue] Name="',VariableName,'" = "',Value,'"');
+  //DebugLn('[TCodeToolManager.OnDefineTreeReadValue] Name="',VariableName,'" = "',Value,'"');
 end;
 
 procedure TCodeToolManager.OnGlobalValuesChanged;
@@ -2655,7 +2655,7 @@ function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
   Code: TCodeBuffer): TFindDeclarationTool;
 begin
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.OnGetCodeToolForBuffer]'
+  DebugLn('[TCodeToolManager.OnGetCodeToolForBuffer]'
     ,' Sender=',TCustomCodeTool(Sender).MainFilename
     ,' Code=',Code.Filename);
   {$ENDIF}
@@ -2675,7 +2675,7 @@ begin
   end;
   inc(FWriteLockCount);
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.ActivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+  DebugLn('[TCodeToolManager.ActivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
   {$ENDIF}
 end;
 
@@ -2689,7 +2689,7 @@ begin
     end;
   end;
   {$IFDEF CTDEBUG}
-  writeln('[TCodeToolManager.DeactivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+  DebugLn('[TCodeToolManager.DeactivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
   {$ENDIF}
 end;
 
@@ -2698,7 +2698,7 @@ procedure TCodeToolManager.OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
 begin
   WriteLockIsSet:=FWriteLockCount>0;
   WriteLockStep:=FWriteLockStep;
-//writeln(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+//DebugLn(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
 end;
 
 function TCodeToolManager.GetResourceTool: TResourceCodeTool;
@@ -2779,29 +2779,29 @@ end;
 procedure TCodeToolManager.WriteDebugReport(WriteTool,
   WriteDefPool, WriteDefTree, WriteCache, WriteGlobalValues: boolean);
 begin
-  writeln('[TCodeToolManager.WriteDebugReport] Consistency=',ConsistencyCheck);
+  DebugLn('[TCodeToolManager.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
   if FCurCodeTool<>nil then begin
     if WriteTool then
       FCurCodeTool.WriteDebugTreeReport
     else
-      writeln('  FCurCodeTool.ConsistencyCheck=',FCurCodeTool.ConsistencyCheck);
+      DebugLn('  FCurCodeTool.ConsistencyCheck=',dbgs(FCurCodeTool.ConsistencyCheck));
   end;
   if WriteDefPool then
     DefinePool.WriteDebugReport
   else
-    writeln('  DefinePool.ConsistencyCheck=',DefinePool.ConsistencyCheck);
+    DebugLn('  DefinePool.ConsistencyCheck=',dbgs(DefinePool.ConsistencyCheck));
   if WriteDefTree then
     DefineTree.WriteDebugReport
   else
-    writeln('  DefineTree.ConsistencyCheck=',DefineTree.ConsistencyCheck);
+    DebugLn('  DefineTree.ConsistencyCheck=',dbgs(DefineTree.ConsistencyCheck));
   if WriteCache then
     SourceCache.WriteDebugReport
   else
-    writeln('  SourceCache.ConsistencyCheck=',SourceCache.ConsistencyCheck);
+    DebugLn('  SourceCache.ConsistencyCheck=',dbgs(SourceCache.ConsistencyCheck));
   if WriteGlobalValues then
     GlobalValues.WriteDebugReport
   else
-    writeln('  GlobalValues.ConsistencyCheck=',GlobalValues.ConsistencyCheck);
+    DebugLn('  GlobalValues.ConsistencyCheck=',dbgs(GlobalValues.ConsistencyCheck));
 end;
 
 //-----------------------------------------------------------------------------
@@ -2813,13 +2813,13 @@ initialization
 
 finalization
   {$IFDEF CTDEBUG}
-  writeln('codetoolmanager.pas - finalization');
+  DebugLn('codetoolmanager.pas - finalization');
   {$ENDIF}
   OnFindOwnerOfCodeTreeNode:=nil;
   CodeToolBoss.Free;
   CodeToolBoss:=nil;
   {$IFDEF CTDEBUG}
-  writeln('codetoolmanager.pas - finalization finished');
+  DebugLn('codetoolmanager.pas - finalization finished');
   {$ENDIF}
 
 end.

@@ -7704,18 +7704,18 @@ begin
 
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
-  write('[TGtkWidgetSet.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
-  write(' HndVisible=',GTK_WIDGET_VISIBLE(Widget));
-  write(' HndRealized=',GTK_WIDGET_REALIZED(Widget));
-  write(' HndMapped=',GTK_WIDGET_MAPPED(Widget));
-  DebugLn(''); write('   ');
-  write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
-  write(' OldFocus=',HexStr(Cardinal(Result),8));
+  DbgOut('[TGtkWidgetSet.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
+  DbgOut(' HndVisible=',GTK_WIDGET_VISIBLE(Widget));
+  DbgOut(' HndRealized=',GTK_WIDGET_REALIZED(Widget));
+  DbgOut(' HndMapped=',GTK_WIDGET_MAPPED(Widget));
+  DebugLn(''); DbgOut('   ');
+  DbgOut(' TopLevel=',HexStr(Cardinal(TopLevel),8));
+  DbgOut(' OldFocus=',HexStr(Cardinal(Result),8));
   AWinControl:=TWinControl(GetNearestLCLObject(PGtkWidget(Result)));
   if AWinControl<>nil then
-    write(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
+    DbgOut(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
   else
-    write(' OldLCLParent=nil');
+    DbgOut(' OldLCLParent=nil');
   DebugLn('');
   if not GTK_WIDGET_VISIBLE(Widget) then
     RaiseException('TGtkWidgetSet.SetFocus: Widget is not visible');
@@ -8697,6 +8697,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.351  2004/05/22 14:35:33  mattias
+  fixed button return key
+
   Revision 1.350  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

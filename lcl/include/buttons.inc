@@ -65,6 +65,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TButton.ControlKeyDown
+ ------------------------------------------------------------------------------}
+procedure TButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited ControlKeyDown(Key, Shift);
+  if (Key=VK_RETURN) and (Shift=[]) then begin
+    Key:=VK_UNKNOWN;
+    Click;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   procedure TButton.SetParent(AParent: TWinControl);
  ------------------------------------------------------------------------------}
 procedure TButton.SetParent(AParent: TWinControl);
@@ -145,6 +157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/05/22 14:35:32  mattias
+  fixed button return key
+
   Revision 1.25  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

@@ -1086,7 +1086,7 @@ begin
   {$IFDEF TREEVIEW_DEBUG}
   write('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
   ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
-  if ANode<>nil then write(' ANode.Text=',ANode.Text);
+  if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
   Unbind;
@@ -1185,7 +1185,7 @@ begin
   {$IFDEF TREEVIEW_DEBUG}
   write('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
   ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
-  if ANode<>nil then write(' ANode.Text=',ANode.Text);
+  if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
 
@@ -1893,7 +1893,7 @@ begin
   {$IFDEF TREEVIEW_DEBUG}
   write('[TTreeNodes.InternalAddObject] Node=',Node<>nil,' S=',S,
   ' AddMode=',AddModeNames[AddMode]);
-  if Node<>nil then write(' Node.Text=',Node.Text);
+  if Node<>nil then DbgOut(' Node.Text=',Node.Text);
   DebugLn('');
   {$ENDIF}
   Result := Owner.CreateNode;
@@ -4506,9 +4506,6 @@ begin
     ScrolledTop:=ANode.Top
   else begin
     b:=ANode.Top+ANode.Height-GetNodeDrawAreaHeight;
-    //writeln('TCustomTreeView.EnsureNodeIsVisible b=',b,
-    //' ANode.Top=',ANode.Top,' ANode.Height=',ANode.Height,
-    //' GetNodeDrawAreaHeight=',GetNodeDrawAreaHeight,' ClientHeight=',ClientHeight);
     if ScrolledTop<b then ScrolledTop:=b;
   end;
 end;
