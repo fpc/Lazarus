@@ -1,0 +1,27 @@
+The following people contributed to Lazarus:
+
+Andrew Johnson
+GongYu
+Jeroen van Idekinge
+Jesus Reyes
+Karl Brandt
+Keith Bowes
+Marc Weustink
+Martin Patik
+Martin Smat
+Mattias Gaertner
+Michael A. Hess
+Micha Nelissen
+Michal Bukovjan
+Olivier Guilbaud
+Reimar Grabowski
+Shane Miller
+Stefan Hille
+Tom Lisjac
+Tony Maro
+Vasily I. Volchenko
+Vincent Snijders
+
+
+and special thanks to the FPC team.
+

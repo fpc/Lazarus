@@ -13,12 +13,21 @@ and many more).
 
 The LCL currently supports linux (gtk, gnome and little bit gtk2) and windows.
 
-
+--------------------------------------------------------------------------------
 Installation:
 
 See the file docs/INSTALL.
 
 
+--------------------------------------------------------------------------------
+Usage:
+
+Start the IDE with:
+  []$ cd your/lazarus/directory
+  []$ ./lazarus
+
+
+--------------------------------------------------------------------------------
 Documentation:
 
 The official site is www.lazarus.freepascal.org. There you can find the FAQ -
@@ -28,6 +37,7 @@ Examples, how to use the LCL can be found in the 'examples' directory.
 Help, documents and files about FreePascal are at www.freepascal.org.
 
 
+--------------------------------------------------------------------------------
 Mailing list:
 
 There is a very active and helpful mailing list for lazarus, where the
@@ -37,6 +47,7 @@ To subscribe send an email with the subject "subscribe" to
 lazarus-request@miraclec.com
 
 
+--------------------------------------------------------------------------------
 How to help lazarus:
 
 If you find bugs, don't hesitate to use the bug tracking tool at the website,
