@@ -30,7 +30,7 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, GetText, FileUtil, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, GetText, FileUtil, LazarusIDEStrConsts;
   
   { IDE Language (Human, not computer) }
 
@@ -221,6 +221,7 @@ var
   Lang, FallbackLang: String;
   Dir: String;
 begin
+  //debugln('TranslateResourceStrings A CustomLang=',CustomLang);
   if LazarusTranslations=nil then CollectTranslations(BaseDirectory);
   if CustomLang='' then begin
     GetLanguageIDs(Lang,FallbackLang);
@@ -228,6 +229,7 @@ begin
     Lang:=CustomLang;
     FallbackLang:='';
   end;
+  //debugln('TranslateResourceStrings A Lang=',Lang,' FallbackLang=',FallbackLang);
   Dir:=AppendPathDelim(BaseDirectory);
   // LCL
   TranslateUnitResourceStrings('LclStrConsts',

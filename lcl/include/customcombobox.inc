@@ -59,9 +59,9 @@ end;
 procedure TCustomComboBox.DestroyWnd;
 var NewStrings : TStrings;
 begin
-  if not HandleAllocated then begin
-    if (length(Name) div (length(Name) div 10000))=0 then ;
-  end;
+  if not HandleAllocated then RaiseGDBException('');
+  // store itemindex
+  GetItemIndex;
   // create an internal list for storing items internally
   NewStrings:= TStringList.Create;
   // copy from interface based list
@@ -793,6 +793,9 @@ end;
 
 {
   $Log$
+  Revision 1.50  2005/01/13 18:39:45  mattias
+  fixed getting ItemIndex before combobox destroys handle
+
   Revision 1.49  2004/11/27 22:29:56  vincents
   fixed setting itemindex, if it had been changed by the interface before
 

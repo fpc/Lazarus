@@ -3577,6 +3577,7 @@ begin
   with AnEnvironmentOptions do begin
     // language
     LanguageComboBox.ItemIndex:=LazarusTranslations.IndexOf(LanguageID);
+    //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'"');
 
     // auto save
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
@@ -3711,6 +3712,7 @@ begin
     if (LanguageComboBox.ItemIndex>=0)
     and (LanguageComboBox.ItemIndex<LazarusTranslations.Count) then
       LanguageID:=LazarusTranslations[LanguageComboBox.ItemIndex].ID;
+    //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' ',dbgs(LanguageComboBox.HandleAllocated));
 
     // auto save
     AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
