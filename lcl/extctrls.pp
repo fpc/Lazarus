@@ -409,6 +409,7 @@ type
   TCustomRadioGroup = class(TCustomGroupBox)
   private
     FButtonList : TList; // list of TRadioButton
+    FHiddenButton: TRadioButton;
     FCreatingWnd: boolean;
     FItems      : TStrings;
     FItemIndex  : integer;
@@ -418,12 +419,8 @@ type
     procedure ItemsChanged (Sender : TObject);
     procedure Clicked(Sender : TObject); virtual;
     procedure DoPositionButtons;
-  public
-    constructor Create (AOwner : TComponent); override;
-    destructor Destroy; override;
-    function CanModify : boolean; virtual;
-    procedure CreateWnd; override;
   protected
+    procedure UpdateRadioButtonStates;
     procedure ReadState(Reader: TReader); override;
     procedure SetItem (value : TStrings);
     procedure SetColumns (value : integer);
@@ -434,6 +431,11 @@ type
     property Items : TStrings read FItems write SetItem;
     property Columns : integer read FColumns write SetColumns default 1;
     property OnClick : TNotifyEvent read FOnClick write FOnClick;
+  public
+    constructor Create (AOwner : TComponent); override;
+    destructor Destroy; override;
+    function CanModify : boolean; virtual;
+    procedure CreateWnd; override;
   end;
 
 
@@ -562,6 +564,9 @@ end.
 
  {
   $Log$
+  Revision 1.52  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.51  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
