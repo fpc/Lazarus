@@ -59,8 +59,7 @@ type
     pihcParameterList,
     pihcVariable,
     pihcType,
-    pihcConst,
-    pihcIdentifier
+    pihcConst
     );
   TPascalHelpContext = record
     Descriptor: TPascalHelpContextType;
@@ -961,7 +960,7 @@ begin
     // check every pascal context
     for j:=0 to ListOfPascalHelpContextList.Count-1 do begin
       PascalContext:=TPascalHelpContextList(ListOfPascalHelpContextList[j]);
-      debugln('THelpDatabase.GetNodesForPascalContexts A PascalContext.Count=',dbgs(PascalContext.Count));
+      //debugln('THelpDatabase.GetNodesForPascalContexts A PascalContext.Count=',dbgs(PascalContext.Count));
       if (PascalContext.Count>0)
       and (PascalContext.List[0].Descriptor=pihcFilename) then begin
         // search file item
@@ -970,7 +969,7 @@ begin
           if not (SearchItem is THelpDBSISourceFile) then continue;
           FileItem:=THelpDBSISourceFile(SearchItem);
           Filename:=PascalContext.List[0].Context;
-          debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename);
+          //debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename);
           if (FileItem.FileMatches(Filename)) then begin
             FileItem.Node.QueryItem:=PascalContext;
             CreateListAndAdd(FileItem.Node,ListOfNodes,true);
@@ -1861,19 +1860,19 @@ var
   TheDirectory: String;
 begin
   Result:=false;
-  debugln('THelpDBSISourceDirectory.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
+  //debugln('THelpDBSISourceDirectory.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
   if (FFilename='') or (AFilename='') then exit;
   TheDirectory:=GetFullFilename;
-  debugln('THelpDBSISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));
+  //debugln('THelpDBSISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));
   if WithSubDirectories then begin
     if not FileIsInPath(AFilename,TheDirectory) then exit;
   end else begin
     if not FileIsInDirectory(AFilename,TheDirectory) then exit;
   end;
-  debugln('THelpDBSISourceDirectory.FileMatches FileMask="',FileMask,'"');
+  //debugln('THelpDBSISourceDirectory.FileMatches FileMask="',FileMask,'"');
   if (FileMask<>'')
   and (not FileInFilenameMasks(ExtractFilename(AFilename),FileMask)) then exit;
-  debugln('THelpDBSISourceDirectory.FileMatches Success');
+  //debugln('THelpDBSISourceDirectory.FileMatches Success');
   Result:=true;
 end;
 

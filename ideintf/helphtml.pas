@@ -92,7 +92,7 @@ var
   Node: THelpNode;
   FullURL: String;
 begin
-  DebugLn('THTMLHelpDatabase.ShowURL A URL="',URL,'" Title="',Title,'"');
+  //DebugLn('THTMLHelpDatabase.ShowURL A URL="',URL,'" Title="',Title,'"');
 
   // find HTML viewer
   Result:=FindViewer('text/html',ErrMsg,Viewer);
@@ -115,8 +115,6 @@ begin
         '"', '"', URLPath, '"']);
       exit;
     end;
-  end else begin
-
   end;
   FullURL:=CombineURL(URLType,URLPath,URLParams);
   debugln('THTMLHelpDatabase.ShowHelp B URL=',URL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams);

@@ -46,6 +46,9 @@ var
   URL: String;
   TheBaseURL: String;
   Filename: String;
+  i: Integer;
+  Context: String;
+  p: LongInt;
 begin
   if (Query is THelpQueryPascalContexts)
   and (NewNode.QueryItem is TPascalHelpContextList) then begin
@@ -58,20 +61,42 @@ begin
       DebugLn('TFPDocHTMLHelpDatabase.ShowHelp A Unitname=',Unitname,' NewNode.HelpType=',dbgs(ord(NewNode.HelpType)),' NewNode.Title=',NewNode.Title,' NewNode.URL=',NewNode.URL);
       if UnitName<>'' then begin
 
-        Filename:=UnitName+'/';
-        // TODO: context in unit
-        Filename:=Filename+'index.html';
-      
+        // create FPDoc context
+        Filename:='';
+        for i:=0 to ContextList.Count-1 do begin
+          Context:=lowercase(ContextList.List[i].Context);
+          case ContextList.List[i].Descriptor of
+          
+          pihcProperty,pihcVariable,pihcType,pihcConst:
+            Filename:=Filename+Context+'.';
+            
+          pihcProcedure: begin
+              // chomp parameters  ToDo: overloaded procs
+              p:=System.Pos('(',Context);
+              if p>0 then
+                Context:=copy(Context,1,p-1);
+              Filename:=Filename+Context+'.';
+            end;
+
+          end;
+        end;
+        
+        // default is index.html
+        if Filename='' then Filename:='index.';
+        
+        // FPDoc Html always has .html as extension
+        Filename:=UnitName+'/'+Filename+'html';
+
         TheBaseURL:='';
         if NewNode.URLValid then begin
           // the node has an URL => use only the path
           TheBaseURL:=NewNode.URL;
-          debugln('A TheBaseURL=',TheBaseURL);
+          //debugln('A TheBaseURL=',TheBaseURL);
           if (HelpDatabases<>nil) then
             HelpDatabases.SubstituteMacros(TheBaseURL);
-          debugln('B TheBaseURL=',TheBaseURL);
+          //debugln('B TheBaseURL=',TheBaseURL);
           TheBaseURL:=ExtractURLDirectory(TheBaseURL);
-          debugln('C TheBaseURL=',TheBaseURL);
+          //debugln('C TheBaseURL=',TheBaseURL);
           DebugLn('TFPDocHTMLHelpDatabase.ShowHelp Node Base URL TheBaseURL=',TheBaseURL);
         end;
 

@@ -505,7 +505,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     // add filename and all filenames of the include chain
     IncludeChain:=nil;
     try
-      CodeToolBoss.GetIncludeCodeChain(ACodePos^.Code,IncludeChain);
+      CodeToolBoss.GetIncludeCodeChain(ACodePos^.Code,true,IncludeChain);
       if IncludeChain=nil then begin
         debugln('WARNING: ConvertCodePosToPascalHelpContext IncludeChain=nil');
         exit;
@@ -519,7 +519,7 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
     // find code tool
     Tool:=CodeToolBoss.FindCodeToolForSource(MainCodeBuffer);
     if not (Tool is TCodeTool) then begin
-      debugln('WARNING: ConvertCodePosToPascalHelpContext not (Tool is TCodeTool)');
+      debugln('WARNING: ConvertCodePosToPascalHelpContext not (Tool is TCodeTool) MainCodeBuffer=',MainCodeBuffer.Filename);
       exit;
     end;
     // convert cursor position to clean position

@@ -90,7 +90,7 @@ type
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
-    FSourceTools: TAVLTree; // tree of TCustomCodeTool
+    FSourceTools: TAVLTree; // tree of TCustomCodeTool sorted for pointer
     FTabWidth: integer;
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
@@ -163,6 +163,7 @@ type
     function FilenameHasSourceExt(const AFilename: string): boolean;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     function GetIncludeCodeChain(Code: TCodeBuffer;
+                                 RemoveFirstCodesWithoutTool: boolean;
                                  var ListOfCodeBuffer: TList): boolean;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     property OnSearchUsedUnit: TOnSearchUsedUnit
@@ -703,7 +704,7 @@ begin
 end;
 
 function TCodeToolManager.GetIncludeCodeChain(Code: TCodeBuffer;
-  var ListOfCodeBuffer: TList): boolean;
+  RemoveFirstCodesWithoutTool: boolean; var ListOfCodeBuffer: TList): boolean;
 var
   OldCode: TCodeBuffer;
 begin
@@ -722,11 +723,26 @@ begin
     if Code=nil then exit;
     ListOfCodeBuffer.Insert(0,Code);
   end;
+
   if (not FilenameHasSourceExt(Code.Filename)) then begin
     OldCode:=Code;
     Code:=FindCodeOfMainUnitHint(OldCode);
     if Code<>OldCode then
       ListOfCodeBuffer.Insert(0,Code);
+  end;
+
+  if RemoveFirstCodesWithoutTool then begin
+    while ListOfCodeBuffer.Count>0 do begin
+      Code:=TCodeBuffer(ListOfCodeBuffer[0]);
+      if FindCodeToolForSource(Code)<>nil then break;
+      ListOfCodeBuffer.Delete(0);
+    end;
+    if ListOfCodeBuffer.Count=0 then begin
+      ListOfCodeBuffer.Free;
+      ListOfCodeBuffer:=nil;
+      Result:=false;
+      exit;
+    end;
   end;
 end;
 
@@ -2756,12 +2772,12 @@ end;
 function TCodeToolManager.FindCodeToolForSource(Code: TCodeBuffer
   ): TCustomCodeTool;
 var ANode: TAVLTreeNode;
-  CurSrc, SearchedSrc: integer;
+  CurSrc, SearchedSrc: Pointer;
 begin
   ANode:=FSourceTools.Root;
-  SearchedSrc:=integer(Code);
+  SearchedSrc:=Pointer(Code);
   while (ANode<>nil) do begin
-    CurSrc:=integer(TCustomCodeTool(ANode.Data).Scanner.MainCode);
+    CurSrc:=Pointer(TCustomCodeTool(ANode.Data).Scanner.MainCode);
     if CurSrc>SearchedSrc then
       ANode:=ANode.Left
     else if CurSrc<SearchedSrc then
@@ -2807,12 +2823,12 @@ begin
   Result.VisibleEditorLines:=FVisibleEditorLines;
   Result.JumpCentered:=FJumpCentered;
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
-  TFindDeclarationTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
-  TFindDeclarationTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
-  TFindDeclarationTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
+  TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+  TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
+  TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
   Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
-  TFindDeclarationTool(Result).OnParserProgress:=@OnParserProgress;
+  TCodeTool(Result).OnParserProgress:=@OnParserProgress;
 end;
 
 procedure TCodeToolManager.SetAbortable(const AValue: boolean);
