@@ -1818,7 +1818,8 @@ begin
           end
           else Begin
             Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
+            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle),
+                     AParent.Left, AParent.Top);
           end;
         end;
       end;
@@ -5109,7 +5110,9 @@ begin
   if not LCLControl.HandleAllocated then exit;
   SenderWidget:=PgtkWidget(LCLControl.Handle);
   //if (Sender is TForm) and (Sender.ClassName='TForm1') then
-  //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget));
+  //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,
+  //    ' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget),
+  //    ' Should=',LCLControl.HandleObjectShouldBeVisible);
   if LCLControl.HandleObjectShouldBeVisible then
   begin
     if (Sender is TCustomForm) then begin
@@ -5119,7 +5122,7 @@ begin
 
     if gtk_widget_visible(SenderWidget) then
       exit;
-      
+
     // before making the widget visible, set the position and size
     if FWidgetsWithResizeRequest.Contains(SenderWidget) then begin
       if (LCLControl is TCustomForm) and (LCLControl.Parent=nil) then begin
@@ -5789,8 +5792,7 @@ begin
       gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
       //TODO:  account for local settings like date format
       //Form some reason, the month is zero based.
-      TLMCalendar(data^).Date :=
-        StrtoDate(Inttostr(Day)+'-'+Inttostr(Month+1)+'-'+Inttostr(Year));
+      TLMCalendar(data^).Date := EncodeDate(Year,Month,Day);
     end;
 
   csSpinEdit :
@@ -7243,6 +7245,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.355  2003/04/20 20:32:40  mattias
+  implemented removing, re-adding, updating project dependencies
+
   Revision 1.354  2003/04/15 09:03:46  mattias
   reduced output
 
