@@ -88,6 +88,7 @@ type
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); virtual; abstract;
     procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
+    function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; virtual; abstract;
 
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;

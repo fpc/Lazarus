@@ -180,6 +180,7 @@ type
     // project
     function OpenProjectDependencies(AProject: TProject;
                                 ReportMissing: boolean): TModalResult; override;
+    function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
     procedure AddProjectRegCompDependency(AProject: TProject;
@@ -1725,6 +1726,45 @@ end;
 procedure TPkgManager.AddProjectLCLDependency(AProject: TProject);
 begin
   AddProjectDependency(AProject,PackageGraph.LCLPackage);
+end;
+
+function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject
+  ): TModalResult;
+var
+  MissingUnits: TList;
+  i: Integer;
+  PkgFile: TPkgFile;
+  Msg: String;
+begin
+  Result:=mrOk;
+  MissingUnits:=PackageGraph.FindNotInstalledRegisterUnits(nil,
+                                              AProject.FirstRequiredDependency);
+  if MissingUnits<>nil then begin
+    Msg:='Probably you need to install some packages for before continuing.'#13
+      +#13
+      +'Warning:'#13
+      +'The project depends on some packages, which contain units with'
+      +' the Register procedure. The Register procedure is normally used '
+      +' to install components in the IDE. But the following units belong '
+      +' to packages which are not yet installed in the IDE. If you'
+      +' try to open a form in the IDE, that uses such components, you'
+      +' will get errors about missing components and the form loading'
+      +' will probably create very unpleasant results.'#13
+      +#13
+      +'This has no impact on opening the project or any of its sources.'#13
+      +#13
+      +'It only means: It is a bad idea to open the forms for designing, before'
+      +' installing the missing packages.'#13
+      +#13;
+    for i:=0 to MissingUnits.Count-1 do begin
+      PkgFile:=TPkgFile(MissingUnits[i]);
+      Msg:=Msg+'  unit '+PkgFile.UnitName
+              +' in package '+PkgFile.LazPackage.IDAsString;
+    end;
+    Result:=MessageDlg('Package needs installation',
+      Msg,mtWarning,[mbIgnore,mbCancel],0);
+    MissingUnits.Free;
+  end;
 end;
 
 function TPkgManager.ShowConfigureCustomComponents: TModalResult;

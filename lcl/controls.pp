@@ -1675,6 +1675,7 @@ const
 
 
 function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer) : integer;
+function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 Function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 Function FindControl(Handle: hwnd): TWinControl;
@@ -1837,6 +1838,12 @@ var
 begin
   Handle := WindowFromPoint(ScreenPos);
   Result := FindOwnerControl(Handle);
+end;
+
+function FindDragTarget(const Position: TPoint;
+  AllowDisabled: Boolean): TControl;
+begin
+  Result:=FindControlAtPosition(Position,AllowDisabled);
 end;
 
 {------------------------------------------------------------------------------
@@ -2234,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.189  2004/03/15 09:06:57  mattias
+  added FindDragTarget
+
   Revision 1.188  2004/03/08 22:36:01  mattias
   added TWinControl.ParentFormInitializeWnd
 

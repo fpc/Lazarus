@@ -135,6 +135,8 @@ type
                                       FirstDependency: TPkgDependency): TList;
     function FindUnsavedDependencyPath(APackage: TLazPackage;
                                        FirstDependency: TPkgDependency): TList;
+    function FindNotInstalledRegisterUnits(APackage: TLazPackage;
+                                        FirstDependency: TPkgDependency): TList;
     function FindAutoInstallDependencyPath(ChildPackage: TLazPackage): TList;
     function FindAmbigiousUnits(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
@@ -1217,7 +1219,7 @@ function TLazPackageGraph.FindAllBrokenDependencies(APackage: TLazPackage;
   FirstDependency: TPkgDependency): TList;
 // returns the list of broken dependencies (TPkgDependency)
 
-  procedure FindBroken(Dependency: TPkgDependency; var PathList: TList);
+  procedure FindBroken(Dependency: TPkgDependency; var DepList: TList);
   var
     RequiredPackage: TLazPackage;
   begin
@@ -1227,14 +1229,14 @@ function TLazPackageGraph.FindAllBrokenDependencies(APackage: TLazPackage;
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
+          FindBroken(RequiredPackage.FirstRequiredDependency,DepList);
         end;
       end else begin
         // broken dependency found
-        if (PathList=nil) or (PathList.IndexOf(Dependency)<0) then begin
-          if PathList=nil then
-            PathList:=TList.Create;
-          PathList.Add(Dependency);
+        if (DepList=nil) or (DepList.IndexOf(Dependency)<0) then begin
+          if DepList=nil then
+            DepList:=TList.Create;
+          DepList.Add(Dependency);
         end;
       end;
       Dependency:=Dependency.NextRequiresDependency;
@@ -1250,8 +1252,6 @@ begin
     FirstDependency:=APackage.FirstRequiredDependency;
   end;
   FindBroken(FirstDependency,Result);
-  if (Result<>nil) and (APackage<>nil) then
-    Result.Insert(0,APackage);
 end;
 
 function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage;
@@ -1350,6 +1350,54 @@ begin
   FindUnsaved(FirstDependency,Result);
   if (Result<>nil) and (APackage<>nil) then
     Result.Insert(0,APackage);
+end;
+
+function TLazPackageGraph.FindNotInstalledRegisterUnits(
+  APackage: TLazPackage; FirstDependency: TPkgDependency): TList;
+// returns the list of required units (TPkgFile) with a Register procedure,
+// that are not installed in the IDE
+
+  procedure FindNotInstalledRegisterUnit(Dependency: TPkgDependency;
+    var UnitList: TList);
+  var
+    RequiredPackage: TLazPackage;
+    i: Integer;
+    APkgFile: TPkgFile;
+  begin
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        // dependency ok
+        RequiredPackage:=Dependency.RequiredPackage;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          if RequiredPackage.Installed=pitNope then begin
+            // package not installed
+            for i:=0 to RequiredPackage.FileCount-1 do begin
+              APkgFile:=RequiredPackage.Files[i];
+              if APkgFile.HasRegisterProc then begin
+                // unit with register procedure -> add
+                if UnitList=nil then
+                  UnitList:=TList.Create;
+                UnitList.Add(APkgFile);
+              end;
+            end;
+          end;
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          FindNotInstalledRegisterUnit(RequiredPackage.FirstRequiredDependency,UnitList);
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+
+begin
+  Result:=nil;
+  if (Count=0) then exit;
+  MarkAllPackagesAsNotVisited;
+  if APackage<>nil then begin
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  FindNotInstalledRegisterUnit(FirstDependency,Result);
 end;
 
 function TLazPackageGraph.FindAutoInstallDependencyPath(
