@@ -3,6 +3,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   CAPTION = 'Debugger Options'
   CLIENTHEIGHT = 442
   CLIENTWIDTH = 480
+  ONCREATE = DebuggerOptionsFormCREATE
+  POSITION = podefaultposonly
   HORZSCROLLBAR.PAGE = 481
   VERTSCROLLBAR.PAGE = 443
   LEFT = 482
@@ -11,7 +13,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   WIDTH = 480
   object nbDebugOptions: TNOTEBOOK
     ALIGN = altop
-    PAGEINDEX = 0
+    PAGEINDEX = 2
     HEIGHT = 398
     WIDTH = 480
     object pgGeneral: TPAGE
@@ -20,14 +22,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
-      object Groupbox1: TGROUPBOX
+      object gbDebuggerType: TGROUPBOX
         CAPTION = 'Debugger type and path'
         PARENTCTL3D = False
         LEFT = 2
         HEIGHT = 54
         TOP = 8
         WIDTH = 472
-        object Combobox1: TCOMBOBOX
+        object cmbDebuggerType: TCOMBOBOX
           MAXLENGTH = 0
           PARENTCTL3D = False
           TABSTOP = True
@@ -36,7 +38,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           TOP = 5
           WIDTH = 160
         end
-        object cmbPath: TCOMBOBOX
+        object cmbDebuggerPath: TCOMBOBOX
           MAXLENGTH = 0
           PARENTCTL3D = False
           TABORDER = 1
@@ -46,7 +48,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           TOP = 5
           WIDTH = 260
         end
-        object Button1: TBUTTON
+        object cmdOpenDebuggerPath: TBUTTON
           CAPTION = '...'
           TABSTOP = True
           TABORDER = 2
@@ -56,7 +58,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 19
         end
       end
-      object Groupbox2: TGROUPBOX
+      object gbAdditionalSearchPath: TGROUPBOX
         CAPTION = 'Additional search path'
         PARENTCTL3D = False
         TABORDER = 1
@@ -64,14 +66,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         HEIGHT = 52
         TOP = 64
         WIDTH = 472
-        object Edit1: TEDIT
+        object txtAdditionalPath: TEDIT
           TABSTOP = True
           LEFT = 6
           HEIGHT = 25
           TOP = 5
           WIDTH = 428
         end
-        object Button2: TBUTTON
+        object cmdOpenAdditionalPath: TBUTTON
           CAPTION = '...'
           TABSTOP = True
           TABORDER = 1
@@ -81,7 +83,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 19
         end
       end
-      object Groupbox3: TGROUPBOX
+      object gbDebuggerSpecific: TGROUPBOX
         CAPTION = 'Debugger specific options (depends on type of debugger)'
         PARENTCTL3D = False
         TABORDER = 2
@@ -97,22 +99,140 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
-      object Groupbox4: TGROUPBOX
-        CAPTION = 'Groupbox4'
+      object gbGeneral: TGROUPBOX
+        CAPTION = 'General'
         PARENTCTL3D = False
         LEFT = 4
         HEIGHT = 132
         TOP = 8
         WIDTH = 230
+        object chkClearLogOnRun: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Clear log on run'
+          DRAGCURSOR = 0
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 5
+          WIDTH = 135
+        end
+        object chkLimitLinecount: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Limit linecount to'
+          DRAGCURSOR = 0
+          TABORDER = 1
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 29
+          WIDTH = 119
+        end
+        object seLimitLinecount: TSPINEDIT
+          ENABLED = False
+          CLIMB_RATE = 1
+          MINVALUE = 1
+          MAXVALUE = 10000
+          VALUE = 1
+          LEFT = 28
+          HEIGHT = 20
+          TOP = 53
+          WIDTH = 62
+        end
       end
-      object Groupbox5: TGROUPBOX
-        CAPTION = 'Groupbox5'
+      object gbMessages: TGROUPBOX
+        CAPTION = 'Messages'
+        ENABLED = False
         PARENTCTL3D = False
         TABORDER = 1
         LEFT = 242
-        HEIGHT = 133
+        HEIGHT = 188
         TOP = 8
         WIDTH = 232
+        object chkMessagesBreakpoint: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Breakpoint'
+          DRAGCURSOR = 0
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 5
+          WIDTH = 161
+        end
+        object chkMessagesProcess: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Process'
+          DRAGCURSOR = 0
+          TABORDER = 1
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 29
+          WIDTH = 147
+        end
+        object chkMessagesThread: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Thread'
+          DRAGCURSOR = 0
+          TABORDER = 2
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 53
+          WIDTH = 141
+        end
+        object chkMessagesModule: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Module'
+          DRAGCURSOR = 0
+          TABORDER = 3
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 77
+          WIDTH = 144
+        end
+        object chkMessagesOutput: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Output'
+          DRAGCURSOR = 0
+          TABORDER = 4
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 101
+          WIDTH = 139
+        end
+        object chkMessagesWindow: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Window'
+          DRAGCURSOR = 0
+          TABORDER = 5
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 125
+          WIDTH = 146
+        end
+        object chkMessagesInterface: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'Interface'
+          DRAGCURSOR = 0
+          TABORDER = 6
+          TABSTOP = True
+          LEFT = 4
+          HEIGHT = 20
+          TOP = 149
+          WIDTH = 150
+        end
       end
     end
     object pgExceptions: TPAGE
@@ -121,14 +241,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
-      object Groupbox6: TGROUPBOX
+      object bgIgnoreExceptions: TGROUPBOX
         CAPTION = 'Ignore these exceptions'
         PARENTCTL3D = False
         LEFT = 4
         HEIGHT = 328
         TOP = 8
         WIDTH = 468
-        object Scrollbox1: TSCROLLBOX
+        object sbExceptions: TSCROLLBOX
           AUTOSIZE = False
           DRAGCURSOR = 0
           PARENTCTL3D = False
@@ -140,7 +260,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           TOP = 5
           WIDTH = 447
         end
-        object Button5: TBUTTON
+        object cmdExceptionRemove: TBUTTON
           ENABLED = False
           CAPTION = 'Remove'
           TABSTOP = True
@@ -150,21 +270,23 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           TOP = 277
           WIDTH = 75
         end
-        object Button6: TBUTTON
+        object cmdExceptionAdd: TBUTTON
           CAPTION = 'Add'
           TABSTOP = True
           TABORDER = 2
+          ONCLICK = cmdExceptionAddCLICK
           LEFT = 300
           HEIGHT = 25
           TOP = 277
           WIDTH = 75
         end
       end
-      object Checkbox1: TCHECKBOX
+      object chkBreakOnException: TCHECKBOX
         ALLOWGRAYED = True
         AUTOSIZE = True
         CAPTION = 'Break on Lazarus Exceptions'
         DRAGCURSOR = 0
+        ONCHANGE = chkBreakOnExceptionCHANGE
         TABORDER = 1
         TABSTOP = True
         LEFT = 2
@@ -173,20 +295,20 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         WIDTH = 188
       end
     end
-    object Page1: TPAGE
+    object pgSignals: TPAGE
       CAPTION = 'OS Exceptions'
       LEFT = 2
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
-      object Groupbox7: TGROUPBOX
+      object gbSignals: TGROUPBOX
         CAPTION = 'Signals'
         PARENTCTL3D = False
         LEFT = 4
         HEIGHT = 354
         TOP = 8
         WIDTH = 468
-        object Button7: TBUTTON
+        object cmdSignalRemove: TBUTTON
           ENABLED = False
           CAPTION = 'Remove'
           TABSTOP = True
@@ -195,7 +317,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           TOP = 305
           WIDTH = 75
         end
-        object Button8: TBUTTON
+        object cmdSignalAdd: TBUTTON
           CAPTION = 'Add'
           TABSTOP = True
           TABORDER = 1

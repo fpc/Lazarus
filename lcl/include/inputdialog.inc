@@ -89,7 +89,9 @@ begin
       Visible := True;
       TabOrder := 2;
     end;
-    Edit.SetFocus;
+
+// Cant set focus here, since the form isn't visible yet.
+//    Edit.SetFocus;
     If ShowModal = mrOk then
     begin
       Value := Edit.Text;

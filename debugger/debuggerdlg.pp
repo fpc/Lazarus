@@ -129,6 +129,7 @@ end;
 
 procedure TDebuggerDlg.DoClose(var Action: TCloseAction);
 begin
+  Action := caFree; // we default to free
   inherited DoClose(Action);
   EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
@@ -145,6 +146,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.7  2003/06/16 00:07:28  marc
+  MWE:
+    + Implemented DebuggerOptions-ExceptonAdd
+    * fixed inputquery (cannot setfocus while dialog is invisuible)
+
   Revision 1.6  2003/05/29 23:14:17  mattias
   implemented jump to code on double click for breakpoints and callstack dlg
 

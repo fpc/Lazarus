@@ -695,6 +695,7 @@ procedure TDebugManager.mnuDebuggerOptionsClick (Sender: TObject );
 var
   Form: TDebuggerOptionsForm;
 begin
+  ShowMessage('This dialog is for demonstration purposes only, and not (fully) functional !');
   Form := TDebuggerOptionsForm.Create(Application);
   Form.ShowModal;
   Form.Free;
@@ -1540,6 +1541,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.54  2003/06/16 00:07:28  marc
+  MWE:
+    + Implemented DebuggerOptions-ExceptonAdd
+    * fixed inputquery (cannot setfocus while dialog is invisuible)
+
   Revision 1.53  2003/06/14 02:24:34  marc
   MWE: + Added DebuggerOptionDialog
 
