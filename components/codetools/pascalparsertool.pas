@@ -4458,7 +4458,7 @@ begin
     Result:=FindDeepestNodeAtPos(CleanCursorPos,true);
     if Result=nil then exit;
   end;
-  if Result.Desc in AllPascalStatements then begin
+  if Result.Desc=ctnBeginBlock then begin
     BuildSubTreeForBeginBlock(Result);
     Result:=FindDeepestNodeAtPos(CleanCursorPos,true);
     if Result=nil then exit;
