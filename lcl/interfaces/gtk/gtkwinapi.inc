@@ -2009,11 +2009,17 @@ var
 begin
   Writeln('[InvalidateRect]');
   Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
-  gdkRect.X := Rect^.Left;
-  gdkRect.Y := Rect^.Top;
-  gdkREct.Width := (Rect^.Right - Rect^.Left);
-  gdkREct.Height := (Rect^.Bottom - Rect^.Top);
-  gtk_widget_draw(PgtkWidget(aHandle),@gdkRect);
+  Result := True;
+  Try
+    gdkRect.X := Rect^.Left;
+    gdkRect.Y := Rect^.Top;
+    gdkREct.Width := (Rect^.Right - Rect^.Left);
+    gdkREct.Height := (Rect^.Bottom - Rect^.Top);
+    gtk_widget_draw(PgtkWidget(aHandle),@gdkRect);
+  except
+    Result := False;
+  end;
+
   Writeln('[InvalidateRect]  Exiting....');
 end;
 
@@ -3135,8 +3141,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.13  2001/01/23 18:42:10  lazarus
-  Added InvalidateRect to gtkwinapi.inc
+  Revision 1.14  2001/01/23 18:43:12  lazarus
+  Slight modification to Invalidaterect.
   Shane
 
   Revision 1.12  2001/01/12 18:46:50  lazarus
