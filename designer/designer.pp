@@ -272,6 +272,7 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.RemoveControl] ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
+  if AComponent=Form then exit;
   // remove all child controls owned by the form
   if (AComponent is TWinControl) then begin
     AWinControl:=TWinControl(AComponent);
@@ -683,6 +684,8 @@ var
     end;
     ControlSelection.RubberbandActive:=false;
     ControlSelection.EndUpdate;
+    with ControlSelection.Grabbers[0] do
+      writeln('AAA1 ',Left,',',Top,',',Width,',',Height);
     Form.Invalidate;
   end;
   
@@ -925,9 +928,13 @@ procedure TDesigner.DoDeleteSelectedComponents;
 var
   AComponent: TComponent;
 begin
-  if (ControlSelection.Count = 1)
-  and (ControlSelection.Items[0].Component = FCustomForm) then
-    Exit;
+  if (ControlSelection.IsSelected(FCustomForm)) then begin
+    if ControlSelection.Count>1 then
+      MessageDlg('Invalid delete',
+       'Selections can not be deleted, if the form is selected.',mtInformation,
+       [mbOk],0);
+    exit;
+  end;
   ControlSelection.BeginUpdate;
   while ControlSelection.Count>0 do Begin
     AComponent:=ControlSelection[ControlSelection.Count-1].Component;
