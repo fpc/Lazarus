@@ -111,6 +111,7 @@ type
     function CreateDefaultBrush: PGdiObject;virtual;
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
+    procedure UpdateDCTextMetric(DC: TDeviceContext);
     
     // images
     procedure LoadXPMFromLazResource(const ResourceName: string;
@@ -256,6 +257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2002/10/10 19:43:16  lazarus
+  MG: accelerated GetTextMetrics
+
   Revision 1.85  2002/10/10 08:51:13  lazarus
   MG: added paint messages for some gtk internal widgets
 
