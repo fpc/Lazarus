@@ -64,7 +64,6 @@ type
     procedure DoEvents; virtual; abstract;
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
-    procedure SendCachedLCLMessages; virtual;
     procedure Init; virtual; abstract;
     function GetText(Sender: TControl; var Text: String): Boolean; virtual; abstract;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
@@ -85,11 +84,6 @@ implementation
 Uses
   Dialogs, LCLStrConsts, Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
 
-procedure TInterfaceBase.SendCachedLCLMessages;
-begin
-
-end;
-
 
 {$I interfacebase.inc}
 
@@ -102,6 +96,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2002/10/16 16:58:22  lazarus
+  MG: moved SendCachedLCLMessages
+
   Revision 1.18  2002/10/15 07:01:29  lazarus
   MG: fixed timer checking
 
