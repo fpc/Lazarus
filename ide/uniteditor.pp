@@ -60,6 +60,8 @@ type
 
   TOnProcessUserCommand = procedure(Sender: TObject;
             Command: integer; var Handled: boolean) of object;
+  TOnUserCommandProcessed = procedure(Sender: TObject;
+            Command: integer; var Handled: boolean) of object;
 
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor and the source
@@ -129,10 +131,10 @@ type
 
     Procedure OpenAtCursorClicked(Sender : TObject);
 
-    Procedure ProcessUserCommand(Sender: TObject; var Command: TSynEditorCommand; 
-       var AChar: char; Data: pointer);
-    Procedure CommandProcessed(Sender: TObject; var Command: TSynEditorCommand; 
-       var AChar: char; Data: pointer);
+    Procedure ProcessUserCommand(Sender: TObject;
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+    Procedure UserCommandProcessed(Sender: TObject;
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ccOnTimer(sender : TObject);
     Procedure ccAddMessage(Texts : String);
     Function  ccParse(Texts : String) : TStrings;
@@ -217,6 +219,7 @@ type
     FOnSaveAllClicked : TNotifyEvent;
     FOnToggleFormUnitClicked : TNotifyEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
+    FOnUserCommandProcessed: TOnProcessUserCommand;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -248,6 +251,8 @@ type
     procedure UpdateStatusBar;
     MarksImgList : TImageList;
     Procedure ProcessParentCommand(Sender: TObject; 
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+    Procedure ParentCommandProcessed(Sender: TObject; 
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     function FindBookmark(BookmarkID: integer): TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
@@ -321,6 +326,8 @@ type
        read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
     property OnProcessUserCommand: TOnProcessUserCommand
        read FOnProcessUserCommand write FOnProcessUserCommand;
+    property OnUserCommandProcessed: TOnUserCommandProcessed
+       read FOnUserCommandProcessed write FOnUserCommandProcessed;
   end;
 
 {Goto dialog}
@@ -685,7 +692,10 @@ var
   Y,I : Integer;
   P: TPoint;
   Texts, Texts2, TheName : String;
+  Handled: boolean;
 Begin
+writeln('TSourceEditor.ProcessUserCommand');
+  Handled:=true;
   case Command of
   ecCodeCompletion :
     if TCustomSynEdit(Sender).ReadOnly=false then begin
@@ -801,14 +811,27 @@ Begin
     end;
     
   else
-    TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data);
+    begin
+      Handled:=false;
+      TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data);
+    end;
   end;  //case
+  if Handled then Command:=ecNone;
+writeln('TSourceEditor.ProcessUserCommand END');
 end;
 
-Procedure TSourceEditor.CommandProcessed(Sender: TObject;
+Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  //Handled: boolean;
 begin
-
+  {Handled:=true;
+  case Command of
+  
+  else begin
+    Handled:=false;}
+    TSourceNotebook(FaOwner).ParentCommandProcessed(self,Command,aChar,Data);
+  {end;
+  if Handled then Command:=ecNone;}
 end;
 
 Procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
@@ -1102,6 +1125,7 @@ writeln('TSourceEditor.CreateEditor  FEditorName="',NewName,'"');
     BookMarkOptions.EnableKeys := false;
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
+    OnCommandProcessed := @UserCommandProcessed;
     OnReplaceText := @OnReplace;
     OnGutterClick := @Self.OnGutterClick;
     OnSpecialLineColors:=@OnEditorSpecialLineColor;
@@ -2154,11 +2178,14 @@ writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
   FSourceEditorList.Remove(TempEditor);
   TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
+writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     Notebook.Pages.Delete(PageIndex);
-writeln('TSourceNotebook.CloseFile G  PageIndex=',PageIndex);
+writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
     UpdateStatusBar;
   end else begin
+writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
     Notebook.Free;
+writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
     Notebook:=nil;
     Hide;
   end;
@@ -2376,6 +2403,7 @@ begin
     if Handled then exit;
   end;
 
+  Handled:=true;
   case Command of
   ecNextEditor:
     NextEditor;
@@ -2388,9 +2416,6 @@ begin
 
   ecOpen :
     OpenClicked(self);
-
-  ecClose :
-    CloseClicked(self);
 
   ecJumpToEditor :
     Begin
@@ -2410,10 +2435,30 @@ begin
 
   ecSetMarker0..ecSetMarker9:
     BookMarkToggle(Command - ecSetMarker0);
-
+  else
+    Handled:=false;
   end;  //case
-  
-  writeln('******* ',ecGotoMarker4,',',Command);
+  if Handled then Command:=ecNone;
+end;
+
+Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+var Handled: boolean;
+begin
+  if Assigned(FOnUserCommandProcessed) then begin
+    Handled:=false;
+    FOnUserCommandProcessed(Self,Command,Handled);
+    if Handled then exit;
+  end;
+
+  Handled:=true;
+  case Command of
+  ecClose :
+    CloseClicked(self);
+  else
+    Handled:=false;
+  end;  //case
+  if Handled then Command:=ecNone;
 end;
 
 Procedure TSourceNotebook.ReloadEditorOptions;

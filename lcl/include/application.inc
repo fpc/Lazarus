@@ -64,14 +64,29 @@ end;
 {------------------------------------------------------------------------------}
 {       TApplication Notification  "Performs Application Level Operations"     }
 {------------------------------------------------------------------------------}
-procedure TApplication.Notification(AComponent : TComponent; Operation : TOperation);
+procedure TApplication.Notification(AComponent : TComponent;
+  Operation : TOperation);
 begin
   if Operation = opRemove then begin
+    if AComponent=FMouseControl then FMouseControl:=nil;
     if AComponent = MainForm then begin
       FMainForm:= nil;
       Terminate;
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TApplication.MouseIdle
+  Params: None
+  Returns:  Nothing
+
+  Handles mouse Idle  
+ ------------------------------------------------------------------------------}
+procedure TApplication.ControlDestroyed(AControl: TControl);
+begin
+  if AControl=FMouseControl then FMouseControl:=nil;
+  if AControl = MainForm then FMainForm:= nil;
 end;
 
 {------------------------------------------------------------------------------}
@@ -143,9 +158,11 @@ begin
     then IsOther := FMouseControl <> nil
     else IsOther := FMouseControl = CaptureControl;
     
-    if IsOther then FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
+    if IsOther and (FMouseControl<>nil) then
+      FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
     FMouseControl := CurrentControl;
-    if IsOther then FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
+    if IsOther and (FMouseControl<>nil) then
+      FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
   end;
 end;
 
@@ -227,14 +244,14 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Run;
 begin
-   if FMainForm <> nil 
-   then FMainForm.Show;
+  if FMainForm <> nil 
+  then FMainForm.Show;
    
-   repeat 
-     HandleMessage;
-     if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel) 
-     then Terminate; 
-   until Terminated;
+  repeat 
+    HandleMessage;
+    if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel) 
+    then Terminate; 
+  until Terminated;
 end;
 
 {------------------------------------------------------------------------------}
@@ -251,8 +268,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Terminate;
 begin
-   FTerminate := True;
-   InterfaceObject.AppTerminate;
+  FTerminate := True;
+  InterfaceObject.AppTerminate;
 end;
 
 {------------------------------------------------------------------------------}
@@ -262,27 +279,30 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.CreateForm(NewForm : TFormClass; var ref);
 begin
-   try
-      TForm(ref) := NewForm.Create(Self);
-   except
-      raise;
-   end;
+  try
+    TForm(ref) := NewForm.Create(Self);
+  except
+    raise;
+  end;
 
-   if FMainForm = nil then
-   begin
-      FMainForm := TForm(ref);
-   end
-   else
-   begin;
-      if not assigned(FList) then
-         FList := TList.Create;
-      FList.Add(TForm(ref));
-   end;
+  if FMainForm = nil then
+  begin
+    FMainForm := TForm(ref);
+  end
+  else
+  begin;
+    if not assigned(FList) then
+      FList := TList.Create;
+    FList.Add(TForm(ref));
+  end;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/06/28 18:15:03  lazarus
+  MG: bugfixes for destroying controls
+
   Revision 1.5  2001/06/26 00:08:35  lazarus
   MG: added code for form icons from Rene E. Beszon
 

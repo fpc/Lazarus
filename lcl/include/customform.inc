@@ -119,7 +119,7 @@ End;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
-  if HandleAllocated and (BorderStyle<>bsDialog) then
+  if HandleAllocated {and (BorderStyle<>bsDialog)} then
     CNSendMessage(LM_SETFORMICON,Self,Pointer(GetIconHandle));
 end;
 
@@ -939,6 +939,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/06/28 18:15:03  lazarus
+  MG: bugfixes for destroying controls
+
   Revision 1.21  2001/06/26 00:08:35  lazarus
   MG: added code for form icons from Rene E. Beszon
 

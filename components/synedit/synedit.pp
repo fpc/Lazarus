@@ -6378,6 +6378,7 @@ begin
         // search for the matching bracket (that is until NumBrackets = 0)
         NumBrackets := 1;
         if Odd(i) then begin
+          // closing bracket -> search opening bracket
           repeat
             // search until start of line
             while PosX > 1 do begin
@@ -6401,6 +6402,7 @@ begin
             PosX := Length(Line) + 1;
           until FALSE;
         end else begin
+          // opening bracket -> search closing bracket
           repeat
             // search until end of line
             Len := Length(Line);

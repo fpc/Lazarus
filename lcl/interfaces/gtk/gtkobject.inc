@@ -330,34 +330,36 @@ End;
 function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
-   handle    : hwnd;                    // handle of sender        
-   pStr      : PChar;                   // temporary string pointer, must be allocated/disposed when used!
-   Widget    : PGtkWidget;              // pointer to gtk-widget (local use when neccessary)
-   AParent   : TWinControl;             // only used twice, replace with typecasts!
-   Pixmap    : pgdkPixMap;
-   box1      : pgtkWidget;              // currently only used for TBitBtn
-   pixmapwid : pGtkWidget;              // currently only used for TBitBtn, possibly replace with pixmap!!!!
-   pLabel    : PgtkWidget;              // currently only used as extra label-widget for TBitBtn
-   Num       : Integer;                 // currently only used for LM_INSERTTOOLBUTTON
-   pStr2     : PChar;                   // currently only used for LM_INSERTTOOLBUTTON
-   GList     : pGList;                  // Only used for listboxes, replace with widget!!!!!
-   SelectionMode : TGtkSelectionMode;   // currently only used for listboxes
-   ListItem  : PGtkListItem;            // currently only used for listboxes
-   Rect      : TRect;
-   FormIconGdiObject: PGdiObject;       // currently only used by LM_SETFORMICON
+  handle    : hwnd;                  // handle of sender        
+  pStr      : PChar;                 // temporary string pointer, must be allocated/disposed when used!
+  Widget    : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
+  AParent   : TWinControl;           // only used twice, replace with typecasts!
+  Pixmap    : pgdkPixMap;
+  box1      : pgtkWidget;            // currently only used for TBitBtn
+  pixmapwid : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
+  pLabel    : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
+  Num       : Integer;               // currently only used for LM_INSERTTOOLBUTTON
+  pStr2     : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
+  GList     : pGList;                // Only used for listboxes, replace with widget!!!!!
+  SelectionMode : TGtkSelectionMode; // currently only used for listboxes
+  ListItem  : PGtkListItem;          // currently only used for listboxes
+  Rect      : TRect;
+  FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
+  QueueItem, OldQueueItem: PLazQueueItem; // currently only used by LM_DESTROY
+  MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
 
 begin
-   result := 0;   //default value just in case nothing sets it
+  Result := 0;   //default value just in case nothing sets it
 
-   Assert(False, 'Trace:Message received'); 
-   if Sender <> nil then
-     Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
+  Assert(False, 'Trace:Message received'); 
+  if Sender <> nil then
+    Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
 
-   // The following case is now split into 2 separate parts:
-   //   1st part should contain all messages which don't need the "handle" variable
-   //   2nd part has to contain all parts which need the handle
-   // Reason for this split are performance issues since we need RTTI to
-   // retrieve the handle
+  // The following case is now split into 2 separate parts:
+  //   1st part should contain all messages which don't need the "handle" variable
+  //   2nd part has to contain all parts which need the handle
+  // Reason for this split are performance issues since we need RTTI to
+  // retrieve the handle
   case LM_Message of
       LM_Create   : CreateComponent(Sender);
 
@@ -432,6 +434,23 @@ begin
         if (Sender is TWinControl) or (Sender is TCommonDialog) then begin
           if Handle<>0 then
             gtk_widget_destroy(PGtkWidget(Handle));
+          // remove all remaining messages to this component
+          QueueItem:=FMessageQueue.First;
+          while (QueueItem<>nil) do begin
+            MsgPtr := PMsg(QueueItem^.Data);
+            if MsgPtr^.HWnd=Handle then begin
+              // remove message
+              if MsgPtr^.Message=LM_PAINT then begin
+                FPaintMessages.Remove(QueueItem);
+                ReleaseDC(0,MsgPtr^.WParam);
+              end;
+              Dispose(MsgPtr);
+              OldQueueItem:=QueueItem;
+              QueueItem:=QueueItem^.Next;
+              FMessageQueue.Delete(OldQueueItem);
+            end else
+              QueueItem:=QueueItem^.Next;
+          end;
         end
         else
           Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
@@ -2948,6 +2967,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.53  2001/06/28 18:15:04  lazarus
+  MG: bugfixes for destroying controls
+
   Revision 1.52  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

@@ -1232,6 +1232,7 @@ end;
 destructor TControl.Destroy;
 begin
 //writeln('[TControl.Destroy] A ',Name,':',ClassName);
+  Application.ControlDestroyed(Self);
   SetParent(nil);
   FFont.Free;
 //writeln('[TControl.Destroy] B ',Name,':',ClassName);
@@ -1344,6 +1345,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.22  2001/06/28 18:15:03  lazarus
+  MG: bugfixes for destroying controls
+
   Revision 1.21  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

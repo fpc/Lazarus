@@ -257,6 +257,7 @@ type
    public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
+      procedure ControlDestroyed(AControl: TControl);
       Procedure BringToFront;
       procedure CreateForm(NewForm : TFormClass; var ref);
       procedure HandleMessage;
