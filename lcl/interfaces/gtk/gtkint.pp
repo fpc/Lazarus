@@ -144,7 +144,6 @@ type
 
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);
-    procedure SendCachedLCLMessages;
     function  LCLtoGtkMessagePending: boolean;
     procedure SendCachedGtkMessages;
     procedure SetCallback(Msg : LongInt; Sender : TObject); override;
@@ -158,6 +157,7 @@ type
                               data : pointer) : integer; override;
     procedure HandleEvents; override;
     procedure WaitMessage; override;
+    procedure SendCachedLCLMessages; override;
     procedure AppTerminate; override;
     procedure Init; override;
     function  UpdateHint(Sender: TObject): Integer; override;
@@ -493,6 +493,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2002/10/01 10:12:34  lazarus
+  MG: added SendCachedLCLMessages to interfacebase for wysiwyg
+
   Revision 1.77  2002/10/01 10:05:48  lazarus
   MG: changed PDeviceContext into class TDeviceContext
 
