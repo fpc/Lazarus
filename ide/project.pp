@@ -155,7 +155,7 @@ type
     procedure IgnoreCurrentFileDateOnDisk;
     procedure IncreaseAutoRevertLock;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure ReadUnitNameFromSource;
+    procedure ReadUnitNameFromSource(TryCache: boolean);
     function CreateUnitName: string;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
@@ -359,7 +359,7 @@ type
     procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
     function ReadProject(const LPIFilename: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
-                           const OverrideProjectInfoFile: string): TModalResult;
+                          const OverrideProjectInfoFile: string): TModalResult;
 
     // units
     function UnitCount:integer;
@@ -662,8 +662,17 @@ begin
   Result:=mrOk;
 end;
 
-procedure TUnitInfo.ReadUnitNameFromSource;
+procedure TUnitInfo.ReadUnitNameFromSource(TryCache: boolean);
+var
+  NewUnitName: String;
 begin
+  if TryCache then begin
+    NewUnitName:=CodeToolBoss.GetCachedSourceName(Source);
+    if NewUnitName<>'' then begin
+      fUnitName:=NewUnitName;
+      exit;
+    end;
+  end;
   fUnitName:=CodeToolBoss.GetSourceName(fSource,false);
 end;
 
@@ -2155,14 +2164,12 @@ begin
   if Load then begin
     // make filename absolute
     if (AFilename<>'') and (not FilenameIsAbsolute(AFilename)) then
-      AFilename:=ProjectPath+AFilename;
+      AFilename:=TrimFilename(ProjectPath+AFilename);
   end else begin
     // try making filename relative to project file
     if (AFilename<>'') and FilenameIsAbsolute(AFilename)
-    and (CompareFileNames(copy(AFilename,1,length(ProjectPath)),ProjectPath)=0)
-    then
-      AFilename:=copy(AFilename,length(ProjectPath)+1,
-           length(AFilename)-length(ProjectPath));
+    and FileIsInPath(AFilename,ProjectPath) then
+      AFilename:=CreateRelativePath(AFilename,ProjectPath);
   end;
 end;
 
@@ -2647,6 +2654,9 @@ end.
 
 {
   $Log$
+  Revision 1.129  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.128  2003/06/08 11:05:45  mattias
   implemented filename case check before adding to project
 

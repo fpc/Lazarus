@@ -113,7 +113,7 @@ begin
 
   // create as many TRadioButton as needed
   while (FButtonList.Count<FItems.Count) do begin
-    Temp := TRadioButton.Create (self);
+    Temp := TRadioButton.Create(Self);
     Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
     Temp.AutoSize := False;
     Temp.OnClick := @Clicked;
@@ -138,7 +138,8 @@ begin
     for i:=0 to FItems.Count-1 do begin
       Temp := TRadioButton(FButtonList[i]);
       Temp.Caption := FItems[i];
-      Temp.Parent := Self;
+      Temp.Parent:=Self;
+      Temp.SetZOrder(false);
     end;
     with FHiddenButton do begin
       FHiddenButton.Visible:=false;
@@ -156,7 +157,7 @@ begin
     FHiddenButton.Checked:=(fItemIndex=-1);
   end;
   //writeln('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
-
+  
   FCreatingWnd := false;
 end;
 
@@ -179,7 +180,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
-  if HandleAllocated then RecreateWnd;
+  if HandleAllocated and (csLoading in ComponentState) then
+    RecreateWnd;
   OwnerFormDesignerModified(Self);
 end;
 
@@ -199,7 +201,8 @@ begin
     if (Value < 1)
        then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
     FColumns := Value;
-    if HandleAllocated then RecreateWnd;
+    if HandleAllocated and (csLoading in ComponentState) then
+      RecreateWnd;
   end;
 end;
 
@@ -215,7 +218,8 @@ begin
   if (Value <> FItems) then
   begin
     FItems.Assign(Value);
-    if HandleAllocated then RecreateWnd;
+    if HandleAllocated and (csLoading in ComponentState) then
+      RecreateWnd;
   end;
 end;
 
@@ -376,6 +380,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.20  2003/03/17 23:39:30  mattias
   added TCheckGroup
 
