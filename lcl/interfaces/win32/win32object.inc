@@ -1759,7 +1759,7 @@ Var
   Height, Width: Integer;
   DoSubClass: Boolean;
   Parent: HWND;
-  PStr, StrTemp: PChar;
+  StrTemp: PChar;
   R: TRect;
   //TCI: TC_ITEM;
 Const
@@ -2753,6 +2753,9 @@ End;
 
 {
   $Log$
+  Revision 1.107  2003/09/08 13:29:55  mattias
+  clean up
+
   Revision 1.106  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 
