@@ -82,7 +82,7 @@ type
     //PageControl1      : TPageControl;
     //TabSheet1, TabSheet2, TabSheet3 : TTabSheet;
       PaintBox1         : TPaintBox;
-    //Panel1            : TPanel;
+      Panel1            : TPanel;
       PixMap1           : TPixMap;
       PopupMenu1        : TPopupMenu;
       Hello, Doctor, FName, Yesterday, Tomorrow : TMenuItem;
@@ -220,6 +220,16 @@ type
 
 //+++++++++++++ TPaintBox +++++++++++++++++++++++++++++ 
       pntCount : integer;
+//+++++++++++++ TPanel ++++++++++++++++++++++++++++++++ 
+      Panel2         : TPanel;
+      btPanelNorm    : TButton;
+      rgPanelInBevel,
+      rgPanelOutBevel,
+      rgPanelAlign   : TRadioGroup;
+      procedure PanelInBevelClick(Sender: TObject);
+      procedure PanelOutBevelClick(Sender: TObject);
+      procedure PanelAlignClick(Sender: TObject);
+      procedure PanelNormClick(Sender:TObject);
 //+++++++++++++ TProgressBar ++++++++++++++++++++++++++
       chbProgText, chbProgDirect, chbProgOrient, chbProgEnable, chbSmooth : TCheckBox;
       ProgTime : TTimer;
@@ -667,7 +677,7 @@ begin
 
   TPan := TMenuItem.Create(Self);
   TPan.Caption := 'TPanel';
-  TPan.OnClick := @ShowMessage0;          //++ Do not exist yet ++
+  TPan.OnClick := @ShowMessage1;
 
   TPop := TMenuItem.Create(Self);
   TPop.Caption := 'TPopupMenu';
@@ -2041,7 +2051,23 @@ PaintBox1 := TPaintBox.Create(Self); //Gives Access violation !!!
     Width          := 100;
   end;
 //++++++++++++++++++++++++++++++++++++ Panel1 +++++++++++++++++++++++++++++++++++++++
-
+benchform[33].width := 550;
+Panel1 := TPanel.Create (Form1);
+  with Panel1 do
+  begin
+    Parent         := BenchForm[33];
+    PanelNormClick (self);
+  end;
+Panel2 := TPanel.Create (Form1);
+  with Panel2 do
+  begin
+    Parent         := BenchForm[33];
+    Align          := alBottom;
+    Height := 150;
+    Ctl3D := False;
+    Caption := 'Panel1';
+    Visible := True;
+  end;
 //++++++++++++++++++++++++++++++++++++ PopupMenu1 +++++++++++++++++++++++++++++++++++
 Hello := TMenuItem.Create(PopupMenu1);
 Hello.Caption := 'Hello';
@@ -2540,6 +2566,9 @@ END.
 
 {
   $Log$
+  Revision 1.7  2002/03/23 21:02:02  lazarus
+  + Enhanced testall-app with demo for TPanel, stoppok
+
   Revision 1.6  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

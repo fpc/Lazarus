@@ -1125,7 +1125,78 @@ btnOpen := TBitBtn.Create(Self); //Button Open
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++ TPanel Tools ++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//             ADD Panel CompTools HERE !!!!!!!!!
+
+  rgPanelOutBevel := TRadioGroup.Create (self);
+  with rgPanelOutBevel do
+  begin
+     Parent := Panel2;
+     OnClick := @PanelOutBevelClick;
+     Top    := 10;
+     Left   := 250;
+     Height := 100;
+     Width  := 100;
+     Items.Add ('lowered');
+     Items.Add ('raised');
+     Items.Add ('none');
+     Items.Add ('(!)space');
+     Hint := 'Change style (lowered/raised..)';
+     ShowHint := True;
+     ItemIndex := 1;
+     Show;
+     Caption := 'Outer-Bevel';
+  End;
+  rgPanelInBevel := TRadioGroup.Create (self);
+  with rgPanelInBevel do
+  begin
+     Parent := Panel2;
+     OnClick := @PanelInBevelClick;
+     Top    := 10;
+     Left   := 140;
+     Height := 100;
+     Width  := 100;
+     Items.Add ('lowered');
+     Items.Add ('raised');
+     Items.Add ('none');
+     Items.Add ('(!)space');
+     Hint := 'Change style (lowered/raised..)';
+     ShowHint := True;
+     ItemIndex := 2;
+     Show;
+     Caption := 'Inner-Bevel';
+  End;
+  rgPanelAlign := TRadioGroup.Create (self);
+  with rgPanelAlign do
+  begin
+     Parent := Panel2;
+     OnClick := @PanelAlignClick;
+     top    := 10;
+     left   := 10;
+     Height := 130;
+     Width  := 120;
+     Items.Add ('alNone');
+     Items.Add ('alBottom');
+     Items.Add ('alClient');
+     Items.Add ('alLeft');
+     Items.Add ('alRight');
+     Items.Add ('alTop');
+     ItemIndex := 0;
+     Show;
+     Caption := 'Alignment';
+  end;
+  btPanelNorm := TButton.Create(self);
+  with btPanelNorm do
+  begin
+     Parent := Panel2;
+     OnClick:= @PanelNormClick; 
+     top    := 10;
+     left   := 360;
+     Height := 30;
+     Width  := 50;
+     Show;
+     Caption := 'Norm';
+  end;
+
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++ TPopupMenu Tools ++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2080,6 +2151,66 @@ begin
 
 end;
 
+
+//++++++++++++++++++++++++++++++++ TPanel +++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.PanelInBevelClick(Sender: TObject);
+begin
+  case rgPanelInBevel.ItemIndex of
+     0 : Panel1.BevelInner := bvLowered;
+     1 : Panel1.BevelInner := bvRaised;
+     2 : Panel1.BevelInner := bvNone;
+     3 : Panel1.BevelInner := bvNone;
+  else
+     Panel1.BevelInner := bvNone;
+  end;
+  Panel1.Show;
+end;
+
+procedure TForm1.PanelOutBevelClick(Sender: TObject);
+begin
+  case rgPanelInBevel.ItemIndex of
+     0 : Panel1.BevelOuter := bvLowered;
+     1 : Panel1.BevelOuter := bvRaised;
+     2 : Panel1.BevelOuter := bvNone;
+     3 : Panel1.BevelOuter := bvNone;
+  else
+     Panel1.BevelOuter := bvNone;
+  end;
+  Panel1.Show;
+end;
+
+procedure TForm1.PanelAlignClick(Sender: TObject);
+begin
+  case rgPanelAlign.ItemIndex of
+     0 : Panel1.Align := alNone;
+     1 : Panel1.Align := alBottom;
+     2 : Panel1.Align := alClient;
+     3 : Panel1.Align := alLeft;
+     4 : Panel1.Align := alRight;
+     5 : Panel1.Align := alTop;
+  else
+     Panel1.Align := alNone;
+  end;
+  Panel1.Show;
+end;
+
+procedure TForm1.PanelNormClick(Sender:TObject);
+begin
+   with Panel1 do
+   begin
+      Left   := 10;
+      Top    := 10;
+      Width  := 300;
+      Height := 100;
+      Ctl3D  := False;
+      Caption := 'Panel1';
+      Visible := True;
+      Align   := alNone;
+      BevelOuter := bvRaised;
+      BevelInner := bvNone;
+   end;
+end;
+//++++++++++++++++++++++++++++++++ TBevel +++++++++++++++++++++++++++++++++++++++++++
 procedure TForm1.BevelSettings(Sender : TObject);
 begin
    case chbBevelShape.ItemIndex of
@@ -2602,6 +2733,12 @@ begin
     EventForm.Caption := EventForm.Caption+' TPaintBox';
     Assert(False, 'Trace: >>> TPaintBox TEST');
   end;
+  if Sender=TPan then
+  begin
+    BenchForm[33].Show;
+    EventForm.Caption := EventForm.Caption+' TPanel';
+    Assert(False, 'Trace: >>> TPanel TEST');
+  end;
   If Sender=TPop then
   begin
     BenchForm[34].Show;
@@ -2723,6 +2860,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.6  2002/03/23 21:02:02  lazarus
+  + Enhanced testall-app with demo for TPanel, stoppok
+
   Revision 1.5  2001/04/17 21:36:15  lazarus
   * enhanced testdialog for TBevel
   * basic test for TPaintBox
