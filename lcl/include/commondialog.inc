@@ -65,11 +65,22 @@ begin
   FHandle:=AValue;
 end;
 
+procedure TCommonDialog.SetHeight(const AValue: integer);
+begin
+  if FHeight=AValue then exit;
+  FHeight:=AValue;
+end;
+
+procedure TCommonDialog.SetWidth(const AValue: integer);
+begin
+  if FWidth=AValue then exit;
+  FWidth:=AValue;
+end;
+
 function TCommonDialog.DoExecute : boolean;
 var CanClose: boolean;
 begin
   if Assigned(FOnShow) then FOnShow(Self);
-  Assert(False, 'Trace:Calling dialog - LM_SHOWMODAL');
   CNSendMessage(LM_SHOWMODAL, Self, nil);
   repeat
     Application.HandleMessage;
@@ -87,6 +98,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/09/04 10:51:30  mattias
+  fixed default size of preview widget
+
   Revision 1.9  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

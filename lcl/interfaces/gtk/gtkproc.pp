@@ -39,7 +39,7 @@ uses
   LCLStrConsts, LCLLinux, LCLType, gtkDef, DynHashArray, LazLinkedList,
   GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
   ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
-  Dialogs, FileCtrl, LResources, Math, GTKGlobals;
+  Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals;
 
 
   {$IFDEF gtk2}

@@ -1251,6 +1251,12 @@ begin
       FilterList.Free;
       gtk_object_set_data(PGtkObject(DlgWindow),'LCLFilterList',nil);
     end;
+
+    // free preview handle
+    if ADialog is TPreviewFileDialog then begin
+      if TPreviewFileDialog(ADialog).PreviewFileControl<>nil then
+        TPreviewFileDialog(ADialog).PreviewFileControl.Handle:=0;
+    end;
   end;
 end;
 
@@ -4405,6 +4411,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.193  2003/09/04 10:51:30  mattias
+  fixed default size of preview widget
+
   Revision 1.192  2003/08/30 18:53:08  mattias
   using default colors, when theme does not define them
 

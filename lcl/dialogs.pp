@@ -80,6 +80,8 @@ type
     FUserChoice: integer;
     FHelpContext: THelpContext;
     procedure SetHandle(const AValue: integer);
+    procedure SetHeight(const AValue: integer);
+    procedure SetWidth(const AValue: integer);
   protected
     function DoExecute : boolean; virtual;
   public
@@ -98,8 +100,8 @@ type
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    property Width: integer read FWidth write FWidth;
-    property Height: integer read FHeight write FHeight;
+    property Width: integer read FWidth write SetWidth;
+    property Height: integer read FHeight write SetHeight;
   end;
 
 
@@ -419,6 +421,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/09/04 10:51:30  mattias
+  fixed default size of preview widget
+
   Revision 1.35  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

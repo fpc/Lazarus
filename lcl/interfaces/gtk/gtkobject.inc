@@ -4958,8 +4958,8 @@ begin
   PreviewWidget:=PGtkWidget(AControl.Handle);
   gtk_object_set_data(PGtkObject(PreviewWidget),'LCLPreviewFixed',
                       PreviewWidget);
+  gtk_widget_set_usize(PreviewWidget,AControl.Width,AControl.Height);
   gtk_box_pack_start(GTK_BOX(list_hbox),PreviewWidget,true,true,0);
-
   gtk_widget_show(PreviewWidget);
 end;
 
@@ -8122,6 +8122,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.404  2003/09/04 10:51:30  mattias
+  fixed default size of preview widget
+
   Revision 1.403  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

@@ -191,6 +191,10 @@ type
     procedure ShowModal(Sender: TObject); virtual;
     procedure UpdateTransientWindows; virtual;
     procedure UntransientWindow(GtkWindow: PGtkWindow);
+    procedure InitializeFileDialog(FileDialog: TFileDialog;
+      var SelWidget: PGtkWidget; Title: PChar);
+    procedure InitializeFontDialog(FontDialog: TFontDialog;
+      var SelWidget: PGtkWidget; Title: PChar);
     procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
     procedure CreateOpenDialogFilter(OpenDialog: TOpenDialog;
       SelWidget: PGtkWidget);
@@ -198,10 +202,6 @@ type
       SelWidget: PGtkWidget);
     procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
       SelWidget: PGtkWidget);
-    procedure InitializeFileDialog(FileDialog: TFileDialog;
-      var SelWidget: PGtkWidget; Title: PChar);
-    procedure InitializeFontDialog(FontDialog: TFontDialog;
-      var SelWidget: PGtkWidget; Title: PChar);
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
@@ -360,6 +360,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2003/09/04 10:51:30  mattias
+  fixed default size of preview widget
+
   Revision 1.141  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 
