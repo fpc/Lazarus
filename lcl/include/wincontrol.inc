@@ -804,7 +804,7 @@ var
   F: TCustomForm;
   ShiftState: TShiftState;
 begin
-  Writeln('name is ',self.name);
+//  Writeln('name is ',self.name);
   Result := True;
   F := GetParentForm(Self);
   if  (F <> nil) 
@@ -1933,6 +1933,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2001/12/08 08:54:45  lazarus
+  MG: added TControl.Refresh
+
   Revision 1.43  2001/12/07 20:12:15  lazarus
   Added a watch dialog.
   Shane

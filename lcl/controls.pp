@@ -514,6 +514,7 @@ TCMDialogKey = TLMKEY;
     procedure BringToFront;
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
+    procedure Refresh;
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
     procedure AddControl; virtual;
@@ -1147,6 +1148,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2001/12/08 08:54:45  lazarus
+  MG: added TControl.Refresh
+
   Revision 1.26  2001/12/05 17:23:44  lazarus
   Added Calendar component
   Shane
