@@ -1781,9 +1781,6 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
       gtk_label_set_text(pGtkLabel(TabLabelWidget), NewText);
     if MenuLabelWidget<>nil then
       gtk_label_set_text(pGtkLabel(MenuLabelWidget), NewText);
-    //      gtk_notebook_set_tab_label_text(
-    //        PGtkNotebook((TWinControl(Sender).Parent).Handle),
-    //        PGtkWidget(P), PGChar(data));
   end;
   
   procedure SetMenuItemCaption;
@@ -1798,21 +1795,17 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     if not MenuItem.HandleAllocated then exit;
     MenuItemWidget:=PGtkWidget(MenuItem.Handle);
     if MenuItemWidget=nil then exit;
-    LabelWidget:=PGTKLabel(PGTKBin(MenuItemWidget)^.Child);
+    LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
     if LabelWidget=nil then exit;
 
     NewCaption:=MenuItem.Caption;
-    if NewCaption <> '-' then
-    begin
-      //Check for a shortcut key
-      AmpPos := pos('&', NewCaption);
-      if AmpPos <> 0 then begin
-        NewCaption[AmpPos - 1] := '_';
-        SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,
-                    PChar(NewCaption)));
-      end
-      else
-        gtk_label_set_text(LabelWidget,PChar(NewCaption));
+    
+    //Check for a shortcut key
+    AmpPos := pos('&', NewCaption);
+    if AmpPos <> 0 then begin
+      NewCaption[AmpPos] := '_';
+      SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,
+                  PChar(NewCaption)));
     end
     else
       gtk_label_set_text(LabelWidget,PChar(NewCaption));
@@ -3145,6 +3138,139 @@ begin
   InitializeCommonDialog(TCommonDialog(FileDialog),SelWidget);
 end;
 
+procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
+  var IconImg, IconMask: PGdkPixmap);
+var
+  GDIObject: PGdiObject;
+begin
+  IconImg:=nil;
+  IconMask:=nil;
+  if (LCLGraphic=nil) then exit;
+  if LCLGraphic is TPixmap then
+    GDIObject:=PgdiObject(TPixmap(LCLGraphic).Handle)
+  else
+    GDIObject:=nil;
+  if GDIObject<>nil then begin
+    IconImg:=GDIObject^.GDIBitmapObject;
+    IconMask:=GDIObject^.GDIBitmapMaskObject;
+  end;
+end;
+
+procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
+  var IconImg, IconMask: PGdkPixmap);
+begin
+  IconImg:=nil;
+  IconMask:=nil;
+  if LCLMenuItem=nil then exit;
+  if LCLMenuItem.Graphic<>nil then begin
+    GetGdkPixmapFromGraphic(LCLMenuItem.Graphic,IconImg,IconMask);
+  end;
+end;
+
+procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem; MenuItemWidget: PGtkWidget);
+var
+  HBoxWidget: PGtkWidget;
+  LabelWidget: PGtkLabel;
+
+  procedure CreateIcon;
+  var
+    PixmapWidget: PGtkWidget;
+    IconImg, IconMask: PGdkPixmap;
+  begin
+    // create a pixmap for the icon
+    IconImg:=nil;
+    IconMask:=nil;
+    if LCLMenuItem.HasIcon then
+      GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask);
+    if IconImg<>nil then begin
+      PixmapWidget:=gtk_pixmap_new(IconImg,IconMask);
+      gtk_widget_show(PixmapWidget);
+      gtk_box_pack_start(GTK_BOX(HBoxWidget),PixmapWidget,false,false,0);
+    end else
+      PixmapWidget:=nil;
+    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIcon', PixmapWidget);
+  end;
+  
+  procedure SetLabelText;
+  var
+    ShortCutPos: integer;
+    s: string;
+  begin
+    LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
+    if LabelWidget=nil then exit;
+    //Check for a shortcut key
+    s:=LCLMenuItem.Caption;
+    ShortCutPos := pos('&', s);
+    if ShortCutPos <> 0 then begin
+      s[ShortCutPos] := '_';
+      SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,PChar(s)));
+    end
+    else begin
+      gtk_label_set_text(LabelWidget,PChar(s));
+    end;
+  end;
+
+  procedure CreateLabel;
+  begin
+    // create a label for the Caption
+    LabelWidget:=PGtkLabel(gtk_label_new(''));
+    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
+    SetLabelText;
+    gtk_widget_show(PGtkWidget(LabelWidget));
+    gtk_box_pack_start(GTK_BOX(HBoxWidget),PGtkWidget(LabelWidget),false,false,0);
+  end;
+
+begin
+  HBoxWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
+  if HBoxWidget=nil then begin
+    // create inner widgets
+    if LCLMenuItem.Caption='-' then begin
+      // a separator is an empty gtkmenuitem
+      exit;
+    end;
+    HBoxWidget:=gtk_hbox_new(false,2); // default padding is 2
+    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
+    gtk_widget_show(HBoxWidget);
+    gtk_container_add(GTK_CONTAINER(MenuItemWidget),HBoxWidget);
+    CreateIcon;
+    CreateLabel;
+  end else begin
+    // there are already inner widgets
+    if LCLMenuItem.Caption='-' then begin
+      // a separator is an empty gtkmenuitem -> delete the inner widgets
+      gtk_widget_destroy(HBoxWidget);
+      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
+    end else begin
+      // just update the content
+      SetLabelText;
+    end;
+  end;
+end;
+
+function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+var
+  MenuItemWidget: PGtkWidget;
+begin
+  // create the menitem widget (normal, check or radio)
+  if not LCLMenuItem.IsCheckItem then
+    MenuItemWidget:=gtk_menu_item_new
+  else if not LCLMenuItem.RadioItem then
+    MenuItemWidget:=gtk_radio_menu_item_new(nil)
+  else
+    MenuItemWidget:=gtk_check_menu_item_new;
+
+  // set attributes (enabled and rightjustify)
+  gtk_widget_set_sensitive(MenuItemWidget, LCLMenuItem.Enabled);
+  if LCLMenuItem.RightJustify then
+    gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
+    
+  // create the hbox containing the icon, the label and the control
+  CreateInnerMenuItem(LCLMenuItem,MenuItemWidget);
+
+  gtk_widget_show(MenuItemWidget);
+  Result:=MenuItemWidget;
+end;
+
 {------------------------------------------------------------------------------
   Function: InitializeFontDialog
   Params: FontDialog: TFontialog; var SelWidget: PGtkWidget
@@ -3651,27 +3777,7 @@ begin
     end;
 
     csMenuItem :
-    begin
-      if Caption <> '-' then
-      begin
-        //Check for a shortcut key
-        tempInt := pos('&', Caption);
-        if tempInt <> 0 then
-        begin
-          StrTemp[tempInt - 1] := '_';
-          P := gtk_menu_item_new_with_label('');
-          SetAccelKey(P,gtk_label_parse_uline(PGTKLabel(PGTKBin(p)^.Child),StrTemp));
-        end
-        else
-          P := gtk_menu_item_new_with_label(Strtemp)
-      end
-      else
-        P := gtk_menu_item_new;
-      gtk_widget_set_sensitive(pgtkwidget(p), TMenuItem(Sender).Enabled);
-      if TMenuItem(Sender).RightJustify then
-        gtk_menu_item_right_justify(pgtkmenuitem(p));
-      gtk_widget_show (p);
-    end;
+      p:=CreateMenuItem(TMenuItem(Sender));
 
     csNotebook :
     begin
@@ -5336,6 +5442,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.161  2002/08/12 15:32:29  lazarus
+  MG: started enhanced menuitem
+
   Revision 1.160  2002/08/09 18:04:18  lazarus
   MG: activated App_Paintable for TCustomForms
 
