@@ -854,7 +854,7 @@ procedure TDebugManager.OnDebuggerCurrentLine(Sender: TObject;
   const ALocation: TDBGLocationRec);
 // debugger paused program due to pause or error
 // -> show the current execution line in editor
-// if SrcLine = -1 then no source is available
+// if SrcLine < 1 then no source is available
 var
   SrcFile: String;
   NewSource: TCodeBuffer;
@@ -870,22 +870,22 @@ begin
   SrcLine:=ALocation.SrcLine;
 
   //TODO: Show assembler window if no source can be found.
-  if SrcLine = -1
-  then begin
+  if SrcLine < 1 then begin
     MessageDlg(lisExecutionPaused,
       Format(lisExecutionPausedAdress, [#13#13, ALocation.Address, #13,
         ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
       mtInformation, [mbOK],0);
 
     // jump to the deepest stack frame with debugging info
-    i:=FDebugger.CallStack.Count-1;
-    while (i>=0) do begin
+    i:=0;
+    while (i<FDebugger.CallStack.Count) do begin
       StackEntry:=FDebugger.CallStack.Entries[i];
       if StackEntry.Line>0 then begin
         SrcLine:=StackEntry.Line;
         SrcFile:=StackEntry.Source;
         break;
       end;
+      inc(i);
     end;
     if SrcLine<1 then
       Exit;
@@ -1575,6 +1575,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.64  2003/11/10 22:29:23  mattias
+  fixed searching for default debugger line
+
   Revision 1.63  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 
