@@ -111,7 +111,9 @@ type
     function AtomIsWord: boolean;
     function AtomIsKeyWord: boolean;
     function AtomIsNumber: boolean;
+    function AtomIsRealNumber: boolean;
     function AtomIsStringConstant: boolean;
+    function AtomIsCharConstant: boolean;
     function AtomIsIdentifier(ExceptionOnNotFound: boolean): boolean;
     function LastAtomIs(BackIndex: integer;
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
@@ -429,10 +431,55 @@ begin
       and (Src[CurPos.StartPos] in ['0'..'9','%','$']);
 end;
 
+function TCustomCodeTool.AtomIsRealNumber: boolean;
+var i: integer;
+begin
+  Result:=false;
+  i:=CurPos.StartPos;
+  if (i<=SrcLen) and (IsNumberChar[Src[i]]) then begin
+    while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
+      inc(i);
+    if (i<=SrcLen) and (Src[i]='.') then
+      Result:=true;
+  end;
+end;
+
 function TCustomCodeTool.AtomIsStringConstant: boolean;
 begin
   Result:=(CurPos.StartPos<=SrcLen)
       and (Src[CurPos.StartPos] in ['''','#']);
+end;
+
+function TCustomCodeTool.AtomIsCharConstant: boolean;
+var i: integer;
+begin
+  Result:=false;
+  if (CurPos.StartPos<=SrcLen) then begin
+    case Src[CurPos.StartPos] of
+    
+    '#':
+      begin
+        i:=CurPos.StartPos+1;
+        while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
+          inc(i);
+        if (i<=SrcLen)
+        and (not (Src[i] in ['''','#'])) then
+          Result:=true;
+      end;
+
+    '''':
+      begin
+        if (CurPos.StartPos+2<=SrcLen) and (Src[CurPos.StartPos+1]<>'''')
+        and (Src[CurPos.StartPos+2]='''') then begin
+          // a single char
+          if (CurPos.StartPos+2<SrcLen)
+          and (not (Src[CurPos.StartPos+3] in ['''','#'])) then
+            Result:=true;
+        end;
+      end;
+      
+    end;
+  end;
 end;
 
 function TCustomCodeTool.LastAtomIs(BackIndex: integer;

@@ -51,11 +51,13 @@ type
     function KeyWordToHashIndex(const AKeyWord: shortstring): integer;
     function KeyWordToHashIndex(const ASource: string;
        AStart, ALen: integer): integer;
+    function KeyWordToHashIndex(Identifier: PChar): integer;
   public
     DefaultKeyWordFunction: TKeyWordFunction;
     function DoIt(const AKeyWord: shortstring): boolean;
     function DoIt(const ASource: string;
        KeyWordStart, KeyWordLen: integer): boolean;
+    function DoIt(Identifier: PChar): boolean;
     function DoItUppercase(const AnUpperSource: string;
        KeyWordStart, KeyWordLen: integer): boolean;
     procedure Clear;
@@ -82,6 +84,12 @@ var
   WordIsPropertySpecifier,
   WordIsBlockKeyWord,
   WordIsLogicalBlockStart,
+  WordIsBinaryOperator,
+  WordIsLvl1Operator, WordIsLvl2Operator, WordIsLvl3Operator, WordIsLvl4Operator,
+  WordIsBooleanOperator,
+  WordIsOrdNumberOperator,
+  WordIsNumberOperator,
+  WordIsPredefinedIdentifier,
   UnexpectedKeyWordInBeginBlock: TKeyWordFunctionList;
   UpChars: array[char] of char;
 
@@ -93,6 +101,7 @@ implementation
 
 var
   CharToHash: array[char] of integer;
+  IsIdentChar: array[char] of boolean;
 
 function UpperCaseStr(const s: string): string;
 var i, l: integer;
@@ -168,6 +177,19 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
+function TKeyWordFunctionList.KeyWordToHashIndex(Identifier: PChar): integer;
+var i: integer;
+begin
+  Result:=0;
+  i:=20;
+  while (i>0) and IsIdentChar[Identifier[0]] do begin
+    inc(Result,CharToHash[Identifier[0]]);
+    dec(i);
+    inc(Identifier);
+  end;
+  if Result>FMaxHashIndex then Result:=-1;
+end;
+
 function TKeyWordFunctionList.DoIt(const AKeyWord: shortstring): boolean;
 var i: integer;
 begin
@@ -211,6 +233,48 @@ begin
           WordPos:=KeyWordStart+KeyWordLen;
           while (KeyPos>=1) 
           and (KeyWordFuncItem.KeyWord[KeyPos]=UpChars[ASource[WordPos]]) do
+          begin
+            dec(KeyPos);
+            dec(WordPos);
+          end;
+          if KeyPos<1 then begin
+            if Assigned(KeyWordFuncItem.DoIt) then
+              Result:=KeyWordFuncItem.DoIt()
+            else
+              Result:=DefaultKeyWordFunction();
+            exit;
+          end;
+        end;
+        if (KeyWordFuncItem.IsLast) then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
+end;
+
+function TKeyWordFunctionList.DoIt(Identifier: PChar): boolean;
+// checks
+var i, KeyPos, KeyWordLen: integer;
+  KeyWordFuncItem: TKeyWordFunctionListItem;
+  IdentifierEnd, WordPos: PChar;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(Identifier);
+  IdentifierEnd:=Identifier;
+  while IsIdentChar[IdentifierEnd[0]] do inc(IdentifierEnd);
+  KeyWordLen:=(Integer(IdentifierEnd)-Integer(Identifier));
+  dec(IdentifierEnd);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      repeat
+        KeyWordFuncItem:=TKeyWordFunctionListItem(FItems[i]);
+        if length(KeyWordFuncItem.KeyWord)=KeyWordLen then begin
+          KeyPos:=KeyWordLen;
+          WordPos:=IdentifierEnd;
+          while (KeyPos>=1)
+          and (KeyWordFuncItem.KeyWord[KeyPos]=UpChars[WordPos[0]]) do
           begin
             dec(KeyPos);
             dec(WordPos);
@@ -393,7 +457,9 @@ begin
     else CharToHash[c]:=0;
     end;
     UpChars[c]:=upcase(c);
+    IsIdentChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
   end;
+  
   KeyWordLists:=TList.Create;
   IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordMethodSpecifier);
@@ -647,6 +713,119 @@ begin
     Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsBinaryOperator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsBinaryOperator);
+  with WordIsBinaryOperator do begin
+    Add('+'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('-'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('*'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('/'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsLvl1Operator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLvl1Operator);
+  with WordIsLvl1Operator do begin
+    Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('@'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsLvl2Operator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLvl2Operator);
+  with WordIsLvl2Operator do begin
+    Add('*'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('/'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsLvl3Operator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLvl3Operator);
+  with WordIsLvl3Operator do begin
+    Add('+'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('-'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsLvl4Operator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLvl4Operator);
+  with WordIsLvl4Operator do begin
+    Add('<' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<>',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>=',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<=',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsBooleanOperator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsBooleanOperator);
+  with WordIsBooleanOperator do begin
+    Add('<' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<>',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('>=',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('<=',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsOrdNumberOperator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsOrdNumberOperator);
+  with WordIsOrdNumberOperator do begin
+    Add('OR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('XOR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsNumberOperator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsNumberOperator);
+  with WordIsNumberOperator do begin
+    Add('+' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('-' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('*' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsPredefinedIdentifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsPredefinedIdentifier);
+  with WordIsPredefinedIdentifier do begin
+    Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SINGLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 

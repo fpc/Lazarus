@@ -919,6 +919,7 @@ function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
   Attr: TProcHeadAttributes): boolean;
 var CloseBracket: char;
   Desc: TCodeTreeNodeDesc;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   if AtomIsChar('(') or AtomIsChar('[') then begin
@@ -985,6 +986,15 @@ begin
           ExtractNextAtom(phpWithDefaultValues in Attr,Attr);
         ReadConstant(ExceptionOnError,
           Extract and (phpWithDefaultValues in Attr),Attr);
+        if (phpCreateNodes in Attr) then begin
+          Node:=CurNode;
+          Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
+          Node:=Node.PriorBrother;
+          while (Node<>nil) and (Node.FirstChild=nil) do begin
+            Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
+            Node:=Node.PriorBrother;
+          end;
+        end;
       end;
     end;
     if (phpCreateNodes in Attr) then begin
@@ -1100,6 +1110,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
  proc specifiers with parameters:
    message <id or number>
    external <id or number> name <id>
+   external <id or number> index <id>
    [alias: <string constant>]
 }
 var IsSpecifier: boolean;
@@ -2381,7 +2392,7 @@ var IsFunction: boolean;
 begin
   IsFunction:=UpAtomIs('FUNCTION');
   CreateChildNode;
-  CurNode.Desc:=ctnProcedure;
+  CurNode.Desc:=ctnProcedureType;
   ReadNextAtom;
   if AtomIsChar('(') then begin
     // read parameter list
@@ -2568,7 +2579,6 @@ begin
       ReadNextAtom;
       if AtomIsChar('(') then begin
         // an enumeration -> read all enums
-        CreateChildNode; // begin enumeration
         CurNode.Desc:=ctnEnumerationType;
         repeat
           ReadNextAtom; // read enum name
@@ -2589,7 +2599,6 @@ begin
             RaiseException(') expected, but '+GetAtom+' found');
         until false;
         CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode; // close enumeration
         ReadNextAtom;
       end else
         RaiseException('invalid type');

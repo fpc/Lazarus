@@ -136,6 +136,7 @@ const
   ctnsNone               = 0;
   ctnsForwardDeclaration = 1;
   ctnsNeedJITParsing     = 2;
+  ctnsHasDefaultValue    = 4;
   
 type
   TCodeTreeNode = class
