@@ -3328,9 +3328,7 @@ var
   MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate,
   LCLUnitsDir, LCLUnitsCPUDir, LCLUnitsCPUOSDir, LCLUnitsCPUOSWidgetSetDir,
   SubTempl: TDefineTemplate;
-  WidgetSet: TLazWidgetSet;
-  TargetOS, SrcOS, SrcPath, WidgetStr, TargetCPU: string;
-  CompiledSrcPath: String;
+  TargetOS, SrcOS, SrcPath, TargetCPU: string;
   i: Integer;
   CurCPU, CurOS, CurWidgetSet, ExtraSrcPath: string;
 begin
@@ -3340,7 +3338,6 @@ begin
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
-  CompiledSrcPath:='$('+ExternalMacroStart+'CompiledSrcPath)';
 
   // <LazarusSrcDir>
   MainDir:=TDefineTemplate.Create(
