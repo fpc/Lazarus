@@ -8,10 +8,9 @@ name=synedit
 version=0.8
 
 [compiler]
-unitdir=../../lcl/units/$(LCLPLATFORM) ../../lcl/units .
+unitdir=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
 unittargetdir=../units
 options=-gl
-
 
 [target]
 units=allunits
@@ -24,6 +23,17 @@ packages=fcl regexpr
 
 [default]
 lcldir=../../lcl
+
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
 
 [rules]
 .PHONY: cleartarget all

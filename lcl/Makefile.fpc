@@ -10,10 +10,11 @@ version=0.8a
 [target]
 dirs=interfaces
 units=allunits
-implicitunits=buttons clipbrd clistbox comctrls controls dialogs dynhasharray \
-        extctrls filectrl forms graphics imglist interfacebase lazqueue \
-        lcllinux lmessages lresources menus messages registry spin \
-        stdctrls toolwin utrace vclglobals arrow calendar interfaces
+implicitunits=arrow buttons calendar clipbrd clistbox comctrls controls \
+        dialogs dynhasharray extctrls filectrl forms graphics \
+        imglist interfacebase lazqueue lcllinux lmessages lresources \
+        menus messages registry spin stdctrls toolwin utrace \
+        vclglobals interfaces
 rsts=dialogs
 
 [require]
@@ -22,11 +23,22 @@ packages=fcl
 [compiler]
 options=-gl
 unittargetdir=units
-unitdir=interfaces/abstract
+unitdir=interfaces/abstract .
 includedir=include
 
 [install]
 buildunit=allunits
 
+[clean]
+files=$(wildcard units/*$(OEXT)) $(wildcard units/*$(PPUEXT))
+
 [default]
 lcldir=.
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
+
+all: cleartarget allunits$(PPUEXT) $(TARGET_DIRS)

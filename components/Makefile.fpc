@@ -5,3 +5,10 @@
 
 [target]
 dirs=synedit codetools
+
+[clean]
+files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT))
+
+[rules]
+
+cleanall: clean

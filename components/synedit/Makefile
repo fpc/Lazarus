@@ -153,9 +153,17 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=synedit
 override PACKAGE_VERSION=0.8
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
 override TARGET_UNITS+=allunits
 override COMPILER_OPTIONS+=-gl
-override COMPILER_UNITDIR+=../../lcl/units/$(LCLPLATFORM) ../../lcl/units .
+override COMPILER_UNITDIR+=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
 override COMPILER_UNITTARGETDIR+=../units
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)

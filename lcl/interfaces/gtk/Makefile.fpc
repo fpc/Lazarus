@@ -18,10 +18,13 @@ options=-gl
 unitdir=../../units .
 unittargetdir=../../units/gtk
 
+[clean]
+files=$(wildcard ../../units/gtk/*$(OEXT)) $(wildcard ../../units/gtk/*$(PPUEXT))
+
 [rules]
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) ../../units/gtk/interfaces$(PPUEXT)
+        -$(DEL) ../../units/gtk/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
 
 all: cleartarget interfaces$(PPUEXT)

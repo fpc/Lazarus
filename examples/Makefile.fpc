@@ -7,40 +7,31 @@ name=lazarus-examples
 version=0.8a
 
 [target]
-examples=hello notebk comdialogs progressbar trackbar listboxtest \
-         bitbutton combobox checkbox scrollbar memotest groupbox \
-         speedtest toolbar messagedialogs notebooktest testall
+units=hello notebk comdialogs progressbar trackbar listboxtest \
+   bitbutton combobox checkbox scrollbar memotest groupbox \
+   speedtest toolbar messagedialogs notebooktest testall
+
+[require]
+packages=fcl regexpr
 
 [clean]
-#units=$(notdir $(basename $(wildcard *$(PPUEXT)))) 
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT))
 
 [default]
             
 [compiler]
 options=-gl  
-unitdir=. ../lcl/units ../components/units ../designer ../lcl/units/$(LCLPLATFORM)
+unitdir=../lcl/units ../lcl/units/$(LCL_PLATFORM) .. .
+units=allexamples
 
 
 [prerules]
-ifndef LCLPLATFORM
+ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET), win32)
-LCLPLATFORM=win32
+LCL_PLATFORM=win32
 else
-LCLPLATFORM=gtk
+LCL_PLATFORM=gtk
 endif
-export LCLPLATFORM
+export LCL_PLATFORM
 endif
-
-[rules]
-.PHONY: cleartarget all makefiles makefile
-
-cleartarget:
-        -$(DEL) $(EXAMPLEFILES)
-
-all: cleartarget $(EXAMPLEFILES)
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile
 

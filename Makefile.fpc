@@ -7,7 +7,7 @@ name=lazarus
 version=0.8a
 
 [require]
-packages=lcl synedit codetools
+packages=fcl regexpr
 
 [target]
 programs=lazarus
@@ -16,44 +16,36 @@ exampledirs=examples
 
 [compiler]
 options=-gl
-unitdir=designer debugger
+unitdir=lcl/units lcl/units/$(LCL_PLATFORM) designer debugger components/units .
 includedir=include include/$(OS_TARGET)
 targetdir=.
 
 [clean]
-#units=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT))) $(basename $(wildcard ./debugger/*$(PPUEXT)))
-#files=$(wildcard ./designer/*$(OEXT))
+files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT))
 
 [install]
 basedir=lib/lazarus
-#prefix=/usr
 
 [dist]
 destdir=$(BASEDIR)/dist
 
 [prerules]
-ifndef LCLPLATFORM
+ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET), win32)
-LCLPLATFORM=win32
+LCL_PLATFORM=win32
 override FPCOPT+=-dSUPPORTS_RESOURCES
 export FPCOPT
 else
-LCLPLATFORM=gtk
+LCL_PLATFORM=gtk
 endif
-export LCLPLATFORM
+export LCL_PLATFORM
 endif
 
 [rules]
-.PHONY: examples lcl components ide tools all clean
-
-lcl: lcl_all
-
-examples: lcl examples_all
-
-components: lcl components_all
+.PHONY: lcl components ide tools all clean
 
 ide:
-ifeq ($(LCLPLATFORM), win32)
+ifeq ($(LCL_PLATFORM), win32)
         $(MAKE) lazarus.res
 endif
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
@@ -63,7 +55,11 @@ tools: lcl components tools_all
 all: lcl components ide
 
 clean: cleanall
-ifeq ($(LCLPLATFORM), win32)
+        $(DEL) $(wildcard ./designer/*$(OEXT))
+        $(wildcard ./designer/*$(PPUEXT))
+        $(wildcard ./debugger/*$(OEXT))
+        $(wildcard ./debugger/*$(PPUEXT))
+ifeq ($(LCL_PLATFORM), win32)
         $(DEL) $(wildcard *.res)
         $(DEL) lazarus.owr
 endif

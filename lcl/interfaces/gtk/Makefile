@@ -153,6 +153,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lcl
 override TARGET_UNITS+=interfaces
+override CLEAN_FILES+=$(wildcard ../../units/gtk/*$(OEXT)) $(wildcard ../../units/gtk/*$(PPUEXT))
 override COMPILER_OPTIONS+=-gl
 override COMPILER_UNITDIR+=../../units .
 override COMPILER_UNITTARGETDIR+=../../units/gtk
@@ -1375,5 +1376,5 @@ include fpcmake.loc
 endif
 .PHONY: cleartarget all
 cleartarget:
-	-$(DEL) ../../units/gtk/interfaces$(PPUEXT)
+	-$(DEL) ../../units/gtk/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
 all: cleartarget interfaces$(PPUEXT)
