@@ -602,6 +602,9 @@ type
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
     function LogicalToPhysicalPos(p: TPoint): TPoint;
+    {$IFDEF SYN_LAZARUS}
+    function PhysicalToLogicalPos(p: TPoint): TPoint;                           //sblbg 2001-12-17
+    {$ENDIF}
     function NextWordPos: TPoint; virtual;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -6849,10 +6852,12 @@ procedure TCustomSynEdit.MoveCaretVert(DY: integer; SelectionCommand: boolean);
 var
   ptO, ptDst: TPoint;
 {$IFDEF SYN_MBCSSUPPORT}
+  NewStepAside: Boolean;
   s: string;
 {$ENDIF}
+  SaveLastCaretX: Integer;
 begin
-  ptO := CaretXY;
+  ptO := LogicalToPhysicalPos(CaretXY);                                         // sblbg 2001-12-17
   ptDst := ptO;
   with ptDst do begin
     Inc(Y, DY);
@@ -6863,23 +6868,41 @@ begin
       if (Y < 1) or (ptO.Y < Y) then
         Y := 1;
   end;
-{$IFDEF SYN_MBCSSUPPORT}
   if (ptO.Y <> ptDst.Y) then begin
     if eoKeepCaretX in Options then                                             //mh 2000-10-19
-      ptDst.X := fLastCaretX;                                                   //mh 2000-10-19
-    if fMBCSStepAside then
+      ptDst.X := fLastCaretX ;                                                  //mh 2000-10-19
+  end;
+
+  ptDst := PhysicalToLogicalPos(ptDst);                                         // sblbg 2001-12-17
+  ptO := PhysicalToLogicalPos(ptO);                                             // sblbg 2001-12-17
+
+{$IFDEF SYN_MBCSSUPPORT}
+  if (ptO.Y <> ptDst.Y) then begin
+    if fMBCSStepAside and not (eoKeepCaretX in Options) then
       Inc(ptDst.X);
-    fMBCSStepAside := FALSE;
+    NewStepAside := False;
     s := Lines[ptDst.Y - 1];
     if (ptDst.X <= Length(s)) then
       if (ByteType(s, ptDst.X) = mbTrailByte) then begin
-        fMBCSStepAside := TRUE;
+        NewStepAside := True;
         Dec(ptDst.X);
       end;
-  end;
+  end
+  else
+    NewStepAside := fMBCSStepAside;
 {$ENDIF}
+  SaveLastCaretX := fLastCaretX;
+
   // set caret and block begin / end
   MoveCaretAndSelection(ptO, ptDst, SelectionCommand);
+
+  // Set fMBCSStepAside and restore fLastCaretX after moving caret, since
+  // UpdateLastCaretX, called by SetCaretXYEx, changes them. This is the one
+  // case where we don't want that.
+{$IFDEF SYN_MBCSSUPPORT}
+  fMBCSStepAside := NewStepAside;
+{$ENDIF}
+  fLastCaretX := SaveLastCaretX;                                                //jr 2002-04-26
 end;
 
 procedure TCustomSynEdit.MoveCaretAndSelection(ptBefore, ptAfter: TPoint;
@@ -7802,6 +7825,33 @@ begin
   end;
   Result := p;
 end;
+
+{$IFDEF SYN_LAZARUS}
+// copied from synedit 1.4
+function TCustomSynEdit.PhysicalToLogicalPos(p: TPoint): TPoint;
+var
+  s: string;
+  i, L: integer;
+  x: integer;
+begin
+  if p.Y <= lines.Count then begin
+    s := Lines[p.Y - 1];
+    l := Length(s);
+    x := 0;
+    i := 0;
+
+    while x < p.X  do begin
+      inc(i);
+      if (i <= l) and (s[i] = #9) then
+        inc(x, TabWidth - (x mod TabWidth))
+      else
+        inc(x);
+    end;
+    p.X := i;
+  end;
+  Result := p;
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.DoLinesDeleted(FirstLine, Count: integer);
 var
