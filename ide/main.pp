@@ -924,7 +924,7 @@ var
   MsgResult: integer;
 begin
   // check packages
-  if (PkgBoss.DoSaveAllPackages([pfAskBeforeSaving])<>mrOk)
+  if (PkgBoss.DoSaveAllPackages([psfAskBeforeSaving])<>mrOk)
   or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then begin
     CanClose:=false;
     exit;
@@ -7901,10 +7901,10 @@ var ActiveSrcEdit: TSourceEditor;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  { $IFDEF IDE_DEBUG}
+  {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
-  { $ENDIF}
+  {$ENDIF}
 
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     ActiveUnitInfo.Form.ClassName,AMethodName,
@@ -7926,19 +7926,19 @@ var ActiveSrcEdit: TSourceEditor;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  { $IFDEF IDE_DEBUG}
+  {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookRenameMethod] ************');
-  { $ENDIF}
+  {$ENDIF}
   FOpenEditorsOnCodeToolChange:=true;
   try
     // create published method
     r:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                 ActiveUnitInfo.Form.ClassName,CurName,NewName);
-    { $IFDEF IDE_DEBUG}
+    {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
-    { $ENDIF}
+    {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
       FormEditor1.JITFormList.RenameMethod(TForm(ActiveUnitInfo.Form),
@@ -8265,6 +8265,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.521  2003/04/13 22:39:19  mattias
+  implemented package links, automatic package loading
+
   Revision 1.520  2003/04/13 13:45:04  mattias
   implemented broken dependencies dialog
 
