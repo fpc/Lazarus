@@ -1083,14 +1083,14 @@ begin
   FocusCount := Integer(FocusState);
 end;
 
-function SendFocusMessage(Window: HWnd; Msg: Word): Boolean;
+{function SendFocusMessage(Window: HWnd; Msg: Word): Boolean;
 var
   Count: Integer;
 begin
   Count := FocusCount;
   SendMessage(Window, Msg, 0, 0);
   Result := (FocusCount = Count);
-end;
+end;}
 
 //------------------------------------------------------------------------------
 function KeysToShiftState(Keys:Word): TShiftState;

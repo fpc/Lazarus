@@ -8136,8 +8136,8 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
-type
-  TBltFunction = function: Boolean;
+//type
+//  TBltFunction = function: Boolean;
 var
   fGC : PGDKGC;
   SrcDevContext, DestDevContext: TDeviceContext;
@@ -9004,6 +9004,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.294  2003/10/30 21:26:23  mattias
+  removed some hints
+
   Revision 1.293  2003/10/22 17:50:16  mattias
   updated rpm scripts
 

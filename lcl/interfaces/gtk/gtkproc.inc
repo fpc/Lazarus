@@ -82,7 +82,7 @@ begin
   {$EndIF}
 end;
 
-{$Ifdef GTK1}
+{$IfNdef GTK2}
 function gtk_class_get_type(aclass : Pointer) : TGtkType;
 begin
   If (aclass <> nil) then
@@ -170,9 +170,9 @@ var
 begin
   GetMem(SelectionColor,4*SizeOf(GDouble));
   try
-    SelectionColor[0]:=Color^.Red/65535;
-    SelectionColor[1]:=Color^.Green/65535;
-    SelectionColor[2]:=Color^.Blue/65535;
+    SelectionColor[0]:=gdouble(Color^.Red)/65535;
+    SelectionColor[1]:=gdouble(Color^.Green)/65535;
+    SelectionColor[2]:=gdouble(Color^.Blue)/65535;
     SelectionColor[3]:=0.0;
     gtk_color_selection_set_color(colorSel,SelectionColor);
   finally
@@ -5518,6 +5518,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.223  2003/10/30 21:26:23  mattias
+  removed some hints
+
   Revision 1.222  2003/10/24 21:28:16  marc
   Added cleanup code for keyboard tables
 

@@ -237,9 +237,6 @@ function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
 implementation
 
 
-uses
-  Math;
-
 type
   TWinControlClass = class of TWinControl;
 

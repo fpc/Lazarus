@@ -116,10 +116,10 @@ begin
   and ((PicWidth > ImgWidth) or (PicHeight > ImgHeight))) then begin
     if Proportional and (PicWidth > 0) and (PicHeight > 0) then begin
       w:=ImgWidth;
-      h:=round(PicHeight*(w/PicWidth));
+      h:=(PicHeight*w) div PicWidth;
       if h>ImgHeight then begin
         h:=ImgHeight;
-        w:=round(PicWidth*(h/PicHeight));
+        w:=(PicWidth*h) div PicHeight;
       end;
       PicWidth:=w;
       PicHeight:=h;

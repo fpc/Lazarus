@@ -1014,7 +1014,7 @@ procedure GetColorValues(Proc: TGetColorStringProc);
 Function Blue(rgb: TColor) : BYTE;
 Function Green(rgb: TColor) : BYTE;
 Function Red(rgb: TColor) : BYTE;
-procedure RedGreenBlue(rgb: TColor; Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
 
 // fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
@@ -1085,7 +1085,7 @@ const
 implementation
 
 uses
-  TypInfo, LCLIntf;
+  LCLIntf;
 
 function SendIntfMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
@@ -1214,7 +1214,7 @@ begin
   Result := rgb and $000000ff;
 end;
 
-procedure RedGreenBlue(rgb: TColor; Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
 begin
   Red := rgb and $000000ff;
   Green := (rgb shr 8) and $000000ff;
@@ -1259,6 +1259,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2003/10/30 21:26:23  mattias
+  removed some hints
+
   Revision 1.94  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 
