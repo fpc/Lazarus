@@ -652,9 +652,6 @@ Begin
   Else
   Begin
     Assert(False, 'TRACE: [TWin32WidgetSet.ShowHide] Hiding the window');
-    If Sender Is TCustomForm then
-      If fsModal in TCustomForm(Sender).FormState then
-        EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@EnableWindowsProc, Handle);
     ShowWindow(Handle, SW_HIDE);
   End;
 End;
@@ -709,6 +706,9 @@ end;
 
 {
   $Log$
+  Revision 1.301  2004/12/16 14:29:12  micha
+  fix showmodal to remember disabled windows (fixes bug 478, and more)
+
   Revision 1.300  2004/12/15 17:51:16  micha
   fix clientrect size on show form with menu (lazarus ide, component palette height too great)
 

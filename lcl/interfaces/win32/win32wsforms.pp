@@ -80,6 +80,7 @@ type
   private
   protected
   public
+    class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -127,6 +128,13 @@ type
 
 implementation
 
+type
+  PDisableWindowsInfo = ^TDisableWindowsInfo;
+  TDisableWindowsInfo = record
+    NewModalWindow: HWND;
+    DisabledWindowList: TList;
+  end;
+
 {-----------------------------------------------------------------------------
   Function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
@@ -141,13 +149,17 @@ var
   Buffer: array[0..15] of Char;
 begin
   Result:=true;
+  
   // Don't disable the current window form
-  if Window=HWND(Data) then exit;
+  if Window = PDisableWindowsInfo(Data)^.NewModalWindow then exit;
 
   // Don't disable any ComboBox listboxes
   if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
     and (StrIComp(Buffer, 'ComboLBox')=0) then exit;
 
+  if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
+    
+  PDisableWindowsInfo(Data)^.DisabledWindowList.Add(Pointer(Window));
   EnableWindow(Window,False);
 end;
 
@@ -228,6 +240,20 @@ begin
   Result := Params.Window;
 end;
 
+procedure TWin32WSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+var
+  WindowInfo: PWindowInfo;
+  I: integer;
+begin
+  WindowInfo := GetWindowInfo(ACustomForm.Handle);
+  if WindowInfo^.DisabledWindowList <> nil then
+  begin
+    for I := 0 to WindowInfo^.DisabledWindowList.Count - 1 do
+      EnableWindow(HWND(WindowInfo^.DisabledWindowList.Items[I]), true);
+    FreeAndNil(WindowInfo^.DisabledWindowList);
+  end;
+end;
+
 procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
           const ABorderIcons: TBorderIcons);
 begin
@@ -265,11 +291,18 @@ end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
-  FormHandle: HWND;
+  DisableWindowsInfo: PDisableWindowsInfo;
+  WindowInfo: PWindowInfo;
 begin
-  FormHandle := ACustomForm.Handle;
-  EnumThreadWindows(GetWindowThreadProcessId(FormHandle, nil), @DisableWindowsProc, FormHandle);
-  ShowWindow(FormHandle, SW_SHOW);
+  New(DisableWindowsInfo);
+  DisableWindowsInfo^.NewModalWindow := ACustomForm.Handle;
+  DisableWindowsInfo^.DisabledWindowList := TList.Create;
+  WindowInfo := GetWindowInfo(DisableWindowsInfo^.NewModalWindow);
+  WindowInfo^.DisabledWindowList := DisableWindowsInfo^.DisabledWindowList;
+  EnumThreadWindows(GetWindowThreadProcessId(DisableWindowsInfo^.NewModalWindow, nil), 
+    @DisableWindowsProc, LPARAM(DisableWindowsInfo));
+  ShowWindow(DisableWindowsInfo^.NewModalWindow, SW_SHOW);
+  Dispose(DisableWindowsInfo);
 end;
 
 { TWin32WSHintWindow }

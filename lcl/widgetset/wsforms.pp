@@ -72,6 +72,7 @@ type
   { TWSCustomForm }
 
   TWSCustomForm = class(TWSScrollingWinControl)
+    class procedure CloseModal(const ACustomForm: TCustomForm); virtual;
     class procedure SetBorderIcons(const AForm: TCustomForm;
         const ABorderIcons: TBorderIcons); virtual;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
@@ -105,6 +106,10 @@ type
 implementation
 
 { TWSCustomForm }
+
+procedure TWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+begin
+end;
 
 procedure TWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
         const ABorderIcons: TBorderIcons);

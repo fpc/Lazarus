@@ -30,21 +30,6 @@ const
   WM_THEMECHANGED = $31A;
 
 {-----------------------------------------------------------------------------
-  Function: EnableWindowsProc
-  Params: Window - handle of toplevel windows to be enabled
-          Data   - nothing
-  Returns: Whether the enumeration should continue
-
-  Called when handling WM_DESTROY for a modal form to enable
-  the windows of application thread
- -----------------------------------------------------------------------------}
-Function EnableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
-Begin
-  Result:=true;
-  EnableWindow(Window,True);
-End;
-
-{-----------------------------------------------------------------------------
   Function: PropEnumProc
   Params: Window - The window with the property
           Str    - The property name
@@ -387,7 +372,6 @@ Var
   procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
   var
     Buddy: HWND;
-    BuddyWindowInfo: PWindowInfo;
   begin
     Buddy := Windows.GetTopWindow(ComboBox.Handle);
     if Buddy<>HWND(nil) then
@@ -611,9 +595,6 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-      If lWinControl Is TCustomForm then
-        If fsModal in TCustomForm(lWinControl).FormState then
-          EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window);
       if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
       if lWinControl is TCustomSpinEdit then
@@ -1483,6 +1464,9 @@ end;
 
 {
   $Log$
+  Revision 1.172  2004/12/16 14:29:12  micha
+  fix showmodal to remember disabled windows (fixes bug 478, and more)
+
   Revision 1.171  2004/12/15 17:51:16  micha
   fix clientrect size on show form with menu (lazarus ide, component palette height too great)
 

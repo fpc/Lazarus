@@ -44,6 +44,7 @@ Type
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
+    DisabledWindowList: TList;// a list of windows that were disabled when showing modal
     hasTabParent: boolean;    // has a tabpage as parent, and is winxp themed
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
@@ -927,7 +928,10 @@ begin
   WindowInfo := PWindowInfo(Windows.GetProp(Window, PChar(dword(WindowInfoAtom))));
   Result := Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom)))<>0;
   if Result then
+  begin
+    WindowInfo^.DisabledWindowList.Free;
     Dispose(WindowInfo);
+  end;
 end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;

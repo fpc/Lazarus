@@ -72,6 +72,8 @@ begin
       caNone: ModalResult := 0;
       caFree: Release;
     end;
+    if CloseAction <> caNone then
+      TWSCustomFormClass(WidgetSetClass).CloseModal(Self);
   except
     ModalResult := 0;
     Application.HandleException(Self);
@@ -1820,6 +1822,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.168  2004/12/16 14:29:51  micha
+  fix showmodal to remember disabled windows (fixes bug 478, and more)
+
   Revision 1.167  2004/12/05 13:25:47  mattias
   destroying clean up
 
