@@ -274,8 +274,15 @@ type
     Signal: string;
     Realized: boolean;
   end;
+  
+  // modal windows
+var
+  ModalWindows: TList; // list of PGtkWindow
 
 implementation
+
+initialization
+  ModalWindows:=nil;
 
 end.
 

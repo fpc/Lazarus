@@ -213,7 +213,7 @@ type
     gfTIMESTAMP, gfUSER);
     
   TGtkClipboardFormats = set of TGtkClipboardFormat;
-    
+
 const
   GtkClipboardFormatName: array[TGtkClipboardFormat] of string = (
       'CLASS', 'COMPOUND_TEXT', 'DELETE', 'FILE_NAME', 'HOST_NAME', 'LENGTH',
@@ -221,7 +221,6 @@ const
       'TIMESTAMP', 'USER'
     );
   
-
 function NewPGDIObject: PGDIObject;
 procedure DisposePGDIObject(GDIObject: PGdiObject);
 
@@ -436,6 +435,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/03/15 18:32:38  mattias
+  implemented transient windows for all cases
+
   Revision 1.33  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
