@@ -545,13 +545,16 @@ end;
 
 { TWin32WSCustomComboBox }
 
-function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-const  
+const
   ComboBoxStyles: array[TComboBoxStyle] of DWORD = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
+  ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST or
+    CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE;
+
+function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
 begin
@@ -596,8 +599,14 @@ begin
 end;
 
 procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
+var
+  CurrentStyle: Integer;
 begin
-  // TODO: implement me
+  CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
+  if (CurrentStyle and ComboBoxStylesMask)=
+    ComboBoxStyles[TCustomComboBox(ACustomComboBox).Style] then exit;
+
+  ACustomComboBox.ReCreateWnd;
 end;
 
 function  TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
