@@ -3444,9 +3444,12 @@ begin
       exit;
     end;
     Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
-    ClientWidget:=GetFixedWidget(Widget);
-    if ClientWidget=nil then
-      ClientWidget:=Widget;
+    ClientWidget:=Widget;
+    if Widget<>nil then begin
+      ClientWidget:=GetFixedWidget(Widget);
+      if ClientWidget=nil then
+        ClientWidget:=Widget;
+    end;
     AWindow:=Drawable;
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     Area.X:=ARect.Left+DCOrigin.X;
@@ -8687,6 +8690,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.368  2004/09/29 15:18:27  mattias
+  fixed TBitmap.Canvas.Frame3d
+
   Revision 1.367  2004/09/17 20:30:13  vincents
   replaced write by DbgOut
 

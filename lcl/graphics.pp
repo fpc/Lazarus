@@ -852,16 +852,19 @@ type
     procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor); virtual;
-    procedure Chord(x, y, width, height, angle1, angle2: Integer); virtual;
-    procedure Chord(x, y, width, height, SX, SY, EX, EY: Integer); virtual;
-    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); virtual;
+    procedure Chord(x, y, Width, Height,
+                    StartAngle16Deg, EndAngle16Deg: Integer); virtual;
+    procedure Chord(x, y, Width, Height, SX, SY, EX, EY: Integer); virtual;
+    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
+                       const Source: TRect); virtual;
     Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
     procedure Ellipse(const ARect: TRect);
     procedure Ellipse(x1, y1, x2, y2: Integer); virtual;
     Procedure FillRect(const ARect: TRect); virtual;
     Procedure FillRect(X1,Y1,X2,Y2: Integer);
-    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); virtual;
+    procedure FloodFill(X, Y: Integer; FillColor: TColor;
+                        FillStyle: TFillStyle); virtual;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut); virtual;
     procedure Frame(const ARect: TRect); virtual; // border using pen
@@ -871,8 +874,9 @@ type
     Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo();
     Procedure LineTo(X1,Y1: Integer); virtual;
     Procedure MoveTo(X1,Y1: Integer); virtual;
-    procedure RadialPie(x,y,width,height,angle1,angle2: Integer); virtual;
-    procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer); virtual;
+    procedure RadialPie(x,y,Width, Height,
+                        StartAngle16Deg, EndAngle16Deg: Integer); virtual;
+    procedure RadialPie(x,y,Width,Height,sx,sy,ex,ey: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
@@ -1774,6 +1778,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.156  2004/09/29 15:18:26  mattias
+  fixed TBitmap.Canvas.Frame3d
+
   Revision 1.155  2004/09/27 10:01:18  mattias
   added TLazIntfImage.TColors property
 

@@ -309,21 +309,24 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
-  Params:   x,y,width,height,angle1,angle2
+  Params:   x,y,Width, Height, StartAngle16Deg, EndAngle16Deg: Integer
   Returns:  Nothing
 
   Use Pie to draw a filled pie-shaped wedge on the canvas.
-  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree.
+  For example, a full circle equals 5760 (16*360).
+  Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.RadialPie(x,y,width,height,angle1,angle2 : Integer);
+procedure TCanvas.RadialPie(x,y,Width, Height,
+  StartAngle16Deg, EndAngle16Deg: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPieWithAngles(FHandle,x,y,width,height,angle1,angle2);
+  LCLIntf.RadialPieWithAngles(FHandle,x,y,Width,Height,
+                              StartAngle16Deg,EndAngle16Deg);
   Changed;
 end;
 
@@ -1007,7 +1010,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Chord
-  Params:   x,y,width,height,angle1,angle2
+  Params:   x,y,Width, Height, StartAngle16Deg, EndAngle16Deg
   Returns:  Nothing
 
   Use Chord to draw a filled Chord-shape on the canvas. The angles angle1 and
@@ -1016,11 +1019,12 @@ end;
   values mean clockwise direction. Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Chord(x,y,width,height,angle1,angle2 : Integer);
+procedure TCanvas.Chord(x, y, Width, Height,
+  StartAngle16Deg, EndAngle16Deg: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.AngleChord(FHandle,x,y,width,height,angle1,angle2);
+  LCLIntf.AngleChord(FHandle,x,y,Width,Height,StartAngle16Deg,EndAngle16Deg);
   Changed;
 end;
 
@@ -1260,6 +1264,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2004/09/29 15:18:27  mattias
+  fixed TBitmap.Canvas.Frame3d
+
   Revision 1.81  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 
