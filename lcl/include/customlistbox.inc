@@ -253,7 +253,7 @@ begin
     raise Exception.Create('TCustomListBox.GetSelected: index '+IntToStr(Index)
       +' out of bound. Count='+IntToStr(Items.Count));
   if HandleAllocated then
-    Result:= (CNSendMessage(LM_GETSEL, Self, @Index) >= 0)
+    Result:= (CNSendMessage(LM_GETSEL, Self, @Index) > 0)
   else
     Result:=clbiSelected in GetListBoxItemRecord(FItems,Index)^.Flags;
 end;

@@ -725,12 +725,12 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If (Sender as TControl).fCompStyle = csCListBox Then
           Begin
-            Data := TWin32CListStringList.Create(Handle);
+            Data := TWin32CListStringList.Create(Handle,TControl(Sender));
             Result := Integer(Data);
           End 
           Else
           Begin
-            Data := TWin32ListStringList.Create(Handle{Control});
+            Data := TWin32ListStringList.Create(Handle,TControl(Sender));
             Result := Integer(Data);      
           End;
         End;
@@ -743,19 +743,12 @@ activate_time :	the time at which the activation event occurred.
           Case (Sender as TControl).FCompStyle Of
             csListBox, csCListBox: 
             Begin
-              If TListBox(Sender).MultiSelect Then
-              Begin
-                Result := SendMessage(Handle, LB_GETSELITEMS, 0, LParam(@Result));
-              End
-              Else
-              Begin
                 Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
                 If Result = LB_ERR Then
                 Begin
                   Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
                   Result := -1;
                 End;
-              End;
             End;
             csNotebook:
             Begin
@@ -830,17 +823,13 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_GETSELCOUNT:
         Begin
-          Case (Sender as TControl).FCompStyle Of
-            csListBox, csCListBox:
-              Result := SendMessage(Handle, LB_GETSELCOUNT, 0, 0);
-          End;
+          If Sender Is TCustomListBox then
+            Result := SendMessage(Handle, LB_GETSELCOUNT, 0, 0);
         End;
         LM_GETSEL:
         Begin
-          If ((Sender As TWinControl).FCompStyle = csListBox) Or ((Sender As TControl).FCompStyle = csCListBox) then
-          Begin
-            Result := Windows.SendMessage(Handle, LB_GETSEL, WParam(Data), 0);
-          End
+          If Sender Is TCustomListBox then
+             Result := Windows.SendMessage(Handle, LB_GETSEL, WParam(Data^), 0);
         End;
         LM_SETLIMITTEXT:
         Begin
@@ -875,26 +864,23 @@ activate_time :	the time at which the activation event occurred.
           End;  
         End;
         LM_SETSELMODE:
-        Begin
-          If (Sender is TControl) And (TControl(Sender).fCompStyle In [csListBox, csCListBox]) And Assigned(data) Then 
+          If (Sender is TCustomListBox) And Assigned(data) Then 
           Begin
-            If TLMSetSelMode(Data^).MultiSelect Then 
-            Begin
-              If TLMSetSelMode(Data^).ExtendedSelect Then
-                SelectionMode := LBS_EXTENDEDSEL
-              Else
-                SelectionMode := LBS_MULTIPLESEL;
-            End 
-            Else 
-              SelectionMode:= 0;
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_Style) Or SelectionMode);
-          End;
-        End;
+           //The win32 api doesn't change the selection mode on the fly: it needs recreate the window 
+           //RecreateWnd(Sender); -> cause endless loop 
+           //Recreates the window step by step
+              
+           If TCustomListBox(Sender).FCompStyle = csListBox Then 
+             RecreateListControl(Handle,TControl(Sender),TListBox(Sender).Sorted)
+           Else
+             RecreateListControl(Handle,TControl(Sender),TCListBox(Sender).Sorted);
+           End;
+
         LM_SETBORDER:
         Begin
           If Sender is TControl Then
           Begin
-            If (TControl(Sender).fCompStyle = csListBox)
+            If (TControl(Sender).FCompStyle = csListBox)
             Or (TControl(Sender).FCompStyle = csCListBox) Then
             Begin
               If TCustomListBox(Sender).BorderStyle = TBorderStyle(bsSingle) Then
@@ -1038,21 +1024,23 @@ End;
   
 Function TWin32Object.RecreateWnd(Sender: TObject): Integer;
 Var
-  AParent : TWinControl;
+  AParent,AWinControl : TWinControl;
 Begin
   //could we just call IntSendMessage??
 
   //destroy old widget
-  If TWinControl(Sender).Handle <> 0 Then
-    DestroyWindow(TWinControl(Sender).Handle);
+  // Not Necessary -> See TControl.SetParent
+  // If TWinControl(Sender).Handle <> 0 Then
+  //  DestroyWindow(TWinControl(Sender).Handle);
+  AWinControl:= TWinControl(Sender);
+  AParent := AWinControl.Parent;
+  //Not necessary
+  //AParent.RemoveControl(TControl(Sender));
 
-  AParent := TWinControl(Sender).Parent;
-  AParent.RemoveControl(TControl(Sender));
+  AWinControl.Parent := Nil;
+  AWinControl.Parent := AParent;
 
-  TWinControl(Sender).Parent := Nil;
-  TWinControl(Sender).Parent := AParent;
-
-  ResizeChild(Sender, TWinControl(Sender).Left, TWinControl(Sender).Top, TWinControl(Sender).Width, TWinControl(Sender).Height);
+  ResizeChild(Sender, AWinControl.Left, AWinControl.Top, AWinControl.Width, AWinControl.Height);
   ShowHide(Sender);
 
   Result := 0;
@@ -1711,16 +1699,14 @@ Begin
     End;
     csListBox:
     Begin
-      Window := CreateWindow('LISTBOX', Nil, Flags, Left, Top, Width, Width, Parent, HMENU(Nil), HInstance, Nil);
-      SendMessage(Window, LB_ADDSTRING, 0, LPARAM(LPCTSTR(StrTemp)));
+      Window := CreateWindow('LISTBOX', Nil, Flags or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csCListBox:
     Begin
-      Window := CreateWindow('LISTBOX', Nil, Flags Or LBS_MULTICOLUMN, Left, Top, Width, Width, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('LISTBOX', Nil, Flags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM((Sender As TCListBox).Width Div ((Sender As TCListBox).ListColumns)), 0);
-      SendMessage(Window, LB_ADDSTRING, 0, LPARAM(LPCTSTR(StrTemp)));
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -1772,7 +1758,6 @@ Begin
       FParentWindow := Window;
       Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - SetProp');
-      //SetProp(Window, 'Lazarus', Sender);
       SetProp(Window, 'Lazarus', Sender);
       If Window = 0 then
       Begin
@@ -2618,6 +2603,9 @@ End;
 
 {
   $Log$
+  Revision 1.40  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.39  2002/12/29 18:17:49  mattias
   patch from Martin Smat fixing creating handles
 

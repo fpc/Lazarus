@@ -213,6 +213,7 @@ type
     procedure SetItems(Value : TStrings);
     procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
     procedure CNCommand(var TheMessage : TLMCommand); message CN_Command;
+    procedure UpdateSorted;
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
@@ -1392,6 +1393,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.73  2002/12/28 21:44:51  mattias
   further cleanup
 

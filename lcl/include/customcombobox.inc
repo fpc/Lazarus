@@ -42,6 +42,7 @@ begin
   // and use the interface based list
   FItems:= NewStrings;
 
+  UpdateSorted;
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 end;
 
@@ -120,19 +121,10 @@ end;
   Set the "sorted" property of the combobox and Sort the current entries.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetSorted(Val : boolean);
-var AMessage : TLMSort;
 begin
   if (Val <> FSorted) then begin
-    if HandleAllocated then begin
-      with AMessage do begin
-        Msg:= LM_SORT;
-        List:= Items;
-        IsSorted:= Val;
-      end;
-
-      CNSendMessage(LM_SORT, Self, @AMessage);
-    end;
     FSorted:= Val;
+    UpdateSorted;
   end;
 end;
 
@@ -720,10 +712,29 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.UpdateSorted;
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.UpdateSorted;
+var
+  AMessage : TLMSort;
+begin
+  if not HandleAllocated then exit;
+  with AMessage do begin
+    Msg:= LM_SORT;
+    List:= Items;
+    IsSorted:= FSorted;
+  end;
+  CNSendMessage(LM_SORT, Self, @AMessage);
+end;
+
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.24  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.23  2002/11/17 11:10:04  mattias
   TComboBox and TListBox accelerated and now supports objects
 

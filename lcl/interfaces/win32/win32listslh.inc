@@ -39,12 +39,13 @@ Type
     FFlagResetContent:Cardinal;
     FFlagDeleteString:Cardinal;
     FFlagInsertString:Cardinal;
+    FFlagAddString:Cardinal;
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
     Procedure SetSorted(Val: Boolean); Virtual;
   Public
-    Constructor Create(List: HWND);
+    Constructor Create(List : HWND; TheOwner: TControl);
     Procedure Assign(Source: TPersistent); Override;
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
@@ -56,6 +57,7 @@ Type
   TWin32CListStringList = Class(TStrings)
   Private
     FWin32CList: HWND;
+    FSender: TControl; // Needed to recreate the window 
     FSorted: Boolean;
   Protected
     Function Get(Index: Integer): String; Override;
@@ -64,7 +66,7 @@ Type
     Procedure PutObject(Index: Integer; AObject: TObject); Override;
     Procedure SetSorted(Val: Boolean); Virtual;
   Public
-    Constructor Create(List: HWND);
+    Constructor Create(List : HWND; TheOwner: TControl);
     Procedure Assign(Source: TPersistent); Override;
     Procedure Clear; Override;
     Procedure Delete(Index: Integer); Override;
@@ -82,6 +84,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.4  2002/11/15 23:43:54  mattias
   applied patch from Karl Brandt
 

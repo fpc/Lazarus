@@ -623,7 +623,117 @@ Begin
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 End;
 
-
+{------------------------------------------------------------------------------
+  Procedure: RecreateListControl
+  Params:  ListHandle - Handle of window
+           ListControl - TListBox, TCListBox or TComboBox
+           ToSort - Sort the list? 
+  
+  Returns: nothing 
+ ------------------------------------------------------------------------------}
+Procedure RecreateListControl(const ListHandle:HWND;const ListControl:TControl; ToSort:Boolean);
+var List:TListBox;
+    CList:TCListBox;
+    Combo:TComboBox;
+    TempStrList:TStringList;
+    ParentHandle,NewHandle,NameProp:HWND;
+    ListFlags: DWORD;
+begin
+	TempStrList:=TStringList.Create;
+	ParentHandle:=ListControl.Parent.Handle;
+	// Get current name property and remove before destroy the window
+	NameProp:=Integer(GetProp(ListHandle,'Name'));
+	RemoveProp(ListHandle,'Name');
+	RemoveProp(ListHandle,'Lazarus');
+	// Get current flags
+	ListFlags:=GetWindowLong(ListHandle, GWL_STYLE);
+	
+	case ListControl.FCompStyle of
+	csListBox: 
+	    with List do
+	    begin
+		List:=TListBox(ListControl);
+		TempStrList.Assign(Items);
+		If MultiSelect Then 
+        begin
+          if ExtendedSelect then 
+            ListFlags:=ListFlags or LBS_EXTENDEDSEL
+          else 
+            ListFlags:=(ListFlags or LBS_MULTIPLESEL) and (not LBS_EXTENDEDSEL);
+        end
+           else ListFlags:=ListFlags and (not (LBS_MULTIPLESEL or LBS_EXTENDEDSEL));
+		
+		If ToSort Then
+          ListFlags:=ListFlags or LBS_SORT
+        Else 
+          ListFlags:=ListFlags and (not LBS_SORT);
+          
+        DestroyWindow(ListHandle);
+        
+        If BorderStyle = TBorderStyle(bsSingle) Then
+             NewHandle:= CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, ListFlags or WS_VSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil)
+        Else
+             NewHandle:= CreateWindow('LISTBOX', Nil, ListFlags or WS_VSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
+		Handle:=NewHandle;
+		Items.Free;
+		Items:= TWin32ListStringList.Create(NewHandle,List);
+		Items.Assign(TempStrList);
+		end;
+	csCListBox:
+		with CList do
+	    begin
+		CList:=TCListBox(ListControl);
+		TempStrList.Assign(Items);
+		If MultiSelect Then 
+        begin
+          if ExtendedSelect then 
+            ListFlags:=ListFlags or LBS_EXTENDEDSEL
+          else 
+            ListFlags:=(ListFlags or LBS_MULTIPLESEL) and (not LBS_EXTENDEDSEL);
+        end
+           else ListFlags:=ListFlags and (not (LBS_MULTIPLESEL or LBS_EXTENDEDSEL));
+		
+		If ToSort Then
+             ListFlags:=ListFlags or LBS_SORT
+           Else
+             ListFlags:=ListFlags and (not LBS_SORT);
+        
+        DestroyWindow(ListHandle);
+        
+        If BorderStyle = TBorderStyle(bsSingle) Then
+             NewHandle := CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, ListFlags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil)
+        Else
+             NewHandle:= CreateWindow('LISTBOX', Nil, ListFlags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
+		Handle:=NewHandle;
+		Items.Free;
+		Items:= TWin32CListStringList.Create(NewHandle,CList);
+		Items.Assign(TempStrList);
+		end;
+	csComboBox:with Combo do
+	    begin
+		Combo:=TComboBox(ListControl);
+		TempStrList.Assign(Items);
+		
+		If ToSort Then
+           ListFlags:=ListFlags or CBS_SORT
+        Else
+           ListFlags:=ListFlags and (not CBS_SORT);
+        
+        DestroyWindow(ListHandle);
+        
+        NewHandle:= CreateWindow('COMBOBOX', Nil, ListFlags, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
+        Handle:=NewHandle;
+        
+		Items.Free;
+		Items:= TWin32ListStringList.Create(NewHandle,Combo);
+		Items.Assign(TempStrList);
+		end;
+	end;
+	TempStrList.Free;
+	// Set the new window properties
+	SetProp(NewHandle,'Lazarus',ListControl);
+	SetProp(NewHandle,'Name',Pointer(NameProp));
+end;
 (***********************************************************************
   Widget member Functions
 ************************************************************************)
@@ -676,6 +786,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.12  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.11  2002/12/16 09:02:27  mattias
   applied win32 notebook patch from Vincent
 

@@ -38,6 +38,7 @@ Begin
   Result := StrComp(AStr, BStr);
 end;
 
+
 {*************************************************************}
 {                      TWin32ListStringList methods           }
 {*************************************************************}
@@ -48,14 +49,14 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-Constructor TWin32ListStringList.Create(List: HWND);
+Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TControl);
 Begin
   Inherited Create;
   If List = HWND(Nil) Then
     Raise Exception.Create('Unspecified list window');
     //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
-  FSender := TControl(GetProp(FWin32List, 'Lazarus'));
+  FSender := TheOwner;
   FOrigHeight := FSender.Height;
  
   //Set proper win32 flags for ComboBox/ListBox
@@ -68,6 +69,7 @@ Begin
                FFlagResetContent:=CB_RESETCONTENT;
                FFlagDeleteString:=CB_DELETESTRING;
                FFlagInsertString:=CB_INSERTSTRING;
+               FFlagAddString:=CB_ADDSTRING;
     	       end;
     csListBox:begin
     	      FFlagSort:=LBS_SORT;
@@ -77,9 +79,12 @@ Begin
               FFlagResetContent:=LB_RESETCONTENT;
               FFlagDeleteString:=LB_DELETESTRING;
               FFlagInsertString:=LB_INSERTSTRING;
+              FFlagAddString:=LB_ADDSTRING;
               end;
   else Raise Exception.Create('Win32ListStringList: Component type not detected');
   end;
+  // Determine if the list is sorted
+  FSorted := (GetWindowLong(FWin32List, GWL_STYLE) and FFlagSort <> 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -105,7 +110,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Sort;
 Begin
-  SetWindowLong(FWin32List, GWL_STYLE, GetWindowLong(FWin32List, GWL_STYLE) Or FFlagSort);
+  RecreateListControl(FWin32List,FSender,FSorted);
 End;
 
 {------------------------------------------------------------------------------
@@ -168,8 +173,9 @@ End;
 
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Clear;
-Begin
-  FSender.Height := FOrigHeight;
+Begin	
+  if FSender.FCompStyle=csComboBox Then
+    FSender.Height := FOrigHeight;
   SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
@@ -181,7 +187,8 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
-  If GetCount <> 0 Then
+  If (FSender.FCompStyle = csComboBox)
+  and (GetCount <> 0) Then
     FSender.Height := (FSender.Height - (FSender.Height Div GetCount));
   SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
@@ -194,12 +201,13 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
-  If (GetCount <> 0) 
-  and (FSender.FCompStyle = csComboBox) Then
+  If (FSender.FCompStyle = csComboBox) 
+  and (GetCount <> 0) Then
     FSender.Height := (FSender.Height + (FSender.Height Div GetCount));
-  SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S)));
   If FSorted Then
-    Sort;
+    SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
+  Else 
+    SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S))); 
 End;
 
 {*************************************************************}
@@ -212,12 +220,14 @@ End;
   Returns: 
 
  ------------------------------------------------------------------------------}
-Constructor TWin32CListStringList.Create(List: HWND);
+Constructor TWin32CListStringList.Create(List : HWND; TheOwner: TControl);
 Begin
   Inherited Create;
   If List = HWND(Nil) Then
     Raise Exception.Create('Unspecified list widget');
   FWin32CList := List;
+  FSorted := (GetWindowLong(FWin32CList, GWL_STYLE) and LBS_SORT <> 0);
+  FSender:=TheOwner;
 End;
 
 {------------------------------------------------------------------------------
@@ -231,10 +241,7 @@ Begin
   If Val <> FSorted Then
   Begin
     FSorted := Val;
-    If Val Then
-      Sort
-    Else
-      SetWindowLong(FWin32CList, GWL_STYLE, GetWindowLong(FWin32CList, GWL_STYLE) And Not LBS_SORT);
+    Sort;
   End;
 End;
 
@@ -246,7 +253,8 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Sort;
 Begin
-  SetWindowLong(FWin32CList, GWL_STYLE, GetWindowLong(FWin32CList, GWL_STYLE) Or LBS_SORT);
+  // The win api doesn't allow to change the sort on the fly, so is needed to recreate the window 
+  RecreateListControl(FWin32CList,FSender,FSorted);
 End;
 
 {------------------------------------------------------------------------------
@@ -343,7 +351,10 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32CListStringList.Insert(Index: Integer; Const S: String);
 Begin
-  SendMessage(FWin32CList, LB_INSERTSTRING, Index, LPARAM(PChar(S)));
+  If FSorted Then
+    SendMessage(FWin32CList,LB_ADDSTRING, 0, LPARAM(PChar(S)))
+  Else 
+    SendMessage(FWin32CList,LB_INSERTSTRING, Index, LPARAM(PChar(S))); 
 End;
 
 {------------------------------------------------------------------------------
@@ -366,6 +377,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.7  2002/11/15 23:43:54  mattias
   applied patch from Karl Brandt
 

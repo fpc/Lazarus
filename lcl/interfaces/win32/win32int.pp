@@ -140,8 +140,6 @@ Implementation
 Uses
   Arrow, Buttons, Calendar, CListBox, Graphics, Menus, Process, Spin, WinExt;
 
-{$I win32listsl.inc}
-
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
 
@@ -169,6 +167,7 @@ Var
   WndList: TList;
 
 {$I win32proc.inc}
+{$I win32listsl.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
 {$I win32winapi.inc}
@@ -189,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.26  2002/12/28 09:42:12  mattias
   toolbutton patch from Martin Smat
 
