@@ -495,27 +495,35 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Ellipse
-  Params:   X1, Y1, X2, Y2
+  Params:   ARect: TRect
   Returns:  Nothing
 
   Use Ellipse to draw a filled circle or ellipse on the canvas.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Ellipse(const Rect: TRect);
+procedure TCanvas.Ellipse(const ARect: TRect);
 begin
-  Ellipse(Rect.Left,Rect.Top,Rect.Right,Rect.Bottom);
+  Ellipse(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom);
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.FillRect
-  Params:   Rect
+  Params:   ARect
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.FillRect(const Rect : TRect);
+procedure TCanvas.FillRect(const ARect : TRect);
 begin
   RequiredState([csHandleValid, csBrushValid]);
-  LCLLinux.FillRect(FHandle, Rect, Brush.Handle);
+  LCLLinux.FillRect(FHandle, ARect, Brush.Handle);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCanvas.FillRect(X1,Y1,X2,Y2 : Integer);
+ ------------------------------------------------------------------------------}
+procedure TCanvas.FillRect(X1,Y1,X2,Y2 : Integer);
+begin
+  FillRect(Rect(X1,Y1,X2,Y2));
 end;
 
 {------------------------------------------------------------------------------
@@ -541,6 +549,48 @@ procedure TCanvas.Frame3d(var Rect : TRect; const FrameWidth : integer; const St
 begin
   RequiredState([csHandleValid]);
   LCLLinux.Frame3d(FHandle, Rect, FrameWidth, Style);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCanvas.Frame(const ARect: TRect);
+
+  Drawing the border of a rectangle with the current pen
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Frame(const ARect: TRect);
+begin
+  RequiredState([csHandleValid, csPenValid]);
+  LCLLinux.Frame(FHandle, ARect);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCanvas.Frame(const ARect: TRect);
+
+  Drawing the border of a rectangle with the current pen
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Frame(X1, Y1, X2, Y2: Integer);
+begin
+  Frame(Rect(X1, Y1, X2, Y2));
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCanvas.FrameRect(const ARect: TRect);
+  
+  Drawing the border of a rectangle with the current brush
+ ------------------------------------------------------------------------------}
+procedure TCanvas.FrameRect(const ARect: TRect);
+begin
+  RequiredState([csHandleValid, csBrushValid]);
+  LCLLinux.FrameRect(FHandle, ARect, Brush.GetHandle);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCanvas.FrameRect(const ARect: TRect);
+
+  Drawing the border of a rectangle with the current brush
+ ------------------------------------------------------------------------------}
+procedure TCanvas.FrameRect(X1, Y1, X2, Y2: Integer);
+begin
+  FrameRect(Rect(X1, Y1, X2, Y2));
 end;
 
 {------------------------------------------------------------------------------
@@ -602,18 +652,18 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.TextRect
-  Params:   Rect, X, Y, Text, Style
+  Params:   ARect, X, Y, Text, Style
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.TextRect(Rect: TRect; X, Y : Integer; const Text : String;
+procedure TCanvas.TextRect(ARect: TRect; X, Y : Integer; const Text : String;
   const Style : TTextStyle);
 var
   Options : Longint;
   fRect : TRect;
 begin
-  Rect.Left := Rect.Left + X;
-  Rect.Top := Rect.Top + Y;
+  ARect.Left := ARect.Left + X;
+  ARect.Top := ARect.Top + Y;
   Options := 0;
   case Style.Alignment of
     taRightJustify : Options := DT_RIGHT;
@@ -643,15 +693,16 @@ begin
   else
     RequiredState([csHandleValid, csFontValid]);
 
-  fRect := Rect;
-  DrawText(Self.Handle, pChar(Text), Length(Text), fRect, DT_CALCRECT or Options);
+  fRect := ARect;
+  DrawText(Self.Handle,pChar(Text),Length(Text),fRect, DT_CALCRECT or Options);
   case Style.Alignment of
-    taRightJustify : OffsetRect(fRect, Rect.Right - fRect.Right, 0);
-    taCenter : OffsetRect(fRect, (Rect.Right - fRect.Right) div 2, 0);
+    taRightJustify : OffsetRect(fRect, ARect.Right - fRect.Right, 0);
+    taCenter : OffsetRect(fRect, (ARect.Right - fRect.Right) div 2, 0);
   end;
   case Style.Layout of
-    tlCenter : OffsetRect(fRect, 0, (Rect.Bottom - Rect.Top) div 2 - (fRect.Bottom - fRect.Top) div 2);
-    tlBottom : OffsetRect(fRect, 0, Rect.Bottom - fRect.Bottom);
+    tlCenter : OffsetRect(fRect, 0, (ARect.Bottom - ARect.Top) div 2
+                                    - (fRect.Bottom - fRect.Top) div 2);
+    tlBottom : OffsetRect(fRect, 0, ARect.Bottom - fRect.Bottom);
   end;
   If Style.Opaque then begin
     RequiredState([csHandleValid, csBrushValid]);
@@ -725,7 +776,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Line(X1,Y1,X2,Y2 : Integer);
 begin
-  //?? Additional function ??
   MoveTo(X1, Y1);
   LineTo(X2, Y2);
 end;
@@ -1097,6 +1147,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.36  2002/12/01 22:00:34  mattias
   fixed DeleteCriticalSection
 

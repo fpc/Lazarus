@@ -538,8 +538,20 @@ type
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
     procedure StretchDraw(const Rect: TRect; Graphic: TGraphic);
+    procedure Ellipse(const ARect: TRect);
     procedure Ellipse(x1, y1, x2, y2: Integer);
-    procedure Ellipse(const Rect: TRect);
+    Procedure FillRect(const ARect : TRect);
+    Procedure FillRect(X1,Y1,X2,Y2 : Integer);
+    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
+    procedure Frame3d(var Rect : TRect; const FrameWidth : integer;
+                      const Style : TBevelCut);
+    procedure Frame(const ARect: TRect);        // border using pen
+    procedure Frame(X1,Y1,X2,Y2 : Integer);     // border using pen
+    procedure FrameRect(const ARect: TRect);    // border using brush
+    procedure FrameRect(X1,Y1,X2,Y2 : Integer); // border using brush
+    Procedure Line(X1,Y1,X2,Y2 : Integer); // short for MoveTo();LineTo();
+    Procedure LineTo(X1,Y1 : Integer);
+    Procedure MoveTo(X1,Y1 : Integer);
     procedure Pie(x,y,width,height,angle1,angle2 : Integer);
     procedure Pie(x,y,width,height,SX,SY,EX,EY : Integer);
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
@@ -561,17 +573,10 @@ type
                        NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Polyline(const Points: array of TPoint);
-    Procedure FillRect(const Rect : TRect);
-    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
-    procedure Frame3d(var Rect : TRect; const FrameWidth : integer;
-                      const Style : TBevelCut);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
     Procedure Rectangle(const Rect: TRect); 
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
     Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
-    Procedure Line(X1,Y1,X2,Y2 : Integer);
-    Procedure MoveTo(X1,Y1 : Integer);
-    Procedure LineTo(X1,Y1 : Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
     procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);
     procedure TextRect(Rect: TRect; X, Y: integer; const Text : string;
@@ -580,10 +585,9 @@ type
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
     function HandleAllocated: boolean;
+  public
     property ClipRect: TRect read GetCanvasClipRect;
     property PenPos: TPoint read GetPenPos write SetPenPos;
-    property OnChange : TNotifyEvent read FOnChange write FOnChange;
-    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle : TTextStyle read FTextStyle write FTextStyle;
@@ -596,6 +600,8 @@ type
     property Pen: TPen read FPen write SetPen;
     property Region: TRegion read FRegion write SetRegion;
     property Color: TColor read GetColor write SetColor;
+    property OnChange : TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
 
@@ -955,6 +961,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.58  2002/12/28 17:43:43  mattias
   fixed FindControl and searching overloaded procs
 
