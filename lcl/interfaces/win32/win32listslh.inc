@@ -30,7 +30,8 @@ Type
     FWin32List: HWND;
     FSorted: Boolean;
     FSender: TControl;
-    FOrigHeight: Integer;
+    FEditHeight: Integer;
+    FItemHeight: Integer;
     //Win32 Flags
     FFlagSort: Cardinal;
     FFlagGetText:Cardinal;
@@ -84,6 +85,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/07/28 06:42:42  mattias
+  removed debuggging SetName, Patch from Karl Brandt
+
   Revision 1.5  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 

@@ -59,9 +59,8 @@ Begin
     //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
   FSender := TheOwner;
-  FOrigHeight := FSender.Height;
  
-  //Set proper win32 flags for ComboBox/ListBox
+  //Set proper win32 flags for ComboBox/ListBox and get/set Combo Height
   case FSender.FCompStyle of
     csComboBox:begin
     	       FFlagSort:=CBS_SORT;
@@ -72,6 +71,9 @@ Begin
                FFlagDeleteString:=CB_DELETESTRING;
                FFlagInsertString:=CB_INSERTSTRING;
                FFlagAddString:=CB_ADDSTRING;
+               
+               FEditHeight:= SendMessage(FWin32List,CB_GETITEMHEIGHT,-1,0);
+               FItemHeight:= SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
     	       end;
     csListBox:begin
     	      FFlagSort:=LBS_SORT;
@@ -177,7 +179,7 @@ End;
 Procedure TWin32ListStringList.Clear;
 Begin	
   if FSender.FCompStyle=csComboBox Then
-    FSender.Height := FOrigHeight;
+    FSender.Height := FEditHeight + FItemHeight;
   SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
@@ -190,8 +192,8 @@ End;
 Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
   If (FSender.FCompStyle = csComboBox)
-  and (GetCount <> 0) Then
-    FSender.Height := (FSender.Height - (FSender.Height Div GetCount));
+  and (GetCount <= 1) Then
+    FSender.Height := FEditHeight + FItemHeight;
   SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
 
@@ -379,6 +381,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/07/28 06:42:42  mattias
+  removed debuggging SetName, Patch from Karl Brandt
+
   Revision 1.9  2003/06/28 16:20:19  mattias
   fixed some win32 intf warnings
 

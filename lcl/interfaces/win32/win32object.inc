@@ -1783,7 +1783,6 @@ Begin
       GetClientRect(Handle, R);
       MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
       Window := Handle;
-      SetName(Window, StrTemp);
     End;
     csArrow:
     Begin
@@ -1796,7 +1795,6 @@ Begin
       Window := CreateWindow('BUTTON', Nil, Flags or BS_PUSHBUTTON Or BS_BITMAP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       IntSendMessage3(LM_LOADXPM, Sender, StrTemp);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csButton:
     Begin
@@ -1808,7 +1806,6 @@ Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags, Left, Top, Width, Height - 8, Parent, HMENU(Nil), HInstance, Nil);
       If Window <> HWND(Nil) Then
         SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csCalendar:
     Begin
@@ -1820,7 +1817,6 @@ Begin
       AProcess.Execute;
       Window := HWND(AProcess);
       //Window := CreateWindow('CalendarWndClass', StrTemp, Flags, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
-      SetName(Window, StrTemp);
       AProcess.Free;
       AProcess := Nil;
     End;
@@ -1830,20 +1826,17 @@ Begin
       Assert(False, 'Trace:TODO: Code TWin32Object.CreateComponent: style csCanvas');
       Window := CreateWindow(ClsName, StrTemp, WS_DLGFRAME Or WS_POPUP Or WS_VISIBLE, Left, Top, Width, Height, HWND(Nil), HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
 }
     csCheckbox:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csComboBox:
     Begin
       Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_DROPDOWN, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csImage:
     Begin
@@ -1851,27 +1844,23 @@ Begin
       With TImage(Sender).Picture.Bitmap Do
         Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
       SetOwner(Window, Sender);
-      SetName(Window, StrTemp);
       ReleaseDC(Handle, DC);
     End;
     csListBox:
     Begin
       Window := CreateWindow('LISTBOX', Nil, Flags or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csCListBox:
     Begin
       Window := CreateWindow('LISTBOX', Nil, Flags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM((Sender As TCListBox).Width Div ((Sender As TCListBox).ListColumns)), 0);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csEdit:
     Begin
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csColorDialog, csFileDialog, csFontDialog:
     Begin
@@ -1882,7 +1871,6 @@ Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
       Window := CreateWindow(ClsName, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
       DoSubClass := false;
     End;
     csFont:
@@ -1891,7 +1879,6 @@ Begin
       With LPLogFont(@Sender)^ Do
         Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csForm, csHintWindow:
     Begin
@@ -1913,8 +1900,6 @@ Begin
         MessageBox(0, 'csForm CreateWindow Failed', nil, mb_Ok);
         Exit;
       End;
-      SetName(Window, StrTemp);
-      //LazObject := Sender;
     End;
     csMainForm:
     Begin
@@ -1933,13 +1918,11 @@ Begin
         MessageBox(0, 'csMainForm CreateWindow Failed', nil, mb_Ok);
         Exit;
       End;
-      SetName(Window, strTemp);
     End;
     csFrame, csGroupBox, csPanel:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     {csHintWindow:
     Begin
@@ -1952,13 +1935,11 @@ Begin
     Begin
       Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, (Sender As TControl).Left, (Sender As TControl).Top, (Sender As TControl).Width, (Sender As TControl).Height, FParentWindow, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csListView:
     Begin
       Window := CreateWindow(WC_LISTVIEW, StrTemp, Flags Or LVS_LIST Or LVS_SINGLESEL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetOwner(Window, Sender);
-      SetName(Window, StrTemp);
     End;
     csMemo:
     Begin
@@ -1976,7 +1957,6 @@ Begin
       End;
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csMainMenu, csMenuBar:
     Begin
@@ -1984,8 +1964,7 @@ Begin
       FMenu := Window;
       Assert(False, Format('Trace:Main menu owner --> %S', [((Sender As TComponent).Owner As TWinControl).ClassName]));
       Windows.SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, Window);
-      {Self.SetProp(Window, 'Lazarus', Sender);
-      Self.SetName(Window, StrTemp);}
+      {Self.SetProp(Window, 'Lazarus', Sender);}
     End;
     csMenuItem:
     Begin
@@ -1994,14 +1973,12 @@ Begin
       AccelIndex := Pos('&', Caption);
       If AccelIndex <> 0 Then
         SetAccelKey(Window, Nil);}
-      {SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);}
+      {SetProp(Window, 'Lazarus', Sender);}
     End;
     csNotebook:
     Begin
       Window := CreateWindow(WC_TABCONTROL, Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     {csPanel:
     Begin
@@ -2013,7 +1990,6 @@ Begin
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTORADIOBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csScrollBar:
     Begin
@@ -2025,14 +2001,12 @@ Begin
       End;
       Window := CreateWindow('SCROLLBAR', Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csScrolledWindow:
     Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
       Window := CreateWindow(ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, strTemp);
       DoSubClass := false;
     End;
     csSpinEdit:
@@ -2043,7 +2017,6 @@ Begin
       Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       Window := CreateUpDownControl(Flags Or WS_Border, Left + Width + 10, Top, 10, Height, Parent, FControlIndex, HInstance, Buddy, 0, 100, Trunc((Sender As TSpinEdit).Value));
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
       Assert(False, 'TRACE:Spin edit control not created');
     End;
     csStatusBar:
@@ -2052,7 +2025,6 @@ Begin
       Inc(FControlIndex);
       Window := CreateStatusWindow(Flags, StrTemp, Parent, FControlIndex);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csGTKTable:
     Begin
@@ -2068,19 +2040,16 @@ Begin
       Assert(False, 'TRACE: CreateComponent - Creating toggle box');
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX Or BS_PUSHLIKE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csToolBar:
     Begin
       Window := CreateWindow(TOOLBARCLASSNAME, LPSTR(Nil), Flags OR CCS_ADJUSTABLE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csToolButton:
     Begin
       Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
       DoSubClass := false;
     End;
     {csGroupBox:
@@ -2103,7 +2072,6 @@ Begin
       Window := CreatePopupMenu;
       FSubMenu := Window;
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csProgressBar:
     Begin
@@ -2116,14 +2084,12 @@ Begin
       end;
       Window := CreateWindow(PROGRESS_CLASS, nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
     csTrackBar:
     Begin
       Assert(False, 'TRACE:CreateComponent - Creating a Track Bar (if we''re lucky)');
       Window := CreateWindow(TRACKBAR_CLASS, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
-      SetName(Window, StrTemp);
     End;
   End; {Case}
 
@@ -2753,6 +2719,9 @@ End;
 
 {
   $Log$
+  Revision 1.78  2003/07/28 06:42:42  mattias
+  removed debuggging SetName, Patch from Karl Brandt
+
   Revision 1.77  2003/07/26 10:33:34  mattias
   fixed GetText from Martin
 

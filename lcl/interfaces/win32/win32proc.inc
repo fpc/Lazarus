@@ -519,14 +519,12 @@ var List:TListBox;
     CList:TCListBox;
     Combo:TComboBox;
     TempStrList:TStringList;
-    ParentHandle,NewHandle,NameProp:HWND;
+    ParentHandle,NewHandle:HWND;
     ListFlags: DWORD;
 begin
 	TempStrList:=TStringList.Create;
 	ParentHandle:=ListControl.Parent.Handle;
-	// Get current name property and remove before destroy the window
-	NameProp:=Integer(GetProp(ListHandle,'Name'));
-	RemoveProp(ListHandle,'Name');
+	// Remove Prop before destroy the window
 	RemoveProp(ListHandle,'Lazarus');
 	// Get current flags
 	ListFlags:=GetWindowLong(ListHandle, GWL_STYLE);
@@ -558,6 +556,7 @@ begin
         Else
              NewHandle:= CreateWindow('LISTBOX', Nil, ListFlags or WS_VSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
 		Handle:=NewHandle;
+		SendMessage(NewHandle, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
 		Items.Free;
 		Items:= TWin32ListStringList.Create(NewHandle,List);
 		Items.Assign(TempStrList);
@@ -588,6 +587,7 @@ begin
         Else
              NewHandle:= CreateWindow('LISTBOX', Nil, ListFlags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
 		Handle:=NewHandle;
+		SendMessage(NewHandle, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
 		Items.Free;
 		Items:= TWin32CListStringList.Create(NewHandle,CList);
 		Items.Assign(TempStrList);
@@ -606,16 +606,16 @@ begin
         
         NewHandle:= CreateWindow('COMBOBOX', Nil, ListFlags, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
         Handle:=NewHandle;
-        
+        SendMessage(NewHandle, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
+		
 		Items.Free;
 		Items:= TWin32ListStringList.Create(NewHandle,Combo);
 		Items.Assign(TempStrList);
 		end;
 	end;
 	TempStrList.Free;
-	// Set the new window properties
+	// Set the new window properties	
 	SetProp(NewHandle,'Lazarus',ListControl);
-	SetProp(NewHandle,'Name',Pointer(NameProp));
 end;
 (***********************************************************************
   Widget member Functions
@@ -717,6 +717,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.16  2003/07/28 06:42:42  mattias
+  removed debuggging SetName, Patch from Karl Brandt
+
   Revision 1.15  2003/03/13 19:57:38  mattias
   added identcompletion context information and fixed win32 intf
 
