@@ -857,7 +857,7 @@ begin
                   case ANode.Desc of
                     ctnProcedure:
                       begin
-                        CurCode:=ExtractProcName(ANode,false);
+                        CurCode:=ExtractProcName(ANode,[]);
                         if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
                           break;
                       end;

@@ -693,7 +693,7 @@ begin
       // ToDo: ppu, ppw, dcu
 
       GetCompatibleMethodsProc(
-        FoundContext.Tool.ExtractProcName(FoundContext.Node,false));
+        FoundContext.Tool.ExtractProcName(FoundContext.Node,[]));
     end;
   end;
   Result:=ifrProceedSearch;

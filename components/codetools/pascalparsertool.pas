@@ -123,6 +123,7 @@ type
     ExtractProcHeadPos: TProcHeadExtractPos;
     procedure InitExtraction;
     function GetExtraction: string;
+    function ExtractStreamEndIsIdentChar: boolean;
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
     // sections
     function KeyWordFuncSection: boolean;
@@ -210,7 +211,7 @@ type
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractProcName(ProcNode: TCodeTreeNode;
-        InUpperCase: boolean): string;
+        Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function ExtractClassName(ClassNode: TCodeTreeNode;
@@ -252,7 +253,37 @@ type
     destructor Destroy; override;
   end;
 
-  
+const
+  ProcHeadAttributeNames: array[TProcHeadAttribute] of string = (
+      // extract attributes:
+      'phpWithStart',
+      'phpWithoutClassKeyword',
+      'phpAddClassName',
+      'phpWithoutClassName',
+      'phpWithoutName',
+      'phpWithoutParamList',
+      'phpWithVarModifiers',
+      'phpWithParameterNames',
+      'phpWithoutParamTypes',
+      'phpWithDefaultValues',
+      'phpWithResultType',
+      'phpWithOfObject',
+      'phpWithComments',
+      'phpInUpperCase',
+      'phpCommentsToSpace',
+      'phpWithoutBrackets',
+      // search attributes:
+      'phpIgnoreForwards',
+      'phpIgnoreProcsWithBody',
+      'phpIgnoreMethods',
+      'phpOnlyWithClassname',
+      'phpFindCleanPosition',
+      // parse attributes:
+      'phpCreateNodes'
+    );
+
+function ProcHeadAttributesToStr(Attr: TProcHeadAttributes): string;
+
 
 implementation
 
@@ -262,6 +293,17 @@ type
                    ebtClass, ebtObject);
   TTryType = (ttNone, ttFinally, ttExcept);
 
+function ProcHeadAttributesToStr(Attr: TProcHeadAttributes): string;
+var a: TProcHeadAttribute;
+begin
+  Result:='';
+  for a:=Low(TProcHeadAttribute) to High(TProcHeadAttribute) do begin
+    if a in Attr then begin
+      if Result<>'' then Result:=Result+',';
+      Result:=Result+ProcHeadAttributeNames[a];
+    end;
+  end;
+end;
 
 { TMultiKeyWordListCodeTool }
 
@@ -2257,7 +2299,7 @@ begin
           CurPos.EndPos-CurPos.StartPos);
       end;
       if not AtomIsChar('=') then
-        SaveRaiseExceptionFmt(ctsUnexpectedKeyword,['=',GetAtom]);
+        SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,['=',GetAtom]);
       // read constant
       repeat
         ReadNextAtom;
@@ -2891,27 +2933,46 @@ begin
 end;
 
 function TPascalParserTool.ExtractProcName(ProcNode: TCodeTreeNode;
-  InUpperCase: boolean): string;
-var ProcHeadNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): string;
+var
+  ProcHeadNode: TCodeTreeNode;
 begin
   Result:='';
+  if [phpWithoutClassName,phpWithoutName]*Attr=
+     [phpWithoutClassName,phpWithoutName]
+  then
+    exit;
   while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
     ProcNode:=ProcNode.Parent;
   if ProcNode=nil then exit;
   ProcHeadNode:=ProcNode.FirstChild;
   if (ProcHeadNode=nil) or (ProcHeadNode.StartPos<1) then exit;
   MoveCursorToNodeStart(ProcHeadNode);
-  repeat
+  ReadNextAtom;
+  if not AtomIsIdentifier(false) then exit;
+  if phpInUpperCase in Attr then
+    Result:=GetUpAtom
+  else
+    Result:=GetAtom;
+  ReadNextAtom;
+  if AtomIsChar('.') then begin
+    if (phpWithoutClassName in Attr) then begin
+      Result:='';
+    end else begin
+      if not (phpWithoutName in Attr) then
+        Result:=Result+'.';
+    end;
     ReadNextAtom;
-    if (CurPos.StartPos<=SrcLen)
-    and (UpperSrc[CurPos.StartPos] in ['.','_','A'..'Z']) then begin
-      if InUpperCase then
+    if not (phpWithoutName in Attr) then begin
+      if phpInUpperCase in Attr then
         Result:=Result+GetUpAtom
       else
         Result:=Result+GetAtom;
-    end else
-      break;
-  until false;
+    end;
+  end else begin
+    if phpWithoutName in Attr then
+      Result:='';
+  end;
 end;
 
 procedure TPascalParserTool.InitExtraction;
@@ -2927,6 +2988,18 @@ begin
   SetLength(Result,ExtractMemStream.Size);
   ExtractMemStream.Position:=0;
   ExtractMemStream.Read(Result[1],length(Result));
+end;
+
+function TPascalParserTool.ExtractStreamEndIsIdentChar: boolean;
+var c: char;
+begin
+  if ExtractMemStream.Position=0 then begin
+    Result:=false;
+    exit;
+  end;
+  ExtractMemStream.Position:=ExtractMemStream.Position-1;
+  ExtractMemStream.Read(c,1);
+  Result:=IsIdentChar[c];
 end;
 
 procedure TPascalParserTool.ExtractNextAtom(AddAtom: boolean;
@@ -2945,13 +3018,16 @@ begin
              CurPos.StartPos-LastAtomEndPos)
       else
         ExtractMemStream.Write(Src[LastAtomEndPos],
-             CurPos.StartPos-LastAtomEndPos)
-    end else if (CurPos.StartPos>LastAtomEndPos) 
-    and (ExtractMemStream.Position>0) then begin
+             CurPos.StartPos-LastAtomEndPos);
+    end else if (CurPos.StartPos>LastAtomEndPos)
+      and (ExtractMemStream.Position>0) then
+    begin
       // some code was skipped
-      if (phpCommentsToSpace in Attr)
+      // -> check if a space must be inserted
+      if AddAtom
+      and ((phpCommentsToSpace in Attr)
       or ((CurPos.StartPos<=SrcLen) and (IsIdentStartChar[Src[CurPos.StartPos]])
-        and (IsIdentChar[Src[LastAtomEndPos-1]]))
+          and ExtractStreamEndIsIdentChar))
       then begin
         ExtractMemStream.Write(' ',1);
         LastStreamPos:=ExtractMemStream.Position;
@@ -2981,8 +3057,6 @@ var
   GrandPaNode: TCodeTreeNode;
   TheClassName, s: string;
   HasClassName, IsProcType: boolean;
-// function TPascalParserTool.ExtractProcHead(ProcNode: TCodeTreeNode;
-//   Attr: TProcHeadAttributes): string;
 begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
@@ -3043,8 +3117,10 @@ begin
         s:=TheClassName+'.';
         if not (phpWithoutName in Attr) then
           s:=s+GetAtom;
-        if phpInUpperCase in Attr then s:=UpperCaseStr(s);
         ExtractNextAtom(false,Attr);
+        if phpInUpperCase in Attr then s:=UpperCaseStr(s);
+        if ExtractStreamEndIsIdentChar then
+          s:=' '+s;
         ExtractMemStream.Write(s[1],length(s));
       end;
     end;

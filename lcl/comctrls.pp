@@ -827,6 +827,7 @@ const
     ('naAdd', 'naAddFirst', 'naAddChild', 'naAddChildFirst', 'naInsert');
   AddModeNames: array[TAddMode] of string =
     ('taAddFirst', 'taAdd', 'taInsert');
+  LCLStreamID = -7;
 
 type
   TTVChangingEvent = procedure(Sender: TObject; Node: TTreeNode;
@@ -1548,6 +1549,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/04/17 09:15:51  lazarus
+  MG: fixes, e.g. method jumping to changed overloaded methods
+
   Revision 1.31  2002/03/27 00:33:54  lazarus
   MWE:
     * Cleanup in lmessages

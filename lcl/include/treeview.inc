@@ -1955,7 +1955,7 @@ begin
   Clear;
   // -7 for lcl stream
   Stream.ReadBuffer(MagicNumber,SizeOf(Integer));
-  if MagicNumber=-7 then begin
+  if MagicNumber=LCLStreamID then begin
     // read stream version
     Stream.ReadBuffer(StreamVersion,SizeOf(StreamVersion));
     // read top level node count
@@ -1964,7 +1964,7 @@ begin
       Add(nil, '').ReadData(Stream, StreamVersion, @NodeInfo);
   end else begin
     // delphi stream
-    Stream.ReadBuffer(NewCount, SizeOf(NewCount));
+    NewCount:=MagicNumber;
     for I := 0 to NewCount - 1 do
       Add(nil, '').ReadDelphiData(Stream, @NodeInfo);
   end;
@@ -1974,9 +1974,11 @@ procedure TTreeNodes.WriteData(Stream: TStream);
 var
   ANode: TTreeNode;
   NodeInfo: TDelphiNodeInfo;
+  MagicNumber: integer;
 begin
   // -7 for lcl stream
-  Stream.WriteBuffer(-7,SizeOf(Integer));
+  MagicNumber:=LCLStreamID;
+  Stream.WriteBuffer(MagicNumber,SizeOf(MagicNumber));
   // write stream version
   Stream.WriteBuffer(TTreeNodeStreamVersion,SizeOf(Word));
   // write top level node count
