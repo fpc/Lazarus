@@ -3118,11 +3118,9 @@ begin
                //set up columns..
                //
                gtk_clist_freeze(PgtkCList(Handle));
-               Writeln('Column count is ',Columns.Count);
                for I := 0 to Columns.Count-1 do
                  Begin
                    ColName := Columns.Item[i].Caption;
-                   Writeln('colnmame is ',ColName);
                    GetMem(pColName,Length(colname)+1);
                    pColName := StrPcopy(pColName,ColName);
                    gtk_clist_set_column_title(Pgtkclist(Handle),I,pColName);
@@ -3173,7 +3171,6 @@ begin
                  end;
                  
                gtk_clist_thaw(PgtkCList(Handle));
-               Writeln('DONE csListView setPRoperties');
 
             end;
       else
@@ -3630,6 +3627,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.94  2001/12/20 19:11:23  lazarus
+  Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
+  Shane
+
   Revision 1.93  2001/12/19 21:36:05  lazarus
   Added MultiSelect to TListView
   Shane

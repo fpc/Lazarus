@@ -606,7 +606,7 @@ begin
   with HintTimer1 do
     Begin
       Enabled := False;
-      Interval := 100;
+      Interval := 500;
       OnTimer := @HintTimer1Timer;
     end;
     
@@ -5478,6 +5478,10 @@ end.
 =======
 
   $Log$
+  Revision 1.193  2001/12/20 19:11:22  lazarus
+  Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
+  Shane
+
   Revision 1.192  2001/12/19 22:09:13  lazarus
   MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
 
@@ -5488,6 +5492,10 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.193  2001/12/20 19:11:22  lazarus
+  Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
+  Shane
+
   Revision 1.192  2001/12/19 22:09:13  lazarus
   MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
 
