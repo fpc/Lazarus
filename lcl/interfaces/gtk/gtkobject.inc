@@ -5859,12 +5859,14 @@ begin
       RaiseException('TGtkObject.AttachMenu ParentMenuWidget=nil');
 
     if GtkWidgetIsA(ParentMenuWidget,GTK_MENU_BAR_TYPE) then begin
-      // mainmenu
+      // mainmenu (= a menu bar)
       ContainerMenu:=ParentMenuWidget;
       gtk_menu_bar_insert(PGtkMenuBar(ParentMenuWidget),MenuItem,
                           LCLMenuItem.MenuIndex);
     end
     else begin
+      // menu item
+      
       // find the menu container
       ContainerMenu := PGtkWidget(gtk_object_get_data(
                                                    PGtkObject(ParentMenuWidget),
@@ -5879,9 +5881,6 @@ begin
           gtk_object_set_data(PGtkObject(ParentMenuWidget), 'ContainerMenu',
                               ContainerMenu);
           gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
-
-          //AccelGroup := GetAccelGroup(ContainerMenu,true);
-          //gtk_menu_set_accel_group(PGtkMenu(ContainerMenu), AccelGroup);
         end;
       end;
       gtk_menu_insert(PGtkMenu(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
@@ -5891,15 +5890,6 @@ begin
     
     if GtkWidgetIsA(MenuItem,GTK_RADIO_MENU_ITEM_TYPE) then
       RegroupMenuItem(HMENU(MenuItem),GroupIndex);
-
-    {// Add accelerators
-    AccelGroup := GetAccelGroup(ContainerMenu,false);
-    AccelKey := GetAccelKey(MenuItem);
-    if (AccelGroup <> nil) and (AccelKey <> 0) then begin
-      gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
-                          GTK_ACCEL_LOCKED, PGtkObject(MenuItem),
-                          'activate_item');
-    end;}
   end;
   //writeln('TGtkObject.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
 end;
@@ -6841,6 +6831,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.323  2003/02/23 10:42:06  mattias
+  implemented changing TMenuItem.GroupIndex at runtime
+
   Revision 1.322  2003/02/05 13:46:57  mattias
   fixed TCustomEdit.SelStart when nothing selected
 
