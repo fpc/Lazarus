@@ -126,9 +126,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.BringWindowToTop(HWnd: HWND): Boolean;
 Begin
-  Assert(False, 'TWin32WidgetSet.BringWindowToTop - Start');
+  Assert(False, 'Trace:TWin32WidgetSet.BringWindowToTop - Start');
   Result := Boolean(Windows.BringWindowToTop(HWnd));
-  Assert(False, 'TWin32WidgetSet.BringWindowToTop - Exit');
+  Assert(False, 'Trace:TWin32WidgetSet.BringWindowToTop - Exit');
 End;
 
 {------------------------------------------------------------------------------
@@ -2941,6 +2941,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2004/03/25 23:08:22  vincents
+  added Trace: to assert message
+
   Revision 1.104  2004/03/07 12:26:31  micha
   rewrite to enable drawing of disabled button
 
