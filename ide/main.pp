@@ -6811,11 +6811,12 @@ begin
   {$ENDIF}
   // calculate start and end of expression in source
   if ActiveSrcEdit.EditorComponent.SelText='' then begin
-    if CodeToolBoss.GetExpressionBounds(ActiveUnitInfo.Source,
+    if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
       ActiveSrcEdit.EditorComponent.CaretY,
       StartCode,StartPos.X,StartPos.Y,
-      EndCode,EndPos.X,EndPos.Y) then
+      EndCode,EndPos.X,EndPos.Y,
+      true) then
     begin
       if (StartCode<>ActiveUnitInfo.Source)
       or (EndCode<>ActiveUnitInfo.Source) then begin
@@ -7688,6 +7689,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.457  2003/02/03 22:28:08  mattias
+  small bugfixes and fixed non checked menu items activate
+
   Revision 1.456  2003/01/28 17:04:33  mattias
   renamed one Rect
 
