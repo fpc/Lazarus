@@ -794,6 +794,8 @@ begin
   and FIgnoreFileDateOnDiskValid
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
+  if not IsVirtual then
+    FileReadOnly:=FileIsWritable(Filename);
 end;
 
 procedure TUnitInfo.IgnoreCurrentFileDateOnDisk;
@@ -2241,6 +2243,9 @@ end.
 
 {
   $Log$
+  Revision 1.95  2003/03/07 11:41:21  mattias
+  fixed readonly check and added script to quick create lazarus snapshot
+
   Revision 1.94  2003/02/28 19:10:25  mattias
   added new ... dialog
 

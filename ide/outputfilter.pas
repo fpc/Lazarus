@@ -419,6 +419,7 @@ begin
   EndPos:=StartPos;
   while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
   if EndPos>length(Line) then exit;
+  CaretXY.X:=1;
   CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
   if Line[EndPos]=',' then begin
     // format: <filename>(123,45) <ErrorType>: <some text>

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-set -x
+#set -x
 
 FPCSrcDir=$1
 OutputFile=fpcsrc-1.0.7-1.tgz
@@ -15,20 +15,24 @@ if [ ! -d $FPCSrcDir/compiler ]; then
   exit
 fi
 
-echo "copy dir to /tmp/fpc ..."
+echo "copy $FPCSrcDir to /tmp/fpc ..."
 cd /tmp
 rm -rf /tmp/fpc
-cp -a $FPCSrcDir fpc
 cd -
+cp -a $FPCSrcDir /tmp/fpc
 
 echo "cleaning up (CVS, ppu, o) ..."
 cd /tmp/fpc
 make distclean
 find . -name '*.ppu' -exec rm -rf {} \;
-find . -name '*.o' -exec rm -rf {} \;
+find . -name '*.rst' -exec rm -rf {} \;
+rm -f *.tar.gz
 if [ -d CVS ]; then
   find . -name 'CVS' | xargs rm -r
 fi
+cd -
+cd /tmp/fpc/docs
+make clean
 cd -
 
 # pack

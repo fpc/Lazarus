@@ -3,7 +3,7 @@ Version: 1.0.7
 Release: 1
 Copyright: GPL
 Group: Development/Languages
-Source: %{name}-%{version}.tgz
+Source: %{name}-%{version}-%{release}.tgz
 Summary: FreePascal sources 1.0.7
 Packager: Mattias Gaertner (gaertner@informatik.uni-koeln.de)
 URL: http://www.freepascal.org/
