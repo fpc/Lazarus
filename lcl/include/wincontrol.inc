@@ -1064,6 +1064,12 @@ end;
 procedure TWinControl.DestroyHandle;
 var i : integer;
 begin
+  if not HandleAllocated then begin
+    writeln('Warning: TWinControl.DestroyHandle ',Name,':',ClassName,' Handle not Allocated');
+    // create an gdb catchable exception:
+    // if (length(Name) div (length(Name) div 10000))=0 then ;
+  end;
+
   { Destroy all children handles, too }
   { If we don't do that, GTK does this without notification for us and we crash }
   { TODO : We can enable HandleAllocated condition only when all controls, especially
@@ -1073,7 +1079,8 @@ begin
       for i:= 0 to FWinControls.Count - 1 do begin
         //writeln('  i=',i);
         //writeln('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
-        TWinControl(FWinControls[i]).DestroyHandle;
+        if TWinControl(FWinControls[i]).HandleAllocated then
+          TWinControl(FWinControls[i]).DestroyHandle;
       end;	
     end;
     DestroyWnd;
@@ -1504,7 +1511,7 @@ Begin
     with TWinControl(AControl) do
     begin
       RemoveFocus(True);
-      DestroyHandle;
+      if HandleAllocated then DestroyHandle;
     end
   else
     if HandleAllocated then
@@ -1678,7 +1685,8 @@ var
   Control: TControl;
 begin
   //writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
-  DestroyHandle;
+  if HandleAllocated then
+    DestroyHandle;
   //writeln('[TWinControl.Destroy] B  ',Name,':',ClassName);
 
   //for n:=0 to ComponentCount-1 do
@@ -2401,6 +2409,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2002/09/16 15:42:17  lazarus
+  MG: fixed calling DestroyHandle if not HandleAllocated
+
   Revision 1.86  2002/09/10 06:49:19  lazarus
   MG: scrollingwincontrol from Andrew
 
