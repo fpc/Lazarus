@@ -20,7 +20,7 @@ unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(L
 targetdir=.
 
 [prerules]
-LAZDIR=../..
+LAZDIR=..
 
 
 [rules]
