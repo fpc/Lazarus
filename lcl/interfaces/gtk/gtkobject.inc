@@ -1795,6 +1795,7 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     NewCaption: string;
   begin
     MenuItem:=TMenuItem(Sender);
+    if not MenuItem.HandleAllocated then exit;
     MenuItemWidget:=PGtkWidget(MenuItem.Handle);
     if MenuItemWidget=nil then exit;
     LabelWidget:=PGTKLabel(PGTKBin(MenuItemWidget)^.Child);
@@ -5323,6 +5324,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.156  2002/08/08 09:38:36  lazarus
+  MG: recent file menus are now updated instantly
+
   Revision 1.155  2002/08/08 09:07:07  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 
