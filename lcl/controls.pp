@@ -489,6 +489,7 @@ type
     FLastResizeClientWidth: integer;
     FLastWidth : Integer;
     FLeft: Integer;
+    FMouseEntered: boolean;
     FOnActivate : TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnClick: TNotifyEvent;
@@ -503,6 +504,8 @@ type
     FOnMouseDown : TMouseEvent;
     FOnMouseMove : TMouseMoveEvent;
     FOnMouseUp: TMouseEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
     FOnStartDrag: TStartDragEvent;
     FParent: TWinControl;
     FParentColor : Boolean;
@@ -516,6 +519,7 @@ type
     FWindowProc: TWndMethod;
     FVisible: Boolean;
     FTabStop : Boolean;
+    procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
     procedure CheckMenuPopup(const P : TSmallPoint);
     function GetClientHeight: Integer;
@@ -655,6 +659,8 @@ type
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
 
     property TabStop : Boolean read FTabStop write SetTabStop;
@@ -1442,6 +1448,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2002/11/21 18:49:52  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.90  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 

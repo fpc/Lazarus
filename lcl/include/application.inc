@@ -243,10 +243,9 @@ begin
   CaptureControl := GetCaptureControl;
   if FMouseControl <> CurrentControl then
   begin
-    if CaptureControl = nil
-    then IsOther := FMouseControl <> nil
-    else IsOther := FMouseControl = CaptureControl;
-    
+    IsOther:=((FMouseControl <> nil) and (CaptureControl = nil)) or
+      ((CaptureControl <> nil) and (FMouseControl = CaptureControl));
+
     if IsOther and (FMouseControl<>nil) then
       FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
     FMouseControl := CurrentControl;
@@ -787,11 +786,25 @@ begin
     FOnUserInputHandler.Remove(TMethod(AnOnUserInputHandler));
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication CreateForm                                                }
-{       Create a Form instance and sets the pointer to the internal form       }
-{       variable and loads the form into the application forms list            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
+------------------------------------------------------------------------------}
+procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
+begin
+  if (FMouseControl<>CurMouseControl) then begin
+    if (FMouseControl<>nil) then
+      FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
+    FMouseControl := CurMouseControl;
+    if (FMouseControl<>nil) then
+      FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+       TApplication CreateForm
+       Create a Form instance and sets the pointer to the internal form
+       variable and loads the form into the application forms list
+------------------------------------------------------------------------------}
 procedure TApplication.CreateForm(InstanceClass: TComponentClass;
   var Reference);
 var
@@ -837,6 +850,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/11/21 18:49:52  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.37  2002/11/15 23:40:39  mattias
   added combobox createhandle old list assign
 
