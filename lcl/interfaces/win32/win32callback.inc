@@ -618,10 +618,12 @@ Begin
     End;
     WM_DRAWITEM:
     Begin
-      if TObject(WParam) is TWinControl then
-        lWinControl := TWinControl(WParam)
-      else
-        lWinControl := nil;
+      // TODO: this could crash for a MenuItem.
+      WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
+      lWinControl := WindowInfo^.WinControl;
+      with PDrawItemStruct(LParam)^ do
+        writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
+
       if (lWinControl is TCustomListbox) and
             (TCustomListBox(lWinControl).Style <> lbStandard) then
       begin
@@ -1453,6 +1455,9 @@ end;
 
 {
   $Log$
+  Revision 1.162  2004/11/15 15:52:48  vincents
+  fix crash when dropping down a owner drawn combobox
+
   Revision 1.161  2004/11/15 08:00:05  micha
   forms with WS_POPUP style have a parent, GetParent(...)=0 is not reliable, and here redundant
   tidy code a bit
