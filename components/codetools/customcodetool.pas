@@ -120,6 +120,8 @@ type
         const ASource: string): integer;
     function CompareNodeUpSrc(ANode: TCodeTreeNode;
         const ASource: string): integer;
+    function CompareSrcIdentifiers(
+      CleanStartPos1, CleanStartPos2: integer): boolean;
     procedure ReadPriorAtom;
 
     procedure CreateChildNode;
@@ -377,6 +379,23 @@ begin
       Result:=-1;
   end else
     Result:=-1;
+end;
+
+function TCustomCodeTool.CompareSrcIdentifiers(
+  CleanStartPos1, CleanStartPos2: integer): boolean;
+begin
+  Result:=(CleanStartPos1>=1) and (CleanStartPos1<=SrcLen)
+          and (CleanStartPos2>=1) and (CleanStartPos2<=SrcLen);
+  if not Result then exit;
+  while (CleanStartPos1<=SrcLen) and (IsIdentChar[Src[CleanStartPos1]]) do begin
+    if (UpperSrc[CleanStartPos1]<>UpperSrc[CleanStartPos2]) then begin
+      Result:=false;
+      exit;
+    end;
+    inc(CleanStartPos1);
+    inc(CleanStartPos2);
+  end;
+  Result:=(CleanStartPos2>SrcLen) or (not IsIdentChar[Src[CleanStartPos2]]);
 end;
 
 function TCustomCodeTool.AtomIsChar(const c: char): boolean;

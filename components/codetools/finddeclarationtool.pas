@@ -35,6 +35,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE CTDEBUG}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -103,6 +105,9 @@ writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos)
     Result:=true;
     exit;
   end;
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc));
+{$ENDIF}
   if CursorNode.Desc=ctnUsesSection then begin
     // find used unit
     Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
@@ -111,10 +116,12 @@ writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos)
     if CursorNode.Desc=ctnBeginBlock then
       BuildSubTreeForBeginBlock(CursorNode);
     MoveCursorToCleanPos(CleanCursorPos);
-    while (CurPos.StartPos>=1) and (IsIdentChar[Src[CurPos.StartPos]]) do
+    while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
       dec(CurPos.StartPos);
+writeln('AAA ',CurPos.StartPos,',',Src[CurPos.StartPos]);
     if (CurPos.StartPos>=1) and (IsIdentStartChar[Src[CurPos.StartPos]]) then
     begin
+writeln('AAA2');
       CurPos.EndPos:=CurPos.StartPos;
       while (CurPos.EndPos<=SrcLen) and IsIdentChar[Src[CurPos.EndPos]] do
         inc(CurPos.EndPos);
@@ -388,9 +395,17 @@ function TFindDeclarationTool.FindDeclarationOfIdentifier(
     A^.B().C[].Identifier
 }
 begin
+{$IFDEF CTDEBUG}
+writeln('[TFindDeclarationTool.FindDeclarationOfIdentifier] Identifier=',
+  copy(Src,IdentifierStartPos,IdentifierEndPos-IdentifierStartPos),
+  ' DeepestNode=',NodeDescriptionAsString(DeepestNode.Desc));
+{$ENDIF}
   Result:=false;
   MoveCursorToCleanPos(IdentifierStartPos);
   ReadPriorAtom;
+{$IFDEF CTDEBUG}
+writeln('[TFindDeclarationTool.FindDeclarationOfIdentifier] B PriorAtom=',GetAtom);
+{$ENDIF}
   if AtomIsChar('.') then begin
     // first search context, then search in context
     
@@ -440,23 +455,55 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInContext(IdentifierStartPos,
   IdentifierEndPos: integer; ContextNode: TCodeTreeNode;
-  SearchInParentNodes: boolean; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer): boolean;
+  SearchInParentNodes: boolean;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 { searches an identifier in context node
-  It does not care about code in front
+  It does not care about code in front of the identifier like 'a.Identifer'.
 }
+var LastContextNode: TCodeTreeNode;
 begin
   Result:=false;
   if ContextNode<>nil then begin
-    case ContextNode.Desc of
-    ctnBeginBlock:
-      begin
-        if not SearchInParentNodes then exit;
+    repeat
+{$IFDEF CTDEBUG}
+writeln('[TFindDeclarationTool.FindIdentifierInContext] ',NodeDescriptionAsString(ContextNode.Desc));
+{$ENDIF}
+      LastContextNode:=ContextNode;
+      case ContextNode.Desc of
+      
+      ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection:
+        begin
+          if ContextNode.LastChild<>nil then
+            ContextNode:=ContextNode.LastChild;
+        end;
         
-        // ToDo
-        
+      ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition:
+        begin
+          if CompareSrcIdentifiers(IdentifierStartPos,ContextNode.StartPos) then
+          begin
+            // identifier found
+            Result:=CleanPosToCaretAndTopLine(ContextNode.StartPos,
+                                              NewPos,NewTopLine);
+            exit;
+          end;
+          // search for enums
+          
+          // ToDo
+          
+        end;
+
       end;
-    end;
+      if LastContextNode=ContextNode then begin
+        // same context -> search in higher context
+        if not SearchInParentNodes then exit;
+        if ContextNode.PriorBrother<>nil then
+          ContextNode:=ContextNode.PriorBrother
+        else if ContextNode.Parent<>nil then
+          ContextNode:=ContextNode.Parent
+        else
+          break;
+      end;
+    until ContextNode=nil;
   end else begin
     // DeepestNode=nil
   end;
