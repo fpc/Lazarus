@@ -2522,7 +2522,7 @@ begin
     lbEvents.Items.Delete(0);
 end;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-procedure TForm1.TestFormClose(Sender : TObject; var Action : TCloseAction);
+procedure TForm1.TestFormClose(Sender : TObject; var CloseAction : TCloseAction);
 var
 i : Integer;
 begin
@@ -2886,6 +2886,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.14  2004/02/19 09:45:40  mattias
+  fixed compilation   from Vincent
+
   Revision 1.13  2003/11/29 13:38:35  mattias
   fixed memleak  from Vincent
 

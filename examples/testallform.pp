@@ -272,7 +272,7 @@ type
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
       procedure CreateMainMenu;
       procedure CreateTestTools;
-      procedure TestFormClose(Sender : TObject; var Action : TCloseAction);
+      procedure TestFormClose(Sender : TObject; var CloseAction : TCloseAction);
       procedure CreateComponents;
       procedure QuitClick(Sender : TObject);
       procedure ShowTestForm(Sender : TObject);
@@ -2585,6 +2585,9 @@ END.
 
 {
   $Log$
+  Revision 1.16  2004/02/19 09:45:40  mattias
+  fixed compilation   from Vincent
+
   Revision 1.15  2003/12/08 14:27:16  mattias
   fixed WaitForHandles
 
