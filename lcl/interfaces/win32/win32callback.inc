@@ -569,6 +569,7 @@ Begin
         Msg := CN_KEYDOWN;
         KeyData := LParam;
         CharCode := Word(WParam);
+        Result := 0;
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         Assert(False,'  OwnerObject= '+TComponent(OwnerObject).Name+':'+OwnerObject.ClassName);
       End;
@@ -583,6 +584,7 @@ Begin
         Msg := CN_KEYUP;
         KeyData := LParam;
         CharCode := Word(WParam);
+        Result := 0;
         Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
       WinProcess := false;
@@ -867,6 +869,7 @@ Begin
         Msg := LM_SYSKEYDOWN;
         KeyData := LParam;
         CharCode := Word(WParam);
+        Result := 0;
       End;
     End;
     WM_SYSKEYUP:
@@ -878,6 +881,7 @@ Begin
         Msg := LM_SYSKEYUP;
         KeyData := LParam;
         CharCode := Word(WParam);
+        Result := 0;
       End;
     End;
     WM_TIMER:
@@ -1315,6 +1319,9 @@ end;
 
 {
   $Log$
+  Revision 1.138  2004/09/07 14:13:16  micha
+  fix key handling of maskedit (inhibit backspace handling)
+
   Revision 1.137  2004/08/29 12:35:07  vincents
   Don't use handles in test if form is MainForm
 
