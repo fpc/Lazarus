@@ -77,8 +77,6 @@ begin
   // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
   for i:=0 to Items.Count-1 do
     Items[i].HandleNeeded;
-  // attach menu to window
-  InterfaceObject.AttachMenuToWindow(Self);
 end;
 
 procedure TMenu.DoChange(Source: TMenuItem; Rebuild: Boolean);
@@ -238,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/12/18 08:50:13  micha
+  attachmenutowindow cleanup
+
   Revision 1.20  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 

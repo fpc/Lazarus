@@ -1255,7 +1255,11 @@ begin
   ReleaseDC(Handle,DC);
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
-  if FMenu <> nil then FMenu.HandleNeeded;
+  if FMenu <> nil then
+  begin
+    FMenu.HandleNeeded;
+    InterfaceObject.AttachMenuToWindow(FMenu);
+  end;
 
   // activate focus if visible
   if Visible then begin
@@ -1449,6 +1453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.121  2003/12/18 08:50:13  micha
+  attachmenutowindow cleanup
+
   Revision 1.120  2003/12/18 08:15:25  micha
   setmenu fix, now correctly (sigh)
 
