@@ -1,11 +1,25 @@
-(******************************************************************************
+{******************************************************************************
                         Misc Support Functs  
  ******************************************************************************
    used by:
      win32object.inc
      //GTKWinAPI
      //GTKCallback
- ******************************************************************************)
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 
 {$IFOPT C-}
@@ -657,6 +671,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.8  2002/05/10 07:43:49  lazarus
+  MG: updated licenses
+
   Revision 1.7  2002/04/03 01:52:43  lazarus
   Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
 
