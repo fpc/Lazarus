@@ -6078,7 +6078,7 @@ begin
 
     // grab
     if (Value<>0) then begin
-      {$IfNDef NoMouseCapture}
+      {$IfDef ActivateMouseCapture}
       gtk_grab_add(PgtkWidget(Value));
       {$EndIf}
     end;
@@ -7400,6 +7400,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.166  2002/10/21 14:40:53  lazarus
+  MG: fixes for 1.1
+
   Revision 1.165  2002/10/20 21:54:04  lazarus
   MG: fixes for 1.1
 
