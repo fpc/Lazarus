@@ -72,37 +72,38 @@ type
   TDesignerFlags = set of TDesignerFlag;
 
   TDesigner = class(TComponentEditorDesigner)
-    procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
   private
+    FAlignMenuItem: TMenuItem;
+    FBringToFrontMenuItem: TMenuItem;
     FCustomForm: TCustomForm;
-    FTheFormEditor: TCustomFormEditor;
-    FSourceEditor: TSourceEditor;
+    FDeleteSelectionMenuItem: TMenuItem;
     FFlags: TDesignerFlags;
     FGridColor: TColor;
+    FMirrorHorizontalMenuItem: TMenuItem;
+    FMirrorVerticalMenuItem: TMenuItem;
+    FOnActivated: TNotifyEvent;
     FOnComponentAdded: TOnComponentAdded;
     FOnComponentDeleted: TOnComponentDeleted;
-    FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
+    FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnModified: TNotifyEvent;
     FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
     FOnRemoveComponent: TOnRemoveComponent;
-    FOnSetDesigning: TOnSetDesigning;
-    FOnUnselectComponentClass: TNotifyEvent;
-    FOnActivated: TNotifyEvent;
     FOnRenameComponent: TOnRenameComponent;
+    FOnSetDesigning: TOnSetDesigning;
+    FOnShowOptions: TNotifyEvent;
+    FOnUnselectComponentClass: TNotifyEvent;
     FPopupMenu: TPopupMenu;
-    FShiftState: TShiftState;
-    FAlignMenuItem: TMenuItem;
-    FMirrorHorizontalMenuItem: TMenuItem;
-    FMirrorVerticalMenuItem: TMenuItem;
     FScaleMenuItem: TMenuItem;
-    FSizeMenuItem: TMenuItem;
-    FBringToFrontMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
-    FDeleteSelectionMenuItem: TMenuItem;
+    FShiftState: TShiftState;
+    FShowOptionsMenuItem: TMenuItem;
+    FSizeMenuItem: TMenuItem;
     FSnapToGridOptionMenuItem: TMenuItem;
     FSnapToGuideLinesOptionMenuItem: TMenuItem;
+    FSourceEditor: TSourceEditor;
+    FTheFormEditor: TCustomFormEditor;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -169,6 +170,8 @@ type
     procedure OnDeleteSelectionMenuClick(Sender: TObject);
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
     procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
+    procedure OnShowOptionsMenuItemClick(Sender: TObject);
+    procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
@@ -210,46 +213,50 @@ type
        aDDC: TDesignerDeviceContext);
     procedure DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 
+  public
     property Flags: TDesignerFlags read FFlags;
     property Form: TCustomForm read FCustomForm write FCustomForm;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
-    property OnActivated: TNotifyEvent
-       read FOnActivated write FOnActivated;
+    property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnComponentAdded: TOnComponentAdded
-       read FOnComponentAdded write FOnComponentAdded;
+                                 read FOnComponentAdded write FOnComponentAdded;
     property OnComponentDeleted: TOnComponentDeleted
-       read FOnComponentDeleted write FOnComponentDeleted;
+                             read FOnComponentDeleted write FOnComponentDeleted;
+    property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
+                                            read FOnGetNonVisualCompIconCanvas
+                                            write FOnGetNonVisualCompIconCanvas;
     property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
-       read FOnGetSelectedComponentClass write FOnGetSelectedComponentClass;
+                                             read FOnGetSelectedComponentClass
+                                             write FOnGetSelectedComponentClass;
     property OnProcessCommand: TOnProcessCommand
-       read FOnProcessCommand write FOnProcessCommand;
+                                 read FOnProcessCommand write FOnProcessCommand;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnPropertiesChanged: TNotifyEvent
-       read FOnPropertiesChanged write FOnPropertiesChanged;
+                           read FOnPropertiesChanged write FOnPropertiesChanged;
     property OnRemoveComponent: TOnRemoveComponent
-       read FOnRemoveComponent write FOnRemoveComponent;
+                               read FOnRemoveComponent write FOnRemoveComponent;
     property OnRenameComponent: TOnRenameComponent
-       read FOnRenameComponent write FOnRenameComponent;
+                               read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning
-       read FOnSetDesigning write FOnSetDesigning;
+                                     read FOnSetDesigning write FOnSetDesigning;
     property OnUnselectComponentClass: TNotifyEvent
-       read FOnUnselectComponentClass write FOnUnselectComponentClass;
-    property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
-       read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
+                                                read FOnUnselectComponentClass
+                                                write FOnUnselectComponentClass;
+    property OnShowOptions: TNotifyEvent
+                                       read FOnShowOptions write FOnShowOptions;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowEditorHints: boolean
-       read GetShowEditorHints write SetShowEditorHints;
+                               read GetShowEditorHints write SetShowEditorHints;
     property ShowComponentCaptionHints: boolean
-       read GetShowComponentCaptionHints write SetShowComponentCaptionHints;
-    property SnapToGrid: boolean
-       read GetSnapToGrid write SetSnapToGrid;
-    property SourceEditor : TSourceEditor
-       read FSourceEditor write FSourceEditor;
+                                             read GetShowComponentCaptionHints
+                                             write SetShowComponentCaptionHints;
+    property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
+    property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
     property TheFormEditor: TCustomFormEditor
-       read FTheFormEditor write FTheFormEditor;
+                                       read FTheFormEditor write FTheFormEditor;
   end;
 
 
@@ -1367,6 +1374,11 @@ begin
   EnvironmentOptions.SnapToGrid:=not EnvironmentOptions.SnapToGrid;
 end;
 
+procedure TDesigner.OnShowOptionsMenuItemClick(Sender: TObject);
+begin
+  if Assigned(OnShowOptions) then OnShowOptions(Self);
+end;
+
 procedure TDesigner.OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
 begin
   EnvironmentOptions.SnapToGuideLines:=not EnvironmentOptions.SnapToGuideLines;
@@ -1702,7 +1714,6 @@ begin
   end;
   FPopupMenu.Items.Add(FSnapToGridOptionMenuItem);
 
-  //: TMenuItem;
   FSnapToGuideLinesOptionMenuItem:=TMenuItem.Create(FPopupMenu);
   with FSnapToGuideLinesOptionMenuItem do begin
     Caption:= fdmSnapToGuideLinesOption;
@@ -1711,6 +1722,12 @@ begin
   end;
   FPopupMenu.Items.Add(FSnapToGuideLinesOptionMenuItem);
 
+  FShowOptionsMenuItem:=TMenuItem.Create(FPopupMenu);
+  with FShowOptionsMenuItem do begin
+    Caption:= fdmShowOptions;
+    OnClick:=@OnShowOptionsMenuItemClick;
+  end;
+  FPopupMenu.Items.Add(FShowOptionsMenuItem);
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
