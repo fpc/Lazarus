@@ -118,7 +118,7 @@ type
   TGDBMIBreakPoints = class(TDBGBreakPoints)
   private
   protected
-    procedure DoStateChange; override;
+    procedure DoDebuggerStateChange; override;
     procedure SetBreakPoints;
   public
   end;
@@ -129,15 +129,17 @@ type
     FBreakID: Integer;
     procedure SetBreakPoint;
     procedure ReleaseBreakPoint;
+    procedure UpdateEnable;
+    procedure UpdateExpression;
   protected
-    procedure DoActionChange; override;
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
+    procedure InitTargetStart; override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure Hit;
+    procedure Hit(var ACanContinue: Boolean);
   end;
 
   TGDBMILocals = class(TDBGLocals)
@@ -479,7 +481,7 @@ begin
   until not Result or (FCommandQueue.Count = 0);
 end;
 
-function  TGDBMIDebugger.FindBreakpoint(
+function TGDBMIDebugger.FindBreakpoint(
   const ABreakpoint: Integer): TDBGBreakPoint;
 var
   n: Integer;
@@ -1058,6 +1060,7 @@ var
   S, Reason: String;
   BreakID: Integer;
   BreakPoint: TGDBMIBreakPoint;
+  CanContinue: Boolean;
 begin
   Result := True;
   List := CreateMIValueList(AParams);
@@ -1122,14 +1125,15 @@ begin
       BreakPoint := TGDBMIBreakPoint(FindBreakpoint(BreakID));
       if BreakPoint <> nil
       then begin
-        BreakPoint.Hit;
-        if (bpaStop in BreakPoint.Actions)
+        CanContinue := False;
+        BreakPoint.Hit(CanContinue);
+        if CanContinue
         then begin
-          SetState(dsPause);
-          ProcessFrame(List.Values['frame']);
+          ExecuteCommand('-exec-continue', False);
         end
         else begin
-          ExecuteCommand('-exec-continue', False);
+          SetState(dsPause);
+          ProcessFrame(List.Values['frame']);
         end;
       end;
       Exit;
@@ -1187,9 +1191,9 @@ end;
 { TGDBMIBreakPoints }
 { =========================================================================== }
 
-procedure TGDBMIBreakPoints.DoStateChange;
+procedure TGDBMIBreakPoints.DoDebuggerStateChange;
 begin
-  inherited DoStateChange;
+  inherited DoDebuggerStateChange;
   if (Debugger <> nil)
   and (Debugger.State in [dsStop, dsPause])
   then SetBreakPoints;
@@ -1224,36 +1228,28 @@ begin
   inherited Destroy;
 end;
 
-procedure TGDBMIBreakPoint.DoActionChange;
-begin
-  Changed(False);
-end;
-
 procedure TGDBMIBreakPoint.DoEnableChange;
-const
-  CMD: array[Boolean] of String = ('disable', 'enable');
 begin
-  if (FBreakID = 0) 
-  or (Debugger = nil)
-  then Exit;
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d',
-                                          [CMD[Enabled], FBreakID], False);
-  Changed(false);
+  UpdateEnable;
+  inherited;
 end;
 
 procedure TGDBMIBreakPoint.DoExpressionChange;
 begin
-  Changed(False);
+  UpdateExpression;
+  inherited;
 end;
 
-procedure TGDBMIBreakPoint.Hit;
+procedure TGDBMIBreakPoint.Hit(var ACanContinue: Boolean);
 begin
-  SetHitCount(HitCount + 1);
-  if bpaEnableGroup in Actions
-  then EnableGroups;
-  if bpaDisableGroup in Actions
-  then DisableGroups;
+  DoHit(HitCount + 1, ACanContinue);
+end;
+
+procedure TGDBMIBreakPoint.InitTargetStart;
+begin
+  inherited InitTargetStart;
+  UpdateExpression;
+  UpdateEnable;
 end;
 
 procedure TGDBMIBreakPoint.SetBreakpoint;
@@ -1307,6 +1303,22 @@ begin
   if Debugger = nil then Exit;
   if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
   then SetBreakpoint;
+end;
+
+procedure TGDBMIBreakPoint.UpdateEnable;
+const
+  CMD: array[Boolean] of String = ('disable', 'enable');
+begin
+  if (FBreakID = 0)
+  or (Debugger = nil)
+  then Exit;
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d',
+                                          [CMD[Enabled], FBreakID], False);
+end;
+
+procedure TGDBMIBreakPoint.UpdateExpression;
+begin
 end;
 
 { =========================================================================== }
@@ -1851,6 +1863,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.23  2003/06/03 01:35:40  marc
+  MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
+         TDBGBreakPoint
+
   Revision 1.22  2003/06/02 21:37:30  mattias
   fixed debugger stop
 
