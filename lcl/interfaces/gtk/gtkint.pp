@@ -93,17 +93,23 @@ type
     procedure ReDraw(Child : Pointer);
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);
     
+    // device contexts
     function IsValidDC(const DC: HDC): Boolean;
+    function NewDC: TDeviceContext;
+    procedure DisposeDC(aDC: TDeviceContext);
+    
+    // GDIObjects
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
     function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
                                   const GDIType: TGDIType): Boolean;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;
     procedure DisposeGDIObject(GdiObject: PGdiObject);
-    function NewDC: TDeviceContext;
-    procedure DisposeDC(aDC: TDeviceContext);
+    procedure SelectGDKPenProps(DC: HDC);
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
     function CreateDefaultPen: PGdiObject;
+    
+    // images
     procedure LoadXPMFromLazResource(const ResourceName: string;
       Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
     procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
@@ -517,6 +523,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/10/07 20:50:58  lazarus
+  MG: accelerated SelectGDKPenProps
+
   Revision 1.81  2002/10/06 17:55:45  lazarus
   MG: JITForms now sets csDesigning before creation
 
