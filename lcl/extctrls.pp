@@ -667,10 +667,11 @@ type
 
   TCustomCheckGroup = class(TCustomGroupBox)
   private
-    FButtonList : TList; // list of TCheckBox
+    FButtonList: TList; // list of TCheckBox
+    FColumnLayout: TColumnLayout;
     FCreatingWnd: boolean;
-    FItems      : TStrings;
-    FColumns    : integer;
+    FItems: TStrings;
+    FColumns: integer;
     FOnItemClick: TCheckGroupClicked;
     function GetChecked(Index: integer): boolean;
     function GetCheckEnabled(Index: integer): boolean;
@@ -680,6 +681,7 @@ type
     procedure ItemsChanged (Sender : TObject);
     procedure SetChecked(Index: integer; const AValue: boolean);
     procedure SetCheckEnabled(Index: integer; const AValue: boolean);
+    procedure SetColumnLayout(const AValue: TColumnLayout);
     procedure UpdateItems;
   protected
     procedure SetItems(Value: TStrings);
@@ -699,6 +701,7 @@ type
     property Checked[Index: integer]: boolean read GetChecked write SetChecked;
     property CheckEnabled[Index: integer]: boolean read GetCheckEnabled write SetCheckEnabled;
     property Columns: integer read FColumns write SetColumns default 1;
+    property ColumnLayout: TColumnLayout read FColumnLayout write SetColumnLayout default clHorizontalThenVertical;
     property OnItemClick: TCheckGroupClicked read FOnItemClick write FOnItemClick;
   end;
 
@@ -706,19 +709,36 @@ type
   { TCheckGroup }
 
   TCheckGroup = class(TCustomCheckGroup)
-  public
   published
-    property Anchors;
     property Align;
-    property Constraints;
+    property Anchors;
     property Caption;
+    property Color;
+    property ColumnLayout;
+    property Columns;
+    property Constraints;
+    property Ctl3D;
     property Enabled;
     property Items;
-    property Columns;
-    property Visible;
-    property OnItemClick;
-    property OnResize;
     property OnChangeBounds;
+    property OnClick;
+    property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnItemClick;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
   end;
 
 
@@ -945,6 +965,9 @@ end.
 
  {
   $Log$
+  Revision 1.111  2004/07/12 21:32:07  mattias
+  added TCheckGroup.ColumnLayout
+
   Revision 1.110  2004/07/11 23:08:43  mattias
   updated russian translation  from vasily
 

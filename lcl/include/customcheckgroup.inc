@@ -20,6 +20,29 @@
 
 { TCustomCheckGroup }
 
+constructor TCustomCheckGroup.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FCreatingWnd := false;
+  ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
+                                  csDoubleClicks];
+  FItems      := TStringList.Create;
+  TStringList(FItems).OnChanging := @ItemsChanged;
+  TStringList(FItems).OnChange := @ItemsChanged;
+  FButtonList := TList.Create;
+  FColumnLayout := clHorizontalThenVertical;
+  FColumns  := 1;
+  Width:= 250;
+  Height := 200;
+end;
+
+destructor TCustomCheckGroup.Destroy;
+begin
+  FreeAndNil(FItems);
+  FreeAndNil(FButtonList);
+  inherited Destroy;
+end;
+
 procedure TCustomCheckGroup.ItemsChanged(Sender: TObject);
 begin
   UpdateItems;
@@ -86,6 +109,13 @@ begin
   TCheckBox(FButtonList[Index]).Enabled:=AValue;
 end;
 
+procedure TCustomCheckGroup.SetColumnLayout(const AValue: TColumnLayout);
+begin
+  if FColumnLayout=AValue then exit;
+  FColumnLayout:=AValue;
+  DoPositionButtons;
+end;
+
 function TCustomCheckGroup.GetChecked(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
@@ -102,28 +132,36 @@ var
   vertDist: integer;
   horzDist: integer;
   rbWidth : integer;
-  CurRows: Integer;
+  MaxRows: Integer;
 begin
-  if (FItems<>nil) and (FItems.Count>0)
-  and (not (csLoading in ComponentState)) then begin
+  if (FItems.Count>0) and (FColumns>0) then begin
     // position in rows and columns
-    CurRows  := Rows;
-    vertDist := ClientHeight DIV CurRows;
-    horzDist := (ClientWidth-8) DIV FColumns;
-    nextLeft := 4;
+    vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
+    horzDist := (Width - 20) DIV FColumns;
     nextTop  := 0;
+    nextLeft := 10;
     rbWidth  := horzDist;
+    MaxRows := (FItems.Count+FColumns-1) div FColumns;
     i := 0;
     while i < FItems.Count do begin
       CheckBox := TCheckBox(FButtonList[i]);
       CheckBox.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
 
       inc (i);
-      if (i mod CurRows) = 0 then begin
-        inc(nextLeft, horzDist);
-        nextTop := 0;
+      if FColumnLayout=clHorizontalThenVertical then begin
+        if (i mod FColumns) = 0 then begin
+          inc(nextTop, vertDist);
+          nextLeft := 10;
+        end else begin
+          inc(nextLeft, horzDist);
+        end;
       end else begin
-        inc(nextTop, vertDist);
+        if (i mod MaxRows) = 0 then begin
+          inc(nextLeft, horzDist);
+          nextTop := 0;
+        end else begin
+          inc(nextTop, vertDist);
+        end;
       end;
     end;
   end;
@@ -222,28 +260,6 @@ begin
   inherited DoOnResize;
 end;
 
-constructor TCustomCheckGroup.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  FCreatingWnd := false;
-  ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csSetCaption,
-                                  csDoubleClicks];
-  FItems      := TStringList.Create;
-  TStringList(FItems).OnChanging := @ItemsChanged;
-  TStringList(FItems).OnChange := @ItemsChanged;
-  FButtonList := TList.Create;
-  FColumns  := 1;
-  Width:= 250;
-  Height := 200;
-end;
-
-destructor TCustomCheckGroup.Destroy;
-begin
-  FreeAndNil(FItems);
-  FreeAndNil(FButtonList);
-  inherited Destroy;
-end;
-
 function TCustomCheckGroup.Rows: integer;
 begin
   if FItems.Count>0 then
@@ -256,6 +272,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2004/07/12 21:32:07  mattias
+  added TCheckGroup.ColumnLayout
+
   Revision 1.5  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
