@@ -24,7 +24,7 @@
 
 unit CListBox;
 
-{$MODE objfpc}
+{$MODE objfpc}{$H+}
 
 interface
 
@@ -69,6 +69,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/06/15 10:31:05  lazarus
+  MG: set longstrings as default
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 

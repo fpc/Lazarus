@@ -1,4 +1,3 @@
-unit lresources;
 {
   Author: Mattias Gaertner
 
@@ -17,7 +16,9 @@ unit lresources;
   ToDo:
 
 }
-{$mode objfpc}
+unit lresources;
+
+{$mode objfpc}{$H+}
 
 interface
 

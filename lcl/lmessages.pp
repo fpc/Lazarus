@@ -21,7 +21,7 @@
 
 unit lMessages;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -768,6 +768,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2001/06/15 10:31:06  lazarus
+  MG: set longstrings as default
+
   Revision 1.9  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 

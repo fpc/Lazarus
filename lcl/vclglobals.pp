@@ -18,7 +18,7 @@
 
 unit vclglobals;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 //uses

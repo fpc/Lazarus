@@ -28,7 +28,7 @@ Detailed description of the Unit.
 }
 unit ImgList;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -148,6 +148,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2001/06/15 10:31:06  lazarus
+  MG: set longstrings as default
+
   Revision 1.3  2001/02/06 13:55:23  lazarus
   Changed the files from mode delphi to mode objfpc
   Shane

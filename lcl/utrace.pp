@@ -1,6 +1,8 @@
+
+
 unit utrace;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 
 interface
@@ -8,7 +10,7 @@ interface
 uses sysutils;
 
 type
-   TAssertErrorProc = procedure(Const Msg,FN : String;LineNo,TheAddr : Longint);
+   TAssertErrorProc = procedure(Const Msg,FN : ShortString;LineNo,TheAddr : Longint);
 
 var
    TraceFileName : string;
@@ -17,10 +19,9 @@ var
 
 implementation
 
-procedure TraceAssertHandler(Const Msg,FN : String;LineNo,TheAddr : Longint);
+procedure TraceAssertHandler(Const Msg,FN : ShortString;LineNo,TheAddr : Longint);
 var
    fileH  : Text;
-
 begin
 
    if LowerCase(LeftStr(Msg, 6)) = 'trace:' then

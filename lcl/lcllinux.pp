@@ -32,7 +32,7 @@ the Delphi Windows unit. This is only done for compatibiltiy.
 }
 
 unit LCLLinux;
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 uses VCLGlobals,Classes;
@@ -313,6 +313,7 @@ PM_Remove = 1;
   VK_F24        = 135;
   VK_NUMLOCK    = 144;
   VK_SCROLL     = 145;
+  
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
   // Used only as parameters to GetAsyncKeyState() and GetKeyState().
@@ -1378,6 +1379,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2001/06/15 10:31:06  lazarus
+  MG: set longstrings as default
+
   Revision 1.7  2001/04/06 22:28:09  lazarus
   * TTimer uses winapi interface now instead of sendmessage interface, stoppok
 

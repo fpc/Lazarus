@@ -21,7 +21,7 @@
 
 unit spin;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 

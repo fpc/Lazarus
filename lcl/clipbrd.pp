@@ -28,8 +28,8 @@ Clipboard unit.  For Copying and Pasting.  You know what it's for!  Why am I exp
 }
 
 unit Clipbrd;
-{$H+}
-{$MODE Objfpc}
+
+{$MODE Objfpc}{$H+}
 
 interface
 
@@ -124,6 +124,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2001/06/15 10:31:05  lazarus
+  MG: set longstrings as default
+
   Revision 1.2  2001/02/16 19:13:30  lazarus
   Added some functions
   Shane

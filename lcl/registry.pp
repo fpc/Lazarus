@@ -32,7 +32,7 @@ this will provide access to a file registry or conf file.
 unit Registry;
 
 //{$mode delphi}
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -184,6 +184,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2001/06/15 10:31:06  lazarus
+  MG: set longstrings as default
+
   Revision 1.2  2001/02/04 18:24:41  lazarus
   Code cleanup
   Shane

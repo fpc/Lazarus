@@ -8,7 +8,7 @@
  /***************************************************************************
 }
 unit allunits;
-{$mode objfpc}
+{$mode objfpc}{$H+}
 interface
 uses
   interfacebase, interfaces,
@@ -25,6 +25,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/06/15 10:31:05  lazarus
+  MG: set longstrings as default
+
   Revision 1.6  2001/03/27 20:55:23  lazarus
   MWE:
     * changed makefiles so that the LCL is build separate fron interfaces

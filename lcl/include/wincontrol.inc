@@ -1906,7 +1906,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMVisibleChanged(var Message : TLMessage);
 begin
-
   if not FVisible and (Parent <> nil)
   then RemoveFocus(False);
   
@@ -1961,6 +1960,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2001/06/15 10:31:06  lazarus
+  MG: set longstrings as default
+
   Revision 1.32  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 

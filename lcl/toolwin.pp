@@ -30,7 +30,7 @@ Detailed description of the Unit.
 unit Toolwin;
 
 //{$mode delphi}
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
