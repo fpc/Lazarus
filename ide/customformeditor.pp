@@ -59,13 +59,16 @@ each control that's dropped onto the form
     Function IsTControl          : Boolean; override;
     Function GetPropCount	   : Integer; override;
     Function GetPropType(Index : Integer) : TTypeKind; override;
+    Function GetPropTypeInfo(Index : Integer) : PTypeInfo;
     Function GetPropName(Index : Integer) : String; override;
+    Function GetPropTypeName(Index : Integer) : String; override;
     Function GetPropTypebyName(Name : String) : TTypeKind; override;
 
     Function GetPropValue(Index : Integer; var Value) : Boolean; override;
     Function GetPropValuebyName(Name: String; var Value) : Boolean; override;
     Function SetProp(Index : Integer; const Value) : Boolean; override;
     Function SetPropbyName(Name : String; const Value) : Boolean; override;
+
 
     Function GetControlCount: Integer; override;
     Function GetControl(Index : Integer): TIComponentInterface; override;
@@ -322,7 +325,27 @@ Begin
   freemem(PP);
 end;
 
-Function TComponentInterface.GetPropName(Index : Integer) : String;
+Function TComponentInterface.GetPropTypeInfo(Index : Integer) : PTypeInfo;
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+Num : Integer;
+Begin
+  PI:=FControl.ClassInfo;
+  PT:=GetTypeData(PI);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  if Index < PT^.PropCount then
+      Result := PP^[Index]^.PropType
+      else
+      Result := nil;
+  freemem(PP);
+end;
+
+
+{This returns "Integer" or "Boolean"}
+Function TComponentInterface.GetPropTypeName(Index : Integer) : String;
 var
 PT : PTypeData;
 PP : PPropList;
@@ -335,6 +358,27 @@ Begin
   GetPropInfos(PI,PP);
   if Index < PT^.PropCount then
       Result := PP^[Index]^.PropType^.Name
+      else
+      Result := '';
+  freemem(PP);
+end;
+
+
+{This returns "Left" "Align" "Visible"}
+Function TComponentInterface.GetPropName(Index : Integer) : String;
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+Num : Integer;
+Begin
+  PI:=FControl.ClassInfo;
+  PT:=GetTypeData(PI);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  if Index < PT^.PropCount then
+//      Result := PP^[Index]^.PropType^.Name
+      Result := PP^[Index]^.Name
       else
       Result := '';
   freemem(PP);

@@ -269,6 +269,7 @@ begin
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
   bitmap := TBitmap.Create;
   NbLinesInWindow := 6;
+
 end;
 
 procedure TSynBaseCompletionForm.Deactivate;
@@ -289,6 +290,7 @@ procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
 var
   i: integer;
 begin
+  Writeln('[TSynBaseCompletionForm] KeyDown');
   case Key of
 // added the VK_XXX codes to make it more readable / maintainable
     VK_RETURN:
@@ -351,6 +353,8 @@ end;
 procedure TSynBaseCompletionForm.Paint;
 var
   i: integer;
+  S1,S2 : String;
+
   function Min(a, b: integer): integer;
   begin
     if a < b then
@@ -389,14 +393,27 @@ Writeln('[TSynBaseCompletionForm.Paint]');
         Canvas.Pen.Color := clSelect;
         Canvas.Rectangle(0, FFontHeight * i, width, FFontHeight * (i + 1));
         Canvas.Pen.Color := clBlack;
-      end else
+        Canvas.Font.Color := clWhite;
+      end
+      else
+        Begin
         Canvas.Brush.Color := Color;
+        Canvas.Font.Color := clBlack;
+        end;
+
 
       if not Assigned(OnPaintItem)
         or not OnPaintItem(ItemList[Scroll.Position + i], Canvas, 0, FFontHeight * i)
       then
         Begin
            Writeln('Drawing to canvas');
+//           Canvas.Font.Color := clBlack;
+{           S1 := Copy(ItemList[Scroll.Position + i],pos('.',ItemList[Scroll.Position + i])+1,pos(':',ItemList[Scroll.Position + i])-1);
+           Canvas.TextOut(2, FFontHeight * i, S1);
+
+           Canvas.Font.Color := clLtGray;
+           Canvas.TextOut(2+(9*length(S1)), FFontHeight * i, Copy(ItemList[Scroll.Position + i],pos(':',ItemList[Scroll.Position + i]),255));
+ }
            Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
         end;
     end;

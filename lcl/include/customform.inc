@@ -362,7 +362,6 @@ var
 
 begin
 // Assert(False, 'Trace:-----------------IN TCUSTOMFORM WNDPROC-------------------');
-
   with Message do
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
@@ -838,6 +837,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/02/02 20:13:39  lazarus
+  Codecompletion changes.
+  Added code to Uniteditor for code completion.
+
+  Also, added code to gtkobject.inc so forms now get keypress events.
+  Shane
+
   Revision 1.10  2001/02/01 16:45:20  lazarus
   Started the code completion.
   Shane

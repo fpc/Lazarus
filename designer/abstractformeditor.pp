@@ -48,6 +48,8 @@ or use TPropertyType
       Function GetPropName(Index : Integer) : String; virtual; abstract;
       Function GetPropTypebyName(Name : String) : TTypeKind; virtual; abstract;
 //      Function GetPropTypebyName(Name : String) : TPropertyType; virtual; abstract;
+      Function GetPropTypeName(Index : Integer) : String; virtual; abstract;
+
 
       Function GetPropValue(Index : Integer; var Value) : Boolean; virtual; abstract;
       Function GetPropValuebyName(Name: String; var Value) : Boolean; virtual; abstract;

@@ -1294,7 +1294,13 @@ begin
           ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
           ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
 
-         end;
+         end
+         else
+      if (sender is TCustomForm) then
+         Begin
+      ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+      ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+        end;
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
@@ -2661,6 +2667,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.26  2001/02/02 20:13:39  lazarus
+  Codecompletion changes.
+  Added code to Uniteditor for code completion.
+
+  Also, added code to gtkobject.inc so forms now get keypress events.
+  Shane
+
   Revision 1.25  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 

@@ -839,13 +839,27 @@ Begin
 end;
 
 Procedure TSourceEditor.ccExecute(Sender : TObject);
+type
+
+   TMethodRec = record
+    Flags : TParamFlags;
+    ParamName : ShortString;
+    TypeName : ShortString;
+   end;
 var
   scompl : TSynBaseCompletion;
   S : TStrings;
   CompInt : TComponentInterface;
   CompName : String;
-  I : Integer;
+  I,X : Integer;
   propKind : TTypeKind;
+  TypeInfo : PTypeInfo;
+  TypeData : PTypeData;
+  NewStr : String;
+  aName : String;
+  Count : Integer;
+  MethodRec : TMethodRec;
+  Temp      : String;
 Begin
   CompInt := nil;
   Writeln('[ccExecute]');
@@ -856,8 +870,9 @@ Begin
   CompName := Copy(CompName,1,pos('.',Compname)-1);
   CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
   if CompInt = nil then Exit;
-
+  aName := CompName+'.';
   //get all methods
+  NewStr := '';
   for I := 0 to CompInt.GetPropCount-1 do
    Begin
      Writeln('I = '+Inttostr(i));
@@ -865,18 +880,88 @@ Begin
      PropKind := CompInt.GetPropType(i);
      case PropKind of
       tkMethod :  Begin
-                    Writeln('Property type is TKMETHOD');
-//                    Writeln('
-                  end;
-      tkObject :  Writeln('Property type is TKObject');
-      tkInteger :  Writeln('Property type is TKINTEGER');
-      tkBool :  Writeln('Property type is TKBool');
-     end;
-   end;
-{
-  S.Add('constructor Create(aOwner : TComponent);');
-  S.Add('OnActivate');
+                    TypeInfo := CompInt.GetPropTypeInfo(I);
+                    TypeData :=  GetTypeData(TypeInfo);
+                    NewStr := CompInt.GetPropName(I);
+                    case TypeData^.MethodKind of
+                         mkProcedure : NewStr := 'property '+CompInt.GetPropName(I)+' :'+CompInt.GetPropTypeName(I);
+                         mkFunction  : NewStr := 'property '+CompInt.GetPropName(I)+' :'+CompInt.GetPropTypeName(I);
+                         mkClassFunction : NewStr := CompInt.GetPropName(I) + ' '+'Function ';
+                         mkClassPRocedure : NewStr := CompInt.GetPropName(I) + ' '+'Procedure ';
+                         mkConstructor : NewStr := 'constructor '+CompInt.GetPropName(I) + ' '+'procedure ';
+                         mkDestructor : NewStr := 'destructor '+CompInt.GetPropName(I) + ' '+'procedure ';
+
+                    end;
+
+                    //check for parameters
+Writeln('ParamCount = '+inttostr(TypeData^.ParamCount));
+                    if TypeData^.ParamCount > 0 then
+                       Begin
+Writeln('----');
+                         for Count := 0 to sizeof(TypeData^.ParamList)-1 do
+                            if TypeData^.ParamList[4+Count] in ['a'..'z','A'..'Z','0'..'9'] then
+                             Write(TypeData^.ParamList[Count])
+                             else
+                             Begin
+                                 Writeln('----');
+                                 break;
+                             end;
+
+{                         NewStr := NewStr+'(';
+                         for Count := 0 to TypeData^.ParamCount-1 do
+                             begin
+                                MethodRec.Flags := [];
+                                Temp := '';
+                                For X := 0 to Sizeof(MethodRec.Flags)-1 do
+                                begin
+                                  Writeln('-->'+TypeData^.ParamList[Sizeof(MethodRec)*Count]);
+                                  Temp := Temp +TypeData^.ParamList[X+((Sizeof(MethodRec)-1)*Count)];
+                                end;
+                                Writeln('TEMP is <'+temp+'>');
+                                MethodRec.ParamName := '';
+                                For X := 0 to Sizeof(MethodRec.ParamName)-1 do
+                                if TypeData^.ParamList[(Sizeof(MethodRec.Flags)-1)+((Sizeof(MethodRec)-1)*Count)+x] in ['a'..'z','A'..'Z','0'..'9'] then
+                                 MethodRec.ParamName := MethodRec.ParamName+TypeData^.ParamList[(Sizeof(MethodRec.Flags)-1)+((Sizeof(MethodRec)-1)*Count)+x]
+                                 else
+                                 break;
+
+                                Writeln('ParamName is '+MethodRec.ParamName);
+                                MethodRec.TypeName := '';
+                                For X := 0 to Sizeof(MethodRec.TypeName)-1 do
+                                if TypeData^.ParamList[(Sizeof(MethodRec.Paramname)-1)+Sizeof(MethodRec.Flags)+((Sizeof(MethodRec)-1)*Count)+x] in ['a'..'z','A'..'Z','0'..'9'] then
+                                MethodRec.TypeName := MethodRec.TypeName+TypeData^.ParamList[Sizeof(MethodRec.Paramname)+Sizeof(MethodRec.Flags)+((Sizeof(MethodRec)-1)*Count)+x]
+                                 else
+                                break;
+                                Writeln('TypeName is '+MethodRec.TypeName);
+
+//       TParamFlags = set of (pfVar,pfConst,pfArray,pfAddress,pfReference,pfOut);
+                               if (pfVar in MethodRec.Flags) then NewStr := NewStr+'var ';
+                               if (pfConst in MethodRec.Flags) then NewStr := NewStr+'const ';
+                               if (pfOut in MethodRec.Flags) then NewStr := NewStr+'out ';
+                               if MethodRec.Typename <> 'void' then
+                               NewStr := NewStr+MethodRec.ParamName+' :'+MethodRec.TypeName;
+
+                             end;
 }
+
+
+                       end;
+
+                  end;
+      tkObject :  NewStr := 'tkobject '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+      tkInteger,tkChar,tkEnumeration,tkWChar : NewStr := 'property ' +CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+      tkBool :  NewStr := 'property '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+      tkClass : NewStr := 'property '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+      tkFloat :  NewStr := 'property '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+      tkSString :  NewStr := 'property '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+      tkUnKnown,tkLString,tkWString,tkAString,tkVariant :  NewStr := 'property '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
+     end;
+
+  if NewStr <> '' then
+  S.Add(NewStr);
+  NewStr := '';
+  end;
+
   sCompl.ItemList := S;
 End;
 
