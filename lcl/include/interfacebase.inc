@@ -1091,6 +1091,11 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.SetActiveWindow(Handle: HWND): HWND;
+begin
+  Result:=GetActiveWindow;
+end;
+
 function TInterfaceBase.SetBkColor(DC: HDC; Color: TColorRef): TColorRef; //pbd
 begin
   Result := 0;
@@ -1232,6 +1237,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/09/09 14:01:05  lazarus
+  MG: improved TScreen and ShowModal
+
   Revision 1.44  2002/08/30 12:32:20  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
