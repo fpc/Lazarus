@@ -25,7 +25,7 @@
         <UsageCount Value="22"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="30" Y="629"/>
+        <CursorPos X="19" Y="620"/>
         <EditorIndex Value="1"/>
         <Filename Value="exampleform.pp"/>
         <IsPartOfProject Value="True"/>
@@ -55,10 +55,14 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
+    <Version Value="2"/>
     <SearchPaths>
       <LCLWidgetType Value="gtk"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/gtk/"/>
     </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

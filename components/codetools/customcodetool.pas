@@ -2207,7 +2207,7 @@ end;
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FForceUpdateNeeded);
+  DebugLn('TCustomCodeTool.UpdateNeeded A ',dbgs(Scanner<>nil),' FForceUpdateNeeded=',dbgs(FForceUpdateNeeded));
   {$ENDIF}
   if FForceUpdateNeeded then begin
     Result:=true;
@@ -2217,7 +2217,7 @@ begin
            or (Scanner.UpdateNeeded(OnlyInterfaceNeeded, CheckFilesOnDisk));
   FForceUpdateNeeded:=Result;
   {$IFDEF CTDEBUG}
-  DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',Result);
+  DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',dbgs(Result));
   {$ENDIF}
 end;
 

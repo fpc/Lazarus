@@ -1023,7 +1023,7 @@ begin
     exit;
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TLinkScanner.Scan A -------- TillInterfaceEnd=',TillInterfaceEnd);
+  DebugLn('TLinkScanner.Scan A -------- TillInterfaceEnd=',dbgs(TillInterfaceEnd));
   {$ENDIF}
   ScanTillInterfaceEnd:=TillInterfaceEnd;
   Clear;
@@ -1038,7 +1038,7 @@ begin
   SetLength(FCleanedSrc,NewSrcLen);
   CleanedLen:=0;
   {$IFDEF CTDEBUG}
-  DebugLn('TLinkScanner.Scan C ',SrcLen);
+  DebugLn('TLinkScanner.Scan C ',dbgs(SrcLen));
   {$ENDIF}
   EndOfInterfaceFound:=false;
   EndOfSourceFound:=false;
@@ -1085,7 +1085,7 @@ begin
   LastProgressPos:=0;
   CheckForAbort:=Assigned(OnProgress);
   {$IFDEF CTDEBUG}
-  DebugLn('TLinkScanner.Scan F ',SrcLen);
+  DebugLn('TLinkScanner.Scan F ',dbgs(SrcLen));
   {$ENDIF}
   try
     try
@@ -1131,7 +1131,7 @@ begin
     end;
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TLinkScanner.Scan END ',CleanedLen);
+  DebugLn('TLinkScanner.Scan END ',dbgs(CleanedLen));
   {$ENDIF}
 end;
 

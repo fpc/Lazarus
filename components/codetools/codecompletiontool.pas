@@ -2033,7 +2033,7 @@ begin
       // -> search a good Insert Position behind or in front of
       //    another proc body of this class
       {$IFDEF CTDEBUG}
-      DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies  Insert missing bodies between existing ... ClassProcs.Count=',ClassProcs.Count);
+      DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies  Insert missing bodies between existing ... ClassProcs.Count=',dbgs(ClassProcs.Count));
       {$ENDIF}
 
       // set default insert position
@@ -2147,7 +2147,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     if (CursorNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods
     {$IFDEF CTDEBUG}
-    DebugLn('TCodeCompletionCodeTool.CompleteCode C ',CleanCursorPos,', |',copy(Src,CleanCursorPos,8));
+    DebugLn('TCodeCompletionCodeTool.CompleteCode C ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
     {$ENDIF}
     CodeCompleteClassNode:=AClassNode;
     try
@@ -2606,7 +2606,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       if not Result then exit;
       
       {$IFDEF CTDEBUG}
-      DebugLn('  CompleteEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',UserEventAtom.StartPos);
+      DebugLn('  CompleteEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',dbgs(UserEventAtom.StartPos));
       {$ENDIF}
       // create a nice event name
       FullEventName:=CreateEventFullName(UserEventAtom,PropertyAtom);
@@ -2648,7 +2648,7 @@ begin
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',CleanCursorPos,' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
+  DebugLn('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',dbgs(CleanCursorPos),' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
   {$ENDIF}
   ImplementationNode:=FindImplementationNode;
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;

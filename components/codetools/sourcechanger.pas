@@ -475,11 +475,11 @@ var
   IntersectionEntry: TSourceChangeCacheEntry;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
-  ' AfterGap=',ord(AfterGap),' CleanPos=',FromPos,'-',ToPos,
+  DebugLn('TSourceChangeCache.ReplaceEx FrontGap=',dbgs(ord(FrontGap)),
+  ' AfterGap=',dbgs(ord(AfterGap)),' CleanPos=',dbgs(FromPos),'-',dbgs(ToPos),
   ' Text="',Text,'"');
   if DirectCode<>nil then
-    DebugLn('DirectCode=',DirectCode.Filename,' DirectPos=',FromDirectPos,'-',ToDirectPos);
+    DebugLn('DirectCode=',DirectCode.Filename,' DirectPos=',dbgs(FromDirectPos),'-',dbgs(ToDirectPos));
   {$ENDIF}
   Result:=false;
   IsDirectChange:=DirectCode<>nil;
@@ -511,8 +511,8 @@ begin
   if IntersectionEntry<>nil then begin
     {$IFDEF CTDEBUG}
     DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because intersection found: ',
-      IntersectionEntry.FromPos,'-',IntersectionEntry.ToPos,
-      ' IsDelete=',IntersectionEntry.IsDeleteOperation);
+      dbgs(IntersectionEntry.FromPos),'-',dbgs(IntersectionEntry.ToPos),
+      ' IsDelete=',dbgs(IntersectionEntry.IsDeleteOperation));
     {$ENDIF}
     RaiseIntersectionFound;
     exit;
@@ -547,7 +547,7 @@ begin
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
   {$IFDEF CTDEBUG}
-  DebugLn('TSourceChangeCache.ReplaceEx SUCCESS IsDelete=',NewEntry.IsDeleteOperation);
+  DebugLn('TSourceChangeCache.ReplaceEx SUCCESS IsDelete=',dbgs(NewEntry.IsDeleteOperation));
   {$ENDIF}
 end;
 
@@ -716,7 +716,7 @@ var
   Abort: boolean;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
+  DebugLn('TSourceChangeCache.Apply EntryCount=',dbgs(FEntries.Count));
   {$ENDIF}
   Result:=false;
   if MainScanner=nil then
@@ -745,7 +745,7 @@ begin
     while CurNode<>nil do begin
       FirstEntry:=TSourceChangeCacheEntry(CurNode.Data);
       {$IFDEF CTDEBUG}
-      DebugLn('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
+      DebugLn('TSourceChangeCache.Apply Pos=',dbgs(FirstEntry.FromPos),'-',dbgs(FirstEntry.ToPos),
       ' Text="',FirstEntry.Text,'"');
       {$ENDIF}
       InsertText:=FirstEntry.Text;
@@ -758,7 +758,7 @@ begin
         PrecEntry:=TSourceChangeCacheEntry(PrecNode.Data);
         if PrecEntry.IsAtSamePos(CurEntry) then begin
           {$IFDEF CTDEBUG}
-          DebugLn('TSourceChangeCache.Apply EntryAtSamePos Pos=',PrecEntry.FromPos,'-',PrecEntry.ToPos,
+          DebugLn('TSourceChangeCache.Apply EntryAtSamePos Pos=',dbgs(PrecEntry.FromPos),'-',dbgs(PrecEntry.ToPos),
           ' InsertText="',InsertText,'"');
           {$ENDIF}
           BetweenGap:=PrecEntry.AfterGap;
@@ -809,7 +809,7 @@ end;
 procedure TSourceChangeCache.DeleteCleanText(CleanFromPos,CleanToPos: integer);
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('[TSourceChangeCache.DeleteCleanText] Pos=',CleanFromPos,'-',CleanToPos);
+  DebugLn('[TSourceChangeCache.DeleteCleanText] Pos=',dbgs(CleanFromPos),'-',dbgs(CleanToPos));
   {$ENDIF}
   if CleanFromPos=CleanToPos then exit;
   MainScanner.DeleteRange(CleanFromPos,CleanToPos);
@@ -820,7 +820,7 @@ procedure TSourceChangeCache.DeleteDirectText(ACode: TCodeBuffer; DirectFromPos,
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TSourceChangeCache.DeleteDirectText] Code=',ACode.Filename,
-  ' Pos=',DirectFromPos,'-',DirectToPos);
+  ' Pos=',dbgs(DirectFromPos),'-',dbgs(DirectToPos));
   {$ENDIF}
   if DirectFromPos=DirectToPos then exit;
   ACode.Delete(DirectFromPos,DirectToPos-DirectFromPos);
@@ -831,7 +831,7 @@ procedure TSourceChangeCache.InsertNewText(ACode: TCodeBuffer;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
-  ' Pos=',DirectPos,' Text="',InsertText,'"');
+  ' Pos=',dbgs(DirectPos),' Text="',InsertText,'"');
   {$ENDIF}
   if InsertText='' then exit;
   ACode.Insert(DirectPos,InsertText);
