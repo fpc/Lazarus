@@ -163,6 +163,26 @@ begin
   writeln('WARNING: TBitmap.SetPixelFormat not implemented');
 end;
 
+procedure TBitmap.UpdatePixelFormat;
+begin
+  FPixelFormat := pfCustom;
+  if HandleType = bmDDB then
+    FPixelFormat := pfDevice
+  else
+    with FImage.FDIB, dsbmih do
+      case biBitCount of
+        1: FPixelFormat := pf1Bit;
+        4: FPixelFormat := pf4Bit;
+        8: FPixelFormat := pf8Bit;
+       16: case biCompression of
+             BI_RGB : FPixelFormat := pf15Bit;
+             BI_BITFIELDS: if dsBitFields[1] = $7E0 then FPixelFormat := pf16Bit;
+           end;
+       24: FPixelFormat := pf24Bit;
+       32: if biCompression = BI_RGB then FPixelFormat := pf32Bit;
+      end;
+end;
+
 procedure TBitmap.Changed(Sender: TObject);
 begin
   //FMaskBitsValid := False;
@@ -711,6 +731,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/06/30 16:31:04  mattias
+  fixed find declaration of with A,B do C; statements
+
   Revision 1.34  2003/06/30 15:13:21  mattias
   fixed releasing bitmap handle
 

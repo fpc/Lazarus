@@ -710,6 +710,7 @@ type
     function GetScanline(Row: Integer): Pointer;
     procedure SetHandleType(Value: TBitmapHandleType); virtual;
     procedure SetPixelFormat(const AValue: TPixelFormat);
+    procedure UpdatePixelFormat;
   protected
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
@@ -1029,6 +1030,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2003/06/30 16:31:04  mattias
+  fixed find declaration of with A,B do C; statements
+
   Revision 1.72  2003/06/30 14:58:29  mattias
   implemented multi file add to package editor
 

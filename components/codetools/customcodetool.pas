@@ -1935,6 +1935,9 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     SaveRaiseException(ctsNoNodeFoundAtCursor);
   end;
   
+var
+  ChildNode: TCodeTreeNode;
+  Brother: TCodeTreeNode;
 begin
   if StartNode<>nil then begin
 //writeln('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
@@ -1943,14 +1946,20 @@ begin
     if (StartNode.StartPos<=P)
     and ((StartNode.EndPos>P) or (StartNode.EndPos<1)) then begin
       // StartNode contains P
+      Result:=StartNode;
       // -> search for a child that contains P
-      Result:=FindDeepestNodeAtPos(StartNode.FirstChild,P,false);
-      if Result=nil then begin
-        // no child found -> search in nextbrothers that contains P
-        while (StartNode.NextBrother<>nil)
-        and (StartNode.NextBrother.StartPos<=P) do
-          StartNode:=StartNode.NextBrother;
-        Result:=StartNode;
+      Brother:=StartNode;
+      while (Brother<>nil)
+      and (Brother.StartPos<=P) do begin
+        // brother also contains P
+        if Brother.FirstChild<>nil then begin
+          ChildNode:=FindDeepestNodeAtPos(Brother.FirstChild,P,false);
+          if ChildNode<>nil then begin
+            Result:=ChildNode;
+            exit;
+          end;
+        end;
+        Brother:=Brother.NextBrother;
       end;
     end else
       // search in next node

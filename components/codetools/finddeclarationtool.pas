@@ -59,6 +59,7 @@ interface
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
+{ $DEFINE ShowTriedBaseContexts}
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
@@ -967,7 +968,7 @@ begin
       // raise exception
       FindDeepestNodeAtPos(CleanCursorPos,true);
     {$IFDEF CTDEBUG}
-    writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc));
+    writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',CursorNode.FirstChild<>nil);
     {$ENDIF}
     if (not IsDirtySrcValid)
     and (CursorNode.Desc=ctnUsesSection) then begin
@@ -1909,7 +1910,10 @@ var
           // -> there is no prior context accessible any more
           // -> identifier not found
           {$IFDEF ShowTriedContexts}
-          writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible   ContextNode=',ContextNode.DescAsString);
+          writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible ',
+          ' ContextNode=',ContextNode.DescAsString,
+          ' "',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"'
+          );
           {$ENDIF}
           ContextNode:=nil;
           Result:=false;
@@ -1929,6 +1933,7 @@ var
 
       if (ContextNode.Desc in [ctnClass,ctnClassInterface])
       and (fdfSearchInAncestors in Params.Flags) then begin
+        // after searching in a class definiton, search in its ancestors
 
         // ToDo: check for circles in ancestors
         
@@ -1972,7 +1977,13 @@ var
             // check if StartContextNode is covered by the ContextNode
             // a WithVariable ranges from the start of its expression
             // to the end of the with statement
-            if StartContextNode.StartPos<ContextNode.EndPos then break;
+            {$IFDEF ShowExprEval}
+            writeln('SearchNextNode WithVar StartContextNode.StartPos=',StartContextNode.StartPos,
+              ' ContextNode=',ContextNode.StartPos,'-',ContextNode.EndPos,
+              ' WithStart="',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"');
+            {$ENDIF}
+            if (StartContextNode.StartPos>=ContextNode.StartPos)
+            and (StartContextNode.StartPos<ContextNode.EndPos) then break;
             { ELSE: this with statement does not cover the startcontext
              -> skip it
              for example:
@@ -2055,7 +2066,7 @@ begin
   {$IFDEF ShowTriedContexts}
   writeln('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
   '"',GetIdentifier(Params.Identifier),'"',
-  ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
+  ' Context="',ContextNode.DescAsString,'" "',StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
   ' File="',ExtractFilename(MainFilename)+'"',
   ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
   );
@@ -2335,7 +2346,7 @@ begin
       end;
       AddNodeToStack(@NodeStack,Result.Node);
 
-      {$IFDEF ShowTriedContexts}
+      {$IFDEF ShowTriedBaseContexts}
       writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
       writeln('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
       {$ENDIF}
@@ -2352,7 +2363,7 @@ begin
       begin
         // this is a forward defined class
         // -> search the real class
-        {$IFDEF ShowTriedContexts}
+        {$IFDEF ShowTriedBaseContexts}
         writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
         {$ENDIF}
 
@@ -2865,8 +2876,9 @@ var
   OldInput: TFindDeclarationInput;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindIdentifierInWithVarContext] ',
-  '"',GetIdentifier(Params.Identifier),'"'
+  writeln('[TFindDeclarationTool.FindIdentifierInWithVarContext] Ident=',
+  '"',GetIdentifier(Params.Identifier),'"',
+  ' WithStart=',StringToPascalConst(copy(Src,WithVarNode.StartPos,15))
   );
   {$ENDIF}
   Result:=false;
