@@ -3365,7 +3365,7 @@ end;
 
   Draws a 3d border in GTK native style.
  ------------------------------------------------------------------------------}
-function TGtkObject.Frame3d(DC : HDC; const ARect : TRect;
+function TGtkObject.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 
 const GTKThinShadowType: array[TBevelCut] of integer =
@@ -3381,7 +3381,6 @@ var
   Area: TGdkRectangle;
   ShadowType: Integer;
   AWindow: PGdkWindow;
-  CurRect: TRect;
 begin
   Result := IsValidDC(DC);
   if not Result then exit;
@@ -3434,8 +3433,6 @@ begin
     //' light_gc=',HexStr(Cardinal(TheStyle^.light_gc[GTK_STATE_NORMAL]),8),
     //'');
 
-    CurRect:=ARect;
-
     for i:= 1 to FrameWidth do begin
      { // left edge
       gdk_draw_line(Drawable, LeftTopGC,
@@ -3463,9 +3460,10 @@ begin
                        @Area,
                        ClientWidget,
                        'button',
-                       CurRect.Left+DCOrigin.X, CurRect.Top+DCOrigin.Y,
-                       CurRect.Right-CurRect.Left, CurRect.Bottom-CurRect.Top);
-      InflateRect(CurRect, -1, -1);
+                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                       ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+      // inflate the rectangle (! ARect will be returned to the user with this)
+      InflateRect(ARect, -1, -1);
     end;
   end;
 end;
@@ -8693,6 +8691,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.325  2004/02/03 08:54:09  mattias
+  Frame3D rect now var again
+
   Revision 1.324  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 

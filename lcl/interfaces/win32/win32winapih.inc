@@ -77,7 +77,7 @@ function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; overri
 
 Function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
 { Draws a 3D border in GTK native style. }
-Function Frame3D(DC: HDC; const Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
+Function Frame3D(DC: HDC; var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; Override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
@@ -190,6 +190,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2004/02/03 08:54:09  mattias
+  Frame3D rect now var again
+
   Revision 1.44  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 

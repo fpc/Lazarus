@@ -112,7 +112,7 @@ begin
   Result:= 0;
 end;
 
-function TInterfaceBase.Frame3d(DC: HDC; const ARect: TRect;
+function TInterfaceBase.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TGraphicsBevelCut) : boolean;
 begin
   Result:= false;
@@ -561,8 +561,11 @@ end;
 
 function TInterfaceBase.DrawSplitter(DC: HDC; const ARect: TRect;
   Horizontal: boolean): boolean;
+var
+  DrawingRect: TRect;
 begin
-  Result := Frame3D(DC,ARect,1,bvRaised);
+  DrawingRect:=ARect;
+  Result := Frame3D(DC,DrawingRect,1,bvRaised);
 end;
 
 function TInterfaceBase.SetCaretRespondToFocus(Handle: HWnd;
@@ -603,6 +606,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/02/03 08:54:09  mattias
+  Frame3D rect now var again
+
   Revision 1.15  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 

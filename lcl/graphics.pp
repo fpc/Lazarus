@@ -720,7 +720,7 @@ type
     Procedure FillRect(const ARect : TRect);
     Procedure FillRect(X1,Y1,X2,Y2 : Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
-    procedure Frame3d(const ARect : TRect; const FrameWidth : integer;
+    procedure Frame3d(var ARect : TRect; const FrameWidth : integer;
                       const Style: TGraphicsBevelCut);
     procedure Frame(const ARect: TRect);        // border using pen
     procedure Frame(X1,Y1,X2,Y2 : Integer);     // border using pen
@@ -1261,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.108  2004/02/03 08:54:09  mattias
+  Frame3D rect now var again
+
   Revision 1.107  2004/02/02 22:01:51  mattias
   fpImage is now used as default, deactivate it with -dDisableFPImage
 

@@ -24,7 +24,7 @@ unitdir=lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
         designer designer/units debugger \
         ideintf/units \
         packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
-includedir=include include/$(OS_TARGET)
+includedir=debugger designer packager include include/$(OS_TARGET)
 targetdir=.
 
 [clean]

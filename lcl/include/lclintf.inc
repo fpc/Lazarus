@@ -110,7 +110,7 @@ begin
   Result:= InterfaceObject.Frame(DC, ARect);
 end;
 
-function Frame3d(DC : HDC; const ARect : TRect; const FrameWidth : integer;
+function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
   const Style: TGraphicsBevelCut) : boolean;
 begin
   Result:= InterfaceObject.Frame3d(DC, ARect, FrameWidth, Style);
@@ -506,6 +506,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/02/03 08:54:09  mattias
+  Frame3D rect now var again
+
   Revision 1.13  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 
