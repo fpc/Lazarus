@@ -70,13 +70,13 @@ type
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
-    procedure FilesTreeViewMouseUp(Sender: TOBject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure FilesPopupMenuPopup(Sender: TObject);
+    procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure PackageEditorFormResize(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
+    procedure SaveBitBtnClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
     FilesNode: TTreeNode;
@@ -91,6 +91,7 @@ type
     procedure UpdateRequiredPkgs;
     procedure UpdateSelectedFile;
     procedure UpdateStatusBar;
+    procedure DoSave;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -106,8 +107,10 @@ type
     FItems: TList; // list of TPackageEditorForm
     FOnCreateNewFile: TOnCreateNewPkgFile;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
+    FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
+    FOnSavePackage: TNotifyEvent;
     function GetEditors(Index: integer): TPackageEditorForm;
   public
     constructor Create;
@@ -123,6 +126,7 @@ type
                             Dependency: TPkgDependency): TModalResult;
     function CreateNewFile(Sender: TObject;
                            const Params: TAddToPkgResult): TModalResult;
+    procedure SavePackage(APackage: TLazPackage);
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -131,6 +135,9 @@ type
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
                                                      write FOnGetIDEFileInfo;
+    property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
+                       read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
+    property OnSavePackage: TNotifyEvent read FOnSavePackage write FOnSavePackage;
   end;
   
 var
@@ -218,6 +225,11 @@ begin
     FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
 end;
 
+procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
+begin
+  UpdateSelectedFile;
+end;
+
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
 var
   CurNode: TTreeNode;
@@ -280,6 +292,11 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.SaveBitBtnClick(Sender: TObject);
+begin
+  DoSave;
+end;
+
 procedure TPackageEditorForm.FilePropsGroupBoxResize(Sender: TObject);
 var
   y: Integer;
@@ -293,17 +310,12 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.FilesTreeViewMouseUp(Sender: TOBject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  UpdateSelectedFile;
-end;
-
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 var
   AddParams: TAddToPkgResult;
 begin
-  if ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo)
+  if ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo,
+    PackageEditors.OnGetUnitRegisterInfo)
     <>mrOk
   then
     exit;
@@ -311,6 +323,7 @@ begin
   case AddParams.AddType of
   d2ptUnit:
     begin
+      // add file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
       UpdateFiles;
@@ -333,6 +346,7 @@ begin
 
   d2ptRequiredPkg:
     begin
+      // add dependency
       LazPackage.AddRequiredDependency(AddParams.Dependency);
       UpdateRequiredPkgs;
     end;
@@ -398,6 +412,7 @@ begin
     Name:='SaveBitBtn';
     Parent:=Self;
     Caption:='Save';
+    OnClick:=@SaveBitBtnClick;
   end;
 
   CompileBitBtn:=TBitBtn.Create(Self);
@@ -455,7 +470,7 @@ begin
     RequiredPackagesNode.SelectedIndex:=RequiredPackagesNode.ImageIndex;
     EndUpdate;
     PopupMenu:=FilesPopupMenu;
-    OnMouseUp:=@FilesTreeViewMouseUp;
+    OnSelectionChanged:=@FilesTreeViewSelectionChanged;
     Options:=Options+[tvoRightClickSelect];
   end;
 
@@ -645,6 +660,12 @@ begin
   StatusBar.SimpleText:=StatusText;
 end;
 
+procedure TPackageEditorForm.DoSave;
+begin
+  PackageEditors.SavePackage(LazPackage);
+  UpdateButtons;
+end;
+
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -748,6 +769,11 @@ begin
   Result:=mrCancel;
   if Assigned(OnCreateNewFile) then
     Result:=OnCreateNewFile(Sender,Params);
+end;
+
+procedure TPackageEditors.SavePackage(APackage: TLazPackage);
+begin
+  if Assigned(OnSavePackage) then OnSavePackage(APackage);
 end;
 
 initialization

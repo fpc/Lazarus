@@ -62,6 +62,9 @@ type
     PkgFileFlags: TPkgFileFlags;
     UsedUnitname: string;
   end;
+  
+  TOnGetUnitRegisterInfo = procedure(Sender: TObject; const AFilename: string;
+    var TheUnitName: string; var HasRegisterProc: boolean) of object;
 
   TAddToPackageDlg = class(TForm)
     // notebook
@@ -73,6 +76,10 @@ type
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
     AddUnitFileBrowseButton: TButton;
+    AddUnitSrcNameLabel: TLabel;
+    AddUnitSrcNameEdit: TEdit;
+    AddUnitHasRegisterCheckBox: TCheckBox;
+    AddUnitUpdateButton: TButton;
     AddUnitButton: TButton;
     CancelAddUnitButton: TButton;
     // new component page
@@ -99,10 +106,10 @@ type
     DependMaxVersionEdit: TEdit;
     NewDependButton: TButton;
     CancelDependButton: TButton;
-    procedure AddToPackageDlgResize(Sender: TObject);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitPageResize(Sender: TObject);
+    procedure AddUnitUpdateButtonClick(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
     procedure CancelAddUnitButtonClick(Sender: TObject);
@@ -118,6 +125,7 @@ type
     fLastNewComponentClassName: string;
     FLazPackage: TLazPackage;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
+    FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     procedure SetLazPackage(const AValue: TLazPackage);
@@ -128,6 +136,7 @@ type
     procedure AutoCompleteNewComponentUnitName;
     function CheckUnitFilename(AddFileType: TAddToPkgType;
       var AFilename: string): boolean;
+    procedure UpdateAddUnitInfo;
   public
     Params: TAddToPkgResult;
     constructor Create(TheOwner: TComponent); override;
@@ -139,23 +148,28 @@ type
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
                                                      write FOnGetIDEFileInfo;
+    property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
+                       read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
   end;
   
 function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent;
+  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
 
 
 implementation
 
 
 function ShowAddToPackageDlg(Pkg: TLazPackage; var Params: TAddToPkgResult;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent;
+  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
 var
   AddDlg: TAddToPackageDlg;
 begin
   AddDlg:=TAddToPackageDlg.Create(Application);
   AddDlg.LazPackage:=Pkg;
   AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
+  AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
   Result:=AddDlg.ShowModal;
   if Result=mrOk then
     Params:=AddDlg.Params;
@@ -165,20 +179,28 @@ end;
 
 { TAddToPackageDlg }
 
-procedure TAddToPackageDlg.AddToPackageDlgResize(Sender: TObject);
-begin
-
-end;
-
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
 begin
   Params.AddType:=d2ptUnit;
 
   Params.UnitFilename:=AddUnitFilenameEdit.Text;
-  if not CheckUnitFilename(Params.AddType,Params.UnitFilename) then exit;
-  Params.UnitName:=ExtractFileNameOnly(Params.UnitFilename);
+  Params.UnitName:=AddUnitSrcNameEdit.Text;
   Params.FileType:=pftUnit;
   Params.PkgFileFlags:=[];
+  if AddUnitHasRegisterCheckBox.Checked then
+    Include(Params.PkgFileFlags,pffHasRegisterProc);
+
+  // check filename
+  if not CheckUnitFilename(Params.AddType,Params.UnitFilename) then exit;
+
+  // check unitname
+  if AnsiCompareText(Params.UnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
+  then begin
+    MessageDlg('Invalid Unit Name',
+      'The unit name "'+Params.UnitName+'" and filename differ.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
 
   // add it ...
   ModalResult:=mrOk;
@@ -199,6 +221,7 @@ begin
       if FileExists(AFilename) then begin
         LazPackage.ShortenFilename(AFilename);
         AddUnitFilenameEdit.Text:=AFilename;
+        UpdateAddUnitInfo;
       end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -225,7 +248,24 @@ begin
   with AddUnitFileBrowseButton do
     SetBounds(x,y,AddUnitFilenameEdit.Height,AddUnitFilenameEdit.Height);
   x:=5;
-  y:=AddUnitFilenameEdit.Top+AddUnitFilenameEdit.Height+15;
+  y:=AddUnitFilenameEdit.Top+AddUnitFilenameEdit.Height+5;
+
+  with AddUnitSrcNameLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,AddUnitSrcNameLabel.Width+5);
+
+  with AddUnitSrcNameEdit do
+    SetBounds(x,y,100,Height);
+  inc(y,AddUnitSrcNameEdit.Height+5);
+  x:=5;
+
+  with AddUnitHasRegisterCheckBox do
+    SetBounds(x,y,200,Height);
+  inc(y,AddUnitHasRegisterCheckBox.Height+5);
+
+  with AddUnitUpdateButton do
+    SetBounds(x,y,300,Height);
+  inc(y,AddUnitUpdateButton.Height+25);
 
   with AddUnitButton do
     SetBounds(x,y,80,Height);
@@ -233,6 +273,11 @@ begin
 
   with CancelAddUnitButton do
     SetBounds(x,y,80,Height);
+end;
+
+procedure TAddToPackageDlg.AddUnitUpdateButtonClick(Sender: TObject);
+begin
+  UpdateAddUnitInfo;
 end;
 
 procedure TAddToPackageDlg.AncestorComboBoxCloseUp(Sender: TObject);
@@ -623,6 +668,35 @@ begin
     OnClick:=@AddUnitFileBrowseButtonClick;
   end;
 
+  AddUnitSrcNameLabel:=TLabel.Create(Self);
+  with AddUnitSrcNameLabel do begin
+    Name:='AddUnitSrcNameLabel';
+    Parent:=AddUnitPage;
+    Caption:='Unit Name: ';
+  end;
+  
+  AddUnitSrcNameEdit:=TEdit.Create(Self);
+  with AddUnitSrcNameEdit do begin
+    Name:='AddUnitSrcNameEdit';
+    Parent:=AddUnitPage;
+    Text:='';
+  end;
+
+  AddUnitHasRegisterCheckBox:=TCheckBox.Create(Self);
+  with AddUnitHasRegisterCheckBox do begin
+    Name:='AddUnitHasRegisterCheckBox';
+    Parent:=AddUnitPage;
+    Caption:='Has Register procedure';
+  end;
+
+  AddUnitUpdateButton:=TButton.Create(Self);
+  with AddUnitUpdateButton do begin
+    Name:='AddUnitUpdateButton';
+    Parent:=AddUnitPage;
+    Caption:='Update Unit Name and Has Register procedure';
+    OnClick:=@AddUnitUpdateButtonClick;
+  end;
+
   AddUnitButton:=TButton.Create(Self);
   with AddUnitButton do begin
     Name:='AddUnitButton';
@@ -986,6 +1060,19 @@ begin
   Result:=true;
 end;
 
+procedure TAddToPackageDlg.UpdateAddUnitInfo;
+var
+  AnUnitName: string;
+  HasRegisterProc: boolean;
+begin
+  if Assigned(OnGetUnitRegisterInfo) then begin
+    OnGetUnitRegisterInfo(Self,AddUnitFilenameEdit.Text,
+                          AnUnitName,HasRegisterProc);
+    AddUnitSrcNameEdit.Text:=AnUnitName;
+    AddUnitHasRegisterCheckBox.Checked:=HasRegisterProc;
+  end;
+end;
+
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -994,7 +1081,6 @@ begin
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,300);
   SetupComponents;
-  OnResize:=@AddToPackageDlgResize;
 end;
 
 destructor TAddToPackageDlg.Destroy;

@@ -405,7 +405,6 @@ function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackage(Key, Data: Pointer): integer;
 function CompareLazPackageName(Data1, Data2: Pointer): integer;
 
-
 implementation
 
 
@@ -648,6 +647,7 @@ end;
 function TPkgFile.GetResolvedFilename: string;
 begin
   Result:=ReadAllLinks(Filename,false);
+  if Result='' then Result:=Filename;
 end;
 
 { TPkgDependency }
@@ -1083,6 +1083,7 @@ begin
   FUsedPkgs:=TList.Create;
   FInstalled:=pitNope;
   FAutoInstall:=pitNope;
+  FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
 end;
 
 destructor TLazPackage.Destroy;
@@ -1192,6 +1193,7 @@ begin
   if FileVersion=1 then ;
   Clear;
   LockModified;
+  FName:=XMLConfig.GetValue(Path+'Name/Value','');
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
   FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FDescription:=XMLConfig.GetValue(Path+'Description','');
@@ -1243,6 +1245,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   end;
 
 begin
+  XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
   XMLConfig.SetDeleteValue(Path+'Description',FDescription,'');
@@ -1337,12 +1340,19 @@ var
 begin
   Result:=nil;
   TheFilename:=AFilename;
-  if ResolveLinks then TheFilename:=ReadAllLinks(TheFilename,false);
+  if ResolveLinks then begin
+    TheFilename:=ReadAllLinks(TheFilename,false);
+    if TheFilename='' then TheFilename:=AFilename;
+  end;
   Cnt:=FileCount;
   for i:=0 to Cnt-1 do begin
-    if CompareFilenames(Files[i].GetResolvedFilename,TheFilename)=0 then begin
-      Result:=Files[i];
-      exit;
+    if ResolveLinks then begin
+      if CompareFilenames(Files[i].GetResolvedFilename,TheFilename)=0 then begin
+        Result:=Files[i];
+      end;
+    end else begin
+      if CompareFilenames(Files[i].Filename,TheFilename)=0 then
+        Result:=Files[i];
     end;
   end;
 end;

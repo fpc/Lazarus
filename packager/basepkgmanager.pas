@@ -47,6 +47,11 @@ uses
   Classes, SysUtils, Forms, PackageDefs;
 
 type
+  TPkgSaveFlag = (
+    psfSaveAs
+    );
+  TPkgSaveFlags = set of TPkgSaveFlag;
+
   TBasePkgManager = class(TComponent)
   public
     procedure ConnectMainBarEvents; virtual; abstract;
@@ -59,8 +64,10 @@ type
     function DoNewPackage: TModalResult; virtual; abstract;
     function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; virtual; abstract;
+    function DoSavePackage(APackage: TLazPackage;
+                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
   end;
-  
+
 var
   PkgBoss: TBasePkgManager;
 

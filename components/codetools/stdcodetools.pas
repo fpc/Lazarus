@@ -184,6 +184,9 @@ type
     function StringConstToFormatString(
           const StartCursorPos, EndCursorPos: TCodeXYPosition;
           var FormatStringConstant,FormatParameters: string): boolean;
+          
+    // register procedure
+    function HasInterfaceRegisterProc(var HasRegisterProc: boolean): boolean;
   end;
 
 
@@ -1657,6 +1660,34 @@ begin
     end;
   until false;
   Result:=FormatStringConstant<>'';
+end;
+
+function TStandardCodeTool.HasInterfaceRegisterProc(var HasRegisterProc: boolean
+  ): boolean;
+var
+  InterfaceNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  HasRegisterProc:=false;
+  BuildTree(true);
+  InterfaceNode:=FindInterfaceNode;
+  if InterfaceNode=nil then exit;
+  ANode:=InterfaceNode.FirstChild;
+  while ANode<>nil do begin
+    if (ANode.Desc=ctnProcedure) then begin
+      MoveCursorToNodeStart(ANode);
+      if ReadNextUpAtomIs('PROCEDURE')
+      and ReadNextUpAtomIs('REGISTER')
+      and ReadNextAtomIsChar(';')
+      then begin
+        HasRegisterProc:=true;
+        break;
+      end;
+    end;
+    ANode:=ANode.NextBrother;
+  end;
+  Result:=true;
 end;
 
 function TStandardCodeTool.GatherResourceStringsWithValue(

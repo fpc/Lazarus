@@ -221,6 +221,9 @@ var i, j, FilenameEndPos: integer;
   MsgTypeName, Filename, Msg: string;
   MsgType: TErrorType;
   SkipMessage: boolean;
+  CurCompHistory: string;
+  CurFilenameLen: Integer;
+  CurCompHistLen: Integer;
 begin
   Result:=false;
   if ('Compiling '=copy(s,1,length('Compiling '))) then begin
@@ -339,6 +342,7 @@ begin
         end;
       end else
         SkipMessage:=false;
+      
       // beautify compiler message
       
       // the compiler always gives short filenames, even if it went into a
@@ -354,11 +358,15 @@ begin
           // -> prepend this subdirectory
           i:=fCompilingHistory.Count-1;
           while (i>=0) do begin
-            j:=length(fCompilingHistory[i])-length(Filename);
-            if CompareFilenames(
-              copy(fCompilingHistory[i],j+1,length(Filename)),Filename)=0 then
+            CurCompHistory:=fCompilingHistory[i];
+            CurCompHistLen:=length(CurCompHistory);
+            CurFilenameLen:=length(Filename);
+            j:=CurCompHistLen-CurFilenameLen;
+            if (j>1) and (CurCompHistory[j]=PathDelim)
+            and (CompareFilenames(
+              copy(CurCompHistory,j+1,CurFilenameLen),Filename)=0) then
             begin
-              Msg:=copy(fCompilingHistory[i],1,j)+Msg;
+              Msg:=copy(CurCompHistory,1,j)+Msg;
               inc(FilenameEndPos,j);
               break;
             end;

@@ -632,11 +632,36 @@ begin
 end;
 
 function TTreeNode.GetPrevVisible: TTreeNode;
+var
+  ANode: TTreeNode;
 begin
-  Result:=GetPrev;
+  Result:=GetPrevSibling;
+  if Result <> nil then begin
+    while Result.Expanded do begin
+      ANode:=Result.GetLastChild;
+      if ANode=nil then break;
+      Result:=ANode;
+    end;
+  end else
+    Result := Parent;
   if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result))
   then
     Result:=nil;
+end;
+
+function TTreeNode.GetPrevExpanded: TTreeNode;
+var
+  ANode: TTreeNode;
+begin
+  Result:=GetPrevSibling;
+  if Result <> nil then begin
+    while Result.Expanded do begin
+      ANode:=Result.GetLastChild;
+      if ANode=nil then break;
+      Result:=ANode;
+    end;
+  end else
+    Result := Parent;
 end;
 
 function TTreeNode.GetNextChild(AValue: TTreeNode): TTreeNode;
@@ -645,6 +670,18 @@ begin
     Result := AValue.GetNextSibling
   else
     Result := nil;
+end;
+
+function TTreeNode.GetNextExpanded: TTreeNode;
+begin
+  if Expanded and (GetFirstChild<>nil) then
+    Result:=GetFirstChild
+  else begin
+    Result:=Self;
+    while (Result<>nil) and (Result.GetNextSibling=nil) do
+      Result:=Result.Parent;
+    if Result<>nil then Result:=Result.GetNextSibling;
+  end;
 end;
 
 function TTreeNode.GetNextMultiSelected: TTreeNode;
@@ -3215,6 +3252,33 @@ begin
   //' Node.Text=',ANode.Text,' Visible=',Result);
 end;
 
+procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  
+  case Key of
+  
+  VK_Down:
+    if (Selected<>nil) and (Selected.GetNextExpanded<>nil) then begin
+      Selected:=Selected.GetNextExpanded;
+      Key:=VK_UNKNOWN;
+    end;
+    
+  VK_Up:
+    if (Selected<>nil) and (Selected.GetPrevExpanded<>nil) then begin
+      Selected:=Selected.GetPrevExpanded;
+      Key:=VK_UNKNOWN;
+    end;
+
+  VK_Left:
+    if (Selected<>nil) then Selected.Expanded:=false;
+    
+  VK_Right:
+    if (Selected<>nil) then Selected.Expanded:=true;
+    
+  end;
+end;
+
 procedure TCustomTreeView.Loaded;
 begin
   inherited Loaded;
@@ -3345,6 +3409,7 @@ begin
     Value.Selected := True;
     Value.MakeVisible;
   end;
+  if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
   Invalidate;
 end;
 

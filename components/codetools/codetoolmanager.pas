@@ -369,6 +369,9 @@ type
           const AClassName, OldVariableName, NewVarName,
           VarType: shortstring): boolean;
           
+    // register
+    function HasInterfaceRegisterProc(Code: TCodeBuffer;
+          var HasRegisterProc: boolean): boolean;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1906,6 +1909,21 @@ begin
     Result:=FCurCodeTool.RenamePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(OldVariableName),NewVarName,VarType,
                SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer;
+  var HasRegisterProc: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.HasInterfaceRegisterProc(HasRegisterProc);
   except
     on e: Exception do Result:=HandleException(e);
   end;

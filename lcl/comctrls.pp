@@ -1133,11 +1133,13 @@ type
     function GetLastSubChild: TTreeNode;
     function GetNext: TTreeNode;
     function GetNextChild(AValue: TTreeNode): TTreeNode;
+    function GetNextExpanded: TTreeNode;
     function GetNextMultiSelected: TTreeNode;
     function GetNextSibling: TTreeNode;
     function GetNextVisible: TTreeNode;
     function GetPrev: TTreeNode;
     function GetPrevChild(AValue: TTreeNode): TTreeNode;
+    function GetPrevExpanded: TTreeNode;
     function GetPrevMultiSelected: TTreeNode;
     function GetPrevSibling: TTreeNode;
     function GetPrevVisible: TTreeNode;
@@ -1353,6 +1355,7 @@ type
     FOnExpanding: TTVExpandingEvent;
     FOnGetImageIndex: TTVExpandedEvent;
     FOnGetSelectedIndex: TTVExpandedEvent;
+    FOnSelectionChanged: TNotifyEvent;
     FOptions: TTreeViewOptions;
     FRClickNode: TTreeNode;
     //FSaveIndex: Integer;
@@ -1449,26 +1452,16 @@ type
     //procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
   protected
     FChangeTimer: TTimer;
-    function CanEdit(Node: TTreeNode): Boolean; dynamic;
+    //procedure Edit(const Item: TTVItem); dynamic;
     function CanChange(Node: TTreeNode): Boolean; dynamic;
     function CanCollapse(Node: TTreeNode): Boolean; dynamic;
+    function CanEdit(Node: TTreeNode): Boolean; dynamic;
     function CanExpand(Node: TTreeNode): Boolean; dynamic;
-    procedure Change(Node: TTreeNode); dynamic;
-    procedure Collapse(Node: TTreeNode); dynamic;
     function CreateNode: TTreeNode; virtual;
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
     function CustomDraw(const ARect: TRect;
       Stage: TCustomDrawStage): Boolean; virtual;
     function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;
       Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
-    procedure Delete(Node: TTreeNode); dynamic;
-    procedure DestroyWnd; override;
-    procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
-    procedure DoPaint; virtual;
-    procedure DoPaintNode(Node: TTreeNode); virtual;
-    procedure DoStartDrag(var DragObject: TDragObject); override;
-    //procedure Edit(const Item: TTVItem); dynamic;
     function GetDragImages: TDragImageList; //override;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
@@ -1480,11 +1473,22 @@ type
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
+    procedure Change(Node: TTreeNode); dynamic;
+    procedure Collapse(Node: TTreeNode); dynamic;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    procedure Delete(Node: TTreeNode); dynamic;
+    procedure DestroyWnd; override;
+    procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
+    procedure DoPaint; virtual;
+    procedure DoPaintNode(Node: TTreeNode); virtual;
+    procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure EndEditing;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); dynamic;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
       Integer); override;
@@ -1522,14 +1526,16 @@ type
     property OnCustomDrawItem: TTVCustomDrawItemEvent
       read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnDeletion: TTVExpandedEvent read FOnDeletion write FOnDeletion;
-    property OnEditing: TTVEditingEvent read FOnEditing write FOnEditing;
     property OnEdited: TTVEditedEvent read FOnEdited write FOnEdited;
+    property OnEditing: TTVEditingEvent read FOnEditing write FOnEditing;
     property OnExpanded: TTVExpandedEvent read FOnExpanded write FOnExpanded;
     property OnExpanding: TTVExpandingEvent read FOnExpanding write FOnExpanding;
     property OnGetImageIndex: TTVExpandedEvent
       read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetSelectedIndex: TTVExpandedEvent
       read FOnGetSelectedIndex write FOnGetSelectedIndex;
+    property OnSelectionChanged: TNotifyEvent
+      read FOnSelectionChanged write FOnSelectionChanged;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property RightClickSelect: Boolean
       read GetRightClickSelect write SetRightClickSelect default False;
@@ -1660,6 +1666,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnSelectionChanged;
     property Options;
     //property OnStartDock;
     property OnStartDrag;
@@ -1735,6 +1742,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2003/04/08 16:56:55  mattias
+  implemented saving package
+
   Revision 1.69  2003/04/04 16:35:24  mattias
   started package registration
 

@@ -44,20 +44,27 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, CodeToolManager,
-  KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, IDEDefs,
-  UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks,
-  PackageSystem, ComponentReg, OpenInstalledPkgDlg,
+  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs,
+  CodeToolManager, CodeCache, Laz_XMLCfg,
+  KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, InputHistory,
+  IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
+  PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
     function OnPackageEditorCreateFile(Sender: TObject;
       const Params: TAddToPkgResult): TModalResult;
+    procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
+      const AFilename: string; var TheUnitName: string;
+      var HasRegisterProc: boolean);
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
       ): TModalResult;
+    procedure OnPackageEditorSavePackage(Sender: TObject);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuOpenInstalledPckClicked(Sender: TObject);
+  private
+    function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -72,6 +79,8 @@ type
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; override;
+    function DoSavePackage(APackage: TLazPackage;
+                           Flags: TPkgSaveFlags): TModalResult; override;
   end;
 
 implementation
@@ -128,10 +137,37 @@ begin
                     [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
 end;
 
+procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
+  const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean
+  );
+var
+  ExpFilename: String;
+  CodeBuffer: TCodeBuffer;
+begin
+  ExpFilename:=CleanAndExpandFilename(AFilename);
+  // create default values
+  TheUnitName:='';
+  HasRegisterProc:=false;
+  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
+  CodeBuffer:=CodeToolBoss.LoadFile(ExpFilename,true,false);
+  if CodeBuffer<>nil then begin
+    TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+    CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer,HasRegisterProc);
+  end;
+  if TheUnitName='' then
+    TheUnitName:=ExtractFileNameOnly(ExpFilename);
+end;
+
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoOpenPackage(APackage);
+end;
+
+procedure TPkgManager.OnPackageEditorSavePackage(Sender: TObject);
+begin
+  if Sender is TLazPackage then
+    DoSavePackage(TLazPackage(Sender),[]);
 end;
 
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
@@ -142,6 +178,141 @@ end;
 procedure TPkgManager.mnuOpenInstalledPckClicked(Sender: TObject);
 begin
   DoShowOpenInstalledPckDlg;
+end;
+
+function TPkgManager.DoShowSavePackageAsDialog(
+  APackage: TLazPackage): TModalResult;
+var
+  OldPkgFilename: String;
+  SaveDialog: TSaveDialog;
+  NewFileName: String;
+  NewPkgName: String;
+  ConflictPkg: TLazPackage;
+  PkgFile: TPkgFile;
+begin
+  OldPkgFilename:=APackage.Filename;
+
+  SaveDialog:=TSaveDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
+    SaveDialog.Title:='Save Package '+APackage.IDAsString+' (*.lpk)';
+    if APackage.HasDirectory then
+      SaveDialog.InitialDir:=APackage.Directory;
+
+    // build a nice package filename suggestion
+    NewFileName:=APackage.Name+'.lpk';
+    SaveDialog.FileName:=NewFileName;
+
+    repeat
+      Result:=mrCancel;
+
+      if not SaveDialog.Execute then begin
+        // user cancels
+        Result:=mrCancel;
+        exit;
+      end;
+      NewFileName:=CleanAndExpandFilename(SaveDialog.Filename);
+      NewPkgName:=ExtractFileNameOnly(NewFilename);
+      
+      // check file extension
+      if ExtractFileExt(NewFilename)='' then begin
+        // append extension
+        NewFileName:=NewFileName+'.lpk';
+      end else if ExtractFileExt(NewFilename)<>'.lpk' then begin
+        Result:=MessageDlg('Invalid package file extension',
+          'Packages must have the extension .lpk',
+          mtInformation,[mbRetry,mbAbort],0);
+        if Result=mrAbort then exit;
+        continue; // try again
+      end;
+
+      // check filename
+      if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
+        Result:=MessageDlg('Invalid package name',
+          'The package name "'+NewPkgName+'" is not a valid package name'#13
+          +'Please choose another name (e.g. package1.lpk)',
+          mtInformation,[mbRetry,mbAbort],0);
+        if Result=mrAbort then exit;
+        continue; // try again
+      end;
+
+      // apply naming conventions
+      if EnvironmentOptions.PascalFileAutoLowerCase then
+        NewFileName:=ExtractFilePath(NewFilename)
+                    +lowercase(ExtractFileName(NewFilename));
+
+      // check package name conflicts
+      ConflictPkg:=PackageGraph.FindAPackageWithName(NewPkgName,APackage);
+      if ConflictPkg<>nil then begin
+        Result:=MessageDlg('Package name already exists',
+          'The package name "'+NewPkgName+'" already exists.'#13
+          +'Conflict package: "'+ConflictPkg.IDAsString+'"'#13
+          +'File: "'+ConflictPkg.Filename+'"'#13
+          +#13
+          +'It is strongly recommended to choose another name.',
+          mtInformation,[mbRetry,mbAbort,mbIgnore],0);
+        if Result=mrAbort then exit;
+        if Result<>mrIgnore then continue; // try again
+      end;
+      
+      // check file name conflict with project
+      if Project1.ProjectUnitWithFilename(NewFilename)<>nil then begin
+        Result:=MessageDlg('Filename is used by project',
+          'The file name "'+NewFilename+'" is part of the current project.'#13
+          +'Projects and Packages should not share files.',
+          mtInformation,[mbRetry,mbAbort],0);
+        if Result=mrAbort then exit;
+        continue; // try again
+      end;
+      
+      // check file name conflict with other packages
+      PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true);
+      if PkgFile<>nil then begin
+        Result:=MessageDlg('Filename is used by other package',
+          'The file name "'+NewFilename+'" is used by'#13
+          +'the package "'+PkgFile.LazPackage.IDAsString+'"'#13
+          +'in file "'+PkgFile.LazPackage.Filename+'".',
+          mtInformation,[mbRetry,mbAbort],0);
+        if Result=mrAbort then exit;
+        continue; // try again
+      end;
+
+    until Result<>mrRetry;
+  finally
+    InputHistories.StoreFileDialogSettings(SaveDialog);
+    SaveDialog.Free;
+  end;
+  
+  // set filename
+  APackage.Filename:=NewFilename;
+  
+  // rename package
+  if AnsiCompareText(NewPkgName,APackage.Name)=0 then begin
+    // just change in case
+    APackage.Name:=NewPkgName;
+  end else begin
+    // name change -> update package graph
+    APackage.Name:=NewPkgName;
+    // ToDo: update package graph
+  end;
+  
+  // clean up old package file to reduce ambigiousities
+  if FileExists(OldPkgFilename)
+  and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
+    if MessageDlg('Delete Old Package File?',
+      'Delete old package file "'+OldPkgFilename+'"?',
+      mtConfirmation,[mbOk,mbCancel],0)=mrOk
+    then begin
+      if not DeleteFile(OldPkgFilename) then begin
+        MessageDlg('Delete failed',
+          'Deleting of file "'+OldPkgFilename+'"'
+             +' failed.',mtError,[mbOk],0);
+      end;
+    end;
+  end;
+
+  // success
+  Result:=mrOk;
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -158,6 +329,8 @@ begin
   PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;
   PackageEditors.OnCreateNewFile:=@OnPackageEditorCreateFile;
   PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
+  PackageEditors.OnGetUnitRegisterInfo:=@OnPackageEditorGetUnitRegisterInfo;
+  PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
 end;
 
 destructor TPkgManager.Destroy;
@@ -207,7 +380,6 @@ var
   NewPackage: TLazPackage;
   CurEditor: TPackageEditorForm;
 begin
-  Result:=mrCancel;
   // create a new package with standard dependencies
   NewPackage:=PackageGraph.NewPackage('NewPackage');
   NewPackage.AddRequiredDependency(
@@ -232,10 +404,59 @@ function TPkgManager.DoOpenPackage(APackage: TLazPackage): TModalResult;
 var
   CurEditor: TPackageEditorForm;
 begin
-  Result:=mrCancel;
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(APackage);
   CurEditor.Show;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoSavePackage(APackage: TLazPackage;
+  Flags: TPkgSaveFlags): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+begin
+  // do not save during compilation
+  if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
+    Result:=mrAbort;
+    exit;
+  end;
+  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
+
+  if APackage.IsVirtual then Include(Flags,psfSaveAs);
+
+  // check if package needs saving
+  if (not (psfSaveAs in Flags)) and (not APackage.ReadOnly)
+  and (not APackage.Modified)
+  and FileExists(APackage.Filename) then begin
+    Result:=mrOk;
+    exit;
+  end;
+
+  // save package
+  if (psfSaveAs in Flags) then begin
+    Result:=DoShowSavePackageAsDialog(APackage);
+    if Result<>mrOk then exit;
+  end;
+  
+  // save
+  Result:=mrCancel;
+  try
+    XMLConfig:=TXMLConfig.Create(APackage.Filename);
+    APackage.SaveToXMLConfig(XMLConfig,'Package/');
+    XMLConfig.Flush;
+    XMLConfig.Free;
+  except
+    on E: Exception do begin
+      Result:=MessageDlg('Error Writing Package',
+        'Unable to write package "'+APackage.IDAsString+'"'#13
+        +'to file "'+APackage.Filename+'".',
+        mtError,[mbAbort,mbCancel],0);
+      exit;
+    end;
+  end;
+  
+  // success
+  APackage.Modified:=false;
   Result:=mrOk;
 end;
 
