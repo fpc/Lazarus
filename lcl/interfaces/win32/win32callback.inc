@@ -1171,7 +1171,7 @@ Begin
     WM_NCDESTROY:
     begin
       // free our own data associated with window
-      if Windows.RemoveProp(Window, PChar(WindowInfoAtom)) <> 0 then
+      if Windows.RemoveProp(Window, PChar(dword(WindowInfoAtom))) <> 0 then
       begin
         Dispose(WindowInfo);
         WindowInfo := nil;
@@ -1430,6 +1430,9 @@ end;
 
 {
   $Log$
+  Revision 1.151  2004/10/29 14:24:17  micha
+  make code possible safer, with better typecasts and use of GlobalAddAtom, because windows are global
+
   Revision 1.150  2004/10/29 11:00:32  micha
   fix typo: the atom var is WindowInfoAtom
   use WM_NCDESTROY, it is later than WM_DESTROY

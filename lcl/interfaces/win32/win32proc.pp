@@ -915,13 +915,13 @@ var
 begin
   New(WindowInfo);
   FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
-  Windows.SetProp(Window, PChar(WindowInfoAtom), dword(WindowInfo));
+  Windows.SetProp(Window, PChar(dword(WindowInfoAtom)), dword(WindowInfo));
   Result := WindowInfo;
 end;
 
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
-  Result := PWindowInfo(Windows.GetProp(Window, PChar(WindowInfoAtom)));
+  Result := PWindowInfo(Windows.GetProp(Window, PChar(dword(WindowInfoAtom))));
   if Result = nil then
     Result := @DefaultWindowInfo;
 end;
@@ -934,11 +934,11 @@ end;
 initialization
 
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
-  WindowInfoAtom := Windows.AddAtom('WindowInfo');
+  WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
 
 finalization
 
-  DeleteAtom(WindowInfoAtom);
+  Windows.GlobalDeleteAtom(WindowInfoAtom);
   WindowInfoAtom := 0;
 
 end.
