@@ -40,18 +40,43 @@ begin
   FAutoPopup := True;
 end;
 
+destructor TPopupMenu.Destroy;
+begin
+  Close;
+  inherited Destroy;
+end;
+
 Procedure TPopupMenu.PopUp(X,Y : Integer);
 begin
+  if ActivePopupMenu<>nil then ActivePopupMenu.Close;
   FPopupPoint := Point(X, Y);
   DoPopup(Self);
   if Items.Count=0 then exit;
+  ActivePopupMenu:=Self;
   HandleNeeded;
   SendMsgToInterface(LM_POPUPSHOW, Self, @FPopupPoint);
+end;
+
+procedure TPopupMenu.Close;
+begin
+  if HandleAllocated then FItems.DestroyHandle;
+  if ActivePopupMenu=Self then begin
+    DoClose;
+    ActivePopupMenu:=nil;
+  end;
+end;
+
+procedure TPopupMenu.DoClose;
+begin
+  if Assigned(OnClose) then OnClose(Self);
 end;
 
 
 {
   $Log$
+  Revision 1.8  2003/05/12 13:40:50  mattias
+  fixed clsing popupmenu on showmodal
+
   Revision 1.7  2003/04/06 22:39:47  mattias
   implemented searching packages
 

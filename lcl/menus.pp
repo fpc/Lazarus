@@ -269,6 +269,7 @@ type
   TPopupMenu = class(TMenu)
   private
     FAutoPopup : Boolean;
+    FOnClose: TNotifyEvent;
     FOnPopup: TNotifyEvent;
     FPopupComponent : TComponent;
     FPopupPoint: TPoint;
@@ -276,13 +277,17 @@ type
     procedure DoPopup(Sender: TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure PopUp(X, Y : Integer);
     property PopupComponent: TComponent read FPopupComponent
                                         write FPopupComponent;
     property PopupPoint: TPoint read FPopupPoint;
+    procedure Close;
+    procedure DoClose;
   published
     property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
 
@@ -308,6 +313,7 @@ function ShortCutToText(ShortCut: TShortCut): string;
 
 var
   DesignerMenuItemClick: TNotifyEvent;
+  ActivePopupMenu: TPopupMenu;
 
 procedure Register;
 
@@ -374,11 +380,15 @@ end;
 
 initialization
   DesignerMenuItemClick:=nil;
+  ActivePopupMenu:=nil;
 
 end.
 
 {
   $Log$
+  Revision 1.43  2003/05/12 13:40:50  mattias
+  fixed clsing popupmenu on showmodal
+
   Revision 1.42  2003/05/02 22:22:15  mattias
   localization, added context policy to make resource string dialog
 

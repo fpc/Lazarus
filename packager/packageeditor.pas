@@ -1122,6 +1122,7 @@ begin
 
   FilesPopupMenu:=TPopupMenu.Create(Self);
   with FilesPopupMenu do begin
+    Name:='FilesPopupMenu';
     OnPopup:=@FilesPopupMenuPopup;
   end;
 

@@ -1348,7 +1348,10 @@ var
   //SaveCount: Integer;
   ActiveWindow: HWnd;
 begin
+  // cancel drags
   CancelDrag;
+  // close popupmenus
+  if ActivePopupMenu<>nil then ActivePopupMenu.Close;
   //writeln('[TCustomForm.ShowModal] START ',Classname);
   if Visible or not Enabled or (fsModal in FFormState)
   or (FormStyle = fsMDIChild) then
@@ -1414,6 +1417,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2003/05/12 13:40:50  mattias
+  fixed clsing popupmenu on showmodal
+
   Revision 1.97  2003/04/20 16:32:58  mattias
   published keypreview
 
