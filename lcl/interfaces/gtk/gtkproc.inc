@@ -284,9 +284,11 @@ begin
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
         DCFlags:=DCFlags-[dcfPenSelected];
       end;
+      
       Origin := SourceDC.Origin;
       SpecialOrigin := SourceDC.SpecialOrigin;
       PenPos := SourceDC.PenPos;
+      
       CurrentBitmap := SourceDC.CurrentBitmap;
       CurrentFont := SourceDC.CurrentFont;
       CurrentPen := SourceDC.CurrentPen;
@@ -295,6 +297,8 @@ begin
       CurrentTextColor := SourceDC.CurrentTextColor;
       CurrentBackColor := SourceDC.CurrentBackColor;
       ClipRegion := SourceDC.ClipRegion;
+      
+      SelectedColors:=dcscCustom;
       SavedContext := nil;
     end;
   end;
@@ -3489,6 +3493,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.118  2002/10/08 14:10:02  lazarus
+  MG: added TDeviceContext.SelectedColors
+
   Revision 1.117  2002/10/08 13:42:25  lazarus
   MG: added TDevContextColorType
 
