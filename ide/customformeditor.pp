@@ -38,8 +38,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector ,
-  Forms, IDEComp, JITForms, Compreg, ComponentEditors;
+  Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
+  Forms, IDEComp, JITForms, Compreg, ComponentEditors, Dialogs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -122,6 +122,8 @@ TCustomFormEditor
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
+    procedure JITFormListReaderError(Sender: TObject; ErrorType: TJITFormError;
+          var Action: TModalResult); virtual;
   public
     JITFormList : TJITForms;
     constructor Create;
@@ -586,6 +588,7 @@ begin
   FSelectedComponents := TComponentSelectionList.Create;
   JITFormList := TJITForms.Create;
   JITFormList.RegCompList := RegCompList;
+  JITFormList.OnReaderError:=@JITFormListReaderError;
 end;
 
 destructor TCustomFormEditor.Destroy;
@@ -797,6 +800,43 @@ begin
     JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
     TForm(AComponent).Name:=NewFormName;
   end;
+end;
+
+procedure TCustomFormEditor.JITFormListReaderError(Sender: TObject;
+  ErrorType: TJITFormError; var Action: TModalResult);
+var
+  aCaption, aMsg: string;
+  DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons;
+  HelpCtx: Longint;
+begin
+  aCaption:='Error reading form';
+  aMsg:='';
+  DlgType:=mtError;
+  Buttons:=[mbCancel];
+  HelpCtx:=0;
+  
+  with JITFormList do begin
+    aMsg:=aMsg+'Form: ';
+    if CurReadForm<>nil then
+      aMsg:=aMsg+CurReadForm.Name+':'+CurReadForm.ClassName
+    else
+      aMsg:=aMsg+'?';
+    if CurReadComponent<>nil then
+      aMsg:=aMsg+#13'Component: '
+        +CurReadComponent.Name+':'+CurReadComponent.ClassName
+    else if CurReadComponentClass<>nil then
+      aMsg:=aMsg+#13'Component Class: '+CurReadComponentClass.ClassName;
+  end;
+  aMsg:=aMsg+#13+JITFormList.CurReadErrorMsg;
+  
+  case ErrorType of
+    jfeUnknownProperty:
+      begin
+        Buttons:=[mbIgnore,mbCancel];
+      end;
+  end;
+  Action:=MessageDlg(aCaption,aMsg,DlgType,Buttons,HelpCtx);
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;

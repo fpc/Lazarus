@@ -49,12 +49,29 @@ uses
 
 type
   //----------------------------------------------------------------------------
+  TJITFormError = (
+      jfeNone,
+      jfeUnknown,
+      jfeUnknownProperty,
+      jfeUnknownComponentClass,
+      jfeReaderError
+    );
+  TJITFormErrors = set of TJITFormError;
+  
+  TJITReaderErrorEvent = procedure(Sender: TObject; ErrorType: TJITFormError;
+    var Action: TModalResult) of object;
+  
+  
   // Just-In-Time-Form List
   TJITForms = class(TPersistent)
   private
-    FForms: TList; // list of TJITForm
+    FCurReadErrorMsg: string;
     FCurReadForm:TForm;
     FCurReadClass:TClass;
+    FCurReadComponent: TComponent;
+    FCurReadComponentClass: TComponentClass;
+    FForms: TList; // list of TJITForm
+    FOnReaderError: TJITReaderErrorEvent;
     FRegCompList:TRegisteredComponentList;
     // jit procedures
     function CreateVMTCopy(SourceClass:TClass; const NewClassName:ShortString):Pointer;
@@ -84,7 +101,10 @@ type
     function GetClassNameFromStream(s:TStream):shortstring;
     function DoCreateJITForm(NewFormName,NewClassName:shortstring):integer;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
+    procedure InitReading;
   public
+    constructor Create;
+    destructor Destroy; override;
     property Items[Index:integer]:TForm read GetItem; default;
     function Count:integer;
     property RegCompList:TRegisteredComponentList read FRegCompList write FRegCompList;
@@ -101,8 +121,13 @@ type
     procedure RemoveMethod(JITForm:TForm; AName:ShortString);
     procedure RenameMethod(JITForm:TForm; OldName,NewName:ShortString);
     procedure RenameFormClass(JITForm:TForm; NewName:ShortString);
-    constructor Create;
-    destructor Destroy; override;
+    property OnReaderError: TJITReaderErrorEvent
+      read FOnReaderError write FOnReaderError;
+    property CurReadForm:TForm read FCurReadForm;
+    property CurReadClass:TClass read FCurReadClass;
+    property CurReadComponent: TComponent read FCurReadComponent;
+    property CurReadComponentClass: TComponentClass read FCurReadComponentClass;
+    property CurReadErrorMsg: string read FCurReadErrorMsg;
   published
     // the dummy template 'procedure of object' for all events
     procedure DoNothing;
@@ -324,6 +349,7 @@ begin
       {$IFDEF IDE_VERBOSE}
       writeln('[TJITForms.AddJITFormFromStream] 4');
       {$ENDIF}
+      InitReading;
       Reader.ReadRootComponent(FCurReadForm);
       if FCurReadForm.Name='' then begin
         NewName:=FCurReadForm.ClassName;
@@ -360,6 +386,13 @@ end;
 function TJITForms.OnFindGlobalComponent(const AName:AnsiString):TComponent;
 begin
   Result:=Application.FindComponent(AName);
+end;
+
+procedure TJITForms.InitReading;
+begin
+  FCurReadComponentClass:=nil;
+  FCurReadComponent:=nil;
+  FCurReadErrorMsg:='';
 end;
 
 procedure TJITForms.AddNewMethod(JITForm:TForm; AName:ShortString);
@@ -656,16 +689,21 @@ procedure TJITForms.ReaderError(Reader: TReader; const ErrorMsg: Ansistring;
 // ToDo: use SUnknownProperty when it is published by the fpc team
 const
   SUnknownProperty = 'Unknown property';
+var
+  ErrorType: TJITFormError;
+  Action: TModalResult;
 begin
-  // ToDo: let user decide if an error is evil
+  ErrorType:=jfeReaderError;
+  Action:=mrCancel;
+  FCurReadErrorMsg:=ErrorMsg;
+  // find out, what error occured
   if RightStr(ErrorMsg,length(SUnknownProperty))=SUnknownProperty then begin
-    { this property is not defined
-      This means:
-        A) The property is not yet implemented -> ignore (skip)
-        B) The property was renamed or removed -> skip
-    }
-    Handled:=true;
+    ErrorType:=jfeUnknownProperty;
+    Action:=mrIgnore;
   end;
+  if Assigned(OnReaderError) then
+    OnReaderError(Self,ErrorType,Action);
+  Handled:=Action in [mrIgnore];
   writeln('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   writeln('[TJITForms.ReaderError] "'+ErrorMsg+'" ignoring=',Handled);
   writeln('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
@@ -675,7 +713,11 @@ procedure TJITForms.ReaderFindComponentClass(Reader: TReader;
   const FindClassName: Ansistring;  var ComponentClass: TComponentClass);
 var
   RegComp:TRegisteredComponent;
+  Action: TModalResult;
+  ErrorType: TJITFormError;
 begin
+  fCurReadComponent:=nil;
+  fCurReadComponentClass:=ComponentClass;
   if ComponentClass=nil then begin
     RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
     if RegComp<>nil then begin
@@ -685,6 +727,10 @@ begin
     end else begin
       writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName
          +''' is unregistered');
+      Action:=mrCancel;
+      ErrorType:=jfeUnknownComponentClass;
+      if Assigned(OnReaderError) then
+        OnReaderError(Self,ErrorType,Action);
     end;
   end;
 end;
@@ -692,6 +738,8 @@ end;
 procedure TJITForms.ReaderCreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
 begin
+  fCurReadComponent:=Component;
+  fCurReadComponentClass:=ComponentClass;
 //  writeln('[TJITForms.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
 end;
 
@@ -699,3 +747,4 @@ end;
 
 
 end.
+
