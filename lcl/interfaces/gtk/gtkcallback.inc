@@ -303,7 +303,7 @@ begin
   Mess.Active:=true;
   Mess.Minimized:=false;
   Mess.ActiveWindow:=0;
-  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then
+  if GtkWidgetIsA(Widget, gtk_window_get_type) then
     Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
   Mess.Result := 0;
   DeliverMessage(Data, Mess);
@@ -507,7 +507,7 @@ begin
   Mess.Active:=true;
   Mess.Minimized:=false;
   Mess.ActiveWindow:=0;
-  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then
+  if GtkWidgetIsA(Widget, gtk_window_get_type) then
     Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
   Mess.Result := 0;
   DeliverPostMessage(Data, Mess);
@@ -3111,6 +3111,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.236  2004/06/29 21:25:52  marc
+  * Fixed compilation for gtk2
+
   Revision 1.235  2004/06/28 15:45:48  mattias
   fixed a mem violation in gtk intf paint msg conversion
 
