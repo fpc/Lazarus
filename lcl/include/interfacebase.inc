@@ -104,6 +104,11 @@ begin
 end;
 
 
+Function TInterfaceBase.CombineRgn(Dest, Src1, Src2 : HRGN;
+  fnCombineMode : Longint) : Longint;
+begin
+  Result := ERROR;
+end;
 
 function TInterfaceBase.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
@@ -151,6 +156,11 @@ end;
 
 function TInterfaceBase.CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
 begin
+  Result := 0;
+end;
+
+function TInterfaceBase.CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN;
+Begin
   Result := 0;
 end;
 
@@ -215,6 +225,11 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+begin
+  Result := SimpleRegion;
+end;
+
 function TInterfaceBase.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
   Result := False;
@@ -255,6 +270,17 @@ end;
 Function TInterfaceBase.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
   Result := False;
+end;
+
+Function TInterfaceBase.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+begin
+  lpRect^ := Rect(0,0,0,0);
+  Result := SIMPLEREGION;
+end;
+
+Function TInterfaceBase.GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
+begin
+  Result := -1;
 end;
 
 Function TInterfaceBase.GetCmdLineParamDescForInterface: string;
@@ -513,6 +539,11 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+begin
+  Result := ERROR;
+end;
+
 function TInterfaceBase.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 begin
   Result := 0;
@@ -648,6 +679,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/08/15 15:46:48  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.38  2002/08/13 07:08:24  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 
