@@ -3059,7 +3059,6 @@ begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
 
-  if Sender is THintWindow then writeln('TGTKObject.DestroyLCLControl DestroyWidget of ',Sender.ClassName,' creates the following gtk warnings:');
   // destroy the widget
   DestroyWidget(Widget);
 
@@ -3091,8 +3090,6 @@ begin
     LastMiddle:=EmptyLastMouseClick;
   if LastRight.Component=Sender then
     LastRight:=EmptyLastMouseClick;
-
-  if Sender is THintWindow then writeln('TGTKObject.DestroyLCLControl END');
 end;
 
 {-------------------------------------------------------------------------------
@@ -6535,6 +6532,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.278  2002/11/04 19:49:36  lazarus
+  MG: added persistent hints for main ide bar
+
   Revision 1.277  2002/11/03 20:53:37  lazarus
   MG: fixed typo
 
