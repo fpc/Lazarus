@@ -3582,8 +3582,6 @@ begin
           AnUnitInfo.ComponentName:=TempForm.Name;
           AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
           // show form
-          TDesigner(TempForm.Designer).SourceEditor:=
-            SourceNoteBook.GetActiveSE;
 
           if not (ofProjectLoading in Flags) then begin
             FDisplayState:= dsForm;
@@ -4099,8 +4097,6 @@ begin
     // show form and select form
     if NewUnitType in [nuForm] then begin
       // show form
-      TDesigner(TCustomForm(NewUnitInfo.Component).Designer).SourceEditor :=
-        SourceNoteBook.GetActiveSE;
       DoShowDesignerFormOfCurrentSrc;
     end else begin
       FDisplayState:= dsSource;
@@ -9106,6 +9102,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.591  2003/06/01 11:23:01  mattias
+  splittet designer form and lookup root
+
   Revision 1.590  2003/05/31 10:07:33  mattias
   changed projects forms into components
 
