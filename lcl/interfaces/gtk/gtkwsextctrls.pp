@@ -292,13 +292,16 @@ end;
 procedure TGtkWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
   const AIndex: integer);
 var
-PageWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  Page: TCustomPage;
 begin
   // The gtk does not provide a function to remove a page without destroying it.
   // Luckily the LCL destroys the Handle, when a page is removed, so this
   // function is not needed.
   // However this is usefull for the TCustomPage.TabVisible property. :)
-  PageWidget := PGtkWidget(ANotebook.Page[AIndex].Handle);
+  Page:=ANotebook.Page[AIndex];
+  if not Page.HandleAllocated then exit;
+  PageWidget := PGtkWidget(Page.Handle);
   gtk_widget_hide(PageWidget);
 end;
 
