@@ -927,19 +927,15 @@ end;
 
 function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint): TPoint;
 var
-  s: string;
-  i, l: integer;
-  x: integer;
   f: Single;
 begin
-  f := (Pixels.X + (fLeftChar - 1) * fCharWidth - fGutterWidth - 2)
-    / fCharWidth;
+  f := ((Pixels.X + (fLeftChar - 1) * fCharWidth - fTextOffset) / fCharWidth)+1;
   // don't return a partially visible last line
   if Pixels.Y >= fLinesInWindow * fTextHeight then begin
     Pixels.Y := fLinesInWindow * fTextHeight - 1;
     if Pixels.Y < 0 then Pixels.Y := 0;
   end;
-  Result := Point(Roundoff(f), Pixels.Y div fTextHeight + TopLine);
+  Result := Point(RoundOff(f), Pixels.Y div fTextHeight + TopLine);
 {$IFDEF SYN_MBCSSUPPORT}
   if (Result.Y >= 1) and (Result.Y <= Lines.Count) then begin
     s := Lines[Result.Y - 1];
@@ -951,33 +947,18 @@ begin
   end;
   fMBCSStepAside := False;
 {$ENDIF}
-  // now fix up for any TAB characters in the line
-  if Result.Y <= lines.Count then begin
-    s := Lines[Result.Y - 1];
-    l := Length(s);
-    x := 0;
-    i := 1;
-
-    while x < Result.X do begin
-      if (i <= l) and (s[i] = #9) then
-        inc(x, TabWidth - (x mod TabWidth) + 1)
-      else
-        inc(x);
-      inc(i);
-    end;
-    Result.X := i;
-  end;
 end;
 
-function TCustomSynEdit.RowColumnToPixels(rowcol: TPoint): TPoint;
+function TCustomSynEdit.RowColumnToPixels(RowCol: TPoint): TPoint;
 begin
-  Result.X := (RowCol.X - 1) * fCharWidth + fTextOffset;
-  Result.Y := (RowCol.Y - fTopLine) * fTextHeight + 1;                
+  Result:=RowCol;
+  Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
+  Result.Y := (Result.Y - fTopLine) * fTextHeight + 1;
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
 begin
-  CaretXY := PixelsToRowColumn(Point(X,Y));
+  CaretXY := PhysicalToLogicalPos(PixelsToRowColumn(Point(X,Y)));
 end;
 
 procedure TCustomSynEdit.DoCopyToClipboard(const SText: string);
@@ -1791,7 +1772,7 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
     exit;
   end;
-  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  LastMouseCaret:=PhysicalToLogicalPos(PixelsToRowColumn(Point(X,Y)));
   fMouseDownX := X;
   fMouseDownY := Y;
   {$ENDIF}
@@ -1885,7 +1866,7 @@ var
 begin
   inherited MouseMove(Shift, x, y);
   {$IFDEF SYN_LAZARUS}
-  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  LastMouseCaret:=PhysicalToLogicalPos(PixelsToRowColumn(Point(X,Y)));
   {$ENDIF}
 
   if (X >= fGutterWidth)
@@ -1971,7 +1952,7 @@ begin
     {$IFDEF SYN_LAZARUS}
     GetCursorPos(CurMousePos);
     CurMousePos:=ScreenToClient(CurMousePos);
-    C := PixelsToRowColumn(CurMousePos);
+    C := PhysicalToLogicalPos(PixelsToRowColumn(CurMousePos));
     // recalculate scroll deltas
     Dec(CurMousePos.X, fGutterWidth);
     // calculate chars past right
@@ -2037,7 +2018,7 @@ begin
   begin
     exit;
   end;
-  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  LastMouseCaret:=PhysicalToLogicalPos(PixelsToRowColumn(Point(X,Y)));
   {$ENDIF}
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
   begin
@@ -4646,9 +4627,9 @@ begin
     if not (eoNoSelection in fOptions) then begin
       {$IFDEF SYN_LAZARUS}
       if (eoDoubleClickSelectsLine in fOptions) then
-        SetLineBlock(PixelsToRowColumn(ptMouse))
+        SetLineBlock(PhysicalToLogicalPos(PixelsToRowColumn(ptMouse)))
       else
-        SetWordBlock(PixelsToRowColumn(ptMouse));
+        SetWordBlock(PhysicalToLogicalPos(PixelsToRowColumn(ptMouse)));
       {$ELSE}
       SetWordBlock(CaretXY);
       {$ENDIF}
@@ -4669,7 +4650,7 @@ begin
   ptMouse := ScreenToClient(ptMouse);
   if ptMouse.X >= fGutterWidth + 2 then begin
     if not (eoNoSelection in fOptions) then begin
-      SetLineBlock(PixelsToRowColumn(ptMouse))
+      SetLineBlock(PhysicalToLogicalPos(PixelsToRowColumn(ptMouse)))
     end;
     inherited;
     Include(fStateFlags, sfTripleClicked);
@@ -4686,7 +4667,7 @@ begin
   ptMouse := ScreenToClient(ptMouse);
   if ptMouse.X >= fGutterWidth + 2 then begin
     if not (eoNoSelection in fOptions) then begin
-      SetParagraphBlock(PixelsToRowColumn(ptMouse))
+      SetParagraphBlock(PhysicalToLogicalPos(PixelsToRowColumn(ptMouse)))
     end;
     inherited;
     Include(fStateFlags, sfQuadClicked);
@@ -5457,7 +5438,7 @@ begin
   IncPaintLock;
   try
     // Make sure X is visible
-//writeln('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
+    //writeln('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
     PhysCaretXY:=LogicalToPhysicalPos(CaretXY);
     if PhysCaretXY.X < LeftChar then
       LeftChar := PhysCaretXY.X
