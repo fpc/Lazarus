@@ -91,7 +91,7 @@ type
     constructor Create(TheItemSize: integer);
     destructor Destroy; override;
     function NewItem: Pointer;
-    procedure EnumerateItems(Method: TLCLEnumItemsMethod);
+    procedure EnumerateItems(const Method: TLCLEnumItemsMethod);
   end;
 
 
@@ -218,7 +218,7 @@ end;
 constructor TLCLNonFreeMemManager.Create(TheItemSize: integer);
 begin
   FItemSize:=TheItemSize;
-  FFirstSize:=FItemSize*4; // 4 items
+  FFirstSize:=FItemSize*4; // 4 items => the first item has 8 entries
   FCurSize:=FFirstSize;
 end;
 
@@ -231,6 +231,7 @@ end;
 function TLCLNonFreeMemManager.NewItem: Pointer;
 begin
   if (FCurItem=FEndItem) then begin
+    // each item has double the size of its predecessor
     inc(FCurSize,FCurSize);
     GetMem(FCurItem,FCurSize);
     if ClearOnCreate then
@@ -244,7 +245,8 @@ begin
   Inc(FCurItem, FItemSize);
 end;
 
-procedure TLCLNonFreeMemManager.EnumerateItems(Method: TLCLEnumItemsMethod);
+procedure TLCLNonFreeMemManager.EnumerateItems(
+  const Method: TLCLEnumItemsMethod);
 var
   Cnt: Integer;
   i: Integer;
@@ -256,6 +258,7 @@ begin
     Cnt:=FItems.Count;
     Size:=FFirstSize;
     for i:=0 to Cnt-1 do begin
+      // each item has double the size of its predecessor
       inc(Size,Size);
       p:=FItems[i];
       Last := p;

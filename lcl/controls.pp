@@ -795,6 +795,7 @@ type
     function GetText: TCaption; 
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
+    function IsAnchorsStored: boolean;
     function IsCaptionStored: Boolean;
     function IsColorStored: Boolean;
     function IsEnabledStored: Boolean;
@@ -1088,7 +1089,7 @@ type
     procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
   public
     // standard properties, which should be supported by all descendents
-    property Anchors: TAnchors read FAnchors write SetAnchors default [akLeft,akTop];
+    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
@@ -2503,6 +2504,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.258  2004/12/20 00:11:24  mattias
+  changed TControl.Anchors default value to AnchorAlign[Align]
+
   Revision 1.257  2004/11/29 01:12:36  mattias
   added SysKey messages to gtk intf and LCL
 

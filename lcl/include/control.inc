@@ -673,6 +673,11 @@ begin
     Result := Width;
 end;
 
+function TControl.IsAnchorsStored: boolean;
+begin
+  Result:=(Anchors=AnchorAlign[Align]);
+end;
+
 function TControl.IsVisible: Boolean;
 begin
   Result := FVisible and ((Parent = nil) or (Parent.IsVisible));
@@ -2409,10 +2414,17 @@ end;
   TControl SetAlign
 ------------------------------------------------------------------------------}
 procedure TControl.SetAlign(Value: TAlign);
+var
+  OldAlign: TAlign;
 begin
   if FAlign = Value then exit;
   //DebugLn('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
+  OldAlign:=FAlign;
   FAlign := Value;
+  // if anchors were on default then change them to new default
+  // This is done for Delphi compatibility.
+  if Anchors=AnchorAlign[OldAlign] then
+    Anchors:=AnchorAlign[FAlign];
   RequestAlign;
 end;
 
@@ -3427,6 +3439,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.225  2004/12/20 00:11:24  mattias
+  changed TControl.Anchors default value to AnchorAlign[Align]
+
   Revision 1.224  2004/12/07 06:28:09  vincents
   fixed error because of conflicted merge
 
