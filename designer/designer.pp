@@ -127,11 +127,11 @@ type
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
     function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
     function MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
-    Procedure MouseDownOnControl(Sender: TControl; TheMessage : TLMMouse);
+    Procedure MouseDownOnControl(Sender: TControl; var TheMessage : TLMMouse);
     Procedure MouseMoveOnControl(Sender: TControl; var TheMessage: TLMMouse);
-    Procedure MouseUpOnControl(Sender: TControl; TheMessage:TLMMouse);
-    Procedure KeyDown(Sender: TControl; TheMessage:TLMKEY);
-    Procedure KeyUp(Sender: TControl; TheMessage:TLMKEY);
+    Procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
+    Procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
+    Procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
 
     procedure DoDeleteSelectedComponents;
     procedure MarkComponentForDeletion(AComponent: TComponent);
@@ -488,7 +488,8 @@ begin
   end;
 end;
 
-procedure TDesigner.MouseDownOnControl(Sender: TControl; TheMessage: TLMMouse);
+procedure TDesigner.MouseDownOnControl(Sender: TControl;
+  var TheMessage: TLMMouse);
 var i,
   CompIndex:integer;
   SelectedCompClass: TRegisteredComponent;
@@ -618,7 +619,7 @@ Begin
 End;
 
 procedure TDesigner.MouseUpOnControl(Sender : TControl;
-  TheMessage:TLMMouse);
+  var TheMessage:TLMMouse);
 var
   ParentCI, NewCI: TComponentInterface;
   NewLeft, NewTop, NewWidth, NewHeight: Integer;
@@ -966,7 +967,7 @@ end;
  Handles the keydown messages.  DEL deletes the selected controls, CTRL-ARROR
  moves the selection up one, SHIFT-ARROW resizes, etc.
 }
-Procedure TDesigner.KeyDown(Sender : TControl; TheMessage:TLMKEY);
+Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage:TLMKEY);
 var
   Shift : TShiftState;
   Command: word;
@@ -983,43 +984,51 @@ Begin
                                                  TheMessage.CharCode,Shift);
   if Assigned(OnProcessCommand) and (Command<>ecNone) then begin
     OnProcessCommand(Self,Command,Handled);
-    if Handled or (Command=ecNone) then exit;
+    Handled:=Handled or (Command=ecNone);
   end;
 
-  case TheMessage.CharCode of
-  VK_DELETE:
-    DoDeleteSelectedComponents;
+  if not Handled then begin
+    Handled:=true;
+    case TheMessage.CharCode of
+    VK_DELETE:
+      DoDeleteSelectedComponents;
 
-  VK_UP:
-    if (ssCtrl in Shift) then
-      NudgeControl(0,-1)
-    else if (ssShift in Shift) then
-      NudgeSize(0,-1);
+    VK_UP:
+      if (ssCtrl in Shift) then
+        NudgeControl(0,-1)
+      else if (ssShift in Shift) then
+        NudgeSize(0,-1);
 
-  VK_DOWN:
-    if (ssCtrl in Shift) then
-      NudgeControl(0,1)
-    else if (ssShift in Shift) then
-      NudgeSize(0,1);
+    VK_DOWN:
+      if (ssCtrl in Shift) then
+        NudgeControl(0,1)
+      else if (ssShift in Shift) then
+        NudgeSize(0,1);
 
-  VK_RIGHT:
-    if (ssCtrl in Shift) then
-      NudgeControl(1,0)
-    else if (ssShift in Shift) then
-      NudgeSize(1,0);
+    VK_RIGHT:
+      if (ssCtrl in Shift) then
+        NudgeControl(1,0)
+      else if (ssShift in Shift) then
+        NudgeSize(1,0);
 
-  VK_LEFT:
-    if (ssCtrl in Shift) then
-      NudgeControl(-1,0)
-    else if (ssShift in Shift) then
-      NudgeSize(-1,0);
-
+    VK_LEFT:
+      if (ssCtrl in Shift) then
+        NudgeControl(-1,0)
+      else if (ssShift in Shift) then
+        NudgeSize(-1,0);
+    else
+      Handled:=false;
+    end;
+  end;
+  
+  if Handled then begin
+    TheMessage.CharCode:=0;
   end;
 end;
 
 
 {-----------------------------------------K E Y U P --------------------------------}
-Procedure TDesigner.KeyUp(Sender : TControl; TheMessage:TLMKEY);
+Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage:TLMKEY);
 Begin
   {$IFDEF VerboseDesigner}
   //Writeln('TDesigner.KEYUP ',TheMessage.CharCode,' ',TheMessage.KeyData);
