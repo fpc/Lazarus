@@ -755,7 +755,9 @@ type
   TPropHookGetComponentNames = procedure(TypeData:PTypeData;
     Proc:TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
-  TPropHookComponentRenamed = procedure(AComponent:TComponent) of object;
+  TPropHookComponentRenamed = procedure(AComponent: TComponent) of object;
+  TPropHookComponentAdded = procedure(AComponent: TComponent; Select: boolean) of object;
+  TPropHookDeleteComponent = procedure(AComponent: TComponent) of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
@@ -784,6 +786,8 @@ type
     FOnGetComponentNames: TPropHookGetComponentNames;
     FOnGetRootClassName: TPropHookGetRootClassName;
     FOnComponentRenamed: TPropHookComponentRenamed;
+    FOnComponentAdded: TPropHookComponentAdded;
+    FOnDeleteComponent: TPropHookDeleteComponent;
     // persistent objects
     FOnGetObject: TPropHookGetObject;
     FOnGetObjectName: TPropHookGetObjectName;
@@ -813,7 +817,9 @@ type
     function GetComponentName(AComponent:TComponent):ShortString;
     procedure GetComponentNames(TypeData:PTypeData; Proc:TGetStringProc);
     function GetRootClassName:ShortString;
-    procedure ComponentRenamed(AComponent:TComponent);
+    procedure ComponentRenamed(AComponent: TComponent);
+    procedure ComponentAdded(AComponent: TComponent; Select: boolean);
+    procedure DeleteComponent(AComponent: TComponent);
     // persistent objects
     function GetObject(const Name:ShortString):TPersistent;
     function GetObjectName(Instance:TPersistent):ShortString;
@@ -840,6 +846,8 @@ type
     property OnGetComponentNames:TPropHookGetComponentNames read FOnGetComponentNames write FOnGetComponentNames;
     property OnGetRootClassName:TPropHookGetRootClassName read FOnGetRootClassName write FOnGetRootClassName;
     property OnComponentRenamed:TPropHookComponentRenamed read FOnComponentRenamed write FOnComponentRenamed;
+    property OnComponentAdded:TPropHookComponentAdded read FOnComponentAdded write FOnComponentAdded;
+    property OnDeleteComponent:TPropHookDeleteComponent read FOnDeleteComponent write FOnDeleteComponent;
     // persistent object events
     property OnGetObject:TPropHookGetObject read FOnGetObject write FOnGetObject;
     property OnGetObjectName:TPropHookGetObjectName read FOnGetObjectName write FOnGetObjectName;
@@ -3239,6 +3247,21 @@ procedure TPropertyEditorHook.ComponentRenamed(AComponent: TComponent);
 begin
   if Assigned(OnComponentRenamed) then
     OnComponentRenamed(AComponent);
+end;
+
+procedure TPropertyEditorHook.ComponentAdded(AComponent: TComponent;
+  Select: boolean);
+begin
+  if Assigned(OnComponentAdded) then
+    OnComponentAdded(AComponent,Select);
+end;
+
+procedure TPropertyEditorHook.DeleteComponent(AComponent: TComponent);
+begin
+  if Assigned(OnDeleteComponent) then
+    OnDeleteComponent(AComponent)
+  else
+    AComponent.Free;
 end;
 
 function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
