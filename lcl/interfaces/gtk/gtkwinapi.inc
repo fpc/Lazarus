@@ -7047,7 +7047,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
+function TgtkObject.ShowScrollBar(Handle: HWND; wBar: Integer;
+  bShow: Boolean): Boolean;
 {const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);}
 begin
@@ -7073,6 +7074,17 @@ begin
     end;
   end;
 }
+end;
+
+{------------------------------------------------------------------------------
+  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+  
+  nCmdShow:
+    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
+------------------------------------------------------------------------------}
+function TgtkObject.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+begin
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -7830,6 +7842,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.212  2003/02/28 19:54:05  mattias
+  added ShowWindow
+
   Revision 1.211  2003/02/23 10:42:06  mattias
   implemented changing TMenuItem.GroupIndex at runtime
 
