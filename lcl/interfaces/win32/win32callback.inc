@@ -62,6 +62,13 @@ Var
   PrevWndProc: Pointer;
   
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
+  LMScroll: TLMScroll; // used by WM_HSCROLL
+  LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
+  LMMouse: TLMMouse; // used by WM_LBUTTONDBLCLK
+  LMMouseMove: TLMMouseMove; // used by WM_MOUSEMOVE
+  LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
+  LMMove: TLMMove; // used by WM_MOVE
+  LMNotify: TLMNotify; // used by WM_NOTIFY
 
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
@@ -217,7 +224,8 @@ Begin
     End;
     WM_HSCROLL:
     Begin
-      With TLMScroll(LMessage) Do
+      PLMsg:=@LMScroll;
+      With LMScroll Do
       Begin
         Msg := LM_HSCROLL;
         ScrollCode := Lo(WParam);
@@ -235,7 +243,8 @@ Begin
     End;
     WM_KEYDOWN:
     Begin
-      With TLMKey(LMessage) Do
+      PLMsg:=@LMKey;
+      With LMKey Do
       Begin
         Msg := LM_SYSKEYDOWN;
         KeyData := LParam;
@@ -244,7 +253,8 @@ Begin
     End;
     WM_KEYUP:
     Begin
-      With TLMKey(LMessage) Do
+      PLMsg:=@LMKey;
+      With LMKey Do
       Begin
         Msg := LM_SYSKEYUP;
         KeyData := LParam;
@@ -258,7 +268,8 @@ Begin
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
     WM_LBUTTONDBLCLK:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_LBUTTONDBLCLK;
         XPos := Lo(LParam);
@@ -268,7 +279,8 @@ Begin
     End;
     WM_LBUTTONDOWN:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_LBUTTONDOWN;
         XPos := Lo(LParam);
@@ -278,7 +290,8 @@ Begin
     End;
     WM_LBUTTONUP:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_LBUTTONUP;
         XPos := Lo(LParam);
@@ -288,7 +301,8 @@ Begin
     End;
     WM_MBUTTONDBLCLK:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_MBUTTONDBLCLK;
         XPos := Lo(LParam);
@@ -298,7 +312,8 @@ Begin
     End;
     WM_MBUTTONDOWN:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_MBUTTONDOWN;
         XPos := Lo(LParam);
@@ -308,7 +323,8 @@ Begin
     End;
     WM_MBUTTONUP:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_MBUTTONUP;
         XPos := Lo(LParam);
@@ -326,7 +342,8 @@ Begin
     End;
     WM_MOUSEMOVE:
     Begin
-      With TLMMouseMove(LMessage) Do
+      PLMsg:=@LMMouseMove;
+      With LMMouseMove Do
       Begin
         Msg := LM_MOUSEMOVE;
         XPos := Lo(LParam);
@@ -336,7 +353,8 @@ Begin
     End;
     WM_MOUSEWHEEL:
     Begin
-      With PLMMouseEvent(@LMessage)^ Do
+      PLMsg:=@LMMouseEvent;
+      With LMMouseEvent Do
       Begin
         Msg := LM_MOUSEWHEEL;
         WheelDelta := Hi(WParam);
@@ -348,7 +366,8 @@ Begin
     End;
     WM_MOVE:
     Begin
-      With TLMMove(LMessage) Do
+      PLMsg:=@LMMove;
+      With LMMove Do
       Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
@@ -372,7 +391,8 @@ Begin
     End;
     WM_NOTIFY:
     Begin
-      With TLMNotify(LMessage) Do
+      PLMsg:=@LMNotify;
+      With LMNotify Do
       Begin
         Msg := LM_NOTIFY;
         IDCtrl := WParam;
@@ -407,7 +427,8 @@ Begin
     End;
     WM_RBUTTONDBLCLK:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_RBUTTONDBLCLK;
         XPos := Lo(LParam);
@@ -417,7 +438,8 @@ Begin
     End;
     WM_RBUTTONDOWN:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_RBUTTONDOWN;
         XPos := Lo(LParam);
@@ -427,7 +449,8 @@ Begin
     End;
     WM_RBUTTONUP:
     Begin
-      With TLMMouse(LMessage) Do
+      PLMsg:=@LMMouse;
+      With LMMouse Do
       Begin
         Msg := LM_RBUTTONUP;
         XPos := Lo(LParam);
@@ -469,7 +492,8 @@ Begin
     End;
     WM_SYSKEYDOWN:
     Begin
-      With TLMKey(LMessage) Do
+      PLMsg:=@LMKey;
+      With LMKey Do
       Begin
         Msg := LM_SYSKEYDOWN;
         KeyData := LParam;
@@ -478,7 +502,8 @@ Begin
     End;
     WM_SYSKEYUP:
     Begin
-      With TLMKey(LMessage) Do
+      PLMsg:=@LMKey;
+      With LMKey Do
       Begin
         Msg := LM_SYSKEYUP;
         KeyData := LParam;
@@ -493,7 +518,8 @@ Begin
     End;
     WM_VSCROLL:
     Begin
-      With TLMScroll(LMessage) Do
+      PLMsg:=@LMScroll;
+      With LMScroll Do
       Begin
         Msg := LM_VSCROLL;
         ScrollCode := Lo(WParam);
@@ -585,6 +611,9 @@ end;
 
 {
   $Log$
+  Revision 1.44  2003/07/26 13:48:45  mattias
+  fixed other messages bigger than TLMessage
+
   Revision 1.43  2003/07/26 13:26:56  mattias
   fixed WindowProc
 
