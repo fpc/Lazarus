@@ -107,6 +107,11 @@ begin
   //writeln('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then ;//GlobalNameSpace.BeginWrite;
   try
+    // ------
+    // Temp hack to get Beforedestruction called
+    // FPC1.0.x doesn't call itself before destruction
+    {$IFDEF VER1_0}BeforeDestruction;{$ENDIF}
+    // ------
     FMenu.Free;
     FMenu:=nil;
     FCanvas.Free;
@@ -1165,6 +1170,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/10/27 15:46:58  lazarus
+  MWE:
+    * Moved call to BeforeDestruction to CustomForm
+    - Removed form.inc
+
   Revision 1.66  2002/10/27 11:51:35  lazarus
   MG: fixed memleaks
 

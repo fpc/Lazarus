@@ -326,8 +326,6 @@ type
     FClientHandle: HWND;
     FDummyPPI : longint;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     property ClientHandle: HWND read FClientHandle;
   published
     property PixelsPerInch : Longint read FDummyPPI write FDummyPPI stored False;
@@ -738,7 +736,6 @@ end;
 
 {$I scrollingwincontrol.inc}
 {$I scrollbox.inc}
-{$I form.inc}
 {$I customform.inc}
 {$I screen.inc}
 {$I application.inc}
