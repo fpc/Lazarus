@@ -22,6 +22,8 @@ type
     Button4: TBUTTON;
     btnOK : TBitBtn;
     btnCancel : TBitBtn;
+    cbVisible : TCheckbox;
+    cbAutoSize : TCheckBox;
   private
     { private declarations }
     FItems : TList;
@@ -38,6 +40,8 @@ type
     procedure Listbox1OnClick(sender : TObject);
     Procedure Edit1OnChange(Sender : TObject);
     Procedure Edit2OnChange(Sender : TObject);
+    Procedure cbVisibleOnClick(Sender : TObject);
+    Procedure cbAutoSizeOnClick(Sender : TObject);
     Procedure FormOnShow(Sender : TObject);
   public
     { public declarations }
@@ -61,7 +65,7 @@ Begin
   begin
      Caption := 'Column Editor';
      Width := 400;
-     Height := 300;
+     Height := 340;
      OnShow := @FormOnShow;
      Position := poScreenCenter;
      Listbox1 := TListBox.Create(self);
@@ -71,7 +75,7 @@ Begin
          left := 1;
          Width := 170;
          Top := 1;
-         Height := 210;
+         Height := 270;
          Visible := True;
          OnClick := @Listbox1OnClick;
        end;
@@ -136,14 +140,40 @@ Begin
          ItemIndex := 0;
          OnClick := @RadioGroup1OnClick;
        end;
-       
+
+     cbVisible := TCheckBox.Create(self);
+     with cbVisible do
+       begin
+         Parent := Self;
+         Visible := True;
+         Caption := 'Visible';
+         Left := self.width div 2;
+         Top :=  RadioGroup1.Top+RadioGroup1.Height+5;
+         Height := 25;
+         Checked := True;
+         OnClick := @cbVisibleOnClick;
+       end;
+
+     cbAutoSize := TCheckBox.Create(self);
+     with cbAutoSize do
+       begin
+         Parent := Self;
+         Visible := True;
+         Caption := 'Auto Size';
+         Left := self.width div 2;
+         Top :=  cbVisible.Top + cbVisible.Height + 5;
+         Height := 25;
+         Checked := True;
+         OnClick := @cbAutoSizeOnClick;
+       end;
+
      Button1 := TButton.Create(self);
      with Button1 do
        Begin
           Parent := self;
           Caption := 'Add';
           Left := self.width div 2;
-          Top := RadioGroup1.Top+RadioGroup1.Height+5;
+          Top := cbAutoSize.Top+cbAutoSize.Height+5;
           Visible := True;
           OnClick := @Button1OnClick;
        end;
@@ -340,6 +370,10 @@ begin
     caCenter:RadioGroup1.ItemIndex := 1;
     caRight : RadioGroup1.ItemIndex := 2;
   end;  //case
+  
+  cbVisible.Checked := ViewColumn.Visible;
+  cbAutoSize.Checked := ViewColumn.AutoSize;
+
 
   FSelectedIndex := Value;
   
@@ -402,6 +436,27 @@ begin
     ViewColumn := TViewColumn.Create;
     ViewColumn.Caption := S;
     Result := FItems.Add(ViewColumn);
+end;
+
+Procedure TColumnDlg.cbVisibleOnClick(Sender : TObject);
+Var
+  ViewColumn : TViewColumn;
+begin
+  if FSelectedIndex = -1 then Exit;
+  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
+
+  ViewColumn.Visible := cbVisible.Checked;
+
+end;
+
+Procedure TColumnDlg.cbAutoSizeOnClick(Sender : TObject);
+Var
+  ViewColumn : TViewColumn;
+begin
+  if FSelectedIndex = -1 then Exit;
+  ViewColumn := TViewColumn(FItems.Items[FSelectedIndex]);
+
+  ViewColumn.AutoSize := cbAutoSize.Checked;
 end;
 
 initialization

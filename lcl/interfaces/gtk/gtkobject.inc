@@ -3148,6 +3148,16 @@ begin
                    
                    //set column alignment
                    gtk_clist_set_column_justification(PgtkCList(Handle),I,aGTKJUSTIFICATION[Columns.Item[i].Alignment]);
+
+                   //set width
+                   gtk_clist_set_column_width(PgtkCList(Handle),I,Columns.Item[i].Width);
+
+
+                   //set auto sizing
+                   gtk_clist_set_column_auto_resize(PgtkCList(Handle),I,Columns.Item[i].AutoSize);
+
+                   //set Visible
+                   gtk_clist_set_column_visibility(PgtkCList(Handle),I,Columns.Item[i].Visible);
                  end;
 
 //sorting
@@ -3656,6 +3666,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.99  2002/01/03 21:17:08  lazarus
+  added column visible and autosize settings.
+  Shane
+
   Revision 1.98  2002/01/03 15:31:27  lazarus
   Added changes to propedit so the colum editor changes effect the TListView.
   Shane

@@ -429,6 +429,14 @@ type
      FAlignment: TColumnAlignment;
      FOnChange: TNotifyEvent;
      FWidth: Integer;
+     FMinWidth: Integer;
+     FMaxWidth: Integer;
+     FAutoSize: Boolean;
+     FVisible: Boolean;
+     procedure SetVisible(const AValue: Boolean);
+     procedure SetAutoSize(const AValue: Boolean);
+     procedure SetMinWidth(const AValue: Integer);
+     procedure SetMaxWidth(const AValue: Integer);
      procedure SetWidth(const AValue: Integer);
      procedure SetCaption(const AValue: String);
    
@@ -438,7 +446,11 @@ type
      destructor Destroy; override;
      Property Caption : String read FCaption write SetCaption;
      Property Width  : Integer read FWidth write SetWidth;
+     property MinWidth : Integer read FMinWidth write SetMinWidth;
+     property MaxWidth : Integer read FMaxWidth write SetMaxWidth;
      property Alignment : TColumnAlignment read FAlignment write SetAlignment;
+     Property AutoSize : Boolean read FAutoSize write SetAutoSize;
+     Property Visible : Boolean read FVisible write SetVisible;
      property OnChange : TNotifyEvent read FOnChange write FOnChange;
 
  end;
@@ -1022,6 +1034,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/01/03 21:17:08  lazarus
+  added column visible and autosize settings.
+  Shane
+
   Revision 1.12  2001/12/31 22:43:00  lazarus
   Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
   Shane
