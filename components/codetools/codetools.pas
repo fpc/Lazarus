@@ -3422,7 +3422,6 @@ begin
   // read all constants  Name = <Const>; or Name : type = <Const>;
   repeat
     ReadNextAtom;  // name
-writeln('  TPascalParserTool.KeyWordFuncConst Name=',GetAtom);
     if AtomIsIdentifier(false) then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
@@ -3430,7 +3429,6 @@ writeln('  TPascalParserTool.KeyWordFuncConst Name=',GetAtom);
       if AtomIsChar(':') then begin
         // read type
         ReadNextAtom;
-writeln('    TPascalParserTool.KeyWordFuncConst Type=',GetAtom);
         TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
           CurPos.EndPos-CurPos.StartPos);
       end;
@@ -3439,7 +3437,6 @@ writeln('    TPascalParserTool.KeyWordFuncConst Type=',GetAtom);
       // read constant
       repeat
         ReadNextAtom;
-writeln('    TPascalParserTool.KeyWordFuncConst Value=',GetAtom);
         if AtomIsChar('(') or AtomIsChar('[') then begin
           ReadTilBracketClose(true);
           ReadNextAtom;
