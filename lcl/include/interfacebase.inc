@@ -1001,8 +1001,6 @@ end;
 Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
-var
-  theModalResult : longint;
 begin
   if PromptDialogFunction<>nil then
     Result:=PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
@@ -1442,6 +1440,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/10/25 10:10:40  lazarus
+  MG: reduced output
+
   Revision 1.61  2002/10/25 10:06:34  lazarus
   MG: broke interfacebase uses circles
 
