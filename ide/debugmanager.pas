@@ -73,6 +73,9 @@ type
     procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
+  protected
+    function  GetState: TDBGState; override;
+    function  GetCommands: TDBGCommands; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -89,6 +92,8 @@ type
     
     procedure RunDebugger; override;
     procedure EndDebugging; override;
+    function Evaluate(const AExpression: String; var AResult: String): Boolean; override;
+
   end;
   
   
@@ -207,9 +212,21 @@ begin
     ToolStatus := TOOLSTATEMAP[FDebugger.State];
   end;
 
-  if FDebugger.State = dsError
-  then begin
-    WriteLN('Ooops, the debugger entered the error state');
+  case FDebugger.State of 
+    dsError: begin
+      WriteLN('Ooops, the debugger entered the error state');
+      MessageDlg('Debugger error',
+        'Debugger error'#13#13 + 
+        'Ooops, the debugger entered the error state'#13 + 
+        'Save your work now !'#13#13 + 
+        'Hit Stop, and hope the best, we''re pulling the plug.', 
+        mtError, [mbOK],0);
+    end;
+    dsStop: begin
+      MessageDlg('Execution stopped',
+        'Execution stopped'#13#13, 
+        mtInformation, [mbOK],0);
+    end;
   end;
 end;
 
@@ -596,6 +613,13 @@ begin
   if FDebugger <> nil then FDebugger.Done;
 end;
 
+function TDebugManager.Evaluate(const AExpression: String; var AResult: String): Boolean;
+begin
+  Result := (MainIDE.ToolStatus = itDebugger)
+        and (FDebugger <> nil)
+        and FDebugger.Evaluate(AExpression, AResult);
+end;
+
 function TDebugManager.DoRunToCursor: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -629,10 +653,30 @@ begin
   Result := mrOK;
 end;
 
+function TDebugManager.GetState: TDBGState;       
+begin
+  if FDebugger = nil
+  then Result := dsNone
+  else Result := FDebugger.State;
+end;
+
+function TDebugManager.GetCommands: TDBGCommands; 
+begin
+  if FDebugger = nil
+  then Result := []
+  else Result := FDebugger.Commands;
+end;
+
 end.
 
 { =============================================================================
   $Log$
+  Revision 1.9  2002/11/05 22:41:13  lazarus
+  MWE:
+    * Some minor debugger updates
+    + Added evaluate to debugboss
+    + Added hint debug evaluation
+
   Revision 1.8  2002/10/02 00:17:03  lazarus
   MWE:
     + Honoured the ofQuiet flag in DoOpenNotExistingFile, so custom messages
