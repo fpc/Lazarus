@@ -564,7 +564,9 @@ type
     function GetRunCommandLine: string; override;
     function GetProjPublishDir: string;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
-      var Handled, Abort: boolean);
+                                  var Handled, Abort: boolean);
+    function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
+                                        const UnparsedValue: string): string;
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
@@ -1265,6 +1267,8 @@ begin
   MacroList.Add(TTransferMacro.Create('ProjPublishDir','',
                     lisPublishProjDir,nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
+  
+  CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
 end;
 
 procedure TMainIDE.SetupControlSelection;
@@ -2592,6 +2596,9 @@ Begin
       ReadSettings(EnvironmentOptions);
     end;
     if EnvironmentOptionsDialog.ShowModal=mrOk then begin
+      // invalidate cached substituted macros
+      IncreaseParseStamp;
+      
       // load settings from EnvironmentOptionsDialog to EnvironmentOptions
       OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
       EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
@@ -3724,6 +3731,10 @@ begin
     // update source notebook page names
     UpdateSourceNames;
   end;
+  
+  // invalidate cached substituted macros
+  IncreaseParseStamp;
+  
   Result:=mrOk;
 end;
 
@@ -4649,6 +4660,9 @@ Begin
 writeln('TMainIDE.DoNewProject A');
   Result:=mrCancel;
 
+  // invalidate cached substituted macros
+  IncreaseParseStamp;
+
   // close current project first
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
@@ -4718,6 +4732,7 @@ writeln('TMainIDE.DoNewProject A');
   for i:=0 to Project1.UnitCount-1 do
     Project1.Units[i].Modified:=false;
   Project1.Modified:=false;
+  IncreaseParseStamp;
 
 writeln('TMainIDE.DoNewProject end ',CodeToolBoss.ConsistencyCheck);
   Result:=mrOk;
@@ -4839,6 +4854,7 @@ begin
     if Result=mrAbort then exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
+  IncreaseParseStamp;
   // close Project
   FreeThenNil(Project1);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject C');{$ENDIF}
@@ -4936,6 +4952,7 @@ begin
   writeln('TMainIDE.DoOpenProjectFile C');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile C');{$ENDIF}
+  IncreaseParseStamp;
 
   // restore files
   LastEditorIndex:=-1;
@@ -5009,6 +5026,7 @@ begin
   end;
   Project1.Modified:=false;
   
+  IncreaseParseStamp;
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
@@ -5036,8 +5054,9 @@ begin
   if ShowDialog then begin
     Result:=ShowPublishProjectDialog(Project1.PublishOptions);
     if Result<>mrOk then exit;
+    IncreaseParseStamp;
   end;
-  
+
   // save project
   Result:=DoSaveProject(Flags);
   if Result<>mrOk then exit;
@@ -5048,9 +5067,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
-writeln('TMainIDE.DoPublishProject A "',CommandAfter,'"');
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
-writeln('TMainIDE.DoPublishProject B "',CmdAfterExe,'" "',CmdAfterParams,'"');
   if (CmdAfterExe<>'') and not FileIsExecutable(CmdAfterExe) then begin
     ShowErrorForCommandAfter;
     Result:=mrCancel;
@@ -5059,7 +5076,6 @@ writeln('TMainIDE.DoPublishProject B "',CmdAfterExe,'" "',CmdAfterParams,'"');
 
   // clear destination directory
   DestDir:=GetProjPublishDir;
-writeln('TMainIDE.DoPublishProject C ',DestDir);
   if (DestDir='') then begin
     MessageDlg('Invalid destination directory',
       'Destination directory "'+DestDir+'" is invalid.'#13
@@ -5090,7 +5106,6 @@ writeln('TMainIDE.DoPublishProject C ',DestDir);
   // write a filtered .lpi file
   NewProjectFilename:=DestDir+ExtractFilename(Project1.ProjectInfoFile);
   DeleteFile(NewProjectFilename);
-writeln('TMainIDE.DoPublishProject C ',NewProjectFilename);
   Result:=Project1.WriteProject(Project1.PublishOptions.WriteFlags,
                                 NewProjectFilename);
   if Result<>mrOk then exit;
@@ -5159,6 +5174,7 @@ begin
   Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
   Project1.CompilerOptions.CompilerPath:='$(CompPath)';
   UpdateCaption;
+  IncreaseParseStamp;
 
   // set project type specific things
   ds:=PathDelim;
@@ -6125,8 +6141,7 @@ procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
 var MacroName:string;
 begin
   if TheMacro=nil then begin
-    MessageDlg('Unknown Macro',
-      'Macro not defined: "'+s+'".',
+    MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',
       mtError,[mbAbort],0);
     Abort:=true;
     exit;
@@ -6206,6 +6221,14 @@ begin
     Handled:=true;
     s:=GetProjPublishDir;
   end;
+end;
+
+function TMainIDE.OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
+  const UnparsedValue: string): string;
+begin
+  CurrentParsedCompilerOption:=Options;
+  Result:=UnparsedValue;
+  MacroList.SubstituteStr(Result);
 end;
 
 function TMainIDE.OnMacroPromptFunction(const s:string;
@@ -8265,6 +8288,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.522  2003/04/15 08:54:26  mattias
+  fixed TMemo.WordWrap
+
   Revision 1.521  2003/04/13 22:39:19  mattias
   implemented package links, automatic package loading
 
