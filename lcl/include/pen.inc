@@ -171,7 +171,7 @@ begin
     begin
       lopnStyle := PEN_STYLES[FPenData.Style];
       lopnWidth.X := FPenData.Width;
-      lopnColor := ColorToRGB(FPenData.Color);
+      lopnColor := FPenData.Color;
     end;
     FPenData.Handle := CreatePenIndirect(LogPen);
   end;
@@ -199,6 +199,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/09/18 17:07:25  lazarus
+  MG: added patch from Andrew
+
   Revision 1.2  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 
