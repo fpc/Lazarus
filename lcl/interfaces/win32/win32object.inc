@@ -110,8 +110,8 @@ Begin
     {csComboBox, }csEdit, csMemo:
     Begin
       CapLen := GetWindowTextLength((Sender As TWinControl).Handle);
-      GetWindowText((Sender As TWinControl).Handle, @Caption, CapLen + 1);
-      Data := StrPas(PChar(@Caption));
+      GetWindowText((Sender As TWinControl).Handle, Caption, CapLen + 1);
+      Data := StrPas(Caption);
     End;
     csPage:
     Begin 
@@ -2953,6 +2953,9 @@ End;
 
 {
   $Log$
+  Revision 1.10  2002/01/24 07:34:50  lazarus
+  Keith: Fixed some bugs
+
   Revision 1.9  2002/01/21 08:42:06  lazarus
   Keith: Fixed some run-time exceptions for FPC 1.1
 

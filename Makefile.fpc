@@ -37,7 +37,8 @@ destdir=$(BASEDIR)/dist
 ifndef LCLPLATFORM
 ifeq ($(OS_TARGET), win32)
 LCLPLATFORM=win32
-export OPT+=-dSUPPORTS_RESOURCES
+override FPCOPT+=-dSUPPORTS_RESOURCES
+export FPCOPT
 else
 LCLPLATFORM=gtk
 endif
