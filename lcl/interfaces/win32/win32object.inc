@@ -1237,6 +1237,11 @@ begin
   Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
+procedure TWin32Object.AttachMenuToWindow(AMenu: TMenu);
+begin
+  Windows.SetMenu(TWinControl(AMenu.Owner).Handle, AMenu.Handle);
+end;
+
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------
@@ -2092,7 +2097,6 @@ Begin
       Window := CreateMenu;
       FMenu := Window;
       Assert(False, Format('Trace:Main menu owner --> %S', [(TComponent(Sender).Owner As TWinControl).ClassName]));
-      Windows.SetMenu(TWinControl(TComponent(Sender).Owner).Handle, Window);
     End;
     csMenuItem:
     Begin
@@ -2799,6 +2803,9 @@ End;
 
 {
   $Log$
+  Revision 1.121  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.120  2003/10/23 07:45:49  micha
   cleanups; single parent window (single taskbar button)
 

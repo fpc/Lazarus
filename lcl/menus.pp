@@ -45,7 +45,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLIntf, LCLType, LCLProc, VCLGlobals,
+  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
   LMessages, ActnList, Graphics, ImgList;
 
 
@@ -54,7 +54,7 @@ type
   EMenuError = class(Exception);
 
   TMenuItem = class;
-  
+
   TMenuChangeEvent = procedure (Sender: TObject; Source: TMenuItem;
                                 Rebuild: Boolean) of object;
 
@@ -88,8 +88,8 @@ type
   end;
 
   TMenuActionLinkClass = class of TMenuActionLink;
-  
-  
+
+
   { TMenuItem }
 
   TMenuItem = class(TComponent)
@@ -269,8 +269,8 @@ type
     property Items;
     property OnChange;
   end;
-  
-  
+
+
   { TPopupMenu }
 
   TPopupMenu = class(TMenu)
@@ -314,6 +314,8 @@ procedure Register;
 
 implementation
 
+uses
+  LCLIntf, InterfaceBase;
 
 { Menu command managment }
 
@@ -378,7 +380,7 @@ initialization
   DesignerMenuItemClick:=nil;
   ActivePopupMenu:=nil;
   CommandPool := nil;
-  
+
 finalization
   FreeThenNil(CommandPool);
 
@@ -386,6 +388,9 @@ end.
 
 {
   $Log$
+  Revision 1.53  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.52  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

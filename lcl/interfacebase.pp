@@ -22,12 +22,12 @@
 }
 
 {
-@author(TInterfaceBase - Marc Weustink <weus@quicknet.nl>)                       
+@author(TInterfaceBase - Marc Weustink <weus@quicknet.nl>)
 @created(13-Nov-1999)
 @lastmod(13-Nov-1999)
 
 Detailed description of the Unit.
-} 
+}
 
 unit InterfaceBase;
 
@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
-  GraphType, GraphMath;
+  Menus, GraphType, GraphMath;
 
 type
 
@@ -65,6 +65,7 @@ type
     procedure WaitMessage; virtual; abstract;
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
+    procedure AttachMenuToWindow(AMenu: TMenu); virtual;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; virtual; abstract;
@@ -74,7 +75,7 @@ type
     {$I winapih.inc}
     {$UNDEF IF_BASE_MEMBER}
   end;
-  
+
 type
   EInterfaceException = class(Exception);
   EInterfaceError = class(EInterfaceException);
@@ -99,13 +100,13 @@ type
     X, Y : Longint) : Longint;
 var
   PromptDialogFunction: TPromptDialogFunction;
-  
+
 var
   InterfaceObject: TInterfaceBase;
 
 implementation
 
-uses Math;
+uses Math, LCLIntf;
 
 {$I interfacebase.inc}
 
@@ -120,6 +121,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.32  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

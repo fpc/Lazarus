@@ -36,7 +36,7 @@ uses
   {$IFDEF UseFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
-  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
+  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LResources,
   GraphType, GraphMath;
 
 type
@@ -295,7 +295,7 @@ type
 
 
   { TFont }
-  
+
   TFont = class(TGraphicsObject)
   private
     FColor : TColor;
@@ -418,7 +418,7 @@ type
   TRegionData = record
     Handle : HRgn;
     Rect : TRect;
-    
+
     {Polygon Region Info - not used yet}
     Polygon : PPoint;//Polygon Points
     NumPoints : Longint;//Number of Points
@@ -471,7 +471,7 @@ type
         (ex: TImage) sets it to False.
       OnProgress - Generic progress indicator event. Propagates out to TPicture
         and TImage OnProgress events.}
-        
+
   TGraphic = class(TPersistent)
   private
     FModified: Boolean;
@@ -538,13 +538,13 @@ type
 
 
   { TPicture }
-  
+
   { TPicture is a TGraphic container.  It is used in place of a TGraphic if the
     graphic can be of any TGraphic class.  LoadFromFile and SaveToFile are
     polymorphic. For example, if the TPicture is holding an Icon, you can
     LoadFromFile a bitmap file, where if the class is TIcon you could only read
     .ICO files.
-    
+
       LoadFromFile - Reads a picture from disk. The TGraphic class created
         determined by the file extension of the file. If the file extension is
         not recognized an exception is generated.
@@ -747,7 +747,7 @@ type
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Polyline(const Points: array of TPoint);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
-    Procedure Rectangle(const Rect: TRect); 
+    Procedure Rectangle(const Rect: TRect);
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
     Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
@@ -837,7 +837,7 @@ type
 
 
   { TBitmap }
-  
+
   { Not completed!
     TBitmap is the data of an image. The image can be loaded from a file,
     stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
@@ -851,7 +851,7 @@ type
     bmisCreateingCanvas
     );
   TBitmapInternalState = set of TBitmapInternalStateFlag;
-  
+
   TBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
@@ -951,15 +951,15 @@ type
 
 
   { TPixmap }
-  
+
   TPixmap = class(TBitmap)
   public
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   end;
-  
+
   { TPortableNetworkGraphic }
-  
+
   TPortableNetworkGraphic = class(TBitmap)
   public
     {$IFDEF UseFPImage}
@@ -973,7 +973,7 @@ type
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
     function GetDefaultMimeType: string; override;
   end;
-  
+
   { TIcon }
   {
     @abstract()
@@ -1003,7 +1003,7 @@ function GetFPImageWriterForFileExtension(const FileExt: string
 type
   // Color / Identifier mapping
   TGetColorStringProc = procedure(const s:ansistring) of object;
-  
+
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function ColorToRGB(Color: TColor): Longint;
@@ -1085,7 +1085,7 @@ const
 implementation
 
 uses
-  TypInfo;
+  TypInfo, LCLIntf;
 
 function SendIntfMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
@@ -1259,6 +1259,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.93  2003/10/15 20:33:36  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

@@ -56,6 +56,10 @@ begin
   Result := True;
 end;
 
+procedure TInterfaceBase.AttachMenuToWindow(AMenu: TMenu);
+begin
+end;
+
 function TInterfaceBase.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 begin
   Result:=GetDC(Handle);
@@ -1131,12 +1135,12 @@ end;
 
 Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
   bErase : Boolean; BorderWidth: integer) : Boolean;
-  
+
   function Min(i1, i2: integer): integer;
   begin
     if i1<=i2 then Result:=i1 else Result:=i2;
   end;
-  
+
   function Max(i1, i2: integer): integer;
   begin
     if i1<=i2 then Result:=i2 else Result:=i1;
@@ -1204,11 +1208,11 @@ begin
       Result := CreatePixmapIndirect(@IMGOK_Check[0], GetSysColor(COLOR_BTNFACE));
     idButtonNo :
       Result := CreatePixmapIndirect(@IMG_NO[0], GetSysColor(COLOR_BTNFACE));
-    idButtonCancel : 
+    idButtonCancel :
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
     idButtonHelp :
       Result := CreatePixmapIndirect(@IMGHELP[0], GetSysColor(COLOR_BTNFACE));
-    idButtonAll : 
+    idButtonAll :
       Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
     idButtonYesToAll :
       Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
@@ -1216,9 +1220,9 @@ begin
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
     idButtonAbort :
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
-    idButtonRetry : 
+    idButtonRetry :
       Result := CreatePixmapIndirect(@IMG_RETRY[0], GetSysColor(COLOR_BTNFACE));
-    idButtonIgnore : 
+    idButtonIgnore :
       Result := CreatePixmapIndirect(@IMG_IGNIORE[0], GetSysColor(COLOR_BTNFACE));
     idButtonClose :
       Result := CreatePixmapIndirect(@IMGClose[0], GetSysColor(COLOR_BTNFACE));
@@ -1243,9 +1247,9 @@ begin
   Result:= 0;
 end;
 
-function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
-  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; 
-  Rop: DWORD): Boolean; 
+function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer;
+  Rop: DWORD): Boolean;
 begin
   Result := False;
 end;
@@ -1301,7 +1305,7 @@ begin
     Result:=0;
 end;
 
-function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer; 
+function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer;
   OldPoint: PPoint): Boolean;
 begin
   Result := False;
@@ -1344,7 +1348,7 @@ Begin
   Result := False;
 End;
 
-function TInterfaceBase.Pie(DC: HDC; 
+function TInterfaceBase.Pie(DC: HDC;
   EllipseX1,EllipseY1,EllipseX2,EllipseY2,
   StartX,StartY,EndX,EndY: Integer): Boolean;
 begin
@@ -1370,14 +1374,14 @@ Begin
   ReallocMem(APoints,0);
 End;
 
-function TInterfaceBase.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
-  Winding: boolean): boolean; 
+function TInterfaceBase.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+  Winding: boolean): boolean;
 begin
   Result := false;
 end;
 
-function TInterfaceBase.Polyline(DC: HDC; Points: PPoint; 
-  NumPts: Integer): boolean; 
+function TInterfaceBase.Polyline(DC: HDC; Points: PPoint;
+  NumPts: Integer): boolean;
 begin
   Result := false;
 end;
@@ -1496,9 +1500,9 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.RestoreDC(DC: HDC; SavedDC: Integer): Boolean; 
+function TInterfaceBase.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
-  Result := False;  
+  Result := False;
 end;
 
 function TInterfaceBase.RightJustifyMenuItem(HndMenu: HMenu;
@@ -1590,7 +1594,7 @@ end;
 
 function TInterfaceBase.SaveDC(DC: HDC) : Integer;
 begin
-  Result := 0;  
+  Result := 0;
 end;
 
 Function TInterfaceBase.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
@@ -1833,6 +1837,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.104  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

@@ -38,7 +38,7 @@ Interface
 Uses
   Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics;
+  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
 
 Type
   { Virtual alignment-control record }
@@ -116,6 +116,7 @@ Type
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
+    Procedure AttachMenuToWindow(AMenu: TMenu); Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -131,7 +132,7 @@ Type
 Implementation
 
 Uses
-  Arrow, Buttons, Calendar, CListBox, Menus, Spin, WinExt;
+  Arrow, Buttons, Calendar, CListBox, Spin, WinExt;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
@@ -180,6 +181,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.46  2003/10/23 07:45:49  micha
   cleanups; single parent window (single taskbar button)
 

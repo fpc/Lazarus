@@ -77,6 +77,8 @@ begin
   // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
   for i:=0 to Items.Count-1 do
     Items[i].HandleNeeded;
+  // attach menu to window
+  InterfaceObject.AttachMenuToWindow(Self);
 end;
 
 procedure TMenu.DoChange(Source: TMenuItem; Rebuild: Boolean);
@@ -100,10 +102,10 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TMenu.FindItem
-  Params:   
-  Returns:  
+  Params:
+  Returns:
 
-  
+
  ------------------------------------------------------------------------------}
 function TMenu.FindItem(AValue: Integer; Kind: TFindItemKind): TMenuItem;
 
@@ -154,10 +156,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
-   i : integer;	
+   i : integer;
 begin
-   for i := 0 to FItems.Count - 1 
-      do if FItems[i].Owner = Root 
+   for i := 0 to FItems.Count - 1
+      do if FItems[i].Owner = Root
        	    then Proc(TComponent (FItems [i]));
 end;
 
@@ -220,10 +222,10 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TMenu.IsRightToLeft
-  Params:   
-  Returns:  
+  Params:
+  Returns:
 
-  
+
  ------------------------------------------------------------------------------}
 function TMenu.IsRightToLeft : Boolean;
 Begin
@@ -236,6 +238,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/10/26 17:34:41  micha
+  new interface method to attach a menu to window
+
   Revision 1.19  2003/10/22 17:50:16  mattias
   updated rpm scripts
 
