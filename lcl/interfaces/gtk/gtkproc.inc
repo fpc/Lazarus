@@ -4603,7 +4603,7 @@ begin
   If Not Assigned(Styles) then
     exit;
   l:=IndexOfStyle(WName);
-  //writeln('GetStyle A ',WName,' ',l);
+//  writeln('GetStyle A ',WName,' ',l);
   If l < 0 then begin
     // create a new style object
     StyleObject := NewStyleObject;
@@ -4651,7 +4651,7 @@ begin
         StyleObject^.Widget := nil;
         GTK_Tooltips_Force_Window(TP);
         gtk_widget_ensure_style(PGTKTooltips(TP)^.Tip_Window);
-        StyleObject^.Style:=GTK_RC_GET_STYLE(PGTKTooltips(TP)^.Tip_Window);
+        StyleObject^.Style:=gtk_widget_get_style(PGTKTooltips(TP)^.Tip_Window);
       end
     else
       If AnsiCompareText(WName,'gtk_default')=0 then begin
@@ -4665,7 +4665,7 @@ begin
     // ensure style of the widget
     If (StyleObject^.Widget <> nil) then begin
       gtk_widget_ensure_style(StyleObject^.Widget);
-      StyleObject^.Style:=GTK_RC_GET_STYLE(StyleObject^.Widget);
+      StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
        If AnsiCompareText(WName,'button')=0 then begin
@@ -5004,10 +5004,10 @@ begin
       begin
         ThemeWidget:=GetWidgetWithBackgroundWindow(ThemeWidget);
         if ThemeWidget<>nil then begin
-          if GtkWidgetIsA(ThemeWidget,GTK_LIST_ITEM_TYPE) then
+          if GtkWidgetIsA(ThemeWidget,GTK_TYPE_LIST_ITEM) then
             Style:=GetStyle('list');
           if Style=nil then
-            Style:=PGtkStyle(ThemeWidget^.thestyle);
+            Style:=PGtkStyle(gtk_widget_get_style(ThemeWidget));
         end;
         if Style=nil then
           Style := GetStyle('default');
@@ -5620,6 +5620,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.233  2003/12/18 15:15:13  ajgenius
+  fix NIL style crash and GTK2 Compiling
+
   Revision 1.232  2003/11/30 18:35:20  mattias
   fixed fpc 1.9.1 warns
 

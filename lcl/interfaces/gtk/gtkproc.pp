@@ -75,6 +75,7 @@ uses
   function  GTK_TYPE_SCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_scrollbar_get_type';
   function  GTK_TYPE_HSCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_hscrollbar_get_type';
   function  GTK_TYPE_VSCROLLBAR : TGTKType; cdecl; external gtkdll name 'gtk_vscrollbar_get_type';
+  function  GTK_TYPE_LIST_ITEM : TGTKType; cdecl; external gtkdll name 'gtk_list_item_get_type';
 {$ENDIF}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
