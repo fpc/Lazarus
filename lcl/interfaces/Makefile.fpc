@@ -4,7 +4,7 @@
 #
 
 [targets]
-dirs=apiwizz
+dirs=gtk qt win32
 
 [dirs]
 # target dir needs to be . or a full path otherwise the 
@@ -12,15 +12,16 @@ dirs=apiwizz
 # not with the lazarusmake.ini
 # targetdir=.
 
+[defaults]
+defaultdir=$(LCLPLATFORM)
+
 [install]
-packagename=tools
+packagename=interfaces
 
 [presettings]
 ifndef LCLPLATFORM
 LCLPLATFORM=gtk
-export LCLPLATFORM
 endif
-
 
 [postsettings]
 

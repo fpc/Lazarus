@@ -127,13 +127,6 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
-# Pre Settings
-#####################################################################
-
-ifndef LCLPLATFORM
-LCLPLATFORM=gtk
-endif
-#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -211,8 +204,8 @@ override NEEDOPT=-Ca -gl
 
 # Directories
 
-override NEEDUNITDIR=$(UNITTARGETDIR) . ./interfaces/$(LCLPLATFORM)
-override NEEDINCDIR=./include ./interfaces/$(LCLPLATFORM)
+override NEEDUNITDIR=$(UNITTARGETDIR) ./interfaces/abstract
+override NEEDINCDIR=./include
 ifndef UNITTARGETDIR
 UNITTARGETDIR=./units
 endif
@@ -1344,3 +1337,6 @@ cleartarget:
 
 all: cleartarget allunits$(PPUEXT)
 	-$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+	-$(DEL) $(UNITTARGETDIR)/interfaces$(PPUEXT)
+	-$(DEL) $(UNITTARGETDIR)/interfaces$(OEXT)
+	$(MAKE) -C interfaces

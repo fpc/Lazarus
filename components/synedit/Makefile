@@ -202,7 +202,7 @@ override NEEDOPT=-Ca -gl
 
 # Directories
 
-override NEEDUNITDIR=$(UNITTARGETDIR) ../../lcl/units
+override NEEDUNITDIR=$(UNITTARGETDIR) ../../lcl/units ../../lcl/units/$(LCLPLATFORM)
 ifndef UNITTARGETDIR
 UNITTARGETDIR=../units
 endif

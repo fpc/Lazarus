@@ -16,7 +16,8 @@ uses
 	clipbrd,    filectrl,        forms,        lcllinux,   spin, 
 	comctrls,   graphics,        lmessages,    stdctrls, 
 	controls,   imglist,         menus,        toolwin, 
-	dialogs,    messages,        utrace,       dynhasharray;
+	dialogs,    messages,        utrace,       dynhasharray,
+	clistbox;
 
 implementation
 end.
@@ -24,6 +25,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/03/27 20:55:23  lazarus
+  MWE:
+    * changed makefiles so that the LCL is build separate fron interfaces
+
   Revision 1.5  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion
 

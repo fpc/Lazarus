@@ -16,9 +16,8 @@ packages=fcl gtk
 LAZDIR=../..
 
 [dirs]
-fpcdir=$(LAZDIR)/..
 targetdir=.
-unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units 
+unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCLPLATFORM)
 
 [libs]
 

@@ -127,6 +127,13 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
+# Pre Settings
+#####################################################################
+
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+endif
+#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -205,7 +212,7 @@ override NEEDOPT=-gl
 
 # Directories
 
-override NEEDUNITDIR=. ../lcl/units ../components/units ../designer
+override NEEDUNITDIR=. ../lcl/units ../components/units ../designer ../lcl/units/$(LCLPLATFORM)
 
 # Packages
 

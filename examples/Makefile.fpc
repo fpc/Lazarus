@@ -17,13 +17,16 @@ packages=fcl gtk
 [dirs]
 # not with the lazarusmake.ini
 # targetdir=.
-unitdir=. ../lcl/units ../components/units ../designer
+unitdir=. ../lcl/units ../components/units ../designer ../lcl/units/$(LCLPLATFORM)
 
 [install]
 units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
 packagename=examples
 
 [presettings]
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+endif
 
 [libs]
 

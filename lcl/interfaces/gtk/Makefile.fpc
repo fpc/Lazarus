@@ -4,8 +4,7 @@
 #
 
 [targets]
-# units=allunits
-# loaders=allunits
+units=interfaces
 
 [require]
 rtl=1
@@ -22,13 +21,13 @@ units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
 # unittargetdir will be corrupt
 # not with the lazarusmake.ini
 # targetdir=.
-unittargetdir=./units
-unitdir=$(UNITTARGETDIR) ./interfaces/abstract 
-incdir=./include 
+unittargetdir=../../units/gtk
+unitdir=$(UNITTARGETDIR) ../../units 
+incdir=.
 
 [install]
 units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-packagename=lcl
+packagename=gtkinterface
 
 [libs]
 
@@ -37,12 +36,7 @@ packagename=lcl
 [defaults]
 
 [rules]
-cleartarget:
-        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
 
-all: cleartarget allunits$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/interfaces$(PPUEXT)
-        -$(DEL) $(UNITTARGETDIR)/interfaces$(OEXT)
-        $(MAKE) -C interfaces
 
+all: 
+        $(MAKE) --assume-new=interfaces$(PASEXT) interfaces$(PPUEXT)

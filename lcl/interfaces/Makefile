@@ -130,7 +130,9 @@ export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 # Pre Settings
 #####################################################################
 
-LAZDIR=../..
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+endif
 #####################################################################
 # FPCDIR Setting
 #####################################################################
@@ -170,21 +172,6 @@ endif
 endif
 endif
 
-ifndef PACKAGESDIR
-PACKAGESDIR=$(FPCDIR)/packages
-endif
-ifndef TOOLKITSDIR
-TOOLKITSDIR=
-endif
-ifndef COMPONENTSDIR
-COMPONENTSDIR=
-endif
-
-# Create units dir
-ifneq ($(FPCDIR),.)
-UNITSDIR=$(FPCDIR)/units/$(OS_TARGET)
-endif
-
 #####################################################################
 # User Settings
 #####################################################################
@@ -192,14 +179,14 @@ endif
 
 # Targets
 
-override EXEOBJECTS+=apiwizz
+override DIROBJECTS+=$(wildcard gtk qt win32)
 
 # Clean
 
-override EXTRACLEANUNITS+=apiwizard
 
 # Install
 
+PACKAGENAME=interfaces
 ZIPTARGET=install
 
 # Defaults
@@ -207,14 +194,9 @@ ZIPTARGET=install
 
 # Directories
 
-override NEEDUNITDIR=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCLPLATFORM)
-ifndef TARGETDIR
-TARGETDIR=.
-endif
 
 # Packages
 
-override PACKAGES+=rtl fcl gtk
 
 # Libraries
 
@@ -493,115 +475,6 @@ endif
 endif
 
 
-# Check if the dirs really exists, else turn it off
-ifeq ($(wildcard $(UNITSDIR)),)
-UNITSDIR=
-endif
-ifeq ($(wildcard $(TOOLKITSDIR)),)
-TOOLKITSDIR=
-endif
-ifeq ($(wildcard $(PACKAGESDIR)),)
-PACKAGESDIR=
-endif
-ifeq ($(wildcard $(COMPONENTSDIR)),)
-COMPONENTSDIR=
-endif
-
-
-# PACKAGESDIR packages
-
-PACKAGERTL=1
-PACKAGEFCL=1
-PACKAGEGTK=1
-
-ifdef PACKAGERTL
-ifneq ($(wildcard $(FPCDIR)/rtl),)
-ifneq ($(wildcard $(FPCDIR)/rtl/$(OS_TARGET)),)
-PACKAGEDIR_RTL=$(FPCDIR)/rtl/$(OS_TARGET)
-else
-PACKAGEDIR_RTL=$(FPCDIR)/rtl
-endif
-ifeq ($(wildcard $(PACKAGEDIR_RTL)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_rtl
-package_rtl:
-	$(MAKE) -C $(PACKAGEDIR_RTL) all
-endif
-UNITDIR_RTL=$(PACKAGEDIR_RTL)
-else
-PACKAGEDIR_RTL=
-ifneq ($(wildcard $(UNITSDIR)/rtl),)
-ifneq ($(wildcard $(UNITSDIR)/rtl/$(OS_TARGET)),)
-UNITDIR_RTL=$(UNITSDIR)/rtl/$(OS_TARGET)
-else
-UNITDIR_RTL=$(UNITSDIR)/rtl
-endif
-else
-UNITDIR_RTL=
-endif
-endif
-ifdef UNITDIR_RTL
-override NEEDUNITDIR+=$(UNITDIR_RTL)
-endif
-endif
-ifdef PACKAGEFCL
-ifneq ($(wildcard $(FPCDIR)/fcl),)
-ifneq ($(wildcard $(FPCDIR)/fcl/$(OS_TARGET)),)
-PACKAGEDIR_FCL=$(FPCDIR)/fcl/$(OS_TARGET)
-else
-PACKAGEDIR_FCL=$(FPCDIR)/fcl
-endif
-ifeq ($(wildcard $(PACKAGEDIR_FCL)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_fcl
-package_fcl:
-	$(MAKE) -C $(PACKAGEDIR_FCL) all
-endif
-UNITDIR_FCL=$(PACKAGEDIR_FCL)
-else
-PACKAGEDIR_FCL=
-ifneq ($(wildcard $(UNITSDIR)/fcl),)
-ifneq ($(wildcard $(UNITSDIR)/fcl/$(OS_TARGET)),)
-UNITDIR_FCL=$(UNITSDIR)/fcl/$(OS_TARGET)
-else
-UNITDIR_FCL=$(UNITSDIR)/fcl
-endif
-else
-UNITDIR_FCL=
-endif
-endif
-ifdef UNITDIR_FCL
-override NEEDUNITDIR+=$(UNITDIR_FCL)
-endif
-endif
-ifdef PACKAGEGTK
-ifneq ($(wildcard $(PACKAGESDIR)/gtk),)
-ifneq ($(wildcard $(PACKAGESDIR)/gtk/$(OS_TARGET)),)
-PACKAGEDIR_GTK=$(PACKAGESDIR)/gtk/$(OS_TARGET)
-else
-PACKAGEDIR_GTK=$(PACKAGESDIR)/gtk
-endif
-ifeq ($(wildcard $(PACKAGEDIR_GTK)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_gtk
-package_gtk:
-	$(MAKE) -C $(PACKAGEDIR_GTK) all
-endif
-UNITDIR_GTK=$(PACKAGEDIR_GTK)
-else
-PACKAGEDIR_GTK=
-ifneq ($(wildcard $(UNITSDIR)/gtk),)
-ifneq ($(wildcard $(UNITSDIR)/gtk/$(OS_TARGET)),)
-UNITDIR_GTK=$(UNITSDIR)/gtk/$(OS_TARGET)
-else
-UNITDIR_GTK=$(UNITSDIR)/gtk
-endif
-else
-UNITDIR_GTK=
-endif
-endif
-ifdef UNITDIR_GTK
-override NEEDUNITDIR+=$(UNITDIR_GTK)
-endif
-endif
-
 
 #####################################################################
 # Default Directories
@@ -806,10 +679,6 @@ ifdef VERBOSE
 override FPCOPT+=-vwni
 endif
 
-ifdef NEEDUNITDIR
-override FPCOPT+=$(addprefix -Fu,$(NEEDUNITDIR))
-endif
-
 ifdef UNITSDIR
 override FPCOPT+=-Fu$(UNITSDIR)
 endif
@@ -881,15 +750,17 @@ endif
 # Standard rules
 #####################################################################
 
-debug: fpc_debug
+all: fpc_all $(addsuffix _all,$(LCLPLATFORM))
 
-smart: fpc_smart
+debug: fpc_debug $(addsuffix _debug,$(LCLPLATFORM))
 
-shared: fpc_shared
+smart: fpc_smart $(addsuffix _smart,$(LCLPLATFORM))
 
-showinstall: fpc_showinstall
+shared: fpc_shared $(addsuffix _shared,$(LCLPLATFORM))
 
-install: fpc_install
+showinstall: fpc_showinstall $(addsuffix _showinstall,$(LCLPLATFORM))
+
+install: fpc_install $(addsuffix _install,$(LCLPLATFORM))
 
 sourceinstall: fpc_sourceinstall
 
@@ -901,33 +772,17 @@ zipsourceinstall: fpc_zipsourceinstall
 
 zipexampleinstall: fpc_zipexampleinstall
 
-clean: fpc_clean
+clean: fpc_clean $(addsuffix _clean,$(LCLPLATFORM))
 
-distclean: fpc_distclean
+distclean: fpc_distclean $(addsuffix _distclean,$(LCLPLATFORM))
 
-cleanall: fpc_cleanall
+cleanall: fpc_cleanall $(addsuffix _cleanall,$(LCLPLATFORM))
+
+require: $(addsuffix _require,$(LCLPLATFORM))
 
 info: fpc_info
 
-.PHONY:  debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall info
-
-#####################################################################
-# Exes
-#####################################################################
-
-.PHONY: fpc_exes
-
-ifdef EXEOBJECTS
-override EXEFILES=$(addsuffix $(EXEEXT),$(EXEOBJECTS))
-override EXEOFILES:=$(addsuffix $(OEXT),$(EXEOBJECTS)) $(addprefix $(LIBPREFIX),$(addsuffix $(STATICLIBEXT),$(EXEOBJECTS)))
-
-override ALLTARGET+=fpc_exes
-override INSTALLEXEFILES+=$(EXEFILES)
-override CLEANEXEFILES+=$(EXEFILES) $(EXEOFILES)
-
-endif
-
-fpc_exes: $(EXEFILES)
+.PHONY:  all debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall require info
 
 #####################################################################
 # General compile rules
@@ -1332,6 +1187,194 @@ endif
 	@$(ECHO)
 
 #####################################################################
+# Directories
+#####################################################################
+
+OBJECTDIRGTK=1
+OBJECTDIRQT=1
+OBJECTDIRWIN32=1
+
+# Dir gtk
+
+ifdef OBJECTDIRGTK
+.PHONY:  gtk_all gtk_debug gtk_examples gtk_test gtk_smart gtk_shared gtk_showinstall gtk_install gtk_sourceinstall gtk_exampleinstall gtk_zipinstall gtk_zipsourceinstall gtk_zipexampleinstall gtk_clean gtk_distclean gtk_cleanall gtk_require gtk_info
+
+gtk_all:
+	$(MAKE) -C gtk all
+
+gtk_debug:
+	$(MAKE) -C gtk debug
+
+gtk_examples:
+	$(MAKE) -C gtk examples
+
+gtk_test:
+	$(MAKE) -C gtk test
+
+gtk_smart:
+	$(MAKE) -C gtk smart
+
+gtk_shared:
+	$(MAKE) -C gtk shared
+
+gtk_showinstall:
+	$(MAKE) -C gtk showinstall
+
+gtk_install:
+	$(MAKE) -C gtk install
+
+gtk_sourceinstall:
+	$(MAKE) -C gtk sourceinstall
+
+gtk_exampleinstall:
+	$(MAKE) -C gtk exampleinstall
+
+gtk_zipinstall:
+	$(MAKE) -C gtk zipinstall
+
+gtk_zipsourceinstall:
+	$(MAKE) -C gtk zipsourceinstall
+
+gtk_zipexampleinstall:
+	$(MAKE) -C gtk zipexampleinstall
+
+gtk_clean:
+	$(MAKE) -C gtk clean
+
+gtk_distclean:
+	$(MAKE) -C gtk distclean
+
+gtk_cleanall:
+	$(MAKE) -C gtk cleanall
+
+gtk_require:
+	$(MAKE) -C gtk require
+
+gtk_info:
+	$(MAKE) -C gtk info
+endif
+
+# Dir qt
+
+ifdef OBJECTDIRQT
+.PHONY:  qt_all qt_debug qt_examples qt_test qt_smart qt_shared qt_showinstall qt_install qt_sourceinstall qt_exampleinstall qt_zipinstall qt_zipsourceinstall qt_zipexampleinstall qt_clean qt_distclean qt_cleanall qt_require qt_info
+
+qt_all:
+	$(MAKE) -C qt all
+
+qt_debug:
+	$(MAKE) -C qt debug
+
+qt_examples:
+	$(MAKE) -C qt examples
+
+qt_test:
+	$(MAKE) -C qt test
+
+qt_smart:
+	$(MAKE) -C qt smart
+
+qt_shared:
+	$(MAKE) -C qt shared
+
+qt_showinstall:
+	$(MAKE) -C qt showinstall
+
+qt_install:
+	$(MAKE) -C qt install
+
+qt_sourceinstall:
+	$(MAKE) -C qt sourceinstall
+
+qt_exampleinstall:
+	$(MAKE) -C qt exampleinstall
+
+qt_zipinstall:
+	$(MAKE) -C qt zipinstall
+
+qt_zipsourceinstall:
+	$(MAKE) -C qt zipsourceinstall
+
+qt_zipexampleinstall:
+	$(MAKE) -C qt zipexampleinstall
+
+qt_clean:
+	$(MAKE) -C qt clean
+
+qt_distclean:
+	$(MAKE) -C qt distclean
+
+qt_cleanall:
+	$(MAKE) -C qt cleanall
+
+qt_require:
+	$(MAKE) -C qt require
+
+qt_info:
+	$(MAKE) -C qt info
+endif
+
+# Dir win32
+
+ifdef OBJECTDIRWIN32
+.PHONY:  win32_all win32_debug win32_examples win32_test win32_smart win32_shared win32_showinstall win32_install win32_sourceinstall win32_exampleinstall win32_zipinstall win32_zipsourceinstall win32_zipexampleinstall win32_clean win32_distclean win32_cleanall win32_require win32_info
+
+win32_all:
+	$(MAKE) -C win32 all
+
+win32_debug:
+	$(MAKE) -C win32 debug
+
+win32_examples:
+	$(MAKE) -C win32 examples
+
+win32_test:
+	$(MAKE) -C win32 test
+
+win32_smart:
+	$(MAKE) -C win32 smart
+
+win32_shared:
+	$(MAKE) -C win32 shared
+
+win32_showinstall:
+	$(MAKE) -C win32 showinstall
+
+win32_install:
+	$(MAKE) -C win32 install
+
+win32_sourceinstall:
+	$(MAKE) -C win32 sourceinstall
+
+win32_exampleinstall:
+	$(MAKE) -C win32 exampleinstall
+
+win32_zipinstall:
+	$(MAKE) -C win32 zipinstall
+
+win32_zipsourceinstall:
+	$(MAKE) -C win32 zipsourceinstall
+
+win32_zipexampleinstall:
+	$(MAKE) -C win32 zipexampleinstall
+
+win32_clean:
+	$(MAKE) -C win32 clean
+
+win32_distclean:
+	$(MAKE) -C win32 distclean
+
+win32_cleanall:
+	$(MAKE) -C win32 cleanall
+
+win32_require:
+	$(MAKE) -C win32 require
+
+win32_info:
+	$(MAKE) -C win32 info
+endif
+
+#####################################################################
 # Local Makefile
 #####################################################################
 
@@ -1339,9 +1382,3 @@ ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
 
-#####################################################################
-# Users rules
-#####################################################################
-
-all: 
-	$(MAKE) --assume-new=apiwizz.pp apiwizz$(EXEEXT)

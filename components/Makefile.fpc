@@ -19,6 +19,10 @@ packagename=components
 
 
 [presettings]
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+export LCLPLATFORM
+endif
 
 [postsettings]
 

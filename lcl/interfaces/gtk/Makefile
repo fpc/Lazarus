@@ -127,11 +127,6 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
-# Pre Settings
-#####################################################################
-
-LAZDIR=../..
-#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -192,24 +187,28 @@ endif
 
 # Targets
 
-override EXEOBJECTS+=apiwizz
+override UNITOBJECTS+=interfaces
 
 # Clean
 
-override EXTRACLEANUNITS+=apiwizard
+override EXTRACLEANUNITS+=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
 
 # Install
 
+override EXTRAINSTALLUNITS+=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
+PACKAGENAME=gtkinterface
 ZIPTARGET=install
 
 # Defaults
 
+override NEEDOPT=-Ca -gl
 
 # Directories
 
-override NEEDUNITDIR=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCLPLATFORM)
-ifndef TARGETDIR
-TARGETDIR=.
+override NEEDUNITDIR=$(UNITTARGETDIR) ../../units
+override NEEDINCDIR=.
+ifndef UNITTARGETDIR
+UNITTARGETDIR=../../units/gtk
 endif
 
 # Packages
@@ -806,6 +805,10 @@ ifdef VERBOSE
 override FPCOPT+=-vwni
 endif
 
+ifdef NEEDOPT
+override FPCOPT+=$(NEEDOPT)
+endif
+
 ifdef NEEDUNITDIR
 override FPCOPT+=$(addprefix -Fu,$(NEEDUNITDIR))
 endif
@@ -813,6 +816,11 @@ endif
 ifdef UNITSDIR
 override FPCOPT+=-Fu$(UNITSDIR)
 endif
+
+ifdef NEEDINCDIR
+override FPCOPT+=$(addprefix -Fi,$(NEEDINCDIR))
+endif
+
 
 # Target dirs and the prefix to use for clean/install
 ifdef TARGETDIR
@@ -912,22 +920,18 @@ info: fpc_info
 .PHONY:  debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall info
 
 #####################################################################
-# Exes
+# Units
 #####################################################################
 
-.PHONY: fpc_exes
+.PHONY: fpc_units
 
-ifdef EXEOBJECTS
-override EXEFILES=$(addsuffix $(EXEEXT),$(EXEOBJECTS))
-override EXEOFILES:=$(addsuffix $(OEXT),$(EXEOBJECTS)) $(addprefix $(LIBPREFIX),$(addsuffix $(STATICLIBEXT),$(EXEOBJECTS)))
+override ALLTARGET+=fpc_units
 
-override ALLTARGET+=fpc_exes
-override INSTALLEXEFILES+=$(EXEFILES)
-override CLEANEXEFILES+=$(EXEFILES) $(EXEOFILES)
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(UNITOBJECTS))
+override INSTALLPPUFILES+=$(UNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES)
 
-endif
-
-fpc_exes: $(EXEFILES)
+fpc_units: $(UNITPPUFILES)
 
 #####################################################################
 # General compile rules
@@ -1343,5 +1347,7 @@ endif
 # Users rules
 #####################################################################
 
+
+
 all: 
-	$(MAKE) --assume-new=apiwizz.pp apiwizz$(EXEEXT)
+	$(MAKE) --assume-new=interfaces$(PASEXT) interfaces$(PPUEXT)

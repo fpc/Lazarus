@@ -127,6 +127,14 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
+# Pre Settings
+#####################################################################
+
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+export LCLPLATFORM
+endif
+#####################################################################
 # FPCDIR Setting
 #####################################################################
 

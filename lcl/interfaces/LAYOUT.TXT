@@ -4,6 +4,8 @@ It is organized according to the following structure:
 
 interfaces
   |
+  +--- abstract
+  |
   +--- gtk
   |
   +--- qt
@@ -12,6 +14,9 @@ interfaces
   |
   +--- ...
   |
+
+interfaces/abstract
+  Abstract definition for initial LCL compilation
 
 interfaces/gtk:
   All gtk specific code goes here.

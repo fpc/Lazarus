@@ -19,13 +19,18 @@ packages=fcl gtk
 [dirs]
 # not with the lazarusmake.ini
 # targetdir=.
-unitdir=. ./lcl/units ./components/units ./designer ./debugger
+unitdir=. ./lcl/units ./lcl/units/$(LCLPLATFORM) ./components/units ./designer ./debugger
 incdir=. ./include ./include/$(OS_TARGET)
 
 [install]
 packagename=lazarus
 
 [presettings]
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+export LCLPLATFORM
+endif
+
 
 [rules]
 .PHONY: examples lcl components ide tools

@@ -127,6 +127,14 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
+# Pre Settings
+#####################################################################
+
+ifndef LCLPLATFORM
+LCLPLATFORM=gtk
+export LCLPLATFORM
+endif
+#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -187,7 +195,7 @@ endif
 
 # Targets
 
-override DIROBJECTS+=$(wildcard lcl components)
+override DIROBJECTS+=$(wildcard lcl lcl/interfaces components)
 override EXEOBJECTS+=lazarus
 override EXAMPLEDIROBJECTS+=examples
 
@@ -207,7 +215,7 @@ override NEEDOPT=-gl
 
 # Directories
 
-override NEEDUNITDIR=. ./lcl/units ./components/units ./designer ./debugger
+override NEEDUNITDIR=. ./lcl/units ./lcl/units/$(LCLPLATFORM) ./components/units ./designer ./debugger
 override NEEDINCDIR=. ./include ./include/$(OS_TARGET)
 
 # Packages
@@ -1365,6 +1373,7 @@ endif
 #####################################################################
 
 OBJECTDIRLCL=1
+OBJECTDIRLCL/INTERFACES=1
 OBJECTDIRCOMPONENTS=1
 
 # Dir lcl
@@ -1425,6 +1434,66 @@ lcl_require:
 
 lcl_info:
 	$(MAKE) -C lcl info
+endif
+
+# Dir lcl/interfaces
+
+ifdef OBJECTDIRLCL/INTERFACES
+.PHONY:  lcl/interfaces_all lcl/interfaces_debug lcl/interfaces_examples lcl/interfaces_test lcl/interfaces_smart lcl/interfaces_shared lcl/interfaces_showinstall lcl/interfaces_install lcl/interfaces_sourceinstall lcl/interfaces_exampleinstall lcl/interfaces_zipinstall lcl/interfaces_zipsourceinstall lcl/interfaces_zipexampleinstall lcl/interfaces_clean lcl/interfaces_distclean lcl/interfaces_cleanall lcl/interfaces_require lcl/interfaces_info
+
+lcl/interfaces_all:
+	$(MAKE) -C lcl/interfaces all
+
+lcl/interfaces_debug:
+	$(MAKE) -C lcl/interfaces debug
+
+lcl/interfaces_examples:
+	$(MAKE) -C lcl/interfaces examples
+
+lcl/interfaces_test:
+	$(MAKE) -C lcl/interfaces test
+
+lcl/interfaces_smart:
+	$(MAKE) -C lcl/interfaces smart
+
+lcl/interfaces_shared:
+	$(MAKE) -C lcl/interfaces shared
+
+lcl/interfaces_showinstall:
+	$(MAKE) -C lcl/interfaces showinstall
+
+lcl/interfaces_install:
+	$(MAKE) -C lcl/interfaces install
+
+lcl/interfaces_sourceinstall:
+	$(MAKE) -C lcl/interfaces sourceinstall
+
+lcl/interfaces_exampleinstall:
+	$(MAKE) -C lcl/interfaces exampleinstall
+
+lcl/interfaces_zipinstall:
+	$(MAKE) -C lcl/interfaces zipinstall
+
+lcl/interfaces_zipsourceinstall:
+	$(MAKE) -C lcl/interfaces zipsourceinstall
+
+lcl/interfaces_zipexampleinstall:
+	$(MAKE) -C lcl/interfaces zipexampleinstall
+
+lcl/interfaces_clean:
+	$(MAKE) -C lcl/interfaces clean
+
+lcl/interfaces_distclean:
+	$(MAKE) -C lcl/interfaces distclean
+
+lcl/interfaces_cleanall:
+	$(MAKE) -C lcl/interfaces cleanall
+
+lcl/interfaces_require:
+	$(MAKE) -C lcl/interfaces require
+
+lcl/interfaces_info:
+	$(MAKE) -C lcl/interfaces info
 endif
 
 # Dir components
