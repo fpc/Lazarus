@@ -283,11 +283,10 @@ Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
     SetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
                     TMenuItem(Sender).Command, false, @MenuInfo);
     // owner could be a popupmenu too
-{
     if (TMenuItem(Sender).Owner is TWinControl) and
-        TWinControl(TMenuItem(Sender).Owner).HandleAllocated then
+        TWinControl(TMenuItem(Sender).Owner).HandleAllocated and
+	([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
       DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
-}
   End;
 
 Var
@@ -2982,6 +2981,9 @@ End;
 
 {
   $Log$
+  Revision 1.190  2004/05/09 19:14:45  micha
+  fix update menu caption at runtime (code accidently commented by me, i think)
+
   Revision 1.189  2004/05/09 16:24:51  micha
   fix tab order by fixing z-order at control creation
 
