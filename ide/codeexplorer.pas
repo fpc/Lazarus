@@ -32,8 +32,8 @@ unit CodeExplorer;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, ComCtrls,
   CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
   IDECommands,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory, IDEProcs,
@@ -142,7 +142,7 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
   begin
     Pixmap:=TPixmap.Create;
     if LazarusResources.Find(ResName)=nil then
-      writeln('TCodeExplorerView.CodeExplorerViewCREATE: ',
+      DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
         ' WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
     ImgList.Add(Pixmap,nil)

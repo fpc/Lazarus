@@ -835,7 +835,7 @@ begin
       inc(FLastOutputLine);
       s:=s+fOutput[FLastOutputLine]+LineEnding;
     end;
-    if s<>'' then write(s);
+    if s<>'' then DbgOut(s);
     fLastOutputTime:=CurTime;
   end;
 end;

@@ -48,7 +48,7 @@ uses
   MemCheck,
   {$ENDIF}
   Interfaces,
-  Forms,
+  Forms, LCLProc,
   Splash,
   Main,
   // use the custom IDE static packages AFTER 'main'
@@ -82,14 +82,14 @@ begin
   try
     Application.Run;
   except
-    writeln('lazarus.pp - unhandled exception');
+    debugln('lazarus.pp - unhandled exception');
   end;
   if (SplashForm<>nil) then begin
     SplashForm.Free;
     SplashForm:=nil;
   end;
 
-  writeln('LAZARUS END - cleaning up ...');
+  debugln('LAZARUS END - cleaning up ...');
 
   // free the IDE, so everything is freed before the finalization sections
   MainIDE.Free;
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.62  2004/09/17 20:04:34  vincents
+  replaced writeln by DebugLn
+
   Revision 1.61  2004/09/04 23:50:17  marc
   * removed compileroptionsdlg from uses claus to get rid of compiler warning
 

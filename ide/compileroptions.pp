@@ -41,7 +41,7 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileCtrl,
+  Classes, SysUtils, FileCtrl, LCLProc,
   Laz_XMLCfg,
   IDEProcs, LazConf,
   TransferMacros;
@@ -854,7 +854,7 @@ begin
       XMLConfigFile := nil;
     except
       on E: Exception do begin
-        writeln('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
+        DebugLn('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
       end;
     end;
   end;
@@ -1143,7 +1143,7 @@ begin
       XMLConfigFile := nil;
     except
       on E: Exception do begin
-        writeln('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
+        DebugLn('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
       end;
     end;
   end;

@@ -35,7 +35,7 @@ unit CodeToolsOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConf, LResources, Forms, Controls, Buttons,
+  Classes, SysUtils, LazConf, LResources, Forms, Controls, Buttons, LclProc,
   ExtCtrls, StdCtrls, ComCtrls, Dialogs, Laz_XMLCfg, CodeToolManager,
   DefineTemplates, SourceChanger, SynEdit,
   IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts;
@@ -364,7 +364,7 @@ begin
     XMLConfig:=TXMLConfig.Create(FFileName);
     FileVersion:=XMLConfig.GetValue('CodeToolsOptions/Version/Value',0);
     if (FileVersion<>0) and (FileVersion<CodeToolsOptionsVersion) then
-      writeln(lisCompilerNOTELoadingOldCodetoolsOptionsFile, FFileName);
+      debugln(lisCompilerNOTELoadingOldCodetoolsOptionsFile, FFileName);
 
     // General
     FSrcPath:=XMLConfig.GetValue('CodeToolsOptions/SrcPath/Value','');
@@ -440,7 +440,7 @@ begin
     XMLConfig.Free;
   except
     on E: Exception do begin
-      writeln('[TCodeToolsOptions.Load]  error reading "',FFilename,'": ',E.Message);
+      DebugLn('[TCodeToolsOptions.Load]  error reading "',FFilename,'": ',E.Message);
     end;
   end;
 end;
@@ -519,7 +519,7 @@ begin
     XMLConfig.Free;
   except
     on E: Exception do begin
-      writeln('[TCodeToolsOptions.Save]  error writing "',FFilename,'": ',E.Message);
+      DebugLn('[TCodeToolsOptions.Save]  error writing "',FFilename,'": ',E.Message);
     end;
   end;
 end;
@@ -537,7 +537,7 @@ begin
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExists(ConfFileName)) then begin
-    writeln(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults);
+    debugln(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults);
   end;
   FFilename:=ConfFilename;
 end;

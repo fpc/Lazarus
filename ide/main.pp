@@ -986,7 +986,7 @@ destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
 
-  writeln('[TMainIDE.Destroy] A');
+  DebugLn('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   FreeThenNil(ProjInspector);
 
@@ -1027,12 +1027,12 @@ begin
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(InputHistories);
 
-  writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
+  DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(SourceNotebook);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
-  writeln('[TMainIDE.Destroy] END');
+  DebugLn('[TMainIDE.Destroy] END');
 end;
 
 procedure TMainIDE.CreateOftenUsedForms;
@@ -3859,7 +3859,7 @@ begin
         AncestorType:=TDataModule
       else
         AncestorType:=TForm;
-      writeln('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
+      DebugLn('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
 
       // convert text to binary format
       try
@@ -4458,7 +4458,7 @@ begin
   end;
 
   Result:=mrOk;
-  debugln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
+  DebugLn('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
 
@@ -4630,7 +4630,7 @@ var ActiveSrcEdit: TSourceEditor;
   ACaption,AText: string;
   i:integer;
 begin
-  writeln('TMainIDE.DoCloseEditorFile A PageIndex=',PageIndex);
+  debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
@@ -4676,7 +4676,7 @@ begin
     Project1.RemoveUnit(i);
   end;
 
-  writeln('TMainIDE.DoCloseEditorFile end');
+  DebugLn('TMainIDE.DoCloseEditorFile end');
   Result:=mrOk;
 end;
 
@@ -4896,7 +4896,7 @@ function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
 var MainUnitInfo: TUnitInfo;
   OpenFlags: TOpenFlags;
 begin
-  writeln('[TMainIDE.DoOpenMainUnit] A ProjectLoading=',ProjectLoading,' MainUnitID=',Project1.MainUnitID);
+  debugln('[TMainIDE.DoOpenMainUnit] A ProjectLoading=',BoolToStr(ProjectLoading),' MainUnitID=',IntToStr(Project1.MainUnitID));
   Result:=mrCancel;
   if Project1.MainUnitID<0 then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
@@ -5284,7 +5284,7 @@ end;
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
 var i:integer;
 Begin
-  writeln('TMainIDE.DoNewProject A');
+  DebugLn('TMainIDE.DoNewProject A');
   Result:=mrCancel;
 
   // invalidate cached substituted macros
@@ -5352,7 +5352,7 @@ Begin
     Project1.Units[i].Modified:=false;
   Project1.Modified:=false;
 
-  writeln('TMainIDE.DoNewProject end ');
+  DebugLn('TMainIDE.DoNewProject end ');
   Result:=mrOk;
 end;
 
@@ -5372,8 +5372,10 @@ begin
   SaveSourceEditorChangesToCodeCache(-1);
   SkipSavingMainSource:=false;
 
+  {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
-
+  {$ENDIF}
+  
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
   for i:=0 to Project1.UnitCount-1 do begin
@@ -5461,7 +5463,7 @@ begin
     end;
   end;
 
-writeln('TMainIDE.DoSaveProject End');
+DebugLn('TMainIDE.DoSaveProject End');
 end;
 
 function TMainIDE.DoCloseProject: TModalResult;
@@ -6147,7 +6149,7 @@ end;
 
 function TMainIDE.DoRunProject: TModalResult;
 begin
-  Writeln('[TMainIDE.DoRunProject] A');
+  DebugLn('[TMainIDE.DoRunProject] A');
 
   if (DoInitProjectRun <> mrOK)
   or (ToolStatus <> itDebugger)
@@ -6163,13 +6165,13 @@ begin
     Result := DebugBoss.RunDebugger;
     if Result<>mrOk then exit;
   end else begin
-    writeln('NOTE: No debugger defined. Starting program without debugging ...');
+    DebugLn('NOTE: No debugger defined. Starting program without debugging ...');
     // no debugger, just start the program
     try
       if FRunProcess = nil then Exit;
       try
-        Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
-        Writeln('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
+        DebugLn('  EXECUTING "',FRunProcess.CommandLine,'"');
+        DebugLn('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
         // just run the program and don't care (no watch, no debugging)
         // just check from time to time, if it has terminated and clean up
         GetDefaultProcessList.Add(FRunProcess);
@@ -6185,7 +6187,7 @@ begin
       ToolStatus:=itNone;
     end;
   end;
-  Writeln('[TMainIDE.DoRunProject] END');
+  DebugLn('[TMainIDE.DoRunProject] END');
 end;
 
 function TMainIDE.SomethingOfProjectIsModified: boolean;
@@ -6196,7 +6198,7 @@ end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
 begin
-  writeln('TMainIDE.DoSaveAll');
+  DebugLn('TMainIDE.DoSaveAll');
   Result:=DoSaveProject(Flags);
   SaveEnvironment;
   SaveIncludeLinks;
@@ -6706,7 +6708,7 @@ var
   OldOpenEditorsOnCodeToolChange: Boolean;
 begin
   // check file and directory
-  writeln('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
+  DebugLn('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
   Result:=CheckDelphiFileExt(DelphiFilename);
   if Result<>mrOk then exit;
   Result:=CheckFileIsWritable(DelphiFilename,[mbAbort]);
@@ -6714,18 +6716,18 @@ begin
   Result:=CheckFilenameForLCLPaths(DelphiFilename);
   if Result<>mrOk then exit;
   // close Delphi files in editor
-  writeln('TMainIDE.DoConvertDelphiUnit Close files in editor .pas/.dfm');
+  DebugLn('TMainIDE.DoConvertDelphiUnit Close files in editor .pas/.dfm');
   Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
   if Result<>mrOk then exit;
   DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
-  writeln('TMainIDE.DoConvertDelphiUnit DFM file="',DFMFilename,'"');
+  DebugLn('TMainIDE.DoConvertDelphiUnit DFM file="',DFMFilename,'"');
   HasDFMFile:=DFMFilename<>'';
   if HasDFMFile then begin
     Result:=DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
     if Result<>mrOk then exit;
   end;
   // rename files (.pas,.dfm) lowercase
-  writeln('TMainIDE.DoConvertDelphiUnit Rename files');
+  DebugLn('TMainIDE.DoConvertDelphiUnit Rename files');
   LazarusUnitFilename:='';
   LFMFilename:='';
   Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,
@@ -6735,21 +6737,21 @@ begin
   HasDFMFile:=FileExists(LFMFilename);
   // convert .dfm file to .lfm file
   if HasDFMFile then begin
-    writeln('TMainIDE.DoConvertDelphiUnit Convert dfm format to lfm "',LFMFilename,'"');
+    DebugLn('TMainIDE.DoConvertDelphiUnit Convert dfm format to lfm "',LFMFilename,'"');
     Result:=ConvertDFMFileToLFMFile(LFMFilename);
     if Result<>mrOk then exit;
   end;
   // create empty .lrs file
-  writeln('TMainIDE.DoConvertDelphiUnit Create empty lrs');
+  DebugLn('TMainIDE.DoConvertDelphiUnit Create empty lrs');
   if HasDFMFile then begin
     LRSFilename:=ChangeFileExt(LazarusUnitFilename,'.lrs');
-    writeln('TMainIDE.DoConvertDelphiUnit Create ',LRSFilename);
+    DebugLn('TMainIDE.DoConvertDelphiUnit Create ',LRSFilename);
     Result:=CreateEmptyFile(LRSFilename,[mbAbort,mbRetry]);
     if Result<>mrOk then exit;
   end else
     LRSFilename:='';
 
-  writeln('TMainIDE.DoConvertDelphiUnit Convert delphi source');
+  DebugLn('TMainIDE.DoConvertDelphiUnit Convert delphi source');
   OldOpenEditorsOnCodeToolChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
@@ -6772,7 +6774,7 @@ begin
     end;
 
     // comment missing units
-    writeln('TMainIDE.DoConvertDelphiUnit FixMissingUnits');
+    DebugLn('TMainIDE.DoConvertDelphiUnit FixMissingUnits');
     Result:=FixMissingUnits(LazarusUnitFilename);
     if Result<>mrOk then begin
       DoJumpToCodeToolBossError;
@@ -6780,11 +6782,11 @@ begin
     end;
     
     // check the LFM file and the pascal unit
-    writeln('TMainIDE.DoConvertDelphiUnit Check new .lfm and .pas file');
+    DebugLn('TMainIDE.DoConvertDelphiUnit Check new .lfm and .pas file');
     Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile);
     if Result<>mrOk then exit;
     if HasDFMFile and (LFMCode=nil) then
-      writeln('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
+      DebugLn('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
     if (LFMCode<>nil)
     and (CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true,true)<>mrOk)
     then begin
@@ -6793,12 +6795,12 @@ begin
     end;
 
     // save LFM file
-    writeln('TMainIDE.DoConvertDelphiUnit Save LFM');
+    DebugLn('TMainIDE.DoConvertDelphiUnit Save LFM');
     Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,false);
     if Result<>mrOk then exit;
 
     // convert lfm to lrs
-    writeln('TMainIDE.DoConvertDelphiUnit Convert lfm to lrs');
+    DebugLn('TMainIDE.DoConvertDelphiUnit Convert lfm to lrs');
     Result:=ConvertLFMtoLRSfile(LFMCode.Filename);
     if Result<>mrOk then exit;
   finally
@@ -7522,7 +7524,7 @@ procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
 var MacroName:string;
 begin
   if TheMacro=nil then begin
-    writeln('WARNING: Macro not defined: "'+s+'".');
+    DebugLn('WARNING: Macro not defined: "'+s+'".');
     s:='';
     //MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
     Handled:=true;
@@ -7673,7 +7675,7 @@ begin
   ExeExt:=LazConf.GetDefaultExecutableExt;
   if OldExt<>ExeExt then
     Result:=copy(Result,1,length(Result)-length(OldExt))+ExeExt;
-  writeln('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
+  DebugLn('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
 procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
@@ -8354,7 +8356,7 @@ var
   BinCompStream: TMemoryStream;
   CInterface: TComponentInterface;
 begin
-  writeln('TMainIDE.OnDesignerPasteComponent A');
+  DebugLn('TMainIDE.OnDesignerPasteComponent A');
   NewComponent:=nil;
 
   // check the class of the new component
@@ -8401,7 +8403,7 @@ begin
                      FormEditor1.CreateChildComponentFromStream(BinCompStream,
                      ARegComp.ComponentClass,LookupRoot,ParentControl));
     if CInterface=nil then begin
-      writeln('TMainIDE.OnDesignerPasteComponent FAILED');
+      DebugLn('TMainIDE.OnDesignerPasteComponent FAILED');
       exit;
     end;
     NewComponent:=CInterface.Component;
@@ -8424,7 +8426,7 @@ var
   ADesigner: TDesigner;
 begin
   if not (Sender is TDesigner) then begin
-    writeln('TMainIDE.OnDesignerPersistentAdded ERROR: Sender.ClassName=',
+    DebugLn('TMainIDE.OnDesignerPersistentAdded ERROR: Sender.ClassName=',
             Sender.ClassName);
     exit;
   end;
@@ -8611,8 +8613,8 @@ procedure TMainIDE.InitCodeToolBoss;
     const ErrorMsg: string);
   begin
     if ADefTempl=nil then begin
-      writeln('');
-      writeln(ErrorMsg);
+      DebugLn('');
+      DebugLn(ErrorMsg);
     end else begin;
       if AddToPool then
         CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false,true,true));
@@ -8640,20 +8642,20 @@ begin
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
-    writeln('');
-    writeln('NOTE: Compiler Filename not set! (see Environment Options)');
+    DebugLn('');
+    DebugLn('NOTE: Compiler Filename not set! (see Environment Options)');
   end;
 
   if (EnvironmentOptions.LazarusDirectory='')
   or not DirPathExists(EnvironmentOptions.LazarusDirectory) then begin
-    writeln('');
-    writeln(
+    DebugLn('');
+    DebugLn(
       'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
   end;
   if (EnvironmentOptions.FPCSourceDirectory='')
   or not DirPathExists(EnvironmentOptions.FPCSourceDirectory) then begin
-    writeln('');
-    writeln('NOTE: FPC Source Directory not set! (see Environment Options)');
+    DebugLn('');
+    DebugLn('NOTE: FPC Source Directory not set! (see Environment Options)');
   end;
 
   // set global variables
@@ -10366,14 +10368,14 @@ var
   ADesigner: TIDesigner;
   AComponent: TComponent;
 begin
-  writeln('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
+  DebugLn('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
   if APersistent is TComponent then
     AComponent:=TComponent(APersistent)
   else
     AComponent:=nil;
   ComponentClass:=IDEComponentPalette.FindComponent(APersistent.ClassName);
   if (ComponentClass=nil) and (AComponent<>nil) then begin
-    writeln('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
+    DebugLn('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
             ' not registered');
     exit;
   end;
@@ -10397,7 +10399,9 @@ begin
   if Select then begin
     TheControlSelection.AssignPersistent(APersistent);
   end;
+  {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnPropHookDeletePersistent(APersistent: TPersistent);
@@ -10405,7 +10409,7 @@ var
   ADesigner: TDesigner;
   AComponent: TComponent;
 begin
-  writeln('TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
+  DebugLn('TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
   if APersistent is TComponent then begin
     AComponent:=TComponent(APersistent);
     ADesigner:=TDesigner(FindRootDesigner(AComponent));
@@ -10704,6 +10708,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.772  2004/09/17 20:04:34  vincents
+  replaced writeln by DebugLn
+
   Revision 1.771  2004/09/16 00:15:49  mattias
   added refactoring submenu in source editor popupmenu and implemented simple var/const heuristic for extract proc
 

@@ -36,8 +36,8 @@ unit CompilerOptionsDlg;
 interface
 
 uses
-  Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, Graphics,
-  LResources, FileCtrl, Dialogs, Controls, GraphType,
+  Forms, Classes, LCLProc, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls,
+  Graphics, LResources, FileCtrl, Dialogs, Controls, GraphType,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
   CompilerOptions, ShowCompilerOpts, Project, PackageDefs;
 
@@ -469,7 +469,7 @@ begin
   PutCompilerOptions;
   CurOptions := CompilerOpts.MakeOptionsString(nil,
                                           CompilerOpts.DefaultMakeOptionsFlags);
-  WriteLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
+  DebugLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
   ShowCompilerOptionsDialog(CurOptions);
 end;
 

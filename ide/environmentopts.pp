@@ -928,7 +928,7 @@ begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
   CopySecondaryConfigFile(EnvOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    writeln('Note: environment config file not found - using defaults');
+    DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
 end;
@@ -1183,7 +1183,7 @@ begin
   except
     // ToDo
     on E: Exception do
-      writeln('[TEnvironmentOptions.Load]  error reading "',FFilename,'": '+E.Message);
+      DebugLn('[TEnvironmentOptions.Load]  error reading "',FFilename,'": '+E.Message);
   end;
 end;
 
@@ -1381,7 +1381,7 @@ begin
   except
     on E: Exception do begin
       // ToDo
-      writeln('[TEnvironmentOptions.Save]  error writing "',Filename,'": ',E.Message);
+      DebugLn('[TEnvironmentOptions.Save]  error writing "',Filename,'": ',E.Message);
     end;
   end;
 end;
@@ -3575,7 +3575,7 @@ begin
       InputHistories.StoreFileDialogSettings(SaveDialog);
     except
       on E: Exception do begin
-        writeln('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ',E.Message);
+        DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ',E.Message);
       end;
     end;
   finally
@@ -3610,7 +3610,7 @@ begin
       InputHistories.StoreFileDialogSettings(OpenDialog);
     except
       // ToDo
-      writeln('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');
+      DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');
     end;
   finally
     OpenDialog.Free;

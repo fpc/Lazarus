@@ -1782,9 +1782,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure RaiseException(const Msg: string);
 begin
-  writeln('ERROR in IDE: ',Msg);
+  DebugLn('ERROR in IDE: ',Msg);
   // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
+  DebugLn('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 

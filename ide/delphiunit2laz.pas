@@ -39,8 +39,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls, FileCtrl,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
+  Dialogs, Buttons, StdCtrls, FileCtrl,
   // Components
   SynEdit, CodeCache, CodeToolManager, DefineTemplates,
   // IDE
@@ -255,7 +255,7 @@ begin
   MissingUnits:=nil;
   try
     // find missing units
-    writeln('FixMissingUnits FindMissingUnits');
+    DebugLn('FixMissingUnits FindMissingUnits');
     CTResult:=CodeToolBoss.FindMissingUnits(LazUnitCode,MissingUnits);
     if not CTResult then begin
       Result:=mrCancel;
@@ -272,7 +272,7 @@ begin
         MissingUnitsText:=MissingUnitsText+', ';
       MissingUnitsText:=MissingUnitsText+MissingUnits[i];
     end;
-    writeln('FixMissingUnits FindMissingUnits="',MissingUnitsText,'"');
+    DebugLn('FixMissingUnits FindMissingUnits="',MissingUnitsText,'"');
     // ask user if missing units should be commented
     Result:=MessageDlg(lisUnitsNotFound,
       Format(lisTheFollowingUnitsWereNotFound1EitherTheseUnitsAreN, [#13,
@@ -281,7 +281,7 @@ begin
     if Result<>mrYes then exit;
 
     // comment missing units
-    writeln('FixMissingUnits CommentUnitsInUsesSections');
+    DebugLn('FixMissingUnits CommentUnitsInUsesSections');
     CTResult:=CodeToolBoss.CommentUnitsInUsesSections(LazUnitCode,MissingUnits);
     if not CTResult then begin
       Result:=mrCancel;

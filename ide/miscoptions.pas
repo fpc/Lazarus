@@ -30,8 +30,8 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, BuildLazDialog, CodeToolsStructs, LazConf, Laz_XMLCfg,
-  TextTools, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, LazConf,
+  Laz_XMLCfg, TextTools, LazarusIDEStrConsts;
 
 type
   TMiscellaneousOptions = class
@@ -132,7 +132,7 @@ begin
     ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+MiscOptsFilename);
     CopySecondaryConfigFile(MiscOptsFilename);
     if (not FileExists(ConfFileName)) then begin
-      writeln('NOTE: miscellaneous options file not found - using defaults');
+      DebugLn('NOTE: miscellaneous options file not found - using defaults');
     end;
     FFilename:=ConfFilename;
   end;
@@ -147,7 +147,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(GetFilename);
   except
-    writeln('ERROR: unable to open miscellaneous options "',GetFilename,'"');
+    DebugLn('ERROR: unable to open miscellaneous options "',GetFilename,'"');
     exit;
   end;
   try
@@ -156,7 +156,7 @@ begin
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
 
       if (FileVersion<MiscOptsVersion) and (FileVersion<>0) then
-        writeln('NOTE: converting old miscellaneous options ...');
+        DebugLn('NOTE: converting old miscellaneous options ...');
 
       BuildLazOpts.Load(XMLConfig,Path+'BuildLazarusOptions/');
       SortSelDirection:=SortDirectionNameToType(XMLConfig.GetValue(
@@ -173,7 +173,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('ERROR: unable read miscellaneous options from "',GetFilename,'": ',E.Message);
+      DebugLn('ERROR: unable read miscellaneous options from "',GetFilename,'": ',E.Message);
     end;
   end;
 end;
@@ -188,7 +188,7 @@ begin
     XMLConfig:=TXMLConfig.CreateClean(XMLFilename);
   except
     on E: Exception do begin
-      writeln('ERROR: unable to open miscellaneous options "',XMLFilename,'":',E.Message);
+      DebugLn('ERROR: unable to open miscellaneous options "',XMLFilename,'":',E.Message);
       exit;
     end;
   end;
@@ -214,7 +214,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('ERROR: unable read miscellaneous options from "',XMLFilename,'": ',E.Message);
+      DebugLn('ERROR: unable read miscellaneous options from "',XMLFilename,'": ',E.Message);
     end;
   end;
 end;

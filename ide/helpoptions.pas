@@ -35,8 +35,8 @@ unit HelpOptions;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ExtCtrls, HelpIntf, Laz_XMLCfg, ObjectInspector,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, ExtCtrls, HelpIntf, Laz_XMLCfg, ObjectInspector,
   LazConf, LazarusIDEStrConsts, IDEOptionDefs, StdCtrls;
 
 type
@@ -226,7 +226,7 @@ begin
     try
       FileVersion:=XMLConfig.GetValue('HelpOptions/Version/Value',0);
       if (FileVersion<>0) and (FileVersion<HelpOptionsVersion) then
-        writeln('Note: Loading old Help options file', FFileName);
+        DebugLn('Note: Loading old Help options file', FFileName);
         
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');
@@ -239,7 +239,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('[THelpOptions.Load]  error reading "',FFilename,'": ',E.Message);
+      DebugLn('[THelpOptions.Load]  error reading "',FFilename,'": ',E.Message);
     end;
   end;
 end;
@@ -267,7 +267,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('[THelpOptions.Save]  error writing "',FFilename,'": ',E.Message);
+      DebugLn('[THelpOptions.Save]  error writing "',FFilename,'": ',E.Message);
     end;
   end;
 end;
@@ -280,7 +280,7 @@ begin
                              GetPrimaryConfigPath+'/'+DefaultHelpOptsFile);
   CopySecondaryConfigFile(DefaultHelpOptsFile);
   if (not FileExists(ConfFileName)) then begin
-    writeln('NOTE: help options config file not found - using defaults');
+    DebugLn('NOTE: help options config file not found - using defaults');
   end;
   FFilename:=ConfFilename;
 end;

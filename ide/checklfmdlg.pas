@@ -407,7 +407,8 @@ begin
   //writeln(LFMSource.Source);
   for i:=LFMChangeList.Count-1 downto 0 do begin
     Entry:=TLFMChangeEntry(LFMChangeList[i]);
-    writeln('TCheckLFMDialog.ApplyReplacements A ',i,' ',Entry.StartPos,',',Entry.EndPos,
+    DebugLn('TCheckLFMDialog.ApplyReplacements A ',IntToStr(i),' ',
+      IntToStr(Entry.StartPos),',',IntToStr(Entry.EndPos),
       ' "',copy(LFMSource.Source,Entry.StartPos,Entry.EndPos-Entry.StartPos),'" -> "',Entry.NewText,'"');
     LFMSource.Replace(Entry.StartPos,Entry.EndPos-Entry.StartPos,Entry.NewText);
   end;

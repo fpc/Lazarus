@@ -37,7 +37,7 @@ unit ProjectDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, Forms, SynRegExpr, FileCtrl,
+  Classes, SysUtils, Laz_XMLCfg, Forms, SynRegExpr, FileCtrl, LCLProc,
   ProjectIntf,
   LazarusIDEStrConsts, PublishModule;
 
@@ -716,11 +716,11 @@ end;
 procedure TProjectJumpHistory.WriteDebugReport;
 var i: integer;
 begin
-  writeln('[TProjectJumpHistory.WriteDebugReport] Count=',Count
-    ,' MaxCount=',MaxCount,' HistoryIndex=',HistoryIndex);
+  DebugLn('[TProjectJumpHistory.WriteDebugReport] Count=',IntToStr(Count),
+    ' MaxCount=',IntToStr(MaxCount),' HistoryIndex=',IntToStr(HistoryIndex));
   for i:=0 to Count-1 do begin
-    writeln('  ',i,': Line=',Items[i].CaretXY.Y,' Col=',Items[i].CaretXY.X,
-      ' "',Items[i].Filename,'"');
+    DebugLn('  ',IntToStr(i),': Line=',IntToStr(Items[i].CaretXY.Y),
+      ' Col=',IntToStr(Items[i].CaretXY.X), ' "',Items[i].Filename,'"');
   end;
 end;
 

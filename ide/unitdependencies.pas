@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
-  Graphics, LCLType, FileCtrl, LResources,
+  Graphics, LCLType, FileCtrl, LResources, LCLProc,
   CodeToolManager, CodeCache,
   IDECommands,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory;
@@ -434,7 +434,7 @@ constructor TUnitDependenciesView.Create(TheOwner: TComponent);
   begin
     Pixmap:=TPixmap.Create;
     if LazarusResources.Find(ResName)=nil then
-      writeln('TUnitDependenciesView.Create: ',
+      DebugLn('TUnitDependenciesView.Create: ',
         ' WARNING: icon not found: "',ResName,'"');
     Pixmap.LoadFromLazarusResource(ResName);
     ImgList.Add(Pixmap,nil)

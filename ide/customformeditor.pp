@@ -379,8 +379,8 @@ Result := True;
        tkWString : Begin
                     //Writeln('Get String...');
                     ShortString(Value) := GetStrProp(FComponent,PRI);
-                    Writeln('The string returned is '+String(value));
-                    Writeln('*Get String...');
+                    DebugLn('The string returned is '+String(value));
+                    DebugLn('*Get String...');
                    end;
        tkInteger,
        tkInt64   : Begin
@@ -707,7 +707,7 @@ Begin
   {$IFNDEF NoCompCatch}
   except
     on E: Exception do begin
-      writeln('TComponentInterface.Delete ERROR:',
+      DebugLn('TComponentInterface.Delete ERROR:',
         ' "'+OldName+':'+OldClassName+'" ',E.Message);
       MessageDlg('Error',
         'An exception occured during deletion of'#13
@@ -801,8 +801,8 @@ Begin
   begin
     FComponentInterfaces.Remove(Temp);
 
-    writeln('TCustomFormEditor.DeleteControl ',
-            AComponent.ClassName,' ',IsJITComponent(AComponent));
+    DebugLn('TCustomFormEditor.DeleteControl ',
+            AComponent.ClassName,' ',BoolToStr(IsJITComponent(AComponent)));
     if IsJITComponent(AComponent) then begin
       // value is a top level component
       if FreeComponent then begin
@@ -1086,7 +1086,8 @@ var
   ANonControlForm: TNonControlForm;
 begin
   ANonControlForm:=FindNonControlForm(AComponent);
-writeln('TCustomFormEditor.UpdateDesignerFormName ',ANonControlForm<>nil,' ',AComponent.Name);
+  DebugLn('TCustomFormEditor.UpdateDesignerFormName ',
+    BoolToStr(ANonControlForm<>nil), ' ',AComponent.Name);
   if ANonControlForm<>nil then
     ANonControlForm.Caption:=AComponent.Name;
 end;
@@ -1202,7 +1203,7 @@ Begin
   Result:=nil;
   Temp:=nil;
   try
-    writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
+    DebugLn('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
 
     OwnerComponent:=nil;
@@ -1244,12 +1245,12 @@ Begin
         begin
           TWinControl(Temp.Component).Parent :=
             TWinControl(ParentComponent);
-          writeln('Parent is '''+TWinControl(Temp.Component).Parent.Name+'''');
+          DebugLn('Parent is '''+TWinControl(Temp.Component).Parent.Name+'''');
         end
         else begin
           TControl(Temp.Component).Parent :=
             TControl(ParentComponent).Parent;
-          writeln('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
+          DebugLn('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
         end;
       end;
     end else begin
@@ -1651,7 +1652,7 @@ begin
     CompEditor.Edit;
   except
     on E: Exception do begin
-      writeln('TCustomFormEditor.OnDesignerMenuItemClick ERROR: ',E.Message);
+      DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR: ',E.Message);
       MessageDlg('Error in '+CompEditor.ClassName,
         'The component editor of class "'+CompEditor.ClassName+'"'
         +'has created the error:'#13
@@ -1672,8 +1673,9 @@ procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;
   Reader: TReader; Instance: TPersistent; var PropName: string;
   IsPath: boolean; var Handled, Skip: Boolean);
 begin
-  writeln('TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
-    ' Instance=',Instance.ClassName,' PropName="',PropName,'" IsPath=',IsPath);
+  DebugLn('TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
+    ' Instance=',Instance.ClassName,' PropName="',PropName,
+    '" IsPath=',BoolToStr(IsPath));
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;

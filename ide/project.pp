@@ -1373,7 +1373,7 @@ begin
       xmlconfig := TXMLConfig.CreateClean(confPath);
     except
       on E: Exception do begin
-        writeln('ERROR: ',E.Message);
+        DebugLn('ERROR: ',E.Message);
         MessageDlg('Write error',
           'Unable to write the project info file'#13
           +'"'+ProjectInfoFile+'".'#13
@@ -2920,6 +2920,9 @@ end.
 
 {
   $Log$
+  Revision 1.163  2004/09/17 20:04:35  vincents
+  replaced writeln by DebugLn
+
   Revision 1.162  2004/09/04 22:24:15  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

@@ -391,7 +391,7 @@ begin
       KeyCommandRelation.KeyA:=IDEShortCut(Items[i].Key,Items[i].Shift,
                                            VK_UNKNOWN,[]);
     end else begin
-      writeln('[TExternalToolList.SaveShortCuts] Error: '
+      DebugLn('[TExternalToolList.SaveShortCuts] Error: '
         +'unable to save shortcut for external tool "',Items[i].Title,'"');
     end;
   end;
@@ -425,7 +425,7 @@ begin
       end;
     except
       on E: Exception do begin
-        writeln('Error freeing stopped process: ',E.Message);
+        DebugLn('Error freeing stopped process: ',E.Message);
       end;
     end;
     dec(i);

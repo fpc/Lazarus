@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileCtrl, Laz_XMLCfg, SynRegExpr,
+  StdCtrls, FileCtrl, LCLProc, Laz_XMLCfg, SynRegExpr,
   LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros;
 
 type
@@ -160,7 +160,7 @@ begin
     Filename:=GetConfigFilename;
     XMLConfig:=TXMLConfig.Create(Filename);
   except
-    writeln('ERROR: unable to open clean directory options "',Filename,'"');
+    DebugLn('ERROR: unable to open clean directory options "',Filename,'"');
     exit;
   end;
   try
@@ -192,7 +192,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('ERROR: unable to read clean directory options from "',
+      DebugLn('ERROR: unable to read clean directory options from "',
         Filename,'": ',E.Message);
     end;
   end;
@@ -208,7 +208,7 @@ begin
     Filename:=GetConfigFilename;
     XMLConfig:=TXMLConfig.CreateClean(Filename);
   except
-    writeln('ERROR: unable to open clean directory options "',Filename,'"');
+    DebugLn('ERROR: unable to open clean directory options "',Filename,'"');
     exit;
   end;
   try
@@ -234,7 +234,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('ERROR: unable to write clean directory options from "',
+      DebugLn('ERROR: unable to write clean directory options from "',
         Filename,'": ',E.Message);
     end;
   end;
@@ -383,7 +383,7 @@ begin
   // delete them all
   for i:=0 to List.Count-1 do begin
     Filename:=List[i];
-    writeln('TCleanDirectoryDialog: Deleting file ',Filename);
+    DebugLn('TCleanDirectoryDialog: Deleting file ',Filename);
     if FileExists(Filename) then begin
       repeat
         if DeleteFile(Filename) then begin

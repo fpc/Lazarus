@@ -39,8 +39,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
-  SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, LCLProc,
+  Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
@@ -655,7 +655,7 @@ procedure TManagedBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
 var
   BP: TBaseBreakPoint;
 begin
-  writeln('TManagedBreakPoints.NotifyAdd A ',ABreakpoint.Source,' ',ABreakpoint.Line);
+  debugln('TManagedBreakPoints.NotifyAdd A ',ABreakpoint.Source,' ',IntToStr(ABreakpoint.Line));
   ABreakpoint.InitialEnabled := True;
   ABreakpoint.Enabled := True;
 
@@ -672,7 +672,7 @@ end;
 
 procedure TManagedBreakPoints.NotifyRemove(const ABreakPoint: TIDEBreakPoint);
 begin
-  writeln('TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark <> nil);
+  debugln('TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',IntToStr(ABreakpoint.Line),' ',BoolToStr(TManagedBreakPoint(ABreakpoint).SourceMark <> nil));
 
   inherited;
 
@@ -1101,7 +1101,7 @@ begin
     then Include(FManagerStates,dmsInitializingDebuggerObjectFailed);
   end;
 
-  WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
+  DebugLn('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
   // All conmmands
   // -------------------
@@ -1135,7 +1135,7 @@ begin
 
   case FDebugger.State of 
     dsError: begin
-      WriteLN('Ooops, the debugger entered the error state');
+      DebugLn('Ooops, the debugger entered the error state');
       MessageDlg(lisDebuggerError,
         Format(lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState, [#13#13,
           #13, #13#13]),
@@ -1565,7 +1565,7 @@ var
   NewWorkingDir: String;
   DebuggerClass: TDebuggerClass;
 begin
-  WriteLN('[TDebugManager.DoInitDebugger] A');
+  DebugLn('[TDebugManager.DoInitDebugger] A');
 
   Result := False;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
@@ -1658,7 +1658,7 @@ begin
   end;
 
   Result := True;
-  WriteLN('[TDebugManager.DoInitDebugger] END');
+  DebugLn('[TDebugManager.DoInitDebugger] END');
 end;
 
 // still part of main, should go here when dummydebugger is finished
@@ -1729,7 +1729,7 @@ begin
   Result:=mrCancel;
   if Destroying then exit;
   if (FDebugger <> nil) then begin
-    writeln('TDebugManager.RunDebugger B ',FDebugger.ClassName);
+    DebugLn('TDebugManager.RunDebugger B ',FDebugger.ClassName);
     // check if debugging needs restart
     if (dmsDebuggerObjectBroken in FManagerStates)
     and (MainIDE.ToolStatus=itDebugger) then begin
@@ -1788,9 +1788,11 @@ begin
   or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
     RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
   
-writeln('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,' ',ASourceMark.Line);
+  DebugLn('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,
+    ' ',IntToStr(ASourceMark.Line));
   OldBreakPoint:=TIDEBreakPoint(ASourceMark.Data);
-writeln('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,' ',OldBreakPoint.Source,' ',OldBreakPoint.Line);
+  DebugLn('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,
+    ' ',OldBreakPoint.Source,' ',IntToStr(OldBreakPoint.Line));
   OldBreakPoint.Free;
   Project1.Modified:=true;
   Result := mrOK
@@ -1802,7 +1804,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
-  writeln('TDebugManager.DoRunToCursor A');
+  DebugLn('TDebugManager.DoRunToCursor A');
   if (MainIDE.DoInitProjectRun <> mrOK)
   or (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
@@ -1810,7 +1812,7 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  writeln('TDebugManager.DoRunToCursor B');
+  DebugLn('TDebugManager.DoRunToCursor B');
 
   Result := mrCancel;
 
@@ -1827,11 +1829,11 @@ begin
   then UnitFilename:=ActiveUnitInfo.Filename
   else UnitFilename:=MainIDE.GetTestUnitFilename(ActiveUnitInfo);
 
-  writeln('TDebugManager.DoRunToCursor C');
+  DebugLn('TDebugManager.DoRunToCursor C');
   FDebugger.RunTo(ExtractFilename(UnitFilename),
                   ActiveSrcEdit.EditorComponent.CaretY);
 
-  writeln('TDebugManager.DoRunToCursor D');
+  DebugLn('TDebugManager.DoRunToCursor D');
   Result := mrOK;
 end;
 
@@ -1891,6 +1893,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.73  2004/09/17 20:04:34  vincents
+  replaced writeln by DebugLn
+
   Revision 1.72  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches

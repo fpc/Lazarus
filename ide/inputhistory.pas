@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, FileCtrl, DiffPatch, IDEProcs, Laz_XMLCfg, LazConf,
-  Dialogs;
+  Dialogs, LCLProc;
 
 const
   // these are the names of the various history lists in the IDE:
@@ -461,7 +461,7 @@ begin
     XMLConfig.Free;
   except
     // ToDo
-    writeln('[TCodeToolsOptions.Load]  error reading "',FFilename,'"');
+    DebugLn('[TCodeToolsOptions.Load]  error reading "',FFilename,'"');
   end;
 end;
 
@@ -478,7 +478,7 @@ begin
     XMLConfig.Free;
   except
     on E: Exception do begin
-      writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'" ',E.Message);
+      DebugLn('[TEnvironmentOptions.Save]  error writing "',FFilename,'" ',E.Message);
     end;
   end;
 end;

@@ -38,7 +38,7 @@ unit DiffPatch;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, LCLProc;
 
 type
   TTextDiffFlag = (
@@ -583,7 +583,7 @@ begin
       until false;
     except
       on E: Exception do begin
-        writeln('CreateTextDiff ',E.Message);
+        DebugLn('CreateTextDiff ',E.Message);
       end;
     end;
   finally

@@ -634,7 +634,7 @@ begin
     // ask the compiler for Macros
     CompilerPath:=FileNames[1];
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
-    writeln('  CompilerPath="',CompilerPath,'"');
+    DebugLn('  CompilerPath="',CompilerPath,'"');
     TargetOS:='';
     TargetProcessor:='';
     if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
@@ -648,7 +648,7 @@ begin
     // create path defines
     FPCSrcDir:=FileNames[2];
     if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
-    writeln('  FPCSrcDir="',FPCSrcDir,'"');
+    DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
     if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
     and (UnitSearchPath<>'') then
       FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
@@ -713,7 +713,7 @@ begin
     
     CompilerPath:=FileNames[0];
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
-    writeln('  CompilerPath="',CompilerPath,'"');
+    DebugLn('  CompilerPath="',CompilerPath,'"');
     
     FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                            CreateCompilerTestPascalFilename,s,
@@ -760,7 +760,7 @@ begin
     // ask the compiler for Macros
     CompilerPath:=FileNames[1];
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
-    writeln('  CompilerPath="',CompilerPath,'"');
+    DebugLn('  CompilerPath="',CompilerPath,'"');
 
     TargetOS:='';
     TargetProcessor:='';
@@ -768,20 +768,20 @@ begin
                                CreateCompilerTestPascalFilename,UnitSearchPath,
                                TargetOS,TargetProcessor,CodeToolsOpts);
     if FPCTemplate=nil then begin
-      writeln('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
+      DebugLn('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
       exit;
     end;
       
     // create FPC CVS Source defines
     FPCSrcDir:=FileNames[0];
     if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
-    writeln('  FPCSrcDir="',FPCSrcDir,'"');
+    DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
     UnitSearchPath:='';
     FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
                         UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
                         UnitLinks, CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
-      writeln('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
+      DebugLn('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
       FPCTemplate.Free;
       exit;
     end;
@@ -1905,9 +1905,9 @@ function TCodeToolsDefinesEditor.ConsistencyCheck: integer;
       else write('ADefNode.Next=nil ');
       DummyDefNode:=TDefineTemplate(ATreeNode.GetNextSibling.Data);
       if DummyDefNode<>nil then
-        writeln('ATreeNode.GetNextSibling.Next=',DummyDefNode.Name)
+        DebugLn('ATreeNode.GetNextSibling.Next=',DummyDefNode.Name)
       else
-        writeln('ATreeNode.GetNextSibling.Next=nil');
+        DebugLn('ATreeNode.GetNextSibling.Next=nil');
 {writeln('=============================================');
 DefineTreeView.WriteDebugReport('TV ',true);
 writeln('=============================================');

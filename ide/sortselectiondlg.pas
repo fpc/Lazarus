@@ -40,9 +40,9 @@ unit SortSelectionDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
-  IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, LazarusIDEStrConsts,
-  EditorOptions, MiscOptions, SynEditHighlighter, TextTools;
+  Classes, SysUtils, LCLProc, Forms, Controls, SynEdit, Buttons, StdCtrls,
+  ExtCtrls, IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, TextTools,
+  LazarusIDEStrConsts, EditorOptions, MiscOptions, SynEditHighlighter;
   
 type
   TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
@@ -283,7 +283,7 @@ begin
   end;
   
   else
-    writeln('ERROR: Domain not implemented');
+    DebugLn('ERROR: Domain not implemented');
   end;
   
   // build sorted text

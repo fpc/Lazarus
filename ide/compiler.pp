@@ -39,8 +39,8 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  LazarusIDEStrConsts, IDEProcs, OutputFilter, FileCtrl;
+  Classes, SysUtils, LCLProc, Forms, Controls, CompilerOptions, Project,
+  Process, LazarusIDEStrConsts, IDEProcs, OutputFilter, FileCtrl;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -144,7 +144,7 @@ begin
         exit;
       end;
     end;
-    Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+    DebugLn('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
       TheProcess := TProcess.Create(nil);
@@ -172,7 +172,7 @@ begin
         exit;
       end;
       on e: Exception do begin
-        writeln('[TCompiler.Compile] exception "',E.Message,'"');
+        DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
         if OutputFilter<>nil then
           OutputFilter.ReadLine(E.Message,true);
         Result:=mrCancel;
@@ -182,7 +182,7 @@ begin
   finally
     SetCurrentDir(OldCurDir);
   end;
-  writeln('[TCompiler.Compile] end');
+  DebugLn('[TCompiler.Compile] end');
 end;
 
 
@@ -190,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2004/09/17 20:04:34  vincents
+  replaced writeln by DebugLn
+
   Revision 1.43  2003/12/21 18:21:32  mattias
   implemented ShowAll and hide hints for unused package units option
 

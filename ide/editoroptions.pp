@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLIntf, LCLType,
-  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
+  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf, LCLProc,
   FileCtrl, GraphType, Graphics, Controls, Dialogs, LResources, IDEProcs,
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
@@ -1109,13 +1109,13 @@ begin
   CopySecondaryConfigFile(EditOptsConfFileName);
   try
     if (not FileExists(ConfFileName)) then begin
-      writeln('NOTE: editor options config file not found - using defaults');
+      DebugLn('NOTE: editor options config file not found - using defaults');
       XMLConfig:=TXMLConfig.CreateClean(ConfFileName);
     end else
       XMLConfig:=TXMLConfig.Create(ConfFileName);
   except
     on E: Exception do begin
-      writeln('WARNING: unable to read ',ConfFileName,' ',E.Message);
+      DebugLn('WARNING: unable to read ',ConfFileName,' ',E.Message);
       XMLConfig:=nil;
     end;
   end;
@@ -1156,7 +1156,7 @@ begin
           fs.Free;
         end;
       except
-        writeln('WARNING: unable to write code template file "',
+        DebugLn('WARNING: unable to write code template file "',
           fCodeTemplateFileName,'"');
       end;
     end;
@@ -1290,7 +1290,7 @@ begin
 
   except
     on E: Exception do
-      writeln('[TEditorOptions.Load] ERROR: ',e.Message);
+      DebugLn('[TEditorOptions.Load] ERROR: ',e.Message);
   end;
 end;
 
@@ -1410,7 +1410,7 @@ begin
     XMLConfig.Flush;
   except
     on E: Exception do
-      writeln('[TEditorOptions.Save] ERROR: ',e.Message);
+      DebugLn('[TEditorOptions.Save] ERROR: ',e.Message);
   end;
 end;
 
@@ -2185,7 +2185,7 @@ begin
       try
         AutoCompleteList.LoadFromFile(s);
       except
-        writeln('NOTE: unable to read code template file ''',s,'''');
+        DebugLn('NOTE: unable to read code template file ''',s,'''');
       end;
   end;
   FillCodeTemplateListBox;

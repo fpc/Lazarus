@@ -32,7 +32,7 @@ unit KeyMapping;
 interface
 
 uses
-  LCLIntf, LCLType,
+  LCLIntf, LCLType, LCLProc,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList,
   LazarusIDEStrConsts, IDECommands;
@@ -2144,8 +2144,8 @@ function TKeyCommandRelationList.GetRelation(
 begin
   if (Index<0) or (Index>=Count) then
   begin
-    writeln('[TKeyCommandRelationList.GetRelation] Index out of bounds '
-      ,Index,' Count=',Count);
+    DebugLn('[TKeyCommandRelationList.GetRelation] Index out of bounds '
+      ,IntToStr(Index),' Count=',IntToStr(Count));
     // creates an exception, that gdb catches:
     if (Index div ((Index and 1) div 10000))=0 then ;
   end;

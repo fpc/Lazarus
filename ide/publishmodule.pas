@@ -35,7 +35,7 @@ unit PublishModule;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, IDEProcs, SynRegExpr, FileCtrl;
+  Classes, SysUtils, Laz_XMLCfg, IDEProcs, SynRegExpr, FileCtrl, LCLProc;
 
 type
   { TPublishModuleOptions }
@@ -216,7 +216,7 @@ begin
     FIncludeFilterValid:=true;
   except
     on E: Exception do begin
-      writeln('Invalid Include File Expression ',Expr,' ',E.Message);
+      DebugLn('Invalid Include File Expression ',Expr,' ',E.Message);
       FIncludeFilterValid:=false;
     end;
   end;
@@ -237,7 +237,7 @@ begin
     FExcludeFilterValid:=true;
   except
     on E: Exception do begin
-      writeln('Invalid Exclude File Expression ',Expr,' ',E.Message);
+      DebugLn('Invalid Exclude File Expression ',Expr,' ',E.Message);
       FExcludeFilterValid:=false;
     end;
   end;
