@@ -45,8 +45,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomMemo.Destroy;
 begin
-  FLines.Free;
-  FFont.Free;
+  FreeThenNil(FLines);
+  FreeThenNil(FFont);
   inherited destroy;
 end;
 
@@ -87,7 +87,8 @@ procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
 begin
   if Value <> FScrollbars then begin
     FScrollbars:= Value;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -101,7 +102,8 @@ procedure TCustomMemo.SetWordWrap(const Value : boolean);
 begin
   if Value <> FWordWrap then begin
     FWordWrap := Value;
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    if HandleAllocated then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;    
 end;
 
@@ -110,7 +112,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/10/30 13:50:26  lazarus
+  MG: fixed message without handle
+
   Revision 1.7  2002/09/05 10:12:07  lazarus
+
   New dialog for multiline caption of TCustomLabel.
   Prettified TStrings property editor.
   Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
