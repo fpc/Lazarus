@@ -71,7 +71,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType, GraphType,
+  LCLProc, LCLType, LCLIntf, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -581,13 +581,17 @@ var
   ABC2: TABC;
   w: Integer;
   HasABC: Boolean;
+  //Size: TSize;
 begin
   // Calculate advance of a character.
   // The following code uses ABC widths instead TextMetric.tmAveCharWidth
   // because ABC widths always tells truth but tmAveCharWidth does not.
   // A true-type font will have ABC widths but others like raster type will not
   // so if the function fails then use TextMetric.tmAveCharWidth.
+  //debugln('TheFontStock.CalcFontAdvance A ',dbgs(pCharHeight));
   GetTextMetrics(DC, TM);
+  //GetTextExtentPoint(DC,'ABCgjp',6,Size);
+  //debugln('TheFontStock.CalcFontAdvance B ',dbgs(pCharHeight),' TM.tmHeight=',dbgs(TM.tmHeight),' TM.tmAscent=',dbgs(TM.tmAscent),' TM.tmDescent=',dbgs(TM.tmDescent),' "',BaseFont.Name,'" ',dbgs(BaseFont.height),' ',dbgs(Size.cx),',',dbgs(Size.cy));
   {$IFDEF FPC}
   // the next two lines are only to suppress the stupid FPC warnings:
   ABC.abcA:=0;

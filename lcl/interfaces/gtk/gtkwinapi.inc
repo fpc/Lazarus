@@ -1347,7 +1347,8 @@ var
     end;
     
     {$IFDEF VerboseFonts}
-    DebugLn('  Tried "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
+    //if GdiObject^.GDIFontObject<>nil then
+      DebugLn('  Tried "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
     {$ENDIF}
   end;
 
@@ -1368,6 +1369,13 @@ var
     if Result='' then Result:='*';
   end;
   
+  function ExtractXLFDItemMask(const ALongFontName: string;
+    Index: Integer): string;
+  begin
+    Result:=ExtractXLFDItem(ALongFontName,Index);
+    if Result='' then Result:='*';
+  end;
+
   function FamilyNameExists: boolean;
   var
     AFont: PGdkFont;
@@ -1442,21 +1450,21 @@ begin
     ,' ',dbgs(ord(LogFont.lfFaceName[0])));
     {$ENDIF}
     if IsFontNameXLogicalFontDesc(LongFontName) then begin
-      FontNameRegistry := ExtractXLFDItem(LongFontName,0);
-      Foundry          := ExtractXLFDItem(LongFontName,1);
-      FamilyName       := ExtractXLFDItem(LongFontName,2);
-      WeightName       := ExtractXLFDItem(LongFontName,3);
-      Slant            := ExtractXLFDItem(LongFontName,4);
-      SetWidthName     := ExtractXLFDItem(LongFontName,5);
-      AddStyleName     := ExtractXLFDItem(LongFontName,6);
-      PixelSize        := ExtractXLFDItem(LongFontName,7);
-      PointSize        := ExtractXLFDItem(LongFontName,8);
-      ResolutionX      := ExtractXLFDItem(LongFontName,9);
-      ResolutionY      := ExtractXLFDItem(LongFontName,10);
-      Spacing          := ExtractXLFDItem(LongFontName,11);
-      AverageWidth     := ExtractXLFDItem(LongFontName,12);
-      CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
-      CharSetCoding    := ExtractXLFDItem(LongFontName,14);
+      FontNameRegistry := ExtractXLFDItemMask(LongFontName,0);
+      Foundry          := ExtractXLFDItemMask(LongFontName,1);
+      FamilyName       := ExtractXLFDItemMask(LongFontName,2);
+      WeightName       := ExtractXLFDItemMask(LongFontName,3);
+      Slant            := ExtractXLFDItemMask(LongFontName,4);
+      SetWidthName     := ExtractXLFDItemMask(LongFontName,5);
+      AddStyleName     := ExtractXLFDItemMask(LongFontName,6);
+      PixelSize        := ExtractXLFDItemMask(LongFontName,7);
+      PointSize        := ExtractXLFDItemMask(LongFontName,8);
+      ResolutionX      := ExtractXLFDItemMask(LongFontName,9);
+      ResolutionY      := ExtractXLFDItemMask(LongFontName,10);
+      Spacing          := ExtractXLFDItemMask(LongFontName,11);
+      AverageWidth     := ExtractXLFDItemMask(LongFontName,12);
+      CharSetRegistry  := ExtractXLFDItemMask(LongFontName,13);
+      CharSetCoding    := ExtractXLFDItemMask(LongFontName,14);
     end else if CheckFontNameIsMangledXLogicalFontDesc(LongFontName) then begin
     end;
 
@@ -1471,12 +1479,12 @@ begin
 
       FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
       
-      if (AnsiCompareText(FamilyName,'default')<>0)
+      if (CompareText(FamilyName,'default')<>0)
       and (not FamilyNameExists) then begin
         FamilyName:='default';
       end;
       
-      if AnsiCompareText(FamilyName,'default')=0 then begin
+      if CompareText(FamilyName,'default')=0 then begin
         {$IFDEF VerboseFonts}
         DebugLn('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
         {$ENDIF}
@@ -5450,8 +5458,12 @@ begin
       end;
       Size.cX := Width;
       // I THINK this is accurate...
-      Size.cY := GDK_String_Height(UseFont, Str)
-        {$IfNDef Win32} + descent div 2{$EndIf};
+      Size.cY :={$IFDEF Win32}
+                GDK_String_Height(UseFont, Str)
+                {$ELSE}
+                ascent+descent;
+                {$ENDIF}
+      //debugln('TGtkWidgetSet.GetTextExtentPoint END Str="'+DbgStr(Str)+'" Size=',dbgs(Size.cX),'x',dbgs(Size.cY),' ascent=',dbgs(ascent),' descent=',dbgs(descent),' tmDescent=',dbgs(TDeviceContext(DC).DCTextMetric.TextMetric.tmDescent));
       If UnRef then
         FontCache.Unreference(UseFont);
     end;
@@ -8840,6 +8852,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.386  2005/01/17 15:36:31  mattias
+  improved gtk intf to calculate TextHeight
+
   Revision 1.385  2005/01/16 11:40:11  mattias
   fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
 

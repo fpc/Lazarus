@@ -6359,22 +6359,22 @@ begin
           IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
           AvgTxtLen:=length(TestString[false]);
           if IsDoubleByteChar then begin
-            gdk_text_extents_wc(UseFont, PGdkWChar(TestString[IsDoubleByteChar]),
+            gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
               AvgTxtLen*2, @lBearing, @rBearing, @Width,
               @TextMetric.tmAscent, @TextMetric.tmDescent);
             //debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),' Width=',dbgs(Width),' AvgTxtLen=',dbgs(AvgTxtLen));
-            TextMetric.tmHeight := gdk_text_height(UseFont,
-                                     PChar(TestString[IsDoubleByteChar]),
-                                     AvgTxtLen*2)
-                           {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
+            TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
+                    // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
+                    //                 AvgTxtLen*2)
+                    //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
           end else begin
             gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
               AvgTxtLen, @lBearing, @rBearing, @Width,
               @TextMetric.tmAscent, @TextMetric.tmDescent);
-            TextMetric.tmHeight := gdk_text_height(UseFont,
-                                     PChar(TestString[IsDoubleByteChar]),
-                                     AvgTxtLen)
-                           {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
+            TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
+                    // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
+                    //              AvgTxtLen)
+                    //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
           end;
           //if Width<AvgTxtLen then UseWidthHeuristic;
           //TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
@@ -6385,14 +6385,14 @@ begin
                 gdk_char_width(UseFont, 'M')); // temp hack
           if TextMetric.tmMaxCharWidth<TextMetric.tmAveCharWidth then
             TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
-          {debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),
-            ' lbearing=',dbgs(lBearing),' rbearing=',dbgs(rBearing),
-            ' width='+dbgs(width),' tmAscent='+dbgs(TextMetric.tmAscent),
-            ' tmDescent='+dbgs(TextMetric.tmdescent),
-            ' tmHeight='+dbgs(TextMetric.tmHeight),
-            ' AvgTxtLen='+dbgs(AvgTxtLen),
-            ' tmMaxCharWidth='+dbgs(TextMetric.tmMaxCharWidth),
-            ' tmAveCharWidth='+dbgs(TextMetric.tmAveCharWidth));}
+          //debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),
+          //  ' lbearing=',dbgs(lBearing),' rbearing=',dbgs(rBearing),
+          //  ' width='+dbgs(width),' tmAscent='+dbgs(TextMetric.tmAscent),
+          //  ' tmDescent='+dbgs(TextMetric.tmdescent),
+          //  ' tmHeight='+dbgs(TextMetric.tmHeight),
+          //  ' AvgTxtLen='+dbgs(AvgTxtLen),
+          //  ' tmMaxCharWidth='+dbgs(TextMetric.tmMaxCharWidth),
+          //  ' tmAveCharWidth='+dbgs(TextMetric.tmAveCharWidth));
           if (CachedFont<>nil) then begin
             CachedFont.lBearing:=lBearing;
             CachedFont.rBearing:=rBearing;
@@ -6994,6 +6994,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.617  2005/01/17 15:36:31  mattias
+  improved gtk intf to calculate TextHeight
+
   Revision 1.616  2005/01/12 23:18:07  mattias
   limited widget sizes to 10000x10000
 

@@ -8704,8 +8704,11 @@ const
   ItalicStyles: array[boolean] of TFontStyles = ([], [fsItalic]);
 begin
   with fTextDrawer do begin
+    //debugln('TCustomSynEdit.RecalcCharExtent A UseUTF8=',dbgs(UseUTF8),
+    //  ' Font.CanUTF8='+dbgs(Font.CanUTF8)+' CharHeight=',dbgs(CharHeight));
     BaseFont := Self.Font;
     BaseStyle := ItalicStyles[UsesFontStyle(fsItalic)];
+    //debugln('TCustomSynEdit.RecalcCharExtent B CharHeight=',dbgs(CharHeight));
     fTextHeight := CharHeight + fExtraLineSpacing;
     BaseStyle := BoldStyles[UsesFontStyle(fsBold)];
     fCharWidth := CharWidth;

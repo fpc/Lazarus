@@ -343,6 +343,16 @@ var i, j, FilenameEndPos: integer;
     end;
   end;
   
+  function CheckForNoteMessages: boolean;
+  begin
+    Result:=false;
+    if ('Note: '=copy(s,1,length('Note: '))) then begin
+      DoAddFilteredLine(s);
+      Result:=true;
+      exit;
+    end;
+  end;
+
   function CheckForNumber(const Str: string; var p: integer): boolean;
   var
     OldP: Integer;
@@ -384,6 +394,9 @@ begin
   if Result then exit;
   // check for 'Fatal: ', 'Panic: ', 'Error: ', 'Closing script ppas.sh'
   Result:=CheckForUrgentMessages;
+  if Result then exit;
+  // check for 'Note: '
+  Result:=CheckForNoteMessages;
   if Result then exit;
   // check for '<line> <kb>/<kb> Kb Free'
   Result:=CheckForLineProgress;
