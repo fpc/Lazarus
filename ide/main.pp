@@ -4858,10 +4858,7 @@ Begin
     for i:=0 to Project1.UnitCount-1 do begin
       AnUnitInfo:=Project1.Units[i];
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnit) then begin
-        AName:=AnUnitInfo.FileName;
-        if (AnUnitInfo.EditorIndex>=0) then
-          AName:=SourceNotebook.FindSourceEditorWithPageIndex(
-                                               AnUnitInfo.EditorIndex).PageName;
+        AName:=Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
         UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
@@ -7521,6 +7518,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.441  2002/12/23 13:41:48  mattias
+  remove from project now extracts project path
+
   Revision 1.440  2002/12/23 13:20:45  mattias
   fixed backuping symlinks
 
