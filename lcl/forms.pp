@@ -204,6 +204,7 @@ type
       property Enabled;
       property FormStyle;
       property Icon;
+      property Menu;
       property PopupMenu;
       property Position;
       property ShowHint;
