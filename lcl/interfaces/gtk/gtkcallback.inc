@@ -2423,7 +2423,9 @@ begin
 {$ELSE}
   if (gtk_major_version=2) and (gtk_minor_version<6) and
      (Range^.Timer<>nil) then
-    {$warning gtk2 pre gtk2.6 ONLY, tested gtk2.0}
+    { gtk2 pre gtk2.6 ONLY, tested gtk2.0.
+      Later versions (gtk2.6+) have a change-value signal that includes scrolltype anyways }
+               
     Result := PUnOpaqueTimer(Range^.Timer)^.ScrollType
   else
     Result := GTK_SCROLL_NONE;
@@ -2984,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.278  2005/04/04 11:57:47  mattias
+  reduced gtk2 warnings  from Danny Milosavljevic
+
   Revision 1.277  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous
 
