@@ -377,6 +377,7 @@ type
     function  ISEOF: boolean;
   protected
   {$ifdef ver1_0}
+    property AutoFillColumns;
     property FixedColor;
   {$endif}
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
@@ -2986,6 +2987,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2004/12/25 21:46:23  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.24  2004/12/23 19:24:46  mattias
   added auto column sizing  from Jesus
 
