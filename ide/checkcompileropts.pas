@@ -18,8 +18,9 @@ type
 
   TCheckCompilerOptsDlg = class(TForm)
     CloseButton: TBUTTON;
-    OutputLabel: TLABEL;
-    OutputMemo: TMEMO;
+    TestMemo: TMEMO;
+    TestGroupbox: TGROUPBOX;
+    OutputListbox: TLISTBOX;
     OutputGroupBox: TGROUPBOX;
     procedure ApplicationOnIdle(Sender: TObject);
     procedure CloseButtonCLICK(Sender: TObject);
@@ -27,13 +28,17 @@ type
     FMacroList: TTransferMacroList;
     FOptions: TCompilerOptions;
     FTest: TCompilerOptionsTest;
+    FLastLineIsProgress: boolean;
+    FDirectories: TStringList;
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetOptions(const AValue: TCompilerOptions);
+    procedure SetMsgDirectory(Index: integer; const CurDir: string);
   public
     function DoTest: TModalResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function RunTool(ExtTool: TExternalToolOptions): TModalResult;
+    procedure Add(const Msg, CurDir: String; ProgressLine: boolean);
     procedure AddMsg(const Msg, CurDir: String);
     procedure AddProgress(const Msg, CurDir: String);
   public
@@ -42,6 +47,8 @@ type
     property MacroList: TTransferMacroList read FMacroList write SetMacroList;
   end;
 
+var
+  CheckCompilerOptsDlg: TCheckCompilerOptsDlg;
 
 implementation
 
@@ -64,6 +71,14 @@ begin
   FOptions:=AValue;
 end;
 
+procedure TCheckCompilerOptsDlg.SetMsgDirectory(Index: integer;
+  const CurDir: string);
+begin
+  if FDirectories=nil then FDirectories:=TStringList.Create;
+  while FDirectories.Count<=Index do FDirectories.Add('');
+  FDirectories[Index]:=CurDir;
+end;
+
 procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
 begin
   if FMacroList=AValue then exit;
@@ -80,9 +95,12 @@ var
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
+  CompileTool:=nil;
+  TestMemo.Lines.Clear;
   try
     // check compiler filename
     FTest:=cotCheckCompilerExe;
+    TestGroupbox.Caption:='Test: Checking compiler ...';
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
     try
       CheckIfFileIsExecutable(CompilerFilename);
@@ -97,6 +115,7 @@ begin
     
     // compile bogus file
     FTest:=cotCompileBogusFiles;
+    TestGroupbox.Caption:='Test: Compiling an empty file ...';
     // get Test directory
     TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
     if not DirectoryExists(TestDir) then begin
@@ -116,12 +135,14 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    // create compiler command line options
-    CmdLineParams:=Options.MakeOptionsString(BogusFilename,[ccloAddVerboseAll]);
-    
-    CompileTool:=TExternalToolOptions.Create;
     try
-      CompileTool.Title:='Test: Compiling bogus filename';
+      // create compiler command line options
+      CmdLineParams:=Options.MakeOptionsString(BogusFilename,
+                                [ccloAddVerboseAll,ccloDoNotAppendOutFileOption])
+                     +' '+BogusFilename;
+
+      CompileTool:=TExternalToolOptions.Create;
+      CompileTool.Title:='Test: Compiling empty file';
       CompileTool.ScanOutputForFPCMessages:=true;
       CompileTool.ScanOutputForMakeMessages:=true;
       CompileTool.WorkingDirectory:=TestDir;
@@ -129,13 +150,15 @@ begin
       CompileTool.CmdLineParams:=CmdLineParams;
       
       Result:=RunTool(CompileTool);
+      FreeThenNil(CompileTool);
     finally
-      // clean up
-      CompileTool.Free;
+      DeleteFile(BogusFilename);
     end;
 
   finally
+    CompileTool.Free;
     FTest:=cotNone;
+    TestGroupbox.Caption:='Test';
   end;
 end;
 
@@ -154,17 +177,34 @@ end;
 function TCheckCompilerOptsDlg.RunTool(ExtTool: TExternalToolOptions
   ): TModalResult;
 begin
+  TestMemo.Lines.Text:=ExtTool.Filename+' '+ExtTool.CmdLineParams;
   Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+end;
+
+procedure TCheckCompilerOptsDlg.Add(const Msg, CurDir: String;
+  ProgressLine: boolean);
+var
+  i: Integer;
+Begin
+  if FLastLineIsProgress then begin
+    OutputListbox.Items[OutputListbox.Items.Count-1]:=Msg;
+  end else begin
+    OutputListbox.Items.Add(Msg);
+  end;
+  FLastLineIsProgress:=ProgressLine;
+  i:=OutputListbox.Items.Count-1;
+  SetMsgDirectory(i,CurDir);
+  OutputListbox.TopIndex:=OutputListbox.Items.Count-1;
 end;
 
 procedure TCheckCompilerOptsDlg.AddMsg(const Msg, CurDir: String);
 begin
-  // ToDo
+  Add(Msg,CurDir,false);
 end;
 
 procedure TCheckCompilerOptsDlg.AddProgress(const Msg, CurDir: String);
 begin
-  // ToDo
+  Add(Msg,CurDir,false);
 end;
 
 initialization

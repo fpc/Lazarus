@@ -508,7 +508,8 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
     function DoShowToDoList: TModalResult;
-    function DoTestCompilerSettings: TModalResult;
+    function DoTestCompilerSettings(
+                            TheCompilerOptions: TCompilerOptions): TModalResult;
 
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
@@ -5512,11 +5513,21 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoTestCompilerSettings: TModalResult;
+function TMainIDE.DoTestCompilerSettings(
+  TheCompilerOptions: TCompilerOptions): TModalResult;
 begin
   Result:=mrCancel;
-  if Project1=nil then exit;
-  // ToDo
+  if (Project1=nil) or (ToolStatus<>itNone) then exit;
+  
+  // change tool status
+  CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(Application);
+  try
+    CheckCompilerOptsDlg.Options:=TheCompilerOptions;
+    CheckCompilerOptsDlg.MacroList:=MacroList;
+    Result:=CheckCompilerOptsDlg.ShowModal;
+  finally
+    FreeThenNil(CheckCompilerOptsDlg);
+  end;
 end;
 
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
@@ -8851,7 +8862,7 @@ end;
 
 procedure TMainIDE.OnCompilerOptionsDialogTest(Sender: TObject);
 begin
-  DoTestCompilerSettings;
+  DoTestCompilerSettings(Sender as TCompilerOptions);
 end;
 
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
@@ -8878,11 +8889,16 @@ begin
   SourceNotebook.ClearErrorLines;
 
   ToolStatus:=itBuilder;
-  MessagesView.Clear;
-  DoArrangeSourceEditorAndMessageView(false);
+  if CheckCompilerOptsDlg<>nil then begin
+    TheOutputFilter.OnOutputString:=@CheckCompilerOptsDlg.AddMsg;
+    TheOutputFilter.OnReadLine:=@CheckCompilerOptsDlg.AddProgress;
+  end else begin
+    MessagesView.Clear;
+    DoArrangeSourceEditorAndMessageView(false);
 
-  TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
-  TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
+    TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
+    TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
+  end;
 end;
 
 procedure TMainIDE.OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
@@ -9390,6 +9406,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.634  2003/08/14 08:10:02  mattias
+  started first compiler test
+
   Revision 1.633  2003/08/13 22:29:28  mattias
   started check compiler options
 

@@ -126,7 +126,8 @@ type
   
   TCompilerCmdLineOption = (
     ccloNoLinkerOpts,  // exclude linker options
-    ccloAddVerboseAll  // add -va
+    ccloAddVerboseAll,  // add -va
+    ccloDoNotAppendOutFileOption // do not add -o option
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
@@ -1552,10 +1553,9 @@ var
   CurMainSrcFile: String;
   CurCustomOptions: String;
 begin
-  if MainSourceFileName='' then
-    CurMainSrcFile:=GetDefaultMainSourceFileName
-  else
-    CurMainSrcFile:=MainSourceFileName;
+  CurMainSrcFile:=MainSourceFileName;
+  if CurMainSrcFile='' then
+    CurMainSrcFile:=GetDefaultMainSourceFileName;
 
   switches := '';
 
@@ -2055,7 +2055,9 @@ Processor specific options:
   -Xc = Link with C library (LINUX only)
        
 }
-  if (TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'') then
+  // append -o Option if neccessary
+  if not (ccloDoNotAppendOutFileOption in Flags)
+  and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
     NewTargetFilename:=CreateTargetFilename(CurMainSrcFile);
     if (NewTargetFilename<>'')
@@ -2502,7 +2504,7 @@ procedure TfrmCompilerOptions.ButtonCheckClicked(Sender: TObject);
 begin
   // Apply any changes and test
   PutCompilerOptions;
-  if Assigned(OnTest) then OnTest(Self);
+  if Assigned(OnTest) then OnTest(CompilerOpts);
 end;
 
 {------------------------------------------------------------------------------

@@ -3,7 +3,6 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   CLIENTHEIGHT = 307
   CLIENTWIDTH = 624
   POSITION = poscreencenter
-  VISIBLE = True
   HORZSCROLLBAR.PAGE = 625
   VERTSCROLLBAR.PAGE = 308
   LEFT = 328
@@ -11,42 +10,54 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   TOP = 358
   WIDTH = 624
   object OutputGroupBox: TGROUPBOX
-    ALIGN = altop
+    ANCHORS = [aktop, akleft, akright, akbottom]
     CAPTION = 'Output'
-    CLIENTHEIGHT = 143
+    CLIENTHEIGHT = 127
     CLIENTWIDTH = 620
     PARENTCTL3D = False
     TABORDER = 0
-    HEIGHT = 160
+    HEIGHT = 144
+    TOP = 112
     WIDTH = 624
-    object OutputMemo: TMEMO
-      ALIGN = albottom
-      LINES.Strings = (
-        'OutputMemo'
-      )
-      TABSTOP = True
-      TABSTOP = True
+    object OutputListbox: TLISTBOX
+      ALIGN = alclient
       TABORDER = 0
-      HEIGHT = 126
-      TOP = 17
-      WIDTH = 620
-    end
-    object OutputLabel: TLABEL
-      ALIGN = altop
-      CAPTION = 'OutputLabel'
-      LAYOUT = tltop
-      HEIGHT = 17
+      TABSTOP = True
+      TOPINDEX = -1
+      HEIGHT = 127
       WIDTH = 620
     end
   end
   object CloseButton: TBUTTON
+    ANCHORS = [akbottom]
     CAPTION = 'Close'
     TABSTOP = True
     TABORDER = 1
     ONCLICK = CloseButtonCLICK
-    LEFT = 296
+    LEFT = 274
     HEIGHT = 25
     TOP = 272
     WIDTH = 75
+  end
+  object TestGroupbox: TGROUPBOX
+    ALIGN = altop
+    CAPTION = 'Test'
+    CLIENTHEIGHT = 88
+    CLIENTWIDTH = 620
+    PARENTCTL3D = False
+    TABORDER = 2
+    HEIGHT = 105
+    WIDTH = 624
+    object TestMemo: TMEMO
+      ALIGN = alclient
+      LINES.Strings = (
+        'TestMemo'
+      )
+      TABSTOP = True
+      TABSTOP = True
+      TABORDER = 0
+      HEIGHT = 88
+      WIDTH = 620
+    end
   end
 end
