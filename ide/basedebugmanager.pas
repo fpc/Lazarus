@@ -57,7 +57,6 @@ type
     function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
   protected
     FDestroying: boolean;
-    FDebugger: TDebugger;
     FCallStack: TIDECallStack;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
@@ -170,6 +169,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.22  2004/09/23 07:45:53  vincents
+  moved FDebugger field from BaseDebugManager to DebugManager
+
   Revision 1.21  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches

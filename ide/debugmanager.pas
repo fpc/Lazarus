@@ -84,6 +84,7 @@ type
     function DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
       var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
+    FDebugger: TDebugger;
     FBreakPointGroups: TIDEBreakPointGroups;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
@@ -1893,6 +1894,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.74  2004/09/23 07:45:53  vincents
+  moved FDebugger field from BaseDebugManager to DebugManager
+
   Revision 1.73  2004/09/17 20:04:34  vincents
   replaced writeln by DebugLn
 
