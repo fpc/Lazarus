@@ -3935,7 +3935,7 @@ begin
                                                             AncestorType,true));
       if CInterface=nil then begin
         // error streaming component -> examine lfm file
-        writeln('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
+        DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
         NewComponent:=nil;
         AnUnitInfo.Component:=NewComponent;
         // open lfm file in editor
@@ -10974,6 +10974,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.793  2004/11/19 12:23:43  vincents
+  fixed WaitForLazarus: close process handle after use.
+
   Revision 1.792  2004/11/18 16:01:14  vincents
   replaced writeln by DebugLn
 

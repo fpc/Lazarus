@@ -167,7 +167,10 @@ procedure TLazarusManager.WaitForLazarus;
     ProcessHandle: THandle;
   begin
     ProcessHandle := OpenProcess(SYNCHRONIZE, false, PID);
-    WaitForSingleObject(ProcessHandle, INFINITE);
+    if ProcessHandle<>HWND(nil) then begin
+      WaitForSingleObject(ProcessHandle, INFINITE) of
+      CloseHandle(ProcessHandle);
+    end;
   end;
   {$ELSE}
   {$IFDEF UNIX}
@@ -258,6 +261,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.11  2004/11/19 12:23:43  vincents
+  fixed WaitForLazarus: close process handle after use.
+
   Revision 1.10  2004/11/06 11:29:24  vincents
   Changes due to the new fpc unit directory structure.
 
