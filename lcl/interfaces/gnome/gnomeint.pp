@@ -67,20 +67,39 @@ uses
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, GTKPRoc, LCLStrConsts;
 
+Function InsertLineBreaks(Font : hFont; Str : PChar; MaxWidth : Longint) : String;
+var
+  Layout : PGnomeIconTextInfo;
+  Line : PGList;
+begin
+  Layout := gnome_icon_layout_text(PGDIObject(Font)^.GDIFontObject,
+    PgChar(Str), ' ', MaxWidth, False);
+
+  Line := Layout^.Rows;
+  While Line <> nil do begin
+    If Line^.Data <> nil then
+      Result := Result + AnsiString(PGnomeIconTextInfoRow(Line^.Data)^.thetext);
+    Line := Line^.Next;
+    If Line <> nil then
+      If Result[Length(Result)] <> #10 then
+        Result := Result + #10;
+  end;
+
+  Result := Copy(Result, 1, Length(Result));
+
+  gnome_icon_text_info_free(Layout);
+end;
+
 procedure TGnomeObject.CreateComponent(Sender : TObject);
 var
-  Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
-  TempWidget,
-  TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p          : pointer;          // ptr to the newly created GtkWidget
   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
   ParentForm: TCustomForm;
 begin
-  Caption   := Sender.ClassName;
   if (Sender is TCustomForm) and (TControl(Sender).FCompStyle = csForm) then begin
     With (Sender as TCustomForm) do begin
-      Caption := TControl(Sender).Caption;
       If Caption > '' then begin
         strTemp := StrAlloc(length(Caption) + 1);
         StrPCopy(strTemp, Caption);
@@ -248,6 +267,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/10/14 14:29:50  lazarus
+  AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
+
   Revision 1.4  2002/10/12 16:36:40  lazarus
   AJ: added new QueryUser/NotifyUser
 
