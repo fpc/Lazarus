@@ -185,7 +185,7 @@ type
       FClientHandle: HWND;
    public
       constructor Create(AOwner: TComponent); override;
-      destructor destroy; override;
+      destructor Destroy; override;
       property ClientHandle: HWND read FClientHandle;
    published
       property ActiveCOntrol;

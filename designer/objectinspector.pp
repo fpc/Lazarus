@@ -486,13 +486,13 @@ var a:integer;
 begin
   FItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
-  FRows.Free;
-  FComponentList.Free;
-  FValueFont.Free;
-  FNameFont.Free;
-  FExpandedProperties.Free;
-  FHintTimer.free;
-  FHintWindow.Free;
+  FreeAndNil(FRows);
+  FreeAndNil(FComponentList);
+  FreeAndNil(FValueFont);
+  FreeAndNil(FNameFont);
+  FreeAndNil(FExpandedProperties);
+  FreeAndNil(FHintTimer);
+  FreeAndNil(FHintWindow);
   inherited Destroy;
 end;
 

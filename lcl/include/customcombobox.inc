@@ -50,6 +50,7 @@ end;
 procedure TCustomComboBox.DestroyHandle;
 var NewStrings : TStrings;
 begin
+  //writeln('TCustomComboBox.DestroyHandle ',Name);
   // create an internal list for storing items internally
   NewStrings:= TStringList.Create;
   // copy from interface based list
@@ -61,6 +62,7 @@ begin
   // and use the internal list
   FItems:= NewStrings;
   
+  //writeln('TCustomComboBox.DestroyHandle B ',Name);
   inherited DestroyHandle;
 end;
 
@@ -545,7 +547,11 @@ end;
 
 {
   $Log$
+  Revision 1.12  2002/08/31 11:37:09  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.11  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.

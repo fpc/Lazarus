@@ -95,7 +95,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomForm.Destroy;
 begin
-//writeln('[TCustomForm.Destroy] A ',Name,':',ClassName);
+  //writeln('[TCustomForm.Destroy] A ',Name,':',ClassName);
   Assert(False, Format('Trace: [TCustomForm.Destroy] %s', [ClassName]));
   FMenu.Free;
   FMenu:=nil;
@@ -103,9 +103,9 @@ begin
   FCanvas:=nil;
   FIcon.Free;
   FIcon:=nil;
-//writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
+  //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
-//writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
+  //writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1025,6 +1025,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/08/31 11:37:09  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.52  2002/08/30 12:32:20  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
