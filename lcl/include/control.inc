@@ -120,7 +120,12 @@ begin
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if SizeChanged or PosChanged then begin
+
+    FLastResize.X:= AWidth - FWidth;
+    FLastResize.Y:= AHeight - FHeight;
+
     DoSetBounds(ALeft,ATop,AWidth,AHeight);
+    
     if SizeChanged then Invalidate;
 //    UpdateAnchorRules;
     BoundsChanged;
@@ -1776,6 +1781,13 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.69  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.68  2002/08/29 00:07:01  lazarus
   MG: fixed TComboBox and InvalidateControl
 
