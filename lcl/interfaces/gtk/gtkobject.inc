@@ -225,16 +225,43 @@ begin
    if Sender <> nil then
      Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
 
-   handle := hwnd(ObjectToGtkObject (sender));
-//???   if handle = nil then assert (false, Format ('Trace:[TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
-
+   // The following case is now split into 2 separate parts:
+   //   1st part should contain all messages which don't need the "handle" variable
+   //   2nd part has to contain all parts which need the handle
+   // Reason for this split are performance issues since we need RTTI to
+   // retrieve the handle
    case LM_Message of
-      LM_Create :
+      LM_Create   : CreateComponent(Sender);
+
+      LM_SETCOLOR : SetColor(Sender);
+
+      LM_SETPixel : SetPixel(Sender,Data); 
+
+      LM_GETPixel : GetPixel(Sender,Data); 
+
+      LM_ShowHide :
       begin
-        Assert(False, 'Trace:Callling CreateComponent');
-        CreateComponent(Sender);
-        Assert(False, 'Trace:Called CreateComponent');
+         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
+         ShowHide(Sender);
       end;
+
+      LM_SetCursor : SetCursor(Sender);
+
+      LM_SetLabel  : SetLabel(Sender,Data);
+
+      LM_GETVALUE  : Result := GetValue (Sender, data);
+
+      LM_SETVALUE  : Result := SetValue (Sender, data);
+     
+      LM_SETPROPERTIES: Result := SetProperties(Sender);
+      
+      LM_ATTACHMENU: AttachMenu(Sender);
+   else begin
+      handle := hwnd(ObjectToGtkObject (sender));
+//???   if handle = nil then assert (false, Format ('Trace:[TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
+      Case LM_Message of
+
+      LM_SetText  : SetText(PgtkWidget(Handle), Data); 
 
       LM_AddChild :
       begin
@@ -432,25 +459,12 @@ begin
          StrDispose(pStr); 
       end; 
 
-      LM_SETFOCUS:gtk_widget_grab_focus(PgtkWidget(TWinControl(sender).handle));
+      LM_SETFOCUS:gtk_widget_grab_focus(PgtkWidget(handle));
 
       LM_SetSize :
       begin
          Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom]));
          ResizeChild(Sender,pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom);
-      end;
-
-      LM_SetText : SetText(PgtkWidget(Handle), Data); 
-
-      LM_SETCOLOR: SetColor(Sender);
-
-      LM_SETPixel: SetPixel(Sender,Data); 
-      LM_GETPixel: GetPixel(Sender,Data); 
-
-      LM_ShowHide :
-      begin
-         Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
-         ShowHide(Sender);
       end;
 
       LM_ShowModal :
@@ -472,10 +486,6 @@ begin
 	       { Don't grab anything - this is done by gtk_window_set_modal }
          //gtk_grab_add(PgtkWidget(Handle));
       end;
-
-      LM_SetCursor : SetCursor(Sender);
-
-      LM_SetLabel  : SetLabel(Sender,Data);
 
 //SH: think of TCanvas.handle!!!!
       LM_ReDraw : 
@@ -700,8 +710,8 @@ begin
       begin
          if (Sender as TControl).fCompStyle = csComboBox then
          begin
-            Result:= PGtkEditable(PGtkCombo((Sender as TWinControl).Handle)^.entry)^.selection_end_pos -
-            PGtkEditable(PGtkCombo((Sender as TWinControl).Handle)^.entry)^.selection_start_pos;
+            Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos -
+                       PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
          end;
       end;
   
@@ -835,7 +845,7 @@ begin
             if (TControl(Sender).fCompStyle = csListBox) then
             begin
                { In TempWidget, a viewport is stored }
-               Widget:= PGtkWidget(PGtkBin(TWinControl(Sender).Handle)^.child);
+               Widget:= PGtkWidget(PGtkBin(Handle)^.child);
                if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle) 
 	          then gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
                   else gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
@@ -853,17 +863,12 @@ begin
 	 end;
       end;
 
-      LM_GETVALUE: Result := GetValue (Sender, data);
-
-      LM_SETVALUE: Result := SetValue (Sender, data);
-     
-      LM_SETPROPERTIES: Result := SetProperties(Sender);
-      
-      LM_ATTACHMENU: AttachMenu(Sender);
-   else
-      Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
-     // unhandled message
-   end;
+      else
+         Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
+         // unhandled message
+      end; // end of 2nd case
+   end;   // end of else-part of 1st case
+   end;   // end of 1st case
 end;
 
 
@@ -965,8 +970,6 @@ end;
 procedure TgtkObject.SetText(Child, Data: Pointer);
 type
    pMsg = ^TLMSetControlText;
-var
-   pStr: PChar;
 begin
    case pMsg(Data)^.fCompStyle of
       csStatusBar : gtk_statusbar_push(PGTKStatusBar(Child),pMsg(Data)^.Panel,pMsg(Data)^.Userdata);
@@ -974,6 +977,8 @@ begin
       writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
    end;
 {STOPPOK: Code seems superfluous, see SetLabel instead
+var
+   pStr: PChar;
    // Stoppok: Hmm, this cast looks quite dangerous if the code above is also valid
    case TLMNotebookEvent(Data^).fCompStyle of
       csNotebook :  
@@ -1701,11 +1706,10 @@ begin
          SetMainWidget(p, TempWidget);
 
          //drag icons
-         if Drag_Icon = nil then
-          Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil, gtk_widget_get_colormap (p),
+         if Drag_Icon = nil
+            then Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil, gtk_widget_get_colormap (p),
 							 @Drag_Mask,
 							 nil, @IMGDrag_Icon);
-
       end;
 
       csFrame :
@@ -1856,9 +1860,8 @@ begin
          Begin 
             p := gtk_button_new_with_label(StrTemp);
             Assert(False, 'Trace:TTOOLBUTTON created as type TBSBUTTON');
-            end
-            else
-            Begin
+         end
+         else Begin
             p := gtk_button_new_with_label(StrTemp);
             Assert(False, 'Trace:TTOOLBUTTON created as type TBSBUTTON because type was unknown');
          end;
@@ -1946,6 +1949,7 @@ begin
 {}
    StrDispose(StrTemp);
 
+   Assert(False, 'Trace:Leaving CreateComponent');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1996,7 +2000,6 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.AddNBPage(Parent, Child: TObject; Index: Integer);
 var
-  Msg: TLMNotebookEvent;
   pStr: PCHar;
 begin
   Assert(false, 'Trace:Adding a notebook page');
@@ -2643,6 +2646,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.4  2000/07/23 18:59:35  lazarus
+  more cleanups, stoppok
+
   Revision 1.3  2000/07/23 10:51:53  lazarus
   - cleanups in IntSendMessage3
   - minor cleanups in other functions
