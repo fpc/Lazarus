@@ -142,7 +142,7 @@ constructor TPicture.Create;
 begin
   inherited Create;
   GetFileFormats;
-  GetClipboardFormats;
+  //GetClipboardFormats;
 end;
 
 destructor TPicture.Destroy;
@@ -266,11 +266,11 @@ begin
 end;
 
 procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
-var
+{var
   NewGraphic: TGraphic;
-  GraphicClass: TGraphicClass;
+  GraphicClass: TGraphicClass;}
 begin
-  GraphicClass := ClipboardFormats.FindFormat(FormatID);
+{  GraphicClass := ClipboardFormats.FindFormat(FormatID);
   if GraphicClass = nil then
     InvalidGraphic(@SUnknownClipboardFormat);
 
@@ -285,7 +285,7 @@ begin
   FGraphic.Free;
   FGraphic := NewGraphic;
   FGraphic.OnChange := Changed;
-  Changed(Self);
+  Changed(Self);}
 end;
 
 procedure TPicture.SaveToClipboardFormat(FormatID: TClipboardFormat);
