@@ -69,6 +69,20 @@ begin
   FControl.UpdateScrollBars;
 end;
 
+function TControlScrollBar.GetSize: integer;
+var
+  KindID: integer;
+begin
+  if Kind=sbHorizontal then
+    KindID:=SM_CXHSCROLL
+  else
+    KindID:=SM_CXVSCROLL;
+  if (FControl<>nil) and (FControl.HandleAllocated) then
+    Result:=LCLLinux.GetScrollBarSize(FControl.Handle,KindID)
+  else
+    Result:=GetSystemMetrics(KindID);
+end;
+
 procedure TControlScrollBar.SetRange(Value: Integer);
 begin
   If Value < 0 then begin
@@ -78,6 +92,11 @@ begin
   if FRange=Value then exit;
   FRange := Value;
   FControl.UpdateScrollBars;
+end;
+
+procedure TControlScrollBar.SetSize(const AValue: integer);
+begin
+  // ToDo
 end;
 
 procedure TControlScrollBar.SetVisible(Value: Boolean);
@@ -153,7 +172,7 @@ var
 
       if Visible then begin
         If (FControl <> nil) and (FControl.HorzScrollBar.Visible) then
-          SBSize := GetSystemMetrics(SM_CXHSCROLL)
+          SBSize := FControl.HorzScrollBar.Size
         else
           SBSize := 0;
         FAutoRange := (Range - ClientHeight)*Shortint(Range >= ClientHeight + SBSize);
@@ -181,7 +200,7 @@ var
 
       if Visible then begin
         If (FControl <> nil) and (FControl.VertScrollBar.Visible) then
-          SBSize := GetSystemMetrics(SM_CYVSCROLL)
+          SBSize := FControl.VertScrollBar.Size
         else
           SBSize := 0;
         FAutoRange := (Range - ClientWidth)*Shortint(Range >= ClientWidth + SBSize);

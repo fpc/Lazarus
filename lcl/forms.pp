@@ -78,8 +78,10 @@ type
     FSmooth : Boolean;
     FVisible: Boolean;
 
+    function GetSize: integer;
     procedure SetPosition(Value: Integer);
     procedure SetRange(Value: Integer);
+    procedure SetSize(const AValue: integer);
     procedure SetSmooth(Value: Boolean);
     procedure SetVisible(Value: Boolean);
   protected
@@ -98,6 +100,7 @@ type
     property Smooth : Boolean read FSmooth write SetSmooth;// default True
     property Position: Integer read FPosition write SetPosition default 0;
     property Range: Integer read FRange write SetRange default 0;
+    property Size: integer read GetSize write SetSize stored false;
     property Visible: Boolean read FVisible write SetVisible;// default True;
   end;
 
