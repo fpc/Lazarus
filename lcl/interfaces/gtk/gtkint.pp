@@ -31,8 +31,8 @@ interface
  
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
-  ExtCtrls, Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
-  gtkDef, DynHashArray, LazQueue, Calendar, Arrow, GraphType;
+  ExtCtrls,Forms,Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
+  gtkDef, DynHashArray, LazQueue, Calendar, Arrow, GraphType,Spin;
 
 type
   TgtkObject = class(TInterfaceBase)
@@ -325,6 +325,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/03/14 20:28:49  lazarus
+  Bug fix for Mattias.
+  Fixed spinedit so you can now get the value and set the value.
+  Shane
+
   Revision 1.30  2002/02/25 18:46:06  lazarus
   MG: fixed nested record parsing
 
