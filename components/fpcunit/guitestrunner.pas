@@ -32,6 +32,8 @@ const
 
 type
 
+  { TGUITestRunner }
+
   TGUITestRunner = class(TForm, ITestListener)
     actCopy: TAction;
     actCut: TAction;
@@ -66,6 +68,7 @@ type
     procedure BtnCloseClick(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerDestroy(Sender: TObject);
+    procedure GUITestRunnerShow(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
     procedure TestTreeSelectionChanged(Sender: TObject);
     procedure pbBarPaint(Sender: TObject);
@@ -80,6 +83,7 @@ type
     errorCounter: Integer;
     testsCounter: Integer;
     barColor: TColor;
+    testSuite: TTest;
   protected
     { IInterface }
     function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
@@ -131,6 +135,12 @@ begin
   suiteList.Free;
 end;
 
+procedure TGUITestRunner.GUITestRunnerShow(Sender: TObject);
+begin
+  if (ParamStr(1) = '--now') or (ParamStr(1) = '-n') then
+    BtnRunClick(Self);
+end;
+
 procedure TGUITestRunner.MenuItem3Click(Sender: TObject);
 begin
   Clipboard.AsText := Memo1.Lines.Text;
@@ -148,21 +158,25 @@ var
 begin
   with (Sender as TPaintBox) do
   begin
-    Canvas.Brush.Color := clGray;
+    Canvas.Brush.Color := clSilver;
     Canvas.Rectangle(0, 0, Width, Height);
-    if (FailureCounter = 0) and (ErrorCounter = 0) then
-       barColor := clGreen;
-    Canvas.Brush.Color := barColor;
-    if TestsCounter <> 0 then
+    if Assigned(TestSuite) then
     begin
-      Canvas.Rectangle(0, 0, round(TestsCounter / GetTestRegistry.CountTestCases * Width), Height);
-      Canvas.Font.Color := clWhite;
-      msg := 'Runs: ' + IntToStr(TestsCounter);
-      if ErrorCounter <> 0 then
+      if (FailureCounter = 0) and (ErrorCounter = 0) and
+      (TestsCounter = TestSuite.CountTestCases) then
+        barColor := clGreen;
+      Canvas.Brush.Color := barColor;
+      if TestsCounter <> 0 then
+      begin
+        Canvas.Rectangle(0, 0, round(TestsCounter / TestSuite.CountTestCases * Width), Height);
+        Canvas.Font.Color := clWhite;
+        msg := 'Runs: ' + IntToStr(TestsCounter);
+        if ErrorCounter <> 0 then
           msg := msg + '    Number of test errors: ' + IntToStr(ErrorCounter);
-      if (FailureCounter <> 0) then
+        if (FailureCounter <> 0) then
         msg := msg + '     Number of test failures: ' + IntToStr(FailureCounter);
-      Canvas.Textout(10, 10,  msg)
+        Canvas.Textout(10, 10,  msg)
+      end;
     end;
   end;
 end;
@@ -170,8 +184,8 @@ end;
 procedure TGUITestRunner.btnRunClick(Sender: TObject);
 var
   testResult: TTestResult;
-  testSuite: TTest;
 begin
+  barcolor := clGray;
   TestTree.items.Clear;
   suiteList.Clear;
   currentTestNode := nil;
