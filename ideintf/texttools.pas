@@ -9,19 +9,33 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- 
-  Dummy unit to compile all IDE interface units.
+
+  Author: Mattias Gaertner
+  
+  Abstract:
+    Interface to various IDE tools manipulating text.
 }
-unit AllIDEIntf;
+unit TextTools;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
-  ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ActionsEditor, HelpIntf, TextTools;
+  Classes, SysUtils, Forms;
+
+type
+  TSortDirection = (sdAscending, sdDescending);
+  TSortDomain = (sdWords, sdLines, sdParagraphs);
+
+  TShowSortSelectionDialogFunc = function(const TheText: string;
+    Highlighter: TObject; var SortedText: string): TModalResult;
+  TSortTextFunc = function(const TheText: string; Direction: TSortDirection;
+    Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
+
+var
+  ShowSortSelectionDialogFunc: TShowSortSelectionDialogFunc;
+  SortTextFunc: TSortTextFunc;
 
 implementation
 

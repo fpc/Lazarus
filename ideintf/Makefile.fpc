@@ -25,7 +25,10 @@ implicitunits=actionseditor \
   listviewpropedit \
   objectinspector \
   objinspstrconsts \
-  propedits
+  propedits \
+  helpintf \
+  texttools \
+  actionseditor
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \

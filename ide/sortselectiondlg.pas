@@ -31,6 +31,7 @@
   Abstract:
     TSortSelectionDialog is a dialog to setup the parameters for sorting
     text selection.
+    SortText is the function to sort the text.
 }
 unit SortSelectionDlg;
 
@@ -41,7 +42,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
   IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, LazarusIDEStrConsts,
-  EditorOptions, MiscOptions, SynEditHighlighter;
+  EditorOptions, MiscOptions, SynEditHighlighter, TextTools;
   
 type
   TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
@@ -594,6 +595,10 @@ begin
     PreviewSynEdit.Text:=SortedText;
   end;
 end;
+
+initialization
+  TextTools.ShowSortSelectionDialogFunc:=@ShowSortSelectionDialog;
+  TextTools.SortTextFunc:=@SortText;
 
 end.
 

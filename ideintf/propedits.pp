@@ -44,7 +44,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
-  ColumnDlg, ObjInspStrConsts;
+  TextTools, ColumnDlg, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -681,10 +681,13 @@ type
 { TStringsPropertyEditor
   PropertyEditor editor for the TStrings properties.
   Brings up the dialog for entering text. }
+  
+  TStringsPropEditorDlg = class;
 
   TStringsPropertyEditor = class(TClassPropertyEditor)
   public
     procedure Edit; override;
+    function CreateDlg(s: TStrings): TStringsPropEditorDlg; virtual;
     function GetAttributes: TPropertyAttributes; override;
   end;
 
@@ -1255,16 +1258,47 @@ type
 
 //==============================================================================
 
+
+//==============================================================================
+
+{ TStringsPropEditorDlg }
+
+type
+  TStringsPropEditorDlg = class(TForm)
+    procedure SortButtonClick(Sender: TObject);
+    procedure MemoChanged(Sender: TObject);
+  public
+    Memo: TMemo;
+    OKButton, CancelButton: TBitBtn;
+    SortButton: TButton;
+    Bevel: TBevel;
+    StatusLabel: TLabel;
+    Editor: TPropertyEditor;
+    constructor Create(TheOwner: TComponent); override;
+    procedure AddButtons(var x, y, BtnWidth: integer); virtual;
+  end;
+
+//==============================================================================
+
+
 // Global flags:
-const
-  GReferenceExpandable: Boolean = True;
-  GShowReadOnlyProps: Boolean = True;
+var
+  GReferenceExpandable: Boolean;
+  GShowReadOnlyProps: Boolean;
+
+// default Hook
+var
+  GlobalDesignHook: TPropertyEditorHook;
+
+function ClassTypeInfo(Value: TClass): PTypeInfo;
+procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
+
 
 //==============================================================================
 // XXX
-// This class is a workaround for the missing typeinfo function
+// This class is a workaround for the broken typeinfo function
 type
-  TDummyClassForPropTypes = class (TPersistent)
+  TDummyClassForPropTypes = class(TPersistent)
   private
     FDateTime: TDateTime;
     FList:PPropList;
@@ -1295,15 +1329,6 @@ type
     property ShortCut: TShortCut read FShortCut;
     property DateTime: TDateTime read FDateTime;
   end;
-
-//==============================================================================
-
-  Function ClassTypeInfo(Value: TClass): PTypeInfo;
-
-var
-  GlobalDesignHook: TPropertyEditorHook;
-
-procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
 
 
 implementation
@@ -4277,21 +4302,9 @@ begin
   Result := [paMultiSelect, paAutoUpdate, paRevertable];
 end;
 
-{ TStringsPropertyEditor }
+{ TStringsPropEditorDlg }
 
-type
-  TStringsPropEditorDlg = class(TForm)
-  private
-    procedure MemoChanged(Sender: TObject);
-  public
-    Memo: TMemo;
-    OKButton, CancelButton: TBitBtn;
-    Bevel: TBevel;
-    StatusLabel: TLabel;
-    constructor Create(AOwner: TComponent); override;
-  end;
-
-constructor TStringsPropEditorDlg.Create(AOwner : TComponent);
+constructor TStringsPropEditorDlg.Create(TheOwner : TComponent);
 var
   x: Integer;
   y: Integer;
@@ -4299,11 +4312,11 @@ var
   MaxY: LongInt;
   w: Integer;
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   Position := poScreenCenter;
-  Width := 350;
+  Width := 400;
   Height := 250;
-  Caption := 'Strings Editor Dialog';
+  Caption := oisStringsEditorDialog;
 
   Bevel:= TBevel.Create(Self);
   x:=4;
@@ -4333,30 +4346,68 @@ begin
     Parent:= Self;
     SetBounds(x,y,MaxX-2*x,MaxY-y-38);
     Anchors:= [akLeft, akTop, akRight, akBottom];
-//    Scrollbars:= ssVertical;   // GTK 1.x does not implement horizontal scrollbars for GtkText
     Memo.OnChange:= @MemoChanged;
   end;
-
-  OKButton := TBitBtn.Create(Self);
+  
   x:=MaxX;
   y:=MaxY-30;
   w:=80;
+  AddButtons(x,y,w);
+end;
+
+procedure TStringsPropEditorDlg.AddButtons(var x, y, BtnWidth: integer);
+begin
+  OKButton := TBitBtn.Create(Self);
   with OKButton do Begin
     Parent := Self;
     Kind:= bkOK;
-    dec(x,w+8);
-    SetBounds(x,y,w,Height);
+    dec(x,BtnWidth+8);
+    SetBounds(x,y,BtnWidth,Height);
     Anchors:= [akRight, akBottom];
   end;
 
-  CancelButton := TBitBtn.Create(self);
+  CancelButton := TBitBtn.Create(Self);
   with CancelButton do Begin
     Parent := Self;
     Kind:= bkCancel;
-    dec(x,w+8);
-    SetBounds(x,y,w,Height);
+    dec(x,BtnWidth+8);
+    SetBounds(x,y,BtnWidth,Height);
     Anchors:= [akRight, akBottom];
   end;
+
+  if Assigned(ShowSortSelectionDialogFunc) then begin
+    SortButton := TButton.Create(Self);
+    with SortButton do Begin
+      Parent := Self;
+      dec(x,BtnWidth+8);
+      SetBounds(x,y,BtnWidth,Height);
+      Anchors:= [akRight, akBottom];
+      Caption:=oisSort;
+      OnClick:=@SortButtonClick;
+    end;
+  end;
+end;
+
+procedure TStringsPropEditorDlg.SortButtonClick(Sender: TObject);
+var
+  OldText, NewSortedText: String;
+  SortOnlySelection: Boolean;
+begin
+  if not Assigned(ShowSortSelectionDialogFunc) then begin
+    SortButton.Enabled:=false;
+    exit;
+  end;
+  SortOnlySelection:=true;
+  OldText:=Memo.SelText;
+  if OldText='' then begin
+    SortOnlySelection:=false;
+    OldText:=Memo.Lines.Text;
+  end;
+  if ShowSortSelectionDialogFunc(OldText,nil,NewSortedText)<>mrOk then exit;
+  if SortOnlySelection then
+    Memo.SelText:=NewSortedText
+  else
+    Memo.Lines.Text:=NewSortedText;
 end;
 
 procedure TStringsPropEditorDlg.MemoChanged(Sender : TObject);
@@ -4365,15 +4416,16 @@ begin
     (Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding))]);
 end;
 
+{ TStringsPropertyEditor }
+
 procedure TStringsPropertyEditor.Edit;
 var
   TheDialog : TStringsPropEditorDlg;
   Strings : TStrings;
 begin
   Strings:= TStrings(GetObjectValue);
-  TheDialog:= TStringsPropEditorDlg.Create(Application);
+  TheDialog:= CreateDlg(Strings);
   try
-    TheDialog.Memo.Text:= Strings.Text;
     if (TheDialog.ShowModal = mrOK) then begin
       Strings.Text:=TheDialog.Memo.Text;
       Modified;
@@ -4381,6 +4433,14 @@ begin
   finally
     TheDialog.Free;
   end;
+end;
+
+function TStringsPropertyEditor.CreateDlg(s: TStrings): TStringsPropEditorDlg;
+begin
+  if s=nil then ;
+  Result:=TStringsPropEditorDlg.Create(Application);
+  Result.Editor:=Self;
+  Result.Memo.Text:= s.Text;
 end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -4398,7 +4458,8 @@ begin
   AString:= GetStrValue;
   TheDialog:= TStringsPropEditorDlg.Create(Application);
   try
-    TheDialog.Memo.Text:= AString;
+    TheDialog.Editor:=Self;
+    TheDialog.Memo.Text:=AString;
     if (TheDialog.ShowModal = mrOK) then
       SetStrValue(TheDialog.Memo.Text);
   finally
@@ -5475,6 +5536,9 @@ end;
 
 procedure InitPropEdits;
 begin
+  GReferenceExpandable:=true;
+  GShowReadOnlyProps:=true;
+
   PropertyClassList:=TList.Create;
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors

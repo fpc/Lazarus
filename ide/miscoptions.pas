@@ -31,12 +31,9 @@ interface
 
 uses
   Classes, SysUtils, BuildLazDialog, CodeToolsStructs, LazConf, Laz_XMLCfg,
-  LazarusIDEStrConsts;
+  TextTools, LazarusIDEStrConsts;
 
 type
-  TSortDirection = (sdAscending, sdDescending);
-  TSortDomain = (sdWords, sdLines, sdParagraphs);
-
   TMiscellaneousOptions = class
   private
     fBuildLazOpts: TBuildLazarusOptions;

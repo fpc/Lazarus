@@ -196,8 +196,12 @@ type
     property Action;
     property Align;
     property Anchors;
+    property Cancel;
+    property Caption;
     property Constraints;
     property Default;
+    property Enabled;
+    property Font;
     property Glyph;
     property Kind;
     property Layout;
@@ -207,6 +211,9 @@ type
     property OnClick;
     property OnEnter;
     property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -215,6 +222,8 @@ type
     property PopupMenu;
     property ShowHint;
     property Spacing;
+    property TabOrder;
+    property TabStop;
     property Visible;
   end;
 
@@ -372,6 +381,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2004/07/16 10:16:32  mattias
+  added texttolols.pas and published TBitBtn.Caption
+
   Revision 1.74  2004/07/15 10:43:38  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

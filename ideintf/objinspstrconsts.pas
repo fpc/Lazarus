@@ -88,6 +88,10 @@ resourcestring
   oisSelectAFile = 'Select a file';
   oisAllFiles = 'All files (*.*)|*.*';
 
+  // property editors
+  oisSort = 'Sort';
+  oisStringsEditorDialog = 'Strings Editor Dialog';
+
 implementation
 
 end.
