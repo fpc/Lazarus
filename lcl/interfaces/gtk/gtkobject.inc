@@ -5628,6 +5628,7 @@ begin
   With Result^.GDIBrushColor.Color do
     Result^.GDIBrushColor.ColorRef :=
       RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
+  Include(Result^.GDIBrushColor.ColorFlags,cfColorAllocated);
 end;
 
 {------------------------------------------------------------------------------
@@ -5671,6 +5672,7 @@ begin
   With Result^.GDIPenColor.Color do
     Result^.GDIPenColor.ColorRef :=
       RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
+  Include(Result^.GDIBrushColor.ColorFlags,cfColorAllocated);
 end;
 
 {------------------------------------------------------------------------------
@@ -5944,6 +5946,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.236  2002/10/08 10:08:46  lazarus
+  MG: accelerated GDIColor allocating
+
   Revision 1.235  2002/10/07 20:50:58  lazarus
   MG: accelerated SelectGDKPenProps
 
