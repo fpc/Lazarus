@@ -1503,7 +1503,7 @@ var
   OldCaptureWidget: PGtkWidget;
 begin
   if OnlyIfCapturedByLCL and not MouseCapureByLCL then exit;
-  {$IfDef NoMouseCapture}
+  {$IfNDef ActivateMouseCapture}
   exit;
   {$EndIf}
   repeat
@@ -3824,6 +3824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.137  2002/10/21 14:40:52  lazarus
+  MG: fixes for 1.1
+
   Revision 1.136  2002/10/21 13:51:58  lazarus
   AJ: GetDefaultFont - try to get GTK builtin value if style fails
 

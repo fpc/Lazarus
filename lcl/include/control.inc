@@ -1203,7 +1203,6 @@ end;
 {  TControl SetMouseCapture                                                    }
 {------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
-var bla: integer;
 begin
   if MouseCapture <> Value
   then begin
@@ -1941,6 +1940,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.93  2002/10/21 14:40:52  lazarus
+  MG: fixes for 1.1
+
   Revision 1.92  2002/10/20 21:49:09  lazarus
   MG: fixes for fpc1.1
 
