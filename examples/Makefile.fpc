@@ -8,7 +8,8 @@ version=0.7a
 
 [target]
 examples=hello notebk comdialogs progressbar trackbar listboxtest \
-         bitbutton combobox checkbox scrollbar testall
+         bitbutton combobox checkbox scrollbar memotest groupbox \
+         speedtest toolbar messagedialogs notebooktest testall
 
 [clean]
 #units=$(notdir $(basename $(wildcard *$(PPUEXT)))) 
