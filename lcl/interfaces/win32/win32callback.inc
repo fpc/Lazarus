@@ -375,6 +375,14 @@ Var
         Text := Items[Index]
     end;
   end;
+  
+  procedure DestroySpinEditBuddy(SpinEdit: TCustomSpinEdit);
+  var
+    Buddy: HWND;
+  begin
+    Buddy := SendMessage(SpinEdit.Handle, UDM_GETBUDDY, 0, 0);
+    DestroyWindow(Buddy);
+  end;
 
 Begin
   Assert(False, 'Trace:WindowProc - Start');
@@ -589,6 +597,8 @@ Begin
           EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window);
       if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
+      if lWinControl is TCustomSpinEdit then
+        DestroySpinEditBuddy(TCustomSpinEdit(lWinControl));
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -1437,6 +1447,9 @@ end;
 
 {
   $Log$
+  Revision 1.158  2004/11/08 13:20:11  vincents
+  destroy SpinEdit's buddy when destroying SpinEdit.
+
   Revision 1.157  2004/11/07 17:58:17  micha
   fix message handling (use actual message, not default), fixes edits begin readonly
 
