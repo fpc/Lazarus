@@ -658,6 +658,7 @@ type
     procedure Paint; override;
     function ParentColorIsStored: boolean;
   public
+    constructor Create(TheOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
@@ -667,7 +668,6 @@ type
     property Color default clBtnFace;
     property Caption read GetText write SetText;
     property ParentColor stored ParentColorIsStored;
-    constructor Create(TheOwner: TComponent); override;
   end;
   
   
@@ -754,6 +754,9 @@ end.
 
  {
   $Log$
+  Revision 1.65  2003/06/19 22:38:21  mattias
+  fixed update on changing package usage options
+
   Revision 1.64  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 
