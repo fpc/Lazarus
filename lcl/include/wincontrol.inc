@@ -3058,6 +3058,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetText(const Value: TCaption);
 begin
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+    FCaption:=Text;
   if FCaption = Value then exit;
   FCaption := Value;
   if HandleAllocated then
@@ -3178,6 +3180,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.189  2004/01/10 02:01:37  mattias
+  implemented Undo property for OI
+
   Revision 1.188  2004/01/09 13:49:43  mattias
   improved gtk intf key fetching and OI keyboard navigation
 

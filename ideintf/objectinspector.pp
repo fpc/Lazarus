@@ -203,6 +203,8 @@ type
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
     procedure ClearRows;
+    function GetCurrentEditValue: string;
+    procedure SetCurrentEditValue(const AValue: string);
     procedure SetItemIndex(NewIndex:integer);
 
     procedure SetItemsTops;
@@ -300,6 +302,8 @@ type
     function GetActiveRow: TOIPropertyGridRow;
     procedure SetCurrentRowValue(const NewValue: string);
     function CanEditRowValue: boolean;
+    property CurrentEditValue: string read GetCurrentEditValue
+                                      write SetCurrentEditValue;
 
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
@@ -336,6 +340,7 @@ type
     MainPopupMenu: TPopupMenu;
     ColorsPopupMenuItem: TMenuItem;
     SetDefaultPopupMenuItem: TMenuItem;
+    UndoPropertyPopupMenuItem: TMenuItem;
     BackgroundColPopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
@@ -344,6 +349,7 @@ type
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure ObjectInspectorResize(Sender: TObject);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
+    procedure OnUndoPopupmenuItemClick(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender: TObject);
     procedure OnShowHintPopupMenuItemClick(Sender: TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
@@ -725,7 +731,6 @@ begin
     NewValue:=ValueEdit.Text
   else
     NewValue:=ValueComboBox.Text;
-  //writeln('TOIPropertyGrid.SetRowValue A ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
   if length(NewValue)>CurRow.Editor.GetEditLimit then
     NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
   if NewValue<>CurRow.Editor.GetVisualValue then begin
@@ -1601,6 +1606,24 @@ begin
   FRows.Clear;
 end;
 
+function TOIPropertyGrid.GetCurrentEditValue: string;
+begin
+  if FCurrentEdit=ValueEdit then
+    Result:=ValueEdit.Text
+  else if FCurrentEdit=ValueComboBox then
+    Result:=ValueComboBox.Text
+  else
+    Result:='';
+end;
+
+procedure TOIPropertyGrid.SetCurrentEditValue(const AValue: string);
+begin
+  if FCurrentEdit=ValueEdit then
+    ValueEdit.Text:=AValue
+  else if FCurrentEdit=ValueComboBox then
+    ValueComboBox.Text:=AValue;
+end;
+
 procedure TOIPropertyGrid.Clear;
 begin
   ClearRows;
@@ -2264,6 +2287,9 @@ begin
   AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
      'Set to Default Value','Set property value to Default',
      @OnSetDefaultPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
+     'Undo','Set property value to last valid value',
+     @OnUndoPopupmenuItemClick,false,true,true);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(ColorsPopupmenuItem,nil,'ColorsPopupMenuItem','Set Colors',''
      ,nil,false,true,true);
@@ -2617,6 +2643,17 @@ begin
   RefreshPropertyValues;
 end;
 
+procedure TObjectInspector.OnUndoPopupmenuItemClick(Sender: TObject);
+var
+  CurGrid: TOIPropertyGrid;
+  CurRow: TOIPropertyGridRow;
+begin
+  CurGrid:=GetActivePropertyGrid;
+  CurRow:=GetActivePropertyRow;
+  if CurRow=nil then exit;
+  CurGrid.CurrentEditValue:=CurRow.Editor.GetVisualValue;
+end;
+
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
 var ColorDialog:TColorDialog;
 begin
@@ -2823,12 +2860,22 @@ end;
 procedure TObjectInspector.OnMainPopupMenuPopup(Sender: TObject);
 var
   DefaultStr: String;
+  CurGrid: TOIPropertyGrid;
+  CurRow: TOIPropertyGridRow;
 begin
   SetDefaultPopupMenuItem.Enabled:=GetCurRowDefaultValue(DefaultStr);
   if SetDefaultPopupMenuItem.Enabled then
     SetDefaultPopupMenuItem.Caption:='Set to default: '+DefaultStr
   else
     SetDefaultPopupMenuItem.Caption:='Set to default value';
+    
+  CurGrid:=GetActivePropertyGrid;
+  CurRow:=GetActivePropertyRow;
+  if (CurRow<>nil) and (CurRow.Editor.GetVisualValue<>CurGrid.CurrentEditValue)
+  then
+    UndoPropertyPopupMenuItem.Enabled:=true
+  else
+    UndoPropertyPopupMenuItem.Enabled:=false;
 end;
 
 procedure TObjectInspector.HookRefreshPropertyValues;
