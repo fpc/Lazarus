@@ -51,7 +51,7 @@ End;
   Handles the messages sent to the current window by Windows or other
   applications
  ------------------------------------------------------------------------------}
-Function WindowProc(Window: HWnd; Msg: UInt; WParam: WParam; LParam: LParam): LResult;
+Function WindowProc(Window: HWnd; Msg: UInt; WParam: WParam; LParam: LParam): LResult; stdcall;
 Var
   C: Cardinal;
   List: TMsgArray;
@@ -71,7 +71,7 @@ Begin
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
-  Assert(False, Format('Trace:WindowProc - Window Value: $%S; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
+  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
   
   Case Msg Of
     LM_MONTHCHANGED..LM_DAYCHANGED:
@@ -453,13 +453,32 @@ Begin
       DeliverMessage(OwnerObject, LMessage);
   {$ENDIF VER1_1}
 
-  Writeln();
-  
   If WinProcess Then
     Result := DefWindowProc(Window, Msg, WParam, LParam);
 
   Assert(False, 'Trace:WindowProc - Exit');
 End;
+
+{------------------------------------------------------------------------------
+ Function: TimerWindowProc
+ Params: Window - The window that receives a message for the timer window
+         Msg    - The message received
+         WParam - Word parameter
+         LParam - Long-integer parameter
+  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
+
+  Handles the messages sent to the timer window by Windows
+ ------------------------------------------------------------------------------}
+FUNCTION TimerWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT;
+Var
+  TimerInfo: PWin32TimerInfo;
+begin
+  if (msg = WM_TIMER) and (WParam<>0) then begin
+    TimerInfo := PWin32TimerInfo(WParam);
+    TimerInfo^.TimerFunc;
+    Result := 0;
+  end else Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -468,6 +487,9 @@ End;
 
 {
   $Log$
+  Revision 1.17  2002/11/23 13:48:48  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.16  2002/11/15 23:43:54  mattias
   applied patch from Karl Brandt
 

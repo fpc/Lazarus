@@ -100,14 +100,12 @@ Function GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean; Override;
 Function GetWindowLong(Handle: HWND; Int: Integer): LongInt; Override;
 Function GetWindowOrgEx(DC: HDC; Var P: TPoint): Integer; Override;
 Function GetWindowRect(Handle: HWND; Var Rect: TRect): Integer; Override;
-Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 
 Function HideCaret(HWnd: HWND): Boolean; Override;
 
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
-
-Function KillTimer (HWnd: HWND; UIDEvent: Cardinal): Boolean; Override;
 
 Function LineTo(DC: HDC; X, Y: Integer): Boolean; Override;
 
@@ -150,7 +148,6 @@ Function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; 
 Function SetSysColors(CElements: Integer; Const LPAElements; Const LPARgbValues): Boolean; Override;
 Function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; Override;
 Function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; Override;
-Function SetTimer(HWnd: HWND; NIDEvent, uElapse: Integer; LPTimerFunc: TFNTimerProc): Integer; Override;
 Function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: LongInt): LongInt; Override;
 Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; Var OldPoint: TPoint): Boolean; Override;
 Function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; Override;
@@ -173,6 +170,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/11/23 13:48:49  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.15  2002/10/01 10:16:34  lazarus
   MG: removed last clientrectbugfix switches
 

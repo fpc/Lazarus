@@ -26,7 +26,7 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, LCLType, LMessages, VCLGlobals;
+  Classes, SysUtils, LCLType, LMessages, VCLGlobals;
 
 
 type
@@ -39,7 +39,7 @@ type
     FTimerHandle  : integer;
     FOnTimer      : TNotifyEvent;
     FEnabled      : Boolean;
-    procedure Timer (var msg); message LM_Timer;
+    procedure Timer;
   protected
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetInterval(Value: Cardinal); virtual;
@@ -62,29 +62,12 @@ type
 
 implementation
 
+uses
+  InterfaceBase;
 
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }
   SNoTimers = 'No timers available';
-
-{------------------------------------------------------------------------------
-  Method:  TimerCBProc
-  Params:  handle  - handle (self) of the TCustomTimer instance
-           message - should be LM_Timer, currently unused (s. Win32 API)
-           IDEvent - currently unused (s. Win32 API)
-           Time    - currently unused (s. Win32 API)
-  Returns: Nothing
-
-  Callback for a timer which will call TCustomTimer.Timer. This proc will be used
-  if the InterfaceObject uses a callback instead of delivering a LM_Timer
-  message.
- ------------------------------------------------------------------------------}
-procedure TimerCBProc(Handle: HWND; message : cardinal; IDEvent: Integer;
-  Time: Cardinal);
-begin
-  if (Handle<>0) then
-    TCustomTimer(Handle).Timer (message);
-end;
 
 {------------------------------------------------------------------------------
   Method: TCustomTimer.Create
@@ -126,7 +109,7 @@ end;
 procedure TCustomTimer.KillTimer;
 begin
   if FTimerHandle <> cIdNoTimer then begin
-    LCLLinux.KillTimer (integer(Self), 1);
+    InterfaceObject.DestroyTimer(FTimerHandle);
     FTimerHandle := cIdNoTimer;
     if Assigned(OnStopTimer) then OnStopTimer(Self);
   end;
@@ -151,8 +134,7 @@ begin
   if (FEnabled) and (FInterval > 0)
   and (([csDesigning,csLoading]*ComponentState=[]))
   and Assigned (FOnTimer) then begin
-    FTimerHandle := LCLLinux.SetTimer(Integer(Self), 1,
-                                      FInterval, @TimerCBProc);
+    FTimerHandle := InterfaceObject.CreateTimer(FInterval, @Timer);
     if FTimerHandle=0 then begin
       FTimerHandle:=cIdNoTimer;
       raise EOutOfResources.Create(SNoTimers);
@@ -163,12 +145,11 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TCustomTimer.Timer
-  Params:  msg - message to be dispatched
   Returns: Nothing
 
   Is called when the timer has expired and calls users OnTimer function.
  ------------------------------------------------------------------------------}
-procedure TCustomTimer.Timer (var msg);
+procedure TCustomTimer.Timer;
 begin
   if (FEnabled) and (FInterval > 0) then
     DoOnTimer;

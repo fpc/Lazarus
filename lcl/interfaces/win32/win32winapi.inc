@@ -1362,20 +1362,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  KillTimer
-  Params: HWnd     - handle of window that installed timer
-          UIDEvent - timer identifier
-  Returns: if the function succeeds
-
-  Destroys the specified timer.
- ------------------------------------------------------------------------------}
-Function TWin32Object.KillTimer (HWnd: HWND; UIDEvent: cardinal): Boolean;
-Begin
-  Assert(False, 'Trace:removing timer!!!');
-  Result := Windows.KillTimer(HWnd, UIDEvent);
-End;
-
-{------------------------------------------------------------------------------
   Method:  LineTo
   Params:  DC - device context handle
            X  - x-coordinate of line's ending point 
@@ -2030,23 +2016,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:  SetTimer
-  Params: HWnd        - handle of window for timer messages
-          NIDEvent    - timer identifier
-          UElapse     - time-out value
-          LPTimerFunc - address of timer procedure
-  Returns: identify of the new timer
-
-  Creates a timer with the specified time-out value.
-
-  Design: Currently only a callback to the TTimer class is implemented.
- ------------------------------------------------------------------------------}
-Function TWin32Object.SetTimer(HWnd: HWND; NIDEvent, UElapse: Integer; LPTimerFunc: TFNTimerProc): Integer;
-Begin
-  Result := Windows.SetTimer(HWnd, NIDEvent, UElapse, TIMERPROC(LPTimerFunc));
-End;
-
-{------------------------------------------------------------------------------
   Procedure: SetWindowLong
   Params:  Handle  - handle of window
            Idx     - value to set
@@ -2306,6 +2275,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/11/23 13:48:49  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.21  2002/10/27 20:05:08  lazarus
   AJ : Patch from Martin Smat fixing Pixmap loading on all Color Depths
 

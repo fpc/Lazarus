@@ -869,7 +869,8 @@ begin
     LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT    ';
     LM_CB_GETCOUNT      : Result :='LM_CB_GETCOUNT     ';
     LM_SETSHORTCUT      : Result :='LM_SETSHORTCUT     ';
-    
+    LM_SETGEOMETRY      : Result :='LM_SETGEOMETRY     ';
+
     // additional for TNoteBook
     LM_NB_UpdateTab     : Result := 'LM_NB_UpdateTab';
   else
@@ -884,6 +885,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2002/11/23 13:48:43  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.39  2002/11/21 18:49:52  mattias
   started OnMouseEnter and OnMouseLeave
 

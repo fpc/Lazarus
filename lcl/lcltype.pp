@@ -1562,8 +1562,7 @@ type
 //------------------------------------------------------------------------------
 // prototype for timer callback
 type
-  TFNTimerProc = procedure(Handle: HWND; Message : cardinal; IDEvent: Integer;
-                           Time: Cardinal);
+  TFNTimerProc = procedure of object;
 
 
 //------------------------------------------------------------------------------
@@ -1682,6 +1681,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2002/11/23 13:48:43  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.25  2002/11/22 09:59:29  mattias
   removed duplicate PPoint
 

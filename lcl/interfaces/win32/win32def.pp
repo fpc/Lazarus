@@ -31,7 +31,7 @@ Unit Win32Def;
 Interface 
 
 Uses
-  Windows, VCLGlobals, Classes;
+  Windows, VCLGlobals, Classes, LCLType;
 
 Type 
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
@@ -113,13 +113,28 @@ Type
     UserData: Integer;
   End;
 
-Implementation 
+type
+  { lazarus win32 Interface definition for additional timer data needed to find the callback}
+  PWin32TimerInfo = ^TWin32Timerinfo;
+  TWin32TimerInfo = record
+    TimerHandle: uint;         // the windows timer ID for this timer
+    TimerFunc  : TFNTimerProc; // owner function to handle timer
+  end;
+
+var
+  // FTimerData contains the currently running timers
+  FTimerData : TList;   // list of PWin32Timerinfo
+
+Implementation
 
 End.
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/11/23 13:48:48  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.4  2002/05/10 07:43:48  lazarus
   MG: updated licenses
 
