@@ -2664,7 +2664,7 @@ begin
       if (Color=clNone) and (FixWidget^.Window<>nil) then
         gdk_window_set_back_pixmap(FixWidget^.Window,nil,0)
       else
-      if (not ColorIsStored)
+      if ColorIsStored
       and ((Color and SYS_COLOR_BASE)=0) then begin
         // don't set background for custom controls (to prevent flickering)
         if GtkWidgetIsA(PGtkWidget(Handle),GTKAPIWidget_GetType) then exit;
@@ -6827,6 +6827,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.318  2003/01/01 13:01:01  mattias
+  fixed setcolor for streamed components
+
   Revision 1.317  2003/01/01 12:38:53  mattias
   clean ups
 
