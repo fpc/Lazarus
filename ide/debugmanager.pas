@@ -148,6 +148,7 @@ begin
 
   NewWatch := FWatches.Add(WatchVar);
   NewWatch.Enabled := True;
+  NewWatch.InitialEnabled := True;
   Project1.Modified:=true;
 end;
 
@@ -162,6 +163,7 @@ begin
                   ExtractFilename(TSourceNotebook(Sender).GetActiveSe.FileName),
                   Line);
   NewBreak.Enabled := True;
+  NewBreak.InitialEnabled := True;
   Project1.Modified:=true;
 end;
 
@@ -169,7 +171,8 @@ procedure TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject; Line: Int
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  FBreakPoints.Find(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line).Free;
+  FBreakPoints.Find(ExtractFilename(
+                      TSourceNotebook(Sender).GetActiveSe.FileName), Line).Free;
   Project1.Modified:=true;
 end;
 
@@ -691,6 +694,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.18  2003/05/22 17:06:49  mattias
+  implemented InitialEnabled for breakpoints and watches
+
   Revision 1.17  2003/05/22 06:50:04  mattias
   fixed double formats
 
