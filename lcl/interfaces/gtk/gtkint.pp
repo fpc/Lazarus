@@ -99,8 +99,8 @@ type
                                   const GDIType: TGDIType): Boolean;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;
     procedure DisposeGDIObject(GdiObject: PGdiObject);
-    function NewDC: PDeviceContext;
-    procedure DisposeDC(pDC: PDeviceContext);
+    function NewDC: TDeviceContext;
+    procedure DisposeDC(aDC: TDeviceContext);
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
     function CreateDefaultPen: PGdiObject;
@@ -170,7 +170,7 @@ type
 
 {$I gtklistslh.inc}
 
-  function GetDCOffset(DC: PDeviceContext): TPoint;
+  function GetDCOffset(DC: TDeviceContext): TPoint;
   function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
 implementation
@@ -493,6 +493,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/10/01 10:05:48  lazarus
+  MG: changed PDeviceContext into class TDeviceContext
+
   Revision 1.76  2002/09/19 16:45:54  lazarus
   MG: fixed Menu.Free and gdkwindow=nil bug
 
