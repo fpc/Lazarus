@@ -654,7 +654,8 @@ begin
   MessageDlg.MessageView.OnDblClick := @MessageViewDblClick;
  }
   Compiler1 := TCompiler.Create;
-  Compiler1.OutputString := @Messagedlg.Add;
+//messagedlg.add is not available at this time.  It's not yet created.
+//  Compiler1.OutputString := @Messagedlg.Add;
 
 { Create other forms }
   ObjectInspector1 := TObjectInspector.Create(Self);
@@ -1555,6 +1556,7 @@ if SourceNotebook.Empty then Begin
       MessageDlg.Width := SourceNotebook.Width;
    end;
   MessageDlg.Clear;
+  Compiler1.OutputString := @Messagedlg.Add;
   Compiler1.Compile(SourceNotebook.ActiveUnitName);
 end;
 
@@ -1623,6 +1625,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2001/02/06 13:38:57  lazarus
+  Fixes from Mattias for EditorOPtions
+  Fixes to COmpiler that should allow people to compile if their path is set up.
+  Changes to code completion.
+  Shane
+
   Revision 1.56  2001/02/04 04:18:11  lazarus
   Code cleanup and JITFOrms bug fix.
   Shane

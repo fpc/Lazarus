@@ -21,10 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit compiler;
 
 {$mode objfpc}
+{$H+}
 
 interface
 
@@ -100,9 +100,8 @@ begin
 
   Assert(False, 'Trace:' + TheProgram);
 
-  TheProcess:=TProcess.Create(TheProgram,[poRunSuspended,poUsePipes,poNoConsole]);
-
-  TheProcess.Execute;
+  TheProcess:=TProcess.Create(TheProgram,[poExecuteOnCreate,poUsePipes,poNoConsole]);
+//  TheProcess.Execute;
 
   if Assigned(OutputString) 
   then 
@@ -111,7 +110,7 @@ begin
     WriteMessage := False;
     for I:=1 to Count do
     begin
-      if buf[i] = #10 
+      if buf[i] = #10
       then begin
         //determine what type of message it is
         if (pos(') Hint:',Texts) <> 0) then WriteMessage := CompilerOpts.ShowHints
@@ -123,20 +122,23 @@ begin
         if (pos(') Warning:',Texts) <> 0) then WriteMessage := CompilerOpts.ShowWarn
         else
         WriteMessage := True;
-        
+
         FOutputList.Add(Texts);
-  
-        if (WriteMessage) or (CompilerOpts.ShowAll) 
+
+        if (WriteMessage) or (CompilerOpts.ShowAll)
         then begin
           OutputString(Texts);
-          Application.ProcessMessages;
         end;
+//        Application.ProcessMessages;
+
         Texts := '';
       end
       else Texts := Texts + buf[i];
     end;
   until Count=0;
   TheProcess.Free;
+Writeln('-----------Exiting Compiler.Compile');
+Application.ProcessMessages;
 end;
 
 {--------------------------------------------------------------------------
@@ -222,6 +224,12 @@ end.
 
 {
   $Log$
+  Revision 1.7  2001/02/06 13:38:57  lazarus
+  Fixes from Mattias for EditorOPtions
+  Fixes to COmpiler that should allow people to compile if their path is set up.
+  Changes to code completion.
+  Shane
+
   Revision 1.6  2001/02/04 18:24:41  lazarus
   Code cleanup
   Shane

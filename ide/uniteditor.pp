@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 {This unit builds the TSourceNotbook that the editors are held on.  It also has
  a class that controls the editors (TSourceEditor)
 }
@@ -27,11 +26,13 @@
 unit UnitEditor;
 
 {$mode objfpc}
+{$H+}
 
 interface
 
 uses
-  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,CustomFormEditor,keymapping,stdctrls,
+  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,
+  CustomFormEditor,keymapping,stdctrls,Compiler,dlgMEssage,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynHighlighterPas,SynEditAutoComplete,
   SynEditKeyCmds,SynCompletion,
@@ -95,6 +96,9 @@ type
     FVisible : Boolean;
 
     Procedure BuildPopupMenu;
+
+    Function FindFile(Value : String) : String;
+
     Function GetSource : TStrings;
     Procedure SetSource(value : TStrings);
     Function GetCurrentCursorXLine : Integer;
@@ -108,6 +112,7 @@ type
     Function TextUnderCursor : String;
     Function GotoMethod(Value : String) : Integer;
     Function GotoMethodDeclaration(Value : String) : Integer;
+
 
     Function GotoLine(Value : Integer) : Integer;
 
@@ -137,6 +142,11 @@ type
 
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
 
+    Procedure ccOnTimer(sender : TObject);
+    Procedure ccAddMessage(Texts : String);
+    Function  ccParse(Texts : String) : TStrings;
+
+
     Function StartFind : Boolean;
     Function FindAgain(StartX,StartLine : Integer) : Boolean;
 
@@ -146,6 +156,7 @@ type
     property Visible : Boolean read FVisible write FVisible default False;
     FindText : String;
     ccSelection : String;
+    ErrorMsgs : TStrings;
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
@@ -264,28 +275,13 @@ implementation
 uses
   LCLLinux,TypInfo,LResources,Main,LazConf;
 
-{const
-  ecFind = ecUserFirst+1;
-  ecFindAgain = ecUserFirst+2;
-  ecFindProcedureDefinition = ecUserFirst+3;
-  ecFindProcedureMethod = ecUserFirst+4;
-
-  ecNextEditor = ecUserFirst+5;
-  ecPrevEditor = ecUserFirst+6;
-
-  ecFirstParent = ecUserFirst+1000;
-  ecSave    = ecFirstParent+1;
-  ecOpen    = ecFirstParent+2;
-  ecClose    = ecFirstParent+3;
-
-  ecJumpToEditor = ecFirstParent+4;
- }
 var
 Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
 aCompletion : TSynCompletion;
 scompl : TSynBaseCompletion;  //used in ccexecute and cccomplete
 GotoDialog : TfrmGoto;
+CodeCompletionTimer : TTimer;
 
 { TSourceEditor }
 
@@ -761,38 +757,38 @@ if Command >= ecFirstParent then
                                  end;
 
     ecFindProcedureDefinition :   Begin
-    Y := CurrentCursorYLine;
-    Texts2 := Lowercase(Source.Strings[Y-1]);
-    Writeln('The source line = '+Texts2);
-    I := pos('function',Texts2);
-    if I = 0 then
-    I := pos('procedure',Texts2);
-    While (I = 0) and (Y > 0) do
-    begin
-    dec(Y);
-    Texts2 := Lowercase(Source.Strings[Y-1]);
-    Writeln('The source line = '+Texts2);
-    I := pos('function ',Texts2);
-    if I = 0 then
-    I := pos('procedure ',Texts2);
-    end;
+                                     Y := CurrentCursorYLine;
+                                     Texts2 := Lowercase(Source.Strings[Y-1]);
+                                     Writeln('The source line = '+Texts2);
+                                     I := pos('function',Texts2);
+                                     if I = 0 then
+                                     I := pos('procedure',Texts2);
+                                     While (I = 0) and (Y > 0) do
+                                     begin
+                                       dec(Y);
+                                       Texts2 := Lowercase(Source.Strings[Y-1]);
+                                       Writeln('The source line = '+Texts2);
+                                       I := pos('function ',Texts2);
+                                       if I = 0 then
+                                       I := pos('procedure ',Texts2);
+                                     end;
 
-    if I <> 0 then
-       Begin
-          TheName := '';
-          I := pos('.',Texts2);
-          inc(i);
-          while (not(Texts2[i] in [';',' ','('])) do
-             Begin
-               TheName := TheName + Texts2[i];
-               inc(i);
-             end;
-          Writeln('Thename = '+TheName);
-          GotoMethodDeclaration(TheName);
-       end;
+                                     if I <> 0 then
+                                        Begin
+                                             TheName := '';
+                                             I := pos('.',Texts2);
+                                             inc(i);
+                                             while (not(Texts2[i] in [';',' ','('])) do
+                                                Begin
+                                                  TheName := TheName + Texts2[i];
+                                                  inc(i);
+                                                end;
+                                             Writeln('Thename = '+TheName);
+                                             GotoMethodDeclaration(TheName);
+                                          end;
 
 
-      end;
+                                   end;
    ecNextEditor:  Begin
                     //tell the SourceNotebook
                     TSourceNotebook(FaOwner).NextEditor;
@@ -810,6 +806,19 @@ if Command >= ecFirstParent then
                             GotoLine(0);
                           end;
                         end;
+
+   ecPeriod : Begin
+               Y := CurrentCursorYLine;
+               Texts := Lowercase(Source.Strings[Y-1]);
+               if InsertMode then
+                    Texts := Copy(Texts,1,CurrentCursorXLine)+'.'+Copy(Texts,CurrentCursorXLine+1,Length(Texts))
+                    else
+                    Texts[CurrentCursorXLine] := '.';
+               Source.Strings[Y-1] := Texts;
+               CodeCompletionTimer.OnTimer := @CCOnTimer;
+               CodeCompletionTimer.Enabled := True;
+              end;
+
 
    end;  //case
 
@@ -868,10 +877,146 @@ ccSelection := '';
 scompl.Deactivate;
 End;
 
+Function TSourceEditor.FindFile(Value : String) : String;
+var
+  Found : Boolean;
+  DirDelimiter : String;
+  SearchDir : String;
+  Num : Integer;
+  tempDir : String;
+Begin
+  Result := '';
+  Found := False;
+  DirDelimiter := '/';
+  SearchDir := TMainIDE(TSourceNotebook(FAOwner).MainIDE).SearchPaths;
+  Writeln('Searcvhdir is '+Searchdir);
+  Num := pos(';',SearchDir);
+  While (not Found) and (SearchDir <> '') do
+  Begin
+    if Num = 0 then Num := Length(SearchDir)+1;
+    TempDir := Copy(SearchDir,1,num-1);
+    Delete(SearchDir,1,Num);
+    if tempDir[Length(TempDir)] <> DirDelimiter then
+       TempDir := TempDir + DirDelimiter;
+    Found := True;
+
+    if FileExists(TempDir+Value) then
+       Result := TempDir+Value
+       else
+       Found := False;
+  end; //while
+
+End;
+
+
+
+Function TSourceEditor.ccParse(Texts : String) : TStrings;
+const
+  symtable = '---Symtable ';
+  Level1 = '  ***';
+  Level2 = '    ***';
+
+  kdClass = 1;
+  kdProcedure = 2;
+
+var
+  s : TStrings;
+  I : Integer;
+  Browser : TStringList;
+  UnitStart : Integer;
+  Found : Boolean;
+  tempFile : TStringList;
+  tempFileName : String;
+  TempLine  : String;
+  kind : Integer;
+  num1,num2 : Integer;
+begin
+  TempFile := TStringList.Create;
+  S := TStringList.Create;
+  Result := nil;
+  Browser := TstringList.Create;
+  Browser.LoadFromFile(ExtractFilePath(Application.Exename)+'browser.log');
+
+
+
+  For I := 0 to Browser.Count-1 do
+    if Browser.strings[I] = symtable+uppercase(Unitname) then
+       break;
+
+  if I >=Browser.Count-1 then Exit;
+
+  UnitStart := I;
+
+  //remove the period from TEXTS if it's the last character
+  if Texts[length(texts)] = '.' then
+    Begin
+      Texts := Copy(Texts,1,Length(texts)-1);
+      kind := kdClass;
+    end
+    else
+  if Texts[length(texts)] = '(' then
+    Begin
+      Texts := Copy(Texts,1,Length(texts)-1);
+      kind := kdProcedure;
+    end
+    else
+    Exit;
+
+  Texts := uppercase(texts);
+  //find ***TEXTS***
+  Found := False;
+  I := UnitStart+1;
+  While (Browser.strings[I] <> symtable+uppercase(Unitname)) and (not found) do
+     if Browser.Strings[I] = Level1+Texts+'***' then
+        Found := true
+        else
+        inc(i);
+
+  if Found then
+     begin  //determine what it is.
+     //grab the line it's defined on.
+     Writeln('The next line is '+Browser.Strings[i+1]);
+     TempFileName := Copy(trim(Browser.Strings[i+1]),1,pos('(',trim(Browser.Strings[i+1]))-1);
+     Writeln('TemmpFileName = '+TempFilename);
+     if FileExists('./temp/'+TempFileName) then
+        TempFileName := './temp/'+TempFileName
+        else
+        TempFileName := FindFile(TempFileName);
+
+     if TempFileName = '' then Exit;
+     tempFile.LoadFromFile(TempFileName);
+     //ok, the file is loaded.  Parse it to see what TEXTS is defined as.
+     Num1 := pos('(',Browser.Strings[i+1])+1;
+     Num2 := ((pos(',',Browser.Strings[i+1])-1) - pos('(',Browser.Strings[i+1])+1)-1;
+     tempLine := TempFile.Strings[StrtoInt(Copy(Browser.Strings[i+1],Num1,Num2))-1];
+     writeln('TEMPLINE = '+TempLine);
+     //templine now contains Form1: TForm1;  or something like that
+
+     case Kind of
+       kdClass :  //search for a colon then the name
+               Begin
+
+               end;
+
+
+      end;
+   end;
+
+
+
+  S.Add('testing');
+  Result := s;
+
+end;
+
+Procedure TSourceEditor.ccAddMessage(Texts : String);
+Begin
+  ErrorMsgs.Add(Texts);
+End;
+
 
 Procedure TSourceEditor.ccExecute(Sender : TObject);
 type
-
    TMethodRec = record
     Flags : TParamFlags;
     ParamName : ShortString;
@@ -885,8 +1030,10 @@ var
   propKind : TTypeKind;
   TypeInfo : PTypeInfo;
   TypeData : PTypeData;
-  NewStr : String;
-  Count : Integer;
+  NewStr,ParamStr : String;
+  Count,Offset,Len : Integer;
+  MethodRec : TMethodRec;
+
 Begin
   CompInt := nil;
   Writeln('[ccExecute]');
@@ -906,75 +1053,67 @@ Begin
      Writeln('Property Name is '+CompInt.GetPropName(I));
      PropKind := CompInt.GetPropType(i);
      case PropKind of
-      tkMethod :  Begin
-                    TypeInfo := CompInt.GetPropTypeInfo(I);
-                    TypeData :=  GetTypeData(TypeInfo);
-                    NewStr := CompInt.GetPropName(I);
-                    case TypeData^.MethodKind of
-                         mkProcedure : NewStr := 'property '+CompInt.GetPropName(I)+' :'+CompInt.GetPropTypeName(I);
-                         mkFunction  : NewStr := 'property '+CompInt.GetPropName(I)+' :'+CompInt.GetPropTypeName(I);
-                         mkClassFunction : NewStr := CompInt.GetPropName(I) + ' '+'Function ';
-                         mkClassPRocedure : NewStr := CompInt.GetPropName(I) + ' '+'Procedure ';
-                         mkConstructor : NewStr := 'constructor '+CompInt.GetPropName(I) + ' '+'procedure ';
-                         mkDestructor : NewStr := 'destructor '+CompInt.GetPropName(I) + ' '+'procedure ';
+      tkMethod :
+        Begin
+          TypeInfo := CompInt.GetPropTypeInfo(I);
+          TypeData :=  GetTypeData(TypeInfo);
 
-                    end;
-
-                    //check for parameters
-Writeln('ParamCount = '+inttostr(TypeData^.ParamCount));
-                    if TypeData^.ParamCount > 0 then
-                       Begin
-Writeln('----');
-                         for Count := 0 to sizeof(TypeData^.ParamList)-1 do
-                            if TypeData^.ParamList[4+Count] in ['a'..'z','A'..'Z','0'..'9'] then
-                             Write(TypeData^.ParamList[Count])
-                             else
-                             Begin
-                                 Writeln('----');
-                                 break;
-                             end;
-
-{                         NewStr := NewStr+'(';
-                         for Count := 0 to TypeData^.ParamCount-1 do
-                             begin
-                                MethodRec.Flags := [];
-                                Temp := '';
-                                For X := 0 to Sizeof(MethodRec.Flags)-1 do
-                                begin
-                                  Writeln('-->'+TypeData^.ParamList[Sizeof(MethodRec)*Count]);
-                                  Temp := Temp +TypeData^.ParamList[X+((Sizeof(MethodRec)-1)*Count)];
-                                end;
-                                Writeln('TEMP is <'+temp+'>');
-                                MethodRec.ParamName := '';
-                                For X := 0 to Sizeof(MethodRec.ParamName)-1 do
-                                if TypeData^.ParamList[(Sizeof(MethodRec.Flags)-1)+((Sizeof(MethodRec)-1)*Count)+x] in ['a'..'z','A'..'Z','0'..'9'] then
-                                 MethodRec.ParamName := MethodRec.ParamName+TypeData^.ParamList[(Sizeof(MethodRec.Flags)-1)+((Sizeof(MethodRec)-1)*Count)+x]
-                                 else
-                                 break;
-
-                                Writeln('ParamName is '+MethodRec.ParamName);
-                                MethodRec.TypeName := '';
-                                For X := 0 to Sizeof(MethodRec.TypeName)-1 do
-                                if TypeData^.ParamList[(Sizeof(MethodRec.Paramname)-1)+Sizeof(MethodRec.Flags)+((Sizeof(MethodRec)-1)*Count)+x] in ['a'..'z','A'..'Z','0'..'9'] then
-                                MethodRec.TypeName := MethodRec.TypeName+TypeData^.ParamList[Sizeof(MethodRec.Paramname)+Sizeof(MethodRec.Flags)+((Sizeof(MethodRec)-1)*Count)+x]
-                                 else
-                                break;
-                                Writeln('TypeName is '+MethodRec.TypeName);
-
-//       TParamFlags = set of (pfVar,pfConst,pfArray,pfAddress,pfReference,pfOut);
-                               if (pfVar in MethodRec.Flags) then NewStr := NewStr+'var ';
-                               if (pfConst in MethodRec.Flags) then NewStr := NewStr+'const ';
-                               if (pfOut in MethodRec.Flags) then NewStr := NewStr+'out ';
-                               if MethodRec.Typename <> 'void' then
-                               NewStr := NewStr+MethodRec.ParamName+' :'+MethodRec.TypeName;
-
-                             end;
+          //check for parameters
+//Writeln('ParamCount = '+inttostr(TypeData^.ParamCount));
+          if TypeData^.ParamCount > 0 then
+          Begin
+{Writeln('----');
+            for Count := 0 to 60 do
+              if TypeData^.ParamList[Count] in ['a'..'z','A'..'Z','0'..'9'] then
+                Write(TypeData^.ParamList[Count])
+              else
+                Begin
+                  Write('$',HexStr(ord(TypeData^.ParamList[Count]),3),' ');
+                end;
 }
+            ParamStr := '';
+            Offset:=0;
+            for Count := 0 to TypeData^.ParamCount-1 do
+            begin
+              Len:=1;  // strange: SizeOf(TParamFlags) is 4, but the data is only 1 byte
+              Move(TypeData^.ParamList[Offset],MethodRec.Flags,Len);
+              inc(Offset,Len);
+
+              Len:=ord(TypeData^.ParamList[Offset]);
+              inc(Offset);
+              SetLength(MethodRec.ParamName,Len);
+              Move(TypeData^.ParamList[Offset],MethodRec.ParamName[1],Len);
+              inc(Offset,Len);
+
+              Len:=ord(TypeData^.ParamList[Offset]);
+              inc(Offset);
+              SetLength(MethodRec.TypeName,Len);
+              Move(TypeData^.ParamList[Offset],MethodRec.TypeName[1],Len);
+              inc(Offset,Len);
+
+              if ParamStr<>'' then ParamStr:=';'+ParamStr;
+              if MethodRec.ParamName='' then
+                ParamStr:=MethodRec.TypeName+ParamStr
+              else
+                ParamStr:=MethodRec.ParamName+':'+MethodRec.TypeName+ParamStr;
+              if (pfVar in MethodRec.Flags) then ParamStr := 'var '+ParamStr;
+              if (pfConst in MethodRec.Flags) then ParamStr := 'const '+ParamStr;
+              if (pfOut in MethodRec.Flags) then ParamStr := 'out '+ParamStr;
+            end;
+            NewStr:='('+ParamStr+')';
+          end else NewStr:='';
+          case TypeData^.MethodKind of
+            mkProcedure : NewStr := 'property '+CompInt.GetPropName(I)+' :'+CompInt.GetPropTypeName(I);
+            mkFunction  : NewStr := 'property '+CompInt.GetPropName(I)+' :'+CompInt.GetPropTypeName(I);
+            mkClassFunction : NewStr := 'function '+CompInt.GetPropName(I) + ' :'+'Function '+NewStr;
+            mkClassProcedure : NewStr := 'procedure '+CompInt.GetPropName(I) + ' :'+'Procedure '+NewStr;
+            mkConstructor : NewStr := 'constructor '+CompInt.GetPropName(I) + ' '+'procedure ';
+            mkDestructor : NewStr := 'destructor '+CompInt.GetPropName(I) + ' '+'procedure ';
+          end;
+//writeln(NewStr);
+        end;
 
 
-                       end;
-
-                  end;
       tkObject :  NewStr := 'tkobject '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
       tkInteger,tkChar,tkEnumeration,tkWChar : NewStr := 'property ' +CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
       tkBool :  NewStr := 'property '+CompInt.GetPropName(I) +' :'+CompInt.GetPropTypeName(I);
@@ -991,6 +1130,14 @@ Writeln('----');
 
   sCompl.ItemList := S;
 End;
+
+Procedure TSourceEditor.ccOnTimer(sender : TObject);
+Begin
+  CodeCOmpletionTimer.Enabled := False;
+//  FEditor.KeyDown(FEditor,word(' '),[ssCtrl]);
+End;
+
+
 
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
@@ -1229,6 +1376,9 @@ Begin
    try
      Add(Format('unit %s;', [FUnitName]));
      Add('');
+     Add('{$mode objfpc}');
+     Add('{$H+}');
+     Add('');
      Add('interface');
      Add('');
      Add('uses Classes, Graphics, Controls, Forms, Dialogs;');
@@ -1277,6 +1427,8 @@ Begin
    try
      Add(Format('unit %s;', [FUnitName]));
      Add('');
+     add('{$mode objfpc}');
+     Add('');
      Add('interface');
      Add('');
      Add('implementation');
@@ -1314,7 +1466,9 @@ Begin
     FEditor.Lines.LoadFromFile(FileName);
     FModified := False;
     FUnitName := ExtractFileName(Filename);
-
+    //remove extension
+    if pos('.',FUnitname) <> 0 then
+     Delete(FUnitName,pos('.',FUnitname),length(FUnitname));
     //see if this is a form file
     CreateFormfromUnit;
   except
@@ -1462,6 +1616,11 @@ begin
       end;
 
 GotoDialog := TfrmGoto.Create(self);
+
+CodeCompletionTimer := TTimer.Create(self);
+CodeCOmpletionTimer.Enabled := False;
+CodeCompletionTimer.Interval := 500;
+
 
  Writeln('TSOurceNotebook create exiting');
 end;
@@ -2006,7 +2165,7 @@ begin
   inherited;
   position := poScreenCenter;
   Width := 250;
-  Height := 150;
+  Height := 100;
   Caption := 'Goto';
 
   Label1 := TLabel.Create(self);
@@ -2035,8 +2194,8 @@ begin
    with btnOK do
      Begin
       Parent := self;
-      Top := 110;
-      Left := 100;
+      Top := 70;
+      Left := 40;
       Visible := True;
       kind := bkOK
      end;
@@ -2045,8 +2204,8 @@ begin
    with btnCancel do
      Begin
       Parent := self;
-      Top := 110;
-      Left := 180;
+      Top := 70;
+      Left := 120;
       Visible := True;
       kind := bkCancel
      end;
@@ -2067,3 +2226,77 @@ Editor_Num := 0;
 {$I designer/bookmark.lrs}
 
 end.
+
+{old ccexecute procedure
+
+Procedure TSourceEditor.ccExecute(Sender : TObject);
+var
+  Browserfile : TStrings;
+  UnitSource : Tstrings;
+  I          : Integer;
+  Texts      : String;
+  CompName   : String;
+  ccStrings : TStrings;
+Begin
+try
+  If FileExists(ExtractFilePath(Application.Exename)+'browser.log') then
+     DeleteFile(ExtractFilePath(Application.Exename)+'browser.log');
+ FEditor.Cursor := crHourGlass;
+  UnitSource := TStringList.Create;
+  UnitSource.Assign(Source);
+
+  sCompl := TSynBaseCompletion(Sender);
+  CompName := sCompl.CurrentString;
+  Writeln('CompName = '+CompName);
+
+  Texts := UnitSource.Strings[CurrentCursorYLine-1];
+
+(*  //delete the selected portion of the source and save it
+  I := CurrentCursorXPos;
+  While (I > 0) and (not Texts[I] in [';','}','(
+   for now just delete the line
+*)
+  UnitSource.Strings[CurrentCursorYLine-1] := '';
+  if pos('.',UnitName) = 0 then
+  UnitSource.SavetoFile('./temp/'+unitname+'.pp')
+  else
+  UnitSource.SavetoFile('./temp/'+unitname);
+
+
+
+  ErrorMsgs := TStringList.Create;
+
+  Compiler1.OutputString := @ccAddMessage;
+
+  if pos('.',UnitName) = 0 then
+  Compiler1.Compile(' -bl ./temp/'+unitname+'.pp')
+  else
+  Compiler1.Compile(' -bl ./temp/'+unitname);
+
+
+  For I := 0 to ErrorMsgs.Count-1 do
+    Writeln(ErrorMsgs.Strings[i]);
+
+
+  If FileExists(ExtractFilePath(Application.Exename)+'browser.log') then
+     Begin
+       //parse the browser.log file
+       ccStrings := ccParse(CompName);
+       if Assigned(ccStrings) then
+       sCompl.ItemList := ccStrings;
+     end
+     else
+     begin
+       sCompl.Deactivate;
+       Messagedlg.Show;
+       MessageDlg.Clear;
+       For I := 0 to ErrorMsgs.Count-1 do
+         MessageDlg.Add(ErrorMsgs.Strings[i]);
+     end;
+  ErrorMsgs.Free;
+
+finally
+ FEditor.Cursor := crDefault;
+end;
+End;
+}

@@ -31,6 +31,8 @@ const
   ecNextEditor       = ecUserFirst+7;
   ecPrevEditor       = ecUserFirst+8;
 
+  ecPeriod           = ecUserFirst+9;
+
   ecFirstParent      = ecUserFirst+1000;
   ecSave             = ecFirstParent+1;
   ecOpen             = ecFirstParent+2;

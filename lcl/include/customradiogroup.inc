@@ -62,6 +62,7 @@ begin
    Height := 200;
 end;
 
+
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.Destroy
   Params:  none
@@ -93,40 +94,41 @@ var
    horzDist: integer;
    rbWidth : integer;
 begin
-   vertDist := Height DIV ((FItems.Count DIV FColumns) + 2);
-   nextTop  := vertDist;
-   horzDist := (Width - 20) DIV FColumns;
-   nextLeft := 10;
-   rbWidth  := horzDist;
-   FButtonList.Clear;
-   i := 0;
-   while i < FItems.Count do
-   begin
+  if FItems.Count>0 then begin
+    vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
+    horzDist := (Width - 20) DIV FColumns;
+    nextTop  := 0;
+    nextLeft := 10;
+    rbWidth  := horzDist;
+    FButtonList.Clear;
+    i := 0;
+    while i < FItems.Count do
+    begin
       Temp := TRadioButton.Create (self);
       Temp.Parent := self;
       Temp.Top    := nextTop;
       Temp.Left   := nextLeft;
       Temp.Width  := rbWidth;
       Temp.Height := vertDist;
-      Temp.Caption := FItems.Strings [i];
-
-      if i = FItemIndex
-         then Temp.Checked := true
-	 else Temp.Checked := false;
+      Temp.Caption := FItems.Strings[i];
+      Temp.Checked := (i = FItemIndex);
       Temp.Show;
       FButtonList.Add (Temp);
+
       inc (i);
       if (i MOD FColumns) = 0 then
       begin
-         inc (nextTop, vertDist);
-	 nextLeft := 10;
+        inc(nextTop, vertDist);
+	nextLeft := 10;
       end
       else begin
-         inc (nextLeft, horzDist);
+        inc(nextLeft, horzDist);
       end;
-   end;
-   inherited CreateWnd;
+    end;
+  end;
+  inherited CreateWnd;
 end;
+
 
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.ItemsChanged
@@ -243,6 +245,12 @@ end;
 
 {
   $Log$
+  Revision 1.4  2001/02/06 13:38:58  lazarus
+  Fixes from Mattias for EditorOPtions
+  Fixes to COmpiler that should allow people to compile if their path is set up.
+  Changes to code completion.
+  Shane
+
   Revision 1.3  2001/02/01 19:34:50  lazarus
   TScrollbar created and a lot of code added.
 

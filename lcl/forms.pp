@@ -184,6 +184,7 @@ type
       property FormStyle;
       property PopupMenu;
       property Position;
+      property ShowHint;
       property Visible;
 //      property WindowState;
       property OnActivate;

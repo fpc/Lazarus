@@ -930,251 +930,10 @@ const
     TPropertyEditor,       // tkWChar
     TBoolPropertyEditor,   // tkBool
     TInt64PropertyEditor,  // tkInt64
-    nil                    // tkQWord
-    ,nil                   // tkDynArray
-    ,nil                   // tkInterfaceRaw
+    nil,                   // tkQWord
+    nil,                   // tkDynArray
+    nil                    // tkInterfaceRaw
     );
-
-// XXX ToDo: There are bugs in the typinfo.pp. Thus this workaround -------
-
-Procedure SetIndexValues (P: PPRopInfo; Var Index,IValue : Longint);
-begin
-  Index:=((P^.PropProcs shr 6) and 1);
-  If Index<>0 then
-    IValue:=P^.Index
-  else
-    IValue:=0;
-end;
-
-function CallIntegerFunc(s: Pointer; Address: Pointer; Index, IValue: LongInt): Int64; assembler;
-asm
-  movl S,%esi
-  movl Address,%edi
-  // ? Indexed function
-  movl Index,%eax
-  testl %eax,%eax
-  je .LINoPush
-  movl IValue,%eax
-  pushl %eax
-.LINoPush:
-  push %esi
-  call %edi
-  // now the result is in EDX:EAX
-end;
-
-Procedure CallSStringFunc(s : Pointer;Address : Pointer; INdex,IValue : Longint;
-                        Var Res: Shortstring);assembler;
-asm
-  movl S,%esi
-  movl Address,%edi
-  // ? Indexed function
-  movl Index,%eax
-  testl %eax,%eax
-  jnz .LSSNoPush
-  movl IValue,%eax
-  pushl %eax
-  // the result is stored in an invisible parameter
-  pushl Res
-.LSSNoPush:
-  push %esi
-  call %edi
-end;
-
-Function GetAStrProp(Instance : TObject;PropInfo : PPropInfo):Pointer;
-{
-Dirty trick based on fact that AnsiString is just a pointer,
-hence can be treated like an integer type.
-}
-var
-  value : Pointer;
-  Index,Ivalue : Longint;
-begin
-  SetIndexValues(PropInfo,Index,IValue);
-  case (PropInfo^.PropProcs) and 3 of
-    ptfield:
-      Value:=Pointer(PLongint(Pointer(Instance)+Longint(PropInfo^.GetProc))^);
-    ptstatic:
-      Value:=Pointer(LongInt(
-        CallIntegerFunc(Instance,PropInfo^.GetProc,Index,IValue)));
-    ptvirtual:
-      Value:=Pointer(LongInt(CallIntegerFunc(Instance,
-        PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
-        Index,IValue)));
-  end;
-  GetAStrProp:=Value;
-end;
-
-Function GetSStrProp(Instance : TObject;PropInfo : PPropInfo):ShortString;
-var
-  value : ShortString;
-  Index,IValue : Longint;
-begin
-  SetIndexValues(PropInfo,Index,IValue);
-  case (PropInfo^.PropProcs) and 3 of
-    ptfield:
-      Value:=PShortString(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
-    ptstatic:
-     CallSStringFunc(Instance,PropInfo^.GetProc,Index,IValue,Value);
-    ptvirtual:
-     CallSSTringFunc(Instance,
-       PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
-       Index,Ivalue,Value);
-  end;
-  GetSStrProp:=Value;
-end;
-
-{function GetStrProp(Instance : TObject;PropInfo : PPropInfo) : Ansistring;
-var s:Ansistring;
-begin
-  Case Propinfo^.PropType^.Kind of
-    tkSString : Result:=GetSStrProp(Instance,PropInfo);
-    tkAString :
-      // Dirty trick which is necessary to increase the reference
-      // counter of Result...
-      begin
-        Pointer(Result):=GetAStrProp(Instance,Propinfo);
-        s:=Result;
-        Pointer(s):=nil;
-      end;
-  else
-    Result:='';
-  end;
-end;}
-
-function GetStrProp(Instance: TObject; PropInfo: PPropInfo): AnsiString;
-var
-  Index, IValue: LongInt;
-  ShortResult: ShortString;
-begin
-  SetIndexValues(PropInfo, Index, IValue);
-  case Propinfo^.PropType^.Kind of
-    tkSString:
-  	  case (PropInfo^.PropProcs) and 3 of
-	          ptField:
-          Result := PShortString(Pointer(Instance) + LongWord(PropInfo^.GetProc))^;
-   	    ptStatic:
-	            begin
-        		 CallSStringFunc(Instance, PropInfo^.GetProc, Index, IValue, ShortResult);
-          		Result := ShortResult;
-          end;
-  	    ptVirtual:
-	            begin
-         		CallSStringFunc(Instance, PPointer(Pointer(Instance.ClassType) +
-         		  LongWord(PropInfo^.GetProc))^, Index, IValue, ShortResult);
-    	      Result := ShortResult;
-     	    end;
-       end;
-   	tkAString:
-      begin
-    	case (PropInfo^.PropProcs) and 3 of
-        ptField:
-   	      Pointer(Result) := PPointer(Pointer(Instance) + LongWord(PropInfo^.GetProc))^;
-  	    ptStatic:
-	        Pointer(Result) := Pointer(LongWord(CallIntegerFunc(Instance,
-            PropInfo^.GetProc, Index, IValue)));
-  	    ptVirtual:
-	        Pointer(Result) := Pointer(LongWord(CallIntegerFunc(Instance,
-   	        PPointer(Pointer(Instance.ClassType) + LongWord(PropInfo^.GetProc))^, Index, IValue)));
-  	  end;
-     end;
-    else
-	  // Property is neither of type AnsiString nor of type ShortString
-      SetLength(Result, 0);
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function CallIntegerProc(s : Pointer;Address : Pointer;Value : Integer;
-Index,IValue : Longint) : Integer;  assembler;
-asm
-  movl S,%esi
-  movl Address,%edi
-  // Push value to set
-  movl Value,%eax
-  pushl %eax
-  // ? Indexed procedure
-  movl Index,%eax
-  testl %eax,%eax
-  je .LIPNoPush
-  movl IValue,%eax
-  pushl %eax
-.LIPNoPush:
-  pushl %esi
-  call %edi
-end;
-
-procedure CallSStringProc(s : Pointer;Address : Pointer;
-  const Value : ShortString; Index,IVAlue : Longint);  assembler;
-asm
-  movl S,%esi
-  movl Address,%edi
-  // Push value to set
-  movl Value,%eax
-  pushl %eax
-  // ? Indexed procedure
-  movl Index,%eax
-  testl %eax,%eax
-  // MG: here was a bug (jnz)
-  je .LSSPNoPush
-  movl IValue,%eax
-  pushl %eax
-.LSSPNoPush:
-  // MG: and here was a bug too (push)
-  pushl %esi
-  call %edi
-end;
-
-procedure SetAStrProp(Instance : TObject;PropInfo : PPropInfo;
-  const Value : AnsiString);
-//Dirty trick based on fact that AnsiString is just a pointer,
-//hence can be treated like an integer type.
-var
-  Index,Ivalue : Longint;
-begin
-  { Another dirty trick which is necessary to increase the reference
-   counter of Value... }
-  SetIndexValues(PropInfo,Index,IValue);
-  case (PropInfo^.PropProcs shr 2) and 3 of
-    ptfield:
-      PLongint(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=
-        Longint(Pointer(Value)) ;
-    ptstatic:
-      CallIntegerProc(
-        Instance,PropInfo^.SetProc,Longint(Pointer(Value)),Index,IValue);
-    ptvirtual:
-      CallIntegerProc(Instance
-        ,PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^
-        ,Longint(Pointer(Value)),Index,IValue);
-  end;
-end;
-
-procedure SetSStrProp(Instance : TObject;PropInfo : PPropInfo;
-  const Value : ShortString);
-var Index,IValue: longint;
-begin
-  SetIndexValues(PropInfo,Index,IValue);
-  case (PropInfo^.PropProcs shr 2) and 3 of
-    ptfield:
-      PShortString(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
-    ptstatic:
-      // MG: here was a bug (Getproc)
-      CallSStringProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
-    ptvirtual:
-      // MG: here was a bug (Getproc)
-      CallSStringProc(Instance,PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^,Value,Index,IValue);
-  end;
-end;
-
-procedure SetStrProp(Instance : TObject;PropInfo : PPropInfo;
-  const Value : AnsiString);
-begin
-  case Propinfo^.PropType^.Kind of
-    tkSString : SetSStrProp(Instance,PropInfo,Value);
-    tkAString : SetAStrProp(Instance,Propinfo,Value);
-  end;
-end;
-
 
 
 // XXX ToDo: These variables/functions have bugs. Thus I provide my own ------
@@ -2038,6 +1797,7 @@ procedure TEnumPropertyEditor.SetValue(const NewValue: string);
 var
   I: Integer;
 begin
+exit;
   I := GetEnumValue(GetPropType, NewValue);
   if I < 0 then begin
     {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
@@ -2904,6 +2664,7 @@ type
     Memo1 : TMemo;
     OKButton : TButton;
     CancelButton : TButton;
+    procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     constructor Create(AOwner : TComponent); override;
   end;
 
@@ -2911,65 +2672,72 @@ constructor TStringsPropEditorDlg.Create(AOwner : TComponent);
 Begin
   inherited Create(AOwner);
   position := poScreenCenter;
-  Height := 200;
-  Width := 300;
+  Height := 250;
+  Width := 350;
   Caption := 'Strings Editor Dialog';
 
   Memo1 := TMemo.Create(self);
   with Memo1 do begin
     Parent := Self;
-    SetBounds(0,0,Width -1,Height-1);
+    SetBounds(0,0,Width -4,Height-50);
     Visible := true;
   end;
 
   OKButton := TButton.Create(self);
-  with OKButton do
-    Begin
-      Parent := self;
-      Caption := '&OK';
-      ModalResult := mrOK;
-      Left := self.width div 2;
-      top := self.height -45;
-      Visible := true;
-    end;
+  with OKButton do Begin
+    Parent := self;
+    Caption := '&OK';
+    ModalResult := mrOK;
+    Left := self.width-180;
+    Top := self.height -40;
+    Height:=25;
+    Width:=60;
+    Visible := true;
+  end;
 
   CancelButton := TButton.Create(self);
-  with CancelButton do
-    Begin
-      Parent := self;
-      Caption := '&Cancel';
-      ModalResult := mrCancel;
-      Left := (self.width div 2) + 75;
-      top := self.height -45;
-      Visible := true;
-    end;
-
+  with CancelButton do Begin
+    Parent := self;
+    Caption := '&Cancel';
+    ModalResult := mrCancel;
+    Left := self.width-90;
+    Top := self.height -40;
+    Height:=25;
+    Width:=60;
+    Visible := true;
+  end;
 end;
 
+procedure TStringsPropEditorDlg.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
+begin
+  inherited;
+  if Memo1<>nil then
+    Memo1.SetBounds(0,0,Width-4,Height-50);
+  if OkButton<>nil then
+    OkButton.SetBounds(Width-180,Height-40,60,25);
+  if CancelButton<>nil then
+    CancelButton.SetBounds(Width-90,Height-40,60,25);
+end;
 
 procedure TStringsPropertyEditor.Edit;
 var
   TheDialog: TStringsPropEditorDlg;
   Strings:TStrings;
 begin
+  Strings:=TStrings(GetOrdValue);
+  TheDialog:=TStringsPropEditorDlg.Create(Application);
+  TheDialog.Memo1.Text:=Strings.Text;
   try
-    Strings:=TStrings(GetOrdValue);
-    TheDialog:=TStringsPropEditorDlg.Create(Application);
-    TheDialog.Memo1.Lines.Assign(Strings);
-    try
-      if (TheDialog.ShowModal = mrOK) then
-        Strings.Assign(TheDialog.Memo1.Lines);
-    finally
-      TheDialog.Free;
-    end;
+    if (TheDialog.ShowModal = mrOK) then
+      Strings.Text:=TheDialog.Memo1.Text;
   finally
-    Strings.Free;
+    TheDialog.Free;
   end;
 end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog, paRevertable, paReadOnly];
+  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
 //==============================================================================
@@ -3266,7 +3034,7 @@ initialization
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
-    nil,'',TStringsPropertyEditor);
+    nil,'Lines',TStringsPropertyEditor);
 
 finalization
   PropertyEditorMapperList.Free;  PropertyEditorMapperList:=nil;

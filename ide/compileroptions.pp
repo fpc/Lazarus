@@ -19,10 +19,10 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit compileroptions;
 
 {$mode objfpc}
+{$H+}
 
 {$ifdef Trace}
   {$ASSERTIONS ON}

@@ -270,6 +270,7 @@ begin
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
   bitmap := TBitmap.Create;
   NbLinesInWindow := 6;
+  ShowHint := True;
 
 end;
 
@@ -395,6 +396,7 @@ Writeln('[TSynBaseCompletionForm.Paint]');
         Canvas.Rectangle(0, FFontHeight * i, width, FFontHeight * (i + 1));
         Canvas.Pen.Color := clBlack;
         Canvas.Font.Color := clWhite;
+        Hint := ItemList[Scroll.Position + i];
       end
       else
         Begin
@@ -409,12 +411,6 @@ Writeln('[TSynBaseCompletionForm.Paint]');
         Begin
            Writeln('Drawing to canvas');
 //           Canvas.Font.Color := clBlack;
-{           S1 := Copy(ItemList[Scroll.Position + i],pos('.',ItemList[Scroll.Position + i])+1,pos(':',ItemList[Scroll.Position + i])-1);
-           Canvas.TextOut(2, FFontHeight * i, S1);
-
-           Canvas.Font.Color := clLtGray;
-           Canvas.TextOut(2+(9*length(S1)), FFontHeight * i, Copy(ItemList[Scroll.Position + i],pos(':',ItemList[Scroll.Position + i]),255));
- }
            Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
         end;
     end;

@@ -11,21 +11,16 @@ unit objectinspector;
 
 
   ToDo:
-   - connect to TFormEditor
    - TCustomComboBox has a bug: it can not store objects
    - MouseDown is always fired two times -> workaround
    - clipping (almost everywhere)
-   - scrolling with TrackBar
-   - ScrollBar instead of TrackBar
    - TCustomComboBox don't know custom draw yet
    - improve TextHeight function
    - combobox can't sort (exception)
-   - TEdit has no Maxlength property
-   - TEdit Readonly property is protected
    - backgroundcolor=clNone
    - DoubleClick on Property
 
-   - a lot more ...
+   - a lot more ...  see XXX
 }
 
 {$MODE OBJFPC}
@@ -34,7 +29,7 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, StdCtrls, LCLLinux, Controls,
-  ComCtrls, ExtCtrls, PropEdits, TypInfo;
+  ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages, LResources;
 
 type
   TOIPropertyGrid = class;
@@ -98,6 +93,7 @@ type
     FDragging:boolean;
     FOldMouseDownY:integer;  // XXX workaround
     FExpandedProperties:TStringList;
+    FBorderStyle:TBorderStyle;
 
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
@@ -132,16 +128,22 @@ type
     procedure ValueComboBoxChange(Sender: TObject);
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueButtonClick(Sender: TObject);
-    procedure TrackBarChange(Sender:TObject);
+
+    procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure SetBorderStyle(Value: TBorderStyle);
+    procedure UpdateScrollBar;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
 
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;
     ValueButton:TButton;
-    TrackBar:TTrackBar;
 
     property Selections:TComponentSelectionList read FComponentList write SetSelections;
-    property PropertyEditorHook:TPropertyEditorHook read FPropertyEditorHook write SetPropertyEditorHook;
+    property PropertyEditorHook:TPropertyEditorHook
+       read FPropertyEditorHook write SetPropertyEditorHook;
     procedure BuildPropertyList;
     procedure RefreshPropertyValues;
 
@@ -150,12 +152,16 @@ type
 
     property TopY:integer read FTopY write SetTopY;
     function GridHeight:integer;
+    function TopMax:integer;
     property DefaultItemHeight:integer read FDefaultItemHeight write FDefaultItemHeight;
     property SplitterX:integer read FSplitterX write SetSplitterX;
     property Indent:integer read FIndent write FIndent;
-    property BackgroundColor:TColor read FBackgroundColor write FBackgroundColor;
+    property BackgroundColor:TColor
+       read FBackgroundColor write FBackgroundColor default clBtnFace;
     property NameFont:TFont read FNameFont write FNameFont;
     property ValueFont:TFont read FValueFont write FValueFont;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
+       default bsSingle;
     property ItemIndex:integer read FItemIndex write SetItemIndex;
     property ExpandedProperties:TStringList read FExpandedProperties write FExpandedProperties;
     function PropertyPath(Index:integer):string;
@@ -170,7 +176,7 @@ type
     procedure Paint;  override;
     procedure Clear;
     constructor Create(AOwner:TComponent;
-      APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
+       APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
     destructor Destroy;  override;
   end;
 
@@ -181,6 +187,12 @@ type
   TOnSelectComponentInOI = procedure(AComponent:TComponent) of object;
 
   TObjectInspector = class (TCustomForm)
+    AvailCompsComboBox : TComboBox;
+    NoteBook:TNoteBook;
+    PropertyGrid:TOIPropertyGrid;
+    EventGrid:TOIPropertyGrid;
+    StatusBar:TStatusBar;
+    procedure AvailComboBoxChange(Sender:TObject);
   private
     FComponentList: TComponentSelectionList;
     FPropertyEditorHook:TPropertyEditorHook;
@@ -190,14 +202,9 @@ type
     function ComponentToString(c:TComponent):string;
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
-    procedure AvailComboBoxChange(Sender:TObject);
     procedure AddComponentToAvailComboBox(AComponent:TComponent);
     procedure PropEditLookupRootChange;
   public
-    AvailCompsComboBox : TComboBox;
-    NoteBook:TNoteBook;
-    PropertyGrid:TOIPropertyGrid;
-    EventGrid:TOIPropertyGrid;
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     property Selections:TComponentSelectionList read FComponentList write SetSelections;
     procedure RefreshSelections;
@@ -223,10 +230,12 @@ constructor TOIPropertyGrid.Create(AOwner:TComponent;
 APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
 begin
   inherited Create(AOwner);
-  SetBounds(1,1,200,300);
-  Visible:=false;
-  ControlStyle:=ControlStyle+[csAcceptsControls];
-
+  if LazarusResources.Find(ClassName)=nil then begin
+    SetBounds(1,1,200,300);
+    ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
+    BorderWidth:=1;
+  end;
+    
   FComponentList:=TComponentSelectionList.Create;
   FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
@@ -246,21 +255,11 @@ begin
   FNameFont.Color:=clWindowText;
   FValueFont:=TFont.Create;
   FValueFont.Color:=clActiveCaption;
-  BorderWidth:=1;
+  fBorderStyle := bsSingle;
 
   // create sub components
   FCurrentEdit:=nil;
   FCurrentButton:=nil;
-
-  TrackBar:=TTrackBar.Create(AOwner);
-  with TrackBar do begin
-    Parent:=Self;
-  	Orientation:=trVertical;
-    Align:=alRight;
-    OnChange:=@TrackBarChange;
-    Visible:=true;
-    Enabled:=true;
-  end;
 
   ValueEdit:=TEdit.Create(Self);
   with ValueEdit do begin
@@ -294,6 +293,76 @@ begin
   FDefaultItemHeight:=ValueComboBox.Height-3;
 
   BuildPropertyList;
+end;
+
+procedure TOIPropertyGrid.UpdateScrollBar;
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if HandleAllocated then begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nTrackPos := 0;
+    ScrollInfo.nMax := TopMax+ClientWidth;
+    ScrollInfo.nPage := ClientWidth;
+    ScrollInfo.nPos := TopY;
+    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+    ShowScrollBar(Handle,SB_VERT,True);
+  end;
+end;
+
+procedure TOIPropertyGrid.CreateParams(var Params: TCreateParams);
+const
+  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
+  ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
+begin
+  inherited CreateParams(Params);
+  with Params do begin
+    {$R-}
+    WindowClass.Style := WindowClass.Style and not ClassStylesOff;
+    Style := Style or WS_VSCROLL or BorderStyles[fBorderStyle]
+      or WS_CLIPCHILDREN;
+    {$R+}
+    if NewStyleControls and Ctl3D and (fBorderStyle = bsSingle) then begin
+      Style := Style and not WS_BORDER;
+      ExStyle := ExStyle or WS_EX_CLIENTEDGE;
+    end;
+  end;
+end;
+
+procedure TOIPropertyGrid.SetBorderStyle(Value: TBorderStyle);
+begin
+  if fBorderStyle <> Value then begin
+    fBorderStyle := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TOIPropertyGrid.WMVScroll(var Msg: TWMScroll);
+begin
+  case Msg.ScrollCode of
+      // Scrolls to start / end of the text
+    SB_TOP:        TopY := 0;
+    SB_BOTTOM:     TopY := TopMax;
+      // Scrolls one line up / down
+    SB_LINEDOWN:   TopY := TopY + DefaultItemHeight div 2;
+    SB_LINEUP:     TopY := TopY - DefaultItemHeight div 2;
+      // Scrolls one page of lines up / down
+    SB_PAGEDOWN:   TopY := TopY + ClientHeight - DefaultItemHeight;
+    SB_PAGEUP:     TopY := TopY - ClientHeight + DefaultItemHeight;
+      // Scrolls to the current scroll bar position
+    SB_THUMBPOSITION,
+    SB_THUMBTRACK: TopY := Msg.Pos;
+      // Ends scrolling
+    SB_ENDSCROLL: ;
+  end;
+end;
+
+procedure TOIPropertyGrid.WMSize(var Msg: TWMSize);
+begin
+  inherited;
+  UpdateScrollBar;
 end;
 
 destructor TOIPropertyGrid.Destroy;
@@ -466,14 +535,6 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.TrackBarChange(Sender:TObject);
-begin
-  if TrackBar.Position<>FTopY then begin
-    FTopY:=TrackBar.Position;
-    Invalidate;
-  end;
-end;
-
 procedure TOIPropertyGrid.SetItemIndex(NewIndex:integer);
 var NewRow:TOIPropertyGridRow;
   NewValue:string;
@@ -560,6 +621,7 @@ begin
   if CurRow<>nil then begin
     ItemIndex:=CurRow.Index;
   end;
+  UpdateScrollBar;
   Invalidate;
 end;
 
@@ -616,6 +678,7 @@ begin
   if not AlreadyInExpandList then
     FExpandedProperties.Add(CurPath);
   FExpandingRow:=nil;
+  UpdateScrollBar;
   Invalidate;
 end;
 
@@ -645,6 +708,7 @@ begin
   end;
   if CurRow.Parent<>nil then
     FExpandedProperties.Add(PropertyPath(CurRow.Parent.Index));
+  UpdateScrollBar;
   Invalidate;
 end;
 
@@ -772,27 +836,28 @@ begin
   if FTopY<>NewValue then begin
     FTopY:=NewValue;
     if FTopY<0 then FTopY:=0;
-    if FTopY>TrackBar.Max then FTopY:=TrackBar.Max;
-    TrackBar.Position:=FTopY;
+    UpdateScrollBar;
     Invalidate;
   end;
 end;
 
 procedure TOIPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
-var scrollmax:integer;
 begin
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
     AlignEditComponents;
-    scrollmax:=GridHeight-Height;
-    if scrollmax<10 then scrollmax:=10;
-    TrackBar.Max:=scrollmax;
   end;
 end;
 
 function TOIPropertyGrid.GetTreeIconX(Index:integer):integer;
 begin
   Result:=Rows[Index].Lvl*Indent+2;
+end;
+
+function TOIPropertyGrid.TopMax:integer;
+begin
+  Result:=GridHeight-ClientHeight+2*BorderWidth;
+  if Result<0 then Result:=0;
 end;
 
 function TOIPropertyGrid.GridHeight:integer;
@@ -953,7 +1018,7 @@ begin
         PaintRow(a);
       end;
       // draw unused space below rows
-      SpaceRect:=Rect(BorderWidth,BorderWidth,TrackBar.Left-1,Height-BorderWidth);
+      SpaceRect:=Rect(BorderWidth,BorderWidth,ClientWidth,Height-BorderWidth);
       if FRows.Count>0 then
         SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
 // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
@@ -998,7 +1063,7 @@ function TOIPropertyGrid.RowRect(ARow:integer):TRect;
 begin
   Result.Left:=BorderWidth;
   Result.Top:=Rows[ARow].Top-FTopY+BorderWidth;
-  Result.Right:=TrackBar.Left-1;
+  Result.Right:=ClientWidth-15;
   Result.Bottom:=Rows[ARow].Bottom-FTopY+BorderWidth;
 end;
 
@@ -1018,7 +1083,6 @@ begin
   else
     scrollmax:=10;
   if scrollmax<10 then scrollmax:=10;
-  TrackBar.Max:=scrollmax;
 end;
 
 procedure TOIPropertyGrid.ClearRows;
@@ -1109,12 +1173,22 @@ begin
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
 
+  // StatusBar
+  StatusBar:=TStatusBar.Create(Self);
+  with StatusBar do begin
+    Name:='StatusBar';
+    Parent:=Self;
+    SimpleText:='All';
+    Show;
+  end;
+
   // combobox at top (filled with available components)
   AvailCompsComboBox := TComboBox.Create (Self);
   with AvailCompsComboBox do begin
     Name:='AvailCompsComboBox';
-    Parent:=self;
+    Parent:=Self;
     Style:=csDropDown;
+    Text:='';
     OnChange:=@AvailComboBoxChange;
     //Sorted:=true;
     Show;
@@ -1139,7 +1213,6 @@ begin
   with PropertyGrid do begin
     Name:='PropertyGrid';
     Parent:=NoteBook.Page[0];
-    TrackBar.Parent:=Parent;
     ValueEdit.Parent:=Parent;
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
@@ -1153,7 +1226,6 @@ begin
   with EventGrid do begin
     Name:='EventGrid';
     Parent:=NoteBook.Page[1];
-    TrackBar.Parent:=Parent;
     ValueEdit.Parent:=Parent;
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
@@ -1161,6 +1233,7 @@ begin
     Align:=alClient;
     Show;
   end;
+
 end;
 
 destructor TObjectInspector.Destroy;
@@ -1225,29 +1298,36 @@ end;
 procedure TObjectinspector.FillComponentComboBox;
 var a:integer;
   Root:TComponent;
+  OldText:AnsiString;
 begin
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   AvailCompsComboBox.Items.BeginUpdate;
+  OldText:=AvailCompsComboBox.Text;
   AvailCompsComboBox.Items.Clear;
   if (FPropertyEditorHook<>nil)
   and (FPropertyEditorHook.LookupRoot<>nil) then begin
     Root:=FPropertyEditorHook.LookupRoot;
     AddComponentToAvailComboBox(Root);
-    for a:=0 to Root.ComponentCount-1 do begin
+    for a:=0 to Root.ComponentCount-1 do
       AddComponentToAvailComboBox(Root.Components[a]);
-    end;
-    if FComponentList.Count=1 then
-      AvailCompsComboBox.Text:=ComponentToString(FComponentList[0]);
   end;
   AvailCompsComboBox.Items.EndUpdate;
   FUpdatingAvailComboBox:=false;
+  a:=AvailCompsComboBox.Items.IndexOf(OldText);
+  if (OldText='') or (a<0) then begin
+    if AvailCompsComboBox.Items.Count>0 then
+      AvailCompsComboBox.Text:=AvailCompsComboBox.Items[0]
+    else
+      AvailCompsComboBox.Text:='';
+  end else
+    AvailCompsComboBox.ItemIndex:=a;
 end;
 
 procedure TObjectinspector.SetSelections(
   const NewSelections:TComponentSelectionList);
 begin
-//XXX writeln('OI: Set Selections');
+writeln('OI: Set Selections');
   if FComponentList.IsEqual(NewSelections) then exit;
   FComponentList.Assign(NewSelections);
   if FComponentList.Count=1 then begin
@@ -1260,7 +1340,6 @@ end;
 
 procedure TObjectinspector.RefreshSelections;
 begin
-//XXX writeln('OI: Refresh Selections');
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
 end;
@@ -1288,11 +1367,12 @@ var NewComponent,Root:TComponent;
     FComponentList.Add(c);
     RefreshSelections;
     if Assigned(FOnSelectComponentInOI) then
-       FOnSelectComponentInOI(c);
+      FOnSelectComponentInOI(c);
   end;
 
 // AvailComboBoxChange
 begin
+  if FUpdatingAvailComboBox then exit;
   if (FPropertyEditorHook=nil) or (FPropertyEditorHook.LookupRoot=nil) then
     exit;
   Root:=FPropertyEditorHook.LookupRoot;
