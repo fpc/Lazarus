@@ -158,10 +158,19 @@ begin
   QuickTrace:=true;
 end;
 
+const
+  LastWrittenGetMemCnt: longint = 0;
+
 procedure CheckHeapWrtMemCnt(const txt: ansistring);
-var p: pointer;
+var
+  p: pointer;
+  CurGetMemCount, DiffGetMemCount: longint;
 begin
-  writeln('>>> memcheck.pp - CheckHeap2 "',txt,'" ',MemCheck_getmem_cnt);
+  CurGetMemCount:=MemCheck_getmem_cnt;
+  DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
+  LastWrittenGetMemCnt:=CurGetMemCount;
+  writeln('>>> memcheck.pp - CheckHeap2 "',txt,'" ',
+    CurGetMemCount,' +',DiffGetMemCount);
   QuickTrace:=false;
   GetMem(p,4);
   FreeMem(p);
@@ -1128,6 +1137,9 @@ finalization
 end.
 {
   $Log$
+  Revision 1.10  2002/09/13 08:23:11  lazarus
+  MG: aded memcheck diff
+
   Revision 1.9  2002/09/13 08:11:46  lazarus
   MG: fixed memcheck output
 
