@@ -6729,8 +6729,10 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   Identifier, SmartHintStr: string;
+  DebugEval: string;
 begin
-  if (ToolStatus<>itNone) or (SrcEdit=nil) then exit;
+  if (SrcEdit=nil) then exit;
+  if (ToolStatus<>itNone) and (ToolStatus<>itDebugger) then exit;
   // check if there is an identifier
   Identifier:=SrcEdit.GetWordFromCaret(CaretPos);
   if (Identifier='') or (not IsValidIdent(Identifier)) then exit;
@@ -6747,6 +6749,13 @@ begin
     CaretPos.X,CaretPos.Y);
   CodeToolBoss.Abortable:=false;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
+
+  if (ToolStatus=itDebugger)
+  and (dcEvaluate in DebugBoss.Commands) then begin
+    DebugBoss.Evaluate(Identifier,DebugEval);
+    if (DebugEval<>'') then
+      SmartHintStr:=SmartHintStr+' = '+DebugEval;
+  end;
 
   if SmartHintStr<>'' then
     SrcEdit.ActivateHint(ClientPos,SmartHintStr);
@@ -7484,6 +7493,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.429  2002/11/10 22:02:35  lazarus
+  MG: added smart hints in debug mode
+
   Revision 1.428  2002/11/10 21:49:23  lazarus
   MG: added smart hints in edit mode
 
