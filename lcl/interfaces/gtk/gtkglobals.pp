@@ -38,6 +38,7 @@ var
   //Dragging : Boolean;
 
   MouseCaptureWidget: PGtkWidget;
+  MouseCapureByLCL: boolean;
 
 const
   DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
@@ -271,6 +272,16 @@ const
   OldMenuSizeRequestProc: TMenuSizeRequestProc = nil;
   OldCheckMenuItemToggleSize: integer = 0;
 
+
+  { Accelerators }
+type
+  PAcceleratorKey = ^TAcceleratorKey;
+  TAcceleratorKey = record
+    Key: guint;
+    Mods: TGdkModifierType;
+    Signal: string;
+    Realized: boolean;
+  end;
 
 implementation
 
