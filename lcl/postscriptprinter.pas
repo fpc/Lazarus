@@ -1,8 +1,10 @@
 {
  /***************************************************************************
-                                PostscriptCanvas.pas
-                                ------------
-                         PostScript Printer Canvas object
+                            postscriptprinter.pas
+                            ---------------------
+
+                               Printer object
+                     Initial Revision  : Mon Nov 05 2002
 
  ***************************************************************************/
 
@@ -18,1532 +20,1040 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
-
-  Author: Olivier Guilbaud
-
-  Informations :
-     - Green Book Listing 9-1, on page 138 for Pattrens
-     - PostScriptPrinter unit of Tony Maro
-     - Piddle Project (Python language)
-     - Internet PostScript forums
-     
-  Warnings :
-     - Draw and StretchDraw it's slow for big image
-     - Angles it's 1/16 of degre
-  ToDo :
-     - Implemente few methods
+ 
+  Author: Tony Maro
 }
 
-unit PostscriptPrinter;
+unit PostScriptPrinter;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Math, Graphics, Forms, GraphMath, GraphType,
-  {$IFDEF DisableFPImage}
-  FPImage, IntfGraphics,
-  {$ENDIF}
-  Printers, LCLType, LCLIntf;
+  Classes, SysUtils, LCLProc, GraphType, Graphics, GraphMath, LCLIntf, Forms;
   
-Type
-  TPostscriptPrinterCanvas = Class(TPrinterCanvas)
+  // uses lcllinux or winapi for RGB conversions and FORMS for application object
+  
+  {
+   Defines a special canvas type object and override drawing methods to make
+   the postscript code...
+
+   Defines a TPSPattern object that handles creation of patterns to be used
+   in fills and paints
+
+   TPostScript manages a list of patterns and inserts the definitions into the
+   postscript code and manages when they are changed
+
+   A pattern definition can access pattern definitions within the same
+   postscript object, as long as the TPSPattern object pointer is placed into
+   the canvas pen/brush at the time the new pattern is made
+  }
+  
+type
+  TPostScript = class;
+
+  TPSPaintType = (ptColored, ptUncolored);
+  TPSTileType = (ttConstant, ttNoDistortion, ttFast);
+  TPostScriptCanvas = class; // forward reference
+
+  { Remember, modifying a pattern affects that pattern for the ENTIRE document! }
+  TPSPattern = class(TObject)
   private
-    fHeader        : TStringList; //Header document
-    fDocument      : TstringList; //Current document
-    fFileName      : String;      //OutOut fileName
-
-    fBuffer        : TStringList; //PostScript temporary buffer
-
-    //Current values
-    fcBrushStyle   : TBrushStyle;
-    fcPenColor     : TColor;      //Color of Pen and Brush
-    fcPenWidth     : Integer;
-    fcPenStyle     : TPenStyle;
-    fcLastFont     : TFont;
-    
-    fPenPos        : TPoint;
-    
-    FirstUpdatefont: Boolean;
-    
-    procedure WriteHeader(St : String);
-    procedure Write(St : String; Lst : TstringList=nil);
-    procedure WriteB(St : string);
-    procedure ClearBuffer;
-    procedure Write(Lst : TStringList); overload;
-    procedure WriteComment(St : string);
-    
-    Procedure TranslateCoord(Var X,Y : Integer);
-    procedure SetPosition(X,Y : Integer);
-    
-    procedure UpdateLineWidth;
-    procedure UpdateLineColor(aColor : TColor=clNone);
-    procedure UpdateLineStyle;
-    procedure UpdateFillColor;
-    procedure UpdateFont;
-    function MapedFontName : string;
-    function MapedString(St : string):string;
-    
-    procedure MoveToLastPos;
-    procedure SetBrushFillPattern(Lst : TStringList; SetBorder,SetFill : Boolean);
-    procedure SetBrushFillPattern(SetBorder,SetFill : Boolean); overload;
-    
-    procedure GetRGBImage(SrcGraph : TGraphic; Lst : TStringList);
+    FOldName: String;
+    FOnChange: TNotifyEvent;
+    FBBox: TRect;
+    FCanvas: TPostScriptCanvas;
+    FName: String;
+    FPaintType: TPSPaintType;
+    FPostScript: TStringList;
+    FTilingType: TPSTileType;
+    FXStep: Real;
+    FYStep: Real;
+    function GetpostScript: TStringList;
+    procedure SetBBox(const AValue: TRect);
+    procedure SetName(const AValue: String);
+    procedure SetPaintType(const AValue: TPSPaintType);
+    procedure SetTilingType(const AValue: TPSTileType);
+    procedure SetXStep(const AValue: Real);
+    procedure SetYStep(const AValue: Real);
   protected
-    procedure CreateHandle; override;
-    
-    procedure BeginDoc; override;
-    procedure EndDoc;   override;
-    procedure NewPage;  override;
   public
-    constructor Create(APrinter : TPrinter); override;
+    constructor Create;
     destructor Destroy; override;
-    
-    procedure SaveToFile(aFileName : string);
-    
-
-    Procedure MoveTo(X1,Y1: Integer); override;
-    Procedure LineTo(X1,Y1: Integer); override;
-    procedure Polyline(Points: PPoint; NumPts: Integer); override;
-    procedure PolyBezier(Points: PPoint; NumPts: Integer;
-                         Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF}); override;
-
-    Procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
-    procedure Frame(const ARect: TRect); override; // border using pen
-    procedure FrameRect(const ARect: TRect); override; // border using brush
-
-    Procedure FillRect(const ARect: TRect); override;
-    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); override;
-    procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean=False); override;
-
-    procedure Ellipse(x1, y1, x2, y2: Integer); override;
-    procedure Arc(x,y,width,height,angle1,angle2: Integer); override;
-    procedure RadialPie(x,y,width,height,angle1,angle2: Integer); override;
-    procedure Chord(x, y, width, height, angle1, angle2: Integer); override;
-
-    procedure TextOut(X,Y: Integer; const Text: String); override;
-    function TextExtent(const Text: string): TSize; override;
-    
-    Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); override;
-    procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
-
-
-    //** Methods not definined on PostScript
-    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); override;
-    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); override;
-    Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
-                        TransparentColor: TColor); override;
-
-    //** Methods not implemented
-    procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer); override;
-    procedure Chord(x, y, width, height, SX, SY, EX, EY: Integer); override;
-    procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
-                      const Style: TGraphicsBevelCut); override;
-    procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer); override;
-    procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-                  StartX,StartY,EndX,EndY: Integer); override;
-    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
-                       const Style: TTextStyle); override;
-
-
-    property OutPutFileName : string read fFileName write fFileName;
+    procedure Changed;
+    property BBox: TRect read FBBox write SetBBox;
+    property PaintType: TPSPaintType read FPaintType write SetPaintType;
+    property TilingType: TPSTileType read FTilingType write SetTilingType;
+    property XStep: Real read FXStep write SetXStep;
+    property YStep: Real read FYStep write SetYStep;
+    property Name: String read FName write SetName;
+    property Canvas: TPostScriptCanvas read FCanvas;
+    property GetPS: TStringList read GetPostscript;
+    property OldName: string read FOldName write FOldName; // used when notifying that name Changed
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+  PPSPattern = ^TPSPattern; // used for array
 
-  TPostscriptCanvas = Class(TPostscriptPrinterCanvas)
+  { basic pen object - modify later for better splitting of brush object }
+  TPSObject = class(TObject)
+  private
+    FOnChange: TNotifyEvent;
+  protected
+    procedure Changed; dynamic;
+    Procedure Lock;
+    Procedure UnLock;
   public
-    Constructor Create; overload;
-    
-    procedure BeginDoc; override;
-    procedure EndDoc;   override;
-    procedure NewPage;  override;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-  
+
+  { Pen and brush object both right now...}
+  TPSPen = class(TPSObject)
+  private
+    FColor: TColor;
+    FPattern: TPSPattern;
+    FWidth: Real;
+    procedure SetPattern(const AValue: TPSPattern);
+  protected
+    procedure SetColor(Value : TColor);
+    procedure Setwidth(value : Real);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPSPen);
+    property Color: TColor read FColor write SetColor;
+    property Pattern: TPSPattern read FPattern write SetPattern;
+    property Width: Real read FWidth write SetWidth;
+    function AsString: String;
+  end;
+
+
+  { Custom canvas-like object that handles postscript code }
+  TPostScriptCanvas = class(TObject)
+  private
+    FBrush: TPSPen;
+    FFontFace: String;
+    FFontSize: Integer;
+    FHeight: Integer;
+    FLineSpacing: Integer;
+    FColor: TColor; // canvas color - implement later
+    FPen: TPSPen;
+    LastX: Integer;
+    LastY: Integer;
+    FPostScript: TStringList;
+    function GetColor: TColor;
+    procedure SetBrush(const AValue: TPSPen);
+    procedure SetColor(const AValue: TColor);
+    procedure SetFontFace(const AValue: String);
+    procedure SetFontSize(const AValue: Integer);
+    procedure SetPen(const AValue: TPSPen);
+    function TranslateY(Ycoord: Integer): Integer; // Y axis is backwards in postscript
+    procedure AddFill;
+    procedure ResetPos; // reset back to last moveto location
+    procedure PenChanged(Sender: TObject);
+  public
+    MPostScript: TPostScript;
+    constructor Create(APostScript: TPostScript);
+    destructor Destroy; override;
+    procedure Clear;
+    property PostScript: TStringList read FPostScript write FPostScript;
+    property FontFace: String read FFontFace write SetFontFace;
+    property FontSize: Integer read FFontSize write SetFontSize;
+    property LineSpacing: Integer read FLineSpacing write FLineSpacing;
+    Procedure MoveTo(X1,Y1 : Integer);
+    Procedure LineTo(X1,Y1 : Integer);
+    Procedure Line(X1,Y1,X2,Y2 : Integer);
+    Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
+    Procedure Rectangle(const Rect: TRect);
+    procedure Polyline(Points: PPoint; NumPts: Integer);
+    procedure Ellipse(x1, y1, x2, y2: Integer);
+    procedure Ellipse(const Rect: TRect);
+    procedure Pie(x,y,width,mheight,angle1,angle2 : Integer);
+    //procedure Pie(x,y,width,height,SX,SY,EX,EY : Integer);
+    procedure Writeln(const AString: String);
+    procedure TextOut(X,Y: Integer; const Text: String);
+    //procedure Chord(x,y,width,height,angle1,angle2 : Integer);
+    //procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
+    //procedure PolyBezier(Points: PPoint; NumPts: Integer;
+    //                     Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
+    //                     Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+    //procedure PolyBezier(const Points: array of TPoint;
+    //                     Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
+    //                     Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+    //procedure PolyBezier(const Points: array of TPoint);
+    //procedure Polygon(const Points: array of TPoint;
+    //                  Winding: Boolean{$IFNDEF VER1_0} = False{$ENDIF};
+    //                  StartIndex: Integer{$IFNDEF VER1_0} = 0{$ENDIF};
+    //                  NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
+    //procedure Polygon(Points: PPoint; NumPts: Integer;
+    //                  Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+    //Procedure Polygon(const Points: array of TPoint);
+    //Procedure FillRect(const Rect : TRect);
+    //procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
+    //Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
+    //Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
+    property Height: Integer read FHeight write FHeight; // set so we can translate Y coords
+    property Color: TColor read GetColor write SetColor;
+    property Pen: TPSPen read FPen write SetPen;
+    property Brush: TPSPen read FBrush write SetBrush;
+  end;
+
+  { Encapsulates ALL the postscript and uses the TPostScriptCanvas object for a single page }
+  TPostScript = class(TObject)
+  private
+    FCanvas: TPostScriptCanvas;
+    FHeight: Integer;
+    FLineSpacing: Integer;
+    FPageNumber: Integer;
+    FTitle: String;
+    FWidth: Integer;
+    FDocument: TStringList;
+    Patterns: PPSPattern;   // array of pointers to pattern objects
+    NumPatterns: Integer; // number of patterns in array
+    procedure SetHeight(const AValue: Integer);
+    procedure SetLineSpacing(const AValue: Integer);
+    procedure SetTitle(const AValue: String);
+    procedure SetWidth(const AValue: Integer);
+    procedure GrabCanvas;
+    procedure UpdateBoundingBox;
+    procedure PatternChanged(Sender: TObject);
+    procedure InsertPattern(APattern: TPSPattern); // adds the pattern to the postscript
+    procedure RemovePattern(APattern: TPSPattern); // remove the pattern from the postscript
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddPattern(APSPattern: TPSPattern);
+    function FindPattern(AName: String): TPSPattern;
+    function DelPattern(AName: String): Boolean;
+    function NewPattern(AName: String): TPSPattern;
+    property Canvas: TPostScriptCanvas read FCanvas;
+    property Height: Integer read FHeight write SetHeight;
+    property Width: Integer read FWidth write SetWidth;
+    property Document: TStringList read FDocument;
+    property PageNumber: Integer read FPageNumber;
+    property Title: String read FTitle write SetTitle;
+    property LineSpacing: Integer read FLineSpacing write SetLineSpacing;
+    procedure BeginDoc;
+    procedure NewPage;
+    procedure EndDoc;
+  end;
+
+
 implementation
-Const
-  cBrushStyle : Array[bsSolid..bsDiagCross] of String = ('bsSolid','bsClear','bsHorizontal',
-                                                         'bsVertical','bsFDiagonal',
-                                                         'bsBDiagonal','bsCross','bsDiagCross');
-{ TPostscriptPrinterCanvas }
 
-//Write an instruction in the header of document
-procedure TPostscriptPrinterCanvas.WriteHeader(St: String);
+
+{ TPostScriptCanvas ----------------------------------------------------------}
+
+{ Y coords in postscript are backwards... }
+function TPostScriptCanvas.TranslateY(Ycoord: Integer): Integer;
 begin
-  fHeader.Add(St);
+  Result := FHeight - Ycoord;
 end;
 
-//Write an instruction in the document
-procedure TPostscriptPrinterCanvas.Write(St: String; Lst : TStringList=Nil);
+{ Adds a fill finishing line to any path we desire to fill }
+procedure TPostScriptCanvas.AddFill;
 begin
-  If not Assigned(Lst) then
-    Lst:=fDocument;
-    
-  Lst.Add(St);
+  FPostScript.Add('gsave '+FBrush.AsString+' fill grestore');
 end;
 
-//Write data in fBuffer
-procedure TPostscriptPrinterCanvas.WriteB(St: string);
-begin
-  Write(St,fBuffer);
-end;
-
-//Clear all data of Buffer
-procedure TPostscriptPrinterCanvas.ClearBuffer;
-begin
-  fBuffer.Clear;
-end;
-
-//Write all Lst.Strings in document
-procedure TPostscriptPrinterCanvas.Write(Lst: TStringList);
-begin
-  fDocument.AddStrings(Lst);
-end;
-
-//Write an comment in the document
-procedure TPostscriptPrinterCanvas.WriteComment(St: string);
-begin
-  fDocument.Add('%'+St);
-end;
-
-//Convert an TCanvas Y point to PostScript Y point
-//The TCanvas origine is corner Left,Top and Postscript is Left,Bottom
-//Modify X and Y for use Left and Top margin
-procedure TPostscriptPrinterCanvas.TranslateCoord(var X,Y : Integer);
-begin
-  Y:=PageHeight-TopMarging-Y;
-  X:=X+LeftMarging;
-end;
-
-//Save the last position
-procedure TPostscriptPrinterCanvas.SetPosition(X, Y: Integer);
-begin
-  fPenPos:= Point(X,Y);
-  SetInternalPenPos(Point(X,Y));
-end;
-
-//Init the width of line
-procedure TPostscriptPrinterCanvas.UpdateLineWidth;
-begin
-  if Pen.Width<>fcPenWidth then
-  begin
-    Write(Format('%d setlinewidth',[Pen.Width]));
-    fcPenWidth:=Pen.Width;
-  end;
-end;
-
-//Init the color of line (pen)
-procedure TPostscriptPrinterCanvas.UpdateLineColor(aColor : TColor=clNone);
-Var R,G,B    : Real;
-    RGBColor : TColor;
-begin
-  if aColor=clNone then
-    aColor:=Pen.Color;
-    
-  if aColor<>fcPenColor then
-  begin
-    RGBColor:=ColorToRGB(aColor);
-    
-    R:=Red(RGBColor)/255;
-    G:=Green(RGBColor)/255;
-    B:=Blue(RGBColor)/255;
-    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(aColor));
-    fcPenColor:=aColor;
-  end;
-end;
-
-//Init the style of line
-procedure TPostscriptPrinterCanvas.UpdateLineStyle;
-Var st : string;
-begin
-  if (Pen.Style<>fcPenStyle) and (Pen.Style<>psClear) then
-  begin
-    Case Pen.Style of
-      psSolid      : St:='[] 0';
-      psDash       : St:='[5 2] 0';
-      psDot        : St:='[1 3] 0';
-      psDashDot    : St:='[5 2 2 2] 0';
-      psDashDotDot : St:='[5 2 2 2 2 2] 0';
-    end;
-    
-    Write(Format('%s setdash',[St]));
-    fcPenStyle:=Pen.Style;
-  end;
-end;
-
-//Init the color for fill
-procedure TPostscriptPrinterCanvas.UpdateFillColor;
-Var R,G,B    : Real;
-    RGBColor : TColor;
-begin
-  if (Brush.Style=bsSolid) and (Brush.Color<>fcPenColor) then
-  begin
-    RGBColor:=ColorToRGB(Brush.Color);
-
-    R:=Red(RGBColor)/255;
-    G:=Green(RGBColor)/255;
-    B:=Blue(RGBColor)/255;
-    Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Brush.Color));
-    fcPenColor:=Brush.Color;
-  end;
-end;
-
-//Update current font
-procedure TPostscriptPrinterCanvas.UpdateFont;
-Var R,G,B    : Real;
-    RGBColor : TColor;
-begin
-  try
-    if Font.Color=clNone then
-      Font.Color:=clBlack;
-    if Font.Size=0 then
-      Font.Size:=12;
-      
-    if Font.Color<>fcPenColor then
-    begin
-      RGBColor:=ColorToRGB(Font.Color);
-
-      R:=Red(RGBColor)/255;
-      G:=Green(RGBColor)/255;
-      B:=Blue(RGBColor)/255;
-
-      Write(Format('%.3f %.3f %.3f setrgbcolor',[R,G,B])+' % '+ColorToString(Font.Color));
-      fcPenColor:=Font.Color;
-    end;
-
-    if (Font.Name<>fcLastFont.Name) or (Font.Size<>fcLastFont.Size) or
-       (Font.Style<>fcLastFont.Style) or FirstUpdatefont then
-    begin
-      FirstUpdatefont:=False;
-      Write(Format('/%s findfont %d scalefont setfont',[MapedFontName,Font.Size]));
-    end;
-  finally
-    fcLastFont.Assign(Font);
-  end;
-end;
-
-//Return an Postscript font Name
-function TPostscriptPrinterCanvas.MapedFontName: string;
-Var Atr : string;
-begin
-  Atr:='';
-  Result:='HelveticaISO';
-  if LowerCase(Font.Name)='times' then
-    Result:='TimesISO';
-  if LowerCase(Font.Name)='monospaced' then
-    Result:='CourierISO';
-  if LowerCase(Font.Name)='serif' then
-    Result:='TimesISO';
-  if LowerCase(Font.Name)='sansserif' then
-    Result:='HelveticaISO';
-  if LowerCase(Font.Name)='symbol' then
-    Result:='Symbol';
-
-  if (fsItalic in Font.Style) and ((Pos('Courier',Result)=1) or (Pos('Helvetica',Result)=1)) then
-    Atr:=Atr+'-Oblique';
-  if (fsItalic in Font.Style) and (Pos('Times',Result)=1)  then
-    Atr:=Atr+'-Italic';
-  if (fsBold in Font.Style)  and ((Pos('Courier',Result)=1) or (Pos('Helvetica',Result)=1) or (Pos('Times',Result)=1)) then
-    Atr:=Atr+'-Bold';
-  if (Result+Atr='Times') or (Result+Atr='TimesISO') then
-    Result:='RomanISO';
-
-  WriteComment(Format('MapedFontName "%s" -> "%s"',[Font.Name,Result]));
-  
-  Result:=Result+Atr;
-end;
-
-//Replace the controls chars by PostScript string
-function TPostscriptPrinterCanvas.MapedString(St: string): string;
-begin
-  Result:=St;
-  Result:=StringReplace(Result,'\','\\',[rfReplaceAll]);
-  Result:=StringReplace(Result,'(','\(',[rfReplaceAll]);
-  Result:=StringReplace(Result,')','\)',[rfReplaceAll]);
-  Result:=StringReplace(Result,#10,'\n',[rfReplaceAll]);
-  Result:=StringReplace(Result,#13,'\r',[rfReplaceAll]);
-  Result:=StringReplace(Result,#8, '\b',[rfReplaceAll]);
-  Result:=StringReplace(Result,#9, '\t',[rfReplaceAll]);
-end;
-
-//Move pen at last pos
-procedure TPostscriptPrinterCanvas.MoveToLastPos;
-begin
-  write(Format('%d %d moveto',[fPenPos.X,fPenPos.Y])+' %last pos');
-end;
-
-//Add at the PstScript sequence, the Fill Pattern/Color and Broder
-//Use SetBorder and SetFill for initialize 1 or 2 sequence
-procedure TPostscriptPrinterCanvas.SetBrushFillPattern(Lst: TStringList;
-  SetBorder, SetFill: Boolean);
-begin
-  If not Assigned(Lst) then Exit;
-  
-  if SetFill then
-  begin
-    if (Brush.Color<>clNone) and (Brush.Style<>bsClear) then
-    begin
-      UpdateFillColor;
-
-      Case Brush.Style of
-          bsSolid : begin
-                      Write(Lst);
-                      Write('eofill');
-                    end;
-          bsClear : ;
-         else
-         begin
-           UpdateLineColor(Brush.Color);
-           write(Format('/%s findfont  %% a pattern font patternfill',[cBrushStyle[Brush.Style]]));
-           Write(Lst);
-           write('patternfill');
-         end;
-       end;
-    end;
-  end;
-  
-  if SetBorder and ((Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid))) then
-  begin
-    UpdateLineColor;
-    UpdateLineWidth;
-    UpdateLineStyle;
-    Write(Lst);
-    Write('stroke');
-  end;
-end;
-
-procedure TPostscriptPrinterCanvas.SetBrushFillPattern(SetBorder, SetFill: Boolean);
-begin
-  SetBrushFillPattern(fBuffer,SetBorder,SetFill);
-end;
-
-//Add in Lst, all RGB pixels of SrcGraph picture
-procedure TPostscriptPrinterCanvas.GetRGBImage(SrcGraph: TGraphic;
-  Lst: TStringList);
-{$IFNDEF DisableFPImage}
-begin
-end;
-{$ELSE}
+{ Sets the current font face}
+procedure TPostScriptCanvas.SetFontFace(const AValue: String);
 var
-  SrcIntfImg : TLazIntfImage;
-  px, py     : Integer;
-  CurColor   : TFPColor;
-  i          : integer;
-  St         : String;
+   MyString: String;
 begin
-  if (SrcGraph is TBitMap) then
-  begin
-    SrcIntfImg:=TLazIntfImage.Create(0,0);
-    Lst.BeginUpdate;
-    Try
-      SrcIntfImg.LoadFromBitmap(TBitMap(SrcGraph).Handle,TBitMap(SrcGraph).MaskHandle);
-      St:='';
-      for py:=0 to SrcIntfImg.Height-1 do
-      begin
-        for px:=0 to SrcIntfImg.Width-1 do
-        begin
-          CurColor:=SrcIntfImg.Colors[px,py];
-          St:=St+IntToHex(Hi(CurColor.Red),2)+
-                 IntToHex(Hi(CurColor.Green),2)+
-                 IntToHex(Hi(CurColor.Blue),2);
+  if FFontFace=AValue then exit;
+  if pos(' ',AValue) > 0 then
+  FFontFace := '('+AValue+')'
+  else FFontFace:=AValue;
 
-          if Length(St)>=78 then
-          begin
-             Lst.Add(Copy(St,1,78));
-             System.Delete(St,1,78);
-          end;
-        end;
-      end;
+  MyString := '/'+FFontFace+' '+IntToStr(FFontSize)+' selectfont';
+  // set the pen info
+  
+  FPostScript.Add(MyString);
+end;
 
-      if St<>'' then
-        Lst.Add(St);
-    finally
-      Lst.EndUpdate;
-      SrcIntfImg.Free;
-    end;
+
+function TPostScriptCanvas.GetColor: TColor;
+begin
+  Result := FColor;
+end;
+
+procedure TPostScriptCanvas.SetBrush(const AValue: TPSPen);
+begin
+  if FBrush=AValue then exit;
+  FBrush:=AValue;
+end;
+
+procedure TPostScriptCanvas.SetColor(const AValue: TColor);
+begin
+  FColor := AValue;
+end;
+
+procedure TPostScriptCanvas.SetFontSize(const AValue: Integer);
+begin
+  if FFontSize=AValue then exit;
+  FFontSize:=AValue;
+  FPostScript.Add('/'+FFontFace+' '+IntToStr(AValue)+' selectfont');
+end;
+
+procedure TPostScriptCanvas.SetPen(const AValue: TPSPen);
+begin
+  // change to ASSIGN method?
+  if FPen=AValue then exit;
+  FPen:=AValue;
+end;
+
+
+{ Return to last moveto location }
+procedure TPostScriptCanvas.ResetPos;
+begin
+  // any routines that you specify a start location when calling such as
+  // textout, ellipse, etc. should not affect the default cursor location.
+
+  FPostScript.Add(IntToStr(LastX)+' '+IntToStr(TranslateY(LastY))+' moveto');
+end;
+
+{ This is called when drawing pen is Changed but NOT when brush changes }
+procedure TPostScriptCanvas.PenChanged(Sender: TObject);
+begin
+  if FPostScript[FPostScript.Count-2] = '%%PEN' then begin
+        // last operation was a pen, so delete it
+        FPostScript.Delete(FPostScript.Count-1);
+        FPostScript.Delete(FPostScript.Count-1);
   end;
-end;
-{$ENDIF}
-
-procedure TPostscriptPrinterCanvas.CreateHandle;
-begin
-  SetHandle(1);
+  FPostScript.Add('%%PEN');
+  FPostScript.Add(FPen.AsString);
 end;
 
-
-constructor TPostscriptPrinterCanvas.Create(APrinter: TPrinter);
+constructor TPostScriptCanvas.Create(APostScript: TPostScript);
 begin
-  inherited Create(APrinter);
-  
-  fcBrushStyle:=bsClear;
-  fcPenColor  :=clBlack;
-  fcPenWidth  :=0;
-  fcPenStyle  :=psSolid;
-  fcLastFont  :=TFont.Create;
-  
-  fHeader:=TStringList.Create;
-  fBuffer:=TstringList.Create;
-  fDocument:=TStringList.Create;
+  MPostScript := APostScript;
+
+  FPostScript := TStringList.Create;
+  FHeight := 792; // length of page in points at 72 ppi
+
+  // Choose a standard font in case the user doesn't
+  FFontFace := 'AvantGarde-Book';
+  SetFontSize(10);
+
+  if Assigned(MPostScript) then begin
+        FLineSpacing := MPostScript.LineSpacing;
+  end;
+     
+  FPen := TPSPen.Create;
+  FPen.Width := 1;
+  FPen.Color := 0;
+  FPen.OnChange := @PenChanged;
+     
+  FBrush := TPSPen.Create;
+  FBrush.Width := 1;
+  FBrush.Color := -1;
+  // don't notify us that the brush Changed...
 end;
 
-destructor TPostscriptPrinterCanvas.Destroy;
+destructor TPostScriptCanvas.Destroy;
 begin
-  fBuffer.Free;
-  fHeader.Free;
-  fDocument.Free;
-  fcLastFont.Free;
-  
+  FPostScript.Free;
+  FPen.Free;
+  FBrush.Free;
   inherited Destroy;
 end;
 
-procedure TPostscriptPrinterCanvas.SaveToFile(aFileName: string);
-Var Lst : TStringList;
+{ Clear the postscript canvas AND the graphic canvas (Add later) }
+procedure TPostScriptCanvas.clear;
 begin
-  Lst:=TStringList.Create;
-  try
-     Lst.AddStrings(fHeader);
-     Lst.AddStrings(fDocument);
+  // clear the canvas for the next page
+  FPostScript.Clear;
+  // Choose a standard font in case the user doesn't
+  FPostScript.Add('/AvantGarde-Book findfont');
+  FPostScript.Add('10 scalefont');
+  FPostScript.Add('setfont');
+
+  // also clear the canvas itself if we plan to embed the bitmap into
+  // the postscript
+
+  // also grab the latest canvas height just in case it's Changed
+  FHeight := 792;
+  if Assigned(MPostScript) then FHeight := MPostScript.Height;
+end;
+
+{ Move draw location }
+procedure TPostScriptCanvas.MoveTo(X1, Y1: Integer);
+var
+   Y: Integer;
+begin
+  Y := TranslateY(Y1);
+  FPostScript.Add(IntToStr(X1)+' '+IntToStr(Y)+' moveto');
+  LastX := X1;
+  LastY := Y1;
+end;
+
+{ Draw a line from current location to these coords }
+procedure TPostScriptCanvas.LineTo(X1, Y1: Integer);
+var
+   Y: Integer;
+begin
+  Y := TranslateY(Y1);
+  FPostScript.Add(IntToStr(X1)+' '+IntToStr(Y)+' lineto');
+  LastX := X1;
+  LastY := Y1;
+end;
+
+procedure TPostScriptCanvas.Line(X1, Y1, X2, Y2: Integer);
+var
+   Y12, Y22: Integer;
+begin
+  Y12 := TranslateY(Y1);
+  Y22 := TranslateY(Y2);
+
+  FPostScript.Add('newpath '+IntToStr(X1)+' '+IntToStr(Y12)+' moveto '+
+        IntToStr(X2)+' '+IntToStr(Y22)+' lineto closepath stroke');
+
+  // go back to last moveto position
+  ResetPos;
+end;
+
+procedure TPostScriptCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
+var
+   Y12, Y22: Integer;
+begin
+  Y12 := TranslateY(Y1);
+  Y22 := TranslateY(Y2);
+
+  FPostScript.Add('stroke newpath');
+  FPostScript.Add(IntToStr(X1)+' '+IntToStr(Y12)+' moveto');
+  FPostScript.Add(IntToStr(X2)+' '+IntToStr(Y12)+' lineto');
+  FPostScript.Add(IntToStr(X2)+' '+IntToStr(Y22)+' lineto');
+  FPostScript.Add(IntToStr(X1)+' '+IntToStr(Y22)+' lineto');
+  FPostScript.Add('closepath');
+  if FBrush.Color > -1 then AddFill;
+  FPostScript.Add('stroke');
+  ResetPos;
+end;
+
+{ Draw a rectangle }
+procedure TPostScriptCanvas.Rectangle(const Rect: TRect);
+var
+   Y12, Y22: Integer;
+begin
+  Y12 := TranslateY(Rect.Top);
+  Y22 := TranslateY(Rect.Bottom);
+
+  FPostScript.Add('stroke newpath');
+  FPostScript.Add(IntToStr(Rect.Left)+' '+IntToStr(Y12)+' moveto');
+  FPostScript.Add(IntToStr(Rect.Right)+' '+IntToStr(Y12)+' lineto');
+  FPostScript.Add(IntToStr(Rect.Right)+' '+IntToStr(Y22)+' lineto');
+  FPostScript.Add(IntToStr(Rect.Left)+' '+IntToStr(Y22)+' lineto');
+  FPostScript.Add('closepath');
+  if FBrush.Color > -1 then AddFill;
+  FPostScript.Add('stroke');
+  ResetPos;
+end;
+
+{ Draw a series of lines }
+procedure TPostScriptCanvas.Polyline(Points: PPoint; NumPts: Integer);
+var
+  i : Longint;
+begin
+  If (NumPts <= 1) or (Points = nil) then exit;
+
+  MoveTo(Points[0].X, Points[0].Y);
+  For i := 1 to NumPts - 1 do
+    LineTo(Points[i].X, Points[i].Y);
+
+  ResetPos;
+end;
+
+{ This was a pain to figure out... }
+procedure TPostScriptCanvas.Ellipse(x1, y1, x2, y2: Integer);
+var
+   radius: Integer;
+   YRatio: Real;
+   centerX, centerY: Integer;
+begin
+     // set radius to half the width
+  radius := (x2 - x1) div 2;
+
+     //calculate ratios
+  if radius <1 then exit; // do nothing
+  YRatio := real(Y2 - Y1) / (X2-X1);
+
+     // find center
+  CenterX := ((X2 - X1) div 2) + X1;
+  CenterY := ((Y2 - Y1) div 2) + Y1;
+
+  FPostScript.Add('newpath '+IntToStr(CenterX)+' '+IntToStr(TranslateY(CenterY))+' translate');
+
+     // move to edge
+  FPostScript.Add(IntToStr(radius)+' 0 moveto');
+
+     // now draw it
+  FPostScript.Add('gsave 1 '+format('%.3f',[YRatio])+' scale');
+  FPostScript.Add('0 0 '+IntToStr(radius)+' 0 360 arc');
+  if FBrush.Color > -1 then AddFill;
+
+     // reset scale for drawing line thickness so it doesn't warp
+  YRatio := 1 / YRatio;
+  FPostScript.Add('1 '+format('%.2f',[YRatio])+' scale stroke grestore');
+
+     // move origin back
+  FPostScript.Add(IntToStr(-CenterX)+' '+IntToStr(-TranslateY(CenterY))+' translate closepath stroke');
+  ResetPos;
+end;
+
+procedure TPostScriptCanvas.Ellipse(const Rect: TRect);
+begin
+  self.Ellipse(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
+end;
+
+procedure TPostScriptCanvas.Pie(x, y, width, mheight, angle1, angle2: Integer);
+begin
+  // set zero at center
+  FPostScript.Add('newpath '+IntToStr(X)+' '+IntToStr(TranslateY(Y))+' translate');
+
+  // scale it
+  FPostScript.Add('gsave '+IntToStr(width)+' '+IntToStr(mheight)+' scale');
+  //FPostScript.Add('gsave 1 1 scale');
+
+  // draw line to edge
+  FPostScript.Add('0 0 moveto');
+  FPostScript.Add('0 0 1 '+IntToStr(angle1)+' '+IntToStr(angle2)+' arc closepath');
+
+  if FBrush.Color > -1 then AddFill;
+
+  // reset scale so we don't change the line thickness
+  // adding 0.01 to compensate for scaling error - there may be a deeper problem here...
+  FPostScript.Add(format('%.6f',[(real(1) / X)+0.01])+' '+format('%.6f',[(real(1) / Y)+0.01])+' scale stroke grestore');
+
+  // close out and return origin
+  FPostScript.Add(IntToStr(-X)+' '+IntToStr(-TranslateY(Y))+' translate closepath stroke');
+
+  ResetPos;
+end;
+
+{ Writes text with a carriage return }
+procedure TPostScriptCanvas.Writeln(const AString: String);
+begin
+  TextOut(LastX, LastY, AString);
+  LastY := LastY+FFontSize+FLineSpacing;
+  MoveTo(LastX, LastY);
+end;
+
+
+{ Output text, restoring draw location }
+procedure TPostScriptCanvas.TextOut(X, Y: Integer; const Text: String);
+var
+  Y1: Integer;
+begin
+  Y1 := TranslateY(Y);
+  FPostScript.Add(IntToStr(X)+' '+IntToStr(Y1)+' moveto');
+  FPostScript.Add('('+Text+') show');
+  ResetPos; // move back to last moveto location
+end;
+
+{ TPostScript -------------------------------------------------------------- }
+
+procedure TPostScript.SetHeight(const AValue: Integer);
+begin
+  if FHeight=AValue then exit;
+  FHeight:=AValue;
+  UpdateBoundingBox;
+  // filter down to the canvas height property
+  if assigned(FCanvas) then FCanvas.Height := FHeight;
+end;
+
+procedure TPostScript.SetLineSpacing(const AValue: Integer);
+begin
+  if FLineSpacing=AValue then exit;
+  FLineSpacing:=AValue;
+  // filter down to the canvas
+  if assigned(FCanvas) then FCanvas.LineSpacing := AValue;
+end;
+
+procedure TPostScript.SetTitle(const AValue: String);
+begin
+  if FTitle=AValue then exit;
+  FTitle:=AValue;
+
+  // need to not hard-link these...
+  FDocument[3] := '%%Title: '+AValue;
+end;
+
+procedure TPostScript.SetWidth(const AValue: Integer);
+begin
+  if FWidth=AValue then exit;
+  FWidth:=AValue;
+  UpdateBoundingBox;
+end;
+
+{ Places the current canvas object into the document }
+procedure TPostScript.GrabCanvas;
+var
+   I: Integer;
+begin
+  // internally calls this at the end of a page...
+
+  I := 0;
+  while I < FCanvas.PostScript.Count do begin
+           Document.Add(FCanvas.PostScript[I]);
+           I := I+1;
+  end;
+end;
+
+{ Take our sizes and change the boundingbox line }
+procedure TPostScript.UpdateBoundingBox;
+begin
+  // need to not hard-link this to line 1
+  FDocument[1] := '%%BoundingBox: 0 0 '+IntToStr(FWidth)+' '+IntToStr(FHeight);
+end;
+
+{ Pattern Changed so update the postscript code }
+procedure TPostScript.PatternChanged(Sender: TObject);
+begin
+  // called anytime a pattern changes.  Update the postscript code.
+  // look for and delete the current postscript code for this pattern
+  // then paste the pattern back into the code before the first page
+  RemovePattern(Sender As TPSPattern);
+  InsertPattern(Sender As TPSPattern);
+end;
+
+{ Places a pattern definition into the bottom of the header in postscript }
+procedure TPostScript.InsertPattern(APattern: TPSPattern);
+var
+  I, J: Integer;
+  MyStrings: TStringList;
+begin
+  I := 0;
+  if FDocument.Count < 1 then begin
+        // added pattern when no postscript exists - this shouldn't happen
+        raise exception.create('Pattern inserted with no postscript existing');
+        exit;
+  end;
      
-     Lst.SaveTofile(ExpandFileName(aFileName));
-  finally
-    Lst.Free;
+  for I := 0 to FDocument.count - 1 do begin
+         if (FDocument[I] = '%%Page: 1 1') then begin
+            // found it!
+            // insert into just before that
+            MyStrings := APattern.GetPS;
+            for J := 0 to MyStrings.Count - 1 do begin
+                FDocument.Insert(I-1+J, MyStrings[j]);
+            end;
+            exit;
+         end;
   end;
 end;
 
-procedure TPostscriptPrinterCanvas.BeginDoc;
+{Remove a pattern from the postscript code }
+procedure TPostScript.RemovePattern(APattern: TPSPattern);
+var
+  I: Integer;
+  MyName: String;
 begin
-  Inherited BeginDoc;
-  
-  FirstUpdatefont:=True;
-  Font.Size:=12;
-  Font.Color:=clBlack;
-  
-  WriteHeader('%!PS-Adobe-3.0');
-  WriteHeader('%%'+Format('BoundingBox: 0 0 %d %d',[PageWidth,PageHeight]));
-  WriteHeader('%%'+Format('Creator: Lazarus PostScriptCanvas for %s',[Application.ExeName]));
-  WriteHeader('%%'+Format('Title: %s',[Title]));
-  WriteHeader('%%CreationDate: '+DateTimeToStr(Now));
-  WriteHeader('%%Pages: (atend)');
-  WriteHeader('%%PageResources: (atend)');
-  WriteHeader('%%PageOrder: Ascend');
-  WriteHeader('%%Page: 1');
-  WriteHeader('');
-  WriteHeader('%------------------------------------------------------------');
-  WriteHeader('%================== BEGIN SETUP==============================');
-  WriteHeader('');
-  WriteHeader('% ISO Fonts');
-  WriteHeader('/Helvetica findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Helvetica-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO-Bold exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Helvetica-Oblique findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO-Oblique exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Helvetica-Oblique-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/HelveticaISO-Oblique-Bold exch definefont pop');
-  WriteHeader('');
+  // this does NOT destroy the object, just removes from postscript
+     
+  if APattern.OldName <> '' then MyName := APattern.OldName
+  else MyName := APattern.name;
 
-  WriteHeader('/Courier findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Courier-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO-Bold exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Courier-Oblique findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO-Oblique exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Courier-Oblique-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/CourierISO-Oblique-Bold exch definefont pop');
-  WriteHeader('');
-
-  WriteHeader('/Times findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Times-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO-Bold exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Times-Italic findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO-Italic exch definefont pop');
-  WriteHeader('');
-  WriteHeader('/Times-Italic-Bold findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/TimesISO-Italic-Bold exch definefont pop');
-  WriteHeader('');
-
-  WriteHeader('/Roman findfont');
-  WriteHeader('  dup length dict begin');
-  WriteHeader('  {1 index /FID ne {def} {pop pop} ifelse} forall');
-  WriteHeader('  /Encoding ISOLatin1Encoding def');
-  WriteHeader('  currentdict');
-  WriteHeader('end');
-  WriteHeader('/RomanISO exch definefont pop');
-  WriteHeader('');
-
-
-  WriteHeader('/underline_on');
-  WriteHeader('{%def');
-  WriteHeader('    /underline true def');
-  WriteHeader('    /underlineposition exch def');
-  WriteHeader('    /underlinethickness exch def');
-  WriteHeader('    /TEXT { TEXTwith } def');
-  WriteHeader('} def');
-
-  WriteHeader('/underline_off');
-  WriteHeader('{ %def');
-  WriteHeader('    /undefline false def');
-  WriteHeader('    /TEXT { TEXTwithout } def');
-  WriteHeader('} def');
-
-  WriteHeader('/TEXTwithout { moveto show } bind def');
-  
-  WriteHeader('/TEXTwith { %def');
-  WriteHeader('    moveto');
-  WriteHeader('    gsave');
-  WriteHeader('       [] 0 setdash');
-  WriteHeader('       0 underlineposition rmoveto');
-  WriteHeader('       underlinethickness setlinewidth');
-  WriteHeader('       dup stringwidth rlineto stroke');
-  WriteHeader('    grestore');
-  WriteHeader('    show');
-  WriteHeader('} bind def');
-  
-  WriteHeader('%%BeginProcSet: patternfill 1.0 0');
-  WriteHeader('% width height matrix proc key cache');
-  WriteHeader('% definepattern -\> font');
-  WriteHeader('/definepattern { %def');
-  WriteHeader('    7 dict begin');
-  WriteHeader('        /FontDict 9 dict def');
-  WriteHeader('        FontDict begin');
-  WriteHeader('            /cache exch def');
-  WriteHeader('            /key exch def');
-  WriteHeader('            /proc exch cvx def');
-  WriteHeader('            /mtx exch matrix invertmatrix def');
-  WriteHeader('            /height exch def');
-  WriteHeader('            /width exch def');
-  WriteHeader('            /ctm matrix currentmatrix def');
-  WriteHeader('            /ptm matrix identmatrix def');
-  WriteHeader('            /str');
-  WriteHeader('            (12345678901234567890123456789012)');
-  WriteHeader('            def');
-  WriteHeader('        end');
-  WriteHeader('        /FontBBox [ %def');
-  WriteHeader('            0 0 FontDict /width get');
-  WriteHeader('            FontDict /height get');
-  WriteHeader('        ] def');
-  WriteHeader('        /FontMatrix FontDict /mtx get def');
-  WriteHeader('        /Encoding StandardEncoding def');
-  WriteHeader('        /FontType 3 def');
-  WriteHeader('        /BuildChar { %def');
-  WriteHeader('            pop begin');
-  WriteHeader('            FontDict begin');
-  WriteHeader('                width 0 cache { %ifelse');
-  WriteHeader('                    0 0 width height setcachedevice');
-  WriteHeader('                }{ %else');
-  WriteHeader('                    setcharwidth');
-  WriteHeader('                } ifelse');
-  WriteHeader('                0 0 moveto width 0 lineto');
-  WriteHeader('                width height lineto 0 height lineto');
-  WriteHeader('                closepath clip newpath');
-  WriteHeader('                gsave proc grestore');
-  WriteHeader('            end end');
-  WriteHeader('        } def');
-  WriteHeader('        FontDict /key get currentdict definefont');
-  WriteHeader('    end');
-  WriteHeader('} bind def');
-  WriteHeader('% dict patternpath -');
-  WriteHeader('% dict matrix patternpath -');
-  WriteHeader('/patternpath { %def');
-  WriteHeader('    dup type /dicttype eq { %ifelse');
-  WriteHeader('        begin FontDict /ctm get setmatrix');
-  WriteHeader('    }{ %else');
-  WriteHeader('        exch begin FontDict /ctm get setmatrix');
-  WriteHeader('        concat');
-  WriteHeader('    } ifelse');
-  WriteHeader('    currentdict setfont');
-  WriteHeader('    FontDict begin');
-  WriteHeader('        FontMatrix concat');
-  WriteHeader('        width 0 dtransform');
-  WriteHeader('        round width div exch round width div exch');
-  WriteHeader('        0 height dtransform');
-  WriteHeader('        round height div exch');
-  WriteHeader('        round height div exch');
-  WriteHeader('        0 0 transform round exch round exch');
-  WriteHeader('        ptm astore setmatrix');
-  WriteHeader('        ');
-  WriteHeader('        pathbbox');
-  WriteHeader('        height div ceiling height mul 4 1 roll');
-  WriteHeader('        width div ceiling width mul 4 1 roll');
-  WriteHeader('        height div floor height mul 4 1 roll');
-  WriteHeader('        width div floor width mul 4 1 roll');
-  WriteHeader('        ');
-  WriteHeader('        2 index sub height div ceiling cvi exch');
-  WriteHeader('        3 index sub width div ceiling cvi exch');
-  WriteHeader('        4 2 roll moveto');
-  WriteHeader('        ');
-  WriteHeader('        FontMatrix ptm invertmatrix pop');
-  WriteHeader('        { %repeat');
-  WriteHeader('            gsave');
-  WriteHeader('                ptm concat');
-  WriteHeader('                dup str length idiv { %repeat');
-  WriteHeader('                    str show');
-  WriteHeader('                } repeat');
-  WriteHeader('                dup str length mod str exch');
-  WriteHeader('                0 exch getinterval show');
-  WriteHeader('            grestore');
-  WriteHeader('            0 height rmoveto');
-  WriteHeader('        } repeat');
-  WriteHeader('        pop');
-  WriteHeader('    end end');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('% dict patternfill -');
-  WriteHeader('% dict matrix patternfill -');
-  WriteHeader('/patternfill { %def');
-  WriteHeader('    gsave');
-  WriteHeader('        clip patternpath');
-  WriteHeader('    grestore');
-  WriteHeader('    newpath');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('% dict patterneofill -');
-  WriteHeader('% dict matrix patterneofill -');
-  WriteHeader('/patterneofill { %def');
-  WriteHeader('    gsave');
-  WriteHeader('        eoclip patternpath');
-  WriteHeader('    grestore');
-  WriteHeader('    newpath');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('% dict patternstroke -');
-  WriteHeader('% dict matrix patternstroke -');
-  WriteHeader('/patternstroke { %def');
-  WriteHeader('    gsave');
-  WriteHeader('        strokepath clip patternpath');
-  WriteHeader('    grestore');
-  WriteHeader('    newpath');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('% dict ax ay string patternashow -');
-  WriteHeader('% dict matrix ax ay string patternashow -');
-  WriteHeader('/patternashow { %def');
-  WriteHeader('    (0) exch { %forall');
-  WriteHeader('        2 copy 0 exch put pop dup');
-  WriteHeader('        false charpath ');
-  WriteHeader('        currentpoint');
-  WriteHeader('        5 index type /dicttype eq { %ifelse');
-  WriteHeader('            5 index patternfill');
-  WriteHeader('        }{ %else');
-  WriteHeader('            6 index 6 index patternfill');
-  WriteHeader('        } ifelse');
-  WriteHeader('        moveto');
-  WriteHeader('        3 copy pop rmoveto');
-  WriteHeader('    } forall');
-  WriteHeader('    pop pop pop');
-  WriteHeader('    dup type /dicttype ne { pop } if pop');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('% dict string patternshow -');
-  WriteHeader('% dict matrix string patternshow -');
-  WriteHeader('/patternshow { %def');
-  WriteHeader('    0 exch 0 exch patternashow');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('/opaquepatternfill { %def');
-  WriteHeader('    gsave');
-  WriteHeader('    1 setgray');
-  WriteHeader('    fill');
-  WriteHeader('    grestore');
-  WriteHeader('    patternfill');
-  WriteHeader('} bind def');
-  WriteHeader('');
-  WriteHeader('%%EndProcSet');
-  WriteHeader('%%EndProlog');
-  WriteHeader('');
-  WriteHeader('%%BeginSetup');
-  WriteHeader('15 15 [300 72 div 0 0 300 72 div 0 0]');
-  WriteHeader('{ %definepattern');
-  WriteHeader('    2 setlinecap');
-  WriteHeader('    7.5 0 moveto 15 7.5 lineto');
-  WriteHeader('    0 7.5 moveto 7.5 15 lineto');
-  WriteHeader('    2 setlinewidth stroke');
-  WriteHeader('} bind');
-  WriteHeader('/bsBDiagonal true definepattern pop');
-  WriteHeader('');
-  WriteHeader('15 15 [300 72 div 0 0 300 72 div 0 0]');
-  WriteHeader('{ %definepattern');
-  WriteHeader('    2 setlinecap');
-  WriteHeader('    7.5 0 moveto 0 7.5 lineto');
-  WriteHeader('    15 7.5 moveto 7.5 15 lineto');
-  WriteHeader('    2 setlinewidth stroke');
-  WriteHeader('} bind');
-  WriteHeader('/bsFDiagonal true definepattern pop');
-  WriteHeader('30 30 [300 72 div 0 0 300 72 div 0 0]');
-  WriteHeader('{ %definepattern');
-  WriteHeader('    2 2 scale');
-  WriteHeader('    2 setlinecap');
-  WriteHeader('    7.5 0 moveto 15 7.5 lineto');
-  WriteHeader('    0 7.5 moveto 7.5 15 lineto');
-  WriteHeader('    7.5 0 moveto 0 7.5 lineto');
-  WriteHeader('    15 7.5 moveto 7.5 15 lineto');
-  WriteHeader('    0.5 setlinewidth stroke');
-  WriteHeader('} bind');
-  WriteHeader('/bsDiagCross true definepattern pop');
-  WriteHeader('');
-  WriteHeader('30 30 [300 72 div 0 0 300 72 div 0 0]');
-  WriteHeader('{ %definepattern');
-  WriteHeader('    2 setlinecap');
-  WriteHeader('    15 0 moveto 15 30 lineto');
-  WriteHeader('    0 15 moveto 30 15 lineto');
-  WriteHeader('    2 setlinewidth stroke');
-  WriteHeader('} bind');
-  WriteHeader('/bsCross true definepattern pop');
-  WriteHeader('');
-  WriteHeader('15 15 [300 72 div 0 0 300 72 div 0 0]');
-  WriteHeader('{ %definepattern');
-  WriteHeader('    2 setlinecap');
-  WriteHeader('    0 7.5 moveto 15 7.5 lineto');
-  WriteHeader('    2 setlinewidth stroke');
-  WriteHeader('} bind');
-  WriteHeader('/bsHorizontal true definepattern pop');
-  WriteHeader('');
-  WriteHeader('15 15 [300 72 div 0 0 300 72 div 0 0]');
-  WriteHeader('{ %definepattern');
-  WriteHeader('    2 setlinecap');
-  WriteHeader('    7.5 0 moveto 7.5 15 lineto');
-  WriteHeader('    2 setlinewidth stroke');
-  WriteHeader('} bind');
-  WriteHeader('/bsVertical true definepattern pop');
-  WriteHeader('%%EndSetup');
-  WriteHeader('%%====================== END SETUP =========================');
-  WriteHeader('');
+  I := 0;
+  if FDocument.Count < 1 then begin
+        // added pattern when no postscript exists - this shouldn't happen
+        raise exception.create('Pattern removed with no postscript existing');
+        exit;
+  end;
+     
+  for I := 0 to FDocument.Count - 1 do begin
+         if (FDocument[I] = '%% PATTERN '+MyName) then begin
+            // found it...
+            // delete until gone
+            while I < FDocument.Count - 1 do begin
+                  // stay within our limites
+                  if (FDocument[I] = '%% END PATTERN '+MyName) then begin
+                     FDocument.Delete(I);
+                     APattern.oldName := '';
+                     exit;
+                  end else FDocument.Delete(I);
+            end;
+         end;
+  end;
 end;
 
-procedure TPostscriptPrinterCanvas.EndDoc;
+constructor TPostScript.Create;
 begin
-  Inherited EndDoc;
-  
-  Write('stroke');
-  Write('showpage');
-  Write('%%EOF');
-  
-  if Trim(fFileName)<>'' then
-    SaveToFile(ExpandFileName(fFileName));
+  inherited create;
+
+  FDocument := TStringList.Create;
+
+     // Set some defaults
+  FHeight := 792; // 11 inches at 72 dpi
+  FWidth := 612; // 8 1/2 inches at 72 dpi
+  FCanvas := TPostScriptCanvas.Create(Self);
+
+  FDocument.Clear;
+  FDocument.Add('%!PS-Adobe-3.0');
+  FDocument.Add('%%BoundingBox: 0 0 612 792');
+  FDocument.Add('%%Creator: '+Application.ExeName);
+  FDocument.Add('%%Title: '+FTitle);
+  FDocument.Add('%%Pages: (atend)');
+  FDocument.Add('%%PageOrder: Ascend');
+
+     // Choose a standard font in case the user doesn't
+  FDocument.Add('/AvantGarde-Book findfont');
+  FDocument.Add('10 scalefont');
+  FDocument.Add('setfont');
+
+     // start our first page
+  FPageNumber := 1;
+  FDocument.Add('%%Page: 1 1'); // I'm still not sure why u put the page # twice
+  FDocument.Add('newpath');
+
 end;
 
-procedure TPostscriptPrinterCanvas.NewPage;
+destructor TPostScript.Destroy;
+var
+   I: Integer;
 begin
-  Inherited NewPage;
+
+  FCanvas.Free;
+  FDocument.Free;
   
-  Write('stroke');
-  Write('showpage');
-  Write('%%'+Format('Page: %d',[PageNumber]));
+  // destroy the patterns
+  if NumPatterns > 0 then begin
+  for I := 0 to NuMPatterns-1 do begin
+         Patterns[i].Free;
+  end;
+  end;
   
-  write('newpath');
+  // free the pattern pointer memory
+  Reallocmem(Patterns, 0);
+  
+  inherited Destroy;
+
 end;
 
-//Move the current position
-procedure TPostscriptPrinterCanvas.MoveTo(X1, Y1: Integer);
+{ Add a pattern to the array }
+procedure TPostScript.AddPattern(APSPattern: TPSPattern);
 begin
-  RequiredState([csHandleValid]);
-  WriteComment(Format('MoveTo(%d,%d)',[x1,y1]));
+  // does NOT create the pattern, just insert in the array of patterns
 
-  SetPosition(X1,Y1);
-  TranslateCoord(X1,Y1);
+  NumPatterns := NumPatterns+1;
 
-  write(Format('%d %d moveto',[X1,Y1]));
+  reallocmem(Patterns, sizeof(TPSPattern) * NumPatterns);
+     
+  Patterns[NumPatterns-1] := APSPattern;
 end;
 
-//Drawe line
-procedure TPostscriptPrinterCanvas.LineTo(X1, Y1: Integer);
+{ Find a pattern object by it's name }
+function TPostScript.FindPattern(AName: String): TPSPattern;
+var
+   I: Integer;
 begin
-  Changing;
-  RequiredState([csHandleValid, csPenValid]);
-
-  WriteComment(Format('LineTo(%d,%d)',[x1,y1]));
-  SetPosition(X1,Y1);
-  TranslateCoord(X1,Y1);
-  UpdateLineColor;
-  UpdateLineWidth;
-  UpdateLineStyle;
-  write(Format('%d %d lineto stroke',[X1,Y1]));
-  changed;
+  Result := nil;
+  if NumPatterns < 1 then exit;
+  for I := 0 to NumPatterns-1 do begin
+         if Patterns[I].Name = AName then begin
+            result := Patterns[i];
+            exit;
+         end;
+  end;
 end;
 
-procedure TPostscriptPrinterCanvas.Polyline(Points: PPoint; NumPts: Integer);
-Var i  : LongInt;
-    Lst: TStringList;
-    Pt : TPoint;
+function TPostScript.DelPattern(AName: String): Boolean;
 begin
-  if (NumPts<=1) or not Assigned(Points) then Exit;
-  Changing;
-  RequiredState([csHandleValid, csPenValid]);
+  if AName<>'' then
+    DebugLn('[TPostScript.DelPattern] ToDo ');
 
-  Lst:=TStringList.Create;
-  try
-    Pt:=Points[0];
-    TranslateCoord(Pt.x,Pt.y);
-    Write(Format('%d %d moveto',[Pt.x,Pt.y]),Lst);
-    for i:=1 to NumPts-1 do
+  // can't do that yet...
+  Result:=false;
+end;
+
+{ Create a new pattern and inserts it into the array for safe keeping }
+function TPostScript.NewPattern(AName: String): TPSPattern;
+var
+   MyPattern: TPSPattern;
+begin
+  MyPattern := TPSPattern.Create;
+  AddPattern(MyPattern);
+  MyPattern.Name := AName;
+  MyPattern.OnChange := @PatternChanged;
+  MyPattern.OldName := '';
+     
+     // Add this to the postscript now...
+
+  InsertPattern(MyPattern);
+  result := MyPattern;
+end;
+
+{ Start a new document }
+procedure TPostScript.BeginDoc;
+var
+   I: Integer;
+begin
+  FCanvas.Clear;
+  FDocument.Clear;
+     
+  // destroy the patterns
+  if NumPatterns > 0 then
+  begin
+    for I := 0 to NuMPatterns-1 do
     begin
-      Pt:=Points[i];
-      TranslateCoord(Pt.x,Pt.y);
-      SetPosition(Pt.x,Pt.y);
-      TranslateCoord(Pt.x,Pt.y);
-      Write(Format('%d %d lineto',[Pt.x,Pt.y]),Lst);
+      Patterns[i].Free;
+      Patterns[i]:=nil;
     end;
-
-    if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
-    begin
-      UpdateLineColor;
-      UpdateLineWidth;
-      UpdateLineStyle;
-      Write(Lst);
-      write('stroke');
-    end;
-  finally
-    Lst.Free;
+    NumPatterns:=0;
   end;
 
-  MoveToLastPos;
+  // free the pattern pointer memory
+  Reallocmem(Patterns, 0);
+
+  FDocument.Add('%!PS-Adobe-3.0');
+  FDocument.Add('%%BoundingBox: 0 0 612 792');
+  FDocument.Add('%%Creator: '+Application.ExeName);
+  FDocument.Add('%%Title: '+FTitle);
+  FDocument.Add('%%Pages: (atend)');
+  FDocument.Add('%%PageOrder: Ascend');
+
+  // Choose a standard font in case the user doesn't
+  FDocument.Add('/AvantGarde-Book findfont');
+  FDocument.Add('10 scalefont');
+  FDocument.Add('setfont');
+
+  // start our first page
+  FPageNumber := 1;
+  FDocument.Add('%%Page: 1 1'); // I'm still not sure why u put the page # twice
+  FDocument.Add('newpath');
+
+  UpdateBoundingBox;
+end;
+
+{ Copy current page into the postscript and start a new one }
+procedure TPostScript.NewPage;
+begin
+  // dump the current page into our postscript first
+  GrabCanvas;
+
+  // put end page definition...
+  FDocument.Add('stroke');
+  FDocument.Add('showpage');
+  FPageNumber := FPageNumber+1;
+  // start new page definition...
+  FDocument.Add('%%Page: '+IntToStr(FPageNumber)+' '+IntToStr(FPageNumber));
+  FDocument.Add('newpath');
+  FCanvas.Clear;
+end;
+
+{ Finish off the document }
+procedure TPostScript.EndDoc;
+begin
+     // dump the canvas into the postscript code
+  GrabCanvas;
+
+     // Start printing the document after closing out the pages
+  FDocument.Add('stroke');
+  FDocument.Add('showpage');
+  FDocument.Add('%%Pages: '+IntToStr(FPageNumber));
+
+     // okay, the postscript is all ready, so dump it to the text file
+     // or to the printer
+  FPageNumber := 0;
+end;
+
+{ TPSObject }
+
+procedure TPSObject.Changed;
+begin
+  //Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TPSObject.Lock;
+begin
+
+end;
+
+procedure TPSObject.UnLock;
+begin
+
+end;
+
+{ TPSPen }
+
+procedure TPSPen.SetPattern(const AValue: TPSPattern);
+begin
+  if FPattern=AValue then exit;
+  FPattern:=AValue;
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
-  Filled: boolean; Continuous: boolean);
-Var i  : Integer;
-    St : String;
-    Pt : TPoint;
+
+procedure TPSPen.SetColor(Value: TColor);
 begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  
-  if (NumPts>=4) then
-  begin
-    ClearBuffer;
+  FColor := Value;
+  Changed;
+end;
 
-    St:='';
-    Pt:=Points[0];
-    TranslateCoord(Pt.x,Pt.y);
-    if Continuous then
-      WriteB('newpath');
-    WriteB(Format('%d %d moveto',[Pt.x,Pt.y]));
-    for i:=1 to NumPts-1 do
-    begin
-      Pt:=Points[i];
-      TranslateCoord(Pt.x,Pt.y);
-      St:=St+Format(' %d %d',[Pt.x,Pt.y]);
-    end;
-    WriteB(Format('%s curveto',[St]));
+procedure TPSPen.Setwidth(value: Real);
+begin
+  FWidth := Value;
+  Changed;
+end;
 
-    if Continuous then
-      writeB('closepath');
-    SetBrushFillPattern(True,Filled);
+constructor TPSPen.Create;
+begin
+  FPattern := nil;
+end;
 
-    MoveToLastPos;
+destructor TPSPen.Destroy;
+begin
+  // Do NOT free the pattern object from here...
+  inherited Destroy;
+end;
+
+procedure TPSPen.Assign(Source: TPSPen);
+begin
+  if source = nil then exit;
+     
+  FWidth := Source.Width;
+  FColor := Source.Color;
+  FPattern := Source.Pattern;
+end;
+
+{ Return the pen definition as a postscript string }
+function TPSPen.AsString: String;
+var
+   MyOut: String;
+begin
+  MyOut := '';
+
+     // set all the features of this pen...
+  if FPattern <> nil then begin
+        // we have a pattern
+        // uh... let's make it work for both colored and uncolored patterns
+        // first for colored:
+
+        if FPattern.PaintType = ptColored then
+            MyOut := '/Pattern setcolorspace '+FPattern.Name+' setcolor '
+        else begin
+             // now for uncolored, use color from pen
+             MyOut := '[/Pattern /DeviceRGB] setcolorspace '+IntToStr(GetRValue(FColor))+' '+IntToStr(GetGValue(FColor))+' '+
+           IntToStr(GetBValue(FColor))+' '+FPattern.Name+' setcolor ';
+        end;
+           
+  end else // no pattern do this:
+          MyOut := IntToStr(GetRValue(FColor))+' '+IntToStr(GetGValue(FColor))+' '+
+           IntToStr(GetBValue(FColor))+' setrgbcolor ';
+
+  MyOut := MyOut + format('%f',[FWidth])+' setlinewidth ';
+  Result := MyOut;
+end;
+
+{ TPSPattern }
+
+{ Returns the pattern definition as postscript }
+function TPSPattern.GetpostScript: TStringList;
+var
+   I: Integer;
+begin
+     // If nothing in the canvas, error
+  if FCanvas.Postscript.Count < 1 then begin
+        raise exception.create('Empty pattern');
+        exit;
   end;
-  Changed;
-end;
+     
+  FPostScript.Clear;
+  With FPostScript do begin
+          Add('%% PATTERN '+FName);
+          Add('/'+FName+'proto 12 dict def '+FName+'proto begin');
+          Add('/PatternType 1 def');
+          case FPaintType of
+               ptColored: Add('/PaintType 1 def');
+               ptUncolored: Add('/PaintType 2 def');
+          end;
+          case FTilingType of
+               ttConstant: Add('/TilingType 1 def');
+               ttNoDistortion: Add('/TilingType 2 def');
+               ttFast: Add('/TilingType 3 def');
+          end;
+          Add('/BBox ['+IntToStr(FBBox.Left)+' '+IntToStr(FBBox.Top)+' '+IntToStr(FBBox.Right)+' '+IntToStr(FBBox.Bottom)+'] def');
+          Add('/XStep '+format('%f',[FXStep])+' def');
+          Add('/YStep '+format('%f',[FYstep])+' def');
+          Add('/PaintProc { begin');
 
-//Draw an Rectangle
-procedure TPostscriptPrinterCanvas.Rectangle(X1, Y1, X2, Y2: Integer);
-begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+          // insert the canvas
+          for I := 0 to FCanvas.PostScript.Count - 1 do begin
+              Add(FCanvas.PostScript[I]);
+          end;
 
-  writecomment(Format('Rectangle(%d,%d,%d,%d)',[x1,y1,x2,y2]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-
-  ClearBuffer;
-  //Tempo draw rect
-  WriteB('newpath');
-  writeB(Format('    %d %d moveto',[X1,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y2]));
-  writeB(Format('    %d %d lineto',[X1,Y2]));
-  writeB('closepath');
-
-  SetBrushFillPattern(True,True);
-
-  MoveToLastPos;
-  
-  Changed;
-end;
-
-procedure TPostscriptPrinterCanvas.Frame(const ARect: TRect);
-Var X1,Y1,X2,Y2 : Integer;
-begin
-  Changing;
-  RequiredState([csHandleValid, csPenValid]);
-
-  X1:=aRect.Left;
-  Y1:=aRect.Top;
-  X2:=aRect.Right;
-  Y2:=aRect.Bottom;
-  
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-
-  ClearBuffer;
-  //Tempo draw rect
-  WriteB('newpath');
-  writeB(Format('    %d %d moveto',[X1,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y1]));
-  writeB(Format('    %d %d lineto',[X2,Y2]));
-  writeB(Format('    %d %d lineto',[X1,Y2]));
-  writeB('closepath');
-
-  SetBrushFillPattern(True,False);
-
-  MoveToLastPos;
-
-  Changed;
-end;
-
-procedure TPostscriptPrinterCanvas.FrameRect(const ARect: TRect);
-Var CL : TColor;
-begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid]);
-
-  CL:=Pen.Color;
-  try
-    Pen.Color:=Brush.Color;
-    Frame(aRect);
-  finally
-    Pen.Color:=CL;
+          // Add support for custom matrix later
+          Add('end } def end '+FName+'proto [1 0 0 1 0 0] makepattern /'+FName+' exch def');
+          Add('%% END PATTERN '+FName);
   end;
+  Result := FPostScript;
+end;
 
+procedure TPSPattern.SetBBox(const AValue: TRect);
+begin
+  if FBBox=AValue then exit;
+  FBBox:=AValue;
+  //FCanvas.Width := FBBox.Right - FBBox.Left;
+  FCanvas.Height := FBBox.Bottom - FBBox.Top;
   Changed;
 end;
 
-//Fill an Rectangular region
-procedure TPostscriptPrinterCanvas.FillRect(const ARect: TRect);
-Var X1,Y1,X2,Y2 : Integer;
+procedure TPSPattern.SetName(const AValue: String);
 begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid]);
-
-  X1:=ARect.Left;
-  Y1:=ARect.Top;
-  X2:=ARect.Right;
-  Y2:=ARect.Bottom;
-
-  Writecomment(Format('FillRect(%d,%d,%d,%d)',[x1,y1,x2,y2]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-  
-  ClearBuffer;
-
-  WriteB('newpath');
-  WriteB(Format('    %d %d moveto',[X1,Y1]));
-  WriteB(Format('    %d %d lineto',[X2,Y1]));
-  WriteB(Format('    %d %d lineto',[X2,Y2]));
-  WriteB(Format('    %d %d lineto',[X1,Y2]));
-  WriteB('closepath');
-
-  SetBrushFillPattern(False,True);
-
-  MoveToLastPos;
-  
+  FOldName := FName;
+  if FName=AValue then exit;
+  FName:=AValue;
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,
-  RY: Integer);
-Var ellipsePath : string;
+procedure TPSPattern.Changed;
 begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
 
-  X1:=Min(X1,X2);
-  X2:=Max(X1,X2);
-  Y1:=Min(Y1,Y2);
-  Y2:=Max(Y1,Y2);
-
-  writecomment(Format('RoundRect(%d,%d,%d,%d,%d,%d)',[x1,y1,x2,y2,Rx,Ry]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-
-  ClearBuffer;
-  
-  {Note: arcto command draws a line from current point to beginning of arc
-  save current matrix, translate to center of ellipse, scale by rx ry, and draw
-  a circle of unit radius in counterclockwise dir, return to original matrix
-  arguments are (cx, cy, rx, ry, startAngle, endAngle)}
-  ellipsePath:='matrix currentmatrix %d %d translate %d %d scale 0 0 1 %d %d arc setmatrix';
-
-  {choice between newpath and moveto beginning of arc
-   go with newpath for precision, does this violate any assumptions in code???
-   write(format('%d %d moveto',[x1+rx, y1]),Lst  # this also works}
-  WriteB('newpath');
-  WriteB(Format(ellipsePath,[x1+rx,y1-ry,rx,ry,90,180]));
-  WriteB(Format(ellipsePath,[x1+rx,y2+ry,rx,ry,180,270]));
-  WriteB(Format(ellipsePath,[x2-rx,y2+ry,rx,ry,270,360]));
-  WriteB(Format(ellipsePath,[x2-rx,y1-ry,rx,ry,0,90]));
-  WriteB('closepath');
-    
-  SetBrushFillPattern(True,True);
-  
-  MoveToLastPos;
+procedure TPSPattern.SetPaintType(const AValue: TPSPaintType);
+begin
+  if FPaintType=AValue then exit;
+  FPaintType:=AValue;
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.Polygon(Points: PPoint; NumPts: Integer;
-  Winding: boolean);
-Var i  : LongInt;
-    Pt : TPoint;
+procedure TPSPattern.SetTilingType(const AValue: TPSTileType);
 begin
-  if (NumPts<=1) or not Assigned(Points) then Exit;
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  
-  ClearBuffer;
-  
-  Pt:=Points[0];
-  TranslateCoord(Pt.x,Pt.y);
-  WriteB('newpath');
-  WriteB(Format('%d %d moveto',[Pt.x,Pt.y]));
-  for i:=1 to NumPts-1 do
-  begin
-    Pt:=Points[i];
-    TranslateCoord(Pt.x,Pt.y);
-    WriteB(Format('%d %d lineto',[Pt.x,Pt.y]));
-  end;
-  WriteB('closepath');
-
-  SetBrushFillPattern(True,True);
-  
-  MoveToLastPos;
+  if FTilingType=AValue then exit;
+  FTilingType:=AValue;
   Changed;
 end;
 
-//Draw an Ellipse
-procedure TPostscriptPrinterCanvas.Ellipse(x1, y1, x2, y2: Integer);
-var xScale : Real;
-    yScale : Real;
-    cX, cY : Real;
-    rX,Ry  : Real;
-    Code   : string;
-    stAng  : Integer;
-    ang    : Integer;
+procedure TPSPattern.SetXStep(const AValue: Real);
 begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-
-  writecomment(Format('Ellipse(%d,%d,%d,%d)',[x1,y1,x2,y2]));
-  TranslateCoord(X1,Y1);
-  TranslateCoord(X2,Y2);
-
-  //Init
-  StAng:=0;
-  Ang:=360;
-
-  //calculate centre of ellipse
-  cx:=(x1+x2)/2;
-  cy:=(y1+y2)/2;
-  rx:=(x2-x1)/2;
-  ry:=(y2-y1)/2;
-  
-  //calculate semi-minor and semi-major axes of ellipse
-  xScale:=Abs((x2-x1)/2.0);
-  yScale:=Abs((y2-y1)/2.0);
-
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %d %d %s setmatrix',
-      [cX,cY,xScale,yScale,StAng,Ang,'arc']);
-      
-  ClearBuffer;
-  WriteB(Format('%.3f %.3f moveto',[cX,cY])); //move to center of circle
-  WriteB(Code);
-  SetBrushFillPattern(False,True);
-
-  //move current point to start of arc, note negative
-  //angle because y increases down
-  ClearBuffer;
-  WriteB(Format('%.3f %.3f moveto',[cX+(rX*Cos(StAng*-1)),cY+(rY*Sin(StAng*-1))]));
-  WriteB(Code);
-  SetBrushFillPattern(True,False);
-
-  MoveToLastPos;
+  if FXStep=AValue then exit;
+  FXStep:=AValue;
   Changed;
 end;
 
-//Draw an Arc
-procedure TPostscriptPrinterCanvas.Arc(x, y, width, height, angle1,
-  angle2: Integer);
-var xScale : Real;
-    yScale : Real;
-    cX, cY : Real;
-    rX,Ry  : Real;
-    Code   : string;
-    ang    : string;
+procedure TPSPattern.SetYStep(const AValue: Real);
 begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-
-  writecomment(Format('Arc(%d,%d,%d,%d,%d,%d)',[x,y,Width,Height,Angle1,Angle2]));
-  TranslateCoord(X,Y);
-
-  //calculate centre of ellipse
-  cx:=x;
-  cy:=y;
-  rx:=Width;
-  ry:=Height;
-
-  if Angle2>=0 then
-    Ang:='arc'
-  else
-    Ang:='arcn';
-    
-  //calculate semi-minor and semi-major axes of ellipse
-  xScale:=Abs(rx);
-  yScale:=Abs(ry);
-
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
-      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
-
-
-  if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
-  begin
-    UpdateLineColor;
-    UpdateLineWidth;
-    UpdateLineStyle;
-
-    //move current point to start of arc, note negative
-    //angle because y increases down
-    write(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
-    Write(Code);
-    write('stroke');
-  end;
-
-  MoveToLastPos;
+  if FYStep=AValue then exit;
+  FYStep:=AValue;
   Changed;
 end;
 
-procedure TPostscriptPrinterCanvas.RadialPie(x, y, width, height, angle1,
-  angle2: Integer);
-var xScale : Real;
-    yScale : Real;
-    cX, cY : Real;
-    rX,Ry  : Real;
-    Code   : string;
-    ang    : string;
+constructor TPSPattern.Create;
 begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-
-  writecomment(Format('RadialPie(%d,%d,%d,%d,%d,%d)',[x,y,Width,Height,Angle1,Angle2]));
-  TranslateCoord(X,Y);
-
-  //calculate centre of ellipse
-  cx:=x;
-  cy:=y;
-  rx:=Width;
-  ry:=Height;
-
-  if Angle2>=0 then
-    Ang:='arc'
-  else
-    Ang:='arcn';
-
-  //calculate semi-minor and semi-major axes of ellipse
-  xScale:=Abs(rx);
-  yScale:=Abs(ry);
-
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
-      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
-
-  //move current point to start of arc, note negative
-  //angle because y increases down
-  ClearBuffer;
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
-  WriteB(Code);
-  writeB(Format('%d %d lineto',[X,Y]));
-  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
-  SetBrushFillPattern(False,True);
-
-  //move current point to start of arc, note negative
-  //angle because y increases down
-  ClearBuffer;
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
-  WriteB(Code);
-  writeB(Format('%d %d lineto',[X,Y]));
-  writeB(Format('%.3f %.3f lineto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
-  SetBrushFillPattern(True,False);
-
-  MoveToLastPos;
-  Changed;
+  FPostScript := TStringList.Create;
+  FPaintType := ptColored;
+  FTilingType := ttConstant;
+  FCanvas := TPostScriptCanvas.Create(nil);
+  FName := 'Pattern1';
 end;
 
-//Out the text at the X,Y coord. Set the font
-procedure TPostscriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
-Var PenUnder : Real;
-    PosUnder : Integer;
+destructor TPSPattern.Destroy;
 begin
-  TranslateCoord(X,Y);
-  UpdateFont;
-
-  if fsUnderline in Font.Style then
-  begin
-    PenUnder:=0.5;
-    if fsBold in Font.Style then
-      PenUnder:=1.0;
-    PosUnder:=(Abs(Round(Font.Size/3))*-1)+2;
-
-    write(Format('%.3f %d underline_on',[PenUnder,PosUnder]));
-    write(Format('(%s) %d %d TEXT',[MapedString(Text),X,Y]));
-    write('underline_off');
-  end
-  else
-  begin
-    write(Format('%d %d moveto',[X,Y]));
-    write(Format('(%s) show',[MapedString(Text)]));
-  end;
-
-  MoveToLastPos;
-end;
-
-function TPostscriptPrinterCanvas.TextExtent(const Text: string): TSize;
-begin
-  Result.cX := 0;
-  Result.cY := 0;
-  if Text='' then Exit;
-  RequiredState([csHandleValid, csFontValid]);
-  GetTextExtentPoint(0, PChar(Text), Length(Text), Result);
-end;
-
-//Draw an Picture
-procedure TPostscriptPrinterCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
-begin
-  if not Assigned(SrcGraphic) then exit;
-  StretchDraw(Rect(X,Y,X+SrcGraphic.Width,Y+SrcGraphic.Height),SrcGraphic);
-end;
-
-//Draw an picture with scale size
-procedure TPostscriptPrinterCanvas.StretchDraw(const DestRect: TRect;  SrcGraphic: TGraphic);
-var X,Y,X1,Y1 : Integer;
-    DrawWidth : Integer;
-    DrawHeight: Integer;
-    ImgWidth  : Integer;
-    ImgHeight : Integer;
-
-begin
-  if not Assigned(SrcGraphic) then exit;
-  Changing;
-  RequiredState([csHandleValid]);
-
-  X:=DestRect.Left;
-  Y:=DestRect.Top;
-  X1:=DestRect.Right;
-  Y1:=DestRect.Bottom;
-  
-  TranslateCoord(X,Y);
-  TransLateCoord(X1,Y1);
-  
-  ImgWidth:=SrcGraphic.Width;
-  ImgHeight:=SrcGraphic.Height;
-
-  DrawWidth:=X1-X;
-  DrawHeight:=Y-Y1;
-  ClearBuffer;
-
-  WriteB('gsave');
-  writeB(Format('%d %d translate',[X,Y-DrawHeight]));
-  WriteB(Format('%d %d scale',[DrawWidth,DrawHeight]));
-  WriteB(Format('/scanline %d 3 mul string def',[ImgWidth]));
-  WriteB(Format('%d %d %d',[ImgWidth,ImgHeight,8]));
-  WriteB(Format('[%d %d %d %d %d %d]',[ImgWidth,0,0,-ImgHeight,0,ImgHeight]));
-  WriteB('{ currentfile scanline readhexstring pop } false 3');
-  WriteB('colorimage');
-
-  GetRGBImage(SrcGraphic,fBuffer);
-  WriteB('% end of image data');
-  WriteB('grestore');
-
-  Write(fBuffer);
-
-  Changed;
-end;
-
-procedure TPostscriptPrinterCanvas.Arc(x, y, width, height, SX, SY, EX,
-  EY: Integer);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.Chord(x, y, width, height, angle1,angle2: Integer);
-var xScale : Real;
-    yScale : Real;
-    cX, cY : Real;
-    rX,Ry  : Real;
-    Code   : string;
-    ang    : string;
-begin
-  Changing;
-  RequiredState([csHandleValid, csBrushValid, csPenValid]);
-
-  writecomment(Format('Chord(%d,%d,%d,%d,%d,%d)',[x,y,Width,Height,Angle1,Angle2]));
-  TranslateCoord(X,Y);
-
-  //calculate centre of ellipse
-  cx:=x;
-  cy:=y;
-  rx:=Width;
-  ry:=Height;
-
-  if Angle2>=0 then
-    Ang:='arc'
-  else
-    Ang:='arcn';
-
-  //calculate semi-minor and semi-major axes of ellipse
-  xScale:=Abs(rx);
-  yScale:=Abs(ry);
-
-  Code:=Format('matrix currentmatrix %.3f %.3f translate %.3f %.3f scale 0 0 1 %.3f %.3f %s setmatrix',
-      [cX,cY,xScale,yScale,Angle1/16,Angle2/16,ang]);
-
-  //move current point to start of arc, note negative
-  //angle because y increases down.ClosePath for draw chord
-  ClearBuffer;
-  writeB('newpath');
-  writeB(Format('%.3f %.3f moveto',[cX+(rX*Cos((Angle1/16)*-1)),cY+(rY*Sin((Angle1/16)*-1))]));
-  WriteB(Code);
-  writeB('closepath');
-  SetBrushFillPattern(True,True);
-
-  MoveToLastPos;
-  Changed;
-end;
-
-procedure TPostscriptPrinterCanvas.Chord(x, y, width, height, SX, SY, EX, EY: Integer);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.Frame3d(var ARect: TRect;
-  const FrameWidth: integer; const Style: TGraphicsBevelCut);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.RadialPie(x, y, width, height, sx, sy, ex,
-  ey: Integer);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.Pie(EllipseX1, EllipseY1, EllipseX2,
-  EllipseY2, StartX, StartY, EndX, EndY: Integer);
-begin
-//Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.TextRect(ARect: TRect; X, Y: integer;
-  const Text: string; const Style: TTextStyle);
-begin
-  //Not implemented
-end;
-
-
-procedure TPostscriptPrinterCanvas.FloodFill(X, Y: Integer; FillColor: TColor;  FillStyle: TFillStyle);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.CopyRect(const Dest: TRect;
-  SrcCanvas: TCanvas; const Source: TRect);
-begin
-  //Not implemented
-end;
-
-procedure TPostscriptPrinterCanvas.BrushCopy(Dest: TRect;
-  InternalImages: TBitmap; Src: TRect; TransparentColor: TColor);
-begin
-  //Not implemented
-end;
-
-{ TPostscriptCanvas }
-
-constructor TPostscriptCanvas.Create;
-begin
-  Inherited Create(nil);
-end;
-
-procedure TPostscriptCanvas.BeginDoc;
-begin
-  inherited BeginDoc;
-end;
-
-procedure TPostscriptCanvas.EndDoc;
-begin
-  inherited EndDoc;
-end;
-
-procedure TPostscriptCanvas.NewPage;
-begin
-  inherited NewPage;
+  FPostScript.Free;
+  FCanvas.Free;
+  inherited Destroy;
 end;
 
 end.
