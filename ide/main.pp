@@ -4357,9 +4357,10 @@ begin
       writeln('');
       writeln(
         'Warning: Could not create Define Template for Free Pascal Compiler');
+    end else begin;
+      Add(ADefTempl);
+      CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     end;
-    Add(ADefTempl);
-    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     // create compiler macros to simulate the Makefiles of the FPC sources
     ADefTempl:=CreateFPCSrcTemplate(EnvironmentOptions.FPCSourceDirectory,
                           CompilerUnitSearchPath);
@@ -4367,18 +4368,20 @@ begin
       writeln('');
       writeln(
         'Warning: Could not create Define Template for Free Pascal Sources');
+    end else begin;
+      Add(ADefTempl);
+      CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     end;
-    Add(ADefTempl);
-    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-    // create compilr macros for the lazarus sources 
+    // create compiler macros for the lazarus sources 
     ADefTempl:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)','$(#LCLWidgetType)');
     if ADefTempl=nil then begin
       writeln('');
       writeln(
         'Warning: Could not create Define Template for Lazarus Sources');
+    end else begin;
+      Add(ADefTempl);
+      CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     end;
-    Add(ADefTempl);
-    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
   end;  
   // build define tree
   with CodeToolBoss do begin
@@ -4550,6 +4553,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2001/11/12 16:56:04  lazarus
+  MG: CLIPBOARD
+
   Revision 1.140  2001/11/09 18:39:11  lazarus
   MG: turned back to stable ground (use old process.pp)
 

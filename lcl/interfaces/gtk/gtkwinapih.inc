@@ -10,6 +10,19 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; override;
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;override;
+
+// clipboard
+function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;
+function ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): boolean; override;
+// ! List will be created. You must free it yourself with FreeMem(List) !
+function ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: integer; var List: PClipboardFormat): boolean; override;
+function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  Formats: PClipboardFormat): boolean; override;
+function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
+
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
@@ -26,7 +39,6 @@ function DestroyCaret: Boolean; override;
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 
-Function EmptyClipBoard : Boolean; override;
 function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
@@ -113,6 +125,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/11/12 16:56:09  lazarus
+  MG: CLIPBOARD
+
   Revision 1.17  2001/10/10 17:55:06  lazarus
   MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
 

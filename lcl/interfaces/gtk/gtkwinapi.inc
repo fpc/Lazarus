@@ -257,6 +257,442 @@ Begin
   
 end;
 
+{------------------------------------------------------------------------------
+  Function: ClipboardFormatToMimeType
+  Params:  FormatID - a registered format identifier (0 is invalid)
+  Returns: the corresponding mime type as string
+ ------------------------------------------------------------------------------}
+function TgtkObject.ClipboardFormatToMimeType(
+  FormatID: TClipboardFormat): string;
+var p: PChar;
+begin
+  if FormatID<>0 then begin
+    p:=gdk_atom_name(FormatID);
+    Result:=StrPas(p);
+    g_free(p);
+  end else
+    Result:='';
+end;
+
+{------------------------------------------------------------------------------
+  Function: ClipboardGetData
+  Params:  ClipboardType
+           FormatID - a registered format identifier (0 is invalid)
+           Stream - If format is available, it will be appended to this stream
+  Returns: true on success
+ ------------------------------------------------------------------------------}
+function TgtkObject.ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): boolean;
+type
+  PGdkAtom = ^TGdkAtom;
+var FormatAtom, FormatTry: Cardinal;
+  SupportedCnt, i: integer;
+  SupportedFormats: PGdkAtom;
+  SelData: TGtkSelectionData;
+  CompoundTextList: PPGChar;
+  CompoundTextCount: integer;
+  
+  function IsFormatSupported(Format: cardinal): boolean;
+  var a: integer;
+     AllID: cardinal;
+  begin
+    if Format=0 then begin
+      Result:=false;
+      exit;
+    end;
+    if SupportedCnt<0 then begin
+      Result:=false;
+      AllID:=gdk_atom_intern('TARGETS',0);
+      SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
+      if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
+      or (SelData.Target<>AllID)
+      or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then
+        exit;
+      SupportedCnt:=SelData.Length div (SelData.Format shr 3);
+      SupportedFormats:=PGdkAtom(SelData.Data);
+    end;
+    a:=SupportedCnt-1;
+    while (a>=0) and (SupportedFormats[a]<>Format) do dec(a);
+    Result:=(a>=0);
+  end;
+
+begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID));
+{$ENDIF}
+  Result:=false;
+  if (FormatID=0) or (Stream=nil) then exit;
+  if not (ClipboardType in [ctPrimarySelection,ctSecondarySelection,ctClipboard])
+  then exit;
+  // request the data from the selection owner
+  SupportedCnt:=-1;
+  SupportedFormats:=nil;
+  try
+
+    FormatAtom:=FormatID;
+    if (FormatAtom=gdk_atom_intern('text/plain',1)) then begin
+      // text/plain is supported in various formats in gtk
+      // The COMPOUND_TEXT format supports internationalization and is therefore
+      // preferred even before 'text/plain'
+      FormatAtom:=0;
+      FormatTry:=gdk_atom_intern('COMPOUND_TEXT',1);
+      if IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+      // then check for simple text format 'text/plain'
+      FormatTry:=gdk_atom_intern('text/plain',1);
+      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+      // then check for simple text format STRING
+      FormatTry:=gdk_atom_intern('STRING',1);
+      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+      // check for some other formats that can be interpreted as text
+      FormatTry:=gdk_atom_intern('FILE_NAME',1);
+      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+      FormatTry:=gdk_atom_intern('HOST_NAME',1);
+      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+      FormatTry:=gdk_atom_intern('USER',1);
+      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+      // the TEXT format is not reliable, but it should be supported
+      FormatTry:=gdk_atom_intern('TEXT',1);
+      if (FormatAtom=0) and IsFormatSupported(FormatTry) then
+        FormatAtom:=FormatTry;
+    end;
+
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom));
+{$ENDIF}
+    if FormatAtom=0 then exit;
+   
+    // request data from owner
+    SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
+    try
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length);
+{$ENDIF}
+      if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
+      or (SelData.Target<>FormatAtom) then
+        exit;
+    
+      // write data to stream
+      if (SelData.Data<>nil) and (SelData.Length>0) then begin
+        if (FormatID=gdk_atom_intern('text/plain',1)) then begin
+          // the lcl expects the return format as simple text
+          // transform if necessary
+          if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',1) then begin
+            CompoundTextCount:=gdk_text_property_to_text_list(SelData.theType,
+              SelData.Format,SelData.Data,SelData.Length,@CompoundTextList);
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount);
+{$ENDIF}
+            for i:=0 to CompoundTextCount-1 do
+              if (CompoundTextList[i]<>nil) then
+                Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
+            gdk_free_text_list(CompoundTextList);
+          end else
+            Stream.Write(SelData.Data^,SelData.Length);
+        end else begin
+          Stream.Write(SelData.Data^,SelData.Length);
+        end;
+      end;
+      
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetData] END');
+{$ENDIF}
+    finally
+      if SelData.Data<>nil then FreeMem(SelData.Data);
+    end;
+    Result:=true;
+  finally
+    if SupportedFormats<>nil then FreeMem(SupportedFormats);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ClipboardGetFormats
+  Params:  ClipboardType
+  Returns: true on success
+           Count contains the number of supported formats
+           List is an array of TClipboardType
+           
+  ! List will be created. You must free it yourself with FreeMem(List) !
+ ------------------------------------------------------------------------------}
+function TGtkObject.ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: integer; var List: PClipboardFormat): boolean;
+type
+  PGdkAtom = ^TGdkAtom;
+var AllID: cardinal;
+  FormatAtoms: PGdkAtom;
+  Cnt, i: integer;
+  AddTextPlain: boolean;
+  SelData: TGtkSelectionData;
+  
+  function IsFormatSupported(Format: cardinal): boolean;
+  var a: integer;
+  begin
+    if Format<>0 then begin
+      for a:=0 to Cnt-1 do begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
+{$ENDIF}
+        if FormatAtoms[a]=Format then begin
+          Result:=true;
+          exit;
+        end;
+      end;
+    end;
+    Result:=false;
+  end;
+  
+  function IsFormatSupported(Formats: TGtkClipboardFormats): boolean;
+  var Format: TGtkClipboardFormat;
+  begin
+    for Format:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
+      if (Format in Formats) 
+      and (IsFormatSupported(
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[Format]),1)))
+      then begin
+        Result:=true;
+        exit;
+      end;
+    Result:=false;
+  end;
+  
+  
+begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8));
+{$ENDIF}
+  Result:=false;
+  Count:=0;
+  List:=nil;
+  if not (ClipboardType in [ctPrimarySelection,ctSecondarySelection,ctClipboard])
+  then exit;
+  // request the list of supported formats from the selection owner
+  AllID:=gdk_atom_intern('TARGETS',0);
+  SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
+  
+  try
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetFormats] A2 ',AllID);
+{$ENDIF}
+    if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
+    or (SelData.Target<>AllID)
+    or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then
+      exit;
+  
+    Cnt:=SelData.Length div (SelData.Format shr 3);
+    if (SelData.Data<>nil) and (Cnt>0) then begin
+      Count:=Cnt;
+      FormatAtoms:=PGdkAtom(SelData.Data);
+      // add transformable lcl formats
+      // for example: the lcl expects text as 'text/plain', but gtk applications
+      // also knows 'TEXT' and 'STRING'. These formats can automagically
+      // transformed into the lcl format, so the lcl format is also supported
+      // and will be added to the list
+    
+      AddTextPlain:=false;
+      if (not IsFormatSupported(gdk_atom_intern('text/plain',1)))
+      and (IsFormatSupported([gfCOMPOUND_TEXT,gfTEXT,gfSTRING,gfFILE_NAME,
+        gfHOST_NAME,gfUSER]))
+      then begin
+        AddTextPlain:=true;
+        inc(Count);
+      end;
+  
+      // copy normal supported formats
+      GetMem(List,SizeOf(TClipboardFormat)*Count);
+      i:=0;
+      while (i<Cnt) do begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('  ',i,':  ',FormatAtoms[i]);
+writeln('         "',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
+{$ENDIF}
+        List[i]:=FormatAtoms[i];
+        inc(i);
+      end;
+    
+      // add all lcl formats that the gtk-interface can transform from the
+      // supported formats
+      if AddTextPlain then begin
+        List[i]:=gdk_atom_intern('text/plain',0);
+        inc(i);
+      end;
+    end;
+  finally
+    if SelData.Data<>nil then FreeMem(SelData.Data);
+  end;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ClipboardGetOwnerShip
+  Params:  ClipboardType
+           OnRequestProc - TClipboardRequestEvent is defined in LCLLinux.pp
+                           If OnRequestProc is nil the onwership will end.
+           FormatCount - number of formats
+           Formats - array of TClipboardFormat. The supported formats the owner
+                      provides.
+                      
+  Returns: true on success
+  
+  Sets the supported formats and requests ownership for the clipboard.
+  Each time the clipboard is read the OnRequestProc will be executed.
+  If someone else requests the ownership, the OnRequestProc will be executed
+  with the invalid FormatID 0 to notify the old owner of the lost of ownership.
+ ------------------------------------------------------------------------------}
+function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  Formats: PClipboardFormat): boolean;
+var TargetEntries: PGtkTargetEntry;
+  
+  function IsFormatSupported(FormatID: integer): boolean;
+  var i: integer;
+  begin
+    if FormatID=0 then begin
+      Result:=false;
+      exit;
+    end;
+    i:=FormatCount-1;
+    while (i>=0) and (Formats[i]<>FormatID) do dec(i);
+    Result:=(i>=0);
+  end;
+
+  procedure AddTargetEntry(var Index: integer; const FormatName: string);
+  begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('  AddTargetEntry ',FormatName);
+{$ENDIF}
+    TargetEntries[Index].Target := StrAlloc(Length(FormatName) + 1);
+    StrPCopy(TargetEntries[Index].Target, FormatName);
+    TargetEntries[Index].Info:=Index;
+    inc(Index);
+  end;
+  
+type
+  TAddedFormats = array[TGtkClipboardFormat] of boolean;
+
+{function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  Formats: PClipboardFormat): boolean;}
+var
+  TargetEntriesSize, i: integer;
+  gtkFormat: TGtkClipboardFormat;
+  ExpFormatCnt: integer;
+  OldClipboardWidget: PGtkWidget;
+begin
+  if ClipboardType in [ctPrimarySelection, ctSecondarySelection, ctClipboard] then
+  begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetOwnerShip] A');
+{$ENDIF}
+    ClipboardHandler[ClipboardType]:=nil;
+    Result:=false;
+    if (ClipboardWidget=nil) or (FormatCount=0) or (Formats=nil) then begin
+      // end ownership
+      if (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType])
+        = ClipboardWidget^.window) then begin
+        gtk_selection_owner_set(nil,ClipboardTypeAtoms[ClipboardType],0);
+      end;
+      Result:=true;
+      exit;
+    end;
+    
+    // registering targets
+    
+    FreeClipboardTargetEntries(ClipboardType);
+    
+    // the gtk-interface adds automatically some gtk formats the lcl does not
+    // know
+    ExpFormatCnt:=FormatCount;
+    for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
+      ClipboardExtraGtkFormats[ClipboardType][gtkFormat]:=false;
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetOwnerShip] B');
+{$ENDIF}
+    if IsFormatSupported(gdk_atom_intern('text/plain',1)) then begin
+      // lcl provides 'text/plain' and the gtk-interface will automatically
+      // provide some more text formats
+      ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]:=
+          not IsFormatSupported(
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfCOMPOUND_TEXT]),0));
+      ClipboardExtraGtkFormats[ClipboardType][gfSTRING]:=not IsFormatSupported(
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfSTRING]),0));
+      ClipboardExtraGtkFormats[ClipboardType][gfTEXT]:=not IsFormatSupported(
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfTEXT]),0));
+    end;
+    for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
+      if ClipboardExtraGtkFormats[ClipboardType][gtkFormat] then
+        inc(ExpFormatCnt);
+
+    // build TargetEntries
+    TargetEntriesSize:=SizeOf(TGtkTargetEntry) * ExpFormatCnt;
+    GetMem(TargetEntries,TargetEntriesSize);
+    FillChar(TargetEntries^,TargetEntriesSize,0);
+    i:=0;
+    while i<FormatCount do
+      AddTargetEntry(i,ClipboardFormatToMimeType(Formats[i]));
+    for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
+      if ClipboardExtraGtkFormats[ClipboardType][gtkFormat] then
+        AddTargetEntry(i,GtkClipboardFormatName[gtkFormat]);
+        
+    // set the supported formats
+    ClipboardTargetEntries[ClipboardType]:=TargetEntries;
+    ClipboardTargetEntryCnt[ClipboardType]:=ExpFormatCnt;
+    
+    // reset the clipboard widget (this will set the new target list)
+    OldClipboardWidget:=ClipboardWidget;
+    SetClipboardWidget(nil);
+    SetClipboardWidget(OldClipboardWidget);
+    
+    // taking the ownership
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetOwnerShip] C');
+{$ENDIF}
+    if gtk_selection_owner_set(ClipboardWidget,
+      ClipboardTypeAtoms[ClipboardType],0)=0 then begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetOwnerShip] D FAILED');
+{$ENDIF}
+      exit;
+    end;
+    
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.ClipboardGetOwnerShip] YEAH, got it!');
+{$ENDIF}
+    ClipboardHandler[ClipboardType]:=OnRequestProc;
+      
+    Result:=true;
+  end else
+    { the gtk does not support this kind of clipboard, so the application can
+     have the ownership at any time. The TClipboard in clipbrd.pp has an
+     internal cache system, so that an application can use all types of
+     clipboards even if the underlying platform does not support it.
+     Of course this will only be a local clipboard, invisible to other
+     applications. }
+    Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ClipboardRegisterFormat
+  Params:  AMimeType
+  Returns: the registered Format identifier (TClipboardFormat)
+ ------------------------------------------------------------------------------}
+function TgtkObject.ClipboardRegisterFormat(
+  const AMimeType:String): TClipboardFormat;
+var AtomName: PChar;
+begin
+  if Assigned(Application) then begin
+    AtomName:=PChar(AMimeType);
+    Result:=gdk_atom_intern(AtomName,0);
+  end else
+    raise Exception.Create(
+      'ERROR: TgtkObject.ClipboardRegisterFormat gdk not initialized');
+end;
+
 
 {------------------------------------------------------------------------------
   Function: CreateBitmap
@@ -1080,18 +1516,6 @@ begin
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
-end;
-
-{------------------------------------------------------------------------------
-  Function: EmptyClipBoard
-  Params: none
-  Returns:
-
- ------------------------------------------------------------------------------}
-Function TGTKObject.EmptyClipBoard : Boolean;
-begin
-  // Your code here
-  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3626,6 +4050,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2001/11/12 16:56:08  lazarus
+  MG: CLIPBOARD
+
   Revision 1.47  2001/11/09 19:14:25  lazarus
   HintWindow changes
   Shane

@@ -259,51 +259,56 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkObject.Init;
 var
-   LogBrush: TLogBrush;
-   //Attributes: TGdkWindowAttr;
-   //AttributesMask: gint;
+  LogBrush: TLogBrush;
+  //Attributes: TGdkWindowAttr;
+  //AttributesMask: gint;
 begin
-   { initialize app level gtk engine }
-   gtk_set_locale ();
+  // initialize app level gtk engine 
+  gtk_set_locale ();
 
-   { call init and pass no args}
-   gtk_init (@argc, @argv);
+  // call init and pass cmd line args
+  gtk_init (@argc, @argv);
 
-   //Create default cursor types
-   Cursor_Watch := gdk_Cursor_New(gdk_Watch);
-   Cursor_Arrow := gdk_Cursor_New(gdk_Arrow);
-   Cursor_Cross := gdk_Cursor_New(gdk_Cross);
-   Cursor_Hand1 := gdk_Cursor_New(gdk_Hand1);
-   Cursor_XTerm := gdk_Cursor_New(gdk_XTerm);
-   Cursor_StdArrow := gdk_Cursor_New(GDK_LEft_Ptr);
-   Cursor_HSplit := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
-   Cursor_VSplit := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
-   Cursor_SizeNWSE := gdk_Cursor_New(GDK_TOP_LEFT_CORNER);
-   Cursor_SizeNS := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
-   Cursor_SizeNESW := gdk_Cursor_New(GDK_BOTTOM_LEFT_CORNER);
-   Cursor_SizeWE := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
+  // Create default cursor types
+  Cursor_Watch := gdk_Cursor_New(gdk_Watch);
+  Cursor_Arrow := gdk_Cursor_New(gdk_Arrow);
+  Cursor_Cross := gdk_Cursor_New(gdk_Cross);
+  Cursor_Hand1 := gdk_Cursor_New(gdk_Hand1);
+  Cursor_XTerm := gdk_Cursor_New(gdk_XTerm);
+  Cursor_StdArrow := gdk_Cursor_New(GDK_LEft_Ptr);
+  Cursor_HSplit := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
+  Cursor_VSplit := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
+  Cursor_SizeNWSE := gdk_Cursor_New(GDK_TOP_LEFT_CORNER);
+  Cursor_SizeNS := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
+  Cursor_SizeNESW := gdk_Cursor_New(GDK_BOTTOM_LEFT_CORNER);
+  Cursor_SizeWE := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
 
-   gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
+  gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
-   // Init tooltips
-   FGTKToolTips := gtk_tooltips_new;   
-   gtk_object_ref(PGTKObject(FGTKToolTips));
-   gtk_toolTips_Enable(FGTKToolTips);
+  // Init tooltips
+  FGTKToolTips := gtk_tooltips_new;   
+  gtk_object_ref(PGTKObject(FGTKToolTips));
+  gtk_toolTips_Enable(FGTKToolTips);
 
-   //Init stock objects;
-   LogBrush.lbStyle := BS_NULL; 
-   FStockNullBrush := CreateBrushIndirect(LogBrush);
-   LogBrush.lbStyle := BS_SOLID; 
-   LogBrush.lbColor := $000000;
-   FStockBlackBrush := CreateBrushIndirect(LogBrush);
-   LogBrush.lbColor := $C0C0C0;
-   FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
-   LogBrush.lbColor := $808080;
-   FStockGrayBrush := CreateBrushIndirect(LogBrush);
-   LogBrush.lbColor := $404040;
-   FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
-   LogBrush.lbColor := $FFFFFF;
-   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+  // Init stock objects;
+  LogBrush.lbStyle := BS_NULL; 
+  FStockNullBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbStyle := BS_SOLID; 
+  LogBrush.lbColor := $000000;
+  FStockBlackBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $C0C0C0;
+  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $808080;
+  FStockGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $404040;
+  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $FFFFFF;
+  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+
+  // clipboard
+  ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
+  ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
+  ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',0);
 end;
 
 function TgtkObject.RecreateWnd(Sender: TObject): Integer;
@@ -460,9 +465,21 @@ begin
 //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
           if Handle<>0 then begin
             if MCaptureHandle=Handle then MCaptureHandle:=0;
+            if ClipboardWidget=PGtkWidget(Handle) then begin
+              // clipboard widget destroyed
+              if (Application<>nil)
+              and (Application.MainForm<>nil)
+              and (Application.MainForm.HandleAllocated)
+              and (Application.MainForm.Handle<>Handle) then
+                // there is still the main form left -> use it for clipboard
+                SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
+              else
+                // program closed -> close clipboard
+                SetClipboardWidget(nil);
+            end;
 //writeln('>>> LM_DESTROY A ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
 {
-  Important (Mattias):
+  MG: Important:
 
   If Sender is TForm and one of its components was focused by SetFocus then
     the next line will produce a gtk warning. The PGtkWidget(Handle) is also
@@ -2034,6 +2051,10 @@ begin
          gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
          gtk_window_set_title(pGtkWindow(p), strTemp);
         
+         // the clipboard needs a widget
+         if ClipboardWidget=nil then
+           SetClipboardWidget(p);
+        
          // Create the VBox, we need that to place controls outside 
          // the client area (like menu)
          Box := gtk_vbox_new(False, 0);
@@ -3145,6 +3166,131 @@ begin
   Result:=nil;
 end;
 
+{------------------------------------------------------------------------------
+  Function: SetClipboardWidget
+  Params: TargetWidget: PGtkWidget - This widget will be connected to all
+                  clipboard signals which are all handled by the TGtkObject
+                  itself. 
+  Returns: none
+
+  All supported targets are added to the new widget. This way, no one,
+  especially not the lcl, will notice the change. ;)
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SetClipboardWidget(TargetWidget: PGtkWidget);
+type
+  TGtkTargetSelectionList = record
+    Selection: Cardinal;
+    List: PGtkTargetList;
+  end;
+  PGtkTargetSelectionList = ^TGtkTargetSelectionList;
+const
+  gtk_selection_handler_key: PChar = 'gtk-selection-handlers';
+  
+  {$IFDEF DEBUG_CLIPBOARD}
+  function gtk_selection_target_list_get(Widget: PGtkWidget;
+    ClipboardType: TClipboardType): PGtkTargetList;
+  var
+    SelectionLists, CurSelList: PGList;
+    TargetSelList: PGtkTargetSelectionList;
+  begin
+    SelectionLists := gtk_object_get_data (PGtkObject(Widget),
+                                          gtk_selection_handler_key);
+    CurSelList := SelectionLists;
+    while (CurSelList<>nil) do begin
+      TargetSelList := CurSelList^.Data;
+      if (TargetSelList^.Selection = ClipboardTypeAtoms[ClipboardType]) then
+      begin
+        Result:=TargetSelList^.List;
+        exit;
+      end;
+      CurSelList := CurSelList^.Next;
+    end;
+    Result:=nil;
+  end;
+  
+  procedure WriteTargetLists(Widget: PGtkWidget);
+  var c: TClipboardType;
+    TargetList: PGtkTargetList;
+    TmpList: PGList;
+    Pair: PGtkTargetPair;
+  begin
+writeln('  WriteTargetLists WWW START');
+    for c:=Low(TClipboardType) to High(TClipboardType) do begin
+      TargetList:=gtk_selection_target_list_get(Widget,c);
+      writeln('  WriteTargetLists WWW ',ClipboardTypeName[c],' ',TargetList<>nil);
+      if TargetList<>nil then begin
+        TmpList:=TargetList^.List;
+        while TmpList<>nil do begin
+          Pair:=PGtkTargetPair(TmpList^.Data);
+          writeln('    WriteTargetLists BBB ',Pair^.Target);
+          TmpList:=TmpList^.Next;
+        end;
+      end;
+    end;
+writeln('  WriteTargetLists WWW END');
+  end;
+  {$ENDIF}
+  
+  procedure ClearTargetLists(Widget: PGtkWidget);
+  // MG: Reading in gtk internas is dirty, but there seems to be no other way
+  //     to clear the old target lists
+  var
+    SelectionLists, CurSelList: PGList;
+    TargetSelList: PGtkTargetSelectionList;
+  begin
+    {$IFDEF DEBUG_CLIPBOARD}
+    writeln('  ClearTargetLists WWW START');
+    {$ENDIF}
+    SelectionLists := gtk_object_get_data (PGtkObject(Widget),
+                                          gtk_selection_handler_key);
+    CurSelList := SelectionLists;
+    while (CurSelList<>nil) do begin
+      TargetSelList := CurSelList^.Data;
+      gtk_target_list_unref(TargetSelList^.List);
+      g_free(TargetSelList);
+      CurSelList := CurSelList^.Next;
+    end;
+    g_list_free(SelectionLists);
+    gtk_object_set_data (PGtkObject(Widget),gtk_selection_handler_key,0);
+    {$IFDEF DEBUG_CLIPBOARD}
+    writeln('  ClearTargetLists WWW END');
+    {$ENDIF}
+  end;
+  
+var c: TClipboardType;
+begin
+  if ClipboardWidget=TargetWidget then exit;
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWidget<>nil);
+{$ENDIF}
+  if ClipboardWidget<>nil then begin
+    {$IFDEF DEBUG_CLIPBOARD}
+    WriteTargetLists(ClipboardWidget);
+    {$ENDIF}
+    ClearTargetLists(ClipboardWidget);
+    {$IFDEF DEBUG_CLIPBOARD}
+    WriteTargetLists(ClipboardWidget);
+    {$ENDIF}
+  end;
+
+  ClipboardWidget:=TargetWidget;
+  if ClipboardWidget<>nil then begin
+    // connect widget to all clipboard signals
+    gtk_signal_connect(PGtkObject(ClipboardWidget),'selection_received',
+      TGTKSignalFunc(@ClipboardSelectionReceivedHandler),0);
+    gtk_signal_connect(PGtkObject(ClipboardWidget),'selection_get',
+      TGTKSignalFunc(@ClipboardSelectionRequestHandler),0);
+    gtk_signal_connect(PGtkObject(ClipboardWidget),'selection_clear_event',
+      TGTKSignalFunc(@ClipboardSelectionLostOwnershipHandler),0);
+    // add all supported targets for all clipboard types
+    for c:=Low(TClipboardType) to High(TClipboardType) do begin
+      if (ClipboardTargetEntries[c]<>nil) then begin
+        gtk_selection_add_targets(ClipboardWidget,ClipboardTypeAtoms[c],
+                  ClipboardTargetEntries[c],ClipboardTargetEntryCnt[c]);
+      end;
+    end;
+  end;
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -3154,6 +3300,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.70  2001/11/12 16:56:08  lazarus
+  MG: CLIPBOARD
+
   Revision 1.69  2001/11/10 10:48:02  lazarus
   MG: fixed set formicon on invisible forms
 
@@ -3385,716 +3534,4 @@ end;
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 
-  Revision 1.28  2000/07/12 20:57:08  lazarus
-  - some minor cleanups
-  - cleanups in Set/Get Pixel
-  - fixed to minor bugs related to Trackbar
-  stoppok
-
-  Revision 1.27  2000/07/09 20:46:38  lazarus
-  - lots of new comments for methods
-  - SetText: Code for Notebook removed (surrounded with comments)!
-  - SetLabel: Code for NoteBook changed from ....get_label to ....set_label
-  - some new asserts
-  - many changes to beautify code
-  stoppok
-
-  Revision 1.26  2000/07/09 20:18:56  lazarus
-  MWE:
-    + added new controlselection
-    + some fixes
-    ~ some cleanup
-
-  Revision 1.25  2000/07/02 05:51:41  lazarus
-  Started code-review, beautified some oarts, nearly no code changes by now, stoppok
-
-  Revision 1.24  2000/06/29 21:09:14  lazarus
-  some minor cleanups, stoppok
-
-  Revision 1.23  2000/06/29 18:08:56  lazarus
-  Shane
-    Looking for the editor problem I made a few changes.  I changed everything back to the original though.
-
-  Revision 1.22  2000/06/28 13:11:38  lazarus
-  Fixed TNotebook so it gets page change events.  Shane
-
-  Revision 1.21  2000/06/24 21:26:19  lazarus
-  *** empty log message ***
-
-  Revision 1.20  2000/06/19 18:21:22  lazarus
-  Spinedit was never getting created
-  Shane
-
-  Revision 1.19  2000/06/14 21:51:27  lazarus
-  MWE:
-    + Added menu accelerators. Not finished
-
-  Revision 1.18  2000/06/13 21:51:19  lazarus
-  MWE:
-    + Started adding menu accels
-
-  Revision 1.17  2000/06/13 20:50:42  lazarus
-  MWE:
-    - Started to remove obsolete/dead code/messages
-
-  HJO:
-    * Fixed messages in showmodal of 2nd form
-    * Fixed modal result for button
-
-  Revision 1.16  2000/06/09 11:35:22  lazarus
-  More shortcut work.
-  Shane
-
-  Revision 1.15  2000/06/08 17:32:53  lazarus
-  trying to add accel to menus.
-  Shane
-
-  Revision 1.14  2000/05/30 22:28:41  lazarus
-  MWE:
-    Applied patches from Vincent Snijders:
-    + Added GetWindowRect
-    * Fixed horz label alignment
-    + Added vert label alignment
-
-  Revision 1.13  2000/05/27 22:33:01  lazarus
-  MWE:
-    + Forgot to add Ref/UnRef to Tooltips
-
-  Revision 1.12  2000/05/27 22:20:56  lazarus
-  MWE & VRS:
-    + Added new hint code
-
-  Revision 1.11  2000/05/27 19:15:50  lazarus
-  MWE:
-    - Removed Linux dependencies. Functions are supported in wingtk
-
-  Revision 1.10  2000/05/25 19:34:31  lazarus
-  MWE:
-    * Fixed messagequeue.count bug in GTKObject.Destroy
-      (thanks to Vincent Snijders)
-
-  Revision 1.9  2000/05/11 22:04:15  lazarus
-  MWE:
-    + Added messagequeue
-    * Recoded SendMessage and Peekmessage
-    + Added postmessage
-    + added DeliverPostMessage
-
-  Revision 1.8  2000/05/10 22:52:58  lazarus
-  MWE:
-    = Moved some global api stuf to gtkobject
-
-  Revision 1.7  2000/05/09 02:05:08  lazarus
-  Replaced writelns with Asserts.                        CAW
-
-  Revision 1.6  2000/05/08 15:56:59  lazarus
-  MWE:
-    + Added support for mwedit92 in Makefiles
-    * Fixed bug # and #5 (Fillrect)
-    * Fixed labelsize in ApiWizz
-    + Added a call to the resize event in WMWindowPosChanged
-
-  Revision 1.5  2000/05/08 12:54:20  lazarus
-  Removed some writeln's
-  Added alignment for the TLabel.  Isn't working quite right.
-  Added the shell code for WindowFromPoint and GetParent.
-  Added FindLCLWindow
-  Shane
-
-  Revision 1.4  2000/05/03 17:19:29  lazarus
-  Added the TScreem forms code by hongli@telekabel.nl
-  Shane
-
-  Revision 1.3  2000/04/17 19:50:06  lazarus
-  Added some compiler stuff built into Lazarus.
-  This depends on the path to your compiler being correct in the compileroptions
-  dialog.
-  Shane
-
-  Revision 1.2  2000/04/13 21:25:16  lazarus
-  MWE:
-    ~ Added some docu and did some cleanup.
-  Hans-Joachim Ott <hjott@compuserve.com>:
-    * TMemo.Lines works now.
-    + TMemo has now a property Scrollbar.
-    = TControl.GetTextBuf revised :-)
-    + Implementation for CListBox columns added
-    * Bug in TGtkCListStringList.Assign corrected.
-
-  Revision 1.1  2000/03/30 22:51:42  lazarus
-  MWE:
-    Moved from ../../lcl
-
-  Revision 1.143  2000/03/30 21:57:44  lazarus
-  MWE:
-    + Added some general functions to Get/Set the Main/Fixed/CoreChild
-      widget
-    + Started with graphic scalig/depth stuff. This is way from finished
-
-  Hans-Joachim Ott <hjott@compuserve.com>:
-    + Added some improvements for TMEMO
-
-  Revision 1.142  2000/03/30 18:07:53  lazarus
-  Added some drag and drop code
-  Added code to change the unit name when it's saved as a different name.  Not perfect yet because if you are in a comment it fails.
-
-  Shane
-
-  Revision 1.141  2000/03/24 14:40:41  lazarus
-  A little polishing and bug fixing.
-
-  Revision 1.140  2000/03/23 22:48:56  lazarus
-  MWE & Hans-Joachim Ott <hjott@compuserve.com>:
-    + added replacement for LM_GetText
-
-  Revision 1.139  2000/03/23 20:40:03  lazarus
-  Added some drag code
-  Shane
-
-  Revision 1.138  2000/03/22 17:09:29  lazarus
-  *** empty log message ***
-
-  Revision 1.137  2000/03/21 18:53:28  lazarus
-  Added code for TBitBtn. Not finished but looks like mostly working.
-  Shane
-
-  Revision 1.136  2000/03/20 20:08:33  lazarus
-  Added a generic MOUSE class.
-  Shane
-
-  Revision 1.135  2000/03/19 23:01:42  lazarus
-  MWE:
-    = Changed splashscreen loading/colordepth
-    = Chenged Save/RestoreDC to platform  dependent, since they are
-      relative to a DC
-
-  Revision 1.134  2000/03/17 19:19:58  lazarus
-  Added Hans Ott's code for TMemo
-  Shane
-
-  Revision 1.133  2000/03/15 20:15:31  lazarus
-  MOdified TBitmap but couldn't get it to work
-  Shane
-
-  Revision 1.132  2000/03/15 01:09:58  lazarus
-  MWE:
-    + Removed comment on LM_IMAGECHANGED in TgtkObject.IntSendMessage3
-       it does compile (compiler hickup ?)
-
-  Revision 1.131  2000/03/15 00:51:57  lazarus
-  MWE:
-    + Added LM_Paint on expose
-    + Added forced creation of gdkwindow if needed
-    ~ Modified DrawFrameControl
-    + Added BF_ADJUST support on DrawEdge
-    - Commented out LM_IMAGECHANGED in TgtkObject.IntSendMessage3
-       (It did not compile)
-
-  Revision 1.130  2000/03/14 19:49:04  lazarus
-  Modified the painting process for TWincontrol.  Now it runs throug it's FCONTROLS list and paints all them
-  Shane
-
-  Revision 1.129  2000/03/13 23:17:34  lazarus
-  MWE:
-    + finished hide caret
-    + added blinking caret
-
-  Revision 1.128  2000/03/10 18:31:09  lazarus
-  Added TSpeedbutton code
-  Shane
-
-  Revision 1.127  2000/03/09 23:47:53  lazarus
-  MWE:
-    * Fixed colorcache
-    * Fixed black window in new editor
-    ~ Did some cosmetic stuff
-
-  From Peter Dyson <peter@skel.demon.co.uk>:
-    + Added Rect api support functions
-    + Added the start of ScrollWindowEx
-
-  Revision 1.126  2000/03/04 00:05:21  lazarus
-  MWE: added changes from Hans (HJO)
-
-  Revision 1.125  2000/03/03 22:58:26  lazarus
-  MWE:
-    Fixed focussing problem.
-      LM-FOCUS was bound to the wrong signal
-    Added GetKeyState api func.
-      Now LCL knows if shift/trl/alt is pressed (might be handy for keyboard
-      selections ;-)
-
-  Revision 1.124  2000/03/03 20:22:03  lazarus
-  Trying to add TBitBtn
-  Shane
-
-  Revision 1.123  2000/03/01 00:41:03  lazarus
-  MWE:
-    Fixed updateshowing problem
-    Added some debug code to display the name of messages
-    Did a bit of cleanup in main.pp to get the code a bit more readable
-      (my editor does funny things with tabs if the indent differs)
-
-  Revision 1.122  2000/02/26 23:48:36  lazarus
-  MWE:
-    FIxed notebook, forgot getlabel code
-
-  Revision 1.121  2000/02/26 23:31:50  lazarus
-  MWE:
-    Fixed notebook crash on insert
-    Fixed loadfont problem for win32 (tleast now a fontname is required)
-
-  Revision 1.120  2000/02/25 19:28:34  lazarus
-  Played with TNotebook to see why it crashes when I add a tab and the tnotebook is showing.  Havn't figured it out
-  Shane
-
-  Revision 1.119  2000/02/24 21:15:30  lazarus
-  Added TCustomForm.GetClientRect and RequestAlign to try and get the controls to align correctly when a MENU is present.  Not Complete yet.
-
-  Fixed the bug in TEdit that caused it not to update it's text property.  I will have to
-  look at TMemo to see if anything there was affected.
-
-  Added SetRect to WinAPI calls
-  Added AdjustWindowRectEx to WINAPI calls.
-  Shane
-
-  Revision 1.118  2000/02/24 09:10:12  lazarus
-  TListBox.Selected bug fixed.
-
-  Revision 1.117  2000/02/23 22:08:38  lazarus
-
-  MInor changes for listboxCVS: Committing in .
-
-  Revision 1.116  2000/02/22 22:19:49  lazarus
-  TCustomDialog is a descendant of TComponent.
-  Initial cuts a form's proper Close behaviour.
-
-  Revision 1.115  2000/02/22 21:29:42  lazarus
-  Added a few more options in the editor like closeing a unit.  Also am keeping track of what page , if any, they are currently on.
-  Shane
-
-  Revision 1.114  2000/02/22 17:32:49  lazarus
-  Modified the ShowModal call.
-  For TCustomForm is simply sets the visible to true now and adds fsModal to FFormState.  In gtkObject.inc FFormState is checked.  If it contains fsModal then either gtk_grab_add or gtk_grab_remove is called depending on the value of VISIBLE.
-
-  The same goes for TCustomDialog (open, save, font, color).
-  I moved the Execute out of the individual dialogs and moved it into TCustomDialog and made it virtual because FONT needs to set some stuff before calling the inherited execute.
-  Shane
-
-  Revision 1.113  2000/02/20 20:13:47  lazarus
-  On my way to make alignments and stuff work :-)
-
-  Revision 1.112  2000/02/19 18:11:59  lazarus
-  More work on moving, resizing, forms' border style etc.
-
-  Revision 1.111  2000/02/18 19:38:52  lazarus
-  Implemented TCustomForm.Position
-  Better implemented border styles. Still needs some tweaks.
-  Changed TComboBox and TListBox to work again, at least partially.
-  Minor cleanups.
-
-  Revision 1.110  2000/01/25 22:04:27  lazarus
-  MWE:
-    The first primitive Caret functions are getting visible
-
-  Revision 1.109  2000/01/22 20:07:46  lazarus
-  Some cleanups. It needs much more cleanup than this.
-  Worked around a compiler bug (?) in mwCustomEdit.
-  Reverted some changes to font generation and increased font size.
-
-  Revision 1.108  2000/01/18 22:18:34  lazarus
-
-  Moved bitmap creation into appropriate place. Cleaned up a bit.
-  Finished DeleteObject procedure.
-
-  Revision 1.107  2000/01/17 23:33:06  lazarus
-  MWE:
-    fixed: nil pointer reference in DeleteObject
-    fixed: some trace info didn't start with 'trace:'
-
-  Revision 1.106  2000/01/17 20:36:25  lazarus
-  Fixed Makefile again.
-  Made implementation of TScreen and screen info saner.
-  Began to implemented DeleteObject in GTKWinAPI.
-  Fixed a bug in GDI allocation which in turn fixed A LOT of other bugs :-)
-
-  Revision 1.105  2000/01/16 23:23:04  lazarus
-  MWE:
-    Added/completed scrollbar API funcs
-
-  Revision 1.104  2000/01/16 20:24:42  lazarus
-  Did some introductory work on TScreen.
-  Only the PixelsPerInch property is implemented at the moment.
-
-  Revision 1.103  2000/01/14 15:01:15  lazarus
-  Changed SETCURSOR so the cursor's were created in the gtkObject.Init and destroyed in GTkObject.AppTerminate
-  Shane
-
-  Revision 1.102  2000/01/14 00:33:31  lazarus
-  MWE:
-    Added Scrollbar messages
-
-  Revision 1.101  2000/01/13 22:44:05  lazarus
-  MWE:
-    Created/updated net gtkwidget for TWinControl decendants
-      also improved foccusing on such a control
-
-  Revision 1.100  2000/01/11 20:51:39  lazarus
-  *** empty log message ***
-
-  Revision 1.98  2000/01/10 00:07:12  lazarus
-  MWE:
-    Added more scrollbar support for TWinControl
-    Most signals for TWinContorl are jet connected to the wrong widget
-      (now scrolling window, should be fixed)
-    Added some cvs entries
-
-  Revision 1.97  2000/01/07 21:14:13  lazarus
-  Added code for getwindowlong and setwindowlong.
-  Shane
-
-  Revision 1.96  2000/01/05 23:13:13  lazarus
-  MWE:
-    Made some changes to the ideeditor to track notebook problems
-
-  Revision 1.95  2000/01/04 19:16:09  lazarus
-  Stoppok:
-     - new messages LM_GETVALUE, LM_SETVALUE, LM_SETPROPERTIES
-     - changed trackbar, progressbar, checkbox to use above messages
-     - some more published properties for above components
-       (all properties derived from TWinControl)
-     - new functions SetValue, GetValue, SetProperties in gtk-interface
-
-  Revision 1.94  2000/01/03 00:19:21  lazarus
-  MWE:
-    Added keyup and buttonup events
-    Added LM_MOUSEMOVE callback
-    Started with scrollbars in editor
-
-  Revision 1.93  2000/01/02 00:28:00  lazarus
-  Stoppok:
-    - changes for creation of radiobuttons
-
-  Revision 1.92  1999/12/31 14:58:01  lazarus
-  MWE:
-    Set unkown VK_ codesto 0
-    Added pfDevice support for bitmaps
-
-  Revision 1.91  1999/12/30 19:49:07  lazarus
-  *** empty log message ***
-
-
-  Revision 1.90  1999/12/30 19:04:13  lazarus
-   - Made TRadiobutton work again
-   - Some more cleanups to checkbox code
-           stoppok
-
-  Revision 1.89  1999/12/30 18:54:35  lazarus
-  Fixed the problem that occured when more than one button was added to the toolbar.
-  Also, I set it up so practically any widget (component) can be added to the toolbar now.  In main.pp I have a TCOMBOBOX control being added.  I will create a example program and place it into the examples directory.
-  Shane
-
-  Revision 1.88  1999/12/30 10:38:59  lazarus
-
-    Some changes to Checkbox code.
-      stoppok
-
-  Revision 1.87  1999/12/29 20:38:23  lazarus
-  Modified the toolbar so it now displays itself.  However, I can only add one button at this point.  I will fix that soon....
-
-  Shane
-
-  Revision 1.86  1999/12/29 09:35:43  lazarus
-  MWE:
-    Reapplied lost changes
-
-  Revision 1.85  1999/12/29 00:39:35  lazarus
-
-    Changes to make trackbar/progressbar working again.
-      stopppok
-
-  Revision 1.84  1999/12/29 00:04:47  lazarus
-  MWE:
-    Refined key events. TODO get vk keycodes for non alpha keys
-
-  Revision 1.83  1999/12/28 01:10:53  lazarus
-  MWE:
-    Added most common virtual keycodes
-
-  Revision 1.82  1999/12/27 22:32:15  lazarus
-  MWE:
-    Fixed triple chars in editor. Events where fired more than once. Now
-      it is checked if there already exists a callback.
-
-  Revision 1.81  1999/12/23 21:48:13  lazarus
-  *** empty log message ***
-
-  Revision 1.78  1999/12/22 01:16:03  lazarus
-  MWE:
-    Changed/recoded keyevent callbacks
-    We Can Edit!
-    Commented out toolbar stuff
-
-  Revision 1.77  1999/12/21 21:35:52  lazarus
-  committed the latest toolbar code.  Currently it doesn't appear anywhere and I have to get it to add buttons correctly through (I think) setstyle.  I think I'll implement the LM_TOOLBARINSERTBUTTON call there.
-  Shane
-
-  Revision 1.76  1999/12/20 21:01:13  lazarus
-  Added a few things for compatability with Delphi and TToolbar
-  Shane
-
-  Revision 1.75  1999/12/18 18:27:31  lazarus
-  MWE:
-    Rearranged some events to get a LM_SIZE, LM_MOVE and LM_WINDOWPOSCHANGED
-    Initialized the TextMetricstruct to zeros to clear unset values
-    Get mwEdit to show more than one line
-    Fixed some errors in earlier commits
-
-  Revision 1.74  1999/12/14 22:21:11  lazarus
-  *** empty log message ***
-
-  Revision 1.73  1999/12/10 00:47:01  lazarus
-  MWE:
-    Fixed some samples
-    Fixed Dialog parent is no longer needed
-    Fixed (Win)Control Destruction
-    Fixed MenuClick
-
-  Revision 1.72  1999/12/08 00:56:07  lazarus
-  MWE:
-    Fixed menus. Events aren't enabled yet (dumps --> invalid typecast ??)
-
-  Revision 1.71  1999/12/07 01:19:25  lazarus
-  MWE:
-    Removed some double events
-    Changed location of SetCallBack
-    Added call to remove signals
-    Restructured somethings
-    Started to add default handlers in TWinControl
-    Made some parts of TControl and TWinControl more delphi compatible
-    ... and lots more ...
-
-  Revision 1.70  1999/12/03 00:26:47  lazarus
-  MWE:
-    fixed control location
-    added gdiobject reference counter
-
-  Revision 1.69  1999/11/26 00:10:57  lazarus
-  MWE:
-    removed test unit
-    commented some obsolete parts
-
-  Revision 1.68  1999/11/25 23:45:08  lazarus
-  MWE:
-    Added font as GDIobject
-    Added some API testcode to testform
-    Commented out some more IFDEFs in mwCustomEdit
-
-  Revision 1.67  1999/11/19 14:44:37  lazarus
-  Changed the FONTSETNAME to try and load a default font if the first one doesn't work.  This is being done for testing and probably will be removed later.
-  Shane
-
-  Revision 1.66  1999/11/19 01:09:43  lazarus
-  MWE:
-    implemented TCanvas.CopyRect
-    Added StretchBlt
-    Enabled creation of TCustomControl.Canvas
-    Added a temp hack in TWinControl.Repaint to get a LM_PAINT
-
-  Revision 1.65  1999/11/18 00:13:08  lazarus
-  MWE:
-    Partly Implemented SelectObject
-    Added  ExTextOut
-    Added  GetTextExtentPoint
-    Added  TCanvas.TextExtent/TextWidth/TextHeight
-    Added  TSize and HPEN
-
-  Revision 1.64  1999/11/17 01:16:39  lazarus
-  MWE:
-    Added some more API stuff
-    Added an initial TBitmapCanvas
-    Added some DC stuff
-    Changed and commented out, original gtk linedraw/rectangle code. This
-      is now called through the winapi wrapper.
-
-  Revision 1.63  1999/11/16 01:32:22  lazarus
-  MWE:
-    Added some more DC functionality
-
-  Revision 1.62  1999/11/15 00:40:22  lazarus
-  MWE:
-    Added GetDC, ReleaseDC, Rectangle functions
-
-  Revision 1.61  1999/11/13 13:03:34  lazarus
-  MWE:
-    Started to implement some platform dependent WINAPI stuff
-    Added a baseclass for InterfaceObject
-    Started messing around with canvasses
-
-  Revision 1.60  1999/11/05 00:34:10  lazarus
-  MWE: Menu structure updated, events and visible code not added yet
-
-  Revision 1.59  1999/11/01 01:28:29  lazarus
-  MWE: Implemented HandleNeeded/CreateHandle/CreateWND
-       Now controls are created on demand. A call to CreateComponent shouldn't
-       be needed. It is now part of CreateWnd
-
-  Revision 1.58  1999/10/28 17:17:42  lazarus
-  Removed references to FCOmponent.
-  Shane
-
-  Revision 1.57  1999/10/05 02:17:04  lazarus
-  Cleaned up the code to make it more readable.     CAW
-
-  Revision 1.56  1999/09/30 21:59:01  lazarus
-  MWE: Fixed TNoteBook problems
-       Modifications: A few
-       - Removed some debug messages
-       + Added some others
-       * changed fixed widged of TPage. Code is still broken.
-       + TWinControls are also added to the Controls collection
-       + Added TControl.Controls[] property
-
-  Revision 1.55  1999/09/26 13:30:15  lazarus
-
-     Implemented OnEnter & OnExit events for TTrackbar. These properties
-     and handler functions have been added to TWincontrol, two new
-     callbacks have been added to gtkcallback.
-      stoppok
-
-  Revision 1.54  1999/09/25 17:10:21  lazarus
-  Modified TEDIT to give the correct text when you use Edit1.Text
-  Thanks to Ned Boddie for noticing the error and sending the fix.
-
-  Revision 1.53  1999/09/23 20:33:30  lazarus
-    reintroduced changes to TTrackbar from v1.46 which where lost in 1.48.
-    Some addtional changes to TTrackbar also applied.
-      stoppok
-
-  Revision 1.52  1999/09/22 20:29:53  lazarus
-  *** empty log message ***
-
-  Revision 1.49  1999/09/21 23:46:54  lazarus
-  *** empty log message ***
-
-  Revision 1.48  1999/09/17 23:18:45  lazarus
-  Commented out a line in gtkobject that contaied the variable SCALEDIGITS that was not defined. Line 664
-
-  Editor has some additons as well.
-
-  Revision 1.46  1999/09/17 20:49:03  lazarus
-
-    Some changes to trackbar component (added lineSize/PageSize properties,
-    removed scaledigits property)
-      stoppok
-
-  Revision 1.45  1999/09/17 04:33:56  lazarus
-  Got the GETPIXEL and SETPIXEL to work (I think)
-
-  Shane
-
-  Revision 1.44  1999/09/15 03:45:23  lazarus
-  Modified Editor.  It displays files now.
-
-  Revision 1.43  1999/09/15 03:17:31  lazarus
-  Changes to Editor.pp
-  If the text was actually displayed, then it would work better.  :-)
-
-  Revision 1.42  1999/09/13 03:22:12  lazarus
-  Moved Notebook code to utilize IntSendMessage3 function.     caw
-
-  Revision 1.41  1999/09/11 12:16:16  lazarus
-  Fixed a bug in key press evaluation. Initial cut at Invalidate problem.
-
-  Revision 1.40  1999/09/03 22:01:02  lazarus
-  Added TTrackBar
-    stoppok
-
-  Revision 1.39  1999/08/25 18:53:05  lazarus
-  Added Canvas.pixel property which allows
-  the user to get/set the pixel color.  This will be used in the editor
-  to create the illusion of the cursor by XORing the pixel with black.
-
-  Shane
-
-  Revision 1.38  1999/08/24 20:18:01  lazarus
-  *** empty log message ***
-
-  Revision 1.37  1999/08/21 13:57:38  lazarus
-  Implemented TListBox.BorderStyle. The listbox is scrollable now.
-
-  Revision 1.36  1999/08/20 18:34:16  lazarus
-  *** empty log message ***
-
-  Revision 1.35  1999/08/19 18:40:53  lazarus
-  Added stuff for TProgressBar
-
-    stoppok  Aug. 19 1999
-
-  Revision 1.34  1999/08/17 16:46:26  lazarus
-  Slight modification to Editor.pp
-  Shane
-
-  Revision 1.32  1999/08/16 22:32:45  peter
-    * commented move_resize which doesn't exists under gtk 1.2.3
-
-  Revision 1.31  1999/08/16 20:48:05  lazarus
-  Added a changed event for TFOnt and code to get the average size of the font.  Doesn't seem to work very well yet.
-  The "average size" code is found in gtkobject.inc.
-
-  Revision 1.30  1999/08/16 18:45:42  lazarus
-  Added a TFont Dialog plus minor additions.
-
-  Shane Aug 16th 1999  14:07 CST
-
-  Revision 1.29  1999/08/15 16:17:57  lazarus
-  Win32 fix  CEB
-
-  Revision 1.28  1999/08/14 10:05:54  lazarus
-  Added TListBox ItemIndex property. Made ItemIndex public for TComboBox and TListBox.
-
-  Revision 1.27  1999/08/07 17:59:21  lazarus
-
-        buttons.pp   the DoLeave and DoEnter were connected to the wrong
-                     event.
-
-        The rest were modified to use the new SendMessage function.   MAH
-
-  Revision 1.26  1999/08/07 00:11:51  lazarus
-  Added the gtklistlh.inc and gtklistsi.inc files
-
-  Revision 1.25  1999/08/06 23:55:29  lazarus
-  Patched some files with a patch from Michal Bukovjan for
-  TComboBox and TListBox.
-
-  Revision 1.24  1999/08/04 19:52:47  lazarus
-  Fixed the cursor display problem on Linux.
-  KeyPRess still crashes.
-  Have to figure out how to calc where the cursor should be going yet.
-
-  Revision 1.23  1999/08/03 06:31:58  lazarus
-  Moved all TNotebook GTK code to gtkint units
-
-  Revision 1.22  1999/08/03 02:52:22  lazarus
-  Added changes for CustomComboBox
-
-  Revision 1.21  1999/08/01 21:46:28  lazarus
-  Modified the GETWIDTH and GETHEIGHT of TFOnt so you can use it to calculate the length in Pixels of a string.  This is now used in the editor.
-
-  Shane
-
-  Revision 1.20  1999/08/01 00:07:44  lazarus
-  Alignment Changes CEB
-
-  Revision 1.19  1999/07/31 06:39:29  lazarus
-
-       Modified the IntSendMessage3 to include a data variable. It isn't used
-       yet but will help in merging the Message2 and Message3 features.
-
-       Adjusted TColor routines to match Delphi color format
-
-       Added a TGdkColorToTColor routine in gtkproc.inc
-
-       Finished the TColorDialog added to comDialog example.        MAH
-
- }
+}

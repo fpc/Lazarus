@@ -1194,6 +1194,188 @@ begin
   Result := 0;
 end;
 
+{------------------------------------------------------------------------------
+  ClipboardSelectionReceivedHandler
+
+  copy the received selection data record and buffer to
+  internal record and buffer (ClipboardSelectionData)
+ ------------------------------------------------------------------------------}
+procedure ClipboardSelectionReceivedHandler(TargetWidget: PGtkWidget;
+  SelectionData: PGtkSelectionData; TimeID: cardinal; Data: Pointer); cdecl;
+var TempBuf: Pointer;
+  c: PClipboardEventData;
+  i: integer;
+begin
+  // at any time there can be several requests
+  // find the request with the correct TimID
+  i:=ClipboardSelectionData.Count-1;
+  while (i>=0) do begin
+    c:=PClipboardEventData(ClipboardSelectionData[i]);
+    if c^.TimeID=TimeID then break;
+    dec(i);
+  end;
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[ClipboardSelectionReceivedHandler] TimeID=',TimeID,' ',i>=0);
+{$ENDIF}
+  if i<0 then exit;
+  // free old data
+  if (c^.Data.Data<>nil) then FreeMem(c^.Data.Data);
+  // copy the information
+  c^.Data:=SelectionData^;
+  // copy the raw data to an internal buffer (the gtk buffer will be destroyed
+  // right after this event)
+  if (c^.Data.Data<>nil) 
+  and (c^.Data.Length>0) then begin
+    GetMem(TempBuf,c^.Data.Length);
+    Move(c^.Data.Data^,TempBuf^,c^.Data.Length);
+    c^.Data.Data:=TempBuf;
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[ClipboardSelectionReceivedHandler] ',ord(PChar(c^.Data.Data)[0]));
+{$ENDIF}
+  end else
+    c^.Data.Data:=nil;
+end;
+
+{------------------------------------------------------------------------------
+  ClipboardSelectionRequestHandler
+
+  This signal is emitted if someone requests the clipboard data
+  Since the lcl clipboard caches all requests this will typically be another
+  application
+ ------------------------------------------------------------------------------}
+procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
+  SelectionData: PGtkSelectionData; Info: cardinal; TimeID: cardinal;
+  Data: Pointer); cdecl;
+type
+  PGdkAtom = ^TGdkAtom;
+var ClipboardType: TClipboardType;
+  MemStream: TMemoryStream;
+  FormatID: cardinal;
+  Buffer: Pointer;
+  BufLength: integer;
+  P: PChar;
+  BitCount: integer;
+  //s: string;
+begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('*** [ClipboardSelectionRequestHandler] START');
+{$ENDIF}
+  if SelectionData^.Target=0 then exit;
+  for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
+    if SelectionData^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
+      if Assigned(ClipboardHandler[ClipboardType]) then begin
+        // handler found for this of clipboard
+        // now create a stream and find a supported format
+{$IFDEF DEBUG_CLIPBOARD}
+p:=gdk_atom_name(SelectionData^.Target);
+writeln('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',p,' ID=',SelectionData^.Target);
+g_free(p);
+{$ENDIF}
+        MemStream:=TMemoryStream.Create;
+        try
+          // the gtk-interface provides autiomatically some formats, that the lcl
+          // does not know. Wrapping them to lcl formats ...
+          FormatID:=SelectionData^.Target;
+          if ((FormatID=gdk_atom_intern('COMPOUND_TEXT',1))
+            and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
+          or ((FormatID=gdk_atom_intern('STRING',1))
+            and (ClipboardExtraGtkFormats[ClipboardType][gfSTRING]))
+          or ((FormatID=gdk_atom_intern('TEXT',1))
+            and (ClipboardExtraGtkFormats[ClipboardType][gfTEXT]))
+          then
+            FormatID:=gdk_atom_intern('text/plain',0);
+            
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
+{$ENDIF}
+          // get the requested data by calling the handler for this clipboard type
+          ClipboardHandler[ClipboardType](FormatID,MemStream);
+          MemStream.Position:=0;
+
+          // build clipboard data for gtk
+          Buffer:=nil;
+          BufLength:=0;
+          BitCount:=8;
+          
+          // if the format was wrapped, transform it back
+          if (FormatID=gdk_atom_intern('text/plain',1)) then begin
+            if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',1)) then
+            begin
+              // transform text/plain to COMPOUND_TEXT
+              P:=StrAlloc(MemStream.Size+1);
+              MemStream.Read(P^,MemStream.Size);
+              P[MemStream.Size]:=#0;
+              gdk_string_to_compound_text(P,@SelectionData^.theType,
+                @SelectionData^.Format,@Buffer,@BufLength);
+              StrDispose(P);
+              gtk_selection_data_set(SelectionData,SelectionData^.Target,
+                SelectionData^.Format,Buffer,BufLength);
+              gdk_free_compound_text(Buffer);
+              exit;
+            end;
+          end;
+          if Buffer=nil then begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
+{$ENDIF}
+            BufLength:=MemStream.Size;
+            if MemStream.Size>0 then begin
+              GetMem(Buffer,MemStream.Size);
+              MemStream.Read(Buffer^,MemStream.Size);
+              {SetLength(s,MemStream.Size);
+              MemStream.Position:=0;
+              MemStream.Read(s[1],MemStream.Size);
+              writeln(' >>> "',s,'"');}
+            end;
+          end;
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[ClipboardSelectionRequestHandler] Len=',BufLength);
+{$ENDIF}
+          gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
+            Buffer,BufLength);
+          FreeMem(Buffer);
+        finally
+          MemStream.Free;
+        end;
+      end;
+      break;
+    end;
+end;
+
+{------------------------------------------------------------------------------
+  ClipboardSelectionLostOwnershipHandler
+
+  This signal is emitted if another application gets the clipboard ownership.
+ ------------------------------------------------------------------------------}
+function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
+  EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
+var ClipboardType: TClipboardType;
+begin
+//writeln('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
+  for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
+    if EventSelection^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('*** [ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
+{$ENDIF}
+      if (ClipboardWidget<>nil)
+      and (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType])
+        <> ClipboardWidget^.window)
+      and Assigned(ClipboardHandler[ClipboardType]) then begin
+        // handler found for this type of clipboard
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
+{$ENDIF}
+        ClipboardHandler[ClipboardType](0,nil);
+        ClipboardHandler[ClipboardType]:=nil;
+      end;
+      break;
+    end;
+  Result:=1;
+end;
+
+
+
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1206,6 +1388,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2001/11/12 16:56:08  lazarus
+  MG: CLIPBOARD
+
   Revision 1.41  2001/11/09 19:14:24  lazarus
   HintWindow changes
   Shane
@@ -1355,287 +1540,4 @@ end;
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 
-  Revision 1.12  2000/06/29 18:08:56  lazarus
-  Shane
-    Looking for the editor problem I made a few changes.  I changed everything back to the original though.
-
-  Revision 1.10  2000/06/19 18:21:22  lazarus
-  Spinedit was never getting created
-  Shane
-
-  Revision 1.9  2000/06/16 13:33:22  lazarus
-  Created a new method for adding controls to the toolbar to be dropped onto the form!
-  Shane
-
-  Revision 1.8  2000/05/17 22:34:07  lazarus
-  MWE:
-    * Fixed Sizing & events
-
-  Revision 1.7  2000/05/11 22:04:15  lazarus
-  MWE:
-    + Added messagequeue
-    * Recoded SendMessage and Peekmessage
-    + Added postmessage
-    + added DeliverPostMessage
-
-  Revision 1.6  2000/05/10 22:52:58  lazarus
-  MWE:
-    = Moved some global api stuf to gtkobject
-
-  Revision 1.5  2000/05/09 02:05:08  lazarus
-  Replaced writelns with Asserts.                        CAW
-
-  Revision 1.4  2000/05/08 15:56:59  lazarus
-  MWE:
-    + Added support for mwedit92 in Makefiles
-    * Fixed bug # and #5 (Fillrect)
-    * Fixed labelsize in ApiWizz
-    + Added a call to the resize event in WMWindowPosChanged
-
-  Revision 1.3  2000/04/18 14:02:32  lazarus
-  Added Double Clicks.  Changed the callback in gtkcallback for the buttonpress event to check the event type.
-  Shane
-
-  Revision 1.2  2000/03/31 18:41:03  lazarus
-  Implemented MessageBox / Application.MessageBox calls. No icons yet, though...
-
-  Revision 1.1  2000/03/30 22:51:42  lazarus
-  MWE:
-    Moved from ../../lcl
-
-  Revision 1.58  2000/03/24 14:40:41  lazarus
-  A little polishing and bug fixing.
-
-  Revision 1.57  2000/03/23 20:40:03  lazarus
-  Added some drag code
-  Shane
-
-  Revision 1.56  2000/03/15 00:51:57  lazarus
-  MWE:
-    + Added LM_Paint on expose
-    + Added forced creation of gdkwindow if needed
-    ~ Modified DrawFrameControl
-    + Added BF_ADJUST support on DrawEdge
-    - Commented out LM_IMAGECHANGED in TgtkObject.IntSendMessage3
-       (It did not compile)
-
-  Revision 1.55  2000/03/08 23:57:38  lazarus
-  MWE:
-    Added SetSysColors
-    Fixed TEdit text bug (thanks to hans-joachim ott <hjott@compuserve.com>)
-    Finished GetKeyState
-    Added changes from Peter Dyson <peter@skel.demon.co.uk>
-    - a new GetSysColor
-    - some improvements on ExTextOut
-
-  Revision 1.54  2000/03/03 22:58:26  lazarus
-  MWE:
-    Fixed focussing problem.
-      LM-FOCUS was bound to the wrong signal
-    Added GetKeyState api func.
-      Now LCL knows if shift/trl/alt is pressed (might be handy for keyboard
-      selections ;-)
-
-  Revision 1.53  2000/02/28 19:16:04  lazarus
-  Added code to the FILE CLOSE to check if the file was modified.  HAven't gotten the application.messagebox working yet though.  It won't stay visible.
-  Shane
-
-  Revision 1.52  2000/02/24 21:15:30  lazarus
-  Added TCustomForm.GetClientRect and RequestAlign to try and get the controls to align correctly when a MENU is present.  Not Complete yet.
-
-  Fixed the bug in TEdit that caused it not to update it's text property.  I will have to
-  look at TMemo to see if anything there was affected.
-
-  Added SetRect to WinAPI calls
-  Added AdjustWindowRectEx to WINAPI calls.
-  Shane
-
-  Revision 1.51  2000/02/22 23:26:12  lazarus
-  MWE: Fixed cursor movement in editor
-       Started on focus problem
-
-  Revision 1.50  2000/02/22 22:19:49  lazarus
-  TCustomDialog is a descendant of TComponent.
-  Initial cuts a form's proper Close behaviour.
-
-  Revision 1.49  2000/02/19 18:11:59  lazarus
-  More work on moving, resizing, forms' border style etc.
-
-  Revision 1.48  2000/02/18 19:38:52  lazarus
-  Implemented TCustomForm.Position
-  Better implemented border styles. Still needs some tweaks.
-  Changed TComboBox and TListBox to work again, at least partially.
-  Minor cleanups.
-
-  Revision 1.47  2000/01/31 20:00:21  lazarus
-  Added code for Application.ProcessMessages.  Needs work.
-  Added TScreen.Width and TScreen.Height.  Added the code into
-  GetSystemMetrics for these two properties.
-  Shane
-
-  Revision 1.46  2000/01/22 20:07:46  lazarus
-  Some cleanups. It needs much more cleanup than this.
-  Worked around a compiler bug (?) in mwCustomEdit.
-  Reverted some changes to font generation and increased font size.
-
-  Revision 1.45  2000/01/16 23:23:04  lazarus
-  MWE:
-    Added/completed scrollbar API funcs
-
-  Revision 1.44  2000/01/14 00:33:31  lazarus
-  MWE:
-    Added Scrollbar messages
-
-  Revision 1.43  2000/01/13 22:44:05  lazarus
-  MWE:
-    Created/updated net gtkwidget for TWinControl decendants
-      also improved foccusing on such a control
-
-  Revision 1.42  2000/01/10 00:07:12  lazarus
-  MWE:
-    Added more scrollbar support for TWinControl
-    Most signals for TWinContorl are jet connected to the wrong widget
-      (now scrolling window, should be fixed)
-    Added some cvs entries
-
-  Revision 1.41  2000/01/04 23:12:46  lazarus
-  MWE:
-    Fixed LM_CHAR message. It is now after the LM_KEYUP message
-    Fixed Menus at checkbox example.
-    Removed references to TTabbedNtBK (somebody removed the files) and
-      chanched it on the compileroptions form
-
-  Revision 1.40  2000/01/04 21:00:34  lazarus
-  *** empty log message ***
-
-  Revision 1.39  2000/01/03 00:19:21  lazarus
-  MWE:
-    Added keyup and buttonup events
-    Added LM_MOUSEMOVE callback
-    Started with scrollbars in editor
-
-  Revision 1.38  1999/12/31 14:58:00  lazarus
-  MWE:
-    Set unkown VK_ codesto 0
-    Added pfDevice support for bitmaps
-
-  Revision 1.37  1999/12/29 00:04:47  lazarus
-  MWE:
-    Refined key events. TODO get vk keycodes for non alpha keys
-
-  Revision 1.36  1999/12/28 01:10:53  lazarus
-  MWE:
-    Added most common virtual keycodes
-
-  Revision 1.35  1999/12/22 01:16:03  lazarus
-  MWE:
-    Changed/recoded keyevent callbacks
-    We Can Edit!
-    Commented out toolbar stuff
-
-  Revision 1.34  1999/12/18 18:27:31  lazarus
-  MWE:
-    Rearranged some events to get a LM_SIZE, LM_MOVE and LM_WINDOWPOSCHANGED
-    Initialized the TextMetricstruct to zeros to clear unset values
-    Get mwEdit to show more than one line
-    Fixed some errors in earlier commits
-
-  Revision 1.33  1999/12/09 01:21:40  lazarus
-  MWE:
-    Added check for TControl in LM_ACTIVATE
-
-  Revision 1.32  1999/12/08 21:42:36  lazarus
-  Moved more messages over to wndproc.
-  Shane
-
-  Revision 1.31  1999/12/07 01:19:25  lazarus
-  MWE:
-    Removed some double events
-    Changed location of SetCallBack
-    Added call to remove signals
-    Restructured somethings
-    Started to add default handlers in TWinControl
-    Made some parts of TControl and TWinControl more delphi compatible
-    ... and lots more ...
-
-  Revision 1.30  1999/11/30 21:30:06  lazarus
-  Minor Issues
-  Shane
-
-  Revision 1.29  1999/11/23 22:06:27  lazarus
-  Minor changes to get it running again with the latest compiler.  There is something wrong with the compiler that is preventing certain things from working.
-  Shane
-
-  Revision 1.28  1999/11/05 17:48:17  lazarus
-  Added a mwedit1 component to lazarus (MAIN.PP)
-  It crashes on create.
-  Shane
-
-  Revision 1.27  1999/11/04 21:52:08  lazarus
-  wndproc being used a little
-  Shane
-
-  Revision 1.26  1999/11/02 16:02:34  lazarus
-  Added a bunch of wndproc stuff and a lot of functions that really don't do a thing at this point.
-  Shane
-
-  Revision 1.25  1999/10/30 12:30:02  peter
-    * fixed some stupid crashes
-
-  Revision 1.24  1999/10/28 17:17:42  lazarus
-  Removed references to FCOmponent.
-  Shane
-
-  Revision 1.23  1999/10/04 23:31:38  lazarus
-  Cleaned up the code to make it more readable.    CAW
-
-  Revision 1.22  1999/09/26 13:30:15  lazarus
-
-     Implemented OnEnter & OnExit events for TTrackbar. These properties
-     and handler functions have been added to TWincontrol, two new
-     callbacks have been added to gtkcallback.
-      stoppok
-
-  Revision 1.21  1999/09/15 03:17:31  lazarus
-  Changes to Editor.pp
-  If the text was actually displayed, then it would work better.  :-)
-
-  Revision 1.20  1999/09/11 12:16:15  lazarus
-  Fixed a bug in key press evaluation. Initial cut at Invalidate problem.
-
-  Revision 1.19  1999/09/03 22:01:02  lazarus
-  Added TTrackBar
-    stoppok
-
-  Revision 1.18  1999/08/26 23:36:02  peter
-    + paintbox
-    + generic keydefinitions and gtk conversion
-    * gtk state -> shiftstate conversion
-
-  Revision 1.17  1999/08/24 20:17:59  lazarus
-  *** empty log message ***
-
-  Revision 1.16  1999/08/20 15:44:38  lazarus
-  TImageList changes added from Marc Weustink
-
-  Revision 1.15  1999/08/16 18:45:40  lazarus
-  Added a TFont Dialog plus minor additions.
-
-  Shane Aug 16th 1999  14:07 CST
-
-  Revision 1.14  1999/07/31 14:27:02  peter
-    * mouse fixes
-    * wheel support
-
-  Revision 1.13  1999/07/31 06:39:27  lazarus
-
-       Modified the IntSendMessage3 to include a data variable. It isn't used
-       yet but will help in merging the Message2 and Message3 features.
-
-       Adjusted TColor routines to match Delphi color format
-
-       Added a TGdkColorToTColor routine in gtkproc.inc
-
-       Finished the TColorDialog added to comDialog example.        MAH
-
- }
+}

@@ -30,6 +30,44 @@ Begin
   Result := False;
 end;
 
+// the clipboard functions are internally used by TClipboard
+
+function TInterfaceBase.ClipboardFormatToMimeType(FormatID: TClipboardFormat
+  ): string;
+begin
+  Result := '';
+end;
+
+function TInterfaceBase.ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat;  Stream: TStream): boolean;
+begin
+  Result := false;
+end;
+
+// ! List will be created. You must free it yourself with FreeMem(List) !
+function TInterfaceBase.ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: integer; var List: PClipboardFormat): boolean;
+begin
+  Result := true;
+  Count := 0;
+  List := nil;
+end;
+
+function TInterfaceBase.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
+  Formats: PClipboardFormat): boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.ClipboardRegisterFormat(
+  const AMimeType: string): TClipboardFormat;
+begin
+  Result := 0;
+end;
+
+
+
 function TInterfaceBase.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
   Result := 0;
@@ -98,11 +136,6 @@ end;
 function TInterfaceBase.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
 Begin
   Result := False;
-end;
-
-Function TInterfaceBase.EmptyClipBoard : Boolean;
-begin
-Result := False;
 end;
 
 function TInterfaceBase.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
@@ -459,6 +492,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/11/12 16:56:07  lazarus
+  MG: CLIPBOARD
+
   Revision 1.17  2001/10/10 17:55:04  lazarus
   MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
 

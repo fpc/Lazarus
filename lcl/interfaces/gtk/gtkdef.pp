@@ -105,6 +105,29 @@ type
     ExStyle: Integer;
     UserData: Integer;
   end;
+  
+// clipboard
+type
+  TClipboardEventData = record
+    TimeID: Cardinal;
+    Data: TGtkSelectionData;
+  end;
+  PClipboardEventData = ^TClipboardEventData;
+  
+  TGtkClipboardFormat = (
+    gfCLASS, gfCOMPOUND_TEXT, gfDELETE, gfFILE_NAME, gfHOST_NAME, gfLENGTH,
+    gfMULTIPLE, gfNAME, gfOWNER_OS, gfPROCESS, gfSTRING, gfTARGETS, gfTEXT,
+    gfTIMESTAMP, gfUSER);
+    
+  TGtkClipboardFormats = set of TGtkClipboardFormat;
+    
+const
+  GtkClipboardFormatName: array[TGtkClipboardFormat] of string = (
+      'CLASS', 'COMPOUND_TEXT', 'DELETE', 'FILE_NAME', 'HOST_NAME', 'LENGTH',
+      'MULTIPLE', 'NAME', 'OWNER_OS', 'PROCESS', 'STRING', 'TARGETS', 'TEXT',
+      'TIMESTAMP', 'USER'
+    );
+  
 
 implementation
 
@@ -113,6 +136,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/11/12 16:56:08  lazarus
+  MG: CLIPBOARD
+
   Revision 1.3  2001/03/27 21:12:54  lazarus
   MWE:
     + Turned on longstrings

@@ -723,20 +723,162 @@ ReportNotObsolete('TColortoTgdkColor');
 end;
 
 
-
-
 Function GetPen(f : PgdkDrawable; Value : TgdkColor) : pgdkGC;
 Var
-gc : PgdkGC;
+  gc : PgdkGC;
 Begin
-ReportNotObsolete('GetPen');
+  ReportNotObsolete('GetPen');
 
-gdk_color_alloc (gdk_colormap_get_system (), @value);
-gc := gdk_gc_new (f);
-gdk_gc_set_foreground (gc, @value);
-result := gc;
+  gdk_color_alloc (gdk_colormap_get_system (), @value);
+  gc := gdk_gc_new (f);
+  gdk_gc_set_foreground (gc, @value);
+  result := gc;
 
-Assert(False, 'Trace:OBSOLETE gtkproc.inc GetPen');
+  Assert(False, 'Trace:OBSOLETE gtkproc.inc GetPen');
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: WaitForClipbrdAnswerDummyTimer
+  
+  this is a helper function for WaitForClipboardAnswer
+ ------------------------------------------------------------------------------}
+function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gint; cdecl;
+begin
+  Result:=1; // go on, make sure getting a message at least every second
+end;
+
+{------------------------------------------------------------------------------
+  Function: WaitForClipboardAnswer
+  Params: none
+  Returns: true, if clipboard data arrived
+
+  waits til clipboard/selection answer arrived (max 1 second)
+  ! While waiting the messagequeue will be processed !
+ ------------------------------------------------------------------------------}
+function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
+var
+  StartTime, CurTime: TSystemTime;
+  Timer: cardinal;
+  
+begin
+  Result:=true;
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.WaitForClipboardAnswer] A');
+{$ENDIF}
+  if (c^.Data.Selection<>0) then begin
+//writeln('[TgtkObject.WaitForClipboardAnswer] B');
+    exit;
+  end;
+  DateTimeToSystemTime(Time,StartTime);
+//writeln('[TgtkObject.WaitForClipboardAnswer] C');
+  Application.ProcessMessages;
+//writeln('[TgtkObject.WaitForClipboardAnswer] D');
+  if (c^.Data.Selection<>0) then begin
+//writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+    exit;
+  end;
+//writeln('[TgtkObject.WaitForClipboardAnswer] F');
+  // start a timer to make sure not waiting forever
+  Timer := gtk_timeout_add(500, @WaitForClipbrdAnswerDummyTimer, nil);
+  try
+    repeat
+      // just wait ...
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.WaitForClipboardAnswer] G');
+{$ENDIF}
+      Application.HandleMessage;
+      if (c^.Data.Selection<>0) then begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+{$ENDIF}
+        exit;
+      end;
+      DateTimeToSystemTime(Time,CurTime);
+    until (CurTime.Second-StartTime.Second>1);
+  finally
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[TgtkObject.WaitForClipboardAnswer] H');
+{$ENDIF}
+    // stop the timer
+    gtk_timeout_remove(Timer);
+//writeln('[TgtkObject.WaitForClipboardAnswer] END');
+  end;
+  Result:=false;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RequestSelectionData
+  Params: ClipboardWidget - widget with connected signals 'selection_get'
+                            and 'selection_clear_event'
+          ClipboardType
+          FormatID - the selection target format wanted
+  Returns: the TGtkSelectionData record
+
+  requests the format FormatID of clipboard of type ClipboardType and
+  waits til clipboard/selection answer arrived (max 1 second)
+  ! While waiting the messagequeue will be processed !
+ ------------------------------------------------------------------------------}
+function RequestSelectionData(ClipboardWidget: PGtkWidget;
+  ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;
+var
+  TimeID: cardinal;
+  i: integer;
+  c: PClipboardEventData;
+begin
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[RequestSelectionData] FormatID=',FormatID);
+{$ENDIF}
+  FillChar(Result,SizeOf(TGtkSelectionData),0);
+  if (ClipboardWidget=nil) or (FormatID=0) 
+  or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
+  
+  TimeID:=1000;
+  repeat
+    repeat
+      inc(TimeID);
+      if TimeID>1100 then exit;
+      i:=ClipboardSelectionData.Count-1;
+      while (i>=0) 
+      and (PClipboardEventData(ClipboardSelectionData[i])^.TimeID<>TimeID) do
+        dec(i);
+    until (i<0);
+    New(c);
+    c^.TimeID:=TimeID;
+    FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
+    ClipboardSelectionData.Add(c);
+{$IFDEF DEBUG_CLIPBOARD}
+writeln('[RequestSelectionData] TimeID=',TimeID);
+{$ENDIF}
+    if gtk_selection_convert(ClipboardWidget,
+        ClipboardTypeAtoms[ClipboardType], FormatID, TimeID)<>0 then break;
+    ClipboardSelectionData.Remove(c);
+    Dispose(c);
+  until false;
+  try
+    if not WaitForClipboardAnswer(c) then exit;
+    Result:=c^.Data;
+  finally
+    ClipboardSelectionData.Remove(c);
+    Dispose(c);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: FreeClipboardTargetEntries
+  Params: ClipboardType
+  Returns: -
+
+  frees the memory of a ClipboardTargetEntries list
+ ------------------------------------------------------------------------------}
+procedure FreeClipboardTargetEntries(ClipboardType: TClipboardType);
+var i: integer;
+begin
+  if ClipboardTargetEntries[ClipboardType]<>nil then begin
+    for i:=0 to ClipboardTargetEntryCnt[ClipboardType]-1 do
+      StrDispose(ClipboardTargetEntries[ClipboardType][i].Target);
+    FreeMem(ClipboardTargetEntries[ClipboardType]);
+  end;
 end;
 
 
@@ -748,6 +890,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.25  2001/11/12 16:56:08  lazarus
+  MG: CLIPBOARD
+
   Revision 1.24  2001/10/31 16:29:23  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane

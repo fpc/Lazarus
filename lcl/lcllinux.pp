@@ -1052,19 +1052,6 @@ BKMODE_LAST = 2;
   SM_MOUSEWHEELPRESENT = 75;
   SM_CMETRICS = 76;
 
-//==============================================
-// Clipboard format constant
-//==============================================
-//------------
-// Predefined Clipboard Formats
-//------------
-
-  CF_TEXT = 1;
-  CF_BITMAP = 2;
-  CF_METAFILEPICT = 3;
-
-  CF_OBJECT = 230;
-
 type
 
   TFarProc = Pointer;
@@ -1348,20 +1335,39 @@ type
 
 type
 
- PMsg = ^TMsg;
- tagMSG = packed record
-   hwnd: HWND;
-   message: LongWord;
-   wParam: Longint;
-   lParam: Longint;
-   time: DWORD;
-   pt: TPoint;
+  PMsg = ^TMsg;
+  tagMSG = packed record
+    hwnd: HWND;
+    message: LongWord;
+    wParam: Longint;
+    lParam: Longint;
+    time: DWORD;
+    pt: TPoint;
   end;
- TMsg = tagMSG;
- _MSG = tagMSG;
+  TMsg = tagMSG;
+  _MSG = tagMSG;
+
 
 // prototype for timer callback
 TFNTimerProc = procedure(Handle: HWND; Message : cardinal; IDEvent: Integer; Time: Cardinal); 
+
+
+// clipboard
+type
+  TClipboardFormat = cardinal;
+  PClipboardFormat = ^TClipboardFormat;
+  
+  TClipboardRequestEvent = procedure(const RequestedFormatID: TClipboardFormat;
+    Data: TStream) of object;
+    
+  TClipboardType = (ctPrimarySelection, ctSecondarySelection, ctClipboard);
+  
+const
+  ClipboardTypeName : array[TClipboardType] of string = (
+      'primary selection', 'secondary selection', 'clipboard'
+    );
+
+
 
 // All winapi related stuff
 {$I winapih.inc}
@@ -1394,6 +1400,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2001/11/12 16:56:07  lazarus
+  MG: CLIPBOARD
+
   Revision 1.12  2001/11/01 18:48:52  lazarus
   Changed Application.Messagebox to use TMessageBox class.
   Added icon images for mtError and mtConfirmation
@@ -1437,220 +1446,4 @@ end.
 
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
-
-  Revision 1.39  2000/05/09 00:01:26  lazarus
-  Updated my email address in the documentation to the current one. Also
-  removed email references in comments that were not @author comments to
-  fix problems with the documentation produced by pasdoc.           CAW
-
-  Revision 1.38  2000/04/24 23:22:52  lazarus
-  MWE:
-    + Added ide option to the makfiles to only compile the ide
-      (don't compile its dependencies because they will be
-      compiled anyhow)
-
-  "Vincent Snijders" <vrs@dds.nl>:
-    - removed the references to the windows unit in mwCustomEdit
-    = moved the cf_xxxx constants from clipbrd.pp to lcllinux
-
-  Revision 1.37  2000/03/31 18:41:03  lazarus
-  Implemented MessageBox / Application.MessageBox calls. No icons yet, though...
-
-  Revision 1.36  2000/03/15 00:51:58  lazarus
-  MWE:
-    + Added LM_Paint on expose
-    + Added forced creation of gdkwindow if needed
-    ~ Modified DrawFrameControl
-    + Added BF_ADJUST support on DrawEdge
-    - Commented out LM_IMAGECHANGED in TgtkObject.IntSendMessage3
-       (It did not compile)
-
-  Revision 1.35  2000/03/14 19:49:05  lazarus
-  Modified the painting process for TWincontrol.  Now it runs throug it's FCONTROLS list and paints all them
-  Shane
-
-  Revision 1.34  2000/03/10 18:31:10  lazarus
-  Added TSpeedbutton code
-  Shane
-
-  Revision 1.33  2000/03/10 13:14:32  lazarus
-  *** empty log message ***
-
-  Revision 1.32  2000/03/08 23:57:39  lazarus
-  MWE:
-    Added SetSysColors
-    Fixed TEdit text bug (thanks to hans-joachim ott <hjott@compuserve.com>)
-    Finished GetKeyState
-    Added changes from Peter Dyson <peter@skel.demon.co.uk>
-    - a new GetSysColor
-    - some improvements on ExTextOut
-
-  Revision 1.31  2000/03/06 00:05:05  lazarus
-  MWE: Added changes from Peter Dyson <peter@skel.demon.co.uk> for a new
-    release of mwEdit (0.92)
-
-  Revision 1.30  2000/03/03 22:58:26  lazarus
-  MWE:
-    Fixed focussing problem.
-      LM-FOCUS was bound to the wrong signal
-    Added GetKeyState api func.
-      Now LCL knows if shift/trl/alt is pressed (might be handy for keyboard
-      selections ;-)
-
-  Revision 1.29  2000/02/28 19:16:04  lazarus
-  Added code to the FILE CLOSE to check if the file was modified.  HAven't gotten the application.messagebox working yet though.  It won't stay visible.
-  Shane
-
-  Revision 1.28  2000/02/24 21:15:30  lazarus
-  Added TCustomForm.GetClientRect and RequestAlign to try and get the controls to align correctly when a MENU is present.  Not Complete yet.
-
-  Fixed the bug in TEdit that caused it not to update it's text property.  I will have to
-  look at TMemo to see if anything there was affected.
-
-  Added SetRect to WinAPI calls
-  Added AdjustWindowRectEx to WINAPI calls.
-  Shane
-
-  Revision 1.27  2000/01/31 20:00:22  lazarus
-  Added code for Application.ProcessMessages.  Needs work.
-  Added TScreen.Width and TScreen.Height.  Added the code into
-  GetSystemMetrics for these two properties.
-  Shane
-
-  Revision 1.26  2000/01/10 00:07:13  lazarus
-  MWE:
-    Added more scrollbar support for TWinControl
-    Most signals for TWinContorl are jet connected to the wrong widget
-      (now scrolling window, should be fixed)
-    Added some cvs entries
-
-  Revision 1.25  2000/01/07 21:14:14  lazarus
-  Added code for getwindowlong and setwindowlong.
-  Shane
-
-  Revision 1.24  1999/12/28 01:10:54  lazarus
-  MWE:
-    Added most common virtual keycodes
-
-  Revision 1.23  1999/12/21 21:35:54  lazarus
-  committed the latest toolbar code.  Currently it doesn't appear anywhere and I have to get it to add buttons correctly through (I think) setstyle.  I think I'll implement the LM_TOOLBARINSERTBUTTON call there.
-  Shane
-
-  Revision 1.22  1999/12/20 21:37:12  lazarus
-  Added ISRIGHTTOLEFT in menus file.
-  Added ISACCEL in forms.pp
-  Shane
-
-  Revision 1.21  1999/12/20 21:01:14  lazarus
-  Added a few things for compatability with Delphi and TToolbar
-  Shane
-
-  Revision 1.20  1999/12/14 21:07:12  lazarus
-  Added more stuff for TToolbar
-  Shane
-
-  Revision 1.19  1999/12/14 19:37:49  lazarus
-  Added a few record structures and such for preperation for the toolbar.
-  Shane
-
-  Revision 1.18  1999/12/14 00:16:43  lazarus
-  MWE:
-    Renamed LM... message handlers to WM... to be compatible and to
-      get more edit parts to compile
-    Started to implement GetSystemMetrics
-    Removed some Lazarus specific parts from mwEdit
-
-  Revision 1.17  1999/12/10 00:47:01  lazarus
-  MWE:
-    Fixed some samples
-    Fixed Dialog parent is no longer needed
-    Fixed (Win)Control Destruction
-    Fixed MenuClick
-
-  Revision 1.16  1999/12/02 19:00:59  lazarus
-  MWE:
-    Added (GDI)Pen
-    Changed (GDI)Brush
-    Changed (GDI)Font (color)
-    Changed Canvas to use/create pen/brush/font
-    Hacked mwedit to allow setting the number of chars (till it get a WM/LM_SIZE event)
-    The editor shows a line !
-
-  Revision 1.15  1999/11/29 00:46:47  lazarus
-  MWE:
-    Added TBrush as gdiobject
-    commented out some more mwedit MWE_FPC ifdefs
-
-  Revision 1.14  1999/11/25 23:45:08  lazarus
-  MWE:
-    Added font as GDIobject
-    Added some API testcode to testform
-    Commented out some more IFDEFs in mwCustomEdit
-
-  Revision 1.13  1999/11/18 00:13:08  lazarus
-  MWE:
-    Partly Implemented SelectObject
-    Added  ExTextOut
-    Added  GetTextExtentPoint
-    Added  TCanvas.TextExtent/TextWidth/TextHeight
-    Added  TSize and HPEN
-
-  Revision 1.12  1999/11/17 01:16:40  lazarus
-  MWE:
-    Added some more API stuff
-    Added an initial TBitmapCanvas
-    Added some DC stuff
-    Changed and commented out, original gtk linedraw/rectangle code. This
-      is now called through the winapi wrapper.
-
-  Revision 1.11  1999/11/13 13:03:34  lazarus
-  MWE:
-    Started to implement some platform dependent WINAPI stuff
-    Added a baseclass for InterfaceObject
-    Started messing around with canvasses
-
-  Revision 1.10  1999/11/09 06:33:09  lazarus
-  Added more constants to get more mwCustomEdit beta files to compile.   CAW
-
-  Revision 1.9  1999/11/02 16:02:34  lazarus
-  Added a bunch of wndproc stuff and a lot of functions that really don't do a thing at this point.
-  Shane
-
-  Revision 1.8  1999/11/01 01:28:30  lazarus
-  MWE: Implemented HandleNeeded/CreateHandle/CreateWND
-       Now controls are created on demand. A call to CreateComponent shouldn't
-       be needed. It is now part of CreateWnd
-
-  Revision 1.7  1999/10/30 17:39:35  peter
-    * reallocmem is now in the system unit
-
-  Revision 1.6  1999/10/28 23:48:57  lazarus
-  MWE: Added new menu classes and started to use handleneeded
-
-  Revision 1.5  1999/10/28 19:25:10  lazarus
-  Added a ton of messaging stuff
-  Shane
-
-  Revision 1.4  1999/10/27 18:23:29  lazarus
-  mwEdit compiles.
-  Shane
-
-  Revision 1.3  1999/10/27 17:27:07  lazarus
-  Added alot of changes and TODO: statements
-  shane
-
-  Revision 1.2  1999/10/27 13:11:51  lazarus
-  Added some LM_??? stuff to LMEssages.
-  Shane
-
-  Revision 1.1  1999/10/27 12:53:23  lazarus
-  Added LCLLinux.pp and removed Linux.pp
-  Also, added the TCustomForm.ISFORM function.
-  Shane
-
-  Revision 1.1  1999/10/26 14:51:20  lazarus
-  Removed WINDOWS.PP and added LINUX.PP
-  Shane
-
-
 }
