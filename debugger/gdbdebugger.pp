@@ -28,13 +28,22 @@ unit GDBDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, CmdLineDebugger, DBGBreakPoint, DBGWatch;
+  Classes, Process, Debugger, CmdLineDebugger;
+
 
 type                       
+  TGDBProgramInfo = record
+    State: TDBGState;
+    BreakPoint: Integer; // ID of Breakpoint hit
+    Signal: Integer;     // Signal no if we hit one
+    SignalText: String;  // Signal text if we hit one
+  end;
+
 
   TGDBDebugger = class(TCmdLineDebugger)
   private
     FHasSymbols: Boolean;
+    function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     procedure GDBRun; 
     procedure GDBPause;
     procedure GDBStart;  
@@ -46,7 +55,7 @@ type
     function  SendCommand(const ACommand: String; Values: array of const): TStrings; // internally used by breakpoits and watches
     procedure RunCommand(const ACommand: String);
     function  GetLocation: TDBGLocationRec;
-    function  GetGDBState: TDBGState;
+    function  GetProgramInfo(const AHandleResult: Boolean): TGDBProgramInfo;
   protected
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateWatches: TDBGWatches; override;
@@ -73,14 +82,17 @@ type
   TGDBBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
+    procedure SetBreakPoint;
   protected
     procedure DoActionChange; override;
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
+    procedure DoStateChange; override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure Hit;
   end;
   
   TGDBWatch = class(TDBGWatch)
@@ -94,7 +106,9 @@ type
   public
   end;
   
+{ =========================================================================== }
 { TGDBDebugger }
+{ =========================================================================== }
 
 constructor TGDBDebugger.Create;
 begin
@@ -123,6 +137,21 @@ begin
   inherited Done;
 end;
 
+function  TGDBDebugger.FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
+var
+  n: Integer;
+begin                     
+  if  ABreakpoint <> 0 
+  then
+    for n := 0 to Breakpoints.Count - 1 do
+    begin
+      Result := Breakpoints[n];
+      if TGDBBreakpoint(Result).FBreakID = ABreakpoint
+      then Exit;
+    end;
+  Result := nil;
+end;
+
 procedure TGDBDebugger.GDBJumpTo(const ASource: String; const ALine: Integer);
 begin
 end;
@@ -139,7 +168,7 @@ begin
   case State of 
     dsIdle, dsStop: begin
       GDBStart;
-      dState := GetGDBState;
+      dState := GetProgramInfo(False).State;
       if dState = dsPause
       then begin
         RunCommand('cont'); 
@@ -212,7 +241,7 @@ begin
     repeat
       SendCmdLn('cont', True);
       loc := GetLocation;
-      dState := GetGDBState;
+      dState := GetProgramInfo(False).State;
     until (loc.FuncName = 'main') or (Integer(loc.Adress) = StopAdress) or (dState <> dsPause);
   end;
 end;
@@ -222,8 +251,7 @@ begin
   case State of 
     dsIdle, dsStop: begin
       GDBStart;
-      DoCurrent(GetLocation);
-      SetState(GetGDBState);
+      GetProgramInfo(True);
     end;
     dsPause: begin
       RunCommand('step');
@@ -236,8 +264,7 @@ begin
   case State of 
     dsIdle, dsStop: begin
       GDBStart;
-      DoCurrent(GetLocation);
-      SetState(GetGDBState);
+      GetProgramInfo(True);
     end;
     dsPause: begin
       RunCommand('next');
@@ -256,29 +283,16 @@ begin
     SendCmdLn('', True);
   end;
 
-  dState := GetGDBState;
-  if dState <> dsPause 
-  then Exit;
-
-  SendCmdLn('kill', True);
-  dState := GetGDBState;   
+  dState := GetProgramInfo(False).State;
+  if dState = dsPause 
+  then begin
+    SendCmdLn('kill', True);
+    dState := GetProgramInfo(False).State;   
+  end;
 
   if dState = dsStop
   then KillTargetProcess;
   SetState(dState);
-end;
-
-function TGDBDebugger.GetGDBState: TDBGState;
-var
-  S: String;
-begin
-  SendCmdLn('info program', True);
-  S := OutputLines.Text;
-  if Pos('stopped', S) > 0 
-  then Result := dsPause
-  else if Pos('not being run', S) > 0 
-  then Result := dsStop
-  else Result := dsNone;
 end;
 
 function TGDBDebugger.GetLocation: TDBGLocationRec;
@@ -326,6 +340,64 @@ begin
   end;
 end;
 
+function TGDBDebugger.GetProgramInfo(const AHandleResult: Boolean): TGDBProgramInfo;
+var
+  S, Signal: String;
+  BreakPoint: TGDBBreakPoint;
+begin                     
+  // Loop since we might have hit a non-break breakpoint              
+  while True do  
+  begin
+    Result.Breakpoint := 0;  
+    Result.Signal := 0;
+    Result.SignalText := '';
+    Result.State := dsNone;
+                
+    SendCmdLn('info program', True);
+    S := OutputLines.Text;
+    if Pos('stopped', S) > 0 
+    then begin
+      Result.State := dsPause;
+      if Pos('breakpoint ', S) > 0
+      then begin
+        Result.Breakpoint := StrToIntDef(GetPart('breakpoint ', '.', S), 0);
+      end
+      else if Pos('signal ', S) > 0
+      then begin
+        Signal := GetPart('signal ', ',', S);
+        // TODO: translate to id
+        Result.SignalText := GetPart(' ', '.', S);
+      end;
+    end
+    else if Pos('not being run', S) > 0 
+    then Result.State := dsStop;
+    
+    if AHandleResult
+    then begin
+      if Result.Breakpoint <> 0
+      then begin
+        BreakPoint := TGDBBreakPoint(FindBreakPoint(Result.Breakpoint));
+        if BreakPoint <> nil
+        then begin
+          BreakPoint.Hit;
+          
+          if not (bpaStop in BreakPoint.Actions)
+          then begin
+            SendCmdLn('cont', True);
+            Continue;
+          end;
+        end;
+      end;
+      SetState(Result.State);
+      DoCurrent(GetLocation);
+
+      if Result.SignalText <> ''
+      then DoException(Result.Signal, Result.SignalText);
+    end;
+    Break;
+  end;
+end;
+
 function TGDBDebugger.GetSupportedCommands: TDBGCommands; 
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak{, dcWatch}]
@@ -361,8 +433,7 @@ procedure TGDBDebugger.RunCommand(const ACommand: String);
 begin
   SetState(dsRun);
   SendCmdLn(ACommand, True);
-  DoCurrent(GetLocation);
-  SetState(GetGDBState);
+  GetProgramInfo(True);
 end;
 
 function TGDBDebugger.SendCommand(const ACommand: String; Values: array of const): TStrings;
@@ -376,14 +447,14 @@ begin
   if AValue <> FileName
   then begin
     GDBStop;
-    inherited; 
-    if FileName <> ''
+    if AValue <> ''
     then begin
-      SendCmdLn('file %s', [FileName], True);
+      SendCmdLn('file %s', [AValue], True);
       FHasSymbols := Pos('no debugging symbols', OutputLines.Text) = 0;
       if not FHasSymbols
-      then WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');
+      then WriteLN('WARNING: File ''',AValue, ''' has no debug symbols');
     end;
+    inherited; 
   end;
 end;
 
@@ -392,11 +463,12 @@ procedure TGDBDebugger.TestCmd(const ACommand: String);
 begin
   SetState(dsRun);
   inherited TestCmd(ACommand);
-  DoCurrent(GetLocation);
-  SetState(GetGDBState);
+  GetProgramInfo(True);
 end;
 
+{ =========================================================================== }
 { TGDBBreakPoint }
+{ =========================================================================== }
 
 constructor TGDBBreakPoint.Create(ACollection: TCollection); 
 begin
@@ -431,25 +503,50 @@ procedure TGDBBreakPoint.DoExpressionChange;
 begin
 end;
 
-procedure TGDBBreakPoint.SetLocation(const ASource: String; const ALine: Integer); 
+procedure TGDBBreakPoint.DoStateChange; 
+begin   
+  inherited;
+  if  (Debugger.State = dsStop)
+  and (FBreakID = 0)
+  then SetBreakpoint;
+end;
+
+procedure TGDBBreakPoint.Hit;
+begin
+  SetHitCount(HitCount + 1);
+
+  if bpaEnableGroup in Actions
+  then; //TODO
+  if bpaDisableGroup in Actions
+  then; //TODO
+end;
+  
+procedure TGDBBreakPoint.SetBreakpoint;
 var
   idx: Integer;
   S: String;
 begin
-  if TGDBDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
+  S := TGDBDebugger(Debugger).SendCommand('break %s:%d', [Source, Line])[0];
+  idx := Pos(' at', S);
+  if idx >0 
   then begin
-    S := TGDBDebugger(Debugger).SendCommand('break %s:%d', [ASource, ALine])[0];
-    idx := Pos(' at', S);
-    if idx >0 
-    then begin
-      FBreakID := StrToIntDef(Copy(S, 12, idx - 12), 0);
-    end;
-    SetValid(FBreakID <> 0);
-    DoEnableChange;
+    FBreakID := StrToIntDef(Copy(S, 12, idx - 12), 0);
   end;
+  SetValid(FBreakID <> 0);
+  DoEnableChange;
 end;
 
+  
+procedure TGDBBreakPoint.SetLocation(const ASource: String; const ALine: Integer); 
+begin  
+  inherited;
+  if TGDBDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
+  then SetBreakpoint;
+end;
+
+{ =========================================================================== }
 { TGDBWatch }
+{ =========================================================================== }
 
 procedure TGDBWatch.DoEnableChange; 
 begin
@@ -457,7 +554,7 @@ end;
 
 function TGDBWatch.GetValue: String; 
 begin
-  if (TGDBDebugger(Debugger).State in [dsStop, dsPause, dsIdle])
+  if (Debugger.State in [dsStop, dsPause, dsIdle])
   and Valid 
   then begin
   end
@@ -472,7 +569,7 @@ end;
 procedure TGDBWatch.SetExpression(const AValue: String); 
 begin
   if  (AValue <> Expression)
-  and (TGDBDebugger(Debugger).State in [dsStop, dsPause, dsIdle])
+  and (Debugger.State in [dsStop, dsPause, dsIdle])
   then begin
     //TGDBDebugger(Debugger).SendCmdLn('', True);
   end;
@@ -485,6 +582,14 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/02/20 23:33:24  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.5  2002/02/06 08:58:29  lazarus
   MG: fixed compiler warnings and asking to create non existing files
 

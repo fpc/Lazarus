@@ -27,7 +27,7 @@ unit Debugger;
 interface
 
 uses
-  Classes, DBGWatch, DBGBreakpoint;
+  Classes;
 
 type
   TDBGLocationRec = record
@@ -72,8 +72,141 @@ type
   
 *)  
 
+
+  TDBGBreakPointAction = (bpaStop, bpaEnableGroup, bpaDisableGroup);
+  TDBGBreakPointActions =set of TDBGBreakPointAction;
+
+  TDebugger = class;
+  TDBGBreakPointGroup = class;
+  TDBGBreakPointClass = class of TDBGBreakPoint;
+  TDBGBreakPoint = class(TCollectionItem)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FGroup: TDBGBreakPointGroup;
+    FValid: Boolean;
+    FEnabled: Boolean;
+    FHitCount: Integer;
+    FExpression: String;                                             
+    FSource: String; 
+    FLine: Integer;
+    FFirstRun: Boolean;
+    FActions: TDBGBreakPointActions;
+    procedure SetActions(const AValue: TDBGBreakPointActions); 
+    procedure SetEnabled(const AValue: Boolean); 
+    procedure SetExpression(const AValue: String); 
+    procedure SetGroup(const AValue: TDBGBreakPointGroup);
+  protected                                        
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure DoActionChange; virtual;
+    procedure DoEnableChange; virtual;
+    procedure DoExpressionChange; virtual;
+    procedure DoStateChange; virtual;
+    procedure SetHitCount(const AValue: Integer); 
+    procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
+    procedure SetValid(const AValue: Boolean); 
+    property  Debugger: TDebugger read FDebugger;
+  public
+    procedure AddDisableGroup(const AGroup: TDBGBreakPointGroup);
+    procedure AddEnableGroup(const AGroup: TDBGBreakPointGroup);
+    constructor Create(ACollection: TCollection); override;
+    procedure RemoveDisableGroup(const AGroup: TDBGBreakPointGroup);
+    procedure RemoveEnableGroup(const AGroup: TDBGBreakPointGroup);
+    property Actions: TDBGBreakPointActions read FActions write SetActions;
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Group: TDBGBreakPointGroup read FGroup write SetGroup;
+    property HitCount: Integer read FHitCount;
+    property Expression: String read FExpression write SetExpression;
+    property Source: String read FSource; 
+    property Line: Integer read FLine;
+    property Valid: Boolean read FValid;
+  end;
+
+  TDBGBreakPoints = class(TCollection)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    function GetItem(const AnIndex: Integer): TDBGBreakPoint;
+    procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
+  protected
+    procedure DoStateChange;
+  public 
+    constructor Create(const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass);
+    function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+    function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+    property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
+  end;
+  
+  TDBGBreakPointGroup = class(TCollectionItem)
+  private
+    FEnabled: Boolean;
+    FName: String;
+    FBreakpoints: TList;
+    function GetBreakpoint(const AIndex: Integer): TDBGBreakPoint;
+    procedure SetEnabled(const AValue: Boolean);
+    procedure SetName(const AValue: String);
+  protected
+  public
+    function Add(const ABreakPoint: TDBGBreakPoint): Integer;
+    function Count: Integer;
+    constructor Create(ACollection: TCollection); override;
+    procedure Delete(const AIndex: Integer);
+    destructor Destroy; override;
+    function Remove(const ABreakPoint: TDBGBreakPoint): Integer;
+    property Breakpoints[const AIndex: Integer]: TDBGBreakPoint read GetBreakpoint;
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Name: String read FName write SetName;
+  end;
+
+  TDBGBreakPointGroups = class(TCollection)
+  private                     
+    function GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
+    procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPointGroup);
+  protected
+  public
+    constructor Create;
+    property Items[const AnIndex: Integer]: TDBGBreakPointGroup read GetItem write SetItem; default;
+  end;
+
+  TDBGWatchClass = class of TDBGWatch;
+  TDBGWatch = class(TCollectionItem)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    FEnabled: Boolean;
+    FExpression: String;
+    //FValue: String;
+    FOnChange: TNotifyEvent;
+    procedure SetEnabled(const AValue: Boolean);
+  protected
+    procedure DoEnableChange; virtual;
+    procedure DoStateChange; virtual; 
+    function  GetValue: String; virtual;
+    function  GetValid: Boolean; virtual;
+    procedure SetExpression(const AValue: String); virtual;
+    procedure SetValue(const AValue: String); virtual;
+    property  Debugger: TDebugger read FDebugger;
+  public
+    constructor Create(ACollection: TCollection); override;
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Expression: String read FExpression write SetExpression;
+    property Valid: Boolean read GetValid;
+    property Value: String read GetValue write SetValue;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  TDBGWatches = class(TCollection)
+  private
+    FDebugger: TDebugger;  // reference to our debugger
+    function GetItem(const AnIndex: Integer): TDBGWatch;
+    procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
+  protected
+    procedure DoStateChange;  
+  public
+    constructor Create(const ADebugger: TDebugger; const AWatchClass: TDBGWatchClass); 
+    property Items[const AnIndex: Integer]: TDBGWatch read GetItem write SetItem; default;
+  end;
+
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject; const ALocation: TDBGLocationRec) of object;
+  TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String) of object;
 
   TDebugger = class(TObject)
   private
@@ -84,6 +217,7 @@ type
     FState: TDBGState;
     FWatches: TDBGWatches;
     FOnCurrent: TDBGCurrentLineEvent;
+    FOnException: TDBGExceptionEvent;
     FOnOutput: TDBGOutputEvent;
     FOnDbgOutput: TDBGOutputEvent;
     FOnState: TNotifyEvent;
@@ -94,6 +228,7 @@ type
     function  CreateWatches: TDBGWatches; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
+    procedure DoException(const AExceptionID: Integer; const AExceptionText: String);
     procedure DoOutput(const AText: String);
     procedure DoState;
     function  GetCommands: TDBGCommands; 
@@ -103,6 +238,7 @@ type
     procedure SetState(const AValue: TDBGState); 
   public
     constructor Create; {virtual; Virtual constructor makes no sense}
+                        //MWE: there will be a day that they do make sense :-)
     destructor Destroy; override;
     
     procedure Init; virtual;                         // Initializes the debugger
@@ -112,20 +248,21 @@ type
     procedure Stop;                                  // quit debugging
     procedure StepOver;         
     procedure StepInto;          
-    procedure RunTo(const ASource: String; const ALine: Integer); virtual;     // Executes til a certain point
-    procedure JumpTo(const ASource: String; const ALine: Integer); virtual;    // No execute, only set exec point
-    property SupportedCommands: TDBGCommands read GetSupportedCommands;        // All available commands of the debugger
-    property Arguments: String read FArguments write FArguments;               // Arguments feed to the program
-    property BreakPoints: TDBGBreakPoints read FBreakPoints;                   // list of all breakpoints
-    property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;    // list of all breakpointgroups
-    property Commands: TDBGCommands read GetCommands;                          // All current available commands of the debugger
-    property FileName: String read FFileName write SetFileName;                // The name of the exe to be debugged
-    property State: TDBGState read FState;                                     // The current stete of the debugger    
-    property Watches: TDBGWatches read FWatches;                               // list of all watches localvars etc
-    property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent; // Passes info about the current line being debugged
-    property OnState: TNotifyEvent read FOnState write FOnState;               // Fires when the current state of the debugger changes
-    property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;         // Passes all output of the debugged target
-    property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;// Passes all debuggeroutput        
+    procedure RunTo(const ASource: String; const ALine: Integer); virtual;       // Executes til a certain point
+    procedure JumpTo(const ASource: String; const ALine: Integer); virtual;      // No execute, only set exec point
+    property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
+    property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
+    property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
+    property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;      // list of all breakpointgroups
+    property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
+    property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
+    property State: TDBGState read FState;                                       // The current state of the debugger    
+    property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
+    property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
+    property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an exeption
+    property OnState: TNotifyEvent read FOnState write FOnState;                 // Fires when the current state of the debugger changes
+    property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
+    property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput        
   end;
 
 implementation
@@ -143,7 +280,9 @@ const
   {dsError} []
   );
 
+{ =========================================================================== }
 { TDebugger }
+{ =========================================================================== }
 
 constructor TDebugger.Create;
 begin
@@ -199,6 +338,11 @@ end;
 procedure TDebugger.DoDbgOutput(const AText: String);
 begin
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
+end;
+
+procedure TDebugger.DoException(const AExceptionID: Integer; const AExceptionText: String);
+begin
+  if Assigned(FOnException) then FOnException(Self, AExceptionID, AExceptionText);
 end;
 
 procedure TDebugger.DoOutput(const AText: String);
@@ -264,11 +408,14 @@ begin
   if FFileName <> AValue
   then begin 
     if FState in [dsRun, dsPause]
-    then Stop;
+    then Stop;        
+    // Reset state
+    FFileName := '';
+    SetState(dsIdle); 
+    
     FFileName := AValue;
-    if FFilename = ''
-    then SetState(dsIdle)
-    else SetState(dsStop); 
+    if FFilename <> ''
+    then SetState(dsStop); 
   end;
 end;
 
@@ -277,6 +424,8 @@ begin
   if AValue <> FState 
   then begin
     FState := AValue;
+    FBreakpoints.DoStateChange;
+    FWatches.DoStateChange;
     DoState;
   end;
 end;
@@ -296,9 +445,365 @@ begin
   ReqCmd(dcStop, []);
 end;
 
+{ =========================================================================== }
+{ TDBGBreakPoint }
+{ =========================================================================== }
+
+procedure TDBGBreakPoint.AddDisableGroup(const AGroup: TDBGBreakPointGroup);
+begin
+end;
+
+procedure TDBGBreakPoint.AddEnableGroup(const AGroup: TDBGBreakPointGroup);
+begin
+end;
+
+procedure TDBGBreakPoint.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TDBGBreakPoint 
+  then begin
+    TDBGBreakPoint(Dest).SetLocation(FSource, FLine);
+    TDBGBreakPoint(Dest).SetExpression(FExpression);
+    TDBGBreakPoint(Dest).SetActions(FActions);
+    TDBGBreakPoint(Dest).SetEnabled(FEnabled);
+  end
+  else inherited; 
+end;
+
+constructor TDBGBreakPoint.Create(ACollection: TCollection); 
+begin
+  inherited Create(ACollection);
+  FSource := '';
+  FLine := -1;
+  FValid := False;
+  FEnabled := False;
+  FHitCount := 0;
+  FExpression := '';
+  FGroup := nil;      
+  FFirstRun := True;  
+  FActions := [bpaStop];
+  FDebugger := TDBGBreakPoints(ACollection).FDebugger;
+end;
+
+procedure TDBGBreakPoint.DoActionChange; 
+begin
+end;
+
+procedure TDBGBreakPoint.DoEnableChange; 
+begin
+end;
+
+procedure TDBGBreakPoint.DoExpressionChange; 
+begin
+end;
+
+procedure TDBGBreakPoint.DoStateChange; 
+begin  
+  case Debugger.State of
+    dsStop, dsIdle: begin
+      FFirstRun := True;
+    end;
+    dsRun: begin
+      if FFirstRun 
+      then begin
+        FHitCount := 0;
+        FFirstRun := False;
+      end;
+    end;
+  end;  
+end;
+
+procedure TDBGBreakPoint.RemoveDisableGroup(const AGroup: TDBGBreakPointGroup);
+begin
+end;
+
+procedure TDBGBreakPoint.RemoveEnableGroup(const AGroup: TDBGBreakPointGroup);
+begin
+end;
+
+procedure TDBGBreakPoint.SetActions(const AValue: TDBGBreakPointActions);
+begin
+  if FActions <> AValue
+  then begin
+    FActions := AValue;
+    DoActionChange;
+  end;
+end;
+
+procedure TDBGBreakPoint.SetEnabled(const AValue: Boolean);
+begin
+  if FEnabled <> AValue
+  then begin
+    FEnabled := AValue;
+    DoEnableChange;
+  end;
+end;
+
+procedure TDBGBreakPoint.SetExpression(const AValue: String);
+begin
+  if FExpression <> AValue
+  then begin
+    FExpression := AValue;
+    DoExpressionChange;
+  end;
+end;
+
+procedure TDBGBreakPoint.SetGroup(const AValue: TDBGBreakPointGroup);
+var
+  Grp: TDBGBreakPointGroup;
+begin
+  if FGroup <> AValue
+  then begin
+    
+    if FGroup <> nil 
+    then begin
+      Grp := FGroup;
+      FGroup := nil;  //  avoid second entrance
+      Grp.Remove(Self);
+    end;
+    FGroup := AValue;
+    if FGroup <> nil 
+    then begin
+      FGroup.Add(Self);
+    end;
+  end;
+end;
+
+procedure TDBGBreakPoint.SetHitCount(const AValue: Integer);
+begin
+  FHitCount := AValue;
+end;
+
+procedure TDBGBreakPoint.SetLocation(const ASource: String; const ALine: Integer); 
+begin
+  FSource := ASource;
+  FLine := ALine;
+end;
+
+procedure TDBGBreakPoint.SetValid(const AValue: Boolean);
+begin
+  FValid := AValue;
+end;
+
+{ =========================================================================== }
+{ TDBGBreakPoints }
+{ =========================================================================== }
+
+function TDBGBreakPoints.Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Add);
+  Result.SetLocation(ASource, ALine);
+end;
+
+constructor TDBGBreakPoints.Create(const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass);
+begin
+  inherited Create(ABreakPointClass);
+  FDebugger := ADebugger;
+end;
+
+procedure TDBGBreakPoints.DoStateChange;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    GetItem(n).DoStateChange;
+end;
+
+function TDBGBreakPoints.Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    Result := GetItem(n);
+    if  (Result.Line = ALine)
+    and (Result.Source = ASource)
+    then Exit;
+  end;    
+  Result := nil;
+end;
+
+function TDBGBreakPoints.GetItem(const AnIndex: Integer): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited GetItem(AnIndex));
+end;
+
+procedure TDBGBreakPoints.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
+begin  
+  SetItem(AnIndex, AValue);   
+end;
+
+{ =========================================================================== }
+{ TDBGBreakPointGroup }
+{ =========================================================================== }
+
+function TDBGBreakPointGroup.Add(const ABreakPoint: TDBGBreakPoint): Integer;
+begin
+  Result := FBreakpoints.IndexOf(ABreakPoint); //avoid dups
+  if Result = -1
+  then begin
+    Result := FBreakpoints.Add(ABreakPoint);
+    ABreakpoint.Group := Self;
+  end;
+end;
+
+function TDBGBreakPointGroup.Count: Integer;
+begin
+  Result := FBreakpoints.Count;
+end;
+
+constructor TDBGBreakPointGroup.Create(ACollection: TCollection); 
+begin
+  inherited Create(ACollection);
+  FBreakpoints := TList.Create;
+  FEnabled := True;
+end;
+
+procedure TDBGBreakPointGroup.Delete(const AIndex: Integer);
+begin
+  Remove(TDBGBreakPoint(FBreakPoints[AIndex]));
+end;
+
+destructor TDBGBreakPointGroup.Destroy; 
+begin         
+  FBreakpoints.Free;
+  inherited Destroy;
+end;
+
+function TDBGBreakPointGroup.GetBreakpoint(const AIndex: Integer): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(FBreakPoints[AIndex]);
+end;
+
+function TDBGBreakPointGroup.Remove(const ABreakPoint: TDBGBreakPoint): Integer;
+begin
+  Result := FBreakpoints.Remove(ABreakPoint);
+  if ABreakpoint.Group = Self
+  then ABreakpoint.Group := nil;
+end;
+
+procedure TDBGBreakPointGroup.SetEnabled(const AValue: Boolean);
+var
+  n: Integer;
+begin
+  if FEnabled <> AValue
+  then begin
+    FEnabled := AValue;
+    for n := 0 to FBreakPoints.Count - 1 do
+      TDBGBreakpoint(FBreakPoints[n]).Enabled := FEnabled;
+  end;
+end;
+
+procedure TDBGBreakPointGroup.SetName(const AValue: String);
+begin
+  FName := AValue;
+end;
+
+{ =========================================================================== }
+{ TDBGBreakPointGroups }
+{ =========================================================================== }
+
+constructor TDBGBreakPointGroups.Create; 
+begin
+  inherited Create(TDBGBreakPointGroup);
+end;
+
+function TDBGBreakPointGroups.GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
+begin
+  Result := TDBGBreakPointGroup(inherited GetItem(AnIndex));
+end;
+
+procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPointGroup);
+begin
+  inherited SetItem(AnIndex, AValue);
+end;
+
+{ =========================================================================== }
+{ TDBGWatch }
+{ =========================================================================== }
+
+constructor TDBGWatch.Create(ACollection: TCollection); 
+begin
+  inherited Create(ACollection);
+  FEnabled := False;
+  FDebugger := TDBGWatches(ACollection).FDebugger;
+end;
+
+procedure TDBGWatch.DoEnableChange; 
+begin
+end;
+
+procedure TDBGWatch.DoStateChange;  
+begin
+end;
+
+function TDBGWatch.GetValid: Boolean;
+begin
+  Result := False;
+end;
+
+function TDBGWatch.GetValue: String;
+begin
+  if Valid 
+  then Result := '<unknown>'
+  else Result := '<invalid>';
+end;
+
+procedure TDBGWatch.SetEnabled(const AValue: Boolean);
+begin
+  if FEnabled <> AValue
+  then begin
+    FEnabled := AValue;
+    DoEnableChange;
+ end;
+end;
+
+procedure TDBGWatch.SetExpression(const AValue: String);
+begin
+end;
+
+procedure TDBGWatch.SetValue(const AValue: String);
+begin
+end;
+
+{ =========================================================================== }
+{ TDBGWatches }
+{ =========================================================================== }
+
+constructor TDBGWatches.Create(const ADebugger: TDebugger; const AWatchClass: TDBGWatchClass);
+begin                   
+  FDebugger := ADebugger;
+  inherited Create(AWatchClass);
+end;
+
+procedure TDBGWatches.DoStateChange;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    GetItem(n).DoStateChange;
+end;
+
+function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
+begin
+  Result := TDBGWatch(inherited GetItem(AnIndex));
+end;
+
+procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
+begin
+  inherited SetItem(AnIndex, AValue);
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2002/02/20 23:33:24  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.7  2002/02/06 08:58:29  lazarus
   MG: fixed compiler warnings and asking to create non existing files
 

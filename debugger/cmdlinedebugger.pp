@@ -287,7 +287,7 @@ var
   WaitSet: Integer;
   Idx, Count: Integer;
 begin                
-  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
+//  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
   if (FTargetProcess = nil)
   then OutHandle := 0
@@ -343,11 +343,13 @@ begin
     end;
   until OutputBuf = WaitPrompt; 
   
-  WriteLN('[TCmdLineDebugger.GetOutput] Leave');
+//  WriteLN('[TCmdLineDebugger.GetOutput] Leave');
 end;
 
 procedure TCmdLineDebugger.KillTargetProcess;
-begin
+begin           
+  if FTargetProcess = nil then Exit;
+  
   FTargetProcess.Terminate(0);
   FTargetProcess.WaitOnExit;
   try
@@ -364,7 +366,7 @@ const
 begin
   if FDbgProcess <> nil 
   then begin
-    WriteLN(Format('[TCmdLineDebugger.SendCmd] CMD: <%s>', [ACommand]));
+//    WriteLN(Format('[TCmdLineDebugger.SendCmd] CMD: <%s>', [ACommand]));
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
@@ -387,6 +389,14 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/02/20 23:33:23  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.5  2002/02/06 08:58:29  lazarus
   MG: fixed compiler warnings and asking to create non existing files
 

@@ -38,8 +38,8 @@ uses
   MsgView, NewProjectDlg, IDEComp, AbstractFormEditor, FormEditor,
   CustomFormEditor, ObjectInspector, PropEdits, ControlSelection, UnitEditor,
   CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros, KeyMapping,
-  ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGBreakpoint,
-  DBGWatch, GDBDebugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
+  ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm,
+  GDBDebugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo;
 
@@ -126,6 +126,7 @@ type
     itmViewMessage : TMenuItem;
     itmViewwatches : TMenuItem;
     itmViewBreakpoints : TMenuItem;
+    itmViewDebugOutput: TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -194,6 +195,7 @@ type
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuViewWatchesClick(Sender : TObject);
     procedure mnuViewBreakPointsClick(Sender : TObject);
+    procedure mnuViewDebugOutputClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
@@ -295,9 +297,10 @@ type
     
     // Debugger events
     procedure OnDebuggerChangeState(Sender: TObject);
-    procedure OnDebuggerCurrentLine(Sender: TObject; 
-       const ALocation: TDBGLocationRec);
-    Procedure OnDebuggerWatchChanged(Sender : TObject);
+    procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
+    procedure OnDebuggerWatchChanged(Sender: TObject);
+    procedure OnDebuggerOutput(Sender: TObject; const AText: String);
+    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
     
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -325,13 +328,15 @@ type
     FOpenEditorsOnCodeToolChange: boolean;
     FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
                                    // Else to own objet
+    FDebugOutputDlg: TDBGOutputForm;
     FDebugger: TDebugger;
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
 
-    Function CreateSeperator : TMenuItem;
-    Procedure SetDefaultsForForm(aForm : TCustomForm);
+    function CreateSeperator : TMenuItem;
+    procedure SetDefaultsForForm(aForm : TCustomForm);
+    procedure OutputFormDestroy(Sender: TObject);
 
   protected
     procedure ToolButtonClick(Sender : TObject);
@@ -1364,6 +1369,13 @@ begin
   itmViewBreakPoints.Shortcut := VK_B or scCtrl or scAlt;
   itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
   mnuView.Add(itmViewBreakPoints);
+
+  itmViewDebugOutput := TMenuItem.Create(Self);
+  itmViewDebugOutput.Name:='itmViewDebugOutput';
+  itmViewDebugOutput.Caption := 'Debug output';
+  itmViewDebugOutput.OnClick := @mnuViewDebugOutputClick;
+  mnuView.Add(itmViewDebugOutput);
+
 //--------------
 // Project
 //--------------
@@ -4117,7 +4129,6 @@ begin
       then Exit;
       FDebugger.FileName := ProgramFilename;
       FDebugger.Arguments := ''; //TODO: get arguments
-      FDebugger.Run;
     end;
   else 
     // Temp solution, in futer it will be run by dummy debugger
@@ -4127,7 +4138,6 @@ begin
       FRunProcess.CommandLine := ProgramFilename;
       FRunProcess.Options:= [poUsePipes, poNoConsole];
       FRunProcess.ShowWindow := swoNone;
-      FRunProcess.Execute;
     except
       on e: Exception do 
         MessageDlg(Format('Error initializing program'#13 + 
@@ -4135,7 +4145,10 @@ begin
                           'Error: %s', [ProgramFilename, e.Message]), mterror, [mbok], 0);
     end;
   end;   
-
+  
+  if FDebugOutputDlg <> nil
+  then FDebugOutputDlg.Clear;
+  
   Result := mrOK;
   ToolStatus := itDebugger;
 end;
@@ -4309,6 +4322,8 @@ begin
   //MainUnitInfo:=Project.Units[Project.MainUnit];
   FDebugger.OnState:=@OnDebuggerChangeState;
   FDebugger.OnCurrent:=@OnDebuggerCurrentLine;
+  FDebugger.OnDbgOutput := @OnDebuggerOutput;
+  FDebugger.OnException := @OnDebuggerException;
   if FDebugger.State = dsNone 
   then FDebugger.Init;
   
@@ -5760,10 +5775,19 @@ Writeln('DONE showing breakpoints');
 //  CreateLFM(Insertwatch);
 end;
 
-Procedure TMainIDE.OnDebuggerWatchChanged(Sender : TObject);
+procedure TMainIDE.mnuViewDebugOutputClick(Sender : TObject);
 begin
-  Writeln('OnDebuggerWatchChanged');
-  //watch changed.
+  if FDebugOutputDlg = nil
+  then begin
+    FDebugOutputDlg := TDBGOutputForm.Create(Self);
+    FDebugOutputDlg.OnDestroy := @OutputFormDestroy;
+  end;
+  FDebugOutputDlg.Show;  
+end;
+
+procedure TMainIDE.OutputFormDestroy(Sender: TObject);
+begin
+  FDebugOutputDlg := nil;
 end;
 
 //This adds the watch to the TWatches TCollection and to the watches dialog
@@ -5785,8 +5809,27 @@ begin
   Watches_Dlg.AddWatch(NewWatch.Expression+':'+NewWatch.Value);
 end;
 
+procedure TMainIDE.OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
+begin
+  MessageDlg('Error', 
+    Format('Project %s raised exception class %d with message ''%s''.', [Project.Title, AExceptionID, AExceptionText]), 
+    mtError,[mbOk],0);
+end;
 
-Procedure TMainIDE.OnWatchAdded(Sender : TObject; AnExpression : String);
+procedure TMainIDE.OnDebuggerOutput(Sender: TObject; const AText: String);
+begin
+  if FDebugOutputDlg <> nil
+  then FDebugOutputDlg.AddText(AText);
+end;
+
+
+procedure TMainIDE.OnDebuggerWatchChanged(Sender : TObject);
+begin
+  Writeln('OnDebuggerWatchChanged');
+  //watch changed.
+end;
+
+procedure TMainIDE.OnWatchAdded(Sender : TObject; AnExpression : String);
 Var
   NewWatch : TdbgWatch;
 begin
@@ -5817,13 +5860,16 @@ begin
   SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
 end;
 
-Procedure TMainIDE.OnSrcNotebookCreateBreakPoint(Sender : TObject;
-  Line : Integer);
+procedure TMainIDE.OnSrcNotebookCreateBreakPoint(Sender : TObject; Line : Integer);
+var
+  NewBreak: TDBGBreakPoint;
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
   Breakpoints_Dlg.AddBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
-  FBreakPoints.Add(TSourceNotebook(sender).GetActiveSe.FileName, Line);
+
+  NewBreak := FBreakPoints.Add(TSourceNotebook(sender).GetActiveSe.FileName, Line);
+  NewBreak.Enabled := True;
 end;
 
 Procedure TMainIDE.OnSrcNotebookDeleteBreakPoint(Sender : TObject;
@@ -6002,6 +6048,14 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.227  2002/02/20 23:33:23  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.226  2002/02/20 16:01:43  lazarus
   MG: fixed editor opts general flags
 

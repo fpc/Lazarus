@@ -1,16 +1,26 @@
 object DbgOutputForm1: TDbgOutputForm
   CAPTION = 'Debug output'
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   TOP = 10
   LEFT = 10
-  HEIGHT = 150
-  WIDTH = 301
+  HEIGHT = 200
+  WIDTH = 400
   object txtOutput: TMemo
     Left = 8
     Top = 104
     Width = 600
     Height = 150
     Align = alClient
+    PopupMenu = mnuPopup
+  end
+  object mnuPopup: TPopupMenu
+    Left = 400
+    Top = 96
+    object popClear: TMenuItem
+      Caption = '&Clear'
+      OnClick = popClearClick
+    end
   end
 end

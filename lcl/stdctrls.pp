@@ -308,6 +308,7 @@ type
       property CharCase;
       property DragMode;
       property MaxLength;
+      property PopupMenu;
       property ReadOnly;
       property Text;
       property Visible;
@@ -321,8 +322,8 @@ type
       property Align;
       property Color;
       property Font;
-
       property Lines;
+      property PopupMenu;
       property ReadOnly;
       property Tabstop;
       property Visible;
@@ -582,6 +583,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/02/20 23:33:24  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.20  2002/02/03 00:24:01  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

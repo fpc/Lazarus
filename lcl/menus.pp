@@ -101,7 +101,6 @@ type
     property Handle: HMenu read GetHandle write FHandle;
     property Items[Index: Integer]: TMenuItem read GetItem; default;
     property Parent: TMenuItem read GetParent;
-    property OnClick: TNotifyEvent read FOnClick write FOnclick; 
   published
     property Caption: String read FCaption write SetCaption {stored IsCaptionStored};
     property Checked: Boolean read FChecked write SetChecked {stored IsCheckedStored} default False;
@@ -111,6 +110,7 @@ type
     property ImageIndex : Integer read FImageIndex write SetImageIndex;
     property ShortCut: TShortCut read FShortCut write SetShortCut {stored IsShortCutStored} default 0;
     property Visible: Boolean read FVisible write SetVisible {stored IsVisibleStored} default True;
+    property OnClick: TNotifyEvent read FOnClick write FOnclick; 
   end;
 
   TFindItemKind = (fkCommand, fkHandle, fkShortCut);
@@ -203,6 +203,14 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/02/20 23:33:24  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.6  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 

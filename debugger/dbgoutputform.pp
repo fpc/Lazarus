@@ -25,18 +25,23 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Debugger;
+  Buttons, StdCtrls, Menus;
 
 type
   TDbgOutputForm = class(TForm)
     txtOutput: TMemo;
+    mnuPopup: TPopupMenu;
+    popClear: TMenuItem;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure popClearClick(Sender: TObject);
   private
   protected
     procedure Loaded; override;
   public
     procedure AddText(const AText: String);
+    procedure Clear;
   end;
 
 implementation
@@ -44,6 +49,16 @@ implementation
 procedure TDbgOutputForm.AddText(const AText: String);
 begin
   txtOutput.Lines.Add(AText);
+end;
+
+procedure TDbgOutputForm.Clear;
+begin             
+  txtOutput.Lines.Clear; 
+end;
+
+procedure TDbgOutputForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
 end;
 
 procedure TDbgOutputForm.FormCreate(Sender: TObject);
@@ -63,12 +78,25 @@ begin
   txtOutput.Scrollbars := ssBoth;
 end;
 
+procedure TDbgOutputForm.popClearClick(Sender: TObject);
+begin
+  Clear;
+end;
+
 initialization
   {$I dbgoutputform.lrc}
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2002/02/20 23:33:24  lazarus
+  MWE:
+    + Published OnClick for TMenuItem
+    + Published PopupMenu property for TEdit and TMemo (Doesn't work yet)
+    * Fixed debugger running twice
+    + Added Debugger output form
+    * Enabled breakpoints
+
   Revision 1.1  2001/11/05 00:12:51  lazarus
   MWE: First steps of a debugger.
 
