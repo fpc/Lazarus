@@ -970,7 +970,8 @@ procedure TControl.SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer);
   be sent.
 }
 begin
-  if (fLastAlignedBounds.Left=aLeft)
+  if (cfLastAlignedBoundsValid in FControlFlags)
+  and (fLastAlignedBounds.Left=aLeft)
   and (fLastAlignedBounds.Top=aTop)
   and (fLastAlignedBounds.Right=aLeft+aWidth)
   and (fLastAlignedBounds.Bottom=aTop+aHeight)
@@ -980,6 +981,9 @@ begin
   fLastAlignedBounds.Top:=aTop;
   fLastAlignedBounds.Right:=aLeft+aWidth;
   fLastAlignedBounds.Bottom:=aTop+aHeight;
+
+  //if AnsiCompareText(ClassName,'TSCROLLBAR')=0 then
+  //  writeln('TControl.SetAlignedBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
 
   SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight, true);
 end;
@@ -2476,6 +2480,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.139  2003/06/27 23:42:38  mattias
+  fixed TScrollBar resizing
+
   Revision 1.138  2003/06/25 18:12:32  mattias
   added docking properties
 

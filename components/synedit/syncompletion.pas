@@ -286,26 +286,28 @@ uses
 
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
-{$IFDEF SYN_CPPB_1}
+  {$IFDEF SYN_LAZARUS}
+  inherited Create(AOwner);
+  {$ELSE}
+  {$IFDEF SYN_CPPB_1}
   CreateNew(AOwner, 0);
-{$ELSE}
-  {$IFDEF FPC}
-  CreateNew(AOwner,0);
   {$ELSE}
   CreateNew(AOwner);
   {$ENDIF}
-{$ENDIF}
+  {$ENDIF}
   FItemList := TStringList.Create;
   BorderStyle := bsNone;
   Scroll := TScrollBar.Create(self);
   Scroll.Kind := sbVertical;
   Scroll.ParentCtl3D := False;
   Scroll.OnChange := {$IFDEF FPC}@{$ENDIF}ScrollChange;
-  Scroll.Parent := self;
+  Scroll.Parent := Self;
   Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;
   Scroll.Width := 10;
   {$IFDEF SYN_LAZARUS}
   Scroll.Visible := True;
+  Scroll.Anchors:=[akRight];
+  Scroll.Align:=alRight;
   FTextColor:=clBlack;
   FTextSelectedColor:=clWhite;
   Caption:='Completion';
@@ -433,7 +435,7 @@ begin
   Scroll.LargeChange := NbLinesInWindow;
 
   {$IFNDEF SYN_LAZARUS}
-  // canvas.draw is unfinished in lcl
+  // bitmap.canvas.draw is unfinished in lcl
   with bitmap do begin
     canvas.pen.color := color;
     canvas.brush.color := color;
@@ -591,9 +593,11 @@ procedure TSynBaseCompletionForm.SetNbLinesInWindow(
 begin
   FNbLinesInWindow := Value;
   Height := fFontHeight * NbLinesInWindow + 2;
+  {$IFNDEF SYN_LAZARUS}
   Scroll.Top := 1;
   Scroll.Left := ClientWidth - Scroll.Width - 1;
   Scroll.Height := Height - 2;
+  {$ENDIF}
   Bitmap.Width := Scroll.Left;
   Bitmap.Height := Height - 2;
 end;

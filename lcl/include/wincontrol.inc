@@ -91,6 +91,7 @@ var
     NewBottom: Integer;
   begin
     {$IFDEF CHECK_POSITION}
+    //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
     with Control do
       writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -140,6 +141,7 @@ var
           
         {$IFDEF CHECK_POSITION}
         //if csDesigning in ComponentState then
+        //if AnsiCompareText(Self.ClassName,'TSynBaseCompletionForm')=0 then
         writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
           ' ',Name,':',ClassName,
           ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
@@ -213,6 +215,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
+      //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
@@ -239,6 +242,11 @@ var
       }
       NewRight:=NewLeft+NewWidth;
       NewBottom:=NewTop+NewHeight;
+      {if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+        writeln(' AAA1 akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
+                ' akLeft in Control.Anchors=',akLeft in Control.Anchors,
+                ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
+                ' New=',NewLeft,',',NewTop,',',NewRight,',',NewBottom);}
       if akLeft in AnchorAlign[AAlign] then begin
         if not (akRight in Control.Anchors) then
           dec(NewRight,NewLeft-ARect.Left);
@@ -250,12 +258,14 @@ var
         NewTop:=ARect.Top;
       end;
       if akRight in AnchorAlign[AAlign] then begin
-        if not (akLeft in Control.Anchors) then
+        if not (akLeft in Control.Anchors)
+        and not (akLeft in AnchorAlign[AAlign]) then
           inc(NewLeft,ARect.Right-NewRight);
         NewRight:=ARect.Right;
       end;
       if akBottom in AnchorAlign[AAlign] then begin
-        if not (akTop in Control.Anchors) then
+        if not (akTop in Control.Anchors)
+        and not (akTop in AnchorAlign[AAlign]) then
           inc(NewTop,ARect.Bottom-NewBottom);
         NewBottom:=ARect.Bottom;
       end;
@@ -263,6 +273,7 @@ var
       NewHeight:=Max(0,NewBottom-NewTop);
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
+      //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
@@ -279,6 +290,7 @@ var
     if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
+      //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
       //if csDesigning in Control.ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
@@ -297,6 +309,7 @@ var
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
+      //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
       {$ENDIF}
@@ -323,6 +336,7 @@ var
     end;
 
     {$IFDEF CHECK_POSITION}
+    //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
     with Control do
       writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' Align=',AlignNames[AAlign]);
     {$ENDIF}
@@ -728,13 +742,22 @@ end;
 function TWinControl.GetClientRect: TRect;
 
   procedure StoreClientRect(NewClientRect: TRect);
+  var
+    ClientSizeChanged: boolean;
+    i: Integer;
   begin
     if wcfClientRectNeedsUpdate in FFlags then begin
+      ClientSizeChanged:=(FClientWidth<>NewClientRect.Right)
+                      or (FClientHeight<>NewClientRect.Bottom);
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
       {$IFDEF VerboseClientRectBugFix}
       writeln('StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight);
       {$ENDIF}
+      if ClientSizeChanged then begin
+        for i:=0 to ControlCount-1 do
+          Exclude(Controls[i].FControlFlags,cfLastAlignedBoundsValid);
+      end;
       Exclude(FFlags,wcfClientRectNeedsUpdate);
     end;
   end;
@@ -2703,6 +2726,7 @@ var
 begin
   {$IFDEF CHECK_POSITION}
   //if csDesigning in ComponentState then
+  //if AnsiCompareText(ClassName,'TScrollBar')=0 then
   writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
   ' Old=',Left,',',Top,',',Width,',',Height,
   ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
@@ -2721,6 +2745,7 @@ begin
       // LCL bounds are not up2date -> process new bounds
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
+      //if AnsiCompareText(ClassName,'TScrollBar')=0 then
       writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
       ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
       ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
@@ -2849,6 +2874,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.144  2003/06/27 23:42:38  mattias
+  fixed TScrollBar resizing
+
   Revision 1.143  2003/06/27 22:07:39  mattias
   fixed targetos for clean all
 

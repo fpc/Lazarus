@@ -934,10 +934,24 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
+var
+  Requisition: TGtkRequisition;
 begin
   if NewWidth<=0 then NewWidth:=1;
   if NewHeight<=0 then NewHeight:=1;
+  
+  if GtkWidgetIsA(Widget,GTK_SCROLLBAR_TYPE) then begin
+    // the width of a scrollbar is fixed and depends only on the theme
+    gtk_widget_size_request (widget, @Requisition);
+    if GtkWidgetIsA(Widget,GTK_HSCROLLBAR_TYPE) then begin
+      NewHeight:=Requisition.height;
+    end else begin
+      NewWidth:=Requisition.width;
+    end;
+  end;
+  
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
+  
   if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
     // the combobox has an entry, which height is not resized
     // automatically. Do it manually.
@@ -7474,6 +7488,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.384  2003/06/27 23:42:38  mattias
+  fixed TScrollBar resizing
+
   Revision 1.383  2003/06/26 18:18:25  mattias
   fixed recaching
 

@@ -535,7 +535,8 @@ type
   TControlFlag = (
     cfRequestAlignNeeded,
     cfClientWidthLoaded,
-    cfClientHeightLoaded
+    cfClientHeightLoaded,
+    cfLastAlignedBoundsValid
     );
   TControlFlags = set of TControlFlag;
 
@@ -1624,6 +1625,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2003/06/27 23:42:38  mattias
+  fixed TScrollBar resizing
+
   Revision 1.133  2003/06/25 18:12:32  mattias
   added docking properties
 
