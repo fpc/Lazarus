@@ -31,13 +31,6 @@ Const
 
 //##apiwiz##sps##   // Do not remove
 
-Procedure Assert(Const PassErr: Boolean; Const Msg: String);
-Begin
-  {$IFNDEF VER1_1}
-    Assert(PassErr, Msg);
-  {$ENDIF}
-End;
-
 {------------------------------------------------------------------------------
   Method:  Arc
   Params:  DC - handle to device context
@@ -934,7 +927,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.HideCaret(HWnd: HWND): Boolean;
 Begin
-  Assert(False, Format('Trace:  [TWin32Object.HideCaret] HWND: 0x%x', [hWnd]));
+  Assert(False, Format('Trace:  [TWin32Object.HideCaret] HWND: 0x%x', [HWnd]));
   Result := Windows.HideCaret(hWnd);
 End;
 
@@ -1715,6 +1708,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/01/21 09:04:30  lazarus
+  Keith: Removed redef of Assert
+
   Revision 1.3  2002/01/21 08:42:06  lazarus
   Keith: Fixed some run-time exceptions for FPC 1.1
 
