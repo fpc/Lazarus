@@ -1917,23 +1917,6 @@ begin
   //writeln('TControl.Create END ',Name,':',ClassName);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl Create Component                                                   }
-{------------------------------------------------------------------------------}
-procedure TControl.CreateComponent(AOwner : TComponent);
-begin
-  CNSendMessage(LM_CREATE, Self, nil);
-end;
-
-{------------------------------------------------------------------------------}
-{  TControl Destroy Component                                                  }
-{------------------------------------------------------------------------------}
-procedure TControl.DestroyComponent;
-begin
-  CNSendMessage(LM_DESTROY, Self, nil);
-end;
-
-
 {------------------------------------------------------------------------------
   Method:  TControl.GetDeviceContext
   Params:  WindowHandle: the windowhandle of this control
@@ -2065,6 +2048,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.110  2002/12/27 17:12:37  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.109  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 
