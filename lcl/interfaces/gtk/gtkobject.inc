@@ -3080,7 +3080,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.SetProperties (Sender : TObject) : integer;
 const
-  aGTKJustification: array[TColumnAlignment] of TGTKJustification = (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
+  aGTKJustification: array[TAlignment] of TGTKJustification = (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
   aGTkSelectionMode: Array[Boolean] of TGtkSelectionMode = (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
 var
    Handle    : Pointer;
@@ -3206,20 +3206,20 @@ begin
           gtk_clist_freeze(PgtkCList(Widget));
           for I := 0 to TListview(sender).Columns.Count-1 do
           begin
-            ColName := TListview(sender).Columns.Item[i].Caption;
+            ColName := TListview(sender).Columns[i].Caption;
             GetMem(pColName, Length(colname)+1);
             StrPcopy(pColName, ColName);
             gtk_clist_set_column_title(Pgtkclist(Widget),I,pColName);
             Dispose(pColName);
             
             //set column alignment
-            gtk_clist_set_column_justification(PgtkCList(Widget),I,aGTKJUSTIFICATION[TListview(sender).Columns.Item[i].Alignment]);
+            gtk_clist_set_column_justification(PgtkCList(Widget),I,aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
             //set width
-            gtk_clist_set_column_width(PgtkCList(Widget),I, TListview(sender).Columns.Item[i].Width);
+            gtk_clist_set_column_width(PgtkCList(Widget),I, TListview(sender).Columns[i].Width);
             //set auto sizing
-            gtk_clist_set_column_auto_resize(PgtkCList(Widget),I, TListview(sender).Columns.Item[i].AutoSize);
+            gtk_clist_set_column_auto_resize(PgtkCList(Widget),I, TListview(sender).Columns[i].AutoSize);
             //set Visible
-            gtk_clist_set_column_visibility(PgtkCList(Widget),I, TListview(sender).Columns.Item[i].Visible);
+            gtk_clist_set_column_visibility(PgtkCList(Widget),I, TListview(sender).Columns[i].Visible);
           end;
 
           //sorting
@@ -3765,6 +3765,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.107  2002/03/12 23:55:37  lazarus
+  MWE:
+    * More delphi compatibility added/updated to TListView
+    * Introduced TDebugger.locals
+    * Moved breakpoints dialog to debugger dir
+    * Changed breakpoints dialog to read from resource
+
   Revision 1.106  2002/03/11 23:07:23  lazarus
   MWE:
     * Made TListview more Delphi compatible
