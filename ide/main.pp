@@ -2475,6 +2475,7 @@ var
   ACaption, AText: string;
   SrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
+  NewHighlighter: TLazSyntaxHighlighter;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   OldFilePath:=ExtractFilePath(AnUnitInfo.Filename);
@@ -2587,7 +2588,6 @@ begin
   end;
   
   // save source in the new position
-  EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
   if not CodeToolBoss.SaveBufferAs(AnUnitInfo.Source,NewFilename,NewSource)
   then begin
     Result:=mrCancel;
@@ -2596,6 +2596,7 @@ begin
   // get final filename
   NewFilename:=NewSource.Filename;
   NewFilePath:=ExtractFilePath(NewFilename);
+  EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
 
   // rename Resource file
   if (ResourceCode<>nil) then begin
@@ -2654,6 +2655,17 @@ begin
     SourceNoteBook.NoteBook.Pages[AnUnitInfo.EditorIndex]:=
                       CreateSrcEditPageName(NewUnitName,NewFilename,
                                             SourceNoteBook.NoteBook.PageIndex);
+
+  // change syntax highlighter
+  if not AnUnitInfo.CustomHighlighter then begin
+    NewHighlighter:=
+      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
+    if NewHighlighter<>AnUnitInfo.SyntaxHighlighter then begin
+      AnUnitInfo.SyntaxHighlighter:=NewHighlighter;
+      SrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
+    end;
+  end;
+
 
   Result:=mrOk;
 end;
@@ -3289,8 +3301,9 @@ begin
   AFilename:=AnUnitInfo.Filename;
 
   // create a new source editor
-  AnUnitInfo.SyntaxHighlighter:=
-    ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
+  if not AnUnitInfo.CustomHighlighter then
+    AnUnitInfo.SyntaxHighlighter:=
+      ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
   SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
     AFilename,-1),AnUnitInfo.Source);
   NewSrcEdit:=SourceNotebook.GetActiveSE;
@@ -6349,6 +6362,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.295  2002/05/16 13:00:55  lazarus
+  MG: fixed changing syntax highlighter on save as
+
   Revision 1.294  2002/05/13 06:12:54  lazarus
   MG: fixed saving unitlinks after changing fpc soure path
 

@@ -63,21 +63,22 @@ type
      nuForm,    // unit with form
      nuCustomProgram  // program
    );
-    
 
+      
   TUnitInfo = class(TObject)
   private
     { Variables }
     fBreakpoints: TProjectBreakPointList;
     fCursorPos: TPoint;
+    fCustomHighlighter: boolean; // do not change highlighter on file extension change
     fEditorIndex: integer;
     fFileName: string;
     fForm: TComponent;
     fFormName: string; // classname is always T<FormName>
         // this attribute contains the formname even if the unit is not loaded
-    fHasResources: boolean;
+    fHasResources: boolean; // source has resource file
     fIsPartOfProject: boolean;
-    fLoaded:  Boolean;  // loaded in the source editor
+    fLoaded: Boolean;  // loaded in the source editor
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
@@ -107,11 +108,14 @@ type
     procedure Clear;
     procedure CreateStartCode(NewUnitType: TNewUnitType;
          const NewUnitName: string);
+    function IsVirtual: boolean;
 
     { Properties }
     property Breakpoints: TProjectBreakPointList
         read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
+    property CustomHighlighter: boolean
+        read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex:integer read fEditorIndex write fEditorIndex;
     property Filename: String read GetFilename;
     property Form: TComponent read fForm write fForm;
@@ -134,7 +138,6 @@ type
         read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
-    function IsVirtual: boolean;
   end;
 
 
@@ -442,6 +445,7 @@ begin
   fBreakPoints.Clear;
   fCursorPos.X := -1;
   fCursorPos.Y := -1;
+  fCustomHighlighter := false;
   fEditorIndex := -1;
   fFilename := '';
   fForm := nil;
@@ -452,7 +456,7 @@ begin
   fModified := false;
   fReadOnly := false;
   if fSource<>nil then fSource.Clear;
-  fSyntaxHighlighter := lshFreePascal;
+  fSyntaxHighlighter := lshText;
   fTopLine := -1;
   fUnitName := '';
 end;
@@ -1454,6 +1458,9 @@ end.
 
 {
   $Log$
+  Revision 1.65  2002/05/16 13:00:57  lazarus
+  MG: fixed changing syntax highlighter on save as
+
   Revision 1.64  2002/05/10 06:57:45  lazarus
   MG: updated licenses
 
