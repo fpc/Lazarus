@@ -294,11 +294,11 @@ end;
 function CheckAddingDependency(LazPackage: TLazPackage;
   NewDependency: TPkgDependency): boolean;
 var
-  NewPckName: String;
+  NewPkgName: String;
 begin
   Result:=false;
 
-  NewPckName:=NewDependency.PackageName;
+  NewPkgName:=NewDependency.PackageName;
 
   // check Max-Min version
   if (pdfMinVersion in NewDependency.Flags)
@@ -312,18 +312,18 @@ begin
   end;
 
   // check packagename
-  if not IsValidIdent(NewPckName) then begin
+  if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
     MessageDlg('Invalid packagename',
-      'The package name "'+NewPckName+'" is invalid.'#13
+      'The package name "'+NewPkgName+'" is invalid.'#13
       +'Plase choose an existing package.',
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check if package is already required
-  if LazPackage.FindDependencyByName(NewPckName)<>nil then begin
+  if LazPackage.FindDependencyByName(NewPkgName)<>nil then begin
     MessageDlg('Dependency already exists',
-      'The package has already a dependency for the package "'+NewPckName+'".',
+      'The package has already a dependency for the package "'+NewPkgName+'".',
       mtError,[mbCancel],0);
     exit;
   end;

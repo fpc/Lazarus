@@ -104,7 +104,7 @@ implementation
 
 uses
   Math;
-
+  
 function ShowAddToProjectDlg(AProject: TProject;
   var AddResult: TAddToProjectResult): TModalResult;
 var
@@ -122,6 +122,56 @@ begin
     AddResult:=nil;
   end;
   AddToProjectDialog.Free;
+end;
+
+function CheckAddingDependency(LazProject: TProject;
+  NewDependency: TPkgDependency): boolean;
+var
+  NewPkgName: String;
+begin
+  Result:=false;
+  
+  NewPkgName:=NewDependency.PackageName;
+
+  // check Max-Min version
+  if (pdfMinVersion in NewDependency.Flags)
+  and (pdfMaxVersion in NewDependency.Flags)
+  and (NewDependency.MaxVersion.Compare(NewDependency.MinVersion)<0) then
+  begin
+    MessageDlg('Invalid Min-Max version',
+      'The Maximum Version is lower than the Minimim Version.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check packagename
+  if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
+    MessageDlg('Invalid packagename',
+      'The package name "'+NewPkgName+'" is invalid.'#13
+      +'Plase choose an existing package.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check if package is already required
+  if LazProject.FindDependencyByName(NewPkgName)<>nil then begin
+    MessageDlg('Dependency already exists',
+      'The project has already a dependency for the package "'+NewPkgName+'".',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check if required package exists
+  if not PackageGraph.DependencyExists(NewDependency,fpfSearchPackageEverywhere)
+  then begin
+    MessageDlg('Package not found',
+      'The dependency "'+NewDependency.AsString+'" was not found.'#13
+      +'Please choose an existing package.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  Result:=true;
 end;
 
 { TAddToProjectDialog }
@@ -157,8 +207,51 @@ begin
 end;
 
 procedure TAddToProjectDialog.NewDependButtonClick(Sender: TObject);
+var
+  NewDependency: TPkgDependency;
 begin
+  NewDependency:=TPkgDependency.Create;
+  try
+    // check minimum version
+    if DependMinVersionEdit.Text<>'' then begin
+      if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
+      begin
+        MessageDlg('Invalid version',
+          'The Minimum Version "'+DependMinVersionEdit.Text+'" is invalid.'#13
+          +'Please use the format major.minor.release.build'#13
+          +'For exmaple: 1.0.20.10',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
+    end;
+    // check maximum version
+    if DependMaxVersionEdit.Text<>'' then begin
+      if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
+      begin
+        MessageDlg('Invalid version',
+          'The Maximum Version "'+DependMaxVersionEdit.Text+'" is invalid.'#13
+          +'Please use the format major.minor.release.build'#13
+          +'For exmaple: 1.0.20.10',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+      NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
+    end;
 
+    NewDependency.PackageName:=DependPkgNameComboBox.Text;
+    if not CheckAddingDependency(TheProject,NewDependency) then exit;
+
+    // ok
+    AddResult:=TAddToProjectResult.Create;
+    AddResult.Dependency:=NewDependency;
+    NewDependency:=nil;
+    AddResult.AddType:=a2pRequiredPkg;
+
+    ModalResult:=mrOk;
+  finally
+    NewDependency.Free;
+  end;
 end;
 
 procedure TAddToProjectDialog.AddFileButtonClick(Sender: TObject);

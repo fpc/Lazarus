@@ -623,6 +623,10 @@ function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 
 procedure SortDependencyList(Dependencies: TList);
+procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
+  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject);
+procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
+  First: TPkgDependency; ListType: TPkgDependencyList);
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
@@ -659,6 +663,51 @@ begin
   for Result:=Low(TLazPackageType) to High(TLazPackageType) do
     if AnsiCompareText(s,LazPackageTypeIdents[Result])=0 then exit;
   Result:=lptRunTime;
+end;
+
+procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
+  var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject);
+var
+  i: Integer;
+  PkgDependency: TPkgDependency;
+  NewCount: Integer;
+  List: TList;
+  FileVersion: Integer;
+begin
+  FileVersion:=XMLConfig.GetValue(ThePath+'Version',0);
+  NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
+  List:=TList.Create;
+  for i:=0 to NewCount-1 do begin
+    PkgDependency:=TPkgDependency.Create;
+    PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
+                                    FileVersion);
+    if PkgDependency.MakeSense then
+      List.Add(PkgDependency)
+    else
+      PkgDependency.Free;
+  end;
+  SortDependencyList(List);
+  for i:=0 to List.Count-1 do begin
+    TPkgDependency(List[i]).AddToList(First,ListType);
+    TPkgDependency(List[i]).Owner:=Owner;
+  end;
+  List.Free;
+end;
+
+procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
+  First: TPkgDependency; ListType: TPkgDependencyList);
+var
+  i: Integer;
+  Dependency: TPkgDependency;
+begin
+  i:=0;
+  Dependency:=First;
+  while Dependency<>nil do begin
+    inc(i);
+    Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/');
+    Dependency:=Dependency.NextDependency[ListType];
+  end;
+  XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
 end;
 
 procedure SortDependencyList(Dependencies: TList);
@@ -1722,33 +1771,6 @@ var
   FileVersion: integer;
   OldFilename: String;
 
-  procedure LoadPkgDependencyList(const ThePath: string;
-    var First: TPkgDependency; ListType: TPkgDependencyList);
-  var
-    i: Integer;
-    PkgDependency: TPkgDependency;
-    NewCount: Integer;
-    List: TList;
-  begin
-    NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
-    List:=TList.Create;
-    for i:=0 to NewCount-1 do begin
-      PkgDependency:=TPkgDependency.Create;
-      PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
-                                      FileVersion);
-      if PkgDependency.MakeSense then
-        List.Add(PkgDependency)
-      else
-        PkgDependency.Free;
-    end;
-    SortDependencyList(List);
-    for i:=0 to List.Count-1 do begin
-      TPkgDependency(List[i]).AddToList(First,ListType);
-      TPkgDependency(List[i]).Owner:=Self;
-    end;
-    List.Free;
-  end;
-
   procedure LoadFiles(const ThePath: string; List: TList);
   var
     i: Integer;
@@ -1796,8 +1818,8 @@ begin
   FName:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
-  LoadPkgDependencyList(Path+'RequiredPkgs/',
-                        FFirstRequiredDependency,pdlRequires);
+  LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
+                        FFirstRequiredDependency,pdlRequires,Self);
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
   LoadRect(XMLConfig,Path+'EditorRect/',fEditorRect);
   EndUpdate;
@@ -1809,22 +1831,6 @@ end;
 procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   );
   
-  procedure SavePkgDependencyList(const ThePath: string;
-    First: TPkgDependency; ListType: TPkgDependencyList);
-  var
-    i: Integer;
-    Dependency: TPkgDependency;
-  begin
-    i:=0;
-    Dependency:=First;
-    while Dependency<>nil do begin
-      inc(i);
-      Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/');
-      Dependency:=Dependency.NextDependency[ListType];
-    end;
-    XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
-  end;
-
   procedure SaveFiles(const ThePath: string; List: TList);
   var
     i: Integer;
@@ -1857,7 +1863,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
-  SavePkgDependencyList(Path+'RequiredPkgs/',
+  SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
   SaveRect(XMLConfig,Path+'EditorRect/',fEditorRect);

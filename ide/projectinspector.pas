@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, AddToProjectDlg;
+  Project, AddToProjectDlg, PackageSystem, PackageDefs;
   
 type
   TOnAddUnitToProject =
@@ -61,7 +61,9 @@ type
     OptionsBitBtn: TBitBtn;
     ItemsTreeView: TTreeView;
     ImageList: TImageList;
+    ItemsPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure OpenBitBtnClick(Sender: TObject);
@@ -77,8 +79,10 @@ type
     FLazProject: TProject;
     FilesNode: TTreeNode;
     DependenciesNode: TTreeNode;
+    RemovedDependenciesNode: TTreeNode;
     ImageIndexFiles: integer;
     ImageIndexRequired: integer;
+    ImageIndexConflict: integer;
     ImageIndexRemovedRequired: integer;
     ImageIndexProject: integer;
     ImageIndexUnit: integer;
@@ -92,6 +96,8 @@ type
     procedure UpdateRequiredPackages;
     procedure UpdateRemovedRequiredPackages;
     function GetImageIndexOfFile(AFile: TUnitInfo): integer;
+    procedure OnProjectBeginUpdate(Sender: TObject);
+    procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -103,6 +109,7 @@ type
     procedure UpdateButtons;
     procedure UpdateItems;
     function GetSelectedFile: TUnitInfo;
+    function GetSelectedDependency: TPkgDependency;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
     property OnOpen: TNotifyEvent read FOnOpen write FOnOpen;
@@ -168,6 +175,7 @@ var
   AddResult: TAddToProjectResult;
   NewFile: TUnitInfo;
   i: Integer;
+  RequiredPackage: TLazPackage;
 begin
   if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
   
@@ -187,11 +195,22 @@ begin
     end;
   
   a2pRequiredPkg:
-    ;
+    begin
+      BeginUpdate;
+      LazProject.AddRequiredDependency(AddResult.Dependency);
+      PackageGraph.OpenDependency(AddResult.Dependency,RequiredPackage);
+      UpdateItems;
+      EndUpdate;
+    end;
   
   end;
   
   AddResult.Free;
+end;
+
+procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
+begin
+
 end;
 
 procedure TProjectInspectorForm.OpenBitBtnClick(Sender: TObject);
@@ -217,7 +236,15 @@ end;
 procedure TProjectInspectorForm.SetLazProject(const AValue: TProject);
 begin
   if FLazProject=AValue then exit;
+  if FLazProject<>nil then begin
+    FLazProject.OnBeginUpdate:=nil;
+    FLazProject.OnEndUpdate:=nil;
+  end;
   FLazProject:=AValue;
+  if FLazProject<>nil then begin
+    FLazProject.OnBeginUpdate:=@OnProjectBeginUpdate;
+    FLazProject.OnEndUpdate:=@OnProjectEndUpdate;
+  end;
   UpdateAll;
 end;
 
@@ -242,6 +269,8 @@ begin
     AddResImg('pkg_files');
     ImageIndexRequired:=Count;
     AddResImg('pkg_required');
+    ImageIndexConflict:=Count;
+    AddResImg('pkg_conflict');
     ImageIndexRemovedRequired:=Count;
     AddResImg('pkg_removedrequired');
     ImageIndexProject:=Count;
@@ -254,6 +283,11 @@ begin
     AddResImg('pkg_text');
     ImageIndexBinary:=Count;
     AddResImg('pkg_binary');
+  end;
+
+  ItemsPopupMenu:=TPopupMenu.Create(Self);
+  with ItemsPopupMenu do begin
+    OnPopup:=@ItemsPopupMenuPopup;
   end;
 
   OpenBitBtn:=TBitBtn.Create(Self);
@@ -302,34 +336,38 @@ begin
     DependenciesNode:=Items.Add(nil,'Required Packages');
     DependenciesNode.ImageIndex:=ImageIndexRequired;
     DependenciesNode.SelectedIndex:=DependenciesNode.ImageIndex;
+    PopupMenu:=ItemsPopupMenu;
   end;
 end;
 
 procedure TProjectInspectorForm.UpdateProjectItems;
 var
   CurFile: TUnitInfo;
-  i: Integer;
   CurNode: TTreeNode;
   NodeText: String;
+  NextNode: TTreeNode;
 begin
   ItemsTreeView.BeginUpdate;
   if LazProject<>nil then begin
     CurFile:=LazProject.FirstPartOfProject;
-    i:=0;
+    CurNode:=FilesNode.GetFirstChild;
     while CurFile<>nil do begin
       NodeText:=
         CreateRelativePath(CurFile.Filename,LazProject.ProjectDirectory);
-      if i<FilesNode.Count then begin
-        CurNode:=FilesNode.Items[i];
+      if CurNode=nil then
+        CurNode:=ItemsTreeView.Items.AddChild(FilesNode,NodeText)
+      else
         CurNode.Text:=NodeText;
-      end else
-        CurNode:=ItemsTreeView.Items.AddChild(FilesNode,NodeText);
       CurNode.ImageIndex:=GetImageIndexOfFile(CurFile);
       CurNode.SelectedIndex:=CurNode.ImageIndex;
       CurFile:=CurFile.NextPartOfProject;
-      inc(i);
+      CurNode:=CurNode.GetNextSibling;
     end;
-    while FilesNode.Count>i do FilesNode.Items[FilesNode.Count-1].Free;
+    while CurNode<>nil do begin
+      NextNode:=CurNode.GetNextSibling;
+      CurNode.Free;
+      CurNode:=NextNode;
+    end;
     FilesNode.Expanded:=true;
   end else begin
     // delete file nodes
@@ -339,14 +377,82 @@ begin
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;
+var
+  Dependency: TPkgDependency;
+  NodeText: String;
+  CurNode: TTreeNode;
+  NextNode: TTreeNode;
 begin
   ItemsTreeView.BeginUpdate;
+  if LazProject<>nil then begin
+    Dependency:=LazProject.FirstRequiredDependency;
+    CurNode:=DependenciesNode.GetFirstChild;
+    while Dependency<>nil do begin
+      NodeText:=Dependency.AsString;
+      if CurNode=nil then
+        CurNode:=ItemsTreeView.Items.AddChild(DependenciesNode,NodeText)
+      else
+        CurNode.Text:=NodeText;
+      if Dependency.LoadPackageResult=lprSuccess then
+        CurNode.ImageIndex:=ImageIndexRequired
+      else
+        CurNode.ImageIndex:=ImageIndexConflict;
+      CurNode.SelectedIndex:=CurNode.ImageIndex;
+      Dependency:=Dependency.NextRequiresDependency;
+      CurNode:=CurNode.GetNextSibling;
+    end;
+    while CurNode<>nil do begin
+      NextNode:=CurNode.GetNextSibling;
+      CurNode.Free;
+      CurNode:=NextNode;
+    end;
+    DependenciesNode.Expanded:=true;
+  end else begin
+    // delete dependency nodes
+    DependenciesNode.HasChildren:=false;
+  end;
   ItemsTreeView.EndUpdate;
 end;
 
 procedure TProjectInspectorForm.UpdateRemovedRequiredPackages;
+var
+  Dependency: TPkgDependency;
+  NodeText: String;
+  CurNode: TTreeNode;
+  NextNode: TTreeNode;
 begin
   ItemsTreeView.BeginUpdate;
+  if (LazProject<>nil) and (LazProject.FirstRemovedDependency<>nil) then begin
+    Dependency:=LazProject.FirstRemovedDependency;
+    if RemovedDependenciesNode=nil then begin
+      RemovedDependenciesNode:=
+        ItemsTreeView.Items.Add(DependenciesNode,'Removed required packages');
+      RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
+      RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
+    end;
+    CurNode:=RemovedDependenciesNode.GetFirstChild;
+    while Dependency<>nil do begin
+      NodeText:=Dependency.AsString;
+      if CurNode=nil then
+        CurNode:=ItemsTreeView.Items.AddChild(RemovedDependenciesNode,NodeText)
+      else
+        CurNode.Text:=NodeText;
+      CurNode.ImageIndex:=RemovedDependenciesNode.ImageIndex;
+      CurNode.SelectedIndex:=CurNode.ImageIndex;
+      Dependency:=Dependency.NextRequiresDependency;
+      CurNode:=CurNode.GetNextSibling;
+    end;
+    while CurNode<>nil do begin
+      NextNode:=CurNode.GetNextSibling;
+      CurNode.Free;
+      CurNode:=NextNode;
+    end;
+    DependenciesNode.Expanded:=true;
+  end else begin
+    // delete removed dependency nodes
+    if RemovedDependenciesNode<>nil then
+      FreeThenNil(RemovedDependenciesNode);
+  end;
   ItemsTreeView.EndUpdate;
 end;
 
@@ -358,6 +464,18 @@ begin
     Result:=ImageIndexProject
   else
     Result:=ImageIndexText;
+end;
+
+procedure TProjectInspectorForm.OnProjectBeginUpdate(Sender: TObject);
+begin
+  BeginUpdate;
+end;
+
+procedure TProjectInspectorForm.OnProjectEndUpdate(Sender: TObject;
+  ProjectChanged: boolean);
+begin
+  UpdateAll;
+  EndUpdate;
 end;
 
 function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
@@ -374,6 +492,26 @@ begin
   while (NodeIndex>0) and (Result<>nil) do begin
     Result:=Result.NextPartOfProject;
     dec(NodeIndex);
+  end;
+end;
+
+function TProjectInspectorForm.GetSelectedDependency: TPkgDependency;
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+begin
+  Result:=nil;
+  if LazProject=nil then exit;
+  CurNode:=ItemsTreeView.Selected;
+  if (CurNode=nil) then exit;
+  NodeIndex:=CurNode.Index;
+  if (CurNode.Parent=DependenciesNode) then begin
+    Result:=GetDependencyWithIndex(LazProject.FirstRequiredDependency,
+                                   pdlRequires,NodeIndex);
+  end;
+  if (CurNode.Parent=RemovedDependenciesNode) then begin
+    Result:=GetDependencyWithIndex(LazProject.FirstRemovedDependency,
+                                   pdlRequires,NodeIndex);
   end;
 end;
 
@@ -434,7 +572,7 @@ procedure TProjectInspectorForm.UpdateTitle;
 var
   NewCaption: String;
 begin
-  if FUpdateLock>0 then begin
+  if (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifTitleChanged);
     exit;
   end;
@@ -453,7 +591,7 @@ procedure TProjectInspectorForm.UpdateButtons;
 var
   CurFile: TUnitInfo;
 begin
-  if FUpdateLock>0 then begin
+  if (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifButtonsChanged);
     exit;
   end;
@@ -474,7 +612,7 @@ end;
 
 procedure TProjectInspectorForm.UpdateItems;
 begin
-  if FUpdateLock>0 then begin
+  if (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifItemsChanged);
     exit;
   end;

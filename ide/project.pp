@@ -228,86 +228,107 @@ type
     );
   TProjectFileSearchFlags = set of TProjectFileSearchFlag;
 
+  TEndUpdateProjectEvent =
+    procedure(Sender: TObject; ProjectChanged: boolean) of object;
+
   TProject = class(TObject)
   private
-    FFlags: TProjectFlags;
-    xmlconfig: TXMLConfig;
-
-    fUnitList: TList;                      // list of _all_ units (TUnitInfo)
-    fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
-    fFirstLoadedUnit: TUnitInfo;           // units with Loaded=true
-    fFirstPartOfProject: TUnitInfo;        // units with IsPartOfProject=true
-    fFirstUnitWithEditorIndex: TUnitInfo;  // units with EditorIndex>=0
-    fFirstUnitWithForm: TUnitInfo;         // units with Form<>nil
-
-    { Variables }
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
     fBookmarks: TProjectBookmarkList;
+    fChanged: boolean;
     fCompilerOptions: TProjectCompilerOptions;
+    fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
+    fFirstLoadedUnit: TUnitInfo;           // units with Loaded=true
+    fFirstPartOfProject: TUnitInfo;        // units with IsPartOfProject=true
+    FFirstRemovedDependency: TPkgDependency;
+    FFirstRequiredDependency: TPkgDependency;
+    fFirstUnitWithEditorIndex: TUnitInfo;  // units with EditorIndex>=0
+    fFirstUnitWithForm: TUnitInfo;         // units with Form<>nil
+    FFlags: TProjectFlags;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
-    fLastReadLPIFilename: string;
     fLastReadLPIFileDate: TDateTime;
+    fLastReadLPIFilename: string;
     fMainUnitID: Integer;  // only for ptApplication
     fModified: boolean;
+    FOnBeginUpdate: TNotifyEvent;
+    FOnEndUpdate: TEndUpdateProjectEvent;
     fOnFileBackup: TOnFileBackup;
     fOutputDirectory: String;
-    fProjectInfoFile: String;  // the lpi filename
     fProjectDirectory: string;
+    fProjectInfoFile: String;  // the lpi filename
     fProjectType: TProjectType;
     fPublishOptions: TPublishProjectOptions;
     fRunParameterOptions: TRunParamsOptions;
     fSrcPath: string; // source path addition for units in ProjectDir
     fTargetFileExt: String;
     fTitle: String;
+    fUnitList: TList;                      // list of _all_ units (TUnitInfo)
     fUnitOutputDirectory: String;
-
+    FUpdateLock: integer;
+    xmlconfig: TXMLConfig;
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
     function GetProjectInfoFile: string;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
-    procedure SetFlags(const AValue: TProjectFlags);
-    procedure SetMainUnitID(const AValue: Integer);
-    procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
-    procedure SetProjectInfoFile(const NewFilename: string);
-    procedure SetTargetFilename(const NewTargetFilename: string);
-    procedure OnLoadSaveFilename(var AFilename: string; Load: boolean);
-    function OnUnitFileBackup(const Filename: string;
-                              IsPartOfProject:boolean): TModalResult;
-    procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
-                               const OldUnitName, NewUnitName: string;
-                               CheckIfAllowed: boolean; var Allowed: boolean);
     function JumpHistoryCheckPosition(
                                 APosition:TProjectJumpHistoryPosition): boolean;
+    function OnUnitFileBackup(const Filename: string;
+                              IsPartOfProject:boolean): TModalResult;
+    procedure OnLoadSaveFilename(var AFilename: string; Load: boolean);
+    procedure OnUnitNameChange(AnUnitInfo: TUnitInfo;
+                               const OldUnitName, NewUnitName: string;
+                               CheckIfAllowed: boolean; var Allowed: boolean);
+    procedure SetFlags(const AValue: TProjectFlags);
+    procedure SetMainUnitID(const AValue: Integer);
+    procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetSrcPath(const NewSrcPath: string);
+    procedure SetTargetFilename(const NewTargetFilename: string);
+    procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure UpdateProjectDirectory;
   protected
-    procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure AddToFormList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromFormList(AnUnitInfo: TUnitInfo);
-    procedure AddToLoadedList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
+    // special unit lists
     procedure AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+    procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
+    procedure AddToFormList(AnUnitInfo: TUnitInfo);
+    procedure AddToLoadedList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
     procedure AddToPartOfProjectList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromFormList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
+    procedure Clear;
+    procedure BeginUpdate(Change: boolean);
+    procedure EndUpdate;
 
+    // load/save
+    function IsVirtual: boolean;
+    function SomethingModified: boolean;
+    procedure MainSourceFilenameChanged;
+    procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
     function ReadProject(const LPIFilename: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                            const OverrideProjectInfoFile: string): TModalResult;
 
-    property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
+    // units
     function UnitCount:integer;
     function NewUniqueUnitName(NewUnitType:TNewUnitType): string;
     function NewUniqueFormName(NewUnitType:TNewUnitType): string;
-    procedure AddUnit(AUnit: TUnitInfo; AddToProjectFile: boolean);
+    procedure AddUnit(AnUnit: TUnitInfo; AddToProjectFile: boolean);
     procedure RemoveUnit(Index: integer);
+    
+    // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
                       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
@@ -325,19 +346,12 @@ type
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
 
+    // units in editor
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
-    procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
-    procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
-    procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-    procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
-
-    procedure Clear;
-    function SomethingModified: boolean;
-    procedure MainSourceFilenameChanged;
     
+
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
     function RemoveCreateFormFromProjectFile(const AClassName,
@@ -351,16 +365,29 @@ type
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
     function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
 
-    function IsVirtual: boolean;
+    // filenames and fileinfo
     function RemoveProjectPathFromFilename(const AFilename: string): string;
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
 
-    procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
-    
+    // bookmarks
     procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);
     procedure MergeBookmarks(AnUnitInfo: TUnitInfo);
+    
+    // dependencies
+    function FindDependencyByName(const PackageName: string): TPkgDependency;
+    function RequiredDepByIndex(Index: integer): TPkgDependency;
+    function RemovedDepByIndex(Index: integer): TPkgDependency;
+    procedure AddRequiredDependency(Dependency: TPkgDependency);
+    procedure RemoveRequiredDependency(Dependency: TPkgDependency);
+    procedure DeleteRequiredDependency(Dependency: TPkgDependency);
+    procedure DeleteRemovedDependency(Dependency: TPkgDependency);
+    procedure RemoveRemovedDependency(Dependency: TPkgDependency);
+    procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
+    procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
+    function Requires(APackage: TLazPackage): boolean;
+    procedure GetAllRequiredPackages(var List: TList);
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
@@ -372,7 +399,10 @@ type
     property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read fFirstPartOfProject;
-
+    property FirstRemovedDependency: TPkgDependency
+                                                   read FFirstRemovedDependency;
+    property FirstRequiredDependency: TPkgDependency
+                                                  read FFirstRequiredDependency;
     property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
     property FirstUnitWithForm: TUnitInfo read fFirstUnitWithForm;
     property Flags: TProjectFlags read FFlags write SetFlags;
@@ -383,6 +413,8 @@ type
     property MainUnitID: Integer read fMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property Modified: boolean read fModified write fModified;
+    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
+    property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
     property ProjectDirectory: string read fProjectDirectory;
@@ -399,6 +431,7 @@ type
     property Title: String read fTitle write fTitle;
     property UnitOutputDirectory: String
                            read fUnitOutputDirectory write fUnitOutputDirectory;
+    property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
   end;
 
 const
@@ -1284,6 +1317,10 @@ begin
 
       // save the Run Parameter Options
       RunParameterOptions.Save(xmlconfig,'ProjectOptions/');
+      
+      // save dependencies
+      SavePkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
+        FFirstRequiredDependency,pdlRequires);
 
       xmlconfig.Flush;
       Modified:=false;
@@ -1318,78 +1355,87 @@ function TProject.ReadProject(const LPIFilename: string): TModalResult;
         Exclude(FFlags,f);
     end;
   end;
-  
+
 var
   NewUnitInfo: TUnitInfo;
   NewUnitCount,i: integer;
 begin
   Result := mrCancel;
-  Clear;
-
-  ProjectInfoFile:=LPIFilename;
+  BeginUpdate(true);
   try
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
-    xmlconfig := TXMLConfig.Create(ProjectInfoFile);
-    fLastReadLPIFilename:=ProjectInfoFile;
-    fLastReadLPIFileDate:=Now;
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
-  except
-    MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
-        ,mtError,[mbOk],0);
-    Result:=mrCancel;
-    exit;
-  end;
+    Clear;
 
-  try
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
-    ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
-       'ProjectOptions/General/ProjectType/Value', ''));
-    LoadFlags;
-    MainUnitID := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
-    ActiveEditorIndexAtStart := xmlconfig.GetValue(
-       'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
-    AutoCreateForms := xmlconfig.GetValue(
-       'ProjectOptions/General/AutoCreateForms/Value', true);
-    IconPath := xmlconfig.GetValue('ProjectOptions/General/IconPath/Value', './');
-    TargetFileExt := xmlconfig.GetValue(
-       'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
-    Title := xmlconfig.GetValue('ProjectOptions/General/Title/Value', '');
-    OutputDirectory := xmlconfig.GetValue(
-       'ProjectOptions/General/OutputDirectory/Value', '.');
-    UnitOutputDirectory := xmlconfig.GetValue(
-       'ProjectOptions/General/UnitOutputDirectory/Value', '.');
-    fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
-    FSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
-
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-    NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
-    for i := 0 to NewUnitCount - 1 do begin
-      NewUnitInfo:=TUnitInfo.Create(nil);
-      AddUnit(NewUnitInfo,false);
-      NewUnitInfo.LoadFromXMLConfig(
-         xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
+    ProjectInfoFile:=LPIFilename;
+    try
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
+      xmlconfig := TXMLConfig.Create(ProjectInfoFile);
+      fLastReadLPIFilename:=ProjectInfoFile;
+      fLastReadLPIFileDate:=Now;
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
+    except
+      MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
+          ,mtError,[mbOk],0);
+      Result:=mrCancel;
+      exit;
     end;
 
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-    // Load the compiler options
-    CompilerOptions.XMLConfigFile := xmlconfig;
-    CompilerOptions.LoadCompilerOptions(true);
-    CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
+    try
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
+      ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
+         'ProjectOptions/General/ProjectType/Value', ''));
+      LoadFlags;
+      MainUnitID := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
+      ActiveEditorIndexAtStart := xmlconfig.GetValue(
+         'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
+      AutoCreateForms := xmlconfig.GetValue(
+         'ProjectOptions/General/AutoCreateForms/Value', true);
+      IconPath := xmlconfig.GetValue('ProjectOptions/General/IconPath/Value', './');
+      TargetFileExt := xmlconfig.GetValue(
+         'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
+      Title := xmlconfig.GetValue('ProjectOptions/General/Title/Value', '');
+      OutputDirectory := xmlconfig.GetValue(
+         'ProjectOptions/General/OutputDirectory/Value', '.');
+      UnitOutputDirectory := xmlconfig.GetValue(
+         'ProjectOptions/General/UnitOutputDirectory/Value', '.');
+      fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
+      FSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
 
-    // load the Publish Options
-    PublishOptions.LoadFromXMLConfig(xmlconfig,'ProjectOptions/PublishOptions/');
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
+      NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
+      for i := 0 to NewUnitCount - 1 do begin
+        NewUnitInfo:=TUnitInfo.Create(nil);
+        AddUnit(NewUnitInfo,false);
+        NewUnitInfo.LoadFromXMLConfig(
+           xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
+      end;
 
-    // load the Run Parameter Options
-    RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
-    
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
-          ProjectDirectory;
-    CodeToolBoss.DefineTree.ClearCache;
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
+      // Load the compiler options
+      CompilerOptions.XMLConfigFile := xmlconfig;
+      CompilerOptions.LoadCompilerOptions(true);
+      CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
+
+      // load the Publish Options
+      PublishOptions.LoadFromXMLConfig(xmlconfig,'ProjectOptions/PublishOptions/');
+
+      // load the Run Parameter Options
+      RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
+
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
+      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+            ProjectDirectory;
+      CodeToolBoss.DefineTree.ClearCache;
+      
+      // load the dependencies
+      LoadPkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
+        FFirstRequiredDependency,pdlRequires,Self);
+    finally
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
+      xmlconfig.Free;
+      xmlconfig:=nil;
+    end;
   finally
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
-    xmlconfig.Free;
-    xmlconfig:=nil;
+    EndUpdate;
   end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
@@ -1399,30 +1445,32 @@ end;
 {------------------------------------------------------------------------------
   TProject AddUnit
  ------------------------------------------------------------------------------}
-procedure TProject.AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
+procedure TProject.AddUnit(AnUnit: TUnitInfo; AddToProjectFile:boolean);
 var
   ShortUnitName:string;
   NewIndex: integer;
 begin
-  if (AUnit = nil) then exit;
+  if (AnUnit = nil) then exit;
+  BeginUpdate(true);
   NewIndex:=UnitCount;
-  fUnitList.Add(AUnit);
-  AUnit.Project:=Self;
-  AUnit.OnFileBackup:=@OnUnitFileBackup;
-  AUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
-  AUnit.OnUnitNameChange:=@OnUnitNameChange;
-  
+  fUnitList.Add(AnUnit);
+  AnUnit.Project:=Self;
+  AnUnit.OnFileBackup:=@OnUnitFileBackup;
+  AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
+  AnUnit.OnUnitNameChange:=@OnUnitNameChange;
+
   // check if this is the new Main Unit
   if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
 
   if AddToProjectFile and (MainUnitID>=0) and (MainUnitID<>NewIndex) then begin
     // add unit to uses section
-    ShortUnitName:=AUnit.UnitName;
+    ShortUnitName:=AnUnit.UnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then
       CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
         ShortUnitName,'');
   end;
+  EndUpdate;
   Modified:=true;
 end;
 
@@ -1439,6 +1487,8 @@ begin
   if (Index=MainUnitID) then begin
     raise Exception.Create('ERROR: TProject.RemoveUnit index = MainUnit');
   end;
+  
+  BeginUpdate(true);
   OldUnitInfo:=Units[Index];
   Modified:=true;
 
@@ -1464,6 +1514,7 @@ begin
   // delete unitinfo instance
   OldUnitInfo.Free;
   fUnitList.Delete(Index);
+  EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -1472,9 +1523,19 @@ end;
 procedure TProject.Clear;
 var i:integer;
 begin
+  BeginUpdate(true);
+
   if xmlconfig<>nil then xmlconfig.Free;
   xmlconfig:=nil;
 
+  // break and free removed dependencies
+  while FFirstRemovedDependency<>nil do
+    DeleteRemovedDependency(FFirstRemovedDependency);
+  // break and free required dependencies
+  while FFirstRequiredDependency<>nil do
+    DeleteRequiredDependency(FFirstRequiredDependency);
+
+  // delete files
   for i:=0 to UnitCount-1 do Units[i].Free;
   fUnitList.Clear;
   
@@ -1495,6 +1556,26 @@ begin
   fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
   fUnitOutputDirectory := '.';
+  EndUpdate;
+end;
+
+procedure TProject.BeginUpdate(Change: boolean);
+begin
+  inc(FUpdateLock);
+  if FUpdateLock=1 then begin
+    fChanged:=Change;
+    if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
+  end else
+    fChanged:=fChanged or Change;
+end;
+
+procedure TProject.EndUpdate;
+begin
+  if FUpdateLock<=0 then RaiseException('TProject.EndUpdate');
+  dec(FUpdateLock);
+  if FUpdateLock=0 then begin
+    if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
+  end;
 end;
 
 function TProject.GetUnits(Index:integer):TUnitInfo;
@@ -2056,6 +2137,80 @@ begin
   end;
 end;
 
+function TProject.FindDependencyByName(const PackageName: string
+  ): TPkgDependency;
+begin
+  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
+                                     PackageName);
+end;
+
+function TProject.RequiredDepByIndex(Index: integer): TPkgDependency;
+begin
+  Result:=GetDependencyWithIndex(FFirstRequiredDependency,pdlRequires,Index);
+end;
+
+function TProject.RemovedDepByIndex(Index: integer): TPkgDependency;
+begin
+  Result:=GetDependencyWithIndex(FFirstRemovedDependency,pdlRequires,Index);
+end;
+
+procedure TProject.AddRequiredDependency(Dependency: TPkgDependency);
+begin
+  Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
+  Dependency.Owner:=Self;
+  Modified:=true;
+end;
+
+procedure TProject.RemoveRequiredDependency(Dependency: TPkgDependency);
+begin
+  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
+  Dependency.Removed:=true;
+  Modified:=true;
+end;
+
+procedure TProject.DeleteRequiredDependency(Dependency: TPkgDependency);
+begin
+  Dependency.RequiredPackage:=nil;
+  Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.Free;
+end;
+
+procedure TProject.DeleteRemovedDependency(Dependency: TPkgDependency);
+begin
+  Dependency.RequiredPackage:=nil;
+  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.Free;
+end;
+
+procedure TProject.RemoveRemovedDependency(Dependency: TPkgDependency);
+begin
+  Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
+  Dependency.Removed:=false;
+end;
+
+procedure TProject.MoveRequiredDependencyUp(Dependency: TPkgDependency);
+begin
+  Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+end;
+
+procedure TProject.MoveRequiredDependencyDown(Dependency: TPkgDependency);
+begin
+  Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+end;
+
+function TProject.Requires(APackage: TLazPackage): boolean;
+begin
+  Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
+                  APackage)<>nil;
+end;
+
+procedure TProject.GetAllRequiredPackages(var List: TList);
+begin
+  if Assigned(OnGetAllRequiredPackages) then
+    OnGetAllRequiredPackages(FirstRequiredDependency,List);
+end;
+
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
   const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
   var Allowed: boolean);
@@ -2372,6 +2527,9 @@ end.
 
 {
   $Log$
+  Revision 1.110  2003/04/20 09:52:07  mattias
+  implemented saving loading project dependencies
+
   Revision 1.109  2003/04/20 07:36:29  mattias
   fixed loading form name
 
