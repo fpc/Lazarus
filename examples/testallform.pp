@@ -138,7 +138,9 @@ type
       procedure BoxStyle(Sender : TObject);
       procedure ShowBox(Sender : TObject);
 //+++++++++++++ TBevel ++++++++++++++++++++++++++++++++ 
-
+      chbBevelStyle,
+      chbBevelShape : TRadiogroup;
+      procedure BevelSettings(Sender : TObject);
 //+++++++++++++ TButton +++++++++++++++++++++++++++++++
       LCount      : Integer;
       btnCLRLotto : TBitBtn;
@@ -216,6 +218,8 @@ type
       btnNew, btnSave, btnOpen : TBitBtn;
 //+++++++++++++ TOpenDialog +++++++++++++++++++++++++++
 
+//+++++++++++++ TPaintBox +++++++++++++++++++++++++++++ 
+      pntCount : integer;
 //+++++++++++++ TProgressBar ++++++++++++++++++++++++++
       chbProgText, chbProgDirect, chbProgOrient, chbProgEnable, chbSmooth : TCheckBox;
       ProgTime : TTimer;
@@ -2000,7 +2004,7 @@ TabSheet3 := TTabSheet.Create(Self);
 TabSheet3.Caption := 'TabSheet3';
 TabSheet3.PageControl := PageControl1;}
 //++++++++++++++++++++++++++++++++++++ PaintBox1 ++++++++++++++++++++++++++++++++++++
-{PaintBox1 := TPaintBox.Create(Self); //Gives Access violation !!!
+PaintBox1 := TPaintBox.Create(Self); //Gives Access violation !!!
   with PaintBox1 do
   begin
     OnClick        := @EventOnClick;
@@ -2035,7 +2039,7 @@ TabSheet3.PageControl := PageControl1;}
     Top            := 10;
     Visible        := True;    
     Width          := 100;
-  end;}
+  end;
 //++++++++++++++++++++++++++++++++++++ Panel1 +++++++++++++++++++++++++++++++++++++++
 
 //++++++++++++++++++++++++++++++++++++ PopupMenu1 +++++++++++++++++++++++++++++++++++
@@ -2536,6 +2540,11 @@ END.
 
 {
   $Log$
+  Revision 1.4  2001/04/17 21:36:15  lazarus
+  * enhanced testdialog for TBevel
+  * basic test for TPaintBox
+  stoppok
+
   Revision 1.3  2001/02/25 09:22:28  lazarus
   * Fixed crash caused by missing pixmaps
   * using resources now instead of xpm file

@@ -137,7 +137,43 @@ lblExeName          := TLabel.Create(Self); //Label showing Application.ExeName
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++ TBevel Tools +++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   
+  chbBevelStyle := TRadioGroup.Create (self);
+  with chbBevelStyle do
+  begin
+     Parent := BenchForm[2];
+     OnClick := @BevelSettings;
+     Top    := 10;
+     Left   := 160;
+     Height := 60;
+     Width  := 180;
+     Items.Add ('lowered');
+     Items.Add ('raised');
+     Hint := 'Change style (lowered/raised)';
+     ShowHint := True;
+     ItemIndex := 0;
+     Show;
+     Caption := 'Bevel Styles';
+  End;
+  chbBevelShape := TRadioGroup.Create (self);
+  with chbBevelShape do
+  begin
+     Parent := BenchForm[2];
+     top    := 80;
+     left   := 160;
+     Height := 200;
+     Width  := 180;
+     OnClick := @BevelSettings;
+     Items.Add ('bsBox');
+     Items.Add ('bsFrame');
+     Items.Add ('bsTopLine');
+     Items.Add ('bsBottomLine');
+     Items.Add ('bsLeftLine');
+     Items.Add ('bsRightLine');
+     ItemIndex := 0;
+     Show;
+     Caption := 'Bevel Shapes';
+  end;
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++ TBitBtn Tools ++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1084,6 +1120,7 @@ btnOpen := TBitBtn.Create(Self); //Button Open
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++ TPaintBox Tools +++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   pntCount := 0;
 //             ADD PaintBox CompTools HERE !!!!!!!!!
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++ TPanel Tools ++++++++++++++++++++++++++++++++++
@@ -2042,6 +2079,21 @@ begin
   Else ProgressBar1.BarShowText := False;
 
 end;
+
+procedure TForm1.BevelSettings(Sender : TObject);
+begin
+   case chbBevelShape.ItemIndex of
+      0 : Bevel1.Shape := bsBox;
+      1 : Bevel1.Shape := bsFrame;
+      2 : Bevel1.Shape := bsTopLine;
+      3 : Bevel1.Shape := bsBottomLine;
+      4 : Bevel1.Shape := bsLeftLine;
+      5 : Bevel1.Shape := bsRightLine;
+   end;
+   if chbBevelStyle.ItemIndex = 0
+     then Bevel1.Style := bsLowered
+     else Bevel1.Style := bsRaised
+end;
 //+++++++++++++++++++++++++++++++++ TRadioGroup +++++++++++++++++++++++++++++++++++++
 procedure TForm1.RadioGroupClick(Sender : TObject);
 begin
@@ -2202,6 +2254,15 @@ begin
     If ToggleBox1.State= cbChecked then
       lblState.Caption := 'State= cbChecked'
     Else lblState.Caption := 'State= cbUnchecked';
+  end;
+  If Sender.ClassName='TPAINTBOX' then
+  begin
+     with TPaintBox(Sender).canvas do
+     begin
+        moveto (0,0);
+        inc (pntCount);
+        lineto (100, pntCount * 10);
+     end;
   end;
 end;
 
@@ -2662,6 +2723,11 @@ begin
 end;
 {
   $Log$
+  Revision 1.5  2001/04/17 21:36:15  lazarus
+  * enhanced testdialog for TBevel
+  * basic test for TPaintBox
+  stoppok
+
   Revision 1.4  2001/02/25 09:22:28  lazarus
   * Fixed crash caused by missing pixmaps
   * using resources now instead of xpm file
