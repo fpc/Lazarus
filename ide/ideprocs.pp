@@ -30,7 +30,8 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText, FileProcs;
+  Classes, SysUtils, Laz_XMLCfg, GetText,
+  FileCtrl, FileProcs;
 
 type
   TCommentType = (
@@ -527,17 +528,29 @@ var
   {$ENDIF}
 begin
   Result:=false;
+
   // store file attributes
   {$IFDEF Win32}
   OldAttr:=FileGetAttr(Filename);
   {$ELSE}
   FStat(Filename,OldInfo);
   {$ENDIF}
-  // rename file
-  if not RenameFile(Filename,BackupFilename) then exit;
-  // create empty file
-  FHandle:=FileCreate(FileName);
-  FileClose(FHandle);
+  
+  if not FileIsSymlink(Filename) then begin
+    // not a symlink
+    // rename old file, create empty new file
+  
+    // rename file
+    if not RenameFile(Filename,BackupFilename) then exit;
+    // create empty file
+    FHandle:=FileCreate(FileName);
+    FileClose(FHandle);
+  end else begin
+    // file is a symlink
+    // -> copy file
+    if not CopyFile(Filename,BackupFilename) then exit;
+  end;
+  
   // restore file attributes
   {$IFDEF Win32}
   FileSetAttr(FileName,OldAttr);
