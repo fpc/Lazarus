@@ -602,6 +602,7 @@ type
     function LogicalToPhysicalPos(p: TPoint): TPoint;
     {$IFDEF SYN_LAZARUS}
     function PhysicalToLogicalPos(p: TPoint): TPoint;                           //sblbg 2001-12-17
+    function NextTokenPos: TPoint; virtual;
     {$ENDIF}
     function NextWordPos: TPoint; virtual;
     procedure Notification(AComponent: TComponent;
@@ -5834,7 +5835,11 @@ begin
           if Command = ecDeleteWord then begin
             if CaretX > Len + 1 then
               CaretX := Len + 1;
+            {$IFDEF SYN_LAZARUS}
+            WP := NextTokenPos;
+            {$ELSE}
             WP := NextWordPos;
+            {$ENDIF}
           end else
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
@@ -6239,6 +6244,74 @@ begin
   if SelAvail then
     SelText := '';
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.NextTokenPos: TPoint;
+var
+  CX, CY, LineLen: integer;
+  Line: string;
+  CurIdentChars, WhiteChars: TSynIdentChars;
+  nTokenPos, nTokenLen: integer;
+  sToken: PChar;
+  
+  procedure FindFirstNonWhiteSpaceCharInNextLine;
+  begin
+    if CY < Lines.Count then begin
+      Line := TSynEditStringList(Lines).ExpandedStrings[CY];
+      LineLen := Length(Line);
+      Inc(CY);
+      CX:=1;
+      while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
+      if CX>LineLen then CX:=1;
+    end;
+  end;
+  
+begin
+  CX := CaretX;
+  CY := CaretY;
+  // valid line?
+  if (CY >= 1) and (CY <= Lines.Count) then begin
+    Line := TSynEditStringList(Lines).ExpandedStrings[CY - 1];
+    LineLen := Length(Line);
+    WhiteChars := [#9,' '];
+    if CX > LineLen then begin
+      FindFirstNonWhiteSpaceCharInNextLine;
+    end else begin
+      if fHighlighter<>nil then begin
+        fHighlighter.SetRange(TSynEditStringList(Lines).Ranges[CY - 1]);
+        fHighlighter.SetLine(Line, CY - 1);
+        while not fHighlighter.GetEol do begin
+          nTokenPos := fHighlighter.GetTokenPos; // zero-based
+          fHighlighter.GetTokenEx(sToken,nTokenLen);
+          if (CX>nTokenPos) and (CX<=nTokenPos+nTokenLen) then begin
+            CX:=nTokenPos+nTokenLen+1;
+            break;
+          end;
+          // Let the highlighter scan the next token.
+          fHighlighter.Next;
+        end;
+        if fHighlighter.GetEol then
+          FindFirstNonWhiteSpaceCharInNextLine;
+      end else begin
+        // no highlighter
+        CurIdentChars:=IdentChars;
+        // find first "whitespace" if next char is not a "whitespace"
+        if (Line[CX] in CurIdentChars) then begin
+          // in a word -> move to end of word
+          while (CX<=LineLen) and (Line[CX] in CurIdentChars) do inc(CX);
+        end;
+        if (Line[CX] in WhiteChars) then begin
+          // skip white space
+          while (CX<=LineLen) and (Line[CX] in WhiteChars) do inc(CX);
+        end;
+        // delete at least one char
+        if (CX=CaretX) then inc(CX);
+      end;
+    end;
+  end;
+  Result := Point(CX, CY);
+end;
+{$ENDIF}
 
 function TCustomSynEdit.NextWordPos: TPoint;
 var
