@@ -613,32 +613,22 @@ Begin
               if (ControlSelection.SelectionForm<>nil)
               and (ControlSelection.SelectionForm<>Form)
               then begin
-                MessageDlg('Invalid mutliselection',
+                MessageDlg('Invalid multiselection',
                   'Multiselected components must be of a single form.',
                   mtInformation,[mbOk],0);
               end else begin
                 ControlSelection.Add(MouseDownComponent);
-                //InvalidateWithParent(MouseDownComponent);
               end;
             end else begin
               // remove from multiselection
               ControlSelection.Delete(CompIndex);
-              //InvalidateWithParent(MouseDownComponent);
             end;
           end else begin
             // no shift key (single selection)
 
             if (CompIndex<0) then begin
               // select only this component
-
-              // invalidate old components
-              //for i:=0 to ControlSelection.Count-1 do
-              //  if ControlSelection[i].Component is TControl then
-              //    InvalidateWithParent(TControl(ControlSelection[i].Component));
-
-              // clear old selection and select new component
               ControlSelection.AssignComponent(MouseDownComponent);
-              //InvalidateWithParent(MouseDownComponent);
             end;
           end;
         end;
