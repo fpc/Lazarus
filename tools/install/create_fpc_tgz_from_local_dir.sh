@@ -6,6 +6,9 @@ set -x
 FPCSrcDir=$1
 OutputFile=$2
 
+FPCSrcDir=$(echo $FPCSrcDir | sed -e 's#//#/#' -e 's#/$##')/
+OutputFile=$(echo $OutputFile | sed -e 's#//#/#' -e 's#/$##')
+
 Usage="Usage: $0 <fpc_source_directory> <outputfile>"
 
 if [ "x$FPCSrcDir" = "x" ]; then
@@ -30,26 +33,7 @@ echo "copy $FPCSrcDir to /tmp/fpc ..."
 cd $TmpBaseDir
 rm -rf $TmpDir
 cd -
-cp -a $FPCSrcDir $TmpDir
-
-echo "cleaning up (CVS, ppu, o) ..."
-cd $TmpDir
-make distclean
-
-for Ext in ppu ppw ppl o ow rst cvsignore bak; do
-  find . -name "*.$Ext" -exec rm -f {} \;
-done
-find . -name "*.~*" -exec rm -f {} \;
-rm -f *.tar.gz
-if [ -d CVS ]; then
-  # use xargs to remove directories (otherwise find returns strange things)
-  find . -name 'CVS' | xargs rm -r
-fi
-cd -
-# clean up docs
-cd $TmpDir/docs
-make clean
-cd -
+sh create_clean_fpcsrc_directory.sh $FPCSrcDir $TmpDir
 
 # pack
 echo "creating tgz ..."

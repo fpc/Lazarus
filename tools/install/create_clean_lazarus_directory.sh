@@ -6,8 +6,8 @@ set -e
 LazSrcDir=$1
 LazDestDir=$2
 
-LazSrcDir=$(echo $LazSrcDir | sed -e 's#//#/#' -e 's#/$##')
-LazDestDir=$(echo $LazDestDir | sed -e 's#//#/#' -e 's#/$##')
+LazSrcDir=$(echo $LazSrcDir | sed -e 's#//#/#' -e 's#/$##')/
+LazDestDir=$(echo $LazDestDir | sed -e 's#//#/#' -e 's#/$##')/
 
 if [ "x$LazSrcDir" = "x" ]; then
   echo "Usage: $0 <lazarus_source_directory> <lazarus_destination_directory>"
@@ -34,9 +34,10 @@ if [ `which rsync` ]; then
         --exclude=".#*" --exclude="*.~*" --exclude="*.bak" \
         --exclude="*.orig" --exclude="*.rej" --exclude="*.bak" \
         --exclude=".xvpics" --exclude="*.compiled" --exclude="killme*" \
+        --exclude=".gdb_hist*"
         $LazSrcDir $LazDestDir
 else
-  echo cp -a $LazSrcDir $LazDestDir
+  cp -a $LazSrcDir $LazDestDir
 fi
 
 echo "cleaning up (CVS, ppu, o) ..."
@@ -49,7 +50,10 @@ for Ext in ppu ppw ppl o ow rst cvsignore bak orig rej xvpics; do
 done
 find . -name "*.~*" -exec rm -f {} \;
 find . -name "*.#*" -exec rm -f {} \;
+# delete all CVS directories
 find . -name "CVS" -exec rm -rf {} \;
+# delete all executables
+find . -perm +a+x -type f -exec rm -f {} \;
 rm -rf tools/install/*.tgz
 rm -rf tools/install/*.*.spec
 cd -
