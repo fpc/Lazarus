@@ -34,7 +34,7 @@ Begin
     Texts := StrPas(PChar(SelData^.data));
     Assert(False, 'Trace:' + Texts);
     Assert(False, 'Trace:0');
-    TEdit(Data).Caption := Texts;
+    TCustomEdit(Data).Caption := Texts;
     Assert(False, 'Trace:1');
   end;
   gtk_drag_finish(Context,false,false,time);

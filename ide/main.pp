@@ -990,7 +990,7 @@ destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
 
-  DebugLn('[TMainIDE.Destroy] A');
+  DebugLn('[TMainIDE.Destroy] A ');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   FreeThenNil(ProjInspector);
 
@@ -1031,7 +1031,7 @@ begin
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(InputHistories);
 
-  DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy...');
+  DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(SourceNotebook);
   inherited Destroy;
@@ -9305,8 +9305,8 @@ begin
         end else begin
           OwnerList:=PkgBoss.GetOwnersOfUnit(TargetUnitInfo.Filename);
           if Options.Scope=frAllOpenProjectsAndPackages then begin
-          
-            // TODO
+            PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
+            ReverseList(OwnerList);
           end;
         end;
         ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
@@ -10813,6 +10813,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.777  2004/09/22 19:05:58  mattias
+  various fixes for TCustomMemo, RTTIControls, FindReferences
+
   Revision 1.776  2004/09/22 12:43:17  mattias
   implemented searching and editing virtual units
 

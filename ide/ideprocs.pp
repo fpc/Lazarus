@@ -190,6 +190,7 @@ function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+procedure ReverseList(List: TList);
 
 
 implementation
@@ -1110,6 +1111,21 @@ function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 begin
   Result:=List.Count-1;
   while (Result>=0) and (AnsiCompareText(List[Result],s)<>0) do dec(Result);
+end;
+
+procedure ReverseList(List: TList);
+var
+  i: Integer;
+  j: Integer;
+begin
+  if List=nil then exit;
+  i:=0;
+  j:=List.Count-1;
+  while i<j do begin
+    List.Exchange(i,j);
+    inc(i);
+    dec(j);
+  end;
 end;
 
 {-------------------------------------------------------------------------------

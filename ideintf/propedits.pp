@@ -1378,6 +1378,9 @@ type
   end;
 
 
+procedure WritePublishedProperties(Instance: TPersistent);
+
+
 implementation
 
 
@@ -1409,6 +1412,58 @@ begin
     and (Editor.OnSubPropertiesChanged<>nil) then
       Editor.UpdateSubProperties;
   end;
+end;
+
+procedure WritePublishedProperties(Instance: TPersistent);
+var
+  TypeInfo: PTypeInfo;
+  TypeData: PTypeData;
+  PropInfo: PPropInfo;
+  CurCount: integer;
+begin
+  TypeInfo:=Instance.ClassInfo;
+  TypeData:=GetTypeData(TypeInfo);
+  debugln('WritePublishedProperties Instance=',HexStr(Cardinal(Instance),8),' ',Instance.ClassName,' TypeData^.PropCount=',dbgs(TypeData^.PropCount));
+  if Instance is TComponent then
+    debugln('  TComponent(Instance).Name=',TComponent(Instance).Name);
+
+  // read all properties and remove doubles
+  TypeInfo:=Instance.ClassInfo;
+  repeat
+    // read all property infos of current class
+    TypeData:=GetTypeData(TypeInfo);
+    // skip unitname
+    PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+    // read property count
+    CurCount:=PWord(PropInfo)^;
+    inc(Longint(PropInfo),SizeOf(Word));
+    debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
+
+    {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',HexStr(Cardinal(TypeData^.ClassType),8));
+    writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
+    ' TypeInfo=',HexStr(Cardinal(TypeInfo),8),
+    ' TypeData^.ClassType.ClassInfo=',HexStr(Cardinal(TypeData^.ClassType.ClassInfo),8),
+    ' TypeData^.ClassType.ClassParent=',HexStr(Cardinal(TypeData^.ClassType.ClassParent),8),
+    ' TypeData^.ParentInfo=',HexStr(Cardinal(TypeData^.ParentInfo),8),
+    '');
+    CurParent:=TypeData^.ClassType.ClassParent;
+    if CurParent<>nil then begin
+      writeln('TPropInfoList.Create F CurParent.ClassName=',CurParent.ClassName,
+        ' CurParent.ClassInfo=',HexStr(Cardinal(CurParent.ClassInfo),8),
+        '');
+    end;}
+
+    // read properties
+    while CurCount>0 do begin
+      // point PropInfo to next propinfo record.
+      // Located at Name[Length(Name)+1] !
+      debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
+      PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+      dec(CurCount);
+    end;
+    TypeInfo:=TypeData^.ParentInfo;
+    if TypeInfo=nil then break;
+  until false;
 end;
 
 

@@ -2142,7 +2142,7 @@ begin
   BuildPopupMenu;
 
   // completion form
-  aCompletion := TSynCompletion.Create(AOwner);
+  aCompletion := TSynCompletion.Create(nil);
     with aCompletion do
       Begin
         EndOfTokenChr:='()[]';
@@ -2222,6 +2222,7 @@ begin
   FSourceEditorList.Free;
   Gotodialog.free;
 
+  FreeThenNil(aCompletion);
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
   FreeThenNil(fCustomPopupMenuItems);

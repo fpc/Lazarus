@@ -46,9 +46,9 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, LCLProc, Forms, Controls,
-  Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions, PackageLinks,
-  PackageDefs, LazarusPackageIntf, ComponentReg, RegisterFCL, RegisterLCL,
-  RegisterSynEdit, RegisterIDEIntf;
+  Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions,
+  PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg, RegisterFCL,
+  RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
 type
   TFindPackageFlag = (
@@ -188,6 +188,7 @@ type
     procedure IteratePackagesSorted(Flags: TFindPackageFlags;
                                     Event: TIteratePackagesEvent);
     procedure MarkAllPackagesAsNotVisited;
+    procedure MarkAllRequiredPackages(FirstDependency: TPkgDependency);
     procedure MarkNeededPackages;
     procedure ConsistencyCheck;
   public
@@ -1747,6 +1748,25 @@ begin
   for i:=FItems.Count-1 downto 0 do begin
     Pkg:=TLazPackage(FItems[i]);
     Pkg.Flags:=Pkg.Flags-[lpfVisited];
+  end;
+end;
+
+procedure TLazPackageGraph.MarkAllRequiredPackages(
+  FirstDependency: TPkgDependency);
+var
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
+begin
+  Dependency:=FirstDependency;
+  while Dependency<>nil do begin
+    if Dependency.LoadPackageResult=lprSuccess then begin
+      RequiredPackage:=Dependency.RequiredPackage;
+      if not (lpfVisited in RequiredPackage.Flags) then begin
+        RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+        MarkAllRequiredPackages(RequiredPackage.FirstRequiredDependency);
+      end;
+    end;
+    Dependency:=Dependency.NextRequiresDependency;
   end;
 end;
 

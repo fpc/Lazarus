@@ -184,6 +184,7 @@ type
                          ComponentClassnames: TStrings;
                          var List: TObjectArray): TModalResult;
     function GetOwnersOfUnit(const UnitFilename: string): TList; override;
+    procedure ExtendOwnerListWithUsedByOwners(OwnerList: TList); override;
     function GetSourceFilesOfOwners(OwnerList: TList): TStrings; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
@@ -2812,6 +2813,50 @@ begin
     Result.Add(PkgFile.LazPackage);
   if Result.Count=0 then
     FreeThenNil(Result);
+end;
+
+procedure TPkgManager.ExtendOwnerListWithUsedByOwners(OwnerList: TList);
+// use items (packages and projects) in OwnerList as leaves and create the
+// list of all packages and projects using them.
+// The result will be the topologically sorted list of projects and packages
+// using the projects/packages in OwnerList, beginning with the top levels.
+var
+  AddedNonPackages: TList;
+
+  procedure AddUsedByOwners(ADependenyOwner: TObject);
+  var
+    LazPackage: TLazPackage;
+    Dependency: TPkgDependency;
+  begin
+    if ADependenyOwner is TProject then begin
+      if AddedNonPackages.IndexOf(ADependenyOwner)>=0 then exit;
+      AddedNonPackages.Add(ADependenyOwner);
+      OwnerList.Add(ADependenyOwner);
+    end else if ADependenyOwner is TLazPackage then begin
+      LazPackage:=TLazPackage(ADependenyOwner);
+      if lpfVisited in LazPackage.Flags then exit;
+      LazPackage.Flags:=LazPackage.Flags+[lpfVisited];
+      Dependency:=LazPackage.FirstUsedByDependency;
+      while Dependency<>nil do begin
+        AddUsedByOwners(Dependency.Owner);
+        Dependency:=Dependency.NextUsedByDependency;
+      end;
+      OwnerList.Add(LazPackage);
+    end;
+  end;
+  
+var
+  i: Integer;
+  OldOwnerList: TList;
+begin
+  OldOwnerList:=TList.Create;
+  OldOwnerList.Assign(OwnerList);
+  OwnerList.Clear;
+  AddedNonPackages:=TList.Create;
+  PackageGraph.MarkAllPackagesAsNotVisited;
+  for i:=0 to OldOwnerList.Count-1 do
+    AddUsedByOwners(TObject(OldOwnerList[i]));
+  OldOwnerList.Free;
 end;
 
 function TPkgManager.GetSourceFilesOfOwners(OwnerList: TList): TStrings;

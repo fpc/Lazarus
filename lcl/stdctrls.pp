@@ -566,21 +566,21 @@ type
     procedure CopyToClipboard; virtual;
     procedure CutToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
+  public
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
     property MaxLength: Integer read FMaxLength write SetMaxLength default -1;
+    property Modified: Boolean read GetModified write SetModified;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
+    property PopupMenu;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
-    property Modified: Boolean read GetModified write SetModified;
-    property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
-    property Text;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
-    property PopupMenu;
-    property TabStop default true;
     property TabOrder;
+    property TabStop default true;
+    property Text;
   end;
 
 
@@ -703,6 +703,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
+    property TabOrder;
     property TabStop;
     property Visible;
     property WordWrap;
@@ -1174,6 +1175,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.169  2004/09/22 19:05:58  mattias
+  various fixes for TCustomMemo, RTTIControls, FindReferences
+
   Revision 1.168  2004/09/22 14:50:18  micha
   convert LM_SETPROPERTIES message for tcustomlabel to interface methods
 

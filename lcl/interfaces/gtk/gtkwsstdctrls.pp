@@ -144,8 +144,8 @@ type
   private
   protected
   public
-    class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); override;
-{$ifdef GTK1}    
+    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
+{$ifdef GTK1}
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
@@ -637,50 +637,72 @@ begin
   Result := WidgetGetSelStart(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget);
 end;
 
-function  TGtkWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+function TGtkWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
-  with PGtkOldEditable(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget)^ do begin
+  with PGtkOldEditable(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.
+    CoreWidget)^ do
+  begin
     Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
   end;
 end;
 
-procedure TGtkWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+procedure TGtkWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
+  NewCase: TEditCharCase);
 begin
   // TODO: implement me!
 end;
 
-procedure TGtkWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+procedure TGtkWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
+  NewMode: TEchoMode);
 begin
   // XXX TODO: GTK 1.x does not support EchoMode emNone.
   // This will have to be coded around, but not a priority
   SetPasswordChar(ACustomEdit, ACustomEdit.PasswordChar);
 end;
 
-procedure TGtkWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+procedure TGtkWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  Widget: PGtkWidget;
 begin
-  gtk_entry_set_max_length(GTK_ENTRY(ACustomEdit.Handle), guint16(NewLength));
+  Widget:=PGtkWidget(ACustomEdit.Handle);
+  if GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+    gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
 end;
 
-procedure TGtkWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+procedure TGtkWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit;
+  NewChar: char);
+var
+  Widget: PGtkWidget;
 begin
-  gtk_entry_set_visibility(GTK_ENTRY(ACustomEdit.Handle), 
-    (ACustomEdit.EchoMode = emNormal) and (NewChar = #0));
+  Widget:=PGtkWidget(ACustomEdit.Handle);
+  if GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+    gtk_entry_set_visibility(GTK_ENTRY(Widget),
+      (ACustomEdit.EchoMode = emNormal) and (NewChar = #0));
 end;
 
-procedure TGtkWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+procedure TGtkWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit;
+  NewReadOnly: boolean);
+var
+  Widget: PGtkWidget;
 begin
-  gtk_entry_set_editable(GTK_ENTRY(ACustomEdit.Handle), not ACustomEdit.ReadOnly);
+  Widget:=PGtkWidget(ACustomEdit.Handle);
+  if GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
+    gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
 end;
 
-procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
 begin
   gtk_editable_set_position(PGtkOldEditable(GetWidgetInfo(
     Pointer(ACustomEdit.Handle), true)^.CoreWidget), NewStart);
 end;
 
-procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
 begin
-  WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget, NewLength);
+  WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle),true)^.CoreWidget,
+                     NewLength);
 end;
 
 { TGtkWSCustomLabel }
@@ -711,23 +733,27 @@ end;
 
 { TGtkWSCustomCheckBox }
 
-function  TGtkWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+function  TGtkWSCustomCheckBox.RetrieveState(
+  const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
   if gtk_toggle_button_get_active (PGtkToggleButton(ACustomCheckBox.Handle))
   then Result := cbChecked
   else Result := cbUnChecked;
 end;
 
-procedure TGtkWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+procedure TGtkWSCustomCheckBox.SetShortCut(
+  const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
   // ToDo: use accelerator group of Form
-  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut, 'activate_item');
+  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut,
+    'activate_item');
 end;
 
 { TGtkWSCustomMemo }
 
-procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
+  const AText: string);
 var
   Widget: PGtkWidget;
   CurMemoLen: cardinal;
@@ -852,13 +878,10 @@ initialization
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
-//  RegisterWSComponent(TEdit, TGtkWSEdit);
-//  RegisterWSComponent(TMemo, TGtkWSMemo);
+//  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
   RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
-//  RegisterWSComponent(TLabel, TGtkWSLabel);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
-//  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
 //  RegisterWSComponent(TRadioButton, TGtkWSRadioButton);

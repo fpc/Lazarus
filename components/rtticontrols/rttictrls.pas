@@ -1341,7 +1341,13 @@ begin
   InvalidateEditor;
   if (Application<>nil) and FIdleHandlerConnected then
     Application.RemoveOnIdleHandler(@OnApplicationIdle);
-  FreeThenNil(FLinkNotifier);
+  if FLinkNotifier<>nil then begin
+    if FTIObject is TComponent then begin
+      TComponent(FTIObject).RemoveFreeNotification(FLinkNotifier);
+      FTIObject:=nil;
+    end;
+    FreeThenNil(FLinkNotifier);
+  end;
   FreeThenNil(FAliasValues);
   FreeThenNil(FHook);
   FreeThenNil(FCollectedValues);
@@ -1362,17 +1368,26 @@ end;
 
 procedure TCustomPropertyLink.SetObjectAndProperty(NewPersistent: TPersistent;
   const NewPropertyName: string);
+var
+  AComponent: TComponent;
 begin
   if (NewPropertyName<>'')
   and ((length(NewPropertyName)>254) or (not IsValidIdent(NewPropertyName)))
   then
     raise Exception('TCustomPropertyLink.SetObjectAndProperty invalid identifier "'+NewPropertyName+'"');
   if (NewPersistent=TIObject) and (NewPropertyName=TIPropertyName) then exit;
-  if FTIObject is TComponent then
-    TComponent(FTIObject).RemoveFreeNotification(FLinkNotifier);
+  if (FTIObject is TComponent) then begin
+    AComponent:=TComponent(FTIObject);
+    AComponent.RemoveFreeNotification(FLinkNotifier);
+  end;
   FTIObject:=NewPersistent;
-  if FTIObject is TComponent then
-    TComponent(FTIObject).FreeNotification(FLinkNotifier);
+  if FTIObject is TComponent then begin
+    AComponent:=TComponent(FTIObject);
+    if not (csDestroying in AComponent.ComponentState) then
+      AComponent.FreeNotification(FLinkNotifier)
+    else
+      FTIObject:=nil;
+  end;
   FTIPropertyName:=NewPropertyName;
   InvalidateEditor;
   LoadFromProperty;
@@ -3097,7 +3112,7 @@ procedure TPropertyLinkNotifier.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Flink<>nil then FLink.Notification(AComponent,Operation);
+  if FLink<>nil then FLink.Notification(AComponent,Operation);
 end;
 
 constructor TPropertyLinkNotifier.Create(TheLink: TCustomPropertyLink);

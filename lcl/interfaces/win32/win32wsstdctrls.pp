@@ -146,7 +146,7 @@ type
   private
   protected
   public
-    class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); override;
+    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
@@ -542,7 +542,7 @@ end;
 
 { TWin32WSCustomMemo }
 
-procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
   S: string;
 begin
