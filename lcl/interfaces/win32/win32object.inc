@@ -2790,33 +2790,32 @@ begin
   csLabel:
     With TLabel(Sender) Do
     Begin
-      Case Alignment of
-        taLeftJustify:
-          Style := SS_LEFT;
-        taCenter:
-          Style := SS_CENTER;
-        taRightJustify:
-          Style := SS_CENTER;
-      Else
-        Style := SS_LEFT; // default, shouldn't happen
-      End;
-      Case Layout of
+      if Wordwrap then
+      begin
+        Style := SS_LEFTNOWORDWRAP;
+      end else begin
+	case Alignment of
+	  taLeftJustify:
+	    Style := SS_LEFT;
+	  taCenter:
+	    Style := SS_CENTER;
+	  taRightJustify:
+	    Style := SS_RIGHT;
+	else
+	  Style := SS_LEFT; // default, shouldn't happen
+	end;
+      end;
+      case Layout of
         tlTop:
-          Style := Style Or BS_TOP;
+          Style := Style or BS_TOP;
         tlCenter:
-          Style := Style Or BS_VCENTER;
+          Style := Style or BS_VCENTER;
         tlBottom:
-          Style := Style Or BS_BOTTOM;
-        Else
-          Style := Style Or BS_BOTTOM; //default, shouldn't happen
-      End;
-      // Experimental wordwrapping support
-      If Wordwrap Then
-        Style := Style and not SS_LEFTNOWORDWRAP
-      Else
-        Style := Style or SS_LEFTNOWORDWRAP;
-
-      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or Style);
+          Style := Style or BS_BOTTOM;
+      else
+        Style := Style or BS_BOTTOM; //default, shouldn't happen
+      end;
+      SetWindowLong(Handle, GWL_STYLE, (GetWindowLong(Handle, GWL_STYLE) and $FFFF0000) or Style);
       Assert(False, 'TRACE:Wordwrapping of labels is not currently implemented');
       Assert(False, 'Trace:TODO: Code wordwrapping labels');
     End;
@@ -2969,6 +2968,9 @@ End;
 
 {
   $Log$
+  Revision 1.187  2004/04/18 20:11:08  micha
+  fix label alignment left, center, right
+
   Revision 1.186  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes
