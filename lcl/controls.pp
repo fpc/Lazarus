@@ -480,7 +480,6 @@ type
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
     procedure SetAlign(Value : TAlign);
-    procedure SetAutoSize(value : Boolean);
     procedure SetBoundsRect(const Rect : TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
@@ -508,6 +507,7 @@ type
   protected
     FControlState: TControlState;
     procedure AdjustSize; dynamic;
+    procedure SetAutoSize(const Value : Boolean); virtual;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender : TObject); virtual;
     procedure Changed;
@@ -635,15 +635,15 @@ type
     property Constraints : TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
-    property Color : TColor read FColor write SetColor;  {should change the WRITE to do something eventually}
+    property Color : TColor read FColor write SetColor;
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
     property Font : TFont read FFont write SetFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
     property Parent : TWinControl read FParent write SetParent;
-    property ShowHint : Boolean read FShowHint write SetShowHint;
-    property Visible: Boolean read FVisible write SetVisible;
+    property ShowHint : Boolean read FShowHint write SetShowHint default False;
+    property Visible: Boolean read FVisible write SetVisible default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
@@ -727,9 +727,12 @@ type
     Procedure SetTabOrder(Value : TTabOrder);
     Procedure UpdateTaborder(value : TTabOrder);
   protected
+    AutoSizing : Boolean;
+
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var Rect: TRect); virtual;
+    Procedure SetAutoSize(const Value : Boolean); Override;
     procedure BoundsChanged; override;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
@@ -737,6 +740,7 @@ type
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender : TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
+    procedure DoAutoSize; Virtual;
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
@@ -960,7 +964,7 @@ implementation
 
 //uses clause
 //Needs dialogs for the SetVisible procedure.
-uses Forms, Dialogs, Interfaces;
+uses Forms, Dialogs, Interfaces, Math;
 
 var
   CaptureControl: TControl;
@@ -1334,6 +1338,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/09/03 08:07:17  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.65  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
