@@ -62,6 +62,20 @@ begin
   TheStatusBar.InvalidatePanel(Index,Parts);
 end;
 
+procedure TStatusPanel.SetIndex(Value: Integer);
+var
+  OldIndex: LongInt;
+  TheStatusBar: TStatusBar;
+begin
+  OldIndex:=Index;
+  if OldIndex=Value then exit;
+  //debugln('TStatusPanel.SetIndex A Test=',Text,' Old=',dbgs(OldIndex),' New=',dbgs(Value));
+  inherited SetIndex(Value);
+  TheStatusBar:=StatusBar;
+  if TheStatusBar=nil then exit;
+  TheStatusBar.InvalidatePanel(-1,[ppText]);
+end;
+
 procedure TStatusPanel.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then

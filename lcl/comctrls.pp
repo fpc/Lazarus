@@ -59,6 +59,8 @@ type
     );
   TPanelParts = set of TPanelPart;
 
+  { TStatusPanel }
+
   TStatusPanel = class(TCollectionItem)
   private
     FText: string;
@@ -75,6 +77,7 @@ type
   protected
     function GetDisplayName: string; override;
     procedure PanelChanged(const Parts: TPanelParts);
+    procedure SetIndex(Value: Integer); override;
   public
     constructor Create(aCollection: TCollection); override;
     procedure Assign(Source: TPersistent); override;
@@ -2300,6 +2303,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.164  2005/02/21 01:08:19  mattias
+  fixed changing Index of TStatusPanel
+
   Revision 1.163  2005/02/17 18:56:32  mattias
   line ends in debug output are now converted, added TTreeNode.FindNode
 

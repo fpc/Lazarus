@@ -3460,11 +3460,12 @@ Type
     procedure RefreshPropertyValues;
   public
     procedure FillCollectionListBox;
-    constructor Create(TheOwner: TComponent); Override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure SelectInObjectInspector(UnselectAll: boolean);
     procedure SetCollection(NewCollection: TCollection;
                     NewOwnerPersistent: TPersistent; const NewPropName: string);
+    procedure Modified;
   public
     property Collection: TCollection read FCollection;
     property OwnerPersistent: TPersistent read FOwnerPersistent;
@@ -3486,6 +3487,7 @@ begin
   if Collection=nil then exit;
   Collection.Add;
   FillCollectionListBox;
+  Modified;
 end;
 
 procedure TCollectionPropertyEditorForm.DeleteClick(Sender: TObject);
@@ -3527,6 +3529,7 @@ begin
         CollectionListBox.ItemIndex:=NewItemIndex;
         SelectInObjectInspector(false);
       end;
+      Modified;
     end;
   end;
   UpdateButtons;
@@ -3542,6 +3545,7 @@ begin
   Collection.Items[i].Index:=i+1;
   CollectionListBox.ItemIndex:=i+1;
   FillCollectionListBox;
+  Modified;
 end;
 
 procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
@@ -3554,6 +3558,7 @@ begin
   Collection.Items[i].Index:=i-1;
   CollectionListBox.ItemIndex:=i-1;
   FillCollectionListBox;
+  Modified;
 end;
 
 procedure TCollectionPropertyEditorForm.UpdateCaption;
@@ -3758,6 +3763,11 @@ begin
     end;
   end;
   FillCollectionListBox;
+end;
+
+procedure TCollectionPropertyEditorForm.Modified;
+begin
+  GlobalDesignHook.Modified(Self);
 end;
 
 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
