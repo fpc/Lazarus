@@ -651,9 +651,6 @@ function InitResourceComponent(Instance: TComponent;
 function GetShortHint(const Hint: string): string;
 function GetLongHint(const Hint: string): string;
 
-procedure RegisterComponents(const Page:ShortString;  UnitName:ShortString;
-  ComponentClasses: array of TComponentClass);
-
 
 var
   Application : TApplication;
