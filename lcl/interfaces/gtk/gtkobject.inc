@@ -6124,6 +6124,7 @@ begin
     dec(CurPanelCount);
   end;
 
+  // check new panel count
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
   //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
   if CurPanelCount<>NewPanelCount then
@@ -6161,7 +6162,7 @@ var
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
 begin
-  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
+  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',dbgs(Index));
   AStatusBar:=StatusBar as TStatusBar;
 
   CurPanel:=nil;
@@ -6184,8 +6185,12 @@ begin
   ContextID:=gtk_statusbar_get_context_id(PGTKStatusBar(StatusPanelWidget),
                                           'state');
   //DebugLn('  PanelText="',PanelText,'"');
-  gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,
-                     PGChar(PanelText));
+  if PanelText<>'' then
+    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,
+                       PGChar(PanelText))
+  else
+    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,'');
+                       
 
   // Alignment
   if CurPanel<>nil then begin
@@ -9199,6 +9204,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.505  2004/05/22 14:59:23  mattias
+  fixed multi update of TStatusBar
+
   Revision 1.504  2004/05/22 14:35:32  mattias
   fixed button return key
 

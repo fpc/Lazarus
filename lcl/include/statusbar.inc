@@ -93,15 +93,14 @@ begin
   or ((PanelIndex>0) and SimplePanel) then exit;
 
   if (csLoading in ComponentState) or (FUpdateLock>0) then begin
-    //DebugLn('TStatusBar.UpdateHandleObject Caching FHandleObjectNeedsUpdate=',FHandleObjectNeedsUpdate,' FHandleUpdatePanelIndex=',FHandleUpdatePanelIndex,' ',PanelIndex);
+    //DebugLn('TStatusBar.UpdateHandleObject Caching FHandleObjectNeedsUpdate=',dbgs(FHandleObjectNeedsUpdate),' FHandleUpdatePanelIndex=',dbgs(FHandleUpdatePanelIndex),' PanelIndex=',dbgs(PanelIndex));
     if FHandleObjectNeedsUpdate then begin
       // combine multiple updates
       if (FHandleUpdatePanelIndex>=0)
-      and (FHandleUpdatePanelIndex<>PanelIndex) then
+      and (FHandleUpdatePanelIndex<>PanelIndex) then begin
         // at least 2 different panels need update => update all
-        FHandleUpdatePanelIndex:=-1 // update all
-      else
-        FHandleUpdatePanelIndex:=PanelIndex;
+        FHandleUpdatePanelIndex:=-1; // update all
+      end;
     end else begin
       // start an update sequence
       FHandleObjectNeedsUpdate:=true;
@@ -110,7 +109,7 @@ begin
     exit;
   end;
 
-  //DebugLn('TStatusBar.UpdateHandleObject A FHandlePanelCount=',FHandlePanelCount,' PanelIndex=',PanelIndex,' Panels.Count=',Panels.Count,' ',SimplePanel);
+  //DebugLn('TStatusBar.UpdateHandleObject A FHandlePanelCount=',dbgs(FHandlePanelCount),' PanelIndex=',dbgs(PanelIndex),' Panels.Count=',dbgs(Panels.Count),' SimplePanel=',dbgs(SimplePanel));
   if (FHandlePanelCount>PanelIndex) and (PanelIndex>=0) then begin
     // update one panel
     StatusBarPanelUpdate(Self,PanelIndex);

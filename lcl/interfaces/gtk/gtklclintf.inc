@@ -417,7 +417,7 @@ var
   StatusPanelWidget: PGtkWidget;
   BoxChild: PGtkBoxChild;
 begin
-  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
+  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(StatusBar),8),' Index=',dbgs(Index));
   AStatusBar:=StatusBar as TStatusBar;
   if Index>=0 then begin
     // update one
@@ -463,6 +463,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/05/22 14:59:23  mattias
+  fixed multi update of TStatusBar
+
   Revision 1.27  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
