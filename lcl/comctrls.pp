@@ -135,6 +135,7 @@ type
     function UpdatingStatusBar: boolean;
     property Canvas: TCanvas read FCanvas;
   published
+    property Action;
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
@@ -2303,6 +2304,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.165  2005/02/21 21:54:23  micha
+  make Action property published for TStatusBar (fired when clicking the statusbar?)
+
   Revision 1.164  2005/02/21 01:08:19  mattias
   fixed changing Index of TStatusPanel
 
