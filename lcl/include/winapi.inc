@@ -507,6 +507,11 @@ begin
   Result := InterfaceObject.LineTo(DC, X, Y);
 end;
 
+Function LoadStockPixmap(StockID: longint) : HBitmap;
+begin
+  Result := InterfaceObject.LoadStockPixmap(StockID);
+end;
+
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
 begin
   Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
@@ -1299,6 +1304,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
   Revision 1.52  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
