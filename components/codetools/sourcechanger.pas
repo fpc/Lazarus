@@ -74,7 +74,9 @@ type
   TAtomTypes = set of TAtomType;
   
   TBeautifyCodeFlag = (
-    bcfNoIndentOnBreakLine
+    bcfNoIndentOnBreakLine,
+    bcfDoNotIndentFirstLine,
+    bcfIndentExistingLineBreaks
     );
   TBeautifyCodeFlags = set of TBeautifyCodeFlag;
 
@@ -84,7 +86,7 @@ type
     LastSplitPos: integer; // last position where splitting is allowed
     LastSrcLineStart: integer;// last line start, not added by splitting
     CurAtomType, LastAtomType: TAtomType;
-    CurPos, AtomStart, AtomEnd, SrcLen, CurIndent: integer;
+    CurPos, AtomStart, AtomEnd, SrcLen, CurIndent, HiddenIndent: integer;
     Src, UpperSrc: string;
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
@@ -107,7 +109,7 @@ type
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
     PrivatVariablePrefix: string;
-    CurFlags:  TBeautifyCodeFlags;
+    CurFlags: TBeautifyCodeFlags;
 
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
         AddBeginEnd: boolean): string;
@@ -838,6 +840,8 @@ end;
 procedure TBeautifyCodeOptions.AddAtom(var CurCode: string; NewAtom: string);
 var
   RestLineLen, LastLineEndInAtom: integer;
+  BreakPos: Integer;
+  IndentLen: Integer;
 begin
   if NewAtom='' then exit;
   //writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
@@ -850,6 +854,26 @@ begin
       NewAtom:=BeautifyWord(NewAtom,IdentifierPolicy);
   end;
   
+  // indent existing line break
+  if bcfIndentExistingLineBreaks in CurFlags then begin
+    BreakPos:=1;
+    while (BreakPos<=length(NewAtom)) do begin
+      if NewAtom[BreakPos] in [#10,#13] then begin
+        inc(BreakPos);
+        if (BreakPos<=length(NewAtom)) and (NewAtom[BreakPos] in [#10,#13])
+        and (NewAtom[BreakPos]<>NewAtom[BreakPos-1]) then
+          inc(BreakPos);
+        IndentLen:=GetLineIndent(CurCode,LastSrcLineStart)+HiddenIndent;
+        NewAtom:=copy(NewAtom,1,BreakPos-1)
+                +GetIndentStr(IndentLen)
+                +copy(NewAtom,BreakPos,length(NewAtom)-BreakPos);
+        inc(BreakPos,IndentLen);
+        HiddenIndent:=0;
+      end else
+        inc(BreakPos);
+    end;
+  end;
+
   // split long string constants
   if NewAtom[1] in ['''','#'] then
     NewAtom:=SplitStringConstant(NewAtom,LineLength-CurLineLen,LineLength,
@@ -858,10 +882,12 @@ begin
   
   // find last line end in atom
   LastLineEndInAtom:=length(NewAtom);
-  while (LastLineEndInAtom>=1)
-  and (not (NewAtom[LastLineEndInAtom] in [#10,#13]))
-  do
-    dec(LastLineEndInAtom);
+  while (LastLineEndInAtom>=1) do begin
+    if (not (NewAtom[LastLineEndInAtom] in [#10,#13])) then
+      dec(LastLineEndInAtom)
+    else
+      break;
+  end;
 
   // start new line if necessary
   if (LastLineEndInAtom<1) and (CurLineLen+length(NewAtom)>LineLength)
@@ -870,9 +896,11 @@ begin
     // -> split line
     //writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
     RestLineLen:=length(CurCode)-LastSplitPos+1;
+    IndentLen:=Indent+GetLineIndent(CurCode,LastSrcLineStart)+HiddenIndent;
     CurCode:=copy(CurCode,1,LastSplitPos-1)+LineEnd
-             +GetIndentStr(Indent+GetLineIndent(CurCode,LastSrcLineStart))
+             +GetIndentStr(IndentLen)
              +copy(CurCode,LastSplitPos,RestLineLen)+NewAtom;
+    HiddenIndent:=0;
     CurLineLen:=length(CurCode)-LastSplitPos-length(LineEnd)+1;
     LastSplitPos:=-1;
   end else begin
@@ -883,6 +911,7 @@ begin
       // there is a line end in the code
       CurLineLen:=length(NewAtom)-LastLineEndInAtom;
       LastSrcLineStart:=length(CurCode)+1-CurLineLen;
+      HiddenIndent:=0;
     end;
   end;
 end;
@@ -1041,51 +1070,55 @@ begin
   //writeln('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
   // set flags
   CurFlags:=BeautifyFlags;
-  if bcfNoIndentOnBreakLine in CurFlags then begin
-    OldIndent:=Indent;
-    Indent:=0;
-  end;
-  // init
-  Src:=AStatement;
-  UpperSrc:=UpperCaseStr(Src);
-  SrcLen:=length(Src);
-  if IndentSize>=LineLength-10 then IndentSize:=LineLength-10;
-  CurIndent:=IndentSize;
-  Result:=GetIndentStr(CurIndent);
-  CurPos:=1;
-  LastSplitPos:=-1;
-  LastSrcLineStart:=1;
-  CurLineLen:=length(Result);
-  LastAtomType:=atNone;
-  // read atoms
-  while (CurPos<=SrcLen) do begin
-    repeat
-      ReadNextAtom;
-      CurAtom:=copy(Src,AtomStart,AtomEnd-AtomStart);
-      if CurAtom=' ' then
-        AddAtom(Result,' ')
-      else
-        break;
-    until false;
-    if ((Result='') or (Result[length(Result)]<>' '))
-    and ((CurAtomType in DoInsertSpaceInFront)
-    or (LastAtomType in DoInsertSpaceAfter)) then
-      AddAtom(Result,' ');
-    if (not (CurAtomType in DoNotSplitLineInFront))
-    and (not (LastAtomType in DoNotSplitLineAfter)) then
-      LastSplitPos:=length(Result)+1;
-    {writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
-    '" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
-    '  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
-    ' ..."',copy(Result,length(Result)-10,10),'"');}
-    AddAtom(Result,CurAtom);
-    LastAtomType:=CurAtomType;
-  end;
-  // restore flags
-  if bcfNoIndentOnBreakLine in CurFlags then begin
+  OldIndent:=Indent;
+  try
+    if bcfNoIndentOnBreakLine in CurFlags then
+      Indent:=0;
+    // init
+    Src:=AStatement;
+    UpperSrc:=UpperCaseStr(Src);
+    SrcLen:=length(Src);
+    if IndentSize>=LineLength-10 then IndentSize:=LineLength-10;
+    CurIndent:=IndentSize;
+    HiddenIndent:=0;
+    if bcfDoNotIndentFirstLine in CurFlags then begin
+      Result:='';
+      HiddenIndent:=CurIndent;
+    end else
+      Result:=GetIndentStr(CurIndent);
+    CurPos:=1;
+    LastSplitPos:=-1;
+    LastSrcLineStart:=1;
+    CurLineLen:=length(Result);
+    LastAtomType:=atNone;
+    // read atoms
+    while (CurPos<=SrcLen) do begin
+      repeat
+        ReadNextAtom;
+        CurAtom:=copy(Src,AtomStart,AtomEnd-AtomStart);
+        if CurAtom=' ' then
+          AddAtom(Result,' ')
+        else
+          break;
+      until false;
+      if ((Result='') or (Result[length(Result)]<>' '))
+      and ((CurAtomType in DoInsertSpaceInFront)
+      or (LastAtomType in DoInsertSpaceAfter)) then
+        AddAtom(Result,' ');
+      if (not (CurAtomType in DoNotSplitLineInFront))
+      and (not (LastAtomType in DoNotSplitLineAfter)) then
+        LastSplitPos:=length(Result)+1;
+      {writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
+      '" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
+      '  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
+      ' ..."',copy(Result,length(Result)-10,10),'"');}
+      AddAtom(Result,CurAtom);
+      LastAtomType:=CurAtomType;
+    end;
+  finally
     Indent:=OldIndent;
+    CurFlags:=[];
   end;
-  CurFlags:=[];
   //writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
   //writeln('**********************************************************');
 end;

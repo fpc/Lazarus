@@ -57,6 +57,9 @@ type
     MaxHistory: integer;
   end;
   
+  
+  { THistoryList - a TStringList to store a history list }
+  
   THistoryList = class(TStringList)
   private
     FMaxCount: integer;
@@ -74,6 +77,9 @@ type
     property Name: string read FName write SetName;
     property MaxCount: integer read FMaxCount write SetMaxCount;
   end;
+  
+  
+  { THistoryLists - list of THistoryList }
   
   THistoryLists = class
   private
@@ -101,6 +107,7 @@ type
   public
     Options: string;
     SearchPath: string;
+    FPCSrcDir: string;
     UnitLinks: string;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -122,11 +129,12 @@ type
     destructor Destroy; override;
     procedure Clear;
     function FindItem(const Options: string): integer;
-    procedure SetItem(const Options, SearchPath, UnitLinks: string);
+    procedure SetItem(const Options, SearchPath, FPCSrcDir, UnitLinks: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function Valid(CheckCompiler: boolean): boolean;
-    function UnitLinksNeedUpdate(const Options, SearchPath: string): boolean;
+    function UnitLinksNeedUpdate(const Options, SearchPath,
+                                 FPCSrcDir: string): boolean;
     function GetUnitLinks(const Options: string): string;
   public
     property CompilerPath: string read FCompilerPath write SetCompilerPath;
@@ -183,10 +191,10 @@ type
     function AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
 
     function LastFPCUnitLinksValid: boolean;
-    function LastFPCUnitLinksNeedsUpdate(const Options,
-                                         SearchPath: string): boolean;
+    function LastFPCUnitLinksNeedsUpdate(const Options, SearchPath,
+                                         FPCSrcDir: string): boolean;
     procedure SetLastFPCUnitLinks(const FPCPath, FPCOptions,
-                                  SearchPath, UnitLinks: string);
+                                  SearchPath, FPCSrcDir, UnitLinks: string);
     
     // filedialog
     procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
@@ -458,16 +466,16 @@ begin
 end;
 
 function TInputHistories.LastFPCUnitLinksNeedsUpdate(
-  const Options, SearchPath: string): boolean;
+  const Options, SearchPath, FPCSrcDir: string): boolean;
 begin
-  Result:=FFPCConfigCache.UnitLinksNeedUpdate(Options,SearchPath);
+  Result:=FFPCConfigCache.UnitLinksNeedUpdate(Options,SearchPath,FPCSrcDir);
 end;
 
 procedure TInputHistories.SetLastFPCUnitLinks(const FPCPath, FPCOptions,
-  SearchPath, UnitLinks: string);
+  SearchPath, FPCSrcDir, UnitLinks: string);
 begin
   FFPCConfigCache.CompilerPath:=FPCPath;
-  FFPCConfigCache.SetItem(FPCOptions,SearchPath,UnitLinks);
+  FFPCConfigCache.SetItem(FPCOptions,SearchPath,FPCSrcDir,UnitLinks);
 end;
 
 procedure TInputHistories.ApplyFileDialogSettings(DestDialog: TFileDialog);
@@ -695,8 +703,8 @@ begin
   while (Result>=0) and (Options<>Items[Result].Options) do dec(Result);
 end;
 
-procedure TFPCConfigCache.SetItem(const Options, SearchPath, UnitLinks: string
-  );
+procedure TFPCConfigCache.SetItem(const Options, SearchPath, FPCSrcDir,
+  UnitLinks: string);
 var
   i: Integer;
   CurItem: TFPCConfigCacheItem;
@@ -709,6 +717,7 @@ begin
     CurItem:=Items[i];
   CurItem.Options:=Options;
   CurItem.SearchPath:=SearchPath;
+  CurItem.FPCSrcDir:=FPCSrcDir;
   CurItem.UnitLinks:=UnitLinks;
 end;
 
@@ -762,8 +771,8 @@ begin
   end;
 end;
 
-function TFPCConfigCache.UnitLinksNeedUpdate(const Options, SearchPath: string
-  ): boolean;
+function TFPCConfigCache.UnitLinksNeedUpdate(const Options, SearchPath,
+  FPCSrcDir: string): boolean;
 var
   i: Integer;
 begin
@@ -774,6 +783,8 @@ begin
   if i<0 then exit;
   // check if search path changed
   if Items[i].SearchPath<>SearchPath then exit;
+  // check if FPCSrcDir changed
+  if Items[i].FPCSrcDir<>FPCSrcDir then exit;
   // check if compiler changed
   if not Valid(true) then exit;
   Result:=false;
@@ -797,6 +808,7 @@ procedure TFPCConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
 begin
   Options:=XMLConfig.GetValue(Path+'Options/Value','');
   SearchPath:=XMLConfig.GetValue(Path+'SearchPath/Value','');
+  FPCSrcDir:=XMLConfig.GetValue(Path+'FPCSrcDir/Value','');
   UnitLinks:=XMLConfig.GetValue(Path+'UnitLinks/Value','');
 end;
 
@@ -805,6 +817,7 @@ procedure TFPCConfigCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
 begin
   XMLConfig.SetDeleteValue(Path+'Options/Value',Options,'');
   XMLConfig.SetDeleteValue(Path+'SearchPath/Value',SearchPath,'');
+  XMLConfig.SetDeleteValue(Path+'FPCSrcDir/Value',FPCSrcDir,'');
   XMLConfig.SetDeleteValue(Path+'UnitLinks/Value',UnitLinks,'');
 end;
 

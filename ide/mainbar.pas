@@ -676,7 +676,6 @@ begin
   itmEditEncloseBlock := TMenuItem.Create(Self);
   itmEditEncloseBlock.Name:='itmEditEncloseBlock';
   itmEditEncloseBlock.Caption := lisMenuEncloseSelection;
-  itmEditEncloseBlock.Enabled:=false;
   mnuEdit.Add(itmEditEncloseBlock);
 
   mnuEdit.Add(CreateMenuSeparator);

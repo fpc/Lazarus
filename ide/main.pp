@@ -7578,7 +7578,7 @@ begin
                                             EnvironmentOptions.CompilerFilename;
     CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks('');
     UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate('',
-                                                        CompilerUnitSearchPath);
+                  CompilerUnitSearchPath,EnvironmentOptions.FPCSourceDirectory);
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath,
@@ -7590,8 +7590,11 @@ begin
     if UnitLinksChanged
     or (CompilerUnitLinks<>InputHistories.FPCConfigCache.GetUnitLinks(''))
     then begin
-      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,'',
-                                      CompilerUnitSearchPath,CompilerUnitLinks);
+      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
+                                         '', // default options ''
+                                         CompilerUnitSearchPath,
+                                         EnvironmentOptions.FPCSourceDirectory,
+                                         CompilerUnitLinks);
       InputHistories.Save;
     end;
     AddTemplate(ADefTempl,false,
@@ -7688,7 +7691,9 @@ begin
       FPCSrcTemplate.InsertBehind(CompilerTemplate);
       // save unitlinks
       InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
-                         CurOptions,CompilerUnitSearchPath,CompilerUnitLinks);
+                                         CurOptions,CompilerUnitSearchPath,
+                                         EnvironmentOptions.FPCSourceDirectory,
+                                         CompilerUnitLinks);
       InputHistories.Save;
     end else begin
       MessageDlg(lisFPCSourceDirectoryError,
@@ -9421,6 +9426,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.639  2003/08/18 10:02:36  mattias
+  fixed win32 lazconf and improved enclose selection
+
   Revision 1.638  2003/08/16 09:45:44  mattias
   started enclose selection
 

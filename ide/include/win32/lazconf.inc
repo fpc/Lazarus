@@ -21,6 +21,9 @@
  *                                                                         *
  ***************************************************************************
 }
+uses
+  DOS; // .. invincible DOS ..
+
 const
   DefaultFPCSrcDirs: array[1..1] of string = (
     'C:\pp'
@@ -166,6 +169,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2003/08/18 10:02:37  mattias
+  fixed win32 lazconf and improved enclose selection
+
   Revision 1.10  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

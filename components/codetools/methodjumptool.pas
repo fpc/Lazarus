@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TMethodJumpingCodeTool enhances TStandardCodeTool with functions to jump
+    TMethodJumpingCodeTool enhances TCodeTemplatesTool with functions to jump
     between a method definition and its body and a forward procedure and its
     body.
 
@@ -41,12 +41,12 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
-  StdCodeTools, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  StdCodeTools, CodeTemplatesTool, SourceLog, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 
 type
-  TMethodJumpingCodeTool = class(TStandardCodeTool)
+  TMethodJumpingCodeTool = class(TCodeTemplatesTool)
   private
     FAdjustTopLineDueToComment: boolean;
   protected

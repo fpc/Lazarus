@@ -1049,12 +1049,12 @@ Begin
       IdentCompletionTimer.Enabled := True;
     end;
     
-  ecSelectionUpperCase:
+  ecSelectionEnclose:
     EncloseSelection;
 
-  ecSelectionEnclose:
+  ecSelectionUpperCase:
     UpperCaseSelection;
-    
+
   ecSelectionLowerCase:
     LowerCaseSelection;
     
@@ -1743,9 +1743,24 @@ end;
 procedure TSourceEditor.EncloseSelection;
 var
   EncloseType: TEncloseSelectionType;
+  EncloseTemplate: string;
+  NewSelection: string;
+  NewCaretXY: TPoint;
 begin
+  if not FEditor.SelAvail then begin
+    FEditor.BlockBegin:=FEditor.CaretXY;
+    FEditor.BlockEnd:=FEditor.CaretXY;
+  end;
   if ShowEncloseSelectionDialog(EncloseType)<>mrOk then exit;
-
+  GetEncloseSelectionParams(EncloseType,EncloseTemplate);
+  EncloseTextSelection(EncloseTemplate,FEditor.Lines,
+                       FEditor.BlockBegin,FEditor.BlockEnd,
+                       FEditor.BlockIndent,
+                       NewSelection,NewCaretXY);
+  writeln('TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,
+    ' "',NewSelection,'"');
+  FEditor.SelText:=NewSelection;
+  FEditor.CaretXY:=NewCaretXY;
 end;
 
 Function TSourceEditor.GetModified : Boolean;

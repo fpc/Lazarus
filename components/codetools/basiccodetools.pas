@@ -53,6 +53,9 @@ procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
 function GetLineIndent(const Source: string; Position: integer): integer;
 function GetIndentStr(Indent: integer): string;
+procedure IndentText(const Source: string; Indent: integer;
+    var NewSource: string);
+function LineEndCount(const Txt: string): integer;
 function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
 function PositionsInSameLine(const Source: string;
     Pos1, Pos2: integer): boolean;
@@ -1399,7 +1402,7 @@ begin
   inc(LineStart);
   // search code
   Result:=LineStart;
-  while (Result<length(Source)) and (Source[Result]<=' ') do inc(Result);
+  while (Result<=length(Source)) and (Source[Result]=' ') do inc(Result);
   dec(Result,LineStart);
 end;
 
@@ -2077,6 +2080,67 @@ begin
   SetLength(Result,Indent);
   if Indent>0 then
     FillChar(Result[1],length(Result),' ');
+end;
+
+procedure IndentText(const Source: string; Indent: integer;
+  var NewSource: string);
+var
+  LengthOfLastLine: integer;
+  LineEndCnt: Integer;
+  SrcPos: Integer;
+  SrcLen: Integer;
+  NewSrcPos: Integer;
+  c: Char;
+  
+  procedure AddIndent;
+  var
+    i: Integer;
+  begin
+    for i:=1 to Indent do begin
+      NewSource[NewSrcPos]:=' ';
+      inc(NewSrcPos);
+    end;
+  end;
+  
+begin
+  if (Indent<=0) or (Source='') then begin
+    NewSource:=Source;
+    exit;
+  end;
+  LineEndCnt:=LineEndCount(Source,LengthOfLastLine);
+  if LengthOfLastLine>0 then inc(LineEndCnt);
+  SetLength(NewSource,LineEndCnt*Indent+length(Source));
+  SrcPos:=1;
+  SrcLen:=length(Source);
+  NewSrcPos:=1;
+  AddIndent;
+  while SrcPos<=SrcLen do begin
+    c:=Source[SrcPos];
+    // copy char
+    NewSource[NewSrcPos]:=Source[SrcPos];
+    inc(NewSrcPos);
+    inc(SrcPos);
+    if (c in [#10,#13]) then begin
+      // line end
+      if (SrcPos<=SrcLen) and (Source[SrcPos] in [#10,#13])
+      and (Source[SrcPos]<>Source[SrcPos-1]) then begin
+        NewSource[NewSrcPos]:=Source[SrcPos];
+        inc(NewSrcPos);
+        inc(SrcPos);
+      end;
+      if (SrcPos<=SrcLen) and (not (Source[SrcPos] in [#10,#13])) then begin
+        // next line not empty -> indent
+        AddIndent;
+      end;
+    end;
+  end;
+end;
+
+function LineEndCount(const Txt: string): integer;
+var
+  LengthOfLastLine: integer;
+begin
+  Result:=LineEndCount(Txt,LengthOfLastLine);
 end;
 
 function TrimCodeSpace(const ACode: string): string;

@@ -43,7 +43,8 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool,
-  FindDeclarationTool, IdentCompletionTool, ResourceCodeTool, CodeToolsStructs;
+  FindDeclarationTool, IdentCompletionTool, ResourceCodeTool, CodeToolsStructs,
+  CodeTemplatesTool;
 
 type
   TCodeToolManager = class;
@@ -293,6 +294,14 @@ type
     // code completion = auto class completion, auto forward proc completion,
     //             local var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
+          
+    // code templates
+    function InsertCodeTemplate(Code: TCodeBuffer;
+          SelectionStart, SelectionEnd: TPoint;
+          TopLine: integer;
+          CodeTemplate: TCodeToolTemplate;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
 
@@ -1515,6 +1524,39 @@ begin
   try
     Result:=FCurCodeTool.CompleteCode(CursorPos,TopLine,
                                            NewPos,NewTopLine,SourceChangeCache);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.InsertCodeTemplate(Code: TCodeBuffer;
+  SelectionStart, SelectionEnd: TPoint; TopLine: integer;
+  CodeTemplate: TCodeToolTemplate; var NewCode: TCodeBuffer; var NewX, NewY,
+  NewTopLine: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  EndPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.InsertCodeTemplate A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=SelectionStart.X;
+  CursorPos.Y:=SelectionStart.Y;
+  CursorPos.Code:=Code;
+  EndPos.X:=SelectionStart.X;
+  EndPos.Y:=SelectionStart.Y;
+  EndPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.InsertCodeTemplate(CursorPos,EndPos,TopLine,
+                              CodeTemplate,NewPos,NewTopLine,SourceChangeCache);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
