@@ -13,6 +13,7 @@ begin
   FHandle := 0;
   FList := nil;
   FOnIdle := nil;
+  FIcon := nil;
    
   inherited Create(AOwner);
 end;
@@ -22,6 +23,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 begin
+  FIcon.Free;
+  FIcon:=nil;
   FList.Free;
   inherited Destroy;
 end;
@@ -112,6 +115,13 @@ procedure TApplication.Initialize;
 begin
   InterfaceObject.Init;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
+  if LazarusResources.Find('MAINICON')<>nil then begin
+    if FIcon=nil then begin
+      FIcon:=TIcon.Create;
+      FIcon.OnChange := @IconChanged;
+    end;
+    FIcon.LoadFromLazarusResource('MAINICON');
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -162,7 +172,40 @@ begin
   
   Done := True;
   if Assigned(FOnIdle) then FOnIdle(Self, Done);
+end;
 
+{------------------------------------------------------------------------------
+  Method: TApplication.SetIcon
+  Params: the new icon
+ ------------------------------------------------------------------------------}
+procedure TApplication.SetIcon(AValue: TIcon);
+begin
+  if FIcon=nil then begin
+    FIcon:=TIcon.Create;
+    FIcon.OnChange := @IconChanged;
+  end;
+  FIcon.Assign(AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TApplication.IconChanged
+ ------------------------------------------------------------------------------}
+procedure TApplication.IconChanged(Sender: TObject);
+begin
+  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+  // NotifyForms(CM_ICONCHANGED);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.IsIconStored
+  Returns: handle of form icon 
+ ------------------------------------------------------------------------------}
+function TApplication.GetIconHandle: HICON;
+begin
+  if FIcon<>nil then
+    Result := FIcon.Handle
+  else
+    Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -235,12 +278,14 @@ begin
          FList := TList.Create;
       FList.Add(TForm(ref));
    end;
-
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/06/26 00:08:35  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.4  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

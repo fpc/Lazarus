@@ -10,6 +10,8 @@
 
 const
   BOOL_RESULT: array[Boolean] of String = ('False', 'True');
+  
+  
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.Create
@@ -25,6 +27,8 @@ begin
   FDeviceContexts := TDynHashArray.Create(-1);
   FGDIObjects := TDynHashArray.Create(-1);
   FMessageQueue := TLazQueue.Create;
+  {FPaintMessages := TDynHashArray.Create(-1);
+  FPaintMessages.OwnerHashFunction := @HashPaintMessage;}
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
 end;
@@ -55,14 +59,20 @@ begin
     p := PMsg(QueueItem^.Data);
     if p^.Message=LM_PAINT then begin
       //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
+      //FPaintMessages.Remove(P);
       ReleaseDC(0,P^.WParam);
-      Dispose(p);
+      Dispose(P);
       OldQueueItem:=QueueItem;
       QueueItem:=QueueItem^.Next;
       FMessageQueue.Delete(OldQueueItem);
     end else
       QueueItem:=QueueItem^.Next;
   end;
+  
+  {if FPaintMessages.Count>0 then begin
+    WriteLn('[TgtkObject.Destroy] WARNING: There are ',FPaintMessages.Count
+       ,' unremoved LM_PAINT message links left.');
+  end;}
 
   if (FDeviceContexts.Count > 0)
   then begin
@@ -132,6 +142,7 @@ begin
   end;
 
   FMessageQueue.Free;
+  //FPaintMessages.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
@@ -163,6 +174,8 @@ begin
       p := PMsg(First^.Data);
       Delete(First);
       Msg := p^;
+      {if Msg.Message=LM_PAINT then
+        FPaintMessages.Remove(p);}
       with Msg do
         SendMessage(hWND, Message, WParam, LParam);
       case Msg.Message of
@@ -331,6 +344,7 @@ var
    SelectionMode : TGtkSelectionMode;   // currently only used for listboxes
    ListItem  : PGtkListItem;            // currently only used for listboxes
    Rect      : TRect;
+   FormIconGdiObject: PGdiObject;       // currently only used by LM_SETFORMICON
 
 begin
    result := 0;   //default value just in case nothing sets it
@@ -749,6 +763,20 @@ activate_time :	the time at which the activation event occurred.
 }
         gtk_widget_queue_draw(PGtkWidget(Handle));
       end; 
+      
+      LM_SETFORMICON :
+      begin
+        if Sender is TCustomForm then begin
+          if (Handle<>0) and (Data<>nil) then begin
+            FormIconGdiObject:=Data;
+            if FormIconGdiObject<>nil then begin
+              gdk_window_set_icon(pgtkWidget(Handle)^.Window, nil, 
+                FormIconGdiObject^.GDIBitmapObject,
+                FormIconGdiObject^.GDIBitmapMaskObject);
+              end;
+            end;
+        end;
+      end;
 
       LM_SCREENINIT :
       begin
@@ -2864,6 +2892,54 @@ begin
   gdk_color_black(gdk_colormap_get_system, @Result^.GDIPenColor);
 end;
 
+{------------------------------------------------------------------------------
+  Function: HashPaintMessage
+  Params: a PaintMessage
+  Returns: a hash index
+
+  Calculates a hash of the handle in the PaintMessage which is used by the
+  FPaintMessages (which is a TDynHashArray).
+ ------------------------------------------------------------------------------}
+{function TgtkObject.HashPaintMessage(p: pointer): integer;
+var h: integer;
+begin
+  h:=PMsg(p)^.WParam;
+  if h<0 then h:=-h;
+  Result:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
+end;}
+
+{------------------------------------------------------------------------------
+  Function: FindPaintMessage
+  Params: a Device Context
+  Returns: nil or a Paint Message to the device context
+
+  Searches in FPaintMessages for a LM_PAINT message with DC as device context.
+ ------------------------------------------------------------------------------}
+{function TgtkObject.FindPaintMessage(DC: HDC): pMsg;
+var h: integer;
+  HashItem: PDynHashArrayItem;
+begin
+  h:=DC;
+  if h<0 then h:=-h;
+  h:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
+  HashItem:=FPaintMessages.GetHashItem(h);
+  if HashItem<>nil then begin
+    if pMsg(HashItem^.Item)^.wParam=DC then begin
+      Result:=pMsg(HashItem^.Item);
+      exit;
+    end;
+    HashItem:=HashItem^.Next;
+    while (HashItem<>nil) and (HashItem^.IsOverflow) do begin
+      if pMsg(HashItem^.Item)^.wParam=DC then begin
+        Result:=pMsg(HashItem^.Item);
+        exit;
+      end;
+      HashItem:=HashItem^.Next;
+    end;
+  end;
+  Result:=nil;
+end;}
+
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -2873,8 +2949,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.50  2001/06/16 09:14:38  lazarus
-  MG: added lazqueue and used it for the messagequeue
+  Revision 1.51  2001/06/26 00:08:36  lazarus
+  MG: added code for form icons from Rene E. Beszon
 
   Revision 1.49  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes

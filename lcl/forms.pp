@@ -77,6 +77,7 @@ type
     FCanvas : TControlCanvas;
     FDesigner : TIDesigner;
     FFormStyle : TFormStyle;
+    FIcon: TIcon;
     FKeyPreview: Boolean;
     FMenu : TMainMenu;
     FModalResult : TModalResult;
@@ -95,15 +96,19 @@ type
     procedure DoCreate;
     procedure DoDestroy;
     Procedure SetActiveControl(Value : TWinControl);
-    Procedure SetBorderStyle(value : TFORMBorderStyle);
+    Procedure SetBorderStyle(Value : TFORMBorderStyle);
     Procedure SetDesigner(Value : TIDesigner);
-    Procedure SetMenu(value : TMainMenu);
+    Procedure SetMenu(Value : TMainMenu);
     Procedure SetFormStyle(Value : TFormStyle);
+    procedure SetIcon(AValue: TIcon);
     Procedure SetPosition(Value : TPosition);
     Procedure SetVisible(Value: boolean);
     Procedure SetWindowState(Value : TWIndowState);
     Function GetCanvas: TControlCanvas;
     Function IsForm : Boolean;
+    procedure IconChanged(Sender: TObject);
+    function IsIconStored: Boolean;
+    function GetIconHandle: HICON;
     { events }
     Procedure WMActivate(var Message : TLMActivate); message LM_Activate;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
@@ -123,6 +128,7 @@ type
     procedure DoShow; dynamic;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     Function GetClientRect : TRect ; Override;
+    property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
     Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
     Procedure PaintWindow(dc : Hdc); override;
@@ -186,6 +192,7 @@ type
       property ClientWidth;
       property Enabled;
       property FormStyle;
+      property Icon;
       property PopupMenu;
       property Position;
       property ShowHint;
@@ -229,20 +236,24 @@ type
   TApplication = class(TComponent)
    private
       FHandle : THandle;
-      FTerminate : Boolean;
-      FMainForm : TForm;
+      FIcon: TIcon;
       FList: TList;
+      FMainForm : TForm;
       FMouseControl: TControl;
       FOnIdle: TIdleEvent;
-      // MWE:Do we need this ??
+      FTerminate : Boolean;
+    // MWE:Do we need this ??
       // function ProcessMessage(Var Msg : TMsg) : Boolean;
       procedure wndproc(var Message : TLMessage);
  //the following is used for Messagebox button clicks.  Temporary until I figure out a better way.
       procedure DefaultOnClick(Sender : TObject);
  //----      
       function GetExename: String;
-      procedure MouseIdle(const CurrentControl: TControl);
+      function GetIconHandle: HICON;
+      procedure IconChanged(Sender: TObject);
       procedure Idle;
+      procedure MouseIdle(const CurrentControl: TControl);
+      procedure SetIcon(AValue: TIcon);
    public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -250,6 +261,7 @@ type
       procedure CreateForm(NewForm : TFormClass; var ref);
       procedure HandleMessage;
       procedure HintMouseMEssage(Control : TControl; var Message: TLMessage);
+      property Icon: TIcon read FIcon write SetIcon;
       procedure Initialize;
       function MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
       procedure Notification(AComponent : TComponent; Operation : TOperation); override;

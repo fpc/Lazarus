@@ -13,7 +13,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm ClientWndProc                                                       }
+{       TCustomForm ClientWndProc                                              }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.ClientWndProc(var MEssage: TLMessage);
 
@@ -72,6 +72,8 @@ begin
   FMenu:=nil;
   FCanvas.Free;
   FCanvas:=nil;
+  FIcon.Free;
+  FIcon:=nil;
 //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
 //writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
@@ -81,8 +83,6 @@ end;
   Method: TCustomForm.Deactivate
   Params:  None
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.Deactivate;
 Begin
@@ -107,11 +107,55 @@ End;
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.Notification(AComponent : TComponent; Operation : TOperation);
+Procedure TCustomForm.Notification(AComponent : TComponent;
+  Operation : TOperation);
 Begin
   inherited Notification(AComponent,Operation);
   if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
 End;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.IconChanged
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.IconChanged(Sender: TObject);
+begin
+  if HandleAllocated and (BorderStyle<>bsDialog) then
+    CNSendMessage(LM_SETFORMICON,Self,Pointer(GetIconHandle));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.SetIcon
+  Params: the new icon
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.SetIcon(AValue: TIcon);
+begin
+  if FIcon=nil then begin
+    FIcon:=TIcon.Create;
+    FIcon.OnChange := @IconChanged;
+  end;
+  FIcon.Assign(AValue);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.IsIconStored
+  Returns: if form icon should be stored in the stream
+ ------------------------------------------------------------------------------}
+function TCustomForm.IsIconStored: Boolean;
+begin
+  Result := IsForm and (Icon<>nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.IsIconStored
+  Returns: handle of form icon 
+ ------------------------------------------------------------------------------}
+function TCustomForm.GetIconHandle: HICON;
+begin
+  if FIcon<>nil then
+    Result := FIcon.Handle
+  else
+    Result := Application.GetIconHandle;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.SetFocus
@@ -177,7 +221,6 @@ begin
   finally
     Exclude(FFormState, fsShowing);
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -656,8 +699,7 @@ Begin
   FBorderStyle := bsSizeable;
   FWindowState := wsNormal;
 //  FDefaultMonitor := dmActiveForm;
-//  FIcon := TIcon.Create;
-//  FIcon.OnChange := IconChanged;
+  FIcon := nil;
 //  FInCMParentBiDiModeChanged := False;
   {apply a drawing surface}
   FCanvas := TControlCanvas.Create;
@@ -790,7 +832,7 @@ end;
 function TCustomForm.SetFocusedControl(Control : TWinControl): Boolean;
 begin
 //TODO: SetFocusedControl
-Result := True;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------}
@@ -798,7 +840,7 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomForm.WantChildKey(Child : TControl; var MEssage : TLMessage):Boolean;
 begin
-   result := False;
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -812,9 +854,10 @@ procedure TCustomForm.CreateWnd;
 begin
   inherited CreateWnd;
   
+  CNSendMEssage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');  
   if FMenu <> nil then FMenu.HandleNeeded;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -896,6 +939,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/06/26 00:08:35  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.20  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

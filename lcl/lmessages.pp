@@ -31,39 +31,39 @@ const
 
 // Commands sent to the interface units
 // add also a description to a message at the end of this unit
-LM_ComUser = $1000;
-LM_Create = LM_ComUser+1;
-LM_SetLabel = LM_ComUser+2;
-LM_SetLeft = LM_ComUser+3;
-LM_SetTop = LM_ComUser+4;
-LM_SetWidth = LM_ComUser+5;
-LM_SetHeight = LM_ComUser+6;
-LM_AddChild = LM_ComUser+7;
-LM_Setsize = LM_ComUser+8;
-LM_GetLabel = LM_ComUser+9;
-LM_AssignEvent = LM_ComUser+10;
-LM_AssignSelf = LM_ComUser+11;
-LM_SetName = LM_ComUser+12;
+LM_ComUser       = $1000;
+LM_Create        = LM_ComUser+1;
+LM_SetLabel      = LM_ComUser+2;
+LM_SetLeft       = LM_ComUser+3;
+LM_SetTop        = LM_ComUser+4;
+LM_SetWidth      = LM_ComUser+5;
+LM_SetHeight     = LM_ComUser+6;
+LM_AddChild      = LM_ComUser+7;
+LM_Setsize       = LM_ComUser+8;
+LM_GetLabel      = LM_ComUser+9;
+LM_AssignEvent   = LM_ComUser+10;
+LM_AssignSelf    = LM_ComUser+11;
+LM_SetName       = LM_ComUser+12;
 LM_RESIZECHILDREN = LM_ComUser+13;
-LM_ShowHide = LM_ComUser+14;
-LM_AddPAge = LM_ComUser+15;
-LM_GetLineCount = LM_ComUser+16;
-LM_SETTEXT = LM_ComUser+17;
-LM_GETTEXT = LM_ComUser+18;
-LM_CANVASCREATE = LM_ComUser+19;
-LM_ReDraw  = LM_ComUser+26;
-LM_SetColor = LM_ComUser+27;
-LM_RemovePage = LM_ComUser+28;
-LM_ShowTabs = LM_ComUser+29;
+LM_ShowHide      = LM_ComUser+14;
+LM_AddPage       = LM_ComUser+15;
+LM_GetLineCount  = LM_ComUser+16;
+LM_SETTEXT       = LM_ComUser+17;
+LM_GETTEXT       = LM_ComUser+18;
+LM_CANVASCREATE  = LM_ComUser+19;
+LM_ReDraw        = LM_ComUser+26;
+LM_SetColor      = LM_ComUser+27;
+LM_RemovePage    = LM_ComUser+28;
+LM_ShowTabs      = LM_ComUser+29;
 LM_SetTabPosition = LM_ComUser+30;
-LM_Invalidate = LM_ComUser+32;
-LM_SetPixel = LM_ComUser+34;
-LM_GetPixel = LM_ComUser+35;
+LM_Invalidate    = LM_ComUser+32;
+LM_SetPixel      = LM_ComUser+34;
+LM_GetPixel      = LM_ComUser+35;
 
 LM_SETPROPERTIES = LM_ComUser+39;         // update object to reflect current properties 
 LM_SETVALUE      = LM_ComUser+40;         // set actual value of object to visual object
 LM_GETVALUE      = LM_ComUser+41;         // get actual value from visual object
-LM_ATTACHMENU = LM_ComUser+42;
+LM_ATTACHMENU    = LM_ComUser+42;
 
 LM_TB_BUTTONCOUNT = LM_ComUser+45;
 LM_INSERTTOOLBUTTON = LM_ComUser+46;
@@ -85,6 +85,7 @@ LM_POPUPSHOW = LM_COMUSER+56;
 
 
 LM_RECREATEWND = LM_COMUSER+57;
+LM_SETFORMICON = LM_COMUSER+58;
 
 //end of messages that are sent to the interface
 
@@ -768,6 +769,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2001/06/26 00:08:35  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.10  2001/06/15 10:31:06  lazarus
   MG: set longstrings as default
 

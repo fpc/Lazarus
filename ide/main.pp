@@ -319,9 +319,7 @@ begin
     try
       ms.Write(res.Value[1],length(res.Value));
       ms.Position:=0;
-//writeln('LoadPixmapRes "',ResourceName,'" ');      
       Pixmap.LoadFromStream(ms);
-      
       Result:=true;
     finally
       ms.Free;
@@ -1706,7 +1704,7 @@ var ActiveSrcEdit:TSourceEditor;
   ResourceCode: TSourceLog;
   FileStream:TFileStream;
 begin
-writeln('TMainIDE.DoSaveEditorUnit 1');
+writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
     Result:=mrAbort;
@@ -1934,7 +1932,7 @@ var ActiveSrcEdit: TSourceEditor;
   i:integer;
   OldDesigner: TDesigner;
 begin
-writeln('TMainIDE.DoCloseEditorUnit 1 PageIndex=',PageIndex);
+writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
@@ -1997,7 +1995,7 @@ var Ext,ACaption,AText:string;
   TempForm: TCustomForm;
   sl: TStringList;
 begin
-writeln('TMainIDE.DoOpenEditorFile');
+writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
   Result:=mrCancel;
   if AFileName='' then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
@@ -2172,6 +2170,7 @@ writeln('TMainIDE.DoOpenEditorFile  LFM end');
     end;
   end;
   Result:=mrOk;
+writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
 end;
 
 function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -2181,6 +2180,7 @@ var MainUnitInfo: TUnitInfo;
   ProgramNameStart,ProgramNameEnd: integer;
   sl: TStringList;
 begin
+writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
   if Project.MainUnit<0 then exit;
   MainUnitInfo:=Project.Units[Project.MainUnit];
@@ -2217,6 +2217,7 @@ begin
   NewSrcEdit.EditorComponent.CaretXY:=MainUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=MainUnitInfo.TopLine;
   Result:=mrOk;
+writeln('[TMainIDE.DoOpenMainUnit] END');
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -2661,6 +2662,14 @@ writeln('[TMainIDE.DoCreateProjectForProgram] 1');
   MainUnitInfo:=Project.Units[Project.MainUnit];
   MainUnitInfo.Source.Source:=ProgramSource;
   Project.ProjectFile:=ProgramFilename;
+  Project.CompilerOptions.CompilerPath:='$(CompPath)';
+  if NewProjectType=ptApplication then begin
+    Project.CompilerOptions.OtherUnitFiles:=
+       '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
+      +';'+
+       '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
+       +OSDirSeparator+'gtk';
+  end;
 
   // show program unit
   Result:=DoOpenMainUnit(false);
@@ -3443,6 +3452,7 @@ end;
 
 initialization
   {$I images/laz_images.lrs}
+  {$I images/mainicon.lrs}
 
   { $I mainide.lrs}
 
@@ -3453,6 +3463,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2001/06/26 00:08:35  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.102  2001/06/06 12:30:40  lazarus
   MG: bugfixes
 

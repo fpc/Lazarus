@@ -2,6 +2,24 @@
                                      TPixmap
  ******************************************************************************)
 
+procedure TPixmap.LoadFromLazarusResource(const ResName: String);
+var
+  ms:TMemoryStream;
+  res:TLResource;
+begin
+  res:=LazarusResources.Find(ResName);
+  if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
+    ms:=TMemoryStream.Create;
+    try
+      ms.Write(res.Value[1],length(res.Value));
+      ms.Position:=0;
+      LoadFromStream(ms);
+    finally
+      ms.Free;
+    end;
+  end;
+end;
+
 procedure TPixmap.LoadFromResourceName(Instance: THandle; const ResName: String);
 begin
 end;
@@ -76,6 +94,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/06/26 00:08:36  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.9  2001/06/06 12:30:41  lazarus
   MG: bugfixes
 

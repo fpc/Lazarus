@@ -28,7 +28,7 @@ interface
 {$endif}
 
 uses
- SysUtils, Classes, vclGlobals, LMessages, LCLLinux;
+  SysUtils, Classes, vclGlobals, LMessages, LCLLinux, LResources;
 
 
 type
@@ -309,6 +309,7 @@ type
     procedure SaveToFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
+    procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
     constructor Create; virtual;
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -511,6 +512,7 @@ type
   TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit,
                   pf32bit, pfCustom);
 
+
   TBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
@@ -549,6 +551,7 @@ type
     procedure FreeImage;
     property Handle: HBITMAP read GetHandle write SetHandle;
     procedure LoadFromStream(Stream: TStream); override;
+    procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
     Procedure LoadFromXPMFile(Filename : String);
@@ -573,6 +576,7 @@ type
   protected
     procedure ReadStream(Stream: TStream; Size: Longint); override;
   public
+    procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); override;
   end;
@@ -584,8 +588,12 @@ type
     Introduced by Marc Weustink <weus@quicknet.nl>
     Currently maintained by ?
   }
-  TIcon = class(TGraphic)
-  // Introduced to get TImageList compiled
+  {
+    TIcon reads and writes .ICO file format.
+    ! Currently it is only a TPixmap, but eventually it will become a TBitmap
+    descendent. !
+  }
+  TIcon = class(TPixmap)
   end;
 
   
@@ -648,6 +656,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/06/26 00:08:35  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.10  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

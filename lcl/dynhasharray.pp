@@ -75,9 +75,11 @@ type
     property Count: integer read fCount;
     function FindHashItem(Item: Pointer): PDynHashArrayItem;
     property FirstHashItem: PDynHashArrayItem read FFirstItem;
+    function GetHashItem(HashIndex: integer): PDynHashArrayItem;
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
     property MinCapacity: integer read FMinCapacity write FMinCapacity;
     property MaxCapacity: integer read FMaxCapacity write FMaxCapacity;
+    property Capacity: integer read FCapacity;
     property OwnerHashFunction: THashFunction
        read FOwnerHashFunction write FOwnerHashFunction;
     constructor Create(InitialMinCapacity: integer);
@@ -354,6 +356,11 @@ begin
     if Result=nil then break;
     if Result^.IsOverflow=false then Result:=nil;
   until (Result=nil) or (Result^.Item=Item);
+end;
+
+function TDynHashArray.GetHashItem(HashIndex: integer): PDynHashArrayItem;
+begin
+  Result:=FItems[HashIndex];
 end;
 
 procedure TDynHashArray.SetCapacity(NewCapacity: integer);

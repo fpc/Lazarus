@@ -81,6 +81,24 @@ begin
   //TODO
 end;
 
+procedure TBitmap.LoadFromLazarusResource(const ResName: String);
+var
+  ms:TMemoryStream;
+  res:TLResource;
+begin
+  res:=LazarusResources.Find(ResName);
+  if (res<>nil) and (res.Value<>'') and (res.ValueType='BMP') then begin
+    ms:=TMemoryStream.Create;
+    try
+      ms.Write(res.Value[1],length(res.Value));
+      ms.Position:=0;
+      LoadFromStream(ms);
+    finally
+      ms.Free;
+    end;
+  end;
+end;
+
 procedure TBitMap.LoadFromStream(Stream: TStream);
 begin
   ReadStream(Stream, Stream.Size - Stream.Position);
@@ -319,6 +337,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/06/26 00:08:35  lazarus
+  MG: added code for form icons from Rene E. Beszon
+
   Revision 1.8  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 
