@@ -6275,6 +6275,158 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TGtkObject.WordWrap(AText: PChar; MaxWidthInPixel: integer;
+    var Lines: PPChar; var LineCount: integer); virtual;
+
+  Breaks AText into several lines and creates a list of PChar.
+  Lines break at new line chars and at spaces if a line is longer than
+  MaxWidthInPixel or in a word.
+  Lines will be one memory block.
+------------------------------------------------------------------------------}
+procedure TGtkObject.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
+  var Lines: PPChar; var LineCount: integer);
+var
+  UseFont : PGDKFont;
+  UnRef : Boolean;
+
+  function GetLineWidthInPixel(LineStart, LineLen: integer): integer;
+  var
+    lbearing, rbearing, width, ascent, descent: LongInt;
+  begin
+    gdk_text_extents(UseFont, @AText[LineStart], LineLen,
+                     @lbearing, @rBearing, @width, @ascent, @descent);
+    Result:=Width;
+  end;
+
+  function FindLineEnd(LineStart: integer): integer;
+  var
+    LineWidth, WordWidth, WordEnd, CharWidth: integer;
+  begin
+    // first search line break or text break
+    Result:=LineStart;
+    while not (AText[Result] in [#0,#10,#13]) do inc(Result);
+    if Result<=LineStart+1 then exit;
+
+    // get current line width in pixel
+    LineWidth:=GetLineWidthInPixel(LineStart,Result-LineStart);
+    if LineWidth>MaxWidthInPixel then begin
+      // line too long
+      // -> add words till line size reached
+      LineWidth:=0;
+      WordEnd:=LineStart;
+      WordWidth:=0;
+      repeat
+        Result:=WordEnd;
+        inc(LineWidth,WordWidth);
+        // find word start
+        while AText[WordEnd] in [' ',#9] do inc(WordEnd);
+        // find word end
+        while not (AText[WordEnd] in [' ',#9,#10,#13]) do inc(WordEnd);
+        // calculate word width
+        WordWidth:=GetLineWidthInPixel(Result,WordEnd-Result);
+      until LineWidth+WordWidth>MaxWidthInPixel;
+      if LineWidth=0 then begin
+        // the first word is longer than the maximum width
+        // -> add chars till line size reached
+        Result:=LineStart;
+        LineWidth:=0;
+        repeat
+          CharWidth:=GetLineWidthInPixel(Result,1);
+          inc(LineWidth,CharWidth);
+          if LineWidth>MaxWidthInPixel then break;
+          inc(Result);
+        until false;
+        // at least one char
+        if Result=LineStart then inc(Result);
+      end;
+    end;
+  end;
+
+  function IsEmptyText: boolean;
+  begin
+    if (AText=nil) or (AText[0]=#0) then begin
+      // no text
+      GetMem(Lines,SizeOf(PChar));
+      Lines[0]:=nil;
+      LineCount:=0;
+      Result:=true;
+    end else
+      Result:=false;
+  end;
+
+  procedure InitFont;
+  begin
+    with TDeviceContext(DC) do begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFont := GetDefaultFont;
+        UnRef := True;
+      end
+      else begin
+        UseFont := CurrentFont^.GDIFontObject;
+        UnRef := False;
+      end;
+    end;
+  end;
+
+  procedure CleanUpFont;
+  begin
+    If UnRef then
+      GDK_Font_UnRef(UseFont);
+  end;
+
+var
+  LinesList: TList;
+  LineStart, LineEnd: integer;
+  TotalSize: integer;
+  i: integer;
+begin
+  writeln('MG: TGtkObject.WordWrap  NOT completed !!!');
+
+  if IsEmptyText then exit;
+  InitFont;
+  LinesList:=TList.Create;
+  LineStart:=0;
+
+  repeat
+    LinesList.Add(Pointer(LineStart));
+    // find line end
+    LineEnd:=FindLineEnd(LineStart);
+    LinesList.Add(Pointer(LineEnd));
+    // find next line start
+    LineStart:=LineEnd;
+    if AText[LineStart] in [#10,#13] then begin
+      // skip new line chars
+      inc(LineStart);
+      if (AText[LineStart] in [#10,#13])
+      and (AText[LineStart]<>AText[LineStart-1]) then
+        inc(LineStart);
+    end else if AText[LineStart] in [' ',#9] then begin
+      // skip space
+      while AText[LineStart] in [' ',#9] do
+        inc(LineStart);
+    end;
+  until AText[LineStart]=#0;
+
+  // create array of PChar
+  LineCount:=LinesList.Count div 2;
+  TotalSize:=(LineCount+1)*SizeOf(PChar);
+  i:=0;
+  while i<LinesList.Count do begin
+    inc(TotalSize,Cardinal(LinesList[i+1])-Cardinal(LinesList[i])+1);
+    inc(i,2);
+  end;
+  GetMem(Lines,TotalSize);
+
+  // create Lines
+  // ToDo
+
+  LinesList.Free;
+  CleanUpFont;
+end;
+
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -6283,6 +6435,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.248  2002/10/15 07:01:29  lazarus
+  MG: fixed timer checking
+
   Revision 1.247  2002/10/14 19:00:49  lazarus
   MG: fixed zombie timers
 
