@@ -319,8 +319,8 @@ begin
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
   RegisterComponents('Standard','StdCtrls',[TLabel,TEdit,TMemo]);
   RegisterComponents('Standard','Buttons',[TButton]);
-  RegisterComponents('Standard','StdCtrls',[TCheckBox,
-          TRadioButton,TToggleBox, TListBox,TComboBox,TScrollBar,TGroupBox]);
+  RegisterComponents('Standard','StdCtrls',[TToggleBox, TCheckBox,
+          TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox]);
   RegisterComponents('Standard', 'ExtCtrls',[TRadioGroup,TPanel]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TImage, TShape, TBevel, TPaintBox]);
