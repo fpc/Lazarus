@@ -858,7 +858,9 @@ try
     end;
   hlParser.ParseThread := ParseThread;
   hlParser.AllowSuspend := True;
+  {$IFNDEF NoThreads}
   ParseThread.Resume;
+  {$ENDIF}
 except
   SetProcessing(False);
   Raise;
@@ -2722,8 +2724,16 @@ var
   ABitmap: HBitmap;
   ARect: TRect;
   OldPal: HPalette;
+  p: TPoint;
 begin
 if (FViewer as ThtmlLite).DontDraw then Exit;
+GetWindowOrgEx(Canvas.Handle,@p);
+writeln('TPaintPanel.PaintA Canvas.Handle=',HexStr(Cardinal(Canvas.Handle),8),
+' ',Width,',',Height,' ',ClientWidth,',',ClientHeight,' ',
+' ',p.x,',',p.y,' ',Visible);
+  Canvas.Brush.Color:=clGreen;
+  Canvas.FillRect(Rect(0,0,200,200));
+  exit;
 ThtmlLite(FViewer).DrawBorder;
 OldPal := 0;
 Canvas.Font := Font;
@@ -2747,8 +2757,10 @@ try
         SetWindowOrgEx(memDC, Left, Top, Nil);
         Canvas2.Handle := MemDC;
   {$ENDIF}
-        DoBackground(Canvas2, False);
-        if Assigned(FOnPaint) then FOnPaint(Self);
+        //DoBackground(Canvas2, False);
+  Canvas2.Brush.Color:=clBlue;
+  Canvas2.FillRect(Rect(0,0,200,200));
+        //if Assigned(FOnPaint) then FOnPaint(Self);
   {$IFDEF HL_LAZARUS}
   {$ELSE}
         OldPal := SelectPalette(Canvas.Handle, ThePalette, False);
@@ -2766,6 +2778,10 @@ try
   end;
   {$ENDIF}
 finally
+writeln('TPaintPanel.Paint B Canvas.Handle=',HexStr(Cardinal(Canvas.Handle),8));
+  {$IFDEF HL_LAZARUS}
+  Canvas2.Handle:=0;
+  {$ENDIF}
   Canvas2.Free;
   end;
 end;
@@ -2781,6 +2797,7 @@ var
   DC: HDC;
   CopyFromDC: boolean;
 begin
+writeln('TPaintPanel.DoBackground A ',HexStr(Cardinal(ACanvas),8));
 DC := ACanvas.handle;
 if DC <> 0 then
   begin

@@ -267,6 +267,40 @@ procedure FreeAndNil(var Obj);
 {$endif}
 {$endif}
 
+{$IFDEF HL_LAZARUS}
+const
+  SymbNames: array[Symb] of string = (
+    'HtmlSy', 'TitleSy', 'BodySy', 'HeadSy', 'PSy', 'PEndSy', 'BSy', 'BEndSy', 'ISy', 'IEndSy',
+    'HtmlEndSy', 'TitleEndSy', 'BodyEndSy', 'HeadEndSy', 'BRSy', 'HeadingSy', 'HeadingEndSy',
+    'EmSy', 'EmEndSy', 'StrongSy', 'StrongEndSy', 'USy', 'UEndSy', 'HRSy',
+    'CiteSy', 'VarSy', 'CiteEndSy', 'VarEndSy', 'BaseSy',
+       {Keep order}
+    'TTSy', 'CodeSy', 'KbdSy', 'SampSy', ' TTEndSy', 'CodeEndSy', 'KbdEndSy', 'SampEndSy',
+       {end order}
+    'OLSy', 'OLEndSy', 'LISy', 'ULSy', 'ULEndSy', 'DirSy', 'DirEndSy', 'MenuSy', 'MenuEndSy',
+    'DLSy', 'DLEndSy', 'DDSy', 'DTSy', 'AddressSy', 'AddressEndSy', 'BlockQuoteSy', 'BlockQuoteEndSy',
+    'PreSy', 'PreEndSy', 'ImageSy', 'Centersy', 'CenterEndSy',
+    'OtherAttribute', 'ASy', 'AEndSy', 'HrefSy', 'NameSy', 'SrcSy', 'AltSy', 'AlignSy',
+    'OtherChar', 'OtherSy', 'CommandSy', 'TextSy', 'EofSy', 'LinkSy', 'BGColorSy',
+    'BackgroundSy', 'TableSy', 'TableEndSy', 'TDSy', 'TDEndSy', 'TRSy', 'TREndSy', 'THSy', 'THEndSy',
+    'ColSpanSy', 'RowSpanSy', 'BorderSy', 'CellPaddingSy', 'CellSpacingSy', 'VAlignSy',
+    'WidthSy', 'CaptionSy', 'CaptionEndSy', 'StartSy', 'ButtonSy', 'InputSy', 'ValueSy',
+    'TypeSy', 'CheckBoxSy', 'RadioSy', 'FormSy', 'FormEndSy', 'MethodSy', 'ActionSy',
+    'CheckedSy', 'SizeSy', 'MaxLengthSy', 'TextAreaSy', 'TextAreaEndSy', 'ColsSy',
+    'RowsSy', 'SelectSy', 'SelectEndSy', 'OptionSy', 'OptionEndSy', 'SelectedSy',
+    'MultipleSy', 'FontSy', 'FontEndSy', 'ColorSy', 'FaceSy', 'BaseFontSy',
+    'TranspSy', 'SubSy', 'SubEndSy', 'SupSy', 'SupEndSy', 'ClearSy', 'IsMapSy',
+    'BigSy', 'BigEndSy', 'SmallSy', 'SmallEndSy', 'BorderColorSy', 'MapSy', 'MapEndSy',
+    'AreaSy', 'ShapeSy', 'CoordsSy', 'NoHrefSy', 'UseMapSy', 'HeightSy', 'PlainSy',
+    'FrameSetSy', 'FrameSetEndSy', 'FrameSy', 'TargetSy', 'NoFramesSy', 'NoFramesEndSy',
+    'NoResizeSy', 'ScrollingSy', 'HSpaceSy', 'VSpaceSy', 'ScriptSy', 'ScriptEndSy',
+    'LanguageSy', 'DivSy', 'DivEndSy', 'SSy', 'SEndSy', 'StrikeSy', 'StrikeEndSy',
+    'FrameBorderSy', 'MarginWidthSy', 'MarginHeightSy', 'BgSoundSy', 'LoopSy',
+    'OnClickSy', 'WrapSy', 'NoShadeSy', 'MetaSy', 'HttpEqSy', 'ContentSy', 'EncTypeSy',
+    'VLinkSy', 'OLinkSy', 'ActiveSy', 'NoBrSy', 'NoBrEndSy', 'WbrSy',
+    'NoWrapSy', 'EolSy');
+{$ENDIF}
+
 implementation
 
 uses

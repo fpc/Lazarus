@@ -1798,9 +1798,11 @@ var
   end;
 
 begin
+writeln('ThlParser.DoCommonSy A ',SymbNames[Sy]);
 case Sy of
   TextSy :
     begin
+writeln('ThlParser.DoCommonSy B ',Assigned(Section),' ',LCToken.S);
     if not Assigned(Section) then
       Section := TSection.Create(MasterList, Lev, FontStack[StackIndex],
                  CurrentUrlTarget, Justify);
@@ -2277,6 +2279,7 @@ var
 
 begin
 repeat
+writeln('ThlParser.DoBody ',SymbNames[Sy]);
   case Sy of
     TextSy, BRSy, PSy, PEndSy,
     NameSy, HRefSy, ASy, AEndSy,
@@ -2293,6 +2296,7 @@ repeat
       begin
       if SectionList.Count = 0 then   {make sure we're at beginning}
         begin
+writeln('ThlParser.DoBody B ',SymbNames[Sy],' ');
         Section.Free;   {Will start with a new section}
         for I := 0 to Attributes.Count-1 do
           with TAttribute(Attributes[I]) do

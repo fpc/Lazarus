@@ -2189,6 +2189,7 @@ begin
       end;
     end;
   Len := Curs - StartCurs;
+writeln('TCell.DoLogic ',HexStr(Cardinal(Self),8),' ',Curs,' ',StartCurs,' Len=',Len);
   Result := H;
   IB := IMgr.ImageBottom - YValue;   {check for image overhang}
   if IB > Result then
@@ -2225,6 +2226,7 @@ begin
   H := Y;
   for I := 0 to Count-1 do
     begin
+writeln('TCell.Draw ',HexStr(Cardinal(Self),8),' ',I,' ',TSectionBase(Items[I]).ClassName);
     H := TSectionBase(Items[I]).Draw(Canvas, ARect, IMgr, X, H);
     end;
   Result := H;
@@ -2494,6 +2496,7 @@ for I := 0 to AGifList.Count-1 do
 OldPal := SelectPalette(Canvas.Handle, ThePalette, True);
 RealizePalette(Canvas.Handle);
 try
+writeln('TSectionList.Draw ');
   Result := inherited Draw(Canvas, ARect, ClipWidth, X, Y);
 finally
   SelectPalette(Canvas.Handle, OldPal, True);
@@ -3929,6 +3932,7 @@ Inc(CaptionIndent, IMgr.LeftIndent(YValue));
 Indent := CaptionIndent + (CaptionWidth-TableWidth) div 2; {table indent}
 
 Len := Curs-StartCurs;
+writeln('ThtmlTable.DrawLogic ',HexStr(Cardinal(Self),8),' ',Curs,' ',StartCurs,' Len=',Len);
 MaxWidth := CaptionWidth;
 if Float then             
   begin
@@ -4375,6 +4379,7 @@ inherited Create(AMasterList);
 Parser := ThlParser(ParentSectionList.Parser);
 Buff := Nil;
 Len := 0;
+writeln('TSection.Create ',HexStr(Cardinal(Self),8),' Len=',Len);
 BuffSize := 0;
 Parser.CurrentSScript := Normal;
 Fonts := TFontList.Create;
@@ -4404,6 +4409,7 @@ end;
 {----------------TSection.Destroy}
 destructor TSection.Destroy;
 begin
+writeln('TSection.Destroy ',HexStr(Cardinal(Self),8));
 if Assigned(Buff) then FreeMem(Buff, BuffSize);
 if Assigned(XP) then
   FreeMem(XP);       
@@ -4549,6 +4555,7 @@ if BuffSize < L+1 then Allocate(L + 100);  {L+1 so there is always extra for fon
 Move(S.S[1], (Buff+Len)^, Length(S.S));
 Move(S.I[1], XP^[Len], Length(S.S)*Sizeof(integer));    
 Len := L;
+writeln('TSection.AddTokenObj ',HexStr(Cardinal(Self),8),' Len=',Len);
 end;
 
 function TSection.BreakInfo(Index: integer; NoBreak: boolean): JustifyType;  {called when <br> encountered}
@@ -5310,6 +5317,7 @@ var
     end;
 
   begin  {Y is at bottom of line here}
+  writeln('DrawTheText A Cnt=',Cnt);
   ImageAtStart := True;
   XX := X + LR.LineIndent;
   LR.DrawY := Y-LR.LineHt;
@@ -5377,6 +5385,7 @@ var
       end
     else
       begin
+  writeln('DrawTheText B ');
       J := IntMin(J1, J2);
       J := IntMin(J, J4);
       Inverted := ChkInversion(Start-Buff, J3);
@@ -5400,6 +5409,7 @@ var
         S[J] := ' ';
         J := Pos(#160, S);
         end;
+  writeln('DrawTheText C ',Self is TPreformated);
       if Self is TPreformated then
         begin   {so will clip in Table cells}
         ARect := Rect(X, Y-LR.LineHt-LR.SpaceBefore-YOffset, X+IMgr.ClipWidth, Y-YOffset+1);
@@ -5413,6 +5423,9 @@ var
           if SScript = Normal then Addon := 0
             else if SScript = SupSc then Addon := -(FontHeight div 3)
             else Addon := Descent div 2 +1;
+  writeln('DrawTheText D ',S,' ',HexStr(Cardinal(Canvas.Font.Color),8));
+        Canvas.Brush.Color:=clRed;
+        Canvas.FillRect(Rect(0,0,200,200));
         TextOut(Canvas.Handle, XX-OHang div 2, Y - Descent + Addon - YOffset, PChar(S), I);
         end;
       {Put in a dummy caret to show character position}
@@ -5458,6 +5471,7 @@ var
     begin
     Inc(Y, LineHt+SpaceBefore);
     XS := LevelIndent + X;
+writeln('DoDraw ',I,' ',ListType <> None);
     if (I = 0) and (ListType <> None) then
       if ListType = Definition then  {definition list, do nothing}
       else if ListType = Ordered then   {ordered list}
@@ -5507,6 +5521,9 @@ begin
 Result := Y + SectionHeight;
 YOffset := ParentSectionList.YOff;
 
+writeln('TSection.Draw A ',HexStr(Cardinal(Self),8),' Lines.Count=',Lines.Count,
+' Len=',Len,' Y=',Y,' YOffset=',YOffset,
+' DrawHeight=',DrawHeight,' ARect.Top=',ARect.Top,' ARect.Bottom=',ARect.Bottom);
 if (Len > 0) and (Y-YOffset+DrawHeight >= ARect.Top) and (Y-YOffset < ARect.Bottom) then
   begin
   DC := Canvas.Handle;
@@ -5514,12 +5531,19 @@ if (Len > 0) and (Y-YOffset+DrawHeight >= ARect.Top) and (Y-YOffset < ARect.Bott
 
   MySelB := ParentSectionList.SelB-StartCurs;
   MySelE := ParentSectionList.SelE-StartCurs;
+writeln('TSection.Draw Lines.Count=',Lines.Count);
+Canvas.Brush.Color:=clMaroon;
+Canvas.FillRect(Rect(0,0,200,200));
   for I := 0 to Lines.Count-1 do
     with LineRec(Lines[I]) do
+      begin
+      writeln('TSection.Draw ',I,' ',Y-YOffset+LineImgHt,' >= ',ARect.Top,
+        ' and ',Y-YOffset,' < ',ARect.Bottom);
       if (Y-YOffset+LineImgHt >= ARect.Top) and (Y-YOffset < ARect.Bottom) then
         DoDraw(I)
       else  {do not completely draw extremely long paragraphs}
         Inc(Y, SpaceBefore + LineHt + SpaceAfter);
+      end;
   end;
 end;
 
