@@ -129,6 +129,8 @@ type
                                   IgnorePackage: TLazPackage): TLazPackage;
     function FindBrokenDependencyPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TList;
+    function FindAllBrokenDependencies(APackage: TLazPackage;
+                                        FirstDependency: TPkgDependency): TList;
     function FindCircleDependencyPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TList;
     function FindUnsavedDependencyPath(APackage: TLazPackage;
@@ -1167,6 +1169,8 @@ end;
 
 function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
   FirstDependency: TPkgDependency): TList;
+// returns the first broken dependency
+// the first irems are TLazPackage, the last item is a TPkgDependency
   
   procedure FindBroken(Dependency: TPkgDependency; var PathList: TList);
   var
@@ -1198,7 +1202,48 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
   
 begin
   Result:=nil;
-  if (Count=0) or (APackage=nil) then exit;
+  if (Count=0) then exit;
+  MarkAllPackagesAsNotVisited;
+  if APackage<>nil then begin
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  FindBroken(FirstDependency,Result);
+  if (Result<>nil) and (APackage<>nil) then
+    Result.Insert(0,APackage);
+end;
+
+function TLazPackageGraph.FindAllBrokenDependencies(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TList;
+// returns the list of broken dependencies (TPkgDependency)
+
+  procedure FindBroken(Dependency: TPkgDependency; var PathList: TList);
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        // dependency ok
+        RequiredPackage:=Dependency.RequiredPackage;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
+        end;
+      end else begin
+        // broken dependency found
+        if (PathList=nil) or (PathList.IndexOf(Dependency)<0) then begin
+          if PathList=nil then
+            PathList:=TList.Create;
+          PathList.Add(Dependency);
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+
+begin
+  Result:=nil;
+  if (Count=0) then exit;
   MarkAllPackagesAsNotVisited;
   if APackage<>nil then begin
     APackage.Flags:=APackage.Flags+[lpfVisited];
@@ -1247,7 +1292,7 @@ var
   Pkg: TLazPackage;
 begin
   Result:=nil;
-  if (Count=0) or (APackage=nil) then exit;
+  if (Count=0) then exit;
   // mark all packages as not visited and circle free
   for i:=FItems.Count-1 downto 0 do begin
     Pkg:=TLazPackage(FItems[i]);

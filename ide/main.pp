@@ -4096,7 +4096,7 @@ begin
   RescanCompilerDefines(true);
 
   // load required packages
-  PkgBoss.OpenProjectDependencies(Project1);
+  PkgBoss.OpenProjectDependencies(Project1,true);
 
   Project1.DefineTemplates.AllChanged;
   Result:=mrOk;
@@ -10337,6 +10337,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.715  2004/03/13 16:37:00  mattias
+  implemented: showing broken project dependencies on open project
+
   Revision 1.714  2004/02/28 11:03:37  mattias
   added TActionList editor from Radek
 

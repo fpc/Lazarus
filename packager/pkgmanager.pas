@@ -175,9 +175,11 @@ type
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
     function DoShowPackageGraph: TModalResult;
     procedure DoShowPackageGraphPathList(PathList: TList); override;
+    function ShowBrokenDependenciesReport(Dependencies: TList): TModalResult;
 
     // project
-    function OpenProjectDependencies(AProject: TProject): TModalResult; override;
+    function OpenProjectDependencies(AProject: TProject;
+                                ReportMissing: boolean): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
     procedure AddProjectRegCompDependency(AProject: TProject;
@@ -1641,10 +1643,21 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.OpenProjectDependencies(AProject: TProject): TModalResult;
+function TPkgManager.OpenProjectDependencies(AProject: TProject;
+  ReportMissing: boolean): TModalResult;
+var
+  BrokenDependencies: TList;
 begin
   PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
-  Result:=mrOk;
+  if ReportMissing then begin
+    BrokenDependencies:=PackageGraph.FindAllBrokenDependencies(nil,
+                                             AProject.FirstRequiredDependency);
+    if BrokenDependencies<>nil then begin
+      Result:=ShowBrokenDependenciesReport(BrokenDependencies);
+      BrokenDependencies.Free;
+    end;
+  end else
+    Result:=mrOk;
 end;
 
 procedure TPkgManager.AddDefaultDependencies(AProject: TProject);
@@ -1673,7 +1686,7 @@ begin
     end;
 
   end;
-  OpenProjectDependencies(AProject);
+  OpenProjectDependencies(AProject,true);
 end;
 
 procedure TPkgManager.AddProjectDependency(AProject: TProject;
@@ -1967,6 +1980,35 @@ procedure TPkgManager.DoShowPackageGraphPathList(PathList: TList);
 begin
   if DoShowPackageGraph<>mrOk then exit;
   PackageGraphExplorer.ShowPath(PathList);
+end;
+
+function TPkgManager.ShowBrokenDependenciesReport(Dependencies: TList
+  ): TModalResult;
+var
+  Msg: String;
+  i: Integer;
+  ADependency: TPkgDependency;
+begin
+  Result:=mrOk;
+  if (Dependencies=nil) or (Dependencies.Count=0) then exit;
+  Msg:='The following package(s) failed to load:'#13
+       +#13;
+  for i:=0 to Dependencies.Count-1 do begin
+    ADependency:=TPkgDependency(Dependencies[i]);
+    Msg:=Msg+ADependency.AsString+#13;
+  end;
+  
+  // give some hints
+  ADependency:=TPkgDependency(Dependencies[0]);
+  if (ADependency.Owner is TProject) then begin
+    // broken dependency used by project -> show project inspector
+    if ADependency.Owner=Project1 then begin
+      Result:=MainIDE.DoShowProjectInspector;
+      Msg:=Msg+'See Project -> Project Inspector';
+    end;
+  end;
+  
+  Result:=MessageDlg('Missing Packages',Msg,mtError,[mbOk],0);
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
