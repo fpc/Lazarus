@@ -11,7 +11,6 @@
 
            FScalePosition, FScaleDigits
 	   
-
   Delphi compatibility:
 
    - the interface is almost like in delphi 4
@@ -34,8 +33,8 @@
 
   Bugs:
 
-    - When changing orientation the GTK version will not always correctly 
-      repaint the scale_value.
+    - When changing orientation after the Trackbar has been constructed
+      the GTK version will CRASH
 }
 {ASSERTIONS ON}
 {------------------------------------------------------------------------------
@@ -382,6 +381,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2000/07/23 19:03:10  lazarus
+  changed some comments, stoppok
+
   Revision 1.1  2000/07/13 10:28:28  michael
   + Initial import
 

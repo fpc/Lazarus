@@ -213,9 +213,6 @@ begin
   CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
 end;
 
-{------------------------------------------------------------------------------}
-{  procedure TCustomComboBox.SetStyle                                }
-{------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.SetStyle
   Params: val - new style for combobox
@@ -313,6 +310,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2000/07/23 19:03:10  lazarus
+  changed some comments, stoppok
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 
