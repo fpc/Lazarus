@@ -67,6 +67,10 @@ type
     procedure EndDebugging; virtual; abstract;
     function Evaluate(const AExpression: String; var AResult: String): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
     
+    function DoCreateBreakPoint(const AFilename: string; ALine: integer): TModalResult; virtual; abstract;
+    function DoDeleteBreakPoint(const AFilename: string; ALine: integer): TModalResult; virtual; abstract;
+    function DoCreateWatch(const AExpression: string): TModalResult; virtual; abstract;
+    
     property Commands: TDBGCommands read GetCommands;              // All current available commands of the debugger
     property State: TDBGState read GetState;                       // The current state of the debugger
     

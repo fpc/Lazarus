@@ -64,10 +64,6 @@ type
 
     // SrcNotebook events
     function OnSrcNotebookAddWatchesAtCursor(Sender: TObject): boolean;
-    function OnSrcNotebookCreateBreakPoint(Sender: TObject;
-                                           Line: Integer): boolean;
-    function OnSrcNotebookDeleteBreakPoint(Sender: TObject;
-                                           Line: Integer): boolean;
 
     // Debugger events
     procedure OnDebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
@@ -123,10 +119,10 @@ type
                       var AResult: String): Boolean; override;
 
     function DoCreateBreakPoint(const AFilename: string;
-                                Line: integer): TModalResult;
+                                ALine: integer): TModalResult; override;
     function DoDeleteBreakPoint(const AFilename: string;
-                                Line: integer): TModalResult;
-    function DoCreateWatch(const VariableName: string): TModalResult;
+                                ALine: integer): TModalResult; override;
+    function DoCreateWatch(const AExpression: string): TModalResult; override;
   end;
   
   
@@ -177,32 +173,6 @@ begin
   Result:=true;
 end;
 
-function TDebugManager.OnSrcNotebookCreateBreakPoint(Sender: TObject;
-  Line: Integer): boolean;
-var
-  AFilename: String;
-begin
-  Result:=false;
-  if SourceNotebook.Notebook = nil then Exit;
-
-  AFilename:=TSourceNotebook(Sender).GetActiveSE.FileName;
-  if DoCreateBreakPoint(AFilename,Line)<>mrOk then exit;
-  Result:=true;
-end;
-
-function TDebugManager.OnSrcNotebookDeleteBreakPoint(Sender: TObject;
-  Line: Integer): boolean;
-var
-  AFilename: String;
-begin
-  Result:=false;
-  if SourceNotebook.Notebook = nil then Exit;
-
-  AFilename:=TSourceNotebook(Sender).GetActiveSE.FileName;
-  if DoDeleteBreakPoint(AFilename,Line)<>mrOk then exit;
-  Result:=true;
-end;
-
 //-----------------------------------------------------------------------------
 // Debugger events
 //-----------------------------------------------------------------------------
@@ -233,6 +203,8 @@ const
   STATENAME: array[TDBGState] of string = (
     'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsRun', 'dsError'
   );
+var
+  Editor: TSourceEditor;
 begin
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
@@ -272,6 +244,15 @@ begin
     // unhide IDE
     MainIDE.UnhideIDE;
   end;
+  
+  // unmark execution line
+  if (FDebugger.State <> dsPause)
+  and (SourceNotebook <> nil)
+  then begin
+    Editor := SourceNotebook.GetActiveSE;
+    if Editor <> nil
+    then Editor.ExecutionLine := -1;
+  end;
 
   case FDebugger.State of 
 
@@ -303,6 +284,7 @@ var
   S, SrcFile: String;
   OpenDialog: TOpenDialog;
   NewSource: TCodeBuffer;
+  Editor: TSourceEditor;
   n: Integer;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
@@ -383,8 +365,14 @@ begin
   // jump editor to execution line
   if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,ALocation.SrcLine,-1,true)
     <>mrOk then exit;
+
   // mark execution line
-  SourceNotebook.GetActiveSE.ExecutionLine:=ALocation.SrcLine;
+  if SourceNotebook <> nil
+  then Editor := SourceNotebook.GetActiveSE
+  else Editor := nil;
+
+  if Editor <> nil
+  then Editor.ExecutionLine:=ALocation.SrcLine;
 end;
 
 //-----------------------------------------------------------------------------
@@ -499,8 +487,6 @@ end;
 procedure TDebugManager.ConnectSourceNotebookEvents;
 begin
   SourceNotebook.OnAddWatchAtCursor := @OnSrcNotebookAddWatchesAtCursor;
-  SourceNotebook.OnCreateBreakPoint := @OnSrcNotebookCreateBreakPoint;
-  SourceNotebook.OnDeleteBreakPoint := @OnSrcNotebookDeleteBreakPoint;
 end;
 
 procedure TDebugManager.SetupMainBarShortCuts;
@@ -845,45 +831,45 @@ begin
         and FDebugger.Evaluate(AExpression, AResult);
 end;
 
-function TDebugManager.DoCreateBreakPoint(const AFilename: string; Line: integer
+function TDebugManager.DoCreateBreakPoint(const AFilename: string; ALine: integer
   ): TModalResult;
 var
   NewBreak: TDBGBreakPoint;
 begin
-  if FBreakPoints.Find(AFilename,Line)<>nil then begin
+  if FBreakPoints.Find(AFilename, ALine)<>nil then begin
     Result:=mrOk;
     exit;
   end;
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
-  NewBreak := FBreakPoints.Add(AFilename,Line);
+  NewBreak := FBreakPoints.Add(AFilename, ALine);
   NewBreak.InitialEnabled := True;
   NewBreak.Enabled := True;
   Project1.Modified:=true;
   Result:=DoEndChangeDebugger;
 end;
 
-function TDebugManager.DoDeleteBreakPoint(const AFilename: string; Line: integer
+function TDebugManager.DoDeleteBreakPoint(const AFilename: string; ALine: integer
   ): TModalResult;
 var
   OldBreakPoint: TDBGBreakPoint;
 begin
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
-  OldBreakPoint:=FBreakPoints.Find(AFilename,Line);
+  OldBreakPoint:=FBreakPoints.Find(AFilename,ALine);
   if OldBreakPoint=nil then exit;
   OldBreakPoint.Free;
   Project1.Modified:=true;
   Result:=DoEndChangeDebugger;
 end;
 
-function TDebugManager.DoCreateWatch(const VariableName: string): TModalResult;
+function TDebugManager.DoCreateWatch(const AExpression: string): TModalResult;
 var
   NewWatch: TDBGWatch;
 begin
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
-  NewWatch := FWatches.Add(VariableName);
+  NewWatch := FWatches.Add(AExpression);
   NewWatch.Enabled := True;
   NewWatch.InitialEnabled := True;
   Project1.Modified:=true;
@@ -941,6 +927,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.28  2003/05/27 08:01:31  marc
+  MWE: + Added exception break
+       * Reworked adding/removing breakpoints
+       + Added Unknown breakpoint type
+
   Revision 1.27  2003/05/26 11:08:20  mattias
   fixed double breakpoints
 

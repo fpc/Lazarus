@@ -1,3 +1,4 @@
+{  $Id$  }
 {
  ***************************************************************************
  *                                                                         *
@@ -60,7 +61,7 @@ type
      lshCPP, lshPerl, lshJava);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
-    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint,
+    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine);
 
 const
@@ -74,6 +75,7 @@ const
     'Enabled breakpoint',
     'Disabled breakpoint',
     'Invalid breakpoint',
+    'Unknown breakpoint',
     'Error line'
   );
   
@@ -767,6 +769,7 @@ begin
       '    Inc(X); { Enabled breakpoint }'#13+
       '    Dec(X); { Disabled breakpoint }'#13+
       '    // { Invalid breakpoint }'#13+
+      '    WriteLN(X); { Unknown breakpoint }'#13+
       '    X := X + 1.0; { Error line }'#13+
       '    ListBox1.Items.Add(IntToStr(X));'#13+
       '  end;'#13+
@@ -775,7 +778,8 @@ begin
     AddAttrSampleLines[ahaDisabledBreakpoint]:=18;
     AddAttrSampleLines[ahaEnabledBreakpoint]:=17;
     AddAttrSampleLines[ahaInvalidBreakpoint]:=19;
-    AddAttrSampleLines[ahaErrorLine]:=20;
+    AddAttrSampleLines[ahaUnknownBreakpoint]:=20;
+    AddAttrSampleLines[ahaErrorLine]:=21;
     AddAttrSampleLines[ahaExecutionPoint]:=15;
     AddAttrSampleLines[ahaTextBlock]:=14;
   end;
@@ -1446,6 +1450,14 @@ begin
     then begin
       DefBGCol:=clLime;
       DefFGCol:=clRed;
+    end else if AttriName=AdditionalHighlightAttributes[ahaInvalidBreakpoint]
+    then begin
+      DefBGCol:=clOlive;
+      DefFGCol:=clGreen;
+    end else if AttriName=AdditionalHighlightAttributes[ahaUnknownBreakpoint]
+    then begin
+      DefBGCol:=clRed;
+      DefFGCol:=clBlack;
     end else if AttriName=AdditionalHighlightAttributes[ahaErrorLine] then begin
       DefBGCol:=$50a0ff;
       DefFGCol:=clBlack;
@@ -1726,7 +1738,7 @@ begin
   ahaEnabledBreakpoint:
     begin
       BG:=clRed;
-      FG:=clBlack;
+      FG:=clWhite;
     end;
   ahaDisabledBreakpoint:
     begin
@@ -1737,6 +1749,11 @@ begin
     begin
       BG:=clOlive;
       FG:=clGreen;
+    end;
+  ahaUnknownBreakpoint:
+    begin
+      BG:=clRed;
+      FG:=clBlack;
     end;
   ahaErrorLine:
     begin

@@ -238,16 +238,17 @@ type
     FNotificationList: TList;
     function GetItem(const AnIndex: Integer): TDBGBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
-    procedure Removed(const ABreakpoint: TDBGBreakPoint); // called by breakpoint when destructed
+    procedure NotifyRemove(const ABreakpoint: TDBGBreakPoint); // called by breakpoint when destructed
+    procedure NotifyAdd(const ABreakPoint: TDBGBreakPoint);    // called when a breakpoint is added
   protected
     procedure DoStateChange; virtual;
     procedure Update(Item: TCollectionItem); override;
+    property  Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger;
                        const ABreakPointClass: TDBGBreakPointClass);
     destructor Destroy; override;
     function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
-    procedure Add(NewBreakPoint: TDBGBreakPoint);
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
     function FindBreakPoint(const ASource: String; const ALine: Integer;
                             Ignore: TDBGBreakPoint): TDBGBreakPoint;
@@ -986,7 +987,7 @@ end;
 destructor TDBGBreakPoint.Destroy;
 begin
   if (TDBGBreakPoints(Collection) <> nil)
-  then TDBGBreakPoints(Collection).Removed(Self);
+  then TDBGBreakPoints(Collection).NotifyRemove(Self);
 
   if FGroup <> nil
   then FGroup.Remove(Self);
@@ -1294,20 +1295,7 @@ begin
   Result := TDBGBreakPoint(inherited Add);
   writeln('TDBGBreakPoints.Add ',Result.ClassName,' ',ASource,' ',ALine);
   Result.SetLocation(ASource, ALine);
-  Add(Result);
-end;
-
-procedure TDBGBreakPoints.Add(NewBreakPoint: TDBGBreakPoint);
-var
-  n: Integer;
-  Notification: TDBGBreakPointsNotification;
-begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TDBGBreakPointsNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnAdd)
-    then Notification.FOnAdd(Self, NewBreakPoint);
-  end;
+  NotifyAdd(Result);
 end;
 
 procedure TDBGBreakPoints.AddNotification(
@@ -1372,7 +1360,20 @@ begin
   Result := TDBGBreakPoint(inherited GetItem(AnIndex));
 end;
 
-procedure TDBGBreakPoints.Removed(const ABreakpoint: TDBGBreakPoint);
+procedure TDBGBreakPoints.NotifyAdd(const ABreakPoint: TDBGBreakPoint);
+var
+  n: Integer;
+  Notification: TDBGBreakPointsNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TDBGBreakPointsNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnAdd)
+    then Notification.FOnAdd(Self, ABreakPoint);
+  end;
+end;
+
+procedure TDBGBreakPoints.NotifyRemove(const ABreakpoint: TDBGBreakPoint);
 var
   n: Integer;
   Notification: TDBGBreakPointsNotification;
@@ -1413,8 +1414,9 @@ begin
     writeln('TDBGBreakPoints.LoadFromXMLConfig i=',i,' ',
       NewBreakPoint.InitialEnabled,' ',NewBreakPoint.Source,' ',NewBreakPoint.Line,
       ' OldBreakPoint=',OldBreakPoint<>nil);
-    if OldBreakPoint<>nil then NewBreakPoint.Free;
-    Add(NewBreakPoint);
+    if OldBreakPoint <> nil
+    then NewBreakPoint.Free
+    else NotifyAdd(NewBreakPoint);
   end;
 end;
 
@@ -2166,6 +2168,11 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.28  2003/05/27 08:01:31  marc
+  MWE: + Added exception break
+       * Reworked adding/removing breakpoints
+       + Added Unknown breakpoint type
+
   Revision 1.27  2003/05/26 20:05:21  mattias
   made compiling gtk2 interface easier
 
