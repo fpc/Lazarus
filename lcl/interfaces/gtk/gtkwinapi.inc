@@ -6583,7 +6583,7 @@ begin
     Result:=0;
     exit;
   end;
-  
+
   // return the old focus handle
   Result := GetFocus;
   NewFocusWidget:=nil;
@@ -6666,16 +6666,23 @@ begin
     write(' TopLvlVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(TopLevel)));
     writeln('');
     {$EndIf}
-    if (NewFocusWidget<>nil)
-    and (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
-    and (GTK_WIDGET_CAN_FOCUS(NewFocusWidget)) then begin
-      {$IfDef VerboseFocus}
-      writeln('  H SETTING NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
-      {$EndIf}
-      gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
-      {$IfDef VerboseFocus}
-      writeln('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8));
-      {$EndIf}
+    if (NewFocusWidget<>nil) and GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then begin
+      if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
+      then begin
+        {$IfDef VerboseFocus}
+        writeln('  H SETTING NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+        {$EndIf}
+        gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
+        {$IfDef VerboseFocus}
+        writeln('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget);
+        {$EndIf}
+      end;
+      if not gtk_widget_has_focus(NewFocusWidget) then begin
+        {$IfDef VerboseFocus}
+        writeln('  J Grabbing focus');
+        {$EndIf}
+        gtk_widget_grab_focus(NewFocusWidget);
+      end;
     end;
   end
   else begin
@@ -7945,6 +7952,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.222  2003/03/25 10:45:41  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.221  2003/03/18 13:04:25  mattias
   improved focus debugging output
 
