@@ -55,7 +55,7 @@ uses
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
   DiskDiffsDialog, UnitDependencies, PublishProjectDlg, ClipBoardHistory,
-  ProcessList,
+  ProcessList, InitialSetupDlgs,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -686,7 +686,11 @@ end;
 
 procedure TMainIDE.LoadGlobalOptions;
 // load environment, miscellaneous, editor and codetools options
+var
+  InteractiveSetup: boolean;
 begin
+  InteractiveSetup:=true;
+
   EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
@@ -694,8 +698,7 @@ begin
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
       LazarusLanguageIDs[EnvironmentOptions.Language]);
 
-    if EnvironmentOptions.CompilerFilename='' then
-      EnvironmentOptions.CompilerFilename:=FindDefaultCompilerPath;
+    CheckCompilerFilename(InteractiveSetup);
     if EnvironmentOptions.FPCSourceDirectory='' then
       EnvironmentOptions.FPCSourceDirectory:=FindDefaultFPCSrcDirectory;
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
@@ -7720,6 +7723,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.462  2003/02/19 22:27:33  mattias
+  added some messages when compiler filename is invalid
+
   Revision 1.461  2003/02/07 19:13:57  mattias
   fixed searching lazarus in current dir
 

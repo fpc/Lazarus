@@ -118,6 +118,7 @@ designer/sizecompsdlg.pp svneol=native#text/pascal
 designer/taborderdlg.lfm svneol=native#text/plain
 designer/taborderdlg.lrs svneol=native#text/pascal
 designer/taborderdlg.pas svneol=native#text/pascal
+docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
 docs/Packages.txt svneol=native#text/plain
 examples/bitbtnform.pp svneol=native#text/pascal
 examples/bitbutton.pp svneol=native#text/pascal
