@@ -1133,6 +1133,7 @@ images/menu/menu_build.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_buildall.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_buildlazarus.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_callstack.xpm -text svneol=native#image/x-xpixmap
+images/menu/menu_close.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_codetoolsdefineseditor.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_codetoolsoptions.xpm -text svneol=native#image/x-xpixmap
 images/menu/menu_copy.xpm -text svneol=native#image/x-xpixmap
