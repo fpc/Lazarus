@@ -419,6 +419,7 @@ images/pkg_package.xpm -text svneol=native#image/x-xpixmap
 images/pkg_package_circle.xpm -text svneol=native#image/x-xpixmap
 images/pkg_package_installed.xpm -text svneol=native#image/x-xpixmap
 images/pkg_package_uninstall.xpm -text svneol=native#image/x-xpixmap
+images/pkg_project.xpm -text svneol=native#image/x-xpixmap
 images/pkg_registerunit.xpm -text svneol=native#image/x-xpixmap
 images/pkg_removedfiles.xpm -text svneol=native#image/x-xpixmap
 images/pkg_removedrequired.xpm -text svneol=native#image/x-xpixmap
