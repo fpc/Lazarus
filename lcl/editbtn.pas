@@ -305,6 +305,7 @@ type
   protected
     procedure DoButtonClick (Sender: TObject); override;
     procedure Change; override;
+    procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -805,7 +806,7 @@ begin
   Button.Glyph:=CreateDateGlyph;//.LoadFromLazarusResource('DateEditGlyph');  //GlyphFromBitmapOrResource(DateGlyph,ResBtnCalendar)
   Button.OnClick:= @DoButtonClick;
 //  OnChange:=@Change;
-  OnDblClick:=@DoButtonClick;
+//  OnDblClick:=@DoButtonClick;
 end;
 
 destructor TDateEdit.Destroy;
@@ -855,6 +856,13 @@ begin
     //inherited Change(Sender)
   end;
 end;
+
+procedure TDateEdit.DblClick;
+begin
+  inherited DblClick;
+  DoButtonClick(nil);
+end;
+
 
 function TDateEdit.IsStoreTitle: boolean;
 begin
