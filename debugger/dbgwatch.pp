@@ -5,7 +5,7 @@
  
  @created(Wed Feb 25st WET 2001)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
+ @author(Marc Weustink <marc@@dommelstein.net>)                       
 
  This unit contains the class definitions of the 
  Watches used by the debugger
@@ -31,56 +31,87 @@ uses
 type
   TDBGWatch = class(TCollectionItem)
   private
-    FValue: String;
-    FName: String;
+    FEnabled: Boolean;
+    FExpression: String;
     FOnChange: TNotifyEvent;
+    function  GetValid: Boolean;
+    function  GetValue: String;
+    procedure SetEnabled(const AValue: Boolean);
+    procedure SetExpression(const AValue: String);
     procedure SetValue(const AValue: String);
-    procedure SetName(const AValue: String);
   protected
   public
-    property Name: String read FName write SetName;
-    property Value: String read FValue write SetValue;
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Expression: String read FExpression write SetExpression;
+    property Valid: Boolean read GetValid;
+    property Value: String read GetValue write SetValue;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
   TDBGWatches = class(TCollection)
   private
     function GetItem(const AnIndex: Integer): TDBGWatch;
-    procedure SetItem(const AnIndex: Integer; const Value: TDBGWatch);
+    procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
   protected
   public
-    property Items[const AnIndex: Integer]: TDBGWatch 
-                 read GetItem write SetItem; default;
+    constructor Create;
+    property Items[const AnIndex: Integer]: TDBGWatch read GetItem write SetItem; default;
   end;
 
 implementation
 
 { TDBGWatch }
 
-procedure TDBGWatch.SetName(const AValue: String);
+function TDBGWatch.GetValid: Boolean;
 begin
-  FName := AValue;
+  Result := False;
+end;
+
+function TDBGWatch.GetValue: String;
+begin
+  if Valid 
+  then begin
+  end
+  else Result := '<invalid>';
+end;
+
+procedure TDBGWatch.SetEnabled(const AValue: Boolean);
+begin
+  FEnabled := AValue;
+end;
+
+procedure TDBGWatch.SetExpression(const AValue: String);
+begin
+  FExpression := AValue;
 end;
 
 procedure TDBGWatch.SetValue(const AValue: String);
 begin
-  FValue := AValue;
 end;
 
 { TDBGWatches }
 
-function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
+constructor TDBGWatches.Create;
 begin
-  Result:=nil
+  inherited Create(TDBGWatch);
 end;
 
-procedure TDBGWatches.SetItem(const AnIndex: Integer; const Value: TDBGWatch);
+function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
 begin
+  Result := TDBGWatch(inherited GetItem(AnIndex));
+end;
+
+procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
+begin
+  inherited SetItem(AnIndex, AValue);
 end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2001/11/05 00:12:51  lazarus
+  MWE: First steps of a debugger.
+
   Revision 1.3  2001/10/18 13:01:31  lazarus
   MG: fixed speedbuttons numglyphs>1 and started IDE debugging
 

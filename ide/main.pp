@@ -220,8 +220,7 @@ type
     
     // Debugger Events
     procedure OnDebuggerChangeState(Sender: TObject);
-    procedure OnDebuggerCurrentLine(Sender: TObject; const AFilename: String;
-                               const ALine: Integer);
+    procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
                                
     // MessagesView Events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -3471,20 +3470,23 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject; 
-  const AFilename: String;  const ALine: Integer);
+procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
 // debugger paused program due to pause or error
 // -> show the current execution line in editor
-var ActiveSrcEdit: TSourceEditor;
+// if SrcLine = -1 then no source is available
+var 
+  ActiveSrcEdit: TSourceEditor;
 begin
   if (Sender<>TheDebugger) or (Sender=nil) then exit;
-  if DoOpenEditorFile(AFilename,false)<>mrOk then exit;
+  //TODO: Show assembler window if no source can be found.
+  if ALocation.SrcLine = -1 then Exit;
+  if DoOpenEditorFile(ALocation.SrcFile, false) <> mrOk then exit;
   ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;
-  ActiveSrcEdit.EditorComponent.CaretXY:=Point(1,ALine);
+  ActiveSrcEdit.EditorComponent.CaretXY:=Point(1, ALocation.SrcLine);
   ActiveSrcEdit.EditorComponent.TopLine:=
-    ALine-(ActiveSrcEdit.EditorComponent.LinesInWindow div 2);
-  ActiveSrcEdit.ErrorLine:=ALine;
+    ALocation.SrcLine - (ActiveSrcEdit.EditorComponent.LinesInWindow div 2);
+  ActiveSrcEdit.ErrorLine:=ALocation.SrcLine;
 end;
 
 function TMainIDE.SomethingOfProjectIsModified: boolean;
@@ -4380,6 +4382,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2001/11/05 00:12:50  lazarus
+  MWE: First steps of a debugger.
+
   Revision 1.133  2001/11/03 08:37:34  lazarus
   MG: fixed errorline showing, resource adding and published var editing and added make cleanall
 
@@ -9007,6 +9012,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2001/11/05 00:12:50  lazarus
+  MWE: First steps of a debugger.
+
   Revision 1.133  2001/11/03 08:37:34  lazarus
   MG: fixed errorline showing, resource adding and published var editing and added make cleanall
 

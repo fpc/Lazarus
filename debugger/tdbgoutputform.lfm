@@ -1,0 +1,16 @@
+object DbgOutputForm: TDbgOutputForm
+  CAPTION = 'Debug output'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LEFT = 239
+  HEIGHT = 150
+  TOP = 161
+  WIDTH = 300
+  object txtOutput: TMemo
+    Left = 8
+    Top = 104
+    Width = 600
+    Height = 150
+    Align = alClient
+  end
+end

@@ -1,0 +1,132 @@
+object DebugTestForm: TDebugTestForm
+  CAPTION = 'DebugTestForm'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LEFT = 239
+  HEIGHT = 300
+  TOP = 161
+  WIDTH = 620
+  object cmdInit: TBUTTON
+    CAPTION = 'Init'
+    LEFT = 10
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdInitClick
+  end
+  object cmdDone: TBUTTON
+    CAPTION = 'Done'
+    LEFT = 70
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdDoneClick
+  end
+  object cmdRun: TBUTTON
+    CAPTION = 'Run'
+    LEFT = 130
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdRunClick
+  end
+  object cmdPause: TBUTTON
+    CAPTION = 'Pause'
+    LEFT = 190
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdPauseClick
+  end
+  object cmdStop: TBUTTON
+    CAPTION = 'Stop'
+    LEFT = 250
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdStopClick
+  end
+  object cmdStep: TBUTTON
+    CAPTION = 'Step'
+    LEFT = 310
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdStepClick
+  end
+  object cmdStepInto: TBUTTON
+    CAPTION = 'Step into'
+    LEFT = 370
+    HEIGHT = 25
+    TOP = 39
+    WIDTH = 50
+    OnClick = cmdStepIntoClick
+  end                    
+  object lblState: TLabel
+    Left = 8
+    Top = 104
+    WIDTH = 50
+  end
+  object lblAdress: TLabel
+    Left = 58
+    Top = 104
+    WIDTH = 100
+  end
+  object lblSource: TLabel
+    Left = 166
+    Top = 104
+    WIDTH = 100
+  end
+  object lblLine: TLabel
+    Left = 274
+    Top = 104
+    WIDTH = 100
+  end
+  object lblFunc: TLabel
+    Left = 382
+    Top = 104
+    WIDTH = 100
+  end
+  object txtLog: TMemo
+    Left = 8
+    Top = 132
+    Width = 600
+    Height = 150
+  end
+  object cmdCommand: TButton
+    Left = 252
+    Top = 71
+    Width = 50
+    Height = 25
+    Caption = 'CMD'
+    OnClick = cmdCommandClick
+  end
+  object cmdCLear: TButton
+    Left = 313
+    Top = 71
+    Width = 50
+    Height = 25
+    Caption = 'Clear'
+    OnClick = cmdClearClick
+  end
+  object txtCommand: TEdit
+    Left = 8
+    Top = 72
+    Width = 237
+    Height = 24
+    Text = ''
+  end
+  object lblFileName: TLabel
+    Left = 8
+    Top = 8
+    WIDTH = 70
+    Caption = 'Filename:'
+  end
+  object txtFileName: TEdit
+    Left = 70
+    Top = 8
+    Width = 293
+    Height = 24
+    Text = ''
+  end
+end

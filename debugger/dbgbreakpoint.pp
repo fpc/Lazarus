@@ -5,7 +5,7 @@
  
  @created(Wed Feb 25st WET 2001)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
+ @author(Marc Weustink <marc@@dommelstein.net>)                       
 
  This unit contains the class definitions of the 
  Breakpoints used by the debugger
@@ -58,30 +58,40 @@ type
     property Valid: Boolean read FValid write SetValid;
   end;
 
-  TDBGBreakPointGroup = class(TCollection)
+  TDBGBreakPoints = class(TCollection)
+  private
+    function GetItem(const AnIndex: Integer): TDBGBreakPoint;
+    procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
+  protected
+  public
+    constructor Create;
+    property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
+  end;
+
+  TDBGBreakPointGroup = class(TCollectionItem)
   private
     FEnabled: Boolean;
     FName: String;
-    function GetItem(const AnIndex: Integer): TDBGBreakPoint;
+    FBreakpoints: TDBGBreakPoints;
     procedure SetEnabled(const AValue: Boolean);
-    procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
     procedure SetName(const AValue: String);
   protected
   public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    property Breakpoints: TDBGBreakPoints read FBreakpoints;
     property Enabled: Boolean read FEnabled write SetEnabled;
-    property Items[const AnIndex: Integer]: TDBGBreakPoint 
-                   read GetItem write SetItem; default;
     property Name: String read FName write SetName;
   end;
 
   TDBGBreakPointGroups = class(TCollection)
   private
     function GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
-    procedure SetItem(const AnIndex: Integer; const Value: TDBGBreakPointGroup);
+    procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPointGroup);
   protected
   public
-    property Items[const AnIndex: Integer]: TDBGBreakPointGroup 
-                  read GetItem write SetItem; default;
+    constructor Create;
+    property Items[const AnIndex: Integer]: TDBGBreakPointGroup read GetItem write SetItem; default;
   end;
 
 
@@ -130,21 +140,36 @@ begin
   FValid := AValue;
 end;
 
+{ TDBGBreakPoints }
+
+constructor TDBGBreakPoints.Create; 
+begin
+  inherited Create(TDBGBreakPoint);
+end;
+
+function TDBGBreakPoints.GetItem(const AnIndex: Integer): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited GetItem(AnIndex));
+end;
+
+procedure TDBGBreakPoints.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
+begin     
+end;
+
 { TDBGBreakPointGroup }
 
-function TDBGBreakPointGroup.GetItem(const AnIndex: Integer): TDBGBreakPoint;
+constructor TDBGBreakPointGroup.Create(ACollection: TCollection); 
 begin
-  Result:=nil;
+  inherited Create(ACollection);
+end;
+
+destructor TDBGBreakPointGroup.Destroy; 
+begin
 end;
 
 procedure TDBGBreakPointGroup.SetEnabled(const AValue: Boolean);
 begin
   FEnabled := AValue;
-end;
-
-procedure TDBGBreakPointGroup.SetItem(const AnIndex: Integer;
-  const AValue: TDBGBreakPoint);
-begin
 end;
 
 procedure TDBGBreakPointGroup.SetName(const AValue: String);
@@ -154,20 +179,26 @@ end;
 
 { TDBGBreakPointGroups }
 
-function TDBGBreakPointGroups.GetItem(
-  const AnIndex: Integer): TDBGBreakPointGroup;
+constructor TDBGBreakPointGroups.Create; 
 begin
-  Result:=nil;
+  inherited Create(TDBGBreakPointGroup);
 end;
 
-procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer; 
-  const Value: TDBGBreakPointGroup);
+function TDBGBreakPointGroups.GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
+begin
+  Result := TDBGBreakPointGroup(inherited GetItem(AnIndex));
+end;
+
+procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPointGroup);
 begin
 end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2001/11/05 00:12:51  lazarus
+  MWE: First steps of a debugger.
+
   Revision 1.3  2001/10/18 13:01:31  lazarus
   MG: fixed speedbuttons numglyphs>1 and started IDE debugging
 
