@@ -41,6 +41,7 @@ program Lazarus;
 {$ENDIF}
 
 uses 
+  //cmem,
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
@@ -86,6 +87,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2002/10/10 20:34:32  lazarus
+  MG: fixed freeing Glyph in TBitBtn.SetKind
+
   Revision 1.37  2002/09/13 08:11:45  lazarus
   MG: fixed memcheck output
 

@@ -44,7 +44,10 @@ var
 begin
   if FOriginal = Value then exit;
 //  FOriginal.Assign(Value);
-  FOriginal.Free;
+  if FOriginal<>nil then begin
+    FOriginal.OnChange:=nil;
+    FOriginal.Free;
+  end;
   FOriginal:= Value;
   FOriginal.OnChange := @GlyphChanged;
   FNumGlyphs:=1;

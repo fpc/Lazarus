@@ -98,7 +98,7 @@ Begin
 
   if FKind = bkCustom then Exit;
 
-  if Glyph <> nil then Glyph.free;
+  //if Glyph <> nil then Glyph.free;
   Bitmap1 := TBitmap.Create;
   Bitmap1.Handle := LoadStockPixmap(BitBtnImages[Value]);
 
@@ -115,19 +115,20 @@ end;
 
 Procedure TBitBtn.SetLayout(Value : TButtonLayout);
 Begin
-if FLayout = Value then Exit;
-FLayout := Value;
-CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+  if FLayout = Value then Exit;
+  FLayout := Value;
+  if HandleAllocated then
+    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 
 
 Procedure TBitBtn.SetSpacing(Value : Integer);
 Begin
-if (FSpacing = Value) or (Value < 0) then Exit;
-FSpacing := Value;
-//still send the layout message because it still calls the same procedure
-CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
-
+  if (FSpacing = Value) or (Value < 0) then Exit;
+  FSpacing := Value;
+  if HandleAllocated then
+    //still send the layout message because it still calls the same procedure
+    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 
 
