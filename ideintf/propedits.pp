@@ -365,6 +365,7 @@ type
     property FirstValue:ansistring read GetValue write SetValue;
     property OnSubPropertiesChanged: TNotifyEvent
       read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
+    property ComponentList: TPersistentSelectionList read FComponents;
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
