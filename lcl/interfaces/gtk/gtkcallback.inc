@@ -336,7 +336,6 @@ end;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  Status : GBoolean;
 begin
   Result := CallBackDefaultReturn;
 
@@ -344,32 +343,23 @@ begin
   EventTrace('changed_editbox', data);
 
   Mess.Msg := CM_TEXTCHANGED;
-  Status := DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
-  Status : GBoolean;
 begin
   Result := CallBackDefaultReturn;
 
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
   EventTrace('day changed', data);
   MSG.Msg := LM_DAYCHANGED;
-  Status := DeliverPostMessage(Data, MSG);
+  DeliverPostMessage(Data, MSG);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
@@ -504,7 +494,6 @@ function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
-  Status : GBoolean;
 {$IFDEF VerboseFocus}
   LCLObject: TControl;
 {$ENDIF}
@@ -523,13 +512,9 @@ begin
   UpdateMouseCaptureControl;
 
   Mess.Msg := LM_DEACTIVATE;
-  Status := DeliverPostMessage(Data, Mess);
+  DeliverPostMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
@@ -743,7 +728,6 @@ end;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMessage;
-  Status : GBoolean;
   Info: PWinWidgetInfo;
 begin
   Result := CallBackDefaultReturn;
@@ -751,13 +735,9 @@ begin
   EventTrace('destroy', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_DESTROY;
-  Status := DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
@@ -792,20 +772,15 @@ end;
 function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMessage;
-  Status : GBoolean;
 begin
   Result := CallBackDefaultReturn;
   if (Widget=nil) then ;
   EventTrace('month changed', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_MONTHCHANGED;
-  Status := DeliverPostMessage(Data, Mess);
+  DeliverPostMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 {-------------------------------------------------------------------------------
@@ -3002,6 +2977,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.264  2005/02/16 23:31:16  mattias
+  fixed define templates quotes
+
   Revision 1.263  2005/02/16 22:55:59  mattias
   improved gtk intf file dialog filter  from C Western
 

@@ -2295,6 +2295,7 @@ var
           // test expression in value
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
           EvalResult:=DirDef.Values.Eval(TempValue);
+          //debugln('da_If,da_ElseIf: DefTempl.Value="',DbgStr(DefTempl.Value),'" CurPath="',CurPath,'" TempValue="',TempValue,'" EvalResult=',EvalResult);
           if DirDef.Values.ErrorPosition>=0 then begin
             ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
             FErrorDescription:=Format(ctsSyntaxErrorInExpr,[TempValue]);
@@ -3475,8 +3476,8 @@ begin
   MainDir.AddChild(TDefineTemplate.Create('Clear SrcPath','Clear SrcPath',
     ExternalMacroStart+'SrcPath','',da_DefineRecurse));
   // if TargetOS<>win32
-  IfTemplate:=TDefineTemplate.Create('IF '+TargetOS+'<>''win32''',
-    ctsIfTargetOSIsNotWin32,'',TargetOS+'<>''win32''',da_If);
+  IfTemplate:=TDefineTemplate.Create('IF '''+TargetOS+'''<>''win32''',
+    ctsIfTargetOSIsNotWin32,'',''''+TargetOS+'''<>''win32''',da_If);
     // then define #SrcPath := #SrcPath;lcl/nonwin32
     IfTemplate.AddChild(TDefineTemplate.Create('win32api for non win32',
       Format(ctsAddsDirToSourcePath,[d(LazarusSrcDir+'/lcl/nonwin32')]),
@@ -3773,14 +3774,14 @@ begin
   IntfDirTemplate:=TDefineTemplate.Create('gtkIntfDirectory',
     ctsIntfDirectory,'','gtk',da_Directory);
     // if LCLWidgetType=gtk2
-    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=''gtk2''',
-      ctsIfLCLWidgetTypeEqualsGtk2,'',WidgetType+'=''gtk2''',da_If);
+    IfTemplate:=TDefineTemplate.Create('IF '''+WidgetType+'''=''gtk2''',
+      ctsIfLCLWidgetTypeEqualsGtk2,'',''''+WidgetType+'''=''gtk2''',da_If);
       // then define gtk2
       IfTemplate.AddChild(TDefineTemplate.Create('Define gtk2',
         ctsDefineMacroGTK2,'gtk2','',da_Define));
     IntfDirTemplate.AddChild(IfTemplate);
     // else LCLWidgetType=gtk2
-    ElseTemplate:=TDefineTemplate.Create('ELSE '+WidgetType+'=''gtk1''',
+    ElseTemplate:=TDefineTemplate.Create('ELSE',
       ctsElse,'','',da_Else);
       // then define gtk1
       ElseTemplate.AddChild(TDefineTemplate.Create('Define gtk1',
@@ -3805,8 +3806,8 @@ begin
     Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
     d('../gtk;')+SrcPath,da_Define));
     // if LCLWidgetType=gnome2
-    IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=''gnome2''',
-      ctsIfLCLWidgetTypeEqualsGnome2,'',WidgetType+'=''gnome2''',da_If);
+    IfTemplate:=TDefineTemplate.Create('IF '''+WidgetType+'''=''gnome2''',
+      ctsIfLCLWidgetTypeEqualsGnome2,'',''''+WidgetType+'''=''gnome2''',da_If);
       // then define gnome2
       IfTemplate.AddChild(TDefineTemplate.Create('Define gnome2',
         ctsDefineMacroGTK2,'gnome2','',da_Define));

@@ -92,7 +92,7 @@ begin
   end;
 end;
 
-function gdk_event_get_type(Event : Pointer) : guint;
+function gdk_event_get_type(Event : Pointer) : TGdkEventType;
 begin
   {$IfDef GTK2}
   result := PGdkEvent(Event)^._type;
@@ -683,7 +683,9 @@ var
   WindowType: TGdkWindowType;
   Width: Integer;
   Height: Integer;
+  {$ifdef gtk1}
   Visual: PGdkVisual;
+  {$endif}
   TypeAsStr: String;
 begin
   Result:=HexStr(Cardinal(AWindow),8);
@@ -697,9 +699,9 @@ begin
   GDK_WINDOW_CHILD: TypeAsStr:='Child';
   GDK_WINDOW_DIALOG: TypeAsStr:='Dialog';
   GDK_WINDOW_TEMP: TypeAsStr:='Temp';
-{$ifdef gtk1}
+  {$ifdef gtk1}
   GDK_WINDOW_PIXMAP: TypeAsStr:='Pixmap';
-{$endif gtk1}
+  {$endif gtk1}
   GDK_WINDOW_FOREIGN: TypeAsStr:='Foreign';
   else TypeAsStr:='Unknown';
   end;
@@ -724,7 +726,7 @@ begin
   gdk_window_get_size(AWindow,@Width,@Height);
   Result:=Result+' Size='+IntToStr(Width)+'x'+IntToStr(Height);
 
-{$ifdef gtk1}
+  {$ifdef gtk1}
   // visual
   Visual:=gdk_window_get_visual(AWindow);
   if Visual<>nil then begin
@@ -732,7 +734,7 @@ begin
       Result:=Result+' Depth='+IntToStr(Visual^.bits_per_rgb);
     end;
   end;
-{$endif gtk1}
+  {$endif gtk1}
 end;
 
 function GetStyleDebugReport(AStyle: PGTKStyle): string;
@@ -4604,8 +4606,9 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       {$IFDEF Gtk2}
       ChildEntry2:=gtk_container_get_children(PGtkContainer(TheWidget));
       while ChildEntry2<>nil do begin
-        if PGtkWidget(ChildEntry2^.Data)<>TheWidget then
-          ConnectSignals(PGtkWidget(ChildEntry2^.Data));
+        ChildWidget:=PGtkWidget(ChildEntry2^.Data);
+        if ChildWidget<>TheWidget then
+          ConnectSignals(ChildWidget);
         ChildEntry2:=ChildEntry2^.Next;
       end;
       {$ELSE}
@@ -7432,20 +7435,20 @@ begin
       gtk_widget_modify_style(Widget,RCStyle);
 
       if FreeFontName then begin
-{$ifdef gtk1}      
+        {$ifdef gtk1}
         g_free(RCStyle^.font_name);
         RCStyle^.font_name:=nil;
-{$else}
+        {$else}
         pango_font_description_free(RCStyle^.font_desc);
         RCStyle^.font_desc:=nil;
-{$endif}	
+        {$endif}
       end;
-{$ifdef gtk1}      
       if FreeFontSetName then begin
+        {$ifdef gtk1}
         g_free(RCStyle^.fontset_name);
         RCStyle^.fontset_name:=nil;
+        {$endif}
       end;
-{$endif}      
       //DebugLn('UpdateWidgetStyleOfControl END ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
       gtk_rc_style_unref(RCStyle);
     end;
@@ -7992,6 +7995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.334  2005/02/16 23:31:16  mattias
+  fixed define templates quotes
+
   Revision 1.333  2005/02/16 22:55:59  mattias
   improved gtk intf file dialog filter  from C Western
 
