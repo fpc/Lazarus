@@ -59,7 +59,12 @@ uses
   BaseDebugManager, DebugManager, MainBar;
 
 type
-  TDisplayState = (dsSource, dsInspector, dsForm, dsInspector2);
+  TDisplayState = (
+    dsSource,     // focussing sourcenotebook
+    dsInspector,  // focussing object inspector
+    dsForm,       // focussing designer form
+    dsInspector2  // focussing object inspector
+    );
 
   TMainIDE = class(TMainIDEBar)
     // event handlers
@@ -283,7 +288,6 @@ type
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
   private
-    FCodeLastActivated : Boolean; // used for toggling between code and forms
     FDisplayState : TDisplayState;
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
@@ -7414,6 +7418,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.426  2002/11/05 20:09:36  lazarus
+  MG: reduced output
+
   Revision 1.425  2002/11/05 20:03:38  lazarus
   MG: implemented hints
 
