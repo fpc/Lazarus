@@ -62,6 +62,8 @@ function CheckFileIsWritable(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
+function SaveStringToFile(const Filename, Content: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
 
 
 implementation
@@ -197,6 +199,29 @@ begin
     inc(i);
   end;
   Result:=mrOk;
+end;
+
+function SaveStringToFile(const Filename, Content: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+var
+  fs: TFileStream;
+begin
+  try
+    fs:=TFileStream.Create(Filename,fmCreate);
+    try
+      if Content<>'' then
+        fs.Write(Content[1],length(Content));
+    finally
+      fs.Free;
+    end;
+    Result:=mrOk;
+  except
+    on E: Exception do begin
+      Result:=MessageDlg('Write error',
+         'Write error: '+E.Message+#13
+         +'File: '+Filename,mtError,[mbAbort]+ErrorButtons,0);
+    end;
+  end;
 end;
 
 end.

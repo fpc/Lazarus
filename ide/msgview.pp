@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                           MsgView.pp - compiler message view
-                           ----------------------------------
+                         MsgView.pp - compiler message view
+                         ----------------------------------
                    TMessagesView is responsible for displaying the
                    fpc/make/codetools messages.
 
@@ -37,8 +37,10 @@ unit MsgView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, StdCtrls, Forms, LResources, IDEProcs,
-  IDEOptionDefs, IDECommands, EnvironmentOpts, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, Controls, StdCtrls, Forms, Menus, LResources,
+  ClipBrd, Dialogs, InputHistory, FileUtil,
+  IDEProcs, IDEOptionDefs, DialogProcs, IDECommands, EnvironmentOpts,
+  LazarusIDEStrConsts;
 
 type
   { TMessageLine }
@@ -66,10 +68,15 @@ type
   
   TMessagesView = class(TForm)
     MessageView: TListBox;
+    MainPopupMenu: TPopupMenu;
+    CopyAllMenuItem: TMenuItem;
+    SaveAllToFileMenuItem: TMenuItem;
+    procedure CopyAllMenuItemClick(Sender: TObject);
     procedure MessageViewDblClicked(Sender: TObject);
     Procedure MessageViewClicked(sender : TObject);
     procedure MessagesViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure SaveAllToFileMenuItemClick(Sender: TObject);
   private
     FItems: TList; // list of TMessageLine
     FVisibleItems: TList; // list of TMessageLine (visible Items of FItems)
@@ -104,6 +111,7 @@ type
     function VisibleItemCount: integer;
     function MsgCount: integer;
     procedure FilterLines(Filter: TOnFilterLine);
+    procedure SaveMessagesToFile(const Filename: string);
   public
     property LastLineIsProgress: boolean read FLastLineIsProgress
                                          write SetLastLineIsProgress;
@@ -132,25 +140,39 @@ const SeparatorLine = '---------------------------------------------';
   TMessagesView.Create
 ------------------------------------------------------------------------------}
 constructor TMessagesView.Create(TheOwner : TComponent);
-var ALayout: TIDEWindowLayout;
 Begin
   inherited Create(TheOwner);
   Name := NonModalIDEWindowNames[nmiwMessagesViewName];
   FItems:=TList.Create;
   FVisibleItems:=TList.Create;
 
-  if LazarusResources.Find(ClassName)=nil then begin
-    Caption:=lisMenuViewMessages;
-    MessageView := TListBox.Create(Self);
-    With MessageView do Begin
-      Parent:= Self;
-      Align:= alClient;
-    end;
+  Caption:=lisMenuViewMessages;
+  MessageView := TListBox.Create(Self);
+  With MessageView do Begin
+    Parent:= Self;
+    Align:= alClient;
   end;
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                                               ItemByEnum(nmiwMessagesViewName);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
+  
+  MainPopupMenu:=TPopupMenu.Create(Self);
+  MessageView.PopupMenu:=MainPopupMenu;
+  
+  CopyAllMenuItem:=TMenuItem.Create(Self);
+  with CopyAllMenuItem do begin
+    Name:='CopyAllMenuItem';
+    Caption:=lisCopyAllMessagesToClipboard;
+    OnClick:=@CopyAllMenuItemClick;
+  end;
+  MainPopupMenu.Items.Add(CopyAllMenuItem);
+  
+  SaveAllToFileMenuItem:=TMenuItem.Create(Self);
+  with SaveAllToFileMenuItem do begin
+    Name:='SaveAllToFileMenuItem';
+    Caption:=lisSaveAllMessagesToFile;
+    OnClick:=@SaveAllToFileMenuItemClick;
+  end;
+  MainPopupMenu.Items.Add(SaveAllToFileMenuItem);
+
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   KeyPreview:=true;
   OnKeyDown:=@MessagesViewKeyDown;
 end;
@@ -297,6 +319,11 @@ begin
   MessageView.Items.EndUpdate;
 end;
 
+procedure TMessagesView.SaveMessagesToFile(const Filename: string);
+begin
+  SaveStringToFile(Filename,MessageView.Items.Text,[]);
+end;
+
 {------------------------------------------------------------------------------
   TMessagesView.Clear
 ------------------------------------------------------------------------------}
@@ -383,6 +410,11 @@ begin
   end;
 end;
 
+procedure TMessagesView.CopyAllMenuItemClick(Sender: TObject);
+begin
+  Clipboard.AsText:=MessageView.Items.Text;
+end;
+
 Procedure TMessagesView.MessageViewClicked(sender : TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then exit;
@@ -397,6 +429,28 @@ procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: Word;
 begin
   //debugln('TMessagesView.MessagesViewKeyDown ',dbgs(Key));
   ExecuteIDECommand(Self,Key,Shift);
+end;
+
+procedure TMessagesView.SaveAllToFileMenuItemClick(Sender: TObject);
+var
+  SaveDialog: TSaveDialog;
+  AFilename: string;
+begin
+  SaveDialog:=TSaveDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
+    SaveDialog.Title:='Save messages to file (*.txt)';
+    SaveDialog.Options:=SaveDialog.Options+[ofPathMustExist];
+    if SaveDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
+      if ExtractFileExt(AFilename)='' then
+        AFilename:=AFilename+'.txt';
+      SaveMessagesToFile(AFilename);
+    end;
+    InputHistories.StoreFileDialogSettings(SaveDialog);
+  finally
+    SaveDialog.Free;
+  end;
 end;
 
 function TMessagesView.GetDirectory: string;

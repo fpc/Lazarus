@@ -187,6 +187,8 @@ resourcestring
   lisMenuViewUnitInfo = 'View Unit Information';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
+  lisCopyAllMessagesToClipboard = 'Copy all messages to clipboard';
+  lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
