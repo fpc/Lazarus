@@ -238,7 +238,9 @@ var
   p: PByte;
   y: cardinal;
   x: cardinal;
-  UnusedByteMask: Byte;
+  UnusedByteMask: Byte; // Alpha Bits should be all set. The Byte at line end
+                        // can contain some unused bits. This mask OR byte at
+                        // line end makes the unsused bits all true.
   UsedBytesPerLine: cardinal;
 begin
   Result:=true;
@@ -269,7 +271,10 @@ begin
         // byte boundary
         UsedBytesPerLine:=UsedBitsPerLine shr 3;
         UnusedBitsAtEnd:=(8-(UsedBitsPerLine and 7)) and 7;
-        UnusedByteMask:=(1 shl UnusedBitsAtEnd) - 1;
+        if RawImage^.Description.AlphaBitOrder=riboBitsInOrder then
+          UnusedByteMask:=(($ff00 shr UnusedBitsAtEnd) and $ff)
+        else
+          UnusedByteMask:=(1 shl UnusedBitsAtEnd) - 1;
         p:=RawImage^.Mask;
         for y:=0 to Height-1 do begin
           // check fully used bytes in line
@@ -288,7 +293,14 @@ begin
             if (p^ or UnusedByteMask)<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              DebugLn('RawImageMaskIsEmpty EdgeByte y=',dbgs(y),' x=',dbgs(x),' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',dbgs(UnusedBitsAtEnd),' UsedBitsPerLine=',dbgs(UsedBitsPerLine),' Width=',dbgs(Width),' RawImage^.Description.AlphaBitsPerPixel=',dbgs(RawImage^.Description.AlphaBitsPerPixel));
+              DebugLn('RawImageMaskIsEmpty EdgeByte y=',dbgs(y),' x=',dbgs(x),
+                ' Byte=',HexStr(Cardinal(p^),2),
+                ' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),
+                ' OR='+dbgs(p^ or UnusedByteMask),
+                ' UnusedBitsAtEnd='+dbgs(UnusedBitsAtEnd),
+                ' UsedBitsPerLine='+dbgs(UsedBitsPerLine),
+                ' Width='+dbgs(Width),
+                ' RawImage^.Description.AlphaBitsPerPixel='+dbgs(RawImage^.Description.AlphaBitsPerPixel));
               {$ENDIF}
               exit;
             end;
@@ -776,6 +788,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2005/03/05 13:09:27  mattias
+  added BitOrder test for RawImageMaskEmpty
+
   Revision 1.38  2005/03/05 12:08:49  mattias
   OI now locks during doubleclick and synedit now uses only MouseCapture instead of heuristic
 
