@@ -401,7 +401,8 @@ begin
 end;
 
 function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
-var OldDuringPaintControl: boolean;
+var
+  OldDuringPaintControl, InternalPaint: boolean;
 begin
   Result:=true;
   
@@ -418,6 +419,7 @@ begin
 
   // paint the Designer stuff
   if TheMessage.DC<>0 then begin
+    InternalPaint:=(TheMessage.Msg=LM_INTERNALPAINT);
     DDC.SetDC(Form,TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
@@ -427,7 +429,7 @@ begin
       ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y
       );
     {$ENDIF}
-    if (Sender is TWinControl)
+    if (not InternalPaint) and (Sender is TWinControl)
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
@@ -1072,7 +1074,9 @@ Begin
   if csDesigning in Sender.ComponentState then begin
     Result:=true;
     case TheMessage.Msg of
-      LM_PAINT:   Result:=PaintControl(Sender,TLMPaint(TheMessage));
+      LM_PAINT,
+      LM_INTERNALPAINT:
+                  Result:=PaintControl(Sender,TLMPaint(TheMessage));
       LM_KEYDOWN: KeyDown(Sender,TLMKey(TheMessage));
       LM_KEYUP:   KeyUP(Sender,TLMKey(TheMessage));
       LM_LBUTTONDOWN,
