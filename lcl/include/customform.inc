@@ -1074,6 +1074,7 @@ end;
 procedure TCustomForm.SetBorderIcons(NewIcons: TBorderIcons);
 begin
   if FBorderIcons = NewIcons then exit;
+  FBorderIcons := NewIcons;
   if HandleAllocated then
     TWSCustomFormClass(WidgetSetClass).SetBorderIcons(Self, NewIcons);
 end;
@@ -1915,6 +1916,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.182  2005/03/26 14:01:18  micha
+  save BorderIcons setting internally
+
   Revision 1.181  2005/03/25 08:58:11  micha
   implement ShowInTaskBar for win32 intf
 
