@@ -1707,23 +1707,24 @@ var
     end;
   end;
   
-  procedure CacheResult(Found: boolean);
+  procedure CacheResult(Found: boolean; EndNode: TCodeTreeNode);
   begin
-    if Found and ([fdfDoNotCache,fdfCollect]*Params.Flags=[])
-    and ([fodDoNotCache]*Params.NewFlags=[])
-    and (FirstSearchedNode<>nil) then begin
-      // cache result
-      if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
-        //writeln('NOTE: TFindDeclarationTool.FindIdentifierInContext.CacheResult Node is proc');
-        // ToDo:
-        // The search range is from start to end of search.
-        // This does not work for overloaded procs.
-        // -> do not cache
-        exit;
-      end;
-      AddResultToNodeCaches(FirstSearchedNode,ContextNode,
-        fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+    if not Found then exit;
+    if (FirstSearchedNode=nil) then exit;
+    if ([fdfDoNotCache,fdfCollect]*Params.Flags<>[]) then exit;
+    if ([fodDoNotCache]*Params.NewFlags<>[]) then exit;
+    if (Params.FoundProc<>nil) then exit; // do not cache proc searches
+    // cache result
+    if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+      writeln('NOTE: TFindDeclarationTool.FindIdentifierInContext.CacheResult Node is proc');
+      // ToDo:
+      // The search range is from start to end of search.
+      // This does not work for overloaded procs.
+      // -> do not cache
+      exit;
     end;
+    AddResultToNodeCaches(FirstSearchedNode,EndNode,
+                      fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
   end;
 
   function CheckResult(NewResult, CallOnIdentifierFound: boolean): boolean;
@@ -1763,7 +1764,6 @@ var
     {$ENDIF}
     if NewResult then begin
       // identifier found
-      CacheResult(true);
       if CallOnIdentifierFound then begin
         {
         write('[TFindDeclarationTool.FindIdentifierInContext] CallOnIdentifierFound Ident=',
@@ -1775,15 +1775,17 @@ var
         }
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
                                                                 Params.NewNode);
+        if IdentFoundResult=ifrSuccess then
+          CacheResult(true,ContextNode);
         Result:=IdentFoundResult<>ifrProceedSearch;
         if IdentFoundResult<>ifrAbortSearch then exit;
       end else begin
         if fdfCollect in Params.Flags then
           Result:=false;
+        CacheResult(true,ContextNode);
         exit;
       end;
     end;
-    // identifier was not found
     if Params.FoundProc<>nil then begin
       // there was a proc, only the search for the overloaded proc was
       // unsuccessful
@@ -1797,6 +1799,7 @@ var
       {$ENDIF}
       exit;
     end;
+    // identifier was not found
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
     if (Params.Identifier<>nil)
     and WordIsPredefinedIdentifier.DoIt(Params.Identifier)
@@ -2214,11 +2217,12 @@ begin
     end;
   end;}
   // if we are here, the identifier was not found
-  if FirstSearchedNode<>nil then begin
+  if (FirstSearchedNode<>nil) and (Params.FoundProc=nil) then begin
     // add result to cache
     Params.NewNode:=nil;
+    Params.NewCodeTool:=nil;
     AddResultToNodeCaches(FirstSearchedNode,LastSearchedNode,
-      fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+                    fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
   end;
   CheckResult(false,false);
 end;
@@ -4854,7 +4858,7 @@ begin
   // the search has found an identifier with the right name
   {$IFDEF ShowFoundIdentifier}
   writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-  ' Indent=',GetIdentifier(Params.Identifier),
+  ' Ident=',GetIdentifier(Params.Identifier),
   ' FoundContext=',FoundContext.Node.DescAsString,
   ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
   );
@@ -4888,7 +4892,7 @@ begin
       // -> identifier found
       {$IFDEF ShowProcSearch}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Indent=',GetIdentifier(Params.Identifier),
+      ' Ident=',GetIdentifier(Params.Identifier),
       ' NO SOURCE to check params'
       );
       {$ENDIF}
@@ -4902,7 +4906,7 @@ begin
       // -> save it and proceed the search to find all overloadeded procs
       {$IFDEF ShowFoundIdentifier}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Indent=',GetIdentifier(Params.Identifier),
+      ' Ident=',GetIdentifier(Params.Identifier),
       ' FIRST PROC'
       );
       {$ENDIF}
@@ -4916,7 +4920,7 @@ begin
     if Params.FoundProc^.ExprInputList=nil then begin
       {$IFDEF ShowFoundIdentifier}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Indent=',GetIdentifier(Params.Identifier),
+      ' Ident=',GetIdentifier(Params.Identifier),
       ' Creating Input Expression List ...'
       );
       {$ENDIF}
@@ -4928,7 +4932,7 @@ begin
           if (StartContextNode.Desc in AllPascalStatements) then begin
             {$IFDEF ShowProcSearch}
             writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-            ' Indent=',GetIdentifier(Params.Identifier),
+            ' Ident=',GetIdentifier(Params.Identifier),
             ' Creating Input Expression List for statement ...'
             );
             {$ENDIF}
@@ -4947,7 +4951,7 @@ begin
           then begin
             {$IFDEF ShowProcSearch}
             writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-            ' Indent=',GetIdentifier(Params.Identifier),
+            ' Ident=',GetIdentifier(Params.Identifier),
             ' Creating Input Expression List for proc node ...'
             );
             {$ENDIF}
@@ -4976,7 +4980,7 @@ begin
     if not Params.FoundProc^.CacheValid then begin
       {$IFDEF ShowFoundIdentifier}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Indent=',GetIdentifier(Params.Identifier),
+      ' Ident=',GetIdentifier(Params.Identifier),
       ' Check the first found proc for compatibility ...'
       );
       {$ENDIF}
@@ -4995,7 +4999,7 @@ begin
       Params.FoundProc^.CacheValid:=true;
       {$IFDEF ShowFoundIdentifier}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Indent=',GetIdentifier(Params.Identifier),
+      ' Ident=',GetIdentifier(Params.Identifier),
       ' First Proc ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]
       );
       {$ENDIF}
@@ -5012,7 +5016,7 @@ begin
     // (compare the expression list with the proc param list)
     {$IFDEF ShowFoundIdentifier}
     writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-    ' Indent=',GetIdentifier(Params.Identifier),
+    ' Ident=',GetIdentifier(Params.Identifier),
     ' Check the current found proc for compatibility ...'
     );
     {$ENDIF}
@@ -5034,7 +5038,7 @@ begin
       Params.Load(OldInput);
       {$IFDEF ShowFoundIdentifier}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
-      ' Indent=',GetIdentifier(Params.Identifier),
+      ' Ident=',GetIdentifier(Params.Identifier),
       ' Current Proc ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]
       );
       {$ENDIF}
@@ -5746,7 +5750,7 @@ begin
   end;
 
   {$IFDEF ShowNodeCache}
-  beVerbose:=CompareSrcIdentifiers(Params.Identifier,'TOBJECT');
+  beVerbose:=CompareSrcIdentifiers(Params.Identifier,'InitDecompressor');
   if beVerbose then begin
     writeln('(((((((((((((((((((((((((((==================');
     
