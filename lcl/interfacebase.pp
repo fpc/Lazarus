@@ -48,6 +48,8 @@ type
   }
   TInterfaceBase = Class(TObject)
   private
+    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
+    procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
   protected
   public
     procedure AppTerminate; virtual; abstract;
@@ -57,8 +59,6 @@ type
     procedure Init; virtual; abstract;
     function GetText(Sender: TControl; var Text: String): Boolean; virtual; abstract;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
-    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
-    procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
     function UpdateHint(Sender: TObject): Integer; virtual; abstract;
     function RecreateWnd(Sender: TObject): Integer; virtual; abstract;
 
@@ -82,6 +82,10 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.5  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
