@@ -625,12 +625,18 @@ var
     TextCompStream.Position:=0;
     if Assigned(FOnPasteComponent) then begin
       NewComponent:=nil;
+      // create component and add to LookupRoot
       FOnPasteComponent(Self,FLookupRoot,TextCompStream,
                         PasteParent,NewComponent);
       if NewComponent=nil then exit;
-      Modified;
-      FindUniquePosition(NewComponent);
+      // add new component to new selection
       NewSelection.Add(NewComponent);
+      // set new nice bounds
+      FindUniquePosition(NewComponent);
+      // finish adding component
+      if Assigned(FOnComponentAdded) then
+        FOnComponentAdded(Self,NewComponent,nil);
+      Modified;
     end;
 
     Result:=true;
