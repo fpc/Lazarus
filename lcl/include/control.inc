@@ -39,30 +39,27 @@ end;
           Threshold: default -1, distance to move before dragging starts
   Returns: Nothing
 
-  Starts the dragging of a control. If the Immidiate flag is set, draggin
+  Starts the dragging of a control. If the Immidiate flag is set, dragging
   starts immediate.
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 var
   P : TPoint;
 begin
-  if (DragControl = nil) or (pointer(dragcontrol) = pointer($FFFFFFFF)) then
-     Begin
-     Assert(False, 'Trace:Dragcontrol = nil or fff');
-     DragControl := nil;
-     if csLButtonDown in ControlState then
-         Begin
-          GetCursorPos(p);
-          Assert(False, Format('Trace:p.x p.y = %d,%d',[P.x,P.y]));
-          P := ScreentoClient(p);
-          Assert(False, Format('Trace:p.x p.y = %d,%d',[P.x,P.y]));
-          Perform(LM_LBUTTONUP,0,Longint(PointtoSmallPoint(p)));
-        end;
-        if Threshold < 0 then
-           Threshold := MOuse.DragThreshold;
-        if pointer(DragControl) <> pointer($FFFFFFFF) then
-           DragInitControl(Self,Immediate,Threshold);
-     end;
+  if (DragControl = nil) or (Pointer(DragControl) = Pointer($FFFFFFFF)) then
+  Begin
+    DragControl := nil;
+    if csLButtonDown in ControlState then
+    Begin
+      GetCursorPos(p);
+      P := ScreenToClient(p);
+      Perform(LM_LBUTTONUP,0,Longint(PointToSmallPoint(p)));
+    end;
+    if Threshold < 0 then
+      Threshold := Mouse.DragThreshold;
+    if Pointer(DragControl) <> Pointer($FFFFFFFF) then
+      DragInitControl(Self,Immediate,Threshold);
+  end;
 end;
 
 procedure TControl.BeginDrag(Immediate: Boolean);
@@ -77,7 +74,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.BeginAutoDrag;
 begin
-  BeginDrag(Mouse.DragImmediate,MOuse.DragThreshold);
+  BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1805,6 +1802,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.84  2002/09/09 19:04:01  lazarus
+  MG: started TTreeView dragging
+
   Revision 1.83  2002/09/08 10:01:59  lazarus
   MG: fixed streaming visible=false
 

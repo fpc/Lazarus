@@ -717,7 +717,6 @@ type
     FTabStop : Boolean;
     FWinControls : TList;
     procedure AlignControl(AControl : TControl);
-    Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     function  GetControl(const Index: Integer): TControl;
     function  GetControlCount: Integer;
     function  GetHandle : HWND;
@@ -736,6 +735,7 @@ type
     procedure AlignControls(AControl : TControl; var Rect: TRect); virtual;
     Procedure SetAutoSize(const Value : Boolean); Override;
     procedure BoundsChanged; override;
+    Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
@@ -1024,7 +1024,8 @@ end;
 
 
 {DragIntit}
-Procedure DragInit(aDragObject : TDragObject; Immediate : Boolean; Threshold : Integer);
+Procedure DragInit(aDragObject : TDragObject; Immediate : Boolean;
+  Threshold : Integer);
 Begin
   DragObject := ADragObject;
   DragObject.Dragtarget := nil;
@@ -1036,36 +1037,33 @@ Begin
 end;
 
 {Draginitcontrol}
-Procedure DragInitControl(Control : TControl; Immediate : Boolean; Threshold : Integer);
+Procedure DragInitControl(Control : TControl; Immediate : Boolean;
+  Threshold : Integer);
 var
   DragObject : TDragObject;
   ok: boolean;
 begin
-  Assert(False, 'Trace:***********************');
-  Assert(False, 'Trace:***DragInitControl*****');
-  Assert(False, 'Trace:***********************');
-
   DragControl := Control;
   ok:=false;
   try
-   DragObject := nil;
-   DragFreeObject := False;
-   if Control.fDragKind = dkDrag then
-      begin
+    DragObject := nil;
+    DragFreeObject := False;
+    if Control.fDragKind = dkDrag then
+    begin
       Control.DoStartDrag(DragObject);
       if DragControl = nil then Exit;
       if DragObject = nil then
-         Begin
-         DragObject := TDragControlObject.Create(Control);
-         DragFreeObject := True;
-         End;
-      end;
-     DragInit(DragObject,Immediate,Threshold);
-     ok:=true;
-   finally
-     if not ok then
-       DragControl := nil;
-   end;
+      Begin
+        DragObject := TDragControlObject.Create(Control);
+        DragFreeObject := True;
+      End;
+    end;
+    DragInit(DragObject,Immediate,Threshold);
+    ok:=true;
+  finally
+    if not ok then
+      DragControl := nil;
+  end;
 end;
 
 
@@ -1351,6 +1349,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/09/09 19:04:01  lazarus
+  MG: started TTreeView dragging
+
   Revision 1.70  2002/09/09 14:01:05  lazarus
   MG: improved TScreen and ShowModal
 
