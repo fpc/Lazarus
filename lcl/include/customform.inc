@@ -1561,7 +1561,7 @@ end;
 procedure TCustomForm.ChildHandlesCreated;
 begin
   inherited ChildHandlesCreated;
-  if Parent<>nil then
+  if Parent=nil then
     ParentFormHandleInitialized;
 end;
 
@@ -1824,6 +1824,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.163  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.162  2004/11/05 22:08:53  mattias
   implemented auto sizing: child to parent sizing
 

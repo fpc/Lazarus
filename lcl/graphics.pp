@@ -454,6 +454,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function HandleAllocated: boolean;
+    function IsDefault: boolean;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
     //Function GetWidth(Value: String): Integer;
@@ -1783,6 +1784,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.160  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.159  2004/11/07 01:10:05  mattias
   fixed double calling destructor for resource cache items
 

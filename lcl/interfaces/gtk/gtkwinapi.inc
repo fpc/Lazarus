@@ -1316,6 +1316,7 @@ var
   function LoadFont: boolean;
   var
     S: string;
+    Desc: TGdkFontCacheDescriptor;
   begin
     S:=FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-'+WeightName
        +'-'+Slant+'-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
@@ -1340,7 +1341,9 @@ var
     Result:=GdiObject^.GDIFontObject<>nil;
     
     if Result then begin
-      FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
+      Desc:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
+      if Desc<>nil then
+        Desc.xlfd:=s;
     end;
     
     {$IFDEF VerboseFonts}
@@ -8726,6 +8729,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.372  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.371  2004/11/08 19:11:55  mattias
   disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
 

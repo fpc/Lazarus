@@ -796,6 +796,30 @@ begin
            +'B'+HexStr(Color^.Blue,4);
 end;
 
+function GetWidgetStyleReport(Widget: PGtkWidget): string;
+var
+  AStyle: PGtkStyle;
+  ARCStyle: PGtkRcStyle;
+begin
+  Result:='';
+  if Widget=nil then exit;
+  AStyle:=gtk_widget_get_style(Widget);
+  if AStyle=nil then begin
+    Result:='nil';
+    exit;
+  end;
+  Result:=Result+'attach_count='+dbgs(AStyle^.attach_count);
+  ARCStyle:=AStyle^.rc_style;
+  if ARCStyle=nil then begin
+    Result:=Result+' rc_style=nil';
+  end else begin
+    Result:=Result+' rc_style=[';
+    Result:=Result+ARCStyle^.font_name+',';
+    Result:=Result+ARCStyle^.fontset_name+',';
+    Result:=Result+']';
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 
@@ -1372,9 +1396,13 @@ begin
     Green := ((AColor      ) and $00FF00) or ((AColor shr 8 ) and $0000FF);
     Blue :=  ((AColor shr 8) and $00FF00) or ((AColor shr 16) and $0000FF);
   end;
+  {$IFDEF DebugGDK}
   BeginGDKErrorTrap;
+  {$ENDIF}
   gdk_colormap_alloc_color(gdk_colormap_get_system, @Result, False, True);
+  {$IFDEF DebugGDK}
   EndGDKErrorTrap;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7154,12 +7182,36 @@ var
   Widget, FixWidget : PGTKWidget;
   NewColor: TGdkColor;
   MainWidget: PGtkWidget;
-  //i: Integer;
+  FontHandle: HFONT;
+  i: Integer;
+  FreeFontName: boolean;
+  FreeFontSetName: boolean;
 
   procedure CreateRCStyle;
   begin
     if RCStyle=nil then
       RCStyle:=gtk_rc_style_new;
+  end;
+  
+  procedure SetRCFont(FontGdiObject: PGdiObject);
+  {$IFDEF GTK1}
+  var
+    FontDesc: TGdkFontCacheDescriptor;
+  {$ENDIF}
+  begin
+    {$IFDEF GTK1}
+    CreateRCStyle;
+    FontDesc:=FontCache.FindADescriptor(FontGdiObject^.GDIFontObject);
+    if (FontDesc<>nil) and (FontDesc.xlfd<>'') then begin
+      RCStyle:=gtk_rc_style_new;
+      g_free(RCStyle^.font_name);
+      RCStyle^.font_name:=g_strdup(PChar(FontDesc.xlfd));
+      g_free(RCStyle^.fontset_name);
+      RCStyle^.fontset_name:=g_strdup(PChar(FontDesc.xlfd));
+
+      //DebugLn('UpdateWidgetStyleOfControl.SetRCFont ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
+    end;
+    {$ENDIF}
   end;
 
 begin
@@ -7179,6 +7231,8 @@ begin
   if not GTK_WIDGET_REALIZED(Widget) then exit;
 
   RCStyle:=nil;
+  FreeFontName:=false;
+  FreeFontSetName:=false;
   try
     // set default background
     if (AWinControl.Color=clNone) then begin
@@ -7230,23 +7284,55 @@ begin
     
     // set font color
     if (AWinControl.Font.Color and SYS_COLOR_BASE)=0 then begin
-      NewColor:=TColorToTGDKColor(AWinControl.Font.Color);
+      //NewColor:=TColorToTGDKColor(AWinControl.Font.Color);
+      NewColor:=AllocGDKColor(AWinControl.Font.Color);
+      //debugln('UpdateWidgetStyleOfControl New Font Color=',dbgs(NewColor.Pixel),' ',dbgs(NewColor.Red),' ',dbgs(NewColor.Green),' ',dbgs(NewColor.Blue));
       CreateRCStyle;
 
       RCStyle^.text[GTK_STATE_NORMAL]:=NewColor;
-      
+      for i:=0 to 4 do begin
+        RCStyle^.text[i]:=NewColor;
+        RCStyle^.fg[i]:=NewColor;
+        RCStyle^.bg[i]:=NewColor;
+        RCStyle^.base[i]:=NewColor;
+        RCStyle^.color_flags[i]:=
+          RCStyle^.color_flags[i] or 15;
+      end;
+
       // Indicate which colors the GtkRcStyle will affect;
       // unflagged colors will follow the theme
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_TEXT;
 
-      //DebugLn('UpdateWidgetStyleOfControl Font=',AWinControl.Font.Name,' ',AWinControl.Font.Size,' ',HexStr(Cardinal(AWinControl.Font.Color),8));
+      DebugLn('UpdateWidgetStyleOfControl Font Color ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Font.Color),8));
+    end;
+
+    // set font (currently only TCustomLabel)
+    if (AWinControl is TCustomLabel)
+    and ((AWinControl.Font.Name<>DefFontData.Name)
+      or (AWinControl.Font.Size<>0)
+      or (AWinControl.Font.Style<>[]))
+    then begin
+       // allocate font
+       FontHandle:=AWinControl.Font.Handle;
+       if FontHandle<>0 then
+         SetRCFont(PGdiObject(FontHandle));
     end;
     
   finally
     if RCStyle<>nil then begin
-      DebugLn('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
+      //DebugLn('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
       gtk_widget_modify_style(Widget,RCStyle);
+
+      if FreeFontName then begin
+        g_free(RCStyle^.font_name);
+        RCStyle^.font_name:=nil;
+      end;
+      if FreeFontSetName then begin
+        g_free(RCStyle^.fontset_name);
+        RCStyle^.fontset_name:=nil;
+      end;
+      //DebugLn('UpdateWidgetStyleOfControl END ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
       gtk_rc_style_unref(RCStyle);
     end;
   end;
@@ -7792,6 +7878,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.319  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.318  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 

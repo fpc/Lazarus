@@ -42,9 +42,11 @@ procedure TWinControl.AdjustSize;
 begin
   If not AutoSizeCanStart then exit;
   if AutoSizeDelayed then begin
+    //debugln('TWinControl.AdjustSize AutoSizeDelayed ',DbgSName(Self));
     Include(FWinControlFlags,wcfAutoSizeNeeded);
     exit;
   end;
+  //debugln('TWinControl.AdjustSize DoAutoSize ',DbgSName(Self));
   DoAutoSize;
 end;
 
@@ -55,6 +57,7 @@ function TWinControl.AutoSizeDelayed: boolean;
 begin
   Result:=(wcfCreatingChildHandles in FWinControlFlags)
           or (inherited AutoSizeDelayed);
+  //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
 end;
 
 {------------------------------------------------------------------------------
@@ -3532,7 +3535,7 @@ begin
 
   if not (csDesigning in ComponentState) then
     EnableWindow(Handle, Enabled);
-  
+
   // Delay the setting of text until it is completely loaded
   if not (csLoading in ComponentState) 
   then TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
@@ -3555,6 +3558,7 @@ begin
     for i := 0 to FWinControls.Count - 1 do
       TWinControl(FWinControls.Items[i]).ParentFormHandleInitialized;
   end;
+  //debugln('TWinControl.ParentFormHandleInitialized A ',DbgSName(Self));
   if wcfAutoSizeNeeded in FWinControlFlags then AdjustSize;
 end;
 
@@ -3565,7 +3569,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.ChildHandlesCreated;
 begin
-
+  Exclude(FWinControlFlags,wcfCreatingChildHandles);
 end;
 
 {------------------------------------------------------------------------------
@@ -4121,6 +4125,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.289  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.288  2004/11/07 20:44:49  micha
   handle "re-entrancy" into handleneeded (via parent); fixes crash upon showing file diff dialog
 

@@ -43,7 +43,7 @@ uses
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   X, XLib, XUtil, //Keyboard handling
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray,
   GraphType, GraphMath, Graphics, GTKWinApiWindow, LResources, Controls, Forms,
@@ -284,6 +284,7 @@ function GetStyleDebugReport(AStyle: PGTKStyle): string;
 function GetRCStyleDebugReport(AStyle: PGtkRcStyle): string;
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 function GdkColorToStr(Color: PGDKColor): string;
+function GetWidgetStyleReport(Widget: PGtkWidget): string;
 
 // gtk resources
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);

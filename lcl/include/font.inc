@@ -623,6 +623,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TFont.IsDefault: boolean;
+ ------------------------------------------------------------------------------}
+function TFont.IsDefault: boolean;
+begin
+  Result:=(CharSet=DEFAULT_CHARSET)
+         and (Color=clWindowText)
+         and (Height=0)
+         and (not IsNameStored)
+         and (Pitch=fpDefault)
+         and (Size=0)
+         and (Style=[]);
+end;
+
+{------------------------------------------------------------------------------
   Method: TFont.SetSize
   Params: Value: the new value
   Returns:  nothing
@@ -950,6 +964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.19  2004/11/07 01:36:18  mattias
   fixed cleaning up unused resource cache item lists
 

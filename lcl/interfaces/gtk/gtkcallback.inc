@@ -172,31 +172,6 @@ end;
   the initialization of a widget.
 
 -------------------------------------------------------------------------------}
-  {$IFDEF CustomFonts}
-  procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
-  // MG: design study for changing font in gtkwidgets
-  var
-    RCStyle: PGtkRcStyle;
-  begin
-    {$IfDef GTK1}
-    {$IFDEF NoStyle}
-    exit;
-    {$ENDIF}
-    if not (AWinControl is TCustomButton) then exit;
-    DebugLn('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
-    RCStyle:=gtk_rc_style_new;
-    g_free(RCStyle^.font_name);
-    RCStyle^.font_name:=g_strdup('-urw-chancery l-medium-i-normal-*-*-140-*-*-p-*-iso8859-2');
-
-    gtk_widget_modify_style(AWidget,RCStyle);
-
-    g_free(RCStyle^.font_name);
-    RCStyle^.font_name:=nil;
-    gtk_rc_style_unref(RCStyle);
-    {$EndIf}
-  end;
-  {$ENDIF CustomFonts}
-
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   WinWidgetInfo: PWinWidgetInfo;
@@ -249,11 +224,9 @@ begin
       end;
 
       if TheWinControl<>nil then begin
+        TheWinControl.InvalidatePreferredSize;
         SetCursor(TheWinControl, crDefault);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
-        {$IFDEF CustomFonts}
-        ModifyWidgetStyle(TheWinControl,Widget);
-        {$ENDIF}
         UpdateWidgetStyleOfControl(TheWinControl);
         
         if TheWinControl is TCustomPage then
@@ -2909,6 +2882,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.251  2004/11/10 18:23:56  mattias
+  impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
+
   Revision 1.250  2004/11/03 14:18:36  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

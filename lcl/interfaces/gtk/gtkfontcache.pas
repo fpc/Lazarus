@@ -63,6 +63,7 @@ type
     function FindGDKFont(TheGdkFont: PGDKFont): TGdkFontCacheItem;
     function FindGDKFontDesc(const LogFont: TLogFont;
                            const LongFontName: string): TGdkFontCacheDescriptor;
+    function FindADescriptor(TheGdkFont: PGDKFont): TGdkFontCacheDescriptor;
     function Add(TheGdkFont: PGDKFont; const LogFont: TLogFont;
                  const LongFontName: string): TGdkFontCacheDescriptor;
     procedure Reference(TheGdkFont: PGDKFont);
@@ -187,6 +188,18 @@ begin
     Result:=TGdkFontCacheDescriptor(ANode.Data)
   else
     Result:=nil;
+end;
+
+function TGdkFontCache.FindADescriptor(TheGdkFont: PGDKFont
+  ): TGdkFontCacheDescriptor;
+var
+  Item: TGdkFontCacheItem;
+begin
+  Item:=FindGDKFont(TheGdkFont);
+  if Item=nil then
+    Result:=nil
+  else
+    Result:=TGdkFontCacheDescriptor(Item.FirstDescriptor);
 end;
 
 function TGdkFontCache.Add(TheGdkFont: PGDKFont; const LogFont: TLogFont;
