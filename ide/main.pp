@@ -813,7 +813,7 @@ begin
   SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
   SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked);
   NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked);
-  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked);
+  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked);
 
 // new row
   ButtonLeft := 1;
@@ -4759,6 +4759,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.157  2001/11/22 10:37:23  lazarus
+  MG: moved lazres, added images/README
+
   Revision 1.156  2001/11/21 19:32:31  lazarus
   TComboBox can now be moved in FormEditor
   Shane
