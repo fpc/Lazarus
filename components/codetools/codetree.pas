@@ -134,7 +134,7 @@ const
       ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
-                         ctnCaseStatement,ctnCaseVariable];
+                         ctnCaseBlock,ctnCaseStatement,ctnCaseVariable];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =

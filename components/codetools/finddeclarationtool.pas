@@ -4308,6 +4308,7 @@ begin
   case Result.Desc of
   xtCompilerFunc:
     begin
+      if not (Params.ContextNode.Desc in AllPascalStatements) then exit;
       MoveCursorToCleanPos(StartPos);
       ReadNextAtom;
       ReadNextAtom;
@@ -4598,7 +4599,8 @@ function TFindDeclarationTool.CheckSrcIdentifier(
   const FoundContext: TFindContext): TIdentifierFoundResult;
 // this is a TOnIdentifierFound function
 //   if identifier found is a proc then it searches for the best overloaded proc
-var FirstParameterNode: TCodeTreeNode;
+var
+  FirstParameterNode, StartContextNode: TCodeTreeNode;
   ParamCompatibility: TTypeCompatibility;
   OldInput: TFindDeclarationInput;
   CurCompatibilityList: TTypeCompatibilityList;
@@ -4650,19 +4652,21 @@ begin
       ' Creating Input Expression List ...'
       );
       {$ENDIF}
-      Params.Save(OldInput);
-      try
+      StartContextNode:=Params.IdentifierTool.FindDeepestNodeAtPos(
+        CurPos.StartPos,true);
+      if StartContextNode.Desc in AllPascalStatements then begin
+        Params.Save(OldInput);
         Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-        Params.Flags:=fdfDefaultForExpressions;
-        Params.ContextNode:=Params.IdentifierTool.FindDeepestNodeAtPos(
-          CurPos.StartPos,true);
+        Params.Flags:=fdfDefaultForExpressions+Params.Flags*fdfGlobals;
+        Params.ContextNode:=StartContextNode;
         Params.OnIdentifierFound:=@Self.CheckSrcIdentifier;
         Params.IdentifierTool.ReadNextAtom;
         Params.FoundProc^.ExprInputList:=
                             Params.IdentifierTool.CreateParamExprList(
                                     Params.IdentifierTool.CurPos.EndPos,Params);
-      finally
         Params.Load(OldInput);
+      end else begin
+        Params.FoundProc^.ExprInputList:=TExprTypeList.Create;
       end;
     end;
 
@@ -4687,16 +4691,13 @@ begin
         Params.FoundProc^.Context.Tool.GetFirstParameterNode(
               Params.FoundProc^.Context.Node);
       Params.Save(OldInput);
-      try
-        ParamCompatibility:=
-          Params.FoundProc^.Context.Tool.IsParamListCompatible(
-            FirstParameterNode,
-            Params.FoundProc^.ExprInputList,
-            fdfIgnoreMissingParams in Params.Flags,
-            Params,Params.FoundProc^.ParamCompatibilityList);
-      finally
-        Params.Load(OldInput);
-      end;
+      ParamCompatibility:=
+        Params.FoundProc^.Context.Tool.IsParamListCompatible(
+          FirstParameterNode,
+          Params.FoundProc^.ExprInputList,
+          fdfIgnoreMissingParams in Params.Flags,
+          Params,Params.FoundProc^.ParamCompatibilityList);
+      Params.Load(OldInput);
       Params.FoundProc^.ProcCompatibility:=ParamCompatibility;
       Params.FoundProc^.CacheValid:=true;
       {$IFDEF ShowFoundIdentifier}
@@ -4731,16 +4732,13 @@ begin
       FirstParameterNode:=
         FoundContext.Tool.GetFirstParameterNode(FoundContext.Node);
       Params.Save(OldInput);
-      try
-        ParamCompatibility:=
-          FoundContext.Tool.IsParamListCompatible(
-            FirstParameterNode,
-            Params.FoundProc^.ExprInputList,
-            fdfIgnoreMissingParams in Params.Flags,
-            Params,CurCompatibilityList);
-      finally
-        Params.Load(OldInput);
-      end;
+      ParamCompatibility:=
+        FoundContext.Tool.IsParamListCompatible(
+          FirstParameterNode,
+          Params.FoundProc^.ExprInputList,
+          fdfIgnoreMissingParams in Params.Flags,
+          Params,CurCompatibilityList);
+      Params.Load(OldInput);
       {$IFDEF ShowFoundIdentifier}
       writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
       ' Indent=',GetIdentifier(Params.Identifier),
