@@ -789,6 +789,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
+
+  Returns the current ItemIndex of a TComboBox
+ ------------------------------------------------------------------------------}
+function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
+begin
+  Result:=ComboBox.Items.IndexOf(ComboBox.Text);
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
            Sender     - sending control
@@ -1401,13 +1411,19 @@ begin
         end 
         else begin
           case TControl(Sender).fCompStyle of
-            csComboBox : Widget:= PGtkCombo(Handle)^.list;
-            csListBox : Widget:= GetCoreChildWidget(PGtkWidget(Handle));
+            csComboBox :
+              Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
+
+            csListBox :
+              begin
+                Widget:= GetCoreChildWidget(PGtkWidget(Handle));
+                Data:= TGtkListStringList.Create(PGtkList(Widget));
+                Result:= Integer(Data);
+              end;
+              
           else 
             raise Exception.Create('Message LM_GETITEMS - Not implemented');
           end;
-          Data:= TGtkListStringList.Create(PGtkList(Widget));
-          Result:= Integer(Data);      
         end;
       end;
 
@@ -1420,7 +1436,10 @@ begin
       LM_GETITEMINDEX :
       begin
         case TControl(Sender).fCompStyle of
-           csListBox: 
+           csComboBox:
+             Result:=GetComboBoxItemIndex(TComboBox(Sender));
+
+           csListBox:
              begin
                if Handle<>0 then begin
                  if TListBox(Sender).MultiSelect then 
@@ -1440,6 +1459,7 @@ begin
                 end else
                   Result:=-1;
              end;
+             
            csCListBox:
              begin
                GList:= 
@@ -1448,12 +1468,14 @@ begin
                   then Result := -1
                   else Result := integer(GList^.Data);
              end;
+             
            csNotebook:
              begin
                TLMNotebookEvent(Data^).Page := 
                  gtk_notebook_get_current_page(PGtkNotebook(Handle));
                UpdateNoteBookClientWidget(Sender);
              end;
+             
         end;
       end;
           
@@ -1531,9 +1553,9 @@ begin
         and (TControl(Sender).fCompStyle = csComboBox) then
         begin
           gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
-          gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
-          gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry))
-                                    + Integer(Data));
+            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
+            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry))
+                                      + Integer(Data));
         end;
       end;  
  
@@ -1755,8 +1777,10 @@ begin
   Result := True;
   case Sender.fCompStyle of
    csComboBox:
-     Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
+     begin
+       Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
                                     TWinControl(Sender).Handle)^.entry)));
+     end;
      
    csEdit    :
      Text := StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
@@ -1991,8 +2015,9 @@ begin
   csPage:
     SetNotebookPageTabLabel;
     
-  csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
-  
+  csComboBox    :
+    SetComboBoxText(PGtkCombo(TComboBox(Sender).Handle), PLabel);
+
   else
     Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
   end;
@@ -2611,10 +2636,18 @@ begin
   then
     DestroyCaret(Handle);
     
-  // update common dialog
-  if Sender is TCommonDialog then
-    DestroyCommonDialogAddOns(TCommonDialog(Sender));
+  if Sender is TControl then begin
+    case TControl(Sender).fCompStyle of
+    csComboBox:
+      SetComboBoxText(PGtkCombo(Handle),nil);
+      
+    end;
     
+  end
+  else if Sender is TCommonDialog then begin
+    DestroyCommonDialogAddOns(TCommonDialog(Sender));
+  end;
+
 
   // destroy the widget
   DestroyWidget(Widget);
@@ -3234,15 +3267,35 @@ end;
 -------------------------------------------------------------------------------}
 function CreateComboBox(ComboBox: TComboBox): Pointer;
 var
- Caption: string;
+  ComboWidget: PGtkCombo;
+  ItemList: TGtkListStringList;
 begin
   Result:=gtk_combo_new();
-  if ComboBox.Caption<>'' then begin
-    Caption:=ComboBox.Caption;
-    gtk_entry_set_text(PGtkEntry(PGtkCombo(Result)^.entry), PChar(Caption));
-  end;
+  ComboWidget:=PGTKCombo(Result);
   SetMainWidget(Result,PGtkCombo(Result)^.entry);
   SetMainWidget(Result,PGtkCombo(Result)^.button);
+  if csDesigning in Combobox.ComponentState then begin
+    // prevent a combobox from showing its subwindow
+    gtk_combo_disable_activate(ComboWidget);
+  end;
+  // Items
+  ItemList:=TGtkListStringList.Create(PGtkList(ComboWidget^.List));
+  gtk_object_set_data(PGtkObject(ComboWidget),'LCLList',ItemList);
+  ItemList.Assign(ComboBox.Items);
+  // ItemIndex
+  if ComboBox.ItemIndex>=0 then
+    gtk_list_select_item(PGTKLIST(ComboWidget^.list),ComboBox.ItemIndex);
+  // SelStart
+  gtk_editable_set_position(PGtkEditable(
+                              ComboWidget^.entry), ComboBox.SelStart-1);
+  // SelLength
+  if ComboBox.SelLength>=0 then
+    gtk_editable_select_region(PGtkEditable(ComboWidget^.entry),
+      ComboBox.SelStart-1,ComboBox.SelStart-1+ComboBox.SelLength);
+  // MaxLength
+  gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),ComboBox.MaxLength);
+  // Text
+  SetComboBoxText(ComboWidget,PChar(ComboBox.Text));
 end;
 
 {------------------------------------------------------------------------------
@@ -5437,6 +5490,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.184  2002/08/29 00:07:02  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.183  2002/08/28 09:40:49  lazarus
   MG: reduced paint messages and DC getting/releasing
 
