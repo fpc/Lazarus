@@ -89,6 +89,7 @@ type
     procedure SetVisible(Value: Boolean);
     procedure MenuChanged(Rebuild : Boolean);
     procedure SetParentComponent(Value : TComponent); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     FCompStyle : LongInt;
     procedure Add(Item: TMenuItem);
@@ -98,6 +99,7 @@ type
     function GetParentMenu: TMenu;
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
+    function HasParent : Boolean; override;
     function IndexOf(Item: TMenuItem): Integer;
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure Remove(Item: TMenuItem);
@@ -213,6 +215,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2002/05/30 21:33:10  lazarus
+  + added / fixed streaming functions for TMenu & TMenuItem, stoppok
+
   Revision 1.12  2002/05/19 08:28:50  lazarus
   + added helper functions to enable streaming of TMenu / TMenuItem
     stoppok

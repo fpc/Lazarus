@@ -39,7 +39,10 @@ end;
  ------------------------------------------------------------------------------}
 constructor TMenuItem.Create(AOwner: TComponent);
 begin
+  if not assigned (aOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
+  
   Inherited Create(AOwner);
+
   FCompStyle := csMenuItem;
   FHandle := 0;
   FItems := nil;
@@ -130,6 +133,25 @@ begin
   Assert(False, 'Trace:Menu received a message - CLICKED');
   if Assigned (FOnClick) then
     FOnClick(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TMenuItem.GetChildren
+  Params:   Proc - proc to be called for each child
+  	    Root - root component
+  Returns:  nothing
+
+  For each item call "proc"
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  i : Integer;
+Begin
+   if not assigned (FItems) then exit;
+
+   for i := 0 to FItems.Count - 1 
+      do if TComponent (FItems[i]).Owner = Root 
+       	    then Proc(TComponent (FItems [i]));
 end;
 
 {------------------------------------------------------------------------------
@@ -227,6 +249,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TMenuItem.HasParent
+  Params:  
+  Returns: True - the item has a parent responsible for streaming
+
+
+ ------------------------------------------------------------------------------}
+function TMenuItem.HasParent : Boolean;
+begin
+   Result := assigned (FParent);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.Insert
   Params:  Index: Location of the menuitem to insert
            Item: Menu item to insert
@@ -277,6 +311,12 @@ end;
 Procedure TMenuItem.MenuChanged(Rebuild : Boolean);
 Begin
   //Use send message to re-create the menu if REBUILD is true.
+//send a message to inform the interface that we need to destroy and recreate this control
+  if not HandleAllocated then Exit;
+  if FHandle <> 0 then
+  Begin
+//     InterfaceObject.IntSendMessage3(LM_RECREATEWND, Self, nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -376,13 +416,16 @@ begin
 
    if assigned (FParent) and (FParent <> Value) 
       then TMenuItem (FParent).Remove (self);
-  
-   if (Value is TMenu) 
-      then TMenu (value).Items.Add (self)
-   else if (Value is TMenuItem) 
-      then TMenuItem (value).Add (self)
-   else
-      raise Exception.Create ('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
+
+   if assigned (value) then
+   begin
+      if (Value is TMenu) 
+         then TMenu (value).Items.Add (self)
+      else if (Value is TMenuItem) 
+         then TMenuItem (value).Add (self)
+      else
+         raise Exception.Create ('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
+   end;
 end;
 
 
@@ -449,6 +492,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/05/30 21:33:10  lazarus
+  + added / fixed streaming functions for TMenu & TMenuItem, stoppok
+
   Revision 1.13  2002/05/19 08:27:43  lazarus
   + added helper functions to enabled streaming of TMenu /TMenuItem
     stoppok
@@ -516,6 +562,9 @@ end;
 
 
   $Log$
+  Revision 1.14  2002/05/30 21:33:10  lazarus
+  + added / fixed streaming functions for TMenu & TMenuItem, stoppok
+
   Revision 1.13  2002/05/19 08:27:43  lazarus
   + added helper functions to enabled streaming of TMenu /TMenuItem
     stoppok

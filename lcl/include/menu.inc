@@ -94,8 +94,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TMenu.GetChildren
-  Params:   proc
-  	    root
+  Params:   proc - procedure which has to be called for every item
+  	    root - root component
   Returns:  nothing
 
   Helper function for streaming.
@@ -105,7 +105,8 @@ var
    i : integer;	
 begin
    for i := 0 to FItems.Count - 1 
-      do Proc (FItems[i]); 
+      do if FItems[i].Owner = Root 
+       	    then Proc(TComponent (FItems [i]));
 end;
 
 {------------------------------------------------------------------------------
@@ -150,6 +151,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/05/30 21:33:10  lazarus
+  + added / fixed streaming functions for TMenu & TMenuItem, stoppok
+
   Revision 1.9  2002/05/19 08:27:43  lazarus
   + added helper functions to enabled streaming of TMenu /TMenuItem
     stoppok
