@@ -41,6 +41,7 @@ type
   public
     destructor Destroy; override;
     function Count: integer;
+    function NextDownIndex(var Index: integer): boolean;
     function IndexOf(AMethod: TMethod): integer;
     procedure Delete(Index: integer);
     procedure Remove(AMethod: TMethod);
@@ -300,17 +301,34 @@ end;
 
 function TMethodList.Count: integer;
 begin
-  Result:=FCount;
+  if Self<>nil then
+    Result:=FCount
+  else
+    Result:=0;
+end;
+
+function TMethodList.NextDownIndex(var Index: integer): boolean;
+begin
+  if Self<>nil then begin
+    dec(Index);
+    if (Index>=FCount) then
+      Index:=FCount-1;
+  end else
+    Index:=-1;
+  Result:=(Index>=0);
 end;
 
 function TMethodList.IndexOf(AMethod: TMethod): integer;
 begin
-  Result:=FCount-1;
-  while Result>=0 do begin
-    if (FItems[Result].Code=AMethod.Code)
-    and (FItems[Result].Data=AMethod.Data) then exit;
-    dec(Result);
-  end;
+  if Self<>nil then begin
+    Result:=FCount-1;
+    while Result>=0 do begin
+      if (FItems[Result].Code=AMethod.Code)
+      and (FItems[Result].Data=AMethod.Data) then exit;
+      dec(Result);
+    end;
+  end else
+    Result:=-1;
 end;
 
 procedure TMethodList.Delete(Index: integer);
@@ -325,8 +343,10 @@ procedure TMethodList.Remove(AMethod: TMethod);
 var
   i: integer;
 begin
-  i:=IndexOf(AMethod);
-  if i>=0 then Delete(i);
+  if Self<>nil then begin
+    i:=IndexOf(AMethod);
+    if i>=0 then Delete(i);
+  end;
 end;
 
 procedure TMethodList.Add(AMethod: TMethod);
