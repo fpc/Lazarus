@@ -141,14 +141,20 @@ End;
 Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
 var
   Handle: HWND;
+  PrevWndProc: pointer;
 begin
   Handle := ObjectToHwnd(Sender);
   case TLMessage(Message).Msg of
   
   LM_PAINT:
-    CallWindowProc(GetProp(Handle, 'DefWndProc'), Handle, WM_PAINT,
-                          TLMessage(Message).WParam, TLMessage(Message).LParam);
-
+    begin
+      PrevWndProc := GetProp(Handle, 'DefWndProc');
+      if PrevWndProc = nil then
+        DefWindowProc(Handle, WM_PAINT, TLMessage(Message).WParam, TLMessage(Message).LParam)
+      else
+        CallWindowProc(PrevWndProc, Handle, WM_PAINT,
+          TLMessage(Message).WParam, TLMessage(Message).LParam);
+    end;
   end;
 end;
 
@@ -2385,6 +2391,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/07/29 22:32:48  marc
+  * Applied patch from Vincent Snijders
+
   Revision 1.47  2003/07/29 07:38:09  marc
   + Added GetCursorPos
 
