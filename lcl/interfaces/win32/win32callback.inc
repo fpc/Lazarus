@@ -331,13 +331,14 @@ Begin
     End;
     WM_MOVE:
     Begin
+      Windows.GetWindowRect(Window, @R);
       With TLMMove(LMessage) Do
       Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := 0;
-        XPos := LoWord(LParam);
-        YPos := HiWord(LParam);
+        XPos := R.Left;
+        YPos := R.Top;
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -425,12 +426,13 @@ Begin
     End;
     WM_SIZE:
     Begin
+      Windows.GetClientRect(Window, @R);
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
         SizeType := WParam;
-        Width := LoWord(LParam);
-        Height := HiWord(LParam);
+        Width := R.Right - R.Left;
+        Height := R.Bottom - R.Top;
       End;
     End;
     WM_SYSKEYDOWN:
@@ -475,10 +477,10 @@ Begin
         Unused := WParam;
         WindowPos := PWindowPos(LParam);
       End;
-      GetClientRect(Window, R);
-      SendMessage(Window, WM_MOVE, 0, MakeLParam(PWindowPos(LParam)^.x, PWindowPos(LParam)^.y));
+//      GetClientRect(Window, R);
+//      SendMessage(Window, WM_MOVE, 0, MakeLParam(PWindowPos(LParam)^.x, PWindowPos(LParam)^.y));
 //      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
-      WinProcess:=false;
+//      WinProcess:=false;
     End;
   End;
 
@@ -545,6 +547,9 @@ end;
 
 {
   $Log$
+  Revision 1.29  2003/06/28 06:33:11  mattias
+  fixed control resizing from Karl Brandt
+
   Revision 1.28  2003/06/27 21:41:14  mattias
   fixed formresize from Micha
 
