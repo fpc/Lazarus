@@ -7233,12 +7233,14 @@ begin
 
   MainWidget:=PGtkWidget(AWinControl.Handle);
   FixWidget:=GetFixedWidget(MainWidget);
-  If FixWidget <> MainWidget then
+  If (FixWidget <> nil) and (FixWidget<>MainWidget) then
     Widget := FixWidget
-  else
+  else begin
     Widget := MainWidget;
+  end;
 
   if not GTK_WIDGET_REALIZED(Widget) then exit;
+  //debugln('UpdateWidgetStyleOfControl ',GetWidgetDebugReport(Widget));
 
   RCStyle:=nil;
   FreeFontName:=false;
@@ -7247,7 +7249,7 @@ begin
     // set default background
     if (AWinControl.Color=clNone) then begin
       // clNone => remove default background
-      if (FixWidget^.Window<>nil) then begin
+      if (FixWidget<>nil) and (FixWidget^.Window<>nil) then begin
         gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
       end;
     end
@@ -7271,8 +7273,7 @@ begin
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
 
-      //DebugLn('UpdateWidgetStyleOfControl Color=',HexStr(Cardinal(AWinControl.Color),8));
-
+      //DebugLn('UpdateWidgetStyleOfControl ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Color),8));
     end;
     
     {if (AWinControl is TCustomForm) then begin
@@ -7889,6 +7890,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.325  2004/12/31 11:59:47  mattias
+  published TEdit.Color - only useful under windows, gtk1 ignores it
+
   Revision 1.324  2004/12/01 16:17:17  mattias
   updated fpdoc sceletons for lcl and gtk intf
 

@@ -669,6 +669,7 @@ type
     property Anchors;
     property AutoSize;
     property BorderSpacing;
+    property Color;
     property Constraints;
     property CharCase;
     property DragMode;
@@ -1211,6 +1212,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.176  2004/12/31 11:59:47  mattias
+  published TEdit.Color - only useful under windows, gtk1 ignores it
+
   Revision 1.175  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 
