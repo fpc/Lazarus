@@ -2715,7 +2715,8 @@ begin
     and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
       SaveDialog.InitialDir:=Project1.ProjectDirectory;
     // show save dialog
-    if not SaveDialog.Execute then begin
+    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
+    then begin
       // user cancels
       Result:=mrCancel;
       exit;
@@ -7738,6 +7739,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.467  2003/02/23 09:03:15  mattias
+  fixed save as with no filename
+
   Revision 1.466  2003/02/21 22:43:54  mattias
   skipped messages are now shown to see progress
 
