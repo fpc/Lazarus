@@ -3451,7 +3451,7 @@ begin
         inherited Font := fFontDummy;
       end;
   end;
-  writeln('  TCustomSynEdit.SetFont E "',Font.Name,'" Height=',Font.Height,' AveCW=',AveCW,' MaxCW=',MaxCW);
+  writeln('  TCustomSynEdit.SetFont E "',Font.Name,'" Height=',Font.Height,' AveCW=',AveCW,' MaxCW=',MaxCW,' CharWidth=',CharWidth);
   if fGutter.ShowLineNumbers then GutterChanged(Self);
 end;
 
