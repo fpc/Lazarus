@@ -713,17 +713,6 @@ type
   end;
 
 
-{ TListColumnsPropertyEditor
-  PropertyEditor editor for the TListColumns properties.
-  Brings up the dialog for entering text. }
-
-  TListColumnsPropertyEditor = class(TClassPropertyEditor)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-
-
 { TCursorPropertyEditor
   PropertyEditor editor for the TCursor properties.
   Displays cursor as constant name if exists, otherwise an integer. }
@@ -776,7 +765,13 @@ type
 
 { TListPropertyEditor
   A property editor with dynamic sub properties representing a list of objects.
-  UNDER CONSTRUCTION by Mattias}
+  The items are shown imbedded in the OI and if the user presses the Edit button
+  as extra window to select items, which are then shown in the OI.
+  UNDER CONSTRUCTION by Mattias
+  The problem with all properties is, that we don't get notified, when something
+  changes. In this case, the list can change, which means the property editors
+  for the list elements must be deleted or created.
+  }
 
   TListPropertyEditor = class(TPropertyEditor)
   private
@@ -829,7 +824,7 @@ type
   end;
 
 { TCollectionPropertyEditor
-  Default property editor for all TCollections
+  Default property editor for all TCollections, imbedded in the OI
   UNDER CONSTRUCTION by Mattias}
 
   TCollectionPropertyEditor = class(TListPropertyEditor)
@@ -853,6 +848,17 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
+  
+{ TListColumnsPropertyEditor
+  PropertyEditor editor for the TListColumns properties.
+  Brings up the dialog for entering text. }
+
+  TListColumnsPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
 
 //==============================================================================
 // Delphi Compatible Property Editor Classnames
@@ -1061,6 +1067,8 @@ type
   TPropHookDeleteComponent = procedure(var AComponent: TComponent) of object;
   TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
                                              ) of object;
+  TPropHookSetSelection = procedure(const ASelection: TPersistentSelectionList
+                                             ) of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
@@ -1094,6 +1102,7 @@ type
     htComponentDeleting,
     htDeleteComponent,
     htGetSelectedComponents,
+    htSetSelectedComponents,
     // persistent objects
     htGetObject,
     htGetObjectName,
@@ -1147,6 +1156,8 @@ type
     procedure ComponentDeleting(AComponent: TComponent);
     procedure DeleteComponent(var AComponent: TComponent);
     procedure GetSelection(const ASelection: TPersistentSelectionList);
+    procedure SetSelection(const ASelection: TPersistentSelectionList);
+    procedure SelectOnlyThis(const APersistent: TPersistent);
     // persistent objects
     function GetObject(const Name: ShortString):TPersistent;
     function GetObjectName(Instance: TPersistent):ShortString;
@@ -1232,6 +1243,10 @@ type
                                    const OnGetSelection: TPropHookGetSelection);
     procedure RemoveHandlerGetSelection(
                                    const OnGetSelection: TPropHookGetSelection);
+    procedure AddHandlerSetSelection(
+                                   const OnSetSelection: TPropHookSetSelection);
+    procedure RemoveHandlerSetSelection(
+                                   const OnSetSelection: TPropHookSetSelection);
     // persistent object events
     procedure AddHandlerGetObject(const OnGetObject: TPropHookGetObject);
     procedure RemoveHandlerGetObject(const OnGetObject: TPropHookGetObject);
@@ -3099,6 +3114,7 @@ end;
 
 function TListPropertyEditor.GetElementPropEditor(Index: integer
   ): TListElementPropertyEditor;
+// called by GetProperties to get the element property editors
 begin
   if not IsSaving then
     Result:=TListElementPropertyEditor(SavedPropertyEditors[Index])
@@ -3134,7 +3150,7 @@ function TListPropertyEditor.ReadElementCount: integer;
 var
   TheList: TList;
 begin
-  TheList:=TList(GetOrdValue);
+  TheList:=TList(GetObjectValue);
   if (TheList<>nil) and (TheList is TList) then
     Result:=TheList.Count
   else
@@ -3145,10 +3161,11 @@ function TListPropertyEditor.ReadElement(Index: integer): TPersistent;
 var
   obj: TObject;
 begin
-  obj := TObject(TList(GetOrdValue).Items[Index]);
-  if obj is TPersistent
-  then Result:=TPersistent(obj)
-  else raise EInvalidOperation.CreateFmt('List element %d is not a TPersistent decendant', [Index]);
+  obj := TObject(TList(GetObjectValue).Items[Index]);
+  if obj is TPersistent then
+    Result:=TPersistent(obj)
+  else
+    raise EInvalidOperation.CreateFmt('List element %d is not a TPersistent decendant', [Index]);
 end;
 
 function TListPropertyEditor.CreateElementPropEditor(Index: integer
@@ -3202,7 +3219,7 @@ end;
 function TListPropertyEditor.GetElementName(Element: TListElementPropertyEditor
   ): shortstring;
 begin
-  Result:='Item '+IntToStr(Element.TheIndex);
+
 end;
 
 procedure TListPropertyEditor.GetElementProperties(
@@ -3253,7 +3270,7 @@ end;
 
 function TListPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:= [paSubProperties, paDynamicSubProps, paReadOnly];
+  Result:= [paSubProperties, paDynamicSubProps, paReadOnly, paDialog];
 end;
 
 procedure TListPropertyEditor.GetProperties(Proc: TGetPropEditProc);
@@ -3287,30 +3304,30 @@ end;
 { TCollectionPropertyEditor }
 
 Type
-  TCollectionPropertyEditorForm = Class(TForm)
+  TCollectionPropertyEditorForm = class(TForm)
   protected
-    CollectionList : TLISTBOX;
-    ButtonPanel: TPANEL;
+    CollectionList : TListBox;
+    ButtonPanel: TPanel;
     AddButton: TSpeedButton;
     DeleteButton: TSpeedButton;
-    procedure ListCLICK(Sender: TObject);
-    procedure AddCLICK(Sender: TObject);
-    procedure DeleteCLICK(Sender: TObject);
+    procedure ListClick(Sender: TObject);
+    procedure AddClick(Sender: TObject);
+    procedure DeleteClick(Sender: TObject);
     procedure UpdateCaption;
   public
     Collection: TCollection;
     PersistentName: string;
     PropertyName: string;
     Procedure PropagateList;
-    Constructor Create(AOwner: TComponent); Override;
+    Constructor Create(TheOwner: TComponent); Override;
   end;
 
 const
   CollectionForm : TCollectionPropertyEditorForm = nil;
 
-Constructor TCollectionPropertyEditorForm.Create(AOwner : TComponent);
+Constructor TCollectionPropertyEditorForm.Create(TheOwner : TComponent);
 begin
-  Inherited Create(AOwner);
+  Inherited Create(TheOwner);
 
   Position := poDefault;
 
@@ -3320,7 +3337,7 @@ begin
   ButtonPanel := TPanel.Create(Self);
   With ButtonPanel do begin
     Parent := Self;
-    Align:= altop;
+    Align:= alTop;
     BevelOuter:= bvRaised;
     BevelInner:= bvLowered;
     BorderWidth:= 2;
@@ -3346,74 +3363,93 @@ begin
   CollectionList := TListBox.Create(Self);
   With CollectionList do begin
     Parent:= Self;
-    Align:= alclient;
+    Align:= alClient;
 //  MultiSelect:= true;
     OnClick:= @ListClick;
   end;
 end;
 
 procedure TCollectionPropertyEditorForm.UpdateCaption;
+var
+  NewCaption: String;
 begin
   //I think to match Delphi this should be formated like
   //"Editing ComponentName.PropertyName[Index]"
-  Caption:= 'Editing ' + PersistentName + '.' + PropertyName;
+  NewCaption:= 'Editing ' + PersistentName + '.' + PropertyName;
   If CollectionList.ItemIndex > -1 then
-    Caption := Caption + '[' +
+    NewCaption := NewCaption + '[' +
       IntToStr(CollectionList.ItemIndex) + ']';
+  Caption:=NewCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.PropagateList;
 var
   I : Longint;
+  CurItem: String;
 begin
-  CollectionList.Items.Clear;
-  for I:= 0 to Collection.Count - 1 do
-    CollectionList.Items.Add(Collection.Items[I].DisplayName);
+  CollectionList.Items.BeginUpdate;
+  // add or replace list items
+  for I:= 0 to Collection.Count - 1 do begin
+    CurItem:=Collection.Items[I].DisplayName;
+    if i>=CollectionList.Items.Count then
+      CollectionList.Items.Add(CurItem)
+    else
+      CollectionList.Items[I]:=CurItem;
+  end;
+  // delete unneeded list items
+  while CollectionList.Items.Count>Collection.Count do begin
+    CollectionList.Items.Delete(CollectionList.Items.Count-1);
+  end;
+  CollectionList.Items.EndUpdate;
+
   DeleteButton.Enabled:= CollectionList.ItemIndex > -1;
   UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
 //var i : integer;
+var
+  NewSelection: TPersistentSelectionList;
+  i: Integer;
 begin
   DeleteButton.Enabled := CollectionList.ItemIndex > -1;
   UpdateCaption;
-  //XXX - Select Collection.Items[CollectionList.ItemIndex]
-  //in OI - once it supports TPersistent
-{  if CollectionList.SelCount > 0 then begin
-    TheControlSelection.BeginUpdate;
-    TheControlSelection.Clear;
-    for i:= 0 to CollectionList.Items.Count - 1 do begin
+  // select in OI
+  NewSelection:=TPersistentSelectionList.Create;
+  try
+    for i:=0 to CollectionList.Items.Count-1 do
       if CollectionList.Selected[i] then
-        TheControlSelection.Add(Collection.Items[i]);
-    end;
-  end;}
+        NewSelection.Add(Collection.Items[i]);
+    GlobalDesignHook.SetSelection(NewSelection);
+  finally
+    NewSelection.Free;
+  end;
 end;
 
-procedure TCollectionPropertyEditorForm.AddCLICK(Sender: TObject);
-var
-  I : Integer;
+procedure TCollectionPropertyEditorForm.AddClick(Sender: TObject);
 begin
   Collection.Add;
-  I := CollectionList.ItemIndex;
   PropagateList;
-  If I > -1 then
-    CollectionList.ItemIndex := I;
-  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
-  UpdateCaption;
 end;
 
-procedure TCollectionPropertyEditorForm.DeleteCLICK(Sender: TObject);
+procedure TCollectionPropertyEditorForm.DeleteClick(Sender: TObject);
 var
   I : Integer;
 begin
-  Collection.Items[CollectionList.ItemIndex].Free;
   I := CollectionList.ItemIndex;
-  PropagateList;
-  If I >= CollectionList.Items.Count then
-    I := I - 1;
-  If I > -1 then
-    CollectionList.ItemIndex := I;
+  if (i>=0) and (i<Collection.Count) then begin
+    if MessageDlg('Confirm delete',
+      'Delete item "'+Collection.Items[i].DisplayName+'"?',
+      mtConfirmation,[mbYes,mbNo],0) = mrYes then
+    begin
+      Collection.Items[i].Free;
+      PropagateList;
+      If I >= CollectionList.Items.Count then
+        I := I - 1;
+      If I > -1 then
+        CollectionList.ItemIndex := I;
+    end;
+  end;
   DeleteButton.Enabled := CollectionList.ItemIndex > -1;
 end;
 
@@ -3423,7 +3459,7 @@ function TCollectionPropertyEditor.ReadElement(Index: integer): TPersistent;
 var
   Collection: TCollection;
 begin
-  Collection:=TCollection(GetOrdValue);
+  Collection:=TCollection(GetObjectValue);
   Result:=Collection.Items[Index];
 end;
 
@@ -3467,7 +3503,7 @@ function TCollectionPropertyEditor.ReadElementCount: integer;
 var
   Collection: TCollection;
 begin
-  Collection:=TCollection(GetOrdValue);
+  Collection:=TCollection(GetObjectValue);
   if (Collection<>nil) and (Collection is TCollection) then
     Result:=Collection.Count
   else
@@ -3484,12 +3520,14 @@ begin
   If Assigned(CollectionForm) then
     CollectionForm.Free;
   CollectionForm := TCollectionPropertyEditorForm.Create(Application);
-  CollectionForm.Collection := TCollection(GetOrdValue);
-  CollectionForm.PropertyName := GetPropInfo^.Name;
-  CollectionForm.PersistentName := '';
-  CollectionForm.Caption := 'Editing ' + GetPropInfo^.Name;
-  CollectionForm.PropagateList;
-  CollectionForm.Show;
+  with CollectionForm do begin
+    Collection := TCollection(GetObjectValue);
+    PropertyName := GetPropInfo^.Name;
+    PersistentName := '';
+    Caption := 'Editing ' + GetPropInfo^.Name;
+    PropagateList;
+    Show;
+  end;
 end;
 
 { TClassPropertyEditor }
@@ -3725,7 +3763,7 @@ end;
 
 function TPersistentPropertyEditor.GetPersistentReference: TPersistent;
 begin
-  Result := TPersistent(GetOrdValue);
+  Result := TPersistent(GetObjectValue);
 end;
 
 function TPersistentPropertyEditor.GetSelections:
@@ -3748,7 +3786,7 @@ var
   LInstance: TPersistent;
 begin
   Result := False;
-  LInstance := TPersistent(GetOrdValue);
+  LInstance := TPersistent(GetObjectValue);
   if PropCount > 1 then
     for I := 1 to PropCount - 1 do
       if TPersistent(GetOrdValueAt(I)) <> LInstance then
@@ -3852,7 +3890,7 @@ end;
 
 function TComponentPropertyEditor.GetComponentReference: TComponent;
 begin
-  Result := TComponent(GetOrdValue);
+  Result := TComponent(GetObjectValue);
 end;
 
 function TComponentPropertyEditor.AllEqual: Boolean;
@@ -4532,7 +4570,7 @@ var
 begin
   ColumnDlg:=TColumnDlg.Create(Application);
   try
-    ListColumns := TListColumns(GetOrdValue);
+    ListColumns := TListColumns(GetObjectValue);
     ColumnDlg.Columns.Assign(ListColumns);
 
     if ColumnDlg.ShowModal = mrOK then begin
@@ -4994,6 +5032,57 @@ begin
   end;
 end;
 
+procedure TPropertyEditorHook.SetSelection(
+  const ASelection: TPersistentSelectionList);
+var
+  i: Integer;
+  Handler: TPropHookSetSelection;
+  APersistent: TPersistent;
+  AComponent: TComponent;
+  NewLookupRoot: TPersistent;
+begin
+  // update LookupRoot
+  NewLookupRoot:=LookupRoot;
+  if (ASelection<>nil) and (ASelection.Count>0) then begin
+    APersistent:=ASelection[0];
+    if APersistent<>nil then begin
+      if (APersistent is TComponent) then begin
+        AComponent:=TComponent(APersistent);
+        if AComponent.Owner<>nil then
+          NewLookupRoot:=AComponent.Owner
+        else
+          NewLookupRoot:=AComponent;
+      end else begin
+        NewLookupRoot:=APersistent;
+      end;
+    end;
+  end;
+  LookupRoot:=NewLookupRoot;
+  // set selection
+  if ASelection=nil then exit;
+  //writeln('TPropertyEditorHook.SetSelection A ASelection.Count=',ASelection.Count);
+  i:=GetHandlerCount(htSetSelectedComponents);
+  while GetNextHandlerIndex(htSetSelectedComponents,i) do begin
+    Handler:=TPropHookSetSelection(FHandlers[htSetSelectedComponents][i]);
+    Handler(ASelection);
+  end;
+  //writeln('TPropertyEditorHook.SetSelection END ASelection.Count=',ASelection.Count);
+end;
+
+procedure TPropertyEditorHook.SelectOnlyThis(const APersistent: TPersistent);
+var
+  NewSelection: TPersistentSelectionList;
+begin
+  NewSelection:=TPersistentSelectionList.Create;
+  try
+    if APersistent<>nil then
+      NewSelection.Add(APersistent);
+    SetSelection(NewSelection);
+  finally
+    NewSelection.Free;
+  end;
+end;
+
 function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
 var
   i: Integer;
@@ -5298,6 +5387,18 @@ procedure TPropertyEditorHook.RemoveHandlerGetSelection(
   const OnGetSelection: TPropHookGetSelection);
 begin
   RemoveHandler(htGetSelectedComponents,TMethod(OnGetSelection));
+end;
+
+procedure TPropertyEditorHook.AddHandlerSetSelection(
+  const OnSetSelection: TPropHookSetSelection);
+begin
+  AddHandler(htSetSelectedComponents,TMethod(OnSetSelection));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerSetSelection(
+  const OnSetSelection: TPropHookSetSelection);
+begin
+  RemoveHandler(htSetSelectedComponents,TMethod(OnSetSelection));
 end;
 
 procedure TPropertyEditorHook.AddHandlerGetObject(

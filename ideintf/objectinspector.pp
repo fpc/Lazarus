@@ -424,6 +424,7 @@ type
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
+    procedure HookSetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetUsePairSplitter(const AValue: boolean);
     procedure CreatePairSplitter;
@@ -715,7 +716,8 @@ begin
   end else Result:='';
 end;
 
-function TOICustomPropertyGrid.GetRowByPath(const PropPath:string):TOIPropertyGridRow;
+function TOICustomPropertyGrid.GetRowByPath(
+  const PropPath: string): TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
 var CurName:string;
   s,e:integer;
@@ -2438,6 +2440,7 @@ begin
     FPropertyEditorHook.AddHandlerRefreshPropertyValues(
                                                 @HookRefreshPropertyValues);
     FPropertyEditorHook.AddHandlerGetSelection(@HookGetSelection);
+    FPropertyEditorHook.AddHandlerSetSelection(@HookSetSelection);
     // select root component
     FSelection.Clear;
     if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
@@ -2616,6 +2619,8 @@ procedure TObjectInspector.SetSelection(
   const ASelection:TPersistentSelectionList);
 begin
   if FSelection.IsEqual(ASelection) then exit;
+  //if (FSelection.Count=1) and (FSelection[0] is TCollectionItem)
+  //and (ASelection.Count=0) then RaiseGDBException('');
   FSelection.Assign(ASelection);
   SetAvailComboBoxText;
   RefreshSelection;
@@ -2773,6 +2778,16 @@ procedure TObjectInspector.HookGetSelection(
 begin
   if ASelection=nil then exit;
   ASelection.Assign(FSelection);
+end;
+
+procedure TObjectInspector.HookSetSelection(
+  const ASelection: TPersistentSelectionList);
+begin
+  if ASelection=nil then exit;
+  if FSelection.IsEqual(ASelection) then exit;
+  Selection:=ASelection;
+  if Assigned(FOnSelectPersistentsInOI) then
+    FOnSelectPersistentsInOI(Self);
 end;
 
 procedure TObjectInspector.SetShowComponentTree(const AValue: boolean);

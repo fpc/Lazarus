@@ -399,6 +399,7 @@ type
     procedure SetImageIndex(const AValue: TImageIndex);
   protected
     procedure SetIndex(AValue: Integer); override;
+    function GetDisplayName: string; override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -498,7 +499,7 @@ type
     procedure SetSelection(const AValue: TListItem);
     procedure SetSortColumn(const AValue: Integer);
     procedure SetSortType(const AValue: TSortType);
-    procedure SetViewStyle (const Avalue: TViewStyle);
+    procedure SetViewStyle(const Avalue: TViewStyle);
     procedure Sort;
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
@@ -2304,6 +2305,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2004/07/24 00:00:33  mattias
+  started TCollectionPropertyEditor
+
   Revision 1.138  2004/07/23 16:44:27  mattias
   activated new TToolbar, old can be activated with -dOldToolBar
 

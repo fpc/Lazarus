@@ -142,16 +142,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomListView.DoUpdate;
 begin
-  if FUpdateCount>0 then exit;
-  if not (lvUpdateNeeded in FStates) then exit;
   if csDestroying in Componentstate Then Exit;
-  //TODO: Optimize implementation by invoking individual updates instead of
-  //      recreating window
-  //notify the interface....
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  Exclude(FStates,lvUpdateNeeded);
-  RecreateWnd;
+  if FUpdateCount>0 then exit;
+  if (lvUpdateNeeded in FStates) then begin
+    //TODO: Optimize implementation by invoking individual updates instead of
+    //      recreating window
+    //notify the interface....
+    if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+      exit;
+    Exclude(FStates,lvUpdateNeeded);
+    RecreateWnd;
+  end else begin
+    UpdateProperties;
+  end;
 end;
 
 procedure TCustomListView.UpdateProperties;
@@ -168,6 +171,7 @@ end;
 procedure TCustomListView.InitializeWnd;
 begin
   inherited InitializeWnd;
+  Exclude(FStates,lvPropertiesNeedsUpdate);
   CNSendMessage(LM_SETPROPERTIES,Self,nil);
   if FSelected <> nil 
   then TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
@@ -609,6 +613,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2004/07/24 00:00:33  mattias
+  started TCollectionPropertyEditor
+
   Revision 1.38  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

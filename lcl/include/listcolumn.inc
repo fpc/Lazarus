@@ -246,6 +246,12 @@ begin
   WSC.ColumnMove(LV, OldIndex, Index, Self);
 end;
 
+function TListColumn.GetDisplayName: string;
+begin
+  Result := Caption;
+  if Result = '' then Result := inherited GetDisplayName;
+end;
+
 procedure TListColumn.SetVisible(const AValue: Boolean);
 var
   LV: TCustomListView;
@@ -264,6 +270,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/07/24 00:00:33  mattias
+  started TCollectionPropertyEditor
+
   Revision 1.8  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 
