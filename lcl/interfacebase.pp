@@ -48,6 +48,8 @@ type
   }
   TInterfaceBase = Class(TObject)
   private
+//    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
+//    procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
   protected
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
     procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
@@ -82,6 +84,10 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/03/29 19:11:38  lazarus
+  Added Triple Click
+  Shane
+
   Revision 1.7  2002/03/27 08:57:16  lazarus
   MG: reduced compiler warnings
 
