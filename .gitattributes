@@ -351,6 +351,7 @@ lcl/extctrls.pp svneol=native#text/pascal
 lcl/filectrl.pp svneol=native#text/pascal
 lcl/forms.pp svneol=native#text/pascal
 lcl/graphics.pp svneol=native#text/pascal
+lcl/graphicsmath.pp svneol=native#text/pascal
 lcl/graphtype.pp svneol=native#text/pascal
 lcl/imglist.pp svneol=native#text/pascal
 lcl/include/alignment.inc svneol=native#text/pascal

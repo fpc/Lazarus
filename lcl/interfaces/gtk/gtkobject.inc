@@ -3840,7 +3840,12 @@ begin
   Set_RC_Name(p);
 
   StrDispose(StrTemp);
-  if P <> nil then HookSignals(Sender);
+  if P <> nil then begin
+    {$IFNDEF win32}
+    //gtk_widget_set_app_paintable(p,true);
+    {$ENDIF}
+    HookSignals(Sender);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -5330,6 +5335,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.159  2002/08/08 18:05:46  lazarus
+  MG: added graphics extensions from Andrew Johnson
+
   Revision 1.158  2002/08/08 17:26:38  lazarus
   MG: added property TMenuItems.RightJustify
 
