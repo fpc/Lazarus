@@ -1515,12 +1515,9 @@ end;
  ------------------------------------------------------------------------------}
 constructor TWinControl.Create(AOwner : TComponent);
 begin
-Assert(False,'Trace:in TWinControl Constructor');
   inherited Create(AOwner);
   FCompStyle := csFixed;
   FBrush := nil;
-
-Assert(False,'Trace:TWinControl Constructor inherited create complete');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1528,8 +1525,8 @@ end;
 {------------------------------------------------------------------------------}
 constructor TWinControl.CreateParented(ParentWindow: hwnd);
 begin
-   FParentWindow := ParentWindow;
-   inherited Create(nil);
+  FParentWindow := ParentWindow;
+  inherited Create(nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2284,6 +2281,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2002/08/25 14:32:11  lazarus
+  MG: calendar now ignores double clicks
+
   Revision 1.78  2002/08/24 12:54:59  lazarus
   MG: fixed mouse capturing, OI edit focus
 
