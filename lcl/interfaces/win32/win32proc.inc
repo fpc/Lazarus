@@ -618,51 +618,76 @@ Begin
   Result := GetProp(Control, 'AccelKey');
 End;
 
-Procedure LCLBoundsToWin32Bounds(Sender: TObject;
-  var Left, Top, Width, Height: Integer);
+{-------------------------------------------------------------------------------
+  function GetLCLClientOriginOffset(Sender: TObject;
+    var LeftOffset, TopOffset: integer): boolean;
+    
+  Returns the difference between the client origin of a win32 handle
+  and the definition of the LCL counterpart.
+  For example:
+    TGroupBox's client area is the area inside the groupbox frame.
+    Hence, the LeftOffset is the frame width and the TopOffset is the caption
+    height.
+-------------------------------------------------------------------------------}
+function GetLCLClientOriginOffset(Sender: TObject;
+  var LeftOffset, TopOffset: integer): boolean;
 var
   TM: TextMetricA;
   DC: HDC;
   Handle: HWND;
   TheWinControl: TWinControl;
 Begin
+  Result:=false;
+  LeftOffset:=0;
+  TopOffset:=0;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
-  If (TheWinControl.Parent Is TCustomGroupBox) Then
+  if not TheWinControl.HandleAllocated then exit;
+  If (TheWinControl is TCustomGroupBox) Then
   Begin
     // The client area of a groupbox under win32 is the whole size, including
     // the frame. The LCL defines the client area without the frame.
     // -> Adjust the position
-    Handle := TheWinControl.Parent.Handle;
-    DC := GetDC(Handle);
+    Handle := TheWinControl.Handle;
+    DC := Windows.GetDC(Handle);
     GetTextMetrics(DC, TM);
-    inc(Top,TM.TMHeight); // add the upper frame with the caption
-    inc(Left,2); // add the left frame border
+    inc(TopOffset,TM.TMHeight); // add the upper frame with the caption
+    inc(LeftOffset,2); // add the left frame border
     ReleaseDC(Handle, DC);
   End;
+  Result:=true;
+end;
+
+function GetLCLClientOriginOffset(Handle: HWnd;
+  var LeftOffset, TopOffset: integer): boolean;
+var
+  OwnerObject: TObject;
+begin
+  OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+  Result:=GetLCLClientOriginOffset(OwnerObject,LeftOffset,TopOffset);
+end;
+
+Procedure LCLBoundsToWin32Bounds(Sender: TObject;
+  var Left, Top, Width, Height: Integer);
+var
+  LeftOffset: integer;
+  TopOffset: integer;
+Begin
+  if (Sender=nil) or (not (Sender is TWinControl)) then exit;
+  GetLCLClientOriginOffset(TWinControl(Sender).Parent,LeftOffset,TopOffset);
+  inc(Left,LeftOffset);
+  inc(Top,TopOffset);
 End;
 
 Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 var
-  TM: TextMetricA;
-  DC: HDC;
-  Handle: HWND;
-  TheWinControl: TWinControl;
+  LeftOffset: integer;
+  TopOffset: integer;
 Begin
-  if (Sender = nil) or (not (Sender is TWinControl)) then exit;
-  TheWinControl:=TWinControl(Sender);
-  If (TheWinControl.Parent Is TCustomGroupBox) Then
-  Begin
-    // The client area of a groupbox under win32 is the whole size, including
-    // the frame. The LCL defines the client area without the frame.
-    // -> Adjust the position
-    Handle := TheWinControl.Parent.Handle;
-    DC := GetDC(Handle);
-    GetTextMetrics(DC, TM);
-    dec(Top,TM.TMHeight); // subtract the upper frame with the caption
-    dec(Left,2); // subtract the left frame border
-    ReleaseDC(Handle, DC);
-  End;
+  if (Sender=nil) or (not (Sender is TWinControl)) then exit;
+  GetLCLClientOriginOffset(TWinControl(Sender).Parent,LeftOffset,TopOffset);
+  dec(Left,LeftOffset);
+  dec(Top,TopOffset);
 End;
 
 {$IFDEF ASSERT_IS_ON}
@@ -673,6 +698,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.25  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.24  2003/08/28 09:10:01  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

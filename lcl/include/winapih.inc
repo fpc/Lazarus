@@ -122,7 +122,7 @@ function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescriptio
 function GetCapture : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretPos(var lpPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function GetClientBounds(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+Function GetClientBounds(handle : HWND; var ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClientRect(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -397,6 +397,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.87  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

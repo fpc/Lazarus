@@ -736,9 +736,9 @@ End;
   
   returns the screen coordinate of the topleft coordinate 0,0 of the client area
   Note that this value is the position as stored in the interface and is not
-  always consistent with the LCL. When a control is moved, the LCL sets the
-  bounds to the wanted position and sends a move message to the interface. It is
-  up to the interface to handle moves instantly or queued.
+  always in sync with the LCL. When a control is moved, the LCL sets the bounds
+  to the wanted position and sends a move message to the interface. It is up to
+  the interface to handle moves instantly or queued.
 -------------------------------------------------------------------------------}
 Function TWinControl.GetClientOrigin: TPoint;
 var
@@ -2337,6 +2337,7 @@ var
   PS : TPaintStruct;
   MemWidth: Integer;
   MemHeight: Integer;
+  ClientBoundRect: TRect;
 begin
   //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
   if ([csDestroying,csLoading]*ComponentState<>[]) or (not HandleAllocated) then
@@ -2368,15 +2369,26 @@ begin
     MemDC := CreateCompatibleDC(0);
     OldBitmap := SelectObject(MemDC, MemBitmap);
     try
+      // Fetch a DC of the whole Handle (including client area)
       DC := BeginPaint(Handle, PS);
+      if DC=0 then exit;
+      // erase background
       Include(FFlags,wcfEraseBackground);
       Perform(LM_ERASEBKGND, MemDC, 0);
       Exclude(FFlags,wcfEraseBackground);
+      // create a paint message to paint the child controls.
+      // WMPaint expects the DC origin to be equal to the client origin of its
+      // parent
+      // -> Move the DC Origin to the client origin
+      if not GetClientBounds(Handle,ClientBoundRect) then exit;
+      MoveWindowOrgEx(MemDC,ClientBoundRect.Left,ClientBoundRect.Top);
+      // handle the paint message
       Msg.DC := MemDC;
       WMPaint(Msg);
       Msg.DC := 0;
-      //TODO:bitblt
-      BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
+      // restore the DC origin
+      MoveWindowOrgEx(MemDC,-ClientBoundRect.Left,-ClientBoundRect.Top);
+      BitBlt(DC, 0,0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
       EndPaint(Handle, PS);
     finally
       Exclude(FFlags,wcfEraseBackground);
@@ -3064,6 +3076,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.166  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.165  2003/08/27 11:01:10  mattias
   started TDockTree
 

@@ -83,6 +83,7 @@ Function GetActiveWindow: HWND; Override;
 Function GetCapture: HWND; Override;
 Function GetCaretPos(Var LPPoint: TPoint): Boolean; Override;
 Function GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean; Override;
+function GetClientBounds(Handle: HWND; Var Rect: TRect): Boolean; Override;
 Function GetClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; Override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
@@ -178,6 +179,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.32  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

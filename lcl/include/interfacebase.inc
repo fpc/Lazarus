@@ -850,9 +850,10 @@ begin
   Result := False;
 end;
 
-Function TInterfaceBase.GetClientBounds(handle : HWND; var Rect : TRect) : Boolean;
+Function TInterfaceBase.GetClientBounds(Handle : HWND;
+  var ARect: TRect) : Boolean;
 begin
-  Result := False;
+  Result := false;
 end;
 
 Function TInterfaceBase.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
@@ -1827,6 +1828,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.102  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

@@ -445,7 +445,7 @@ Begin
     Begin
       if Sender=nil then Handle := GetDesktopWindow
       else Handle := ObjectToHwnd(Sender);
-      DC := GetDC(Handle);
+      DC := Windows.GetDC(Handle);
       //WriteLn('LM_SCREENINIT called --> should go to TWin32Object.Init');
       //WriteLn('TODO: check this');
       PLMScreenInit(Data)^.PixelsPerInchX := GetDeviceCaps(DC, LogPixelsX);
@@ -1771,7 +1771,7 @@ Begin
         // Temphack to set backcolor, till better solution
         If HandleAllocated Then
         Begin
-          DC := GetDC(Handle);
+          DC := Windows.GetDC(Handle);
           SetBKColor(Handle, Color);
           ReleaseDC(Handle, DC);
         End;
@@ -1931,7 +1931,7 @@ Begin
     End;
     csImage:
     Begin
-      DC := GetDC(Handle);
+      DC := Windows.GetDC(Handle);
       With TImage(Sender).Picture.Bitmap Do
         Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
       SetOwner(Window, Sender);
@@ -2815,6 +2815,9 @@ End;
 
 {
   $Log$
+  Revision 1.104  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.103  2003/08/31 14:48:15  mattias
   replaced some  as  from Micha
 

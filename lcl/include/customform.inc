@@ -1308,16 +1308,19 @@ begin
     end 
     else begin
       case Position of
-        //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly       
-        poScreenCenter, poDesktopCenter : begin
+      //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly
+      poScreenCenter, poDesktopCenter :
+        begin
           X:= (Screen.Width - Width) div 2;
           Y:= (Screen.Height - Height) div 2;
         end;
-        poMainFormCenter : if (Self <> Application.MainForm) then begin
+      poMainFormCenter :
+        if (Self <> Application.MainForm) then begin
           X:= ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
           Y:= ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
         end;
-        poOwnerFormCenter : if (Owner is TCustomForm) then begin
+      poOwnerFormCenter :
+        if (Owner is TCustomForm) then begin
           X:= ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
           Y:= ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
         end;
@@ -1426,6 +1429,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.112  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.111  2003/08/28 12:08:30  mattias
   fixed register color prop edit
 
@@ -1791,194 +1797,4 @@ end;
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 
-  Revision 1.5  2000/05/09 02:07:40  lazarus
-  Replaced writelns with Asserts.                          CAW
-
-  Revision 1.4  2000/05/03 17:19:29  lazarus
-  Added the TScreem forms code by hongli@telekabel.nl
-  Shane
-
-  Revision 1.3  2000/04/10 14:03:07  lazarus
-  Added SetProp and GetProp winapi calls.
-  Added ONChange to the TEdit's published property list.
-  Shane
-
-  Revision 1.2  2000/04/07 16:59:55  lazarus
-  Implemented GETCAPTURE and SETCAPTURE along with RELEASECAPTURE.
-  Shane
-
-  Revision 1.1  2000/04/02 20:49:56  lazarus
-  MWE:
-    Moved lazarus/lcl/*.inc files to lazarus/lcl/include
-
-  Revision 1.37  2000/03/30 18:07:53  lazarus
-  Added some drag and drop code
-  Added code to change the unit name when it's saved as a different name.  Not perfect yet because if you are in a comment it fails.
-
-  Shane
-
-  Revision 1.36  2000/03/15 20:15:31  lazarus
-  MOdified TBitmap but couldn't get it to work
-  Shane
-
-  Revision 1.35  2000/03/03 20:22:03  lazarus
-  Trying to add TBitBtn
-  Shane
-
-  Revision 1.34  2000/03/01 00:41:02  lazarus
-  MWE:
-    Fixed updateshowing problem
-    Added some debug code to display the name of messages
-    Did a bit of cleanup in main.pp to get the code a bit more readable
-      (my editor does funny things with tabs if the indent differs)
-
-  Revision 1.33  2000/02/28 19:16:04  lazarus
-  Added code to the FILE CLOSE to check if the file was modified.  HAven't gotten the application.messagebox working yet though.  It won't stay visible.
-  Shane
-
-  Revision 1.32  2000/02/28 00:15:54  lazarus
-  MWE:
-    Fixed creation of visible componets at runtime. (when a new editor
-      was created it didn't show up)
-    Made the hiding/showing of controls more delphi compatible
-
-  Revision 1.31  2000/02/24 21:15:30  lazarus
-  Added TCustomForm.GetClientRect and RequestAlign to try and get the controls to align correctly when a MENU is present.  Not Complete yet.
-
-  Fixed the bug in TEdit that caused it not to update it's text property.  I will have to
-  look at TMemo to see if anything there was affected.
-
-  Added SetRect to WinAPI calls
-  Added AdjustWindowRectEx to WINAPI calls.
-  Shane
-
-  Revision 1.30  2000/02/23 14:19:09  lazarus
-  Fixed the conflicts caused when two people worked on the ShowModal method for CustomForm and CustomDialog at the same time.
-  Shane
-
-  Revision 1.29  2000/02/22 22:19:49  lazarus
-  TCustomDialog is a descendant of TComponent.
-  Initial cuts a form's proper Close behaviour.
-
-  Revision 1.28  2000/02/22 17:32:49  lazarus
-  Modified the ShowModal call.
-  For TCustomForm is simply sets the visible to true now and adds fsModal to FFormState.  In gtkObject.inc FFormState is checked.  If it contains fsModal then either gtk_grab_add or gtk_grab_remove is called depending on the value of VISIBLE.
-
-  The same goes for TCustomDialog (open, save, font, color).
-  I moved the Execute out of the individual dialogs and moved it into TCustomDialog and made it virtual because FONT needs to set some stuff before calling the inherited execute.
-  Shane
-
-  Revision 1.27  2000/02/19 18:11:59  lazarus
-  More work on moving, resizing, forms' border style etc.
-
-  Revision 1.26  2000/02/18 19:38:52  lazarus
-  Implemented TCustomForm.Position
-  Better implemented border styles. Still needs some tweaks.
-  Changed TComboBox and TListBox to work again, at least partially.
-  Minor cleanups.
-
-  Revision 1.25  2000/01/03 00:19:21  lazarus
-  MWE:
-    Added keyup and buttonup events
-    Added LM_MOUSEMOVE callback
-    Started with scrollbars in editor
-
-  Revision 1.24  1999/12/22 01:16:03  lazarus
-  MWE:
-    Changed/recoded keyevent callbacks
-    We Can Edit!
-    Commented out toolbar stuff
-
-  Revision 1.23  1999/12/14 00:16:43  lazarus
-  MWE:
-    Renamed LM... message handlers to WM... to be compatible and to
-      get more edit parts to compile
-    Started to implement GetSystemMetrics
-    Removed some Lazarus specific parts from mwEdit
-
-  Revision 1.22  1999/12/10 00:47:01  lazarus
-  MWE:
-    Fixed some samples
-    Fixed Dialog parent is no longer needed
-    Fixed (Win)Control Destruction
-    Fixed MenuClick
-
-  Revision 1.21  1999/12/08 00:56:07  lazarus
-  MWE:
-    Fixed menus. Events aren't enabled yet (dumps --> invalid typecast ??)
-
-  Revision 1.20  1999/12/07 01:19:25  lazarus
-  MWE:
-    Removed some double events
-    Changed location of SetCallBack
-    Added call to remove signals
-    Restructured somethings
-    Started to add default handlers in TWinControl
-    Made some parts of TControl and TWinControl more delphi compatible
-    ... and lots more ...
-
-  Revision 1.19  1999/11/23 22:06:27  lazarus
-  Minor changes to get it running again with the latest compiler.  There is something wrong with the compiler that is preventing certain things from working.
-  Shane
-
-  Revision 1.18  1999/11/04 21:52:08  lazarus
-  wndproc being used a little
-  Shane
-
-  Revision 1.17  1999/11/02 16:02:34  lazarus
-  Added a bunch of wndproc stuff and a lot of functions that really don't do a thing at this point.
-  Shane
-
-  Revision 1.16  1999/11/01 09:53:16  lazarus
-  MWE: Implemented HandleNeeded/CreateHandle/CreateWND
-       Now controls are created on demand. A call to CreateComponent shouldn't
-       be needed. It is now part of CreateWnd
-
-  Revision 1.15  1999/10/28 23:48:57  lazarus
-  MWE: Added new menu classes and started to use handleneeded
-
-  Revision 1.14  1999/10/28 20:37:34  lazarus
-  TCustomForm.ClientWndProc added.
-  Shane
-
-  Revision 1.13  1999/10/27 17:27:07  lazarus
-  Added alot of changes and TODO: statements
-  shane
-
-  Revision 1.12  1999/10/27 12:53:23  lazarus
-  Added LCLLinux.pp and removed Linux.pp
-  Also, added the TCustomForm.ISFORM function.
-  Shane
-
-  Revision 1.11  1999/09/21 23:46:53  lazarus
-  *** empty log message ***
-
-  Revision 1.10  1999/08/07 17:59:16  lazarus
-
-        buttons.pp   the DoLeave and DoEnter were connected to the wrong
-                     event.
-
-        The rest were modified to use the new CNSendMEssage function.   MAH
-
-  Revision 1.9  1999/08/02 01:13:32  lazarus
-  Added new colors and corrected BTNFACE
-  Need the TSCrollbar class to go further with the editor.
-  Mouse doesn't seem to be working correctly yet when I click on the editor window
-
-  Revision 1.8  1999/08/01 21:46:24  lazarus
-  Modified the GETWIDTH and GETHEIGHT of TFOnt so you can use it to calculate the length in Pixels of a string.  This is now used in the editor.
-
-  Shane
-
-  Revision 1.7  1999/07/31 06:39:20  lazarus
-
-       Modified the IntCNSendMEssage3 to include a data variable. It isn't used
-       yet but will help in merging the Message2 and Message3 features.
-
-       Adjusted TColor routines to match Delphi color format
-
-       Added a TGdkColorToTColor routine in gtkproc.inc
-
-       Finished the TColorDialog added to comDialog example.        MAH
-
- }
+}

@@ -139,22 +139,45 @@ End;
   functions for the message.
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
-var
-  Handle: HWND;
-  PrevWndProc: pointer;
-begin
-  Handle := ObjectToHwnd(Sender);
-  case TLMessage(Message).Msg of
-  
-  LM_PAINT:
-    begin
+
+  procedure CallWin32PaintHandler;
+  var
+    PaintMsg: TLMPaint;
+    Handle: HWND;
+    PrevWndProc: pointer;
+    ClientBoundRect: TRect;
+  begin
+    // the LCL creates paint messages, with a DC origin set to the client
+    // origin of the emitting control. The paint handler of win32 expects the
+    // DC origin at the origin of the control.
+    // -> move the windoworigin
+    Handle := ObjectToHwnd(Sender);
+    ClientBoundRect:=Rect(0,0,0,0);
+    if Sender is TWinControl then
+      if not GetClientBounds(Handle,ClientBoundRect) then exit;
+    PaintMsg:=TLMPaint(Message);
+    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
+    try
+      // call win32 paint handler
       PrevWndProc := GetProp(Handle, 'DefWndProc');
       if PrevWndProc = nil then
-        DefWindowProc(Handle, WM_PAINT, TLMessage(Message).WParam, TLMessage(Message).LParam)
+        DefWindowProc(Handle, WM_PAINT, TLMessage(Message).WParam,
+                      TLMessage(Message).LParam)
       else
         CallWindowProc(PrevWndProc, Handle, WM_PAINT,
           TLMessage(Message).WParam, TLMessage(Message).LParam);
+    finally
+      // restore DC origin
+      MoveWindowOrgEx(PaintMsg.DC,ClientBoundRect.Left,ClientBoundRect.Top);
     end;
+  end;
+
+begin
+  case TLMessage(Message).Msg of
+  
+  LM_PAINT:
+    CallWin32PaintHandler;
+
   end;
 end;
 
@@ -218,8 +241,15 @@ End;
   Converts client coordinates to screen coordinates
  ------------------------------------------------------------------------------}
 Function TWin32Object.ClientToScreen(Handle: HWND; Var P: TPoint): Boolean;
+var
+  LeftOffset, TopOffset: integer;
 Begin
   Result := Windows.ClientToScreen(Handle, @P);
+  if (not Result) then exit;
+  Result := GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset);
+  if not Result then exit;
+  inc(P.X,LeftOffset);
+  inc(P.X,TopOffset);
 End;
 
 {------------------------------------------------------------------------------
@@ -681,7 +711,7 @@ Begin
   End;
 
   If (Width <> 0) And (Height <> 0) Then Begin
-    hdcScreen := GetDC(GetDesktopWindow);
+    hdcScreen := Windows.GetDC(GetDesktopWindow);
     hdcBitmap := CreateCompatibleDC(hdcScreen);
     hbmBitmap := CreateCompatibleBitmap(hdcScreen, Width, Height);
     OldObject := SelectObject(hdcBitmap, hbmBitmap);
@@ -1099,6 +1129,25 @@ End;
 
   Retrieves the coordinates of a window's client area.
  ------------------------------------------------------------------------------}
+function TWin32Object.GetClientBounds(Handle: HWND; Var Rect: TRect): Boolean;
+var
+  LeftOffset, TopOffset: integer;
+begin
+  Result := GetClientRect(Handle, Rect);
+  if not Result then exit;
+  if not GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset) then exit;
+  OffsetRect(Rect,LeftOffset,TopOffset);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetClientRect
+  Params: Handle - handle of window
+          Rect   - record for client coordinates
+  Returns: If the function succeeds
+
+  Retrieves the dimension of a window's client area.
+  Left and Top are always 0,0
+ ------------------------------------------------------------------------------}
 Function TWin32Object.GetClientRect(Handle: HWND; Var Rect: TRect): Boolean;
 var
   OwnerObject: TObject;
@@ -1107,6 +1156,7 @@ var
   DC: HDC;
 Begin
   Result := Windows.GetClientRect(Handle, @Rect);
+  if not Result then exit;
   OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
   if OwnerObject is TWinControl then begin
     TheWinControl:=TWinControl(OwnerObject);
@@ -1114,7 +1164,7 @@ Begin
       // The client area of a groupbox under win32 is the whole size, including
       // the frame. The LCL defines the client area without the frame.
       // -> Adjust the client size
-      DC := GetDC(Handle);
+      DC := Windows.GetDC(Handle);
       GetTextMetrics(DC, TM);
       dec(Rect.Bottom,TM.TMHeight+2); // subtract the top frame with the caption
                                      // and subtract the bottom frame
@@ -1190,9 +1240,15 @@ End;
   the specified window.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetDC(HWnd: HWND): HDC;
+var
+  LeftOffset, TopOffset: integer;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
+  if (Result<>0) and (HWnd<>0)
+  and GetLCLClientOriginOffset(HWnd,LeftOffset,TopOffset) then begin
+    MoveWindowOrgEx(Result,LeftOffset,TopOffset);
+  end;
   Assert(False, Format('Trace:< [TWin32Object.GetDC] Got 0x%x', [Result]));
 End;
 
@@ -1448,36 +1504,24 @@ var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
-  OwnerObject: TObject;
-  TheWinControl: TWinControl;
-  DC: HDC;
-  TM: TextMetricA;
+  LeftOffset, TopOffset: integer;
 begin
-  Result:=Windows.GetWindowRect(Handle,@R);
+  Result:=false;
+  if not Windows.GetWindowRect(Handle,@R) then exit;
   LeftTop.X:=R.Left;
   LeftTop.Y:=R.Top;
   ParentHandle:=Windows.GetParent(Handle);
   if ParentHandle<>0 then 
   begin
-    Windows.ScreenToClient(ParentHandle,@LeftTop);
-    OwnerObject := TObject(GetProp(ParentHandle, 'Lazarus'));
-    if (OwnerObject<>nil) and (OwnerObject is TWinControl) then begin
-      TheWinControl:=TWinControl(OwnerObject);
-      if TheWinControl is TGroupBox then
-      begin
-        {$IFDEF VerboseSizeMsg}
-        writeln('TWin32Object.GetWindowRelativePosition A ',TheWinControl.Name,':',TheWinControl.ClassName,' Win32=',R.Left,',',R.Top,' Moved=',LeftTop.X,',',LeftTop.Y);
-        {$ENDIF}
-        DC := GetDC(ParentHandle);
-        GetTextMetrics(DC, TM);
-        dec(LeftTop.Y,TM.TMHeight); 
-        dec(LeftTop.X,2); 
-        ReleaseDC(ParentHandle, DC);
-      end;
-    end;
+    if not Windows.ScreenToClient(ParentHandle,@LeftTop) then exit;
+    if not GetLCLClientOriginOffset(ParentHandle,LeftOffset,TopOffset) then
+      exit;
+    dec(LeftTop.X,LeftOffset);
+    dec(LeftTop.Y,TopOffset);
   end;
   Left:=LeftTop.X;
   Top:=LeftTop.Y;  
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -2431,6 +2475,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2003/08/31 17:30:49  mattias
+  fixed TControl painting for win32
+
   Revision 1.58  2003/08/27 08:14:37  mattias
   fixed system fonts for win32 intf
 
