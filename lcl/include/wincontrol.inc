@@ -489,6 +489,7 @@ var
   DC: HDC;
   PS: TPaintStruct; //defined in LCLLinux.pp
 begin
+
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, Message.DC]));
   DC := Message.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
@@ -1937,7 +1938,7 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.23  2001/03/19 14:00:51  lazarus
+  Revision 1.24  2001/03/19 14:38:39  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.21  2001/03/12 12:17:02  lazarus

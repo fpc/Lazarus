@@ -3389,7 +3389,7 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.24  2001/03/19 14:00:52  lazarus
+  Revision 1.25  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.22  2001/03/12 12:17:02  lazarus
