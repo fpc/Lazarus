@@ -279,7 +279,7 @@ implementation
 
 
 uses 
-  buttons,stdctrls,interfaces,designer;
+  buttons,stdctrls,interfaces {,designer};
 
 var
   FocusMessages : Boolean; //Should set it to TRUE by defualt but fpc does not handle that yet.
