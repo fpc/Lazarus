@@ -130,9 +130,9 @@ begin
   Result := InterfaceObject.DeleteObject(GDIObject);
 end;
 
-function DestroyCaret: Boolean;
+function DestroyCaret(Handle : HWND): Boolean;
 Begin
-  Result := InterfaceObject.DestroyCaret;
+  Result := InterfaceObject.DestroyCaret(Handle);
 end;
 
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
@@ -1027,6 +1027,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/12/12 14:23:18  lazarus
+  MG: implemented DestroyCaret
+
   Revision 1.19  2001/11/14 17:46:58  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop

@@ -895,8 +895,7 @@ begin
   GTKObject := PGTKObject(Handle);
   Result := GTKObject <> nil;
 
-  if Result
-  then begin
+  if Result then begin
     if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       if IsValidGDIObjectType(Bitmap, gdiBitmap)
@@ -1328,11 +1327,24 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DestroyCaret: Boolean;
-Begin
-  Assert(False, 'Trace:TODO: [TgtkObject.DestroyCaret]');
-  //TODO: Implement this;
-  Result := False;
+function TgtkObject.DestroyCaret(Handle: HWND): Boolean;
+var
+  GTKObject: PGTKObject;
+begin
+  GTKObject := PGTKObject(Handle);
+  Result := true;
+  
+  if GTKObject<>nil then begin
+    if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
+    then begin
+      GTKAPIWidget_DestroyCaret(PGTKAPIWidget(GTKObject));
+    end
+//    else if // TODO: other widgettypes
+    else begin
+      Result := False;
+    end;
+  end
+  else Assert(False, 'Trace:WARNING: [TgtkObject.DestroyCaret] Got null HWND');
 end;
 
 {------------------------------------------------------------------------------
@@ -4072,6 +4084,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2001/12/12 14:23:18  lazarus
+  MG: implemented DestroyCaret
+
   Revision 1.50  2001/12/11 16:51:37  lazarus
   Modified the Watches dialog
   Shane

@@ -1172,6 +1172,9 @@ var
   i: integer;
 begin
 //writeln('[TCustomSynEdit.Destroy]');
+  {$IFDEF SYN_LAZARUS}
+  if HandleAllocated then LCLLinux.DestroyCaret(Handle);
+  {$ENDIF}
   Highlighter := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
@@ -3616,7 +3619,7 @@ begin
 //writeln('[TCustomSynEdit.WMKillFocus] A');
   HideCaret;
   {$IFDEF SYN_LAZARUS}
-  LCLLinux.DestroyCaret;
+  LCLLinux.DestroyCaret(Handle);
   {$ELSE}
   Windows.DestroyCaret;
   {$ENDIF}

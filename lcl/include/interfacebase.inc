@@ -129,7 +129,7 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.DestroyCaret: Boolean;
+function TInterfaceBase.DestroyCaret(Handle : HWND): Boolean;
 begin
   Result := False;
 end;
@@ -498,6 +498,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/12/12 14:23:17  lazarus
+  MG: implemented DestroyCaret
+
   Revision 1.20  2001/11/14 19:10:03  lazarus
   MG: fixes for parser and linkscanner and small cleanups
 

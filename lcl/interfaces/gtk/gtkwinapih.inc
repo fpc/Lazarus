@@ -36,7 +36,7 @@ function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
-function DestroyCaret: Boolean; override;
+function DestroyCaret(Handle : HWND): Boolean; override;
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 
@@ -126,6 +126,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/12/12 14:23:18  lazarus
+  MG: implemented DestroyCaret
+
   Revision 1.19  2001/11/14 17:46:59  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop

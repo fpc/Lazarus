@@ -49,6 +49,7 @@ function GTKAPIWidget_GetType : guint;
 function GTKAPIWidget_New : PGTKWidget;
 procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
                                  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
+procedure GTKAPIWidget_DestroyCaret(APIWidget: PGTKAPIWidget); 
 procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget); 
 procedure GTKAPIWidget_ShowCaret(APIWidget: PGTKAPIWidget); 
 procedure GTKAPIWidget_SetCaretPos(APIWidget: PGTKAPIWidget; X, Y: Integer); 
@@ -104,13 +105,21 @@ try
     Result := 0;
     exit;
   end;
+except
+  Writeln('------Exception 1 in GTKAPIWidgetClient_Timer------');
+end;
+try
   GTKAPIWidgetClient_DrawCaret(Client);
+except
+  Writeln('------Exception 2 in GTKAPIWidgetClient_Timer------');
+end;
+try
   if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
     Result := 1
   else
     Result := 0;
 except
-  Writeln('------Exception in GTKAPIWidgetClient_Timer------');
+  Writeln('------Exception 3 in GTKAPIWidgetClient_Timer------');
   writeln('Client = ',longint(Client));
   if Assigned(Client) then
      begin
@@ -317,7 +326,7 @@ end;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient); 
 begin
-//writeln('[GTKAPIWidgetClient_HideCaret] A');
+//writeln('[GTKAPIWidgetClient_HideCaret] A Client=',HexStr(Cardinal(Client),8));
   if Client = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
@@ -333,6 +342,7 @@ const
                                  (GTK_STATE_INSENSITIVE, GTK_STATE_NORMAL);
 var
   Widget: PGTKWidget;
+  HasFocus: boolean;
 begin
   if Client = nil then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_DrawCaret] Got nil client');
@@ -341,11 +351,15 @@ begin
   Widget := PGTKWidget(Client);
   
   with Client^.Caret do begin
-    if (Timer <> 0) and ((not Blinking) or (not Visible)) then begin
+    HasFocus:=gtk_widget_has_focus(Widget);
+  
+    if (Timer <> 0) and
+      ((not Blinking) or (not Visible)
+      or (ShowHideOnFocus and (not HasFocus))) 
+    then begin
       gtk_timeout_remove(Timer);
       Timer := 0;
     end;
-    
     if IsDrawn and ((not Visible) or Blinking) then begin
       // hide caret
       if (BackPixmap <> nil) and (Widget<>nil) and (Widget^.theStyle<>nil)
@@ -362,31 +376,41 @@ begin
     and (not IsDrawn)
     then begin
       if Pixmap <> nil then
-        Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_ShowCaret] Implement bitmap');
+        Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
       
       //Create backbitmap if needed
-      if (BackPixmap = nil) and (Widget^.Window<>nil)
-      then BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
-      
+      if (BackPixmap = nil) and (Widget^.Window<>nil) and (Width>0)
+      and (Height>0)
+      then
+        BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
+
       if (BackPixmap <> nil) and (Widget<>nil) and ((Widget^.theStyle)<>nil)
+      and (Width>0) and (Height>0)
       then gdk_draw_pixmap(
         BackPixmap, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
         Widget^.Window, X, Y, 0, 0, Width, Height
       );
-      
+
       // draw caret
-      if PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil then
+      if (PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil) 
+      and (PGTKWidget(Client)^.Window<>nil)
+      and (Width>0) and (Height>0)
+      and (PGTKWidget(Client)^.theStyle<>nil) then
         gdk_draw_rectangle(
           PGTKWidget(Client)^.Window, 
           PGTKStyle(PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]],
           1, X, Y, Width, Height
-        );
+        )
+      else
+        writeln('Draw Caret failed: X=',X,',Y=',Y,',W=',Width,',H=',Height,',',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
       IsDrawn := True;
+
     end;
     
+//writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget));
     if Visible and Blinking and (Timer = 0) 
-    and (gtk_widget_has_focus(Widget) or not ShowHideOnFocus)
+    and (not ShowHideOnFocus or HasFocus)
     then
       Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
   end;
@@ -394,7 +418,7 @@ end;
 
 procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); 
 begin
-//writeln('[GTKAPIWidgetClient_ShowCaret] A');
+//writeln('[GTKAPIWidgetClient_ShowCaret] A Client=',HexStr(Cardinal(Client),8));
   if Client = nil 
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_ShowCaret] Got nil client');
@@ -410,10 +434,10 @@ procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
 var
   IsVisible: Boolean;
 begin
-//writeln('[GTKAPIWidgetClient_CreateCaret] A');
+//writeln('********** [GTKAPIWidgetClient_CreateCaret] A Client=',HexStr(Cardinal(Client),8),' Width=',AWidth,' Height=',AHeight,' Bitmap=',ABitmap<>nil);
   if Client = nil 
   then begin
-    WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
+    WriteLn('WARNING: [GTKAPIWidgetClient_CreateCaret] Got nil client');
     Exit;
   end;
 
@@ -434,6 +458,27 @@ begin
 
     if IsVisible then GTKAPIWidgetClient_ShowCaret(Client);
   end;
+end;
+
+procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); 
+begin
+writeln('********** [GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
+  if Client = nil 
+  then begin
+    WriteLn('WARNING: [GTKAPIWidgetClient_DestroyCaret] Got nil client');
+    Exit;
+  end;
+
+  with Client^.Caret do begin
+    if Visible then GTKAPIWidgetClient_HideCaret(Client);
+    
+    if BackPixmap <> nil then begin
+      gdk_pixmap_unref(BackPixmap);
+      BackPixmap := nil;
+    end;
+    Pixmap := nil;
+  end;
+writeln('********** B[GTKAPIWidgetClient_DestroyCaret] A Client=',HexStr(Cardinal(Client),8));
 end;
 
 procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
@@ -586,6 +631,16 @@ begin
     AWidth, AHeight, ABitmap);
 end;
 
+procedure GTKAPIWidget_DestroyCaret(APIWidget: PGTKAPIWidget); 
+begin
+  if APIWidget = nil 
+  then begin
+    WriteLn('WARNING: [GTKAPIWidget_DestroyCaret] Got nil client');
+    Exit;
+  end;
+  GTKAPIWidgetClient_DestroyCaret(PGTKAPIWidgetClient(APIWidget^.Client));
+end;
+
 procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget); 
 begin
 //writeln('[GTKAPIWidget_HideCaret] A');
@@ -644,6 +699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/12/12 14:23:19  lazarus
+  MG: implemented DestroyCaret
+
   Revision 1.16  2001/11/13 18:50:10  lazarus
   Changes to facilitate the toggle between form and unit
   Shane
