@@ -724,6 +724,37 @@ end;
 
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
   var AResult: String): Boolean;
+  
+  function MakePrintable(const AString: String): String;
+  var
+    n: Integer;
+    InString: Boolean;
+  begin
+    Result := '';
+    InString := False;
+    for n := 1 to Length(AString) do
+    begin
+      case AString[n] of
+        ' '..#127: begin
+          if not InString
+          then begin
+            InString := True;
+            Result := Result + '''';
+          end;
+          Result := Result + AString[n];
+          if AString[n] = '''' then Result := Result + '''';
+        end;
+      else
+        if InString
+        then begin
+          InString := False;
+          Result := Result + '''';
+        end;
+        Result := Result + Format('#%d', [Ord(AString[n])]);
+      end;
+    end;
+  end;
+  
 var
   ResultState: TDBGState;
   S, ResultValues: String;
@@ -771,7 +802,7 @@ begin
     S := Lowercase(ResultInfo.TypeName);
     if (S = 'character')
     or (S = 'ansistring')
-    then AResult := '''' + GetText(Pointer(addr)) + '''';
+    then AResult := MakePrintable(GetText(Pointer(addr)));
   finally
     ResultInfo.Free;
   end;
@@ -957,6 +988,8 @@ function TGDBMIDebugger.GetText(const AExpression: String;
   AValues: array of const): String;
 var
   S: String;
+  n, len, idx: Integer;
+  v: Integer;
 begin
   if not ExecuteCommand('x/s ' + AExpression, AValues, S, [cfNoMICommand, cfIgnoreError])
   then begin
@@ -966,8 +999,49 @@ begin
     S := StripLN(S);
     // don't use ' as end terminator, there might be one as part of the text
     // since ' will be the last char, simply strip it.
-    Result := GetPart(['\t '''], [], S);
-    Delete(Result, Length(Result), 1);
+    S := GetPart(['\t '], [], S);
+
+    // Scan the string
+    len := Length(S);
+    SetLength(Result, len);
+    n := 0;
+    idx := 1;
+    while idx <= len do
+    begin
+      case S[idx] of
+        '''': begin
+          Inc(idx);
+          // scan till end
+          while idx <= len do
+          begin
+            if S[idx] = ''''
+            then begin
+              Inc(idx);
+              if idx > len then Break;
+              if S[idx] <> '''' then Break;
+            end;
+            Inc(n);
+            Result[n] := S[idx];
+            Inc(idx);
+          end;
+        end;
+        '#': begin
+          Inc(idx);
+          v := 0;
+          // scan till non number (correct input is assumed)
+          while (idx <= len) and (S[idx] >= '0') and (S[idx] <= '9') do
+          begin
+            v := v * 10 + Ord(S[idx]) - Ord('0');
+            Inc(idx)
+          end;
+          Inc(n);
+          Result[n] := Chr(v and $FF);
+        end;
+      else
+        Break; //??
+      end;
+    end;
+    SetLength(Result, n);
   end;
 end;
 
@@ -2447,6 +2521,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.53  2004/11/19 00:41:18  marc
+  * Fixed string evaluation
+
   Revision 1.52  2004/11/02 23:25:02  marc
   * Introduced another method of interrupting gdb on win32
 
