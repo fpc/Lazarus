@@ -464,8 +464,9 @@ begin
                              FCursorBeyondEOL,true);
 
     // Define templates
-    FGlobalDefineTemplates.SaveToXMLConfig(XMLConfig,'CodeToolsGlobalDefines/',
-      true,false,true,false);
+    if FGlobalDefineTemplates<>nil then
+      FGlobalDefineTemplates.SaveToXMLConfig(XMLConfig,
+        'CodeToolsGlobalDefines/',true,false,true,false);
 
     // CodeCreation
     XMLConfig.SetDeleteValue(
@@ -518,7 +519,7 @@ begin
     XMLConfig.Free;
   except
     on E: Exception do begin
-      writeln('[TCodeToolsOptions.Load]  error writing "',FFilename,'": ',E.Message);
+      writeln('[TCodeToolsOptions.Save]  error writing "',FFilename,'": ',E.Message);
     end;
   end;
 end;
