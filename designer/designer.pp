@@ -939,7 +939,6 @@ begin
         ControlSelection.SizeSelection(
           LastMouseMovePos.X-OldMouseMovePos.X,
           LastMouseMovePos.Y-OldMouseMovePos.Y);
-        //FCustomForm.Invalidate;
         if Assigned(OnModified) then OnModified(Self);
       end else begin
         // no grabber resizing
@@ -959,8 +958,6 @@ begin
             LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
           then begin
             if Assigned(OnModified) then OnModified(Self);
-            //FCustomForm.Invalidate;
-            //SendCachedLCLMessages;
           end;
         end
         else
@@ -974,7 +971,6 @@ begin
           else
             ControlSelection.RubberbandType:=rbtCreating;
           ControlSelection.RubberBandActive:=true;
-          //FCustomForm.Invalidate;
         end;
       end;
     end
