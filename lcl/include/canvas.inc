@@ -402,19 +402,15 @@ end;
 }
 procedure TCanvas.Polygon(const Points: array of TPoint; Winding: Boolean;
   StartIndex: Integer; NumPts: Integer);
-var NPoints, i: integer;
-  PointArray: ^TPoint;
+var
+  NPoints: integer;
 begin
   if NumPts<0 then
     NPoints:=High(Points)-StartIndex+1
   else
     NPoints:=NumPts;
   if NPoints<=0 then exit;
-  GetMem(PointArray,SizeOf(TPoint)*NPoints);
-  for i:=0 to NPoints-1 do
-    PointArray[i]:=Points[i+StartIndex];
-  Polygon(PointArray,NPoints,Winding);
-  FreeMem(PointArray);
+  Polygon(@Points[StartIndex],NPoints,Winding);
 end;
 
 procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
@@ -454,19 +450,15 @@ end;
 }
 procedure TCanvas.Polyline(const Points: array of TPoint; StartIndex: Integer;
   NumPts: Integer);
-var NPoints, i: integer;
-  PointArray: ^TPoint;
+var
+  NPoints : integer;
 begin
   if NumPts<0 then
     NPoints:=High(Points)-StartIndex+1
   else
     NPoints:=NumPts;
   if NPoints<=0 then exit;
-  GetMem(PointArray,SizeOf(TPoint)*NPoints);
-  for i:=0 to NPoints-1 do
-    PointArray[i]:=Points[i+StartIndex];
-  Polyline(PointArray,NPoints);
-  FreeMem(PointArray);
+  Polyline(@Points[StartIndex], NPoints);
 end;
 
 procedure TCanvas.Polyline(Points: PPoint; NumPts: Integer);
@@ -1104,6 +1096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/10/14 14:29:50  lazarus
+  AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
+
   Revision 1.30  2002/10/04 14:24:14  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
