@@ -3583,50 +3583,33 @@ end;
   Tells GTK Engine to create a widget
  ------------------------------------------------------------------------------}
 procedure TgtkObject.CreateComponent(Sender : TObject);
-const 
-  FormStyleMap : array[TFormBorderStyle] of integer = (
-    GTK_WINDOW_DIALOG,  // bsNone
-    GTK_WINDOW_TOPLEVEL,// bsSingle
-    GTK_WINDOW_TOPLEVEL,// bsSizeable
-    GTK_WINDOW_DIALOG,  // bsDialog
-    GTK_WINDOW_DIALOG,  // bsToolWindow
-    GTK_WINDOW_DIALOG   // bsSizeToolWin
-  );
-  FormResizableMap : array[TFormBorderStyle] of gint = (
-    0, // bsNone
-    1, // bsSingle
-    1, // bsSizeable
-    0, // bsDialog
-    0, // bsToolWindow
-    1  // bsSizeToolWin
-  );
-//unused:  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);  
 
 //unused:type
 //unused:   Tpixdata = Array[1..20] of String;
 
 var
-   Caption : ansistring;          // the caption of "Sender"
-   StrTemp : PChar;               // same as "caption" but as PChar
-   TempWidget,
-   TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
-   p          : pointer;          // ptr to the newly created GtkWidget
-   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
-   TempInt   : Integer;           // local use when neccessary
-   Adjustment: PGTKAdjustment;    // currently only used for csFixed
-   // - for csBitBtn
-   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
-   //pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
-   pixmapwid : pGtkWidget;        // currently only used for TBitBtn
-   //mask      : pGDKBitmap;        // currently only used for TBitBtn
-   //style     : pgtkStyle;         // currently only used for TBitBtn
-   label1    : pgtkwidget;        // currently only used for TBitBtn
-   //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
-   //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
-   ParentForm: TCustomForm;
-   Accel : PChar;
-   SetupProps : boolean;
-   Titles: PPGChar;
+  Caption : ansistring;          // the caption of "Sender"
+  StrTemp : PChar;               // same as "caption" but as PChar
+  TempWidget,
+  TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p          : pointer;          // ptr to the newly created GtkWidget
+  CompStyle,                     // componentstyle (type) of GtkWidget which will be created
+  TempInt   : Integer;           // local use when neccessary
+  Adjustment: PGTKAdjustment;    // currently only used for csFixed
+  // - for csBitBtn
+  Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
+  //pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
+  pixmapwid : pGtkWidget;        // currently only used for TBitBtn
+  //mask      : pGDKBitmap;        // currently only used for TBitBtn
+  //style     : pgtkStyle;         // currently only used for TBitBtn
+  label1    : pgtkwidget;        // currently only used for TBitBtn
+  //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
+  //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
+  ParentForm: TCustomForm;
+  Accel : PChar;
+  SetupProps : boolean;
+  Titles: PPGChar;
+  ABorderStyle: TFormBorderStyle;
 
   procedure Set_RC_Name(AWidget: PGtkWidget);
   var RCName: string;
@@ -3826,10 +3809,16 @@ begin
   csForm :
     begin
       Assert(Sender is TForm);
-      p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
 
-      gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[TForm(Sender).BorderStyle],
-        FormResizableMap[TForm(Sender).BorderStyle], 0);
+      if csDesigning in TForm(Sender).ComponentState then
+        ABorderStyle:=bsSizeable
+      else
+        ABorderStyle:=TForm(Sender).BorderStyle;
+      
+      p := gtk_window_new(FormStyleMap[ABorderStyle]);
+
+      gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[ABorderStyle],
+        FormResizableMap[ABorderStyle], 0);
       gtk_window_set_title(pGtkWindow(p), strTemp);
 
       // the clipboard needs a widget
@@ -5908,6 +5897,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.233  2002/10/06 17:55:45  lazarus
+  MG: JITForms now sets csDesigning before creation
+
   Revision 1.232  2002/10/05 10:37:21  lazarus
   MG: fixed TComboBox.ItemIndex on CreateWnd
 
