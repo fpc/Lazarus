@@ -2399,7 +2399,7 @@ begin
   
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
-  FColor := clBtnFace;
+  FColor := clWindow;
   FVisible := true;
   FParentShowHint := True;
   FWindowProc := @WndProc;
@@ -2561,6 +2561,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.153  2003/09/13 10:02:18  mattias
+  set default color to clWindow
+
   Revision 1.152  2003/08/27 11:01:10  mattias
   started TDockTree
 
