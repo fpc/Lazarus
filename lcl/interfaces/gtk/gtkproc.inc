@@ -2538,6 +2538,13 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: IndexOfStyle
+  Params: WName
+  Returns: Index of Style
+
+  Returns the Index within the Styles property of WNAME
+ ------------------------------------------------------------------------------}
 function IndexOfStyle(const WName : String): integer;
 begin
   if Styles<>nil then begin
@@ -2547,6 +2554,15 @@ begin
   Result:=-1;
 end;
 
+{------------------------------------------------------------------------------
+  Function: ReleaseStyle
+  Params: WName
+  Returns: nothing
+
+  Tries to release a Style corresponding to the Widget Name passed, aka 'button',
+  'default', checkbox', etc. This should only be called on theme change or on
+  application terminate.
+ ------------------------------------------------------------------------------}
 Procedure ReleaseStyle(const WName : String);
 var
   l : Longint;
@@ -2568,6 +2584,17 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetStyle
+  Params: none
+  Returns: Returns a Corresponding Style
+
+  Tries to get the Style corresponding to the Widget Name passed, aka 'button',
+  'default', checkbox', etc. for use within such routines as DrawFrameControl
+  to attempt to supply theme dependent drawing. Styles are stored in a TStrings
+  list which is only updated on theme change, to ensure fast efficient retrieval
+  of Styles.
+ ------------------------------------------------------------------------------}
 function GetStyle(const WName : String) : PGTKStyle;
 var
   Wd : PGTKWidget;
@@ -2582,13 +2609,14 @@ begin
     If AnsiCompareText(WName,'button')=0 then
       Wd := GTK_BUTTON_NEW
     else
-      If AnsiCompareText(WName,'default')=0 then begin
-        Style := GTK_Style_New;
-        if Style <> nil then begin
-          Styles.AddObject(WName, TObject(Style));
-          Result:=Style;
-        end;
-      end
+      If AnsiCompareText(WName,'default')=0 then
+        Wd := GTK_WIDGET_NEW(GTK_WIDGET_TYPE,nil,[])
+    else
+      If AnsiCompareText(WName,'checkbox')=0 then
+        Wd := GTK_CHECK_BUTTON_NEW
+    else
+      If AnsiCompareText(WName,'radiobutton')=0 then
+        Wd := GTK_RADIO_BUTTON_NEW(nil)
     else
       exit;
     gtk_widget_ensure_style(Wd);
@@ -2619,10 +2647,15 @@ function GetDefaultFont : PGDKFont;
 var
   Style : PGTKStyle;
 begin
-  Style := GetStyle('default');
   Result := nil;
+  Style := GetStyle('default');
   If Style <> nil then begin
-    Result := Style^.Font;
+    If Style^.Font <> nil then
+       Result := Style^.Font
+    else
+      If (Style^.RC_Style <> nil) and (Style^.RC_Style^.font_name <> nil)
+      then
+        Result := gdk_font_load(Style^.RC_Style^.font_name);
     If Result <> nil then
       Result := gdk_font_ref(Result);
   end;
@@ -2720,6 +2753,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.85  2002/09/03 08:07:21  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.84  2002/09/02 19:10:32  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
