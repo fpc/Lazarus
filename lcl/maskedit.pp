@@ -658,9 +658,11 @@ end;
 
 procedure TCustomMaskEdit.SetEditText(const Value: string);
 begin
-  if GetEditText <> Value then
-  begin
-    SetTextBuf(PChar(Value));
+  if GetEditText <> Value then begin
+    if HandleAllocated then
+      SetTextBuf(PChar(Value))
+    else
+      inherited Text:=Value;
     CheckCursor;
   end;
 end;
