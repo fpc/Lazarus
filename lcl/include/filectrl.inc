@@ -474,11 +474,16 @@ end;
  ------------------------------------------------------------------------------}
 function ReadAllLinks(const Filename: string;
   ExceptionOnError: boolean): string;
+{$IFNDEF win32}
 var
   LinkFilename: string;
   AText: string;
+{$ENDIF}
 begin
   Result:=Filename;
+  {$IFDEF win32}
+
+  {$ELSE}
   repeat
     LinkFilename:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(Result);
     if LinkFilename='' then begin
@@ -511,6 +516,7 @@ begin
         Result:=LinkFilename;
     end;
   until false;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -766,6 +772,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2003/02/09 16:01:49  mattias
+  fixed win32 compilation
+
   Revision 1.11  2003/02/07 17:49:21  mattias
   added ReadAllLinks
 
