@@ -73,9 +73,18 @@ procedure TFormEditor.PaintAllDesignerItems;
 var
   i: Integer;
   ADesigner: TDesigner;
+  AForm: TCustomForm;
 begin
   for i:=0 to JITFormList.Count-1 do begin
     ADesigner:=TDesigner(JITFormList[i].Designer);
+    if ADesigner<>nil then begin
+      ADesigner.DrawDesignerItems(true);
+    end;
+  end;
+  for i:=0 to JITDataModuleList.Count-1 do begin
+    AForm:=GetDesignerForm(JITDataModuleList[i]);
+    if AForm=nil then continue;
+    ADesigner:=TDesigner(AForm.Designer);
     if ADesigner<>nil then begin
       ADesigner.DrawDesignerItems(true);
     end;
