@@ -386,7 +386,7 @@ var
   PropertyEditorHook1 : TPropertyEditorHook;
   SourceNotebook : TSourceNotebook;
   Project1: TProject;
-
+  
 const
   OpenFlagNames: array[TOpenFlag] of string = (
      'ofProjectLoading',

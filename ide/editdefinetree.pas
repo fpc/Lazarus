@@ -35,13 +35,12 @@ unit EditDefineTree;
 interface
 
 uses
-  Classes, SysUtils, IDEProcs, CodeToolManager, DefineTemplates,
-  CompilerOptions, TransferMacros, LinkScanner, FileProcs;
+  Classes, SysUtils, FileProcs, FileCtrl, IDEProcs, CodeToolManager,
+  DefineTemplates, CompilerOptions, TransferMacros, LinkScanner;
 
 procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions);
 procedure SetAdditionalGlobalSrcPathToCodeToolBoss(const SrcPath: string);
 function FindCurrentProjectDirTemplate: TDefineTemplate;
-function FindCurrentProjectDirSrcPathTemplate: TDefineTemplate;
 function FindPackagesTemplate: TDefineTemplate;
 function FindPackageTemplateWithID(const PkgID: string): TDefineTemplate;
 function CreatePackagesTemplate: TDefineTemplate;
@@ -49,7 +48,6 @@ function CreatePackageTemplateWithID(const PkgID: string): TDefineTemplate;
 
 const
   ProjectDirDefTemplName = 'Current Project Directory';
-  ProjectDirSrcPathTemplName = 'SrcPathAddition';
   PackagesDefTemplName = 'Packages';
   PkgOutputDirDefTemplName = 'Output Directory';
 
@@ -60,13 +58,6 @@ function FindCurrentProjectDirTemplate: TDefineTemplate;
 begin
   Result:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
     ProjectDirDefTemplName,true);
-end;
-
-function FindCurrentProjectDirSrcPathTemplate: TDefineTemplate;
-begin
-  Result:=FindCurrentProjectDirTemplate;
-  if Result<>nil then
-    Result:=Result.FindChildByName(ProjectDirSrcPathTemplName);
 end;
 
 function FindPackagesTemplate: TDefineTemplate;
@@ -115,9 +106,13 @@ var
 begin
   Count:=0;
   for i:=1 to length(s)-1 do begin
-    if ((i=1) or (s[i-1]<>SpecialChar))
+    if ((i=1) or (s[i-1]<>FileProcs.SpecialChar))
     and (s[i]='$') and (s[i+1] in ['(','{']) then
       inc(Count);
+  end;
+  if Count=0 then begin
+    Result:=s;
+    exit;
   end;
   SetLength(Result,Length(s)+Count);
   i:=1;
@@ -125,7 +120,7 @@ begin
   while (i<=length(s)) do begin
     if (i<length(s))
     and ((s[i]='$') and (s[i+1] in ['(','{']))
-    and ((i=1) or (s[i-1]<>SpecialChar))
+    and ((i=1) or (s[i-1]<>FileProcs.SpecialChar))
     then begin
       Result[j]:=s[i];
       Result[j+1]:='(';
@@ -143,8 +138,11 @@ begin
 end;
 
 procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions);
-var ProjectDir, s: string;
+var ProjectDir: string;
   ProjTempl: TDefineTemplate;
+  UnitPath: String;
+  IncPath: String;
+  SrcPath: String;
 begin
   { ToDo:
   
@@ -207,36 +205,32 @@ begin
   // Paths --------------------------------------------------------------------
   
   // Include Path
-  if CompOpts.IncludeFiles<>'' then begin
+  IncPath:=ConvertTransferMacrosToExternalMacros(CompOpts.GetIncludePath(false));
+  if IncPath<>'' then begin
     // add include paths
     ProjTempl.AddChild(TDefineTemplate.Create('IncludePath',
-      'include path addition',ExternalMacroStart+'INCPATH',
-      ConvertTransferMacrosToExternalMacros(CompOpts.IncludeFiles)+';'
-      +'$('+ExternalMacroStart+'INCPATH)',
+      'include path addition',ExternalMacroStart+'IncPath',
+      IncPath+';'
+      +'$('+ExternalMacroStart+'IncPath)',
       da_DefineRecurse));
   end;
   // compiled unit path (ppu/ppw/dcu files)
-  s:=CompOpts.OtherUnitFiles;
-  if (CompOpts.UnitOutputDirectory<>'') then begin
-    if s<>'' then
-      s:=s+';'+CompOpts.UnitOutputDirectory
-    else
-      s:=CompOpts.UnitOutputDirectory;
-  end;
-  if s<>'' then begin
+  UnitPath:=ConvertTransferMacrosToExternalMacros(CompOpts.GetUnitPath(false));
+  if UnitPath<>'' then begin
     // add compiled unit path
     ProjTempl.AddChild(TDefineTemplate.Create('UnitPath',
       'unit path addition',ExternalMacroStart+'UnitPath',
-      ConvertTransferMacrosToExternalMacros(s)+';'
+      UnitPath+';'
       +'$('+ExternalMacroStart+'UnitPath)',
       da_DefineRecurse));
   end;
   // source path (unitpath + sources for the CodeTools, hidden to the compiler)
-  if (CompOpts.SrcPath<>'') or (s<>'') then begin
+  SrcPath:=ConvertTransferMacrosToExternalMacros(CompOpts.GetSrcPath(false));
+  if (SrcPath<>'') or (UnitPath<>'') then begin
     // add compiled unit path
     ProjTempl.AddChild(TDefineTemplate.Create('SrcPath',
       'source path addition',ExternalMacroStart+'SrcPath',
-      ConvertTransferMacrosToExternalMacros(s+';'+CompOpts.SrcPath)+';'
+      MergeSearchPaths(UnitPath,SrcPath)+';'
       +'$('+ExternalMacroStart+'SrcPath)',
       da_DefineRecurse));
   end;

@@ -66,6 +66,9 @@ function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function TrimFilename(const AFilename: string): string;
+function CleanAndExpandFilename(const Filename: string): string;
+function CleanAndExpandDirectory(const Filename: string): string;
+function FileIsInPath(const Filename, Path: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
@@ -252,20 +255,60 @@ end;
 function TrimFilename(const AFilename: string): string;
 // trim double path delims, heading and trailing spaces
 // and special dirs . and ..
+
+  function FilenameIsTrimmed(const TheFilename: string): boolean;
+  var
+    l: Integer;
+    i: Integer;
+  begin
+    Result:=false;
+    if TheFilename='' then begin
+      Result:=true;
+      exit;
+    end;
+    l:=length(TheFilename);
+    // check heading spaces
+    if TheFilename[1]=' ' then exit;
+    // check trailing spaces
+    if TheFilename[l]=' ' then exit;
+    i:=1;
+    while i<=l do begin
+      case TheFilename[i] of
+
+      PathDelim:
+        // check for double path delimiter
+        if (i<l) and (TheFilename[i+1]=PathDelim) then exit;
+
+      '.':
+        if (i=1) or (TheFilename[i-1]=PathDelim) then begin
+          // check for . and .. directories
+          if (i=l) or (TheFilename[i+1]=PathDelim) then exit;
+          if (TheFilename[i+1]='.')
+          and ((i=l-1) or (TheFilename[i+2]=PathDelim)) then exit;
+        end;
+
+      end;
+      inc(i);
+    end;
+    Result:=true;
+  end;
+
 var SrcPos, DestPos, l, DirStart: integer;
   c: char;
 begin
   Result:=AFilename;
+  if FilenameIsTrimmed(Result) then exit;
+
   l:=length(AFilename);
   SrcPos:=1;
   DestPos:=1;
-  
+
   // skip trailing spaces
-  while (l>=1) and (AFilename[SrcPos]=' ') do dec(l);
-  
+  while (l>=1) and (AFilename[l]=' ') do dec(l);
+
   // skip heading spaces
   while (SrcPos<=l) and (AFilename[SrcPos]=' ') do inc(SrcPos);
-  
+
   // trim double path delims and special dirs . and ..
   while (SrcPos<=l) do begin
     c:=AFilename[SrcPos];
@@ -288,7 +331,8 @@ begin
     // check for special dirs . and ..
     if (c='.') then begin
       if (SrcPos<l) then begin
-        if (AFilename[SrcPos+1]=PathDelim) then begin
+        if (AFilename[SrcPos+1]=PathDelim)
+        and ((DestPos=1) or (AFilename[SrcPos-1]=PathDelim)) then begin
           // special dir ./
           // -> skip
           inc(SrcPos,2);
@@ -365,6 +409,38 @@ begin
   // trim result
   if DestPos<=length(AFilename) then
     SetLength(Result,DestPos-1);
+end;
+
+{------------------------------------------------------------------------------
+  function CleanAndExpandFilename(const Filename: string): string;
+ ------------------------------------------------------------------------------}
+function CleanAndExpandFilename(const Filename: string): string;
+begin
+  Result:=ExpandFilename(TrimFileName(Filename));
+end;
+
+{------------------------------------------------------------------------------
+  function CleanAndExpandDirectory(const Filename: string): string;
+ ------------------------------------------------------------------------------}
+function CleanAndExpandDirectory(const Filename: string): string;
+begin
+  Result:=AppendPathDelim(CleanAndExpandFilename(Filename));
+end;
+
+{------------------------------------------------------------------------------
+  function FileIsInPath(const Filename, Path: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileIsInPath(const Filename, Path: string): boolean;
+var
+  ExpFile: String;
+  ExpPath: String;
+  l: integer;
+begin
+  ExpFile:=CleanAndExpandFilename(Filename);
+  ExpPath:=CleanAndExpandDirectory(Path);
+  l:=length(ExpPath);
+  Result:=(length(ExpFile)>l) and (ExpFile[l+1]=PathDelim)
+          and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
 end;
 
 function AppendPathDelim(const Path: string): string;

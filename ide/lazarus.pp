@@ -44,9 +44,9 @@ program Lazarus;
 
 uses
   //cmem,
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
+  {$ENDIF}
   Interfaces,
   Forms,
   Splash,
@@ -54,8 +54,7 @@ uses
   MainBar,
   MsgView,
   FindReplaceDialog,
-  FindInFilesDlg,
-  IDEProcs;
+  FindInFilesDlg;
 
 begin
   Application.Initialize;
@@ -77,19 +76,25 @@ begin
 
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
+  
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
+  SplashForm:=nil;
 
   writeln('LAZARUS END - cleaning up ...');
 
   // free the forms, so that they are freed before the finalization sections
-  FreeThenNil(MainIDE);
+  MainIDE.Free;
+  MainIDE:=nil;
 end.
 
 
 {
   $Log$
+  Revision 1.42  2003/04/21 16:21:28  mattias
+  implemented default package for custom IDE components
+
   Revision 1.41  2003/04/18 15:32:51  mattias
   implemented file reference list
 

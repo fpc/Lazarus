@@ -1405,7 +1405,6 @@ begin
       CompilerOptions.XMLConfigFile := xmlconfig;
       CompilerOptions.LoadCompilerOptions(true);
       if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
-      CreateProjectDefineTemplate(CompilerOptions);
 
       // load the Publish Options
       PublishOptions.LoadFromXMLConfig(xmlconfig,'ProjectOptions/PublishOptions/');
@@ -2547,6 +2546,9 @@ end.
 
 {
   $Log$
+  Revision 1.113  2003/04/21 16:21:28  mattias
+  implemented default package for custom IDE components
+
   Revision 1.112  2003/04/20 23:10:03  mattias
   implemented inherited project compiler options
 

@@ -47,6 +47,8 @@ unit DefineTemplates;
 
 {$ifdef FPC} {$mode objfpc} {$endif}{$H+}
 
+{ $Define VerboseDefineCache}
+
 interface
 
 uses
@@ -1236,6 +1238,9 @@ end;
 procedure TDefineTree.ClearCache;
 begin
   if (FCache.Count=0) and (FVirtualDirCache=nil) then exit;
+  {$IFDEF VerboseDefineCache}
+  writeln('TDefineTree.ClearCache A +++++++++');
+  {$ENDIF}
   FCache.FreeAndClear;
   FVirtualDirCache.Free;
   FVirtualDirCache:=nil;
@@ -1450,7 +1455,7 @@ var ExpPath: string;
 begin
   //writeln('[TDefineTree.GetDefinesForDirectory] "',Path,'"');
   if (Path<>'') or (not WithVirtualDir) then begin
-    ExpPath:=Path;
+    ExpPath:=TrimFilename(Path);
     if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
       ExpPath:=ExpPath+PathDelim;
     DirDef:=FindDirectoryInCache(ExpPath);
@@ -1664,12 +1669,14 @@ var
     MacroFuncName: String;
     NewMacroLen: Integer;
     MacroParam: string;
+    OldMacroLen: Integer;
   begin
     Result:=false;
     MacroFuncNameEnd:=MacroEnd;
     MacroFuncNameLen:=MacroFuncNameEnd-MacroStart-1;
     MacroEnd:=SearchBracketClose(CurValue,MacroFuncNameEnd)+1;
     if MacroEnd>ValueLen+1 then exit;
+    OldMacroLen:=MacroEnd-MacroStart;
     // Macro found
     if MacroFuncNameLen>0 then begin
       MacroFuncName:=copy(CurValue,MacroStart+1,MacroFuncNameLen);
@@ -1698,7 +1705,7 @@ var
       //writeln('**** NewValue MacroStr=',MacroStr);
     end;
     NewMacroLen:=length(MacroStr);
-    GrowBuffer(BufferPos+NewMacroLen+ValueLen-MacroStart+1);
+    GrowBuffer(BufferPos+NewMacroLen-OldMacroLen+ValueLen-ValuePos+1);
     // copy text between this macro and last macro
     CopyFromValueToBuffer(MacroStart-ValuePos);
     // copy macro value to buffer
@@ -1721,7 +1728,8 @@ var
     end;
     // copy the buffer into NewValue
     SetLength(NewValue,BufferPos);
-    Move(Buffer^,NewValue[1],BufferPos);
+    if BufferPos>0 then
+      Move(Buffer^,NewValue[1],BufferPos);
     // clean up
     FreeMem(Buffer);
     Buffer:=nil;
@@ -1869,7 +1877,9 @@ var
 
 // function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
 begin
-  //writeln('[TDefineTree.Calculate] "',DirDef.Path,'"');
+  {$IFDEF VerboseDefineCache}
+  writeln('[TDefineTree.Calculate] ++++++ "',DirDef.Path,'"');
+  {$ENDIF}
   Result:=true;
   FErrorTemplate:=nil;
   ExpandedDirectory:=DirDef.Path;
@@ -3069,8 +3079,8 @@ begin
   SubDirTempl.AddChild(TDefineTemplate.Create('lazarus standard components',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'synedit'
-    +';'+SrcPath
+    '..'+ds+'synedit;'
+    +SrcPath
     ,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
 

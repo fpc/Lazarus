@@ -190,8 +190,28 @@ begin
 end;
 
 procedure TTransferMacroList.Add(NewMacro: TTransferMacro);
+var
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  cmp: Integer;
 begin
-  fItems.Add(NewMacro);
+  l:=0;
+  r:=fItems.Count-1;
+  m:=0;
+  while l<=r do begin
+    m:=(l+r) shr 1;
+    cmp:=AnsiCompareText(NewMacro.Name,Items[m].Name);
+    if cmp<0 then
+      r:=m-1
+    else if cmp>0 then
+      l:=m+1
+    else
+      break;
+  end;
+  if (m<fItems.Count) and (AnsiCompareText(NewMacro.Name,Items[m].Name)>0) then
+    inc(m);
+  fItems.Insert(m,NewMacro);
 end;
 
 function TTransferMacroList.SubstituteStr(var s:string): boolean;
@@ -345,16 +365,26 @@ end;
 
 function TTransferMacroList.FindByName(const MacroName: string): TTransferMacro;
 var
-  i:integer;
-  Cnt: Integer;
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  cmp: Integer;
 begin
-  Cnt:=Count;
-  for i:=0 to Cnt-1 do
-    if AnsiCompareText(MacroName,Items[i].Name)=0 then begin
-      Result:=Items[i];
-      exit;
+  l:=0;
+  r:=fItems.Count-1;
+  m:=0;
+  while l<=r do begin
+    m:=(l+r) shr 1;
+    Result:=Items[m];
+    cmp:=AnsiCompareText(Result.Name,Items[m].Name);
+    if cmp<0 then
+      r:=m-1
+    else if cmp>0 then
+      l:=m+1
+    else begin
+      break;
     end;
-  Result:=nil;
+  end;
 end;
 
 function TTransferMacroList.MF_Ext(const Filename:string;

@@ -41,13 +41,13 @@ interface
 {$I ide.inc}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
+  {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
   Dialogs, Menus, CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree,
   LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs,
-  InputHistory, IDEDefs, UComponentManMain, Project, ComponentReg,
+  InputHistory, IDEDefs, Project, ComponentReg, UComponentManMain,
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates,
@@ -376,6 +376,8 @@ end;
 
 procedure TPkgManager.OnApplicationIdle(Sender: TObject);
 begin
+  if (Screen.ActiveCustomForm<>nil)
+  and (fsModal in Screen.ActiveCustomForm.FormState) then exit;
   PackageGraph.CloseUnneededPackages;
 end;
 
@@ -961,10 +963,7 @@ procedure TPkgManager.LoadInstalledPackages;
 begin
   // base packages
   PackageGraph.AddStaticBasePackages;
-  
   PackageGraph.RegisterStaticPackages;
-  // custom packages
-  // ToDo
 end;
 
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage

@@ -47,7 +47,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, Forms, Controls, Dialogs,
   LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf,
-  ComponentReg, RegisterLCL, RegisterFCL;
+  ComponentReg, RegisterFCL, RegisterLCL, RegisterSynEdit;
   
 type
   TFindPackageFlag = (
@@ -75,6 +75,7 @@ type
   private
     FAbortRegistration: boolean;
     fChanged: boolean;
+    FDefaultPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
     FItems: TList;   // unsorted list of TLazPackage
@@ -88,10 +89,13 @@ type
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
+    FSynEditPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
     function CreateFCLPackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
+    function CreateSynEditPackage: TLazPackage;
+    function CreateDefaultPackage: TLazPackage;
     function GetPackages(Index: integer): TLazPackage;
     procedure DoDependencyChanged(Dependency: TPkgDependency);
     procedure SetAbortRegistration(const AValue: boolean);
@@ -175,6 +179,10 @@ type
                                     ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
     procedure RegisterStaticPackages;
+    procedure RegisterStaticPackage(APackage: TLazPackage;
+                                    RegisterProc: TRegisterProc);
+    procedure RegisterDefaultPackageComponent(const Page, UnitName: ShortString;
+                                              ComponentClass: TComponentClass);
   public
     // dependency handling
     procedure AddDependencyToPackage(APackage: TLazPackage;
@@ -194,6 +202,8 @@ type
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
+    property SynEditPackage: TLazPackage read FSynEditPackage;
+    property DefaultPackage: TLazPackage read FDefaultPackage;
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
@@ -215,6 +225,12 @@ var
   PackageGraph: TLazPackageGraph;
 
 implementation
+
+procedure RegisterCustomIDEComponent(const Page, UnitName: ShortString;
+  ComponentClass: TComponentClass);
+begin
+  PackageGraph.RegisterDefaultPackageComponent(Page,UnitName,ComponentClass);
+end;
 
 procedure RegisterComponentsGlobalHandler(const Page: string;
   ComponentClasses: array of TComponentClass);
@@ -850,6 +866,78 @@ begin
   end;
 end;
 
+function TLazPackageGraph.CreateSynEditPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='SynEdit';
+    Filename:='$(LazarusDir)/components/synedit/';
+    Version.SetValues(1,0,1,1);
+    Author:='SynEdit - http://sourceforge.net/projects/synedit/';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=false;
+    Description:='SynEdit - the editor component used by Lazarus. '
+                +'http://sourceforge.net/projects/synedit/';
+    PackageType:=lptDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
+
+    // add units
+    AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
+    AddFile('syneditlazdsgn.pas','SynEditLazDsgn',pftUnit,[],cpBase);
+    AddFile('syncompletion.pas','SynCompletion',pftUnit,[],cpBase);
+    AddFile('synexporthtml.pas','SynExportHTML',pftUnit,[],cpBase);
+    AddFile('synmacrorecorder.pas','SynMacroRecorder',pftUnit,[],cpBase);
+    AddFile('synmemo.pas','SynMemo',pftUnit,[],cpBase);
+    AddFile('synhighlighterpas.pas','SynHighlighterPas',pftUnit,[],cpBase);
+    AddFile('synhighlightercpp.pp','SynHighlighterCPP',pftUnit,[],cpBase);
+    AddFile('synhighlighterjava.pas','SynHighlighterJava',pftUnit,[],cpBase);
+    AddFile('synhighlighterperl.pas','SynHighlighterPerl',pftUnit,[],cpBase);
+    AddFile('synhighlighterhtml.pp','SynHighlighterHTML',pftUnit,[],cpBase);
+    AddFile('synhighlighterxml.pas','SynHighlighterXML',pftUnit,[],cpBase);
+    AddFile('synhighlighterlfm.pas','SynHighlighterLFM',pftUnit,[],cpBase);
+    AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);
+
+    // add unit paths
+    UsageOptions.UnitPath:='$(LazarusDir)/components/units';
+
+    // add requirements
+    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg);
+
+    Modified:=false;
+  end;
+end;
+
+function TLazPackageGraph.CreateDefaultPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='DefaultPackage';
+    Filename:='$(LazarusDir)/components/custom/';
+    Version.SetValues(1,0,1,1);
+    Author:='Anonymous';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=false;
+    Description:='This is the default package. '
+                +'Used only for components without a package. '
+                +'These components are outdated.';
+    PackageType:=lptDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
+
+    // add unit paths
+    UsageOptions.UnitPath:='$(LazarusDir)/components/custom';
+
+    // add requirements
+    AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg);
+    AddRequiredDependency(SynEditPackage.CreateDependencyForThisPkg);
+
+    Modified:=false;
+  end;
+end;
+
 procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
 var
   RequiredPackage: TLazPackage;
@@ -889,6 +977,11 @@ begin
   // LCL
   FLCLPackage:=CreateLCLPackage;
   AddPackage(FLCLPackage);
+  // SynEdit
+  FSynEditPackage:=CreateSynEditPackage;
+  AddPackage(FSynEditPackage);
+  // the default package will be added on demand
+  FDefaultPackage:=CreateDefaultPackage;
 end;
 
 procedure TLazPackageGraph.ClosePackage(APackage: TLazPackage);
@@ -1274,18 +1367,52 @@ end;
 
 procedure TLazPackageGraph.RegisterStaticPackages;
 begin
-  // FCL
-  RegistrationPackage:=FCLPackage;
-  RegisterFCL.Register;
-  FCLPackage.Registered:=true;
-  
-  // LCL
-  RegistrationPackage:=LCLPackage;
-  RegisterLCL.Register;
-  LCLPackage.Registered:=true;
+  BeginUpdate(true);
+  // IDE built-in packages
+  RegisterStaticPackage(FCLPackage,@RegisterFCL.Register);
+  RegisterStaticPackage(LCLPackage,@RegisterLCL.Register);
+  RegisterStaticPackage(SynEditPackage,@RegisterSynEdit.Register);
 
-  // clean up
+  // custom IDE components
+  RegistrationPackage:=DefaultPackage;
+  ComponentReg.RegisterCustomIDEComponents(@RegisterCustomIDEComponent);
+  if DefaultPackage.FileCount=0 then begin
+    FreeThenNil(FDefaultPackage);
+  end else begin
+    DefaultPackage.Name:=CreateUniquePkgName('DefaultPackage',DefaultPackage);
+    AddPackage(DefaultPackage);
+  end;
   RegistrationPackage:=nil;
+
+  // installed packages
+  // ToDo
+
+  EndUpdate;
+end;
+
+procedure TLazPackageGraph.RegisterStaticPackage(APackage: TLazPackage;
+  RegisterProc: TRegisterProc);
+begin
+  RegistrationPackage:=APackage;
+  RegisterProc();
+  APackage.Registered:=true;
+  RegistrationPackage:=nil;
+end;
+
+procedure TLazPackageGraph.RegisterDefaultPackageComponent(const Page,
+  UnitName: ShortString; ComponentClass: TComponentClass);
+var
+  PkgFile: TPkgFile;
+  NewPkgFilename: String;
+begin
+  PkgFile:=FDefaultPackage.FindUnit(UnitName,true);
+  if PkgFile=nil then begin
+    NewPkgFilename:=UnitName+'.pas';
+    PkgFile:=FDefaultPackage.AddFile(NewPkgFilename,UnitName,pftUnit,[],
+                                     cpOptional);
+  end;
+  FRegistrationFile:=PkgFile;
+  RegisterComponentsHandler(Page,[ComponentClass]);
 end;
 
 procedure TLazPackageGraph.AddDependencyToPackage(APackage: TLazPackage;

@@ -38,7 +38,11 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, IDEProcs;
+  Classes, SysUtils,
+  {$IFDEF CustomIDEComps}
+  CustomIDEComps,
+  {$ENDIF}
+  IDEProcs, LazarusPackageIntf;
 
 type
   TComponentPriorityCategory = (
@@ -143,6 +147,12 @@ var
 function ComparePriority(const p1,p2: TComponentPriority): integer;
 function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
 
+type
+  RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
+                                       ComponentClass: TComponentClass);
+
+procedure RegisterCustomIDEComponents(RegisterProc: RegisterUnitComponentProc);
+
 
 implementation
 
@@ -163,6 +173,13 @@ begin
   Comp2:=TIDEComponent(Data2);
   Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
                           Comp2.ComponentClass.Classname);
+end;
+
+procedure RegisterCustomIDEComponents(RegisterProc: RegisterUnitComponentProc);
+begin
+  {$IFDEF CustomIDEComps}
+  CustomIDEComps.RegisterCustomComponents(RegisterProc);
+  {$ENDIF}
 end;
 
 { TIDEComponent }

@@ -2699,7 +2699,6 @@ begin
   // update the package block define template (the container for all other
   // define templates of the package)
   if FMain=nil then begin
-writeln('TLazPackageDefineTemplates.UpdateMain A ',LazPackage.IDAsString);
     FMain:=CreatePackageTemplateWithID(LazPackage.IDAsString);
   end;
   FMain.Name:=LazPackage.IDAsString;
@@ -2720,7 +2719,6 @@ begin
   if (FOutPutSrcPath=nil)
   or (fLastOutputDirSrcPathIDAsString<>LazPackage.IDAsString) then begin
     fLastOutputDirSrcPathIDAsString:=LazPackage.IDAsString;
-writeln('TLazPackageDefineTemplates.UpdateDefinesForOutputDirectory A ',LazPackage.IDAsString);
     FOutPutSrcPath:=TDefineTemplate.Create('CompiledSrcPath',
       'CompiledSrcPath addition',CompiledSrcPathMacroName,
       '$PkgSrcPath('+fLastOutputDirSrcPathIDAsString+');'
@@ -2773,8 +2771,6 @@ begin
     end else
       fLastSourceDirectories:=TStringList.Create;
       
-writeln('TLazPackageDefineTemplates.UpdateDefinesForSourceDirectories A ',LazPackage.IDAsString,' "',NewSourceDirs.Text,'"');
-
     // build source directory define templates
     fLastSourceDirectories.Assign(NewSourceDirs);
     if (FMain=nil) and (fLastSourceDirectories.Count>0) then UpdateMain;

@@ -92,6 +92,9 @@ resourcestring
   lisTestDirectory = 'Test directory';
   lisLaunchingCmdLine = 'Launching target command line';
   lisPublishProjDir = 'Publish project directory';
+  lisProjectUnitPath = 'Project Unit Path';
+  lisProjectIncPath = 'Project Include Path';
+  lisProjectSrcPath = 'Project Src Path';
 
   // main bar menu
   lisMenuFile = '&File';

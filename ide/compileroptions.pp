@@ -269,6 +269,7 @@ type
     function NeedsLinkerOpts: boolean;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
+    function GetSrcPath(RelativeToBaseDir: boolean): string;
   public
     { Properties }
     property Owner: TObject read fOwner write fOwner;
@@ -1227,6 +1228,22 @@ begin
   InhIncludePath:=GetInheritedOption(icoIncludePath,RelativeToBaseDir);
   
   Result:=MergeSearchPaths(CurIncludePath,InhIncludePath);
+end;
+
+function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean): string;
+var
+  CurSrcPath: String;
+  InhSrcPath: String;
+begin
+  // src path
+  CurSrcPath:=ParsedOpts.GetParsedValue(pcosSrcPath);
+  if (not RelativeToBaseDir) then
+    CreateAbsolutePath(CurSrcPath,BaseDirectory);
+
+  // inherited src path
+  InhSrcPath:=GetInheritedOption(icoSrcPath,RelativeToBaseDir);
+
+  Result:=MergeSearchPaths(CurSrcPath,InhSrcPath);
 end;
 
 {------------------------------------------------------------------------------
