@@ -23,7 +23,6 @@
 
   ToDo:
     - icons
-    - pass keys to form editor
     - drag&drop: change parent and position
     - TComponent childs (e.g. TMenu and TMenuItems)
 }

@@ -69,7 +69,8 @@ type
     function JumpToNode(ANode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
-    function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos: integer;
+    function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
+        NewBottomLineCleanPos: integer;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
@@ -245,7 +246,8 @@ const
       {$IFDEF CTDEBUG}
       writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc D CleanDiffPos=',DiffPos);
       {$ENDIF}
-      Result:=JumpToCleanPos(DiffPos,ToProcNode.StartPos,NewPos,NewTopLine,true);
+      Result:=JumpToCleanPos(DiffPos,ToProcNode.StartPos,ToProcNode.EndPos,
+                             NewPos,NewTopLine,true);
     end else begin
       // procs are equal
       if (ToProcNode.LastChild.Desc=ctnBeginBlock) then begin
@@ -260,7 +262,8 @@ const
         writeln('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc F proc has no body');
         {$ENDIF}
         Result:=JumpToCleanPos(ToProcNode.FirstChild.StartPos,
-                               ToProcNode.StartPos,NewPos,NewTopLine,false);
+                               ToProcNode.StartPos,ToProcNode.EndPos,NewPos,
+                               NewTopLine,false);
       end;
       RevertableJump:=true;
     end;
@@ -689,8 +692,8 @@ begin
   DestNode:=FindProcBody(ProcNode);
   if DestNode=nil then begin
     // proc without body -> jump to proc node header
-    Result:=JumpToCleanPos(ProcNode.FirstChild.StartPos,ProcNode.Startpos,
-                           NewPos,NewTopLine,false);
+    Result:=JumpToCleanPos(ProcNode.FirstChild.StartPos,ProcNode.StartPos,
+                           ProcNode.EndPos,NewPos,NewTopLine,false);
     exit;
   end;
   // search good position
@@ -744,7 +747,9 @@ begin
   end else
     i:=0;
   if NewCleanPos>SrcLen then NewCleanPos:=SrcLen;
-  if not JumpToCleanPos(NewCleanPos,ProcNode.StartPos,NewPos,NewTopLine,true)
+  
+  if not JumpToCleanPos(NewCleanPos,ProcNode.StartPos,ProcNode.EndPos,
+                        NewPos,NewTopLine,true)
   then exit;
   if CursorBeyondEOL then
     inc(NewPos.x,i);
@@ -885,7 +890,7 @@ function TMethodJumpingCodeTool.JumpToNode(ANode: TCodeTreeNode;
 begin
   Result:=false;
   if (ANode=nil) or (ANode.StartPos<1) then exit;
-  Result:=JumpToCleanPos(ANode.StartPos,ANode.StartPos,
+  Result:=JumpToCleanPos(ANode.StartPos,ANode.StartPos,ANode.EndPos,
                          NewPos,NewTopLine,IgnoreJumpCentered);
 end;
 
@@ -983,10 +988,13 @@ begin
 end;
 
 function TMethodJumpingCodeTool.JumpToCleanPos(NewCleanPos,
-  NewTopLineCleanPos: integer; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer; IgnoreJumpCentered: boolean): boolean;
-var CenteredTopLine: integer;
+  NewTopLineCleanPos, NewBottomLineCleanPos: integer;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  IgnoreJumpCentered: boolean): boolean;
+var
+  CenteredTopLine: integer;
   NewTopLinePos: TCodeXYPosition;
+  NewBottomLinePos: TCodeXYPosition;
 begin
   Result:=false;
   // convert clean position to line, column and code
@@ -1008,18 +1016,37 @@ begin
   end;
   // convert clean top line position to line, column and code
   if not CleanPosToCaret(NewTopLineCleanPos,NewTopLinePos) then exit;
+  // convert clea bottom line position to line, column and code
+  NewBottomLinePos:=NewPos;
+  if (NewBottomLineCleanPos>NewCleanPos)
+  and (not CleanPosToCaret(NewBottomLineCleanPos,NewBottomLinePos)) then exit;
+
   if NewTopLinePos.Code=NewPos.Code then begin
     // top line position is in the same code as the destination position
     NewTopLine:=NewTopLinePos.Y;
+    CenteredTopLine:=NewPos.Y-VisibleEditorLines div 2;
     if JumpCentered and (not IgnoreJumpCentered) then begin
       // center the destination position in the source editor
-      CenteredTopLine:=NewPos.Y-VisibleEditorLines div 2;
       if CenteredTopLine<NewTopLine then
         NewTopLine:=CenteredTopLine;
     end;
+    // NewTopLine not above first line of code
     if NewTopLine<1 then NewTopLine:=1;
-    if NewTopLine<=NewPos.Y-VisibleEditorLines then
-      NewTopLine:=NewPos.Y-VisibleEditorLines+1;
+    // make NewTopLine visible
+    if NewTopLine<=NewPos.Y-VisibleEditorLines then begin
+      // NewTopLine is not visible
+      // center or align to bottom
+      if (NewBottomLineCleanPos>NewCleanPos)
+      and (NewBottomLinePos.Y<NewPos.Y+(VisibleEditorLines div 2))
+      then begin
+        // align to bottom
+        NewTopLine:=NewBottomLinePos.Y-VisibleEditorLines+1;
+      end else begin
+        // center
+        NewTopLine:=CenteredTopLine;
+      end;
+      if NewTopLine<1 then NewTopLine:=1;
+    end;
   end else
     NewTopLine:=1;
   Result:=true;
