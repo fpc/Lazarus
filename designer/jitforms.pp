@@ -261,7 +261,7 @@ var
   i: Integer;
 begin
   for i:=0 to 1000 do begin
-    if PPointer(AClass)[i]=MethodPointer then begin
+    if PPointer(pointer(AClass))[i]=MethodPointer then begin
       Result:=i*SizeOf(Pointer);
       exit;
     end;
@@ -313,17 +313,33 @@ begin
     Designer.ValidateRename(AComponent, CurName, NewName);
 end;
 
+{$IFDEF VER1_0}
+type
+  TMyComponent = class(TComponent)
+    function GetValidateRenameAddress: pointer;
+  end;
+
+{ TMyComponent }
+
+function TMyComponent.GetValidateRenameAddress: pointer;
+begin
+  Result := @ValidateRename;
+end;
+{$ENDIF}
+
 function GetTComponentValidateRenameVMTOffset: integer;
 begin
-  Result:=GetVMTVirtualMethodOffset(TComponent,@TComponent.ValidateRename,
+  Result:=GetVMTVirtualMethodOffset(TComponent,
+    {$IFNDEF VER1_0}@TComponent.ValidateRename
+    {$ELSE}@TMyComponent.GetValidateRenameAddress{$ENDIF},
     TComponentWithOverrideValidateRename,
     @TComponentWithOverrideValidateRename.ValidateRename);
 end;
 
 var
-  MyFindGlobalComponentProc:function(const AName:AnsiString):TComponent of object;
+  MyFindGlobalComponentProc:function(const AName: AnsiString): TComponent of object;
 
-function MyFindGlobalComponent(const AName:AnsiString):TComponent;
+function MyFindGlobalComponent(const AName: AnsiString): TComponent;
 begin
   Result:=MyFindGlobalComponentProc(AName);
 end;
@@ -941,8 +957,8 @@ begin
 
   // set vmtTypeInfo
   TypeDataSize:=SizeOf(TTypeData)+2; // TTypeData + one word for new prop count
-  TypeInfoSize:=SizeOf(TTypeInfo.Kind)+1+length(NewClassName)+TypeDataSize;
-  if SizeOf(TTypeInfo.Kind)<>1 then
+  TypeInfoSize:=SizeOf(TTypeKind)+1+length(NewClassName)+TypeDataSize;
+  if SizeOf(TTypeKind)<>1 then
     raise Exception.Create('CreateNewClass SizeOf(TTypeInfo^.Kind)<>1');
   GetMem(NewTypeInfo,TypeInfoSize);
   FillChar(NewTypeInfo^,TypeInfoSize,0);
