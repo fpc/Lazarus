@@ -38,7 +38,7 @@ program NotebookTest;
 
 uses
   Interfaces, Classes, Controls, Forms, Buttons, SysUtils, StdCtrls,
-  Graphics, ExtCtrls;
+  Graphics, ExtCtrls, LclProc;
 
 type
 	  
@@ -126,11 +126,11 @@ var
   F1: TForm1;
 
 begin
-  WriteLN('------ INIT ------- ');
+  DebugLN('------ INIT ------- ');
   Application.Initialize;
-  WriteLN('------ CREATE ------- ');
+  DebugLN('------ CREATE ------- ');
   Application.CreateForm(TForm1, F1);
-  WriteLN('------ RUN ------- ');
+  DebugLN('------ RUN ------- ');
   Application.Run;
-  WriteLN('------ DONE ------- ');
+  DebugLN('------ DONE ------- ');
 end.
