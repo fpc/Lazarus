@@ -155,6 +155,7 @@ Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: 
 
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 function DeliverMessage(const Target: Pointer; var AMessage): Integer;
+procedure NotifyApplicationUserInput;
 
 (* gtkDragCallback.inc headers *)
 Function edit_drag_data_received(widget : pgtkWidget;
