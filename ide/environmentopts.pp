@@ -89,15 +89,15 @@ const
   { IDE Language (Human, not computer) }
 
 type
-  TLazarusLanguage = (llAutomatic, llEnglish, llGerman, llSpanish, llFrench);
+  TLazarusLanguage = (llAutomatic, llEnglish, llGerman, llSpanish, llFrench, llRussian);
   
 const
   LazarusLanguageNames: array[TLazarusLanguage] of string = (
-    'Automatic (default is english)', 'English', 'Deutsch', 'EspaÒol', 'FranÁais'
+    'Automatic (default is english)', 'English', 'Deutsch', 'EspaÒol', 'FranÁais', 'Ú’””À… '
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
-    '', 'en', 'de', 'es', 'fr'
+    '', 'en', 'de', 'es', 'fr', 'ru'
   );
   
   
@@ -627,6 +627,7 @@ begin
     llGerman  : Result:=rsLanguageDeutsch;
     llSpanish : Result:=rsLanguageSpanish;
     llFrench  : Result:=rsLanguageFrench;
+    llRussian : Result:=rsLanguageRussian;
   end;
 end;
 

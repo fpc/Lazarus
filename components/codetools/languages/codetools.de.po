@@ -510,6 +510,10 @@ msgstr ""
 msgid "source is not unit"
 msgstr ""
 
+#: codetoolsstrconsts:ctssrcpathforcompiledunits
+msgid "src path for compiled units"
+msgstr ""
+
 #: codetoolsstrconsts:ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr ""

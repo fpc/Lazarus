@@ -50,6 +50,10 @@ msgstr ""
 msgid "&Close Page"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucomponents
+msgid "&Components"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Edit"
@@ -140,6 +144,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagerussian
+msgid "\362\325\323\323\313\311\312"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuaboutlazarus
@@ -638,6 +646,10 @@ msgstr "Vervollstaendige Code"
 msgid "Complete properties"
 msgstr ""
 
+#: lazarusidestrconsts:srkmcatcomponentsmenu
+msgid "Components menu commands"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr ""
@@ -649,6 +661,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
 msgstr "Einstellungen fuer \"Kompiliere Lazarus\""
+
+#: lazarusidestrconsts:lismenuconfigcustomcomps
+msgid "Configure custom components"
+msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."

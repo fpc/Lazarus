@@ -122,6 +122,10 @@ msgstr ""
 msgid "&Run"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucomponents
+msgid "&Components"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
 msgstr ""
@@ -504,6 +508,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconfigcustomcomps
+msgid "Configure custom components"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
@@ -3106,6 +3114,10 @@ msgstr ""
 msgid "Run menu commands"
 msgstr ""
 
+#: lazarusidestrconsts:srkmcatcomponentsmenu
+msgid "Components menu commands"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcattoolmenu
 msgid "Tools menu commands"
 msgstr ""
@@ -3136,6 +3148,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagerussian
+msgid "\362\325\323\323\313\311\312"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption

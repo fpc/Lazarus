@@ -59,6 +59,10 @@ msgstr "&Ajouter un suivi sous le curseur"
 msgid "&Close Page"
 msgstr "&Fermer la page"
 
+#: lazarusidestrconsts:lismenucomponents
+msgid "&Components"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Edition"
@@ -150,6 +154,10 @@ msgstr "\" n'existe pas."
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
 msgstr "\" est protèger en écriture."
+
+#: lazarusidestrconsts:rslanguagerussian
+msgid "\362\325\323\323\313\311\312"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
@@ -647,6 +655,10 @@ msgstr "Compléter le code"
 msgid "Complete properties"
 msgstr "Propriété d'achèvement"
 
+#: lazarusidestrconsts:srkmcatcomponentsmenu
+msgid "Components menu commands"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr "Fichiers de configuration"
@@ -658,6 +670,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
 msgstr "Configurer la construction de lazarus"
+
+#: lazarusidestrconsts:lismenuconfigcustomcomps
+msgid "Configure custom components"
+msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."

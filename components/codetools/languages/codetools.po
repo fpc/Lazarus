@@ -598,3 +598,7 @@ msgstr ""
 msgid "%s is not executable"
 msgstr ""
 
+#: codetoolsstrconsts:ctssrcpathforcompiledunits
+msgid "src path for compiled units"
+msgstr ""
+

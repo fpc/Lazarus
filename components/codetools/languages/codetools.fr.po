@@ -520,6 +520,10 @@ msgstr "Noms de fichiers sources pour les unités standard de fpc"
 msgid "source is not unit"
 msgstr "la source n'est pas une unité"
 
+#: codetoolsstrconsts:ctssrcpathforcompiledunits
+msgid "src path for compiled units"
+msgstr ""
+
 #: codetoolsstrconsts:ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Initialisation de SrcPath"
