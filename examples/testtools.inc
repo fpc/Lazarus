@@ -2881,10 +2881,14 @@ end;
 
 Destructor TForm1.Destroy;
 begin
+  IniFile1.Free;
   inherited Destroy;
 end;
 {
   $Log$
+  Revision 1.13  2003/11/29 13:38:35  mattias
+  fixed memleak  from Vincent
+
   Revision 1.12  2003/11/25 09:15:55  mattias
   fixed testall
 
