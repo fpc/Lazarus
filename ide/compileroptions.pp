@@ -1255,7 +1255,7 @@ begin
   Result:=MergeSearchPaths(CurrentPath,InheritedPath);
   {$IFDEF VerbosePkgUnitPath}
   if Option=pcosUnitPath then
-    debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' CurrentPath="',CurrentPath,'"');
+    debugln('TBaseCompilerOptions.GetParsedPath Total ',dbgsName(Self),' Result="',Result,'"');
   {$ENDIF}
 end;
 

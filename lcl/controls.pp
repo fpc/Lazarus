@@ -674,12 +674,12 @@ type
        +-----+
 
       If you want to have the top of B the same as the top of C use
-        B.AnchorSide[akTop].Control:=C;
         B.AnchorSide[akTop].Side:=asrTop;
+        B.AnchorSide[akTop].Control:=C;
       If you want to keep a distance of 10 pixels between B and C use
         B.BorderSpacing.Right:=10;
-        B.AnchorSide[akRight].Control:=C;
         B.AnchorSide[akRight].Side:=asrLeft;
+        B.AnchorSide[akRight].Control:=C;
 
       Do not setup in both directions, because this will create a circle, and
       circles are not allowed.
@@ -692,11 +692,11 @@ type
             +-------+
             
       Centering A relative to B:
-        A.AnchorSide[akTop].Control:=B;
         A.AnchorSide[akTop].Side:=arsCenter;
+        A.AnchorSide[akTop].Control:=B;
       Or use this. It's equivalent:
-        A.AnchorSide[akBottom].Control:=B;
         A.AnchorSide[akBottom].Side:=arsCenter;
+        A.AnchorSide[akBottom].Control:=B;
 
 
     }
@@ -2853,6 +2853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.275  2005/01/24 14:57:36  mattias
+  fixed TCollectionPropertyEditorForm to recognize renames and deletes
+
   Revision 1.274  2005/01/24 12:23:11  mattias
   fixed TColorButton.Paint
 

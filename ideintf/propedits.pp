@@ -2450,8 +2450,15 @@ begin
 end;
 
 procedure TPropertyEditor.Initialize;
+
+  procedure RaiseNoInstance;
+  begin
+    raise Exception.Create('TPropertyEditor.Initialize '+dbgsName(Self));
+  end;
+
 begin
-  //
+  if FPropList^[0].Instance=nil then
+    RaiseNoInstance;
 end;
 
 procedure TPropertyEditor.Modified;
@@ -3425,15 +3432,20 @@ begin
   SaveElements;
 end;
 
-{ TCollectionPropertyEditor }
 
 Type
+  { TCollectionPropertyEditor }
+  
   TCollectionPropertyEditorForm = class(TForm)
     procedure ListClick(Sender: TObject);
     procedure AddClick(Sender: TObject);
     procedure DeleteClick(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
+  private
+    FCollection: TCollection;
+    FOwnerPersistent: TPersistent;
+    FPropertyName: string;
   protected
     CollectionListBox: TListBox;
     ButtonPanel: TPanel;
@@ -3443,13 +3455,19 @@ Type
     MoveDownButton: TSpeedButton;
     procedure UpdateCaption;
     procedure UpdateButtons;
+    procedure ComponentRenamed(AComponent: TComponent);
+    procedure PersistentDeleting(APersistent: TPersistent);
   public
-    Collection: TCollection;
-    PersistentName: string;
-    PropertyName: string;
     procedure FillCollectionListBox;
-    Constructor Create(TheOwner: TComponent); Override;
+    constructor Create(TheOwner: TComponent); Override;
+    destructor Destroy; override;
     procedure SelectInObjectInspector(UnselectAll: boolean);
+    procedure SetCollection(NewCollection: TCollection;
+                    NewOwnerPersistent: TPersistent; const NewPropName: string);
+  public
+    property Collection: TCollection read FCollection;
+    property OwnerPersistent: TPersistent read FOwnerPersistent;
+    property PropertyName: string read FPropertyName;
   end;
 
 const
@@ -3537,12 +3555,19 @@ procedure TCollectionPropertyEditorForm.UpdateCaption;
 var
   NewCaption: String;
 begin
-  //I think to match Delphi this should be formated like
+  //I think to match Delphi this should be formatted like
   //"Editing ComponentName.PropertyName[Index]"
-  NewCaption:= 'Editing ' + PersistentName + '.' + PropertyName;
+  if OwnerPersistent is TComponent then
+    NewCaption:=TComponent(OwnerPersistent).Name
+  else if OwnerPersistent<>nil then
+    NewCaption:=OwnerPersistent.GetNamePath
+  else
+    NewCaption:='';
+  if NewCaption<>'' then NewCaption:=NewCaption+'.';
+  NewCaption:=NewCaption+PropertyName;
+  NewCaption:= 'Editing ' + NewCaption;
   If CollectionListBox.ItemIndex > -1 then
-    NewCaption := NewCaption + '[' +
-      IntToStr(CollectionListBox.ItemIndex) + ']';
+    NewCaption:=NewCaption + '[' + IntToStr(CollectionListBox.ItemIndex) + ']';
   Caption:=NewCaption;
 end;
 
@@ -3554,6 +3579,20 @@ begin
   DeleteButton.Enabled:= i > -1;
   MoveUpButton.Enabled:=i>0;
   MoveDownButton.Enabled:=(i>=0) and (i<Collection.Count-1);
+end;
+
+procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent
+  );
+begin
+  if AComponent=OwnerPersistent then
+    UpdateCaption;
+end;
+
+procedure TCollectionPropertyEditorForm.PersistentDeleting(
+  APersistent: TPersistent);
+begin
+  if APersistent=OwnerPersistent then
+    SetCollection(nil,nil,'');
 end;
 
 procedure TCollectionPropertyEditorForm.FillCollectionListBox;
@@ -3658,6 +3697,13 @@ begin
   end;
 end;
 
+destructor TCollectionPropertyEditorForm.Destroy;
+begin
+  if GlobalDesignHook<>nil then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  inherited Destroy;
+end;
+
 procedure TCollectionPropertyEditorForm.SelectInObjectInspector(
   UnselectAll: boolean);
 var
@@ -3676,6 +3722,28 @@ begin
   finally
     NewSelection.Free;
   end;
+end;
+
+procedure TCollectionPropertyEditorForm.SetCollection(
+  NewCollection: TCollection; NewOwnerPersistent: TPersistent;
+  const NewPropName: string);
+begin
+  if (FCollection=NewCollection) and (FOwnerPersistent=NewOwnerPersistent)
+  and (FPropertyName=NewPropName) then
+    exit;
+  FCollection:=NewCollection;
+  FOwnerPersistent:=NewOwnerPersistent;
+  FPropertyName:=NewPropName;
+  //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
+  if GlobalDesignHook<>nil then begin
+    if FOwnerPersistent<>nil then begin
+      GlobalDesignHook.AddHandlerComponentRenamed(@ComponentRenamed);
+      GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
+    end else begin
+      GlobalDesignHook.RemoveAllHandlersForObject(Self);
+    end;
+  end;
+  FillCollectionListBox;
 end;
 
 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -3747,17 +3815,10 @@ begin
   TheCollection := TCollection(GetObjectValue);
   if TheCollection=nil then
     raise Exception.Create('Collection=nil');
-  If Assigned(CollectionForm) then
-    CollectionForm.Free;
-  CollectionForm := TCollectionPropertyEditorForm.Create(Application);
-  with CollectionForm do begin
-    Collection := TheCollection;
-    PropertyName := GetPropInfo^.Name;
-    PersistentName := '';
-    Caption := 'Editing ' + GetPropInfo^.Name;
-    FillCollectionListBox;
-    Show;
-  end;
+  If CollectionForm=nil then
+    CollectionForm := TCollectionPropertyEditorForm.Create(Application);
+  CollectionForm.SetCollection(TheCollection,GetComponent(0),GetName);
+  CollectionForm.Show;
 end;
 
 { TClassPropertyEditor }
