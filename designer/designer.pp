@@ -1397,7 +1397,7 @@ begin
     end;
     if ACursor<>LastFormCursor then begin
       LastFormCursor:=ACursor;
-      CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
+      Form.Cursor:=ACursor;
     end;
 
     exit;
