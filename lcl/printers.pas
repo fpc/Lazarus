@@ -128,7 +128,7 @@ type
     fTitle       : string;       //Title of current document
     fPrinting    : Boolean;      //Printing
     fAborted     : Boolean;      //Abort  process
-    fCapabilities: TPrinterCapabilities;
+    //fCapabilities: TPrinterCapabilities;
     fPaperSize   : TPaperSize;
     
     function GetCanvas: TCanvas;

@@ -235,8 +235,10 @@ type
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
-    function WinControlAtPos(x,y: integer; UseFormAsDefault: boolean): TWinControl;
-    function ControlAtPos(x,y: integer; UseFormAsDefault: boolean): TControl;
+    function WinControlAtPos(x,y: integer; UseFormAsDefault,
+                             IgnoreHidden: boolean): TWinControl;
+    function ControlAtPos(x,y: integer; UseFormAsDefault,
+                          IgnoreHidden: boolean): TControl;
     function GetDesignedComponent(AComponent: TComponent): TComponent;
     function GetComponentEditorForSelection: TBaseComponentEditor;
     function GetShiftState: TShiftState; override;
@@ -1047,7 +1049,7 @@ Begin
   if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
 
   if MouseDownComponent=nil then begin
-    MouseDownComponent:=ControlAtPos(MouseDownPos.X,MouseDownPos.Y,true);
+    MouseDownComponent:=ControlAtPos(MouseDownPos.X,MouseDownPos.Y,true,true);
     if MouseDownComponent=nil then exit;
   end;
   MouseDownSender:=Sender;
@@ -1211,7 +1213,7 @@ var
       if MouseDownComponent is TWinControl then
         NewParentControl:=TWinControl(MouseDownComponent)
       else
-        NewParentControl:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X,true);
+        NewParentControl:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X,true,true);
       while (NewParentControl<>nil)
       and ((not (csAcceptsControls in NewParentControl.ControlStyle))
         or ((NewParentControl.Owner<>FLookupRoot)
@@ -2215,8 +2217,8 @@ begin
   Result:=nil;
 end;
 
-function TDesigner.WinControlAtPos(x, y: integer; UseFormAsDefault: boolean
-  ): TWinControl;
+function TDesigner.WinControlAtPos(x, y: integer; UseFormAsDefault,
+  IgnoreHidden: boolean): TWinControl;
 var i: integer;
   WinControlBounds: TRect;
 begin
@@ -2224,19 +2226,21 @@ begin
     Result:=TWinControl(FLookupRoot.Components[i]);
     if (Result is TWinControl) then begin
       with Result do begin
-        WinControlBounds:=GetParentFormRelativeBounds(Result);
-        if (WinControlBounds.Left<=x) and (WinControlBounds.Top<=y)
-        and (WinControlBounds.Right>x)
-        and (WinControlBounds.Bottom>y) then
-          exit;
+        if (not IgnoreHidden) or ControlIsInDesignerVisible(Result) then begin
+          WinControlBounds:=GetParentFormRelativeBounds(Result);
+          if (WinControlBounds.Left<=x) and (WinControlBounds.Top<=y)
+          and (WinControlBounds.Right>x)
+          and (WinControlBounds.Bottom>y) then
+            exit;
+         end;
       end;
     end;
   end;
   Result:=Form;
 end;
 
-function TDesigner.ControlAtPos(x, y: integer; UseFormAsDefault: boolean
-  ): TControl;
+function TDesigner.ControlAtPos(x, y: integer; UseFormAsDefault,
+  IgnoreHidden: boolean): TControl;
 var i: integer;
   ControlBounds: TRect;
 begin
@@ -2244,11 +2248,13 @@ begin
     Result:=TControl(FLookupRoot.Components[i]);
     if (Result is TControl) then begin
       with Result do begin
-        ControlBounds:=GetParentFormRelativeBounds(Result);
-        if (ControlBounds.Left<=x) and (ControlBounds.Top<=y)
-        and (ControlBounds.Right>x)
-        and (ControlBounds.Bottom>y) then
-          exit;
+        if (not IgnoreHidden) or ControlIsInDesignerVisible(Result) then begin
+          ControlBounds:=GetParentFormRelativeBounds(Result);
+          if (ControlBounds.Left<=x) and (ControlBounds.Top<=y)
+          and (ControlBounds.Right>x)
+          and (ControlBounds.Bottom>y) then
+            exit;
+        end;
       end;
     end;
   end;
