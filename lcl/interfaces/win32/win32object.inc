@@ -244,7 +244,6 @@ Var
   Num: Integer;
   PStr, PStr2: PChar;
   SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
-  S: String;
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   AMenu: TMenu;
@@ -299,16 +298,6 @@ Begin
       Exit;
     End;
     Case LM_Message of
-      LM_APPENDTEXT:
-      Begin
-        if (Data <> nil) and (PChar(Data)^ <> #0) then 
-        begin
-          { TODO: needs to be moved/changed when TWSWinControl.SetText is broken up further }
-          TWin32WSWinControl.GetText(Sender as TWinControl, S);
-          S := S + PChar(Data);
-          TWin32WSWinControl.SetText(Sender as TWinControl, S);
-        end;
-      End;
       LM_ADDCHILD:
       Begin
         Assert(False, 'Trace:Adding a child to Parent');
@@ -2771,6 +2760,9 @@ End;
 
 {
   $Log$
+  Revision 1.239  2004/09/10 17:59:58  micha
+  convert LM_APPENDTEXT to interface method
+
   Revision 1.238  2004/09/10 14:38:29  micha
   convert lm_gettext to new interface methods
   remove lm_settext replacement settext methods in twidgetsets

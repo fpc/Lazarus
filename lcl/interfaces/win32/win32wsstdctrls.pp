@@ -129,6 +129,7 @@ type
   private
   protected
   public
+    class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); override;
   end;
 
   { TWin32WSEdit }
@@ -376,6 +377,21 @@ begin
   SetProp(winhandle, 'MAXLENGTH', NewLength);
 end;
 
+{ TWin32WSCustomMemo }
+
+procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+var
+  S: string;
+begin
+  if Length(AText) > 0 then 
+  begin
+    GetText(ACustomMemo, S);
+    S := S + AText;
+    SetText(ACustomMemo, S);
+  end;
+end;
+
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -392,7 +408,7 @@ initialization
   RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
 //  RegisterWSComponent(TListBox, TWin32WSListBox);
   RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
+  RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
 //  RegisterWSComponent(TEdit, TWin32WSEdit);
 //  RegisterWSComponent(TMemo, TWin32WSMemo);
 //  RegisterWSComponent(TCustomLabel, TWin32WSCustomLabel);

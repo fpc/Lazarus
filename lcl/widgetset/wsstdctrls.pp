@@ -116,7 +116,10 @@ type
   { TWSCustomMemo }
 
   TWSCustomMemo = class(TWSCustomEdit)
+  public
+    class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); virtual;
   end;
+  TWSCustomMemoClass = class of TWSCustomMemo;
 
   { TWSEdit }
 
@@ -251,6 +254,12 @@ procedure TWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: 
 begin
 end;
 
+{ TWSCustomMemo }
+
+procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -265,7 +274,7 @@ initialization
   RegisterWSComponent(TCustomListBox, TWSCustomListBox);
 //  RegisterWSComponent(TListBox, TWSListBox);
   RegisterWSComponent(TCustomEdit, TWSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
+  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
 //  RegisterWSComponent(TEdit, TWSEdit);
 //  RegisterWSComponent(TMemo, TWSMemo);
 //  RegisterWSComponent(TCustomLabel, TWSCustomLabel);

@@ -255,7 +255,6 @@ type
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
-    procedure AppendText(Sender: TObject; Str: PChar); virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
     Procedure GetPixel(Sender : TObject; Data : Pointer);virtual;
     function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
@@ -460,6 +459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.196  2004/09/10 17:59:57  micha
+  convert LM_APPENDTEXT to interface method
+
   Revision 1.195  2004/09/10 16:28:51  mattias
   implemented very rudimentary TTabControl
 

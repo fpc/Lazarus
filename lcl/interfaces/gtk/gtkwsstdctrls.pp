@@ -124,6 +124,7 @@ type
   private
   protected
   public
+    class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); override;
   end;
 
   { TGtkWSEdit }
@@ -339,6 +340,25 @@ begin
   {$EndIf}
 end;
 
+{ TGtkWSCustomMemo }
+
+procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+var
+  Widget: PGtkWidget;
+  CurMemoLen: cardinal;
+begin
+  if Length(AText) = 0 then
+    exit;
+
+  {$IfDef GTK1}
+  Widget:=GetWidgetInfo(Pointer(ACustomMemo.Handle), true)^.CoreWidget;
+  gtk_text_freeze(PGtkText(Widget));
+  CurMemoLen := gtk_text_get_length(PGtkText(Widget));
+  gtk_editable_insert_text(PGtkOldEditable(Widget), PChar(AText), Length(AText), @CurMemoLen);
+  gtk_text_thaw(PGtkText(Widget));
+  {$EndIf}
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -355,7 +375,7 @@ initialization
 //  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
+  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
 //  RegisterWSComponent(TEdit, TGtkWSEdit);
 //  RegisterWSComponent(TMemo, TGtkWSMemo);
 //  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);

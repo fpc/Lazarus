@@ -3854,9 +3854,6 @@ begin
         end;
       end;
 
-      LM_APPENDTEXT:
-        AppendText(Sender,PChar(Data));
-
       else
         if Sender<>nil then
           Assert(True, Format('WARNING: Unhandled message %d in IntSendMessage3'
@@ -3914,33 +3911,6 @@ begin
     // parent changed for child
     FixedPutControl(pFixed, Child, Left, Top);
     RegroupAccelerator(Child);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.AppendText(Sender: TObject; Str: PChar);
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.AppendText(Sender: TObject; Str: PChar);
-var
-  Widget: PGtkWidget;
-  CurMemoLen: cardinal;
-begin
-  if Str=nil then exit;
-
-  if (Sender is TWinControl) then begin
-   {$IfDef GTK1}
-    case TWinControl(Sender).fCompStyle of
-      csMemo:
-      begin
-        Widget:=GetWidgetInfo(Pointer(TWinControl(Sender).Handle),
-                              true)^.CoreWidget;
-        gtk_text_freeze(PGtkText(Widget));
-        CurMemoLen := gtk_text_get_length(PGtkText(Widget));
-        gtk_editable_insert_text(PGtkOldEditable(Widget),Str,StrLen(Str),@CurMemoLen);
-        gtk_text_thaw(PGtkText(Widget));
-      end;
-     end;
-   {$EndIf}
   end;
 end;
 
@@ -8853,6 +8823,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.547  2004/09/10 17:59:58  micha
+  convert LM_APPENDTEXT to interface method
+
   Revision 1.546  2004/09/10 16:28:51  mattias
   implemented very rudimentary TTabControl
 

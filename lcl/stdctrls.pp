@@ -1123,6 +1123,7 @@ type
   TMemoStrings = class(TStrings)
   private
     FMemo: TCustomMemo;
+    FMemoWidgetClass: TWSCustomMemoClass;
   protected
     function Get(Index : Integer): String; override;
     function GetCount: Integer; override;
@@ -1131,6 +1132,8 @@ type
     procedure Clear; override;
     procedure Delete(index : Integer); override;
     procedure Insert(index: Integer; const S: String); override;
+
+    property MemoWidgetClass: TWSCustomMemoClass read FMemoWidgetClass write FMemoWidgetClass;
   end;
 
 procedure Register;
@@ -1171,6 +1174,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.166  2004/09/10 17:59:57  micha
+  convert LM_APPENDTEXT to interface method
+
   Revision 1.165  2004/09/10 09:43:12  micha
   convert LM_SETLABEL message to interface methods
 

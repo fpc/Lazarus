@@ -128,7 +128,7 @@ begin
         LastLine:=S+LineEnding;
         if (CurText<>'') and (not (CurText[length(CurText)] in [#10,#13])) then
           LastLine:=LineEnding+LastLine;
-        CNSendMessage(LM_APPENDTEXT, FMemo, PChar(LastLine))
+        FMemoWidgetClass.AppendText(FMemo, LastLine);
       end else begin
         TempStrings.Insert(Index, S);
         FMemo.Text:=TempStrings.Text;
@@ -148,6 +148,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/09/10 17:59:57  micha
+  convert LM_APPENDTEXT to interface method
+
   Revision 1.10  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

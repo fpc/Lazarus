@@ -214,7 +214,6 @@ const
   LM_SETCURSOR      = LM_User+81;
 
   LM_INTERNALPAINT  = LM_User + 90;
-  LM_APPENDTEXT     = LM_User + 91;
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_User+99;
@@ -1034,6 +1033,9 @@ end.
 
 {
   $Log$
+  Revision 1.80  2004/09/10 17:59:57  micha
+  convert LM_APPENDTEXT to interface method
+
   Revision 1.79  2004/09/10 14:38:29  micha
   convert lm_gettext to new interface methods
   remove lm_settext replacement settext methods in twidgetsets
