@@ -37,6 +37,7 @@ uses
   Forms,
   Splash,
   Main,
+  MainBar,
   MsgView,
   FindReplaceDialog,
   FindInFilesDlg;
@@ -70,6 +71,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2002/03/27 09:18:11  lazarus
+  MG: splitted main.pp: TMainIDE has now an ancestor TMainIDEBar
+
   Revision 1.28  2002/02/25 16:48:10  lazarus
   MG: new IDE window layout system
 

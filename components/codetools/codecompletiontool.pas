@@ -1073,6 +1073,21 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       end;
       AnAVLNode:=NextAVLNode;
     end;
+    
+    // remove abstract methods
+    AnAVLNode:=ClassProcs.FindLowest;
+    while AnAVLNode<>nil do begin
+      NextAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
+      if NextAVLNode<>nil then begin
+        ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
+        ANode:=ANodeExt.Node;
+        if (ANode<>nil) and (ANode.Desc=ctnProcedure)
+        and ProcNodeHasSpecifier(ANode,psABSTRACT) then begin
+          ClassProcs.Delete(AnAVLNode);
+        end;
+      end;
+      AnAVLNode:=NextAVLNode;
+    end;
 
     CurNode:=FirstExistingProcBody;
     
