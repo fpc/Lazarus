@@ -577,7 +577,7 @@ begin
           icompUnknown,true,0,
           CurrentIdentifierList.CreateIdentifier(
             BeautifyCodeOptions.PropertyReadIdentPrefix+PropertyName),
-          0,nil,nil,ctnNone);
+          0,nil,nil,ctnProcedure);
       CurrentIdentifierList.Add(NewItem);
     end;
     if UpAtomIs('WRITE') then begin
@@ -586,7 +586,7 @@ begin
           icompUnknown,true,0,
           CurrentIdentifierList.CreateIdentifier(
             BeautifyCodeOptions.PropertyWriteIdentPrefix+PropertyName),
-          0,nil,nil,ctnNone);
+          0,nil,nil,ctnProcedure);
       CurrentIdentifierList.Add(NewItem);
     end;
     if UpAtomIs('READ') or UpAtomIs('WRITE') then begin
@@ -595,7 +595,16 @@ begin
           icompUnknown,true,0,
           CurrentIdentifierList.CreateIdentifier(
             BeautifyCodeOptions.PrivatVariablePrefix+PropertyName),
-          0,nil,nil,ctnNone);
+          0,nil,nil,ctnVarDefinition);
+      CurrentIdentifierList.Add(NewItem);
+    end;
+    if UpAtomIs('STORED') then begin
+      // add the default class completion 'stored' specifier function
+      NewItem:=TIdentifierListItem.Create(
+          icompUnknown,true,0,
+          CurrentIdentifierList.CreateIdentifier(
+            PropertyName+BeautifyCodeOptions.PropertyStoredIdentPostfix),
+          0,nil,nil,ctnProcedure);
       CurrentIdentifierList.Add(NewItem);
     end;
   end;
