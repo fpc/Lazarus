@@ -266,6 +266,7 @@ type
       AComponent: TComponent; const NewName: string);
 
     procedure OnControlSelectionChanged(Sender: TObject);
+    procedure OnControlSelectionPropsChanged(Sender: TObject);
     procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
           NewForm: TCustomForm);
 
@@ -1195,6 +1196,7 @@ procedure TMainIDE.SetupControlSelection;
 begin
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
+  TheControlSelection.OnPropertiesChanged:=@OnControlSelectionPropsChanged;
   TheControlSelection.OnSelectionFormChanged:=@OnControlSelectionFormChanged;
 end;
 
@@ -6189,6 +6191,12 @@ begin
   {$ENDIF}
 end;
 
+procedure TMainIDE.OnControlSelectionPropsChanged(Sender: TObject);
+begin
+  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+  ObjectInspector1.RefreshPropertyValues;
+end;
+
 procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
   NewForm: TCustomForm);
 begin
@@ -7728,6 +7736,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.465  2003/02/21 10:42:57  mattias
+  fixed updating OI when moving components
+
   Revision 1.464  2003/02/20 11:03:20  mattias
   save as of project files now starts in project dierctory
 
