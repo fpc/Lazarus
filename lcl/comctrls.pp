@@ -971,7 +971,14 @@ type
   TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected,
                 nsExpanded, nsHasChildren);
   TNodeStates = set of TNodeState;
-  TNodeAttachMode = (naAdd, naAddFirst, naAddChild, naAddChildFirst, naInsert);
+  TNodeAttachMode = (
+    naAdd,           // add as last sibling of Destination
+    naAddFirst,      // add as first sibling of Destnation
+    naAddChild,      // add as last child of Destination
+    naAddChildFirst, // add as first child of Destination
+    naInsert,        // insert in front of Destination
+    naInsertBehind   // insert behind Destination
+    );
 
   TAddMode = (taAddFirst, taAdd, taInsert);
 
@@ -982,7 +989,8 @@ type
 
 const
   NodeAttachModeNames: array[TNodeAttachMode] of string =
-    ('naAdd', 'naAddFirst', 'naAddChild', 'naAddChildFirst', 'naInsert');
+    ('naAdd', 'naAddFirst', 'naAddChild', 'naAddChildFirst',
+     'naInsert', 'naInsertBehind');
   AddModeNames: array[TAddMode] of string =
     ('taAddFirst', 'taAdd', 'taInsert');
   LCLStreamID = -7;
@@ -1761,6 +1769,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/06/18 11:21:06  mattias
+  fixed taborder=0, implemented TabOrder Editor
+
   Revision 1.77  2003/06/13 21:13:20  mattias
   fixed TTrackBar initial size
 

@@ -335,7 +335,7 @@ begin
     Parent:=NoteBook.Page[1];
     Left:=FormsAutoCreatedListBox.Left+5;
     Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
-    Width:=300;
+    Width:=400;
     Height:=25;
     Caption:=dlgAutoCreateNewForms;
   end;
@@ -424,7 +424,7 @@ begin
   with FormsAutoCreateNewFormsCheckBox do begin
     Left:=FormsMoveAutoCreatedFormUpBtn.Left;
     Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
-    Width:=300;
+    Width:=Parent.ClientWidth-Left;
     Height:=25;
   end;
 end;

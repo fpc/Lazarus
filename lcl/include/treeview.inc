@@ -1141,6 +1141,7 @@ procedure TTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
   naAddChild:      add as last child of Destination
   naAddChildFirst: add as first child of Destination
   naInsert:        insert in front of Destination
+  naInsertBehind:  insert behind Destination
 }
 var
   AddMode: TAddMode;
@@ -1149,8 +1150,18 @@ var
   OldOnChanging: TTVChangingEvent;
   OldOnChange: TTVChangedEvent;
 begin
-  if (Destination=nil) and (Mode in [naAddChild,naAddChildFirst,naInsert]) then
+  if (Destination=nil)
+  and (Mode in [naAddChild,naAddChildFirst,naInsert,naInsertBehind]) then
     TreeNodeError('TTreeNode.MoveTo Destination=nil');
+  if Mode=naInsertBehind then begin
+    // convert naInsertBehind
+    if Destination.GetNextSibling=nil then begin
+      Mode:=naAdd;
+    end else begin
+      Mode:=naInsert;
+      Destination:=Destination.GetNextSibling;
+    end;
+  end;
   if (Destination = nil) or not Destination.HasAsParent(Self) then begin
     OldOnChanging := TreeView.OnChanging;
     OldOnChange := TreeView.OnChange;
