@@ -70,12 +70,12 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
-    State: TCustomDrawItemState);
+    State: TOwnerDrawState);
 
 
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
-  State: TCustomDrawItemState);
+  State: TOwnerDrawState);
 begin
   //TControlCanvas(FCanvas).UpdateTextFlags;
   if Assigned(FOnDrawItem) then
@@ -654,10 +654,9 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomComboBox.CNDrawItems(var TheMessage : TLMDrawItems);
 //var
-  //State: TOwnerDrawState;
+//  State: TOwnerDrawState;
 begin
-
-  {with Message.DrawItemStruct^ do
+  {with TheMessage.DrawItemStruct^ do
   begin
     State := TOwnerDrawState(LongRec(itemState).Lo);
     if itemState and ODS_COMBOBOXEDIT <> 0 then
@@ -728,6 +727,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2002/10/03 18:04:46  lazarus
+  MG: started customdrawitem
+
   Revision 1.16  2002/10/03 14:47:30  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 

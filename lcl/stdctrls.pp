@@ -168,13 +168,14 @@ type
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
-  TCustomDrawItemState = (
-    cdiSelected, cdiGrayed, cdiDisabled, cdiChecked,
-    cdiFocused, cdiDefault, cdiHotLight, cdiInactive, cdiNoAccel,
-    cdiNoFocusRect, cdiComboBoxEdit);
-  
-  TCustomDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
-    Rect: TRect; State: TCustomDrawItemState) of object;
+  TOwnerDrawStateType = (
+    odSelected, odGrayed, odDisabled, odChecked,
+    odFocused, odDefault, odHotLight, odInactive, odNoAccel,
+    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit);
+  TOwnerDrawState = set of TOwnerDrawStateType;
+
+  TDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
+    Rect: TRect; State: TOwnerDrawState) of object;
   TMeasureItemEvent = procedure(Control: TWinControl; Index: Integer;
     var Height: Integer) of object;
 
@@ -191,7 +192,7 @@ type
     fMaxLength: integer;
     FOnChange : TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
-    FOnDrawItem: TCustomDrawItemEvent;
+    FOnDrawItem: TDrawItemEvent;
     FOnDropDown: TNotifyEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
@@ -209,7 +210,7 @@ type
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
     procedure DrawItem(Index: Integer; Rect: TRect;
-      State: TCustomDrawItemState); virtual;
+      State: TOwnerDrawState); virtual;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure Change; dynamic;
     procedure Loaded; override;
@@ -247,7 +248,7 @@ type
     property MaxLength: integer read GetMaxLength write SetMaxLength default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
-    property OnDrawItem: TCustomDrawItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnMeasureItem: TMeasureItemEvent
       read FOnMeasureItem write FOnMeasureItem;
@@ -1315,6 +1316,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/10/03 18:04:46  lazarus
+  MG: started customdrawitem
+
   Revision 1.51  2002/10/03 14:47:30  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 

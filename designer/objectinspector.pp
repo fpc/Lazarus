@@ -21,9 +21,6 @@
 
 
   ToDo:
-   - TCustomComboBox has a bug: it can not store objects
-   - TCustomComboBox don't know custom draw yet
-   - combobox can't sort (exception)
    - backgroundcolor=clNone
 
    - a lot more ...  see XXX
@@ -44,6 +41,9 @@ type
   EObjectInspectorException = class(Exception);
   
   TObjectInspector = class;
+
+
+  { TOIOptions }
 
   TOIOptions = class
   private
@@ -94,6 +94,9 @@ type
   end;
 
   TOIPropertyGrid = class;
+
+
+  { TOIPropertyGridRow }
 
   TOIPropertyGridRow = class
   private

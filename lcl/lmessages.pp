@@ -372,7 +372,7 @@ type
     Msg : Cardinal;
     CursorWnd : HWND;
     HitText : Word;
-    MOuseMsg : Word;
+    MouseMsg : Word;
     Result : Longint;
   end;
 
@@ -381,7 +381,7 @@ type
   TLMCanvasCreate = Record
      pparent : Pointer;
      pCanvas : Pointer;
-    end;
+  end;
 
   pTLMCanvasCreate = ^TLMCanvasCreate;
 
@@ -871,6 +871,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2002/10/03 18:04:46  lazarus
+  MG: started customdrawitem
+
   Revision 1.33  2002/10/03 14:47:29  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 

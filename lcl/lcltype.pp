@@ -664,10 +664,10 @@ type
     ctlType: UINT;
     ctlID : UINT;
     itemID : UINT;
-     itemAction : UINT;
-     itemState : UINT;
+    itemAction : UINT;
+    itemState : UINT;
     hwndItem: HWND;
-    _hDc: HDC;
+    _hDC: HDC;
     rcItem: TRect;
     itemData : DWord;
   end;
@@ -1579,6 +1579,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2002/10/03 18:04:46  lazarus
+  MG: started customdrawitem
+
   Revision 1.17  2002/09/27 20:52:22  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
