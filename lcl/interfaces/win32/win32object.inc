@@ -939,7 +939,6 @@ activate_time :	the time at which the activation event occurred.
           If (Sender as TControl).FCompStyle = csComboBox then
           Begin
             Result := SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil));
-            Result := High(Result) - Low(Result);
           End;
         End;
         LM_GETLIMITTEXT:
@@ -1216,7 +1215,7 @@ end;
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
-function TWin32Object.DestroyTimer(TimerHandle: integer) : boolean;
+function TWin32Object.DestroyTimer(TimerHandle: Integer) : boolean;
 var
   n : integer;
   TimerInfo : PWin32Timerinfo;
@@ -1227,7 +1226,7 @@ begin
   while (n>0) do begin
     dec(n);
     TimerInfo := FTimerData[n];
-    if (TimerInfo^.TimerID=TimerHandle) then
+    if (TimerInfo^.TimerID=UINT(TimerHandle)) then
     begin
       Result := Windows.KillTimer(0, TimerHandle);
       FTimerData.Delete(n);
@@ -2046,7 +2045,7 @@ Begin
       If TCustomForm(Sender).FormStyle = fsStayOnTop Then
         FlagsEx:= FlagsEx or WS_EX_TOPMOST;
       try
-        Window := CreateWindowEx(FlagsEx,@ClsName, StrTemp,Flags, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+        Window := CreateWindowEx(FlagsEx, @ClsName, StrTemp, Flags, LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), Parent, HMENU(Nil), HInstance, Nil);
       except
         writeln('Exception occured creating window');
       end;
@@ -2061,7 +2060,7 @@ Begin
     End;
     csHintWindow:
     Begin
-      Window := CreateWindow(@ClsName, StrTemp,WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(@ClsName, StrTemp,WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), Parent, HMENU(Nil), HInstance, Nil);
       DoSubClass := false;
     End;
     csFrame, csGroupBox:
@@ -2133,7 +2132,7 @@ Begin
     csScrolledWindow:
     Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
-      Window := CreateWindow(@ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(@ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), HWND(Nil), HMENU(Nil), HInstance, Nil);
       DoSubClass := false;
     End;
     csSpinEdit:
@@ -2687,13 +2686,13 @@ begin
     Begin
       Case Alignment of
         taLeftJustify:
-          Style := Style Or SS_LEFT;
+          Style := SS_LEFT;
         taCenter:
-          Style := Style Or SS_CENTER;
+          Style := SS_CENTER;
         taRightJustify:
-          Style := Style Or SS_CENTER;
-        Else
-          Style := STYLE Or SS_LEFT; // default, shouldn't happen
+          Style := SS_CENTER;
+      Else
+        Style := SS_LEFT; // default, shouldn't happen
       End;
       Case Layout of
         tlTop:
@@ -2775,7 +2774,7 @@ Begin
     {dwTypeData:=LPSTR(TMenuItem(Sender).Caption);}
     {cch:=length(TMenuItem(Sender).Caption);} {not needed}
   end;
-  InsertMenuItem(ParentMenuHandle, -1, true, @MenuInfo);
+  InsertMenuItem(ParentMenuHandle, High(UINT), true, @MenuInfo);
   if TMenuItem(Sender).ShortCut <> 0 then
   begin
     Msg.Handle:=MenuHandle;
@@ -2807,6 +2806,9 @@ End;
 
 {
   $Log$
+  Revision 1.126  2003/11/08 17:41:03  micha
+  compiler warning cleanups
+
   Revision 1.125  2003/10/29 19:47:29  mattias
   fixed win32 compiling
 

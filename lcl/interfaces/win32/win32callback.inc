@@ -33,7 +33,7 @@
 Function DisableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
 Begin
   Result:=true;
-  If Data <> Window Then
+  If HWnd(Data) <> Window Then
     EnableWindow(Window,False);
 End;
 
@@ -95,10 +95,6 @@ Var
   NotifyUserInput: Boolean;
   PrevWndProc: Pointer;
   NewPos: Integer; //Used by TScrollingWindow
-  {$IFNDEF VER1_0}
-  List: TMsgArray;
-  C: integer;
-  {$ENDIF}
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -109,7 +105,7 @@ Var
   LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
   LMMove: TLMMove; // used by WM_MOVE
   LMNotify: TLMNotify; // used by WM_NOTIFY
-{$IFDEF VER1_1_MSG}
+{$IFDEF VER1_1_MSG}  // should be 'ifndef VER1_0' when we fix TMsgArray
   List: TMsgArray;
   C: Integer;
 {$ENDIF}
@@ -209,7 +205,7 @@ Begin
   Assert(False, 'Trace:WindowProc - Start');
 
   Result := 0;
-  LMessage.Msg := -1;
+  LMessage.Msg := LM_NULL;
   PLMsg := @LMessage;
   WinProcess := True;
   NotifyUserInput := False;
@@ -299,7 +295,7 @@ Begin
           EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
       end;
       // no specific message found? try send a general msg
-      if LMessage.Msg = -1 then
+      if LMessage.Msg = LM_NULL then
         if OwnerObject is TControl then
           TControl(OwnerObject).Perform(CN_COMMAND, WParam, LParam);
     End;
@@ -809,7 +805,7 @@ Begin
           Exit;
         End;
   {$ELSE VER1_1_MSG}
-    If (OwnerObject <> Nil) And (PLMsg^.Msg <> -1) Then
+    If (OwnerObject <> Nil) And (PLMsg^.Msg <> LM_NULL) Then
     Begin
       DeliverMessage(OwnerObject, PLMsg^);
     End;
@@ -888,6 +884,9 @@ end;
 
 {
   $Log$
+  Revision 1.67  2003/11/08 17:41:03  micha
+  compiler warning cleanups
+
   Revision 1.66  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x

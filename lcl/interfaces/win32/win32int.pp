@@ -119,7 +119,7 @@ Type
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
-    function DestroyTimer(TimerHandle: integer) : boolean; override;
+    function DestroyTimer(TimerHandle: Integer) : boolean; override;
 
     {$I win32winapih.inc}
   End;
@@ -181,6 +181,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/11/08 17:41:03  micha
+  compiler warning cleanups
+
   Revision 1.48  2003/10/28 14:25:37  mattias
   fixed unit circle
 

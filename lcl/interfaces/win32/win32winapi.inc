@@ -533,7 +533,7 @@ Type
 Var
   AliasLen      : Cardinal;
   AList         : TList;
-  ColorCount    : Integer;
+  ColorCount    : Cardinal;
   hdcScreen     : HDC;
   hdcBitmap     : HDC;
   hbmBitmap     : HBITMAP ;
@@ -628,7 +628,7 @@ Var
 
   function GetColorFromAlias(Alias:String):DWORD;
   var
-     i : Integer;
+    i : Cardinal;
   begin
     result:=0;
     i     :=0;
@@ -715,13 +715,11 @@ Begin
     hdcBitmap := CreateCompatibleDC(hdcScreen);
     hbmBitmap := CreateCompatibleBitmap(hdcScreen, Width, Height);
     OldObject := SelectObject(hdcBitmap, hbmBitmap);
-    if OldObject<>0 then begin
-      // ToDo: Do we need to free anything here?
-    end;
     CreateColorMap;
     DoDrawBitmap;
     DestroyColorMap;
     ReleaseDC(GetDesktopWindow, hdcScreen);
+    SelectObject(hdcBitmap, OldObject);
     DeleteDC(hdcBitmap);
     Result:=hbmBitmap;
   end;
@@ -2536,6 +2534,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2003/11/08 17:41:03  micha
+  compiler warning cleanups
+
   Revision 1.68  2003/11/07 17:35:57  micha
   InvalidateRect invalidate children too
 
