@@ -850,6 +850,19 @@ Begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        // check if this is a spurious WM_MOUSEMOVE message, pos not actually changed
+        if (XPos = WindowInfo^.MouseX) and (YPos = WindowInfo^.MouseY) then
+        begin
+          // do not fire message after all (position not changed)
+          Msg := LM_NULL;
+          NotifyUserInput := false;
+        end else
+        if WindowInfo <> @DefaultWindowInfo then
+        begin
+          // position changed, update window info
+          WindowInfo^.MouseX := XPos;
+          WindowInfo^.MouseY := YPos;
+        end;
       End;
     End;
     WM_MOUSEWHEEL:
@@ -1472,6 +1485,9 @@ end;
 
 {
   $Log$
+  Revision 1.176  2004/12/31 16:29:58  micha
+  prevent reporting of spurious mousemove messages
+
   Revision 1.175  2004/12/27 12:08:54  micha
   set focus to a control on the newly focussed tabpage of a notebook (fixes bug 501)
 
