@@ -8002,11 +8002,10 @@ begin
 end;
 
 {$IFDEF GTK1}
-{$IFNDEF Ver1_0}
 var
   FirstScreenCalled: Boolean = False;
   FirstScreenResult: Boolean = False;
-  
+{$IFNDEF Ver1_0}
 function GetFirstScreen: Boolean;
 var
   nMonitors: cint;
@@ -8017,7 +8016,7 @@ var
   pXineramaQueryScreens: function (dpy: PDisplay;
     number: Pcint): PXineramaScreenInfo;cdecl;
 begin
-  if not FirstScreenCalled then
+  if not FirstScreenCalled then begin
     if XQueryExtension(X11Display, 'XINERAMA', @opcode, @firstevent,
       @firsterror)
     then begin
@@ -8041,11 +8040,12 @@ begin
         FreeLibrary(XineramaLib);
       end;
     end;
-  FirstScreenCalled := True;
+    FirstScreenCalled := True;
+  end;
   Result := FirstScreenResult;
 end;
-{$ENDIF}
-{$ENDIF}
+{$ENDIF VER1_0}
+{$ENDIF Gtk1}
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -8057,6 +8057,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.337  2005/02/19 16:30:47  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.336  2005/02/19 16:19:19  mattias
   added xinerama recognition fro gtk1/fpc1_9+  from C Western
 

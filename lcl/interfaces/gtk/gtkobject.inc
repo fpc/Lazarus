@@ -334,7 +334,7 @@ begin
   then begin
     DebugLn(ProcName,Format(rsWarningUnreleasedGDIObjectsDump,
        [FGDIObjects.Count]));
-    for GDIType := Low(GDIType) to High(GDIType) do
+    for GDIType := Low(TGDIType) to High(TGDIType) do
       GDITypeCount[GDIType] := 0;
 
     n:=0;
@@ -7010,6 +7010,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.629  2005/02/19 16:30:46  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.628  2005/02/17 02:10:52  mattias
   fixed gtk2 intf checking if signal already connected
 

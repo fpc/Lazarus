@@ -4566,6 +4566,7 @@ begin
           if Buf = nil then
             Result := SizeOf(TDIBSECTION)
           else begin
+            FillChar(BitmapSection,SizeOf(TDIBSECTION),0);
             With PGDIObject(GDIObj)^, BitmapSection,
               BitmapSection.dsBm, BitmapSection.dsBmih
             do begin
@@ -5269,18 +5270,22 @@ begin
     SM_CXSCREEN:
       begin
         {$IFDEF GTK1} { Partial fix for multi monitor systems - force use of first one }
+        {$IFNDEF VER1_0}
         if GetFirstScreen then
           result := FirstScreen.x
         else
+        {$ENDIF}
         {$ENDIF}
           result := gdk_Screen_Width;
       end;
     SM_CYSCREEN:
       begin
         {$IFDEF GTK1}
+        {$IFNDEF VER1_0}
         if GetFirstScreen then
           result := FirstScreen.y
         else
+        {$ENDIF}
         {$ENDIF}
           result := gdk_Screen_Height;
       end;
@@ -8905,6 +8910,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.398  2005/02/19 16:30:47  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.397  2005/02/19 16:19:19  mattias
   added xinerama recognition fro gtk1/fpc1_9+  from C Western
 
