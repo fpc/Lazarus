@@ -471,6 +471,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
+    InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.CreateClean(FFileName);
     XMLConfig.SetDeleteValue('InputHistory/Version/Value',
       InputHistoryVersion,0);

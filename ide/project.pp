@@ -939,7 +939,7 @@ begin
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
   if (not IsVirtual) and FileExists(Filename) then
-    FileReadOnly:=not FileIsWritable(Filename)
+    FileReadOnly:=not FileIsWritableCached(Filename)
   else
     FileReadOnly:=false;
 end;
@@ -1376,6 +1376,7 @@ begin
       if Assigned(OnSaveProjectInfo) then
         OnSaveProjectInfo(Self,XMLConfig,ProjectWriteFlags);
 
+      InvalidateFileStateCache;
       xmlconfig.Flush;
       Modified:=false;
       Result:=mrOk;
@@ -3170,6 +3171,9 @@ end.
 
 {
   $Log$
+  Revision 1.180  2005/01/25 01:14:19  mattias
+  implemented automatic redirecting of package output directory and filestate cache
+
   Revision 1.179  2005/01/20 13:10:58  mattias
   fixed win compilation
 

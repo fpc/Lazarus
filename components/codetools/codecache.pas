@@ -261,7 +261,7 @@ begin
     if Result=nil then begin
       // load new buffer
       Result:=TCodeBuffer.Create;
-      if (not FileExists(AFilename)) then begin
+      if (not FileExistsCached(AFilename)) then begin
         Result.Free;
         Result:=nil;
         exit;
@@ -281,7 +281,7 @@ begin
       end;
     end else if Result.IsDeleted then begin
       // file in cache, but marked as deleted -> load from disk
-      if (not FileExists(AFilename))
+      if (not FileExistsCached(AFilename))
       or (not Result.LoadFromFile(AFilename)) then
       begin
         Result:=nil;
@@ -419,7 +419,7 @@ begin
   if OnlyIfExists then begin
     Result:=FindFile(AFilename);
     if (Result=nil)
-    and (FilenameIsAbsolute(AFilename) and FileExists(AFilename)) then
+    and (FilenameIsAbsolute(AFilename) and FileExistsCached(AFilename)) then
       Result:=LoadFile(AFilename);
   end else
     Result:=LoadFile(AFilename);
@@ -541,7 +541,8 @@ begin
     if OnlyIfChanged and fLastIncludeLinkFileValid
     and (fLastIncludeLinkFileChangeStep=fChangeStep)
     and (fLastIncludeLinkFile=AFilename)
-    and FileExists(AFilename) and (FileAge(AFilename)=fLastIncludeLinkFileAge)
+    and FileExistsCached(AFilename)
+    and (FileAge(AFilename)=fLastIncludeLinkFileAge)
     then begin
       exit;
     end;

@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  Buttons, IDEProcs, FileUtil, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
   LazarusIDEStrConsts, InputHistory, CompilerOptions, CompilerOptionsDlg;
 
 type
@@ -154,6 +154,7 @@ begin
   try
     Result:=mrCancel;
     try
+      InvalidateFileStateCache;
       XMLConfig:=TXMLConfig.Create(Filename);
       try
         Path:=GetXMLPathForCompilerOptions(XMLConfig);

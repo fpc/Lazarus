@@ -91,6 +91,16 @@ function CreateRelativePath(const Filename, BaseDirectory: string): string;
 function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 
+// file stats
+procedure InvalidateFileStateCache;
+function FileExistsCached(const Filename: string): boolean;
+function DirPathExistsCached(const Filename: string): boolean;
+function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+function FileIsExecutableCached(const AFilename: string): boolean;
+function FileIsReadableCached(const AFilename: string): boolean;
+function FileIsWritableCached(const AFilename: string): boolean;
+function FileIsTextCached(const AFilename: string): boolean;
+
 // cmd line
 procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
@@ -851,6 +861,46 @@ begin
   Result:=FileProcs.FilenameIsMatching(Mask,Filename,MatchExactly);
 end;
 
+procedure InvalidateFileStateCache;
+begin
+  FileStateCache.IncreaseTimeStamp;
+end;
+
+function FileExistsCached(const Filename: string): boolean;
+begin
+  Result:=FileProcs.FileExistsCached(Filename);
+end;
+
+function DirPathExistsCached(const Filename: string): boolean;
+begin
+  Result:=FileProcs.DirPathExistsCached(Filename);
+end;
+
+function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+begin
+  Result:=FileProcs.DirectoryIsWritableCached(DirectoryName);
+end;
+
+function FileIsExecutableCached(const AFilename: string): boolean;
+begin
+  Result:=FileProcs.FileIsExecutableCached(AFilename);
+end;
+
+function FileIsReadableCached(const AFilename: string): boolean;
+begin
+  Result:=FileProcs.FileIsReadableCached(AFilename);
+end;
+
+function FileIsWritableCached(const AFilename: string): boolean;
+begin
+  Result:=FileProcs.FileIsWritableCached(AFilename);
+end;
+
+function FileIsTextCached(const AFilename: string): boolean;
+begin
+  Result:=FileProcs.FileIsTextCached(AFilename);
+end;
+
 procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
 var p, s, l: integer;
@@ -1250,6 +1300,7 @@ var
 begin
   if FileExists(Filename) then begin
     try
+      InvalidateFileStateCache;
       fs:=TFileStream.Create(Filename,fmOpenWrite);
       fs.Size:=0;
       fs.Free;
@@ -1941,6 +1992,7 @@ var
 begin
   Result:=false;
   try
+    InvalidateFileStateCache;
     fs:=TFileStream.Create(Filename,fmCreate);
     fs.Free;
     Result:=true;
@@ -1973,6 +2025,7 @@ begin
   try
     SrcFileStream:=TFileStream.Create(SrcFilename,fmOpenRead);
     try
+      InvalidateFileStateCache;
       DestFileStream:=TFileSTream.Create(DestFilename,fmCreate);
       try
         DestFileStream.CopyFrom(SrcFileStream,SrcFileStream.Size);

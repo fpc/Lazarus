@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FileUtil,
   {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF},
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem;
 
 type
@@ -513,6 +513,7 @@ begin
         XMLConfig.SetDeleteValue('Packages/Item'+IntToStr(i)+'/ID',
                                  LazPackageID.IDAsString,'');
       end;
+      InvalidateFileStateCache;
       XMLConfig.Flush;
     finally
       XMLConfig.Free;

@@ -1409,6 +1409,7 @@ begin
   if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
     FConfigStore.Free;
     FXMLCfg.Free;
+    InvalidateFileStateCache;
     if CleanConfig then
       FXMLCfg:=TXMLConfig.CreateClean(Filename)
     else

@@ -35,7 +35,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts;
+  Classes, SysUtils, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  CodeToolsStrConsts;
   
 type
   TFPCStreamSeekType = int64;
@@ -58,6 +59,7 @@ function CompareFileExt(const Filename, Ext: string;
   CaseSensitive: boolean): integer;
 function GetFilenameOnDisk(const AFilename: string): string;
 function DirPathExists(DirectoryName: string): boolean;
+function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 function FilenameIsWinAbsolute(const TheFilename: string):boolean;
@@ -79,6 +81,7 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
+function GetTempFilename(const Path, Prefix: string): string;
 
 
 // debugging
@@ -116,6 +119,95 @@ function DbgSName(const p: TObject): string;
 function DbgStr(const StringWithSpecialChars: string): string;
 
 
+type
+  TFileStateCacheItemFlag = (
+    fsciExists,    // file or directory exists
+    fsciDirectory, // file exists and is directory
+    fsciReadable,  // file is readable
+    fsciWritable,  // file is writable
+    fsciDirectoryReadable, // file is directory and can be searched
+    fsciDirectoryWritable, // file is directory and new files can be created
+    fsciText,      // file is text file (not binary)
+    fsciExecutable // file is executable
+    );
+  TFileStateCacheItemFlags = set of TFileStateCacheItemFlag;
+
+  { TFileStateCacheItem }
+
+  TFileStateCacheItem = class
+  private
+    FFilename: string;
+    FFlags: TFileStateCacheItemFlags;
+    FTestedFlags: TFileStateCacheItemFlags;
+    FTimeStamp: integer;
+  public
+    constructor Create(const TheFilename: string; NewTimeStamp: integer);
+  public
+    property Filename: string read FFilename;
+    property Flags: TFileStateCacheItemFlags read FFlags;
+    property TestedFlags: TFileStateCacheItemFlags read FTestedFlags;
+    property TimeStamp: integer read FTimeStamp;
+  end;
+
+  { TFileStateCache }
+
+  TFileStateCache = class
+  private
+    FFiles: TAVLTree;
+    FTimeStamp: integer;
+    FLockCount: integer;
+    procedure SetFlag(AFile: TFileStateCacheItem;
+                      AFlag: TFileStateCacheItemFlag; NewValue: boolean);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Lock;
+    procedure Unlock;
+    function Locked: boolean;
+    procedure IncreaseTimeStamp;
+    function FileExistsCached(const Filename: string): boolean;
+    function DirPathExistsCached(const Filename: string): boolean;
+    function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+    function FileIsExecutableCached(const AFilename: string): boolean;
+    function FileIsReadableCached(const AFilename: string): boolean;
+    function FileIsWritableCached(const AFilename: string): boolean;
+    function FileIsTextCached(const AFilename: string): boolean;
+    function FindFile(const Filename: string;
+                      CreateIfNotExists: boolean): TFileStateCacheItem;
+    function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
+                   var AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
+    procedure WriteDebugReport;
+  public
+    property TimeStamp: integer read FTimeStamp;
+  end;
+  
+var
+  FileStateCache: TFileStateCache;
+
+function FileExistsCached(const Filename: string): boolean;
+function DirPathExistsCached(const Filename: string): boolean;
+function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+function FileIsExecutableCached(const AFilename: string): boolean;
+function FileIsReadableCached(const AFilename: string): boolean;
+function FileIsWritableCached(const AFilename: string): boolean;
+function FileIsTextCached(const AFilename: string): boolean;
+
+procedure InvalidateFileStateCache;
+function CompareFileStateItems(Data1, Data2: Pointer): integer;
+function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
+
+const
+  FileStateCacheItemFlagNames: array[TFileStateCacheItemFlag] of string = (
+    'fsciExists',
+    'fsciDirectory',
+    'fsciReadable',
+    'fsciWritable',
+    'fsciDirectoryReadable',
+    'fsciDirectoryWritable',
+    'fsciText',
+    'fsciExecutable'
+    );
+
 implementation
 
 // to get more detailed error messages consider the os
@@ -136,6 +228,7 @@ var
 begin
   if FileExists(Filename) then begin
     try
+      InvalidateFileStateCache;
       fs:=TFileStream.Create(Filename,fmOpenWrite);
       fs.Size:=0;
       fs.Free;
@@ -150,12 +243,49 @@ begin
   Result:=true;
 end;
 
+function DirectoryIsWritable(const DirectoryName: string): boolean;
+var
+  TempFilename: String;
+  fs: TFileStream;
+  s: String;
+begin
+  TempFilename:=GetTempFilename(DirectoryName,'tstperm');
+  Result:=false;
+  try
+    InvalidateFileStateCache;
+    fs:=TFileStream.Create(TempFilename,fmCreate);
+    s:='WriteTest';
+    fs.Write(s[1],length(s));
+    fs.Free;
+    DeleteFile(TempFilename);
+    Result:=true;
+  except
+  end;
+end;
+
+function GetTempFilename(const Path, Prefix: string): string;
+var
+  i: Integer;
+  CurPath: String;
+  CurName: String;
+begin
+  Result:=ExpandFilename(Path);
+  CurPath:=AppendPathDelim(ExtractFilePath(Result));
+  CurName:=Prefix+ExtractFileNameOnly(Result);
+  i:=1;
+  repeat
+    Result:=CurPath+CurName+IntToStr(i)+'.tmp';
+    if not FileExists(Result) then exit;
+    inc(i);
+  until false;
+end;
+
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
   {$IFDEF WIN32}
-  Result:=AnsiCompareText(Filename1, Filename2);
+  Result:=CompareText(Filename1, Filename2);
   {$ELSE}
-  Result:=AnsiCompareStr(Filename1, Filename2);
+  Result:=CompareStr(Filename1, Filename2);
   {$ENDIF}
 end;
 
@@ -1014,19 +1144,274 @@ begin
   end;
 end;
 
+function FileExistsCached(const Filename: string): boolean;
+begin
+  Result:=FileStateCache.FileExistsCached(Filename);
+end;
+
+function DirPathExistsCached(const Filename: string): boolean;
+begin
+  Result:=FileStateCache.DirPathExistsCached(Filename);
+end;
+
+function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+begin
+  Result:=FileStateCache.DirectoryIsWritableCached(DirectoryName);
+end;
+
+function FileIsExecutableCached(const AFilename: string): boolean;
+begin
+  Result:=FileStateCache.FileIsExecutableCached(AFilename);
+end;
+
+function FileIsReadableCached(const AFilename: string): boolean;
+begin
+  Result:=FileStateCache.FileIsReadableCached(AFilename);
+end;
+
+function FileIsWritableCached(const AFilename: string): boolean;
+begin
+  Result:=FileStateCache.FileIsWritableCached(AFilename);
+end;
+
+function FileIsTextCached(const AFilename: string): boolean;
+begin
+  Result:=FileStateCache.FileIsTextCached(AFilename);
+end;
+
+procedure InvalidateFileStateCache;
+begin
+  FileStateCache.IncreaseTimeStamp;
+end;
+
+function CompareFileStateItems(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareFilenames(TFileStateCacheItem(Data1).FFilename,
+                           TFileStateCacheItem(Data2).FFilename);
+end;
+
+function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
+begin
+  Result:=CompareFilenames(AnsiString(Key),TFileStateCacheItem(Data).FFilename);
+  //debugln('CompareFilenameWithFileStateCacheItem Key=',AnsiString(Key),' Data=',TFileStateCacheItem(Data).FFilename,' Result=',dbgs(Result));
+end;
+
 //------------------------------------------------------------------------------
 procedure InternalInit;
 var
   c: char;
 begin
+  FileStateCache:=TFileStateCache.Create;
   for c:=Low(char) to High(char) do begin
     UpChars[c]:=upcase(c);
   end;
 end;
 
+{ TFileStateCacheItem }
+
+constructor TFileStateCacheItem.Create(const TheFilename: string;
+  NewTimeStamp: integer);
+begin
+  FFilename:=TheFilename;
+  FTimeStamp:=NewTimeStamp;
+end;
+
+{ TFileStateCache }
+
+procedure TFileStateCache.SetFlag(AFile: TFileStateCacheItem;
+  AFlag: TFileStateCacheItemFlag; NewValue: boolean);
+begin
+  if AFile.FTimeStamp<>FTimeStamp then begin
+    AFile.FTestedFlags:=[];
+    AFile.FTimeStamp:=FTimeStamp;
+  end;
+  Include(AFile.FTestedFlags,AFlag);
+  if NewValue then
+    Include(AFile.FFlags,AFlag)
+  else
+    Exclude(AFile.FFlags,AFlag);
+  //debugln('TFileStateCache.SetFlag AFile.Filename=',AFile.Filename,' ',FileStateCacheItemFlagNames[AFlag],'=',dbgs(AFlag in AFile.FFlags),' Valid=',dbgs(AFlag in AFile.FTestedFlags));
+end;
+
+constructor TFileStateCache.Create;
+begin
+  FFiles:=TAVLTree.Create(@CompareFileStateItems);
+  FTimeStamp:=1; // one higher than default for new files
+end;
+
+destructor TFileStateCache.Destroy;
+begin
+  FFiles.FreeAndClear;
+  FFiles.Free;
+  inherited Destroy;
+end;
+
+procedure TFileStateCache.Lock;
+begin
+  inc(FLockCount);
+end;
+
+procedure TFileStateCache.Unlock;
+
+  procedure RaiseTooManyUnlocks;
+  begin
+    raise Exception.Create('TFileStateCache.Unlock');
+  end;
+
+begin
+  if FLockCount<=0 then RaiseTooManyUnlocks;
+  dec(FLockCount);
+end;
+
+function TFileStateCache.Locked: boolean;
+begin
+  Result:=FLockCount>0;
+end;
+
+procedure TFileStateCache.IncreaseTimeStamp;
+begin
+  if Self<>nil then begin
+    if FTimeStamp<maxLongint then
+      inc(FTimeStamp)
+    else
+      FTimeStamp:=-maxLongint;
+  end;
+  //debugln('TFileStateCache.IncreaseTimeStamp FTimeStamp=',dbgs(FTimeStamp));
+end;
+
+function TFileStateCache.FileExistsCached(const Filename: string): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(Filename,fsciExists,AFile,Result) then exit;
+  Result:=FileExists(AFile.Filename);
+  SetFlag(AFile,fsciExists,Result);
+  {if not Check(Filename,fsciExists,AFile,Result) then begin
+    WriteDebugReport;
+    raise Exception.Create('');
+  end;}
+end;
+
+function TFileStateCache.DirPathExistsCached(const Filename: string): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(Filename,fsciDirectory,AFile,Result) then exit;
+  Result:=DirPathExists(AFile.Filename);
+  SetFlag(AFile,fsciDirectory,Result);
+end;
+
+function TFileStateCache.DirectoryIsWritableCached(const DirectoryName: string
+  ): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(DirectoryName,fsciDirectoryWritable,AFile,Result) then exit;
+  Result:=DirectoryIsWritable(AFile.Filename);
+  SetFlag(AFile,fsciDirectoryWritable,Result);
+end;
+
+function TFileStateCache.FileIsExecutableCached(
+  const AFilename: string): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(AFilename,fsciExecutable,AFile,Result) then exit;
+  Result:=FileIsExecutable(AFile.Filename);
+  SetFlag(AFile,fsciExecutable,Result);
+end;
+
+function TFileStateCache.FileIsReadableCached(const AFilename: string): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(AFilename,fsciReadable,AFile,Result) then exit;
+  Result:=FileIsReadable(AFile.Filename);
+  SetFlag(AFile,fsciReadable,Result);
+end;
+
+function TFileStateCache.FileIsWritableCached(const AFilename: string): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(AFilename,fsciWritable,AFile,Result) then exit;
+  Result:=FileIsWritable(AFile.Filename);
+  SetFlag(AFile,fsciWritable,Result);
+end;
+
+function TFileStateCache.FileIsTextCached(const AFilename: string): boolean;
+var
+  AFile: TFileStateCacheItem;
+begin
+  if Check(AFilename,fsciText,AFile,Result) then exit;
+  Result:=FileIsText(AFile.Filename);
+  SetFlag(AFile,fsciText,Result);
+end;
+
+function TFileStateCache.FindFile(const Filename: string;
+  CreateIfNotExists: boolean): TFileStateCacheItem;
+var
+  TrimmedFilename: String;
+  ANode: TAVLTreeNode;
+begin
+  // make filename unique
+  TrimmedFilename:=ChompPathDelim(TrimFilename(Filename));
+  ANode:=FFiles.FindKey(PChar(TrimmedFilename),
+                        @CompareFilenameWithFileStateCacheItem);
+  if ANode<>nil then
+    Result:=TFileStateCacheItem(ANode.Data)
+  else if CreateIfNotExists then begin
+    Result:=TFileStateCacheItem.Create(TrimmedFilename,FTimeStamp);
+    FFiles.Add(Result);
+    if FFiles.FindKey(PChar(TrimmedFilename),
+                      @CompareFilenameWithFileStateCacheItem)=nil
+    then begin
+      WriteDebugReport;
+      raise Exception.Create('');
+    end;
+  end else
+    Result:=nil;
+end;
+
+function TFileStateCache.Check(const Filename: string;
+  AFlag: TFileStateCacheItemFlag; var AFile: TFileStateCacheItem;
+  var FlagIsSet: boolean): boolean;
+begin
+  AFile:=FindFile(Filename,true);
+  if FTimeStamp=AFile.FTimeStamp then begin
+    Result:=AFlag in AFile.FTestedFlags;
+    FlagIsSet:=AFlag in AFile.FFlags;
+  end else begin
+    AFile.FTestedFlags:=[];
+    AFile.FTimeStamp:=FTimeStamp;
+    Result:=false;
+    FlagIsSet:=false;
+  end;
+  //debugln('TFileStateCache.Check Filename=',Filename,' AFile.Filename=',AFile.Filename,' ',FileStateCacheItemFlagNames[AFlag],'=',dbgs(FlagIsSet),' Valid=',dbgs(Result));
+end;
+
+procedure TFileStateCache.WriteDebugReport;
+var
+  ANode: TAVLTreeNode;
+  AFile: TFileStateCacheItem;
+begin
+  debugln('TFileStateCache.WriteDebugReport FTimeStamp=',dbgs(FTimeStamp));
+  ANode:=FFiles.FindLowest;
+  while ANode<>nil do begin
+    AFile:=TFileStateCacheItem(ANode.Data);
+    debugln('  "',AFile.Filename,'" TimeStamp=',dbgs(AFile.TimeStamp));
+    ANode:=FFiles.FindSuccessor(ANode);
+  end;
+  debugln(' FFiles=',dbgs(FFiles.ConsistencyCheck));
+  debugln(FFiles.ReportAsString);
+end;
+
 initialization
   InternalInit;
 
+finalization
+  FileStateCache.Free;
+  FileStateCache:=nil;
 
 end.
 

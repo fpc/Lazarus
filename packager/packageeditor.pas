@@ -2062,6 +2062,7 @@ begin
       end;
       XMLConfig.SetDeleteValue(Path+'Count/Value',LayoutCount,0);
 
+      InvalidateFileStateCache;
       XMLConfig.Flush;
     finally
       XMLConfig.Free;

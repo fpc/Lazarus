@@ -103,14 +103,19 @@ const
                                pcosLibraryPath,pcosSrcPath,pcosDebugPath];
   ParsedCompilerFilenames = [pcosCompilerPath];
   ParsedCompilerDirectories = [pcosOutputDir];
+  ParsedCompilerOutDirectories = [pcosOutputDir];
   ParsedCompilerFiles =
     ParsedCompilerSearchPaths+ParsedCompilerFilenames+ParsedCompilerDirectories;
 
 type
   TLocalSubstitutionEvent = function(const s: string): string of object;
+  TGetWritableOutputDirectory = procedure(var s: string) of object;
+
+  { TParsedCompilerOptions }
 
   TParsedCompilerOptions = class
   private
+    FGetWritableOutputDirectory: TGetWritableOutputDirectory;
     FInvalidateGraphOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
   public
@@ -129,6 +134,8 @@ type
                                                        write FOnLocalSubstitute;
     property InvalidateGraphOnChange: boolean read FInvalidateGraphOnChange
                                               write FInvalidateGraphOnChange;
+    property GetWritableOutputDirectory: TGetWritableOutputDirectory
+             read FGetWritableOutputDirectory write FGetWritableOutputDirectory;
   end;
 
   TParseStringEvent =
@@ -1074,6 +1081,7 @@ begin
   ExecuteAfter.SaveToXMLConfig(XMLConfigFile,p+'ExecuteAfter/');
 
   // write
+  InvalidateFileStateCache;
   XMLConfigFile.Flush;
 end;
 
@@ -2302,7 +2310,7 @@ begin
       s:=TrimFilename(s);
       if (s<>'') and (not FilenameIsAbsolute(s)) then begin
         BaseDirectory:=GetParsedValue(pcosBaseDir);
-        if (BaseDirectory<>'') then s:=BaseDirectory+s;
+        if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
       end;
     end
     else if Option in ParsedCompilerDirectories then begin
@@ -2310,7 +2318,11 @@ begin
       s:=TrimFilename(s);
       if (s='') or (not FilenameIsAbsolute(s)) then begin
         BaseDirectory:=GetParsedValue(pcosBaseDir);
-        if (BaseDirectory<>'') then s:=BaseDirectory+s;
+        if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
+        if (Option in ParsedCompilerOutDirectories)
+        and Assigned(GetWritableOutputDirectory) then begin
+          GetWritableOutputDirectory(s);
+        end;
       end;
       s:=AppendPathDelim(s);
     end

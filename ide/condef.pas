@@ -52,10 +52,13 @@ interface
 *)
 
 uses
-  Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons,
-  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, SysUtils, Classes;
+  Messages, Graphics, Controls, Forms, LCLProc, Dialogs, StdCtrls, Buttons,
+  IDEProcs, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, SysUtils, Classes;
 
 type
+
+  { TCondForm }
+
   TCondForm = class(TForm)
     AddInverse: TButton;
     FirstTest: TComboBox;
@@ -76,12 +79,11 @@ type
       Shift: TShiftState);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
-  private
-    XMLConfig: TXMLCOnfig;
   public
     Choice, First, Second, FS: string;
     procedure DeleteSelected;
     procedure SaveChoices;
+    function CreateXMLConfig: TXMLConfig;
   end;
 
 
@@ -152,29 +154,31 @@ end;
 
 procedure TCondForm.CondFormCREATE(Sender: TObject);
 var
-  ConfFileName: string;
   i: Integer;
+  XMLConfig: TXMLConfig;
 begin
-  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/condef.xml');
   try
-    if (not FileExists(ConfFileName)) then
-      XMLConfig:=TXMLConfig.CreateClean(ConfFileName)
-    else
-      XMLConfig:=TXMLConfig.Create(ConfFileName);
-    Choice := XMLConfig.GetValue('condef/Choice', '"MSWINDOWS,UNIX","MSWINDOWS,ELSE","FPC,NONE","FPC,ELSE","DEBUG,NONE"');
-    First := XMLConfig.GetValue('condef/First', 'MSWINDOWS');
-    Second := XMLConfig.GetValue('condef/Second', 'UNIX');
-    with ListBox do begin
-      Items.CommaText := Choice;
-      i := Items.IndexOf(First+','+Second);
-      if i < 0 then begin
-        Items.Add(First+','+Second);
-        ItemIndex := 0;
-      end else
-        ItemIndex := i;
+    XMLConfig:=CreateXMLConfig;
+    try
+      Choice := XMLConfig.GetValue('condef/Choice', '"MSWINDOWS,UNIX","MSWINDOWS,ELSE","FPC,NONE","FPC,ELSE","DEBUG,NONE"');
+      First := XMLConfig.GetValue('condef/First', 'MSWINDOWS');
+      Second := XMLConfig.GetValue('condef/Second', 'UNIX');
+    finally
+      XMLConfig.Free;
     end;
   except
-    XMLConfig:=nil;
+    on E: Exception do begin
+      debugln('TCondForm.CondFormCREATE ',E.Message);
+    end;
+  end;
+  with ListBox do begin
+    Items.CommaText := Choice;
+    i := Items.IndexOf(First+','+Second);
+    if i < 0 then begin
+      Items.Add(First+','+Second);
+      ItemIndex := 0;
+    end else
+      ItemIndex := i;
   end;
 end;
 
@@ -194,7 +198,6 @@ end;
 
 procedure TCondForm.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(XMLConfig);
 end;
 
 procedure TCondForm.FormShow(Sender: TObject);
@@ -214,12 +217,42 @@ begin
 end;
 
 procedure TCondForm.SaveChoices;
+var
+  XMLConfig: TXMLConfig;
 begin
-  if Assigned(XMLConfig) then begin
-    XMLConfig.SetValue('condef/Choice', Choice);
-    XMLConfig.SetValue('condef/First', First);
-    XMLConfig.SetValue('condef/Second', Second);
-    XMLConfig.Flush;
+  try
+    InvalidateFileStateCache;
+    XMLConfig:=CreateXMLConfig;
+    try
+      XMLConfig.SetValue('condef/Choice', Choice);
+      XMLConfig.SetValue('condef/First', First);
+      XMLConfig.SetValue('condef/Second', Second);
+      XMLConfig.Flush;
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      debugln('TCondForm.SaveChoices ',E.Message);
+    end;
+  end;
+end;
+
+function TCondForm.CreateXMLConfig: TXMLConfig;
+var
+  ConfFileName: String;
+begin
+  Result:=nil;
+  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/condef.xml');
+  try
+    if (not FileExists(ConfFileName)) then
+      Result:=TXMLConfig.CreateClean(ConfFileName)
+    else
+      Result:=TXMLConfig.Create(ConfFileName);
+  except
+    on E: Exception do begin
+      debugln('TCondForm.CreateXMLConfig ',E.Message);
+    end;
   end;
 end;
 

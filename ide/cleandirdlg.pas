@@ -205,6 +205,7 @@ var
   Path: String;
 begin
   try
+    InvalidateFileStateCache;
     Filename:=GetConfigFilename;
     XMLConfig:=TXMLConfig.CreateClean(Filename);
   except

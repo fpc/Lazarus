@@ -896,6 +896,7 @@ begin
   // create if not yet done
   if not FileExists(AFilename) then begin
     try
+      InvalidateFileStateCache;
       fs:=TFileStream.Create(AFilename,fmCreate);
       fs.Free;
     except
@@ -907,9 +908,10 @@ begin
   end;
   // check writable
   try
-    if CheckReadable then
+    if CheckReadable then begin
+      InvalidateFileStateCache;
       fs:=TFileStream.Create(AFilename,fmOpenWrite)
-    else
+    end else
       fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
     try
       fs.Position:=fs.Size;
@@ -925,6 +927,7 @@ begin
   end;
   // check readable
   try
+    InvalidateFileStateCache;
     fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
     try
       fs.Position:=fs.Size-1;

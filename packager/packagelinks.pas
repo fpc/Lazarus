@@ -606,6 +606,7 @@ begin
     end;
     XMLConfig.SetDeleteValue(Path+'Count',FUserLinksSortID.Count,0);
     
+    InvalidateFileStateCache;
     XMLConfig.Flush;
     XMLConfig.Free;
 

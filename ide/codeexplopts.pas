@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, Buttons, ExtCtrls, FileUtil,
-  LazConf;
+  LazConf, IDEProcs;
 
 type
   { TCodeExplorerOptions }
@@ -185,6 +185,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
+    InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.CreateClean(FOptionsFilename);
     XMLConfig.SetDeleteValue('CodeExplorer/Version/Value',
       CodeExplorerVersion,0);

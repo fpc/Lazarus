@@ -5346,6 +5346,7 @@ var
 begin
   try
     ClearFile(Filename,true);
+    InvalidateFileStateCache;
     fs:=TFileStream.Create(Filename,fmCreate);
     try
       if Src<>'' then
@@ -7731,6 +7732,7 @@ var
 begin
   Result:=mrOk;
   if Project1=nil then exit;
+  InvalidateFileStateCache;
   Project1.GetUnitsChangedOnDisk(AnUnitList);
   if AnUnitList=nil then exit;
   Result:=ShowDiskDiffsDialog(AnUnitList);
@@ -7780,7 +7782,7 @@ begin
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
   if (CmdAfterExe<>'') then begin
     CmdAfterExe:=FindDefaultExecutablePath(CmdAfterExe);
-    if not FileIsExecutable(CmdAfterExe) then begin
+    if not FileIsExecutableCached(CmdAfterExe) then begin
       MessageDlg(lisCommandAfterInvalid,
         Format(lisTheCommandAfterPublishingIsInvalid, [#13, '"', CmdAfterExe,
           '"']), mtError, [mbCancel], 0);
@@ -7832,7 +7834,7 @@ begin
 
   // execute 'CommandAfter'
   if (CmdAfterExe<>'') then begin
-    if FileIsExecutable(CmdAfterExe) then begin
+    if FileIsExecutableCached(CmdAfterExe) then begin
       Tool:=TExternalToolOptions.Create;
       Tool.Filename:=CmdAfterExe;
       Tool.Title:=lisCommandAfterPublishingModule;
@@ -11378,6 +11380,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.838  2005/01/25 01:14:19  mattias
+  implemented automatic redirecting of package output directory and filestate cache
+
   Revision 1.837  2005/01/24 02:42:34  mattias
   fixed search path to cmd line param
 

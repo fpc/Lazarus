@@ -1153,6 +1153,7 @@ begin
     res:=LazarusResources.Find('lazarus_dci_file');
     if (res<>nil) and (res.Value<>'') and (res.ValueType='DCI') then begin
       try
+        InvalidateFileStateCache;
         fs:=TFileStream.Create(fCodeTemplateFileName,fmCreate);
         try
           fs.Write(res.Value[1],length(res.Value));
@@ -1411,6 +1412,7 @@ begin
       ,fCTemplIndentToTokenStart,false);
 
 
+    InvalidateFileStateCache;
     XMLConfig.Flush;
   except
     on E: Exception do

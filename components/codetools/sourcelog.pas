@@ -36,7 +36,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils;
+  Classes, SysUtils, FileProcs;
 
 type
   TSourceLog = class;
@@ -669,6 +669,7 @@ begin
   //DebugLn('TSourceLog.SaveToFile Self=',HexStr(Cardinal(Self),8));
   Result:=true;
   try
+    InvalidateFileStateCache;
     fs:=TFileStream.Create(Filename, fmCreate);
     try
       if fSrcLen>0 then

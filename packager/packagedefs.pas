@@ -64,6 +64,8 @@ type
     procedure(FirstDependency: TPkgDependency; var List: TList) of object;
   TGetDependencyOwnerDescription =
     procedure(Dependency: TPkgDependency; var Description: string) of object;
+  TGetWritablePkgOutputDirectory =
+    procedure(APackage: TLazPackage; var AnOutDirectory: string) of object;
 
 
   { TPkgComponent }
@@ -521,6 +523,8 @@ type
   TPkgChangeNameEvent = procedure(Pkg: TLazPackage;
                                   const OldName: string) of object;
 
+  { TLazPackage }
+
   TLazPackage = class(TLazPackageID)
   private
     FAuthor: string;
@@ -593,6 +597,7 @@ type
       var Handled, Abort: boolean);
     procedure SetUserReadOnly(const AValue: boolean);
     function SubstitutePkgMacro(const s: string): string;
+    procedure GetWritableOutputDirectory(var AnOutDir: string);
     procedure Clear;
     procedure UpdateSourceDirectories;
     procedure VersionChanged(Sender: TObject); override;
@@ -784,6 +789,7 @@ var
 
   OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent;
   OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription;
+  OnGetWritablePkgOutputDirectory: TGetWritablePkgOutputDirectory;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
@@ -1796,11 +1802,11 @@ end;
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
   var s: string; var Handled, Abort: boolean);
 begin
-  if AnsiCompareText(s,'PkgOutDir')=0 then begin
+  if CompareText(s,'PkgOutDir')=0 then begin
     Handled:=true;
     s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
   end
-  else if AnsiCompareText(s,'PkgDir')=0 then begin
+  else if CompareText(s,'PkgDir')=0 then begin
     Handled:=true;
     s:=FDirectory;
   end;
@@ -1816,6 +1822,12 @@ function TLazPackage.SubstitutePkgMacro(const s: string): string;
 begin
   Result:=s;
   FMacros.SubstituteStr(Result);
+end;
+
+procedure TLazPackage.GetWritableOutputDirectory(var AnOutDir: string);
+begin
+  if Assigned(OnGetWritablePkgOutputDirectory) then
+    OnGetWritablePkgOutputDirectory(Self,AnOutDir);
 end;
 
 function TLazPackage.GetAutoIncrementVersionOnBuild: boolean;
@@ -2019,6 +2031,8 @@ begin
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
+  FCompilerOptions.ParsedOpts.GetWritableOutputDirectory:=
+                                                    @GetWritableOutputDirectory;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;

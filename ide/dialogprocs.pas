@@ -236,6 +236,7 @@ var
   fs: TFileStream;
 begin
   try
+    InvalidateFileStateCache;
     fs:=TFileStream.Create(Filename,fmCreate);
     try
       if Content<>'' then

@@ -486,7 +486,7 @@ begin
 
         if (NewTargetDirectory<>'') and DirPathExists(NewTargetDirectory) then
         begin
-          if not DirectoryIsWritable(NewTargetDirectory) then begin
+          if not DirectoryIsWritableCached(NewTargetDirectory) then begin
             // Case 3. the lazarus directory is not writable
             // create directory <primary config dir>/bin/
             NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
@@ -598,6 +598,7 @@ begin
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
   try
+    InvalidateFileStateCache;
     fs:=TFileStream.Create(Filename,fmCreate);
     try
       if ExtraOptions<>'' then begin

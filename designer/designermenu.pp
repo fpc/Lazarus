@@ -38,7 +38,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
   Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf,  ComCtrls, Arrow, 
- {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},LazarusIDEStrConsts, PropEdits;
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},LazarusIDEStrConsts,
+  PropEdits, IDEProcs;
 
 type
 
@@ -1136,6 +1137,7 @@ begin
     end;
     XMLConfig.SetValue(templatemenuitem + '/Description/Value', TemplateMenuForm.GetDescription);
     SaveAsTemplate(templatemenuitem, SelectedDesignerMenuItem);
+    InvalidateFileStateCache;
     XMLConfig.Flush;
   end;
 end;
@@ -1234,6 +1236,7 @@ begin
        old_templatemenuitem:='menu_' + old_templatemenuitem;
        XMLConfig.DeletePath(old_templatemenuitem);
      end;
+    InvalidateFileStateCache;
     XMLConfig.Flush;
   end;
 end;

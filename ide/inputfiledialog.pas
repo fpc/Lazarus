@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
   FileUtil, LResources,
   // IDE
-  TransferMacros, InputHistory;
+  TransferMacros, InputHistory, IDEProcs;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
@@ -277,11 +277,11 @@ begin
     if FTransferMacros<>nil then
       Macros.SubstituteStr(Filename);
     Filename:=ExpandFileName(Filename);
-    if (not (iftDirectory in CurFileFlags)) and DirPathExists(Filename)
+    if (not (iftDirectory in CurFileFlags)) and DirPathExistsCached(Filename)
     then
       exit;
     if (not (iftFilename in CurFileFlags)) and FileExists(Filename)
-    and (not DirPathExists(Filename))
+    and (not DirPathExistsCached(Filename))
     then
       exit;
   end;

@@ -2046,6 +2046,12 @@ resourcestring
   lisPkgMangDeleteOldPackageFile = 'Delete Old Package File?';
   lisPkgMangDeleteOldPackageFile2 = 'Delete old package file %s%s%s?';
   lisPkgMangDeleteFailed = 'Delete failed';
+  lisAmbigiousUnitFound = 'Ambigious Unit found';
+  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%'
+    +'swas found in one of the source directories of the package %s and looks '
+    +'like a compiled unit.Compiled units must be in the output directory of '
+    +'the package, otherwise other packages can get problems using this '
+    +'package.%s%sDelete ambigious file?';
   lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
   lisPkgMangUnsavedPackage = 'Unsaved package';
   lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages = 'There is an '

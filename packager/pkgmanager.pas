@@ -65,6 +65,9 @@ uses
   MainBar, MainIntf, MainBase;
 
 type
+
+  { TPkgManager }
+
   TPkgManager = class(TBasePkgManager)
     // events - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // package editor
@@ -136,6 +139,8 @@ type
     procedure OnApplicationIdle(Sender: TObject);
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
                                             var Description: string);
+    procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
+                                            var AnOutDirectory: string);
   private
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
@@ -411,6 +416,22 @@ begin
     Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
       );
   end;
+end;
+
+procedure TPkgManager.GetWritablePkgOutputDirectory(APackage: TLazPackage;
+  var AnOutDirectory: string);
+var
+  NewOutDir: String;
+begin
+  if DirectoryIsWritableCached(AnOutDirectory) then exit;
+  // output directory is not writable
+  // -> redirect to home directory
+  NewOutDir:=SetDirSeparators('/$(TargetCPU)/$(TargetOS)');
+  MainIDE.MacroList.SubstituteStr(NewOutDir);
+  NewOutDir:=TrimFilename(GetPrimaryConfigPath+PathDelim+'lib'+PathDelim
+                          +APackage.Name+NewOutDir);
+  AnOutDirectory:=NewOutDir;
+  debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -1040,6 +1061,7 @@ begin
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);
+      InvalidateFileStateCache;
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
@@ -1302,14 +1324,9 @@ var
                                           SearchFlags);
       if (AmbigiousFilename='') then exit;
       if not YesToAll then
-        Result:=MessageDlg('Ambigious Unit found',
-          'The file "'+AmbigiousFilename+'"'#13
-          +'was found in one of the source directories of the package '
-            +APackage.IDAsString+' and looks like a compiled unit.'
-          +'Compiled units must be in the output directory of the package, '
-          +'otherwise other packages can get problems using this package.'#13
-          +#13
-          +'Delete ambigious file?',
+        Result:=MessageDlg(lisAmbigiousUnitFound,
+          Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
+            AmbigiousFilename, '"', #13, APackage.IDAsString, #13, #13]),
           mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort],0)
       else
         Result:=mrYesToAll;
@@ -1601,6 +1618,7 @@ var
 begin
   inherited Create(TheOwner);
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
+  OnGetWritablePkgOutputDirectory:=@GetWritablePkgOutputDirectory;
 
   // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;
@@ -2140,6 +2158,7 @@ begin
     try
       XMLConfig.Clear;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
+      InvalidateFileStateCache;
       XMLConfig.Flush;
       PkgLink:=PkgLinks.AddUserLink(APackage);
       if PkgLink<>nil then begin

@@ -543,7 +543,7 @@ begin
           inc(UnitLinkEnd);
         if UnitLinkEnd>UnitLinkStart then begin
           Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
-          if FileExists(Filename) then begin
+          if FileExistsCached(Filename) then begin
             Result:=true;
             exit;
           end;
@@ -552,7 +552,7 @@ begin
             Filename:=ChangeFileExt(Filename,'.pas')
           else
             Filename:=ChangeFileExt(Filename,'.pp');
-          if FileExists(Filename) then begin
+          if FileExistsCached(Filename) then begin
             Result:=true;
             exit;
           end;
@@ -2738,7 +2738,7 @@ begin
   SetLength(Buf,1024);
   try
     CmdLine:=PPC386Path+' -va ';
-    if FileExists(EnglishErrorMsgFilename) then
+    if FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     if PPCOptions<>'' then
       CmdLine:=CmdLine+PPCOptions+' ';

@@ -2643,13 +2643,24 @@ begin
           RaiseClassOfWithoutIdentifier;
         end;
         Params.Save(OldInput);
+        // first search backwards
         Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
                              @CheckSrcIdentifier);
-        Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+        Params.Flags:=[fdfSearchInParentNodes,
                        fdfIgnoreCurContextNode]
-                      +(fdfGlobals*Params.Flags);
+                      +(fdfGlobals*Params.Flags)-[fdfExceptionOnNotFound];
         Params.ContextNode:=Result.Node.Parent;
-        FindIdentifierInContext(Params);
+        if not FindIdentifierInContext(Params) then begin
+          // then search forwards
+          Params.Load(OldInput);
+          Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
+                               @CheckSrcIdentifier);
+          Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                         fdfIgnoreCurContextNode,fdfSearchForward]
+                        +(fdfGlobals*Params.Flags);
+          Params.ContextNode:=Result.Node.Parent;
+          FindIdentifierInContext(Params);
+        end;
         if (Params.NewNode.Desc<>ctnTypeDefinition) then begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseClassOfNotResolved;

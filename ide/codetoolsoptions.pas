@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, LazConf, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
   LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
   Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
-  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts;
+  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts, IDEProcs;
 
 type
   TCodeToolsOptions = class
@@ -459,6 +459,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
+    InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.CreateClean(FFileName);
     XMLConfig.SetValue('CodeToolsOptions/Version/Value',
       CodeToolsOptionsVersion);

@@ -88,7 +88,7 @@ type
     property TimeStamp: integer read FTimeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
-
+  
 implementation
 
 function CompareFileReferences(Data1, Data2: Pointer): integer;
