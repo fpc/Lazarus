@@ -779,7 +779,7 @@ begin
       ShowHide(Sender);
     end;
 
-    LM_SetCursor : SetCursor(Sender);
+    LM_SetCursor : SetCursor(TWinControl(Sender));
 
     LM_SetLabel  : SetLabel(Sender,Data);
 
@@ -1355,7 +1355,7 @@ begin
 
       LM_GETITEMINDEX :
       begin
-        case (Sender as TControl).fCompStyle of
+        case TControl(Sender).fCompStyle of
            csListBox: 
              begin
                if Handle<>0 then begin
@@ -1773,42 +1773,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject.SetCursor
-  Params:  Sender - the control which invoked this method
-  Returns: Nothing
-
-  Sets the cursor for a widget
-  
-  WARNING: Sender will be casted to TControl, CLEANUP!
- ------------------------------------------------------------------------------}
-procedure TgtkObject.SetCursor(Sender : TObject);
-//var CursorType : Integer;
-begin
-  Assert(False, 'Trace:IN SETCURSOR');
-  If not(Sender is TWinControl) or(TWinControl(Sender).Handle = 0) then EXIT;
-  Assert(False, 'Trace:IN SETCURSOR CASE STATEMENT');
-  case TControl(Sender).Cursor of
-     crAppStart : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Watch); 
-     crArrow    : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Arrow); 
-     crCross    : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Cross); 
-     crHandPoint: gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_hand1); 
-     crIBeam    : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_XTerm); 
-     crHourGlass: gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Watch);
-     crDefault  : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_StdArrow);
-     crHSplit   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_HSplit);
-     crVSplit   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_VSplit);
-     crSizeNWSE : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeNWSE);
-     crSizeNS   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeNS);
-     crSizeNESW : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeNESW);
-     crSizeWE   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeWE);
-     
-  else
-     Exit;
-  end; 
-end;
-
-
-{------------------------------------------------------------------------------
   Method: TGtkObject.SetLabel
   Params:  sender - the calling object
            data   - String (PChar) to be set as label for a control
@@ -2015,7 +1979,6 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       
       // if we are here no handler was defined yet
       // -> register handler
-      Assert(False, Format('trace:  [TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
       if ConnectBefore then
         gtk_signal_connect      (AnObject, ASignal,
                                  TGTKSignalFunc(ACallBackProc),Sender)
@@ -2023,14 +1986,15 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
         gtk_signal_connect_after(AnObject, ASignal,
                                  TGTKSignalFunc(ACallBackProc),Sender);
       
-      // -> register realize handler
+      // update signal mask which will be set in the realize handler
       if ReqSignalMask <> 0 then begin
         WinWidgetInfo:=GetWidgetInfo(PGtkWidget(AnObject),true);
         WinWidgetInfo^.EventMask:=WinWidgetInfo^.EventMask or ReqSignalMask;
-        if RealizeHandler = nil then begin
-          gtk_signal_connect(AnObject, 'realize',
-            TGTKSignalFunc(@GTKRealizeCB), Sender);
-        end;
+      end;
+      // -> register realize handler
+      if (RealizeHandler = nil) and (RealizeID<>0) then begin
+        gtk_signal_connect(AnObject, 'realize',
+          TGTKSignalFunc(@GTKRealizeCB), Sender);
       end;
     end;
   end;
@@ -3836,15 +3800,7 @@ begin
     TWinControl(Sender).Handle := THandle(p);
     if p <> nil then begin
       gtk_object_set_data(pgtkobject(p),'Sender',Sender);
-      {$IFDEF ClientRectBugFix}
-      {if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then begin
-        gtk_window_set_default_size(PgtkWindow(p),
-                              TControl(Sender).Width,TControl(Sender).Height);
-        gtk_widget_set_uposition(PgtkWidget(p),
-                                 TControl(Sender).Left, TControl(Sender).Top);
-      end;}
       SetResizeRequest(p);
-      {$ENDIF}
     end;
   end
   else
@@ -5338,6 +5294,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.143  2002/06/21 16:59:15  lazarus
+  MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
+
   Revision 1.142  2002/06/19 19:46:09  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
