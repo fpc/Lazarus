@@ -120,9 +120,14 @@ endif
 endif
 UNITSDIR:=$(wildcard $(FPCDIR)/units/$(OS_TARGET))
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
-override PACKAGE_NAME=lazarus-tools
+override PACKAGE_NAME=lazarus-qt
 override PACKAGE_VERSION=0.7a
-override TARGET_DIRS+=apiwizz
+DIST_DESTDIR=$(BASEDIR)/../../../dist
+override TARGET_UNITS+=interfaces
+override COMPILER_OPTIONS+=-gl
+override COMPILER_INCLUDEDIR+=.
+override COMPILER_UNITDIR+=$(COMPILER_UNITTARGETDIR) ../../units
+override COMPILER_UNITTARGETDIR+=../../units/qt
 ifndef ECHO
 ECHO:=$(strip $(wildcard $(addsuffix /gecho$(SRCEXEEXT),$(SEARCHPATH))))
 ifeq ($(ECHO),)
@@ -535,6 +540,232 @@ endif
 ifndef INSTALL_DATADIR
 INSTALL_DATADIR=$(INSTALL_BASEDIR)
 endif
+ifdef inUnix
+ifndef GCCLIBDIR
+GCCLIBDIR:=$(shell dirname `(gcc -v 2>&1)| head -n 1| awk '{ print $$4 } '`)
+endif
+ifeq ($(OS_TARGET),linux)
+ifndef OTHERLIBDIR
+OTHERLIBDIR:=$(shell grep -v "^\#" /etc/ld.so.conf | awk '{ ORS=" "; print $1 }')
+endif
+endif
+ifeq ($(OS_TARGET),netbsd)
+OTHERLIBDIR+=/usr/pkg/lib
+endif
+export GCCLIBDIR OTHERLIB
+endif
+ifeq ($(OS_TARGET),linux)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_INET=1
+REQUIRE_PACKAGES_MYSQL=1
+REQUIRE_PACKAGES_IBASE=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),go32v2)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),win32)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),os2)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),freebsd)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_INET=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),beos)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),netbsd)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),amiga)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),atari)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifdef REQUIRE_PACKAGES_RTL
+PACKAGEDIR_RTL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /rtl/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_RTL),)
+PACKAGEDIR_RTL:=$(firstword $(PACKAGEDIR_RTL))
+ifeq ($(wildcard $(PACKAGEDIR_RTL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_rtl
+package_rtl:
+	$(MAKE) -C $(PACKAGEDIR_RTL) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_RTL)/$(OS_TARGET)),)
+UNITDIR_RTL=$(PACKAGEDIR_RTL)/$(OS_TARGET)
+else
+UNITDIR_RTL=$(PACKAGEDIR_RTL)
+endif
+else
+PACKAGEDIR_RTL=
+UNITDIR_RTL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /rtl/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_RTL),)
+UNITDIR_RTL:=$(firstword $(UNITDIR_RTL))
+else
+UNITDIR_RTL=
+endif
+endif
+ifdef UNITDIR_RTL
+override COMPILER_UNITDIR+=$(UNITDIR_RTL)
+endif
+endif
+ifdef REQUIRE_PACKAGES_PASZLIB
+PACKAGEDIR_PASZLIB:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /paszlib/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_PASZLIB),)
+PACKAGEDIR_PASZLIB:=$(firstword $(PACKAGEDIR_PASZLIB))
+ifeq ($(wildcard $(PACKAGEDIR_PASZLIB)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_paszlib
+package_paszlib:
+	$(MAKE) -C $(PACKAGEDIR_PASZLIB) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_PASZLIB)/$(OS_TARGET)),)
+UNITDIR_PASZLIB=$(PACKAGEDIR_PASZLIB)/$(OS_TARGET)
+else
+UNITDIR_PASZLIB=$(PACKAGEDIR_PASZLIB)
+endif
+else
+PACKAGEDIR_PASZLIB=
+UNITDIR_PASZLIB:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /paszlib/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_PASZLIB),)
+UNITDIR_PASZLIB:=$(firstword $(UNITDIR_PASZLIB))
+else
+UNITDIR_PASZLIB=
+endif
+endif
+ifdef UNITDIR_PASZLIB
+override COMPILER_UNITDIR+=$(UNITDIR_PASZLIB)
+endif
+endif
+ifdef REQUIRE_PACKAGES_INET
+PACKAGEDIR_INET:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /inet/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_INET),)
+PACKAGEDIR_INET:=$(firstword $(PACKAGEDIR_INET))
+ifeq ($(wildcard $(PACKAGEDIR_INET)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_inet
+package_inet:
+	$(MAKE) -C $(PACKAGEDIR_INET) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_INET)/$(OS_TARGET)),)
+UNITDIR_INET=$(PACKAGEDIR_INET)/$(OS_TARGET)
+else
+UNITDIR_INET=$(PACKAGEDIR_INET)
+endif
+else
+PACKAGEDIR_INET=
+UNITDIR_INET:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /inet/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_INET),)
+UNITDIR_INET:=$(firstword $(UNITDIR_INET))
+else
+UNITDIR_INET=
+endif
+endif
+ifdef UNITDIR_INET
+override COMPILER_UNITDIR+=$(UNITDIR_INET)
+endif
+endif
+ifdef REQUIRE_PACKAGES_MYSQL
+PACKAGEDIR_MYSQL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /mysql/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_MYSQL),)
+PACKAGEDIR_MYSQL:=$(firstword $(PACKAGEDIR_MYSQL))
+ifeq ($(wildcard $(PACKAGEDIR_MYSQL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_mysql
+package_mysql:
+	$(MAKE) -C $(PACKAGEDIR_MYSQL) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_MYSQL)/$(OS_TARGET)),)
+UNITDIR_MYSQL=$(PACKAGEDIR_MYSQL)/$(OS_TARGET)
+else
+UNITDIR_MYSQL=$(PACKAGEDIR_MYSQL)
+endif
+else
+PACKAGEDIR_MYSQL=
+UNITDIR_MYSQL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /mysql/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_MYSQL),)
+UNITDIR_MYSQL:=$(firstword $(UNITDIR_MYSQL))
+else
+UNITDIR_MYSQL=
+endif
+endif
+ifdef UNITDIR_MYSQL
+override COMPILER_UNITDIR+=$(UNITDIR_MYSQL)
+endif
+endif
+ifdef REQUIRE_PACKAGES_IBASE
+PACKAGEDIR_IBASE:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /ibase/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_IBASE),)
+PACKAGEDIR_IBASE:=$(firstword $(PACKAGEDIR_IBASE))
+ifeq ($(wildcard $(PACKAGEDIR_IBASE)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_ibase
+package_ibase:
+	$(MAKE) -C $(PACKAGEDIR_IBASE) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_IBASE)/$(OS_TARGET)),)
+UNITDIR_IBASE=$(PACKAGEDIR_IBASE)/$(OS_TARGET)
+else
+UNITDIR_IBASE=$(PACKAGEDIR_IBASE)
+endif
+else
+PACKAGEDIR_IBASE=
+UNITDIR_IBASE:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /ibase/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_IBASE),)
+UNITDIR_IBASE:=$(firstword $(UNITDIR_IBASE))
+else
+UNITDIR_IBASE=
+endif
+endif
+ifdef UNITDIR_IBASE
+override COMPILER_UNITDIR+=$(UNITDIR_IBASE)
+endif
+endif
+ifdef REQUIRE_PACKAGES_FCL
+PACKAGEDIR_FCL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /fcl/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_FCL),)
+PACKAGEDIR_FCL:=$(firstword $(PACKAGEDIR_FCL))
+ifeq ($(wildcard $(PACKAGEDIR_FCL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_fcl
+package_fcl:
+	$(MAKE) -C $(PACKAGEDIR_FCL) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_FCL)/$(OS_TARGET)),)
+UNITDIR_FCL=$(PACKAGEDIR_FCL)/$(OS_TARGET)
+else
+UNITDIR_FCL=$(PACKAGEDIR_FCL)
+endif
+else
+PACKAGEDIR_FCL=
+UNITDIR_FCL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /fcl/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_FCL),)
+UNITDIR_FCL:=$(firstword $(UNITDIR_FCL))
+else
+UNITDIR_FCL=
+endif
+endif
+ifdef UNITDIR_FCL
+override COMPILER_UNITDIR+=$(UNITDIR_FCL)
+endif
+endif
+.PHONY: package_rtl package_paszlib package_inet package_mysql package_ibase package_fcl
 ifndef NOCPUDEF
 override FPCOPTDEF=$(CPU_TARGET)
 endif
@@ -619,6 +850,12 @@ override COMPILER_UNITTARGETDIR=$(COMPILER_TARGETDIR)
 override UNITTARGETDIRPREFIX=$(TARGETDIRPREFIX)
 endif
 endif
+ifdef GCCLIBDIR
+override FPCOPT+=-Fl$(GCCLIBDIR)
+endif
+ifdef OTHERLIBDIR
+override FPCOPT+=$(addprefix -Fl,$(OTHERLIBDIR))
+endif
 ifdef OPT
 override FPCOPT+=$(OPT)
 endif
@@ -641,9 +878,105 @@ ifeq ($(OS_SOURCE),$(OS_TARGET))
 EXECPPAS:=@$(PPAS)
 endif
 endif
+.PHONY: fpc_units
+ifdef TARGET_UNITS
+override ALLTARGET+=fpc_units
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_UNITS))
+override INSTALLPPUFILES+=$(UNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES)
+endif
+fpc_units: $(UNITPPUFILES)
 ifdef TARGET_RSTS
 override RSTFILES=$(addsuffix $(RSTEXT),$(TARGET_RSTS))
 override CLEANRSTFILES+=$(RSTFILES)
+endif
+.PHONY: fpc_packages fpc_all fpc_smart fpc_debug
+$(FPCMADE): $(ALLTARGET)
+	@$(ECHOREDIR) Compiled > $(FPCMADE)
+fpc_packages: $(COMPILEPACKAGES)
+fpc_all: fpc_packages $(FPCMADE)
+fpc_smart:
+	$(MAKE) all LINKSMART=1 CREATESMART=1
+fpc_debug:
+	$(MAKE) all DEBUG=1
+.SUFFIXES: $(EXEEXT) $(PPUEXT) $(OEXT) .pas .pp
+%$(PPUEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(PPUEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+vpath %.pp $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.pas $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %$(PPUEXT) $(COMPILER_UNITTARGETDIR)
+.PHONY: fpc_install fpc_sourceinstall fpc_exampleinstall
+ifdef INSTALL_UNITS
+override INSTALLPPUFILES+=$(addsuffix $(PPUEXT),$(INSTALL_UNITS))
+endif
+ifdef INSTALLPPUFILES
+override INSTALLPPULINKFILES:=$(subst $(PPUEXT),$(OEXT),$(INSTALLPPUFILES)) $(addprefix $(STATICLIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(INSTALLPPUFILES)))
+override INSTALLPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPUFILES))
+override INSTALLPPULINKFILES:=$(wildcard $(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPULINKFILES)))
+override INSTALL_CREATEPACKAGEFPC=1
+endif
+ifdef INSTALLEXEFILES
+override INSTALLEXEFILES:=$(addprefix $(TARGETDIRPREFIX),$(INSTALLEXEFILES))
+endif
+fpc_install: all $(INSTALLTARGET)
+ifdef INSTALLEXEFILES
+	$(MKDIR) $(INSTALL_BINDIR)
+ifdef UPXPROG
+	-$(UPXPROG) $(INSTALLEXEFILES)
+endif
+	$(INSTALLEXE) $(INSTALLEXEFILES) $(INSTALL_BINDIR)
+endif
+ifdef INSTALL_CREATEPACKAGEFPC
+ifdef FPCMAKE
+ifdef PACKAGE_VERSION
+ifneq ($(wildcard Makefile.fpc),)
+	$(FPCMAKE) -p -T$(OS_TARGET) Makefile.fpc
+	$(MKDIR) $(INSTALL_UNITDIR)
+	$(INSTALL) Package.fpc $(INSTALL_UNITDIR)
+endif
+endif
+endif
+endif
+ifdef INSTALLPPUFILES
+	$(MKDIR) $(INSTALL_UNITDIR)
+	$(INSTALL) $(INSTALLPPUFILES) $(INSTALL_UNITDIR)
+ifneq ($(INSTALLPPULINKFILES),)
+	$(INSTALL) $(INSTALLPPULINKFILES) $(INSTALL_UNITDIR)
+endif
+ifneq ($(wildcard $(LIB_FULLNAME)),)
+	$(MKDIR) $(INSTALL_LIBDIR)
+	$(INSTALL) $(LIB_FULLNAME) $(INSTALL_LIBDIR)
+ifdef inUnix
+	ln -sf $(LIB_FULLNAME) $(INSTALL_LIBDIR)/$(LIB_NAME)
+endif
+endif
+endif
+ifdef INSTALL_FILES
+	$(MKDIR) $(INSTALL_DATADIR)
+	$(INSTALL) $(INSTALL_FILES) $(INSTALL_DATADIR)
+endif
+fpc_sourceinstall: distclean
+	$(MKDIR) $(INSTALL_SOURCEDIR)
+	$(COPYTREE) $(BASEDIR) $(INSTALL_SOURCEDIR)
+fpc_exampleinstall: $(addsuffix _distclean,$(TARGET_EXAMPLEDIRS))
+ifdef HASEXAMPLES
+	$(MKDIR) $(INSTALL_EXAMPLEDIR)
+endif
+ifdef EXAMPLESOURCEFILES
+	$(COPY) $(EXAMPLESOURCEFILES) $(INSTALL_EXAMPLEDIR)
+endif
+ifdef TARGET_EXAMPLEDIRS
+	$(COPYTREE) $(addsuffix /*,$(TARGET_EXAMPLEDIRS)) $(INSTALL_EXAMPLEDIR)
 endif
 .PHONY: fpc_distinstall
 fpc_distinstall: install exampleinstall
@@ -844,69 +1177,29 @@ fpc_info:
 	@$(ECHO)  Dist destination dir. $(DIST_DESTDIR)
 	@$(ECHO)  Dist zip name........ $(DIST_ZIPNAME)
 	@$(ECHO)
-TARGET_DIRS_APIWIZZ=1
-ifdef TARGET_DIRS_APIWIZZ
-apiwizz_all:
-	$(MAKE) -C apiwizz all
-apiwizz_debug:
-	$(MAKE) -C apiwizz debug
-apiwizz_smart:
-	$(MAKE) -C apiwizz smart
-apiwizz_examples:
-	$(MAKE) -C apiwizz examples
-apiwizz_shared:
-	$(MAKE) -C apiwizz shared
-apiwizz_install:
-	$(MAKE) -C apiwizz install
-apiwizz_sourceinstall:
-	$(MAKE) -C apiwizz sourceinstall
-apiwizz_exampleinstall:
-	$(MAKE) -C apiwizz exampleinstall
-apiwizz_distinstall:
-	$(MAKE) -C apiwizz distinstall
-apiwizz_zipinstall:
-	$(MAKE) -C apiwizz zipinstall
-apiwizz_zipsourceinstall:
-	$(MAKE) -C apiwizz zipsourceinstall
-apiwizz_zipexampleinstall:
-	$(MAKE) -C apiwizz zipexampleinstall
-apiwizz_zipdistinstall:
-	$(MAKE) -C apiwizz zipdistinstall
-apiwizz_clean:
-	$(MAKE) -C apiwizz clean
-apiwizz_distclean:
-	$(MAKE) -C apiwizz distclean
-apiwizz_cleanall:
-	$(MAKE) -C apiwizz cleanall
-apiwizz_info:
-	$(MAKE) -C apiwizz info
-apiwizz:
-	$(MAKE) -C apiwizz all
-.PHONY: apiwizz_all apiwizz_debug apiwizz_smart apiwizz_examples apiwizz_shared apiwizz_install apiwizz_sourceinstall apiwizz_exampleinstall apiwizz_distinstall apiwizz_zipinstall apiwizz_zipsourceinstall apiwizz_zipexampleinstall apiwizz_zipdistinstall apiwizz_clean apiwizz_distclean apiwizz_cleanall apiwizz_info apiwizz
-endif
-all: $(addsuffix _all,$(TARGET_DIRS))
-debug: $(addsuffix _debug,$(TARGET_DIRS))
-smart: $(addsuffix _smart,$(TARGET_DIRS))
-examples: $(addsuffix _examples,$(TARGET_DIRS))
-shared: $(addsuffix _shared,$(TARGET_DIRS))
-install: $(addsuffix _install,$(TARGET_DIRS))
-sourceinstall:
-exampleinstall: $(addsuffix _exampleinstall,$(TARGET_DIRS))
+debug: fpc_debug
+smart: fpc_smart
+examples:
+shared:
+install: fpc_install
+sourceinstall: fpc_sourceinstall
+exampleinstall: fpc_exampleinstall
 distinstall: fpc_distinstall
 zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
-zipexampleinstall: fpc_zipexampleinstall $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
-zipdistinstall: fpc_zipdistinstall $(addsuffix _zipdistinstall,$(TARGET_DIRS))
-clean: $(addsuffix _clean,$(TARGET_DIRS))
-distclean: $(addsuffix _distclean,$(TARGET_DIRS))
-cleanall: $(addsuffix _cleanall,$(TARGET_DIRS))
+zipexampleinstall: fpc_zipexampleinstall
+zipdistinstall: fpc_zipdistinstall
+clean: fpc_clean
+distclean: fpc_distclean
+cleanall: fpc_cleanall
 info: fpc_info
-.PHONY: all debug smart examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info
+.PHONY: debug smart examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: makefile makefiles
+.PHONY: all makefile makefiles
+all: 
+	$(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
 makefile: Makefile.fpc
 	-$(FPCMAKE) -w
 makefiles: makefile
-	$(MAKE) -C apiwizz makefiles

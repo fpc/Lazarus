@@ -6,7 +6,7 @@
 [package]
 #name=lazarus-codetools
 name=lazarus
-version=0.7a
+version=0.8
 
 [target]
 units=avl_tree basiccodetools codecache codetoolmanager codetools sourcelog \
@@ -19,8 +19,9 @@ units=avl_tree basiccodetools codecache codetoolmanager codetools sourcelog \
 [compiler]
 options=-gl  
 unittargetdir=../units
-targetdir=../units
-unitdir=$(COMPILER_UNITTARGETDIR)
+#targetdir=../units
+unitdir=. $(COMPILER_UNITTARGETDIR)     
+
 
 [require]
 packages=rtl fcl

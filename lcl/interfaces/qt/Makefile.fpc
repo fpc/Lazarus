@@ -1,0 +1,35 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#   
+# test
+     
+[package]
+name=lazarus-qt
+version=0.7a
+
+[require]
+packages=rtl fcl 
+
+[target]
+units=interfaces
+
+[compiler]
+options=-gl
+unittargetdir=../../units/qt
+unitdir=$(COMPILER_UNITTARGETDIR) ../../units 
+includedir=.
+
+[prerules]
+DIST_DESTDIR=$(BASEDIR)/../../../dist
+
+[rules]
+.PHONY: all makefile makefiles
+
+all: 
+        $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile
