@@ -29,6 +29,8 @@ uses
   Classes, SysUtils;
 
 const
+//(*
+// Part of LCLType
   {These should be moved to the correct area eventually}
   WS_EX_CLIENTEDGE = $200;
   WS_HSCroll = $100000;
@@ -36,6 +38,7 @@ const
   WS_BORDER = $800000;
   WS_CLIPCHILDREN = $2000000;
   {}
+//*)
 
   csNone = 0;
   csAlignment = 1;

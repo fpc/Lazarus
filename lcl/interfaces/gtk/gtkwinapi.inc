@@ -35,19 +35,6 @@ const
 
 //##apiwiz##sps##   // Do not remove
 
-function TgtkObject.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
-begin
-  PS.hDC:=GetDC(Handle);
-  Result := PS.hDC;
-end;
-
-Function TgtkObject.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
-begin
-  Result:=1;
-  if PS.HDC <> 0 then
-    ReleaseDC(Handle, PS.HDC);
-end;
-
 {------------------------------------------------------------------------------
   Method:   Arc
   Params:   x,y,width,height,angle1,angle2
@@ -122,6 +109,18 @@ begin
     else
       Result := Inherited AngleChord(DC, x, y, width, height, angle1, angle2);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: BeginPaint
+  Params:  
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+begin
+  PS.hDC:=GetDC(Handle);
+  Result := PS.hDC;
 end;
 
 {------------------------------------------------------------------------------
@@ -231,46 +230,6 @@ begin
   Mess.WParam := WParam;
   Proc(Mess);
   Result := Mess.Result;
-end;
-
-{------------------------------------------------------------------------------
-  Function: CheckMenuItem
-  Params:  hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean
-  Returns: Nothing
-
-
- ------------------------------------------------------------------------------}
-function TgtkObject.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
-  bChecked: Boolean): Boolean;
-var
-  LCLMenuItem: TMenuItem;
-  IsRadio: Boolean;
-  Group: PGSList;
-begin
-  IsRadio := gtk_is_radio_menu_item(Pointer(hndMenu));
-  if IsRadio or gtk_is_check_menu_item(Pointer(hndMenu))
-  then begin
-    if IsRadio
-    then begin
-      Group :=  gtk_radio_menu_item_group(Pointer(hndMenu));
-      LockRadioGroupOnChange(Group, +1);
-    end
-    else  LockOnChange(PgtkObject(hndMenu),1);
-    gtk_check_menu_item_set_active(PGtkCheckMenuItem(hndMenu),bChecked);
-    if IsRadio
-    then begin
-      LockRadioGroupOnChange(Group, -1);
-    end
-    else LockOnChange(PgtkObject(hndMenu),-1);
-    Result:=true;
-  end else begin
-    LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
-    if LCLMenuItem<>nil then begin
-      LCLMenuItem.RecreateHandle;
-      Result := true;
-    end else
-      Result := false;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1202,72 +1161,6 @@ begin
   Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
-function Tgtkobject.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
-  Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
-begin
-  Assert(False, 'trace:[TgtkObject.GetDIBits]');
-  Result := 0;
-  if IsValidGDIObject(Bitmap)
-  then begin
-    case PGDIObject(Bitmap)^.GDIType of
-      gdiBitmap:
-        Result := InternalGetDIBits(DC, Bitmap, StartScan, NumScans, -1, Bits,
-                                      BitInfo, Usage, True);
-      else
-        writeln('WARNING: [TgtkObject.GetDIBits] not a Bitmap!');
-    end;
-  end
-  else
-    writeln('WARNING: [TgtkObject.GetDIBits] invalid Bitmap!');
-end;
-
-function Tgtkobject.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
-var
-  BitInfo : tagBitmapInfo;
-begin
-  Assert(False, 'trace:[TgtkObject.GetBitmapBits]');
-  Result := 0;
-  if IsValidGDIObject(Bitmap)
-  then begin
-    case PGDIObject(Bitmap)^.GDIType of
-      gdiBitmap:
-        Result := InternalGetDIBits(0, Bitmap, 0, 0, Count, Bits, BitInfo, 0, False);
-      else
-        writeln('WARNING: [TgtkObject.GetBitmapBits] not a Bitmap!');
-    end;
-  end
-  else
-    writeln('WARNING: [TgtkObject.GetBitmapBits] invalid Bitmap!');
-end;
-
-{------------------------------------------------------------------------------
-  function Tgtkobject.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-    Desc: PRawImageDescription): boolean;
-
- ------------------------------------------------------------------------------}
-function Tgtkobject.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): boolean;
-var
-  GDIObject: PGDIObject;
-  GdkPixmap: PGdkPixmap;
-begin
-  Result:=false;
-  if not IsValidGDIObject(Bitmap) then begin
-    writeln('WARNING: [TgtkObject.GetBitmapRawImageDescription] invalid Bitmap!');
-    exit;
-  end;
-  GDIObject:=PGDIObject(Bitmap);
-  GdkPixmap:=nil;
-  case GDIObject^.GDIBitmapType of
-  gbBitmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIBitmapObject);
-  gbPixmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIPixmapObject);
-  else
-    writeln('WARNING: [TgtkObject.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
-    exit;
-  end;
-  Result:=GetWindowRawImageDescription(PGdkWindow(GdkPixmap),Desc);
-end;
-
 {------------------------------------------------------------------------------
   Function: CreateCompatibleDC
   Params:  none
@@ -1633,6 +1526,7 @@ begin
   end;
 end;
 {$EndIf}
+
 {------------------------------------------------------------------------------
   Function: CreatePalette
   Params:  LogPalette
@@ -2056,86 +1950,6 @@ begin
       gtk_widget_hide (ComboWidget^.popwin);
   end;
   Result:=true;
-end;
-
-{------------------------------------------------------------------------------
-  Function: ExtSelectClipRGN
-  Params:  dc, RGN, Mode
-  Returns: integer
-
-  Combines the passed Region with the current clipping region in the device
-  context (dc), using the specified mode.
-
-  The Combine Mode can be one of the following:
-      RGN_AND  : all points which are in both regions
-
-      RGN_COPY : an exact copy of the source region, same as SelectClipRGN
-
-      RGN_DIFF : all points which are in the Clipping Region but
-                 not in the Source.(Clip - RGN)
-
-      RGN_OR   : all points which are in either the Clip Region or
-                 in the Source.(Clip + RGN)
-
-      RGN_XOR  : all points which are in either the Clip Region
-                 or in the Source, but not in both.
-
-  The result can be one of the following constants
-      Error
-      NullRegion
-      SimpleRegion
-      ComplexRegion
- ------------------------------------------------------------------------------}
-function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
-  Mode : Longint) : Integer;
-var
-  Clip,
-  Tmp : hRGN;
-  X, Y : Longint;
-begin
-  Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
-    Result := ERROR
-  else with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      WriteLn('WARNING: [TgtkObject.ExtSelectClipRGN] Uninitialized GC');
-      Result := ERROR;
-    end
-    else begin
-      //writeln('TgtkObject.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
-      //  ' Mode=',Mode,' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
-      If ClipRegion=0 then begin
-        // there is no clipping region in the DC
-        Case Mode of
-          RGN_COPY:
-            begin
-              Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
-              If Result <> ERROR then
-                Result := SelectClipRGN(DC, RGN);
-            end;
-          RGN_OR,
-          RGN_XOR,
-          RGN_AND,
-          RGN_DIFF:
-            begin
-              BeginGDKErrorTrap;
-              GDK_Window_Get_Size(Drawable, @X, @Y);
-              EndGDKErrorTrap;
-              Clip := CreateRectRGN(0,0,X,Y);
-              Tmp := CreateEmptyRegion;
-              Result := CombineRGN(Tmp, Clip, RGN, mode);
-              DeleteObject(Clip);
-              SelectClipRGN(DC, Tmp);
-              DeleteObject(Tmp);
-            end;
-          end;
-        end
-      else
-        Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2875,21 +2689,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: EnableMenuItem
-  Params: hndMenu:
-          uIDEnableItem:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TGTKObject.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
-  bEnable: Boolean): Boolean;
-begin
-  if hndMenu <> 0
-  then gtk_widget_set_sensitive(pgtkwidget(hndMenu), bEnable);
-  Result:=true;
-end;
-
-{------------------------------------------------------------------------------
   Function: EnableScrollBar
   Params:  Wnd, wSBflags, wArrows
   Returns: Nothing
@@ -2916,6 +2715,19 @@ begin
   if hWnd <> 0 then
     gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
   Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: EndPaint
+  Params:  
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+begin
+  Result:=1;
+  if PS.HDC <> 0 then
+    ReleaseDC(Handle, PS.HDC);
 end;
 
 {------------------------------------------------------------------------------
@@ -3015,6 +2827,86 @@ begin
     end
     else
       Result := Inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ExtSelectClipRGN
+  Params:  dc, RGN, Mode
+  Returns: integer
+
+  Combines the passed Region with the current clipping region in the device
+  context (dc), using the specified mode.
+
+  The Combine Mode can be one of the following:
+      RGN_AND  : all points which are in both regions
+
+      RGN_COPY : an exact copy of the source region, same as SelectClipRGN
+
+      RGN_DIFF : all points which are in the Clipping Region but
+                 not in the Source.(Clip - RGN)
+
+      RGN_OR   : all points which are in either the Clip Region or
+                 in the Source.(Clip + RGN)
+
+      RGN_XOR  : all points which are in either the Clip Region
+                 or in the Source, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+ ------------------------------------------------------------------------------}
+function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
+  Mode : Longint) : Integer;
+var
+  Clip,
+  Tmp : hRGN;
+  X, Y : Longint;
+begin
+  Result := SIMPLEREGION;
+  If not IsValidDC(DC) then
+    Result := ERROR
+  else with TDeviceContext(DC) do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.ExtSelectClipRGN] Uninitialized GC');
+      Result := ERROR;
+    end
+    else begin
+      //writeln('TgtkObject.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
+      //  ' Mode=',Mode,' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
+      If ClipRegion=0 then begin
+        // there is no clipping region in the DC
+        Case Mode of
+          RGN_COPY:
+            begin
+              Result := RegionType(PGdiObject(RGN)^.GDIRegionObject);
+              If Result <> ERROR then
+                Result := SelectClipRGN(DC, RGN);
+            end;
+          RGN_OR,
+          RGN_XOR,
+          RGN_AND,
+          RGN_DIFF:
+            begin
+              BeginGDKErrorTrap;
+              GDK_Window_Get_Size(Drawable, @X, @Y);
+              EndGDKErrorTrap;
+              Clip := CreateRectRGN(0,0,X,Y);
+              Tmp := CreateEmptyRegion;
+              Result := CombineRGN(Tmp, Clip, RGN, mode);
+              DeleteObject(Clip);
+              SelectClipRGN(DC, Tmp);
+              DeleteObject(Tmp);
+            end;
+          end;
+        end
+      else
+        Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
+    end;
   end;
 end;
 
@@ -3502,6 +3394,86 @@ begin
   end;
   if TopList <> nil
   then g_list_free(TopList);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetDIBits
+  Params:  
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+function Tgtkobject.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+  Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+begin
+  Assert(False, 'trace:[TgtkObject.GetDIBits]');
+  Result := 0;
+  if IsValidGDIObject(Bitmap)
+  then begin
+    case PGDIObject(Bitmap)^.GDIType of
+      gdiBitmap:
+        Result := InternalGetDIBits(DC, Bitmap, StartScan, NumScans, -1, Bits,
+                                      BitInfo, Usage, True);
+      else
+        writeln('WARNING: [TgtkObject.GetDIBits] not a Bitmap!');
+    end;
+  end
+  else
+    writeln('WARNING: [TgtkObject.GetDIBits] invalid Bitmap!');
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetBitmapBits
+  Params:  
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+function Tgtkobject.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+var
+  BitInfo : tagBitmapInfo;
+begin
+  Assert(False, 'trace:[TgtkObject.GetBitmapBits]');
+  Result := 0;
+  if IsValidGDIObject(Bitmap)
+  then begin
+    case PGDIObject(Bitmap)^.GDIType of
+      gdiBitmap:
+        Result := InternalGetDIBits(0, Bitmap, 0, 0, Count, Bits, BitInfo, 0, False);
+      else
+        writeln('WARNING: [TgtkObject.GetBitmapBits] not a Bitmap!');
+    end;
+  end
+  else
+    writeln('WARNING: [TgtkObject.GetBitmapBits] invalid Bitmap!');
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetBitmapRawImageDescription
+  Params: Bitmap: HBITMAP;
+          Desc: PRawImageDescription
+  Returns: boolean;
+
+ ------------------------------------------------------------------------------}
+function Tgtkobject.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+  Desc: PRawImageDescription): boolean;
+var
+  GDIObject: PGDIObject;
+  GdkPixmap: PGdkPixmap;
+begin
+  Result:=false;
+  if not IsValidGDIObject(Bitmap) then begin
+    writeln('WARNING: [TgtkObject.GetBitmapRawImageDescription] invalid Bitmap!');
+    exit;
+  end;
+  GDIObject:=PGDIObject(Bitmap);
+  GdkPixmap:=nil;
+  case GDIObject^.GDIBitmapType of
+  gbBitmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIBitmapObject);
+  gbPixmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIPixmapObject);
+  else
+    writeln('WARNING: [TgtkObject.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
+    exit;
+  end;
+  Result:=GetWindowRawImageDescription(PGdkWindow(GdkPixmap),Desc);
 end;
 
 {------------------------------------------------------------------------------
@@ -9060,6 +9032,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.302  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.301  2003/11/23 13:13:35  mattias
   added clWindow for gtklistitem
 

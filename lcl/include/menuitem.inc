@@ -629,9 +629,10 @@ begin
     FChecked := AValue;
     if AValue and FRadioItem then
       TurnSiblingsOff;
-    if (FParent <> nil) and not (csReading in ComponentState)
-    and HandleAllocated then
-      CheckMenuItem(Handle, FCommand, FChecked);
+    if (FParent <> nil)
+    and not (csReading in ComponentState)
+    and HandleAllocated
+    then CheckMenuItem(Handle, FCommand, FChecked);
   end;
 end;
 
@@ -659,8 +660,8 @@ procedure TMenuItem.SetEnabled(AValue: Boolean);
 begin
   if FEnabled <> AValue then begin
     FEnabled := AValue;
-    if HandleAllocated and (Parent <> nil) then
-      EnableMenuItem(Handle, FCommand, FEnabled);
+    if HandleAllocated and (Parent <> nil)
+    then EnableMenuItem(Handle, FCommand, FEnabled);
     MenuChanged(False);
   end;
 end;
@@ -983,6 +984,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.40  2003/11/16 01:56:15  mattias
   changed TMenuItem.Graphic to TMenuItem.Bitmap
 
@@ -1131,6 +1135,9 @@ end;
 
 
   $Log$
+  Revision 1.41  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.40  2003/11/16 01:56:15  mattias
   changed TMenuItem.Graphic to TMenuItem.Bitmap
 

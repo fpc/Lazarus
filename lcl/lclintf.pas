@@ -51,6 +51,9 @@ uses
 
 // All winapi related stuff
 {$I winapih.inc}
+// All interface communication
+{$I lclintfh.inc}
+
 
 function MakeLong(A,B : Word) : LongInt;
 function MakeWord(A,B : Byte) : Word;
@@ -122,6 +125,7 @@ begin
 end;
 
 {$I winapi.inc}
+{$I lclintf.inc}
 
 procedure InternalInit;
 var
@@ -147,6 +151,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.2  2003/09/19 16:10:32  mattias
   started TDBNavigator
 

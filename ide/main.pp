@@ -5727,7 +5727,7 @@ function TMainIDE.DoTestCompilerSettings(
 begin
   Result:=mrCancel;
   if (Project1=nil) or (ToolStatus<>itNone) then exit;
-  
+
   // change tool status
   CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(Application);
   try
@@ -10165,6 +10165,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.674  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.673  2003/11/22 15:47:52  mattias
   added auto stop debugging on close
 

@@ -1,6 +1,6 @@
 { 
  /*************************************************************************** 
-                         Interfaces.pp  -  determines what interface to use
+                 Interfaces.pp  -  determines what interface to use
                              ------------------- 
  
                    Initial Revision  : Thu July 1st CST 1999 

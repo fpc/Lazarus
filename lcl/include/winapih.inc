@@ -1,6 +1,6 @@
 (******************************************************************************
   All Winapi related stuff goes here.
-  This file is used by both LCLLinux and InterfaceBase
+  This file is used by both LCLIntf.pas and InterfaceBase.pp
   If a procedure is platform dependent then it should have the following tail:
     {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
   If a procedure isn't platform dependent, it is no part of InterfaseBase and
@@ -29,6 +29,9 @@
 
 {******************************************************************************
   Platform specific stuff
+                                                                             
+  Note:
+    the IFNDEF IF_BASE_MEMBER section is at the end
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
@@ -39,30 +42,12 @@ Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; {$IFDEF IF_BASE_
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function BringWindowToTop(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-procedure CallDefaultWndHandler(Sender: TObject; var Message); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CharLowerBuff --> independent
-function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
-  bChecked: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-// the clipboard functions are internally used by TClipboard
-function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ClipboardGetData(ClipboardType: TClipboardType;
-  FormatID: TClipboardFormat; Stream: TStream): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-// ! ClipboardGetFormats: List will be created. You must free it yourself with FreeMem(List) !
-function ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
-  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
-  Formats: PClipboardFormat): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCaret(Handle: HWND; Bitmap: hBitmap; width, Height: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -80,30 +65,27 @@ function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: strin
 function CreatePalette(const LogPalette: TLogPalette): HPalette; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreatePen --> independent
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreateRectRgnIndirect --> independent
 
-Procedure DeleteCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure DeleteCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DeleteDC(hDC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DestroyCaret(Handle : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Procedure EnterCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure EnterCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function EqualRect --> independent
 Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$IFNDEF IF_BASE_MEMBER} function ExcludeClipRgn(dc: hdc; rgn : hrgn) : Integer; {$ENDIF}
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -113,46 +95,30 @@ function FloodFill(DC: HDC; X, Y: Integer;
                    Color: TGraphicsColor;
                    FillStyle: TGraphicsFillStyle;
                    Brush: HBRUSH): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer;
-                 const Style : TGraphicsBevelCut
-                 ): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Function GetActiveWindow : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCapture : HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCaretPos(var lpPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function GetClientBounds(handle : HWND; var ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function GetClientRect(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function GetCmdLineParamDescForInterface: string; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetClientRect(handle : HWND; var Rect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetClipBox(DC : hDC; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCursorPos(var lpPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} //pbd
 function GetDC(hWnd: HWND): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetDeviceSize(DC: HDC; var p: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetDesignerDC(WindowHandle: HWND): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFocus: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFontLanguageInfo(DC: HDC): DWord; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetKeyState(nVirtKey: Integer): Smallint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetMapMode(DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetParent(Handle : HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function GetScrollPos --> independent
 //function GetScrollRange --> independent
@@ -168,7 +134,6 @@ function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer; var Size: TSi
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowLong(Handle : hwnd; int : Integer): Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
@@ -180,7 +145,6 @@ function HideCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Procedure InitializeCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IntersectRect --> independent
-Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsCharAlphaNumeric --> independent
 function IsDBCSLeadByte(TestChar: Byte): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -189,28 +153,14 @@ function IsWindowVisible(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;
 
 Procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-{$IFNDEF IF_BASE_MEMBER}
-Procedure NotifyUser(const DialogMessage : String; DialogType : longint);
-Procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);
-
-Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
-Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
-{$ENDIF}
 
 //function OffsetRect --> independent
 
-function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterGetInterfaceInfo: boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Pie(DC: HDC; EllipseX1,EllipseY1,EllipseX2,EllipseY2,
              StartX,StartY,EndX,EndY: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -221,36 +171,12 @@ function PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongI
 Function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function PtInRect --> independent
 
-{$IFNDEF IF_BASE_MEMBER}
-Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint;
-Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-
-Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
-Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-
-Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint;
-Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-{$EndIf}
-
-Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
-function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RadialPieWithAngles(DC: HDC; X,Y,Width,Height,Angle1,Angle2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RealizePalette(DC: HDC): Cardinal; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function SaveDC(DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -260,16 +186,13 @@ function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; 
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetActiveWindow(Handle: HWND): HWND;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} //pbd
 Function SetBkMode(DC: HDC; bkMode : Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function SetCapture (Value : LongInt): LongInt; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretPos(X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretPosEx(handle: HWnd; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCursor(hCursor: HICON): HCURSOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetFocus(hWnd: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetMapMode(DC: HDC; MapMode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -296,7 +219,6 @@ function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc,
 function StretchDIBits(DC: HDC; DestX, DestY, DestWidth, DestHeight, SrcX,
   SrcY, SrcWidth, SrcHeight: Integer; Bits: Pointer; var BitsInfo: TBitmapInfo;
   Usage: UINT; Rop: DWORD): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -314,36 +236,12 @@ Function WindowFromPoint(Point : TPoint) : HWND; {$IFDEF IF_BASE_MEMBER}virtual;
 
 {$IFNDEF IF_BASE_MEMBER}
 
-const
-  { Ternary raster operations }
-  SRCCOPY     = $00CC0020;     { dest = source                    }
-  SRCPAINT    = $00EE0086;     { dest = source OR dest            }
-  SRCAND      = $008800C6;     { dest = source AND dest           }
-  SRCINVERT   = $00660046;     { dest = source XOR dest           }
-  SRCERASE    = $00440328;     { dest = source AND (NOT dest )    }
-  NOTSRCCOPY  = $00330008;     { dest = (NOT source)              }
-  NOTSRCERASE = $001100A6;     { dest = (NOT src) AND (NOT dest)  }
-  MERGECOPY   = $00C000CA;     { dest = (source AND pattern)      }
-  MERGEPAINT  = $00BB0226;     { dest = (NOT source) OR dest      }
-  PATCOPY     = $00F00021;     { dest = pattern                   }
-  PATPAINT    = $00FB0A09;     { dest = DPSnoo                    }
-  PATINVERT   = $005A0049;     { dest = pattern XOR dest          }
-  DSTINVERT   = $00550009;     { dest = (NOT dest)                }
-  BLACKNESS   = $00000042;     { dest = BLACK                     }
-  WHITENESS   = $00FF0062;     { dest = WHITE                     }
-
-type
-  WPARAM = longint;
-  LPARAM = LongInt;
-  LRESULT = LongInt;
-
-
 //##apiwiz##spi##    // Do not remove
 
 function AdjustWindowRectEx(Var Rect: TRect; Style1: Word; MenuExist : Boolean;
   Style2 : Word) : Boolean;
 
-Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
+function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
@@ -362,14 +260,14 @@ function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Bo
 Function IsCharAlphaNumeric(c : Char) : Boolean;
 function IsRectEmpty(const ARect: TRect): Boolean;
 
-function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
-
 function MakeWParam(l, h: Word): WPARAM;
 function MakeLParam(l, h: Word): LPARAM;
 function MakeLResult(l, h: Word): LRESULT;
 
-Function PtInRect(Rect : TRect; Point : TPoint) : Boolean;
-Function PointToSmallPoint(const P : TPoint) : TSmallPoint;
+function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
+
+function PtInRect(Rect : TRect; Point : TPoint) : Boolean;
+function PointToSmallPoint(const P : TPoint) : TSmallPoint;
 
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean;
 function SetRect(Var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
@@ -380,27 +278,23 @@ Function SmallPointToPoint(const P : TSmallPoint) : Tpoint;
 
 function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; //pbd
 
-Function GetRValue(RGB : DWORD) : BYTE;
-Function GetGValue(RGB : DWORD) : BYTE;
-Function GetBValue(RGB : DWORD) : BYTE;
+function GetRValue(RGB : DWORD) : BYTE;
+function GetGValue(RGB : DWORD) : BYTE;
+function GetBValue(RGB : DWORD) : BYTE;
 
-Function RGB(R, G, B : Byte) : TColorRef;
+function RGB(R, G, B : Byte) : TColorRef;
 
 //##apiwiz##epi##    // Do not remove
 
-Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
-Procedure EnterCriticalSection(var CritSection: TRTLCriticalSection);
-Procedure LeaveCriticalSection(var CritSection: TRTLCriticalSection);
-Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
-
-// should go to sysutils.pp
-procedure RaiseLastOSError;
 
 {$ENDIF}
 
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.93  2003/11/14 21:17:59  micha
   new maskblt method for transparency blitting
 

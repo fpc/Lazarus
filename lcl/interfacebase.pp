@@ -40,12 +40,9 @@ type
 
   { TInterfaceBase }
 
-  TInterfaceBase = Class(TObject)
+  TInterfaceBase = class(TObject)
   protected
     procedure PassCmdLineOptions; virtual;
-    function CreateRegionCopy(SrcRGN: hRGN): hRGN; virtual;
-    function DCClipRegionValid(DC: HDC): boolean; virtual;
-    function CreateEmptyRegion: hRGN; virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -53,7 +50,6 @@ type
     procedure WaitMessage; virtual; abstract;
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
-    procedure AttachMenuToWindow(AMenuObject: TComponent); virtual;
     function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; virtual; abstract;
@@ -61,6 +57,7 @@ type
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}
+    {$I lclintfh.inc}
     {$UNDEF IF_BASE_MEMBER}
   end;
 
@@ -97,6 +94,8 @@ implementation
 uses Math;
 
 {$I interfacebase.inc}
+{$I intfbasewinapi.inc}
+{$I intfbaselcl.inc}
 
 initialization
   InputDialogFunction:=nil;
@@ -109,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.34  2003/10/28 14:25:37  mattias
   fixed unit circle
 

@@ -21,18 +21,16 @@
 }
 
 //##apiwiz##sps##   // Do not remove
-function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
-Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 
 function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
+function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 Function BringWindowToTop(hWnd : HWND): Boolean; override;
 
 function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; override;
-function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; override;
 Function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 
 // clipboard
@@ -72,11 +70,11 @@ function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal):
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
-function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
-Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
-Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
+function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
+procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
+function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
@@ -215,6 +213,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.80  2003/11/10 16:15:32  micha
   cleanups; win32 fpimage support
 

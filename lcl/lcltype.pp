@@ -268,6 +268,44 @@ PM_Noremove = 0;
 PM_Remove = 1;
 
 //==============================================
+// Menu constants
+//==============================================
+                           
+  MF_BYCOMMAND       = 0;
+  MF_BYPOSITION      = $400;
+  MF_BYHANDLE        = $800; // introduced by the LCL
+
+  MF_SEPARATOR       = $800;
+
+  MF_ENABLED         = 0;
+  MF_GRAYED          = 1;
+  MF_DISABLED        = 2;
+
+  MF_UNCHECKED       = 0;
+  MF_CHECKED         = 8;
+  MF_USECHECKBITMAPS = $200;
+
+  MF_STRING          = 0;
+  MF_BITMAP          = 4;
+  MF_OWNERDRAW       = $100;
+
+  MF_POPUP           = $10;
+  MF_MENUBARBREAK    = $20;
+  MF_MENUBREAK       = $40;
+
+  MF_UNHILITE        = 0;
+  MF_HILITE          = $80;
+
+  MF_DEFAULT         = $1000;
+  MF_SYSMENU         = $2000;
+  MF_HELP            = $4000;
+  MF_RIGHTJUSTIFY    = $4000;
+
+  MF_MOUSESELECT     = $8000;
+                           
+  MF_UNSUPPORTED     = $FFFFFFFF;
+                           
+//==============================================
 // Keyboard constants
 //==============================================
 
@@ -1874,6 +1912,9 @@ end.
 
 {
   $Log$
+  Revision 1.50  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.49  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 

@@ -293,6 +293,7 @@ type
     function DestroyTimer(TimerHandle: integer) : boolean; override;
 
     {$I gtkwinapih.inc}
+    {$I gtklclintfh.inc}
 
   public
     property RCFilename: string read FRCFilename write SetRCFilename;
@@ -310,6 +311,7 @@ uses
 {$I gtklistsl.inc}
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
+{$I gtklclintf.inc}
 
 
 procedure InternalInit;
@@ -399,6 +401,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.157  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.156  2003/11/10 16:15:32  micha
   cleanups; win32 fpimage support
 

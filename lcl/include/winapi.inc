@@ -1,8 +1,6 @@
-// included by lcllinux.pp
-
 (******************************************************************************
   All Winapi related stuff goes here.
-  This file is used by LCLLinux
+  This file is used by LCLIntf.pas
   If a procedure is platform dependent then it should call:
     InterfaceObject.MyDependentProc
 
@@ -28,6 +26,8 @@
 {******************************************************************************
   These functions redirect to the platform specific interface object.
 
+  Note:
+    the section for not referring InterfaceObject is at the end
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
@@ -56,11 +56,6 @@ begin
   Result := InterfaceObject.BringWindowToTop(hWnd);
 end;
 
-procedure CallDefaultWndHandler(Sender: TObject; var Message);
-begin
-  InterfaceObject.CallDefaultWndHandler(Sender,Message);
-end;
-
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
 begin
   Result := InterfaceObject.CallNExtHookEx(hhk,ncode,wparam,lParam);
@@ -71,57 +66,14 @@ begin
   Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, wParam, lParam);
 end;
 
-function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
-  bChecked: Boolean): Boolean;
-begin
-  Result := InterfaceObject.CheckMenuItem(hndMenu,uIDEnableItem,bChecked);
-end;
-
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := InterfaceObject.ClientToScreen(Handle, P);
 end;
 
-// the clipboard functions are internally used by TClipboard
-function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
-begin
-  Result := InterfaceObject.ClipboardFormatToMimeType(FormatID);
-end;
-
-function ClipboardGetData(ClipboardType: TClipboardType;
-  FormatID: TClipboardFormat; Stream: TStream): boolean;
-begin
-  Result := InterfaceObject.ClipboardGetData(ClipboardType, FormatID, Stream);
-end;
-
-// ! List will be created. You must free it yourself with FreeMem(List) !
-function ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;
-begin
-  Result := InterfaceObject.ClipboardGetFormats(ClipboardType,Count,List);
-end;
-
-function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
-  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
-  Formats: PClipboardFormat): boolean;
-begin
-  Result := InterfaceObject.ClipboardGetOwnerShip(ClipboardType, OnRequestProc,
-                   FormatCount, Formats);
-end;
-
-function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
-begin
-  Result := InterfaceObject.ClipboardRegisterFormat(AMimeType);
-end;
-
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 begin
   Result := InterfaceObject.CombineRgn(Dest, Src1, Src2, fnCombineMode);
-end;
-
-function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
-begin
-  Result := InterfaceObject.ComboBoxDropDown(Handle,DropDown);
 end;
 
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint;
@@ -131,18 +83,19 @@ begin
                                          BitmapBits);
 end;
 
-function CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap): boolean;
-begin
-  Result := InterfaceObject.CreateBitmapFromRawImage(RawImage,Bitmap,MaskBitmap);
-end;
-
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
 begin
   Result := InterfaceObject.CreateDIBitmap(DC,InfoHeader,dwUsage,InitBits,
                                            InitInfo,wUsage);
+end;
+
+function CreateDIBSection(DC: HDC; const BitmapInfo: tagBitmapInfo; Usage: UINT;
+  var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
+begin
+  Result := InterfaceObject.CreateDIBSection(DC,BitmapInfo,Usage,
+                                             Bits,SectionHandle,Offset);
 end;
 
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
@@ -184,11 +137,6 @@ end;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
   Result := InterfaceObject.CreatePenIndirect(LogPen);
-end;
-
-function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
-begin
-  Result := InterfaceObject.CreatePixmapIndirect(Data, TransColor);
 end;
 
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
@@ -241,11 +189,6 @@ begin
   Result := InterfaceObject.DPtoLP(DC,Points,Count);
 end;
 
-function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
-begin
-  Result := InterfaceObject.EnableMenuItem(hndMenu, uIDEnableItem, bEnable);
-end;
-
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := InterfaceObject.EnableScrollBar(Wnd, wSBflags, wArrows);
@@ -276,27 +219,6 @@ begin
   Result := InterfaceObject.ExcludeClipRect(DC,Left,Top,Right,Bottom);
 end;
 
-{------------------------------------------------------------------------------
-  Function: ExcludeClipRgn
-  Params:  dc, RGN
-  Returns: integer
-
-  Subtracts all intersecting points of the passed Region from the Current
-  clipping region in the device context (dc).
-
-  The result can be one of the following constants
-      Error
-      NullRegion
-      SimpleRegion
-      ComplexRegion
-
-
- ------------------------------------------------------------------------------}
-function ExcludeClipRgn(dc: hdc; rgn : hrgn) : Integer;
-begin
-  Result := ExtSelectClipRGN(DC, RGN, RGN_DIFF);
-end;
-
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := InterfaceObject.ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
@@ -324,17 +246,6 @@ begin
   Result := InterfaceObject.FloodFill(DC,X,Y,Color,FillStyle,Brush);
 end;
 
-function Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-  Result:= InterfaceObject.Frame(DC, ARect);
-end;
-
-function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
-  const Style: TGraphicsBevelCut) : boolean;
-begin
-  Result:= InterfaceObject.Frame3d(DC, ARect, FrameWidth, Style);
-end;
-
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
 begin
   Result:= InterfaceObject.FrameRect(DC, ARect, hBr);
@@ -345,7 +256,12 @@ begin
   Result := InterfaceObject.GetActiveWindow;
 end;
 
-Function GetCapture: HWND;
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+begin
+  Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
+end;
+
+function GetCapture: HWND;
 Begin
   Result := InterfaceObject.GetCapture;
 end;
@@ -353,28 +269,6 @@ end;
 function GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
   Result := InterfaceObject.GetCaretPos(lpPoint);
-end;
-
-function GetCaretRespondToFocus(handle: HWND;
-  var ShowHideOnFocus: boolean): Boolean;
-begin
-  Result := InterfaceObject.GetCaretRespondToFocus(handle,ShowHideOnFocus);
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetClientBounds
-  Params: handle:
-          ARect:
-          Result:
-  Returns: true on success
-
-  Returns the client bounds of a control. The client bounds is the rectangle of
-  the inner area of a control, where the child controls are visible. The
-  coordinates are relative to the control's left and top.
- ------------------------------------------------------------------------------}
-Function GetClientBounds(Handle: HWND; var ARect: TRect): Boolean;
-begin
-  Result := InterfaceObject.GetClientBounds(Handle, ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -388,7 +282,7 @@ end;
   child controls are visible.
   A child control with Align=alClient will completely fill the clientrect.
  ------------------------------------------------------------------------------}
-Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
+function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
   Result := InterfaceObject.GetClientRect(handle, Rect);
 end;
@@ -401,19 +295,6 @@ end;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
 begin
   Result := InterfaceObject.GetClipRGN(DC, RGN);
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetCmdLineParamDescForInterface
-  Params: none
-  Returns: ansistring
-
-  Returns a description of the command line parameters, that are understood by
-  the interface.
- ------------------------------------------------------------------------------}
-Function GetCmdLineParamDescForInterface: string;
-begin
-  Result := InterfaceObject.GetCmdLineParamDescForInterface;
 end;
 
 Function GetCursorPos(var lpPoint:TPoint): Boolean;
@@ -443,39 +324,6 @@ begin
   Result := InterfaceObject.GetDeviceCaps(DC, Index);
 end;
 
-function GetDeviceRawImageDescription(DC: HDC;
-  Desc: PRawImageDescription): boolean;
-begin
-  Result := InterfaceObject.GetDeviceRawImageDescription(DC,Desc);
-end;
-
-function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
-begin
-  Result := InterfaceObject.GetDeviceSize(DC,p);
-end;
-
-function GetDesignerDC(WindowHandle: HWND): HDC;
-begin
-  Result := InterfaceObject.GetDesignerDC(WindowHandle);
-end;
-
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
-begin
-  Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
-end;
-
-function GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): boolean;
-begin
-  Result := InterfaceObject.GetBitmapRawImageDescription(Bitmap,Desc);
-end;
-
-function CreateDIBSection(DC: HDC; const BitmapInfo: tagBitmapInfo; Usage: UINT;
-  var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
-begin
-  Result := InterfaceObject.CreateDIBSection(DC,BitmapInfo,Usage,
-                                             Bits,SectionHandle,Offset);
-end;
 
 function GetFocus: HWND;
 begin
@@ -495,12 +343,6 @@ end;
 function GetMapMode(DC: HDC): Integer;
 begin
   Result := InterfaceObject.GetMapMode(DC);
-end;
-
-function GetNotebookTabIndexAtPos(Handle: HWND;
-  const ClientPos: TPoint): integer;
-begin
-  Result := InterfaceObject.GetNotebookTabIndexAtPos(Handle,ClientPos);
 end;
 
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
@@ -525,32 +367,9 @@ Begin
   Result := InterfaceObject.GetProp(Handle,Str);
 end;
 
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
-  var NewRawImage: TRawImage): boolean;
-begin
-  Result := InterfaceObject.GetRawImageFromDevice(SrcDC,SrcRect,NewRawImage);
-end;
-
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result := InterfaceObject.GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,
-                                                  SrcRect,NewRawImage);
-end;
-
 Function GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
 begin
   Result := InterfaceObject.GetRGNBox(RGN, lpRect);
-end;
-
-function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer;
-begin
-  Result := InterfaceObject.GetScrollBarSize(Handle, SBStyle);
-end;
-
-function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
-begin
-  Result := InterfaceObject.GetScrollbarVisible(Handle, SBStyle);
 end;
 
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean;
@@ -627,18 +446,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GetWindowRelativePosition(Handle: hwnd;
-    var Left, Top: integer): boolean;
-
-  Returns the Left, Top, relative to the client origin of its parent.
-------------------------------------------------------------------------------}
-function GetWindowRelativePosition(Handle : hwnd;
-  var Left, Top: integer): boolean;
-begin
-  Result := InterfaceObject.GetWindowRelativePosition(Handle,Left,Top);
-end;
-
-{------------------------------------------------------------------------------
   Function GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 
   Returns the Width and Height
@@ -685,17 +492,6 @@ Begin
   Result := InterfaceObject.IntersectClipRect(dc,Left,Top,Right,Bottom);
 end;
 
-{------------------------------------------------------------------------------
-  Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
-    BorderWidth: integer) : Boolean;
-
-  Calls InvalidateRect for the borderframe.
-------------------------------------------------------------------------------}
-Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean;
-begin
-  Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
-end;
-
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
 begin
   Result := InterfaceObject.InvalidateRect(aHandle, ARect, bErase);
@@ -726,11 +522,6 @@ begin
   Result := InterfaceObject.LineTo(DC, X, Y);
 end;
 
-Function LoadStockPixmap(StockID: longint) : HBitmap;
-begin
-  Result := InterfaceObject.LoadStockPixmap(StockID);
-end;
-
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
   Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
@@ -749,35 +540,6 @@ end;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
   Result := InterfaceObject.MoveToEx(DC, X, Y, OldPoint);
-end;
-
-function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
-begin
-  Result := InterfaceObject.MoveWindowOrgEx(DC, dX, dY);
-end;
-
-function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=InterfaceObject.PairSplitterAddSide(SplitterHandle,SideHandle,Side);
-end;
-
-function PairSplitterGetInterfaceInfo: boolean;
-begin
-  Result:=InterfaceObject.PairSplitterGetInterfaceInfo;
-end;
-
-function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
-  Side: integer): Boolean;
-begin
-  Result:=InterfaceObject.PairSplitterRemoveSide(SplitterHandle,SideHandle,
-                                                 Side);
-end;
-
-function PairSplitterSetPosition(SplitterHandle: hWnd;
-  var NewPosition: integer): Boolean;
-begin
-  Result:=InterfaceObject.PairSplitterSetPosition(SplitterHandle,NewPosition);
 end;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND;
@@ -822,33 +584,6 @@ begin
   Result := InterfaceObject.PtInRegion(RGN,X,Y);
 end;
 
-function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
-begin
-  Result := InterfaceObject.RadialChord(DC, x,y,width,height,sx,sy,ex,ey);
-end;
-
-function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
-begin
-  Result := InterfaceObject.RadialArc(DC, x,y,width,height,sx,sy,ex,ey);
-end;
-
-function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
-begin
-  Result := InterfaceObject.RadialPie(DC, x,y,width,height,sx,sy,ex,ey);
-end;
-
-function RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
-  Angle1,Angle2: Integer): Boolean;
-begin
-  Result := InterfaceObject.RadialPieWithAngles(DC,
-                                                X,Y,Width,Height,Angle1,Angle2);
-end;
-
-function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
-begin
-  Result := InterfaceObject.RadioMenuItemGroup(hndMenu,bRadio);
-end;
-
 function RealizePalette(DC: HDC): Cardinal;
 begin
   Result := InterfaceObject.RealizePalette(DC);
@@ -864,11 +599,6 @@ begin
   Result := InterfaceObject.RectVisible(dc,ARect);
 end;
 
-function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;
-begin
-  Result := InterfaceObject.RegroupMenuItem(hndMenu,GroupIndex);
-end;
-
 function ReleaseCapture:  Boolean;
 begin
   Result := InterfaceObject.ReleaseCapture;
@@ -877,94 +607,6 @@ end;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := InterfaceObject.ReleaseDC(hWnd, DC);
-end;
-
-function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
-begin
-  Result := InterfaceObject.ReleaseDesignerDC(hWnd, DC);
-end;
-
-Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
-begin
-  Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
-end;
-
-Procedure NotifyUser(const DialogMessage : String; DialogType : longint);
-begin
-  PromptUser(DialogMessage, DialogType, [idButtonOK], -1, -1);
-end;
-
-Procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);
-begin
-  PromptUserAtXY(DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
-end;
-
-Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
-begin
-  PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK], -1, -1);
-end;
-
-Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
-begin
-  PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
-end;
-
-Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint) : Longint;
-begin
-  Result := PromptUser(DialogMessage, DialogType, @Buttons[Low(Buttons)],
-    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult);
-end;
-
-Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
-begin
-  Result := InterfaceObject.PromptUser('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
-end;
-
-Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint) : Longint;
-begin
-  Result := PromptUser(DialogCaption, DialogMessage, DialogType, @Buttons[Low(Buttons)],
-    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult);
-end;
-
-Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
-begin
-  Result := InterfaceObject.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
-end;
-
-Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-begin
-  Result := PromptUserAtXY(DialogMessage, DialogType, @Buttons[Low(Buttons)],
-    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
-end;
-
-Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-begin
-  Result := InterfaceObject.PromptUserAtXY('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
-end;
-
-Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-begin
-  Result := PromptUserAtXY(DialogCaption, DialogMessage, DialogType, @Buttons[Low(Buttons)],
-    High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
-end;
-
-Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
-begin
-  Result := InterfaceObject.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
-end;
-
-function RightJustifyMenuItem(HndMenu: HMenu;
-  bRightJustify: boolean): boolean;
-begin
-  Result := InterfaceObject.RightJustifyMenuItem(hndMenu, bRightJustify);
 end;
 
 Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
@@ -992,11 +634,6 @@ begin
   Result := InterfaceObject.ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip, hrgnUpdate, prcUpdate, flags);
 end;
 
-procedure SendCachedLCLMessages;
-begin
-
-end;
-
 function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
 begin
   Result := InterfaceObject.SendMessage(HandleWnd, Msg, wParam, lParam);
@@ -1017,13 +654,6 @@ begin
   Result := InterfaceObject.SetBkMode(DC, bkMode);
 end;
 
-Function SetComboMinDropDownSize(Handle: HWND;
-  MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
-begin
-  Result := InterfaceObject.SetComboMinDropDownSize(Handle,
-                                   MinItemsWidth, MinItemsHeight, MinItemCount);
-end;
-
 Function SetCapture(value : Longint): Longint;
 Begin
   Result := InterfaceObject.SetCapture(Value);
@@ -1037,11 +667,6 @@ end;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
   Result := InterfaceObject.SetCaretPosEx(Handle, X, Y);
-end;
-
-function SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
-begin
-  Result := InterfaceObject.SetCaretRespondToFocus(Handle,ShowHideOnFocus);
 end;
 
 function SetCursor(hCursor: HICON): HCURSOR;
@@ -1161,14 +786,6 @@ function StretchDIBits(DC: HDC; DestX, DestY, DestWidth, DestHeight, SrcX,
 begin
   Result := InterfaceObject.StretchDIBits(DC,DestX,DestY,DestWidth,DestHeight,
                           SrcX,SrcY,SrcWidth,SrcHeight,Bits,BitsInfo,Usage,Rop);
-end;
-
-function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
-  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
-  Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
-begin
-  Result := InterfaceObject.StretchMaskBlt(DestDC, X, Y, Width, Height,
-               SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
 end;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
@@ -1347,6 +964,21 @@ begin
   Info.fMask:=SIF_POS;
   GetScrollInfo(Handle, nBar, Info);
   Result := Info.nPos;
+end;
+
+function GetRValue(RGB : DWORD) : BYTE;
+begin
+  Result := RGB and $ff;
+end;
+
+function GetGValue(RGB : DWORD) : BYTE;
+begin
+  Result := (RGB shr 8) and $ff;
+end;
+
+function GetBValue(RGB : DWORD) : BYTE;
+begin
+  Result := (RGB shr 16) and $ff;
 end;
 
 {------------------------------------------------------------------------------
@@ -1533,6 +1165,22 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: RGB
+  Params:   R: Red color
+            G: Green Color
+            B: Blue Color
+  Returns:  The return value is the resultant RGB color
+
+  The RGB macro selects a red, green, blue (RGB) color based on the arguments 
+  supplied and the color capabilities of the output device.
+ ------------------------------------------------------------------------------}
+
+function RGB(R, G, B : Byte) : TColorRef;
+begin
+  Result := R or (G shl 8) or (B Shl 16);
+end;
+
+{------------------------------------------------------------------------------
   Function: ScrollWindow   In progress pbd
   Params:   Handle
             XAmount +scroll down -scroll up
@@ -1644,59 +1292,14 @@ begin
   DestRect.Bottom := Max(SrcRect1.Bottom, SrcRect2.Bottom);
 end;
 
-Function GetRValue(RGB : DWORD) : BYTE;
-begin
-  Result := RGB and $ff;
-end;
-
-Function GetGValue(RGB : DWORD) : BYTE;
-begin
-  Result := (RGB shr 8) and $ff;
-end;
-
-Function GetBValue(RGB : DWORD) : BYTE;
-begin
-  Result := (RGB shr 16) and $ff;
-end;
-
-Function RGB(R, G, B : Byte) : TColorRef;
-begin
-  Result := R or (G shl 8) or (B Shl 16);
-end;
-
-Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
-begin
-  writeln('InitializeCriticalSection(TRTLCriticalSection) Not implemented yet');
-end;
-
-Procedure EnterCriticalSection(var CritSection: TRTLCriticalSection);
-begin
-  writeln('EnterCriticalSection(TRTLCriticalSection) Not implemented yet');
-end;
-
-Procedure LeaveCriticalSection(var CritSection: TRTLCriticalSection);
-begin
-  writeln('LeaveCriticalSection(TRTLCriticalSection) Not implemented yet');
-end;
-
-Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
-begin
-  writeln('DeleteCriticalSection(TRTLCriticalSection) Not implemented yet');
-end;
-
-procedure RaiseLastOSError;
-begin
-  writeln('ToDo: RaiseLastOSError');
-  RaiseGDBException('ToDo: RaiseLastOSError');
-end;
-
 //##apiwiz##epi##   // Do not remove
-
-// included by lcllinux.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.104  2003/11/24 11:03:07  marc
+  * Splitted winapi*.inc into a winapi and a lcl interface communication part
+
   Revision 1.103  2003/11/14 21:17:59  micha
   new maskblt method for transparency blitting
 
