@@ -225,7 +225,8 @@ Procedure TCustomForm.SetFocus;
 Begin
 //writeln('[TCustomForm.SetFocus] A ',Classname);
 //if not(Visible and Enabled) then Exit;
-  CNSendMessage(LM_SETFOCUS,Self,nil);
+  if HandleAllocated then
+    CNSendMessage(LM_SETFOCUS,Self,nil);
 //writeln('[TCustomForm.SetFocus] END ',Classname);
 end;
 
@@ -259,6 +260,11 @@ begin
     NewFocusControl := FActiveControl
   else
     NewFocusControl := Self;
+  {$IFDEF VerboseFocus}
+  writeln('TCustomForm.SetWindowFocus ',Name,':',Classname ,
+    ' NewFocusControl=',NewFocusControl.Name,':',NewFocusControl.ClassName,
+    ' HndAlloc=',NewFocusControl.HandleAllocated);
+  {$ENDIF}
   if not NewFocusControl.HandleAllocated then exit;
   LCLLinux.SetFocus(NewFocusControl.Handle);
   if GetFocus = NewFocusControl.Handle then
@@ -303,6 +309,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMActivate(var Message : TLMActivate);
 begin
+  {$IFDEF VerboseFocus}
+  writeln('TCustomForm.WMActivate ',Name,':',ClassName,' ',Message.Active);
+  {$ENDIF}
+  if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
+    SetActive(Message.Active {<> WA_INACTIVE});
   Activate;
 end;
 
@@ -433,6 +444,23 @@ end;
 procedure TCustomForm.DoDestroy;
 begin
   if Assigned(FOnDestroy) then FOnDestroy(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomForm.SetActive(AValue: Boolean);
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.SetActive(AValue: Boolean);
+begin
+  FActive := AValue;
+  //if FActiveOleControl <> nil then
+  //  FActiveOleControl.Perform(CM_DOCWINDOWACTIVATE, Ord(Value), 0);
+  if FActive then
+  begin
+    if (ActiveControl = nil) and not (csDesigning in ComponentState) then
+      ActiveControl := FindNextControl(nil, True, True, False);
+    //MergeMenu(True);
+    SetWindowFocus;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -768,6 +796,13 @@ Begin
       RaiseGDBException(SCannotFocus);
       // EInvalidOperation.Create(SCannotFocus);
     FActiveControl := AWinControl;
+    {$IFDEF VerboseFocus}
+    write('TCustomForm.SetActiveControl ',Name,':',ClassName,' ');
+    if FActiveControl<>nil then
+      writeln('FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
+    else
+      writeln('FActiveControl=nil');
+    {$ENDIF}
     if not (csLoading in ComponentState) then
     begin
       if FActive then SetWindowFocus;
@@ -1225,6 +1260,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.79  2002/12/28 11:29:47  mattias
   xmlcfg deletion, focus fixes
 

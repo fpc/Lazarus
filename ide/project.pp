@@ -575,26 +575,26 @@ end;
 procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var AFilename:string;
 begin
-  XMLConfig.SetValue(Path+'CursorPos/X',fCursorPos.X);
-  XMLConfig.SetValue(Path+'CursorPos/Y',fCursorPos.Y);
-  XMLConfig.SetValue(Path+'EditorIndex/Value',fEditorIndex);
+  XMLConfig.SetDeleteValue(Path+'CursorPos/X',fCursorPos.X,-1);
+  XMLConfig.SetDeleteValue(Path+'CursorPos/Y',fCursorPos.Y,-1);
+  XMLConfig.SetDeleteValue(Path+'EditorIndex/Value',fEditorIndex,-1);
   AFilename:=Filename;
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetValue(Path+'Filename/Value',AFilename);
-  XMLConfig.SetValue(Path+'FormName/Value',fFormName);
-  XMLConfig.SetValue(Path+'HasResources/Value',fHasResources);
-  XMLConfig.SetValue(Path+'IsPartOfProject/Value',fIsPartOfProject);
-  XMLConfig.SetValue(Path+'Loaded/Value',fLoaded);
-  XMLConfig.SetValue(Path+'ReadOnly/Value',fReadOnly);
+  XMLConfig.SetDeleteValue(Path+'FormName/Value',fFormName,'');
+  XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
+  XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',fIsPartOfProject,false);
+  XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
+  XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fReadOnly,false);
   AFilename:=FResourceFilename;
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
-  XMLConfig.SetValue(Path+'ResourceFilename/Value',AFilename);
+  XMLConfig.SetDeleteValue(Path+'ResourceFilename/Value',AFilename,'');
   XMLConfig.SetValue(Path+'SyntaxHighlighter/Value'
      ,LazSyntaxHighlighterNames[fSyntaxHighlighter]);
-  XMLConfig.SetValue(Path+'TopLine/Value',fTopLine);
-  XMLConfig.SetValue(Path+'UnitName/Value',fUnitName);
+  XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
+  XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
   fBreakpoints.SaveToXMLConfig(XMLConfig,Path);
 end;
 
@@ -2101,6 +2101,9 @@ end.
 
 {
   $Log$
+  Revision 1.87  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.86  2002/11/16 13:56:20  mattias
   project now notices, if compiler options changed
 

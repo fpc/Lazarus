@@ -265,6 +265,7 @@ type
     procedure CloseModal;
     procedure DoCreate;
     procedure DoDestroy;
+    procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetBorderStyle(Value : TFORMBorderStyle);
     procedure SetDesigner(Value : TIDesigner);
