@@ -1,3 +1,11 @@
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr "Propriété de l'élément"
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr "Eléments"
+
 #: objinspstrconsts:oisitemsselected
 msgid " items selected"
 msgstr "Sélection"
@@ -10,9 +18,29 @@ msgstr "&Ajouter"
 msgid "&Delete"
 msgstr "&Supprimer"
 
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr "Supprimer"
+
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Evénements"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr "Index d'image"
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr "Libellé"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr "Editeur d'élements"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr "Nouveau"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"

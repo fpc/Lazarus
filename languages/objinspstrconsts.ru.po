@@ -8,6 +8,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr ""
+
 #: objinspstrconsts:oisitemsselected
 msgid " items selected"
 msgstr " элементов выбрано"
@@ -20,9 +28,29 @@ msgstr "&Добавить"
 msgid "&Delete"
 msgstr "&Удалить"
 
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr ""
+
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "События"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr ""
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"

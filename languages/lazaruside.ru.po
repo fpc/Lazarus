@@ -290,6 +290,10 @@ msgstr "Проверка:"
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
 
+#: lazarusidestrconsts:lischoosedirectory
+msgid "Choose directory"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
 msgstr "В порядке классов"
@@ -1113,6 +1117,10 @@ msgstr "Сообщения..."
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
 msgstr "Политика вставки методов"
+
+#: lazarusidestrconsts:dlgminimizeallonminimizemain
+msgid "Minimize all on minimize main"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"

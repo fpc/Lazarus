@@ -28,6 +28,14 @@ resourcestring
   oisProperties='Properties';
   oisEvents='Events';
 
+  //ListView items editor
+  sccsLvEdtCaption        = 'ListView editor';
+  sccsLvEdtGrpLCaption    = ' Items ';
+  sccsLvEdtGrpRCaption    = ' Item property ';
+  sccsLvEdtlabCaption     = 'Label';
+  sccsLvEdtImgIndexCaption= 'Image index';
+  sccsLvEdtBtnAdd         = 'New';
+  sccsLvEdtBtnDel         = 'Delete';
 
 implementation
 

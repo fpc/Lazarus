@@ -27,6 +27,7 @@
  History
    01/28/2003 OG - Create
    18/02/2003 OG - First release
+   19/02/2003 OG - Add ObjInspStrConsts unit
 }
 unit ListViewPropEdit;
 
@@ -36,20 +37,14 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls,Menus,PropEdits,ComponentEditors,LCLProc,LMessages;
+  StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
+  LMessages, ObjInspStrConsts;
 
 Implementation
-Const
-  sccsLvEdtCaption        = 'ListView editor';
-  sccsLvEdtGrpLCaption    = ' Items ';
-  sccsLvEdtGrpRCaption    = ' Item property ';
-  sccsLvEdtlabCaption     = 'Label';
-  sccsLvEdtImgIndexCaption= 'Image index';
-  sccsLvEdtBtnAdd         = 'New';
-  sccsLvEdtBtnDel         = 'Delete';
-  
+
 Type
- {TMenuItemsPropertyEditorDlg}
+  {TMenuItemsPropertyEditorDlg}
+  
   TListViewItemsPropertyEditorDlg = Class(TForm)
   private
     edtLabel : TEdit;
@@ -82,11 +77,11 @@ Type
   {TListViewItemsPropertyEditor
    Property editor for the Items properties of TListView object.
    Brings up the dialog for editing items}
-   TListViewItemsPropertyEditor = Class(TClassPropertyEditor)
-   public
-     procedure Edit; override;
-     function GetAttributes: TPropertyAttributes; override;
-   end;
+  TListViewItemsPropertyEditor = Class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
 
 //This function find the Designer of aComponent
 function GetDesignerOfComponent(aComponent : TComponent): TComponentEditorDesigner;
@@ -325,6 +320,7 @@ begin
     Parent :=cmp;
     Left   :=16;
     Top    :=72;
+    Width  :=90;
     Caption:=sccsLvEdtImgIndexCaption;
   end;
 
@@ -332,9 +328,9 @@ begin
   With EdtLabel do
   begin
     Parent:=Cmp;
-    Left  :=104;
+    Left  :=134;
     Text  :='';
-    Width :=185;
+    Width :=155;
     Top   :=24;
     
     OnChange:=@EdtLabelOnChange;
@@ -344,9 +340,9 @@ begin
   With EdtIndex do
   begin
     Parent:=Cmp;
-    Left  :=104;
+    Left  :=134;
     Text  :='';
-    Width :=73;
+    Width :=43;
     Top   :=64;
     
     OnChange:=@EdtIndexOnChange;
@@ -454,10 +450,10 @@ begin
 end;
 
 initialization
-  //Initialization of properties Items of TMainMenu and TPopupMenu
+  //Register TListViewItemsPropertyEditor
   RegisterPropertyEditor(ClassTypeInfo(TListItems), TListView,'Items',
     TListViewItemsPropertyEditor);
 
-  //Register a component editor for with mouse right clic, the popup
+  //Register a component editor for TListView
   RegisterComponentEditor(TListView,TListViewComponentEditor);
 end.

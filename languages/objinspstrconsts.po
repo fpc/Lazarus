@@ -22,3 +22,31 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr ""
+

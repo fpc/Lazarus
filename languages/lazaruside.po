@@ -562,6 +562,10 @@ msgstr ""
 msgid "Select Delphi form files (*.dfm)"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosedirectory
+msgid "Choose directory"
+msgstr ""
+
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
 msgstr ""
@@ -756,6 +760,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgminimizeallonminimizemain
+msgid "Minimize all on minimize main"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpalhints

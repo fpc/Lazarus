@@ -12,7 +12,14 @@
 #
 
 set -x
-#set -e
+
+set -e
+if [ ! -x tools/updatepofiles ]; then
+  cd tools
+  make
+  cd -
+fi
+set +e
 
 # IDE without objectinspector
 rstconv -i lazarusidestrconsts.rst -o languages/lazaruside.po

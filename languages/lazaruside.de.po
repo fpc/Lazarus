@@ -290,6 +290,10 @@ msgstr ""
 msgid "Choose code template file (*.dci)"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosedirectory
+msgid "Choose directory"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
 msgstr ""
@@ -1112,6 +1116,10 @@ msgstr "Messages..."
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
+msgstr ""
+
+#: lazarusidestrconsts:dlgminimizeallonminimizemain
+msgid "Minimize all on minimize main"
 msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal

@@ -300,6 +300,10 @@ msgstr "Controles"
 msgid "Choose code template file (*.dci)"
 msgstr "Choisir un fichier de modèle de code (*.dci)"
 
+#: lazarusidestrconsts:lischoosedirectory
+msgid "Choose directory"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
 msgstr "L'odre des objets"
@@ -1123,6 +1127,10 @@ msgstr "Messages"
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
 msgstr "Politique d'insertion des méthodes"
+
+#: lazarusidestrconsts:dlgminimizeallonminimizemain
+msgid "Minimize all on minimize main"
+msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
