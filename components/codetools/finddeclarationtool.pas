@@ -281,7 +281,7 @@ type
     procedure DoDeleteNodes; override;
     procedure ClearNodeCaches(Force: boolean);
     function CreateNewNodeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
-    function CreateNewBaseTypeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
+    function CreateNewBaseTypeCache(Node: TCodeTreeNode): TBaseTypeCache;
     function GetNodeCache(Node: TCodeTreeNode;
       CreateIfNotExists: boolean): TCodeTreeNodeCache;
     procedure AddResultToNodeCaches(Identifier: PChar;
@@ -3732,7 +3732,7 @@ begin
 end;
 
 function TFindDeclarationTool.CreateNewBaseTypeCache(Node: TCodeTreeNode
-  ): TCodeTreeNodeCache;
+  ): TBaseTypeCache;
 begin
   Result:=BaseTypeCacheMemManager.NewBaseTypeCache(Node);
   Result.Next:=FFirstBaseTypeCache;
