@@ -1133,8 +1133,6 @@ end;
 
 function TCodeToolManager.RemoveLazarusResource(Code: TCodeBuffer;
   const ResourceName: string): boolean;
-var ResCode: TCodeBuffer;
-  LinkIndex: integer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
