@@ -113,7 +113,7 @@ end;
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   decor,Func : Longint;
-  TheWindow, MainWindow: PGdkWindow;
+  TheWindow: PGdkWindow;
   TheForm: TCustomForm;
 begin
   Result := True;
@@ -124,8 +124,6 @@ begin
       TheForm:=TCustomForm(Data);
       TheWindow:=GetControlWindow(Widget);
 
-      // Try to make all Modal forms transient to the main form
-
       //apart from none and sizeable, this will
       //only work if WM supports motif flags
       //properly, which very few actually do.
@@ -135,23 +133,6 @@ begin
 
       gdk_window_set_decorations(TheWindow, decor);
       gdk_window_set_functions(TheWindow, func);
-      
-      if (Application.MainForm<>nil)
-      and (Application.MainForm.HandleAllocated) then begin
-        TheWindow:=GetControlWindow(Widget);
-        MainWindow:=GetControlWindow(PGtkWidget(Application.MainForm.Handle));
-        if TheWindow<>MainWindow then
-          {gdk_window_set_transient_for(MainWindow,TheWindow)};
-      end;
-    end
-    else if TObject(Data) is TPopupMenu then begin
-      if (Application.MainForm<>nil)
-      and (Application.MainForm.HandleAllocated) then begin
-        TheWindow:=GetControlWindow(Widget);
-        MainWindow:=GetControlWindow(PGtkWidget(Application.MainForm.Handle));
-        if TheWindow<>MainWindow then
-          {gdk_window_set_transient_for(MainWindow,TheWindow)};
-      end;
     end;
     
     if not (csDesigning in TComponent(Data).ComponentState) then
@@ -220,6 +201,7 @@ begin
         SetCursor(TheWinControl, nil);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
       end;
+      
     end;
   end else begin
     // this is a hidden child widget of a lcl widget
@@ -365,22 +347,44 @@ begin
   DeliverGtkPaintMessage(Data,Widget);
 end;
 
-function gtkfrmactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
+function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
 {$IFDEF VerboseFocus}
-  LCLObject: TControl;
+  LCLObject: TObject;
+  CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
   EventTrace('activate after', data);
   {$IFDEF VerboseFocus}
-  write('gtkfrmactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn);
-  LCLObject:=TControl(GetLCLObject(Widget));
-  if LCLObject<>nil then
-    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
-  else
-    writeln(' LCLObject=nil');
+  write('gtkfrmactivateAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  LCLObject:=TObject(data);
+  if LCLObject<>nil then begin
+    if LCLObject is TComponent then begin
+      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+    end else begin
+      write(' LCLObject=',LCLObject.ClassName)
+    end;
+  end else
+    write(' LCLObject=nil');
+  writeln(''); write('    ');
+  CurFocusWidget:=PGtkWidget(GetFocus);
+  if CurFocusWidget<>nil then begin
+    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    if LCLObject<>nil then begin
+      if LCLObject is TComponent then begin
+        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+      end else begin
+        write(' ParentLCLFocus=',LCLObject.ClassName)
+      end;
+    end else
+      write(' LCLObject=nil');
+  end else begin
+    write(' GetFocus=nil');
+  end;
+  writeln('');
   {$ENDIF}
   Mess.Msg := LM_ACTIVATE;
   Result := DeliverPostMessage(Data, Mess);
@@ -568,18 +572,39 @@ function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
 var
   Mess : TLMessage;
 {$IFDEF VerboseFocus}
-  LCLObject: TControl;
+  LCLObject: TObject;
+  CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
   EventTrace('focus', data);
   {$IFDEF VerboseFocus}
-  write('GTKFocusCB Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
-        ' GetFocus=',HexStr(Cardinal(GetFocus),8));
-  LCLObject:=TControl(GetLCLObject(Widget));
-  if LCLObject<>nil then
-    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
-  else
-    writeln(' LCLObject=nil');
+  write('GTKFocusCB Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  LCLObject:=TObject(data);
+  if LCLObject<>nil then begin
+    if LCLObject is TComponent then begin
+      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+    end else begin
+      write(' LCLObject=',LCLObject.ClassName)
+    end;
+  end else
+    write(' LCLObject=nil');
+  writeln(''); write('    ');
+  CurFocusWidget:=PGtkWidget(GetFocus);
+  if CurFocusWidget<>nil then begin
+    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    if LCLObject<>nil then begin
+      if LCLObject is TComponent then begin
+        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+      end else begin
+        write(' ParentLCLFocus=',LCLObject.ClassName)
+      end;
+    end else
+      write(' LCLObject=nil');
+  end else begin
+    write(' GetFocus=nil');
+  end;
+  writeln('');
   {$ENDIF}
 
   //TODO: fill in old focus
@@ -588,23 +613,44 @@ begin
   Result := DeliverMessage(Data,  Mess) = 0;
 end;
 
-function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 {$IFDEF VerboseFocus}
-  LCLObject: TControl;
+  LCLObject: TObject;
+  CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
   EventTrace('killfocus', data);
   {$IFDEF VerboseFocus}
-  write('GTKKillFocusCB Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
-        ' GetFocus=',HexStr(Cardinal(GetFocus),8));
-  LCLObject:=TControl(GetLCLObject(Widget));
-  if LCLObject<>nil then
-    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
-  else
-    writeln(' LCLObject=nil');
+  write('GTKillFocusCBAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
+  LCLObject:=TObject(data);
+  if LCLObject<>nil then begin
+    if LCLObject is TComponent then begin
+      write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+    end else begin
+      write(' LCLObject=',LCLObject.ClassName)
+    end;
+  end else
+    write(' LCLObject=nil');
+  writeln(''); write('    ');
+  CurFocusWidget:=PGtkWidget(GetFocus);
+  if CurFocusWidget<>nil then begin
+    write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
+    LCLObject:=GetParentLCLObject(CurFocusWidget);
+    if LCLObject<>nil then begin
+      if LCLObject is TComponent then begin
+        write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
+      end else begin
+        write(' ParentLCLFocus=',LCLObject.ClassName)
+      end;
+    end else
+      write(' LCLObject=nil');
+  end else begin
+    write(' GetFocus=nil');
+  end;
+  writeln('');
   {$ENDIF}
   Mess.msg := LM_KILLFOCUS;
 
@@ -2537,6 +2583,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.171  2003/03/18 13:04:25  mattias
+  improved focus debugging output
+
   Revision 1.170  2003/03/16 09:41:06  mattias
   fixed checking menuitems
 
