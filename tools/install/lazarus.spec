@@ -22,6 +22,7 @@ Lazarus is a free RAD tool for freepascal using the lazarus component library.
 %build
   cd lazarus
   make
+  strip lazarus
 
 %install
   if [ %{buildroot} != "/" ]; then
