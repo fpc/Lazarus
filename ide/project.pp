@@ -115,8 +115,9 @@ type
   TNewUnitType = (
      nuEmpty,   // no code
      nuUnit,    // unit
-     nuForm     // unit with form
-    );
+     nuForm,    // unit with form
+     nuCustomProgram  // program
+   );
     
 
   TUnitInfo = class(TObject)
@@ -183,7 +184,7 @@ type
 
   //---------------------------------------------------------------------------
   TProjectType =   // for a description see ProjectTypeDescriptions
-     (ptProgram, ptApplication); 
+     (ptApplication, ptCustomProgram, ptProgram); 
 
   TProject = class(TObject)
   private
@@ -266,24 +267,27 @@ const
   ResourceFileExt = '.lrs';
 
   ProjectTypeNames : array[TProjectType] of string = (
-      'Program','Application'
+      'Application', 'Program', 'Custom program'
     );
 
   ProjectTypeDescriptions : array[TProjectType] of string = (
+      // ptApplication
+      'Application'#13
+      +'A graphical lcl/freepascal program. The program file is '
+      +'automatically maintained by lazarus.'
 
       // ptProgram
-      'Program:'#13
+      ,'Program:'#13
+      +'A freepascal program. The program file is automatically '
+      +'maintained by lazarus.'
+
+      // ptCustomProgram
+      ,'Custom program:'#13
       +'A freepascal program.'
-
-      // ptApplication
-      ,'Application'#13
-      +'A graphical lcl/freepascal program.'
-
     );
 
   ProjectDefaultExt : array[TProjectType] of string = (
-       '.pp',
-       '.lpr'
+      '.lpr','.pp','.pp'
     );
 
 
@@ -715,6 +719,17 @@ begin
     Add('');
     Add('end.');
     Add('');
+  end else if NewUnitType in [nuCustomProgram] then with Source do begin
+    Add('program CustomProgram;');
+    Add('');
+    Add('{$mode objfpc}{$H+}');
+    Add('');
+    Add('uses');
+    Add('  Classes, SysUtils;');
+    Add('');
+    Add('begin');
+    Add('end.');
+    Add('');
   end;
 end;
 
@@ -756,11 +771,12 @@ begin
 
   // create program source
   case fProjectType of
-   ptProgram, ptApplication:
+   ptProgram, ptApplication, ptCustomProgram:
     begin
       PrgUnitInfo:=TUnitInfo.Create;
       PrgUnitInfo.IsPartOfProject:=true;
-      PrgUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter('.lpr');
+      PrgUnitInfo.SyntaxHighlighter:=
+        ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[fProjectType]);
       AddUnit(PrgUnitInfo,false);
       MainUnit:=0;
       with Units[MainUnit].Source do begin
@@ -770,7 +786,7 @@ begin
         Add('');
         Add('uses');
         case fProjectType of
-          ptProgram:  Add('  Classes;');
+          ptProgram, ptCustomProgram:  Add('  Classes;');
           ptApplication:  Add('  Forms;');
         else
           Add('  { add your units here };');
@@ -991,7 +1007,7 @@ begin
       Units[MainUnit].Source.Text:=SrcText;
   end;
 
-  // delete bookmarks and breakpoints on this unit
+  // delete bookmarks on this unit
   if OldUnitInfo.EditorIndex>=0 then begin
     Bookmarks.DeleteAllWithEditorIndex(OldUnitInfo.EditorIndex);
   end;
@@ -1261,6 +1277,7 @@ var NewProgramName,Ext,SrcTxt:string;
   SrcChanged:boolean;
 begin
   DoDirSeparators(NewProjectFilename);
+  NewProjectFilename:=ExpandFilename(NewProjectFilename);
   if NewProjectFilename=fProjectFile then exit;
   Ext:=ExtractFileExt(NewProjectFilename);
   if ProjectType in [ptProgram, ptApplication] then begin
@@ -1368,8 +1385,8 @@ end.
 
 {
   $Log$
-  Revision 1.11  2001/03/05 14:24:52  lazarus
-  bugfixes for ide project code
+  Revision 1.12  2001/03/08 15:59:06  lazarus
+  IDE bugfixes and viewunit/forms functionality
 
   Revision 1.10  2001/03/03 11:06:15  lazarus
   added project support, codetools

@@ -182,7 +182,6 @@ type
     fProject: TProject;
 
     Function CreateSeperator : TMenuItem;
-    Procedure UpdateViewDialogs;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
 
   protected
@@ -203,6 +202,8 @@ type
     function DoOpenEditorFile(AFileName:string; ProjectLoading:boolean):TModalResult;
     function DoOpenFileAtCursor(Sender: TObject):TModalResult;
     function DoSaveAll: TModalResult;
+    function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
+    function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     
     // project(s)
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
@@ -976,40 +977,6 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{Fills the View Units dialog and the View Forms dialog}
-{------------------------------------------------------------------------------}
-
-Procedure TMainIDE.UpdateViewDialogs;
-var a,ProgramNameStart,ProgramNameEnd:integer;
-  s,SrcTxt:string;
-Begin
-  ViewUnits1.Listbox1.Items.BeginUpdate;
-  ViewUnits1.Listbox1.Items.Clear;
-//  ViewForms1.Listbox1.Items.BeginUpdate;
-//  ViewForms1.Listbox1.Items.Clear;
-  for a:=0 to Project.UnitCount-1 do begin
-    if Project.Units[a].IsPartOfProject then begin
-      if (Project.Units[a].Unitname<>'') then begin
-        ViewUnits1.Listbox1.Items.Add(Project.Units[a].Unitname);
-//        if Project.Units[a].FormName<>'' then
-//          ViewForms1.Listbox1.Items.Add(Project.Units[a].Unitname);
-      end else if (Project.MainUnit=a) 
-      and (Project.ProjectType in [ptProgram,ptApplication]) then begin
-        s:=ExtractFilename(Project.Units[a].Filename);
-        if s='' then begin
-          SrcTxt:=Project.Units[a].Source.Text;
-          s:=FindProgramNameInSource(SrcTxt,ProgramNameStart,ProgramnameEnd);
-        end;
-        if s<>'' then
-          ViewUnits1.Listbox1.Items.Add(s);
-      end;      
-    end;
-  end;
-  ViewUnits1.Listbox1.Items.EndUpdate;
-//  ViewForms1.Listbox1.Items.EndUpdate;
-End;
-
-{------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -1024,13 +991,11 @@ Begin
     SourceNotebook.DisplayCodeforControl(FControlLastActivated);
 end;
 
-Procedure TMainIDE.CodeorFormActivated(Sender : TObject);
+Procedure TMainIDE.CodeOrFormActivated(Sender : TObject);
 Begin
   FCodeLastActivated := (TForm(Sender) = TForm(SourceNotebook));
   if FCodeLastActivated then Writeln('TRUE') else Writeln('False');
-
   FControlLastActivated := Sender;
-
 end;
 
 Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
@@ -1339,19 +1304,13 @@ end;
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
-Begin
-  Writeln('View Units Clicked');
-  UpdateViewDialogs;
-  ViewUnits1.ShowModal;
-  Writeln('Done with ViewUnits Clicked');
+begin
+  DoViewUnitsAndForms(false);
 end;
 
 Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
 Begin
-  Writeln('View Forms Clicked');
-  UpdateViewDialogs;
-  ViewForms1.ShowModal;
-  Writeln('Done with ViewForms Clicked');
+  DoViewUnitsAndForms(true);
 end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
@@ -1611,6 +1570,7 @@ writeln('TMainIDE.DoNewEditorUnit 6');
     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
     FormEditor1.AddSelected(TComponent(CInterface.Control));
   end;
+  UpdateMainUnitSrcEdit;
 
 writeln('TMainIDE.DoNewUnit end');
 
@@ -1643,6 +1603,15 @@ writeln('TMainIDE.DoSaveCurUnit 1');
     ActiveUnitInfo.Modified:=true;
   end;
 
+  if ActiveUnitInfo.Filename='' then begin
+    if (Project.MainUnit>=0) 
+    and (Project.Units[Project.MainUnit]=ActiveUnitInfo) then begin
+      // new project has no name yet -> save project
+      Result:=DoSaveProject(true);
+      exit;
+    end;
+  end;
+
   // load old resource file
   ResourceFileName:=Project.SearchResourceFilename(ActiveUnitInfo);
   if (ActiveUnitInfo.Filename<>'') and (FileExists(ResourceFileName)) then begin
@@ -1669,7 +1638,6 @@ writeln('TMainIDE.DoSaveCurUnit 1');
 
 
 writeln('TMainIDE.DoSaveCurUnit 2');
-  // ToDo: only save if modified
   SaveAllParts:=false;
   if ActiveUnitInfo.Filename='' then SaveAs:=true;
   if SaveAs then begin
@@ -1910,7 +1878,7 @@ writeln('TMainIDE.DoOpenEditorFile');
   Result:=mrCancel;
   if AFileName='' then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
-  if (not ProjectLoading) and (Ext='.lpi') then begin
+  if (not ProjectLoading) and ((Ext='.lpi') or (Ext='.lpr')) then begin
     // load program file and project info file
     Result:=DoOpenProjectFile(AFilename);
     exit;
@@ -1998,6 +1966,110 @@ writeln('TMainIDE.DoOpenEditorFile');
   Result:=mrOk;
 end;
 
+function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
+var MainUnitInfo: TUnitInfo;
+  NewPageName, SrcTxt: string;
+  NewSrcEdit: TSourceEditor;
+  ProgramNameStart,ProgramNameEnd: integer;
+begin
+writeln('TMainIDE.DoOpenMainUnit 1');
+  Result:=mrCancel;
+  if Project.MainUnit<0 then exit;
+  MainUnitInfo:=Project.Units[Project.MainUnit];
+  if MainUnitInfo.Loaded then begin
+    // already loaded switch to source editor
+    SourceNotebook.NoteBook.PageIndex:=MainUnitInfo.EditorIndex;
+    Result:=mrOk;
+    exit;
+  end;
+writeln('TMainIDE.DoOpenMainUnit 2');
+  // MainUnit not loaded -> create source editor
+  NewPageName:=MainUnitInfo.Unitname;
+  if NewPageName='' then begin
+    NewPageName:=ExtractFileName(MainUnitInfo.Filename);
+    NewPageName:=copy(NewPageName,1,
+      length(NewPageName)-length(ExtractFileExt(NewPageName)));
+  end;
+  if NewpageName='' then begin
+    SrcTxt:=MainUnitInfo.Source.Text;
+    NewPageName:=FindProgramNameInSource(SrcTxt,ProgramNameStart,ProgramNameEnd);
+  end;
+  if NewpageName='' then begin
+    NewPageName:='mainunit';
+  end;
+writeln('TMainIDE.DoOpenMainUnit 3');
+  SourceNotebook.NewFile(NewPageName,MainUnitInfo.Source);
+  if not ProjectLoading then
+    Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
+  MainUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+  MainUnitInfo.Loaded:=true;
+  NewSrcEdit:=SourceNotebook.GetActiveSE;
+  NewSrcEdit.SyntaxHighlighterType:=MainUnitInfo.SyntaxHighlighter;
+  NewSrcEdit.EditorComponent.CaretXY:=MainUnitInfo.CursorPos;
+  NewSrcEdit.EditorComponent.TopLine:=MainUnitInfo.TopLine;
+
+  Result:=mrOk;
+writeln('TMainIDE.DoOpenMainUnit end');
+end;
+
+function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
+var UnitList: TList;
+  i, ProgramNameStart, ProgramNameEnd:integer;
+  MainUnitName: string;
+  MainUnitInfo, AnUnitInfo: TUnitInfo;
+Begin
+  UnitList:= TList.Create;
+  try
+writeln('TMainIDE.mnuViewUnitsClicked 1');
+    for i:=0 to Project.UnitCount-1 do begin
+      if Project.Units[i].IsPartOfProject then begin
+        if OnlyForms then begin
+          if Project.Units[i].FormName<>'' then
+            UnitList.Add(TViewUnitsEntry.Create(
+              Project.Units[i].FormName,i,false));
+        end else begin
+          if Project.Units[i].UnitName<>'' then begin
+            UnitList.Add(TViewUnitsEntry.Create(
+              Project.Units[i].UnitName,i,false));
+          end else if Project.MainUnit=i then begin
+            MainUnitInfo:=Project.Units[Project.MainUnit];
+            if Project.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
+            then begin
+              if (MainUnitInfo.Loaded) then
+                MainUnitName:=SourceNoteBook.NoteBook.Pages[
+                  MainUnitInfo.EditorIndex];
+              if MainUnitName='' then begin
+                MainUnitName:=FindProgramNameInSource(MainUnitInfo.Source.Text
+                  ,ProgramNameStart,ProgramNameEnd);
+              end;
+              if MainUnitName<>'' then
+                UnitList.Add(TViewUnitsEntry.Create(
+                  MainUnitName,i,false));
+            end;
+          end;
+        end;
+      end;
+    end;
+writeln('TMainIDE.mnuViewUnitsClicked 2');
+    if ShowViewUnitsDlg(UnitList,true)=mrOk then begin
+      for i:=0 to UnitList.Count-1 do begin
+        if TViewUnitsEntry(UnitList[i]).Selected then begin
+          AnUnitInfo:=Project.Units[TViewUnitsEntry(UnitList[i]).ID];
+          if AnUnitInfo.Loaded then
+            SourceNoteBook.NoteBook.PageIndex:=AnUnitInfo.EditorIndex
+          else begin
+            if DoOpenEditorFile(AnUnitInfo.Filename,false)=mrAbort then exit;
+          end;
+        end;
+      end;
+    end;
+writeln('TMainIDE.mnuViewUnitsClicked 3');
+  finally
+    UnitList.Free;
+  end;
+  Result:=mrOk;
+end;
+
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
 begin
 writeln('TMainIDE.DoOpenFileAtCursor');
@@ -2007,12 +2079,14 @@ writeln('TMainIDE.DoOpenFileAtCursor');
 end;
 
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
+var i:integer;
 Begin
 writeln('TMainIDE.DoNewProject 1');
   Result:=mrCancel;
 
   If Project<>nil then begin
     //save and close the project
+
     if DoSaveProject(false)=mrAbort then begin
       Result:=mrAbort;
       exit;
@@ -2037,14 +2111,19 @@ writeln('TMainIDE.DoNewProject 4');
       // create a first form unit
       DoNewEditorUnit(nuForm);
     end;
-  else
-   // ptProgram
+   ptProgram,ptCustomProgram:
     begin
-      // create a first unit
-      DoNewEditorUnit(nuUnit);
+      // show program unit
+      DoOpenMainUnit(false);
     end;
   end;
  
+  // set all modified to false
+  Project.Modified:=false;
+  for i:=0 to Project.UnitCount-1 do begin
+    Project.Units[i].Modified:=false;
+  end;
+
 writeln('TMainIDE.DoNewProject end');
   UpdateCaption;
   Result:=mrOk;
@@ -2061,7 +2140,8 @@ begin
 writeln('TMainIDE.DoSaveProject 1');
   // check that all new units are saved first
   for i:=0 to Project.UnitCount-1 do begin
-    if (Project.Units[i].Loaded) and (Project.Units[i].Filename='') then begin
+    if (Project.Units[i].Loaded) and (Project.Units[i].Filename='')
+    and (Project.MainUnit<>i) then begin
       Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,false);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
@@ -2446,8 +2526,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.69  2001/03/05 14:24:52  lazarus
-  bugfixes for ide project code
+  Revision 1.70  2001/03/08 15:59:06  lazarus
+  IDE bugfixes and viewunit/forms functionality
 
   Revision 1.68  2001/03/03 11:06:15  lazarus
   added project support, codetools

@@ -2,11 +2,11 @@
 {
  /***************************************************************************
                           ViewUnit_dlg.pp
-                             -------------------
-                   TViewUnit is the application dialog for displaying all units in a project.
+                        -------------------
+   TViewUnit is the application dialog for displaying all units in a project.
 
 
-                   Initial Revision  : Sat Feb 19 17:42 CST 1999
+   Initial Revision  : Sat Feb 19 17:42 CST 1999
 
 
  ***************************************************************************/
@@ -20,149 +20,158 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit ViewUnit_Dlg;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,LResources,buttons,stdctrls;
-
+  SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls;
 
 type
-	  
- TViewUnits1 = class(TFORM)
-    Edit1: TEdit;
-    ListBox1: TListBox;
+  TViewUnitsEntry = class
+  public
+    Name: string;
+    ID: integer;
+    Selected: boolean;
+    constructor Create(AName: string; AnID: integer; ASelected: boolean);
+  end;
+
+  TViewUnits = class(TForm)
+    ListBox: TListBox;
     btnOK : TButton;
     btnCancel : TButton;
     Procedure btnOKClick(Sender : TOBject);
     Procedure btnCancelClick(Sender : TOBject);
-    Procedure Listbox1Click(Sender : TObject);
-protected
-public
-  //  constructor Create(AOwner: TComponent); override;	
-end;
-
-var
-ViewUnits1 : TViewUnits1;
-
-implementation
-
-  {
-constructor TViewUnits1.Create(AOwner: TComponent);	
-var
-Pad : Integer;
-begin
-
-  inherited Create(AOwner);
-  Caption := 'View Project Units';
-  Left := 0;
-  Top := 0;
-  Width := 325;
-  height := 200;
-  Pad := 10;
-  position := poScreenCenter;
-  Name := 'ViewUnits1';
-
-  btnOK := TButton.Create(Self);
-  btnOK.Parent := Self;
-  btnOK.Left := ClientWidth - 90;
-  btnOK.Top := pad;
-  btnOK.Width := 75;
-  btnOK.Height := 25;
-  btnOK.Caption := 'OK';
-  btnOK.Visible := True;
-  btnOK.OnClick := @btnOKClick;
-  btnOK.Name := 'btnOK';
-
-  btnCancel := TButton.Create(Self);
-  btnCancel.Parent := Self;
-  btnCancel.Left := ClientWidth - 90;
-  btnCancel.Top := btnOK.Top + btnOK.Height + pad;
-  btnCancel.Width := 75;
-  btnCancel.Height := 25;
-  btnCancel.Caption := 'Cancel';
-  btnCancel.Visible := True;
-  btnCancel.Name := 'btnCancel';
-  btnCancel.OnClick := @btnCancelClick;
-
-  Edit1 := TEdit.Create(Self);
-  Edit1.Parent := Self;
-  Edit1.Left := pad;
-  Edit1.Top := pad;
-  edit1.Width := ClientWidth - (ClientWidth - btnOK.Left) - (2*pad);
-  Edit1.Height := 25;
-  Edit1.Visible := True;
-  Edit1.Name := 'Edit1';
-
-  Listbox1:= TListBox.Create(Self);
-  with Listbox1 do begin
-    Parent:= Self;
-    Top:= Edit1.Height + Edit1.Top + Pad;
-    Left:= pad;
-    Width:= ClientWidth - (ClientWidth - btnOK.Left) - (2*pad);
-    Height:= Self.Height - Top - pad;
-    Visible:= true;
-    MultiSelect:= false;
-    Name := 'Listbox1';
-    OnClick := @ListBox1Click;
+  public
+    constructor Create(AOwner: TComponent); override;	
   end;
 
 
+function ShowViewUnitsDlg(Entries: TList; MultiSelect: boolean): TModalResult;
+   // Entries is a list of TViewUnitsEntry(s)
 
+
+implementation
+
+
+function ShowViewUnitsDlg(Entries: TList;
+  MultiSelect: boolean): TModalResult;
+var ViewUnits: TViewUnits;
+  i: integer;
+begin
+  ViewUnits:=TViewUnits.Create(Application);
+  try
+    ViewUnits.ListBox.Visible:=false;
+    ViewUnits.ListBox.MultiSelect:=MultiSelect;
+    with ViewUnits.ListBox.Items do begin
+      BeginUpdate;
+      Clear;
+      for i:=0 to Entries.Count-1 do
+        Add(TViewUnitsEntry(Entries[i]).Name);
+      EndUpdate;
+    end;
+    for i:=0 to Entries.Count-1 do
+      ViewUnits.ListBox.Selected[i]:=TViewUnitsEntry(Entries[i]).Selected;
+    ViewUnits.ListBox.Visible:=true;
+    Result:=ViewUnits.ShowModal;
+    if Result=mrOk then begin
+      for i:=0 to Entries.Count-1 do
+        TViewUnitsEntry(Entries[i]).Selected:=ViewUnits.ListBox.Selected[i];
+    end;
+  finally
+    ViewUnits.Free;
+  end;
 end;
-       }
 
-Procedure TViewUnits1.btnOKClick(Sender : TOBject);
+{ TViewUnitsEntry }
+
+constructor TViewUnitsEntry.Create(AName: string; AnID: integer;
+  ASelected: boolean);
+begin
+  inherited Create;
+  Name:=AName;
+  ID:=AnID;
+  Selected:=ASelected;
+end;
+
+{ TViewUnits }
+
+constructor TViewUnits.Create(AOwner: TComponent);	
+var  Pad : Integer;
+begin
+  inherited Create(AOwner);
+
+  if LazarusResources.Find(Classname)=nil then begin
+    Caption := 'View Project Units';
+    SetBounds((Screen.Width-345) div 2, (Screen.Height-220) div 2, 325, 200);
+    Pad := 10;
+    Position := poScreenCenter;
+
+    btnOK := TButton.Create(Self);
+    with btnOk do begin
+      Parent := Self;
+      Left := Self.Width - 90;
+      Top := pad;
+      Width := 75;
+      Height := 25;
+      Caption := 'OK';
+      Visible := True;
+      OnClick := @btnOKClick;
+      Name := 'btnOK';
+    end;
+
+    btnCancel := TButton.Create(Self);
+    with btnCancel do begin
+      Parent := Self;
+      Left := Self.Width - 90;
+      Top := btnOK.Top + btnOK.Height + pad;
+      Width := 75;
+      Height := 25;
+      Caption := 'Cancel';
+      Visible := True;
+      Name := 'btnCancel';
+      OnClick := @btnCancelClick;
+    end;
+
+    Listbox:= TListBox.Create(Self);
+    with Listbox do begin
+      Parent:= Self;
+      Top:= Pad;
+      Left:= Pad;
+      Width:= Self.Width - (Self.Width - btnOK.Left) - (2*pad);
+      Height:= Self.Height - Top - Pad;
+      Visible:= true;
+      MultiSelect:= false;
+      Name := 'Listbox';
+    end;
+  end;
+end;
+
+
+Procedure TViewUnits.btnOKClick(Sender : TOBject);
 Begin
-{
-Search the list to see if it is already on a page.
-If so, simply set that page to the front.  If not
-then load it into a new page.
-}
-modalresult := mrOK;
+  ModalResult := mrOK;
 End;
 
 
-Procedure TViewUnits1.btnCancelClick(Sender : TOBject);
+Procedure TViewUnits.btnCancelClick(Sender : TOBject);
 Begin
-ModalResult := mrCancel;
+  ModalResult := mrCancel;
 end;
-
-Procedure TViewUnits1.listbox1Click(Sender : TObject);
-Var
-I : Integer;
-Begin
-if Listbox1.Items.Count > 0 then
-   Begin
-   for i := 0 to Listbox1.Items.Count-1 do
-    Begin
-     if Listbox1.Selected[I] then
-        Begin
-	Assert(False, 'Trace:Selected index is '+ IntToStr(i) + ' and test is ' + Listbox1.Items.Strings[i]);
-	Edit1.Text := Listbox1.Items.Strings[i];
-        Break;
-        end;
-    end;
-   end;
-end;
-
 
 
 initialization
-{Do not change the following}
-{<LAZARUSFORMDEF>}
-{$I viewunits1.lrs}
-{<LAZARUSFORMDEFEND>}
-{}
+{ $I viewunits1.lrs}
 
 
 end.
 {
   $Log$
+  Revision 1.7  2001/03/08 15:59:06  lazarus
+  IDE bugfixes and viewunit/forms functionality
+
   Revision 1.6  2001/01/16 23:30:45  lazarus
   trying to determine what's crashing LAzarus on load.
   Shane

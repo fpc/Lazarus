@@ -1,12 +1,9 @@
 { $Id$ }
 {
  /***************************************************************************
-                          Lazarus.pp  -  Main application unit
+                                 Lazarus.pp
                              -------------------
-                   This unit does nothing more than launch the
-                   TConfig Object which is responsible for the
-                   creation of everything else.
-
+                   This is the lazarus editor program.
 
                    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
 
@@ -25,47 +22,47 @@
 
 program lazarus;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 uses 
-  forms,
-  splash,
-  main,
-  dlgMessage,
-  viewunit_dlg,  //dialog used to list the units in a project
-  viewform_dlg,  //dialog to display the forms in the project
+  Forms,
+  Splash,
+  Main,
+  DlgMessage,
   FindReplaceDialog;
 
 var
   SplashForm: TSplashForm;
 
 begin
-   Application.Initialize; { calls InitProcedure which starts up GTK }
+  Application.Initialize;
+    // calls InitProcedure which starts up the interface (e.g. GTK)
    
-   //Show splashform
-   SplashForm := TSplashForm.Create(nil);
-   with SplashForm do
-   begin
-     Show;
-     Paint;
-   end;
+  // Show splashform
+  SplashForm := TSplashForm.Create(nil);
+  with SplashForm do
+  begin
+    Show;
+    Paint;
+  end;
 
-   Application.CreateForm(TMainIDE, MainIDE);
-   Application.CreateForm(TMessageDlg, MessageDlg);
-   Application.CreateForm(TViewUnits1, ViewUnits1);
-   Application.CreateForm(TViewForms1, ViewForms1);
-   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
-   SplashForm.StartTimer;
-   Application.Run;
+  Application.CreateForm(TMainIDE, MainIDE);
+  Application.CreateForm(TMessageDlg, MessageDlg);
+  Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
+  SplashForm.StartTimer;
+  Application.Run;
 
-   // workaround till lcl closes clean
-   Application.Free;
-   Application:=nil;
+  // workaround till lcl closes clean
+  Application.Free;
+  Application:=nil;
 end.
 
 
 {
   $Log$
+  Revision 1.16  2001/03/08 15:59:06  lazarus
+  IDE bugfixes and viewunit/forms functionality
+
   Revision 1.15  2001/02/22 17:04:57  lazarus
   added environment options + killed ide unit circles
 
