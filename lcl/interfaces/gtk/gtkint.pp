@@ -78,13 +78,18 @@ type
       function SetProperties (Sender: TObject) : integer;
       procedure AttachMenu(Sender: TObject);
    protected
-      Cursor_Watch : pGDKCursor;
-      Cursor_Arrow : pGDKCursor;
-      Cursor_Cross : pGDKCursor;
-      Cursor_Hand1 : pGDKCursor;
-      Cursor_XTerm : pGDKCursor;
+      Cursor_Watch    : pGDKCursor;
+      Cursor_Arrow    : pGDKCursor;
+      Cursor_Cross    : pGDKCursor;
+      Cursor_Hand1    : pGDKCursor;
+      Cursor_XTerm    : pGDKCursor;
       Cursor_StdArrow : pGDKCursor;
-      Cursor_HSplit : pGDKCursor;
+      Cursor_HSplit   : pGDKCursor;
+      Cursor_VSplit   : pGDKCursor;
+      Cursor_SizeNWSE : pGDKCursor;
+      Cursor_SizeNS   : pGDKCursor;
+      Cursor_SizeNESW : pGDKCursor;
+      Cursor_SizeWE   : pGDKCursor;
 
    public
       constructor Create; 
@@ -242,6 +247,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/03/15 14:40:09  lazarus
+  MG: added some mouse cursors
+
   Revision 1.7  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

@@ -118,6 +118,11 @@ begin
    gdk_Cursor_Destroy(Cursor_XTerm);
    gdk_Cursor_Destroy(Cursor_StdArrow);
    gdk_Cursor_Destroy(Cursor_HSplit);
+   gdk_Cursor_Destroy(Cursor_VSplit);
+   gdk_Cursor_Destroy(Cursor_SizeNWSE);
+   gdk_Cursor_Destroy(Cursor_SizeNS);
+   gdk_Cursor_Destroy(Cursor_SizeNESW);
+   gdk_Cursor_Destroy(Cursor_SizeWE);
 
    gtk_object_unref(PGTKObject(FGTKToolTips));
    FGTKToolTips := nil; 
@@ -159,6 +164,11 @@ begin
    Cursor_XTerm := gdk_Cursor_New(gdk_XTerm);
    Cursor_StdArrow := gdk_Cursor_New(GDK_LEft_Ptr);
    Cursor_HSplit := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
+   Cursor_VSplit := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
+   Cursor_SizeNWSE := gdk_Cursor_New(GDK_TOP_LEFT_CORNER);
+   Cursor_SizeNS := gdk_Cursor_New(GDK_SB_V_DOUBLE_ARROW);
+   Cursor_SizeNESW := gdk_Cursor_New(GDK_BOTTOM_LEFT_CORNER);
+   Cursor_SizeWE := gdk_Cursor_New(GDK_SB_H_DOUBLE_ARROW);
 
    gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
@@ -1027,7 +1037,12 @@ begin
      crHourGlass: gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_Watch);
      crDefault  : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_StdArrow);
      crHSplit   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_HSplit);
-
+     crVSplit   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_VSplit);
+     crSizeNWSE : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeNWSE);
+     crSizeNS   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeNS);
+     crSizeNESW : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeNESW);
+     crSizeWE   : gdk_window_set_cursor (pgtkWidget(TWinControl(Sender).Handle)^.window, Cursor_SizeWE);
+     
   else
      Exit;
   end; 
@@ -2683,6 +2698,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.32  2001/03/15 14:40:09  lazarus
+  MG: added some mouse cursors
+
   Revision 1.31  2001/03/12 12:17:02  lazarus
   MG: fixed random function results
 
