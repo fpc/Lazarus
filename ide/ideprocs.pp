@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, LazGetText;
+  Classes, SysUtils, Laz_XMLCfg, GetText;
 
 //
 const
