@@ -132,6 +132,7 @@ begin
   LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
   FLastFPCAge:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCAge',-1);
   FLastFPCPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCPath','');
+  FLastFPCSearchPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCSearchPath','');
   FLastFPCUnitLinks:=XMLConfig.GetValue(Path+'FPCUnitLinks/UnitLinks','');
 end;
 
@@ -144,6 +145,7 @@ begin
   SaveRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
   XMLConfig.SetValue(Path+'FPCUnitLinks/FPCAge',FLastFPCAge);
   XMLConfig.SetValue(Path+'FPCUnitLinks/FPCPath',FLastFPCPath);
+  XMLConfig.SetValue(Path+'FPCUnitLinks/FPCSearchPath',FLastFPCSearchPath);
   XMLConfig.SetValue(Path+'FPCUnitLinks/UnitLinks',FLastFPCUnitLinks);
 end;
 

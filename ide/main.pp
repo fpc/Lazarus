@@ -3004,9 +3004,9 @@ begin
   for i:=0 to Project1.UnitCount-1 do begin
     AnUnitInfo:=Project1.Units[i];
     if AnUnitInfo.Loaded then begin
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',AnUnitInfo.Filename);
-{$ENDIF}
+      {$IFDEF IDE_DEBUG}
+      writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',AnUnitInfo.Filename);
+      {$ENDIF}
       ASrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
          AnUnitInfo.EditorIndex);
       AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
@@ -6237,6 +6237,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.282  2002/04/21 14:30:36  lazarus
+  MG: fixed inputhistory load/save
+
   Revision 1.281  2002/04/21 13:24:05  lazarus
   MG: small updates and fixes
 
