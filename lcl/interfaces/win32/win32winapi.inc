@@ -562,11 +562,17 @@ End;
   specified record.
  ------------------------------------------------------------------------------}
 Function TWin32Object.CreateFontIndirect(Const LogFont: TLogFont): HFONT;
+Var
+  TempLogFont: TLogFont;
 Begin
-  if String(LogFont.lfFaceName) = 'default' then
-    Result := Windows.GetStockObject(DEFAULT_GUI_FONT)
-  else
-  Result := Windows.CreateFontIndirect(@LogFont);
+  TempLogFont := LogFont;
+  if String(TempLogFont.lfFaceName) = DefFontData.Name then
+  begin
+    Move(FMetrics.lfMessageFont.lfFaceName, TempLogFont.lfFaceName, LF_FACESIZE);
+    if TempLogFont.lfHeight = 0 then
+      TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
+  end;
+  Result := Windows.CreateFontIndirect(@TempLogFont);
 End;
 
 {------------------------------------------------------------------------------
@@ -2826,6 +2832,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2003/12/19 18:18:47  micha
+  better default font handling
+
   Revision 1.83  2003/12/18 10:17:00  micha
   remove non-useful variable wndlist (thx vincent)
 
