@@ -125,7 +125,9 @@ type
     function GetMaxCoordinates(DesignerMenuItem: PDesignerMenuItem; Max_Width, Max_Height: Integer): TRect; //width and height of all expanded menu items
     
     // Event handling
-    procedure MenuItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure MenuItemMouseDown(Sender: TObject; Button: TMouseButton;
+                                Shift: TShiftState; X, Y: Integer);
+    procedure MenuItemDblClick(Sender: TObject);
     procedure AddNewItemBeforeClick(Sender: TObject);
     procedure AddNewItemAfterClick(Sender: TObject);
     procedure AddSubMenuClick(Sender: TObject);
@@ -156,7 +158,8 @@ type
     //  update
     procedure InitIndexSequence;
     function CreateIndexSequence(MenuItem: PDesignerMenuItem; Ident: string; Ind: Integer): Boolean;
-    function UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind,Action: Integer): TMenuItem;
+    function UpdateMenu(MenuItem: TMenuItem;
+           DesignerMenuItem: PDesignerMenuItem; Ind,Action: Integer): TMenuItem;
     
     procedure HideDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem);
     function GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; const Ident: string): PDesignerMenuItem;
@@ -188,6 +191,7 @@ var
   index_sequence: Array[1..INDEX_SEQUENCE_LENGTH] of Integer;
   
   XMLConfig: TXMLConfig;
+
 
 //
 constructor TDesignerMainMenu.CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
@@ -319,7 +323,8 @@ begin
   MenuItem^.SelfPanel.Caption:='';
   MenuItem^.SelfPanel.Height:=DESIGNER_MENU_ITEM_HEIGHT;
   Menuitem^.SelfPanel.OnMouseDown:=@MenuItemMouseDown;
-  
+  Menuitem^.SelfPanel.OnDblClick:=@MenuItemDblClick;
+
   MenuItem^.CaptionLabel:=TLabel.Create(self);
   MenuItem^.CaptionLabel.Name:='CaptionLabel_' + MenuItem^.ID;
   MenuItem^.CaptionLabel.Parent:=MenuItem^.SelfPanel;
@@ -327,7 +332,8 @@ begin
   MenuItem^.CaptionLabel.Top:=2;
   MenuItem^.CaptionLabel.Height:=DESIGNER_MENU_ITEM_HEIGHT - 4;
   MenuItem^.CaptionLabel.OnMouseDown:=@MenuItemMouseDown;
-  
+  Menuitem^.CaptionLabel.OnDblClick:=@MenuItemDblClick;
+
   MenuItem^.SubMenuArrow:=TArrow.Create(self);
   MenuItem^.SubMenuArrow.Name:='SubMenuArrow_' + MenuItem^.ID;
   MenuItem^.SubMenuArrow.Parent:=MenuItem^.SelfPanel;
@@ -337,7 +343,8 @@ begin
   MenuItem^.SubMenuArrow.ShadowType:=stout;
   MenuItem^.SubMenuArrow.Visible:=false;
   MenuItem^.SubMenuArrow.OnMouseDown:=@MenuItemMouseDown;
-  
+  Menuitem^.SubMenuArrow.OnDblClick:=@MenuItemDblClick;
+
   DesignerMenuItemIdent:=DesignerMenuItemIdent + 1;
   inc(temp_newitemcounter);
 end;
@@ -701,7 +708,8 @@ end;
 // -------------------------------------------------------------------------------------------------------------------//
 // We have clicked on some DesignerMenuItem --------------------------------------------------------------------------//
 // -------------------------------------------------------------------------------------------------------------------//
-procedure TDesignerMainMenu.MenuItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TDesignerMainMenu.MenuItemMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   writeln ('<<-- CLICK -->>');
 
@@ -728,6 +736,11 @@ begin
 
   Parent.Invalidate;
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
+end;
+
+procedure TDesignerMainMenu.MenuItemDblClick(Sender: TObject);
+begin
+  HandleOnClickEventClick(Sender);
 end;
 
 // -------------------------------------------------------------//
@@ -781,8 +794,10 @@ procedure TDesignerMainMenu.HandleOnClickEventClick(Sender: TObject);
 var
   temp_menuitem: TMenuItem;
 begin
-  temp_menuitem:=UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 10);
-  fDefaultComponentEditor:=TDefaultComponentEditor.Create(temp_menuitem, fEditor.GetDesigner);
+  temp_menuitem:=UpdateMenu(fMenu.Items,
+                    GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 10);
+  fDefaultComponentEditor:=
+             TDefaultComponentEditor.Create(temp_menuitem, fEditor.GetDesigner);
   fDefaultComponentEditor.Edit;
   fDefaultComponentEditor.Free;
 end;
@@ -1672,7 +1687,8 @@ end;}
 // ------------------------------------------------------------------
 // UPDATE Menu (type of update is specified via the Action parameter)
 // ------------------------------------------------------------------
-function TDesignerMainMenu.UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind, Action: Integer): TMenuItem;
+function TDesignerMainMenu.UpdateMenu(MenuItem: TMenuItem;
+  DesignerMenuItem: PDesignerMenuItem; Ind, Action: Integer): TMenuItem;
 var
   i: Integer;
   temp_menuitem: TMenuItem;

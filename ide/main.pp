@@ -7457,10 +7457,8 @@ begin
     MessagesView.SelectedMessageIndex:=Index;
   end;
   MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
-writeln('TMainIDE.DoJumpToCompilerMessage A ');
   if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
   then begin
-writeln('TMainIDE.DoJumpToCompilerMessage B ');
     if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
       // the directory was just hidden, re-append it
       NewFilename:=AppendPathDelim(CurDir)+Filename;
@@ -7468,23 +7466,19 @@ writeln('TMainIDE.DoJumpToCompilerMessage B ');
         Filename:=NewFilename;
     end;
 
-writeln('TMainIDE.DoJumpToCompilerMessage C ');
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if IsTestUnitFilename(Filename) then begin
       SearchedFilename := ExtractFileName(Filename);
       Include(OpenFlags,ofVirtualFile);
     end else begin
       SearchedFilename := FindUnitFile(Filename);
-writeln('TMainIDE.DoJumpToCompilerMessage D ',SearchedFilename);
       if not FilenameIsAbsolute(SearchedFilename) then
         Include(OpenFlags,ofVirtualFile);
     end;
 
-writeln('TMainIDE.DoJumpToCompilerMessage E ',SearchedFilename);
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
-writeln('TMainIDE.DoJumpToCompilerMessage F ',Result);
       if Result then begin
         // set caret position
         SourceNotebook.AddJumpPointClicked(Self);
@@ -10270,6 +10264,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.692  2004/01/04 00:05:51  mattias
+  added double click for menu editor
+
   Revision 1.691  2004/01/03 20:19:22  mattias
   fixed reopening virtual files
 
