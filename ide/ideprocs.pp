@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, DOS, Laz_XMLCfg, GetText;
+  Classes, DOS, SysUtils, Laz_XMLCfg, GetText, FileProcs;
 
 type
   TCommentType = (
@@ -45,12 +45,26 @@ type
     );
   TCommentTypes = set of TCommentType;
   
-  TOnCopyFile = procedure(const Filename: string; var Copy: boolean);
   TOnCopyFileMethod =
-    procedure(const Filename: string; var Copy: boolean) of object;
-  TOnCopyError = procedure(const ErrorMsg: string; var Handled: boolean);
+    procedure(const Filename: string; var Copy: boolean;
+      Data: TObject) of object;
+    
+    
+  TCopyErrorType = (
+    ceSrcDirDoesNotExists,
+    ceCreatingDirectory,
+    ceCopyFileError
+    );
+    
+  TCopyErrorData = record
+    Error: TCopyErrorType;
+    Param1: string;
+    Param2: string;
+  end;
+      
   TOnCopyErrorMethod =
-    procedure(const ErrorMsg: string; var Handled: boolean) of object;
+    procedure(const ErrorData: TCopyErrorData; var Handled: boolean;
+      Data: TObject) of object;
 
 //
 const
@@ -70,19 +84,21 @@ function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function AppendPathDelim(const Path: string): string;
+function ChompPathDelim(const Path: string): string;
 function TrimFilename(const AFilename: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string): string;
+function FilenameIsMatching(const Mask, Filename: string;
+  MatchExactly: boolean): boolean;
 procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
 function ConvertSpecialFileChars(const Filename: string): string;
 function PrepareCmdLineOption(const Option: string): string;
-function CopyDirectory(const SrcDirectory, DestDirectory: string;
-             OnCopyFile: TOnCopyFile;
-             OnCopyError: TOnCopyError): boolean;
-function CopyDirectoryWithMethods(const SrcDir, DestDir: string;
-             OnCopyFile: TOnCopyFileMethod;
-             OnCopyError: TOnCopyErrorMethod): boolean;
+function CopyFileWithMethods(const SrcFilename, DestFilename: string;
+             OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
+function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
+             OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
+             Data: TObject): boolean;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -215,11 +231,7 @@ end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
-  {$IFDEF WIN32}
-  Result:=AnsiCompareText(Filename1, Filename2);
-  {$ELSE}
-  Result:=AnsiCompareStr(Filename1, Filename2);
-  {$ENDIF}
+  Result:=FileProcs.CompareFilenames(FileName1,FileName2);
 end;
 
 function FileIsExecutable(const AFilename: string): boolean;
@@ -274,107 +286,42 @@ end;
 
 function FilenameIsAbsolute(Filename: string):boolean;
 begin
-  DoDirSeparators(Filename);
-  {$IFDEF win32}
-  // windows
-  Result:=(copy(Filename,1,2)='\\') or ((length(Filename)>3) and
-     (upcase(Filename[1]) in ['A'..'Z']) and (copy(Filename,2,2)=':\'));
-  {$ELSE}
-  Result:=(Filename<>'') and (Filename[1]='/');
-  {$ENDIF}
+  Result:=FileProcs.FilenameIsAbsolute(Filename);
 end;
 
 function DirectoryExists(DirectoryName: string): boolean;
-var sr: TSearchRec;
 begin
-  if (DirectoryName<>'')
-  and (DirectoryName[length(DirectoryName)]=PathDelim) then
-    DirectoryName:=copy(DirectoryName,1,length(DirectoryName)-1);
-  if SysUtils.FindFirst(DirectoryName,faAnyFile,sr)=0 then
-    Result:=((sr.Attr and faDirectory)>0)
-  else
-    Result:=false;
-  SysUtils.FindClose(sr);
+  Result:=FileProcs.DirectoryExists(DirectoryName);
 end;
 
 function ForceDirectory(DirectoryName: string): boolean;
-var i: integer;
-  Dir: string;
 begin
-  DoDirSeparators(DirectoryName);
-  i:=1;
-  while i<=length(DirectoryName) do begin
-    if DirectoryName[i]=PathDelim then begin
-      Dir:=copy(DirectoryName,1,i-1);
-      if not DirectoryExists(Dir) then begin
-        Result:=CreateDir(Dir);
-        if not Result then exit;
-      end;
-    end;
-  end;
-  Result:=true;
+  Result:=FileProcs.ForceDirectory(DirectoryName);
 end;
 
 function FileIsReadable(const AFilename: string): boolean;
 begin
-  {$IFDEF win32}
-  Result:=FileExists(AFilename);
-  {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.R_OK);
-  {$ENDIF}
+  Result:=FileProcs.FileIsReadable(AFilename);
 end;
 
 function FileIsWritable(const AFilename: string): boolean;
 begin
-  {$IFDEF win32}
-  Result:=((FileGetAttr(AFilename) and faReadOnly)>0);
-  {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
-  {$ENDIF}
+  Result:=FileProcs.FileIsWritable(AFilename);
 end;
 
 function FileIsText(const AFilename: string): boolean;
-var fs: TFileStream;
-  Buf: string;
-  Len, i: integer;
-  NewLine: boolean;
 begin
-  Result:=false;
-  try
-    fs:=TFileStream.Create(AFilename,fmOpenRead);
-    try
-      // read the first 1024 bytes
-      Len:=1024;
-      if Len>fs.Size then Len:=fs.Size;
-      if Len>0 then begin
-        SetLength(Buf,Len);
-        fs.Read(Buf[1],length(Buf));
-        NewLine:=false;
-        for i:=1 to length(Buf) do begin
-          case Buf[i] of
-          #0..#8,#11..#12,#14..#31: exit;
-          #10,#13: NewLine:=true;
-          end;
-        end;
-        if NewLine or (Len<1024) then
-          Result:=true;
-      end else
-        Result:=true;
-    finally
-      fs.Free;
-    end;
-  except
-  end;
+  Result:=FileProcs.FileIsText(AFilename);
 end;
 
 function AppendPathDelim(const Path: string): string;
 begin
-  if (Path<>'') and (Path[length(Path)]<>PathDelim) then
-    Result:=Path+PathDelim
-  else
-    Result:=Path;
+  Result:=FileProcs.AppendPathDelim(Path);
+end;
+
+function ChompPathDelim(const Path: string): string;
+begin
+  Result:=FileProcs.ChompPathDelim(Path);
 end;
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
@@ -424,6 +371,12 @@ begin
     StartPos:=p+1;
   end;
   Result:='';
+end;
+
+function FilenameIsMatching(const Mask, Filename: string;
+  MatchExactly: boolean): boolean;
+begin
+  Result:=FileProcs.FilenameIsMatching(Mask,Filename,MatchExactly);
 end;
 
 procedure SplitCmdLine(const CmdLine: string;
@@ -1095,36 +1048,6 @@ begin
 end;
 
 
-function CopyDirectory(const SrcDirectory, DestDirectory: string;
-  OnCopyFile: TOnCopyFile; OnCopyError: TOnCopyError): boolean;
-var
-  SrcDir, DestDir: string;
-begin
-  Result:=true;
-  SrcDir:=AppendPathDelim(TrimFilename(SrcDirectory));
-  DestDir:=AppendPathDelim(TrimFilename(DestDirectory));
-  if CompareFilenames(SrcDir,DestDir)=0 then exit;
-  
-end;
-
-function CopyDirectoryWithMethods(const SrcDir, DestDir: string;
-  OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod): boolean;
-  
-  procedure OnCopyFileProc(const Filename: string; var Copy: boolean);
-  begin
-    OnCopyFile(Filename,Copy);
-  end;
-
-  procedure OnCopyErrorProc(const ErrorMsg: string; var Handled: boolean);
-  begin
-    OnCopyError(ErrorMsg,Handled);
-  end;
-
-begin
-  Result:=false; //CopyDirectory(SrcDir,DestDir,@OnCopyFileProc,@OnCopyErrorProc);
-end;
-
-
 function EnvironmentAsStringList: TStringList;
 var
   i, SysVarCount, e: integer;
@@ -1164,6 +1087,143 @@ begin
     EnvList.Free;
   end;
 end;
+
+function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
+  OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
+  Data: TObject): boolean;
+  
+  function HandleError(ErrorNumber: TCopyErrorType;
+    const Param1, Param2: string): boolean;
+  var
+    ErrorData: TCopyErrorData;
+  begin
+    Result:=false;
+    if Assigned(OnCopyError) then begin
+      ErrorData.Error:=ErrorNumber;
+      ErrorData.Param1:=Param1;
+      ErrorData.Param2:=Param2;
+      OnCopyError(ErrorData,Result,Data);
+    end;
+  end;
+  
+  function CopyDir(const CurSrcDir, CurDestDir: string): boolean;
+  // both dirs must end with PathDelim
+  const
+    {$IFDEF Win32}
+    FindMask = '*.*';
+    {$ELSE}
+    FindMask = '*';
+    {$ENDIF}
+  var
+    FileInfo: TSearchRec;
+    CurFilename,
+    SubSrcDir, SubDestDir,
+    DestFilename: string;
+    DoCopy: boolean;
+  begin
+    Result:=false;
+    if not ForceDirectory(CurDestDir)
+    and not HandleError(ceCreatingDirectory,CurDestDir,'') then exit;
+    
+    if SysUtils.FindFirst(CurSrcDir+FindMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        CurFilename:=CurSrcDir+FileInfo.Name;
+        // check if src file
+        if FilenameIsMatching(DestDirectory,CurFilename,false) then continue;
+        
+        // check user filter
+        if Assigned(OnCopyFile) then begin
+          DoCopy:=true;
+          OnCopyFile(CurFilename,DoCopy,Data);
+          if not DoCopy then continue;
+        end;
+
+        // copy
+        if (FileInfo.Attr and faDirectory)>0 then begin
+          // copy sub directory
+          SubSrcDir:=AppendPathDelim(CurFilename);
+          SubDestDir:=AppendPathDelim(CurDestDir+FileInfo.Name);
+          if not CopyDir(SubSrcDir,SubDestDir) then exit;
+        end else begin
+          // copy file
+          DestFilename:=CurDestDir+FileInfo.Name;
+          if not CopyFileWithMethods(CurFilename,DestFilename,OnCopyError,Data)
+          then
+            exit;
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+    
+    Result:=true;
+  end;
+  
+var
+  SrcDir, DestDir: string;
+begin
+  Result:=true;
+  SrcDir:=AppendPathDelim(TrimFilename(SrcDirectory));
+  DestDir:=AppendPathDelim(TrimFilename(DestDirectory));
+  if CompareFilenames(SrcDir,DestDir)=0 then exit;
+
+  if (not DirectoryExists(SrcDir))
+  and not HandleError(ceSrcDirDoesNotExists,SrcDir,'') then exit;
+  
+  CopyDir(SrcDir,DestDirectory);
+end;
+
+function CopyFileWithMethods(const SrcFilename, DestFilename: string;
+  OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
+var
+  SrcFileStream, DestFileStream: TFileStream;
+  {$IFDEF Win32}
+  OldAttr: Longint;
+  {$ELSE}
+  OldInfo: Stat;
+  {$ENDIF}
+begin
+  Result:=false;
+  if CompareFilenames(SrcFilename,DestFilename)=0 then exit;
+  
+  // read file attributes
+  {$IFDEF Win32}
+  OldAttr:=FileGetAttr(SrcFilename);
+  {$ELSE}
+  FStat(SrcFilename,OldInfo);
+  {$ENDIF}
+  
+  //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);
+  // copy file
+  try
+    SrcFileStream:=TFileStream.Create(SrcFilename,fmOpenRead);
+    try
+      DestFileStream:=TFileSTream.Create(DestFilename,fmCreate);
+      try
+        DestFileStream.CopyFrom(SrcFileStream,SrcFileStream.Size);
+      finally
+        DestFileStream.Free;
+      end;
+    finally
+      SrcFileStream.Free;
+    end;
+  except
+    exit;
+  end;
+  
+  // copy file attributes
+  {$IFDEF Win32}
+  FileSetAttr(DestFileName,OldAttr);
+  {$ELSE}
+  Chmod(DestFilename,
+         OldInfo.Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
+                           +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
+  {$ENDIF}
+
+  Result:=true;
+end;
+
 
 end.
 
