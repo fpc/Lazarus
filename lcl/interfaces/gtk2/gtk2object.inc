@@ -337,136 +337,8 @@ begin
 end;
 
 function TGtk2WidgetSet.CreateListView(ListViewObject: TObject): PGtkWidget;
-var
-  GtkTreeView: PGtkWidget;
-  ListStore: PGtkListStore;
-  nColumns: Integer;
-  ListView: TCustomListView;
-  GTypeArray: PGType;
-  i: Integer;
-  renderer: PGtkCellRenderer;
-  Column: PGtkTreeViewColumn;
-
-  procedure RefreshItems(const ListStore: PGtkListStore);
-  var
-    Iter: TGtkTreeIter;
-    ColCount: Integer;
-    i, x: Integer;
-    Item: TListItem;
-  begin
-    gtk_list_store_clear(ListStore);
-    for i := 0 to ListView.Items.Count-1 do begin
-      Item := ListView.Items.Item[i];
-
-      // Figure out how many columns are needed
-      if not(ListView.ViewStyle = vsReport) then begin
-        gtk_list_store_append(ListStore, @Iter);
-        gtk_list_store_set(ListStore, @Iter,[1, PChar(Item.Caption),-1]);
-      end
-      else begin
-        ColCount := ListView.Columns.Count;
-        if ColCount > (1 + Item.SubItems.Count) then
-          ColCount := 1 + Item.SubItems.Count;
-        if ColCount < 0 then ColCount := 1;
-        gtk_list_store_append(ListStore, @Iter);
-        gtk_list_store_set(ListStore, @Iter,[1, PChar(Item.Caption),-1]);
-        for x := 1 to ColCount-1 do begin
-          gtk_list_store_set(ListStore, @Iter, [X+1, PChar(Item.SubItems.Strings[X-1]), -1]);
-        end;
-      end;
-    end;
-  end;
-  
 begin
-  Result := gtk_scrolled_window_new(nil, nil);
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(Result)^.hscrollbar, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(Result)^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(PGtkScrolledWindow(Result),
-                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_widget_show(Result);
-
-  if ListViewObject = nil then Exit;
-  
-  ListView := TCustomListView(ListViewObject);
-  
-  {case ListView.ViewStyle of
-    vsReport: nColumns := ListView.Columns.Count;
-    vsList  : nColumns := 1;
-    //vsIcons
-  end;}
-  nColumns := ListView.Columns.Count+1;
-  
-  GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
-  GTypeArray[0] := GDK_TYPE_PIXBUF;
-  for i := 1 to nColumns do begin
-    GTypeArray[i] := G_TYPE_STRING;
-  end;
-  GTypeArray[nColumns+1] := 0; // -1;
-  ListStore := gtk_list_store_newv(nColumns, GTypeArray);
-  ReAllocMem(GTypeArray, 0);
-  
-  GtkTreeView:=gtk_tree_view_new_with_model(PGtkTreeModel(ListStore));
-  g_object_unref (G_OBJECT (ListStore));
-  
-  if ListView.Columns.Count > 0 then begin
-    column := gtk_tree_view_column_new();
-    if ListView.Columns.Count> 0 then
-      gtk_tree_view_column_set_title(column, PChar(ListView.Columns.Items[0].Caption));
-    //set width
-    gtk_tree_view_column_set_fixed_width(Column, ListView.Columns.Items[0].Width+Ord(ListView.Columns.Items[0].Width=0));
-
-    // set Visible
-    gtk_tree_view_column_set_visible(Column, ListView.Columns.Items[0].Visible);
-    // set MinWidth
-    if ListView.Columns.Items[0].MinWidth > 0 then
-      gtk_tree_view_column_set_min_width(Column, ListView.Columns.Items[0].MinWidth);
-    // set MaxWidth
-    if ListView.Columns.Items[0].MaxWidth > 0 then
-      gtk_tree_view_column_set_max_width(Column, ListView.Columns.Items[0].MaxWidth);
-    
-    //Add an Icon renderer and a text renderer to the first column
-    //for Icons
-    renderer := gtk_cell_renderer_pixbuf_new();
-    gtk_tree_view_column_pack_start(column, renderer, FALSE);
-    gtk_tree_view_column_set_attributes(column, renderer,['pixbuf', 0, nil]);
-
-    renderer := gtk_cell_renderer_text_new();
-    gtk_tree_view_column_pack_start(column, renderer, True);
-    gtk_tree_view_column_set_attributes(column, renderer, ['text', 1, nil]);
-
-
-    gtk_tree_view_append_column(GTK_TREE_VIEW(GtkTreeview), column);
-    gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-  
-    for i := 1 to ListView.Columns.Count-1 do begin;
-      renderer := gtk_cell_renderer_text_new();
-      column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', i+1, nil]);
-      gtk_tree_view_column_set_title(column, PChar(ListView.Columns.Items[i].Caption));
-    
-      //set width
-      gtk_tree_view_column_set_fixed_width(Column, ListView.Columns.Items[i].Width);
-      // set Visible
-      gtk_tree_view_column_set_visible(Column, ListView.Columns.Items[i].Visible);
-      // set MinWidth
-      if ListView.Columns.Items[i].MinWidth > 0 then
-        gtk_tree_view_column_set_min_width(Column, ListView.Columns.Items[i].MinWidth);
-      // set MaxWidth
-      if ListView.Columns.Items[i].MaxWidth > 0 then
-        gtk_tree_view_column_set_max_width(Column, ListView.Columns.Items[i].MaxWidth);
-      gtk_tree_view_append_column (GTK_TREE_VIEW (GtkTreeView), column);
-      gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-    end;
-  end;
-
-  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (GtkTreeView), ListView.ViewStyle = vsReport);
-  
-  gtk_container_add(GTK_CONTAINER(Result),PGtkWidget(GtkTreeView));
-
-  SetMainWidget(Result, GtkTreeView);
-  GetWidgetInfo(Result, True)^.CoreWidget := GtkTreeView;
-
-  RefreshItems(ListStore);
-  gtk_widget_show(GtkTreeView);
+ DebugLn('Warning: deprecated call to TGtkWidgetSet.CreateListView');
 end;
 
 
@@ -1679,6 +1551,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.30  2005/03/01 23:09:41  mattias
+  gtk2 intf listview  from Andrew Haines
+
   Revision 1.29  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files
