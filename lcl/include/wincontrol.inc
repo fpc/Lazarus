@@ -2258,8 +2258,7 @@ begin
     Include(FFlags,wcfEraseBackground);
     try
       DC := BeginPaint(Handle, PS);
-      // ToDo: get rid of this hack (2 times MemDC)
-      Perform(LM_ERASEBKGND, MemDC, MemDC);
+      Perform(LM_ERASEBKGND, MemDC, 0);
       Msg.DC := MemDC;
       WMPaint(Msg);
       Msg.DC := 0;
@@ -2461,7 +2460,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-                                                                                  Method: TWinControl.WMKeyUp
+  Method: TWinControl.WMKeyUp
   Params:   Msg: The message
   Returns:  nothing
 
@@ -2886,6 +2885,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.149  2003/06/30 16:39:40  mattias
+  clean up
+
   Revision 1.148  2003/06/30 14:58:29  mattias
   implemented multi file add to package editor
 
