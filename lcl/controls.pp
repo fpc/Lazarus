@@ -506,8 +506,11 @@ type
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
   protected
+    AutoSizing : Boolean;
+
     FControlState: TControlState;
     procedure AdjustSize; dynamic;
+    procedure DoAutoSize; Virtual;
     procedure SetAutoSize(const Value : Boolean); virtual;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender : TObject); virtual;
@@ -728,12 +731,9 @@ type
     Procedure SetTabOrder(Value : TTabOrder);
     Procedure UpdateTaborder(value : TTabOrder);
   protected
-    AutoSizing : Boolean;
-
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var Rect: TRect); virtual;
-    Procedure SetAutoSize(const Value : Boolean); Override;
     procedure BoundsChanged; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
@@ -742,7 +742,7 @@ type
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender : TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
-    procedure DoAutoSize; Virtual;
+    procedure DoAutoSize; Override;
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
@@ -1349,6 +1349,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/09/10 06:49:18  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.71  2002/09/09 19:04:01  lazarus
   MG: started TTreeView dragging
 
