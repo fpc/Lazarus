@@ -5935,6 +5935,8 @@ begin
     CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,FormClassName,
       AComponent.Name, AComponent.ClassName);
   end;
+
+  ObjectInspector1.FillComponentComboBox;
 end;
 
 procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
@@ -5960,6 +5962,8 @@ begin
   FormClassName:=ActiveForm.ClassName;
   CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
     AComponent.Name);
+
+  ObjectInspector1.FillComponentComboBox;
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
@@ -7399,6 +7403,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.416  2002/10/22 17:53:35  lazarus
+  MG: fixed updating OI when adding/emoving component and selecting in OI
+
   Revision 1.415  2002/10/21 22:12:46  lazarus
   MG: fixed frmactivate
 
