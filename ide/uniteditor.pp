@@ -256,8 +256,6 @@ type
     FUnUsedEditorComponents: TList; // list of TSynEdit
     FProcessingCommand: boolean;
 
-    FSaveDialog : TSaveDialog;
-
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnCloseClicked: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
@@ -516,8 +514,8 @@ begin
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
-    TSourceNoteBook(FAOwner).FSourceEditorList.Remove(FEditor);
-    TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Remove(FEditor);
+    TSourceNoteBook(FAOwner).FSourceEditorList.Remove(Self);
+    TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
   end;
 //writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
@@ -1565,7 +1563,6 @@ begin
       OnGetSource:=@OnWordCompletionGetSource;
     end;
   end;
-  FSaveDialog := TSaveDialog.Create(Self);
   BuildPopupMenu;
 
 
@@ -1663,7 +1660,6 @@ end;
 destructor TSourceNotebook.Destroy;
 var i: integer;
 begin
-//writeln('[TSourceNotebook.Destroy]');
   FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
@@ -2674,11 +2670,7 @@ writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   TempEditor.Close;
-  FSourceEditorList.Remove(TempEditor);
-  if FProcessingCommand then
-    FUnUsedEditorComponents.Add(TempEditor)
-  else
-    TempEditor.Free;
+  TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
 //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     Notebook.Pages.Delete(PageIndex);

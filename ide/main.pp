@@ -2824,6 +2824,8 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
+  if ActiveUnitInfo.Form=FLastFormActivated then
+    FLastFormActivated:=nil;
   ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
   ActiveUnitInfo.TopLine:=ActiveSrcEdit.EditorComponent.TopLine;
   ActiveUnitInfo.CursorPos:=ActiveSrcEdit.EditorComponent.CaretXY;
@@ -4662,40 +4664,32 @@ procedure TMainIDE.DoBringToFrontFormOrUnit;
 var AForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
 begin
-  if FCodeLastActivated then
-   begin
-    if SourceNoteBook.NoteBook<>nil then
-       AForm:=SourceNotebook
-    else
-       AForm:=nil;
-    //if AForm is set, make sure the right tab is being displayed.
-    if AForm <> nil then
-       begin
+  AForm:=nil;
+  if FCodeLastActivated then begin
+    if SourceNoteBook.NoteBook<>nil then begin
+      AForm:=SourceNotebook;
+      if FLastFormActivated<>nil then begin
         ActiveUnitInfo := Project.UnitWithForm(FLastFormActivated);
-        if ActiveUnitInfo <> nil then
-           begin
-             SourceNotebook.Notebook.PageIndex := ActiveUnitInfo.EditorIndex;
-           end;
-           
-       end;
-   end
-   else
-   begin
-    if (SourceNoteBook.NoteBook<>nil) then
-     begin
+        if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex>=0) then
+        begin
+          SourceNotebook.Notebook.PageIndex := ActiveUnitInfo.EditorIndex;
+        end;
+      end;
+    end;
+  end
+  else
+  begin
+    if (SourceNoteBook.NoteBook<>nil) then begin
       ActiveUnitInfo:=Project.UnitWithEditorIndex(
         SourceNoteBook.NoteBook.PageIndex);
       if (ActiveUnitInfo<>nil) then
         AForm:=TCustomForm(ActiveUnitInfo.Form);
       FLastFormActivated := AForm;
-        
-     end;
+    end;
   end;
-
-  if AForm<>nil then
-   begin
+  if AForm<>nil then begin
     BringWindowToTop(AForm.Handle);
-   end;
+  end;
 end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
@@ -5850,6 +5844,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.219  2002/02/09 21:09:19  lazarus
+  MG: fixed sourcenotebook closing and form-unit switching
+
   Revision 1.218  2002/02/09 20:32:08  lazarus
   MG: many fixes on my way to events
 
