@@ -5775,6 +5775,13 @@ end;
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SelectGDKPenProps(DC: HDC);
+
+  procedure SetDashes(Dashes: array of gint8);
+  begin
+    laz_gdk_gc_set_dashes(TDeviceContext(DC).GC,0,Pgint8(@Dashes[Low(Dashes)]),
+      High(Dashes)-Low(Dashes)+1);
+  end;
+
 begin
   if TDeviceContext(DC).SelectedColors=dcscPen then exit;
   
@@ -5796,10 +5803,10 @@ begin
         else begin
           gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,0,0);
           case GDIPenStyle of
-            PS_DASH:       gdk_gc_set_dashes(GC, 0, [4,4], 2);
-            PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
-            PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
-            PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
+            PS_DASH:       SetDashes([4,4]);
+            PS_DOT:        SetDashes([2,2]);
+            PS_DASHDOT:    SetDashes([4,2,2,2,0]);
+            PS_DASHDOTDOT: SetDashes([4,2,2,2,2,2]);
            {This is DEADLY!!!}
             //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
@@ -6576,6 +6583,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.283  2002/11/12 10:53:44  lazarus
+  MG: fixed setting gdk pen style
+
   Revision 1.282  2002/11/12 10:16:18  lazarus
   MG: fixed TMainMenu creation
 
