@@ -79,6 +79,8 @@ type
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
+function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
+  Delimiter: string; Flags: TSearchFileInPathFlags): TStrings;
 function GetAllFilesMask: string;
 
 // file actions
@@ -118,6 +120,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2005/01/27 00:55:04  mattias
+  implemented allowing parent as AnchorSide.Control
+
   Revision 1.5  2005/01/12 23:58:31  mattias
   improved project: recognizing if filename was fixed before pathdelim changed
 

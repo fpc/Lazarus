@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, LazarusIDEStrConsts, FileUtil, IDEProcs, EnvironmentOpts,
-  CompilerOptions, ExtToolEditDlg, TransferMacros;
+  CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf;
 
 type
   TCompilerOptionsTest = (
@@ -92,11 +92,13 @@ var
   CompilerFilename: String;
   CompileTool: TExternalToolOptions;
   CmdLineParams: String;
+  CompilerFiles: TStrings;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
   CompileTool:=nil;
   TestMemo.Lines.Clear;
+  CompilerFiles:=nil;
   try
     // check compiler filename
     FTest:=cotCheckCompilerExe;
@@ -112,6 +114,20 @@ begin
         exit;
       end;
     end;
+    
+    // check if there are several compilers in path
+    CompilerFiles:=SearchAllFilesInPath(GetDefaultCompilerFilename,'',
+         SysUtils.GetEnvironmentVariable('PATH'),':',[sffDontSearchInBasePath]);
+    if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
+      Result:=MessageDlg('Ambigious Compiler',
+        'There are several FreePascal Compilers in your path.'#13#13
+        +CompilerFiles.Text+#13
+        +'Maybe you forgot to delete an old compiler?',
+        mtWarning,[mbCancel,mbIgnore],0);
+      if Result<>mrIgnore then exit;
+    end;
+    
+    
     
     // compile bogus file
     FTest:=cotCompileBogusFiles;
@@ -156,6 +172,7 @@ begin
     end;
 
   finally
+    CompilerFiles.Free;
     CompileTool.Free;
     FTest:=cotNone;
     TestGroupbox.Caption:='Test';

@@ -492,6 +492,7 @@ begin
       if TObject(SelectedControls[i]) is TControl then begin
         CurControl:=TControl(SelectedControls[i]);
         if CurControl.Parent<>nil then begin
+          sl.Add(ControlToStr(CurControl.Parent));
           for j:=0 to CurControl.Parent.ControlCount-1 do begin
             Sibling:=CurControl.Parent.Controls[j];
             if Sibling<>CurControl then
@@ -510,7 +511,7 @@ end;
 
 function TAnchorDesigner.AnchorDesignerNoSiblingText: string;
 begin
-  Result:='(parent borders)';
+  Result:='(nil)';
 end;
 
 procedure TAnchorDesigner.Refresh(Force: boolean);

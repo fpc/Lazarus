@@ -1071,6 +1071,56 @@ begin
   Result:='';
 end;
 
+function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
+  Delimiter: string; Flags: TSearchFileInPathFlags): TStrings;
+  
+  procedure Add(NewFilename: string);
+  var
+    i: Integer;
+  begin
+    NewFilename:=TrimFilename(NewFilename);
+    if not FileExists(NewFilename) then exit;
+    if Result=nil then begin
+      Result:=TStringList.Create;
+    end else begin
+      for i:=0 to Result.Count-1 do
+        if CompareFilenames(Result[i],NewFilename)=0 then exit;
+    end;
+    Result.Add(NewFilename);
+  end;
+  
+var
+  p, StartPos, l: integer;
+  CurPath, Base: string;
+begin
+  Result:=nil;
+  if (Filename='') then exit;
+  // check if filename absolute
+  if FilenameIsAbsolute(Filename) then begin
+    Add(CleanAndExpandFilename(Filename));
+    exit;
+  end;
+  Base:=CleanAndExpandDirectory(BasePath);
+  // search in current directory
+  if (not (sffDontSearchInBasePath in Flags)) then begin
+    Add(CleanAndExpandFilename(Base+Filename));
+  end;
+  // search in search path
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
+    CurPath:=TrimFilename(copy(SearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      if not FilenameIsAbsolute(CurPath) then
+        CurPath:=Base+CurPath;
+      Add(CleanAndExpandFilename(AppendPathDelim(CurPath)+Filename));
+    end;
+    StartPos:=p+1;
+  end;
+end;
+
 function GetAllFilesMask: string;
 begin
   {$IFDEF win32}
@@ -1105,6 +1155,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2005/01/27 00:55:04  mattias
+  implemented allowing parent as AnchorSide.Control
+
   Revision 1.9  2005/01/12 23:58:31  mattias
   improved project: recognizing if filename was fixed before pathdelim changed
 
