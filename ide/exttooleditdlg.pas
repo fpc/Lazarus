@@ -25,8 +25,8 @@
     external tool. (= Programfilename and parameters)
     All TExternalToolOptions are stored in a TExternalToolList
     (see exttooldialog.pas).
-    And provides TExternalToolOptionDlg which is a dialog for editing a
-    TExternalToolOptions;
+    And this unit provides TExternalToolOptionDlg which is a dialog for editing
+    a TExternalToolOptions;
     
 }
 unit ExtToolEditDlg;
@@ -54,7 +54,7 @@ const ExternalToolOptionsFormat = '1.0';
 
 type
   {
-    the storage object for a single external tool
+    TExternalToolOptions - the storage object for a single external tool
   }
   TExternalToolOptions = class
   private

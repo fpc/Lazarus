@@ -1559,7 +1559,10 @@ end;
 destructor TDirectoryDefines.Destroy;
 begin
   Values.Free;
-  UnitLinksTree.Free;
+  if UnitLinksTree<>nil then begin
+    UnitLinksTree.FreeAndClear;
+    UnitLinksTree.Free;
+  end;
   inherited Destroy;
 end;
 
