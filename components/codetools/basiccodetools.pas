@@ -864,56 +864,67 @@ begin
   Result:=true;
 end;
 
+function ReadNextPascalAtomEx(const Source : string;var Position,EndPosition : integer;CaseSensitive : boolean; var Atom : string):boolean;
+begin
+     Atom := ReadNextPascalAtom(Source,Position,EndPosition);
+     if not(CaseSensitive) then Atom := lowerCase(Atom);
+     Result := (Position > length(Source));
+end;
+
+// search pascal atoms of Find in Source
+
 function SearchCodeInSource(const Source,Find:string; StartPos:integer;
    var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
-// search pascal atoms of Find in Source
-var FindAtomStart,FindPos,Position,AtomStart
-  ,FirstSrcAtomStart,FirstSrcAtomEnd:integer;
-  FindAtom,SrcAtom:string;
+var
+	FindAtomStart     : integer;
+	FindPos           : integer;
+	Position          : integer;
+	AtomStart         : integer;
+	FirstSrcAtomStart : integer;
+	CompareSrcPosition: integer;
+	FindAtom          : string ;
+	SrcAtom           : string;
+	HasFound          : boolean;
+	FirstFindAtom     : string;
+	FirstFindPos      : integer;
 begin
   Result:=-1;
   if (Find='') or (StartPos>length(Source)) then exit;
+
   Position:=StartPos;
+  FirstFindPos:=1;
+
+  {search first atom in find}
+
+  if ReadNextPascalAtomEx(Find,FirstFindPos,FindAtomStart,CaseSensitive,FirstFindAtom) then exit;
+
   repeat
-    // search first atom in find
-    FindPos:=1;
-    ReadNextPascalAtom(Find,FindPos,FindAtomStart);
-    FindAtom:=copy(Find,FindAtomStart,FindPos-FindAtomStart);
-    if FindAtom='' then exit;
-    if not CaseSensitive then FindAtom:=lowercase(FindAtom);
-    // search first atom in source
-    repeat
-      ReadNextPascalAtom(Source,Position,AtomStart);
-      SrcAtom:=copy(Source,AtomStart,Position-AtomStart);
-      if not CaseSensitive then SrcAtom:=lowercase(SrcAtom);
-    until (Position>length(Source)) or (SrcAtom=FindAtom);
-    if SrcAtom=FindAtom then begin
-      // first atom found
-      FirstSrcAtomStart:=AtomStart;
-      FirstSrcAtomEnd:=Position;
-      // compare the rest of Find
+
+     if ReadNextPascalAtomEx(Source,Position,AtomStart,CaseSensitive,SrcAtom) then break;
+
+     if SrcAtom=FirstFindAtom then begin
+      {first atom found}
+      FirstSrcAtomStart  := AtomStart;
+      CompareSrcPosition := Position;
+      FindPos := FirstFindPos;
+
+      {read next source and find atoms and compare}
+
       repeat
-        // get next atom in find
-        ReadNextPascalAtom(Find,FindPos,FindAtomStart);
-        FindAtom:=copy(Find,FindAtomStart,FindPos-FindAtomStart);
-        if FindAtom='' then break;
-        if not CaseSensitive then FindAtom:=lowercase(FindAtom);
-        // compare to next atom in source
-        ReadNextPascalAtom(Source,Position,AtomStart);
-        SrcAtom:=copy(Source,AtomStart,Position-AtomStart);
-        if not CaseSensitive then SrcAtom:=lowercase(SrcAtom);
-      until (SrcAtom<>FindAtom);
-      if (FindAtom='') and (FindAtomStart>length(Find)) then begin
-        // code found
-        Result:=FirstSrcAtomStart;
-        EndFoundPosition:=Position;
-        exit;
-      end;
-    end else begin
-      // first atom not found
-      exit;
-    end;
-    Position:=FirstSrcAtomEnd;
+
+        if ReadNextPascalAtomEx(Find,FindPos,FindAtomStart,CaseSensitive,FindAtom) then break;        
+        if ReadNextPascalAtomEx(Source,CompareSrcPosition,AtomStart,CaseSensitive,SrcAtom) then break;
+
+        HasFound := SrcAtom = FindAtom;
+
+        if HasFound then begin
+           Result := FirstSrcAtomStart;
+           EndFoundPosition := CompareSrcPosition;
+           exit;
+        end;
+
+      until not(HasFound);
+     end;
   until false;
 end;
 
