@@ -8,7 +8,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value=""/>
       <TargetFileExt Value=""/>
       <Title Value="gtkglarea_demo"/>
@@ -17,19 +17,10 @@
       <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/gtk"/>
     </General>
     <Bookmarks Count="0"/>
-    <JumpHistory Count="2" HistoryIndex="1">
-      <Position1>
-        <Filename Value="gtkglarea_demo.pp"/>
-        <Caret Line="27" Column="34" TopLine="1"/>
-      </Position1>
-      <Position2>
-        <Filename Value="exampleform.pp"/>
-        <Caret Line="15" Column="10" TopLine="1"/>
-      </Position2>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
     <Units Count="2">
       <Unit0>
-        <CursorPos X="1" Y="20"/>
+        <CursorPos X="7" Y="26"/>
         <EditorIndex Value="0"/>
         <Filename Value="gtkglarea_demo.pp"/>
         <FormName Value=""/>
@@ -37,13 +28,14 @@
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ReadOnly Value="False"/>
+        <ResourceFilename Value=""/>
         <SyntaxHighlighter Value="FreePascal"/>
         <TopLine Value="1"/>
         <UnitName Value="GTKGLArea_Demo"/>
         <BreakPoints Count="0"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="12" Y="70"/>
         <EditorIndex Value="1"/>
         <Filename Value="exampleform.pp"/>
         <FormName Value=""/>
@@ -51,8 +43,9 @@
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ReadOnly Value="False"/>
+        <ResourceFilename Value=""/>
         <SyntaxHighlighter Value="FreePascal"/>
-        <TopLine Value="1"/>
+        <TopLine Value="45"/>
         <UnitName Value="ExampleForm"/>
         <BreakPoints Count="0"/>
       </Unit1>

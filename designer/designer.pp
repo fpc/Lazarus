@@ -836,9 +836,9 @@ begin
   StepY:=GridSizeY;
   with FCustomForm.Canvas do begin
     Pen.Color := FGridColor;
-    x := 0;
+    x := StepX-1;
     while x <= FCustomForm.Width do begin
-      y := 0;
+      y := StepY-1;
       while y <= FCustomForm.Height do begin
          MoveTo(x,y);
          LineTo(x+1,y);

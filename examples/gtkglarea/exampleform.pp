@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, GTKGlArea, gtkglarea_int, Forms, LResources, Buttons,
-  StdCtrls, gtk, glib, NVGL, Linux;
+  StdCtrls, Dialogs, gtk, glib, NVGL, Linux;
 
 type
   TglTexture = class
@@ -121,7 +121,6 @@ begin
   except
     Result.Free;
     Result:=nil;
-    raise Exception.Create('File not found: '+Filename);
   end;
 end;
 
@@ -574,10 +573,24 @@ procedure TExampleForm.GTKGLAreaControl1Paint(Sender: TObject);
     
   end;
 
+const GLInitialized: boolean = false;
 
 procedure InitGL;
+
+  procedure LoadglTexture(const Filename:string; var Image:TglTexture);
+  begin
+    if not LoadglTexImage2DFromBitmapFile(Filename,Image) then begin
+      MessageDlg('File not found',
+        'Image file not found: '+ExpandFilename(Filename),
+        mtError,[mbOk],0);
+      raise Exception.Create('Image file not found: '+ExpandFilename(Filename));
+    end;
+  end;
+
 var i: integer;
 begin
+  if GLInitialized then exit;
+  GLInitialized:=true;
   {setting lighting conditions}
   glLightfv(GL_LIGHT0,GL_AMBIENT,lightamb);
   glLightfv(GL_LIGHT1,GL_AMBIENT,lightamb);
@@ -598,12 +611,11 @@ begin
     MyglTextures[i]:=TglTexture.Create;
   end;
   {loading the texture and setting its parameters}
-  if not LoadglTexImage2DFromBitmapFile('data/particle.bmp',MyglTextures[0]) then 
-    Halt;
-  if not LoadglTexImage2DFromBitmapFile('data/texture2.bmp',MyglTextures[1]) then
-    Halt;
-  if not LoadglTexImage2DFromBitmapFile('data/texture3.bmp',MyglTextures[2]) then
-    Halt;
+  
+  LoadglTexture('data/particle.bmp',MyglTextures[0]);
+  LoadglTexture('data/texture2.bmp',MyglTextures[1]);
+  LoadglTexture('data/texture3.bmp',MyglTextures[2]);
+  
   glGenTextures(3, textures[0]);
   for i:=0 to 2 do begin
     glBindTexture(GL_TEXTURE_2D, Textures[i]);

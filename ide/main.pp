@@ -4509,7 +4509,7 @@ end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;
 var
-  ProgramFilename: String;
+  ProgramFilename, WorkingDir: String;
 begin
   if ToolStatus <> itNone
   then begin
@@ -4553,8 +4553,12 @@ begin
       CheckIfFileIsExecutable(ProgramFilename);
       FRunProcess := TProcess.Create(nil);
       FRunProcess.CommandLine := GetRunCommandLine;
-      FRunProcess.CurrentDirectory:=
-                                   Project1.RunParameterOptions.WorkingDirectory;
+      WorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
+      if WorkingDir='' then
+        WorkingDir:=ExtractFilePath(GetProjectTargetFilename);
+      MacroList.SubstituteStr(WorkingDir);
+      FRunProcess.CurrentDirectory:=ExpandFilename(WorkingDir);
+                                  
       FRunProcess.Options:= [poNoConsole];
       FRunProcess.ShowWindow := swoNone;
     except
@@ -4589,6 +4593,7 @@ begin
     if FRunProcess = nil then Exit;
     try
       Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
+      Writeln('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
       FRunProcess.Execute;
       ToolStatus:=itNone;
       Result := mrOk;
@@ -4596,7 +4601,9 @@ begin
       on e: Exception do 
         MessageDlg(Format('Error initializing program'#13 + 
                           '"%s"'#13 + 
-                          'Error: %s', [FRunProcess.CommandLine, e.Message]), mterror, [mbok], 0);
+                          'Error: %s',
+                          [FRunProcess.CommandLine, e.Message]), mtError,
+                          [mbOk], 0);
     end;
   end;   
   Writeln('[TMainIDE.DoRunProject] END');
@@ -6433,6 +6440,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.310  2002/06/12 14:14:50  lazarus
+  MG: fixed working directory of running programms
+
   Revision 1.309  2002/06/11 15:40:27  lazarus
   MG: implemented GridSizeX, GridSizeY and DisplayGrid
 
