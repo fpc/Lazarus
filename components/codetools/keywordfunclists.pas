@@ -755,6 +755,9 @@ begin
     Add('LOW',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PREC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SUCC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LENGTH',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsTermOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsTermOperator);
@@ -1009,6 +1012,7 @@ begin
     Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
@@ -1043,6 +1047,7 @@ begin
     Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
