@@ -37,16 +37,17 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
-procedure StatusBarInsertPanel(StatusBar: TObject; Index: integer); override;
 procedure StatusBarPanelUpdate(StatusBar: TObject; Index: integer); override;
-procedure StatusBarRemovePanel(StatusBar: TObject; Index: integer); override;
-procedure StatusBarSetSimpleText(StatusBar: TObject); override;
-procedure StatusBarSetStyle(StatusBar: TObject); override;
+procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
+procedure StatusBarUpdate(StatusBar: TObject); override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.8  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines

@@ -2887,7 +2887,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TWinControl.HandleNeeded
-  Params:  AOwner: the owner of the class
+  Params:  None
   Returns: Nothing
 
   Description of the procedure for the class.
@@ -3180,6 +3180,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.190  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.189  2004/01/10 02:01:37  mattias
   implemented Undo property for OI
 

@@ -24,8 +24,10 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
   FPanels := TStatusPanels.Create(Self);
+  {$IFNDEF NewStatusBar}
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
+  {$ENDIF}
   Color := clBtnFace;
   Anchors:=[akLeft,akRight,akBottom];
   Align := alBottom;
@@ -41,7 +43,11 @@ begin
   if FSimpleText <> value then
   begin
     FSimpleText := Value;
+    {$IFDEF NewStatusBar}
+    if HandleAllocated and FSimplePanel then StatusBarSetText(Self,0);
+    {$ELSE}
     Invalidate;
+    {$ENDIF}
   end;
 end;
 
@@ -50,7 +56,11 @@ Begin
   if FSimplePanel <> Value then
   Begin
     FSimplePanel := Value;
+    {$IFDEF NewStatusBar}
+    if HandleAllocated then StatusBarUpdate(Self);
+    {$ELSE}
     Invalidate;
+    {$ENDIF}
   end;
 End;
 
@@ -66,9 +76,19 @@ end;
 destructor TStatusBar.Destroy;
 begin
   FreeThenNil(FPanels);
+  {$IFNDEF NewStatusBar}
   FreeThenNil(FCanvas);
+  {$ENDIF}
   inherited Destroy;
 end;
+
+{$IFDEF NewStatusBar}
+procedure TStatusBar.CreateWnd;
+begin
+  inherited CreateWnd;
+  StatusBarUpdate(Self);
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
@@ -76,8 +96,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
   PanelParts: TPanelParts);
+{$IFNDEF NewStatusBar}
 var
   PanelRect, TextRect: TRect;
+{$ENDIF}
 begin
   if (PanelParts=[]) or (not HandleAllocated) or (csLoading in ComponentState)
   then exit;
@@ -103,6 +125,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF NewStatusBar}
 {------------------------------------------------------------------------------
   procedure TStatusBar.GetPanelRect(PanelIndex: integer; var ARect: TRect);
 ------------------------------------------------------------------------------}
@@ -189,9 +212,6 @@ var
   PW : Longint;
 Begin
   inherited WMPaint(Msg);
-  {$IFDEF NewStatusBar}
-  exit;
-  {$ENDIF}
   FillChar(Style, SizeOf(Style),0);
   With Style do begin
     Layout := tlCenter;
@@ -234,5 +254,6 @@ Begin
     Canvas.TextRect(R, 2, 0, SimpleText, Style);
   end;
 End;
+{$ENDIF}
 // included by comctrls.pp
 

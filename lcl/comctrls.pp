@@ -103,23 +103,33 @@ type
 
   TStatusBar = Class(TWinControl)
   private
+    {$IFNDEF NewStatusBar}
     FCanvas : TCanvas;
+    {$ENDIF}
     FPanels : TStatusPanels;
     FSimpleText : String;
     FSimplePanel : Boolean;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
     procedure SetSimplePanel(Value : Boolean);
+    {$IFNDEF NewStatusBar}
     Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     Procedure DrawDivider(X : Integer);
     Procedure DrawBevel(xLeft, PanelNum : Integer);
+    {$ENDIF}
+    {$IFDEF NewStatusBar}
+  protected
+    procedure CreateWnd; override;
+    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
+    {$IFNDEF NewStatusBar}
     procedure GetPanelRect(PanelIndex: integer; var ARect: TRect);
   public
     property Canvas: TCanvas read FCanvas;
+    {$ENDIF}
   published
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
@@ -1945,6 +1955,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2004/01/12 08:36:33  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.100  2004/01/10 17:09:20  mattias
   deactivated EraseBackGound for TOIPropertyGrid and TTreeView
 

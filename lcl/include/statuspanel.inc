@@ -109,4 +109,3 @@ begin
     PanelChanged([ppWidth]);
   end;
 end;
-

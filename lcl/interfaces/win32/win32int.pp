@@ -107,6 +107,9 @@ Type
     Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
     Procedure CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
+    
+    procedure UpdateStatusBarPanel(StatusPanel: TStatusPanel);
+    procedure UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
 
   Public
     { Creates a callback of Lazarus message Msg for Sender }
@@ -188,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.64  2003/12/27 16:47:18  micha
   fix dialogs owner handle, fixes focusing issue
 

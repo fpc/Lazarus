@@ -233,18 +233,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: StatusBarInsertPanel
-  Params: StatusBar:
-          index:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TGTKObject.StatusBarInsertPanel(StatusBar: TObject; Index: integer);
-begin
-  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
-end;
-
-{------------------------------------------------------------------------------
   Procedure: StatusBarPanelUpdate
   Params: StatusBar:
           index:
@@ -271,35 +259,37 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: StatusBarRemovePanel
+  Procedure: StatusBarSetText
   Params: StatusBar:
-          index:
+          PanelIndex:
+          Text:
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TGTKObject.StatusBarRemovePanel(StatusBar: TObject; Index: integer);
+procedure TGTKObject.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
+var
+  AStatusBar: TStatusBar;
+  HBox: PGtkWidget;
+  StatusPanelWidget: PGtkWidget;
 begin
-  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
+  AStatusBar := StatusBar as TStatusBar;
+  if AStatusBar.SimplePanel then
+    UpdateStatusBarPanels(StatusBar,PGtkWidget(AStatusBar.Handle))
+  else begin
+    HBox:=PGtkWidget(AStatusBar.Handle);
+    StatusPanelWidget:=PGtkBoxChild(
+                        g_list_nth_data(PGtkBox(HBox)^.children,PanelIndex))^.Widget;
+    UpdateStatusBarPanel(StatusBar,PanelIndex,StatusPanelWidget);
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: StatusBarSetSimpleText
+  Procedure: StatusBarUpdate
   Params: StatusBar:
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TGTKObject.StatusBarSetSimpleText(StatusBar: TObject);
-begin
-  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: StatusBarSetStyle
-  Params: StatusBar:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TGTKObject.StatusBarSetStyle(StatusBar: TObject);
+procedure TGTKObject.StatusBarUpdate(StatusBar: TObject);
 begin
   UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
 end;
@@ -309,6 +299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.9  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines

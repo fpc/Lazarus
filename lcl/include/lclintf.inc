@@ -375,29 +375,19 @@ begin
                                    MinItemsWidth, MinItemsHeight, MinItemCount);
 end;
 
-procedure StatusBarInsertPanel(StatusBar: TObject; index: integer);
+procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
 begin
-  InterfaceObject.StatusBarInsertPanel(StatusBar, index);
+  InterfaceObject.StatusBarPanelUpdate(StatusBar, PanelIndex);
 end;
 
-procedure StatusBarPanelUpdate(StatusBar: TObject; index: integer);
+procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
 begin
-  InterfaceObject.StatusBarPanelUpdate(StatusBar, index);
+  InterfaceObject.StatusBarSetText(StatusBar, PanelIndex);
 end;
 
-procedure StatusBarRemovePanel(StatusBar: TObject; index: integer);
+procedure StatusBarUpdate(StatusBar: TObject);
 begin
-  InterfaceObject.StatusBarRemovePanel(StatusBar, index);
-end;
-
-procedure StatusBarSetSimpleText(StatusBar: TObject);
-begin
-  InterfaceObject.StatusBarSetSimpleText(StatusBar);
-end;
-
-procedure StatusBarSetStyle(StatusBar: TObject);
-begin
-  InterfaceObject.StatusBarSetStyle(StatusBar);
+  InterfaceObject.StatusBarUpdate(StatusBar);
 end;
 
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
@@ -496,6 +486,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.10  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines

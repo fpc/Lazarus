@@ -97,70 +97,70 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Procedure: StatusBarInsertPanel
-  Params: StatusBar:
-          index:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TWIN32Object.StatusBarInsertPanel(StatusBar: TObject; index: integer);
-begin
-  // Your code here
-end;
-
-{------------------------------------------------------------------------------
   Procedure: StatusBarPanelUpdate
   Params: StatusBar:
-          index:
+          PanelIndex:
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TWIN32Object.StatusBarPanelUpdate(StatusBar: TObject; index: integer);
+procedure TWIN32Object.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
+var
+  TheStatusBar: TStatusBar;
 begin
-  // Your code here
+  TheStatusBar := (StatusBar as TStatusBar);
+  UpdateStatusBarPanelWidths(TheStatusBar);
+  UpdateStatusBarPanel(TheStatusBar.Panels[PanelIndex]);
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: StatusBarRemovePanel
+  Procedure: StatusBarSetText
   Params: StatusBar:
-          index:
+          PanelIndex:
+          Text:
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TWIN32Object.StatusBarRemovePanel(StatusBar: TObject; index: integer);
+procedure TWIN32Object.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
+var
+  TheStatusBar: TStatusBar;
 begin
-  // Your code here
+  TheStatusBar := StatusBar as TStatusBar;
+  if TheStatusBar.SimplePanel then
+    Windows.SendMessage(TheStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(TheStatusBar.SimpleText)))
+  else
+    UpdateStatusBarPanel(TheStatusBar.Panels[PanelIndex]);
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: StatusBarSetSimpleText
+  Procedure: StatusBarUpdate
   Params: StatusBar:
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TWIN32Object.StatusBarSetSimpleText(StatusBar: TObject);
+procedure TWIN32Object.StatusBarUpdate(StatusBar: TObject);
+var
+  TheStatusBar: TStatusBar;
+  PanelIndex: integer;
 begin
-  // Your code here
+  TheStatusBar := StatusBar as TStatusBar;
+  Windows.SendMessage(TheStatusBar.Handle, SB_SIMPLE, WPARAM(TheStatusBar.SimplePanel), 0);
+  if TheStatusBar.SimplePanel then
+    StatusBarSetText(StatusBar, 0)
+  else begin
+    UpdateStatusBarPanelWidths(TheStatusBar);
+    for PanelIndex := 0 to TheStatusBar.Panels.Count-1 do
+      UpdateStatusBarPanel(TheStatusBar.Panels[PanelIndex]);
+  end;
 end;
-
-{------------------------------------------------------------------------------
-  Procedure: StatusBarSetStyle
-  Params: StatusBar:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TWIN32Object.StatusBarSetStyle(StatusBar: TObject);
-begin
-  // Your code here
-end;
-
-
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.7  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines

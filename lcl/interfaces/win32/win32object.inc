@@ -1619,7 +1619,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32Object.CreateSelectDirectoryDialog
-  Params: Sender - The sending object: a TSelectDirectoryDialog objecy
+  Params: Sender - The sending object: a TSelectDirectoryDialog object
   Returns: Nothing
 
   Creates a common dialog
@@ -1657,6 +1657,56 @@ Begin
 
   CoTaskMemFree(Buffer);
 End;
+
+{------------------------------------------------------------------------------
+  Method: TWin32Object.UpdateStatusBarPanel
+  Params: StatusPanel - StatusPanel which needs to be update
+  Returns: Nothing
+
+  Called by StatusBarPanelUpdate and StatusBarSetText
+  Everything is updated except the panel width
+ ------------------------------------------------------------------------------}
+procedure TWin32Object.UpdateStatusBarPanel(StatusPanel: TStatusPanel);
+var
+  BevelType: integer;
+  Text: string;
+begin
+  Text := StatusPanel.Text;
+  case StatusPanel.Alignment of
+    taCenter: Text := #9 + Text;
+    taRightJustify: Text := #9#9 + Text;
+  end;
+  case StatusPanel.Bevel of
+    pbNone: BevelType := Windows.SBT_NOBORDERS;
+    pbLowered: BevelType := 0;
+    pbRaised: BevelType := Windows.SBT_POPOUT;
+  end;
+  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
+end;
+
+procedure TWin32Object.UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
+var
+  Rights: PInteger;
+  PanelIndex: integer;
+  CurrentRight: integer;
+begin
+  if StatusBar.Panels.Count=0 then begin
+    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, 0, 0);
+    exit;
+  end;
+  Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
+  try
+    CurrentRight := 0;
+    for PanelIndex := 0 to StatusBar.Panels.Count-2 do begin
+      CurrentRight := CurrentRight + StatusBar.Panels[PanelIndex].Width;
+      Rights[PanelIndex] := CurrentRight;
+    end;
+    Rights[StatusBar.Panels.Count-1] := -1; //Last extends to end;
+    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, StatusBar.Panels.Count, LPARAM(Rights));
+  finally
+    Freemem(Rights);
+  end;
+end;
 
 const
 
@@ -2913,6 +2963,9 @@ End;
 
 {
   $Log$
+  Revision 1.158  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.157  2004/01/07 18:04:09  micha
   fix getselcount message for non-multiple-selection listbox
 

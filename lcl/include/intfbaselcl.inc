@@ -566,23 +566,15 @@ begin
   Result := false;
 end;
 
-procedure TInterfaceBase.StatusBarInsertPanel(StatusBar: TObject; index: integer);
+procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
 begin
 end;
 
-procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject; index: integer);
+procedure TInterfaceBase.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
 begin
 end;
 
-procedure TInterfaceBase.StatusBarRemovePanel(StatusBar: TObject; index: integer);
-begin
-end;
-
-procedure TInterfaceBase.StatusBarSetSimpleText(StatusBar: TObject);
-begin
-end;
-
-procedure TInterfaceBase.StatusBarSetStyle(StatusBar: TObject);
+procedure TInterfaceBase.StatusBarUpdate(StatusBar: TObject);
 begin
 end;
 
@@ -598,6 +590,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/01/12 08:36:34  micha
+  statusbar interface dependent reimplementation (from vincent)
+
   Revision 1.11  2004/01/11 16:38:29  marc
   * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
   + Started with accelerator nameing routines
