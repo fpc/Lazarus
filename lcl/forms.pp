@@ -462,7 +462,27 @@ type
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   
+  // application hint stuff
+  PHintInfo = ^THintInfo;
+  THintInfo = record
+    HintControl: TControl;
+    HintWindowClass: THintWindowClass;
+    HintPos: TPoint;
+    HintMaxWidth: Integer;
+    HintColor: TColor;
+    CursorRect: TRect;
+    CursorPos: TPoint;
+    ReshowTimeout: Integer;
+    HideTimeout: Integer;
+    HintStr: string;
+    HintData: Pointer;
+  end;
+
   TAppHintTimerType = (ahtNone, ahtShowHint, ahtHideHint, ahtReshowHint);
+
+  TShowHintEvent = procedure (var HintStr: string; var CanShow: Boolean;
+    var HintInfo: THintInfo) of object;
+
   THintInfoAtMouse = record
     MousePos: TPoint;
     Control: TControl;
@@ -496,6 +516,7 @@ type
     FOnIdleHandler: TMethodList;
     FOnIdleEnd: TNotifyEvent;
     FOnIdleEndHandler: TMethodList;
+    FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
     FOnUserInputHandler: TMethodList;
     FShowHint: Boolean;
@@ -565,6 +586,7 @@ type
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
+    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property Title: String read GetTitle write FTitle;
@@ -606,6 +628,8 @@ procedure NotifyApplicationUserInput(Msg: Cardinal);
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
 
+function GetShortHint(const Hint: string): string;
+function GetLongHint(const Hint: string): string;
 
 var
   Application : TApplication;
@@ -832,6 +856,26 @@ begin
   and (AComponent.Owner is TForm)
   and (TForm(AComponent.Owner).Designer <> nil) then
     TForm(AComponent.Owner).Designer.Modified;
+end;
+
+function GetShortHint(const Hint: string): string;
+var
+  I: Integer;
+begin
+  I := Pos('|', Hint);
+  if I = 0 then
+    Result := Hint else
+    Result := Copy(Hint, 1, I - 1);
+end;
+
+function GetLongHint(const Hint: string): string;
+var
+  I: Integer;
+begin
+  I := Pos('|', Hint);
+  if I = 0 then
+    Result := Hint else
+    Result := Copy(Hint, I + 1, Maxint);
 end;
 
 procedure FreeInterfaceObject;
