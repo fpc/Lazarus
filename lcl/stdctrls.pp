@@ -395,13 +395,6 @@ type
     property Items;
     property ItemHeight;
     property MultiSelect;
-    property ParentShowHint;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property Visible;
     property OnClick;
     property OnDblClick;
     property OnDrawItem;
@@ -414,6 +407,14 @@ type
     property OnMouseDown;
     property OnMouseUp;
     property OnResize;
+    property ParentShowHint;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
   end;
 
 
@@ -1391,6 +1392,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/12/27 10:34:55  mattias
+  message view scrolls to message
+
   Revision 1.71  2002/12/27 08:46:32  mattias
   changes for fpc 1.1
 

@@ -51,6 +51,7 @@ type
     LastSelectedIndex : Integer;
   protected
     Function GetSelectedLineIndex : Integer;
+    procedure SetSelectedLineIndex(const AValue: Integer);
   public
     constructor Create(AOwner : TComponent); override;
     procedure Add(const Texts : String);
@@ -59,7 +60,8 @@ type
     function MsgCount: integer;
     procedure Clear;
     property Message : String read GetMessage;
-    property SelectedMessageIndex : Integer read GetSelectedLineIndex;
+    property SelectedMessageIndex: Integer
+      read GetSelectedLineIndex write SetSelectedLineIndex;
     property OnSelectionChanged : TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
   end;
 
@@ -184,6 +186,12 @@ begin
     If Assigned(OnSelectionChanged) then
       OnSelectionChanged(self);
   end;
+end;
+
+procedure TMessagesView.SetSelectedLineIndex(const AValue: Integer);
+begin
+  MessageView.ItemIndex:=AValue;
+  MessageView.TopIndex:=MessageView.ItemIndex;
 end;
 
 initialization
