@@ -254,7 +254,10 @@ type
                           csActionClient,
                           csMenuEvents,
                           csNoFocus);
+const
+  csMultiClicks = [csDoubleClicks,csTripleClicks,csQuadClicks];
 
+type
   TControlState = set of (csLButtonDown,
                           csClicked,
                           csPalette,
@@ -1325,6 +1328,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/09/01 16:11:21  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.63  2002/08/31 18:45:54  lazarus
   MG: added some property editors and started component editors
 
