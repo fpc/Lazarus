@@ -46,6 +46,9 @@ uses
 
 type
   TGnomeObject = class(TGtkObject)
+  private
+    Function PromptUserWidget(const DialogCaption, DialogMessage : String;
+      DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex : Longint) : Pointer;
   protected
     procedure InitStockItems; override;
     procedure FreeStockItems; override;
@@ -78,29 +81,6 @@ uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
-
-Function InsertLineBreaks(Font : hFont; Str : PChar; MaxWidth : Longint) : String;
-var
-  Layout : PGnomeIconTextInfo;
-  Line : PGList;
-begin
-  Layout := gnome_icon_layout_text(PGDIObject(Font)^.GDIFontObject,
-    PgChar(Str), ' ', MaxWidth, False);
-
-  Line := Layout^.Rows;
-  While Line <> nil do begin
-    If Line^.Data <> nil then
-      Result := Result + AnsiString(PGnomeIconTextInfoRow(Line^.Data)^.thetext);
-    Line := Line^.Next;
-    If Line <> nil then
-      If Result[Length(Result)] <> #10 then
-        Result := Result + #10;
-  end;
-
-  Result := Copy(Result, 1, Length(Result));
-
-  gnome_icon_text_info_free(Layout);
-end;
 
 Procedure TGnomeObject.InitStockItems;
 begin
@@ -216,7 +196,8 @@ end;
 procedure TGnomeObject.CreateComponent(Sender : TObject);
 var
   StrTemp : PChar;               // same as "caption" but as PChar
-  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  TempWidget,
+  TempWidget2 : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p          : pointer;          // ptr to the newly created GtkWidget
   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
   ParentForm: TCustomForm;
@@ -244,11 +225,23 @@ begin
       gtk_widget_show(Box);
 
       // Create the form client area
-      TempWidget := gtk_fixed_new();
+      TempWidget := gtk_scrolled_window_new(nil,nil);
       gtk_box_pack_end(Box, TempWidget, True, True, 0);
       gtk_widget_show(TempWidget);
-      SetFixedWidget(p, TempWidget);
-      SetMainWidget(p, TempWidget);
+
+      gtk_object_set_data(P,'scroll_area', TempWidget);
+
+      TempWidget2 := gtk_layout_new(nil, nil);
+      gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
+      gtk_widget_show(TempWidget2);
+      SetFixedWidget(p, TempWidget2);
+      SetMainWidget(p, TempWidget2);
+
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+                                     GTK_POLICY_NEVER,
+                                     GTK_POLICY_NEVER);
 
       //drag icons
       if Drag_Icon = nil then
@@ -275,16 +268,13 @@ begin
     If (Sender is TMenu) and (TMenu(Sender).FCompStyle = csMainMenu) then
     begin
       p := gtk_menu_bar_new();
-      // get the VBox, the form has one child, a VBox
       ParentForm:=TCustomForm(TMenu(Sender).Parent);
       if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
         RaiseException('MainMenu without form');
       if ParentForm.Menu<>TMenu(Sender) then
         RaiseException('form has already a MainMenu');
-      SetAccelGroup(p, gtk_accel_group_get_default);
       gtk_widget_show(p);
       gnome_app_set_menus(Pointer(ParentForm.Handle), p);
-      gnome_app_enable_layout_config(P, True);
       TMenu(Sender).Items.Handle := HMenu(p);
     end
   else begin
@@ -303,6 +293,12 @@ end.
 
 {
   $Log$
+  Revision 1.9  2002/10/23 20:47:27  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.8  2002/10/21 13:15:24  lazarus
   AJ:Try and fall back on default style if nil(aka default theme)
 
