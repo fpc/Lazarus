@@ -2151,6 +2151,11 @@ Begin
       WindowTitle := StrCaption;
       Flags := Flags Or SS_LEFT;
     End;
+    csPairSplitter, csPairSplitterSide:
+    begin
+      pClassName := 'STATIC';
+      WindowTitle := StrCaption;
+    end;
     csListView:
     Begin
       pClassName := WC_LISTVIEW;
@@ -3001,6 +3006,10 @@ End;
 
 {
   $Log$
+  Revision 1.171  2004/02/21 10:11:36  micha
+    1. pressing the Return key in ObjectInspector when editing a value throws an exception
+    2. placing TPairSplitter component on the form produces "Division by zero"
+
   Revision 1.170  2004/02/20 19:52:18  micha
   fixed: tarrow crash in win32
   added: interface function DrawArrow to draw themed arrow

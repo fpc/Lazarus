@@ -197,8 +197,8 @@ Var
     if Result=nil then //if Result is still nil, process main menu
     begin
       MainMenuHandle := GetMenu(Window);
-      GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo);
-      Result := TObject(MenuInfo.dwItemData);
+      if GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo) then
+        Result := TObject(MenuInfo.dwItemData);
     end;
   end;
 
@@ -368,8 +368,8 @@ Begin
     End;
     WM_COMMAND:
     Begin
-      OwnerObject := TObject(GetProp(LParam, 'Wincontrol'));
-      if LParam=0 then OwnerObject := GetMenuItemObject; {menuitem or shortcut}
+      if LParam=0 then OwnerObject := GetMenuItemObject {menuitem or shortcut}
+      else OwnerObject := TObject(GetProp(LParam, 'Wincontrol'));      
 
 // is this for speedbuttons?
 //      If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
@@ -490,6 +490,11 @@ Begin
     WM_GETDLGCODE:
     Begin
       LMessage.Msg := LM_GETDLGCODE;
+      if OwnerObject is TEdit then
+      begin
+        WinProcess := false;
+	LMessage.Result := DLGC_WANTALLKEYS;
+      end;
     End;
     WM_KEYDOWN:
     Begin
@@ -1001,6 +1006,10 @@ end;
 
 {
   $Log$
+  Revision 1.93  2004/02/21 10:11:36  micha
+    1. pressing the Return key in ObjectInspector when editing a value throws an exception
+    2. placing TPairSplitter component on the form produces "Division by zero"
+
   Revision 1.92  2004/02/12 18:03:15  mattias
   fixed combobox enabled  from Vincent
 
