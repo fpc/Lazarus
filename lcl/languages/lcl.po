@@ -158,6 +158,14 @@ msgstr ""
 msgid "File information"
 msgstr ""
 
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
+msgstr ""
+
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
 msgstr ""
@@ -416,6 +424,14 @@ msgstr ""
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
+msgstr ""
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr ""
+
+#: lclstrconsts:rsmodified
+msgid "  modified "
 msgstr ""
 
 #: lclstrconsts:ifsvk_unknown

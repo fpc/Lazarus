@@ -626,14 +626,13 @@ begin
   with VersionBuildLabel do begin
     Name:='VersionBuildLabel';
     Parent:=VersionGroupBox;
-    Caption:=lisMenuBuild;
+    Caption:=lisBuildNumber;
   end;
 
   VersionBuildSpinEdit:=TSpinEdit.Create(Self);
   with VersionBuildSpinEdit do begin
     Name:='VersionBuildSpinEdit';
     Parent:=VersionGroupBox;
-    Caption:=lisMenuBuild;
     Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=9999;

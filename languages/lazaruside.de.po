@@ -720,6 +720,10 @@ msgstr ""
 msgid "Build Lazarus"
 msgstr "Kompiliere Lazarus"
 
+#: lazarusidestrconsts:lisbuildnumber
+msgid "Build Number"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
 msgstr ""

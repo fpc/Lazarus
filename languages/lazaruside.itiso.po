@@ -720,6 +720,10 @@ msgstr "Esegui build dell'LCL"
 msgid "Build Lazarus"
 msgstr "Build Lazarus"
 
+#: lazarusidestrconsts:lisbuildnumber
+msgid "Build Number"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
 msgstr "Esegui build della registrazione del pacchetto"

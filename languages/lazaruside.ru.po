@@ -710,6 +710,10 @@ msgstr "Собрать LCL"
 msgid "Build Lazarus"
 msgstr "Собрать Lazarus"
 
+#: lazarusidestrconsts:lisbuildnumber
+msgid "Build Number"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
 msgstr "Зарегистрировать пакет"

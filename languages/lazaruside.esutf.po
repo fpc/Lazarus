@@ -721,6 +721,10 @@ msgstr "Construir LCL"
 msgid "Build Lazarus"
 msgstr "Construir Lazarus"
 
+#: lazarusidestrconsts:lisbuildnumber
+msgid "Build Number"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
 msgstr "Construir Registro de Paquete"

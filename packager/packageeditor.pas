@@ -346,7 +346,7 @@ begin
   x:=0;
   y:=0;
   w:=ClientWidth div 5;
-  h:=25;
+  h:=SaveBitBtn.Height;
   y1:=y;
   y2:=y1+h;
   // first column of buttons

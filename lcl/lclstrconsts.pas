@@ -91,6 +91,8 @@ ResourceString
   rsWarningUnreleasedTimerInfos = ' WARNING: There are %d TimerInfo '
     +'structures left, I''ll free them';
   rsFileInformation = 'File information';
+  rsgtkFilter = 'Filter:';
+  rsgtkHistory = 'History:';
   rsDefaultFileInfoValue = 'permissions user group size date time';
   rsBlank = 'Blank';
   rsUnableToLoadDefaultFont = 'Unable to load default font';
@@ -185,6 +187,8 @@ ResourceString
   rsCalculator = 'Calculator';
   rsError      = 'Error';
   rsPickDate   = 'Select a date';
+  rsSize = '  size ';
+  rsModified = '  modified ';
 
   // I'm not sure if in all languages the Dialog texts for a button
   // have the same meaning as a key

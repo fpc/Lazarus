@@ -8,6 +8,14 @@ msgstr ""
 "X-Generator: KBabel 1.0.2\n"
 "Project-Id-Version: lcl\n"
 
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr ""
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " ADVERTENCIA: Quedan %d estructuras TimerInfo, se liberarán."
@@ -260,6 +268,10 @@ msgstr "El archivo no se puede escribir"
 msgid "File must exist"
 msgstr "Debe salir el archivo"
 
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr ""
+
 #: lclstrconsts:ifsvk_final
 msgid "Final"
 msgstr ""
@@ -290,6 +302,10 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
 msgstr ""
 
 #: lclstrconsts:ifsvk_home

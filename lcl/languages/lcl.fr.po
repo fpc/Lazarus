@@ -8,6 +8,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr ""
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " ATTENTION: Il y a %d structures TimerInfo, elles seront supprimées."
@@ -260,6 +268,10 @@ msgstr "Fichier protègé en écriture"
 msgid "File must exist"
 msgstr "Le fichier doit exister"
 
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr ""
+
 #: lclstrconsts:ifsvk_final
 msgid "Final"
 msgstr ""
@@ -290,6 +302,10 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
 msgstr ""
 
 #: lclstrconsts:ifsvk_home

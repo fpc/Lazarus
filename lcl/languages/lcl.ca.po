@@ -1,3 +1,11 @@
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr ""
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr " Avís: s'ha deixat %s estructures TimerInfo, les allibero"
@@ -250,6 +258,10 @@ msgstr "No es pot escriure el fitxer"
 msgid "File must exist"
 msgstr "El fitxer ha d'existir"
 
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr ""
+
 #: lclstrconsts:ifsvk_final
 msgid "Final"
 msgstr ""
@@ -280,6 +292,10 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
 msgstr ""
 
 #: lclstrconsts:ifsvk_home

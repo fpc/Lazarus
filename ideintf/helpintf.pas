@@ -420,7 +420,6 @@ type
   private
     FItems: TList;
     FHelpDBClasses: TList;
-    FMacroTimeStamp: integer;
     function GetItems(Index: integer): THelpDatabase;
     procedure DoRegisterDatabase(ADatabase: THelpDatabase);
     procedure DoUnregisterDatabase(ADatabase: THelpDatabase);

@@ -8,6 +8,14 @@ msgstr ""
 "Project-Id-Version: 0.9.2\n"
 "MIME-Version: 1.0\n"
 
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr ""
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr "Attenzione: ci sono ancora %d strutture Timer Info, li sto liberando "
@@ -260,6 +268,10 @@ msgstr "Il file non è scrivibile"
 msgid "File must exist"
 msgstr "Il file deve esistere"
 
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr ""
+
 #: lclstrconsts:ifsvk_final
 msgid "Final"
 msgstr ""
@@ -290,6 +302,10 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
 msgstr ""
 
 #: lclstrconsts:ifsvk_home

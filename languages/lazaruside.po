@@ -7198,6 +7198,10 @@ msgstr ""
 msgid "Release"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildnumber
+msgid "Build Number"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
 msgstr ""

@@ -2409,6 +2409,7 @@ resourcestring
   lisPckOptsMajor = 'Major';
   lisPckOptsMinor = 'Minor';
   lisPckOptsRelease = 'Release';
+  lisBuildNumber = 'Build Number';
   lisPckOptsAutomaticallyIncrementVersionOnBuild = 'Automatically increment '
     +'version on build';
   lisPckOptsPackageType = 'PackageType';

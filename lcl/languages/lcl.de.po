@@ -4,6 +4,14 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: lclstrconsts:rsmodified
+msgid "  modified "
+msgstr ""
+
+#: lclstrconsts:rssize
+msgid "  size "
+msgstr ""
+
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr ""
@@ -256,6 +264,10 @@ msgstr ""
 msgid "File must exist"
 msgstr ""
 
+#: lclstrconsts:rsgtkfilter
+msgid "Filter:"
+msgstr ""
+
 #: lclstrconsts:ifsvk_final
 msgid "Final"
 msgstr ""
@@ -286,6 +298,10 @@ msgstr ""
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
+msgstr ""
+
+#: lclstrconsts:rsgtkhistory
+msgid "History:"
 msgstr ""
 
 #: lclstrconsts:ifsvk_home

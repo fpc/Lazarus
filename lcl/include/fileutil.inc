@@ -575,11 +575,11 @@ begin
   //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
 
   // size
-  Result:=Result+'  size '+IntToStr({$ifdef ver1_0}info.size{$else}info.st_size{$endif});
+  Result:=Result+rsSize+IntToStr({$ifdef ver1_0}info.size{$else}info.st_size{$endif});
   
   {$ENDIF}
   // date + time
-  Result:=Result+'  modified ';
+  Result:=Result+rsModified;
   try
     Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
                            FileDateToDateTime(FileAge(AFilename)));
@@ -1093,6 +1093,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2004/12/18 23:46:16  mattias
+  added resurce strings for gtk file dlg
+
   Revision 1.7  2004/12/06 17:31:02  mattias
   added access to lresources
 

@@ -323,22 +323,22 @@ end;
 
 procedure TSortSelectionDialog.SortSelectionDialogResize(Sender: TObject);
 begin
-  with PreviewGroupBox do begin
-    Width:=Self.ClientWidth-2*Left;
-    Height:=Self.ClientHeight-Top-90;
-  end;
+  with PreviewGroupBox do
+    SetBounds(Left,Top,Self.ClientWidth-2*Left,Self.ClientHeight-Top-110);
 
-  with DirectionRadioGroup do begin
-    Top:=PreviewGroupBox.Top+PreviewGroupBox.Height+5;
-    Width:=((Self.ClientWidth-5) div 2)-Left;
-  end;
+  with DirectionRadioGroup do
+    SetBounds(Left,PreviewGroupBox.Top+PreviewGroupBox.Height+5,
+       ((Self.ClientWidth-5) div 2)-Left,Height);
 
-  with DomainRadioGroup do begin
-    Left:=DirectionRadioGroup.Left+DirectionRadioGroup.Width+5;
-    Top:=DirectionRadioGroup.Top;
-    Width:=DirectionRadioGroup.Width;
-    Height:=DirectionRadioGroup.Height;
-  end;
+  with DomainRadioGroup do
+    SetBounds(DirectionRadioGroup.Left+DirectionRadioGroup.Width+5,
+              DirectionRadioGroup.Top,
+              DirectionRadioGroup.Width,DirectionRadioGroup.Height);
+
+  with OptionsCheckGroup do
+    SetBounds(DirectionRadioGroup.Left,
+              DirectionRadioGroup.Top+DirectionRadioGroup.Height+5,
+              DirectionRadioGroup.Width,DirectionRadioGroup.Height);
 
   with OkButton do begin
     Left:=Self.ClientWidth-200;
@@ -561,6 +561,7 @@ begin
   
   OnResize:=@SortSelectionDialogResize;
   OnClose:=@SortSelectionDialogClose;
+  OnResize(Self);
 end;
 
 procedure TSortSelectionDialog.BeginUpdate;

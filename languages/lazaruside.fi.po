@@ -710,6 +710,10 @@ msgstr ""
 msgid "Build Lazarus"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildnumber
+msgid "Build Number"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
 msgstr ""

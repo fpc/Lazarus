@@ -3959,7 +3959,8 @@ begin
                        HBox,false,false,0);
 
     // create the label 'History:'
-    LabelWidget:=gtk_label_new('History:');
+    s:=rsgtkHistory;
+    LabelWidget:=gtk_label_new(PChar(s));
     gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
     gtk_widget_show(LabelWidget);
 
@@ -4144,6 +4145,7 @@ var
   HBox, LabelWidget, FilterPullDownWidget,
   MenuWidget, MenuItemWidget: PGtkWidget;
   i, CurMask: integer;
+  s: String;
 begin
   ExtractFilterList(OpenDialog.Filter,FilterList);
   if FilterList.Count>0 then begin
@@ -4155,7 +4157,8 @@ begin
                        HBox,false,false,0);
 
     // create the label 'Filter:'
-    LabelWidget:=gtk_label_new('Filter:');
+    s:=rsgtkFilter;
+    LabelWidget:=gtk_label_new(PChar(s));
     gtk_box_pack_start(GTK_BOX(HBox),LabelWidget,false,false,5);
     gtk_widget_show(LabelWidget);
 
@@ -6941,6 +6944,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.611  2004/12/18 23:46:16  mattias
+  added resurce strings for gtk file dlg
+
   Revision 1.610  2004/11/28 00:55:44  mattias
   deactivated sending SYSKey messages in gtk intf - they are not used anyway
 

@@ -25,7 +25,7 @@ unit FileUtil;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LCLStrConsts;
 
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -116,6 +116,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2004/12/18 23:46:16  mattias
+  added resurce strings for gtk file dlg
+
   Revision 1.3  2004/12/04 01:17:41  mattias
   implemented Target Directory for IDE
 
