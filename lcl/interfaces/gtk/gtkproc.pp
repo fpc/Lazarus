@@ -36,7 +36,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   LMessages, Controls, Forms, VclGlobals,
-  LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
+  LCLStrConsts, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
   GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
   CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs,
   FileCtrl, LResources, Math, GTKGlobals;
@@ -424,35 +424,36 @@ var
   
 implementation
 
-  procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
-  var RCName: string;
-    AComponent: TComponent;
-  begin
-    if (AWidget=nil) or (not (Sender is TComponent)) then exit;
 
-    // check if a unique name can be created
-    AComponent:=TComponent(Sender);
-    while (AComponent<>nil) and (AComponent.Name<>'') do begin
-      AComponent:=AComponent.Owner;
-    end;
-    if (AComponent=nil) or (AComponent=TComponent(Application)) then begin
-      // create unique name
-      AComponent:=TComponent(Sender);
-      RCName:=AComponent.Name;
-      while (AComponent<>nil) do begin
-        AComponent:=TComponent(AComponent.Owner);
-        if (AComponent<>nil) and (AComponent.Name<>'') then
-          RCName:=AComponent.Name+'_'+RCName;
-      end;
-      gtk_widget_set_name(AWidget,PChar(RCName));
-      gtk_widget_set_rc_style(AWidget);
-    end;
-    if (Sender is TCustomForm)
-    and ((Application.MainForm=TCustomForm(Sender))
-      or (Application.MainForm=nil))
-    then
-      UpdateSysColorMap(AWidget);
+procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
+var RCName: string;
+  AComponent: TComponent;
+begin
+  if (AWidget=nil) or (not (Sender is TComponent)) then exit;
+
+  // check if a unique name can be created
+  AComponent:=TComponent(Sender);
+  while (AComponent<>nil) and (AComponent.Name<>'') do begin
+    AComponent:=AComponent.Owner;
   end;
+  if (AComponent=nil) or (AComponent=TComponent(Application)) then begin
+    // create unique name
+    AComponent:=TComponent(Sender);
+    RCName:=AComponent.Name;
+    while (AComponent<>nil) do begin
+      AComponent:=TComponent(AComponent.Owner);
+      if (AComponent<>nil) and (AComponent.Name<>'') then
+        RCName:=AComponent.Name+'_'+RCName;
+    end;
+    gtk_widget_set_name(AWidget,PChar(RCName));
+    gtk_widget_set_rc_style(AWidget);
+  end;
+  if (Sender is TCustomForm)
+  and ((Application.MainForm=TCustomForm(Sender))
+    or (Application.MainForm=nil))
+  then
+    UpdateSysColorMap(AWidget);
+end;
 
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
