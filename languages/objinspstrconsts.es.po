@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: Luis R. Hilario B. <luisdigital@BonBon.net>\n"
-"PO-Revision-Date: 2004-02-27 22:08-0400\n"
+"Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
+"PO-Revision-Date: 2004-03-12 20:38-0400\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -14,11 +14,11 @@ msgstr " Imágenes "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr ""
+msgstr " propiedad elemento "
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
-msgstr ""
+msgstr " elementos "
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
@@ -26,7 +26,7 @@ msgstr "Imagen seleccionada"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
-msgstr ""
+msgstr "%u elementos seleccionados"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -38,23 +38,23 @@ msgstr "&Suprimir"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr ""
+msgstr "(Todo)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr ""
+msgstr "(Desconocido)"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr ""
+msgstr "Acción"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr ""
+msgstr "Editor de Lista de Acción"
 
 #: objinspstrconsts:oisadd
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -66,7 +66,7 @@ msgstr "Todo"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
-msgstr ""
+msgstr "Categoría"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
@@ -82,7 +82,7 @@ msgstr "Suprimir"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr ""
+msgstr "Editor de lista de acción..."
 
 #: objinspstrconsts:oiserror
 msgid "Error"
@@ -98,7 +98,7 @@ msgstr "Indice de imagen"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr ""
+msgstr "Editor de lista de imagen"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
@@ -106,7 +106,7 @@ msgstr "Etiqueta"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr ""
+msgstr "Editor de ListView"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -122,23 +122,23 @@ msgstr "Propiedades"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr ""
+msgstr "Establecer valor por defecto"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr ""
+msgstr "Establecer por defecto: %s"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr ""
+msgstr "Editor de StringGrid"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr ""
+msgstr "Editor de StringGrid ..."
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
-msgstr ""
+msgstr "Sub-elemento"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"

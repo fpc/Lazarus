@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "              No mostrar ventana de bienvenida"
 "Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
-"PO-Revision-Date: 2004-02-27 21:19-0400\n"
+"PO-Revision-Date: 2004-03-12 20:35-0400\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
@@ -799,7 +799,7 @@ msgstr "Escoja un nombre distinto"
 
 #: lazarusidestrconsts:dlgchscodetempl
 msgid "Choose code template file (*.dci)"
-msgstr "Escoja archivo de plantilla de cÃ³digo (*.dci)"
+msgstr "Escoja archivo de plantilla de código (*.dci)"
 
 #: lazarusidestrconsts:lischoosecompilerpath
 msgid "Choose compiler filename (ppc386)"
@@ -1159,7 +1159,7 @@ msgstr "Convertir nodo"
 
 #: lazarusidestrconsts:srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
-msgstr "Convertir tabulaciones a espacios en la selecciÃ³n"
+msgstr "Convertir tabulaciones a espacios en la selección"
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
@@ -1371,7 +1371,7 @@ msgstr "Error del Depurador%sUuups, el depurador entró en el estado de error%s¡G
 
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
-msgstr ""
+msgstr "Depurador inválido"
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
@@ -1847,7 +1847,7 @@ msgstr "Error: "
 
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
-msgstr "Error: compilador invÃ¡lido: %s"
+msgstr "Error: compilador inválido: %s"
 
 #: lazarusidestrconsts:liserrors
 msgid "Errors"
@@ -1863,7 +1863,7 @@ msgstr "Ejecutar"
 
 #: lazarusidestrconsts:liscoexecuteafter
 msgid "Execute after"
-msgstr "Ejecutar despuÃ©s"
+msgstr "Ejecutar después"
 
 #: lazarusidestrconsts:liscoexecutebefore
 msgid "Execute before"
@@ -1907,7 +1907,7 @@ msgstr "Herramientas Externas"
 
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
-msgstr "Configuracin de las herramientas externas"
+msgstr "Configuración de las herramientas externas"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -2083,7 +2083,7 @@ msgstr "Buscar inicio de bloque"
 
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
-msgstr "Buscar inicio del bloque de cÃ³digo"
+msgstr "Buscar inicio del bloque de código"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -3067,7 +3067,7 @@ msgstr "Directorio de Lazarus \"%s\" no encontrado."
 
 #: lazarusidestrconsts:lislazaruseditorv
 msgid "Lazarus Editor v%s"
-msgstr "Editor v%s de Lazrus"
+msgstr "Editor v%s de Lazarus"
 
 #: lazarusidestrconsts:lislazarusprojectinfolpilpiallfiles
 msgid "Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*"
@@ -3107,7 +3107,7 @@ msgstr "Izquierda:"
 
 #: lazarusidestrconsts:dlglevelnoneopt
 msgid "Level 0 (no extra Optimizations)"
-msgstr ""
+msgstr "Nivel 0 (sin optimizaciones extra)"
 
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
@@ -3171,7 +3171,7 @@ msgstr "Enlazando Bibliotecas:"
 
 #: lazarusidestrconsts:dlglinksmart
 msgid "Link Smart"
-msgstr "Enlazar pequeÃ±a"
+msgstr "Enlazar pequeña"
 
 #: lazarusidestrconsts:dlglinkdinlibs
 msgid "Link With Dynamic Libraries"
@@ -3623,7 +3623,7 @@ msgstr "nada seleccionado"
 
 #: lazarusidestrconsts:dlgconormal
 msgid "Normal Code"
-msgstr ""
+msgstr "Código normal"
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"
@@ -4311,7 +4311,7 @@ msgstr "Publicar"
 
 #: lazarusidestrconsts:lisdiskdiffrevertall
 msgid "Reload from disk"
-msgstr ""
+msgstr "Recargar desde el disco"
 
 #: lazarusidestrconsts:lisexttoolremove
 msgid "Remove"
@@ -5423,7 +5423,7 @@ msgstr "El nombre de clase %s%s%s no es un identificador de pascal válido."
 
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
-msgstr "El comando despuÃ©s %s%s%s no es ejecutable."
+msgstr "El comando después %s%s%s no es ejecutable."
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
@@ -5439,7 +5439,7 @@ msgstr "La ruta de la unidad actual para el archivo%s%s%s%s es%s%s%s%s.%s%sLa ru
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr ""
+msgstr "El depurador %s%s%s%s no existe o no es ejecutable.%s%s Vea Entorno -> Depurador Opciones"
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
@@ -6403,7 +6403,7 @@ msgstr "Ver variables locales"
 
 #: lazarusidestrconsts:srkmcatviewmenu
 msgid "View menu commands"
-msgstr "Ver comandos de menÃº"
+msgstr "Ver comandos de menú"
 
 #: lazarusidestrconsts:srkmectogglemessages
 msgid "View messages"
