@@ -7081,7 +7081,6 @@ end;
   
   This is only a heuristic
  ------------------------------------------------------------------------------}
-{$Ifdef GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 var
   SingleCharLen, DoubleCharLen: integer;
@@ -7090,7 +7089,6 @@ begin
   DoubleCharLen:=gdk_text_width(TheFont, #0'A', 2);
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
-{$EndIf}
 
 {------------------------------------------------------------------------------
   Method:   GDKPixel2GDIRGB
@@ -7281,6 +7279,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.307  2004/09/12 19:00:17  mazen
+  *Font width is now used with GTK2
+
   Revision 1.306  2004/09/11 10:02:38  mattias
   fixed TLazIntfImage.LoadFromDevice
 
