@@ -1316,7 +1316,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/VisibleGutter',
       fVisibleGutter,true);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ShowLineNumbers',
-      fShowLineNumbers,true);
+      fShowLineNumbers,false);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterColor',
       fGutterColor,clBtnFace);
     XMLConfig.SetDeleteValue('EditorOptions/Display/GutterWidth',
