@@ -1249,6 +1249,10 @@ msgstr ""
 msgid "Convert"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuconvertdelphiproject
+msgid "Convert Delphi Project to Lazarus Project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
 msgstr ""
@@ -2231,6 +2235,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufindidentifierrefs
+msgid "Find Identifier References"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfindinfiles
@@ -3473,6 +3481,10 @@ msgstr ""
 msgid "Make Executable"
 msgstr ""
 
+#: lazarusidestrconsts:lismakenotfound
+msgid "Make not found"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmakepath
 msgid "Make path"
 msgstr ""
@@ -3981,16 +3993,24 @@ msgstr ""
 msgid "Open last project at start"
 msgstr ""
 
-#: lazarusidestrconsts:lisoipopenloadedpackage
+#: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuopenpackage
+#: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuopenpackagefile
+#: lazarusidestrconsts:lisopenpackagefile
 msgid "Open package file"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenpackagefile
+msgid "Open package file (.lpk)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenpackageofcurunit
+msgid "Open package of current unit"
 msgstr ""
 
 #: lazarusidestrconsts:lisopenpackage
@@ -4567,6 +4587,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
+msgstr ""
+
+#: lazarusidestrconsts:uemrefactor
+msgid "Refactoring"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
@@ -5265,10 +5289,6 @@ msgstr ""
 msgid "Show compiler options"
 msgstr ""
 
-#: lazarusidestrconsts:dlgshowlinenumbers
-msgid "Show compiling line numbers"
-msgstr ""
-
 #: lazarusidestrconsts:dlgshowcaps
 msgid "Show component captions"
 msgstr ""
@@ -5319,6 +5339,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlghintsunused
 msgid "Show Hints for unused units in main source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowlinenumbers
+msgid "Show line numbers"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshownotes
@@ -5881,6 +5905,10 @@ msgstr ""
 msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
 msgstr ""
 
+#: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
+msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
+msgstr ""
+
 #: lazarusidestrconsts:lisenvoptdlginvalidfpcsrcdir
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, fcl, packages, compiler, ... ."
 msgstr ""
@@ -6037,6 +6065,10 @@ msgstr ""
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr ""
 
+#: lazarusidestrconsts:listheprogrammakewasnotfoundthistoolisneededtobuildla
+msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package %s%s%s."
 msgstr ""
@@ -6179,6 +6211,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listherewasanerrorwhilecopyingthecomponentstreamtocli
 msgid "There was an error while copying the component stream to clipboard:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
+msgid "This file is not in any loaded package."
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
@@ -6661,6 +6697,10 @@ msgstr ""
 msgid "Unit Style:"
 msgstr ""
 
+#: lazarusidestrconsts:lisunitsnotfound
+msgid "Unit(s) not found"
+msgstr ""
+
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"
 msgstr ""
@@ -6847,6 +6887,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditviewpackgesource
+msgid "View Package Source"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewforms

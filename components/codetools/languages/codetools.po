@@ -558,6 +558,10 @@ msgstr ""
 msgid "Define macro gnome2"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefinemacrocarbon1
+msgid "Define macro carbon1"
+msgstr ""
+
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
 msgstr ""

@@ -26,11 +26,11 @@ msgstr " Выбранный рисунок "
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "%s: Уже зарешистрирован"
 
 #: objinspstrconsts:oishelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "%s: Не зарегистрирован"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
@@ -42,7 +42,7 @@ msgstr "&Добавить"
 
 #: objinspstrconsts:oiscancel
 msgid "&Cancel"
-msgstr ""
+msgstr "&Отмена"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -50,7 +50,7 @@ msgstr "&Удалить"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr ""
+msgstr "&Загрузить"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
@@ -58,27 +58,27 @@ msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr ""
+msgstr "&Сохранить"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr ""
+msgstr "(Все)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr ""
+msgstr "(Неизвестно)"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr ""
+msgstr "Действие"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr ""
+msgstr "Редактор списка действий"
 
 #: objinspstrconsts:oisadd
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -90,7 +90,7 @@ msgstr "Все"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files (*.*)|*.*"
-msgstr ""
+msgstr "Все файлы (*.*)|*.*"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
@@ -102,7 +102,7 @@ msgstr ""
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "Просмотрщик %s%s%s не исполняемый."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
@@ -114,7 +114,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
-msgstr ""
+msgstr "Категория"
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -130,7 +130,7 @@ msgstr "Очистить"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Подтвердить удаление"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
@@ -142,15 +142,15 @@ msgstr "Удалить"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr ""
+msgstr "Удалить элемент %s%s%s?"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr ""
+msgstr "Правка списка действий..."
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
-msgstr ""
+msgstr "Перечисление"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
@@ -158,15 +158,15 @@ msgstr "Ошибка"
 
 #: objinspstrconsts:oiserrorloadingimage
 msgid "Error loading image"
-msgstr ""
+msgstr "Ошибка загрузки изображения"
 
 #: objinspstrconsts:oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
-msgstr ""
+msgstr "Ошибка загрузки изображения %s%s%s:%s%s"
 
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "Ошибка при выполнении %s%s%s:%s%s"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -178,31 +178,31 @@ msgstr ""
 
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
+msgstr "Контекст справки %s не найден в Базе данных %s%s%s."
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr ""
+msgstr "Контекст справки %s не найден."
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
+msgstr "Справочная база %s%s%s не нашла просмотрщика для страницы справки типа %s"
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr ""
+msgstr "Справочная база %s%s%s не найдена"
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Справочный ключ %s%s%s не найден в базе данных %s%s%s"
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr ""
+msgstr "Справочный ключ %s%s%s не найден"
 
 #: objinspstrconsts:oishelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr ""
+msgstr "Справочный элемент %s%s%s не имеет справочной базы"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
@@ -222,7 +222,7 @@ msgstr ""
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
-msgstr ""
+msgstr "Интерфейс"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
@@ -234,11 +234,11 @@ msgstr "Редактор ListView"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr ""
+msgstr "Диалог загрузки изображения"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr ""
+msgstr "Метод"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -246,7 +246,7 @@ msgstr "Создать"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
+msgstr "Не найдено браузера HTML.%sОпределите его в Справка->Настроить справку->Просмотрщики"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -266,7 +266,7 @@ msgstr ""
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr ""
+msgstr "Выберите файл"
 
 #: objinspstrconsts:oisset
 msgid "Set"
@@ -282,7 +282,7 @@ msgstr "Установить по умолчанию: %s"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
-msgstr ""
+msgstr "Сортировка"
 
 #: objinspstrconsts:oisstring
 msgid "String"
@@ -298,7 +298,7 @@ msgstr "Редактор Сетки строк ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr ""
+msgstr "Диалог ввода строк"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
@@ -306,11 +306,11 @@ msgstr "Подэлемент"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr ""
+msgstr "Справочная база %s%s%s не смогла найти файл %s%s%s."
 
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr ""
+msgstr "Макрос %s в параметрах обзора будер заменён на URL."
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"

@@ -92,14 +92,12 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     object ScopeRadioGroup: TRadioGroup
       Anchors = [akTop, akLeft, akRight]
       Caption = 'ScopeRadioGroup'
-      Enabled = False
       Items.Strings = (
         'in current unit'
         'in main project'
         'in project/package owning file'
         'in all open projects and packages'
       )
-      ParentColor = True
       Left = 6
       Height = 112
       Top = 5

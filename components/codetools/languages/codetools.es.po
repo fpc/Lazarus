@@ -221,6 +221,10 @@ msgstr "Definir "
 msgid "Define Macro %s"
 msgstr "Definir Macro %s"
 
+#: codetoolsstrconsts:ctsdefinemacrocarbon1
+msgid "Define macro carbon1"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefinemacrognome2
 msgid "Define macro gnome2"
 msgstr "Define macro gnome2"

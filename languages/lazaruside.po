@@ -358,6 +358,10 @@ msgstr ""
 msgid "Extract procedure"
 msgstr ""
 
+#: lazarusidestrconsts:lismenufindidentifierrefs
+msgid "Find Identifier References"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertgplnotice
 msgid "GPL notice"
 msgstr ""
@@ -627,7 +631,7 @@ msgid "Configure Build+Run File"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackage
-msgid "Open package"
+msgid "Open loaded package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentpkg
@@ -635,7 +639,11 @@ msgid "Open recent package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackagefile
-msgid "Open package file"
+msgid "Open package file (.lpk)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenpackageofcurunit
+msgid "Open package of current unit"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
@@ -684,6 +692,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconvertdelphiproject
+msgid "Convert Delphi Project to Lazarus Project"
 msgstr ""
 
 #: lazarusidestrconsts:lismenubuildlazarus
@@ -796,6 +808,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lislfmfilenotfound
 msgid "LFM file not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitsnotfound
+msgid "Unit(s) not found"
+msgstr ""
+
+#: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
+msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitlfmfile
@@ -2095,7 +2115,11 @@ msgid "Visible gutter"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
-msgid "Show compiling line numbers"
+msgid "Show line numbers"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowcompilinglinenumbers
+msgid "Show line numbers"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
@@ -3230,6 +3254,26 @@ msgstr ""
 msgid "Move Editor Right"
 msgstr ""
 
+#: lazarusidestrconsts:uemrefactor
+msgid "Refactoring"
+msgstr ""
+
+#: lazarusidestrconsts:uemcompletecode
+msgid "Complete Code"
+msgstr ""
+
+#: lazarusidestrconsts:uemencloseselection
+msgid "Enclose Selection"
+msgstr ""
+
+#: lazarusidestrconsts:uemextractproc
+msgid "Extract Procedure"
+msgstr ""
+
+#: lazarusidestrconsts:uemfindidentifierreferences
+msgid "Find Identifier References"
+msgstr ""
+
 #: lazarusidestrconsts:uemeditorproperties
 msgid "Editor properties"
 msgstr ""
@@ -3914,6 +3958,10 @@ msgstr ""
 msgid "Extract procedure"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecfindidentifierrefs
+msgid "FInd identifier references"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr ""
@@ -4356,6 +4404,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
+msgstr ""
+
+#: lazarusidestrconsts:lismakenotfound
+msgid "Make not found"
+msgstr ""
+
+#: lazarusidestrconsts:listheprogrammakewasnotfoundthistoolisneededtobuildla
+msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr ""
 
 #: lazarusidestrconsts:liscompileidewithoutlinking
@@ -5508,6 +5564,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddpackagenotfound
 msgid "Package not found"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
+msgid "This file is not in any loaded package."
 msgstr ""
 
 #: lazarusidestrconsts:lisprojaddthedependencywasnotfound
@@ -6756,6 +6816,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckedituninstall
 msgid "Uninstall"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditviewpackgesource
+msgid "View Package Source"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditgeneraloptions
