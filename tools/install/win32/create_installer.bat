@@ -1,18 +1,19 @@
 :: This setting need to change for every build
-SET LAZVERSION=0.9.5
+SET LAZVERSION=0.9.6
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
-SET ISCC="C:\Program Files\Inno Setup 4\iscc.exe"
+SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
 :: Path to the fpc sources checked out of cvs
-SET FPCCVSDIR=c:\lazarus\source\fpc-1.9
+SET FPCCVSDIR=c:\lazarus\source\fpc-1.9.8
 
 :: Path to the lazarus sources checked out of cvs
-SET LAZCVSDIR=c:\lazarus\source\lazarus
+SET LAZCVSDIR=c:\lazarus\source\lazcvs
 
 :: Path to fpc 1.0.10 compiler
 SET RELEASE_PPC=c:\fpc\bin\ppc386-release.exe
+::SET RELEASE_PPC=c:\fpc\1.9.6\bin\i386-win32\ppc386.exe
 
 :: Path to the directory containing some third party utilities used by fpc
 :: it will be copied completely to the pp\bin\win32 directory
@@ -80,7 +81,7 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.
-if not exist output\lazarus-{%LAZVERSION%}-{%DATESTAMP%}-win32.exe goto END
+if not exist output\lazarus-%LAZVERSION%-%DATESTAMP%-win32.exe goto END
 
 :: delete build dir
 rd /s /q %BUILDDIR% > NUL

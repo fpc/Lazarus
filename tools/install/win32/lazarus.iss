@@ -35,8 +35,16 @@ Source: environmentoptions.xml; DestDir: {app}; Flags: onlyifdoesntexist; AfterI
 Source: editoroptions.xml; DestDir: {app}; Flags: onlyifdoesntexist
 Source: samplefpc.cfg; DestDir: {app}\pp\bin\i386-win32; AfterInstall: UpdateFpcCfg; DestName: fpc.cfg
 
+[INI]
+Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/
+Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/modules.php?op=modload&name=PNphpBB2&file=index
+Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://lazarus-ccr.sourceforge.net/kb/index.php/Main_Page
+
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\lazarus.exe
+Name: {group}\{cm:ProgramOnTheWeb,Lazarus}; Filename: {app}\Lazarus Home Page.url; IconFilename: {app}\images\LazarusProject.ico
+Name: {group}\Lazarus Forums; Filename: {app}\Lazarus Forums.url; IconFilename: {app}\images\LazarusProject.ico
+Name: {group}\Lazarus Wiki Help; Filename: {app}\Lazarus Wiki Help.url; IconFilename: {app}\images\LazarusProject.ico
 Name: {group}\{cm:UninstallProgram,Lazarus}; Filename: {uninstallexe}
 Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon
 

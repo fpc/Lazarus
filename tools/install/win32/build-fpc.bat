@@ -10,8 +10,8 @@ copy %FPCBINDIR%\ld.exe %FPCBINDIR%\ldw.exe
 
 %SOURCE_DIR:~,2%
 cd %SOURCE_DIR%
-%MAKEEXE% clean PP=%RELEASE_PPC% >> %LOGFILE%
-%MAKEEXE% compiler_cycle PP=%RELEASE_PPC% >> %LOGFILE%
+%MAKEEXE% clean PP=%RELEASE_PPC% >> %LOGFILE% 2>&1
+%MAKEEXE% compiler_cycle PP=%RELEASE_PPC% >> %LOGFILE% 2>&1
 
 del %FPCBINDIR%\asw.exe 
 del %FPCBINDIR%\ldw.exe 
