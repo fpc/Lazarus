@@ -418,7 +418,6 @@ var
   MainIDE : TMainIDEBar;
 
   ObjectInspector1 : TObjectInspector;
-  PropertyEditorHook1 : TPropertyEditorHook;
   SourceNotebook : TSourceNotebook;
   Project1: TProject;
   

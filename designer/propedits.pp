@@ -903,7 +903,8 @@ type
   TPropHookGetRootClassName = function:ShortString of object;
   TPropHookComponentRenamed = procedure(AComponent: TComponent) of object;
   TPropHookComponentAdded = procedure(AComponent: TComponent; Select: boolean) of object;
-  TPropHookDeleteComponent = procedure(AComponent: TComponent) of object;
+  TPropHookComponentDeleting = procedure(AComponent: TComponent) of object;
+  TPropHookDeleteComponent = procedure(var AComponent: TComponent) of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
@@ -932,6 +933,7 @@ type
     htGetRootClassName,
     htComponentRenamed,
     htComponentAdded,
+    htComponentDeleting,
     htDeleteComponent,
     // persistent objects
     htGetObject,
@@ -979,7 +981,8 @@ type
     function GetRootClassName:ShortString;
     procedure ComponentRenamed(AComponent: TComponent);
     procedure ComponentAdded(AComponent: TComponent; Select: boolean);
-    procedure DeleteComponent(AComponent: TComponent);
+    procedure ComponentDeleting(AComponent: TComponent);
+    procedure DeleteComponent(var AComponent: TComponent);
     // persistent objects
     function GetObject(const Name: ShortString):TPersistent;
     function GetObjectName(Instance: TPersistent):ShortString;
@@ -1038,6 +1041,10 @@ type
                                      OnComponentAdded: TPropHookComponentAdded);
     procedure RemoveHandlerComponentAdded(
                                      OnComponentAdded: TPropHookComponentAdded);
+    procedure AddHandlerComponentDeleting(
+                               OnComponentDeleting: TPropHookComponentDeleting);
+    procedure RemoveHandlerComponentDeleting(
+                               OnComponentDeleting: TPropHookComponentDeleting);
     procedure AddHandlerDeleteComponent(
                                    OnDeleteComponent: TPropHookDeleteComponent);
     procedure RemoveHandlerDeleteComponent(
@@ -1133,7 +1140,10 @@ type
 
 //==============================================================================
 
-  Function ClassTypeInfo(Value : TClass) : PTypeInfo;
+  Function ClassTypeInfo(Value: TClass): PTypeInfo;
+  
+var
+  GlobalHook: TPropertyEditorHook;
 
 implementation
 
@@ -4359,7 +4369,16 @@ begin
     TPropHookComponentAdded(FHandlers[htComponentAdded][i])(AComponent,Select);
 end;
 
-procedure TPropertyEditorHook.DeleteComponent(AComponent: TComponent);
+procedure TPropertyEditorHook.ComponentDeleting(AComponent: TComponent);
+var
+  i: Integer;
+begin
+  i:=GetHandlerCount(htComponentDeleting);
+  while GetNextHandlerIndex(htComponentDeleting,i) do
+    TPropHookComponentDeleting(FHandlers[htComponentDeleting][i])(AComponent);
+end;
+
+procedure TPropertyEditorHook.DeleteComponent(var AComponent: TComponent);
 var
   i: Integer;
 begin
@@ -4369,7 +4388,7 @@ begin
     while GetNextHandlerIndex(htDeleteComponent,i) do
       TPropHookDeleteComponent(FHandlers[htDeleteComponent][i])(AComponent);
   end else
-    AComponent.Free;
+    FreeThenNil(AComponent);
 end;
 
 function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
@@ -4620,6 +4639,18 @@ begin
   RemoveHandler(htComponentAdded,TMethod(OnComponentAdded));
 end;
 
+procedure TPropertyEditorHook.AddHandlerComponentDeleting(
+  OnComponentDeleting: TPropHookComponentDeleting);
+begin
+  AddHandler(htComponentDeleting,TMethod(OnComponentDeleting));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerComponentDeleting(
+  OnComponentDeleting: TPropHookComponentDeleting);
+begin
+  RemoveHandler(htComponentDeleting,TMethod(OnComponentDeleting));
+end;
+
 procedure TPropertyEditorHook.AddHandlerDeleteComponent(
   OnDeleteComponent: TPropHookDeleteComponent);
 begin
@@ -4801,7 +4832,7 @@ var
 
 //******************************************************************************
 
-Function ClassTypeInfo(Value : TClass) : PTypeInfo;
+Function ClassTypeInfo(Value: TClass): PTypeInfo;
 begin
   Result := PTypeInfo(Value.ClassInfo);
 end;
@@ -4813,7 +4844,7 @@ begin
   // register the standard property editors
 
   // XXX workaround for missing typeinfo function
-  // Normaly it should use be something like this;
+  // Normally it should use something like this;
   // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),

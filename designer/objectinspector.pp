@@ -29,7 +29,7 @@ unit ObjectInspector;
 
 {$MODE OBJFPC}{$H+}
 
-{$DEFINE DoNotCatchOIExceptions}
+{off $DEFINE DoNotCatchOIExceptions}
 
 interface
 

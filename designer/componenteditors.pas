@@ -508,11 +508,13 @@ procedure TNotebookComponentEditor.DoDeletePage;
 var
   Hook: TPropertyEditorHook;
   OldIndex: integer;
+  PageComponent: TComponent;
 begin
   OldIndex:=Notebook.PageIndex;
   if (OldIndex>=0) and (OldIndex<Notebook.PageCount) then begin
     if not GetHook(Hook) then exit;
-    Hook.DeleteComponent(TComponent(NoteBook.PageList[OldIndex]));
+    PageComponent:=TComponent(NoteBook.PageList[OldIndex]);
+    Hook.DeleteComponent(PageComponent);
   end;
 end;
 

@@ -38,11 +38,12 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus, GraphType,
-  ComponentEditors, Designer, LazarusIDEStrConsts;
+  PropEdits, ComponentEditors, Designer, LazarusIDEStrConsts;
 
 type
 
   TMainMenuEditorForm = class(TForm)
+    procedure OnComponentDeleting(AComponent: TComponent);
   private
     fDesignerMainMenu: TDesignerMainMenu;
     fPanel: TPanel;
@@ -82,7 +83,19 @@ implementation
 
 { TMainMenuEditorForm }
 
-constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
+procedure TMainMenuEditorForm.OnComponentDeleting(AComponent: TComponent);
+begin
+  if (AComponent=nil) then exit;
+  writeln('TMainMenuEditorForm.OnComponentDeleting ',AComponent.Name,':',AComponent.ClassName);
+  if AComponent is TMenu then begin
+
+  end else if AComponent is TMenuItem then begin
+
+  end;
+end;
+
+constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
+  aEditor: TComponentEditor; aDesigner: TDesigner);
 var
   Cmp: TPanel;
   Cmp2: TScrollBox;
@@ -102,7 +115,8 @@ begin
   
   DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
 
-  
+  GlobalHook.AddHandlerComponentDeleting(@OnComponentDeleting);
+
   //PopupMenu:=DesignerPopupMenu;
   
   Cmp2:=TScrollBox.Create(self);
@@ -180,6 +194,7 @@ end;
 
 destructor TMainMenuEditorForm.Destroy;
 begin
+  GlobalHook.RemoveHandlerComponentDeleting(@OnComponentDeleting);
   inherited Destroy;
 end;
 
