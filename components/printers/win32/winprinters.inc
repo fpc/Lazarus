@@ -1,8 +1,7 @@
 {**************************************************************
 Implementation for winprinter
 ***************************************************************}
-
-Uses WinUtilPrn, InterfaceBase, Win32Int;
+Uses WinUtilPrn, InterfaceBase, Win32Int, LCLIntf;
 
 Const
   Win32Orientations: array [TPrinterOrientation] of Integer = (
@@ -16,7 +15,7 @@ Type
     Port   : String;
 
     DefaultPaper : Short;
-    
+
     DevMode: TDeviceMode;
   end;
 
@@ -34,36 +33,14 @@ destructor TWinPrinter.Destroy;
 begin
   ClearDC;
   DoResetPrintersList;
-  
+
   if fPrinterHandle<>0 then
       ClosePrinter(fPrinterHandle);
-      
+
   inherited Destroy;
 end;
 
-function TWinPrinter.PrinterSetup: Boolean;
-Var NewDevMode : TDeviceMode;
-    PDev       : TPrinterDevice;
-begin
-  if Printers.Count>0 then
-  begin
-    if fPrinterHandle=0 then
-      SetPrinter(Printers.Strings[PrinterIndex]);
-
-    if fPrinterHandle=0 then
-      raise EPrinter.Create('Printer handle not defined');
-      
-    PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    FillChar(NewDevMode,SizeOf(NewDevMode),0);
-    
-    Result:=(AdvancedDocumentProperties(0,fPrinterHandle,PChar(PDev.Name),@PDev.DevMode,@NewDevMode)<>0);
-    
-    if Result then
-      PDev.DevMode:=NewDevMode;
-  end;
-end;
-
-function TWinPrinter.PrintDialog: Boolean;
+function TWinPrinter.BaseDialogs(aFlag : DWORD):boolean;
 var lpp        : tagPD;
     PDev       : TPrinterDevice;
     DevMode    : PDeviceMode;
@@ -72,6 +49,7 @@ var lpp        : tagPD;
     DevNames   : PDevNames;
     St         : PChar;
 begin
+  Result:=False;
   if Printers.Count>0 then
   begin
     FillChar(lpp,SizeOf(lpp),0);
@@ -80,7 +58,7 @@ begin
     begin
       lStructSize:=SizeOf(lpp);
       hInstance:=LCLType.HInstance;
-      Flags:=PD_COLLATE or PD_USEDEVMODECOPIES; //PD_PRINTSETUP ;
+      Flags:=aFlag;
       hWndOwner:=TWin32WidgetSet(InterfaceObject).AppHandle;
 
       PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
@@ -92,7 +70,7 @@ begin
       finally
         GlobalUnLock(DeviceMode);
       end;
-      
+
       hDevMode:=DeviceMode;
       nCopies:=1;
       try
@@ -111,7 +89,9 @@ begin
               GlobalFree(lpp.hDevNames);
             end;
           end;
-          
+
+          Result:=True;
+
           if lpp.hDevMode<>0 then
           begin
             DevMode:=PDeviceMode(GlobalLock(lpp.hDevMode));
@@ -128,11 +108,41 @@ begin
       finally
          if DeviceMode<>0 then
            GlobalFree(DeviceMode);
-           
+
          if hDevNames<>0 then
            GlobalFree(hDevNames);
       end;
     end;
+  end;
+end;
+
+function TWinPrinter.PrinterSetup: Boolean;
+begin
+  Result:=BaseDialogs(PD_PRINTSETUP);
+end;
+
+function TWinPrinter.PrintDialog: Boolean;
+begin
+  Result:=BaseDialogs(PD_COLLATE or PD_USEDEVMODECOPIES);
+end;
+
+function TWinPrinter.GetXDPI: Integer;
+begin
+  Result:=72;
+  if (Printers.Count>0) then
+  begin
+    SetDC;
+    Result:=GetDeviceCaps(fDC, LOGPIXELSX);
+  end;
+end;
+
+function TWinPrinter.GetYDPI: Integer;
+begin
+  Result:=72;
+  if (Printers.Count>0) then
+  begin
+    SetDC;
+    Result:=GetDeviceCaps(fDC,LOGPIXELSY);
   end;
 end;
 
@@ -158,7 +168,7 @@ begin
   if (fLastHandleType<>2) and (Printers.Count>0) then
   begin
     ClearDC;
-    
+
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
     fDC:=CreateDC(PChar(PDev.Driver),PChar(PDev.Device),
             PChar(PDev.Port),@PDev.DevMode);
@@ -183,17 +193,19 @@ procedure TWinPrinter.DoBeginDoc;
 var Inf: TDocInfo;
 begin
   inherited DoBeginDoc;
-  
+
   if fPrinterHandle=0 then
     raise EPrinter.Create('Printer handle not defined');
-    
+
+  ClearDC;
   SetDC;
+  Canvas.Handle:=fDC;
   Canvas.Refresh;
 
   FillChar(Inf,SizeOf(Inf),0);
   Inf.cbSize:=SizeOf(Inf);
   Inf.lpszDocName:=PChar(Title);
-  
+
   StartDoc(fDC,Inf);
   StartPage(fDC);
 end;
@@ -210,7 +222,7 @@ end;
 procedure TWinPrinter.DoEndDoc(aAborded: Boolean);
 begin
   inherited DoEndDoc(aAborded);
-  
+
   EndPage(fDC);
   if not aAborded then
     WinUtilPrn.EndDoc(fDC);
@@ -235,7 +247,7 @@ Var Flags          : DWORD;
     DefaultPrinter : array[0..79] of Char;
     LstStr         : TStringList;
     PDev           : TPrinterDevice;
-    
+
 begin
   Level:=5; //Compatible with all Win32 versions
   DefaultPrinter:='';
@@ -294,7 +306,7 @@ begin
             PDev.Port   :=PPRINTER_INFO_2(InfoPrt)^.pPortName;
             PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
             PDev.DefaultPaper:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^.dmPaperSize;
-            
+
             if AnsiCompareText(PDev.Name,DefaultPrinter)<>0 then
               Lst.AddObject(PDev.Name,PDev)
             else
@@ -317,7 +329,7 @@ var i   : Integer;
     Obj : TObject;
 begin
   inherited DoResetPrintersList;
-  
+
   if Printers.Count>0 then
   begin
     for i:=0 to Printers.Count-1 do
@@ -337,7 +349,7 @@ var Buffer   : PChar;
     ArPapers : Array[0..255] of Word;
 begin
   inherited DoEnumPapers(Lst);
-  
+
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
@@ -347,7 +359,7 @@ begin
 
     if fPrinterHandle=0 then
       raise EPrinter.Create('Printer handle not defined');
-      
+
     //Reteive the supported papers
     PaperC:=0;
     GetMem(Buffer,64*255);
@@ -362,7 +374,7 @@ begin
     finally
       FreeMem(Buffer);
     end;
-    
+
     //Retreive the code of papers
     FillChar(ArPapers,SizeOf(ArPapers),0);
     PaperC:=DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
@@ -395,11 +407,11 @@ var i    : Integer;
     j    : SHORT;
 begin
   inherited DoSetPaperName(aName);
-  
+
   if (Printers.Count>0) then
   begin
     ClearDC;
-    
+
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
 
     i:=PaperSize.SupportedPapers.IndexOf(aName);
@@ -417,7 +429,7 @@ var NSize, i : Integer;
     ArSizes  : Array[0..255] of TPoint;
 begin
   Result:=Inherited DoGetPaperRect(aName,aPaperRc);
-  
+
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
@@ -431,7 +443,7 @@ begin
     begin
       aPaperRc.PhysicalRect:=Classes.Rect(0,0,ArSizes[i].X,ArSizes[i].Y);
       aPaperRc.WorkRect:=Classes.Rect(0,0,ArSizes[i].X,ArSizes[i].Y);
-      
+
       Result:=1;
     end;
   end;
@@ -448,7 +460,7 @@ begin
   if i<>-1 then
   begin
     ClearDC;
-    
+
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
     if fPrinterHandle<>0 then
       ClosePrinter(fPrinterHandle);
@@ -466,7 +478,7 @@ begin
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    
+
     if PDev.DevMode.dmCopies<>0 then
       Result:=PDev.DevMode.dmCopies;
   end;
@@ -494,7 +506,7 @@ begin
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
-    
+
     Case PDev.DevMode.dmOrientation of
       DMORIENT_PORTRAIT  : Result:=poPortrait;
       DMORIENT_LANDSCAPE : Result:=poLandscape;
@@ -506,7 +518,7 @@ procedure TWinPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 var PDev : TPrinterDevice;
 begin
   inherited DoSetOrientation(aValue);
-  
+
   if (Printers.Count>0) then
   begin
     PDev:=TPrinterDevice(Printers.Objects[PrinterIndex]);
@@ -521,4 +533,7 @@ INITIALIZATION
   Printer:=TWinPrinter.Create;
 
 {end.}
+
+
+
 

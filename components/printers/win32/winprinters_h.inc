@@ -37,6 +37,9 @@ Type
     procedure SetIC;
     procedure SetDC;
     procedure ClearDC;
+    
+    function BaseDialogs(aFlag : DWORD):boolean;
+
   protected
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
@@ -57,6 +60,9 @@ Type
     procedure DoSetCopies(aValue : Integer); override;
     function DoGetOrientation: TPrinterOrientation; override;
     procedure DoSetOrientation(aValue : TPrinterOrientation); override;
+
+    function GetXDPI: Integer; override;
+    function GetYDPI: Integer; override;
   public
     constructor Create; override;
     destructor Destroy; override;

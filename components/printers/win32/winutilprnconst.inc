@@ -219,7 +219,7 @@
   PRINTER_ERROR_OUTOFPAPER                = $00000001;
   PRINTER_ERROR_JAM                       = $00000002;
   PRINTER_ERROR_OUTOFTONER                = $00000004;
-  
+
   //PrintDlg Flags
   PD_ALLPAGES                             = $00000000;
   PD_SELECTION                            = $00000001;
@@ -245,5 +245,6 @@
   PD_DISABLEPRINTTOFILE                   = $00080000;
   PD_HIDEPRINTTOFILE                      = $00100000;
   PD_NONETWORKBUTTON                      = $00200000;
+
 
 
