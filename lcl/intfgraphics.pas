@@ -1370,9 +1370,11 @@ procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB(x, y: integer;
 // RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
 // AlphaSeparate=true
 var
-  MaskPosition: TRawImagePosition;
   Position: PCardinal;
   Pixel: Cardinal;
+  AlphaPosition: Integer;
+  AlphaBitPosition: Integer;
+  AlphaByte: Byte;
 begin
   Position:=PCardinal(FPixelData+FLineStarts[y].Byte+(x shl 2));
   Pixel:=((Value.Red shr 8) shl 16)
@@ -1380,11 +1382,14 @@ begin
          +(Value.Blue shr 8);
   Position^:=Pixel;
 
-  GetXYMaskPostion(x,y,MaskPosition);
-  FAlphaWriteRawImageBits(FMaskData,MaskPosition,
-                FDataDescription.AlphaPrec,
-                FDataDescription.AlphaShift,
-                Value.Alpha);
+  AlphaPosition:=FMaskLineStarts[y].Byte+(cardinal(x) shr 3);
+  AlphaBitPosition:=(x and 7);
+  AlphaByte:=FMaskData[AlphaPosition];
+  if Value.Alpha>=$8000 then
+    AlphaByte:=AlphaByte or (1 shl AlphaBitPosition)
+  else
+    AlphaByte:=AlphaByte and not (1 shl AlphaBitPosition);
+  FMaskData[AlphaPosition]:=AlphaByte;
 end;
 
 procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer;
@@ -1396,9 +1401,11 @@ procedure TLazIntfImage.SetColor_BPP32_R8G8B8_A1_BIO_TTB_RBO(x, y: integer;
 // RedPrec=8 RedShift=16 GreenPrec=8 GreenShift=8 BluePrec=8 BlueShift=0
 // AlphaSeparate=true
 var
-  MaskPosition: TRawImagePosition;
   Position: PCardinal;
   Pixel: Cardinal;
+  AlphaPosition: Integer;
+  AlphaBitPosition: Integer;
+  AlphaByte: Byte;
 begin
   Position:=PCardinal(FPixelData+FLineStarts[y].Byte+(x shl 2));
   Pixel:=(Value.Red shr 8)
@@ -1406,11 +1413,14 @@ begin
          +((Value.Blue shr 8) shl 16);
   Position^:=Pixel;
 
-  GetXYMaskPostion(x,y,MaskPosition);
-  FAlphaWriteRawImageBits(FMaskData,MaskPosition,
-                FDataDescription.AlphaPrec,
-                FDataDescription.AlphaShift,
-                Value.Alpha);
+  AlphaPosition:=FMaskLineStarts[y].Byte+(cardinal(x) shr 3);
+  AlphaBitPosition:=(x and 7);
+  AlphaByte:=FMaskData[AlphaPosition];
+  if Value.Alpha>=$8000 then
+    AlphaByte:=AlphaByte or (1 shl AlphaBitPosition)
+  else
+    AlphaByte:=AlphaByte and not (1 shl AlphaBitPosition);
+  FMaskData[AlphaPosition]:=AlphaByte;
 end;
 
 procedure TLazIntfImage.SetAutoCreateMask(const AValue: boolean);
@@ -2170,7 +2180,7 @@ begin
   GetMem(IntArray,SizeOf(Integer)*(FCharsPerPixel+1));
   try
     ReadPalette(IntArray);
-    FPixelToColorTree.ConsistencyCheck;
+    //FPixelToColorTree.ConsistencyCheck;
     ReadPixels(IntArray);
   finally
     FreeMem(IntArray);
