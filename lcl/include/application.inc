@@ -173,7 +173,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
-  if InterfaceObject=nil then begin
+  if AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0 then begin
     writeln('ERROR: no widget interface object. Did u compile an abstract LCL?');
     raise Exception.Create(
       'No widget interface object. Did u compile an abstract LCL?');
@@ -394,6 +394,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/01/27 23:35:33  lazarus
+  MG: added error message, when lcl has abstract widget interface object
+
   Revision 1.16  2002/01/27 23:24:37  lazarus
   MG: added error message, when lcl founds no widget interface object
 
