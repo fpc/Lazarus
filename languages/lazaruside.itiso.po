@@ -456,6 +456,10 @@ msgstr "Nome classe ambiguo"
 msgid "Ambigious Unit Name"
 msgstr "Nome unit ambiguo"
 
+#: lazarusidestrconsts:lisambigiousunitfound
+msgid "Ambigious Unit found"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
 msgid "Ambigious additional compiler config file"
 msgstr ""
@@ -6207,6 +6211,10 @@ msgstr ""
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
 msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
 msgstr "Il file %s%s%s%ssembra essere il file programma di un esistente Progetto1 lazarus.%sAprire il progetto?%sCanc caricherà il file come sorgente normale."
+
+#: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambigious file?"
+msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"

@@ -446,6 +446,10 @@ msgstr ""
 msgid "Ambigious Unit Name"
 msgstr ""
 
+#: lazarusidestrconsts:lisambigiousunitfound
+msgid "Ambigious Unit found"
+msgstr ""
+
 #: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
 msgid "Ambigious additional compiler config file"
 msgstr ""
@@ -612,7 +616,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "Backward search"
-msgstr ""
+msgstr "Taaksepäin"
 
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
@@ -2448,7 +2452,7 @@ msgstr "Lomakkeet..."
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
-msgstr ""
+msgstr "Eteenpäin"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -3632,7 +3636,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
-msgstr ""
+msgstr "Päävalikko"
 
 #: lazarusidestrconsts:lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
@@ -5180,7 +5184,7 @@ msgstr "Tallennetaanko %s -projektiin tehdyt muutokset?"
 
 #: lazarusidestrconsts:lissavechanges
 msgid "Save changes?"
-msgstr ""
+msgstr "Tallennetaanko muutokset?"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
@@ -5196,7 +5200,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
-msgstr ""
+msgstr "Tallennetaanko tiedosto %s%s%s%sennenkuin suljetaan lomake (form) %s%s%s?"
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -6196,6 +6200,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
 msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
+msgstr ""
+
+#: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
+msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambigious file?"
 msgstr ""
 
 #: lazarusidestrconsts:listhefilewasnotfounddoyouwanttolocateityourself
@@ -7328,7 +7336,7 @@ msgstr "Leveys:"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
-msgstr ""
+msgstr "Ikkunoiden paikat"
 
 #: lazarusidestrconsts:dlgwindows
 msgid "Windows"
