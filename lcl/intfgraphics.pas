@@ -3136,7 +3136,7 @@ begin
   or (FBitsPerPixel = 16)
   then begin
     for n := 0 to (ReadSize div 2) - 1 do
-      PWord(LineBuf)[n]^ := LEtoN(PWord(LineBuf)[n]^);
+      PWord(LineBuf)[n] := LEtoN(PWord(LineBuf)[n]);
   end;
 
   {$ENDIF}
