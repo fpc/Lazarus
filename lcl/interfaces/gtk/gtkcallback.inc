@@ -18,30 +18,6 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-const
-  DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
-  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
-
-type
-  TLastMouseClick = record
-    Down: boolean;
-    TheTime: TDateTime;
-    Component: TComponent;
-    Window: PGdkWindow;
-    WindowPoint: TPoint;
-  end;
-
-const
-  EmptyLastMouseClick: TLastMouseClick =
-    (Down: false; TheTime: -1; Component: nil;
-     Window: nil; WindowPoint: (X: 0; Y: 0));
-
-
-var
-  LastLeft, LastMiddle, LastRight: TLastMouseClick;
-  LastFileSelectRow : gint;
-
-
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 var
   PaintMsg: TLMPaint;
@@ -684,18 +660,8 @@ var
 { $DEFINE VerboseMouseBugfix}
 
   function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
-    BtnKey, MsgNormal, MsgDouble, MsgTriple: longint): boolean;
+    BtnKey, MsgNormal, MsgDouble, MsgTriple, MsgQuad: longint): boolean;
     
-    function ComponentUnderstandsDblClicks: boolean;
-    begin
-      Result:=csDoubleClicks in TControl(Data).ControlStyle;
-    end;
-
-    function ComponentUnderstandsTripleClicks: boolean;
-    begin
-      Result:=csTripleClicks in TControl(Data).ControlStyle;
-    end;
-
     function LastClickInSameGdkWindow: boolean;
     begin
       Result:=(LastMouse.Window<>nil) and (LastMouse.Window=Event^.Window);
@@ -712,7 +678,17 @@ var
       Result:=((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)));
     end;
     
+    function TestIfMultiClick: boolean;
+    begin
+      Result:=LastClickInSameGdkWindow
+          and LastClickAtSamePosition
+          and LastClickInTime;
+    end;
+    
+  var
+    IsMultiClick: boolean;
   begin
+    Result:=false;
     if (LastMouse.Down) and
       (not (Event^.theType in [gdk_2button_press,gdk_3button_press]))
     then begin
@@ -720,58 +696,75 @@ var
       writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
               ' Event^.theType=',Event^.theType);
       {$ENDIF}
-      Result:=false;
       Exit;
     end;
 
     MessI.Keys := MessI.Keys or BtnKey;
-    if ComponentUnderstandsDblClicks
-    and LastClickInSameGdkWindow
-    and LastClickAtSamePosition
-    and LastClickInTime
-    and (not (Event^.theType = gdk_3button_press))
-    then begin
-      {$IFDEF VerboseMouseBugfix}
-      writeln('  TIME DOUBLE CLICK: ',now,'-',LastMouse.TheTime,'<= ',
-        ((1/86400)*(DblClickTime/1000)));
-      {$ENDIF}
-      Event^.theType := gdk_2Button_press;
+
+    IsMultiClick:=TestIfMultiClick;
+
+    case Event^.theType of
+    gdk_2button_press:
+      // the gtk itself has detected a double click
+      if (LastMouse.ClickCount>=2)
+      and IsMultiClick
+      then begin
+        // the double click was already detected and sent to the LCL
+        // -> skip this message
+        exit;
+      end else begin
+        LastMouse.ClickCount:=2;
+      end;
+      
+    gdk_3button_press:
+      // the gtk itself has detected a triple click
+      if (LastMouse.ClickCount>=3)
+      and IsMultiClick
+      then begin
+        // the triple click was already detected and sent to the LCL
+        // -> skip this message
+        exit;
+      end else begin
+        LastMouse.ClickCount:=3;
+      end;
+
+    else
+      begin
+        inc(LastMouse.ClickCount);
+        
+        if (LastMouse.ClickCount<=4)
+        and IsMultiClick
+        then begin
+          // multi click
+          {$IFDEF VerboseMouseBugfix}
+          writeln('  MULTI CLICK: ',now,'-',LastMouse.TheTime,'<= ',
+            ((1/86400)*(DblClickTime/1000)));
+          {$ENDIF}
+        end else begin
+          // normal click
+          LastMouse.ClickCount:=1;
+        end;
+      end;
     end;
+    {$IFDEF VerboseMouseBugfix}
+    writeln('  ClickCount=',LastMouse.ClickCount);
+    {$ENDIF}
+
     LastMouse.TheTime := Now;
     LastMouse.Window := Event^.Window;
     LastMouse.WindowPoint := EventXY;
-
-    if event^.thetype = gdk_button_press then begin
-      MessI.Msg := MsgNormal;
-      {$IFDEF VerboseMouseBugfix}
-      writeln('  NormalClick');
-      {$ENDIF}
-    end else
-    if event^.thetype = gdk_2button_press then begin
-      if ComponentUnderstandsDblClicks then
-        MessI.Msg := MsgDouble
-      else
-        MessI.Msg := MsgNormal;
-      LastMouse.Window := nil;
-      {$IFDEF VerboseMouseBugfix}
-      writeln('  DoubleClick');
-      {$ENDIF}
-    end
-    else
-    if event^.thetype = gdk_3button_press then begin
-      if ComponentUnderstandsTripleClicks then
-        MessI.Msg := MsgTriple
-      else
-        MessI.Msg := MsgNormal;
-      LastMouse.Window := nil;
-      {$IFDEF VerboseMouseBugfix}
-      writeln('  TripleClick');
-      {$ENDIF}
-    end;
-    
-
     LastMouse.Down := True;
     LastMouse.Component:=TComponent(Data);
+
+    case LastMouse.ClickCount of
+    1: MessI.Msg := MsgNormal;
+    2: MessI.Msg := MsgDouble;
+    3: MessI.Msg := MsgTriple;
+    4: MessI.Msg := MsgQuad;
+    else
+      MessI.Msg := LM_NULL;
+    end;
+
     Result:=true;
   end;
 
@@ -839,15 +832,18 @@ begin
     case event^.Button of
     
     1: if not CheckMouseButtonDown(LastLeft,
-              MK_LBUTTON, LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK)
+              MK_LBUTTON, LM_LBUTTONDOWN,
+              LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK)
        then exit;
 
     2: if not CheckMouseButtonDown(LastMiddle,
-              MK_MBUTTON, LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK)
+              MK_MBUTTON, LM_MBUTTONDOWN,
+              LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK, LM_MBUTTONQUADCLK)
        then exit;
 
     3: if not CheckMouseButtonDown(LastRight,
-              MK_RBUTTON, LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK)
+              MK_RBUTTON, LM_RBUTTONDOWN,
+              LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK, LM_RBUTTONQUADCLK)
        then exit;
 
     else
@@ -865,7 +861,7 @@ begin
     if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
-    
+
     MessI.Result:=0;
     // send the message directly to the LCL
     // (Posting the message via queue
@@ -873,7 +869,6 @@ begin
     //DeliverPostMessage(Data, MessI);
     DeliverMessage(Data, MessI);
   end;
-  Result:=true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -889,10 +884,10 @@ function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
 begin
   Result:=true;
   {$IFDEF VerboseMouseBugfix}
-  writeln('[gtkMouseBtnPressAfter] ',
+  {writeln('[gtkMouseBtnPressAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y));}
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -917,18 +912,12 @@ var
   DesignOnlySignal: boolean;
 
   function CheckMouseButtonUp(var LastMouse: TLastMouseClick;
-    MsgUp: integer): boolean;
+    MsgUp: longint): boolean;
   begin
-    if not (LastMouse.Down) then
-      Result:=false
-    else
-    begin
-      MessI.Msg := MsgUp;
-      LastMouse.Down := False;
-      Result:=true;
-    end;
-    LastMouse.Component:=nil;
-  end;
+    MessI.Msg := MsgUp;
+    LastMouse.Down := False;
+    Result:=true;
+ end;
   
 begin
   Result:=true;
@@ -964,22 +953,23 @@ begin
                                          PGtkWidget(TWinControl(Data).Handle));
 
   case event^.Button of
-  1:
-    if not CheckMouseButtonUp(LastLeft,LM_LBUTTONUP) then Exit;
 
-  2:
-    if not CheckMouseButtonUp(LastMiddle,LM_MBUTTONUP) then Exit;
+  1: if not CheckMouseButtonUp(LastLeft, LM_LBUTTONUP)
+     then exit;
 
-  3:
-    if not CheckMouseButtonUp(LastRight,LM_RBUTTONUP) then Exit;
+  2: if not CheckMouseButtonUp(LastMiddle, LM_MBUTTONUP)
+     then exit;
+
+  3: if not CheckMouseButtonUp(LastRight, LM_RBUTTONUP)
+     then exit;
 
   else
     begin
       MessI.Msg := LM_NULL;
       exit;
     end;
-  end;
-  
+  end; // case
+
   MessI.XPos := MappedXY.X;
   MessI.YPos := MappedXY.Y;
   
@@ -999,7 +989,6 @@ begin
     MessI.Result := 0;
     DeliverMessage(Data, MessI);
   end;
-  Result:=true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1015,9 +1004,9 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
 begin
   Result:=true;
   {$IFDEF VerboseMouseBugfix}
-  writeln('[gtkMouseBtnReleaseAfter] ',
+  {writeln('[gtkMouseBtnReleaseAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
-    Trunc(Event^.X),',',Trunc(Event^.Y));
+    Trunc(Event^.X),',',Trunc(Event^.Y));}
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -2279,6 +2268,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.119  2002/09/01 16:11:22  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.118  2002/08/31 11:37:10  lazarus
   MG: fixed destroying combobox
 
