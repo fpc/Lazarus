@@ -269,10 +269,6 @@ Begin
   Case LM_Message Of
     LM_CREATE:
       CreateComponent(Sender);
-    LM_SETPIXEL:
-      SetPixel(Sender, Data);
-    LM_GETPIXEL:
-      GetPixel(Sender, Data);
     LM_GETVALUE:
       Result := GetValue(Sender, Data);
     LM_SETVALUE:
@@ -2166,44 +2162,30 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetPixel
-  Params:  Sender - the lcl object which called this func via SendMessage
-           Data   - pointer to a TLMSetGetPixel record
+  Params:  Canvas - canvas to set color on
+           X, Y   - position
+           AColor - new color for specified position
   Returns: nothing
 
-  Set the color of the specified pixel on the window?screen?object?
+  Set the color of the specified pixel on the canvas
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetPixel(Sender: TObject; Data: Pointer);
-Var
-  DC: HDC;
-  Handle: HWnd;
-Begin
-  Assert(False, 'Trace:TODO: Implement TWin32WidgetSet.SetPixel');
-  Handle :=(Sender As TWinControl).Handle;
-  DC := GetDC(Handle);
-  With TLMSetGetPixel(Data^) Do
-    Windows.SetPixel(DC, X, Y, PixColor);
-  ReleaseDC(Handle, DC);
+procedure TWin32WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
+begin
+  Windows.SetPixel(CanvasHandle, X, Y, AColor);
 end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.GetPixel
-  Params:  Sender - the lcl object which called this func via SenMessage
-           Data   - pointer to a TLMSetGetPixel record
-  Returns: nothing
+  Params:  Canvas - canvas to get color from
+           X, Y   - position
+  Returns: Color at specified point
 
-  Get the color of the specified pixel on the window?screen?object?
+  Get the color of the specified pixel on the canvas
  -----------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.GetPixel(Sender: TObject; Data: Pointer);
-Var
-  DC: HDC;
-  Handle: HWnd;
-Begin
-  Handle := (Sender As TWinControl).Handle;
-  DC := GetDC(Handle);
-  With TLMSetGetPixel(Data^) Do
-    PixColor := Windows.GetPixel(DC, X, Y);
-  ReleaseDC(Handle, DC);
-End;
+function  TWin32WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
+begin
+  Result := Windows.GetPixel(CanvasHandle, X, Y);
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.GetValue
@@ -2536,6 +2518,9 @@ End;
 
 {
   $Log$
+  Revision 1.247  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.246  2004/09/11 17:29:10  micha
   convert LM_POPUPSHOW message to interface method
 

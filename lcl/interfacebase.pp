@@ -52,6 +52,8 @@ type
     procedure AppTerminate; virtual; abstract;
     procedure AppMinimize; virtual; abstract;
     procedure AppBringToFront; virtual; abstract;
+    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
+    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
     function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
                               Data: pointer): integer; virtual; abstract;
@@ -116,6 +118,9 @@ end.
 
 {
   $Log$
+  Revision 1.51  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.50  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls

@@ -94,32 +94,17 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.GetPixel --}
 {-----------------------------------------------}
-Function TCanvas.GetPixel(X,Y : Integer) : TColor;
-var
-  Msg : TLMSetGetPixel;
-{TLMSetGetPixel = record
-  X,Y : Integer;
-  PixColor : TColor;
-end;
-}
-Begin
-  msg.X := x;
-  msg.Y := Y;
-  SendIntfMessage(LM_GetPixel, Self, @msg);
-  Result := msg.PixColor;
+function TCanvas.GetPixel(X, Y: Integer): TColor;
+begin
+  Result := InterfaceObject.DCGetPixel(Self.Handle, X, Y);
 end;
 
 {-----------------------------------------------}
 {--  TCanvas.SetPixel --}
 {-----------------------------------------------}
-Procedure TCanvas.SetPixel(X,Y: Integer; Value : TColor);
-var
-  Msg : TLMSetGetPixel;
-Begin
-  Msg.X := X;
-  msg.Y := Y;
-  MSg.PixColor := Value;
-  SendIntfMessage(LM_SetPixel, Self, @msg);
+procedure TCanvas.SetPixel(X, Y: Integer; Value: TColor);
+begin
+  InterfaceObject.DCSetPixel(Self.Handle, X, Y, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -1259,6 +1244,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.75  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

@@ -141,8 +141,6 @@ Type
     Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TCustomPage; Index: Integer);
     procedure RemoveNBPage(Notebook: TCustomNotebook; Index: Integer);
     Procedure SetText(Window: HWND; Data: Pointer);
-    Procedure SetPixel(Sender: TObject; Data: Pointer);
-    Procedure GetPixel(Sender: TObject; Data: Pointer);
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetProperties(Sender: TObject): Integer;
@@ -177,6 +175,8 @@ Type
     Procedure AppInit; Override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
+    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
+    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
@@ -280,6 +280,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.105  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls

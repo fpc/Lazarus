@@ -63,8 +63,6 @@ const
   LM_ShowTabs       = LM_ComUser+29;
   LM_SetTabPosition = LM_ComUser+30;
   LM_Invalidate     = LM_ComUser+32;
-  LM_SetPixel       = LM_ComUser+34;
-  LM_GetPixel       = LM_ComUser+35;
 
   LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
@@ -694,11 +692,6 @@ type
     Result : LongInt;
   End;
 
-  TLMSetGetPixel = record
-    X,Y : Integer;
-    PixColor : TGraphicsColor;
-  end;
-
 {$if defined(ver1_0) or not(defined(win32))}
   TLMSize = packed record
     Msg: Cardinal;
@@ -854,8 +847,6 @@ begin
   LM_ShowTabs       :Result:='LM_ShowTabs';
   LM_SetTabPosition :Result:='LM_SetTabPosition';
   LM_Invalidate     :Result:='LM_Invalidate';
-  LM_SetPixel       :Result:='LM_SetPixel';
-  LM_GetPixel       :Result:='LM_GetPixel';
 
   LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
   LM_SETVALUE       :Result:='LM_SETVALUE';
@@ -999,6 +990,9 @@ end.
 
 {
   $Log$
+  Revision 1.89  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.88  2004/09/11 17:29:10  micha
   convert LM_POPUPSHOW message to interface method
 

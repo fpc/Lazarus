@@ -3106,7 +3106,6 @@ function TGtkWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
   handle      : hwnd;                  // handle of sender
-  pStr        : PChar;                 // temporary string pointer, must be allocated/disposed when used!
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
@@ -3132,10 +3131,6 @@ begin
   // retrieve the handle
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
-
-  LM_SETPixel : SetPixel(Sender,Data);
-
-  LM_GETPixel : GetPixel(Sender,Data);
 
   LM_GETVALUE  : Result := GetValue(Sender, data);
 
@@ -6810,28 +6805,24 @@ end;
 
   Set the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetPixel(Sender : TObject; Data : Pointer);
+procedure TGtkWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 var
   aDC     : TDeviceContext;
-  X: Integer;
-  Y: Integer;
   DCOrigin: TPoint;
   GDKColor: TGDKColor;
 begin
-  aDC := TDeviceContext(TCanvas(Sender).Handle);
+  aDC := TDeviceContext(CanvasHandle);
   if (aDC = nil) or (aDC.Drawable = nil) then exit;
 
-  X:=TLMSetGetPixel(data^).X;
-  Y:=TLMSetGetPixel(data^).Y;
   DCOrigin:=GetDCOffset(aDC);
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
   aDC.SelectedColors := dcscCustom;
-  GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
+  GDKColor:=AllocGDKColor(AColor);
   gdk_gc_set_foreground(aDC.GC, @GDKColor);
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  gdk_draw_point(aDC.Drawable, aDC.GC, X,Y);
+  gdk_draw_point(aDC.Drawable, aDC.GC, X, Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 end;
 
@@ -6843,24 +6834,20 @@ end;
 
   Get the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.GetPixel(Sender : TObject; Data : Pointer);
+function  TGtkWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 var
   aDC    : TDeviceContext;
   Image  : pGDKImage;
   GDKColor: TGDKColor;
   Colormap : PGDKColormap;
-  X: Integer;
-  Y: Integer;
   DCOrigin: TPoint;
   MaxX, MaxY: integer;
   Pixel: LongWord;
 begin
-  TLMSetGetPixel(data^).PixColor := clNone;
-  aDC := TDeviceContext((Sender as TCanvas).Handle);
+  Result := clNone;
+  aDC := TDeviceContext(CanvasHandle);
   if (aDC = nil) or (aDC.Drawable = nil) then exit;
 
-  X:=TLMSetGetPixel(data^).X;
-  Y:=TLMSetGetPixel(data^).Y;
   DCOrigin:=GetDCOffset(TDeviceContext(aDC));
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
@@ -6886,7 +6873,7 @@ begin
 
   gdk_image_unref(Image);
 
-  TLMSetGetPixel(data^).PixColor := TGDKColorToTColor(GDKColor);
+  Result := TGDKColorToTColor(GDKColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -8582,6 +8569,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.555  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.554  2004/09/11 17:29:10  micha
   convert LM_POPUPSHOW message to interface method
 

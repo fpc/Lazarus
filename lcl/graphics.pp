@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
-  GraphType, GraphMath;
+  GraphType, GraphMath, InterfaceBase;
 
 type
   PColor = ^TColor;
@@ -1747,6 +1747,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.147  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.146  2004/09/11 10:19:07  mattias
   implemented TBitmap.LoadFromDevice
 

@@ -254,8 +254,6 @@ type
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
-    Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
-    Procedure GetPixel(Sender : TObject; Data : Pointer);virtual;
     function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetProperties (Sender: TObject) : integer;virtual;
@@ -302,7 +300,9 @@ type
     procedure AppInit; override;
     procedure AppMinimize; override;
     procedure AppBringToFront; override;
-
+    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
+    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
+        
     // helper routines needed by interface methods
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
@@ -458,6 +458,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.201  2004/09/12 13:11:50  micha
+  convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
+
   Revision 1.200  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls
