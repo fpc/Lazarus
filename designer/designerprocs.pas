@@ -273,7 +273,7 @@ end;
 function TDesignerDeviceContext.GetDCOrigin: TPoint;
 begin
   if not (ddcDCOriginValid in FFlags) then begin
-    GetWindowOrgEx(FDC,FDCOrigin);
+    GetWindowOrgEx(FDC,@FDCOrigin);
     Include(FFlags,ddcDCOriginValid);
   end;
   Result:=FDCOrigin;

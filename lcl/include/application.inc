@@ -169,7 +169,15 @@ procedure TApplication.ControlDestroyed(AControl: TControl);
 begin
   if AControl=FMouseControl then FMouseControl:=nil;
   if AControl = MainForm then FMainForm:= nil;
+  if Screen.FActiveControl = AControl then Screen.FActiveControl := nil;
+  if Screen.FActiveCustomForm = AControl then
+  begin
+    Screen.FActiveCustomForm := nil;
+    Screen.FActiveForm := nil;
+  end;
+  if Screen.FFocusedForm = AControl then Screen.FFocusedForm := nil;
   if FHintControl = AControl then FHintControl:=nil;
+  Screen.UpdateLastActive;
 end;
 
 {------------------------------------------------------------------------------
@@ -843,6 +851,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/12/27 17:12:37  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.43  2002/12/17 12:04:30  mattias
   reduced flickering of hints
 

@@ -23,11 +23,7 @@
 }
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.Create
-  Params:  AOwner: the owner of the class
-  Returns: Nothing
-
-  Constructor for the radiogroup
+  constructor TCustomPanel.Create (AOwner : TComponent);
  ------------------------------------------------------------------------------}
 constructor TCustomPanel.Create (AOwner : TComponent);
 begin

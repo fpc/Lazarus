@@ -58,6 +58,7 @@ var
   ScrollInfo: TScrollInfo;
 begin
   inherited CreateWnd;
+  if not HandleAllocated then RaiseGDBException('TScrollBar.CreateWnd HandleAllocated=false');
   SetScrollRange(Handle, SB_CTL, FMin, FMax, False);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   ScrollInfo.nPage := FPageSize;
@@ -108,7 +109,8 @@ begin
     Change;
   end;
 
-  CNSendMEssage(LM_SetProperties,self,nil);
+  if HandleAllocated then
+    CNSendMEssage(LM_SetProperties,self,nil);
 end;
 
 procedure TScrollBar.SetPosition(Value: Integer);

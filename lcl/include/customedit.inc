@@ -228,7 +228,6 @@ procedure TCustomEdit.SetEchoMode(Val : TEchoMode);
 begin
   if (Val <> FEchoMode) then begin
     FEchoMode:= Val;
-writeln('TCustomEdit.SetEchoMode ',FEchoMode=emPassword,' ',HandleAllocated);
     if HandleAllocated then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
@@ -310,6 +309,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/12/27 17:12:37  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.15  2002/12/22 23:25:34  mattias
   fixed setting TEdit properties after creating handle
 

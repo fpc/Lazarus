@@ -98,7 +98,7 @@ Function GetTextColor(DC: HDC): TColorRef; Override;
 Function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean; Override;
 Function GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean; Override;
 Function GetWindowLong(Handle: HWND; Int: Integer): LongInt; Override;
-Function GetWindowOrgEx(DC: HDC; Var P: TPoint): Integer; Override;
+Function GetWindowOrgEx(DC: HDC; P: PPoint): Integer; Override;
 Function GetWindowRect(Handle: HWND; Var Rect: TRect): Integer; Override;
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 
@@ -170,6 +170,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.18  2002/12/26 11:00:15  mattias
   added included by to unitinfo and a few win32 functions
 

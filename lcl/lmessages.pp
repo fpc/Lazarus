@@ -32,46 +32,45 @@ interface
 uses Classes, SysUtils, vclGlobals, LCLType, GraphType;
 
 const
-
   //-------------
   // Commands SENT TO the interface units
   // add also a description to a message at the end of this unit
   // here are no defines of message records sent to the interface
   // These are declared in a later section
   //-------------
-  LM_ComUser       = $1000;
-  LM_Create        = LM_ComUser+1;
-  LM_SetLabel      = LM_ComUser+2;
-  LM_SetLeft       = LM_ComUser+3;
-  LM_SetTop        = LM_ComUser+4;
-  LM_SetWidth      = LM_ComUser+5;
-  LM_SetHeight     = LM_ComUser+6;
-  LM_AddChild      = LM_ComUser+7;
-  LM_Setsize       = LM_ComUser+8;
-  LM_GetLabel      = LM_ComUser+9;
-  LM_AssignEvent   = LM_ComUser+10;
-  LM_AssignSelf    = LM_ComUser+11;
-  LM_SetName       = LM_ComUser+12;
+  LM_ComUser        = $1000;
+  LM_Create         = LM_ComUser+1;
+  LM_SetLabel       = LM_ComUser+2;
+  LM_SetLeft        = LM_ComUser+3;
+  LM_SetTop         =  LM_ComUser+4;
+  LM_SetWidth       = LM_ComUser+5;
+  LM_SetHeight      = LM_ComUser+6;
+  LM_AddChild       = LM_ComUser+7;
+  LM_Setsize        = LM_ComUser+8;
+  LM_GetLabel       = LM_ComUser+9;
+  LM_AssignEvent    = LM_ComUser+10;
+  LM_AssignSelf     = LM_ComUser+11;
+  LM_SetName        = LM_ComUser+12;
   LM_RESIZECHILDREN = LM_ComUser+13;
-  LM_ShowHide      = LM_ComUser+14;
-  LM_AddPage       = LM_ComUser+15;
-  LM_GetLineCount  = LM_ComUser+16;
-  LM_SETTEXT       = LM_ComUser+17;
-  LM_GETTEXT       = LM_ComUser+18;
-  LM_CANVASCREATE  = LM_ComUser+19;
-  LM_ReDraw        = LM_ComUser+26;
-  LM_SetColor      = LM_ComUser+27;
-  LM_RemovePage    = LM_ComUser+28;
-  LM_ShowTabs      = LM_ComUser+29;
+  LM_ShowHide       = LM_ComUser+14;
+  LM_AddPage        = LM_ComUser+15;
+  LM_GetLineCount   = LM_ComUser+16;
+  LM_SETTEXT        = LM_ComUser+17;
+  LM_GETTEXT        = LM_ComUser+18;
+  LM_CANVASCREATE   = LM_ComUser+19;
+  LM_ReDraw         = LM_ComUser+26;
+  LM_SetColor       = LM_ComUser+27;
+  LM_RemovePage     = LM_ComUser+28;
+  LM_ShowTabs       = LM_ComUser+29;
   LM_SetTabPosition = LM_ComUser+30;
-  LM_Invalidate    = LM_ComUser+32;
-  LM_SetPixel      = LM_ComUser+34;
-  LM_GetPixel      = LM_ComUser+35;
+  LM_Invalidate     = LM_ComUser+32;
+  LM_SetPixel       = LM_ComUser+34;
+  LM_GetPixel       = LM_ComUser+35;
 
-  LM_SETPROPERTIES = LM_ComUser+39;         // update object to reflect current properties
-  LM_SETVALUE      = LM_ComUser+40;         // set actual value of object to visual object
-  LM_GETVALUE      = LM_ComUser+41;         // get actual value from visual object
-  LM_ATTACHMENU    = LM_ComUser+42;
+  LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
+  LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
+  LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
+  LM_ATTACHMENU     = LM_ComUser+42;
 
   LM_TB_BUTTONCOUNT = LM_ComUser+45;
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
@@ -79,197 +78,73 @@ const
 
   //LM_SetCursor = LM_ComUser+48;  We define this later for Windows compatability.
 
-  LM_IMAGECHANGED = LM_ComUser+49;
-  LM_LAYOUTCHANGED = LM_ComUser+50;
+  LM_IMAGECHANGED   = LM_ComUser+49;
+  LM_LAYOUTCHANGED  = LM_ComUser+50;
   LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
 
-  LM_LOADXPM = LM_ComUser+52;
+  LM_LOADXPM        = LM_ComUser+52;
 
   LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
-  //LM_SETENABLED = LM_COMUSER+54;
-  LM_BRINGTOFRONT = LM_COMUSER+55;
-  LM_POPUPSHOW = LM_COMUSER+56;
+  //LM_SETENABLED   = LM_COMUSER+54;
+  LM_BRINGTOFRONT   = LM_COMUSER+55;
+  LM_POPUPSHOW      = LM_COMUSER+56;
 
 
-  LM_RECREATEWND = LM_COMUSER+57;
-  LM_SETFORMICON = LM_COMUSER+58;
+  LM_RECREATEWND    = LM_COMUSER+57;
+  LM_SETFORMICON    = LM_COMUSER+58;
 
-  LM_MINIMIZE = LM_COMUSER+59;
+  LM_MINIMIZE       = LM_COMUSER+59;
 
-  LM_SETDESIGNING = LM_COMUSER+60;
+  LM_SETDESIGNING   = LM_COMUSER+60;
 
-  LM_SETSHORTCUT = LM_COMUSER+61;
+  LM_SETSHORTCUT    = LM_COMUSER+61;
 
-  LM_SETGEOMETRY = LM_COMUSER+62;
+  LM_SETGEOMETRY    = LM_COMUSER+62;
 
-  LM_GETITEMS      = LM_COMUSER+63;
-  LM_GETITEMINDEX  = LM_COMUSER+64;
-  LM_SETITEMINDEX  = LM_COMUSER+65;
-  LM_GETSELTEXT    = LM_COMUSER+66;
-  LM_SETSELTEXT    = LM_COMUSER+67;
-  LM_GETSELSTART   = LM_COMUSER+68;
-  LM_SETSELSTART   = LM_COMUSER+69;
-  LM_GETSELLEN     = LM_COMUSER+70;
-  LM_SETSELLEN     = LM_COMUSER+71;
-  LM_GETLIMITTEXT  = LM_COMUSER+72;
-  LM_SETLIMITTEXT  = LM_COMUSER+73;
-  LM_SORT          = LM_COMUSER+74;
-  LM_GETSELCOUNT   = LM_COMUSER+75;
-  LM_GETSEL        = LM_COMUSER+76;
-  LM_SETSEL        = LM_COMUSER+77;
-  LM_SETSELMODE    = LM_COMUSER+78;
-  LM_SETBORDER     = LM_COMUSER+79;
+  LM_GETITEMS       = LM_COMUSER+63;
+  LM_GETITEMINDEX   = LM_COMUSER+64;
+  LM_SETITEMINDEX   = LM_COMUSER+65;
+  LM_GETSELTEXT     = LM_COMUSER+66;
+  LM_SETSELTEXT     = LM_COMUSER+67;
+  LM_GETSELSTART    = LM_COMUSER+68;
+  LM_SETSELSTART    = LM_COMUSER+69;
+  LM_GETSELLEN      = LM_COMUSER+70;
+  LM_SETSELLEN      = LM_COMUSER+71;
+  LM_GETLIMITTEXT   = LM_COMUSER+72;
+  LM_SETLIMITTEXT   = LM_COMUSER+73;
+  LM_SORT           = LM_COMUSER+74;
+  LM_GETSELCOUNT    = LM_COMUSER+75;
+  LM_GETSEL         = LM_COMUSER+76;
+  LM_SETSEL         = LM_COMUSER+77;
+  LM_SETSELMODE     = LM_COMUSER+78;
+  LM_SETBORDER      = LM_COMUSER+79;
 
   // TListView
-  LM_LV_FIRST      = LM_COMUSER+80;
-  LM_LV_ADDITEM    = LM_LV_FIRST+1;
-  LM_LV_CHANGEITEM = LM_LV_FIRST+2;
-  LM_LV_DELETEITEM = LM_LV_FIRST+3;
-  LM_LV_SELECTITEM = LM_LV_FIRST+4;
-  LM_LV_LAST       = LM_LV_FIRST+9; // LM_COMUSER+89
+  LM_LV_FIRST       = LM_COMUSER+80;
+  LM_LV_ADDITEM     = LM_LV_FIRST+1;
+  LM_LV_CHANGEITEM  = LM_LV_FIRST+2;
+  LM_LV_DELETEITEM  = LM_LV_FIRST+3;
+  LM_LV_SELECTITEM  = LM_LV_FIRST+4;
+  LM_LV_LAST        = LM_LV_FIRST+9; // LM_COMUSER+89
 
   // TComboBox
-  LM_CB_FIRST      = LM_LV_LAST+1;  // LM_COMUSER+90
-  LM_CB_GETCOUNT   = LM_CB_FIRST+1;
-  LM_CB_GETTEXT    = LM_CB_FIRST+2;
-  LM_CB_ADDTEXT    = LM_CB_FIRST+3;
-  LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
+  LM_CB_FIRST       = LM_LV_LAST+1;  // LM_COMUSER+90
+  LM_CB_GETCOUNT    = LM_CB_FIRST+1;
+  LM_CB_GETTEXT     = LM_CB_FIRST+2;
+  LM_CB_ADDTEXT     = LM_CB_FIRST+3;
+  LM_CB_LAST        = LM_CB_FIRST+9; // LM_COMUSER+99
   
   // TNoteBook
-  LM_NB_First      = LM_CB_LAST+1;
-  LM_NB_UpdateTab  = LM_NB_First+1;
-  LM_NB_Last       = LM_NB_UpdateTab;
+  LM_NB_First       = LM_CB_LAST+1;
+  LM_NB_UpdateTab   = LM_NB_First+1;
+  LM_NB_Last        = LM_NB_UpdateTab;
   
   // TListBox
-  LB_First         = LM_NB_Last +1;
-  LB_GETTOPINDEX   = LB_First   +1;
-  LB_SETTOPINDEX   = LB_First   +2;
-  LB_Last          = LB_SETTOPINDEX;
-
-  //-------------
-  //end of messages that are sent to the interface
-  //-------------
-
-
-  //-------------
-  // Windows Compatability}
-  //-------------
- { System Menu Commands }
-  SC_SIZE = 61440;
-  SC_MOVE = 61456;
-  SC_MINIMIZE = 61472;
-  SC_MAXIMIZE = 61488;
-  SC_NEXTWINDOW = 61504;
-  SC_PREVWINDOW = 61520;
-  SC_CLOSE = 61536;
-  SC_VSCROLL = 61552;
-  SC_HSCROLL = 61568;
-  SC_MOUSEMENU = 61584;
-  SC_KEYMENU = 61696;
-  SC_ARRANGE = 61712;
-  SC_RESTORE = 61728;
-  SC_TASKLIST = 61744;
-  SC_SCREENSAVE = 61760;
-  SC_HOTKEY = 61776;
-  SC_DEFAULT = 61792;
-  SC_MONITORPOWER = 61808;
-  SC_CONTEXTHELP = 61824;
-  SC_SEPARATOR = 61455;
-  
-
-  //-------------
-  // Messages
-  //-------------
-
-  LM_NULL = $0000;
-  // not yet these are defined as messages to the interface
-  //LM_CREATE = $0001;
-  //LM_DESTROY = $0002;
-  LM_MOVE = $0003;
-
-  LM_SIZE = $0005;
-  LM_ACTIVATE = $0006;
-  LM_SETFOCUS = $0007;
-  LM_KILLFOCUS = $0008;
-  LM_ENABLE = $000A;
-  LM_GETTEXTLENGTH = $000E;
-  LM_ERASEBKGND = $0014;
-
-  LM_SHOWWINDOW   = $0018;
-
-  LM_CANCELMODE   = $001F;
-  LM_SETCURSOR = $0020;
-  LM_DRAWITEM     = $002B;
-  LM_MEASUREITEM  = $002C;
-  LM_DELETEITEM   = $002D;
-  LM_VKEYTOITEM   = $002E;
-  LM_CHARTOITEM   = $002F;
-  LM_SETFONT      = $0030;
-
-  LM_COMPAREITEM = $0039;
-  LM_WINDOWPOSCHANGING = $0046;
-  LM_WINDOWPOSCHANGED = $0047;
-  LM_NOTIFY  = $004E;
-  LM_NOTIFYFORMAT = $0055;
-
-  LM_NCCALCSIZE = $0083;
-  LM_NCHITTEST = $0084;
-  LM_NCPAINT = $0085;
-  LM_NCACTIVATE = $0086;
-  LM_GETDLGCODE = $0087;
-  LM_NCMOUSEMOVE = $00A0;
-  LM_NCLBUTTONDOWN = $00A1;
-  LM_NCLBUTTONUP = $00A2;
-  LM_NCLBUTTONDBLCLK  = $00A3;
-
-  LM_KEYFIRST = $0100;
-  LM_KEYDOWN = $0100;
-  LM_KEYUP = $0101;
-  LM_CHAR = $0102;
-
-  LM_SYSKEYDOWN = $0104;
-  LM_SYSKEYUP = $0105;
-  LM_SYSCHAR = $0106;
-
-  LM_KEYLAST = $0108;
-
-  LM_COMMAND = $0111;
-  LM_SYSCOMMAND = $0112;
-
-  LM_HSCROLL = $0114;
-  LM_VSCROLL = $0115;
-  LM_CTLCOLORMSGBOX   = $0132;
-  LM_CTLCOLOREDIT     = $0133;
-  LM_CTLCOLORLISTBOX  = $0134;
-  LM_CTLCOLORBTN      = $0135;
-  LM_CTLCOLORDLG      = $0136;
-  LM_CTLCOLORSCROLLBAR= $0137;
-  LM_CTLCOLORSTATIC   = $0138;
-
-  LM_MOUSEFIRST = $0200;
-  LM_MOUSEMOVE = $0200;
-  LM_LBUTTONDOWN = $0201;
-  LM_LBUTTONUP = $0202;
-  LM_LBUTTONDBLCLK = $0203;
-  LM_RBUTTONDOWN = $0204;
-  LM_RBUTTONUP = $0205;
-  LM_RBUTTONDBLCLK = $0206;
-  LM_MButtonDown = $0207;
-  LM_MBUTTONUP = $0208;
-  LM_MBUTTONDBLCLK = $0209;
-  LM_MOUSEWHEEL = $020A;
-  LM_MOUSELAST = $020A;
-  // for triple and quad clicks see below
-
-  LM_CAPTURECHANGED = $0215;
-  LM_DROPFILES = $0233;
-
-  LM_PARENTNOTIFY  = $0210;
-
-  //-------------
-  // End of Windows Compatability and messages
-  //-------------
+  LM_LB_First          = LM_NB_Last +1;
+  LM_LB_GETTOPINDEX    = LM_LB_First   +1;
+  LM_LB_SETTOPINDEX    = LM_LB_First   +2;
+  LM_LB_Last           = LM_LB_SETTOPINDEX;
 
 
   //-------------
@@ -279,7 +154,7 @@ const
   // RECEIVED from the interface, here are no defines
   // of messages send to the interface
   //-------------
-  LM_USER = $400; // MWE: changed from $100 to $400 since they were in the windows range
+  LM_USER           = $400; // MWE: changed from $100 to $400 since they were in the windows range
   WM_USER           = LM_USER;
   LM_DESTROY        = LM_User+2;
   LM_ACTIVATEITEM   = LM_User+4;
@@ -346,7 +221,7 @@ const
   LM_GRABFOCUS      = LM_USER+79;
 
   LM_DRAWLISTITEM   = LM_User+80;
-  
+
   LM_INTERNALPAINT  = LM_User + 90;
 
   // these IDs are reserved for internal messages in the interfaces
@@ -354,6 +229,132 @@ const
   LM_INTERFACELAST  = LM_User+199;
 
   LM_UNKNOWN        = LM_INTERFACELAST+1;
+
+
+  //-------------
+  //end of messages that are sent to the interface
+  //-------------
+
+
+  //-------------
+  // Windows Compatability}
+  //-------------
+ { System Menu Commands }
+  SC_SIZE           = 61440;
+  SC_MOVE           = 61456;
+  SC_MINIMIZE       = 61472;
+  SC_MAXIMIZE       = 61488;
+  SC_NEXTWINDOW     = 61504;
+  SC_PREVWINDOW     = 61520;
+  SC_CLOSE          = 61536;
+  SC_VSCROLL        = 61552;
+  SC_HSCROLL        = 61568;
+  SC_MOUSEMENU      = 61584;
+  SC_KEYMENU        = 61696;
+  SC_ARRANGE        = 61712;
+  SC_RESTORE        = 61728;
+  SC_TASKLIST       = 61744;
+  SC_SCREENSAVE     = 61760;
+  SC_HOTKEY         = 61776;
+  SC_DEFAULT        = 61792;
+  SC_MONITORPOWER   = 61808;
+  SC_CONTEXTHELP    = 61824;
+  SC_SEPARATOR      = 61455;
+  
+
+  //-------------
+  // Messages
+  //-------------
+
+  LM_NULL           = $0000;
+  // not yet these are defined as messages to the interface
+  //LM_CREATE        = $0001;
+  //LM_DESTROY       = $0002;
+  LM_MOVE           = $0003;
+
+  LM_SIZE           = $0005;
+  LM_ACTIVATE       = $0006;
+  LM_SETFOCUS       = $0007;
+  LM_KILLFOCUS      = $0008;
+  LM_ENABLE         = $000A;
+  LM_GETTEXTLENGTH  = $000E;
+  LM_ERASEBKGND     = $0014;
+
+  LM_SHOWWINDOW     = $0018;
+
+  LM_CANCELMODE     = $001F;
+  LM_SETCURSOR      = $0020;
+  LM_DRAWITEM       = $002B;
+  LM_MEASUREITEM    = $002C;
+  LM_DELETEITEM     = $002D;
+  LM_VKEYTOITEM     = $002E;
+  LM_CHARTOITEM     = $002F;
+  LM_SETFONT        = $0030;
+
+  LM_COMPAREITEM    = $0039;
+  LM_WINDOWPOSCHANGING = $0046;
+  LM_WINDOWPOSCHANGED = $0047;
+  LM_NOTIFY         = $004E;
+  LM_NOTIFYFORMAT   = $0055;
+
+  LM_NCCALCSIZE     = $0083;
+  LM_NCHITTEST      = $0084;
+  LM_NCPAINT        = $0085;
+  LM_NCACTIVATE     = $0086;
+  LM_GETDLGCODE     = $0087;
+  LM_NCMOUSEMOVE    = $00A0;
+  LM_NCLBUTTONDOWN  = $00A1;
+  LM_NCLBUTTONUP    = $00A2;
+  LM_NCLBUTTONDBLCLK  = $00A3;
+
+  LM_KEYFIRST       = $0100;
+  LM_KEYDOWN        = $0100;
+  LM_KEYUP          = $0101;
+  LM_CHAR           = $0102;
+
+  LM_SYSKEYDOWN     = $0104;
+  LM_SYSKEYUP       = $0105;
+  LM_SYSCHAR        = $0106;
+
+  LM_KEYLAST        = $0108;
+
+  LM_COMMAND        = $0111;
+  LM_SYSCOMMAND     = $0112;
+
+  LM_HSCROLL        = $0114;
+  LM_VSCROLL        = $0115;
+  LM_CTLCOLORMSGBOX   = $0132;
+  LM_CTLCOLOREDIT     = $0133;
+  LM_CTLCOLORLISTBOX  = $0134;
+  LM_CTLCOLORBTN      = $0135;
+  LM_CTLCOLORDLG      = $0136;
+  LM_CTLCOLORSCROLLBAR= $0137;
+  LM_CTLCOLORSTATIC   = $0138;
+
+  LM_MOUSEFIRST     = $0200;
+  LM_MOUSEMOVE      = $0200;
+  LM_LBUTTONDOWN    = $0201;
+  LM_LBUTTONUP      = $0202;
+  LM_LBUTTONDBLCLK  = $0203;
+  LM_RBUTTONDOWN    = $0204;
+  LM_RBUTTONUP      = $0205;
+  LM_RBUTTONDBLCLK  = $0206;
+  LM_MButtonDown    = $0207;
+  LM_MBUTTONUP      = $0208;
+  LM_MBUTTONDBLCLK  = $0209;
+  LM_MOUSEWHEEL     = $020A;
+  LM_MOUSELAST      = $020A;
+  // for triple and quad clicks see below
+
+  LM_CAPTURECHANGED = $0215;
+  LM_DROPFILES      = $0233;
+
+  LM_PARENTNOTIFY   = $0210;
+
+  //-------------
+  // End of Windows Compatability and messages
+  //-------------
+
 
 
 type
@@ -831,67 +832,207 @@ Implementation
 function GetMessageName(const AMessage: Integer):  String;
 begin
   case AMessage of
-    LM_Create           : Result :='LM_Create          ';
-    LM_Destroy          : Result :='LM_Destroy         ';
-    LM_SetLabel         : Result :='LM_SetLabel        ';
-    LM_SetLeft          : Result :='LM_SetLeft         ';
-    LM_SetTop           : Result :='LM_SetTop          ';
-    LM_SetWidth         : Result :='LM_SetWidth        ';
-    LM_SetHeight        : Result :='LM_SetHeight       ';
-    LM_AddChild         : Result :='LM_AddChild        ';
-    LM_Setsize          : Result :='LM_Setsize         ';
-    LM_GetLabel         : Result :='LM_GetLabel        ';
-    LM_AssignEvent      : Result :='LM_AssignEvent     ';
-    LM_AssignSelf       : Result :='LM_AssignSelf      ';
-    LM_SetName          : Result :='LM_SetName         ';
-    LM_RESIZECHILDREN   : Result :='LM_RESIZECHILDREN  ';
-    LM_ShowHide         : Result :='LM_ShowHide        ';
-    LM_AddPAge          : Result :='LM_AddPAge         ';
-    LM_GetLineCount     : Result :='LM_GetLineCount    ';
-    LM_SETTEXT          : Result :='LM_SETTEXT         ';
-    LM_GETTEXT          : Result :='LM_GETTEXT         ';
-    LM_CANVASCREATE     : Result :='LM_CANVASCREATE    ';
-    LM_ReDraw           : Result :='LM_ReDraw          ';
-    LM_SetColor         : Result :='LM_SetColor        ';
-    LM_RemovePage       : Result :='LM_RemovePage      ';
-    LM_ShowTabs         : Result :='LM_ShowTabs        ';
-    LM_SetTabPosition   : Result :='LM_SetTabPosition  ';
-    LM_Invalidate       : Result :='LM_Invalidate      ';
-    LM_SetPixel         : Result :='LM_SetPixel        ';
-    LM_GetPixel         : Result :='LM_GetPixel        ';
-    LM_SETPROPERTIES    : Result :='LM_SETPROPERTIES   ';      
-    LM_SETVALUE         : Result :='LM_SETVALUE        ';     
-    LM_GETVALUE         : Result :='LM_GETVALUE        ';     
-    LM_ATTACHMENU       : Result :='LM_ATTACHMENU      ';
-    LM_TB_BUTTONCOUNT   : Result :='LM_TB_BUTTONCOUNT  ';
-    LM_INSERTTOOLBUTTON : Result :='LM_INSERTTOOLBUTTON';
-    LM_DELETETOOLBUTTON : Result :='LM_DELETETOOLBUTTON';
-    LM_SetCursor        : Result :='LM_SetCursor       ';
-    LM_IMAGECHANGED     : Result :='LM_IMAGECHANGED    ';
-    LM_LAYOUTCHANGED    : Result :='LM_LAYOUTCHANGED   ';
-    LM_BTNDEFAULT_CHANGED: Result :='LM_BTNDEFAULT_CHANGED';
-    LM_LOADXPM          : Result :='LM_LOADXPM         ';
-    LM_DRAGINFOCHANGED  : Result :='LM_DRAGINFOCHANGED ';
-//    LM_SETENABLED       : Result :='LM_SETENABLED       ';
-    LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT    ';
-    LM_CB_GETCOUNT      : Result :='LM_CB_GETCOUNT     ';
-    LM_SETFORMICON      : Result :='LM_SETFORMICON     ';
-    LM_SETSHORTCUT      : Result :='LM_SETSHORTCUT     ';
-    LM_SETGEOMETRY      : Result :='LM_SETGEOMETRY     ';
-    LM_GETITEMS         : Result :='LM_GETITEMS        ';
-    LM_GETITEMINDEX     : Result :='LM_GETITEMINDEX    ';
-    LM_SETITEMINDEX     : Result :='LM_SETITEMINDEX    ';
-    LM_SORT             : Result :='LM_SORT            ';
-    LM_SETSELMODE       : Result :='LM_SETSELMODE      ';
-    LM_SETBORDER        : Result :='LM_SETBORDER       ';
-    LM_SCREENINIT       : Result :='LM_SCREENINIT      ';
-    // additional for TNoteBook
-    LM_NB_UpdateTab     : Result := 'LM_NB_UpdateTab';
+  //-------------
+  // Commands SENT TO the interface units
+  // add also a description to a message at the end of this unit
+  // here are no defines of message records sent to the interface
+  // These are declared in a later section
+  //-------------
+  LM_ComUser        :Result:='LM_ComUser';
+  LM_Create         :Result:='LM_Create';
+  LM_SetLabel       :Result:='LM_SetLabel';
+  LM_SetLeft        :Result:='LM_SetLeft';
+  LM_SetTop         :Result:='LM_SetTop';
+  LM_SetWidth       :Result:='LM_SetWidth';
+  LM_SetHeight      :Result:='LM_SetHeight';
+  LM_AddChild       :Result:='LM_AddChild';
+  LM_Setsize        :Result:='LM_Setsize';
+  LM_GetLabel       :Result:='LM_GetLabel';
+  LM_AssignEvent    :Result:='LM_AssignEvent';
+  LM_AssignSelf     :Result:='LM_AssignSelf';
+  LM_SetName        :Result:='LM_SetName';
+  LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
+  LM_ShowHide       :Result:='LM_ShowHide';
+  LM_AddPage        :Result:='LM_AddPage';
+  LM_GetLineCount   :Result:='LM_GetLineCount';
+  LM_SETTEXT        :Result:='LM_SETTEXT';
+  LM_GETTEXT        :Result:='LM_GETTEXT';
+  LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
+  LM_ReDraw         :Result:='LM_ReDraw';
+  LM_SetColor       :Result:='LM_SetColor';
+  LM_RemovePage     :Result:='LM_RemovePage';
+  LM_ShowTabs       :Result:='LM_ShowTabs';
+  LM_SetTabPosition :Result:='LM_SetTabPosition';
+  LM_Invalidate     :Result:='LM_Invalidate';
+  LM_SetPixel       :Result:='LM_SetPixel';
+  LM_GetPixel       :Result:='LM_GetPixel';
+
+  LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
+  LM_SETVALUE       :Result:='LM_SETVALUE';
+  LM_GETVALUE       :Result:='LM_GETVALUE';
+  LM_ATTACHMENU     :Result:='LM_ATTACHMENU';
+
+  LM_TB_BUTTONCOUNT :Result:='LM_TB_BUTTONCOUNT';
+  LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
+  LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
+
+  //LM_SetCursor :Result:='LM_SetCursor'; a LM_ComUser+48;  We define this later for Windows compatability.
+
+  LM_IMAGECHANGED   :Result:='LM_IMAGECHANGED';
+  LM_LAYOUTCHANGED  :Result:='LM_LAYOUTCHANGED';
+  LM_BTNDEFAULT_CHANGED :Result:='LM_BTNDEFAULT_CHANGED';
+
+  LM_LOADXPM        :Result:='LM_LOADXPM';
+
+  LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
+
+  //LM_SETENABLED   :Result:='LM_SETENABLED';
+  LM_BRINGTOFRONT   :Result:='LM_BRINGTOFRONT';
+  LM_POPUPSHOW      :Result:='LM_POPUPSHOW';
+
+
+  LM_RECREATEWND    :Result:='LM_RECREATEWND';
+  LM_SETFORMICON    :Result:='LM_SETFORMICON';
+
+  LM_MINIMIZE       :Result:='LM_MINIMIZE';
+
+  LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
+
+  LM_SETSHORTCUT    :Result:='LM_SETSHORTCUT';
+
+  LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
+
+  LM_GETITEMS       :Result:='LM_GETITEMS';
+  LM_GETITEMINDEX   :Result:='LM_GETITEMINDEX';
+  LM_SETITEMINDEX   :Result:='LM_SETITEMINDEX';
+  LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
+  LM_SETSELTEXT     :Result:='LM_SETSELTEXT';
+  LM_GETSELSTART    :Result:='LM_GETSELSTART';
+  LM_SETSELSTART    :Result:='LM_SETSELSTART';
+  LM_GETSELLEN      :Result:='LM_GETSELLEN';
+  LM_SETSELLEN      :Result:='LM_SETSELLEN';
+  LM_GETLIMITTEXT   :Result:='LM_GETLIMITTEXT';
+  LM_SETLIMITTEXT   :Result:='LM_SETLIMITTEXT';
+  LM_SORT           :Result:='LM_SORT';
+  LM_GETSELCOUNT    :Result:='LM_GETSELCOUNT';
+  LM_GETSEL         :Result:='LM_GETSEL';
+  LM_SETSEL         :Result:='LM_SETSEL';
+  LM_SETSELMODE     :Result:='LM_SETSELMODE';
+  LM_SETBORDER      :Result:='LM_SETBORDER';
+
+  // TListView
+  //LM_LV_FIRST       :Result:='LM_LV_FIRST';
+  LM_LV_ADDITEM     :Result:='LM_LV_ADDITEM';
+  LM_LV_CHANGEITEM  :Result:='LM_LV_CHANGEITEM';
+  LM_LV_DELETEITEM  :Result:='LM_LV_DELETEITEM';
+  LM_LV_SELECTITEM  :Result:='LM_LV_SELECTITEM';
+  //LM_LV_LAST        :Result:='LM_LV_LAST';
+
+  // TComboBox
+  //LM_CB_FIRST       :Result:='LM_CB_FIRST';
+  LM_CB_GETCOUNT    :Result:='LM_CB_GETCOUNT';
+  LM_CB_GETTEXT     :Result:='LM_CB_GETTEXT';
+  LM_CB_ADDTEXT     :Result:='LM_CB_ADDTEXT';
+  //LM_CB_LAST        :Result:='LM_CB_LAST';
+
+  // TNoteBook
+  //LM_NB_First       :Result:='LM_NB_First';
+  LM_NB_UpdateTab   :Result:='LM_NB_UpdateTab';
+  //LM_NB_Last        :Result:='LM_NB_Last';
+
+  // TListBox
+  //LM_LB_First          :Result:='LM_B_First';
+  LM_LB_GETTOPINDEX    :Result:='LM_LB_GETTOPINDEX';
+  LM_LB_SETTOPINDEX    :Result:='LM_LB_SETTOPINDEX';
+  //LM_LB_Last           :Result:='LM_LB_Last';
+
+
+  //-------------
+  // lcl messages
+  //
+  // This should be a list of LCL specific messages
+  // RECEIVED from the interface, here are no defines
+  // of messages send to the interface
+  //-------------
+  LM_USER           :Result:='LM_USER';
+  //WM_USER           :Result:='';
+  LM_DESTROY        :Result:='LM_DESTROY';
+  LM_ACTIVATEITEM   :Result:='LM_ACTIVATEITEM';
+  LM_CHANGED        :Result:='LM_CHANGED';
+  LM_FOCUS          :Result:='LM_FOCUS';
+  LM_CLICKED        :Result:='LM_CLICKED';
+  LM_PRESSED        :Result:='LM_PRESSED';
+  LM_RELEASED       :Result:='LM_RELEASED';
+  LM_MOVECURSOR     :Result:='LM_MOVECURSOR';
+  LM_ENTER          :Result:='LM_ENTER';
+  LM_LEAVE          :Result:='LM_LEAVE';
+  //LM_SIZEALLOCATE :Result:='LM_SIZEALLOCATE';
+  LM_CHECKRESIZE    :Result:='LM_CHECKRESIZE';
+  //LM_SHOW :Result:='LM_SHOW';
+  LM_INSERTTEXT     :Result:='LM_INSERTTEXT';
+  LM_DELETETEXT     :Result:='LM_DELETETEXT';
+  LM_SETEDITABLE    :Result:='LM_SETEDITABLE';
+  LM_MOVEWORD       :Result:='LM_MOVEWORD';
+  LM_MOVEPAGE       :Result:='LM_MOVEPAGE';
+  LM_MOVETOROW      :Result:='LM_MOVETOROW';
+  LM_MOVETOCOLUMN   :Result:='LM_MOVETOCOLUMN';
+  LM_KILLCHAR       :Result:='LM_KILLCHAR';
+  LM_KILLWORD       :Result:='LM_KILLWORD';
+  LM_KILLLINE       :Result:='LM_KILLLINE';
+  LM_CUTTOCLIP      :Result:='LM_CUTTOCLIP';
+  LM_COPYTOCLIP     :Result:='LM_COPYTOCLIP';
+  LM_PASTEFROMCLIP  :Result:='LM_PASTEFROMCLIP';
+  //LM_MOVERESIZE   :Result:='LM_MOVERESIZE';
+  LM_EXPOSEEVENT    :Result:='LM_EXPOSEEVENT';
+  LM_CONFIGUREEVENT :Result:='LM_CONFIGUREEVENT';
+  //LM_DRAW         :Result:='LM_DRAW';
+  LM_PAINT          :Result:='LM_PAINT';
+  LM_SHOWMODAL      :Result:='LM_SHOWMODAL';
+  LM_SETFILTER      :Result:='LM_SETFILTER';
+  LM_SETFILENAME    :Result:='LM_SETFILENAME';
+  LM_OK_CLICKED     :Result:='LM_OK_CLICKED';
+  LM_CANCEL_CLICKED :Result:='LM_CANCEL_CLICKED';
+  //LM_KEYDOWN      :Result:='LM_KEYDOWN';
+  //LM_KEYUP        :Result:='LM_KEYUP';
+  LM_TIMER          :Result:='LM_TIMER';
+  //LM_MOUSEBTNPRESS  :Result:='LM_MOUSEBTNPRESS';
+  //LM_MOUSEBTNRELEASE  :Result:='LM_MOUSEBTNRELEASE';
+  LM_EXIT           :Result:='LM_EXIT';
+  LM_SCREENINIT     :Result:='LM_SCREENINIT';
+  LM_CLOSEQUERY     :Result:='LM_CLOSEQUERY';
+  LM_DRAGSTART      :Result:='LM_DRAGSTART';
+  LM_DEACTIVATE     :Result:='LM_DEACTIVATE';
+
+  LM_MONTHCHANGED   :Result:='LM_MONTHCHANGED';
+  LM_YEARCHANGED    :Result:='LM_YEARCHANGED';
+  LM_DAYCHANGED     :Result:='LM_DAYCHANGED';
+
+  //LM_MOUSEFIRST2    :Result:='';
+  LM_LBUTTONTRIPLECLK :Result:='LM_LBUTTONTRIPLECLK';
+  LM_LBUTTONQUADCLK :Result:='LM_LBUTTONQUADCLK';
+  LM_MBUTTONTRIPLECLK :Result:='LM_MBUTTONTRIPLECLK';
+  LM_MBUTTONQUADCLK :Result:='LM_MBUTTONQUADCLK';
+  LM_RBUTTONTRIPLECLK :Result:='LM_RBUTTONTRIPLECLK';
+  LM_RBUTTONQUADCLK :Result:='LM_RBUTTONQUADCLK';
+  LM_MOUSEENTER     :Result:='LM_MOUSEENTER';
+  LM_MOUSELEAVE     :Result:='LM_MOUSELEAVE';
+  //LM_MOUSELAST2     :Result:='';
+
+  LM_GRABFOCUS      :Result:='LM_GRABFOCUS';
+
+  LM_DRAWLISTITEM   :Result:='LM_DRAWLISTITEM';
+
+  LM_INTERNALPAINT  :Result:='LM_INTERNALPAINT';
+
+  // these IDs are reserved for internal messages in the interfaces
+  LM_INTERFACEFIRST :Result:='LM_INTERFACEFIRST';
+  LM_INTERFACELAST  :Result:='LM_INTERFACELAST';
+
+  LM_UNKNOWN        :Result:='LM_UNKNOWN';
   else
     Result := Format('Unknown message 0x%x (%d)', [AMessage, AMessage]);
   end;
   Result  := Trim(Result);  
-  
 end;
 
 
@@ -899,6 +1040,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2002/12/27 17:12:37  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.43  2002/12/27 08:46:32  mattias
   changes for fpc 1.1
 

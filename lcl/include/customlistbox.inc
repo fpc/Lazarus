@@ -130,7 +130,7 @@ end;
 function TCustomListBox.GetTopIndex: Integer;
 begin
   if HandleAllocated then
-    FTopIndex:=CNSendMessage(LB_GETTOPINDEX, Self, nil);
+    FTopIndex:=CNSendMessage(LM_LB_GETTOPINDEX, Self, nil);
   Result := FTopIndex;
 end;
 
@@ -139,10 +139,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.SetTopIndex(const AValue: Integer);
 begin
-  if FTopIndex=AValue then exit;
   FTopIndex:=AValue;
   if HandleAllocated then
-    CNSendMessage(LB_SETTOPINDEX, Self, Pointer(FTopIndex));
+    CNSendMessage(LM_LB_SETTOPINDEX, Self, Pointer(FTopIndex));
 end;
 
 {------------------------------------------------------------------------------

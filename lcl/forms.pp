@@ -442,6 +442,9 @@ type
 
   TScreen = class(TComponent)
   private
+    FActiveControl: TWinControl;
+    FActiveCustomForm: TCustomForm;
+    FActiveForm: TForm;
     FCursor: TCursor;
     FCursorCount: integer;
     FCursorList: PCursorRec;
@@ -450,6 +453,10 @@ type
     FFonts : TStrings;
     FFormList: TList;
     FHintFont : TFont;
+    FLastActiveControl: TWinControl;
+    FLastActiveCustomForm: TCustomForm;
+    FOnActiveControlChange: TNotifyEvent;
+    FOnActiveFormChange: TNotifyEvent;
     FPixelsPerInch : integer;
     FSaveFocusedList: TList;
 
@@ -466,10 +473,14 @@ type
     procedure RemoveForm(FForm: TCustomForm);
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(Index: Integer; const AValue: HCURSOR);
+    procedure UpdateLastActive;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
   public
+    property ActiveControl: TWinControl read FActiveControl;
+    property ActiveCustomForm: TCustomForm read FActiveCustomForm;
+    property ActiveForm: TForm read FActiveForm;
     property Cursor: TCursor read FCursor write SetCursor;
     property Cursors[Index: Integer]: HCURSOR read GetCursors write SetCursors;
     property FormCount: Integer read GetFormCount;
@@ -479,6 +490,10 @@ type
     property HintFont : TFont read FHintFont;
     property Height : Integer read Getheight;
     property Width : Integer read GetWidth;
+    property OnActiveControlChange: TNotifyEvent
+      read FOnActiveControlChange write FOnActiveControlChange;
+    property OnActiveFormChange: TNotifyEvent
+      read FOnActiveFormChange write FOnActiveFormChange;
   end;
 
 

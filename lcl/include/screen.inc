@@ -1,3 +1,5 @@
+// included by forms.pp
+
 {******************************************************************************
                                   TScreen
  ******************************************************************************
@@ -259,13 +261,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TScreen.MyFunction
-  Params:   AOwner: the owner of the class
-  Returns:  String containing output from the function.
-
-  Description of the function for the class.
+  procedure TScreen.UpdateLastActive;
  ------------------------------------------------------------------------------}
-{function TScreen.MyFunction(AOwner: TComponent): String;
+procedure TScreen.UpdateLastActive;
 begin
+  if FLastActiveCustomForm <> FActiveCustomForm then
+  begin
+    FLastActiveCustomForm := FActiveCustomForm;
+    if Assigned(FOnActiveFormChange) then FOnActiveFormChange(Self);
+  end;
+  if FLastActiveControl <> FActiveControl then
+  begin
+    FLastActiveControl := FActiveControl;
+    if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Self);
+  end;
+end;
 
-end;}
+// included by forms.pp
+

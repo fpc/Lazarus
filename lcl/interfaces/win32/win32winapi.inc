@@ -1275,9 +1275,9 @@ End;
   Retrieves the x-coordinates and y-coordinates of the window origin for the
   specified device context.
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetWindowOrgEx(DC: HDC; Var P: TPoint): Integer;
+Function TWin32Object.GetWindowOrgEx(DC: HDC; P: PPoint): Integer;
 Begin
-  Result := Integer(Windows.GetWindowOrgEx(DC, @P));
+  Result := Integer(Windows.GetWindowOrgEx(DC, P));
 End;
 
 {------------------------------------------------------------------------------
@@ -2266,6 +2266,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.26  2002/12/26 11:00:15  mattias
   added included by to unitinfo and a few win32 functions
 

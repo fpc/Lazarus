@@ -35,6 +35,7 @@ the Delphi Windows unit. This is only done for compatibiltiy.
 }
 
 unit LCLType;
+
 {$mode objfpc}{$H+}
 
 interface
@@ -1310,12 +1311,23 @@ const
   TA_BOTTOM     = 8;
   TA_BASELINE   = 24;
   TA_RTLREADING = $100;
-  TA_MASK =  (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
+  TA_MASK       = (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
   
   { PolyFill() Modes }
   ALTERNATE     = 1;
   WINDING       = 2;
   POLYFILL_LAST = 2;
+  
+  { StretchBlt() Modes }
+  BLACKONWHITE      = 1;
+  WHITEONBLACK      = 2;
+  COLORONCOLOR      = 3;
+  HALFTONE          = 4;
+  MAXSTRETCHBLTMODE = 4;
+  
+  { constants for CreateDIBitmap }
+
+  CBM_INIT = 4;     { initialize bitmap  }
 
 
 type
@@ -1759,6 +1771,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2002/12/27 17:12:37  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.30  2002/12/25 13:30:36  mattias
   added more windows funcs and fixed jump to compiler error end of file
 
