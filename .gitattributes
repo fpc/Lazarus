@@ -105,6 +105,7 @@ components/synedit/synregexpr.pas svneol=native#text/pascal
 components/synedit/syntextdrawer.pp svneol=native#text/pascal
 components/turbopower_ipro/ipanim.pas svneol=native#text/pascal
 components/turbopower_ipro/ipconst.pas svneol=native#text/pascal
+components/turbopower_ipro/ipdefct.inc svneol=native#text/pascal
 components/turbopower_ipro/ipdefine.inc svneol=native#text/pascal
 components/turbopower_ipro/iphtml.pas svneol=native#text/pascal
 components/turbopower_ipro/iphtmlpv.pas svneol=native#text/pascal
