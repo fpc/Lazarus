@@ -1644,6 +1644,47 @@ Begin
   inherited WndProc(Message);
 end;
 
+procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
+begin
+  // ToDo
+end;
+
+procedure TWinControl.DockOver(Source: TDragDockObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  // ToDo
+end;
+
+procedure TWinControl.DoDockOver(Source: TDragDockObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  // ToDo
+end;
+
+procedure TWinControl.DoRemoveDockClient(Client: TControl);
+begin
+  // ToDo
+end;
+
+function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl
+  ): Boolean;
+begin
+  // ToDo
+  Result:=false;
+end;
+
+procedure TWinControl.GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
+  MousePos: TPoint; var CanDock: Boolean);
+begin
+  // ToDo
+end;
+
+procedure TWinControl.ReloadDockedControl(const AControlName: string;
+  var AControl: TControl);
+begin
+  // ToDo
+end;
+
 {------------------------------------------------------------------------------
   Method:  TWinControl.MainWndProc
   Params:  Message:
@@ -1686,6 +1727,13 @@ Begin
       //Sendmessage to do something?
     End;
   end;
+end;
+
+procedure TWinControl.SetUseDockManager(const AValue: Boolean);
+begin
+  if FUseDockManager=AValue then exit;
+  FUseDockManager:=AValue;
+  // ToDo
 end;
 
 procedure TWinControl.UpdateTabOrder(NewTabValue: TTabOrder);
@@ -2105,6 +2153,19 @@ begin
   Result := 0;
   if FControls <> nil then Inc(Result, FControls.Count);
   if FWinControls <> nil then Inc(Result, FWinControls.Count);
+end;
+
+function TWinControl.GetDockClientCount: Integer;
+begin
+  // ToDo
+  Result:=0;
+end;
+
+function TWinControl.GetDockClients(Index: Integer): TControl;
+begin
+  // ToDo
+  RaiseGDBException('not implemented');
+  Result:=nil;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2793,6 +2854,11 @@ begin
     RealizeBounds;
 end;
 
+procedure TWinControl.DockDrop(Source: TDragDockObject; X, Y: Integer);
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.GetIsResizing
   Params:  None
@@ -2811,6 +2877,18 @@ begin
     Result := FParent.FTabList.IndexOf(Self)
   else
     Result := -1;
+end;
+
+function TWinControl.GetVisibleDockClientCount: Integer;
+begin
+  // ToDo
+  Result:=0;
+end;
+
+procedure TWinControl.SetDockSite(const AValue: Boolean);
+begin
+  if FDockSite=AValue then exit;
+  FDockSite:=AValue;
 end;
 
 {------------------------------------------------------------------------------
@@ -2986,6 +3064,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.165  2003/08/27 11:01:10  mattias
+  started TDockTree
+
   Revision 1.164  2003/08/26 14:33:40  mattias
   implemented component tree for OI
 

@@ -467,6 +467,25 @@ type
   end;
 
 
+  { TDockManager is an abstract class for managing a dock site's docked
+    controls. See TDockTree for the default dock manager }
+  TDockManager = class
+    procedure BeginUpdate; virtual; abstract;
+    procedure EndUpdate; virtual; abstract;
+    procedure GetControlBounds(Control: TControl; var CtlBounds: TRect); virtual; abstract;
+    procedure InsertControl(Control: TControl; InsertAt: TAlign;
+      DropCtl: TControl); virtual; abstract;
+    procedure LoadFromStream(Stream: TStream); virtual; abstract;
+    procedure PaintSite(DC: HDC); virtual; abstract;
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
+      var DockRect: TRect); virtual; abstract;
+    procedure RemoveControl(Control: TControl); virtual; abstract;
+    procedure ResetBounds(Force: Boolean); virtual; abstract;
+    procedure SaveToStream(Stream: TStream); virtual; abstract;
+    procedure SetReplacingControl(Control: TControl); virtual; abstract;
+  end;
+
+
   { TSizeConstraints }
 
   TConstraintSize = 0..MaxInt;
@@ -729,6 +748,7 @@ type
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); dynamic;
     procedure DoStartDock(var DragObject: TDragObject); dynamic;
     function GetDockEdge(const MousePos: TPoint): TAlign; dynamic;
+    procedure PositionDockRect(DragDockObject: TDragDockObject); dynamic;
     procedure Click; dynamic;
     procedure DblClick; dynamic;
     procedure TripleClick; dynamic;
@@ -812,6 +832,13 @@ type
     function ColorIsStored: boolean; virtual;
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
+    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
+    function ManualDock(NewDockSite: TWinControl;
+      DropControl: TControl {$IFDEF VER1_1}= nil{$ENDIF};
+      ControlSide: TAlign {$IFDEF VER1_1}= alNone{$ENDIF}): Boolean;
+    function ManualFloat(ScreenPos: TRect): Boolean;
+    function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
+      DropControl: TControl; ControlSide: TAlign): Boolean;
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
     procedure Refresh;
@@ -835,7 +862,6 @@ type
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
-    procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
   public
     // Event lists
     procedure RemoveAllControlHandlersOfObject(AnObject: TObject);
@@ -944,7 +970,11 @@ type
     //FDockSite: Boolean;
     FClientWidth: Integer;
     FClientHeight: Integer;
+    FDockManager: TDockManager;
+    FDockSite: Boolean;
     FFlags: TWinControlFlags;
+    FOnDockDrop: TDockDropEvent;
+    FOnDockOver: TDockOverEvent;
     //FUseDockManager : Boolean;
     FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
@@ -954,22 +984,29 @@ type
     FOnMouseWheelUp: TMouseWheelUpDownEvent;
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
+    FOnUnDock: TUnDockEvent;
     FParentWindow: hwnd;
     FParentCtl3D: Boolean;
     FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
     FShowing: Boolean;
     FTabList: TList;
+    FUseDockManager: Boolean;
     FWinControls: TList;
     procedure AlignControl(AControl : TControl);
     function  GetControl(const Index: Integer): TControl;
     function  GetControlCount: Integer;
+    function GetDockClientCount: Integer;
+    function GetDockClients(Index: Integer): TControl;
     function  GetHandle : HWND;
     function  GetIsResizing: boolean;
     function GetTabOrder: TTabOrder;
+    function GetVisibleDockClientCount: Integer;
+    procedure SetDockSite(const AValue: Boolean);
     procedure SetHandle(NewHandle: HWND);
     Procedure SetBorderWidth(Value : TBorderWidth);
     Procedure SetParentCtl3D(Value : Boolean);
+    procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
   protected
     procedure AdjustSize; override;
@@ -1033,7 +1070,19 @@ type
     procedure Update; override;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
-    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
+    procedure DockOver(Source: TDragDockObject; X, Y: Integer;
+                       State: TDragState; var Accept: Boolean); dynamic;
+    procedure DoDockOver(Source: TDragDockObject; X, Y: Integer;
+                         State: TDragState; var Accept: Boolean); dynamic;
+    procedure DoRemoveDockClient(Client: TControl); dynamic;
+    function  DoUnDock(NewTarget: TWinControl; Client: TControl): Boolean; dynamic;
+    procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
+                          MousePos: TPoint; var CanDock: Boolean); dynamic;
+    procedure ReloadDockedControl(const AControlName: string;
+                                  var AControl: TControl); dynamic;
+    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+                           MousePos: TPoint): Boolean; dynamic;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDown(var Message: TLMKey): Boolean;
@@ -1054,21 +1103,29 @@ type
     procedure SetZOrderPosition(Position: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
-
-    property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
-    property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
-    property  IsResizing : Boolean read GetIsResizing;
-
-    property  ParentCtl3D : Boolean read FParentCtl3D write SetParentCtl3d default True;
-    { events }
-    property  OnEnter : TNotifyEvent read FOnEnter write FOnEnter;
-    property  OnExit  : TNotifyEvent read FOnExit write FOnExit;
-    property  OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
-    property  OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
-    property  OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
-    property  OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
-    property  OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
-    property  OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
+  public
+    property BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
+    property DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
+    property DockClientCount: Integer read GetDockClientCount;
+    property DockClients[Index: Integer]: TControl read GetDockClients;
+    property DockSite: Boolean read FDockSite write SetDockSite default False;
+    property DockManager: TDockManager read FDockManager write FDockManager;
+    property IsResizing: Boolean read GetIsResizing;
+    property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;
+    property OnDockOver: TDockOverEvent read FOnDockOver write FOnDockOver;
+    property OnEnter : TNotifyEvent read FOnEnter write FOnEnter;
+    property OnExit  : TNotifyEvent read FOnExit write FOnExit;
+    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
+    property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
+    property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
+    property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
+    property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
+    property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
+    property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
+    property ParentCtl3D: Boolean read FParentCtl3D write SetParentCtl3d default True;
+    property UseDockManager: Boolean read FUseDockManager
+                                     write SetUseDockManager default False;
+    property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(ParentWindow: HWnd);
@@ -1078,6 +1135,7 @@ type
     procedure EndUpdateBounds;
     procedure LockRealizeBounds;
     procedure UnlockRealizeBounds;
+    procedure DockDrop(Source: TDragDockObject; X, Y: Integer); dynamic;
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
     Function ControlAtPos(const Pos : TPoint;
@@ -1115,8 +1173,8 @@ type
     property Brush: TBrush read FBrush;
     property Controls[Index: Integer]: TControl read GetControl;
     property ControlCount: Integer read GetControlCount;
-    property Handle : HWND read GetHandle write SetHandle;
-    property Showing : Boolean read FShowing;
+    property Handle: HWND read GetHandle write SetHandle;
+    property Showing: Boolean read FShowing;
     property CachedClientWidth: integer read FClientWidth;
     property CachedClientHeight: integer read FClientHeight;
   end;
@@ -1169,6 +1227,108 @@ type
   published
     Property Height;
     Property Width;
+  end;
+
+
+{ TDockZone }
+
+  TDockTree = class;
+
+  { TDockZone is a node in the TDockTree and encapsulates a region into which
+    other zones are contained. }
+
+  TDockZone = class
+  private
+    function GetChildCount: Integer;
+    function GetHeight: Integer;
+    function GetLeft: Integer;
+    function GetLimitBegin: Integer;
+    function GetLimitSize: Integer;
+    function GetTop: Integer;
+    function GetVisible: Boolean;
+    function GetVisibleChildCount: Integer;
+    function GetWidth: Integer;
+    function GetZoneLimit: Integer;
+    procedure SetZoneLimit(const AValue: Integer);
+  public
+    constructor Create(Tree: TDockTree);
+    procedure ExpandZoneLimit(NewLimit: Integer);
+    function FirstVisibleChild: TDockZone;
+    function NextVisible: TDockZone;
+    function PrevVisible: TDockZone;
+    procedure ResetChildren;
+    procedure ResetZoneLimits;
+    procedure Update;
+    property ChildCount: Integer read GetChildCount;
+    property Height: Integer read GetHeight;
+    property Left: Integer read GetLeft;
+    property LimitBegin: Integer read GetLimitBegin;
+    property LimitSize: Integer read GetLimitSize;
+    property Top: Integer read GetTop;
+    property Visible: Boolean read GetVisible;
+    property VisibleChildCount: Integer read GetVisibleChildCount;
+    property Width: Integer read GetWidth;
+    property ZoneLimit: Integer read GetZoneLimit write SetZoneLimit;
+  end;
+
+
+  { TDockTree - a tree of TDockZones }
+
+  TForEachZoneProc = procedure(Zone: TDockZone) of object;
+
+  TDockTreeClass = class of TDockTree;
+  
+  TDockTreeFlag = (
+    dtfUpdateAllNeeded
+    );
+  TDockTreeFlags = set of TDockTreeFlag;
+
+  TDockTree = class(TDockManager)
+  private
+    FBorderWidth: Integer;
+    FDockSite: TWinControl;
+    FGrabberSize: Integer;
+    FGrabbersOnTop: Boolean;
+    FFlags: TDockTreeFlags;
+    //FOldRect: TRect;
+    FOldWndProc: TWndMethod;
+    //FReplacementZone: TDockZone;
+    //FScaleBy: Double;
+    //FShiftScaleOrient: TDockOrientation;
+    //FShiftBy: Integer;
+    //FSizePos: TPoint;
+    //FSizingDC: HDC;
+    //FSizingWnd: HWND;
+    //FSizingZone: TDockZone;
+    FTopZone: TDockZone;
+    //FTopXYLimit: Integer;
+    FUpdateCount: Integer;
+    //FVersion: Integer;
+    procedure WindowProc(var AMessage: TLMessage);
+    procedure DeleteZone(Zone: TDockZone);
+  protected
+    procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+    procedure GetControlBounds(AControl: TControl; var CtlBounds: TRect); override;
+    function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
+    procedure InsertControl(AControl: TControl; InsertAt: TAlign;
+                            DropCtl: TControl); override;
+    procedure LoadFromStream(SrcStream: TStream); override;
+    procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
+                             const ARect: TRect); virtual;
+    procedure PositionDockRect(AClient, DropCtl: TControl; DropAlign: TAlign;
+                               var DockRect: TRect); override;
+    procedure RemoveControl(AControl: TControl); override;
+    procedure SaveToStream(DestStream: TStream); override;
+    procedure SetReplacingControl(AControl: TControl); override;
+    procedure ResetBounds(Force: Boolean); override;
+    procedure UpdateAll;
+    property DockSite: TWinControl read FDockSite write FDockSite;
+  public
+    constructor Create(TheDockSite: TWinControl); virtual;
+    destructor Destroy; override;
+    procedure PaintSite(DC: HDC); override;
   end;
 
 
@@ -1648,6 +1808,8 @@ end;
 {$I control.inc}
 {$I graphiccontrol.inc}
 {$I customcontrol.inc}
+{$I dockzone.inc}
+{$I docktree.inc}
 {$I mouse.inc}
 {$I dragobject.inc}
 
@@ -1668,6 +1830,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.146  2003/08/27 11:01:10  mattias
+  started TDockTree
+
   Revision 1.145  2003/08/26 20:30:39  mattias
   fixed updating component tree on delete component
 

@@ -270,7 +270,7 @@ type
     property AutoScroll;
     property AutoSize;
     property Constraints;
-    //property DockSite;
+    property DockSite;
     property DragCursor;
     property DragKind;
     property DragMode;

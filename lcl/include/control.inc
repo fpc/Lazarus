@@ -140,6 +140,11 @@ begin
   end;
 end;
 
+procedure TControl.PositionDockRect(DragDockObject: TDragDockObject);
+begin
+  // ToDo
+end;
+
 {------------------------------------------------------------------------------
        TControl.BoundsChanged
 
@@ -2214,7 +2219,28 @@ end;
 
 procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
 begin
+  // ToDo
+end;
 
+function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
+  ControlSide: TAlign): Boolean;
+begin
+  // ToDo
+  Result:=false;
+end;
+
+function TControl.ManualFloat(ScreenPos: TRect): Boolean;
+begin
+  // ToDo
+  Result:=false;
+end;
+
+function TControl.ReplaceDockedControl(Control: TControl;
+  NewDockSite: TWinControl; DropControl: TControl; ControlSide: TAlign
+  ): Boolean;
+begin
+  // ToDo
+  Result:=false;
 end;
 
 procedure TControl.AddHandlerOnResize(OnResizeEvent: TNotifyEvent;
@@ -2535,6 +2561,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.152  2003/08/27 11:01:10  mattias
+  started TDockTree
+
   Revision 1.151  2003/08/26 20:30:39  mattias
   fixed updating component tree on delete component
 
