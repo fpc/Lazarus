@@ -187,7 +187,7 @@ endif
 
 # Targets
 
-override EXEOBJECTS+=hello notebk comdialogs progressbar trackbar listboxtest bitbutton combobox checkbox selection scrollbar
+override EXEOBJECTS+=hello notebk comdialogs progressbar trackbar listboxtest bitbutton combobox checkbox selection scrollbar testall
 
 # Clean
 
