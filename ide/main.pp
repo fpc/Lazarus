@@ -586,6 +586,9 @@ begin
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
     Load(false);
+    TranslateResourceStrings(ExtractFilePath(ExpandFilename(ParamStr(0))),
+      LazarusLanguageIDs[EnvironmentOptions.Language]);
+
     if EnvironmentOptions.CompilerFilename='' then
       EnvironmentOptions.CompilerFilename:=FindDefaultCompilerPath;
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
@@ -593,7 +596,7 @@ begin
     OnApplyWindowLayout:=@Self.OnApplyWindowLayout;
   end;
   UpdateDefaultPascalFileExtensions;
-
+  
   EditorOpts:=TEditorOptions.Create;
   EditorOpts.Load;
 
@@ -6566,6 +6569,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.320  2002/07/04 14:48:22  lazarus
+  MG: added internationalization, started with german
+
   Revision 1.319  2002/07/04 10:44:50  lazarus
   MG: added comment for MainIDE:=Self;
 

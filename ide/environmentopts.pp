@@ -65,10 +65,20 @@ type
   TDebuggerType = (dtNone, dtGnuDebugger);
 
   TPascalExtType = (petNone, petPAS, petPP);
+  
+  TLazarusLanguage = (llAutomatic, llEnglish, llGerman);
 
 const
   DebuggerName : array[TDebuggerType] of string = (
     '(None)','GNU debugger (gdb)'
+  );
+  
+  LazarusLanguageNames: array[TLazarusLanguage] of string = (
+    'Automatic (default is english)', 'English', 'Deutsch'
+  );
+  
+  LazarusLanguageIDs: array[TLazarusLanguage] of string = (
+    '', 'en', 'de'
   );
   
   PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
@@ -141,6 +151,8 @@ type
     fPascalFileExtension: TPascalExtType;
     fPascalFileLowerCase: boolean;
     
+    // language
+    fLanguage: TLazarusLanguage;
     
     procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
 
@@ -251,6 +263,9 @@ type
        read fPascalFileExtension write fPascalFileExtension;
     property PascalFileLowerCase: boolean
        read fPascalFileLowerCase write fPascalFileLowerCase;
+       
+    // language
+    property Language: TLazarusLanguage read fLanguage write fLanguage;
   end;
 
   //----------------------------------------------------------------------------
@@ -263,6 +278,10 @@ type
   { form for environment options }
   TEnvironmentOptionsDialog = class(TForm)
     NoteBook: TNoteBook;
+
+    // language
+    LanguageGroupBox: TGroupBox;
+    LanguageComboBox: TComboBox;
     
     // auto save
     AutoSaveGroupBox: TGroupBox;
@@ -464,6 +483,9 @@ begin
 
   FFilename:='';
 
+  // language
+  Language:=llAutomatic;
+
   // auto save
   FAutoSaveEditorFiles:=true;
   FAutoSaveProject:=true;
@@ -614,11 +636,26 @@ var XMLConfig: TXMLConfig;
     if fPascalFileExtension=petNone then
       fPascalFileExtension:=petPAS;
   end;
+  
+  procedure LoadLanguage;
+  var l: TLazarusLanguage;
+    s: string;
+  begin
+    s:=XMLConfig.GetValue(
+       'EnvironmentOptions/Language/ID',LazarusLanguageIDs[fLanguage]);
+    for l:=Low(TLazarusLanguage) to High(TLazarusLanguage) do begin
+      if LazarusLanguageIDs[l]=s then
+        fLanguage:=l;
+    end;
+  end;
 
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
     FileVersion:=XMLConfig.GetValue('EnvironmentOptions/Version/Value',0);
+    
+    // language
+    LoadLanguage;
 
     // auto save
     FAutoSaveEditorFiles:=XMLConfig.GetValue(
@@ -800,6 +837,10 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
     XMLConfig.SetValue('EnvironmentOptions/Version/Value',EnvOptsVersion);
+
+    // language
+    XMLConfig.SetValue('EnvironmentOptions/Language/ID'
+       ,LazarusLanguageIDs[fLanguage]);
 
     // auto save
     XMLConfig.SetValue('EnvironmentOptions/AutoSave/EditorFiles'
@@ -1059,17 +1100,48 @@ end;
 
 procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
 var MaxX:integer;
+  l: TLazarusLanguage;
 begin
   MaxX:=ClientWidth-5;
+
+  // language
+  LanguageGroupBox:=TGroupBox.Create(Self);
+  with LanguageGroupBox do begin
+    Name:='LanguageGroupBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=8;
+    Top:=2;
+    Width:=(MaxX div 2) - 15;
+    Height:=50;
+    Caption:='Language';
+    Visible:=true;
+  end;
+  
+  LanguageComboBox:=TComboBox.Create(Self);
+  with LanguageComboBox do begin
+    Name:='LanguageComboBox';
+    Parent:=LanguageGroupBox;
+    Left:=5;
+    Top:=3;
+    Width:=LanguageGroupBox.ClientWidth-2*Left;
+    with Items do begin
+      BeginUpdate;
+      for l:=Low(TLazarusLanguage) to High(TLazarusLanguage) do begin
+        Add(LazarusLanguageNames[l]+' ['+LazarusLanguageIDs[l]+']');
+      end;
+      EndUpdate;
+    end;
+    Visible:=true;
+  end;
 
   // auto save
   AutoSaveGroupBox:=TGroupBox.Create(Self);
   with AutoSaveGroupBox do begin
     Name:='AutoSaveGroupBox';
     Parent:=NoteBook.Page[Page];
-    Left:=8;
-    Top:=2;
-    Width:=(MaxX div 2) - 15;
+    Left:=LanguageGroupBox.Left;
+    Top:=LanguageGroupBox.Top+LanguageGroupBox.Height+5;
+    Width:=LanguageGroupBox.Width;
     Height:=108;
     Caption:='Auto save';
     Visible:=true;
@@ -1205,7 +1277,7 @@ begin
     Name:='WindowPositionsGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:='Window Positions';
-    SetBounds(MaxX div 2,AutoSaveGroupBox.Top,(MaxX div 2)-5,290);
+    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,290);
     OnResize:=@WindowPositionsGroupBoxResize;
     Visible:=true;
   end;
@@ -2067,11 +2139,20 @@ var MaxX:integer;
 begin
   MaxX:=ClientWidth-5;
 
+  // language
+  with LanguageGroupBox do begin
+    SetBounds(8,2,(MaxX div 2) - 15,50);
+  end;
+
+  with LanguageComboBox do begin
+    SetBounds(5,3,LanguageGroupBox.ClientWidth-2*Left,Height);
+  end;
+
   // auto save
   with AutoSaveGroupBox do begin
-    Left:=8;
-    Top:=2;
-    Width:=(MaxX div 2) - 15;
+    Left:=LanguageGroupBox.Left;
+    Top:=LanguageGroupBox.Top+LanguageGroupBox.Height+5;
+    Width:=LanguageGroupBox.Width;
     Height:=108;
   end;
 
@@ -2143,7 +2224,7 @@ begin
 
   // Window Positions
   with WindowPositionsGroupBox do begin
-    SetBounds(MaxX div 2,AutoSaveGroupBox.Top,(MaxX div 2)-5,290);
+    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,290);
   end;
 end;
 
@@ -2699,6 +2780,9 @@ procedure TEnvironmentOptionsDialog.ReadSettings(
 var i: integer;
 begin
   with AnEnvironmentOptions do begin
+    // language
+    LanguageComboBox.ItemIndex:=ord(Language);
+  
     // auto save
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
     AutoSaveProjectCheckBox.Checked:=AutoSaveProject;
@@ -2803,8 +2887,15 @@ end;
 
 procedure TEnvironmentOptionsDialog.WriteSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
+var
+  l: TLazarusLanguage;
 begin
   with AnEnvironmentOptions do begin
+    // language
+    for l:=low(TLazarusLanguage) to High(TLazarusLanguage) do
+      if ord(l)=LanguageComboBox.ItemIndex then
+        Language:=l;
+
     // auto save
     AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
     AutoSaveProject:=AutoSaveProjectCheckBox.Checked;

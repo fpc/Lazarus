@@ -1,0 +1,26 @@
+The <lazarusdir>/languages directory contains all the stuff for
+internationalization of lazarus IDE.
+
+All text and messages used in the IDE should be placed into the unit
+lazarusidestrconsts.pas. This unit uses a resourcestring section, so that the
+compiler will create the <lazarusdir>/lazarusidestrconsts.rst file.
+Since this is a fpc-only format it must be converted with the rstconv program:
+
+cd <lazarusdir>/languages
+rstconv -i ../lazarusidestrconsts.rst -o lazaruside.po
+
+This will create the file lazaruside.po, which should be translated in all
+required languages to a lazaruside.xx.po file. For the xx see the gettext unit
+in the procedure TranslateResourceStrings.
+
+german: lazaruside.de.po
+
+
+After the translation, the lazaruside.xx.po file is converted to an .mo file
+with the msgfmt program:
+
+msgfmt -v -o lazaruside.xx.mo lazaruside.xx.po
+
+where xx is the language id.
+
+

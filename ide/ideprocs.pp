@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, XMLCfg;
+  Classes, SysUtils, XMLCfg, GetText;
 
 //
 const
@@ -69,7 +69,7 @@ procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
 function TabsToSpaces(const s: string; TabWidth: integer): string;
-
+procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 
 implementation
 
@@ -565,6 +565,104 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TranslateUnitResourceStrings(const ResUnitName, AFilename: string);
+var
+  mo: TMOFile;
+  TableID, StringID, TableCount: Integer;
+  s: String;
+begin
+  if (ResUnitName='') or (AFilename='') then exit;
+  try
+    mo := TMOFile.Create(AFilename);
+    try
+      for TableID:=0 to ResourceStringTableCount - 1 do
+      begin
+        TableCount := ResourceStringCount(TableID);
+
+        // check if this table belongs to the ResUnitName
+        if TableCount=0 then continue;
+        s:=GetResourceStringName(TableID,0);
+        if AnsiCompareText(ResUnitName+'.',LeftStr(s,length(ResUnitName)+1))<>0
+        then continue;
+
+        // translate all resource strings of the unit
+        for StringID := 0 to TableCount - 1 do begin
+          s := mo.Translate(GetResourceStringDefaultValue(TableID,StringID),
+            GetResourceStringHash(TableID,StringID));
+          if Length(s) > 0 then begin
+            SetResourceStringValue(TableID,StringID,s);
+          end;
+        end;
+      end;
+    finally
+      mo.Free;
+    end;
+  except
+    on e: Exception do;
+  end;
+end;
+
+procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
+  Lang, FallbackLang: string);
+begin
+  if (ResUnitName='') or (BaseFilename='')
+  or ((Lang='') and (FallbackLang='')) then exit;
+  
+  if FallbackLang<>'' then
+    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
+  if Lang<>'' then
+    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
+end;
+
+procedure GetLanguageIDs(var Lang, FallbackLang: string);
+begin
+  Lang := GetEnv('LC_ALL');
+  FallbackLang:='';
+  
+  if Length(Lang) = 0 then
+  begin
+    Lang := GetEnv('LC_MESSAGES');
+    if Length(Lang) = 0 then
+    begin
+      Lang := GetEnv('LANG');
+      if Length(Lang) = 0 then
+        exit;   // no language defined via environment variables
+    end;
+  end;
+
+  FallbackLang := Copy(Lang, 1, 2);
+  Lang := Copy(Lang, 1, 5);
+end;
+
+{-------------------------------------------------------------------------------
+  TranslateResourceStrings
+
+  Params: none
+  Result: none
+
+  Translates all resourcestrings of the resource string files:
+    - lclstrconsts.pas
+    - codetoolsstrconsts.pas
+    - lazarusstrconsts.pas
+-------------------------------------------------------------------------------}
+procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
+var
+  Lang, FallbackLang: String;
+begin
+  if CustomLang='' then begin
+    GetLanguageIDs(Lang,FallbackLang);
+  end else begin
+    Lang:=CustomLang;
+    FallbackLang:='';
+  end;
+  TranslateUnitResourceStrings('LclStrConsts',
+     AppendPathDelim(BaseDirectory)+'lcl/languages/lcl.%s.mo',
+                     Lang,FallbackLang);
+  TranslateUnitResourceStrings('LazarusIDEStrConsts',
+     AppendPathDelim(BaseDirectory)+'languages/lazaruside.%s.mo',
+                     Lang,FallbackLang);
 end;
 
 end.

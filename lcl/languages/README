@@ -9,7 +9,7 @@ Since this is a fpc-only format it must be converted with the rstconv program:
 cd lcl/languages
 rstconv -i ../units/lclstrconsts.rst -o lcl.po
 
-This will create the lcl.po, which should be translated in all required
+This will create the file lcl.po, which should be translated in all required
 languages to a lcl.xx.po file. For the xx see the gettext unit in the procedure
 TranslateResourceStrings.
 

@@ -1,0 +1,532 @@
+#: lazarusidestrconsts:lisselectiontool
+msgid "Selection tool"
+msgstr ""
+
+#: lazarusidestrconsts:liscursorcolumnincurrenteditor
+msgid "Cursor column in current editor"
+msgstr ""
+
+#: lazarusidestrconsts:liscursorrowincurrenteditor
+msgid "Cursor row in current editor"
+msgstr ""
+
+#: lazarusidestrconsts:liscompilerfilename
+msgid "Compiler filename"
+msgstr ""
+
+#: lazarusidestrconsts:liswordatcursorincurrenteditor
+msgid "Word at cursor in current editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
+msgid "Expanded filename of current editor file"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalsourcedirectory
+msgid "Freepascal source directory"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusdirectory
+msgid "Lazarus directory"
+msgstr ""
+
+#: lazarusidestrconsts:lislclwidgettype
+msgid "LCL Widget Type"
+msgstr ""
+
+#: lazarusidestrconsts:liscommandlineparamsofprogram
+msgid "Command line parameters of program"
+msgstr ""
+
+#: lazarusidestrconsts:lispromptforvalue
+msgid "Prompt for value"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectfilename
+msgid "Project filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectdirectory
+msgid "Project directory"
+msgstr ""
+
+#: lazarusidestrconsts:lissavecurrenteditorfile
+msgid "save current editor file"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveallmodified
+msgid "save all modified files"
+msgstr ""
+
+#: lazarusidestrconsts:listargetfilenameofproject
+msgid "Target filename of project"
+msgstr ""
+
+#: lazarusidestrconsts:listargetfilenameplusparams
+msgid "Target filename + params"
+msgstr ""
+
+#: lazarusidestrconsts:lislaunchingcmdline
+msgid "Launching target command line"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufile
+msgid "&File"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuedit
+msgid "&Edit"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusearch
+msgid "&Search"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuview
+msgid "&View"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuproject
+msgid "&Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenurun
+msgid "&Run"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutools
+msgid "&Tools"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuenvironent
+msgid "E&nvironment"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuhelp
+msgid "&Help"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewunit
+msgid "New Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewform
+msgid "New Form"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopen
+msgid "Open"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenrecent
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusave
+msgid "Save"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusaveas
+msgid "Save As"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusaveall
+msgid "Save All"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuclose
+msgid "Close"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucloseall
+msgid "Close All"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuquit
+msgid "Quit"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuundo
+msgid "Undo"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuredo
+msgid "Redo"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucut
+msgid "Cut"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucopy
+msgid "Copy"
+msgstr ""
+
+#: lazarusidestrconsts:lismenupaste
+msgid "Paste"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuindentselection
+msgid "Indent selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuunindentselection
+msgid "Unindent selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuuppercaseselection
+msgid "Uppercase selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenulowercaseselection
+msgid "Lowercase selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutabstospacesselection
+msgid "Tabs to spaces in selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucompletecode
+msgid "Complete Code"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufind
+msgid "Find"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufindnext
+msgid "Find &Next"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufindprevious
+msgid "Find &Previous"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufindinfiles
+msgid "Find &in files"
+msgstr ""
+
+#: lazarusidestrconsts:lismenureplace
+msgid "Replace"
+msgstr ""
+
+#: lazarusidestrconsts:lismenugotoline
+msgid "Goto line"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumpback
+msgid "Jump back"
+msgstr ""
+
+#: lazarusidestrconsts:lismenujumpforward
+msgid "Jump forward"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddjumppointtohistory
+msgid "Add jump point to history"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewjumphistory
+msgid "View Jump-History"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufindblockotherendofcodeblock
+msgid "Find other end of code block"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufindcodeblockstart
+msgid "Find code block start"
+msgstr ""
+
+#: lazarusidestrconsts:lismenufinddeclarationatcursor
+msgid "Find Declaration at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenfilenameatcursor
+msgid "Open filename at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenugotoincludedirective
+msgid "Goto include directive"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewobjectinspector
+msgid "Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewprojectexplorer
+msgid "Project Explorer"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcodeexplorer
+msgid "Code Explorer"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewunits
+msgid "Units..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewforms
+msgid "Forms..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewmessages
+msgid "Messages"
+msgstr ""
+
+#: lazarusidestrconsts:lismenudebugwindows
+msgid "Debug windows"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewwatches
+msgid "Watches"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewlocalvariables
+msgid "Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcallstack
+msgid "Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewdebugoutput
+msgid "Debug output"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewproject
+msgid "New Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenproject
+msgid "Open Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenrecentproject
+msgid "Open Recent Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusaveproject
+msgid "Save Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenusaveprojectas
+msgid "Save Project As..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddunittoproject
+msgid "Add active unit to Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuremoveunitfromproject
+msgid "Remove from Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "View Source"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuprojectoptions
+msgid "Project Options..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenubuild
+msgid "Build"
+msgstr ""
+
+#: lazarusidestrconsts:lismenubuildall
+msgid "Build all"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuprojectrun
+msgid "Run"
+msgstr ""
+
+#: lazarusidestrconsts:lismenupause
+msgid "Pause"
+msgstr ""
+
+#: lazarusidestrconsts:lismenustepinto
+msgid "Step into"
+msgstr ""
+
+#: lazarusidestrconsts:lismenustepover
+msgid "Step over"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuruntocursor
+msgid "Run to cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenustop
+msgid "Stop"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucompileroptions
+msgid "Compiler Options..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenurunparameters
+msgid "Run Parameters ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenusettings
+msgid "Settings ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenuquicksyntaxcheck
+msgid "Quick syntax check"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuguessunclosedblock
+msgid "Guess unclosed block"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuguessmisplacedifdef
+msgid "Guess misplaced IFDEF/ENDIF"
+msgstr ""
+
+#: lazarusidestrconsts:lismenubuildlazarus
+msgid "Build Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconfigurebuildlazarus
+msgid "Configure \"Build Lazarus\""
+msgstr ""
+
+#: lazarusidestrconsts:lismenugeneraloptions
+msgid "General options"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditoroptions
+msgid "Editor options"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucodetoolsoptions
+msgid "CodeTools options"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucodetoolsdefineseditor
+msgid "CodeTools defines editor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaboutlazarus
+msgid "About Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:lisresourcefilecomment
+msgid "{ This is an automatically generated lazarus resource file }"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenfile
+msgid "Open file"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenprojectfile
+msgid "Open Project File"
+msgstr ""
+
+#: lazarusidestrconsts:lissavespace
+msgid "Save "
+msgstr ""
+
+#: lazarusidestrconsts:lissavechangestoproject
+msgid "Save changes to project?"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectchanged
+msgid "Project changed"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpcsourcedirectoryerror
+msgid "FPC Source Directory error"
+msgstr ""
+
+#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+msgid "Please check the freepascal source directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscompilererror
+msgid "Compiler error"
+msgstr ""
+
+#: lazarusidestrconsts:lisplzcheckthecmpilername
+msgid "Please check the compiler name"
+msgstr ""
+
+#: lazarusidestrconsts:lisaboutlazarus
+msgid "About Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:lisaboutlazarusmsg
+msgid "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
+msgstr ""
+
+#: lazarusidestrconsts:lsiunitnamealreadyexistscap
+msgid "Unitname already in project"
+msgstr ""
+
+#: lazarusidestrconsts:lsiunitnamealreadyexiststext
+msgid "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
+msgstr ""
+
+#: lazarusidestrconsts:lsiinvalidpascalidentifiercap
+msgid "Invalid Pascal Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lsiinvalidpascalidentifiertext
+msgid "The name \"%s\" is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lsihintnewunit
+msgid "New Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintopen
+msgid "Open"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintsave
+msgid "Save"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintsaveall
+msgid "Save all"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintnewform
+msgid "New Form"
+msgstr ""
+
+#: lazarusidestrconsts:lsihinttoggleformunit
+msgid "Toggle Form/Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintviewunits
+msgid "View Units"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintviewforms
+msgid "View Forms"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintrun
+msgid "Run"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintpause
+msgid "Pause"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintstepinto
+msgid "Step Into"
+msgstr ""
+
+#: lazarusidestrconsts:lsihintstepover
+msgid "Step Over"
+msgstr ""
+
