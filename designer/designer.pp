@@ -510,17 +510,15 @@ begin
   Sender.Dispatch(TheMessage);
   if ControlSelection.SelectionForm=Form then begin
     if not ControlSelection.IsResizing then begin
-      if (ControlSelection.IsSelected(Sender)) then begin
-        {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
-          ' ',Sender.Width,',',Sender.Height,
-          ' Type=',TheMessage.SizeType
-          ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
-        ControlSelection.UpdateBounds;
-        if Assigned(FOnPropertiesChanged) then
-          FOnPropertiesChanged(Self);
-      end;
-      ControlSelection.InvalidateGuideLinesCache;
+      {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
+        ' ',Sender.Width,',',Sender.Height,
+        ' Type=',TheMessage.SizeType
+        ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
+      ControlSelection.UpdateBounds;
+      if Assigned(FOnPropertiesChanged) then
+        FOnPropertiesChanged(Self);
     end;
+    ControlSelection.InvalidateGuideLinesCache;
   end;
 end;
 
@@ -531,12 +529,10 @@ begin
   //writeln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
   if ControlSelection.SelectionForm=Form then begin
     if not ControlSelection.IsResizing then begin
-      if (ControlSelection.IsSelected(Sender)) then begin
-        //writeln('***  TDesigner.MoveControl ',Sender.Name,':',Sender.ClassName,' ',Assigned(FOnPropertiesChanged));
-        ControlSelection.UpdateBounds;
-        if Assigned(FOnPropertiesChanged) then
-          FOnPropertiesChanged(Self);
-      end;
+      //writeln('***  TDesigner.MoveControl ',Sender.Name,':',Sender.ClassName,' ',Assigned(FOnPropertiesChanged));
+      ControlSelection.UpdateBounds;
+      if Assigned(FOnPropertiesChanged) then
+        FOnPropertiesChanged(Self);
     end;
     ControlSelection.InvalidateGuideLinesCache;
   end;
@@ -652,12 +648,14 @@ Begin
               ControlSelection.Delete(CompIndex);
             end;
           end else begin
-            // no shift key (single selection)
+            // no shift key (single selection or kept multiselection)
 
             if (CompIndex<0) then begin
               // select only this component
               ControlSelection.AssignComponent(MouseDownComponent);
-            end;
+            end else
+              // sync with the interface
+              ControlSelection.UpdateBounds;
           end;
         end;
       end else begin

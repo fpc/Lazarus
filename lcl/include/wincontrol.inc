@@ -682,14 +682,33 @@ End;
   up to the interface to handle moves instantly or queued.
 -------------------------------------------------------------------------------}
 Function TWinControl.GetClientOrigin: TPoint;
+var
+  AControl: TWinControl;
 Begin
   Result.X := 0;
   Result.Y := 0;
 //writeln('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
-  LCLLinux.ClientToScreen(Handle,Result);
+  if HandleAllocated then begin
+    // get the interface idea where the client area is on the screen
+    LCLLinux.ClientToScreen(Handle,Result);
+    // adjust the result by all bounds, that are not yet sent to the interface
+    AControl:=Self;
+    repeat
+      inc(Result.X,AControl.Left-AControl.FBoundsRealized.Left);
+      inc(Result.Y,AControl.Top-AControl.FBoundsRealized.Top);
+      AControl:=AControl.Parent;
+    until AControl=nil;
+  end else
+    Result:=inherited GetClientOrigin;
   Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
 
+{-------------------------------------------------------------------------------
+  TWinControl GetClientRect
+  Result:  TRect
+
+  returns the client area. Starting at 0,0.
+-------------------------------------------------------------------------------}
 function TWinControl.GetClientRect: TRect;
 
   procedure StoreClientRect(NewClientRect: TRect);
@@ -715,6 +734,8 @@ begin
     LCLLinux.GetClientRect(Handle, Result);
     // the LCL is not always in sync with the interface
     // -> adjust client rect based on LCL bounds
+    // for example: if the Width in LCL differ from the Width of the Interface
+    // object, then adjust the clientwidth accordingly
     LCLLinux.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
     Result.Right:=Width-(InterfaceWidth-Result.Right);
     Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
@@ -2779,6 +2800,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.136  2003/06/12 18:55:44  mattias
+  improved designer to recognize auto child moves
+
   Revision 1.135  2003/06/11 22:29:42  mattias
   fixed realizing bounds after loading form
 
