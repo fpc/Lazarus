@@ -163,6 +163,7 @@ type
   TWinControl = class;
   TControl = class;
   TWinControlClass = class of TWinControl;
+  TControlClass = class of TControl;
 
   TDate = type TDateTime;
   TTime = type TDateTime;
@@ -2809,6 +2810,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.264  2005/01/07 21:02:48  micha
+  add tcontrolclass, needed by codetoolsdefines
+
   Revision 1.263  2005/01/03 22:44:31  mattias
   implemented TControl.AnchorSide
 
