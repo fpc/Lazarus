@@ -325,8 +325,8 @@ begin
         then begin
           for J := 0 to Item[I].SubItems.Count - 1 do
           begin
-            {$ifdef Endian_Little}
-            ReverseBytes(@PInt,4);
+            {$ifdef Endian_BIG}
+            ReverseBytes(PInt,4);
             {$endif}
             Item[I].SubItemImages[J] := PInt^;
             Inc(PInt);
@@ -375,7 +375,7 @@ begin
   try
     ItemHeader^.Size := Size;
     ItemHeader^.Count := Count;
-    {$ifdef Endian_Little}
+    {$ifdef Endian_BIG}
     ReverseBytes(@ItemHeader^.Size,4);
     ReverseBytes(@ItemHeader^.Count,4);
     {$endif}
@@ -420,8 +420,8 @@ begin
       for J := 0 to  Item[I].SubItems.Count - 1 do
       begin
         PInt^ :=  Item[I].SubItemImages[J];
-        {$ifdef Endian_Little}
-        ReverseBytes(@PInt,4);
+        {$ifdef Endian_BIG}
+        ReverseBytes(PInt,4);
         {$endif}
         Inc(PInt);
       end;
@@ -436,6 +436,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/11/13 15:53:14  marc
+  * Fixed endianess
+
   Revision 1.24  2004/08/15 17:00:58  mattias
   improved DefineProperties to read/write endian independent
 
