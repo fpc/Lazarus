@@ -22,6 +22,14 @@ msgstr ""
 msgid "&Delete"
 msgstr ""
 
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr ""
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr ""
+
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
 msgstr ""
@@ -216,5 +224,29 @@ msgstr ""
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
+msgstr ""
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr ""
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
 msgstr ""
 

@@ -1,5 +1,5 @@
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.1 beta"
+msgid "0.9.2 beta"
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
@@ -710,6 +710,18 @@ msgstr ""
 msgid "About Lazarus"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuonlinehelp
+msgid "Online Help"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconfigurehelp
+msgid "Configure Help"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucontexthelp
+msgid "Context sensitive Help"
+msgstr ""
+
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr ""
@@ -754,6 +766,14 @@ msgstr ""
 msgid "Format error"
 msgstr ""
 
+#: lazarusidestrconsts:lislfmfilecorrupt
+msgid "LFM file corrupt"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletofindavalidclassnamein
+msgid "Unable to find a valid classname in %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoconvertfileerror
 msgid "Unable to convert file %s%s%s%sError: %s"
 msgstr ""
@@ -764,6 +784,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liserrorcreatinglrs
 msgid "Error creating lrs"
+msgstr ""
+
+#: lazarusidestrconsts:lislfmfilenotfound
+msgid "LFM file not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitlfmfile
+msgid "Unit: %s%sLFM file: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoconvertlfmtolrsandwritelrsfile
@@ -1174,6 +1202,30 @@ msgstr ""
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
 msgstr ""
 
+#: lazarusidestrconsts:lisclassnotfound
+msgid "Class not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisclassisnotaregisteredcomponentclassunabletopaste
+msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+msgstr ""
+
+#: lazarusidestrconsts:liscontrolneedsparent
+msgid "Control needs parent"
+msgstr ""
+
+#: lazarusidestrconsts:listheclassisatcontrolandcannotbepastedontoanoncontro
+msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
+msgstr ""
+
+#: lazarusidestrconsts:lisconversionerror
+msgid "Conversion error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoconvertcomponenttextintobinaryformat
+msgid "Unable to convert component text into binary format:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
 msgstr ""
@@ -1307,7 +1359,7 @@ msgid "Choose Lazarus Directory"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosecompilerpath
-msgid "Choose compiler filename (ppc386)"
+msgid "Choose compiler filename (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosefpcsourcedir
@@ -1671,7 +1723,7 @@ msgid "Lazarus directory (default for all projects)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfpcpath
-msgid "Compiler path (ppc386)"
+msgid "Compiler path (%s)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
@@ -2047,7 +2099,7 @@ msgid "Visible gutter"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
-msgid "Show line numbers"
+msgid "Show compiling line numbers"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
@@ -2418,6 +2470,18 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
+#: lazarusidestrconsts:lisbrowseforcompiler
+msgid "Browse for Compiler (%s)"
+msgstr ""
+
+#: lazarusidestrconsts:lisunitoutputdirectory
+msgid "Unit Output directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisselectanode
+msgid "Select a node"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompileroptions
 msgid "Show compiler options"
 msgstr ""
@@ -2428,6 +2492,34 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcostyle
 msgid "Style:"
+msgstr ""
+
+#: lazarusidestrconsts:lisnocompileroptionsinherited
+msgid "No compiler options inherited."
+msgstr ""
+
+#: lazarusidestrconsts:lisunitpath
+msgid "unit path"
+msgstr ""
+
+#: lazarusidestrconsts:lisincludepath
+msgid "include path"
+msgstr ""
+
+#: lazarusidestrconsts:lisobjectpath
+msgid "object path"
+msgstr ""
+
+#: lazarusidestrconsts:lislibrarypath
+msgid "library path"
+msgstr ""
+
+#: lazarusidestrconsts:lislinkeroptions
+msgid "linker options"
+msgstr ""
+
+#: lazarusidestrconsts:liscustomoptions
+msgid "custom options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoasis
@@ -2631,7 +2723,7 @@ msgid "Target OS specific options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
-msgid "Verbosity:"
+msgid "Verbosity during compilation:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoshowerr
@@ -2710,28 +2802,32 @@ msgstr ""
 msgid "Use Additional Compiler Config File"
 msgstr ""
 
+#: lazarusidestrconsts:liscustomoptions2
+msgid "Custom options"
+msgstr ""
+
 #: lazarusidestrconsts:dlgstopafternrerr
 msgid "Stop after number of errors:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgotherunitfiles
-msgid "Other Unit Files (Delimiter is semicolon):"
+msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoincfiles
-msgid "Include Files:"
+msgid "Include Files (-Fi):"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcosources
-msgid "Other Sources:  (.pp/.pas files)"
+msgid "Other Sources (.pp/.pas files, used only by IDE not by compiler)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
-msgid "Libraries:"
+msgid "Libraries (-Fl):"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugpath
-msgid "Debugger path addition:"
+msgid "Debugger path addition (none):"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtofpcpath
@@ -2748,6 +2844,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscoexecutebefore
 msgid "Execute before"
+msgstr ""
+
+#: lazarusidestrconsts:lisadditionalcompileroptionsinheritedfrompackages
+msgid "Additional compiler options inherited from packages"
 msgstr ""
 
 #: lazarusidestrconsts:liscocommand
@@ -2767,7 +2867,7 @@ msgid "Show all messages"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitoutp
-msgid "Unit output directory:"
+msgid "Unit output directory (-FE):"
 msgstr ""
 
 #: lazarusidestrconsts:liscodefault
@@ -3174,8 +3274,64 @@ msgstr ""
 msgid "Invalid mutliselection"
 msgstr ""
 
+#: lazarusidestrconsts:lisinvalidmultiselection
+msgid "Invalid multiselection"
+msgstr ""
+
+#: lazarusidestrconsts:lisunableconvertbinarystreamtotext
+msgid "Unable convert binary stream to text"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletostreamselectedcomponents
+msgid "Unable to stream selected components"
+msgstr ""
+
+#: lazarusidestrconsts:liscannotcopytoplevelcomponent
+msgid "Can not copy top level component."
+msgstr ""
+
+#: lazarusidestrconsts:liscopyingawholeformisnotimplemented
+msgid "Copying a whole form is not implemented."
+msgstr ""
+
+#: lazarusidestrconsts:listherewasanerrorduringwritingtheselectedcomponent
+msgid "There was an error during writing the selected component %s:%s:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:listherewasanerrorwhileconvertingthebinarystreamofthe
+msgid "There was an error while converting the binary stream of the selected component %s:%s:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunablecopycomponentstoclipboard
+msgid "Unable copy components to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:listherewasanerrorwhilecopyingthecomponentstreamtocli
+msgid "There was an error while copying the component stream to clipboard:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorin
+msgid "Error in %s"
+msgstr ""
+
+#: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
+msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
+msgstr ""
+
+#: lazarusidestrconsts:lisinvaliddelete
+msgid "Invalid delete"
+msgstr ""
+
+#: lazarusidestrconsts:listherootcomponentcannotbedeleted
+msgid "The root component can not be deleted."
 msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
@@ -4154,6 +4310,10 @@ msgstr ""
 msgid "Italian"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageitalianiso
+msgid "Italian(ISO 8859-1)"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr ""
@@ -4410,6 +4570,14 @@ msgstr ""
 msgid "LCL unit path missing"
 msgstr ""
 
+#: lazarusidestrconsts:lisnotadelphiunit
+msgid "Not a Delphi unit"
+msgstr ""
+
+#: lazarusidestrconsts:listhefileisnotadelphiunit
+msgid "The file %s%s%s is not a Delphi unit."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
 msgstr ""
@@ -4467,7 +4635,7 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/ppc386 -n%s or %s/usr/local/bin/fpc @/etc/11fpc.cfg%s."
+msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforfreepascalcvssources
@@ -5886,6 +6054,14 @@ msgstr ""
 msgid "NewPackage"
 msgstr ""
 
+#: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
+msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used  to install components in the IDE. But the following units belong  to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispackageneedsinstallation
+msgid "Package needs installation"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmanginvalidfileextension
 msgid "Invalid file extension"
 msgstr ""
@@ -5964,6 +6140,22 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageownsthefileshouldthefileberenamed
 msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangaddingnewdependencyforprojectpackage
+msgid "%sAdding new Dependency for project %s: package %s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangaddingnewdependencyforpackagepackage
+msgid "%sAdding new Dependency for package %s: package %s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgmangthefollowingunitswillbeaddedtotheusessectionof
+msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisconfirmchanges
+msgid "Confirm changes"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenotsaved
@@ -7092,5 +7284,141 @@ msgstr ""
 
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+msgstr ""
+
+#: lazarusidestrconsts:lisfixlfmfile
+msgid "Fix LFM file"
+msgstr ""
+
+#: lazarusidestrconsts:lisnocodeselected
+msgid "No code selected"
+msgstr ""
+
+#: lazarusidestrconsts:lispleaseselectsomecodetoextractanewproceduremethod
+msgid "Please select some code to extract a new procedure/method."
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidselection
+msgid "Invalid selection"
+msgstr ""
+
+#: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
+msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
+msgstr ""
+
+#: lazarusidestrconsts:lisextractprocedure
+msgid "Extract Procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lisnameofnewprocedure
+msgid "Name of new procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lisextract
+msgid "Extract"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidprocname
+msgid "Invalid proc name"
+msgstr ""
+
+#: lazarusidestrconsts:lispublicmethod
+msgid "Public Method"
+msgstr ""
+
+#: lazarusidestrconsts:lisprivatemethod
+msgid "Private Method"
+msgstr ""
+
+#: lazarusidestrconsts:lisprotectedmethod
+msgid "Protected Method"
+msgstr ""
+
+#: lazarusidestrconsts:lispublishedmethod
+msgid "Published Method"
+msgstr ""
+
+#: lazarusidestrconsts:lisprocedure
+msgid "Procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lisprocedurewithinterface
+msgid "Procedure with interface"
+msgstr ""
+
+#: lazarusidestrconsts:lissubprocedure
+msgid "Sub Procedure"
+msgstr ""
+
+#: lazarusidestrconsts:lissubprocedureonsamelevel
+msgid "Sub Procedure on same level"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalcompilernotfound
+msgid "Free Pascal Compiler not found"
+msgstr ""
+
+#: lazarusidestrconsts:listhefreepascalcompilerfilenamewasnotfounditisrecomm
+msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidcompilerfilename
+msgid "Invalid Compiler Filename"
+msgstr ""
+
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfreepascalsourcesnotfound
+msgid "Free Pascal Sources not found"
+msgstr ""
+
+#: lazarusidestrconsts:listhefreepascalsourcedirectorywasnotfoundsomecodefun
+msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
+msgid "Invalid Free Pascal source directory"
+msgstr ""
+
+#: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:lislazarusdirectorynotfound
+msgid "Lazarus directory not found"
+msgstr ""
+
+#: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:listhecurrentlazarusdirectorydoesnotlookcorrectwithou
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutablecho
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts:lishlpoptshelpoptions
+msgid "Help Options"
+msgstr ""
+
+#: lazarusidestrconsts:lishlpoptsviewers
+msgid "Viewers"
+msgstr ""
+
+#: lazarusidestrconsts:lishlpoptsproperties
+msgid "Properties:"
 msgstr ""
 

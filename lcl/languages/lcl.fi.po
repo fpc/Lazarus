@@ -118,6 +118,18 @@ msgstr ""
 msgid "Abort"
 msgstr "Keskeytä"
 
+#: lclstrconsts:ifsvk_accept
+msgid "Accept"
+msgstr ""
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:ifsvk_back
+msgid "Backspace"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr ""
@@ -142,9 +154,25 @@ msgstr ""
 msgid "Canvas does not allow drawing"
 msgstr ""
 
+#: lclstrconsts:ifsvk_capital
+msgid "Capital"
+msgstr ""
+
+#: lclstrconsts:ifsvk_clear
+msgid "Clear"
+msgstr ""
+
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
 msgstr "Vahvistus"
+
+#: lclstrconsts:ifsvk_control
+msgid "Control"
+msgstr ""
+
+#: lclstrconsts:ifsvk_convert
+msgid "Convert"
+msgstr ""
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -154,12 +182,24 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
+#: lclstrconsts:ifsvk_delete
+msgid "Delete"
+msgstr ""
+
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
 msgstr ""
 
+#: lclstrconsts:ifsvk_down
+msgid "Down"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
+msgstr ""
+
+#: lclstrconsts:ifsvk_end
+msgid "End"
 msgstr ""
 
 #: lclstrconsts:rsmterror
@@ -186,8 +226,16 @@ msgstr ""
 msgid "Error:"
 msgstr "Virhe:"
 
+#: lclstrconsts:ifsvk_escape
+msgid "Escape"
+msgstr ""
+
 #: lclstrconsts:rsexception
 msgid "Exception"
+msgstr ""
+
+#: lclstrconsts:ifsvk_execute
+msgid "Execute"
 msgstr ""
 
 #: lclstrconsts:rsfileinformation
@@ -200,6 +248,10 @@ msgstr ""
 
 #: lclstrconsts:rsfdfilemustexist
 msgid "File must exist"
+msgstr ""
+
+#: lclstrconsts:ifsvk_final
+msgid "Final"
 msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
@@ -222,6 +274,18 @@ msgstr ""
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr ""
 
+#: lclstrconsts:ifsvk_hanja
+msgid "Hanja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_help
+msgid "Help"
+msgstr ""
+
+#: lclstrconsts:ifsvk_home
+msgid "Home"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr ""
@@ -229,6 +293,10 @@ msgstr ""
 #: lclstrconsts:rsmtinformation
 msgid "Information"
 msgstr "Informaatio"
+
+#: lclstrconsts:ifsvk_insert
+msgid "Insert"
+msgstr ""
 
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
@@ -270,6 +338,22 @@ msgstr ""
 msgid "Invalid stream format"
 msgstr ""
 
+#: lclstrconsts:ifsvk_junja
+msgid "Junja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_kana
+msgid "Kana"
+msgstr ""
+
+#: lclstrconsts:ifsvk_left
+msgid "Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
 #: lclstrconsts:rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
 msgstr ""
@@ -278,12 +362,36 @@ msgstr ""
 msgid "List must be empty"
 msgstr ""
 
+#: lclstrconsts:ifsvk_menu
+msgid "Menu"
+msgstr ""
+
 #: lclstrconsts:smenuindexerror
 msgid "Menu index out of range"
 msgstr ""
 
 #: lclstrconsts:smenuitemisnil
 msgid "MenuItem is nil"
+msgstr ""
+
+#: lclstrconsts:ifsvk_modechange
+msgid "Mode Change"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_next
+msgid "Next"
 msgstr ""
 
 #: lclstrconsts:rsnointerfaceobject
@@ -302,8 +410,20 @@ msgstr ""
 msgid "No to all"
 msgstr "Ei kaikkiin"
 
+#: lclstrconsts:ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
+msgstr ""
+
+#: lclstrconsts:ifsvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: lclstrconsts:ifsvk_numpad
+msgid "Numpad %d"
 msgstr ""
 
 #: lclstrconsts:rsfdopenfile
@@ -318,8 +438,20 @@ msgstr "Tallennetaanko vanhan päälle ?"
 msgid "Path must exist"
 msgstr ""
 
+#: lclstrconsts:ifsvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
+msgstr ""
+
+#: lclstrconsts:ifsvk_print
+msgid "Print"
+msgstr ""
+
+#: lclstrconsts:ifsvk_prior
+msgid "Prior"
 msgstr ""
 
 #: lclstrconsts:rspropertydoesnotexist
@@ -330,12 +462,32 @@ msgstr ""
 msgid "Resource %s not found"
 msgstr ""
 
+#: lclstrconsts:ifsvk_return
+msgid "Return"
+msgstr ""
+
+#: lclstrconsts:ifsvk_right
+msgid "Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Tallenna nimellä"
 
+#: lclstrconsts:ifsvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
+msgstr ""
+
+#: lclstrconsts:ifsvk_select
+msgid "Select"
 msgstr ""
 
 #: lclstrconsts:rspickdate
@@ -354,8 +506,24 @@ msgstr "Valitse väri"
 msgid "Select Directory"
 msgstr ""
 
+#: lclstrconsts:ifsvk_shift
+msgid "Shift"
+msgstr ""
+
+#: lclstrconsts:ifsvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
+#: lclstrconsts:ifsvk_space
+msgid "Space key"
+msgstr ""
+
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
+msgstr ""
+
+#: lclstrconsts:ifsvk_tab
+msgid "Tab"
 msgstr ""
 
 #: lclstrconsts:rsfddirectorynotexist
@@ -382,6 +550,10 @@ msgstr ""
 msgid "Unable to load default font"
 msgstr ""
 
+#: lclstrconsts:ifsvk_unknown
+msgid "Unknown"
+msgstr ""
+
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
 msgstr ""
@@ -392,6 +564,10 @@ msgstr ""
 
 #: lclstrconsts:rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
+msgstr ""
+
+#: lclstrconsts:ifsvk_up
+msgid "Up"
 msgstr ""
 
 #: lclstrconsts:rsmtwarning

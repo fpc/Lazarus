@@ -129,6 +129,18 @@ msgstr "Kontrolka nie mo¿e byæ sama swoim rodzicem"
 msgid "Abort"
 msgstr "Porzuæ"
 
+#: lclstrconsts:ifsvk_accept
+msgid "Accept"
+msgstr ""
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:ifsvk_back
+msgid "Backspace"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Pusty"
@@ -153,9 +165,25 @@ msgstr "Nie mo¿na ustawiæ ogniska na wy³±czone lub niewidzialne okno"
 msgid "Canvas does not allow drawing"
 msgstr "Canvas nie pozwala na rysowanie"
 
+#: lclstrconsts:ifsvk_capital
+msgid "Capital"
+msgstr ""
+
+#: lclstrconsts:ifsvk_clear
+msgid "Clear"
+msgstr ""
+
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
 msgstr "Potwierdzenie"
+
+#: lclstrconsts:ifsvk_control
+msgid "Control"
+msgstr ""
+
+#: lclstrconsts:ifsvk_convert
+msgid "Convert"
+msgstr ""
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -165,13 +193,25 @@ msgstr "B³±d przy tworzeniu \"gdb catchable\":"
 msgid "Custom"
 msgstr "Inny"
 
+#: lclstrconsts:ifsvk_delete
+msgid "Delete"
+msgstr ""
+
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
 msgstr "Katalog musi istnieæ"
 
+#: lclstrconsts:ifsvk_down
+msgid "Down"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Zdublowane menu"
+
+#: lclstrconsts:ifsvk_end
+msgid "End"
+msgstr ""
 
 #: lclstrconsts:rsmterror
 msgid "Error"
@@ -197,9 +237,17 @@ msgstr "B³±d odczytu %s%s%s: %s"
 msgid "Error:"
 msgstr "B³±d:"
 
+#: lclstrconsts:ifsvk_escape
+msgid "Escape"
+msgstr ""
+
 #: lclstrconsts:rsexception
 msgid "Exception"
 msgstr "Wyj±tek"
+
+#: lclstrconsts:ifsvk_execute
+msgid "Execute"
+msgstr ""
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
@@ -212,6 +260,10 @@ msgstr "Plik nie jest zapisywalny"
 #: lclstrconsts:rsfdfilemustexist
 msgid "File must exist"
 msgstr "Plik musi istnieæ"
+
+#: lclstrconsts:ifsvk_final
+msgid "Final"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -233,6 +285,18 @@ msgstr "Plik siatki nie istnieje"
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex nie mo¿e byæ mniejszy ni¿ poprzedniego elementu menu"
 
+#: lclstrconsts:ifsvk_hanja
+msgid "Hanja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_help
+msgid "Help"
+msgstr ""
+
+#: lclstrconsts:ifsvk_home
+msgid "Home"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Indeks poza zakresem Cell[Col=%d Row=%d]"
@@ -240,6 +304,10 @@ msgstr "Indeks poza zakresem Cell[Col=%d Row=%d]"
 #: lclstrconsts:rsmtinformation
 msgid "Information"
 msgstr "Informacja"
+
+#: lclstrconsts:ifsvk_insert
+msgid "Insert"
+msgstr ""
 
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
@@ -281,6 +349,22 @@ msgstr "B³êdna warto¶æ w³a¶ciwo¶ci"
 msgid "Invalid stream format"
 msgstr "B³êdny format strumienia"
 
+#: lclstrconsts:ifsvk_junja
+msgid "Junja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_kana
+msgid "Kana"
+msgstr ""
+
+#: lclstrconsts:ifsvk_left
+msgid "Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
 #: lclstrconsts:rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
 msgstr "Indeks listy poza zakresem (%d)"
@@ -289,6 +373,10 @@ msgstr "Indeks listy poza zakresem (%d)"
 msgid "List must be empty"
 msgstr "Lista musi byæ pusta"
 
+#: lclstrconsts:ifsvk_menu
+msgid "Menu"
+msgstr ""
+
 #: lclstrconsts:smenuindexerror
 msgid "Menu index out of range"
 msgstr "Indeks menu poza zakresem"
@@ -296,6 +384,26 @@ msgstr "Indeks menu poza zakresem"
 #: lclstrconsts:smenuitemisnil
 msgid "MenuItem is nil"
 msgstr "Element menu ma warto¶æ nil"
+
+#: lclstrconsts:ifsvk_modechange
+msgid "Mode Change"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_next
+msgid "Next"
+msgstr ""
 
 #: lclstrconsts:rsnointerfaceobject
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
@@ -313,9 +421,21 @@ msgstr "Brak dostêpnych timerów"
 msgid "No to all"
 msgstr "Nie na wszystkie"
 
+#: lclstrconsts:ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
 msgstr "Nieprawid³owy plik siatki"
+
+#: lclstrconsts:ifsvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: lclstrconsts:ifsvk_numpad
+msgid "Numpad %d"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -329,9 +449,21 @@ msgstr "Chcesz nadpisaæ plik?"
 msgid "Path must exist"
 msgstr "¦cie¿ka musi istnieæ"
 
+#: lclstrconsts:ifsvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
 msgstr "uprawnienia u¿ytkownik grupa rozmiar data czas"
+
+#: lclstrconsts:ifsvk_print
+msgid "Print"
+msgstr ""
+
+#: lclstrconsts:ifsvk_prior
+msgid "Prior"
+msgstr ""
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -341,13 +473,33 @@ msgstr "W³a¶ciwo¶æ %s nie istnieje"
 msgid "Resource %s not found"
 msgstr "Nie znaleziono zasobu: %s"
 
+#: lclstrconsts:ifsvk_return
+msgid "Return"
+msgstr ""
+
+#: lclstrconsts:ifsvk_right
+msgid "Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Zapisz plik jako"
 
+#: lclstrconsts:ifsvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "W³a¶ciwo¶æ ScrollBar'u poza zakresem"
+
+#: lclstrconsts:ifsvk_select
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
@@ -365,9 +517,25 @@ msgstr "Wybierz kolor"
 msgid "Select Directory"
 msgstr "Wybierz katalog"
 
+#: lclstrconsts:ifsvk_shift
+msgid "Shift"
+msgstr ""
+
+#: lclstrconsts:ifsvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
+#: lclstrconsts:ifsvk_space
+msgid "Space key"
+msgstr ""
+
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "Podmenu nie jest w menu"
+
+#: lclstrconsts:ifsvk_tab
+msgid "Tab"
+msgstr ""
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -393,6 +561,10 @@ msgstr "¦cie¿ka \"%s\" nie istnieje."
 msgid "Unable to load default font"
 msgstr "Nie mo¿na za³adowaæ domy¶lnej czcionki"
 
+#: lclstrconsts:ifsvk_unknown
+msgid "Unknown"
+msgstr ""
+
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
 msgstr "Nieznane rozszerzenie pliku obrazka"
@@ -404,6 +576,10 @@ msgstr "Nieobs³ugiwany format bitmapy."
 #: lclstrconsts:rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
 msgstr "Nieobs³ugiwany format schowka: %s"
+
+#: lclstrconsts:ifsvk_up
+msgid "Up"
+msgstr ""
 
 #: lclstrconsts:rsmtwarning
 msgid "Warning"

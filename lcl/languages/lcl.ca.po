@@ -118,6 +118,18 @@ msgstr "Un control no es pot tenir a ell mateix com a pare"
 msgid "Abort"
 msgstr "Avortar"
 
+#: lclstrconsts:ifsvk_accept
+msgid "Accept"
+msgstr ""
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:ifsvk_back
+msgid "Backspace"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Blanc"
@@ -142,9 +154,25 @@ msgstr "No es pot focalitzar una finestra invisible o des-habilitada"
 msgid "Canvas does not allow drawing"
 msgstr "Els patrons no permeten dibuixar"
 
+#: lclstrconsts:ifsvk_capital
+msgid "Capital"
+msgstr ""
+
+#: lclstrconsts:ifsvk_clear
+msgid "Clear"
+msgstr ""
+
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
 msgstr "Confirmació"
+
+#: lclstrconsts:ifsvk_control
+msgid "Control"
+msgstr ""
+
+#: lclstrconsts:ifsvk_convert
+msgid "Convert"
+msgstr ""
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -154,13 +182,25 @@ msgstr "Error creant capturables gdb"
 msgid "Custom"
 msgstr "Personalitzar"
 
+#: lclstrconsts:ifsvk_delete
+msgid "Delete"
+msgstr ""
+
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
+msgstr ""
+
+#: lclstrconsts:ifsvk_down
+msgid "Down"
 msgstr ""
 
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Menús duplicats"
+
+#: lclstrconsts:ifsvk_end
+msgid "End"
+msgstr ""
 
 #: lclstrconsts:rsmterror
 msgid "Error"
@@ -186,9 +226,17 @@ msgstr "Error llegint %s%s%s: %s"
 msgid "Error:"
 msgstr "Error"
 
+#: lclstrconsts:ifsvk_escape
+msgid "Escape"
+msgstr ""
+
 #: lclstrconsts:rsexception
 msgid "Exception"
 msgstr "Excepció"
+
+#: lclstrconsts:ifsvk_execute
+msgid "Execute"
+msgstr ""
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
@@ -201,6 +249,10 @@ msgstr "No es pot escriure el fitxer"
 #: lclstrconsts:rsfdfilemustexist
 msgid "File must exist"
 msgstr "El fitxer ha d'existir"
+
+#: lclstrconsts:ifsvk_final
+msgid "Final"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -222,6 +274,18 @@ msgstr "El fitxer de la graella no existeix"
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex no pot ser menys que un GroupIndex d'un element anterior del menú"
 
+#: lclstrconsts:ifsvk_hanja
+msgid "Hanja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_help
+msgid "Help"
+msgstr ""
+
+#: lclstrconsts:ifsvk_home
+msgid "Home"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Índex fora de rang Cell[Col=%d Row=%d]"
@@ -229,6 +293,10 @@ msgstr "Índex fora de rang Cell[Col=%d Row=%d]"
 #: lclstrconsts:rsmtinformation
 msgid "Information"
 msgstr "Informació"
+
+#: lclstrconsts:ifsvk_insert
+msgid "Insert"
+msgstr ""
 
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
@@ -270,6 +338,22 @@ msgstr "Valor de propietat no vàlid"
 msgid "Invalid stream format"
 msgstr "Format de corrent no vàlid"
 
+#: lclstrconsts:ifsvk_junja
+msgid "Junja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_kana
+msgid "Kana"
+msgstr ""
+
+#: lclstrconsts:ifsvk_left
+msgid "Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
 #: lclstrconsts:rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
 msgstr ""
@@ -278,6 +362,10 @@ msgstr ""
 msgid "List must be empty"
 msgstr "La llista ha d'estar buida"
 
+#: lclstrconsts:ifsvk_menu
+msgid "Menu"
+msgstr ""
+
 #: lclstrconsts:smenuindexerror
 msgid "Menu index out of range"
 msgstr "Índex de menú fora de rang"
@@ -285,6 +373,26 @@ msgstr "Índex de menú fora de rang"
 #: lclstrconsts:smenuitemisnil
 msgid "MenuItem is nil"
 msgstr "El MenuItem és nul"
+
+#: lclstrconsts:ifsvk_modechange
+msgid "Mode Change"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_next
+msgid "Next"
+msgstr ""
 
 #: lclstrconsts:rsnointerfaceobject
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
@@ -302,9 +410,21 @@ msgstr "No hi ha temporitzadors disponibles"
 msgid "No to all"
 msgstr "No a tot"
 
+#: lclstrconsts:ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
 msgstr "No és un fitxer de graella vàlid"
+
+#: lclstrconsts:ifsvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: lclstrconsts:ifsvk_numpad
+msgid "Numpad %d"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -318,9 +438,21 @@ msgstr "Sobre-escriure el fitxer ?"
 msgid "Path must exist"
 msgstr "La trajectòria ha d'existir"
 
+#: lclstrconsts:ifsvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
 msgstr "permisos usuari grup tamany dia hora"
+
+#: lclstrconsts:ifsvk_print
+msgid "Print"
+msgstr ""
+
+#: lclstrconsts:ifsvk_prior
+msgid "Prior"
+msgstr ""
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -330,13 +462,33 @@ msgstr "La propietat %s no existeix"
 msgid "Resource %s not found"
 msgstr ""
 
+#: lclstrconsts:ifsvk_return
+msgid "Return"
+msgstr ""
+
+#: lclstrconsts:ifsvk_right
+msgid "Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Guardar fitxer com a "
 
+#: lclstrconsts:ifsvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "Propietat de la barra desplaçadora fora de rang"
+
+#: lclstrconsts:ifsvk_select
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
@@ -354,9 +506,25 @@ msgstr "Seleccionar color"
 msgid "Select Directory"
 msgstr ""
 
+#: lclstrconsts:ifsvk_shift
+msgid "Shift"
+msgstr ""
+
+#: lclstrconsts:ifsvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
+#: lclstrconsts:ifsvk_space
+msgid "Space key"
+msgstr ""
+
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "El sub-menú no és al menú"
+
+#: lclstrconsts:ifsvk_tab
+msgid "Tab"
+msgstr ""
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -382,6 +550,10 @@ msgstr "La trajectòria \"%s\" no existeix."
 msgid "Unable to load default font"
 msgstr "No sóc capaç de carregar la font predeterminada"
 
+#: lclstrconsts:ifsvk_unknown
+msgid "Unknown"
+msgstr ""
+
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
 msgstr "Extensió d'imatge desconeguda"
@@ -393,6 +565,10 @@ msgstr "Mapa de bits no suportat"
 #: lclstrconsts:rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
 msgstr "Format de porta-retalls no suportat: %s"
+
+#: lclstrconsts:ifsvk_up
+msgid "Up"
+msgstr ""
 
 #: lclstrconsts:rsmtwarning
 msgid "Warning"

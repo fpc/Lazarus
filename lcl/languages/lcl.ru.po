@@ -118,6 +118,18 @@ msgstr "Элемент управления не может быть сам себе потомком"
 msgid "Abort"
 msgstr "Сброс"
 
+#: lclstrconsts:ifsvk_accept
+msgid "Accept"
+msgstr ""
+
+#: lclstrconsts:ifsvk_apps
+msgid "application key"
+msgstr ""
+
+#: lclstrconsts:ifsvk_back
+msgid "Backspace"
+msgstr ""
+
 #: lclstrconsts:rsblank
 msgid "Blank"
 msgstr "Пустой"
@@ -142,9 +154,25 @@ msgstr "Нельзя дать фокус отключённому или невидимому окну"
 msgid "Canvas does not allow drawing"
 msgstr "Канва не поддерживает рисования"
 
+#: lclstrconsts:ifsvk_capital
+msgid "Capital"
+msgstr ""
+
+#: lclstrconsts:ifsvk_clear
+msgid "Clear"
+msgstr ""
+
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
 msgstr "Подтверждение"
+
+#: lclstrconsts:ifsvk_control
+msgid "Control"
+msgstr ""
+
+#: lclstrconsts:ifsvk_convert
+msgid "Convert"
+msgstr ""
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
@@ -154,13 +182,25 @@ msgstr "Создание кешируемой ошибки gdb:"
 msgid "Custom"
 msgstr "Пользовательский"
 
+#: lclstrconsts:ifsvk_delete
+msgid "Delete"
+msgstr ""
+
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
 msgstr "Каталог должен существовать"
 
+#: lclstrconsts:ifsvk_down
+msgid "Down"
+msgstr ""
+
 #: lclstrconsts:sduplicatemenus
 msgid "Duplicate menus"
 msgstr "Повторяющиеся меню"
+
+#: lclstrconsts:ifsvk_end
+msgid "End"
+msgstr ""
 
 #: lclstrconsts:rsmterror
 msgid "Error"
@@ -186,9 +226,17 @@ msgstr "Ошибка чтения %s%s%s: %s"
 msgid "Error:"
 msgstr "Ошибка:"
 
+#: lclstrconsts:ifsvk_escape
+msgid "Escape"
+msgstr ""
+
 #: lclstrconsts:rsexception
 msgid "Exception"
 msgstr "Исключение"
+
+#: lclstrconsts:ifsvk_execute
+msgid "Execute"
+msgstr ""
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
@@ -201,6 +249,10 @@ msgstr "Файл не доступен для записи"
 #: lclstrconsts:rsfdfilemustexist
 msgid "File must exist"
 msgstr "Файл должен существовать"
+
+#: lclstrconsts:ifsvk_final
+msgid "Final"
+msgstr ""
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -222,6 +274,18 @@ msgstr "Файл сетки не существует"
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
 msgstr "GroupIndex не может быть меньше GroupIndex для предыдущего элемента меню"
 
+#: lclstrconsts:ifsvk_hanja
+msgid "Hanja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_help
+msgid "Help"
+msgstr ""
+
+#: lclstrconsts:ifsvk_home
+msgid "Home"
+msgstr ""
+
 #: lclstrconsts:rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "Индекс вне диапазона Cell[Col=%d Row=%d]"
@@ -229,6 +293,10 @@ msgstr "Индекс вне диапазона Cell[Col=%d Row=%d]"
 #: lclstrconsts:rsmtinformation
 msgid "Information"
 msgstr "Сведения"
+
+#: lclstrconsts:ifsvk_insert
+msgid "Insert"
+msgstr ""
 
 #: lclstrconsts:sinvalidactioncreation
 msgid "Invalid action creation"
@@ -270,6 +338,22 @@ msgstr "Неправильное значение свойства"
 msgid "Invalid stream format"
 msgstr "Неправильный формат потока"
 
+#: lclstrconsts:ifsvk_junja
+msgid "Junja"
+msgstr ""
+
+#: lclstrconsts:ifsvk_kana
+msgid "Kana"
+msgstr ""
+
+#: lclstrconsts:ifsvk_left
+msgid "Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lwin
+msgid "left windows key"
+msgstr ""
+
 #: lclstrconsts:rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
 msgstr "Индекс списка вне диапазона (%d)"
@@ -278,6 +362,10 @@ msgstr "Индекс списка вне диапазона (%d)"
 msgid "List must be empty"
 msgstr "Список должен быть пуст"
 
+#: lclstrconsts:ifsvk_menu
+msgid "Menu"
+msgstr ""
+
 #: lclstrconsts:smenuindexerror
 msgid "Menu index out of range"
 msgstr "Индекс меню вне диапазона"
@@ -285,6 +373,26 @@ msgstr "Индекс меню вне диапазона"
 #: lclstrconsts:smenuitemisnil
 msgid "MenuItem is nil"
 msgstr "MenuItem - указатель на нуль"
+
+#: lclstrconsts:ifsvk_modechange
+msgid "Mode Change"
+msgstr ""
+
+#: lclstrconsts:ifsvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: lclstrconsts:ifsvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_next
+msgid "Next"
+msgstr ""
 
 #: lclstrconsts:rsnointerfaceobject
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
@@ -302,9 +410,21 @@ msgstr "Недоступны таймеры"
 msgid "No to all"
 msgstr "Нет для всех"
 
+#: lclstrconsts:ifsvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: lclstrconsts:rsnotavalidgridfile
 msgid "Not a valid grid file"
 msgstr "Неправильный файл сетки"
+
+#: lclstrconsts:ifsvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: lclstrconsts:ifsvk_numpad
+msgid "Numpad %d"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -318,9 +438,21 @@ msgstr "Переписать файл ?"
 msgid "Path must exist"
 msgstr "Путь должен существовать"
 
+#: lclstrconsts:ifsvk_pause
+msgid "Pause key"
+msgstr ""
+
 #: lclstrconsts:rsdefaultfileinfovalue
 msgid "permissions user group size date time"
 msgstr "разрешения пользователь группа дата время"
+
+#: lclstrconsts:ifsvk_print
+msgid "Print"
+msgstr ""
+
+#: lclstrconsts:ifsvk_prior
+msgid "Prior"
+msgstr ""
 
 #: lclstrconsts:rspropertydoesnotexist
 msgid "Property %s does not exist"
@@ -330,13 +462,33 @@ msgstr "Свойство %s не существует"
 msgid "Resource %s not found"
 msgstr "Ресурс %s не найден"
 
+#: lclstrconsts:ifsvk_return
+msgid "Return"
+msgstr ""
+
+#: lclstrconsts:ifsvk_right
+msgid "Right"
+msgstr ""
+
+#: lclstrconsts:ifsvk_rwin
+msgid "right windows key"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Сохранить файл как"
 
+#: lclstrconsts:ifsvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
 msgstr "свойство ScrollBar вне диапазона"
+
+#: lclstrconsts:ifsvk_select
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts:rspickdate
 msgid "Select a date"
@@ -354,9 +506,25 @@ msgstr "Выбрать цвет"
 msgid "Select Directory"
 msgstr "Выберите каталог"
 
+#: lclstrconsts:ifsvk_shift
+msgid "Shift"
+msgstr ""
+
+#: lclstrconsts:ifsvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
+#: lclstrconsts:ifsvk_space
+msgid "Space key"
+msgstr ""
+
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "Подменю не в меню"
+
+#: lclstrconsts:ifsvk_tab
+msgid "Tab"
+msgstr ""
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -382,6 +550,10 @@ msgstr "Путь \"%s\" не существует."
 msgid "Unable to load default font"
 msgstr "Не могу загрузить шрифт по умолчанию"
 
+#: lclstrconsts:ifsvk_unknown
+msgid "Unknown"
+msgstr ""
+
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
 msgstr "Неизвестное расширение файла изображения"
@@ -393,6 +565,10 @@ msgstr "Неподдерживаемый тип точечного рисунка."
 #: lclstrconsts:rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
 msgstr "Неподдерживаемый формат буфера обмена: %s"
+
+#: lclstrconsts:ifsvk_up
+msgid "Up"
+msgstr ""
 
 #: lclstrconsts:rsmtwarning
 msgid "Warning"

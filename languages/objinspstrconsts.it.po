@@ -76,6 +76,14 @@ msgstr "Array"
 msgid "Boolean"
 msgstr "Booleano"
 
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
+
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Categoria"
@@ -92,6 +100,10 @@ msgstr "Classe"
 msgid "Clear"
 msgstr "Cancella"
 
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr ""
+
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
 msgstr "Conferma la cancellazione di tutte le immagini?"
@@ -99,6 +111,10 @@ msgstr "Conferma la cancellazione di tutte le immagini?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Elimina"
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr ""
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
@@ -111,6 +127,10 @@ msgstr "Enumerazione"
 #: objinspstrconsts:oiserror
 msgid "Error"
 msgstr "Errore"
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr ""
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -155,6 +175,10 @@ msgstr "Metodo"
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
 msgstr "Nuovo"
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -211,6 +235,14 @@ msgstr ""
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Voce sottostante"
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
