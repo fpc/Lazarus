@@ -1016,8 +1016,8 @@ begin
         Application.ProcessMessages;
         CaretXY := Pos;
       end;
-      SetFocus;
       {$ENDIF}
+      SetFocus;
       EndUndoBlock;
     end;
 end;
