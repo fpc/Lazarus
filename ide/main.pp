@@ -6979,9 +6979,11 @@ begin
     end;
 
     // gather all reachable resourcestring sections
-    if not CodeToolBoss.GatherResourceStringSections(ActiveUnitInfo.Source,
+    if not CodeToolBoss.GatherResourceStringSections(
+      ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
-      ActiveSrcEdit.EditorComponent.CaretY)
+      ActiveSrcEdit.EditorComponent.CaretY,
+      nil)
     then begin
       DoJumpToCodeToolBossError;
       exit;
@@ -7005,15 +7007,22 @@ begin
     ActiveSrcEdit.ReplaceLines(StartPos.Y,EndPos.Y,NewSourceLines);
 
     // add new resourcestring to resourcestring section
-    InsertAlphabetically:=(InsertPolicy=rsipAlphabetically);
-    DummyResult:=CodeToolBoss.AddResourcestring(
-                   SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
-                   NewIdentifier,''''+NewIdentValue+'''',InsertAlphabetically);
+    if InsertPolicy in [rsipAppend,rsipAlphabetically] then begin
+      InsertAlphabetically:=(InsertPolicy=rsipAlphabetically);
+      DummyResult:=CodeToolBoss.AddResourcestring(
+                     SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
+                     NewIdentifier,''''+NewIdentValue+'''',
+                     InsertAlphabetically);
+    end else
+      DummyResult:=true;
     ApplyCodeToolChanges;
     if not DummyResult then begin
       DoJumpToCodeToolBossError;
       exit;
     end;
+    
+    // switch back to source
+    ActiveSrcEdit.Activate;
 
     Result:=mrOk;
   finally
@@ -7887,6 +7896,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.485  2003/03/14 14:57:03  mattias
+  make resourcestring dialog now checks for doubles (idents and values)
+
   Revision 1.484  2003/03/13 10:11:41  mattias
   fixed TControl.Show in design mode
 
