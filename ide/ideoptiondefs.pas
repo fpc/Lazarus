@@ -41,6 +41,7 @@ const
   DefaultSourceNoteBookName = 'SourceNotebook';
   DefaultMessagesViewName = 'MessagesView';
   DefaultUnitDependenciesName = 'UnitDependencies';
+  DefaultCodeExplorerName = 'CodeExplorer';
 
 type
   { TIDEWindowLayout stores information about the position, min/maximized state

@@ -636,6 +636,10 @@ resourcestring
   dlgUpWord = 'Up';
   dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace All';
+  
+  // Code Explorer
+  lisCodeExplorer = 'Code Explorer';
+  
 implementation
 
 end.
