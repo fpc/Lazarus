@@ -178,6 +178,8 @@ type
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
 
+  TOwnerDrawState = TBaseOwnerDrawState;
+
   TDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
     ARect: TRect; State: TOwnerDrawState) of object;
   TMeasureItemEvent = procedure(Control: TWinControl; Index: Integer;
@@ -1518,6 +1520,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.137  2004/03/08 00:48:05  mattias
+  moved TOnwerDrawState to StdCtrls
+
   Revision 1.136  2004/03/07 09:37:20  mattias
   added workaround for AutoSize in TCustomLabel
 

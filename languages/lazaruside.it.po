@@ -3103,6 +3103,10 @@ msgstr "tasto finestre a sinistra"
 msgid "Left:"
 msgstr "Sinistra:"
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Livello 1 (ottimizzazioni veloci)"
@@ -3614,6 +3618,10 @@ msgstr "Niente"
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "nessuna selezionata"
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"

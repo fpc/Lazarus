@@ -74,6 +74,14 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr ""
@@ -108,5 +116,25 @@ msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr ""
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr ""
+
+#: objinspstrconsts:oisadd
+msgid "Add"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
 msgstr ""
 

@@ -210,3 +210,7 @@ msgstr ""
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
 msgstr ""
 
+#: syneditstrconst:syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr ""
+

@@ -3094,6 +3094,10 @@ msgstr "Левая клавиша Windows"
 msgid "Left:"
 msgstr "Слева:"
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Уровень 1 (быстрая)"
@@ -3605,6 +3609,10 @@ msgstr "Нет"
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "Ничего не выбрано"
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"

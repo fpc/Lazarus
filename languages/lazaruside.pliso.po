@@ -3105,6 +3105,10 @@ msgstr "lewy klawisz windows"
 msgid "Left:"
 msgstr "Od lewej:"
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Poziom 1 (szybkie optymalizacje)"
@@ -3616,6 +3620,10 @@ msgstr "Brak"
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "nie wybrano elementu"
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"

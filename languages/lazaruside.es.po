@@ -3105,6 +3105,10 @@ msgstr "tecla de windows izquierda"
 msgid "Left:"
 msgstr "Izquierda:"
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Nivel 1 (optimizaciones rápidas)"
@@ -3616,6 +3620,10 @@ msgstr "Nada"
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "nada seleccionado"
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"

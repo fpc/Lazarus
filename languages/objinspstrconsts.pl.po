@@ -37,6 +37,26 @@ msgstr "&Dodaj"
 msgid "&Delete"
 msgstr "&Usuń"
 
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr ""
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr ""
+
+#: objinspstrconsts:oisadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Dodaj ..."
@@ -44,6 +64,10 @@ msgstr "Dodaj ..."
 #: objinspstrconsts:oisall
 msgid "All"
 msgstr "Wszystkie"
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
@@ -56,6 +80,10 @@ msgstr "Chcesz wyczyścić wszystkie obrazki ?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Usuń"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr ""
 
 #: objinspstrconsts:oiserror
 msgid "Error"

@@ -850,21 +850,21 @@ type
   TDrawItemStruct = tagDrawItemStruct;
   DrawItemStruct = tagDrawItemStruct;
 
-
+  // ToDo: move this to StdCtrls
   TOwnerDrawStateType = (
     odSelected, odGrayed, odDisabled, odChecked,
     odFocused, odDefault, odHotLight, odInactive, odNoAccel,
     odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
     odPainted  // item already painted
     );
-  TOwnerDrawState = set of TOwnerDrawStateType;
+  TBaseOwnerDrawState = set of TOwnerDrawStateType;
 
   PDrawListItemStruct = ^TDrawListItemStruct;
   TDrawListItemStruct = record
     ItemID: UINT;
     Area: TRect;
     DC: HDC;
-    ItemState: TOwnerDrawState;
+    ItemState: TBaseOwnerDrawState;
   end;
 
 
@@ -1998,6 +1998,9 @@ end.
 
 {
   $Log$
+  Revision 1.60  2004/03/08 00:48:05  mattias
+  moved TOnwerDrawState to StdCtrls
+
   Revision 1.59  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

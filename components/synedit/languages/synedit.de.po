@@ -174,6 +174,10 @@ msgstr ""
 msgid "Tcl/Tk Files (*.tcl)|*.tcl"
 msgstr ""
 
+#: syneditstrconst:syns_filtertex
+msgid "TeX Files (*.tex)|*.tex"
+msgstr ""
+
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr ""

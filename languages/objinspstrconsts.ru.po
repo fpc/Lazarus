@@ -36,12 +36,36 @@ msgstr "&Добавить"
 msgid "&Delete"
 msgstr "&Удалить"
 
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr ""
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr ""
+
+#: objinspstrconsts:oisadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Добавить..."
 
 #: objinspstrconsts:oisall
 msgid "All"
+msgstr ""
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
 msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
@@ -55,6 +79,10 @@ msgstr "Подтверждаете очистку всех изображений ?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Удалить"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr ""
 
 #: objinspstrconsts:oiserror
 msgid "Error"

@@ -2478,6 +2478,10 @@ msgstr ""
 msgid "Generate:"
 msgstr ""
 
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcofast
 msgid "Faster Code"
 msgstr ""
@@ -2500,6 +2504,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
+msgstr ""
+
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
 msgstr ""
 
 #: lazarusidestrconsts:dlglevel1opt

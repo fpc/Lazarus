@@ -3094,6 +3094,10 @@ msgstr "Tecles de finestres esquerres"
 msgid "Left:"
 msgstr "Esquerra:"
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Nivell 1 (Optimitzacions ràpides)"
@@ -3605,6 +3609,10 @@ msgstr "Cap"
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "Cap de seleccionat"
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"

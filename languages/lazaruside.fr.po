@@ -3104,6 +3104,10 @@ msgstr "Touche Windows gauche"
 msgid "Left:"
 msgstr "Gauche:"
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Niveau 1 (Optimisation rapide)"
@@ -3615,6 +3619,10 @@ msgstr "Aucun"
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
 msgstr "pas sélectionné"
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"

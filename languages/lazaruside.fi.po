@@ -580,7 +580,7 @@ msgstr "Lihavoitu"
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
-msgstr ""
+msgstr "Kirjainmerkki"
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket Highlight"
@@ -1192,7 +1192,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
-msgstr ""
+msgstr "Tee uusi tyhjä tekstitiedosto (*.txt)."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplication
 msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
@@ -1832,7 +1832,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
-msgstr ""
+msgstr "Virhe: "
 
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
@@ -2368,7 +2368,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_help
 msgid "Help"
-msgstr ""
+msgstr "Ohje"
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -3094,17 +3094,21 @@ msgstr ""
 msgid "Left:"
 msgstr ""
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
-msgstr ""
+msgstr "Taso 1 (Nopea optimoiti)"
 
 #: lazarusidestrconsts:dlglevel2opt
 msgid "Level 2 (Level 1 + Slower Optimizations)"
-msgstr ""
+msgstr "Taso 2 (taso 1 + hitaampi optimoiti)"
 
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
-msgstr ""
+msgstr "Taso 3 (taso2 + Uncertain)"
 
 #: lazarusidestrconsts:lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
@@ -3352,15 +3356,15 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Hiiren vasen näppäin"
 
 #: lazarusidestrconsts:srvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Hiiren keskimmäinen näppäin"
 
 #: lazarusidestrconsts:srvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Hiiren oikea näppäin"
 
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
@@ -3492,7 +3496,7 @@ msgstr "Nimeäminen"
 
 #: lazarusidestrconsts:srkmecnew
 msgid "New"
-msgstr ""
+msgstr "Uusi"
 
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
@@ -3552,7 +3556,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidno
 msgid "no"
-msgstr ""
+msgstr "ei"
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
@@ -3604,6 +3608,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
+msgstr ""
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
@@ -3688,7 +3696,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
-msgstr ""
+msgstr "Avaa tiedosto"
 
 #: lazarusidestrconsts:srkmecopenfileatcursor
 msgid "Open file at cursor"
@@ -6372,7 +6380,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr ""
+msgstr "Näytä lomakkeet(Forms)"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"

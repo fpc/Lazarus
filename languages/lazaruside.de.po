@@ -3104,6 +3104,10 @@ msgstr ""
 msgid "Left:"
 msgstr ""
 
+#: lazarusidestrconsts:dlglevelnoneopt
+msgid "Level 0 (no extra Optimizations)"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr ""
@@ -3614,6 +3618,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
+msgstr ""
+
+#: lazarusidestrconsts:dlgconormal
+msgid "Normal Code"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect

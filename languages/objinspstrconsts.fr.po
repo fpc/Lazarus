@@ -26,12 +26,36 @@ msgstr "&Ajouter"
 msgid "&Delete"
 msgstr "&Supprimer"
 
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr ""
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr ""
+
+#: objinspstrconsts:oisadd
+msgid "Add"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Ajouter ..."
 
 #: objinspstrconsts:oisall
 msgid "All"
+msgstr ""
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
 msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
@@ -45,6 +69,10 @@ msgstr "Confirmez vous la suppression de toutes les images ?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Supprimer"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr ""
 
 #: objinspstrconsts:oiserror
 msgid "Error"
