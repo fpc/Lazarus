@@ -940,9 +940,7 @@ begin
   // in a class or in a forward proc?
   BuildTreeAndGetCleanPos(false,CursorPos, CleanCursorPos);
   // find CodeTreeNode at cursor
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
-  if CursorNode=nil then
-    RaiseException('no valid node found at cursor');
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   ASourceChangeCache:=SourceChangeCache;
   SourceChangeCache.MainScanner:=Scanner;
 {$IFDEF CTDEBUG}
@@ -1032,9 +1030,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... ');
         if (Dummy<>0) and (Dummy<>-1) then 
           RaiseException('cursor pos outside of code');
         // find CodeTreeNode at cursor
-        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
-        if CursorNode=nil then 
-          RaiseException('no valid node found at cursor');
+        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
         ClassNode:=CursorNode;
         while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do

@@ -76,7 +76,8 @@ type
     
     property Scanner: TLinkScanner read FScanner write SetScanner;
     
-    function FindDeepestNodeAtPos(P: integer): TCodeTreeNode;
+    function FindDeepestNodeAtPos(P: integer;
+      ExceptionOnNotFound: boolean): TCodeTreeNode;
     function CaretToCleanPos(Caret: TCodeXYPosition;
         var CleanPos: integer): integer;  // 0=valid CleanPos
               //-1=CursorPos was skipped, CleanPos between two links
@@ -1078,7 +1079,8 @@ begin
   WriteSubTree(Tree.Root,'  ');
 end;
 
-function TCustomCodeTool.FindDeepestNodeAtPos(P: integer): TCodeTreeNode;
+function TCustomCodeTool.FindDeepestNodeAtPos(P: integer;
+  ExceptionOnNotFound: boolean): TCodeTreeNode;
 
   function SearchInNode(ANode: TCodeTreeNode): TCodeTreeNode;
   begin
@@ -1103,6 +1105,10 @@ function TCustomCodeTool.FindDeepestNodeAtPos(P: integer): TCodeTreeNode;
 // TCustomCodeTool.FindDeepestNodeAtPos
 begin
   Result:=SearchInNode(Tree.Root);
+  if (Result=nil) and ExceptionOnNotFound then begin
+    MoveCursorToCleanPos(P);
+    RaiseException('no node found at cursor');
+  end;
 end;
 
 function TCustomCodeTool.CaretToCleanPos(Caret: TCodeXYPosition;

@@ -609,6 +609,10 @@ begin
   if BeginNode=nil then
     RaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode=nil');
+  if BeginNode.Desc<>ctnBeginBlock then
+    RaiseException(
+       'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
+       +BeginNode.DescAsString);
   if BeginNode.FirstChild<>nil then
     // block already parsed
     exit;

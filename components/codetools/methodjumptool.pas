@@ -180,9 +180,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint B');
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
   // find CodeTreeNode at cursor
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
-  if CursorNode=nil then
-    RaiseException('no node found at cursor');
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
@@ -208,7 +206,7 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint D ',CleanCursorPos,', |',copy(Src,
     and (TypeSectionNode.Parent.Desc=ctnTypeSection) then
       TypeSectionNode:=TypeSectionNode.Parent;
     // search the method node under the cursor
-    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,false);
     if (CursorNode=nil)
     or (not (CursorNode.Desc in [ctnProcedureHead,ctnProcedure])) then
       exit;
