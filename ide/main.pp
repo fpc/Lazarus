@@ -3004,8 +3004,9 @@ Begin
 end;
 
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
-var SE: TSourceEditor;
-    FName,SPath: String;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  FName,SPath: String;
 
   function FindPasFile(var FName: String; SPath: String): Boolean;
   //  Searches for FName in Spath
@@ -3026,8 +3027,11 @@ var SE: TSourceEditor;
       while TempPath<>'' do begin
         p:=pos(';',TempPath);
         if p=0 then p:=length(TempPath)+1;
-        CurPath:=copy(TempPath,1,p-1)+'/';
+        CurPath:=copy(TempPath,1,p-1);
         Delete(TempPath,1,p);
+        if CurPath='' then continue;
+        if CurPath[length(CurPath)]<>OSDirSeparator then
+          CurPath:=CurPath+OSDirSeparator;
         for c:=0 to 2 do begin
           case c of
             0: TempFile:=FName;
@@ -3041,6 +3045,7 @@ var SE: TSourceEditor;
           end;
         end;
       end;
+      if (Ext='') and (ExtractFileExt(FName)<>'') then break;
     end;
     result:=false;
   end;
@@ -3052,12 +3057,13 @@ var SE: TSourceEditor;
     StopChars: set of char;
   begin
     Result := '';
-    if (XY.Y >= 1) and (XY.Y <= SE.EditorComponent.Lines.Count) then begin
-      Line := SE.EditorComponent.Lines.Strings[XY.Y - 1];
+    if (XY.Y >= 1) and (XY.Y <= ActiveSrcEdit.EditorComponent.Lines.Count) then 
+    begin
+      Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
       Len := Length(Line);
       if (XY.X >= 1) and (XY.X <= Len + 1) then begin
         StopChars := [',',';',':','[',']','{','}','(',')',' ','''','"','`'
-                     ,'#','%'];
+                     ,'#','%','=','>'];
         Stop := XY.X;
         while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
           Inc(Stop);
@@ -3072,13 +3078,20 @@ var SE: TSourceEditor;
 begin
   writeln('TMainIDE.DoOpenFileAtCursor');
   Result:=mrCancel;
-  SE:=SourceNoteBook.GetActiveSE;
-  if SE=nil then exit;
-  FName:=GetFilenameAtRowCol(SE.EditorComponent.CaretXY);
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.CaretXY);
   if FName='' then exit;
-  SPath:=ExtractFilePath(Project.ProjectFile)+';'
-        +EnvironmentOptions.LazarusDirectory+'/lcl;'
-        +EnvironmentOptions.LazarusDirectory+'/designer';
+  if ActiveUnitInfo.IsVirtual then
+    SPath:='.'
+  else
+    SPath:=ExtractFilePath(ActiveUnitInfo.Filename);
+  if not Project.IsVirtual then
+    SPath:=SPath+';'+ExtractFilePath(Project.ProjectFile);
+  if EnvironmentOptions.LazarusDirectory<>'' then
+    SPath:=SPath
+             +';'+EnvironmentOptions.LazarusDirectory+OSDirSeparator+'lcl'
+             +';'+EnvironmentOptions.LazarusDirectory+OSDirSeparator+'designer';
   if FindPasFile(FName,SPath) then begin
     result:=mrOk;
     EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(FName);
@@ -5172,6 +5185,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.171  2001/12/11 09:34:32  lazarus
+  MG: fixed open file at cursor
+
   Revision 1.170  2001/12/10 23:03:18  lazarus
   MG: enhanced open file at cursor to read more than one word
 
