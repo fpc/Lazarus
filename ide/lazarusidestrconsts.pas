@@ -363,6 +363,22 @@ resourcestring
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
     'Notes: Project files are all files in the project directory';
+  lisEnvOptDlgInvalidCompilerFilename = 'Invalid compiler filename';
+  lisEnvOptDlgInvalidCompilerFilenameMsg =
+    'The compiler file "%s" is not an executable.';
+  lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
+  lisEnvOptDlgInvalidDebuggerFilenameMsg =
+    'The debugger file "%s" is not an executable.';
+  lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisEnvOptDlgLazarusDirNotFoundMsg = 'Lazarus directory "%s" not found.';
+  lisEnvOptDlgInvalidLazarusDir = 'The lazarus directory "%s" does not look correct.'
+    +' Normally it contains directories like lcl, debugger, designer, components, ... .';
+  lisEnvOptDlgFPCSrcDirNotFoundMsg = 'FPC source directory "%s" not found.';
+  lisEnvOptDlgInvalidFPCSrcDir = 'The FPC source directory "%s" does not look correct.'
+    +' Normally it contains directories like rtl, fcl, packages, compiler, ... .';
+  lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
+
+  // editor options
   dlgEdOptsCap = 'Editor Options';
   dlgEdDisplay = 'Display';
   dlgKeyMapping = 'Key Mappings';
@@ -436,7 +452,8 @@ resourcestring
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
-//CodeTools dialogue
+
+  //CodeTools dialogue
   dlgCodeToolsOpts = 'CodeTools Options';
   dlgCodeCreation = 'Code Creation';
   dlgWordsPolicies = 'Words';
@@ -477,8 +494,10 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
-//Windows (no,no,course, not M$ :) ) captions 
+
   locwndSrcEditor = 'Lazarus Source Editor';
+  
+  // compiler options
   dlgCompilerOptions = 'Compiler Options';
   dlgSearchPaths = 'Search Paths';
   dlgCOParsing = 'Parsing';
@@ -566,6 +585,8 @@ resourcestring
   dlgMainViewForms = 'View project forms';
   dlgMainViewUnits = 'View project units';
   dlgMulti = 'Multi';
+  
+  // project options dialog
   dlgProjectOptions = 'Project Options';
   dlgPOApplication = 'Application';
   dlgPOFroms = 'Forms';
@@ -596,6 +617,7 @@ resourcestring
   dlgDirectoryDoesNotExist = 'Directory does not exist';
   dlgTheDirectory = 'The directory "';
   dlgDoesNotExist = '" does not exist.';
+  
 implementation
 
 end.

@@ -39,7 +39,8 @@ uses
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, Laz_XMLCfg,
   ObjectInspector, ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf,
-  Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory,LazarusIDEStrConsts;
+  Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory,
+  LazarusIDEStrConsts;
 
 const
   EnvOptsVersion: integer = 101;
@@ -446,6 +447,11 @@ type
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
     FLayouts: TIDEWindowLayoutList;
+    FOldLazarusDir: string;
+    FOldCompilerFilename: string;
+    FOldFPCSourceDir: string;
+    FOldDebuggerFilename: string;
+    FOldTestDir: string;
     procedure SetupDesktopPage(Page: integer);
     procedure SetupFormEditorPage(Page: integer);
     procedure SetupObjectInspectorPage(Page: integer);
@@ -462,6 +468,7 @@ type
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
                               MaxCount: integer);
     procedure SetWindowPositionsItem(Index: integer);
+    function CheckValues: boolean;
   published
     property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
@@ -2839,6 +2846,7 @@ end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
 begin
+  if not CheckValues then exit;
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrOk;
 end;
@@ -2961,15 +2969,20 @@ begin
 
     // files
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
+    FOldLazarusDir:=LazarusDirectory;
     SetComboBoxText(LazarusDirComboBox,LazarusDirectory,MaxComboBoxCount);
     CompilerPathComboBox.Items.Assign(CompilerFileHistory);
+    FOldCompilerFilename:=CompilerFilename;
     SetComboBoxText(CompilerPathComboBox,CompilerFilename,MaxComboBoxCount);
     FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
+    FOldFPCSourceDir:=FPCSourceDirectory;
     SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,MaxComboBoxCount);
     DebuggerPathComboBox.Items.Assign(DebuggerFileHistory);
+    FOldDebuggerFilename:=DebuggerFilename;
     SetComboBoxText(DebuggerPathComboBox,DebuggerFilename,MaxComboBoxCount);
     SetComboBoxText(DebuggerTypeComboBox,DebuggerName[DebuggerType]);
     TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
+    FOldTestDir:=TestBuildDirectory;
     SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
 
     // recent files and directories
@@ -3232,6 +3245,140 @@ begin
   end;
   if Index>=0 then
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
+end;
+
+function TEnvironmentOptionsDialog.CheckValues: boolean;
+
+  function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
+  begin
+    Result:=(NewFilename<>OldFilename) and (NewFilename<>'');
+  end;
+
+  function CheckExecutable(const OldFilename, NewFilename: string;
+    const ErrorCaption, ErrorMsg: string): boolean;
+  begin
+    Result:=true;
+    if not CheckFileChanged(OldFilename,NewFilename) then exit;
+    if (not FileIsExecutable(NewFilename)) then begin
+      if MessageDlg(ErrorCaption,Format(ErrorMsg,[NewFilename]),
+        mtWarning,[mbIgnore,mbCancel],0)=mrCancel
+      then begin
+        Result:=false;
+      end;
+    end;
+  end;
+  
+  function CheckDirectoryExists(const Dir,
+    ErrorCaption, ErrorMsg: string): TModalResult;
+  begin
+    if not DirectoryExists(Dir) then begin
+      Result:=MessageDlg(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
+                         [mbIgnore,mbCancel],0);
+    end else
+      Result:=mrOk;
+  end;
+  
+  function SimpleDirectoryCheck(const OldDir, NewDir,
+    NotFoundErrMsg: string; var StopChecking: boolean): boolean;
+  var
+    SubResult: TModalResult;
+  begin
+    StopChecking:=true;
+    if not CheckFileChanged(OldDir,NewDir) then begin
+      Result:=true;
+      exit;
+    end;
+    SubResult:=CheckDirectoryExists(NewDir,lisEnvOptDlgDirectoryNotFound,
+                                    NotFoundErrMsg);
+    if SubResult=mrIgnore then begin
+      Result:=true;
+      exit;
+    end;
+    if SubResult=mrCancel then begin
+      Result:=false;
+      exit;
+    end;
+    StopChecking:=false;
+    Result:=true;
+  end;
+  
+  function CheckLazarusDir: boolean;
+  var
+    NewLazarusDir: string;
+    StopChecking: boolean;
+  begin
+    NewLazarusDir:=LazarusDirComboBox.Text;
+    Result:=SimpleDirectoryCheck(FOldLazarusDir,NewLazarusDir,
+                                lisEnvOptDlgLazarusDirNotFoundMsg,StopChecking);
+    if (not Result) or StopChecking then exit;
+
+    // lazarus directory specific tests
+    NewLazarusDir:=AppendPathDelim(NewLazarusDir);
+    if not DirectoryExists(NewLazarusDir+'lcl')
+    or not DirectoryExists(NewLazarusDir+'lcl'+PathDelim+'units')
+    or not DirectoryExists(NewLazarusDir+'components')
+    or not DirectoryExists(NewLazarusDir+'debugger')
+    or not DirectoryExists(NewLazarusDir+'designer')
+    then begin
+      Result:=(MessageDlg(Format(lisEnvOptDlgInvalidLazarusDir,[NewLazarusDir]),
+                 mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
+      exit;
+    end;
+    Result:=true;
+  end;
+  
+  function CheckFPCSourceDir: boolean;
+  var
+    NewFPCSrcDir: string;
+    StopChecking: boolean;
+  begin
+    NewFPCSrcDir:=FPCSourceDirComboBox.Text;
+    Result:=SimpleDirectoryCheck(FOldFPCSourceDir,NewFPCSrcDir,
+                                 lisEnvOptDlgFPCSrcDirNotFoundMsg,StopChecking);
+    if (not Result) or StopChecking then exit;
+
+    // FPC source directory specific tests
+    NewFPCSrcDir:=AppendPathDelim(NewFPCSrcDir);
+    if not DirectoryExists(NewFPCSrcDir+'fcl')
+    or not DirectoryExists(NewFPCSrcDir+'rtl')
+    or not DirectoryExists(NewFPCSrcDir+'packages')
+    then begin
+      Result:=(MessageDlg(Format(lisEnvOptDlgInvalidFPCSrcDir,[NewFPCSrcDir]),
+                 mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
+      exit;
+    end;
+    Result:=true;
+  end;
+  
+  function CheckTestDir: boolean;
+  var
+    NewTestDir: string;
+    StopChecking: boolean;
+  begin
+    NewTestDir:=TestBuildDirComboBox.Text;
+    Result:=SimpleDirectoryCheck(FOldTestDir,NewTestDir,
+                                 lisEnvOptDlgTestDirNotFoundMsg,StopChecking);
+    if (not Result) or StopChecking then exit;
+  end;
+  
+begin
+  Result:=false;
+  // check compiler filename
+  if not CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
+    lisEnvOptDlgInvalidCompilerFilename,lisEnvOptDlgInvalidCompilerFilenameMsg)
+  then exit;
+  // check debugger filename
+  if not CheckExecutable(FOldDebuggerFilename,DebuggerPathComboBox.Text,
+    lisEnvOptDlgInvalidDebuggerFilename,lisEnvOptDlgInvalidDebuggerFilenameMsg)
+  then exit;
+  // check lazarus directory
+  if not CheckLazarusDir then exit;
+  // check fpc source directory
+  if not CheckFPCSourceDir then exit;
+  // check test directory
+  if not CheckTestDir then exit;
+  
+  Result:=true;
 end;
 
 end.
