@@ -2270,6 +2270,7 @@ resourcestring
   lisPckEditRecompileAllRequired = 'Recompile all required';
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
+  lisPckEditViewPackgeSource = 'View Package Source';
   lisPckEditGeneralOptions = 'General Options';
   lisPckEditSaveChanges = 'Save Changes?';
   lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave '

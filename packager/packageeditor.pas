@@ -63,6 +63,8 @@ type
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnUninstallPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
+  TOnViewPackageSource =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject; Params: TAddToPkgResult): TModalResult  of object;
   TOnDeleteAmbigiousFiles =
@@ -152,6 +154,7 @@ type
     procedure SaveAsClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
+    procedure ViewPkgSourceClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxClick(Sender: TObject);
     procedure UseMinVersionCheckBoxClick(Sender: TObject);
   private
@@ -211,6 +214,7 @@ type
     FOnRevertPackage: TOnRevertPackage;
     FOnSavePackage: TOnSavePackage;
     FOnUninstallPackage: TOnUninstallPackage;
+    FOnViewPackageSource: TOnViewPackageSource;
     function GetEditors(Index: integer): TPackageEditorForm;
     procedure ApplyLayout(AnEditor: TPackageEditorForm);
     procedure SaveLayout(AnEditor: TPackageEditorForm);
@@ -239,6 +243,7 @@ type
     procedure UpdateAllEditors;
     function InstallPackage(APackage: TLazPackage): TModalResult;
     function UninstallPackage(APackage: TLazPackage): TModalResult;
+    function ViewPkgSourcePackage(APackage: TLazPackage): TModalResult;
     function DeleteAmbigiousFiles(APackage: TLazPackage;
                                   const Filename: string): TModalResult;
   public
@@ -266,6 +271,8 @@ type
                                                  write FOnInstallPackage;
     property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
                                                  write FOnUninstallPackage;
+    property OnViewPackageSource: TOnViewPackageSource read FOnViewPackageSource
+                                                 write FOnViewPackageSource;
     property OnDeleteAmbigiousFiles: TOnDeleteAmbigiousFiles
                      read FOnDeleteAmbigiousFiles write FOnDeleteAmbigiousFiles;
     property OnImExportCompilerOptions: TNotifyEvent
@@ -539,7 +546,9 @@ begin
     OptionsBitBtn.Enabled);
   AddPopupMenuItem(dlgCompilerOptions, @CompilerOptionsBitBtnClick,
     CompilerOptionsBitBtn.Enabled);
+  AddPopupMenuItem(lisPckEditViewPackgeSource, @ViewPkgSourceClick,true);
 
+  // remove unneeded menu items
   while FilesPopupMenu.Items.Count>ItemCnt do
     FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
 end;
@@ -792,6 +801,11 @@ end;
 procedure TPackageEditorForm.UninstallClick(Sender: TObject);
 begin
   PackageEditors.UninstallPackage(LazPackage);
+end;
+
+procedure TPackageEditorForm.ViewPkgSourceClick(Sender: TObject);
+begin
+  PackageEditors.ViewPkgSourcePackage(LazPackage);
 end;
 
 procedure TPackageEditorForm.UseMaxVersionCheckBoxClick(Sender: TObject);
@@ -2103,6 +2117,13 @@ function TPackageEditors.UninstallPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnUninstallPackage) then
     Result:=OnUninstallPackage(Self,APackage);
+end;
+
+function TPackageEditors.ViewPkgSourcePackage(APackage: TLazPackage
+  ): TModalResult;
+begin
+  if Assigned(OnViewPackageSource) then
+    Result:=OnViewPackageSource(Self,APackage);
 end;
 
 function TPackageEditors.DeleteAmbigiousFiles(APackage: TLazPackage;

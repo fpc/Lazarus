@@ -82,6 +82,8 @@ type
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
                                         SaveAs: boolean): TModalResult;
+    function OnPackageEditorViewPkgSourcePackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
@@ -227,6 +229,7 @@ type
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage): TModalResult;
+    function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
@@ -480,6 +483,12 @@ begin
     Result:=DoSavePackage(APackage,[psfSaveAs])
   else
     Result:=DoSavePackage(APackage,[]);
+end;
+
+function TPkgManager.OnPackageEditorViewPkgSourcePackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoOpenPackageSource(APackage);
 end;
 
 procedure TPkgManager.PackageGraphBeginUpdate(Sender: TObject);
@@ -1517,6 +1526,7 @@ begin
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
+  PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSourcePackage;
   PackageEditors.OnDeleteAmbigiousFiles:=@OnPackageEditorDeleteAmbigiousFiles;
   PackageEditors.OnImExportCompilerOptions:=@OnPackageEditorImExportCompilerOptions;
 
@@ -2416,7 +2426,7 @@ begin
       +RegistrationCode
       +'end.'+e;
   Src:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.
-                  BeautifyStatement(Src,0);
+                                                       BeautifyStatement(Src,0);
   Src:=HeaderSrc+Src;
 
   // check if old code is already uptodate
@@ -3011,6 +3021,11 @@ begin
     PackageGraph.EndUpdate;
   end;
   Result:=mrOk;
+end;
+
+function TPkgManager.DoOpenPackageSource(APackage: TLazPackage): TModalResult;
+begin
+  Result:=MainIDE.DoOpenEditorFile(APackage.GetSrcFilename,-1,[ofRegularFile]);
 end;
 
 function TPkgManager.DoCompileAutoInstallPackages(
