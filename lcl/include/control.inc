@@ -1289,7 +1289,8 @@ end;
 
 { =============================================================================
   $Log$
-  Revision 1.12  2001/02/06 18:19:37  lazarus
+  Revision 1.13  2001/02/06 18:23:51  lazarus
+  Changed InvalidateControl
   Shane
 
   Revision 1.11  2001/02/04 04:18:12  lazarus
