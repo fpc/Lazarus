@@ -2146,6 +2146,21 @@ var CleanCursorPos, Indent, insertPos: integer;
     CompleteCode:=true;
   end;
   
+  function IsNonExistingIdentAssignment: boolean;
+  begin
+    Result:=false;
+
+    {$IFDEF CTDEBUG}
+    writeln('  IsEventAssignment: IsNonExistingIdentAssignment...');
+    {$ENDIF}
+    // check assigment syntax
+    {if not CheckLocalVarAssignmentSyntax(VarNameAtom, AssignmentOperator,
+      TermAtom)
+    then
+      exit;}
+
+  end;
+  
 // function CompleteCode(CursorPos: TCodeXYPosition;
 //        var NewPos: TCodeXYPosition; var NewTopLine: integer;
 //        SourceChangeCache: TSourceChangeCache): boolean;
@@ -2188,6 +2203,9 @@ begin
   
   // test if Event assignment
   if IsEventAssignment then exit;
+  
+  // test if Local variable assignment
+  if IsNonExistingIdentAssignment then exit;
 
   {$IFDEF CTDEBUG}
   writeln('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
