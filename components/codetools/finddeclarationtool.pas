@@ -49,7 +49,7 @@ interface
 
 { $DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
-{ $DEFINE ShowTriedFiles}
+{$DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowExprEval}
@@ -886,10 +886,10 @@ begin
       // cursor is on a unitname -> try to locate it
       UnitName:=copy(Src,UnitNamePos.StartPos,
                      UnitNamePos.EndPos-UnitNamePos.StartPos);
-      if UnitInFilePos.StartPos>=1 then
-        UnitInFilename:=copy(Src,UnitInFilePos.StartPos,
-                     UnitInFilePos.EndPos-UnitInFilePos.StartPos)
-      else
+      if UnitInFilePos.StartPos>=1 then begin
+        UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
+                     UnitInFilePos.EndPos-UnitInFilePos.StartPos-2)
+      end else
         UnitInFilename:='';
       NewPos.Code:=FindUnitSource(UnitName,UnitInFilename);
       if NewPos.Code=nil then
@@ -1050,23 +1050,27 @@ begin
   ' UnitSrcSearchPath=',UnitSrcSearchPath);
   {$ENDIF}
   //writeln('>>>>>',Scanner.Values.AsString,'<<<<<');
+  MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
+  if not MainCodeIsVirtual then begin
+    CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
+  end else begin
+    CurDir:='';
+  end;
   if AnUnitInFilename<>'' then begin
     // unitname in 'filename'
     if FilenameIsAbsolute(AnUnitInFilename) then begin
       Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename,true));
     end else begin
-      // search AnUnitInFilename in searchpath
-      Result:=SearchFileInPath(UnitSrcSearchPath,AnUnitInFilename);
+      // search file in current directory
+      CurDir:=AppendPathDelim(CurDir);
+      if not LoadFile(CurDir+AnUnitInFilename,Result) then begin
+        // search AnUnitInFilename in searchpath
+        Result:=SearchFileInPath(UnitSrcSearchPath,AnUnitInFilename);
+      end;
     end;
   end else begin
     // normal unit name -> search as the compiler would search
     // first search in current directory (= where the maincode is)
-    MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
-    if not MainCodeIsVirtual then begin
-      CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
-    end else begin
-      CurDir:='';
-    end;
     {$IFDEF ShowTriedFiles}
     writeln('TFindDeclarationTool.FindUnitSource Search in current dir=',CurDir);
     {$ENDIF}
@@ -2662,8 +2666,8 @@ begin
     or (UnitInFileAtom.EndPos>SrcLen+1) then
       RaiseException('[TFindDeclarationTool.FindCodeToolForUsedUnit] '
         +'internal error: invalid UnitInFileAtom');
-    AnUnitInFilename:=copy(Src,UnitInFileAtom.StartPos,
-                   UnitInFileAtom.EndPos-UnitInFileAtom.StartPos);
+    AnUnitInFilename:=copy(Src,UnitInFileAtom.StartPos+1,
+                   UnitInFileAtom.EndPos-UnitInFileAtom.StartPos-2);
   end else
     AnUnitInFilename:='';
   NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename);

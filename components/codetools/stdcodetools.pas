@@ -570,7 +570,8 @@ begin
     ReadPriorUsedUnit(UnitNameAtom, InAtom);
     AnUnitName:=GetAtom(UnitNameAtom);
     if InAtom.StartPos>0 then
-      AnUnitInFilename:=GetAtom(InAtom)
+      AnUnitInFilename:=copy(Src,InAtom.StartPos+1,
+                             InAtom.EndPos-InAtom.StartPos-2)
     else
       AnUnitInFilename:='';
     // find unit file
