@@ -74,7 +74,7 @@ type
     function CreatePublishedMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string; TypeData: PTypeData;
         SourceChangeCache: TSourceChangeCache): boolean;
-        
+
     function MethodTypeDataToStr(TypeData: PTypeData;
         Attr: TProcHeadAttributes): string;
     function FindPublishedMethodNodeInClass(ClassNode: TCodeTreeNode;
@@ -120,8 +120,8 @@ begin
     Offset:=0;
     for i:=0 to ParamCount-1 do begin
       // read ParamFlags
-      // XXX ToDo strange: SizeOf(TParamFlags) is 4, but the data is only 1
-      Len:=1; // SizeOf(TParamFlags)
+      // ToDo: check this: SizeOf(TParamFlags) is 4, but the data is only 1 byte
+      Len:=1; // typinfo.pp comment is wrong: SizeOf(TParamFlags)
       Move(TypeData^.ParamList[Offset],ParamType.Flags,Len);
       inc(Offset,Len);
 

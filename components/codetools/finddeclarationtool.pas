@@ -50,7 +50,7 @@
               result in 1.000.000 checks for 'integer', before the interface
               cache of objpas points to longint. Then longint will be searched
               in objpas (>100 checks), before the system.pp interface cache is
-              asked. Total: 100.000.000 checks.
+              asked. Total: 1.100.000 checks.
            Hence, the result of a search should be saved:
              every 'cache' node get a list of
                Identifier+CleanBackwardPos+CleanForwardPos -> TFindContext
@@ -87,7 +87,7 @@ interface
 { $DEFINE CTDEBUG}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
-{$DEFINE ShowExprEval}
+{ $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
 
