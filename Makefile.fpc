@@ -13,7 +13,8 @@ packages=rtl fcl gtk
 
 [target]
 programs=lazarus
-dirs=lcl components tools
+dirs=lcl components
+#dirs=lcl components tools
 exampledirs=examples
 
 [compiler]

@@ -132,7 +132,7 @@ ifndef LCLPLATFORM
 LCLPLATFORM=gtk
 export LCLPLATFORM
 endif
-override TARGET_DIRS+=lcl components tools
+override TARGET_DIRS+=lcl components
 override TARGET_PROGRAMS+=lazarus
 override TARGET_EXAMPLEDIRS+=examples
 override INSTALL_BASEDIR=lib/lazarus
@@ -542,35 +542,30 @@ ifeq ($(OS_TARGET),linux)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_INET=1
-REQUIRE_PACKAGES_FCL=1
-REQUIRE_PACKAGES_GTK=1
 REQUIRE_PACKAGES_MYSQL=1
 REQUIRE_PACKAGES_IBASE=1
+REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_X11=1
 REQUIRE_PACKAGES_OPENGL=1
+REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(OS_TARGET),go32v2)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifeq ($(OS_TARGET),win32)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_MYSQL=1
-REQUIRE_PACKAGES_IBASE=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifeq ($(OS_TARGET),os2)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifeq ($(OS_TARGET),freebsd)
 REQUIRE_PACKAGES_RTL=1
@@ -578,31 +573,24 @@ REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_INET=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_MYSQL=1
-REQUIRE_PACKAGES_IBASE=1
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifeq ($(OS_TARGET),beos)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifeq ($(OS_TARGET),amiga)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifeq ($(OS_TARGET),atari)
 REQUIRE_PACKAGES_RTL=1
 REQUIRE_PACKAGES_PASZLIB=1
 REQUIRE_PACKAGES_FCL=1
 REQUIRE_PACKAGES_GTK=1
-REQUIRE_PACKAGES_OPENGL=1
 endif
 ifdef REQUIRE_PACKAGES_RTL
 PACKAGEDIR_RTL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /rtl/Makefile.fpc,$(PACKAGESDIR)))))
@@ -685,60 +673,6 @@ ifdef UNITDIR_INET
 override COMPILER_UNITDIR+=$(UNITDIR_INET)
 endif
 endif
-ifdef REQUIRE_PACKAGES_FCL
-PACKAGEDIR_FCL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /fcl/Makefile.fpc,$(PACKAGESDIR)))))
-ifneq ($(PACKAGEDIR_FCL),)
-PACKAGEDIR_FCL:=$(firstword $(PACKAGEDIR_FCL))
-ifeq ($(wildcard $(PACKAGEDIR_FCL)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_fcl
-package_fcl:
-	$(MAKE) -C $(PACKAGEDIR_FCL) all
-endif
-ifneq ($(wildcard $(PACKAGEDIR_FCL)/$(OS_TARGET)),)
-UNITDIR_FCL=$(PACKAGEDIR_FCL)/$(OS_TARGET)
-else
-UNITDIR_FCL=$(PACKAGEDIR_FCL)
-endif
-else
-PACKAGEDIR_FCL=
-UNITDIR_FCL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /fcl/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_FCL),)
-UNITDIR_FCL:=$(firstword $(UNITDIR_FCL))
-else
-UNITDIR_FCL=
-endif
-endif
-ifdef UNITDIR_FCL
-override COMPILER_UNITDIR+=$(UNITDIR_FCL)
-endif
-endif
-ifdef REQUIRE_PACKAGES_GTK
-PACKAGEDIR_GTK:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /gtk/Makefile.fpc,$(PACKAGESDIR)))))
-ifneq ($(PACKAGEDIR_GTK),)
-PACKAGEDIR_GTK:=$(firstword $(PACKAGEDIR_GTK))
-ifeq ($(wildcard $(PACKAGEDIR_GTK)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_gtk
-package_gtk:
-	$(MAKE) -C $(PACKAGEDIR_GTK) all
-endif
-ifneq ($(wildcard $(PACKAGEDIR_GTK)/$(OS_TARGET)),)
-UNITDIR_GTK=$(PACKAGEDIR_GTK)/$(OS_TARGET)
-else
-UNITDIR_GTK=$(PACKAGEDIR_GTK)
-endif
-else
-PACKAGEDIR_GTK=
-UNITDIR_GTK:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /gtk/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_GTK),)
-UNITDIR_GTK:=$(firstword $(UNITDIR_GTK))
-else
-UNITDIR_GTK=
-endif
-endif
-ifdef UNITDIR_GTK
-override COMPILER_UNITDIR+=$(UNITDIR_GTK)
-endif
-endif
 ifdef REQUIRE_PACKAGES_MYSQL
 PACKAGEDIR_MYSQL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /mysql/Makefile.fpc,$(PACKAGESDIR)))))
 ifneq ($(PACKAGEDIR_MYSQL),)
@@ -791,6 +725,33 @@ endif
 endif
 ifdef UNITDIR_IBASE
 override COMPILER_UNITDIR+=$(UNITDIR_IBASE)
+endif
+endif
+ifdef REQUIRE_PACKAGES_FCL
+PACKAGEDIR_FCL:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /fcl/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_FCL),)
+PACKAGEDIR_FCL:=$(firstword $(PACKAGEDIR_FCL))
+ifeq ($(wildcard $(PACKAGEDIR_FCL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_fcl
+package_fcl:
+	$(MAKE) -C $(PACKAGEDIR_FCL) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_FCL)/$(OS_TARGET)),)
+UNITDIR_FCL=$(PACKAGEDIR_FCL)/$(OS_TARGET)
+else
+UNITDIR_FCL=$(PACKAGEDIR_FCL)
+endif
+else
+PACKAGEDIR_FCL=
+UNITDIR_FCL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /fcl/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_FCL),)
+UNITDIR_FCL:=$(firstword $(UNITDIR_FCL))
+else
+UNITDIR_FCL=
+endif
+endif
+ifdef UNITDIR_FCL
+override COMPILER_UNITDIR+=$(UNITDIR_FCL)
 endif
 endif
 ifdef REQUIRE_PACKAGES_X11
@@ -847,7 +808,34 @@ ifdef UNITDIR_OPENGL
 override COMPILER_UNITDIR+=$(UNITDIR_OPENGL)
 endif
 endif
-.PHONY: package_rtl package_paszlib package_inet package_fcl package_gtk package_mysql package_ibase package_x11 package_opengl
+ifdef REQUIRE_PACKAGES_GTK
+PACKAGEDIR_GTK:=$(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /gtk/Makefile.fpc,$(PACKAGESDIR)))))
+ifneq ($(PACKAGEDIR_GTK),)
+PACKAGEDIR_GTK:=$(firstword $(PACKAGEDIR_GTK))
+ifeq ($(wildcard $(PACKAGEDIR_GTK)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_gtk
+package_gtk:
+	$(MAKE) -C $(PACKAGEDIR_GTK) all
+endif
+ifneq ($(wildcard $(PACKAGEDIR_GTK)/$(OS_TARGET)),)
+UNITDIR_GTK=$(PACKAGEDIR_GTK)/$(OS_TARGET)
+else
+UNITDIR_GTK=$(PACKAGEDIR_GTK)
+endif
+else
+PACKAGEDIR_GTK=
+UNITDIR_GTK:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /gtk/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_GTK),)
+UNITDIR_GTK:=$(firstword $(UNITDIR_GTK))
+else
+UNITDIR_GTK=
+endif
+endif
+ifdef UNITDIR_GTK
+override COMPILER_UNITDIR+=$(UNITDIR_GTK)
+endif
+endif
+.PHONY: package_rtl package_paszlib package_inet package_mysql package_ibase package_fcl package_x11 package_opengl package_gtk
 override FPCOPTDEF=$(CPU_TARGET)
 ifneq ($(OS_TARGET),$(OS_SOURCE))
 override FPCOPT+=-T$(OS_TARGET)
@@ -1270,7 +1258,6 @@ fpc_info:
 	@$(ECHO)
 TARGET_DIRS_LCL=1
 TARGET_DIRS_COMPONENTS=1
-TARGET_DIRS_TOOLS=1
 ifdef TARGET_DIRS_LCL
 lcl_all:
 	$(MAKE) -C lcl all
@@ -1348,45 +1335,6 @@ components_info:
 components:
 	$(MAKE) -C components all
 .PHONY: components_all components_debug components_smart components_examples components_shared components_install components_sourceinstall components_exampleinstall components_distinstall components_zipinstall components_zipsourceinstall components_zipexampleinstall components_zipdistinstall components_clean components_distclean components_cleanall components_info components
-endif
-ifdef TARGET_DIRS_TOOLS
-tools_all:
-	$(MAKE) -C tools all
-tools_debug:
-	$(MAKE) -C tools debug
-tools_smart:
-	$(MAKE) -C tools smart
-tools_examples:
-	$(MAKE) -C tools examples
-tools_shared:
-	$(MAKE) -C tools shared
-tools_install:
-	$(MAKE) -C tools install
-tools_sourceinstall:
-	$(MAKE) -C tools sourceinstall
-tools_exampleinstall:
-	$(MAKE) -C tools exampleinstall
-tools_distinstall:
-	$(MAKE) -C tools distinstall
-tools_zipinstall:
-	$(MAKE) -C tools zipinstall
-tools_zipsourceinstall:
-	$(MAKE) -C tools zipsourceinstall
-tools_zipexampleinstall:
-	$(MAKE) -C tools zipexampleinstall
-tools_zipdistinstall:
-	$(MAKE) -C tools zipdistinstall
-tools_clean:
-	$(MAKE) -C tools clean
-tools_distclean:
-	$(MAKE) -C tools distclean
-tools_cleanall:
-	$(MAKE) -C tools cleanall
-tools_info:
-	$(MAKE) -C tools info
-tools:
-	$(MAKE) -C tools all
-.PHONY: tools_all tools_debug tools_smart tools_examples tools_shared tools_install tools_sourceinstall tools_exampleinstall tools_distinstall tools_zipinstall tools_zipsourceinstall tools_zipexampleinstall tools_zipdistinstall tools_clean tools_distclean tools_cleanall tools_info tools
 endif
 TARGET_EXAMPLEDIRS_EXAMPLES=1
 ifdef TARGET_EXAMPLEDIRS_EXAMPLES
