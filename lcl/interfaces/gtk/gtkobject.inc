@@ -378,6 +378,11 @@ begin
         else
           ATransientWindow^.SortIndex:=-1;
         ATransientWindow^.IsModal:=ATransientWindow^.SortIndex>=0;
+        if not ATransientWindow^.IsModal then begin
+          if LCLObject is TCustomForm then
+            ATransientWindow^.SortIndex:=
+              Screen.CustomFormIndex(TCustomForm(LCLObject));
+        end;
         if AllWindows=nil then AllWindows:=TList.Create;
         AllWindows.Add(ATransientWindow);
       end;
@@ -429,8 +434,16 @@ begin
     
     // sort non modal windows for z order
     // ToDo: How do we get the z order?
-    // For now, just use the creation order
-
+    // For now, just use the inverse order in the Screen object
+    // that means: the lower in the Screen object, the later in the transient list
+    for i:=0 to FirstModal-2 do begin
+      for j:=i+1 to FirstModal-1 do begin
+        ATransientWindow1:=PTransientWindow(AllWindows[i]);
+        ATransientWindow2:=PTransientWindow(AllWindows[j]);
+        if ATransientWindow1^.SortIndex<ATransientWindow2^.SortIndex then
+          AllWindows.Exchange(i,j);
+      end;
+    end;
     
     // set all transient relationships for LCL windows
     ParentTransientWindow:=nil;
@@ -438,6 +451,8 @@ begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
       if ATransientWindow^.Component=nil then continue;
       if ParentTransientWindow<>nil then begin
+        //writeln('Set TRANSIENT Parent=',ParentTransientWindow^.Component.Name,':',ParentTransientWindow^.Component.ClassName,' ',ParentTransientWindow^.SortIndex,
+        //' Child=',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName,' ',ATransientWindow^.SortIndex);
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
                                      ParentTransientWindow^.GtkWindow);
       end;
@@ -7046,6 +7061,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.338  2003/03/18 13:45:39  mattias
+  set transient forms with Screen object order
+
   Revision 1.337  2003/03/18 13:04:25  mattias
   improved focus debugging output
 
