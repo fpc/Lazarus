@@ -32,10 +32,7 @@ unit global;
 interface
 
 
-
-
 implementation
-
 
 {$I global.inc}
 
@@ -45,6 +42,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/05/03 23:00:33  mattias
+  localization
+
   Revision 1.6  2002/05/10 06:57:41  lazarus
   MG: updated licenses
 

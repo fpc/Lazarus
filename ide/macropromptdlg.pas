@@ -38,7 +38,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
-  Dialogs, LResources;
+  Dialogs, LResources, LazarusIDEStrConsts;
 
 
 type
@@ -86,7 +86,7 @@ begin
     Width:=300;
     Height:=150;
     Position:=poScreenCenter;
-    Caption:='Enter data';
+    Caption:=lisMacroPromptEnterData;
     OnResize:=@MacroPrompDialogResize;
 
     NoteLabel:=TLabel.Create(Self);
@@ -94,7 +94,7 @@ begin
       Name:='NoteLabel';
       Parent:=Self;
       SetBounds(8,8,200,25);
-      Caption:='Enter run parameters';
+      Caption:=lisMacroPromptEnterRunParameters;
       Visible:=true;
     end;
     
@@ -112,7 +112,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,25);
-      Caption:='Ok';
+      Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -122,7 +122,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,Self.ClientHeight-40,80,25);
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;

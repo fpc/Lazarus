@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources;
+  LResources, LazarusIDEStrConsts;
 
 type
   TLazFindInFilesDialog = class(TForm)
@@ -63,7 +63,7 @@ constructor TLazFindInFilesDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    Caption:='Find in files';
+    Caption:=srkmecFindInFiles;
     Width:=320;
     Height:=430;
     Position:=poScreenCenter;
@@ -74,7 +74,7 @@ begin
       Name:='TextToFindLabel';
       Parent:=Self;
       SetBounds(8,8,80,Height);
-      Caption:='Text to find:';
+      Caption:=lisFindFileTextToFind;
       Visible:=true;
     end;
     
@@ -96,7 +96,7 @@ begin
       Parent:=Self;
       SetBounds(8,TextToFindLabel.Top+TextToFindLabel.Height+10,
         Self.ClientWidth-20,95);
-      Caption:='Options';
+      Caption:=dlgFROpts;
       Visible:=true;
     end;
     
@@ -105,7 +105,7 @@ begin
       Name:='CaseSensitiveCheckBox';
       Parent:=OptionsGroupBox;
       SetBounds(8,2,OptionsGroupBox.ClientWidth-20,20);
-      Caption:='Case sensitive';
+      Caption:=lisFindFileCaseSensitive;
       Visible:=true;
     end;
     
@@ -116,7 +116,7 @@ begin
       SetBounds(CaseSensitiveCheckBox.Left,
            CaseSensitiveCheckBox.Top+CaseSensitiveCheckBox.Height+5,
            CaseSensitiveCheckBox.Width,20);
-      Caption:='Whole words only';
+      Caption:=lisFindFileWholeWordsOnly;
       Visible:=true;
     end;
     
@@ -127,7 +127,7 @@ begin
       SetBounds(CaseSensitiveCheckBox.Left,
            WholeWordsOnlyCheckBox.Top+WholeWordsOnlyCheckBox.Height+5,
            CaseSensitiveCheckBox.Width,20);
-      Caption:='Regular expressions';
+      Caption:=lisFindFileRegularExpressions;
       Visible:=true;
     end;
     
@@ -137,11 +137,11 @@ begin
       Parent:=Self;
       SetBounds(8,OptionsGroupBox.Top+OptionsGroupBox.Height+10,
         Self.ClientWidth-20,90);
-      Caption:='Where';
+      Caption:=lisFindFileWhere;
       Items.BeginUpdate;
-      Items.Add('search all files in project');
-      Items.Add('search all open files');
-      Items.Add('search in directories');
+      Items.Add(lisFindFilesearchAllFilesInProject);
+      Items.Add(lisFindFilesearchAllOpenFiles);
+      Items.Add(lisFindFilesearchInDirectories);
       Items.EndUpdate;
       Visible:=true;
     end;
@@ -152,7 +152,7 @@ begin
       Parent:=Self;
       SetBounds(8,WhereRadioGroup.Top+WhereRadioGroup.Height+10,
         Self.ClientWidth-20,135);
-      Caption:='Directory options';
+      Caption:=lisFindFileDirectoryOptions;
       Visible:=true;
     end;
     
@@ -161,7 +161,7 @@ begin
       Name:='DirectoryLabel';
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(8,5,80,Height);
-      Caption:='Directory';
+      Caption:=lisCodeToolsDefsInsertBehindDirectory;
       Visible:=true;
     end;
     
@@ -190,7 +190,7 @@ begin
       Name:='FileMaskLabel';
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(8,DirectoryComboBox.Top+DirectoryComboBox.Height+5,200,Height);
-      Caption:='File mask (*, *.*, *.bak?)';
+      Caption:=lisFindFileFileMaskBak;
       Visible:=true;
     end;
     
@@ -209,7 +209,7 @@ begin
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(8,FileMaskComboBox.Top+FileMaskComboBox.Height+10,
           150,Height);
-      Caption:='Include sub directories';
+      Caption:=lisFindFileIncludeSubDirectories;
       Visible:=true;
     end;
     
@@ -218,7 +218,7 @@ begin
       Name:='OkButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,Height);
-      Caption:='Ok';
+      Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -228,7 +228,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(Self.ClientWidth-100,Self.ClientHeight-40,80,Height);
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
@@ -327,8 +327,6 @@ procedure TLazFindInFilesDialog.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
-
-
 
 end.
 
