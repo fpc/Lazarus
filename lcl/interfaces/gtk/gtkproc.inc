@@ -8008,6 +8008,19 @@ var
   FirstScreenCalled: Boolean = False;
   FirstScreenResult: Boolean = False;
 {$IFDEF UseXinerama}
+{ Copy record definition from Xinerama unit.
+  Can't use the unit itself, as it forces the executable to
+  refer to the libraray }
+type
+   TXineramaScreenInfo = record
+        screen_number : cint;
+        x_org 	      : cshort;
+        y_org 	      : cshort;
+        width 	      : cshort;
+        height 	      : cshort;
+     end;
+   PXineramaScreenInfo = ^TXineramaScreenInfo;
+
 function GetFirstScreen: Boolean;
 var
   nMonitors: cint;
@@ -8032,14 +8045,17 @@ begin
           pXineramaIsActive(X11Display)
         then begin
           XineramaScreenInfo := pXineramaQueryScreens(X11Display, @nMonitors);
-          if (nMonitors > 0) and (nMonitors < 10) then begin
-            FirstScreen.x := XineramaScreenInfo^.width;
-            FirstScreen.y := XineramaScreenInfo^.height;
+          if XineramaScreenInfo <> nil then begin
+            if (nMonitors > 0) and (nMonitors < 10) then begin
+              FirstScreen.x := XineramaScreenInfo^.width;
+              FirstScreen.y := XineramaScreenInfo^.height;
+              FirstScreenResult := True;
+            end;
             XFree(XineramaScreenInfo);
-            FirstScreenResult := True;
           end;
         end;
-        FreeLibrary(XineramaLib);
+        // Do not FreeLibrary(XineramaLib) because it causes the X11 library to
+        // crash on exit
       end;
     end;
     FirstScreenCalled := True;
@@ -8059,6 +8075,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.340  2005/02/20 10:43:04  mattias
+  added dyn xinerama use patch  from C Western
+
   Revision 1.339  2005/02/19 20:36:55  mattias
   xinerama hack is now only enabled when compiled with -dUseXinerama
 

@@ -44,9 +44,6 @@ uses
       // MWE:
       // TODO: check if the new keyboard routines require X on GTK2
       X, XLib, XUtil, //Font retrieval and Keyboard handling
-      {$IFDEF UseXinerama}
-        Xinerama,
-      {$ENDIF}
     {$ENDIF not Gtk1}
   {$ENDIF}
   InterfaceBase,

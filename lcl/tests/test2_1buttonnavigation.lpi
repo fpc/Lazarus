@@ -9,21 +9,21 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="5"/>
+      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="test2_1buttonnavigation"/>
     </General>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="14" Y="32"/>
+        <CursorPos X="20" Y="26"/>
         <EditorIndex Value="0"/>
         <Filename Value="test2_1buttonnavigation.lpr"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="test2_1buttonnavigation"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="43"/>
       </Unit0>
     </Units>
     <PublishOptions>
