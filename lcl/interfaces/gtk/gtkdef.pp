@@ -29,10 +29,6 @@ unit GTKDef;
 {$mode objfpc} 
 {$LONGSTRINGS ON}
 
-{$IFDEF gtk2}
-{$DEFINE USE_PANGO}
-{$EndIf}
-
 interface
 
 uses
@@ -95,7 +91,7 @@ type
         GDIBrushPixMap: PGdkPixmap;
       );
       gdiFont: (
-      {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+      {$Ifdef GTK2}
         GDIFontObject: PPangoFontDescription;
         StrikeOut : gboolean;//Description can't set these so we use these
         Underline : gboolean;//instead of an additional AttributeList
@@ -465,6 +461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/09/19 00:41:51  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.47  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

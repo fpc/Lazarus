@@ -144,7 +144,7 @@ begin
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
-  {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+  {$Ifdef GTK2}
   FDefaultFontDesc:= nil;
   {$Else}
   FDefaultFont:= nil;
@@ -4718,7 +4718,7 @@ begin
       g_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
                          gtk_signal_func(@GTKDialogMenuActivateCB),
                          OpenDialog);
-      gtk_menu_append({$IfNdef GTK2}PGTKMenu{$EndIf}(MenuWidget), MenuItemWidget);
+      gtk_menu_append(MenuWidget, MenuItemWidget);
       gtk_widget_show(MenuItemWidget);
     end;
     gtk_widget_show(MenuWidget);
@@ -4915,7 +4915,7 @@ begin
       g_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
                          gtk_signal_func(@GTKDialogMenuActivateCB),
                          OpenDialog);
-      gtk_menu_append({$IfNdef GTK2}PGTKMenu{$EndIf}(MenuWidget), MenuItemWidget);
+      gtk_menu_append(MenuWidget, MenuItemWidget);
       gtk_widget_show(MenuItemWidget);
     end;
     gtk_widget_show(MenuWidget);
@@ -7172,8 +7172,7 @@ begin
     if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
       // mainmenu (= a menu bar)
       ContainerMenu:=ParentMenuWidget;
-      gtk_menu_bar_insert({$IFNDef GTK2}PGtkMenuBar{$EndIf}(ParentMenuWidget),MenuItem,
-                          LCLMenuItem.MenuIndex);
+      gtk_menu_bar_insert(ParentMenuWidget,MenuItem, LCLMenuItem.MenuIndex);
     end
     else begin
       // menu item
@@ -7194,7 +7193,7 @@ begin
           gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
         end;
       end;
-      gtk_menu_insert({$IFNDef GTK2}PGtkMenu{$EndIf}(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
+      gtk_menu_insert(ContainerMenu, MenuItem, LCLMenuItem.MenuIndex);
     end;
     
     SetContainerMenuToggleSize;
@@ -7461,7 +7460,7 @@ begin
 
     gdk_gc_get_values(aDC.GC, @Values);
 
-    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+    {$Ifdef GTK2}
       if (gtk_widget_get_style(ClientWidget)<>nil) and
         (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
       then begin
@@ -7475,7 +7474,7 @@ begin
 
   if aDC <> nil
   then begin
-    {$IfNdef USE_PANGO}
+    {$Ifdef GTK1}
     if Values.Font <> nil
     then begin
       GdiObject:=NewGDIObject(gdiFont);
@@ -7557,7 +7556,7 @@ end;
 function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
   Result := NewGDIObject(gdiFont);
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK2}
   Result^.GDIFontObject:= GetDefaultFontDesc(true);
 {$Else}
   Result^.GDIFontObject:= GetDefaultFont(true);
@@ -7588,7 +7587,7 @@ end;
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK2}
 begin
 end;
 {$Else}
@@ -7656,7 +7655,7 @@ end;
 {------------------------------------------------------------------------------
   function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
  ------------------------------------------------------------------------------}
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK2}
 function TgtkObject.GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
 begin
   if FDefaultFontDesc = nil then begin
@@ -7959,7 +7958,7 @@ end;
 procedure TGtkObject.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
   var Lines: PPChar; var LineCount: integer);
 var
-  {$IfDef USE_PANGO}
+  {$IfDef GTK2}
   UseFontDesc : PPangoFontDescription;
   {$Else}
   UseFont : PGDKFont;
@@ -7970,7 +7969,7 @@ var
   var
     lbearing, rbearing, width, ascent, descent: LongInt;
   begin
-    {$IfDef USE_PANGO}
+    {$IfDef GTK2}
     GetTextExtentIgnoringAmpersands(UseFontDesc, @AText[LineStart], LineLen,
                      @lbearing, @rBearing, @width, @ascent, @descent);
     {$Else}
@@ -8041,7 +8040,7 @@ var
     with TDeviceContext(DC) do begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        {$IfDef USE_PANGO}
+        {$IfDef GTK2}
         UseFontDesc := GetDefaultFontDesc(true);
         {$Else}
         UseFont := GetDefaultFont(true);
@@ -8049,7 +8048,7 @@ var
         UnRef := True;
       end
       else begin
-        {$IfDef USE_PANGO}
+        {$IfDef GTK2}
         UseFontDesc := CurrentFont^.GDIFontObject;
         {$Else}
         UseFont := CurrentFont^.GDIFontObject;
@@ -8062,7 +8061,7 @@ var
   procedure CleanUpFont;
   begin
     If UnRef then
-        {$IfDef USE_PANGO}
+        {$IfDef GTK2}
          pango_font_description_free(UseFontDesc);
         {$Else}
         GDK_Font_UnRef(UseFont);
@@ -8193,6 +8192,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.420  2003/09/19 00:41:51  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.419  2003/09/18 21:36:00  ajgenius
   add csEdit to GTK2 interface to start removing use of GtkOldEditable
 

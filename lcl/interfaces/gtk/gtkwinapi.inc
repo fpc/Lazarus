@@ -1305,7 +1305,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
-{$IfDef USE_PANGO}
+{$IfDef GTK2}
 begin
   writeln('ToDo: TgtkObject.CreateFontIndirectEx');
   Result:=0;
@@ -2128,7 +2128,7 @@ begin
         gdiFont:
           begin
             if GDIFontObject<>nil then
-            {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+            {$Ifdef GTK2}
              pango_font_description_free(GDIFontObject);
             {$Else}
             gdk_font_unref(GDIFontObject);
@@ -2960,7 +2960,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-{$Ifdef USE_PANGO}
+{$Ifdef GTK2}
 begin
   writeln('ToDo: TgtkObject.ExtTextOut');
   Result:=false;
@@ -4227,7 +4227,7 @@ begin
         end;
       gdiFont:
         begin
-          {$IfDef USE_PANGO}
+          {$IfDef GTK2}
           Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiFont(PANGO)');
           {$Else}
           if Buf = nil then
@@ -4561,7 +4561,7 @@ var
   GDIObj : PGDIObject;
 begin
   GDIObj := NewGDIObject(gdiFont);
-  {$IfDef USE_PANGO}
+  {$IfDef GTK2}
   GDIObj^.GDIFontObject:= GetDefaultFontDesc(true);
   {$Else}
   GDIObj^.GDIFontObject:= GetDefaultFont(true);
@@ -4991,7 +4991,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
-{$IfDef USE_PANGO}
+{$IfDef GTK2}
 begin
   writeln('TGTKObject.GetTextExtentPoint ToDo');
   Result:=false;
@@ -6951,7 +6951,7 @@ begin
           Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Font', [DC]));
           Result := HFONT(CurrentFont);
           CurrentFont := PGDIObject(GDIObj);
-          {$IfNDef USE_PANGO}
+          {$IfDef GTK1}
           if GC <> nil
           then begin
             gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
@@ -8516,7 +8516,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
-{$IfDef USE_PANGO}
+{$IfDef GTK2}
 begin
   writeln('TGTKObject.TextOut ToDo');
   Result:=false;
@@ -8795,6 +8795,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.287  2003/09/19 00:41:52  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.286  2003/09/18 14:06:30  ajgenius
   fixed Tgtkobject.drawtext for Pango till the native pango one works better
 

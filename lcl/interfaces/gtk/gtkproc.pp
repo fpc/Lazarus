@@ -24,19 +24,12 @@ interface
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
 
-{$IFDEF gtk2}
-{$DEFINE USE_PANGO}
-{$EndIf}
 uses
   SysUtils, Classes,
-  {$IFNDEF USE_PANGO}
+  {$IFDEF GTK1}
   {$Ifndef Win32}
   X, XLib,//Font retrieval
   {$EndIf}
-  //hopefully we can grab a pango context off of an Invisible widget and call
-  //pango_context_list_families, then extract info from that list for pango,
-  //thus keeping us from having to expose xft, fontconfig, X, or Win32 Pango
-  //interfaces, or from having to call actual interfaces directly in GTK2
   {$EndIf}
   InterfaceBase,
   {$IFDEF gtk2}
@@ -401,7 +394,7 @@ const
 var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
   
-{$IFNDEF USE_PANGO}
+{$IFDEF GTK1}
 var
   X11Display : Pointer;//only needed to get X fonts
 {$EndIf}
@@ -434,7 +427,7 @@ Function DeleteAmpersands(var Str : String) : Longint;
 function Ampersands2Underscore(Src: PChar) : PChar;
 function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
-{$Ifdef USE_PANGO}
+{$Ifdef GTK2}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$Else}
@@ -462,7 +455,6 @@ procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
 // menus
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
 function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
-function MenuItemChecked(MenuWidget: PGtkCheckMenuItem): boolean;
 function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
 function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
 procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
@@ -492,7 +484,7 @@ Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
 Function GetStyleWidget(const WName : String) : PGTKWidget;
 
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK2}
 function LoadDefaultFontDesc: PPangoFontDescription;
 {$Else}
 function LoadDefaultFont: PGDKFont;
@@ -500,7 +492,7 @@ function LoadDefaultFont: PGDKFont;
 
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
-{$IfNdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 {$EndIf}
 
@@ -543,6 +535,10 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
   Function gtk_window_get_modal(window:PGtkWindow):gboolean;
   Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
   Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
+  Function gtk_check_menu_item_get_active(menu_item : PGtkCheckMenuItem) : gboolean;
+  Procedure gtk_menu_append(menu : PGTKWidget; Item : PGtkWidget);
+  Procedure gtk_menu_insert(menu : PGtkWidget; Item : PGTKWidget; Index : gint);
+  Procedure gtk_menu_bar_insert(menubar : PGtkWidget; Item : PGTKWidget; Index : gint);
   Function gtk_image_new : PGTKWidget;
   Function gtk_toolbar_new : PGTKWidget;
   Procedure gtk_color_selection_get_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
@@ -634,7 +630,7 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-{$IFNDEF USE_PANGO} //only needed to get X fonts
+{$IFDEF GTK1} //only needed to get X fonts
 initialization
   X11Display := nil;
   

@@ -105,6 +105,26 @@ begin
     menu_item^.flag0:=menu_item^.flag0 and (not bm_right_justify);
 end;
 
+Function gtk_check_menu_item_get_active(menu_item : PGtkCheckMenuItem) : gboolean;
+begin
+   Result:=(menu_item^.flag0 and bm_checkmenuitem_active <> 0);
+end;
+
+Procedure gtk_menu_append(menu : PGTKWidget; Item : PGtkWidget);
+begin
+  gtk.gtk_menu_append(PGTKMenu(menu), Item);
+end;
+
+Procedure gtk_menu_insert(menu : PGtkWidget; Item : PGTKWidget; Index : gint);
+begin
+  gtk.gtk_menu_insert(PGTKMenu(menu), Item, Index);
+end;
+
+Procedure gtk_menu_bar_insert(menubar : PGtkWidget; Item : PGTKWidget; Index : gint);
+begin
+  gtk.gtk_menu_bar_insert(PGtkMenuBar(menubar), Item, Index);
+end;
+
 Function gtk_image_new :PGTKWidget;
 begin
   result := gtk.gtk_image_new(nil,nil);
@@ -2936,15 +2956,6 @@ begin
   Result:=GTK_CHECK_MENU_ITEM_CLASS(gtk_object_get_class(widget));
 end;
 
-function MenuItemChecked(MenuWidget: PGtkCheckMenuItem): boolean;
-begin
-  {$IFDEF Gtk2}
-  Result:=gtk_check_menu_item_get_active(MenuWidget);
-  {$ELSE}
-  Result:=(MenuWidget^.flag0 and bm_checkmenuitem_active <> 0)
-  {$ENDIF}
-end;
-
 {------------------------------------------------------------------------------
   function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
 
@@ -3029,7 +3040,7 @@ begin
       then begin
         LCLMenuItem := TMenuItem(GetLCLObject(MenuItem));
         if  (LCLMenuItem <> nil)
-        and (MenuItemChecked(MenuItem) <> LCLMenuItem.Checked)
+        and (gtk_check_menu_item_get_active(MenuItem) <> LCLMenuItem.Checked)
         then gtk_check_menu_item_set_active(MenuItem, LCLMenuItem.Checked);
       end;
       CurListItem := CurListItem^.Next;
@@ -3299,6 +3310,7 @@ begin
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItemWidget),
       LCLMenuItem.Checked);
     {$ifdef GTK2}
+      writeln('TODO: CreateMenuItem, get old toggle size');
     {$else}
     if (OldCheckMenuItemToggleSize=0) then
       OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
@@ -4098,7 +4110,7 @@ end;
   a generic fixed font, if THAT fails, it gets whatever font is available.
   If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK2}
 function LoadDefaultFontDesc: PPangoFontDescription;
 var
   Style : PGTKStyle;
@@ -4129,11 +4141,6 @@ begin
     Style := GetStyle('gtk_default');
 
   If Style <> nil then begin
-    {$IFDEF Gtk2}
-    // Gtk2ToDo
-    if Style^.font_desc<>nil then
-      Result:=gdk_font_from_description(Style^.font_desc);
-    {$ELSE}
     Result := Style^.Font;
     If Result = nil then
       {$IFNDEF NoStyle}
@@ -4142,7 +4149,6 @@ begin
           Result := gdk_font_load(Style^.RC_Style^.font_name);
       end;
       {$ENDIF}
-    {$ENDIF}
   end;
 
   If Result = nil then
@@ -4573,7 +4579,7 @@ end;
 
   Gets text extent of a string, ignoring escaped Ampersands.
 -------------------------------------------------------------------------------}
-{$Ifdef USE_PANGO}
+{$Ifdef GTK2}
 Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 {$Else}
@@ -4594,7 +4600,7 @@ begin
       LineLength:=StrLen(NewStr);
     end;
   end;
-{$Ifdef USE_PANGO}
+{$Ifdef GTK2}
   gdk_text_extents(FontDesc, NewStr, LineLength,
                    lbearing, rBearing, width, ascent, descent);
 {$Else}
@@ -4610,7 +4616,7 @@ end;
   
   This is only a heuristic
  ------------------------------------------------------------------------------}
-{$IfNdef USE_PANGO} // we should implement pango for gtk2 soon
+{$Ifdef GTK1}
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 var
   SingleCharLen, DoubleCharLen: integer;
@@ -4745,7 +4751,7 @@ end;
 
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 var
-  {$IFNDEF USE_PANGO}
+  {$IFDEF GTK1}
   theFonts : PPChar;
   {$Else}
   Widget : PGTKWidget;
@@ -4756,7 +4762,7 @@ var
   I, N: Integer;
 begin
   ScreenFonts.Clear;
-  {$IFNDEF USE_PANGO}
+  {$IFDEF GTK1}
   {$IfNdef Win32}
   If X11Display = nil then
     X11Display := XOpenDisplay(GDK_GET_DISPLAY);
@@ -4791,7 +4797,7 @@ begin
     end;
    if (families <> nil) then
      g_free(families);
-  {$EndIf USE_PANGO}
+  {$EndIf GTK2}
 end;
 
 {$IFDEF ASSERT_IS_ON}
@@ -4804,6 +4810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.209  2003/09/19 00:41:52  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.208  2003/09/18 14:06:30  ajgenius
   fixed Tgtkobject.drawtext for Pango till the native pango one works better
 

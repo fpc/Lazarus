@@ -46,10 +46,6 @@ interface
 
 {off $Define Disable_GC_SysColors}
 
-{$IFDEF gtk2}
-{$DEFINE USE_PANGO}
-{$EndIf}
-
 uses
   InterfaceBase,
   {$IFDEF gtk2}
@@ -91,7 +87,7 @@ type
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
     
-    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+    {$Ifdef GTK2}
     FDefaultFontDesc : PPangoFontDescription;
     {$Else}
     FDefaultFont : PGdkFont;
@@ -148,7 +144,7 @@ type
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
     procedure UpdateDCTextMetric(DC: TDeviceContext); virtual;
-    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+    {$Ifdef GTK2}
     function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
     {$Else}
     function GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
@@ -372,6 +368,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.149  2003/09/19 00:41:51  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.148  2003/09/18 17:23:04  ajgenius
   start using GtkTextView for Gtk2 Memo
 

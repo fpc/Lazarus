@@ -30,8 +30,6 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$DEFINE USE_PANGO}
-
 uses
   Classes, SysUtils,
   {$IfNDef GTK2_2}
@@ -53,14 +51,12 @@ uses
 type
   TGtk2Object = class(TGtkObject)
   public
-    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
     function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
     function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
     function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
     function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
     function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
     procedure UpdateDCTextMetric(DC: TDeviceContext); override;
-    {$EndIf}
 
     function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
     Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
@@ -93,7 +89,6 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
 
 implementation
 
-{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
 {------------------------------------------------------------------------------
   Method:  DrawText
   Params:  DC, Str, Count, Rect, Flags
@@ -916,8 +911,6 @@ begin
   end;
 end;
 
-{$EndIf}
-
 function Tgtk2Object.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 var
   paintrect : TGDKRectangle;
@@ -1541,6 +1534,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2003/09/19 00:41:52  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.18  2003/09/18 21:36:00  ajgenius
   add csEdit to GTK2 interface to start removing use of GtkOldEditable
 

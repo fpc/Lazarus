@@ -315,7 +315,7 @@ begin
   
   // the gtk always toggles the check flag
   // -> restore 'checked' flag if needed
-  if MenuItemChecked(AMenuItem) = LCLMenuItem.Checked then Exit;
+  if gtk_check_menu_item_get_active(AMenuItem) = LCLMenuItem.Checked then Exit;
   if LCLMenuItem.AutoCheck then Exit;
 
   // restore it
@@ -2854,6 +2854,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.192  2003/09/19 00:41:51  ajgenius
+  remove USE_PANGO define since pango now apears to work properly.
+
   Revision 1.191  2003/09/17 15:26:41  mattias
   fixed removing TPage
 
