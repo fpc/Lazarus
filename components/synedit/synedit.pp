@@ -3515,7 +3515,7 @@ begin
         ScrollInfo.nPos := LeftChar;
         SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
         {$IFDEF SYN_LAZARUS}
-        ShowScrollBar(Handle,SB_VERT,True);
+        ShowScrollBar(Handle,SB_HORZ,True);
         {$ENDIF}
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
@@ -3534,7 +3534,7 @@ begin
         end;
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
         {$IFDEF SYN_LAZARUS}
-        ShowScrollBar(Handle,SB_HORZ,True);
+        ShowScrollBar(Handle,SB_VERT,True);
         {$ENDIF}
       end;
     end;
