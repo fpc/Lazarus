@@ -2073,7 +2073,12 @@ var CleanCursorPos, Indent, insertPos: integer;
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                      fdfTopLvlResolving,fdfFindVariable];
       if (not FindDeclarationOfIdentAtCursor(Params))
-      or (Params.NewNode.Desc<>ctnProperty) then exit;
+      or (Params.NewNode.Desc<>ctnProperty) then begin
+        {$IFDEF CTDEBUG}
+        writeln('FindEventTypeAtCursor not a property');
+        {$ENDIF}
+        exit;
+      end;
       PropertyContext:=CreateFindContext(Params);
       // identifier is property
       // -> check type of property
@@ -2081,8 +2086,12 @@ var CleanCursorPos, Indent, insertPos: integer;
       ProcContext:=PropertyContext.Tool.FindBaseTypeOfNode(
                                                  Params,PropertyContext.Node);
       if (ProcContext.Node=nil) or (ProcContext.Node.Desc<>ctnProcedureType)
-      then
+      then begin
+        {$IFDEF CTDEBUG}
+        writeln('FindEventTypeAtCursor not a procedure type');
+        {$ENDIF}
         exit;
+      end;
       // identifier is property of type proc => this is an event
       Result:=true;
     end;
@@ -2126,11 +2135,14 @@ var CleanCursorPos, Indent, insertPos: integer;
     begin
       Result:=false;
       ProcNode:=CursorNode;
-      while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+      while (ProcNode<>nil) do begin
+        if (ProcNode.Desc=ctnProcedure) then begin
+          SearchedClassname:=ExtractClassNameOfProcNode(ProcNode);
+          if SearchedClassName<>'' then break;
+        end;
         ProcNode:=ProcNode.Parent;
+      end;
       if (ProcNode=nil) then exit;
-      SearchedClassname:=ExtractClassNameOfProcNode(ProcNode);
-      if SearchedClassname='' then exit;
       ANode:=FindFirstNodeOnSameLvl(ProcNode);
       if (ANode=nil) then exit;
       // search class node
