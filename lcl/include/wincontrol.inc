@@ -969,6 +969,8 @@ begin
 //  if HandleAllocated then begin
     if FWinControls <> nil then begin
       for i:= 0 to FWinControls.Count - 1 do begin
+        //writeln('  i=',i);
+        //writeln('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
         TWinControl(FWinControls[i]).DestroyHandle;
       end;	
     end;
@@ -1573,18 +1575,19 @@ var
   n: Integer;
   Control: TControl;
 begin
-//writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
+  //writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
   DestroyHandle;
-  
-//  for n:=0 to ComponentCount-1 do
-//    writeln('  ',Components[n].ClassName);
+  //writeln('[TWinControl.Destroy] B  ',Name,':',ClassName);
+
+  //for n:=0 to ComponentCount-1 do
+  //  writeln('  n=',n,' ',Components[n].ClassName);
   
   n := ControlCount;
 
   while n > 0 do
   begin
     Control := Controls[n - 1];
-//writeln('[TWinControl.Destroy] B  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
+    //writeln('[TWinControl.Destroy] C  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
     Remove(Control);
     // don't free the control just set parent to nil
     // controls are freed by the owner
@@ -1594,9 +1597,9 @@ begin
   end;
 
   FBrush.Free;
-//writeln('[TWinControl.Destroy] D  ',Name,':',ClassName);
+  //writeln('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
-//writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
+  //writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -2296,6 +2299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/08/31 11:37:09  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.81  2002/08/30 12:32:21  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
