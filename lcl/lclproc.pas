@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************
 
-  Useful helper functions.
+  Useful lower level helper functions.
 }
 unit LCLProc;
 
@@ -35,6 +35,20 @@ Function DeleteAmpersands(var Str : String) : Longint;
 
 function ShortCutToShortCutText(ShortCut: TShortCut): string;
 function ShortCutTextToShortCut(const ShortCutText: string): TShortCut;
+
+// Hooks used to prevent unit circles
+type
+  TSendApplicationMessageFunction =
+    function(Msg: Cardinal; WParam, LParam: Longint):Longint;
+  TOwnerFormDesignerModifiedProc =
+    procedure(AComponent: TComponent);
+
+var
+  SendApplicationMessageFunction: TSendApplicationMessageFunction;
+  OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc;
+
+function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
+procedure OwnerFormDesignerModified(AComponent: TComponent);
 
 
 implementation
@@ -194,6 +208,25 @@ begin
     end;
   end;
 end;
+
+function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint
+  ): Longint;
+begin
+  if SendApplicationMessageFunction<>nil then
+    Result:=SendApplicationMessageFunction(Msg,WParam,LParam)
+  else
+    Result:=0;
+end;
+
+procedure OwnerFormDesignerModified(AComponent: TComponent);
+begin
+  if OwnerFormDesignerModifiedProc<>nil then
+    OwnerFormDesignerModifiedProc(AComponent);
+end;
+
+initialization
+  SendApplicationMessageFunction:=nil;
+  OwnerFormDesignerModifiedProc:=nil;
 
 end.
 
