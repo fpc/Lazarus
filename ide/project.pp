@@ -1339,6 +1339,7 @@ begin
 
     try
       Path:='ProjectOptions/';
+      xmlconfig.SetValue(Path+'PathDelim/Value',PathDelim);
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
       SaveFlags;
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
@@ -1508,7 +1509,7 @@ begin
     try
       Path:='ProjectOptions/';
       fPathDelimChanged:=
-        XMLConfig.GetValue(Path+'PathDelim/Value', '/')<>PathDelim;
+        XMLConfig.GetValue(Path+'PathDelim/Value', PathDelim)<>PathDelim;
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
@@ -3168,6 +3169,9 @@ end.
 
 {
   $Log$
+  Revision 1.176  2005/01/13 19:54:58  mattias
+  added loading/saving project pathdelim  from Vincent
+
   Revision 1.175  2005/01/12 23:58:31  mattias
   improved project: recognizing if filename was fixed before pathdelim changed
 
