@@ -3126,6 +3126,27 @@ Assert(False, 'Trace:GetCaretPos');
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.GetCaretRespondToFocus(handle: HWND;
+    var ShowHideOnFocus: boolean): Boolean;
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetCaretRespondToFocus(handle: HWND;
+  var ShowHideOnFocus: boolean): Boolean;
+begin
+  if handle<>0 then begin
+    if gtk_type_is_a(gtk_object_type(PGTKObject(handle)), GTKAPIWidget_GetType)
+    then begin
+      GTKAPIWidget_GetCaretRespondToFocus(PGTKAPIWidget(handle),
+        ShowHideOnFocus);
+      Result:=true;
+    end
+    else begin
+      Result := False;
+    end;
+  end else
+    Result:=false;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetCharABCWidths        pbd
   Params:  Don't care yet
   Returns: False so that the font cache in the newest mwEdit will use
@@ -7617,6 +7638,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.202  2002/12/30 17:24:08  mattias
+  added history to identifier completion
+
   Revision 1.201  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
