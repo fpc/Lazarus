@@ -266,7 +266,7 @@ Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
     // owner could be a popupmenu too
     if (TMenuItem(Sender).Owner is TWinControl) and
         TWinControl(TMenuItem(Sender).Owner).HandleAllocated and
-	([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
+        ([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
       DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
   End;
   
@@ -485,7 +485,7 @@ Begin
       Begin
         if (Data <> nil) and (PChar(Data)^ <> #0) then 
         begin
-  	  GetText(TComponent(Sender), Handle, S);
+          GetText(TComponent(Sender), Handle, S);
           S := S + PChar(Data);
           SetLabel(Sender, PChar(S));
         end;
@@ -625,7 +625,7 @@ Begin
           if (AMenu<>nil) and (AMenu.Parent<>nil)
           and (AMenu.Parent is TCustomForm)
           and TCustomForm(AMenu.Parent).HandleAllocated 
-	  and not (csDestroying in AMenu.Parent.ComponentState) then
+          and not (csDestroying in AMenu.Parent.ComponentState) then
             DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
         End
         Else
@@ -643,13 +643,13 @@ Begin
 {Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
 and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters.
 The default menu positioning function will position the menu at the current pointer position.
-menu :	a GtkMenu.
-parent_menu_shell :	the menu shell containing the triggering menu item.
-parent_menu_item :	the menu item whose activation triggered the popup.
-func :	a user supplied function used to position the menu.
-data :	user supplied data to be passed to func.
-button :	the button which was pressed to initiate the event.
-activate_time :	the time at which the activation event occurred.
+menu :  a GtkMenu.
+parent_menu_shell :     the menu shell containing the triggering menu item.
+parent_menu_item :      the menu item whose activation triggered the popup.
+func :  a user supplied function used to position the menu.
+data :  user supplied data to be passed to func.
+button :        the button which was pressed to initiate the event.
+activate_time : the time at which the activation event occurred.
 }
       LM_POPUPSHOW:
       Begin
@@ -688,9 +688,9 @@ activate_time :	the time at which the activation event occurred.
       End;
       LM_SETFONT:
       begin
-      	if Sender is TControl then begin
-      		Windows.SendMessage(Handle, WM_SETFONT, windows.wParam(integer(data)), 1);
-      	end;
+        if Sender is TControl then begin
+                Windows.SendMessage(Handle, WM_SETFONT, windows.wParam(integer(data)), 1);
+        end;
       end;
       LM_SETSIZE:
       Begin
@@ -705,7 +705,7 @@ activate_time :	the time at which the activation event occurred.
               // the LCL defines the size of a form without border, win32 with.
               // -> adjust size according to BorderStyle
               Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle), false,
-		  BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle));
+                  BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle));
             end;
           end;
           ResizeChild(TheWinControl, Left, Top,
@@ -847,7 +847,7 @@ activate_time :	the time at which the activation event occurred.
             Then Data := TWin32CheckListBoxStrings.Create(Handle,TWinControl(Sender))
           Else Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
         Result := Integer(Data);
-	Windows.SetProp(Handle, 'List', Result);
+        Windows.SetProp(Handle, 'List', Result);
       End;
       LM_GETTEXT :
       Begin
@@ -1759,6 +1759,7 @@ Var
 {$ENDIF}
   WinHandle, BuddyHandle: HWND;
   StringList: TWin32ListStringList;
+  suppressMove: boolean;
 Begin
   // if not Sender.HandleAllocated then exit; --> Already checked (LM_SETSIZE and LM_RECREATEWND)
   {$IFDEF VerboseSizeMsg}
@@ -1773,22 +1774,41 @@ Begin
     '');
   {$ENDIF}
   WinHandle := Sender.Handle;
-  if Sender.FCompStyle = csSpinEdit then
+  suppressMove := false;
+  case Sender.FCompStyle of
+  csSpinEdit:
   begin
     // detach from buddy first
     BuddyHandle := Windows.SendMessage(WinHandle, UDM_SETBUDDY, 0, 0);
     MoveWindow(BuddyHandle, Left, Top, Width, Height, True);
     // reattach
     Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
-  end else begin
+    suppressMove := true;
+  end;
+  
+  csGroupBox:
+  begin
+    // check if we have a ``container'', if so, move that
+    BuddyHandle := Windows.GetProp(WinHandle, 'ParentPanel');
+    if BuddyHandle <> 0 then
+    begin
+      MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
+      Left := 0;
+      Top := 0;
+    end;
+  end;
+  
+  else
     if Sender is TCustomComboBox then
     begin
       StringList := TWin32ListStringList(Windows.GetProp(WinHandle, 'List'));
       if StringList <> nil then
-	Height := StringList.ComboHeight;
+        Height := StringList.ComboHeight;
     end;
-    MoveWindow(WinHandle, Left, Top, Width, Height, True);
   end;
+  
+  if not suppressMove then
+    MoveWindow(WinHandle, Left, Top, Width, Height, True);
   LCLControlSizeNeedsUpdate(Sender,False);
 End;
 
@@ -1801,9 +1821,15 @@ End;
   Adds A Child to a Parent
  ------------------------------------------------------------------------------}
 Procedure TWin32WidgetSet.AddChild(Parent, Child: HWND);
+var
+  ParentPanel: HWND;
 Begin
   Assert(False, 'Trace:AddChild - Parent Window Handle is $' + IntToHex(LongInt(Parent), 8));
   Assert(False, 'Trace:AddChild - Child Window Handle is $' + IntToHex(LongInt(Child), 8));
+  // handle groupbox exception
+  ParentPanel := Windows.GetProp(Child, 'ParentPanel');
+  if ParentPanel <> 0 then
+    Child := ParentPanel;
   SetParent(Child, Parent);
 End;
 
@@ -2083,6 +2109,21 @@ Begin
     End;
     {csFrame,} csGroupBox:
     Begin
+      if (Sender is TWinControl) and (TWinControl(Sender).Parent <> nil) and 
+        (TWinControl(Sender).Parent.FCompStyle = csGroupBox) then
+      begin
+        // the parent of this groupbox is another groupbox: there is a bug in 
+        // drawing the caption in that case, the caption of the child groupbox
+        // is drawn in system font, make an intermediate "ParentPanel", then
+        // the bug is hidden. Use 'ParentPanel' property of groupbox window
+        // to determine reference to this parent panel
+        // do not use 'ParentPanel' property for other controls!
+        Parent := CreateWindowEx(0, @ClsName, nil, WS_CHILD or WS_CLIPSIBLINGS or (Flags and WS_VISIBLE), 
+          Left, Top, Width, Height, Parent, 0, HInstance, nil);
+        Left := 0;
+        Top := 0;
+        Flags := Flags or WS_VISIBLE;
+      end;
       pClassName := 'BUTTON';
       WindowTitle := StrCaption;
       Flags := Flags Or BS_GROUPBOX;
@@ -2327,11 +2368,23 @@ Begin
       if SubClassWndProc <> nil then
         Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
       // subclass edit control of combobox too
-      if CompStyle = csCombobox then
+      case CompStyle of
+      csCombobox:
       begin
         Buddy := Windows.GetTopWindow(Window);
-	if Buddy <> HWND(nil) then
-	  Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(@ComboBoxEditWindowProc)));
+        if Buddy <> HWND(nil) then
+          Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(@ComboBoxEditWindowProc)));
+      end;
+
+      csGroupBox:
+      begin
+        // use exact same condition as above
+        if (TWinControl(Sender).Parent <> nil) and (TWinControl(Sender).Parent.FCompStyle = csGroupBox) then
+        begin
+          Windows.SetProp(Window, 'ParentPanel', Parent);
+        end;
+      end;
+
       end;
       Windows.SendMessage(Window, WM_SETFONT, WParam(FMessageFont), 0);
     end;
@@ -2411,9 +2464,13 @@ end;
 Procedure TWin32WidgetSet.ShowHide(Sender: TObject);
 Var
   Handle: HWND;
+  ParentPanel: HWND;
 Begin
   If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
+  ParentPanel := Windows.GetProp(Handle, 'ParentPanel');
+  if ParentPanel <> 0 then
+    Handle := ParentPanel;
   If TControl(Sender).HandleObjectShouldBeVisible Then
   Begin
     Assert(False, 'Trace: [TWin32WidgetSet.ShowHide] Showing the window');
@@ -2829,16 +2886,16 @@ begin
       begin
         Style := SS_LEFTNOWORDWRAP;
       end else begin
-	case Alignment of
-	  taLeftJustify:
-	    Style := SS_LEFT;
-	  taCenter:
-	    Style := SS_CENTER;
-	  taRightJustify:
-	    Style := SS_RIGHT;
-	else
-	  Style := SS_LEFT; // default, shouldn't happen
-	end;
+        case Alignment of
+          taLeftJustify:
+            Style := SS_LEFT;
+          taCenter:
+            Style := SS_CENTER;
+          taRightJustify:
+            Style := SS_RIGHT;
+        else
+          Style := SS_LEFT; // default, shouldn't happen
+        end;
       end;
       case Layout of
         tlTop:
@@ -3003,6 +3060,9 @@ End;
 
 {
   $Log$
+  Revision 1.206  2004/06/17 19:54:19  micha
+  fix bug in drawing groupbox caption when it is a child of another groupbox
+
   Revision 1.205  2004/06/15 15:37:29  micha
   fix groupbox background erasing
 
