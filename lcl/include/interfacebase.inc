@@ -953,7 +953,43 @@ begin
   DeleteObject(Clip);
 end;
 
-Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect;
+Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
+  bErase : Boolean; BorderWidth: integer) : Boolean;
+  
+  function Min(i1, i2: integer): integer;
+  begin
+    if i1<=i2 then Result:=i1 else Result:=i2;
+  end;
+  
+  function Max(i1, i2: integer): integer;
+  begin
+    if i1<=i2 then Result:=i2 else Result:=i1;
+  end;
+
+var
+  BorderRect: TRect;
+begin
+  Result:=false;
+  BorderRect:=ARect^;
+  // left
+  BorderRect.Right:=Min(BorderRect.Right,BorderRect.Left+BorderWidth);
+  if not InvalidateRect(aHandle,@BorderRect,bErase) then exit;
+  BorderRect.Right:=ARect^.Right;
+  // top
+  BorderRect.Bottom:=Min(BorderRect.Bottom,BorderRect.Top+BorderWidth);
+  if not InvalidateRect(aHandle,@BorderRect,bErase) then exit;
+  BorderRect.Bottom:=ARect^.Bottom;
+  // right
+  BorderRect.Left:=Max(BorderRect.Left,BorderRect.Right-BorderWidth);
+  if not InvalidateRect(aHandle,@BorderRect,bErase) then exit;
+  BorderRect.Left:=ARect^.Left;
+  // bottom
+  BorderRect.Top:=Max(BorderRect.Top,BorderRect.Bottom-BorderWidth);
+  if not InvalidateRect(aHandle,@BorderRect,bErase) then exit;
+  Result:=true;
+end;
+
+Function TInterfaceBase.InvalidateRect(aHandle : HWND; ARect : pRect;
   bErase : Boolean) : Boolean;
 begin
   Result := false;
@@ -1460,6 +1496,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/11/30 11:22:53  mattias
+  statusbar now uses invalidaterect
+
   Revision 1.68  2002/11/23 13:48:44  mattias
   added Timer patch from Vincent Snijders
 
