@@ -574,14 +574,19 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // combobox is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.hasTabParent := false;
+
   // get edit window within
   with Params do
   begin
     Buddy := Windows.GetTopWindow(Window);
-    SubClassWndProc := @ChildEditWindowProc;
+    // If the style is CBS_DROPDOWNLIST, GetTopWindow returns null,
+    // because the combobox has no edit in that case.
+    if Buddy<>HWND(nil) then begin
+      SubClassWndProc := @ChildEditWindowProc;
+      WindowCreateInitBuddy(AWinControl, Params);
+      BuddyWindowInfo^.isComboEdit := true;
+    end else BuddyWindowInfo:=nil;
   end;
-  WindowCreateInitBuddy(AWinControl, Params);
-  Params.BuddyWindowInfo^.isComboEdit := true;
   Result := Params.Window;
 end;
 
@@ -606,7 +611,7 @@ begin
   if (CurrentStyle and ComboBoxStylesMask)=
     ComboBoxStyles[TCustomComboBox(ACustomComboBox).Style] then exit;
 
-  ACustomComboBox.ReCreateWnd;
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomComboBox);
 end;
 
 function  TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;

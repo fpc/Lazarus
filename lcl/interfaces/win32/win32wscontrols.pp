@@ -242,7 +242,9 @@ begin
         Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
       Windows.SendMessage(Buddy, WM_SETFONT, 
         WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
-    end;
+    end
+    else
+      BuddyWindowInfo := nil;
 end;
 
 { TWin32WSControl }
