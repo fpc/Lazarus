@@ -610,6 +610,9 @@ var i, ParamCount, Len, Offset: integer;
   CurTypeIdentifier: string;
   OldInput: TFindDeclarationInput;
   CurExprType: TExpressionType;
+  {$IFDEF CTDEBUG}
+  CurParamName: string;
+  {$ENDIF}
 begin
   {$IFDEF CTDEBUG}
   writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
@@ -630,6 +633,11 @@ begin
 
       // skip ParamName
       Len:=ord(TypeData^.ParamList[Offset]);
+      {$IFDEF CTDEBUG}
+      SetLength(CurParamName,Len);
+      if Len>0 then
+        Move(TypeData^.ParamList[Offset+1],CurParamName[1],Len);
+      {$ENDIF}
       inc(Offset,Len+1);
 
       // read ParamType
@@ -643,7 +651,8 @@ begin
       {$IFDEF CTDEBUG}
       writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
       ' i=',i,'/',ParamCount,
-      ' Ident=',CurTypeIdentifier
+      ' ParamName=',CurParamName,
+      ' TypeIdent=',CurTypeIdentifier
       );
       {$ENDIF}
 

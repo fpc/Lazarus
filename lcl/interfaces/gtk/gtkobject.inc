@@ -1028,7 +1028,7 @@ procedure TGtkObject.SendCachedGtkMessages;
           FixWidget:=GetFixedWidget(MainWidget);
         end;
       end else break;
-    until false;
+    until Application.Terminated;
 
     { if any client area was resized, which MainWidget Size was already in sync
       with the LCL, no message was sent. So, tell each changed client area to
@@ -1047,7 +1047,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       end else begin
         break;
       end;
-    until false;
+    until Application.Terminated;
 
     List.Free;
     {$IFDEF VerboseSizeMsg}
@@ -1336,7 +1336,7 @@ begin
     SendCachedGtkMessages;
 	
     // then handle our own messages
-    while true do  begin
+    while not Application.Terminated do begin
       // fetch first message
       vlItem := fMessageQueue.FirstMessageItem;
       if vlItem = nil then break;
@@ -1364,7 +1364,7 @@ begin
     end;
     
     // proceed until all messages are handled
-  until not PendingGtkMessagesExists;
+  until (not PendingGtkMessagesExists) or Application.Terminated;
 end;
 
 {------------------------------------------------------------------------------
@@ -8417,6 +8417,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.445  2004/01/06 15:20:19  mattias
+  fixed instant termination of gtk message handling
+
   Revision 1.444  2004/01/03 11:57:48  mattias
   applied implementation for LM_LB_GETINDEXAT  from Vincent
 

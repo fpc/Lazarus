@@ -3429,24 +3429,24 @@ begin
     if not NewIdentIsMethod then begin
       if MessageDlg('Incompatible Identifier',
         'The identifier "'+NewValue+'" is not a method.'#13
-        +'Press OK to undo,'#13
-        +'press Ignore to force it.',mtWarning,[mbOk,mbIgnore],0)=mrOk
+        +'Press Cancel to undo,'#13
+        +'press Ignore to force it.',mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
       then
         exit;
     end;
     if not NewMethodIsPublished then begin
       if MessageDlg('Incompatible Method',
         'The method "'+NewValue+'" is not published.'#13
-        +'Press OK to undo,'#13
-        +'press Ignore to force it.',mtWarning,[mbOk,mbIgnore],0)=mrOk
+        +'Press Cancel to undo,'#13
+        +'press Ignore to force it.',mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
       then
         exit;
     end;
     if not NewMethodIsCompatible then begin
       if MessageDlg('Incompatible Method',
-        'The method "'+NewValue+'" is incompatible to this event.'#13
-        +'Press OK to undo,'#13
-        +'press Ignore to force it.',mtWarning,[mbOk,mbIgnore],0)=mrOk
+        'The method "'+NewValue+'" is incompatible to this event ('+GetName+').'#13
+        +'Press Cancel to undo,'#13
+        +'press Ignore to force it.',mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
       then
         exit;
     end;
