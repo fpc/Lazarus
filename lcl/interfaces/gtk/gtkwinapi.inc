@@ -1897,31 +1897,30 @@ var
 begin
   // Find out if we want to release internal GDI object
   GDIObjectExists:=FGDIObjects.Contains(PGDIObject(GDIObject));
-  Result:= IsValidGDIObject(GDIObject);
-  if Result or GDIObjectExists 
-  then 
+  Result:=GDIObjectExists;
+  if GDIObjectExists then begin
     with PGdiObject(GDIObject)^ do
     begin
       case GDIType of
         gdiFont:
           begin
-            if Result then gdk_font_unref(GDIFontObject);
+            if GDIFontObject<>nil then gdk_font_unref(GDIFontObject);
           end;
         gdiBrush:
           begin
-            if Result and (GDIBrushPixmap <> nil) 
+            if (GDIBrushPixmap <> nil)
             then gdk_bitmap_unref(GDIBrushPixmap);
             
             gdk_colormap_free_colors(gdk_colormap_get_system, @GDIBrushColor, 1);
           end;
         gdiBitmap:
           begin
-            if Result and (GDIBitmapObject <> nil)
+            if (GDIBitmapObject <> nil)
             then gdk_bitmap_unref(GDIBitmapObject);
             If Visual <> nil then
-              gdk_visual_ref(Visual);
+              gdk_visual_unref(Visual);
             If Colormap <> nil then
-              gdk_colormap_ref(Colormap);
+              gdk_colormap_unref(Colormap);
           end;
         gdiPen:
           begin
@@ -1929,8 +1928,8 @@ begin
           end;
         gdiRegion:
           begin
-            if Result and (GDIRegionObject <> nil) then
-               gdk_region_destroy(GDIRegionObject);
+            if (GDIRegionObject <> nil) then
+              gdk_region_destroy(GDIRegionObject);
           end;
         else begin
           Result:= false;
@@ -1940,9 +1939,8 @@ begin
       end;
     end;
 
-  { Dispose of the GDI object }
-//writeln('[TgtkObject.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
-  if GDIObjectExists then begin
+    { Dispose of the GDI object }
+    //writeln('[TgtkObject.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
     DisposeGDIObject(PGDIObject(GDIObject));
   end;
 end;
@@ -6711,6 +6709,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.129  2002/09/12 05:32:14  lazarus
+  MG: fixed DeleteObject
+
   Revision 1.128  2002/09/10 15:23:22  lazarus
   MG: fixed calculation of bitmap size
 
