@@ -75,6 +75,10 @@ type
     FStockDkGrayBrush: HBRUSH;
     FStockWhiteBrush: HBRUSH;
     
+    FStockNullPen: HPEN;
+    FStockBlackPen: HPEN;
+    FStockWhitePen: HPEN;
+    
     Procedure HookSignals(Sender : TObject);  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);
     procedure DestroyLCLControl(Sender : TObject);
@@ -417,6 +421,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/08/15 15:46:49  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.57  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
