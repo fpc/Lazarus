@@ -2143,7 +2143,7 @@ var
 begin
   // Check if GetTextBuf is overridden, otherwise
   // we can call RealGetText directly
-  if Pointer(@Self.GetTextBuf) = Pointer(@TControl.GetTextBuf)
+  if TMethod(@Self.GetTextBuf).Code = Pointer(@TControl.GetTextBuf)
   then begin
     Result := RealGetText;
   end
@@ -3130,7 +3130,7 @@ begin
   
   // Check if SetTextBuf is overridden, otherwise
   // we can call RealSetText directly
-  if Pointer(@Self.SetTextBuf) = Pointer(@TControl.SetTextBuf)
+  if TMethod(@Self.SetTextBuf).Code = Pointer(@TControl.SetTextBuf)
   then begin
     RealSetText(Value);
   end
@@ -3419,6 +3419,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.222  2004/12/06 22:41:45  vincents
+  fixed type cast of method pointer
+
   Revision 1.221  2004/11/05 22:08:53  mattias
   implemented auto sizing: child to parent sizing
 
