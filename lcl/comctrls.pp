@@ -1531,65 +1531,6 @@ type
     property Items;
   end;
 
-  TScrollBox = class(TWinControl)
-  private
-    FAutoScroll : Boolean;
-    Procedure SetAutoScroll(Value : Boolean);
-    Procedure DoAutoSize; Override;
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    property Align;
-    property Anchors;
-    property AutoScroll : Boolean read FAutoScroll write SetAutoScroll;
-    property AutoSize;
-    //property BiDiMode;
-    //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
-    property Constraints;
-    //property DockSite;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property Enabled;
-    property Color nodefault;
-    property Ctl3D;
-    property Font;
-    //property ParentBiDiMode;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
-    //property OnCanResize;
-    property OnClick;
-    property OnConstrainedResize;
-    property OnDblClick;
-    //property OnDockDrop;
-    //property OnDockOver;
-    property OnDragDrop;
-    property OnDragOver;
-    //property OnEndDock;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    //property OnGetSiteInfo;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnMouseWheel;
-    property OnMouseWheelDown;
-    property OnMouseWheelUp;
-    property OnResize;
-    //property OnStartDock;
-    property OnStartDrag;
-    //property OnUnDock;
-  end;
-
-
 function InitCommonControl(CC: Integer): Boolean;
 procedure CheckCommonControl(CC: Integer);
 
@@ -1647,14 +1588,15 @@ end;
 {$I toolbar.inc}
 {$I trackbar.inc}
 {$I treeview.inc}
-{$I scrollbox.inc}
-
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/09/10 06:49:18  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.41  2002/09/09 19:04:01  lazarus
   MG: started TTreeView dragging
 

@@ -78,10 +78,20 @@ end;
 Procedure TStatusBar.DrawBevel(xLeft, PanelNum : Integer );
 var
   Colora,Colorb:TColor;
+  I, PL, PW : Longint;
 Begin
+  if PanelNum = Panels.Count-1 then begin
+    PL := Left;
+    If Panels.Count > 1 then
+      For I := 0 to Panels.Count-2 do
+        PL := PL + Panels[I].Width;
+    PW := ClientWidth - PL;
+  end
+  else
+    PW := Panels[PanelNum].Width;
 
   Canvas.Brush.Color := Color;
-  Canvas.FillRect(Rect(XLeft,Top,XLeft+Panels[PanelNum].Width,Top+Height));
+  Canvas.FillRect(Rect(XLeft,Top,XLeft+PW,Top+Height));
 
   if Panels[PanelNum].Bevel = pbRaised then
   begin
@@ -101,12 +111,11 @@ Begin
       Pen.Color:=Colora;
       MoveTo(XLeft,Top+Height-1);
       LineTo(XLeft,Top);
-      LineTo(XLeft+Panels[PanelNum].Width-1,Top);
+      LineTo(XLeft+PW-1,Top);
       Pen.Color:=Colorb;
-      LineTo(XLeft+Panels[PanelNum].Width-1,Top+Height-1);
+      LineTo(XLeft+PW-1,Top+Height-1);
       LIneTo(XLeft,Top+Height-1);
    End;
-
 End;
 
 
@@ -125,6 +134,7 @@ var
   I : Integer;
   Style : TTextStyle;
   R : TRect;
+  PW : Longint;
 Begin
   inherited;
   Style := Canvas.TextStyle;
@@ -133,7 +143,7 @@ Begin
     Alignment := taLeftJustify;
     WordBreak := False;
     SingleLine := True;
-    Clipping := False;
+    Clipping := True;
     ShowPrefix := False;
     Opaque := False;
   end;
@@ -144,14 +154,15 @@ Begin
     For I := 0 to Panels.Count-1 do
       Begin
         if I = Panels.Count-1 then
-          // this sets the last panel to the width of the statusbar
-          Panels[I].Width := ClientWidth-R.Left;
-        R.Right := R.Left + Panels[I].Width;
+          PW := ClientWidth-R.Left
+        else
+          PW := Panels[I].Width;
+        R.Right := R.Left + PW;
         DrawBevel(R.Left,I);
-        InflateRect(R, -1, -1);
+        InflateRect(R, -2, -1);
         Style.Alignment := Panels[I].Alignment;
-        Canvas.TextRect(R, 1, 0, Panels[i].Text, Style);
-        InflateRect(R, 1, 1);
+        Canvas.TextRect(R, 0, 0, Panels[i].Text, Style);
+        InflateRect(R, 2, 1);
         //draw divider
         if I < Panels.Count-1 then
           DrawDivider(R.Right);

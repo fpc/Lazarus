@@ -1077,6 +1077,21 @@ Begin
   Assert(False, Format('Trace:< [TWin32Object.GetDC] Got 0x%x', [Result]));
 End;
 
+function TWin32Object.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+begin
+  Result := Windows.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, Windows.PBitmapInfo(@BitInfo)^, Usage)
+end;
+
+function TWin32Object.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+begin
+  Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
+end;
+
+function TWin32Object.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+begin
+  Result := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@p2)^,  p3, p4, p5, p6)
+end;
 {------------------------------------------------------------------------------
   Method:  GetFocus
   Params:  none
@@ -2290,6 +2305,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/09/10 06:49:24  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.17  2002/08/30 12:32:25  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 

@@ -154,7 +154,8 @@ end;
 
 Procedure TBitmap.LoadFromFile(Const Filename : String);
 begin
-  LoadFromXPMFile(FileName);
+  Inherited;
+  //LoadFromXPMFile(FileName);
 end;
 
 Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
@@ -169,20 +170,6 @@ end;
 
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
 type
-  RGBQUAD = packed record
-          rgbBlue : BYTE;
-          rgbGreen : BYTE;
-          rgbRed : BYTE;
-   //       rgbReserved : BYTE;
-       end;
-
-  BITMAPINFO = packed record
-          bmiHeader : BITMAPINFOHEADER;
-          bmiColors : array[0..0] of RGBQUAD;
-       end;
-
-  PBITMAPINFO = ^BITMAPINFO;
-
   TBitsObj = array[1..1] of byte;
   PBitsObj = ^TBitsObj;
 
@@ -243,8 +230,9 @@ begin
         if ReadSize<>ImgSize then
           raise EInOutError.Create('Invalid windows bitmap (bits)');
 
-        Handle := CreateBitmap(Width, Height,
-          BmpInfo^.bmiHeader.biPlanes, BitsPerPixel, Bits);
+        Handle := CreateBitmap(BmpInfo^.bmiHeader.biWidth,
+          BmpInfo^.bmiHeader.biHeight, BmpInfo^.bmiHeader.biPlanes,
+          BitsPerPixel, Bits);
 
       finally
         FreeMem(Bits);
@@ -256,14 +244,115 @@ begin
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-var Size: longint;
-begin
-  // ToDo
-  // this is only a workaround till we can save bitmaps
-  if WriteSize then begin
-    Size:=0;
-    Stream.Write(Size, SizeOf(Size));
+Type
+  TBITMAPHEADER = packed record
+    FileHeader : tagBitmapFileHeader;
+    InfoHeader : tagBitmapInfoHeader;
   end;
+
+  Procedure FillBitmapInfo(Bitmap : hBitmap; var Bits : Pointer;
+    Var Header : TBitmapHeader);
+  var
+    ScreenDC, DC : hDC;
+    DIB : TDIBSection;
+    BitmapHeader : TagBITMAPINFO;
+  begin
+    FillChar(DIB, SizeOf(DIB), 0);
+    GetObject(Bitmap, SizeOf(DIB), @DIB);
+    with DIB.dsbm, DIB.dsbmih do
+    begin
+      biSize := sizeof(DIB.dsbmih);
+      biWidth := bmWidth;
+      biHeight := bmHeight;
+      biPlanes := 1;
+      biBitCount := bmPlanes * bmBitsPixel;
+      if biSizeImage = 0 then  begin
+        biSizeImage := ((bmWidth * biBitCount) + 31) and not 31;
+        biSizeImage := biSizeImage div 8;
+        biSizeImage := biSizeImage * Abs(bmHeight);
+      end;
+    end;
+    Bits := AllocMem(Longint(Dib.dsBmih.biSizeImage)*SizeOf(Byte));
+    BitmapHeader.bmiHeader := DIB.dsbmih;
+    ScreenDC := GetDC(0);
+    DC := CreateCompatibleDC(ScreenDC);
+    GetDIBits(DC, Bitmap, 0, Abs(Dib.dsBmih.biHeight), Bits, BitmapHeader, DIB_RGB_COLORS);
+    ReleaseDC(0, ScreenDC);
+    DeleteDC(DC);
+    With Header, Header.FileHeader, Header.InfoHeader do begin
+      InfoHeader := BitmapHeader.bmiHeader;
+      FillChar(FileHeader, sizeof(FileHeader), 0);
+      bfType      := $4D42;
+      bfSize      := SizeOf(Header) + biSizeImage;
+      bfOffBits   := SizeOf(Header);
+    end;
+  end;
+
+  Procedure DoWriteSize(Header : TBitmapHeader);
+  var
+    Size : Longint;
+  begin
+    Size := Header.FileHeader.bfSize;
+    if WriteSize then
+      Stream.WriteBuffer(Size, SizeOf(Size));
+  end;
+
+  Procedure WriteBitmapHeader(Header : TBitmapHeader);
+  begin
+    Stream.WriteBuffer(Header, SizeOf(Header));
+  end;
+
+  Procedure WriteTRIColorMap(Color : PLongint; size : Longint); //For OS/2 Bitmaps
+  var
+    I : Longint;
+    TRI : RGBTRIPLE;
+  begin
+    size := size div 3;
+    for i := 0 to size - 1 do
+    begin
+      Tri.rgbtBlue := Blue(Color[i]);
+      Tri.rgbtGreen := Green(Color[i]);
+      Tri.rgbtRed := Red(Color[i]);
+      Stream.WriteBuffer(Tri, 3);
+    end;
+  end;
+
+  Procedure WriteQUADColorMap(Color : PLongint; size : Longint); //For MS Bitmaps
+  var
+    I : Longint;
+    Quad : RGBQUAD;
+  begin
+    size := size div 4;
+    for i := 0 to size - 1 do
+    begin
+      FillChar(QUAD, SizeOf(RGBQUAD),0);
+      Quad.rgbBlue := Blue(Color[i]);
+      Quad.rgbGreen := Green(Color[i]);
+      Quad.rgbRed := Red(Color[i]);
+      Stream.WriteBuffer(Quad, 4);
+    end;
+  end;
+
+  Procedure WriteColorMap(Header : TBitmapHeader);
+  begin
+    ///Figure out how to get colors then call Quad/Tri
+  end;
+
+  Procedure WritePixels(Bits : PByte; Header : TBitmapHeader);
+  begin
+    Stream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
+  end;
+  
+var
+  Bits : PByte;
+  Header : TBitmapHeader;
+begin
+  FillBitmapInfo(Handle, Bits, Header);
+  DoWriteSize(Header);
+  WriteBitmapHeader(Header);
+  WriteColorMap(Header);
+  WritePixels(Bits, Header);
+  ReallocMem(Bits, 0);
 end;
 
 procedure TBitMap.SaveToStream(Stream: TStream);
@@ -371,6 +460,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/09/10 06:49:19  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.16  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 

@@ -46,6 +46,8 @@ Function CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH; Override;
 Function CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean; Override;
 Function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; Override;
 Function CreateCompatibleDC(DC: HDC): HDC; Override;
+function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; Override;
 Function CreateFontIndirect(Const LogFont: TLogFont): HFONT; Override;
 Function CreatePenIndirect(Const LogPen: TLogPen): HPEN; Override;
 { Creates a bitmap from raw pixmap data }
@@ -81,6 +83,8 @@ Function GetClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; Override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetDC(HWnd: HWND): HDC; Override;
+function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 Function GetFocus: HWND; Override;
 Function GetKeyState(NVirtKey: Integer): SmallInt; Override;
 Function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; Override;
@@ -172,6 +176,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/09/10 06:49:25  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.13  2002/08/30 12:32:25  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 

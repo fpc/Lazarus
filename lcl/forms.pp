@@ -51,14 +51,142 @@ type
   TScrollBarInc = 1..32768;
   TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
 
+  TScrollingWinControl = class;
+
   TControlScrollBar = class(TPersistent)
+  private
+    FControl: TScrollingWinControl;
+
+    FAutoRange : Longint;
+
+    FKind: TScrollBarKind;
+
+    FIncrement: TScrollBarInc;
+    FPosition: Integer;
+    FRange: Integer;
+    FVisible: Boolean;
+
+    procedure SetPosition(Value: Integer);
+    procedure SetRange(Value: Integer);
+    procedure SetVisible(Value: Boolean);
+  protected
+    procedure AutoCalcRange;
+    Procedure UpdateScrollBar;
+  public
+    constructor Create(AControl: TScrollingWinControl; AKind: TScrollBarKind);
+
+    procedure Assign(Source: TPersistent); override;
+
+    function IsScrollBarVisible: Boolean;
+
+    function ScrollPos: Integer;
+
+    property Kind: TScrollBarKind read FKind;
+  published
+    property Increment: TScrollBarInc read FIncrement write FIncrement default 8;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property Range: Integer read FRange write SetRange default 0;
+    property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
   TScrollingWinControl = class(TWinControl)
   private
-    //FHorzScrollBar : TControlScrollBar;
-    //FVertScrollBar : TControlScrollBar;
-    //FAutoScroll    : Boolean;
+    FHorzScrollBar : TControlScrollBar;
+    FVertScrollBar : TControlScrollBar;
+    FAutoScroll    : Boolean;
+    
+    FOnPaint: TNotifyEvent;
+    
+    FCanvas : TControlCanvas;
+
+    IsUpdating : Boolean;
+
+    procedure SetAutoScroll(Value: Boolean);
+    procedure SetHorzScrollBar(Value: TControlScrollBar);
+    procedure SetVertScrollBar(Value: TControlScrollBar);
+    Function StoreScrollBars : Boolean;
+  Protected
+    procedure AlignControls(AControl: TControl; var ARect: TRect); override;
+    procedure CreateWnd; override;
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default True;
+    Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure WMPaint(var message: TLMPaint); message LM_PAINT;
+    procedure WMSize(var Message: TLMSize); message LM_Size;
+    Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
+    Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    procedure ScrollBy(DeltaX, DeltaY: Integer);
+    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+  Public
+    Constructor Create(AOwner : TComponent); Override;
+    Destructor Destroy; Override;
+
+    procedure Paint; dynamic;
+    procedure PaintWindow(dc : Hdc); override;
+
+    Procedure UpdateScrollbars;
+
+    property Canvas: TControlCanvas read FCanvas;
+  published
+    property HorzScrollBar: TControlScrollBar read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
+    property VertScrollBar: TControlScrollBar read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+  end;
+
+  TScrollBox = class(TScrollingWinControl)
+  private
+    Procedure DoAutoSize; Override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Align;
+    property Anchors;
+    property AutoScroll default True;
+    property AutoSize;
+    //property BiDiMode;
+    //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property Constraints;
+    //property DockSite;
+    property DragCursor;
+    property DragKind;
+
+    property DragMode;
+    property Enabled;
+    property Color nodefault;
+    property Ctl3D;
+    property Font;
+    //property ParentBiDiMode;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    //property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnDblClick;
+    //property OnDockDrop;
+    //property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    //property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    //property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    //property OnStartDock;
+    property OnStartDrag;
+    //property OnUnDock;
+    property OnPaint;
   end;
 
   TIDesigner = class;
@@ -366,7 +494,7 @@ implementation
 
 
 uses 
-  Buttons, StdCtrls, Interfaces, LResources, dialogs,ExtCtrls {,designer};
+  Buttons, StdCtrls, Interfaces, LResources, dialogs,ExtCtrls {,designer}, Math;
 
 const
   FocusMessages : Boolean = true;
@@ -550,7 +678,8 @@ end;
 //==============================================================================
 
 
-
+{$I scrollingwincontrol.inc}
+{$I scrollbox.inc}
 {$I form.inc}
 {$I customform.inc}
 {$I screen.inc}

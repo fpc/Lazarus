@@ -22,11 +22,9 @@
 
   ToDo:
    - TCustomComboBox has a bug: it can not store objects
-   - clipping (almost everywhere)
    - TCustomComboBox don't know custom draw yet
    - combobox can't sort (exception)
    - backgroundcolor=clNone
-   - DoubleClick on Property
 
    - a lot more ...  see XXX
 }

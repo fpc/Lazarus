@@ -636,6 +636,12 @@ const
   HWND_TOPMOST = HWND(-1);
   HWND_NOTOPMOST = HWND(-2);
 
+const
+  { DIB color table identifiers }
+
+  DIB_RGB_COLORS = 0;     { color table in RGBs  }
+  DIB_PAL_COLORS = 1;     { color table in palette indices  }
+
 type
 
   PNMHdr = ^TNMHdr;
@@ -742,6 +748,7 @@ type
   end;
   BITMAPINFOHEADER = tagBITMAPINFOHEADER;
 
+
 { ********************************** }
 {        B I T M A P    S T U F F    }
 
@@ -768,6 +775,30 @@ type
   end;
   TDIBSection = tagDIBSECTION;
   DIBSECTION = tagDIBSECTION;
+
+  PRGBQUAD = ^tagRGBQUAD;
+  tagRGBQUAD = packed record
+          rgbBlue : BYTE;
+          rgbGreen : BYTE;
+          rgbRed : BYTE;
+          rgbReserved : BYTE;
+       end;
+  RGBQUAD = tagRGBQUAD;
+
+  PRGBTRIPLE = ^tagRGBTRIPLE;
+  tagRGBTRIPLE = packed record
+    rgbtBlue : BYTE;
+    rgbtGreen : BYTE;
+    rgbtRed : BYTE;
+  end;
+  RGBTRIPLE = tagRGBTRIPLE;
+
+  PBITMAPINFO = ^tagBITMAPINFO;
+  tagBITMAPINFO = packed record
+          bmiHeader : tagBITMAPINFOHEADER;
+          bmiColors : array[0..0] of tagRGBQUAD;
+       end;
+  BITMAPINFO = tagBITMAPINFO;
 
 const
   TRUETYPE_FONTTYPE = 4;
@@ -1486,6 +1517,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2002/09/10 06:49:18  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.13  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
