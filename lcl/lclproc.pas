@@ -170,6 +170,7 @@ implementation
 
 var
   InterfaceFinalizationHandlers: TList;
+  DebugText: ^Text;
 
 
 Function DeleteAmpersands(var Str : String) : Longint;
@@ -727,6 +728,62 @@ begin
   Result:=Double(StrToFloat(s));
 end;
 
+procedure InitializeDebugOutput;
+var
+  DebugFileName: string;
+  function GetDebugFileName: string;
+  const
+    DebugLogStart = '--debug-log=';
+    DebugLogStartLength = length(DebugLogStart);
+  var
+    i: integer;
+    EnvVarName: string;
+  begin
+    Result := '';
+    // first try to find the log file name in the command line parameters
+    for i:= 1 to Paramcount do begin
+      if copy(ParamStr(i),1, length(DebugLogStart))=DebugLogStart then begin
+        Result := copy(ParamStr(i), length(DebugLogStart)+1,
+                   Length(ParamStr(i))-length(DebugLogStart));
+      end;
+    end;
+    // if not found yet, then try to find in the environment variables
+    if (length(result)=0) then begin
+      EnvVarName:= ChangeFileExt(ExtractFileName(Paramstr(0)),'') + '_debuglog';
+      Result := GetEnvironmentVariable(EnvVarName);
+    end;
+    if (length(result)>0) then
+      Result := ExpandFileName(Result);
+  end;
+begin
+  DebugFileName := GetDebugFileName;
+  if (length(DebugFileName)>0) and
+    (DirectoryExists(ExtractFileDir(DebugFileName))) then begin
+
+    new(DebugText);
+    Assign(DebugText^, DebugFileName);
+    if FileExists(DebugFileName) then
+      Append(DebugText^)
+    else
+      Rewrite(DebugText^);
+    writeln(DebugText^,'Created.');
+  end
+  else begin
+    if TextRec(Output).Mode=fmClosed then
+      DebugText := nil
+    else
+      DebugText := @Output;
+  end;
+end;
+
+procedure FinalizeDebugOutput;
+begin
+  if Assigned(DebugText) and (DebugText<>@Output) then begin
+    Close(DebugText^);
+    Dispose(DebugText);
+  end;
+end;
+
 procedure DebugLn(const S: String; Args: array of const);
 begin
   DebugLn(Format(S, Args));
@@ -739,8 +796,8 @@ end;
 
 procedure DebugLn(const s: string);
 begin
-  if TextRec(Output).Mode<>fmClosed then
-    writeln(s);
+  if Assigned(DebugText) then
+    writeln(DebugText^, s);
 end;
 
 procedure DebugLn(const s1, s2: string);
@@ -825,8 +882,8 @@ end;
 
 procedure DBGOut(const s: string);
 begin
-  if TextRec(Output).Mode<>fmClosed then
-    write(s);
+  if Assigned(DebugText) then
+    write(DebugText^, s);
 end;
 
 procedure DBGOut(const s1, s2: string);
@@ -1175,12 +1232,14 @@ begin
 end;
 
 initialization
+  InitializeDebugOutput;
   SendApplicationMessageFunction:=nil;
   OwnerFormDesignerModifiedProc:=nil;
   InterfaceFinalizationHandlers:=TList.Create;
 finalization
   InterfaceFinalizationHandlers.Free;
   InterfaceFinalizationHandlers:=nil;
+  FinalizeDebugOutput;
 
 end.
 
