@@ -127,15 +127,6 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
-# Pre Settings
-#####################################################################
-
-#ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-#  THE_EDIT=mwedit92
-#else
-#  THE_EDIT=mwedit
-#endif
-#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -188,6 +179,8 @@ override DIROBJECTS+=$(wildcard synedit mwedit)
 
 # Install
 
+override EXTRAINSTALLUNITS+=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
+PACKAGENAME=components
 ZIPTARGET=install
 
 # Defaults
@@ -195,6 +188,9 @@ ZIPTARGET=install
 
 # Directories
 
+ifndef UNITTARGETDIR
+UNITTARGETDIR=./units
+endif
 
 # Packages
 
@@ -525,7 +521,7 @@ export DESTZIPDIR
 # set the base directory where to install everything
 ifndef BASEINSTALLDIR
 ifdef UNIXINSTALLDIR
-BASEINSTALLDIR=$(PREFIXINSTALLDIR)/lib/fpc/$(FPC_VERSION)
+BASEINSTALLDIR=$(PREFIXINSTALLDIR)/lib/lazarus/$(FPC_VERSION)
 else
 BASEINSTALLDIR=$(PREFIXINSTALLDIR)
 endif
@@ -560,7 +556,7 @@ endif
 # Where the source files will be stored
 ifndef SOURCEINSTALLDIR
 ifdef UNIXINSTALLDIR
-SOURCEINSTALLDIR=$(PREFIXINSTALLDIR)/src/fpc-$(FPC_VERSION)
+SOURCEINSTALLDIR=$(PREFIXINSTALLDIR)/src/lazarus-$(FPC_VERSION)
 else
 SOURCEINSTALLDIR=$(BASEINSTALLDIR)/source
 endif
@@ -572,7 +568,7 @@ endif
 # Where the doc files will be stored
 ifndef DOCINSTALLDIR
 ifdef UNIXINSTALLDIR
-DOCINSTALLDIR=$(PREFIXINSTALLDIR)/doc/fpc-$(FPC_VERSION)
+DOCINSTALLDIR=$(PREFIXINSTALLDIR)/doc/lazarus-$(FPC_VERSION)
 else
 DOCINSTALLDIR=$(BASEINSTALLDIR)/doc
 endif
@@ -698,7 +694,7 @@ override FPCOPT+=-FU$(UNITTARGETDIR)
 ifeq ($(UNITTARGETDIR),.)
 override UNITTARGETDIRPREFIX=
 else
-override UNITTARGETDIRPREFIX=$(TARGETDIR)/
+override UNITTARGETDIRPREFIX=$(UNITTARGETDIR)/
 endif
 else
 ifdef TARGETDIR

@@ -4,7 +4,7 @@
 #
 
 [targets]
-units=allunits
+# units=allunits
 
 [require]
 packages=fcl gtk
@@ -16,7 +16,8 @@ files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 [dirs]
 # target dir needs to be . or a full path otherwise the 
 # unittargetdir will be corrupt
-targetdir=.
+# not with the lazarusmake.ini
+# targetdir=.
 unittargetdir=../units
 unitdir=$(UNITTARGETDIR) ../../lcl/units 
 

@@ -4,7 +4,8 @@
 #
 
 [targets]
-units=allunits
+# units=allunits
+# loaders=allunits
 
 [require]
 options=-Ca
@@ -17,12 +18,15 @@ files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 [dirs]
 # target dir needs to be . or a full path otherwise the 
 # unittargetdir will be corrupt
-targetdir=.
+# not with the lazarusmake.ini
+#targetdir=.
 unittargetdir=./units
 unitdir=$(UNITTARGETDIR) . ./interfaces/$(LCLPLATFORM) 
 incdir=./include ./interfaces/$(LCLPLATFORM)
 
 [install]
+units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
+packagename=lcl
 
 [libs]
 
@@ -32,7 +36,6 @@ LCLPLATFORM=gtk
 endif
 
 [defaults]
-
 
 [rules]
 cleartarget:

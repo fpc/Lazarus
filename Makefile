@@ -189,6 +189,7 @@ endif
 
 override DIROBJECTS+=$(wildcard lcl components)
 override EXEOBJECTS+=lazarus
+override EXAMPLEDIROBJECTS+=examples
 
 # Clean
 
@@ -196,6 +197,7 @@ override EXTRACLEANUNITS+=$(basename $(wildcard *$(PPUEXT)))
 
 # Install
 
+PACKAGENAME=lazarus
 ZIPTARGET=install
 
 # Defaults
@@ -648,7 +650,7 @@ export DESTZIPDIR
 # set the base directory where to install everything
 ifndef BASEINSTALLDIR
 ifdef UNIXINSTALLDIR
-BASEINSTALLDIR=$(PREFIXINSTALLDIR)/lib/fpc/$(FPC_VERSION)
+BASEINSTALLDIR=$(PREFIXINSTALLDIR)/lib/lazarus/$(FPC_VERSION)
 else
 BASEINSTALLDIR=$(PREFIXINSTALLDIR)
 endif
@@ -683,7 +685,7 @@ endif
 # Where the source files will be stored
 ifndef SOURCEINSTALLDIR
 ifdef UNIXINSTALLDIR
-SOURCEINSTALLDIR=$(PREFIXINSTALLDIR)/src/fpc-$(FPC_VERSION)
+SOURCEINSTALLDIR=$(PREFIXINSTALLDIR)/src/lazarus-$(FPC_VERSION)
 else
 SOURCEINSTALLDIR=$(BASEINSTALLDIR)/source
 endif
@@ -695,7 +697,7 @@ endif
 # Where the doc files will be stored
 ifndef DOCINSTALLDIR
 ifdef UNIXINSTALLDIR
-DOCINSTALLDIR=$(PREFIXINSTALLDIR)/doc/fpc-$(FPC_VERSION)
+DOCINSTALLDIR=$(PREFIXINSTALLDIR)/doc/lazarus-$(FPC_VERSION)
 else
 DOCINSTALLDIR=$(BASEINSTALLDIR)/doc
 endif
@@ -830,7 +832,7 @@ override FPCOPT+=-FU$(UNITTARGETDIR)
 ifeq ($(UNITTARGETDIR),.)
 override UNITTARGETDIRPREFIX=
 else
-override UNITTARGETDIRPREFIX=$(TARGETDIR)/
+override UNITTARGETDIRPREFIX=$(UNITTARGETDIR)/
 endif
 else
 ifdef TARGETDIR
@@ -885,6 +887,8 @@ endif
 
 debug: fpc_debug $(addsuffix _debug,$(DIROBJECTS))
 
+test: fpc_test
+
 smart: fpc_smart $(addsuffix _smart,$(DIROBJECTS))
 
 shared: fpc_shared $(addsuffix _shared,$(DIROBJECTS))
@@ -903,7 +907,7 @@ zipsourceinstall: fpc_zipsourceinstall
 
 zipexampleinstall: fpc_zipexampleinstall
 
-clean: fpc_clean $(addsuffix _clean,$(DIROBJECTS))
+clean: fpc_clean $(addsuffix _clean,$(DIROBJECTS)) $(addsuffix _clean,$(EXAMPLEDIROBJECTS))
 
 distclean: fpc_distclean $(addsuffix _distclean,$(DIROBJECTS))
 
@@ -913,7 +917,7 @@ require: $(addsuffix _require,$(DIROBJECTS))
 
 info: fpc_info
 
-.PHONY:  debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall require info
+.PHONY:  debug test smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall require info
 
 #####################################################################
 # Exes
@@ -932,6 +936,24 @@ override CLEANEXEFILES+=$(EXEFILES) $(EXEOFILES)
 endif
 
 fpc_exes: $(EXEFILES)
+
+#####################################################################
+# Examples
+#####################################################################
+
+.PHONY: fpc_examples fpc_test
+
+ifdef EXAMPLEOBJECTS
+override EXAMPLESOURCEFILES:=$(addsuffix $(PASEXT),$(EXAMPLEOBJECTS))
+override EXAMPLEFILES:=$(addsuffix $(EXEEXT),$(EXAMPLEOBJECTS))
+override EXAMPLEOFILES:=$(addsuffix $(OEXT),$(EXAMPLEOBJECTS)) $(addprefix $(LIBPREFIX),$(addsuffix $(STATICLIBEXT),$(EXAMPLEOBJECTS)))
+
+override CLEANEXEFILES+=$(EXAMPLEFILES) $(EXAMPLEOFILES)
+endif
+
+fpc_examples: all $(EXAMPLEFILES) $(addsuffix _all,$(EXAMPLEDIROBJECTS))
+
+fpc_test: examples
 
 #####################################################################
 # General compile rules
@@ -1458,6 +1480,67 @@ components_require:
 
 components_info:
 	$(MAKE) -C components info
+endif
+EXAMPLEDIREXAMPLES=1
+
+# Dir examples
+
+ifdef EXAMPLEDIREXAMPLES
+.PHONY:  examples_all examples_debug examples_examples examples_test examples_smart examples_shared examples_showinstall examples_install examples_sourceinstall examples_exampleinstall examples_zipinstall examples_zipsourceinstall examples_zipexampleinstall examples_clean examples_distclean examples_cleanall examples_require examples_info
+
+examples_all:
+	$(MAKE) -C examples all
+
+examples_debug:
+	$(MAKE) -C examples debug
+
+examples_examples:
+	$(MAKE) -C examples examples
+
+examples_test:
+	$(MAKE) -C examples test
+
+examples_smart:
+	$(MAKE) -C examples smart
+
+examples_shared:
+	$(MAKE) -C examples shared
+
+examples_showinstall:
+	$(MAKE) -C examples showinstall
+
+examples_install:
+	$(MAKE) -C examples install
+
+examples_sourceinstall:
+	$(MAKE) -C examples sourceinstall
+
+examples_exampleinstall:
+	$(MAKE) -C examples exampleinstall
+
+examples_zipinstall:
+	$(MAKE) -C examples zipinstall
+
+examples_zipsourceinstall:
+	$(MAKE) -C examples zipsourceinstall
+
+examples_zipexampleinstall:
+	$(MAKE) -C examples zipexampleinstall
+
+examples_clean:
+	$(MAKE) -C examples clean
+
+examples_distclean:
+	$(MAKE) -C examples distclean
+
+examples_cleanall:
+	$(MAKE) -C examples cleanall
+
+examples_require:
+	$(MAKE) -C examples require
+
+examples_info:
+	$(MAKE) -C examples info
 endif
 
 #####################################################################

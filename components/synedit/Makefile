@@ -165,21 +165,6 @@ endif
 endif
 endif
 
-ifndef PACKAGESDIR
-PACKAGESDIR=$(FPCDIR)/packages
-endif
-ifndef TOOLKITSDIR
-TOOLKITSDIR=
-endif
-ifndef COMPONENTSDIR
-COMPONENTSDIR=
-endif
-
-# Create units dir
-ifneq ($(FPCDIR),.)
-UNITSDIR=$(FPCDIR)/units/$(OS_TARGET)
-endif
-
 #####################################################################
 # User Settings
 #####################################################################
@@ -187,7 +172,6 @@ endif
 
 # Targets
 
-override UNITOBJECTS+=allunits
 
 # Clean
 
@@ -204,16 +188,13 @@ ZIPTARGET=install
 # Directories
 
 override NEEDUNITDIR=$(UNITTARGETDIR) ../../lcl/units
-ifndef TARGETDIR
-TARGETDIR=.
-endif
 ifndef UNITTARGETDIR
 UNITTARGETDIR=../units
 endif
 
 # Packages
 
-override PACKAGES+=rtl fcl gtk
+override PACKAGES+=fcl gtk
 
 # Libraries
 
@@ -492,56 +473,12 @@ endif
 endif
 
 
-# Check if the dirs really exists, else turn it off
-ifeq ($(wildcard $(UNITSDIR)),)
-UNITSDIR=
-endif
-ifeq ($(wildcard $(TOOLKITSDIR)),)
-TOOLKITSDIR=
-endif
-ifeq ($(wildcard $(PACKAGESDIR)),)
-PACKAGESDIR=
-endif
-ifeq ($(wildcard $(COMPONENTSDIR)),)
-COMPONENTSDIR=
-endif
-
 
 # PACKAGESDIR packages
 
-PACKAGERTL=1
 PACKAGEFCL=1
 PACKAGEGTK=1
 
-ifdef PACKAGERTL
-ifneq ($(wildcard $(FPCDIR)/rtl),)
-ifneq ($(wildcard $(FPCDIR)/rtl/$(OS_TARGET)),)
-PACKAGEDIR_RTL=$(FPCDIR)/rtl/$(OS_TARGET)
-else
-PACKAGEDIR_RTL=$(FPCDIR)/rtl
-endif
-ifeq ($(wildcard $(PACKAGEDIR_RTL)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_rtl
-package_rtl:
-	$(MAKE) -C $(PACKAGEDIR_RTL) all
-endif
-UNITDIR_RTL=$(PACKAGEDIR_RTL)
-else
-PACKAGEDIR_RTL=
-ifneq ($(wildcard $(UNITSDIR)/rtl),)
-ifneq ($(wildcard $(UNITSDIR)/rtl/$(OS_TARGET)),)
-UNITDIR_RTL=$(UNITSDIR)/rtl/$(OS_TARGET)
-else
-UNITDIR_RTL=$(UNITSDIR)/rtl
-endif
-else
-UNITDIR_RTL=
-endif
-endif
-ifdef UNITDIR_RTL
-override NEEDUNITDIR+=$(UNITDIR_RTL)
-endif
-endif
 ifdef PACKAGEFCL
 ifneq ($(wildcard $(FPCDIR)/fcl),)
 ifneq ($(wildcard $(FPCDIR)/fcl/$(OS_TARGET)),)
@@ -650,7 +587,7 @@ export DESTZIPDIR
 # set the base directory where to install everything
 ifndef BASEINSTALLDIR
 ifdef UNIXINSTALLDIR
-BASEINSTALLDIR=$(PREFIXINSTALLDIR)/lib/fpc/$(FPC_VERSION)
+BASEINSTALLDIR=$(PREFIXINSTALLDIR)/lib/lazarus/$(FPC_VERSION)
 else
 BASEINSTALLDIR=$(PREFIXINSTALLDIR)
 endif
@@ -685,7 +622,7 @@ endif
 # Where the source files will be stored
 ifndef SOURCEINSTALLDIR
 ifdef UNIXINSTALLDIR
-SOURCEINSTALLDIR=$(PREFIXINSTALLDIR)/src/fpc-$(FPC_VERSION)
+SOURCEINSTALLDIR=$(PREFIXINSTALLDIR)/src/lazarus-$(FPC_VERSION)
 else
 SOURCEINSTALLDIR=$(BASEINSTALLDIR)/source
 endif
@@ -697,7 +634,7 @@ endif
 # Where the doc files will be stored
 ifndef DOCINSTALLDIR
 ifdef UNIXINSTALLDIR
-DOCINSTALLDIR=$(PREFIXINSTALLDIR)/doc/fpc-$(FPC_VERSION)
+DOCINSTALLDIR=$(PREFIXINSTALLDIR)/doc/lazarus-$(FPC_VERSION)
 else
 DOCINSTALLDIR=$(BASEINSTALLDIR)/doc
 endif
@@ -827,7 +764,7 @@ override FPCOPT+=-FU$(UNITTARGETDIR)
 ifeq ($(UNITTARGETDIR),.)
 override UNITTARGETDIRPREFIX=
 else
-override UNITTARGETDIRPREFIX=$(TARGETDIR)/
+override UNITTARGETDIRPREFIX=$(UNITTARGETDIR)/
 endif
 else
 ifdef TARGETDIR
@@ -909,20 +846,6 @@ cleanall: fpc_cleanall
 info: fpc_info
 
 .PHONY:  debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall info
-
-#####################################################################
-# Units
-#####################################################################
-
-.PHONY: fpc_units
-
-override ALLTARGET+=fpc_units
-
-override UNITPPUFILES=$(addsuffix $(PPUEXT),$(UNITOBJECTS))
-override INSTALLPPUFILES+=$(UNITPPUFILES)
-override CLEANPPUFILES+=$(UNITPPUFILES)
-
-fpc_units: $(UNITPPUFILES)
 
 #####################################################################
 # General compile rules

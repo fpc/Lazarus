@@ -6,6 +6,7 @@
 programs=lazarus
 #dirs=lcl components designer
 dirs=lcl components 
+exampledirs=examples
 
 [clean]
 units=$(basename $(wildcard *$(PPUEXT)))
@@ -17,6 +18,9 @@ packages=fcl gtk
 targetdir=.
 unitdir=. ./lcl/units ./components/units ./designer
 incdir=. ./include ./include/$(OS_TARGET)
+
+[install]
+packagename=lazarus
 
 [presettings]
 

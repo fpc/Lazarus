@@ -3,17 +3,21 @@
 #
 
 [targets]
-#dirs=$(THE_EDIT)
 dirs=synedit mwedit
 
 [dirs]
+# target dir needs to be . or a full path otherwise the 
+# unittargetdir will be corrupt
+# not with the lazarusmake.ini
+# targetdir=.
+unittargetdir=./units
+
+[install]
+units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
+packagename=components
+
 
 [presettings]
-#ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-#  THE_EDIT=mwedit92
-#else
-#  THE_EDIT=mwedit
-#endif
 
 [postsettings]
 
