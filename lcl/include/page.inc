@@ -36,11 +36,10 @@ begin
   {set the default height and width}
 
   if (AOwner<>nil) and (AOwner is TControl) then begin
-    Width:=(TControl(AOwner).ClientWidth);
-    Height:=(TControl(AOwner).ClientHeight);
+    SetInitialBounds(0,0,
+                    TControl(AOwner).ClientWidth,TControl(AOwner).ClientHeight);
   end else begin
-    Width:=120;
-    Height:=100;
+    SetInitialBounds(0,0,120,100);
   end;
 
   {create the control}
@@ -158,6 +157,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.14  2003/06/11 22:29:42  mattias
+  fixed realizing bounds after loading form
+
   Revision 1.13  2003/06/10 17:23:35  mattias
   implemented tabstop
 
