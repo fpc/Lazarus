@@ -992,7 +992,8 @@ end;
 procedure TWinControl.SetBorderStyle(NewStyle: TBorderStyle);
 begin
   FBorderStyle := NewStyle;
-  TWSWinControlClass(WidgetSetClass).SetBorderStyle(Self, NewStyle);
+  if HandleAllocated then
+    TWSWinControlClass(WidgetSetClass).SetBorderStyle(Self, NewStyle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3544,6 +3545,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.232  2004/05/21 21:58:01  vincents
+  Added if HandleAllocated to SetBorderStyle
+
   Revision 1.231  2004/05/21 10:02:59  micha
   consistent BorderStyle naming
 
