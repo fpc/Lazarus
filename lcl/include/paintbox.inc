@@ -30,7 +30,7 @@ begin
     begin
       Pen.Style := psDash;
       Brush.Style := bsClear;
-      Rectangle(0, 0, Width, Height);
+      Rectangle(0, 0, Width - 1, Height - 1);
     end;
   if Assigned(FOnPaint) then
    FOnPaint(Self);
