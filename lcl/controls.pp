@@ -1241,11 +1241,13 @@ type
   private
     FChildControl: TControl;
     FChildCount: integer;
+    FFirstChildZone: TDockZone;
     FTree: TDockTree;
     FZoneLimit: integer;
     FParentZone: TDockZone;
     FOrientation: TDockOrientation;
     FNextSibling: TDockZone;
+    FPrevSibling: TDockZone;
     //FPrevSibling: TDockZone;
     function GetHeight: Integer;
     function GetLeft: Integer;
@@ -1311,7 +1313,7 @@ type
     //FSizingWnd: HWND;
     //FSizingZone: TDockZone;
     FTopZone: TDockZone;
-    //FTopXYLimit: Integer;
+    FTopXYLimit: Integer;
     FUpdateCount: Integer;
     //FVersion: Integer;
     procedure WindowProc(var AMessage: TLMessage);
@@ -1840,6 +1842,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.148  2003/09/02 08:39:16  mattias
+  added italian localization
+
   Revision 1.147  2003/08/27 20:55:51  mattias
   fixed updating codetools on changing pkg output dir
 

@@ -19,30 +19,64 @@
 }
 
 function TDockZone.GetHeight: Integer;
+var
+  Zone: TDockZone;
+  R: TRect;
 begin
-  // ToDo
-  Result:=0;
+  if (Self = FTree.FTopZone) or ((FParentZone = FTree.FTopZone) and
+    (FChildControl <> nil) and (FTree.FTopZone.VisibleChildCount = 1)) then
+  begin
+    R := FTree.FDockSite.ClientRect;
+    FTree.FDockSite.AdjustClientRect(R);
+    Result := R.Bottom - R.Top;
+  end
+  else begin
+    Zone := Self;
+    while Zone.FParentZone<>nil do begin
+      if Zone.FParentZone.FOrientation = doHorizontal then begin
+        Result := Zone.ZoneLimit - Zone.LimitBegin;
+        Exit;
+      end else
+        Zone := Zone.FParentZone;
+    end;
+    if FTree.FTopZone.FOrientation = doHorizontal then
+      Result := FTree.FTopXYLimit
+    else
+      Result := FTree.FTopZone.ZoneLimit;
+  end;
 end;
 
 function TDockZone.GetLeft: Integer;
+var
+  Zone: TDockZone;
+  R: TRect;
 begin
-  // ToDo
-  Result:=0;
+  Zone := Self;
+  while Zone.FParentZone<>nil do begin
+    if (Zone.FParentZone.FOrientation = doVertical)
+    and (Zone.FPrevSibling <> nil) then begin
+      Result := Zone.FPrevSibling.ZoneLimit;
+      Exit;
+    end else
+      Zone := Zone.FParentZone;
+  end;
+  R := FTree.FDockSite.ClientRect;
+  FTree.FDockSite.AdjustClientRect(R);
+  Result:=R.Left;
 end;
 
 function TDockZone.GetLimitBegin: Integer;
-// retunrs the zone limits. All childs are bounded to this value.
-// Aka returns top for orientation doHorizontal and left for doVertical
+// returns the zone limit.
 var
-  Zone: TDockZone;
+  ZoneOrientation: TDockOrientation;
 begin
-  if FTree.FTopZone = Self then
-    Zone := Self
+  if FParentZone = nil then
+    ZoneOrientation := Self.FOrientation
   else
-    Zone := FParentZone;
-  if Zone.FOrientation = doHorizontal then
+    ZoneOrientation := FParentZone.FOrientation;
+  if ZoneOrientation = doHorizontal then
     Result := Top
-  else if Zone.FOrientation = doVertical then
+  else if ZoneOrientation = doVertical then
     Result := Left
   else
     raise Exception.Create('TDockZone.GetLimitBegin');
@@ -50,27 +84,41 @@ end;
 
 function TDockZone.GetLimitSize: Integer;
 var
-  Zone: TDockZone;
+  ZoneOrientation: TDockOrientation;
 begin
-  if FTree.FTopZone = Self then
-    Zone := Self
+  if FParentZone = nil then
+    ZoneOrientation := Self.FOrientation
   else
-    Zone := FParentZone;
-  if Zone.FOrientation = doHorizontal then
+    ZoneOrientation := FParentZone.FOrientation;
+  if ZoneOrientation = doHorizontal then
     Result := Height
-  else if Zone.FOrientation = doVertical then
+  else if ZoneOrientation = doVertical then
     Result := Width
   else
     raise Exception.Create('TDockZone.GetLimitSize');
 end;
 
 function TDockZone.GetTop: Integer;
+var
+  Zone: TDockZone;
+  R: TRect;
 begin
-  // ToDo
-  Result:=0;
+  Zone := Self;
+  while Zone.FParentZone<>nil do begin
+    if (Zone.FParentZone.FOrientation = doHorizontal)
+    and (Zone.FPrevSibling <> nil) then begin
+      Result := Zone.FPrevSibling.ZoneLimit;
+      Exit;
+    end else
+      Zone := Zone.FParentZone;
+  end;
+  R := FTree.FDockSite.ClientRect;
+  FTree.FDockSite.AdjustClientRect(R);
+  Result:=R.Top;
 end;
 
 function TDockZone.GetVisible: Boolean;
+// a zone is visible if it or one of its child zones contain a visible control
 var
   Zone: TDockZone;
 begin
@@ -145,20 +193,26 @@ end;
 
 function TDockZone.FirstVisibleChild: TDockZone;
 begin
-  // ToDo
-  Result:=nil;
+  if FFirstChildZone<>nil then begin
+    if FFirstChildZone.Visible then
+      Result:=FFirstChildZone
+    else
+      Result:=FFirstChildZone.GetNextVisibleZone;
+  end else begin
+    Result:=nil;
+  end;
 end;
 
 function TDockZone.NextVisible: TDockZone;
 begin
-  // ToDo
-  Result:=nil;
+  Result:=FNextSibling;
+  while (Result<>nil) and (not Result.Visible) do Result:=Result.FNextSibling;
 end;
 
 function TDockZone.PrevVisible: TDockZone;
 begin
-  // ToDo
-  Result:=nil;
+  Result:=FPrevSibling;
+  while (Result<>nil) and (not Result.Visible) do Result:=Result.FPrevSibling;
 end;
 
 procedure TDockZone.ResetChildren;

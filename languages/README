@@ -5,6 +5,7 @@ There are a few other directories for the codetools and the lcl. They work
 all the same. All language files can easily be updated with the
 <lazarusdir>/localize.sh script.
 
+
 All text and messages used in the IDE (except the special designer units)
 should be placed into the unit lazarusidestrconsts.pas. This unit uses a
 resourcestring section, so that the compiler will create the
@@ -14,6 +15,8 @@ Since this is a fpc-only format it must be converted with the rstconv program:
 cd <lazarusdir>/languages
 rstconv -i ../lazarusidestrconsts.rst -o lazaruside.po
 
+Hint: this is done by <lazarusdir>/localize.sh
+
 This will create the file lazaruside.po, which should be translated in all
 required languages to a lazaruside.xx.po file. For the xx see the gettext unit
 in the procedure TranslateResourceStrings.
@@ -22,6 +25,7 @@ german:           lazaruside.de.po
 russian (KOI8-R): lazaruside.ru.po
 spanish:          lazaruside.es.po
 french:           lazaruside.fr.po
+italian:          lazaruside.it.po
 
 
 After the translation, the lazaruside.xx.po file is converted to an .mo file
@@ -30,9 +34,11 @@ with the msgfmt program:
 msgfmt -v -o lazaruside.xx.mo lazaruside.xx.po
 
 where xx is the language id.
+Hint: this is done by <lazarusdir>/localize.sh too
 
 
 (The same for objinspstrconsts.xx.po, codetoolsstrconsts.xx.po, lcl.xx.po)
+Hint: this is also done by <lazarusdir>/localize.sh
 
 
 

@@ -24,7 +24,7 @@ set +e
 # IDE without objectinspector
 rstconv -i lazarusidestrconsts.rst -o languages/lazaruside.po
 ./tools/updatepofiles languages/lazaruside.po
-for lang in de ru es fr pl; do
+for lang in de ru es fr pl it; do
   msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
 done
 

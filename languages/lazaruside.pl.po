@@ -220,6 +220,10 @@ msgstr "0.9.0 beta"
 msgid "<choose an existing file>"
 msgstr "<wybierz istniej±cy plik>"
 
+#: lazarusidestrconsts:lisctdefnovariableselected
+msgid "<no variable selected>"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
 msgstr "\" nie istnieje."
@@ -335,6 +339,10 @@ msgstr "dodaj opcje do zale¿nych pakietów i projektów"
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Dodaj ¶cie¿ki do zale¿nuch pakietów/projektów"
+
+#: lazarusidestrconsts:lisa2paddtopackage
+msgid "Add to package"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
@@ -887,6 +895,10 @@ msgstr "Edytor definicji CodeTools"
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefinespreview
 msgid "CodeTools Defines Preview"
 msgstr "Podgl±d dyrektyw CodeTools"
+
+#: lazarusidestrconsts:lisctdefcodetoolsdirectoryvalues
+msgid "CodeTools Directory Values"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
@@ -3584,6 +3596,10 @@ msgstr "Otwórz pakiet z pliku..."
 msgid "Open Package?"
 msgstr "Chcesz otworzyæ pakiet?"
 
+#: lazarusidestrconsts:lisctdefsopenpreview
+msgid "Open Preview"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
 msgstr "Otwórz projekt..."
@@ -3767,6 +3783,10 @@ msgstr "Nie znalaz³em pakiet"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opcje pakietu"
+
+#: lazarusidestrconsts:lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackage
 msgid "Package: %s"
@@ -4724,6 +4744,10 @@ msgstr "Wszystkie procs przy b³êdzie"
 msgid "Show Close Buttons in notebook"
 msgstr "Pokazuj przyciski zamykaj±ce zak³adki"
 
+#: lazarusidestrconsts:lisuishowcodetoolsvalues
+msgid "Show CodeTools Values"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
 msgstr "Skompilowane procedury"
@@ -4999,6 +5023,10 @@ msgstr "Podkatalog"
 #: lazarusidestrconsts:srkmectoggleformunit
 msgid "Switch between form and unit"
 msgstr "Prze³±cz pomiêdzy formularzem i kodem"
+
+#: lazarusidestrconsts:lisa2pswitchpaths
+msgid "Switch Paths"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsymantecchecking
 msgid "Symantec Checking:"
@@ -5368,6 +5396,10 @@ msgstr "Pakiet ma ju¿ zale¿no¶æ od pakietu %s%s%s."
 msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
 msgstr "Pakiet %s%s%s jest nieprawid³owy.%sWybierz istniej±cy pakiet."
 
+#: lazarusidestrconsts:lisa2pthepackagenameisinvalidpleasechooseanexisting
+msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
 msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "Nazwa pakietu %s%s%s jest nieprawid³owa%sProszê wybraæ inn± nazwê (np. package1.lpk)"
@@ -5543,6 +5575,10 @@ msgstr "Prze³±cz tryb"
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
 msgstr "Token:"
+
+#: lazarusidestrconsts:lisctdefstools
+msgid "Tools"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcattoolmenu
 msgid "Tools menu commands"
@@ -6056,6 +6092,10 @@ msgstr "Warto¶æ jako tekst"
 msgid "Variable"
 msgstr "Zmienna"
 
+#: lazarusidestrconsts:lisctdefvariablename
+msgid "Variable Name"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtvariableprefix
 msgid "Variable prefix"
 msgstr "Przedrostek zmiennej"
@@ -6063,6 +6103,10 @@ msgstr "Przedrostek zmiennej"
 #: lazarusidestrconsts:liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "Zmienna:"
+
+#: lazarusidestrconsts:lisctdefvariable
+msgid "Variable: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity:"

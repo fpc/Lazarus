@@ -386,3 +386,7 @@ msgstr ""
 msgid "List index exceeds bounds (%d)"
 msgstr ""
 
+#: lclstrconsts:rsresourcenotfound
+msgid "Resource %s not found"
+msgstr ""
+

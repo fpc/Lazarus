@@ -210,6 +210,10 @@ msgstr "0.9.0 бета"
 msgid "<choose an existing file>"
 msgstr "<выберите существующий файл>"
 
+#: lazarusidestrconsts:lisctdefnovariableselected
+msgid "<no variable selected>"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
 msgstr "\" не существует."
@@ -325,6 +329,10 @@ msgstr "Добавить параметры к зависимым пакетам и проектам"
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
 msgstr "Добавить пути к зависимым пакетам/проектам"
+
+#: lazarusidestrconsts:lisa2paddtopackage
+msgid "Add to package"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
@@ -877,6 +885,10 @@ msgstr "Настройки редактора CodeTools"
 #: lazarusidestrconsts:liscodetoolsdefscodetoolsdefinespreview
 msgid "CodeTools Defines Preview"
 msgstr "Просмотр настроек CodeTools"
+
+#: lazarusidestrconsts:lisctdefcodetoolsdirectoryvalues
+msgid "CodeTools Directory Values"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
@@ -3574,6 +3586,10 @@ msgstr "Открыть файл пакета"
 msgid "Open Package?"
 msgstr "Открыть пакет?"
 
+#: lazarusidestrconsts:lisctdefsopenpreview
+msgid "Open Preview"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
 msgstr "Открыть проект"
@@ -3757,6 +3773,10 @@ msgstr "Пакет не найден"
 #: lazarusidestrconsts:lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Параметры пакета"
+
+#: lazarusidestrconsts:lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackage
 msgid "Package: %s"
@@ -4714,6 +4734,10 @@ msgstr "Все проц-ры при ошибках"
 msgid "Show Close Buttons in notebook"
 msgstr "Показать кнопку Закрыть в закладках"
 
+#: lazarusidestrconsts:lisuishowcodetoolsvalues
+msgid "Show CodeTools Values"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
 msgstr "Откомпирированные проц-ры"
@@ -4989,6 +5013,10 @@ msgstr "Подкаталог"
 #: lazarusidestrconsts:srkmectoggleformunit
 msgid "Switch between form and unit"
 msgstr "Переключить модуль/форму"
+
+#: lazarusidestrconsts:lisa2pswitchpaths
+msgid "Switch Paths"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsymantecchecking
 msgid "Symantec Checking:"
@@ -5358,6 +5386,10 @@ msgstr "Пакет уже имеет зависимость от пакета %s%s%s"
 msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
 msgstr "Имя пакета %s%s%s некорректно.%sВыберите существующий пакет."
 
+#: lazarusidestrconsts:lisa2pthepackagenameisinvalidpleasechooseanexisting
+msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
 msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "Имя пакета %s%s%s некорректно.%sВыберите другой пакет (напр., package1.lpk)."
@@ -5532,6 +5564,10 @@ msgstr "Переключить режим"
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefstools
+msgid "Tools"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcattoolmenu
@@ -6046,6 +6082,10 @@ msgstr "Значение как текст"
 msgid "Variable"
 msgstr "Переменная"
 
+#: lazarusidestrconsts:lisctdefvariablename
+msgid "Variable Name"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtvariableprefix
 msgid "Variable prefix"
 msgstr "Префикс переменной"
@@ -6053,6 +6093,10 @@ msgstr "Префикс переменной"
 #: lazarusidestrconsts:liscodetoolsdefsvariable
 msgid "Variable:"
 msgstr "Переменная:"
+
+#: lazarusidestrconsts:lisctdefvariable
+msgid "Variable: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity:"

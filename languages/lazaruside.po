@@ -2062,8 +2062,16 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: lazarusidestrconsts:lisa2pswitchpaths
+msgid "Switch Paths"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddtopackage
+msgid "Add to package"
 msgstr ""
 
 #: lazarusidestrconsts:dlgindentcodeto
@@ -4354,6 +4362,14 @@ msgstr ""
 msgid "Else"
 msgstr ""
 
+#: lazarusidestrconsts:lisctdefstools
+msgid "Tools"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefsopenpreview
+msgid "Open Preview"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinserttemplate
 msgid "Insert Template"
 msgstr ""
@@ -4716,6 +4732,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidok
 msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lisuishowcodetoolsvalues
+msgid "Show CodeTools Values"
 msgstr ""
 
 #: lazarusidestrconsts:lisueerrorinregularexpression
@@ -5778,6 +5798,10 @@ msgstr ""
 msgid "Unit Path"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgdefssrcdirmark
+msgid "Package Source Directory Mark"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pinvalidpackage
 msgid "Invalid Package"
 msgstr ""
@@ -5894,8 +5918,8 @@ msgstr ""
 msgid "The Maximum Version is lower than the Minimim Version."
 msgstr ""
 
-#: lazarusidestrconsts:lisa2pthepackagenameisinvalidplasechooseanexisting
-msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
+#: lazarusidestrconsts:lisa2pthepackagenameisinvalidpleasechooseanexisting
+msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pthepackagehasalreadyadependencyforthe
@@ -6692,5 +6716,25 @@ msgstr ""
 
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefchoosedirectory
+msgid "Choose Directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefcodetoolsdirectoryvalues
+msgid "CodeTools Directory Values"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefvariable
+msgid "Variable: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefnovariableselected
+msgid "<no variable selected>"
+msgstr ""
+
+#: lazarusidestrconsts:lisctdefvariablename
+msgid "Variable Name"
 msgstr ""
 
