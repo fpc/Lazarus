@@ -327,7 +327,7 @@ begin
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TToggleBox, TCheckBox,
           TRadioButton, TListBox,TComboBox,TScrollBar,TGroupBox,TStaticText]);
-  RegisterComponents('Standard','ExtCtrls',[TRadioGroup,TPanel]);
+  RegisterComponents('Standard','ExtCtrls',[TRadioGroup,TCheckGroup,TPanel]);
 
   // Additional
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);

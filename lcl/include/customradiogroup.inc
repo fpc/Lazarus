@@ -160,6 +160,14 @@ begin
   FCreatingWnd := false;
 end;
 
+function TCustomRadioGroup.Rows: integer;
+begin
+  if FItems.Count>0 then
+    Result:=((FItems.Count-1) div Columns)+1
+  else
+    Result:=0;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.ItemsChanged
   Params:  sender : object calling this proc. (in fact the FItems instance)
@@ -368,6 +376,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2003/03/17 23:39:30  mattias
+  added TCheckGroup
+
   Revision 1.19  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
