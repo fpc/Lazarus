@@ -45,7 +45,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
-  CodeToolManager, CodeCache, Laz_XMLCfg, LazarusIDEStrConsts,
+  CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree, LazarusIDEStrConsts,
   KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, InputHistory,
   IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
@@ -66,6 +66,8 @@ type
     procedure OnPackageEditorSavePackage(Sender: TObject);
     procedure PackageGraphChangePackageName(Pkg: TLazPackage;
       const OldName: string);
+    function PackageGraphExplorerOpenPackage(Sender: TObject;
+      APackage: TLazPackage): TModalResult;
     procedure PkgManagerAddPackage(Pkg: TLazPackage);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuPkgOpenPackageClicked(Sender: TObject);
@@ -221,6 +223,12 @@ procedure TPkgManager.PackageGraphChangePackageName(Pkg: TLazPackage;
 begin
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageName(Pkg,OldName);
+end;
+
+function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoOpenPackage(APackage);
 end;
 
 procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
@@ -429,7 +437,9 @@ begin
   IDEComponentPalette:=TIDEComponentPalette.Create;
   
   PkgLinks:=TPackageLinks.Create;
-  
+
+  PackageDependencies:=TAVLTree.Create(@CompareLazPackageID);
+
   PackageGraph:=TLazPackageGraph.Create;
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
   PackageGraph.OnAddPackage:=@PkgManagerAddPackage;
@@ -450,6 +460,7 @@ begin
   FreeThenNil(PackageGraph);
   FreeThenNil(PkgLinks);
   FreeThenNil(IDEComponentPalette);
+  FreeThenNil(PackageDependencies);
   inherited Destroy;
 end;
 
@@ -566,6 +577,7 @@ begin
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(APackage);
   CurEditor.Show;
+  CurEditor.BringToFront;
   Result:=mrOk;
 end;
 
@@ -691,8 +703,10 @@ end;
 
 function TPkgManager.DoShowPackageGraph: TModalResult;
 begin
-  if PackageGraphExplorer=nil then
+  if PackageGraphExplorer=nil then begin
     PackageGraphExplorer:=TPkgGraphExplorer.Create(Application);
+    PackageGraphExplorer.OnOpenPackage:=@PackageGraphExplorerOpenPackage;
+  end;
   PackageGraphExplorer.Show;
   PackageGraphExplorer.BringToFront;
   Result:=mrOk;

@@ -87,6 +87,7 @@ type
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
+    procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
@@ -299,6 +300,11 @@ begin
   end;
   while FilesPopupMenu.Items.Count>ItemCnt do
     FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
+end;
+
+procedure TPackageEditorForm.FilesTreeViewDblClick(Sender: TObject);
+begin
+  OpenFileMenuItemClick(Self);
 end;
 
 procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
@@ -736,6 +742,7 @@ begin
     PopupMenu:=FilesPopupMenu;
     OnSelectionChanged:=@FilesTreeViewSelectionChanged;
     Options:=Options+[tvoRightClickSelect];
+    OnDblClick:=@FilesTreeViewDblClick;
   end;
 
   FilePropsGroupBox:=TGroupBox.Create(Self);
@@ -1248,8 +1255,7 @@ var
   APackage: TLazPackage;
 begin
   Result:=mrCancel;
-  if PackageGraph.OpenDependency(Dependency,
-    fpfSearchPackageEverywhere,APackage)=lprSuccess then
+  if PackageGraph.OpenDependency(Dependency,APackage)=lprSuccess then
   begin
     if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
   end;

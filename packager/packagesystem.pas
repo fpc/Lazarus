@@ -91,46 +91,48 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Count: integer;
-    function FindLeftMostByName(const PkgName: string): TAVLTreeNode;
+    function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
-    function FindWithDependency(Dependency: TPkgDependency;
-      Flags: TFindPackageFlags): TAVLTreeNode;
+    function FindNodeOfDependency(Dependency: TPkgDependency;
+                                  Flags: TFindPackageFlags): TAVLTreeNode;
+    function FindOpenPackage(Dependency: TPkgDependency;
+                             Flags: TFindPackageFlags): TLazPackage;
     function FindAPackageWithName(const PkgName: string;
-      IgnorePackage: TLazPackage): TLazPackage;
+                                  IgnorePackage: TLazPackage): TLazPackage;
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
-      WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
+                      WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
-      IgnoreDeleted: boolean): TPkgFile;
+                                   IgnoreDeleted: boolean): TPkgFile;
     function FindFileInAllPackages(const TheFilename: string;
-      ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
+                                ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindPackageWithFilename(const TheFilename: string;
-      ResolveLinks: boolean): TLazPackage;
+                                     ResolveLinks: boolean): TLazPackage;
     function CreateUniqueUnitName(const Prefix: string): string;
     function PackageNameExists(const PkgName: string;
-      IgnorePackage: TLazPackage): boolean;
+                               IgnorePackage: TLazPackage): boolean;
     function CreateUniquePkgName(const Prefix: string;
-      IgnorePackage: TLazPackage): string;
+                                 IgnorePackage: TLazPackage): string;
     function NewPackage(const Prefix: string): TLazPackage;
     procedure ConsistencyCheck;
     procedure RegisterUnitHandler(const TheUnitName: string;
-      RegisterProc: TRegisterProc);
+                                  RegisterProc: TRegisterProc);
     procedure RegisterComponentsHandler(const Page: string;
-      ComponentClasses: array of TComponentClass);
+                                    ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
     procedure AddPackage(APackage: TLazPackage);
     procedure AddStaticBasePackages;
     procedure RegisterStaticPackages;
     function OpenDependency(Dependency: TPkgDependency;
-      Flags: TFindPackageFlags; var APackage: TLazPackage): TLoadPackageResult;
+                            var APackage: TLazPackage): TLoadPackageResult;
     procedure IterateComponentClasses(APackage: TLazPackage;
-      Event: TIterateComponentClassesEvent;
-      WithUsedPackages, WithRequiredPackages: boolean);
+                               Event: TIterateComponentClassesEvent;
+                               WithUsedPackages, WithRequiredPackages: boolean);
     procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
     procedure IteratePackages(Flags: TFindPackageFlags;
-      Event: TIteratePackagesEvent);
+                              Event: TIteratePackagesEvent);
     procedure IteratePackagesSorted(Flags: TFindPackageFlags;
-      Event: TIteratePackagesEvent);
+                                    Event: TIteratePackagesEvent);
   public
     property Packages[Index: integer]: TLazPackage read GetPackages; default;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -231,14 +233,14 @@ begin
   Result:=FItems.Count;
 end;
 
-function TLazPackageGraph.FindLeftMostByName(const PkgName: string
+function TLazPackageGraph.FindLowestPkgNodeByName(const PkgName: string
   ): TAVLTreeNode;
 var
   PriorNode: TAVLTreeNode;
 begin
   Result:=nil;
   if PkgName='' then exit;
-  Result:=FTree.FindKey(PChar(PkgName),@CompareNameWithPackage);
+  Result:=FTree.FindKey(PChar(PkgName),@CompareNameWithPackageID);
   while Result<>nil do begin
     PriorNode:=FTree.FindPrecessor(Result);
     if (PriorNode=nil)
@@ -262,13 +264,13 @@ begin
   Result:=NextNode;
 end;
 
-function TLazPackageGraph.FindWithDependency(Dependency: TPkgDependency;
+function TLazPackageGraph.FindNodeOfDependency(Dependency: TPkgDependency;
   Flags: TFindPackageFlags): TAVLTreeNode;
 var
   CurPkg: TLazPackage;
 begin
   // search in all packages with the same name
-  Result:=FindLeftMostByName(Dependency.PackageName);
+  Result:=FindLowestPkgNodeByName(Dependency.PackageName);
   while Result<>nil do begin
     CurPkg:=TLazPackage(Result.Data);
     // check version
@@ -290,13 +292,25 @@ begin
   end;
 end;
 
+function TLazPackageGraph.FindOpenPackage(Dependency: TPkgDependency;
+  Flags: TFindPackageFlags): TLazPackage;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FindNodeOfDependency(Dependency,Flags);
+  if ANode<>nil then
+    Result:=TLazPackage(ANode.Data)
+  else
+    Result:=nil;
+end;
+
 function TLazPackageGraph.FindAPackageWithName(const PkgName: string;
   IgnorePackage: TLazPackage): TLazPackage;
 var
   ANode: TAVLTreeNode;
 begin
   Result:=nil;
-  ANode:=FindLeftMostByName(PkgName);
+  ANode:=FindLowestPkgNodeByName(PkgName);
   if ANode<>nil then begin
     Result:=TLazPackage(ANode.Data);
     if Result=IgnorePackage then begin
@@ -332,9 +346,8 @@ begin
   if WithRequiredPackages then begin
     ADependency:=StartPackage.FirstRequiredDependency;
     while ADependency<>nil do begin
-      if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
-         =lprSuccess
-      then begin
+      ARequiredPackage:=FindOpenPackage(ADependency,[fpfSearchInInstalledPckgs]);
+      if ARequiredPackage<>nil then begin
         Result:=ARequiredPackage.FindUnit(TheUnitName,IgnoreDeleted);
         if Result<>nil then exit;
       end;
@@ -419,7 +432,7 @@ var
 begin
   Result:=false;
   if PkgName<>'' then begin
-    ANode:=FindLeftMostByName(PkgName);
+    ANode:=FindLowestPkgNodeByName(PkgName);
     if (ANode<>nil) and (IgnorePackage=TLazPackage(ANode.Data)) then
       ANode:=FindNextSameName(ANode);
     Result:=ANode<>nil;
@@ -660,10 +673,24 @@ begin
 end;
 
 procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
+var
+  RequiredPackage: TLazPackage;
+  Dependency: TPkgDependency;
 begin
   FTree.Add(APackage);
   FItems.Add(APackage);
   APackage.OnChangeName:=@PackageChangedName;
+  
+  // open all dependencies
+  Dependency:=APackage.FirstRequiredDependency;
+  while Dependency<>nil do begin
+    OpenDependency(Dependency,RequiredPackage);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+  
+  // update all dependencies
+  
+  
   if Assigned(OnAddPackage) then OnAddPackage(APackage);
 end;
 
@@ -694,24 +721,22 @@ begin
 end;
 
 function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
-  Flags: TFindPackageFlags; var APackage: TLazPackage): TLoadPackageResult;
+  var APackage: TLazPackage): TLoadPackageResult;
 var
   ANode: TAVLTreeNode;
   PkgLink: TPackageLink;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
     // search in opened packages
-    ANode:=FindWithDependency(Dependency,Flags);
-    if (ANode=nil) then begin
+    ANode:=FindNodeOfDependency(Dependency,fpfSearchPackageEverywhere);
+    if (APackage=nil) then begin
       // package not yet open
-      if (fpfSearchInPkgLinks in Flags) then begin
-        PkgLinks.UpdateAll;
-        PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
-        if PkgLink<>nil then begin
+      PkgLinks.UpdateAll;
+      PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
+      if PkgLink<>nil then begin
 
-          // ToDo
+        // ToDo
 
-        end;
       end;
     end;
     // save result
@@ -739,9 +764,8 @@ begin
   if WithRequiredPackages then begin
     ADependency:=APackage.FirstRequiredDependency;
     while ADependency<>nil do begin
-      if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
-         =lprSuccess
-      then begin
+      ARequiredPackage:=FindOpenPackage(ADependency,[fpfSearchInInstalledPckgs]);
+      if ARequiredPackage<>nil then begin
         ARequiredPackage.IterateComponentClasses(Event,false);
       end;
       ADependency:=ADependency.NextRequiresDependency;

@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem;
+  Project, PackageDefs, PackageSystem, PackageEditor;
   
 type
   TPkgGraphExplorer = class(TForm)
@@ -53,15 +53,19 @@ type
     InfoMemo: TMemo;
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
+    procedure PkgListBoxClick(Sender: TObject);
+    procedure PkgTreeViewDblClick(Sender: TObject);
     procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
   private
+    FOnOpenPackage: TOnOpenPackage;
     fSortedPackages: TAVLTree;
     procedure SetupComponents;
     function GetPackageImageIndex(Pkg: TLazPackage): integer;
     procedure GetDependency(ANode: TTreeNode; var Pkg: TLazPackage;
       var Dependency: TPkgDependency);
+    procedure GetCurrentIsUsedBy(var Dependency: TPkgDependency);
     function SearchParentNodeWithText(ANode: TTreeNode;
       const NodeText: string): TTreeNode;
   public
@@ -74,6 +78,10 @@ type
     procedure UpdatePackageName(Pkg: TLazPackage; const OldName: string);
     procedure UpdatePackageID(Pkg: TLazPackage);
     procedure UpdatePackageAdded(Pkg: TLazPackage);
+    procedure SelectPackage(Pkg: TLazPackage);
+    function FindMainNodeWithText(const s: string): TTreeNode;
+  public
+    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
   end;
   
 var
@@ -129,6 +137,32 @@ begin
   UpdateAll;
 end;
 
+procedure TPkgGraphExplorer.PkgListBoxClick(Sender: TObject);
+var
+  Dependency: TPkgDependency;
+begin
+  GetCurrentIsUsedBy(Dependency);
+  if (Dependency=nil) or (Dependency.Owner=nil) then begin
+    PkgListBox.ItemIndex:=-1;
+    exit;
+  end;
+  if Dependency.Owner is TLazPackage then begin
+    SelectPackage(TLazPackage(Dependency.Owner));
+  end;
+end;
+
+procedure TPkgGraphExplorer.PkgTreeViewDblClick(Sender: TObject);
+var
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  if Pkg<>nil then begin
+    if Assigned(OnOpenPackage) then
+      OnOpenPackage(Self,Pkg);
+  end;
+end;
+
 procedure TPkgGraphExplorer.PkgTreeViewExpanding(Sender: TObject;
   Node: TTreeNode; var AllowExpansion: Boolean);
 var
@@ -150,8 +184,7 @@ begin
     Dependency:=Pkg.FirstRequiredDependency;
     while Dependency<>nil do begin
       // find required package
-      if PackageGraph.OpenDependency(Dependency,fpfSearchPackageEverywhere,
-        ChildPackage)=lprSuccess then
+      if PackageGraph.OpenDependency(Dependency,ChildPackage)=lprSuccess then
       begin
         // package found
         NodeText:=ChildPackage.IDAsString;
@@ -237,19 +270,21 @@ begin
     Images:=Self.ImageList;
     OnExpanding:=@PkgTreeViewExpanding;
     OnSelectionChanged:=@PkgTreeViewSelectionChanged;
+    OnDblClick:=@PkgTreeViewDblClick;
   end;
 
   PkgListLabel:=TLabel.Create(Self);
   with PkgListLabel do begin
     Name:='PkgListLabel';
     Parent:=Self;
-    Caption:='Required by Packages:';
+    Caption:='Is required by:';
   end;
 
   PkgListBox:=TListBox.Create(Self);
   with PkgListBox do begin
     Name:='PkgListBox';
     Parent:=Self;
+    OnClick:=@PkgListBoxClick;
   end;
 
   InfoMemo:=TMemo.Create(Self);
@@ -307,6 +342,21 @@ begin
   end;
 end;
 
+procedure TPkgGraphExplorer.GetCurrentIsUsedBy(var Dependency: TPkgDependency);
+var
+  TreePkg: TLazPackage;
+  TreeDependency: TPkgDependency;
+  ListIndex: Integer;
+begin
+  Dependency:=nil;
+  GetDependency(PkgTreeView.Selected,TreePkg,TreeDependency);
+  if (Dependency=nil) and (TreePkg<>nil) then begin
+    ListIndex:=PkgListBox.ItemIndex;
+    if ListIndex<0 then exit;
+    Dependency:=TreePkg.UsedByDepByIndex(ListIndex);
+  end;
+end;
+
 function TPkgGraphExplorer.SearchParentNodeWithText(ANode: TTreeNode;
   const NodeText: string): TTreeNode;
 begin
@@ -324,7 +374,7 @@ begin
   inherited Create(TheOwner);
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
-  Caption:='Package Graph Explorer';
+  Caption:='Package Graph';
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
@@ -423,6 +473,7 @@ begin
       UsedByDep:=UsedByDep.NextUsedByDependency;
     end;
     PkgListBox.Items.Assign(sl);
+    PkgListBox.ItemIndex:=-1;
     sl.Free;
   end;
 end;
@@ -480,6 +531,24 @@ end;
 procedure TPkgGraphExplorer.UpdatePackageAdded(Pkg: TLazPackage);
 begin
   UpdateAll;
+end;
+
+procedure TPkgGraphExplorer.SelectPackage(Pkg: TLazPackage);
+var
+  NewNode: TTreeNode;
+begin
+  if Pkg=nil then exit;
+  NewNode:=FindMainNodeWithText(Pkg.IDAsString);
+  if NewNode<>nil then
+    PkgTreeView.Selected:=NewNode;
+end;
+
+function TPkgGraphExplorer.FindMainNodeWithText(const s: string): TTreeNode;
+begin
+  Result:=nil;
+  if PkgTreeView.Items.Count=0 then exit;
+  Result:=PkgTreeView.Items[0];
+  while (Result<>nil) and (Result.Text<>s) do Result:=Result.GetNextSibling;
 end;
 
 initialization

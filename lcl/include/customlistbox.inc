@@ -385,8 +385,9 @@ end;
 
 procedure TCustomListBox.SetItemIndex(Val : integer);
 begin
-  if (Val < 0) or (Val >= FItems.Count) then
+  if (Val >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Val,FItems.Count]);
+  if Val<0 then Val:=-1;
 //writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
   if HandleAllocated then

@@ -269,9 +269,9 @@ type
     destructor Destroy; override;
     procedure AddItem(const Item: String; AnObject: TObject); //override;
     procedure AddHistoryItem(const Item: string; MaxHistoryCount: integer;
-      SetAsText, CaseSensitive: boolean);
+                             SetAsText, CaseSensitive: boolean);
     procedure AddHistoryItem(const Item: string; AnObject: TObject;
-      MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
+                   MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
     procedure Clear; //override;
     procedure ClearSelection; //override;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
@@ -279,7 +279,7 @@ type
     procedure SelectAll;
 
     property AutoDropDown: Boolean
-      read FAutoDropDown write FAutoDropDown default False;
+                           read FAutoDropDown write FAutoDropDown default False;
     property Canvas: TCanvas read FCanvas;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
@@ -1452,6 +1452,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/04/11 17:10:20  mattias
+  added but not implemented ComboBoxDropDown
+
   Revision 1.87  2003/04/04 16:35:24  mattias
   started package registration
 

@@ -329,7 +329,7 @@ begin
   end;
 
   // check if required package exists
-  if PackageGraph.FindWithDependency(NewDependency,fpfSearchPackageEverywhere)
+  if PackageGraph.FindNodeOfDependency(NewDependency,fpfSearchPackageEverywhere)
     =nil then
   begin
     MessageDlg('Package not found',

@@ -45,8 +45,8 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, CompilerOptions,
-  Forms, FileCtrl, IDEProcs, ComponentReg;
+  Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, AVL_Tree,
+  CompilerOptions, Forms, FileCtrl, IDEProcs, ComponentReg;
 
 type
   TLazPackageID = class;
@@ -364,16 +364,17 @@ type
     procedure ConsistencyCheck;
     function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
     function FindPkgFile(const AFilename: string;
-      ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
+                         ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
     function FindRemovedPkgFile(const AFilename: string): TPkgFile;
     function FindDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
     function RemovedDepByIndex(Index: integer): TPkgDependency;
+    function UsedByDepByIndex(Index: integer): TPkgDependency;
     function NameAndVersion: string;
     function AddFile(const NewFilename, NewUnitName: string;
-      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
-      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+                     NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
+                     CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure RemoveFile(PkgFile: TPkgFile);
     procedure UnremovePkgFile(PkgFile: TPkgFile);
     procedure UnremoveRequiredPkg(Dependency: TPkgDependency);
@@ -381,7 +382,7 @@ type
     procedure RemoveRequiredDependency(Dependency: TPkgDependency);
     function CreateDependencyForThisPkg: TPkgDependency;
     function AddComponent(PkgFile: TPkgFile; const Page: string;
-      TheComponentClass: TComponentClass): TPkgComponent;
+                          TheComponentClass: TComponentClass): TPkgComponent;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
     function Requires(APackage: TLazPackage): boolean;
@@ -450,19 +451,26 @@ const
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
     'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate');
     
+var
+  // All TPkgDependency are added to this AVL tree
+  PackageDependencies: TAVLTree; // tree of TPkgDependency
+
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 procedure SortDependencyList(Dependencies: TList);
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
-function CompareNameWithPackage(Key, Data: Pointer): integer;
-function CompareLazPackageName(Data1, Data2: Pointer): integer;
+function CompareNameWithPackageID(Key, Data: Pointer): integer;
+function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
 function FindDependencyByNameInList(First: TPkgDependency;
   ListType: TPkgDependencyList; const Name: string): TPkgDependency;
 function FindCompatibleDependencyInList(First: TPkgDependency;
   ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
 function GetDependencyWithIndex(First: TPkgDependency;
   ListType: TPkgDependencyList; Index: integer): TPkgDependency;
+function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
+function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
+function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
 
 
 implementation
@@ -526,20 +534,20 @@ begin
   Result:=Pkg1.Compare(Pkg2);
 end;
 
-function CompareNameWithPackage(Key, Data: Pointer): integer;
+function CompareNameWithPackageID(Key, Data: Pointer): integer;
 var
   Name: String;
-  Pkg: TLazPackage;
+  Pkg: TLazPackageID;
 begin
   if Key<>nil then begin
     Name:=AnsiString(Key);
-    Pkg:=TLazPackage(Data);
+    Pkg:=TLazPackageID(Data);
     Result:=AnsiCompareText(Name,Pkg.Name);
   end else
     Result:=-1;
 end;
 
-function CompareLazPackageName(Data1, Data2: Pointer): integer;
+function CompareLazPackageIDNames(Data1, Data2: Pointer): integer;
 var
   Pkg1: TLazPackageID;
   Pkg2: TLazPackageID;
@@ -578,6 +586,47 @@ begin
     Result:=Result.NextDependency[ListType];
     dec(Index);
   end;
+end;
+
+function FindLowestPkgDependencyNodeWithName(const PkgName: string
+  ): TAVLTreeNode;
+var
+  PrecNode: TAVLTreeNode;
+begin
+  Result:=nil;
+  if PackageDependencies=nil then exit;
+  Result:=PackageDependencies.FindKey(PChar(PkgName),@CompareNameWithPackageID);
+  if Result=nil then exit;
+  while true do begin
+    PrecNode:=PackageDependencies.FindPrecessor(Result);
+    if (PrecNode=nil)
+    or (AnsiCompareText(PkgName,TPkgDependency(PrecNode.Data).PackageName)<>0)
+    then
+      break;
+    Result:=PrecNode;
+  end;
+end;
+
+function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
+begin
+  Result:=nil;
+  if (Node=nil) or (PackageDependencies=nil) then exit;
+  Node:=PackageDependencies.FindSuccessor(Node);
+  if AnsiCompareText(TPkgDependency(Node.Data).PackageName,
+                     TPkgDependency(Result.Data).PackageName)=0
+  then
+    Result:=Node;
+end;
+
+function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FindLowestPkgDependencyNodeWithName(PkgName);
+  if ANode<>nil then
+    Result:=TPkgDependency(ANode.Data)
+  else
+    Result:=nil;
 end;
 
 { TPkgFile }
@@ -807,12 +856,14 @@ constructor TPkgDependency.Create;
 begin
   MinVersion:=TPkgVersion.Create;
   MaxVersion:=TPkgVersion.Create;
+  if PackageDependencies<>nil then PackageDependencies.Add(Self);
   Clear;
 end;
 
 destructor TPkgDependency.Destroy;
 begin
   RequiredPackage:=nil;
+  if PackageDependencies<>nil then PackageDependencies.Remove(Self);
   FreeAndNil(fMinVersion);
   FreeAndNil(fMaxVersion);
   inherited Destroy;
@@ -1612,6 +1663,11 @@ begin
   Result:=GetDependencyWithIndex(FFirstRemovedDependency,pdlRequires,Index);
 end;
 
+function TLazPackage.UsedByDepByIndex(Index: integer): TPkgDependency;
+begin
+  Result:=GetDependencyWithIndex(FFirstUsedByDependency,pdlUsedBy,Index);
+end;
+
 function TLazPackage.NameAndVersion: string;
 begin
   Result:=Name+' '+Version.AsString;
@@ -1848,6 +1904,9 @@ begin
   if Result<>0 then exit;
   Result:=Version.Compare(PackageID2.Version);
 end;
+
+initialization
+  PackageDependencies:=nil;
 
 end.
 

@@ -457,7 +457,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetDroppedDown(const AValue: Boolean);
 begin
-  // ToDo
+  if FDroppedDown=AValue then exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  ComboBoxDropDown(Handle,AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -732,6 +734,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2003/04/11 17:10:20  mattias
+  added but not implemented ComboBoxDropDown
+
   Revision 1.24  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 
