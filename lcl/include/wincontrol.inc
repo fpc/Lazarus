@@ -1565,7 +1565,7 @@ begin
     if AControl = Self 
     then begin
       Assert(False, 'Trace:[TControl.SetParent] EInvalidOperation --> AControl = Self');
-      raise EInvalidOperation.Create('A control can''t have itself as parent');
+      raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
     end;
 
     if AControl is TWinControl then
@@ -2524,7 +2524,8 @@ begin
   Result := GetDC(Handle);
 //writeln('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
   if Result = 0 
-  then raise EOutOfResources.Create('Error creating device context');
+  then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
+    ClassName]);
 
   WindowHandle := FHandle;
 //*)  
@@ -2580,6 +2581,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2003/03/11 07:46:44  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.119  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 
