@@ -163,12 +163,7 @@ type
     FActions: TDBGBreakPointActions;
     FDisableGroupList: TList;
     FEnableGroupList: TList;                                  
-    function  GetDebugger: TDebugger;
-    procedure SetActions(const AValue: TDBGBreakPointActions);
-    procedure SetEnabled(const AValue: Boolean);
-    procedure SetExpression(const AValue: String);
-    procedure SetGroup(const AValue: TDBGBreakPointGroup);
-    procedure SetInitialEnabled(const AValue: Boolean);
+    function GetDebugger: TDebugger;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure DisableGroups;
@@ -189,6 +184,21 @@ type
     procedure CopyAllGroupLists(SrcBreakPoint: TDBGBreakPoint;
                                 DestGroups: TDBGBreakPointGroups);
     procedure ClearAllGroupLists;
+    // virtual properties
+    function GetActions: TDBGBreakPointActions; virtual;
+    function GetEnabled: Boolean; virtual;
+    function GetExpression: String; virtual;
+    function GetGroup: TDBGBreakPointGroup; virtual;
+    function GetHitCount: Integer; virtual;
+    function GetInitialEnabled: Boolean; virtual;
+    function GetLine: Integer; virtual;
+    function GetSource: String; virtual;
+    function GetValid: TValidState; virtual;
+    procedure SetActions(const AValue: TDBGBreakPointActions); virtual;
+    procedure SetEnabled(const AValue: Boolean); virtual;
+    procedure SetExpression(const AValue: String); virtual;
+    procedure SetGroup(const AValue: TDBGBreakPointGroup); virtual;
+    procedure SetInitialEnabled(const AValue: Boolean); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -202,15 +212,15 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
   public
-    property Actions: TDBGBreakPointActions read FActions write SetActions;
-    property Enabled: Boolean read FEnabled write SetEnabled;
-    property Expression: String read FExpression write SetExpression;
-    property Group: TDBGBreakPointGroup read FGroup write SetGroup;
-    property HitCount: Integer read FHitCount;
-    property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
-    property Line: Integer read FLine;
-    property Source: String read FSource;
-    property Valid: TValidState read FValid;
+    property Actions: TDBGBreakPointActions read GetActions write SetActions;
+    property Enabled: Boolean read GetEnabled write SetEnabled;
+    property Expression: String read GetExpression write SetExpression;
+    property Group: TDBGBreakPointGroup read GetGroup write SetGroup;
+    property HitCount: Integer read GetHitCount;
+    property InitialEnabled: Boolean read GetInitialEnabled write SetInitialEnabled;
+    property Line: Integer read GetLine;
+    property Source: String read GetSource;
+    property Valid: TValidState read GetValid;
     property Loading: Boolean read FLoading;
   end;
   TDBGBreakPointClass = class of TDBGBreakPoint;
@@ -1047,9 +1057,54 @@ begin
     TDBGBreakPointGroup(FDisableGroupList[n]).Enabled := True;
 end;
 
+function TDBGBreakPoint.GetActions: TDBGBreakPointActions;
+begin
+  Result := FActions;
+end;
+
 function  TDBGBreakPoint.GetDebugger: TDebugger;
 begin
   Result := TDBGBreakPoints(Collection).FDebugger;
+end;
+
+function TDBGBreakPoint.GetEnabled: Boolean;
+begin
+  Result := FEnabled;
+end;
+
+function TDBGBreakPoint.GetExpression: String;
+begin
+  Result := FExpression;
+end;
+
+function TDBGBreakPoint.GetGroup: TDBGBreakPointGroup;
+begin
+  Result := FGroup;
+end;
+
+function TDBGBreakPoint.GetHitCount: Integer;
+begin
+  Result := FHitCount;
+end;
+
+function TDBGBreakPoint.GetInitialEnabled: Boolean;
+begin
+  Result := FInitialEnabled;
+end;
+
+function TDBGBreakPoint.GetLine: Integer;
+begin
+  Result := FLine;
+end;
+
+function TDBGBreakPoint.GetSource: String;
+begin
+  Result := FSource;
+end;
+
+function TDBGBreakPoint.GetValid: TValidState;
+begin
+  Result := FValid;
 end;
 
 procedure TDBGBreakPoint.RemoveDisableGroup(const AGroup: TDBGBreakPointGroup);
@@ -2169,6 +2224,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.30  2003/05/28 00:58:50  marc
+  MWE: * Reworked breakpoint handling
+
   Revision 1.29  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 

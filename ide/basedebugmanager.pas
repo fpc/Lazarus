@@ -44,7 +44,9 @@ uses
 
 type
   TBaseDebugManager = class(TComponent)
+  private
   protected
+    FBreakPoints: TDBGBreakPoints;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
   public
@@ -73,7 +75,7 @@ type
     
     property Commands: TDBGCommands read GetCommands;              // All current available commands of the debugger
     property State: TDBGState read GetState;                       // The current state of the debugger
-    
+    property BreakPoints: TDBGBreakPoints read FBreakpoints;
   end;
 
 var

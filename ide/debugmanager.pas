@@ -75,10 +75,11 @@ type
   private
     FDebugger: TDebugger;
     FDebuggerUpdateLock: integer;
+    FBreakpointsNotification: TDBGBreakPointsNotification;         // Notification for our BreakPoints
+
     // When no debugger is created the IDE stores all debugger settings in its
     // own variables. When the debugger object is created these items point
     // to the corresponding items in the FDebugger object.
-    FBreakPoints: TDBGBreakPoints;
     FBreakPointGroups: TDBGBreakPointGroups;
     FWatches: TDBGWatches;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
@@ -87,6 +88,11 @@ type
     // Here are all choises stored
     FUserSourceFiles: TStringList;
 
+    // Breakpoint routines
+    procedure BreakpointAdded(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+    procedure BreakpointRemoved(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+
+    // Dialog routines
     procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
@@ -135,6 +141,155 @@ const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack
   );
+  
+type
+  TManagedBreakPoint = class(TDBGBreakPoint)
+  private
+    FMaster: TDBGBreakPoint;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    function GetHitCount: Integer; override;
+    function GetValid: TValidState; override;
+    procedure SetActions(const AValue: TDBGBreakPointActions); override;
+    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetExpression(const AValue: String); override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    procedure ResetMaster;
+  end;
+  
+  TManagedBreakPoints = class(TDBGBreakPoints)
+  private
+    FMaster: TDBGBreakPoints;
+    FMasterNotification: TDBGBreakPointsNotification;
+    procedure SetMaster(const AValue: TDBGBreakPoints);
+    procedure MasterUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Master: TDBGBreakPoints read FMaster write SetMaster;
+  end;
+
+{ TManagedBreakPoints }
+
+constructor TManagedBreakPoints.Create;
+begin
+  FMaster := nil;
+  FMasterNotification := TDBGBreakPointsNotification.Create;
+  FMasterNotification.OnUpdate := @MasterUpdate;
+
+  inherited Create(nil, TManagedBreakPoint);
+end;
+
+destructor TManagedBreakPoints.Destroy;
+begin
+  FreeAndNil(FMasterNotification);
+  inherited Destroy;
+end;
+
+procedure TManagedBreakPoints.MasterUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+  function FindItem: TManagedBreakPoint;
+  var
+    n: Integer;
+  begin
+    for n := 0 to Count - 1 do
+    begin
+      Result := TManagedBreakPoint(Items[n]);
+      if Result.FMaster = ABreakPoint
+      then Exit;
+    end;
+    Result := nil;
+  end;
+  
+var
+  bp: TManagedBreakPoint;
+begin
+  if ABreakPoint = nil
+  then begin
+    Update(nil);
+  end
+  else begin
+    bp := FindItem;
+    if bp <> nil
+    then Update(bp);
+  end;
+end;
+
+procedure TManagedBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
+var
+  n: Integer;
+begin
+  if FMaster = AValue then Exit;
+  
+  if FMaster <> nil
+  then FMaster.RemoveNotification(FMasterNotification);
+  
+  FMaster := AValue;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      TManagedBreakPoint(Items[n]).ResetMaster;
+  end
+  else begin
+    FMaster.AddNotification(FMasterNotification);
+    FMaster.Assign(Self);
+  end;
+end;
+
+
+{ TManagedBreakPoint }
+
+procedure TManagedBreakPoint.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if TManagedBreakPoints(GetOwner).FMaster <> nil
+  then FMaster := TDBGBreakpoint(Dest);
+end;
+
+constructor TManagedBreakPoint.Create (ACollection: TCollection );
+begin
+  inherited Create(ACollection);
+  FMaster := nil;
+end;
+
+function TManagedBreakPoint.GetHitCount: Integer;
+begin
+  if FMaster = nil
+  then Result := 0
+  else Result := FMaster.HitCount;
+end;
+
+function TManagedBreakPoint.GetValid: TValidState;
+begin
+  if FMaster = nil
+  then Result := vsUnknown
+  else Result := FMaster.Valid;
+end;
+
+procedure TManagedBreakPoint.ResetMaster;
+begin
+  FMaster := nil;
+  Changed(False);
+end;
+
+procedure TManagedBreakPoint.SetActions(const AValue: TDBGBreakPointActions);
+begin
+  inherited SetActions(AValue);
+  if FMaster <> nil then FMaster.Actions := AValue;
+end;
+
+procedure TManagedBreakPoint.SetEnabled(const AValue: Boolean);
+begin
+  inherited SetEnabled(AValue);
+  if FMaster <> nil then FMaster.Enabled := AValue;
+end;
+
+procedure TManagedBreakPoint.SetExpression(const AValue: String);
+begin
+  inherited SetExpression(AValue);
+  if FMaster <> nil then FMaster.Expression := AValue;
+end;
+
 
 //-----------------------------------------------------------------------------
 // Menu events
@@ -440,7 +595,11 @@ begin
     FDialogs[DialogType] := nil; 
 
   FDebugger := nil;
-  FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
+  FBreakPoints := TManagedBreakPoints.Create;
+  FBreakpointsNotification := TDBGBreakPointsNotification.Create;
+  FBreakpointsNotification.OnAdd := @BreakpointAdded;
+  FBreakpointsNotification.OnRemove := @BreakpointRemoved;
+  
   FBreakPointGroups := TDBGBreakPointGroups.Create;
   FWatches := TDBGWatches.Create(nil, TDBGWatch);
   
@@ -456,10 +615,12 @@ begin
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
     DestroyDebugDialog(DialogType);
   
+  TManagedBreakpoints(FBreakpoints).Master := nil;
+
   if FDebugger <> nil
   then begin
-    if FDebugger.BreakPoints = FBreakPoints
-    then FBreakPoints := nil;
+//@@    if FDebugger.BreakPoints = FBreakPoints
+//@@    then FBreakPoints := nil;
     if FDebugger.BreakPointGroups = FBreakPointGroups
     then FBreakPointGroups := nil;
     if FDebugger.Watches = FWatches
@@ -468,11 +629,13 @@ begin
     FreeThenNil(FDebugger);
   end
   else begin
-    FreeThenNil(FBreakPoints);
+//@@    FreeThenNil(FBreakPoints);
     FreeThenNil(FBreakPointGroups);
     FreeThenNil(FWatches);
   end;
   
+  FreeAndNil(FBreakPoints);
+  FreeAndNil(FBreakpointsNotification);
   FreeAndNil(FUserSourceFiles);
 
   inherited Destroy;
@@ -602,6 +765,18 @@ begin
   end;
 end;
 
+procedure TDebugManager.BreakpointAdded(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint );
+begin
+  ABreakpoint.InitialEnabled := True;
+  ABreakpoint.Enabled := True;
+  Project1.Modified := True;
+end;
+
+procedure TDebugManager.BreakpointRemoved (const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint );
+begin
+  Project1.Modified := True;
+end;
+
 procedure TDebugManager.EndUpdateDialogs;
 var
   DialogType: TDebugDialogType;
@@ -619,8 +794,8 @@ end;
 
 function TDebugManager.DoInitDebugger: TModalResult;
 var
-  OldBreakpoints: TDBGBreakpoints;
-  OldBreakPointGroups: TDBGBreakPointGroups;
+//@@  OldBreakpoints: TDBGBreakpoints;
+//@@  OldBreakPointGroups: TDBGBreakPointGroups;
   OldWatches: TDBGWatches;
 
   procedure ResetDialogs;
@@ -637,36 +812,36 @@ var
   procedure SaveDebuggerItems;
   begin
     // copy the break point list without the group references
-    OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-    OldBreakpoints.Assign(FBreakPoints);
+//@@    OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
+//@@    OldBreakpoints.Assign(FBreakPoints);
     
     // copy the groups and all group references
-    OldBreakPointGroups := TDBGBreakPointGroups.Create;
-    OldBreakPointGroups.Regroup(FBreakPointGroups,FBreakPoints,OldBreakPoints);
+//@@    OldBreakPointGroups := TDBGBreakPointGroups.Create;
+//@@    OldBreakPointGroups.Regroup(FBreakPointGroups,FBreakPoints,OldBreakPoints);
 
     // copy the watches
     OldWatches := TDBGWatches.Create(nil, TDBGWatch);
     OldWatches.Assign(FWatches);
 
-    FBreakPointGroups := nil;
-    FBreakPoints := nil;
+//@@    FBreakPointGroups := nil;
+//@@    FBreakPoints := nil;
     FWatches := nil;
   end;
   
   procedure RestoreDebuggerItems;
   begin
     // restore the break point list without the group references
-    if (OldBreakpoints<>nil) then
-      FBreakPoints.Assign(OldBreakpoints);
+//@@    if (OldBreakpoints<>nil) then
+//@@      FBreakPoints.Assign(OldBreakpoints);
 
     // restore the groups and all group references
-    if (OldBreakPointGroups<>nil) then begin
-      if (OldBreakpoints<>nil) then
-        FBreakPointGroups.Regroup(OldBreakPointGroups,OldBreakpoints,
-                                  FBreakPoints)
-      else
-        FBreakPointGroups.Assign(OldBreakPointGroups);
-    end;
+//@@    if (OldBreakPointGroups<>nil) then begin
+//@@      if (OldBreakpoints<>nil) then
+//@@        FBreakPointGroups.Regroup(OldBreakPointGroups,OldBreakpoints,
+//@@                                  FBreakPoints)
+//@@      else
+//@@        FBreakPointGroups.Assign(OldBreakPointGroups);
+//@@    end;
 
     // restore the watches
     if OldWatches<>nil then
@@ -676,6 +851,7 @@ var
   procedure FreeDebugger;
   begin
     SaveDebuggerItems;
+    TManagedBreakPoints(FBreakPoints).Master := nil;
     FDebugger.Free;
     FDebugger := nil;
     ResetDialogs;
@@ -693,8 +869,8 @@ begin
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
   if (not FileExists(LaunchingApplication)) then exit;
 
-  OldBreakpoints := nil;
-  OldBreakPointGroups := nil;
+//@@  OldBreakpoints := nil;
+//@@  OldBreakPointGroups := nil;
   OldWatches := nil;
 
   BeginUpdateDialogs;
@@ -716,8 +892,11 @@ begin
           then begin
             SaveDebuggerItems;
             FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
-            FBreakPointGroups := FDebugger.BreakPointGroups;
-            FBreakPoints := FDebugger.BreakPoints;
+//@@            FBreakPointGroups := FDebugger.BreakPointGroups;
+//@@            FBreakPoints := FDebugger.BreakPoints;
+
+            TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints; //!!
+            
             FWatches := FDebugger.Watches;
             ResetDialogs;
           end;
@@ -730,8 +909,8 @@ begin
         exit;
       end;
     finally
-      OldBreakpoints.Free;
-      OldBreakPointGroups.Free;
+//@@      OldBreakpoints.Free;
+//@@      OldBreakPointGroups.Free;
       OldWatches.Free;
     end;
     FDebugger.OnState     := @OnDebuggerChangeState;
@@ -883,9 +1062,10 @@ begin
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
   NewBreak := FBreakPoints.Add(AFilename, ALine);
-  NewBreak.InitialEnabled := True;
-  NewBreak.Enabled := True;
-  Project1.Modified:=true;
+  // Set by notification
+  //  NewBreak.InitialEnabled := True;
+  //  NewBreak.Enabled := True;
+  //  Project1.Modified:=true;
   Result:=DoEndChangeDebugger;
 end;
 
@@ -967,6 +1147,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.31  2003/05/28 00:58:50  marc
+  MWE: * Reworked breakpoint handling
+
   Revision 1.30  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 
