@@ -231,7 +231,7 @@ begin
         strTemp := nil;
 
       P := GNOME_APP_NEW(Argv[0], strTemp);
-
+      gnome_app_enable_layout_config(p, True);
       gtk_window_set_policy (GTK_WINDOW (p), FormResizableMap[BorderStyle],
         FormResizableMap[BorderStyle], 0);
 
@@ -303,6 +303,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/10/21 13:15:24  lazarus
+  AJ:Try and fall back on default style if nil(aka default theme)
+
   Revision 1.7  2002/10/21 03:23:34  lazarus
   AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
 
