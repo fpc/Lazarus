@@ -3090,7 +3090,8 @@ begin
         MainOrigin.Y:=0;
       end;
       // check if the main gdkwindow is the clientwindow of the parent
-      if MainWindow=gtk_widget_get_parent_window(Widget) then begin
+      if (Widget^.Parent<>nil)
+      and (MainWindow=gtk_widget_get_parent_window(Widget)) then begin
         // the widget is using its parent window
         // -> adjust the coordinates
         inc(MainOrigin.X,Widget^.Allocation.X);
@@ -7533,6 +7534,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.183  2002/11/01 14:40:31  lazarus
+  MG: fixed mouse coords on scrolling wincontrols
+
   Revision 1.182  2002/10/31 22:14:16  lazarus
   MG: fixed GetClipBox when clipping region invalid
 
