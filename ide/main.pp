@@ -225,6 +225,7 @@ type
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
     procedure mnuEnvCodeToolsOptionsClicked(Sender : TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
+    procedure mnuEnvRescanFPCSrcDirClicked(Sender : TObject);
 
     // windows menu
 
@@ -1628,6 +1629,7 @@ begin
   itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
   itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
   itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
+  itmEnvRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
 end;
 
 procedure TMainIDE.SetupWindowsMenu;
@@ -2802,6 +2804,11 @@ end;
 procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
 begin
   ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts,MacroList);
+end;
+
+procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
+begin
+  RescanCompilerDefines(false);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -10165,6 +10172,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.675  2003/11/26 21:41:18  mattias
+  added Rescan FPC source directory menu item
+
   Revision 1.674  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

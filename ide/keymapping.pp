@@ -212,7 +212,8 @@ const
   ecEditorOptions        = ecUserFirst + 805;
   ecCodeToolsOptions     = ecUserFirst + 806;
   ecCodeToolsDefinesEd   = ecUserFirst + 807;
-  
+  ecRescanFPCSrcDir      = ecUserFirst + 808;
+
   // help menu
   ecAboutLazarus         = ecUserFirst + 900;
   
@@ -681,6 +682,7 @@ begin
   ecEditorOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCodeToolsDefinesEd: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRescanFPCSrcDir: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1218,7 +1220,8 @@ begin
     ecEditorOptions         : Result:= lismenueditoroptions;
     ecCodeToolsOptions      : Result:= srkmecCodeToolsOptions;
     ecCodeToolsDefinesEd    : Result:= srkmecCodeToolsDefinesEd;
-    
+    ecRescanFPCSrcDir       : Result:= lisMenuRescanFPCSourceDirectory;
+
     // help menu
     ecAboutLazarus          : Result:= lisMenuAboutLazarus;
     
@@ -2094,6 +2097,7 @@ begin
   AddDefault(C,'Editor options',ecEditorOptions);
   AddDefault(C,'CodeTools options',ecCodeToolsOptions);
   AddDefault(C,'CodeTools defines editor',ecCodeToolsDefinesEd);
+  AddDefault(C,'Rescan FPC source directory',ecRescanFPCSrcDir);
 
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,caAll)];

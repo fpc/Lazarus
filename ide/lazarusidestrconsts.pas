@@ -1177,6 +1177,7 @@ resourcestring
   srkmecEnvironmentOptions        = 'General environment options';
   srkmecCodeToolsOptions          = 'Codetools options';
   srkmecCodeToolsDefinesEd        = 'Codetools defines editor';
+  lisMenuRescanFPCSourceDirectory = 'Rescan FPC source directory';
   srkmecMakeResourceString        = 'Make resource string';
   srkmecDiff                      = 'Diff';
   // help menu

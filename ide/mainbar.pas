@@ -334,6 +334,7 @@ type
     itmEnvDebuggerOptions: TMenuItem;
     itmEnvCodeToolsOptions: TMenuItem;
     itmEnvCodeToolsDefinesEditor: TMenuItem;
+    itmEnvRescanFPCSrcDir: TMenuItem;
 
     // help menu
     itmHelpAboutLazarus: TMenuItem;
@@ -1391,6 +1392,13 @@ begin
   itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
   itmEnvCodeToolsDefinesEditor.Bitmap:=LoadPixmap('menu_codetoolsdefineseditor');
   mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
+
+  mnuEnvironment.Add(CreateMenuSeparator);
+
+  itmEnvRescanFPCSrcDir := TMenuItem.Create(Self);
+  itmEnvRescanFPCSrcDir.Name:='itmEnvRescanFPCSrcDir';
+  itmEnvRescanFPCSrcDir.Caption := lisMenuRescanFPCSourceDirectory;
+  mnuEnvironment.Add(itmEnvRescanFPCSrcDir);
 end;
 
 procedure TMainIDEBar.SetupWindowsMenu;
@@ -1545,6 +1553,7 @@ begin
     itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
     itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
     itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
+    itmEnvRescanFPCSrcDir.ShortCut:=CommandToShortCut(ecRescanFPCSrcDir);
 
     // help menu
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
