@@ -865,7 +865,7 @@ function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
   CheckTabStop, CheckParent: Boolean): TWinControl;
 begin
   Result:=TWinControl(FindNextControl(CurrentControl,
-                                      GoForward,CheckTabStop,CheckParent));
+                                      GoForward,CheckTabStop,CheckParent,true));
 end;
 
 {------------------------------------------------------------------------------
@@ -2563,6 +2563,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2002/12/28 17:43:43  mattias
+  fixed FindControl and searching overloaded procs
+
   Revision 1.110  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
