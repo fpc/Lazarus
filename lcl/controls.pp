@@ -555,7 +555,7 @@ type
     Procedure SetZOrder(Topmost: Boolean) ; dynamic;
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
-    procedure WndProc(var Message : TLMessage); virtual;
+    procedure WndProc(var TheMessage : TLMessage); virtual;
     Procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Dynamic;
     Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
@@ -722,7 +722,7 @@ type
     procedure BoundsChanged; override;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
-    procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender : TObject); override;
     {$IFDEF ClientRectBugFix}
@@ -1236,6 +1236,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/06/19 19:46:08  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.51  2002/06/04 15:17:21  lazarus
   MG: improved TFont for XLFD font names
 
