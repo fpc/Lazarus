@@ -162,7 +162,7 @@ Begin
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
   Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
-
+  
   Assert(False, 'Trace:Win32Object.Init - Exit');
 End;
 
@@ -3003,6 +3003,9 @@ End;
 
 {
   $Log$
+  Revision 1.203  2004/06/10 18:14:09  vincents
+  converted win32proc.inc to unit
+
   Revision 1.202  2004/05/31 19:32:34  vincents
   fixed using ecUpperCase in win32
 

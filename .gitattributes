@@ -1253,6 +1253,7 @@ lcl/interfaces/win32/win32listsl.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32listslh.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32object.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32proc.inc svneol=native#text/pascal
+lcl/interfaces/win32/win32proc.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32winapi.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32winapih.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32wsactnlist.pp svneol=native#text/pascal

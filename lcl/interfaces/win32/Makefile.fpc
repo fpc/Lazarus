@@ -11,7 +11,7 @@ packages=rtl fcl
 
 [target]
 units=interfaces
-implicitunits=winext win32def win32int
+implicitunits=winext win32def win32proc win32int
 
 [compiler]
 options=-gl

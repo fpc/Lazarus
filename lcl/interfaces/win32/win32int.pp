@@ -36,7 +36,7 @@ Interface
   successful compilation.
 }
 Uses
-  Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
+  Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
 
@@ -175,12 +175,10 @@ Type
 
   {$I win32listslh.inc}
 
-  { Asserts a trace for event named Message in the object Data }
-  Procedure EventTrace(Message: String; Data: TObject);
-
 Implementation
 
 Uses
+  Win32Proc,
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
@@ -215,9 +213,7 @@ Uses
 ////////////////////////////////////////////////////
   Buttons, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
 
-Type
-  TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
-
+type
   { Linked list of objects for events }
   PLazObject = ^TLazObject;
   TLazObject = Record
@@ -237,7 +233,7 @@ const
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
   
-{$I win32proc.inc}
+//{$I win32proc.inc}
 {$I win32listsl.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
@@ -257,6 +253,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2004/06/10 18:14:09  vincents
+  converted win32proc.inc to unit
+
   Revision 1.81  2004/06/09 20:51:45  vincents
   implemented basic clipboard support for win32
 

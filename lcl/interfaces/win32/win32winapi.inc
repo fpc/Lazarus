@@ -490,9 +490,7 @@ function TWin32WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: Integer; var List: PClipboardFormat): Boolean;
 var
   FormatID: UINT;
-  LastFormatID: UINT;
   c: integer;
-  TextPlainFormatID: TClipboardFormat;
 
 Begin
   Result := false;
@@ -3067,6 +3065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2004/06/10 18:14:10  vincents
+  converted win32proc.inc to unit
+
   Revision 1.116  2004/06/09 20:51:45  vincents
   implemented basic clipboard support for win32
 
