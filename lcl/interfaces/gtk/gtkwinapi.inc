@@ -2410,10 +2410,34 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetActiveWindow : HWND;
+var
+  List: PGList;
+  Widget: PGTKWidget;
+  Window: PGTKWindow;
 begin
-  // ToDo
-//  Result := gdk_Window_Get_Toplevel;
-  Result:=0;
+  List := gdk_window_get_toplevels;
+
+  while List <> nil do
+  begin
+    if (List^.Data <> nil)
+    then begin
+      gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
+      if gtk_is_window(Window)
+      then begin
+        Widget := Window^.focus_widget;
+
+        if (Widget <> nil) and gtk_widget_has_focus(Widget)
+        then begin
+          Result := HWND(GetMainWidget(PGtkWidget(Window)));
+          Exit;
+        end;
+      end;
+    end;
+    list := g_list_next(list);
+  end;
+
+  // If we are here we didn't find anything
+  Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -4981,6 +5005,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function SetActiveWindow(Handle: HWND): HWND;
+  
+  
+------------------------------------------------------------------------------}
+function TgtkObject.SetActiveWindow(Handle: HWND): HWND;
+begin
+  // ToDo
+  Result:=GetActiveWindow;
+end;
+
+{------------------------------------------------------------------------------
   Function: SetBkColor        pbd
   Params:  DC:    Device context to change the text background color
            Color: RGB Tuple
@@ -6380,6 +6415,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.126  2002/09/09 14:01:06  lazarus
+  MG: improved TScreen and ShowModal
+
   Revision 1.125  2002/09/06 19:45:11  lazarus
   Cleanups plus a fix to TPanel parent/drawing problem.
 
