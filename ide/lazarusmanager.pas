@@ -1,3 +1,4 @@
+{  $Id$  }
 unit LazarusManager;
 
 {$mode objfpc}{$H+}
@@ -27,24 +28,28 @@ type
   end;
   
 type
-  TLazarusManager = class
+  TLazarusManager = class(TComponent)
   private
     FStartLazarusOptions: TStartLazarusOptions;
     FLazarusProcess: TLazarusProcess;
     FLazarusPath: string;
-    function GetLazarusPath(name: string): string;
+    function GetLazarusPath(const FileName: string): string;
     procedure RenameLazarusExecutables;
     procedure LazarusProcessStart(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Run;
+    procedure ShowSplash;
   end;
 
 implementation
 
 constructor TLazarusManager.Create;
 begin
+  inherited Create(nil);
+  SplashForm := TSplashForm.Create(Self);
+  ShowSplash;
   FStartLazarusOptions := TStartLazarusOptions.Create;
 end;
 
@@ -54,9 +59,9 @@ begin
   inherited Destroy;
 end;
 
-function TLazarusManager.GetLazarusPath(name: string) : string;
+function TLazarusManager.GetLazarusPath(const FileName: string) : string;
 begin
-  result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + name +
+  result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + FileName +
     GetDefaultExecutableExt;
 end;
 
@@ -91,6 +96,7 @@ var
 begin
   repeat
     SplashForm.Show;
+    Application.ProcessMessages;
     RenameLazarusExecutables();
     FLazarusProcess := TLazarusProcess.Create(FLazarusPath);
     FLazarusProcess.OnStart := @LazarusProcessStart;
@@ -100,6 +106,15 @@ begin
     FreeAndNil(FLazarusProcess);
   until not Restart;
   Application.Terminate;
+end;
+
+procedure TLazarusManager.ShowSplash;
+begin
+  with SplashForm do begin
+    Show;
+    Paint;
+  end;
+  Application.ProcessMessages; // process splash paint message
 end;
 
 { TLazarusProcess }
@@ -135,4 +150,10 @@ begin
 end;
 
 end.
+{
+  $Log$
+  Revision 1.3  2004/09/03 21:14:50  vincents
+  fix showing splash screen on restart
+
+}
 

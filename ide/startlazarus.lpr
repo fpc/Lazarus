@@ -1,3 +1,4 @@
+{  $Id$  }
 program StartLazarus;
 
 {$mode objfpc}{$H+}
@@ -5,27 +6,21 @@ program StartLazarus;
 uses
   Interfaces, SysUtils,
   Forms,
-  Splash, LazarusManager;
+  LazarusManager;
   
 var
   ALazarusManager: TLazarusManager;
   
-procedure ShowSplash;
-begin
-  SplashForm := TSplashForm.Create(Application);
-  with SplashForm do begin
-    Show;
-    Paint;
-    StartTimer;
-  end;
-  Application.ProcessMessages; // process splash paint message
-end;
-
 begin
   Application.Initialize;
-  ShowSplash;
   ALazarusManager := TLazarusManager.Create;
   ALazarusManager.Run;
   FreeAndNil(ALazarusManager);
 end.
+{
+  $Log$
+  Revision 1.2  2004/09/03 21:14:50  vincents
+  fix showing splash screen on restart
+
+}
 
