@@ -1033,6 +1033,8 @@ type
   TToolBar = class;
   TToolButton = class;
 
+  TToolButtonState = (tbsChecked, tbsPressed, tbsEnabled, tbsHidden,
+    tbsIndeterminate, tbsWrap, tbsEllipses, tbsMarked);
 
   { TToolButtonActionLink }
 
@@ -2236,6 +2238,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/02/22 16:20:29  mattias
+  fixed old toolbar compilation
+
   Revision 1.112  2004/02/22 15:39:43  mattias
   fixed error handling on saving lpi file
 

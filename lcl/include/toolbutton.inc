@@ -592,6 +592,8 @@ end;
 procedure TToolButton.SetParent(AParent: TWinControl);
 var
   i: Integer;
+  NewWidth: Integer;
+  NewHeight: Integer;
 begin
   CheckNewParent(AParent);
   if AParent=Parent then exit;
@@ -600,6 +602,14 @@ begin
   if FToolBar<>nil then
     FToolBar.RemoveButton(Self);
   FToolBar:=nil;
+  if AParent is TToolBar then begin
+    if Style in [tbsButton,tbsDropDown,tbsCheck] then
+      NewWidth:=TToolBar(AParent).ButtonWidth
+    else
+      NewWidth:=Width;
+    NewHeight:=TToolBar(AParent).ButtonHeight;
+    SetBoundsKeepBase(Left,Top,NewWidth,NewHeight,true);
+  end;
   
   // inherited
   inherited SetParent(AParent);
@@ -1111,6 +1121,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2004/02/22 16:20:29  mattias
+  fixed old toolbar compilation
+
   Revision 1.11  2004/02/22 15:39:43  mattias
   fixed error handling on saving lpi file
 
