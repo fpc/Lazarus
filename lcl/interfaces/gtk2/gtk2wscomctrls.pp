@@ -50,6 +50,9 @@ type
     TreeModel: PGtkTreeModel;
     TreeSelection: PGtkTreeSelection;
     WidgetInfo: PWidgetInfo;
+    //this is created and destroyed as needed
+    //it only holds items which are about to be changed the list is emptied in Gtk2_ItemSelectionChanged
+    ItemCache: TStringList;
   end;
 
 type
@@ -88,7 +91,7 @@ type
     class procedure ReCreateItems(const ALV: TCustomListView); virtual;
     class procedure SetPropertyInternal(const ALV: TCustomListView; const Widgets: PTVWidgets; const AProp: TListViewProperty; const AIsSet: Boolean);
   protected
-    class procedure SetCallbacks(const AScrollWidget: PGtkWidget; var Widgets: TTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const AScrollWidget: PGtkWidget; const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo); virtual;
   public
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -219,13 +222,12 @@ type
 implementation
 
 // Will be used commonly for ListViews and TreeViews
-procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget; var TVWidgets: TTVWidgets);
+procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget; var TVWidgets: PTVWidgets);
 var
   WidgetInfo: PWidgetInfo;
 begin
   WidgetInfo := GetWidgetInfo(ATreeViewHandle);
-  TVWidgets := PTVWidgets(WidgetInfo^.UserData)^;
-  TVWidgets.WidgetInfo := WidgetInfo;
+  TVWidgets := PTVWidgets(WidgetInfo^.UserData);
 end;
  
 function AlignToGtkAlign(Align: TAlignment): gfloat;
