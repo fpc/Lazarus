@@ -2848,34 +2848,39 @@ begin
   if Handle = 0 then Exit;
   Widget := pgtkwidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
-  if (ClientWidget <> nil) and (GetControlWindow(ClientWidget)<>nil) then begin
+  if (ClientWidget <> Widget) then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     MainWindow:=GetControlWindow(Widget);
-    if MainWindow<>nil then begin
-      gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
-    end else begin
-      {$IFDEF RaiseExceptionOnNilPointers}
-      RaiseException('TGTKObject.GetClientBounds Window=nil');
-      {$ENDIF}
-      MainOrigin.X:=0;
-      MainOrigin.Y:=0;
+    if MainWindow<>ClientWindow then begin
+      if MainWindow<>nil then begin
+        gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
+      end else begin
+        // widget not realized
+        MainOrigin.X:=0;
+        MainOrigin.Y:=0;
+      end;
+      // check if the main gdkwindow is the clientwindow of the parent
+      if MainWindow=gtk_widget_get_parent_window(Widget) then begin
+        // the widget is using its parent window
+        // -> adjust the coordinates
+        inc(MainOrigin.X,Widget^.Allocation.X);
+        inc(MainOrigin.Y,Widget^.Allocation.Y);
+      end;
+      if ClientWindow<>nil then
+        gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y)
+      else begin
+        // client widget not realized
+        ClientOrigin:=MainOrigin;
+      end;
+      ARect.Left:=ClientOrigin.X-MainOrigin.X;
+      ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
+      ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
+      ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
+      
+      Result:=true;
     end;
-    inc(MainOrigin.X,Widget^.Allocation.X);
-    inc(MainOrigin.Y,Widget^.Allocation.Y);
-    if ClientWindow<>nil then
-      gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y)
-    else begin
-      {$IFDEF RaiseExceptionOnNilPointers}
-      RaiseException('TGTKObject.GetClientBounds ClientWindow=nil');
-      {$ENDIF}
-      ClientOrigin.X:=0;
-      ClientOrigin.Y:=0;
-    end;
-    ARect.Left:=ClientOrigin.X-MainOrigin.X;
-    ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
-    ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
-    ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
-  end else begin
+  end;
+  if not Result then begin
     with Widget^.Allocation do
       ARect := Rect(0,0,Width,Height);
   end;
@@ -7238,6 +7243,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.151  2002/10/09 10:22:55  lazarus
+  MG: fixed client origin coordinates
+
   Revision 1.150  2002/10/08 21:51:12  lazarus
   MG: fixed Ellipse
 
