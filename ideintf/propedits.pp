@@ -290,6 +290,8 @@ type
 
   TPropertyEditorHook = class;
 
+  { TPropertyEditor }
+
   TPropertyEditor=class
   private
     FOnSubPropertiesChanged: TNotifyEvent;
@@ -321,10 +323,12 @@ type
     function GetMethodValueAt(Index: Integer): TMethod;
     function GetOrdValue: Longint;
     function GetOrdValueAt(Index: Integer): Longint;
-    function GetPtrValue: Pointer;
-    function GetPtrValueAt(Index: Integer): Pointer;
+//    function GetPtrValue: Pointer;
+//    function GetPtrValueAt(Index: Integer): Pointer;
     function GetObjectValue: TObject;
+    function GetObjectValue(MinClass: TClass): TObject;
     function GetObjectValueAt(Index: Integer): TObject;
+    function GetObjectValueAt(Index: Integer; MinClass: TClass): TObject;
     function GetDefaultOrdValue: Longint;
     function GetStrValue: AnsiString;
     function GetStrValueAt(Index: Integer): AnsiString;
@@ -2353,6 +2357,7 @@ begin
   with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
 end;
 
+(*
 function TPropertyEditor.GetPtrValue:Pointer;
 begin
   Result:=GetPtrValueAt(0);
@@ -2362,16 +2367,28 @@ function TPropertyEditor.GetPtrValueAt(Index:Integer):Pointer;
 begin
   with FPropList^[Index] do Result:=Pointer(GetOrdProp(Instance,PropInfo));
 end;
+*)
 
 function TPropertyEditor.GetObjectValue: TObject;
 begin
   Result:=GetObjectValueAt(0);
 end;
 
+function TPropertyEditor.GetObjectValue(MinClass: TClass): TObject;
+begin
+  Result:=GetObjectValueAt(0, MinClass);
+end;
+
 function TPropertyEditor.GetObjectValueAt(Index: Integer): TObject;
 begin
   with FPropList^[Index] do
     Result:=GetObjectProp(Instance,PropInfo,nil); // nil for fpc 1.0.x
+end;
+
+function TPropertyEditor.GetObjectValueAt(Index: Integer; MinClass: TClass): TObject;
+begin
+  with FPropList^[Index] do
+    Result:=GetObjectProp(Instance,PropInfo,MinClass);
 end;
 
 function TPropertyEditor.GetDefaultOrdValue: Longint;

@@ -126,7 +126,7 @@ Var DI : TComponentEditorDesigner;
     Ds : TBaseComponentEditor;
     LV : TCustomListView;
 begin
-  LV:=TListItems(GetPtrValue).Owner;
+  LV:=TListItems(GetObjectValue(TListItems)).Owner;
   DI:=GetDesignerOfComponent(LV);
   If Assigned(DI) then
   begin

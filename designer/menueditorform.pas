@@ -341,14 +341,14 @@ end;
 
 procedure TMenuItemsPropertyEditor.Edit;
 var
-  Component: TComponent;
-  AMenu: TMenu;
+  Menu: TMenu;
+  MenuItem: TMenuItem;
 begin
-  Component:=TComponent(GetPtrValue);
-  if (Component=nil) or (not (Component is TMenuItem)) then exit;
-  AMenu:=TMenuItem(Component).GetParentMenu;
-  if AMenu=nil then exit;
-  ShowMenuEditor(AMenu);
+  MenuItem := TMenuItem(GetObjectValue(TMenuItem));
+  if MenuItem = nil then exit;
+  Menu := MenuItem.GetParentMenu;
+  if Menu = nil then exit;
+  ShowMenuEditor(Menu);
 end;
 
 function TMenuItemsPropertyEditor.GetAttributes: TPropertyAttributes;
