@@ -277,8 +277,14 @@ End;
 { TWin32CheckListBoxStrings }
 
 function TWin32CheckListBoxStrings.GetChecked(const Index: Integer): Boolean;
+var
+  Data: PWin32CheckListBoxItemRecord;
 begin
-  Result:= GetItemRecord(Index, false)^.Checked;
+  Data := GetItemRecord(Index, false);
+  if Data <> nil then
+    Result := Data^.Checked
+  else
+    Result := false;
 end;
 
 procedure TWin32CheckListBoxStrings.SetChecked(const Index: Integer;
@@ -521,6 +527,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2003/12/15 22:04:05  micha
+  nil check
+
   Revision 1.23  2003/12/15 21:57:16  micha
   checklistbox, implement object+checked; from vincent
 
