@@ -248,7 +248,7 @@ type
     procedure EndResizing(ApplyUserBounds: boolean);
     procedure UpdateBounds;
     procedure MoveSelection(dx, dy: integer);
-    procedure MoveSelectionWithSnapping(TotalDX, TotalDY: integer);
+    function MoveSelectionWithSnapping(TotalDX, TotalDY: integer): boolean;
     procedure SizeSelection(dx, dy: integer);  
     procedure SetBounds(NewLeft,NewTop,NewWidth,NewHeight: integer);
       // size all controls depending on ActiveGrabber.
@@ -1188,22 +1188,30 @@ begin
   EndResizing(true);
 end;
 
-procedure TControlSelection.MoveSelectionWithSnapping(TotalDX, TotalDY: integer
-  );
+function TControlSelection.MoveSelectionWithSnapping(TotalDX, TotalDY: integer
+  ): boolean;
+var
+  NewLeft, NewTop: integer;
 begin
+  Result:=false;
   if (Count=0) or (IsResizing) then exit;
   {$IFDEF VerboseDesigner}
   writeln('[TControlSelection.MoveSelectionWithSnapping] A  ',
     TotalDX,',',TotalDY,' OldBounds=',FLeft,',',FTop,',',FWidth,',',FHeight);
   {$ENDIF}
-  BeginResizing;
-  FLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
-  FTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
-  {$IFDEF VerboseDesigner}
-  writeln('[TControlSelection.MoveSelectionWithSnapping] B  ',
-    FLeft,',',FTop,',',FWidth,',',FHeight);
-  {$ENDIF}
-  EndResizing(true);
+  NewLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
+  NewTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
+  if (NewLeft<>FLeft) or (NewTop<>FTop) then begin
+    Result:=true;
+    BeginResizing;
+    FLeft:=NewLeft;
+    FTop:=NewTop;
+    {$IFDEF VerboseDesigner}
+    writeln('[TControlSelection.MoveSelectionWithSnapping] B  ',
+      FLeft,',',FTop,',',FWidth,',',FHeight);
+    {$ENDIF}
+    EndResizing(true);
+  end;
 end;
 
 procedure TControlSelection.SizeSelection(dx, dy: integer);  
