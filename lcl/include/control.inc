@@ -526,8 +526,12 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetColor(value : TColor);
 begin
-   FColor := Value;
-   CNSendMessage(LM_SETCOLOR, Self, nil);
+  if FColor <> Value then
+  begin
+    FColor := Value;
+    FParentColor := False;
+    CNSendMessage(LM_SETCOLOR, Self, nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -535,7 +539,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TControl.CanAutoSize(Var NewWidth, NewHeight : Integer): Boolean;
 Begin
-Result := True;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------}
@@ -543,7 +547,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TControl.Dragging: Boolean;
 Begin
-Result := (DragControl = self);
+  Result := (DragControl = self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1608,6 +1612,7 @@ begin
   
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
+  FColor := clWindow;
   // initial control isn't visible (It isn't created yet)
   FVisible := False;
 //  FOwner := AOwner;
@@ -1764,6 +1769,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.57  2002/07/09 17:18:22  lazarus
+  MG: fixed parser for external vars
+
   Revision 1.56  2002/06/19 19:46:08  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
