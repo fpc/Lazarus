@@ -46,7 +46,7 @@ uses
   Classes, SysUtils, Process, TypInfo,
   // lcl
   LCLType, LclLinux, LMessages, LResources, StdCtrls, Forms, Buttons, Menus,
-  ComCtrls, Spin, FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
+  FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
   // codetools
   CodeToolManager, CodeCache, DefineTemplates,
   // synedit
@@ -59,30 +59,22 @@ uses
   CompReg, IDEComp, AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, ColumnDlg, MenuPropEdit,
   // debugger
-  Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, Watchesdlg,
-  BreakPointsdlg, DebuggerDlg, LocalsDlg,
+  RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
   PkgManager, BasePkgManager,
   // source editing
   UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
   DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions, ViewUnit_dlg,
-  // rest ide
+  // rest of the ide
   LazarusIDEStrConsts, LazConf, MsgView, EnvironmentOpts,
   TransferMacros, KeyMapping, IDEProcs, ExtToolDialog, ExtToolEditDlg,
   MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
   // main ide
-  BaseDebugManager, DebugManager, MainBar;
+  MainBar;
 
 type
-  TDisplayState = (
-    dsSource,     // focussing sourcenotebook
-    dsInspector,  // focussing object inspector
-    dsForm,       // focussing designer form
-    dsInspector2  // focussing object inspector
-    );
-
   TMainIDE = class(TMainIDEBar)
     // event handlers
     
@@ -470,7 +462,7 @@ type
     
     // package(s)
     function DoNewPackage: TModalResult;
-    
+
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
     
@@ -5263,10 +5255,7 @@ end;
 
 function TMainIDE.DoNewPackage: TModalResult;
 begin
-  Result:=mrCancel;
-
-  
-  Result:=mrOk;
+  Result:=PkgBoss.DoNewPackage;
 end;
 
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
@@ -7344,8 +7333,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
 
   if (ToolStatus=itDebugger)
-  and (dcEvaluate in DebugBoss.Commands) then begin
-    DebugBoss.Evaluate(Identifier,DebugEval);
+  and DebugBoss.Evaluate(Identifier,DebugEval) then begin
     if (DebugEval<>'') then
       SmartHintStr:=SmartHintStr+' = '+DebugEval;
   end;
@@ -8123,6 +8111,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.505  2003/04/02 17:06:27  mattias
+  improved deb creation
+
   Revision 1.504  2003/04/01 23:35:28  mattias
   added menu component editor from Olivier
 
