@@ -1524,7 +1524,11 @@ begin
     if Result then exit;
   end else begin
     // main source has relative filename (= virtual)
-    NewCode:=LoadSourceCaseSensitive(AFilename);
+    NewCode:=FOnLoadSource(Self,AFilename);
+    if NewCode=nil then
+      NewCode:=FOnLoadSource(Self,lowercase(AFilename));
+    if NewCode=nil then
+      NewCode:=FOnLoadSource(Self,UpperCaseStr(AFilename));
     Result:=(NewCode<>nil);
     if Result then exit;
   end;

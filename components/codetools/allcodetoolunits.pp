@@ -19,7 +19,8 @@ uses
   StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
   FindDeclarationCache, BasicCodeTools, CodeTree, CodeAtom, SourceChanger,
   CodeToolMemManager, CodeCache, KeywordFuncLists, SourceLog, ExprEval,
-  DefineTemplates, FileProcs, AVL_Tree, CodeToolsStrConsts;
+  DefineTemplates, FileProcs, AVL_Tree, CodeToolsStrConsts,
+  MultiKeyWordListTool, ResourceCodeTool;
 
 
 implementation
@@ -29,6 +30,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/04/28 14:10:30  lazarus
+  MG: fixes for saving resource files
+
   Revision 1.9  2002/03/28 20:31:01  lazarus
   MG: added inputhistory
 

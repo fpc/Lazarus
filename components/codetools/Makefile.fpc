@@ -15,10 +15,10 @@ options=-gl
 [target]
 units=allcodetoolunits
 implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
-   customcodetool pascalparsertool finddeclarationtool stdcodetools \
-   methodjumptool eventcodetool codecompletiontool codeatom codetree \
-   definetemplates expreval keywordfunclists linkscanner sourcechanger \
-   fileprocs
+   customcodetool multikeywordlisttool pascalparsertool finddeclarationtool \
+   stdcodetools resourcecodetool methodjumptool eventcodetool \
+   codecompletiontool codeatom codetree definetemplates expreval \
+   keywordfunclists linkscanner sourcechanger fileprocs
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))

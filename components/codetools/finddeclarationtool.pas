@@ -3469,6 +3469,23 @@ end;
 
 function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
   Params: TFindDeclarationParams): TExpressionType;
+  
+  procedure ConvertIdentifierAtCursor;
+  begin
+    if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos) then
+    begin
+      // predefined identifiers
+      ConvertNodeToExpressionType.Desc:=
+        PredefinedIdentToExprTypeDesc(@Src[CurPos.StartPos]);
+      if ConvertNodeToExpressionType.Desc=xtString then begin
+
+        // ToDo: ask scanner, if AnsiString or ShortString
+
+      end;
+    end;
+  end;
+  
 var BaseContext: TFindContext;
 begin
   {$IFDEF ShowExprEval}
@@ -3505,17 +3522,13 @@ begin
 
     MoveCursorToNodeStart(Node);
     ReadNextAtom;
-    if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos) then
-    begin
-      // predefined identifiers
-      Result.Desc:=PredefinedIdentToExprTypeDesc(@Src[CurPos.StartPos]);
-      if Result.Desc=xtString then begin
+    ConvertIdentifierAtCursor;
+  end else if Node.Desc=ctnProperty then begin
 
-        // ToDo: ask scanner, if AnsiString or ShortString
-        
-      end;
-    end;
+    // ToDo: ppu, ppw, dcu files
+
+    ExtractPropType(Node,false);
+    ConvertIdentifierAtCursor;
   end;
 end;
 
@@ -3640,6 +3653,16 @@ begin
   ' RightOperand=',ExpressionTypeDescNames[RightOperand.Desc]
   );
   {$ENDIF}
+  // convert Left and RightOperand contexts to expressiontype
+  if LeftOperand.Desc=xtContext then begin
+    LeftOperand:=LeftOperand.Context.Tool.ConvertNodeToExpressionType(
+                      LeftOperand.Context.Node,Params);
+  end;
+  if RightOperand.Desc=xtContext then begin
+    RightOperand:=RightOperand.Context.Tool.ConvertNodeToExpressionType(
+                      RightOperand.Context.Node,Params);
+  end;
+
 
   // ToDo: search for an overloaded operator
 

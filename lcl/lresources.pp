@@ -77,7 +77,7 @@ var s,Indent:ShortString;
   c,h:char;
   RangeString,NewRangeString:boolean;
 begin
-  Indent:='  ';
+  Indent:='';
   s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''','
     +LineEnd;
   ResStream.Write(s[1],length(s));

@@ -138,7 +138,11 @@ function FindFirstLineEndAfterInCode(const Source: string;
     Position: integer; NestedComments: boolean): integer;
 function ReplacementNeedsLineEnd(const Source: string;
     FromPos, ToPos, NewLength, MaxLineLength: integer): boolean;
-   
+function CountNeededLineEndsToAddForward(const Src: string;
+    StartPos, MinLineEnds: integer): integer;
+function CountNeededLineEndsToAddBackward(const Src: string;
+    StartPos, MinLineEnds: integer): integer;
+
    
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
     CaseSensitive: boolean): integer;
@@ -167,7 +171,8 @@ implementation
 
 var
   IsIDChar,          // ['a'..'z','A'..'Z','0'..'9','_']
-  IsIDStartChar      // ['a'..'z','A'..'Z','_']
+  IsIDStartChar,     // ['a'..'z','A'..'Z','_']
+  IsSpaceChar
      : array[char] of boolean;
 
 
@@ -1210,6 +1215,7 @@ var SrcLen: integer;
 begin
   SrcLen:=length(Source);
   Result:=Position;
+  if Result=0 then exit;
   while (Result<=SrcLen) do begin
     case Source[Result] of
       '{','(','/':
@@ -1298,6 +1304,7 @@ begin
     exit;
   end;
   Result:=Position-1;
+  if Result>length(Source) then Result:=length(Source);
   while (Result>0) do begin
     case Source[Result] of
       '}',')':
@@ -1785,6 +1792,56 @@ begin
   SetLength(Result,ResultPos-1);
 end;
 
+function CountNeededLineEndsToAddForward(const Src: string;
+  StartPos, MinLineEnds: integer): integer;
+var c:char;
+  SrcLen: integer;
+begin
+  Result:=MinLineEnds;
+  if (StartPos<1) or (Result=0)  then exit;
+  SrcLen:=length(Src);
+  while (StartPos<=SrcLen) do begin
+    c:=Src[StartPos];
+    if c in [#10,#13] then begin
+      dec(Result);
+      if Result=0 then break;
+      inc(StartPos);
+      if (StartPos<=SrcLen)
+      and (Src[StartPos] in [#10,#13])
+      and (Src[StartPos]<>c) then
+        inc(StartPos);
+    end else if IsSpaceChar[c] then
+      inc(StartPos)
+    else
+      break;
+  end;
+end;
+
+function CountNeededLineEndsToAddBackward(
+  const Src: string; StartPos, MinLineEnds: integer): integer;
+var c:char;
+  SrcLen: integer;
+begin
+  Result:=MinLineEnds;
+  SrcLen:=length(Src);
+  if (StartPos>SrcLen) or (Result=0) then exit;
+  while (StartPos>=1) do begin
+    c:=Src[StartPos];
+    if c in [#10,#13] then begin
+      dec(Result);
+      if Result=0 then break;
+      dec(StartPos);
+      if (StartPos>=1)
+      and (Src[StartPos] in [#10,#13])
+      and (Src[StartPos]<>c) then
+        dec(StartPos);
+    end else if IsSpaceChar[c] then
+      dec(StartPos)
+    else
+      break;
+  end;
+end;
+
 
 //=============================================================================
 
@@ -1794,6 +1851,7 @@ begin
   for c:=#0 to #255 do begin
     IsIDChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
     IsIDStartChar[c]:=(c in ['a'..'z','A'..'Z','_']);
+    IsSpaceChar[c]:=c in [#0..#32];
   end;
 end;
 

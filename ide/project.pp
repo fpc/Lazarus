@@ -73,6 +73,7 @@ type
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     fOnUnitNameChange: TOnUnitNameChange;
     fReadOnly:  Boolean;
+    FResourceFilename: string;
     fSource: TCodeBuffer;
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
@@ -116,6 +117,8 @@ type
     property OnUnitNameChange: TOnUnitNameChange
         read fOnUnitNameChange write fOnUnitNameChange;
     property ReadOnly: Boolean read fReadOnly write SetReadOnly;
+    property ResourceFileName: string
+        read FResourceFilename write FResourceFilename;
     property Source: TCodeBuffer read fSource write SetSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
         read fSyntaxHighlighter write fSyntaxHighlighter;
@@ -463,6 +466,10 @@ begin
   XMLConfig.SetValue(Path+'IsPartOfProject/Value',fIsPartOfProject);
   XMLConfig.SetValue(Path+'Loaded/Value',fLoaded);
   XMLConfig.SetValue(Path+'ReadOnly/Value',fReadOnly);
+  AFilename:=FResourceFilename;
+  if Assigned(fOnLoadSaveFilename) then
+    fOnLoadSaveFilename(AFilename,false);
+  XMLConfig.SetValue(Path+'ResourceFilename/Value',AFilename);
   XMLConfig.SetValue(Path+'SyntaxHighlighter/Value'
      ,LazSyntaxHighlighterNames[fSyntaxHighlighter]);
   XMLConfig.SetValue(Path+'TopLine/Value',fTopLine);
@@ -488,6 +495,13 @@ begin
   fIsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
   fLoaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   fReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
+  AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
+  if Assigned(fOnLoadSaveFilename) then
+    fOnLoadSaveFilename(AFilename,true);
+  FResourceFilename:=AFilename;
+  if (FResourceFilename<>'')
+  and (FResourceFilename[length(FResourceFilename)]=PathDelim) then
+    FResourceFilename:='';
   fSyntaxHighlighter:=StrToLazSyntaxHighlighter(XMLConfig.GetValue(
        Path+'SyntaxHighlighter/Value',''));
   fTopLine:=XMLConfig.GetValue(Path+'TopLine/Value',-1);
@@ -538,7 +552,7 @@ end;
 
 procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType;
   const NewUnitName: string);
-var ResourceFilename :string;
+var AResourceFilename :string;
   NewSource, LE: string;
   
   function Beautified(const s: string): string;
@@ -553,7 +567,7 @@ begin
   LE:=EndOfLine;
   if NewUnitType in [nuForm,nuUnit] then begin
     fUnitName:=NewUnitName;
-    ResourceFilename:=fUnitName+ResourceFileExt;
+    AResourceFilename:=fUnitName+ResourceFileExt;
     NewSource:=Beautified(
        'unit '+fUnitName+';'+LE
       +LE
@@ -594,7 +608,7 @@ begin
           +LE
           +'initialization'+LE);
         NewSource:=NewSource
-          +'  {$I '+ResourceFilename+'}'+LE;
+          +'  {$I '+AResourceFilename+'}'+LE;
       end;
     end;
     NewSource:=NewSource+Beautified(
@@ -1305,13 +1319,14 @@ begin
   ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDir;
   DoDirSeparators(AFilename);
+  AFilename:=TrimFilename(AFilename);
   if Load then begin
     // make filename absolute
-    if not FilenameIsAbsolute(AFilename) then
+    if (AFilename<>'') and (not FilenameIsAbsolute(AFilename)) then
       AFilename:=ProjectPath+AFilename;
   end else begin
     // try making filename relative to project file
-    if FilenameIsAbsolute(AFilename) 
+    if (AFilename<>'') and FilenameIsAbsolute(AFilename)
     and (CompareFileNames(copy(AFilename,1,length(ProjectPath)),ProjectPath)=0)
     then
       AFilename:=copy(AFilename,length(ProjectPath)+1,
@@ -1429,6 +1444,9 @@ end.
 
 {
   $Log$
+  Revision 1.63  2002/04/28 14:10:29  lazarus
+  MG: fixes for saving resource files
+
   Revision 1.62  2002/04/21 13:24:06  lazarus
   MG: small updates and fixes
 

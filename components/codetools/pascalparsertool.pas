@@ -21,17 +21,11 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TMultiKeyWordListCodeTool enhances the TCustomCodeTool with the ability
-    to switch the KeyWord list and keep a list of KeyWord lists.
-    
     TPascalParserTool enhances TMultiKeyWordListCodeTool.
     This tool parses the pascal code, makes simple syntax checks and provides
     a lot of useful parsing functions. It can either parse complete sources
     or parts of it.
     
-
-  ToDo:
-
 }
 unit PascalParserTool;
 
@@ -46,29 +40,10 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, SourceChanger;
+  MultiKeyWordListTool, SourceLog, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
-  TMultiKeyWordListCodeTool = class(TCustomCodeTool)
-  private
-    FKeyWordLists: TList; // list of TKeyWordFunctionList
-    FCurKeyWordListID: integer;
-    procedure SetCurKeyWordFuncList(AKeyWordFuncList: TKeyWordFunctionList);
-  protected
-    procedure SetKeyWordListID(NewID: integer);
-  public
-    DefaultKeyWordFuncList: TKeyWordFunctionList;
-    property KeyWordListID: integer read FCurKeyWordListID write SetKeyWordListID;
-    property CurKeyWordFuncList: TKeyWordFunctionList
-       read KeyWordFuncList write SetCurKeyWordFuncList;
-    function AddKeyWordFuncList(AKeyWordFuncList: TKeyWordFunctionList): integer;
-    procedure ClearKeyWordFuncLists;
-
-    constructor Create;
-    destructor Destroy; override;
-  end;
-
   TProcHeadAttribute = (
       // extract attributes:
       phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
@@ -207,6 +182,8 @@ type
     function DoAtom: boolean; override;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
+    function ExtractPropType(PropNode: TCodeTreeNode;
+        InUpperCase: boolean): string;
     function ExtractProcName(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
@@ -302,65 +279,6 @@ begin
     end;
   end;
 end;
-
-{ TMultiKeyWordListCodeTool }
-
-constructor TMultiKeyWordListCodeTool.Create;
-begin
-  inherited Create;
-  FKeyWordLists:=TList.Create; // list of TKeyWordFunctionList
-  AddKeyWordFuncList(KeyWordFuncList);
-  FCurKeyWordListID:=0;
-  DefaultKeyWordFuncList:=KeyWordFuncList;
-end;
-
-destructor TMultiKeyWordListCodeTool.Destroy;
-begin
-  ClearKeyWordFuncLists;
-  FKeyWordLists.Free;
-  inherited Destroy;
-end;
-
-procedure TMultiKeyWordListCodeTool.SetKeyWordListID(NewID: integer);
-begin
-  if FCurKeyWordListID=NewID then exit;
-  FCurKeyWordListID:=NewID;
-  KeyWordFuncList:=TKeyWordFunctionList(FKeyWordLists[NewID]);
-end;
-
-procedure TMultiKeyWordListCodeTool.SetCurKeyWordFuncList(
-  AKeyWordFuncList: TKeyWordFunctionList);
-var i: integer;
-begin
-  i:=0;
-  while i<FKeyWordLists.Count do begin
-    if TKeyWordFunctionList(FKeyWordLists[i])=AKeyWordFuncList then begin
-      SetKeyWordListID(i);
-      exit;
-    end;
-    inc(i);
-  end;
-  SaveRaiseException(
-    '[TMultiKeyWordListCodeTool.SetCurKeyWordFuncList] unknown list');
-end;
-
-function TMultiKeyWordListCodeTool.AddKeyWordFuncList(
-  AKeyWordFuncList: TKeyWordFunctionList): integer;
-begin
-  Result:=FKeyWordLists.Add(AKeyWordFuncList);
-end;
-
-procedure TMultiKeyWordListCodeTool.ClearKeyWordFuncLists;
-var i: integer;
-begin
-  KeyWordListID:=0;
-  for i:=FKeyWordLists.Count-1 downto 1 do begin
-    TKeyWordFunctionList(FKeyWordLists[i]).Free;
-    FKeyWordLists.Delete(i);
-  end;
-  KeyWordFuncList.Clear;
-end;
-
 
 { TPascalParserTool }
 
@@ -2993,9 +2911,35 @@ begin
   ReadNextAtom;
   AtomIsIdentifier(true);
   if InUpperCase then
-    Result:=copy(UpperSrc,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    Result:=GetUpAtom
   else
-    Result:=copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+    Result:=GetAtom;
+end;
+
+function TPascalParserTool.ExtractPropType(PropNode: TCodeTreeNode;
+  InUpperCase: boolean): string;
+begin
+  Result:='';
+  if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then exit;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom;
+  if not UpAtomIs('PROPERTY') then exit;
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if CurPos.Flag=cafRoundBracketOpen then begin
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
+  if CurPos.Flag in [cafSemicolon,cafEND] then exit;
+  if not (CurPos.Flag=cafColon) then
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom]);
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  if InUpperCase then
+    Result:=GetUpAtom
+  else
+    Result:=GetAtom;
 end;
 
 function TPascalParserTool.ExtractProcName(ProcNode: TCodeTreeNode;

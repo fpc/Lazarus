@@ -275,7 +275,8 @@ type
     
     // methods for 'save unit'
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-        var LFMCode, ResourceCode: TCodeBuffer): TModalResult;
+        var LFMCode, ResourceCode: TCodeBuffer;
+        IgnoreSourceErrors: boolean): TModalResult;
     function DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveFileResources(AnUnitInfo: TUnitInfo;
@@ -2390,30 +2391,49 @@ begin
 end;
 
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
-  var LFMCode, ResourceCode: TCodeBuffer): TModalResult;
+  var LFMCode, ResourceCode: TCodeBuffer;
+  IgnoreSourceErrors: boolean): TModalResult;
 var LinkIndex: integer;
-  LFMFilename: string;
+  LFMFilename, MsgTxt: string;
 begin
   LFMCode:=nil;
+  ResourceCode:=nil;
   if AnUnitInfo.HasResources then begin
+    // first try to find the resource file via the unit source
     LinkIndex:=-1;
     ResourceCode:=CodeToolBoss.FindNextResourceFile(
       AnUnitInfo.Source,LinkIndex);
-    if ResourceCode=nil then begin
-
-      // ToDo: warn for errors in source
-
+    // if unit source has errors, then try the last resource file
+    if (ResourceCode=nil) then begin
+      if not IgnoreSourceErrors then
+        DoJumpToCodeToolBossError;
+      if (AnUnitInfo.ResourceFileName<>'')
+      then begin
+        Result:=DoLoadCodeBuffer(ResourceCode,AnUnitInfo.ResourceFileName,
+                                       [lbfCheckIfText]);
+        if Result=mrAbort then exit;
+      end;
     end;
+    // if no resource file found then tell the user
+    if (ResourceCode=nil) and (not IgnoreSourceErrors)
+    then begin
+      MsgTxt:='Unable to load old resource file.'#13
+              +'The resource file is the first include file in the'#13
+              +'initialization section.'#13
+              +'For example {$I '+AnUnitInfo.UnitName+'.lrs}.'#13
+              +'Probably a syntax error.';
+      Result:=MessageDlg('Resource load error',MsgTxt,mtWarning,
+                         [mbIgnore,mbAbort],0);
+      if Result=mrAbort then exit;
+    end;
+    // load lfm file
     if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Form<>nil) then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if (FileExists(LFMFilename)) then begin
         Result:=DoLoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
         if not (Result in [mrOk,mrIgnore]) then exit;
-        Result:=mrCancel;
       end;
     end;
-  end else begin
-    ResourceCode:=nil;
   end;
   Result:=mrOk;
 end;
@@ -2427,7 +2447,6 @@ var
   ACaption, AText: string;
   SrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
-  LinkIndex: integer;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   OldFilePath:=ExtractFilePath(AnUnitInfo.Filename);
@@ -2469,19 +2488,12 @@ begin
   EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
 
   // check unitname
-  NewUnitName:=ExtractFileNameOnly(NewFilename);
-  if NewUnitName='' then exit;
-  if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
-  begin
-    Result:=MessageDlg(lsiUnitNameAlreadyExistsCap,
-       Format(lsiUnitNameAlreadyExistsText,[NewUnitName]),
-        mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
-    if Result=mrIgnore then
-      Result:=mrCancel
-    else
-      exit;
-  end;
   if FilenameIsPascalUnit(NewFilename) then begin
+    NewUnitName:=ExtractFileNameOnly(NewFilename);
+    if NewUnitName='' then begin
+      Result:=mrCancel;
+      exit;
+    end;
     if not IsValidIdent(NewUnitName) then begin
       Result:=MessageDlg(lsiInvalidPascalIdentifierCap,
         Format(lsiInvalidPascalIdentifierText,[NewUnitName]),
@@ -2489,6 +2501,18 @@ begin
       if Result=mrCancel then exit;
       Result:=mrCancel;
     end;
+    if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
+    begin
+      Result:=MessageDlg(lsiUnitNameAlreadyExistsCap,
+         Format(lsiUnitNameAlreadyExistsText,[NewUnitName]),
+          mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
+      if Result=mrIgnore then
+        Result:=mrCancel
+      else
+        exit;
+    end;
+  end else begin
+    NewUnitName:='';
   end;
 
   // check file extension
@@ -2497,7 +2521,9 @@ begin
   end;
   
   // check filename
-  if EnvironmentOptions.PascalFileLowerCase then
+  if EnvironmentOptions.PascalFileLowerCase
+  and FilenameIsPascalUnit(NewFilename)
+  then
     NewFileName:=ExtractFilePath(NewFilename)
                  +lowercase(ExtractFileName(NewFilename));
   if FileExists(NewFilename) then begin
@@ -2539,7 +2565,9 @@ begin
     Result:=mrCancel;
     exit;
   end;
-
+  // get final filename
+  NewFilename:=NewSource.Filename;
+  NewFilePath:=ExtractFilePath(NewFilename);
 
   // rename Resource file
   if (ResourceCode<>nil) then begin
@@ -2552,8 +2580,8 @@ begin
       // resource code was in the same or in a sub directory of source
       // -> try to keep this relationship
       NewResFilePath:=NewFilePath
-         +copy(ResourceCode.Filename,length(OldFilePath)+1,
-           length(ResourceCode.Filename));
+                       +copy(ResourceCode.Filename,length(OldFilePath)+1,
+                         length(ResourceCode.Filename));
       if not DirectoryExists(NewResFilePath) then
         NewResFilePath:=NewFilePath;
     end else begin
@@ -2564,6 +2592,8 @@ begin
     NewResFilename:=NewResFilePath
                     +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
+    if ResourceCode<>nil then
+      AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
 
     {$IFDEF IDE_DEBUG}
     writeln('TMainIDE.ShowSaveFileAsDialog D ',ResourceCode<>nil);
@@ -2590,10 +2620,6 @@ begin
     CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
       ExtractRelativePath(NewFilePath,NewResFilename),false);
   end;
-
-  // get new resource codebuffer
-  LinkIndex:=-1;
-  ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
 
   // change unitname on SourceNotebook
   if AnUnitInfo.EditorIndex>=0 then
@@ -2685,13 +2711,15 @@ begin
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
                'T'+AnUnitInfo.FormName,CompResourceCode)) then
             begin
-              ACaption:='Resource error';
+              ACaption:='Resource save error';
               AText:='Unable to add resource '
                 +'T'+AnUnitInfo.FormName+':FORMDATA to resource file '#13
                 +'"'+ResourceCode.FileName+'".'#13
                 +'Probably a syntax error.';
               Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
               if Result=mrAbort then exit;
+            end else begin
+              AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
             end;
           end else begin
             ResourceCode.Source:=CompResourceCode;
@@ -3272,18 +3300,20 @@ var NewUnitInfo:TUnitInfo;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
 begin
-writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
+  writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
+  SaveSourceEditorChangesToCodeCache(-1);
   Result:=CreateNewCodeBuffer(NewUnitType,NewFilename,NewBuffer,NewUnitName);
   if Result<>mrOk then exit;
   Result:=mrCancel;
-  SaveSourceEditorChangesToCodeCache(-1);
-  
+
   NewFilename:=NewBuffer.Filename;
   NewUnitInfo:=TUnitInfo.Create(NewBuffer);
 
   // create source code
-  if NewUnitType in [nuForm] then
+  if NewUnitType in [nuForm] then begin
     NewUnitInfo.FormName:=Project1.NewUniqueFormName(NewUnitType);
+    CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,'.lrs'));
+  end;
   NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
   
   // add to project
@@ -3305,7 +3335,7 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
 
   // create a new sourceeditor
   SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
-                           NewUnitInfo.Filename,-1),
+                         NewUnitInfo.Filename,-1),
                          NewUnitInfo.Source);
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
@@ -3321,7 +3351,7 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
   end else begin
     FCodeLastActivated:=true;
   end;
-  writeln('TMainIDE.DoNewUnit end');
+  writeln('TMainIDE.DoNewUnit end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
@@ -3341,9 +3371,7 @@ begin
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-  if not (sfProjectSaving in Flags) then
-    SaveSourceEditorChangesToCodeCache(-1);
-
+  
   // if this file is part of the project and the project is virtual then save
   // project first
   if (not (sfProjectSaving in Flags)) and Project1.IsVirtual
@@ -3352,6 +3380,10 @@ begin
     Result:=DoSaveProject(Flags*[sfSaveToTestDir]);
     exit;
   end;
+
+  // update codetools cache and collect Modified flags
+  if not (sfProjectSaving in Flags) then
+    SaveSourceEditorChangesToCodeCache(-1);
 
   // if this is new unit then a simple Save becomes a SaveAs
   if (not (sfSaveToTestDir in Flags)) and (ActiveUnitInfo.IsVirtual) then
@@ -3365,12 +3397,6 @@ begin
     exit;
   end;
 
-  // update codetools cache and collect Modified flags
-  if ActiveSrcEdit.Modified then begin
-    ActiveSrcEdit.UpdateCodeBuffer;
-    ActiveUnitInfo.Modified:=true;
-  end;
-
   // if nothing modified then a simple Save can be skipped
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
   and (not ActiveUnitInfo.Modified) then begin
@@ -3379,9 +3405,12 @@ begin
   end;
   
   // load resource file
-  Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode);
-  if Result in [mrIgnore, mrOk] then Result:=mrCancel
-  else exit;
+  Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode,
+                             not (sfSaveAs in Flags));
+  if Result in [mrIgnore, mrOk] then
+    Result:=mrCancel
+  else
+    exit;
 
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
@@ -5725,7 +5754,11 @@ begin
                             +'See messages.');
     end;
   end else if AComponent=ADesigner.Form then begin
-    // rename form in source, form variable and createform statement
+    // ToDo:
+    //   rename form in source
+    //   rename form variable
+    //   replace createform statement
+    //   delete old form resource in resource file
     MessageDlg('Not implemented yet.',
                'Form renaming in source is not implemented yet.',
                mtInformation,[mbOk],0);
@@ -6288,6 +6321,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.289  2002/04/28 14:10:27  lazarus
+  MG: fixes for saving resource files
+
   Revision 1.288  2002/04/28 06:42:47  lazarus
   MG: fixed saving OI settings
 

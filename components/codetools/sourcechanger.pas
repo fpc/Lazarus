@@ -140,10 +140,6 @@ type
     procedure DeleteOldText(CleanFromPos,CleanToPos: integer);
     procedure InsertNewText(ACode: TCodeBuffer; DirectPos: integer;
         const InsertText: string);
-    function CountNeededLineEndsToAddForward(
-        CleanPos, MinLineEnds: integer): integer;
-    function CountNeededLineEndsToAddBackward(
-        CleanPos, MinLineEnds: integer): integer;
     procedure SetMainScanner(NewScanner: TLinkScanner);
     function GetBuffersToModify(Index: integer): TCodeBuffer;
     procedure UpdateBuffersToModify;
@@ -461,13 +457,15 @@ begin
           end;
         gtNewLine:
           begin
-            NeededLineEnds:=CountNeededLineEndsToAddForward(FirstEntry.ToPos,1);
+            NeededLineEnds:=CountNeededLineEndsToAddForward(Src,
+              FirstEntry.ToPos,1);
             if NeededLineEnds>0 then
               InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
           end;
         gtEmptyLine:
           begin
-            NeededLineEnds:=CountNeededLineEndsToAddForward(FirstEntry.ToPos,2);
+            NeededLineEnds:=CountNeededLineEndsToAddForward(Src,
+              FirstEntry.ToPos,2);
             for i:=1 to NeededLineEnds do
               InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
           end;
@@ -519,14 +517,14 @@ begin
           end;
         gtNewLine:
           begin
-            NeededLineEnds:=CountNeededLineEndsToAddBackward(
+            NeededLineEnds:=CountNeededLineEndsToAddBackward(Src,
                                       CurEntry.FromPos-1,1);
             if NeededLineEnds>0 then
               InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
           end;
         gtEmptyLine:
           begin
-            NeededLineEnds:=CountNeededLineEndsToAddBackward(
+            NeededLineEnds:=CountNeededLineEndsToAddBackward(Src,
                                 CurEntry.FromPos-1,2);
             for i:=1 to NeededLineEnds do
               InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
@@ -554,50 +552,6 @@ begin
     FEntries.FreeAndClear;
   end;
   Result:=true;
-end;
-
-function TSourceChangeCache.CountNeededLineEndsToAddForward(
-  CleanPos, MinLineEnds: integer): integer;
-var c:char;
-begin
-  Result:=MinLineEnds;
-  if CleanPos<1 then exit;
-  while (CleanPos<=SrcLen) do begin
-    c:=Src[CleanPos];
-    if IsLineEndChar[c] then begin
-      dec(Result);
-      inc(CleanPos);
-      if (CleanPos<=SrcLen)
-      and (IsLineEndChar[Src[CleanPos]])
-      and (Src[CleanPos]<>c) then
-        inc(CleanPos);
-    end else if IsSpaceChar[c] then
-      inc(CleanPos)
-    else
-      break;
-  end;
-end;
-
-function TSourceChangeCache.CountNeededLineEndsToAddBackward(
-  CleanPos, MinLineEnds: integer): integer;
-var c:char;
-begin
-  Result:=MinLineEnds;
-  if (CleanPos>SrcLen) then exit;
-  while (CleanPos>=1) do begin
-    c:=Src[CleanPos];
-    if IsLineEndChar[c] then begin
-      dec(Result);
-      dec(CleanPos);
-      if (CleanPos>=1)
-      and (IsLineEndChar[Src[CleanPos]])
-      and (Src[CleanPos]<>c) then
-        dec(CleanPos);
-    end else if IsSpaceChar[c] then
-      dec(CleanPos)
-    else
-      break;
-  end;
 end;
 
 procedure TSourceChangeCache.DeleteOldText(CleanFromPos,CleanToPos: integer);

@@ -43,7 +43,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, EventCodeTool, CodeTree, CodeAtom,
   SourceChanger, DefineTemplates, CodeCache, ExprEval, LinkScanner,
-  KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool, FindDeclarationTool;
+  KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool, FindDeclarationTool,
+  ResourceCodeTool;
 
 type
   TCodeToolManager = class;
@@ -73,6 +74,7 @@ type
     FJumpCentered: boolean;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
     FSourceTools: TAVLTree; // tree of TCustomCodeTool
@@ -87,6 +89,7 @@ type
     procedure OnGlobalValuesChanged;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
+    function InitResourceTool: boolean;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     function GetCodeToolForSource(Code: TCodeBuffer;
       ExceptionOnError: boolean): TCustomCodeTool;
@@ -107,6 +110,7 @@ type
     procedure OnToolSetWriteLock(Lock: boolean);
     procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
       var WriteLockStep: integer);
+    function GetResourceTool: TResourceCodeTool;
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -347,6 +351,7 @@ writeln('[TCodeToolManager.Destroy] B');
 {$ENDIF}
   FSourceTools.FreeAndClear;
   FSourceTools.Free;
+  FResourceTool.Free;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.Destroy] C');
 {$ENDIF}
@@ -516,6 +521,14 @@ begin
     fErrorCode:=MainCode;
     fErrorMsg:=ctsNoScannerAvailable;
   end;
+end;
+
+function TCodeToolManager.InitResourceTool: boolean;
+begin
+  fErrorMsg:='';
+  fErrorCode:=nil;
+  fErrorLine:=-1;
+  Result:=true;
 end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
@@ -1074,9 +1087,9 @@ function TCodeToolManager.FindNextResourceFile(Code: TCodeBuffer;
   var LinkIndex: integer): TCodeBuffer;
 begin
   Result:=nil;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindNextResourceFile A ',Code.Filename);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindNextResourceFile A ',Code.Filename);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
@@ -1089,12 +1102,12 @@ function TCodeToolManager.FindLazarusResource(Code: TCodeBuffer;
   const ResourceName: string): TAtomPosition;
 begin
   Result.StartPos:=-1;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
-{$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
+  if not InitResourceTool then exit;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
+  {$ENDIF}
   try
-    Result:=FCurCodeTool.FindLazarusResource(ResourceName);
+    Result:=GetResourceTool.FindLazarusResource(Code,ResourceName);
   except
     on e: Exception do HandleException(e);
   end;
@@ -1102,23 +1115,17 @@ end;
 
 function TCodeToolManager.AddLazarusResource(Code: TCodeBuffer;
   const ResourceName, ResourceData: string): boolean;
-var ResCode: TCodeBuffer;
-  LinkIndex: integer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',ResourceName,' ',length(ResourceData));
   {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
+  if not InitResourceTool then exit;
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.AddLazarusResource B ');
   {$ENDIF}
   try
-    LinkIndex:=-1;
-    ResCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
-    if ResCode=nil then exit;
-    Result:=FCurCodeTool.AddLazarusResource(Rescode,ResourceName,ResourceData,
-                  SourceChangeCache);
+    Result:=GetResourceTool.AddLazarusResource(Code,ResourceName,ResourceData);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1133,13 +1140,9 @@ begin
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
   {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
+  if not InitResourceTool then exit;
   try
-    LinkIndex:=-1;
-    ResCode:=FCurCodeTool.FindNextIncludeInInitialization(LinkIndex);
-    if ResCode=nil then exit;
-    Result:=FCurCodeTool.RemoveLazarusResource(ResCode,ResourceName,
-                       SourceChangeCache);
+    Result:=GetResourceTool.RemoveLazarusResource(Code,ResourceName);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1538,6 +1541,12 @@ begin
   WriteLockIsSet:=FWriteLockCount>0;
   WriteLockStep:=FWriteLockStep;
 //writeln(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+end;
+
+function TCodeToolManager.GetResourceTool: TResourceCodeTool;
+begin
+  if FResourceTool=nil then FResourceTool:=TResourceCodeTool.Create;
+  Result:=FResourceTool;
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
