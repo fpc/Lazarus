@@ -900,6 +900,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetTextExtentExPoint(DC: HDC; Str: PChar;
+  Count, p4: Integer; p5, p6: PInteger; var Size: TSize): BOOL;
+begin
+  Result := False;
+end;
+
 function TInterfaceBase.GetTextExtentPoint(DC: HDC; Str: PChar;
   Count: Integer; var Size: TSize): Boolean;
 begin
@@ -1430,6 +1436,11 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.SetTextAlign(DC: HDC; Flags: UINT): UINT;
+begin
+  Result := 0;
+end;
+
 Function TInterfaceBase.SetTextCharacterExtra(_hdc : hdc;
   nCharExtra : Integer):Integer;
 begin
@@ -1512,6 +1523,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.72  2002/02/09 02:30:56  mattias
   added patch from Jeroen van Idekinge
 
