@@ -220,7 +220,7 @@ begin
     if FToolBar <> nil then
       with FToolBar do
       begin
-        Perform(TB_HIDEBUTTON, Index, Longint(Ord(not Self.Visible)));
+        Perform(TB_HIDEBUTTON, WParam(Index), LParam(Ord(not Self.Visible)));
         { Force a resize to occur }
         if AutoSize then AdjustSize;
       end;
@@ -232,7 +232,7 @@ end;
 procedure TToolButton.CMEnabledChanged(var Message: TLMessage);
 begin
   if FToolBar <> nil then
-    FToolBar.Perform(TB_ENABLEBUTTON, Index, Ord(Enabled));
+    FToolBar.Perform(TB_ENABLEBUTTON, WParam(Index), LParam(Ord(Enabled)));
 end;
 
 procedure TToolButton.CMHitTest(var Message: TCMHitTest);
@@ -249,7 +249,7 @@ begin
     FDown := Value;
     if FToolBar <> nil then
     begin
-      FToolBar.Perform(DownMessage[Style = tbsCheck], Index, MakeLong(Ord(Value), 0));
+      FToolBar.Perform(DownMessage[Style = tbsCheck], WParam(Index), WParam(MakeLong(Ord(Value), 0)));
       FToolBar.UpdateButtonStates;
     end;
   end;
@@ -281,7 +281,7 @@ begin
     if FToolBar <> nil then
     begin
       RefreshControl;
-      FToolBar.Perform(TB_CHANGEBITMAP, Index, Value);
+      FToolBar.Perform(TB_CHANGEBITMAP, WParam(Index), LParam(Value));
       if FToolBar.Transparent or FToolBar.Flat then Invalidate;
     end;
   end;
@@ -293,7 +293,7 @@ begin
   begin
     FMarked := Value;
     if FToolBar <> nil then
-      FToolBar.Perform(TB_MARKBUTTON, Index, Longint(Ord(Value)));
+      FToolBar.Perform(TB_MARKBUTTON, WParam(Index), LParam(Ord(Value)));
   end;
 end;
 
@@ -304,7 +304,7 @@ begin
     if Value then SetDown(False);
     FIndeterminate := Value;
     if FToolBar <> nil then
-      FToolBar.Perform(TB_INDETERMINATE, Index, Longint(Ord(Value)));
+      FToolBar.Perform(TB_INDETERMINATE, WParam(Index), LParam(Ord(Value)));
   end;
 end;
 
@@ -454,6 +454,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.3  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 

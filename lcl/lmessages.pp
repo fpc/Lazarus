@@ -140,19 +140,19 @@ const
   LM_CB_GETTEXT     = LM_CB_FIRST+1;
   LM_CB_ADDTEXT     = LM_CB_FIRST+2;
   LM_CB_LAST        = LM_CB_FIRST+9; // LM_COMUSER+99
-  
+
   // TNoteBook
   LM_NB_First       = LM_CB_LAST+1;
   LM_NB_UpdateTab   = LM_NB_First+0;
   LM_NB_Last        = LM_NB_UpdateTab;
-  
+
   // TListBox
   LM_LB_First          = LM_NB_Last +1;
   LM_LB_GETTOPINDEX    = LM_LB_First   +0;
   LM_LB_SETTOPINDEX    = LM_LB_First   +1;
   LM_LB_GETINDEXAT     = LM_LB_First   +2;
   LM_LB_Last           = LM_LB_GETINDEXAT;
-  
+
   // TCheckListBox
   LM_CLB_FIRST         = LM_LB_Last + 1;
   LM_CLB_GETCHECKED    = LM_CLB_FIRST + 0;
@@ -276,7 +276,7 @@ const
   SC_MONITORPOWER   = 61808;
   SC_CONTEXTHELP    = 61824;
   SC_SEPARATOR      = 61455;
-  
+
 
   //-------------
   // Messages
@@ -385,7 +385,7 @@ type
     DrawItemStruct : PDrawItemStruct;
     Result : LongInt;
   end;
-  
+
   TLMDrawListItem = record
     // message from the interface to the LCL
     Msg: Cardinal;
@@ -587,7 +587,7 @@ type
   end;
   TWindowPos = tagWINDOWPOS;
   WINDOWPOS = tagWINDOWPOS;
-  
+
   TLMWindowPosMsg = record
     Msg: Cardinal;
     Unused: Integer;
@@ -597,7 +597,7 @@ type
 
   TLMWindowPosChanged = TLMWindowPosMsg;
   TLMWindowPosChanging = TLMWindowPosMsg;
-           
+
   {PNCCalcSizeParams}
   PNCCalcSizeParams = ^TNCCalcSizeParams;
   tagNCCalcSize_Params = packed record
@@ -606,7 +606,7 @@ type
   end;
   TNCCalcSizeParams = tagNCCalcSize_Params;
   ncCalcSizeParams = tagNCCalcSize_Params;
-  
+
 
   TLMNCCalcSize = record
     Msg: Cardinal;
@@ -657,6 +657,7 @@ type
   end;
 
   //Used to set the statusbar's text
+  PLMSetControlText = ^TLMSetControlText;
   TLMSetControlText = record
     fCompStyle : Longint;
     Panel : Integer;
@@ -733,7 +734,7 @@ type
     Index : integer;
     Checked : boolean;
   end;
-  
+
   TLMSetFocus = packed record
     Msg: Cardinal;
     FocusedWnd: HWND;
@@ -768,9 +769,9 @@ type
     Msg : Cardinal;
     case Integer of
       0 : (
-        WParam: LongInt;
-      	LParam : LongInt;
-      	Result : LongInt);
+        WParam: LclType.WPARAM;
+      	LParam : LclType.LPARAM;
+      	Result : LclType.LRESULT);
       1 : (
       	WParamLo: Word;
       	WParamHi: Word;
@@ -871,7 +872,7 @@ const
   CBN_SELENDOK     = 9;
   CBN_SELENDCANCEL = 10;
 
-        
+
 function GetMessageName(const AMessage: Integer):  String;
 
 
@@ -1084,7 +1085,7 @@ begin
   else
     Result := Format('Unknown message 0x%x (%d)', [AMessage, AMessage]);
   end;
-  Result  := Trim(Result);  
+  Result  := Trim(Result);
 end;
 
 
@@ -1092,6 +1093,9 @@ end.
 
 {
   $Log$
+  Revision 1.58  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.57  2003/12/21 18:21:32  mattias
   implemented ShowAll and hide hints for unused package units option
 

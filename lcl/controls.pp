@@ -765,7 +765,7 @@ type
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
-    procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer); virtual;
+    procedure SendDockNotification(Msg: Cardinal; WParam: WParam; LParam: LParam); virtual;
     procedure SetColor(Value : TColor); virtual;
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
@@ -829,7 +829,7 @@ type
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
   public
-    FCompStyle : LongInt;
+    FCompStyle: Byte;       // enables (valid) use of 'IN' operator
     Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
     // use overload to simulate default
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
@@ -859,7 +859,7 @@ type
                                 Lock: boolean); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     Procedure SetTextBuf(Buffer : PChar); virtual;
-    Function  Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
+    Function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LongInt;
     Function  ScreenToClient(const Point : TPoint) : TPoint;
     Function  ClientToScreen(const Point : TPoint) : TPoint;
     Function  Dragging : Boolean;
@@ -1404,7 +1404,7 @@ Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 Function FindControl(Handle : hwnd) : TWinControl;
 function FindLCLControl(const ScreenPos: TPoint) : TControl;
 
-function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
+function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
 Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
 
 procedure SetCaptureControl(Control : TControl);
@@ -1482,7 +1482,7 @@ begin
   if Result=nil then Result:=AWinControl;
 end;
 
-function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
+function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
 begin
   Result:=LCLProc.SendApplicationMessage(Msg,WParam,LParam);
 end;
@@ -1511,7 +1511,7 @@ begin
   if Control <> nil then
     with TLMessage(Message) do
     Begin
-      Control.Perform(Msg + CN_BASE,WParam, LParam);
+      Control.Perform(Msg + CN_BASE, WParam, LParam);
       DoControlMsg := True;
     end;
 end;
@@ -1853,6 +1853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.163  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.162  2003/12/27 20:15:15  mattias
   set some colors to default
 

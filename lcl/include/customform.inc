@@ -516,7 +516,7 @@ procedure TCustomForm.SetActive(AValue: Boolean);
 begin
   FActive := AValue;
   //if FActiveOleControl <> nil then
-  //  FActiveOleControl.Perform(CM_DOCWINDOWACTIVATE, Ord(Value), 0);
+  //  FActiveOleControl.Perform(CM_DOCWINDOWACTIVATE, WParam(Ord(Value)), 0);
   if FActive then
   begin
     if (ActiveControl = nil) and not (csDesigning in ComponentState) then
@@ -1228,7 +1228,7 @@ begin
           TScrollingWinControl(TempControl).AutoScrollInView(Control);
         TempControl := TempControl.Parent;
       end;
-      Perform(CM_FOCUSCHANGED, 0, Longint(Control));
+      Perform(CM_FOCUSCHANGED, 0, LParam(Control));
       if (FActiveOleControl <> nil) and (FActiveOleControl <> Control) then
         FActiveOleControl.Perform(CM_UIDEACTIVATE, 0, 0);
     end;
@@ -1467,6 +1467,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.123  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.122  2003/12/23 16:50:45  micha
   fix defocus control when destroying it
 

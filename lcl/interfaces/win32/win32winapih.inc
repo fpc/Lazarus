@@ -29,8 +29,8 @@ Function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSr
 Function BringWindowToTop(HWnd: HWND): Boolean; Override;
 
 procedure CallDefaultWndHandler(Sender: TObject; var Message); Override;
-Function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam, LParam: LongInt): Integer; Override;
-Function CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam, LParam: LongInt): Integer; Override;
+Function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam: WParam; LParam: LParam): Integer; Override;
+Function CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam: WParam; LParam: LParam): Integer; Override;
 Function ClientToScreen(Handle: HWND; Var P: TPoint): Boolean; Override;
 
 // clipboard
@@ -135,7 +135,7 @@ Function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax
 Function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: Boolean): Boolean; Override;
 Function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
 Function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
-Function PostMessage(Handle: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean; Override;
+Function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean; Override;
 
 function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
@@ -154,7 +154,7 @@ Function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; 
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 Function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; Override;
 Function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; Override;
-Function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Integer; Override;
+Function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; Override;
 Function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; Override;
 Function SetBkMode(DC: HDC; BkMode: Integer): Integer; Override;
 Function SetCapture(Value: LongInt): LongInt; Override;
@@ -190,6 +190,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.42  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

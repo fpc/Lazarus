@@ -61,7 +61,7 @@ Type
     Procedure Sort; Virtual;
     Property Sorted: Boolean Read FSorted Write SetSorted;
   End;
-  
+
   PWin32CheckListBoxItemRecord = ^TWin32CheckListBoxItemRecord;
   TWin32CheckListBoxItemRecord = record
     TheObject: TObject;
@@ -117,6 +117,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.14  2003/12/26 09:28:05  micha
   fix itemdata (string+object) for combobox (from vincent)
 

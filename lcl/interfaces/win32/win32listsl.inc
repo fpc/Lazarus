@@ -73,40 +73,44 @@ Begin
 
   //Set proper win32 flags for ComboBox/ListBox and get/set Combo Height
   case FSender.FCompStyle of
-    csComboBox:begin
-    	       FFlagSort := CBS_SORT;
-               FFlagGetText := CB_GETLBTEXT;
-               FFlagGetTextLen := CB_GETLBTEXTLEN;
-               FFlagGetCount := CB_GETCOUNT;
-               FFlagResetContent := CB_RESETCONTENT;
-               FFlagDeleteString := CB_DELETESTRING;
-               FFlagInsertString := CB_INSERTSTRING;
-               FFlagAddString := CB_ADDSTRING;
-               FFlagGetItemData := CB_GETITEMDATA;
-               FFlagSetItemData := CB_SETITEMDATA;
-               //Get edit and item sizes
-               Windows.GetClientRect(FWin32List,@R);
-               FEditHeight:= R.Bottom;
-               FItemHeight:= Windows.SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
-               FDDownCount:= TComboBox(FSender).DropDownCount;
-               If FDDownCount = 0 then FDDownCount:= 8;
-    	       end;
-    csListBox,csCheckListBox:begin
-    	      FFlagSort:=LBS_SORT;
-              FFlagGetText:=LB_GETTEXT;
-              FFlagGetTextLen:=LB_GETTEXTLEN;
-              FFlagGetCount:=LB_GETCOUNT;
-              FFlagResetContent:=LB_RESETCONTENT;
-              FFlagDeleteString:=LB_DELETESTRING;
-              FFlagInsertString:=LB_INSERTSTRING;
-              FFlagAddString:=LB_ADDSTRING;
-              FFlagGetItemData:= LB_GETITEMDATA;
-              FFlagSetItemData:= LB_SETITEMDATA;
-              end;
-  else Raise Exception.Create('Win32ListStringList: Component type not detected');
+    csComboBox:
+    begin
+      FFlagSort         := UINT(CBS_SORT);
+      FFlagGetText      := UINT(CB_GETLBTEXT);
+      FFlagGetTextLen   := UINT(CB_GETLBTEXTLEN);
+      FFlagGetCount     := UINT(CB_GETCOUNT);
+      FFlagResetContent := UINT(CB_RESETCONTENT);
+      FFlagDeleteString := UINT(CB_DELETESTRING);
+      FFlagInsertString := UINT(CB_INSERTSTRING);
+      FFlagAddString    := UINT(CB_ADDSTRING);
+      FFlagGetItemData  := UINT(CB_GETITEMDATA);
+      FFlagSetItemData  := UINT(CB_SETITEMDATA);
+      //Get edit and item sizes
+      Windows.GetClientRect(FWin32List,@R);
+      FEditHeight := R.Bottom;
+      FItemHeight := Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0);
+      FDDownCount := TComboBox(FSender).DropDownCount;
+      If FDDownCount = 0 then
+        FDDownCount := 8;
+    end;
+    csListBox,csCheckListBox:
+    begin
+      FFlagSort         := UINT(LBS_SORT);
+      FFlagGetText      := UINT(LB_GETTEXT);
+      FFlagGetTextLen   := UINT(LB_GETTEXTLEN);
+      FFlagGetCount     := UINT(LB_GETCOUNT);
+      FFlagResetContent := UINT(LB_RESETCONTENT);
+      FFlagDeleteString := UINT(LB_DELETESTRING);
+      FFlagInsertString := UINT(LB_INSERTSTRING);
+      FFlagAddString    := UINT(LB_ADDSTRING);
+      FFlagGetItemData  := UINT(LB_GETITEMDATA);
+      FFlagSetItemData  := UINT(LB_SETITEMDATA);
+    end;
+  else
+    raise Exception.Create('Win32ListStringList: Component type not detected');
   end;
   // Determine if the list is sorted
-  FSorted := (GetWindowLong(FWin32List, GWL_STYLE) and FFlagSort <> 0);
+  FSorted := (UINT(GetWindowLong(FWin32List, GWL_STYLE)) and FFlagSort <> 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -539,6 +543,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.26  2003/12/26 09:28:05  micha
   fix itemdata (string+object) for combobox (from vincent)
 

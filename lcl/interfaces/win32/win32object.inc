@@ -274,7 +274,7 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
       GetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
                       TMenuItem(Sender).Command, false, @MenuInfo);
       if TMenuItem(Sender).Enabled then
-        fState := fState and (not (MFS_DISABLED or MFS_GRAYED));
+        fState := fState and DWORD(not (MFS_DISABLED or MFS_GRAYED));
 
       fMask:=MIIM_TYPE or MIIM_STATE;
       fType:=Style;
@@ -597,7 +597,7 @@ Begin
       LM_BTNDEFAULT_CHANGED:
       Begin
         If (TButton(Sender).Default) And (SendMessage(Handle, BM_GETSTATE, 0, 0) = BST_FOCUS) Then
-          SendMessage(Handle, BM_SETSTATE, WPARAM(True), 0);
+          Windows.SendMessage(Handle, BM_SETSTATE, Windows.WPARAM(True), 0);
       End;
       LM_DESTROY:
       Begin
@@ -885,13 +885,13 @@ activate_time :	the time at which the activation event occurred.
       LM_SETITEMINDEX :
       Begin
         Case (Sender as TControl).FCompStyle Of
-          csComboBox: SendMessage(Handle, CB_SETCURSEL, WParam(Integer(Data)), 0);
+          csComboBox: Windows.SendMessage(Handle, CB_SETCURSEL, Windows.WParam(Integer(Data)), 0);
           csListBox, csCListBox:
           Begin
             If TListBox(Sender).MultiSelect Then
-              SendMessage(Handle, LB_SETSEL, WPARAM(TRUE), LParam(Integer(Data)))
+              Windows.SendMessage(Handle, LB_SETSEL, Windows.WPARAM(TRUE), Windows.LParam(Integer(Data)))
             Else
-              SendMessage(Handle, LB_SETCURSEL, WParam(Integer(Data)), 0);
+              Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(Integer(Data)), 0);
           End;
           csNotebook:
           Begin
@@ -899,7 +899,7 @@ activate_time :	the time at which the activation event occurred.
             with TLMNotebookEvent(Data^) do
             begin
               OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
-              SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
+              Windows.SendMessage(Handle,TCM_SETCURSEL, Windows.WPARAM(Page),0);
               if (Page>=0)
               And ((Parent As TCustomNotebook).CustomPage(Page).HandleAllocated)
                 then ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
@@ -915,14 +915,14 @@ activate_time :	the time at which the activation event occurred.
       Begin
         If (Sender as TControl).FCompStyle = csComboBox Then
         Begin
-          Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil)));
+          Result := Low(Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil)));
         End;
       End;
       LM_GETSELLEN:
       Begin
         If (Sender as TControl).FCompStyle = csComboBox then
         Begin
-          Result := SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil));
+          Result := Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil));
         End;
       End;
       LM_GETLIMITTEXT:
@@ -943,7 +943,7 @@ activate_time :	the time at which the activation event occurred.
       Begin
         If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
         Begin
-          SendMessage(Handle, CB_SETCURSEL, WParam(Data), 0);
+          Windows.SendMessage(Handle, CB_SETCURSEL, Windows.WParam(Data), 0);
         End;
       End;
       LM_GETLINECOUNT:
@@ -959,7 +959,7 @@ activate_time :	the time at which the activation event occurred.
       LM_GETSEL:
       Begin
         If Sender Is TCustomListBox then
-           Result := Windows.SendMessage(Handle, LB_GETSEL, WParam(Data^), 0);
+           Result := Windows.SendMessage(Handle, LB_GETSEL, Windows.WParam(Data^), 0);
       End;
       LM_SETLIMITTEXT:
       Begin
@@ -987,9 +987,9 @@ activate_time :	the time at which the activation event occurred.
           If TControl(Sender).FCompStyle = csListBox Then
           Begin
             If TLMSetSel(Data^).Selected Then
-              SendMessage(Handle, LB_SELITEMRANGE, WParam(True), MakeLParam(0, 0))
+              Windows.SendMessage(Handle, LB_SELITEMRANGE, Windows.WParam(True), Windows.LPARAM(MakeLParam(0, 0)))
             Else
-              SendMessage(Handle, LB_SELITEMRANGE, WParam(False), MakeLParam(0, 0));
+              Windows.SendMessage(Handle, LB_SELITEMRANGE, Windows.WParam(False), Windows.LPARAM(MakeLParam(0, 0)));
           End
         End;
       End;
@@ -1229,7 +1229,7 @@ begin
     TimerInfo := FTimerData[n];
     if (TimerInfo^.TimerID=UINT(TimerHandle)) then
     begin
-      Result := Windows.KillTimer(0, TimerHandle);
+      Result := Boolean(Windows.KillTimer(0, UINT(TimerHandle)));
       FTimerData.Delete(n);
       Dispose(TimerInfo);
     end;
@@ -1324,7 +1324,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.NormalizeIconName(Var IconName: String);
 Var
-  IcoLen: Byte;
+  IcoLen: Integer;
 Begin
   DoDirSeparators(IconName);
   IcoLen := Pos('.xmp', LowerCase(IconName));
@@ -1404,7 +1404,7 @@ Var
   CF: TChooseFont;
   LF: LogFont;
   OpenFile: OpenFileName;
-  Ret: Boolean;
+  Ret: WinBool;
   FName: PChar;
   FFilter: string;
   SizeStr:Integer;
@@ -1505,19 +1505,19 @@ Begin
   Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
   case CompStyle of
   csColorDialog:
-   Begin
+  Begin
     //CC := LPChooseColor(@Sender)^;
     ZeroMemory(@CC, SizeOf(TChooseColor));
     With CC Do
     Begin
       LStructSize := SizeOf(TChooseColor);
       HWndOwner := GetOwnerHandle(Sender);
-      RGBResult := TColorDialog(Sender).Color;
+      RGBResult := ColorToRGB(TColorDialog(Sender).Color);
       LPCustColors := @CustomColors;
       Flags := CC_FullOpen Or CC_RGBInit;
     End;
     Ret := ChooseColor(@CC)
-   End;
+  End;
   csOpenFileDialog, csSaveFileDialog:
   With TOpenDialog(Sender) do
   Begin
@@ -1631,8 +1631,8 @@ Begin
     lpszTitle := PChar(Sender.Title);
     ulFlags := BIF_RETURNONLYFSDIRS;
     lpfn := @BrowseForFolderCallback;
-    lParam := LongInt(PChar(Sender.InitialDir));  // this value will be passed to
-                                     // callback proc as lpData
+    // this value will be passed to callback proc as lpData
+    lParam := LclType.LParam(PChar(Sender.InitialDir));
   End;
 
   iidl := SHBrowseForFolder(@bi);
@@ -1778,13 +1778,12 @@ End;
            may be nice to use it with different panels.
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetText(Window: HWND; Data: Pointer);
-Type
-  PMsg = ^TLMSetControlText;
 Begin
-  Case PMsg(Data)^.FCompStyle Of
+  Case PLMSetControlText(Data)^.FCompStyle Of
     csStatusBar:
     Begin
-      SendMessage(Window, SB_SETTEXT, WParam(PMsg(Data)^.Panel), LParam(LPSTR(PMsg(Data)^.UserData)));
+      Windows.SendMessage(Window, SB_SETTEXT, Windows.WParam(PLMSetControlText(Data)^.Panel),
+        Windows.LParam(LPSTR(PLMSetControlText(Data)^.UserData)));
     End
     Else
       AssertEx('STOPPOK: [TWin32Object.SetText] Possible superfluous use of SetText, use SetLabel instead!', False, 2);
@@ -1825,7 +1824,6 @@ Var
   R: TRect;
   //TCI: TC_ITEM;
 Const
-  BitsPerPixel: Array[Boolean] Of Cardinal = (3, 1);
   ComboBoxStyles: array[TComboBoxStyle] of DWORD = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
@@ -1944,14 +1942,7 @@ Begin
     End;
     csImage:
     Begin
-     writeln('WARNING: Creation of csImage inside LM_CREATE - It shouldn''t be here');
-     // The bitmap creation is done inside TBitMap.HandleNeeded
-     // For now, just commented the code. Todo: remove it later if really not needed
-     // DC := Windows.GetDC(Handle);
-     // With TImage(Sender).Picture.Bitmap Do
-     //  Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
-     // SetOwner(Window, Sender);
-     // ReleaseDC(Handle, DC);
+      // nothing to do
     End;
     csListBox, csCheckListBox:
     Begin
@@ -2009,15 +2000,15 @@ Begin
       Case TCustomForm(Sender).BorderStyle of
       //bsSizeable:; -> Default
       bsSingle:
-        Flags:= Flags and (not WS_THICKFRAME);
+        Flags:= Flags and DWORD(not WS_THICKFRAME);
       bsDialog:
-        Flags:= Flags and (not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
+        Flags:= Flags and DWORD(not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
       bsNone:
         Flags:= WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
       bsToolWindow:
       Begin
         FlagsEx:=WS_EX_TOOLWINDOW;
-        Flags:= Flags and (not WS_THICKFRAME);
+        Flags:= Flags and DWORD(not WS_THICKFRAME);
       End;
       bsSizeToolWin:
         FlagsEx:=WS_EX_TOOLWINDOW;
@@ -2166,7 +2157,7 @@ Begin
       Assert(False, 'Trace:Create a csPage component.');
       FlagsEx := WS_EX_CONTROLPARENT;
       pClassName := @ClsName;
-      Flags := Flags and not WS_VISIBLE;
+      Flags := Flags and DWORD(not WS_VISIBLE);
       DoSubClass := false;
     End;
     csPanel:
@@ -2231,7 +2222,7 @@ Begin
       Begin
         //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
         Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-        Window := CreateUpDownControl(Flags Or WS_Border or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT,
+        Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT),
           0, 0,       // pos -  ignored for buddy
           0, 0,       // size - ignored for buddy
           Parent, 0, HInstance, Buddy,
@@ -2267,10 +2258,10 @@ Begin
     begin
       if DoSubClass then
         SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
-      SendMessage(Window, WM_SETFONT, FMessageFont, 0);
+      Windows.SendMessage(Window, WM_SETFONT, WParam(FMessageFont), 0);
     end;
     If Buddy <> HWND(Nil) Then
-      SendMessage(Buddy, WM_SETFONT, FMessageFont, 0);
+      Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
   End
   Else If (Sender Is TMenuItem) Then
     TMenuItem(Sender).Handle := Window
@@ -2307,7 +2298,7 @@ Begin
   case CompStyle of
     csCListBox:
     begin
-      SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
+      Windows.SendMessage(Window, LB_SETCOLUMNWIDTH, Windows.WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
     end;
     csFrame, csGroupBox:
       TWinControl(Sender).InvalidateClientRectCache(true);
@@ -2358,7 +2349,7 @@ Begin
       Windows.ShowWindow(Handle, SW_SHOW);
     end;
     If (Sender Is TCustomForm) Then
-      SetClassLong(Handle, GCL_HIcon, TCustomForm(Sender).GetIconHandle);
+      SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
   End
   Else
   Begin
@@ -2421,7 +2412,7 @@ End;
 Procedure TWin32Object.RemoveNBPage(Parent: TObject; Index: Integer);
 Begin
   Assert(false, 'Trace:Removing a notebook page');
-  SendMessage((Parent As TCustomNotebook).Handle, TCM_DELETEITEM, WPARAM(Index), 0);
+  Windows.SendMessage((Parent As TCustomNotebook).Handle, TCM_DELETEITEM, Windows.WPARAM(Index), 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -2513,10 +2504,10 @@ Begin
     csTrackbar:
       If (Handle <> HWnd(Nil)) Then
       Begin
-        Integer(Data^) := Round(SendMessage(Handle, TBM_GETRANGEMAX, 0, 0) - SendMessage(Handle, TBM_GETRANGEMIN, 0, 0));
+        LResult(Data^) := SendMessage(Handle, TBM_GETRANGEMAX, 0, 0) - SendMessage(Handle, TBM_GETRANGEMIN, 0, 0);
       End
       Else
-        Integer(Data^) := 0;
+        LResult(Data^) := 0;
     csRadiobutton, csCheckbox:
       case SendMessage(Handle, BM_GETCHECK, 0, 0) of
         BST_CHECKED: TCheckBoxState(Data^) := cbChecked;
@@ -2589,22 +2580,22 @@ Begin
       SendMessage(Handle,MCM_SETCURSEL, 0, Integer(@ST));
     End;
     csProgressBar:
-      SendMessage(Handle, PBM_SETPOS, WPARAM(Data^), 0);
+      Windows.SendMessage(Handle, PBM_SETPOS, Windows.WPARAM(Data^), 0);
     csTrackbar:
     Begin
       If Handle = HWnd(Nil) Then
         Exit;
       Assert(False, 'TRACE:Setting the track bar value.');
-      SendMessage(Handle, TBM_SETPOS, WPARAM(True), LPARAM(Data^));
+      Windows.SendMessage(Handle, TBM_SETPOS, Windows.WPARAM(True), Windows.LPARAM(Data^));
     End;
     csRadiobutton, csCheckbox:
     Begin
       If TCheckBoxState(Data^) = cbChecked Then
-        SendMessage(Handle, BM_SETCHECK, WParam(BST_CHECKED), 0)
+        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_CHECKED), 0)
       Else If TCheckboxState(Data^) = cbUnchecked Then
-        SendMessage(Handle, BM_SETCHECK, WParam(BST_UNCHECKED), 0)
+        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0)
       Else
-        SendMessage(Handle, BM_SETCHECK, WParam(BST_INDETERMINATE), 0);
+        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_INDETERMINATE), 0);
     End
     Else
       Assert (True, Format('Trace:WARNING: [TWin32Object.SetValue] failed for %S', [Sender.ClassName]));
@@ -2624,7 +2615,7 @@ Var
   Handle: HWND;
   I: Integer;
   LVC: LV_COLUMN;
-  Style: DWord;
+  Style: Integer;
 begin
   Result := 0; // default if nobody sets it
 
@@ -2642,8 +2633,8 @@ begin
   csEdit:
     With (TCustomEdit(Sender)) Do
     Begin
-      SendMessage(Handle, EM_SETREADONLY, WPARAM(ReadOnly), 0);
-      SendMessage(Handle, EM_LIMITTEXT, MaxLength, 0);
+      Windows.SendMessage(Handle, EM_SETREADONLY, Windows.WPARAM(ReadOnly), 0);
+      Windows.SendMessage(Handle, EM_LIMITTEXT, Windows.WPARAM(MaxLength), 0);
     End;
 
   csListView:
@@ -2672,7 +2663,7 @@ begin
     End;
 
   csProgressBar:
-    With (TProgressBar(Sender)) Do
+    With TProgressBar(Sender) Do
     Begin
       { smooth and vertical need window recreation }
       if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
@@ -2717,11 +2708,11 @@ begin
   csTrackbar:
     With(TTrackBar(Sender)) Do
     Begin
-      SendMessage(Handle, TBM_SETRANGEMAX, WPARAM(True), Max);
-      SendMessage(Handle, TBM_SETRANGEMIN, WPARAM(True), Min);
-      SendMessage(Handle, TBM_SETPOS, WPARAM(True), Position);
-      SendMessage(Handle, TBM_SETLINESIZE, 0, LineSize);
-      SendMessage(Handle, TBM_SETPAGESIZE, 0, PageSize);
+      Windows.SendMessage(Handle, TBM_SETRANGEMAX, Windows.WPARAM(True), Max);
+      Windows.SendMessage(Handle, TBM_SETRANGEMIN, Windows.WPARAM(True), Min);
+      Windows.SendMessage(Handle, TBM_SETPOS, Windows.WPARAM(True), Position);
+      Windows.SendMessage(Handle, TBM_SETLINESIZE, 0, LineSize);
+      Windows.SendMessage(Handle, TBM_SETPAGESIZE, 0, PageSize);
       Case Orientation Of
         trVertical:
           SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or TBS_VERT);
@@ -2769,11 +2760,11 @@ begin
       End;
       // Experimental wordwrapping support
       If Wordwrap Then
-        Style := Style And Not SS_LEFTNOWORDWRAP
+        Style := Style and not SS_LEFTNOWORDWRAP
       Else
-        Style := Style Or SS_LEFTNOWORDWRAP;
+        Style := Style or SS_LEFTNOWORDWRAP;
 
-      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or Style);
+      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or Style);
       Assert(False, 'TRACE:Wordwrapping of labels is not currently implemented');
       Assert(False, 'Trace:TODO: Code wordwrapping labels');
     End;
@@ -2907,6 +2898,9 @@ End;
 
 {
   $Log$
+  Revision 1.154  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.153  2003/12/27 16:47:18  micha
   fix dialogs owner handle, fixes focusing issue
 

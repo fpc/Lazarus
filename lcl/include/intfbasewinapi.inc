@@ -75,13 +75,13 @@ begin
 end;
 
 function TInterfaceBase.CallNextHookEx(hhk : HHOOK; ncode : Integer;
-  wParam, lParam : Longint) : Integer;
+  WParam: WParam; LParam: LParam) : Integer;
 begin
   Result := 0;
 end;
 
 function TInterfaceBase.CallWindowProc(lpPrevWndFunc: TFarProc; Handle: HWND;
-  Msg: UINT; wParam, lParam: LongInt): Integer;
+  Msg: UINT; WParam: WParam; LParam: LParam): Integer;
 begin
   Result:=0;
 end;
@@ -1056,7 +1056,7 @@ begin
 end;
 
 function TInterfaceBase.PostMessage(Handle: HWND; Msg: Cardinal;
-  wParam: LongInt; lParam: LongInt): Boolean;
+  WParam: WParam; LParam: LParam): Boolean;
 begin
   Result := False;
 end;
@@ -1230,7 +1230,7 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
+function TInterfaceBase.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 begin
   Result := 0;
 end;
@@ -1397,6 +1397,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.2  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 

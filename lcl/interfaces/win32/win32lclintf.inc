@@ -44,7 +44,7 @@ Begin
   if AMenuItem.Checked then CheckFlag := MF_CHECKED
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
-  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> $FFFFFFFF;
+  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> DWORD($FFFFFFFF);
 End;
 
 {------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ Begin
   if AMenuItem.Enabled then EnableFlag := MF_ENABLED
   else EnableFlag := MF_GRAYED;
   EnableFlag := EnableFlag or MF_BYCOMMAND;
-  Result := Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag);
+  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
 End;
 
 
@@ -73,6 +73,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.3  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

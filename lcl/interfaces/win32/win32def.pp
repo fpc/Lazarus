@@ -1,11 +1,11 @@
 { $Id$
-                         ------------------------------ 
+                         ------------------------------
                          gtkdef.pp  -  Type definitions
-                         ------------------------------ 
+                         ------------------------------
 
  @created(Wed Jan 24st WET 2001)
  @lastmod($Date$)
- @author(Marc Weustink <marc@@lazarus.dommelstein.net>)                       
+ @author(Marc Weustink <marc@@lazarus.dommelstein.net>)
 
  This unit contains type definitions needed in the Windows <-> LCL interface
 
@@ -27,7 +27,7 @@ Unit Win32Def;
 
 {$mode objfpc}{$H+}
 
-Interface 
+Interface
 
 Uses
   Windows, VCLGlobals, Classes, LCLType;
@@ -38,7 +38,7 @@ Const
   MCM_GETCURSEL = MCM_FIRST + 1;
   MCM_SETCURSEL =  MCM_FIRST + 2;
 
-Type 
+Type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
 
@@ -112,22 +112,22 @@ Type
   TWinControlInfo = Record
     ImplementationControl: HWND; // used to be "fixed" or "core-child"
     UpdateRect: TRect; // used by LM_Paint, beginpaint etc
-    WndProc: Integer; // window data 
+    WndProc: Integer; // window data
     Style: Integer;
     ExStyle: Integer;
     UserData: Integer;
   End;
 
-type
   { lazarus win32 Interface definition for additional timer data needed to find the callback}
   PWin32TimerInfo = ^TWin32Timerinfo;
   TWin32TimerInfo = record
     TimerID: UINT;         // the windows timer ID for this timer
     TimerFunc: TFNTimerProc; // owner function to handle timer
   end;
+
   // In the way that ScrollWindow is implemented at Windows unit
   // It's not possible to pass a pointer as argument
-  // which prevents the use of nil   
+  // which prevents the use of nil
   function ScrollWindow(hWnd:HWND; XAmount:longint; YAmount:longint;lpRect,lpClipRect:LPRECT):WINBOOL; external 'user32' name 'ScrollWindow';
 var
   // FTimerData contains the currently running timers
@@ -140,6 +140,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.9  2003/10/02 11:18:09  mattias
   clean ups from Karl
 

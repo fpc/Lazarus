@@ -56,14 +56,14 @@ begin
   Result := InterfaceObject.BringWindowToTop(hWnd);
 end;
 
-function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
+function CallNextHookEx(hhk : HHOOK; ncode : Integer; WParam: WParam; LParam: LParam) : Integer;
 begin
-  Result := InterfaceObject.CallNExtHookEx(hhk,ncode,wparam,lParam);
+  Result := InterfaceObject.CallNextHookEx(hhk, ncode, WParam, LParam);
 end;
 
-Function CallWindowProc(lpPrevWndFunc :TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer;
+Function CallWindowProc(lpPrevWndFunc :TFarProc; Handle : HWND; Msg : UINT; WParam: WParam; LParam: LParam): Integer;
 begin
-  Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, wParam, lParam);
+  Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, WParam, LParam);
 end;
 
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
@@ -573,10 +573,9 @@ begin
   Result := InterfaceObject.Polyline(DC,Points,NumPts);
 end;
 
-function PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
-  lParam: LongInt): Boolean;
+function PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean;
 begin
-  Result := InterfaceObject.PostMessage(Handle, Msg, wParam, lParam);
+  Result := InterfaceObject.PostMessage(Handle, Msg, WParam, LParam);
 end;
 
 function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean;
@@ -634,9 +633,9 @@ begin
   Result := InterfaceObject.ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip, hrgnUpdate, prcUpdate, flags);
 end;
 
-function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer;
+function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 begin
-  Result := InterfaceObject.SendMessage(HandleWnd, Msg, wParam, lParam);
+  Result := InterfaceObject.SendMessage(HandleWnd, Msg, WParam, LParam);
 end;
 
 function SetActiveWindow(Handle: HWND): HWND;
@@ -1171,7 +1170,7 @@ end;
             B: Blue Color
   Returns:  The return value is the resultant RGB color
 
-  The RGB macro selects a red, green, blue (RGB) color based on the arguments 
+  The RGB macro selects a red, green, blue (RGB) color based on the arguments
   supplied and the color capabilities of the output device.
  ------------------------------------------------------------------------------}
 
@@ -1297,6 +1296,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.105  2003/12/16 14:01:27  mattias
   fixed compilation gtk and fpc 1.9
 

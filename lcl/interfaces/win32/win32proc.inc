@@ -410,7 +410,8 @@ End;
 
   GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
-Procedure GetWin32KeyInfo(Const Event: Integer; Var KeyCode, VirtualKey: Word; Var SysKey, Extended, Toggle: Boolean);
+{
+Procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer; var SysKey, Extended, Toggle: Boolean);
 Const
   MVK_UNIFY_SIDES = 1;
 Begin
@@ -421,7 +422,7 @@ Begin
   ExtEnded := (SysKey) Or (VirtualKey = VK_INSERT) Or (VirtualKey = VK_HOME) Or (VirtualKey = VK_LEFT) Or (VirtualKey = VK_UP) Or (VirtualKey = VK_RIGHT) Or (VirtualKey = VK_DOWN) Or (VirtualKey = VK_PRIOR) Or (VirtualKey = VK_NEXT) Or (VirtualKey = VK_END) Or (VirtualKey = VK_DIVIDE);
   Toggle := Lo(GetKeyState(VirtualKey)) = 1;
 End;
-
+}
 {------------------------------------------------------------------------------
   Function: DeliverMessage
   Params:    Message - The message to process
@@ -558,16 +559,16 @@ var
 begin
   Result:=false;
   Window:= Sender.Handle;
-  GetWindowSize(Window,IntfWidth,IntfHeight);
-  if (Sender.Width=IntfWidth)
-  and (Sender.Height=IntfHeight)
+  GetWindowSize(Window, IntfWidth, IntfHeight);
+  if (Sender.Width = IntfWidth)
+  and (Sender.Height = IntfHeight)
   and (not Sender.ClientRectNeedsInterfaceUpdate) then
     exit;
   Result:=true;
   if SendSizeMsgOnDiff then begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
     Sender.InvalidateClientRectCache(true);
-    SendMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth,IntfHeight));
+    SendMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth, IntfHeight));
   end;
 end;
 
@@ -577,13 +578,13 @@ end;
 Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
 Begin
   Assert(False, 'Trace:TODO: Code SetAccelGroup');
-  SetProp(Control, 'AccelGroup', Pointer(AnAccelGroup));
+  Windows.SetProp(Control, 'AccelGroup', AnAccelGroup);
 End;
 
 Function GetAccelGroup(Const Control: HWND): HACCEL;
 Begin
   Assert(False, 'Trace:TODO: Code GetAccelGroup');
-  Result := HACCEL(GetProp(Control, 'AccelGroup'));
+  Result := HACCEL(Windows.GetProp(Control, 'AccelGroup'));
 End;
 
 Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
@@ -610,7 +611,7 @@ var AccelCount: integer; {number of accelerators in table}
     end;
   end;
 
-  function GetVirtFromState(const AState: TShiftState): word;
+  function GetVirtFromState(const AState: TShiftState): Byte;
   begin
     Result := FVIRTKEY;
     if ssAlt in AState then Result := Result or FALT;
@@ -735,6 +736,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.35  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.34  2003/12/27 16:47:18  micha
   fix dialogs owner handle, fixes focusing issue
 

@@ -1205,8 +1205,8 @@ begin
       );
       {$ENDIF}
     end;
-    Control.Perform(TheMessage.Msg, TheMessage.Keys,
-                    LongInt(PointtoSmallPoint(P)));
+    Control.Perform(TheMessage.Msg, WParam(TheMessage.Keys),
+                    LParam(PointtoSmallPoint(P)));
     Result := True;
   end;
 end;
@@ -1332,7 +1332,7 @@ begin
           MoveWindowOrg(DC, Left, Top);
           //writeln('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
           IntersectClipRect(DC, 0, 0, Width, Height);
-          Perform(LM_PAINT, DC, 0);
+          Perform(LM_PAINT, WParam(DC), 0);
           RestoreDC(DC, SaveIndex);
           Exclude(FControlState, csPaintCopy);
         end;
@@ -1377,7 +1377,7 @@ begin
   {$ENDIF}
 
   Message.Msg := LM_PAINT;
-  Message.WParam := DC;
+  Message.WParam := WParam(DC);
   Message.LParam := 0;
   Message.Result := 0;
   DefaultHandler(Message);
@@ -1487,7 +1487,7 @@ var
                     (Enabled or AllowDisabled)
                     and
                     (Perform(CM_HITTEST, 0,
-                             LongInt(PointtoSmallPoint(ControlPos))) <> 0)
+                             LParam(PointtoSmallPoint(ControlPos))) <> 0)
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
@@ -2073,7 +2073,7 @@ end;
 Procedure TWinControl.InsertControl(AControl : TControl);
 Begin
   AControl.ValidateContainer(Self);
-  Perform(CM_CONTROLLISTCHANGE, Integer(AControl), Integer(True));
+  Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
   Insert(AControl);
   if not (csReadingState in AControl.ControlState) then
   begin
@@ -2090,7 +2090,7 @@ Begin
     //writeln('TWinControl.InsertControl ',Name,':',ClassName);
   end;
   AControl.RequestAlign;
-  Perform(CM_CONTROLCHANGE, Integer(AControl), Integer(True));
+  Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
 End;
 
 {------------------------------------------------------------------------------}
@@ -2098,7 +2098,7 @@ End;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.RemoveControl(AControl : TControl);
 Begin
-  Perform(CM_CONTROLCHANGE, Integer(AControl), Integer(False));
+  Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
   if AControl is TWinControl then
     with TWinControl(AControl) do
     begin
@@ -2109,7 +2109,7 @@ Begin
     if HandleAllocated then
       AControl.InvalidateControl(AControl.Visible, False, True);
   Remove(AControl);
-//  Perform(CM_CONTROLLISTCHANGE, Integer(AControl), Integer(False));
+//  Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(False));
   Realign;
 End;
 
@@ -2413,7 +2413,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMPaint(var Msg: TLMPaint);
 var
-  DC,MemDC : HDC;
+  DC,MemDC: HDC;
 {$ifdef BUFFERED_WMPAINT}
   MemBitmap, OldBitmap : HBITMAP;
   MemWidth: Integer;
@@ -2462,7 +2462,7 @@ begin
 {$ENDIF}
       // erase background
       Include(FFlags,wcfEraseBackground);
-      Perform(LM_ERASEBKGND, MemDC, 0);
+      Perform(LM_ERASEBKGND, WParam(MemDC), 0);
       Exclude(FFlags,wcfEraseBackground);
       // create a paint message to paint the child controls.
       // WMPaint expects the DC origin to be equal to the client origin of its
@@ -2472,7 +2472,7 @@ begin
       MoveWindowOrgEx(MemDC,ClientBoundRect.Left,ClientBoundRect.Top);
       // handle the paint message
       Msg.DC := MemDC;
-      Perform(LM_PAINT, MemDC, 0);
+      Perform(LM_PAINT, WParam(MemDC), 0);
       Msg.DC := 0;
       // restore the DC origin
       MoveWindowOrgEx(MemDC,-ClientBoundRect.Left,-ClientBoundRect.Top);
@@ -3166,6 +3166,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.184  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.183  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

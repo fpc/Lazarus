@@ -30,7 +30,7 @@ uses
   Classes, SysUtils, FPCAdds, LResources, VCLGlobals, LCLType, LCLStrConsts,
   Controls, Dialogs, GraphType, Graphics, ExtCtrls, StdCtrls, Forms, FileCtrl,
   Calendar, Buttons;
-  
+
 type
 
   { TPreviewFileControl }
@@ -63,10 +63,10 @@ type
     constructor Create(TheOwner: TComponent); override;
     property PreviewFileControl: TPreviewFileControl read FPreviewFileControl;
   end;
-  
-  
+
+
   { TOpenPictureDialog }
-  
+
   TOpenPictureDialog = class(TPreviewFileDialog)
   private
     FDefaultFilter: string;
@@ -91,15 +91,15 @@ type
   published
     property Filter stored IsFilterStored;
   end;
-  
-  
+
+
   { TSavePictureDialog }
-  
+
   TSavePictureDialog = class(TOpenPictureDialog)
   public
     constructor Create(TheOwner: TComponent); override;
   end;
-  
+
 { ---------------------------------------------------------------------
   Calculator Dialog
   ---------------------------------------------------------------------}
@@ -267,7 +267,7 @@ end;
 procedure TPreviewFileControl.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style and not WS_CHILD;
+  Params.Style := Params.Style and DWORD(not WS_CHILD);
 end;
 
 constructor TPreviewFileControl.Create(TheOwner: TComponent);
@@ -387,7 +387,7 @@ begin
     Name:='FPictureGroupBox';
     Align:=alClient;
   end;
-  
+
   FImageCtrl:=TImage.Create(Self);
   with FImageCtrl do begin
     Name:='FImageCtrl';

@@ -529,7 +529,7 @@ begin
   HintInfo.HideTimeout := FHintHidePause;
   HintInfo.HintWindowClass := HintWindowClass;
   HintInfo.HintData := nil;
-  CanShow := FHintControl.Perform(CM_HINTSHOW, 0, Longint(@HintInfo)) = 0;
+  CanShow := FHintControl.Perform(CM_HINTSHOW, 0, LParam(@HintInfo)) = 0;
   if CanShow and Assigned(FOnShowHint) then
     FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
   if CanShow and (FHintControl <> nil) and (HintInfo.HintStr <> '') then
@@ -1117,6 +1117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.68  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

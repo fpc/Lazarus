@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType;
-  
+
 type
   TMethodList = class
   private
@@ -62,7 +62,7 @@ function ShortCutTextToShortCut(const ShortCutText: string): TShortCut;
 // Hooks used to prevent unit circles
 type
   TSendApplicationMessageFunction =
-    function(Msg: Cardinal; WParam, LParam: Longint):Longint;
+    function(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
   TOwnerFormDesignerModifiedProc =
     procedure(AComponent: TComponent);
   TSendMessageToInterfaceFunction =
@@ -75,7 +75,7 @@ var
   // SendMsgToInterface is set in interfacebase.pp
   SendMsgToInterface: TSendMessageToInterfaceFunction;
 
-function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
+function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
@@ -84,7 +84,7 @@ procedure RaiseGDBException(const Msg: string);
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   var Left,Top,Width,Height: integer);
-  
+
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 
@@ -246,11 +246,11 @@ begin
   end;
 end;
 
-function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint
+function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam
   ): Longint;
 begin
   if SendApplicationMessageFunction<>nil then
-    Result:=SendApplicationMessageFunction(Msg,WParam,LParam)
+    Result:=SendApplicationMessageFunction(Msg, WParam, LParam)
   else
     Result:=0;
 end;

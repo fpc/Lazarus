@@ -18,7 +18,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- 
+
   Abstract:
     TTreeView for LCL
 
@@ -34,7 +34,7 @@
 const
   TTreeNodeStreamVersion : word = 1;
   TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^';
-  
+
   // maximum scroll range
   //MAX_SCROLL = 32767;
 
@@ -3300,7 +3300,7 @@ begin
       AnInsertMarkType:=tvimAsFirstChild;
     end;
   end;
-  
+
   // normalize (try to replace tvimAsPrevSibling)
   if (AnInsertMarkType=tvimAsPrevSibling) and (AnInsertMarkNode<>nil) then begin
     if (AnInsertMarkNode.GetPrevSibling<>nil) then begin
@@ -3446,15 +3446,15 @@ end;
 procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  
+
   case Key of
-  
+
   VK_Down:
     if (Selected<>nil) and (Selected.GetNextExpanded<>nil) then begin
       Selected:=Selected.GetNextExpanded;
       Key:=VK_UNKNOWN;
     end;
-    
+
   VK_Up:
     if (Selected<>nil) and (Selected.GetPrevExpanded<>nil) then begin
       Selected:=Selected.GetPrevExpanded;
@@ -3463,10 +3463,10 @@ begin
 
   VK_Left:
     if (Selected<>nil) then Selected.Expanded:=false;
-    
+
   VK_Right:
     if (Selected<>nil) then Selected.Expanded:=true;
-    
+
   end;
 end;
 
@@ -3514,7 +3514,7 @@ var
   ScrollInfo: TScrollInfo;
 begin
   if not (tvsScrollbarChanged in FStates) then exit;
-  
+
   if not HandleAllocated or (FUpdateCount>0) then
     exit;
 
@@ -3972,7 +3972,7 @@ begin
             with PointToSmallPoint(ScreenToClient(MousePos)) do
             begin
               FRClickNode := GetNodeAt(X, Y);
-              Perform(WM_CONTEXTMENU, Handle, Integer(PointToSmallPoint(MousePos)));
+              Perform(WM_CONTEXTMENU, WParam(Handle), LParam(PointToSmallPoint(MousePos)));
               FRClickNode := nil;
             end
           else
@@ -4277,14 +4277,14 @@ var
       end;
     end;
   end;
-  
+
   procedure DrawInsertMark;
   var
     InsertMarkRect: TRect;
     x: Integer;
   begin
     case InsertMarkType of
-    
+
     tvimAsFirstChild:
       if InsertMarkNode=Node then begin
         // draw insert mark for new first child
@@ -4307,7 +4307,7 @@ var
           Rectangle(InsertMarkRect);
         end;
       end;
-      
+
     tvimAsPrevSibling:
       if InsertMarkNode=Node then begin
         // draw insert mark for new previous sibling
@@ -4329,7 +4329,7 @@ var
           Rectangle(InsertMarkRect);
         end;
       end;
-      
+
     tvimAsNextSibling:
       if InsertMarkNode=Node then begin
         // draw insert mark for new next sibling
@@ -4352,7 +4352,7 @@ var
           Rectangle(InsertMarkRect);
         end;
       end;
-      
+
     end;
   end;
 
@@ -4601,9 +4601,9 @@ begin
       Selected:=GetNodeAt(X,Y);
     end;
   end;
-  
+
   inherited MouseDown(Button, Shift, X, Y);
-  
+
   CursorNode:=GetNodeAt(X,Y);
   bStartDrag := false;
   if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
@@ -4876,7 +4876,7 @@ begin
       if not (tvsDragged in FStates) then begin
         GetCursorPos(MousePos);
         P:=PointToSmallPoint(ScreenToClient(MousePos));
-        Perform(LM_LBUTTONUP, 0, MakeLong(P.X, P.Y));
+        Perform(LM_LBUTTONUP, 0, LParam(MakeLong(P.X, P.Y)));
       end
       else begin
         Node := GetNodeAt(AMessage.XPos, AMessage.YPos);

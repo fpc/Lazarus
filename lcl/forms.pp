@@ -1205,7 +1205,7 @@ begin
   end;
 end;
 
-function SendApplicationMsg(Msg: Cardinal; WParam, LParam: Longint): Longint;
+function SendApplicationMsg(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
 begin
   if (Application<>nil) and (Application.HandleAllocated) then
     Result := SendMessage(Application.Handle, Msg, WParam, LParam)

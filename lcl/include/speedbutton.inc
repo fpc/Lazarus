@@ -3,7 +3,7 @@
 {******************************************************************************
                                    TSpeedButton
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -65,7 +65,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TSpeedbutton.Click
-  Params: 
+  Params:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
@@ -82,7 +82,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.SetAllowAllUp(Value : Boolean);
 begin
-  if FAllowAllUp <> Value 
+  if FAllowAllUp <> Value
   then begin
     FAllowAllUp := Value;
     UpdateExclusive;
@@ -149,7 +149,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.SetGroupIndex(const Value : Integer);
 begin
-  if FGroupIndex <> Value 
+  if FGroupIndex <> Value
   then begin
     FGroupIndex := Value;
     UpdateExclusive;
@@ -263,7 +263,7 @@ procedure TSpeedButton.UpdateExclusive;
 var
   msg : TLMessage;
 begin
-  if (FGroupIndex <> 0) and (Parent <> nil) 
+  if (FGroupIndex <> 0) and (Parent <> nil)
   then begin
     MSg.MSg := CM_ButtonPressed;
     Msg.WParam := FGroupIndex;
@@ -344,10 +344,10 @@ begin
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
     GlyphWidth:=GlyphWidth div NumGlyphs;
   GlyphHeight:=TButtonGlyph(FGlyph).Glyph.Height;
-  
+
   ClientSize.cx:= PaintRect.Right - PaintRect.Left;
   ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
-  
+
   if Caption <> '' then begin
     TMP := Caption;
     SIndex := DeleteAmpersands(TMP);
@@ -368,9 +368,9 @@ begin
     S:= 0
   else
     S:= Spacing;
-  
+
   { Calculate caption and glyph layout }
-  
+
   if Margin = -1 then begin
     if S = -1 then begin
       TotalSize.cx:= TextSize.cx + GlyphWidth;
@@ -387,7 +387,7 @@ begin
         M:= (ClientSize.cx - TotalSize.cx + 1) div 2
       else
         M:= (ClientSize.cy - TotalSize.cy + 1) div 2
-    end;  
+    end;
   end else begin
     if S = -1 then begin
       TotalSize.cx:= ClientSize.cx - (Margin + GlyphWidth);
@@ -398,7 +398,7 @@ begin
       	S:= (TotalSize.cy - TextSize.cy) div 2;
     end;
     M:= Margin
-  end;  
+  end;
 
   case Layout of
     blGlyphLeft : begin
@@ -423,9 +423,9 @@ begin
       Offset.X:= (ClientSize.cx - GlyphWidth + 1) div 2;
       Offset.Y:= ClientSize.cy - M - GlyphHeight;
       OffsetCap.X:= (ClientSize.cx - TextSize.cx + 1) div 2;
-      OffsetCap.Y:= Offset.Y - S - TextSize.cy; 
+      OffsetCap.Y:= Offset.Y - S - TextSize.cy;
     end;
-  end;  
+  end;
 
   FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if Caption <> '' then begin
@@ -452,7 +452,7 @@ begin
     //writeln('TSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
     Canvas.TextRect(PaintRect, 0, 0, Caption, TXTStyle);
   end;
-  
+
   inherited Paint;
 end;
 
@@ -489,7 +489,7 @@ procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if csDesigning in ComponentState then exit;
-  
+
   if (Button = mbLeft) and Enabled
   then begin
     if not FDown
@@ -515,14 +515,14 @@ begin
   inherited MouseMove(Shift, X, Y);
   if csDesigning in ComponentState then exit;
 
-  if FDragging 
+  if FDragging
   then begin
     Assert(False,'Trace:FDragging is true');
     if not FDown then
       NewState := bsUp
     else
       NewState := bsExclusive;
-    
+
     if  (X >= 0) and (X < Width)
     and (Y >= 0) and (Y < Height)
     then begin
@@ -531,8 +531,8 @@ begin
       else
         NewState := bsDown;
     end;
-    
-    if NewState <> FState 
+
+    if NewState <> FState
     then begin
       FState := NewState;
       Invalidate;
@@ -560,7 +560,7 @@ begin
   then begin
     FDragging := False;
 
-    if FGroupIndex = 0 
+    if FGroupIndex = 0
     then begin
       FState := bsUp;
 //      FMouseInControl := False;
@@ -617,12 +617,12 @@ var
   Sender : TSpeedButton;
 begin
   if csDesigning in ComponentState then exit;
-  if Message.WParam = FGroupIndex
+  if Message.WParam = WParam(FGroupIndex)
   then begin
     Sender := TSpeedButton(Message.LParam);
-    if Sender <> Self 
+    if Sender <> Self
     then begin
-      if Sender.Down and FDown 
+      if Sender.Down and FDown
       then begin
         FDown := False;
         FState := bsUp;
@@ -658,7 +658,7 @@ procedure TSpeedButton.CMMouseEnter(var Message :TLMessage);
 begin
   inherited CMMouseEnter(Message);
   if csDesigning in ComponentState then exit;
-  
+
   if not FMouseInControl
   and Enabled and (GetCapture = 0)
   then begin
@@ -698,6 +698,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.43  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -1,4 +1,4 @@
-{ 
+{
   Extra Win32 code that's not in the RTL.
   Copyright (C) 2001, 2002 Keith Bowes.
 
@@ -128,7 +128,7 @@ End;
 
 Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
 Var
-  InsPt: Byte;
+  InsPt: Integer;
 Begin
   Result := Str;
   Repeat
@@ -147,7 +147,7 @@ End;
 Function Split(Const Str: String; SplitStr: String; Count: Integer;
   Const CaseSensitive: Boolean): TStringList;
 Var
-  LastP, P: Byte;
+  LastP, P: Integer;
   OrigCt: Integer;
   S: String;
 Begin

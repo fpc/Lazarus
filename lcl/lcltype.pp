@@ -72,50 +72,59 @@ type
 {$ENDIF}
 
 
-{$if defined(VER1_0) or not(defined(win32))}
+{$ifndef win32}
   { Provided for compatibility with Windows registry ONLY }
-  HKEY = Integer;
-  PHKEY = ^HKEY;
-  HDC = type LongWord;
+  HKEY  = Integer;
+  HDC   = type LongWord;
   HHOOK = type LongWord;
   HFONT = type LongWord;
   HGDIOBJ = type LongWord;
-  HPEN = type LongWord;
-  HRGN = type Longword;
+  HPEN  = type LongWord;
+  HRGN  = type LongWord;
   HINST = type LongWord;
   HICON = type LongWord;
   HCURSOR = HICON;
-  Bool = LongBool;
+  Bool    = LongBool;
   HGLOBAL = THandle;
-  Short = SmallInt;
-  hwnd    = THandle;
-  HMENU = type LongWord;
-  HBitmap = type LongWord;
-  HPalette = type LongWord;
+  Short   = SmallInt;
+  HWND    = THandle;
+  HMENU   = type LongWord;
+  HBITMAP = type LongWord;
+  HPALETTE = type LongWord;
 
   HBRUSH = type LongWord;
+
+  WPARAM = type LongInt;
+  LPARAM = type LongInt;
+  LRESULT = type LongInt;
+
 {$else}
-  HKEY = Windows.HKEY;
-  PHKEY = ^HKEY;
-  HDC = Windows.HDC;
+  HKEY  = Windows.HKEY;
+  HDC   = Windows.HDC;
   HHOOK = Windows.HHOOK;
   HFONT = Windows.HFont;
   HGDIOBJ = Windows.HGDIOBJ;
-  HPEN = Windows.HPEN;
-  HRGN = Windows.HRGN;
-  HINST = Windows.HINST;
-  HICON = Windows.HICON;
+  HPEN    = Windows.HPEN;
+  HRGN    = Windows.HRGN;
+  HINST   = Windows.HINST;
+  HICON   = Windows.HICON;
   HCURSOR = HICON;
-  Bool = Windows.Bool;
+  BOOL    = Windows.BOOL;
   HGLOBAL = Windows.HGLOBAL;
-  Short = Windows.Short;
-  hwnd    = Windows.hwnd;
-  HMENU = Windows.HMENU;
-  HBitmap = Windows.HBitmap;
-  HPalette = Windows.HPalette;
+  Short   = Windows.Short;
+  HWND    = Windows.HWND;
+  HMENU   = Windows.HMENU;
+  HBITMAP = Windows.HBITMAP;
+  HPALETTE = Windows.HPALETTE;
 
-  HBRUSH = Windows.HBrush;
+  HBRUSH = Windows.HBRUSH;
+
+  WPARAM = Windows.WPARAM;
+  LPARAM = Windows.LPARAM;
+  LRESULT = Windows.LRESULT;
 {$endif}
+
+  PHKEY = ^HKEY;
 
 // from Delphis sysutils.pas
   PByteArray = ^TByteArray;
@@ -146,10 +155,6 @@ const
   WHITENESS   = $00FF0062;     { dest = WHITE                     }
 
 type
-  WPARAM = longint;
-  LPARAM = LongInt;
-  LRESULT = LongInt;
-
   TKeyBoardState = array[0..255] of byte;
 
   PABC = ^TABC;
@@ -275,7 +280,7 @@ const
 //==============================================
 // Menu constants
 //==============================================
-                           
+
   MF_BYCOMMAND       = 0;
   MF_BYPOSITION      = $400;
   MF_BYHANDLE        = $800; // introduced by the LCL
@@ -307,9 +312,9 @@ const
   MF_RIGHTJUSTIFY    = $4000;
 
   MF_MOUSESELECT     = $8000;
-                           
+
   MF_UNSUPPORTED     = $FFFFFFFF;
-                           
+
 //==============================================
 // Keyboard constants
 //==============================================
@@ -1911,6 +1916,9 @@ end.
 
 {
   $Log$
+  Revision 1.53  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.52  2003/12/26 10:16:54  mattias
   changed TColorRef from longword to longint
 

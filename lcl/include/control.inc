@@ -61,7 +61,7 @@ begin
     if csLButtonDown in ControlState then begin
       GetCursorPos(p);
       P := ScreenToClient(p);
-      Perform(LM_LBUTTONUP,0,Longint(PointToSmallPoint(p)));
+      Perform(LM_LBUTTONUP, 0, LParam(PointToSmallPoint(p)));
     end;
 
     if Threshold < 0 then
@@ -178,7 +178,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.Changed;
 Begin
-  Perform(CM_CHANGED,0,Longint(self));
+  Perform(CM_CHANGED, 0, LParam(self));
 End;
 
 {------------------------------------------------------------------------------
@@ -545,7 +545,7 @@ Begin
     FMouseEntered:=true;
     if Assigned(OnMouseEnter) then OnMouseEnter(Self);
     if FParent <> nil then
-      FParent.Perform(CM_MOUSEENTER,0,longint(Self));
+      FParent.Perform(CM_MOUSEENTER, 0, LParam(Self));
   end;
 end;
 
@@ -559,7 +559,7 @@ Begin
     FMouseEntered:=false;
     if Assigned(OnMouseLeave) then OnMouseLeave(Self);
     if FParent <> nil then
-      FParent.Perform(CM_MOUSELEAVE,0,longint(Self));
+      FParent.Perform(CM_MOUSELEAVE, 0, LParam(Self));
   end;
 end;
 
@@ -754,7 +754,7 @@ end;
        TControl.Perform
 
 ------------------------------------------------------------------------------}
-Function TControl.Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
+Function TControl.Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LongInt;
 var
   Message : TLMessage;
 begin
@@ -882,7 +882,7 @@ end;
 {       TControl.SendDockNotification
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.SendDockNotification(Msg: Cardinal; WPAram, LParam : Integer);
+Procedure TControl.SendDockNotification(Msg: Cardinal; WParam: WParam; LParam: LParam);
 begin
 
 end;
@@ -2211,7 +2211,7 @@ begin
   begin
     VisibleChanging;
     FVisible := Value;
-    Perform(CM_VISIBLECHANGED, Ord(Value), 0);
+    Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
     RequestAlign;
   end;
   if (csLoading in ComponentState) then
@@ -2378,7 +2378,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TControl.SetTextBuf(Buffer : PChar);
 Begin
-  Perform(CM_TEXTCHANGED,0,0);
+  Perform(CM_TEXTCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2610,6 +2610,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.161  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.160  2003/12/28 02:40:50  mattias
   set colors to default values
 

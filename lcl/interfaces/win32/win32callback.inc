@@ -65,7 +65,7 @@ End;
 Function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
 Begin
   Result:=false;
-  if (DWORD(Str) and $FFFF0000) = 0 then Exit; // global atom handle
+  if (DWORD(Str) and DWORD($FFFF0000)) = 0 then Exit; // global atom handle
   Assert(False, 'Trace:PropEnumProc - Start');
   Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed', [String(Str), Data, Window]));
   RemoveProp(Window, Str);
@@ -84,8 +84,8 @@ End;
   Handles the messages sent to the current window by Windows or other
   applications
  ------------------------------------------------------------------------------}
-Function WindowProc(Window: HWnd; Msg: UInt;
-  WParam: WParam; LParam: LParam): LResult; stdcall;
+Function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
 Var
   LMessage: TLMessage;
   PLMsg: PLMessage;
@@ -301,7 +301,7 @@ Begin
       Begin
         Msg := LM_CHAR;
         KeyData := LParam;
-        CharCode := WParam;
+        CharCode := Word(WParam);
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
     End;
@@ -350,9 +350,9 @@ Begin
       MsgObject := TObject(GetProp(LParam, 'WinControl'));
       if MsgObject is TWinControl then
       begin
-        Windows.SetTextColor(WParam, ColorToRGB(TWinControl(MsgObject).Font.Color));
-        Windows.SetBkColor(WParam, ColorToRGB(TWinControl(MsgObject).Brush.Color));
-        Result := TWinControl(MsgObject).Brush.Handle;
+        Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
+        Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
+        Result := LResult(TWinControl(MsgObject).Brush.Handle);
         // Override default handling
         WinProcess := false;
       end;
@@ -388,9 +388,9 @@ Begin
       With LMScroll Do
       Begin
         Msg := LM_HSCROLL;
-        ScrollCode := Lo(WParam);
-        Pos := Hi(WParam);
-        ScrollBar := LParam;
+        ScrollCode := SmallInt(Lo(WParam));
+        Pos := SmallInt(Hi(WParam));
+        ScrollBar := HWND(LParam);
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
@@ -414,7 +414,7 @@ Begin
       Begin
         Msg := LM_KEYDOWN;
         KeyData := LParam;
-        CharCode := WParam;
+        CharCode := Word(WParam);
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         Assert(False,'  OwnerObject= '+TComponent(OwnerObject).Name+':'+OwnerObject.ClassName);
       End;
@@ -427,7 +427,7 @@ Begin
       Begin
         Msg := LM_KEYUP;
         KeyData := LParam;
-        CharCode := WParam;
+        CharCode := Word(WParam);
         Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
     End;
@@ -443,8 +443,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_LBUTTONDBLCLK;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
 
@@ -459,8 +459,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_LBUTTONDOWN;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
 
@@ -475,8 +475,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_LBUTTONUP;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -487,8 +487,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_MBUTTONDBLCLK;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -499,8 +499,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_MBUTTONDOWN;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -511,8 +511,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_MBUTTONUP;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -533,8 +533,8 @@ Begin
       With LMMouseMove Do
       Begin
         Msg := LM_MOUSEMOVE;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -545,9 +545,9 @@ Begin
       With LMMouseEvent Do
       Begin
         Msg := LM_MOUSEWHEEL;
-        WheelDelta := ShortInt(Hi(WParam));
-        X := ShortInt(Lo(LParam));
-        Y := ShortInt(Hi(LParam));
+        WheelDelta := SmallInt(Hi(WParam));
+        X := SmallInt(Lo(LParam));
+        Y := SmallInt(Hi(LParam));
         State := GetShiftState;
         UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
@@ -605,8 +605,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_RBUTTONDBLCLK;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -617,8 +617,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_RBUTTONDOWN;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       End;
     End;
@@ -629,8 +629,8 @@ Begin
       With LMMouse Do
       Begin
         Msg := LM_RBUTTONUP;
-        XPos := Lo(LParam);
-        YPos := Hi(LParam);
+        XPos := SmallInt(Lo(LParam));
+        YPos := SmallInt(Hi(LParam));
         Keys := WParam;
         Result := 0;
       End;
@@ -657,7 +657,7 @@ Begin
       Begin
         Msg := LM_SYSKEYDOWN;
         KeyData := LParam;
-        CharCode := WParam;
+        CharCode := Word(WParam);
       End;
     End;
     WM_SYSKEYUP:
@@ -668,7 +668,7 @@ Begin
       Begin
         Msg := LM_SYSKEYUP;
         KeyData := LParam;
-        CharCode := WParam;
+        CharCode := Word(WParam);
       End;
     End;
     WM_TIMER:
@@ -683,9 +683,9 @@ Begin
       With LMScroll Do
       Begin
         Msg := LM_VSCROLL;
-        ScrollCode := Lo(WParam);
-        Pos := Hi(WParam);
-        ScrollBar := LParam;
+        ScrollCode := SmallInt(Lo(WParam));
+        Pos := SmallInt(Hi(WParam));
+        ScrollBar := HWND(LParam);
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
@@ -730,9 +730,9 @@ Begin
   begin
     PrevWndProc := GetProp(Window, 'DefWndProc');
     if PrevWndProc = nil then
-      Result := DefWindowProc(Window, Msg, WParam, LParam)
+      Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
     else
-      Result := CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
+      Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
   end;
 
   Case Msg Of
@@ -747,14 +747,22 @@ Begin
         If (Windows.GetParent(Window) = 0)
         and (OwnerObject is TCustomForm)
         and (TCustomForm(OwnerObject).Parent=nil) then begin
-          Windows.GetWindowRect(Window,@R);
-          XPos := R.Left;
-          YPos := R.Top;
+          if Windows.GetWindowRect(Window,@R) then
+          begin
+            XPos := R.Left;
+            YPos := R.Top;
+          end else begin
+            Msg := LM_NULL;
+          end;
         end
         Else begin
-          GetWindowRelativePosition(Window,NewLeft,NewTop);
-          XPos := NewLeft;
-          YPos := NewTop;
+          if GetWindowRelativePosition(Window,NewLeft,NewTop) then
+          begin
+            XPos := NewLeft;
+            YPos := NewTop;
+          end else begin
+            Msg := LM_NULL;
+          end;
         end;
         if OwnerObject is TWinControl then begin
           TheWinControl:=TWinControl(OwnerObject);
@@ -773,9 +781,9 @@ Begin
       Begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
-        GetWindowSize(Window,NewWidth,NewHeight);
-        Width:=NewWidth;
-        Height:=NewHeight;
+        GetWindowSize(Window, NewWidth, NewHeight);
+        Width := NewWidth;
+        Height := NewHeight;
         if (OwnerObject is TWinControl) then begin
           TheWinControl:=TWinControl(OwnerObject);
           {$IFDEF VerboseSizeMsg}
@@ -851,7 +859,7 @@ End;
  ------------------------------------------------------------------------------}
 Function ToolBtnWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT; stdcall;
 begin
-  Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
+  Result := Windows.DefWindowProc(window_hwnd, Msg, WParam, LParam);
 end;
 
 {------------------------------------------------------------------------------
@@ -909,6 +917,9 @@ end;
 
 {
   $Log$
+  Revision 1.82  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.81  2003/12/27 16:26:55  micha
   remove redundant window property "lazarus" (from martin)
 

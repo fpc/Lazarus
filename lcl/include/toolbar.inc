@@ -99,8 +99,8 @@ var
 begin
   inherited CreateWnd;
 
-  Perform(TB_SETEXTENDEDSTYLE, 0, Perform(TB_GETEXTENDEDSTYLE, 0, 0) or
-    TBSTYLE_EX_DRAWDDARROWS);
+  Perform(TB_SETEXTENDEDSTYLE, 0, LParam(Perform(TB_GETEXTENDEDSTYLE, 0, 0) or
+    TBSTYLE_EX_DRAWDDARROWS));
   FOldHandle := 0;
   StockFont := GetStockObject(SYSTEM_FONT);
   if StockFont <> 0 then
@@ -148,8 +148,8 @@ begin
   if not HandleAllocated then exit;
   BeginUpdate;
   try
-    Perform(TB_BUTTONSTRUCTSIZE, SizeOf(TTBButton), 0);
-    Perform(TB_SETINDENT, FIndent, 0);
+    Perform(TB_BUTTONSTRUCTSIZE, WParam(SizeOf(TTBButton)), 0);
+    Perform(TB_SETINDENT, WParam(FIndent), 0);
     if FImages <> nil then
     begin
       ImageWidth := FImages.Width;
@@ -203,10 +203,10 @@ var
   AdjustY: Integer;
 begin
   if (csLoading in ComponentState) or
-    (Perform(TB_GETBUTTON, Index, Longint(@TBButton)) = 0)
+    (Perform(TB_GETBUTTON, WParam(Index), LParam(@TBButton)) = 0)
   then
     Exit;
-  if Perform(TB_GETITEMRECT, Index, Longint(@R)) <> 0 then
+  if Perform(TB_GETITEMRECT, WParam(Index), LParam(Longint(@R))) <> 0 then
   begin
     Button := TControl(TBButton.dwData);
     if Button is TToolButton then TToolButton(Button).BeginUpdate;
@@ -379,7 +379,7 @@ begin
         try
           StrPCopy(Buffer, CaptionText);
           Buffer[Length(CaptionText)+1] := #0;
-          Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
+          Button.iString := Self.Perform(TB_ADDSTRING, 0, LParam(@Buffer));
         finally
           StrDispose(Buffer);
         end;
@@ -399,7 +399,7 @@ begin
     Button.iString := -1;
   end;
 
-  Result := Self.Perform(Message, ToIndex, Integer(@Button)) <> 0;
+  Result := Self.Perform(Message, WParam(ToIndex), LParam(@Button)) <> 0;
 end;
 
 function TToolBar.UpdateItem2(Message, FromIndex, ToIndex: Integer): Boolean;
@@ -452,7 +452,7 @@ begin
         try
           StrPCopy(Buffer, CaptionText);
           Buffer[Length(CaptionText) + 1] := #0;
-          //Button.iString := Self.Perform(TB_ADDSTRING, 0, Longint(@Buffer));
+          //Button.iString := Self.Perform(TB_ADDSTRING, 0, LParam(@Buffer));
         finally
           StrDispose(Buffer);
         end;
@@ -488,7 +488,7 @@ end;
     Button.pszText := nil;
     Button.cchText := 0;
   end;
-  Result := Self.Perform(Message, ToIndex, Integer(@Button)) <> 0;
+  Result := Self.Perform(Message, WParam(ToIndex), LParam(@Button)) <> 0;
 end;
 
 function TToolBar.RefreshButton(Index: Integer): Boolean;
@@ -587,11 +587,11 @@ procedure TToolBar.UpdateButtonState(Index: Integer);
 var
   TBButton: TTBButton;
 begin
-  if (Perform(TB_GETBUTTON, Index, Integer(@TBButton)) <> 0) then
+  if (Perform(TB_GETBUTTON, WParam(Index), LParam(@TBButton)) <> 0) then
     with TToolButton(TBButton.dwData) do
     begin
       SetButtonState(TBButton.fsState);
-      Self.Perform(TB_SETSTATE, Index, MakeLong(GetButtonState, 0));
+      Self.Perform(TB_SETSTATE, WParam(Index), LParam(MakeLong(GetButtonState, 0)));
     end;
 end;
 
@@ -729,7 +729,7 @@ begin
   begin
     AddBitmap.hInst := 0;
     AddBitmap.nID := NewHandle;
-    Perform(TB_ADDBITMAP, ButtonCount, Longint(@AddBitmap));
+    Perform(TB_ADDBITMAP, WParam(ButtonCount), LParam(@AddBitmap));
   end
   else
   begin
@@ -741,7 +741,7 @@ begin
       nIDNew := NewHandle;
       nButtons := ButtonCount;
     end;
-    Perform(TB_REPLACEBITMAP, 0, Longint(@ReplaceBitmap));
+    Perform(TB_REPLACEBITMAP, 0, LParam(@ReplaceBitmap));
     if FOldHandle <> 0 then DeleteObject(FOldHandle);
   end;
   FOldHandle := NewHandle;
@@ -766,7 +766,7 @@ end;
 
 procedure TToolBar.SetImageList(Value: HImageList);
 begin
-  if HandleAllocated then Perform(TB_SETIMAGELIST, 0, Value);
+  if HandleAllocated then Perform(TB_SETIMAGELIST, 0, LParam(Value));
   Invalidate;
 end;
 
@@ -791,7 +791,7 @@ end;
 
 procedure TToolBar.SetDisabledImageList(Value: HImageList);
 begin
-  if HandleAllocated then Perform(TB_SETDISABLEDIMAGELIST, 0, Value);
+  if HandleAllocated then Perform(TB_SETDISABLEDIMAGELIST, 0, LParam(Value));
   Invalidate;
 end;
 
@@ -816,7 +816,7 @@ end;
 
 procedure TToolBar.SetHotImageList(Value: HImageList);
 begin
-  if HandleAllocated then Perform(TB_SETHOTIMAGELIST, 0, Value);
+  if HandleAllocated then Perform(TB_SETHOTIMAGELIST, 0, LParam(Value));
   Invalidate;
 end;
 
@@ -1000,7 +1000,7 @@ begin
     FButtons.Insert(Result, Control);
     BeginUpdate;
     try
-      Perform(TB_DELETEBUTTON, OldIndex, 0);
+      Perform(TB_DELETEBUTTON, WParam(OldIndex), 0);
       UpdateItem(TB_INSERTBUTTON, Result, Result);
     finally
       EndUpdate;
@@ -1023,7 +1023,7 @@ begin
     I := FButtons.IndexOf(Control);
     if I < Pos then Pos := I;
   end
-  else if Perform(TB_GETITEMRECT, Pos, Longint(@R)) <> 0 then
+  else if Perform(TB_GETITEMRECT, WParam(Pos), LParam(@R)) <> 0 then
   begin
     NeedsUpdate := Control.Width <> R.Right - R.Left;
     Reordered := NeedsUpdate;
@@ -1161,7 +1161,7 @@ begin
 
   if FInMenuLoop and not (csDesigning in ComponentState) then
     with Message do
-      if Perform(CM_DIALOGCHAR, CharCode, KeyData) <> 0 then
+      if Perform(CM_DIALOGCHAR, WParam(CharCode), LParam(KeyData)) <> 0 then
         Result := 1;
 end;
 
@@ -1231,7 +1231,7 @@ begin
         with PNMToolBar(NMHdr)^ do
           { We can safely assume that a TBN_DROPDOWN message was generated by a
             TToolButton and not any TControl. }
-          if Perform(TB_GETBUTTON, iItem, Longint(@tbButton)) <> 0 then
+          if Perform(TB_GETBUTTON, WParam(iItem), LParam(@tbButton)) <> 0 then
           begin
             Button := TToolButton(tbButton.dwData);
             if Button <> nil then
@@ -1378,7 +1378,7 @@ begin
       //MenuToolBar := Self;
       InitToolMenuHooks;
     end;
-    Perform(TB_SETHOTITEM, -1, 0);
+    Perform(TB_SETHOTITEM, WParam(-1), 0);
     try
       APoint := Button.ClientToScreen(Point(0, Button.ClientHeight));
       if FTempMenu.IsRightToLeft then Inc(APoint.X, Button.Width);
@@ -1389,7 +1389,7 @@ begin
     end;
     FMenuButton := Button;
     if StillModal then
-      Perform(TB_SETHOTITEM, Button.Index, 0);
+      Perform(TB_SETHOTITEM, WParam(Button.Index), 0);
     Result := True;
   finally
 //TODO: Add POSTMESSAGE
@@ -1438,7 +1438,7 @@ begin
   InitToolMenuKeyHooks;
   if Button <> nil then
   begin
-    Perform(TB_SETHOTITEM, Button.Index, 0);
+    Perform(TB_SETHOTITEM, WParam(Button.Index), 0);
     ClickButton(Button);
   end
   else
@@ -1456,7 +1456,7 @@ begin
   end;
   FInMenuLoop := False;
   FCaptureChangeCancels := False;
-  Perform(TB_SETHOTITEM, -1, 0);
+  Perform(TB_SETHOTITEM, WParam(-1), 0);
 end;
 
 function TToolBar.TrackMenu(Button: TToolButton): Boolean;
@@ -1491,6 +1491,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.12  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -59,8 +59,8 @@ Function TWin32Object.Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer)
 var
   SX, SY, EX, EY : Longint;
 Begin
-  Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
-  Result := Windows.Arc(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+  Angles2Coords(X, Y, Width, Height, Angle1, Angle2, SX, SY, EX, EY);
+  Result := Boolean(Windows.Arc(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ var
   SX, SY, EX, EY : Longint;
 Begin
   Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
-  Result := Windows.Chord(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+  Result := Boolean(Windows.Chord(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 Begin
-  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
+  Result := Boolean(Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop));
 End;
 
 {------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ End;
   The BeginPaint function prepares the specified window for painting and fills
   a PAINTSTRUCT structure with information about the painting.
  ------------------------------------------------------------------------------}
-Function TWin32Object.BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;
+Function TWin32Object.BeginPaint(Handle: HWND; var PS: TPaintStruct): HDC;
 Begin
   Result := Windows.BeginPaint(Handle, @PS);
 End;
@@ -127,7 +127,7 @@ End;
 Function TWin32Object.BringWindowToTop(HWnd: HWND): Boolean;
 Begin
   Assert(False, 'TWin32Object.BringWindowToTop - Start');
-  Result := Windows.BringWindowToTop(HWnd);
+  Result := Boolean(Windows.BringWindowToTop(HWnd));
   Assert(False, 'TWin32Object.BringWindowToTop - Exit');
 End;
 
@@ -163,10 +163,10 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
       // call win32 paint handler
       PrevWndProc := GetProp(Handle, 'DefWndProc');
       if PrevWndProc = nil then
-        DefWindowProc(Handle, WM_PAINT, TLMessage(Message).WParam,
-                      TLMessage(Message).LParam)
+        Windows.DefWindowProc(Handle, WM_PAINT, TLMessage(Message).WParam,
+          TLMessage(Message).LParam)
       else
-        CallWindowProc(PrevWndProc, Handle, WM_PAINT,
+        Windows.CallWindowProc(WNDPROC(PrevWndProc), Handle, WM_PAINT,
           TLMessage(Message).WParam, TLMessage(Message).LParam);
     finally
       // restore DC origin
@@ -266,7 +266,7 @@ begin
         if Sender is TCheckListBox then
         begin
           // ItemID not UINT(-1)
-          if DrawItemStruct^.ItemID <> $FFFFFFFF then
+          if DrawItemStruct^.ItemID <> DWORD($FFFFFFFF) then
             DrawCheckListBoxItem(TCheckListBox(Sender).Checked[DrawItemStruct^.ItemID],
               PChar(TCheckListBox(Sender).Items[DrawItemStruct^.ItemID]), DrawItemStruct);
         end;
@@ -285,9 +285,9 @@ end;
 
   Calls the next procedure in the hook chain
  ------------------------------------------------------------------------------}
-Function TWin32Object.CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam, LParam: LongInt): Integer;
+Function TWin32Object.CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam: WParam; LParam: LParam): Integer;
 Begin
-  Result := Windows.CallNextHookEx(hhk, ncode, wParam, lParam);
+  Result := Windows.CallNextHookEx(hhk, ncode, Windows.WPARAM(wParam), Windows.LPARAM(lParam));
 End;
 
 {------------------------------------------------------------------------------
@@ -301,9 +301,10 @@ End;
 
   Passes message information to the specified window procedure
  ------------------------------------------------------------------------------}
-Function TWin32Object.CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam, LParam: LongInt): Integer;
+Function TWin32Object.CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND;
+    Msg: UINT; WParam: WParam; LParam: LParam): Integer;
 Begin
-  Result := Windows.CallWindowProc(WNDPROC(LPPrevWndFunc), Handle, Msg, WParam, LParam);
+  Result := Windows.CallWindowProc(WNDPROC(LPPrevWndFunc), Handle, Msg, Windows.WPARAM(WParam), Windows.LPARAM(LParam));
 End;
 
 {------------------------------------------------------------------------------
@@ -318,8 +319,8 @@ Function TWin32Object.ClientToScreen(Handle: HWND; Var P: TPoint): Boolean;
 var
   LeftOffset, TopOffset: integer;
 Begin
-  Result := Windows.ClientToScreen(Handle, @P);
-  if (not Result) then exit;
+  Result := Boolean(Windows.ClientToScreen(Handle, @P));
+  if not Result then exit;
   Result := GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset);
   if not Result then exit;
   inc(P.X,LeftOffset);
@@ -498,12 +499,13 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH;
 Var
-  LB: TLogBrush;
+  LB: Windows.LogBrush;
 Begin
-  LB := LogBrush;
-  LB.lbColor := ColorToRGB(LB.lbColor);
+  LB.lbStyle := LogBrush.lbStyle;
+  LB.lbColor := Windows.COLORREF(ColorToRGB(LogBrush.lbColor));
+  LB.lbHatch := LogBrush.lbHatch;
   Assert(False, Format('Trace:> [TWin32Object.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
-  Result := Windows.CreateBrushIndirect(Windows.LOGBRUSH(LB));
+  Result := Windows.CreateBrushIndirect(LB);
   Assert(False, Format('Trace:< [TWin32Object.CreateBrushIndirect] Got --> %x', [Result]));
 End;
 
@@ -520,7 +522,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean;
 Begin
-  Result := Windows.CreateCaret(Handle, Bitmap, Width, Height);
+  Result := Boolean(Windows.CreateCaret(Handle, Bitmap, Width, Height));
   Assert(False, 'Trace:TODO: [TWin32Object.CreateCaret] Finish');
 End;
 
@@ -588,7 +590,7 @@ Var
   LP: TLogPen;
 Begin
   LP := LogPen;
-  Lp.lopnColor := ColorToRGB(Lp.lopnColor);
+  Lp.lopnColor := Windows.COLORREF(ColorToRGB(Lp.lopnColor));
   Assert(False, 'Trace:[TWin32Object.CreatePenIndirect]');
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 End;
@@ -653,8 +655,7 @@ Var
   procedure CreateColorMap;
   Var
     Elem: String;
-    I: Integer;
-    Idx: Cardinal;
+    I, Idx: Integer;
     ColorMap: PColorMap;
   Begin
     Assert(False, 'Trace:CreateColorMap - Start');
@@ -671,12 +672,15 @@ Var
 
         While Pos(Elem[Length(Elem)],'",')>0 do Elem:=Copy(Elem,1,Length(Elem)-1);
 
-        Idx := Pos(Elem, '"')+AliasLen+4;
+        Idx := Cardinal(Pos(Elem, '"'))+AliasLen+4;
         New(ColorMap);
         ColorMap^.Alias := Copy(Elem, 1, AliasLen);
         If Copy(Elem, idx, 1) = '#' Then begin
-          //ColorMap^.Color :=StrToInt('$'+Copy(Elem,Idx,6));
-          ColorMap^.Color :=RGB(StrToInt('$'+Copy(Elem,Idx+1,2)),StrToInt('$'+Copy(Elem,Idx+3,2)),StrToInt('$'+Copy(Elem,Idx+5,2)));
+          //ColorMap^.Color := StrToInt('$'+Copy(Elem,Idx,6));
+          ColorMap^.Color := RGB(
+            Byte(StrToInt('$'+Copy(Elem,Idx+1,2))),
+            Byte(StrToInt('$'+Copy(Elem,Idx+3,2))),
+            Byte(StrToInt('$'+Copy(Elem,Idx+5,2))));
         end
         Else
           ColorMap^.Color := TransColor;
@@ -853,7 +857,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.DeleteDC(HDC: HDC): Boolean;
 Begin
-  Result := Windows.DeleteDC(HDC);
+  Result := Boolean(Windows.DeleteDC(HDC));
 End;
 
 {------------------------------------------------------------------------------
@@ -867,7 +871,7 @@ End;
 Function TWin32Object.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 Begin
   { Find out if we want to release internal GDI object }
-  Result := Windows.DeleteObject(GDIObject);
+  Result := Boolean(Windows.DeleteObject(GDIObject));
 End;
 
 {------------------------------------------------------------------------------
@@ -881,7 +885,7 @@ End;
 Function TWin32Object.DestroyCaret(Handle: HWND): Boolean;
 Begin
   Assert(False, 'Trace:TODO: [TWin32Object.DestroyCaret]');
-  Result := Windows.DestroyCaret;
+  Result := Boolean(Windows.DestroyCaret);
 End;
 
 {------------------------------------------------------------------------------
@@ -898,7 +902,7 @@ Function TWin32Object.DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: 
 Begin
   // flat button border: ignore
   if (UType <> DFC_BUTTON) or ((UState and DFCS_FLAT) = 0) then
-    Result := Windows.DrawFrameControl(DC, @Rect, UType, UState);
+    Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
 End;
 
 {------------------------------------------------------------------------------
@@ -915,7 +919,7 @@ End;
 Function TWin32Object.DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
 Begin
   Assert(False, Format('trace:> [TWin32Object.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]));
-  Result := Windows.DrawEdge(DC, @Rect, edge, grfFlags);
+  Result := Boolean(Windows.DrawEdge(DC, @Rect, edge, grfFlags));
   Assert(False, Format('trace:< [TWin32Object.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]));
 End;
 
@@ -948,7 +952,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32Object.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 Begin
-  Result := Windows.Ellipse(DC, X1, Y1, X2, Y2);
+  Result := Boolean(Windows.Ellipse(DC, X1, Y1, X2, Y2));
 End;
 
 {------------------------------------------------------------------------------
@@ -962,8 +966,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.EmptyClipBoard: Boolean;
 Begin
-  // Your code here
-  Result := Windows.EmptyClipboard;
+  Result := Boolean(Windows.EmptyClipboard);
 End;
 
 {------------------------------------------------------------------------------
@@ -979,7 +982,7 @@ Function TWin32Object.EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): B
 Begin
   Assert(False, 'Trace:TODO: [TWin32Object.EnableScrollBar]');
   //TODO: Implement this;
-  Result := Windows.EnableScrollBar(Wnd, WSBFlags, WArrows);
+  Result := Boolean(Windows.EnableScrollBar(Wnd, WSBFlags, WArrows));
 End;
 
 {------------------------------------------------------------------------------
@@ -994,7 +997,7 @@ End;
 Function TWin32Object.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 Begin
   Assert(False, Format('Trace:[TWin32Object.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BOOL_TEXT[BEnable]]));
-  Result := Windows.EnableWindow(HWnd, BEnable);
+  Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
 End;
 
 {------------------------------------------------------------------------------
@@ -1052,7 +1055,7 @@ end;
 Function TWin32Object.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 Begin
   Assert(False, Format('trace:> [TWin32Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
-  Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
+  Result := Boolean(Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx));
   Assert(False, Format('trace:< [TWin32Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 End;
 
@@ -1127,7 +1130,7 @@ Function TWin32Object.Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Intege
 Const
   Edge: Array[TBevelCut] Of Integer = (0, EDGE_ETCHED, EDGE_RAISED);
 Begin
-  Result := DrawEdge(DC, Rect, Edge[Style], BF_RECT);
+  Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
 End;
 
 {------------------------------------------------------------------------------
@@ -1164,7 +1167,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetCaretPos(Var LPPoint: TPoint): Boolean;
 Begin
-  Result := Windows.GetCaretPos(@LPPoint);
+  Result := Boolean(Windows.GetCaretPos(@LPPoint));
 End;
 
 {------------------------------------------------------------------------------
@@ -1180,7 +1183,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean;
 Begin
-  Result := Windows.GetCharABCWidths(DC, P2, P3, ABCStructs);
+  Result := Boolean(Windows.GetCharABCWidths(DC, P2, P3, ABCStructs));
 End;
 
 {------------------------------------------------------------------------------
@@ -1195,7 +1198,7 @@ function TWin32Object.GetClientBounds(Handle: HWND; Var Rect: TRect): Boolean;
 var
   LeftOffset, TopOffset: integer;
 begin
-  Result := GetClientRect(Handle, Rect);
+  Result := Boolean(GetClientRect(Handle, Rect));
   if not Result then exit;
   if not GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset) then exit;
   OffsetRect(Rect,LeftOffset,TopOffset);
@@ -1217,7 +1220,7 @@ var
   TM: TextMetricA;
   DC: HDC;
 Begin
-  Result := Windows.GetClientRect(Handle, @Rect);
+  Result := Boolean(Windows.GetClientRect(Handle, @Rect));
   if not Result then exit;
   OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
   if OwnerObject is TWinControl then begin
@@ -1294,7 +1297,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetCursorPos(Var LPPoint: TPoint): Boolean;
 Begin
-  Result := Windows.GetCursorPos(@LPPoint);
+  Result := Boolean(Windows.GetCursorPos(@LPPoint));
 End;
 
 {------------------------------------------------------------------------------
@@ -1701,10 +1704,10 @@ End;
 
   Retrieves the parameters of a scroll bar.
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
+Function TWin32Object.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 Begin
   Assert(False, 'Trace:TODO: [TWin32Object.GetScrollInfo]');
-  Result := Windows.GetScrollInfo(Handle, BarFlag, Windows.SCROLLINFO(ScrollInfo));
+  Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, Windows.LPSCROLLINFO(@ScrollInfo)));
 End;
 
 {------------------------------------------------------------------------------
@@ -1768,7 +1771,7 @@ End;
 Function TWin32Object.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
 Begin
   Assert(False, 'Trace:[TWin32Object.GetTextExtentPoint] - Start');
-  Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
+  Result := Boolean(Windows.GetTextExtentPoint32(DC, Str, Count, @Size));
   Assert(False, 'Trace:[TWin32Object.GetTextExtentPoint] - Exit');
 End;
 
@@ -1783,7 +1786,7 @@ End;
 Function TWin32Object.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
 Begin
   Assert(False, Format('Trace:> TODO FINISH[TWin32Object.GetTextMetrics] DC: 0x%x', [DC]));
-  Result := Windows.GetTextMetrics(DC, @TM);
+  Result := Boolean(Windows.GetTextMetrics(DC, @TM));
   Assert(False, Format('Trace:< TODO FINISH[TWin32Object.GetTextMetrics] DC: 0x%x', [DC]));
 End;
 
@@ -1878,7 +1881,7 @@ var
   R: TRect;
   OwnerObject: TObject;
 begin
-  Result := Windows.GetWindowRect(Handle,@R);
+  Result := Boolean(Windows.GetWindowRect(Handle,@R));
   If (Windows.GetParent(Handle) = 0) then begin
     OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
     if OwnerObject is TCustomForm then begin
@@ -1907,7 +1910,7 @@ end;
 Function TWin32Object.HideCaret(HWnd: HWND): Boolean;
 Begin
   Assert(False, Format('Trace:  [TWin32Object.HideCaret] HWND: 0x%x', [HWnd]));
-  Result := Windows.HideCaret(hWnd);
+  Result := Boolean(Windows.HideCaret(hWnd));
 End;
 
 {------------------------------------------------------------------------------
@@ -1927,7 +1930,7 @@ Begin
   Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
   if BErase then
     Flags := Flags or RDW_ERASE;
-  Result := Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags);
+  Result := Boolean(Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags));
 End;
 
 {------------------------------------------------------------------------------
@@ -1959,7 +1962,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32Object.IsWindowVisible(handle: HWND): boolean;
 begin
-  Result := Windows.IsWindowVisible(handle);
+  Result := Boolean(Windows.IsWindowVisible(handle));
 end;
 
 {------------------------------------------------------------------------------
@@ -1974,7 +1977,7 @@ end;
 Function TWin32Object.LineTo(DC: HDC; X, Y: Integer): Boolean;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
-  Result := Windows.LineTo(DC, X, Y);
+  Result := Boolean(Windows.LineTo(DC, X, Y));
   Assert(False, Format('Trace:< [TWin32Object.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 End;
 
@@ -1995,7 +1998,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 Begin
-  Result := Windows.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
+  Result := Boolean(Windows.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop));
 End;
 
 Function TWin32Object.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
@@ -2055,7 +2058,7 @@ End;
 Function TWin32Object.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
-  Result := Windows.MoveToEx(DC, X, Y, LPPOINT(OldPoint));
+  Result := Boolean(Windows.MoveToEx(DC, X, Y, LPPOINT(OldPoint)));
   Assert(False, Format('Trace:< [TWin32Object.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 End;
 
@@ -2073,7 +2076,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
 Begin
-  Result := Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg);
+  Result := Boolean(Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
 End;
 
 {------------------------------------------------------------------------------
@@ -2100,7 +2103,7 @@ Begin
   If Filled or (not Continuous) then
     Result := Inherited PolyBezier(DC,Points,NumPts, Filled, Continuous)
   else
-    Result := Windows.PolyBezier(DC, LPPOINT(Points)^, NumPts);
+    Result := Boolean(Windows.PolyBezier(DC, LPPOINT(Points)^, NumPts));
 End;
 
 {------------------------------------------------------------------------------
@@ -2134,7 +2137,7 @@ Begin
     PFMode := SetPolyFillMode(DC, Windows.WINDING)
   else
     PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
-  Result := Windows.Polygon(DC, LPPOINT(Points)^, NumPts);
+  Result := Boolean(Windows.Polygon(DC, LPPOINT(Points), NumPts));
   SetPolyFillMode(DC, PFMode);
 End;
 
@@ -2150,7 +2153,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean;
 Begin
-  Result := Windows.Polyline(DC, LPPOINT(Points)^, NumPts);
+  Result := Boolean(Windows.Polyline(DC, LPPOINT(Points), NumPts));
 End;
 
 {------------------------------------------------------------------------------
@@ -2164,9 +2167,9 @@ End;
   The PostMessage Function places (posts) a message in the message queue and
   then returns without waiting.
  ------------------------------------------------------------------------------}
-Function TWin32Object.PostMessage(Handle: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean;
+Function TWin32Object.PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean;
 Begin
-  Result := Windows.PostMessage(Handle, Msg, wParam, lParam);
+  Result := Boolean(Windows.PostMessage(Handle, Msg, WParam, LParam));
 End;
 
 {------------------------------------------------------------------------------
@@ -2181,7 +2184,7 @@ End;
 ------------------------------------------------------------------------------}
 function TWin32Object.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
-  Result := Windows.Arc(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+  Result := Boolean(Windows.Arc(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -2196,7 +2199,7 @@ End;
 ------------------------------------------------------------------------------}
 function TWin32Object.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
-  Result := Windows.Chord(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+  Result := Boolean(Windows.Chord(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -2211,7 +2214,7 @@ End;
 ------------------------------------------------------------------------------}
 function TWin32Object.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
-  Result := Windows.Pie(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+  Result := Boolean(Windows.Pie(DC, X, Y, X+Width, Y+Height, SX, SY, EX, EY));
 End;
 
 {------------------------------------------------------------------------------
@@ -2244,13 +2247,13 @@ End;
 Function TWin32Object.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
-  Result := Windows.Rectangle(DC, X1, Y1, X2+1, Y2+1);
+  Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2+1, Y2+1));
   Assert(False, Format('Trace:< [TWin32Object.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 End;
 
 function TWin32Object.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  Result := Windows.RectVisible(DC, LPRECT(@ARect)^);
+  Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
 end;
 
 {------------------------------------------------------------------------------
@@ -2263,7 +2266,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32Object.ReleaseCapture: Boolean;
 Begin
-  Result := Windows.ReleaseCapture;
+  Result := Boolean(Windows.ReleaseCapture);
 End;
 
 {------------------------------------------------------------------------------
@@ -2299,7 +2302,7 @@ End;
 Function TWin32Object.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
-  Result := Windows.RestoreDC(DC, SavedDC);
+  Result := Boolean(Windows.RestoreDC(DC, SavedDC));
   Assert(False, Format('Trace:< [TWin32Object.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 End;
 
@@ -2420,7 +2423,7 @@ End;
   The function calls the window procedure for the specified window and does
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
-Function TWin32Object.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Integer;
+Function TWin32Object.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 Begin
   Result := Windows.SendMessage(HandleWnd, Msg, WParam, LParam);
 End;
@@ -2436,7 +2439,7 @@ End;
 Function TWin32Object.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := Windows.SetBkColor(DC, ColorToRGB(Color));
+  Result := Windows.SetBkColor(DC, Windows.COLORREF(ColorToRGB(Color)));
   Assert(False, Format('Trace:< [TWin32Object.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 End;
 
@@ -2477,7 +2480,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetCaretPos(X, Y: Integer): Boolean;
 Begin
-  Result := Windows.SetCaretPos(X, Y);
+  Result := Boolean(Windows.SetCaretPos(X, Y));
 End;
 
 {------------------------------------------------------------------------------
@@ -2539,7 +2542,7 @@ End;
 Function TWin32Object.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
 Begin
   Assert(False, 'Trace:TWin32Object.SetProp - Start');
-  Result := Windows.SetProp(Handle, Str, LongInt(Data));
+  Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
   Assert(False, Format('Trace:TWin32Object.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
 End;
 
@@ -2575,7 +2578,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetSysColors(CElements: Integer; Const LPAElements; Const LPARGBValues): Boolean;
 Begin
-  Result := Windows.SetSysColors(CElements, LPAElements, LPARGBValues);
+  Result := Boolean(Windows.SetSysColors(CElements, PInteger(@LPAElements)^, LPColorRef(@LPARGBValues)^));
 End;
 
 {------------------------------------------------------------------------------
@@ -2604,7 +2607,7 @@ End;
 Function TWin32Object.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := Windows.SetTextColor(DC, ColorToRGB(Color));
+  Result := Windows.SetTextColor(DC, Windows.COLORREF(ColorToRGB(Color)));
   Assert(False, Format('Trace:< [TWin32Object.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 End;
 
@@ -2638,7 +2641,7 @@ End;
 Function TWin32Object.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 Begin
-  Result := Windows.SetWindowOrgEx(DC, NewX, NewY, LPPoint(OldPoint));
+  Result := Boolean(Windows.SetWindowOrgEx(DC, NewX, NewY, LPPoint(OldPoint)));
 End;
 
 {------------------------------------------------------------------------------
@@ -2658,7 +2661,7 @@ End;
 Function TWin32Object.SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean;
 Begin
 //writeln('[TWin32Object.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
-  Result := Windows.SetWindowPos(HWnd, HWndInsertAfter, X, Y, CX, CY, UFlags);
+  Result := Boolean(Windows.SetWindowPos(HWnd, HWndInsertAfter, X, Y, CX, CY, UFlags));
 End;
 
 {------------------------------------------------------------------------------
@@ -2672,7 +2675,7 @@ Function TWin32Object.ShowCaret(HWnd: HWND): Boolean;
 Begin
 //writeln('[TWin32Object.ShowCaret] A');
   Assert(False, Format('Trace:> [TWin32Object.ShowCaret] HWND: 0x%x', [HWnd]));
-  Result := Windows.ShowCaret(HWnd);
+  Result := Boolean(Windows.ShowCaret(HWnd));
   Assert(False, Format('Trace:< [TWin32Object.ShowCaret] HWND: 0x%x --> %s', [HWnd, BOOL_TEXT[Result]]));
 End;
 
@@ -2688,7 +2691,7 @@ End;
 Function TWin32Object.ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean;
 Begin
   Assert(False, 'Trace:[TWin32Object.ShowScrollBar]');
-  Result := Windows.ShowScrollBar(Handle, WBar, BShow);
+  Result := Boolean(Windows.ShowScrollBar(Handle, WBar, BShow));
 End;
 
 {------------------------------------------------------------------------------
@@ -2699,7 +2702,7 @@ End;
 ------------------------------------------------------------------------------}
 Function TWin32Object.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
-  Result:=Windows.ShowWindow(hWnd, nCmdShow);
+  Result := Boolean(Windows.ShowWindow(hWnd, nCmdShow));
 end;
 
 {------------------------------------------------------------------------------
@@ -2722,7 +2725,7 @@ end;
 Function TWin32Object.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 Begin
   Assert(True, Format('Trace:> [TWin32Object.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
-  Result := Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
+  Result := Boolean(Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop));
   Assert(True, Format('Trace:< [TWin32Object.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 End;
 
@@ -2767,7 +2770,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 Begin
-  Result := Windows.TextOut(DC, X, Y, Str, Count);
+  Result := Boolean(Windows.TextOut(DC, X, Y, Str, Count));
 End;
 
 {------------------------------------------------------------------------------
@@ -2832,6 +2835,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/12/29 14:22:22  micha
+  fix a lot of range check errors win32
+
   Revision 1.86  2003/12/27 16:26:55  micha
   remove redundant window property "lazarus" (from martin)
 
