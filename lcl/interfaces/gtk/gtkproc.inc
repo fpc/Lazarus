@@ -991,6 +991,9 @@ begin
         ClientWidget:=GetFixedWidget(PanelWidget);
     end;
   end;
+
+  ClientWidget:=nil;
+
   SetFixedWidget(NoteBookWidget,ClientWidget);
 end;
 
@@ -1557,7 +1560,8 @@ begin
   Result := Integer(gtk_object_get_data(Widget, 'AccelKey'));
 end;
 
-procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut; const Signal : string);
+procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut;
+  const Signal : string);
 var GDKModifier : integer;
     GDKKey : word;
 begin
@@ -2730,7 +2734,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.89  2002/09/06 15:57:36  lazarus
+  MG: fixed notebook client area, send messages and minor bugs
+
   Revision 1.88  2002/09/05 10:12:08  lazarus
+
   New dialog for multiline caption of TCustomLabel.
   Prettified TStrings property editor.
   Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
