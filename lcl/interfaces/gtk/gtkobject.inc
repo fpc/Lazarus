@@ -2629,6 +2629,9 @@ begin
           end;
         end;
       end;
+      
+      LM_APPENDTEXT:
+        AppendText(Sender,PChar(Data));
 
       else
         if Sender<>nil then
@@ -2754,6 +2757,31 @@ begin
     writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
   end;
 {STOPPOK: Code seems superfluous, see SetLabel instead}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.AppendText(Sender: TObject; Str: PChar);
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.AppendText(Sender: TObject; Str: PChar);
+var
+  Widget: PGtkWidget;
+  CurMemoLen: cardinal;
+begin
+  if Str=nil then exit;
+  
+  if (Sender is TWinControl) then begin
+    case TWinControl(Sender).fCompStyle of
+      csMemo:
+      begin
+        Widget:=GetWidgetInfo(Pointer(TWinControl(Sender).Handle),
+                              true)^.ImplementationWidget;
+        gtk_text_freeze(PGtkText(Widget));
+        CurMemoLen := gtk_text_get_length(PGtkText(Widget));
+        gtk_editable_insert_text(PGtkEditable(Widget),Str,StrLen(Str),@CurMemoLen);
+        gtk_text_thaw(PGtkText(Widget));
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -7182,6 +7210,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.349  2003/04/08 00:09:03  mattias
+  added LM_APPENDTEXT from hernan
+
   Revision 1.348  2003/04/04 16:35:24  mattias
   started package registration
 

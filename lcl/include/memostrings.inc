@@ -113,12 +113,17 @@ end;
 procedure TMemoStrings.Insert(index : Integer; const S: String);
 var
   TempStrings: TStringList;
+  Cnt: Integer;
 begin
   If Assigned(FMemo) and (Index >= 0)
   then begin
     TempStrings := TStringList.Create;
     TempStrings.Text := FMemo.Text;
-    if Index <= TempStrings.Count
+    Cnt:=TempStrings.Count;
+    if Index=Cnt then
+      CNSendMessage(LM_APPENDTEXT, FMemo, PChar(S))
+    else
+    if Index < Cnt
     then begin
       TempStrings.Insert(Index, S);
       FMemo.Text := TempStrings.Text;
@@ -132,6 +137,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/04/08 00:09:03  mattias
+  added LM_APPENDTEXT from hernan
+
   Revision 1.4  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 
