@@ -425,6 +425,7 @@ type
     property OnActivate;
     property OnClose;
     property OnCloseQuery;
+    property OnChangeBounds;
     property OnCreate;
     property OnDeactivate;
     property OnDestroy;

@@ -1,10 +1,20 @@
+msgid ""
+msgstr ""
+"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
+"PO-Revision-Date: 2003-07-06 17:19+0200\n"
+"Project-Id-Version: synmacrorecorder.pl\n"
+"Language-Team: Polish <pl@li.org>\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.1\n"
+
 #: synmacrorecorder:scannotpause
 msgid "Can only pause when recording"
-msgstr "Mo¿na tylko chwilowo wstrzymaæ nagrywanie"
+msgstr "Makro nie jest nagrywane - nie mo¿na wstrzymaæ"
 
 #: synmacrorecorder:scannotresume
 msgid "Can only resume when paused"
-msgstr "Nagrywanie mo¿na wznowiæ tylko wtedy gdy jest wstrzymane"
+msgstr "Mo¿na wznowiæ tylko po wstrzymaniu"
 
 #: synmacrorecorder:scannotplay
 msgid "Cannot playback macro when recording"
@@ -12,5 +22,5 @@ msgstr "Nie mo¿na odtwarzaæ makra podczas nagrywania"
 
 #: synmacrorecorder:scannotrecord
 msgid "Cannot record macro when recording"
-msgstr "Nie mo¿na nagrywaæ makra gdy nagrywa siê ju¿ inne"
+msgstr "Nie mo¿na nagrywaæ dwóch makr naraz"
 

@@ -303,6 +303,14 @@ msgstr "Ajouter un fichier au paquet"
 msgid "Add file to project:"
 msgstr "Ajouter un fichier au projet"
 
+#: lazarusidestrconsts:lisa2paddfiles
+msgid "Add Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfilestopackage
+msgid "Add files to package"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Ajouter un point de saut"
@@ -1079,6 +1087,10 @@ msgstr "Copier"
 msgid "Copy Error"
 msgstr "Erreur de copie"
 
+#: lazarusidestrconsts:lisdsgcopycomponents
+msgid "Copy selected components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Copie de la sélection dans le presse papier"
@@ -1227,6 +1239,10 @@ msgstr "Position personnalisée"
 msgid "Cut"
 msgstr "Couper"
 
+#: lazarusidestrconsts:lisdsgcutcomponents
+msgid "Cut selected components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
 msgstr "Couper la sélection vers le presse papier"
@@ -1257,6 +1273,10 @@ msgstr "Erreur débugueur"
 
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgstr ""
+
+#: lazarusidestrconsts:lismendebuggeroptions
+msgid "Debugger Options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugpath
@@ -1427,6 +1447,10 @@ msgstr "Description:"
 msgid "Description:  "
 msgstr "Description: "
 
+#: lazarusidestrconsts:liskeycatdesigner
+msgid "Designer commands"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsdesigntimeandruntime
 msgid "Designtime and Runtime"
 msgstr "Conception et exécution"
@@ -1498,6 +1522,10 @@ msgstr "Affichage (pas pour Win32; par exemple : 198.112.45.11:0, x.org:1, hydra
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Affiche les numéros de lignes dans les Backtraces d'erreur d'exécution"
+
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -1878,6 +1906,10 @@ msgstr "Propriétés du fichier"
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Type de fichier"
+
+#: lazarusidestrconsts:lisa2pfilename2
+msgid "Filename"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
 msgid "Filename differs from Packagename"
@@ -3739,6 +3771,10 @@ msgstr "Coller"
 msgid "Paste clipboard to current position"
 msgstr "Colle le presse papier à la position courante"
 
+#: lazarusidestrconsts:lisdsgpastecomponents
+msgid "Paste selected components from clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "Chemin de modèles"
@@ -4494,6 +4530,10 @@ msgstr "Sélection la page vers le haut"
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Sélectionner le paragraphe"
+
+#: lazarusidestrconsts:lisdsgselectparentcomponent
+msgid "Select parent component"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorselecttemplate
 msgid "Select Template:"

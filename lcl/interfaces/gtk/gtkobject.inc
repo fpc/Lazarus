@@ -311,7 +311,9 @@ begin
   //end;
   
   // reposition
-  //writeln('TgtkObject.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top);
+  {$IFDEF VerboseSizeMsg}
+  writeln('TgtkObject.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' Visible=',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top,',',Width,',',Height);
+  {$ENDIF}
   gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
 end;
 
@@ -835,10 +837,11 @@ procedure TGtkObject.SendCachedGtkMessages;
   
   procedure SendCachedGtkResizeNotifications;
   { This proc sends all cached size messages from the gtk to lcl but in an
-    optimized order. When sending the LCL a size/move/windowposchanged messages
-    it will automatically realign all child controls. This realigning is based
-    on the clientrect.
-    Therefore, before a size message is sent to the lcl, all clientrect must
+    optimized order.
+    When sending the LCL a size/move/windowposchanged messages the LCL will
+    automatically realign all child controls. This realigning is based on the
+    clientrect.
+    Therefore, before a size message is sent to the lcl, all clientrect must be
     updated.
     If a size message results in resizing a widget that was also resized, then
     the message for the dependent widget is not sent to the lcl, because the lcl
@@ -900,7 +903,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     until false;
 
     { if any client area was resized, which MainWidget Size was already in sync
-      with the LCL, no message was send. So, tell each changed client area to
+      with the LCL, no message was sent. So, tell each changed client area to
       check its size.
     }
     {$IFDEF VerboseSizeMsg}
@@ -936,9 +939,24 @@ procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 var
   Requisition: TGtkRequisition;
+  {$IFDEF VerboseSizeMsg}
+  LCLObject: TObject;
+  {$ENDIF}
 begin
   if NewWidth<=0 then NewWidth:=1;
   if NewHeight<=0 then NewHeight:=1;
+  
+  {$IFDEF VerboseSizeMsg}
+  LCLObject:=GetParentLCLObject(Widget);
+  write('TgtkObject.RealizeWidgetSize Widget=',HexStr(Cardinal(Widget),8),
+    ' New=',NewWidth,',',NewHeight);
+  if (LCLObject<>nil) and (LCLObject is TControl) then begin
+    with TControl(LCLObject) do
+      writeln(' LCL=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  end else begin
+    writeln(' LCL=',HexStr(Cardinal(LCLObject),8));
+  end;
+  {$ENDIF}
   
   if GtkWidgetIsA(Widget,GTK_SCROLLBAR_TYPE) then begin
     // the width of a scrollbar is fixed and depends only on the theme
@@ -7894,6 +7912,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.392  2003/07/06 17:53:34  mattias
+  updated polish localization
+
   Revision 1.391  2003/07/04 22:06:49  mattias
   implemented interface graphics
 

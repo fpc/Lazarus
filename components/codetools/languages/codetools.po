@@ -50,6 +50,10 @@ msgstr ""
 msgid "%s expected, but %s found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsclasssnotfound
+msgid "Class %s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
 msgstr ""

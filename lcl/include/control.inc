@@ -144,6 +144,9 @@ var
   end;
   
 begin
+  {$IFDEF VerboseSizeMsg}
+  writeln('TControl.ChangeBounds A ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' New=',ALeft,',',ATop,',',AWidth,',',AHeight);
+  {$ENDIF}
   // constraint the size
   DoConstrainedResize(AWidth, AHeight);
 
@@ -2480,6 +2483,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.140  2003/07/06 17:53:34  mattias
+  updated polish localization
+
   Revision 1.139  2003/06/27 23:42:38  mattias
   fixed TScrollBar resizing
 

@@ -102,6 +102,10 @@ msgstr ""
 msgid "circle in definitions"
 msgstr ""
 
+#: codetoolsstrconsts:ctsclasssnotfound
+msgid "Class %s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr ""

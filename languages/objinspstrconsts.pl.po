@@ -1,18 +1,28 @@
+msgid ""
+msgstr ""
+"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
+"PO-Revision-Date: 2003-07-06 17:18+0200\n"
+"Project-Id-Version: objinspstrconsts.pl\n"
+"Language-Team: Polish <pl@li.org>\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.1\n"
+
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
 msgstr " Obrazki "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr " W³a¶ciwo¶æ elementu"
+msgstr " W³a¶ciwo¶æ elementu "
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
-msgstr " Elementy"
+msgstr " Elementy "
 
 #: objinspstrconsts:oisitemsselected
 msgid " items selected"
-msgstr " elementy wybrane"
+msgstr " elementów wybranych"
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
@@ -28,7 +38,7 @@ msgstr "&Usuñ"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
-msgstr "Dodaj..."
+msgstr "Dodaj ..."
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
@@ -77,4 +87,8 @@ msgstr "W³a¶ciwo¶ci"
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
 msgstr "Podelement"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
 

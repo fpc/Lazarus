@@ -294,6 +294,14 @@ msgstr ""
 msgid "Add file to project:"
 msgstr ""
 
+#: lazarusidestrconsts:lisa2paddfiles
+msgid "Add Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfilestopackage
+msgid "Add files to package"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
 msgstr ""
@@ -1070,6 +1078,10 @@ msgstr "Copiar"
 msgid "Copy Error"
 msgstr "Error de Copia"
 
+#: lazarusidestrconsts:lisdsgcopycomponents
+msgid "Copy selected components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr ""
@@ -1218,6 +1230,10 @@ msgstr ""
 msgid "Cut"
 msgstr "Cortar"
 
+#: lazarusidestrconsts:lisdsgcutcomponents
+msgid "Cut selected components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
 msgstr ""
@@ -1248,6 +1264,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgstr ""
+
+#: lazarusidestrconsts:lismendebuggeroptions
+msgid "Debugger Options"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugpath
@@ -1418,6 +1438,10 @@ msgstr ""
 msgid "Description:  "
 msgstr ""
 
+#: lazarusidestrconsts:liskeycatdesigner
+msgid "Designer commands"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsdesigntimeandruntime
 msgid "Designtime and Runtime"
 msgstr ""
@@ -1489,6 +1513,10 @@ msgstr "Pantalla (no para win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Visualizar números de líneas en los errores de tiempo de ejecucion en trazados inversos"
+
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -1868,6 +1896,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2pfilename2
+msgid "Filename"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
@@ -3730,6 +3762,10 @@ msgstr "Pegar"
 msgid "Paste clipboard to current position"
 msgstr ""
 
+#: lazarusidestrconsts:lisdsgpastecomponents
+msgid "Paste selected components from clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr ""
@@ -4485,6 +4521,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Seleccionar párrafo"
+
+#: lazarusidestrconsts:lisdsgselectparentcomponent
+msgid "Select parent component"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorselecttemplate
 msgid "Select Template:"

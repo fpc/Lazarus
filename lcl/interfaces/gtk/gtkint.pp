@@ -225,9 +225,9 @@ type
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
     procedure RealizeWidgetSize(Widget: PGtkWidget;
-      NewWidth, NewHeight: integer);
+                                NewWidth, NewHeight: integer);
     Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
-      SetupProps : Boolean); Virtual;
+                                    SetupProps : Boolean); Virtual;
   public
     constructor Create; 
     destructor Destroy; override;
@@ -349,6 +349,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2003/07/06 17:53:34  mattias
+  updated polish localization
+
   Revision 1.134  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

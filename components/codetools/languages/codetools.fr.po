@@ -112,6 +112,10 @@ msgstr "Parenthèse ouverte prévue, mais %s trouvé"
 msgid "circle in definitions"
 msgstr "définitions circulaire"
 
+#: codetoolsstrconsts:ctsclasssnotfound
+msgid "Class %s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "identificateur de classe attendu"

@@ -1,6 +1,16 @@
+msgid ""
+msgstr ""
+"Last-Translator: Dominik Zablotny <dominz@wp.pl>\n"
+"PO-Revision-Date: 2003-06-15 22:28+0200\n"
+"Project-Id-Version: synedit.pl\n"
+"Language-Team: Polish <pl@li.org>\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.1\n"
+
 #: syneditstrconst:syns_scrollinfofmt
 msgid "%d - %d"
-msgstr ""
+msgstr "%d - %d"
 
 #: syneditstrconst:syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
@@ -36,7 +46,7 @@ msgstr "Pliki Cache (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst:syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Kaskadowe arkuszy stylu (*.css)|*.css"
+msgstr "Kaskadowe arkusze styl√≥w (*.css)|*.css"
 
 #: syneditstrconst:syns_filtercorbaidl
 msgid "CORBA IDL files (*.idl)|*.idl"
@@ -68,7 +78,7 @@ msgstr "Pliki GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
 
 #: syneditstrconst:syns_filtergws
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "Skrypty GW-TEL (*.gws)|*.gws"
+msgstr "pliki skryptowe GW-TEL (*.gws)|*.gws"
 
 #: syneditstrconst:syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
@@ -76,7 +86,7 @@ msgstr "Pliki HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst:syns_exporterformathtml
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: syneditstrconst:syns_filterhtml
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
@@ -140,7 +150,7 @@ msgstr "Pliki PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst:syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "Pliki Progressa (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr "Pliki Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
 
 #: syneditstrconst:syns_filterpython
 msgid "Python Files (*.py)|*.py"
@@ -148,11 +158,11 @@ msgstr "Pliki Pythona (*.py)|*.py"
 
 #: syneditstrconst:syns_filterrtf
 msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "Pliki Rich Text Format (*.rtf)|*.rtf"
+msgstr "Dokumenty Rich Text Format (*.rtf)|*.rtf"
 
 #: syneditstrconst:syns_exporterformatrtf
 msgid "RTF"
-msgstr ""
+msgstr "RTF"
 
 #: syneditstrconst:syns_filtersdd
 msgid "Semanta DD files (*.sdd)|*.sdd"
@@ -160,7 +170,7 @@ msgstr "Pliki Semanta DD (*.sdd)|*.sdd"
 
 #: syneditstrconst:syns_eduplicateshortcut
 msgid "Shortcut already exists"
-msgstr "SkrÛt juø istnieje"
+msgstr "Skr√≥t ju≈º istnieje"
 
 #: syneditstrconst:syns_filtersql
 msgid "SQL Files (*.sql)|*.sql"
@@ -176,19 +186,19 @@ msgstr "Pliki Tcl/Tk (*.tcl)|*.tcl"
 
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "Klawisz \"%s\" jest juø przypisany do innego polecenia edytora. (%s)"
+msgstr "Klawisz \"%s\" jest ju≈º przypisany do innego polecenia edytora. (%s)"
 
 #: syneditstrconst:syns_duplicateshortcutmsg2
 msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr "Klawisz \"%s\" jest juø przypisany do innego polecenia edytora. \015\nSkrÛt dla tego polecenia pozosta≥ niezmieniony."
+msgstr "Klawisz \"%s\" jest ju≈º przypisany do innego polecenia edytora.\015\nSkr√≥t nie zosta≈Ç zmieniony."
 
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
-msgstr "GÛrna linia: %d"
+msgstr "G√≥rna linia: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr ""
+msgstr "Skrypty shella UNIX (*.sh)|*.sh"
 
 #: syneditstrconst:syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"

@@ -78,3 +78,7 @@ msgstr "Properties"
 msgid "Sub item"
 msgstr ""
 
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
+

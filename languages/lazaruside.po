@@ -30,6 +30,10 @@ msgstr ""
 msgid "LCL Interface specific options:"
 msgstr ""
 
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
+
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr ""
@@ -622,6 +626,10 @@ msgstr ""
 msgid "Editor options"
 msgstr ""
 
+#: lazarusidestrconsts:lismendebuggeroptions
+msgid "Debugger Options"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
 msgstr ""
@@ -632,6 +640,22 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgcopycomponents
+msgid "Copy selected components to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgcutcomponents
+msgid "Cut selected components to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgpastecomponents
+msgid "Paste selected components from clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lisdsgselectparentcomponent
+msgid "Select parent component"
 msgstr ""
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
@@ -1374,6 +1398,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:lisa2pfilename2
+msgid "Filename"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvlanguage
 msgid "Language"
 msgstr ""
@@ -1992,6 +2020,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgeddelete
 msgid "Delete"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfilestopackage
+msgid "Add files to package"
 msgstr ""
 
 #: lazarusidestrconsts:dlgindentcodeto
@@ -3804,6 +3836,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
+msgstr ""
+
+#: lazarusidestrconsts:liskeycatdesigner
+msgid "Designer commands"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguageautomatic
@@ -5908,6 +5944,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfiles
+msgid "Add Files"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2punitfilename

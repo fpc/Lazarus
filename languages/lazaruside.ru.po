@@ -294,6 +294,14 @@ msgstr "Добавить файл к пакету"
 msgid "Add file to project:"
 msgstr "Добавить файл к проекту"
 
+#: lazarusidestrconsts:lisa2paddfiles
+msgid "Add Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisa2paddfilestopackage
+msgid "Add files to package"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Добавить точку перехода"
@@ -1070,6 +1078,10 @@ msgstr "Копировать"
 msgid "Copy Error"
 msgstr "Ошибка копирования"
 
+#: lazarusidestrconsts:lisdsgcopycomponents
+msgid "Copy selected components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
 msgstr "Копировать выделение в буфер"
@@ -1218,6 +1230,10 @@ msgstr "Пользовательская позиция"
 msgid "Cut"
 msgstr "Вырезать"
 
+#: lazarusidestrconsts:lisdsgcutcomponents
+msgid "Cut selected components to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
 msgstr "Вырезать выделение в буфер"
@@ -1249,6 +1265,10 @@ msgstr "Ошибка отладчика"
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "Ошибка отладчика%sОп, отладчик находится в нерабочем состоянии%sСохраните работу!%sНажмите Стоп и надейтесь на лучшее!"
+
+#: lazarusidestrconsts:lismendebuggeroptions
+msgid "Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcodebugpath
 msgid "Debugger path addition:"
@@ -1418,6 +1438,10 @@ msgstr "Описание:"
 msgid "Description:  "
 msgstr "Описание: "
 
+#: lazarusidestrconsts:liskeycatdesigner
+msgid "Designer commands"
+msgstr ""
+
 #: lazarusidestrconsts:lispckoptsdesigntimeandruntime
 msgid "Designtime and Runtime"
 msgstr "При разработке и запуске"
@@ -1489,6 +1513,10 @@ msgstr "Дисплей (не для win32, напр., 198.112.45.11:0, x.org:1, hydra:0.1)"
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Выдать номера строк в ошибках времени исполнения"
+
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "Do not show splash screen"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -1869,6 +1897,10 @@ msgstr "Свойства файла"
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Тип файла"
+
+#: lazarusidestrconsts:lisa2pfilename2
+msgid "Filename"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
 msgid "Filename differs from Packagename"
@@ -3730,6 +3762,10 @@ msgstr "Вставить"
 msgid "Paste clipboard to current position"
 msgstr "Вставить из буфера в текущую позицию"
 
+#: lazarusidestrconsts:lisdsgpastecomponents
+msgid "Paste selected components from clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "Шаблоны пути"
@@ -4485,6 +4521,10 @@ msgstr "Выделить страницу сверху"
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Выделить абзац"
+
+#: lazarusidestrconsts:lisdsgselectparentcomponent
+msgid "Select parent component"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditorselecttemplate
 msgid "Select Template:"

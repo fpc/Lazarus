@@ -88,3 +88,7 @@ msgstr "Свойства"
 msgid "Sub item"
 msgstr "Подэлемент"
 
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
+
