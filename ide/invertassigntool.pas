@@ -148,31 +148,33 @@ var
 Lines: TStringList;
 AList,
 BList: TStringList;
-Indents: array of Integer;
+Indents: ^Integer;
 X, Y: Integer;
 EqPos: Integer;
 ALine: String;
 begin
   Lines := TStringList.Create;
-  SetLength(Indents, ALines.Count);
+  if ALines.Count>0 then begin
+    GetMem(Indents,SizeOf(Integer)*ALines.Count);
 
-  // Put a line on multiple lines, on one line
-  ALine := '';
-  for X := 0 to ALines.Count-1 do begin
-    ALine := ALine + ALines.Strings[X];
-    if IsAWholeLine(ALine) then begin
-      Indents[Lines.Add(ALine)] := GetIndent(ALine);
-      ALine := '';
+    // Put a line on multiple lines, on one line
+    ALine := '';
+    for X := 0 to ALines.Count-1 do begin
+      ALine := ALine + ALines.Strings[X];
+      if IsAWholeLine(ALine) then begin
+        Indents[Lines.Add(ALine)] := GetIndent(ALine);
+        ALine := '';
+      end;
     end;
+
+    // exited the loop without finding the end of a line
+    if Length(ALine) > 0 then begin
+      X := Lines.Add(ALine);
+      Indents[X] := GetIndent(ALine);
+    end;
+
+    ALines.Clear;
   end;
-  
-  // exited the loop without finding the end of a line
-  if Length(ALine) > 0 then begin
-    X := Lines.Add(ALine);
-    Indents[X] := GetIndent(ALine);
-  end;
-  
-  ALines.Clear;
   
   AList := TStringList.Create;
   BList := TStringList.Create;
@@ -194,6 +196,7 @@ begin
   BList.Free;
 
   Result := ALines;
+  ReAllocMem(Indents,0);
   // TODO: How do you stop this from adding a new line at the end of the last item
 end;
 //////////////////////////////////////////////////////////////////////
