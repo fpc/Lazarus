@@ -195,6 +195,7 @@ type
     destructor Destroy; override;
   published
     property ActivePage;
+    property Align;
     property Images;
     property OnCloseTabClicked;
     //property MultiLine;
@@ -559,6 +560,9 @@ end.
 
  {
   $Log$
+  Revision 1.48  2003/01/04 20:55:55  mattias
+  published TNoteBook.Align
+
   Revision 1.47  2002/12/27 18:18:05  mattias
   fixes for htmllite
 
