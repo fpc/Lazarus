@@ -710,7 +710,11 @@ begin
   writeln('');
   {$ENDIF}
 
+  {$IfDef GTK2}
+  Result:=False;
+  {$Else}
   Result:=true;
+  {$EndIF}
 end;
 
 function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -759,7 +763,12 @@ begin
   Mess.msg := LM_SETFOCUS;
   Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
   DeliverMessage(Data,  Mess);
+
+  {$IfDef GTK2}
+  Result:=False;
+  {$Else}
   Result:=true;
+  {$EndIF}
 end;
 
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
@@ -802,7 +811,11 @@ begin
   writeln('');
   {$ENDIF}
 
+  {$IfDef GTK2}
+  Result:=False;
+  {$Else}
   Result:=true;
+  {$EndIF}
 end;
 
 function GTKKillFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
@@ -851,7 +864,12 @@ begin
   //TODO: fill in new focus
   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
   DeliverMessage(Data,  Mess);
+
+  {$IfDef GTK2}
+  Result:=False;
+  {$Else}
   Result:=true;
+  {$EndIF}
 end;
 
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2401,6 +2419,7 @@ function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent;
   data : gpointer) : GBoolean; cdecl;
 var
   MessI : TLMEnter;
+  Status : GBoolean;
 begin
 //writeln('[gtkFocusInNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
@@ -2412,13 +2431,20 @@ begin
   end;
 
   MessI.msg := LM_Enter;
-  Result:= DeliverMessage(Data, MessI) = 0;
+  Status := DeliverMessage(Data, MessI) = 0;
+
+  {$Ifdef GTK2}
+   Status := False;
+  {$Endif}
+  
+  Result := Status
 end;
 
 function gtkFocusOutNotifyCB (widget : PGtkWidget; event : PGdkEvent;
   data : gpointer) : GBoolean; cdecl;
 var
   MessI : TLMExit;
+  Status : GBoolean;
 begin
 //writeln('[gtkFocusOutNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusOutNotify (alias Exit)', data);
@@ -2430,7 +2456,13 @@ begin
   end;
 
   MessI.msg := LM_Exit;
-  Result:= DeliverMessage(Data, MessI) = 0;
+  Status := DeliverMessage(Data, MessI) = 0;
+
+  {$Ifdef GTK2}
+   Status := False;
+  {$Endif}
+
+  Result := Status
 end;
 
 {
@@ -2894,6 +2926,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.198  2003/10/01 20:51:09  ajgenius
+  partly fix focus callbacks for GTK2
+
   Revision 1.197  2003/10/01 15:57:37  ajgenius
   undo accidental mouse callback changes, partly fix key events for gtk2
 
