@@ -3,7 +3,6 @@
 {------------------------------------------------------------------------------}
 constructor TBitBtn.Create(AOwner: TComponent);
 begin
-
   Inherited Create(AOwner);
   FCompStyle := csBitBtn;
   FGlyph := TButtonGlyph.Create;
@@ -21,7 +20,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TBitbtn.Destroy;
 Begin
-inherited Destroy;
+  FGlyph.Free;
+  inherited Destroy;
 end;
 
 

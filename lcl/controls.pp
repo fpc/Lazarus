@@ -1129,8 +1129,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.15  2001/03/13 15:02:12  lazarus
-  MG: activated GetWindowOrgEx
+  Revision 1.16  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.14  2001/03/12 12:17:01  lazarus
   MG: fixed random function results

@@ -348,7 +348,7 @@ begin
   end;
   Result := DeliverPostMessage(Data, Msg);
 
-  if ssLeft in ShiftState then WriteLN(Format('[GTKMotionNotify] widget: 0x%p', [widget]));
+  //if ssLeft in ShiftState then WriteLN(Format('[GTKMotionNotify] widget: 0x%p', [widget]));
   
   if (Pointer(MCaptureHandle) <> widget)
   and (MCaptureHandle <> 0)
@@ -1091,8 +1091,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.24  2001/03/13 15:02:13  lazarus
-  MG: activated GetWindowOrgEx
+  Revision 1.25  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.23  2001/02/28 13:17:34  lazarus
   Added some debug code for the top,left reporting problem.

@@ -23,29 +23,29 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBitMapCanvas.CreateHandle;
 var
-  hDC: HDC;
+  DC: HDC;
 begin
   if FBitmap <> nil then
   begin
     FBitmap.HandleNeeded;
     FreeDC;
     FBitmap.PaletteNeeded;
-    hDC := CreateCompatibleDC(0);
+    DC := CreateCompatibleDC(0);
 
     Assert(False, Format('trace:[TBitmapCanvas.CreateHandle] Got Handle 0x%x', [FBitmap.Handle]));
 
     if FBitmap.Handle = 0
     then FOldBitmap := 0
-    else FOldBitmap := SelectObject(hDC, FBitmap.Handle);
+    else FOldBitmap := SelectObject(DC, FBitmap.Handle);
 
     if FBitmap.FPalette = 0
     then FOldPalette := 0
     else begin
-      FOldPalette := SelectPalette(hDC, FBitmap.FPalette, True);
-      RealizePalette(hDC);
+      FOldPalette := SelectPalette(DC, FBitmap.FPalette, True);
+      RealizePalette(DC);
     end;
 
-    Handle := hDC;
+    Handle := DC;
   end;
 end;
 
@@ -64,7 +64,7 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method:  TControlCanvas.FreeContext
+  Method:  TControlCanvas.FreeDC
   Params:  None
   Returns: Nothing
 
@@ -87,6 +87,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.2  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

@@ -17,7 +17,6 @@
  ------------------------------------------------------------------------------}
 constructor TSpeedbutton.Create(AOwner: TComponent);
 begin
-
   Inherited Create(AOwner);
   FCompStyle := csSpeedButton;
 
@@ -26,7 +25,6 @@ begin
 
   SetBounds(0, 0, 23, 22);
   ControlStyle := [csCaptureMouse, csDoubleClicks];
-
 
   {set default alignment}
   Align := alNone;
@@ -275,7 +273,7 @@ begin
       end;
     InflateRect(PaintRect, -1, -1);
   end;
-  
+
   if FState in [bsDown, bsExclusive]
   then begin
     if (FState = bsExclusive)
@@ -298,7 +296,6 @@ begin
   Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
   TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, FLayout, FMargin,
     FSpacing, FState, Transparent, (0));
-
 end;
 
 {------------------------------------------------------------------------------
@@ -526,6 +523,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.5  2001/02/06 14:52:47  lazarus
   Changed TSpeedbutton in gtkobject so it erases itself when it's set to visible=false;
   Shane

@@ -3,7 +3,6 @@
 {------------------------------------------------------------------------------}
 constructor TButtonGlyph.Create;
 begin
-
 //  Inherited Create;
   FOriginal := TBitmap.Create;
 end;
@@ -13,10 +12,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TButtonGlyph.Destroy;
 Begin
-FOriginal.Free;
-
-inherited Destroy;
-
+  FOriginal.Free;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------}
@@ -24,10 +21,11 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TButtonGlyph.SetGlyph(Value : TBitmap);
 Begin
-if FOriginal = Value then exit;
-//Invalidate;
-FOriginal := Value;
-//FOriginal.Assign(Value);
+  if FOriginal = Value then exit;
+  //Invalidate;
+  FOriginal.Free;
+  FOriginal := Value;
+  //FOriginal.Assign(Value);
 end;
 
 {------------------------------------------------------------------------------}
@@ -76,3 +74,4 @@ Begin
      end;
 
 end;
+

@@ -87,14 +87,13 @@ or use TPropertyType
   Created by Shane Miller
   This unit defines the layout for the forms editor.  The forms editor is responsible
   for creating a form, holding a list of selected controls, determining if the form was
-  modified, holding the filename for the form, and working wit the object inspector.
+  modified and working wit the object inspector.
 }
 
   TAbstractFormEditor = class
    public
-     Function Filename : AnsiString; virtual; abstract;
      Function FormModified : Boolean; virtual; abstract;
-     Function FindComponentByName(const Name : String) : TIComponentInterface; virtual; abstract;
+     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; virtual; abstract;
      Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
      Function GetFormComponent: TIComponentInterface; virtual; abstract;
@@ -103,9 +102,10 @@ or use TPropertyType
      Function GetSelCount : Integer; virtual; abstract;
      Function GetSelComponent(Index : Integer) : TIComponentInterface; virtual; abstract;
 
-//     Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+//     Function CreateComponent(CI : TIComponentInterface; TypeName : ShortString;
      Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
+     Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; virtual; abstract;
   end;
 
 

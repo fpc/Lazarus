@@ -114,15 +114,17 @@ destructor TMenuItem.Destroy;
 var
    i : integer;
 begin
-  i := 0;
   if assigned (FItems) then begin
-    while i < FItems.Count do
-    begin
-      TMenuItem(FItems [i]).Free;
-      inc (i);
+    i := FItems.Count-1;
+    while i>=0 do begin
+      TMenuItem(FItems[i]).Free;
+      dec(i);
     end;
   end;
   FItems.Free;
+  FItems:=nil;
+  if FParent<>nil then
+    FParent.FItems.Remove(Self);
   inherited Destroy;
 end;
 
@@ -405,6 +407,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.6  2001/02/21 22:55:26  lazarus
   small bugfixes + added TOIOptions
 
@@ -452,6 +457,9 @@ end;
 
 
   $Log$
+  Revision 1.7  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.6  2001/02/21 22:55:26  lazarus
   small bugfixes + added TOIOptions
 

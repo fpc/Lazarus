@@ -758,10 +758,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.Notification( AComponent : TComponent; Operation : TOperation);
 begin
-   inherited Notification(AComponent, Operation);
-   if Operation = opRemove then
-       if AComponent = PopupMenu then PopupMenu := nil;
-
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = PopupMenu then PopupMenu := nil;
 end;
 
 
@@ -808,7 +807,7 @@ procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
 var
   Rect : TRect;
 begin
-Writeln('[INAVLIDATECONTROL]');
+//Writeln('[INVALIDATECONTROL]');
   if (IsVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle)) and
      (Parent <> nil) and (Parent.HandleAllocated) then
     Begin
@@ -816,8 +815,7 @@ Writeln('[INAVLIDATECONTROL]');
 //    Rect := BoundsRect;
 //    InvalidateRect(parent.handle,@Rect, True);
     end;
-Writeln('[INAVLIDATECONTROL] Done');
-
+//Writeln('[INVALIDATECONTROL] Done');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1298,6 +1296,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.16  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.15  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

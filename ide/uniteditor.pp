@@ -273,6 +273,7 @@ type
     Function GetSourceForUnit(UnitName : String) : TStrings;
     Function SetSourceForUnit(UnitName : String; NewSource : TStrings) : Boolean;
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
+    function SomethingModified: boolean;
 
     Procedure DisplayFormforActivePage;
     Procedure DisplayCodeforControl(Control : TObject);
@@ -1098,9 +1099,7 @@ writeln('TSourceEditor.CreateEditor  freeing old FEditor');
   aCompletion.AddEditor(FEditor);
   FEditor.Lines.Assign(OldSource);
   OldSource.Free;
-writeln('TSourceEditor.CreateEditor  focusing');
   FEditor.SetFocus;
-writeln('TSourceEditor.CreateEditor  end');
 end;
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
@@ -1524,6 +1523,7 @@ begin
   FOpenDialog := TOpenDialog.Create(Self);
   BuildPopupMenu;
 
+
   MarksImgList := TImageList.Create(AOwner);
 
   //load 10 bookmark images
@@ -1600,7 +1600,7 @@ begin
   CodeCompletionTimer.Interval := 500;
 
 
- Writeln('TSOurceNotebook create exiting');
+ Writeln('TSourceNotebook create exiting');
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -2230,6 +2230,13 @@ Begin
   Result := (not assigned(Notebook)) or (Notebook.Pages.Count = 0);
 end;
 
+function TSourceNotebook.SomethingModified: boolean;
+var i: integer;
+begin
+  Result:=false;
+  for i:=0 to EditorCount-1 do Result:=Result or Editors[i].Modified;
+end;
+
 Procedure TSourceNotebook.NextEditor;
 Begin
   if Notebook.PageIndex < Notebook.Pages.Count-1 then
@@ -2681,53 +2688,57 @@ end;
 
 Constructor TfrmGoto.Create(AOWner : TComponent);
 begin
-  inherited;
-  position := poScreenCenter;
-  Width := 250;
-  Height := 100;
-  Caption := 'Goto';
+  inherited Create(AOwner);
 
-  Label1 := TLabel.Create(self);
-  with Label1 do
+  if LazarusResources.Find(ClassName)=nil then begin
+    position := poScreenCenter;
+    Width := 250;
+    Height := 100;
+    Caption := 'Goto';
+
+    Label1 := TLabel.Create(self);
+    with Label1 do
     Begin
-     Parent := self;
-     Top := 10;
-     Left := 5;
-     Caption := 'Goto line :';
-     Visible := True;
+      Parent := self;
+      Top := 10;
+      Left := 5;
+      Caption := 'Goto line :';
+      Visible := True;
     end;
 
-   Edit1 := TEdit.Create(self);
-   with Edit1 do
-     Begin
+    Edit1 := TEdit.Create(self);
+    with Edit1 do
+    Begin
       Parent := self;
       Top := 30;
       Width := self.width-40;
       Left := 5;
       Visible := True;
       Caption := '';
-     end;
+    end;
 
-   btnOK := TBitbtn.Create(self);
-   with btnOK do
-     Begin
+    btnOK := TBitbtn.Create(self);
+    with btnOK do
+    Begin
       Parent := self;
       Top := 70;
       Left := 40;
+      kind := bkOK;
       Visible := True;
-      kind := bkOK
-     end;
+    end;
 
-   btnCancel := TBitbtn.Create(self);
-   with btnCancel do
-     Begin
+    btnCancel := TBitbtn.Create(self);
+    with btnCancel do
+    Begin
       Parent := self;
       Top := 70;
       Left := 120;
+      kind := bkCancel;
       Visible := True;
-      kind := bkCancel
-     end;
-  OnActivate := @GotoDialogActivate;
+    end;
+
+    OnActivate := @GotoDialogActivate;
+  end;
 end;
 
 Procedure TfrmGoto.GotoDialogActivate(sender : TObject);

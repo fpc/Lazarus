@@ -55,7 +55,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.CreateHandle;
 begin
-
   if FControl = nil
   then inherited CreateHandle
   else begin
@@ -67,7 +66,6 @@ begin
     end;
     Handle := FDeviceContext;
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -90,6 +88,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

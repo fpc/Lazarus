@@ -247,8 +247,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.8  2001/03/15 14:40:09  lazarus
-  MG: added some mouse cursors
+  Revision 1.9  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.7  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.

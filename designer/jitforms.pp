@@ -18,11 +18,11 @@ unit jitforms;
       in designing state
 }
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
-uses Classes, SysUtils, CompReg, Forms, Controls;
+uses Classes, SysUtils, CompReg, Forms, Controls, LCLLinux;
 
 type
   //----------------------------------------------------------------------------
@@ -204,7 +204,7 @@ writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewCl
 writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
   TComponent(FCurReadForm):=Instance;
   try
-    Instance.Create(Application);
+    Instance.Create(nil);
     Writeln('----------------------------------');
     Writeln('New form name is '+NewFormName);
     Writeln('----------------------------------');
@@ -261,15 +261,19 @@ begin
   Result:=0;
   NewClassName:=GetClassNameFromStream(BinStream);
   if NewClassName='' then begin
+    Application.MessageBox('No classname in form stream found.','',mb_OK);
     Result:=-1;  exit;
   end;
+writeln('[TJITForms.AddJITFormFromStream] 1');
   try
     Result:=DoCreateJITForm('',NewClassName);
+writeln('[TJITForms.AddJITFormFromStream] 2');
 
     Reader:=TReader.Create(BinStream,4096);
     MyFindGlobalComponentProc:=@OnFindGlobalComponent;
     FindGlobalComponent:=@MyFindGlobalComponent;
 
+writeln('[TJITForms.AddJITFormFromStream] 3');
     try
       // connect TReader events
       Reader.OnError:=@ReaderError;
@@ -280,8 +284,10 @@ begin
       Reader.OnCreateComponent:=@ReaderCreateComponent;
       Reader.OnFindComponentClass:=@ReaderFindComponentClass;
 
+writeln('[TJITForms.AddJITFormFromStream] 4');
       Reader.ReadRootComponent(FCurReadForm);
 
+writeln('[TJITForms.AddJITFormFromStream] 5');
       // MG: workaround til visible=true is default
       for a:=0 to FCurReadForm.ComponentCount-1 do begin
         if FCurReadForm.Components[a] is TControl then
@@ -289,6 +295,7 @@ begin
       end;
       // MG: end of workaround
 
+writeln('[TJITForms.AddJITFormFromStream] 6');
       FCurReadForm.Show;
     finally
       FindGlobalComponent:=nil;

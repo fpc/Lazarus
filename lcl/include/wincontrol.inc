@@ -343,11 +343,10 @@ end;
 Procedure TWinControl.ReCreateWnd;
 Begin
 //send a message to inform the interface that we need to destroy and recreate this control
-Writeln(Format('[TWinControl.RecreateWnd] %s ', [Classname]));
-if FHandle <> 0 then
+  if FHandle <> 0 then
   Begin
-   CNSendMessage(LM_RECREATEWND,Self,Nil);
-   AttachSignals;
+    CNSendMessage(LM_RECREATEWND,Self,Nil);
+    AttachSignals;
   end;
 end;
 
@@ -522,7 +521,7 @@ procedure TWinControl.PaintControls(DC: HDC; First: TControl);
 var
   I, Count, SaveIndex: Integer;
   FrameBrush: HBRUSH;
-  TempCOntrol : TCOntrol;
+  TempControl : TCOntrol;
 begin
   if FControls <> nil then
   begin
@@ -535,7 +534,7 @@ begin
     Count := FControls.Count;
     while I < Count do
     begin
-      TempCOntrol := TControl(FControls.Items[I]);
+      TempControl := TControl(FControls.Items[I]);
       with (TempControl) do
         if (Visible or (csDesigning in ComponentState) and
           not (csNoDesignVisible in ControlStyle)) and
@@ -727,7 +726,7 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
- Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
+// Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
    Form := GetParentForm(self);
    if Assigned(form) then
      Writeln('Form is assigned') else Writeln('Form is NOT assigned');
@@ -736,7 +735,7 @@ begin
   else
   if Visible and HandleAllocated then
      LCLLinux.SetFocus(Handle);
-  Writeln('[TWINCONTROL.SETFOCUS] done');
+//  Writeln('[TWINCONTROL.SETFOCUS] done');
 
 
 {  if Visible and HandleAllocated then
@@ -1241,7 +1240,7 @@ var
   n: Integer;
   Control: TControl;
 begin
-writeln('[TWinControl.Destroy] ',Name,':',ClassName);
+//writeln('[TWinControl.Destroy] 1  ',Name,':',ClassName);
   DestroyHandle; 
 
   n := ControlCount;
@@ -1259,6 +1258,7 @@ writeln('[TWinControl.Destroy] ',Name,':',ClassName);
 
   FBrush.Free;
   inherited Destroy;
+//writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1329,7 +1329,7 @@ var
   PS : TPaintStruct;
   I : Integer;
 begin
-//writeln('[TWinControl.WMPaint] ',Name,':',ClassName);
+//writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
   if (Msg.DC <> 0) then
   begin
@@ -1363,6 +1363,7 @@ begin
     end;
   end;
   Assert(False, Format('Trace:< [TWinControl.WMPaint] %s', [ClassName]));
+//writeln('[TWinControl.WMPaint] END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1407,8 +1408,8 @@ end;
 procedure TWinControl.WMMove(var Message: TLMMove);
 begin
   { Just sync the coordinates }
-Writeln('[TWINCONTROL].WMMOVE');
-Writeln(Format('MOVE is LEft=%d    Top= %d',[Message.XPos,MEssage.YPos]));
+//Writeln('[TWINCONTROL].WMMOVE');
+//Writeln(Format('MOVE is LEft=%d    Top= %d',[Message.XPos,MEssage.YPos]));
 
   FLeft := Message.XPos;
   FTop  := Message.YPos;
@@ -1936,8 +1937,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.22  2001/03/13 15:02:13  lazarus
-  MG: activated GetWindowOrgEx
+  Revision 1.23  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.21  2001/03/12 12:17:02  lazarus
   MG: fixed random function results

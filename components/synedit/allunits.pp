@@ -15,8 +15,8 @@ interface
 
 uses
   syntextdrawer, syneditkeycmds, synedittypes, syneditstrconst,
-  syneditmiscclasses, syneditmiscprocs, syneditsearch, synedittextbuffer,
-  synedit, synhighlighterpas, {synedithighlighter,} syncompletion,
+  syneditsearch, syneditmiscprocs, syneditmiscclasses, synedittextbuffer,
+  synedit, synhighlighterpas, syncompletion,
   syneditautocomplete, synhighlighterhtml, synhighlightercpp;
 	
 implementation
@@ -26,8 +26,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.5  2001/03/12 23:42:40  lazarus
-  MG: added synhighlighter for cpp and html
+  Revision 1.6  2001/03/19 14:00:48  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.4  2001/02/21 22:55:25  lazarus
   small bugfixes + added TOIOptions

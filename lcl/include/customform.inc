@@ -91,11 +91,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.FocusControl(Control : TWinControl);
 Begin
-   Writeln('[FOCUSCONTROL]');
+//   Writeln('[FOCUSCONTROL]');
    FActiveControl := Control;
    LCLLinux.SetFocus(Control.Handle);
-   Writeln('[FOCUSCONTROL] DONE');
-
+//   Writeln('[FOCUSCONTROL] DONE');
 End;
 
 
@@ -104,9 +103,8 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.Notification(AComponent : TComponent; Operation : TOperation);
 Begin
-inherited Notification(AComponent,Operation);
-
-if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
+  inherited Notification(AComponent,Operation);
+  if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
 End;
 
 
@@ -170,9 +168,9 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.WMActivate(var Message : TLMActivate);
 Begin
-  Writeln('[TCUSTOMFORM.WMACtivate]');
-if Assigned(FOnActivate) then FOnActivate(Self);
-  Writeln('[TCUSTOMFORM.WMACtivate] Done');
+//  Writeln('[TCUSTOMFORM.WMACtivate]');
+  if Assigned(FOnActivate) then FOnActivate(Self);
+//  Writeln('[TCUSTOMFORM.WMACtivate] Done');
 end;
 
 {------------------------------------------------------------------------------
@@ -205,17 +203,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var Message: TLMSize);
 Begin
-Writeln('[TCUSTOMFORM].WMSIZE');
-Writeln(Format('Size is width=%d    height= %d',[Message.Width,MEssage.height]));
-Assert(False, 'Trace:WMSIZE in TCustomForm');
-if not (csDesigning in ComponentState) then
+//Writeln('[TCUSTOMFORM].WMSIZE');
+//Writeln(Format('Size is width=%d    height= %d',[Message.Width,MEssage.height]));
+  Assert(False, 'Trace:WMSIZE in TCustomForm');
+  if not (csDesigning in ComponentState) then
     Case Message.SizeType of
        SIZENORMAL : FWindowState := wsNormal;
        SIZEICONIC : FWIndowState := wsMinimized;
        SIZEFULLSCREEN : FWindowstate := wsMaximized;
       end;
-RequestAlign;
-
+  RequestAlign;
 End;
 
 {------------------------------------------------------------------------------
@@ -353,7 +350,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetDesigner(Value : TIDesigner);
 Begin
-FDesigner := Value;
+  FDesigner := Value;
 end;
 
 {------------------------------------------------------------------------------}
@@ -440,6 +437,7 @@ begin
                   TOwnerDrawState(LongRec(itemState).Lo));
               finally
                 Handle := 0;
+riteln('[TCustomForm.WndPRoc] 1');
                 RestoreDC(hDC, SaveIndex)
               end;
             finally
@@ -472,6 +470,7 @@ begin
                     Integer(itemWidth), Integer(itemHeight));
                 finally
                   Handle := 0;
+writeln('[TCustomForm.WndPRoc] 2');
                   RestoreDC(DC, SaveIndex);
                 end;
               finally
@@ -855,6 +854,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.13  2001/02/28 13:17:33  lazarus
   Added some debug code for the top,left reporting problem.
   Shane

@@ -85,7 +85,7 @@ begin
       CurrentBrush := SourceDC^.CurrentBrush;
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
-      SavedContext := SourceDC^.SavedContext;
+      SavedContext := nil;
     end;
   end;
   Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
@@ -723,6 +723,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.11  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.10  2001/01/25 21:38:57  lazarus
   MWE:
     * fixed lil bug I commetted yesterday (listbox crash)

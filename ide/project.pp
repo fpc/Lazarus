@@ -234,6 +234,7 @@ type
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure Clear;
+    function SomethingModified: boolean;
     function AddCreateFormToProjectFile(AClassName,AName:string):boolean;
     function RemoveCreateFormFromProjectFile(AClassName,AName:string):boolean;
     function FormIsCreatedInProjectFile(AClassname,AName:string):boolean;
@@ -806,8 +807,8 @@ begin
         case fProjectType of
          ptApplication:
           begin
-            Add('   Application.Initialize;');
-            Add('   Application.Run;');
+            Add('  Application.Initialize;');
+            Add('  Application.Run;');
          end;
         end;
         Add('end.');
@@ -1392,6 +1393,12 @@ begin
   end;
 end;
 
+function TProject.SomethingModified: boolean;
+var i: integer;
+begin
+  Result:=Modified;
+  for i:=0 to UnitCount-1 do Result:=Result or Units[i].Modified;
+end;
 
 end.
 
@@ -1399,7 +1406,11 @@ end.
 
 {
   $Log$
+  Revision 1.16  2001/03/19 14:00:47  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.15  2001/03/09 17:54:45  lazarus
+
   Fixed error in Windows section of OnLoadSaveFilename - missing ')'
 
   Revision 1.14  2001/03/09 11:38:20  lazarus

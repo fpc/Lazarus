@@ -244,7 +244,13 @@ end;
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
   // TODO: the properties from new bitmap
-  FImage.FHandle := Value;
+  with FImage do
+    if FHandle <> Value then
+    begin
+      FreeContext;
+      FHandle:=Value;
+      Changed(Self);
+    end;
 end;
 
 procedure TBitmap.SetMaskHandle(Value: HBITMAP);
@@ -311,6 +317,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.4  2001/03/12 09:40:44  lazarus
   MG: bugfix for readstream
 

@@ -242,12 +242,11 @@ begin
     else
       lfPitchAndFamily := DEFAULT_PITCH;
     end;
-    
+
     FFontData.Handle := CreateFontIndirect(LogFont);
   end;
   
   Result := FFontData.Handle;
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -271,6 +270,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

@@ -37,21 +37,43 @@ end;
  ------------------------------------------------------------------------------}
 destructor TgtkObject.Destroy;
 const
-  GDITYPENAME: array[TGDIType] of String = ('gdiBitmap', 'gdiBrush', 'gdiFont', 'gdiPen', 'gdiRegion');
+  GDITYPENAME: array[TGDIType] of String = ('gdiBitmap', 'gdiBrush'
+    ,'gdiFont', 'gdiPen', 'gdiRegion');
 var
   n: Integer;
   p: PMsg;
   GDITypeCount: array[TGDIType] of Integer;
   GDIType: TGDIType;
 begin
-  if (FDeviceContexts.Count > 0) 
-  then begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs' ,[FDeviceContexts.Count]));
+  // tidy up the messages
+  n:=FMessageQueue.Count-1;
+  while (n>=0) do begin
+    p := PMsg(FMessageQueue.Items[n]);
+    if p^.Message=LM_PAINT then begin
+      //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
+      ReleaseDC(0,P^.WParam);
+      FMessageQueue.Delete(n);
+    end;
+    dec(n);
   end;
-  if (FGDIObjects.Count > 0)
-  then begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased GDIObjects, a detailed dump follows:' ,[FGDIObjects.Count]));
 
+  if (FDeviceContexts.Count > 0) or (FGDIObjects.Count > 0)
+  then begin
+    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs and %d unreleased GDIObjects' ,[FDeviceContexts.Count, FGDIObjects.Count]));
+    n:=0;
+    write('DCs:  ');
+    while (n<7) and (n<FDeviceContexts.Count) do begin
+      write(' ',HexStr(Cardinal(FDeviceContexts[n]),8));
+      inc(n);
+    end;
+    writeln();
+    n:=0;
+    write('GDIOs:');
+    while (n<7) and (n<FGDIObjects.Count) do begin
+      write(' ',HexStr(Cardinal(FGDIObjects[n]),8));
+      inc(n);
+    end; 
+    writeln();
     for GDIType := Low(GDIType) to High(GDIType) do 
       GDITypeCount[GDIType] := 0;
     for n := 0 to FGDIObjects.Count - 1 do
@@ -59,7 +81,8 @@ begin
     for GDIType := Low(GDIType) to High(GDIType) do 
     begin
       if GDITypeCount[GDIType] > 0 
-      then WriteLN(Format('[TgtkObject.Destroy]   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
+      then WriteLN(Format('[TgtkObject.Destroy]   %s: %d',
+        [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
     end
   end;
   if FMessageQueue.Count > 0 
@@ -103,6 +126,10 @@ begin
       Delete(0);
       with Msg do
         SendMessage(hWND, Message, WParam, LParam);
+      case Msg.Message of
+       LM_PAINT:
+         ReleaseDC(0,Msg.WParam);
+      end;
     end;
 end;
 
@@ -2592,8 +2619,6 @@ end;
   Creates an initial DC
  ------------------------------------------------------------------------------}
 function TgtkObject.NewDC: PDeviceContext;
-var
-  n: Integer;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewDC]', []));
   New(Result);
@@ -2612,8 +2637,9 @@ begin
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor);
   end;
-  n := FDeviceContexts.Add(Result);
-  Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+  FDeviceContexts.Add(Result);
+//writeln('[TgtkObject.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
+//  Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
 (*
 {------------------------------------------------------------------------------
@@ -2622,16 +2648,21 @@ end;
   Returns: nothing
 
   Frees an initial DC
+  It does not free the GDI objects. See ReleaseDC for a smarter function.
  ------------------------------------------------------------------------------}
 function TgtkObject.FreeDC(ADC: PDeviceContext);
 var
   n: Integer;
 begin
+//writeln('[TgtkObject.FreeDC] ',HexStr(Cardinal(ADC),8));
   Assert(False, Format('Trace:> [TgtkObject.FreeDC] DC:0x%p', [ADC]));
   if ADC <> nil
   then begin
     if ADC^.SavedContext <> nil 
-    then FreeDC(ADC^.SavedContext);
+    then begin
+writeln('[TgtkObject.FreeDC] WARNING: there is an unused saved context left!');
+      FreeDC(ADC^.SavedContext);
+    end;
 
     Assert(ADC^.CurrentBitmap = nil, 'trace:  [TgtkObject.FreeDC] CurrentBitmap <> nil');
     Assert(ADC^.CurrentFont = nil, 'trace:  [TgtkObject.FreeDC] CurrentFont <> nil'); 
@@ -2663,6 +2694,7 @@ begin
   FillChar(Result^, SizeOf(TGDIObject), 0);
   Result^.GDIType := GDIType;
   n := FGDIObjects.Add(Result);
+//writeln('[TgtkObject.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
   Assert(False, Format('Trace:< [TgtkObject.NewGDIObject] FGDIObjects[%d] --> 0x%p', [n, Result]));
 end;
 
@@ -2716,12 +2748,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.33  2001/03/17 17:30:02  lazarus
-  MWE:
-    + Added some detailed info on unreleased GDIObjects
-
-  Revision 1.32  2001/03/15 14:40:09  lazarus
-  MG: added some mouse cursors
+  Revision 1.34  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.31  2001/03/12 12:17:02  lazarus
   MG: fixed random function results

@@ -8,7 +8,8 @@ const
 {-----------------------------------------------}
 {--  TCanvas.BrushCopy --}
 {-----------------------------------------------}
-Procedure TCanvas.BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect; TransparentColor :TColor);
+Procedure TCanvas.BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
+  TransparentColor :TColor);
 Begin
 //TODO:TCANVAS.BRUSHCOPY
 end;
@@ -42,9 +43,7 @@ var
   SH, SW, DH, DW: Integer;
 Begin
 //this SHOULD stretch the image to the new canvas, but it doesn't yet.....
-
   Assert(False, Format('Trace:==> [TCanvas.CopyRect] ', []));
-
   if Canvas <> nil
   then begin
     Canvas.RequiredState([csHandleValid, csBrushValid]);
@@ -98,8 +97,10 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateBrush;
+var OldHandle: HBRUSH;
 begin
-  SelectObject(FHandle, Brush.Handle);
+  OldHandle:=SelectObject(FHandle, Brush.Handle);
+  if OldHandle<>Brush.Handle then LCLLinux.DeleteObject(OldHandle);
 //  SetBkColor(FHandle, not ColorToRGB(Brush.Color));
 //  SetBkMode(FHandle, TRANSPARENT);
 end;
@@ -111,8 +112,10 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreatePen;
+var OldHandle: HPEN;
 begin
-  SelectObject(FHandle, Pen.Handle);
+  OldHandle:=SelectObject(FHandle, Pen.Handle);
+  if OldHandle<>Pen.Handle then LCLLinux.DeleteObject(OldHandle);
 //  SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
 
@@ -123,8 +126,10 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateFont;
+var OldHandle: HPEN;
 begin
-  SelectObject(FHandle, Font.Handle);
+  OldHandle:=SelectObject(FHandle, Font.Handle);
+  if OldHandle<>Font.Handle then LCLLinux.DeleteObject(OldHandle);
   SetTextColor(FHandle, ColorToRGB(Font.Color));
 end;
 
@@ -148,9 +153,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetAutoReDraw(Value : Boolean);
 begin
-   FAutoRedraw := Value;
-   If FAutoReDraw then
-      CNSendMessage(LM_REDraw, Self, nil);
+  FAutoRedraw := Value;
+  If FAutoReDraw then
+    CNSendMessage(LM_ReDraw, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -521,6 +526,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.3  2001/02/04 18:24:41  lazarus
   Code cleanup
   Shane

@@ -48,6 +48,8 @@ type
     FOldTop: integer;
     FOldWidth: integer;
     FOldHeight: integer;
+    FGrabIndex: TGrabIndex;
+    FCursor: TCursor;
   public
     property Positions: TGrabPositions read FPositions write FPositions;
     property Left:integer read FLeft write FLeft;
@@ -58,6 +60,8 @@ type
     property OldTop:integer read FOldTop write FOldTop;
     property OldWidth:integer read FOldWidth write FOldWidth;
     property OldHeight:integer read FOldHeight write FOldHeight;
+    property GrabIndex: TGrabIndex read FGrabIndex write FGrabIndex;
+    property Cursor: TCursor read FCursor write FCursor;
     procedure SaveBounds;
   end;
 
@@ -99,10 +103,16 @@ type
     FCustomForm: TCustomForm;
     FGrabbers: array[TGrabIndex] of TGrabber;
     FGrabberSize: integer;
+    FGrabberColor: TColor;
     FMarkerSize: integer;
+    FMarkerColor: integer;
     FActiveGrabber:TGrabber;
     FRubberBandBounds:TRect;
+    FRubberbandActive: boolean;
     FVisible:boolean;
+    FUpdateLock: integer;
+    FChangedDuringLock: boolean;
+    FIsResizing: boolean;
 
     FOnChange: TNotifyEvent;
 
@@ -110,7 +120,6 @@ type
     function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
     procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
     procedure SetGrabberSize(const NewSize: integer);
-    procedure AdjustSize;
     procedure AdjustGrabber;
     procedure DoChange;
     procedure SetVisible(const Value: Boolean);
@@ -120,25 +129,32 @@ type
     procedure SetRubberBandBounds(ARect:TRect);
   protected
   public
+    constructor Create; 
+    destructor Destroy; override;
     property Items[Index:integer]:TSelectedControl read GetItems write SetItems; default;
     function Count:integer;
+    procedure BeginUpDate;
+    procedure EndUpdate;
     function IndexOf(AControl:TControl):integer;
     function Add(AControl: TControl):integer;
     procedure Remove(AControl: TControl);
     procedure Delete(Index:integer);
     procedure Clear;
     procedure Assign(AControlSelection:TControlSelection);
+    procedure AdjustSize;
     function IsSelected(AControl: TControl): Boolean;
     procedure SaveBounds;
     procedure MoveSelection(dx, dy: integer);
     procedure SizeSelection(dx, dy: integer);  
       // size all controls depending on ActiveGrabber.
-      // if ActiveGrabber=nil then Left,Top
+      // if ActiveGrabber=nil then Right,Bottom
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
+    property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     procedure DrawGrabbers(DC: HDC);
     function GrabberAtPos(X,Y:integer):TGrabber;
     property Grabbers[AGrabIndex:TGrabIndex]:TGrabber read GetGrabbers write SetGrabbers;
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
+    property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     procedure DrawMarker(AControl:TControl; DC:HDC);
     property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
@@ -147,13 +163,16 @@ type
     property Width:integer read FWidth;
     property Height:integer read FHeight;
     property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
-    procedure DrawRubberband(DeleteOld:boolean; ARect:TRect);
-    procedure SelectWithRubberBand(ACustomForm:TCustomForm);
+    property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
+    procedure DrawRubberband(DC: HDC);
+    procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
     property Visible:boolean read FVisible write SetVisible;
-    constructor Create; 
-    destructor Destroy; override;
   end;
 
+
+var TheControlSelection: TControlSelection;
+
+function GetFormRelativeControlTopLeft(Control: TControl): TPoint;
 
 implementation
 
@@ -173,6 +192,20 @@ const
     [gpLeft          ],             [          gpRight],
     [gpLeft, gpBottom], [gpBottom], [gpBottom, gpRight]
   );
+
+
+function GetFormRelativeControlTopLeft(Control: TControl): TPoint;
+var FormOrigin: TPoint;
+begin
+  if Control.Parent=nil then begin
+    Result:=Point(0,0);
+  end else begin
+    Result:=Control.Parent.ClientOrigin;
+    FormOrigin:=GetParentForm(Control).ClientOrigin;
+    Result.X:=Result.X-FormOrigin.X+Control.Left;
+    Result.Y:=Result.Y-FormOrigin.Y+Control.Top;
+  end;
+end;
 
 
 { TGrabber }
@@ -201,6 +234,8 @@ end;
 
 procedure TSelectedControl.SaveBounds;
 begin
+writeln('[TSelectedControl.SaveBounds] ',Control.Name,':',Control.ClassName
+  ,'  ',Control.Left,',',Control.Top);
   FOldLeft:=Control.Left;
   FOldTop:=Control.Top;
   FOldWidth:=Control.Width;
@@ -215,13 +250,21 @@ begin
   inherited;
   FControls:=TList.Create;
   FGrabberSize:=6;
+  FGrabberColor:=clBlack;
   FMarkerSize:=5;
+  FMarkerColor:=clDkGray;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     FGrabbers[g]:=TGrabber.Create;
     FGrabbers[g].Positions:=GRAB_POSITIONS[g];
+    FGrabbers[g].GrabIndex:=g;
+    FGrabbers[g].Cursor:=GRAB_CURSOR[g];
   end;
   FCustomForm:=nil;
   FActiveGrabber:=nil;
+  FUpdateLock:=0;
+  FChangedDuringLock:=false;
+  FRubberbandActive:=false;
+  FIsResizing:=false;
 end;
 
 destructor TControlSelection.Destroy;
@@ -231,6 +274,20 @@ begin
   FControls.Free;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].Free;
   inherited Destroy;
+end;
+
+procedure TControlSelection.BeginUpDate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TControlSelection.EndUpdate;
+begin
+  if FUpdateLock<=0 then exit;
+  dec(FUpdateLock);
+  if FUpdateLock=0 then begin
+    if FChangedDuringLock then DoChange;
+  end;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -263,60 +320,50 @@ begin
 end;
 
 procedure TControlSelection.AdjustSize;
-var i,ALeft,ATop:integer;
-  FormOrigin:TPoint;
-
-  procedure AbsoluteLeftTop(AControl:TControl; var ALeft, ATop:integer);
-  var ControlOrigin:TPoint;
-  begin
-    ControlOrigin:=AControl.ClientOrigin;
-    ALeft:=ControlOrigin.X-FormOrigin.X;
-    ATop:=ControlOrigin.Y-FormOrigin.Y;
-writeln('[AbsoluteLeftTop] ',ControlOrigin.X,',',ControlOrigin.Y
-        ,'  ',FormOrigin.X,',',FormOrigin.Y);
-  end;
-
+var i:integer;
+  LeftTop:TPoint;
 begin
+  if FIsResizing then exit;
   if FControls.Count>=1 then begin
-    FormOrigin:=FCustomForm.ClientOrigin;
-    AbsoluteLeftTop(Items[0].Control,ALeft,ATop);
-writeln('[TControlSelection.AdjustSize] ',ALeft,',',ATop,'  ',Items[0].Control.Name);
-    FLeft:=ALeft;
-    FTop:=ATop;
+    LeftTop:=GetFormRelativeControlTopLeft(Items[0].Control);
+    FLeft:=LeftTop.X;
+    FTop:=LeftTop.Y;
     FHeight:=Items[0].Control.Height;
     FWidth:=Items[0].Control.Width;
     for i:=1 to FControls.Count-1 do begin
-      AbsoluteLeftTop(Items[i].Control,ALeft,ATop);
-      if FLeft>ALeft then begin
-        inc(FWidth,FLeft-ALeft);
-        FLeft:=ALeft;
+      LeftTop:=GetFormRelativeControlTopLeft(Items[i].Control);
+      if FLeft>LeftTop.X then begin
+        inc(FWidth,FLeft-LeftTop.X);
+        FLeft:=LeftTop.X;
       end;
-      if FTop>ATop then begin
-        inc(FHeight,FTop-ATop);
-        FTop:=ATop;
+      if FTop>LeftTop.Y then begin
+        inc(FHeight,FTop-LeftTop.Y);
+        FTop:=LeftTop.Y;
       end;
-      FWidth:=Max(FLeft+FWidth,ALeft+Items[i].Control.Width)-FLeft;
-      FHeight:=Max(FTop+FHeight,ATop+Items[i].Control.Height)-FTop;
+      FWidth:=Max(FLeft+FWidth,LeftTop.X+Items[i].Control.Width)-FLeft;
+      FHeight:=Max(FTop+FHeight,LeftTop.Y+Items[i].Control.Height)-FTop;
     end;
     AdjustGrabber;
-writeln('[TControlSelection.AdjustSize] ',FLeft,',',FTop);
   end;
 end;
 
 procedure TControlSelection.AdjustGrabber;
 var g:TGrabIndex;
+  OutPix, InPix: integer;
 begin
+  OutPix:=GrabberSize div 2;
+  InPix:=GrabberSize-OutPix;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     if gpLeft in FGrabbers[g].Positions then
-      FGrabbers[g].Left:=FLeft-GrabberSize
+      FGrabbers[g].Left:=FLeft-OutPix
     else if gpRight in FGrabbers[g].Positions then
-      FGrabbers[g].Left:=FLeft+FWidth
+      FGrabbers[g].Left:=FLeft+FWidth-InPix
     else
       FGrabbers[g].Left:=FLeft+((FWidth-GrabberSize) div 2);
     if gpTop in FGrabbers[g].Positions then
-      FGrabbers[g].Top:=FTop-GrabberSize
+      FGrabbers[g].Top:=FTop-OutPix
     else if gpBottom in FGrabbers[g].Positions then
-      FGrabbers[g].Top:=FTop+FHeight
+      FGrabbers[g].Top:=FTop+FHeight-InPix
     else
       FGrabbers[g].Top:=FTop+((FHeight-GrabberSize) div 2);
     FGrabbers[g].Width:=GrabberSize;
@@ -326,14 +373,18 @@ end;
 
 procedure TControlSelection.DoChange;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if (FUpdateLock>0) then
+    FChangedDuringLock:=true
+  else begin
+    if Assigned(FOnChange) then FOnChange(Self);
+    FChangedDuringLock:=false;
+  end;
 end;
 
 procedure TControlSelection.SetVisible(const Value: Boolean);
 begin
   if FVisible=Value then exit;
   FVisible:=Value;
-  DoChange;
 end;
 
 function TControlSelection.GetItems(Index:integer):TSelectedControl;
@@ -351,6 +402,7 @@ procedure TControlSelection.SaveBounds;
 var i:integer;
   g:TGrabIndex;
 begin
+writeln('TControlSelection.SaveBounds');
   for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
   FOldLeft:=FLeft;
@@ -436,14 +488,21 @@ var i:integer;
   g:TGrabIndex;
 begin
   if (dx=0) and (dy=0) then exit;
-  for i:=0 to FControls.Count-1 do
-    with Items[i] do
-      Control.SetBounds(OldLeft+dx,OldTop+dy
-         ,Control.Width,Control.Height);
+  BeginUpdate;
+  FIsResizing:=true;
+  for i:=0 to FControls.Count-1 do begin
+    with Items[i] do begin
+writeln('TControlSelection.MoveSelection ',i,'   ',OldLeft,',',OldTop,'  d=',dx,',',dy);
+      Control.SetBounds(OldLeft+dx,OldTop+dy,Control.Width,Control.Height);
+    end;
+  end;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     FGrabbers[g].Left:=FGrabbers[g].OldLeft+dx;
     FGrabbers[g].Top:=FGrabbers[g].OldTop+dy;
   end;
+  FIsResizing:=false;
+  SaveBounds;
+  EndUpdate;
 end;
 
 procedure TControlSelection.SizeSelection(dx, dy: integer);  
@@ -453,10 +512,12 @@ var i:integer;
   GrabberPos:TGrabPositions;
 begin
   if Count=0 then exit;
+  BeginUpdate;
+  FIsResizing:=true;
   if FActiveGrabber<>nil then
     GrabberPos:=FActiveGrabber.Positions
   else
-    GrabberPos:=[gpLeft,gpTop];
+    GrabberPos:=[gpRight,gpBottom];
   if [gpTop,gpBottom] * GrabberPos = [] then dy:=0;
   if [gpLeft,gpRight] * GrabberPos = [] then dx:=0;
   if (dx=0) and (dy=0) then exit;
@@ -491,7 +552,9 @@ begin
       end;
     end;
   end;
-  DoChange;
+  SaveBounds;
+  EndUpdate;
+  FIsResizing:=false;
 end;
 
 function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
@@ -513,6 +576,7 @@ procedure TControlSelection.DrawGrabbers(DC: HDC);
 var OldBrushColor:TColor;
   g:TGrabIndex;
   FormOrigin, DCOrigin, Diff: TPoint;
+  OldFormHandle: HDC;
 begin
   if (Count=0) or (FCustomForm=nil)
   or (Items[0].Control is TCustomForm) then exit;
@@ -526,10 +590,11 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
    ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top
    ,' Selection=',FLeft,',',FTop);
 }
+  OldFormHandle:=FCustomForm.Canvas.Handle;
   FCustomForm.Canvas.Handle:=DC;
   with FCustomForm.Canvas do begin
     OldBrushColor:=Brush.Color;
-    Brush.Color:=clBlack;
+    Brush.Color:=FGrabberColor;
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
       FillRect(Rect(
          Diff.X+FGrabbers[g].Left
@@ -539,6 +604,7 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
       ));
     Brush.Color:=OldbrushColor;
   end;
+  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
 procedure TControlSelection.DrawMarker(AControl:TControl; DC:HDC);
@@ -546,16 +612,20 @@ var OldBrushColor:TColor;
   ALeft,ATop:integer;
   AControlOrigin,DCOrigin:TPoint;
   SaveIndex:HDC;
+  OldFormHandle:HDC;
 begin
-  if (Count<1) or (FCustomForm=nil) or (AControl is TCustomForm)
+  if (Count<2) or (FCustomForm=nil) or (AControl is TCustomForm)
   or (not IsSelected(AControl)) then exit;
-  AControlOrigin:=AControl.ClientOrigin;
+  AControlOrigin:=AControl.Parent.ClientOrigin;
+  Inc(AControlOrigin.X,AControl.Left);
+  Inc(AControlOrigin.Y,AControl.Top);
   GetWindowOrgEx(DC, DCOrigin);
   // MoveWindowOrg is currently not functioning in the gtk
   // this is a workaround
-  ALeft:=AControlOrigin.X-DCOrigin.X; //AControlOrigin.X-FormOrigin.X;
-  ATop:=AControlOrigin.Y-DCOrigin.Y; //AControlOrigin.Y-FormOrigin.Y;
+  ALeft:=AControlOrigin.X-DCOrigin.X;
+  ATop:=AControlOrigin.Y-DCOrigin.Y;
   SaveIndex := SaveDC(DC);
+  OldFormHandle:=FCustomForm.Canvas.Handle;
   FCustomForm.Canvas.Handle:=DC;
 {
 writeln('DrawMarker A ',FCustomForm.Name
@@ -566,7 +636,7 @@ writeln('DrawMarker A ',FCustomForm.Name
 }
   with FCustomForm.Canvas do begin
     OldBrushColor:=Brush.Color;
-    Brush.Color:=clDKGray;
+    Brush.Color:=FMarkerColor;
     FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
     FillRect(Rect(ALeft,ATop+AControl.Height-MarkerSize
              ,ALeft+MarkerSize,ATop+AControl.Height));
@@ -577,60 +647,76 @@ writeln('DrawMarker A ',FCustomForm.Name
                  ,ALeft+AControl.Width,ATop+AControl.Height));
     Brush.Color:=OldbrushColor;
   end;
-  FCustomForm.Canvas.Handle:=0;
+  FCustomForm.Canvas.Handle:=OldFormHandle;
   RestoreDC(DC, SaveIndex);
 end;
 
-procedure TControlSelection.DrawRubberband(DeleteOld:boolean; ARect:TRect);
+procedure TControlSelection.DrawRubberband(DC: HDC);
+var OldFormHandle: HDC;
+  FormOrigin, DCOrigin, Diff: TPoint;
 
   procedure DrawInvertFrameRect(x1,y1,x2,y2:integer);
   var i:integer;
+
     procedure InvertPixel(x,y:integer);
-    var c:TColor;
+    //var c:TColor;
     begin
-      c:=FCustomForm.Canvas.Pixels[x,y];
-      c:=c xor $ffffff;
-      FCustomForm.Canvas.Pixels[x,y]:=c;
+      //c:=FCustomForm.Canvas.Pixels[x,y];
+      //c:=c xor $ffffff;
+      //FCustomForm.Canvas.Pixels[x,y]:=c;
+      FCustomForm.Canvas.MoveTo(Diff.X+x,Diff.Y+y);
+      FCustomForm.Canvas.LineTo(Diff.X+x+1,Diff.Y+y);
     end;
+
+  var OldPenColor: TColor;
   begin
     if FCustomForm=nil then exit;
     if x1>x2 then begin i:=x1; x1:=x2; x2:=i; end;
     if y1>y2 then begin i:=y1; y1:=y2; y2:=i; end;
-    i:=x1+1;
-    while i<x2-1 do begin
-      InvertPixel(i,y1);
-      InvertPixel(i,y2);
-      inc(i,2);
-    end;
-    i:=y1;
-    while i<y2 do begin
-      InvertPixel(x1,i);
-      InvertPixel(x2,i);
-      inc(i,2);
+    with FCustomForm.Canvas do begin
+      OldPenColor:=Brush.Color;
+      Pen.Color:=clBlack;
+      i:=x1+1;
+      while i<x2-1 do begin
+        InvertPixel(i,y1);
+        InvertPixel(i,y2);
+        inc(i,2);
+      end;
+      i:=y1;
+      while i<y2 do begin
+        InvertPixel(x1,i);
+        InvertPixel(x2,i);
+        inc(i,2);
+      end;
+      Pen.Color:=OldPenColor;
     end;
   end;
 
 // DrawRubberband
 begin
-  if DeleteOld then
-    with FRubberBandBounds do
-      DrawInvertFrameRect(Left,Top,Right,Bottom);
-  FRubberBandBounds:=ARect;
+  if (FCustomForm=nil) then exit;
+  GetWindowOrgEx(DC, DCOrigin);
+  FormOrigin:=FCustomForm.ClientOrigin;
+  Diff.X:=FormOrigin.X-DCOrigin.X;
+  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
+  OldFormHandle:=FCustomForm.Canvas.Handle;
+  FCustomForm.Canvas.Handle:=DC;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left,Top,Right,Bottom);
+  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
-procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm);
+procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
+  ExclusiveOr:boolean);
 var i:integer;
-  FormOrigin:TPoint;
 
   function ControlInRubberBand(AControl:TControl):boolean;
   var ALeft,ATop,ARight,ABottom:integer;
     Origin:TPoint;
   begin
-    Origin:=AControl.ClientOrigin;
-    ALeft:=Origin.X-FormOrigin.X;
-    ATop:=Origin.Y-FormOrigin.Y;
+    Origin:=GetFormRelativeControlTopLeft(AControl);
+    ALeft:=Origin.X;
+    ATop:=Origin.Y;
     ARight:=ALeft+AControl.Width;
     ABottom:=ATop+AControl.Height;
     Result:=(ALeft<FRubberBandBounds.Right)
@@ -641,16 +727,33 @@ var i:integer;
 
 // SelectWithRubberBand
 begin
-  FormOrigin:=ACustomForm.ClientOrigin;
-  Clear;
   for i:=0 to ACustomForm.ControlCount-1 do
-    if ControlInRubberBand(ACustomForm.Controls[i]) then
-      Add(ACustomForm.Controls[i]);
+    if ControlInRubberBand(ACustomForm.Controls[i]) then begin
+      if IndexOf(ACustomForm.Controls[i])>=0 then begin
+        if ExclusiveOr then
+          Remove(ACustomForm.Controls[i]);
+      end else begin
+        Add(ACustomForm.Controls[i]);
+      end;
+    end;
 end;
 
 procedure TControlSelection.SetRubberBandBounds(ARect:TRect);
+var i :integer;
 begin
   FRubberBandBounds:=ARect;
+  with FRubberBandBounds do begin
+    if Right<Left then begin
+      i:=Left;
+      Left:=Right;
+      Right:=i;
+    end;
+    if Bottom<Top then begin
+      i:=Top;
+      Top:=Bottom;
+      Bottom:=i;
+    end;
+  end;
 end;
 
 end.

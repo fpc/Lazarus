@@ -51,16 +51,21 @@ begin
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   SplashForm.StartTimer;
   Application.Run;
+  SplashForm.Free;
 
-writeln('LAZARUS END');
+writeln('LAZARUS close application...');
   // workaround till lcl closes clean
   Application.Free;
   Application:=nil;
+writeln('LAZARUS END');
 end.
 
 
 {
   $Log$
+  Revision 1.18  2001/03/19 14:00:46  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.17  2001/03/12 09:34:52  lazarus
   MG: added transfermacros, renamed dlgmessage.pp to msgview.pp
 

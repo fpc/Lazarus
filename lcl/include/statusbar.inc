@@ -51,28 +51,31 @@ end;
 {------------------------------------------------------------------------------}
 destructor TStatusBar.Destroy;
 begin
- FPanels.free;
- inherited Destroy;
+  FPanels.Free;
+  FCanvas.Free;
+  inherited Destroy;
 end;
 
 Procedure TStatusBar.DrawBevel(xLeft, PanelNum : Integer );
 Begin
-    Canvas.Brush.Color := color;
-    Canvas.FillRect(Rect(XLeft,Top,XLeft +Panels[PanelNum].Width,Top+Height));
+//writeln('[TStatusBar.DrawBevel] ',Canvas.Classname);
+  Canvas.Brush.Color := color;
+  Canvas.FillRect(Rect(XLeft,Top,XLeft +Panels[PanelNum].Width,Top+Height));
 
-  if Panels[PanelNum].Bevel = pbRaised then
-  Begin
-    Canvas.Pen.Color := clWhite;
-    Canvas.Line(XLeft,Top,XLeft+Panels[PanelNum].Width-1,Top);
-    Canvas.Line(XLeft,Top,XLeft,Top+Height-1);
-    Canvas.Line(XLeft,Top+1,XLeft+Panels[PanelNum].Width-1,Top+1);
-    Canvas.Line(XLeft+1,Top,XLeft+1,Top+Height-1);
-    Canvas.Pen.Color := clBlack;
-    Canvas.Line(XLeft,Top+Height-5,XLeft+Panels[PanelNum].Width-1,Top+Height-5);
-    Canvas.Line(XLeft+Panels[PanelNum].Width-2,Top,XLeft+Panels[PanelNum].Width-2,Top+Height-1);
-    Canvas.Line(XLeft,Top+Height-6,XLeft+Panels[PanelNum].Width-1,Top+Height-6);
-    Canvas.Line(XLeft+Panels[PanelNum].Width-3,Top,XLeft+Panels[PanelNum].Width-3,Top+Height-2);
-  end
+  if (Panels[PanelNum].Bevel = pbRaised) then
+    with Canvas do begin
+      Pen.Width:=1;
+      Pen.Color := clWhite;
+      Line(XLeft,Top,XLeft+Panels[PanelNum].Width-1,Top);
+      Line(XLeft,Top,XLeft,Top+Height-1);
+      Line(XLeft,Top+1,XLeft+Panels[PanelNum].Width-1,Top+1);
+      Line(XLeft+1,Top,XLeft+1,Top+Height-1);
+      Pen.Color := clBlack;
+      Line(XLeft,Top+Height-5,XLeft+Panels[PanelNum].Width-1,Top+Height-5);
+      Line(XLeft+Panels[PanelNum].Width-2,Top,XLeft+Panels[PanelNum].Width-2,Top+Height-1);
+      Line(XLeft,Top+Height-6,XLeft+Panels[PanelNum].Width-1,Top+Height-6);
+      Line(XLeft+Panels[PanelNum].Width-3,Top,XLeft+Panels[PanelNum].Width-3,Top+Height-2);
+    end
   else
   if Panels[PanelNum].Bevel = pbLowered then
   Begin
@@ -94,8 +97,8 @@ Begin
     Canvas.Line(XLeft,Top,XLeft+Panels[PanelNum].Width-1,Top);
     Canvas.Line(XLeft,Top,XLeft,Top+Height-1);
     Canvas.Line(XLeft,Top+Height-1,XLeft+Panels[PanelNum].Width-1,Top+Height-1);
-    Canvas.Line(XLeft+Panels[PanelNum].Width-1,Top,XLeft+Panels[PanelNum].Width-1,Top+Height-1);}
-
+    Canvas.Line(XLeft+Panels[PanelNum].Width-1,Top,XLeft+Panels[PanelNum].Width-1,Top+Height-1);
+}
   end
 
 
@@ -144,5 +147,4 @@ Begin
     Begin
       Canvas.TextOut(Left+2,Top+2,SimpleText);
     end;
-
 End;

@@ -56,7 +56,6 @@ type
     Toolbutton3  : TToolButton;
     Toolbutton4  : TToolButton;
     GlobalMouseSpeedButton : TSpeedButton;
-    Bitmap1      : TBitmap;
 
     ComboBox1 : TComboBox;
     Edit1: TEdit;
@@ -250,6 +249,7 @@ type
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
       ComponentClass: TRegisteredComponent);
+    procedure OnControlSelectionChanged(Sender: TObject);
 
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -277,7 +277,7 @@ var
 implementation
 
 uses
-  ViewUnit_dlg,ViewForm_dlg, Math,LResources, Designer;
+  ViewUnit_dlg, ViewForm_dlg, Math,LResources, Designer;
 
 
 { TMainIDE }
@@ -352,8 +352,6 @@ begin
 
   LoadMainMenu;
 
-  Bitmap1 := TBitmap.Create;
-  Bitmap1.Handle := CreatePixmapIndirect(@IMGOK_Check, ColorToRGB(clBtnFace));
 
   ComponentNotebook := TNotebook.Create(Self);
   with ComponentNotebook do begin
@@ -366,7 +364,6 @@ begin
     Height := 100; //Self.ClientHeight - ComponentNotebook.Top;
   end;
 
-  SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
   PageCount := 0;
   for I := 0 to RegCompList.PageCount-1 do
   begin
@@ -377,6 +374,7 @@ begin
          ComponentNotebook.Pages.Strings[pagecount] := RegCompPage.Name
       else ComponentNotebook.Pages.Add(RegCompPage.Name);
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
+      SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
       with GlobalMouseSpeedButton do
       Begin
         Parent := ComponentNotebook.Page[PageCount];
@@ -396,7 +394,6 @@ begin
         RegComp := RegCompPage.Items[x];
         IDEComponent := TIDEComponent.Create;
         IdeComponent.RegisteredComponent := RegComp;
-        Writeln('Name is '+RegComp.ComponentClass.ClassName);
         IDEComponent._SpeedButton(Self,ComponentNotebook.Page[PageCount]);
         IDEComponent.SpeedButton.OnClick := @ControlClick;
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
@@ -621,6 +618,9 @@ begin
   MacroList.Add(TTransferMacro.Create('Params','',nil));
   MacroList.Add(TTransferMacro.Create('TargetFile','',nil));
 
+  TheControlSelection:=TControlSelection.Create;
+  TheControlSelection.OnChange:=@OnControlSelectionChanged;
+
   // load last project or create a new project
   if (not FileExists(EnvironmentOptions.LastSavedProjectFile))
   or (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)<>mrOk) then
@@ -633,6 +633,7 @@ begin
     Project.Free;
     Project:=nil;
   end;
+  TheControlSelection.Free;
   MacroList.Free;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
@@ -1053,12 +1054,12 @@ var
 begin
   if Sender is TSpeedButton then
   Begin
-    Writeln('sender is a speedbutton');
-    Writeln('The name is '+TSpeedbutton(sender).name);
+//    Writeln('sender is a speedbutton');
+//    Writeln('The name is '+TSpeedbutton(sender).name);
     SpeedButton := TSpeedButton(Sender);
-    Writeln('Speedbutton s Name is '+SpeedButton.name);
+//    Writeln('Speedbutton s Name is '+SpeedButton.name);
     //find the IDECOmponent that has this speedbutton
-    IDEComp := IDECompList.FindCompbySpeedButton(SpeedButton);
+    IDEComp := IDECompList.FindCompBySpeedButton(SpeedButton);
     if SelectedComponent <> nil then
       TIDeComponent(
        IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down
@@ -1077,9 +1078,11 @@ begin
       end;
       if temp <> nil then
         TSpeedButton(Temp).down := False
-      else
-        Writeln('*****************ERROR - Control ',
+      else begin
+        Writeln('[TMainIDE.ControlClick] ERROR - Control ',
            'GlobalMouseSpeedButton',inttostr(ComponentNotebook.Pageindex),' not found');
+        Halt;
+      end;
     end;
     if IDECOmp <> nil then Begin
       //draw this button down
@@ -1100,14 +1103,16 @@ begin
       end;
       if temp <> nil then
         TSpeedButton(Temp).down := True
-      else
-        Writeln('*****************ERROR - Control '
+      else begin
+        Writeln('[TMainIDE.ControlClick] ERROR - Control '
            +'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)+' not found');
+        Halt;
+      end;
     end;
   end
   else
   Begin
-    Writeln('must be nil');
+//    Writeln('must be nil');
     //draw old speedbutton up
     if SelectedComponent <> nil then
       TIDeComponent(
@@ -1127,11 +1132,13 @@ begin
     end;
     if temp <> nil then
       TSpeedButton(Temp).down := True
-    else
-      Writeln('*****************ERROR - Control '
+    else begin
+      Writeln('[TMainIDE.ControlClick] ERROR - Control '
         +'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)+' not found');
+      Halt;
+    end;
   end;
-  Writeln('Exiting ControlClick');
+//  Writeln('Exiting ControlClick');
 end;
 
 
@@ -1305,7 +1312,9 @@ end;
 
 Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
 Begin
-  aForm.Designer := TDesigner.Create(aForm);
+writeln('[TMainIDE.SetDefaultsforForm] 1');
+  aForm.Designer := TDesigner.Create(aForm, TheControlSelection);
+writeln('[TMainIDE.SetDefaultsforForm] 2');
   with TDesigner(aForm.Designer) do begin
     FormEditor := FormEditor1;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
@@ -1314,6 +1323,7 @@ Begin
     OnComponentListChanged:=@OnDesignerComponentListChanged;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnAddComponent:=@OnDesignerAddComponent;
+writeln('[TMainIDE.SetDefaultsforForm] 3');
   end;
 end;
 
@@ -1323,7 +1333,11 @@ end;
 procedure TMainIDE.mnuQuitClicked(Sender : TObject);
 begin
   if SomethingOfProjectIsModified then begin
-    if DoSaveProject(false)=mrAbort then exit;
+    if Application.MessageBox('Save changes to project?','Project changed',
+        MB_OKCANCEL)=mrOk then begin
+      if DoSaveProject(false)=mrAbort then exit;
+      if DoCloseProject=mrAbort then exit;
+    end;
   end;
   Project.Free;
   Project:=nil;
@@ -1582,7 +1596,7 @@ writeln('TMainIDE.DoNewEditorUnit 6');
 
     // select the new form (object inspector, formeditor, control selection)
     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
-    FormEditor1.AddSelected(TComponent(CInterface.Control));
+    TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
   end;
   UpdateMainUnitSrcEdit;
 
@@ -1831,6 +1845,7 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   ACaption,AText:string;
   i:integer;
+  OldDesigner: TDesigner;
 begin
 writeln('TMainIDE.DoCloseEditorUnit 1');
   Result:=mrCancel;
@@ -1860,7 +1875,9 @@ writeln('TMainIDE.DoCloseEditorUnit 1');
 writeln('TMainIDE.DoCloseEditorUnit 2');
   // close form
   if ActiveUnitInfo.Form<>nil then begin
+    OldDesigner:=TDesigner(TCustomForm(ActiveUnitInfo.Form).Designer);
     FormEditor1.DeleteControl(ActiveUnitInfo.Form);
+    OldDesigner.Free;
     ActiveUnitInfo.Form:=nil;
   end;
 writeln('TMainIDE.DoCloseEditorUnit 3');
@@ -1888,6 +1905,8 @@ var Ext,ACaption,AText:string;
   NewPageName, NewLFMFilename: string;
   NewSrcEdit: TSourceEditor;
   TxtLFMStream,BinLFMStream:TMemoryStream;
+  CInterface: TComponentInterface;
+  TempForm: TCustomForm;
 begin
 writeln('TMainIDE.DoOpenEditorFile');
   Result:=mrCancel;
@@ -1955,24 +1974,68 @@ writeln('TMainIDE.DoOpenEditorFile');
           // convert text to binary format
           try
             ObjectTextToBinary(TxtLFMStream,BinLFMStream);
+            BinLFMStream.Position:=0;
             Result:=mrOk;
           except
-            ACaption:='Format error';
-            AText:='Unable to convert text form data of file "'
-               +NewLFMFilename+'" into binary stream.';
-            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-               ,MB_OKCANCEL);
-            if Result=mrCancel then begin
-              Result:=mrAbort;
-              exit;
+            on E: Exception do begin
+              ACaption:='Format error';
+              AText:='Unable to convert text form data of file "'
+                 +NewLFMFilename+'" into binary stream. ('+E.Message+')';
+              Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+                 ,MB_OKCANCEL);
+              if Result=mrCancel then begin
+                Result:=mrAbort;
+                exit;
+              end;
             end;
           end;
         finally
           TxtLFMStream.Free;
         end;
-        // ToDo: write a function TCustomFormEditor.CreateFormFromStream
-        //  set NewUnitInfo.Formname and NewUnitInfo.Form
+writeln('TMainIDE.DoOpenEditorFile  LFM 1');
+        if not Assigned(FormEditor1) then
+          FormEditor1 := TFormEditor.Create;
+        if not ProjectLoading then FormEditor1.ClearSelected;
 
+writeln('TMainIDE.DoOpenEditorFile  LFM 2');
+        // create jitform
+        CInterface := TComponentInterface(
+          FormEditor1.CreateFormFromStream(BinLFMStream));
+        if CInterface=nil then begin
+          ACaption:='Form load error';
+          AText:='Unable to build form from file "'
+             +NewLFMFilename+'".';
+          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+             ,MB_OKCANCEL);
+          if Result=mrCancel then begin
+            Result:=mrAbort;
+            exit;
+          end;
+        end;
+writeln('TMainIDE.DoOpenEditorFile  LFM 3 ');
+        TempForm:=TForm(CInterface.Control);
+        NewUnitInfo.Form:=TempForm;
+writeln('TMainIDE.DoOpenEditorFile  LFM 3.1');
+        SetDefaultsForForm(TempForm);
+writeln('TMainIDE.DoOpenEditorFile  LFM 3.2');
+        NewUnitInfo.FormName:=TempForm.Name;
+        // show form
+        TDesigner(TempForm.Designer).SourceEditor := SourceNoteBook.GetActiveSE;
+
+        if not ProjectLoading then begin
+writeln('TMainIDE.DoOpenEditorFile  LFM 4');
+          TempForm.Show;
+          FCodeLastActivated:=false;
+        end;
+        SetDesigning(TempForm,True);
+        
+writeln('TMainIDE.DoOpenEditorFile  LFM 5');
+        // select the new form (object inspector, formeditor, control selection)
+        if not ProjectLoading then begin
+          PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
+          TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
+        end;
+writeln('TMainIDE.DoOpenEditorFile  LFM end');
       finally
         BinLFMStream.Free;
       end;
@@ -2101,11 +2164,14 @@ writeln('TMainIDE.DoNewProject 1');
   Result:=mrCancel;
 
   If Project<>nil then begin
-    //save and close the project
-
-    if DoSaveProject(false)=mrAbort then begin
-      Result:=mrAbort;
-      exit;
+    if SomethingOfProjectIsModified then begin
+      if Application.MessageBox('Save changes to project?','Project changed'
+          ,MB_OKCANCEL)=mrOK then begin
+        if DoSaveProject(false)=mrAbort then begin
+          Result:=mrAbort;
+          exit;
+        end;
+      end;
     end;
 writeln('TMainIDE.DoNewProject 2');
     if DoCloseProject=mrAbort then begin
@@ -2135,12 +2201,12 @@ writeln('TMainIDE.DoNewProject 4');
   end;
  
   // set all modified to false
-  Project.Modified:=false;
   for i:=0 to Project.UnitCount-1 do begin
     Project.Units[i].Modified:=false;
   end;
+  Project.Modified:=false;
 
-writeln('TMainIDE.DoNewProject end');
+writeln('TMainIDE.DoNewProject end ');
   UpdateCaption;
   Result:=mrOk;
 end;
@@ -2330,6 +2396,15 @@ writeln('TMainIDE.DoOpenProjectFile 1');
     end;
   until Result<>mrRetry;
   // close the old project
+  if SomethingOfProjectIsModified then begin
+    if Application.MessageBox('Save changes to project?','Project changed'
+      ,MB_OKCANCEL)=mrOK then begin
+      if DoSaveProject(false)=mrAbort then begin
+        Result:=mrAbort;
+        exit;
+      end;
+    end;
+  end;
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
 writeln('TMainIDE.DoOpenProjectFile 2');
@@ -2370,7 +2445,15 @@ writeln('TMainIDE.DoOpenProjectFile 5');
   if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
   and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count) then
     SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
-writeln('TMainIDE.DoOpenProjectFile end');
+
+  // set all modified to false
+  for i:=0 to Project.UnitCount-1 do begin
+    Project.Units[i].Modified:=false;
+  end;
+  Project.Modified:=false;
+
+writeln('TMainIDE.DoOpenProjectFile end ');
+
 end;
 
 function TMainIDE.DoBuildProject: TModalResult;
@@ -2404,15 +2487,9 @@ begin
 end;
 
 function TMainIDE.SomethingOfProjectIsModified: boolean;
-var i:integer;
 begin
-  Result:=Project.Modified;
-  for i:=0 to Project.UnitCount-1 do begin
-    Result:=Result or Project.Units[i].Modified;
-    if Project.Units[i].Loaded then
-      Result:=Result or SourceNoteBook.FindSourceEditorWithPageIndex(
-           Project.Units[i].EditorIndex).Modified;
-  end;
+  Result:=(Project<>nil) 
+       and (Project.SomethingModified or SourceNotebook.SomethingModified);
 end;
 
 function TMainIDE.DoSaveAll: TModalResult;
@@ -2499,6 +2576,7 @@ begin
       FileStream:=TFileStream.Create(AFilename,fmOpenRead);
       try
         MemStream.CopyFrom(FileStream,FileStream.Size);
+        MemStream.Position:=0;
       finally
         FileStream.Free;
       end;
@@ -2787,6 +2865,18 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
+var NewSelectedComponents : TComponentSelectionList;
+  i: integer;
+begin
+writeln('[TMainIDE.OnControlSelectionChanged]');
+  NewSelectedComponents:=TComponentSelectionList.Create;
+  for i:=0 to TheControlSelection.Count-1 do begin
+    NewSelectedComponents.Add(TheControlSelection[i].Control);
+  end;
+  FormEditor1.SelectedComponents:=NewSelectedComponents;
+end;
+
 initialization
   {$I images/laz_images.lrs}
 
@@ -2799,6 +2889,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2001/03/19 14:00:46  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.74  2001/03/12 18:57:31  lazarus
   MG: new designer and controlselection code
 

@@ -474,20 +474,19 @@ begin
   // dont copy
   // In a compatible DC you have to select a bitmap into it
 (*
-  if IsValidDC(DC)
-  then with PDeviceContext(DC)^ do
-  begin
-    pNewDC^.hWnd := hWnd;
-    pNewDC^.Drawable := Drawable;
-    pNewDC^.GC := gdk_gc_new(Drawable);
-  end
+  if IsValidDC(DC) then
+    with PDeviceContext(DC)^ do
+    begin
+      pNewDC^.hWnd := hWnd;
+      pNewDC^.Drawable := Drawable;
+      pNewDC^.GC := gdk_gc_new(Drawable);
+    end
   else begin
     // We can't do anything yet
     // Wait till a bitmap get selected
   end;
 *)
 
-  // Maybe copy these ??
   pNewDC^.CurrentFont := CreateDefaultFont;
   pNewDC^.CurrentBrush := CreateDefaultBrush;
   pNewDC^.CurrentPen := CreateDefaultPen;
@@ -524,7 +523,6 @@ var
        CharSetRegistry, CharSetCoding
       ]);
 
-    GDIObject := NewGDIObject(gdiFont);
     pStr := StrAlloc(Length(S) + 1);
     try
       StrPCopy(pStr, S);
@@ -627,6 +625,7 @@ begin
     CharSetCoding := '*';
   end;
 
+  GDIObject := NewGDIObject(gdiFont);
   LoadFont;
   if GdiObject^.GDIFontObject = nil
   then begin
@@ -676,6 +675,8 @@ begin
 
   if GdiObject^.GDIFontObject = nil
   then begin
+writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8)
+,'  ',FGDIObjects.Count);
     FGDIObjects.Remove(GdiObject);
     Dispose(GdiObject);
     Result := 0;
@@ -829,6 +830,7 @@ begin
   { Dispose of the GDI object }
   if PGDIObject(GDIObject) <> nil
   then begin
+//writeln('[TgtkObject.DeleteObject] ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
     FGDIObjects.Remove(PGDIObject(GDIObject));
     Dispose(PGDIObject(GDIObject));
   end;
@@ -1364,8 +1366,7 @@ begin
   then begin
     if Values.Font <> nil
     then begin
-      New(GdiObject);
-      GdiObject^.GDIType := gdiFont;
+      GdiObject:=NewGDIObject(gdiFont);
       GdiObject^.GDIFontObject := Values.Font;
       gdk_font_ref(Values.Font);
     end
@@ -2495,20 +2496,35 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.ReleaseDC(hWnd: HWND; hDC: HDC): Integer;
+function TgtkObject.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   nIndex: Integer;
-  pDC: PDeviceContext;
+  pDC, pSavedDC: PDeviceContext;
 begin
-  Assert(False, Format('trace:> [TgtkObject.ReleaseDC] DC:0x%x', [hDC]));
+//writeln('[TgtkObject.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
+  Assert(False, Format('trace:> [TgtkObject.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
-  if {(hWnd <> 0) and} (hDC <> 0)
+  if {(hWnd <> 0) and} (DC <> 0)
   then begin
-    nIndex := FDeviceContexts.IndexOf(Pointer(hDC));
+    nIndex := FDeviceContexts.IndexOf(Pointer(DC));
     if nIndex <> -1
     then begin
-      pDC := PDeviceContext(hDC);
+      pDC := PDeviceContext(DC);
+      { Release all saved device contexts }
+      pSavedDC:=pDC^.SavedContext;
+      if pSavedDC<>nil then begin
+        if pSavedDC^.CurrentBitmap = pDC^.CurrentBitmap 
+        then pDC^.CurrentBitmap := nil;  
+        if pSavedDC^.CurrentFont = pDC^.CurrentFont 
+        then pDC^.CurrentFont := nil;    
+        if pSavedDC^.CurrentPen = pDC^.CurrentPen 
+        then pDC^.CurrentPen := nil;     
+        if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
+        then pDC^.CurrentBrush := nil;   
+        ReleaseDC(0,HDC(pSavedDC));
+        pDC^.SavedContext:=nil;
+      end;
       { Release all graphic objects }
       DeleteObject(HGDIObj(pDC^.CurrentBrush));
       DeleteObject(HGDIObj(pDC^.CurrentPen));
@@ -2516,7 +2532,8 @@ begin
       DeleteObject(HGDIObj(pDC^.CurrentBitmap));
       try
         { On root window, we don't allocate a graphics context }
-        if pDC^.GC <> nil then gdk_gc_unref(pDC^.GC);
+        if pDC^.GC <> nil then
+          gdk_gc_unref(pDC^.GC);
       except
         on Exception do; //Nothing, just try to unref it
                          //(it segfaults if the window doesnt exist anymore :-)
@@ -2526,7 +2543,7 @@ begin
       Result := 1;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] FDeviceContexts[%d] DC:0x%x', [nIndex, hDC]));
+  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] FDeviceContexts[%d] DC:0x%x', [nIndex, DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2537,63 +2554,40 @@ end;
 
 -------------------------------------------------------------------------------}
 function TgtkObject.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
-  function CountSaved(pDC: PDeviceContext): Integer;
-  begin
-    Result := 0;
-    while pDC^.SavedContext <> nil do
-    begin
-      Inc(Result);
-      pDC := pDC^.SavedContext;
-    end;
-  end;
-
 var
-  pDC, pSaved: PDeviceContext;
-  count: Integer;
+  pDC, pSavedDC: PDeviceContext;
+  Count: Integer;
 begin
   Assert(False, Format('Trace:> [TgtkObject.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
   if Result 
   then begin
-    pDC := PDeviceContext(DC);
-    Count := CountSaved(pDC);
-    Result := (Abs(SavedDC) <= Count);
-    
-    if SavedDC > 0 then Dec(SavedDc, Count + 1); // make relative
-    
-    while (SavedDC < 0) and (pDC <> nil) and Result do
-    begin
-      Assert(False, Format('Trace:< [TgtkObject.RestoreDC] Unwinding#: %d', [SavedDC]));
-      pSaved := pDC^.SavedContext;
-      Inc(SavedDC);
-      // TODO copy bitmap allso 
-      
-      pDC^.SavedContext := pSaved^.SavedContext;
-      pSaved^.SavedContext := nil;
-      
-      Result := CopyDCData(pDC, pSaved);
-
-      //prevent deleting of copied objects;
-      if pSaved^.CurrentBitmap = pDC^.CurrentBitmap 
-      then pSaved^.CurrentBitmap := nil;  
-      if pSaved^.CurrentFont = pDC^.CurrentFont 
-      then pSaved^.CurrentFont := nil;    
-      if pSaved^.CurrentPen = pDC^.CurrentPen 
-      then pSaved^.CurrentPen := nil;     
-      if pSaved^.CurrentBrush = pDC^.CurrentBrush 
-      then pSaved^.CurrentBrush := nil;   
-      
-
-      DeleteDC(HGDIOBJ(pSaved)); 
-      // fornow  unref GC
-(*
-      if OldDC^.GC <> nil 
-      then begin 
-        gdk_gc_unref(OldDC^.GC);
-        OldDC^.GC := nil;
-      end;
-*)
+    pSavedDC := PDeviceContext(DC);
+    Count:=Abs(SavedDC);
+    while (Count>0) and (pSavedDC<>nil) do begin
+      pDC:=pSavedDC;
+      pSavedDC:=pDC^.SavedContext;
+      dec(Count);
     end;
+
+    // TODO copy bitmap also 
+
+    pDC^.SavedContext := pSavedDC^.SavedContext;
+    pSavedDC^.SavedContext := nil;
+      
+    Result := CopyDCData(pSavedDC, pDC);
+
+    //prevent deleting of copied objects;
+    if pSavedDC^.CurrentBitmap = pDC^.CurrentBitmap 
+    then pSavedDC^.CurrentBitmap := nil;  
+    if pSavedDC^.CurrentFont = pDC^.CurrentFont 
+    then pSavedDC^.CurrentFont := nil;    
+    if pSavedDC^.CurrentPen = pDC^.CurrentPen 
+    then pSavedDC^.CurrentPen := nil;     
+    if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
+    then pSavedDC^.CurrentBrush := nil;   
+      
+    DeleteDC(HGDIOBJ(pSavedDC));
   end;
   Assert(False, Format('Trace:< [TgtkObject.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
@@ -2620,12 +2614,9 @@ begin
     pDC := PDeviceContext(DC);
     pSavedDC := NewDC;
     CopyDCData(pSavedDC, pDC);
+    pSavedDC^.SavedContext:=pDC^.SavedContext;
     pDC^.SavedContext:= pSavedDC;
-    // count saved DCs
-    repeat
-      Inc(Result);
-      pDC := pDC^.SavedContext;
-    until pDC^.SavedContext = nil;
+    Result:=1;
   end;
   
   Assert(False, Format('Trace:< [TgtkObject.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
@@ -2766,6 +2757,8 @@ begin
       end;
     end;
   end;
+//writeln('[TgtkObject.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
+// ,'  Old=',Hexstr(Cardinal(Result),8));
   Assert(False, Format('trace:< [TgtkObject.SelectObject] DC: 0x%x  --> 0x%x', [DC, Result]));
 end;
 
@@ -3396,8 +3389,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.23  2001/03/13 15:02:13  lazarus
-  MG: activated GetWindowOrgEx
+  Revision 1.24  2001/03/19 14:00:52  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.22  2001/03/12 12:17:02  lazarus
   MG: fixed random function results

@@ -608,7 +608,7 @@ type
     procedure CreateHandle; override;
   public
     constructor Create(ABitMap : TBitmap);
-    destructor Destroy; //overriding causes a crash with flat speedbuttons
+    destructor Destroy; override; // overriding causes a crash with flat speedbuttons
     // TODO: replace this by property BitmapHandle;
     // MWE: Not needed
     //property Bitmap: TBitmap read FBitmap;
@@ -645,6 +645,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.6  2001/03/05 14:20:04  lazarus
   added streaming to tgraphic, added tpicture
 

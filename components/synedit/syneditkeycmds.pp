@@ -37,13 +37,16 @@ Known Issues:
 
 unit SynEditKeyCmds;
 
-{$mode objfpc}
-
 {$I synedit.inc}
 
 interface
 
 uses
+  {$IFDEF SYN_LAZARUS}
+  LCLLinux,
+  {$ELSE}
+  Windows,
+  {$ENDIF}
   Classes, Menus, SysUtils;
 
 const
@@ -263,11 +266,6 @@ implementation
 
 // FOR LAZARUS
 uses
-  {$IFDEF SYN_LAZARUS}
-  LCLLinux,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   SynEditStrConst;
 
 //=============================================================================

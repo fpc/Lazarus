@@ -49,22 +49,22 @@ begin
       then Handle := CreatePixmapIndirect(Buf, -1)
       else Handle := CreatePixmapIndirect(Buf, ColorToRGB(FTransparentColor));
 
-    //set width and height
+      //set width and height
 
-    try
-      t := S.Strings[2];  //this line contains the width and height
-      //remove the initial quote
-      delete(t,1,1);
-      Delete(t,pos(' ',t),length(t));
-      Width := strtoint(t);
+      try
+        t := S.Strings[2];  //this line contains the width and height
+        //remove the initial quote
+        delete(t,1,1);
+        Delete(t,pos(' ',t),length(t));
+        Width := strtoint(t);
 
-      t := S.Strings[2];  //this line contains the width and height
-      delete(t,1,1);
-      Delete(t,1,pos(' ',t));
-      Delete(t,pos(' ',t),length(t));
-      Height := strtoint(t);
-    except
-    end;
+        t := S.Strings[2];  //this line contains the width and height
+        delete(t,1,1);
+        Delete(t,1,pos(' ',t));
+        Delete(t,pos(' ',t),length(t));
+        Height := strtoint(t);
+      except
+      end;
 
     finally
       FreeMem(Buf);
@@ -77,6 +77,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/03/19 14:00:51  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.6  2001/02/04 18:24:41  lazarus
   Code cleanup
   Shane

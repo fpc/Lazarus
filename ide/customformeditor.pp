@@ -86,23 +86,23 @@ TCustomFormEditor
 
 }
 
- TControlClass = class of TControl;
+  TControlClass = class of TControl;
 
- TCustomFormEditor = class(TAbstractFormEditor)
+  TCustomFormEditor = class(TAbstractFormEditor)
   private
-   FModified     : Boolean;
-   FComponentInterfaceList : TList; //used to track and find controls
-   FSelectedComponents : TComponentSelectionList;
-   FObj_Inspector : TObjectInspector;
+    FModified     : Boolean;
+    FComponentInterfaceList : TList; //used to track and find controls
+    FSelectedComponents : TComponentSelectionList;
+    FObj_Inspector : TObjectInspector;
   protected
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
+    procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
   public
     constructor Create;
     destructor Destroy; override;
 
     Function AddSelected(Value : TComponent) : Integer;
     Procedure DeleteControl(Value : TComponent);
-    Function Filename : String; override;
     Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
@@ -112,22 +112,21 @@ TCustomFormEditor
 
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
-    Function NewFormFromLFM(_Filename : String): TCustomform;
+    Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; override;
     Procedure ClearSelected;
     property SelectedComponents : TComponentSelectionList 
-      read FSelectedComponents write FSelectedComponents;
+      read FSelectedComponents write SetSelectedComponents;
     property Obj_Inspector : TObjectInspector read FObj_Inspector write FObj_Inspector;
-
   end;
 
 
 implementation
 
 uses
-  SysUtils,jitforms;
+  SysUtils, JITForms;
 
 var
-JITFormList : TJITForms;
+  JITFormList : TJITForms;
 
 {TComponentInterface}
 
@@ -516,12 +515,18 @@ begin
   inherited;
 end;
 
+procedure TCustomFormEditor.SetSelectedComponents(
+  TheSelectedComponents : TComponentSelectionList);
+begin
+  FSelectedComponents.Free;
+  FSelectedComponents:=TheSelectedComponents;
+  Obj_Inspector.Selections := FSelectedComponents;
+end;
+
 Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
 Begin
   FSelectedComponents.Add(Value);
   Result := FSelectedComponents.Count;
-  // call the OI to update it's selected.
-  writeln('[TCustomFormEditor.AddSelected] '+Value.Name);
   Obj_Inspector.Selections := FSelectedComponents;
 end;
 
@@ -546,11 +551,6 @@ Begin
      end;
 end;
 
-
-Function TCustomFormEditor.Filename : String;
-begin
-  Result := 'testing.pp';
-end;
 
 Function TCustomFormEditor.FormModified : Boolean;
 Begin
@@ -612,7 +612,11 @@ Begin
     //this should be a form
     NewFormIndex := JITFormList.AddNewJITForm;
     if NewFormIndex >= 0 then
-      Temp.FControl := JITFormList[NewFormIndex];
+      Temp.FControl := JITFormList[NewFormIndex]
+    else begin
+      Temp:=nil;
+      exit;
+    end;
   end;
 
   if Assigned(ParentCI) then
@@ -678,6 +682,24 @@ Begin
   Result := Temp;
 end;
 
+Function TCustomFormEditor.CreateFormFromStream(
+  BinStream: TStream): TIComponentInterface;
+var NewFormIndex: integer;
+  Temp : TComponentInterface;
+begin
+  Temp := TComponentInterface.Create;
+  NewFormIndex := JITFormList.AddJITFormFromStream(BinStream);
+  if NewFormIndex >= 0 then
+    Temp.FControl := JITFormList[NewFormIndex]
+  else begin
+    Temp:=nil;
+    exit;
+  end;
+  FComponentInterfaceList.Add(Temp);
+
+  Result := Temp;
+end;
+
 Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(Value :TIComponentInterface);
 Begin
   if (FComponentInterfaceList.IndexOf(Value) <> -1) then
@@ -695,38 +717,6 @@ end;
 Procedure TCustomFormEditor.ClearSelected;
 Begin
   FSelectedComponents.Clear;
-end;
-
-Function TCustomFormEditor.NewFormFromLFM(_Filename : String): TCustomForm;
-var
-  BinStream: TMemoryStream;
-  TxtStream : TFileStream;
-  Index    : Integer;
-Begin
-  Writeln('[NewFormFromLFM]');
-  result := nil;
-  try
-    BinStream := TMemoryStream.Create;
-      try
-        TxtStream:= TFileStream.Create(_Filename,fmOpenRead);
-        try
-          ObjectTexttoBinary(TxtStream,BinStream);
-        finally
-          TxtStream.Free;
-        end;
-        BinStream.Position := 0;
-        Writeln('[NewFormFromLFM] calling AddJITFORMFromStream');
-        Index := JITFormList.AddJITFormFromStream(binStream);
-        Writeln('[NewFormFromLFM] index='+inttostr(index));
-        Result := JITFormList[Index];
-      finally
-        BinStream.Free;
-      end;
-     except
-        //some error raised
-     end;
-
-
 end;
 
 Function TCustomFormEditor.CreateControlComponentInterface(Control: TComponent) :TIComponentInterface;

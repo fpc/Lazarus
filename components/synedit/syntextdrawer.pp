@@ -63,7 +63,7 @@
 unit SynTextDrawer;
 
 {$IFDEF FPC}
-  {$mode objfpc}
+  {$mode objfpc}{$H+}
   {$DEFINE SYN_LAZARUS}
 {$ENDIF}
 
@@ -188,6 +188,9 @@ type
   private
     FDC: HDC;
     FSaveDC: Integer;
+    {$IFDEF SYN_LAZARUS}
+    FSavedFont: HFont;
+    {$ENDIF}
 
     // Font information
     FFontStock: TheFontStock;
@@ -306,6 +309,10 @@ const
 
 var
   gFontsInfoManager: TheFontsInfoManager;
+{$IFDEF SYN_LAZARUS}
+  SynTextDrawerFinalization: boolean;
+{$ENDIF}
+
 {$IFNDEF HE_LEADBYTES}
   LeadBytes: TheLeadByteChars;
 {$ENDIF}
@@ -314,7 +321,11 @@ var
 
 function GetFontsInfoManager: TheFontsInfoManager;
 begin
-  if not Assigned(gFontsInfoManager) then
+  if (not Assigned(gFontsInfoManager)) 
+  {$IFDEF SYN_LAZARUS}
+  and (not SynTextDrawerFinalization)
+  {$ENDIF}
+  then
     gFontsInfoManager := TheFontsInfoManager.Create;
   Result := gFontsInfoManager;
 end;
@@ -380,8 +391,7 @@ end;
 
 constructor TheFontsInfoManager.Create;
 begin
-  inherited;
-
+  inherited Create;
   FFontsInfo := TList.Create;
 end;
 
@@ -866,11 +876,12 @@ begin
     ASSERT((FDC = 0) and (DC <> 0) and (FDrawingCount = 0));
     FDC := DC;
     FSaveDC := SaveDC(DC);
-    SelectObject(DC, FCrntFont);
     {$IFNDEF SYN_LAZARUS}
+    SelectObject(DC, FCrntFont);
     Windows.SetTextColor(DC, ColorToRGB(FColor));
     Windows.SetBkColor(DC, ColorToRGB(FBkColor));
     {$ELSE}
+    FSavedFont := SelectObject(DC, FCrntFont);
     LCLLinux.SetTextColor(DC, ColorToRGB(FColor));
     LCLLinux.SetBkColor(DC, ColorToRGB(FBkColor));
     {$ENDIF}
@@ -885,8 +896,13 @@ begin
   Dec(FDrawingCount);
   if FDrawingCount <= 0 then
   begin
-    if FDC <> 0 then
+    if FDC <> 0 then begin
+      {$IFDEF SYN_LAZARUS}
+      if FSavedFont <> 0 then
+        SelectObject(FDC,FSavedFont);
+      {$ENDIF}
       RestoreDC(FDC, FSaveDC);
+    end;
     FSaveDC := 0;
     FDC := 0;
     FDrawingCount := 0;
@@ -1258,13 +1274,20 @@ end;
 
 initialization
 
+{$IFDEF SYN_LAZARUS}
+  SynTextDrawerFinalization:=false;
+{$ENDIF}
 {$IFNDEF HE_LEADBYTES}
   InitializeLeadBytes;
 {$ENDIF} 
 
 finalization
+{$IFDEF SYN_LAZARUS}
+  SynTextDrawerFinalization:=true;
+{$ENDIF}
 
   gFontsInfoManager.Free;
+  gFontsInfoManager:=nil;
 
 end.
 

@@ -243,11 +243,13 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TCustomImageList.Destroy;
+var i: integer;
 begin
   FBitmap.Free;
   FMaskBitmap.Free;
   FChangeLinkList.Free;
-  FImageList.Destroy;  //shane
+  for i:=0 to FImageList.Count-1 do TObject(FImageList[i]).Free;
+  FImageList.Free;  //shane
   inherited Destroy;
 end;
 
@@ -808,6 +810,9 @@ end;
 {
 
   $Log$
+  Revision 1.4  2001/03/19 14:00:50  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.3  2001/02/06 13:55:23  lazarus
   Changed the files from mode delphi to mode objfpc
   Shane

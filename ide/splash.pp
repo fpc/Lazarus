@@ -18,21 +18,18 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit Splash;
 
-{$mode objfpc}
-//{$mode delphi}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  classes, Controls, forms,buttons,sysutils, stdctrls, extctrls,
-	LCLLinux{must be defined before graphics}, Graphics;
+  Classes, Controls, Forms, Buttons, SysUtils, StdCtrls, ExtCtrls,
+  LCLLinux{must be defined before graphics}, Graphics;
 
 type
-
-  TSplashForm = class(TFORM)
+  TSplashForm = class(TForm)
   private
     FBitmap : TBitmap;
     FTimer : TTimer;
@@ -307,6 +304,7 @@ const
     's!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccvccccvcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccvcccccccccccc',
     'evcvvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvccvccccccccccccccccccccccccccvccccccccccccccccccccccccccccccccccvccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccvccccccc'
    );
+
 constructor TSplashForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -326,7 +324,6 @@ begin
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
-
 end;
 
 destructor TSplashForm.Destroy;
@@ -342,7 +339,9 @@ begin
   FTimer.Enabled := False;
   //Release resources
   FTimer.Free;
+  FTimer:=nil;
   FBitmap.Free;
+  FBitmap:=nil;
 end;
 
 procedure TSplashForm.HideFormTimer(Sender : TObject);
@@ -367,6 +366,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/03/19 14:00:47  lazarus
+  MG: fixed many unreleased DC and GDIObj bugs
+
   Revision 1.2  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

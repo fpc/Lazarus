@@ -74,8 +74,8 @@ uses
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
 {$ENDIF}
-  SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, SynEditTextBuffer,
-  SynEditKeyCmds, SynEditSearch, SynEditHighlighter, SynTextDrawer;
+  SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMiscProcs,
+  SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer;
 
 const
   DIGIT = ['0'..'9'];
@@ -1097,7 +1097,7 @@ destructor TCustomSynEdit.Destroy;
 var
   i: integer;
 begin
-writeln('[TCustomSynEdit.Destroy]');
+//writeln('[TCustomSynEdit.Destroy]');
   Highlighter := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
@@ -1110,7 +1110,7 @@ writeln('[TCustomSynEdit.Destroy]');
       TSynEditPlugin(fPlugins[i]).Free;
     fPlugins.Free;
   end;
-  fScrollTimer.Free;                                                      
+  fScrollTimer.Free;                                             
   fTSearch.Free;
   fMarkList.Free;
   fBookMarkOpt.Free;
