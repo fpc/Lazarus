@@ -67,6 +67,8 @@ type
     FStopExecute: boolean;
     FLastOutputLine: integer;
     fLastOutputTime: TDateTime;
+    fLastSearchedShortIncFilename: string;
+    fLastSearchedIncFilename: string;
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -148,6 +150,8 @@ begin
   if fCompilingHistory<>nil then fCompilingHistory.Clear;
   if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
   FStopExecute:=false;
+  fLastSearchedShortIncFilename:='';
+  fLastSearchedIncFilename:='';
 end;
 
 function TOutputFilter.Execute(TheProcess: TProcess): boolean;
@@ -671,43 +675,57 @@ begin
     Result:=ShortIncFilename;
     exit;
   end;
-  AlreadySearchedPaths:='';
-  AlreadySearchedIncPaths:='';
-  // try every compiled pascal source
-  for p:=fCompilingHistory.Count-1 downto 0 do begin
-    RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
-    FullDir:=RelativeDir;
-    if not FilenameIsAbsolute(FullDir) then
-      FullDir:=fCurrentDirectory+FullDir;
-    FullDir:=TrimFilename(FullDir);
-    if SearchDirectoryInSearchPath(AlreadySearchedPaths,FullDir,1)>0 then
-      continue;
-    // new directory start a search
-    Result:=FullDir+ShortIncFilename;
-    if FileExists(Result) then begin
-      // file found in search dir
-      Result:=CleanAndExpandFilename(Result);
-      exit;
-    end;
-    AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);
-    // search with include path of directory
-    if Assigned(OnGetIncludePath) then begin
-      IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir),FullDir);
-      IncludePath:=RemoveSearchPaths(IncludePath,AlreadySearchedIncPaths);
-      if IncludePath<>'' then begin
-        Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
-        if Result<>'' then begin
-          if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
-            Result:=TrimFilename(
+  // try cache
+  if (fLastSearchedShortIncFilename<>'')
+  and (fLastSearchedShortIncFilename=ShortIncFilename)
+  then begin
+    Result:=fLastSearchedIncFilename;
+    exit;
+  end;
+  
+  try
+    AlreadySearchedPaths:='';
+    AlreadySearchedIncPaths:='';
+    // try every compiled pascal source
+    for p:=fCompilingHistory.Count-1 downto 0 do begin
+      RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
+      FullDir:=RelativeDir;
+      if not FilenameIsAbsolute(FullDir) then
+        FullDir:=fCurrentDirectory+FullDir;
+      FullDir:=TrimFilename(FullDir);
+      if SearchDirectoryInSearchPath(AlreadySearchedPaths,FullDir,1)>0 then
+        continue;
+      // new directory start a search
+      Result:=FullDir+ShortIncFilename;
+      if FileExists(Result) then begin
+        // file found in search dir
+        Result:=CleanAndExpandFilename(Result);
+        exit;
+      end;
+      AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);
+      // search with include path of directory
+      if Assigned(OnGetIncludePath) then begin
+        IncludePath:=TrimSearchPath(OnGetIncludePath(FullDir),FullDir);
+        IncludePath:=RemoveSearchPaths(IncludePath,AlreadySearchedIncPaths);
+        if IncludePath<>'' then begin
+          Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
+          if Result<>'' then begin
+            if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
+              Result:=TrimFilename(
                      RightStr(Result,length(Result)-length(fCurrentDirectory)));
-          exit;
+            exit;
+          end;
+          AlreadySearchedIncPaths:=MergeSearchPaths(AlreadySearchedIncPaths,
+                                                    IncludePath);
         end;
-        AlreadySearchedIncPaths:=MergeSearchPaths(AlreadySearchedIncPaths,
-                                                  IncludePath);
       end;
     end;
+    Result:=ShortIncFilename;
+  finally
+    // cache result, it will probably be used several consecutive times
+    fLastSearchedShortIncFilename:=ShortIncFilename;
+    fLastSearchedIncFilename:=Result;
   end;
-  Result:=ShortIncFilename;
 end;
 
 procedure TOutputFilter.SetStopExecute(const AValue: boolean);
