@@ -224,9 +224,7 @@ begin
       FormWidget:=PGtkWidget(AForm.Handle);
       FormWindow:=PGdkWindowPrivate(FormWidget^.window);
       if FormWindow<>nil then begin
-        {$IFDEF EnableGtkWindowFocus}
         GDK_WINDOW_ACTIVATE(FormWindow);
-        {$ENDIF}
       end;
       {$ENDIF}
 {$ifdef gtk2}
@@ -8987,6 +8985,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.417  2005/03/21 08:12:10  mattias
+  fixed removing focus of a gtk listbox on delete item  from Collin Western
+
   Revision 1.416  2005/03/20 09:45:05  mattias
   disabled gtk1 focussing a window, enable it with -dEnableGtkWindowFocus
 

@@ -44,6 +44,7 @@ type
     procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     procedure SetSorted(Val : boolean); virtual;
+    procedure CheckForInvalidFocus;
     procedure ConnectItemCallbacks(Index: integer);
     procedure ConnectItemCallbacks(Li: PGtkListItem); virtual;
     procedure ConnectAllCallbacks; virtual;
@@ -96,6 +97,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.11  2005/03/21 08:12:10  mattias
+  fixed removing focus of a gtk listbox on delete item  from Collin Western
+
   Revision 1.10  2004/07/03 11:11:08  mattias
   TGTKListStringList now keeps selection on Put and Move
 

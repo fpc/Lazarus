@@ -183,6 +183,19 @@ begin
   end;
 end;
 
+procedure TGtkListStringList.CheckForInvalidFocus;
+var
+  Window: PGtkWindow;
+begin
+  { This procedure works round a gtk problem - a deleted item may have the focus
+    according to an enclosing window, but the enclosing window does not notice that
+    the item has gone. }
+  Window := PGtkWindow(gtk_widget_get_ancestor(PGtkWidget(FGtkList),gtk_window_get_type));
+  if (Window <> nil) and (Window^.focus_widget <> nil)
+     and (gtk_widget_get_ancestor(Window^.focus_widget, gtk_list_get_type) = PGtkWidget(FGtkList)) then
+    Window^.focus_widget := nil;
+end;
+
 {------------------------------------------------------------------------------
   procedure TGtkListStringList.ConnectItemCallbacks(Index: integer);
 
@@ -577,6 +590,7 @@ begin
   BeginUpdate;
   RemoveAllCallbacks;
   Include(FStates,glsItemCacheNeedsUpdate);
+  CheckForInvalidFocus;
   gtk_list_clear_items(FGtkList, 0, Count);
   FCachedCount:=0;
   EndUpdate;
@@ -609,16 +623,20 @@ begin
     ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCapacity);
   end;
   // remove item from gtk list
-  {$IFDEF Gtk1}
-  { Work round gtk bug - crashes if deleting first item in list
-    and item has focus and there are remaining items }
-  if (Index = 0) and (PGTKContainer(FGtkList)^.focus_child <> nil)
-     and (gtk_list_child_position(FGtkList,PGTKContainer(FGtkList)^.focus_child) = 0) then begin
-    Next := FGtkList^.children^.next;
-    if Next <> nil then
-     gtk_widget_grab_focus(Next^.data);
+  if Count = 0 then
+    CheckForInvalidFocus
+  else begin
+    {$IFDEF Gtk1}
+    { Work round gtk bug - crashes if deleting first item in list
+      and item has focus and there are remaining items }
+    if (Index = 0) and (PGTKContainer(FGtkList)^.focus_child <> nil)
+       and (gtk_list_child_position(FGtkList,PGTKContainer(FGtkList)^.focus_child) = 0) then begin
+      Next := FGtkList^.children^.next;
+      if Next <> nil then
+       gtk_widget_grab_focus(Next^.data);
+    end;
+    {$ENDIF}
   end;
-  {$ENDIF}
   gtk_list_clear_items(FGtkList, Index, Index + 1);
   {$IFDEF CheckGtkList}
   ConsistencyCheck;
@@ -976,6 +994,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2005/03/21 08:12:10  mattias
+  fixed removing focus of a gtk listbox on delete item  from Collin Western
+
   Revision 1.30  2005/03/13 22:35:17  mattias
   fixed deleting selected TListBox item under gtk1  from Collin
 
