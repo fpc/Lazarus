@@ -3513,10 +3513,9 @@ begin
         if  (Sender is TControl) and assigned (data) then
         begin
           case TControl(Sender).fCompStyle of
-          {$Ifdef GTK1}
           csListBox,
-          csCheckListBox
-          {$EndIf}         : TGtkListStringList(TLMSort(Data^).List).Sorted:=
+          csCheckListBox:
+                         TGtkListStringList(TLMSort(Data^).List).Sorted:=
                               TLMSort(Data^).IsSorted;
           {$IfDef GTK1}
           csCListBox: TGtkCListStringList(TLMSort(Data^).List).Sorted :=
@@ -8515,6 +8514,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.558  2004/09/12 18:56:36  mazen
+  * Fix compilation problem with GTK2
+
   Revision 1.557  2004/09/12 13:30:13  micha
   remove handling of LM_SETFOCUS in interface, as it is never sent from LCL
 
