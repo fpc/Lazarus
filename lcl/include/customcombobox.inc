@@ -41,7 +41,6 @@ begin
   end;
   // and use the interface based list
   FItems:= NewStrings;
-  ParentColor := false;
 
   if FItemIndex <> -1 then
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
@@ -572,6 +571,7 @@ begin
   TControlCanvas(FCanvas).Control := Self;
   ArrowKeysTraverseList := True;
   TabStop := true;
+  ParentColor := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -793,6 +793,9 @@ end;
 
 {
   $Log$
+  Revision 1.48  2004/10/17 14:40:38  micha
+  fix parentcolor initialization, in createwnd is too late
+
   Revision 1.47  2004/09/20 21:01:04  micha
   convert LM_SETPROPERTIES to interface methods for TCustomComboBox
 
