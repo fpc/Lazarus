@@ -3,7 +3,7 @@
 #set -x
 set -e
 
-Usage="Usage: $0 devel or stable"
+Usage="Usage: $0 devel|stable"
 
 FPCVersion=$1
 
@@ -28,9 +28,9 @@ if [ "x$FPCVersion" = "xdevel" ]; then
 fi
 if [ "x$FPCVersion" = "xstable" ]; then
   Year=03
-  Month=03
-  Day=01
-  LazVersion=1.0.7
+  Month=06
+  Day=05
+  LazVersion=1.0.9
 fi
 
 
@@ -57,7 +57,7 @@ cd -
 cat $SpecFile | \
   sed -e 's/^Version: .*/Version: '"$LazVersion/" \
       -e 's/^Release: .*/Release: '"$LazRelease/" \
-      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version\//' \
+      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
   > $SpecFile
 
 # change Makefile for new rpmbuild
@@ -70,19 +70,21 @@ cd -
 
 # compile
 cd $TmpDir/fpc
-make rtl
-make compiler
-make rpm NODOCS=1
+#make rtl
+#make compiler
+#make rpm NODOCS=1
 cd -
 
 
 echo
 echo building fpcsrc rpm ...
+set -x
 
 # copy src tgz into building directory
 cp $SrcTGZ /usr/src/redhat/SOURCES/
 
 # create spec file
+SpecFile=fpcsrc-$LazVersion-$LazRelease.spec
 cat fpcsrc.spec | \
   sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/" \
   > $SpecFile
