@@ -207,7 +207,8 @@ end;
 procedure TDBEdit.EditingDone;
 begin
   inherited EditingDone;
-  FDataLink.UpdateRecord;
+  if FDataLink.CanModify then
+    FDataLink.UpdateRecord;
 end;
 
 { Public Methods }
@@ -234,6 +235,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2005/01/06 13:22:24  micha
+  fix access violation with dbedit (from loesje)
+
   Revision 1.10  2004/09/01 11:12:04  mattias
   replaced KeyPress dependencies with KeyDown
 
