@@ -49,7 +49,8 @@ type
   // TBeautifyCodeOptions
   TClassPartInsertPolicy = (cpipAlphabetically, cpipLast);
   TMethodInsertPolicy = (mipAlphabetically, mipLast, mipClassOrder);
-  TForwardProcInsertPolicy = (fpipLast, fpipInFrontOfMethods, fpipBehindMethods);
+  TForwardProcInsertPolicy = (
+    fpipLast, fpipInFrontOfMethods, fpipBehindMethods);
 
   TWordPolicy = (wpNone, wpLowerCase, wpUpperCase, wpLowerCaseFirstLetterUp);
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
