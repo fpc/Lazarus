@@ -502,7 +502,7 @@ TCMDialogKey = TLMKEY;
 
   public
     FCompStyle : LongInt;
-    Isresizing : Boolean;
+    IsResizing : Boolean;
     // use overload to simulate default
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
     procedure BeginDrag(Immediate: Boolean); //overload;
@@ -1127,7 +1127,7 @@ end;
 {$I dragobject.inc}
 initialization
 
-writeln('controls.pp - initialization');
+//writeln('controls.pp - initialization');
   Mouse := TMouse.create;
   DragControl := nil;
   CaptureControl := nil;
@@ -1140,6 +1140,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/10/07 07:28:32  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.21  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 

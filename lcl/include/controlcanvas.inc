@@ -55,6 +55,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.CreateHandle;
 begin
+//writeln('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',HexStr(FDeviceContext,8),' WinHandle=',HexStr(FWindowHandle,8));
   if FControl = nil
   then inherited CreateHandle
   else begin
@@ -88,6 +89,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/10/07 07:28:33  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.2  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

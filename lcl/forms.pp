@@ -128,7 +128,6 @@ type
     procedure DoShow; dynamic;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     Function GetClientRect : TRect ; Override;
-    property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
     Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
     Procedure PaintWindow(dc : Hdc); override;
@@ -137,19 +136,21 @@ type
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent; const CurName, NewName: shortstring);
     procedure WndProc(var Message : TLMessage); override;
-    property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
-    property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
-    property Position : TPosition read FPosition write SetPosition default poDesigned;
     {events}
+    property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
+    property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
+    property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
+    property OnCloseQuery : TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery stored IsForm;
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
-    property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
-    property OnCloseQuery : TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery stored IsForm;
+    property OnResize stored IsForm;
+    property Position : TPosition read FPosition write SetPosition default poDesigned;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
@@ -200,13 +201,14 @@ type
 //      property WindowState;
       property OnActivate;
       property OnCreate;
+      property OnClose;
+      property OnCloseQuery;
       property OnDeactivate;
       property OnDestroy;
       property OnShow;
       property OnHide;
       property OnPaint;
-      property OnClose;
-      property OnCloseQuery;
+      property OnResize;
    end;
 
   TFormClass = class of TForm;

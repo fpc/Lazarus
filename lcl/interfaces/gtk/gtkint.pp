@@ -267,7 +267,7 @@ end;
 
 
 initialization
-writeln('gtkint.pp - initialization');
+//writeln('gtkint.pp - initialization');
   InternalInit;
 
 finalization
@@ -278,6 +278,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/10/07 07:28:33  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.19  2001/09/30 08:34:51  lazarus
   MG: fixed mem leaks and fixed range check errors
 

@@ -664,17 +664,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl SetAutoSize                                 }
+{       TControl SetAutoSize                                                   }
 {------------------------------------------------------------------------------}
 Procedure TControl.SetAutoSize(value : Boolean);
 Begin
-if FAutoSize <> value then
-FAutosize := Value;
+  if FAutoSize <> value then
+  FAutosize := Value;
 //TODO: Finish this by calling gtk and telling it to resize...?
 end;
 
 {------------------------------------------------------------------------------}
-{       TControl SetBoundsRect                                 }
+{       TControl SetBoundsRect                                                 }
 {------------------------------------------------------------------------------}
 Procedure TControl.SetBoundsRect(const Rect : TRect);
 Begin
@@ -684,7 +684,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TControl SetCursor                                                            }
+{  TControl SetCursor                                                          }
 {------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
 begin
@@ -700,7 +700,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TControl SetEnabled                                                            }
+{  TControl SetEnabled                                                         }
 {------------------------------------------------------------------------------}
 procedure TControl.SetEnabled(Value: Boolean);
 begin
@@ -713,7 +713,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TControl SetMouseCapture                                                 }
+{  TControl SetMouseCapture                                                    }
 {------------------------------------------------------------------------------}
 procedure TControl.SetMouseCapture(Value : Boolean);
 begin
@@ -847,6 +847,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.Resize;
 begin
+//writeln('[TControl.Resize] ',ClassName);
   if Assigned(FOnResize) then FOnResize(Self);
 end;
 
@@ -1325,6 +1326,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.25  2001/10/07 07:28:33  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.24  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 

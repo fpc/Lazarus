@@ -79,7 +79,7 @@ var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
   begin
     ALowWord:=lowercase(AWord);
     Hash:=0;
-    a:=0;
+    a:=1;
     while (a<=length(ALowWord)) and (a<20) do begin
       inc(Hash,ord(ALowWord[a]) and $3f);
       inc(a);

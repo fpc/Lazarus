@@ -911,6 +911,7 @@ end;
 
 procedure TOIPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
+//writeln('[TOIPropertyGrid.SetBounds] ',aLeft,',',aTop,',',aWidth,',',aHeight);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
     SplitterX:=SplitterX;

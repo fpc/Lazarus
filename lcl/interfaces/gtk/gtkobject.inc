@@ -2437,7 +2437,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.SetPixel
-  Params:  Sender : the lcl object which called this func via SenMessage
+  Params:  Sender : the lcl object which called this func via SendMessage
            Data   : pointer to a TLMSetGetPixel record
   Returns: nothing
 
@@ -2445,31 +2445,38 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
 var
-   fWindow : pGdkWindow;
-   //gc      : pgdkGC;
-   Image   : pGDKImage;
-   widget  : PgtkWidget;
+  PDC     : PDeviceContext;
+  Image   : pGDKImage;
+  Widget  : PgtkWidget;
+  GDKColor: TGDKColor;
+  pFixed  : PGTKFixed;
+  fWindow : pGdkWindow;
 begin
-   Widget := PgtkWidget(TCanvas(sender).Handle);
+  PDC := PDeviceContext(TCanvas(Sender).Handle);
+  if PDC = nil then exit;
+  Widget := PgtkWidget(PDC^.HWnd);
 
-   Image := gtk_Object_get_data(pgtkobject(widget),'Image');
-   if Image = nil 
-      then Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,
+  Image := gtk_Object_get_data(pgtkobject(widget),'Image');
+  if Image = nil then begin
+    Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,
                             widget^.allocation.width,widget^.allocation.height);
+    if Image = nil then exit;
+    gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
+  end;
 
-   gdk_image_put_pixel(Image,TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
-                         TLMSetGetPixel(data^).PixColor);
+  GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
+//writeln('SetPixel: Color=',HexStr(TLMSetGetPixel(data^).PixColor,8),' GDKColor=',HexStr(GDKColor.Pixel,8));
+  gdk_image_put_pixel(Image,TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
+                         GDKColor.Pixel);
 
-   gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
-
-   widget  := GetFixedWidget(Widget);
-   fWindow := pGtkWidget(widget)^.window;
-   //gc      := gdk_gc_new(PgdkWindow(fWindow));
-   gdk_draw_image(fwindow,
-      PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)], 
+  pFixed := GetFixedWidget(Widget);
+  if pFixed <> nil then Widget:=PgtkWidget(pFixed);
+  fWindow := pGtkWidget(Widget)^.window;
+  gdk_draw_image(fwindow,
+      PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (Widget)], 
       Image,
-      TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
-      TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
+      TLMSetGetPixel(Data^).X,TLMSetGetPixel(data^).Y,
+      TLMSetGetPixel(Data^).X,TLMSetGetPixel(data^).Y,
       1,1);
 end;
 
@@ -2483,22 +2490,27 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.GetPixel(Sender : TObject; Data : Pointer);
 var
-   Image : pGDKImage;
-   widget : PgtkWidget;
-   WasNil : Boolean;
+  PDC    : PDeviceContext;
+  Image  : pGDKImage;
+  Widget : PgtkWidget;
+  GDKColorIndex: Cardinal;
 begin
-   Widget := PgtkWidget(TCanvas(sender).Handle);
+  PDC := PDeviceContext(TCanvas(Sender).Handle);
+  if PDC = nil then exit;
+  Widget := PgtkWidget(PDC^.HWnd);
 
-   Image := gtk_Object_get_data(pgtkobject(widget),'Image');
-   if Image = nil then
-   begin
-      WasNil := True;
-      Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,widget^.allocation.width,widget^.allocation.height);
-   end;
+  Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
+  if Image = nil then begin
+    Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,
+      widget^.allocation.width,widget^.allocation.height);
+    if Image = nil then exit;
+    gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
+  end;
 
-   TLMSetGetPixel(data^).PixColor := gdk_image_get_pixel(Image,TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y);
-
-   If WasNil then gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
+  GDKColorIndex := gdk_image_get_pixel(Image,
+                              TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y);
+  
+  TLMSetGetPixel(data^).PixColor := GDKColorIDToRGB(GDKColorIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -3038,6 +3050,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.57  2001/10/07 07:28:34  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.56  2001/09/30 08:34:52  lazarus
   MG: fixed mem leaks and fixed range check errors
 

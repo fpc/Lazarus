@@ -18,7 +18,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl AdjustClientRect                                                      }
+{  TWinControl AdjustClientRect                                                }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.AdjustClientRect(var Rect: TRect);
 Begin
@@ -26,7 +26,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl AlignControls                                                      }
+{  TWinControl AlignControls                                                   }
 {------------------------------------------------------------------------------}
 procedure TWinControl.AlignControls(AControl : TControl; var Rect : TRect);
 var
@@ -204,7 +204,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl BroadCast                                                      }
+{  TWinControl BroadCast                                                       }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.BroadCast(var Message);
 var
@@ -242,7 +242,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl CMDrag                                                      }
+{  TWinControl CMDrag                                                          }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.CMDrag(var MEssage: TCMDrag);
 Begin
@@ -250,23 +250,22 @@ Begin
    Begin
    case DragMessage of
          dmDragEnter, dmDragLEave,dmDragMOve, dmDragDrop :
-                                   if target <> nil then TControl(target).DoDragMsg(Message);
-         dmFindTarget:begin
-                       Writeln('dmFindTarget');
-                       result := longint(ControlatPos(ScreentoClient(pos),False));
-                       if Result = 0 then Result := longint(Self);
-                      end;
+           if target <> nil then TControl(target).DoDragMsg(Message);
+         dmFindTarget:
+           begin
+             Writeln('dmFindTarget');
+             Result := longint(ControlatPos(ScreentoClient(pos),False));
+             if Result = 0 then Result := longint(Self);
+           end;
          end;//case
-
-
    end;
-
 end;
 
 {------------------------------------------------------------------------------}
 {  TWinControl CreateSubClass                                                      }
 {------------------------------------------------------------------------------}
-procedure TWinControl.CreateSubClass(var Params: TCreateParams; ControlClassName: PChar);
+procedure TWinControl.CreateSubClass(var Params: TCreateParams;
+  ControlClassName: PChar);
 (*
 const
   CS_OFF = CS_OWNDC or CS_CLASSDC or CS_PARENTDC or CS_GLOBALCLASS;
@@ -292,7 +291,7 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{  TWinControl DisableAlign}
+{  TWinControl DisableAlign                                                    }
 {------------------------------------------------------------------------------}
 procedure TWinControl.DisableAlign;
 begin
@@ -300,7 +299,7 @@ begin
 End;
 
 {------------------------------------------------------------------------------}
-{  TWinControl EnableAlign}
+{  TWinControl EnableAlign                                                     }
 {------------------------------------------------------------------------------}
 procedure TWinControl.EnableAlign;
 begin
@@ -381,7 +380,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl GetTabOrder                                                      }
+{  TWinControl GetTabOrder                                                     }
 {------------------------------------------------------------------------------}
 Function TWinControl.GetTabOrder : TTabOrder;
 Begin
@@ -391,7 +390,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl UpdateShowing                                                      }
+{  TWinControl UpdateShowing                                                   }
 {------------------------------------------------------------------------------}
 procedure TWinControl.UpdateShowing;
 var
@@ -428,7 +427,7 @@ begin
 
 end;
 {------------------------------------------------------------------------------}
-{  TWinControl UpdateTabOrder                                                      }
+{  TWinControl UpdateTabOrder                                                  }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.UpdateTabOrder(Value : TTabOrder);
 Begin
@@ -436,7 +435,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl Focused                                                      }
+{  TWinControl Focused                                                         }
 {------------------------------------------------------------------------------}
 Function TWinControl.Focused : Boolean;
 Begin
@@ -444,7 +443,7 @@ Result := (FHandle <> 0) and (GetFocus = FHandle);
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl FindChildControl                                               }
+{  TWinControl FindChildControl                                                }
 {------------------------------------------------------------------------------}
 function TWinControl.FindChildControl(ControlName: string): TControl;
 var
@@ -1411,6 +1410,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSize(Var Message : TLMSize);
 begin
+//writeln('[TWinControl.WMSize] ',ClassName);
+  if (FWidth=Message.Width) and (FHeight=Message.Height) then exit;
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
   { Just coordinate the bounds }
   FWidth  := Message.Width;
@@ -1428,14 +1429,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMove(var Message: TLMMove);
 begin
+  //if (FLeft=Message.XPos) and (FTop=Message.YPos) then exit;
   { Just sync the coordinates }
 //Writeln('[TWINCONTROL].WMMOVE');
 //Writeln(Format('MOVE is LEft=%d    Top= %d',[Message.XPos,MEssage.YPos]));
-
   FLeft := Message.XPos;
   FTop  := Message.YPos;
   { TODO : When anchors are implemented, update its rules instead }
   RequestAlign;
+  if not (csLoading in ComponentState) then Resize;
 end;                          
 
 {------------------------------------------------------------------------------
@@ -1463,7 +1465,6 @@ procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin            
   Assert(False, Format('Trace: TODO: [TWinControl.LMKillFocus] %s', [ClassName]));
   DoExit;
-
 end;                          
 
 {------------------------------------------------------------------------------
@@ -1879,6 +1880,7 @@ begin
   WindowHandle := FHandle;
 (*)
   Result := GetDC(Handle);
+//writeln('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
   if Result = 0 
   then raise EOutOfResources.Create('Error creating device context');
 
@@ -1949,6 +1951,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2001/10/07 07:28:33  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.37  2001/10/03 17:34:27  lazarus
   MG: activated TCustomForm.OnCreate event
 

@@ -34,8 +34,8 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateGDKColor
-  Params:  AColor: A RGB color
+  Function: AllocGDKColor
+  Params:  AColor: A RGB color (TColor)
   Returns: an Allocated GDKColor
 
   Allocated a GDKColor from a winapi color
@@ -50,6 +50,30 @@ begin
   end;
   gdk_colormap_alloc_color(gdk_colormap_get_system, @Result, False, True);
 end;
+
+{------------------------------------------------------------------------------
+  Function: GDKColorIDToRGB
+  Params:  AGDKColorID: A GDK color index
+  Returns: a RGB color (TColor)
+
+ ------------------------------------------------------------------------------}
+function GDKColorIDToRGB(AGDKColorID: cardinal): LongInt;
+//var AColor: TGDKColor;
+begin
+//writeln('[GDKColorIDToRGB] ID=',HexStr(AGDKColorID,8),' ',gdk_colormap_get_system_size);
+  Result:=AGDKColorID;
+  exit;
+{ MG:  I don't know what the AGDKColorID from gdk_image_get_pixel is.
+
+  if AGDKColorID >= cardinal(gdk_colormap_get_system_size) then
+    Result:=0
+  else begin
+    AColor:=gdk_colormap_get_system^.Colors[AGDKColorID];
+    Result := (AColor.Red shr 8) or (AColor.Green and $ff00)
+               or ((AColor.Blue and $ff00) shl 8);
+  end;
+  }
+end; 
 
 {------------------------------------------------------------------------------
   Function: CopyDCData
@@ -625,8 +649,10 @@ end;
 
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 begin
+//writeln('[gtkproc: SetFixedWidget] Parent=',HexStr(Cardinal(ParentWidget),8),
+//' Fixed=',HexStr(Cardinal(FixedWidget),8));
   if (ParentWidget <> nil) and (FixedWidget <> nil) then
-  gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
+    gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
 
 // ----------------------------------------------------------------------
@@ -745,6 +771,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.21  2001/10/07 07:28:34  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.20  2001/09/30 08:34:52  lazarus
   MG: fixed mem leaks and fixed range check errors
 

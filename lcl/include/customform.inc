@@ -280,6 +280,7 @@ Begin
        SIZEFULLSCREEN : FWindowstate := wsMaximized;
       end;
   RequestAlign;
+  Resize;
 End;
 
 {------------------------------------------------------------------------------
@@ -940,6 +941,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2001/10/07 07:28:33  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.26  2001/10/03 17:34:26  lazarus
   MG: activated TCustomForm.OnCreate event
 

@@ -86,7 +86,7 @@ var
 Begin
   Msg.X := X;
   msg.Y := Y;
-  MSg.PixColor := Value;
+  MSg.PixColor := ColorToRGB(Value);
   CNSendMessage(LM_SetPixel, Self, @msg);
 end;
 
@@ -441,6 +441,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCanvas.GetHandle : HDC;
 begin
+//writeln('[TCanvas.GetHandle] ',ClassName);
   RequiredState(csAllValid);
   Result := FHandle;
 end;
@@ -524,6 +525,7 @@ procedure TCanvas.RequiredState(ReqState: TCanvasState);
 var
   Needed: TCanvasState;
 begin
+//writeln('[TCanvas.RequiredState] ',csHandleValid in ReqState,' ',csHandleValid in FState);
   Needed := ReqState - FState;
   if Needed <> [] then
   begin
@@ -596,6 +598,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/10/07 07:28:33  lazarus
+  MG: fixed setpixel and TCustomForm.OnResize event
+
   Revision 1.9  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 
