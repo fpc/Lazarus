@@ -76,6 +76,7 @@ function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 function Frame3d(DC : HDC; var ARect: TRect; const FrameWidth: integer; const Style : TBevelCut): boolean; override;
 
 Function GetActiveWindow : HWND; override;
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
@@ -88,8 +89,8 @@ function GetDC(hWnd: HWND): HDC;  override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 function GetFocus: HWND; override;
+function GetFontLanguageInfo(DC: HDC): DWord; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
@@ -190,6 +191,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/12/05 22:16:35  mattias
+  double byte char font started
+
   Revision 1.54  2002/11/23 13:48:47  mattias
   added Timer patch from Vincent Snijders
 
