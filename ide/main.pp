@@ -2369,7 +2369,7 @@ begin
   // create jitform
   CInterface := TComponentInterface(
     FormEditor1.CreateComponent(nil,TForm,
-      ObjectInspector1.Left+ObjectInspector1.Width+40,Top+Height+50,400,300));
+      ObjectInspector1.Left+ObjectInspector1.Width+60,Top+Height+80,400,300));
   FormEditor1.SetFormNameAndClass(CInterface,
     NewUnitInfo.FormName,'T'+NewUnitInfo.FormName);
   NewForm:=TForm(CInterface.Control);
@@ -6181,7 +6181,7 @@ end;
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
-//writeln('********8 TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
+//writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
   if (ALayout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
   and (ALayout.CustomCoordinatesAreValid) then begin
     // explicit position
@@ -6191,18 +6191,18 @@ begin
   if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
   then begin
     // default position
-    if ALayout.Form=TForm(ObjectInspector1) then begin
+    if ALayout.FormID=DefaultObjectInspectorName then begin
       ALayout.Form.SetBounds(
         Left,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
     end else
-    if ALayout.Form=TForm(Self) then begin
-      ALayout.Form.SetBounds(0,0,Screen.Width-10,105);
+    if ALayout.FormID=DefaultMainIDEName then begin
+      ALayout.Form.SetBounds(0,0,Screen.Width-10,100);
     end else
-    if ALayout.Form=TForm(SourceNotebook) then begin
-      ALayout.Form.SetBounds(260,Top+Height+30,Screen.Width-300,
-        Screen.Height-100-Top-Height);
+    if ALayout.FormID=DefaultSourceNoteBookName then begin
+      ALayout.Form.SetBounds(250,Top+Height+30,Screen.Width-300,
+        Screen.Height-200-Top-Height);
     end else
-    if ALayout.Form=TForm(MessagesView) then begin
+    if ALayout.FormID=DefaultMessagesViewName then begin
       ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
         Screen.Width-300,80);
     end;
@@ -6326,6 +6326,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.291  2002/05/06 12:21:35  lazarus
+  MG: nicer default window positions
+
   Revision 1.290  2002/04/30 15:01:05  lazarus
   MWE:
     + Added view callstack menu item

@@ -1643,18 +1643,9 @@ begin
   FMainIDE := AOwner;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByFormID(DefaultSourceNoteBookName);
+                                        ItemByFormID(DefaultSourceNoteBookName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
-  {if (EnvironmentOptions.SaveWindowPositions)
-  and (EnvironmentOptions.WindowPositionsValid) then begin
-    BoundsRect:=EnvironmentOptions.SourceEditorBounds;
-  end else begin
-    Left := 260;
-    Top := 150;
-    Width := 400;
-    Height := 400;
-  end;}
 
   FSourceEditorList := TList.Create;
   FUnUsedEditorComponents := TList.Create;
