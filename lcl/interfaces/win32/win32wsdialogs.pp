@@ -225,8 +225,7 @@ procedure PrepareFileDialog(const AOpenDialog: TOpenDialog; var OpenFile: OPENFI
   end;
 
 var
-  FName: PChar;
-  FFilter: string;
+  lFilter: string;
   SizeStr:Integer;
 begin
   //TODO: HistoryList
@@ -234,27 +233,26 @@ begin
     SizeStr:=15*MAX_PATH  // Tested with 210 selected files
   else
     SizeStr:=MAX_PATH;
-  GetMem(FName,SizeStr+2);
-  FillChar(FName^, SizeStr+2, 0);
-  StrLCopy(FName,PChar(AOpenDialog.Filename),SizeStr);
+  if Length(AOpenDialog.Filename) > SizeStr then
+    SizeStr := Length(AOpenDialog.Filename) + 1;
   if AOpenDialog.Filter <> '' then 
   begin
-    FFilter := AOpenDialog.Filter;
-    ReplacePipe(FFilter);
+    lFilter := AOpenDialog.Filter;
+    ReplacePipe(lFilter);
   end
   else
-    FFilter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
+    lFilter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
   ZeroMemory(@OpenFile, sizeof(OpenFileName));
   with OpenFile Do
   begin
     lStructSize := sizeof(OpenFileName);
     hWndOwner := GetOwnerHandle(AOpenDialog);
     hInstance := System.hInstance;
-    lpStrFilter := StrAlloc(Length(FFilter)+1);
-    Move(PChar(FFilter)^, lpStrFilter^, Length(FFilter)+1);
-    lpStrFile := FName;
-    lpStrTitle := PChar(AOpenDialog.Title);
-    lpStrInitialDir := PChar(AOpenDialog.InitialDir);
+    lpStrFilter := StrNew(PChar(lFilter));
+    GetMem(lpStrFile, SizeStr+2);
+    StrLCopy(lpStrFile, PChar(AOpenDialog.Filename), SizeStr);
+    lpStrTitle := StrNew(PChar(AOpenDialog.Title));
+    lpStrInitialDir := StrNew(PChar(AOpenDialog.InitialDir));
     nMaxFile := SizeStr;
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
   end;
@@ -322,6 +320,8 @@ begin
 
     FreeMem(OpenFile.lpStrFile);
     StrDispose(OpenFile.lpStrFilter);
+    StrDispose(OpenFile.lpStrTitle);
+    StrDispose(OpenFile.lpStrInitialDir);
   end;
 end;
 
