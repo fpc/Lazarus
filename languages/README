@@ -1,5 +1,5 @@
 The <lazarusdir>/languages directory contains all the stuff for
-internationalization of lazarus IDE.
+internationalization of the lazarus IDE.
 
 All text and messages used in the IDE should be placed into the unit
 lazarusidestrconsts.pas. This unit uses a resourcestring section, so that the

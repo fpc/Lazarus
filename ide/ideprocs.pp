@@ -663,6 +663,9 @@ begin
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
      AppendPathDelim(BaseDirectory)+'languages/lazaruside.%s.mo',
                      Lang,FallbackLang);
+  TranslateUnitResourceStrings('CodeToolsStrConsts',
+     AppendPathDelim(BaseDirectory)+'components/codetools/languages/codetools.%s.mo',
+                     Lang,FallbackLang);
 end;
 
 end.

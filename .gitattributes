@@ -19,6 +19,7 @@ components/codetools/fileprocs.pas svneol=native#text/pascal
 components/codetools/finddeclarationcache.pas svneol=native#text/pascal
 components/codetools/finddeclarationtool.pas svneol=native#text/pascal
 components/codetools/keywordfunclists.pas svneol=native#text/pascal
+components/codetools/languages/codetools.po svneol=native#text/plain
 components/codetools/linkscanner.pas svneol=native#text/pascal
 components/codetools/memcheck.pas svneol=native#text/pascal
 components/codetools/methodjumptool.pas svneol=native#text/pascal

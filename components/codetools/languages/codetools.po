@@ -1,0 +1,528 @@
+#: codetoolsstrconsts:ctsunknownsubdescriptor
+msgid "(unknown subdescriptor %s)"
+msgstr ""
+
+#: codetoolsstrconsts:ctsforward
+msgid "Forward"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunparsed
+msgid "Unparsed"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidflagvaluefordirective
+msgid "invalid flag value \"%s\" for directive %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidmode
+msgid "invalid mode \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts:ctsawithoutb
+msgid "%s without %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsincludefilenotfound
+msgid "include file not found \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts:ctserrorindirectiveexpression
+msgid "error in directive expression"
+msgstr ""
+
+#: codetoolsstrconsts:ctsincludecircledetected
+msgid "Include circle detected"
+msgstr ""
+
+#: codetoolsstrconsts:ctsidentexpectedbutatomfound
+msgid "identifier expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsidentexpectedbutkeywordfound
+msgid "identifier expected, but keyword %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsstrexpectedbutatomfound
+msgid "%s expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsidentexpectedbuteoffound
+msgid "unexpected end of file (identifier expected)"
+msgstr ""
+
+#: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
+msgid "bracket open expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
+msgid "bracket close expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsbracketnotfound
+msgid "bracket %s not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnonodefoundatcursor
+msgid "no node found at cursor"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunknownmainfilename
+msgid "(unknown mainfilename)"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunexpectedkeyword
+msgid "unexpected keyword \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts:ctsnopascalcodefound
+msgid "no pascal code found (first token is %s)"
+msgstr ""
+
+#: codetoolsstrconsts:ctsstringconstant
+msgid "string constant"
+msgstr ""
+
+#: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
+msgid "Anonym %s definitions are not allowed"
+msgstr ""
+
+#: codetoolsstrconsts:ctsendforrecordnotfound
+msgid "end for record not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsmissingenumlist
+msgid "missing enum list"
+msgstr ""
+
+#: codetoolsstrconsts:ctsmissingtypeidentifier
+msgid "missing type identifier"
+msgstr ""
+
+#: codetoolsstrconsts:ctsprocedureorfunction
+msgid "procedure or function"
+msgstr ""
+
+#: codetoolsstrconsts:ctsmethodname
+msgid "method name"
+msgstr ""
+
+#: codetoolsstrconsts:ctsidentifier
+msgid "identifier"
+msgstr ""
+
+#: codetoolsstrconsts:ctssemicolonnotfound
+msgid "semicolon not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctskeyword
+msgid "keyword"
+msgstr ""
+
+#: codetoolsstrconsts:ctskeywordexampleexpectedbutatomfound
+msgid "keyword (e.g. %s) expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsconstant
+msgid "constant"
+msgstr ""
+
+#: codetoolsstrconsts:ctssemicolonafterpropspecmissing
+msgid "; expected after \"%s\" property specifier, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunknownsectionkeyword
+msgid "unknown section keyword %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsillegalqualifier
+msgid "illegal qualifier %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunexpectedendofsource
+msgid "unexpected end of source"
+msgstr ""
+
+#: codetoolsstrconsts:ctspointstartat
+msgid ". start at "
+msgstr ""
+
+#: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
+msgid "unexpected keyword \"%s\" in asm block found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
+msgid "unexpected keyword \"%s\" found while reading blocks backwards"
+msgstr ""
+
+#: codetoolsstrconsts:ctswordnotfound
+msgid "\"%s\" not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctspointhintprocstartat
+msgid ".  Hint: proc start at "
+msgstr ""
+
+#: codetoolsstrconsts:ctsmissingpointafterend
+msgid "missing . after end"
+msgstr ""
+
+#: codetoolsstrconsts:ctsendforclassnotfound
+msgid "\"end\" for class/object not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunexpectedsubrangeoperatorfound
+msgid "unexpected subrange operator '..' found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidsubrange
+msgid "invalid subrange"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunitnotfound
+msgid "unit not found: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsidentifiernotfound
+msgid "identifier not found: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnocontextnodefoundatcursor
+msgid "no context node found at cursor"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
+msgid "inherited keyword only allowed in methods"
+msgstr ""
+
+#: codetoolsstrconsts:ctscircleindefinitions
+msgid "circle in definitions"
+msgstr ""
+
+#: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
+msgid "Forward class definition not resolved: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctstypeidentifier
+msgid "type identifier"
+msgstr ""
+
+#: codetoolsstrconsts:ctsancestorisnotproperty
+msgid "ancestor of untyped property is not a property"
+msgstr ""
+
+#: codetoolsstrconsts:ctsbasetypeofnotfound
+msgid "base type of \"%s\" not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsclassidentifierexpected
+msgid "class identifier expected"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
+msgid "default class ancestor TObject not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
+msgid "expression type must be class or record type"
+msgstr ""
+
+#: codetoolsstrconsts:ctsclasswithoutname
+msgid "class without name"
+msgstr ""
+
+#: codetoolsstrconsts:ctsbinaryoperator
+msgid "binary operator"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidtype
+msgid "invalid type"
+msgstr ""
+
+#: codetoolsstrconsts:ctskeywordin
+msgid "keyword \"in\""
+msgstr ""
+
+#: codetoolsstrconsts:ctsillegalcircleinusedunits
+msgid "illegal circle using unit: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctssourceisnotunit
+msgid "source is not unit"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinterfacesectionnotfound
+msgid "interface section not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsusedunitisnotapascalunit
+msgid "used unit is not a pascal unit"
+msgstr ""
+
+#: codetoolsstrconsts:ctsduplicateidentifier
+msgid "duplicate identifier: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsqualifierexpectedbutatomfound
+msgid "qualifier expected but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsincompatibletypesgotexpected
+msgid "incompatibles types: expected \"%s\" but got \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts:ctspropertyspecifieralreadydefined
+msgid "property specifier already defined: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctserrorinparamlist
+msgid "error in paramlist"
+msgstr ""
+
+#: codetoolsstrconsts:ctsproperttypeexpectedbutatomfound
+msgid "property type expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsindexspecifierredefined
+msgid "index specifier redefined"
+msgstr ""
+
+#: codetoolsstrconsts:ctsindexparameterexpectedbutatomfound
+msgid "index parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultspecifierredefined
+msgid "default specifier redefined"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
+msgid "default parameter expected, but %s found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
+msgid "nodefault specifier defined twice"
+msgstr ""
+
+#: codetoolsstrconsts:ctsimplementationnodenotfound
+msgid "implementation node not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsclassnodewithoutparentnode
+msgid "class node without parent node"
+msgstr ""
+
+#: codetoolsstrconsts:ctstypesectionofclassnotfound
+msgid "type section of class not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunabletocompleteproperty
+msgid "unable to complete property"
+msgstr ""
+
+#: codetoolsstrconsts:ctserrorduringinsertingnewclassparts
+msgid "error during inserting new class parts"
+msgstr ""
+
+#: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
+msgid "error during creation of new proc bodies"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunabletoapplychanges
+msgid "unable to apply changes"
+msgstr ""
+
+#: codetoolsstrconsts:ctsendofsourcenotfound
+msgid "End of source not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctscursorposoutsideofcode
+msgid "cursor pos outside of code"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnewprocbodynotfound
+msgid "new proc body not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnoscannerfound
+msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
+msgstr ""
+
+#: codetoolsstrconsts:ctsnoscanneravailable
+msgid "No scanner available"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunknownfunction
+msgid "Unknown function %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctssyntaxerrorinexpr
+msgid "Syntax Error in expression \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultppc386macro
+msgid "Default ppc386 macro"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultppc386targetoperatingsystem
+msgid "Default ppc386 target Operating System"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
+msgid "Default ppc386 source Operating System"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultppc386targetprocessor
+msgid "Default ppc386 target processor"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
+msgid "Free Pascal Compiler initial makros"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
+msgid "Free Pascal Sources, %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
+msgid "Source filenames for the standard fpc units"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfreepascalsourcedir
+msgid "Free Pascal Source Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctssrcpathinitialization
+msgid "SrcPath Initialization"
+msgstr ""
+
+#: codetoolsstrconsts:ctscompiler
+msgid "Compiler"
+msgstr ""
+
+#: codetoolsstrconsts:ctsruntimelibrary
+msgid "Runtime library"
+msgstr ""
+
+#: codetoolsstrconsts:ctsprocessorspecific
+msgid "processor specific"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfreepascalcomponentlibrary
+msgid "Free Pascal Component Library"
+msgstr ""
+
+#: codetoolsstrconsts:ctsincludedirectoriesplusdirs
+msgid "include directories: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctspackagedirectories
+msgid "Package directories"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefsforlazarussources
+msgid "Definitions for the Lazarus Sources"
+msgstr ""
+
+#: codetoolsstrconsts:ctsaddsdirtosourcepath
+msgid "adds %s to SrcPath"
+msgstr ""
+
+#: codetoolsstrconsts:ctssetsincpathto
+msgid "sets IncPath to %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctssetssrcpathto
+msgid "sets SrcPath to %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnameddirectory
+msgid "%s Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsabstractwidgetpath
+msgid "abstract widget path"
+msgstr ""
+
+#: codetoolsstrconsts:ctswidgetdirectory
+msgid "Widget Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctscomponentsdirectory
+msgid "Components Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctstoolsdirectory
+msgid "Tools Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdesignerdirectory
+msgid "Designer Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctslazarusmaindirectory
+msgid "lazarus main directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdebuggerdirectory
+msgid "Debugger Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctslazarussources
+msgid "Lazarus Sources"
+msgstr ""
+
+#: codetoolsstrconsts:ctsanlclproject
+msgid "an LCL project"
+msgstr ""
+
+#: codetoolsstrconsts:ctsothercompilerdefines
+msgid "%s Compiler Defines"
+msgstr ""
+
+#: codetoolsstrconsts:ctsresetalldefines
+msgid "Reset all defines"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefinemakroname
+msgid "Define Makro %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsnamedproject
+msgid "%s Project"
+msgstr ""
+
+#: codetoolsstrconsts:ctsmethodtypedefinitionnotfound
+msgid "method type definition not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsoldmethodnotfound
+msgid "old method not found: %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfiledoesnotexists
+msgid "file \"%s\" does not exist"
+msgstr ""
+
+#: codetoolsstrconsts:ctsexecuteaccessdeniedforfile
+msgid "execute access denied for %s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdircomponentisnotdir
+msgid "a directory component in %s is not a directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinsufficientmemory
+msgid "insufficient memory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfilehascircularsymlink
+msgid "%s has a circular symbolic link"
+msgstr ""
+
+#: codetoolsstrconsts:ctsfileisnotexecutable
+msgid "%s is not executable"
+msgstr ""
+
