@@ -53,6 +53,7 @@ type
     FOnComponentListChanged: TNotifyEvent;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
+    FOnModified: TNotifyEvent;
     FOnPropertiesChanged: TNotifyEvent;
     FOnRemoveComponent: TOnRemoveComponent;
     FOnSetDesigning: TOnSetDesigning;
@@ -108,18 +109,19 @@ type
     property Form: TCustomForm read FCustomForm write FCustomForm;
     property FormEditor : TFormEditor read FFormEditor write FFormEditor;
     property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
-    property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
-       read FOnGetSelectedComponentClass write FOnGetSelectedComponentClass;
-    property OnUnselectComponentClass: TNotifyEvent
-       read FOnUnselectComponentClass write FOnUnselectComponentClass;
-    property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
+    property OnAddComponent: TOnAddComponent read FOnAddComponent write FOnAddComponent;
     property OnComponentListChanged: TNotifyEvent
        read FOnComponentListChanged write FOnComponentListChanged;
+    property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
+       read FOnGetSelectedComponentClass write FOnGetSelectedComponentClass;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnPropertiesChanged: TNotifyEvent
        read FOnPropertiesChanged write FOnPropertiesChanged;
-    property OnAddComponent: TOnAddComponent read FOnAddComponent write FOnAddComponent;
     property OnRemoveComponent: TOnRemoveComponent
        read FOnRemoveComponent write FOnRemoveComponent;
+    property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
+    property OnUnselectComponentClass: TNotifyEvent
+       read FOnUnselectComponentClass write FOnUnselectComponentClass;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     procedure DrawNonVisualComponents(DC: HDC);
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
@@ -680,7 +682,8 @@ end;
 
 procedure TDesigner.Modified;
 Begin
-
+  ControlSelection.SaveBounds;
+  if Assigned(FOnModified) then FOnModified(Self);
 end;
 
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);

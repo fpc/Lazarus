@@ -229,6 +229,7 @@ type
     procedure RemoveUnit(Index:integer);
     function IndexOf(AUnitInfo: TUnitInfo):integer;
     function IndexOfUnitWithName(AUnitName:string; OnlyProjectUnits:boolean):integer;
+    function IndexOfUnitWithForm(AForm: TComponent; OnlyProjectUnits:boolean):integer;
     function UnitWithEditorIndex(Index:integer):TUnitInfo;
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
@@ -1148,6 +1149,20 @@ begin
   end;
 end;
 
+function TProject.IndexOfUnitWithForm(AForm: TComponent; 
+  OnlyProjectUnits:boolean):integer;
+begin
+  Result:=UnitCount-1;
+  while (Result>=0) do begin
+    if (OnlyProjectUnits and Units[Result].IsPartOfProject) 
+    or (not OnlyProjectUnits) then begin
+      if Units[Result].Form=AForm then
+        exit;
+    end;
+    dec(Result);
+  end;
+end;
+
 function TProject.UnitWithEditorIndex(Index:integer):TUnitInfo;
 var i:integer;
 begin
@@ -1382,6 +1397,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2001/04/04 13:55:35  lazarus
+  MG: finished TComponentPropertyEditor, added OnModified to oi, cfe and designer
+
   Revision 1.19  2001/04/04 12:20:34  lazarus
   MG: added  add to/remove from project, small bugfixes
 

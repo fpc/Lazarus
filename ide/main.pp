@@ -268,6 +268,7 @@ type
     procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
       ComponentClass: TRegisteredComponent);
     procedure OnDesignerRemoveComponent(Sender: TObject; Component: TComponent);
+    procedure OnDesignerModified(Sender: TObject);
     procedure OnControlSelectionChanged(Sender: TObject);
 
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -1376,6 +1377,7 @@ writeln('[TMainIDE.SetDefaultsforForm] 2');
     OnAddComponent:=@OnDesignerAddComponent;
     OnRemoveComponent:=@OnDesignerRemoveComponent;
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
+    OnModified:=@OnDesignerModified;
 writeln('[TMainIDE.SetDefaultsforForm] 3');
   end;
 end;
@@ -3348,6 +3350,18 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnDesignerModified(Sender: TObject);
+var i: integer;
+begin
+  i:=Project.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
+  if i>=0 then begin
+    Project.Units[i].Modified:=true;
+    if Project.Units[i].Loaded then
+      SourceNotebook.FindSourceEditorWithPageIndex(
+        Project.Units[i].EditorIndex).EditorComponent.Modified:=true;
+  end;
+end;
+
 procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
 var NewSelectedComponents : TComponentSelectionList;
   i: integer;
@@ -3373,6 +3387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2001/04/04 13:55:34  lazarus
+  MG: finished TComponentPropertyEditor, added OnModified to oi, cfe and designer
+
   Revision 1.88  2001/04/04 12:20:34  lazarus
   MG: added  add to/remove from project, small bugfixes
 

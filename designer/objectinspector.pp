@@ -131,6 +131,7 @@ type
     FCurrentButton:TWinControl; // nil or ValueButton
     FDragging:boolean;
     FOldMouseDownY:integer;  // XXX workaround
+    FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
     FBorderStyle:TBorderStyle;
 
@@ -212,6 +213,7 @@ type
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
     function MouseToIndex(y:integer;MustExist:boolean):integer;
 
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     procedure Paint;  override;
     procedure Clear;
@@ -243,11 +245,13 @@ type
     FUpdatingAvailComboBox:boolean;
     FOnAddAvailableComponent:TOnAddAvailableComponent;
     FOnSelectComponentInOI:TOnSelectComponentInOI;
+    FOnModified: TNotifyEvent;
     function ComponentToString(c:TComponent):string;
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
     procedure AddComponentToAvailComboBox(AComponent:TComponent);
     procedure PropEditLookupRootChange;
+    procedure OnGridModified(Sender: TObject);
   public
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     property Selections:TComponentSelectionList 
@@ -261,6 +265,7 @@ type
       read FOnSelectComponentInOI write FOnSelectComponentInOI;
     property PropertyEditorHook:TPropertyEditorHook 
       read FPropertyEditorHook write SetPropertyEditorHook;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
     procedure DoInnerResize;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -512,8 +517,10 @@ begin
       try
         CurRow.Editor.SetValue(NewValue);
       except
-writeln('[TOIPropertyGrid.SetRowValue] OH NO');
+        on E: Exception do
+          MessageDlg(E.Message,mtError,[mbOk],0);
       end;
+      if Assigned(FOnModified) then FOnModified(Self);
     end;
   end;
 end;
@@ -1434,6 +1441,7 @@ begin
     Selections:=Self.FComponentList;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
+    OnModified:=@OnGridModified;
     Show;
   end;
 
@@ -1448,6 +1456,7 @@ begin
     Selections:=Self.FComponentList;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
+    OnModified:=@OnGridModified;
     Show;
   end;
 
@@ -1626,6 +1635,11 @@ begin
   finally
     ColorDialog.Free;
   end;
+end;
+
+procedure TObjectInspector.OnGridModified(Sender: TObject);
+begin
+  if Assigned(FOnModified) then FOnModified(Self);
 end;
 
 end.

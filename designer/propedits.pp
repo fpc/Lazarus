@@ -20,7 +20,7 @@ unit propedits;
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
     -TFont property editors
-    -Message Dialogoues on errors
+    -Message Dialogs on errors
 
     -many more... see XXX
 }
@@ -2252,19 +2252,22 @@ end;
 
 procedure TComponentPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
-  PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
+  if Assigned(PropertyHook) then
+    PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
 end;
 
 procedure TComponentPropertyEditor.SetValue(const NewValue: ansistring);
 var Component: TComponent;
 begin
-  if NewValue = '' then Component := nil else
-  begin
-    Component := PropertyHook.GetComponent(NewValue);
-    if not (Component is GetTypeData(GetPropType)^.ClassType) then begin
-      // XXX
-      //raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-      exit;
+  if NewValue = '' then Component := nil
+  else begin
+    if Assigned(PropertyHook) then begin
+      Component := PropertyHook.GetComponent(NewValue);
+      if not (Component is GetTypeData(GetPropType)^.ClassType) then begin
+        // XXX
+        //raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+        exit;
+      end;
     end;
   end;
   SetOrdValue(Longint(Component));
@@ -2895,8 +2898,13 @@ function TPropertyEditorHook.GetComponent(const Name:Shortstring):TComponent;
 begin
   if Assigned(FOnGetComponent) then
     Result:=FOnGetComponent(Name)
-  else
-    Result:=nil;
+  else begin
+    if Assigned(LookupRoot) then begin
+      Result:=LookupRoot.FindComponent(Name);
+    end else begin
+      Result:=nil;
+    end;
+  end;
 end;
 
 function TPropertyEditorHook.GetComponentName(
@@ -2914,9 +2922,16 @@ end;
 
 procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
 Proc:TGetStringProc);
+var i: integer;
 begin
   if Assigned(FOnGetComponentNames) then
-    FOnGetComponentNames(TypeData,Proc);
+    FOnGetComponentNames(TypeData,Proc)
+  else begin
+    if Assigned(LookupRoot) then
+      for i:=0 to LookupRoot.ComponentCount-1 do
+        if (LookupRoot.Components[i] is TypeData^.ClassType) then
+          Proc(LookupRoot.Components[i].Name);
+  end;
 end;
 
 function TPropertyEditorHook.GetRootClassName:Shortstring;
@@ -3031,7 +3046,7 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TPenStyle'),
     nil,'',TPenStylePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
-    nil,'',TTabOrderPropertyEditor);
+    nil,'Tag',TTabOrderPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),

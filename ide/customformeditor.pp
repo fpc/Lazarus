@@ -99,6 +99,8 @@ TCustomFormEditor
   protected
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
+    procedure OnObjectInspectorModified(Sender: TObject);
+    procedure SetObj_Inspector(AnObjectInspector: TObjectInspector);
   public
     constructor Create;
     destructor Destroy; override;
@@ -118,7 +120,7 @@ TCustomFormEditor
     Procedure ClearSelected;
     property SelectedComponents : TComponentSelectionList 
       read FSelectedComponents write SetSelectedComponents;
-    property Obj_Inspector : TObjectInspector read FObj_Inspector write FObj_Inspector;
+    property Obj_Inspector : TObjectInspector read FObj_Inspector write SetObj_Inspector;
   end;
 
 
@@ -517,15 +519,17 @@ end;
 procedure TCustomFormEditor.SetSelectedComponents(
   TheSelectedComponents : TComponentSelectionList);
 begin
+  if FSelectedComponents.Count>0 then begin
+    if FSelectedComponents[0].Owner<>nil then begin
+      Obj_Inspector.PropertyEditorHook.LookupRoot:=
+        FSelectedComponents[0].Owner;
+    end else begin
+      Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0];
+    end;
+  end;
   if FSelectedComponents.IsEqual(TheSelectedComponents) then exit;
   FSelectedComponents.Free;
   FSelectedComponents:=TheSelectedComponents;
-  if FSelectedComponents.Count>0 then begin
-    Obj_Inspector.PropertyEditorHook.LookupRoot:=
-       FSelectedComponents[0].Owner;
-  end else begin
-    Obj_Inspector.PropertyEditorHook.LookupRoot:=nil;
-  end;
   Obj_Inspector.Selections := FSelectedComponents;
 end;
 
@@ -705,18 +709,17 @@ begin
   Result := Temp;
 end;
 
-Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(Value :TIComponentInterface);
+Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(
+  Value :TIComponentInterface);
 Begin
   if (FComponentInterfaceList.IndexOf(Value) <> -1) then
       FComponentInterfaceList.Delete(FComponentInterfaceList.IndexOf(Value));
-
 end;
-
 
 Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
 Begin
   //this can only be used IF you have one FormEditor per form.  I currently don't
-result := nil;
+  Result := nil;
 end;
 
 Procedure TCustomFormEditor.ClearSelected;
@@ -724,7 +727,8 @@ Begin
   FSelectedComponents.Clear;
 end;
 
-Function TCustomFormEditor.CreateControlComponentInterface(Control: TComponent) :TIComponentInterface;
+Function TCustomFormEditor.CreateControlComponentInterface(
+  Control: TComponent) :TIComponentInterface;
 var
   Temp : TComponentInterface;
 
@@ -733,7 +737,31 @@ Begin
   Temp.FControl := Control;
   FComponentInterfaceList.Add(Temp);
   Result := Temp;
+end;
 
+procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);
+var CustomForm: TCustomForm;
+begin
+  if (FSelectedComponents<>nil) and (FSelectedComponents.Count>0) then begin
+    if FSelectedComponents[0] is TCustomForm then
+      CustomForm:=TCustomForm(FSelectedComponents[0])
+    else if (FSelectedComponents[0].Owner<>nil)
+    and (FSelectedComponents[0].Owner is TCustomForm) then
+      CustomForm:=TCustomForm(FSelectedComponents[0].Owner)
+    else
+      CustomForm:=nil;
+    if (CustomForm<>nil) and (CustomForm.Designer<>nil) then
+      CustomForm.Designer.Modified;
+  end;
+end;
+
+procedure TCustomFormEditor.SetObj_Inspector(
+  AnObjectInspector: TObjectInspector);
+begin
+  if AnObjectInspector=FObj_Inspector then exit;
+  if FObj_Inspector<>nil then FObj_Inspector.OnModified:=nil;
+  FObj_Inspector:=AnObjectInspector;
+  FObj_Inspector.OnModified:=@OnObjectInspectorModified;
 end;
 
 end.
