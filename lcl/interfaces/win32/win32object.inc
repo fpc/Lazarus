@@ -109,7 +109,7 @@ Begin
     Assert(False, 'Trace:Win32Object.Init - Toolbar button Register Failed');
     Exit;
   End;
-  
+
   FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, nil, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(nil), HInstance, nil);
   Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
 
@@ -126,9 +126,9 @@ Begin
   end;
   Assert(False,'Trace:FTimerWindow: ' + IntToStr(FTimerWindow));
   //Init stock objects;
-  LogBrush.lbStyle := BS_NULL; 
+  LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbStyle := BS_SOLID; 
+  LogBrush.lbStyle := BS_SOLID;
   LogBrush.lbColor := $000000;
   FStockBlackBrush := CreateBrushIndirect(LogBrush);
   LogBrush.lbColor := $C0C0C0;
@@ -182,7 +182,7 @@ Begin
       StrDispose(Caption);
     End;
     csPage:
-    Begin 
+    Begin
       Assert(False, 'Trace:TWin32Object.GetText - csPage: Start');
       Ctrl := ((Sender As TPage).Parent As TNotebook);
       Caption := StrAlloc(MAX_PATH);
@@ -227,18 +227,18 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
       cbsize:=sizeof(MENUITEMINFO);
       {In Win32 Menu items that are created without a initial caption default to disabled,
        the next three lines are to counter that.}
-      fMask:=MIIM_STATE;
-      GetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle), false, @MenuInfo);
+      fMask:=MIIM_STATE or MIIM_TYPE or MIIM_ID;
+      GetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle) and $FFFF, false, @MenuInfo);
       if (Sender as TMenuItem).Enabled then fState := fState and (not (MFS_DISABLED or MFS_GRAYED));
-      
+
       fMask:=MIIM_TYPE or MIIM_STATE;
       fType:=Style;
       dwTypeData:=Data;
     end;
-    SetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle), false, @MenuInfo);
+    SetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle) and $FFFF, false, @MenuInfo);
     DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
   End;
-  
+
 Var
   Handle, HOwner: HWnd;
   R: TRect;
@@ -260,7 +260,7 @@ Begin
   HOwner := GetAncestor(Handle, GA_ROOTOWNER);
   Assert(Handle<>0,'Trace:WARNING: [TWin32Object.SetLabel] --> Got NULL handle');
   Assert(False, 'Trace:Setting the label in TWin32Object.SetLabel');
- 
+
   Case TControl(Sender).FCompStyle Of
     csBitBtn:
       IntSendMessage3(LM_IMAGECHANGED, Sender, Nil);
@@ -335,7 +335,7 @@ End;
            Data       - pointer to message-specific data (optional)
   Returns: depends on the message and the sender
 
-  Processes messages from different components. 
+  Processes messages from different components.
 
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
@@ -402,7 +402,7 @@ Begin
       PLMScreenInit(Data)^.PixelsPerInchY := GetDeviceCaps(DC, LogPixelsY);
       PLMScreenInit(Data)^.ColorDepth := GetDeviceCaps(DC, BitsPixel);
       ReleaseDC(Handle, DC);
-    End;  
+    End;
     LM_LOADXPM:
       Begin
         If (Sender is TBitmap) Then
@@ -436,10 +436,10 @@ Begin
       //TWinControl(Sender).Handle := Handle;
       //Assert(False, Format('Trace:[TWin32Object.IntSendMessag3] Sender is %S', [Sender.ClassName]));
       Exit;
-    End; 
+    End;
     Case LM_Message of
       LM_SETTEXT:
-        SetText(Handle, Data); 
+        SetText(Handle, Data);
       LM_ADDCHILD:
       Begin
         Assert(False, 'Trace:Adding a child to Parent');
@@ -519,7 +519,7 @@ Begin
         End;
         LM_DESTROY:
         Begin
-          If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then 
+          If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then
           Begin
             If Handle <> 0 Then
               DestroyWindow(Handle);
@@ -553,23 +553,23 @@ Begin
           Assert(False, 'Trace:********************');
         End;
 {Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
-and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters. 
+and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters.
 The default menu positioning function will position the menu at the current pointer position.
-menu :	a GtkMenu.	
-parent_menu_shell :	the menu shell containing the triggering menu item.	
-parent_menu_item :	the menu item whose activation triggered the popup.	
-func :	a user supplied function used to position the menu.	
-data :	user supplied data to be passed to func.	
-button :	the button which was pressed to initiate the event.	
-activate_time :	the time at which the activation event occurred. 	
+menu :	a GtkMenu.
+parent_menu_shell :	the menu shell containing the triggering menu item.
+parent_menu_item :	the menu item whose activation triggered the popup.
+func :	a user supplied function used to position the menu.
+data :	user supplied data to be passed to func.
+button :	the button which was pressed to initiate the event.
+activate_time :	the time at which the activation event occurred.
 }
         LM_POPUPSHOW:
-        Begin 
+        Begin
           SetProp(((Sender as TPopupMenu).Owner as TWinControl).Handle, 'PopupMenu', Pointer((Sender as TPopupMenu).Handle));
           TrackPopupMenuEx((Sender as TPopupMenu).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON, TPoint(Data^).x, TPoint(Data^).y, ((Sender as TPopupMenu).Owner as TWinControl).Handle, Nil);
         End;
         LM_SETFILTER:
-        Begin 
+        Begin
           PStr := StrAlloc(Length(TFileDialog(Sender).Filter) + 1);
           Try
             StrPCopy(PStr, TFileDialog(Sender).Filter);
@@ -578,9 +578,9 @@ activate_time :	the time at which the activation event occurred.
           Finally
             StrDispose(pStr);
           End;
-        End; 
-        LM_SETFILENAME: 
-        Begin 
+        End;
+        LM_SETFILENAME:
+        Begin
           PStr := StrAlloc(Length(TFileDialog(Sender).FileName) + 1);
           Try
             StrPCopy(PStr, TFileDialog(Sender).FileName);
@@ -589,7 +589,7 @@ activate_time :	the time at which the activation event occurred.
           Finally
             StrDispose(pStr);
           End;
-        End; 
+        End;
         LM_SETFOCUS:
         Begin
           If Handle <> 0 Then
@@ -648,10 +648,10 @@ activate_time :	the time at which the activation event occurred.
             Result := -1;
         End;
         //SH: think of TCanvas.handle!!!!
-        LM_REDRAW: 
-        Begin 
+        LM_REDRAW:
+        Begin
           Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
-          If Sender Is TCanvas Then 
+          If Sender Is TCanvas Then
             ReDraw(TCanvas(Sender))
           Else If Not (Sender Is TSpeedbutton) Then
             ReDraw(Sender)
@@ -711,13 +711,13 @@ activate_time :	the time at which the activation event occurred.
               StrPCopy(PStr, TToolButton(Sender).Caption);
               PStr2 := StrAlloc(Length(TControl(Sender).Hint) + 1);
               StrPCopy(PStr2, TControl(Sender).Hint);
-            End 
+            End
             Else
             Begin
               Raise Exception.Create('Can not assign this control to the toolbar');
               Exit;
             End;
-    
+
             Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.IndexOf(TControl(Sender));
             If Num < 0 Then
               Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.Count + 1;
@@ -747,8 +747,8 @@ activate_time :	the time at which the activation event occurred.
         Begin
           SendMessage((Sender As TWinControl).Parent.Handle, TB_DELETEBUTTON, 0, 0);
         End;
-        LM_INVALIDATE: 
-        Begin 
+        LM_INVALIDATE:
+        Begin
           Assert(False, 'Trace:Trying to invalidate window... !!!');
           GetClientRect(Handle, R);
           InvalidateRect(Handle, @R, True);
@@ -763,11 +763,11 @@ activate_time :	the time at which the activation event occurred.
           Begin
             Data := TWin32CListStringList.Create(Handle,TControl(Sender));
             Result := Integer(Data);
-          End 
+          End
           Else
           Begin
             Data := TWin32ListStringList.Create(Handle,TControl(Sender));
-            Result := Integer(Data);      
+            Result := Integer(Data);
           End;
         End;
         LM_GETTEXT :
@@ -777,7 +777,7 @@ activate_time :	the time at which the activation event occurred.
         LM_GETITEMINDEX :
         Begin
           Case (Sender as TControl).FCompStyle Of
-            csListBox, csCListBox: 
+            csListBox, csCListBox:
             Begin
                 Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
                 If Result = LB_ERR Then
@@ -791,7 +791,7 @@ activate_time :	the time at which the activation event occurred.
               TLMNotebookEvent(Data^).Page := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
             End;
           End;
-        End;   
+        End;
         LM_SETITEMINDEX :
         Begin
           Case (Sender as TControl).FCompStyle Of
@@ -817,12 +817,12 @@ activate_time :	the time at which the activation event occurred.
               end;
             End;
           End;
-        End;  
+        End;
         LM_GETSELSTART:
         Begin
           If (Sender as TControl).FCompStyle = csComboBox Then
           Begin
-            Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil)));           
+            Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil)));
           End;
         End;
         LM_GETSELLEN:
@@ -840,11 +840,11 @@ activate_time :	the time at which the activation event occurred.
             Result := Integer(GetProp(Handle, 'LIMIT_TEXT'));
           End;
         End;
-        LM_SETSELSTART: 
+        LM_SETSELSTART:
         Begin
           If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
             SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(Word(Integer(Data)), -1));
-        End;    
+        End;
         LM_SETSELLEN:
         Begin
           If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
@@ -888,25 +888,25 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETSEL:
         Begin
-          If (Sender is TControl) And (TControl(Sender).FCompStyle In [csListBox, csCListBox]) And Assigned(Data) Then 
+          If (Sender is TControl) And (TControl(Sender).FCompStyle In [csListBox, csCListBox]) And Assigned(Data) Then
           Begin
-            If TControl(Sender).FCompStyle = csListBox Then 
+            If TControl(Sender).FCompStyle = csListBox Then
             Begin
               If TLMSetSel(Data^).Selected Then
                 SendMessage(Handle, LB_SELITEMRANGE, WParam(True), MakeLParam(0, 0))
               Else
                 SendMessage(Handle, LB_SELITEMRANGE, WParam(False), MakeLParam(0, 0));
             End
-          End;  
+          End;
         End;
         LM_SETSELMODE:
-          If (Sender is TCustomListBox) And Assigned(data) Then 
+          If (Sender is TCustomListBox) And Assigned(data) Then
           Begin
-           //The win32 api doesn't change the selection mode on the fly: it needs recreate the window 
-           //RecreateWnd(Sender); -> cause endless loop 
+           //The win32 api doesn't change the selection mode on the fly: it needs recreate the window
+           //RecreateWnd(Sender); -> cause endless loop
            //Recreates the window step by step
-              
-           If TCustomListBox(Sender).FCompStyle = csListBox Then 
+
+           If TCustomListBox(Sender).FCompStyle = csListBox Then
              RecreateListControl(Handle,TControl(Sender),TListBox(Sender).Sorted)
            Else
              RecreateListControl(Handle,TControl(Sender),TCListBox(Sender).Sorted);
@@ -964,7 +964,7 @@ Begin
     Window := (Sender As TCustomForm).Handle
   Else
     Window := (Sender as TWinControl).Handle;
-  
+
   {$IFDEF VER1_1}
     List := TMsgArray(GetProp(Window, 'MsgList'));
     SetLength(List, Length(List) + 1);
@@ -1065,7 +1065,7 @@ End;
 
   Creates a window again
  ------------------------------------------------------------------------------}
-  
+
 Function TWin32Object.RecreateWnd(Sender: TObject): Integer;
 Var
   AParent,AWinControl : TWinControl;
@@ -1153,7 +1153,7 @@ end;
   Method: TWin32Object.WinRegister
   Params: None
   Returns: If the window was successfully regitered
-  
+
   Registers the main window class
  ------------------------------------------------------------------------------}
 Function TWin32Object.WinRegister: Boolean;
@@ -1235,7 +1235,7 @@ Begin
   DrawIcon(DC, (Surface As TWinControl).Left, (Surface As TWinControl).Top, Pixmap);
   ReleaseDC((Surface As TWinControl).Handle, DC);
 End;
-  
+
 {------------------------------------------------------------------------------
   Method: TWin32Object.NormalizeIconName
   Params: IconName - The name of the icon to normalize
@@ -1270,7 +1270,7 @@ End;
   Params: Window - The window that has the text to be limited
           Limit  - Number of characters to limit the text to
   Returns: Nothing
-  
+
   Sets the text limit
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetLimitText(Window: HWND; Limit: Word);
@@ -1471,7 +1471,7 @@ End;
   Returns: Nothing
 
   Sets the cursor for a window
-  
+
   WARNING: Sender will be casted to TControl, CLEANUP!
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetCursor(Sender: TObject);
@@ -1629,7 +1629,7 @@ Begin
     Else
       Parent :=((Sender As TWinControl).Parent As TPage).Parent.Handle;
     Assert(False, Format('Trace:TWin32Object.CreateComponent - parent handle --> 0x%X', [Parent]));
-    
+
     Assert(False, 'Trace:Setting parent');
   End
   Else
@@ -2029,7 +2029,7 @@ Begin
     End;
   End; {Case}
 
-  If (Sender Is TWinControl) Or (CompStyle = csImage) Then 
+  If (Sender Is TWinControl) Or (CompStyle = csImage) Then
   Begin
     TWinControl(Sender).Handle := Window;
     If Window <> HWND(Nil) Then
@@ -2083,7 +2083,7 @@ End;
   Params: Window - The window to assign
           Data   - The data to assign to the window
   Returns: Nothing
-  
+
   Assigns data to a window
  ------------------------------------------------------------------------------}
 procedure TWin32Object.AssignSelf(Window: HWnd; Data: Pointer);
@@ -2256,7 +2256,7 @@ Begin
 
   Handle := TWinControl(Sender).Handle;
   Assert (Handle = 0, 'Trace:WARNING: TWin32Object.GetValue --> got no window');
-   
+
   Case TControl(Sender).FCompStyle Of
     csTrackbar:
       If (Handle <> HWnd(Nil)) Then
@@ -2323,7 +2323,7 @@ Begin
   Handle := TWinControl(Sender).Handle;
   If Handle = HWnd(Nil) Then
     Assert (False, 'Trace:WARNING:[TWin32Object.SetValue] --> got no window');
-   
+
   Case TControl(Sender).FCompStyle Of
     csArrow:
     Begin
@@ -2410,7 +2410,7 @@ begin
   Handle := TWinControl(Sender).Handle;
   If Handle = HWND(Nil) Then
     Assert (False, 'Trace:WARNING: [TWin32Object.SetProperties] --> got nil pointer');
-   
+
   Case TControl(Sender).FCompStyle Of
     csEdit:
       With (TCustomEdit(Sender)) Do
@@ -2473,7 +2473,7 @@ begin
             SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_LTRLEADING);
           End;
         End;
-        If BarShowText Then 
+        If BarShowText Then
         Begin
           SetWindowText(Handle, StrToPChar((Sender As TControl).Caption));
         End
@@ -2497,7 +2497,7 @@ begin
     Begin
       SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(TSpinEdit(Sender).Value), 0));
     End;
-    csTrackbar: 
+    csTrackbar:
       With(TTrackBar(Sender)) Do
       Begin
         SendMessage(Handle, TBM_SETRANGEMAX, WPARAM(True), Max);
@@ -2536,7 +2536,7 @@ begin
             Style := Style Or SS_CENTER;
           taRightJustify:
             Style := Style Or SS_CENTER;
-          Else 
+          Else
             Style := STYLE Or SS_LEFT; // default, shouldn't happen
         End;
         Case Layout of
@@ -2546,7 +2546,7 @@ begin
             Style := Style Or BS_VCENTER;
           tlBottom:
             Style := Style Or BS_BOTTOM;
-          Else 
+          Else
             Style := Style Or BS_BOTTOM; //default, shouldn't happen
         End;
         // Experimental wordwrapping support
@@ -2566,7 +2566,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32Object.AttachMenu
-  Params:  Sender - the lcl object which called this func 
+  Params:  Sender - the lcl object which called this func
   Returns: nothing
 
   Attaches the calling Menu to its Parent
@@ -2581,7 +2581,7 @@ var MenuInfo: MENUITEMINFO;
     Msg: TLMShortCut;
 Begin
   ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
-  
+
   {Following part fixes the case when an item is added in runtime
   but the parent item has not defined the submenu flag (hSubmenu=0) }
   if (Sender as TMenuItem).Parent.Parent<>nil then
@@ -2591,14 +2591,14 @@ Begin
       cbSize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, ParentMenuHandle, false, @MenuInfo);
+    GetMenuItemInfo(ParentOfParent, (ParentMenuHandle) and $FFFF, false, @MenuInfo);
     if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
     begin
       MenuInfo.hSubmenu:=ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, ParentMenuHandle, false, MenuInfo);
+      SetMenuItemInfo(ParentOfParent, Integer(ParentMenuHandle) and $FFFF, false, MenuInfo);
     end;
   end;
-  
+
   Mask := MIIM_ID or MIIM_DATA;
   if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
   MenuHandle := (Sender as TMenuItem).Handle;
@@ -2607,7 +2607,7 @@ Begin
     fMask:=Mask;
     fType:=Style;
     {fState:=MFS_ENABLED;} {not needed}
-    wID:=integer(MenuHandle);
+    wID:=integer(MenuHandle) and $FFFF; {value is only 16 bit wide!}
     hSubmenu:=MenuHandle;
     {hbmpChecked:=0;
     hbmpUnchecked:=0;} {not needed}
@@ -2615,7 +2615,7 @@ Begin
     {dwTypeData:=LPSTR((Sender as TmenuItem).Caption);}
     {cch:=length((Sender as TMenuItem).Caption);} {not needed}
   end;
-  InsertMenuItem(ParentMenuHandle, 0, false, @MenuInfo);
+  InsertMenuItem(ParentMenuHandle, -1, true, @MenuInfo);
   if (Sender as TMenuItem).ShortCut <> 0 then
   begin
     Msg.Handle:=MenuHandle;
@@ -2659,6 +2659,9 @@ End;
 
 {
   $Log$
+  Revision 1.52  2003/06/24 08:32:03  mattias
+  applied menu fix from Micha Nelissen
+
   Revision 1.51  2003/03/25 08:12:39  mattias
   patch from Martin Smat for menu items and default messages
 
@@ -2817,4 +2820,4 @@ End;
   + Initial import
 
  }
- 
+
