@@ -1354,10 +1354,9 @@ end;
 procedure TControl.Show;
 begin
   if Parent <> nil then Parent.ShowControl(Self);
-  if (csDesigning in ComponentState) and (csNoDesignVisible in ControlStyle)
-  then
-    exit;
-  Visible := true;
+  // do not switch the visible flag in design mode
+  if not (csDesigning in ComponentState) or
+    (csNoDesignVisible in ControlStyle) then Visible := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2072,6 +2071,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.118  2003/03/13 10:11:41  mattias
+  fixed TControl.Show in design mode
+
   Revision 1.117  2003/03/11 23:14:19  mattias
   added TControl.HandleObjectShouldBeVisible
 
