@@ -6,7 +6,21 @@
          No code here (just some dummy results to keep the compiler quiet :-)
 
   !! Keep this alphabetical !!
- ******************************************************************************}
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 //##apiwiz##sps##   // Do not remove
 
 function TInterfaceBase.Arc(DC: HDC; 
@@ -551,6 +565,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/05/10 06:05:52  lazarus
+  MG: changed license to LGPL
+
   Revision 1.27  2002/05/09 12:41:28  lazarus
   MG: further clientrect bugfixes
 
