@@ -2751,6 +2751,14 @@ begin
     'Define HL_LAZARUS','HL_LAZARUS','',da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
 
+  // components/turbopower_ipro
+  SubDirTempl:=TDefineTemplate.Create('TurboPower InternetPro',
+    'TurboPower InternetPro components',
+    '','turbopower_ipro',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('IP_LAZARUS',
+    'Define IP_LAZARUS','IP_LAZARUS','',da_DefineRecurse));
+  DirTempl.AddChild(SubDirTempl);
+
   // components/custom
   SubDirTempl:=TDefineTemplate.Create('Custom Components',
     ctsCustomComponentsDirectory,

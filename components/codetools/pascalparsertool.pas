@@ -99,7 +99,10 @@ type
     
   TTreeRange = (trInterface, trAll, trTillCursor);
   
-  TBuildTreeFlag = (btSetIgnoreErrorPos,btKeepIgnoreErrorPos);
+  TBuildTreeFlag = (
+    btSetIgnoreErrorPos,
+    btKeepIgnoreErrorPos
+    );
   TBuildTreeFlags = set of TBuildTreeFlag;
   
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
@@ -203,7 +206,7 @@ type
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         const CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
-        BuildTreeFlags: TBuildTreeFlags);
+        BuildTreeFlags: TBuildTreeFlags; ExceptionOnCursorPosOut: boolean);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
@@ -3938,7 +3941,8 @@ end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
   TreeRange: TTreeRange; const CursorPos: TCodeXYPosition;
-  var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
+  var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags;
+  ExceptionOnCursorPosOut: boolean);
 var
   Dummy: integer;
   IgnorePos: TCodePosition;
@@ -3954,7 +3958,6 @@ begin
   end
   else if (btKeepIgnoreErrorPos in BuildTreeFlags) then
     ClearIgnoreErrorAfter;
-    
   if (TreeRange=trTillCursor) and (not UpdateNeeded(true)) then begin
     // interface tree is valid
     // -> if there was an error, raise it again
@@ -3969,7 +3972,10 @@ begin
       BuildSubTree(CleanCursorPos);
       exit;
     end;
+    // cursor is not in partially parsed code -> parse complete code
   end;
+
+  // parse code
   BuildTree(TreeRange=trInterface);
   if (not IgnoreErrorAfterValid) and (not EndOfSourceFound) then
     SaveRaiseException(ctsEndOfSourceNotFound);
@@ -3979,7 +3985,10 @@ begin
     BuildSubTree(CleanCursorPos);
     exit;
   end;
-  RaiseException(ctsCursorPosOutsideOfCode);
+  if (Dummy=-2) or ExceptionOnCursorPosOut then
+    RaiseException(ctsCursorPosOutsideOfCode);
+  // cursor outside of clean code
+  CleanCursorPos:=-1;
 end;
 
 function TPascalParserTool.FindTypeNodeOfDefinition(
@@ -4437,7 +4446,8 @@ procedure TPascalParserTool.BuildSubTree(CleanCursorPos: integer);
 var
   ANode: TCodeTreeNode;
 begin
-  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,false);
+  if ANode=nil then exit;
   case ANode.Desc of
   ctnClass,ctnClassInterface:
     BuildSubTreeForClass(ANode);

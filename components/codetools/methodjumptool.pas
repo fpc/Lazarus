@@ -323,7 +323,7 @@ begin
   {$IFDEF CTDEBUG}
   writeln('TMethodJumpingCodeTool.FindJumpPoint A  CursorPos=',CursorPos.X,',',CursorPos.Y);
   {$ENDIF}
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);
   if CleanCursorPos<FirstAtomStart then CleanCursorPos:=FirstAtomStart;
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
