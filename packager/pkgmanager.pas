@@ -1653,13 +1653,14 @@ begin
     and (CurFile.FileType=pftUnit) then begin
       CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
       if CodeBuffer<>nil then begin
+        // if the unit is edited, the unitname is probably already cached
         CurUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
-        if AnsiCompareText(CurUnitName,CurFile.UnitName)<>0 then begin
+        // if not then parse it
+        if AnsiCompareText(CurUnitName,CurFile.UnitName)<>0 then
           CurUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-        end;
-        if AnsiCompareText(CurUnitName,CurFile.UnitName)=0 then begin
+        // if it makes sense, update unitname
+        if AnsiCompareText(CurUnitName,CurFile.UnitName)=0 then
           CurFile.UnitName:=CurUnitName;
-        end;
       end;
       CurUnitName:=CurFile.UnitName;
       if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin

@@ -674,7 +674,7 @@ begin
     
   // components for dependencies
   x:=5;
-  y:=5;
+  y:=3;
   with UseMinVersionCheckBox do
     SetBounds(x,y,150,MinVersionEdit.Height);
   inc(x,UseMinVersionCheckBox.Width+5);
@@ -690,9 +690,9 @@ begin
 
   with MaxVersionEdit do
     SetBounds(x,y,MinVersionEdit.Width,Height);
-    
-  x:=MinVersionEdit.Left+MinVersionEdit.Width+30;
-  y:=5;
+  inc(y,MaxVersionEdit.Height+10);
+
+  x:=5;
   with ApplyDependencyButton do
     SetBounds(x,y,150,Height);
 end;
@@ -700,6 +700,7 @@ end;
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 var
   AddParams: TAddToPkgResult;
+  NewFilename: String;
 begin
   if LazPackage.ReadOnly then begin
     UpdateButtons;
@@ -717,9 +718,23 @@ begin
 
   d2ptUnit:
     begin
-      // add file
+      // add unit file
       with AddParams do
         LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      // add lfm file
+      if AddParams.AutoAddLFMFile then begin
+        NewFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
+        if FileExists(NewFilename)
+        and (LazPackage.FindPkgFile(NewFilename,false,true)=nil) then
+          LazPackage.AddFile(NewFilename,'',pftLFM,[],cpNormal);
+      end;
+      // add lrs file
+      if AddParams.AutoAddLRSFile then begin
+        NewFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
+        if FileExists(NewFilename)
+        and (LazPackage.FindPkgFile(NewFilename,false,true)=nil) then
+          LazPackage.AddFile(NewFilename,'',pftLRS,[],cpNormal);
+      end;
       UpdateAll;
     end;
 

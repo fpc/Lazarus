@@ -62,6 +62,8 @@ type
     FileType: TPkgFileType;
     PkgFileFlags: TPkgFileFlags;
     UsedUnitname: string;
+    AutoAddLFMFile: boolean;
+    AutoAddLRSFile: boolean;
   end;
   
   TOnGetUnitRegisterInfo = procedure(Sender: TObject; const AFilename: string;
@@ -81,6 +83,7 @@ type
     AddUnitSrcNameLabel: TLabel;
     AddUnitSrcNameEdit: TEdit;
     AddUnitHasRegisterCheckBox: TCheckBox;
+    AddSecondaryFilesCheckBox: TCheckBox;
     AddUnitUpdateButton: TButton;
     AddUnitButton: TButton;
     CancelAddUnitButton: TButton;
@@ -366,12 +369,15 @@ end;
 
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
 begin
+  FillChar(Params,SizeOf(Params),0);
   Params.AddType:=d2ptUnit;
 
   Params.UnitFilename:=AddUnitFilenameEdit.Text;
   Params.UnitName:=AddUnitSrcNameEdit.Text;
   Params.FileType:=pftUnit;
   Params.PkgFileFlags:=[];
+  Params.AutoAddLFMFile:=AddSecondaryFilesCheckBox.Checked;
+  Params.AutoAddLRSFile:=AddSecondaryFilesCheckBox.Checked;
   if AddUnitHasRegisterCheckBox.Checked then
     Include(Params.PkgFileFlags,pffHasRegisterProc);
 
@@ -460,6 +466,7 @@ var
   i: Integer;
   CurPFT: TPkgFileType;
 begin
+  FillChar(Params,SizeOf(Params),0);
   Params.AddType:=d2ptUnit;
   Params.UnitFilename:=AddFilenameEdit.Text;
   Params.FileType:=pftText;
@@ -545,8 +552,12 @@ begin
   x:=5;
 
   with AddUnitHasRegisterCheckBox do
-    SetBounds(x,y,200,Height);
+    SetBounds(x,y,Parent.ClientWidth-2*x,Height);
   inc(y,AddUnitHasRegisterCheckBox.Height+5);
+
+  with AddSecondaryFilesCheckBox do
+    SetBounds(x,y,Parent.ClientWidth-2*x,Height);
+  inc(y,AddSecondaryFilesCheckBox.Height+5);
 
   with AddUnitUpdateButton do
     SetBounds(x,y,300,Height);
@@ -629,6 +640,7 @@ var
   PkgComponent: TPkgComponent;
   ARequiredPackage: TLazPackage;
 begin
+  FillChar(Params,SizeOf(Params),0);
   Params.AddType:=d2ptNewComponent;
   Params.FileType:=pftUnit;
   Params.PkgFileFlags:=[pffHasRegisterProc];
@@ -809,6 +821,9 @@ procedure TAddToPackageDlg.NewDependButtonClick(Sender: TObject);
 var
   NewDependency: TPkgDependency;
 begin
+  FillChar(Params,SizeOf(Params),0);
+  Params.AddType:=d2ptRequiredPkg;
+  
   NewDependency:=TPkgDependency.Create;
   try
     // check minimum version
@@ -844,7 +859,6 @@ begin
     // ok
     Params.Dependency:=NewDependency;
     NewDependency:=nil;
-    Params.AddType:=d2ptRequiredPkg;
 
     ModalResult:=mrOk;
   finally
@@ -966,6 +980,14 @@ begin
     Name:='AddUnitHasRegisterCheckBox';
     Parent:=AddUnitPage;
     Caption:='Has Register procedure';
+  end;
+
+  AddSecondaryFilesCheckBox:=TCheckBox.Create(Self);
+  with AddSecondaryFilesCheckBox do begin
+    Name:='AddSecondaryFilesCheckBox';
+    Parent:=AddUnitPage;
+    Caption:='Add LFM, LRS files, if they exist';
+    Checked:=true;
   end;
 
   AddUnitUpdateButton:=TButton.Create(Self);
@@ -1198,7 +1220,6 @@ begin
       end;
       EndUpdate;
     end;
-    OnClick:=@AddUnitUpdateButtonClick;
   end;
 
   AddFileButton:=TButton.Create(Self);
