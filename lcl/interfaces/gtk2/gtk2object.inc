@@ -1009,7 +1009,10 @@ var
   aTextBuffer : PGtkTextBuffer;
   aTextIter1  : TGtkTextIter;
   aTextIter2  : TGtkTextIter;
-  pLabel : PChar;
+
+  DC : hDC;
+  aLabel, pLabel: pchar;
+  AccelKey : integer;
 begin
   if Sender is TMenuItem then begin
     inherited SetLabel(Sender, Data);
@@ -1038,6 +1041,39 @@ begin
                     LockOnChange(PGtkObject(Widget),-1);}
                   end;
 
+  csLabel:
+    begin
+      gtk_label_set_use_underline(PGtkLabel(Widget), True);
+      if TLabel(Sender).ShowAccelChar then begin
+        If TLabel(sender).WordWrap and (TLabel(Sender).Caption<>'') then begin
+          DC := GetDC(TLabel(Sender).Handle);
+          aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, True);
+          DeleteDC(DC);
+        end
+        else
+          aLabel:= Ampersands2Underscore(pLabel);
+
+        try
+          gtk_label_set_label(pGtkLabel(Widget), aLabel);
+          AccelKey:= gtk_label_get_mnemonic_keyval(pGtkLabel(Widget));
+          Accelerate(TComponent(Sender),Widget,AccelKey,0,'grab_focus');
+        finally
+	  StrDispose(aLabel);
+	end;
+
+      end else begin
+        If TLabel(sender).WordWrap then begin
+          DC := GetDC(TLabel(Sender).Handle);
+          aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, False);
+          gtk_label_set_label(PGtkLabel(Widget), aLabel);
+	  StrDispose(aLabel);
+          DeleteDC(DC);
+        end
+        else
+          gtk_label_set_label(PGtkLabel(Widget), pLabel);
+      end;
+    end;
+
   csMemo        : begin
                     Widget:= PGtkWidget(GetWidgetInfo(Widget, True)^.ImplementationWidget);
                     aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
@@ -1048,7 +1084,6 @@ begin
                     gtk_text_buffer_insert(aTextBuffer, @aTextIter1, pLabel, StrLen(pLabel));
                     gtk_text_buffer_end_user_action(aTextBuffer);
                   end;
-
   else
     inherited SetLabel(Sender, Data);
   end;
@@ -1064,6 +1099,10 @@ end;
   the calling object to the corresponding GTK2 object.
  ------------------------------------------------------------------------------}
 function Tgtk2Object.SetProperties(Sender : TObject) : integer;
+const
+  cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
+  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
+  cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 var
   wHandle    : Pointer;
   Widget, ImplWidget   : PGtkWidget;
@@ -1096,6 +1135,16 @@ begin
         else
           gtk_entry_set_invisible_char(GTK_ENTRY(wHandle), Longint(TCustomEdit(Sender).PassWordChar));
       end;
+
+  csLabel :
+     with TLabel(Sender) do
+     begin
+       gtk_label_set_line_wrap(GTK_LABEL(wHandle), False);
+       gtk_misc_set_alignment(GTK_MISC(wHandle), cLabelAlignX[Alignment],
+                              0.0);
+       gtk_label_set_line_wrap(GTK_LABEL(wHandle), TRUE);
+       gtk_label_set_justify(GTK_LABEL(wHandle), cLabelAlign[Alignment]);
+     end;
 
   csMemo:
     begin
@@ -1356,6 +1405,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.6  2003/10/04 00:36:30  ajgenius
+  partly fix csLabel for GTK2, Layout is still wacked.
+
   Revision 1.5  2003/10/03 01:25:01  ajgenius
   add more gtk1i<->gtk2 key & event wrappers,
   move more GTK2 workarounds from gtk to gtk2 interface,
