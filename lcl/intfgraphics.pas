@@ -2974,7 +2974,7 @@ Var
 begin
   Stream.Read(BFI,SizeOf(BFI));
   { This will move past any junk after the BFI header }
-  Stream.Position:=Stream.Position-TStreamSeekType(SizeOf(BFI)+BFI.biSize);
+  Stream.Position:=Stream.Position-TStreamSeekType(SizeOf(BFI)-BFI.biSize);
   with BFI do
     begin
     if (biCompression<>0) then

@@ -974,7 +974,7 @@ type
   protected
     procedure Changed(Sender: TObject); override;
     procedure Changing(Sender: TObject); virtual;
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
+    procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetPalette: HPALETTE; override;
@@ -1453,6 +1453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2004/02/29 10:34:00  mattias
+  fixed bmp reader reader skipping header
+
   Revision 1.121  2004/02/27 00:42:41  marc
   * Interface CreateComponent splitup
   * Implemented CreateButtonHandle on GTK interface

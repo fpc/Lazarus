@@ -88,11 +88,11 @@ begin
     inherited Assign(Source);
 end;
 
-procedure TBitmap.Draw(ACanvas: TCanvas; const ARect: TRect);
+procedure TBitmap.Draw(DestCanvas: TCanvas; const DestRect: TRect);
 var
   UseMaskHandle: HBitmap;
 begin
-  if (ARect.Right<=ARect.Left) or (ARect.Bottom<=ARect.Top)
+  if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
   or (Width=0) or (Height=0) then exit;
   HandleNeeded;
   if HandleAllocated then begin
@@ -101,8 +101,9 @@ begin
       UseMaskHandle:=MaskHandle
     else
       UseMaskHandle:=0;
-    StretchMaskBlt(ACanvas.Handle,
-            ARect.Left,ARect.Top, ARect.Right-ARect.Left,ARect.Bottom-ARect.Top,
+    StretchMaskBlt(DestCanvas.Handle,
+            DestRect.Left,DestRect.Top,
+            DestRect.Right-DestRect.Left,DestRect.Bottom-DestRect.Top,
             Canvas.Handle,0,0,Width,Height, UseMaskHandle,0,0,SRCCOPY);
   end;
 end;
@@ -1106,6 +1107,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2004/02/29 10:34:00  mattias
+  fixed bmp reader reader skipping header
+
   Revision 1.74  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 
