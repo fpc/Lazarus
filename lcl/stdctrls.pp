@@ -46,7 +46,8 @@ type
   { TScrollBar }
 
   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
-  TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth);
+  TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth,
+    ssAutoHorizontal, ssAutoVertical, ssAutoBoth);
 
   TScrollCode = (scLineUp, scLineDown, scPageUp, scPageDown, scPosition,
                  scTrack, scTop, scBottom, scEndScroll);
@@ -377,13 +378,14 @@ type
     FWordWrap: Boolean;
   protected
     procedure SetLines(Value : TStrings);
-    procedure SetWordWrap(Value : Boolean);
+    procedure SetWordWrap(const Value : boolean);
+    procedure SetScrollBars(const Value : TScrollStyle);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Append(Value : String);
+    procedure Append(const Value : String);
     property Lines: TStrings read FLines write SetLines;
-    property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
     property Font : TFont read FFont write FFont;
   end;
@@ -411,8 +413,10 @@ type
     property Lines;
     property PopupMenu;
     property ReadOnly;
+    property ScrollBars;
     property Tabstop;
     property Visible;
+    property WordWrap;
     property OnChange;
   end;
 
@@ -721,7 +725,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/09/05 10:12:06  lazarus
+  New dialog for multiline caption of TCustomLabel.
+  Prettified TStrings property editor.
+  Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
+  Removed saving of old combo text (it broke things and is not needed). Cleanups.
+
   Revision 1.40  2002/09/03 11:32:49  lazarus
+
   Added shortcut keys to labels
   Support for alphabetically sorting the properties
   Standardize message and add shortcuts ala Kylix
