@@ -397,14 +397,14 @@ Var
       if (itemState and ODS_SELECTED)<>0 then flags:=flags or DFCS_PUSHED;
       DrawFrameControl(_HDC, rcItem, DFC_BUTTON, flags);
       InflateRect(rcItem, -2, -2);
-      if (itemState and ODS_SELECTED)<>0 then OffsetRect(rcItem, 2, 2);
+      if (itemState and ODS_SELECTED)<>0 then OffsetRect(rcItem, 1, 1);
       SetBkMode(_HDC, TRANSPARENT);
-      BitmapHandle:=(Sender as TBitBtn).Glyph.Handle;
+      BitmapHandle:=TBitBtn(Sender).Glyph.Handle;
       hdcBitmap := CreateCompatibleDC(_HDC);
       GetObject(BitmapHandle, sizeof(BitmapBuf), @BitmapBuf);
       SelectObject(hdcBitmap, BitmapHandle);
-      GetTextExtentPoint32(_HDC, LPSTR((Sender as TBitBtn).Caption), length((Sender as TBitBtn).Caption), TextSize);
-      case (Sender as TBitBtn).Layout of
+      GetTextExtentPoint32(_HDC, LPSTR(TBitBtn(Sender).Caption), length(TBitBtn(Sender).Caption), TextSize);
+      case TBitBtn(Sender).Layout of
         blGlyphLeft: begin
           xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1;
           yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-BitmapBuf.bmHeight) shr 1;
@@ -431,7 +431,7 @@ Var
         end;
       end;
       BitBlt(_HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
-      DrawText(_HDC, LPSTR((Sender as TBitBtn).Caption), -1, rcItem, TextPosFlags);
+      DrawText(_HDC, LPSTR(TBitBtn(Sender).Caption), -1, rcItem, TextPosFlags);
       DeleteObject(BitmapHandle);
       DeleteDC(hdcBitmap);
     end;
@@ -649,14 +649,8 @@ Begin
         //TBitBtn
         LM_IMAGECHANGED, LM_LAYOUTCHANGED:
         Begin
-          Assert(False, 'Trace:[TWin32Object.IntSendMessage3 - Got LM_IMAGECHANGED or LM_LAYOUTCHANGED');
-          Assert(False, 'Trace:********************');
-          Assert(False, 'Trace:1');
-          {Bitmap := (Sender As TBitBtn).Glyph.Handle;
-          SendMessage(Handle, BM_SETIMAGE, IMAGE_BITMAP, Bitmap);
-          SetWindowText(Handle, PChar((Sender As TWinControl).Caption));}
-          Assert(False, 'Trace:5');
-          Assert(False, 'Trace:********************');
+          GetClientRect(Handle, SizeRect);
+          InvalidateRect(Handle, @SizeRect, True);
         End;
 {Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
 and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters.
@@ -2787,6 +2781,9 @@ End;
 
 {
   $Log$
+  Revision 1.118  2003/10/06 10:53:25  mattias
+  fixed redrawing BitBtns from Micha
+
   Revision 1.117  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 
