@@ -1661,16 +1661,14 @@ begin
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
   FColor := clWindow;
-  // initial control isn't visible (It isn't created yet)
-  FVisible := False;
-//  FOwner := AOwner;
+  FVisible := true;
   FParentShowHint := True;
   FWindowProc := @WndProc;
   FCursor := crDefault;
   FFont := TFont.Create;
   //FFont.OnChange := @FontChanged;
   FIsControl := False;
-  FEnabled := True; {Default}
+  FEnabled := True;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1805,6 +1803,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.82  2002/09/07 19:35:42  lazarus
+  Visible property is by default true.
+
   Revision 1.81  2002/09/06 22:32:21  lazarus
   Enabled cursor property + property editor.
 
