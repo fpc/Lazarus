@@ -735,7 +735,7 @@ end;
 
 procedure TOutputFilter.InternalSetCurrentDirectory(const Dir: string);
 begin
-  fCurrentDirectory:=TrimFilename(AppendPathDelim(Dir));
+  fCurrentDirectory:=TrimFilename(AppendPathDelim(SetDirSeparators(Dir)));
 end;
 
 destructor TOutputFilter.Destroy;

@@ -23,6 +23,10 @@ SET FPCBINDIR=c:\lazarus\source\fpcbindir
 :: it should have the debugger with the name gdb.exe in its bin subdirectory
 SET GDBDIR=c:\lazarus\source\mingw
 
+:: Path to the directory containing the mingw gdb debugger installation
+:: it should have the debugger with the name gdb.exe in its bin subdirectory
+SET GDBDIR=c:\lazarus\source\mingw
+
 :: Path to build directory. 
 :: In this directory an image of the installation will be built.
 SET BUILDDIR=c:\temp\lazbuild
