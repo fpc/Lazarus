@@ -63,7 +63,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomEdit.GetSelText : string;
 begin
-  Result:= Copy(Text, SelStart, SelLength)
+  Result:= Copy(Text, SelStart + 1, SelLength)
 end;
 
 {------------------------------------------------------------------------------
@@ -274,6 +274,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/11/13 08:40:44  lazarus
+  MB: Fixed selection start/end/text for edits and combos. Add support for memos.
+
   Revision 1.11  2002/10/01 18:00:04  lazarus
   AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
 
