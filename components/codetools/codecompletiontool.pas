@@ -51,16 +51,17 @@ type
 
   TCodeCompletionCodeTool = class(TEventsCodeTool)
   private
-    ClassNode, StartNode: TCodeTreeNode;
-    FirstInsert: TCodeTreeNodeExtension;
-    JumpToProcName: string;
     ASourceChangeCache: TSourceChangeCache;
-    NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
+    ClassNode, StartNode: TCodeTreeNode;
+    FCompleteProperties: boolean;
+    FirstInsert: TCodeTreeNodeExtension;
     FSetPropertyVariablename: string;
+    JumpToProcName: string;
+    NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
     function ProcExists(const NameAndParams: string): boolean;
     function VarExists(const UpperName: string): boolean;
     procedure AddInsert(PosNode: TCodeTreeNode;
-        const CleanDef, Def, IdentifierName: string);
+        const CleanDef, Def, IdentifierName, Body: string);
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
     procedure InsertNewClassParts(PartType: NewClassPart);
@@ -73,6 +74,8 @@ type
     constructor Create;
     property SetPropertyVariablename: string
       read FSetPropertyVariablename write FSetPropertyVariablename;
+    property CompleteProperties: boolean
+      read FCompleteProperties write FCompleteProperties;
   end;
 
 
@@ -126,7 +129,7 @@ begin
 end;
 
 procedure TCodeCompletionCodeTool.AddInsert(PosNode: TCodeTreeNode;
-  const CleanDef, Def, IdentifierName: string);
+  const CleanDef, Def, IdentifierName, Body: string);
 var NewInsert, InsertPos, LastInsertPos: TCodeTreeNodeExtension;
 begin
 {$IFDEF CTDEBUG}
@@ -138,6 +141,7 @@ writeln('[TCodeCompletionCodeTool.AddInsert] ',CleanDef,',',Def,',',Identifierna
     Txt:=CleanDef;
     ExtTxt1:=Def;
     ExtTxt2:=IdentifierName;
+    ExtTxt3:=Body;
   end;
   if FirstInsert=nil then begin
     FirstInsert:=NewInsert;
@@ -233,8 +237,9 @@ var Parts: array[TPropPart] of TAtomPosition;
   end;
 
 var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
-  CleanParamList, ParamList, PropType: string;
+  CleanParamList, ParamList, PropType, ProcBody, VariableName: string;
   InsertPos: integer;
+  BeautifyCodeOpts: TBeautifyCodeOptions;
 begin
   Result:=false;
   for APart:=Low(TPropPart) to High(TPropPart) do
@@ -275,14 +280,10 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
   or UpAtomIs('END') or AtomIsChar(';') or (not AtomIsIdentifier(false))
   or AtomIsKeyWord then begin
     // no type name found -> ignore this property
-{$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
-{$ENDIF}
-    Result:=true;
-    exit;
+    RaiseException('property type expected, but '+GetAtom+' found');
   end;
   Parts[ppType]:=CurPos;
-  // read specifiers
+  // parse specifiers
   ReadNextAtom;
   if UpAtomIs('INDEX') then begin
     if Parts[ppIndexWord].StartPos>=1 then 
@@ -329,14 +330,15 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
     RaiseException('Reparsing error (Complete Property)');
   PropType:=copy(Src,Parts[ppType].StartPos,
                Parts[ppType].EndPos-Parts[ppType].StartPos);
+  BeautifyCodeOpts:=ASourceChangeCache.BeautifyCodeOptions;
   // check read specifier
+  VariableName:='';
   if (Parts[ppReadWord].StartPos>0) or (Parts[ppWriteWord].StartPos<1) then
   begin
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] read specifier needed');
 {$ENDIF}
-    AccessParamPrefix:=
-      ASourceChangeCache.BeautifyCodeOptions.PropertyReadIdentPrefix;
+    AccessParamPrefix:=BeautifyCodeOpts.PropertyReadIdentPrefix;
     if Parts[ppRead].StartPos>0 then
       AccessParam:=copy(Src,Parts[ppRead].StartPos,
           Parts[ppRead].EndPos-Parts[ppRead].StartPos)
@@ -409,21 +411,24 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
           end;
         end;
         // add new Insert Node
-        AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam);
+        if CompleteProperties then
+          AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'');
       end;
     end else begin
+      // the read identifier is a variable
       if Parts[ppRead].StartPos<1 then
-        AccessParam:=ASourceChangeCache.BeautifyCodeOptions.PrivatVariablePrefix
+        AccessParam:=BeautifyCodeOpts.PrivatVariablePrefix
              +copy(Src,Parts[ppName].StartPos,
                Parts[ppName].EndPos-Parts[ppName].StartPos);
-      // the read identifier is a variable
+      VariableName:=AccessParam;
       if not VarExists(UpperCaseStr(AccessParam)) then begin
         // variable does not exist yet -> add insert demand for variable
-        AddInsert(PropNode,UpperCaseStr(AccessParam),
-                  AccessParam+':'+PropType+';',AccessParam);
+        if CompleteProperties then
+          AddInsert(PropNode,UpperCaseStr(AccessParam),
+                    AccessParam+':'+PropType+';',AccessParam,'');
       end;
     end;
-    if Parts[ppRead].StartPos<0 then begin
+    if (Parts[ppRead].StartPos<0) and CompleteProperties then begin
       // insert read specifier
       if Parts[ppReadWord].StartPos>0 then begin
         // 'read' keyword exists -> insert read identifier behind
@@ -439,8 +444,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
         else
           InsertPos:=Parts[ppType].EndPos;
         ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-           ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('read')
-           +' '+AccessParam);
+           BeautifyCodeOpts.BeautifyKeyWord('read')+' '+AccessParam);
       end;
     end;
   end;
@@ -450,8 +454,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
 {$ENDIF}
-    AccessParamPrefix:=
-      ASourceChangeCache.BeautifyCodeOptions.PropertyWriteIdentPrefix;
+    AccessParamPrefix:=BeautifyCodeOpts.PropertyWriteIdentPrefix;
     if Parts[ppWrite].StartPos>0 then
       AccessParam:=copy(Src,Parts[ppWrite].StartPos,
             Parts[ppWrite].EndPos-Parts[ppWrite].StartPos)
@@ -488,6 +491,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
       if not ProcExists(CleanAccessFunc) then begin
         // add insert demand for function
         // build function code
+        ProcBody:='';
         if (Parts[ppParamList].StartPos>0) then begin
           MoveCursorToCleanPos(Parts[ppParamList].StartPos);
           ReadNextAtom;
@@ -512,8 +516,22 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
         end else begin
           if (Parts[ppIndexWord].StartPos<1) then begin
             // no param list, no index
-            AccessFunc:='procedure '+AccessParam
-                        +'(const '+SetPropertyVariablename+': '+PropType+');';
+            AccessFunc:=
+              'procedure '+AccessParam
+              +'(const '+SetPropertyVariablename+': '+PropType+');';
+            if VariableName<>'' then begin
+              // read spec is a variable -> add simple assign code to body
+              ProcBody:=
+                'procedure '
+                +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
+                +'(const '+SetPropertyVariablename+': '+PropType+');'
+                +BeautifyCodeOpts.LineEnd
+                +'begin'+BeautifyCodeOpts.LineEnd
+                +GetIndentStr(BeautifyCodeOpts.Indent)+
+                  +VariableName+':='+SetPropertyVariablename+';'
+                  +BeautifyCodeOpts.LineEnd
+                +'end;';
+            end;
           end else begin
             // index, no param list
             AccessFunc:='procedure '+AccessParam
@@ -522,17 +540,19 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
           end;
         end;
         // add new Insert Node
-        AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam);
+        if CompleteProperties then
+          AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam,ProcBody);
       end;
     end else begin
       // the write identifier is a variable
       if not VarExists(UpperCaseStr(AccessParam)) then begin
         // variable does not exist yet -> add insert demand for variable
-        AddInsert(PropNode,UpperCaseStr(AccessParam),
-                  AccessParam+':'+PropType+';',AccessParam);
+        if CompleteProperties then
+          AddInsert(PropNode,UpperCaseStr(AccessParam),
+                    AccessParam+':'+PropType+';',AccessParam,'');
       end;
     end;
-    if Parts[ppWrite].StartPos<0 then begin
+    if (Parts[ppWrite].StartPos<0) and CompleteProperties then begin
       // insert write specifier
       if Parts[ppWriteWord].StartPos>0 then begin
         // 'write' keyword exists -> insert write identifier behind
@@ -553,8 +573,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
         else
           InsertPos:=Parts[ppType].EndPos;
         ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-           ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('write')
-           +' '+AccessParam);
+           BeautifyCodeOpts.BeautifyKeyWord('write')+' '+AccessParam);
       end;
     end;
   end;
@@ -569,7 +588,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
     else
       AccessParam:=copy(Src,Parts[ppName].StartPos,
         Parts[ppName].EndPos-Parts[ppName].StartPos)
-        +ASourceChangeCache.BeautifyCodeOptions.PropertyStoredIdentPostfix;
+        +BeautifyCodeOpts.PropertyStoredIdentPostfix;
     CleanAccessFunc:=UpperCaseStr(AccessParam);
     // check if procedure exists
     if (not ProcExists(CleanAccessFunc)) and (not VarExists(CleanAccessFunc))
@@ -578,13 +597,15 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
       // build function code
       AccessFunc:='function '+AccessParam+':boolean;';
       // add new Insert Node
-      AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam);
+      if CompleteProperties then
+        AddInsert(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'');
     end;
     if Parts[ppStored].StartPos<0 then begin
       // insert stored specifier
       InsertPos:=Parts[ppStoredWord].EndPos;
-      ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-           AccessParam);
+      if CompleteProperties then
+        ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
+                                   AccessParam);
     end;
   end;
   Result:=true;
@@ -766,14 +787,17 @@ var
   procedure InsertProcBody(ANodeExt: TCodeTreeNodeExtension);
   var ProcCode: string;
   begin
-    ProcCode:=ANodeExt.ExtTxt1;
+    if ANodeExt.ExtTxt3<>'' then
+      ProcCode:=ANodeExt.ExtTxt3
+    else
+      ProcCode:=ANodeExt.ExtTxt1;
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
                  ProcCode,TheClassName,'');
 {$IFDEF CTDEBUG}
 writeln('>>> InsertProcBody ',TheClassName,' "',ProcCode,'"');
 {$ENDIF}
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                 ProcCode,Indent,true);
+                 ProcCode,Indent,ANodeExt.ExtTxt3='');
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
       ProcCode);
     if JumpToProcName='' then begin
@@ -883,6 +907,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
                   +ANodeExt.Txt;       // Name+ParamTypeList
             ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
                ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
+            ExtTxt3:=ANodeExt.ExtTxt3;
             Position:=ANodeExt.Position;
           end;
           ClassProcs.Add(NewNodeExt);
@@ -966,7 +991,10 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       MissingNode:=ClassProcs.FindHighest;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
-        ProcCode:=ANodeExt.ExtTxt1;
+        if ANodeExt.ExtTxt3<>'' then
+          ProcCode:=ANodeExt.ExtTxt3
+        else
+          ProcCode:=ANodeExt.ExtTxt1;
         if (ProcCode='') then begin
           ANode:=TCodeTreeNodeExtension(MissingNode.Data).Node;
           if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
@@ -1081,7 +1109,10 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
               end;
             end;
           end;
-          ProcCode:=ANodeExt.ExtTxt1;
+          if ANodeExt.ExtTxt3<>'' then
+            ProcCode:=ANodeExt.ExtTxt3
+          else
+            ProcCode:=ANodeExt.ExtTxt1;
           if (ProcCode='') then begin
             ANode:=ANodeExt.Node;
             if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
@@ -1095,7 +1126,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
               ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
                 ProcCode,TheClassName,'');
             ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                        ProcCode,Indent,true);
+                        ProcCode,Indent,ANodeExt.ExtTxt3='');
             ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                   InsertPos,InsertPos,ProcCode);
             if JumpToProcName='' then begin
@@ -1330,6 +1361,7 @@ constructor TCodeCompletionCodeTool.Create;
 begin
   inherited Create;
   FSetPropertyVariablename:='AValue';
+  FCompleteProperties:=true;
 end;
 
 

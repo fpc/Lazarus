@@ -179,7 +179,7 @@ type
   public
     Node: TCodeTreeNode;
     Txt: string;
-    ExtTxt1, ExtTxt2: string;
+    ExtTxt1, ExtTxt2, ExtTxt3: string;
     Position: integer;
     Data: Pointer;
     Next: TCodeTreeNodeExtension;
@@ -526,6 +526,7 @@ begin
   Txt:='';
   ExtTxt1:='';
   ExtTxt2:='';
+  ExtTxt3:='';
   Node:=nil;
   Position:=-1;
   Data:=nil;
