@@ -607,7 +607,7 @@ begin
   InitLayoutList;
   FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
   IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
-  FMinimizeAllOnMinimizeMain:=true;
+  FMinimizeAllOnMinimizeMain:=false;
 
   // form editor
   FShowGrid:=true;
@@ -620,7 +620,7 @@ begin
   FGuideLineColorLeftTop:=clBlue;
   FGuideLineColorRightBottom:=clGreen;
   FShowComponentCaptions:=false;
-  FShowEditorHints:=false;
+  FShowEditorHints:=true;
   FAutoCreateForms:=true;
   FGrabberColor:=clBlack;
   FMarkerColor:=clDkGray;
@@ -632,8 +632,8 @@ begin
   FObjectInspectorOptions:=TOIOptions.Create;
   
   // hints
-  FShowHintsForComponentPalette:=false;
-  FShowHintsForMainSpeedButtons:=false;
+  FShowHintsForComponentPalette:=true;
+  FShowHintsForMainSpeedButtons:=true;
 
   // files
   FLazarusDirectory:=IDEProcs.ProgramDirectory;
@@ -1447,6 +1447,7 @@ begin
     Width:=Parent.ClientWidth-Left;
     Height:=20;
     Caption:=dlgMinimizeAllOnMinimizeMain;
+    Enabled:=false;
   end;
 
   // hints
