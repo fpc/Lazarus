@@ -47,7 +47,7 @@ begin
             BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
             BinMemStream.Position:=0;
             BinExt:=uppercase(ExtractFileExt(BinFilename));
-            if BinExt='.LFM' then begin
+            if (BinExt='.LFM') or (BinExt='.DFM') then begin
               ResourceType:='FORMDATA';
               ResourceName:=FindLFMClassName(BinMemStream);
               if ResourceName='' then begin

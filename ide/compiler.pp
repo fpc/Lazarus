@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process;
 
 type
-  TOnOutputString = procedure (Value: String) of Object;
+  TOnOutputString = procedure (const Value: String) of Object;
   TErrorType = (etNone, etHint, etWarning, etError, etFatal);
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
       of object;
@@ -46,7 +46,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject): TModalResult;
-    function GetSourcePosition(Line: string; var Filename:string;
+    function GetSourcePosition(const Line: string; var Filename:string;
        var CaretXY: TPoint; var MsgType: TErrorType): boolean;
     property OnOutputString : TOnOutputString
        read FOnOutputString write FOnOutputString;
@@ -63,7 +63,7 @@ const
 var
   Compiler1 : TCompiler;
 
-function ErrorTypeNameToType(Name:string): TErrorType;
+function ErrorTypeNameToType(const Name:string): TErrorType;
 
 
 implementation
@@ -74,11 +74,12 @@ uses linux;
 {$ENDIF linux}
 
 
-function ErrorTypeNameToType(Name:string): TErrorType;
+function ErrorTypeNameToType(const Name:string): TErrorType;
+var LowName: string;
 begin
-  Name:=lowercase(Name);
+  LowName:=lowercase(Name);
   for Result:=Low(TErrorType) to High(TErrorType) do
-    if lowercase(ErrorTypeNames[Result])=Name then exit;
+    if lowercase(ErrorTypeNames[Result])=LowName then exit;
   Result:=etNone;
 end;
 
@@ -166,7 +167,7 @@ begin
       end;
     end;
     // TProcess does not report, if a program can not be executed
-    // to get good error messages consider the os
+    // to get good error messages consider the OS
     {$IFDEF linux}
     if not Linux.Access(CmdLine,Linux.X_OK) then begin
       case LinuxError of
@@ -220,7 +221,8 @@ begin
             if Buf[i] in [#10,#13] then begin
               OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
               ProcessOutputLine;
-              if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1]) then
+              if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
+              then
                 inc(i);
               LineStart:=i+1;
             end;
@@ -250,14 +252,11 @@ end;
 {--------------------------------------------------------------------------
             TCompiler GetSourcePosition
 ---------------------------------------------------------------------------}
-function TCompiler.GetSourcePosition(Line: string; var Filename:string;
+function TCompiler.GetSourcePosition(const Line: string; var Filename:string;
   var CaretXY: TPoint; var MsgType: TErrorType): boolean;
-{This assumes the line will have the format
+{ This assumes the line has one of the following formats
 <filename>(123,45) <ErrorType>: <some text>
-
-ToDo: parse format:
 <filename>(456) <ErrorType>: <some text> in line (123)
-
 }
 var StartPos, EndPos: integer;
 begin
@@ -312,6 +311,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2001/05/29 08:16:26  lazarus
+  MG: bugfixes + starting programs
+
   Revision 1.12  2001/04/04 12:20:34  lazarus
   MG: added  add to/remove from project, small bugfixes
 

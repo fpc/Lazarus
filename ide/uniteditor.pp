@@ -1369,8 +1369,9 @@ end;
 destructor TSourceNotebook.Destroy;
 var i: integer;
 begin
+writeln('[TSourceNotebook.Destroy]');
   for i:=FSourceEditorList.Count-1 downto 0 do
-    Editors[EditorCount-1].Free;
+    Editors[i].Free;
   if Notebook<>nil then begin
     Notebook.Free;
     NoteBook:=nil;
@@ -1843,10 +1844,11 @@ writeln('TSourceNotebook.NewSe A');
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
   end;
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
+writeln('TSourceNotebook.NewSe B');
+  FSourceEditorList.Add(Result);
   Result.FUnitName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
-  FSourceEditorList.Add(Result);
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
@@ -2170,7 +2172,6 @@ Begin
   Result := GetActiveSE.FileName;
 end;
 
-
 function TSourceNotebook.GetEditors(Index:integer):TSourceEditor;
 begin
   Result:=TSourceEditor(FSourceEditorList[Index]);
@@ -2212,7 +2213,6 @@ begin
       Result:=Filename;
       exit;
     end;
-    FileName:='unit1';
   end;
   ShortName:=ExtractFileName(FileName);
   Ext:=ExtractFileExt(ShortName);

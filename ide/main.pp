@@ -233,6 +233,7 @@ type
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     function DoBuildProject: TModalResult;
+    function DoRunProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramFilename,
        ProgramSource: string): TModalResult;
@@ -688,8 +689,8 @@ begin
   ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked);
   ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked);   
   ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuToggleFormUnitCLicked);
-  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormCLicked);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], nil {@mnuRunClicked});
+  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked);
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuRunProjectClicked);
   
 //  pnlSpeedButtons.Width := ButtonLeft;
 //  pnlSpeedButtons.Height := ButtonTop;
@@ -846,7 +847,7 @@ begin
 
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.Name:='itmSearchFind';
-  itmSearchFind.caption := 'Find';
+  itmSearchFind.Caption := 'Find';
   mnuSearch.add(itmSearchFind);
 
   itmSearchFindAgain := TMenuItem.Create(nil);
@@ -961,7 +962,6 @@ begin
   itmProjectBuild.Name:='itmProjectBuild';
   itmProjectBuild.Caption := 'Build';
   itmProjectBuild.OnClick := @mnuBuildProjectClicked;
-  itmProjectBuild.Enabled := False;
   mnuProject.Add(itmProjectBuild);
 
   itmProjectRun := TMenuItem.Create(Self);
@@ -1253,6 +1253,12 @@ begin
       Handled:=true;
       DoBuildProject;
     end;
+   ecRun:
+    begin
+      Handled:=true;
+      if DoBuildProject<>mrOk then exit;
+      DoRunProject;
+    end;
   end;
 end;
 
@@ -1450,31 +1456,8 @@ Begin
 end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
-var
-  TheProcess : TProcess;
-  TheProgram : String;
 begin
-  Assert(False, 'Trace:Run Project Clicked');
-  if SourceNotebook.Empty then Begin
-   Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
-   Exit;
-   end;
-
-  TheProgram := ExtractFileName(SourceNotebook.ActiveUnitName);
-  //remove the extension
-  if pos('.',TheProgram) <> 0 then
-     delete(ThePRogram,pos('.',TheProgram),length(TheProgram));
-
-
-  if not FileExists(ExtractFilePath(SOurceNotebook.ActiveUnitName)+TheProgram) then Begin
-     TheProgram := 'No program called "'+TheProgram+'" found!';
-     Application.MessageBox(@TheProgram,'Error',MB_OK);
-     exit;
-     end;
-
-  TheProcess:=TProcess.Create(TheProgram,[poRunSuspended,poUsePipes,poNoConsole]);
-
-  TheProcess.Execute;
+  DoRunProject;
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
@@ -2293,7 +2276,10 @@ writeln('TMainIDE.DoNewProject 1');
     begin
       // create a first form unit
       Project.CompilerOptions.OtherUnitFiles:=
-         '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units';
+         '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
+        +';'+
+         '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
+         +OSDirSeparator+'gtk';
       DoNewEditorUnit(nuForm);
     end;
    ptProgram,ptCustomProgram:
@@ -2758,6 +2744,51 @@ begin
   finally
     ToolStatus:=itNone;
   end;
+end;
+
+function TMainIDE.DoRunProject: TModalResult;
+// quick hack to start programs
+// ToDo:
+//  -switch the IDE mode to running and free the process when program terminates
+//  -implement a better messages form for vast amount of output
+//  -target filename
+//  -command line parameters
+//  -connect program to debugger
+var
+  TheProcess : TProcess;
+  ProgramFilename, Ext, AText : String;
+begin
+  Result:=mrCancel;
+writeln('[TMainIDE.DoRunProject] A');
+  if ToolStatus<>itNone then begin
+    Result:=mrAbort;
+    exit;
+  end;
+  if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
+  then exit;
+
+  Ext:=ExtractFileExt(Project.ProjectFile);
+  ProgramFilename := LowerCase(copy(Project.ProjectFile,1,
+                          length(Project.ProjectFile)-length(Ext)));
+
+  if not FileExists(ProgramFilename) then begin
+    AText:='No program file "'+ProgramFilename+'" found!';
+    Application.MessageBox(PChar(AText),'File not found',MB_OK);
+    exit;
+  end;
+
+  try
+    TheProcess:=TProcess.Create(ProgramFilename,
+       [poRunSuspended,poUsePipes,poNoConsole]);
+    TheProcess.Execute;
+  except
+    on e: Exception do begin
+      AText:='Error running program "'+ProgramFilename+'": '+e.Message;
+      Application.MessageBox(PChar(AText),'Error',MB_OK);
+    end;
+  end;
+  Result:=mrOk;
+writeln('[TMainIDE.DoRunProject] END');
 end;
 
 function TMainIDE.SomethingOfProjectIsModified: boolean;
@@ -3358,6 +3389,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2001/05/29 08:16:26  lazarus
+  MG: bugfixes + starting programs
+
   Revision 1.97  2001/05/28 10:00:54  lazarus
   MG: removed unused code. fixed editor name bug.
 

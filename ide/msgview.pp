@@ -37,7 +37,7 @@ type
     Function GetMessage : String;
   public
     constructor Create(AOwner : TComponent); override;
-    Procedure Add(Texts : String);
+    Procedure Add(const Texts : String);
     Procedure Clear;
     Function GetSelectedLineIndex : Integer;
     property Message : String read GetMessage;
@@ -74,7 +74,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TMessagesView.Add                                                           }
 {------------------------------------------------------------------------------}
-Procedure  TMessagesView.Add(Texts : String);
+Procedure  TMessagesView.Add(const Texts : String);
 Begin
   MessageView.Items.Add(Texts);
 end;

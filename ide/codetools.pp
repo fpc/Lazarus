@@ -926,19 +926,16 @@ var Find,Atom:string;
   FindPosition,FindAtomStart,SemicolonPos:integer;
 begin
   Result:=false;
-  if AddCode='' then begin
-    Result:=true;
-    exit;
-  end;
+  if AddCode='' then exit;
   if Source='' then exit;
-  // search "LazarusResources.Add('<ResourceName>',"
+  // search the "LazarusResources.Add('<ResourceName>'," in AddCode
   FindPosition:=1;
   repeat
-    Atom:=ReadNextPascalAtom(Source,FindPosition,FindAtomStart);
+    Atom:=ReadNextPascalAtom(AddCode,FindPosition,FindAtomStart);
   until (Atom='') or (Atom=',');
   if Atom='' then exit;
   // search the resource start in code
-  Find:=copy(AddCode,1,FindPosition);
+  Find:=copy(AddCode,1,FindPosition-1);
   Position:=SearchCodeInSource(Source,Find,1,EndPosition,false);
   if Position<1 then exit;
   // search resource end in code
