@@ -137,6 +137,7 @@ Var
   NotifyUserInput: Boolean;
   OverlayWindow: HWND;
   TargetWindow: HWND;
+  DlgCode, CharCode: dword;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -1050,31 +1051,49 @@ Begin
       if LMessage.Result = 0 then
         WinProcess := true;
     end;
-    
-    WM_KEYDOWN, WM_KEYUP:
-    begin
-      // if not yet processed, resend normally
-      if LMKey.CharCode <> VK_UNKNOWN then
-      begin
-        LMKey.Msg := Msg;
-        DeliverMessage(OwnerObject, LMKey);
-        // still not handled? then do default processing
-        WinProcess := LMKey.CharCode <> VK_UNKNOWN;
-      end;
-    end;
-
+   
     WM_CHAR:
     begin
-      // if Key is set to zero, inhibit key, else default processing
-      WinProcess := LMChar.CharCode <> 0;
+      // if key not yet processed, let windows process it
+      WinProcess := LMChar.CharCode <> VK_UNKNOWN;
+    end;
+   
+    WM_KEYDOWN, WM_KEYUP:
+    begin
+      // if key not yet processed, let windows process it
+      WinProcess := LMKey.CharCode <> VK_UNKNOWN;
     end;
   end;
 
   if WinProcess then
   begin    
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
-  end;
 
+    case Msg of
+      WM_CHAR, WM_KEYDOWN, WM_KEYUP:
+      begin
+        case Msg of
+          WM_CHAR: CharCode := LMChar.CharCode;
+          WM_KEYDOWN, WM_KEYUP: CharCode := LMKey.CharCode;
+        end;
+        case CharCode of
+          VK_RETURN:
+            DlgCode := DLGC_WANTALLKEYS;
+          VK_TAB:
+            DlgCode := DLGC_WANTTAB or DLGC_WANTALLKEYS;
+        else
+          DlgCode := 0;
+        end;
+        if (DlgCode = 0) or ((DlgCode and CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0)) = 0) then
+        begin
+          // windows didn't want the key
+          PLMsg^.Msg := LM_CHAR;
+          DeliverMessage(OwnerObject, PLMsg^);
+        end;
+      end;
+    end;
+  end;
+  
   { LMMouseEvent and LMInsertText have no Result field }
 
   if      PLMsg = @LMScroll     then Result := LMScroll.Result 
@@ -1283,6 +1302,9 @@ end;
 
 {
   $Log$
+  Revision 1.130  2004/08/01 14:21:06  micha
+  better pre/post-intf key handling
+
   Revision 1.129  2004/07/27 00:07:48  marc
   * Fixed disabled state of bitbtns
 
