@@ -95,39 +95,37 @@ type
 
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor.
-  It creates the PopupMenu that appears when you right-click on the editor.
-  It calls the editor functions for bookmarks.
  ---- TSource Editor ---}
   TSourceEditor = class
   private
-    FEditPlugin : TSynEditPlugin1;  // used to get the LinesInserted and
-                                    //   LinesDeleted messages
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
-    FAOwner : TComponent;
-    FEditor : TSynEdit;
+    FAOwner: TComponent;
+    FEditor: TSynEdit;
+    FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
+                                   //   LinesDeleted messages
     FCodeTemplates: TSynEditAutoComplete;
+    FPageName: string;
 
     FCodeBuffer: TCodeBuffer;
     FIgnoreCodeBufferLock: integer;
-    FShortName : String;
 
-    FPopUpMenu : TPopupMenu;
+    FPopUpMenu: TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
     FErrorLine: integer;
     FErrorColumn: integer;
     FExecutionLine: integer;
     FModified: boolean;
 
-    FOnAfterClose : TNotifyEvent;
-    FOnAfterOpen : TNotifyEvent;
-    FOnAfterSave : TNotifyEvent;
-    FOnBeforeClose : TNotifyEvent;
-    FOnBeforeOpen : TNotifyEvent;
-    FOnBeforeSave : TNotifyEvent;
+    FOnAfterClose: TNotifyEvent;
+    FOnAfterOpen: TNotifyEvent;
+    FOnAfterSave: TNotifyEvent;
+    FOnBeforeClose: TNotifyEvent;
+    FOnBeforeOpen: TNotifyEvent;
+    FOnBeforeSave: TNotifyEvent;
     FOnEditorChange: TNotifyEvent;
     FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
-    FVisible : Boolean;
+    FVisible: Boolean;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
@@ -141,10 +139,13 @@ type
     Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     function GetWordFromCaretEx(const ACaretPos: TPoint;
       const ALeftLimit, ARightLimit: TCharSet): String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
+    procedure SetPageName(const AValue: string);
+    procedure UpdatePageName;
     Procedure SetSource(Value : TStrings);
     Function GetCurrentCursorXLine : Integer;
     Procedure SetCurrentCursorXLine(num : Integer);
@@ -183,7 +184,6 @@ type
 
     Procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
-    Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure OnGutterClick(Sender: TObject; X, Y, Line: integer;
          mark: TSynEditMark);
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
@@ -256,26 +256,18 @@ type
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
+    property CodeTemplates: TSynEditAutoComplete
+       read FCodeTemplates write SetCodeTemplates;
     property CurrentCursorXLine : Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
-    property Owner: TComponent read FAOwner;
-    property Source: TStrings read GetSource write SetSource;
-    property ShortName: String read FShortName write fShortName;
-    property FileName: AnsiString read GetFileName;
-    property Modified: Boolean read GetModified write SetModified;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property InsertMode: Boolean read GetInsertmode;
-    property CodeTemplates: TSynEditAutoComplete
-       read FCodeTemplates write SetCodeTemplates;
-    property PopupMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property EditorComponent: TSynEdit read FEditor;
-    property SyntaxHighlighterType: TLazSyntaxHighlighter 
-       read fSyntaxHighlighterType write SetSyntaxHighlighterType;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
     property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
-
+    property FileName: AnsiString read GetFileName;
+    property InsertMode: Boolean read GetInsertmode;
+    property Modified: Boolean read GetModified write SetModified;
     property OnAfterClose : TNotifyEvent read FOnAfterClose write FOnAfterClose;
     property OnBeforeClose : TNotifyEvent read FOnBeforeClose write FOnBeforeClose;
     property OnAfterOpen : TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
@@ -291,8 +283,14 @@ type
     property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp : TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
-    
+    property Owner: TComponent read FAOwner;
+    property PageName: string read FPageName write SetPageName;
+    property PopupMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    property Source: TStrings read GetSource write SetSource;
     property SourceNoteBook: TSourceNotebook read FSourceNoteBook;
+    property SyntaxHighlighterType: TLazSyntaxHighlighter
+       read fSyntaxHighlighterType write SetSyntaxHighlighterType;
   end;
   
   //============================================================================
@@ -389,8 +387,8 @@ type
      
     Function CreateNotebook : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
-    Procedure EditorChanged(sender : TObject);
-    
+    Procedure EditorChanged(Sender: TObject);
+
     Procedure ccExecute(Sender : TObject);
     Procedure ccCancel(Sender : TObject);
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
@@ -430,13 +428,12 @@ type
     function GetEditors(Index:integer):TSourceEditor;
     
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-
   public
     FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
     FindReplaceDlgUserText: array[TFindDlgComponent] of string;
 
     Procedure NotebookPageChanged(Sender : TObject);
-    
+
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
@@ -450,7 +447,6 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    Function ActiveUnitName : String;
     Function ActiveFileName : AnsiString;
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
@@ -1050,6 +1046,7 @@ Procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
 Begin
   If Assigned(OnEditorChange) then
     OnEditorChange(Sender);
+  UpdatePageName;
 end;
 
 function TSourceEditor.IsBreakPointMark(
@@ -1575,6 +1572,25 @@ Begin
   Result := FEditor.Lines;
 end;
 
+procedure TSourceEditor.SetPageName(const AValue: string);
+begin
+  if FPageName=AValue then exit;
+  FPageName:=AValue;
+  UpdatePageName;
+end;
+
+procedure TSourceEditor.UpdatePageName;
+var
+  p: Integer;
+  NewPageName: String;
+begin
+  p:=SourceNotebook.FindPageWithEditor(Self);
+  NewPageName:=FPageName;
+  if Modified then NewPageName:='*'+NewPageName;
+  if SourceNotebook.NoteBook.Pages[p]<>NewPageName then
+    SourceNotebook.NoteBook.Pages[p]:=NewPageName;
+end;
+
 Procedure TSourceEditor.SetSource(value : TStrings);
 Begin
   FEditor.Lines.Assign(Value);
@@ -1618,9 +1634,14 @@ Begin
 end;
 
 procedure TSourceEditor.SetModified(NewValue:boolean);
+var
+  OldModified: Boolean;
 begin
+  OldModified:=Modified;
   FModified:=NewValue;
   if not FModified then FEditor.Modified:=false;
+  if OldModified<>Modified then
+    UpdatePageName;
 end;
 
 Function TSourceEditor.GetInsertMode : Boolean;
@@ -2650,9 +2671,9 @@ Begin
   writeln('TSourceNotebook.NewSE C ');
   {$ENDIF}
   FSourceEditorList.Add(Result);
-  Result.FShortName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
+  Result.FPageName:=NoteBook.Pages[Pagenum];
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
@@ -2675,7 +2696,7 @@ begin
   Result := nil;
   if (FSourceEditorList=nil)
     or (Notebook=nil) 
-    or (PageIndex<0) or (PageIndex>=Notebook.Pages.Count) then exit;
+    or (PageIndex<0) or (PageIndex>=Notebook.PageCount) then exit;
   TempEditor:=nil;
   with Notebook.Page[PageIndex] do
     for I := 0 to ControlCount-1 do
@@ -2742,7 +2763,7 @@ end;
 
 Function TSourceNotebook.Empty : Boolean;
 Begin
-  Result := (not assigned(Notebook)) or (Notebook.Pages.Count = 0);
+  Result := (not assigned(Notebook)) or (Notebook.PageCount = 0);
 end;
 
 procedure TSourceNotebook.FindReplaceDlgKey(Sender: TObject; var Key: Word;
@@ -2817,7 +2838,7 @@ end;
 Procedure TSourceNotebook.NextEditor;
 Begin
   if NoteBook=nil then exit;
-  if Notebook.PageIndex < Notebook.Pages.Count-1 then
+  if Notebook.PageIndex < Notebook.PageCount-1 then
     Notebook.PageIndex := Notebook.PageIndex+1
   else
     NoteBook.PageIndex := 0;
@@ -2829,7 +2850,7 @@ Begin
   if Notebook.PageIndex > 0 then
     Notebook.PageIndex := Notebook.PageIndex-1
   else
-    NoteBook.PageIndex := NoteBook.Pages.Count-1;
+    NoteBook.PageIndex := NoteBook.PageCount-1;
 End;
 
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);
@@ -3158,16 +3179,11 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] B ');
   {$ENDIF}
-  TempEditor.ShortName := NewShortName;
-  {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.NewFile] C ');
-  {$ENDIF}
   TempEditor.CodeBuffer:=ASource;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] D ');
   {$ENDIF}
-  Notebook.Pages[Notebook.PageIndex] :=
-    FindUniquePageName(NewShortName,Notebook.PageIndex);
+  TempEditor.PageName:=FindUniquePageName(NewShortName,Notebook.PageIndex);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
   {$ENDIF}
@@ -3184,7 +3200,7 @@ Begin
   if TempEditor=nil then exit;
   TempEditor.Close;
   TempEditor.Free;
-  if Notebook.Pages.Count>1 then begin
+  if Notebook.PageCount>1 then begin
     //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     // if this is the current page, switch to left PageIndex
     if (Notebook.PageIndex=PageIndex) and (PageIndex>0) then
@@ -3220,11 +3236,6 @@ Begin
   if Assigned(FOnSaveClicked) then FOnSaveClicked(Sender);
 end;
 
-Function TSourceNotebook.ActiveUnitName : String;
-Begin
-  Result := GetActiveSE.ShortName;
-end;
-
 Function TSourceNotebook.ActiveFileName : AnsiString;
 Begin
   Result := GetActiveSE.FileName;
@@ -3255,9 +3266,10 @@ var I:integer;
   begin
     Result:=false;
     if Notebook=nil then exit;
-    for a:=0 to Notebook.Pages.Count-1 do begin
+    for a:=0 to Notebook.PageCount-1 do begin
       if (a<>IgnorePageIndex) 
-      and (lowercase(Notebook.Pages[a])=lowercase(AName)) then begin
+      and (AnsiCompareText(AName,FindSourceEditorWithPageIndex(a).PageName)=0)
+      then begin
         Result:=true;
         exit;
       end;
@@ -3366,7 +3378,7 @@ begin
   if Notebook=nil then begin
     Result:=-1;
   end else begin
-    Result:=Notebook.Pages.Count-1;
+    Result:=Notebook.PageCount-1;
     while (Result>=0) do begin
       with Notebook.Page[Result] do
         for I := 0 to ControlCount-1 do
@@ -3435,14 +3447,14 @@ begin
   ecOpenFileAtCursor:
     OpenAtCursorClicked(self);
 
-  ecJumpToEditor :
+  ecJumpToEditor:
     Begin
       // This is NOT implemented yet
 
     end;
 
   ecGotoEditor1..ecGotoEditor9,ecGotoEditor0:
-    if Notebook.Pages.Count>Command-ecGotoEditor1 then
+    if Notebook.PageCount>Command-ecGotoEditor1 then
       Notebook.PageIndex:=Command-ecGotoEditor1;
 
   ecToggleFormUnit:
