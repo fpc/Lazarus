@@ -503,9 +503,20 @@ Begin
   Result := InterfaceObject.IntersectClipRect(dc,Left,Top,Right,Bottom);
 end;
 
-Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+{------------------------------------------------------------------------------
+  Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
+    BorderWidth: integer) : Boolean;
+    
+  Calls InvalidateRect for the borderframe.
+------------------------------------------------------------------------------}
+Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean;
 begin
-  Result := InterfaceObject.InvalidateRect(aHandle, Rect, bErase);
+  Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
+end;
+
+Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean;
+begin
+  Result := InterfaceObject.InvalidateRect(aHandle, ARect, bErase);
 end;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
@@ -1376,6 +1387,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/11/30 11:22:53  mattias
+  statusbar now uses invalidaterect
+
   Revision 1.62  2002/11/23 13:48:44  mattias
   added Timer patch from Vincent Snijders
 
