@@ -41,14 +41,19 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
-  FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
-  Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
+  Classes, Controls, LCLProc, LCLType, LCLLinux, FileCtrl, LMessages, Forms,
+  Buttons, ComCtrls, SysUtils, Dialogs, StdCtrls, GraphType, Graphics, Extctrls,
+  Menus,
+  // codetools
+  CodeToolManager, CodeCache, SourceLog,
+  // synedit
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynHighlighterPas,
-  SynEditAutoComplete, SynEditKeyCmds, SynCompletion, GraphType, Graphics,
-  Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
-  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl,
-  LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts,
+  SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
+  // IDE units
+  EditorOptions, CustomFormEditor, KeyMapping, FormEditor, FindReplaceDialog,
+  WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs, MsgView,
+  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
+  TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
   SourceEditProcs, SortSelectionDlg, ClipBoardHistory, DiffDialog;
 
 type
@@ -244,6 +249,7 @@ type
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
     procedure InsertGPLNotice(CommentType: TCommentType);
+    procedure InsertLGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
@@ -1048,6 +1054,9 @@ Begin
   ecInsertGPLNotice:
     InsertGPLNotice(comtDefault);
 
+  ecInsertLGPLNotice:
+    InsertLGPLNotice(comtDefault);
+
   ecInsertUserName:
     InsertUsername;
 
@@ -1335,7 +1344,19 @@ procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
 var
   Txt: string;
 begin
-  Txt:=CommentText(Format(lisGPLNotice,[#13#13,#13#13]),CommentType);
+  Txt:=CommentText(LCLProc.BreakString(
+           Format(lisGPLNotice,[#13#13,#13#13,#13#13]),
+           FEditor.RightEdge-2,0),CommentType);
+  FEditor.SelText:=Txt;
+end;
+
+procedure TSourceEditor.InsertLGPLNotice(CommentType: TCommentType);
+var
+  Txt: string;
+begin
+  Txt:=CommentText(LCLProc.BreakString(
+           Format(lisLGPLNotice,[#13#13,#13#13,#13#13]),
+           FEditor.RightEdge-2,0),CommentType);
   FEditor.SelText:=Txt;
 end;
 
