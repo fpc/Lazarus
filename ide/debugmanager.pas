@@ -414,6 +414,7 @@ end;
 procedure TManagedBreakPoint.OnToggleEnableMenuItemClick(Sender: TObject);
 begin
   Enabled:=not Enabled;
+  InitialEnabled:=Enabled;
 end;
 
 procedure TManagedBreakPoint.OnDeleteMenuItemClick(Sender: TObject);
@@ -1048,11 +1049,8 @@ begin
     then FWatches := nil;
   
     FreeAndNil(FDebugger);
-  end
-  else begin
-    FreeAndNil(FWatches);
   end;
-  
+  FreeAndNil(FWatches);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FBreakPointGroups);
   FreeAndNil(FBreakpointsNotification);
@@ -1251,9 +1249,17 @@ var
   procedure SaveDebuggerItems;
   begin
     // copy the watches
-    OldWatches := TDBGWatches.Create(nil, TDBGWatch);
-    OldWatches.Assign(FWatches);
-
+    if (FDebugger<>nil)
+    and (FDebugger.Watches=FWatches) then begin
+      // wtaches belongs to the current debugger
+      // -> create debugger independent watches and copy watches
+      OldWatches := TDBGWatches.Create(nil, TDBGWatch);
+      OldWatches.Assign(FWatches);
+    end else begin
+      // watches are already independent of debugger
+      // -> keep watches
+      OldWatches:=FWatches;
+    end;
     FWatches := nil;
   end;
   
@@ -1545,6 +1551,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.59  2003/08/08 07:49:56  mattias
+  fixed mem leaks in debugger
+
   Revision 1.58  2003/07/31 19:56:49  mattias
   fixed double messages SETLabel
 

@@ -215,6 +215,7 @@ end;
 
 destructor TCmdLineDebugger.Destroy;
 begin
+  FreeAndNil(FLineEnds);
   inherited;
   try
     FDbgProcess.Free;
@@ -381,6 +382,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.20  2003/08/08 07:49:56  mattias
+  fixed mem leaks in debugger
+
   Revision 1.19  2003/08/02 00:23:08  marc
   - removed accidently committed testcode
 

@@ -26,14 +26,8 @@
   UNDER CONSTRUCTION by Mattias Gaertner
   
   ToDo:
-    - Capacity
-    - Add
-    - Delete
     - Exchange
-    - Insert
-    - GetObject
     - Put
-    - PutObject
     - Sort
     - CustomSort
     - Find
@@ -63,6 +57,7 @@ type
   protected
     FArraysValid: boolean;
     FLineCount: integer;
+    FLineCapacity: integer;
     FLineRanges: ^TLineRange;// array of TLineRange
     FText: string;
     FUpdateCount: integer;
@@ -74,10 +69,16 @@ type
     procedure Changing; virtual;
     function Get(Index: Integer): string; override;
     procedure ClearArrays;
+    function GetObject(Index: Integer): TObject; override;
+    procedure PutObject(Index: Integer; AnObject: TObject); override;
+    function GetLineLen(Index: integer; IncludeNewLineChars: boolean): integer;
   public
     destructor Destroy; override;
     procedure Clear; override;
     procedure SetText(TheText: PChar); override;
+    procedure Insert(Index: Integer; const S: string); override;
+    procedure Delete(Index: Integer); override;
+    procedure Exchange(FromIndex, ToIndex: Integer); override;
   public
     property Text: string read FText write SetTextStr;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -128,6 +129,7 @@ begin
   end;
   if (FText<>'') and (not (FText[l] in [#10,#13])) then
     inc(FLineCount);
+  FLineCapacity:=FLineCount;
   // build line range list
   if FLineCount>0 then begin
     ArraySize:=FLineCount*SizeOf(TLineRange);
@@ -200,6 +202,36 @@ begin
     FreeMem(FLineRanges);
     FLineRanges:=nil;
   end;
+  FLineCapacity:=0;
+end;
+
+function TTextStrings.GetObject(Index: Integer): TObject;
+begin
+  if FArraysValid then
+    Result:=FLineRanges[Index].TheObject
+  else
+    Result:=nil;
+end;
+
+procedure TTextStrings.PutObject(Index: Integer; AnObject: TObject);
+begin
+  if not FArraysValid then BuildArrays;
+  FLineRanges[Index].TheObject:=AnObject;
+end;
+
+function TTextStrings.GetLineLen(Index: integer; IncludeNewLineChars: boolean
+  ): integer;
+var
+  LineEndPos: Integer;
+begin
+  if not FArraysValid then BuildArrays;
+  if not IncludeNewLineChars then
+    LineEndPos:=FLineRanges[Index].EndPos
+  else if Index=FLineCount-1 then
+    LineEndPos:=length(FText)
+  else
+    LineEndPos:=FLineRanges[Index+1].StartPos;
+  Result:=LineEndPos-FLineRanges[Index].StartPos;
 end;
 
 destructor TTextStrings.Destroy;
@@ -220,6 +252,89 @@ begin
   if FText=TheText then exit;
   FText:=TheText;
   FArraysValid:=false;
+end;
+
+procedure TTextStrings.Insert(Index: Integer; const S: string);
+var
+  NewStartPos: Integer;
+  NewLineCharCount: Integer;
+  NewLineLen: Integer;
+  i: Integer;
+begin
+  if not FArraysValid then BuildArrays;
+  NewLineLen:=length(S);
+  if Index<FLineCount then
+    NewStartPos:=FLineRanges[Index].StartPos
+  else
+    NewStartPos:=length(FText);
+  NewLineCharCount:=0;
+  if (NewLineLen>0) and (S[NewLineLen] in [#10,#13]) then begin
+    inc(NewLineCharCount);
+    if (NewLineLen>1)
+    and (S[NewLineLen-1] in [#10,#13])
+    and (S[NewLineLen-1]<>S[NewLineLen]) then
+      inc(NewLineCharCount);
+  end;
+  // adjust text
+  System.Insert(S,FText,NewStartPos);
+  // adjust arrays
+  if FLineCount=FLineCapacity then begin
+    if FLineCapacity<8 then
+      FLineCapacity:=8
+    else
+      FLineCapacity:=FLineCapacity shl 1;
+    ReAllocMem(FLineRanges,SizeOf(TLineRange)*FLineCapacity);
+  end;
+  if Index<FLineCount then begin
+    System.Move(FLineRanges[Index],FLineRanges[Index+1],
+         (FLineCount-Index)*SizeOf(TLineRange));
+    for i:=Index+1 to FLineCount do begin
+      inc(FLineRanges[i].StartPos,NewLineLen);
+      inc(FLineRanges[i].EndPos,NewLineLen);
+    end;
+  end;
+  FLineRanges[Index].Line:=S;
+  FLineRanges[Index].EndPos:=NewStartPos+NewLineLen-NewLineCharCount;
+  inc(FLineCount);
+end;
+
+procedure TTextStrings.Delete(Index: Integer);
+var
+  OldLineLen: Integer;
+  OldStartPos: Integer;
+  i: Integer;
+begin
+  if not FArraysValid then BuildArrays;
+  // adjust text
+  OldLineLen:=GetLineLen(Index,true);
+  if OldLineLen>0 then begin
+    OldStartPos:=FLineRanges[Index].StartPos;
+    System.Delete(FText,OldStartPos,OldLineLen);
+  end;
+  // adjust arrays
+  dec(FLineCount);
+  FLineRanges[Index].Line:='';
+  if Index<FLineCount then begin
+    System.Move(FLineRanges[Index+1],FLineRanges[Index],
+         (FLineCount-Index)*SizeOf(TLineRange));
+    for i:=Index to FLineCount-1 do begin
+      dec(FLineRanges[i].StartPos,OldLineLen);
+      dec(FLineRanges[i].EndPos,OldLineLen);
+    end;
+  end;
+end;
+
+procedure TTextStrings.Exchange(FromIndex, ToIndex: Integer);
+var
+  CurLineLen: Integer;
+begin
+  if FromIndex=ToIndex then exit;
+  if not FArraysValid then BuildArrays;
+  CurLineLen:=GetLineLen(FromIndex,true);
+  // adjust text
+  if CurLineLen>0 then begin
+
+  end;
 end;
 
 end.

@@ -160,7 +160,6 @@ end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
 var
-  DebuggerClass: TDebuggerClass;
   i: Integer;
   AMemo: TMemo;
 begin

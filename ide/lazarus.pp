@@ -40,7 +40,7 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-{ $DEFINE IDE_MEM_CHECK}
+{$DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.49  2003/08/08 07:49:56  mattias
+  fixed mem leaks in debugger
+
   Revision 1.48  2003/07/24 08:52:46  marc
   + Added SSHGDB debugger
 

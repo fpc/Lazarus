@@ -699,7 +699,9 @@ var
   AutoPackages: TList;
   i: Integer;
 begin
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CompileRequiredPackages A ');
+  {$ENDIF}
   AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
                                                      Policies);
   if AutoPackages<>nil then begin
@@ -717,7 +719,9 @@ begin
       AutoPackages.Free;
     end;
   end;
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CompileRequiredPackages END ');
+  {$ENDIF}
   Result:=mrOk;
 end;
 
@@ -727,7 +731,9 @@ var
   PathList: TList;
   Dependency: TPkgDependency;
 begin
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckPackageGraphForCompilation A');
+  {$ENDIF}
   
   // check for unsaved packages
   PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
@@ -773,7 +779,9 @@ begin
     exit;
   end;
   
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckPackageGraphForCompilation END');
+  {$ENDIF}
   Result:=mrOk;
 end;
 
@@ -921,7 +929,9 @@ var
   OtherStateFile: String;
 begin
   Result:=mrYes;
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  {$ENDIF}
 
   // check state file
   StateFilename:=APackage.GetStateFilename;
@@ -1021,7 +1031,9 @@ begin
     end;
   end;
 
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
+  {$ENDIF}
   Result:=mrNo;
 end;
 
@@ -2054,7 +2066,9 @@ var
   OutputDir: String;
   OldSrc: String;
 begin
+  {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.DoSavePackageMainSource A');
+  {$ENDIF}
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;
   if not DirectoryExists(OutputDir) then begin

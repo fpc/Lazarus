@@ -25,9 +25,8 @@ properly:
 --------------------------------------------------------------------------------
 1.1 Installing FreePascal under Linux:
 
-  Lazarus requires a fpc (FreePascal) version 1.0.7 not older than
-  21th september 2002 and it requires both - the compiled fpc libs (binaries)
-  and the fpc sources. The fpc 1.0.6 is too buggy.
+  Lazarus requires a fpc (FreePascal) version 1.0.10 and it requires both - the
+  compiled fpc libs (binaries) and the fpc sources. The fpc 1.0.6 is too buggy.
 
   The fpc binaries:
   At the lazarus downloads section (www.lazarus.freepascal.org) you can get the

@@ -108,6 +108,7 @@ type
     function  GetSupportedCommands: TDBGCommands; override;
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
+    procedure ClearCommandQueue;
   public
     class function Caption: String; override;
     class function ExePaths: String; override;
@@ -383,6 +384,7 @@ end;
 destructor TGDBMIDebugger.Destroy;
 begin
   inherited;
+  ClearCommandQueue;
   FreeAndNil(FCommandQueue);
 end;
 
@@ -517,14 +519,16 @@ begin
 
       // Delete command first to allow GDB access while processing stopped
       FCommandQueue.Delete(0);
+      try
 
-      if StoppedParams <> ''
-      then ProcessStopped(StoppedParams, FPauseWaitState = pwsInternal);
+        if StoppedParams <> ''
+        then ProcessStopped(StoppedParams, FPauseWaitState = pwsInternal);
 
-      if Assigned(CmdInfo^.Callback)
-      then CmdInfo^.Callback(ResultState, ResultValues, 0);
-
-      Dispose(CmdInfo);
+        if Assigned(CmdInfo^.Callback)
+        then CmdInfo^.Callback(ResultState, ResultValues, 0);
+      finally
+        Dispose(CmdInfo);
+      end;
 
       if FirstCmd
       then begin
@@ -1282,6 +1286,18 @@ begin
   end;
 end;
 
+procedure TGDBMIDebugger.ClearCommandQueue;
+var
+  CmdInfo: PGDBMICmdInfo;
+  i: Integer;
+begin
+  for i:=0 to FCommandQueue.Count-1 do begin
+    CmdInfo:=PGDBMICmdInfo(FCommandQueue.Objects[i]);
+    if CmdInfo<>nil then Dispose(CmdInfo);
+  end;
+  FCommandQueue.Clear;
+end;
+
 function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
 var
   S: String;
@@ -1477,7 +1493,7 @@ end;
 procedure TGDBMIBreakPoint.SetLocation(const ASource: String;
   const ALine: Integer);
 begin
-  writeln('TGDBMIBreakPoint.SetLocation A ',Source = ASource,' ',Line = ALine);
+  //writeln('TGDBMIBreakPoint.SetLocation A ',Source = ASource,' ',Line = ALine);
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
   if Debugger = nil then Exit;
@@ -1495,6 +1511,7 @@ begin
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
+  writeln('TGDBMIBreakPoint.UpdateEnable Line=',Line,' Enabled=',Enabled,' InitialEnabled=',InitialEnabled);
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d',
                                           [CMD[Enabled], FBreakID], []);
 end;
@@ -2048,6 +2065,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.36  2003/08/08 07:49:56  mattias
+  fixed mem leaks in debugger
+
   Revision 1.35  2003/08/02 00:20:20  marc
   * fixed environment handling to debuggee
 

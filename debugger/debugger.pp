@@ -733,8 +733,10 @@ type
     function Add(const AName: String): TBaseException;
     function Find(const AName: String): TBaseException;
   protected
+    procedure ClearExceptions; virtual;
   public
     constructor Create(const AItemClass: TBaseExceptionClass);
+    destructor Destroy; override;
   end;
 
   { TDBGExceptions }
@@ -1110,6 +1112,7 @@ begin
   FCallStack.FDebugger := nil;
   FWatches.FDebugger := nil;
 
+  FreeAndNil(FExceptions);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FLocals);
   FreeAndNil(FCallStack);
@@ -3014,6 +3017,12 @@ begin
   inherited Create(AItemClass);
 end;
 
+destructor TBaseExceptions.Destroy;
+begin
+  ClearExceptions;
+  inherited Destroy;
+end;
+
 function TBaseExceptions.Find(const AName: String): TBaseException;
 var
   n: Integer;
@@ -3027,6 +3036,12 @@ begin
     then Exit;
   end;
   Result := nil;
+end;
+
+procedure TBaseExceptions.ClearExceptions;
+begin
+  while Count>0 do
+    TBaseException(GetItem(Count-1)).Free;
 end;
 
 { =========================================================================== }
@@ -3099,6 +3114,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.50  2003/08/08 07:49:56  mattias
+  fixed mem leaks in debugger
+
   Revision 1.49  2003/08/02 00:20:20  marc
   * fixed environment handling to debuggee
 
