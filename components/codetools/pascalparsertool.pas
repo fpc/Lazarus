@@ -2064,10 +2064,8 @@ begin
       if UpAtomIs('EXTERNAL') then begin
         // read external name
         ReadNextAtom;
-        if CurPos.Flag<>cafSemicolon then begin
-          AtomIsIdentifier(true);
-          ReadNextAtom;
-        end;
+        if AtomIsStringConstant then
+          ReadConstant(true,false,[]);
       end else
         ReadNextAtom;
       if UpAtomIs('NAME') then begin
@@ -2202,6 +2200,8 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
       var a:b;
         a:b; cvar;
         a:b; public name 'string constant';
+        a:b; external name 'string constant';
+        a:b; cvar; external;
 
     implementation
 
