@@ -90,6 +90,7 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -166,6 +167,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
 
@@ -685,6 +687,18 @@ begin
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
+procedure TWin32WSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
+var
+  Handle: HWND;
+begin
+  Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
+  Handle := AWinControl.Handle;
+  if TCustomComboBox(AWinControl).Style = csDropDownList then
+    Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
+  else
+    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+end;
+
 function  TWin32WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 var
   winhandle: HWND;
@@ -875,6 +889,11 @@ procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const
 begin
   // TODO: check if can be done without recreation
   TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomMemo);
+end;
+
+procedure TWin32WSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
+begin
+  SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
 end;
 
 procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);

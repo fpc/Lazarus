@@ -60,6 +60,7 @@ type
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
   { TWin32WSSpeedButton }
@@ -407,6 +408,10 @@ begin
   DrawBitBtnImage(ABitBtn, PChar(ABitBtn.Caption));
 end;
 
+procedure TWin32WSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
+begin
+  DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AText));
+end;
 
 initialization
 

@@ -308,72 +308,10 @@ end;
 procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 Var
   Handle: HWnd;
-{  TCI: TC_ITEM; }
-  TempText: string;
-Const
-  TermChar: PChar = #0#0;
 Begin
   Handle := AWinControl.Handle;
-  Assert(Handle<>0,'Trace:WARNING: [TWin32WidgetSet.SetLabel] --> Got NULL handle');
-  Assert(False, 'Trace:Setting the label in TWin32WidgetSet.SetLabel');
-
-  Case AWinControl.FCompStyle Of
-    csBitBtn:
-      DrawBitBtnImage(TCustomBitBtn(AWinControl), PChar(AText));
-      
-      
-{ TODO: CHECK !! Code was never reached in SetLabel ? }
-{
-    csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
-    csColorDialog, csFontDialog:
-    Begin
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Got %S', [CS_To_String(AWinControl.FCompStyle)]));
-      Assert(False, 'Trace:TWin32WidgetSet.SetLabel - I''m not sure if this''ll work');
-      Assert(False, Format('Trace:Is Sender a TCommonDialog - %S', [BOOL_RESULT[AWinControl Is TCommonDialog]]));
-      If AWinControl Is TCommonDialog Then
-        TCommonDialog(AWinControl).Title := AText 
-      Else
-        AWinControl.Caption := AText;
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Leaving %S', [CS_To_String(AWinControl.FCompStyle)]));
-    End;
-}
-  
-    csComboBox:
-    Begin
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Got %S', [CS_To_String(AWinControl.FCompStyle)]));
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [AText]));
-      if TCustomComboBox(AWinControl).Style = csDropDownList then
-        Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
-      else
-        Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
-    End;
-    csMemo:
-    Begin
-      SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
-    End;
-  {
-    csNotebook:
-    Begin
-      Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csNotebook');
-      with TLMNotebookEvent(Data^) do
-      if Parent=Sender then
-      begin
-        TCI.mask := TCIF_TEXT;
-        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [Str]));
-        TCI.pszText := PChar(Str);
-        Windows.SendMessage(TCustomNotebook(Sender).Handle, TCM_SETITEM, Page, LPARAM(@TCI));
-      end
-    End;
-  }
-    csToolButton:
-    Begin
-      TempText := AText + TermChar;
-      SendMessage(AWinControl.Parent.Handle, TB_ADDSTRING, 0, LPARAM(PChar(TempText)));
-    End;
-  Else
-    Windows.SetWindowText(Handle, PChar(AText));
-  End;
-  Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> END', [AWinControl.ClassName]));
+  Assert(Handle<>0,'Trace:WARNING: [TWin32WSWinControl.SetText] --> Got NULL handle');
+  Windows.SetWindowText(Handle, PChar(AText));
 End;
 
 procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
