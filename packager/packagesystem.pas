@@ -82,7 +82,7 @@ type
     procedure AddStaticBasePackages;
     procedure RegisterStaticPackages;
   public
-    property Packages[Index: integer]: TLazPackage read GetPackages;
+    property Packages[Index: integer]: TLazPackage read GetPackages; default;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
                                               write SetRegistrationPackage;
     property RegistrationUnitName: string read FRegistrationUnitName;
@@ -376,17 +376,19 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='FCL';
+    Title:='FreePascal Component Library';
     Filename:='$(#FPCSrcDir)/fcl/';
     Version.SetValues(1,0,1,1);
     Author:='FPC team';
-    AutoLoad:=true;
+    AutoInstall:=pitStatic;
     AutoUpdate:=false;
-    Description:='FCL - FreePascal Component Library';
+    Description:='The FCL provides the base classes for object pascal.';
     PackageType:=lptDesignTime;
+    Installed:=pitStatic;
 
     // add files
-    AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],CompPriorityBase);
-    AddFile('db/db.pp','DB',pftUnit,[pffHasRegisterProc],CompPriorityBase);
+    AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('db/db.pp','DB',pftUnit,[pffHasRegisterProc],cpBase);
 
     Modified:=false;
   end;
@@ -398,27 +400,29 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='LCL';
+    Title:='Lazarus Component Library';
     Filename:='$(#LazarusDir)/lcl/';
     Version.SetValues(1,0,1,1);
     Author:='Lazarus';
-    AutoLoad:=true;
+    AutoInstall:=pitStatic;
     AutoUpdate:=false;
-    Description:='LCL - Lazarus Component Library';
+    Description:='The LCL contains all base components for form editing.';
     PackageType:=lptDesignTime;
+    Installed:=pitStatic;
 
     // add files
-    AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
-    AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpLCL);
     
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
@@ -448,10 +452,12 @@ begin
   // FCL
   RegistrationPackage:=FCLPackage;
   RegisterFCL.Register;
+  FCLPackage.Registered:=true;
   
   // LCL
   RegistrationPackage:=LCLPackage;
   RegisterLCL.Register;
+  LCLPackage.Registered:=true;
 
   // clean up
   RegistrationPackage:=nil;

@@ -46,12 +46,13 @@ uses
 {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, COntrols, KeyMapping, EnvironmentOpts,
   UComponentManMain, PackageEditor, PackageDefs, PackageLinks, PackageSystem,
-  ComponentReg,
+  ComponentReg, OpenInstalledPkgDlg,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
+    procedure mnuOpenInstalledPckClicked(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -64,6 +65,8 @@ type
 
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoNewPackage: TModalResult; override;
+    function DoShowOpenInstalledPckDlg: TModalResult; override;
+    function DoOpenPackage(APackage: TLazPackage): TModalResult; override;
   end;
 
 implementation
@@ -73,6 +76,11 @@ implementation
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
 begin
   ShowConfigureCustomComponents;
+end;
+
+procedure TPkgManager.mnuOpenInstalledPckClicked(Sender: TObject);
+begin
+  DoShowOpenInstalledPckDlg;
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -95,6 +103,7 @@ procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDE do begin
     itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
+    itmOpenInstalledPkg.OnClick :=@mnuOpenInstalledPckClicked;
   end;
 end;
 
@@ -132,6 +141,26 @@ begin
   NewPackage:=PackageGraph.NewPackage('NewPackage');
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);
+  CurEditor.Show;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoShowOpenInstalledPckDlg: TModalResult;
+var
+  APackage: TLazPackage;
+begin
+  Result:=ShowOpenInstalledPkgDlg(APackage);
+  if (Result<>mrOk) then exit;
+  Result:=DoOpenPackage(APackage);
+end;
+
+function TPkgManager.DoOpenPackage(APackage: TLazPackage): TModalResult;
+var
+  CurEditor: TPackageEditorForm;
+begin
+  Result:=mrCancel;
+  // open a package editor
+  CurEditor:=PackageEditors.OpenEditor(APackage);
   CurEditor.Show;
   Result:=mrOk;
 end;

@@ -44,7 +44,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms;
+  Classes, SysUtils, Forms, PackageDefs;
 
 type
   TBasePkgManager = class(TComponent)
@@ -57,6 +57,8 @@ type
     
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;
+    function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
+    function DoOpenPackage(APackage: TLazPackage): TModalResult; virtual; abstract;
   end;
   
 var

@@ -392,7 +392,6 @@ begin
     Result:=TPackageEditorForm.Create(Application);
     Result.LazPackage:=Pkg;
     FItems.Add(Result);
-    Pkg.Open:=true;
   end;
 end;
 

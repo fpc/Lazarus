@@ -271,6 +271,7 @@ type
     
     // components menu
     itmCompsConfigCustomComps: TMenuItem;
+    itmOpenInstalledPkg: TMenuItem;
 
     // tools menu
     itmToolConfigure: TMenuItem;
@@ -1049,6 +1050,17 @@ begin
   itmCompsConfigCustomComps.Name:='itmCompsConfigCustomComps';
   itmCompsConfigCustomComps.Caption := lisMenuConfigCustomComps;
   mnuComponents.Add(itmCompsConfigCustomComps);
+
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(CreateMenuSeparator);
+  {$ENDIF}
+
+  itmOpenInstalledPkg := TMenuItem.Create(Self);
+  itmOpenInstalledPkg.Name:='itmOpenInstalledPkg';
+  itmOpenInstalledPkg.Caption := lisMenuOpenInstalledPkg;
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(itmOpenInstalledPkg);
+  {$ENDIF}
 end;
 
 procedure TMainIDEBar.SetupToolsMenu;
@@ -1253,6 +1265,7 @@ begin
 
     // components menu
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
+    itmOpenInstalledPkg.ShortCut:=CommandToShortCut(ecOpenInstalledPkg);
 
     // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);

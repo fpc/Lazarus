@@ -84,38 +84,31 @@ Creating other system specific rpms:
 
 Debian:
 
-Creating the debian fpc packages:
+Creating the debian fpc and fpcsrc packages:
+
+  There are two versions of the compiler: the stable 1.0.7 and the unstable
+  developer version 1.1. To build them, you must install fpc first. Install the
+  latest fpc package you can get. Note: The 1.0.7 can not be built with a 1.1
+  compiler.
+  The create_fpc_deb.sh works nearly automatically. Become root and execute it.
+  For 1.0.7: ./create_fpc_deb.sh stable
+  For 1.1:   ./create_fpc_deb.sh devel
+
+  What it does: First it checks if the fpc source tgz is already created and
+  if not, it automatically downloads it. The script does not use the current
+  version, but the latest known to work with lazarus. Then it unpacks the
+  source, compiles it and builds the debs. Normally you can find the debs under
+  /usr/src/ and the current directory.
 
 
-  You need the debhelper, tetex-bin, tetex-extra, awk, dvipdfm, latex2html
-  packages.
-  See install/debian/README.debian for changing /etc/texmf/texmf.cnf.
-  Install the latest fpc package you can get. You will need it to compile the
-  compiler itself. Then download the fpc cvs of the FIXES_1_0_0 branch and
-  compile the RTL and the compiler with 'make rtl' and 'make compiler'.
-  The deb packages are created with 'make deb'. This will create a lot of debs
-  in /usr/src. The lazarus debs are created by changing the version in
-  Makefile.fpc, Makefile and prepending a message to install/debian/changelog.
-
-
-Creating the debian fpcsrc package:
-
-  You need the fakeroot package.
-  Create the fpcsrc-1.0.7.tgz of 'Creating the fpcsrc tgz' and put it into
-  tools/install. If you have no permissions for that, just copy the directory
-  somewhere (e.g. cp -R <lazarusdir>/tools/install /tmp/fpcsrc).
-  Then cd into the tools/install directory and execute the script
-  create_fpcsrc_deb.sh. It will create /tmp/fpcsrc_temp/ and will build the
-  deb there.
-  
-  
 Creating the debian lazarus package:
 
-  You need the X11 package:
-  Create the lazarus-0.8.5.tgz of 'Creating the lazarus tgz' and put it into
-  tools/install. If you have no permissions for that, just copy the directory
-  somewhere (e.g. cp -R <lazarusdir>/tools/install /tmp/lazarus).
-  Then cd into the tools/install directory and execute the script
-  create_lazarus_deb.sh. It will create /tmp/lazarus_temp/ and will build the
-  deb there.
-  
+  Important:
+  If you have created new fpc debs, then you should install them, *before* you
+  build the lazarus deb. Otherwise the compiled lazarus deb is not compatible
+  to the fpc debs.
+
+  As root:
+  Execute create_lazarus_deb.sh.
+
+

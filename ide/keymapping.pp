@@ -45,6 +45,7 @@ const
   }
   ecNone                 = SynEditKeyCmds.ecNone;
   
+  // search
   ecFind                 = ecUserFirst + 1;
   ecFindAgain            = ecUserFirst + 2;
   ecFindNext             = ecFindAgain;
@@ -53,27 +54,29 @@ const
   ecFindProcedureDefinition = ecUserFirst + 5;
   ecFindProcedureMethod  = ecUserFirst + 6;
   ecGotoLineNumber       = ecUserFirst + 7;
+  ecFindPrevious         = ecUserFirst + 8;
+  ecFindInFiles          = ecUserFirst + 9;
+  ecJumpBack             = ecUserFirst + 10;
+  ecJumpForward          = ecUserFirst + 11;
+  ecAddJumpPoint         = ecUserFirst + 12;
+  ecViewJumpHistory      = ecUserFirst + 13;
 
-  ecNextEditor           = ecUserFirst + 8;
-  ecPrevEditor           = ecUserFirst + 9;
-  ecMoveEditorLeft       = ecUserFirst + 10;
-  ecMoveEditorRight      = ecUserFirst + 11;
-
-  ecPeriod               = ecUserFirst + 12;
-
-  ecFindPrevious         = ecUserFirst + 13;
-  ecFindInFiles          = ecUserFirst + 14;
-  ecJumpBack             = ecUserFirst + 15;
-  ecJumpForward          = ecUserFirst + 16;
-  ecAddJumpPoint         = ecUserFirst + 17;
-  ecViewJumpHistory      = ecUserFirst + 18;
-
+  // search code
   ecFindDeclaration      = ecUserFirst + 20;
   ecFindBlockOtherEnd    = ecUserFirst + 21;
   ecFindBlockStart       = ecUserFirst + 22;
   ecOpenFileAtCursor     = ecUserFirst + 23;
   ecGotoIncludeDirective = ecUserFirst + 24;
 
+  // source notebook
+  ecNextEditor           = ecUserFirst + 30;
+  ecPrevEditor           = ecUserFirst + 31;
+  ecMoveEditorLeft       = ecUserFirst + 32;
+  ecMoveEditorRight      = ecUserFirst + 33;
+
+  ecPeriod               = ecUserFirst + 40;
+
+  // edit selection
   ecSelectionUpperCase   = ecUserFirst + 50;
   ecSelectionLowerCase   = ecUserFirst + 51;
   ecSelectionTabs2Spaces = ecUserFirst + 52;
@@ -85,6 +88,7 @@ const
   ecSelectLine           = ecUserFirst + 58;
   ecSelectParagraph      = ecUserFirst + 59;
   
+  // insert text
   ecInsertGPLNotice      = ecUserFirst + 80;
   ecInsertLGPLNotice     = ecUserFirst + 81;
   ecInsertUserName       = ecUserFirst + 82;
@@ -99,6 +103,7 @@ const
   ecInsertCVSRevision    = ecUserFirst + 91;
   ecInsertCVSSource      = ecUserFirst + 92;
 
+  // codetools
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
   ecIdentCompletion      = ecUserFirst + 102;
@@ -109,6 +114,7 @@ const
   ecMakeResourceString   = ecUserFirst + 107;
   ecDiff                 = ecUserFirst + 108;
 
+  // file menu
   ecNew                  = ecUserFirst + 201;
   ecNewUnit              = ecUserFirst + 202;
   ecNewForm              = ecUserFirst + 203;
@@ -121,6 +127,7 @@ const
   ecCloseAll             = ecUserFirst + 211;
   ecQuit                 = ecUserFirst + 212;
 
+  // IDE navigation
   ecJumpToEditor         = ecUserFirst + 300;
   ecToggleFormUnit       = ecUserFirst + 301;
   ecToggleObjectInsp     = ecUserFirst + 302;
@@ -136,6 +143,19 @@ const
   ecToggleLocals         = ecUserFirst + 312;
   ecToggleCallStack      = ecUserFirst + 313;
 
+  // sourcenotebook commands
+  ecGotoEditor1          = ecUserFirst + 350;
+  ecGotoEditor2          = ecGotoEditor1 + 1;
+  ecGotoEditor3          = ecGotoEditor2 + 1;
+  ecGotoEditor4          = ecGotoEditor3 + 1;
+  ecGotoEditor5          = ecGotoEditor4 + 1;
+  ecGotoEditor6          = ecGotoEditor5 + 1;
+  ecGotoEditor7          = ecGotoEditor6 + 1;
+  ecGotoEditor8          = ecGotoEditor7 + 1;
+  ecGotoEditor9          = ecGotoEditor8 + 1;
+  ecGotoEditor0          = ecGotoEditor9 + 1;
+
+  // compile menu
   ecBuild                = ecUserFirst + 400;
   ecRun                  = ecUserFirst + 401;
   ecPause                = ecUserFirst + 402;
@@ -146,9 +166,11 @@ const
   ecBuildAll             = ecUserFirst + 407;
   ecBuildLazarus         = ecUserFirst + 408;
 
+  // tools menu
   ecExtToolFirst         = ecUserFirst + 500;
   ecExtToolLast          = ecUserFirst + 599;
 
+  // project menu
   ecNewProject           = ecUserFirst + 700;
   ecNewProjectFromFile   = ecUserFirst + 701;
   ecOpenProject          = ecUserFirst + 702;
@@ -161,6 +183,7 @@ const
   ecViewProjectTodos     = ecUserFirst + 709;
   ecProjectOptions       = ecUserFirst + 710;
 
+  // option commmands
   ecRunParameters        = ecUserFirst + 800;
   ecCompilerOptions      = ecUserFirst + 801;
   ecExtToolSettings      = ecUserFirst + 802;
@@ -170,21 +193,13 @@ const
   ecCodeToolsOptions     = ecUserFirst + 806;
   ecCodeToolsDefinesEd   = ecUserFirst + 807;
   
+  // components menu
   ecConfigCustomComps    = ecUserFirst + 900;
+  ecOpenInstalledPkg     = ecUserFirst + 901;
 
+  // help menu
   ecAboutLazarus         = ecUserFirst + 1000;
   
-  ecGotoEditor1          = ecUserFirst + 2000;
-  ecGotoEditor2          = ecGotoEditor1 + 1;
-  ecGotoEditor3          = ecGotoEditor2 + 1;
-  ecGotoEditor4          = ecGotoEditor3 + 1;
-  ecGotoEditor5          = ecGotoEditor4 + 1;
-  ecGotoEditor6          = ecGotoEditor5 + 1;
-  ecGotoEditor7          = ecGotoEditor6 + 1;
-  ecGotoEditor8          = ecGotoEditor7 + 1;
-  ecGotoEditor9          = ecGotoEditor8 + 1;
-  ecGotoEditor0          = ecGotoEditor9 + 1;
-
 
 type
   TCommandArea = (caSourceEditor, caDesigner);
@@ -612,7 +627,8 @@ begin
     
     // components menu
     ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
-    
+    ecOpenInstalledPkg      : Result:= lisMenuOpenInstalledPkg;
+
     // tools menu
     ecExtToolSettings       : Result:= srkmecExtToolSettings;
     ecConfigBuildLazarus    : Result:= lismenuconfigurebuildlazarus;
@@ -1447,6 +1463,7 @@ begin
   // components menu
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
   Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open installed package',ecOpenInstalledPkg,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
   C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];

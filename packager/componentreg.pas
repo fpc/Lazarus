@@ -40,13 +40,24 @@ interface
 uses
   Classes, SysUtils, IDEProcs;
 
+type
+  TComponentPriorityCategory = (
+    cpLCL,
+    cpBase,
+    cpRecommended,
+    cpNormal,
+    cpOptional
+    );
+    
+  TComponentPriority = record
+    Category: TComponentPriorityCategory;
+    Level: integer; // higher level means higher priority (range: -1000 to 1000)
+  end;
+    
 const
-  CompPriorityLCL         =  0;
-  CompPriorityBase        = 10;
-  CompPriorityRecommended = 20;
-  CompPriorityNormal      = 30;
-  CompPriorityOptional    = 40;
+  ComponentPriorityNormal: TComponentPriority = (Category: cpNormal; Level:0);
 
+    
 type
   TIDEComponentPage = class;
   TIDEComponentPalette = class;
@@ -65,7 +76,7 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck; virtual;
     function GetUnitName: string; virtual; abstract;
-    function GetPriority: integer; virtual;
+    function GetPriority: TComponentPriority; virtual;
     procedure AddToPalette; virtual;
   public
     property ComponentClass: TComponentClass read FComponentClass;
@@ -81,7 +92,7 @@ type
     FItems: TList; // list of TIDEComponent
     FPageName: string;
     FPalette: TIDEComponentPalette;
-    FPriority: integer;
+    FPriority: TComponentPriority;
     function GetItems(Index: integer): TIDEComponent;
   public
     constructor Create(const ThePageName: string);
@@ -96,7 +107,7 @@ type
     property Items[Index: integer]: TIDEComponent read GetItems; default;
     property PageName: string read FPageName;
     property Palette: TIDEComponentPalette read FPalette;
-    property Priority: integer read FPriority write FPriority;
+    property Priority: TComponentPriority read FPriority write FPriority;
   end;
 
 
@@ -117,19 +128,28 @@ type
     function IndexOfPageWithName(const APageName: string): integer;
     procedure AddComponent(NewComponent: TIDEComponent);
     function CreateNewPage(const NewPageName: string;
-      Priority: integer): TIDEComponentPage;
+      const Priority: TComponentPriority): TIDEComponentPage;
     function FindComponent(const CompClassName: string): TIDEComponent;
   public
     property Items[Index: integer]: TIDEComponentPage read GetItems; default;
   end;
   
+
 var
   IDEComponentPalette: TIDEComponentPalette;
+
+function ComparePriority(const p1,p2: TComponentPriority): integer;
 
 
 implementation
 
 
+function ComparePriority(const p1, p2: TComponentPriority): integer;
+begin
+  Result:=ord(p2.Category)-ord(p1.Category);
+  if Result<>0 then exit;
+  Result:=p1.Level-p2.Level;
+end;
 
 { TIDEComponent }
 
@@ -154,9 +174,9 @@ begin
     RaiseException('TIDEComponent.ConsistencyCheck not IsValidIdent(FComponentClass.ClassName)');
 end;
 
-function TIDEComponent.GetPriority: integer;
+function TIDEComponent.GetPriority: TComponentPriority;
 begin
-  Result:=CompPriorityNormal;
+  Result:=ComponentPriorityNormal;
 end;
 
 procedure TIDEComponent.AddToPalette;
@@ -206,11 +226,12 @@ end;
 procedure TIDEComponentPage.Add(NewComponent: TIDEComponent);
 var
   InsertIndex: Integer;
-  NewPriority: Integer;
+  NewPriority: TComponentPriority;
 begin
   NewPriority:=NewComponent.GetPriority;
   InsertIndex:=0;
-  while (InsertIndex<Count) and (NewPriority<Items[InsertIndex].GetPriority) do
+  while (InsertIndex<Count)
+  and (ComparePriority(Items[InsertIndex].GetPriority,NewPriority)>0) do
     inc(InsertIndex);
   FItems.Insert(InsertIndex,NewComponent);
   NewComponent.Page:=Self;
@@ -308,13 +329,14 @@ begin
 end;
 
 function TIDEComponentPalette.CreateNewPage(const NewPageName: string;
-  Priority: integer): TIDEComponentPage;
+  const Priority: TComponentPriority): TIDEComponentPage;
 var
   InsertIndex: Integer;
 begin
   Result:=TIDEComponentPage.Create(NewPageName);
   InsertIndex:=0;
-  while (InsertIndex<Count) and (Items[InsertIndex].Priority<Priority) do
+  while (InsertIndex<Count)
+  and (ComparePriority(Items[InsertIndex].Priority,Priority)>0) do
     inc(InsertIndex);
   FItems.Insert(InsertIndex,Result);
   Result.FPalette:=Self;

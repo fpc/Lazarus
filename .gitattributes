@@ -818,6 +818,7 @@ packager/basepkgmanager.pas svneol=native#text/pascal
 packager/brokendependenciesdlg.pas svneol=native#text/pascal
 packager/componentreg.pas svneol=native#text/pascal
 packager/lazaruspackageintf.pas svneol=native#text/pascal
+packager/openinstalledpkgdlg.pas svneol=native#text/pascal
 packager/packagedefs.pas svneol=native#text/pascal
 packager/packageeditor.pas svneol=native#text/pascal
 packager/packagelinks.pas svneol=native#text/pascal
