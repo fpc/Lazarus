@@ -57,7 +57,10 @@ type
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
     function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
-    function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; overload;
+    function PangoExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+    function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; overload;
+    function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; overload;
+    function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; overload;
     {$EndIf}
   end;
 
@@ -233,7 +236,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function Tgtk2Object.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function Tgtk2Object.PangoExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   LineStart, LineEnd, StrEnd: PChar;
@@ -393,6 +396,263 @@ begin
   end;
   Assert(False, Format('trace:< [Tgtk2Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
+
+{------------------------------------------------------------------------------
+  Function: TextOut
+  Params: DC:
+          X:
+          Y:
+          Str:
+          Count:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTK2Object.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+  Count: Integer) : Boolean;
+var
+  DCOrigin: TPoint;
+  aRect : TRect;
+
+  UnRef,
+  Underline,
+  StrikeOut : Boolean;
+
+  RGBColor : Longint;
+
+  Layout : PPangoLayout;
+  UseFontDesc : PPangoFontDescription;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+begin
+  Result := IsValidDC(DC);
+  if Result and (Count>0)
+  then with TDeviceContext(DC) do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [Tgtk2Object.TextOut] Uninitialized GC');
+    end
+    else begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFontDesc := GetDefaultFontDesc(true);
+        UnRef := True;
+        Underline := False;
+        StrikeOut := False;
+      end
+      else begin
+        UseFontDesc := CurrentFont^.GDIFontObject;
+        UnRef := False;
+        Underline := CurrentFont^.Underline;
+        StrikeOut := CurrentFont^.StrikeOut;
+      end;
+      
+      If UseFontDesc = nil then
+        WriteLn('WARNING: [Tgtk2Object.TextOut] Missing Font')
+      else begin
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        pango_layout_set_font_description(Layout, UseFontDesc);
+        AttrList := pango_layout_get_attributes(Layout);
+
+        //fix me... what about &&, can we strip and do do markup substitution?
+        If Underline then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(StrikeOut);
+        pango_attr_list_change(AttrList,Attr);
+
+        Case TColor(CurrentTextColor.ColorRef) of
+          clScrollbar..clEndColors:
+            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+          else
+            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
+        end;
+
+        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                        gushort(GetGValue(RGBColor)) shl 8,
+                                        gushort(GetBValue(RGBColor)) shl 8);
+
+        pango_attr_list_change(AttrList,Attr);
+        pango_layout_set_attributes(Layout, AttrList);
+
+        pango_layout_set_single_paragraph_mode(Layout, TRUE);
+        pango_layout_set_width(Layout, 0);
+
+        pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
+
+        //fix me... and what about UTF-8 conversion?
+        //this could be a massive problem since we
+        //will need to know before hand what the current
+        //locale is, and if we stored UTF-8 string this would break
+        //cross-compatibility with GTK1.2 and win32 interfaces.....
+
+        pango_layout_set_text(Layout, Str, Count);
+
+        aRect := Rect(0,0,0, 0);
+        pango_layout_get_pixel_size(Layout, @arect.Right, @arect.Bottom);
+
+        OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
+        FillRect(DC,aRect,hBrush(CurrentBrush));
+
+        gdk_draw_layout(drawable, gc, aRect.Left, aRect.Top, Layout);
+        g_object_unref(Layout);
+        Result := True;
+        If UnRef then
+          pango_font_description_free(UseFontDesc);
+      end;
+    end;
+  end;
+end;
+
+function Tgtk2Object.CreateFontIndirectEx(const LogFont: TLogFont;
+  const LongFontName: string): HFONT;
+var
+  GdiObject: PGdiObject;
+  FamilyName : string;
+
+  procedure LoadDefaultFont;
+  begin
+    DisposeGDIObject(GdiObject);
+    GdiObject:=CreateDefaultFont;
+  end;
+
+begin
+  Result := 0;
+  GDIObject := NewGDIObject(gdiFont);
+
+  with LogFont do begin
+    if lfFaceName[0] = #0
+    then begin
+      Assert(false,'ERROR: [Tgt2kObject.CreateFontIndirectEx] No fontname');
+      Exit;
+    end;
+
+    FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
+    if AnsiCompareText(FamilyName,'default')=0 then begin
+      LoadDefaultFont;
+      exit;
+    end;
+
+    GdiObject^.GDIFontObject := pango_font_description_from_string(PChar(AnsiString(FamilyName + ' ' + IntToStr(Abs(lfHeight)))));
+    If lfWeight <> FW_DONTCARE then
+      pango_font_description_set_weight(GdiObject^.GDIFontObject, lfWeight);
+      
+    if lfItalic = 0 then
+      pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_NORMAL)
+    else
+      pango_font_description_set_style(GdiObject^.GDIFontObject,PANGO_STYLE_ITALIC);
+
+    GdiObject^.StrikeOut := lfStrikeOut <> 0;
+    GdiObject^.Underline := lfUnderline <> 0;
+
+    Result := HFONT(GdiObject);
+  end;
+end;
+
+function Tgtk2Object.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
+  var Size: TSize): Boolean;
+var
+  DCOrigin: TPoint;
+  aRect : TRect;
+
+  UnRef,
+  Underline,
+  StrikeOut : Boolean;
+
+  RGBColor : Longint;
+
+  Layout : PPangoLayout;
+  UseFontDesc : PPangoFontDescription;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+begin
+  Result := IsValidDC(DC);
+  if Result and (Count>0)
+  then with TDeviceContext(DC) do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [Tgtk2Object.GetTextExtentPoint] Uninitialized GC');
+    end
+    else begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFontDesc := GetDefaultFontDesc(true);
+        UnRef := True;
+        Underline := False;
+        StrikeOut := False;
+      end
+      else begin
+        UseFontDesc := CurrentFont^.GDIFontObject;
+        UnRef := False;
+        Underline := CurrentFont^.Underline;
+        StrikeOut := CurrentFont^.StrikeOut;
+      end;
+
+      If UseFontDesc = nil then
+        WriteLn('WARNING: [Tgtk2Object.GetTextExtentPoint] Missing Font')
+      else begin
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        pango_layout_set_font_description(Layout, UseFontDesc);
+        AttrList := pango_layout_get_attributes(Layout);
+
+        //fix me... what about &&, can we strip and do do markup substitution?
+        If Underline then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(StrikeOut);
+        pango_attr_list_change(AttrList,Attr);
+
+        Case TColor(CurrentTextColor.ColorRef) of
+          clScrollbar..clEndColors:
+            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+          else
+            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
+        end;
+
+        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                        gushort(GetGValue(RGBColor)) shl 8,
+                                        gushort(GetBValue(RGBColor)) shl 8);
+
+        pango_attr_list_change(AttrList,Attr);
+        pango_layout_set_attributes(Layout, AttrList);
+
+        pango_layout_set_single_paragraph_mode(Layout, TRUE);
+        pango_layout_set_width(Layout, 0);
+
+        pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
+
+        //fix me... and what about UTF-8 conversion?
+        //this could be a massive problem since we
+        //will need to know before hand what the current
+        //locale is, and if we stored UTF-8 string this would break
+        //cross-compatibility with GTK1.2 and win32 interfaces.....
+
+        pango_layout_set_text(Layout, Str, Count);
+
+        pango_layout_get_pixel_size(Layout, @Size.cX, @Size.cY);
+
+        g_object_unref(Layout);
+
+        Result := True;
+        If UnRef then
+          pango_font_description_free(UseFontDesc);
+      end;
+    end;
+  end;
+end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
@@ -503,6 +763,11 @@ end.
 
 {
   $Log$
+  Revision 1.9  2003/09/10 18:03:47  ajgenius
+  more changes for pango -
+  partly fixed ref counting,
+  added Pango versions of TextOut, CreateFontIndirectEx, and GetTextExtentPoint to the GTK2 interface
+
   Revision 1.8  2003/09/09 20:46:38  ajgenius
   more implementation toward pango for gtk2
 

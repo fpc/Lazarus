@@ -7444,7 +7444,7 @@ begin
         (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
       then begin
          GdiObject:=NewGDIObject(gdiFont);
-         GdiObject^.GDIFontObject := gtk_widget_get_style(ClientWidget)^.font_desc;
+         GdiObject^.GDIFontObject :=  pango_font_description_copy(gtk_widget_get_style(ClientWidget)^.font_desc);
          GdiObject^.StrikeOut := False;
          GdiObject^.Underline := False;
          gdk_font_ref(Values.Font);
@@ -7645,7 +7645,7 @@ begin
   end;
   Result:=FDefaultFontDesc;
   if IncreaseReferenceCount then
-    g_object_ref(Result);
+    result := pango_font_description_copy(Result);
 end;
 {$Else}
 function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
@@ -8042,7 +8042,7 @@ var
   begin
     If UnRef then
         {$IfDef USE_PANGO}
-        G_Object_UnRef(UseFontDesc);
+         pango_font_description_free(UseFontDesc);
         {$Else}
         GDK_Font_UnRef(UseFont);
         {$EndIf}
@@ -8172,6 +8172,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.413  2003/09/10 18:03:46  ajgenius
+  more changes for pango -
+  partly fixed ref counting,
+  added Pango versions of TextOut, CreateFontIndirectEx, and GetTextExtentPoint to the GTK2 interface
+
   Revision 1.412  2003/09/10 02:33:41  ajgenius
   fixed TColotDialog for GTK2
 

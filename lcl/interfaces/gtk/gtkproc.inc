@@ -3984,17 +3984,15 @@ begin
   if Style = nil then
     Style := GetStyle('gtk_default');
 
-  If Style <> nil then
-      Result := Style^.font_desc;
+  If (Style <> nil) then begin
+     Result := pango_font_description_copy(Style^.font_desc);
+  end;
 
   If Result = nil then
     Result := pango_font_description_from_string('sans 12');
     
   if Result = nil then
     Result := pango_font_description_from_string('12');
-
-  If Result <> nil then
-    Result := g_object_ref(Result);
 end;
 {$Else}
 function LoadDefaultFont: PGDKFont;
@@ -4650,6 +4648,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.203  2003/09/10 18:03:46  ajgenius
+  more changes for pango -
+  partly fixed ref counting,
+  added Pango versions of TextOut, CreateFontIndirectEx, and GetTextExtentPoint to the GTK2 interface
+
   Revision 1.202  2003/09/10 02:33:41  ajgenius
   fixed TColotDialog for GTK2
 

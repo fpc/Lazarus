@@ -2114,7 +2114,7 @@ begin
           begin
             if GDIFontObject<>nil then
             {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
-            g_object_unref(GDIFontObject);
+             pango_font_description_free(GDIFontObject);
             {$Else}
             gdk_font_unref(GDIFontObject);
             {$EndIf}
@@ -8763,6 +8763,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.279  2003/09/10 18:03:46  ajgenius
+  more changes for pango -
+  partly fixed ref counting,
+  added Pango versions of TextOut, CreateFontIndirectEx, and GetTextExtentPoint to the GTK2 interface
+
   Revision 1.278  2003/09/09 20:46:38  ajgenius
   more implementation toward pango for gtk2
 
