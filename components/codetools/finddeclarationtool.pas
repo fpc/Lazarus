@@ -2307,11 +2307,13 @@ var
   
   procedure ExecuteStack;
   var NewOperand: TExpressionType;
+    LastPos: integer;
   begin
     if StackPtr<=0 then begin
       // only one element -> nothing to do
       exit;
     end;
+    LastPos:=CurPos.StartPos;
     while (StackPtr>0)
     and (ExprStack[StackPtr].OperatorLvl>ExprStack[StackPtr-1].OperatorLvl) do
     begin
@@ -2325,6 +2327,7 @@ var
       ExprStack[StackPtr]:=ExprStack[StackPtr+1];
       ExprStack[StackPtr].Operand:=NewOperand;
     end;
+    MoveCursorToCleanPos(LastPos);
   end;
   
 begin
@@ -2334,8 +2337,8 @@ writeln('[TFindDeclarationTool.FindExpressionResultType] ',
 {$ENDIF}
   Result:=CleanExpressionType;
   // read the expression from left to right and calculate the type
-  MoveCursorToCleanPos(StartPos);
   StackPtr:=-1;
+  MoveCursorToCleanPos(StartPos);
   repeat
     // read operand
     CurExprType:=ReadOperandTypeAtCursor(Params);
@@ -2382,11 +2385,8 @@ writeln('[TFindDeclarationTool.FindExpressionResultType] ',
     // execute stack if possible
     ExecuteStack;
   until false;
-
-  // This is a quick hack: Just return the type of the last variable.
-  MoveCursorToCleanPos(EndPos);
-  Result.Desc:=xtContext;
-  Result.Context:=FindContextNodeAtCursor(Params);
+  ExecuteStack;
+  Result:=ExprStack[0].Operand;
 end;
 
 function TFindDeclarationTool.FindIdentifierInUsesSection(
@@ -2829,7 +2829,6 @@ writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
     // ToDo: ppu, ppw, dcu files
 
     MoveCursorToNodeStart(Node);
-    ReadNextAtom;
 
     // ToDo: prevent circles
 
@@ -2898,6 +2897,7 @@ function TFindDeclarationTool.ReadOperandTypeAtCursor(
 var EndPos, SubStartPos: integer;
 begin
   Result:=CleanExpressionType;
+  if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
   // read unary operators which have no effect on the type: +, -, not
   while AtomIsChar('+') or AtomIsChar('-') or UpAtomIs('NOT') do
     ReadNextAtom;
@@ -3379,7 +3379,6 @@ writeln('[TFindDeclarationTool.IsCompatible] FindContext.Node.Desc=ctnSetType',
     // ToDo: ppu, ppw, dcu
     
     FindContext.Tool.MoveCursorToNodeStart(FindContext.Node.FirstChild);
-    ReadNextAtom;
     NodeExprType:=ReadOperandTypeAtCursor(Params);
     ExpressionType.Desc:=ExpressionType.SubDesc;
     Result:=IsCompatible(NodeExprType,ExpressionType,Params);
@@ -3452,7 +3451,7 @@ writeln('[TFindDeclarationTool.CreateParamExprList] ',
         if AtomIsChar(BracketClose) then break;
         if not AtomIsChar(',') then
           RaiseException(BracketClose+' expected, but '+GetAtom+' found');
-        ReadNextAtom;
+        CurPos.StartPos:=CurPos.EndPos;
       end;
     end;
   end;
