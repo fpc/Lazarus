@@ -360,6 +360,9 @@ begin
   if AccelTable <> 0 then
     DestroyAcceleratorTable(AccelTable);
   DestroyWindow(Handle);
+  { TODO: HACK: next line "fixes" opendialogs being closed after 
+    closing message dialog }
+  TWin32WidgetSet(InterfaceObject).HandleEvents;
 end;
 
 procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
