@@ -182,7 +182,7 @@ type
     property Parent: TMenuItem read GetParent;
     function IsCheckItem: boolean; virtual;
   published
-    property AutoCheck: boolean read FAutoCheck write SetAutoCheck;
+    property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
     property Caption: String
       read FCaption write SetCaption stored IsCaptionStored;
     property Checked: Boolean
@@ -463,6 +463,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2002/08/22 13:45:57  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.25  2002/08/17 07:57:05  lazarus
   MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
 

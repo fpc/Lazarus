@@ -62,12 +62,14 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenu.CreateHandle;
+var i: integer;
 begin
   InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil); // CreateComponent(nil);
   // initiate creation of subitems
   // Note: FItems is a MenuItem, by using Createhandle all subitems will be
   //       created.
-  FItems.CreateHandle;
+  for i:=0 to Items.Count-1 do
+    Items[i].HandleNeeded;
 end;
 
 {------------------------------------------------------------------------------
@@ -168,6 +170,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/08/22 13:45:58  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.11  2002/08/12 15:32:29  lazarus
   MG: started enhanced menuitem
 

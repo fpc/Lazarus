@@ -289,7 +289,8 @@ end;
 
   Draws the requested image on the given canvas.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean);
+procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
+  Enabled: Boolean);
 var
   aBitmap : TBitmap;
 begin
@@ -839,6 +840,9 @@ end;
 {
 
   $Log$
+  Revision 1.12  2002/08/22 13:45:58  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.11  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 

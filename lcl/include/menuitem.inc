@@ -66,26 +66,32 @@ end;
   Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenuItem.CreateHandle;
-var
-  n: Integer;
+var i: Integer;
 begin
+  InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil);
+  if FItems<>nil then begin
+    for i := 0 to Count - 1 do begin
+      Items[i].HandleNeeded;
+    end;
+  end;
   if Parent <> nil then
   begin
     Parent.HandleNeeded;
-    if Parent.HandleAllocated and (not HandleAllocated) then
-      InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil);
-    if HandleAllocated then
-    begin
+    if Parent.HandleAllocated then
+      InterfaceObject.IntSendMessage3(LM_ATTACHMENU, Self, nil);
+    if HandleAllocated then begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;  
   end;
-  if (FItems <> nil) and ((Parent = nil) or Parent.HandleAllocated) 
+  {
+  if (FItems <> nil) and ((Parent = nil) or Parent.HandleAllocated)
   then begin
     for n := 0 to FItems.Count - 1 do 
     begin
       InterfaceObject.IntSendMessage3(LM_ATTACHMENU, TObject(FItems[n]), nil);
     end;
   end;
+  }
 end;
 
 {------------------------------------------------------------------------------
@@ -420,7 +426,7 @@ procedure TMenuItem.RecreateHandle;
 begin
   if not HandleAllocated then exit;
   DestroyHandle;
-  CreateHandle;
+  HandleNeeded;
 end;
 
 {------------------------------------------------------------------------------
@@ -916,6 +922,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/08/22 13:45:58  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.25  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
@@ -1019,6 +1028,9 @@ end;
 
 
   $Log$
+  Revision 1.26  2002/08/22 13:45:58  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.25  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 

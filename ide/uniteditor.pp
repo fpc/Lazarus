@@ -458,7 +458,8 @@ type
     SrcPopUpMenu : TPopupMenu;
     StatusBar : TStatusBar;
     SetBookmarkMenuItem : TMenuItem;
-    property OnAddJumpPoint: TOnAddJumpPoint 
+    GotoBookmarkMenuItem : TMenuItem;
+    property OnAddJumpPoint: TOnAddJumpPoint
        read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked : TNotifyEvent read FOnCloseClicked write FOnCloseClicked;
     property OnDeleteLastJumpPoint: TNotifyEvent
@@ -2252,6 +2253,7 @@ end;
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
+  i: integer;
 begin
   if not (Sender is TPopupMenu) then exit;
   ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
@@ -2259,6 +2261,10 @@ begin
   ReadOnlyMenuItem.Checked:=ASrcEdit.ReadOnly;
   ShowLineNumbersMenuItem.Checked:=
     ASrcEdit.EditorComponent.Gutter.ShowLineNumbers;
+  for i:=0 to 9 do begin
+    SetBookmarkMenuItem[i].Checked:=(FindBookmark(i)<>nil);
+    GotoBookmarkMenuItem[i].Checked:=SetBookmarkMenuItem[i].Checked;
+  end;
 end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
@@ -2312,10 +2318,10 @@ Begin
       SetBookmarkMenuItem.Add(SubMenuItem);
     end;
 
-  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Name:='GotoBookmarkMenuItem';
-  MenuItem.Caption := '&Goto Bookmark';
-  SrcPopupMenu.Items.Add(MenuItem);
+  GotoBookmarkMenuItem := TMenuItem.Create(Self);
+  GotoBookmarkMenuItem.Name:='GotoBookmarkMenuItem';
+  GotoBookmarkMenuItem.Caption := '&Goto Bookmark';
+  SrcPopupMenu.Items.Add(GotoBookmarkMenuItem);
 
   for I := 0 to 9 do
     Begin
@@ -2323,7 +2329,7 @@ Begin
       SubmenuItem.Name:='GotoBookmark'+IntToStr(I)+'MenuItem';
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkGotoClicked;
-      MenuItem.Add(SubMenuItem);
+      GotoBookmarkMenuItem.Add(SubMenuItem);
     end;
 
   SrcPopupMenu.Items.Add(Seperator);
@@ -2804,16 +2810,16 @@ var
   ActEdit,AnEdit:TSourceEditor;
 Begin
   MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
-  if not MenuItem.Checked then begin
-    MenuItem.Checked := true;
-    MenuItem.Caption := MenuItem.Caption + '*';
-  end;
   ActEdit:=GetActiveSE;
 
   AnEdit:=FindBookmark(Value);
-  if AnEdit<>nil then AnEdit.EditorComponent.ClearBookMark(Value);
+  if AnEdit<>nil then begin
+    AnEdit.EditorComponent.ClearBookMark(Value);
+  end;
   ActEdit.EditorComponent.SetBookMark(Value,
      ActEdit.EditorComponent.CaretX,ActEdit.EditorComponent.CaretY);
+  MenuItem.Checked := true;
+  GotoBookmarkMenuItem[Value].Checked:=true;
 end;
 
 {This is called from outside to set a bookmark}
@@ -3143,7 +3149,7 @@ begin
     BookMarkGoto(Command - ecGotoMarker0);
 
   ecSetMarker0..ecSetMarker9:
-    BookMarkToggle(Command - ecSetMarker0);
+    BookMarkSet(Command - ecSetMarker0);
     
   ecJumpBack:
     HistoryJump(Self,jhaBack);
