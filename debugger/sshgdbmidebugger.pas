@@ -46,22 +46,22 @@ type
   protected
     function ParseInitialization: Boolean; override;
   public
-    class function CreateProperties: TDebuggerProperties; override;         // Creates and initializes debuggerproperties
+    class function CreateProperties: TDebuggerProperties; override;  // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
   end;
 
-
-implementation
-
-type
-  TSSHGDBMIDebuggerProperties = class(TDebuggerProperties)
+  TSSHGDBMIDebuggerProperties = class(TGDBMIDebuggerProperties)
   private
     FNote: String; //dummy
   published
     property Note: String read FNote write FNote;
   end;
-  
+
+implementation
+
+type
+
   TSSHGDBMINotePropertyEditor = class(TStringPropertyEditor)
   private
   protected
@@ -206,6 +206,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/09 00:10:51  marc
+  * More debugger properties
+  * Fixed debugger for regcall callingconvention in RTL
+
   Revision 1.7  2004/01/04 03:53:36  marc
   * Changed TComponentSelectionList to TPersistentSelectionList
   + Added SSHdebugger property

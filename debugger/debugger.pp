@@ -798,9 +798,8 @@ type
 
   TDebuggerProperties = class(TPersistent)
   private
-    FTest: String;
+  public
   published
-    property Test: String read FTest write FTest;
   end;
 
   TDebugger = class(TObject)
@@ -860,7 +859,7 @@ type
     class function ExePaths: String; virtual;        // The default locations of the exe
 
     // debugger properties
-    class function CreateProperties: TDebuggerProperties; virtual;         // Creates and initializes debuggerproperties
+    class function CreateProperties: TDebuggerProperties; virtual;         // Creates debuggerproperties
     class function GetProperties: TDebuggerProperties;                     // Get the current properties
     class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
 
@@ -1019,7 +1018,6 @@ begin
   if FRefCount = 0 then Free;
 end;
 
-
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -1100,14 +1098,8 @@ begin
 end;
 
 class function TDebugger.CreateProperties: TDebuggerProperties; 
-var
-  idx: Integer;
 begin
   Result := TDebuggerProperties.Create;
-  if MDebuggerPropertiesList = nil then Exit;
-  idx := MDebuggerPropertiesList.IndexOf(ClassName);
-  if idx = -1 then Exit;
-  Result.Assign(TDebuggerProperties(MDebuggerPropertiesList.Objects[idx]));
 end;
 
 function TDebugger.CreateSignals: TDBGSignals;
@@ -3179,6 +3171,10 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.58  2004/01/09 00:10:51  marc
+  * More debugger properties
+  * Fixed debugger for regcall callingconvention in RTL
+
   Revision 1.57  2004/01/05 15:22:42  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 

@@ -57,18 +57,40 @@ type
   TGDBMICallback = procedure(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer) of object;
   TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
 
+  TGDBMITargetFlags = set of (
+    tfHasSymbols,      // Debug symbols are present
+    tfRTLUsesRegCall   // the RTL is compiled with RegCall calling convention
+  );
+
+  TGDBMIDebuggerFlags = set of (
+    dfImplicidTypes    // Debugger supports implicit types (^Type)
+  );
+
+
+  TGDBMIRTLCallingConvention = (ccDefault, ccRegCall, ccStdCall);
+
+  TGDBMIDebuggerProperties = class(TDebuggerProperties)
+  private
+    FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
+  public
+    constructor Create;
+  published
+    property OverrideRTLCallingConvention: TGDBMIRTLCallingConvention read FOverrideRTLCallingConvention write FOverrideRTLCallingConvention;
+  end;
+
   { TGDBMIDebugger }
 
   TGDBMIDebugger = class(TCmdLineDebugger)
   private
     FCommandQueue: TStringList;
-    FHasSymbols: Boolean;
     FTargetPID: Integer;
     FBreakErrorBreakID: Integer;
     FExceptionBreakID: Integer;
     FVersion: String;
     FPauseWaitState: TGDBMIPauseWaitState;
     FInExecuteCount: Integer;
+    FTargetFlags: TGDBMITargetFlags;
+    FDebuggerFlags: TGDBMIDebuggerFlags;
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
@@ -86,6 +108,8 @@ type
     function  GetText(const AExpression: String; AValues: array of const): String; overload;
     function  GetData(const ALocation: Pointer): Pointer; overload;
     function  GetData(const AExpression: String; AValues: array of const): Pointer; overload;
+    function  GetStrValue(const AExpression: String; AValues: array of const): String;
+    function  GetIntValue(const AExpression: String; AValues: array of const): Integer;
     function  GetGDBTypeInfo(const AExpression: String): TGDBType;
     function  ProcessResult(var ANewState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
     function  ProcessRunning(var AStoppedParams: String): Boolean;
@@ -110,8 +134,10 @@ type
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
   public
+    class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
+    
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
 
@@ -217,7 +243,6 @@ type
     CallBack: TGDBMICallback;
   end;
 
-
 function CreateMIValueList(AResultValues: String): TStringList;
 var
   n: Integer;
@@ -319,6 +344,16 @@ begin
   Result.Add(AResultValues);
 end;
 
+{ =========================================================================== }
+{ TGDBMIDebuggerProperties }
+{ =========================================================================== }
+
+constructor TGDBMIDebuggerProperties.Create;
+begin
+  FOverrideRTLCallingConvention := ccDefault;
+  inherited;
+end;
+
 
 { =========================================================================== }
 { TGDBMIDebugger }
@@ -331,14 +366,16 @@ end;
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
 begin
-  FHasSymbols := True; // True until proven otherwise
   Result:=false;
+  
+
   if not ExecuteCommand('-file-exec-and-symbols %s', [FileName], []) then exit;
   if State=dsError then exit;
   if not (inherited ChangeFileName) then exit;
   if State=dsError then exit;
 
-  if FHasSymbols then begin
+  if tfHasSymbols in FTargetFlags
+  then begin
     // Force setting language
     // Setting extensions dumps GDB (bug #508)
     if not ExecuteCommand('-gdb-set language pascal', []) then exit;
@@ -362,6 +399,9 @@ begin
   FExceptionBreakID := -1;
   FCommandQueue := TStringList.Create;
   FTargetPID := 0;
+  FTargetFlags := [];
+  FDebuggerFlags := [];
+
   inherited;
 end;
 
@@ -378,6 +418,11 @@ end;
 function TGDBMIDebugger.CreateLocals: TDBGLocals;
 begin
   Result := TGDBMILocals.Create(Self);
+end;
+
+function TGDBMIDebugger.CreateProperties: TDebuggerProperties;
+begin
+  Result := TGDBMIDebuggerProperties.Create;
 end;
 
 function TGDBMIDebugger.CreateWatches: TDBGWatches;
@@ -796,6 +841,25 @@ begin
   else Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
 end;
 
+function TGDBMIDebugger.GetIntValue(const AExpression: String; AValues: array of const): Integer;
+begin
+  Result := StrToIntDef(GetStrValue(AExpression, AValues), 0);
+end;
+
+function TGDBMIDebugger.GetStrValue(const AExpression: String; AValues: array of const): String;
+var
+  S: String;
+  ResultList: TStringList;
+begin
+  if ExecuteCommand('-data-evaluate-expression %s', [Format(AExpression, AValues)], S, [cfIgnoreError])
+  then begin
+    ResultList := CreateMIValueList(S);
+    Result := ResultList.Values['value'];
+    ResultList.Free;
+  end
+  else Result := '';
+end;
+
 function TGDBMIDebugger.GetText(const ALocation: Pointer): String;
 begin
   Result := GetText('%d', [Integer(ALocation)]);
@@ -844,7 +908,7 @@ begin
   FPauseWaitState := pwsNone;
   FInExecuteCount := 0;
   
-  if CreateDebugProcess('-silent -i mi')
+  if CreateDebugProcess('-silent -i mi -nx')
   then begin
     if not ParseInitialization
     then begin
@@ -863,6 +927,7 @@ begin
     end
     else begin
       WriteLN('[Debugger] Running GDB version: ', FVersion);
+      Include(FDebuggerFlags, dfImplicidTypes);
     end;
 
     inherited Init;
@@ -947,7 +1012,7 @@ begin
           // check for symbol info
           if Pos('no debugging symbols', S) > 0
           then begin
-            FHasSymbols := False;
+            Exclude(FTargetFlags, tfHasSymbols);
             WriteLN('[WARNING] Debugger: File ''',FileName, ''' has no debug symbols');
           end
           else if ANoMICommand 
@@ -1078,23 +1143,35 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   procedure ProcessException;
   var
     S: String;
-    ExceptionName, ExceptionMessage: String;
+    ObjAddr, ExceptionName, ExceptionMessage: String;
     ResultList: TStringList;
     Location: TDBGLocationRec;
-    CompactMode: Boolean;
+    OK: Boolean;
   begin
     ExceptionName := 'Unknown';
 
-    CompactMode := FVersion >= '5.3';
+    if tfRTLUsesRegCall in FTargetFlags
+    then  ObjAddr := '$eax'
+    else begin
+      if dfImplicidTypes in FDebuggerFlags
+      then ObjAddr := '^pointer($fp+8)^'
+      else ObjAddr := Format('%u', [Integer(GetData('$fp+8', []))]);
+    end;
     
-    if (CompactMode
-        and ExecuteCommand(
-              '-data-evaluate-expression ^^shortstring(^^pointer($fp+8)^^+12)^^',
-              [], S, [cfIgnoreError]))
-    or ((not CompactMode)
-        and ExecuteCommand('-data-evaluate-expression pshortstring(%u)^',
-              [Integer(GetData(GetData(GetData('$fp+8', []))+12))],
-              S, [cfIgnoreError]))
+    if dfImplicidTypes in FDebuggerFlags
+    then begin
+      OK :=  ExecuteCommand(
+            '-data-evaluate-expression ^^shortstring(^pointer(%s)^+12)^^',
+            [ObjAddr],
+            S, [cfIgnoreError]);
+    end
+    else begin
+      OK := ExecuteCommand('-data-evaluate-expression pshortstring(%u)^',
+            [Integer(GetData(GetData(ObjAddr, [])+12))],
+            S, [cfIgnoreError]);
+    end;
+
+    if OK
     then begin
       ResultList := CreateMIValueList(S);
       ExceptionName := ResultList.Values['value'];
@@ -1109,9 +1186,10 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
       Exit;
     end;
 
-    if CompactMode
+    if dfImplicidTypes in FDebuggerFlags
     then begin
-      ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
+      ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ObjAddr]);
+      //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
       ExceptionMessage := DeleteEscapeChars(ExceptionMessage, '\');
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
@@ -1119,7 +1197,9 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     Location.SrcLine := -1;
     Location.SrcFile := '';
     Location.FuncName := '';
-    Location.Address := GetData('$fp+12', []);
+    if tfRTLUsesRegCall in FTargetFlags
+    then Location.Address := Pointer(GetIntValue('$edx', []))
+    else Location.Address := GetData('$fp+12', []);
     
     if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)],
                       S, [cfIgnoreError, cfNoMiCommand])
@@ -1310,81 +1390,169 @@ begin
 end;
 
 function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
+  function CheckFunction(const AFunction: String): Boolean;
+  var
+    S: String;
+    idx: Integer;
+  begin
+    ExecuteCommand('info functions %s', [AFunction],
+                    S, [cfIgnoreError, cfNoMICommand]);
+    idx := Pos(AFunction, S);
+    if idx <> 0
+    then begin
+      // Strip first
+      Delete(S, 1, idx + Length(AFunction) - 1);
+      idx := Pos(AFunction, S);
+    end;
+    Result := idx <> 0;
+  end;
+
+  procedure RetrieveRegcall;
+  var
+    S: String;
+    ResultState: TDBGState;
+  begin
+    // Assume it is
+    Include(FTargetFlags, tfRTLUsesRegCall);
+
+    ExecuteCommand('-data-evaluate-expression FPC_THREADVAR_RELOCATE_PROC', [],
+                    ResultState, S, [cfIgnoreError]);
+    if ResultState <> dsError then Exit; // guessed right
+    
+    // next attempt, posibly no symbols, try functions
+    if CheckFunction('FPC_CPUINIT') then Exit; // function present --> not 1.0
+
+    // this runerror is only defined for < 1.1 ?
+    if not CheckFunction('$$_RUNERROR$') then Exit;
+
+    // We are here in 2 cases
+    // 1) there are no symbols at all
+    //    We dont have to know the calling convention
+    // 2) target is compiled with an earlier version than 1.9.2
+    //    params are passes by stack
+    Exclude(FTargetFlags, tfRTLUsesRegCall);
+  end;
+
 var
-  S: String;
+  S, FileType, EntryPoint: String;
   ResultState: TDBGState;
   ResultList, BkptList: TStringList;
   TargetPIDPart: String;
+  TempInstalled: Boolean;
 begin
-  if State in [dsStop]
+  if not (State in [dsStop])
   then begin
-    if WorkingDir <> ''
-    then ExecuteCommand('-environment-cd %s', [WorkingDir], []);
-
-    if FHasSymbols
-    then begin
-      // Make sure we are talking pascal
-      ExecuteCommand('-gdb-set language pascal', []);
-      if Arguments <>''
-      then ExecuteCommand('-exec-arguments %s', [Arguments], []);
-      ExecuteCommand('-break-insert -t main', []);
-      ExecuteCommand('-exec-run', []);
-
-      // Insert Exception breakpoint
-      if FExceptionBreakID = -1
-      then begin
-        ExecuteCommand('-break-insert FPC_RAISEEXCEPTION', [],  ResultState, S, [cfIgnoreError]);
-        ResultList := CreateMIValueList(S);
-        BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-        FExceptionBreakID := StrToIntDef(BkptList.Values['number'], -1);
-        ResultList.Free;
-        BkptList.Free;
-      end;
-
-      // Insert Break breakpoint
-      if FBreakErrorBreakID = -1
-      then begin
-        ExecuteCommand('-break-insert FPC_BREAK_ERROR', [], ResultState, S, [cfIgnoreError]);
-        ResultList := CreateMIValueList(S);
-        BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-        FBreakErrorBreakID := StrToIntDef(BkptList.Values['number'], -1);
-        ResultList.Free;
-        BkptList.Free;
-      end;
-
-    end else begin
-      writeln('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
-    end;
-
-    // try to find PID
-    if ExecuteCommand('info program', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
-    then begin
-       TargetPIDPart:=GetPart('child process ', '.', S);
-       if TargetPIDPart='' then
-         TargetPIDPart:=GetPart('child Thread ', ' ', S);
-       FTargetPID := StrToIntDef(TargetPIDPart, 0);
-
-       WriteLN('[Debugger] Target PID: ', FTargetPID);
-    end
-    else begin
-      FTargetPID := 0;
-    end;
-
-    if FTargetPID = 0
-    then begin
-      Result := False;
-      SetState(dsError);
-      Exit;
-    end;
-
-    if ResultState = dsNone
-    then begin
-      if AContinueCommand <> ''
-      then Result := ExecuteCommand(AContinueCommand, [])
-      else SetState(dsPause);
-    end
-    else SetState(ResultState);
+    Result := True;
+    Exit;
   end;
+
+  if WorkingDir <> ''
+  then ExecuteCommand('-environment-cd %s', [WorkingDir], []);
+
+  FTargetFlags := [tfHasSymbols]; // Set until proven otherwise
+
+  // check if the exe is compiled with FPC >= 1.9.2
+  // then the rtl is compiled with regcalls
+  RetrieveRegCall;
+
+  if Arguments <>''
+  then ExecuteCommand('-exec-arguments %s', [Arguments], [cfIgnoreError]);
+  
+  if tfHasSymbols in FTargetFlags
+  then begin
+    // Make sure we are talking pascal
+    ExecuteCommand('-gdb-set language pascal', []);
+    ExecuteCommand('-break-insert -t main', [], ResultState, S, [cfIgnoreError]);
+    TempInstalled := ResultState <> dsError;
+  end
+  else begin
+    Writeln('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
+    TempInstalled := False;
+  end;
+  
+  // try to insert Exception breakpoint
+  // we might have rtl symbols
+  if FExceptionBreakID = -1
+  then begin
+    ExecuteCommand('-break-insert FPC_RAISEEXCEPTION', [],  ResultState, S, [cfIgnoreError]);
+    if ResultState <> dsError
+    then begin
+      ResultList := CreateMIValueList(S);
+      BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+      FExceptionBreakID := StrToIntDef(BkptList.Values['number'], -1);
+      ResultList.Free;
+      BkptList.Free;
+    end;
+  end;
+
+  // try Insert Break breakpoint
+  // we might have rtl symbols
+  if FBreakErrorBreakID = -1
+  then begin
+    ExecuteCommand('-break-insert FPC_BREAK_ERROR', [], ResultState, S, [cfIgnoreError]);
+    if ResultState <> dsError
+    then begin
+      ResultList := CreateMIValueList(S);
+      BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+      FBreakErrorBreakID := StrToIntDef(BkptList.Values['number'], -1);
+      ResultList.Free;
+      BkptList.Free;
+    end;
+  end;
+  
+  // try to retrieve the filetype and program entry point
+  if ExecuteCommand('info file', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
+  then begin
+     FileType := GetPart('file type ', '.', S);
+     EntryPoint := GetPart('Entry point: ', '\n', S);
+     WriteLN('[Debugger] File type: ', FileType);
+     WriteLN('[Debugger] Entry point: ', EntryPoint);
+  end;
+  
+  // TODO: use filetype to determine register types
+  
+  if not TempInstalled and (Length(EntryPoint) > 0)
+  then begin
+    // We could not set our initial break to get info and allow stepping
+    // Try it with the program entry point
+    ExecuteCommand('-break-insert -t *%s', [EntryPoint], ResultState, S, [cfIgnoreError]);
+    TempInstalled := ResultState <> dsError;
+  end;
+  
+  // fire the first step
+  if TempInstalled
+  then ExecuteCommand('-exec-run', []);
+
+
+  // try to find PID
+  if ExecuteCommand('info program', [], ResultState, S, [cfIgnoreError, cfNoMICommand])
+  then begin
+     TargetPIDPart:=GetPart('child process ', '.', S);
+     if TargetPIDPart='' then
+       TargetPIDPart:=GetPart('child Thread ', ' ', S);
+     FTargetPID := StrToIntDef(TargetPIDPart, 0);
+
+     WriteLN('[Debugger] Target PID: ', FTargetPID);
+  end
+  else begin
+    FTargetPID := 0;
+  end;
+
+  if FTargetPID = 0
+  then begin
+    Result := False;
+    SetState(dsError);
+    Exit;
+  end;
+  
+  if ResultState = dsNone
+  then begin
+    if AContinueCommand <> ''
+    then Result := ExecuteCommand(AContinueCommand, [])
+    else SetState(dsPause);
+  end
+  else SetState(ResultState);
+
   Result := True;
 end;
 
@@ -2079,6 +2247,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.41  2004/01/09 00:10:51  marc
+  * More debugger properties
+  * Fixed debugger for regcall callingconvention in RTL
+
   Revision 1.40  2004/01/05 15:22:42  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 
