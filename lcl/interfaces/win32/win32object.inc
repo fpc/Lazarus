@@ -2807,14 +2807,16 @@ var MenuInfo: MENUITEMINFO;
     if (maxWidth>=TMenuItem(Sender).Bitmap.Width) and (maxHeight>=TMenuItem(Sender).Bitmap.Height) then Result:=TMenuItem(Sender).Bitmap.Handle
     else
     begin
+      newWidth:=min(maxWidth, TMenuItem(Sender).Bitmap.Width);
+      newHeight:=min(maxHeight, TMenuItem(Sender).Bitmap.Height);
       hdcScreen:=GetDC(GetDesktopWindow);
       hdcOrigBitmap:=CreateCompatibleDC(hdcScreen);
       hdcNewBitmap:=CreateCompatibleDC(hdcScreen);
-      hbmpCheck:=CreateCompatibleBitmap(hdcScreen, maxWidth, maxHeight);
+      hbmpCheck:=CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
       ReleaseDC(GetDesktopWindow, hdcScreen);
       OldOrigBitmap:=SelectObject(hdcOrigBitmap, TMenuItem(Sender).Bitmap.Handle);
       OldCheckmark:=SelectObject(hdcNewBitmap, hbmpCheck);
-      StretchBlt(hdcNewBitmap, 0, 0, maxWidth, maxHeight, hdcOrigBitmap, 0, 0, TMenuItem(Sender).Bitmap.Width, TMenuItem(Sender).Bitmap.Height, SRCCOPY);
+      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcOrigBitmap, 0, 0, TMenuItem(Sender).Bitmap.Width, TMenuItem(Sender).Bitmap.Height, SRCCOPY);
       SelectObject(hdcOrigBitmap, OldOrigBitmap);
       hbmpCheck:=SelectObject(hdcNewBitmap, OldCheckmark);
       DeleteDC(hdcNewBitmap);
@@ -2867,7 +2869,7 @@ Begin
        implemented in LCL}
     end;
   end;
-  InsertMenuItem(ParentMenuHandle, MenuInfo.wID, false, @MenuInfo);
+  InsertMenuItem(ParentMenuHandle, TMenuItem(Sender).Parent.IndexOf(TMenuItem(Sender)), true, @MenuInfo);
   if TMenuItem(Sender).ShortCut <> 0 then
   begin
     Msg.Handle:=MenuHandle;
@@ -2898,6 +2900,9 @@ End;
 
 {
   $Log$
+  Revision 1.155  2003/12/29 21:56:08  micha
+  fix menuitem icon and index (from martin)
+
   Revision 1.154  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 
