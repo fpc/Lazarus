@@ -273,6 +273,9 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
+    function FindDeclarationInInterface(Code: TCodeBuffer;
+          const Identifier: string; var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
     
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
@@ -1155,6 +1158,36 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindSmartHint END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclarationInInterface(Code: TCodeBuffer;
+  const Identifier: string; var NewCode: TCodeBuffer; var NewX, NewY,
+  NewTopLine: integer): boolean;
+var
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationInInterface A ',Code.Filename,' Identifier=',Identifier);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationInInterface B ',FCurCodeTool.Scanner<>nil);
+  {$ENDIF}
+  try
+    Result:=FCurCodeTool.FindDeclarationInInterface(Identifier,NewPos,
+                                                    NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationInInterface END ');
   {$ENDIF}
 end;
 

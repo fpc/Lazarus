@@ -283,9 +283,20 @@ begin
 end;
 
 procedure TPkgManager.IDEComponentPaletteOpenUnit(Sender: TObject);
+var
+  PkgComponent: TPkgComponent;
 begin
-  if (Sender=nil) or (not (Sender is TPkgFile)) then exit;
-  MainIDE.DoOpenMacroFile(Self,TPkgFile(Sender).Filename);
+  if (Sender=nil) then exit;
+  if (Sender is TPkgFile) then
+    MainIDE.DoOpenMacroFile(Self,TPkgFile(Sender).Filename)
+  else if (Sender is TPkgComponent) then begin
+    PkgComponent:=TPkgComponent(Sender);
+    if PkgComponent.PkgFile=nil then exit;
+    MainIDE.DoOpenFileAndJumpToIdentifier(
+      PkgComponent.PkgFile.Filename,PkgComponent.ComponentClass.ClassName,
+      -1, // open page somewhere
+      [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
+  end;
 end;
 
 procedure TPkgManager.GetDependencyOwnerDescription(

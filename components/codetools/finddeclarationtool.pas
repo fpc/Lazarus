@@ -489,6 +489,7 @@ type
 
   TFindDeclarationTool = class(TPascalReaderTool)
   private
+    FAdjustTopLineDueToComment: boolean;
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     FOnFindUsedUnit: TOnFindUsedUnit;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
@@ -647,12 +648,22 @@ type
       SearchSmartFlags: TFindSmartFlags;
       var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindDeclarationInInterface(const Identifier: string;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
+
+    function JumpToNode(ANode: TCodeTreeNode;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        IgnoreJumpCentered: boolean): boolean;
+    function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
+        NewBottomLineCleanPos: integer;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        IgnoreJumpCentered: boolean): boolean;
 
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
       read FInterfaceIdentifierCache;
@@ -664,6 +675,8 @@ type
       read FOnGetSrcPathForCompiledUnit write FOnGetSrcPathForCompiledUnit;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
+    property AdjustTopLineDueToComment: boolean
+        read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
   end;
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
@@ -1083,6 +1096,38 @@ begin
   finally
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
+  end;
+end;
+
+function TFindDeclarationTool.FindDeclarationInInterface(
+  const Identifier: string; var NewPos: TCodeXYPosition; var NewTopLine: integer
+  ): boolean;
+var
+  StartNode: TCodeTreeNode;
+  SectionNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  if Identifier='' then exit;
+  BuildTree(true);
+  StartNode:=FindInterfaceNode;
+  if StartNode=nil then exit;
+  SectionNode:=StartNode.FirstChild;
+  if SectionNode=nil then exit;
+  while SectionNode<>nil do begin
+    if SectionNode.Desc in AllDefinitionSections then begin
+      Node:=SectionNode.FirstChild;
+      while Node<>nil do begin
+        if Node.Desc in AllIdentifierDefinitions then begin
+          if CompareSrcIdentifiers(Node.StartPos,PChar(Identifier)) then begin
+            Result:=JumpToNode(Node,NewPos,NewTopLine,false);
+            exit;
+          end;
+        end;
+        Node:=Node.NextBrother;
+      end;
+    end;
+    SectionNode:=SectionNode.NextBrother;
   end;
 end;
 
@@ -2718,6 +2763,80 @@ begin
   if Result.Node<>nil then write(Result.Node.DescAsString) else write('NIL');
   DebugLn('');
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  IgnoreJumpCentered: boolean): boolean;
+begin
+  Result:=false;
+  if (ANode=nil) or (ANode.StartPos<1) then exit;
+  Result:=JumpToCleanPos(ANode.StartPos,ANode.StartPos,ANode.EndPos,
+                         NewPos,NewTopLine,IgnoreJumpCentered);
+end;
+
+function TFindDeclarationTool.JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
+  NewBottomLineCleanPos: integer; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer; IgnoreJumpCentered: boolean): boolean;
+var
+  CenteredTopLine: integer;
+  NewTopLinePos: TCodeXYPosition;
+  NewBottomLinePos: TCodeXYPosition;
+begin
+  Result:=false;
+  // convert clean position to line, column and code
+  if not CleanPosToCaret(NewCleanPos,NewPos) then exit;
+  NewTopLine:=NewPos.Y;
+  if AdjustTopLineDueToComment then begin
+    // if there is a comment in front of the top position, it probably belongs
+    // to the destination code
+    // -> adjust the topline position, so that the comment is visible
+    NewTopLineCleanPos:=FindLineEndOrCodeInFrontOfPosition(NewTopLineCleanPos,
+                                                           false);
+    if (NewTopLineCleanPos>=1) and (Src[NewTopLineCleanPos] in [#13,#10])
+    then begin
+      inc(NewTopLineCleanPos);
+      if (Src[NewTopLineCleanPos] in [#10,#13])
+      and (Src[NewTopLineCleanPos]<>Src[NewTopLineCleanPos-1]) then
+        inc(NewTopLineCleanPos);
+    end;
+  end;
+  // convert clean top line position to line, column and code
+  if not CleanPosToCaret(NewTopLineCleanPos,NewTopLinePos) then exit;
+  // convert clean bottom line position to line, column and code
+  NewBottomLinePos:=NewPos;
+  if (NewBottomLineCleanPos>NewCleanPos)
+  and (not CleanPosToCaret(NewBottomLineCleanPos,NewBottomLinePos)) then exit;
+
+  if NewTopLinePos.Code=NewPos.Code then begin
+    // top line position is in the same code as the destination position
+    NewTopLine:=NewTopLinePos.Y;
+    CenteredTopLine:=NewPos.Y-VisibleEditorLines div 2;
+    if JumpCentered and (not IgnoreJumpCentered) then begin
+      // center the destination position in the source editor
+      if CenteredTopLine<NewTopLine then
+        NewTopLine:=CenteredTopLine;
+    end;
+    // NewTopLine not above first line of code
+    if NewTopLine<1 then NewTopLine:=1;
+    // make NewTopLine visible
+    if NewTopLine<=NewPos.Y-VisibleEditorLines then begin
+      // NewTopLine is not visible
+      // center or align to bottom
+      if (NewBottomLineCleanPos>NewCleanPos)
+      and (NewBottomLinePos.Y<NewPos.Y+(VisibleEditorLines div 2))
+      then begin
+        // align to bottom
+        NewTopLine:=NewBottomLinePos.Y-VisibleEditorLines+1;
+      end else begin
+        // center
+        NewTopLine:=CenteredTopLine;
+      end;
+      if NewTopLine<1 then NewTopLine:=1;
+    end;
+  end else
+    NewTopLine:=1;
+  Result:=true;
 end;
 
 function TFindDeclarationTool.FindIdentifierInProcContext(

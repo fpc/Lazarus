@@ -156,7 +156,7 @@ begin
   if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
   or (PkgComponent.PkgFile.LazPackage=nil) then exit;
   if Assigned(OnOpenUnit) then
-    OnOpenUnit(PkgComponent.PkgFile);
+    OnOpenUnit(PkgComponent);
 end;
 
 procedure TComponentPalette.PopupMenuPopup(Sender: TObject);

@@ -204,6 +204,9 @@ type
         NewFlags: TNewFlags): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
+        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+
     function DoInitProjectRun: TModalResult; virtual; abstract;
     function DoOpenMacroFile(Sender: TObject;
         const AFilename: string): TModalResult; virtual; abstract;

@@ -537,6 +537,8 @@ type
     function DoOpenEditorFile(AFileName: string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
+    function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
+        PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
     function DoRevertMainUnit: TModalResult;
@@ -677,8 +679,11 @@ type
     procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
     procedure DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);
+
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
+
+    // tools
     function DoMakeResourceString: TModalResult;
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
@@ -5146,6 +5151,28 @@ begin
       SaveEnvironment;
     end;
   end;
+end;
+
+function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
+  AnIdentifier: string; PageIndex: integer; Flags: TOpenFlags): TModalResult;
+var
+  ActiveUnitInfo: TUnitInfo;
+  ActiveSrcEdit: TSourceEditor;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  Result:=DoOpenEditorFile(AFilename, PageIndex, Flags);
+  if Result<>mrOk then exit;
+  Result:=mrCancel;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if CodeToolBoss.FindDeclarationInInterface(ActiveUnitInfo.Source,
+    AnIdentifier,NewSource, NewX, NewY, NewTopLine)
+  then begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+                    NewSource, NewX, NewY, NewTopLine, true);
+    Result:=mrOk;
+  end else
+    DoJumpToCodeToolBossError;
 end;
 
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
@@ -10548,6 +10575,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.751  2004/08/12 10:50:14  mattias
+  Open unit of component palette component now jumps to declaration
+
   Revision 1.750  2004/08/09 18:28:16  mattias
   IDE save toolbutton is now updated on Idle
 

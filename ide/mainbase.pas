@@ -164,7 +164,7 @@ type
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         AddJumpPoint: boolean): TModalResult; virtual; abstract;
-
+                        
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
   end;
