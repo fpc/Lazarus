@@ -912,41 +912,53 @@ type
   TPropHookModified = procedure of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
   TPropHookRefreshPropertyValues = procedure of object;
+  
+  TPropHookType = (
+    // lookup root
+    htChangeLookupRoot,
+    // methods
+    htCreateMethod,
+    htGetMethodName,
+    htGetMethods,
+    htMethodExists,
+    htRenameMethod,
+    htShowMethod,
+    htMethodFromAncestor,
+    htChainCall,
+    // components
+    htGetComponent,
+    htGetComponentName,
+    htGetComponentNames,
+    htGetRootClassName,
+    htComponentRenamed,
+    htComponentAdded,
+    htDeleteComponent,
+    // persistent objects
+    htGetObject,
+    htGetObjectName,
+    htGetObjectNames,
+    // modifing
+    htModified,
+    htRevert,
+    htRefreshPropertyValues
+    );
 
   TPropertyEditorHook = class
   private
+    FHandlers: array[TPropHookType] of TMethodList;
     // lookup root
     FLookupRoot: TComponent;
-    FOnChangeLookupRoot: TPropHookChangeLookupRoot;
-    // methods
-    FOnCreateMethod: TPropHookCreateMethod;
-    FOnGetMethodName: TPropHookGetMethodName;
-    FOnGetMethods: TPropHookGetMethods;
-    FOnMethodExists: TPropHookMethodExists;
-    FOnRenameMethod: TPropHookRenameMethod;
-    FOnShowMethod: TPropHookShowMethod;
-    FOnMethodFromAncestor: TPropHookMethodFromAncestor;
-    FOnChainCall: TPropHookChainCall;
-    // components
-    FOnGetComponent: TPropHookGetComponent;
-    FOnGetComponentName: TPropHookGetComponentName;
-    FOnGetComponentNames: TPropHookGetComponentNames;
-    FOnGetRootClassName: TPropHookGetRootClassName;
-    FOnComponentRenamed: TPropHookComponentRenamed;
-    FOnComponentAdded: TPropHookComponentAdded;
-    FOnDeleteComponent: TPropHookDeleteComponent;
-    // persistent objects
-    FOnGetObject: TPropHookGetObject;
-    FOnGetObjectName: TPropHookGetObjectName;
-    FOnGetObjectNames: TPropHookGetObjectNames;
-    // modifing
-    FOnModified: TPropHookModified;
-    FOnRevert: TPropHookRevert;
-    FOnRefreshPropertyValues: TPropHookRefreshPropertyValues;
 
     procedure SetLookupRoot(AComponent:TComponent);
+    procedure AddHandler(HookType: TPropHookType; const Handler: TMethod);
+    procedure RemoveHandler(HookType: TPropHookType; const Handler: TMethod);
+    function GetHandlerCount(HookType: TPropHookType): integer;
+    function GetNextHandlerIndex(HookType: TPropHookType; var i: integer): boolean;
   public
     GetPrivateDirectory:AnsiString;
+    constructor Create;
+    destructor Destroy; override;
+
     // lookup root
     property LookupRoot:TComponent read FLookupRoot write SetLookupRoot;
     // methods
@@ -961,50 +973,94 @@ type
     procedure ChainCall(const AMethodName, InstanceName,
       InstanceMethod:ShortString;  TypeData:PTypeData);
     // components
-    function GetComponent(const Name:ShortString):TComponent;
-    function GetComponentName(AComponent:TComponent):ShortString;
-    procedure GetComponentNames(TypeData:PTypeData; Proc:TGetStringProc);
+    function GetComponent(const Name: ShortString):TComponent;
+    function GetComponentName(AComponent: TComponent):ShortString;
+    procedure GetComponentNames(TypeData:PTypeData; const Proc:TGetStringProc);
     function GetRootClassName:ShortString;
     procedure ComponentRenamed(AComponent: TComponent);
     procedure ComponentAdded(AComponent: TComponent; Select: boolean);
     procedure DeleteComponent(AComponent: TComponent);
     // persistent objects
-    function GetObject(const Name:ShortString):TPersistent;
-    function GetObjectName(Instance:TPersistent):ShortString;
-    procedure GetObjectNames(TypeData:PTypeData; Proc:TGetStringProc);
+    function GetObject(const Name: ShortString):TPersistent;
+    function GetObjectName(Instance: TPersistent):ShortString;
+    procedure GetObjectNames(TypeData: PTypeData; const Proc:TGetStringProc);
     // modifing
     procedure Modified;
     procedure Revert(Instance:TPersistent; PropInfo:PPropInfo);
     procedure RefreshPropertyValues;
+  public
+    // Handlers
 
     // lookup root
-    property OnChangeLookupRoot:TPropHookChangeLookupRoot
-      read FOnChangeLookupRoot write FOnChangeLookupRoot;
+    procedure AddHandlerChangeLookupRoot(
+                                 OnChangeLookupRoot: TPropHookChangeLookupRoot);
+    procedure RemoveHandlerChangeLookupRoot(
+                                 OnChangeLookupRoot: TPropHookChangeLookupRoot);
     // method events
-    property OnCreateMethod:TPropHookCreateMethod read FOnCreateMethod write FOnCreateMethod;
-    property OnGetMethodName:TPropHookGetMethodName read FOnGetMethodName write FOnGetMethodName;
-    property OnGetMethods:TPropHookGetMethods read FOnGetMethods write FOnGetMethods;
-    property OnMethodExists:TPropHookMethodExists read FOnMethodExists write FOnMethodExists;
-    property OnRenameMethod:TPropHookRenameMethod read FOnRenameMethod write FOnRenameMethod;
-    property OnShowMethod:TPropHookShowMethod read FOnShowMethod write FOnShowMethod;
-    property OnMethodFromAncestor:TPropHookMethodFromAncestor read FOnMethodFromAncestor write FOnMethodFromAncestor;
-    property OnChainCall:TPropHookChainCall read FOnChainCall write FOnChainCall;
+    procedure AddHandlerCreateMethod(OnCreateMethod: TPropHookCreateMethod);
+    procedure RemoveHandlerCreateMethod(OnCreateMethod: TPropHookCreateMethod);
+    procedure AddHandlerGetMethodName(OnGetMethodName: TPropHookGetMethodName);
+    procedure RemoveHandlerGetMethodName(OnGetMethodName: TPropHookGetMethodName);
+    procedure AddHandlerGetMethods(OnGetMethods: TPropHookGetMethods);
+    procedure RemoveHandlerGetMethods(OnGetMethods: TPropHookGetMethods);
+    procedure AddHandlerMethodExists(OnMethodExists: TPropHookMethodExists);
+    procedure RemoveHandlerMethodExists(OnMethodExists: TPropHookMethodExists);
+    procedure AddHandlerRenameMethod(OnRenameMethod: TPropHookRenameMethod);
+    procedure RemoveHandlerRenameMethod(OnRenameMethod: TPropHookRenameMethod);
+    procedure AddHandlerShowMethod(OnShowMethod: TPropHookShowMethod);
+    procedure RemoveHandlerShowMethod(OnShowMethod: TPropHookShowMethod);
+    procedure AddHandlerMethodFromAncestor(
+                             OnMethodFromAncestor: TPropHookMethodFromAncestor);
+    procedure RemoveHandlerMethodFromAncestor(
+                             OnMethodFromAncestor: TPropHookMethodFromAncestor);
+    procedure AddHandlerChainCall(OnChainCall: TPropHookChainCall);
+    procedure RemoveHandlerChainCall(OnChainCall: TPropHookChainCall);
     // component event
-    property OnGetComponent:TPropHookGetComponent read FOnGetComponent write FOnGetComponent;
-    property OnGetComponentName:TPropHookGetComponentName read FOnGetComponentName write FOnGetComponentName;
-    property OnGetComponentNames:TPropHookGetComponentNames read FOnGetComponentNames write FOnGetComponentNames;
-    property OnGetRootClassName:TPropHookGetRootClassName read FOnGetRootClassName write FOnGetRootClassName;
-    property OnComponentRenamed:TPropHookComponentRenamed read FOnComponentRenamed write FOnComponentRenamed;
-    property OnComponentAdded:TPropHookComponentAdded read FOnComponentAdded write FOnComponentAdded;
-    property OnDeleteComponent:TPropHookDeleteComponent read FOnDeleteComponent write FOnDeleteComponent;
+    procedure AddHandlerGetComponent(OnGetComponent: TPropHookGetComponent);
+    procedure RemoveHandlerGetComponent(OnGetComponent: TPropHookGetComponent);
+    procedure AddHandlerGetComponentName(
+                                 OnGetComponentName: TPropHookGetComponentName);
+    procedure RemoveHandlerGetComponentName(
+                                 OnGetComponentName: TPropHookGetComponentName);
+    procedure AddHandlerGetComponentNames(
+                               OnGetComponentNames: TPropHookGetComponentNames);
+    procedure RemoveHandlerGetComponentNames(
+                               OnGetComponentNames: TPropHookGetComponentNames);
+    procedure AddHandlerGetRootClassName(
+                                 OnGetRootClassName: TPropHookGetRootClassName);
+    procedure RemoveHandlerGetRootClassName(
+                                 OnGetRootClassName: TPropHookGetRootClassName);
+    procedure AddHandlerComponentRenamed(
+                                 OnComponentRenamed: TPropHookComponentRenamed);
+    procedure RemoveHandlerComponentRenamed(
+                                 OnComponentRenamed: TPropHookComponentRenamed);
+    procedure AddHandlerComponentAdded(
+                                     OnComponentAdded: TPropHookComponentAdded);
+    procedure RemoveHandlerComponentAdded(
+                                     OnComponentAdded: TPropHookComponentAdded);
+    procedure AddHandlerDeleteComponent(
+                                   OnDeleteComponent: TPropHookDeleteComponent);
+    procedure RemoveHandlerDeleteComponent(
+                                   OnDeleteComponent: TPropHookDeleteComponent);
     // persistent object events
-    property OnGetObject:TPropHookGetObject read FOnGetObject write FOnGetObject;
-    property OnGetObjectName:TPropHookGetObjectName read FOnGetObjectName write FOnGetObjectName;
-    property OnGetObjectNames:TPropHookGetObjectNames read FOnGetObjectNames write FOnGetObjectNames;
+    procedure AddHandlerGetObject(OnGetObject: TPropHookGetObject);
+    procedure RemoveHandlerGetObject(OnGetObject: TPropHookGetObject);
+    procedure AddHandlerGetObjectName(OnGetObjectName: TPropHookGetObjectName);
+    procedure RemoveHandlerGetObjectName(
+                                       OnGetObjectName: TPropHookGetObjectName);
+    procedure AddHandlerGetObjectNames(
+                                     OnGetObjectNames: TPropHookGetObjectNames);
+    procedure RemoveHandlerGetObjectNames(
+                                     OnGetObjectNames: TPropHookGetObjectNames);
     // modifing events
-    property OnModified:TPropHookModified read FOnModified write FOnModified;
-    property OnRevert:TPropHookRevert read FOnRevert write FOnRevert;
-    property OnRefreshPropertyValues:TPropHookRefreshPropertyValues read FOnRefreshPropertyValues write FOnRefreshPropertyValues;
+    procedure AddHandlerModified(OnModified: TPropHookModified);
+    procedure RemoveHandlerModified(OnModified: TPropHookModified);
+    procedure AddHandlerRevert(OnRevert: TPropHookRevert);
+    procedure RemoveHandlerRevert(OnRevert: TPropHookRevert);
+    procedure AddHandlerRefreshPropertyValues(
+                       OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
+    procedure RemoveHandlerRefreshPropertyValues(
+                       OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
   end;
 
 //==============================================================================
@@ -4094,20 +4150,30 @@ end;
 
 function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
   ATypeInfo:PTypeInfo): TMethod;
+var
+  i: Integer;
+  Handler: TPropHookCreateMethod;
 begin
-  if IsValidIdent(Name) and (ATypeInfo<>nil) and Assigned(FOnCreateMethod) then
-    Result:=FOnCreateMethod(Name,ATypeInfo)
-  else begin
-    Result.Code:=nil;
-    Result.Data:=nil;
+  Result.Code:=nil;
+  Result.Data:=nil;
+  if IsValidIdent(Name) and (ATypeInfo<>nil) then begin
+    i:=GetHandlerCount(htCreateMethod);
+    while GetNextHandlerIndex(htCreateMethod,i) do begin
+      Handler:=TPropHookCreateMethod(FHandlers[htCreateMethod][i]);
+      Result:=Handler(Name,ATypeInfo);
+      if Result.Code<>nil then exit;
+    end;
   end;
 end;
 
 function TPropertyEditorHook.GetMethodName(const Method:TMethod): ShortString;
+var
+  i: Integer;
 begin
-  if Assigned(FOnGetMethodName) then
-    Result:=FOnGetMethodName(Method)
-  else begin
+  i:=GetHandlerCount(htGetMethodName);
+  if GetNextHandlerIndex(htGetMethodName,i) then begin
+    Result:=TPropHookGetMethodName(FHandlers[htGetMethodName][i])(Method);
+  end else begin
     // search the method name with the given code pointer
     if Assigned(Method.Code) then begin
       if Assigned(LookupRoot) then begin
@@ -4123,22 +4189,33 @@ end;
 
 procedure TPropertyEditorHook.GetMethods(TypeData:PTypeData;
   Proc:TGetStringProc);
+var
+  i: Integer;
 begin
-  if Assigned(FOnGetMethods) then
-    FOnGetMethods(TypeData,Proc);
+  i:=GetHandlerCount(htGetMethods);
+  while GetNextHandlerIndex(htGetMethods,i) do
+    TPropHookGetMethods(FHandlers[htGetMethods][i])(TypeData,Proc);
 end;
 
 function TPropertyEditorHook.MethodExists(const Name:Shortstring;
   TypeData: PTypeData;
   var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean):boolean;
+var
+  i: Integer;
+  Handler: TPropHookMethodExists;
 begin
   // check if a published method with given name exists in LookupRoot
-  if IsValidIdent(Name) and Assigned(FOnMethodExists) then
-    Result:=FOnMethodExists(Name,TypeData,
-                            MethodIsCompatible,MethodIsPublished,IdentIsMethod)
-  else begin
-    Result:=IsValidIdent(Name) and Assigned(LookupRoot)
-                               and (LookupRoot.MethodAddress(Name)<>nil);
+  Result:=IsValidIdent(Name) and Assigned(FLookupRoot);
+  if not Result then exit;
+  i:=GetHandlerCount(htMethodExists);
+  if i>=0 then begin
+    while GetNextHandlerIndex(htMethodExists,i) do begin
+      Handler:=TPropHookMethodExists(FHandlers[htMethodExists][i]);
+      Result:=Handler(Name,TypeData,
+                            MethodIsCompatible,MethodIsPublished,IdentIsMethod);
+    end;
+  end else begin
+    Result:=(LookupRoot.MethodAddress(Name)<>nil);
     MethodIsCompatible:=Result;
     MethodIsPublished:=Result;
     IdentIsMethod:=Result;
@@ -4146,27 +4223,37 @@ begin
 end;
 
 procedure TPropertyEditorHook.RenameMethod(const CurName, NewName:ShortString);
+// rename published method in LookupRoot object and source
+var
+  i: Integer;
 begin
-  // rename published method in LookupRoot object and source
-  if Assigned(FOnRenameMethod) then
-    FOnRenameMethod(CurName,NewName);
+  i:=GetHandlerCount(htRenameMethod);
+  while GetNextHandlerIndex(htRenameMethod,i) do
+    TPropHookRenameMethod(FHandlers[htRenameMethod][i])(CurName,NewName);
 end;
 
 procedure TPropertyEditorHook.ShowMethod(const Name:Shortstring);
+// jump cursor to published method body
+var
+  i: Integer;
 begin
-  // jump cursor to published method body
-  if Assigned(FOnShowMethod) then
-    FOnShowMethod(Name);
+  i:=GetHandlerCount(htShowMethod);
+  while GetNextHandlerIndex(htShowMethod,i) do
+    TPropHookShowMethod(FHandlers[htShowMethod][i])(Name);
 end;
 
 function TPropertyEditorHook.MethodFromAncestor(const Method:TMethod):boolean;
 var AncestorClass: TClass;
+  i: Integer;
+  Handler: TPropHookMethodFromAncestor;
 begin
   // check if given Method is not in LookupRoot source,
   // but in one of its ancestors
-  if Assigned(FOnMethodFromAncestor) then
-    Result:=FOnMethodFromAncestor(Method)
-  else begin
+  i:=GetHandlerCount(htMethodFromAncestor);
+  if GetNextHandlerIndex(htMethodFromAncestor,i) then begin
+    Handler:=TPropHookMethodFromAncestor(FHandlers[htMethodFromAncestor][i]);
+    Result:=Handler(Method);
+  end else begin
     if (Method.Data<>nil) then begin
       AncestorClass:=TObject(Method.Data).ClassParent;
       Result:=(AncestorClass<>nil)
@@ -4177,114 +4264,156 @@ begin
 end;
 
 procedure TPropertyEditorHook.ChainCall(const AMethodName, InstanceName,
-InstanceMethod:Shortstring;  TypeData:PTypeData);
+  InstanceMethod:Shortstring;  TypeData:PTypeData);
+var
+  i: Integer;
+  Handler: TPropHookChainCall;
 begin
-  if Assigned(FOnChainCall) then
-    FOnChainCall(AMethodName,InstanceName,InstanceMethod,TypeData);
+  i:=GetHandlerCount(htChainCall);
+  while GetNextHandlerIndex(htChainCall,i) do begin
+    Handler:=TPropHookChainCall(FHandlers[htChainCall][i]);
+    Handler(AMethodName,InstanceName,InstanceMethod,TypeData);
+  end;
 end;
 
 function TPropertyEditorHook.GetComponent(const Name:Shortstring):TComponent;
+var
+  i: Integer;
 begin
-  if Assigned(FOnGetComponent) then
-    Result:=FOnGetComponent(Name)
-  else begin
-    if Assigned(LookupRoot) then begin
-      Result:=LookupRoot.FindComponent(Name);
-    end else begin
-      Result:=nil;
-    end;
-  end;
+  Result:=nil;
+  if not Assigned(LookupRoot) then exit;
+  i:=GetHandlerCount(htGetComponent);
+  while GetNextHandlerIndex(htGetComponent,i) and (Result=nil) do
+    Result:=TPropHookGetComponent(FHandlers[htGetComponent][i])(Name);
+  if Result=nil then
+    Result:=LookupRoot.FindComponent(Name);
 end;
 
 function TPropertyEditorHook.GetComponentName(
   AComponent:TComponent):Shortstring;
+var
+  i: Integer;
+  Handler: TPropHookGetComponentName;
 begin
-  if Assigned(FOnGetComponentName) then
-    Result:=FOnGetComponentName(AComponent)
-  else begin
-   if Assigned(AComponent) then
-     Result:=AComponent.Name
-   else
-     Result:='';
+  Result:='';
+  if AComponent=nil then exit;
+  i:=GetHandlerCount(htGetComponentName);
+  while GetNextHandlerIndex(htGetComponentName,i) and (Result='') do begin
+    Handler:=TPropHookGetComponentName(FHandlers[htGetComponentName][i]);
+    Result:=Handler(AComponent);
   end;
+  if Result='' then
+    Result:=AComponent.Name;
 end;
 
 procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
-  Proc:TGetStringProc);
+  const Proc:TGetStringProc);
 var i: integer;
+  Handler: TPropHookGetComponentNames;
 begin
-  if Assigned(FOnGetComponentNames) then
-    FOnGetComponentNames(TypeData,Proc)
-  else begin
-    if Assigned(LookupRoot) then
-      for i:=0 to LookupRoot.ComponentCount-1 do
-        if (LookupRoot.Components[i] is TypeData^.ClassType) then
-          Proc(LookupRoot.Components[i].Name);
+  if not Assigned(LookupRoot) then exit;
+  i:=GetHandlerCount(htGetComponentNames);
+  if i>0 then begin
+    while GetNextHandlerIndex(htGetComponentNames,i) do begin
+      Handler:=TPropHookGetComponentNames(FHandlers[htGetComponentNames][i]);
+      Handler(TypeData,Proc);
+    end;
+  end else begin
+    for i:=0 to LookupRoot.ComponentCount-1 do
+      if (LookupRoot.Components[i] is TypeData^.ClassType) then
+        Proc(LookupRoot.Components[i].Name);
   end;
 end;
 
 function TPropertyEditorHook.GetRootClassName:Shortstring;
+var
+  i: Integer;
+  Handler: TPropHookGetRootClassName;
 begin
-  if Assigned(FOnGetRootClassName) then begin
-    Result:=FOnGetRootClassName();
-  end else begin
-    if Assigned(LookupRoot) then
-      Result:=LookupRoot.ClassName
-    else
-      Result:='';
+  Result:='';
+  i:=GetHandlerCount(htGetRootClassName);
+  while GetNextHandlerIndex(htGetRootClassName,i) and (Result='') do begin
+    Handler:=TPropHookGetRootClassName(FHandlers[htGetRootClassName][i]);
+    Result:=Handler();
   end;
+  if (Result='') and Assigned(LookupRoot) then
+    Result:=LookupRoot.ClassName;
 end;
 
 procedure TPropertyEditorHook.ComponentRenamed(AComponent: TComponent);
+var
+  i: Integer;
 begin
-  if Assigned(OnComponentRenamed) then
-    OnComponentRenamed(AComponent);
+  i:=GetHandlerCount(htComponentRenamed);
+  while GetNextHandlerIndex(htComponentRenamed,i) do
+    TPropHookComponentRenamed(FHandlers[htComponentRenamed][i])(AComponent);
 end;
 
 procedure TPropertyEditorHook.ComponentAdded(AComponent: TComponent;
   Select: boolean);
+var
+  i: Integer;
 begin
-  if Assigned(OnComponentAdded) then
-    OnComponentAdded(AComponent,Select);
+  i:=GetHandlerCount(htComponentAdded);
+  while GetNextHandlerIndex(htComponentAdded,i) do
+    TPropHookComponentAdded(FHandlers[htComponentAdded][i])(AComponent,Select);
 end;
 
 procedure TPropertyEditorHook.DeleteComponent(AComponent: TComponent);
+var
+  i: Integer;
 begin
-  if Assigned(OnDeleteComponent) then
-    OnDeleteComponent(AComponent)
-  else
+  if AComponent=nil then exit;
+  i:=GetHandlerCount(htDeleteComponent);
+  if i>0 then begin
+    while GetNextHandlerIndex(htDeleteComponent,i) do
+      TPropHookDeleteComponent(FHandlers[htDeleteComponent][i])(AComponent);
+  end else
     AComponent.Free;
 end;
 
 function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
+var
+  i: Integer;
 begin
-  if Assigned(FOnGetObject) then
-    Result:=FOnGetObject(Name)
-  else
-    Result:=nil;
+  Result:=nil;
+  i:=GetHandlerCount(htGetObject);
+  while GetNextHandlerIndex(htGetObject,i) and (Result=nil) do
+    Result:=TPropHookGetObject(FHandlers[htGetObject][i])(Name);
 end;
 
 function TPropertyEditorHook.GetObjectName(Instance:TPersistent):Shortstring;
+var
+  i: Integer;
 begin
-  if Assigned(FOnGetObjectName) then
-    Result:=FOnGetObjectName(Instance)
-  else begin
+  Result:='';
+  i:=GetHandlerCount(htGetObjectName);
+  if i>0 then begin
+    while GetNextHandlerIndex(htGetObjectName,i) and (Result='') do
+      Result:=TPropHookGetObjectName(FHandlers[htGetObject][i])(Instance);
+  end else
     if Instance is TComponent then
       Result:=TComponent(Instance).Name;
-  end;
 end;
 
 procedure TPropertyEditorHook.GetObjectNames(TypeData:PTypeData;
-  Proc:TGetStringProc);
+  const Proc:TGetStringProc);
+var
+  i: Integer;
 begin
-  if Assigned(FOnGetObjectNames) then
-    FOnGetObjectNames(TypeData,Proc);
+  i:=GetHandlerCount(htGetObjectNames);
+  while GetNextHandlerIndex(htGetObjectNames,i) do
+    TPropHookGetObjectNames(FHandlers[htGetObjectNames][i])(TypeData,Proc);
 end;
 
 procedure TPropertyEditorHook.Modified;
+var
+  i: Integer;
 begin
-  if Assigned(FOnModified) then begin
-    FOnModified();
+  i:=GetHandlerCount(htModified);
+  if i>0 then begin
+    while GetNextHandlerIndex(htModified,i) do
+      TPropHookModified(FHandlers[htModified][i])();
   end else if FLookupRoot<>nil then begin
     if (FLookupRoot is TCustomForm)
     and (TCustomForm(FLookupRoot).Designer<>nil) then
@@ -4293,24 +4422,346 @@ begin
 end;
 
 procedure TPropertyEditorHook.Revert(Instance:TPersistent;
-PropInfo:PPropInfo);
+  PropInfo:PPropInfo);
+var
+  i: Integer;
 begin
-  if Assigned(FOnRevert) then
-    FOnRevert(Instance,PropInfo);
+  i:=GetHandlerCount(htRevert);
+  while GetNextHandlerIndex(htRevert,i) do
+    TPropHookRevert(FHandlers[htRevert][i])(Instance,PropInfo);
 end;
 
 procedure TPropertyEditorHook.RefreshPropertyValues;
+var
+  i: Integer;
 begin
-  if Assigned(FOnRefreshPropertyValues) then
-    FOnRefreshPropertyValues();
+  i:=GetHandlerCount(htRefreshPropertyValues);
+  while GetNextHandlerIndex(htRefreshPropertyValues,i) do
+    TPropHookRefreshPropertyValues(FHandlers[htRefreshPropertyValues][i])();
+end;
+
+procedure TPropertyEditorHook.AddHandlerChangeLookupRoot(
+  OnChangeLookupRoot: TPropHookChangeLookupRoot);
+begin
+  AddHandler(htChangeLookupRoot,TMethod(OnChangeLookupRoot));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerChangeLookupRoot(
+  OnChangeLookupRoot: TPropHookChangeLookupRoot);
+begin
+  RemoveHandler(htChangeLookupRoot,TMethod(OnChangeLookupRoot));
+end;
+
+procedure TPropertyEditorHook.AddHandlerCreateMethod(
+  OnCreateMethod: TPropHookCreateMethod);
+begin
+  AddHandler(htCreateMethod,TMethod(OnCreateMethod));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerCreateMethod(
+  OnCreateMethod: TPropHookCreateMethod);
+begin
+  RemoveHandler(htCreateMethod,TMethod(OnCreateMethod));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetMethodName(
+  OnGetMethodName: TPropHookGetMethodName);
+begin
+  AddHandler(htGetMethodName,TMethod(OnGetMethodName));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetMethodName(
+  OnGetMethodName: TPropHookGetMethodName);
+begin
+  RemoveHandler(htGetMethodName,TMethod(OnGetMethodName));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetMethods(
+  OnGetMethods: TPropHookGetMethods);
+begin
+  AddHandler(htGetMethods,TMethod(OnGetMethods));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetMethods(
+  OnGetMethods: TPropHookGetMethods);
+begin
+  RemoveHandler(htGetMethods,TMethod(OnGetMethods));
+end;
+
+procedure TPropertyEditorHook.AddHandlerMethodExists(
+  OnMethodExists: TPropHookMethodExists);
+begin
+  AddHandler(htMethodExists,TMethod(OnMethodExists));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerMethodExists(
+  OnMethodExists: TPropHookMethodExists);
+begin
+  RemoveHandler(htMethodExists,TMethod(OnMethodExists));
+end;
+
+procedure TPropertyEditorHook.AddHandlerRenameMethod(
+  OnRenameMethod: TPropHookRenameMethod);
+begin
+  AddHandler(htRenameMethod,TMethod(OnRenameMethod));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerRenameMethod(
+  OnRenameMethod: TPropHookRenameMethod);
+begin
+  RemoveHandler(htRenameMethod,TMethod(OnRenameMethod));
+end;
+
+procedure TPropertyEditorHook.AddHandlerShowMethod(
+  OnShowMethod: TPropHookShowMethod);
+begin
+  AddHandler(htShowMethod,TMethod(OnShowMethod));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerShowMethod(
+  OnShowMethod: TPropHookShowMethod);
+begin
+  RemoveHandler(htShowMethod,TMethod(OnShowMethod));
+end;
+
+procedure TPropertyEditorHook.AddHandlerMethodFromAncestor(
+  OnMethodFromAncestor: TPropHookMethodFromAncestor);
+begin
+  AddHandler(htMethodFromAncestor,TMethod(OnMethodFromAncestor));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerMethodFromAncestor(
+  OnMethodFromAncestor: TPropHookMethodFromAncestor);
+begin
+  RemoveHandler(htMethodFromAncestor,TMethod(OnMethodFromAncestor));
+end;
+
+procedure TPropertyEditorHook.AddHandlerChainCall(
+  OnChainCall: TPropHookChainCall);
+begin
+  AddHandler(htChainCall,TMethod(OnChainCall));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerChainCall(
+  OnChainCall: TPropHookChainCall);
+begin
+  RemoveHandler(htChainCall,TMethod(OnChainCall));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetComponent(
+  OnGetComponent: TPropHookGetComponent);
+begin
+  AddHandler(htGetComponent,TMethod(OnGetComponent));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetComponent(
+  OnGetComponent: TPropHookGetComponent);
+begin
+  RemoveHandler(htGetComponent,TMethod(OnGetComponent));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetComponentName(
+  OnGetComponentName: TPropHookGetComponentName);
+begin
+  AddHandler(htGetComponentName,TMethod(OnGetComponentName));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetComponentName(
+  OnGetComponentName: TPropHookGetComponentName);
+begin
+  RemoveHandler(htGetComponentName,TMethod(OnGetComponentName));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetComponentNames(
+  OnGetComponentNames: TPropHookGetComponentNames);
+begin
+  AddHandler(htGetComponentNames,TMethod(OnGetComponentNames));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetComponentNames(
+  OnGetComponentNames: TPropHookGetComponentNames);
+begin
+  RemoveHandler(htGetComponentNames,TMethod(OnGetComponentNames));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetRootClassName(
+  OnGetRootClassName: TPropHookGetRootClassName);
+begin
+  AddHandler(htGetRootClassName,TMethod(OnGetRootClassName));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetRootClassName(
+  OnGetRootClassName: TPropHookGetRootClassName);
+begin
+  RemoveHandler(htGetRootClassName,TMethod(OnGetRootClassName));
+end;
+
+procedure TPropertyEditorHook.AddHandlerComponentRenamed(
+  OnComponentRenamed: TPropHookComponentRenamed);
+begin
+  AddHandler(htComponentRenamed,TMethod(OnComponentRenamed));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerComponentRenamed(
+  OnComponentRenamed: TPropHookComponentRenamed);
+begin
+  RemoveHandler(htComponentRenamed,TMethod(OnComponentRenamed));
+end;
+
+procedure TPropertyEditorHook.AddHandlerComponentAdded(
+  OnComponentAdded: TPropHookComponentAdded);
+begin
+  AddHandler(htComponentAdded,TMethod(OnComponentAdded));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerComponentAdded(
+  OnComponentAdded: TPropHookComponentAdded);
+begin
+  RemoveHandler(htComponentAdded,TMethod(OnComponentAdded));
+end;
+
+procedure TPropertyEditorHook.AddHandlerDeleteComponent(
+  OnDeleteComponent: TPropHookDeleteComponent);
+begin
+  AddHandler(htDeleteComponent,TMethod(OnDeleteComponent));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerDeleteComponent(
+  OnDeleteComponent: TPropHookDeleteComponent);
+begin
+  RemoveHandler(htDeleteComponent,TMethod(OnDeleteComponent));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetObject(
+  OnGetObject: TPropHookGetObject);
+begin
+  AddHandler(htGetObject,TMethod(OnGetObject));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetObject(
+  OnGetObject: TPropHookGetObject);
+begin
+  RemoveHandler(htGetObject,TMethod(OnGetObject));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetObjectName(
+  OnGetObjectName: TPropHookGetObjectName);
+begin
+  AddHandler(htGetObjectName,TMethod(OnGetObjectName));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetObjectName(
+  OnGetObjectName: TPropHookGetObjectName);
+begin
+  RemoveHandler(htGetObjectName,TMethod(OnGetObjectName));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetObjectNames(
+  OnGetObjectNames: TPropHookGetObjectNames);
+begin
+  AddHandler(htGetObjectNames,TMethod(OnGetObjectNames));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerGetObjectNames(
+  OnGetObjectNames: TPropHookGetObjectNames);
+begin
+  RemoveHandler(htGetObjectNames,TMethod(OnGetObjectNames));
+end;
+
+procedure TPropertyEditorHook.AddHandlerModified(OnModified: TPropHookModified
+  );
+begin
+  AddHandler(htModified,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerModified(
+  OnModified: TPropHookModified);
+begin
+  RemoveHandler(htModified,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.AddHandlerRevert(OnRevert: TPropHookRevert);
+begin
+  AddHandler(htRevert,TMethod(OnRevert));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerRevert(OnRevert: TPropHookRevert);
+begin
+  RemoveHandler(htRevert,TMethod(OnRevert));
+end;
+
+procedure TPropertyEditorHook.AddHandlerRefreshPropertyValues(
+  OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
+begin
+  AddHandler(htRefreshPropertyValues,TMethod(OnRefreshPropertyValues));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerRefreshPropertyValues(
+  OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
+begin
+  RemoveHandler(htRefreshPropertyValues,TMethod(OnRefreshPropertyValues));
 end;
 
 procedure TPropertyEditorHook.SetLookupRoot(AComponent:TComponent);
+var
+  i: Integer;
 begin
   if FLookupRoot=AComponent then exit;
   FLookupRoot:=AComponent;
-  if Assigned(FOnChangeLookupRoot) then
-    FOnChangeLookupRoot();
+  i:=GetHandlerCount(htChangeLookupRoot);
+  while GetNextHandlerIndex(htChangeLookupRoot,i) do
+    TPropHookChangeLookupRoot(FHandlers[htChangeLookupRoot][i])();
+end;
+
+procedure TPropertyEditorHook.AddHandler(HookType: TPropHookType;
+  const Handler: TMethod);
+begin
+  if Handler.Code=nil then RaiseGDBException('TPropertyEditorHook.AddHandler');
+  if FHandlers[HookType]=nil then
+    FHandlers[HookType]:=TMethodList.Create;
+  FHandlers[HookType].Add(Handler);
+end;
+
+procedure TPropertyEditorHook.RemoveHandler(HookType: TPropHookType;
+  const Handler: TMethod);
+begin
+  if FHandlers[HookType]=nil then exit;
+  FHandlers[HookType].Remove(Handler);
+end;
+
+function TPropertyEditorHook.GetHandlerCount(HookType: TPropHookType): integer;
+begin
+  if FHandlers[HookType]<>nil then
+    Result:=FHandlers[HookType].Count
+  else
+    Result:=0;
+end;
+
+function TPropertyEditorHook.GetNextHandlerIndex(HookType: TPropHookType;
+  var i: integer): boolean;
+begin
+  if FHandlers[HookType]<>nil then begin
+    dec(i);
+    if (i>=FHandlers[HookType].Count) then
+      i:=FHandlers[HookType].Count-1;
+  end else begin
+    i:=-1;
+  end;
+  Result:=(i>=0);
+end;
+
+constructor TPropertyEditorHook.Create;
+begin
+  inherited Create;
+end;
+
+destructor TPropertyEditorHook.Destroy;
+var
+  HookType: TPropHookType;
+begin
+  for HookType:=Low(TPropHookType) to high(TPropHookType) do
+    FreeThenNil(FHandlers[HookType]);
+  inherited Destroy;
 end;
 
 //******************************************************************************

@@ -29,6 +29,8 @@ unit ObjectInspector;
 
 {$MODE OBJFPC}{$H+}
 
+{$DEFINE DoNotCatchOIExceptions}
+
 interface
 
 uses
@@ -688,15 +690,19 @@ begin
   if NewValue<>CurRow.Editor.GetVisualValue then begin
     Include(FStates,pgsApplyingValue);
     try
+      {$IFNDEF DoNotCatchOIExceptions}
       try
+      {$ENDIF}
         //writeln('TOIPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
         CurRow.Editor.SetValue(NewValue);
         //writeln('TOIPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      {$IFNDEF DoNotCatchOIExceptions}
       except
         on E: Exception do begin
           MessageDlg('Error',E.Message,mtError,[mbOk],0);
         end;
       end;
+      {$ENDIF}
       if (OldChangeStep<>FChangeStep) then begin
         // the selection has changed
         // => CurRow does not exist any more
@@ -746,14 +752,18 @@ begin
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
   if paDialog in CurRow.Editor.GetAttributes then begin
+    {$IFNDEF DoNotCatchOIExceptions}
     try
+    {$ENDIF}
       writeln('#################### TOIPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
       CurRow.Editor.Edit;
+    {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
         MessageDlg('Error',E.Message,mtError,[mbOk],0);
       end;
     end;
+    {$ENDIF}
     if (OldChangeStep<>FChangeStep) then begin
       // the selection has changed
       // => CurRow does not exist any more
@@ -2179,8 +2189,9 @@ procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 begin
   if FPropertyEditorHook<>NewValue then begin
     FPropertyEditorHook:=NewValue;
-    FPropertyEditorHook.OnChangeLookupRoot:=@PropEditLookupRootChange;
-    FPropertyEditorHook.OnRefreshPropertyValues:=@PropEditRefreshPropertyValues;
+    FPropertyEditorHook.AddHandlerChangeLookupRoot(@PropEditLookupRootChange);
+    FPropertyEditorHook.AddHandlerRefreshPropertyValues(
+                                                @PropEditRefreshPropertyValues);
     // select root component
     FComponentList.Clear;
     if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil) then
