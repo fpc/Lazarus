@@ -55,13 +55,6 @@ begin
   CNSendMessage(LM_BRINGTOFRONT,Self,nil);
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication DefaultOnClick                                            }
-{------------------------------------------------------------------------------}
-procedure TApplication.DefaultOnClick(Sender : TObject);
-begin
-  TForm(TButton(Sender).Parent).ModalResult := TButton(Sender).ModalResult;
-end;
 
 {------------------------------------------------------------------------------}
 {       TApplication Messagebox     }
@@ -417,6 +410,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/10/24 10:15:24  lazarus
+  MG: broke buttons.pp <-> forms.pp circle
+
   Revision 1.26  2002/10/23 20:47:26  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl
