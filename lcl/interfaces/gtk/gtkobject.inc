@@ -6137,13 +6137,14 @@ end;
 procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
 const
   TestString = '{Am|g_}';
-  AVGBuffer: Pchar =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
 var
   XT : TSize;
   dummy: LongInt;
   UseFont : PGDKFont;
   UnRef : Boolean;
+  AVGBuffer: array[#32..#126] of char;
+  AvgLen: integer;
+  c: char;
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
@@ -6167,12 +6168,16 @@ begin
           gdk_text_extents(UseFont, TestString,
             length(TestString), @lbearing, @rBearing, @dummy,
             @TextMetric.tmAscent, @TextMetric.tmDescent);
-          GetTextExtentPoint(HDC(DC), AVGBuffer, StrLen(AVGBuffer), XT);
+          for c:=Low(AVGBuffer) to High(AVGBuffer) do
+            AVGBuffer[c]:=c;
+          AvgLen:=ord(High(AVGBuffer))-ord(Low(AVGBuffer))+1;
+          GetTextExtentPoint(HDC(DC), @AVGBuffer[Low(AVGBuffer)],
+                             AvgLen, XT);
           if not IsDoubleByteChar then
-            XT.cX := XT.cX div StrLen(AVGBuffer)
+            XT.cX := XT.cX div AvgLen
           else
             // Quick hack for double byte char fonts
-            XT.cX := XT.cX div (StrLen(AVGBuffer) div 2);
+            XT.cX := XT.cX div (AvgLen div 2);
           TextMetric.tmHeight := XT.cY;
           TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
           TextMetric.tmAveCharWidth :=  XT.cX;
@@ -6694,6 +6699,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.296  2002/12/07 08:42:08  mattias
+  improved ExtTxtOut: support for char dist array
+
   Revision 1.295  2002/12/05 22:16:30  mattias
   double byte char font started
 
