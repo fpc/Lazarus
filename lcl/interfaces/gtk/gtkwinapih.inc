@@ -72,7 +72,7 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: 
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-function Frame3d(DC : HDC; var Rect: TRect; const FrameWidth: integer; const Style : TBevelCut): boolean; override;
+function Frame3d(DC : HDC; var ARect: TRect; const FrameWidth: integer; const Style : TBevelCut): boolean; override;
 
 Function GetActiveWindow : HWND; override;
 function GetCapture: HWND; override;
@@ -188,6 +188,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/09/20 13:11:14  lazarus
+  MG: fixed TPanel and Frame3D
+
   Revision 1.48  2002/09/19 19:56:18  lazarus
   MG: accelerated designer drawings
 
