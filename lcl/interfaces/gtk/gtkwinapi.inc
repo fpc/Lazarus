@@ -3038,6 +3038,9 @@ var
   DCOrigin: TPoint;
   UnderLine: boolean;
 
+  buffer : PGdkPixmap;
+  buffered : boolean;
+
   procedure DrawTextLine;
   var
     UnderLineLen, Y: integer;
@@ -3049,7 +3052,7 @@ var
       if (Dx=nil) then begin
         // no dist array -> write as one block
         BeginGDKErrorTrap;
-        gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
+        gdk_draw_text(Buffer, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
         EndGDKErrorTrap;
       end else begin
@@ -3062,7 +3065,7 @@ var
         LinePos:=LineStart;
         for i:=1 to LineLen do begin
           BeginGDKErrorTrap;
-          gdk_draw_text(Drawable, UseFont, GC, CurX, TxtPt.Y, LinePos, 1);
+          gdk_draw_text(Buffer, UseFont, GC, CurX, TxtPt.Y, LinePos, 1);
           EndGDKErrorTrap;
           inc(LinePos);
           inc(CurX,CurDistX^);
@@ -3076,7 +3079,7 @@ var
           UnderLineLen := gdk_text_width(UseFont,LineStart, LineLen);
         Y := TxtPt.Y + 1;
         BeginGDKErrorTrap;
-        gdk_draw_line(Drawable, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
+        gdk_draw_line(Buffer, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
         EndGDKErrorTrap;
       end;
     end;
@@ -3102,7 +3105,7 @@ begin
       
       // to reduce flickering calculate first and then paint
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
-
+      buffered := false;
       UseFont:=nil;
       if (Str<>nil) and (Count>0) then begin
         if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
@@ -3123,22 +3126,21 @@ begin
             IntersectClipRect(DC, Rect^.Left, Rect^.Top,
                               Rect^.Right, Rect^.Bottom);
           end;
-          LineLen := FindChar(#10,Str,Count);
-          TopY := Y;
-          UpdateDCTextMetric(TDeviceContext(DC));
-          TxtPt.X := X + DCOrigin.X;
-          {$IfDef Win32}
-          LineHeight := DCTextMetric.TextMetric.tmHeight div 2;
-          {$Else}
-          LineHeight := DCTextMetric.TextMetric.tmAscent;
-          {$EndIf}
-          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
         end else begin
           WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
           Result := False;
         end;
       end;
       
+      //If we don't have double buffering, try and buffer each block of text,
+      //otherwise most text "flashes" by disapearing and then redrawing on account
+      //of the two passes, first one to draw bg and then another to draw fg.
+
+      //By doing it this way the "constant" flashing is replaced by more occasional
+      //flashing, and is primarily restricted to the larger blocks of text. Far
+      //more pleasant to work with, especially in the Lazarus Source Editor where
+      //each keyword, string, etc is its own block drawn individually, thus is
+      //constantly flashing during code changes, resizing,  scrolling, etc.
       if ((Options and ETO_OPAQUE) <> 0) then
       begin
         Width := Rect^.Right - Rect^.Left;
@@ -3146,15 +3148,31 @@ begin
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
         BeginGDKErrorTrap;
-        gdk_draw_rectangle(Drawable, GC, 1,
-                           Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                           Width, Height);
+        buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
+        gdk_draw_rectangle(buffer, GC, 1, 0, 0, Width, Height);
         EndGDKErrorTrap;
-      end;
+        buffered := True;
+      end else
+        buffer := Drawable;
 
       if UseFont<>nil then begin
+        LineLen := FindChar(#10,Str,Count);
+        UpdateDCTextMetric(TDeviceContext(DC));
+        {$IfDef Win32}
+        LineHeight := DCTextMetric.TextMetric.tmHeight div 2;
+        {$Else}
+        LineHeight := DCTextMetric.TextMetric.tmAscent;
+        {$EndIf}
+        if Buffered then begin
+          TxtPt.X := 0;
+          TxtPt.Y := LineHeight;
+        end
+        else begin
+          TopY := Y;
+          TxtPt.X := X + DCOrigin.X;
+          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+        end;
         SelectGDKTextProps(DC);
-
         LineStart:=Str;
         if LineLen < 0 then begin
           LineLen:=Count;
@@ -3178,6 +3196,13 @@ begin
         BeginGDKErrorTrap;
         If UnRef then
           GDK_Font_UnRef(UseFont);
+        EndGDKErrorTrap;
+      end;
+      if buffered then begin
+        BeginGDKErrorTrap;
+        gdk_draw_pixmap(drawable, gc, buffer, 0,0, Rect^.Left+DCOrigin.X,
+          Rect^.Top+DCOrigin.Y, Width, Height);
+        gdk_pixmap_unref(buffer);
         EndGDKErrorTrap;
       end;
     end;
@@ -8926,6 +8951,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.289  2003/10/02 18:18:32  ajgenius
+  buffer cs_opaque ExtTextOut blocks to help prevent extensive flickering
+
   Revision 1.288  2003/09/25 16:02:16  ajgenius
   try to catch GDK/X drawable errors and raise an AV to stop killing App
 
