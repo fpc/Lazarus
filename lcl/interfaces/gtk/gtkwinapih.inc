@@ -85,6 +85,7 @@ Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetCmdLineParamDescForInterface: string; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
+function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 function GetFocus: HWND; override;
@@ -187,6 +188,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/09/19 19:56:18  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.47  2002/09/18 17:07:30  lazarus
   MG: added patch from Andrew
 
