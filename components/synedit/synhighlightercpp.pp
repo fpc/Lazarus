@@ -218,7 +218,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber:Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
     {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(var StartPos, EndPos: integer); override;

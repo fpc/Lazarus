@@ -29,7 +29,8 @@ uses
   FileCtrl, Graphics, Controls, Dialogs, LResources,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
-  SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP,
+  SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
+  SynHighlighterLFM,
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
@@ -69,7 +70,8 @@ const
   );
   
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
-    ( nil, nil, TSynPasSyn, TSynPasSyn, nil, nil, TSynHTMLSyn, TSynCPPSyn);
+    ( nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
+      TSynCPPSyn);
     
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
@@ -754,7 +756,7 @@ begin
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshCPP];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
-    FileExtensions:='c;cc;cpp;h';
+    FileExtensions:='c;cc;cpp;h;hpp';
     SampleSource:=
       '/* Comment */'#13+
       '#include <stdio.h>'#13+
@@ -778,6 +780,66 @@ begin
       Add('Preprocessor=Comment');
       Add('Identifier=Identifier');
       Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for XML
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshXML];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='xml;xsd;xsl;xslt;dtd';
+    SampleSource:=
+      '<?xml version="1.0"?>'#13+
+      '<!DOCTYPE root ['#13+
+      '  ]>'#13+
+      '<!-- Comment -->'#13+
+      '<root version="&test;">'#13+
+      '  <![CDATA[ **CDATA section** ]]>'#13+
+      '</root>'#13+
+      '<!-- Text Block -->'#13+
+      ''#13+
+      #13;
+    AddAttrSampleLines[ahaTextBlock]:=8;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Element=Reserved_word');
+      Add('Comment=Comment');
+      Add('Text=Identifier');
+      Add('Space=Space');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+
+  // create info for LFM
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshLFM];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='lfm;dfm;xfm';
+    SampleSource:=
+      '{ Lazarus Form Definitions }'#13+
+      'object TestForm: TTestForm'#13+
+      '  Left = 273'#13+
+      '  Top = 103'#13+
+      '  Caption = ''sample source'''#13+
+      'end'#13+
+      '{ Text Block }'#13+
+      ''#13+
+      #13;
+    AddAttrSampleLines[ahaTextBlock]:=7;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Element=Reserved_word');
+      Add('Comment=Comment');
+      Add('Identifier=Identifier');
+      Add('Key=Reserved_word');
       Add('Number=Number');
       Add('Space=Space');
       Add('String=String');
@@ -1660,7 +1722,7 @@ begin
   FormCreating:=true;
 
   if LazarusResources.Find(ClassName)=nil then begin  
-    SetBounds((Screen.Width-470) div 2,(Screen.Height-480) div 2, 455,459);
+    SetBounds((Screen.Width-490) div 2,(Screen.Height-480) div 2, 480,459);
     Caption:='Editor Options';
     SynAutoComplete:=TSynEditAutoComplete.Create(Self);
 
@@ -2708,7 +2770,7 @@ end;
 procedure TEditorOptionsForm.SetupGeneralPage;
 var MaxX,ChkBoxW:integer;
 begin
-  MaxX:=Width-9;
+  MaxX:=Width-5;
   ChkBoxW:=(MaxX-20) div 2;
 
   EditorOptionsGroupBox:=TGroupBox.Create(Self);
@@ -3105,7 +3167,7 @@ end;
 procedure TEditorOptionsForm.SetupDisplayPage;
 var MaxX,MaxY,ChkBoxW:integer;
 begin
-  MaxX:=Width-9;
+  MaxX:=Width-5;
   MaxY:=375;
   ChkBoxW:=140;
 
@@ -3479,16 +3541,16 @@ end;
 procedure TEditorOptionsForm.SetupColorPage;
 var a,MaxX,MaxY:integer;
 begin
-  MaxX:=Width-9;
-  MaxY:=375;
+  MaxX:=Width-5;
+  MaxY:=377;
 
   LanguageComboBox:=TComboBox.Create(Self);
   with LanguageComboBox do begin
     Name:='LanguageComboBox';
     Parent:=MainNoteBook.Page[3];
     Top:=5;
-    Left:=80;
-    Width:=130;
+    Left:=75;
+    Width:=170;
     Height:=20;
     with Items do begin
       BeginUpdate;
@@ -3520,7 +3582,7 @@ begin
     Name:='ColorSchemeComboBox';
     Parent:=MainNoteBook.Page[3];
     Top:=LanguageComboBox.Top;
-    Left:=LanguageComboBox.Left+LanguageComboBox.Width+120;
+    Left:=LanguageComboBox.Left+LanguageComboBox.Width+110;
     Width:=100;
     Height:=20;
     with Items do begin
@@ -3554,7 +3616,7 @@ begin
     Name:='FileExtensionsComboBox';
     Parent:=MainNoteBook.Page[3];
     Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+4;
-    Left:=110;
+    Left:=103;
     Width:=310;
     Height:=20;
     Items.BeginUpdate;
@@ -3588,7 +3650,7 @@ begin
     Parent:=MainNoteBook.Page[3];
     Top:=FileExtensionsComboBox.Top+FileExtensionsComboBox.Height+12;
     Left:=5;
-    Width:=150;
+    Width:=180;
     Height:=16;
     Caption:='Element';
     Visible:=true;
@@ -3781,7 +3843,7 @@ end;
 procedure TEditorOptionsForm.SetupCodeToolsPage;
 var MaxX:integer;
 begin
-  MaxX:=Width-9;
+  MaxX:=Width-5;
 
   AutomaticFeaturesGroupBox:=TGroupBox.Create(Self);
   with AutomaticFeaturesGroupBox do begin
@@ -3799,9 +3861,10 @@ begin
   with AutoCodeCompletionCheckBox do begin
     Name:='AutoCodeCompletionCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
-    Top:=5;
+    Top:=2;
     Left:=5;
     Width:=200;
+    Height:=20;
     Caption:='Code completion';
     Checked:=EditorOpts.AutoCodeCompletion;
     Enabled:=false;
@@ -3812,7 +3875,7 @@ begin
   with AutoCodeParametersCheckBox do begin
     Name:='AutoCodeParametersCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
-    Top:=AutoCodeCompletionCheckBox.Top+AutoCodeCompletionCheckBox.Height+20;
+    Top:=AutoCodeCompletionCheckBox.Top+AutoCodeCompletionCheckBox.Height;
     Left:=AutoCodeCompletionCheckBox.Left;
     Width:=AutoCodeCompletionCheckBox.Width;
     Height:=AutoCodeCompletionCheckBox.Height;
@@ -3826,7 +3889,7 @@ begin
   with AutoToolTipExprEvalCheckBox do begin
     Name:='AutoToolTipExprEvalCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
-    Top:=AutoCodeParametersCheckBox.Top+AutoCodeParametersCheckBox.Height+20;
+    Top:=AutoCodeParametersCheckBox.Top+AutoCodeParametersCheckBox.Height;
     Left:=AutoCodeCompletionCheckBox.Left;
     Width:=AutoCodeCompletionCheckBox.Width;
     Height:=AutoCodeCompletionCheckBox.Height;
@@ -3840,7 +3903,7 @@ begin
   with AutoToolTipSymbToolsCheckBox do begin
     Name:='AutoToolTipSymbToolsCheckBox';
     Parent:=AutomaticFeaturesGroupBox;
-    Top:=AutoToolTipExprEvalCheckBox.Top+AutoToolTipExprEvalCheckBox.Height+20;
+    Top:=AutoToolTipExprEvalCheckBox.Top+AutoToolTipExprEvalCheckBox.Height;
     Left:=AutoCodeCompletionCheckBox.Left;
     Width:=AutoCodeCompletionCheckBox.Width;
     Height:=AutoCodeCompletionCheckBox.Height;

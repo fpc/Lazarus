@@ -1073,8 +1073,6 @@ begin
   fRange := rsUnknown;
   fAsmStart := False;
   fDefaultFilter := SYNS_FilterPascal;
-  
-  
 end; { Create }
 
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
@@ -1134,7 +1132,7 @@ begin
       {$IFDEF SYN_LAZARUS}
       until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
       {$ELSE}
-      until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+      until (fLine[Run] in [#0, #10, #13]);
       {$ENDIF}
     end;
   end;

@@ -17,7 +17,8 @@ uses
   syntextdrawer, syneditkeycmds, synedittypes, syneditstrconst,
   syneditsearch, syneditmiscprocs, syneditmiscclasses, synedittextbuffer,
   synedit, synedithighlighter, synhighlighterpas, syncompletion,
-  syneditautocomplete, synhighlighterhtml, synhighlightercpp;
+  syneditautocomplete, synhighlighterhtml, synhighlightercpp, synhighlighterxml,
+  synhighlighterlfm;
 	
 implementation
 
@@ -26,6 +27,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/12/06 10:15:06  lazarus
+  MG: added xml and lfm highlighter
+
   Revision 1.7  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion
 

@@ -32,13 +32,23 @@ unit SynEditHighlighter;
 interface
 
 uses
+  SysUtils, Classes,
+{$IFDEF SYN_CLX}
+  kTextDrawer,
+  Types,
+  QGraphics,
+{$ELSE}
+  Graphics,
   {$IFDEF SYN_LAZARUS}
   LCLLinux,
   {$ELSE}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, Graphics, Registry,
-  SynEditTypes, SynEditMiscClasses;
+  Registry,
+  IniFiles,
+{$ENDIF}
+  SynEditTypes,
+  SynEditMiscClasses;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
 {$IFDEF SYN_COMPILER_4_UP}
@@ -80,16 +90,16 @@ type
       oldStyle: boolean): boolean; virtual;
     function LoadFromRegistry(Reg: TBetterRegistry): boolean;
     function SaveToRegistry(Reg: TBetterRegistry): boolean;
+    function LoadFromFile(Ini : TIniFile): boolean;                             //DDH 10/16/01
+    function SaveToFile(Ini : TIniFile): boolean;                               //DDH 10/16/01
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
     property Name: string read fName;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   published
     property Background: TColor read fBackground write SetBackground
-//      default clNone;
       stored GetBackgroundColorStored;                                          //mh 2000-10-08
     property Foreground: TColor read fForeground write SetForeground
-//      default clNone;
       stored GetForegroundColorStored;                                          //mh 2000-10-08
     property Style: TFontStyles read fStyle write SetStyle //default [];
       stored GetFontStyleStored;                                                //mh 2000-10-08
@@ -108,22 +118,30 @@ const
   SYN_ATTR_KEYWORD           =   2;
   SYN_ATTR_STRING            =   3;
   SYN_ATTR_WHITESPACE        =   4;
+  SYN_ATTR_SYMBOL            =   5;                                             //mh 2001-09-13
 
 type
   TSynCustomHighlighter = class(TComponent)
   private
     fAttributes: TStringList;
     fAttrChangeHooks: TSynNotifyEventChain;
+    fUpdateCount: integer;                                                      //mh 2001-09-13
+    fEnabled: Boolean;
+    fWordBreakChars: TSynIdentChars;
+    procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
     fDefaultFilter: string;
+    fUpdateChange: boolean;                                                     //mh 2001-09-13
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
     procedure DefHighlightChange(Sender: TObject);
+    procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
     function GetAttribute(idx: integer): TSynHighlighterAttributes; virtual;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       virtual; abstract;
     function GetDefaultFilter: string; virtual;
     function GetIdentChars: TSynIdentChars; virtual;
+    procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
     function GetSampleSource: string; virtual;                        
     function IsFilterStored: boolean; virtual;
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
@@ -141,6 +159,8 @@ type
     procedure AddSpecialAttribute(const AttribName: string);
     {$ENDIF}
     procedure Assign(Source: TPersistent); override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
@@ -153,16 +173,19 @@ type
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
-    procedure SetLine(const NewValue: String; LineNumber:Integer); virtual; abstract;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); virtual; abstract;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
     function UseUserSettings(settingIndex: integer): boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
     function LoadFromRegistry(RootKey: HKEY; Key: string): boolean; virtual;
     function SaveToRegistry(RootKey: HKEY; Key: string): boolean; virtual;
+    function LoadFromFile(AFileName: String): boolean;                          //DDH 10/16/01
+    function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
     property IdentChars: TSynIdentChars read GetIdentChars;
+    property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetLanguageName;
   public
     property AttrCount: integer read GetAttribCount;
@@ -178,11 +201,14 @@ type
       index SYN_ATTR_KEYWORD read GetDefaultAttribute;
     property StringAttribute: TSynHighlighterAttributes
       index SYN_ATTR_STRING read GetDefaultAttribute;
+    property SymbolAttribute: TSynHighlighterAttributes                         //mh 2001-09-13
+      index SYN_ATTR_SYMBOL read GetDefaultAttribute;
     property WhitespaceAttribute: TSynHighlighterAttributes
       index SYN_ATTR_WHITESPACE read GetDefaultAttribute;
   published
     property DefaultFilter: string read GetDefaultFilter write SetDefaultFilter
       stored IsFilterStored;
+    property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
   end;
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
@@ -345,7 +371,6 @@ begin
   fName := attribName;
 end;
 
-{begin}                                                                         //mh 2000-10-08
 function TSynHighlighterAttributes.GetBackgroundColorStored: boolean;
 begin
   Result := fBackground <> fBackgroundDefault;
@@ -367,7 +392,6 @@ begin
   fBackgroundDefault := fBackground;
   fStyleDefault := fStyle;
 end;
-{end}                                                                           //mh 2000-10-08
 
 function TSynHighlighterAttributes.LoadFromBorlandRegistry(rootKey: HKEY;
   attrKey, attrName: string; oldStyle: boolean): boolean;
@@ -605,6 +629,36 @@ begin
     Result := false;
 end;
 
+function TSynHighlighterAttributes.LoadFromFile(Ini : TIniFile): boolean;       //DDH 10/16/01
+var
+  S: TStringList;
+begin
+  S := TStringList.Create;
+  try
+    Ini.ReadSection(Name, S);
+    if S.Count > 0 then
+    begin
+      if S.IndexOf('Background') <> -1 then
+        Background := Ini.ReadInteger(Name, 'Background', clWindow);
+      if S.IndexOf('Foreground') <> -1 then
+        Foreground := Ini.ReadInteger(Name, 'Foreground', clWindowText);
+      if S.IndexOf('Style') <> -1 then
+        IntegerStyle := Ini.ReadInteger(Name, 'Style', 0);
+      Result := true;
+    end else Result := false;
+  finally
+    S.Free;
+  end;
+end;
+
+function TSynHighlighterAttributes.SaveToFile(Ini : TIniFile): boolean;         //DDH 10/16/01
+begin
+  Ini.WriteInteger(Name, 'Background', Background);
+  Ini.WriteInteger(Name, 'Foreground', Foreground);
+  Ini.WriteInteger(Name, 'Style', IntegerStyle);
+  Result := true;
+end;
+
 function TSynHighlighterAttributes.GetStyleFromInt: integer;
 begin
   if fsBold in Style then Result:= 1 else Result:= 0;
@@ -626,6 +680,7 @@ end;
 constructor TSynCustomHighlighter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  fWordBreakChars := TSynWordBreakChars;
   fAttributes := TStringList.Create;
   fAttributes.Duplicates := dupError;
   fAttributes.Sorted := TRUE;
@@ -634,14 +689,38 @@ begin
 end;
 
 destructor TSynCustomHighlighter.Destroy;
-var
-  i: integer;
 begin
-  for i := fAttributes.Count - 1 downto 0 do
-    TSynHighlighterAttributes(fAttributes.Objects[i]).Free;
+  FreeHighlighterAttributes;
   fAttributes.Free;
   fAttrChangeHooks.Free;
   inherited Destroy;
+end;
+
+procedure TSynCustomHighlighter.BeginUpdate;
+begin
+  Inc(fUpdateCount);
+end;
+
+procedure TSynCustomHighlighter.EndUpdate;
+begin
+  if fUpdateCount > 0 then begin
+    Dec(fUpdateCount);
+    if (fUpdateCount = 0) and fUpdateChange then begin
+      fUpdateChange := FALSE;
+      DefHighlightChange(Self);
+    end;
+  end;
+end;
+
+procedure TSynCustomHighlighter.FreeHighlighterAttributes;
+var
+  i: integer;
+begin
+  if fAttributes <> nil then begin
+    for i := fAttributes.Count - 1 downto 0 do
+      TSynHighlighterAttributes(fAttributes.Objects[i]).Free;
+    fAttributes.Clear;
+  end;
 end;
 
 procedure TSynCustomHighlighter.Assign(Source: TPersistent);
@@ -667,6 +746,9 @@ begin
     // assign the sample source text only if same or descendant class
     if Src is ClassType then
       SampleSource := Src.SampleSource;
+    fWordBreakChars := Src.WordBreakChars;
+    DefaultFilter := Src.DefaultFilter;
+    Enabled := Src.Enabled;
   end else
     inherited Assign(Source);
 end;
@@ -685,24 +767,23 @@ function TSynCustomHighlighter.LoadFromRegistry(RootKey: HKEY;
   Key: string): boolean;
 var
   r: TBetterRegistry;
-  {$IFNDEF SYN_LAZARUS}
+  {$IFNDEF FPC}
   i: integer;
   {$ENDIF}
 begin
   r := TBetterRegistry.Create;
   try
     r.RootKey := RootKey;
-    {$IFNDEF SYN_LAZARUS}
-    // ToDo Registry
+    {$IFNDEF FPC}
     if r.OpenKeyReadOnly(Key) then begin
       Result := true;
       for i := 0 to AttrCount-1 do
         Result := Result and Attribute[i].LoadFromRegistry(r);
     end
-    else Result := false;
-    {$ELSE}
-    Result:=false;
+    else
     {$ENDIF}
+      Result := false;
+    
   finally r.Free; end;
 end;
 
@@ -724,6 +805,40 @@ begin
   finally r.Free; end;
 end;
 
+function TSynCustomHighlighter.LoadFromFile(AFileName : String): boolean;       //DDH 10/16/01
+VAR AIni : TIniFile;
+    i : Integer;
+begin
+  AIni := TIniFile.Create(AFileName);
+  try
+    with AIni do
+    begin
+      Result := true;
+      for i := 0 to AttrCount-1 do
+        Result := Result and Attribute[i].LoadFromFile(AIni);
+    end;
+  finally
+    AIni.Free;
+  end;
+end;
+
+function TSynCustomHighlighter.SaveToFile(AFileName : String): boolean;         //DDH 10/16/01
+var AIni : TIniFile;
+    i: integer;
+begin
+  AIni := TIniFile.Create(AFileName);
+  try
+    with AIni do
+    begin
+      Result := true;
+      for i := 0 to AttrCount-1 do
+        Result := Result and Attribute[i].SaveToFile(AIni);
+    end;
+  finally
+    AIni.Free;
+  end;
+end;
+
 procedure TSynCustomHighlighter.AddAttribute(AAttrib: TSynHighlighterAttributes);
 begin
   fAttributes.AddObject(AAttrib.Name, AAttrib);
@@ -738,7 +853,10 @@ end;
 
 procedure TSynCustomHighlighter.DefHighlightChange(Sender: TObject);
 begin
-  fAttrChangeHooks.Fire;
+  if fUpdateCount > 0 then
+    fUpdateChange := TRUE
+  else
+    fAttrChangeHooks.Fire;
 end;
 
 function TSynCustomHighlighter.GetAttribCount: integer;
@@ -768,6 +886,11 @@ end;
 function TSynCustomHighlighter.GetIdentChars: TSynIdentChars;
 begin
   Result := [#33..#255];
+end;
+
+procedure TSynCustomHighlighter.SetWordBreakChars(AChars: TSynIdentChars);
+begin
+  fWordBreakChars := AChars;
 end;
 
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -822,12 +945,10 @@ var
 begin
   for i := fAttributes.Count - 1 downto 0 do begin
     Attri := TSynHighlighterAttributes(fAttributes.Objects[i]);
-{begin}                                                                         //mh 2000-10-08
     if Attri <> nil then begin
       Attri.OnChange := AEvent;
       Attri.InternalSaveDefaultValues;
     end;
-{end}                                                                           //mh 2000-10-08
   end;
 end;
 
@@ -847,6 +968,18 @@ end;
 procedure TSynCustomHighlighter.UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
 begin
   fAttrChangeHooks.Remove(ANotifyEvent);
+end;
+
+procedure TSynCustomHighlighter.SetEnabled(const Value: boolean);
+begin
+  if fEnabled <> Value then
+  begin
+    fEnabled := Value;
+    //we need to notify any editor that we are attached to to repaint,
+    //but a highlighter doesn't know what editor it is attached to.
+    //Until this is resolved, you will have to manually call repaint
+    //on the editor in question.
+  end;
 end;
 
 {$IFNDEF SYN_CPPB_1}

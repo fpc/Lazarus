@@ -41,8 +41,17 @@ unit SynEditTypes;
 
 interface
 
+const
+  TSynSpecialChars = ['À'..'Ö', 'Ø'..'ö', 'ø'..'ÿ'];
+  TSynValidStringChars = ['_', '0'..'9', 'A'..'Z', 'a'..'z'] + TSynSpecialChars;
+  TSynWordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
+                        ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|'];
+
 type
   TSynIdentChars = set of char;
+
+  //NOTE: This will need to be localized and currently will not work with
+  //      MBCS languages like Japanese or Korean.
 
   PSynSelectionMode = ^TSynSelectionMode;
   TSynSelectionMode = (smNormal, smLine, smColumn);

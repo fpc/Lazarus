@@ -12,7 +12,8 @@ version=0.8
 units=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
   synedit synedithighlighter synhighlighterpas syncompletion \
-  syneditautocomplete synhighlighterhtml synhighlightercpp
+  syneditautocomplete synhighlighterhtml synhighlightercpp \
+  synhighlighterxml synhighlighterlfm
 
 [default]
             
