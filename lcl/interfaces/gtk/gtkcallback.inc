@@ -678,6 +678,7 @@ var
    fileList : PGTKCList;
    DirName  : string;
    FileName : string;
+   Files: TStringList;
 begin
    Result := True;
    theDialog := TCommonDialog(data);
@@ -694,9 +695,10 @@ begin
                                     PGtkFileSelection(FPointer));
            DirName:=ExtractFilePath(FileName);
            TFileDialog(data).FileName := '';
-           TStringList(TFileDialog(theDialog).Files).Clear;
+           Files:=TStringList(TFileDialog(theDialog).Files);
+           Files.Clear;
            if not FileExists(FileName) then
-             TStringList(TFileDialog(theDialog).Files).Add(FileName);
+             Files.Add(FileName);
            fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
            rowNum := 0;
 	   cListRow := fileList^.row_list;
@@ -707,13 +709,15 @@ begin
                if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT
                then begin
 	         gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
-                 TStringList(TFileDialog(theDialog).Files).Add(DirName+fileInfo);
+                 Files.Add(DirName+fileInfo);
                end;
 	     end;
 	     // get next row from list
 	     rowNum := rowNum + 1;
 	     cListRow := g_list_next(cListRow);
 	   end;
+           if (Filename<>'') and (Files.IndexOf(Filename)<0) then
+             Files.Add(Filename);
          end
 	 else
 	 begin
@@ -1585,6 +1589,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2001/12/17 11:09:48  lazarus
+  MG: fixed typed but not selected filename in TOpenDialog
+
   Revision 1.55  2001/12/12 20:45:30  lazarus
   MG: added non existing filename to multiselection in TOpenDialog
 
