@@ -139,8 +139,10 @@ type
 
   { TBitBtn }
 
-  TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp,bkYes, bkNo,
-                 bkClose, bkAbort, bkRetry, bkIgnore, bkAll);
+  TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp, bkYes, bkNo,
+                 bkClose, bkAbort, bkRetry, bkIgnore, bkAll,
+                 bkNoToAll, bkYesToAll);
+  TBitBtnKinds = set of TBitBtnKind;
 
   TBitBtn = class(TButton)
   private
@@ -263,16 +265,18 @@ implementation
 const
   BitbtnCaption : array[TBitBtnKind] of String = (
     '', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo,
-    rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll);
+    rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll,
+    rsmbNoToAll, rsmbYesToAll);
 
   BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
     0, mrOK, mrCancel, 0, mrYes, mrNo,
-    0, mrAbort, mrRetry, mrIgnore, mrAll);
+    0, mrAbort, mrRetry, mrIgnore, mrAll,
+    mrNoToAll, mrYesToAll);
 
   BitBtnImages : array[TBitBtnKind] of Longint = (
     idButtonOk, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
     idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
-    idButtonAll);
+    idButtonAll, idButtonAll, idButtonAll);
 
 procedure Register;
 begin
@@ -295,6 +299,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/04/13 13:45:04  mattias
+  implemented broken dependencies dialog
+
   Revision 1.40  2003/04/08 09:04:07  mattias
   fixed registration for fpc 1.0.x
 

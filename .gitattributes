@@ -663,6 +663,7 @@ lcl/templates/template.pp svneol=native#text/pascal
 lcl/toolwin.pp svneol=native#text/pascal
 lcl/utrace.pp svneol=native#text/pascal
 lcl/vclglobals.pp svneol=native#text/pascal
+packager/brokendependenciesdlg.pas svneol=native#text/pascal
 packager/lazaruspackageintf.pas svneol=native#text/pascal
 packager/pkggraphexporer.pas svneol=native#text/pascal
 tools/apiwizz/apiwizard.pp svneol=native#text/pascal
