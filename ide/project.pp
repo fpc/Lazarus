@@ -594,7 +594,7 @@ end;
 constructor TUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
   inherited Create;
-  Assert(False, 'Project Unit Info Class Created');
+  Assert(False, 'Trace:Project Unit Info Class Created');
   FBookmarks:=TFileBookmarks.Create;
   Clear;
   Source := ACodeBuffer;
@@ -2846,6 +2846,9 @@ end.
 
 {
   $Log$
+  Revision 1.153  2004/03/25 23:14:01  vincents
+  added Trace: to assert message
+
   Revision 1.152  2004/03/20 12:55:48  mattias
   implemented adding Application.Title:= statements
 
