@@ -3,6 +3,9 @@
   <Package>
     <Name Value="GTKOpenGL"/>
     <Author Value="Mattias Gaertner, Satan"/>
+    <Description Value="OpenGL for LCL - components: TGtkGlAreaControl"/>
+    <License Value="LGPL-2"/>
+    <Version Major="1"/>
     <Files Count="5">
       <Item1>
         <Filename Value="gtkglarea.pp"/>
@@ -26,6 +29,7 @@
         <UnitName Value="NVGLX"/>
       </Item5>
     </Files>
+    <AutoIncrementVersionOnBuild Value="False"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
