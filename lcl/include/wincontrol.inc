@@ -1806,9 +1806,9 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TWinControl.Create(AOwner : TComponent);
+constructor TWinControl.Create(TheOwner : TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   FCompStyle := csFixed;
   FBrush := nil;
 end;
@@ -2580,6 +2580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.119  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.118  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
