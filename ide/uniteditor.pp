@@ -3335,7 +3335,7 @@ Begin
         if FindInFilesDialog.WhereRadioGroup.ItemIndex = 1 then
         begin
           for i:= 0 to self.EditorCount -1 do
-            //only if file exist on disk
+            //only if file exists on disk
             if FilenameIsAbsolute(Editors[i].FileName)
             and FileExists(Editors[i].FileName) then
               TheFileList.Add(Editors[i].FileName);
@@ -3355,11 +3355,19 @@ Begin
           MessagesView.Clear;
           MessagesView.ShowOnTop;
           try
-            TheMatchedFiles:= IDEProcs.FindInFiles(TheFileList,
-                      FindText,
-                      FindInFilesDialog.WholeWordsOnlyCheckBox.Checked,
-                      FindInFilesDialog.CaseSensitiveCheckBox.Checked,
-                      FindInFilesDialog.RegularExpressionsCheckBox.Checked);
+            try
+              TheMatchedFiles:= IDEProcs.FindInFiles(TheFileList,
+                        FindText,
+                        FindInFilesDialog.WholeWordsOnlyCheckBox.Checked,
+                        FindInFilesDialog.CaseSensitiveCheckBox.Checked,
+                        FindInFilesDialog.RegularExpressionsCheckBox.Checked);
+            except
+              on E: ERegExpr do begin
+                MessageDlg(lisUEErrorInRegularExpression,
+                E.Message,mtError,[mbCancel],0);
+                exit;
+              end;//on except
+            end;//try-except
             //if we matched any files add them to the message window
             if (TheMatchedFiles<>nil) and (TheMatchedFiles.Count>0) then
             begin
