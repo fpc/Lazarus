@@ -1026,23 +1026,21 @@ begin
 end;
 
 procedure TCodeToolsDefinesEditor.ValueNoteBookResize(Sender: TObject);
-var ValNoteBookMaxX, ValNoteBookMaxY: integer;
+var
+  ValNoteBookMaxX: integer;
 begin
   //ValNoteBookMaxX:=ValueNoteBook.ClientWidth-10;//ValueAsTextSynEdit.Parent.ClientWidth;
   //ValNoteBookMaxY:=ValueNoteBook.ClientHeight-30;//ValueAsTextSynEdit.Parent.ClientHeight;
   ValNoteBookMaxX:=ValueAsTextSynEdit.Parent.ClientWidth;
-  ValNoteBookMaxY:=ValueAsTextSynEdit.Parent.ClientHeight;
   with ValueAsTextSynEdit do begin
     Left:=0;
     Top:=0;
     Width:=ValNoteBookMaxX;
-    Height:=ValNoteBookMaxY;
   end;
   with ValueAsFilePathsSynEdit do begin
     Left:=0;
     Top:=0;
     Width:=ValNoteBookMaxX-80;
-    Height:=ValNoteBookMaxY;
   end;
   with MoveFilePathUpBitBtn do begin
     Left:=ValNoteBookMaxX-75;
@@ -1518,12 +1516,14 @@ begin
   ValueAsTextSynEdit.Gutter.Visible:=false;
   ValueAsTextSynEdit.Align:=alClient;
   ValueAsTextSynEdit.Scrollbars:=ssBoth;
+  ValueAsTextSynEdit.Align:=alLeft;
 
   CreateWinControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
                    ValueNoteBook.Page[1]);
   ValueAsFilePathsSynEdit.Options:=ValueAsTextSynEdit.Options;
   ValueAsFilePathsSynEdit.Gutter.Visible:=false;
   ValueAsFilePathsSynEdit.Scrollbars:=ssBoth;
+  ValueAsFilePathsSynEdit.Align:=alLeft;
 
   CreateWinControl(MoveFilePathUpBitBtn,TBitBtn,'MoveFilePathUpBitBtn',
                    ValueNoteBook.Page[1]);
