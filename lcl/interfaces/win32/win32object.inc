@@ -181,9 +181,9 @@ Begin
   Case (Sender as TControl).FCompStyle Of
     csComboBox:
     Begin
-      CapLen := SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXTLEN, CNSendMessage(LM_GETITEMINDEX, Self, Nil), 0);
+      CapLen := SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXTLEN, CNSendMessage(LM_GETITEMINDEX, Sender, Nil), 0);
       Caption := StrAlloc(CapLen + 1);
-      SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXT, CNSendMessage(LM_GETITEMINDEX, Self, Nil), LPARAM(Caption));
+      SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXT, CNSendMessage(LM_GETITEMINDEX, Sender, Nil), LPARAM(Caption));
       Data := StrPas(Caption);
       StrDispose(Caption);
     End;
@@ -797,14 +797,23 @@ activate_time :	the time at which the activation event occurred.
         LM_GETITEMINDEX :
         Begin
           Case (Sender as TControl).FCompStyle Of
+            csComboBox:
+            Begin
+              Result:=SendMessage(Handle, CB_GETCURSEL, 0, 0);
+              if Result = LB_ERR Then
+              Begin
+                Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+                Result := -1;
+              End;
+            End;
             csListBox, csCListBox:
             Begin
-                Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
-                If Result = LB_ERR Then
-                Begin
-                  Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
-                  Result := -1;
-                End;
+              Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
+              If Result = LB_ERR Then
+              Begin
+                Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+                Result := -1;
+              End;
             End;
             csNotebook:
             Begin
@@ -2744,6 +2753,9 @@ End;
 
 {
   $Log$
+  Revision 1.77  2003/07/26 10:33:34  mattias
+  fixed GetText from Martin
+
   Revision 1.76  2003/07/26 10:30:44  mattias
   rewritten WM_COMMAND by Micha
 
