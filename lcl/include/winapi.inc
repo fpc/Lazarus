@@ -974,6 +974,11 @@ begin
   Result := InterfaceObject.ShowScrollBar(Handle, wBar, bShow);
 end;
 
+function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+begin
+  Result := InterfaceObject.ShowWindow(hWnd,nCmdShow);
+end;
+
 procedure Sleep(dwMilliseconds: DWORD);
 begin
   InterfaceObject.Sleep(dwMilliseconds);
@@ -1563,6 +1568,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2003/02/28 19:54:05  mattias
+  added ShowWindow
+
   Revision 1.72  2003/02/28 10:14:29  mattias
   started package system (packager)
 
