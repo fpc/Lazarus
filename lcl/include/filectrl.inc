@@ -661,6 +661,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function FileIsInPath(const Filename, Path: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileIsInPath(const Filename, Path: string): boolean;
+var
+  ExpFile: String;
+  ExpPath: String;
+  l: integer;
+begin
+  ExpFile:=CleanAndExpandFilename(Filename);
+  ExpPath:=CleanAndExpandDirectory(Path);
+  l:=length(ExpPath);
+  Result:=(length(ExpFile)>l) and (ExpFile[l+1]=PathDelim)
+          and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
+end;
+
+{------------------------------------------------------------------------------
   function CopyFile(const SrcFilename, DestFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function CopyFile(const SrcFilename, DestFilename: string): boolean;
@@ -777,6 +793,9 @@ end;
 
 {
   $Log$
+  Revision 1.14  2003/02/20 11:03:20  mattias
+  save as of project files now starts in project dierctory
+
   Revision 1.13  2003/02/19 13:10:01  mattias
   fixed parsing invalid date
 

@@ -56,6 +56,7 @@ function FileIsSymlink(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
   ExceptionOnError: boolean): string;
+function CopyFile(const SrcFilename, DestFilename: string): boolean;
 
 // directories
 function DirectoryExists(const FileName: String): Boolean;
@@ -72,7 +73,7 @@ function ChompPathDelim(const Path: string): string;
 function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
-function CopyFile(const SrcFilename, DestFilename: string): boolean;
+function FileIsInPath(const Filename, Path: string): boolean;
 
 // file search
 function SearchFileInPath(const Filename, BasePath, SearchPath,
@@ -112,6 +113,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2003/02/20 11:03:20  mattias
+  save as of project files now starts in project dierctory
+
   Revision 1.11  2003/02/07 17:49:21  mattias
   added ReadAllLinks
 
