@@ -2090,26 +2090,28 @@ begin
               FileList.Add(TempDir + FileInfo.Name);
             end;//if
           until SysUtils.FindNext(FileInfo)<>0;
-          SysUtils.FindClose(FileInfo);
         end;//if
+        SysUtils.FindClose(FileInfo);
       end;//for
     finally
       MaskList.Free;
     end;//try-finally
     //If selected then Look for and search subdirectories
-    if (recursive) and (SysUtils.FindFirst(TempDir
+    if (recursive) then begin
+      if (SysUtils.FindFirst(TempDir
                         +FindMask,faAnyFile,FileInfo)=0) then
-    begin
-      if ((faDirectory and FileInfo.Attr)>0) then
       begin
-        repeat
-          // check if special file
-          if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
-          FindMatchingTextFiles
-            (FileList,TempDir + FileInfo.Name,mask,recursive);
-        until SysUtils.FindNext(FileInfo)<>0;
-      end;//if
-      SysUtils.FindClose(FileInfo);
+        if ((faDirectory and FileInfo.Attr)>0) then
+        begin
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+            FindMatchingTextFiles
+              (FileList,TempDir + FileInfo.Name,mask,recursive);
+          until SysUtils.FindNext(FileInfo)<>0;
+        end;//if
+        SysUtils.FindClose(FileInfo);
+      end;
     end;//if
   end;//if
 end;//FindMatchingFiles
