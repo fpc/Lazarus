@@ -155,6 +155,8 @@ type
 
   TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit,
                   pf32bit, pfCustom);
+                  
+  TTransparentMode = (tmAuto, tmFixed);
 
 implementation
 
@@ -163,6 +165,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/12/12 17:47:45  mattias
+  new constants for compatibility
+
   Revision 1.7  2002/09/27 20:52:21  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
