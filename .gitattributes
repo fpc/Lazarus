@@ -415,6 +415,7 @@ images/pkg_binary.xpm -text svneol=native#image/x-xpixmap
 images/pkg_compile.xpm -text svneol=native#image/x-xpixmap
 images/pkg_conflict.xpm -text svneol=native#image/x-xpixmap
 images/pkg_files.xpm -text svneol=native#image/x-xpixmap
+images/pkg_inherited.xpm -text svneol=native#image/x-xpixmap
 images/pkg_package.xpm -text svneol=native#image/x-xpixmap
 images/pkg_package_circle.xpm -text svneol=native#image/x-xpixmap
 images/pkg_package_installed.xpm -text svneol=native#image/x-xpixmap
