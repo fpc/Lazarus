@@ -5830,6 +5830,55 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function TGTKObject.SetComboMinDropDownSize(Handle: HWND;
+    MinItemsWidth, MinItemsHeight: integer): boolean;
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.SetComboMinDropDownSize(Handle: HWND;
+  MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+var
+  ComboWidget: PGtkCombo;
+  DropDownWidget, ListWidget, FirstChildWidget: PGtkWidget;
+  FirstChild: PGList;
+  CurWidth, CurHeight, CurItemHeight, BorderX, BorderY: integer;
+begin
+  Result:=true;
+  if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_COMBO_TYPE)) then
+    RaiseException('TGTKObject.SetComboMinDropDownSize invalid handle');
+
+  // get current items width and height
+  ComboWidget:=PGtkCombo(Handle);
+  ListWidget:=ComboWidget^.List;
+  if ListWidget=nil then exit;
+  CurWidth:=ListWidget^.Allocation.Width;
+  CurHeight:=ListWidget^.Allocation.Height;
+  if MinItemCount>0 then begin
+    FirstChild:=PGTkList(ListWidget)^.children;
+    if FirstChild<>nil then begin
+      FirstChildWidget:=PGtkWidget(FirstChild^.Data);
+      CurItemHeight:=FirstChildWidget^.Allocation.Height;
+      if MinItemsHeight<CurItemHeight*MinItemCount then
+        MinItemsHeight:=CurItemHeight*MinItemCount;
+    end;
+  end;
+  if (CurWidth>=MinItemsWidth) and (CurHeight>=MinItemsHeight) then exit;
+
+  // calculate new width and height
+  // ToDo: scrollbars
+  if MinItemsWidth<CurWidth then MinItemsWidth:=CurWidth;
+  if MinItemsHeight<CurWidth then MinItemsHeight:=CurHeight;
+  DropDownWidget:=ComboWidget^.popwin;
+  if DropDownWidget=nil then exit;
+  BorderX:=DropDownWidget^.Allocation.Width-CurWidth;
+  if BorderX<0 then BorderX:=0;
+  BorderY:=DropDownWidget^.Allocation.Height-CurHeight;
+  if BorderY<0 then BorderY:=0;
+
+  gtk_widget_set_usize(DropDownWidget,
+                       MinItemsWidth+BorderX,MinItemsHeight+BorderY);
+end;
+
+{------------------------------------------------------------------------------
   Function: SetCapture
   Params:  Value: Handle of window to capture
   Returns: Nothing
@@ -7167,6 +7216,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.141  2002/10/03 14:47:32  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.140  2002/10/01 10:05:50  lazarus
   MG: changed PDeviceContext into class TDeviceContext
 
