@@ -344,7 +344,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     UpdateLCLRect;
 
     {$IFDEF VerboseSizeMsg}
-    writeln('JJJ2 ',
+    writeln('JJJ2 ',LCLControl.Name,
       ' GTK=',GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight,
       ' LCL=',LCLLeft,',',LCLTop,',',LCLWidth,',',LCLHeight
       );
@@ -352,7 +352,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     // first send a LM_WINDOWPOSCHANGED message
     if TopLeftChanged or WidthHeightChanged then begin
       PosMsg.Msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
-      PosMsg.Result := -1;
+      PosMsg.Result := 0;
       New(PosMsg.WindowPos);
       try
         with PosMsg.WindowPos^ do begin
@@ -370,7 +370,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       if not MessageDelivered then exit;
       UpdateLCLRect;
     end;
-        
+
     // then send a LM_SIZE message
     if WidthHeightChanged then begin
       {$IFDEF VerboseSizeMsg}
@@ -378,18 +378,17 @@ procedure TGtkObject.SendCachedGtkMessages;
       {$ENDIF}
       with SizeMsg do
       begin
-        Result := -1;
+        Result := 0;
         Msg := LM_SIZE;
         SizeType := Size_SourceIsInterface;
         Width := GtkWidth;
         Height := GtkHeight;
       end;
-      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
       MessageDelivered := (DeliverMessage(LCLControl, SizeMsg) = 0);
       if not MessageDelivered then exit;
       UpdateLCLRect;
     end;
-    
+
     // then send a LM_MOVE message
     if TopLeftChanged then begin
       {$IFDEF VerboseSizeMsg}
@@ -397,13 +396,12 @@ procedure TGtkObject.SendCachedGtkMessages;
       {$ENDIF}
       with MoveMsg do
       begin
-        Result := -1;
+        Result := 0;
         Msg := LM_MOVE;
         MoveType := Move_SourceIsInterface;
         XPos := GtkLeft;
         YPos := GtkTop;
       end;
-      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
       MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
       if not MessageDelivered then exit;
     end;
@@ -415,7 +413,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     it will automatically realign all child controls. This realigning is based
     on the clientrect.
     Therefore, before a size message is sent to the lcl, all clientrect must
-    updated before.
+    updated.
     If a size message results in resizing a widget that was also resized, then
     the message for the dependent widget is not sent to the lcl, because the lcl
     resize was after the gtk resize.
@@ -2801,7 +2799,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure TgtkObject.HookSignals(Sender: TObject);
 begin
-  if (sender is TWinControl) then
+  if (Sender is TWinControl) then
      Begin
        SetCallback(LM_SHOWWINDOW,Sender);
        SetCallback(LM_DESTROY,Sender);
@@ -2822,7 +2820,7 @@ begin
        SetCallback(LM_MOUSEWHEEL,Sender);
       End;
 
-  if (sender is TControl) then
+  if (Sender is TControl) then
     Begin
       case (sender as TControl).FCompStyle of
 
@@ -2883,7 +2881,7 @@ begin
       end; //case
     end
     else
-    If (sender is TMenuItem) then
+    If (Sender is TMenuItem) then
       Begin
         SetCallback(LM_ACTIVATE,Sender);
       end;
@@ -5724,6 +5722,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.201  2002/09/06 15:57:35  lazarus
+  MG: fixed notebook client area, send messages and minor bugs
+
   Revision 1.200  2002/09/05 13:46:19  lazarus
   MG: activated InvalidateControl for TWinControls
 
