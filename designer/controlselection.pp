@@ -814,7 +814,7 @@ begin
   FRubberbandType:=rbtSelection;
   FRubberbandCreationColor:=clMaroon;
   FRubberbandSelectionColor:=clNavy;
-  Application.AddOnIdleHandler(@OnIdle);
+  Application.AddOnIdleHandler(@OnIdle {$IFDEF VER1_0}, true{$ENDIF});
 end;
 
 destructor TControlSelection.Destroy;

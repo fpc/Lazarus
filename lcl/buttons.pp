@@ -38,8 +38,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts, GraphType,
-  Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms,
+  Classes, SysUtils, FPCAdds, LCLType, LCLProc, LCLIntf, LCLStrConsts,
+  GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms,
   Menus {for ShortCut procedures};
 
 type
@@ -387,6 +387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2005/02/08 21:46:22  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.86  2005/01/14 00:27:05  mattias
   fixed several dialogs to react on esacpe
 

@@ -29,7 +29,7 @@ unit LMessages;
 
 interface
 
-uses Classes, SysUtils, LCLType, GraphType
+uses Classes, SysUtils, FPCAdds, LCLType, GraphType
   {$ifdef win32}
   {$ifndef ver1_0}
   ,messages
@@ -807,6 +807,9 @@ end.
 
 {
   $Log$
+  Revision 1.126  2005/02/08 21:46:23  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.125  2005/02/05 16:09:52  marc
   * first 64bit changes
 

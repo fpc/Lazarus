@@ -41,7 +41,7 @@ unit Grids;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
+  Classes, SysUtils, FPCAdds, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
   GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg, StdCtrls,
   LResources, MaskEdit, Buttons;
 

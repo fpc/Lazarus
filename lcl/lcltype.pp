@@ -52,7 +52,7 @@ uses
 {$ifdef win32}
   windows,
 {$endif win32}
-  Classes, SysUtils;
+  Classes, SysUtils, FPCAdds;
 
 type
 {$IFDEF USE_UTF8BIDI_LCL}
@@ -2320,6 +2320,9 @@ end.
 
 {
   $Log$
+  Revision 1.76  2005/02/08 21:46:23  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.75  2005/02/05 16:09:52  marc
   * first 64bit changes
 

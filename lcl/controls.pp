@@ -40,9 +40,9 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, TypInfo, DynHashArray, LCLStrConsts, LCLType, LCLProc,
-  GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
-  PropertyStorage, Menus, ActnList, LCLClasses;
+  Classes, SysUtils, TypInfo, FPCAdds, DynHashArray, LCLStrConsts, LCLType,
+  LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
+  UTrace, PropertyStorage, Menus, ActnList, LCLClasses;
 
 
 const
@@ -2899,6 +2899,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.281  2005/02/08 21:46:22  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.280  2005/02/05 16:09:52  marc
   * first 64bit changes
 

@@ -55,7 +55,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
+  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
   ActnList, ClipBrd, CustApp, LCLClasses, Controls;
 
@@ -1241,6 +1241,8 @@ end;
 procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
 {$ELSE}
 procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount:Longint; Frames: PPointer);
+var
+  FrameNumber: integer;
 {$ENDIF}
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
@@ -1250,6 +1252,11 @@ Begin
     DebugLn('  Sender=',Sender.ClassName);
     if Sender is Exception then begin
       DebugLn('  Exception=',Exception(Sender).Message);
+{$IFNDEF ExceptionHasNoFrames}
+      DebugLn('  Stack trace:');
+      for FrameNumber := 0 to FrameCount-1 do
+        DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
+{$ENDIF}
     end;
   end else
     DebugLn('  Sender=nil');
