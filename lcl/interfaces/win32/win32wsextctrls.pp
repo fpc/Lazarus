@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  ExtCtrls,
+  ExtCtrls, Classes,
 ////////////////////////////////////////////////////
   WSExtCtrls, WSLCLClasses, Windows, WinExt, Win32Int, InterfaceBase, Win32WSControls;
 
@@ -55,6 +55,7 @@ type
   public
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
@@ -290,6 +291,30 @@ procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+end;
+
+procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
+var
+  OldPageIndex: Integer;
+  PageHandle: HWND;
+  Handle: HWND;
+begin
+  Handle := ANotebook.Handle;
+  OldPageIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
+  SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(AIndex), 0);
+  if not (csDestroying in ANotebook.ComponentState) then
+  begin
+    // create handle if not already done, need to show!
+    if (AIndex >= 0) and (AIndex < ANotebook.PageCount) then
+    begin
+      PageHandle := ANotebook.CustomPage(AIndex).Handle;
+      SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    end;
+    if (OldPageIndex >= 0) and (OldPageIndex<>AIndex)
+    and (OldPageIndex < ANotebook.PageList.Count)
+    and (ANotebook.CustomPage(OldPageIndex).HandleAllocated)
+      then ShowWindow(ANotebook.CustomPage(OldPageIndex).Handle, SW_HIDE);
+  end;
 end;
 
 procedure TWin32WSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);

@@ -376,7 +376,7 @@ begin
   LockSelectionChange;
   try
     // TODO 64bit
-    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+    TWSCustomListBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   finally
     UnlockSelectionChange;
   end;
@@ -450,8 +450,9 @@ end;
 function TCustomListBox.GetItemIndex : integer;
 begin
 //DebugLn('[TCustomListBox.GetItemIndex] A ',FItems.ClassName);
-  if HandleAllocated then begin
-    Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
+  if HandleAllocated then 
+  begin
+    Result := TWSCustomListBoxClass(WidgetSetClass).GetItemIndex(Self);
     FItemIndex:=Result;
   end else
     Result:=FItemIndex;

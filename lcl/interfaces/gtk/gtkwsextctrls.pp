@@ -57,6 +57,7 @@ type
     
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
@@ -349,6 +350,21 @@ function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
   Result:=inherited GetNotebookMinTabWidth(AWinControl);
+end;
+
+{ Code pasted from LM_GETITEMINDEX message implementation
+     csNotebook:
+       begin
+         TLMNotebookEvent(Data^).Page :=
+           gtk_notebook_get_current_page(PGtkNotebook(Handle));
+         UpdateNoteBookClientWidget(ACustomListBox);
+       end;
+}
+
+procedure TGtkWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
+begin
+  gtk_notebook_set_page(PGtkNotebook(ANotebook.Handle), AIndex);
+  UpdateNoteBookClientWidget(ANotebook);
 end;
 
 procedure TGtkWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);

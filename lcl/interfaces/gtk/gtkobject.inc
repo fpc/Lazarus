@@ -3126,91 +3126,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_GETITEMINDEX :
-      begin
-        case TControl(Sender).fCompStyle of
-          {$IFdef GTK1}
-           csListBox, csCheckListBox:
-             begin
-               if Handle<>0 then begin
-                 Widget:=nil;
-                 if TListBox(Sender).MultiSelect then
-                   Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
-                                        CoreWidget)^.last_focus_child;
-                 if Widget=nil then begin
-                   GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget)^.selection;
-                   if GList <> nil then
-                     Widget:= PGtkWidget(GList^.data);
-                 end;
-                 if Widget = nil then
-                   Result:= -1
-                 else
-                   Result:= gtk_list_child_position(PGtkList(
-                                 GetWidgetInfo(Pointer(Handle), True)^.
-                                               CoreWidget), Widget);
-               end else
-                 Result:=-1;
-             end;
-
-           csCListBox:
-             begin
-               GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget)^.selection;
-               if GList = nil then
-                 Result := -1
-               else
-                 Result := integer(GList^.Data);
-             end;
-          {$EndIf}
-
-           csNotebook:
-             begin
-               TLMNotebookEvent(Data^).Page :=
-                 gtk_notebook_get_current_page(PGtkNotebook(Handle));
-               UpdateNoteBookClientWidget(Sender);
-             end;
-
-          {$IFdef GTK2}
-           else
-             DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETITEMINDEX');
-          {$EndIf}
-        end;
-      end;
-
-      LM_SETITEMINDEX:
-        if Handle<>0 then begin
-          case TControl(Sender).fCompStyle of
-
-          {$IFdef GTK1}
-          csListBox, csCheckListBox:
-          begin
-            if Integer(Data)>=0 then begin
-              gtk_list_select_item(
-                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.CoreWidget),
-                Integer(Data))
-            end else
-              gtk_list_unselect_all(
-                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.CoreWidget));
-          end;
-
-          csCListBox:
-            gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
-                                   True)^.CoreWidget),
-                                 Integer(Data), 1);    // column
-          {$EndIf}
-
-          csNotebook:
-            if Data<>nil then begin
-              gtk_notebook_set_page(PGtkNotebook(Handle),
-                                    TLMNotebookEvent(Data^).Page);
-              UpdateNoteBookClientWidget(Sender);
-            end;
-          {$IFdef GTK2}
-           else
-             DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETITEMINDEX');
-          {$EndIf}
-          end;
-        end;
-
       LM_GetLineCount :
       begin
         DebugLn('ToDo: LM_GetLineCount');
@@ -8157,6 +8072,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.570  2004/09/15 17:21:22  micha
+  convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
+
   Revision 1.569  2004/09/15 14:45:39  micha
   convert LM_GETITEMS message to interface method
 

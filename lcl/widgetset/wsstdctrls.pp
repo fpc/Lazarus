@@ -92,8 +92,10 @@ type
 
   TWSCustomListBox = class(TWSWinControl)
   public
-    class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
+    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
+    class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
   end;
   TWSCustomListBoxClass = class of TWSCustomListBox;
   
@@ -184,13 +186,22 @@ implementation
 
 { TWSCustomListBox }
 
-procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+function  TWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
+  Result := 0;
 end;
 
 function  TWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 begin
   Result := nil;
+end;
+
+procedure TWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
+begin
+end;
+
+procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+begin
 end;
 
 { TWSCustomComboBox }

@@ -330,41 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_GETITEMINDEX :
-      Begin
-        Case (Sender as TControl).FCompStyle Of
-          csListBox, csCListBox:
-          Begin
-            Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
-            If Result = LB_ERR Then
-            Begin
-              Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
-              Result := -1;
-            End;
-          End;
-          csNotebook:
-          Begin
-            TLMNotebookEvent(Data^).Page := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-          End;
-        End;
-      End;
-      LM_SETITEMINDEX :
-      Begin
-        Case (Sender as TControl).FCompStyle Of
-          csListBox, csCListBox:
-          Begin
-            If TListBox(Sender).MultiSelect Then
-              Windows.SendMessage(Handle, LB_SETSEL, Windows.WPARAM(TRUE), Windows.LParam(Integer(Data)))
-            Else
-              Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(Integer(Data)), 0);
-          End;
-          csNotebook:
-          Begin
-            Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-            ChangeActivePage(TLMNotebookEvent(Data^));
-          End;
-        End;
-      End;
       LM_GETLINECOUNT:
       Begin
         If Sender Is TCustomMemo Then
@@ -1817,40 +1782,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.ChangeActivePage
-  Params: Data - The notebook setitemindex message
-  Returns: Nothing
-
-  Changes the active page to one specified in data
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.ChangeActivePage(const Data: TLMNotebookEvent);
-var
-  OldPageIndex: Integer;
-  PageHandle: HWND;
-  Handle: HWND;
-begin
-  with Data do
-  begin
-    Handle := TWinControl(Parent).Handle;
-    OldPageIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-    Windows.SendMessage(Handle, TCM_SETCURSEL, Windows.WPARAM(Page), 0);
-    if not (csDestroying in (Parent as TCustomNotebook).ComponentState) then
-    begin
-      // create handle if not already done, need to show!
-      if (Page>=0) and (Page < TCustomNotebook(Parent).PageCount) then
-      begin
-        PageHandle := TCustomNotebook(Parent).CustomPage(Page).Handle;
-        SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-      end;
-      if (OldPageIndex>=0) and (OldPageIndex<>Page)
-      and (OldPageIndex < TCustomNotebook(Parent).PageList.Count)
-      and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
-        then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DCReDraw
   Params: CanvasHandle - HDC to redraw
   Returns: Nothing
@@ -2224,6 +2155,9 @@ End;
 
 {
   $Log$
+  Revision 1.263  2004/09/15 17:21:22  micha
+  convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
+
   Revision 1.262  2004/09/15 14:45:39  micha
   convert LM_GETITEMS message to interface method
 

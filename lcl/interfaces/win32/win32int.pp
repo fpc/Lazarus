@@ -133,7 +133,6 @@ Type
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
-    procedure ChangeActivePage(const Data: TLMNotebookEvent);
     Procedure SetText(Window: HWND; Data: Pointer);
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
@@ -278,6 +277,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2004/09/15 17:21:22  micha
+  convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
+
   Revision 1.111  2004/09/14 10:06:26  micha
   convert LM_REDRAW message to interface method (in twidgetset)
 

@@ -71,8 +71,6 @@ const
 
   LM_SETGEOMETRY    = LM_COMUSER+62;
 
-  LM_GETITEMINDEX   = LM_COMUSER+64;
-  LM_SETITEMINDEX   = LM_COMUSER+65;
   LM_GETSELTEXT     = LM_COMUSER+66;
   LM_SETSELTEXT     = LM_COMUSER+67;
   LM_SORT           = LM_COMUSER+74;
@@ -838,8 +836,6 @@ begin
 
   LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
 
-  LM_GETITEMINDEX   :Result:='LM_GETITEMINDEX';
-  LM_SETITEMINDEX   :Result:='LM_SETITEMINDEX';
   LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
   LM_SETSELTEXT     :Result:='LM_SETSELTEXT';
   LM_SORT           :Result:='LM_SORT';
@@ -957,6 +953,9 @@ end.
 
 {
   $Log$
+  Revision 1.102  2004/09/15 17:21:22  micha
+  convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
+
   Revision 1.101  2004/09/15 14:45:39  micha
   convert LM_GETITEMS message to interface method
 

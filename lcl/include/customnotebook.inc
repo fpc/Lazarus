@@ -729,18 +729,13 @@ end;
   procedure TCustomNotebook.DoSendPageIndex;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.DoSendPageIndex;
-var
-  Msg: TLMNotebookEvent;
 begin
   //DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
   if not HandleAllocated or (csLoading in ComponentState) then exit;
-  Msg.Parent := Self;
-  Msg.fCompStyle := fCompStyle;
-  Msg.Page := fPageIndex;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
-  CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
+  TWSCustomNotebookClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendPageIndex] B');
   {$ENDIF}
@@ -798,6 +793,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/09/15 17:21:22  micha
+  convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
+
   Revision 1.58  2004/09/14 12:45:29  micha
   convert LM_SETTABPOSITION message to interface method
 
