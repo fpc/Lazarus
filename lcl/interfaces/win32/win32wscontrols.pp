@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Controls,
+  Controls,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses;
 
@@ -53,6 +53,7 @@ type
   private
   protected
   public
+    class procedure SetCursor(AControl: TControl; ACursor: TCursor); override;
   end;
 
   { TWin32WSWinControl }
@@ -90,6 +91,14 @@ type
 
 implementation
 
+uses
+  Windows, Win32Int;
+
+procedure TWin32WSControl.SetCursor(AControl: TControl; ACursor: TCursor);
+begin
+  Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -99,7 +108,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TWin32WSDragImageList);
-//  RegisterWSComponent(TControl, TWin32WSControl);
+  RegisterWSComponent(TControl, TWin32WSControl);
 //  RegisterWSComponent(TWinControl, TWin32WSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);

@@ -374,26 +374,9 @@ end;
   procedure TScreen.SetCursor(const AValue: TCursor);
  ------------------------------------------------------------------------------}
 procedure TScreen.SetCursor(const AValue: TCursor);
-//var
-  //MousePos: TPoint;
-  //Handle: HWND;
-  //Code: Longint;
 begin
   if AValue <> Cursor then begin
     FCursor := AValue;
-    {if AValue = crDefault then begin
-      // Reset the cursor to the default by sending a WM_SETCURSOR to the
-      //  window under the cursor
-      GetCursorPos(MousePos);
-      Handle := WindowFromPoint(MousePos);
-      if (Handle <> 0) and
-        (GetWindowThreadProcessId(Handle, nil) = GetCurrentThreadId) then
-      begin
-        Code := SendMessage(Handle, WM_NCHITTEST, 0, LongInt(PointToSmallPoint(P)));
-        SendMessage(Handle, WM_SETCURSOR, Handle, MakeLong(Code, WM_MOUSEMOVE));
-        Exit;
-      end;
-    end;}
     LCLIntf.SetCursor(Cursors[FCursor]);
   end;
   Inc(FCursorCount);

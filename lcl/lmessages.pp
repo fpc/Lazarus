@@ -82,8 +82,6 @@ const
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
   LM_DELETETOOLBUTTON = LM_ComUser+47;
 
-  //LM_SetCursor = LM_ComUser+48;  We define this later for Windows compatability.
-
   LM_IMAGECHANGED   = LM_ComUser+49;
   LM_LAYOUTCHANGED  = LM_ComUser+50;
   LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
@@ -299,7 +297,6 @@ const
   LM_SHOWWINDOW        = $0018;
 
   LM_CANCELMODE        = $001F;
-  LM_SETCURSOR         = $0020;
   LM_DRAWITEM          = $002B;
   LM_MEASUREITEM       = $002C;
   LM_DELETEITEM        = $002D;
@@ -409,18 +406,6 @@ type
     PixelsPerInchY : Integer;
     ColorDepth : Integer;
   end;
-
-{$if defined(ver1_0) or not(defined(win32))}
-  TLMSETCURSOR = record
-    Msg : Cardinal;
-    CursorWnd : HWND;
-    HitText : Word;
-    MouseMsg : Word;
-    Result : Longint;
-  end;
-{$else}
-  TLMSetCursor = TWMSetCursor;
-{$endif}
 
   PLMScreenInit = ^TLMScreenInit;
 
@@ -921,8 +906,6 @@ begin
   LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
   LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
 
-  //LM_SetCursor :Result:='LM_SetCursor'; a LM_ComUser+48;  We define this later for Windows compatability.
-
   LM_IMAGECHANGED   :Result:='LM_IMAGECHANGED';
   LM_LAYOUTCHANGED  :Result:='LM_LAYOUTCHANGED';
   LM_BTNDEFAULT_CHANGED :Result:='LM_BTNDEFAULT_CHANGED';
@@ -1089,6 +1072,11 @@ end.
 
 {
   $Log$
+  Revision 1.62  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.61  2004/04/04 17:10:05  marc
   Patch from Andrew Haines
 

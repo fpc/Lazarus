@@ -40,6 +40,38 @@ Uses
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
 
+const
+
+  IDC_ARROW     = MakeIntResource(32512);
+  IDC_IBEAM     = MakeIntResource(32513);
+  IDC_WAIT      = MakeIntResource(32514);
+  IDC_CROSS     = MakeIntResource(32515);
+  IDC_UPARROW   = MakeIntResource(32516);
+  IDC_SIZE      = MakeIntResource(32640);
+  IDC_ICON      = MakeIntResource(32641);
+  IDC_SIZENWSE  = MakeIntResource(32642);
+  IDC_SIZENESW  = MakeIntResource(32643);
+  IDC_SIZEWE    = MakeIntResource(32644);
+  IDC_SIZENS    = MakeIntResource(32645);
+  IDC_SIZEALL   = MakeIntResource(32646);
+  IDC_NO        = MakeIntResource(32648);
+  IDC_HAND      = MakeIntResource(32649);
+  IDC_APPSTARTING = MakeIntResource(32650);
+  IDC_HELP      = MakeIntResource(32651);
+  IDC_NODROP    = MakeIntResource(32767);
+  IDC_DRAG      = MakeIntResource(32766);
+  IDC_HSPLIT    = MakeIntResource(32765);
+  IDC_VSPLIT    = MakeIntResource(32764);
+  IDC_MULTIDRAG = MakeIntResource(32763);
+  IDC_SQLWAIT   = MakeIntResource(32762);
+  IDC_HANDPT    = MakeIntResource(32761);
+
+  LclCursorToWin32CursorMap: array[crLow..crHigh] of PChar = (
+     IDC_SIZEALL, IDC_HANDPT, IDC_HELP, IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT,
+     IDC_MULTIDRAG, IDC_VSPLIT, IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT,
+     IDC_UPARROW, IDC_SIZEWE, IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE,
+     IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
+
 Type
   { Virtual alignment-control record }
   TAlignment = Record
@@ -78,7 +110,6 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
-    Procedure LmSetCursor(Sender: TObject; Data: Pointer);
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
@@ -161,7 +192,7 @@ Uses
 // Win32WSCheckLst,
 // Win32WSCListBox,
 // Win32WSComCtrls,
-// Win32WSControls,
+ Win32WSControls,
 // Win32WSDbCtrls,
 // Win32WSDBGrids,
 // Win32WSDialogs,
@@ -199,7 +230,7 @@ Type
     TMsgArray = Array[0..1] Of Integer;
   {$ENDIF}
 
-Const
+const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
@@ -224,6 +255,11 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.76  2004/04/10 17:54:52  micha
   - added: [win32] mousewheel default handler sends scrollbar messages
   - fixed: lmsetcursor; partial todo

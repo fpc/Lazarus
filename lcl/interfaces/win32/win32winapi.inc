@@ -1434,6 +1434,7 @@ begin
         WindowHandle, HMENU(nil), HInstance, nil);
     Windows.SetProp(OverlayWindow, 'DefWndProc', Windows.SetWindowLong(
         OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc)));
+    Windows.SetProp(OverlayWindow, 'Wincontrol', Windows.GetProp(WindowHandle, 'Wincontrol'));
     Windows.SetProp(WindowHandle, 'Overlay', OverlayWindow);
   end;
   Result := Windows.GetDC(OverlayWindow);
@@ -2974,6 +2975,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.106  2004/04/10 17:54:52  micha
   - added: [win32] mousewheel default handler sends scrollbar messages
   - fixed: lmsetcursor; partial todo

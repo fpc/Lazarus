@@ -1798,12 +1798,7 @@ begin
   if FCursor <> Value
   then begin
     FCursor := Value;
-    // This should not be called if it is already set to VALUE but if
-    // it's not created when it's set, and you set it again it skips this,
-    // so for now I do it this way.
-    // later, I'll create the cursor in the CreateComponent
-    // (or something like that)
-    if not(csDesigning in ComponentState) then CNSendMessage(LM_SETCURSOR, Self, nil);
+    TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
   end;
 end;
 
@@ -2880,6 +2875,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.182  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.181  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 

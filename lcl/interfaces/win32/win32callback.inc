@@ -286,6 +286,11 @@ Begin
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
   OwnerObject := TObject(GetProp(Window, 'Wincontrol'));
+  if OwnerObject is TWinControl then begin
+    TheWinControl := TWinControl(OwnerObject);
+  end else begin
+    TheWinControl := nil;
+  end;
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
@@ -736,6 +741,14 @@ Begin
         LMMouse.Result := 0;
       End;
     End;
+    WM_SETCURSOR:
+    begin
+      if (TheWinControl <> nil) and (TheWinControl.Cursor <> crDefault) then
+      begin
+        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[TheWinControl.Cursor]));
+	WinProcess := false;
+      end;
+    end;
     WM_SETFOCUS:
     Begin
       LMessage.Msg := LM_SETFOCUS;
@@ -849,8 +862,7 @@ Begin
             Msg := LM_NULL;
           end;
         end;
-        if OwnerObject is TWinControl then begin
-          TheWinControl:=TWinControl(OwnerObject);
+        if TheWinControl <> nil then begin
           {$IFDEF VerboseSizeMsg}
           writeln('Win32CallBack WM_MOVE ',TheWinControl.Name,':',TheWinControl.ClassName,
             ' NewPos=',XPos,',',YPos);
@@ -1126,6 +1138,11 @@ end;
 
 {
   $Log$
+  Revision 1.100  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.99  2004/04/10 17:54:52  micha
   - added: [win32] mousewheel default handler sends scrollbar messages
   - fixed: lmsetcursor; partial todo

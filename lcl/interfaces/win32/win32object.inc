@@ -422,8 +422,6 @@ Begin
       Assert(False, Format('Trace:  [TWin32WidgetSet.IntSendMessage3] %s --> Show/Hide', [Sender.ClassName]));
       ShowHide(Sender);
     End;
-    LM_SETCURSOR:
-      LmSetCursor(Sender, Data);
     LM_SETLABEL:
       SetLabel(Sender, Data);
     LM_GETVALUE:
@@ -1741,62 +1739,6 @@ begin
   end;
 end;
 
-const
-
-  IDC_ARROW     = MakeIntResource(32512);
-  IDC_IBEAM     = MakeIntResource(32513);
-  IDC_WAIT      = MakeIntResource(32514);
-  IDC_CROSS     = MakeIntResource(32515);
-  IDC_UPARROW   = MakeIntResource(32516);
-  IDC_SIZE      = MakeIntResource(32640);
-  IDC_ICON      = MakeIntResource(32641);
-  IDC_SIZENWSE  = MakeIntResource(32642);
-  IDC_SIZENESW  = MakeIntResource(32643);
-  IDC_SIZEWE    = MakeIntResource(32644);
-  IDC_SIZENS    = MakeIntResource(32645);
-  IDC_SIZEALL   = MakeIntResource(32646);
-  IDC_NO        = MakeIntResource(32648);
-  IDC_HAND      = MakeIntResource(32649);
-  IDC_APPSTARTING = MakeIntResource(32650);
-  IDC_HELP      = MakeIntResource(32651);
-  IDC_NODROP    = MakeIntResource(32767);
-  IDC_DRAG      = MakeIntResource(32766);
-  IDC_HSPLIT    = MakeIntResource(32765);
-  IDC_VSPLIT    = MakeIntResource(32764);
-  IDC_MULTIDRAG = MakeIntResource(32763);
-  IDC_SQLWAIT   = MakeIntResource(32762);
-  IDC_HANDPT    = MakeIntResource(32761);
-
-  LclCursorToWin32CursorMap: array[crLow..crHigh] of PChar = (
-     IDC_SIZEALL, IDC_HANDPT, IDC_HELP, IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT,
-     IDC_MULTIDRAG, IDC_VSPLIT, IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT,
-     IDC_UPARROW, IDC_SIZEWE, IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE,
-     IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.LmSetCursor
-  Params:  Sender - the control which invoked this method
-  Returns: Nothing
-
-  Sets the cursor for a window
-
-  WARNING: Sender will be casted to TControl, CLEANUP!
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.LmSetCursor(Sender: TObject; Data: Pointer);
-Var
-  Cursor: PChar;
-Begin
-  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Start');
-  Assert(False, Format('Trace:TWin32WidgetSet.LmSetCursor - Sender --> %S', [Sender.ClassName]));
-  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Getting the cursor');
-  if Data = nil then
-    Data := Pointer(Integer(crDefault));
-  Cursor := LclCursorToWin32CursorMap[Integer(Data)];
-  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Loading the cursor');
-  Windows.SetCursor(Windows.LoadCursor(0, Cursor));
-  Assert(False, 'Trace:TWin32WidgetSet.LmSetCursor - Exit');
-End;
-
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.ResizeChild
   Params:  Sender                   - the object which invoked this function
@@ -2663,7 +2605,6 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetValue(Sender: TObject; Data: Pointer): Integer;
 Var
-  Cur: PChar;
   Handle: HWnd;
   ST: SystemTime;
 
@@ -3028,6 +2969,11 @@ End;
 
 {
   $Log$
+  Revision 1.186  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.185  2004/04/11 07:00:30  micha
   speedup: don't redraw menubar if form is being destroyed
 

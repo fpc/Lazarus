@@ -1710,7 +1710,8 @@ implementation
 
 uses
   Forms, // the circle can't be broken without breaking Delphi compatibility
-  Math;  // Math is in RTL and only a few functions are used.
+  Math,  // Math is in RTL and only a few functions are used.
+  WSControls;
 
 var
   // The interface knows, which TWinControl has the capture. This stores
@@ -2241,6 +2242,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.195  2004/04/11 10:19:28  micha
+  cursor management updated:
+  - lcl notifies interface via WSControl.SetCursor of changes
+  - fix win32 interface to respond to wm_setcursor callback and set correct cursor
+
   Revision 1.194  2004/04/09 23:52:01  mattias
   fixed hiding uninitialized controls
 

@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Controls,
+  Controls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSImgList;
 
@@ -53,7 +53,10 @@ type
   private
   protected
   public
+    class procedure SetCursor(AControl: TControl; ACursor: TCursor); virtual;
   end;
+
+  TWSControlClass = class of TWSControl;
 
   { TWSWinControl }
 
@@ -90,6 +93,10 @@ type
 
 implementation
 
+procedure TWSControl.SetCursor(AControl: TControl; ACursor: TCursor);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -99,7 +106,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TWSDragImageList);
-//  RegisterWSComponent(TControl, TWSControl);
+  RegisterWSComponent(TControl, TWSControl);
 //  RegisterWSComponent(TWinControl, TWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TWSCustomControl);
