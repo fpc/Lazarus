@@ -88,6 +88,7 @@ buildunit=alllclunits
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 
