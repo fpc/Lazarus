@@ -1,15 +1,15 @@
 object Form1: TForm1
   ActiveControl = TIEdit1
   Caption = 'RTTI Controls Example'
-  ClientHeight = 357
-  ClientWidth = 590
+  ClientHeight = 392
+  ClientWidth = 619
   PixelsPerInch = 90
-  HorzScrollBar.Page = 591
-  VertScrollBar.Page = 358
-  Left = 291
-  Height = 357
-  Top = 163
-  Width = 590
+  HorzScrollBar.Page = 620
+  VertScrollBar.Page = 393
+  Left = 294
+  Height = 392
+  Top = 168
+  Width = 619
   object TIEdit1: TTIEdit
     Link.TIObject = TICheckBox1
     Link.TIPropertyName = 'Caption'
@@ -30,9 +30,9 @@ object Form1: TForm1
     TabOrder = 1
     TabStop = True
     Left = 176
-    Height = 20
+    Height = 24
     Top = 136
-    Width = 109
+    Width = 98
   end
   object TIListBox_Color: TTIListBox
     BorderStyle = bsSingle
@@ -41,6 +41,7 @@ object Form1: TForm1
     Link.TIPropertyName = 'Color'
     TabOrder = 2
     TabStop = True
+    TopIndex = -1
     Left = 11
     Height = 70
     Top = 200
@@ -103,9 +104,9 @@ object Form1: TForm1
     Tabstop = True
     TIObject = StaticText4
     ValueFont.Color = clMaroon
-    Left = 312
+    Left = 328
     Height = 225
-    Top = 119
+    Top = 144
     Width = 242
   end
   object Label1: TLabel
@@ -115,5 +116,19 @@ object Form1: TForm1
     Height = 87
     Top = 9
     Width = 286
+  end
+  object TICheckBox2: TTICheckBox
+    AllowGrayed = True
+    AutoSize = True
+    Caption = 'TICheckBox2 for set element TIPropertyGrid1.Anchors.akRight'
+    Link.TIObject = TIPropertyGrid1
+    Link.TIPropertyName = 'Anchors'
+    Link.TIElementName = 'akRight'
+    TabOrder = 10
+    TabStop = True
+    Left = 240
+    Height = 24
+    Top = 104
+    Width = 368
   end
 end

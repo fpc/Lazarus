@@ -35,8 +35,8 @@ unit PairSplitter;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, LMessages, Graphics, GraphType, LCLIntf,
-  Controls;
+  Classes, SysUtils,
+  LCLType, LCLProc, LMessages, Graphics, GraphType, LCLIntf, Controls;
   
 type
   TCustomPairSplitter = class;

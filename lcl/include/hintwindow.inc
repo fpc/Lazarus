@@ -79,7 +79,6 @@ var
 begin
   Rect := ClientRect;
   Canvas.Brush.Color := Color;
-  Canvas.Brush.Style := bsSolid;
   Canvas.Pen.Width := 1;
   DrawEdge(Canvas.Handle, Rect, BDR_RAISEDOUTER, BF_RECT);
   with TS do

@@ -115,16 +115,59 @@ type
     SystemFont: Boolean;     // Use the system font instead of Canvas Font
   end;
 
+  {$IFDEF UseFPCanvas}
+type
+  TPenStyle = TFPPenStyle;
+  TPenMode = TFPPenMode;
+  TBrushStyle = TFPBrushStyle;
+
+const
+  psSolid = FPCanvas.psSolid;
+  psDash = FPCanvas.psDash;
+  psDot = FPCanvas.psDot;
+  psDashDot = FPCanvas.psDashDot;
+  psDashDotDot = FPCanvas.psDashDotDot;
+  psClear = FPCanvas.psClear;
+  //psInsideframe = FPCanvas.psInsideframe;
+
+  pmBlack = FPCanvas.pmBlack;
+  pmWhite = FPCanvas.pmWhite;
+  pmNop = FPCanvas.pmNop;
+  pmNot = FPCanvas.pmNot;
+  pmCopy = FPCanvas.pmCopy;
+  pmNotCopy = FPCanvas.pmNotCopy;
+  pmMergePenNot = FPCanvas.pmMergePenNot;
+  pmMaskPenNot = FPCanvas.pmMaskPenNot;
+  pmMergeNotPen = FPCanvas.pmMergeNotPen;
+  pmMaskNotPen = FPCanvas.pmMaskNotPen;
+  pmMerge = FPCanvas.pmMerge;
+  pmNotMerge = FPCanvas.pmNotMerge;
+  pmMask = FPCanvas.pmMask;
+  pmNotMask = FPCanvas.pmNotMask;
+  pmXor = FPCanvas.pmXor;
+  pmNotXor = FPCanvas.pmNotXor;
+  
+  bsSolid = FPCanvas.bsSolid;
+  bsClear = FPCanvas.bsClear;
+  bsHorizontal = FPCanvas.bsHorizontal;
+  bsVertical = FPCanvas.bsVertical;
+  bsFDiagonal = FPCanvas.bsFDiagonal;
+  bsBDiagonal = FPCanvas.bsBDiagonal;
+  bsCross = FPCanvas.bsCross;
+  bsDiagCross = FPCanvas.bsDiagCross;
+  {$ELSE}
+type
   TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear,
                psInsideframe);
   TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
               pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge,
               pmMask, pmNotMask, pmXor, pmNotXor
              );
-
   TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
                  bsBDiagonal, bsCross, bsDiagCross);
 
+  {$ENDIF}
+type
   TFillStyle = TGraphicsFillStyle;
   TFillMode = (fmAlternate, fmWinding);
 
@@ -524,10 +567,13 @@ type
   private
     FHandle: HPen;
     FColor: TColor;
+    FPenHandleCached: boolean;
+    {$IFDEF UseFPCanvas}
+    {$ELSE}
     FWidth: Integer;
     FStyle: TPenStyle;
     FMode: TPenMode;
-    FPenHandleCached: boolean;
+    {$ENDIF}
     procedure FreeHandle;
   protected
     {$IFDEF UseFPCanvas}
@@ -538,9 +584,9 @@ type
     function GetHandle: HPEN;
     procedure SetHandle(const Value: HPEN);
     procedure SetColor(Value: TColor);
-    procedure SetMode(Value: TPenMode);
-    procedure SetStyle(Value: TPenStyle);
-    procedure SetWidth(value: Integer);
+    procedure SetMode(Value: TPenMode); {$IFDEF UseFPCanvas}override;{$ENDIF}
+    procedure SetStyle(Value: TPenStyle); {$IFDEF UseFPCanvas}override;{$ENDIF}
+    procedure SetWidth(value: Integer); {$IFDEF UseFPCanvas}override;{$ENDIF}
   public
     constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
     destructor Destroy; override;
@@ -1827,6 +1873,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.164  2004/12/23 22:38:18  mattias
+  implemented TIElementName of link of RTTI controls for set elements
+
   Revision 1.163  2004/12/22 23:54:21  mattias
   started TControl.AnchorSide
 

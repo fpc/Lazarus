@@ -34,6 +34,7 @@ type
     StaticText3: TStaticText;
     StaticText4: TStaticText;
     TICheckBox1: TTICheckBox;
+    TICheckBox2: TTICheckBox;
     TIComboBox_Enabled: TTIComboBox;
     TIEdit1: TTIEdit;
     TIListBox_Color: TTIListBox;

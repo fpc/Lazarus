@@ -3,27 +3,25 @@
   <ProjectOptions>
     <Version Value="5"/>
     <General>
+      <Flags>
+        <SaveClosedFiles Value="False"/>
+        <SaveOnlyProjectUnits Value="True"/>
+      </Flags>
       <MainUnit Value="0"/>
       <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="exampleproject2"/>
     </General>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/helpmanager.pas"/>
-        <Caret Line="120" Column="15" TopLine="106"/>
-      </Position1>
-    </JumpHistory>
-    <Units Count="5">
+    <Units Count="2">
       <Unit0>
         <Filename Value="exampleproject2.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ExampleProject2"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="31"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="23" Y="46"/>
+        <CursorPos X="12" Y="28"/>
         <EditorIndex Value="0"/>
         <Filename Value="example2.pas"/>
         <ComponentName Value="Form1"/>
@@ -32,31 +30,8 @@
         <ResourceFilename Value="example2.lrs"/>
         <TopLine Value="22"/>
         <UnitName Value="Example2"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="31"/>
       </Unit1>
-      <Unit2>
-        <CursorPos X="28" Y="47"/>
-        <EditorIndex Value="1"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/helpmanager.pas"/>
-        <Loaded Value="True"/>
-        <TopLine Value="29"/>
-        <UnitName Value="HelpManager"/>
-        <UsageCount Value="15"/>
-      </Unit2>
-      <Unit3>
-        <CursorPos X="20" Y="1803"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/lcl/controls.pp"/>
-        <TopLine Value="1779"/>
-        <UnitName Value="Controls"/>
-        <UsageCount Value="9"/>
-      </Unit3>
-      <Unit4>
-        <CursorPos X="13" Y="144"/>
-        <Filename Value="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/rttictrls.pas"/>
-        <TopLine Value="125"/>
-        <UnitName Value="RTTICtrls"/>
-        <UsageCount Value="10"/>
-      </Unit4>
     </Units>
     <PublishOptions>
       <Version Value="2"/>

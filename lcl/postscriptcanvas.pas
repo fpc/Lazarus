@@ -176,9 +176,16 @@ Type
   end;
 
 Const
-  cBrushStyle : Array[bsSolid..bsDiagCross] of String = ('bsSolid','bsClear','bsHorizontal',
-                                                         'bsVertical','bsFDiagonal',
-                                                         'bsBDiagonal','bsCross','bsDiagCross');
+  cBrushStyle : Array[TBrushStyle] of String =
+     {$IFDEF UseFPCanvas}
+     ('bsClear', 'bsSolid', 'bsBDiagonal',
+      'bsFDiagonal', 'bsCross', 'bsDiagCross',
+      'bsHorizontal', 'bsVertical', 'bsImage', 'bsPattern');
+     {$ELSE}
+     ('bsSolid','bsClear','bsHorizontal',
+      'bsVertical','bsFDiagonal',
+      'bsBDiagonal','bsCross','bsDiagCross');
+     {$ENDIF}
 
 
   cFontPSMetrics : Array[0..12] of TFontPSMetrics =(

@@ -60,10 +60,14 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TPen.SetStyle(Value : TPenStyle);
 begin
-  if FStyle <> Value
+  if Style <> Value
   then begin
     FreeHandle;
-    FStyle := Value;
+    {$IFDEF UseFPCanvas}
+    inherited Style := Value;
+    {$ELSE}
+    FStyle:=Value;
+    {$ENDIF}
     Changed;
   end;
 end;
@@ -77,9 +81,14 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TPen.SetMode(Value : TPenMode);
 begin
-  if FMode <> Value
+  if Mode <> Value
   then begin
-    FMode := Value;
+    FreeHandle;
+    {$IFDEF UseFPCanvas}
+    inherited Mode := Value;
+    {$ELSE}
+    FMode:=Value;
+    {$ENDIF}
     Changed;
   end;
 end;
@@ -96,7 +105,11 @@ begin
   if Width <> Value
   then begin
     FreeHandle;
-    FWidth := Value;
+    {$IFDEF UseFPCanvas}
+    inherited Width := Value;
+    {$ELSE}
+    FWidth:=Value;
+    {$ENDIF}
     Changed;
   end;
 end;
@@ -111,11 +124,17 @@ end;
 constructor TPen.Create;
 begin
   inherited Create;
-  FWidth := 1;
   FHandle := 0;
+  {$IFDEF UseFPCanvas}
+  inherited Width := 1;
+  inherited Style := psSolid;
+  inherited Mode := pmCopy;
+  {$ELSE}
+  FWidth := 1;
   FStyle := psSolid;
-  FColor := clBlack;
   FMode := pmCopy;
+  {$ENDIF}
+  Color := clBlack;
 end;
 
 {------------------------------------------------------------------------------
@@ -188,8 +207,8 @@ begin
     FillChar(LogPen,SizeOf(LogPen),0);
     with LogPen do
     begin
-      lopnStyle := PEN_STYLES[FStyle];
-      lopnWidth.X := FWidth;
+      lopnStyle := PEN_STYLES[Style];
+      lopnWidth.X := Width;
       lopnColor := FColor;
     end;
     CachedPen:=PenResourceCache.FindDescriptor(@LogPen);
@@ -256,6 +275,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/12/23 22:38:18  mattias
+  implemented TIElementName of link of RTTI controls for set elements
+
   Revision 1.15  2004/12/22 23:54:21  mattias
   started TControl.AnchorSide
 

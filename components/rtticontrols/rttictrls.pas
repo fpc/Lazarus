@@ -22,6 +22,8 @@
 
   ToDo:
     - ploReadOnly
+    - TTICheckBox with Enums (e.g. TTICheckBox.Checked = Enum property has the
+                              same value as TIElementName)
 }
 unit RTTICtrls;
 
@@ -100,12 +102,14 @@ Type
     FOptions: TPropertyLinkOptions;
     FOwner: TComponent;
     FSaveEnabled: boolean;
+    FTIElementName: string;
     FTIObject: TPersistent;
     FTIPropertyName: string;
     procedure SetCollectValues(const AValue: boolean);
     procedure SetEditor(const AValue: TPropertyEditor);
     procedure SetFilter(const AValue: TTypeKinds);
     procedure SetOptions(const NewOptions: TPropertyLinkOptions);
+    procedure SetTIElementName(const AValue: string);
     procedure SetTIObject(const AValue: TPersistent);
     procedure SetTIPropertyName(const AValue: string);
   protected
@@ -126,6 +130,8 @@ Type
     procedure Assign(Source: TPersistent); override;
     procedure SetObjectAndProperty(NewPersistent: TPersistent;
                                    const NewPropertyName: string);
+    procedure SetObjectAndProperty(NewPersistent: TPersistent;
+                                 const NewPropertyName, NewElementName: string);
     procedure InvalidateEditor; virtual;
     procedure CreateEditor; virtual;
     procedure FetchValues; virtual;
@@ -176,6 +182,7 @@ Type
     property SaveEnabled: boolean read FSaveEnabled write FSaveEnabled;
     property TIObject: TPersistent read FTIObject write SetTIObject;
     property TIPropertyName: string read FTIPropertyName write SetTIPropertyName;
+    property TIElementName: string read FTIElementName write SetTIElementName;
   end;
   
 
@@ -187,6 +194,7 @@ Type
     property Options;
     property TIObject;
     property TIPropertyName;
+    property TIElementName;
   end;
   
   
@@ -198,6 +206,12 @@ Type
   end;
   
   
+  { TTIObjectPropertyEditor }
+
+  TTIObjectPropertyEditor = class(TPersistentPropertyEditor)
+  end;
+
+
   { TPropertyNamePropertyEditor
     Property editor for TCustomPropertyLink.TIPropertyName, showing
     all compatible properties. }
@@ -214,9 +228,21 @@ Type
   end;
   
 
-  { TTIObjectPropertyEditor }
+  { TTIElementNamePropertyEditor
+    Property editor for TCustomPropertyLink.TIElementName, showing
+    all elements. }
 
-  TTIObjectPropertyEditor = class(TPersistentPropertyEditor)
+  TTIElementNamePropertyEditor = class(TStringPropertyEditor)
+  protected
+    FPropEdits: TList; // list of TPropertyEditor for TIPropertyName
+    FElementPropEdits: TList; // list of TPropertyEditor for TIElementName
+    procedure GetCompatiblePropEdits(Prop: TPropertyEditor);
+    procedure GetElementPropEdits(Prop: TPropertyEditor);
+    function TestEditor(const Prop: TPropertyEditor): boolean;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetEditLimit: Integer; override;
+    procedure GetValues(Proc: TGetStringProc); override;
   end;
 
 
@@ -710,7 +736,6 @@ Type
     procedure LinkLoadFromProperty(Sender: TObject); virtual;
     procedure LinkSaveToProperty(Sender: TObject); virtual;
     procedure LinkEditorChanged(Sender: TObject); virtual;
-    procedure DoAutoSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1390,6 +1415,12 @@ begin
   if (ploReadOnIdle in ChangedOptions) then UpdateIdleHandler;
 end;
 
+procedure TCustomPropertyLink.SetTIElementName(const AValue: string);
+begin
+  if FTIElementName=AValue then exit;
+  SetObjectAndProperty(TIObject,TIPropertyName,AValue);
+end;
+
 function TCustomPropertyLink.GetCanModify: boolean;
 begin
   Result:=(FEditor<>nil) and (not FEditor.IsReadOnly);
@@ -1398,13 +1429,13 @@ end;
 procedure TCustomPropertyLink.SetTIObject(const AValue: TPersistent);
 begin
   if FTIObject=AValue then exit;
-  SetObjectAndProperty(AValue,TIPropertyName);
+  SetObjectAndProperty(AValue,TIPropertyName,TIElementName);
 end;
 
 procedure TCustomPropertyLink.SetTIPropertyName(const AValue: string);
 begin
   if FTIPropertyName=AValue then exit;
-  SetObjectAndProperty(TIObject,AValue);
+  SetObjectAndProperty(TIObject,AValue,TIElementName);
 end;
 
 procedure TCustomPropertyLink.EditorChanged;
@@ -1460,7 +1491,8 @@ var
 begin
   if Source is TCustomPropertyLink then begin
     SrcLink:=TCustomPropertyLink(Source);
-    SetObjectAndProperty(SrcLink.TIObject,SrcLink.TIPropertyName);
+    SetObjectAndProperty(SrcLink.TIObject,SrcLink.TIPropertyName,
+                         SrcLink.TIElementName);
   end else begin
     inherited Assign(Source);
   end;
@@ -1468,6 +1500,12 @@ end;
 
 procedure TCustomPropertyLink.SetObjectAndProperty(NewPersistent: TPersistent;
   const NewPropertyName: string);
+begin
+  SetObjectAndProperty(NewPersistent,NewPropertyName,'');
+end;
+
+procedure TCustomPropertyLink.SetObjectAndProperty(NewPersistent: TPersistent;
+  const NewPropertyName, NewElementName: string);
 var
   AComponent: TComponent;
 begin
@@ -1475,20 +1513,26 @@ begin
   and ((length(NewPropertyName)>254) or (not IsValidIdent(NewPropertyName)))
   then
     raise Exception('TCustomPropertyLink.SetObjectAndProperty invalid identifier "'+NewPropertyName+'"');
-  if (NewPersistent=TIObject) and (NewPropertyName=TIPropertyName) then exit;
-  if (FTIObject is TComponent) then begin
-    AComponent:=TComponent(FTIObject);
-    AComponent.RemoveFreeNotification(FLinkNotifier);
+  if (NewPersistent<>TIObject) or (NewPropertyName<>TIPropertyName) then begin
+    if (FTIObject is TComponent) then begin
+      AComponent:=TComponent(FTIObject);
+      AComponent.RemoveFreeNotification(FLinkNotifier);
+    end;
+    FTIObject:=NewPersistent;
+    if FTIObject is TComponent then begin
+      AComponent:=TComponent(FTIObject);
+      if not (csDestroying in AComponent.ComponentState) then
+        AComponent.FreeNotification(FLinkNotifier)
+      else
+        FTIObject:=nil;
+    end;
+    FTIPropertyName:=NewPropertyName;
+  end
+  else if FTIElementName=NewElementName then begin
+    // no change
+    exit;
   end;
-  FTIObject:=NewPersistent;
-  if FTIObject is TComponent then begin
-    AComponent:=TComponent(FTIObject);
-    if not (csDestroying in AComponent.ComponentState) then
-      AComponent.FreeNotification(FLinkNotifier)
-    else
-      FTIObject:=nil;
-  end;
-  FTIPropertyName:=NewPropertyName;
+  FTIElementName:=NewElementName;
   InvalidateEditor;
   LoadFromProperty;
 end;
@@ -1515,6 +1559,8 @@ begin
     raise Exception.Create('Unable to create property editor for '
                            +FTIObject.ClassName+':'+FTIPropertyName);
   end;}
+  if FTIElementName<>'' then
+  
   if CollectValues then FetchValues;
   if ((FEditor<>nil) or OldEditorExisted) and Assigned(OnEditorChanged) then
     OnEditorChanged(Self);
@@ -1569,7 +1615,7 @@ procedure TCustomPropertyLink.Notification(AComponent: TComponent;
 begin
   if (Operation=opRemove) then begin
     if (AComponent=FTIObject) then
-      SetObjectAndProperty(nil,FTIPropertyName);
+      SetObjectAndProperty(nil,FTIPropertyName,TIElementName);
   end;
 end;
 
@@ -1608,7 +1654,10 @@ end;
 procedure TCustomPropertyLink.SetAsText(const NewText: string);
 begin
   try
-    FEditor.SetValue(AliasValues.AliasToValue(NewText));
+    if (FTIElementName='') then
+      FEditor.SetValue(AliasValues.AliasToValue(NewText))
+    else
+      SetSetElementValue(FTIElementName,CompareText(NewText,'True')=0);
   except
     on E: Exception do DoError(true,E);
   end;
@@ -1618,7 +1667,14 @@ function TCustomPropertyLink.GetAsText: string;
 begin
   Result:='';
   try
-    Result:=AliasValues.ValueToAlias(FEditor.GetVisualValue);
+    if (FTIElementName='') then
+      Result:=AliasValues.ValueToAlias(FEditor.GetVisualValue)
+    else begin
+      if GetSetElementValue(FTIElementName) then
+        Result:='True'
+      else
+        Result:='False';
+    end;
   except
     on E: Exception do DoError(false,E);
   end;
@@ -2194,7 +2250,8 @@ procedure TTICustomCheckBox.LinkEditorChanged(Sender: TObject);
 begin
   if Sender=nil then ;
   if (FLink<>nil) and (FLink.Editor<>nil) then begin
-    if FLink.Editor is TBoolPropertyEditor then begin
+    if (FLink.Editor is TBoolPropertyEditor)
+    or (FLink.Editor is TSetPropertyEditor) then begin
       FLinkValueFalse:='False';
       FLinkValueTrue:='True';
     end else if FLink.Editor is TOrdinalPropertyEditor then begin
@@ -2204,31 +2261,6 @@ begin
       FLinkValueFalse:='';
       FLinkValueTrue:='True';
     end;
-  end;
-end;
-
-procedure TTICustomCheckBox.DoAutoSize;
-var
-  R : TRect;
-  DC : hDC;
-begin
-  If AutoSizing or not AutoSize then
-    Exit;
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  AutoSizing := True;
-  DC := GetDC(Handle);
-  Try
-    R := Rect(0,0, Width, Height);
-    DrawText(DC, PChar(Caption), Length(Caption), R,
-      DT_CalcRect);
-    If R.Right > Width then
-      Width := R.Right + 25;
-    If R.Bottom > Height then
-      Height := R.Bottom + 2;
-  Finally
-    ReleaseDC(0, DC);
-    AutoSizing := False;
   end;
 end;
 
@@ -2262,7 +2294,7 @@ begin
   FLinkValueTrue:='True';
   FLink:=TPropertyLink.Create(Self);
   FLink.Filter:=[{tkUnknown,}tkInteger{,tkChar},tkEnumeration,
-                 {tkFloat,tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 {tkFloat,}tkSet,{tkMethod,}tkSString,tkLString,tkAString,
                  tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
                  {tkClass,tkObject,}tkWChar,tkBool,tkInt64,
                  tkQWord{,tkDynArray,tkInterfaceRaw}];
@@ -3399,17 +3431,133 @@ begin
   SetLinks;
 end;
 
+{ TTIElementNamePropertyEditor }
+
+procedure TTIElementNamePropertyEditor.GetCompatiblePropEdits(
+  Prop: TPropertyEditor);
+begin
+  if FPropEdits=nil then FPropEdits:=TList.Create;
+  FPropEdits.Add(Prop);
+end;
+
+procedure TTIElementNamePropertyEditor.GetElementPropEdits(Prop: TPropertyEditor
+  );
+begin
+  if FElementPropEdits=nil then FElementPropEdits:=TList.Create;
+  FElementPropEdits.Add(Prop);
+end;
+
+function TTIElementNamePropertyEditor.TestEditor(const Prop: TPropertyEditor
+  ): boolean;
+var
+  i: Integer;
+  CurPersistent: TPersistent;
+  ALink: TCustomPropertyLink;
+begin
+  Result:=false;
+  for i:=0 to PropCount-1 do begin
+    CurPersistent:=GetComponent(i);
+    if (CurPersistent is TCustomPropertyLink) then begin
+      ALink:=TCustomPropertyLink(CurPersistent);
+      //debugln('TTIElementNamePropertyEditor.TestEditor ',ALink.TIPropertyName,' ',Prop.GetName);
+      if (CompareText(ALink.TIPropertyName,Prop.GetName)<>0) then exit;
+      if Assigned(ALink.OnTestEditor) and (not ALink.OnTestEditor(Prop)) then
+        exit;
+      //debugln('TTIElementNamePropertyEditor.TestEditor ok ',ALink.TIPropertyName);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TTIElementNamePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paMultiSelect,paValueList,paSortList,paRevertable,paHasDefaultValue];
+end;
+
+function TTIElementNamePropertyEditor.GetEditLimit: Integer;
+begin
+  Result:=255;
+end;
+
+procedure TTIElementNamePropertyEditor.GetValues(Proc: TGetStringProc);
+var
+  ALink: TCustomPropertyLink;
+  ASelection: TPersistentSelectionList;
+  i: Integer;
+  CurPersistent: TPersistent;
+  CurTIObject: TPersistent;
+  Filter: TTypeKinds;
+  CurPropEdit: TPropertyEditor;
+  j: Integer;
+begin
+  ASelection:=TPersistentSelectionList.Create;
+  try
+    // get every TIObject of every TCustomPropertyLink in the selection
+    Filter:=AllTypeKinds;
+    for i:=0 to PropCount-1 do begin
+      CurPersistent:=GetComponent(i);
+      if (CurPersistent is TCustomPropertyLink) then begin
+        ALink:=TCustomPropertyLink(CurPersistent);
+        CurTIObject:=ALink.TIObject;
+        if CurTIObject<>nil then begin
+          ASelection.Add(CurTIObject);
+          Filter:=Filter*ALink.Filter;
+        end;
+      end;
+    end;
+    if ASelection.Count=0 then exit;
+    // get properties of all TIObjects
+    GetPersistentProperties(ASelection,Filter,PropertyHook,
+      @GetCompatiblePropEdits,nil,@TestEditor);
+    if FPropEdits<>nil then begin
+      // get the possible element values:
+      for i:=0 to FPropEdits.Count-1 do begin
+        CurPropEdit:=TPropertyEditor(FPropEdits[i]);
+        if paValueList in CurPropEdit.GetAttributes then
+        begin
+          // get value list
+          CurPropEdit.GetValues(Proc);
+          break;
+        end else if paSubProperties in CurPropEdit.GetAttributes then begin
+          // get names of sub property editors
+          CurPropEdit.GetProperties(@GetElementPropEdits);
+          if FElementPropEdits<>nil then begin
+            for j:=0 to FElementPropEdits.Count-1 do
+              Proc(TPropertyEditor(FElementPropEdits[j]).GetName);
+            break;
+          end;
+        end;
+      end;
+    end;
+  finally
+    ASelection.Free;
+    if FPropEdits<>nil then begin
+      for i:=0 to FPropEdits.Count-1 do
+        TPropertyEditor(FPropEdits[i]).Free;
+      FreeThenNil(FPropEdits);
+    end;
+    if FElementPropEdits<>nil then begin
+      for i:=0 to FElementPropEdits.Count-1 do
+        TPropertyEditor(FElementPropEdits[i]).Free;
+      FreeThenNil(FElementPropEdits);
+    end;
+  end;
+end;
+
 initialization
   {$I rttictrls.lrs}
   // TPropertyLink
   RegisterPropertyEditor(ClassTypeInfo(TPropertyLink),
     nil, '', TPropertyLinkPropertyEditor);
-  // property editor for TCustomPropertyLink.TIPropertyName
-  RegisterPropertyEditor(TypeInfo(string),
-    TCustomPropertyLink, 'TIPropertyName', TPropertyNamePropertyEditor);
   // property editor for TCustomPropertyLink.TIObject
   RegisterPropertyEditor(ClassTypeInfo(TPersistent),
     TCustomPropertyLink, 'TIObject', TTIObjectPropertyEditor);
+  // property editor for TCustomPropertyLink.TIPropertyName
+  RegisterPropertyEditor(TypeInfo(string),
+    TCustomPropertyLink, 'TIPropertyName', TPropertyNamePropertyEditor);
+  // property editor for TCustomPropertyLink.TIElementName
+  RegisterPropertyEditor(TypeInfo(string),
+    TCustomPropertyLink, 'TIElementName', TTIElementNamePropertyEditor);
   // property editor for TCustomPropertyLink.AliasValues
   RegisterPropertyEditor(ClassTypeInfo(TAliasStrings),
     TCustomPropertyLink, 'AliasValues', TPropLinkAliasPropertyEditor);
