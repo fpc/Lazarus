@@ -999,18 +999,8 @@ function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
 {$IFNDEF gtk2}
-const
-  ARGS : array[0..1] of TGTKArg =
-    ((
-      thetype : GTK_TYPE_OBJECT;
-      name : 'hadjustment';
-      d:(object_data : nil)
-    ),
-    (
-      thetype : GTK_TYPE_OBJECT;
-      name : 'vadjustment';
-      d:(object_data : nil)
-    ));
+var
+  Args: array[0..1] of TGTKArg;
 {$ENDIF}
 begin
 {$IFDEF gtk2}
@@ -1019,9 +1009,11 @@ begin
   //      TODO: check if we still need to pass the args in gtk1
   Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
 {$ELSE}
-  Args[0].thetype := GTK_ADJUSTMENT_TYPE;
-  Args[1].thetype := GTK_ADJUSTMENT_TYPE;
-
+  FillChar(Args,SizeOf(TGTKArg)*(High(Args)-Low(Args)),0);
+  Args[0].theType:=GTK_ADJUSTMENT_TYPE;
+  Args[0].name:='hadjustment';
+  Args[1].theType:=GTK_ADJUSTMENT_TYPE;
+  Args[1].name:='vadjustment';
   Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @ARGS[0]);
 {$ENDIF}
 
@@ -1143,6 +1135,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/08/13 12:41:54  mattias
+  fixed uninitialized argument
+
   Revision 1.58  2004/05/22 11:06:27  mattias
   fixed grids SetBorderStyle
 

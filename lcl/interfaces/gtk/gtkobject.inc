@@ -217,19 +217,21 @@ procedure TGtkWidgetSet.PassCmdLineOptions;
   function SearchOption(const Option: string; Remove: boolean): boolean;
   var
     i: Integer;
+    ArgCount: LongInt;
   begin
     Result:=false;
     if Option='' then exit;
     i:=0;
-    while i<argc do begin
+    ArgCount:=argc;
+    while i<ArgCount do begin
       if AnsiStrComp(PChar(Option),argv[i])=0 then begin
         // option exists
         Result:=true;
         if Remove then begin
           // remove option from parameters, so that no other parameter parsed
           // can see it.
-          dec(argc);
-          while i<argc do begin
+          dec(ArgCount);
+          while i<ArgCount do begin
             argv[i]:=argv[i+1];
             inc(i);
           end;
@@ -9230,6 +9232,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.523  2004/08/13 12:41:54  mattias
+  fixed uninitialized argument
+
   Revision 1.522  2004/08/11 12:57:03  mattias
   improved gtk1 FontCache to handle several descriptors per gdkfont
 
