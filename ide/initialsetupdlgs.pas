@@ -28,6 +28,10 @@
 
   Author: Mattias Gaertner
   
+  Abstract:
+    Procedures and dialogs to check environment. The IDE uses these procedures
+    at startup to check for example the lazarus directory and warns if, there
+    it looks suspicious.
 }
 unit InitialSetupDlgs;
 

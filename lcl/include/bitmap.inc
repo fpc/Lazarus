@@ -480,6 +480,10 @@ Type
     InfoHeader : tagBitmapInfoHeader;
   end;
 
+var
+  MemStream: TMemoryStream;
+
+
   Procedure FillBitmapInfo(Bitmap : hBitmap; var Bits : Pointer;
     Var Header : TBitmapHeader);
   var
@@ -521,7 +525,7 @@ Type
   Procedure DoWriteStreamSize(Size: longint);
   begin
     if WriteSize then
-      Stream.WriteBuffer(Size, SizeOf(Size));
+      MemStream.WriteBuffer(Size, SizeOf(Size));
   end;
 
   Procedure DoWriteSize(Header : TBitmapHeader);
@@ -531,7 +535,7 @@ Type
 
   Procedure WriteBitmapHeader(Header : TBitmapHeader);
   begin
-    Stream.WriteBuffer(Header, SizeOf(Header));
+    MemStream.WriteBuffer(Header, SizeOf(Header));
   end;
 
   Procedure WriteTRIColorMap(Color : PLongint; size : Longint); //For OS/2 Bitmaps
@@ -545,7 +549,7 @@ Type
       Tri.rgbtBlue := Blue(Color[i]);
       Tri.rgbtGreen := Green(Color[i]);
       Tri.rgbtRed := Red(Color[i]);
-      Stream.WriteBuffer(Tri, 3);
+      MemStream.WriteBuffer(Tri, 3);
     end;
   end;
 
@@ -561,7 +565,7 @@ Type
       Quad.rgbBlue := Blue(Color[i]);
       Quad.rgbGreen := Green(Color[i]);
       Quad.rgbRed := Red(Color[i]);
-      Stream.WriteBuffer(Quad, 4);
+      MemStream.WriteBuffer(Quad, 4);
     end;
   end;
 
@@ -572,7 +576,7 @@ Type
 
   Procedure WritePixels(Bits : PByte; Header : TBitmapHeader);
   begin
-    Stream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
+    MemStream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
   end;
   
   procedure DoWriteOriginal;
@@ -592,15 +596,26 @@ begin
     exit;
   end;
 
-  Bits:=nil;
+  // write image in BMP format to temporary stream
+  MemStream:=TMemoryStream.Create;
   try
+    Bits:=nil;
     FillBitmapInfo(Handle, Bits, Header);
     DoWriteSize(Header);
     WriteBitmapHeader(Header);
     WriteColorMap(Header);
     WritePixels(Bits, Header);
+    // save stream, so that further saves will be fast
+    MemStream.Position:=0;
+    FreeAndNil(FImage.FSaveStream);
+    FImage.SaveStream:=MemStream;
+    MemStream:=nil;
+    FImage.SaveStreamType:=bnWinBitmap;
+    // copy savestream to destination stream
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   finally
     ReallocMem(Bits, 0);
+    MemStream.Free;
   end;
 end;
 
@@ -716,6 +731,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/08/10 09:33:43  mattias
+  saved bitmap stream is now stored
+
   Revision 1.37  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

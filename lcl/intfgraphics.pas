@@ -185,6 +185,7 @@ type
     destructor Destroy; override;
     procedure DeleteChilds;
     procedure UnbindFromParent;
+    procedure CreateChildNode(ChildValue: integer);
     function GetChildNode(ChildValue: integer;
                           CreateIfNotExists: boolean): TArrayNode;
     procedure Expand(ValueToInclude: integer);
@@ -1811,6 +1812,18 @@ begin
   end;
 end;
 
+procedure TArrayNode.CreateChildNode(ChildValue: integer);
+var
+  NewNode: TArrayNode;
+  Index: Integer;
+begin
+  NewNode:=TArrayNode.Create;
+  NewNode.Value:=ChildValue;
+  NewNode.Parent:=Self;
+  Index:=ChildValue-StartValue;
+  Childs[Index]:=NewNode;
+end;
+
 function TArrayNode.GetChildNode(ChildValue: integer; CreateIfNotExists: boolean
   ): TArrayNode;
 var
@@ -1826,10 +1839,8 @@ begin
   end;
   Result:=Childs[Index];
   if (Result=nil) and CreateIfNotExists then begin
-    Result:=TArrayNode.Create;
-    Result.Value:=ChildValue;
-    Result.Parent:=Self;
-    Childs[Index]:=Result;
+    CreateChildNode(ChildValue);
+    Result:=Childs[Index];
   end;
 end;
 
