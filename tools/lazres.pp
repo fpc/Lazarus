@@ -36,6 +36,32 @@ program LazRes;
 
 uses Classes, SysUtils, LResources;
 
+function StreamIsFormInTextFormat(Stream: TMemoryStream): boolean;
+const
+  FormTextStart = 'object ';
+var s: string;
+  OldPos: integer;
+begin
+  SetLength(s,length(FormTextStart));
+  OldPos:=Stream.Position;
+  Stream.Read(s[1],length(s));
+  Result:=AnsiCompareText(s,FormTextStart)=0;
+  Stream.Position:=OldPos;
+end;
+
+function StreamIsFormInFCLFormat(Stream: TMemoryStream): boolean;
+const
+  FormFCLStart = 'TPF0';
+var s: string;
+  OldPos: integer;
+begin
+  SetLength(s,length(FormFCLStart));
+  OldPos:=Stream.Position;
+  Stream.Read(s[1],length(s));
+  Result:=s=FormFCLStart;
+  Stream.Position:=OldPos;
+end;
+
 var
   ResourceFilename,BinFilename,BinExt,ResourceName,ResourceType:String;
   a:integer;
@@ -68,14 +94,19 @@ begin
             BinExt:=uppercase(ExtractFileExt(BinFilename));
             if (BinExt='.LFM') or (BinExt='.DFM') or (BinExt='.XFM') then begin
               ResourceType:='FORMDATA';
-              ResourceName:=FindLFMClassName(BinMemStream);
-              if ResourceName='' then begin
-                writeln(' ERROR: no resourcename');
+              if StreamIsFormInTextFormat(BinMemStream) then begin
+                ResourceName:=FindLFMClassName(BinMemStream);
+                if ResourceName='' then begin
+                  writeln(' ERROR: no resourcename');
+                  halt(2);
+                end;
+                write(' ResourceName='''+ResourceName
+                      +''' Type='''+ResourceType+'''');
+                LFMtoLRSstream(BinMemStream,ResMemStream);
+              end else begin
+                writeln(' ERROR: form data is not in text format.');
                 halt(2);
               end;
-              write(
-                ' ResourceName='''+ResourceName+''' Type='''+ResourceType+'''');
-              LFMtoLRSstream(BinMemStream,ResMemStream);
             end else begin
               ResourceType:=copy(BinExt,2,length(BinExt)-1);
               ResourceName:=ExtractFileName(BinFilename);
