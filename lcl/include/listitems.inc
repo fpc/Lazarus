@@ -250,107 +250,107 @@ end;
 
 type
   PItemHeader = ^TItemHeader;
-  TItemHeader = packed record
+  TItemHeader = record // packing is not needed (and not wanted since it controls also how this record is stored)
     Size, Count: Integer;
     Items: record end;
   end;
   PItemInfo = ^TItemInfo;
-  TItemInfo = packed record
+  TItemInfo = record // packing is not needed (and not wanted since it controls also how this record is stored)
     ImageIndex: Integer;
     StateIndex: Integer;
     OverlayIndex: Integer;
     SubItemCount: Integer;
     Data: Pointer;
-    Caption: string[255];
+    //Caption: string[255]; // all stings follow here
   end;
   ShortStr = string[255];
   PShortStr = ^ShortStr;
   PInteger  = ^Integer;
   
 procedure TListItems.ReadData(Stream: TStream);
+  function ReadString: String;
+  var
+    Len: Byte;
+  begin
+    Len := Stream.ReadByte;
+    SetLength(Result, Len);
+    Stream.ReadBuffer(Result[1], Len);
+  end;
+
 var
-  I, J, Size, L, Len: Integer;
-  ItemHeader: PItemHeader;
-  ItemInfo: PItemInfo;
-  PStr: PShortStr;
-  PInt: PInteger;
+  I, J: Integer;
+  ItemInfo: TItemInfo;
   ListItem: TListItem;
-  SubCount: Integer;
+  Size, ItemCount, SubCount: Integer;
+  StartPos: Int64;
 begin
   Clear;
-  //Flag:=False;
-  Size:=ReadLRSInteger(Stream);
-  ItemHeader := AllocMem(Size);
+  StartPos := Stream.Position;
+  Size := Stream.ReadDWord;
+  ItemCount := LEtoN(Integer(Stream.ReadDWord));
   Owner.BeginUpdate;
   try
-    ItemHeader^.Count:=ReadLRSInteger(Stream);
-    Stream.ReadBuffer(ItemHeader^.Items, Size - 8);
-    ItemInfo := @ItemHeader^.Items;
-    PStr := nil;
-    for I := 0 to ItemHeader^.Count - 1 do
+    for I := 0 to ItemCount - 1 do
     begin
+      Stream.ReadBuffer(ItemInfo, SizeOf(ItemInfo));
       ListItem := Add;
-      ListItem.Caption := ItemInfo^.Caption;
-      ListItem.ImageIndex := LEtoN(ItemInfo^.ImageIndex);
-      // ListItem.StateIndex := LEtoN(ItemInfo^.StateIndex);
-      // ListItem.OverlayIndex := LEtoN(ItemInfo^.OverlayIndex);
+      ListItem.Caption := ReadString;
+      ListItem.ImageIndex := LEtoN(ItemInfo.ImageIndex);
+      // ListItem.StateIndex := LEtoN(ItemInfo.StateIndex);
+      // ListItem.OverlayIndex := LEtoN(ItemInfo.OverlayIndex);
 
       //TODO: check if we need to stream a data pointer
-      ListItem.Data := Pointer(LEtoN(PtrInt(ItemInfo^.Data)));
+      ListItem.Data := Pointer(LEtoN(PtrInt(ItemInfo.Data)));
       
-      PStr := @ItemInfo^.Caption;
-      Inc(Integer(PStr), Length(PStr^) + 1);
-      Len := 0;
-      SubCount := LEtoN(ItemInfo^.SubItemCount);
+      SubCount := LEtoN(ItemInfo.SubItemCount);
       for J := 0 to SubCount - 1 do
       begin
-        ListItem.SubItems.Add(PStr^);
-        L := Length(PStr^);
-        Inc(Len, L + 1);
-        Inc(Integer(PStr), L + 1);
+        ListItem.SubItems.Add(ReadString);
       end;
-
-      Inc(Integer(ItemInfo), SizeOf(TItemInfo)-255+Length(ItemInfo^.Caption)+Len);
     end;
     
     //read subitem images
-    if PChar(PStr) - PChar(ItemHeader) < Size then
-    begin
-      PInt := Pointer(PStr);
+    if Stream.Position < StartPos + Size
+    then begin
       for I := 0 to Count - 1 do
       begin
-        if Item[I].FSubItems <> nil
-        then begin
-          for J := 0 to Item[I].SubItems.Count - 1 do
-          begin
-            Item[I].SubItemImages[J] := LEtoN(PInt^);
-            Inc(PInt);
-          end;
-        end;
+        ListItem := Item[I];
+        if ListItem.FSubItems = nil then Continue;
+
+        for J := 0 to ListItem.SubItems.Count - 1 do
+          ListItem.SubItemImages[J] := LEtoN(Integer(Stream.ReadDWord));
       end;
     end;
   finally
-    FreeMem(ItemHeader, Size);
     Owner.EndUpdate;
   end;
 end;
 
 procedure TListItems.WriteData(Stream: TStream);
-var
-  I, J, Size, L, Len : Integer;
-  ItemHeader         : PItemHeader;
-  ItemInfo           : PItemInfo;
-  PStr               : PShortStr;
-  PInt               : PInteger;
-  
   function GetLength(const S: string): Integer;
   begin
     Result := Length(S);
     if Result > 255 then Result := 255;
   end;
+  
+  procedure WriteString(const S: String);
+  var
+    Len: Integer;
+  begin
+    Len := Length(S);
+    if Len > 255 then Len := 255;
+    Stream.WriteByte(Len);
+    Stream.WriteBuffer(S[1], Len);
+  end;
+
+var
+  I, J, Size, L : Integer;
+  ItemHeader    : TItemHeader;
+  ItemInfo      : TItemInfo;
+  ListItem      : TListItem;
 
 begin
-  Size := SizeOf(TItemHeader);
+  Size := SizeOf(ItemHeader);
   for I := 0 to Count - 1 do
   begin
     L := GetLength(Item[I].Caption) + 1;
@@ -361,59 +361,56 @@ begin
     end;
     Inc(Size, SizeOf(TItemInfo) - 255 + L);
   end;
-  ItemHeader := AllocMem(Size);
-  try
-    ItemHeader^.Size := NtoLE(Size);
-    ItemHeader^.Count := NtoLE(Count);
-    ItemInfo := @ItemHeader^.Items;
-    PStr := nil;
-    for I := 0 to Count - 1 do
-    begin
-      with Item[I] do
-      begin
-        ItemInfo^.Caption := Caption;
-        ItemInfo^.ImageIndex := NtoLE(ImageIndex);
-        ItemInfo^.StateIndex := NtoLE(Integer(-1)) {StateIndex};
-        ItemInfo^.OverlayIndex := NtoLE(Integer(-1)) {OverlayIndex};
-        ItemInfo^.SubItemCount := NtoLE(SubItems.Count);
-        // TODO: check this
-        // Stream pointers ???
-        ItemInfo^.Data := Pointer(NtoLE(PtrInt(Data)));
-        PStr := @ItemInfo^.Caption;
-        Inc(Pointer(PStr), Length(ItemInfo^.Caption) + 1);
-        Len := 0;
-        for J := 0 to SubItems.Count - 1 do
-        begin
-          PStr^ := SubItems[J];
-          L := Length(PStr^);
-          Inc(Len, L + 1);
-          Inc(Pointer(PStr), L + 1);
-        end;
-      end;
-      Inc(Integer(ItemInfo), SizeOf(TItemInfo) - 255 +
-        Length(ItemInfo^.Caption) + Len);
-    end;
-    
-    //write SubItem images.
-    PInt := Pointer(PStr);
-    for I := 0 to Count - 1 do
-    begin
-      for J := 0 to  Item[I].SubItems.Count - 1 do
-      begin
-        PInt^ := NtoLE(Item[I].SubItemImages[J]);
-        Inc(PInt);
-      end;
-    end;
 
-    Stream.WriteBuffer(ItemHeader^, Size);
-  finally
-    FreeMem(ItemHeader, Size);
+  ItemHeader.Size := NtoLE(Size);
+  ItemHeader.Count := NtoLE(Count);
+  Stream.WriteBuffer(ItemHeader, SizeOf(ItemHeader));
+  
+  for I := 0 to Count - 1 do
+  begin
+    ListItem := Item[I];
+
+    ItemInfo.ImageIndex := NtoLE(ListItem.ImageIndex);
+    ItemInfo.StateIndex := NtoLE(Integer(-1)) {StateIndex};
+    ItemInfo.OverlayIndex := NtoLE(Integer(-1)) {OverlayIndex};
+    // don't acces SubItems directly, they will be created
+    if ListItem.FSubItems = nil
+    then ItemInfo.SubItemCount := 0
+    else ItemInfo.SubItemCount := NtoLE(ListItem.SubItems.Count);
+    // TODO: check this
+    // Stream pointers ???
+    ItemInfo.Data := Pointer(NtoLE(PtrInt(ListItem.Data)));
+    Stream.WriteBuffer(ItemInfo, SizeOf(ItemInfo));
+
+    // Write the strings
+    WriteString(ListItem.Caption);
+    
+    for J := 0 to ItemInfo.SubItemCount - 1 do
+    begin
+      WriteString(ListItem.SubItems[J]);
+    end;
+  end;
+  
+  //write SubItem images.
+  for I := 0 to Count - 1 do
+  begin
+    ListItem := Item[I];
+    // dont force subitem creation
+    if ListItem.FSubItems = nil then Continue;
+    for J := 0 to  ListItem.SubItems.Count - 1 do
+    begin
+      Stream.WriteDWord(DWord(ListItem.SubItemImages[J]));
+    end;
   end;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.27  2005/01/16 23:01:07  marc
+  * Rewrite of streamreading/writing to be sparc compatible
+    (no unaligned read/writes)
+
   Revision 1.26  2004/11/13 17:22:15  marc
   + Added generic endian functions
 
