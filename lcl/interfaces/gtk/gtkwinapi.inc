@@ -895,17 +895,17 @@ begin
   try
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage A ',
-      ' AlwaysCreateMask=',AlwaysCreateMask,
-      ' Depth=',RawImage.Description.Depth,
-      ' Width=',RawImage.Description.Width,
-      ' Height=',RawImage.Description.Height,
-      ' Data=',HexStr(Cardinal(RawImage.Data),8),
-      ' DataSize=',RawImage.DataSize,
-      ' Mask=',HexStr(Cardinal(RawImage.Mask),8),
-      ' MaskSize=',RawImage.MaskSize,
-      ' Palette=',HexStr(Cardinal(RawImage.Palette),8),
-      ' PaletteSize=',RawImage.PaletteSize,
-      ' BitsPerPixel=',RawImage.Description.BitsPerPixel,
+      ' AlwaysCreateMask='+dbgs(AlwaysCreateMask),
+      ' Depth='+dbgs(RawImage.Description.Depth),
+      ' Width='+dbgs(RawImage.Description.Width),
+      ' Height='+dbgs(RawImage.Description.Height),
+      ' Data='+HexStr(Cardinal(RawImage.Data),8),
+      ' DataSize='+dbgs(RawImage.DataSize)+
+      ' Mask='+HexStr(Cardinal(RawImage.Mask),8)+
+      ' MaskSize='+dbgs(RawImage.MaskSize)+
+      ' Palette='+HexStr(Cardinal(RawImage.Palette),8)+
+      ' PaletteSize='+dbgs(RawImage.PaletteSize)+
+      ' BitsPerPixel='+dbgs(RawImage.Description.BitsPerPixel)+
       '');
     {$ENDIF}
 
@@ -947,9 +947,9 @@ begin
         GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
         {$IFDEF VerboseRawImage}
         DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
-          ' BytesPerLine=',GdkImage^.bpl,
-          ' BytesPerPixel=',GdkImage^.bpp,
-          ' ByteOrder=',GdkImage^.byte_order,
+          ' BytesPerLine=',dbgs(GdkImage^.bpl),
+          ' BytesPerPixel=',dbgs(GdkImage^.bpp),
+          ' ByteOrder=',dbgs(GdkImage^.byte_order),
           '');
         {$ENDIF}
         if (RawImage.Description.BitsPerPixel<>(cardinal(GdkImage^.bpp) shl 3))
@@ -4687,7 +4687,7 @@ begin
 
   DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+  DebugLn('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',dbgs(DCOrigin.X),',',dbgs(DCOrigin.Y),' SrcRect=',dbgs(SrcRect.Left),',',dbgs(SrcRect.Top),',',dbgs(SrcRect.Right),',',dbgs(SrcRect.Bottom));
   {$ENDIF}
   ARect:=SrcRect;
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
@@ -8705,6 +8705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.360  2004/08/13 20:40:27  mattias
+  fixed DebugLn for VerboseRawImage
+
   Revision 1.359  2004/08/11 12:57:03  mattias
   improved gtk1 FontCache to handle several descriptors per gdkfont
 

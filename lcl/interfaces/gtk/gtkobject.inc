@@ -2219,7 +2219,9 @@ begin
   // get intersection
   ARect:=SrcRect;
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow Intersect ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
+  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow Intersect ARect=',
+    dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom),
+    ' DevW=',dbgs(NewRawImage.Description.Width),' DevH=',dbgs(NewRawImage.Description.Height));
   {$ENDIF}
   MaxRect:=Rect(0,0,NewRawImage.Description.Width,
                     NewRawImage.Description.Height);
@@ -2228,7 +2230,9 @@ begin
   NewRawImage.Description.Width:=SourceRect.Right-SourceRect.Left;
   NewRawImage.Description.Height:=SourceRect.Bottom-SourceRect.Top;
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get image ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+  DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get image ',
+    dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),
+    ' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
   {$ENDIF}
   if (NewRawImage.Description.Width<=0) or (NewRawImage.Description.Height<=0)
   then begin
@@ -2258,7 +2262,8 @@ begin
 
     NewRawImage.DataSize:=AnImage^.bpl * AnImage^.Height;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
+    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),
+      ' BitsPerPixel=',dbgs(NewRawImage.Description.BitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
     if NewRawImage.DataSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
@@ -2283,10 +2288,10 @@ begin
 
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow H ',
-      ' Width=',NewRawImage.Description.Width,
-      ' Height=',NewRawImage.Description.Height,
-      ' Depth=',NewRawImage.Description.Depth,
-      ' DataSize=',NewRawImage.DataSize);
+      ' Width=',dbgs(NewRawImage.Description.Width),
+      ' Height=',dbgs(NewRawImage.Description.Height),
+      ' Depth=',dbgs(NewRawImage.Description.Depth),
+      ' DataSize=',dbgs(NewRawImage.DataSize));
     {$ENDIF}
   finally
     gdk_image_destroy(AnImage);
@@ -2295,7 +2300,7 @@ begin
   if MaskBitmap<>nil then begin
     // get mask
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get mask ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' MaskBitmap=',HexStr(Cardinal(MaskBitmap),8));
+    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow get mask ',dbgs(SourceRect.Left),',',dbgs(SourceRect.Top),',',dbgs(SourceRect.Right),',',dbgs(SourceRect.Bottom),' MaskBitmap=',HexStr(Cardinal(MaskBitmap),8));
     {$ENDIF}
     if not GetRawImageMaskFromGdkBitmap(MaskBitmap,SourceRect,NewRawImage) then
       exit;
@@ -2334,7 +2339,7 @@ begin
   end;
   try
     {$IFDEF VerboseRawImage}
-    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',AnImage^.bpl,' theType=',AnImage^.thetype,' depth=',AnImage^.depth,' BitsPerpixel=',AnImage^.bpp);
+    DebugLn('TGTKWidgetSet.GetRawImageMaskFromGdkBitmap A BytesPerLine=',dbgs(AnImage^.bpl),' theType=',dbgs(AnImage^.thetype),' depth=',dbgs(AnImage^.depth),' BitsPerpixel=',dbgs(AnImage^.bpp));
     DebugLn('RawImage=',RawImageDescriptionAsString(@RawImage));
     {$ENDIF}
   
@@ -2353,7 +2358,7 @@ begin
 
     RawImage.MaskSize:=AnImage^.bpl * AnImage^.Height;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,' bpl=',AnImage^.bpl);
+    DebugLn('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',dbgs(AnImage^.Width),' Height=',dbgs(AnImage^.Height),' BitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),' bpl=',dbgs(AnImage^.bpl));
     {$ENDIF}
     if RawImage.MaskSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
       RaiseGDBException('RawImage.MaskSize<>AnImage^.bpl*AnImage^.Height');
@@ -2365,10 +2370,10 @@ begin
 
     {$IFDEF VerboseRawImage}
     DebugLn('TGtkWidgetSet.GetRawImageMaskFromGdkBitmap H ',
-      ' Width=',RawImage.Description.Width,
-      ' Height=',RawImage.Description.Height,
-      ' AlphaBitsPerPixel=',RawImage.Description.AlphaBitsPerPixel,
-      ' MaskSize=',RawImage.MaskSize);
+      ' Width=',dbgs(RawImage.Description.Width),
+      ' Height=',dbgs(RawImage.Description.Height),
+      ' AlphaBitsPerPixel=',dbgs(RawImage.Description.AlphaBitsPerPixel),
+      ' MaskSize=',dbgs(RawImage.MaskSize));
     {$ENDIF}
   finally
     gdk_image_destroy(AnImage);
@@ -9234,6 +9239,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.525  2004/08/13 20:40:27  mattias
+  fixed DebugLn for VerboseRawImage
+
   Revision 1.524  2004/08/13 12:52:58  mattias
   removed IFDEF unused var
 

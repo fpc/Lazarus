@@ -248,7 +248,7 @@ begin
   or (RawImage^.Description.Width=0) or (RawImage^.Description.Height=0)
   or (RawImage^.Description.AlphaPrec=0) then begin
     {$IFDEF VerboseRawImage}
-    DebugLn'RawImageMaskIsEmpty Quicktest: empty');
+    DebugLn('RawImageMaskIsEmpty Quicktest: empty');
     {$ENDIF}
     exit;
   end;
@@ -276,7 +276,7 @@ begin
             if p^<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              DebugLn'RawImageMaskIsEmpty FullByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2));
+              DebugLn('RawImageMaskIsEmpty FullByte y=',dbgs(y),' x=',dbgs(x),' Byte=',HexStr(Cardinal(p^),2));
               {$ENDIF}
               exit;
             end;
@@ -287,7 +287,7 @@ begin
             if (p^ or UnusedByteMask)<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              DebugLn'RawImageMaskIsEmpty EdgeByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',UnusedBitsAtEnd);
+              DebugLn('RawImageMaskIsEmpty EdgeByte y=',dbgs(y),' x=',dbgs(x),' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',dbgs(UnusedBitsAtEnd));
               {$ENDIF}
               exit;
             end;
@@ -297,13 +297,13 @@ begin
       end else begin
         // ToDo: AlphaSeparate and rileTight
         {$IFDEF VerboseRawImage}
-        DebugLn'RawImageMaskIsEmpty TODO');
+        DebugLn('RawImageMaskIsEmpty TODO');
         {$ENDIF}
         exit;
       end;
     end else begin
       {$IFDEF VerboseRawImage}
-      DebugLn'RawImageMaskIsEmpty TODO');
+      DebugLn('RawImageMaskIsEmpty TODO');
       {$ENDIF}
       exit;
     end;
@@ -311,7 +311,7 @@ begin
     Result:=true;
   end;
   {$IFDEF VerboseRawImage}
-  DebugLn'RawImageMaskIsEmpty Empty=',Result);
+  DebugLn('RawImageMaskIsEmpty Empty=',dbgs(Result));
   {$ENDIF}
 end;
 
@@ -775,6 +775,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2004/08/13 20:40:27  mattias
+  fixed DebugLn for VerboseRawImage
+
   Revision 1.32  2004/06/28 17:03:37  mattias
   clean up
 
