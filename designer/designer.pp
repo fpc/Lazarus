@@ -118,6 +118,7 @@ type
     Procedure KeyDown(Sender: TControl; TheMessage:TLMKEY);
     Procedure KeyUp(Sender: TControl; TheMessage:TLMKEY);
 
+    procedure DoDeleteSelectedComponents;
     Procedure RemoveControl(Control: TComponent);
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
@@ -230,8 +231,8 @@ Begin
   Writeln('[TDesigner.RemoveControl] ',Control.Name,':',Control.ClassName);
   if Assigned(FOnRemoveComponent) then
     FOnRemoveComponent(Self,Control);
-  FCustomForm.RemoveControl(TCOntrol(Control));
-  //this send a message to notification and removes it from the controlselection
+  //FCustomForm.RemoveControl(TControl(Control));
+  // this sends a message to notification and removes it from the controlselection
   FFormEditor.DeleteControl(Control);
 end;
 
@@ -543,14 +544,14 @@ Begin
         NewCI := TComponentInterface(FFormEditor.CreateComponent(
            ParentCI,SelectedCompClass.ComponentClass
           ,NewLeft,NewTop,NewWidth,NewHeight));
-        if NewCI.Control is TControl then
-          TControl(NewCI.Control).Visible:=true;
+        if NewCI.Component is TControl then
+          TControl(NewCI.Component).Visible:=true;
         if Assigned(FOnSetDesigning) then
-          FOnSetDesigning(Self,NewCI.Control,True);
+          FOnSetDesigning(Self,NewCI.Component,True);
         if Assigned(FOnAddComponent) then
-          FOnAddComponent(Self,NewCI.Control,SelectedCompClass);
+          FOnAddComponent(Self,NewCI.Component,SelectedCompClass);
 
-        SelectOnlyThisComponent(TComponent(NewCI.Control));
+        SelectOnlyThisComponent(TComponent(NewCI.Component));
         if not (ssShift in Shift) then
           if Assigned(FOnUnselectComponentClass) then
             // this resets the component palette to the selection tool
@@ -558,7 +559,7 @@ Begin
         Form.Invalidate;
         {$IFDEF VerboseDesigner}
         writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
-           '  NewCI.Control.Owner.Name=',NewCI.Control.Owner.Name);
+           '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
         {$ENDIF}
       end;
       ControlSelection.EndUpdate;
@@ -666,7 +667,6 @@ end;
 }
 Procedure TDesigner.KeyDown(Sender : TControl; TheMessage:TLMKEY);
 var
-  I : Integer;
   Shift : TShiftState;
 Begin
   {$IFDEF VerboseDesigner}
@@ -682,16 +682,7 @@ Begin
 
   if (TheMessage.CharCode = 46) then //DEL KEY
   begin
-    if (ControlSelection.Count = 1)
-    and (ControlSelection.Items[0].Component = FCustomForm) then
-       Exit;
-    ControlSelection.BeginUpdate;
-    for  I := ControlSelection.Count-1 downto 0 do Begin
-      Writeln('I = '+inttostr(i));
-      RemoveControl(ControlSelection.Items[I].Component);
-    End;
-    SelectOnlythisComponent(FCustomForm);
-    ControlSelection.EndUpdate;
+    DoDeleteSelectedComponents;
   end
   else
   if TheMessage.CharCode = 38 then //UP ARROW
@@ -740,6 +731,26 @@ Begin
   {$ENDIF}
 end;
 
+procedure TDesigner.DoDeleteSelectedComponents;
+var
+  AComponent: TComponent;
+begin
+  if (ControlSelection.Count = 1)
+  and (ControlSelection.Items[0].Component = FCustomForm) then
+    Exit;
+  ControlSelection.BeginUpdate;
+  while ControlSelection.Count>0 do Begin
+    AComponent:=ControlSelection[ControlSelection.Count-1].Component;
+    {$IFDEF VerboseDesigner}
+    Writeln('TDesigner: Removing control: ',
+      AComponent.Name,':',AComponent.ClassName);
+    {$ENDIF}
+    RemoveControl(AComponent);
+  End;
+  SelectOnlythisComponent(FCustomForm);
+  ControlSelection.EndUpdate;
+end;
+
 function TDesigner.IsDesignMsg(Sender: TControl; var TheMessage: TLMessage): Boolean;
 Begin
   Result := false;
@@ -772,19 +783,19 @@ end;
 
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
-  if Operation = opInsert then
-    begin
-      Writeln('opInsert');
-    end
+  if Operation = opInsert then begin
+    {$IFDEF VerboseDesigner}
+    Writeln('opInsert');
+    {$ENDIF}
+  end
   else
-  if Operation = opRemove then
-    begin
-      writeln('[TDesigner.Notification] opRemove '+
-        ''''+AComponent.ClassName+'.'+AComponent.Name+'''');
-      if (AComponent is TControl) then
-        if ControlSelection.IsSelected(AComponent) then
-          ControlSelection.Remove(AComponent);
-    end;
+  if Operation = opRemove then begin
+    {$IFDEF VerboseDesigner}
+    writeln('[TDesigner.Notification] opRemove ',
+            AComponent.Name,':',AComponent.ClassName);
+    {$ENDIF}
+    ControlSelection.Remove(AComponent);
+  end;
 end;
 
 procedure TDesigner.PaintGrid;
