@@ -549,10 +549,11 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Frame3d(var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut);
+procedure TCanvas.Frame3d(var ARect: TRect; const FrameWidth : integer;
+  const Style : TBevelCut);
 begin
   RequiredState([csHandleValid]);
-  LCLLinux.Frame3d(FHandle, Rect, FrameWidth, Style);
+  LCLLinux.Frame3d(FHandle, ARect, FrameWidth, Style);
 end;
 
 {------------------------------------------------------------------------------
@@ -1171,6 +1172,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.44  2003/06/13 10:37:20  mattias
   fixed AV on StretchDraw 0x0
 

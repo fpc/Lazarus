@@ -543,8 +543,8 @@ type
     Procedure FillRect(const ARect : TRect);
     Procedure FillRect(X1,Y1,X2,Y2 : Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
-    procedure Frame3d(var Rect : TRect; const FrameWidth : integer;
-                      const Style : TBevelCut);
+    procedure Frame3d(var ARect : TRect; const FrameWidth : integer;
+                      const Style: TBevelCut);
     procedure Frame(const ARect: TRect);        // border using pen
     procedure Frame(X1,Y1,X2,Y2 : Integer);     // border using pen
     procedure FrameRect(const ARect: TRect);    // border using brush
@@ -962,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.67  2003/05/19 08:16:32  mattias
   fixed allocation of dc backcolor
 
