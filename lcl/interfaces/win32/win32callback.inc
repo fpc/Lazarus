@@ -384,6 +384,16 @@ Var
     DestroyWindow(Buddy);
   end;
 
+  procedure DestroyComboEditWindowInfo(ComboBox: TCustomComboBox);
+  var
+    Buddy: HWND;
+  begin
+    Buddy := Windows.GetTopWindow(ComboBox.Handle);
+    writeln('DestroyComboEditWindowInfo ', Buddy);
+    if Buddy<>HWND(nil) then
+      Dispose(GetWindowInfo(Buddy));
+  end;
+  
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -604,6 +614,8 @@ Begin
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
       if lWinControl is TCustomSpinEdit then
         DestroySpinEditBuddy(TCustomSpinEdit(lWinControl));
+      if lWinControl is TCustomComboBox then
+        DestroyComboEditWindowInfo(TCustomComboBox(lWinControl));
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -1455,6 +1467,9 @@ end;
 
 {
   $Log$
+  Revision 1.164  2004/11/17 22:20:42  vincents
+  fixed memleak with windowinfo of comboedit.
+
   Revision 1.163  2004/11/16 12:21:51  vincents
   fix copy/paste error in key handler.
 
