@@ -18,17 +18,17 @@ Please make sure that you link to the right libgtkgl. If you accidently link to 
     <Version Major="1"/>
     <Files Count="5">
       <Item1>
-        <Filename Value="gtkglarea.pp"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="GTKGLArea"/>
-      </Item1>
-      <Item2>
         <Filename Value="gtkglarea.lrs"/>
         <Type Value="LRS"/>
-      </Item2>
-      <Item3>
+      </Item1>
+      <Item2>
         <Filename Value="gtkglarea_int.pp"/>
         <UnitName Value="GTKGLArea_Int"/>
+      </Item2>
+      <Item3>
+        <Filename Value="gtkglareacontrol.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="GTKGLAreaControl"/>
       </Item3>
       <Item4>
         <Filename Value="nvgl.pp"/>

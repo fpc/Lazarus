@@ -254,9 +254,6 @@ const
 { GLX resources. }
 
 type
-
-  TXID = cardinal;
-
   PGLXContextID = ^GLXContextID;
   GLXContextID = TXID;
 
@@ -287,8 +284,6 @@ type
 
   PGLXFBConfigSGIX = ^TGLXFBConfigSGIX;
   TGLXFBConfigSGIX = pointer;
-
-  PCardinal = ^Cardinal;
 
 { GLX 1.0 functions. }
 

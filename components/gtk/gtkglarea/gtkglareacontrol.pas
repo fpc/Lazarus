@@ -13,7 +13,7 @@
   Author: Mattias Gaertner
 
 }
-unit GTKGLArea;
+unit GTKGLAreaControl;
 
 {$MODE objfpc}{$H+}
 

@@ -13,7 +13,7 @@ unitdir=. ../../../lcl/units ../../../lcl/units/gtk
 
 [target]
 units=gtkglarea
-implicitunits=gtkglarea_int nvgl gtkglarea
+implicitunits=gtkglarea_int nvgl gtkglareacontrol
 
 [default]
 
@@ -31,6 +31,6 @@ zipname=lazarus.gtkglarea.$(ZIPSUFFIX)
 [rules]
 .PHONY: cleartarget all makefile makefiles
 
-all: cleartarget gtkglarea$(PPUEXT)
+all: cleartarget gtkglareacontrol$(PPUEXT)
 
 # end.
