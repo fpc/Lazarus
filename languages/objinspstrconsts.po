@@ -86,6 +86,10 @@ msgstr ""
 msgid "Events"
 msgstr ""
 
+#: objinspstrconsts:oisfavourites
+msgid "Favourites"
+msgstr ""
+
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr ""

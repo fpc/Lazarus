@@ -176,7 +176,7 @@ msgstr "Luokka"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
-msgstr ""
+msgstr "Tyhjennä"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -196,7 +196,7 @@ msgstr ""
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr ""
+msgstr "Tee komponentin oletustapahtuma"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -272,7 +272,7 @@ msgstr "Lueteltu tyyppi"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr ""
+msgstr "Virhe"
 
 #: objinspstrconsts:oiserrorloadingimage
 msgid "Error loading image"
@@ -292,6 +292,10 @@ msgstr "Tapahtumat"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
+msgstr ""
+
+#: objinspstrconsts:oisfavourites
+msgid "Favourites"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory

@@ -304,6 +304,10 @@ msgstr "Eventi"
 msgid "Exit"
 msgstr ""
 
+#: objinspstrconsts:oisfavourites
+msgid "Favourites"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
 msgstr ""

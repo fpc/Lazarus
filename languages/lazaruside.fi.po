@@ -136,7 +136,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
-msgstr "%sSeuraavat käännösyksiköt (units) lisätään %s%s%-tiedoston uses-lauseeseen :%s%s%s"
+msgstr "%sSeuraava käännösyksikkö (unit) lisätään %s-tiedoston uses-lauseeseen :%s%s%s"
 
 #: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
@@ -404,11 +404,11 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
-msgstr ""
+msgstr "Sijoittele"
 
 #: lazarusidestrconsts:lisalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Sijoita"
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -468,7 +468,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisambiguousfilefound
 msgid "Ambiguous file found"
-msgstr ""
+msgstr "Epäselvä (tai moniselitteinen) tiedosto löytyi"
 
 #: lazarusidestrconsts:lisambiguousfilefoundthisfilecanbemistakenwithdelete
 msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
@@ -656,7 +656,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisbottoms
 msgid "Bottoms"
-msgstr ""
+msgstr "Alareunat"
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
@@ -856,7 +856,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscenters
 msgid "Centers"
-msgstr ""
+msgstr "Keskilinjat"
 
 #: lazarusidestrconsts:liscodetemplchange
 msgid "Change"
@@ -1036,7 +1036,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
-msgstr ""
+msgstr "Koodiselain"
 
 #: lazarusidestrconsts:dlgcodetoolstab
 msgid "Code Tools"
@@ -1996,7 +1996,7 @@ msgstr "Käyttöliittymän asetukset"
 
 #: lazarusidestrconsts:liscodetemplerror
 msgid "Error"
-msgstr ""
+msgstr "Virhe"
 
 #: lazarusidestrconsts:lispkgmangerrorreadingpackage
 msgid "Error Reading Package"
@@ -2768,7 +2768,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
-msgstr ""
+msgstr "Vaakasuunta"
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
@@ -3540,7 +3540,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisleftsides
 msgid "Left sides"
-msgstr ""
+msgstr "Vasemmat reunat"
 
 #: lazarusidestrconsts:lisleftspaceequally
 msgid "Left space equally"
@@ -4052,7 +4052,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
-msgstr ""
+msgstr "Ei muutoksia"
 
 #: lazarusidestrconsts:lisnocodeselected
 msgid "No code selected"
@@ -4208,7 +4208,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenproject
 msgid "Open Project?"
-msgstr ""
+msgstr "Avataanto projekti?"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
@@ -4260,7 +4260,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopentheprojectanswernotoloaditasxmlfile
 msgid "Open the project %s?%sAnswer No to load it as xml file."
-msgstr ""
+msgstr "Avataanko tiedosto %s Lazarus projektina?%sEi vastaus avaa sen editoriin xml-tiedostona."
 
 #: lazarusidestrconsts:liscomppalopenunit
 msgid "Open unit"
@@ -4688,7 +4688,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojectinfofiledetected
 msgid "Project info file detected"
-msgstr ""
+msgstr "Tunnistettiin 'Project Info'-tiedostoksi"
 
 #: lazarusidestrconsts:lisprojectisrunnable
 msgid "Project is runnable"
@@ -5072,7 +5072,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
-msgstr ""
+msgstr "Oikeat reunat"
 
 #: lazarusidestrconsts:lisrightspaceequally
 msgid "Right space equally"
@@ -5300,7 +5300,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissearchfor
 msgid "Search For "
-msgstr ""
+msgstr "Viittaukset tunnisteeseen: "
 
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
@@ -5308,7 +5308,7 @@ msgstr "Hakutulokset"
 
 #: lazarusidestrconsts:lissearchagain
 msgid "Search again"
-msgstr ""
+msgstr "Etsi uudelleen"
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
@@ -5332,11 +5332,11 @@ msgstr "Mistä etsitään"
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
-msgstr ""
+msgstr "Etsitään..."
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
-msgstr ""
+msgstr "Etsitään tiedostosta: %s"
 
 #: lazarusidestrconsts:lisseemessages
 msgid "See messages."
@@ -6236,7 +6236,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobetheprogramfileofanexistinglazarus
 msgid "The file %s%s%s%sseems to be the program file of an existing lazarus Project1.%sOpen project?%sCancel will load the file as normal source."
-msgstr ""
+msgstr "Tiedosto %s%s%s%s näyttää olevan Lazarus-ohjelma.%sOk avaan sen normaalin Lazarus-projektin tavoin?%sPeru-näppäin avaa sen vain lähdekoodina."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
@@ -6616,7 +6616,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listops
 msgid "Tops"
-msgstr ""
+msgstr "Yläreunat"
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
@@ -7200,7 +7200,7 @@ msgstr "Versio"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
-msgstr ""
+msgstr "Pystysuunta"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
@@ -7216,7 +7216,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecodeexpl
 msgid "View Code Explorer"
-msgstr ""
+msgstr "Näytä koodiselain"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
