@@ -248,6 +248,11 @@ procedure TgtkObject.SendCachedLCLMessages;
         LCLHeight:=LCLControl.Height;
         if LCLHeight<0 then
           LCLHeight:=0;
+        if (LCLWidth>10000) or (LCLHeight>10000) then begin
+          writeln('WARNING: resizing BIG ',
+            ' Control=',LCLControl.Name,':',LCLControl.ClassName,
+            ' NewSize=',LCLWidth,',',LCLHeight);
+        end;
         gtk_widget_set_usize(Widget, LCLWidth, LCLHeight);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
@@ -1118,10 +1123,10 @@ begin
           pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
           StrPCopy(pStr, AddItemListItem.Caption);
           gtk_clist_set_text(PgtkCList(Widget),num,0,pStr);
-          if (TListview(sender).SmallImages <> nil)
+          if (TListview(Sender).SmallImages <> nil)
           and (TListItem(TListview(sender).Items[Num]).ImageIndex > -1) 
           then begin
-            if (TListItem(TListview(sender).Items[Num]).ImageIndex
+            if (TListItem(TListview(Sender).Items[Num]).ImageIndex
               < TListview(sender).SmallImages.Count)
             then begin
               //draw image
@@ -1130,13 +1135,13 @@ begin
                 TListItem(TListview(sender).Items[Num]).ImageIndex,BitImage);
               {$IfNDef Win32}
               gtk_clist_set_pixtext(Pgtkclist(Widget),Num,0,pStr,3,
-                pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                pgdkPixmap(PgdiObject(BitImage.Handle)^.GDIBitmapObject),nil);
               {$EndIF}
             end;
           end;
           StrDispose(pStr);
 
-          for count := 0 to AddItemListItem.SubItems.Count-1 do
+          for Count := 0 to AddItemListItem.SubItems.Count-1 do
           begin
             pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count]) + 1);
             StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count]);
@@ -3761,7 +3766,7 @@ begin
         //gtk_container_add(PGtkContainer(p), TempWidget);
         for TempInt := 0 to ListColumns - 1 do
           gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt,
-                                                    (Width-10) div ListColumns);
+                                             (Max(0,Width-10)) div ListColumns);
       end;
       gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
       gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
@@ -5199,6 +5204,8 @@ begin
         Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
         
         gtk_clist_freeze(PgtkCList(Widget));
+        
+        
         for I := 0 to TListview(sender).Columns.Count-1 do
         begin
           gtk_clist_set_column_title(Pgtkclist(Widget),I,
@@ -6015,6 +6022,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.242  2002/10/09 11:46:05  lazarus
+  MG: fixed loading TListView from stream
+
   Revision 1.241  2002/10/08 22:32:28  lazarus
   MG: fixed cool little bug (menu double attaching bug)
 
