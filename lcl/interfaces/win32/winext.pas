@@ -91,6 +91,12 @@ Const
   BFFM_SELCHANGED = 2;
 
   BFFM_SETSELECTION = WM_USER + 102;
+  
+  {SpinEdit 32 bit messages}
+  UDM_GETPOS32 = 1138;
+  UDM_GETRANGE32 = 1136;
+  UDM_SETPOS32 = 1137;
+  UDM_SETRANGE32 = 1135;
 
 
 { Win32 API functions not included in windows.pp }

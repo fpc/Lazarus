@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Spin, Controls, LCLType,
 ////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses, Windows, Win32Int,
+  WSSpin, WSLCLClasses, Windows, Win32Int, WinExt,
   Win32WSStdCtrls, Win32WSControls;
   
 type
@@ -111,7 +111,7 @@ end;
 
 function  TWin32WSCustomSpinEdit.GetValue(const ACustomSpinEdit: TCustomSpinEdit): single;
 begin
-  Result := SendMessage(ACustomSpinEdit.Handle, UDM_GETPOS, 0, 0);
+  Result := SendMessage(ACustomSpinEdit.Handle, UDM_GETPOS32, 0, 0);
 end;
 
 procedure TWin32WSCustomSpinEdit.SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer);
@@ -129,9 +129,9 @@ var
   Handle: HWND;
 begin
   Handle := ACustomSpinEdit.Handle;
-  SendMessage(Handle, UDM_SETRANGE, 0, MakeLong(Trunc(ACustomSpinEdit.MaxValue), 
-    Trunc(ACustomSpinEdit.MinValue)));
-  SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(ACustomSpinEdit.Value), 0));
+  SendMessage(Handle, UDM_SETRANGE32, WParam(Trunc(ACustomSpinEdit.MaxValue)),
+    LParam(Trunc(ACustomSpinEdit.MinValue)));
+  SendMessage(Handle, UDM_SETPOS32, 0, LParam(Trunc(ACustomSpinEdit.Value)));
 end;
 
 initialization
