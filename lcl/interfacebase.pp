@@ -31,6 +31,8 @@ unit InterfaceBase;
 {$LONGSTRINGS ON}
 interface
 
+{ $DEFINE ClientRectBugFix}
+
 {$ifdef Trace}
   {$ASSERTIONS ON}
 {$endif}
@@ -84,6 +86,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.8  2002/03/29 19:11:38  lazarus
   Added Triple Click
   Shane
