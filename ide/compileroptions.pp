@@ -1391,8 +1391,8 @@ begin
     Result:=lowercase(ExtractFileNameOnly(MainSourceFileName));
     if Result<>'' then begin
       Result:=ExtractFilePath(MainSourceFileName)+Result;
-      if fTargetOS = 'win32' then
-        Result:=Result+'.exe';
+      if CompareText(fTargetOS, 'win32') = 0 
+      then Result:=Result+'.exe';
     end else
       Result:='';
   end;
