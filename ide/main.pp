@@ -2787,12 +2787,13 @@ var
   PreReadBuf: TCodeBuffer;
 begin
   Handled:=false;
-  Ext:=lowercase(ExtractFilename(AFilename));
+  Ext:=lowercase(ExtractFileExt(AFilename));
 
   if (not (ofProjectLoading in Flags)) and (ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
     Result:=DoOpenProjectFile(AFilename);
+    Handled:=true;
     exit;
   end;
 
@@ -3226,7 +3227,7 @@ begin
   NewSrcEdit.EditorComponent.TopLine:=AnUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
   NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
-  
+
   // mark unit as loaded
   AnUnitInfo.Loaded:=true;
   
@@ -3478,8 +3479,8 @@ var
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
 begin
-writeln('');
-writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
+  writeln('');
+  writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
   if ExtractFilenameOnly(AFilename)='' then exit;
@@ -3533,19 +3534,19 @@ writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
   end;
 
   // check readonly
-  NewUnitInfo.ReadOnly:=NewUnitInfo.ReadOnly 
+  NewUnitInfo.ReadOnly:=NewUnitInfo.ReadOnly
                         or (not FileIsWritable(NewUnitInfo.Filename));
-                        
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.DoOpenEditorFile] B');
-{$ENDIF}
+
+  {$IFDEF IDE_DEBUG}
+  writeln('[TMainIDE.DoOpenEditorFile] B');
+  {$ENDIF}
   // open file in source notebook
   Result:=DoOpenFileInSourceNoteBook(NewUnitInfo,Flags);
   if Result<>mrOk then exit;
 
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.DoOpenEditorFile] C');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TMainIDE.DoOpenEditorFile] C');
+  {$ENDIF}
 
   // read form data
   if FilenameIsPascalUnit(AFilename) then begin
@@ -3555,7 +3556,7 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
   end;
 
   Result:=mrOk;
-writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
+  writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
@@ -3563,7 +3564,7 @@ function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
 var MainUnitInfo: TUnitInfo;
   OpenFlags: TOpenFlags;
 begin
-writeln('[TMainIDE.DoOpenMainUnit] A');
+  writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
   if Project1.MainUnit<0 then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
@@ -3584,7 +3585,7 @@ writeln('[TMainIDE.DoOpenMainUnit] A');
 
   // build a nice pagename for the sourcenotebook
   Result:=mrOk;
-writeln('[TMainIDE.DoOpenMainUnit] END');
+  writeln('[TMainIDE.DoOpenMainUnit] END');
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -5443,6 +5444,7 @@ begin
   // syntax error -> show error and jump
   // show error in message view
   DoArrangeSourceEditorAndMessageView;
+  MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;
   if CodeToolBoss.ErrorCode<>nil then begin
     MessagesView.Add(Project1.RemoveProjectPathFromFilename(
@@ -5452,11 +5454,12 @@ begin
       +') Error: '+CodeToolBoss.ErrorMessage);
   end else
     MessagesView.Add(CodeToolBoss.ErrorMessage);
+    
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
-    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,[ofOnlyIfExists])=mrOk then
-    begin
+    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,[ofOnlyIfExists])=mrOk
+    then begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       with ActiveSrcEdit.EditorComponent do begin
         SetFocus;
@@ -5677,7 +5680,7 @@ begin
     ACaretXY,ATopLine);
   if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
-    NewJumpPoint);
+                                   NewJumpPoint);
   if Project1.JumpHistory.HistoryIndex=Project1.JumpHistory.Count-2 then
     Project1.JumpHistory.HistoryIndex:=Project1.JumpHistory.Count-1;
 //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
@@ -6218,6 +6221,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.278  2002/04/15 10:56:05  lazarus
+  MG: fixes for open lpi files and improved jump points
+
   Revision 1.277  2002/04/12 16:36:07  lazarus
   MG: FPC unitlinks are now saved
 

@@ -43,10 +43,11 @@ type
     Function GetSelectedLineIndex : Integer;
   public
     constructor Create(AOwner : TComponent); override;
-    Procedure Add(const Texts : String);
-    Procedure AddSeparator;
+    procedure Add(const Texts : String);
+    procedure AddSeparator;
+    procedure ClearTillLastSeparator;
     function MsgCount: integer;
-    Procedure Clear;
+    procedure Clear;
     property Message : String read GetMessage;
     property SelectedMessageIndex : Integer read GetSelectedLineIndex;
     property OnSelectionChanged : TNotifyEvent read FOnSelectionChanged write FOnSelectionChanged;
@@ -57,6 +58,8 @@ var
 
 
 implementation
+
+const SeparatorLine = '----------------------------';
 
 { TMessagesView }
 
@@ -96,8 +99,22 @@ end;
 
 Procedure TMessagesView.AddSeparator;
 begin
-  if MsgCount>0 then
-    Add('----------------------------');
+  Add(SeparatorLine);
+end;
+
+procedure TMessagesView.ClearTillLastSeparator;
+var LastSeparator: integer;
+begin
+  with MessageView do begin
+    LastSeparator:=Items.Count-1;
+    while (LastSeparator>=0) and (Items[LastSeparator]<>SeparatorLine) do
+      dec(LastSeparator);
+    if LastSeparator>=0 then begin
+      while (Items.Count>LastSeparator) do begin
+        Items.Delete(Items.Count-1);
+      end;
+    end;
+  end;
 end;
 
 function TMessagesView.MsgCount: integer;

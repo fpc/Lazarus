@@ -153,6 +153,8 @@ type
     ErrorMsgs : TStrings;
     Procedure ReParent(AParent : TWinControl);
 
+    Procedure ProcessCommand(Sender: TObject;
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ProcessUserCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure UserCommandProcessed(Sender: TObject;
@@ -716,6 +718,20 @@ begin
   FEditor.ReadOnly:=NewValue;
 end;
 
+Procedure TSourceEditor.ProcessCommand(Sender: TObject;
+   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+begin
+  case Command of
+  
+  ecSelEditorTop, ecSelEditorBottom, ecEditorTop, ecEditorBottom:
+    begin
+      if FaOwner<>nil then
+        TSourceNotebook(FaOwner).AddJumpPointClicked(Self);
+    end;
+    
+  end;
+end;
+
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 var
@@ -726,6 +742,7 @@ var
 Begin
   Handled:=true;
   case Command of
+  
   ecIdentCompletion :
     if TCustomSynEdit(Sender).ReadOnly=false then begin
       CurrentCompletionType:=ctIdentCompletion;
@@ -816,9 +833,13 @@ var Handled: boolean;
 begin
   Handled:=true;
   case Command of
+  
+  ecNone: ;
+
   ecUndo:
       if (FEditor.Modified=false) and (CodeBuffer<>nil) then 
         CodeBuffer.Assign(FEditor.Lines);
+        
   else
     begin
       Handled:=false;
@@ -1152,6 +1173,7 @@ writeln('TSourceEditor.CreateEditor  A ');
       Align := alClient;
       BookMarkOptions.EnableKeys := false;
       OnStatusChange := @EditorStatusChanged;
+      OnProcessCommand := @ProcessCommand;
       OnProcessUserCommand := @ProcessUserCommand;
       OnCommandProcessed := @UserCommandProcessed;
       OnReplaceText := @OnReplace;
@@ -3027,7 +3049,7 @@ begin
   if Assigned(FOnProcessUserCommand) then begin
     Handled:=false;
     FOnProcessUserCommand(Self,Command,Handled);
-    if Handled then begin
+    if Handled or (Command=ecNone) then begin
       FProcessingCommand:=false;
       exit;
     end;
@@ -3035,6 +3057,7 @@ begin
 
   Handled:=true;
   case Command of
+  
   ecNextEditor:
     NextEditor;
 

@@ -797,15 +797,23 @@ end;
 
 procedure TProjectJumpHistory.InsertSmart(Index: integer;
   APosition: TProjectJumpHistoryPosition);
-// insert if item after or in front of Index is not equal to APosition
+// insert if item after or in front of Index is not similar to APosition
+// else replace the similar with the new updated version
 begin
   if Index<0 then Index:=Count;
-  if (Index<=Count)
-  and ((Index<1) or (not Items[Index-1].IsSimilar(APosition)))
-  and ((Index=Count) or (not Items[Index].IsSimilar(APosition))) then
-    Insert(Index,APosition)
-  else
+  if (Index<=Count) then begin
+    if (Index>0) and Items[Index-1].IsSimilar(APosition) then begin
+      Items[Index-1]:=APosition;
+      APosition.Free;
+    end else if (Index<Count) and Items[Index].IsSimilar(APosition) then begin
+      Items[Index]:=APosition;
+      APosition.Free;
+    end else begin
+      Insert(Index,APosition);
+    end;
+  end else begin
     APosition.Free;
+  end;
 end;
 
 procedure TProjectJumpHistory.DeleteForwardHistory;
