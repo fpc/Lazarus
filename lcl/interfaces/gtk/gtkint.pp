@@ -247,7 +247,10 @@ type
     id:               guint;           
     next:             PGtkHandler;      
     prev:             PGtkHandler;     
-    flags:            guint; // -->  blocked : 20, object_signal : 1, after : 1, no_marshal : 1          
+    flags:            guint; // -->  blocked : 20 bits,
+                             //      object_signal : 1 bit,
+                             //      after : 1 bit,
+                             //      no_marshal : 1 bit
     ref_count:        guint16;         
     signal_id:        guint16;         
     func:             TGtkSignalFunc;   
@@ -387,6 +390,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/06/11 13:41:10  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.49  2002/06/09 07:08:43  lazarus
   MG: fixed window jumping
 
