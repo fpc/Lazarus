@@ -19,7 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 }
-unit compileroptions;
+unit CompilerOptions;
 
 {$mode objfpc}
 {$H+}
@@ -883,10 +883,10 @@ begin
   switches := switches + ' -O';
 
   { Generate }
-  { Generate    g = smaller    G = faster }
+  { Generate    G = faster g = smaller  }
   case (Generate) of
-    1:  switches := switches + 'g';
-    2:  switches := switches + 'G';
+    1:  switches := switches + 'G';
+    2:  switches := switches + 'g';
   end;
 
   { Optimizations }
