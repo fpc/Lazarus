@@ -595,9 +595,8 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF SYN_LAZARUS}
     procedure UTF8KeyPress(var Key: TUTF8Char); override;
-    {$ELSE}
-    procedure KeyPress(var Key: Char); override;
     {$ENDIF}
+    procedure KeyPress(var Key: Char); override;
     {$IFDEF SYN_LAZARUS}
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     {$ENDIF}
@@ -1998,29 +1997,33 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
-{$ELSE}
-procedure TCustomSynEdit.KeyPress(var Key: Char);
-{$ENDIF}
 begin
-{$IFDEF SYN_MBCSSUPPORT}
-  if (fImeCount > 0) then begin
-    Dec(fImeCount);
-    Exit;
-  end;
-{$ENDIF}
   // don't fire the event if key is to be ignored
   if not (sfIgnoreNextChar in fStateFlags) then begin
-    {$IFDEF SYN_LAZARUS}
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
     {$IFDEF VerboseKeyboard}
     DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
-    {$ELSE}
-    if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
-    {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
     // Key was handled anyway, so eat it!
     Key:='';
+  end else
+    // don't ignore further keys
+    Exclude(fStateFlags, sfIgnoreNextChar);
+end;
+{$ENDIF}
+
+procedure TCustomSynEdit.KeyPress(var Key: Char);
+begin
+  // don't fire the event if key is to be ignored
+  if not (sfIgnoreNextChar in fStateFlags) then begin
+    {$IFDEF VerboseKeyboard}
+    DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
+    {$ENDIF}
+    if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
+    CommandProcessor(ecChar, Key, nil);
+    // Key was handled anyway, so eat it!
+    Key:=#0;
   end else
     // don't ignore further keys
     Exclude(fStateFlags, sfIgnoreNextChar);
