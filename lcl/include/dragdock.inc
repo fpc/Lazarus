@@ -179,13 +179,13 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function FindDragTarget(const Position: TPoint; DragKind: TDragKind;
+  function GetDragTargetAt(const Position: TPoint; DragKind: TDragKind;
     Client: TControl): Pointer;
 
   Search a control at position and ask for a dragging/docking target.
   Client is the Source control.
 -------------------------------------------------------------------------------}
-function FindDragTarget(const Position: TPoint; DragKind: TDragKind;
+function GetDragTargetAt(const Position: TPoint; DragKind: TDragKind;
   Client: TControl): TControl;
 begin
   Result:=nil;
@@ -222,7 +222,7 @@ Begin
     exit;
   end;
 
-  TargetControl := FindDragTarget(Position,DragControl.DragKind,DragControl);
+  TargetControl := GetDragTargetAt(Position,DragControl.DragKind,DragControl);
 
   if DragControl.DragKind = dkDrag then
     ActiveDrag := dopDrag
@@ -336,6 +336,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.2  2004/03/19 16:37:55  mattias
+  renamed internal FindDragTarget to GetDragTargetAt
+
   Revision 1.1  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 
