@@ -161,6 +161,7 @@ type
     fFindTextAtCursor:boolean;
     fShowTabCloseButtons: boolean;
     fSynEditOptions: TSynEditorOptions;
+    fCtrlMouseLinks: boolean;
     fUndoAfterSave:boolean;
     fUseSyntaxHighlight:boolean;
     fBlockIndent:integer;
@@ -225,6 +226,7 @@ type
     property SynEditOptions:TSynEditorOptions
         read fSynEditOptions write fSynEditOptions
         default SYNEDIT_DEFAULT_OPTIONS;
+    property CtrlMouseLinks: boolean read fCtrlMouseLinks write fCtrlMouseLinks;
     property ShowTabCloseButtons: boolean
         read fShowTabCloseButtons write fShowTabCloseButtons;
     property UndoAfterSave:boolean
@@ -329,6 +331,7 @@ type
     DoubleClickLineCheckBox:TCheckBox;
     FindTextAtCursorCheckBox:TCheckBox;
     UseSyntaxHighlightCheckBox:TCheckBox;
+    MouseLinksCheckBox: TCheckBox;
     BlockIndentComboBox:TComboBox;
     BlockIndentLabel:TLabel;
     UndoLimitComboBox:TComboBox;
@@ -1010,6 +1013,7 @@ begin
   // set defaults
 
   // General options
+  fCtrlMouseLinks:=true;
   fShowTabCloseButtons:=true;
   fBlockIndent:=2;
   fUndoLimit:=32767;
@@ -1093,6 +1097,8 @@ begin
       end;
     end;
 
+    fCtrlMouseLinks:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/CtrlMouseLinks',true);
     fShowTabCloseButtons:=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabCloseButtons',true);
     fUndoAfterSave:=
@@ -1208,6 +1214,8 @@ begin
       end;
     end;
 
+    XMLConfig.SetValue('EditorOptions/General/Editor/CtrlMouseLinks'
+      ,fCtrlMouseLinks);
     XMLConfig.SetValue('EditorOptions/General/Editor/ShowTabCloseButtons'
       ,fShowTabCloseButtons);
     XMLConfig.SetValue('EditorOptions/General/Editor/UndoAfterSave'
@@ -3113,7 +3121,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=24*10;
+    Height:=24*11; // 24 pixels per line
     Caption:=dlgEdOptsCap;
     Show;
   end;
@@ -3259,6 +3267,19 @@ begin
     Caption:=dlgScrollPastEndFile;
     Checked:=eoScrollPastEoF in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
+    Show;
+  end;
+
+  MouseLinksCheckBox:=TCheckBox.Create(Self);
+  with MouseLinksCheckBox do begin
+    Name:='MouseLinksCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
+    Left:=ScrollPastEoFCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+    Caption:=dlgMouseLinks;
+    Checked:=EditorOpts.CtrlMouseLinks;
     Show;
   end;
 
@@ -3509,7 +3530,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=MaxX-10;
-    Height:=24*10;
+    Height:=24*11; // 24 pixels per option
   end;
 
   // many, many checkboxes ...
@@ -3583,6 +3604,15 @@ begin
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
+  
+  with MouseLinksCheckBox do begin
+    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  // right side
 
   with ScrollPastEoLCheckBox do begin
     Top:=5;
@@ -5145,6 +5175,7 @@ begin
   EditorOpts.UndoAfterSave:=UndoAfterSaveCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
+  EditorOpts.CtrlMouseLinks:=MouseLinksCheckBox.Checked;
   i:=StrToIntDef(UndoLimitComboBox.Text,32767);
   if i<1 then i:=1;
   if i>32767 then i:=32767;

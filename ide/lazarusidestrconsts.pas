@@ -384,6 +384,7 @@ resourcestring
   dlgScrollPastEndLine = 'Scroll Past End of Line';
   dlgCloseButtonsNotebook = 'Close buttons in notebook';
   dlgShowScrollHint = 'Show Scroll Hint';
+  dlgMouseLinks = 'Mouse links';
   dlgSmartTabs = 'Smart Tabs';
   dlgTabsToSpaces = 'Tabs To Spaces';
   dlgTrimTrailingSpaces = 'Trim Trailing Spaces';
