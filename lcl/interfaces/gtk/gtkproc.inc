@@ -2450,8 +2450,8 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
   begin
     {$IfDef GTK2}
     // Gtk2ToDo
-    writeln('ToDo: gtkproc.inc AttachUnique');
     if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
+    gtk_window_add_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
     if (TheAccelGroup=nil)
     or ((TheAccelGroup^.attach_objects<>nil)
@@ -2516,8 +2516,8 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
   begin
     {$IfDef GTK2}
     // Gtk2ToDo
-    writeln('ToDo: gtkproc.inc Detach');
     if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
+    gtk_window_remove_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
     {$else}
     if (TheAccelGroup=nil)
     or (TheAccelGroup^.attach_objects=nil)
@@ -3062,7 +3062,7 @@ var
         s[ShortCutPos] := '_';
         Accelerate(LCLMenuItem,MenuItemWidget,
           gtk_label_parse_uline(LabelWidget,PChar(s)),
-          GDK_MOD1_MASK,'activate_item');
+          GDK_MOD1_MASK,{$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
       end else begin
         // Because gnome changes menuitem shortcuts via keyboard, we can't
         // set the accelerator.
@@ -4620,11 +4620,18 @@ end;
 
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 var
+  {$IFNDEF USE_PANGO}
   theFonts : PPChar;
+  {$Else}
+  Widget : PGTKWidget;
+  Context : PPangoContext;
+  families : PPPangoFontFamily;
+  {$EndIf}
   Tmp: AnsiString;
   I, N: Integer;
 begin
   ScreenFonts.Clear;
+  {$IFNDEF USE_PANGO}
   {$IfNdef Win32}
   If X11Display = nil then
     X11Display := XOpenDisplay(GDK_GET_DISPLAY);
@@ -4638,6 +4645,28 @@ begin
     end;
    XFreeFontNames(theFonts);
   {$EndIf Win32}
+  {$Else}
+   Widget := GetStyleWidget('default');
+   if Widget = nil then begin
+     exit;//raise an error here I guess
+   end;
+   Context := gtk_widget_get_pango_context(Widget);
+   if Context = nil then begin
+     exit;//raise an error here I guess
+   end;
+   families := nil;
+   pango_context_list_families(Context, @families, @n);
+
+   For I := 0 to N - 1 do
+     If families[I] <> nil then begin
+       Tmp := StrPas(pango_font_family_get_name(families[I]));
+       If Tmp <> '' then
+         If ScreenFonts.IndexOf(Tmp) < 0 then
+           ScreenFonts.Append(Tmp);
+    end;
+   if (families <> nil) then
+     g_free(families);
+  {$EndIf USE_PANGO}
 end;
 
 {$IFDEF ASSERT_IS_ON}
@@ -4650,6 +4679,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.205  2003/09/12 17:40:46  ajgenius
+  fixes for GTK2(accel groups, menu accel, 'draw'),
+  more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)
+
   Revision 1.204  2003/09/11 21:33:11  ajgenius
   partly fixed TWinControl(csFixed)
 

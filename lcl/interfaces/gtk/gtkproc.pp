@@ -29,8 +29,14 @@ interface
 {$EndIf}
 uses
   SysUtils, Classes,
+  {$IFNDEF USE_PANGO}
   {$Ifndef Win32}
   X, XLib,//Font retrieval
+  {$EndIf}
+  //hopefully we can grab a pango context off of an Invisible widget and call
+  //pango_context_list_families, then extract info from that list for pango,
+  //thus keeping us from having to expose xft, fontconfig, X, or Win32 Pango
+  //interfaces, or from having to call actual interfaces directly in GTK2
   {$EndIf}
   InterfaceBase,
   {$IFDEF gtk2}
@@ -88,8 +94,10 @@ function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+{$Ifdef GTK1}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
+{$EndIf}
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 function gtkfrmactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
@@ -354,7 +362,9 @@ type
     dstMousePress,
     dstMouseMotion,
     dstMouseRelease,
+{$Ifdef GTK1}
     dstDrawAfter,
+{$EndIf}
     dstExposeAfter
     );
   TDesignSignalTypes = set of TDesignSignalType;
@@ -367,28 +377,33 @@ const
     'button-press-event',
     'motion-notify-event',
     'button-release-event',
+{$Ifdef GTK1}
     'draw',
+{$EndIf}
     'expose-event'
     );
 
   DesignSignalAfter: array[TDesignSignalType] of boolean =
-    (false,false,false,false,true,true);
+    (false,false,false,false,{$Ifdef GTK1}true,{$EndIf}true);
 
   DesignSignalFuncs: array[TDesignSignalType] of Pointer = (
     nil,
     @gtkMouseBtnPress,
     @gtkMotionNotify,
     @gtkMouseBtnRelease,
+{$Ifdef GTK1}
     @gtkDrawAfter,
+{$EndIf}
     @gtkExposeEventAfter
     );
 
 var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
   
+{$IFNDEF USE_PANGO}
 var
-  X11Display : Pointer;
-
+  X11Display : Pointer;//only needed to get X fonts
+{$EndIf}
 procedure InitDesignSignalMasks;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
@@ -615,6 +630,7 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
+{$IFNDEF USE_PANGO} //only needed to get X fonts
 initialization
   X11Display := nil;
   
@@ -624,6 +640,7 @@ Finalization
     XCloseDisplay(X11Display);
   {$EndIf}
   X11Display := nil;
+{$EndIf}
 
 end.
 

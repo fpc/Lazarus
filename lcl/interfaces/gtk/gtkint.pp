@@ -147,7 +147,7 @@ type
     function CreateDefaultBrush: PGdiObject;virtual;
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
-    procedure UpdateDCTextMetric(DC: TDeviceContext);
+    procedure UpdateDCTextMetric(DC: TDeviceContext); virtual;
     {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
     function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
     {$Else}
@@ -372,6 +372,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.145  2003/09/12 17:40:45  ajgenius
+  fixes for GTK2(accel groups, menu accel, 'draw'),
+  more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)
+
   Revision 1.144  2003/09/09 20:46:38  ajgenius
   more implementation toward pango for gtk2
 

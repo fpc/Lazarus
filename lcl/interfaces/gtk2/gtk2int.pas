@@ -56,11 +56,12 @@ type
     function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
-    function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
-    function PangoExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-    function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; overload;
-    function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; overload;
-    function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; overload;
+    function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
+    function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+    function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
+    function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
+    function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
+    procedure UpdateDCTextMetric(DC: TDeviceContext); override;
     {$EndIf}
   end;
 
@@ -82,16 +83,11 @@ implementation
 
 {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
 {------------------------------------------------------------------------------
-  Method:  (Pango)DrawText
+  Method:  DrawText
   Params:  DC, Str, Count, Rect, Flags
   Returns: If the string was drawn, or CalcRect run
-
-  Currently we don't use this... since the gtk1 interface does its own calculations
-  and then calls TextOut we can test that things work first with the basic Text
-  routines, then worry about making sure this one works before we make is override
-  by default.
  ------------------------------------------------------------------------------}
-function TGTK2Object.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+function TGTK2Object.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 
   Function Alignment : TPangoAlignment;
   begin
@@ -147,6 +143,9 @@ begin
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
+        If (AttrList = nil) then
+          AttrList := pango_attr_list_new();
+
         //fix me... what about &&, can we strip and do do markup substitution?
         If CurrentFont^.Underline then
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
@@ -173,7 +172,7 @@ begin
         //fix me... then generate markup for all this?
         //the same routine could then be used for both
         //DrawText and ExtTextOut
-        
+
         pango_layout_set_attributes(Layout, AttrList);
 
         pango_layout_set_single_paragraph_mode(Layout, (Flags and DT_SingleLine) = DT_SingleLine);
@@ -182,9 +181,9 @@ begin
         If ((Flags and DT_WordBreak) = DT_WordBreak)and not
           Pango_layout_get_single_paragraph_mode(Layout)
         then
-          pango_layout_set_width(Layout, Rect.Right - Rect.Left)
+          pango_layout_set_width(Layout, (Rect.Right - Rect.Left)*PANGO_SCALE)
         else
-          pango_layout_set_width(Layout, 0);
+          pango_layout_set_width(Layout, -1);
 
         pango_layout_set_alignment(Layout, Alignment);
   
@@ -196,7 +195,6 @@ begin
         
         pango_layout_set_text(Layout, Str, Count);
         pango_layout_get_pixel_size(Layout, @Width, @Height);
-
         Case TopOffset of
           DT_Top : Y := Rect.Top;
           DT_Bottom : Y := Rect.Bottom - Height;
@@ -236,7 +234,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function Tgtk2Object.PangoExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function Tgtk2Object.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   LineStart, LineEnd, StrEnd: PChar;
@@ -262,6 +260,7 @@ var
       if (Dx=nil) then begin
         // no dist array -> write as one block
         //fix me... do we even need to do it this way with pango?
+        TextOut(DC,TxtPt.X, TxtPt.Y, LineStart, LineLen);
       end else begin
         // dist array -> write each char separately
         CharsWritten:=integer(LineStart-Str);
@@ -272,6 +271,7 @@ var
         LinePos:=LineStart;
         for i:=1 to LineLen do begin
           //fix me... do we even need to do it this way with pango?
+          TextOut(DC,CurX, TxtPt.Y, LinePos, 1);
           inc(LinePos);
           inc(CurX,CurDistX^);
           inc(CurDistX);
@@ -301,7 +301,7 @@ begin
       // to reduce flickering calculate first and then paint
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
-      UseFontDesc:=nil;
+     { UseFontDesc:=nil;
       if (Str<>nil) and (Count>0) then begin
         if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then
           UseFontDesc := GetDefaultFontDesc(false)
@@ -314,6 +314,9 @@ begin
 
         AttrList := pango_layout_get_attributes(Layout);
 
+        If (AttrList = nil) then
+          AttrList := pango_attr_list_new();
+
         If CurrentFont^.Underline then
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
         else
@@ -324,7 +327,7 @@ begin
         Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
         pango_attr_list_change(AttrList,Attr);
 
-        if UseFontDesc <> nil then begin
+        if UseFontDesc <> nil then begin           }
           if (Options and ETO_CLIPPED) <> 0 then
           begin
             X := Rect^.Left;
@@ -338,11 +341,11 @@ begin
           TxtPt.X := X + DCOrigin.X;
           LineHeight := DCTextMetric.TextMetric.tmAscent;
           TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
-        end else begin
+        {end else begin
           WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Font');
           Result := False;
         end;
-      end;
+      end;  }
 
       if ((Options and ETO_OPAQUE) <> 0) then
       begin
@@ -364,14 +367,14 @@ begin
                            Width, Height);
       end;
 
-      Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+      {Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
                                         gushort(GetGValue(RGBColor)) shl 8,
                                         gushort(GetBValue(RGBColor)) shl 8);
 
       pango_attr_list_change(AttrList,Attr);
 
       pango_layout_set_attributes(Layout, AttrList);
-
+       }
       LineStart:=Str;
       if LineLen < 0 then begin
         LineLen:=Count;
@@ -456,6 +459,9 @@ begin
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
+        If (AttrList = nil) then
+          AttrList := pango_attr_list_new();
+
         //fix me... what about &&, can we strip and do do markup substitution?
         If Underline then
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
@@ -482,7 +488,7 @@ begin
         pango_layout_set_attributes(Layout, AttrList);
 
         pango_layout_set_single_paragraph_mode(Layout, TRUE);
-        pango_layout_set_width(Layout, 0);
+        pango_layout_set_width(Layout, -1);
 
         pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
 
@@ -604,6 +610,9 @@ begin
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
 
+        If (AttrList = nil) then
+          AttrList := pango_attr_list_new();
+
         //fix me... what about &&, can we strip and do do markup substitution?
         If Underline then
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
@@ -630,7 +639,7 @@ begin
         pango_layout_set_attributes(Layout, AttrList);
 
         pango_layout_set_single_paragraph_mode(Layout, TRUE);
-        pango_layout_set_width(Layout, 0);
+        pango_layout_set_width(Layout, -1);
 
         pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
 
@@ -653,6 +662,132 @@ begin
     end;
   end;
 end;
+
+{------------------------------------------------------------------------------
+  procedure Tgtk2Object.UpdateDCTextMetric(DC: TDeviceContext);
+ ------------------------------------------------------------------------------}
+procedure Tgtk2Object.UpdateDCTextMetric(DC: TDeviceContext);
+const
+  TestString = '{Am|g_}';
+var
+  XT : TSize;
+  dummy: LongInt;
+  UseFontDesc : PPangoFontDescription;
+  UnRef : Boolean;
+  AVGBuffer: array[#32..#126] of char;
+  AvgLen: integer;
+  c: char;
+
+  Underline,
+  StrikeOut : Boolean;
+
+  Layout : PPangoLayout;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+  Extents : TPangoRectangle;
+begin
+  with TDeviceContext(DC) do begin
+    if dcfTextMetricsValid in DCFlags then begin
+      // cache valid
+    end else begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFontDesc := GetDefaultFontDesc(true);
+        UnRef := True;
+
+        Underline := False;
+        StrikeOut := False;
+      end
+      else begin
+        UseFontDesc := CurrentFont^.GDIFontObject;
+        UnRef := False;
+
+        Underline := CurrentFont^.Underline;
+        StrikeOut := CurrentFont^.StrikeOut;
+      end;
+      If UseFontDesc = nil then
+        WriteLn('WARNING: [Tgtk2Object.GetTextMetrics] Missing font')
+      else begin
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        pango_layout_set_font_description(Layout, UseFontDesc);
+        AttrList := pango_layout_get_attributes(Layout);
+
+        If (AttrList = nil) then
+          AttrList := pango_attr_list_new();
+
+        //fix me... what about &&, can we strip and do do markup substitution?
+        If Underline then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(StrikeOut);
+        pango_attr_list_change(AttrList,Attr);
+
+        pango_layout_set_attributes(Layout, AttrList);
+
+        pango_layout_set_single_paragraph_mode(Layout, TRUE);
+        pango_layout_set_width(Layout, -1);
+
+        pango_layout_set_alignment(Layout, PANGO_ALIGN_LEFT);
+
+        //fix me... and what about UTF-8 conversion?
+        //this could be a massive problem since we
+        //will need to know before hand what the current
+        //locale is, and if we stored UTF-8 string this would break
+        //cross-compatibility with GTK1.2 and win32 interfaces.....
+
+        pango_layout_set_text(Layout,  TestString, length(TestString));
+
+        pango_layout_get_extents(Layout, nil, @Extents);
+        g_object_unref(Layout);
+
+        If UnRef then
+          pango_font_description_free(UseFontDesc);
+
+        FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
+        with DCTextMetric do begin
+          IsDoubleByteChar:=False;//FontIsDoubleByteCharsFont(UseFont);
+
+          for c:=Low(AVGBuffer) to High(AVGBuffer) do
+            AVGBuffer[c]:=c;
+          lbearing := PANGO_LBEARING(extents) div PANGO_SCALE;
+          rBearing := PANGO_RBEARING(extents) div PANGO_SCALE;
+          TextMetric.tmAscent := PANGO_ASCENT(extents) div PANGO_SCALE;
+          TextMetric.tmDescent := PANGO_DESCENT(extents) div PANGO_SCALE;
+          AvgLen:=ord(High(AVGBuffer))-ord(Low(AVGBuffer))+1;
+          GetTextExtentPoint(HDC(DC), @AVGBuffer[Low(AVGBuffer)],
+                             AvgLen, XT);
+          if not IsDoubleByteChar then
+            XT.cX := XT.cX div AvgLen
+          else
+            // Quick hack for double byte char fonts
+            XT.cX := XT.cX div (AvgLen div 2);
+          TextMetric.tmHeight := XT.cY;
+          TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
+          TextMetric.tmAveCharWidth :=  XT.cX;
+          if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
+          {temp EVIL hack FIXME -->}
+          AVGBuffer[Low(AVGBuffer)]:='M';
+          GetTextExtentPoint(HDC(DC), @AVGBuffer[Low(AVGBuffer)],
+                             1, XT);
+          TextMetric.tmMaxCharWidth := XT.cX;
+          AVGBuffer[Low(AVGBuffer)]:='W';
+          GetTextExtentPoint(HDC(DC), @AVGBuffer[Low(AVGBuffer)],
+                             1, XT);
+          TextMetric.tmMaxCharWidth := Max(TextMetric.tmMaxCharWidth,XT.cX);
+          {<--  temp EVIL hack FIXME}
+          if TextMetric.tmMaxCharWidth<1 then
+            TextMetric.tmMaxCharWidth:=1;
+        end;
+      end;
+      Include(DCFlags,dcfTextMetricsValid);
+    end;
+  end;
+end;
+
 {$EndIf}
 
 {------------------------------------------------------------------------------
@@ -763,6 +898,10 @@ end.
 
 {
   $Log$
+  Revision 1.10  2003/09/12 17:40:46  ajgenius
+  fixes for GTK2(accel groups, menu accel, 'draw'),
+  more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)
+
   Revision 1.9  2003/09/10 18:03:47  ajgenius
   more changes for pango -
   partly fixed ref counting,

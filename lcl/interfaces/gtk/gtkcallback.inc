@@ -359,6 +359,8 @@ begin
   Result := DeliverPostMessage(Data, MSG);
 end;
 
+
+{$Ifdef GTK1}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
@@ -382,6 +384,7 @@ begin
 
   DeliverGtkPaintMessage(Data,Widget,Area,false);
 end;
+{$ENDIF}
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
@@ -2844,6 +2847,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.189  2003/09/12 17:40:45  ajgenius
+  fixes for GTK2(accel groups, menu accel, 'draw'),
+  more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)
+
   Revision 1.188  2003/09/10 02:33:41  ajgenius
   fixed TColotDialog for GTK2
 

@@ -3352,7 +3352,7 @@ begin
           end;
         end else if Sender is TMenuItem then begin
           Accelerate(TComponent(Sender), Widget, TLMShortcut(data^),
-            'activate_item');
+            {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
         end;
       end;
 
@@ -7446,7 +7446,6 @@ begin
          GdiObject^.GDIFontObject :=  pango_font_description_copy(gtk_widget_get_style(ClientWidget)^.font_desc);
          GdiObject^.StrikeOut := False;
          GdiObject^.Underline := False;
-         gdk_font_ref(Values.Font);
       end else GdiObject := CreateDefaultFont;
     {$EndIf}
   end;
@@ -8171,6 +8170,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.415  2003/09/12 17:40:45  ajgenius
+  fixes for GTK2(accel groups, menu accel, 'draw'),
+  more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)
+
   Revision 1.414  2003/09/11 21:33:11  ajgenius
   partly fixed TWinControl(csFixed)
 
