@@ -456,11 +456,13 @@ type
     destructor Destroy; override;
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
     Procedure FillRect(const Rect : TRect);
-    Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
+    Procedure Rectangle(X1,Y1,X2,Y2 : Integer); overload;
+    Procedure Rectangle(const Rect: TRect); overload;
     Procedure Line(X1,Y1,X2,Y2 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
     Procedure LineTo(X1,Y1 : Integer);
     Procedure TextOut(X,Y: Integer; const Text: String);
+    Procedure TextRect(Rect: TRect; X,Y : Integer; const Text : String);
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
@@ -743,6 +745,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/11/09 19:14:23  lazarus
+  HintWindow changes
+  Shane
+
   Revision 1.15  2001/10/25 19:02:18  lazarus
   MG: fixed parsing constants with OR, AND, XOR, MOD, DIV, SHL, SHR
 

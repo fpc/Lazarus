@@ -1175,22 +1175,26 @@ begin
   if not (Sender is TSpeedButton) then
   begin
     pWidget := pgtkWidget(TWinControl(Sender).Handle);
-//if Sender is TCustomForm then
-//writeln('[TgtkObject.ResizeChild] ',Sender.ClassName,' ',Width,',',Height);
+
     if Sender is TCustomForm then
-      //gdk_window_resize(pWidget^.Window, Width,Height);
-      gtk_widget_set_usize(pWidget, -1, -1);
+       gtk_widget_set_usize(pWidget, -1, -1);
+       
     gtk_widget_set_usize(pWidget, Width, Height);
 
-    if not ((Parent = nil) or (Sender is TCustomForm)) then 
+    if Sender is TCustomForm then
+       gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
+
+    if not ((Parent = nil) or (Sender is TCustomForm)) then
     begin
       pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
-      if pFixed <> nil then begin
-        gtk_fixed_move(pFixed, pWidget, Left, Top);
-      end
+      if pFixed <> nil then
+        begin
+          gtk_fixed_move(pFixed, pWidget, Left, Top);
+        end
       else Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
     end
-    else begin
+    else
+     begin
       gtk_widget_set_uposition(pWidget, Left, Top);
     end;
   end;
@@ -1579,9 +1583,6 @@ begin
     
     LM_MOUSEMOVE:
     begin
-//       if ((sender is tCustomForm) )then
-//       ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify)
-//       else
        ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
     end;
     
@@ -2055,6 +2056,23 @@ begin
          P := gtk_frame_new(' ');
          gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
       end;
+      
+      csHintWindow :
+      Begin
+         p := gtk_window_new(FormStyleMap[bsToolWindow]{gtk_window_Popup});
+         gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
+//         Box := gtk_vbox_new(False, 0);
+//         gtk_container_add(p, Box);
+//         gtk_widget_show(Box);
+
+         // Create the form client area
+         TempWidget := gtk_fixed_new();
+         gtk_container_add(p, TempWidget);//         gtk_box_pack_end(Box, TempWidget, True, True, 0);
+         gtk_widget_show(TempWidget);
+         SetFixedWidget(p, TempWidget);
+         SetMainWidget(p, TempWidget);
+         gtk_widget_show(p);
+      end;
 
       csLabel :
       begin
@@ -2429,7 +2447,7 @@ begin
   finally
     strDispose(pStr);
   end;
-//   gtk_object_set_data(PGtkObject(TPage(Child).Handle), 'Owner', pgtkwidget(TWinControl(Parent).handle));
+//   gtk_object_set_data(PGtkObject(TPage(Child).Handle), '1', pgtkwidget(TWinControl(Parent).handle));
 end;
 
 {------------------------------------------------------------------------------}
@@ -3118,6 +3136,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.68  2001/11/09 19:14:24  lazarus
+  HintWindow changes
+  Shane
+
   Revision 1.67  2001/11/09 14:33:41  lazarus
   MG: fixed GetItemIndex-Handle-NotAllocated-Crash bug
 

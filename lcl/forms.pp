@@ -211,10 +211,35 @@ type
    end;
 
   TFormClass = class of TForm;
+  
+  
+   {THintWindow}
+  THintWindow = class(TCustomForm)
+    private
+      FActivating: Boolean;
+      FAutoHide : Boolean;
+      FAutoHideTimer : TComponent;
+      FHideInterval : Integer;
+      Procedure SetAutoHide(Value : Boolean);
+      Procedure AutoHideHint(Sender : TObject);
+      Procedure SetHideInterval(Value : Integer);
+    protected
+      procedure Paint; override;
+    public
+      constructor Create(AOwner: TComponent); override;
+      destructor Destroy; override;
+      procedure ActivateHint(Rect: TRect; const AHint: String); virtual;
+      function CalcHintRect(MaxWidth: Integer; const AHint: String; AData: Pointer): TRect; virtual;
+      property Color;
+      property AutoHide : Boolean read FAutoHide write SetAutoHide;
+      property HideInterval : Integer read FHideInterval write SetHideInterval;
+  end;
+
 
   TScreen = class(TComponent)
   private
     FFormList: TList;
+    FHintFont : TFont;
     FPixelsPerInch : integer;
     Function GetFormCount: Integer;
     Function GetForms(IIndex: Integer): TForm;
@@ -228,6 +253,7 @@ type
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property PixelsPerInch : integer read FPixelsPerInch;
+    property HintFont : TFont read FHintFont;
     property Height : Integer read Getheight;
     property Width : Integer read GetWidth;
   end;
@@ -314,7 +340,7 @@ implementation
 
 
 uses 
-  Buttons, StdCtrls, Interfaces, LResources, dialogs {,designer};
+  Buttons, StdCtrls, Interfaces, LResources, dialogs,ExtCtrls {,designer};
 
 const
   FocusMessages : Boolean = true;
@@ -433,6 +459,8 @@ end;
 {$I Customform.inc}
 {$I screen.inc}
 {$I application.inc}
+{$I hintwindow.inc}
+
 
 initialization
   Screen:= TScreen.Create(nil);

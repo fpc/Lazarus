@@ -248,6 +248,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Rectangle
+  Params:   Rect
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Rectangle(const Rect: TRect);
+begin
+ Rectangle(Rect.Left, REct.Top, Rect.RIght, REct.Bottom);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.TextRect
+  Params:   Rect,X,Y,Text
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+Procedure TCanvas.TextRect(Rect: TRect; X,Y : Integer; const Text : String);
+begin
+  RequiredState([csHandleValid, csFontValid, csBrushValid]);
+  ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, @Rect, pChar(Text), Length(Text), nil);
+  MoveTo(X + TextWidth(Text), Y);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.TextOut
   Params:   X,Y,Text
   Returns:  Nothing
@@ -598,6 +622,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/11/09 19:14:23  lazarus
+  HintWindow changes
+  Shane
+
   Revision 1.10  2001/10/07 07:28:33  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 

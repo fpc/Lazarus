@@ -609,6 +609,7 @@ Begin
       with Result do
       begin
         P := Point(Pos.X - Left, Pos.Y - Top);
+
         //MWE: rewrote it a bit to get it more readable
         if  PtInRect(ClientRect,P) 
         and (   
@@ -1694,7 +1695,7 @@ begin
   Assert(False, Format('trace:[TWinControl.AttachSignals] %s', [ClassName]));
   // Attach callbacks
   SetCallback(LM_DESTROY);
-  SetCallback(LM_SHOWWINDOW);
+  SetCallback(LM_SHOWWINDOW); //This does the SHOW and HIDE
   SetCallback(LM_FOCUS);
 //Obsolete ??  SetCallback(LM_SIZEALLOCATE); 
   SetCallback(LM_WINDOWPOSCHANGED);
@@ -1721,7 +1722,6 @@ begin
   
 
 {  *** These need to be implemented yet
-   hide
    state-changed
 }
 end;
@@ -1931,6 +1931,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2001/11/09 19:14:23  lazarus
+  HintWindow changes
+  Shane
+
   Revision 1.40  2001/10/31 16:29:22  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane

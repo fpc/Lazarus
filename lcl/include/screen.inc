@@ -13,6 +13,11 @@ begin
   inherited Create(AOwner);
   FFormList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
+  FHintFont := TFont.Create;
+//  FHintFont.Name := 'courier';
+  FHintFont.Style := [];
+  FHintFont.Size := 12;
+  FHintFont.Pitch := fpDefault;
 end;
 
 {------------------------------------------------------------------------------

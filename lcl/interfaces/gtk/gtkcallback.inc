@@ -1206,6 +1206,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2001/11/09 19:14:24  lazarus
+  HintWindow changes
+  Shane
+
   Revision 1.40  2001/11/01 21:30:35  lazarus
   Changes to Messagebox.
   Added line to CodeTools to prevent duplicate USES entries.

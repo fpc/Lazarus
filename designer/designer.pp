@@ -27,7 +27,7 @@ interface
 uses
   Classes, LCLLinux, Forms, Controls, LMessages, Graphics, ControlSelection,
   CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus, AlignCompsDlg,
-  SizeCompsDlg, ScaleCompsDlg;
+  SizeCompsDlg, ScaleCompsDlg, ExtCtrls;
 
 type
   TOnGetSelectedComponentClass = procedure(Sender: TObject; 
@@ -67,9 +67,13 @@ type
     FBringToFrontMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
 
+    //hint stuff
+    FHintTimer : TTimer;
+    FHintWIndow : THintWindow;
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
     procedure InvalidateWithParent(AComponent: TComponent);
+    Procedure HintTimer(sender : TObject);
   protected
     MouseDownComponent, MouseDownSender : TComponent;
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
@@ -160,6 +164,18 @@ begin
   FHasSized:=false;
   FGridColor:=clGray;
   FDuringPaintControl:=false;
+
+  FHintTimer := TTimer.Create(nil);
+  FHintTimer.Interval := 500;
+  FHintTimer.Enabled := False;
+  FHintTimer.OnTimer := @HintTimer;
+  
+  FHintWindow := THintWindow.Create(nil);
+
+  FHIntWindow.Visible := False;
+  FHintWindow.Caption := 'This is a hint window'#13#10'NEat huh?';
+  FHintWindow.HideInterval := 4000;
+  FHintWindow.AutoHide := True;
 end;
 
 destructor TDesigner.Destroy;
@@ -271,6 +287,7 @@ var i,
   SelectedCompClass: TRegisteredComponent;
   NonVisualComp: TComponent;
 Begin
+  FHintTimer.Enabled := False;
   FHasSized:=false;
   if (MouseDownComponent<>nil) or (getParentForm(Sender)=nil) then exit;
   MouseDownComponent:=Sender;
@@ -378,6 +395,8 @@ var
   SenderOrigin:TPoint;
   SelectedCompClass: TRegisteredComponent;
 Begin
+  FHintTimer.Enabled := False;
+
   SenderParentForm:=GetParentForm(Sender);
   if (MouseDownComponent=nil) or (SenderParentForm=nil) then exit;
 
@@ -499,6 +518,12 @@ var
   SenderParentForm:TCustomForm;
   MouseX, MouseY :integer;
 Begin
+try
+  FHintTimer.Enabled := False;
+  FHintTimer.Enabled := True;
+  if FHintWindow.Visible then
+     FHintWindow.Visible := False;
+     
   if MouseDownComponent=nil then exit;
 
   SenderParentForm:=GetParentForm(Sender);
@@ -561,7 +586,12 @@ Begin
   end else begin
     ControlSelection.ActiveGrabber:=nil;
   end;
-  LastMouseMovePos:=Point(MouseX,MouseY);
+finally
+    SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
+    MouseX:=Message.Pos.X+SenderOrigin.X;
+    MouseY:=Message.Pos.Y+SenderOrigin.Y;
+    LastMouseMovePos:=Point(MouseX,MouseY);
+end;
 end;
 
 procedure TDesigner.MouseRightUpOnControl(Sender : TControl; Message:TLMMouse);
@@ -569,6 +599,8 @@ var
   MouseX, MouseY : Integer;
   SenderOrigin: TPoint;
 begin
+  FHintTimer.Enabled := False;
+
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   MouseX:=Message.Pos.X+SenderOrigin.X;
   MouseY:=Message.Pos.Y+SenderOrigin.Y;
@@ -664,6 +696,9 @@ Begin
     else
     if ((Message.Msg >= LM_KeyFIRST) and (Message.Msg <= LM_KeyLAST)) then
       Result:=true;
+//    else
+//    if ((Message.Msg >= CM_MOUSEENTER) and (Message.Msg <= CM_MOUSELEAVE)) then
+//      Result:=true;
 
     case Message.Msg of
       LM_PAINT:   Result:=PaintControl(Sender,TLMPaint(Message));
@@ -675,6 +710,7 @@ Begin
       LM_MOUSEMOVE:    MouseMoveOnControl(Sender, TLMMouse(Message));
       LM_SIZE:    Result:=SizeControl(Sender,TLMSize(Message));
       LM_MOVE:    Result:=MoveControl(Sender,TLMMove(Message));
+//      CM_MOUSELEAVE:  Writeln('MOUSELEAVE!!!!!!!!!!!!');//Result:=MoveControl(Sender,TLMMove(Message));
     end;
   end;
 end;
@@ -984,7 +1020,36 @@ begin
   if ControlSelection.Count = 1 then begin
     AComponent:= ControlSelection.Items[0].Component;
     if AComponent is TControl then TControl(AComponent).SendToBack;
-  end;    
+  end;
+end;
+
+Procedure TDesigner.HintTimer(sender : TObject);
+var
+  Rect : TRect;
+  AHint : String;
+  Control : TControl;
+  Position : TPoint;
+begin
+  FHintTimer.Enabled := False;
+  Position := Mouse.CursorPos;
+  if ((Position.X < FCustomForm.LEft) or (Position.X > (FCustomForm.Left+FCustomForm.Width)) or (Position.Y < FCustomForm.Top) or (Position.Y > (FCustomForm.Top+FCustomForm.Height))) then Exit;
+
+  Position := FCustomForm.ScreenToClient(Position);
+
+  Control := FCustomForm.ControlAtPos(Position,True);
+  if not Assigned(Control) then
+     Control := FCustomForm;
+  AHint := Control.Name + ' : '+Control.ClassName;
+  AHint := AHint + #10+'Left : '+Inttostr(Control.Left)+ '  Top : '+Inttostr(Control.Top)+
+                   #10+'Width : '+Inttostr(Control.Width)+ '  Height : '+Inttostr(Control.Height);
+
+  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
+  Rect.Left := LastMouseMovePos.X+FCustomForm.LEft+10;
+  Rect.Top := LastMouseMovePos.Y+FCustomForm.Top;
+  Rect.Right := Rect.Left + Rect.Right;
+  Rect.Bottom := Rect.Top + Rect.Bottom;
+
+  FHintWindow.ActivateHint(Rect,AHint);
 end;
 
 

@@ -1148,6 +1148,9 @@ function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: P
 var
   pStr: PChar;
   Width, Height: Integer;
+  NewText,oldText : String;
+  NUm : Integer;
+  Line : Integer;
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
@@ -1185,8 +1188,26 @@ begin
           Y := Rect^.Top;
         end;
         SelectGDKTextProps(DC);
-        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-            X, Y + 10 {TODO: query font height}, pStr, Count);
+        Line := 1;
+        OldText := StrPas(pStr);
+        Num := pos(#10,OldText);
+        if Num = 0 then
+        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + 10 {TODO: query font height}, pStr, Count)
+        else
+          Begin  //write multiple lines
+             while NUm > 0 do
+                begin
+                  NewText := Copy(OldText,1,Num);
+                  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + (Line*10) {TODO: query font height}, pchar(NewText), Length(NewText));
+
+                  Delete(OldText,1,Num);
+                  Num := pos(#10,OldText);
+                  inc(line);
+                end;
+                if OldText <> '' then
+                  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + (Line*10) {TODO: query font height}, pchar(OldText), length(OldText));
+
+          end;
       finally
         StrDispose(pStr);
       end;
@@ -3605,6 +3626,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2001/11/09 19:14:25  lazarus
+  HintWindow changes
+  Shane
+
   Revision 1.46  2001/10/31 16:29:23  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane
