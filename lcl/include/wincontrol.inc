@@ -1256,11 +1256,10 @@ begin
 //  end;
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TWinControl WndPRoc                                                      }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.WndPRoc(Var Message : TLMessage);
+{------------------------------------------------------------------------------
+  TWinControl WndPRoc
+------------------------------------------------------------------------------}
+Procedure TWinControl.WndProc(Var Message: TLMessage);
 Var
   Form: TCustomForm;
 //  KeyState: TKeyboardState;
@@ -1268,61 +1267,71 @@ Var
 Begin
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
-    LM_SETFOCUS:
-      begin
-        Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
-        Form := GetPArentForm(Self);
-        if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
-        Message.Result:=0;
-      end;
-    LM_KILLFOCUS: 
-      begin
-        Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
-        if csFocusing in ControlState then Exit;
-        Message.Result:=0;
-      end;
-    LM_NCHITTEST:
-      begin
-        inherited WndPRoc(Message);
-        if (Message.Result = HTTRANSPARENT) 
-        and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)), False) <> nil) 
-        then  Message.Result := HTCLIENT;
-        Exit;
-      end;
-    LM_MOUSEFIRST..LM_MOUSELAST,LM_MOUSEFIRST2..LM_MOUSELAST2:
-       begin
-         {$IFDEF VerboseMouseBugfix}
-         writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
-         {$ENDIF}
-         if IsControlMouseMSG(TLMMouse(Message)) then
-           Exit;
-         {$IFDEF VerboseMouseBugfix}
-         writeln('TWinControl.WndPRoc B ',Name,':',ClassName);
-         {$ENDIF}
-       end;
-    LM_KEYFIRST..LM_KEYLAST:
-      if Dragging then Exit;
-    LM_CANCELMODE:
-      if (GetCapture = Handle) 
-      and (CaptureControl <> nil) 
-      and (CaptureControl.Parent = Self) 
-      then CaptureControl.Perform(LM_CANCELMODE,0,0);
-    else
+  
+  LM_SETFOCUS:
+    begin
+      Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
+      Form := GetParentForm(Self);
+      {$IFDEF VerboseFocus}
+      writeln('TWinControl.WndProc A ',Name,':',ClassName);
+      {$ENDIF}
+      if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
+      Message.Result:=0;
+    end;
+    
+  LM_KILLFOCUS:
+    begin
+      Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
+      if csFocusing in ControlState then Exit;
+      Message.Result:=0;
+    end;
+    
+  LM_NCHITTEST:
+    begin
+      inherited WndPRoc(Message);
+      if (Message.Result = HTTRANSPARENT)
+      and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)), False) <> nil)
+      then  Message.Result := HTCLIENT;
+      Exit;
+    end;
+    
+  LM_MOUSEFIRST..LM_MOUSELAST,LM_MOUSEFIRST2..LM_MOUSELAST2:
+     begin
+       {$IFDEF VerboseMouseBugfix}
+       writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
+       {$ENDIF}
+       if IsControlMouseMSG(TLMMouse(Message)) then
+         Exit;
+       {$IFDEF VerboseMouseBugfix}
+       writeln('TWinControl.WndPRoc B ',Name,':',ClassName);
+       {$ENDIF}
+     end;
+     
+  LM_KEYFIRST..LM_KEYLAST:
+    if Dragging then Exit;
+    
+  LM_CANCELMODE:
+    if (GetCapture = Handle)
+    and (CaptureControl <> nil)
+    and (CaptureControl.Parent = Self)
+    then CaptureControl.Perform(LM_CANCELMODE,0,0);
+    
+  else
 //TODO:Implement TMOUSE
- {    with Mouse do
-     if WheelPresent and (RegWheelMessage <> 0) and (Message.Msg = RegWheelMessage) then
+{  with Mouse do
+   if WheelPresent and (RegWheelMessage <> 0) and (Message.Msg = RegWheelMessage) then
+    Begin
+      GetKeyboardState(KeyState);
+      with WheelMsg do
       Begin
-        GetKeyboardState(KeyState);
-        with WheelMsg do
-        Begin
-          Msg := Message.Msg;
-          ShiftState := KeyboardStateToShiftState(KeyState);
-          WheelData :=Message.WParam;
-          Pos := TSmallPoint(Message.LPaream);
-        end;
-        MouseWheelHandler(TMessage(WheelMsg));
-        Exit;
+        Msg := Message.Msg;
+        ShiftState := KeyboardStateToShiftState(KeyState);
+        WheelData :=Message.WParam;
+        Pos := TSmallPoint(Message.LPaream);
       end;
+      MouseWheelHandler(TMessage(WheelMsg));
+      Exit;
+    end;
 }
   end;
 
@@ -1336,7 +1345,7 @@ end;
 
   Description of the procedure for the class.
  ------------------------------------------------------------------------------}
-Procedure TWinControl.MainWndPRoc(Var Message : TLMessage);
+Procedure TWinControl.MainWndProc(Var Message : TLMessage);
 Begin
   Assert(False, Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
 end;
@@ -2546,7 +2555,8 @@ begin
   
   if not (csDesigning in ComponentState) 
   or (csNoDesignVisible in ControlStyle) 
-  then UpdateControlState;
+  then
+    UpdateControlState;
 end;
 
 {------------------------------------------------------------------------------
@@ -2582,6 +2592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.123  2003/03/25 10:45:41  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.122  2003/03/18 13:04:25  mattias
   improved focus debugging output
 

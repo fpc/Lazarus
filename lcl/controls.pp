@@ -629,7 +629,7 @@ type
     Procedure SetParentComponent(Value: TComponent); override;
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
-    procedure WndProc(var TheMessage : TLMessage); virtual;
+    procedure WndProc(var TheMessage: TLMessage); virtual;
     Procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Dynamic;
     Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
@@ -1447,6 +1447,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.110  2003/03/25 10:45:40  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.109  2003/03/17 23:39:30  mattias
   added TCheckGroup
 
