@@ -34,6 +34,7 @@ echo downloading cvs $CVSParams ...
 mkdir -p $TempDir
 cd $TempDir
 rm -rf fpc
+export CVS_RSH=
 export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
 echo 'The password is: cvs'
 cvs login

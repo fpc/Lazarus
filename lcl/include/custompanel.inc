@@ -23,11 +23,11 @@
 }
 
 {------------------------------------------------------------------------------
-  constructor TCustomPanel.Create (AOwner : TComponent);
+  constructor TCustomPanel.Create (TheOwner : TComponent);
  ------------------------------------------------------------------------------}
-constructor TCustomPanel.Create (AOwner : TComponent);
+constructor TCustomPanel.Create (TheOwner : TComponent);
 begin
-  inherited Create (AOwner);
+  inherited Create (TheOwner);
   FCompStyle:= csPanel;
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
     csClickEvents, csSetCaption, csOpaque, csDoubleClicks, csReplicatable,
@@ -111,6 +111,11 @@ begin
   end;
 end;
 
+function TCustomPanel.ParentColorIsStored: boolean;
+begin
+  Result:=not ParentColor;
+end;
+
 procedure TCustomPanel.AdjustClientRect(var Rect: TRect);
 var
   BevelSize: Integer;
@@ -129,12 +134,6 @@ begin
     FBorderStyle := Value;
     Invalidate;
   end;
-end;
-
-procedure TCustomPanel.Invalidate;
-begin
-  inherited;
-//  InvalidateRect(ClientRect, True);
 end;
 
 function TCustomPanel.GetText: TCaption;

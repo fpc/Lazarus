@@ -2417,7 +2417,8 @@ type
 
   TIpHtmlCustomPanel = class;
 
-  TIpHtmlInternalPanel = class(TCustomPanel)
+  TIpHtmlInternalPanel = class(
+    {$IFDEF IP_LAZARUS}TCustomControl{$ELSE}TCustomPanel{$ENDIF})
   protected
     FUpdatingScrollbars : Boolean;
     FAutoScroll: Boolean;
@@ -2450,7 +2451,6 @@ type
     procedure Paint; override;
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
-
 
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -15392,16 +15392,26 @@ end;
 
 procedure TIpHtmlInternalPanel.WMHScroll(var Message: TWMHScroll);
 begin
+  {$IFDEF IP_LAZARUS}
+  if HScroll.Visible then
+    HScroll.ScrollMessage(Message)
+  {$ELSE}
   if (Message.ScrollBar = 0) and HScroll.Visible then
     HScroll.ScrollMessage(Message) else
     inherited;
+  {$ENDIF}
 end;
 
 procedure TIpHtmlInternalPanel.WMVScroll(var Message: TWMVScroll);
 begin
+  {$IFDEF IP_LAZARUS}
+  if VScroll.Visible then
+    VScroll.ScrollMessage(Message)
+  {$ELSE}
   if (Message.ScrollBar = 0) and VScroll.Visible then
     VScroll.ScrollMessage(Message) else
     inherited;
+  {$ENDIF}
 end;
 
 procedure TIpHtmlInternalPanel.WMEraseBkgnd(var Message: TWmEraseBkgnd);
@@ -17548,6 +17558,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.7  2003/03/31 20:25:18  mattias
+  fixed scrollbars of TIpHtmlPanel
+
   Revision 1.6  2003/03/31 09:13:33  mattias
   fixes for fpc 1.0.7
 
