@@ -1033,20 +1033,24 @@ begin
 end;
 
 procedure TDBGBreakPoint.DoStateChange;
+var
+  OldHitCount: Integer;
 begin
   case Debugger.State of
-    dsStop, dsIdle: begin
-      FFirstRun := True;
-    end;
+    dsStop, dsIdle:
+      begin
+        FFirstRun := True;
+      end;
     dsRun: begin
-      if FFirstRun
-      then begin
+      if FFirstRun then begin
+        OldHitCount:=FHitCount;
         FHitCount := 0;
         FFirstRun := False;
+        if OldHitCount<>FHitCount then
+          Changed(false);
       end;
     end;
   end;
-  Changed(false);
 end;
 
 procedure TDBGBreakPoint.EnableGroups;
@@ -2224,6 +2228,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.31  2003/05/28 17:27:29  mattias
+  recuced update notifications
+
   Revision 1.30  2003/05/28 00:58:50  marc
   MWE: * Reworked breakpoint handling
 
