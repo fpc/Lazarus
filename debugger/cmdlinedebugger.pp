@@ -409,7 +409,11 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
+{$ifdef win32}
     FDbgProcess.Input.Write(LineEnding[1], Length(LineEnding));
+{$else}
+    FDbgProcess.Input.Write(LineEnding, Length(LineEnding));
+{$endif}
   end
   else begin
     WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
@@ -431,6 +435,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.32  2004/03/12 22:12:53  vincents
+  fixed non-win32 compilation
+
   Revision 1.31  2004/03/12 21:39:29  vincents
   Lazarus can communicate with debugger on win32
 
