@@ -1,0 +1,21 @@
+#: codetoolsstrconsts:ctsunknownsubdescriptor
+msgid "(unknown subdescriptor %s)"
+msgstr "(unbekannter subdescriptor %s)"
+
+#: codetoolsstrconsts:ctsforward
+msgid "Forward"
+msgstr "Forward"
+
+#: codetoolsstrconsts:ctsunparsed
+msgid "Unparsed"
+msgstr "Unparsed"
+
+#: codetoolsstrconsts:ctsinvalidflagvaluefordirective
+msgid "invalid flag value \"%s\" for directive %s"
+msgstr "ungueltiges Flag \"%s\" bei Directive %s"
+
+#: codetoolsstrconsts:ctsinvalidmode
+msgid "invalid mode \"%s\""
+msgstr "ungueltiger Mode \"%s\""
+
+

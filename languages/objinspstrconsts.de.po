@@ -1,0 +1,24 @@
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Object Inspector"
+
+#: objinspstrconsts:oisitemsselected
+msgid " items selected"
+msgstr " selektiert"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "Hinzufuegen"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "Loeschen"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Properties"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Events"
+

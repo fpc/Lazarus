@@ -672,15 +672,22 @@ begin
     Lang:=CustomLang;
     FallbackLang:='';
   end;
+  // LCL
   TranslateUnitResourceStrings('LclStrConsts',
-     AppendPathDelim(BaseDirectory)+'lcl/languages/lcl.%s.mo',
-                     Lang,FallbackLang);
+    AppendPathDelim(BaseDirectory)+'lcl/languages/lcl.%s.mo',
+                    Lang,FallbackLang);
+  // IDE without objectinspector
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
-     AppendPathDelim(BaseDirectory)+'languages/lazaruside.%s.mo',
-                     Lang,FallbackLang);
+    AppendPathDelim(BaseDirectory)+'languages/lazaruside.%s.mo',
+                    Lang,FallbackLang);
+  // objectinspector
+  TranslateUnitResourceStrings('ObjInspStrConsts',
+    AppendPathDelim(BaseDirectory)+'languages/objinspstrconsts.%s.mo',
+                    Lang,FallbackLang);
+  // CodeTools
   TranslateUnitResourceStrings('CodeToolsStrConsts',
-     AppendPathDelim(BaseDirectory)+'components/codetools/languages/codetools.%s.mo',
-                     Lang,FallbackLang);
+    AppendPathDelim(BaseDirectory)+'components/codetools/languages/codetools.%s.mo',
+                    Lang,FallbackLang);
 end;
 
 {-------------------------------------------------------------------------------

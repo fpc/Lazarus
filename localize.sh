@@ -1,11 +1,29 @@
-#!/bin/sh
+#!/bin/bash
 # This script may be used to compile all language.
-# This script is too small and simple to be licensed.
-# Let's decide, that it is public property.
-# If it can't be public property anywhere (or anywhy), it also can be of GPL 2.
 
-msgfmt languages/lazaruside.de.po -o languages/lazaruside.de.mo
-msgfmt languages/lazaruside.ru.po -o languages/lazaruside.ru.mo
-msgfmt components/codetools/languages/codetools.ru.po -o components/codetools/languages/codetools.ru.mo
-msgfmt lcl/languages/lcl.de.po -o lcl/languages/lcl.de.mo
-msgfmt lcl/languages/lcl.ru.po -o lcl/languages/lcl.ru.mo
+set -x
+
+# IDE without objectinspector
+for lang in de ru es; do
+  msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
+done
+
+# objectinspector
+for lang in de; do
+  msgfmt languages/objinspstrconsts.$lang.po \
+    -o languages/objinspstrconsts.$lang.mo
+done
+
+# CodeTools
+for lang in de; do
+  msgfmt components/codetools/languages/codetools.$lang.po \
+    -o components/codetools/languages/codetools.$lang.mo
+done
+
+# LCL
+for lang in de; do
+  msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo
+done
+
+# end.
+
