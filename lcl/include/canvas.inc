@@ -1144,9 +1144,20 @@ begin
   Dec(FLockCount);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCanvas.Refresh;
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Refresh;
+begin
+  DeselectHandles;
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/02/06 06:39:02  mattias
+  implemented TCanvas.Refresh
+
   Revision 1.38  2003/01/28 17:04:34  mattias
   renamed one Rect
 

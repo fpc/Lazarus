@@ -526,6 +526,7 @@ type
   public
     procedure Lock;
     procedure Unlock;
+    procedure Refresh;
 
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
     procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
@@ -961,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2003/02/06 06:39:02  mattias
+  implemented TCanvas.Refresh
+
   Revision 1.61  2003/01/28 17:04:34  mattias
   renamed one Rect
 
