@@ -130,8 +130,9 @@ begin
     LazarusTranslations:=TLazarusTranslations.Create
   else
     LazarusTranslations.Clear;
-  // add automatic translation
+  // add automatic and english translation
   LazarusTranslations.Add('');
+  LazarusTranslations.Add('en');
   // search existing translations
   SearchMask:=AppendPathDelim(LazarusDir)+'languages'+PathDelim+'lazaruside.*.po';
   //writeln('CollectTranslations ',SearchMask);
@@ -162,8 +163,7 @@ begin
   try
     mo := TMOFile.Create(AFilename);
     try
-      for TableID:=0 to ResourceStringTableCount - 1 do
-      begin
+      for TableID:=0 to ResourceStringTableCount - 1 do begin
         TableCount := ResourceStringCount(TableID);
 
         // check if this table belongs to the ResUnitName
