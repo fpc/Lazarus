@@ -74,13 +74,13 @@ type
 //   DOMString
 // -------------------------------------------------------
 
-{$IFDEF ver1_0}
+{ $IFDEF ver1_0}
   DOMString = String;
   DOMPChar = PChar;
-{$ELSE}
-  DOMString = WideString;
-  DOMPChar = PWideChar;
-{$ENDIF}
+{ $ELSE}
+//  DOMString = WideString;
+//  DOMPChar = PWideChar;
+{ $ENDIF}
 
 
 // -------------------------------------------------------
@@ -767,21 +767,21 @@ begin
   end;
 end;
 
-function CompareDOMNodeWithDOMNode(Data1, Data2: Pointer): integer;
+function CompareDOMNodeWithDOMNode(Node1, Node2: Pointer): integer;
 begin
-  Result:=CompareDOMStrings(DOMPChar(TDOMNode(Data1).NodeName),
-                            DOMPChar(TDOMNode(Data2).NodeName),
-                            length(TDOMNode(Data1).NodeName),
-                            length(TDOMNode(Data2).NodeName)
+  Result:=CompareDOMStrings(DOMPChar(TDOMNode(Node1).NodeName),
+                            DOMPChar(TDOMNode(Node2).NodeName),
+                            length(TDOMNode(Node1).NodeName),
+                            length(TDOMNode(Node2).NodeName)
                             );
 end;
 
-function CompareDOMStringWithDOMNode(Data1, Data2: Pointer): integer;
+function CompareDOMStringWithDOMNode(AKey, ANode: Pointer): integer;
 begin
-  Result:=CompareDOMStrings(DOMPChar(Data1),
-                            DOMPChar(TDOMNode(Data2).NodeName),
-                            length(DOMString(Data1)),
-                            length(TDOMNode(Data2).NodeName)
+  Result:=CompareDOMStrings(DOMPChar(AKey),
+                            DOMPChar(TDOMNode(ANode).NodeName),
+                            length(DOMString(AKey)),
+                            length(TDOMNode(ANode).NodeName)
                             );
 end;
 
@@ -923,7 +923,7 @@ var AVLNode: TAVLTreeNode;
 begin
   Result:=nil;
   if FChildNodeTree<>nil then begin
-    AVLNode:=FChildNodeTree.FindKey(PChar(ANodeName),
+    AVLNode:=FChildNodeTree.FindKey(DOMPChar(ANodeName),
                                     @CompareDOMStringWithDOMNode);
     if AVLNode<>nil then
       Result:=TDOMNode(AVLNode.Data);
@@ -1185,7 +1185,6 @@ function TDOMDocument.GetDocumentElement: TDOMElement;
 var
   node: TDOMNode;
 begin
-  // MAT: this proc searches the first ELEMENT_NODE. Can this be cached?
   node := FFirstChild;
   while Assigned(node) do
   begin
@@ -1634,6 +1633,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/12/18 17:52:18  mattias
+  fixed lazarus xml files for fpc 1.1
+
   Revision 1.4  2002/09/13 16:58:27  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 
