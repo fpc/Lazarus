@@ -844,9 +844,11 @@ activate_time :	the time at which the activation event occurred.
           Begin
             Case TControl(Sender).FCompStyle Of
               csComboBox, csListBox:
-                TWin32ListStringList(TLMSort(Data^).List).Sorted := TLMSort(Data^).IsSorted;
+                TWin32ListStringList(TLMSort(Data^).List).Sorted :=
+                  TLMSort(Data^).IsSorted;
               csCListBox:
-                TWin32CListStringList(TLMSort(Data^).List).Sorted := TLMSort(Data^).IsSorted;
+                TWin32CListStringList(TLMSort(Data^).List).Sorted :=
+                  TLMSort(Data^).IsSorted;
             End
           End
         End;
@@ -2587,6 +2589,9 @@ End;
 
 {
   $Log$
+  Revision 1.34  2002/12/19 19:55:37  mattias
+  Fixed sending wrong List
+
   Revision 1.33  2002/12/16 09:02:27  mattias
   applied win32 notebook patch from Vincent
 

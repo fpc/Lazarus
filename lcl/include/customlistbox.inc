@@ -133,7 +133,7 @@ begin
   if not HandleAllocated then exit;
   with AMessage do begin
     Msg:= LM_SORT;
-    List:= Items;
+    List:= TObject(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
     IsSorted:= FSorted;
   end;
   CNSendMessage(LM_SORT, Self, @AMessage);
