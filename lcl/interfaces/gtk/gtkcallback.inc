@@ -83,7 +83,7 @@ end;
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   decor,Func : Longint;
-  TheWindow: PGdkWindow;
+  TheWindow, MainWindow: PGdkWindow;
   TheForm: TCustomForm;
 begin
   Result := True;
@@ -105,13 +105,22 @@ begin
 
       gdk_window_set_decorations(TheWindow, decor);
       gdk_window_set_functions(TheWindow, func);
+      
+      if (Application.MainForm<>nil)
+      and (Application.MainForm.HandleAllocated) then begin
+        TheWindow:=GetControlWindow(Widget);
+        MainWindow:=GetControlWindow(PGtkWidget(Application.MainForm.Handle));
+        if TheWindow<>MainWindow then
+          gdk_window_set_transient_for(MainWindow,TheWindow);
+      end;
     end
     else if TObject(Data) is TPopupMenu then begin
       if (Application.MainForm<>nil)
       and (Application.MainForm.HandleAllocated) then begin
         TheWindow:=GetControlWindow(Widget);
-        gdk_window_set_transient_for(TheWindow,
-          GetControlWindow(PGtkWidget(Application.MainForm.Handle)));
+        MainWindow:=GetControlWindow(PGtkWidget(Application.MainForm.Handle));
+        if TheWindow<>MainWindow then
+          gdk_window_set_transient_for(MainWindow,TheWindow);
       end;
     end;
   end;
@@ -2418,6 +2427,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.136  2002/09/30 20:37:09  lazarus
+  MG: fixed transient of modal forms
+
   Revision 1.135  2002/09/30 20:19:12  lazarus
   MG: fixed flickering of modal forms
 
