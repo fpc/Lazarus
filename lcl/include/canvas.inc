@@ -641,13 +641,13 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.TextRect
-  Params:   Rect, X, Y, Text
+  Params:   ARect, X, Y, Text
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.TextRect(Rect: TRect; X,Y : Integer; const Text : String);
+Procedure TCanvas.TextRect(ARect: TRect; X,Y : Integer; const Text : String);
 begin
-  TextRect(Rect,X,Y,Text,TextStyle);
+  TextRect(ARect,X,Y,Text,TextStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1147,6 +1147,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/01/28 17:04:34  mattias
+  renamed one Rect
+
   Revision 1.37  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 

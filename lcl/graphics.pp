@@ -578,7 +578,7 @@ type
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
     Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
     procedure TextOut(X,Y: Integer; const Text: String);
-    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);
+    procedure TextRect(ARect: TRect; X, Y: integer; const Text : string);
     procedure TextRect(ARect: TRect; X, Y: integer; const Text : string;
                        const Style : TTextStyle);
     function TextExtent(const Text: string): TSize;
@@ -961,6 +961,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2003/01/28 17:04:34  mattias
+  renamed one Rect
+
   Revision 1.60  2003/01/28 12:45:04  mattias
   fixed broken cvs
 
