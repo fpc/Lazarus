@@ -833,7 +833,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
     // gather existing class proc definitions
     ClassProcs:=GatherProcNodes(StartNode,[phpInUpperCase,phpAddClassName],
        ExtractClassName(ClassNode,true));
-       
+
     // check for double defined methods in ClassProcs
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin

@@ -526,12 +526,15 @@ begin
       end;
     end;
     // next node
-    if (ANode.NextBrother=nil) and (ANode.Parent<>nil)
-    and (ANode.Parent.NextBrother<>nil)
-    and (ANode.Parent.Desc in (AllCodeSections+AllClassSections)) then
-      ANode:=ANode.Parent.NextBrother.FirstChild
-    else
+    if ANode.NextBrother<>nil then begin
       ANode:=ANode.NextBrother;
+    end else begin
+      ANode:=ANode.Parent.NextBrother;
+      while (ANode<>nil) and (ANode.Desc in (AllCodeSections+AllClassSections))
+      and (ANode.FirstChild=nil) do
+        ANode:=ANode.NextBrother;
+      if ANode<>nil then ANode:=ANode.FirstChild;
+    end;
   end;
 end;
 
