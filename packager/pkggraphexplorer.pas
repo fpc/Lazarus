@@ -81,7 +81,7 @@ type
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    function IsUpdating: boolean;
+    function IsUpdateLocked: boolean;
     procedure UpdateAll;
     procedure UpdateTree;
     procedure UpdateList;
@@ -507,14 +507,14 @@ begin
   if FChangedDuringLock then UpdateAll;
 end;
 
-function TPkgGraphExplorer.IsUpdating: boolean;
+function TPkgGraphExplorer.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
 end;
 
 procedure TPkgGraphExplorer.UpdateAll;
 begin
-  if IsUpdating then begin
+  if IsUpdateLocked then begin
     FChangedDuringLock:=true;
     exit;
   end;

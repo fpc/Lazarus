@@ -312,25 +312,28 @@ var
 begin
   Result:=false;
   BeginUpdate(false);
-  AFilename:=PkgLink.Filename;
-  if not FileExists(AFilename) then exit;
   try
-    XMLConfig:=TXMLConfig.Create(AFilename);
-    NewPackage:=TLazPackage.Create;
-    NewPackage.Filename:=AFilename;
-    NewPackage.LoadFromXMLConfig(XMLConfig,'Package/');
-    XMLConfig.Free;
-  except
-    on E: Exception do begin
-      writeln('unable to read file "'+AFilename+'" ',E.Message);
-      exit;
+    AFilename:=PkgLink.Filename;
+    if not FileExists(AFilename) then exit;
+    try
+      XMLConfig:=TXMLConfig.Create(AFilename);
+      NewPackage:=TLazPackage.Create;
+      NewPackage.Filename:=AFilename;
+      NewPackage.LoadFromXMLConfig(XMLConfig,'Package/');
+      XMLConfig.Free;
+    except
+      on E: Exception do begin
+        writeln('unable to read file "'+AFilename+'" ',E.Message);
+        exit;
+      end;
     end;
+    if not NewPackage.MakeSense then exit;
+    if PkgLink.Compare(NewPackage)<>0 then exit;
+    // ok
+    AddPackage(NewPackage);
+  finally
+    EndUpdate;
   end;
-  if not NewPackage.MakeSense then exit;
-  if PkgLink.Compare(NewPackage)<>0 then exit;
-  // ok
-  AddPackage(NewPackage);
-  EndUpdate;
   Result:=true;
 end;
 

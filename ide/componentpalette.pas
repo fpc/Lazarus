@@ -310,7 +310,7 @@ var
   OldActivePage: String;
 begin
   if fUpdatingNotebook then exit;
-  if IsUpdating then begin
+  if IsUpdateLocked then begin
     fNoteBookNeedsUpdate:=true;
     exit;
   end;

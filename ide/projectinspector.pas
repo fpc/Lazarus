@@ -109,7 +109,7 @@ type
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    function IsUpdating: boolean;
+    function IsUpdateLocked: boolean;
     procedure UpdateAll;
     procedure UpdateTitle;
     procedure UpdateButtons;
@@ -711,7 +711,7 @@ begin
   end;
 end;
 
-function TProjectInspectorForm.IsUpdating: boolean;
+function TProjectInspectorForm.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
 end;

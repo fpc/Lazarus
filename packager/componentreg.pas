@@ -159,7 +159,7 @@ type
     procedure ClearButtons; virtual;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
-    function IsUpdating: boolean;
+    function IsUpdateLocked: boolean;
     procedure ConsistencyCheck;
     function Count: integer;
     function GetPage(const APageName: string;
@@ -461,7 +461,7 @@ begin
   if FUpdateLock=0 then DoEndUpdate(fChanged);
 end;
 
-function TBaseComponentPalette.IsUpdating: boolean;
+function TBaseComponentPalette.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
 end;
