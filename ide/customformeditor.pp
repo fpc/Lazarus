@@ -570,7 +570,7 @@ Begin
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete B ');
   {$ENDIF}
-  Destroy;
+  Free;
   Result := True;
 end;
 
@@ -635,6 +635,7 @@ var
   AForm: TCustomForm;
 Begin
   Temp := TComponentInterface(FindComponent(Value));
+writeln('TCustomFormEditor.DeleteControl ',HexStr(Cardinal(Temp),8),' ',HexStr(Cardinal(Value),8),' ',Value.Name,':',Value.ClassName);
   if Temp <> nil then
   begin
     RemoveFromComponentInterfaceList(Temp);
@@ -650,7 +651,7 @@ Begin
       if not (AForm is TForm) then
         writeln('WARNING: TCustomFormEditor.DeleteControl ',AForm.ClassName);
       JITFormList.DestroyJITForm(TForm(AForm));
-      Temp.Destroy;
+      Temp.Free;
     end
     else
       Temp.Delete;
