@@ -272,11 +272,7 @@ type
     procedure WMImeNotify(var Msg: TMessage); message WM_IME_NOTIFY;
 {$ENDIF}
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-{$IFDEF SYN_LAZARUS}
-{$IFDEF USE_SYNEDIT_MOUSEWHEEL}
-    procedure WMMouseWheel(var Msg: TLMMouseEvent); message LM_MOUSEWHEEL;
-{$ENDIF}
-{$ELSE}
+{$IFNDEF SYN_LAZARUS}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
 {$ENDIF}
@@ -333,8 +329,6 @@ type
     fBookMarkOpt: TSynBookMarkOpt;
 {$ifndef SYN_LAZARUS}
     fBorderStyle: TBorderStyle;
-{$endif}
-{$ifdef USE_SYNEDIT_MOUSEWHEEL}
     fMouseWheelAccumulator: integer;
 {$endif}    
     fHideSelection: boolean;
@@ -6793,45 +6787,7 @@ begin
   fRedoList.Unlock;
 end;
 
-{$IFDEF SYN_LAZARUS}
-{$IFDEF USE_SYNEDIT_MOUSEWHEEL}
-procedure TCustomSynEdit.WMMouseWheel(var Msg: TLMMouseEvent);
-var
-  nDelta: integer;
-  nWheelClicks: integer;
-const
-  LinesToScroll = 6;
-  WHEEL_DELTA = 120;
-  WHEEL_PAGESCROLL = high(DWORD);
-begin
-  if csDesigning in ComponentState then
-    exit;
-
-  if GetKeyState(VK_CONTROL) >= 0 then
-    nDelta := LinesToScroll
-  else begin
-    nDelta := LinesInWindow;
-    if eoHalfPageScroll in fOptions then
-      nDelta:=nDelta shr 1;
-  end;
-
-  Inc(fMouseWheelAccumulator, Msg.WheelDelta);
-{$ifdef DEBUG_SYNEDIT_MOUSEWHEEL}  
-  DebugLn('TCustomSynEdit.WMMouseWheel A fMouseWheelAccumulator=',fMouseWheelAccumulator,
-    ' Msg.WheelDelta=',Msg.WheelDelta,' LinesInWindow=',LinesInWindow,' nDelta=',nDelta);
-{$endif}
-  nWheelClicks := fMouseWheelAccumulator div WHEEL_DELTA;
-  fMouseWheelAccumulator := fMouseWheelAccumulator mod WHEEL_DELTA;
-  if (nDelta = integer(WHEEL_PAGESCROLL)) or (nDelta > LinesInWindow) then
-    nDelta := LinesInWindow;
-{$ifdef DEBUG_SYNEDIT_MOUSEWHEEL}  
-  DebugLn('TCustomSynEdit.WMMouseWheel B TopLine=',TopLine,' nDelta=',nDelta,' nWheelClicks=',nWheelClicks);
-{$endif}  
-  TopLine := TopLine - (nDelta * nWheelClicks);
-  Update;
-end;
-{$ENDIF}
-{$ELSE}
+{$IFNDEF SYN_LAZARUS}
 
 procedure TCustomSynEdit.WMMouseWheel(var Msg: TMessage);
 var
