@@ -202,6 +202,8 @@ type
     FSelStart: integer;
     FSorted : boolean;
     FStyle : TComboBoxStyle;
+    FArrowKeysTraverseList : Boolean;
+    FReturnArrowState : Boolean; //used to return the state of arrow keys from termporary change
     function GetDroppedDown: Boolean;
     function GetItemWidth: Integer;
     procedure SetItemWidth(const AValue: Integer);
@@ -209,6 +211,7 @@ type
     procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
     procedure CNCommand(var TheMessage : TLMCommand); message CN_Command;
     procedure UpdateSorted;
+    procedure SetArrowKeysTraverseList(Value : Boolean);
   protected
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -274,6 +277,8 @@ type
 
     property AutoDropDown: Boolean
                            read FAutoDropDown write FAutoDropDown default False;
+    property ArrowKeysTraverseList : Boolean
+                           read FArrowKeysTraverseList write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
@@ -289,6 +294,7 @@ type
     property ItemIndex;
   published
     property Anchors;
+    property ArrowKeysTraverseList;
     property AutoDropDown;
     property Ctl3D;
     property DropDownCount;
@@ -1453,6 +1459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2003/06/12 16:18:23  mattias
+  applied TComboBox fix for grabbing keys from Yoyong
+
   Revision 1.95  2003/06/10 17:23:34  mattias
   implemented tabstop
 

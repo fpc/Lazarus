@@ -364,18 +364,55 @@ begin
   end;
 end;
 
-procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomComboBox.SetArrowKeysTraverseList(Value : Boolean);
 begin
-  inherited KeyDown(Key, Shift);
-  if AutoDropDown then
+  if Value <> FArrowKeysTraverseList then begin
+    FArrowKeysTraverseList := Value;
+    if HandleAllocated and (not (csLoading in ComponentState)) then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+   end;
+end;
+
+procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  skip : Boolean;
+begin
+  Skip := False;
+  
+  if AutoDropDown or ((Shift *[ssCtrl] = [ssCtrl]) and (Key = VK_DOWN))
+      or FReturnArrowState then
   begin
     case Key of
       VK_TAB,VK_RETURN:
+       begin
+
+        if FReturnArrowState = True then
+        begin
+          SetArrowKeysTraverseList(False); //we need this here, else we cannot traverse popup list
+          FReturnArrowState := False;
+        end;
+
         DroppedDown := False;
-      else
+       end;
+    else
+      begin
+        if ArrowKeysTraverseList = False then
+        begin
+          SetArrowKeysTraverseList(True); //we need this here, else we cannot traverse popup list
+          FReturnArrowState := True;
+          Skip := True;
+        end;
+        //AutoDropDown := True;
         DroppedDown := True;
+
+      end;
     end;
   end;
+
+  if Skip then
+    Key := 0
+  else
+    inherited KeyDown(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -523,6 +560,7 @@ begin
   FDropDownCount:=8;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
+  ArrowKeysTraverseList := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -750,6 +788,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2003/06/12 16:18:23  mattias
+  applied TComboBox fix for grabbing keys from Yoyong
+
   Revision 1.27  2003/06/10 13:35:54  mattias
   implemented TComboBox dropdown from Yoyong
 
