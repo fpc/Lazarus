@@ -1749,7 +1749,7 @@ Begin
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
-    csForm:
+    csForm, csHintWindow:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
 //  Not needed since the size is set later
@@ -1800,19 +1800,19 @@ Begin
       End;
       SetName(Window, strTemp);
     End;
-    csFrame:
+    csFrame, csGroupBox, csPanel:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX Or BS_TOP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
-    csHintWindow:
+    {csHintWindow:
     Begin
       Assert(False, 'Trace:TWin32Object.CreateComponent - Got style csHintWindow');
       Assert(False, 'Trace:TWin32Object.CreateComponent (style csHintWindow) - Creating a window.  TODO: Create a small dialog box for hints');
       TControl(Sender).FCompStyle := csForm;
       IntSendMessage3(LM_CREATE, Sender, Nil);
-    End;
+    End;}
     csLabel:
     Begin
       Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT Or SS_SIMPLE, (Sender As TControl).Left, (Sender As TControl).Top, (Sender As TControl).Width, (Sender As TControl).Height, FParentWindow, HMENU(Nil), HInstance, Nil);
@@ -1915,12 +1915,12 @@ Begin
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
-    csPanel:
+    {csPanel:
     Begin
       Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - code TPanel');
       TControl(Sender).FCompStyle := csGroupBox;
       CNSendMessage(LM_CREATE, Sender, Nil);
-    End;
+    End;}
     csRadioButton:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTORADIOBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
@@ -1996,16 +1996,17 @@ Begin
     End;
     csToolButton:
     Begin
-      Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, {TControl(Sender).}Parent{.Handle}, HMENU(nil), HInstance, nil);
+      Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
-    csGroupBox:
+    {csGroupBox:
     Begin
       Assert(False, 'Trace:TODO: Code csGroupBox.  Is this the same as csFrame?');
       TControl(Sender).FCompStyle := csFrame;
       IntSendMessage3(LM_CREATE, Sender, Nil);
-    End;
+      exit;
+    End;}
     // TPage - Notebook page
     csPage:
     Begin
@@ -2617,6 +2618,9 @@ End;
 
 {
   $Log$
+  Revision 1.39  2002/12/29 18:17:49  mattias
+  patch from Martin Smat fixing creating handles
+
   Revision 1.38  2002/12/28 21:44:51  mattias
   further cleanup
 
