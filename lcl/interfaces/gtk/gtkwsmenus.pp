@@ -27,14 +27,13 @@ unit GtkWSMenus;
 interface
 
 uses
-  Menus, WSMenus, WSLCLClasses,
+  Classes, InterfaceBase, LCLType, WSMenus, WSLCLClasses,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  GtkInt, Classes, InterfaceBase, LCLType,
-  GTKWinApiWindow, gtkglobals, gtkproc;
+  GtkInt, gtkproc, gtkglobals, Menus;
 
 type
 

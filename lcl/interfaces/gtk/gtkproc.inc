@@ -5837,7 +5837,7 @@ function GetStyleWithName(const WName: String) : PGTKStyle;
   function CreateStyleNotebook: PGTKWidget;
   var
     NoteBookWidget: PGtkNotebook;
-    NoteBookPageWidget: PGtkWidget;
+    //NoteBookPageWidget: PGtkWidget;
     NoteBookPageClientAreaWidget: PGtkWidget;
     NoteBookTabLabel: PGtkWidget;
     NoteBookTabMenuLabel: PGtkWidget;
@@ -7281,6 +7281,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.306  2004/09/11 10:02:38  mattias
+  fixed TLazIntfImage.LoadFromDevice
+
   Revision 1.305  2004/09/10 16:28:51  mattias
   implemented very rudimentary TTabControl
 

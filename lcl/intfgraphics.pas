@@ -1627,8 +1627,6 @@ var
   DeviceSize: TPoint;
 begin
   GetDeviceSize(DC,DeviceSize);
-  DeviceSize.X:=20;
-  DeviceSize.Y:=30;
   ARect:=Rect(0,0,DeviceSize.X,DeviceSize.Y);
   if not GetRawImageFromDevice(DC,ARect,ARawImage) then
     raise FPImageException.Create('Failed to get raw image from device');
