@@ -361,9 +361,9 @@ type
     procedure SetDefaultsForForm(aForm : TCustomForm);
     procedure InvalidateAllDesignerForms;
   protected
-    procedure ToolButtonClick(Sender : TObject);
+    procedure ToolButtonClick(Sender: TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
-    procedure AddRecentFileToEnvironment(const AFilename: string);
+    procedure AddRecentProjectFileToEnvironment(const AFilename: string);
     
     // methods for start
     procedure LoadGlobalOptions;
@@ -2235,12 +2235,12 @@ begin
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
     if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
-      AddRecentFileToEnvironment(AFilename);
+      AddRecentProjectFileToEnvironment(AFilename);
     end else begin
       // open failed
       if not FileExists(AFilename) then begin
         EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
-        AddRecentFileToEnvironment(AFilename);
+        AddRecentProjectFileToEnvironment(AFilename);
       end;
     end;
   end;
@@ -8617,7 +8617,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.AddRecentFileToEnvironment(const AFilename: string);
+procedure TMainIDE.AddRecentProjectFileToEnvironment(const AFilename: string);
 begin
   EnvironmentOptions.AddToRecentProjectFiles(AFilename);
   SetRecentProjectFilesMenu;
@@ -8653,6 +8653,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.556  2003/05/06 08:40:57  mattias
+  added export procedure specifier
+
   Revision 1.555  2003/05/05 18:45:32  mattias
   localization
 
