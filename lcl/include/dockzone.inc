@@ -18,12 +18,6 @@
  *****************************************************************************
 }
 
-function TDockZone.GetChildCount: Integer;
-begin
-  // ToDo
-  Result:=0;
-end;
-
 function TDockZone.GetHeight: Integer;
 begin
   // ToDo
@@ -37,15 +31,37 @@ begin
 end;
 
 function TDockZone.GetLimitBegin: Integer;
+// retunrs the zone limits. All childs are bounded to this value.
+// Aka returns top for orientation doHorizontal and left for doVertical
+var
+  Zone: TDockZone;
 begin
-  // ToDo
-  Result:=0;
+  if FTree.FTopZone = Self then
+    Zone := Self
+  else
+    Zone := FParentZone;
+  if Zone.FOrientation = doHorizontal then
+    Result := Top
+  else if Zone.FOrientation = doVertical then
+    Result := Left
+  else
+    raise Exception.Create('TDockZone.GetLimitBegin');
 end;
 
 function TDockZone.GetLimitSize: Integer;
+var
+  Zone: TDockZone;
 begin
-  // ToDo
-  Result:=0;
+  if FTree.FTopZone = Self then
+    Zone := Self
+  else
+    Zone := FParentZone;
+  if Zone.FOrientation = doHorizontal then
+    Result := Height
+  else if Zone.FOrientation = doVertical then
+    Result := Width
+  else
+    raise Exception.Create('TDockZone.GetLimitSize');
 end;
 
 function TDockZone.GetTop: Integer;
@@ -55,15 +71,33 @@ begin
 end;
 
 function TDockZone.GetVisible: Boolean;
+var
+  Zone: TDockZone;
 begin
-  // ToDo
-  Result:=false;
+  if Assigned(FChildControl) then
+    Result := FChildControl.Visible
+  else
+  begin
+    Result := True;
+    Zone := FirstVisibleChild;
+    while Assigned(Zone) do begin
+      if Zone.Visible then Exit;
+      Zone := Zone.FNextSibling;
+    end;
+    Result := False;
+  end;
 end;
 
 function TDockZone.GetVisibleChildCount: Integer;
+var
+  Zone: TDockZone;
 begin
-  // ToDo
-  Result:=0;
+  Result := 0;
+  Zone := FirstVisibleChild;
+  while Zone <> nil do begin
+    Zone := Zone.NextVisible;
+    Inc(Result);
+  end;
 end;
 
 function TDockZone.GetWidth: Integer;
@@ -74,18 +108,34 @@ end;
 
 function TDockZone.GetZoneLimit: Integer;
 begin
-  // ToDo
-  Result:=0;
+  if (not Visible) and IsOrientationValid then
+    // LimitSize will be zero and zone will take up no space
+    Result := GetLimitBegin
+  else
+    Result := FZoneLimit;
 end;
 
 procedure TDockZone.SetZoneLimit(const AValue: Integer);
 begin
-  // ToDo
+  FZoneLimit := AValue;
 end;
 
-constructor TDockZone.Create(Tree: TDockTree);
+function TDockZone.IsOrientationValid: boolean;
 begin
-  // ToDo
+  Result := (Assigned(FParentZone) and (FParentZone.FOrientation <> doNoOrient))
+            or ((FTree.FTopZone = Self) and (FOrientation <> doNoOrient));
+end;
+
+function TDockZone.GetNextVisibleZone: TDockZone;
+begin
+  Result := FNextSibling;
+  while Assigned(Result) and not Result.Visible do
+    Result := Result.FNextSibling;
+end;
+
+constructor TDockZone.Create(TheTree: TDockTree);
+begin
+  FTree:=TheTree;
 end;
 
 procedure TDockZone.ExpandZoneLimit(NewLimit: Integer);

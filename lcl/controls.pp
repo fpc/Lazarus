@@ -1239,7 +1239,14 @@ type
 
   TDockZone = class
   private
-    function GetChildCount: Integer;
+    FChildControl: TControl;
+    FChildCount: integer;
+    FTree: TDockTree;
+    FZoneLimit: integer;
+    FParentZone: TDockZone;
+    FOrientation: TDockOrientation;
+    FNextSibling: TDockZone;
+    //FPrevSibling: TDockZone;
     function GetHeight: Integer;
     function GetLeft: Integer;
     function GetLimitBegin: Integer;
@@ -1250,8 +1257,10 @@ type
     function GetWidth: Integer;
     function GetZoneLimit: Integer;
     procedure SetZoneLimit(const AValue: Integer);
+    function IsOrientationValid: boolean;
+    function GetNextVisibleZone: TDockZone;
   public
-    constructor Create(Tree: TDockTree);
+    constructor Create(TheTree: TDockTree);
     procedure ExpandZoneLimit(NewLimit: Integer);
     function FirstVisibleChild: TDockZone;
     function NextVisible: TDockZone;
@@ -1259,7 +1268,8 @@ type
     procedure ResetChildren;
     procedure ResetZoneLimits;
     procedure Update;
-    property ChildCount: Integer read GetChildCount;
+    property Tree: TDockTree read FTree;
+    property ChildCount: Integer read FChildCount;
     property Height: Integer read GetHeight;
     property Left: Integer read GetLeft;
     property LimitBegin: Integer read GetLimitBegin;
@@ -1830,6 +1840,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.147  2003/08/27 20:55:51  mattias
+  fixed updating codetools on changing pkg output dir
+
   Revision 1.146  2003/08/27 11:01:10  mattias
   started TDockTree
 

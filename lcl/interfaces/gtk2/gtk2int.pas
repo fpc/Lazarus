@@ -22,8 +22,7 @@
 
 unit Gtk2Int;
 
-{$mode objfpc}
-{$LONGSTRINGS ON}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -32,9 +31,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, InterfaceBase, gdk2pixbuf, gtk2, gdk2, glib2, LMessages,
-  Controls, Forms, VclGlobals, LCLLinux, LCLType, gtkDef, DynHashArray,
-  LazQueue, GraphType, GraphMath, gtkInt;
+  Classes, SysUtils, gdk2pixbuf, gtk2, gdk2, glib2, gtkInt;
 
 type
   TGtk2Object = class(TGtkObject)
@@ -43,16 +40,14 @@ type
 
 implementation
 
-uses
-  Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
-  LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
-
 
 end.
 
 {
   $Log$
+  Revision 1.2  2003/08/27 20:55:51  mattias
+  fixed updating codetools on changing pkg output dir
+
   Revision 1.1  2002/12/15 11:52:28  mattias
   started gtk2 interface
 
@@ -99,6 +94,4 @@ end.
 
   Revision 1.3  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
-
-
 }
