@@ -47,6 +47,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  {$IFDEF VER1_0}
+  FPCAdds,
+  {$ENDIF}
   Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, LCLIntf,
   Dialogs, JITForm, ComponentReg, IDEProcs;
 
