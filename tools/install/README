@@ -1,0 +1,36 @@
+Installation tools
+==================
+
+1. creating the fpcsrc tgz:
+
+  The script create_fpc_snapshot_tgz.sh makes a cvs export of the
+  fpc FIXES_1_0_0 branch and compress it to fpcsrc-1.0.7.tgz.
+  
+  
+2. creating the fpcsrc rpm:
+
+  Put the fpcsrc-1.0.7.tgz of step 1. into /usr/src/redhat/SOURCES/ and
+  run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will create the src rpm and the
+  rpm for the current system (e.g. redhat 7.3). The src rpm can be used to
+  create rpms for any system by building it on the destination system.
+  The fpcsrc rpm will simply copy the files into /usr/share/fpcsrc. It does
+  not contain any binaries, so all rpms are system independent. The lazarus
+  IDE searches the fpc src automatically in /usr/share/fpcsrc and so the user
+  does not need to setup this path.
+  
+  
+3. creating the lazarus tgz:
+
+  The script create_lazarus_snapshot_tgz.sh makes a cvs export of lazarus and
+  compress it to lazarus-0.8.5.tgz.
+
+
+4. creating the lazarus rpm:
+
+  Put the lazarus-0.8.5.tgz of step 3. into /usr/src/redhat/SOURCES/ and
+  run 'rpm -ba lazarus-0.8.5-1.spec'. This will create the src rpm and the
+  rpm for the current system (e.g. redhat 7.3). The src rpm can be used to
+  create rpms for any system by building it on the destination system.
+  The package depends on 'fpc >= 1.0.7' and 'fpcsrc >= 1.0.7'.
+
+
