@@ -2601,6 +2601,7 @@ var
    label1    : pgtkwidget;        // currently only used for TBitBtn
    //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
+   ParentForm: TCustomForm;
 
 begin
   Assert(False, 'Trace:In CreateComponet');
@@ -2932,7 +2933,10 @@ begin
     begin
       p := gtk_menu_bar_new();
       // get the VBox, the form has one child, a VBox
-      Box := PGTKBin(TWinControl(TMenu(Sender).Owner).Handle)^.Child;
+      ParentForm:=TCustomForm(TMenu(Sender).Parent);
+      if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
+        raise Exception.Create('MainMenu without form');
+      Box := PGTKBin(ParentForm.Handle)^.Child;
       gtk_box_pack_start(Box, p, False, False, 0);
       SetAccelGroup(p, gtk_accel_group_get_default);
       gtk_widget_show(p);
@@ -4306,6 +4310,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.124  2002/05/15 05:58:17  lazarus
+  MG: added TMainMenu.Parent
+
   Revision 1.123  2002/05/13 15:26:14  lazarus
   MG: fixed form positioning when show, hide, show
 
