@@ -4053,7 +4053,7 @@ begin
     Top := y;
     Left := x;
     Width := w;
-    Height := 70;
+    Height := 90;
     Caption := dlgToFPCPath;
     inc(y,Height+10);
   end;
@@ -4063,7 +4063,7 @@ begin
   begin
     Parent := grpCompiler;
     Left := 2;
-    Top := 2;
+    Top := 3;
     Width := Parent.ClientWidth-Left-37;
     Text := '';
   end;
@@ -4085,7 +4085,7 @@ begin
     Name:='chkSkipCompiler';
     Parent:=grpCompiler;
     Left:=5;
-    Top:=27;
+    Top:=35;
     Width:=Parent.ClientWidth-2*Left;
     Caption:=lisCOSkipCallingCompiler;
   end;
