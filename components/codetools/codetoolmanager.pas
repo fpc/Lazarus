@@ -776,7 +776,8 @@ begin
   writeln('TCodeToolManager.GatherIdentifiers B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
-    Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList);
+    Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList,
+                      SourceChangeCache.BeautifyCodeOptions);
   except
     on e: Exception do HandleException(e);
   end;

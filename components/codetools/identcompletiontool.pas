@@ -56,7 +56,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  FindDeclarationTool, PascalParserTool;
+  SourceChanger, FindDeclarationTool, PascalParserTool;
   
 
 type
@@ -91,6 +91,11 @@ type
     DefaultDesc: TCodeTreeNodeDesc;
     function AsString: string;
     function GetDesc: TCodeTreeNodeDesc;
+    constructor Create(NewCompatibility: TIdentifierCompatibility;
+      NewHasChilds: boolean; NewHistoryIndex: integer;
+      NewIdentifier: PChar; NewLevel: integer;
+      NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
+      NewDefaultDesc: TCodeTreeNodeDesc);
     property ParamList: string read GetParamList write SetParamList;
   end;
   
@@ -99,7 +104,8 @@ type
   
   TIdentifierList = class
   private
-    FFilteredList: TList;
+    FCreatedIdentifiers: TList; // list of PChar
+    FFilteredList: TList; // list of TIdentifierListItem
     FFlags: TIdentifierListFlags;
     FHistory: TIdentifierHistoryList;
     FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
@@ -118,6 +124,8 @@ type
     function Count: integer;
     function GetFilteredCount: integer;
     function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
+    function FindCreatedIdentifier(const Ident: string): integer;
+    function CreateIdentifier(const Ident: string): PChar;
   public
     property Prefix: string read FPrefix write SetPrefix;
     property FilteredItems[Index: integer]: TIdentifierListItem
@@ -165,12 +173,13 @@ type
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure GatherPredefinedIdentifiers(CleanPos: integer;
-      const Context: TFindContext);
+      const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure GatherUsefulIdentifiers(CleanPos: integer;
-      const Context: TFindContext);
+      const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
-      var IdentifierList: TIdentifierList): boolean;
+      var IdentifierList: TIdentifierList;
+      BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
   end;
   
 const
@@ -328,7 +337,9 @@ begin
   FFlags:=[ilfFilteredListNeedsUpdate];
   FItems:=TAVLTree.Create(@CompareIdentListItems);
   FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
-  FIdentSearchItem:=TIdentifierListItem.Create;
+  FIdentSearchItem:=TIdentifierListItem.Create(icompUnknown,
+      false,0,nil,0,nil,nil,ctnNone);
+  FCreatedIdentifiers:=TList.Create;
 end;
 
 destructor TIdentifierList.Destroy;
@@ -338,11 +349,18 @@ begin
   FIdentView.Free;
   FFilteredList.Free;
   FIdentSearchItem.Free;
+  FCreatedIdentifiers.Free;
   inherited Destroy;
 end;
 
 procedure TIdentifierList.Clear;
+var
+  i: Integer;
 begin
+  for i:=0 to FCreatedIdentifiers.Count-1 do begin
+    FreeMem(FCreatedIdentifiers[i]);
+  end;
+  FCreatedIdentifiers.Clear;
   FItems.FreeAndClear;
   FIdentView.Clear;
   Include(FFlags,ilfFilteredListNeedsUpdate);
@@ -383,6 +401,36 @@ begin
   FIdentSearchItem.ParamList:='';
   Result:=FIdentView.FindKey(FIdentSearchItem,
                              @CompareIdentListItemsForIdents)<>nil;
+end;
+
+function TIdentifierList.FindCreatedIdentifier(const Ident: string): integer;
+begin
+  if Ident<>'' then begin
+    Result:=FCreatedIdentifiers.Count-1;
+    while (Result>=0)
+    and (CompareIdentifiers(PChar(Ident),PChar(FCreatedIdentifiers[Result]))<>0)
+    do
+      dec(Result);
+  end else begin
+    Result:=-1;
+  end;
+end;
+
+function TIdentifierList.CreateIdentifier(const Ident: string): PChar;
+var
+  i: Integer;
+begin
+  if Ident<>'' then begin
+    i:=FindCreatedIdentifier(Ident);
+    if i>=0 then
+      Result:=PChar(FCreatedIdentifiers[i])
+    else begin
+      GetMem(Result,length(Ident)+1);
+      Move(Ident[1],Result^,length(Ident)+1);
+      FCreatedIdentifiers.Add(Result);
+    end;
+  end else
+    Result:=nil;
 end;
 
 { TIdentCompletionTool }
@@ -440,14 +488,15 @@ begin
   end;
   if Ident=nil then exit;
 
-  NewItem:=TIdentifierListItem.Create;
-  NewItem.Compatibility:=icompUnknown;
-  NewItem.HasChilds:=false;
-  NewItem.HistoryIndex:=0;
-  NewItem.Identifier:=Ident;
-  NewItem.Level:=LastGatheredIdentLevel;
-  NewItem.Node:=FoundContext.Node;
-  NewItem.Tool:=FoundContext.Tool;
+  NewItem:=TIdentifierListItem.Create(
+                            icompUnknown,
+                            false,
+                            0,
+                            Ident,
+                            LastGatheredIdentLevel,
+                            FoundContext.Node,
+                            FoundContext.Tool,
+                            ctnNone);
   
   {$IFDEF ShowFoundIdents}
   writeln('  IDENT COLLECTED: ',NewItem.AsString);
@@ -457,7 +506,7 @@ begin
 end;
 
 procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
-  const Context: TFindContext);
+  const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
 // Add predefined identifiers
 
   function StatementLevel: integer;
@@ -482,43 +531,99 @@ begin
     if Context.Tool.NodeIsInAMethod(Context.Node)
     and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
       // method body -> add 'Self'
-      NewItem:=TIdentifierListItem.Create;
-      NewItem.Compatibility:=icompUnknown;
-      NewItem.HasChilds:=true;
-      NewItem.Identifier:='Self';
-      NewItem.Level:=StatementLevel;
-      NewItem.Node:=nil;
-      NewItem.Tool:=nil;
-      NewItem.DefaultDesc:=ctnVarDefinition;
+      NewItem:=TIdentifierListItem.Create(
+          icompUnknown,
+          true,
+          0,
+          'Self',
+          StatementLevel,
+          nil,
+          nil,
+          ctnVarDefinition);
       CurrentIdentifierList.Add(NewItem);
     end;
     ProcNode:=Context.Node.GetNodeOfType(ctnProcedure);
     if Context.Tool.NodeIsFunction(ProcNode)
     and (not CurrentIdentifierList.HasIdentifier('Result','')) then begin
       // function body -> add 'Result'
-      NewItem:=TIdentifierListItem.Create;
-      NewItem.Compatibility:=icompUnknown;
-      NewItem.HasChilds:=false;
-      NewItem.Identifier:='Result';
-      NewItem.Level:=StatementLevel;
-      NewItem.Node:=nil;
-      NewItem.Tool:=nil;
-      NewItem.DefaultDesc:=ctnNone;
+      NewItem:=TIdentifierListItem.Create(
+          icompUnknown,
+          true,
+          0,
+          'Result',
+          StatementLevel,
+          nil,
+          nil,
+          ctnVarDefinition);
       CurrentIdentifierList.Add(NewItem);
     end;
   end;
 end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
-  const Context: TFindContext);
+  const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+var
+  NewItem: TIdentifierListItem;
+  PropertyName: String;
 begin
-  GatherPredefinedIdentifiers(CleanPos,Context);
-  
+  GatherPredefinedIdentifiers(CleanPos,Context,BeautifyCodeOptions);
+  if Context.Node.Desc=ctnProperty then begin
+    PropertyName:=ExtractPropName(Context.Node,false);
+    MoveCursorToCleanPos(CleanPos);
+    ReadPriorAtom;
+    if UpAtomIs('READ') then begin
+      // add the default class completion 'read' specifier function
+      NewItem:=TIdentifierListItem.Create(
+          icompUnknown,true,0,
+          CurrentIdentifierList.CreateIdentifier(
+            BeautifyCodeOptions.PropertyReadIdentPrefix+PropertyName),
+          0,nil,nil,ctnNone);
+      CurrentIdentifierList.Add(NewItem);
+    end;
+    if UpAtomIs('WRITE') then begin
+      // add the default class completion 'write' specifier function
+      NewItem:=TIdentifierListItem.Create(
+          icompUnknown,true,0,
+          CurrentIdentifierList.CreateIdentifier(
+            BeautifyCodeOptions.PropertyWriteIdentPrefix+PropertyName),
+          0,nil,nil,ctnNone);
+      CurrentIdentifierList.Add(NewItem);
+    end;
+    if UpAtomIs('READ') or UpAtomIs('WRITE') then begin
+      // add the default class completion 'read'/'write' specifier variable
+      NewItem:=TIdentifierListItem.Create(
+          icompUnknown,true,0,
+          CurrentIdentifierList.CreateIdentifier(
+            BeautifyCodeOptions.PrivatVariablePrefix+PropertyName),
+          0,nil,nil,ctnNone);
+      CurrentIdentifierList.Add(NewItem);
+    end;
+  end;
 end;
 
 function TIdentCompletionTool.GatherIdentifiers(
-  const CursorPos: TCodeXYPosition;
-  var IdentifierList: TIdentifierList): boolean;
+  const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
+  BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
+  
+  function GetContextExprStartPos(IdentStartPos: integer;
+    ContextNode: TCodeTreeNode): integer;
+  begin
+    Result:=FindStartOfVariable(IdentStartPos);
+    if Result<ContextNode.StartPos then
+      Result:=ContextNode.StartPos;
+    MoveCursorToCleanPos(Result);
+    ReadNextAtom;
+    case ContextNode.Desc of
+    ctnProperty:
+      // check for special property keywords
+      if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+      then
+        // don't resolve property specifiers
+        Result:=IdentStartPos;
+    end;
+  end;
+  
 var
   CleanCursorPos, IdentStartPos, IdentEndPos: integer;
   CursorNode: TCodeTreeNode;
@@ -544,6 +649,14 @@ begin
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                   [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    if CursorNode.Desc in [ctnClass,ctnClassInterface] then begin
+      BuildSubTreeForClass(CursorNode);
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    end;
+    if CursorNode.Desc in AllPascalStatements then begin
+      BuildSubTreeForBeginBlock(CursorNode);
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    end;
     GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
 
     // find context
@@ -554,7 +667,8 @@ begin
       ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
-    ContextExprStartPos:=FindStartOfVariable(IdentStartPos);
+    ContextExprStartPos:=GetContextExprStartPos(IdentStartPos,CursorNode);
+
     {$IFDEF CTDEBUG}
     writeln('TIdentCompletionTool.GatherIdentifiers C',
       ' ContextExprStartPos=',ContextExprStartPos,
@@ -597,7 +711,7 @@ begin
     {$IFDEF CTDEBUG}
     writeln('TIdentCompletionTool.GatherIdentifiers G');
     {$ENDIF}
-    GatherUsefulIdentifiers(CleanCursorPos,GatherContext);
+    GatherUsefulIdentifiers(CleanCursorPos,GatherContext,BeautifyCodeOptions);
     
     Result:=true;
   finally
@@ -655,6 +769,22 @@ begin
     Result:=Node.Desc
   else
     Result:=DefaultDesc;
+end;
+
+constructor TIdentifierListItem.Create(
+  NewCompatibility: TIdentifierCompatibility; NewHasChilds: boolean;
+  NewHistoryIndex: integer; NewIdentifier: PChar; NewLevel: integer;
+  NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
+  NewDefaultDesc: TCodeTreeNodeDesc);
+begin
+  Compatibility:=NewCompatibility;
+  HasChilds:=NewHasChilds;
+  HistoryIndex:=NewHistoryIndex;
+  Identifier:=NewIdentifier;
+  Level:=NewLevel;
+  Node:=NewNode;
+  Tool:=NewTool;
+  DefaultDesc:=NewDefaultDesc;
 end;
 
 { TIdentifierHistoryList }

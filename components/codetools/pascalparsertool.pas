@@ -202,12 +202,8 @@ type
     function ExtractNode(ANode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
 
-    function ExtractPropName(PropNode: TCodeTreeNode;
-        InUpperCase: boolean): string;
     function ExtractPropType(PropNode: TCodeTreeNode;
         InUpperCase, EmptyIfIndexed: boolean): string;
-    function ExtractProperty(PropNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes): string;
     function ExtractProcName(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
@@ -225,6 +221,10 @@ type
         ProcSpec: TProcedureSpecifier): boolean;
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
 
+    function ExtractPropName(PropNode: TCodeTreeNode;
+        InUpperCase: boolean): string;
+    function ExtractProperty(PropNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): string;
     function GetPropertyNameIdentifier(PropNode: TCodeTreeNode): PChar;
 
     function FindVarNode(StartNode: TCodeTreeNode;
