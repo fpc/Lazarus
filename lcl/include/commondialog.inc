@@ -34,26 +34,45 @@ begin
   FUserChoice := mrNone;
   CNSendMessage(LM_CREATE, Self, nil);
   Result:= DoExecute;
+  Close;
+end;
+
+procedure TCommonDialog.Close;
+begin
   CNSendMessage(LM_DESTROY, Self, nil);
   FHandle := 0;
 end;
 
+procedure TCommonDialog.SetHandle(const AValue: integer);
+begin
+  FHandle:=AValue;
+end;
+
 function TCommonDialog.DoExecute : boolean;
+var CanClose: boolean;
 begin
   if Assigned(FOnShow) then FOnShow(Self);
   Assert(False, 'Trace:Calling dialog - LM_SHOWMODAL');
   CNSendMessage(LM_SHOWMODAL, Self, nil);
   repeat
-     Application.HandleMessage;
+    Application.HandleMessage;
+    if (FUserChoice <> mrNone) and (Handle<>0)
+    and (OnCanClose<>nil) then begin
+      CanClose:=true;
+      OnCanClose(Self,CanClose);
+      if not CanClose then FUserChoice:=mrNone;
+    end;
   until FUserChoice <> mrNone;
   Result := (FUserChoice = mrOk);
   if Assigned(FOnClose) then FOnClose(Self);
-
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.4  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

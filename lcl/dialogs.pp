@@ -56,71 +56,133 @@ const
    mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];
 
 type
+
+  { TCommonDialog }
+
   TCommonDialog = class(TComponent)
   private
     FHandle : integer;
+    FInitialHeight: integer;
+    FInitialWidth: integer;
+    FOnCanClose: TCloseQueryEvent;
     FOnShow, FOnClose : TNotifyEvent;
     FTitle : string;
     FUserChoice: integer;
+    FHelpContext: THelpContext;
+    procedure SetHandle(const AValue: integer);
   protected
     function DoExecute : boolean; virtual;
   public
     FCompStyle : LongInt;
     constructor Create (AOwner : TComponent); override;
     function Execute : boolean; virtual;
-    property Handle : integer read FHandle write FHandle;
+    property Handle : integer read FHandle write SetHandle;
     property Title : string read FTitle write FTitle;
     property UserChoice : integer read FUserChoice write FUserChoice;
+    procedure Close;
+  published
     property OnClose : TNotifyEvent read FOnClose write FOnClose;
+    property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
     property OnShow : TNotifyEvent read FOnShow write FOnShow;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
+    property InitialWidth: integer read FInitialWidth write FInitialWidth;
+    property InitialHeight: integer read FInitialHeight write FInitialHeight;
   end;
 
+
+  { TFileDialog }
+  
   TFileDialog = class(TCommonDialog)
   private
+    FDefaultExt: string;
     FFileName : String;
     FFiles: TStrings;
     FFilter: String;
+    FFilterIndex: Integer;
+    FHistoryList: TStrings;
     FInitialDir: string;
     FOldWorkingDir: string;
+    FOnHelpClicked: TNotifyEvent;
+    procedure SetDefaultExt(const AValue: string);
   protected
     function DoExecute : boolean; override;
-    procedure SetFileName(value :String);
-    procedure SetFilter(value :String);
+    procedure SetFileName(value :String); virtual;
+    procedure SetFilter(value :String); virtual;
+    procedure SetHistoryList(const AValue: TStrings); virtual;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     function Execute : boolean; override;
     property Files: TStrings read FFiles;
+    property HistoryList: TStrings read FHistoryList write SetHistoryList;
   published
+    property DefaultExt: string read FDefaultExt write SetDefaultExt;
     property FileName : String read FFileName write SetFileName;
     property Filter : String read FFilter write SetFilter;
+    property FilterIndex: Integer read FFilterIndex write FFilterIndex default 1;
     property InitialDir: string read FInitialDir write FInitialDir;
+    property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
   end;
 
-  TOpenOption = (ofReadOnly, ofOverwritePrompt, ofHideReadOnly,
-    ofNoChangeDir, ofShowHelp, ofNoValidate, ofAllowMultiSelect,
-    ofExtensionDifferent, ofPathMustExist, ofFileMustExist, ofCreatePrompt,
-    ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofNoNetworkButton,
-    ofNoLongNames, ofOldStyleDialog, ofNoDereferenceLinks{, ofEnableIncludeNotify,
-    ofEnableSizing});
+
+  { TOpenDialog }
+  
+  TOpenOption = (
+    ofReadOnly,
+    ofOverwritePrompt, // tests if secected file exists and if so shows a
+                       // message, to inform the user, that file will be
+                       // overwritten
+    ofHideReadOnly,
+    ofNoChangeDir,     // do not change current directory
+    ofShowHelp,        // show a help button
+    ofNoValidate,
+    ofAllowMultiSelect,// allow multiselection
+    ofExtensionDifferent,
+    ofPathMustExist,   // shows an error message if selected path does not exist
+    ofFileMustExist,   // shows an error message if selected file does not exist
+    ofCreatePrompt,
+    ofShareAware,
+    ofNoReadOnlyReturn,// do not return filenames that are readonly
+    ofNoTestFileCreate,
+    ofNoNetworkButton,
+    ofNoLongNames,
+    ofOldStyleDialog,
+    ofNoDereferenceLinks,// do not expand filenames
+    ofEnableIncludeNotify,
+    ofEnableSizing,    // dialog can be resized, e.g. via the mouse
+    ofDontAddToRecent, // do not add the path to the history list
+    ofForceShowHidden, // includes in display files marked as hidden
+    ofViewDetail       // details are OS and interface dependent
+    );
   TOpenOptions = set of TOpenOption;
   
   TOpenDialog = class(TFileDialog)
   private
+    FOnFolderChange: TNotifyEvent;
+    FOnSelectionChange: TNotifyEvent;
     FOptions: TOpenOptions;
+  protected
+    function DoExecute: boolean; override;
   public
-    constructor Create (AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   published
     property Options: TOpenOptions read FOptions write FOptions
-      {default [ofHideReadOnly, ofEnableSizing]};
+      default [ofEnableSizing, ofViewDetail];
+    property OnFolderChange: TNotifyEvent read FOnFolderChange write FOnFolderChange;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
 
-  TSaveDialog  = class(TFileDialog)
+
+  { TSaveDialog }
+  
+  TSaveDialog = class(TOpenDialog)
   public
-    constructor Create (AOwner : TComponent); override;
+    constructor Create(AOwner : TComponent); override;
   end;
 
 
+  { TColorDialog }
+  
   TColorDialog = class(TCommonDialog)
   private
     FColor : TColor;
@@ -129,6 +191,9 @@ type
   published
     property Color : TColor read FColor write FColor;
   end;
+
+
+  { TFontDialog }
 
   TFontDialog = class(TCommonDialog)
   private
@@ -139,6 +204,9 @@ type
     property FontName : String read FFontName write FFontName;
   end;
 
+
+  { MessageDlg }
+  
   function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
               Buttons: TMsgDlgButtons): TForm;
   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
@@ -154,10 +222,12 @@ type
   procedure ShowMessageFmt(const aMsg: string; Params: array of const);
   procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 
+
 implementation
 
+
 uses
-  Buttons, StdCtrls, LCLlinux, Graphics, SysUtils;
+  Buttons, StdCtrls, LCLlinux, Graphics, SysUtils, FileCtrl;
 
 resourcestring
    rsMbYes    = 'Yes';
@@ -235,6 +305,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/05/29 21:44:37  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.11  2002/05/10 06:05:49  lazarus
   MG: changed license to LGPL
 

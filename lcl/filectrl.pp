@@ -50,9 +50,16 @@ uses
     Currently maintained by Curtis White
   }
   function DirectoryExists(const Name: String): Boolean;
+  function FileIsWritable(const AFilename: string): boolean;
+  function GetFileDescription(const AFilename: string): string;
 
 
 implementation
+
+{$IFNDEF win32}
+uses
+  {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF};
+{$ENDIF}
 
 {$I filectrl.inc}
 
@@ -65,6 +72,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.3  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

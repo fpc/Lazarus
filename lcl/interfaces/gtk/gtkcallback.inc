@@ -723,105 +723,299 @@ var
    FileName : string;
    Files: TStringList;
 begin
-   Result := True;
-   theDialog := TCommonDialog(data);
-   FPointer := Pointer(theDialog.Handle);
+  Result := True;
+  theDialog := TCommonDialog(data);
+  FPointer := Pointer(theDialog.Handle);
 //   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
-   if theDialog is TFileDialog then
-   begin
-      if theDialog is TOpenDialog then
+  if theDialog is TFileDialog then
+  begin
+    if theDialog is TOpenDialog then
+    begin
+      // check extra options
+      if ofAllowMultiSelect in TOpenDialog(theDialog).Options then
       begin
-         // check extra options
-         if ofAllowMultiSelect in TOpenDialog(theDialog).Options then
-	 begin
-           FileName:=gtk_file_selection_get_filename(
+        FileName:=gtk_file_selection_get_filename(
                                     PGtkFileSelection(FPointer));
-           DirName:=ExtractFilePath(FileName);
-           TFileDialog(data).FileName := '';
-           Files:=TStringList(TFileDialog(theDialog).Files);
-           Files.Clear;
-           if not FileExists(FileName) then
-             Files.Add(FileName);
-           fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
-           rowNum := 0;
-	   cListRow := fileList^.row_list;
-	   while cListRow <> nil do
-	   begin
-	     if PGtkCListRow(cListRow^.data)^.state = GTK_STATE_SELECTED then
-	     begin
-               if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT
-               then begin
-	         gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
+        DirName:=ExtractFilePath(FileName);
+        TFileDialog(data).FileName := '';
+        Files:=TStringList(TFileDialog(theDialog).Files);
+        Files.Clear;
+        if not FileExists(FileName) then
+          Files.Add(FileName);
+        fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
+        rowNum := 0;
+        cListRow := fileList^.row_list;
+        while cListRow <> nil do
+        begin
+          if PGtkCListRow(cListRow^.data)^.state = GTK_STATE_SELECTED then
+	        begin
+            if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT
+            then begin
+	            gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
                  Files.Add(DirName+fileInfo);
-               end;
-	     end;
-	     // get next row from list
-	     rowNum := rowNum + 1;
-	     cListRow := g_list_next(cListRow);
-	   end;
-           if (Filename<>'') and (Files.IndexOf(Filename)<0) then
-             Files.Add(Filename);
-         end
-	 else
-	 begin
-            TFileDialog(data).FileName := 
-              gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
-         end;
-      end
-      else
-      begin
-         TFileDialog(data).FileName := gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
+            end;
+          end;
+          // get next row from list
+          rowNum := rowNum + 1;
+          cListRow := g_list_next(cListRow);
+        end;
+        if (Filename<>'') and (Files.IndexOf(Filename)<0) then
+          Files.Add(Filename);
+      end else begin
+        TFileDialog(data).FileName :=
+          gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
       end;
-   end
-   else if theDialog is TColorDialog then
-   begin
-      colorSel := GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(FPointer))^.colorsel);
-      gtk_color_selection_get_color(colorsel, @colorArray[0]);
-      newColor.pixel := 0;
-      newColor.red := Trunc(colorArray[0] * $FFFF);
-      newColor.green := Trunc(colorArray[1] * $FFFF);
-      newColor.blue := Trunc(colorArray[2] * $FFFF);
+    end
+    else
+    begin
+      TFileDialog(data).FileName :=
+        gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
+    end;
+  end
+  else if theDialog is TColorDialog then
+  begin
+    colorSel := GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(FPointer))^.colorsel);
+    gtk_color_selection_get_color(colorsel, @colorArray[0]);
+    newColor.pixel := 0;
+    newColor.red := Trunc(colorArray[0] * $FFFF);
+    newColor.green := Trunc(colorArray[1] * $FFFF);
+    newColor.blue := Trunc(colorArray[2] * $FFFF);
+    TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
+  end
+  else if theDialog is TFontDialog then
+  begin
+    Assert(False, 'Trace:Prssed OK in FontDialog');
+    FontName := gtk_font_selection_dialog_get_font_name(pgtkfontselectiondialog(FPointer));
+    TFontDialog(theDialog).FontName := FontName;
+    Assert(False, 'Trace:-----'+TFontDialog(theDialog).FontName+'----');
+  end;
 
-      TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
-   end
-   else if theDialog is TFontDialog then
-   begin
-   Assert(False, 'Trace:Prssed OK in FontDialog');
-   FontName := gtk_font_selection_dialog_get_font_name(pgtkfontselectiondialog(FPointer));
-   TFontDialog(theDialog).FontName := FontName;
-   Assert(False, 'Trace:-----'+TFontDialog(theDialog).FontName+'----');
-   end;
+  StoreCommonDialogSetup(theDialog);
+  theDialog.UserChoice := mrOK;
+end;
 
-   theDialog.UserChoice := mrOK;
- end;
-
-function gtkDialogCancelclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+{-------------------------------------------------------------------------------
+  function gtkDialogCancelclickedCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+  
+  This function is called, whenever the user clicks the cancel button in a
+  commondialog
+-------------------------------------------------------------------------------}
+function gtkDialogCancelclickedCB(widget: PGtkWidget; data: gPointer): GBoolean;
+  cdecl;
 var
-   theDialog : TCommonDialog;
+  theDialog : TCommonDialog;
 begin
-   Result := True;
-   theDialog := TCommonDialog(data);
+  Result := True;
+  theDialog := TCommonDialog(data);
 //   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
-   if theDialog is TFileDialog then
-   begin
-      TFileDialog(data).FileName := '';
-   end;
-   theDialog.UserChoice := mrCancel;
+  if theDialog is TFileDialog then
+  begin
+    TFileDialog(data).FileName := '';
+  end;
+  StoreCommonDialogSetup(theDialog);
+  theDialog.UserChoice := mrCancel;
+end;
 
- end;
+{-------------------------------------------------------------------------------
+  function gtkDialogHelpclickedCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
 
-function gtkDialogDestroyCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+  This function is called, whenever the user clicks the help button in a
+  commondialog
+-------------------------------------------------------------------------------}
+function gtkDialogHelpclickedCB(widget: PGtkWidget; data: gPointer): GBoolean;
+  cdecl;
 var
-   theDialog : TCommonDialog;
+  theDialog : TCommonDialog;
 begin
-   Result := True;
-   theDialog := TCommonDialog(data);
-//   gtk_grab_remove(PgtkWidget(TCommonDialog(data).Handle));
-   if theDialog is TFileDialog then
-   begin
-     // TFileDialog(data).FileName := '';
-   end;
-  theDialog.UserChoice := -1;
+  Result := True;
+  theDialog := TCommonDialog(data);
+  if theDialog is TOpenDialog then begin
+    if TOpenDialog(theDialog).OnHelpClicked<>nil then
+      TOpenDialog(theDialog).OnHelpClicked(theDialog);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function gtkDialogCloseQueryCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, before a commondialog is destroyed
+-------------------------------------------------------------------------------}
+function gtkDialogCloseQueryCB(widget: PGtkWidget; data: gPointer): GBoolean;
+  cdecl;
+var
+  theDialog : TCommonDialog;
+  CanClose: boolean;
+begin
+  Result := False; // true = do nothing, false = destroy or hide window
+  // data is not the commondialog. Get it manually.
+  theDialog := TCommonDialog(GetLCLObject(Widget));
+  if theDialog=nil then exit;
+  if theDialog.OnCanClose<>nil then begin
+    CanClose:=True;
+    theDialog.OnCanClose(theDialog,CanClose);
+    Result:=not CanClose;
+    if CanClose then StoreCommonDialogSetup(theDialog);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure UpdateDetailView
+  Params: OpenDialog: TOpenDialog
+  Result: none
+
+  Shows some OS dependent information about the current file
+-------------------------------------------------------------------------------}
+procedure UpdateDetailView(OpenDialog: TOpenDialog);
+var
+  FileDetailLabel: PGtkWidget;
+  Filename, OldFilename, Details: string;
+begin
+  Filename:=
+    gtk_file_selection_get_filename(PGtkFileSelection(OpenDialog.Handle));
+  OldFilename:=OpenDialog.Filename;
+  if Filename=OldFilename then exit;
+  OpenDialog.Filename:=Filename;
+  // tell application, that selection has changed
+  if OpenDialog.OnSelectionChange<>nil then
+    OpenDialog.OnSelectionChange(OpenDialog);
+  if (OpenDialog.OnFolderChange<>nil)
+  and (ExtractFilePath(Filename)<>ExtractFilePath(OldFilename)) then
+    OpenDialog.OnFolderChange(OpenDialog);
+  // show some information
+  FileDetailLabel:=gtk_object_get_data(PGtkObject(OpenDialog.Handle),
+                                       'FileDetailLabel');
+  if FileDetailLabel=nil then exit;
+  if FileExists(Filename) then begin
+    Details:=GetFileDescription(Filename);
+  end else begin
+    Details:='(file does not exist)';
+  end;
+  gtk_label_set_text(PGtkLabel(FileDetailLabel),PChar(Details));
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKDialogKeyUpDownCB
+  Params: Widget: PGtkWidget; Event : pgdkeventkey; Data: gPointer
+  Result: GBoolean
+
+  This function is called, whenever a key is pressed or released in a common
+  dialog window
+-------------------------------------------------------------------------------}
+function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
+begin
+  Result:=false;
+
+  case Event^.theType of
+
+  GDK_KEY_RELEASE, GDK_KEY_PRESS:
+    begin
+      if Event^.KeyVal=GDK_Escape then begin
+        StoreCommonDialogSetup(TCommonDialog(data));
+        TCommonDialog(data).UserChoice:=mrCancel;
+      end;
+      if (TCommonDialog(data) is TOpenDialog) then begin
+        UpdateDetailView(TOpenDialog(data));
+      end;
+    end;
+    
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKDialogRealizeCB
+  Params: Widget: PGtkWidget; Data: Pointer
+  Result: GBoolean
+
+  This function is called, whenever a commondialog window is realized
+-------------------------------------------------------------------------------}
+function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+begin
+  gdk_window_set_events(Widget^.Window, gdk_window_get_events(Widget^.Window)
+    or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+  Result:=true;
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKDialogFocusInCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, when a widget of a commondialog gets focus
+-------------------------------------------------------------------------------}
+function GTKDialogFocusInCB(widget: PGtkWidget; data: gPointer): GBoolean;
+  cdecl;
+var
+  theDialog: TCommonDialog;
+begin
+  Result:=false;
+  theDialog:=TCommonDialog(GetLCLObject(Widget));
+  if (theDialog is TOpenDialog) then begin
+    UpdateDetailView(TOpenDialog(theDialog));
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKDialogSelectRowCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, whenever a row is selected in a commondialog
+-------------------------------------------------------------------------------}
+function GTKDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
+  bevent: pgdkEventButton; data: gPointer): GBoolean; cdecl;
+var
+  theDialog: TCommonDialog;
+begin
+  Result:=false;
+  theDialog:=TCommonDialog(GetLCLObject(Widget));
+  if (theDialog is TOpenDialog) then begin
+    UpdateDetailView(TOpenDialog(theDialog));
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKDialogMenuActivateCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, whenever a menu of a commondialog is activated
+-------------------------------------------------------------------------------}
+function GTKDialogMenuActivateCB(widget: PGtkWidget; data: gPointer): GBoolean;
+  cdecl;
+var
+  theDialog: TCommonDialog;
+  //NewFilename: string;
+begin
+  Result:=false;
+  theDialog:=TCommonDialog(GetLCLObject(Widget));
+  if (theDialog is TOpenDialog) then begin
+    if gtk_object_get_data(PGtkObject(Widget), 'IsHistoryMenuItem')<>nil then
+    begin
+
+      //UpdateDetailView(TOpenDialog(theDialog));
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function gtkDialogDestroyCB
+  Params: widget: PGtkWidget; data: gPointer
+  Result: GBoolean
+
+  This function is called, when the commondialog is destroyed
+-------------------------------------------------------------------------------}
+function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+begin
+  Result := True;
+  TCommonDialog(data).UserChoice := mrAbort;
+  TCommonDialog(data).Close;
 end;
 
 function gtkpressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1752,6 +1946,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.75  2002/05/24 07:16:32  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 

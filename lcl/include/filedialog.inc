@@ -26,6 +26,7 @@ begin
   inherited Create(AOwner);
   fCompStyle := csFileDialog;
   FFiles := TStringList.Create;
+  FHistoryList:=TStringList.Create;
 end;
 
 {------------------------------------------------------------------------------}
@@ -33,6 +34,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TFileDialog.Destroy;
 begin
+  FHistoryList.Free;
   FFiles.Free;
   inherited;
 end;
@@ -53,6 +55,21 @@ begin
   finally
     SetCurrentDir(FOldWorkingDir);
   end;
+end;
+
+{------------------------------------------------------------------------------}
+{  TFileDialog DoExecute                                                         }
+{------------------------------------------------------------------------------}
+procedure TFileDialog.SetHistoryList(const AValue: TStrings);
+begin
+  FHistoryList.Assign(AValue);
+end;
+
+procedure TFileDialog.SetDefaultExt(const AValue: string);
+begin
+  FDefaultExt:=AValue;
+  if (FDefaultExt<>'') and (FDefaultExt[1]<>'.') then
+    FDefaultExt:='.'+FDefaultExt;
 end;
 
 {------------------------------------------------------------------------------}
@@ -85,6 +102,72 @@ end;
 {******************************************************************************
                                   TOpenDialog
  ******************************************************************************}
+
+{------------------------------------------------------------------------------
+  Method: TOpenDialog.DoExecute
+  Params:  none
+  Returns: true if valid was selected
+
+  Starts dialogs and lets user choose a filename.
+ ------------------------------------------------------------------------------}
+function TOpenDialog.DoExecute: boolean;
+
+  procedure DereferenceLinks;
+  var i: integer;
+  begin
+    Filename:=ExpandFilename(Filename);
+    if Files<>nil then begin
+      for i:=0 to Files.Count-1 do begin
+        Files[i]:=ExpandFilename(Files[i]);
+      end;
+    end;
+  end;
+
+begin
+  Result:=inherited DoExecute;
+  if (not (ofNoDereferenceLinks in Options)) then begin
+    DereferenceLinks;
+  end;
+  if (not (ofNoChangeDir in Options)) and (ExtractFilePath(Filename)<>'') then
+  begin
+    InitialDir:=ExtractFilePath(Filename);
+  end;
+  if Result then begin
+    if (DefaultExt<>'') and (ExtractFileExt(Filename)='')
+    and (not FileExists(Filename)) then begin
+      Filename:=Filename+DefaultExt;
+    end;
+    if (ofOverwritePrompt in Options) and FileExists(Filename) then begin
+      Result:=MessageDlg('Overwrite file?',
+        'The file "'+Filename+'" already exists.'#13
+        +'Overwrite?',mtConfirmation,[mbOk,mbCancel],0)=mrOk;
+      if not Result then exit;
+    end;
+    if (ofPathMustExist in Options)
+    and (not FileExists(ExtractFilePath(Filename))) then begin
+      Result:=false;
+      MessageDlg('Path must exist',
+        'The path "'+ExtractFilePath(Filename)+'" does not exist.'
+        ,mtError,[mbCancel],0);
+      exit;
+    end;
+    if (ofFileMustExist in Options)
+    and (not FileExists(Filename)) then begin
+      Result:=false;
+      MessageDlg('File must exist',
+        'The file "'+Filename+'" does not exist.',mtError,[mbCancel],0);
+      exit;
+    end;
+    if (ofNoReadOnlyReturn in Options)
+    and (not FileIsWritable(Filename)) then begin
+      Result:=false;
+      MessageDlg('File is not writable',
+        'The file "'+Filename+'" is not writable.',mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TOpenDialog.Create
   Params:  AOwner: the owner of the class
@@ -96,7 +179,7 @@ constructor TOpenDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   FTitle:= 'Open existing file:';
-  FOptions := [];
+  FOptions := [ofEnableSizing, ofViewDetail];
 end;
 
 {******************************************************************************
@@ -119,6 +202,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.4  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 
