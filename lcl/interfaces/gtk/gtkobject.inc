@@ -262,6 +262,7 @@ var
   LogBrush: TLogBrush;
   //Attributes: TGdkWindowAttr;
   //AttributesMask: gint;
+  FG,BG : TgdkColor;  //foreground and background
 begin
   // initialize app level gtk engine 
   gtk_set_locale ();
@@ -289,6 +290,14 @@ begin
   FGTKToolTips := gtk_tooltips_new;   
   gtk_object_ref(PGTKObject(FGTKToolTips));
   gtk_toolTips_Enable(FGTKToolTips);
+  FG.red := $FFFFFF;
+  FG.Green := $FFFFFF;
+  fg.blue := $FFFFFF;
+  BG.REd := $444444;
+  bg.Green := $ffffff;
+  bg.Blue := $111111;
+  
+  gtk_toolTips_set_colors(FGTKToolTips,@FG,@BG);
 
   // Init stock objects;
   LogBrush.lbStyle := BS_NULL; 
@@ -3314,6 +3323,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.72  2001/11/16 20:08:39  lazarus
+  Object inspector has hints now.
+  Shane
+
   Revision 1.71  2001/11/14 17:46:58  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop

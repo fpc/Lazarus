@@ -669,12 +669,10 @@ CheckHeap('TCustomFormEditor.CreateComponent C '+IntToStr(GetMem_Cnt));
 CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));
 {$ENDIF}
   if ParentCI <> nil then Begin
-    Writeln('ParentCI <> nil');
     TempName := Temp.FControl.ClassName;
     delete(TempName,1,1);
     //make it more presentable
     TempName := TempName[1] + lowercase(Copy(TempName,2,length(tempname)));
-    writeln('TempName is '''+TempName+'''');
     Num := 0;
     Found := True;
     While Found do Begin
@@ -691,7 +689,6 @@ CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));
       end;
     end;
     Temp.FControl.Name := TempName+IntToStr(Num);
-    Writeln('TempName + num = '+TempName+Inttostr(num));
   end;
 
 {$IFDEF IDE_MEM_CHECK}

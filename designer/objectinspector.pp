@@ -138,6 +138,14 @@ type
     FExpandedProperties:TStringList;
     FBorderStyle:TBorderStyle;
 
+    //hint stuff
+    FHintTimer : TTimer;
+    FHintWindow : THintWindow;
+    FLastMouseMovePos : TPoint;
+    Procedure HintTimer(sender : TObject);
+    Procedure ResetHintTimer(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+
+
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
     procedure ClearRows;
@@ -174,6 +182,7 @@ type
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure UpdateScrollBar;
   protected
@@ -323,6 +332,8 @@ begin
     OnKeyDown:=@ValueEditKeyDown;
     Visible:=false;
     Enabled:=false;
+    OnMouseMove := @ResetHintTimer;
+
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
@@ -333,6 +344,7 @@ begin
     Visible:=false;
     Enabled:=false;
     Parent:=Self;
+    OnMouseMove := @ResetHintTimer;
   end;
 
   ValueButton:=TButton.Create(Self);
@@ -347,6 +359,21 @@ begin
   FDefaultItemHeight:=ValueComboBox.Height-3;
 
   BuildPropertyList;
+  
+  FHintTimer := TTimer.Create(nil);
+  FHintTimer.Interval := 500;
+  FHintTimer.Enabled := False;
+  FHintTimer.OnTimer := @HintTimer;
+
+  FHintWindow := THintWindow.Create(nil);
+
+  FHIntWindow.Visible := False;
+  FHintWindow.Caption := 'This is a hint window'#13#10'NEat huh?';
+  FHintWindow.HideInterval := 4000;
+  FHintWindow.AutoHide := True;
+  
+
+
 end;
 
 procedure TOIPropertyGrid.UpdateScrollBar;
@@ -429,6 +456,8 @@ begin
   FValueFont.Free;
   FNameFont.Free;
   FExpandedProperties.Free;
+  FHintTimer.free;
+  FHintWindow.Free;
   inherited Destroy;
 end;
 
@@ -817,7 +846,8 @@ end;
 
 procedure TOIPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
-var IconX,Index:integer;
+var
+  IconX,Index:integer;
   PointedRow:TOIpropertyGridRow;
 begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
@@ -1175,6 +1205,81 @@ end;
 function TOIPropertyGrid.GetRow(Index:integer):TOIPropertyGridRow;
 begin
   Result:=TOIPropertyGridRow(FRows[Index]);
+end;
+
+
+Procedure TOIPropertyGrid.HintTimer(sender : TObject);
+var
+  Rect : TRect;
+  AHint : String;
+  Control : TControl;
+  Position : TPoint;
+  BW       : Integer;
+  IconX,Index:integer;
+  PointedRow:TOIpropertyGridRow;
+
+begin
+  BW := 0;
+  FHintTimer.Enabled := False;
+  Position := Mouse.CursorPos;
+  if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0) or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then Exit;
+
+  Position := ScreenToClient(Position);
+  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0) or (Position.Y >= Height)) then Exit;
+  AHint := '';
+  Index:=MouseToIndex(Position.Y,false);
+  if (Index>=0) and (Index<FRows.Count) then
+     begin
+        IconX:=GetTreeIconX(Index);
+            PointedRow:=Rows[Index];
+            if Assigned(PointedRow) then
+              Begin
+                 if position.X <= FSplitterX then
+                      Begin
+                        if Assigned(PointedRow.Editor) then
+                           AHint := PointedRow.Editor.GetName
+                      end
+                    else
+                      AHint := PointedRow.LastPaintedValue;
+                 
+              end;
+     end;
+  if AHint = '' then Exit;
+  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
+  Position := ClientToScreen(FLastMouseMovePos);
+  Rect.Left := Position.X+10;
+  Rect.Top := Position.Y+10;
+  Rect.Right := Rect.Left + Rect.Right+3;
+  Rect.Bottom := Rect.Top + Rect.Bottom+3;
+
+  FHintWindow.ActivateHint(Rect,AHint);
+
+end;
+
+Procedure TOIPropertyGrid.ResetHintTimer(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+begin
+  if FHintWIndow.Visible then
+     FHintWindow.Visible := False;
+     
+  FHintTimer.Enabled := False;
+  FHintTimer.Enabled := True;
+
+  if (Sender is TOIPropertyGrid) then
+    Begin
+       FLastMouseMovePos.X := X;
+       FLastMouseMovePos.Y := Y;
+    end
+    else
+    begin  //account for the controls position.  THis is used for the FCurrentEdit control
+       FLastMouseMovePos.X := TWinControl(sender).Left+X;
+       FLastMouseMovePos.Y := TWinControl(Sender).Top+Y;
+    end;
+end;
+
+procedure TOIPropertyGrid.WMMouseMove(var Msg: TWMMouseMove);
+begin
+  inherited;
+  ResetHintTimer(self,[],Msg.pos.x,Msg.Pos.Y);
 end;
 
 //------------------------------------------------------------------------------

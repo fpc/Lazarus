@@ -890,6 +890,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.26  2001/11/16 20:08:41  lazarus
+  Object inspector has hints now.
+  Shane
+
   Revision 1.25  2001/11/12 16:56:08  lazarus
   MG: CLIPBOARD
 
