@@ -374,6 +374,11 @@ begin
   Result := InterfaceObject.GetRGNBox(RGN, lpRect);
 end;
 
+function GetROP2(DC: HDC): integer;
+begin
+  result := InterfaceObject.GetROP2(DC);
+end;
+
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean;
 begin
   Result := InterfaceObject.GetScrollInfo(Handle, SBStyle, ScrollInfo);
@@ -679,6 +684,11 @@ end;
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
+end;
+
+function SetROP2(DC: HDC; Mode: Integer): Integer;
+begin
+  Result := InterfaceObject.SetRop2(Dc, Mode);
 end;
 
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
@@ -1315,6 +1325,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.115  2005/01/07 18:40:10  mattias
   clean up, added GetRGBValues
 

@@ -1834,6 +1834,19 @@ End;
 
 
 {------------------------------------------------------------------------------
+  Method:  GetROP2
+  Params: DC - Handle of the device context
+
+  Returns: 0 if unsuccessful, the current Foreground Mixing Mode if successul
+
+  Retrieves the current Foreground Mixing Mode in the given device context
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetROP2(DC: HDC): Integer;
+begin
+	Result := Windows.GetROP2(DC);	
+end;
+
+{------------------------------------------------------------------------------
   Method:  GetScrollInfo
   Params:  Handle     - handle of window with scroll bar
            BarFlag    - scroll bar flag
@@ -2700,6 +2713,18 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  SetROP2
+  Params:  DC			- Device Context
+           Mode		- Foreground mixing mode 
+       
+  Returns: 0 if unsuccessful or the old Mode if successful
+ ------------------------------------------------------------------------------}
+Function TWin32WidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+begin
+	result := Windows.SetROP2(DC, Mode);
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetScrollInfo
   Params:  Handle     - handle of window with scroll bar
            SBStyle    - scroll bar flag
@@ -3042,6 +3067,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.132  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.131  2005/01/01 11:39:02  micha
   make stretchmaskblt handle the general case, and let maskblt call stretchmaskblt
 

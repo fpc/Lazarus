@@ -4043,6 +4043,25 @@ begin
   end;
 end;
 
+Function TGtkWidgetSet.GetROP2(DC: HDC): Integer;
+var
+  Values: TGdkGCValues;
+begin
+  if not IsValidDC(DC) then begin
+    Assert(False, 'Trace:[TGtkWidgetSet.GetROP2] Invalid GC');
+    result := 0
+  end else
+    with TDeviceContext(DC) do begin
+      if GC = nil then begin
+        Assert(False, 'Trace:[TGtkWidgetSet.GetROP2] Uninitialized GC');
+        Result := 0;
+      end else begin
+        gdk_gc_get_values(GC, @Values);
+        result := GdkFunctionToROP2Mode( Values.thefunction )
+      end;
+    end;
+end;
+
 {------------------------------------------------------------------------------
   Function: GetClipRGN
   Params: dc, rgn
@@ -7895,6 +7914,26 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  Function TGtkWidgetSet.SetROPMode(Handle: hwnd; Str : PChar;
+                              Data : Pointer) : Boolean;
+ ------------------------------------------------------------------------------}
+Function TGtkWidgetSet.SetROP2(DC: HDC; Mode: Integer) : Integer;
+Begin
+  if IsValidDC(DC) then with TDeviceContext(DC) do begin
+    if GC=nil then begin
+      Assert(False, 'Trace:[TGtkWidgetSet.SetROP2] Uninitialized GC');
+      result := 0
+    end else begin
+      Result := GetROP2(DC);
+      gdk_gc_set_function(GC, ROP2ModeToGdkFunction(Mode));
+    end;
+  end else begin
+    Assert(False, 'Trace:[TGtkWidgetSet.SetROP2] Invalid GC');
+    Result := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: SetScrollInfo
   Params:  none
   Returns: The old position value
@@ -8826,6 +8865,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.384  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.383  2005/01/07 18:40:10  mattias
   clean up, added GetRGBValues
 

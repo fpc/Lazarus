@@ -849,6 +849,11 @@ begin
   Result := SIMPLEREGION;
 end;
 
+Function TWidgetSet.GetROP2(DC: HDC): Integer;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
 begin
@@ -1293,6 +1298,11 @@ Begin
   Result := True;
 end;
 
+function TWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
@@ -1404,6 +1414,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.15  2004/12/19 19:29:04  marc
   * x86_64 fix: Conversion if integer to pointer
 

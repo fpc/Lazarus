@@ -235,6 +235,8 @@ type
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
+    function ROP2ModeToGdkFunction(Mode: Integer): TGdkFunction;
+    function gdkFunctionToROP2Mode(aFunction: TGdkFunction): Integer;
   public
     // for gtk specific components:
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String; const AComponent: TComponent; const ASignalWidget: PGTKWidget; const ASignal: PChar); virtual;
@@ -430,6 +432,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.218  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.217  2004/10/16 15:36:49  mattias
   implemented gtkwscomctrls.TGtkWSStatusBar
 

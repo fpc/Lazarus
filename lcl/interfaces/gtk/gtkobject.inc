@@ -6896,6 +6896,52 @@ begin
   CleanUpFont;
 end;
 
+function TGtkWidgetSet.ROP2ModeToGdkFunction(Mode: IntegeR): TGdkFunction;
+begin
+  case Mode of
+    R2_COPYPEN:     result := GDK_COPY;
+    R2_NOT:         result := GDK_INVERT;
+    R2_XORPEN:      result := GDK_XOR;
+    R2_BLACK:       result := GDK_CLEAR;
+    R2_MASKPEN:     result := GDK_AND;
+    R2_MASKPENNOT:  result := GDK_AND_REVERSE;
+    R2_MASKNOTPEN:  result := GDK_AND_INVERT;
+    R2_NOP:         result := GDK_NOOP;
+    R2_MERGEPEN:    result := GDK_OR;
+    R2_NOTXORPEN:   result := GDK_EQUIV;
+    R2_MERGEPENNOT: result := GDK_OR_REVERSE;
+    R2_NOTCOPYPEN:  result := GDK_COPY_INVERT;
+    R2_NOTMASKPEN:  result := GDK_NAND;
+    //R2_NOTMERGEPEN: result := GDK_NOR;
+    R2_WHITE:       result := GDK_SET;
+    else
+      result := GDK_COPY;
+  end;
+end;
+
+function TGtkWidgetSet.GdkFunctionToROP2Mode(aFunction: TGdkFunction): Integer;
+begin
+  case aFunction of
+    GDK_COPY:         result := R2_COPYPEN;
+    GDK_INVERT:       result := R2_NOT;
+    GDK_XOR:          result := R2_XORPEN;
+    GDK_CLEAR:        result := R2_BLACK;
+    GDK_AND:          result := R2_MASKPEN;
+    GDK_AND_REVERSE:  result := R2_MASKPENNOT;
+    GDK_AND_INVERT:   result := R2_MASKNOTPEN;
+    GDK_NOOP:         result := R2_NOP;
+    GDK_OR:           result := R2_MERGEPEN;
+    GDK_EQUIV:        result := R2_NOTXORPEN;
+    GDK_OR_REVERSE:   result := R2_MERGEPENNOT;
+    GDK_COPY_INVERT:  result := R2_NOTCOPYPEN;
+    GDK_NAND:         result := R2_NOTMASKPEN;
+    //GDK_NOR:          result := R2_NOTMERGEPEN;
+    GDK_SET:          result := R2_WHITE;
+    else
+      result := R2_COPYPEN;
+  end;
+end;
+
 function TGtkWidgetSet.ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
   ProcessAmpersands : Boolean) : PChar;
 var
@@ -6944,6 +6990,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.614  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.613  2005/01/07 20:51:11  micha
   swap TCustomStaticText and TCustomLabel
 

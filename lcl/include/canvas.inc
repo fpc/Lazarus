@@ -144,6 +144,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreatePen;
 var OldHandle: HPEN;
+const PenModes:Array[TPenMode] of Integer =
+  ( R2_BLACK, R2_WHITE, R2_NOP, R2_NOT, R2_COPYPEN, R2_NOTCOPYPEN, R2_MERGEPENNOT,
+    R2_MASKPENNOT, R2_MERGENOTPEN, R2_MASKNOTPEN, R2_MERGEPEN, R2_NOTMERGEPEN,
+    R2_MASKPEN, R2_NOTMASKPEN, R2_XORPEN, R2_NOTXORPEN );
+{
+  TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
+              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge,
+              pmMask, pmNotMask, pmXor, pmNotXor
+}
 begin
 //DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
 // ,'  Pen=',HexStr(Cardinal(Pointer(Pen)),8));
@@ -152,7 +161,7 @@ begin
     FSavedPenHandle:=OldHandle;
   SetPenPos(FPenPos);
   Include(FState, csPenValid);
-//  SetROP2(FHandle, PenModes[Pen.Mode]);
+  SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
 
 {------------------------------------------------------------------------------
@@ -1268,6 +1277,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.85  2005/01/01 20:05:08  mattias
   accelerated code completion box in IDE and replaced ExtTextOut with ExtUTF8Out in TCanvas.TextOut
 

@@ -105,6 +105,7 @@ Function GetKeyState(NVirtKey: Integer): SmallInt; Override;
 Function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; Override;
 Function GetParent(Handle: HWND): HWND; Override;
 Function GetProp(Handle: HWND; Str: PChar): Pointer; Override;
+Function GetROP2(DC: HDC): Integer; override;
 Function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; Override;
 Function GetStockObject(Value: Integer): LongInt; Override;
 Function GetSysColor(NIndex: Integer): DWORD; Override;
@@ -164,6 +165,7 @@ Function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
 Function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
 Function SetFocus(HWnd: HWND): HWND; Override;
 Function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; Override;
+Function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 Function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; Override;
 Function SetSysColors(CElements: Integer; Const LPAElements; Const LPARgbValues): Boolean; Override;
 Function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; Override;
@@ -191,6 +193,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.50  2004/11/19 21:59:23  micha
   fix focus issue (for example using MessageDlg)
 

@@ -1309,6 +1309,8 @@ const
   PS_TYPE_MASK = $F0000;
 
 
+
+
 //==============================================
 // API system Color constants  pbd
 // note these are usually shown ORed with
@@ -1434,6 +1436,44 @@ const
 
   MAX_SYS_COLORS = COLOR_ENDCOLORS;
   SYS_COLOR_BASE = TColorRef($80000000);
+
+
+{$ifndef win32}
+  R2_BLACK        = 0;
+  R2_COPYPEN      = 1;
+  R2_MASKNOTPEN   = 2;
+  R2_MASKPEN      = 3;
+  R2_MASKPENNOT   = 4;
+  R2_MERGENOTPEN  = 5;
+  R2_MERGEPEN     = 6;
+  R2_MERGEPENNOT  = 7;
+  R2_NOP          = 8;
+  R2_NOT          = 9;
+  R2_NOTCOPYPEN   = 10;
+  R2_NOTMASKPEN   = 11;
+  R2_NOTMERGEPEN  = 12;
+  R2_NOTXORPEN    = 13;
+  R2_WHITE        = 14;
+  R2_XORPEN       = 15;
+  
+{$else}
+  R2_BLACK        = Windows.R2_BLACK;
+  R2_COPYPEN      = Windows.R2_COPYPEN;
+  R2_MASKNOTPEN   = Windows.R2_MASKNOTPEN;
+  R2_MASKPEN      = Windows.R2_MASKPEN;
+  R2_MASKPENNOT   = Windows.R2_MASKPENNOT;
+  R2_MERGENOTPEN  = Windows.R2_MERGENOTPEN;
+  R2_MERGEPEN     = Windows.R2_MERGEPEN;
+  R2_MERGEPENNOT  = Windows.R2_MERGEPENNOT;
+  R2_NOP          = Windows.R2_NOP;
+  R2_NOT          = Windows.R2_NOT;
+  R2_NOTCOPYPEN   = Windows.R2_NOTCOPYPEN;
+  R2_NOTMASKPEN   = Windows.R2_NOTMASKPEN;
+  R2_NOTMERGEPEN  = windows.R2_NOTMERGEPEN;
+  R2_NOTXORPEN    = Windows.R2_NOTXORPEN;
+  R2_WHITE        = Windows.R2_WHITE;
+  R2_XORPEN       = windows.R2_XORPEN;
+{$endif}
 
 
 //==============================================
@@ -2272,6 +2312,9 @@ end.
 
 {
   $Log$
+  Revision 1.74  2005/01/08 11:03:18  mattias
+  implemented TPen.Mode=pmXor  from Jesus
+
   Revision 1.73  2005/01/07 20:51:10  micha
   swap TCustomStaticText and TCustomLabel
 
