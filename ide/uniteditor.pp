@@ -1434,7 +1434,6 @@ begin
   // create or delete breakpoint
   // find breakpoint mark at line
   BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
-writeln('TSourceEditor.OnGutterClick A ',BreakPtMark<>nil);
   if BreakPtMark = nil then
     DebugBoss.DoCreateBreakPoint(Filename,Line)
   else
