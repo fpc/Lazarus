@@ -90,7 +90,6 @@ Type
                          // Assoc. windowproc also acts as handler for popup menus
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
-    FNextControlId: Cardinal;
 
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -255,6 +254,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2004/05/14 17:48:39  micha
+  fix itemheight of listbox, handle measureitem message
+
   Revision 1.78  2004/05/12 09:46:25  micha
   fix toolbar buttons by handling them as customcontrols
   remove handledialogmessage, now handled in lcl

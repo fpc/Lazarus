@@ -190,11 +190,6 @@ Var
     end;
   end;
 
-  procedure GetChildOwnerObject(ChildId: Integer);
-  begin
-    OwnerObject := TObject(Windows.GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
-  end;
-
   procedure SendPaintMessage;
   var
     DC, MemDC: HDC;
@@ -445,7 +440,7 @@ Begin
     End;
     WM_DRAWITEM:
     Begin
-      GetChildOwnerObject(WParam);
+      OwnerObject := TObject(WParam);
       if (OwnerObject is TCustomListbox) and
             (TCustomListBox(OwnerObject).Style <> lbStandard) then
       begin
@@ -831,7 +826,7 @@ Begin
     End;
     WM_MEASUREITEM:
     Begin
-      GetChildOwnerObject(WParam);
+      OwnerObject := TObject(WParam);
       LMessage.Msg := LM_MEASUREITEM;
       LMessage.LParam := LParam;
       LMessage.WParam := WParam;
@@ -1155,6 +1150,9 @@ end;
 
 {
   $Log$
+  Revision 1.104  2004/05/14 17:48:39  micha
+  fix itemheight of listbox, handle measureitem message
+
   Revision 1.103  2004/05/13 12:17:00  micha
   fixes to designer window mouse/key handling:
   - capture all events

@@ -39,7 +39,6 @@ Begin
   begin
     FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
   end;
-  FNextControlId := 0;
 End;
 
 {------------------------------------------------------------------------------
@@ -2275,8 +2274,7 @@ Begin
     if (Flags and WS_CHILD) <> 0 then
     begin
       // menu handle is also for specifying a control id if this is a child
-      MenuHandle := HMENU(FNextControlId);
-      Inc(FNextControlId);
+      MenuHandle := HMENU(Sender);
     end else begin
       MenuHandle := HMENU(nil);
     end;
@@ -2959,6 +2957,9 @@ End;
 
 {
   $Log$
+  Revision 1.194  2004/05/14 17:48:39  micha
+  fix itemheight of listbox, handle measureitem message
+
   Revision 1.193  2004/05/14 15:20:47  micha
   fix sizing when menu is attached to window
 

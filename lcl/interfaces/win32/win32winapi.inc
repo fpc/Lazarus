@@ -348,6 +348,19 @@ begin
       end;
     end;
 
+    LM_MEASUREITEM:
+    begin
+      with TLMMeasureItem(Message).MeasureItemStruct^ do
+      begin
+        if Sender is TCustomListBox then
+	begin
+	  itemHeight := TCustomListBox(Sender).ItemHeight;
+//	  if TCustomListBox(Sender).Style = lbOwnerDrawVariable then
+//	    TCustomListBox(Sender).MeasureItem(itemID, integer(itemHeight));
+	end;
+      end;
+    end;
+
     LM_MOUSEWHEEL:
     begin
       // provide default wheel scrolling functionality
@@ -2987,6 +3000,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2004/05/14 17:48:39  micha
+  fix itemheight of listbox, handle measureitem message
+
   Revision 1.110  2004/05/13 12:17:00  micha
   fixes to designer window mouse/key handling:
   - capture all events
