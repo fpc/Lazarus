@@ -859,14 +859,15 @@ begin
   end;
 end;
 
-procedure TApplication.NotifyKeyDownHandler(var Key: Word; Shift: TShiftState);
+procedure TApplication.NotifyKeyDownHandler(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
 var
   i: Integer;
 begin
   if FOnKeyDownHandler=nil then exit;
   i:=FOnKeyDownHandler.Count-1;
   while (i>=0) and (FOnKeyDownHandler<>nil) and (Key<>VK_UNKNOWN) do begin
-    TKeyEvent(FOnKeyDownHandler[i])(Self,Key,Shift);
+    TKeyEvent(FOnKeyDownHandler[i])(Sender,Key,Shift);
     dec(i);
     if (FOnKeyDownHandler<>nil) and (i>FOnKeyDownHandler.Count-1) then
       i:=FOnKeyDownHandler.Count-1;
@@ -991,6 +992,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/04/11 10:31:57  mattias
+  added Sender to Application OnKeyDownHandler
+
   Revision 1.49  2003/04/11 10:23:23  mattias
   added Application OnKeyDownHandler
 

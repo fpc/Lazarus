@@ -683,7 +683,8 @@ type
     procedure ShowException(E: Exception);
     procedure Terminate;
     procedure NotifyUserInputHandler(Msg: Cardinal);
-    procedure NotifyKeyDownHandler(var Key : Word; Shift : TShiftState);
+    procedure NotifyKeyDownHandler(Sender: TObject;
+                                   var Key : Word; Shift : TShiftState);
     procedure AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
     procedure RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
     procedure AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
