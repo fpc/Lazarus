@@ -181,6 +181,9 @@ begin
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
   AllocWindowInfo(FAppHandle);
 
+  // set nice main icon
+  SendMessage(FAppHandle, WM_SETICON, ICON_BIG, 
+    Windows.LoadIcon(MainInstance, 'MAINICON'));
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
@@ -733,6 +736,9 @@ end;
 
 {
   $Log$
+  Revision 1.296  2004/11/01 18:20:21  micha
+  set default icon instead of lcl icon which actually is a bitmap
+
   Revision 1.295  2004/10/29 09:52:08  micha
   fix crash on showing tabpage
   fix painting of radiobutton in groupbox (non-tabpage-parent)

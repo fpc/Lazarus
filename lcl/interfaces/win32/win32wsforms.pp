@@ -237,7 +237,7 @@ end;
 
 procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
 begin
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, AIcon);
+  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, Windows.LoadIcon(MainInstance, 'MAINICON'));
 end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
