@@ -133,7 +133,11 @@ begin
   if FState <> OldState then
   begin
     ApplyChanges;
-    if not ClicksDisabled then Click;
+    if UseOnChange then begin
+      DoOnChange;
+    end else begin
+      if not ClicksDisabled then Click;
+    end;
   end;
 end;
 
@@ -164,15 +168,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomCheckBox.Click;
- ------------------------------------------------------------------------------}
-procedure TCustomCheckBox.Click;
-begin
-  inherited Changed;
-  inherited Click;
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomCheckBox.SetText(const Value: TCaption);
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetText(const Value: TCaption);
@@ -193,8 +188,14 @@ begin
     CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
   end;
 end;
+
+// included by stdctrls.pp
+
 {
   $Log$
+  Revision 1.13  2003/03/25 16:56:57  mattias
+  implemented TButtonControl.UseOnChange
+
   Revision 1.12  2003/03/25 16:29:53  mattias
   fixed sending TButtonControl.OnClick on every change
 

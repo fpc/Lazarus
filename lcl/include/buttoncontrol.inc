@@ -21,6 +21,11 @@ begin
   //  or not TButtonActionLink(ActionLink).IsCheckedLinked;
 end;
 
+function TButtonControl.UseOnChangeIsStored: boolean;
+begin
+  Result:=true;
+end;
+
 function TButtonControl.GetChecked: Boolean;
 begin
   GetChecked := False;
@@ -31,9 +36,24 @@ begin
   // this is done in the overriden methods
 end;
 
+procedure TButtonControl.DoOnChange;
+begin
+  if Checked=fLastCheckedOnChange then exit;
+  fLastCheckedOnChange:=Checked;
+  if csLoading in ComponentState then exit;
+  if UseOnChange and Assigned(OnChange) then OnChange(Self);
+end;
+
+procedure TButtonControl.Click;
+begin
+  DoOnChange;
+  inherited Click;
+end;
+
 constructor TButtonControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FUseOnChange:=DefaultButtonControlUseOnChange;
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
 end;
 

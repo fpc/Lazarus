@@ -610,12 +610,21 @@ type
   TButtonControl = class(TWinControl)
   private
     FClicksDisabled: Boolean;
+    FOnChange: TNotifyEvent;
+    FUseOnChange: boolean;
     function IsCheckedStored: boolean;
+    function UseOnChangeIsStored: boolean;
   protected
+    fLastCheckedOnChange: boolean;
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
+    procedure DoOnChange; virtual;
+    procedure Click; override;
+  protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
+    property UseOnChange: boolean read FUseOnChange write FUseOnChange stored UseOnChangeIsStored;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -643,15 +652,11 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure SetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
-    procedure Click; override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
     property State: TCheckBoxState read GetState write SetState;
-  published
-    property TabOrder;
-    property TabStop;
   end;
 
 {$IFNDef NewCheckBox}
@@ -663,33 +668,35 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AutoSize;
     property AllowGrayed;
     property Anchors;
+    property AutoSize;
     property Caption;
     property Checked;
-    property State;
-    property Visible;
-    property Enabled;
-    property OnEnter;
-    property OnExit;
     property DragCursor;
     property DragKind;
     property DragMode;
+    property Enabled;
     property Hint;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
+    property OnChange;
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
+    property OnEnter;
+    property OnExit;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property State;
+    property TabOrder;
+    property TabStop;
+    property UseOnChange;
+    property Visible;
   end;
 {$Else NewCheckBox}
   // new checkbox
@@ -912,6 +919,9 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
+  
+var
+  DefaultButtonControlUseOnChange: boolean;
 
 implementation
 
@@ -1399,11 +1409,17 @@ end;
 
 {$I customstatictext.inc}
 
+initialization
+  DefaultButtonControlUseOnChange:=false;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.84  2003/03/25 16:56:57  mattias
+  implemented TButtonControl.UseOnChange
+
   Revision 1.83  2003/03/25 16:29:53  mattias
   fixed sending TButtonControl.OnClick on every change
 
