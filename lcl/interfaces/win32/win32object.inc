@@ -2510,7 +2510,7 @@ Begin
     End;
     csSpinEdit:
     Begin
-      Integer(Data^) := SendMessage(Handle, UDM_GETPOS, 0, 0);
+      Single(Data^) := SendMessage(Handle, UDM_GETPOS, 0, 0);
     End;
     Else
       Assert (True, Format('WARNING:[TWin32Object.GetValue]] failed for %S', [Sender.ClassName]));
@@ -2887,6 +2887,9 @@ End;
 
 {
   $Log$
+  Revision 1.150  2003/12/20 12:54:34  micha
+  fix spinedit value retrieval
+
   Revision 1.149  2003/12/19 21:34:53  micha
   fix compiler problem; wrong code for constants
 
