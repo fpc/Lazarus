@@ -134,6 +134,59 @@ begin
   Result:=XPMToPPChar(XPMSource.Value);
 end;
 
+{-------------------------------------------------------------------------------
+  function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
+
+  Converts the source of an XPM image file into an array of PChar.
+  See XPMToPPChar for more info.
+-------------------------------------------------------------------------------}
+function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
+var
+  s: string;
+begin
+  Result:=nil;
+  if Size<=0 then exit;
+  SetLength(s,Size);
+  Stream.Read(s[1],Size);
+  Result:=XPMToPPChar(s);
+end;
+
+{-------------------------------------------------------------------------------
+  function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
+    ): boolean;
+    
+  Reads the first line of an XPM PChar array, whcih contains the width, height
+  and number of colors of the XPM.
+-------------------------------------------------------------------------------}
+function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
+  ): boolean;
+var
+  LinePos: PChar;
+  
+  function ReadNumber(var i: integer): boolean;
+  begin
+    Result:=false;
+    // skip space
+    while (LinePos^ in [' ',#9]) do inc(LinePos);
+    // read number
+    i:=0;
+    while (LinePos^ in ['0'..'9']) do begin
+      i:=i*10+ord(LinePos^)-ord('0');
+      inc(LinePos);
+      Result:=true;
+    end;
+  end;
+  
+begin
+  Result:=false;
+  if (XPM=nil) or (XPM[0]=nil) then exit;
+  LinePos:=XPM[0];
+  if not ReadNumber(Width) then exit;
+  if not ReadNumber(Height) then exit;
+  if not ReadNumber(ColorCount) then exit;
+  Result:=true;
+end;
+
 
 { TPixmap }
 
@@ -164,105 +217,26 @@ begin
 end;
 
 procedure TPixmap.ReadStream(Stream: TStream; Size: Longint);
-type
-  TCharArray = array[0..0] of PChar;
-  PCharArray = ^TCharArray;
 var
-  Buf: PCharArray;
-  BufPtr: ^PChar;
-  i, j, LineCount, PixLen, Line3Start, LineStart, LineEnd: Integer;
-  s : String;
-  
-  procedure ParseDataLine;
-  var a: integer;
-  begin
-    if s[LineStart]<>'"' then exit;
-    a:=LineStart+1;
-    while (a<LineEnd) and (s[a]<>'"') do inc(a);
-    if a>=LineEnd then exit;
-    s[LineEnd]:=#0;
-    BufPtr^ := @s[LineStart+1];
-    Inc(BufPtr);
-  end;
-  
+  XPM: PPChar;
+  NewWidth, NewHeight, NewColorCount: integer;
 begin
-  FreeContext;
+  XPM:=ReadXPMFromStream(Stream,Size);
+  if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
+    raise Exception.Create('TPixmap.ReadStream: ERROR: reading xpm');
 
-  // Convert a XPM filedata format to a XPM memory format
-  // by filling an array of PChar with the contents between 
-  // the ""'s in the file
+  // free old pixmap
+  // Create the pixmap
+  if FTransparentColor = clNone then
+    // create a transparent pixmap (with mask)
+    Handle := CreatePixmapIndirect(XPM, -1)
+  else
+    // create an opaque pixmap.
+    // Transparent pixels are filled with FTransparentColor
+    Handle := CreatePixmapIndirect(XPM, ColorToRGB(FTransparentColor));
 
-  // read stream into string
-  PixLen:=Stream.Size;
-  if PixLen=0 then exit;
-  SetLength(s,PixLen);
-  Stream.Read(s[1],PixLen);
-  // count line ends
-  Line3Start:=-1;
-  LineCount:=1;
-  i:=1;
-  while (i<=PixLen) do begin
-    if not (s[i] in [#10,#13]) then
-      inc(i)
-    else begin
-      inc(LineCount);
-      inc(i);
-      if (i<=PixLen) and (s[i] in [#10,#13]) and (s[i]<>s[i-1]) then
-        inc(i);
-      if (LineCount=3) and (i<PixLen) then Line3Start:=i;
-    end;
-  end;
-  if (s[PixLen] in [#10,#13]) then dec(LineCount);
-  // build PChar Array of Data-Line Starts ( " characters)
-  if (LineCount>2) and (Line3Start>=1) and (s[Line3Start]='"') then begin
-    Buf := GetMem((LineCount+1) * SizeOf(PCharArray));
-    try
-      BufPtr := Pointer(Buf);
-      LineStart:=1;
-      i:=1;
-      while (i<=PixLen) do begin
-        if not (s[i] in [#10,#13]) then
-          inc(i)
-        else begin
-          // found line end
-          LineEnd:=i;
-          ParseDataLine;
-          inc(i);
-          if (i<=PixLen) and (s[i] in [#10,#13]) and (s[i]<>s[i-1]) then
-            inc(i);
-          LineStart:=i;
-        end;
-      end;
-      if not (s[PixLen] in [#10,#13]) and (LineStart<=PixLen) then begin
-        LineEnd:=PixLen+1;
-        ParseDataLine;
-      end;
-      BufPtr^ := nil;
-      // Create the pixmap
-      if FTransparentColor = clNone then
-        // create a transparent pixmap (with mask)
-        Handle := CreatePixmapIndirect(Buf, -1)
-      else
-        // create an opaque pixmap.
-        // Transparent pixels are filled with FTransparentColor
-        Handle := CreatePixmapIndirect(Buf, ColorToRGB(FTransparentColor));
-
-      // set width and height
-      // the third line is of the form '"<width as decimal> <height as decimal> '
-      LineEnd:=Line3Start;
-      while (LineEnd<PixLen) and not (s[LineEnd] in [#13,#10]) do inc(LineEnd);
-      i:=Line3Start+1; // ignore initial "
-      j:=i;
-      while (j<LineEnd) and (s[j]<>' ') do inc(j);
-      FWidth := StrToIntDef(copy(s,i,j-i),1);
-      inc(j);
-      i:=j;      
-      while (j<LineEnd) and (s[j]<>' ') do inc(j);
-      FHeight := StrToIntDef(copy(s,i,j-i),1);
-    finally
-      FreeMem(Buf);
-    end;
-  end;
+  FWidth:=NewWidth;
+  FHeight:=NewHeight;
 end;
 
 // included by graphics.pp
@@ -270,6 +244,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/09/02 08:13:17  lazarus
+  MG: fixed GraphicClass.Create
+
   Revision 1.13  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 

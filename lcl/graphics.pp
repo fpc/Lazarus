@@ -320,7 +320,7 @@ type
     procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
-    constructor Create; // virtual;
+    constructor Create; virtual;
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
@@ -605,7 +605,7 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
   public
-    constructor Create; // override;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
@@ -685,6 +685,9 @@ function ClearXLFDStyle(const LongFontName: string): string;
 
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
+function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
+function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
+  ): boolean;
 
 var 
   { Stores information about the current screen }
@@ -843,6 +846,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/09/02 08:13:16  lazarus
+  MG: fixed GraphicClass.Create
+
   Revision 1.39  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 

@@ -376,21 +376,28 @@ begin
   if GraphicClass = nil then
     raise EInvalidGraphic.CreateFmt('Unknown picture extension', [Ext]);
 
+writeln('TPicture.LoadFromFile A ',GraphicClass.ClassName);
   NewGraphic := GraphicClass.Create;
+writeln('TPicture.LoadFromFile B ',NewGraphic.ClassName);
   ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
+writeln('TPicture.LoadFromFile C ');
     NewGraphic.LoadFromFile(Filename);
+writeln('TPicture.LoadFromFile D ');
     ok:=true;
   finally
     // this try..finally construction will in case of an exception
     // not alter the error backtrace output
     if not ok then NewGraphic.Free;
   end;
+writeln('TPicture.LoadFromFile E ');
   FGraphic.Free;
+writeln('TPicture.LoadFromFile F ');
   FGraphic := NewGraphic;
   FGraphic.OnChange := @Changed;
   Changed(Self);
+writeln('TPicture.LoadFromFile END ');
 end;
 
 procedure TPicture.SaveToFile(const Filename: string);

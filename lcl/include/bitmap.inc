@@ -290,7 +290,8 @@ end;
 
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
-  // TODO: the properties from new bitmap
+  // TODO: get the properties from new bitmap (Width, Height)
+  //       When this is done, then check TPixmap.ReadStream
   with FImage do
     if FHandle <> Value then
     begin
@@ -367,6 +368,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/09/02 08:13:16  lazarus
+  MG: fixed GraphicClass.Create
+
   Revision 1.14  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
