@@ -5390,13 +5390,15 @@ end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
 var i: integer;
+  SrcEdit: TSourceEditor;
 begin
   i:=Project1.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
   if i>=0 then begin
     Project1.Units[i].Modified:=true;
     if Project1.Units[i].Loaded then
-      SourceNotebook.FindSourceEditorWithPageIndex(
-        Project1.Units[i].EditorIndex).EditorComponent.Modified:=true;
+      SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
+        Project1.Units[i].EditorIndex);
+    if SrcEdit<>nil then SrcEdit.EditorComponent.Modified:=true;
   end;
 end;
 
@@ -5404,9 +5406,9 @@ procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
 var NewSelectedComponents : TComponentSelectionList;
   i: integer;
 begin
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.OnControlSelectionChanged]');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TMainIDE.OnControlSelectionChanged]');
+  {$ENDIF}
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
   NewSelectedComponents:=TComponentSelectionList.Create;
   for i:=0 to TheControlSelection.Count-1 do begin
@@ -5414,9 +5416,9 @@ writeln('[TMainIDE.OnControlSelectionChanged]');
   end;
   FormEditor1.SelectedComponents:=NewSelectedComponents;
   NewSelectedComponents.Free;
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.OnControlSelectionChanged] END');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TMainIDE.OnControlSelectionChanged] END');
+  {$ENDIF}
 end;
 
 // -----------------------------------------------------------------------------
@@ -6501,6 +6503,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.314  2002/06/19 19:46:05  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.313  2002/06/14 14:57:05  lazarus
   MG: fixed open file at cursor search path
 

@@ -37,9 +37,9 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
-  ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs,
-  ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory;
+  Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, XMLCfg,
+  ObjectInspector, ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf,
+  Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory;
 
 const
   EnvOptsVersion: integer = 101;
@@ -90,14 +90,19 @@ type
     FIDEWindowLayoutList: TIDEWindowLayoutList;
 
     // form editor
-    FDisplayGrid: boolean;
+    FShowGrid: boolean;
+    FGridColor: TColor;
     FSnapToGrid: boolean;
+    FGridSizeX: integer;
+    FGridSizeY: integer;
+    FShowGuideLines: boolean;
+    FSnapToGuideLines: boolean;
+    FGuideLineColorLeftTop: TColor;
+    FGuideLineColorRightBottom: TColor;
     FShowComponentCaptions: boolean;
     FShowEditorHints: boolean;
     FAutoCreateForms: boolean;
-    FGridSizeX: integer;
-    FGridSizeY: integer;
-    
+
     // object inspector
     FObjectInspectorOptions: TOIOptions;
     
@@ -165,14 +170,21 @@ type
         read FIDEWindowLayoutList write FIDEWindowLayoutList;
 
     // form editor
-    property DisplayGrid: boolean read FDisplayGrid write FDisplayGrid;
+    property ShowGrid: boolean read FShowGrid write FShowGrid;
     property SnapToGrid: boolean read FSnapToGrid write FSnapToGrid;
+    property GridColor: TColor read FGridColor write FGridColor;
+    property GridSizeX: integer read FGridSizeX write FGridSizeX;
+    property GridSizeY: integer read FGridSizeY write FGridSizeY;
+    property ShowGuideLines: boolean read FShowGuideLines write FShowGuideLines;
+    property SnapToGuideLines: boolean read FSnapToGuideLines write FSnapToGuideLines;
+    property GuideLineColorLeftTop: TColor
+       read FGuideLineColorLeftTop write FGuideLineColorLeftTop;
+    property GuideLineColorRightBottom: TColor
+       read FGuideLineColorRightBottom write FGuideLineColorRightBottom;
     property ShowComponentCaptions: boolean
        read FShowComponentCaptions write FShowComponentCaptions;
     property ShowEditorHints: boolean read FShowEditorHints write FShowEditorHints;
     property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms;
-    property GridSizeX: integer read FGridSizeX write FGridSizeX;
-    property GridSizeY: integer read FGridSizeY write FGridSizeY;
 
     // object inspector
     property ObjectInspectorOptions: TOIOptions
@@ -274,15 +286,26 @@ type
     WindowPositionsBox: TIDEWindowSetupLayoutComponent;
 
     // form editor
-    DisplayGridCheckBox: TCheckBox;
+    GridGroupBox: TGroupBox;
+    ShowGridCheckBox: TCheckBox;
+    GridColorLabel: TLabel;
+    GridColorButton: TColorButton;
     SnapToGridCheckBox: TCheckBox;
-    ShowComponentCaptionsCheckBox: TCheckBox;
-    ShowEditorHintsCheckBox: TCheckBox;
-    AutoCreateFormsCheckBox: TCheckBox;
     GridSizeXLabel: TLabel;
     GridSizeXComboBox: TComboBox;
     GridSizeYLabel: TLabel;
     GridSizeYComboBox: TComboBox;
+    GuideLinesGroupBox: TGroupBox;
+    ShowGuideLinesCheckBox: TCheckBox;
+    SnapToGuideLinesCheckBox: TCheckBox;
+    GuideLineColorLeftTopLabel: TLabel;
+    GuideLineColorLeftTopButton: TColorButton;
+    GuideLineColorRightBottomLabel: TLabel;
+    GuideLineColorRightBottomButton: TColorButton;
+    FormEditMiscGroupBox: TGroupBox;
+    ShowComponentCaptionsCheckBox: TCheckBox;
+    ShowEditorHintsCheckBox: TCheckBox;
+    AutoCreateFormsCheckBox: TCheckBox;
 
     // object inspector
     ObjectInspectorGroupBox: TGroupBox;
@@ -451,13 +474,18 @@ begin
   InitLayoutList;
 
   // form editor
-  FDisplayGrid:=true;
+  FShowGrid:=true;
+  FGridColor:=clBlack;
   FSnapToGrid:=true;
+  FGridSizeX:=8;
+  FGridSizeY:=8;
+  FShowGuideLines:=true;
+  FSnapToGuideLines:=true;
+  FGuideLineColorLeftTop:=clBlue;
+  FGuideLineColorRightBottom:=clGreen;
   FShowComponentCaptions:=false;
   FShowEditorHints:=false;
   FAutoCreateForms:=true;
-  FGridSizeX:=8;
-  FGridSizeY:=8;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
@@ -610,20 +638,32 @@ begin
       'EnvironmentOptions/Desktop/');
 
     // form editor
-    FDisplayGrid:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/DisplayGrid',FDisplayGrid);
+    FShowGrid:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/ShowGrid',FShowGrid);
+    FGridColor:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/GridColor',FGridColor);
     FSnapToGrid:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/SnapToGrid',FSnapToGrid);
+    FGridSizeX:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/GridSizeX',FGridSizeX);
+    FGridSizeY:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
+    FShowGuideLines:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/ShowGuideLines',FShowGuideLines);
+    FSnapToGuideLines:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/SnapToGuideLines',FSnapToGuideLines);
+    FGuideLineColorLeftTop:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/GuideLineColorLeftTop',
+       FGuideLineColorLeftTop);
+    FGuideLineColorRightBottom:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/GuideLineColorRightBottom',
+       FGuideLineColorRightBottom);
     FShowComponentCaptions:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/ShowComponentCaptions',FShowComponentCaptions);
     FShowEditorHints:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints);
     FAutoCreateForms:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/AutoCreateForms',FAutoCreateForms);
-    FGridSizeX:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GridSizeX',FGridSizeX);
-    FGridSizeY:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
 
     if not OnlyDesktop then begin
       // files
@@ -778,16 +818,32 @@ begin
       'EnvironmentOptions/Desktop/');
 
     // form editor
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/DisplayGrid',FDisplayGrid);
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/SnapToGrid',FSnapToGrid);
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/ShowComponentCaptions'
-       ,FShowComponentCaptions);
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/ShowEditorHints'
-       ,FShowEditorHints);
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/AutoCreateForms'
-       ,FAutoCreateForms);
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/GridSizeX',FGridSizeX);
-    XMLConfig.SetValue('EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/ShowGrid',FShowGrid);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/GridColor',FGridColor);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/SnapToGrid',FSnapToGrid);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/GridSizeX',FGridSizeX);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/ShowGuideLines',FShowGuideLines);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/SnapToGuideLines',FSnapToGuideLines);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/GuideLineColorLeftTop',
+       FGuideLineColorLeftTop);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/GuideLineColorRightBottom',
+       FGuideLineColorRightBottom);
+    XMLConfig.SetValue('EnvironmentOptions/FormEditor/ShowComponentCaptions',
+       FShowComponentCaptions);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints);
+    XMLConfig.SetValue(
+       'EnvironmentOptions/FormEditor/AutoCreateForms',FAutoCreateForms);
 
     if not OnlyDesktop then begin
       // files
@@ -1702,129 +1758,273 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
+
+  procedure SetupGridGroupBox;
+  begin
+    ShowGridCheckBox:=TCheckBox.Create(Self);
+    with ShowGridCheckBox do begin
+      Name:='ShowGridCheckBox';
+      Parent:=GridGroupBox;
+      Left:=6;
+      Top:=2;
+      Width:=200;
+      Caption:='Show grid';
+      Visible:=true;
+    end;
+
+    GridColorButton:=TColorButton.Create(Self);
+    with GridColorButton do begin
+      Name:='GridColorButton';
+      Parent:=GridGroupBox;
+      Left:=ShowGridCheckBox.Left;
+      Top:=ShowGridCheckBox.Top+ShowGridCheckBox.Height+5;
+      Width:=50;
+      Height:=25;
+      Visible:=true;
+    end;
+
+    GridColorLabel:=TLabel.Create(Self);
+    with GridColorLabel do begin
+      Name:='GridColorLabel';
+      Parent:=GridGroupBox;
+      Left:=GridColorButton.Left+GridColorButton.Width+5;
+      Top:=GridColorButton.Top+2;
+      Width:=80;
+      Caption:='Grid color';
+      Visible:=true;
+    end;
+
+    SnapToGridCheckBox:=TCheckBox.Create(Self);
+    with SnapToGridCheckBox do begin
+      Name:='SnapToGridCheckBox';
+      Parent:=GridGroupBox;
+      Top:=GridColorLabel.Top+GridColorLabel.Height+10;
+      Left:=ShowGridCheckBox.Left;
+      Width:=ShowGridCheckBox.Width;
+      Height:=ShowGridCheckBox.Height;
+      Caption:='Snap to grid';
+      Visible:=true;
+    end;
+
+    GridSizeXLabel:=TLabel.Create(Self);
+    with GridSizeXLabel do begin
+      Name:='GridSizeXLabel';
+      Parent:=GridGroupBox;
+      Left:=ShowGridCheckBox.Left;
+      Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
+      Width:=80;
+      Caption:='Grid size X';
+      Visible:=true;
+    end;
+
+    GridSizeXComboBox:=TComboBox.Create(Self);
+    with GridSizeXComboBox do begin
+      Name:='GridSizeXComboBox';
+      Parent:=GridGroupBox;
+      Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
+      Top:=GridSizeXLabel.Top-2;
+      Width:=60;
+      with Items do begin
+        BeginUpdate;
+        Add('2');
+        Add('5');
+        Add('8');
+        Add('10');
+        Add('12');
+        Add('15');
+        Add('20');
+        Add('25');
+        Add('30');
+        EndUpdate;
+      end;
+      Visible:=true;
+    end;
+
+    GridSizeYLabel:=TLabel.Create(Self);
+    with GridSizeYLabel do begin
+      Name:='GridSizeYLabel';
+      Parent:=GridGroupBox;
+      Left:=GridSizeXLabel.Left;
+      Top:=GridSizeXLabel.Top+GridSizeXLabel.Height+5;
+      Width:=GridSizeXLabel.Width;
+      Caption:='Grid size Y';
+      Visible:=true;
+    end;
+
+    GridSizeYComboBox:=TComboBox.Create(Self);
+    with GridSizeYComboBox do begin
+      Name:='GridSizeYComboBox';
+      Parent:=GridGroupBox;
+      Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
+      Top:=GridSizeYLabel.Top-2;
+      Width:=GridSizeXComboBox.Width;
+      with Items do begin
+        BeginUpdate;
+        Add('2');
+        Add('5');
+        Add('8');
+        Add('10');
+        Add('12');
+        Add('15');
+        Add('20');
+        Add('25');
+        Add('30');
+        EndUpdate;
+      end;
+      Visible:=true;
+    end;
+  end;
+
+  procedure SetupGuideLinesGroupBox;
+  begin
+    ShowGuideLinesCheckBox:=TCheckBox.Create(Self);
+    with ShowGuideLinesCheckBox do begin
+      Name:='ShowGuideLinesCheckBox';
+      Parent:=GuideLinesGroupBox;
+      Left:=5;
+      Top:=5;
+      Width:=Parent.ClientWidth-2*Left;
+      Caption:='Show Guide Lines';
+      Visible:=true;
+    end;
+    
+    SnapToGuideLinesCheckBox:=TCheckBox.Create(Self);
+    with SnapToGuideLinesCheckBox do begin
+      Name:='SnapToGuideLinesCheckBox';
+      Parent:=GuideLinesGroupBox;
+      Left:=ShowGuideLinesCheckBox.Left;
+      Top:=ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5;
+      Width:=ShowGuideLinesCheckBox.Width;
+      Caption:='Snap to Guide Lines';
+      Visible:=true;
+    end;
+    
+    GuideLineColorLeftTopButton:=TColorButton.Create(Self);
+    with GuideLineColorLeftTopButton do begin
+      Name:='GuideLineColorLeftTopButton';
+      Parent:=GuideLinesGroupBox;
+      Left:=SnapToGuideLinesCheckBox.Left;
+      Top:=SnapToGuideLinesCheckBox.Top+SnapToGuideLinesCheckBox.Height+5;
+      Width:=50;
+      Height:=25;
+      Visible:=true;
+    end;
+    
+    GuideLineColorLeftTopLabel:=TLabel.Create(Self);
+    with GuideLineColorLeftTopLabel do begin
+      Name:='GuideLineColorLeftTopLabel';
+      Parent:=GuideLinesGroupBox;
+      Left:=GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5;
+      Top:=GuideLineColorLeftTopButton.Top+2;
+      Width:=150;
+      Caption:='color for left, top';
+      Visible:=true;
+    end;
+
+    GuideLineColorRightBottomButton:=TColorButton.Create(Self);
+    with GuideLineColorRightBottomButton do begin
+      Name:='GuideLineColorRightBottomButton';
+      Parent:=GuideLinesGroupBox;
+      Left:=GuideLineColorLeftTopButton.Left;
+      Top:=GuideLineColorLeftTopButton.Top
+          +GuideLineColorLeftTopButton.Height+5;
+      Width:=50;
+      Height:=25;
+      Visible:=true;
+    end;
+
+    GuideLineColorRightBottomLabel:=TLabel.Create(Self);
+    with GuideLineColorRightBottomLabel do begin
+      Name:='GuideLineColorRightBottomLabel';
+      Parent:=GuideLinesGroupBox;
+      Left:=GuideLineColorLeftTopLabel.Left;
+      Top:=GuideLineColorRightBottomButton.Top+2;
+      Width:=GuideLineColorLeftTopLabel.Width;
+      Caption:='color for right, bottom';
+      Visible:=true;
+    end;
+  end;
+  
+  procedure SetupMiscGroupBox;
+  begin
+    ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
+    with ShowComponentCaptionsCheckBox do begin
+      Name:='ShowComponentCaptionsCheckBox';
+      Parent:=FormEditMiscGroupBox;
+      Top:=5;
+      Left:=5;
+      Width:=Parent.ClientWidth-2*Left;
+      Caption:='Show component captions';
+      Visible:=true;
+    end;
+
+    ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
+    with ShowEditorHintsCheckBox do begin
+      Name:='ShowEditorHintsCheckBox';
+      Parent:=FormEditMiscGroupBox;
+      Top:=ShowComponentCaptionsCheckBox.Top
+           +ShowComponentCaptionsCheckBox.Height+5;
+      Left:=ShowComponentCaptionsCheckBox.Left;
+      Width:=ShowComponentCaptionsCheckBox.Width;
+      Caption:='Show editor hints';
+      Visible:=true;
+    end;
+
+    AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
+    with AutoCreateFormsCheckBox do begin
+      Name:='AutoCreateFormsCheckBox';
+      Parent:=FormEditMiscGroupBox;
+      Top:=ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5;
+      Left:=ShowEditorHintsCheckBox.Left;
+      Width:=ShowEditorHintsCheckBox.Width;
+      Caption:='Auto create forms';
+      Visible:=true;
+    end;
+  end;
+
 begin
-  // form editor
-  DisplayGridCheckBox:=TCheckBox.Create(Self);
-  with DisplayGridCheckBox do begin
-    Name:='DisplayGridCheckBox';
+  // form editor page
+  GridGroupBox:=TGroupBox.Create(Self);
+  with GridGroupBox do begin
+    Name:='GridGroupBox';
     Parent:=Notebook.Page[Page];
-    Left:=6;
-    Top:=2;
-    Width:=200;
-    Height:=23;
-    Caption:='Display grid';
+    Left:=5;
+    Top:=5;
+    Width:=((Parent.ClientWidth-3*Left) div 2);
+    Height:=170;
+    Caption:='Grid';
     Visible:=true;
   end;
+  
+  SetupGridGroupBox;
+  
+  GuideLinesGroupBox:=TGroupBox.Create(Self);
+  with GuideLinesGroupBox do begin
+    Name:='GuideLinesGroupBox';
+    Parent:=Notebook.Page[Page];
+    Left:=GridGroupBox.Left+GridGroupBox.Width+5;
+    Top:=GridGroupBox.Top;
+    Width:=GridGroupBox.Width;
+    Height:=GridGroupBox.Height;
+    Caption:='Guide lines';
+    Visible:=true;
+  end;
+  
+  SetupGuideLinesGroupBox;
 
-  SnapToGridCheckBox:=TCheckBox.Create(Self);
-  with SnapToGridCheckBox do begin
-    Name:='SnapToGridCheckBox';
+  FormEditMiscGroupBox:=TGroupBox.Create(Self);
+  with FormEditMiscGroupBox do begin
+    Name:='FormEditMiscGroupBox';
     Parent:=Notebook.Page[Page];
-    Top:=27;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
-    Caption:='Snap to grid';
+    Left:=5;
+    Top:=GridGroupBox.Top+GridGroupBox.Height+5;
+    Width:=Parent.ClientWidth-2*Left;
+    Height:=100;
+    Caption:='Miscellaneous';
     Visible:=true;
   end;
-
-  ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
-  with ShowComponentCaptionsCheckBox do begin
-    Name:='ShowComponentCaptionsCheckBox';
-    Parent:=Notebook.Page[Page];
-    Top:=52;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
-    Caption:='Show component captions';
-    Visible:=true;
-  end;
-
-  ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
-  with ShowEditorHintsCheckBox do begin
-    Name:='ShowEditorHintsCheckBox';
-    Parent:=Notebook.Page[Page];
-    Top:=77;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
-    Caption:='Show editor hints';
-    Visible:=true;
-  end;
-
-  AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
-  with AutoCreateFormsCheckBox do begin
-    Name:='AutoCreateFormsCheckBox';
-    Parent:=Notebook.Page[Page];
-    Top:=102;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
-    Caption:='Auto create forms';
-    Visible:=true;
-  end;
-
-  GridSizeXLabel:=TLabel.Create(Self);
-  with GridSizeXLabel do begin
-    Name:='GridSizeXLabel';
-    Parent:=Notebook.Page[Page];
-    Left:=6;
-    Top:=129;
-    Width:=80;
-    Height:=20;
-    Caption:='Grid size X';
-    Visible:=true;
-  end;
-
-  GridSizeXComboBox:=TComboBox.Create(Self);
-  with GridSizeXComboBox do begin
-    Name:='GridSizeXComboBox';
-    Parent:=Notebook.Page[Page];
-    Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
-    Top:=GridSizeXLabel.Top+2;
-    Width:=60;
-    Height:=23;
-    with Items do begin
-      BeginUpdate;
-      Add('2');
-      Add('5');
-      Add('8');
-      Add('10');
-      EndUpdate;
-    end;
-    Visible:=true;
-  end;
-
-  GridSizeYLabel:=TLabel.Create(Self);
-  with GridSizeYLabel do begin
-    Name:='GridSizeYLabel';
-    Parent:=Notebook.Page[Page];
-    Left:=6;
-    Top:=154;
-    Width:=GridSizeXLabel.Width;
-    Height:=20;
-    Caption:='Grid size Y';
-    Visible:=true;
-  end;
-
-  GridSizeYComboBox:=TComboBox.Create(Self);
-  with GridSizeYComboBox do begin
-    Name:='GridSizeYComboBox';
-    Parent:=Notebook.Page[Page];
-    Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
-    Top:=GridSizeYLabel.Top+2;
-    Width:=60;
-    Height:=23;
-    with Items do begin
-      BeginUpdate;
-      Add('2');
-      Add('5');
-      Add('8');
-      Add('10');
-      EndUpdate;
-    end;
-    Visible:=true;
-  end;
+  
+  SetupMiscGroupBox;
 end;
 
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
@@ -1948,70 +2148,126 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
+
+  procedure SetupGridGroupBox;
+  begin
+    with ShowGridCheckBox do begin
+      SetBounds(6,2,200,Height);
+    end;
+
+    with GridColorButton do begin
+      SetBounds(ShowGridCheckBox.Left,
+                ShowGridCheckBox.Top+ShowGridCheckBox.Height+5,
+                50,25);
+    end;
+
+    with GridColorLabel do begin
+      SetBounds(GridColorButton.Left+GridColorButton.Width+5,
+             GridColorButton.Top+2,80,Height);
+    end;
+
+    with SnapToGridCheckBox do begin
+      SetBounds(ShowGridCheckBox.Left,
+                GridColorLabel.Top+GridColorLabel.Height+10,
+                ShowGridCheckBox.Width,
+                ShowGridCheckBox.Height);
+    end;
+
+    with GridSizeXLabel do begin
+      SetBounds(ShowGridCheckBox.Left,
+                SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,80,Height);
+    end;
+
+    with GridSizeXComboBox do begin
+      SetBounds(GridSizeXLabel.Left+GridSizeXLabel.Width+5,
+                GridSizeXLabel.Top-2,60,Height);
+    end;
+
+    with GridSizeYLabel do begin
+      SetBounds(GridSizeXLabel.Left,
+                GridSizeXLabel.Top+GridSizeXLabel.Height+5,
+                GridSizeXLabel.Width,Height);
+    end;
+
+    with GridSizeYComboBox do begin
+      SetBounds(GridSizeYLabel.Left+GridSizeYLabel.Width+5,
+                GridSizeYLabel.Top-2,
+                GridSizeXComboBox.Width,Height);
+    end;
+  end;
+
+  procedure SetupGuideLinesGroupBox;
+  begin
+    with ShowGuideLinesCheckBox do begin
+      SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
+    end;
+
+    with SnapToGuideLinesCheckBox do begin
+      SetBounds(ShowGuideLinesCheckBox.Left,
+                ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5,
+                ShowGuideLinesCheckBox.Width,Height);
+    end;
+
+    with GuideLineColorLeftTopButton do begin
+      SetBounds(SnapToGuideLinesCheckBox.Left,
+                SnapToGuideLinesCheckBox.Top+SnapToGuideLinesCheckBox.Height+5,
+                50,25);
+    end;
+
+    with GuideLineColorLeftTopLabel do begin
+      SetBounds(GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5,
+                GuideLineColorLeftTopButton.Top+2,150,Height);
+    end;
+
+    with GuideLineColorRightBottomButton do begin
+      SetBounds(GuideLineColorLeftTopButton.Left,
+                GuideLineColorLeftTopButton.Top
+                  +GuideLineColorLeftTopButton.Height+5,50,25);
+    end;
+
+    with GuideLineColorRightBottomLabel do begin
+      SetBounds(GuideLineColorLeftTopLabel.Left,
+                GuideLineColorRightBottomButton.Top+2,
+                GuideLineColorLeftTopLabel.Width,Height);
+    end;
+  end;
+
+  procedure SetupMiscGroupBox;
+  begin
+    with ShowComponentCaptionsCheckBox do begin
+      SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
+    end;
+
+    with ShowEditorHintsCheckBox do begin
+      SetBounds(ShowComponentCaptionsCheckBox.Left,
+                ShowComponentCaptionsCheckBox.Top
+                 +ShowComponentCaptionsCheckBox.Height+5,
+                ShowComponentCaptionsCheckBox.Width,Height);
+    end;
+
+    with AutoCreateFormsCheckBox do begin
+      SetBounds(ShowEditorHintsCheckBox.Left,
+                ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
+                ShowEditorHintsCheckBox.Width,Height);
+    end;
+  end;
+
 begin
-  // form editor
-  with DisplayGridCheckBox do begin
-    Left:=6;
-    Top:=2;
-    Width:=200;
-    Height:=23;
+  // form editor page
+  with GridGroupBox do begin
+    SetBounds(5,5,((Parent.ClientWidth-3*Left) div 2),170);
   end;
-
-  with SnapToGridCheckBox do begin
-    Top:=27;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
+  SetupGridGroupBox;
+  with GuideLinesGroupBox do begin
+    SetBounds(GridGroupBox.Left+GridGroupBox.Width+5,GridGroupBox.Top,
+              GridGroupBox.Width,GridGroupBox.Height);
   end;
-
-  with ShowComponentCaptionsCheckBox do begin
-    Top:=52;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
+  SetupGuideLinesGroupBox;
+  with FormEditMiscGroupBox do begin
+    SetBounds(5,GridGroupBox.Top+GridGroupBox.Height+5,
+              Parent.ClientWidth-2*Left,100);
   end;
-
-  with ShowEditorHintsCheckBox do begin
-    Top:=77;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
-  end;
-
-  with AutoCreateFormsCheckBox do begin
-    Top:=102;
-    Left:=DisplayGridCheckBox.Left;
-    Width:=DisplayGridCheckBox.Width;
-    Height:=DisplayGridCheckBox.Height;
-  end;
-
-  with GridSizeXLabel do begin
-    Left:=6;
-    Top:=129;
-    Width:=80;
-    Height:=20;
-  end;
-
-  with GridSizeXComboBox do begin
-    Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
-    Top:=GridSizeXLabel.Top+2;
-    Width:=60;
-    Height:=23;
-  end;
-
-  with GridSizeYLabel do begin
-    Left:=6;
-    Top:=154;
-    Width:=GridSizeXLabel.Width;
-    Height:=20;
-  end;
-
-  with GridSizeYComboBox do begin
-    Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
-    Top:=GridSizeYLabel.Top+2;
-    Width:=60;
-    Height:=23;
-  end;
+  SetupMiscGroupBox;
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
@@ -2464,13 +2720,18 @@ begin
       ShowHintsForMainSpeedButtons;
 
     // form editor
-    DisplayGridCheckBox.Checked:=DisplayGrid;
+    ShowGridCheckBox.Checked:=ShowGrid;
+    GridColorButton.ButtonColor:=GridColor;
     SnapToGridCheckBox.Checked:=SnapToGrid;
+    SetComboBoxText(GridSizeXComboBox,IntToStr(GridSizeX));
+    SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
+    ShowGuideLinesCheckBox.Checked:=ShowGuideLines;
+    SnapToGuideLinesCheckBox.Checked:=SnapToGuideLines;
+    GuideLineColorLeftTopButton.ButtonColor:=GuideLineColorLeftTop;
+    GuideLineColorRightBottomButton.ButtonColor:=GuideLineColorRightBottom;
     ShowComponentCaptionsCheckBox.Checked:=ShowComponentCaptions;
     ShowEditorHintsCheckBox.Checked:=ShowEditorHints;
     AutoCreateFormsCheckBox.Checked:=AutoCreateForms;
-    SetComboBoxText(GridSizeXComboBox,IntToStr(GridSizeX));
-    SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
 
     // files
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
@@ -2562,13 +2823,18 @@ begin
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
 
     // form editor
-    DisplayGrid:=DisplayGridCheckBox.Checked;
+    ShowGrid:=ShowGridCheckBox.Checked;
+    GridColor:=GridColorButton.ButtonColor;
     SnapToGrid:=SnapToGridCheckBox.Checked;
+    GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
+    GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
+    ShowGuideLines:=ShowGuideLinesCheckBox.Checked;
+    SnapToGuideLines:=SnapToGridCheckBox.Checked;
+    GuideLineColorLeftTop:=GuideLineColorLeftTopButton.ButtonColor;
+    GuideLineColorRightBottom:=GuideLineColorRightBottomButton.ButtonColor;
     ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints:=ShowEditorHintsCheckBox.Checked;
     AutoCreateForms:=AutoCreateFormsCheckBox.Checked;
-    GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
-    GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
 
     // files
     LazarusDirectory:=LazarusDirComboBox.Text;

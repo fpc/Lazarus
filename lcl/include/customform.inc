@@ -494,7 +494,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm WndProc                                                    }
 {------------------------------------------------------------------------------}
-procedure TCustomForm.WndProc(Var Message : TLMessage);
+procedure TCustomForm.WndProc(Var TheMessage : TLMessage);
 var
   FocusHandle : HWND;
 //  SaveIndex : Integer;
@@ -504,7 +504,7 @@ var
 
 begin
 // Assert(False, 'Trace:-----------------IN TCUSTOMFORM WNDPROC-------------------');
-  with Message do
+  with TheMessage do
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
       begin
@@ -525,7 +525,7 @@ begin
             LCLLinux.SetFocus(FocusHandle);
             Exit;
           end;
-          Message.Result:=0;
+          TheMessage.Result:=0;
         end;
       end;
     CM_EXIT:  
@@ -541,14 +541,18 @@ begin
       then begin
         if  (Position in [poDefault, poDefaultPosOnly]) 
         and (WindowState <> wsMaximized) 
-        then with PWindowPos(Message.lParam)^ do flags := flags or SWP_NOMOVE;
+        then
+          with PWindowPos(TheMessage.lParam)^ do
+            flags := flags or SWP_NOMOVE;
         
         if  (Position in [poDefault, poDefaultSizeOnly]) 
         and (BorderStyle in [bsSizeable, bsSizeToolWin]) 
-        then with PWindowPos(Message.lParam)^ do flags := flags or SWP_NOSIZE;
+        then
+          with PWindowPos(TheMessage.lParam)^ do
+            flags := flags or SWP_NOSIZE;
       end;
     LM_DRAWITEM:
-      with PDrawItemStruct(Message.LParam)^ do
+      with PDrawItemStruct(TheMessage.LParam)^ do
       begin
         if (CtlType = ODT_MENU) and Assigned(Menu) 
         then begin
@@ -618,7 +622,7 @@ riteln('[TCustomForm.WndPRoc] 1');
         Assert(False, 'Trace:LM_SHOWWINDOW RECEIVED!!!!!!!!!!!');
       end;
     end;
-  inherited WndProc(Message);
+  inherited WndProc(TheMessage);
 end;
 
 
@@ -1033,6 +1037,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/06/19 19:46:09  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.47  2002/05/30 21:17:27  lazarus
   lcl/controls.pp
 

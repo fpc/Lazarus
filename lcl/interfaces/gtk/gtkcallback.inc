@@ -28,24 +28,24 @@ var
   LastFileSelectRow : gint;
 
 
-function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
+function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 begin
   if TObject(Target) is TWinControl then
   begin
-    Result := PostMessage(TWinControl(Target).Handle, TLMessage(Message).Msg,
-      TLMessage(Message).WParam, TLMessage(Message).LParam);
+    Result := PostMessage(TWinControl(Target).Handle, TLMessage(TheMessage).Msg,
+      TLMessage(TheMessage).WParam, TLMessage(TheMessage).LParam);
   end
   else
   begin
-    Result := DeliverMessage(Target, Message) = 0;
+    Result := DeliverMessage(Target, TheMessage) = 0;
   end;
 end;
 
-procedure EventTrace(message : string; data : pointer);
+procedure EventTrace(Themessage : string; data : pointer);
 begin
   if Data = nil 
-  then Assert(False, Format('Trace:Event [%s] fired',[message]))
-  else Assert(False, Format('Trace:Event [%s] fired for %s',[message, TObject(data).Classname]));
+  then Assert(False, Format('Trace:Event [%s] fired',[Themessage]))
+  else Assert(False, Format('Trace:Event [%s] fired for %s',[Themessage, TObject(data).Classname]));
 end;
 
 {*************************************************************}
@@ -471,16 +471,11 @@ begin
 
   DeliverPostMessage(Data, Msg);
 
-  if (Pointer(MCaptureHandle) <> widget)
-  and (MCaptureHandle <> 0)
-  then begin
-    // capture differs. => gtk forgot to tell, that the capturing ended
-    // -> end capturing
-    
-    // ToDo: end capturing
-    
-    WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p',
-      [MCaptureHandle, widget]));
+  if (MCaptureHandle <> 0) and (Pointer(MCaptureHandle) <> widget) then
+  begin
+    // capture differs. => gtk forgot to tell, that the capturing has changed
+    // -> update
+    UpdateMouseCaptureControl;
   end;
 end;
 
@@ -2022,6 +2017,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2002/06/19 19:46:09  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.84  2002/06/11 13:41:09  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 

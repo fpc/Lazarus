@@ -141,7 +141,7 @@ type
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent;
                              const CurName, NewName: string);override;
-    procedure WndProc(var Message : TLMessage); override;
+    procedure WndProc(var TheMessage : TLMessage); override;
     {events}
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;

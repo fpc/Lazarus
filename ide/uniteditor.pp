@@ -2334,7 +2334,7 @@ end;
   Params: Sender : TObject
   Result: none
   
-  Called whenever an editor status changes.
+  Called whenever an editor status changes. Sender is normally a TSynEdit.
 -------------------------------------------------------------------------------}
 Procedure TSourceNotebook.EditorChanged(Sender : TObject);
 var SenderDeleted: boolean;

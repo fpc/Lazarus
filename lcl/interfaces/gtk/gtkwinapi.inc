@@ -4133,7 +4133,7 @@ begin
 }
 // Writeln('SetCapture result is '+inttostr(result));
    if MCaptureHandle <>  0 then
-            SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
+     SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
   end;
      
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
@@ -4781,6 +4781,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2002/06/19 19:46:10  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.78  2002/06/12 12:35:44  lazarus
   MG: fixed apiwidget warnings/criticals
 
