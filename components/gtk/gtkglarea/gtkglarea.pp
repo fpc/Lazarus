@@ -26,8 +26,8 @@ unit gtkglarea;
 interface
 
 uses
-  Classes, SysUtils, VCLGlobals, LCLLinux, LCLType, glib, gdk, gtk,
-  gtkglarea_int, gl, Controls, gtkint, gtkwinapiwindow, LMessages;
+  Classes, SysUtils, VCLGlobals, LCLLinux, LCLType,glib, gdk, gtk, gtkglarea_int, gl,
+  Controls, gtkint, gtkwinapiwindow, LMessages;
   
 type
   TCustomGTKGLAreaControl = class(TWinControl)
@@ -90,7 +90,7 @@ begin
   Handle := longint(gtk_gl_area_new(pgint(@InitAttrList)));
   if Widget <> nil then begin
     gtk_object_set_data(pgtkobject(Widget),'Sender',Self);
-    gtk_object_set_data(pgtkobject(Widget),'Class', Pointer(Self));
+    gtk_object_set_data(pgtkobject(Widget), 'Class', Pointer(Self));
     gtk_object_set_data(pgtkObject(Widget),'Style',0);
     gtk_object_set_data(pgtkObject(Widget),'ExStyle',0);
   end else begin

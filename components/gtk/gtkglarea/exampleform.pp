@@ -28,13 +28,15 @@ unit ExampleForm;
 interface
 
 uses
-  Classes, SysUtils, GTKGlArea, Forms, LResources, Buttons, StdCtrls,
-  gtkglarea_int, gtk, glib, NVGL, linux;
+  Classes, SysUtils, GTKGlArea, gtkglarea_int, Forms, LResources, Buttons, StdCtrls,
+  gtk, glib, NVGL, linux;
 
 type
   TglTexture = class
+  public
     Width,Height: longint;
     Data        : pointer;
+    destructor Destroy; override;
   end;
   
 type
@@ -73,14 +75,11 @@ type
   end;
 
   TParticleEngine = class
-    //x, y, z: GLfloat;
     xspawn: GLfloat;
     Particle: array [1..2001] of TParticle;
     procedure MoveParticles;
     procedure DrawParticles;
-    //procedure Init;
     procedure Start;
-    //procedure Stop;
   public
     constructor Create;
     destructor Destroy; override;
@@ -107,7 +106,7 @@ var direction: boolean;
 implementation
 
 
-function LoadFileToMemStream(const Filename: string): TMemoryStream;
+{function LoadFileToMemStream(const Filename: string): TMemoryStream;
 var FileStream: TFileStream;
 begin
   Result:=TMemoryStream.Create;
@@ -228,15 +227,15 @@ begin
       try
         try
           for i:=0 to PixelCount-1 do begin
-            MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));
+            MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));}
             {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
-            with PRawImage(Image.Data)^ do begin
+            {with PRawImage(Image.Data)^ do begin
               p[i*3+0]:=AnRGBQuad.rgbRed;
               p[i*3+1]:=AnRGBQuad.rgbGreen;
               p[i*3+2]:=AnRGBQuad.rgbBlue;
-            end;
+            end;}
             {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-          end;
+          {end;
         except
           writeln('Error converting bitmap');
           exit;
@@ -254,6 +253,143 @@ begin
   end;
   Result:=true;
 end;
+}
+function LoadFileToMemStream(Filename: string): TMemoryStream;
+var FileStream: TFileStream;
+begin
+  Result:=TMemoryStream.Create;
+  try
+    FileStream:=TFileStream.Create(Filename, fmOpenRead);
+    try
+      Result.CopyFrom(FileStream,FileStream.Size);
+      Result.Position:=0;
+    finally
+      FileStream.Free;
+    end;
+  except
+    Result.Free;
+    Result:=nil;
+  end;
+end;
+
+function LoadglTexImage2DFromBitmapFile(Filename:string; var Image:TglTexture): boolean;
+type
+  TBITMAPFILEHEADER = packed record
+    bfType: Word;
+    bfSize: DWORD;
+    bfReserved1: Word;
+    bfReserved2: Word;
+    bfOffBits: DWORD;
+  end;
+
+  BITMAPINFOHEADER = packed record
+          biSize : DWORD;
+          biWidth : Longint;
+          biHeight : Longint;
+          biPlanes : WORD;
+          biBitCount : WORD;
+          biCompression : DWORD;
+          biSizeImage : DWORD;
+          biXPelsPerMeter : Longint;
+          biYPelsPerMeter : Longint;
+          biClrUsed : DWORD;
+          biClrImportant : DWORD;
+       end;
+
+  RGBQUAD = packed record
+          rgbBlue : BYTE;
+          rgbGreen : BYTE;
+          rgbRed : BYTE;
+       //   rgbReserved : BYTE;
+       end;
+
+  BITMAPINFO = packed record
+          bmiHeader : BITMAPINFOHEADER;
+          bmiColors : array[0..0] of RGBQUAD;
+       end;
+
+  PBITMAPINFO = ^BITMAPINFO;
+
+  TRawImage = packed record
+     p:array[0..0] of byte;
+   end;
+  PRawImage = ^TRawImage;
+
+const
+  BI_RGB = 0;
+
+var
+  MemStream: TMemoryStream;
+  BmpHead: TBitmapFileHeader;
+  BmpInfo:PBitmapInfo;
+  ImgSize:longint;
+  InfoSize, PixelCount, i:integer;
+  BitsPerPixel:integer;
+  AnRGBQuad: RGBQUAD;
+begin
+  Result:=false;
+  MemStream:=LoadFileToMemStream(Filename);
+  if MemStream=nil then exit;
+  try
+    if (MemStream.Read(BmpHead, sizeof(BmpHead))<sizeof(BmpHead))
+    or (BmpHead.bfType <> $4D42) then begin
+      writeln('Invalid windows bitmap (header)');
+      exit;
+    end;
+    InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
+    GetMem(BmpInfo,InfoSize);
+    try
+      if MemStream.Read(BmpInfo^,InfoSize)<>InfoSize then begin
+        writeln('Invalid windows bitmap (info)');
+        exit;
+      end;
+      if BmpInfo^.bmiHeader.biSize<>sizeof(BitmapInfoHeader) then begin
+        writeln('OS2 bitmaps are not supported yet');
+        exit;
+      end;
+      if BmpInfo^.bmiHeader.biCompression<>bi_RGB then begin
+        writeln('RLE compression is not supported yet');
+        exit;
+      end;
+      BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
+      if BitsPerPixel<>24 then begin
+        writeln('Only truecolor bitmaps supported yet');
+        exit;
+      end;
+      ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
+      if MemStream.Size-MemStream.Position<ImgSize then begin
+        writeln('Invalid windows bitmap (bits)');
+        exit;
+      end;
+      Image.Width:=BmpInfo^.bmiHeader.biWidth;
+      Image.Height:=BmpInfo^.bmiHeader.biHeight;
+      PixelCount:=Image.Width*Image.Height;
+      GetMem(Image.Data,PixelCount * 3);
+      try
+        for i:=0 to PixelCount-1 do begin
+          MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));
+          with PRawImage(Image.Data)^ do begin
+            p[i*3+0]:=AnRGBQuad.rgbRed;
+            p[i*3+1]:=AnRGBQuad.rgbGreen;
+            p[i*3+2]:=AnRGBQuad.rgbBlue;
+          end;
+        end;
+      except
+        writeln('Error converting bitmap');
+        FreeMem(Image.Data);
+        Image.Data:=nil;
+        exit;
+      end;
+    finally
+      FreeMem(BmpInfo);
+    end;
+    Result:=true;
+  finally
+    MemStream.Free;
+  end;
+  Result:=true;
+end;
+
 
 
 constructor TExampleForm.Create(AOwner: TComponent);
@@ -354,7 +490,6 @@ begin
     
     // resize the components first, since the gtkglarea needs some time to setup
     FormResize(Self);
-    
     AreaInitialized:=false;
     GTKGLAreaControl1:=TGTKGLAreaControl.Create(Self);
     with GTKGLAreaControl1 do begin
@@ -365,6 +500,7 @@ begin
       OnResize:=@GTKGLAreaControl1Resize;
       Visible:=true;
     end;
+
     
   end;
   // now resize
@@ -404,23 +540,12 @@ end;
 procedure TParticleEngine.DrawParticles;
 var i: integer;
 begin
-  //if blended then glEnable(GL_DEPTH_TEST) else glEnable(GL_BLEND);
-  glBindTexture(GL_TEXTURE_2D, textures[0]);
   for i:=1 to 2001 do begin
     glPushMatrix;
     glTranslatef(Particle[i].x, Particle[i].y, Particle[i].z);
     glCallList(ParticleList);
-    {glBegin(GL_TRIANGLE_STRIP);
-      glNormal3f( 0.0, 0.0, 1.0);
-      glTexCoord2f( 1.0, 1.0);     glVertex3f(Particle[i].x+0.03, Particle[i].y+0.03, Particle[i].z);
-      glTexCoord2f( 0.0, 1.0);     glVertex3f(Particle[i].x-0.03, Particle[i].y+0.03, Particle[i].z);
-      glTexCoord2f( 1.0, 0.0);     glVertex3f(Particle[i].x+0.03, Particle[i].y-0.03, Particle[i].z);
-      glTexCoord2f( 0.0, 0.0);     glVertex3f(Particle[i].x-0.03, Particle[i].y-0.03, Particle[i].z);
-    glEnd;}
     glPopMatrix;
-    //glTranslatef(-Particle[i].x, -Particle[i].y, -Particle[i].z);
   end;
-  //if blended then glDisable(GL_DEPTH_TEST) else glDisable(GL_BLEND);
 end;
 
 procedure TParticleEngine.RespawnParticle(i: integer);
@@ -431,10 +556,10 @@ begin
   Particle[i].x:=xspawn;
   Particle[i].y:=-0.5;
   Particle[i].z:=0;
-  Particle[i].vx:=-0.005+random(2000)/200000;
-  Particle[i].vy:=0.035+random(750)/100000;
-  Particle[i].vz:=-0.005+random(2000)/200000;
-  Particle[i].life:=random(1250)/1000+1;
+  Particle[i].vx:=-0.005+GLFloat(random(2000))/200000;
+  Particle[i].vy:=0.035+GLFloat(random(750))/100000;
+  Particle[i].vz:=-0.005+GLFloat(random(2000))/200000;
+  Particle[i].life:=GLFloat(random(1250))/1000+1;
 end;
 
 procedure TParticleEngine.MoveParticles;
@@ -527,8 +652,6 @@ end;
 
 procedure TExampleForm.FormResize(Sender: TObject);
 begin
-  //GTKGLAreaControl1.Width:=Width-100;
-  //GTKGLAreaControl1.Height:=Height-100;
   if GTKGLAreaControl1<>nil then
     GTKGLAreaControl1.SetBounds(10, 30, Width-120, Height-40);
   ExitButton1.SetBounds(Width-90, 5, 80, 25);
@@ -539,8 +662,6 @@ begin
   RotateZButton1.SetBounds(Width-90, 115, 80, 25);
   RotateZButton2.SetBounds(Width-90, 145, 80, 25);
   HintLabel1.SetBounds(10, 0, 80, 25);
-  //writeln('Form: ',ExitButton1.Width);
-  //writeln('GTKGLarea: ',GTKGLareaControl1.Height);
 end;
 
 procedure TExampleForm.ExitButton1Click(Sender: TObject);
@@ -552,9 +673,6 @@ procedure TExampleForm.GTKGLAreaControl1Paint(Sender: TObject);
 
   procedure myInit;
   begin
-    {init rotation variables}
-    //xrot:=0; yrot:=0; zrot:=0;
-    //xrotspeed:=0; yrotspeed:=0; zrotspeed:=0;
     {init lighting variables}
     {ambient color}
     lightamb[0]:=0.5;
@@ -601,7 +719,7 @@ procedure TExampleForm.GTKGLAreaControl1Paint(Sender: TObject);
   end;
 
 
-procedure InitGL;cdecl;
+procedure InitGL;
 var i: integer;
 begin
   {setting lighting conditions}
@@ -618,7 +736,6 @@ begin
   glEnable(GL_LIGHT2);
   glEnable(GL_LIGHT3);
   glEnable(GL_LIGHT4);
-  //glEnable(GL_LIGHTING);
   {}
   for i:=0 to 2 do begin
     Textures[i]:=0;
@@ -644,36 +761,25 @@ begin
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
   {instead of GL_MODULATE you can try GL_DECAL or GL_BLEND}
   glEnable(GL_TEXTURE_2D);          // enables 2d textures
-  glClearColor(0.0,0.0,0.0,1.0);    // sets background color 
+  glClearColor(0.0,0.0,0.0,1.0);    // sets background color
   glClearDepth(1.0);
   glDepthFunc(GL_LEQUAL);           // the type of depth test to do
   glEnable(GL_DEPTH_TEST);          // enables depth testing
   glShadeModel(GL_SMOOTH);          // enables smooth color shading
   {blending}
-  //glEnable(GL_BLEND);
   glColor4f(1.0,1.0,1.0,0.5);			// Full Brightness, 50% Alpha ( NEW )
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  //glDisable(GL_DEPTH_TEST);
-  //glLightModelf(GL_LIGHT_MODEL_AMBIENT, 1.0);
   glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-  {fog}
-  glFogi(GL_FOG_MODE,GL_LINEAR);	  // Fog Mode
-  glFogfv(GL_FOG_COLOR,fogColor);	  // Set Fog Color
-  glFogf(GL_FOG_DENSITY,0.2); 	  // How Dense Will The Fog Be
-  glHint(GL_FOG_HINT,GL_NICEST);	  // Fog Hint Value
-  glFogf(GL_FOG_START,1.0);		  // Fog Start Depth
-  glFogf(GL_FOG_END,2.5);			  // Fog End Depth
-  //glEnable(GL_FOG);				  // Enables GL_FOG
   {}
   glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
   glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);    
-  //glEnable(GL_LIGHTING);
   
   // creating display lists
   
-  ParticleList:=glGenLists(3);
+  ParticleList:=glGenLists(1);
   glNewList(ParticleList, GL_COMPILE);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
     glBegin(GL_TRIANGLE_STRIP);
       glNormal3f( 0.0, 0.0, 1.0);
       glTexCoord2f( 1.0, 1.0);     glVertex3f(+0.025, +0.025, 0);
@@ -687,19 +793,19 @@ begin
   glNewList(BackList, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, textures[2]);
     glBegin(GL_QUADS);
+      {Front Face}
       glNormal3f( 0.0, 0.0, 1.0);
       glTexCoord2f( 1.0, 1.0);     glVertex3f( 2.5, 2.5, 2.5);
       glTexCoord2f( 0.0, 1.0);     glVertex3f(-2.5, 2.5, 2.5);
       glTexCoord2f( 0.0, 0.0);     glVertex3f(-2.5,-2.5, 2.5);
       glTexCoord2f( 1.0, 0.0);     glVertex3f( 2.5,-2.5, 2.5);
-    
+      {Back Face}
       glNormal3f( 0.0, 0.0,-1.0);
       glTexCoord2f( 0.0, 1.0);     glVertex3f( 2.5, 2.5,-2.5);
       glTexCoord2f( 0.0, 0.0);     glVertex3f( 2.5,-2.5,-2.5);
       glTexCoord2f( 1.0, 0.0);     glVertex3f(-2.5,-2.5,-2.5);
       glTexCoord2f( 1.0, 1.0);     glVertex3f(-2.5, 2.5,-2.5);      
-    
-       {Left Face}
+      {Left Face}
       glNormal3f(-1.0, 0.0, 0.0);
       glTexCoord2f( 1.0, 1.0);     glVertex3f(-2.5, 2.5, 2.5);
       glTexCoord2f( 0.0, 1.0);     glVertex3f(-2.5, 2.5,-2.5);
@@ -711,8 +817,7 @@ begin
       glTexCoord2f( 0.0, 1.0);     glVertex3f( 2.5, 2.5, 2.5);
       glTexCoord2f( 0.0, 0.0);     glVertex3f( 2.5,-2.5, 2.5);
       glTexCoord2f( 1.0, 0.0);     glVertex3f( 2.5,-2.5,-2.5);      
-
-            {Top Face}
+      {Top Face}
       glNormal3f( 0.0, 1.0, 0.0);
       glTexCoord2f( 1.0, 1.0);     glVertex3f( 2.5, 2.5,-2.5);
       glTexCoord2f( 0.0, 1.0);     glVertex3f(-2.5, 2.5,-2.5);
@@ -738,7 +843,6 @@ begin
       glTexCoord2f( 0.0, 1.0);     glVertex3f(-0.5, 0.5, 0.5);
       glTexCoord2f( 0.0, 0.0);     glVertex3f(-0.5,-0.5, 0.5);
       glTexCoord2f( 1.0, 0.0);     glVertex3f( 0.5,-0.5, 0.5);
-      
       {Back Face}
       glNormal3f( 0.0, 0.0,-1.0);
       glTexCoord2f( 0.0, 1.0);     glVertex3f( 0.5, 0.5,-0.5);
@@ -786,7 +890,7 @@ begin
     if not AreaInitialized then begin
       myInit;
       InitGL;
-      glMatrixMode (GL_PROJECTION);    { prepare for and then } 
+      glMatrixMode (GL_PROJECTION);    { prepare for and then }
       glLoadIdentity ();               { define the projection }
       glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 20.0); { transformation } 
       glMatrixMode (GL_MODELVIEW);  { back to modelview matrix }
@@ -804,12 +908,8 @@ begin
     glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
     glLoadIdentity;             { clear the matrix }
     glTranslatef (0.0, 0.0,-3.0);  // -2.5); { viewing transformation }
-    glScalef (1.0, 1.0, 1.0);      { modeling transformation }
     {rotate}
 
-    //yrot:=yrot+yrotspeed;
-    //zrot:=zrot+zrotspeed;
-    
     glPushMatrix;
 
     if MoveBackground then begin
@@ -830,10 +930,6 @@ begin
     glCallList(BackList);    
     
     glPopMatrix;
-    
-    {glRotatef(-rrz,0.0,0.0,1.0);
-    glRotatef(-rry,0.0,1.0,0.0);
-    glRotatef(-rrx,1.0,0.0,0.0);}
        
     glPushMatrix;
 
@@ -855,20 +951,12 @@ begin
       glDisable(GL_BLEND);
       glEnable(GL_DEPTH_TEST);
     end;
-    // draw particles here for dynamic particle system
-    
-    //ParticleEngine.DrawParticles;
     
     glPopMatrix;
     
-    {glRotatef(-rz,0.0,0.0,1.0);
-    glRotatef(-ry,0.0,1.0,0.0);
-    glRotatef(-rx,1.0,0.0,0.0);}
-    
-    // draw particles here for static particle system
     if ParticleBlended then glEnable(GL_BLEND);
     ParticleEngine.DrawParticles;
-    if ParticleBlended then glDisable(GL_BLEND);    
+    if ParticleBlended then glDisable(GL_BLEND);
     //glFlush;
     glFinish;    
     // Swap backbuffer to front
@@ -878,11 +966,19 @@ end;
 
 procedure TExampleForm.GTKGLAreaControl1Resize(Sender: TObject);
 begin
-  if (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.widget)) then
+  if (AreaInitialized) and (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.widget)) then
     {glViewport(0, 0, PGtkWidget(GTKGLAreaControl1.Widget)^.allocation.width,
       PGtkWidget(GTKGLAreaControl1.Widget)^.allocation.height);}
     glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);  
 end;
 
+
+{ TglTexture }
+
+destructor TglTexture.Destroy;
+begin
+  if Data<>nil then FreeMem(Data);
+  inherited Destroy;
+end;
 
 end.

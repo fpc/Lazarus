@@ -1,8 +1,9 @@
 // File: NVGL.pp        
-// modified: 10-04-2001
+// modified: 11-03-2002
 //
 // FreePascal Bindings for libGL by NVIDIA (based on MESA Bindings from Sebastian Günther)
-// Version 0.0.1
+// Version 0.0.3
+// supported NVIDIA Driver Version: 2802
 // this is UNPUBLISHED source code and may not be used by anyone (except matti) for anything
 // later it will be GPL'ed  :)
 // Copyright (C) 2001 Satan
@@ -76,6 +77,7 @@ type
   PGLshort = ^GLshort;
   PGLbyte = ^GLbyte;
   PGLushort = ^GLushort;
+  PGLSizei = ^GLSizei;
 // -------------------------------------------------------
 
 type
@@ -88,6 +90,7 @@ type
   const
      GL_VERSION_1_1 = 1;
      GL_VERSION_1_2 = 1;
+     GL_VERSION_1_3 = 1;
   { Extensions  }
      GL_ARB_imaging = 1;
      GL_ARB_multisample = 1;
@@ -105,10 +108,12 @@ type
      GL_EXT_blend_color = 1;
      GL_EXT_blend_minmax = 1;
      GL_EXT_blend_subtract = 1;
+     GL_EXT_clip_volume_hint = 1;
      GL_EXT_compiled_vertex_array = 1;
      GL_EXT_color_table = 1;
      GL_EXT_draw_range_elements = 1;
      GL_EXT_fog_coord = 1;
+     GL_EXT_multi_draw_arrays = 1;
      GL_EXT_packed_pixels = 1;
      GL_EXT_paletted_texture = 1;
      GL_EXT_point_parameters = 1;
@@ -126,20 +131,25 @@ type
      GL_EXT_texture_env_dot3 = 1;
      GL_EXT_texture_filter_anisotropic = 1;
      GL_EXT_texture_lod_bias = 1;
+     GL_EXT_texture_object = 1;
      GL_EXT_vertex_array = 1;
      GL_EXT_vertex_weighting = 1;
+     GL_HP_occlusion_test = 1;
      GL_IBM_texture_mirrored_repeat = 1;
      GL_NV_blend_square = 1;
+     GL_NV_copy_depth_to_color = 1;
+     GL_NV_depth_clamp = 1;
      GL_NV_draw_mesh = 1;
      GL_NV_evaluators = 1;
      GL_NV_fence = 1;
-     GL_NV_flushold = 1;
+     GL_NV_flusHold = 1;
      GL_NV_fog_distance = 1;
      GL_NV_light_max_exponent = 1;
      GL_NV_mac_get_proc_address = 1;
      GL_NV_multisample_filter_hint = 1;
+     GL_NV_occlusion_query = 1;
      GL_NV_packed_depth_stencil = 1;
-     GL_NV_pixel_data_range = 1;
+     GL_NV_point_sprite = 1;
      GL_NV_register_combiners = 1;
      GL_NV_register_combiners2 = 1;
      GL_NV_set_window_stereomode = 1;
@@ -150,9 +160,11 @@ type
      GL_NV_texture_rectangle = 1;
      GL_NV_texture_shader = 1;
      GL_NV_texture_shader2 = 1;
+     GL_NV_texture_shader3 = 1;
      GL_NV_vertex_array_range = 1;
      GL_NV_vertex_array_range2 = 1;
      GL_NV_vertex_program = 1;
+     GL_NV_vertex_program1_1 = 1;
      GL_S3_s3tc = 1;
      GL_SGIS_generate_mipmap = 1;
      GL_SGIS_multitexture = 1;
@@ -182,7 +194,7 @@ type
      GL_LIST_BIT = $00020000;
      GL_TEXTURE_BIT = $00040000;
      GL_SCISSOR_BIT = $00080000;
-     GL_ALL_ATTRIB_BITS = $000fffff;
+     GL_ALL_ATTRIB_BITS = $FFFFFFFF;
   { ClearBufferMask  }
   {      GL_COLOR_BUFFER_BIT  }
   {      GL_ACCUM_BUFFER_BIT  }
@@ -1063,8 +1075,6 @@ type
      GL_LIGHT5 = $4005;
      GL_LIGHT6 = $4006;
      GL_LIGHT7 = $4007;
-  { NV_draw_elements_inc_pair  }
-     GL_UNSIGNED_INT_INC_PAIR = $6000;
   { EXT_abgr  }
      GL_ABGR_EXT = $8000;
   { EXT_blend_color  }
@@ -1200,6 +1210,103 @@ type
      GL_MINMAX = $802E;
      GL_MINMAX_FORMAT = $802F;
      GL_MINMAX_SINK = $8030;
+  { OpenGL13 }
+     GL_ACTIVE_TEXTURE  = $84E0;
+     GL_CLIENT_ACTIVE_TEXTURE = $84E1;
+     GL_MAX_TEXTURE_UNITS = $84E2;
+     GL_TEXTURE0 = $84C0;
+     GL_TEXTURE1 = $84C1;
+     GL_TEXTURE2 = $84C2;
+     GL_TEXTURE3 = $84C3;
+     GL_TEXTURE4 = $84C4;
+     GL_TEXTURE5 = $84C5;
+     GL_TEXTURE6 = $84C6;
+     GL_TEXTURE7 = $84C7;
+     GL_TEXTURE8 = $84C8;
+     GL_TEXTURE9 = $84C9;
+     GL_TEXTURE10 = $84CA;
+     GL_TEXTURE11 = $84CB;
+     GL_TEXTURE12 = $84CC;
+     GL_TEXTURE13 = $84CD;
+     GL_TEXTURE14 = $84CE;
+     GL_TEXTURE15 = $84CF;
+     GL_TEXTURE16 = $84D0;
+     GL_TEXTURE17 = $84D1;
+     GL_TEXTURE18 = $84D2;
+     GL_TEXTURE19 = $84D3;
+     GL_TEXTURE20 = $84D4;
+     GL_TEXTURE21 = $84D5;
+     GL_TEXTURE22 = $84D6;
+     GL_TEXTURE23 = $84D7;
+     GL_TEXTURE24 = $84D8;
+     GL_TEXTURE25 = $84D9;
+     GL_TEXTURE26 = $84DA;
+     GL_TEXTURE27 = $84DB;
+     GL_TEXTURE28 = $84DC;
+     GL_TEXTURE29 = $84DD;
+     GL_TEXTURE30 = $84DE;
+     GL_TEXTURE31 = $84DF;
+     GL_NORMAL_MAP = $8511;
+     GL_REFLECTION_MAP = $8512;
+     GL_TEXTURE_CUBE_MAP = $8513;
+     GL_TEXTURE_BINDING_CUBE_MAP = $8514;
+     GL_TEXTURE_CUBE_MAP_POSITIVE_X = $8515;
+     GL_TEXTURE_CUBE_MAP_NEGATIVE_X = $8516;
+     GL_TEXTURE_CUBE_MAP_POSITIVE_Y = $8517;
+     GL_TEXTURE_CUBE_MAP_NEGATIVE_Y = $8518;
+     GL_TEXTURE_CUBE_MAP_POSITIVE_Z = $8519;
+     GL_TEXTURE_CUBE_MAP_NEGATIVE_Z = $851A;
+     GL_PROXY_TEXTURE_CUBE_MAP = $851B;
+     GL_MAX_CUBE_MAP_TEXTURE_SIZE = $851C;
+     GL_COMBINE = $8570;
+     GL_COMBINE_RGB = $8571;
+     GL_COMBINE_ALPHA = $8572;
+     GL_RGB_SCALE = $8573;
+     GL_ADD_SIGNED = $8574;
+     GL_INTERPOLATE = $8575;
+     GL_CONSTANT = $8576;
+     GL_PRIMARY_COLOR = $8577;
+     GL_PREVIOUS = $8578;
+     GL_SOURCE0_RGB = $8580;
+     GL_SOURCE1_RGB = $8581;
+     GL_SOURCE2_RGB = $8582;
+     GL_SOURCE0_ALPHA = $8588;
+     GL_SOURCE1_ALPHA = $8589;
+     GL_SOURCE2_ALPHA = $858A;
+     GL_OPERAND0_RGB = $8590;
+     GL_OPERAND1_RGB = $8591;
+     GL_OPERAND2_RGB = $8592;
+     GL_OPERAND0_ALPHA = $8598;
+     GL_OPERAND1_ALPHA = $8599;
+     GL_OPERAND2_ALPHA = $859A;
+     GL_SUBTRACT = $84E7;
+     GL_TRANSPOSE_MODELVIEW_MATRIX = $84E3;
+     GL_TRANSPOSE_PROJECTION_MATRIX = $84E4;
+     GL_TRANSPOSE_TEXTURE_MATRIX = $84E5;
+     GL_TRANSPOSE_COLOR_MATRIX = $84E6;
+     GL_COMPRESSED_ALPHA = $84E9;
+     GL_COMPRESSED_LUMINANCE = $84EA;
+     GL_COMPRESSED_LUMINANCE_ALPHA = $84EB;
+     GL_COMPRESSED_INTENSITY = $84EC;
+     GL_COMPRESSED_RGB = $84ED;
+     GL_COMPRESSED_RGBA = $84EE;
+     GL_TEXTURE_COMPRESSION_HINT = $84EF;
+     GL_TEXTURE_COMPRESSED_IMAGE_SIZE = $86A0;
+     GL_TEXTURE_COMPRESSED = $86A1;
+     GL_NUM_COMPRESSED_TEXTURE_FORMATS = $86A2;
+     GL_COMPRESSED_TEXTURE_FORMATS = $86A3;
+     GL_DOT3_RGB = $86AE;
+     GL_DOT3_RGBA = $86AF;
+     GL_CLAMP_TO_BORDER = $812D;
+     GL_MULTISAMPLE = $809D;
+     GL_SAMPLE_ALPHA_TO_COVERAGE = $809E;
+     GL_SAMPLE_ALPHA_TO_ONE = $809F;
+     GL_SAMPLE_COVERAGE = $80A0;
+     GL_SAMPLE_BUFFERS = $80A8;
+     GL_SAMPLES = $80A9;
+     GL_SAMPLE_COVERAGE_VALUE = $80AA;
+     GL_SAMPLE_COVERAGE_INVERT = $80AB;
+     GL_MULTISAMPLE_BIT = $20000000;
   { EXT_vertex_array  }
      GL_VERTEX_ARRAY_EXT = $8074;
      GL_NORMAL_ARRAY_EXT = $8075;
@@ -1277,6 +1384,9 @@ type
      GL_COLOR_INDEX8_EXT = $80E5;
      GL_COLOR_INDEX12_EXT = $80E6;
      GL_COLOR_INDEX16_EXT = $80E7;
+     GL_TEXTURE_INDEX_SIZE_EXT = $80ED;
+  { EXT_clip_volume_hint }
+     GL_CLIP_VOLUME_CLIPPING_HINT_EXT = $80F0;
   { EXT_point_parameters  }
      GL_POINT_SIZE_MIN_EXT = $8126;
      GL_POINT_SIZE_MAX_EXT = $8127;
@@ -1469,6 +1579,10 @@ type
      GL_EYE_RADIAL_NV = $855B;
   {      GL_EYE_PLANE  }
      GL_EYE_PLANE_ABSOLUTE_NV = $855C;
+  { NV_fragment_program }
+     GL_FRAGMENT_PROGRAM_NV = $8870;
+     GL_MAX_TEXTURE_COORDS_NV = $8871;
+     GL_MAX_TEXTURE_IMAGE_UNITS_NV = $8872;
   { NV_texgen_emboss  }
      GL_EMBOSS_LIGHT_NV = $855D;
      GL_EMBOSS_CONSTANT_NV = $855E;
@@ -1753,8 +1867,26 @@ type
      GL_TEXTURE_DS_SIZE_NV = $871D;
      GL_TEXTURE_DT_SIZE_NV = $871E;
      GL_TEXTURE_MAG_SIZE_NV = $871F;
-  { NV_texture_shader  }
+  { NV_texture_shader2 }
      GL_DOT_PRODUCT_TEXTURE_3D_NV = $86EF;
+  { NV_texture_shader3 }
+     GL_OFFSET_PROJECTIVE_TEXTURE_2D_NV = $8850;
+     GL_OFFSET_PROJECTIVE_TEXTURE_2D_SCALE_NV = $8851;
+     GL_OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_NV = $8852;
+     GL_OFFSET_PROJECTIVE_TEXTURE_RECTANGLE_SCALE_NV = $8853;
+     GL_OFFSET_HILO_TEXTURE_2D_NV = $8854;
+     GL_OFFSET_HILO_TEXTURE_RECTANGLE_NV = $8855;
+     GL_OFFSET_HILO_PROJECTIVE_TEXTURE_2D_NV = $8856;
+     GL_OFFSET_HILO_PROJECTIVE_TEXTURE_RECTANGLE_NV = $8857;
+     GL_DEPENDENT_HILO_TEXTURE_2D_NV = $8858;
+     GL_DEPENDENT_RGB_TEXTURE_3D_NV = $8859;
+     GL_DEPENDENT_RGB_TEXTURE_CUBE_MAP_NV = $885A;
+     GL_DOT_PRODUCT_PASS_THROUGH_NV = $885B;
+     GL_DOT_PRODUCT_TEXTURE_1D_NV = $885C;
+     GL_DOT_PRODUCT_AFFINE_DEPTH_REPLACE_NV = $885D;
+     GL_HILO8_NV = $885E;
+     GL_SIGNED_HILO8_NV = $885F;
+     GL_FORCE_BLUE_TO_ONE_NV = $8860;
   { NV_register_combiners2  }
      GL_PER_STAGE_CONSTANTS_NV = $8535;
   { IBM_texture_mirrored_repeat  }
@@ -1811,6 +1943,29 @@ type
      GL_READ_PIXEL_DATA_RANGE_LENGTH_NV = $6004;
      GL_WRITE_PIXEL_DATA_RANGE_POINTER_NV = $6005;
      GL_READ_PIXEL_DATA_RANGE_POINTER_NV = $6006;
+  { NV_packed_normal }
+     GL_UNSIGNED_INT_S10_S11_S11_REV_NV = $886B;
+ // NV_half_float
+     GL_HALF_FLOAT_NV = $886C;
+ // NV_copy_depth_to_color
+     GL_DEPTH_STENCIL_TO_RGBA_NV = $886E;
+     GL_DEPTH_STENCIL_TO_BGRA_NV = $886F;
+ // HP_occlusion_test
+     GL_OCCLUSION_TEST_HP = $8165;
+     GL_OCCLUSION_TEST_RESULT_HP = $8166;
+ // NV_occlusion_query
+     GL_PIXEL_COUNTER_BITS_NV = $8864;
+     GL_CURRENT_OCCLUSION_QUERY_ID_NV = $8865;
+     GL_PIXEL_COUNT_NV = $8866;
+     GL_PIXEL_COUNT_AVAILABLE_NV = $8867;
+ // NV_point_sprite
+     GL_POINT_SPRITE_NV = $8861;
+     GL_COORD_REPLACE_NV = $8862;
+     GL_POINT_SPRITE_R_MODE_NV = $8863;
+ // 3DFX_tbuffer
+     GL_TBUFFER_WRITE_MASK_3DFX = $86D8;
+ // NV_depth_clamp
+     GL_DEPTH_CLAMP_NV = $864F;
   {                                                            }
 
 // -------------------------------------------------------
@@ -1820,6 +1975,7 @@ type
 var
 
 glAccum: procedure(op: GLenum; value: Single); cdecl;
+glActiveTexture: procedure(texture: GLenum); cdecl;
 glActiveTextureARB: procedure(texture: GLenum); cdecl;
 glAddSwapHintRectWIN: procedure(x, y: GLint; width, height: GLsizei); cdecl;
 glAlphaFunc: procedure(func: GLenum; ref: GLclampf); cdecl;
@@ -1829,6 +1985,7 @@ glAreTexturesResidentEXT: function(n: LongInt; var textures: LongWord; var resid
 glArrayElement: procedure(i: LongInt); cdecl;
 glArrayElementEXT: procedure(i: LongInt); cdecl;
 glBegin: procedure(mode: GLenum); cdecl;
+glBeginOcclusionQueryNV: procedure(id: GLuint); cdecl;
 glBindProgramNV: procedure(target: GLenum; id: GLuint); cdecl;
 glBindTexture: procedure(target: GLenum; texture: LongWord); cdecl;
 glBindTextureEXT: procedure(target: GLenum; texture: LongWord); cdecl;
@@ -1846,55 +2003,40 @@ glClearColor: procedure(red, green, blue, alpha: GLclampf); cdecl;
 glClearIndex: procedure(c: Single); cdecl;
 glClearDepth: procedure(depth: GLclampd); cdecl;
 glClearStencil: procedure(s: LongInt); cdecl;
+glClientActiveTexture: procedure(texture: GLenum); cdecl;
 glClientActiveTextureARB: procedure(texture: GLenum); cdecl;
 glClipPlane: procedure(plane: GLenum; var equation: Double); cdecl;
 glColor3b: procedure (red, green, blue: ShortInt); cdecl;
-//glColor3bv: procedure (var v: ShortInt); cdecl;
 glColor3bv: procedure (v: PShortInt); cdecl;
 glColor3d: procedure (red, green, blue: Double); cdecl;
-//glColor3dv: procedure (var v: Double); cdecl;
 glColor3dv: procedure (v: PDouble); cdecl;
 glColor3f: procedure (red, green, blue: Single); cdecl;
-//glColor3fv: procedure (var v: Single); cdecl;
 glColor3fv: procedure (v:PSingle); cdecl;
 glColor3i: procedure (red, green, blue: LongInt); cdecl;
-//glColor3iv: procedure (var v: LongInt); cdecl;
 glColor3iv: procedure (v: PLongInt); cdecl;
 glColor3s: procedure (red, green, blue: SmallInt); cdecl;
-//glColor3sv: procedure (var v: SmallInt); cdecl;
 glColor3sv: procedure (v: PSmallInt); cdecl;
 glColor3ub: procedure(red, green, blue: Byte); cdecl;
-//glColor3ubv: procedure(var v: Byte); cdecl;
 glColor3ubv: procedure(v: PByte); cdecl;
 glColor3ui: procedure(red, green, blue: LongWord); cdecl;
-//glColor3uiv: procedure(var v: LongWord); cdecl;
 glColor3uiv: procedure(v: PLongWord); cdecl;
 glColor3us: procedure(red, green, blue: Word); cdecl;
-//glColor3usv: procedure(var v: Word); cdecl;
 glColor3usv: procedure(v: PWord); cdecl;
 glColor4b: procedure (red, green, blue, alpha: ShortInt); cdecl;
-//glColor4bv: procedure (var v: ShortInt); cdecl;
 glColor4bv: procedure (v: PShortInt); cdecl;
 glColor4d: procedure (red, green, blue, alpha: Double); cdecl;
-//glColor4dv: procedure (var v: Double); cdecl;
 glColor4dv: procedure (v: PDouble); cdecl;
 glColor4f: procedure (red, green, blue, alpha: Single); cdecl;
-//glColor4fv: procedure (var v: Single); cdecl;
 glColor4fv: procedure (v: PSingle); cdecl;
 glColor4i: procedure (red, green, blue, alpha: LongInt); cdecl;
-//glColor4iv: procedure (var v: LongInt); cdecl;
 glColor4iv: procedure (v: PLongInt); cdecl;
 glColor4s: procedure (red, green, blue, alpha: SmallInt); cdecl;
-//glColor4sv: procedure (var v: SmallInt); cdecl;
 glColor4sv: procedure (v: PSmallInt); cdecl;
 glColor4ub: procedure(red, green, blue, alpha: Byte); cdecl;
-//glColor4ubv: procedure(var v: Byte); cdecl;
 glColor4ubv: procedure(v: PByte); cdecl;
 glColor4ui: procedure(red, green, blue, alpha: LongWord); cdecl;
-//glColor4uiv: procedure(var v: LongWord); cdecl;
 glColor4uiv: procedure(v: PLongWord); cdecl;
 glColor4us: procedure(red, green, blue, alpha: Word); cdecl;
-//glColor4usv: procedure(var v: Word); cdecl;
 glColor4usv: procedure(v: PWord); cdecl;
 glColorMask: procedure(red, green, blue, alpha: GLboolean); cdecl;
 glColorMaterial: procedure(face, mode: GLenum); cdecl;
@@ -1913,11 +2055,17 @@ glCombinerParameterfvNV: procedure(pname: GLenum; const params: PGLfloat); cdecl
 glCombinerParameteriNV: procedure(pname: GLenum; param: GLint); cdecl;
 glCombinerParameterivNV: procedure(pname: GLenum; const params: PGLint); cdecl;
 glCombinerStageParameterfvNV: procedure(stage, pname: GLenum; const params: PGLfloat); cdecl;
+glCompressedTexImage1D: procedure(target: GLenum; level: GLint; internalformat: GLenum; width: GLsizei; border: GLint; imageSize:  GLsizei; const data: PGLvoid); cdecl;
 glCompressedTexImage1DARB: procedure(target: GLenum; level: GLint; internalformat: GLenum; width: GLsizei; border: GLint; imageSize:  GLsizei; const data: PGLvoid); cdecl;
+glCompressedTexImage2D: procedure(target: GLenum; level: GLint; internalformat: GLenum; width, height: GLsizei; border: GLint; imageSize:  GLsizei; const data: PGLvoid); cdecl;
 glCompressedTexImage2DARB: procedure(target: GLenum; level: GLint; internalformat: GLenum; width, height: GLsizei; border: GLint; imageSize:  GLsizei; const data: PGLvoid); cdecl;
+glCompressedTexImage3D: procedure(target: GLenum; level: GLint; internalformat: GLenum; width, height, depth: GLsizei; border: GLint; imageSize:  GLsizei; const data: PGLvoid); cdecl;
 glCompressedTexImage3DARB: procedure(target: GLenum; level: GLint; internalformat: GLenum; width, height, depth: GLsizei; border: GLint; imageSize:  GLsizei; const data: PGLvoid); cdecl;
+glCompressedTexSubImage1D: procedure(target: GLenum; level, xoffset: GLint; width: GLsizei; format: GLenum; imageSize: GLsizei; const data: PGLvoid); cdecl;
 glCompressedTexSubImage1DARB: procedure(target: GLenum; level, xoffset: GLint; width: GLsizei; format: GLenum; imageSize: GLsizei; const data: PGLvoid); cdecl;
+glCompressedTexSubImage2D: procedure(target: GLenum; level, xoffset, yoffset: GLint; width, height: GLsizei; format: GLenum; imageSize: GLsizei; const data: PGLvoid); cdecl;
 glCompressedTexSubImage2DARB: procedure(target: GLenum; level, xoffset, yoffset: GLint; width, height: GLsizei; format: GLenum; imageSize: GLsizei; const data: PGLvoid); cdecl;
+glCompressedTexSubImage3D: procedure(target: GLenum; level, xoffset, yoffset, zoffset: GLint; width, height, depth: GLsizei; format: GLenum; imageSize: GLsizei; const data: PGLvoid); cdecl;
 glCompressedTexSubImage3DARB: procedure(target: GLenum; level, xoffset, yoffset, zoffset: GLint; width, height, depth: GLsizei; format: GLenum; imageSize: GLsizei; const data: PGLvoid); cdecl;
 glConvolutionFilter1D: procedure(target, internalformat: GLenum; width: GLsizei; format, _type: GLenum; const image: PGLvoid); cdecl;
 glConvolutionFilter2D: procedure(target, internalformat: GLenum; width, height: GLsizei; format, _type: GLenum; const image: PGLvoid); cdecl;
@@ -1935,9 +2083,11 @@ glCopyTexImage2D: procedure(target: GLenum; level: LongInt; format: GLenum; x, y
 glCopyTexSubImage1D: procedure(target: GLenum; level, xoffset, x, y, width: LongInt); cdecl;
 glCopyTexSubImage2D: procedure(target: GLenum; level, xoffset, yoffset, x, y, width, height: LongInt); cdecl;
 glCopyTexSubImage3D: procedure(target: GLenum; level: LongInt; xoffset, yoffset, zoffset, x, y, width, height: LongInt); cdecl;
+glCopyTexSubImage3DEXT: procedure(target: GLenum; level: LongInt; xoffset, yoffset, zoffset, x, y, width, height: LongInt); cdecl;
 glCullFace: procedure(mode: GLenum); cdecl;
 glDeleteFencesNV: procedure(n: GLsizei; const fences: PGLuint); cdecl;
 glDeleteLists: procedure(list: LongWord; range: LongInt); cdecl;
+glDeleteOcclusionQueriesNV: procedure(n: GLsizei; const ids: PGLuint); cdecl;
 glDeleteProgramsNV: procedure(n: GLsizei; const programs: PGLuint); cdecl;
 glDeleteTextures: procedure(n: LongInt; var textures: LongWord); cdecl;
 glDeleteTexturesEXT: procedure(n: LongInt; var textures: LongWord); cdecl;
@@ -1962,6 +2112,7 @@ glEnable: procedure(cap: LongInt); cdecl;
 glEnableClientState: procedure(cap: GLenum); cdecl;
 glEnd: procedure; cdecl;
 glEndList: procedure; cdecl;
+glEndOcclusionQueryNV: procedure; cdecl;
 glEvalCoord1d: procedure(u: Double); cdecl;
 glEvalCoord1dv: procedure(var u: Double); cdecl;
 glEvalCoord1f: procedure(u: Single); cdecl;
@@ -1983,7 +2134,7 @@ glFinishFenceNV: procedure(fence: GLuint); cdecl;
 glFlush: procedure; cdecl;
 glFlushPixelDataRangeNV: procedure(target: GLenum); cdecl;
 glFlushVertexArrayRangeNV: procedure; cdecl;
-glFlushold: function: PGLvoid; cdecl;
+glFlushHold: function: PGLvoid; cdecl;
 glFogCoordPointerEXT: procedure(_type: GLenum; stride: GLsizei; const pointer: PGLvoid); cdecl;
 glFogCoorddEXT: procedure(fog: GLdouble); cdecl;
 glFogCoorddvEXT: procedure(const fog: PGLdouble); cdecl;
@@ -1996,6 +2147,7 @@ glFogiv: procedure(pname: GLenum; params : PLongInt); cdecl;
 glFrontFace: procedure(mode: GLenum); cdecl;
 glFrustum: procedure(left, right, bottom, top, near_val, far_val: Double); cdecl;
 glGenFencesNV: procedure(n: GLsizei; fences: PGLuint); cdecl;
+glGenOcclusionQueriesNV: procedure(n: GLsizei; ids: PGLuint); cdecl;
 glGenLists: function(range: LongInt): LongWord; cdecl;
 glGenProgramsNV: procedure(n: GLsizei; programs: PGLuint); cdecl;
 glGenTextures: procedure(n: LongInt; var textures: LongWord); cdecl;
@@ -2013,6 +2165,7 @@ glGetCombinerInputParameterivNV: procedure(stage, portion, variable, pname: GLen
 glGetCombinerOutputParameterfvNV: procedure(stage, portion, pname: GLenum; params: PGLfloat); cdecl;
 glGetCombinerOutputParameterivNV: procedure(stage, portion, pname: GLenum; params: PGLint); cdecl;
 glGetCombinerStageParameterfvNV: procedure(stage, pname: GLenum; params: PGLfloat); cdecl;
+glGetCompressedTexImage: procedure(target: GLenum; lod: GLint; img: PGLvoid); cdecl;
 glGetCompressedTexImageARB: procedure(target: GLenum; lod: GLint; img: PGLvoid); cdecl;
 glGetConvolutionFilter: procedure(target, format, _type: GLenum; image: PGLvoid); cdecl;
 glGetConvolutionParameterfv: procedure(target, pname: GLenum; params: PGLfloat); cdecl;
@@ -2042,12 +2195,18 @@ glGetMaterialiv: procedure(face, pname: GLenum; params : PLongInt); cdecl;
 glGetMinmax: procedure(target: GLenum; reset: GLboolean; format, _type: GLenum; values: PGLvoid); cdecl;
 glGetMinmaxParameterfv: procedure(target, pname: GLenum; params: PGLfloat); cdecl;
 glGetMinmaxParameteriv: procedure(target, pname: GLenum; params: PGLint); cdecl;
+glGetOcclusionQueryivNV: procedure(id: GLuint; pname: GLenum; params: PGLint);
+glGetOcclusionQueryuivNV: procedure(id: GLuint; pname: GLenum; params: PGLuint);
 glGetPixelMapfv: procedure(map: GLenum; var values: Single); cdecl;
 glGetPixelMapuiv: procedure(map: GLenum; var values: LongWord); cdecl;
 glGetPixelMapusv: procedure(map: GLenum; var values: Word); cdecl;
 glGetPointerv: procedure(pname: GLenum; var params: Pointer); cdecl;
 glGetPointervEXT: procedure(pname: GLenum; var params: Pointer); cdecl;
 glGetPolygonStipple: procedure(var mask: Byte); cdecl;
+glGetProgramLocalParameterdvNV: procedure(target: GLenum; len: GLsizei; const name: PGLubyte; params: PGLdouble);
+glGetProgramLocalParameterfvNV: procedure(target: GLenum; len: GLsizei; const name: PGLubyte; params: PGLfloat);
+glGetProgramParameterSigneddvNV: procedure(target: GLenum; index: GLint; pname: GLenum; params: PGLdouble);
+glGetProgramParameterSignedfvNV: procedure(target: GLenum; index: GLint; pname: GLenum; params: PGLfloat);
 glGetProgramParameterdvNV: procedure(target: GLenum; index: GLuint; pname: GLenum; params: PGLdouble); cdecl;
 glGetProgramParameterfvNV: procedure(target: GLenum; index: GLuint; pname: GLenum; params: PGLfloat); cdecl;
 glGetProgramStringNV: procedure(id: GLuint; pname: GLenum; _program: PGLubyte); cdecl;
@@ -2089,6 +2248,7 @@ glInterleavedArrays: procedure(format: GLenum; stride: LongInt; var pointer); cd
 glIsEnabled: function(cap: GLenum): GLBoolean; cdecl;
 glIsFenceNV: function(fence: GLuint): GLBoolean; cdecl;
 glIsList: function(list: LongWord): GLBoolean; cdecl;
+glIsOcclusionQueryNV: function(id: GLuint): GLBoolean; cdecl;
 glIsProgramNV: function(id: GLuint): GLBoolean; cdecl;
 glIsTexture: function(texture: LongWord): Boolean; cdecl;
 glIsTextureEXT: function(texture: LongWord): Boolean; cdecl;
@@ -2104,11 +2264,13 @@ glLineStipple: procedure(factor: LongInt; pattern: Word); cdecl;
 glLineWidth: procedure(width: Single); cdecl;
 glListBase: procedure(base: LongWord); cdecl;
 glLoadIdentity: procedure; cdecl;
-glLoadMatrixd: procedure(var m: Double); cdecl;
-glLoadMatrixf: procedure(var m: PSingle); cdecl;
+glLoadMatrixd: procedure(m: PGLDouble); cdecl;
+glLoadMatrixf: procedure(m: PGLFloat); cdecl;
 glLoadName: procedure(name: LongWord); cdecl;
 glLoadProgramNV: procedure(target: GLenum; id: GLuint; len: GLsizei; const _program: PGLubyte); cdecl;
+glLoadTransposeMatrixd: procedure(const m: PGLdouble); cdecl;
 glLoadTransposeMatrixdARB: procedure(const m: PGLdouble); cdecl;
+glLoadTransposeMatrixf: procedure(const m: PGLfloat); cdecl;
 glLoadTransposeMatrixfARB: procedure(const m: PGLfloat); cdecl;
 glLockArraysEXT: procedure(first: GLint; count: GLsizei); cdecl;
 glLogicOp: procedure(opcode: GLenum); cdecl;
@@ -2129,72 +2291,108 @@ glMateriali: procedure(face, pname: GLenum; param: LongInt); cdecl;
 glMaterialiv: procedure(face, pname: GLenum; params : PLongInt); cdecl;
 glMatrixMode: procedure(mode: GLenum); cdecl;
 glMinmax: procedure(target, internalformat: GLenum; sink: GLboolean); cdecl;
-glMultMatrixd: procedure(var m: Double); cdecl;
-glMultMatrixf: procedure(var m: Single); cdecl;
+glMultMatrixd: procedure(m: PGLDouble); cdecl;
+glMultMatrixf: procedure(m: PGLFloat); cdecl;
+glMultTransposeMatrixd: procedure(const m: PGLdouble); cdecl;
 glMultTransposeMatrixdARB: procedure(const m: PGLdouble); cdecl;
+glMultTransposeMatrixf: procedure(const m: PGLfloat); cdecl;
 glMultTransposeMatrixfARB: procedure(const m: PGLfloat); cdecl;
+glMultiDrawArraysEXT: procedure(mode: GLenum; const first: PGLint; const count: PGLsizei; primcount: GLsizei); cdecl;
+glMultiDrawElementsEXT: procedure(mode: GLenum; const count: PGLsizei; _type: GLenum; const indices: PGLVoid; primcount: GLsizei); cdecl;
+glMultiTexCoord1d: procedure(target: GLenum; s: GLdouble); cdecl;
 glMultiTexCoord1dARB: procedure(target: GLenum; s: GLdouble); cdecl;
 glMultiTexCoord1dSGIS: procedure(target: GLenum; s: Double); cdecl;
+glMultiTexCoord1dv: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord1dvARB: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord1dvSGIS: procedure(target: GLenum; var v: Double); cdecl;
+glMultiTexCoord1f: procedure(target: GLenum; s: GLfloat); cdecl;
 glMultiTexCoord1fARB: procedure(target: GLenum; s: GLfloat); cdecl;
 glMultiTexCoord1fSGIS: procedure(target: GLenum; s: Single); cdecl;
+glMultiTexCoord1fv: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord1fvARB: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord1fvSGIS: procedure(target: GLenum; var v: Single); cdecl;
+glMultiTexCoord1i: procedure(target: GLenum; s: GLint); cdecl;
 glMultiTexCoord1iARB: procedure(target: GLenum; s: GLint); cdecl;
 glMultiTexCoord1iSGIS: procedure(target: GLenum; s: LongInt); cdecl;
+glMultiTexCoord1iv: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord1ivARB: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord1ivSGIS: procedure(target: GLenum; var v: LongInt); cdecl;
+glMultiTexCoord1s: procedure(target: GLenum; s: GLshort); cdecl;
 glMultiTexCoord1sARB: procedure(target: GLenum; s: GLshort); cdecl;
 glMultiTexCoord1sSGIS: procedure(target: GLenum; s: ShortInt); cdecl;
+glMultiTexCoord1sv: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord1svARB: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord1svSGIS: procedure(target: GLenum; var v: ShortInt); cdecl;
+glMultiTexCoord2d: procedure(target: GLenum; s, t: GLdouble); cdecl;
 glMultiTexCoord2dARB: procedure(target: GLenum; s, t: GLdouble); cdecl;
 glMultiTexCoord2dSGIS: procedure(target: GLenum; s, t: Double); cdecl;
+glMultiTexCoord2dv: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord2dvARB: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord2dvSGIS: procedure(target: GLenum; var v: Double); cdecl;
+glMultiTexCoord2f: procedure(target: GLenum; s, t: GLfloat); cdecl;
 glMultiTexCoord2fARB: procedure(target: GLenum; s, t: GLfloat); cdecl;
 glMultiTexCoord2fSGIS: procedure(target: GLenum; s, t: Single); cdecl;
+glMultiTexCoord2fv: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord2fvARB: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord2fvSGIS: procedure(target: GLenum; var v: Single); cdecl;
+glMultiTexCoord2i: procedure(target: GLenum; s, t: GLint); cdecl;
 glMultiTexCoord2iARB: procedure(target: GLenum; s, t: GLint); cdecl;
 glMultiTexCoord2iSGIS: procedure(target: GLenum; s, t: LongInt); cdecl;
+glMultiTexCoord2iv: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord2ivARB: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord2ivSGIS: procedure(target: GLenum; var v: LongInt); cdecl;
+glMultiTexCoord2s: procedure(target: GLenum; s, t: GLshort); cdecl;
 glMultiTexCoord2sARB: procedure(target: GLenum; s, t: GLshort); cdecl;
 glMultiTexCoord2sSGIS: procedure(target: GLenum; s, t: ShortInt); cdecl;
+glMultiTexCoord2sv: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord2svARB: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord2svSGIS: procedure(target: GLenum; var v: ShortInt); cdecl;
+glMultiTexCoord3d: procedure(target: GLenum; s, t, r: GLdouble); cdecl;
 glMultiTexCoord3dARB: procedure(target: GLenum; s, t, r: GLdouble); cdecl;
 glMultiTexCoord3dSGIS: procedure(target: GLenum; s, t, r: Double); cdecl;
+glMultiTexCoord3dv: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord3dvARB: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord3dvSGIS: procedure(target: GLenum; var v: Double); cdecl;
+glMultiTexCoord3f: procedure(target: GLenum; s, t, r: GLfloat); cdecl;
 glMultiTexCoord3fARB: procedure(target: GLenum; s, t, r: GLfloat); cdecl;
 glMultiTexCoord3fSGIS: procedure(target: GLenum; s, t, r: Single); cdecl;
+glMultiTexCoord3fv: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord3fvARB: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord3fvSGIS: procedure(target: GLenum; var v: Single); cdecl;
+glMultiTexCoord3i: procedure(target: GLenum; s, t, r:  GLint); cdecl;
 glMultiTexCoord3iARB: procedure(target: GLenum; s, t, r:  GLint); cdecl;
 glMultiTexCoord3iSGIS: procedure(target: GLenum; s, t, r: LongInt); cdecl;
+glMultiTexCoord3iv: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord3ivARB: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord3ivSGIS: procedure(target: GLenum; var v: LongInt); cdecl;
+glMultiTexCoord3s: procedure(target: GLenum; s, t, r: GLshort); cdecl;
 glMultiTexCoord3sARB: procedure(target: GLenum; s, t, r: GLshort); cdecl;
 glMultiTexCoord3sSGIS: procedure(target: GLenum; s, t, r: ShortInt); cdecl;
+glMultiTexCoord3sv: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord3svARB: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord3svSGIS: procedure(target: GLenum; var v: ShortInt); cdecl;
+glMultiTexCoord4d: procedure(target: GLenum; s, t, r, q: GLdouble); cdecl;
 glMultiTexCoord4dARB: procedure(target: GLenum; s, t, r, q: GLdouble); cdecl;
 glMultiTexCoord4dSGIS: procedure(target: GLenum; s, t, r, q: Double); cdecl;
+glMultiTexCoord4dv: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord4dvARB: procedure(target: GLenum; const v: PGLdouble); cdecl;
 glMultiTexCoord4dvSGIS: procedure(target: GLenum; var v: Double); cdecl;
+glMultiTexCoord4f: procedure(target: GLenum; s, t, r, q: GLfloat); cdecl;
 glMultiTexCoord4fARB: procedure(target: GLenum; s, t, r, q: GLfloat); cdecl;
 glMultiTexCoord4fSGIS: procedure(target: GLenum; s, t, r, q: Single); cdecl;
+glMultiTexCoord4fv: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord4fvARB: procedure(target: GLenum; const v: PGLfloat); cdecl;
 glMultiTexCoord4fvSGIS: procedure(target: GLenum; var v: Single); cdecl;
+glMultiTexCoord4i: procedure(target: GLenum; s, t, r, q: GLint); cdecl;
 glMultiTexCoord4iARB: procedure(target: GLenum; s, t, r, q: GLint); cdecl;
 glMultiTexCoord4iSGIS: procedure(target: GLenum; s, t, r, q: LongInt); cdecl;
+glMultiTexCoord4iv: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord4ivARB: procedure(target: GLenum; const v: PGLint); cdecl;
 glMultiTexCoord4ivSGIS: procedure(target: GLenum; var v: LongInt); cdecl;
+glMultiTexCoord4s: procedure(target: GLenum; s, t, r, q: GLshort); cdecl;
 glMultiTexCoord4sARB: procedure(target: GLenum; s, t, r, q: GLshort); cdecl;
 glMultiTexCoord4sSGIS: procedure(target: GLenum; s, t, r, q: ShortInt); cdecl;
+glMultiTexCoord4sv: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord4svARB: procedure(target: GLenum; const v: PGLshort); cdecl;
 glMultiTexCoord4svSGIS: procedure(target: GLenum; var v: ShortInt); cdecl;
 glMultiTexCoordPointerSGIS: procedure(target: GLenum; size: LongInt; _Type: GLEnum; stride: LongInt; var _Pointer); cdecl;
@@ -2222,6 +2420,8 @@ glPixelStorei: procedure(pname: GLenum; param: LongInt); cdecl;
 glPixelTransferf: procedure(pname: GLenum; param: Single); cdecl;
 glPixelTransferi: procedure(pname: GLenum; param: LongInt); cdecl;
 glPixelZoom: procedure(xfactor, yfactor: Single); cdecl;
+glPointParameteriNV: procedure(pname: GLenum; param: GLint); cdecl;
+glPointParameterivNV: procedure(pname: GLenum; const params: PGLint); cdecl;
 glPointParameterfEXT: procedure(pname: GLenum; param: Single); cdecl;
 glPointParameterfvEXT: procedure(pname: GLenum; var params: Single); cdecl;
 glPointSize: procedure(size: Single); cdecl;
@@ -2234,12 +2434,22 @@ glPopMatrix: procedure; cdecl;
 glPopName: procedure; cdecl;
 glPrioritizeTextures: procedure(n: LongInt; var textures: LongWord; var priorities: GLclampf); cdecl;
 glPrioritizeTexturesEXT: procedure(n: LongInt; var textures: LongWord; var priorities: GLClampf); cdecl;
+glProgramLocalParameter4dNV: procedure(target: GLenum; len: GLsizei; const name: PGLubyte; x, y, z, w: GLdouble); cdecl;
+glProgramLocalParameter4dvNV: procedure(target: GLenum; len: GLsizei; const name: PGLubyte; const v: PGLdouble); cdecl;
+glProgramLocalParameter4fNV: procedure(target: GLenum; len: GLsizei; const name: PGLubyte; x, y, z, w: GLfloat); cdecl;
+glProgramLocalParameter4fvNV: procedure(target: GLenum; len: GLsizei; const name: PGLubyte; const v: PGLfloat); cdecl;
 glProgramParameter4dNV: procedure(target: GLenum; index: GLuint; x, y, z, w: GLdouble); cdecl;
 glProgramParameter4dvNV: procedure(target: GLenum; index: GLuint; const v: PGLdouble); cdecl;
 glProgramParameter4fNV: procedure(target: GLenum; index: GLuint; x, y, z, w: GLfloat); cdecl;
 glProgramParameter4fvNV: procedure(target: GLenum; index: GLuint; const v: PGLfloat); cdecl;
+glProgramParameterSigned4dNV: procedure(target: GLenum; index: GLint; x, y, z, w: GLdouble);
+glProgramParameterSigned4dvNV: procedure(target: GLenum; index: GLint; const v: PGLdouble);
+glProgramParameterSigned4fNV: procedure(target: GLenum; index: GLint; x, y, z, w: GLfloat);
+glProgramParameterSigned4fvNV: procedure(target: GLenum; index: GLint; const v: PGLfloat);
 glProgramParameters4dvNV: procedure(target: GLenum; index: GLuint; count: GLsizei; const v: PGLdouble); cdecl;
 glProgramParameters4fvNV: procedure(target: GLenum; index: GLuint; count: GLsizei; const v: PGLfloat); cdecl;
+glProgramParametersSigned4dvNV: procedure(target: GLenum; index: GLint; count: GLsizei; const v: PGLdouble);
+glProgramParametersSigned4fvNV: procedure(target: GLenum; index: GLint; count: GLsizei; const v: PGLfloat);
 glPushAttrib: procedure(mask: GLbitfield); cdecl;
 glPushClientAttrib: procedure(mask: GLbitfield); cdecl;
 glPushMatrix: procedure; cdecl;
@@ -2278,13 +2488,14 @@ glRectdv: procedure(var v1, v2: Double); cdecl;
 glRectfv: procedure(var v1, v2: Single); cdecl;
 glRectiv: procedure(var v1, v2: LongInt); cdecl;
 glRectsv: procedure(var v1, v2: SmallInt); cdecl;
-glReleaseFlushold: function(const id: PGLvoid): GLenum; cdecl;
+glReleaseFlushHold: function(const id: PGLvoid): GLenum; cdecl;
 glRenderMode: function(mode: GLenum): LongInt; cdecl;
 glRequestResidentProgramsNV: procedure(n: GLsizei; const programs: PGLuint); cdecl;
 glResetHistogram: procedure(target: GLenum); cdecl;
 glResetMinmax: procedure(target: GLenum); cdecl;
 glRotated: procedure(angle, x, y, z: Double); cdecl;
 glRotatef: procedure(angle, x, y, z: Single); cdecl;
+glSampleCoverage: procedure(value: GLclampf; invert: GLboolean); cdecl;
 glSampleCoverageARB: procedure(value: GLclampf; invert: GLboolean); cdecl;
 glScaled: procedure(x, y, z: Double); cdecl;
 glScalef: procedure(x, y, z: Single); cdecl;
@@ -2316,6 +2527,7 @@ glShadeModel: procedure(mode: GLenum); cdecl;
 glStencilFunc: procedure(func: GLenum; ref: LongInt; mask: LongWord); cdecl;
 glStencilMask: procedure(mask: LongWord); cdecl;
 glStencilOp: procedure(fail, zfail, zpass: GLenum); cdecl;
+glTbufferMask3DFX: procedure(mask :GLuint); cdecl;
 glTestFenceNV: function(fence: GLuint): GLboolean; cdecl;
 glTexCoord1d: procedure(s: Double); cdecl;
 glTexCoord1dv: procedure(var v: Double); cdecl;
@@ -2364,6 +2576,7 @@ glTexGeniv: procedure(cord, pname: GLenum; params : PLongInt); cdecl;
 glTexImage1D: procedure(target: GLenum; level, internalFormat, width, border: LongInt; format, _Type: GLenum; var pixels); cdecl;
 glTexImage2D: procedure(target: GLenum; level, internalFormat, width, height, border: LongInt; format, _Type: GLenum; var pixels); cdecl;
 glTexImage3D: procedure(target: GLenum; level: LongInt; internalFormat: GLenum; width, height, depth, border: LongInt; format, _Type: GLEnum; var pixels); cdecl;
+glTexImage3DEXT: procedure(target: GLenum; level: LongInt; internalFormat: GLenum; width, height, depth, border: LongInt; format, _Type: GLEnum; var pixels); cdecl;
 glTexParameterf: procedure(target, pname: GLenum; param: Single); cdecl;
 glTexParameterfv: procedure(target, pname: GLenum; params : PSingle); cdecl;
 glTexParameteri: procedure(target, pname: GLenum; param: LongInt); cdecl;
@@ -2371,6 +2584,7 @@ glTexParameteriv: procedure(target, pname: GLenum; params : PLongInt); cdecl;
 glTexSubImage1D: procedure(target: GLenum; level, xoffset, width: LongInt; format, _Type: GLenum; var pixels); cdecl;
 glTexSubImage2D: procedure(target: GLenum; level, xoffset, yoffset, width, height: LongInt; format, _Type: GLenum; var pixels); cdecl;
 glTexSubImage3D: procedure(target: GLenum; level: LongInt; xoffset, yoffset, zoffset, width, height, depth: LongInt; format, _Type: GLEnum; var pixels); cdecl;
+glTexSubImage3DEXT: procedure(target: GLenum; level: LongInt; xoffset, yoffset, zoffset, width, height, depth: LongInt; format, _Type: GLEnum; var pixels); cdecl;
 glTrackMatrixNV: procedure(target: GLenum; address: GLuint; matrix, transform: GLenum); cdecl;
 glTranslated: procedure(x, y, z: Double); cdecl;
 glTranslatef: procedure(x, y, z: Single); cdecl;
@@ -2448,7 +2662,22 @@ glVertexWeightfEXT: procedure(weight: GLfloat); cdecl;
 glVertexWeightfvEXT: procedure(const weight: PGLfloat); cdecl;
 glViewport: procedure(x, y, width, height: LongInt); cdecl;
 glWindowBackBufferHintAutodesk: procedure; cdecl;
-
+glWindowPos2dARB: procedure(x, y: GLdouble); cdecl;
+glWindowPos2dvARB: procedure(const p: PGLdouble); cdecl;
+glWindowPos2fARB: procedure(x, y: GLfloat); cdecl;
+glWindowPos2fvARB: procedure(const p: PGLfloat); cdecl;
+glWindowPos2iARB: procedure(x, y: GLint); cdecl;
+glWindowPos2ivARB: procedure(const p: PGLint); cdecl;
+glWindowPos2sARB: procedure(x, y: GLshort); cdecl;
+glWindowPos2svARB: procedure(const p: PGLshort); cdecl;
+glWindowPos3dARB: procedure(x, y, z: GLdouble); cdecl;
+glWindowPos3dvARB: procedure(const p: PGLdouble); cdecl;
+glWindowPos3fARB: procedure(x, y, z: GLfloat); cdecl;
+glWindowPos3fvARB: procedure(const p: PGLfloat); cdecl;
+glWindowPos3iARB: procedure(x, y, z: GLint); cdecl;
+glWindowPos3ivARB: procedure(const p: PGLint); cdecl;
+glWindowPos3sARB: procedure(x, y, z: GLshort); cdecl;
+glWindowPos3svARB: procedure(const p: PGLshort); cdecl;
 
 // =======================================================
 // -------------------------------------------------------
@@ -2487,7 +2716,8 @@ begin
 // Loading OpenGL Procedures and Functions
 
   glAccum := GetProc(libgl, 'glAccum');
-  glActiveTextureARB := GetProc(libgl, 'glActiveTextureARB') ;
+  glActiveTexture := GetProc(libgl, 'glActiveTexture');
+  glActiveTextureARB := GetProc(libgl, 'glActiveTextureARB');
   glAddSwapHintRectWIN := GetProc(libgl, 'glAddSwapHintRectWIN');
   glAlphaFunc := GetProc(libgl, 'glAlphaFunc');
   glAreProgramsResidentNV := GetProc(libgl, 'glAreProgramsResidentNV');
@@ -2496,6 +2726,7 @@ begin
   glArrayElement := GetProc(libgl, 'glArrayElement');
   glArrayElementEXT := GetProc(libgl, 'glArrayElementEXT');
   glBegin := GetProc(libgl, 'glBegin');
+  glBeginOcclusionQueryNV := GetProc(libgl, 'glBeginOcclusionQueryNV');
   glBindProgramNV := GetProc(libgl, 'glBindProgramNV');
   glBindTexture := GetProc(libgl, 'glBindTexture');
   glBindTextureEXT := GetProc(libgl, 'glBindTextureEXT');
@@ -2513,6 +2744,7 @@ begin
   glClearDepth := GetProc(libgl, 'glClearDepth');
   glClearIndex := GetProc(libgl, 'glClearIndex');
   glClearStencil := GetProc(libgl, 'glClearStencil');
+  glClientActiveTexture := GetProc(libgl, 'glClientActiveTexture');
   glClientActiveTextureARB := GetProc(libgl, 'glClientActiveTextureARB');
   glClipPlane := GetProc(libgl, 'glClipPlane');
   glColor3b := GetProc(libgl, 'glColor3b');
@@ -2564,11 +2796,17 @@ begin
   glCombinerParameteriNV := GetProc(libgl, 'glCombinerParameteriNV');
   glCombinerParameterivNV := GetProc(libgl, 'glCombinerParameterivNV');
   glCombinerStageParameterfvNV := GetProc(libgl, 'glCombinerStageParameterfvNV');
+  glCompressedTexImage1D := GetProc(libgl, 'glCompressedTexImage1D');
   glCompressedTexImage1DARB := GetProc(libgl, 'glCompressedTexImage1DARB');
+  glCompressedTexImage2D := GetProc(libgl, 'glCompressedTexImage2D');
   glCompressedTexImage2DARB := GetProc(libgl, 'glCompressedTexImage2DARB');
+  glCompressedTexImage3D := GetProc(libgl, 'glCompressedTexImage3D');
   glCompressedTexImage3DARB := GetProc(libgl, 'glCompressedTexImage3DARB');
+  glCompressedTexSubImage1D := GetProc(libgl, 'glCompressedTexSubImage1D');
   glCompressedTexSubImage1DARB := GetProc(libgl, 'glCompressedTexSubImage1DARB');
+  glCompressedTexSubImage2D := GetProc(libgl, 'glCompressedTexSubImage2D');
   glCompressedTexSubImage2DARB := GetProc(libgl, 'glCompressedTexSubImage2DARB');
+  glCompressedTexSubImage3D := GetProc(libgl, 'glCompressedTexSubImage3D');
   glCompressedTexSubImage3DARB := GetProc(libgl, 'glCompressedTexSubImage3DARB');
   glConvolutionFilter1D := GetProc(libgl, 'glConvolutionFilter1D');
   glConvolutionFilter2D := GetProc(libgl, 'glConvolutionFilter2D');
@@ -2586,9 +2824,11 @@ begin
   glCopyTexSubImage1D := GetProc(libgl, 'glCopyTexSubImage1D');
   glCopyTexSubImage2D := GetProc(libgl, 'glCopyTexSubImage2D');
   glCopyTexSubImage3D := GetProc(libgl, 'glCopyTexSubImage3D');
+  glCopyTexSubImage3DEXT := GetProc(libgl, 'glCopyTexSubImage3DEXT');
   glCullFace := GetProc(libgl, 'glCullFace');
   glDeleteFencesNV := GetProc(libgl, 'glDeleteFencesNV');
   glDeleteLists := GetProc(libgl, 'glDeleteLists');
+  glDeleteOcclusionQueriesNV := GetProc(libgl, 'glDeleteOcclusionQueriesNV');
   glDeleteProgramsNV := GetProc(libgl, 'glDeleteProgramsNV');
   glDeleteTextures := GetProc(libgl, 'glDeleteTextures');  
   glDeleteTexturesEXT := GetProc(libgl, 'glDeleteTexturesEXT');
@@ -2613,6 +2853,7 @@ begin
   glEnableClientState := GetProc(libgl, 'glEnableClientState');
   glEnd := GetProc(libgl, 'glEnd');
   glEndList := GetProc(libgl, 'glEndList');
+  glEndOcclusionQueryNV := GetProc(libgl, 'glEndOcclusionQueryNV');
   glEvalCoord1d := GetProc(libgl, 'glEvalCoord1d');
   glEvalCoord1dv := GetProc(libgl, 'glEvalCoord1dv');
   glEvalCoord1f := GetProc(libgl, 'glEvalCoord1f');
@@ -2634,7 +2875,7 @@ begin
   glFlush := GetProc(libgl, 'glFlush');
   glFlushPixelDataRangeNV := GetProc(libgl, 'glFlushPixelDataRangeNV'); 
   glFlushVertexArrayRangeNV := GetProc(libgl, 'glFlushVertexArrayRangeNV');
-  glFlushold := GetProc(libgl, 'glFlushold');
+  glFlushHold := GetProc(libgl, 'glFlushHold');
   glFogCoordPointerEXT := GetProc(libgl, 'glFogCoordPointerEXT');
   glFogCoorddEXT := GetProc(libgl, 'glFogCoorddEXT');
   glFogCoorddvEXT := GetProc(libgl, 'glFogCoorddvEXT');
@@ -2664,6 +2905,7 @@ begin
   glGetCombinerOutputParameterfvNV := GetProc(libgl, 'glGetCombinerOutputParameterfvNV');
   glGetCombinerOutputParameterivNV := GetProc(libgl, 'glGetCombinerOutputParameterivNV');
   glGetCombinerStageParameterfvNV := GetProc(libgl, 'glGetCombinerStageParameterfvNV');
+  glGetCompressedTexImage := GetProc(libgl, 'glGetCompressedTexImage');
   glGetCompressedTexImageARB := GetProc(libgl, 'glGetCompressedTexImageARB');
   glGetConvolutionFilter :=GetProc(libgl, 'glGetConvolutionFilter');
   glGetConvolutionParameterfv := GetProc(libgl, 'glGetConvolutionParameterfv');
@@ -2693,12 +2935,18 @@ begin
   glGetMinmax := GetProc(libgl, 'glGetMinmax');
   glGetMinmaxParameterfv := GetProc(libgl, 'glGetMinmaxParameterfv');
   glGetMinmaxParameteriv := GetProc(libgl, 'glGetMinmaxParameteriv');
+  glGetOcclusionQueryivNV := GetProc(libgl, 'glGetOcclusionQueryivNV');
+  glGetOcclusionQueryuivNV := GetProc(libgl, 'glGetOcclusionQueryuivNV');
   glGetPixelMapfv := GetProc(libgl, 'glGetPixelMapfv');
   glGetPixelMapuiv := GetProc(libgl, 'glGetPixelMapuiv');
   glGetPixelMapusv := GetProc(libgl, 'glGetPixelMapusv');
   glGetPointerv := GetProc(libgl, 'glGetPointerv');
   glGetPointervEXT := GetProc(libgl, 'glGetPointervEXT');
   glGetPolygonStipple := GetProc(libgl, 'glGetPolygonStipple');
+  glGetProgramLocalParameterdvNV := GetProc(libgl, 'glGetProgramLocalParameterdvNV');
+  glGetProgramLocalParameterfvNV := GetProc(libgl, 'glGetProgramLocalParameterfvNV');
+  glGetProgramParameterSigneddvNV := GetProc(libgl, 'glGetProgramParameterSigneddvNV');
+  glGetProgramParameterSignedfvNV := GetProc(libgl, 'glGetProgramParameterSignedfvNV');
   glGetProgramParameterdvNV := GetProc(libgl, 'glGetProgramParameterdvNV');
   glGetProgramParameterfvNV := GetProc(libgl, 'glGetProgramParameterfvNV');
   glGetProgramStringNV := GetProc(libgl, 'glGetProgramStringNV');
@@ -2739,7 +2987,8 @@ begin
   glInterleavedArrays := GetProc(libgl, 'glInterleavedArrays');
   glIsEnabled := GetProc(libgl, 'glIsEnabled');  
   glIsFenceNV := GetProc(libgl, 'glIsFenceNV');
-  glIsList := GetProc(libgl, 'glIsList');  
+  glIsList := GetProc(libgl, 'glIsList');
+  glIsOcclusionQueryNV := GetProc(libgl, 'glIsOcclusionQueryNV');
   glIsProgramNV := GetProc(libgl, 'glIsProgramNV');
   glIsTexture := GetProc(libgl, 'glIsTexture');
   glIsTextureEXT := GetProc(libgl, 'glIsTextureEXT');
@@ -2759,7 +3008,9 @@ begin
   glLoadMatrixf := GetProc(libgl, 'glLoadMatrixf');
   glLoadName := GetProc(libgl, 'glLoadName');
   glLoadProgramNV := GetProc(libgl, 'glLoadProgramNV');
+  glLoadTransposeMatrixd := GetProc(libgl, 'glLoadTransposeMatrixd');
   glLoadTransposeMatrixdARB := GetProc(libgl, 'glLoadTransposeMatrixdARB');
+  glLoadTransposeMatrixf := GetProc(libgl, 'glLoadTransposeMatrixf');
   glLoadTransposeMatrixfARB := GetProc(libgl, 'glLoadTransposeMatrixfARB');
   glLockArraysEXT := GetProc(libgl, 'glLockArraysEXT');
   glLogicOp := GetProc(libgl, 'glLogicOp');  
@@ -2782,70 +3033,106 @@ begin
   glMinmax := GetProc(libgl, 'glMinmax');
   glMultMatrixd := GetProc(libgl, 'glMultMatrixd');
   glMultMatrixf := GetProc(libgl, 'glMultMatrixf');
+  glMultTransposeMatrixd := GetProc(libgl, 'glMultTransposeMatrixd');
   glMultTransposeMatrixdARB := GetProc(libgl, 'glMultTransposeMatrixdARB');
+  glMultTransposeMatrixf := GetProc(libgl, 'glMultTransposeMatrixf');
   glMultTransposeMatrixfARB := GetProc(libgl, 'glMultTransposeMatrixfARB');
+  glMultiDrawArraysEXT := GetProc(libgl, 'glMultiDrawArraysEXT');
+  glMultiDrawElementsEXT := GetProc(libgl, 'glMultiDrawElementsEXT');
+  glMultiTexCoord1d := GetProc(libgl, 'glMultiTexCoord1d');
   glMultiTexCoord1dARB := GetProc(libgl, 'glMultiTexCoord1dARB');
   glMultiTexCoord1dSGIS := GetProc(libgl, 'glMultiTexCoord1dSGIS');
+  glMultiTexCoord1dv := GetProc(libgl, 'glMultiTexCoord1dv');
   glMultiTexCoord1dvARB := GetProc(libgl, 'glMultiTexCoord1dvARB');  
   glMultiTexCoord1dvSGIS := GetProc(libgl, 'glMultiTexCoord1dvSGIS');
+  glMultiTexCoord1f := GetProc(libgl, 'glMultiTexCoord1f');
   glMultiTexCoord1fARB := GetProc(libgl, 'glMultiTexCoord1fARB');  
   glMultiTexCoord1fSGIS := GetProc(libgl, 'glMultiTexCoord1fSGIS');
+  glMultiTexCoord1fv := GetProc(libgl, 'glMultiTexCoord1fv');
   glMultiTexCoord1fvARB := GetProc(libgl, 'glMultiTexCoord1fvARB');  
   glMultiTexCoord1fvSGIS := GetProc(libgl, 'glMultiTexCoord1fvSGIS');
+  glMultiTexCoord1i := GetProc(libgl, 'glMultiTexCoord1i');
   glMultiTexCoord1iARB := GetProc(libgl, 'glMultiTexCoord1iARB');  
   glMultiTexCoord1iSGIS := GetProc(libgl, 'glMultiTexCoord1iSGIS');
+  glMultiTexCoord1iv := GetProc(libgl, 'glMultiTexCoord1iv');
   glMultiTexCoord1ivARB := GetProc(libgl, 'glMultiTexCoord1ivARB');  
   glMultiTexCoord1ivSGIS := GetProc(libgl, 'glMultiTexCoord1ivSGIS');
+  glMultiTexCoord1s := GetProc(libgl, 'glMultiTexCoord1s');
   glMultiTexCoord1sARB := GetProc(libgl, 'glMultiTexCoord1sARB');  
   glMultiTexCoord1sSGIS := GetProc(libgl, 'glMultiTexCoord1sSGIS');
+  glMultiTexCoord1sv := GetProc(libgl, 'glMultiTexCoord1sv');
   glMultiTexCoord1svARB := GetProc(libgl, 'glMultiTexCoord1svARB');  
   glMultiTexCoord1svSGIS := GetProc(libgl, 'glMultiTexCoord1svSGIS');
+  glMultiTexCoord2d := GetProc(libgl, 'glMultiTexCoord2d');
   glMultiTexCoord2dARB := GetProc(libgl, 'glMultiTexCoord2dARB');  
   glMultiTexCoord2dSGIS := GetProc(libgl, 'glMultiTexCoord2dSGIS');
+  glMultiTexCoord2dv := GetProc(libgl, 'glMultiTexCoord2dv');
   glMultiTexCoord2dvARB := GetProc(libgl, 'glMultiTexCoord2dvARB');  
   glMultiTexCoord2dvSGIS := GetProc(libgl, 'glMultiTexCoord2dvSGIS');
+  glMultiTexCoord2f := GetProc(libgl, 'glMultiTexCoord2f');
   glMultiTexCoord2fARB := GetProc(libgl, 'glMultiTexCoord2fARB');  
   glMultiTexCoord2fSGIS := GetProc(libgl, 'glMultiTexCoord2fSGIS');
+  glMultiTexCoord2fv := GetProc(libgl, 'glMultiTexCoord2fv');
   glMultiTexCoord2fvARB := GetProc(libgl, 'glMultiTexCoord2fvARB');  
   glMultiTexCoord2fvSGIS := GetProc(libgl, 'glMultiTexCoord2fvSGIS');
+  glMultiTexCoord2i := GetProc(libgl, 'glMultiTexCoord2i');
   glMultiTexCoord2iARB := GetProc(libgl, 'glMultiTexCoord2iARB');  
   glMultiTexCoord2iSGIS := GetProc(libgl, 'glMultiTexCoord2iSGIS');
+  glMultiTexCoord2iv := GetProc(libgl, 'glMultiTexCoord2iv');
   glMultiTexCoord2ivARB := GetProc(libgl, 'glMultiTexCoord2ivARB');  
   glMultiTexCoord2ivSGIS := GetProc(libgl, 'glMultiTexCoord2ivSGIS');
+  glMultiTexCoord2s := GetProc(libgl, 'glMultiTexCoord2s');
   glMultiTexCoord2sARB := GetProc(libgl, 'glMultiTexCoord2sARB');  
   glMultiTexCoord2sSGIS := GetProc(libgl, 'glMultiTexCoord2sSGIS');
+  glMultiTexCoord2sv := GetProc(libgl, 'glMultiTexCoord2sv');
   glMultiTexCoord2svARB := GetProc(libgl, 'glMultiTexCoord2svARB');  
   glMultiTexCoord2svSGIS := GetProc(libgl, 'glMultiTexCoord2svSGIS');
+  glMultiTexCoord3d := GetProc(libgl, 'glMultiTexCoord3d');
   glMultiTexCoord3dARB := GetProc(libgl, 'glMultiTexCoord3dARB');  
   glMultiTexCoord3dSGIS := GetProc(libgl, 'glMultiTexCoord3dSGIS');
+  glMultiTexCoord3dv := GetProc(libgl, 'glMultiTexCoord3dv');
   glMultiTexCoord3dvARB := GetProc(libgl, 'glMultiTexCoord3dvARB');  
   glMultiTexCoord3dvSGIS := GetProc(libgl, 'glMultiTexCoord3dvSGIS');
+  glMultiTexCoord3f := GetProc(libgl, 'glMultiTexCoord3f');
   glMultiTexCoord3fARB := GetProc(libgl, 'glMultiTexCoord3fARB');  
   glMultiTexCoord3fSGIS := GetProc(libgl, 'glMultiTexCoord3fSGIS');
+  glMultiTexCoord3fv := GetProc(libgl, 'glMultiTexCoord3fv');
   glMultiTexCoord3fvARB := GetProc(libgl, 'glMultiTexCoord3fvARB');  
   glMultiTexCoord3fvSGIS := GetProc(libgl, 'glMultiTexCoord3fvSGIS');
+  glMultiTexCoord3i := GetProc(libgl, 'glMultiTexCoord3i');
   glMultiTexCoord3iARB := GetProc(libgl, 'glMultiTexCoord3iARB');  
   glMultiTexCoord3iSGIS := GetProc(libgl, 'glMultiTexCoord3iSGIS');
+  glMultiTexCoord3iv := GetProc(libgl, 'glMultiTexCoord3iv');
   glMultiTexCoord3ivARB := GetProc(libgl, 'glMultiTexCoord3ivARB');  
   glMultiTexCoord3ivSGIS := GetProc(libgl, 'glMultiTexCoord3ivSGIS');
+  glMultiTexCoord3s := GetProc(libgl, 'glMultiTexCoord3s');
   glMultiTexCoord3sARB := GetProc(libgl, 'glMultiTexCoord3sARB');  
   glMultiTexCoord3sSGIS := GetProc(libgl, 'glMultiTexCoord3sSGIS');
+  glMultiTexCoord3sv := GetProc(libgl, 'glMultiTexCoord3sv');
   glMultiTexCoord3svARB := GetProc(libgl, 'glMultiTexCoord3svARB');  
   glMultiTexCoord3svSGIS := GetProc(libgl, 'glMultiTexCoord3svSGIS');
+  glMultiTexCoord4d := GetProc(libgl, 'glMultiTexCoord4d');
   glMultiTexCoord4dARB := GetProc(libgl, 'glMultiTexCoord4dARB');  
   glMultiTexCoord4dSGIS := GetProc(libgl, 'glMultiTexCoord4dSGIS');
+  glMultiTexCoord4dv := GetProc(libgl, 'glMultiTexCoord4dv');
   glMultiTexCoord4dvARB := GetProc(libgl, 'glMultiTexCoord4dvARB');  
   glMultiTexCoord4dvSGIS := GetProc(libgl, 'glMultiTexCoord4dvSGIS');
+  glMultiTexCoord4f := GetProc(libgl, 'glMultiTexCoord4f');
   glMultiTexCoord4fARB := GetProc(libgl, 'glMultiTexCoord4fARB');  
   glMultiTexCoord4fSGIS := GetProc(libgl, 'glMultiTexCoord4fSGIS');
+  glMultiTexCoord4fv := GetProc(libgl, 'glMultiTexCoord4fv');
   glMultiTexCoord4fvARB := GetProc(libgl, 'glMultiTexCoord4fvARB');  
   glMultiTexCoord4fvSGIS := GetProc(libgl, 'glMultiTexCoord4fvSGIS');
+  glMultiTexCoord4i := GetProc(libgl, 'glMultiTexCoord4i');
   glMultiTexCoord4iARB := GetProc(libgl, 'glMultiTexCoord4iARB');  
   glMultiTexCoord4iSGIS := GetProc(libgl, 'glMultiTexCoord4iSGIS');
+  glMultiTexCoord4iv := GetProc(libgl, 'glMultiTexCoord4iv');
   glMultiTexCoord4ivARB := GetProc(libgl, 'glMultiTexCoord4ivARB');  
   glMultiTexCoord4ivSGIS := GetProc(libgl, 'glMultiTexCoord4ivSGIS');
+  glMultiTexCoord4s := GetProc(libgl, 'glMultiTexCoord4s');
   glMultiTexCoord4sARB := GetProc(libgl, 'glMultiTexCoord4sARB');  
   glMultiTexCoord4sSGIS := GetProc(libgl, 'glMultiTexCoord4sSGIS');
+  glMultiTexCoord4sv := GetProc(libgl, 'glMultiTexCoord4sv');
   glMultiTexCoord4svARB := GetProc(libgl, 'glMultiTexCoord4svARB');  
   glMultiTexCoord4svSGIS := GetProc(libgl, 'glMultiTexCoord4svSGIS');
   glMultiTexCoordPointerSGIS := GetProc(libgl, 'glMultiTexCoordPointerSGIS');
@@ -2875,6 +3162,8 @@ begin
   glPixelZoom := GetProc(libgl, 'glPixelZoom');
   glPointParameterfEXT := GetProc(libgl, 'glPointParameterfEXT');
   glPointParameterfvEXT := GetProc(libgl, 'glPointParameterfvEXT');
+  glPointParameteriNV := GetProc(libgl, 'glPointParameteriNV');
+  glPointParameterivNV := GetProc(libgl, 'glPointParameterivNV');
   glPointSize := GetProc(libgl, 'glPointSize');
   glPolygonMode := GetProc(libgl, 'glPolygonMode');
   glPolygonOffset := GetProc(libgl, 'glPolygonOffset');
@@ -2885,12 +3174,22 @@ begin
   glPopName := GetProc(libgl, 'glPopName');
   glPrioritizeTextures := GetProc(libgl, 'glPrioritizeTextures');  
   glPrioritizeTexturesEXT := GetProc(libgl, 'glPrioritizeTexturesEXT');  
+  glProgramLocalParameter4dNV := GetProc(libgl, 'glProgramLocalParameter4dNV');
+  glProgramLocalParameter4dvNV := GetProc(libgl, 'glProgramLocalParameter4dvNV');
+  glProgramLocalParameter4fNV := GetProc(libgl, 'glProgramLocalParameter4fNV');
+  glProgramLocalParameter4fvNV := GetProc(libgl, 'glProgramLocalParameter4fvNV');
   glProgramParameter4dNV := GetProc(libgl, 'glProgramParameter4dNV');
   glProgramParameter4dvNV := GetProc(libgl, 'glProgramParameter4dvNV');
   glProgramParameter4fNV := GetProc(libgl, 'glProgramParameter4fNV');
   glProgramParameter4fvNV := GetProc(libgl, 'glProgramParameter4fvNV');
+  glProgramParameterSigned4dNV := GetProc(libgl, 'glProgramParameterSigned4dNV');
+  glProgramParameterSigned4dvNV := GetProc(libgl, 'glProgramParameterSigned4dvNV');
+  glProgramParameterSigned4fNV := GetProc(libgl, 'glProgramParameterSigned4fNV');
+  glProgramParameterSigned4fvNV := GetProc(libgl, 'glProgramParameterSigned4fvNV');
   glProgramParameters4dvNV := GetProc(libgl, 'glProgramParameters4dvNV');
   glProgramParameters4fvNV := GetProc(libgl, 'glProgramParameters4fvNV');
+  glProgramParametersSigned4dvNV := GetProc(libgl, 'glProgramParameters4dvNV');
+  glProgramParametersSigned4fvNV := GetProc(libgl, 'glProgramParameters4fvNV');
   glPushAttrib := GetProc(libgl, 'glPushAttrib');
   glPushClientAttrib := GetProc(libgl, 'glPushClientAttrib');
   glPushMatrix := GetProc(libgl, 'glPushMatrix');  
@@ -2929,13 +3228,14 @@ begin
   glRectiv := GetProc(libgl, 'glRectiv');
   glRects := GetProc(libgl, 'glRects');
   glRectsv := GetProc(libgl, 'glRectsv');
-  glReleaseFlushold := GetProc(libgl, 'glReleaseFlushold');
+  glReleaseFlushHold := GetProc(libgl, 'glReleaseFlushold');
   glRenderMode := GetProc(libgl, 'glRenderMode');  
   glRequestResidentProgramsNV := GetProc(libgl,'glRequestResidentProgramsNV');
   glResetHistogram := GetProc(libgl,'glResetHistogram');
   glResetMinmax := GetProc(libgl,'glResetMinmax');
   glRotated := GetProc(libgl, 'glRotated');
   glRotatef := GetProc(libgl, 'glRotatef');
+  glSampleCoverage := GetProc(libgl, 'glSampleCoverage');
   glSampleCoverageARB := GetProc(libgl, 'glSampleCoverageARB');
   glScaled := GetProc(libgl, 'glScaled');
   glScalef := GetProc(libgl, 'glScalef');
@@ -2967,6 +3267,7 @@ begin
   glStencilFunc := GetProc(libgl, 'glStencilFunc');
   glStencilMask := GetProc(libgl, 'glStencilMask');
   glStencilOp := GetProc(libgl, 'glStencilOp');
+  glTbufferMask3DFX := GetProc(libgl, 'glTbufferMask3DFX');
   glTestFenceNV := GetProc(libgl, 'glTestFenceNV');
   glTexCoord1d := GetProc(libgl, 'glTexCoord1d');
   glTexCoord1dv := GetProc(libgl, 'glTexCoord1dv');
@@ -3015,6 +3316,7 @@ begin
   glTexImage1D := GetProc(libgl, 'glTexImage1D');
   glTexImage2D := GetProc(libgl, 'glTexImage2D');
   glTexImage3D := GetProc(libgl, 'glTexImage3D');
+  glTexImage3DEXT := GetProc(libgl, 'glTexImage3DEXT');
   glTexParameterf := GetProc(libgl, 'glTexParameterf');
   glTexParameterfv := GetProc(libgl, 'glTexParameterfv');
   glTexParameteri := GetProc(libgl, 'glTexParameteri');
@@ -3022,6 +3324,7 @@ begin
   glTexSubImage1D := GetProc(libgl, 'glTexSubImage1D');
   glTexSubImage2D := GetProc(libgl, 'glTexSubImage2D');
   glTexSubImage3D := GetProc(libgl, 'glTexSubImage3D');
+  glTexSubImage3DEXT := GetProc(libgl, 'glTexSubImage3DEXT');
   glTrackMatrixNV := GetProc(libgl, 'glTrackMatrixNV');
   glTranslated := GetProc(libgl, 'glTranslated');
   glTranslatef := GetProc(libgl, 'glTranslatef');
@@ -3099,6 +3402,22 @@ begin
   glVertexWeightfvEXT := GetProc(libgl, 'glVertexWeightfvEXT');
   glViewport := GetProc(libgl, 'glViewport');
   glWindowBackBufferHintAutodesk := GetProc(libgl, 'glWindowBackBufferHintAutodesk');
+  glWindowPos2dARB := GetProc(libgl, 'glWindowPos2dARB');
+  glWindowPos2dvARB := GetProc(libgl, 'glWindowPos2dvARB');
+  glWindowPos2fARB := GetProc(libgl, 'glWindowPos2fARB');
+  glWindowPos2fvARB := GetProc(libgl, 'glWindowPos2fvARB');
+  glWindowPos2iARB := GetProc(libgl, 'glWindowPos2iARB');
+  glWindowPos2ivARB := GetProc(libgl, 'glWindowPos2ivARB');
+  glWindowPos2sARB := GetProc(libgl, 'glWindowPos2sARB');
+  glWindowPos2svARB := GetProc(libgl, 'glWindowPos2svARB');
+  glWindowPos3dARB := GetProc(libgl, 'glWindowPos3dARB');
+  glWindowPos3dvARB := GetProc(libgl, 'glWindowPos3dvARB');
+  glWindowPos3fARB := GetProc(libgl, 'glWindowPos3fARB');
+  glWindowPos3fvARB := GetProc(libgl, 'glWindowPos3fvARB');
+  glWindowPos3iARB := GetProc(libgl, 'glWindowPos3iARB');
+  glWindowPos3ivARB := GetProc(libgl, 'glWindowPos3ivARB');
+  glWindowPos3sARB := GetProc(libgl, 'glWindowPos3sARB');
+  glWindowPos3svARB := GetProc(libgl, 'glWindowPos3svARB');
 
   GLInitialized := True;
   Result := True;
@@ -3117,6 +3436,9 @@ finalization
 end.
 {
   $Log$
+  Revision 1.3  2002/04/15 10:54:58  lazarus
+  MG: fixes from satan
+
   Revision 1.2  2001/11/12 17:36:47  lazarus
   MG: new version from satan
 
