@@ -128,6 +128,7 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16: string);
+function ConvertLineEndings(const s: string): string;
 
 procedure DbgOut(const S: String; Args: array of const);
 procedure DbgOut(const s: string);
@@ -857,8 +858,8 @@ end;
 
 procedure DebugLn(const s: string);
 begin
-  if Assigned(DebugText) then
-    writeln(DebugText^, s);
+  if not Assigned(DebugText) then exit;
+  writeln(DebugText^, ConvertLineEndings(s));
 end;
 
 procedure DebugLn(const s1, s2: string);
@@ -939,6 +940,33 @@ procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13,
   s14, s15, s16: string);
 begin
   DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16);
+end;
+
+function ConvertLineEndings(const s: string): string;
+var
+  i: Integer;
+  EndingStart: LongInt;
+begin
+  Result:=s;
+  i:=1;
+  while (i<=length(Result)) do begin
+    if Result[i] in [#10,#13] then begin
+      EndingStart:=i;
+      inc(i);
+      if (i<=length(Result)) and (Result[i] in [#10,#13])
+      and (Result[i]<>Result[i-1]) then begin
+        inc(i);
+      end;
+      if (length(LineEnding)<>i-EndingStart)
+      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
+        // line end differs => replace with current LineEnding
+        Result:=
+          copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
+        i:=EndingStart+length(LineEnding);
+      end;
+    end else
+      inc(i);
+  end;
 end;
 
 procedure DbgOut(const S: String; Args: array of const);

@@ -905,6 +905,13 @@ begin
   end;
 end;
 
+function TTreeNode.FindNode(const NodeText: string): TTreeNode;
+begin
+  Result:=GetFirstChild;
+  while (Result<>nil) and (Result.Text<>NodeText) do
+    Result:=Result.GetNextSibling;
+end;
+
 function TTreeNode.GetCount: Integer;
 begin
   Result:=FCount;
@@ -1886,6 +1893,13 @@ begin
     else
       exit;
   end;
+end;
+
+function TTreeNodes.FindTopLvlNode(const NodeText: string): TTreeNode;
+begin
+  Result:=GetFirstNode;
+  while (Result<>nil) and (Result.Text<>NodeText) do
+    Result:=Result.GetNextSibling;
 end;
 
 function TTreeNodes.GetNodeFromIndex(Index: Integer): TTreeNode;

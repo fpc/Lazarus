@@ -1533,6 +1533,8 @@ type
     Text: string[255];
   end;
 
+  { TTreeNode }
+
   TTreeNode = class(TPersistent)
   private
     FOwner: TTreeNodes;   // the object, which contains all nodes of the tree
@@ -1650,6 +1652,7 @@ type
     function HasAsParent(AValue: TTreeNode): Boolean;
     function IndexOf(AValue: TTreeNode): Integer;
     function IndexOfText(const NodeText: string): Integer;
+    function FindNode(const NodeText: string): TTreeNode;
     procedure MakeVisible;
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); virtual;
     procedure MultiSelectGroup;
@@ -1695,6 +1698,8 @@ type
     CacheNode: TTreeNode;
     CacheIndex: Integer;
   end;
+
+  { TTreeNodes }
 
   TTreeNodes = class(TPersistent)
   private
@@ -1756,6 +1761,7 @@ type
     function GetLastNode: TTreeNode; // last top level node
     function GetLastSubNode: TTreeNode; // absolute last node
     function GetLastExpandedSubNode: TTreeNode; // absolute last node
+    function FindTopLvlNode(const NodeText: string): TTreeNode;
     function Insert(NextNode: TTreeNode; const S: string): TTreeNode;
     function InsertObject(NextNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
@@ -2294,6 +2300,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.163  2005/02/17 18:56:32  mattias
+  line ends in debug output are now converted, added TTreeNode.FindNode
+
   Revision 1.162  2005/02/05 16:09:52  marc
   * first 64bit changes
 
