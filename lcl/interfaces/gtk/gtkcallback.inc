@@ -89,7 +89,7 @@ begin
   Result := True;
   EventTrace('realize', nil);
 
-  if Data<>nil then begin
+  if (Data<>nil) then begin
     if TObject(Data) is TCustomForm then begin
       TheForm:=TCustomForm(Data);
       TheWindow:=GetControlWindow(Widget);
@@ -124,7 +124,8 @@ begin
       end;
     end;
     
-    RealizeAccelerator(TComponent(Data),Widget);
+    if not (csDesigning in TComponent(Data).ComponentState) then
+      RealizeAccelerator(TComponent(Data),Widget);
   end;
 end;
 
@@ -2536,6 +2537,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.154  2002/10/22 12:12:08  lazarus
+  MG: accelerators are now shared between non modal forms
+
   Revision 1.153  2002/10/21 22:12:47  lazarus
   MG: fixed frmactivate
 
