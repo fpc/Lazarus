@@ -134,7 +134,7 @@ begin
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(Widget^.Window,NewEventMask);
       end else begin
-        SetEventMaskForDesignMode(Widget^.Window);
+        //SetEventMaskForDesignMode(Widget^.Window);
       end;
 
       if TheWinControl<>nil then begin
@@ -2133,6 +2133,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2002/06/26 16:15:56  lazarus
+  MG: fixed missing declaration
+
   Revision 1.88  2002/06/26 15:11:09  lazarus
   MG: added new tool: Guess misplaced $IFDEF/$ENDIF
 
