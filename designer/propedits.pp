@@ -2925,7 +2925,6 @@ writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,
         exit;
     end;
   end;
-  if NewMethodExists then exit;
 writeln('### TMethodPropertyEditor.SetValue C');
   if IsValidIdent(CurValue) and IsValidIdent(NewValue)
   and (not NewMethodExists)
