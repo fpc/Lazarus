@@ -39,6 +39,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -143,6 +144,12 @@ begin
                         TColorDialog(ACommonDialog).Color);
   gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
   GtkWindowShowModal(GtkWindow);
+end;
+
+function  TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+begin
+  { TODO: cleanup }
+  Result := TGtkWidgetSet(InterfaceObject).CreateComponent(ACommonDialog);
 end;
 
 procedure TGtkWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);

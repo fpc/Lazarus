@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Dialogs,
 ////////////////////////////////////////////////////
-  WSDialogs, WSLCLClasses, Windows;
+  WSDialogs, WSLCLClasses, Windows, Win32Int, InterfaceBase;
 
 type
 
@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): integer; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -106,6 +107,12 @@ type
 
 
 implementation
+
+function  TWin32WSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): integer;
+begin
+  { TODO: cleanup }
+  Result := TWin32WidgetSet(InterfaceObject).CreateComponent(ACommonDialog);
+end;
 
 procedure TWin32WSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin

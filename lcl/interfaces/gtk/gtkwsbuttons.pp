@@ -57,7 +57,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
     class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
@@ -72,7 +72,7 @@ type
     class procedure UpdateLayout(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
     class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
   public
-    class function CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): THandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -111,14 +111,14 @@ begin
 end;
 
 
-function TGtkWSButton.CreateHandle(const AComponent: TComponent;
+function TGtkWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): THandle;
 var
   Button: TCustomButton;
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  Button := AComponent as TCustomButton;
+  Button := AWinControl as TCustomButton;
 
   Result := THandle(gtk_button_new_with_label('button'));
   if Result = 0 then Exit;
@@ -208,14 +208,14 @@ end;
  right, so the invisible is always in position 3. 
 } 
 
-function TGtkWSBitBtn.CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; 
+function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): THandle; 
 var
   BitBtn: TCustomBitBtn;
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  BitBtn := AComponent as TCustomBitBtn;
+  BitBtn := AWinControl as TCustomBitBtn;
 
   Result := THandle(gtk_button_new);
   if Result = 0 then Exit;

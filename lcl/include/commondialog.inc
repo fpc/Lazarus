@@ -32,7 +32,7 @@ end;
 function TCommonDialog.Execute: boolean;
 begin
   FUserChoice := mrNone;
-  CNSendMessage(LM_CREATE, Self, nil);
+  Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
   Result:= DoExecute;
   Close;
 end;
@@ -97,6 +97,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.17  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 

@@ -1789,7 +1789,6 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
 
 
-function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer): integer;
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 Function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
@@ -1841,15 +1840,6 @@ var
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TImageList]);
-end;
-
-{------------------------------------------------------------------------------
-  CNSendMessage  - To be replaced
-------------------------------------------------------------------------------}
-function CNSendMessage(LM_Message: integer; Sender: TObject;
-  Data: pointer): integer;
-begin
-  Result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
@@ -2401,6 +2391,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.248  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.247  2004/09/14 10:23:44  mattias
   implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
 

@@ -2385,7 +2385,9 @@ Begin
   if csDesigning in ComponentState then
     DebugLn('TWinControl.Repaint A ',Name,':',ClassName);
   {$ENDIF}
-  CNSendMessage(LM_PAINT, Self, nil);
+  { TODO: check what to do with LM_PAINT message, neither gtk nor win32
+    interface responded to it }
+  //CNSendMessage(LM_PAINT, Self, nil);
   // Invalidate;
   // Update;
 end;
@@ -3362,7 +3364,7 @@ begin
       Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
     end;
 
-    FHandle := WidgetSetClass.CreateHandle(Self, Params);
+    FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
     Constraints.UpdateInterfaceConstraints;
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
     if not HandleAllocated then
@@ -3912,6 +3914,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.282  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.281  2004/09/24 17:20:43  micha
   convert LM_SETGEOMETRY message to interface method
 

@@ -115,7 +115,7 @@ procedure TMenuItem.CreateHandle;
 var i: Integer;
 begin
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
-  SendMsgToInterface(LM_CREATE, Self, nil);
+  Handle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
   if FItems<>nil then begin
     for i := 0 to Count - 1 do begin
       Items[i].HandleNeeded;
@@ -1150,6 +1150,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.63  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 
@@ -1367,6 +1372,11 @@ end;
 
 
   $Log$
+  Revision 1.64  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.63  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 

@@ -26,13 +26,11 @@
 constructor TWidgetSet.Create;
 begin
   inherited Create;
-  SendMsgToInterface:=@IntSendMessage3;
 end;
 
 destructor TWidgetSet.Destroy;
 begin
   inherited Destroy;
-  SendMsgToInterface:=nil;
 end;
 
 procedure TWidgetSet.PassCmdLineOptions;
@@ -42,6 +40,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.117  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.116  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

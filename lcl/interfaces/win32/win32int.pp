@@ -159,7 +159,6 @@ Type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
-    Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
@@ -265,6 +264,11 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.119  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.118  2004/09/24 14:50:57  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 

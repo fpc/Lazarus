@@ -44,9 +44,11 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Graphics,
+  Controls, Graphics, LCLType,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSImgList;
+  WSLCLClasses, WSImgList,
+  { TODO: remove when CreateHandle/Component code moved }
+  InterfaceBase;
 
 type
   { TWSDragImageList }
@@ -78,6 +80,8 @@ type
     class procedure SetColor(const AWinControl: TWinControl); virtual;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); virtual;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): HWND; virtual;
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual;
@@ -174,6 +178,13 @@ end;
 
 procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
 begin
+end;
+
+function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+begin
+  // For now default to the old creation routines
+  Result := InterfaceObject.CreateComponent(AWinControl);
 end;
 
 procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);

@@ -44,6 +44,7 @@ type
   protected
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
+    class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
@@ -55,6 +56,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TGtkWSMainMenu }
@@ -143,6 +145,12 @@ begin
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
 
+function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+begin
+  { TODO: cleanup }
+  Result := HMENU(TGtkWidgetSet(InterfaceObject).CreateComponent(AMenuItem));
+end;
+
 procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   { TODO: cleanup }
@@ -163,6 +171,14 @@ procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
 begin
   Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
     {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
+end;
+
+{ TGtkWSMenu }
+
+function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+begin
+  { TODO: cleanup }
+  Result := HMENU(TGtkWidgetSet(InterfaceObject).CreateComponent(AMenu));
 end;
 
 { TGtkWSPopupMenu }
@@ -203,7 +219,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TMenuItem, TGtkWSMenuItem);
-//  RegisterWSComponent(TMenu, TGtkWSMenu);
+  RegisterWSComponent(TMenu, TGtkWSMenu);
 //  RegisterWSComponent(TMainMenu, TGtkWSMainMenu);
   RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu);
 ////////////////////////////////////////////////////

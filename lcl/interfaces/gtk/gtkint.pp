@@ -255,8 +255,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
-                              data : pointer) : integer; override;
     procedure HandleEvents; override;
     procedure WaitMessage; override;
     procedure SendCachedLCLMessages; override;
@@ -432,6 +430,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.216  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.215  2004/09/24 19:02:38  micha
   convert LM_MOVEPAGE message to interface method
 

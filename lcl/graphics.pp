@@ -1297,12 +1297,6 @@ begin
                    TFont,TPen,TBrush,TRegion]);
 end;
 
-function SendIntfMessage(LM_Message: integer; Sender: TObject;
-  Data: pointer): integer;
-begin
-  result := SendMsgToInterface(LM_Message, Sender, Data);
-end;
-
 const
   GraphicsFinalized: boolean = false;
 
@@ -1758,6 +1752,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.154  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.153  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 

@@ -251,29 +251,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.IntSendMessage3
-  Params:  LM_Message - message to be processed
-           Sender     - sending control
-           Data       - pointer to message-specific data (optional)
-  Returns: depends on the message and the sender
-
-  Processes messages from different components.
-
-  WARNING: the result of this function sometimes is not always really an
-           integer!!!!!
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
-Begin
-  Result := 0;   //default value just in case nothing sets it
-  Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
-  Assert(False, 'Trace:IntSendMessage3 - Value of Sender = $' + IntToHex(LongInt(Sender), 8));
-  Case LM_Message Of
-    LM_CREATE:
-      CreateComponent(Sender);
-  End; // end of 1st case
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetCallback
   Params: Msg    - message for which to set a callback
           Sender - object to which callback will be sent
@@ -1105,16 +1082,6 @@ Begin
     writeln('TWin32WidgetSet.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
   End
-  Else If (Sender Is TMenuItem) Then
-  Begin
-    Assert(False, 'Trace:[TWin32WidgetSet.CreateComponent] - Sender is a menu item');
-    Caption := TMenuItem(Sender).Caption;
-    Assert(False, Format('Trace:[TWin32WidgetSet.CreateComponent] - Caption set to %S', [Caption]));
-    CompStyle := TMenuItem(Sender).FCompStyle;
-    Assert(False, Format('Trace:[TWin32WidgetSet.CreateComponent] - CompStyle set to %S', [CS_To_String(CompStyle)]));
-  End
-  Else If (Sender Is TMenu) { Or (Sender Is TPopupMenu) } Then
-    CompStyle := TMenu(Sender).FCompStyle
   Else If (Sender Is TCommonDialog) Then
     CompStyle := TCommonDialog(Sender).FCompStyle;
 
@@ -1446,14 +1413,6 @@ Begin
       Begin
         // nothing to do
       End;
-      csMainMenu, csMenuBar:
-      begin
-        Window := CreateMenu;
-      end;
-      csMenuItem, csPopupMenu:
-      begin
-        Window := CreatePopupMenu;
-      end;
       csSpinEdit:
       Begin
         //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
@@ -1537,10 +1496,6 @@ Begin
       Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
     end;
   End
-  Else If (Sender Is TMenuItem) Then
-    TMenuItem(Sender).Handle := Window
-  Else If (Sender Is TMenu) Then
-    TMenu(Sender).Items.Handle := Window
   Else If (Sender Is TCommonDialog) Then
     TCommonDialog(Sender).Handle := Window
   Else
@@ -1696,6 +1651,11 @@ End;
 
 {
   $Log$
+  Revision 1.287  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.286  2004/09/24 14:50:58  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 

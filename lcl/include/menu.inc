@@ -72,7 +72,7 @@ end;
 procedure TMenu.CreateHandle;
 var i: integer;
 begin
-  SendMsgToInterface(LM_CREATE, Self, nil); // CreateComponent(nil);
+  FItems.Handle := TWSMenuClass(WidgetSetClass).CreateHandle(Self);
   // initiate creation of subitems
   // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
   for i:=0 to Items.Count-1 do
@@ -236,6 +236,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.24  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

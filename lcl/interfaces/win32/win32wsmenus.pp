@@ -47,6 +47,7 @@ type
   protected
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
+    class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
@@ -58,6 +59,7 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TWin32WSMainMenu }
@@ -220,6 +222,11 @@ begin
     DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
 end;
 
+function  TWin32WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+begin
+  Result := CreatePopupMenu;
+end;
+
 procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   AMenu: TMenu;
@@ -286,6 +293,13 @@ begin
   end;
 end;
 
+{ TWin32WSMenu }
+
+function  TWin32WSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+begin
+  Result := CreateMenu;
+end;
+
 { TWin32WSPopupMenu }
 
 procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
@@ -308,7 +322,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TMenuItem, TWin32WSMenuItem);
-//  RegisterWSComponent(TMenu, TWin32WSMenu);
+  RegisterWSComponent(TMenu, TWin32WSMenu);
 //  RegisterWSComponent(TMainMenu, TWin32WSMainMenu);
   RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);
 ////////////////////////////////////////////////////

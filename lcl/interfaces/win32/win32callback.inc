@@ -427,11 +427,17 @@ Begin
         if OwnerObject is TControl then
           TControl(OwnerObject).Perform(CN_COMMAND, WParam, LParam);
     End;
+{
+  * Besides the fact that LCL does not respond to LM_CREATE, this code is
+    probably never reached anyway, as the callback is not set until after
+    window creation
+
     WM_CREATE:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_CREATE');
       LMessage.Msg := LM_CREATE;
     End;
+}
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     Begin
       MsgObject := TObject(GetProp(LParam, 'Wincontrol'));
@@ -1295,6 +1301,11 @@ end;
 
 {
   $Log$
+  Revision 1.140  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.139  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

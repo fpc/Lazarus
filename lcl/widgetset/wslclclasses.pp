@@ -49,8 +49,6 @@ type
   
 {$M+}
   TWSLCLComponent = class(TObject) 
-    class function CreateHandle(const AComponent: TComponent; 
-                                const AParams: TCreateParams): THandle; virtual;
   end;
 {$M-}
 
@@ -65,15 +63,6 @@ implementation
 
 uses
   SysUtils, LCLClasses;
-
-{ TWSLCLComponent }    
-
-function TWSLCLComponent.CreateHandle(const AComponent: TComponent; 
-  const AParams: TCreateParams): THandle;
-begin
-  // For now default to the old creation routines
-  Result := InterfaceObject.CreateComponent(AComponent);
-end;
 
 ////////////////////////////////////////////////////
 // Registration code

@@ -53,6 +53,7 @@ type
 
   TWSMenuItem = class(TWSLCLComponent)
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
+    class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; virtual;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); virtual;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); virtual;
@@ -61,7 +62,9 @@ type
 
   { TWSMenu }
 
+  TWSMenuClass = class of TWSMenu;
   TWSMenu = class(TWSLCLComponent)
+    class function  CreateHandle(const AMenu: TMenu): HMENU; virtual;
   end;
 
   { TWSMainMenu }
@@ -85,6 +88,11 @@ procedure TWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
 end;
 
+function  TWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+begin
+  Result := 0;
+end;
+
 procedure TWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
 end;
@@ -98,6 +106,13 @@ procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
 begin
 end;
           
+{ TWSMenu }
+
+function  TWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+begin
+  Result := 0;
+end;
+
 { TWSPopupMenu }
 
 procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);

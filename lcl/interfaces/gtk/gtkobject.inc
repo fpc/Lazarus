@@ -3001,43 +3001,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.IntSendMessage3
-  Params:  LM_Message - message to be processed by GTK
-           Sender     - sending control
-           data       - pointer to (optional)
-  Returns: depends on the message and the sender
-
-  Processes messages from different components.
-
-  WARNING: the result of this function sometimes is not always really an
-           integer!!!!!
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
-  data : pointer) : integer;
-begin
-  Result := 0;   //default value just in case nothing sets it
-
-  Assert(False, 'Trace:Message received');
-  if Sender <> nil then
-    Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
-
-  // The following case is now split into 2 separate parts:
-  //   1st part should contain all messages which don't need the "handle" variable
-  //   2nd part has to contain all parts which need the handle
-  // Reason for this split are performance issues since we need RTTI to
-  // retrieve the handle
-  case LM_Message of
-  LM_Create   : CreateComponent(Sender);
-
-  else
-         // unhandled message
-        if Sender<>nil then
-          Assert(True, Format('WARNING: Unhandled message %d in IntSendMessage3'
-             +'send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
-  end;   // end of 1st case
-end;
-
-{------------------------------------------------------------------------------
   Method: TGtkWidgetSet.ResizeChild
 
   Params:  sender - the object which invoked this function
@@ -6976,6 +6939,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.603  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.602  2004/09/24 19:02:38  micha
   convert LM_MOVEPAGE message to interface method
 

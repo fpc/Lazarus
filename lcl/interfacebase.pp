@@ -57,8 +57,6 @@ type
     procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
     procedure SetDesigning(AComponent: TComponent); virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
-    function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
-                              Data: pointer): integer; virtual; abstract;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; virtual; abstract;
@@ -120,6 +118,11 @@ end.
 
 {
   $Log$
+  Revision 1.55  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.54  2004/09/24 14:50:57  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 

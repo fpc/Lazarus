@@ -39,16 +39,6 @@ uses Classes, SysUtils, LCLType, GraphType
 
 const
   //-------------
-  // Commands SENT TO the interface units
-  // add also a description to a message at the end of this unit
-  // here are no defines of message records sent to the interface
-  // These are declared in a later section
-  //-------------
-  LM_ComUser        = $1000;
-  LM_Create         = LM_ComUser+1;
-  
-
-  //-------------
   // lcl messages
   //
   // This should be a list of LCL specific messages
@@ -706,15 +696,6 @@ function GetMessageName(const AMessage: Integer):  String;
 begin
   case AMessage of
   //-------------
-  // Commands SENT TO the interface units
-  // add also a description to a message at the end of this unit
-  // here are no defines of message records sent to the interface
-  // These are declared in a later section
-  //-------------
-  LM_ComUser        :Result:='LM_ComUser';
-  LM_Create         :Result:='LM_Create';
-
-  //-------------
   // lcl messages
   //
   // This should be a list of LCL specific messages
@@ -803,6 +784,11 @@ end.
 
 {
   $Log$
+  Revision 1.124  2004/09/24 21:34:14  micha
+  convert LM_CREATE message to interface methods
+  remove SendMsgToInterface, CNSendMessage and related methods
+  remove TWidgetSet.IntSendMessage3; all LCL to interface messages have been converted
+
   Revision 1.123  2004/09/24 19:02:38  micha
   convert LM_MOVEPAGE message to interface method
 

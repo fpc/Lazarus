@@ -74,8 +74,6 @@ type
 var
   SendApplicationMessageFunction: TSendApplicationMessageFunction;
   OwnerFormDesignerModifiedProc: TOwnerFormDesignerModifiedProc;
-  // SendMsgToInterface is set in interfacebase.pp
-  SendMsgToInterface: TSendMessageToInterfaceFunction;
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
