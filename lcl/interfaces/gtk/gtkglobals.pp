@@ -405,7 +405,9 @@ var
 const
   odnScrollArea = 'scroll_area'; // the gtk_scrolled_window of a widget
                                  // used by TCustomForm and TScrollbox
-  
+
+const
+  CallBackDefaultReturn = {$IFDEF GTK2}false{$ELSE}true{$ENDIF};
 
 implementation
 

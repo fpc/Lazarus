@@ -55,6 +55,7 @@ Type
     FDateAsString : String;
     FDate: TDateTime; // last valid date
     FDisplaySettings : TDisplaySettings;
+    FOnChange: TNotifyEvent;
     FReadOnly: Boolean;
     FDayChanged: TNotifyEvent;
     FMonthChanged: TNotifyEvent;
@@ -79,20 +80,25 @@ Type
     destructor Destroy; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
-    procedure AddControl; override;
   published
+    Property Align;
+    Property Anchors;
+    Property Constraints;
     Property Date: String read GetDate write SetDate stored false;
     Property DateTime: TDateTime read GetDateTime write SetDateTime;
-    property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
-    property ReadOnly : Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
+    property DisplaySettings: TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
     property Visible;
-//    property OnChange;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnClick;
+    property OnResize;
+    property OnChangeBounds;
+    property OnMouseUp;
     property OnMouseMove;
     property OnMouseDown;
-    property OnDayChanged : TNotifyEvent read FDayChanged write FDayChanged;
-    property OnMonthChanged : TNotifyEvent read FMonthChanged write FMonthChanged;
-    property OnYearChanged : TNotifyEvent read FYearChanged write FYearChanged;
+    property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
+    property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
+    property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
   end;
   
 procedure Register;
@@ -110,7 +116,7 @@ constructor TCalendar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csCalendar;
-  SetBounds(0,0,250,150);
+  SetInitialBounds(0,0,250,150);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
   Date := FormatDateTime(ShortDateFormat,Now);
@@ -131,11 +137,6 @@ procedure TCalendar.InitializeWnd;
 begin
   inherited InitializeWnd;
   if FPropsChanged then SetProps;
-end;
-
-procedure TCalendar.AddControl;
-begin
-  inherited AddControl;
 end;
 
 function TCalendar.GetDate: String;
@@ -245,20 +246,20 @@ end;
 
 procedure TCalendar.LMDAYChanged(var Message: TLMessage);
 begin
-  if Assigned(OnDayChanged) then
-    OnDayChanged(self);
+  if Assigned(OnDayChanged) then OnDayChanged(self);
+  if Assigned(OnChange) then OnChange(self);
 end;
 
 procedure TCalendar.LMMonthChanged(var Message: TLMessage);
 begin
-  if Assigned(OnMonthChanged) then
-    OnMonthChanged(self);
+  if Assigned(OnMonthChanged) then OnMonthChanged(self);
+  if Assigned(OnChange) then OnChange(self);
 end;
 
 procedure TCalendar.LMYEARChanged(var Message: TLMessage);
 begin
-  if Assigned(OnYearChanged) then
-    OnYearChanged(self);
+  if Assigned(OnYearChanged) then OnYearChanged(self);
+  if Assigned(OnChange) then OnChange(self);
 end;
 
 

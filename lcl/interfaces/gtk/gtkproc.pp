@@ -30,7 +30,7 @@ interface
 {off $DEFINE VerboseAccelerator}
 
 uses
-  SysUtils, Classes, FPCAdds,
+  SysUtils, Classes, Math, FPCAdds,
   {$IFDEF UNIX}
   {$IFDEF GTK1}
   // MWE:
@@ -45,11 +45,11 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  LMessages, Controls, Forms, VclGlobals, LCLProc,
-  LCLStrConsts, LCLIntf, LCLType, gtkDef, DynHashArray, LazLinkedList,
-  GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
-  ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
-  Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals;
+  LMessages, VclGlobals, LCLProc, LCLStrConsts, LCLIntf, LCLType,
+  Controls, Forms, DynHashArray, LazLinkedList, GraphType, GraphMath, Graphics,
+  Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox, Calendar,
+  Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, ExtDlgs, FileCtrl, LResources,
+  GTKGlobals, gtkDef;
 
 
   {$IFDEF gtk2}

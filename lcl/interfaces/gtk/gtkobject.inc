@@ -6819,6 +6819,8 @@ begin
   //if (Sender is TForm) and (Sender.ClassName='TForm1') then
   //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,
   //    ' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget),
+  //    ' GtkRealized=',gtk_widget_realized(SenderWidget),
+  //    ' GtkMapped=',gtk_widget_mapped(SenderWidget),
   //    ' Should=',LCLControl.HandleObjectShouldBeVisible);
   if LCLControl.HandleObjectShouldBeVisible then
   begin
@@ -9187,6 +9189,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.464  2004/02/07 18:04:14  mattias
+  fixed grids OnDrawCells
+
   Revision 1.463  2004/02/05 16:28:38  mattias
   fixed unsharing TBitmap
 

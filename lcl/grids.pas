@@ -1426,12 +1426,16 @@ end;
 procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState
   );
 begin
-  if gdSelected in aState then  Canvas.Brush.color:= SelectedColor else
-  if gdFixed in aState then     Canvas.Brush.color:= FixedColor
-  else                          Canvas.Brush.color:= Color;
-
-  if gdSelected in aState then  Canvas.Font.Color := clWindow
-  else                          Canvas.Font.Color := Self.Font.Color; //clWindowText;
+  if DefaultDrawing then begin
+    if gdSelected in aState then  Canvas.Brush.color:= SelectedColor else
+    if gdFixed in aState then     Canvas.Brush.color:= FixedColor
+    else                          Canvas.Brush.color:= Color;
+    if gdSelected in aState then  Canvas.Font.Color := clWindow
+    else                          Canvas.Font.Color := Self.Font.Color; //clWindowText;
+  end else begin
+    Canvas.Brush.Color := clWindow;
+    Canvas.Font.Color := clWindowText;
+  end;
 end;
 
 procedure TCustomGrid.ResetOffset(chkCol, ChkRow: Boolean);
@@ -2405,6 +2409,8 @@ begin
         fGridState:=gsSelecting;
         FSplitter:=MouseToCell(Point(X,Y));
 
+        if Not Focused then setFocus;
+
         if not (goEditing in Options) then begin
           if ssShift in Shift then begin
             SelectActive:=(goRangeSelect in Options);
@@ -2426,10 +2432,12 @@ begin
           MoveSelection;
           // Click();
         end;
+        (*
         if (GoEditing in Options)and(FEditor=nil) and not Focused then begin
           {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
           LCLIntf.SetFocus(Self.Handle);
         end;
+        *)
       end;
   end;
   {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
@@ -3408,6 +3416,7 @@ begin
   FGCache.AccumHeight:=TList.Create;
   inherited Create(AOwner);
   //AutoScroll:=False;
+  FDefaultDrawing := True;
   FOptions:=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
      goSmoothScroll ];
@@ -3840,10 +3849,11 @@ end;
 procedure TDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
   aState:TGridDrawState);
 begin
-  PrepareCanvas(aCol, aRow, aState);
-  if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then
+  if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then begin
+    PrepareCanvas(aCol, aRow, aState);
+    Canvas.FillRect(aRect);
     OnDrawCell(Self,aCol,aRow,aRect,aState)
-  else
+  end else
     DefaultDrawCell(aCol,aRow,aRect,aState);
   inherited DrawCellGrid(aRect,aCol,aRow,aState);
 end;
@@ -3957,10 +3967,16 @@ end;
 
 procedure TDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
+var
+  OldDefaultDrawing: boolean;
 begin
-  if DefaultDrawing or (csDesigning in ComponentState) then
-    Canvas.TextStyle.Clipping:=False;
-    
+  OldDefaultDrawing:=FDefaultDrawing;
+  FDefaultDrawing:=True;
+  try
+    PrepareCanvas(aCol, aRow, aState);
+  finally
+    FDefaultDrawing:=OldDefaultDrawing;
+  end;
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
 end;
@@ -4187,15 +4203,14 @@ end;
 
 procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
-var
-  S: string;
-  //ts: TTextStyle;
+//var
+//  ts: TTextStyle;
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
-  S:=Cells[aCol,aRow];
-  //if S<>'' then
-  Canvas.TextRect(aRect, 3, 0, S);
-  //MyTExtRect(aRect, 3, 0, S, Canvas.Textstyle.Clipping);
+  if DefaultDrawing then begin
+    Canvas.TextRect(aRect, 3, 0, Cells[aCol,aRow]);
+    //MyTExtRect(aRect, 3, 0, Cells[aCol,aRow], Canvas.Textstyle.Clipping);
+  end;
 end;
 
 procedure TStringGrid.EditordoGetValue;

@@ -2706,6 +2706,8 @@ Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
   end;
 
 begin
+  //writeln('FixedPutControl Parent=[',GetWidgetDebugReport(Parent),']',
+  //  ' Child=[',GetWidgetDebugReport(Child),']');
   If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
     gtk_fixed_put(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
   else If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
@@ -6305,6 +6307,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.257  2004/02/07 18:04:14  mattias
+  fixed grids OnDrawCells
+
   Revision 1.256  2004/02/04 12:48:17  mattias
   added CLX colors
 

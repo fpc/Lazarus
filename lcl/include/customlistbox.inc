@@ -515,7 +515,6 @@ end;
 procedure TCustomListBox.MakeCurrentVisible;
 var
   i: Integer;
-  ARect: TRect;
 begin
   i:=ItemIndex;
   if (i<0) or (i>=Items.Count) then exit;
