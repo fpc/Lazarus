@@ -5620,7 +5620,7 @@ begin
           lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
           mtInformation, [mbOk], 0);
       end else begin
-        if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbOk,
+        if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
           mbCancel], 0)
           =mrOk then
         begin
@@ -10316,6 +10316,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.710  2004/02/10 00:45:50  mattias
+  changed mbOk to mbYes for asking to add unit to project
+
   Revision 1.709  2004/02/04 13:40:18  mattias
   ShortCutToText now deletes any modifier
 
