@@ -487,7 +487,6 @@ type
        read FOnCreateBreakPoint write FOnCreateBreakPoint;
     property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
        read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
-
   end;
  
   //=============================================================================
@@ -1595,7 +1594,7 @@ begin
   MarksImgList.Width:=11;
   MarksImgList.Height:=11;
 
-  //load 10 bookmark images
+  // load 10 bookmark images
   for I := 0 to 9 do Begin
     Pixmap1:=TPixMap.Create;
     Pixmap1.TransparentColor:=clBtnFace;
@@ -2117,7 +2116,12 @@ Begin
           Height := ClientHeight-Notebook.top;
           Pages.Strings[0] := 'unit1';
           PageIndex := 0;   // Set it to the first page
+          if EditorOpts.ShowTabCloseButtons then
+            Options:=Options+[nboShowCloseButtons]
+          else
+            Options:=Options-[nboShowCloseButtons];
           OnPageChanged := @NotebookPageChanged;
+          OnCloseTabClicked:=@CloseClicked;
           {$IFDEF IDE_DEBUG}
           writeln('[TSourceNotebook.CreateNotebook] E');
           {$ENDIF}
@@ -2761,7 +2765,8 @@ Begin
 end;
 
 Procedure TSourceNotebook.CloseFile(PageIndex:integer);
-var TempEditor: TSourceEditor;
+var
+  TempEditor: TSourceEditor;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
@@ -2772,10 +2777,11 @@ Begin
   TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
     //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
-    Notebook.Pages.Delete(PageIndex);
-    // switch to left PageIndex
-    if PageIndex>0 then
+    // if this is the current page, switch to left PageIndex
+    if (Notebook.PageIndex=PageIndex) and (PageIndex>0) then
       Notebook.PageIndex:=PageIndex-1;
+    // delete the page
+    Notebook.Pages.Delete(PageIndex);
     //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
     UpdateStatusBar;
   end else begin
@@ -3075,6 +3081,12 @@ Begin
   end;
   
   EditorOpts.KeyMap.AssignTo(FKeyStrokes);
+  if NoteBook<>nil then begin
+    if EditorOpts.ShowTabCloseButtons then
+      NoteBook.Options:=NoteBook.Options+[nboShowCloseButtons]
+    else
+      NoteBook.Options:=NoteBook.Options-[nboShowCloseButtons];
+  end;
 end;
 
 procedure TSourceNotebook.KeyDown(var Key : Word; Shift : TShiftState);

@@ -72,13 +72,13 @@ begin
     Msg.Child := TPage(fPageList[Index]);
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TNBPages.Put] A ',Index,' ',S);
-{$ENDIF}
-    CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TNBPages.Put] B ');
-{$ENDIF}
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('[TNBPages.Put] A ',Index,' ',S);
+    {$ENDIF}
+    CNSendMessage(LM_SetLabel, fNotebook, @Msg);
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('[TNBPages.Put] B ');
+    {$ENDIF}
   end;
 end;
 
@@ -191,6 +191,7 @@ procedure TNBPages.Move(CurIndex, NewIndex: Integer);
 //var
 // theObject: TObject;
 begin
+  // move TPage components
   //fPageList.Move(CurIndex, NewIndex);
   //theObject := fPageList[CurIndex];
   //fPageList[CurIndex] := fPageList[NewIndex];
@@ -274,6 +275,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  method TCustomNotebook DoCloseTabClicked
+  Params: APage: TPage
+  Result: none
+  
+  Called whenever the user closes the tab.
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.DoCloseTabClicked(APage: TPage);
+begin
+  if Assigned(OnCloseTabClicked) then OnCloseTabClicked(APage);
+end;
+
+{------------------------------------------------------------------------------
   TCustomNotebook GetActivePage
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetActivePage: String;
@@ -296,6 +309,25 @@ begin
       Break;
     end;
   end;
+end;
+
+procedure TCustomNotebook.SetImages(const AValue: TImageList);
+begin
+  if FImages=AValue then exit;
+  FImages:=AValue;
+  if (csLoading in ComponentState) then exit;
+  UpdateTabProperties;
+end;
+
+procedure TCustomNotebook.SetOptions(const AValue: TNoteBookOptions);
+var ChangedOptions: TNoteBookOptions;
+begin
+  if FOptions=AValue then exit;
+  ChangedOptions:=(FOptions-AValue)+(AValue-FOptions);
+  FOptions:=AValue;
+  if (csLoading in ComponentState) then exit;
+  if nboShowCloseButtons in ChangedOptions then
+    UpdateTabProperties;
 end;
 
 {------------------------------------------------------------------------------
@@ -401,7 +433,7 @@ begin
     Msg.fCompStyle := fCompStyle;
     Msg.TabPosition := @fTabPosition;
     //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
-    CNSendMessage(LM_SETTABPOSITION, Self, @Msg);
+    CNSendMessage(LM_SetTabPosition, Self, @Msg);
   end;
 end;
 
@@ -463,6 +495,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  method TCustomNotebook UpdateTabProperties
+  Params: none
+  Result: none
+  
+  Tells the interface to update all tabs.
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.UpdateTabProperties;
+var i: integer;
+begin
+  for i := 0 to PageCount - 1 do
+    CNSendMessage(LM_NB_UpdateTab, Page[i], nil);
+end;
+
+{------------------------------------------------------------------------------
   TCustomNotebook Change
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
@@ -520,6 +566,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.17  2002/05/24 07:16:31  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 

@@ -56,6 +56,23 @@ end;
 {*************************************************************}
 
 {-------------------------------------------------------------------------------
+  function gtkNoteBookCloseBtnClicked
+  Params: Widget: PGtkWidget; Data: Pointer
+  Result: GBoolean
+
+  gtkNoteBookCloseBtnClicked is called by the gtk, whenever a close button in
+  the tab of notebook page is clicked.
+-------------------------------------------------------------------------------}
+function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
+  Data: Pointer): GBoolean; cdecl;
+var APage: TPage;
+begin
+  APage:=TPage(Data);
+  TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
+  Result:=true; // handled = true
+end;
+
+{-------------------------------------------------------------------------------
   function GTKRealizeCB
   Params: Widget: PGtkWidget; Data: Pointer
   Result: GBoolean
@@ -2038,6 +2055,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.80  2002/06/06 14:41:29  lazarus
   MG: if completion form visible it will now get all synedit keys
 

@@ -291,12 +291,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean);
 var
-aBitmap : TBitmap;
+  aBitmap : TBitmap;
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
   aBitmap := TBitmap(FImageList[Index]);
 
-  Canvas.CopyRect(Rect(X, Y, X + FWidth, Y + FHeight), aBitmap.Canvas, Rect(0, 0, FWidth, FHeight));
+  Canvas.CopyRect(Rect(X, Y, X + FWidth, Y + FHeight), aBitmap.Canvas,
+                  Rect(0, 0, FWidth, FHeight));
 end;
 
 {------------------------------------------------------------------------------
@@ -329,8 +330,8 @@ end;
  ------------------------------------------------------------------------------}
 Function TCustomImageList.GetCount : Integer;
 begin
-Result := FImageList.Count;
-FCount := Result;
+  Result := FImageList.Count;
+  FCount := Result;
 end;
 
 
@@ -765,7 +766,8 @@ end;
 
   Internal routine to move images on the internal image list.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.ShiftImages(const Source: TCanvas; Start, Shift: Integer);
+procedure TCustomImageList.ShiftImages(const Source: TCanvas;
+  Start, Shift: Integer);
 var
   FMoveBitmap: TBitmap;
 begin
@@ -837,6 +839,9 @@ end;
 {
 
   $Log$
+  Revision 1.11  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.10  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

@@ -1,3 +1,4 @@
+// included by graphics.pp
 {******************************************************************************
                                      TPixmap
  ******************************************************************************
@@ -15,6 +16,126 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{-------------------------------------------------------------------------------
+  function XPMToPPChar
+  Params: const XPM: string
+  Result: PPChar
+  
+  Converts the source of an XPM image file into an array of PChar.
+  The memory is allocated as one block, so freeing can simply be done via
+  FreeMem(TheResult). The data is just behind the array.
+  
+  An XPM file can be included by a C source file, because it has a C syntax.
+  In the compiled program it is simply an array of PChar.
+  This function converts an XPM source file to the same array, by removing the
+  comments and the string constant symbols.
+-------------------------------------------------------------------------------}
+function XPMToPPChar(const XPM: string): PPChar;
+var
+  TrimmedXPM: string;
+  SrcLen, SrcPos, DestPos, LineCount, CurLine, LineLen: integer;
+  LineStart: PChar;
+begin
+  // trim all comments and symbols and extract only the xpm data between ""
+  SrcLen:=length(XPM);
+  SetLength(TrimmedXPM,SrcLen+1); // +1 because TrimmedXPM should be at least
+                                  // one byte
+  SrcPos:=1;
+  DestPos:=1;
+  LineCount:=1;
+  while (SrcPos<=SrcLen) do begin
+    case XPM[SrcPos] of
+
+    '/':
+      begin
+        if (SrcPos<SrcLen) and (XPM[SrcPos+1]='*') then begin
+          // this is a C comment
+          // -> skip comment
+          inc(SrcPos,2);
+          while (SrcPos<SrcLen) do begin
+            if (XPM[SrcPos]='*') and (XPM[SRcPos+1]='/') then begin
+              // comment end found
+              inc(SrcPos,2);
+              break;
+            end;
+            inc(SrcPos);
+          end;
+        end;
+      end;
+
+    '"':
+      begin
+        // start of a string constant
+        inc(SrcPos);
+        while (SrcPos<SrcLen) do begin
+          if XPM[SrcPos]='\' then
+            inc(SrcPos);
+          if (XPM[SrcPos]='"') and (XPM[SrcPos-1]<>'\') then begin
+            // string end found
+            inc(SrcPos);
+            break;
+          end;
+          // copy char
+          TrimmedXPM[DestPos]:=XPM[SrcPos];
+          inc(DestPos);
+          inc(SrcPos);
+        end;
+      end;
+
+    ',':
+      begin
+        // new string constant
+        // -> add #0 char
+        inc(SrcPos);
+        TrimmedXPM[DestPos]:=#0;
+        inc(DestPos);
+        inc(LineCount);
+      end;
+
+    else
+      inc(SrcPos);
+    end;
+  end;
+  TrimmedXPM[DestPos]:=#0; // DestPos now contains the length of trimmed data
+
+  // create array of PChar + image data
+  GetMem(Result,SizeOf(PChar)*(LineCount+1)+DestPos);
+
+  // copy data
+  Move(TrimmedXPM[1],Result[LineCount+1],DestPos);
+
+  // calculate the array of PChar
+  LineStart:=@Result[LineCount+1];
+  for CurLine:=0 to LineCount-1 do begin
+    LineLen:=StrLen(LineStart)+1;
+    Result[CurLine]:=LineStart;
+    inc(LineStart,LineLen);
+  end;
+  Result[LineCount]:=nil; // mark the end of the array with a nil
+end;
+
+{-------------------------------------------------------------------------------
+  function LazResourceXPMToPPChar
+  Params: const ResourceName: string
+  Result: PPChar
+
+  Loads the source of an XPM image file from the LazarusResources into an array
+  of PChar.
+  See XPMToPPChar for more info.
+-------------------------------------------------------------------------------}
+function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
+var XPMSource: TLResource;
+begin
+  XPMSource:=LazarusResources.Find(ResourceName);
+  if XPMSource.ValueType<>'XPM' then
+    raise Exception.Create('LazResourceXPMToPPChar: The resource "'
+                           +ResourceName+'" is not of type XPM');
+  Result:=XPMToPPChar(XPMSource.Value);
+end;
+
+
+{ TPixmap }
 
 procedure TPixmap.LoadFromLazarusResource(const ResName: String);
 var
@@ -144,9 +265,14 @@ begin
   end;
 end;
 
+// included by graphics.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.12  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

@@ -1,3 +1,4 @@
+// included by extctrls.pp
 {******************************************************************************
                                      TPage
  ******************************************************************************
@@ -29,6 +30,9 @@ end;
 constructor TPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  
+  fImageIndex:=-1;
+  
   {set the default height and width}
 
   if (AOwner<>nil) and (AOwner is TControl) then begin
@@ -47,6 +51,21 @@ begin
   { The alignment is performed by the notebook component }
 
   Caption := '';
+end;
+
+{------------------------------------------------------------------------------
+  method TPage SetImageIndex
+  Params: const AValue: integer
+  Result: none
+  
+  Set the image index of the image shown in the tabs.
+ ------------------------------------------------------------------------------}
+procedure TPage.SetImageIndex(const AValue: integer);
+begin
+  if FImageIndex=AValue then exit;
+  FImageIndex:=AValue;
+  if (csLoading in ComponentState) then exit;
+  CNSendMessage(LM_NB_UpdateTab, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -102,8 +121,12 @@ begin
   ARect:=GetClientRect;
 end;
 
+// included by extctrls.pp
 {
   $Log$
+  Revision 1.9  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.8  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

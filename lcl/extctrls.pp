@@ -64,6 +64,8 @@ type
 
   TPage = class(TWinControl)
   private
+    FImageIndex: integer;
+    procedure SetImageIndex(const AValue: integer);
   protected
     procedure ReadState(Reader: TAbstractReader); override;
     //procedure Paint; override;
@@ -76,6 +78,7 @@ type
   published
     property Caption;
     //property Height;
+    property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
     // property TabOrder;     This property needs to be created in TWinControl
     property Visible;
     //property Width;
@@ -110,11 +113,17 @@ type
   { TCustomNotebook }
   {
     @abstract(Base class for TNotebook and TTabbedNotebook.)
-    Introduced and (currently) maintained by Curtis White
+    Introduced by Curtis White
   }
+  TNoteBookOption = (nboShowCloseButtons);
+  TNoteBookOptions = set of TNoteBookOption;
+  
   TCustomNotebook = class(TCustomControl)
   private
     fAccess: TStrings; // TNBPages
+    FImages: TImageList;
+    FOnCloseTabClicked: TNotifyEvent;
+    FOptions: TNoteBookOptions;
     fPageIndex: Integer;
     fPageList: TList;  // List of TPage
     //fMultiLine: boolean;
@@ -129,6 +138,8 @@ type
     function GetPageIndex: Integer;
     //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
+    procedure SetImages(const AValue: TImageList);
+    procedure SetOptions(const AValue: TNoteBookOptions);
     //procedure SetMultiLine(Value: boolean);
     procedure SetPageIndex(Value: Integer);
     procedure SetPages(Value: TStrings);
@@ -142,6 +153,7 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure ReadState(Reader: TAbstractReader); override;
     procedure ShowControl(AControl: TControl); override;
+    procedure UpdateTabProperties; virtual;
 
     property ActivePage: String read GetActivePage write SetActivePage;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
@@ -156,7 +168,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DoCloseTabClicked(APage: TPage); virtual;
+    property Images: TImageList read FImages write SetImages;
     property Name;
+    property OnCloseTabClicked: TNotifyEvent
+      read FOnCloseTabClicked write FOnCloseTabClicked;
+    property Options: TNoteBookOptions read FOptions write SetOptions;
   end;
 
   { TNotebook }
@@ -173,8 +190,11 @@ type
     property Pages;
   published
     property ActivePage;
+    property Images;
+    property OnCloseTabClicked;
     //property MultiLine;
     property OnPageChanged;
+    property Options;
     property PageIndex;
     property PageList;
     property ShowTabs;
@@ -443,6 +463,9 @@ end.
 
  {
   $Log$
+  Revision 1.25  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.24  2002/05/13 14:47:00  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 

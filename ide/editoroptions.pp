@@ -139,9 +139,10 @@ type
     xmlconfig:TXMLConfig;
 
     // general options
+    fFindTextAtCursor:boolean;
+    fShowTabCloseButtons: boolean;
     fSynEditOptions: TSynEditorOptions;
     fUndoAfterSave:boolean;
-    fFindTextAtCursor:boolean;
     fUseSyntaxHighlight:boolean;
     fBlockIndent:integer;
     fUndoLimit:integer;
@@ -205,6 +206,8 @@ type
     property SynEditOptions:TSynEditorOptions
         read fSynEditOptions write fSynEditOptions
         default SYNEDIT_DEFAULT_OPTIONS;
+    property ShowTabCloseButtons: boolean
+        read fShowTabCloseButtons write fShowTabCloseButtons;
     property UndoAfterSave:boolean
         read fUndoAfterSave write fUndoAfterSave default true;
     property FindTextAtCursor:boolean
@@ -294,11 +297,11 @@ type
     DropFilesCheckBox:TCheckBox;
     HalfPageScrollCheckBox:TCheckBox;
     KeepCaretXCheckBox:TCheckBox;
-    NoSelectionCheckBox:TCheckBox;
     PersistentCaretCheckBox:TCheckBox;
     ScrollByOneLessCheckBox:TCheckBox;
     ScrollPastEofCheckBox:TCheckBox;
     ScrollPastEolCheckBox:TCheckBox;
+    ShowCloseBtnInNoteBookCheckBox:TCheckBox;
     ShowScrollHintCheckBox:TCheckBox;
     SmartTabsCheckBox:TCheckBox;
     TabsToSpacesCheckBox:TCheckBox;
@@ -972,6 +975,7 @@ begin
   // set defaults
 
   // General options
+  fShowTabCloseButtons:=true;
   fBlockIndent:=2;
   fUndoLimit:=32767;
   fTabWidths:=8;
@@ -1034,7 +1038,6 @@ begin
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
         eoKeepCaretX:SynEditOptName:='KeepCaretX';
-        eoNoSelection:SynEditOptName:='NoSelection';
         eoPersistentCaret:SynEditOptName:='PersistentCaret';
         eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
         eoScrollPastEof:SynEditOptName:='ScrollPastEof';
@@ -1055,6 +1058,8 @@ begin
       end;
     end;
 
+    fShowTabCloseButtons:=
+      XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabCloseButtons',true);
     fUndoAfterSave:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
     fFindTextAtCursor:=
@@ -1152,7 +1157,6 @@ begin
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
         eoKeepCaretX:SynEditOptName:='KeepCaretX';
         eoPersistentCaret:SynEditOptName:='PersistentCaret';
-        eoNoSelection:SynEditOptName:='NoSelection';
         eoScrollByOneLess:SynEditOptName:='ScrollByOneLess';
         eoScrollPastEof:SynEditOptName:='ScrollPastEof';
         eoScrollPastEol:SynEditOptName:='ScrollPastEol';
@@ -1169,6 +1173,8 @@ begin
       end;
     end;
 
+    XMLConfig.SetValue('EditorOptions/General/Editor/ShowTabCloseButtons'
+      ,fShowTabCloseButtons);
     XMLConfig.SetValue('EditorOptions/General/Editor/UndoAfterSave'
       ,fUndoAfterSave);
     XMLConfig.SetValue('EditorOptions/General/Editor/FindTextAtCursor'
@@ -2083,14 +2089,14 @@ begin
   // general
   SetOption(AltSetsColumnModeCheckBox,eoAltSetsColumnMode);
   SetOption(AutoIndentCheckBox,eoAutoIndent);
-  //SetOption(BracketHighlightCheckBox,eoBracketHighlight);
+  // not for Preview: SetOption(BracketHighlightCheckBox,eoBracketHighlight);
   SetOption(DoubleClickLineCheckBox,eoDoubleClickSelectsLine);
   SetOption(DragDropEditingCheckBox,eoDragDropEditing);
   SetOption(DropFilesCheckBox,eoDropFiles);
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
   SetOption(KeepCaretXCheckBox,eoKeepCaretX);
   SetOption(PersistentCaretCheckBox,eoPersistentCaret);
-  //SetOption(NoSelectionCheckBox,eoNoSelection);
+  // not for Preview: SetOption(NoSelectionCheckBox,eoNoSelection);
   SetOption(ScrollByOneLessCheckBox,eoScrollByOneLess);
   SetOption(ScrollPastEoFCheckBox,eoScrollPastEoF);
   SetOption(ScrollPastEoLCheckBox,eoScrollPastEoL);
@@ -3068,6 +3074,7 @@ begin
 
   // many, many checkboxes ...
 
+  // left side
   AltSetsColumnModeCheckBox:=TCheckBox.Create(Self);
   with AltSetsColumnModeCheckBox do begin
     Name:='AltSetsColumnModeCheckBox';
@@ -3167,25 +3174,11 @@ begin
     Show;
   end;
 
-  NoSelectionCheckBox:=TCheckBox.Create(Self);
-  with NoSelectionCheckBox do begin
-    Name:='NoSelectionCheckBox';
-    Parent:=EditorOptionsGroupBox;
-    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='No Selection';
-    Checked:=eoNoSelection in EditorOpts.SynEditOptions;
-    OnClick:=@GeneralCheckBoxOnClick;
-    Show;
-  end;
-
   PersistentCaretCheckBox:=TCheckBox.Create(Self);
   with PersistentCaretCheckBox do begin
     Name:='PersistentCaretCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
+    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
@@ -3213,8 +3206,8 @@ begin
   with ScrollPastEoFCheckBox do begin
     Name:='ScrollPastEoFCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=5;
-    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
+    Top:=ScrollByOneLessCheckBox.Top+ScrollByOneLessCheckBox.Height+5;
+    Left:=ScrollByOneLessCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Scroll Past End of File';
@@ -3223,11 +3216,12 @@ begin
     Show;
   end;
 
+  // right side
   ScrollPastEoLCheckBox:=TCheckBox.Create(Self);
   with ScrollPastEoLCheckBox do begin
     Name:='ScrollPastEoLCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
     Left:=ScrollPastEoFCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
@@ -3237,12 +3231,27 @@ begin
     Show;
   end;
 
+  ShowCloseBtnInNoteBookCheckBox:=TCheckBox.Create(Self);
+  with ShowCloseBtnInNoteBookCheckBox do begin
+    Name:='ShowCloseBtnInNoteBookCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
+    Left:=ScrollPastEoLCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+    Caption:='Close buttons in notebook';
+    Checked:=EditorOpts.ShowTabCloseButtons;
+    OnClick:=@GeneralCheckBoxOnClick;
+    Show;
+  end;
+
   ShowScrollHintCheckBox:=TCheckBox.Create(Self);
   with ShowScrollHintCheckBox do begin
     Name:='ShowScrollHintCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
-    Left:=ScrollPastEoLCheckBox.Left;
+    Top:=ShowCloseBtnInNoteBookCheckBox.Top
+         +ShowCloseBtnInNoteBookCheckBox.Height+5;
+    Left:=ShowCloseBtnInNoteBookCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Show Scroll Hint';
@@ -3509,16 +3518,9 @@ begin
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
-  with NoSelectionCheckBox do begin
-    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
-  end;
-
   with PersistentCaretCheckBox do begin
     Left:=AltSetsColumnModeCheckBox.Left;
-    Top:=NoSelectionCheckBox.Top+NoSelectionCheckBox.Height+5;
+    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
@@ -3531,22 +3533,30 @@ begin
   end;
 
   with ScrollPastEoFCheckBox do begin
+    Top:=ScrollByOneLessCheckBox.Top+ScrollByOneLessCheckBox.Height+5;
+    Left:=AltSetsColumnModeCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+  end;
+
+  with ScrollPastEoLCheckBox do begin
     Top:=5;
     Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
-  with ScrollPastEoLCheckBox do begin
-    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
-    Left:=ScrollPastEoFCheckBox.Left;
+  with ShowCloseBtnInNoteBookCheckBox do begin
+    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
+    Left:=ScrollPastEoLCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
 
   with ShowScrollHintCheckBox do begin
-    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
-    Left:=ScrollPastEoLCheckBox.Left;
+    Top:=ShowCloseBtnInNoteBookCheckBox.Top
+        +ShowCloseBtnInNoteBookCheckBox.Height+5;
+    Left:=ShowCloseBtnInNoteBookCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
   end;
@@ -5077,16 +5087,13 @@ begin
     Include(SynOptions,eoBracketHighlight)
   else
     Exclude(SynOptions,eoBracketHighlight);
-  if NoSelectionCheckBox.Checked then
-    Include(SynOptions,eoNoSelection)
-  else
-    Exclude(SynOptions,eoNoSelection);
   PreviewEdits[1].Options:=SynOptions;
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
   PreviewEdits[1].Options:=SynOptions-[eoBracketHighlight]
                                      +[eoNoCaret,eoNoSelection];
 
   // general
+  EditorOpts.ShowTabCloseButtons:=ShowCloseBtnInNoteBookCheckBox.Checked;
   EditorOpts.UndoAfterSave:=UndoAfterSaveCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;

@@ -36,7 +36,7 @@ const
   //-------------
   // Commands SENT TO the interface units
   // add also a description to a message at the end of this unit
-  // here are no defines of messages send to the interface
+  // here are no defines of message records sent to the interface
   // These are declared in a later section
   //-------------
   LM_ComUser       = $1000;
@@ -134,6 +134,10 @@ const
   LM_CB_GETTEXT    = LM_CB_FIRST+2;
   LM_CB_ADDTEXT    = LM_CB_FIRST+3;
   LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
+  
+  // additional for TNoteBook
+  LM_NB_UpdateTab  = LM_CB_LAST+1;
+  LM_NB_Last       = LM_NB_UpdateTab;
 
   //-------------
   //end of messages that are sent to the interface
@@ -823,6 +827,9 @@ begin
     LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT     ';   
     LM_CB_GETCOUNT         : Result :='LM_CB_GETCOUNT         ';
     LM_SETSHORTCUT      : Result := 'LM_SETSHORTCUT';
+    
+    // additional for TNoteBook
+    LM_NB_UpdateTab     : Result := 'LM_NB_UpdateTab';
   else
     Result := Format('Unknown message 0x%x (%d)', [AMessage, AMessage]);
   end;
@@ -835,6 +842,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.25  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

@@ -1803,9 +1803,17 @@ begin
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender : TObject);
+var PageIndex: integer;
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoCloseEditorUnit(SourceNoteBook.NoteBook.PageIndex,true);
+  if Sender is TPage then begin
+    PageIndex:=SourceNoteBook.NoteBook.PageList.IndexOf(Sender);
+    if PageIndex<0 then
+      PageIndex:=SourceNoteBook.NoteBook.PageIndex;
+  end else begin
+    PageIndex:=SourceNoteBook.NoteBook.PageIndex;
+  end;
+  DoCloseEditorUnit(PageIndex,true);
 end;
 
 procedure TMainIDE.mnuCloseAllClicked(Sender : TObject);
@@ -3559,7 +3567,7 @@ begin
       AText:='Unit "'+ActiveUnitInfo.Unitname+'" has changed. Save?'
     else
       AText:='Source of page "'+
-        SourceNotebook.NoteBook.Pages[SourceNotebook.NoteBook.PageIndex]
+        SourceNotebook.NoteBook.Pages[PageIndex]
         +'" has changed. Save?';
     ACaption:='Source modified';
     if Messagedlg(ACaption, AText, mtConfirmation, [mbYes, mbNo], 0)=mrYes then
@@ -6408,6 +6416,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.307  2002/06/08 17:15:59  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.306  2002/06/04 15:17:17  lazarus
   MG: improved TFont for XLFD font names
 

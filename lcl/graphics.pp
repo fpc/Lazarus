@@ -662,6 +662,9 @@ function ClearXLFDHeight(const LongFontName: string): string;
 function ClearXLFDPitch(const LongFontName: string): string;
 function ClearXLFDStyle(const LongFontName: string): string;
 
+function XPMToPPChar(const XPM: string): PPChar;
+function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
+
 var 
   { Stores information about the current screen }
   ScreenInfo : TLMScreenInit;
@@ -816,6 +819,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/06/08 17:16:02  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.33  2002/06/05 12:33:57  lazarus
   MG: fixed fonts in XLFD format and styles
 
