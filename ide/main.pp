@@ -407,7 +407,8 @@ type
     function CreateNewCodeBuffer(NewUnitType:TNewUnitType;
         NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
-    function CreateNewForm(NewUnitInfo: TUnitInfo): TModalResult;
+    function CreateNewForm(NewUnitInfo: TUnitInfo; AncestorType: TComponentClass;
+        ResourceCode: TCodeBuffer): TModalResult;
 
     // methods for 'save unit'
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
@@ -978,7 +979,7 @@ begin
   writeln('[TMainIDE.OnPropHookGetMethods] ************');
   {$ENDIF}
   if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
-    ActiveUnitInfo.Form.ClassName,TypeData,Proc) then
+    ActiveUnitInfo.Component.ClassName,TypeData,Proc) then
   begin
     DoJumpToCodeToolBossError;
   end;
@@ -2165,11 +2166,11 @@ var
 begin
   AnUnitInfo:=Project1.FirstUnitWithForm;
   while AnUnitInfo<>nil do begin
-    if AnUnitInfo.Form<>nil then begin
-      if AnUnitInfo.Form is TControl then
-        TControl(AnUnitInfo.Form).Invalidate;
+    if AnUnitInfo.Component<>nil then begin
+      if AnUnitInfo.Component is TControl then
+        TControl(AnUnitInfo.Component).Invalidate;
     end;
-    AnUnitInfo:=AnUnitInfo.NextUnitWithForm;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
 
@@ -2691,8 +2692,9 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
   begin
     AnUnitInfo:=Project1.FirstUnitWithForm;
     while AnUnitInfo<>nil do begin
-      if (AnUnitInfo.Form<>nil) and (AnUnitInfo.Form is TCustomForm) then begin
-        AForm:=TCustomForm(AnUnitInfo.Form);
+      if (AnUnitInfo.Component<>nil) and (AnUnitInfo.Component is TCustomForm)
+      then begin
+        AForm:=TCustomForm(AnUnitInfo.Component);
         ADesigner:=TDesigner(AForm.Designer);
         if ADesigner<>nil then begin
           ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
@@ -2700,7 +2702,7 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
             EnvironmentOptions.ShowComponentCaptions;
         end;
       end;
-      AnUnitInfo:=AnUnitInfo.NextUnitWithForm;
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
     InvalidateAllDesignerForms;
   end;
@@ -2830,15 +2832,18 @@ begin
     Result:=mrCancel;
 end;
 
-function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo): TModalResult;
+function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
+  AncestorType: TComponentClass; ResourceCode: TCodeBuffer): TModalResult;
 var
   NewForm: TCustomForm;
-  ResourceCode: TCodeBuffer;
   CInterface : TComponentInterface;
 begin
   // create a buffer for the new resource file and for the LFM file
-  ResourceCode:=
-    CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,ResourceFileExt));
+  if ResourceCode=nil then begin
+    ResourceCode:=
+      CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,
+                              ResourceFileExt));
+  end;
   ResourceCode.Source:='{ '+lisResourceFileComment+' }';
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
 
@@ -2849,16 +2854,16 @@ begin
 
   // create jitform
   CInterface := TComponentInterface(
-    FormEditor1.CreateComponent(nil,TForm,
+    FormEditor1.CreateComponent(nil,AncestorType,
       ObjectInspector1.Left+ObjectInspector1.Width+60,Top+Height+80,400,300));
-  FormEditor1.SetFormNameAndClass(CInterface,
-    NewUnitInfo.FormName,'T'+NewUnitInfo.FormName);
+  FormEditor1.SetComponentNameAndClass(CInterface,
+    NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewForm:=TForm(CInterface.Component);
-  NewUnitInfo.Form:=NewForm;
+  NewUnitInfo.Component:=NewForm;
   SetDefaultsForForm(NewForm);
 
-  NewUnitInfo.FormName:=NewForm.Name;
-  NewUnitInfo.FormResourceName:=NewUnitInfo.FormName;
+  NewUnitInfo.ComponentName:=NewForm.Name;
+  NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
   if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then
     Project1.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
     
@@ -2899,7 +2904,7 @@ begin
       if Result=mrAbort then exit;
     end;
     // load lfm file
-    if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Form<>nil) then begin
+    if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
       if (FileExists(LFMFilename)) then begin
         Result:=DoLoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
@@ -3085,7 +3090,7 @@ begin
   end;
   
   // check new resource file
-  if AnUnitInfo.FormName='' then begin
+  if AnUnitInfo.ComponentName='' then begin
     // unit has no form
     // -> remove lfm file, so that it will not be auto loaded on next open
     NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
@@ -3207,7 +3212,7 @@ begin
   // save lrs - lazarus resource file and lfm - lazarus form text file
   // Note: When there is a bug in the source, no resource code can be found,
   //       but the LFM file should always be saved
-  if (AnUnitInfo.Form<>nil) then begin
+  if (AnUnitInfo.Component<>nil) then begin
     // stream component to resource code and to lfm file
     FormSavingOk:=true;
 
@@ -3222,7 +3227,7 @@ begin
           try
             Writer:=TWriter.Create(Driver);
             try
-              Writer.WriteDescendent(AnUnitInfo.Form,nil);
+              Writer.WriteDescendent(AnUnitInfo.Component,nil);
             finally
               Writer.Free;
             end;
@@ -3231,8 +3236,8 @@ begin
           end;
         except
           ACaption:=lisStreamingError;
-          AText:=Format(lisUnableToStreamT, [AnUnitInfo.FormName,
-            AnUnitInfo.FormName]);
+          AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
+            AnUnitInfo.ComponentName]);
           Result:=MessageDlg(ACaption, AText, mtError,
                      [mbAbort, mbRetry, mbIgnore], 0);
           if Result=mrAbort then exit;
@@ -3260,7 +3265,7 @@ begin
           try
             BinCompStream.Position:=0;
             BinaryToLazarusResourceCode(BinCompStream,MemStream
-              ,'T'+AnUnitInfo.FormName,'FORMDATA');
+              ,'T'+AnUnitInfo.ComponentName,'FORMDATA');
             MemStream.Position:=0;
             SetLength(CompResourceCode,MemStream.Size);
             MemStream.Read(CompResourceCode[1],length(CompResourceCode));
@@ -3274,10 +3279,10 @@ begin
           {$ENDIF}
           // replace lazarus form resource code
           if not (sfSaveToTestDir in Flags) then begin
-            if (AnUnitInfo.FormName<>AnUnitInfo.FormResourceName)
-            and (AnUnitInfo.FormResourceName<>'') then begin
+            if (AnUnitInfo.ComponentName<>AnUnitInfo.ComponentResourceName)
+            and (AnUnitInfo.ComponentResourceName<>'') then begin
               CodeToolBoss.RemoveLazarusResource(ResourceCode,
-                                               'T'+AnUnitInfo.FormResourceName);
+                                          'T'+AnUnitInfo.ComponentResourceName);
             end;
             if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
                lisResourceFileComment)) then
@@ -3289,18 +3294,19 @@ begin
               if Result=mrAbort then exit;
             end;
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
-               'T'+AnUnitInfo.FormName,CompResourceCode)) then
+               'T'+AnUnitInfo.ComponentName,CompResourceCode)) then
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(
                 lisUnableToAddResourceTFORMDATAToResourceFileProbably, [
-                AnUnitInfo.FormName, #13, '"', ResourceCode.FileName, '"', #13]
+                AnUnitInfo.ComponentName,
+                #13, '"', ResourceCode.FileName, '"', #13]
                 );
               Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
               if Result=mrAbort then exit;
             end else begin
               AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
-              AnUnitInfo.FormResourceName:=AnUnitInfo.FormName;
+              AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
             end;
           end else begin
             ResourceCode.Source:=CompResourceCode;
@@ -3342,7 +3348,7 @@ begin
                 ACaption:=lisStreamingError;
                 AText:=Format(
                   lisUnableToTransformBinaryComponentStreamOfTIntoText, [
-                  AnUnitInfo.FormName, AnUnitInfo.FormName]);
+                  AnUnitInfo.ComponentName, AnUnitInfo.ComponentName]);
                 Result:=MessageDlg(ACaption, AText, mtError,
                                    [mbAbort, mbRetry, mbIgnore], 0);
                 if Result=mrAbort then exit;
@@ -3558,7 +3564,8 @@ begin
 
         // create jitform
         CInterface := TComponentInterface(
-                                FormEditor1.CreateFormFromStream(BinLFMStream));
+                            FormEditor1.CreateComponentFromStream(BinLFMStream,
+                                                                  TForm));
         if CInterface=nil then begin
           ACaption:=lisFormLoadError;
           AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
@@ -3567,13 +3574,13 @@ begin
           if Result=mrCancel then Result:=mrAbort;
           if Result<>mrOk then exit;
           TempForm:=nil;
-          AnUnitInfo.Form:=TempForm;
+          AnUnitInfo.Component:=TempForm;
         end else begin
           TempForm:=TForm(CInterface.Component);
-          AnUnitInfo.Form:=TempForm;
+          AnUnitInfo.Component:=TempForm;
           SetDefaultsForForm(TempForm);
-          AnUnitInfo.FormName:=TempForm.Name;
-          AnUnitInfo.FormResourceName:=AnUnitInfo.FormName;
+          AnUnitInfo.ComponentName:=TempForm.Name;
+          AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
           // show form
           TDesigner(TempForm.Designer).SourceEditor:=
             SourceNoteBook.GetActiveSE;
@@ -3614,8 +3621,8 @@ var
   i: integer;
   OldDesigner: TDesigner;
 begin
-  AForm:=TCustomForm(AnUnitInfo.Form);
-  if AForm<>nil then begin
+  AForm:=TCustomForm(AnUnitInfo.Component);
+  if (AForm<>nil) and (AForm is TCustomForm) then begin
     if FLastFormActivated=AForm then
       FLastFormActivated:=nil;
     // unselect controls
@@ -3626,7 +3633,7 @@ begin
     // free designer and design form
     OldDesigner:=TDesigner(AForm.Designer);
     OldDesigner.DeleteFormAndFree;
-    AnUnitInfo.Form:=nil;
+    AnUnitInfo.Component:=nil;
   end;
   Result:=mrOk;
 end;
@@ -4037,9 +4044,9 @@ begin
 
   // create source code
   if nfCreateDefaultSrc in NewFlags then begin
-    if NewUnitType in [nuForm] then begin
-      NewUnitInfo.FormName:=Project1.NewUniqueFormName(NewUnitType);
-      NewUnitInfo.FormResourceName:='';
+    if NewUnitType in [nuForm,nuDataModule] then begin
+      NewUnitInfo.ComponentName:=Project1.NewUniqueComponentName(NewUnitType);
+      NewUnitInfo.ComponentResourceName:='';
       CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,ResourceFileExt));
     end;
     NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
@@ -4064,7 +4071,7 @@ begin
   end;
                               
   // syntax highlighter type
-  if NewUnitType in [nuForm, nuUnit,nuDataModule] then begin
+  if NewUnitType in [nuForm,nuUnit,nuDataModule] then begin
     NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
   end else begin
     NewUnitInfo.SyntaxHighlighter:=
@@ -4085,14 +4092,14 @@ begin
 
     // create form
     if NewUnitType in [nuForm] then begin
-      Result:=CreateNewForm(NewUnitInfo);
+      Result:=CreateNewForm(NewUnitInfo,TForm,nil);
       if Result<>mrOk then exit;
     end;
 
     // show form and select form
     if NewUnitType in [nuForm] then begin
       // show form
-      TDesigner(TCustomForm(NewUnitInfo.Form).Designer).SourceEditor :=
+      TDesigner(TCustomForm(NewUnitInfo.Component).Designer).SourceEditor :=
         SourceNoteBook.GetActiveSE;
       DoShowDesignerFormOfCurrentSrc;
     end else begin
@@ -4256,7 +4263,7 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoSaveEditorFile B');{$ENDIF}
   // save resource file and lfm file
-  if (ResourceCode<>nil) or (ActiveUnitInfo.Form<>nil) then begin
+  if (ResourceCode<>nil) or (ActiveUnitInfo.Component<>nil) then begin
     Result:=DoSaveFileResources(ActiveUnitInfo,ResourceCode,LFMCode,Flags);
     if Result in [mrIgnore, mrOk] then
       Result:=mrCancel
@@ -4288,7 +4295,7 @@ begin
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-  if ActiveUnitInfo.Form=FLastFormActivated then
+  if ActiveUnitInfo.Component=FLastFormActivated then
     FLastFormActivated:=nil;
 
   // save some meta data of the source
@@ -4508,12 +4515,12 @@ begin
   if FilenameIsPascalUnit(AFilename) then begin
     // this could be a unit with a form
     if EnvironmentOptions.AutoCreateFormsOnOpen
-    or (NewUnitInfo.Form<>nil) then begin
+    or (NewUnitInfo.Component<>nil) then begin
       // -> try to (re)load the lfm file
       Result:=DoLoadLFM(NewUnitInfo,Flags);
       if Result<>mrOk then exit;
     end;
-  end else if NewUnitInfo.Form<>nil then begin
+  end else if NewUnitInfo.Component<>nil then begin
     // this is no pascal source and there is a designer form
     // This can be the case, when the file is renamed and reverted
     // -> close form
@@ -4585,9 +4592,9 @@ Begin
       if not Project1.Units[i].IsPartOfProject then continue;
       if OnlyForms then begin
         // add all form names of project
-        if Project1.Units[i].FormName<>'' then begin
+        if Project1.Units[i].ComponentName<>'' then begin
           UnitList.Add(TViewUnitsEntry.Create(
-            Project1.Units[i].FormName,i,Project1.Units[i]=ActiveUnitInfo));
+            Project1.Units[i].ComponentName,i,Project1.Units[i]=ActiveUnitInfo));
         end;
       end else begin
         // add all unit names of project
@@ -4630,8 +4637,9 @@ Begin
       end;
       if (AnUnitInfo<>nil) then begin
         AForm:=SourceNotebook;
-        if OnlyForms and (AnUnitInfo.Form<>nil) then begin
-          AForm:=TForm(AnUnitInfo.Form);
+        if OnlyForms and (AnUnitInfo.Component<>nil)
+        and (AForm is TCustomForm) then begin
+          AForm:=TForm(AnUnitInfo.Component);
         end;
         AForm.ShowOnTop;
       end;
@@ -5413,9 +5421,9 @@ Begin
               then
                 Project1.MainUnitInfo.Modified:=true;
             end;
-            if (AnUnitInfo.FormName<>'') then begin
+            if (AnUnitInfo.ComponentName<>'') then begin
               Project1.RemoveCreateFormFromProjectFile(
-                  'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
+                  'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
             end;
           end;
         end;
@@ -5965,7 +5973,7 @@ var
   i: integer;
 begin
   if AForm<>nil then begin
-    i:=Project1.IndexOfUnitWithForm(AForm,false,nil);
+    i:=Project1.IndexOfUnitWithComponent(AForm,false,nil);
     if i>=0 then begin
       ActiveUnitInfo:=Project1.Units[i];
       ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(
@@ -6406,7 +6414,7 @@ var
 begin
   AnUnitInfo:=Project1.FirstUnitWithForm;
   while AnUnitInfo<>nil do begin
-    NextUnitInfo:=AnUnitInfo.NextUnitWithForm;
+    NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     if not AnUnitInfo.NeedsSaveToDisk then
       CloseDesignerForm(AnUnitInfo);
     AnUnitInfo:=NextUnitInfo;
@@ -6478,7 +6486,7 @@ var
 begin
   if SourceNoteBook.NoteBook = nil then exit;
   if FLastFormActivated <> nil then begin
-    ActiveUnitInfo:= Project1.UnitWithForm(FLastFormActivated);
+    ActiveUnitInfo:= Project1.UnitWithComponent(FLastFormActivated);
     if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
     begin
       SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
@@ -7230,7 +7238,7 @@ begin
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
   end;
   // find source for form
-  i:=Project1.IndexOfUnitWithForm(ActiveForm,false,nil);
+  i:=Project1.IndexOfUnitWithComponent(ActiveForm,false,nil);
   if i<0 then begin
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: form without source');
   end;
@@ -7245,7 +7253,7 @@ procedure TMainIDE.OnDesignerModified(Sender: TObject);
 var i: integer;
   SrcEdit: TSourceEditor;
 begin
-  i:=Project1.IndexOfUnitWithForm(TDesigner(Sender).Form,false,nil);
+  i:=Project1.IndexOfUnitWithComponent(TDesigner(Sender).Form,false,nil);
   if i>=0 then begin
     Project1.Units[i].Modified:=true;
     if Project1.Units[i].Loaded then
@@ -8161,8 +8169,8 @@ begin
   if ActiveUnitInfo = nil then Exit;
 
   SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
-  ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form)
-                                or (ActiveUnitInfo.FormName<>'');
+  ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component)
+                                or (ActiveUnitInfo.ComponentName<>'');
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
@@ -8266,7 +8274,7 @@ begin
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
-  ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
+  ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.Form);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
@@ -8285,7 +8293,7 @@ begin
     //   replace createform statement
 
     // check if formname already exists
-    i:=Project1.IndexOfUnitWithFormName(NewName,true,ActiveUnitInfo);
+    i:=Project1.IndexOfUnitWithComponentName(NewName,true,ActiveUnitInfo);
     if i>=0 then
       raise Exception.Create(
                          Format(lisThereIsAlreadyAFormWithTheName, ['"',
@@ -8297,10 +8305,10 @@ begin
       AComponent.Name,AComponent.ClassName,
       NewName,NewClassName);
     ApplyBossResult(Format(lisUnableToRenameFormInSourceSeeMessages, [#13]));
-    ActiveUnitInfo.FormName:=NewName;
+    ActiveUnitInfo.ComponentName:=NewName;
 
     // rename form class
-    FormEditor1.JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
+    FormEditor1.JITFormList.RenameComponentClass(AComponent,NewClassName);
 
     // change createform statement
     if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnitID>=0)
@@ -8568,9 +8576,9 @@ begin
         exit;
       end;
     end;
-    if (AnUnitInfo.FormName<>'') then begin
+    if (AnUnitInfo.ComponentName<>'') then begin
       Dummy:=Project1.RemoveCreateFormFromProjectFile(
-          'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
+          'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
       if not Dummy then begin
         ApplyCodeToolChanges;
         DoJumpToCodeToolBossError;
@@ -8634,9 +8642,9 @@ procedure TMainIDE.DoSwitchToFormSrc(ADesigner: TDesigner;
 var i: integer;
 begin
   if (ADesigner<>nil) then
-    i:=Project1.IndexOfUnitWithForm(ADesigner.Form,false,nil)
+    i:=Project1.IndexOfUnitWithComponent(ADesigner.Form,false,nil)
   else if GlobalDesignHook.LookupRoot<>nil then
-    i:=Project1.IndexOfUnitWithForm(GlobalDesignHook.LookupRoot,false,nil)
+    i:=Project1.IndexOfUnitWithComponent(GlobalDesignHook.LookupRoot,false,nil)
   else
     i:=-1;
   if (i>=0) then begin
@@ -8654,11 +8662,11 @@ end;
 function TMainIDE.GetFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
   ): TCustomForm;
 begin
-  Result:=TCustomForm(AnUnitInfo.Form);
+  Result:=TCustomForm(AnUnitInfo.Component);
   if (Result=nil) and LoadForm and (not AnUnitInfo.IsVirtual)
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
     DoLoadLFM(AnUnitInfo,[]);
-    Result:=TCustomForm(AnUnitInfo.Form);
+    Result:=TCustomForm(AnUnitInfo.Component);
   end;
 end;
 
@@ -8675,8 +8683,8 @@ begin
   writeln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
   {$ENDIF}
   Result:=CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
-                            ActiveUnitInfo.Form.ClassName,AMethodName,TypeData,
-                            MethodIsCompatible,MethodIsPublished,IdentIsMethod);
+                        ActiveUnitInfo.Component.ClassName,AMethodName,TypeData,
+                        MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   if CodeToolBoss.ErrorMessage<>'' then begin
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToFindMethodPlzFixTheErrorShownInTheMessage
@@ -8702,15 +8710,15 @@ begin
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
-                ActiveUnitInfo.Form.ClassName,AMethodName,ATypeInfo);
+                ActiveUnitInfo.Component.ClassName,AMethodName,ATypeInfo);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
-      Result:=FormEditor1.JITFormList.CreateNewMethod(TForm(ActiveUnitInfo.Form)
-                                                      ,AMethodName);
+      Result:=FormEditor1.JITFormList.CreateNewMethod(
+                                   TForm(ActiveUnitInfo.Component),AMethodName);
     end else begin
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
@@ -8734,7 +8742,7 @@ begin
   {$ENDIF}
 
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
-    ActiveUnitInfo.Form.ClassName,AMethodName,
+    ActiveUnitInfo.Component.ClassName,AMethodName,
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
@@ -8761,14 +8769,14 @@ begin
   try
     // create published method
     r:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
-                ActiveUnitInfo.Form.ClassName,CurName,NewName);
+                ActiveUnitInfo.Component.ClassName,CurName,NewName);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
-      FormEditor1.JITFormList.RenameMethod(TForm(ActiveUnitInfo.Form),
+      FormEditor1.JITFormList.RenameMethod(TForm(ActiveUnitInfo.Component),
                                            CurName,NewName);
     end else begin
       DoJumpToCodeToolBossError;
@@ -9098,6 +9106,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.590  2003/05/31 10:07:33  mattias
+  changed projects forms into components
+
   Revision 1.589  2003/05/30 16:25:47  mattias
   started datamodule
 
