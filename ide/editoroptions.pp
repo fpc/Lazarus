@@ -66,7 +66,6 @@ type
     fDoubleClickLine:boolean;
     fFindTextAtCursor:boolean;
     fUseSyntaxHighlight:boolean;
-    fCreateBackupFiles:boolean;
     fBlockIndent:integer;
     fUndoLimit:integer;
     fTabWidths:integer;
@@ -133,8 +132,6 @@ type
         read fFindTextAtCursor write fFindTextAtCursor default true;
     property UseSyntaxHighlight:boolean
         read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
-    property CreateBackupFiles:boolean
-        read fCreateBackupFiles write fCreateBackupFiles default true;
     property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
     property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidths:integer read fTabWidths write fTabWidths default 8;
@@ -239,7 +236,6 @@ type
     DoubleClickLineCheckBox:TCheckBox;
     FindTextAtCursorCheckBox:TCheckBox;
     UseSyntaxHighlightCheckBox:TCheckBox;
-    CreateBackupFilesCheckBox:TCheckBox;
     BlockIndentComboBox:TComboBox;
     BlockIndentLabel:TLabel;
     UndoLimitComboBox:TComboBox;
@@ -649,8 +645,6 @@ begin
       XMLConfig.GetValue('EditorOptions/General/Editor/FindTextAtCursor',true);
     fUseSyntaxHighlight:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UseSyntaxHighlight',true);
-    fCreateBackupFiles:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/CreateBackupFiles',true);
     fBlockIndent:=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',2);
     fUndoLimit:=
@@ -759,8 +753,6 @@ begin
       ,fFindTextAtCursor);
     XMLConfig.SetValue('EditorOptions/General/Editor/UseSyntaxHighlight'
       ,fUseSyntaxHighlight);
-    XMLConfig.SetValue('EditorOptions/General/Editor/CreateBackupFiles'
-      ,fCreateBackupFiles);
     XMLConfig.SetValue('EditorOptions/General/Editor/BlockIndent'
       ,fBlockIndent);
     XMLConfig.SetValue('EditorOptions/General/Editor/UndoLimit'
@@ -1885,6 +1877,7 @@ begin
     Caption:='Drag Drop Editing';
     Checked:=eoDragDropEditing in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
+    Enabled:=false;
     Show;
   end;
 
@@ -2108,20 +2101,6 @@ begin
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Use syntax highlight';
     Checked:=EditorOpts.UseSyntaxHighlight;
-    OnClick:=@GeneralCheckBoxOnClick;
-    Show;
-  end;
-
-  CreateBackupFilesCheckBox:=TCheckBox.Create(Self);
-  with CreateBackupFilesCheckBox do begin
-    Name:='CreateBackupFilesCheckBox';
-    Parent:=EditorOptionsGroupBox;
-    Top:=UseSyntaxHighlightCheckBox.Top+UseSyntaxHighlightCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Create backup files';
-    Checked:=EditorOpts.CreateBackupFiles;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
   end;
@@ -2875,6 +2854,7 @@ begin
     Width:=200;
     Caption:='Code completion';
     Checked:=EditorOpts.AutoCodeCompletion;
+    Enabled:=false;
     Show;
   end;
 
@@ -2888,6 +2868,7 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Code parameters';
     Checked:=EditorOpts.AutoCodeParameters;
+    Enabled:=false;
     Show;
   end;
 
@@ -2901,6 +2882,7 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Tooltip expression evaluation';
     Checked:=EditorOpts.AutoToolTipExprEval;
+    Enabled:=false;
     Show;
   end;
 
@@ -2914,6 +2896,7 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Tooltip symbol Tools';
     Checked:=EditorOpts.AutoToolTipSymbTools;
+    Enabled:=false;
     Show;
   end;
 
@@ -3148,7 +3131,6 @@ begin
   EditorOpts.DoubleClickLine:=DoubleClickLineCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
-  EditorOpts.CreateBackupFiles:=CreateBackupFilesCheckBox.Checked;
   EditorOpts.SyntaxExtensions:=SyntaxExtensionsComboBox.Text;
 
   // code Tools

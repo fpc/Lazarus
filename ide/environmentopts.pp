@@ -715,6 +715,7 @@ begin
     Width:=AutoSaveGroupBox.ClientWidth-2;
     Height:=20;
     Caption:='Editor files';
+    Enabled:=false;
     Show;
   end;
   
@@ -727,6 +728,7 @@ begin
     Width:=AutoSaveGroupBox.ClientWidth-2;
     Height:=20;
     Caption:='Project';
+    Enabled:=false;
     Show;
   end;
 
@@ -739,6 +741,7 @@ begin
     Width:=90;
     Height:=23;
     Caption:='Interval in secs';
+    Enabled:=false;
     Show;
   end;
 
@@ -758,6 +761,7 @@ begin
       Add('120');
       EndUpdate;
     end;
+    Enabled:=false;
     Show;
   end;
 
@@ -849,6 +853,7 @@ begin
     Width:=FormEditorGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Display grid';
+    Enabled:=false;
     Show;
   end;
   
@@ -861,6 +866,7 @@ begin
     Width:=FormEditorGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Snap to grid';
+    Enabled:=false;
     Show;
   end;
 
@@ -873,6 +879,7 @@ begin
     Width:=FormEditorGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Show component captions';
+    Enabled:=false;
     Show;
   end;
 
@@ -885,6 +892,7 @@ begin
     Width:=FormEditorGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Show editor hints';
+    Enabled:=false;
     Show;
   end;
 
@@ -897,6 +905,7 @@ begin
     Width:=FormEditorGroupBox.ClientWidth-2*Left;
     Height:=23;
     Caption:='Auto create forms';
+    Enabled:=false;
     Show;
   end;
 
@@ -909,6 +918,7 @@ begin
     Width:=80;
     Height:=20;
     Caption:='Grid size X';
+    Enabled:=false;
     Show;
   end;
   
@@ -928,6 +938,7 @@ begin
       Add('10');
       EndUpdate;
     end;
+    Enabled:=false;
     Show;
   end;
   
@@ -940,6 +951,7 @@ begin
     Width:=GridSizeXLabel.Width;
     Height:=20;
     Caption:='Grid size Y';
+    Enabled:=false;
     Show;
   end;
 
@@ -959,6 +971,7 @@ begin
       Add('10');
       EndUpdate;
     end;
+    Enabled:=false;
     Show;
   end;
 

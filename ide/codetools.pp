@@ -870,12 +870,15 @@ end;
 function RemoveCreateFormFromProgram(Source:TSourceLog;
    AClassName,AName:string):boolean;
 // remove 'Application.CreateForm(<AClassName>,<AName>);'
-var Position,EndPosition:integer;
+var Position,EndPosition,AtomStart:integer;
 begin
   Result:=false;
   Position:=SearchCodeInSource(Source.Source,
-     ';application.createform('+AClassName+','+AName+')',1,EndPosition,false);
+     'application.createform('+AClassName+','+AName+')',1,EndPosition,false);
   if Position<1 then exit;
+  if ReadNextPascalAtom(Source.Source,EndPosition,AtomStart)=';' then
+    ReadNextPascalAtom(Source.Source,EndPosition,AtomStart);
+  EndPosition:=AtomStart;
   Source.Delete(Position,EndPosition-Position);
   Result:=true;
 end;
@@ -894,7 +897,7 @@ function ListAllCreateFormsInProgram(Source:string):TStrings;
 var Position,EndPosition:integer;
   s:string;
 begin
-  Result:=TStrings.Create;
+  Result:=TStringList.Create;
   Position:=1;
   repeat
     Position:=SearchCodeInSource(Source,
@@ -903,6 +906,7 @@ begin
       s:=ReadNextPascalAtom(Source,EndPosition,Position);
       ReadNextPascalAtom(Source,EndPosition,Position);
       s:=ReadNextPascalAtom(Source,EndPosition,Position)+':'+s;
+writeln('ListAllCreateFormsInProgram ',s);
       Result.Add(s);
     end;
   until Position<1;

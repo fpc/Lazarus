@@ -32,7 +32,7 @@ uses
   CodeTools, MsgView, NewProjectDlg, Process, IDEComp, AbstractFormEditor,
   FormEditor, CustomFormEditor, ObjectInspector, ControlSelection, PropEdits,
   UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
-  KeyMapping;
+  KeyMapping, ProjectOpts;
 
 const
   Version_String = '0.7';
@@ -86,6 +86,7 @@ type
     itmProjectOpen: TMenuItem;
     itmProjectSave: TMenuItem;
     itmProjectSaveAs: TMenuItem;
+    itmProjectViewSource: TMenuItem;
     itmProjectBuild: TMenuItem;
     itmProjectRun: TMenuItem;
     itmProjectOptions: TMenuItem;
@@ -145,6 +146,7 @@ type
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
     procedure mnuSaveProjectAsClicked(Sender : TObject);
+    procedure mnuViewProjectSourceClicked(Sender : TObject);
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
@@ -959,6 +961,14 @@ begin
 
   mnuProject.Add(CreateSeperator);
 
+  itmProjectViewSource := TMenuItem.Create(Self);
+  itmProjectViewSource.Name:='itmProjectViewSource';
+  itmProjectViewSource.Caption := 'View Source';
+  itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
+  mnuProject.Add(itmProjectViewSource);
+
+  mnuProject.Add(CreateSeperator);
+
   itmProjectBuild := TMenuItem.Create(Self);
   itmProjectBuild.Name:='itmProjectBuild';
   itmProjectBuild.Caption := 'Build';
@@ -1430,6 +1440,11 @@ begin
   DoSaveProject(true);
 end;
 
+procedure TMainIDE.mnuViewProjectSourceClicked(Sender : TObject);
+begin
+  DoOpenMainUnit(false);
+end;
+
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
   DoBuildProject;
@@ -1480,8 +1495,9 @@ end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
 begin
-  Assert(False, 'Trace:Project Options Clicked');
- //frmProjectOptions.Show;
+  if ShowProjectOptionsDialog(Project)=mrOk then begin
+    UpdateMainUnitSrcEdit;
+  end;
 end;
 
 procedure TMainIDE.SaveDesktopSettings(
@@ -1601,7 +1617,7 @@ writeln('TMainIDE.DoNewEditorUnit 1');
     SetDefaultsForForm(TempForm);
 
     NewUnitInfo.FormName:=TempForm.Name;
-    Project.AddCreateFormToProjectFile(TempForm.Name,TempForm.ClassName);
+    Project.AddCreateFormToProjectFile(TempForm.ClassName,TempForm.Name);
   end;
 
   // create source code
@@ -1970,7 +1986,8 @@ writeln('TMainIDE.DoOpenEditorFile');
       SrcStream.Read(NewSource[1],length(NewSource));
       // check if unit is a program
       if (not ProjectLoading) and (not ReOpen)
-      and ((Ext='.pp') or (Ext='.pas') or (Ext='.dpr')) then begin
+      and ((Ext='.pp') or (Ext='.pas') or (Ext='.dpr') or (Ext='.lpr')) then
+      begin
         NewProgramName:=FindProgramNameInSource(NewSource,
            ProgramNameStart,ProgramNameEnd);
         if NewProgramName<>'' then begin
@@ -3240,6 +3257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2001/04/03 12:14:43  lazarus
+  MG: added project options
+
   Revision 1.86  2001/03/31 13:35:22  lazarus
   MG: added non-visual-component code to IDE and LCL
 
