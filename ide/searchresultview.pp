@@ -170,8 +170,8 @@ begin
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
   ResultsNoteBook.Update;
 
-  if LazarusResources.Find(ClassName)=nil then
-    Caption:=lisMenuViewSearchResults;
+  Caption:=lisMenuViewSearchResults;
+  btnSearchAgain.Caption:=lisSearchAgain;
     
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.

@@ -3650,7 +3650,7 @@ var
   ListIndex: integer;
 begin
   ShowSearchResultsView;
-  ListIndex:=SearchResultsView.AddResult('Search For '+ASearchForm.SearchText,
+  ListIndex:=SearchResultsView.AddResult(lisSearchFor+ASearchForm.SearchText,
                                           ASearchForm.SearchText,
                                           ASearchForm.SearchDirectory,
                                           ASearchForm.SearchMask,

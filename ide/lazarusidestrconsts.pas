@@ -194,6 +194,7 @@ resourcestring
   lisCopyAllMessagesToClipboard = 'Copy all messages to clipboard';
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
+  lisSearchAgain = 'Search again';
   lisMenuViewAnchorEditor = 'View Anchor Editor';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
@@ -1777,6 +1778,7 @@ resourcestring
   
   // unit editor
   lisUEErrorInRegularExpression = 'Error in regular expression';
+  lisSearchFor = 'Search For ';
   lisUENotFound = 'Not found';
   lisUESearchStringNotFound = 'Search string ''%s'' not found!';
   lisUEReplaceThisOccurrenceOfWith = 'Replace this occurrence of %s%s%s%s '
