@@ -6293,6 +6293,7 @@ begin
     s:=EnvironmentOptions.FPCSourceDirectory;
   end else if MacroName='comppath' then begin
     Handled:=true;
+writeln('TMainIDE.OnMacroSubstitution A ',s,' ',EnvironmentOptions.CompilerFilename);
     s:=EnvironmentOptions.CompilerFilename;
   end else if MacroName='params' then begin
     Handled:=true;
@@ -8484,6 +8485,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.533  2003/04/22 07:56:17  mattias
+  implemented dynamic component palette
+
   Revision 1.532  2003/04/21 18:00:52  mattias
   fixed opening main unit
 
