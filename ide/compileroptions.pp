@@ -414,7 +414,7 @@ begin
   LinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', '');
     
   { Other }
-  ShowErrors := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', false);
+  ShowErrors := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', true);
   ShowWarn := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', true);
   ShowNotes := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', true);
   ShowHints := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', true);
