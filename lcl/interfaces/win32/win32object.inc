@@ -369,6 +369,7 @@ Var
   LVI: LV_ITEM;
   PStr, PStr2: PChar;
   R, R2: TRECT;
+  S: String;
   //SelectionMode: DWORD; // currently only used for listboxes
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
@@ -411,9 +412,12 @@ Begin
         //SH: think of TBitmap.handle!!!!
     LM_APPENDTEXT:
     Begin
-      PStr:=PChar((Sender as TMemo).Text);
-      StrCat(PStr, Data);
-      SetLabel(Sender, PStr);
+      if (Data <> nil)
+      and (PChar(Data)^ <> #0)
+      then begin
+        S := (Sender as TMemo).Text + PChar(Data);
+        SetLabel(Sender, PChar(S));
+      end;
     End;
     LM_SCREENINIT:
     Begin
@@ -2725,6 +2729,9 @@ End;
 
 {
   $Log$
+  Revision 1.80  2003/07/30 21:56:32  marc
+  * Fixed LM_APPENDTEXT buffer overrun
+
   Revision 1.79  2003/07/30 17:41:06  mattias
   added LM_APENDTEXT from Martin Smat
 
