@@ -56,7 +56,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  SourceChanger, FindDeclarationTool, PascalParserTool;
+  CodeToolMemManager, SourceChanger, FindDeclarationTool, PascalParserTool;
   
 
 type
@@ -82,6 +82,7 @@ type
   
   TIdentifierListItem = class
   private
+    FNext: TIdentifierListItem;
     FParamList: string;
     FParamListValid: boolean;
     function GetParamList: string;
@@ -109,6 +110,7 @@ type
     function CanBeAssigned: boolean;
     procedure UpdateBaseContext;
     function HasChilds: boolean;
+    procedure Clear;
   public
     property ParamList: string read GetParamList write SetParamList;
   end;
@@ -322,6 +324,78 @@ begin
   Result:=AnsiCompareText(HistItem.ParamList,IdentItem.ParamList);
 end;
 
+type
+  TIdentifierListItemMemManager = class(TCodeToolMemManager)
+  protected
+    procedure FreeFirstItem; override;
+  public
+    procedure DisposeIdentListItem(IdentListItem: TIdentifierListItem);
+    function NewIdentListItem(NewCompatibility: TIdentifierCompatibility;
+      NewHasChilds: boolean; NewHistoryIndex: integer;
+      NewIdentifier: PChar; NewLevel: integer;
+      NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
+      NewDefaultDesc: TCodeTreeNodeDesc): TIdentifierListItem;
+  end;
+  
+var
+  IdentifierListItemMemManager: TIdentifierListItemMemManager;
+
+{ TIdentifierListItemMemManager }
+
+procedure TIdentifierListItemMemManager.FreeFirstItem;
+var Item: TIdentifierListItem;
+begin
+  Item:=TIdentifierListItem(FFirstFree);
+  TIdentifierListItem(FFirstFree):=Item.FNext;
+  Item.Free;
+end;
+
+procedure TIdentifierListItemMemManager.DisposeIdentListItem(
+  IdentListItem: TIdentifierListItem);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add IdentListItem to Free list
+    IdentListItem.FNext:=TIdentifierListItem(FFirstFree);
+    TIdentifierListItem(FFirstFree):=IdentListItem;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free IdentListItem
+    IdentListItem.Free;
+    {$IFDEF DebugCTMemManager}
+    inc(FFreedCount);
+    {$ENDIF}
+  end;
+  dec(FCount);
+end;
+
+function TIdentifierListItemMemManager.NewIdentListItem(
+  NewCompatibility: TIdentifierCompatibility;
+  NewHasChilds: boolean; NewHistoryIndex: integer;
+  NewIdentifier: PChar; NewLevel: integer;
+  NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
+  NewDefaultDesc: TCodeTreeNodeDesc): TIdentifierListItem;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=TIdentifierListItem(FFirstFree);
+    // ToDo: set values
+    TIdentifierListItem(FFirstFree):=Result.FNext;
+    Result.FNext:=nil;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new node
+    Result:=TIdentifierListItem.Create(NewCompatibility,
+      NewHasChilds,NewHistoryIndex,NewIdentifier,NewLevel,
+      NewNode,NewTool,
+      NewDefaultDesc);
+    {$IFDEF DebugCTMemManager}
+    inc(FAllocatedCount);
+    {$ENDIF}
+  end;
+  inc(FCount);
+end;
+
 { TIdentifierList }
 
 procedure TIdentifierList.SetPrefix(const AValue: string);
@@ -438,6 +512,7 @@ begin
     Include(FFlags,ilfFilteredListNeedsUpdate);
   end else begin
     // redefined identifier -> ignore
+    //writeln('TIdentifierList.Add redefined: ',NewItem.AsString);
     NewItem.Free;
   end;
 end;
@@ -552,7 +627,7 @@ begin
       Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
     end;
   
-  ctnVarDefinition,ctnConstDefinition:
+  ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier:
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
     
   ctnProcedure,ctnProcedureHead:
@@ -979,6 +1054,21 @@ begin
   Result:=iliHasChilds in Flags;
 end;
 
+procedure TIdentifierListItem.Clear;
+begin
+  FParamList:='';
+  FParamListValid:=false;
+  Compatibility:=icompUnknown;
+  HistoryIndex:=0;
+  Identifier:=nil;
+  Level:=0;
+  Node:=nil;
+  Tool:=nil;
+  DefaultDesc:=ctnNone;
+  Flags:=[];
+  BaseExprType:=CleanExpressionType;
+end;
+
 { TIdentifierHistoryList }
 
 procedure TIdentifierHistoryList.SetCapacity(const AValue: integer);
@@ -1070,7 +1160,7 @@ var
 begin
   AnAVLNode:=FindItem(AnItem);
   if AnAVLNode=nil then
-    Result:=3333333  // a very high value
+    Result:=33333333  // a very high value
   else
     Result:=TIdentHistListItem(AnAVLNode.Data).HistoryIndex;
 end;
@@ -1079,6 +1169,13 @@ function TIdentifierHistoryList.Count: integer;
 begin
   Result:=FItems.Count;
 end;
+
+initialization
+  IdentifierListItemMemManager:=TIdentifierListItemMemManager.Create;
+  
+finalization
+  IdentifierListItemMemManager.Free;
+  IdentifierListItemMemManager:=nil;
 
 end.
 

@@ -684,7 +684,9 @@ begin
   end else begin
     // free list empty -> create new node
     Result:=TCodeTreeNode.Create;
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;
@@ -701,7 +703,9 @@ begin
   end else begin
     // free list full -> free the ANode
     ANode.Free;
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -777,7 +781,9 @@ end;
 procedure InternalFinal;
 begin
   NodeExtMemManager.Free;
+  NodeExtMemManager:=nil;
   NodeMemManager.Free;
+  NodeMemManager:=nil;
 end;
 
 

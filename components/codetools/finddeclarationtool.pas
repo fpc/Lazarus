@@ -1838,7 +1838,8 @@ var
       Params.SetResult(Self,ContextNode,CurPos.StartPos);
       Result:=CheckResult(true,true);
     end;
-    if FindIdentifierInHiddenUsedUnits(Params) then begin
+    if (not (fdfIgnoreUsedUnits in Params.Flags))
+    and FindIdentifierInHiddenUsedUnits(Params) then begin
       Result:=CheckResult(true,false);
     end;
   end;
@@ -2881,7 +2882,7 @@ begin
 
   Params.Save(OldInput);
   Params.ContextNode:=Params.NewNode;
-  Exclude(Params.Flags,fdfIgnoreCurContextNode);
+  Params.Flags:=Params.Flags-[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
   Result:=Params.NewCodeTool.FindIdentifierInContext(Params);
   Params.Load(OldInput);
 end;
@@ -3188,7 +3189,8 @@ begin
   Result:=false;
   // build code tree
   {$IFDEF ShowTriedContexts}
-  writeln(DebugPrefix,'TFindDeclarationTool.FindIdentifierInInterface',
+  writeln({$IFDEF DebugPrefix}DebugPrefix,{$ENDIF}
+  'TFindDeclarationTool.FindIdentifierInInterface',
   ' Ident="',GetIdentifier(Params.Identifier),'"',
   ' IgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags,
   ' Self=',TCodeBuffer(Scanner.MainCode).Filename
@@ -3311,7 +3313,7 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInUsedUnit(
   const AnUnitName: string; Params: TFindDeclarationParams): boolean;
-{ this function is internally used by FindIdentifierInUsesSection
+{ this function is internally used by FindIdentifierInHiddenUsedUnits
   for hidden used units, like the system unit or the objpas unit
 }
 var

@@ -51,8 +51,10 @@ type
     FCount: integer;
     FMinFree: integer;
     FMaxFreeRatio: integer;
+    {$IFDEF DebugCTMemManager}
     FAllocatedCount: int64;
     FFreedCount: int64;
+    {$ENDIF}
     procedure DisposeItem(AnItem: PCodeToolMemManagerItem);
     function NewItem: PCodeToolMemManagerItem;
     procedure FreeFirstItem; virtual;
@@ -62,8 +64,10 @@ type
         read FMaxFreeRatio write SetMaxFreeRatio; // in one eighth steps
     property Count: integer read FCount;
     property FreeCount: integer read FFreeCount;
+    {$IFDEF DebugCTMemManager}
     property AllocatedCount: int64 read FAllocatedCount;
     property FreedCount: int64 read FFreedCount;
+    {$ENDIF}
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -79,7 +83,9 @@ procedure TCodeToolMemManager.Clear;
 begin
   while FFirstFree<>nil do begin
     FreeFirstItem;
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   FFreeCount:=0;
 end;
@@ -90,8 +96,10 @@ begin
   FFirstFree:=nil;
   FFreeCount:=0;
   FCount:=0;
+  {$IFDEF DebugCTMemManager}
   FAllocatedCount:=0;
   FFreedCount:=0;
+  {$ENDIF}
   FMinFree:=100000;
   FMaxFreeRatio:=8; // 1:1
 end;
@@ -112,7 +120,9 @@ begin
   end else begin
     // free list full -> free the ANode
     //FreeItem(AnItem);
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -128,7 +138,9 @@ begin
   end else begin
     // free list empty -> create new node
     New(Result);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;

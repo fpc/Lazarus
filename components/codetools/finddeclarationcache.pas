@@ -299,7 +299,9 @@ begin
   end else begin
     // free list full -> free the Entry
     Dispose(Entry);
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -315,7 +317,9 @@ begin
   end else begin
     // free list empty -> create new Entry
     New(Result);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;
@@ -343,7 +347,9 @@ begin
   end else begin
     // free list full -> free the Entry
     Dispose(Entry);
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -359,7 +365,9 @@ begin
   end else begin
     // free list empty -> create new Entry
     New(Result);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;
@@ -939,7 +947,9 @@ begin
   end else begin
     // free list full -> free the NodeCache
     NodeCache.Free;
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -965,7 +975,9 @@ begin
   end else begin
     // free list empty -> create new NodeCache
     Result:=TCodeTreeNodeCache.Create(AnOwner);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;
@@ -1042,7 +1054,9 @@ begin
   end else begin
     // free list full -> free the BaseType
     BaseTypeCache.Free;
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -1067,7 +1081,9 @@ begin
   end else begin
     // free list empty -> create new BaseType
     Result:=TBaseTypeCache.Create(AnOwner);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;

@@ -2799,7 +2799,9 @@ begin
   end else begin
     // free list full -> free Link
     Dispose(Link);
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -2816,7 +2818,9 @@ begin
     // free list empty -> create new PSourceLink
     New(Result);
     FillChar(Result^,SizeOf(TSourceLink),0);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;
@@ -2844,7 +2848,9 @@ begin
   end else begin
     // free list full -> free Step
     Dispose(Step);
+    {$IFDEF DebugCTMemManager}
     inc(FFreedCount);
+    {$ENDIF}
   end;
   dec(FCount);
 end;
@@ -2861,7 +2867,9 @@ begin
     // free list empty -> create new PSourceChangeStep
     New(Result);
     FillChar(Result^,SizeOf(TSourceChangeStep),0);
+    {$IFDEF DebugCTMemManager}
     inc(FAllocatedCount);
+    {$ENDIF}
   end;
   inc(FCount);
 end;

@@ -3122,12 +3122,11 @@ begin
   if ExtractMemStream=nil then
     ExtractMemStream:=TMemoryStream.Create;
   ExtractMemStream.Position:=0;
-  ExtractMemStream.Size:=0;
 end;
 
 function TPascalParserTool.GetExtraction: string;
 begin
-  SetLength(Result,ExtractMemStream.Size);
+  SetLength(Result,ExtractMemStream.Position);
   ExtractMemStream.Position:=0;
   ExtractMemStream.Read(Result[1],length(Result));
 end;
