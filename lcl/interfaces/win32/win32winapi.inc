@@ -170,6 +170,7 @@ var
   var
     ScrollInfo: Windows.tagScrollInfo;
     WParam: Windows.WParam;
+    ScrollMsg, ScrollBar: dword;
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
@@ -178,7 +179,17 @@ var
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
-    if Windows.GetScrollInfo(Handle, SB_VERT, ScrollInfo) then
+    // if mouse is over horizontal scrollbar, scroll horizontally
+    WParam := (TLMMouseEvent(Message).X and $FFFF) or ((TLMMouseEvent(Message).Y and $FFFF) shl 16);
+    if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
+    begin
+      ScrollBar := SB_HORZ;
+      ScrollMsg := WM_HSCROLL;
+    end else begin
+      ScrollBar := SB_VERT;
+      ScrollMsg := WM_VSCROLL;
+    end;
+    if Windows.GetScrollInfo(Handle, ScrollBar, ScrollInfo) then
     begin
       with TLMMouseEvent(Message) do
       begin
@@ -189,7 +200,7 @@ var
           WParam := ScrollInfo.nMin;
         WParam := SB_THUMBPOSITION or (WParam shl 16);
       end;
-      Windows.PostMessage(Handle, WM_VSCROLL, WParam, HWND(nil));
+      Windows.PostMessage(Handle, ScrollMsg, WParam, HWND(nil));
     end;
   end;
 
@@ -2997,6 +3008,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.123  2004/06/30 15:41:56  micha
+  cursor above horizontal scrollbar, then scroll horizontally
+
   Revision 1.122  2004/06/20 12:48:21  micha
   fix default scroll handler to send scroll position within range
 
