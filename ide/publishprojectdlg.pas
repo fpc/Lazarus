@@ -37,7 +37,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, LResources, Buttons, StdCtrls,
-  ProjectDefs, IDEOptionDefs, IDEProcs, InputHistory, Dialogs;
+  ProjectDefs, IDEOptionDefs, IDEProcs, InputHistory, Dialogs,
+  LazarusIDEStrConsts;
 
 type
   { TPublishProjectDialog }
@@ -69,6 +70,7 @@ type
     OkButton: TBUTTON;
     SaveSettingsButton: TBUTTON;
     CancelButton: TBUTTON;
+    procedure BrowseDestDirBitBtnCLICK(Sender: TObject);
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
     procedure ExcludeFilterGroupboxRESIZE(Sender: TObject);
     procedure FilesGroupboxRESIZE(Sender: TObject);
@@ -124,6 +126,21 @@ begin
     Left:=DestDirComboBox.Left+DestDirComboBox.Width+5;
   with CommandAfterCombobox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
+end;
+
+procedure TPublishProjectDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  NewDir: String;
+begin
+  OpenDialog:=TOpenDialog.Create(Self);
+  InputHistories.ApplyFileDialogSettings(OpenDialog);
+  OpenDialog.Title:=lisChooseDirectory;
+  if OpenDialog.Execute then begin
+    NewDir:=ExpandFilename(OpenDialog.Filename);
+    SetComboBox(DestDirComboBox,NewDir,20);
+  end;
+  OpenDialog.Free;
 end;
 
 procedure TPublishProjectDialog.ExcludeFilterGroupboxRESIZE(Sender: TObject);

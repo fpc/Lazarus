@@ -223,6 +223,7 @@ resourcestring
   lisOpenProjectFile = 'Open Project File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
+  lisChooseDirectory = 'Choose directory';
 
   // dialogs
   lisSaveChangesToProject = 'Save changes to project %s?';

@@ -6,9 +6,9 @@ object PublishProjectDialog: TPublishProjectDialog
   ONRESIZE = PublishProjectDialogRESIZE
   HORZSCROLLBAR.PAGE = 470
   VERTSCROLLBAR.PAGE = 463
-  LEFT = 343
+  LEFT = 307
   HEIGHT = 462
-  TOP = 289
+  TOP = 165
   WIDTH = 469
   object OkButton: TBUTTON
     ANCHORS = [aktop, akright]
@@ -57,13 +57,14 @@ object PublishProjectDialog: TPublishProjectDialog
     object BrowseDestDirBitBtn: TBITBTN
       GLYPH.Data = {
         3A000000424D3A00000000000000360000002800000001000000010000000100
-        100000000000040000005A00000060000000400000004000000000000000
+        100000000000040000004E00000051000000400000004000000000000000
       }
       SPACING = 3
       ANCHORS = [aktop, akleft]
       CAPTION = 'Browse'
       TABSTOP = True
       TABORDER = 1
+      ONCLICK = BrowseDestDirBitBtnCLICK
       LEFT = 366
       HEIGHT = 25
       TOP = 1
