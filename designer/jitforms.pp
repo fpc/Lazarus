@@ -305,10 +305,29 @@ end;
 function TJITForms.AddJITFormFromStream(BinStream:TStream):integer;
 //  returns new index
 // -1 = invalid stream
+
+  procedure ApplyVisible;
+  var
+    i: integer;
+    AControl: TControl;
+  begin
+    // The LCL has as default Visible=false. But for Delphi compatbility
+    // loading control defaults to true.
+    for i:=0 to FCurReadForm.ComponentCount-1 do begin
+      AControl:=TControl(FCurReadForm.Components[i]);
+      if (AControl is TControl) then begin
+        if (not (csVisibleSetInLoading in AControl.ControlState)) then
+          AControl.Visible:=true
+        else
+          AControl.ControlState:=
+            AControl.ControlState-[csVisibleSetInLoading];
+      end;
+    end;
+  end;
+
 var
   Reader:TReader;
   NewClassName:shortstring;
-  a:integer;
   NewName: string;
 begin
   Result:=-1;
@@ -361,12 +380,7 @@ begin
       {$IFDEF IDE_VERBOSE}
       writeln('[TJITForms.AddJITFormFromStream] 5');
       {$ENDIF}
-      // MG: workaround til visible=true is default
-      for a:=0 to FCurReadForm.ComponentCount-1 do begin
-        if FCurReadForm.Components[a] is TControl then
-          TControl(FCurReadForm.Components[a]).Visible:=true;
-      end;
-      // MG: end of workaround
+      ApplyVisible;
 
       {$IFDEF IDE_VERBOSE}
       writeln('[TJITForms.AddJITFormFromStream] 6');

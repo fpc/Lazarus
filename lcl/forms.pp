@@ -415,10 +415,30 @@ function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
 
   function InitComponent(ClassType: TClass): Boolean;
+  
+    procedure ApplyVisible;
+    var
+      i: integer;
+      AControl: TControl;
+    begin
+      // The LCL has as default Visible=false. But for Delphi compatbility
+      // loading control defaults to true.
+      if Instance is TControl then
+        for i:=0 to Instance.ComponentCount-1 do begin
+          AControl:=TControl(Instance.Components[i]);
+          if (AControl is TControl) then begin
+            if (not (csVisibleSetInLoading in AControl.ControlState)) then
+              AControl.Visible:=true
+            else
+              AControl.ControlState:=
+                AControl.ControlState-[csVisibleSetInLoading];
+          end;
+        end;
+    end;
+  
   var
     CompResource:TLResource;
     MemStream: TMemoryStream;
-    a:integer;
   begin
 //writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
     Result:=false;
@@ -444,13 +464,7 @@ function InitResourceComponent(Instance: TComponent;
         end;
       end;
     finally
-      // MG: workaround til Visible=true is default
-      if Instance is TControl then
-        for a:=0 to Instance.ComponentCount-1 do
-          if Instance.Components[a] is TControl then begin
-            TControl(Instance.Components[a]).Visible:=true;
-          end;
-      // MG end of workaround
+      ApplyVisible;
       MemStream.Free;
     end;
     Result:=true;
