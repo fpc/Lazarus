@@ -633,6 +633,10 @@ begin
     Result:=true;
     exit;
   end;
+  if FEntries.Count=0 then begin
+    Result:=true;
+    exit;
+  end;
   if Assigned(FOnBeforeApplyChanges) then begin
     Abort:=false;
     FOnBeforeApplyChanges(Abort);
@@ -655,7 +659,7 @@ begin
       InsertText:=FirstEntry.Text;
       // add after gap
       AddAfterGap(CurNode);
-      // add text from every nodes inserted at the same position
+      // add text from every node inserted at the same position
       PrecNode:=FEntries.FindPrecessor(CurNode);
       CurEntry:=FirstEntry;
       while (PrecNode<>nil) do begin

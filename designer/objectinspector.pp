@@ -203,6 +203,7 @@ type
     procedure AddSubEditor(PropEditor:TPropertyEditor);
 
     procedure SetRowValue;
+    procedure DoCallEdit;
     procedure RefreshValueEdit;
     Procedure ValueEditDblClick(Sender : TObject);
     procedure ValueEditMouseDown(Sender: TObject; Button:TMouseButton;
@@ -690,6 +691,46 @@ begin
   end;
 end;
 
+procedure TOIPropertyGrid.DoCallEdit;
+var
+  CurRow:TOIPropertyGridRow;
+  OldChangeStep: integer;
+begin
+writeln('#################### TOIPropertyGrid.DoCallEdit');
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  or (FCurrentEdit=nil)
+  or (FItemIndex<0)
+  or (FItemIndex>=FRows.Count)
+  or ((FCurrentEditorLookupRoot<>nil)
+    and (FPropertyEditorHook<>nil)
+    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
+  then begin
+    exit;
+  end;
+
+  OldChangeStep:=fChangeStep;
+  CurRow:=Rows[FItemIndex];
+  if paDialog in CurRow.Editor.GetAttributes then begin
+    try
+      CurRow.Editor.Edit;
+    except
+      on E: Exception do begin
+        MessageDlg('Error',E.Message,mtError,[mbOk],0);
+      end;
+    end;
+    if (OldChangeStep<>FChangeStep) then begin
+      // the selection has changed
+      // => CurRow does not exist any more
+      exit;
+    end;
+
+    if FCurrentEdit=ValueEdit then
+      ValueEdit.Text:=CurRow.Editor.GetVisualValue
+    else
+      ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
+  end;
+end;
+
 procedure TOIPropertyGrid.RefreshValueEdit;
 var
   CurRow: TOIPropertyGridRow;
@@ -769,21 +810,8 @@ begin
 end;
 
 procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
-var CurRow:TOIPropertyGridRow;
 begin
-writeln('#################### TOIPropertyGrid.ValueButtonClick');
-  if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count)
-  and (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[]) then
-  begin
-    CurRow:=Rows[FItemIndex];
-    if paDialog in CurRow.Editor.GetAttributes then begin
-      CurRow.Editor.Edit;
-      if FCurrentEdit=ValueEdit then
-        ValueEdit.Text:=CurRow.Editor.GetVisualValue
-      else
-        ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
-    end;
-  end;
+  DoCallEdit;
 end;
 
 procedure TOIPropertyGrid.SetItemIndex(NewIndex:integer);
@@ -1614,70 +1642,47 @@ end;
 
 PRocedure TOIPropertyGrid.ValueEditDblClick(Sender : TObject);
 var
-  //Rect : TRect;
-  Position : TPoint;
-  Index: integer;
-  PointedRow:TOIpropertyGridRow;
+  CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
-  Temp : String;
+  CurValue: string;
 begin
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  or (FCurrentEdit=nil)
+  or (FItemIndex<0)
+  or (FItemIndex>=FRows.Count)
+  or ((FCurrentEditorLookupRoot<>nil)
+    and (FPropertyEditorHook<>nil)
+    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
+  then begin
+    exit;
+  end;
+
   FHintTimer.Enabled := False;
-  //if event, then either create it or go to it.
-  //if Edit box, then nothing
-  //if combobox, then select the next value
 
-  if (sender is TComboBox) then
-     Begin  //either an Event of a enumeration or Boolean
+  if FCurrentEdit=ValueEdit then
+    CurValue:=ValueEdit.Text
+  else
+    CurValue:=ValueComboBox.Text;
+  if CurValue='' then begin
+    DoCallEdit;
+    exit;
+  end;
 
-      Position := Mouse.CursorPos;
-      if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0)
-         or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then
-      Exit;
-
-      Position := ScreenToClient(Position);
-      if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
-         or (Position.Y >= Height)) then
-      Exit;
-
-      Index:=MouseToIndex(Position.Y,false);
-      if (Index>=0) and (Index<FRows.Count) then
-       begin
-        PointedRow:=Rows[Index];
-        if Assigned(PointedRow) then
-        Begin
-
-          TypeKind := PointedRow.Editor.GetPropType^.Kind;
-          case TypeKind of
-               tkMethod : begin
-                          //event
-                          //if blank then create event!
-                          if TComboBox(sender).Text = '' then
-                             Begin
-                                //see if it's in the list first.
-                                Temp := TMethodPropertyEditor(PointedRow.Editor).GetFormMethodName;
-                                if (TComboBox(sender).Items.Indexof(Temp) = -1) then
-                                    TComboBox(sender).Items.Add(Temp);
-                                //set the text
-                                TComboBox(sender).Text := Temp;
-                             end
-                             else  //jump to event!
-                             Begin
-                             
-                             end;
-                             
-                          end;
-                else
-                   Begin
-                     if TComboBox(Sender).Items.Count = 0 then Exit;
-                     if TComboBox(sender).ItemIndex < (TComboBox(sender).Items.Count-1) then
-                          TComboBox(sender).ItemIndex := TComboBox(sender).ItemIndex +1
-                          else
-                          TComboBox(sender).ItemIndex := 0;
-                   end;
-           end;
-         end;
-     end;
-     end;
+  if (FCurrentEdit=ValueComboBox) then Begin
+    //either an Event or an enumeration or Boolean
+    CurRow:=Rows[FItemIndex];
+    TypeKind := CurRow.Editor.GetPropType^.Kind;
+    if TypeKind in [tkEnumeration,tkBool] then begin
+      // set value to next value in list
+      if ValueComboBox.Items.Count = 0 then Exit;
+      if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count-1) then
+        ValueComboBox.ItemIndex := ValueComboBox.ItemIndex +1
+      else
+        ValueComboBox.ItemIndex := 0;
+    end else if TypeKind=tkMethod then begin
+      DoCallEdit;
+    end;
+  end;
 end;
 
 procedure TOIPropertyGrid.SetBackgroundColor(const AValue: TColor);

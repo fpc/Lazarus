@@ -460,10 +460,9 @@ end;
 function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
   UpperMethodName: string;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-var ANode: TCodeTreeNode;
+var
+  ANode: TCodeTreeNode;
 begin
-
-  // ToDo: method overloading
   ANode:=FindMethodNodeInImplementation(UpperClassName,UpperMethodName,true);
   Result:=FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
 end;
