@@ -2265,85 +2265,34 @@ var
   Crit : LPCRITICAL_SECTION;
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-{  If CritSection <> 0 then
-    Try
-      Crit := LPCRITICAL_SECTION(CritSection);
-      Dispose(Crit);
-    except
-      CritSection := 0;
-    end;}
+  If CritSection <> 0 then
+    DeleteCriticalSection(CritSection);
   New(Crit);
   Windows.InitializeCriticalSection(Crit^);
   CritSection := Longint(Crit);
 end;
 
 Procedure TWin32Object.EnterCriticalSection(var CritSection: TCriticalSection);
-{var
-  Crit,
-  tmp : LPCRITICAL_SECTION;}
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-{  New(Crit);
-  If CritSection <> 0 then
-    Try
-      Crit^ := LPCRITICAL_SECTION(CritSection)^;
-    except
-      begin
-        CritSection := Longint(Crit);
-        exit;
-      end;
-    end;
-  Windows.EnterCriticalSection(Crit^);
-  tmp := LPCRITICAL_SECTION(CritSection);
-  CritSection := Longint(Crit);
-  Dispose(Tmp);}
   Windows.EnterCriticalSection(LPCRITICAL_SECTION(CritSection));
 end;
 
 Procedure TWin32Object.LeaveCriticalSection(var CritSection: TCriticalSection);
-{var
-  Crit,
-  tmp : LPCRITICAL_SECTION;}
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-{  New(Crit);
-  If CritSection <> 0 then
-    Try
-      Crit^ := LPCRITICAL_SECTION(CritSection)^;
-    except
-      begin
-        CritSection := Longint(Crit);
-        exit;
-      end;
-    end;
-  Windows.LeaveCriticalSection(Crit^);
-  tmp := LPCRITICAL_SECTION(CritSection);
-  CritSection := Longint(Crit);
-  Dispose(Tmp);}
   Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
 end;
 
 Procedure TWin32Object.DeleteCriticalSection(var CritSection: TCriticalSection);
-var
-  Crit,
-  tmp : LPCRITICAL_SECTION;
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-{  New(Crit);
-  If CritSection <> 0 then
-    Try
-      Crit^ := LPCRITICAL_SECTION(CritSection)^;
-    except
-      begin
-        CritSection := Longint(Crit);
-        exit;
-      end;
-    end;
-  Windows.DeleteCriticalSection(Crit^);
-  Dispose(Crit);   }
-  tmp := LPCRITICAL_SECTION(CritSection);
-  CritSection := 0;
-  Dispose(Tmp);
+  Windows.DeleteCriticalSection(LPCRITICAL_SECTION(CritSection));
+  Try
+    Dispose(LPCRITICAL_SECTION(CritSection));
+  finally
+    CritSection := 0;
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -2356,6 +2305,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/07/02 20:07:29  mattias
+  fixed critical section from Micha
+
   Revision 1.37  2003/07/02 19:35:26  mattias
   fixed AV on start from Vincent
 
