@@ -32,6 +32,8 @@ unit CustomFormEditor;
 
 interface
 
+{$DEFINE VerboseFormEditor}
+
 uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -507,9 +509,15 @@ Begin
   end;
 end;
 
-Function TComponentInterface.Delete : Boolean;
+Function TComponentInterface.Delete: Boolean;
 Begin
+  {$IFDEF VerboseFormEditor}
+  writeln('TComponentInterface.Delete A ',Component.Name,':',Component.ClassName);
+  {$ENDIF}
   Component.Free;
+  {$IFDEF VerboseFormEditor}
+  writeln('TComponentInterface.Delete B ',Component.Name,':',Component.ClassName);
+  {$ENDIF}
   Destroy;
   Result := True;
 end;
@@ -575,7 +583,6 @@ Begin
       Temp.Delete;
   end;
 end;
-
 
 Function TCustomFormEditor.FormModified : Boolean;
 Begin
@@ -758,8 +765,7 @@ end;
 Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(
   Value :TIComponentInterface);
 Begin
-  if (FComponentInterfaceList.IndexOf(Value) <> -1) then
-    FComponentInterfaceList.Delete(FComponentInterfaceList.IndexOf(Value));
+  FComponentInterfaceList.Remove(Value);
 end;
 
 Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
