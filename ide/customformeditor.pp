@@ -32,7 +32,7 @@ unit CustomFormEditor;
 
 interface
 
-{$DEFINE VerboseFormEditor}
+{ $DEFINE VerboseFormEditor}
 
 uses
 {$IFDEF IDE_MEM_CHECK}

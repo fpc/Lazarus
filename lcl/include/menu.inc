@@ -81,6 +81,9 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
+  if (Parent<>nil) and (Parent is TCustomForm)
+  and (TCustomForm(Parent).Menu=Self) then
+    TCustomForm(Parent).Menu:=nil;
   FItems.Free;
   inherited Destroy;
 end;
@@ -170,6 +173,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/09/19 16:45:54  lazarus
+  MG: fixed Menu.Free and gdkwindow=nil bug
+
   Revision 1.12  2002/08/22 13:45:58  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 

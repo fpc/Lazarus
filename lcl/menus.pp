@@ -45,7 +45,8 @@ interface
 {$endif}
 
 uses
-  VCLGlobals, Classes, SysUtils, LMessages, ActnList, Graphics, ImgList;
+  Classes, SysUtils, LCLLinux, LCLType, VCLGlobals, LMessages,
+  ActnList, Graphics, ImgList;
 
 
 type
@@ -298,7 +299,7 @@ function ShortCutToText(ShortCut: TShortCut): string;
 implementation
 
 uses
-  Interfaces, LCLLinux, LCLType;
+  Interfaces, Controls, Forms;
 
 { Menu command managment }
 
@@ -463,6 +464,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2002/09/19 16:45:54  lazarus
+  MG: fixed Menu.Free and gdkwindow=nil bug
+
   Revision 1.26  2002/08/22 13:45:57  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 
