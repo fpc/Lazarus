@@ -50,7 +50,7 @@ begin
 
     Assert(False, Format('trace:[TBitmapCanvas.CreateHandle] Got Handle 0x%x', [FBitmap.Handle]));
 
-    if FBitmap.Handle = 0 then
+    if not FBitmap.HandleAllocated then
       FOldBitmap := 0
     else
       FOldBitmap := SelectObject(DC, FBitmap.Handle);
@@ -112,6 +112,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/02/05 16:28:38  mattias
+  fixed unsharing TBitmap
+
   Revision 1.7  2003/06/30 10:09:46  mattias
   fixed Get/SetPixel for DC without widget
 

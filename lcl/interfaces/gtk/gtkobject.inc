@@ -6258,6 +6258,7 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   AWindow: PGdkWindow;
+  WidgetInfo: PWinWidgetInfo;
 begin
   p := nil;
   SetupProps:= false;
@@ -6697,6 +6698,8 @@ begin
         Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       end;
       StrDispose(AccelText);
+      WidgetInfo:=GetWidgetInfo(P,true);
+      Include(WidgetInfo^.Flags,wwiNotOnParentsClientArea);
       gtk_widget_show (P);
     end;
 
@@ -9184,6 +9187,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.463  2004/02/05 16:28:38  mattias
+  fixed unsharing TBitmap
+
   Revision 1.462  2004/02/04 00:04:37  mattias
   added some TEdit ideas to TSpinEdit
 

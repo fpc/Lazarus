@@ -956,8 +956,8 @@ type
     Procedure FreeCanvasContext;
     function GetCanvas: TCanvas;
     procedure CreateCanvas;
-    Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
-                       const NDIB : TDIBSection; OS2Format : Boolean);
+    Procedure CreateNewImage(NHandle: HBITMAP; NPallette: HPALETTE;
+                             const NDIB : TDIBSection; OS2Format : Boolean);
     procedure SetHandle(Value: HBITMAP);
     procedure SetMaskHandle(Value: HBITMAP);
     function GetHandleType: TBitmapHandleType;
@@ -1193,8 +1193,6 @@ type
     constructor Create(ABitmap : TBitmap);
     destructor Destroy; override;
     // TODO: replace this by property BitmapHandle;
-    // MWE: Not needed
-    //property Bitmap: TBitmap read FBitmap;
   end;
 
 
@@ -1446,6 +1444,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2004/02/05 16:28:38  mattias
+  fixed unsharing TBitmap
+
   Revision 1.110  2004/02/04 22:17:09  mattias
   removed workaround VirtualCreate
 

@@ -368,7 +368,7 @@ end;
 
 procedure TPicture.ForceType(GraphicType: TGraphicClass);
 begin
-  if not (Graphic is GraphicType) then
+  if not (FGraphic is GraphicType) then
   begin
     FGraphic.Free;
     FGraphic := nil;

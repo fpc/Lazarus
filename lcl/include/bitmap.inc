@@ -163,8 +163,7 @@ end;
 
 function TBitmap.GetHandle: HBITMAP;
 begin
-  UnshareImage;
-  if FImage.FHandle=0 then
+  if not FImage.HandleAllocated then
     HandleNeeded;
   Result := FImage.FHandle;
 end;
@@ -258,6 +257,8 @@ begin
     if UseWidth<1 then UseWidth:=1;
     if UseHeight<1 then UseHeight:=1;
     FImage.FHandle:= CreateBitmap(UseWidth, UseHeight, 1, n, nil);
+    FImage.FDIB.dsbm.bmWidth := Width;
+    FImage.FDIB.dsbm.bmHeight := Height;
   end;
 end;
 
@@ -337,7 +338,7 @@ Begin
   end;
 end;
 
-Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
+Procedure TBitmap.CreateNewImage(NHandle: HBITMAP; NPallette: HPALETTE;
    const NDIB : TDIBSection; OS2Format : Boolean);
 Begin
 
@@ -345,18 +346,44 @@ end;
 
 procedure TBitMap.PaletteNeeded;
 begin
-
+  // ToDo
 end;
 
 procedure TBitmap.UnshareImage;
+var
+  NewImage: TBitmapImage;
+  IntfImage: TLazIntfImage;
+  OldImage: TBitmapImage;
 begin
   if (FImage.RefCount>1) then begin
-    //writeln('TBitmap.UnshareImage ',ClassName);
+    //writeln('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
     // release old FImage and create a new one
-    FreeCanvasContext;
-    FImage.Release;
-    FImage := TBitmapImage.Create;
-    FImage.Reference;
+    NewImage:=TBitmapImage.Create;
+    try
+      NewImage.Reference;
+      if FImage.HandleAllocated and (Width>0) and (Height>0) then begin
+        // copy content
+        IntfImage:=TLazIntfImage.Create(0,0);
+        try
+          IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle);
+          IntfImage.CreateBitmap(NewImage.FHandle,NewImage.FMaskHandle);
+          FillChar(NewImage.FDIB, SizeOf(NewImage.FDIB), 0);
+          if NewImage.HandleAllocated then
+            GetObject(NewImage.FHandle, SizeOf(NewImage.FDIB), @NewImage.FDIB);
+        finally
+          IntfImage.Free;
+        end;
+      end;
+      FreeCanvasContext;
+      OldImage:=FImage;
+      FImage:=NewImage;
+      NewImage:=nil; // transaction sucessful
+      OldImage.Release;
+    finally
+      // in case something goes wrong, keep old and free new
+      NewImage.Free;
+    end;
+    //writeln('TBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
   end;
 end;
 
@@ -1011,6 +1038,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/02/05 16:28:38  mattias
+  fixed unsharing TBitmap
+
   Revision 1.58  2004/02/04 22:17:09  mattias
   removed workaround VirtualCreate
 

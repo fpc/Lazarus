@@ -41,7 +41,8 @@ end;
 procedure TCustomImage.SetPicture(const AValue: TPicture);
 begin
   if FPicture=AValue then exit;
-  FPicture.Assign(AValue);  //the onchange of the picture gets called and notifies that something changed.
+  FPicture.Assign(AValue); //the OnChange of the picture gets called and
+                           // notifies this TCustomImage that something changed.
 end;
 
 procedure TCustomImage.DoAutoSize;
@@ -172,6 +173,8 @@ begin
         Brush.Color := clWhite;
       FillRect(iRect);
     end;
+    Brush.Color:=clBlue;
+    FillRect(iRect);
     StretchDraw(iRect, Picture.Graphic);
   end;
 
