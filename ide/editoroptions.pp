@@ -805,34 +805,70 @@ begin
   DefFGCol:=clNone;
   DefBGCol:=clNone;
   DefFontStyles:=[];
-  if AttriName='Assembler' then begin
-    DefFGCol:=clGreen;
-  end else if AttriName='Comment' then begin
-    DefFGCol:=clBlue;
-    DefFontStyles:=[fsBold];
-  end else if AttriName='Reserved word' then begin
-    DefFontStyles:=[fsBold];
-  end else if AttriName='Number' then begin
-    DefFGCol:=clNavy;
-  end else if AttriName='String' then begin
-    DefFGCol:=clBlue;
-  end else if AttriName='Symbol' then begin
-    DefFGCol:=clRed;
-  end else if AttriName=AdditionalHiglightAttributes[0] then begin
-    DefBGCol:=clNavy;
+  if ColorScheme ='Twilight'  then begin
+    // default for twilight color scheme
+    DefBGCol:=clBlack;
     DefFGCol:=clWhite;
-  end else if AttriName=AdditionalHiglightAttributes[1] then begin
-    DefBGCol:=clDKGray;
-    DefFGCol:=clWhite;
-  end else if AttriName=AdditionalHiglightAttributes[2] then begin
-    DefBGCol:=clRed;
-    DefFGCol:=clBlack;
-  end else if AttriName=AdditionalHiglightAttributes[3] then begin
-    DefBGCol:=clGreen;
-    DefFGCol:=clBlack;
-  end else if AttriName=AdditionalHiglightAttributes[4] then begin
-    DefBGCol:=$50a0ff;
-    DefFGCol:=clBlack;
+    if AttriName='Assembler' then begin
+      DefFGCol:=clLime;
+    end else if AttriName='Comment' then begin
+      DefFGCol:=clGray;
+    end else if AttriName='Reserved word' then begin
+      DefFGCol:=clAqua;
+      DefFontStyles:=[fsBold];
+    end else if AttriName='Number' then begin
+      DefFGCol:=clFuchsia;
+    end else if AttriName='String' then begin
+      DefFGCol:=clYellow;
+    end else if AttriName='Symbol' then begin
+      DefFGCol:=clAqua;
+    end else if AttriName=AdditionalHiglightAttributes[0] then begin
+      DefBGCol:=clWhite;
+      DefFGCol:=clBlack
+    end else if AttriName=AdditionalHiglightAttributes[1] then begin
+      DefBGCol:=clBlue;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHiglightAttributes[2] then begin
+      DefBGCol:=clRed;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHiglightAttributes[3] then begin
+      DefBGCol:=clLime;
+      DefFGCol:=clRed;
+    end else if AttriName=AdditionalHiglightAttributes[4] then begin
+      DefBGCol:=$50a0ff;
+      DefFGCol:=clBlack;
+    end;
+  end else begin
+    // default for all other color schemes
+    if AttriName='Assembler' then begin
+      DefFGCol:=clGreen;
+    end else if AttriName='Comment' then begin
+      DefFGCol:=clBlue;
+      DefFontStyles:=[fsBold];
+    end else if AttriName='Reserved word' then begin
+      DefFontStyles:=[fsBold];
+    end else if AttriName='Number' then begin
+      DefFGCol:=clNavy;
+    end else if AttriName='String' then begin
+      DefFGCol:=clBlue;
+    end else if AttriName='Symbol' then begin
+      DefFGCol:=clRed;
+    end else if AttriName=AdditionalHiglightAttributes[0] then begin
+      DefBGCol:=clNavy;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHiglightAttributes[1] then begin
+      DefBGCol:=clDKGray;
+      DefFGCol:=clWhite;
+    end else if AttriName=AdditionalHiglightAttributes[2] then begin
+      DefBGCol:=clRed;
+      DefFGCol:=clBlack;
+    end else if AttriName=AdditionalHiglightAttributes[3] then begin
+      DefBGCol:=clGreen;
+      DefFGCol:=clBlack;
+    end else if AttriName=AdditionalHiglightAttributes[4] then begin
+      DefBGCol:=$50a0ff;
+      DefFGCol:=clBlack;
+    end;
   end;
   for a:=1 to length(AttriName) do
     if (not (AttriName[a] in ['a'..'z','A'..'Z'])) then
@@ -1335,7 +1371,9 @@ end;
 
 procedure TEditorOptionsForm.ComboBoxOnExit(Sender:TObject);
 var NewVal,a:integer;
+  Box: TComboBox;
 begin
+  Box:=TComboBox(Sender);
   if PreviewEdits[1]<>nil then begin
     // general
     if Sender=BlockIndentComboBox then begin
@@ -1345,9 +1383,9 @@ begin
       for a:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a]<>nil then
           PreviewEdits[a].TabWidth:=NewVal;
-    end;
+    end
     // display
-    if Sender=EditorFontHeightComboBox then begin
+    else if Sender=EditorFontHeightComboBox then begin
       NewVal:=StrToIntDef(EditorFontHeightComboBox.Text
         ,PreviewEdits[1].Font.Height);
       if (NewVal<0) then
@@ -1364,30 +1402,48 @@ begin
       for a:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a]<>nil then
           PreviewEdits[a].Font.Height:=NewVal;
-    end;
-    if Sender=ExtraLineSpacingComboBox then begin
+    end
+    else if Sender=ExtraLineSpacingComboBox then begin
       NewVal:=StrToIntDef(ExtraLineSpacingComboBox.Text
         ,PreviewEdits[1].ExtraLineSpacing);
       SetComboBoxText(ExtraLineSpacingComboBox,IntToStr(NewVal));
       for a:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a]<>nil then
           PreviewEdits[a].ExtraLineSpacing:=NewVal;
-    end;
-    if Sender=GutterWidthComboBox then begin
+    end
+    else if Sender=GutterWidthComboBox then begin
       NewVal:=StrToIntDef(GutterWidthComboBox.Text
         ,PreviewEdits[1].Gutter.Width);
       SetComboBoxText(GutterWidthComboBox,IntToStr(NewVal));
       for a:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a]<>nil then
           PreviewEdits[a].Gutter.Width:=NewVal;
-    end;
-    if Sender=RightMarginComboBox then begin
+    end
+    else if Sender=RightMarginComboBox then begin
       NewVal:=StrToIntDef(RightMarginComboBox.Text
         ,PreviewEdits[1].RightEdge);
       SetComboBoxText(RightMarginComboBox,IntToStr(NewVal));
       for a:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[a]<>nil then
           PreviewEdits[a].RightEdge:=NewVal;
+    end
+    // color
+    else if Sender=ColorSchemeComboBox then begin
+      if Box.Items.IndexOf(Box.Text)<0 then begin
+        SetComboBoxText(Box,EditorOpts.ColorScheme);
+      end else begin
+        if Box.Text<>EditorOpts.ColorScheme then begin
+          EditorOpts.ColorScheme:=Box.Text;
+          SetComboBoxText(Box,EditorOpts.ColorScheme);
+          EditorOpts.ReadAttribute(EditorOpts.TextBlockElement);
+          EditorOpts.ReadAttribute(EditorOpts.ExecutionPointElement);
+          EditorOpts.ReadAttribute(EditorOpts.EnabledBreakPointElement);
+          EditorOpts.ReadAttribute(EditorOpts.DisabledBreakPointElement);
+          EditorOpts.ReadAttribute(EditorOpts.ErrorLineElement);
+          EditorOpts.GetHighlighterSettings(PreviewPasSyn);
+          ShowCurAttribute;
+        end;
+      end;
     end;
   end;
 end;
@@ -2616,7 +2672,16 @@ begin
     Width:=100;
     Height:=16;
     Text:=EditorOpts.ColorScheme;
-    Enabled:=false;
+    with Items do begin
+      BeginUpdate;
+      Add('Default');
+      Add('Twilight');
+      EndUpdate;
+    end;
+    SetComboBoxText(ColorSchemeComboBox,EditorOpts.ColorScheme);
+    OnChange:=@ComboBoxOnChange;
+    OnKeyDown:=@ComboBoxOnKeyDown;
+    OnExit:=@ComboBoxOnExit;
     Show;
   end;
 
