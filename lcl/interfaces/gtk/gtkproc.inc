@@ -1515,6 +1515,23 @@ begin
     gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
 end;
 
+procedure AccelerateButton(const Widget : Pointer; const Msg : TLMShortCut);
+var GDKModifier : integer;
+    GDKKey : word;
+begin
+  if Msg.OldKey <> 0 then
+    gtk_widget_remove_accelerators(Widget, 'clicked', false);
+  { Map the shift states }
+  GDKModifier:= 0;
+  if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
+  if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
+  if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
+  GDKKey:= VK2GDK(Msg.NewKey);
+  { Set the accelerator }
+  gtk_widget_add_accelerator(Widget, 'clicked',
+    gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
+end;
+
 {------------------------------------------------------------------------------
   procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
     var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
@@ -2533,6 +2550,63 @@ begin
     Result := gdk_fontset_load('-*-fixed-*-*-*-*-*-120-*-*-*-*-*-*');
 end;
 
+Function DeleteAmpersands(var Str : String) : Longint;
+var
+  I : Integer;
+  Tmp : String;
+begin
+  I := 1;
+  Result := -1;
+  SetLength(Tmp,0);
+  While I <= Length(Str) do
+    Case Str[I] of
+      '&' :
+         If I + 1 <= Length(Str) then begin
+           If Str[I+1] = '&' then begin
+             Inc(I,2);
+             Tmp := Tmp + '&';
+           end
+           else begin
+             If Result  < 0 then
+               Result := Length(Tmp) + 1;
+             Inc(I,1);
+           end;
+         end
+         else
+           Inc(I,1);
+      else begin
+        Tmp := Tmp + Str[I];
+        Inc(I,1);
+      end;
+    end;
+  SetLength(Str,0);
+  Str := Tmp;
+end;
+
+Function Ampersands2Underscore(var Str : PChar) : Longint;
+var
+  I, L : Longint;
+  AStr : AnsiString;
+begin
+  Result := -1;
+  Try
+    L := StrLen(Str);
+    SetLength(AStr, L);
+    For I := 0 to L do
+      AStr[I + 1] := Str[I];
+    Result := DeleteAmpersands(AStr);
+    If Result <> -1 then
+      Insert('_', AStr, Result);
+    if Str <> nil then begin
+      For I := 0 to L do
+        Str[I] := #0;
+      For I := 0 to Length(AStr) do
+        Str[I] := AStr[I+1]
+    end;
+  except
+    Assert(False, Format('trace: [Ampersands2Underscore] unknown error occured',[]));
+  end;
+end;
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -2541,6 +2615,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.76  2002/08/27 06:40:51  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.75  2002/08/24 12:55:00  lazarus
   MG: fixed mouse capturing, OI edit focus
 
