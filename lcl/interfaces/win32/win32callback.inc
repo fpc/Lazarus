@@ -434,6 +434,7 @@ Begin
             idFrom := SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
           end;
         end;
+        Win32PosToLCLPos(OwnerObject, XPos, YPos);
       End;
     End;
     WM_PAINT:
@@ -641,6 +642,9 @@ end;
 
 {
   $Log$
+  Revision 1.48  2003/08/11 20:18:46  mattias
+  fixed position of control in TGroupBox from Micha
+
   Revision 1.47  2003/08/11 18:10:41  mattias
   fixed combobox height from Micha
 

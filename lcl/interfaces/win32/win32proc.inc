@@ -709,6 +709,41 @@ Begin
   Result := GetProp(Control, 'AccelKey');
 End;
 
+Procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top, Width, Height: Integer);
+var
+  TM: TextMetricA;
+  DC: HDC;
+  Handle: HWND;
+Begin
+  if Sender = nil then exit;
+  If (TControl(Sender).Parent Is TCustomGroupBox) Then
+  Begin
+    Handle := TControl(Sender).Parent.Handle;
+    DC := GetDC(Handle);
+    GetTextMetrics(DC, TM);
+    Top := Top + TM.TMHeight;
+    ReleaseDC(Handle, DC);
+  End;
+End;
+
+Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
+var
+  TM: TextMetricA;
+  DC: HDC;
+  Handle: HWND;
+Begin
+  if Sender = nil then exit;
+  // check for groupbox client pos
+  If (TControl(Sender).Parent Is TCustomGroupBox) Then
+  Begin
+    Handle := TControl(Sender).Parent.Handle;
+    DC := GetDC(Handle);
+    GetTextMetrics(DC, TM);
+    Top := Top - TM.TMHeight;
+    ReleaseDC(Handle, DC);
+  End;
+End;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -717,6 +752,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.17  2003/08/11 20:18:46  mattias
+  fixed position of control in TGroupBox from Micha
+
   Revision 1.16  2003/07/28 06:42:42  mattias
   removed debuggging SetName, Patch from Karl Brandt
 

@@ -550,7 +550,10 @@ Begin
           If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then
           Begin
             If Handle <> 0 Then
+            begin
+              RemoveProp(Handle, 'Lazarus');
               DestroyWindow(Handle);
+            end;
           End
           Else If Sender Is TMenu Then
           Begin
@@ -1612,18 +1615,10 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
 Var
-  DC: HDC;
   Handle: HWND;
-  TM: TEXTMETRICA;
 Begin
   Handle := (Sender As TWinControl).Handle;
-  If (TControl(Sender).Parent Is TCustomGroupBox) Then
-  Begin
-    DC := GetDC(Handle);
-    GetTextMetrics(DC, TM);
-    Top := Top + TM.TMHeight;
-    ReleaseDC(Handle, DC);
-  End;
+  LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
   If Handle <> HWND(Nil) Then
     MoveWindow(Handle, Left, Top, Width, Height, True)
 End;
@@ -1760,6 +1755,7 @@ Begin
     Top := TControl(Sender).Top;
     Width := TControl(Sender).Width;
     Assert(False, 'Trace:Setting dimentions');
+    LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
   End
   Else If (Sender Is TMenuItem) Then
   Begin
@@ -1945,7 +1941,7 @@ Begin
     End;}
     csLabel:
     Begin
-      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, (Sender As TControl).Left, (Sender As TControl).Top, (Sender As TControl).Width, (Sender As TControl).Height, FParentWindow, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, Left, Top, Width, Height, FParentWindow, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
     End;
     csListView:
@@ -2734,6 +2730,9 @@ End;
 
 {
   $Log$
+  Revision 1.82  2003/08/11 20:18:46  mattias
+  fixed position of control in TGroupBox from Micha
+
   Revision 1.81  2003/08/09 16:30:34  mattias
   fixed LM_ShowModal for win32 intf from Karl
 
