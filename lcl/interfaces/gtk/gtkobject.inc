@@ -6137,7 +6137,7 @@ end;
 procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
 const
   TestString = '{Am|g_}';
-  AVGBuffer : Pchar =
+  AVGBuffer: Pchar =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
 var
   XT : TSize;
@@ -6163,20 +6163,25 @@ begin
       else begin
         FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
         with DCTextMetric do begin
+          IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
           gdk_text_extents(UseFont, TestString,
             length(TestString), @lbearing, @rBearing, @dummy,
             @TextMetric.tmAscent, @TextMetric.tmDescent);
           GetTextExtentPoint(HDC(DC), AVGBuffer, StrLen(AVGBuffer), XT);
-          XT.cX := XT.cX div StrLen(AVGBuffer);
+          if not IsDoubleByteChar then
+            XT.cX := XT.cX div StrLen(AVGBuffer)
+          else
+            // Quick hack for double byte char fonts
+            XT.cX := XT.cX div (StrLen(AVGBuffer) div 2);
           TextMetric.tmHeight := XT.cY;
           TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
           TextMetric.tmAveCharWidth :=  XT.cX;
-          if TextMetric.tmAveCharWidth<2 then TextMetric.tmAveCharWidth:=2;
+          if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
           TextMetric.tmMaxCharWidth :=
             Max(gdk_char_width(UseFont, 'W'),
                 gdk_char_width(UseFont, 'M')); // temp hack
-          if TextMetric.tmMaxCharWidth<2 then
-            TextMetric.tmMaxCharWidth:=2;
+          if TextMetric.tmMaxCharWidth<1 then
+            TextMetric.tmMaxCharWidth:=1;
           If UnRef then
             GDK_Font_UnRef(UseFont);
         end;
@@ -6689,6 +6694,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.295  2002/12/05 22:16:30  mattias
+  double byte char font started
+
   Revision 1.294  2002/12/04 20:39:15  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 
