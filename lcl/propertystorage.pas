@@ -116,8 +116,12 @@ Type
     property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
   end;
 
+  { TCustomPropertyStorage }
+
   TCustomPropertyStorage = Class (TComponent)
   private
+    FOnRestoringProperties: TNotifyEvent;
+    FOnSavingProperties: TNotifyEvent;
     FStoredValues: TStoredValues;
     FActive: Boolean;
     FLinks: TList;
@@ -161,7 +165,9 @@ Type
     property Root: TComponent read GetRoot;
     property Active: Boolean read FActive write FActive default True;
     property StoredValues: TStoredValues read FStoredValues write SetStoredValues;
+    property OnSavingProperties : TNotifyEvent read FOnSavingProperties write FOnSavingProperties;
     property OnSaveProperties : TNotifyEvent read FOnSaveProperties write FOnSaveProperties;
+    property OnRestoringProperties : TNotifyEvent read FOnRestoringProperties  write FOnRestoringProperties;
     property OnRestoreProperties : TNotifyEvent read FOnRestoreProperties  write FOnRestoreProperties;
   end;
   
@@ -525,8 +531,10 @@ begin
     begin
     StorageNeeded(False);
     Try
+      if Assigned(FOnSavingProperties) then
+        FOnSavingProperties(Self);
       SaveProperties;
-      FStoredValues.SaveVAlues;
+      FStoredValues.SaveValues;
       NotifyLinks(poSave);
       if Assigned(FOnSaveProperties) then
         FOnSaveProperties(Self);
@@ -542,12 +550,17 @@ begin
   if Active then begin
     FSaved := False;
     StorageNeeded(True);
-    FStoredValues.RestoreValues;
-    RestoreProperties;
-    NotifyLinks(poRestore);
-    FRestored:=True;
-    if Assigned(FOnRestoreProperties) then
-      FOnRestoreProperties(Self);
+    try
+      if Assigned(FOnRestoringProperties) then
+        FOnRestoringProperties(Self);
+      FStoredValues.RestoreValues;
+      RestoreProperties;
+      NotifyLinks(poRestore);
+      FRestored:=True;
+      if Assigned(FOnRestoreProperties) then
+        FOnRestoreProperties(Self);
+    finally
+    end;
   end;
 end;
 

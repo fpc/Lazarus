@@ -63,7 +63,9 @@ Type
     property IniFileName;
     property IniSection;
     property Active;
+    property OnSavingProperties;
     property OnSaveProperties;
+    property OnRestoringProperties;
     property OnRestoreProperties;
   end;
 

@@ -64,7 +64,9 @@ type
     property FileName;
     property RootNodePath;
     property Active;
+    property OnSavingProperties;
     property OnSaveProperties;
+    property OnRestoringProperties;
     property OnRestoreProperties;
   end;
 {$ENDIF not VER1_0}
