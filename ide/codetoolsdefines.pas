@@ -598,6 +598,7 @@ var InputFileDlg: TInputFileDialog;
   UnitSearchPath, UnitLinkList, DefaultFPCSrcDir, DefaultCompiler,
   CompilerPath, FPCSrcDir: string;
   DirTemplate, FPCTemplate, FPCSrcTemplate: TDefineTemplate;
+  TargetOS, TargetProcessor: string;
 begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
@@ -637,9 +638,12 @@ begin
     CompilerPath:=FileNames[1];
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
+    TargetOS:='';
+    TargetProcessor:='';
     if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
       FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                 CreateCompilerTestPascalFilename,UnitSearchPath,
+                                TargetOS,TargetProcessor,
                                 CodeToolsOpts)
     else
       FPCTemplate:=nil;
@@ -651,7 +655,8 @@ begin
     if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
     and (UnitSearchPath<>'') then
       FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                      UnitSearchPath, 'ppu', false, UnitLinkList, CodeToolsOpts)
+                      UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
+                      UnitLinkList, CodeToolsOpts)
     else
       FPCSrcTemplate:=nil;
 
@@ -688,6 +693,7 @@ procedure TCodeToolsDefinesEditor.InsertFPCompilerDefinesTemplateMenuItemClick(
 var InputFileDlg: TInputFileDialog;
   s, CompilerPath, DefaultCompiler: string;
   FPCTemplate: TDefineTemplate;
+  TargetOS, TargetProcessor: string;
 begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
@@ -714,6 +720,7 @@ begin
     
     FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                            CreateCompilerTestPascalFilename,s,
+                                           TargetOS,TargetProcessor,
                                            CodeToolsOpts);
     if FPCTemplate=nil then exit;
     FPCTemplate.Name:='Free Pascal Compiler ('+CompilerPath+')';
@@ -725,6 +732,7 @@ procedure TCodeToolsDefinesEditor.InsertFPCSourceDirDefinesTemplateMenuItemClick
   (Sender: TObject);
 var InputFileDlg: TInputFileDialog;
   UnitSearchPath, UnitLinks, DefaultCompiler, CompilerPath, FPCSrcDir: string;
+  TargetOS, TargetProcessor: string;
   ResetAllTemplate, FPCSrcTemplate, FPCSrcDirTemplate,
   FPCTemplate: TDefineTemplate;
 begin
@@ -757,9 +765,11 @@ begin
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
 
+    TargetOS:='';
+    TargetProcessor:='';
     FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                CreateCompilerTestPascalFilename,UnitSearchPath,
-                               CodeToolsOpts);
+                               TargetOS,TargetProcessor,CodeToolsOpts);
     if FPCTemplate=nil then begin
       writeln('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
       exit;
@@ -771,7 +781,8 @@ begin
     writeln('  FPCSrcDir="',FPCSrcDir,'"');
     UnitSearchPath:='';
     FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                        UnitSearchPath, 'ppu', false, UnitLinks, CodeToolsOpts);
+                        UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
+                        UnitLinks, CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
       writeln('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
       FPCTemplate.Free;

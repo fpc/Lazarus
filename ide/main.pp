@@ -7880,6 +7880,7 @@ var CompilerUnitSearchPath, CompilerUnitLinks: string;
   c: integer;
   AFilename: string;
   UnitLinksChanged: boolean;
+  TargetOS, TargetProcessor: string;
 begin
   FOpenEditorsOnCodeToolChange:=false;
   
@@ -7922,9 +7923,11 @@ begin
   UpdateEnglishErrorMsgFilename;
   with CodeToolBoss.DefinePool do begin
     // start the compiler and ask for his settings
+    TargetOS:='';
+    TargetProcessor:='';
     ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,'',
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
-                       CodeToolsOpts);
+                       TargetOS,TargetProcessor,CodeToolsOpts);
     AddTemplate(ADefTempl,false,
       'NOTE: Could not create Define Template for Free Pascal Compiler');
     CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
@@ -7940,6 +7943,7 @@ begin
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath,
             CodeToolBoss.GetCompiledSrcExtForDirectory(''),
+            TargetOS,TargetProcessor,
             not UnitLinksChanged,CompilerUnitLinks,
             CodeToolsOpts);
 
@@ -7996,6 +8000,7 @@ var
   CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
   CompilerUnitSearchPath, CompilerUnitLinks: string;
   CurOptions: String;
+  TargetOS, TargetProcessor: string;
   UnitLinksValid: boolean;
 begin
   if Project1.CompilerOptions.TargetOS<>'' then
@@ -8021,7 +8026,7 @@ begin
   CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CurOptions,
                     CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
-                    CodeToolsOpts);
+                    TargetOS,TargetProcessor,CodeToolsOpts);
 
   if CompilerTemplate<>nil then begin
     CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
@@ -8041,6 +8046,7 @@ begin
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
       CompilerUnitSearchPath,
       CodeToolBoss.GetCompiledSrcExtForDirectory(''),
+      TargetOS,TargetProcessor,
       UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
     if FPCSrcTemplate<>nil then begin
       CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
@@ -9794,6 +9800,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.654  2003/10/08 08:22:32  mattias
+  improved FPC Src template for new chaotic FPC sources
+
   Revision 1.653  2003/10/07 14:54:58  mattias
   moved some lazarus resource code to LResources.pp
 

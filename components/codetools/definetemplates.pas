@@ -80,12 +80,12 @@ const
   VirtualDirectory='VIRTUALDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..11] of shortstring =(
-      'linux', 'freebsd', 'win32', 'go32v1', 'go32v2', 'beos', 'os2', 'amiga',
-      'atari', 'sunos', 'palmos'
+  FPCOperatingSystemNames: array[1..14] of shortstring =(
+      'linux', 'freebsd', 'openbsd', 'netbsd', 'win32', 'go32v1', 'go32v2',
+      'beos', 'os2', 'amiga', 'atari', 'sunos', 'palmos', 'qnx'
     );
   FPCOperatingSystemAlternativeNames: array[1..1] of shortstring =(
-      'unix'
+      'unix' // see GetDefaultSrcOSForTargetOS
     );
   FPCProcessorNames: array[1..3] of shortstring =(
       'i386', 'powerpc', 'm68k'
@@ -357,9 +357,11 @@ type
     // FPC templates
     function CreateFPCTemplate(const PPC386Path, PPCOptions,
                                TestPascalFile: string;
-                               var UnitSearchPath: string;
+                               var UnitSearchPath, TargetOS,
+                               TargetProcessor: string;
                                Owner: TObject): TDefineTemplate;
-    function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath, PPUExt: string;
+    function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
+                          DefaultTargetOS, DefaultProcessorName: string;
                           UnitLinkListValid: boolean; var UnitLinkList: string;
                           Owner: TObject): TDefineTemplate;
     function CreateFPCCommandLineDefines(const Name, CmdLine: string;
@@ -407,6 +409,7 @@ function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
+function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 
 
 implementation
@@ -417,6 +420,7 @@ type
   public
     UnitName: string;
     Filename: string;
+    DefaultMacroCount: integer;
   end;
 
 // some useful functions
@@ -518,6 +522,17 @@ begin
     end else
       break;
   end;
+end;
+
+function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
+begin
+  Result:='';
+  if (AnsiCompareText(TargetOS,'linux')=0)
+  or (AnsiCompareText(TargetOS,'freebsd')=0)
+  or (AnsiCompareText(TargetOS,'netbsd')=0)
+  or (AnsiCompareText(TargetOS,'openbsd')=0)
+  then
+    Result:='unix';
 end;
 
 { TDefineTemplate }
@@ -2435,7 +2450,8 @@ end;
 
 function TDefinePool.CreateFPCTemplate(
   const PPC386Path, PPCOptions, TestPascalFile: string;
-  var UnitSearchPath: string; Owner: TObject): TDefineTemplate;
+  var UnitSearchPath, TargetOS, TargetProcessor: string;
+  Owner: TObject): TDefineTemplate;
 // create symbol definitions for the freepascal compiler
 // To get reliable values the compiler itself is asked for
 var
@@ -2530,12 +2546,16 @@ var
 var CmdLine: string;
   i, OutLen, LineStart: integer;
   TheProcess : TProcess;
-  OutputLine, Buf, TargetOS, SrcOS, TargetProcessor: String;
+  OutputLine, Buf: String;
   NewDefTempl: TDefineTemplate;
+  SrcOS: string;
 begin
   //writeln('CreateFPCTemplate ',PPC386Path,' ',PPCOptions);
   Result:=nil;
   UnitSearchPath:='';
+  TargetOS:='';
+  SrcOS:='';
+  TargetProcessor:='';
   if (PPC386Path='') or (not FileIsExecutable(PPC386Path)) then exit;
   LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
@@ -2678,14 +2698,16 @@ begin
 end;
 
 function TDefinePool.CreateFPCSrcTemplate(
-  const FPCSrcDir, UnitSearchPath, PPUExt: string;
+  const FPCSrcDir, UnitSearchPath, PPUExt, DefaultTargetOS,
+  DefaultProcessorName: string;
   UnitLinkListValid: boolean; var UnitLinkList: string;
   Owner: TObject): TDefineTemplate;
 var
   Dir, TargetOS, SrcOS, TargetProcessor, UnitLinks,
   IncPathMacro: string;
-  DS: char;
+  DS: char; // dir separator
   UnitTree: TAVLTree; // tree of TUnitNameLink
+  DefaultSrcOS: string;
 
   procedure GatherUnits; forward;
 
@@ -2731,12 +2753,12 @@ var
     end;
     
     function BuildMacroFilename(const AFilename: string;
-      var SrcOSMacroUsed: boolean): string;
+      var DefaultMacroCount: integer): string;
     // replace Operating System and Processor Type with macros
     var DirStart, DirEnd, i: integer;
       DirName: string;
     begin
-      SrcOSMacroUsed:=false;
+      DefaultMacroCount:=0;
       Result:=copy(AFilename,length(FPCSrcDir)+1,
                    length(AFilename)-length(FPCSrcDir));
       DirStart:=1;
@@ -2754,6 +2776,8 @@ var
           for i:=Low(FPCOperatingSystemNames) to High(FPCOperatingSystemNames)
           do
             if FPCOperatingSystemNames[i]=DirName then begin
+              if AnsiCompareText(DirName,DefaultTargetOS)=0 then
+                inc(DefaultMacroCount);
               Result:=copy(Result,1,DirStart-1)+TargetOS+
                       copy(Result,DirEnd,length(Result)-DirEnd+1);
               inc(DirEnd,length(TargetOS)-length(DirName));
@@ -2765,16 +2789,19 @@ var
               to High(FPCOperatingSystemAlternativeNames)
           do
             if FPCOperatingSystemAlternativeNames[i]=DirName then begin
+              if AnsiCompareText(DirName,DefaultSrcOS)=0 then
+                inc(DefaultMacroCount);
               Result:=copy(Result,1,DirStart-1)+SrcOS+
                       copy(Result,DirEnd,length(Result)-DirEnd+1);
               inc(DirEnd,length(SrcOS)-length(DirName));
               DirName:=SrcOS;
-              SrcOSMacroUsed:=true;
               break;
             end;
           // replace processor type
           for i:=Low(FPCProcessorNames) to High(FPCProcessorNames) do
             if FPCProcessorNames[i]=DirName then begin
+              if AnsiCompareText(DirName,DefaultProcessorName)=0 then
+                inc(DefaultMacroCount);
               Result:=copy(Result,1,DirStart-1)+TargetProcessor+
                       copy(Result,DirEnd,length(Result)-DirEnd+1);
               inc(DirEnd,length(TargetProcessor)-length(DirName));
@@ -2797,8 +2824,8 @@ var
       AFilename, Ext, UnitName, MacroFileName: string;
       FileInfo: TSearchRec;
       NewUnitLink, OldUnitLink: TUnitNameLink;
-      SrcOSMacroUsed: boolean;
       i: integer;
+      DefaultMacroCount: integer;
     begin
       //writeln('Browse ',ADirPath);
       if ADirPath='' then exit;
@@ -2822,12 +2849,14 @@ var
               UnitName:=copy(UnitName,1,length(UnitName)-length(Ext));
               if UnitName<>'' then begin
                 OldUnitLink:=FindUnitLink(UnitName);
-                MacroFileName:=BuildMacroFileName(AFilename,SrcOSMacroUsed);
+                DefaultMacroCount:=0;
+                MacroFileName:=BuildMacroFileName(AFilename,DefaultMacroCount);
                 if OldUnitLink=nil then begin
                   // first unit with this name
                   NewUnitLink:=TUnitNameLink.Create;
                   NewUnitLink.UnitName:=UnitName;
                   NewUnitLink.FileName:=MacroFileName;
+                  NewUnitLink.DefaultMacroCount:=DefaultMacroCount;
                   UnitTree.Add(NewUnitLink);
                 end else begin
                   { there is another unit with this name
@@ -2841,23 +2870,38 @@ var
                      macro. And filenames without macros are always deleted if
                      there is a filename with a macro. (The filename without
                      macro is only used by the FPC team as a template source
-                     for the OS specific)
+                     for the OS specific).
+                     If there are several macro filenames for the same unit, the
+                     filename with the highest number of default values is used.
+                     
                      For example:
                        classes.pp can be found in several places
-                        <FPCSrcDir>/fcl/classes/os2/classes.pp
-                        <FPCSrcDir>/fcl/classes/linux/classes.pp
-                        <FPCSrcDir>/fcl/classes/win32/classes.pp
-                        <FPCSrcDir>/fcl/classes/go32v2/classes.pp
+                        <FPCSrcDir>/fcl/amiga/classes.pp
+                        <FPCSrcDir>/fcl/beos/classes.pp
+                        <FPCSrcDir>/fcl/qnx/classes.pp
+                        <FPCSrcDir>/fcl/sunos/classes.pp
+                        <FPCSrcDir>/fcl/template/classes.pp
                         <FPCSrcDir>/fcl/classes/freebsd/classes.pp
-                        <FPCSrcDir>/fcl/classes/template/classes.pp
+                        <FPCSrcDir>/fcl/classes/go32v2/classes.pp
+                        <FPCSrcDir>/fcl/classes/linux/classes.pp
+                        <FPCSrcDir>/fcl/classes/netbsd/classes.pp
+                        <FPCSrcDir>/fcl/classes/openbsd/classes.pp
+                        <FPCSrcDir>/fcl/classes/os2/classes.pp
+                        <FPCSrcDir>/fcl/classes/win32/classes.pp
 
-                       This will result in a single filename:
+                       This means, there are two possible macro filenames:
+                        $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
                         $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
+                        
+                       Which one is taken, depends on your defaults. For linux:
+                        $(#FPCSrcDir)/fcl/classes/$(#TargetOS)/classes.pp
+                       will be taken.
                   }
                   if (FileNameMacroCount(OldUnitLink.Filename)=0)
-                  or (SrcOSMacroUsed) then begin
+                  or (OldUnitLink.DefaultMacroCount<DefaultMacroCount) then begin
                     // old filename has no macros -> take the macro filename
                     OldUnitLink.Filename:=MacroFileName;
+                    OldUnitLink.DefaultMacroCount:=DefaultMacroCount;
                   end;
                 end;
               end;
@@ -2958,6 +3002,8 @@ begin
   SrcPathMacro:='$('+ExternalMacroStart+'SrcPath)';
   UnitLinks:=ExternalMacroStart+'UnitLinks';
   UnitTree:=nil;
+  DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
+
 
   Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
      Format(ctsFreePascalSourcesPlusDesc,['RTL, FCL, Packages, Compiler']),
@@ -3041,6 +3087,7 @@ begin
     IncPathMacro
     +';'+Dir+'fcl'+DS+'inc'+DS
     +';'+Dir+'fcl'+DS+SrcOS+DS
+    +';'+Dir+'fcl'+DS+'classes'+DS
     ,da_DefineRecurse));
   FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
   FCLDir.AddChild(FCLDBDir);
