@@ -938,6 +938,16 @@ begin
       if FaOwner<>nil then
         TSourceNotebook(FaOwner).AddJumpPointClicked(Self);
     end;
+    
+  ecCopy:
+    begin
+      if (not FEditor.SelAvail) then begin
+        // nothing selected
+        if EditorOpts.CopyWordAtCursorOnCopyNone then begin
+          FEditor.SetSelWord;
+        end;
+      end;
+    end;
 
   else
     if (CurCompletionControl<>nil)
