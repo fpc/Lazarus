@@ -765,7 +765,7 @@ begin
   if (TargetFilename <> '') then begin
     Result:=ExtractFilePath(MainSourceFileName)+TargetFilename;
   end else begin
-    Result:=ExtractFileNameOnly(MainSourceFileName);
+    Result:=lowercase(ExtractFileNameOnly(MainSourceFileName));
     if Result<>'' then begin
       Result:=ExtractFilePath(MainSourceFileName)+Result;
       if fTargetOS = 'win32' then
