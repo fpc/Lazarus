@@ -58,6 +58,11 @@ type
     );
   TPkgOpenFlags = set of TPkgOpenFlag;
 
+  TPkgCompileFlag = (
+    pcfCompileAll
+    );
+  TPkgCompileFlags = set of TPkgCompileFlag;
+
   TBasePkgManager = class(TComponent)
   public
     procedure ConnectMainBarEvents; virtual; abstract;
@@ -78,6 +83,9 @@ type
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
+    procedure DoShowPackageGraphPathList(PathList: TList); virtual; abstract;
+    function DoCompilePackage(APackage: TLazPackage;
+                      Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
   end;
 
 var

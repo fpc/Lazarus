@@ -51,6 +51,9 @@ type
   TOnSavePackage =
     function(Sender: TObject; APackage: TLazPackage;
              SaveAs: boolean): TModalResult of object;
+  TOnCompilePackage =
+    function(Sender: TObject; APackage: TLazPackage;
+             CompileAll: boolean): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject;
              const Params: TAddToPkgResult): TModalResult  of object;
@@ -90,6 +93,7 @@ type
     procedure AddBitBtnClick(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
+    procedure CompileAllClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
@@ -138,6 +142,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoSave(SaveAs: boolean);
+    procedure DoCompile(CompileAll: boolean);
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -148,6 +153,7 @@ type
   TPackageEditors = class
   private
     FItems: TList; // list of TPackageEditorForm
+    FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
@@ -172,6 +178,8 @@ type
     function CreateNewFile(Sender: TObject;
                            const Params: TAddToPkgResult): TModalResult;
     function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
+    function CompilePackage(APackage: TLazPackage;
+                            CompileAll: boolean): TModalResult;
     procedure UpdateAllEditors;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
@@ -185,6 +193,8 @@ type
                        read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
     property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor write FOnFreeEditor;
     property OnSavePackage: TOnSavePackage read FOnSavePackage write FOnSavePackage;
+    property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
+                                                 write FOnCompilePackage;
   end;
   
 var
@@ -336,6 +346,7 @@ begin
   AddPopupMenuItem('Save',@SaveBitBtnClick,SaveBitBtn.Enabled);
   AddPopupMenuItem('Save As',@SaveAsClick,not LazPackage.AutoCreated);
   AddPopupMenuItem('Compile',@CompileBitBtnClick,CompileBitBtn.Enabled);
+  AddPopupMenuItem('Compile All',@CompileAllClick,CompileBitBtn.Enabled);
   AddPopupMenuItem('Add',@AddBitBtnClick,AddBitBtn.Enabled);
   AddPopupMenuItem('Remove',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
   AddPopupMenuItem('Install',@InstallBitBtnClick,InstallBitBtn.Enabled);
@@ -723,9 +734,14 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.CompileAllClick(Sender: TObject);
+begin
+  DoCompile(true);
+end;
+
 procedure TPackageEditorForm.CompileBitBtnClick(Sender: TObject);
 begin
-
+  DoCompile(false);
 end;
 
 procedure TPackageEditorForm.CompilerOptionsBitBtnClick(Sender: TObject);
@@ -1340,6 +1356,14 @@ begin
   UpdateStatusBar;
 end;
 
+procedure TPackageEditorForm.DoCompile(CompileAll: boolean);
+begin
+  PackageEditors.CompilePackage(LazPackage,CompileAll);
+  UpdateButtons;
+  UpdateTitle;
+  UpdateStatusBar;
+end;
+
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1456,7 +1480,15 @@ end;
 function TPackageEditors.SavePackage(APackage: TLazPackage;
   SaveAs: boolean): TModalResult;
 begin
-  if Assigned(OnSavePackage) then Result:=OnSavePackage(Self,APackage,SaveAs);
+  if Assigned(OnSavePackage) then
+    Result:=OnSavePackage(Self,APackage,SaveAs);
+end;
+
+function TPackageEditors.CompilePackage(APackage: TLazPackage;
+  CompileAll: boolean): TModalResult;
+begin
+  if Assigned(OnCompilePackage) then
+    Result:=OnCompilePackage(Self,APackage,CompileAll);
 end;
 
 procedure TPackageEditors.UpdateAllEditors;

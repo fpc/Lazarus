@@ -329,11 +329,10 @@ begin
   end;
 
   // check if required package exists
-  if PackageGraph.FindNodeOfDependency(NewDependency,fpfSearchPackageEverywhere)
-    =nil then
-  begin
+  if not PackageGraph.DependencyExists(NewDependency,fpfSearchPackageEverywhere)
+  then begin
     MessageDlg('Package not found',
-      'The packagename "'+NewPckName+'" was not found.'#13
+      'The dependency "'+NewDependency.AsString+'" was not found.'#13
       +'Please choose an existing package.',
       mtError,[mbCancel],0);
     exit;

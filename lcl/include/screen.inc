@@ -339,5 +339,18 @@ begin
   end;
 end;
 
+procedure TScreen.MoveFormToFront(ACustomForm: TCustomForm);
+begin
+  FCustomForms.Remove(ACustomForm);
+  FCustomForms.Insert(0, ACustomForm);
+  FCustomFormsZOrdered.Remove(ACustomForm);
+  FCustomFormsZOrdered.Insert(0, ACustomForm);
+  if ACustomForm is TForm then
+  begin
+    Screen.FFormList.Remove(ACustomForm);
+    Screen.FFormList.Insert(0, ACustomForm);
+  end;
+end;
+
 // included by forms.pp
 

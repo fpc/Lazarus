@@ -56,6 +56,8 @@ type
   TPkgManager = class(TBasePkgManager)
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
+    function OnPackageEditorCompilePackage(Sender: TObject;
+      APackage: TLazPackage; CompileAll: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                    const Params: TAddToPkgResult): TModalResult;
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
@@ -106,6 +108,9 @@ type
     function DoShowPackageGraph: TModalResult;
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
     function DoCloseAllPackageEditors: TModalResult; override;
+    procedure DoShowPackageGraphPathList(PathList: TList); override;
+    function DoCompilePackage(APackage: TLazPackage;
+                              Flags: TPkgCompileFlags): TModalResult; override;
   end;
 
 implementation
@@ -143,6 +148,16 @@ end;
 procedure TPkgManager.MainIDEitmPkgPkgGraphClick(Sender: TObject);
 begin
   DoShowPackageGraph;
+end;
+
+function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
+  APackage: TLazPackage; CompileAll: boolean): TModalResult;
+var
+  Flags: TPkgCompileFlags;
+begin
+  Flags:=[];
+  if CompileAll then Include(Flags,pcfCompileAll);
+  Result:=DoCompilePackage(APackage,Flags);
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
@@ -531,6 +546,7 @@ begin
   PackageEditors.OnGetUnitRegisterInfo:=@OnPackageEditorGetUnitRegisterInfo;
   PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
+  PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
 
   Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
@@ -875,6 +891,36 @@ begin
   Result:=mrOk;
 end;
 
+procedure TPkgManager.DoShowPackageGraphPathList(PathList: TList);
+begin
+  if DoShowPackageGraph<>mrOk then exit;
+  PackageGraphExplorer.ShowPath(PathList);
+end;
+
+function TPkgManager.DoCompilePackage(APackage: TLazPackage;
+  Flags: TPkgCompileFlags): TModalResult;
+var
+  PathList: TList;
+begin
+  Result:=mrCancel;
+  if APackage.AutoCreated then exit;
+
+  // check for broken dependencies
+  PathList:=PackageGraph.FindBrokenDependencyPath(APackage);
+  if PathList<>nil then begin
+    DoShowPackageGraphPathList(PathList);
+    Result:=MessageDlg('Broken dependency',
+      'A required packages was not found. See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  
+  // check for circle dependencies
+  
+
+  Result:=mrOk;
+end;
+
 function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;
 begin
   if APackage.Editor<>nil then begin
@@ -898,7 +944,6 @@ begin
         if CurPackage.Modified and (not CurPackage.ReadOnly)
         and (not (lpfSkipSaving in CurPackage.Flags)) then begin
           Result:=DoSavePackage(CurPackage,Flags);
-writeln('TPkgManager.DoSaveAllPackages A ',CurPackage.IDAsString,' ',Result=mrOk);
           if Result=mrIgnore then
             CurPackage.Flags:=CurPackage.Flags+[lpfSkipSaving];
           if Result<>mrOk then exit;

@@ -245,6 +245,7 @@ type
     property RequiredPackage: TLazPackage read FRequiredPackage write SetRequiredPackage;
     property LoadPackageResult: TLoadPackageResult read FLoadPackageResult write SetLoadPackageResult;
   end;
+  PPkgDependency = ^TPkgDependency;
   
   
   { TPkgCompilerOptions }

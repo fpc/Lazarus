@@ -879,6 +879,15 @@ begin
   end;
 end;
 
+function TTreeNode.IndexOfText(const NodeText: string): Integer;
+begin
+  Result:=Count-1;
+  while Result>=0 do begin
+    if FItems[Result].Text=NodeText then exit;
+    dec(Result);
+  end;
+end;
+
 function TTreeNode.GetCount: Integer;
 //var Node: TTreeNode;
 begin

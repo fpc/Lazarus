@@ -1157,6 +1157,7 @@ type
     function GetPrevVisible: TTreeNode;
     function HasAsParent(AValue: TTreeNode): Boolean;
     function IndexOf(AValue: TTreeNode): Integer;
+    function IndexOfText(const NodeText: string): Integer;
     procedure MakeVisible;
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); virtual;
     procedure MultiSelectGroup;
@@ -1757,6 +1758,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2003/04/16 17:20:24  mattias
+  implemented package check broken dependency on compile
+
   Revision 1.72  2003/04/14 18:03:48  mattias
   implemented inherited compiler options
 

@@ -85,6 +85,7 @@ type
     procedure UpdatePackageAdded(Pkg: TLazPackage);
     procedure SelectPackage(Pkg: TLazPackage);
     function FindMainNodeWithText(const s: string): TTreeNode;
+    procedure ShowPath(PathList: TList);
   public
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
   end;
@@ -661,6 +662,48 @@ begin
   if PkgTreeView.Items.Count=0 then exit;
   Result:=PkgTreeView.Items[0];
   while (Result<>nil) and (Result.Text<>s) do Result:=Result.GetNextSibling;
+end;
+
+procedure TPkgGraphExplorer.ShowPath(PathList: TList);
+var
+  AnObject: TObject;
+  CurNode, LastNode: TTreeNode;
+  i: Integer;
+  
+  procedure SelectChild(var Node: TTreeNode; const NodeText: string);
+  var
+    i: Integer;
+  begin
+    if Node=nil then
+      Node:=FindMainNodeWithText(NodeText)
+    else begin
+      Node.Expanded:=true;
+      i:=Node.IndexOfText(NodeText);
+      if i>=0 then
+        Node:=Node.Items[i]
+      else
+        Node:=nil;
+    end;
+  end;
+  
+begin
+  PkgTreeView.BeginUpdate;
+  CurNode:=nil;
+  LastNode:=nil;
+  for i:=0 to PathList.Count-1 do begin
+    AnObject:=TObject(PathList[i]);
+    LastNode:=CurNode;
+    if AnObject is TLazPackage then begin
+      SelectChild(CurNode,TLazPackage(AnObject).IDAsString);
+    end else if AnObject is TPkgDependency then begin
+      SelectChild(CurNode,TPkgDependency(AnObject).AsString);
+    end else
+      break;
+    if CurNode=nil then break;
+  end;
+  if CurNode<>nil then Lastnode:=CurNode;
+  PkgTreeView.Selected:=LastNode;
+  PkgTreeView.EndUpdate;
 end;
 
 initialization

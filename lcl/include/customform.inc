@@ -643,7 +643,9 @@ end;
 procedure TCustomForm.SetZOrder(Topmost: Boolean);
 begin
   if Parent=nil then begin
-    if TopMost and HandleAllocated then BringWindowToTop(Handle);
+    if TopMost and HandleAllocated then begin
+      BringWindowToTop(Handle);
+    end;
     exit;
   end;
   inherited SetZOrder(Topmost);
@@ -1131,14 +1133,9 @@ begin
   // update Screen object
   Screen.FActiveControl := Control;
   Screen.FActiveCustomForm := Self;
-  Screen.FCustomForms.Remove(Self);
-  Screen.FCustomForms.Insert(0, Self);
+  Screen.MoveFormToFront(Self);
   if Self is TForm then
-  begin
-    Screen.FActiveForm := TForm(Self);
-    Screen.FFormList.Remove(Self);
-    Screen.FFormList.Insert(0, Self);
-  end
+    Screen.FActiveForm := TForm(Self)
   else
     Screen.FActiveForm := nil;
     
@@ -1396,7 +1393,7 @@ begin
     EnableTaskWindows(WindowList);}
     if Screen.FSaveFocusedList.Count > 0 then
     begin
-      Screen.FFocusedForm := TCustoMForm(Screen.FSaveFocusedList.First);
+      Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
       Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
     end else
       Screen.FFocusedForm := nil;
@@ -1409,6 +1406,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2003/04/16 17:20:24  mattias
+  implemented package check broken dependency on compile
+
   Revision 1.94  2003/04/11 21:21:34  mattias
   implemented closing unneeded package
 

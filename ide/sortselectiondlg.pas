@@ -111,6 +111,7 @@ begin
   SortSelectionDialog.TheText:=TheText;
   SortSelectionDialog.PreviewSynEdit.Highlighter:=Highlighter;
   EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
+  SortSelectionDialog.UpdatePreview;
   Result:=SortSelectionDialog.ShowModal;
   if Result=mrOk then
     SortedText:=SortSelectionDialog.SortedText;
@@ -377,6 +378,7 @@ procedure TSortSelectionDialog.SortSelectionDialogClose(Sender: TObject;
 begin
   MiscellaneousOptions.SortSelDirection:=Direction;
   MiscellaneousOptions.SortSelDomain:=Domain;
+  MiscellaneousOptions.Save;
 end;
 
 procedure TSortSelectionDialog.SetDirection(const AValue: TSortDirection);
@@ -434,7 +436,8 @@ begin
   FIgnoreSpace:=true;
   FDirection:=sdAscending;
   FDomain:=sdLines;
-  
+  FStates:=FStates+[ssdPreviewNeedsUpdate,ssdSortedTextNeedsUpdate];
+
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,600,400);
   Caption:='Sort Selection';

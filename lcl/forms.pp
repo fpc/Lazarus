@@ -525,6 +525,7 @@ type
     function CustomFormIndex(AForm: TCustomForm): integer;
     function FormIndex(AForm: TForm): integer;
     function CustomFormZIndex(AForm: TCustomForm): integer;
+    procedure MoveFormToFront(ACustomForm: TCustomForm);
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;
