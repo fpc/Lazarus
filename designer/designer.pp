@@ -1120,14 +1120,25 @@ end;
 
 procedure TDesigner.DoDeleteComponent(AComponent: TComponent;
   FreeComponent: boolean);
+var
+  Hook: TPropertyEditorHook;
 begin
   PopupMenuComponentEditor:=nil;
   if TheFormEditor.FindComponent(AComponent)<>nil then begin
+    // unselect component
     ControlSelection.Remove(AComponent);
+    // call RemoveComponent handler
     if Assigned(FOnRemoveComponent) then
       FOnRemoveComponent(Self,AComponent);
+    // call component deleting handlers
+    Hook:=GetPropertyEditorHook;
+    if Hook<>nil then
+      Hook.ComponentDeleting(AComponent);
+    // delete component
     TheFormEditor.DeleteControl(AComponent,FreeComponent);
+    // unmark component
     DeletingComponents.Remove(AComponent);
+    // call ComponentDeleted handler
     if Assigned(FOnComponentDeleted) then
       FOnComponentDeleted(Self,AComponent);
   end;
