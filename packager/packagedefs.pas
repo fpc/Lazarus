@@ -133,6 +133,7 @@ type
   
   TPkgFile = class
   private
+    FAutoReferenceSourceDir: boolean;
     FComponentPriority: TComponentPriority;
     FComponents: TList; // list of TPkgComponent
     FDirectory: string;
@@ -141,9 +142,12 @@ type
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
     FPackage: TLazPackage;
+    FSourceDirectoryReferenced: boolean;
+    FSourceDirNeedReference: boolean;
     FUnitName: string;
     function GetComponents(Index: integer): TPkgComponent;
     function GetHasRegisterProc: boolean;
+    procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetRemoved(const AValue: boolean);
     procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
@@ -167,6 +171,7 @@ type
     function GetResolvedFilename: string;
     function HasRegisteredPlugins: boolean;
     function MakeSense: boolean;
+    procedure UpdateSourceDirectoryReference;
   public
     property Removed: boolean read FRemoved write SetRemoved;
     property Directory: string read FDirectory;
@@ -180,6 +185,9 @@ type
     property ComponentPriority: TComponentPriority read FComponentPriority
                                                    write FComponentPriority;
     property Components[Index: integer]: TPkgComponent read GetComponents;
+    property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
+    property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
+                                             write SetAutoReferenceSourceDir;
   end;
   
   
@@ -1056,8 +1064,10 @@ begin
   OldDirectory:=FDirectory;
   FDirectory:=ExtractFilePath(fFilename);
   if OldDirectory<>FDirectory then begin
-    LazPackage.SourceDirectories.RemoveFilename(OldDirectory);
-    LazPackage.SourceDirectories.AddFilename(FDirectory);
+    if FSourceDirNeedReference then begin
+      LazPackage.SourceDirectories.RemoveFilename(OldDirectory);
+      LazPackage.SourceDirectories.AddFilename(FDirectory);
+    end;
   end;
   UpdateUnitName;
 end;
@@ -1067,14 +1077,20 @@ begin
   Result:=pffHasRegisterProc in FFlags;
 end;
 
+procedure TPkgFile.SetAutoReferenceSourceDir(const AValue: boolean);
+begin
+  if FAutoReferenceSourceDir=AValue then exit;
+  FAutoReferenceSourceDir:=AValue;
+  if FSourceDirNeedReference then
+    UpdateSourceDirectoryReference;
+end;
+
 procedure TPkgFile.SetRemoved(const AValue: boolean);
 begin
   if FRemoved=AValue then exit;
   FRemoved:=AValue;
-  if FRemoved then
-    LazPackage.SourceDirectories.RemoveFilename(FDirectory)
-  else
-    LazPackage.SourceDirectories.AddFilename(FDirectory);
+  FSourceDirNeedReference:=(FileType=pftUnit) and not Removed;
+  UpdateSourceDirectoryReference;
 end;
 
 function TPkgFile.GetComponents(Index: integer): TPkgComponent;
@@ -1086,6 +1102,8 @@ procedure TPkgFile.SetFileType(const AValue: TPkgFileType);
 begin
   if FFileType=AValue then exit;
   FFileType:=AValue;
+  FSourceDirNeedReference:=(FFileType=pftUnit) and not Removed;
+  UpdateSourceDirectoryReference;
 end;
 
 procedure TPkgFile.SetFlags(const AValue: TPkgFileFlags);
@@ -1131,6 +1149,22 @@ begin
   Result:=Filename<>'';
 end;
 
+procedure TPkgFile.UpdateSourceDirectoryReference;
+begin
+  if (not AutoReferenceSourceDir) or (FPackage=nil) then exit;
+  if FSourceDirNeedReference then begin
+    if not SourceDirectoryReferenced then begin
+      LazPackage.SourceDirectories.AddFilename(FDirectory);
+      FSourceDirectoryReferenced:=true;
+    end;
+  end else begin
+    if SourceDirectoryReferenced then begin
+      LazPackage.SourceDirectories.RemoveFilename(FDirectory);
+      FSourceDirectoryReferenced:=false;
+    end;
+  end;
+end;
+
 constructor TPkgFile.Create(ThePackage: TLazPackage);
 begin
   Clear;
@@ -1146,10 +1180,14 @@ end;
 
 procedure TPkgFile.Clear;
 begin
+  AutoReferenceSourceDir:=false;
   FRemoved:=false;
   FFilename:='';
+  FDirectory:='';
   FFlags:=[];
   FFileType:=pftUnit;
+  FSourceDirectoryReferenced:=false;
+  FSourceDirNeedReference:=true;
   FreeThenNil(FComponents);
 end;
 
@@ -1945,11 +1983,24 @@ procedure TLazPackage.UpdateSourceDirectories;
 var
   Cnt: Integer;
   i: Integer;
+  PkgFile: TPkgFile;
 begin
-  fSourceDirectories.Clear;
   Cnt:=FFiles.Count;
-  for i:=0 to Cnt-1 do
-    fSourceDirectories.AddFilename(Files[i].Directory);
+  for i:=0 to Cnt-1 do begin
+    PkgFile:=Files[i];
+    PkgFile.FSourceDirectoryReferenced:=false;
+  end;
+  fSourceDirectories.Clear;
+  for i:=0 to Cnt-1 do begin
+    PkgFile:=Files[i];
+    PkgFile.AutoReferenceSourceDir:=true;
+    PkgFile.UpdateSourceDirectoryReference;
+    //writeln('TLazPackage.UpdateSourceDirectories A ',PkgFile.Filename,' ',
+    //  ' ',PkgFile.FileType=pftUnit,' ',PkgFile.Removed,
+    //  ' Need=',PkgFile.FSourceDirNeedReference,
+    //  ' Is=',PkgFile.FSourceDirectoryReferenced);
+  end;
+  //writeln('TLazPackage.UpdateSourceDirectories B ',IDAsString,' ',FFiles.Count,' "',fSourceDirectories.CreateSearchPathFromAllFiles,'"');
 end;
 
 procedure TLazPackage.VersionChanged(Sender: TObject);
@@ -2032,8 +2083,6 @@ begin
   FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
   FLicense:=XMLConfig.GetValue(Path+'License/Value','');
   FVersion.LoadFromXMLConfig(XMLConfig,Path+'Version/',FileVersion);
-  LoadFiles(Path+'Files/',FFiles);
-  LoadFlags(Path);
   FIconFile:=SwitchPathDelims(XMLConfig.GetValue(Path+'IconFile/Value',''),
                               PathDelimChanged);
   OutputStateFile:=SwitchPathDelims(
@@ -2041,6 +2090,9 @@ begin
                             PathDelimChanged);
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
+  LoadFiles(Path+'Files/',FFiles);
+  UpdateSourceDirectories;
+  LoadFlags(Path);
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,Self,false);
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
@@ -2304,9 +2356,10 @@ function TLazPackage.AddFile(const NewFilename, NewUnitName: string;
   CompPriorityCat: TComponentPriorityCategory): TPkgFile;
 begin
   Result:=FindRemovedPkgFile(NewFilename);
-  if Result=nil then
-    Result:=TPkgFile.Create(Self)
-  else begin
+  if Result=nil then begin
+    Result:=TPkgFile.Create(Self);
+  end else begin
+    Result.AutoReferenceSourceDir:=false;
     FRemovedFiles.Remove(Result);
     Result.Removed:=false;
   end;
@@ -2317,6 +2370,8 @@ begin
     Flags:=NewFlags;
     ComponentPriority:=ComponentPriorityNormal;
     ComponentPriority.Category:=CompPriorityCat;
+    Removed:=false;
+    AutoReferenceSourceDir:=true;
   end;
   FFiles.Add(Result);
   Modified:=true;
@@ -2329,15 +2384,17 @@ begin
   Result:=FindRemovedPkgFile(NewFilename);
   if Result=nil then begin
     Result:=TPkgFile.Create(Self);
-    Result.Removed:=false;
   end;
   with Result do begin
+    AutoReferenceSourceDir:=false;
     Filename:=NewFilename;
     UnitName:=NewUnitName;
     FileType:=NewFileType;
     Flags:=NewFlags;
     ComponentPriority:=ComponentPriorityNormal;
     ComponentPriority.Category:=CompPriorityCat;
+    Removed:=false;
+    AutoReferenceSourceDir:=true;
   end;
   FRemovedFiles.Add(Result);
 end;
