@@ -340,7 +340,7 @@ begin
     try
       // read the first 1024 bytes
       Len:=1024;
-      if Len>fs.Size then Len:=fs.Size;
+      if Len>fs.Size then Len:=integer(fs.Size);
       if Len>0 then begin
         SetLength(Buf,Len);
         fs.Read(Buf[1],length(Buf));
@@ -896,6 +896,9 @@ end;
 
 {
   $Log$
+  Revision 1.39  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.38  2003/12/21 13:58:06  mattias
   renamed DirectoryExists to DirPathExists to reduce ambigiousity
 

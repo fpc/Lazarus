@@ -172,13 +172,13 @@ begin
       ImageWidth := 0;
       ImageHeight := 0;
     end;
-    Perform(TB_SETBITMAPSIZE, 0, MakeLParam(ImageWidth, ImageHeight));
+    Perform(TB_SETBITMAPSIZE, 0, MakeLParam(Word(ImageWidth), Word(ImageHeight)));
 
     if ShowCaptions and ToolButtonVisible then Dec(NewHeight, FHeightMargin);
 
     if NewWidth <= 0 then NewWidth := 1;
     if NewHeight <= 0 then NewHeight := 1;
-    Perform(TB_SETBUTTONSIZE, 0, MakeLParam(NewWidth, NewHeight));
+    Perform(TB_SETBUTTONSIZE, 0, MakeLParam(Word(NewWidth), Word(NewHeight)));
     FButtonWidth := NewWidth;
     FButtonHeight := NewHeight;
   finally
@@ -1491,6 +1491,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.11  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

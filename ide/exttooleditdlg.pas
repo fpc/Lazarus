@@ -296,7 +296,7 @@ end;
 
 constructor TExternalToolOptionDlg.Create(AnOwner: TComponent);
 var
-  i: integer;
+  i: word;
   s: string;
 begin
   inherited Create(AnOwner);

@@ -159,9 +159,9 @@ var
 begin
   gtk_color_selection_get_color(colorsel, @colorArray[0]);
   Color^.pixel := 0;
-  Color^.red := Trunc(colorArray[0] * $FFFF);
-  Color^.green := Trunc(colorArray[1] * $FFFF);
-  Color^.blue := Trunc(colorArray[2] * $FFFF);
+  Color^.red := gushort(Trunc(colorArray[0] * $FFFF));
+  Color^.green := gushort(Trunc(colorArray[1] * $FFFF));
+  Color^.blue := gushort(Trunc(colorArray[2] * $FFFF));
 end;
 
 Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
@@ -1315,7 +1315,11 @@ end;
 {$IFDEF UNIX}
 {$DEFINE InitKeyboardTables}
 procedure InitKeyboardTables;
-  procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte; var AExtended, AHasMultiVK: Boolean);
+
+  procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte;
+    var AExtended, AHasMultiVK: Boolean);
+  var
+    ByteKey: Byte;
   begin
     AExtended := False;
     AHasMultiVK := False;
@@ -1323,12 +1327,13 @@ procedure InitKeyboardTables;
 
     case AKeySym of
       32..255: begin
-        case Chr(AKeySym) of // Normal ASCII chars
+        ByteKey:=Byte(AKeySym);
+        case Chr(ByteKey) of // Normal ASCII chars
           // only unshifted is needed for first match
           // 'A'..'Z',
           '0'..'9',
-          ' ':      AVKey := AKeySym;                       
-          'a'..'z': AVKey := AKeySym - Ord('a') + Ord('A');
+          ' ':      AVKey := ByteKey;
+          'a'..'z': AVKey := ByteKey - Ord('a') + Ord('A');
           '+': AVKey := VK_OEM_PLUS;
           ',': AVKey := VK_OEM_COMMA;
           '-': AVKey := VK_OEM_MINUS;
@@ -1815,6 +1820,7 @@ const
 
 var
   Display: Pointer;
+  ByteKey: Byte;
   n, m: Integer;
   LoKey, HiKey: Integer;
   KeySym: array[0..3] of TKeySym;
@@ -1846,7 +1852,8 @@ begin
     HasKey := False;
     for m := 0 to 3 do
     begin
-      KeySym[m] := XKeyCodeToKeysym(Display, n, m);
+      ByteKey:=Byte(n);
+      KeySym[m] := XKeyCodeToKeysym(Display, ByteKey, m);
       if (VKey = $FF) and (KeySym[m] <> 0)
       then begin
         HasKey := True;
@@ -1941,7 +1948,7 @@ begin
     end;
     MKeyCodeToVK[n] := VKey;
     if VKey <> $FF
-    then MVKeyInfo[VKey].KeyCode := n;
+    then MVKeyInfo[VKey].KeyCode := Byte(n);
   end;
 end;
 {$ENDIF}
@@ -2288,7 +2295,7 @@ begin
     gtk_Layout_move(PGtkLayout(Parent), Child, Left, Top)
   else
     If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
-      gtk_fixed_move(PGtkFixed(Parent), Child, Left, Top)
+      gtk_fixed_move(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
   else
     WriteLn('[FixedMoveControl] WARNING: Invalid Fixed Widget');
 end;
@@ -2311,7 +2318,7 @@ Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 
 begin
   If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
-    gtk_fixed_put(PGtkFixed(Parent), Child, Left, Top)
+    gtk_fixed_put(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
   else If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
     gtk_Layout_Put(PGtkLayout(Parent), Child, Left, Top)
   else
@@ -3796,7 +3803,7 @@ var
     GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
     if IconImg<>nil then begin
       // set the toggle width
-      GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=IconWidth;
+      GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=guint16(IconWidth);
       
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
         PGtkMenuItem(MenuItemWidget)^.flag0 or
@@ -5620,6 +5627,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.234  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.233  2003/12/18 15:15:13  ajgenius
   fix NIL style crash and GTK2 Compiling
 

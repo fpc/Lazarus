@@ -63,7 +63,7 @@ begin
     if FOriginal.Width mod FOriginal.Height = 0 then begin
       GlyphCount:= FOriginal.Width div FOriginal.Height;
       if GlyphCount > 4 then GlyphCount:= 1;
-      FNumGlyphs:= GlyphCount;
+      FNumGlyphs:= TNumGlyphs(GlyphCount);
     end;
   end;
   GlyphChanged(FOriginal);

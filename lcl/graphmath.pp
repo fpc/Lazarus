@@ -35,7 +35,7 @@ unit GraphMath;
 interface
 
 Uses
-  Classes, SysUtils, Math;
+  Classes, SysUtils, Math, FPCAdds;
 
 Type
   TFloatPoint = Record
@@ -279,8 +279,8 @@ end;
 Operator := (Value : TFloatPoint) : TPoint;
 begin
   With Result do begin
-    X := Round(Value.X);
-    Y := Round(Value.Y);
+    X := FPCAdds.RoundToInt(Value.X);
+    Y := RoundToInt(Value.Y);
   end;
 end;
 
@@ -493,8 +493,8 @@ var
   var
     P : TPoint;
   begin
-    P.X := Round(Point.X);
-    P.Y := Round(Point.Y);
+    P.X := RoundToInt(Point.X);
+    P.Y := RoundToInt(Point.Y);
     If (Pt.X <> P.X) or (Pt.Y <> P.Y) then begin
       Inc(Count);
       ReallocMem(Points,SizeOf(TPoint)*Count);
@@ -767,8 +767,7 @@ end;
   3'o clock position.
 
 ------------------------------------------------------------------------------}
-Function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : 
-Longint;
+Function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : Longint;
 var
   a, b, R : Extended;
 begin
@@ -777,7 +776,7 @@ begin
   R := Sqr(a)*Sqr(b);
   R := Sqrt(R / ((Sqr(b)*Sqr(Cos(DegToRad(EccentricAngle/16)))) +
     (Sqr(a)*Sqr(Sin(DegToRad(EccentricAngle/16))))));
-  Result := Trunc(R);
+  Result := TruncToInt(R);
 end;
 
 {------------------------------------------------------------------------------
@@ -1085,6 +1084,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.4  2003/11/10 19:05:44  mattias
   fixed some bugs by Andreas
 

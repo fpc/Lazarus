@@ -28,7 +28,7 @@ interface
 {$DEFINE REPORT_GDK_ERRORS}
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
   {$IFDEF GTK1}
   // MWE:

@@ -1881,9 +1881,9 @@ begin
     ptfield:
       Case GetTypeData(PropInfo^.PropType)^.FloatType of
         ftSingle:
-          PSingle(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+          PSingle(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Single(Value);
         ftDouble:
-          PDouble(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+          PDouble(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Double(Value);
         ftExtended:
           PExtended(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
 {$ifndef m68k}
@@ -1909,15 +1909,15 @@ begin
         Case GetTypeData(PropInfo^.PropType)^.FloatType of
           ftSingle:
             if Index=0 then
-              TMySetSingleProc(AMethod)(Value)
+              TMySetSingleProc(AMethod)(Single(Value))
             else
-              TMySetSingleProcIndex(AMethod)(IValue,Value);
+              TMySetSingleProcIndex(AMethod)(IValue,Single(Value));
 
           ftDouble:
             if Index=0 then
-              TMySetDoubleProc(AMethod)(Value)
+              TMySetDoubleProc(AMethod)(Double(Value))
             else
-              TMySetDoubleProcIndex(AMethod)(IValue,Value);
+              TMySetDoubleProcIndex(AMethod)(IValue,Double(Value));
 
           ftExtended:
             if Index=0 then
@@ -2366,7 +2366,7 @@ begin
       Error([MinValue, MaxValue]);
       exit;
     end;
-  SetOrdValue(L);
+  SetOrdValue(integer(L));
 end;
 
 { TCharPropertyEditor }
@@ -3637,7 +3637,7 @@ function TDateProperty.GetValue: string;
 var
   DT: TDateTime;
 begin
-  DT := GetFloatValue;
+  DT := TDateTime(GetFloatValue);
   if DT = 0.0 then Result := '' else
   Result := DateToStr(DT);
 end;
@@ -3662,7 +3662,7 @@ function TTimePropertyEditor.GetValue: string;
 var
   DT: TDateTime;
 begin
-  DT := GetFloatValue;
+  DT := TDateTime(GetFloatValue);
   if DT = 0.0 then Result := '' else
   Result := TimeToStr(DT);
 end;
@@ -3687,7 +3687,7 @@ function TDateTimePropertyEditor.GetValue: string;
 var
   DT: TDateTime;
 begin
-  DT := GetFloatValue;
+  DT := TDateTime(GetFloatValue);
   if DT = 0.0 then Result := '' else
   Result := DateTimeToStr(DT);
 end;
@@ -3957,7 +3957,7 @@ function TShortCutPropertyEditor.GetValue: string;
 var
   CurValue: TShortCut;
 begin
-  CurValue := GetOrdValue;
+  CurValue := TShortCut(GetOrdValue);
   if CurValue = scNone then
     Result := '(None)'//srNone
   else

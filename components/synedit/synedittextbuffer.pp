@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils,
   {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  FPCAdds, LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -296,8 +296,8 @@ end;
 type
   TSynEditFileReader = class(TSynEditFiler)
   protected
-    fFilePos: Cardinal;
-    fFileSize: Cardinal;
+    fFilePos: {$IFDEF SYN_LAZARUS}TStreamSeekType{$ELSE}Cardinal{$ENDIF};
+    fFileSize: {$IFDEF SYN_LAZARUS}TStreamSeekType{$ELSE}Cardinal{$ENDIF};
     procedure FillBuffer;
   public
     constructor Create(const FileName: string);

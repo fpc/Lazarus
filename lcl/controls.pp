@@ -1795,7 +1795,7 @@ var
   L: Longint;
 begin
   if not IdentToCursor(S, L) then L := StrToInt(S);
-  Result := L;
+  Result := TCursor(L);
 end;
 
 procedure GetCursorValues(Proc: TGetStrProc);
@@ -1853,6 +1853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.161  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.160  2003/12/23 16:50:45  micha
   fix defocus control when destroying it
 

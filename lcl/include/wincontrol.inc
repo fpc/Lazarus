@@ -1137,7 +1137,7 @@ begin
       for I := 0 to Count - 1 do
       begin
         Control := TWinControl(List[I]);
-        if Control <> nil then Control.UpdateTabOrder(I);
+        if Control <> nil then Control.UpdateTabOrder(TTabOrder(I));
       end;
     finally
       List.Free;
@@ -2976,7 +2976,7 @@ end;
 function TWinControl.GetTabOrder: TTabOrder;
 begin
   if FParent <> nil then
-    Result := FParent.FTabList.IndexOf(Self)
+    Result := TTabOrder(FParent.FTabList.IndexOf(Self))
   else
     Result := -1;
 end;
@@ -3166,6 +3166,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.183  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.182  2003/12/23 16:50:45  micha
   fix defocus control when destroying it
 

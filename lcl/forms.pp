@@ -798,7 +798,7 @@ type
     function HandleAllocated: boolean;
     procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
-    function HelpCommand(Command: Integer; Data: Longint): Boolean;
+    function HelpCommand(Command: Word; Data: Longint): Boolean;
     function HelpContext(Context: THelpContext): Boolean;
     function HelpJump(const JumpID: string): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;

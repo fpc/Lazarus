@@ -27,8 +27,8 @@ unit EditBtn;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLStrConsts, LCLType, LMessages, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs;
+  Classes, SysUtils, FPCAdds, LResources, LCLStrConsts, LCLType, LMessages,
+  Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs;
 
 type
   { TCustomEditButton }
@@ -708,7 +708,6 @@ begin
   end;
 end;
 
-
 function TFileNameEdit.CreateFileOpenBitmap: TBitmap;
 begin
   Result:=CreateFileOpenGlyph;
@@ -910,7 +909,7 @@ end;
 function TCalcEdit.GetAsFloat: Double;
 begin
   Try
-    Result:=StrToFloat(Text);
+    Result:=StrToDouble(Text);
   except
     Result:=0.0;
   end;

@@ -8413,7 +8413,7 @@ begin
     CurDefinesCompilerOptions:=CurOptions;
     CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
     UnitLinksValid:=OnlyIfCompilerChanged
-      and InputHistories.FPCConfigCache.Valid(true);
+                    and InputHistories.FPCConfigCache.Valid(true);
     if UnitLinksValid then begin
       i:=InputHistories.FPCConfigCache.FindItem(CurOptions);
       if i<0 then begin
@@ -8441,7 +8441,7 @@ begin
     //writeln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
     if FPCSrcTemplate<>nil then begin
       CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
-                                                         FPCSrcTemplate.Name);
+                                                           FPCSrcTemplate.Name);
       FPCSrcTemplate.InsertBehind(CompilerTemplate);
       CodeToolBoss.DefineTree.ClearCache;
       // save unitlinks
@@ -10250,6 +10250,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.686  2003/12/25 14:17:06  mattias
+  fixed many range check warnings
+
   Revision 1.685  2003/12/21 18:21:32  mattias
   implemented ShowAll and hide hints for unused package units option
 

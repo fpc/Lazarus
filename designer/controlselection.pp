@@ -632,7 +632,7 @@ begin
   if FIsTControl then
     TControl(FComponent).Left:=Aleft
   else
-    LongRec(FComponent.DesignInfo).Lo:=Min(32000,Max(0,ALeft));
+    LongRec(FComponent.DesignInfo).Lo:=word(Min(32000,Max(0,ALeft)));
   FCachedLeft:=ALeft;
 end;
 
@@ -655,7 +655,7 @@ begin
   if FIsTControl then
     TControl(FComponent).Top:=ATop
   else
-    LongRec(FComponent.DesignInfo).Hi:=Min(32000,Max(0,ATop));
+    LongRec(FComponent.DesignInfo).Hi:=word(Min(32000,Max(0,ATop)));
   FCachedTop:=ATop;
 end;
 

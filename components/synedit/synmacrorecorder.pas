@@ -698,7 +698,7 @@ begin
       if IdentToEditorCommand(Copy(cmdStr, 1, p-1), Longint(Cmd)) then  // D2 needs type-cast
       begin
         Delete(cmdStr, 1, p);
-        iEvent := CreateMacroEvent(Cmd);
+        iEvent := CreateMacroEvent(TSynEditorCommand(Cmd));
         try
           fEvents.Add(iEvent);
           iEvent.InitEventParameters(cmdStr);
@@ -750,7 +750,7 @@ end;
 procedure TSynBasicEvent.InitEventParameters(aStr: string);
 begin
   // basic events have no parameters but can contain an optional repeat count
-  RepeatCount := StrToIntDef(Trim(aStr), 1);
+  RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
 procedure TSynBasicEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;
@@ -802,7 +802,7 @@ begin
   else
     Key := ' ';
   Delete(aStr, 1, 1); // if possible delete the first character
-  RepeatCount := StrToIntDef(Trim(aStr), 1);
+  RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
 procedure TSynCharEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;
@@ -870,7 +870,7 @@ begin
     Position := Point(x, y);
     Delete(aStr, 1, c);
     aStr := Trim(aStr);
-    RepeatCount := StrToIntDef(aStr, 1);
+    RepeatCount := Byte(StrToIntDef(aStr, 1));
   end;
 end;
 
@@ -942,7 +942,7 @@ begin
   valStr := Copy(aStr, o+1, c-o-1);
   Value := StringReplace(valStr, '''''', '''', [rfReplaceAll]);
   Delete(aStr, 1, c);
-  RepeatCount := StrToIntDef(Trim(aStr), 1);
+  RepeatCount := Byte(StrToIntDef(Trim(aStr), 1));
 end;
 
 procedure TSynStringEvent.Initialize(aCmd: TSynEditorCommand; aChar: Char;

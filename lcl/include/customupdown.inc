@@ -135,7 +135,7 @@ begin
       aw := (ah+1) div 2;
     end
     else begin
-      aw := Round(tmp);
+      aw := RoundToInt(tmp);
       ah := 2*aw - 1;
     end;
     aw := max(aw, 3);
@@ -149,7 +149,7 @@ begin
       ah := (aw+1) div 2;
     end
     else begin
-      ah := Round(tmp);
+      ah := RoundToInt(tmp);
       aw := 2*ah - 1;
     end;
     ah := max(ah, 3);
@@ -415,7 +415,7 @@ begin
           InvalidNumber := True;
       end;
     If not InvalidNumber then
-      AV := Trunc(StrToFloat(str))
+      AV := SmallInt(TruncToInt(StrToFloat(str)))
     else begin
       AV := FPosition;
       Position := AV - 1;

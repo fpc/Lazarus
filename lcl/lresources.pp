@@ -34,7 +34,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, Strings;
+  Classes, SysUtils, FPCAdds, LCLStrConsts, Strings;
 
 type
   TLResource = class
@@ -188,7 +188,7 @@ function FindLFMClassName(LFMStream:TStream):ansistring;
   -> the classname is the last word of the first line
 }
 var c:char;
-  StartPos,EndPos:integer;
+  StartPos, EndPos: TStreamSeekType;
 begin
   Result:='';
   StartPos:=-1;
@@ -1224,12 +1224,12 @@ end;
 
 function TestFormStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
 var
-  Pos: Integer;
+  Pos: TStreamSeekType;
   Signature: Integer;
 begin
   Pos := Stream.Position;
   Signature := 0;
-  Stream.Read(Signature, sizeof(Signature));
+  Stream.Read(Signature, SizeOf(Signature));
   Stream.Position := Pos;
   if (Byte(Signature) = $FF) or (Signature = Integer(FilerSignature)) then
     Result := sofBinary
@@ -1248,7 +1248,7 @@ procedure InternalDelphiBinaryToText(Input, Output: TStream;
   ConvertProc: TObjectTextConvertProc;
   BinarySignature: Integer; SignatureLength: Byte);
 var
-  Pos: Integer;
+  Pos: TStreamSeekType;
   Signature: Integer;
 begin
   Pos := Input.Position;

@@ -175,7 +175,7 @@ each control that's dropped onto the form
       const NewName, NewClassName: shortstring);
     Procedure ClearSelected;
     
-    function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): integer;
+    function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): word;
   public
     property SelectedComponents: TComponentSelectionList
                            read FSelectedComponents write SetSelectedComponents;
@@ -1005,8 +1005,8 @@ Begin
   else begin
     // non TControl
     with LongRec(Temp.Component.DesignInfo) do begin
-      Lo:=CompLeft;
-      Hi:=CompTop;
+      Lo:=word(Min(32000,CompLeft));
+      Hi:=word(Min(32000,CompTop));
     end;
   end;
 
@@ -1207,7 +1207,7 @@ Begin
 end;
 
 function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
-  Shift: TShiftState): integer;
+  Shift: TShiftState): word;
 begin
   Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,[caDesigner]);
 end;

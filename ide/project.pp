@@ -47,10 +47,10 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLIntf, LCLType, Laz_XMLCfg, LazConf, CompilerOptions,
-  FileCtrl, CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs,
-  IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates,
-  PackageDefs;
+  Classes, SysUtils, FPCAdds, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
+  CompilerOptions, FileCtrl, CodeToolManager, CodeCache, Forms, Controls,
+  EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree,
+  DefineTemplates, PackageDefs;
 
 type
   TUnitInfo = class;
@@ -763,7 +763,7 @@ begin
      LazSyntaxHighlighterNames[lshFreePascal]);
   XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
-  XMLConfig.SetDeleteValue(Path+'UsageCount/Value',round(fUsageCount),-1);
+  XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
   FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
@@ -2784,6 +2784,9 @@ end.
 
 {
   $Log$
+  Revision 1.144  2003/12/25 14:17:06  mattias
+  fixed many range check warnings
+
   Revision 1.143  2003/12/23 18:51:40  mattias
   fixed updating Define caches, when project dependencies changes
 

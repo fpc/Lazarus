@@ -35,7 +35,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  Classes, SysUtils;
+  Classes, SysUtils, FileProcs;
 
 type
   TAVLTreeNode = class
@@ -89,7 +89,8 @@ type
     procedure FreeAndDelete(ANode: TAVLTreeNode);
     property Count: integer read FCount;
     function ConsistencyCheck: integer;
-    procedure WriteReportToStream(s: TStream; var StreamSize: integer);
+    procedure WriteReportToStream(s: TStream;
+                                  var StreamSize: TFPCStreamSeekType);
     function ReportAsString: string;
     constructor Create(OnCompareMethod: TListSortCompare);
     constructor Create;
@@ -947,7 +948,8 @@ begin
   OldData.Free;
 end;
 
-procedure TAVLTree.WriteReportToStream(s: TStream; var StreamSize: integer);
+procedure TAVLTree.WriteReportToStream(s: TStream;
+  var StreamSize: TFPCStreamSeekType);
 var h: string;
 
   procedure WriteStr(const Txt: string);
@@ -982,7 +984,7 @@ end;
 
 function TAVLTree.ReportAsString: string;
 var ms: TMemoryStream;
-  StreamSize: integer;
+  StreamSize: TFPCStreamSeekType;
 begin
   Result:='';
   ms:=TMemoryStream.Create;
@@ -992,10 +994,11 @@ begin
     ms.Size:=StreamSize;
     StreamSize:=0;
     WriteReportToStream(ms,StreamSize);
-    if ms.Size>0 then begin
+    StreamSize:=0;
+    if StreamSize>0 then begin
       ms.Position:=0;
-      SetLength(Result,ms.Size);
-      ms.Read(Result[1],ms.Size);
+      SetLength(Result,StreamSize);
+      ms.Read(Result[1],TFPCMemStreamSeekType(StreamSize));
     end;
   finally
     ms.Free;

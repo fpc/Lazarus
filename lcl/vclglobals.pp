@@ -17,8 +17,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- }
-
+}
 unit VCLGlobals;
 
 {$mode objfpc}{$H+}

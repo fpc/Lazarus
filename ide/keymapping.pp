@@ -356,7 +356,7 @@ function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
 function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
-function EditorKeyStringToVKCode(const s: string): integer;
+function EditorKeyStringToVKCode(const s: string): word;
 
 procedure GetDefaultKeyForCommand(Command: word;
   var TheKeyA, TheKeyB: TIDEShortCut);
@@ -392,14 +392,14 @@ begin
     Result:=DefaultName;
 end;
 
-function EditorKeyStringToVKCode(const s: string): integer;
+function EditorKeyStringToVKCode(const s: string): word;
 var
-  i: integer;
+  i: word;
   Data: Pointer;
 begin
   Result:=VK_UNKNOWN;
   if EditorKeyStringIsIrregular(s) then begin
-    Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN);
+    Result:=word(StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN));
     exit;
   end;
   if (s<>'none') and (s<>'') then begin
@@ -925,7 +925,7 @@ end;
 function ShowKeyMappingEditForm(Index:integer;
   AKeyCommandRelationList: TKeyCommandRelationList):TModalResult;
    
-  procedure InitComboBox(AComboBox: TComboBox; AKey: integer);
+  procedure InitComboBox(AComboBox: TComboBox; AKey: word);
   var s: string;
     i: integer;
   begin
@@ -1391,7 +1391,7 @@ end;
 { TKeyMappingEditForm }
 
 constructor TKeyMappingEditForm.Create(TheOwner:TComponent);
-var a:integer;
+var a: word;
   s:AnsiString;
 begin
   inherited Create(TheOwner);
@@ -1587,7 +1587,7 @@ begin
 end;
 
 procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
-var NewKey1,NewKey2:integer;
+var NewKey1,NewKey2:word;
   NewShiftState1,NewShiftState2:TShiftState;
   AText:AnsiString;
   DummyRelation, CurRelation:TKeyCommandRelation;
@@ -2216,10 +2216,10 @@ begin
     else
       NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value',DefaultStr);
     p:=1;
-    Key:=ReadNextInt;
+    Key:=word(ReadNextInt);
     Shift:=IntToShiftState(ReadNextInt);
     Relations[a].KeyA:=IDEShortCut(Key,Shift,VK_UNKNOWN,[]);
-    Key:=ReadNextInt;
+    Key:=word(ReadNextInt);
     Shift:=IntToShiftState(ReadNextInt);
     Relations[a].KeyB:=IDEShortCut(Key,Shift,VK_UNKNOWN,[]);
   end;

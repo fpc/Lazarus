@@ -38,10 +38,11 @@ unit PkgOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, LResources, ExtCtrls, StdCtrls,
-  Spin, Dialogs, PathEditorDlg, IDEProcs, IDEOptionDefs, LazarusIDEStrConsts,
-  BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions;
-  
+  Classes, SysUtils, FPCAdds, Forms, Controls, Buttons, LResources, ExtCtrls,
+  StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEOptionDefs,
+  LazarusIDEStrConsts, BrokenDependenciesDlg, PackageDefs, PackageSystem,
+  CompilerOptions;
+
 type
   TPackageOptionsDialog = class(TForm)
     Notebook: TNotebook;
@@ -350,10 +351,10 @@ begin
   // version
   NewVersion:=TPkgVersion.Create;
   try
-    NewVersion.Major:=round(VersionMajorSpinEdit.Value);
-    NewVersion.Minor:=round(VersionMinorSpinEdit.Value);
-    NewVersion.Release:=round(VersionReleaseSpinEdit.Value);
-    NewVersion.Build:=round(VersionBuildSpinEdit.Value);
+    NewVersion.Major:=RoundToInt(VersionMajorSpinEdit.Value);
+    NewVersion.Minor:=RoundToInt(VersionMinorSpinEdit.Value);
+    NewVersion.Release:=RoundToInt(VersionReleaseSpinEdit.Value);
+    NewVersion.Build:=RoundToInt(VersionBuildSpinEdit.Value);
 
     // check for broken dependencies
     BrokenDependencies:=PackageGraph.GetBrokenDependenciesWhenChangingPkgID(

@@ -936,8 +936,8 @@ procedure TGtkObject.SendCachedGtkMessages;
         Result := 0;
         Msg := LM_SIZE;
         SizeType := Size_SourceIsInterface;
-        Width := GtkWidth;
-        Height := GtkHeight;
+        Width := SmallInt(GtkWidth);
+        Height := SmallInt(GtkHeight);
       end;
       MessageDelivered := (DeliverMessage(LCLControl, SizeMsg) = 0);
       if not MessageDelivered then exit;
@@ -955,8 +955,8 @@ procedure TGtkObject.SendCachedGtkMessages;
         Result := 0;
         Msg := LM_MOVE;
         MoveType := Move_SourceIsInterface;
-        XPos := GtkLeft;
-        YPos := GtkTop;
+        XPos := SmallInt(GtkLeft);
+        YPos := SmallInt(GtkTop);
       end;
       MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
       if not MessageDelivered then exit;
@@ -2342,7 +2342,7 @@ begin
         GListItem:=GListItem^.next;
       end;
       VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
-      MaxAdjValue:=round(VertAdj^.upper-VertAdj^.page_size);
+      MaxAdjValue:=RoundToInt(VertAdj^.upper-VertAdj^.page_size);
       if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
       gtk_adjustment_set_value(VertAdj,AdjValue);
     end;
@@ -3003,9 +3003,9 @@ begin
       begin
         { Compute pixels per inch variable }
         PLMScreenInit(Data)^.PixelsPerInchX:=
-          Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+          RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
         PLMScreenInit(Data)^.PixelsPerInchY:=
-          Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+          RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
@@ -3170,14 +3170,16 @@ begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
           csComboBox:
-            Result:= Abs(PGtkOldEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
-                     - PGtkOldEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos);
+            with PGtkOldEditable(PGtkCombo(Handle)^.entry)^ do begin
+              Result:= Abs(integer(selection_end_pos)-integer(selection_start_pos));
+            end;
           {$IfDef GTK1}
           csEdit, csMemo:
   	    begin
   	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
-              Result:= Abs(PGtkOldEditable(Widget)^.selection_end_pos
-                           - PGtkOldEditable(Widget)^.selection_start_pos);
+              with PGtkOldEditable(Widget)^ do begin
+                Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
+              end;
   	    end;
           {$EndIf}
           end;
@@ -5312,7 +5314,7 @@ begin
     gtk_list_select_item(PGtkList(Widget^.list), ComboBox.ItemIndex);
 
   // MaxLength
-  gtk_entry_set_max_length(PGtkEntry(Widget^.entry), ComboBox.MaxLength);
+  gtk_entry_set_max_length(PGtkEntry(Widget^.entry),guint16(ComboBox.MaxLength));
 
   // Text
   SetComboBoxText(Widget, PChar(ComboBox.Text));
@@ -6888,7 +6890,7 @@ type
   PCheckBoxState = ^TCheckBoxState;
 var
   Handle    : Pointer;
-  Year,Month,Day : Integer;  //used for csCalendar
+  Year, Month, Day: word;  //used for csCalendar
 begin
   Result := 0;     // default if nobody sets it
 
@@ -6903,8 +6905,8 @@ begin
   case TControl(Sender).fCompStyle of
   csTrackbar   :
     if (handle <> nil) then begin
-      integer(data^) := round(gtk_range_get_adjustment(
-              GTK_RANGE (handle))^.value);
+      integer(data^) := RoundToInt(gtk_range_get_adjustment(
+                                                    GTK_RANGE (handle))^.value);
     end else
       integer(data^) := 0;
 
@@ -7125,7 +7127,8 @@ begin
         // This will have to be coded around, but not a priority
       
         gtk_entry_set_editable(GTK_ENTRY(wHandle), not (TCustomEdit(Sender).ReadOnly));
-        gtk_entry_set_max_length(GTK_ENTRY(wHandle), TCustomEdit(Sender).MaxLength);
+        gtk_entry_set_max_length(GTK_ENTRY(wHandle),
+          guint16(TCustomEdit(Sender).MaxLength));
         gtk_entry_set_visibility(GTK_ENTRY(wHandle),
           (TCustomEdit(Sender).EchoMode = emNormal)
           and (TCustomEdit(Sender).PassWordChar=#0));
@@ -8466,6 +8469,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.443  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.442  2003/12/23 11:16:41  mattias
   started key combinations, fixed some range check errors
 

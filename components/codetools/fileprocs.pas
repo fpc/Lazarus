@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    - simple file functions
+    - simple file functions anf fpc additions
 }
 unit FileProcs;
 
@@ -36,6 +36,11 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts;
+  
+type
+  TFPCStreamSeekType = int64;
+  TFPCMemStreamSeekType = integer;
+
 
 const
   // ToDo: find the constant in the fpc units.
@@ -251,7 +256,7 @@ begin
     try
       // read the first 1024 bytes
       Len:=1024;
-      if Len>fs.Size then Len:=fs.Size;
+      if Len>fs.Size then Len:=integer(fs.Size);
       if Len>0 then begin
         SetLength(Buf,Len);
         fs.Read(Buf[1],length(Buf));

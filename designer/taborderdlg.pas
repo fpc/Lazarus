@@ -127,7 +127,7 @@ begin
     if AControl.TabStop then begin
       if AControl.TabOrder<>CurTabOrder then
         TabChanged:=true;
-      AControl.TabOrder:=CurTabOrder;
+      AControl.TabOrder:=TTabOrder(CurTabOrder);
       writeln('TTabOrderDialog.CommitNodes A ',AControl.Name,' ',AControl.TabOrder,' ',CurTabOrder);
       inc(CurTabOrder);
     end;

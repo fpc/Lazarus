@@ -28,8 +28,8 @@ uses
   // resource strings
   LCLStrConsts,
   // base classes
-  LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
-  ExtendedStrings, DynamicArray, UTrace, TextStrings,
+  FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree,
+  StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
   LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
   // the interface base
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.5  2003/12/23 20:40:43  mattias
   added TEditButton, TFileNameEdit, TDirectoryEdit, TDateEdit, TCalcEdit from Michael V.C.
 

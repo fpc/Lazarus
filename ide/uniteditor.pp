@@ -2043,7 +2043,7 @@ end;
 
 procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: integer);
 begin
-  EditorComponent.CommandProcessor(EditorCommand,' ',nil);
+  EditorComponent.CommandProcessor(TSynEditorCommand(EditorCommand),' ',nil);
 end;
 
 {------------------------------------------------------------------------}

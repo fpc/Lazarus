@@ -78,7 +78,8 @@ begin
     try
       Graphic.WriteData(GraphicsImage);
       Result := (SelfImage.Size = GraphicsImage.Size) and
-             CompareMem(SelfImage.Memory, GraphicsImage.Memory, SelfImage.Size);
+             CompareMem(SelfImage.Memory, GraphicsImage.Memory,
+                        TCompareMemSize(SelfImage.Size));
     finally
       GraphicsImage.Free;
     end;

@@ -33,7 +33,7 @@ type
   end;
   
 var
-  OldPosition: Integer;
+  OldPosition: TStreamSeekType;
   c: char;
   Range: TXPMRange;
   LastChar: Char;
@@ -286,6 +286,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.22  2003/09/08 13:07:17  mattias
   TBitmap now uses fpImage for writing bitmaps
 

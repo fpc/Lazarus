@@ -33,8 +33,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
-  GraphType, GraphMath;
+  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
+  LMessages, GraphType, GraphMath;
 
 type
 
@@ -92,8 +92,6 @@ var
 
 implementation
 
-uses Math;
-
 {$I interfacebase.inc}
 {$I intfbasewinapi.inc}
 {$I intfbaselcl.inc}
@@ -109,6 +107,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.39  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 

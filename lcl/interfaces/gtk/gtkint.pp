@@ -57,19 +57,25 @@ interface
 {$EndIF}
 
 uses
+  // rtl+ftl
+  Classes, SysUtils, FPCAdds,
+  // interfacebase
   InterfaceBase,
+  // gtk
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
+  // Target OS specific
   {$IFDEF UNIX}
   x, xlib,
   {$ENDIF}
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  SysUtils, Classes, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
+  // LCL
+  ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   VclGlobals, LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
   GraphType, GraphMath, Graphics, Menus;
 
@@ -404,6 +410,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.162  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.161  2003/12/16 14:01:27  mattias
   fixed compilation gtk and fpc 1.9
 

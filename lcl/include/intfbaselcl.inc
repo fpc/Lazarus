@@ -371,7 +371,7 @@ var
   A1, A2 : Extended;
 begin
   Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := Arc(DC, X, Y, Width, Height, Round(A1), Round(A2));
+  Result := Arc(DC, X, Y, Width, Height, RoundToInt(A1), RoundToInt(A2));
 end;
 
 function TInterfaceBase.RadialChord(DC: HDC;
@@ -380,7 +380,7 @@ var
   A1, A2 : Extended;
 Begin
   Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := AngleChord(DC, X, Y, Width, Height, Round(A1), Round(A2));
+  Result := AngleChord(DC, X, Y, Width, Height, RoundToInt(A1), RoundToInt(A2));
 End;
 
 function TInterfaceBase.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
@@ -388,7 +388,8 @@ var
   A1, A2 : Extended;
 begin
   Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := RadialPieWithAngles(DC, X, Y, Width, Height, Round(A1), Round(A2));
+  Result := RadialPieWithAngles(DC, X, Y, Width, Height,
+                                RoundToInt(A1), RoundToInt(A2));
 end;
 
 function TInterfaceBase.RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
@@ -468,6 +469,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.5  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

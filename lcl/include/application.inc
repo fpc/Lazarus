@@ -729,9 +729,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TApplication.HelpCommand(Command: Integer; Data: Longint): Boolean;
+  function TApplication.HelpCommand(Command: Word; Data: Longint): Boolean;
 ------------------------------------------------------------------------------}
-function TApplication.HelpCommand(Command: Integer; Data: Longint): Boolean;
+function TApplication.HelpCommand(Command: Word; Data: Longint): Boolean;
 begin
   Result := InvokeHelp(Command, Data);
 end;
@@ -1117,6 +1117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.67  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 

@@ -54,18 +54,23 @@ uses
 type
   //TODO: check this against vclglobals
 
-  PLongInt = ^LongInt;
-  PInteger = ^Integer;
-  PSmallInt = ^SmallInt;
-  PDouble = ^Double;
   PRect = ^TRect;
-  PANSICHAR = ^AnsiChar;
-  PWideChar = ^WideChar;
   UINT = LongWord;
   PPoint = ^TPoint;
 
+  {PLongInt = ^LongInt;
+  PInteger = ^Integer;
+  PSmallInt = ^SmallInt;
+  PDouble = ^Double;
+  PAnsiChar = ^AnsiChar;
+  PWideChar = ^WideChar;}
+
   TCriticalSection = longint;
   PCriticalSection = ^TCriticalSection;
+{$IFNDEF VER1_0}
+  TRTLCriticalSection = pointer;
+{$ENDIF}
+
 
 {$if defined(VER1_0) or not(defined(win32))}
   { Provided for compatibility with Windows registry ONLY }
@@ -81,7 +86,7 @@ type
   HICON = type LongWord;
   HCURSOR = HICON;
   Bool = LongBool;
-  HGLOBAL = THAndle;
+  HGLOBAL = THandle;
   Short = SmallInt;
   hwnd    = THandle;
   HMENU = type LongWord;
@@ -117,7 +122,7 @@ type
   TByteArray = array[0..32767] of Byte;
 
 var
-  hInstance :HINST;
+  hInstance: HINST;
 
 const
   INVALID_HANDLE_VALUE  = 0;
@@ -263,9 +268,9 @@ const
   MSGF_NEXTWINDOW = 6;
 
 
-//PEEKMESSAGE stuff
-PM_Noremove = 0;
-PM_Remove = 1;
+// PEEKMESSAGE stuff
+  PM_Noremove = 0;
+  PM_Remove = 1;
 
 //==============================================
 // Menu constants
@@ -1868,14 +1873,9 @@ const
 type
   TShortCut = Low(Word)..High(Word);   {should be moved to classes}
 
-{$IFNDEF VER1_0}
-type
-  TRTLCriticalSection = pointer;
-{$ENDIF}
 
-
-function hiword(i: integer): word;
-function loword(i: integer): word;
+function HiWord(i: integer): word;
+function LoWord(i: integer): word;
 Function Char2VK(C : Char) : Word;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 
@@ -1883,12 +1883,12 @@ function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 implementation
 
 
-function hiword(i: integer): word;
+function HiWord(i: integer): word;
 begin
   Result:=Hi(i);
 end;
 
-function loword(i: integer): word;
+function LoWord(i: integer): word;
 begin
   Result:=Lo(i);
 end;
@@ -1899,6 +1899,8 @@ begin
     '0'..'9' :Result := VK_0 + Ord(C) - Ord('0');
     'a'..'z' :Result := VK_A + Ord(C) - Ord('a');
     'A'..'Z' :Result := VK_A + Ord(C) - Ord('A');
+  else
+    Result:=0;
   end;
 end;
 
@@ -1912,6 +1914,9 @@ end.
 
 {
   $Log$
+  Revision 1.51  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.50  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

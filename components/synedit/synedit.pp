@@ -62,7 +62,7 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType, LMessages,
+  FPCAdds, LCLIntf, LCLType, LMessages,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -884,9 +884,9 @@ end;
 function Roundoff(X: Extended): Longint;
 begin
   if (x >= 0) then begin
-    Result := Trunc(x + 0.5)
+    Result := TruncToInt(x + 0.5)
   end else begin
-    Result := Trunc(x - 0.5);
+    Result := TruncToInt(x - 0.5);
   end;
 end;
 
@@ -3223,6 +3223,7 @@ var
 {$IFDEF SYN_LAZARUS}
   MemStream: TMemoryStream;
   Buf: Pointer;
+  BufSize: integer;
 {$ELSE}
   Mem: HGLOBAL;
 {$ENDIF}
@@ -3239,12 +3240,13 @@ begin
       Buf:=nil;
       try
         Clipboard.GetFormat(SynEditClipboardFormat,MemStream);
-        if MemStream.Size>=SizeOf(TSynSelectionMode)+1 then begin
-          GetMem(Buf,MemStream.Size+1);
+        BufSize:=integer(MemStream.Size);
+        if BufSize>=SizeOf(TSynSelectionMode)+1 then begin
+          GetMem(Buf,BufSize+1);
           MemStream.Position:=0;
-          MemStream.Read(Buf^,MemStream.Size);
+          MemStream.Read(Buf^,BufSize);
           P:=PChar(Buf);
-          P[MemStream.Size]:=#0;
+          P[BufSize]:=#0;
       {$ELSE}
       Clipboard.Open;
       try

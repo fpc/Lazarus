@@ -89,7 +89,9 @@ end;
 function TClipboard.AddFormat(FormatID: TClipboardFormat;
   Stream: TStream): Boolean;
 // copy Stream to a MemoryStream, add it to cache and tell the interface object
-var OldPosition, i: integer;
+var
+  OldPosition: TStreamSeekType;
+  i: integer;
 begin
   //writeln('[TClipboard.AddFormat - Stream] A ',ClipboardTypeName[ClipboardType],' Format=',FormatID);
   Result:=false;
@@ -307,8 +309,8 @@ begin
   try
     if GetFormat(PredefinedClipboardFormat(pcfText),MemStream) then begin
       MemStream.Position:=0;
-      Result:=MemStream.Size;
-      if Result>BufSize then Result:=BufSize;
+      Result:=BufSize;
+      if Result>MemStream.Size then Result:=integer(MemStream.Size);
       if Result>0 then
         MemStream.Read(Buffer^,Result);
       Buffer[Result]:=#0;
@@ -673,6 +675,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.14  2003/09/10 19:15:16  mattias
   implemented copying graphics from/to clipboard
 

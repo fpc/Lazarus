@@ -32,7 +32,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, FPCAdds,
   {$IFDEF UseFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
@@ -1257,6 +1257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.101  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.100  2003/12/02 12:25:17  micha
   try: gdi memory leak fix for pen
 

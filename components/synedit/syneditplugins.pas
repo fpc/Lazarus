@@ -167,7 +167,7 @@ var
 
 function NewPluginCommand: TSynEditorCommand;
 begin
-  Result := gCurrentCommand;
+  Result := TSynEditorCommand(gCurrentCommand);
   Inc( gCurrentCommand );
 end;
 

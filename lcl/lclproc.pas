@@ -87,6 +87,7 @@ procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
+
 implementation
 
 

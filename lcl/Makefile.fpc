@@ -33,6 +33,7 @@ implicitunits= \
   extdlgs \
   extendedstrings \
   filectrl \
+  fpcadds \
   forms \
   graphics \
   graphmath \

@@ -617,9 +617,9 @@ var
           break;
       until false;
       LongRec(AComponent.DesignInfo).Lo:=
-        Max(0,Min(P.x,Form.ClientWidth-NonVisualCompWidth));
+        word(Max(0,Min(P.x,Form.ClientWidth-NonVisualCompWidth)));
       LongRec(AComponent.DesignInfo).Hi:=
-        Max(0,Min(P.y,Form.ClientHeight-NonVisualCompWidth));
+        word(Max(0,Min(P.y,Form.ClientHeight-NonVisualCompWidth)));
     end;
   end;
 

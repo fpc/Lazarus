@@ -1071,8 +1071,8 @@ var
 begin
   if (Widget=nil) then ;
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
-                                         Point(trunc(Event^.X),trunc(Event^.Y)),
-                                         PGtkWidget(AWinControl.Handle));
+                               Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
+                               PGtkWidget(AWinControl.Handle));
 
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
@@ -1337,7 +1337,7 @@ var
 
 begin
   if (Widget=nil) then ;
-  EventXY:=Point(trunc(Event^.X),trunc(Event^.Y));
+  EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(AWinControl.Handle));
@@ -1534,8 +1534,8 @@ var
 begin
   if (Widget=nil) then ;
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
-                                         Point(trunc(Event^.X),trunc(Event^.Y)),
-                                         PGtkWidget(AWinControl.Handle));
+                               Point(TruncToInt(Event^.X),TruncToInt(Event^.Y)),
+                               PGtkWidget(AWinControl.Handle));
 
   case event^.Button of
 
@@ -2706,11 +2706,11 @@ begin
   // Get rounded values
   with Adjustment^ do
   begin
-    V := Round(Value);
-    U := Round(Upper);
+    V := RoundToInt(Value);
+    U := RoundToInt(Upper);
     //L := Round(Lower);
-    StepI := Round(Step_Increment);
-    PageI := Round(Page_Increment);
+    StepI := RoundToInt(Step_Increment);
+    PageI := RoundToInt(Page_Increment);
     //Page := Round(Page_Size);
   end;
   
@@ -2726,7 +2726,7 @@ begin
   begin
     msg := LM_HSCROLL;
     // Get scrollcode
-    if ssLeft in GTKEventState2ShiftState(Mask)
+    if ssLeft in GTKEventState2ShiftState(Word(Mask))
     then ScrollCode := SB_THUMBTRACK
     else if V - OldValue = StepI 
     then ScrollCode := SB_LINERIGHT
@@ -2739,7 +2739,7 @@ begin
     else if V >= U
     then ScrollCode := SB_ENDSCROLL
     else ScrollCode := SB_THUMBPOSITION;
-    Pos := V;
+    Pos := SmallInt(V);
     ScrollBar := HWND(Scroll);
   end;
   Status := DeliverMessage(Data, Msg) = 0;
@@ -2773,11 +2773,11 @@ begin
   // Get rounded values
   with Adjustment^ do
   begin
-    V := Round(Value);
-    U := Round(Upper);
+    V := RoundToInt(Value);
+    U := RoundToInt(Upper);
     //L := Round(Lower);
-    StepI := Round(Step_Increment);
-    PageI := Round(Page_Increment);
+    StepI := RoundToInt(Step_Increment);
+    PageI := RoundToInt(Page_Increment);
     //Page := Round(Page_Size);
   end;
   
@@ -2794,7 +2794,7 @@ begin
   begin
     msg := LM_VSCROLL;
     // Get scrollcode
-    if ssLeft in GTKEventState2ShiftState(Mask)
+    if ssLeft in GTKEventState2ShiftState(Word(Mask))
     then ScrollCode := SB_THUMBTRACK
     else if V - OldValue = StepI 
     then ScrollCode := SB_LINEDOWN
@@ -2807,7 +2807,7 @@ begin
     else if V >= U
     then ScrollCode := SB_ENDSCROLL
     else ScrollCode := SB_THUMBPOSITION;
-    Pos := V;
+    Pos := SmallInt(V);
     ScrollBar := HWND(Scroll);
   end;
   Status := DeliverMessage(Data, Msg) = 0;
@@ -3082,10 +3082,12 @@ begin
             if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue)) then
             begin
               // transform text/plain to COMPOUND_TEXT
-              P:=StrAlloc(MemStream.Size+1);
-              MemStream.Read(P^,MemStream.Size);
-              P[MemStream.Size]:=#0;
+              BufLength:=integer(MemStream.Size);
+              P:=StrAlloc(BufLength+1);
+              MemStream.Read(P^,BufLength);
+              P[BufLength]:=#0;
 
+              BufLength:=0;
               gdk_string_to_compound_text(P,
                 @SelectionData^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF},
                 @SelectionData^.Format,@Buffer,@BufLength);
@@ -3100,10 +3102,10 @@ begin
             {$IFDEF DEBUG_CLIPBOARD}
             writeln('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
             {$ENDIF}
-            BufLength:=MemStream.Size;
-            if MemStream.Size>0 then begin
-              GetMem(Buffer,MemStream.Size);
-              MemStream.Read(Buffer^,MemStream.Size);
+            BufLength:=integer(MemStream.Size);
+            if BufLength>0 then begin
+              GetMem(Buffer,BufLength);
+              MemStream.Read(Buffer^,BufLength);
               {SetLength(s,MemStream.Size);
               MemStream.Position:=0;
               MemStream.Read(s[1],MemStream.Size);
@@ -3192,6 +3194,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.209  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.208  2003/12/21 15:36:47  mattias
   workaround for inherited bug in fpc 1.9
 

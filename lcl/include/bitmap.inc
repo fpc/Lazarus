@@ -32,7 +32,7 @@ function TestStreamIsBMP(Stream: TMemoryStream): boolean;
 var
   BmpHeadbfType: word;
   ReadSize: Integer;
-  OldPosition: Integer;
+  OldPosition: TStreamSeekType;
 begin
   BmpHeadbfType:=0;
   OldPosition:=Stream.Position;
@@ -804,7 +804,7 @@ procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
 
   procedure DoWriteOriginal;
   begin
-    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
+    DoWriteStreamSize(Stream,longint(FImage.SaveStream.Size));
     FImage.SaveStream.Position:=0;
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   end;
@@ -1013,6 +1013,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.54  2003/12/21 16:01:58  mattias
   workaround for inherited bug in fpc 1.9
 

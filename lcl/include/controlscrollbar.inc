@@ -247,9 +247,9 @@ begin
     With TScrollingWinControl(FControl) do begin
       // page
       if Self.Kind=sbVertical then
-        FPage := Min(ClientHeight + 1,High(FPage))
+        FPage := TScrollBarInc(Min(ClientHeight + 1,High(FPage)))
       else
-        FPage := Min(ClientWidth + 1,High(FPage));
+        FPage := TScrollBarInc(Min(ClientWidth + 1,High(FPage)));
       ScrollInfo.nPage := FPage;
 
       // range

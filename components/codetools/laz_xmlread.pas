@@ -31,7 +31,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, Laz_DOM;
+  SysUtils, Classes, FileProcs, Laz_DOM;
 
 type
 
@@ -1314,7 +1314,7 @@ begin
   if f.Size = 0 then exit;
 
   GetMem(buf, f.Size + 1);
-  f.Read(buf^, f.Size);
+  f.Read(buf^, TFPCMemStreamSeekType(f.Size));
   buf[f.Size] := #0;
   
   reader := TXMLReader.Create;
@@ -1385,7 +1385,7 @@ begin
   if f.Size = 0 then exit;
 
   GetMem(buf, f.Size + 1);
-  f.Read(buf^, f.Size);
+  f.Read(buf^, TFPCMemStreamSeekType(f.Size));
   buf[f.Size] := #0;
   reader := TXMLReader.Create;
   reader.ProcessDTD(buf, AFilename);
@@ -1418,6 +1418,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2003/12/25 14:17:06  mattias
+  fixed many range check warnings
+
   Revision 1.10  2003/12/19 09:06:07  mattias
   replaced StrLComp by CompareLPChar
 

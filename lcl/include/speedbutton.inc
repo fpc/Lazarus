@@ -183,7 +183,7 @@ Begin
 
   if Value <> TButtonGlyph(fGlyph).NumGlyphs then
   Begin
-    TButtonGlyph(fGlyph).NumGlyphs := Value;
+    TButtonGlyph(fGlyph).NumGlyphs :=  TNumGlyphs(Value);
     Invalidate;
   end;
 end;
@@ -698,6 +698,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.42  2003/09/27 09:49:30  mattias
   fix for speedbutton from Micha
 

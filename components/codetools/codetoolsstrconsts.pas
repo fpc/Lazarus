@@ -182,8 +182,10 @@ ResourceString
   ctsWidgetDirectory = 'Widget Directory';
   ctsIntfDirectory = 'interface directory';
   ctsIfLCLWidgetTypeEqualsGtk2 = 'If LCLWidgetType=gtk2 then';
+  ctsElse = 'else';
   ctsIfTargetOSIsNotWin32 = 'If TargetOS<>win32 then';
   ctsIfLCLWidgetTypeEqualsGnome2 = 'If LCLWidgetType=gnome2 then';
+  ctsDefineMacroGTK1 = 'Define macro gtk1';
   ctsDefineMacroGTK2 = 'Define macro gtk2';
   ctsDefineMacroGnome2 = 'Define macro gnome2';
   ctsGtk2IntfDirectory = 'gtk2 interface directory';

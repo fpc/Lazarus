@@ -3331,6 +3331,7 @@ var
   TargetOS, SrcOS, SrcPath, TargetCPU: string;
   i: Integer;
   CurCPU, CurOS, CurWidgetSet, ExtraSrcPath: string;
+  ElseTemplate: TDefineTemplate;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3409,7 +3410,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-      d('../ideintf'
+      d('../ideintf;'
        +'../components/synedit;'
        +'../components/codetools;'
        +'../components/custom;'
@@ -3479,7 +3480,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     SrcPathMacroName,
-      d('../lcl'
+      d('../ideintf'
+      +';../lcl'
       +';../lcl/interfaces/'+WidgetType)
       +';'+SrcPath
     ,da_Define));
@@ -3626,6 +3628,13 @@ begin
       IfTemplate.AddChild(TDefineTemplate.Create('Define gtk2',
         ctsDefineMacroGTK2,'gtk2','',da_Define));
     IntfDirTemplate.AddChild(IfTemplate);
+    // else LCLWidgetType=gtk2
+    ElseTemplate:=TDefineTemplate.Create('ELSE '+WidgetType+'=''gtk1''',
+      ctsElse,'','',da_Else);
+      // then define gtk1
+      ElseTemplate.AddChild(TDefineTemplate.Create('Define gtk1',
+        ctsDefineMacroGTK1,'gtk1','',da_Define));
+    IntfDirTemplate.AddChild(ElseTemplate);
   SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/lcl/interfaces/gtk2

@@ -110,11 +110,6 @@ For Copying and Pasting.  You know what it's for!  Why am I explaining it?  :-)
   
   For mime types see:
     http://www.isi.edu/in-notes/iana/assignments/media-types/media-types
-
-  ToDo:
-    - Better description
-    - graphic formats
-
 }
 
 unit Clipbrd;
@@ -128,7 +123,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLType, LCLIntf, GraphType, Graphics;
+  Classes, SysUtils, FPCAdds, LCLType, LCLIntf, GraphType, Graphics;
 
 { for delphi compatibility:
 
@@ -360,6 +355,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.14  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

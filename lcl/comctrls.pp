@@ -38,9 +38,9 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, LCLStrConsts, LCLIntf, LCLType, LCLProc, AvgLvlTree,
-  Controls, Forms, StdCtrls, ExtCtrls, vclGlobals, LMessages, Menus, ImgList,
-  GraphType, Graphics, ToolWin, CommCtrl, Buttons, Math;
+  SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LCLType, LCLProc,
+  AvgLvlTree, Controls, Forms, StdCtrls, ExtCtrls, vclGlobals, LMessages, Menus,
+  ImgList, GraphType, Graphics, ToolWin, CommCtrl, Buttons, Math;
 
 type
   TStatusPanelStyle = (psText, psOwnerDraw);
@@ -1884,7 +1884,7 @@ const
     TBSTATE_PRESSED, TBSTATE_ENABLED, TBSTATE_HIDDEN, TBSTATE_INDETERMINATE,
     TBSTATE_WRAP, TBSTATE_ELLIPSES, TBSTATE_MARKED);
 
-  ButtonStyles: array[TToolButtonStyle] of Word = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
+  ButtonStyles: array[TToolButtonStyle] of Byte = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
     TBSTYLE_DROPDOWN, TBSTYLE_SEP, TBSTYLE_SEP);
 
   ScrollBarWidth=0;
@@ -1936,6 +1936,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.93  2003/12/21 16:01:58  mattias
   workaround for inherited bug in fpc 1.9
 

@@ -60,7 +60,7 @@ uses
   QClipbrd
 {$ELSE}
 {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
+  FPCAdds, LCLIntf, LCLType,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -384,12 +384,12 @@ begin
   if not fFirstAttribute then
     FormatAfterLastAttribute;
   // insert header
-  fBuffer.SetSize(fBuffer.Position);
+  fBuffer.SetSize(integer(fBuffer.Position));
   InsertData(0, GetHeader);
   // add footer
   AddData(GetFooter);
   // Size is ReadOnly in Delphi 2
-  fBuffer.SetSize(fBuffer.Position);
+  fBuffer.SetSize(integer(fBuffer.Position));
 end;
 
 procedure TSynCustomExporter.FormatToken(Token: string);
@@ -399,7 +399,7 @@ end;
 
 function TSynCustomExporter.GetBufferSize: integer;
 begin
-  Result := fBuffer.Size;
+  Result := integer(fBuffer.Size);
 end;
 
 function TSynCustomExporter.GetClipboardFormat: UINT;
@@ -414,7 +414,7 @@ end;
 
 procedure TSynCustomExporter.InsertData(APos: integer; const AText: string);
 var
-  Len, ToMove, SizeNeeded: integer;
+  Len, ToMove, SizeNeeded: {$IFDEF SYN_LAZARUS}TStreamSeekType{$ELSE}integer{$ENDIF};
   Dest: PChar;
 begin
   Len := Length(AText);
@@ -426,9 +426,9 @@ begin
       fBuffer.SetSize((SizeNeeded + $1800) and not $FFF); // increment in pages
     Dest := fBuffer.Memory;
     Inc(Dest, Len);
-    Move(fBuffer.Memory^, Dest^, ToMove);
+    Move(fBuffer.Memory^, Dest^, TCompareMemSize(ToMove));
     fBuffer.Position := 0;
-    fBuffer.Write(AText[1], Len);
+    fBuffer.Write(AText[1], TMemStreamSeekType(Len));
     fBuffer.Position := ToMove + Len;
   end;
 end;

@@ -41,9 +41,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  MultiKeyWordListTool, SourceLog, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  CustomCodeTool, MultiKeyWordListTool, SourceLog, KeywordFuncLists,
+  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
   TProcHeadAttribute = (
@@ -3177,7 +3177,9 @@ procedure TPascalParserTool.ExtractNextAtom(AddAtom: boolean;
   Attr: TProcHeadAttributes);
 // add current atom and text before, then read next atom
 // if not phpWithComments in Attr then the text before will be shortened
-var LastAtomEndPos, LastStreamPos: integer;
+var
+  LastAtomEndPos: integer;
+  LastStreamPos: TFPCStreamSeekType;
 begin
   LastStreamPos:=ExtractMemStream.Position;
   if LastAtoms.Count>0 then begin

@@ -1725,8 +1725,8 @@ var
   RegionObj: PGdkRegion;
 begin
   GObject := NewGDIObject(gdiRegion);
-  R.X := X1;
-  R.Y := Y1;
+  R.X := gint16(X1);
+  R.Y := gint16(Y1);
   R.Width := X2 - X1;
   R.Height := Y2 - Y1;
 
@@ -3487,14 +3487,14 @@ function TgtkObject.GetCapture: HWND;
 var
   Widget: PGtkWidget;
   AWindow: PGtkWindow;
-  IsModal: boolean;
+  IsModal: gboolean;
 begin
   Widget:=gtk_grab_get_current;
   // for the LCL a modal window is not capturing
   if Widget<>nil then begin
     if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
       AWindow:=PGtkWindow(Widget);
-      IsModal:=(gtk_window_get_modal(AWindow) = true);
+      IsModal:=gtk_window_get_modal(AWindow);
       if IsModal then
         Widget:=nil;
     end;
@@ -4028,11 +4028,11 @@ begin
   //For Size in MM, MM = (Pixels*100)/(PPI*25.4)
 
   HORZSIZE : { Horizontal size in millimeters }
-    Result := Round((GetDeviceCaps(DC, HORZRES) * 100) /
+    Result := RoundToInt((GetDeviceCaps(DC, HORZRES) * 100) /
                     (GetDeviceCaps(DC, LOGPIXELSX) * 25.4));
 
   VERTSIZE : { Vertical size in millimeters }
-    Result := Round((GetDeviceCaps(DC, VERTRES) * 100) /
+    Result := RoundToInt((GetDeviceCaps(DC, VERTRES) * 100) /
                     (GetDeviceCaps(DC, LOGPIXELSY) * 25.4));
 
   //So long as gdk_screen_width_mm is acurate, these should be
@@ -4040,10 +4040,10 @@ begin
   //we will also have to add internal support for Papersizes etc..
 
   LOGPIXELSX : { Logical pixels per inch in X }
-    Result := Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+    Result := RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
 
   LOGPIXELSY : { Logical pixels per inch in Y }
-    Result := Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+    Result := RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
 
   SIZEPALETTE: { number of entries in color palette }
     if GetVisual then
@@ -4331,7 +4331,7 @@ begin
                   end;
                 gbPixmap:
                   If GDIPixmapObject <> nil then begin
-                     biBitCount := gdk_drawable_get_depth(GDIPixmapObject);
+                     biBitCount := word(gdk_drawable_get_depth(GDIPixmapObject));
                      gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
                   end;
                 gbImage :
@@ -4365,14 +4365,14 @@ begin
                 biXPelsPerMeter := GetDeviceCaps(0, LOGPIXELSX)
               else
                 biXPelsPerMeter :=
-                  Round((single(biWidth) / GetSystemMetrics(SM_CXSCREEN)) *
+                  RoundToInt((single(biWidth) / GetSystemMetrics(SM_CXSCREEN)) *
                         GetDeviceCaps(0, LOGPIXELSX));
 
               If GetSystemMetrics(SM_CYSCREEN) >= biHeight then
                 biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY)
               else
                 biYPelsPerMeter :=
-                  Round((Single(biHeight) / GetSystemMetrics(SM_CYSCREEN)) *
+                  RoundToInt((Single(biHeight) / GetSystemMetrics(SM_CYSCREEN))*
                         GetDeviceCaps(0, LOGPIXELSY));
 
               bmWidth := biWidth;
@@ -4692,19 +4692,19 @@ begin
     with ScrollInfo, Adjustment^ do begin
       // POS
       if (fMask and SIF_POS) <> 0 then
-        nPos := round(Value);
+        nPos := RoundToInt(Value);
       // RANGE
       if (fMask and SIF_RANGE) <> 0
       then begin
-        nMin:= round(Lower);
-        nMax:= round(Upper);
+        nMin:= RoundToInt(Lower);
+        nMax:= RoundToInt(Upper);
       end;
       // PAGE
       if (fMask and SIF_PAGE) <> 0 then
-        nPage := round(Page_Size);
+        nPage := Cardinal(Round(Page_Size));
       // TRACKPOS
       if (fMask and SIF_TRACKPOS)<>0 then
-        nTrackPos := round(Value); // don't know if this is correct
+        nTrackPos := RoundToInt(Value);
     end;
     Result := true;
   end else begin
@@ -7773,7 +7773,7 @@ begin
 
   with ScrollInfo, Adjustment^ do begin
     //writeln('SetScrollInfo Value=',Value);
-    Result := Round(Value);
+    Result := RoundToInt(Value);
     //writeln('SetScrollInfo Result=',Result);
     if (fMask and SIF_POS) <> 0
     then Value := nPos;
@@ -9036,6 +9036,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.306  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.305  2003/12/23 11:16:41  mattias
   started key combinations, fixed some range check errors
 

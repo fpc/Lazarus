@@ -1355,8 +1355,8 @@ type
 const
   { allows to add custom info in heap_mem_info, this is the size that will
     be allocated for this information }
-  extra_info_size : longint = 0;
-  exact_info_size : longint = 0;
+  extra_info_size : word = 0;
+  exact_info_size : word = 0;
   EntryMemUsed    : longint = 0;
   { function to fill this info up }
   fill_extra_info_proc : TFillExtraInfoProc = nil;
@@ -1980,8 +1980,7 @@ var
   bp: TCall;
   pl : pdword;
   pp : pheap_mem_info;
-  oldextrasize,
-  oldexactsize : longint;
+  oldextrasize, oldexactsize : word;
   old_fill_extra_info_proc : tfillextrainfoproc;
   old_display_extra_info_proc : tdisplayextrainfoproc;
 begin
@@ -2567,6 +2566,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2003/12/25 14:17:06  mattias
+  fixed many range check warnings
+
   Revision 1.25  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x

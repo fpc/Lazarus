@@ -24,8 +24,6 @@
     This unit defines a form for the lazarus environment options and a class to
     store the options in a xml file.
 
-  ToDo:
-  
 }
 unit EnvironmentOpts;
 
@@ -37,10 +35,10 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, Laz_XMLCfg,
-  ObjectInspector, ExtCtrls, StdCtrls, Spin, EditorOptions, LResources, LazConf,
-  Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, FileCtrl;
+  Classes, SysUtils, FPCAdds, Forms, Controls, Buttons, GraphType, Graphics,
+  Laz_XMLCfg, ObjectInspector, ExtCtrls, StdCtrls, Spin, EditorOptions,
+  LResources, LazConf, Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs,
+  InputHistory, LazarusIDEStrConsts, FileCtrl;
 
 const
   EnvOptsVersion: integer = 102;
@@ -3617,7 +3615,7 @@ begin
     ObjectInspectorOptions.GridBackgroundColor:=
        OIBackgroundColorButton.ButtonColor;
     ObjectInspectorOptions.DefaultItemHeight:=
-      round(OIDefaultItemHeightSpinEdit.Value);
+      RoundToInt(OIDefaultItemHeightSpinEdit.Value);
 
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;

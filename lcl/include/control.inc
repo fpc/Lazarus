@@ -455,7 +455,7 @@ end;
 Function TControl.GetTabOrder : TTabOrder;
 Begin
   If Parent <> nil then
-    Result := ListIndexOf(Parent.FTabList, Self)
+    Result := TTabOrder(ListIndexOf(Parent.FTabList, Self))
   else
     Result := -1;
 end;
@@ -2607,6 +2607,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.159  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.158  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 

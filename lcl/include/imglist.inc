@@ -538,7 +538,7 @@ begin
   Stream.WriteWord($0001);
   
   //Count of image
-  Stream.WriteWord(Count);
+  Stream.WriteWord(Word(Count));
 
   for i:=0 to Count-1 do
   begin
@@ -985,6 +985,9 @@ end;
 {
 
   $Log$
+  Revision 1.19  2003/12/25 14:17:07  mattias
+  fixed many range check warnings
+
   Revision 1.18  2003/11/08 23:42:24  mattias
   fixed unregistering imageslink
 
