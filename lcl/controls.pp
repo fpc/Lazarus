@@ -286,10 +286,11 @@ type
 
   TControlCanvas = class(TCanvas)
   private
-    FControl: Tcontrol;
+    FControl: TControl;
     FDeviceContext: HDC;
     FWindowHandle: HWND;
     procedure SetControl(AControl: TControl);
+    procedure CreateFont; override;
   protected
     procedure CreateHandle; override;
   public
@@ -1447,6 +1448,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.110  2003/03/25 10:45:40  mattias
   reduced focus handling and improved focus setting
 

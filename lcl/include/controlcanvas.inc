@@ -33,6 +33,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TControlCanvas.CreateFont;
+ ------------------------------------------------------------------------------}
+procedure TControlCanvas.CreateFont;
+begin
+  inherited CreateFont;
+  //writeln('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
+  //if Control.ClassName='TSpeedButton' then RaiseGDBException('ARRGH');
+end;
+
+{------------------------------------------------------------------------------
   Method: TControlCanvas.Create
   Params:  none
   Returns: Nothing
@@ -103,6 +113,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.4  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

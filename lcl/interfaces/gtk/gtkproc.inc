@@ -3399,7 +3399,7 @@ end;
   a generic fixed font, if THAT fails, it gets whatever font is available.
   If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
-function GetDefaultFont : PGDKFont;
+function GetDefaultFont: PGDKFont;
 var
   Style : PGTKStyle;
 begin
@@ -4015,6 +4015,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.166  2003/04/02 13:23:24  mattias
+  fixed default font
+
   Revision 1.165  2003/03/28 19:39:54  mattias
   started typeinfo for double extended
 
