@@ -7637,6 +7637,7 @@ begin
     CompilerUnitLinks:='';
     if UnitLinksValid then
       CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
+
     FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
       CompilerUnitSearchPath,
@@ -9366,6 +9367,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.629  2003/08/03 10:27:30  mattias
+  fixed fpc src defines for bsd
+
   Revision 1.628  2003/07/31 19:56:49  mattias
   fixed double messages SETLabel
 

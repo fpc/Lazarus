@@ -45,16 +45,15 @@
 }
 unit DefineTemplates;
 
-{$ifdef FPC} {$mode objfpc} {$endif}{$H+}
+{$mode objfpc}{$H+}
 
 { $Define VerboseDefineCache}
 
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, ExprEval
-  {$ifdef FPC}, Laz_XMLCfg{$endif}, AVL_Tree, Process,
-  KeywordFuncLists, FileProcs;
+  Classes, SysUtils, CodeToolsStrConsts, ExprEval, Laz_XMLCfg, AVL_Tree,
+  Process, KeywordFuncLists, FileProcs;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -2592,7 +2591,11 @@ begin
             ctsDefaultppc386TargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
           AddTemplate(NewDefTempl);
-          if (TargetOS='linux') then
+          if (TargetOS='linux')
+          or (TargetOS='freebsd')
+          or (TargetOS='netbsd')
+          or (TargetOS='openbsd')
+          then
             SrcOS:='unix'
           else
             SrcOS:=TargetOS;
@@ -2781,7 +2784,7 @@ var
       SrcOSMacroUsed: boolean;
       i: integer;
     begin
-      //  writeln('%%%Browse ',ADirPath);
+      //writeln('Browse ',ADirPath);
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
@@ -2897,13 +2900,13 @@ var
         inc(PathEnd);
       if PathEnd>PathStart then begin
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
-        //writeln('&&& FindStandardPPUSources ',ADirPath);
+        //writeln('FindStandardPPUSources A ',ADirPath);
         // search all ppu files in this directory
         if FindFirst(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
-            //writeln('&&& FindStandardPPUSources B ',UnitName);
+            //writeln('FindStandardPPUSources B ',UnitName);
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;

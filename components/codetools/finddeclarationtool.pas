@@ -3530,6 +3530,8 @@ begin
     then begin
       if Scanner.InitialValues.IsDefined('LINUX') then
         SystemAlias:='SYSLINUX'
+      else if Scanner.InitialValues.IsDefined('BSD') then
+        SystemAlias:='SYSBSD'
       else if Scanner.InitialValues.IsDefined('WIN32') then
         SystemAlias:='SYSWIN32';
     end;
