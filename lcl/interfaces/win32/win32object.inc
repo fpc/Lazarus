@@ -409,6 +409,12 @@ Begin
     LM_ATTACHMENU:
       AttachMenu(Sender);
         //SH: think of TBitmap.handle!!!!
+    LM_APPENDTEXT:
+    Begin
+      PStr:=PChar((Sender as TMemo).Text);
+      StrCat(PStr, Data);
+      SetLabel(Sender, PStr);
+    End;
     LM_SCREENINIT:
     Begin
       if Sender=nil then Handle := GetDesktopWindow
@@ -2719,6 +2725,9 @@ End;
 
 {
   $Log$
+  Revision 1.79  2003/07/30 17:41:06  mattias
+  added LM_APENDTEXT from Martin Smat
+
   Revision 1.78  2003/07/28 06:42:42  mattias
   removed debuggging SetName, Patch from Karl Brandt
 
