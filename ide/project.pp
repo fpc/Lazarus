@@ -68,6 +68,7 @@ type
      nuEmpty,   // no code
      nuUnit,    // unit
      nuForm,    // unit with form
+     nuText,
      nuCustomProgram  // program
    );
    
@@ -412,7 +413,7 @@ const
     );
     
   UnitTypeDefaultExt: array[TNewUnitType] of string = (
-      '.pas', '.pas', '.pas', '.pas'
+      '.pas', '.pas', '.pas', '.txt', '.pas'
     );
 
   DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
@@ -2240,6 +2241,9 @@ end.
 
 {
   $Log$
+  Revision 1.94  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.93  2003/02/28 15:38:00  mattias
   bookmarks are now saved also for closed files and merged when possible
 

@@ -150,7 +150,9 @@ type
   end;
 
   TDBGBreakPoints = class;
-  TDBGBreakPointsEvent = procedure(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint) of object;
+  TDBGBreakPointsEvent =
+    procedure(const ASender: TDBGBreakPoints;
+              const ABreakpoint: TDBGBreakPoint) of object;
   TDBGBreakPointsNotification = class(TDebuggerNotification)
   private
     FOnAdd:    TDBGBreakPointsEvent;
@@ -213,7 +215,8 @@ type
   protected
   public
     constructor Create;
-    property Items[const AnIndex: Integer]: TDBGBreakPointGroup read GetItem write SetItem; default;
+    property Items[const AnIndex: Integer]: TDBGBreakPointGroup
+                                            read GetItem write SetItem; default;
   end;
 
   TDBGWatchClass = class of TDBGWatch;
@@ -243,7 +246,8 @@ type
   end;
 
   TDBGWatches = class;
-  TDBGWatchesEvent = procedure(const ASender: TDBGWatches; const AWatch: TDBGWatch) of object;
+  TDBGWatchesEvent =
+       procedure(const ASender: TDBGWatches; const AWatch: TDBGWatch) of object;
   TDBGWatchesNotification = class(TDebuggerNotification)
   private
     FOnAdd:    TDBGWatchesEvent;
@@ -1471,6 +1475,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.17  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.16  2002/08/28 10:44:44  lazarus
   MG: implemented run param environment variables
 

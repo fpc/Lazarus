@@ -1,9 +1,10 @@
 object VIEWUNITS1: TVIEWUNITS1
   CAPTION = 'View Project Units'
-  COLOR = -2147483633
   CLIENTHEIGHT = 200
   CLIENTWIDTH = 325
   POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 326
+  VERTSCROLLBAR.PAGE = 201
   LEFT = 477
   HEIGHT = 200
   TOP = 412
@@ -38,9 +39,9 @@ object VIEWUNITS1: TVIEWUNITS1
   end
   object Listbox1: TLISTBOX
     ANCHORS = [aktop, akleft]
-    BORDERSTYLE = bssingle
-    TABORDER = 3
     ONCLICK = LISTBOX1CLICK
+    TABORDER = 3
+    TOPINDEX = -1
     LEFT = 10
     HEIGHT = 145
     TOP = 45

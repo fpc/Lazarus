@@ -46,6 +46,10 @@ begin
   Result := Caption;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomLabel.Notification(AComponent : TComponent;
+    Operation : TOperation);
+ ------------------------------------------------------------------------------}
 procedure TCustomLabel.Notification(AComponent : TComponent; Operation : TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -75,7 +79,7 @@ var
   R : TRect;
   DC : hDC;
 begin
-  If AutoSizing or not AutoSize then
+  If AutoSizing or (not AutoSize) or (Caption='') then
     Exit;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   AutoSizing := True;
@@ -170,6 +174,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.8  2002/10/16 17:06:33  lazarus
   MG: fixed handle allocating in TLabel
 

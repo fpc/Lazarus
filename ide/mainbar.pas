@@ -217,7 +217,7 @@ type
     itmGotoIncludeDirective: TMenuItem;
 
     itmViewInspector: TMenuItem;
-    itmViewProject: TMenuItem;
+    itmViewProjectExplorer: TMenuItem;
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
@@ -427,7 +427,6 @@ begin
   itmFileNewOther.Name:='itmFileNewOther';
   itmFileNewOther.Caption := lisMenuNewOther;
   itmFileNewOther.Graphic:=LoadPixmap('menu_new');
-  itmFileNewOther.Enabled:=false;
   mnuFile.Add(itmFileNewOther);
 
   mnuFile.Add(CreateMenuSeparator);
@@ -797,10 +796,11 @@ begin
   itmViewInspector.Caption := lisMenuViewObjectInspector;
   mnuView.Add(itmViewInspector);
 
-  itmViewProject  := TMenuItem.Create(Self);
-  itmViewProject.Name:='itmViewProject';
-  itmViewProject.Caption := lisMenuViewProjectExplorer;
-  mnuView.Add(itmViewProject);
+  itmViewProjectExplorer  := TMenuItem.Create(Self);
+  itmViewProjectExplorer.Name:='itmViewProject';
+  itmViewProjectExplorer.Caption := lisMenuViewProjectExplorer;
+  itmViewProjectExplorer.Enabled := false;
+  mnuView.Add(itmViewProjectExplorer);
 
   mnuView.Add(CreateMenuSeparator);
 
@@ -1169,7 +1169,7 @@ begin
     itmGotoIncludeDirective.ShortCut:=CommandToShortCut(ecGotoIncludeDirective);
 
     itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
-    itmViewProject.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
+    itmViewProjectExplorer.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
     itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);

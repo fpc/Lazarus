@@ -116,7 +116,8 @@ end;
 { TViewUnits }
 
 constructor TViewUnits.Create(AOwner: TComponent);	
-var  Pad : Integer;
+var
+  Pad : Integer;
 begin
   inherited Create(AOwner);
 
@@ -246,6 +247,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.14  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.13  2002/10/14 08:27:37  lazarus
   MG: view units/forms dialog size is now saved
 

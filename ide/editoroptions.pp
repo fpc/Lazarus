@@ -38,34 +38,21 @@ unit EditorOptions;
 
 interface
 
-{$define NEW_EDITOR_SYNEDIT}
-
 uses
   LCLLinux, LCLType,
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
   FileCtrl, GraphType, Graphics, Controls, Dialogs, LResources, IDEProcs,
-{$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
-{$else}
-  mwCustomEdit, mwPasSyn, mwHighlighter,
-{$endif}
   Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts;
 
 type
-{$ifdef NEW_EDITOR_SYNEDIT}
   TPreviewEditor = TSynEdit;
   TPreviewPasSyn = TSynPasSyn;
   TCustomSyn = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
-{$else}
-  TPreviewEditor = TmwCustomEdit;
-  TPreviewPasSyn = TmwPasSyn;
-  TCustomSyn = TmwCustomHighlighter;
-  TSynHighlightElement = TmwHighlightAttributes;
-{$endif}
   TCustomSynClass = class of TCustomSyn;
 
   TLazSyntaxHighlighter =
@@ -2177,7 +2164,6 @@ var a:integer;
 // GeneralCheckBoxOnClick
 begin
   if FormCreating then exit;
-  {$IFDEF NEW_EDITOR_SYNEDIT}
   // general
   SetOption(AltSetsColumnModeCheckBox,eoAltSetsColumnMode);
   SetOption(AutoIndentCheckBox,eoAutoIndent);
@@ -2196,13 +2182,9 @@ begin
   SetOption(SmartTabsCheckBox,eoSmartTabs);
   SetOption(TabsToSpacesCheckBox,eoTabsToSpaces);
   SetOption(TrimTrailingSpacesCheckBox,eoTrimTrailingSpaces);
-  {$ELSE}
-
-  {$ENDIF}
 
   for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
     if PreviewEdits[a]<>nil then begin
-      {$IFDEF NEW_EDITOR_SYNEDIT}
       // general
       if Sender=UseSyntaxHighlightCheckBox then
         if UseSyntaxHighlightCheckBox.Checked then
@@ -2213,9 +2195,6 @@ begin
       if (a in [1,2]) then
         PreviewEdits[a].Gutter.Visible:=VisibleGutterCheckBox.Checked;
       PreviewEdits[a].Gutter.ShowLineNumbers:=ShowLineNumbersCheckBox.Checked;
-      {$ELSE}
-
-      {$ENDIF}
     end;
   end;
   if CurHighlightElement<>nil then begin
@@ -2308,24 +2287,16 @@ begin
   if Sender=GutterColorButton then begin
     for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
       if PreviewEdits[a]<>nil then begin
-        {$IFDEF NEW_EDITOR_SYNEDIT}
         PreviewEdits[a].Gutter.Color:=GutterColorButton.ButtonColor;
         PreviewEdits[a].Invalidate;
-        {$ELSE}
-        PreviewEdits[a].GutterColor:=GutterColorButton.ButtonColor;
-        {$ENDIF}
       end;
     end;
   end;
   if Sender=RightMarginColorButton then begin
     for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
       if PreviewEdits[a]<>nil then begin
-        {$IFDEF NEW_EDITOR_SYNEDIT}
         PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
         PreviewEdits[a].Invalidate;
-        {$ELSE}
-
-        {$ENDIF}
       end;
     end;
   end;
