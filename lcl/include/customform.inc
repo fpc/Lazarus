@@ -908,19 +908,20 @@ end;
 
 procedure TCustomForm.UpdateActions;
 
-  procedure TraverseClients(Container: TWinControl);
+  procedure RecursiveInitiate(Container: TWinControl);
   var
-    I: Integer;
-    Control: TControl;
+    i: Integer;
+    CurControl: TControl;
   begin
-    if Container.Showing then
-      for I := 0 to Container.ControlCount - 1 do begin
-        Control := Container.Controls[I];
-        if (csActionClient in Control.ControlStyle) and Control.Visible then
-          Control.InitiateAction;
-        if Control is TWinControl then
-          TraverseClients(TWinControl(Control));
-      end;
+    if not Container.Showing then exit;
+    for i := 0 to Container.ControlCount - 1 do begin
+      CurControl := Container.Controls[i];
+      if (csActionClient in CurControl.ControlStyle)
+      and CurControl.Visible then
+        CurControl.InitiateAction;
+      if CurControl is TWinControl then
+        RecursiveInitiate(TWinControl(CurControl));
+    end;
   end;
 
 var
@@ -935,7 +936,7 @@ begin
       with Menu.Items[I] do
         if Visible then InitiateAction;
   // update all controls
-  TraverseClients(Self);
+  RecursiveInitiate(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1581,6 +1582,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.126  2004/02/10 02:00:13  mattias
+  activated Idle actions
+
   Revision 1.125  2004/02/02 17:39:10  mattias
   added TActionList - actions need testing
 

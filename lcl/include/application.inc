@@ -301,6 +301,7 @@ begin
   NotifyIdleHandler;
   if Done then begin
     // wait till something happens
+    DoIdleActions;
     Include(FFlags,AppWaiting);
     Exclude(FFlags,AppIdleEndSent);
     InterfaceObject.WaitMessage;
@@ -635,7 +636,7 @@ begin
 
 end;
 
-procedure TApplication.DoActionIdle;
+procedure TApplication.DoIdleActions;
 var
   i: Integer;
   CurForm: TCustomForm;
@@ -1160,6 +1161,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2004/02/10 02:00:13  mattias
+  activated Idle actions
+
   Revision 1.70  2004/02/02 17:39:10  mattias
   added TActionList - actions need testing
 

@@ -799,7 +799,7 @@ type
     procedure SetTitle(const AValue: String); override;
     procedure StartHintTimer(Interval: integer; TimerType: TAppHintTimerType);
     procedure UpdateVisible;
-    procedure DoActionIdle;
+    procedure DoIdleActions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
