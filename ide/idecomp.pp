@@ -210,9 +210,8 @@ begin
   inherited Create;
 end;
 
-destructor TIDEComponent.destroy;
+destructor TIDEComponent.Destroy;
 begin
-  IDECompList.Delete(self);
   inherited Destroy;
 end;
 
@@ -220,7 +219,7 @@ Function TIDEComponent._Speedbutton(aowner : TComponent; nParent : TWinControl):
 var
   Pixmap1 : TPixmap;
 Begin
-  Pixmap1 := LoadImageintoPixmap;
+  Pixmap1 := LoadImageIntoPixmap;
 
   FSpeedButton := TSpeedButton.Create(AOwner);
   with FSpeedButton do
@@ -231,7 +230,6 @@ Begin
     Enabled := True;
     Glyph := Pixmap1;
     Visible := True;
-
    end;
   Result := FSpeedButton;
 end;
@@ -324,12 +322,10 @@ initialization
 
 {$I designer/lazarus_control_images.lrs}
 
-//shane  RegCompList := TRegisteredComponentList.Create;
   RegisterStandardComponents(RegCompList);
   IdeCompList := TIDECompList.Create;
 
 finalization
-  IdeCompList.Destroy;
-//shane  RegCompList.Destroy;
+  IdeCompList.Free;
 
 end.

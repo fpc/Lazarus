@@ -21,9 +21,14 @@ unit CustomFormEditor;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
 uses
+{$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+{$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector ,
   Forms, IDEComp, JITForms,Compreg;
 
@@ -117,6 +122,8 @@ TCustomFormEditor
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; override;
+    Procedure SetFormNameAndClass(CI: TIComponentInterface; 
+      const NewFormName, NewClassName: shortstring);
     Procedure ClearSelected;
     property SelectedComponents : TComponentSelectionList 
       read FSelectedComponents write SetSelectedComponents;
@@ -220,9 +227,6 @@ Result := True;
           Result := False;
        end;//case
 end;
-
-
-
 
 
 Function TComponentInterface.GetPPropInfoByIndex(Index:Integer): PPropInfo;
@@ -527,9 +531,7 @@ begin
       Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0];
     end;
   end;
-  if FSelectedComponents.IsEqual(TheSelectedComponents) then exit;
-  FSelectedComponents.Free;
-  FSelectedComponents:=TheSelectedComponents;
+  FSelectedComponents.Assign(TheSelectedComponents);
   Obj_Inspector.Selections := FSelectedComponents;
 end;
 
@@ -604,7 +606,13 @@ Var
   DummyComponent:TComponent;
 Begin
   writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent A '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   Temp := TComponentInterface.Create;
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent B '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   if Assigned(ParentCI) then
   begin
     if (not(TComponentInterface(ParentCI).FControl is TCustomForm)) and
@@ -612,11 +620,15 @@ Begin
       Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl.Owner)
     else
       Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl)
-  end
-   else
-  Begin
+  end else begin
     //this should be a form
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent B2 '+IntToStr(GetMem_Cnt));
+{$ENDIF}
     NewFormIndex := JITFormList.AddNewJITForm;
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent B3 '+IntToStr(GetMem_Cnt));
+{$ENDIF}
     if NewFormIndex >= 0 then
       Temp.FControl := JITFormList[NewFormIndex]
     else begin
@@ -624,6 +636,9 @@ Begin
       exit;
     end;
   end;
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent C '+IntToStr(GetMem_Cnt));
+{$ENDIF}
 
   if Assigned(ParentCI) and (Temp.FControl is TControl) then
     Begin
@@ -642,6 +657,9 @@ Begin
       end;
     end;
 
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   if ParentCI <> nil then Begin
     Writeln('ParentCI <> nil');
     TempName := Temp.FControl.ClassName;
@@ -666,6 +684,9 @@ Begin
     Writeln('TempName + num = '+TempName+Inttostr(num));
   end;
 
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent E '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   if (Temp.FControl is TControl) then
   Begin
     CompLeft:=X;
@@ -686,6 +707,9 @@ Begin
     end;
   end;
 
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TCustomFormEditor.CreateComponent F '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   FComponentInterfaceList.Add(Temp);
 
   Result := Temp;
@@ -707,6 +731,17 @@ begin
   FComponentInterfaceList.Add(Temp);
 
   Result := Temp;
+end;
+
+Procedure TCustomFormEditor.SetFormNameAndClass(CI: TIComponentInterface;
+  const NewFormName, NewClassName: shortstring);
+var AComponent: TComponent;
+begin
+  AComponent:=TComponentInterface(CI).FControl;
+  if (AComponent<>nil) and (AComponent is TForm) then begin
+    JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
+    TForm(AComponent).Name:=NewFormName;
+  end;
 end;
 
 Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(

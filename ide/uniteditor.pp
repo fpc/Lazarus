@@ -25,28 +25,23 @@ unit UnitEditor;
 
 {$mode objfpc}
 {$H+}
-//{$DEFINE NEW_EDITOR}
-{$DEFINE NEW_EDITOR_SYNEDIT}
+
+{$I ide.inc}
 
 interface
 
 uses
+  {$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+  {$ENDIF}
   Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
-  Compiler, MsgView, WordCompletion, CodeTools,
-{$ifdef NEW_EDITOR_SYNEDIT}
+  Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds,SynCompletion, 
-{$else}
-  wcustomedit,mwPasSyn,
-{$endif}
   Graphics, Extctrls, Menus;
 
 type
-{$ifdef NEW_EDITOR_SYNEDIT}
-  TmwCustomEdit = TSynEdit;
-  TmwPasSyn = TSynPasSyn;
-{$endif}
   // --------------------------------------------------------------------------
 
   TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint);
@@ -72,18 +67,13 @@ type
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
     FAOwner : TComponent;
-{$ifdef NEW_EDITOR_SYNEDIT}
-    FEditor     : TSynEdit;
+    FEditor : TSynEdit;
     FCodeTemplates: TSynEditAutoComplete;
-{$else}
-    FHighlighter: TmwPasSyn;
-    FEditor     : TmwCustomEdit;
-{$endif}
     //if this is a Form or Datamodule, this is used
     FControl: TComponent;
 
     FFileName : AnsiString;
-    FUnitName : String;
+    FShortName : String;
 
     FPopUpMenu : TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
@@ -101,10 +91,10 @@ type
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
     FVisible : Boolean;
 
-    Function FindFile(Value : String) : String;
+    Function FindFile(const Value : String) : String;
 
     Function GetSource : TStrings;
-    Procedure SetSource(value : TStrings);
+    Procedure SetSource(Value : TStrings);
     Function GetCurrentCursorXLine : Integer;
     Procedure SetCurrentCursorXLine(num : Integer);
     Function GetCurrentCursorYLine : Integer;
@@ -147,7 +137,8 @@ type
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; var FG, BG: TColor);
     Function RefreshEditorSettings : Boolean;
-    procedure SetSyntaxHighlighterType(ASyntaxHighlighterType: TLazSyntaxHighlighter);
+    procedure SetSyntaxHighlighterType(
+         ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
 
@@ -172,7 +163,7 @@ type
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property Owner : TComponent read FAOwner;
     property Source : TStrings read GetSource write SetSource;
-    property UnitName : String read FUnitName write fUnitname;
+    property ShortName : String read FShortName write fShortName;
     property FileName : AnsiString read FFileName write FFilename;
     property Modified : Boolean read GetModified write SetModified;
     property ReadOnly : Boolean read GetReadOnly;
@@ -207,6 +198,8 @@ type
     FSourceEditorList : TList; // list of TSourceEditor
     FCodeTemplateModul: TSynEditAutoComplete;
     FKeyStrokes: TSynEditKeyStrokes;
+    FUnUsedEditorComponents: TList; // list of TSynEdit
+    FProcessingCommand: boolean;
 
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
@@ -235,6 +228,7 @@ type
     Procedure OpenAtCursorClicked(Sender : TObject);
     Procedure BookmarkGoTo(Value: Integer);
     Procedure BookMarkToggle(Value : Integer);
+    
   protected
     ccSelection : String;
      
@@ -278,10 +272,11 @@ type
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
+    Procedure ClearUnUsedEditorComponents(Force: boolean);
 
     Procedure DisplayFormforActivePage;
     Procedure DisplayCodeforControl(Control : TObject);
-    Procedure DisplayCodefromUnitName(UnitName : String);
+    Procedure DisplayCodefromUnitName(const UnitName : String);
 
     Procedure NewClicked(Sender: TObject);
     procedure OpenClicked(Sender : TObject);
@@ -295,7 +290,7 @@ type
     procedure ReplaceClicked(Sender : TObject);
     procedure FindAgainClicked(Sender : TObject);
 
-    Procedure NewFile(UnitName: String; Source : TStrings);
+    Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
     Procedure CloseFile(PageIndex:integer);
 
     Procedure ToggleBookmark(Value : Integer);
@@ -357,7 +352,7 @@ uses
 
 type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,
-                     ctCodeCompletion);
+                     ctIdentCompletion);
 
 const
   TSrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
@@ -371,7 +366,7 @@ var
   scompl : TSynBaseCompletion;  //used in ccexecute and cccomplete
   CurrentCompletionType: TCompletionType;
   GotoDialog : TfrmGoto;
-  CodeCompletionTimer : TTimer;
+  IdentCompletionTimer : TTimer;
   AWordCompletion : TWordCompletion;
 
 
@@ -384,7 +379,7 @@ var
 
 constructor TSourceEditor.Create(AOwner : TComponent; AParent : TWinControl);
 Begin
-writeln('TSourceEditor.Create A ',AOwner.Classname,' ',AParent.Classname);
+//writeln('TSourceEditor.Create A ',AOwner.ClassName);
   inherited Create;
   FAOwner := AOwner;
 
@@ -393,18 +388,22 @@ writeln('TSourceEditor.Create A ',AOwner.Classname,' ',AParent.Classname);
   FExecutionLine:=-1;
 
   FControl := nil;
-writeln('TSourceEditor.Create B ');
+//writeln('TSourceEditor.Create B ');
   CreateEditor(AOwner,AParent);
-writeln('TSourceEditor.Create END ');
+//writeln('TSourceEditor.Create END ');
 end;
 
 destructor TSourceEditor.Destroy;
 begin
-writeln('TSourceEditor.Destroy A ',FEditor.Name);
-  FEditor.Free;
-writeln('TSourceEditor.Destroy B ');
+//writeln('TSourceEditor.Destroy A ',FEditor.Name);
+  if (FAOwner<>nil) and (FEditor<>nil) then begin
+    FEditor.Visible:=false;
+    FEditor.Parent:=nil;
+    TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
+  end;
+//writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
-writeln('TSourceEditor.Destroy END ');
+//writeln('TSourceEditor.Destroy END ');
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
@@ -705,14 +704,14 @@ Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
 var
   Y,I : Integer;
   P: TPoint;
-  Texts, Texts2, TheName : String;
+  Texts, Texts2 : String;
   Handled: boolean;
 Begin
   Handled:=true;
   case Command of
-  ecCodeCompletion :
+  ecIdentCompletion :
     if TCustomSynEdit(Sender).ReadOnly=false then begin
-      CurrentCompletionType:=ctCodeCompletion;
+      CurrentCompletionType:=ctIdentCompletion;
       TextS := FEditor.LineText;
       i := FEditor.CaretX - 1;
       if i > length(TextS) then
@@ -759,44 +758,6 @@ Begin
   ecReplace:
     StartFindAndReplace(true);
 
-  ecFindProcedureMethod :
-    Begin
-      //jump down to the procedure definition
-      Texts := TextUnderCursor;  //this should be a procedure name.
-      GotoMethod(Texts);
-    end;
-
-  ecFindProcedureDefinition :
-    Begin
-      Y := CurrentCursorYLine;
-      Texts2 := Lowercase(Source.Strings[Y-1]);
-      Writeln('The source line = '+Texts2);
-      I := pos('function',Texts2);
-      if I = 0 then
-      I := pos('procedure',Texts2);
-      While (I = 0) and (Y > 0) do begin
-        dec(Y);
-        Texts2 := Lowercase(Source.Strings[Y-1]);
-        Writeln('The source line = '+Texts2);
-        I := pos('function ',Texts2);
-        if I = 0 then
-          I := pos('procedure ',Texts2);
-      end;
-      if I <> 0 then
-      Begin
-        TheName := '';
-        I := pos('.',Texts2);
-        inc(i);
-        while (not(Texts2[i] in [';',' ','('])) do
-          Begin
-            TheName := TheName + Texts2[i];
-            inc(i);
-          end;
-        Writeln('Thename = '+TheName);
-        GotoMethodDeclaration(TheName);
-      end;
-     end;
-
   ecGotoLineNumber :
     begin 
       GotoDialog.Edit1.Text:='';
@@ -819,8 +780,8 @@ Begin
       else
         Texts[CurrentCursorXLine] := '.';
       Source.Strings[Y-1] := Texts;
-      CodeCompletionTimer.OnTimer := @CCOnTimer;
-      CodeCompletionTimer.Enabled := True;
+      IdentCompletionTimer.OnTimer := @CCOnTimer;
+      IdentCompletionTimer.Enabled := True;
     end;
     
   else
@@ -930,7 +891,7 @@ end;
 procedure TSourceEditor.SetSyntaxHighlighterType(
   ASyntaxHighlighterType: TLazSyntaxHighlighter);
 begin
-  if EditorOPts.UseSyntaxHighlight then begin
+  if EditorOpts.UseSyntaxHighlight then begin
     case ASyntaxHighlighterType of
       lshFreePascal,lshDelphi:
         FEditor.Highlighter:=aHighlighter;
@@ -939,7 +900,6 @@ begin
     end;
   end else FEditor.Highlighter:=nil;
   if ASyntaxHighlighterType<>fSyntaxHighlighterType then begin
-
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
 end;
@@ -968,7 +928,7 @@ Begin
   EditorOpts.GetSynEditSettings(FEditor);
 end;
 
-Function TSourceEditor.FindFile(Value : String) : String;
+Function TSourceEditor.FindFile(const Value : String) : String;
 var
   Found : Boolean;
   DirDelimiter : String;
@@ -980,7 +940,7 @@ Begin
   Found := False;
   DirDelimiter := '/';
   SearchDir := TSourceNotebook(Owner).SearchPaths;
-  Writeln('Searcvhdir is '+Searchdir);
+  Writeln('Searchdir is '+Searchdir);
   Num := pos(';',SearchDir);
   While (not Found) and (SearchDir <> '') do
   Begin
@@ -1028,10 +988,8 @@ begin
   Browser := TstringList.Create;
   Browser.LoadFromFile(ExtractFilePath(Application.Exename)+'browser.log');
 
-
-
   For I := 0 to Browser.Count-1 do
-    if Browser.strings[I] = symtable+uppercase(Unitname) then
+    if Browser.strings[I] = symtable+uppercase(Shortname) then
        break;
 
   if I >=Browser.Count-1 then Exit;
@@ -1057,7 +1015,7 @@ begin
   //find ***TEXTS***
   Found := False;
   I := UnitStart+1;
-  While (Browser.strings[I] <> symtable+uppercase(Unitname)) and (not found) do
+  While (Browser.strings[I] <> symtable+uppercase(Shortname)) and (not found) do
      if Browser.Strings[I] = Level1+Texts+'***' then
         Found := true
         else
@@ -1103,52 +1061,45 @@ End;
 
 Procedure TSourceEditor.ccOnTimer(sender : TObject);
 Begin
-  CodeCompletionTimer.Enabled := False;
+  IdentCompletionTimer.Enabled := False;
 //  FEditor.KeyDown(FEditor,word(' '),[ssCtrl]);
 End;
 
-
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
-var OldSource: TStringList;
+type
+  bytearray = array[0..10000] of byte;
+var
   NewName: string;
   i: integer;
 Begin
-  OldSource:=TStringList.Create;
-  if assigned(FEditor) then Begin
-writeln('TSourceEditor.CreateEditor  freeing old FEditor');
-    OldSource.Assign(FEditor.Lines);
-    NewName:=FEditor.Name;
-    FEditor.Free;
-    FEditor:=nil;
-  end else begin
+writeln('TSourceEditor.CreateEditor  A ');
+  if not assigned(FEditor) then Begin
     i:=0;
     repeat
       inc(i);
       NewName:='SynEdit'+IntToStr(i);
-    until (FAOwner.FindComponent(NewName)=nil);
+    until (AOwner.FindComponent(NewName)=nil);
+    FEditor:=TSynEdit.Create(AOwner);
+    with FEditor do begin
+      Name:=NewName;
+      Parent := AParent;
+      Align := alClient;
+      BookMarkOptions.EnableKeys := false;
+      OnStatusChange := @EditorStatusChanged;
+      OnProcessUserCommand := @ProcessUserCommand;
+      OnCommandProcessed := @UserCommandProcessed;
+      OnReplaceText := @OnReplace;
+      OnGutterClick := @Self.OnGutterClick;
+      OnSpecialLineColors:=@OnEditorSpecialLineColor;
+      Show;
+    end;
+    if FCodeTemplates<>nil then
+      FCodeTemplates.AddEditor(FEditor);
+    aCompletion.AddEditor(FEditor);
+    RefreshEditorSettings;
+  end else begin
+    FEditor.Parent:=AParent;
   end;
-
-  FEditor:=TSynEdit.Create(FAOwner);
-writeln('TSourceEditor.CreateEditor  FEditorName="',NewName,'"');  
-  with FEditor do begin
-    Name:=NewName;
-    Parent := AParent;
-    Align := alClient;
-    BookMarkOptions.EnableKeys := false;
-    OnStatusChange := @EditorStatusChanged;
-    OnProcessUserCommand := @ProcessUserCommand;
-    OnCommandProcessed := @UserCommandProcessed;
-    OnReplaceText := @OnReplace;
-    OnGutterClick := @Self.OnGutterClick;
-    OnSpecialLineColors:=@OnEditorSpecialLineColor;
-    Show;
-  end;
-  if FCodeTemplates<>nil then
-    FCodeTemplates.AddEditor(FEditor);
-  RefreshEditorSettings;
-  aCompletion.AddEditor(FEditor);
-  FEditor.Lines.Assign(OldSource);
-  OldSource.Free;
   FEditor.SetFocus;
 end;
 
@@ -1296,6 +1247,7 @@ var
 begin
   inherited Create(AOwner);
   Caption := 'Lazarus Source Editor';
+  FProcessingCommand := false;
 
   if (EnvironmentOptions.SaveWindowPositions) 
   and (EnvironmentOptions.WindowPositionsValid) then begin
@@ -1310,6 +1262,7 @@ begin
   FMainIDE := AOwner;
 
   FSourceEditorList := TList.Create;
+  FUnUsedEditorComponents := TList.Create;
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
     if FileExists(EditorOpts.CodeTemplateFilename) then
@@ -1405,17 +1358,20 @@ begin
 
   GotoDialog := TfrmGoto.Create(self);
 
-  CodeCompletionTimer := TTimer.Create(self);
-  CodeCompletionTimer.Enabled := False;
-  CodeCompletionTimer.Interval := 500;
+  IdentCompletionTimer := TTimer.Create(self);
+  IdentCompletionTimer.Enabled := False;
+  IdentCompletionTimer.Interval := 500;
 end;
 
 destructor TSourceNotebook.Destroy;
 var i: integer;
 begin
-writeln('[TSourceNotebook.Destroy]');
+//writeln('[TSourceNotebook.Destroy]');
+  FProcessingCommand:=false;
   for i:=FSourceEditorList.Count-1 downto 0 do
     Editors[i].Free;
+  ClearUnUsedEditorComponents(true);
+  FUnUsedEditorComponents.Free;
   if Notebook<>nil then begin
     Notebook.Free;
     NoteBook:=nil;
@@ -1524,7 +1480,7 @@ begin
         end;
       end;
 
-    ctCodeCompletion,ctTemplateCompletion:
+    ctIdentCompletion,ctTemplateCompletion:
       begin
         // search CurrentString in bold words (words after #3'B')
         CurStr:=sCompl.CurrentString;
@@ -1553,7 +1509,7 @@ var
 Begin
   if sCompl=nil then exit;
   case CurrentCompletionType of
-    ctTemplateCompletion, ctCodeCompletion:
+    ctTemplateCompletion, ctIdentCompletion:
       begin
         // the completion is the bold text between #3'B' and #3'b'
         p1:=Pos(#3,Value);
@@ -1625,7 +1581,7 @@ Begin
   S := TStringList.Create;
   Prefix := sCompl.CurrentString;
   case CurrentCompletionType of
-   ctCodeCompletion:
+   ctIdentCompletion:
     begin
       ccSelection := Prefix;
       with GetActiveSE.EditorComponent do begin
@@ -1759,6 +1715,7 @@ End;
 
 Function TSourceNotebook.CreateNotebook : Boolean;
 Begin
+  ClearUnUsedEditorComponents(false);
   Result := False;
   if not assigned(Notebook) then
     Begin
@@ -1781,6 +1738,15 @@ Begin
 
     end;
 End;
+
+Procedure TSourceNotebook.ClearUnUsedEditorComponents(Force: boolean);
+var i:integer;
+begin
+  if not Force and FProcessingCommand then exit;
+  for i:=0 to FUnUsedEditorComponents.Count-1 do
+    TSynEdit(FUnUsedEditorComponents[i]).Free;
+  FUnUsedEditorComponents.Clear;
+end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
 
@@ -1888,29 +1854,30 @@ end;
 
 Procedure TSourceNotebook.EditorChanged(sender : TObject);
 Begin
+  ClearUnUsedEditorComponents(false);
   UpdateStatusBar;
 End;
 
-Function TSourceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
+Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
 Begin
-writeln('TSourceNotebook.NewSe A');
+writeln('TSourceNotebook.NewSE A ');
   if CreateNotebook then Pagenum := 0;
   if Pagenum < 0 then begin
     // add a new page right to the current
     Pagenum := Notebook.PageIndex+1;
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
   end;
-writeln('TSourceNotebook.NewSe B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
+writeln('TSourceNotebook.NewSE B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
-writeln('TSourceNotebook.NewSe C');
+writeln('TSourceNotebook.NewSE C ');
   FSourceEditorList.Add(Result);
-  Result.FUnitName:=Notebook.Pages[PageNum];
+  Result.FShortName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
-writeln('TSourceNotebook.NewSe end');
+writeln('TSourceNotebook.NewSE end ');
 end;
 
 Procedure TSourceNotebook.DisplayCodeforControl(Control : TObject);
@@ -1931,7 +1898,7 @@ Begin
      DisplayPage(TSourceEditor(FSOurceEditorList.Items[I]));
 End;
 
-Procedure TSourceNotebook.DisplayCodefromUnitName(UnitName : String);
+Procedure TSourceNotebook.DisplayCodefromUnitName(const UnitName : String);
 Var
    I,X : Integer;
 Begin
@@ -1939,7 +1906,7 @@ Begin
    if X = 0 then Exit;
    I := 0;
    while  (I < X)
-   and (Uppercase(TSourceEditor(FSourceEditorList.Items[I]).Unitname)
+   and (Uppercase(TSourceEditor(FSourceEditorList.Items[I]).Shortname)
      <> Uppercase(Unitname)) do
    Begin
      inc(i);
@@ -1966,7 +1933,7 @@ Begin
         Begin
           With Notebook.Page[X] do
           for I := 0 to ControlCount-1 do
-               if Controls[I] is TmwCustomEdit then
+               if Controls[I] is TSynEdit then
                   Begin
                      TempEditor := Controls[I];
                      Break;
@@ -1990,8 +1957,8 @@ Begin
   end
   else
   Begin  //the SE isn't on a page so we need to create a page for it.
-    Notebook.PageIndex := Notebook.Pages.Add(SE.UnitName);
-    SE.ReParent(Notebook.Page[Notebook.Pageindex]);
+    Notebook.PageIndex := Notebook.Pages.Add(SE.ShortName);
+    SE.ReParent(Notebook.Page[Notebook.PageIndex]);
   end;
 end;
 
@@ -2000,6 +1967,7 @@ function TSourceNotebook.FindSourceEditorWithPageIndex(
 var I:integer;
   TempEditor : TControl;
 begin
+  ClearUnUsedEditorComponents(false);
   Result := nil;
   if (FSourceEditorList=nil)
     or (Notebook=nil) 
@@ -2007,7 +1975,7 @@ begin
   TempEditor:=nil;
   with Notebook.Page[PageIndex] do
     for I := 0 to ControlCount-1 do
-      if Controls[I] is TmwCustomEdit then
+      if Controls[I] is TSynEdit then
         Begin
           TempEditor := Controls[I];
           Break;
@@ -2028,7 +1996,6 @@ Begin
     or (Notebook=nil) or (Notebook.PageIndex<0) then exit;
   Result:= FindSourceEditorWithPageIndex(Notebook.PageIndex);
 end;
-
 
 Function TSourceNotebook.Empty : Boolean;
 Begin
@@ -2185,41 +2152,46 @@ begin
   BookMarkGoTo(Value);
 End;
 
-Procedure TSourceNotebook.NewFile(UnitName: String; Source : TStrings);
+Procedure TSourceNotebook.NewFile(const NewShortName: String; 
+  ASource : TCodeBuffer);
 Var
   TempEditor : TSourceEditor;
 Begin
   //create a new page
+//writeln('[TSourceNotebook.NewFile] A ');
   TempEditor := NewSE(-1);
-  TempEditor.Unitname := Unitname;
-  TempEditor.Source := Source;
+//writeln('[TSourceNotebook.NewFile] B ');
+  TempEditor.ShortName := NewShortName;
+//writeln('[TSourceNotebook.NewFile] C ');
+  ASource.AssignTo(TempEditor.Source);
+//writeln('[TSourceNotebook.NewFile] D ');
   Notebook.Pages[Notebook.PageIndex] :=
-    FindUniquePageName(UnitName,Notebook.PageIndex);
-writeln('[TSourceNotebook.NewFile] end');
+    FindUniquePageName(NewShortName,Notebook.PageIndex);
+//writeln('[TSourceNotebook.NewFile] end');
 end;
 
 Procedure TSourceNotebook.CloseFile(PageIndex:integer);
 var TempEditor: TSourceEditor;
 Begin
-writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
+//writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
   TempEditor:= FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   TempEditor.Close;
   FSourceEditorList.Remove(TempEditor);
   TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
-writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
+//writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     Notebook.Pages.Delete(PageIndex);
-writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
+//writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
     UpdateStatusBar;
   end else begin
-writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
+//writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
     Notebook.Free;
-writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
+//writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
     Notebook:=nil;
     Hide;
   end;
-writeln('TSourceNotebook.CloseFile END');
+//writeln('TSourceNotebook.CloseFile END');
 end;
 
 Procedure TSourceNotebook.NewClicked(Sender: TObject);
@@ -2234,7 +2206,7 @@ end;
 
 Function TSourceNotebook.ActiveUnitName : String;
 Begin
-  Result := GetActiveSE.UnitName;
+  Result := GetActiveSE.ShortName;
 end;
 
 Function TSourceNotebook.ActiveFileName : AnsiString;
@@ -2321,11 +2293,11 @@ begin
    For I := 0 to  FSourceEditorList.Count-1 do
        Begin
         TempEditor := TSourceEditor(FSourceEditorList.Items[i]);
-        if Uppercase(TempEditor.UnitName) = Uppercase(Unitname) then
+        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
            Break;
        End;
 
-        if Uppercase(TempEditor.UnitName) = Uppercase(Unitname) then
+        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
         Result := TempEditor.Source
           else
         Result := nil;
@@ -2342,11 +2314,11 @@ begin
    For I := 0 to  FSourceEditorList.Count-1 do
        Begin
         TempEditor := TSourceEditor(FSourceEditorList.Items[i]);
-        if Uppercase(TempEditor.UnitName) = Uppercase(Unitname) then
+        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
            Break;
        End;
 
-        if Uppercase(TempEditor.UnitName) = Uppercase(Unitname) then
+        if Uppercase(TempEditor.ShortName) = Uppercase(Unitname) then
         Begin
           TempEditor.Source := NewSource;
           Result := True;
@@ -2427,10 +2399,14 @@ Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 var Handled: boolean;
 begin
+  FProcessingCommand:=true;
   if Assigned(FOnProcessUserCommand) then begin
     Handled:=false;
     FOnProcessUserCommand(Self,Command,Handled);
-    if Handled then exit;
+    if Handled then begin
+      FProcessingCommand:=false;
+      exit;
+    end;
   end;
 
   Handled:=true;
@@ -2469,6 +2445,7 @@ begin
     Handled:=false;
   end;  //case
   if Handled then Command:=ecNone;
+  FProcessingCommand:=false;
 end;
 
 Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
@@ -2595,7 +2572,7 @@ initialization
   aCompletion:=nil;
   scompl:=nil;
   GotoDialog:=nil;
-  CodeCompletionTimer:=nil;
+  IdentCompletionTimer:=nil;
   AWordCompletion:=nil;
 
 {$I designer/bookmark.lrs}

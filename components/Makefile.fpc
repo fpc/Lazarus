@@ -9,7 +9,7 @@ version=0.7a
 
 [target]
 #dirs=synedit mwedit
-dirs=synedit 
+dirs=synedit codetools
 
 [install]
 
@@ -29,4 +29,5 @@ makefile: Makefile.fpc
 makefiles: makefile
         $(MAKE) -C mwedit makefiles
         $(MAKE) -C synedit makefiles
+        $(MAKE) -C codetools makefiles
 

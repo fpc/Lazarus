@@ -1,11 +1,11 @@
 {
  /***************************************************************************
-                         project.pp  -  project utility class file
-                             -------------------
-                   TProject is responsible for managing a complete project.
+                  project.pp  -  project utility class file
+                  -----------------------------------------
+          TProject is responsible for managing a complete project.
 
 
-                   Initial Revision  : Sun Mar 28 23:15:32 CST 1999
+              Initial Revision  : Sun Mar 28 23:15:32 CST 1999
 
 
  ***************************************************************************/
@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, XMLCfg, LazConf, CompilerOptions, FileCtrl,
-  CodeTools, Forms, Controls, EditorOptions, Dialogs, IDEProcs;
+  CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs, IDEProcs;
 
 type
   //---------------------------------------------------------------------------
@@ -47,8 +47,8 @@ type
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property EditorIndex: integer read fEditorIndex write fEditorIndex;
     property ID:integer read fID write fID;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
   TProjectBookmarkList = class
@@ -67,8 +67,8 @@ type
     function Add(ABookmark: TProjectBookmark):integer;
     procedure DeleteAllWithEditorIndex(EditorIndex:integer);
     function IndexOfID(ID:integer):integer;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
 
@@ -79,8 +79,8 @@ type
     // ToDo: conditions, active/non active ...
   public
     property LineNumber:integer read fLineNumber write fLineNumber;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
  end;
 
   TProjectBreakPointList = class
@@ -97,8 +97,8 @@ type
     procedure Delete(Index:integer);
     procedure Clear;
     function Add(ABreakPoint: TProjectBreakPoint):integer;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
 
@@ -127,7 +127,7 @@ type
     fBreakpoints: TProjectBreakPointList;
     fCursorPos: TPoint;
     fEditorIndex: integer;
-    fFilename: String;
+    fFileName: string;
     fForm: TComponent;
     fFormName: string; // classname is always T<fFormName>
         // this attribute contains the formname even if the unit is not loaded
@@ -139,30 +139,36 @@ type
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     fOnUnitNameChange: TOnUnitNameChange;
     fReadOnly:  Boolean;
-    fSource: TSourceLog;
+    fSource: TCodeBuffer;
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
     fUnitName: String;
 
     function GetHasResources:boolean;
-    procedure SetUnitName(NewUnitName:string);
+    procedure SetUnitName(const NewUnitName:string);
+    function GetFileName: string;
+    procedure SetReadOnly(const NewValue: boolean);
+    procedure SetSource(ABuffer: TCodeBuffer);
   public
-    constructor Create;
+    constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
 
     function ReadUnitSource(ReadUnitName:boolean): TModalResult;
+    procedure ReadUnitNameFromSource;
     function WriteUnitSource: TModalResult;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; Path: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; Path: string);
+    function WriteUnitSourceToFile(const AFileName: string): TModalResult;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure Clear;
-    procedure CreateStartCode(NewUnitType: TNewUnitType);
+    procedure CreateStartCode(NewUnitType: TNewUnitType;
+         const NewUnitName: string);
 
     { Properties }
     property Breakpoints: TProjectBreakPointList
         read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property EditorIndex:integer read fEditorIndex write fEditorIndex;
-    property Filename: String read fFilename write fFilename;
+    property Filename: String read GetFilename;
     property Form: TComponent read fForm write fForm;
     property FormName: string read fFormName write fFormName;
     property HasResources: boolean read GetHasResources write fHasResources;
@@ -175,12 +181,13 @@ type
         read fOnLoadSaveFilename write fOnLoadSaveFilename;
     property OnUnitNameChange: TOnUnitNameChange
         read fOnUnitNameChange write fOnUnitNameChange;
-    property ReadOnly: Boolean read fReadOnly write fReadOnly;
-    property Source: TSourceLog read fSource write fSource;
+    property ReadOnly: Boolean read fReadOnly write SetReadOnly;
+    property Source: TCodeBuffer read fSource write SetSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
         read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
+    function IsVirtual: boolean;
   end;
 
 
@@ -210,11 +217,11 @@ type
 
     function GetUnits(Index:integer):TUnitInfo;
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
-    procedure SetProjectFile(NewProjectFilename: string);
+    procedure SetProjectFile(const NewProjectFilename: string);
     function OnUnitFileBackup(const Filename:string;
                               IsPartOfProject:boolean):TModalResult;
     function GetProjectInfoFile:string;
-    procedure SetProjectInfoFile(NewFilename:string);
+    procedure SetProjectInfoFile(const NewFilename:string);
     procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
        const OldUnitName, NewUnitName: string;  var Allowed: boolean);
@@ -227,11 +234,12 @@ type
 
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
     function UnitCount:integer;
-    function NewUniqueUnitName:string;
+    function NewUniqueUnitName(NewUnitType:TNewUnitType):string;
+    function NewUniqueFormName(NewUnitType:TNewUnitType):string;
     procedure AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
     procedure RemoveUnit(Index:integer);
     function IndexOf(AUnitInfo: TUnitInfo):integer;
-    function IndexOfUnitWithName(AUnitName:string;
+    function IndexOfUnitWithName(const AnUnitName:string;
        OnlyProjectUnits:boolean):integer;
     function IndexOfUnitWithForm(AForm: TComponent;
        OnlyProjectUnits:boolean):integer;
@@ -241,14 +249,13 @@ type
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure Clear;
     function SomethingModified: boolean;
-    function AddCreateFormToProjectFile(AClassName,AName:string):boolean;
-    function RemoveCreateFormFromProjectFile(AClassName,AName:string):boolean;
-    function FormIsCreatedInProjectFile(AClassname,AName:string):boolean;
-    function UnitIsUsed(AUnitName:string):boolean;
-    function GetResourceFilename(AnUnitInfo: TUnitInfo; Index:integer):string;
-    function SearchIncludeFile(AnUnitInfo: TUnitInfo; Filename:string):string;
-    function SearchFile(Filename,SearchPaths,InitialDir:string):string;
-    function SearchResourceFilename(AnUnitInfo: TUnitInfo):string;
+    function AddCreateFormToProjectFile(const AClassName,AName:string):boolean;
+    function RemoveCreateFormFromProjectFile(const AClassName,AName:string):boolean;
+    function FormIsCreatedInProjectFile(const AClassname,AName:string):boolean;
+    function UnitIsUsed(const ShortUnitName:string):boolean;
+    function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
+    function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
+    function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
 
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
@@ -295,17 +302,21 @@ const
     );
 
   ProjectDefaultExt : array[TProjectType] of string = (
-      '.lpr','.pp','.pp'
+      '.lpr','.pas','.pas'
+    );
+    
+  UnitTypeDefaultExt: array[TNewUnitType] of string = (
+      '.pas', '.pas', '.pas', '.pas'
     );
 
 
-function ProjectTypeNameToType(s:string): TProjectType;
+function ProjectTypeNameToType(const s:string): TProjectType;
 
 
 implementation
 
 
-function ProjectTypeNameToType(s:string): TProjectType;
+function ProjectTypeNameToType(const s:string): TProjectType;
 begin
   for Result:=Low(TProjectType) to High(TProjectType) do
     if (lowercase(ProjectTypeNames[Result])=lowercase(s)) then exit;
@@ -329,7 +340,7 @@ begin
 end;
 
 procedure TProjectBookmark.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 begin
   XMLConfig.SetValue(Path+'ID',ID);
   XMLConfig.SetValue(Path+'CursorPosX',CursorPos.X);
@@ -338,7 +349,7 @@ begin
 end;
 
 procedure TProjectBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 begin
   ID:=XMLConfig.GetValue(Path+'ID',-1);
   CursorPos.X:=XMLConfig.GetValue(Path+'CursorPosX',0);
@@ -414,7 +425,7 @@ begin
 end;
 
 procedure TProjectBookmarkList.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 var a:integer;
 begin
   XMLConfig.SetValue(Path+'Bookmarks/Count',Count);
@@ -423,7 +434,7 @@ begin
 end;
 
 procedure TProjectBookmarkList.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 var a,NewCount:integer;
   NewBookmark:TProjectBookmark;
 begin
@@ -440,13 +451,13 @@ end;
 { TProjectBreakPoint }
 
 procedure TProjectBreakPoint.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 begin
   XMLConfig.SetValue(Path+'LineNumber',LineNumber);
 end;
 
 procedure TProjectBreakPoint.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 begin
   LineNumber:=XMLConfig.GetValue(Path+'LineNumber',-1);
 end;
@@ -502,7 +513,7 @@ begin
 end;
 
 procedure TProjectBreakPointList.SaveToXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 var a:integer;
 begin
   XMLConfig.SetValue(Path+'BreakPoints/Count',Count);
@@ -511,7 +522,7 @@ begin
 end;
 
 procedure TProjectBreakPointList.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
-  Path: string);
+  const Path: string);
 var a,NewCount:integer;
   NewBreakPoint:TProjectBreakPoint;
 begin
@@ -533,13 +544,14 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo Constructor
  ------------------------------------------------------------------------------}
-constructor TUnitInfo.Create;
+constructor TUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
   inherited Create;
   Assert(False, 'Project Unit Info Class Created');
-  fSource := TSourceLog.Create('');
   fBreakPoints:=TProjectBreakPointList.Create;
   Clear;
+  fSource := ACodeBuffer;
+  if fSource<>nil then fFileName:=fSource.Filename else FFileName:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -548,8 +560,6 @@ end;
 destructor TUnitInfo.Destroy;
 begin
   fBreakPoints.Free;
-  fSource.Free;
-
   inherited Destroy;
 end;
 
@@ -560,28 +570,52 @@ function TUnitInfo.WriteUnitSource: TModalResult;
 var
   ACaption:string;
   AText:string;
-  fs: TFileStream;
 begin
+  if fSource=nil then begin
+    Result:=mrOk;
+    exit;
+  end;
   if Assigned(fOnFileBackup) then begin
     Result:=fOnFileBackup(fFilename,IsPartOfProject);
     if Result=mrAbort then exit;
   end;
   repeat
-    try
-      fs:=TFileStream.Create(fFilename,fmCreate);
-      try
-        fs.Write(Source.Source[1],Length(Source.Source));
-      finally
-        fs.Free;
-      end;
-    except
+    if not fSource.Save then begin
       ACaption:='Write error';
-      AText:='Unable to write file "'+fFilename+'"!';
+      AText:='Unable to write file "'+Filename+'"!';
       Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
          ,MB_ABORTRETRYIGNORE);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
-    end;
+    end else
+      Result:=mrOk;
+  until Result<>mrRetry;
+  Result:=mrOk;
+end;
+
+function TUnitInfo.WriteUnitSourceToFile(const AFileName: string): TModalResult;
+var
+  ACaption:string;
+  AText:string;
+begin
+  if fSource=nil then begin
+    Result:=mrOk;
+    exit;
+  end;
+  if Assigned(fOnFileBackup) then begin
+    Result:=fOnFileBackup(fFilename,false);
+    if Result=mrAbort then exit;
+  end;
+  repeat
+    if not fSource.SaveToFile(AFileName) then begin
+      ACaption:='Write error';
+      AText:='Unable to write file "'+AFilename+'"!';
+      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
+         ,MB_ABORTRETRYIGNORE);
+      if Result=mrAbort then exit;
+      if Result=mrIgnore then Result:=mrOk;
+    end else
+      Result:=mrOk;
   until Result<>mrRetry;
   Result:=mrOk;
 end;
@@ -589,34 +623,34 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo ReadUnitSource
  ------------------------------------------------------------------------------}
-function TUnitInfo.ReadUnitSource(ReadUnitName:boolean): TmodalResult;
-var UnitNameStart,UnitNameEnd:integer;
+function TUnitInfo.ReadUnitSource(ReadUnitName:boolean): TModalResult;
+var 
   ACaption:string;
   AText:string;
-  fs: TFileStream;
-  s: string;
+  NewSource: TCodeBuffer;
 begin
   repeat
-    try
-      fs:=TFileStream.Create(fFilename,fmOpenRead);
-      try
-        Setlength(s,fs.Size);
-        fs.Read(s[1],Length(s));
-        Source.Source:=s;
-      finally
-        fs.Free;
-      end;
-    except
+    NewSource:=CodeToolBoss.LoadFile(fFilename);
+    if NewSource=nil then begin
       ACaption:='Read error';
       AText:='Unable to read file "'+fFilename+'"!';
       Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
          ,MB_ABORTRETRYIGNORE);
-      if Result in [mrAbort,mrIgnore] then exit;
+      if Result in [mrAbort,mrIgnore] then
+        exit;
+    end else begin
+      fSource:=NewSource;
+      Result:=mrOk;
     end;
   until Result<>mrRetry;
-  if ReadUnitName then
-    fUnitName:=FindUnitNameInSource(Source.Source,UnitNameStart,UnitNameEnd);
+  if ReadUnitName then 
+    fUnitName:=CodeToolBoss.GetSourceName(fSource);
   Result:=mrOk;
+end;
+
+procedure TUnitInfo.ReadUnitNameFromSource;
+begin
+  fUnitName:=CodeToolBoss.GetSourceName(fSource);
 end;
 
 {------------------------------------------------------------------------------
@@ -636,7 +670,7 @@ begin
   fLoaded := false;
   fModified := false;
   fReadOnly := false;
-  fSource.Clear;
+  if fSource<>nil then fSource.Clear;
   fSyntaxHighlighter := lshFreePascal;
   fTopLine := -1;
   fUnitName := '';
@@ -646,7 +680,7 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo SaveToXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; Path: string);
+procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var AFilename:string;
 begin
   XMLConfig.SetValue(Path+'CursorPos/X',fCursorPos.X);
@@ -671,7 +705,7 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; Path: string);
+procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;const Path: string);
 var AFilename: string;
 begin
   CursorPos.X:=XMLConfig.GetValue(Path+'CursorPos/X',-1);
@@ -693,10 +727,8 @@ begin
   fBreakpoints.LoadFromXMLConfig(XMLConfig,Path);
 end;
 
-procedure TUnitInfo.SetUnitName(NewUnitName:string);
-var NewIncludeFilename:string;
-  IncludeStart,IncludeEnd:integer;
-  Allowed:boolean;
+procedure TUnitInfo.SetUnitName(const NewUnitName:string);
+var Allowed:boolean;
 begin
   if fUnitName<>NewUnitName then begin
     if NewUnitName<>'' then begin
@@ -704,13 +736,9 @@ begin
       if Assigned(fOnUnitNameChange) then
         fOnUnitNameChange(Self,fUnitName,NewUnitName,Allowed);
       if not Allowed then exit;
-      RenameUnitInSource(Source,NewUnitName);
-      if FindIncludeDirective(Source.Source,'initialization',1
-         ,IncludeStart,IncludeEnd) then
-      begin
-        NewIncludeFilename:=NewUnitName+ResourceFileExt;
-        Source.Replace(IncludeStart,IncludeEnd-IncludeStart,
-              '{$I '+NewIncludeFilename+'}');
+      if fSource<>nil then begin
+        CodeToolBoss.RenameSource(fSource,NewUnitName);
+        CodeToolBoss.RenameMainInclude(fSource,NewUnitName+'.lrs',true);
       end;
       fUnitName:=NewUnitName;
       fModified:=true;
@@ -718,13 +746,41 @@ begin
   end;
 end;
 
-procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType);
+function TUnitInfo.GetFileName: string;
+begin
+  if fSource<>nil then Result:=fSource.Filename
+  else Result:=fFileName;
+end;
+
+function TUnitInfo.IsVirtual: boolean;
+begin
+  if fSource<>nil then Result:=fSource.IsVirtual
+  else Result:=(fFileName<>ExpandFileName(fFileName));
+end;
+
+procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
+begin
+  if fSource=ABuffer then exit;
+  fSource:=ABuffer;
+  fFileName:=ABuffer.FileName;
+end;
+
+procedure TUnitInfo.SetReadOnly(const NewValue: boolean);
+begin
+  fReadOnly:=NewValue;
+  if fSource<>nil then fSource.ReadOnly:=fReadOnly;
+end;
+
+procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType;
+  const NewUnitName: string);
 var ResourceFilename:string;
   NewSource: TStringList;
 begin
-  ResourceFilename:=fUnitName+ResourceFileExt;
+  if fSource=nil then exit;
   NewSource:=TStringList.Create;
   if NewUnitType in [nuForm,nuUnit] then with NewSource do begin
+    fUnitName:=NewUnitName;
+    ResourceFilename:=fUnitName+ResourceFileExt;
     Add('unit '+fUnitName+';');
     Add('');
     Add('{$mode objfpc}{$H+}');
@@ -775,7 +831,7 @@ begin
     Add('end.');
     Add('');
   end;
-  Source.Source:=NewSource.Text;
+  fSource.Assign(NewSource);
   NewSource.Free;
   fModified:=true;
 end;
@@ -796,6 +852,7 @@ end;
 constructor TProject.Create(TheProjectType: TProjectType);
 var PrgUnitInfo: TUnitInfo;
   NewSource: TStringList;
+  NewPrgBuf: TCodeBuffer;
 begin
   inherited Create;
 
@@ -822,7 +879,8 @@ begin
   case fProjectType of
    ptProgram, ptApplication, ptCustomProgram:
     begin
-      PrgUnitInfo:=TUnitInfo.Create;
+      NewPrgBuf:=CodeToolBoss.CreateFile('program.pas');
+      PrgUnitInfo:=TUnitInfo.Create(NewPrgBuf);
       PrgUnitInfo.IsPartOfProject:=true;
       PrgUnitInfo.SyntaxHighlighter:=
         ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[fProjectType]);
@@ -852,7 +910,7 @@ begin
         Add('end.');
         Add('');
       end;
-      Units[MainUnit].Source.Source:=NewSource.Text;
+      Units[MainUnit].Source.Assign(NewSource);
     end;
   end;
   NewSource.Free;
@@ -976,7 +1034,7 @@ begin
 
     NewUnitCount:=xmlcfg.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
-      NewUnitInfo:=TUnitInfo.Create;
+      NewUnitInfo:=TUnitInfo.Create(nil);
       AddUnit(NewUnitInfo,false);
       NewUnitInfo.LoadFromXMLConfig(
          xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
@@ -1000,7 +1058,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProject.AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
 var ShortUnitName:string;
-  UnitNameStart,UnitNameEnd:integer;
 begin
   if (AUnit = nil) then exit;
   fUnitList.Add(AUnit);
@@ -1010,11 +1067,10 @@ begin
 
   if AddToProjectFile and (MainUnit>=0) then begin
     // add unit to uses section
-    ShortUnitName:=FindUnitNameInSource(AUnit.Source.Source,
-       UnitNameStart,UnitNameEnd);
-    if ShortUnitName='' then ShortUnitName:=AUnit.UnitName;
-    if (ShortUnitName<>'') then
-      AddToProgramUsesSection(Units[MainUnit].Source,ShortUnitName,'');
+    ShortUnitName:=CodeToolBoss.GetSourceName(AUnit.Source);
+    if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then
+      CodeToolBoss.AddUnitToMainUsesSection(Units[MainUnit].Source,
+        ShortUnitName,'');
   end;
   Modified:=true;
 end;
@@ -1040,16 +1096,16 @@ begin
   if MainUnit>=0 then begin
     // remove unit from uses section and from createforms in program file
     if OldUnitInfo.UnitName<>'' then
-      RemoveFromProgramUsesSection(Units[MainUnit].Source,OldUnitInfo.UnitName);
-    if (OldUnitInfo.FormName<>'') and (RemoveCreateFormFromProjectFile(
-        'T'+OldUnitInfo.FormName,OldUnitInfo.FormName)) then
-      Units[MainUnit].Source.Modified:=true;
+      CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnit].Source,
+        OldUnitInfo.UnitName);
+    if (OldUnitInfo.FormName<>'') then
+      CodeToolBoss.RemoveCreateFormStatement(Units[MainUnit].Source,
+        OldUnitInfo.FormName);
   end;
 
   // delete bookmarks on this unit
-  if OldUnitInfo.EditorIndex>=0 then begin
+  if OldUnitInfo.EditorIndex>=0 then
     Bookmarks.DeleteAllWithEditorIndex(OldUnitInfo.EditorIndex);
-  end;
 
   // delete unitinfo instance
   OldUnitInfo.Free;
@@ -1097,24 +1153,17 @@ begin
   Result:=fUnitList.Count;
 end;
 
-function TProject.NewUniqueUnitName:string;
+function TProject.NewUniqueUnitName(NewUnitType:TNewUnitType):string;
 
-  function ExpandedUnitname(AnUnitName:string):string;
-  var s:string;
+  function ExpandedUnitname(const AnUnitName:string):string;
+  var Ext:string;
   begin
-    if ExtractFilePath(AnUnitName)<>'' then
-      Result:=AnUnitName
-    else begin
-      s:=ExtractFilePath(fProjectFile);
-      if s<>'' then
-        Result:=s+AnUnitName
-      else
-        Result:=GetCurrentDir+OSDirSeparator+AnUnitName;
-    end;
-    Result:=lowercase(ChangeFileExt(Result,''));
+    Result:=uppercase(ExtractFileName(AnUnitName));
+    Ext:=ExtractFileExt(Result);
+    Result:=copy(Result,1,length(Result)-length(Ext));
   end;
 
-  function UnitNameExists(AnUnitName:string):boolean;
+  function UnitNameExists(const AnUnitName:string):boolean;
   var i:integer;
     ExpName:string;
   begin
@@ -1122,46 +1171,88 @@ function TProject.NewUniqueUnitName:string;
     ExpName:=ExpandedUnitName(AnUnitName);
     if ExpandedUnitname(fProjectFile)=Expname then exit;
     for i:=0 to UnitCount-1 do
-      if (Units[i].UnitName<>'') and (Units[i].IsPartOfProject)
-      and (ExpandedUnitName(Units[i].UnitName)=ExpName) then
+      if (Units[i].IsPartOfProject) 
+      and (ExpandedUnitName(Units[i].FileName)=ExpName) then
         exit;
     Result:=false;
   end;
 
-// NewUniqueUnitName
+// NewUniqueUnitName(NewUnitType:TNewUnitType)
 var u:integer;
+  Prefix: string;
 begin
   u:=1;
-  while (UnitNameExists('Unit'+IntToStr(u))) do inc(u);
-  Result:='Unit'+IntToStr(u);
+  case NewUnitType of
+    nuForm,nuUnit: Prefix:='unit';
+  else Prefix:='text'
+  end;
+  while (UnitNameExists(Prefix+IntToStr(u))) do inc(u);
+  Result:=Prefix+IntToStr(u);
 end;
 
-function TProject.AddCreateFormToProjectFile(AClassName,AName:string):boolean;
+function TProject.NewUniqueFormName(NewUnitType:TNewUnitType):string;
+// NewUniqueFormName(NewUnitType:TNewUnitType)
+
+  function FormNameExists(const AFormName: string): boolean;
+  var i: integer;
+  begin
+    Result:=true;
+    for i:=0 to UnitCount-1 do begin
+      if Units[i].Form<>nil then begin
+        if AnsiCompareText(Units[i].Form.Name,AFormName)=0 then exit;
+        if AnsiCompareText(Units[i].Form.ClassName,'T'+AFormName)=0 then exit;
+      end else if Units[i].FormName<>'' then begin
+        if AnsiCompareText(Units[i].FormName,AFormName)=0 then exit;
+      end;
+    end;
+    Result:=false;
+  end;
+
+var i: integer;
+  Prefix: string;
 begin
-  Result:=AddCreateFormToProgram(Units[MainUnit].Source,AClassName,AName);
+  i:=1;
+  case NewUnitType of
+    nuForm, nuUnit: Prefix:='Form'
+  else
+    Prefix:='form';
+  end;
+  while (FormNameExists(Prefix+IntToStr(i))) do inc(i);
+  Result:=Prefix+IntToStr(i);
+end;
+
+function TProject.AddCreateFormToProjectFile(
+  const AClassName,AName:string):boolean;
+begin
+  Result:=CodeToolBoss.AddCreateFormStatement(Units[MainUnit].Source,
+    AClassName,AName);
   if Result then Modified:=true;
 end;
 
 function TProject.RemoveCreateFormFromProjectFile(
-  AClassName,AName:string):boolean;
+  const AClassName,AName:string):boolean;
 begin
-  Result:=RemoveCreateFormFromProgram(Units[MainUnit].Source,AClassName,AName);
+  Result:=CodeToolBoss.RemoveCreateFormStatement(Units[MainUnit].Source,
+              AName);
   if Result then Modified:=true;
 end;
 
-function TProject.FormIsCreatedInProjectFile(AClassname,AName:string):boolean;
+function TProject.FormIsCreatedInProjectFile(
+  const AClassname,AName:string):boolean;
+var p: integer;
 begin
-  Result:=CreateFormExistsInProgram(Units[MainUnit].Source.Source,AClassName,AName);
+  Result:=(CodeToolBoss.FindCreateFormStatement(Units[MainUnit].Source,
+               1,AClassName,AName,p)=0);
 end;
 
-function TProject.IndexOfUnitWithName(AUnitName:string; 
+function TProject.IndexOfUnitWithName(const AnUnitName:string; 
   OnlyProjectUnits:boolean):integer;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (OnlyProjectUnits and Units[Result].IsPartOfProject) 
     or (not OnlyProjectUnits) then begin
-      if (lowercase(Units[Result].UnitName)=lowercase(AUnitName)) then
+      if (AnsiCompareText(Units[Result].UnitName,AnUnitName)=0) then
         exit;
     end;
     dec(Result);
@@ -1193,42 +1284,28 @@ begin
     Result:=nil;
 end;
 
-function TProject.UnitIsUsed(AUnitName:string):boolean;
+function TProject.UnitIsUsed(const ShortUnitName:string):boolean;
+var NamePos, InPos: integer;
 begin
-  Result:=UnitIsUsedInSource(Units[MainUnit].Source.Source,AUnitName);
+  Result:=CodeToolBoss.FindUnitInAllUsesSections(Units[MainUnit].Source,
+              ShortUnitName,NamePos,InPos);
 end;
 
-function TProject.GetResourceFilename(AnUnitInfo: TUnitInfo;
-  Index:integer):string;
-var
-  IncludeStart,IncludeEnd:integer;
-  IncludeDirective,IncludeFilename:string;
+function TProject.GetResourceFile(AnUnitInfo: TUnitInfo;
+  Index:integer): TCodeBuffer;
+var i, LinkIndex: integer;
 begin
-  // find the first include filename in the intialization section
-  if FindIncludeDirective(AnUnitInfo.Source.Source,'initialization'
-     ,Index,IncludeStart,IncludeEnd)
-  then begin
-    SplitCompilerDirective(copy(AnUnitInfo.Source.Source
-           ,IncludeStart,IncludeEnd-IncludeStart)
-         ,IncludeDirective,IncludeFilename);
-    Result:=IncludeFilename;
-  end else
-    Result:='';
+  LinkIndex:=-1;
+  i:=0;
+  Result:=nil;
+  while (i<Index) do begin
+    inc(i);
+    Result:=CodeToolBoss.FindNextResourceFile(AnUnitInfo.Source,LinkIndex);
+  end;
 end;
 
-function TProject.SearchIncludeFile(AnUnitInfo: TUnitInfo; 
-  Filename:string):string;
-begin
-  if ExtractFileExt(Filename)='' then Filename:=Filename+'.pp';
-  // search in the unit directory
-  Result:=ExtractFilePath(AnUnitInfo.Filename)+Filename;
-  if FileExists(Result) then exit;
-  // search in all include paths
-  Result:=SearchFile(Filename,CompilerOptions.IncludeFiles
-      ,ExtractFilePath(AnUnitInfo.Filename));
-end;
-
-function TProject.SearchFile(Filename,SearchPaths,InitialDir:string):string;
+function TProject.SearchFile(
+  const Filename,SearchPaths,InitialDir:string):string;
 var StartPos,EndPos:integer;
   CurPath: string;
   OldDir: string;
@@ -1256,25 +1333,16 @@ begin
   Result:='';
 end;
 
-function TProject.SearchResourceFilename(AnUnitInfo: TUnitInfo):string;
-var s:string;
+function TProject.GetMainResourceFilename(AnUnitInfo: TUnitInfo):string;
+var CodeBuf: TCodeBuffer;
 begin
-  Result:=GetResourceFilename(AnUnitInfo,1);
-  if Result='' then begin
+  CodeBuf:=GetResourceFile(AnUnitInfo,1);
+  if CodeBuf=nil then begin
     if AnUnitInfo.Filename='' then exit;
     Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
     exit;
-  end;
-  if ExtractFileExt(Result)='' then Result:=Result+'.pp';
-  s:=ExtractFilePath(AnUnitInfo.Filename)+Result;
-  if FileExists(s) then begin
-    Result:=s;
-    exit;
-  end;
-  if Result<>'' then
-    SearchIncludeFile(AnUnitInfo,Result);
-  if (Result='') and (AnUnitInfo.Filename<>'') then
-    Result:=ChangeFileExt(AnUnitInfo.Filename,ResourceFileExt);
+  end else
+    Result:=CodeBuf.Filename;
 end;
 
 function TProject.IndexOf(AUnitInfo: TUnitInfo):integer;
@@ -1319,26 +1387,31 @@ begin
   Modified:=true;
 end;
 
-procedure TProject.SetProjectFile(NewProjectFilename: string);
-var NewProgramName,Ext:string;
+procedure TProject.SetProjectFile(const NewProjectFilename: string);
+var ExpProjFilename,NewProgramName,Ext:string;
+  NewSource: TCodeBuffer;
 begin
-  DoDirSeparators(NewProjectFilename);
-  NewProjectFilename:=ExpandFilename(NewProjectFilename);
-  if NewProjectFilename=fProjectFile then exit;
-  Ext:=ExtractFileExt(NewProjectFilename);
+  ExpProjFilename:=NewProjectFilename;
+  DoDirSeparators(ExpProjFilename);
+  ExpProjFilename:=ExpandFilename(ExpProjFilename);
+  if ExpProjFilename=fProjectFile then exit;
+  Ext:=ExtractFileExt(ExpProjFilename);
   if ProjectType in [ptProgram, ptApplication] then begin
     // change programname in source
-    NewProgramName:=ExtractFilename(NewProjectFilename);
+    NewProgramName:=ExtractFilename(ExpProjFilename);
     NewProgramName:=copy(NewProgramName,1,length(NewProgramName)-length(Ext));
     if MainUnit>=0 then
-      RenameProgramInSource(Units[MainUnit].Source,NewProgramName);
+      CodeToolBoss.RenameSource(Units[MainUnit].Source,NewProgramName);
   end;
   if MainUnit>=0 then begin
-    Units[MainUnit].Filename:=ChangeFileExt(NewProjectFilename
-       ,ProjectDefaultExt[ProjectType]);
+    NewSource:=CodeToolBoss.CreateFile(ChangeFileExt(ExpProjFilename
+       ,ProjectDefaultExt[ProjectType]));
+    if Units[MainUnit].Source<>nil then
+      NewSource.Source:=Units[MainUnit].Source.Source;
+    Units[MainUnit].Source:=NewSource;
     Units[MainUnit].Modified:=true;
   end;
-  fProjectFile:=NewProjectFilename;
+  fProjectFile:=ExpProjFilename;
   Modified:=true;
 end;
 
@@ -1357,11 +1430,10 @@ begin
   if Result<>'' then Result:=ChangeFileExt(Result,'.lpi');
 end;
 
-procedure TProject.SetProjectInfoFile(NewFilename:string);
+procedure TProject.SetProjectInfoFile(const NewFilename:string);
 begin
   if NewFilename='' then exit;
-  NewFilename:=ChangeFileExt(NewFilename,ProjectDefaultExt[ProjectType]);
-  ProjectFile:=NewFilename;
+  ProjectFile:=ChangeFileExt(NewFilename,ProjectDefaultExt[ProjectType]);
 end;
 
 procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
@@ -1396,9 +1468,11 @@ begin
         Allowed:=false;
         exit;
       end;
-    if ProjectType in [ptProgram, ptApplication] then begin
+    if (OldUnitName<>'') and (ProjectType in [ptProgram, ptApplication]) then
+    begin
       // rename unit in program uses section
-      RenameUnitInProgramUsesSection(Units[MainUnit].Source
+writeln('TProject.OnUnitNameChange A');
+      CodeToolBoss.RenameUsedUnit(Units[MainUnit].Source
         ,OldUnitName,NewUnitName,'');
     end;
   end;
@@ -1417,6 +1491,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2001/10/09 09:46:50  lazarus
+  MG: added codetools, fixed synedit unindent, fixed MCatureHandle
+
   Revision 1.26  2001/07/08 22:33:56  lazarus
   MG: added rapid testing project
 
@@ -1493,62 +1570,5 @@ end.
 
   Revision 1.1  2000/07/13 10:27:48  michael
   + Initial import
-
-  Revision 1.14  2000/07/09 20:18:55  lazarus
-  MWE:
-    + added new controlselection
-    + some fixes
-    ~ some cleanup
-
-  Revision 1.13  2000/05/10 02:34:43  lazarus
-  Changed writelns to Asserts except for ERROR and WARNING messages.   CAW
-
-  Revision 1.12  2000/04/18 20:06:39  lazarus
-  Added some functions to Compiler.pp
-
-  Revision 1.11  2000/04/17 19:50:05  lazarus
-  Added some compiler stuff built into Lazarus.
-  This depends on the path to your compiler being correct in the compileroptions
-  dialog.
-  Shane
-
-  Revision 1.10  2000/03/07 16:52:58  lazarus
-  Fixxed a problem with the main.pp unit determining a new files FORM name.
-  Shane
-
-  Revision 1.9  2000/03/03 20:22:02  lazarus
-  Trying to add TBitBtn
-  Shane
-
-  Revision 1.8  2000/03/01 21:54:05  lazarus
-  90% finished with SAVE PROJECT and OPEN PROJECT
-  Shane
-
-  Revision 1.6  1999/05/14 18:44:17  lazarus
-  *** empty log message ***
-
-  Revision 1.5  1999/05/14 14:53:10  michael
-  + Removed objpas from uses clause
-
-  Revision 1.4  1999/05/14 14:39:44  michael
-  All file stuff now uses sysutils. Win32 compiles
-
-  Revision 1.3  1999/05/07 05:46:54  lazarus
-  *** empty log message ***
-
-  Revision 1.2  1999/04/28 05:29:37  lazarus
-  *** empty log message ***
-
-  Revision 1.1  1999/04/27 05:08:28  lazarus
-  *** empty log message ***
-
-  Revision 1.3  1999/04/20 02:56:42  lazarus
-  *** empty log message ***
-
-  Revision 1.2  1999/04/18 05:42:05  lazarus
-  *** empty log message ***
-
-  Revision 1.1  1999/04/14 07:31:44  michael
-  + Initial implementation
 
 }

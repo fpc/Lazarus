@@ -313,8 +313,11 @@ Begin
   //could we just call IntSendMessage??
 
   //destroy old widget
-  if TWinControl(Sender).HandleAllocated then
+  if TWinControl(Sender).HandleAllocated then begin
+    if MCaptureHandle=TWinControl(Sender).Handle then
+      MCaptureHandle:=0;
     gtk_widget_destroy(PgtkWidget(TWinControl(Sender).Handle));
+  end;
 
   aParent := TWinControl(Sender).Parent;
   aParent.RemoveControl(TControl(Sender));
@@ -447,8 +450,10 @@ begin
       begin
         if (Sender is TWinControl) or (Sender is TCommonDialog) then begin
 //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-          if Handle<>0 then
+          if Handle<>0 then begin
+            if MCaptureHandle=Handle then MCaptureHandle:=0;
             gtk_widget_destroy(PGtkWidget(Handle));
+          end;
           // remove all remaining messages to this component
           QueueItem:=FMessageQueue.First;
           while (QueueItem<>nil) do begin
@@ -3086,6 +3091,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.60  2001/10/09 09:46:59  lazarus
+  MG: added codetools, fixed synedit unindent, fixed MCatureHandle
+
   Revision 1.59  2001/10/08 12:57:07  lazarus
   MG: fixed GetPixel
 

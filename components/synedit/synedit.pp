@@ -3307,7 +3307,11 @@ begin
     fTopLine := Value;
     UpdateScrollBars;
     if Abs(Delta) < fLinesInWindow then
+      {$IFDEF SYN_LAZARUS}
+      Invalidate
+      {$ELSE}
       ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil)
+      {$ENDIF}
     else
       Invalidate;
     StatusChanged([scTopLine]);

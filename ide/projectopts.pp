@@ -13,7 +13,7 @@ interface
 
 uses
   Classes, LCLLinux, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  Project, LResources, Buttons, CodeTools, Dialogs, IDEProcs;
+  Project, LResources, Buttons, Dialogs, IDEProcs, CodeToolManager;
 
 type
   TProjectOptionsDialog = class(TForm)
@@ -366,8 +366,8 @@ function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
 var i, j: integer;
 begin
   if (FProject<>nil) and (FProject.MainUnit>=0) then begin
-    Result:=ListAllCreateFormsInProgram(
-           FProject.Units[FProject.MainUnit].Source.Source);
+    Result:=CodeToolBoss.ListAllCreateFormStatements(
+         FProject.Units[FProject.MainUnit].Source);
     if Result<>nil then begin
       // shorten lines of type 'FormName:TFormName' to simply 'FormName'
       for i:=0 to Result.Count-1 do begin
@@ -547,10 +547,8 @@ begin
 end;
 
 procedure TProjectOptionsDialog.SetAutoCreateForms;
-var i, p, InsertPos, StartPos, EndPosition: integer;
-  MainSrc: TSourceLog;
-  OldList: TStrings;
-  s, FormName, FormClassName: string;
+var i: integer;
+  OldList, NewList: TStrings;
 begin
   if (Project.MainUnit<0) or (Project.ProjectType in [ptCustomProgram]) then
     exit;
@@ -563,48 +561,18 @@ begin
         dec(i);
       if i<0 then exit;
     end;
-    MainSrc:=Project.Units[Project.MainUnit].Source;
-    StartPos:=SearchCodeInSource(MainSrc.Source,
-        'application.createform(',1,EndPosition,false);
-    if StartPos<1 then begin
-      StartPos:=SearchCodeInSource(MainSrc.Source,
-          'application.Initialize;',1,EndPosition,false);
-      if StartPos<1 then begin
-        MessageDlg('Unable to find "Application.Initialize;" '
-             +'in project source. Auto-create-forms changes not applied.'
-             ,mtError,[mbOk],0);
-        exit;
+    NewList:=TStringList.Create;
+    try
+      for i:=0 to FormsAutoCreatedListBox.Items.Count-1 do begin
+        NewList.Add(FormsAutoCreatedListBox.Items[i]);
       end;
-      ReadNextPascalAtom(MainSrc.Source,EndPosition,InsertPos);
-    end else 
-      InsertPos:=StartPos;
-    // remove all "Application.CreateForm(*,*);"
-    for i:=0 to OldList.Count-1 do begin
-      FormName:=OldList[i];
-      p:=Pos(':',FormName);
-      if p>1 then begin
-        FormClassName:=copy(FormName,p+1,length(FormName)-p);
-        FormName:=copy(FormName,1,p-1);
-      end else begin
-        FormClassName:='T'+FormName;
+      if not CodeToolBoss.SetAllCreateFromStatements(
+          Project.Units[Project.MainUnit].Source, NewList) then begin
+        // ToDo: print a message
       end;
-      RemoveCreateFormFromProgram(MainSrc,FormClassName,FormName);
+    finally
+      NewList.Free;
     end;
-    // add auto created forms
-    s:='';
-    for i:=0 to FormsAutoCreatedListBox.Items.Count-1 do begin
-      FormName:=FormsAutoCreatedListBox.Items[i];
-      p:=Pos(':',FormName);
-      if p>1 then begin
-        FormClassName:=copy(FormName,p+1,length(FormName)-p);
-        FormName:=copy(FormName,1,p-1);
-      end else begin
-        FormClassName:='T'+FormName;
-      end;
-      s:=s+'Application.CreateForm('+FormClassName+','+FormName+');'+EndOfLine+'  ';
-    end;
-    if s<>'' then
-      MainSrc.Insert(InsertPos,s);
   finally
     OldList.Free;
   end;

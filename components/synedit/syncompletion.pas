@@ -451,7 +451,7 @@ begin
     Position := Scroll.Position
   else if Position > Scroll.Position + NbLinesInWindow - 1 then
     Position := Scroll.Position + NbLinesInWindow - 1;
-writeln('TSynBaseCompletionForm.ScrollChange');
+//writeln('TSynBaseCompletionForm.ScrollChange');
   Invalidate;
 end;
 
@@ -727,11 +727,11 @@ end;
 
 procedure TSynBaseCompletion.SetWidth(Value: Integer);
 begin
-writeln('TSynBaseCompletion.SetWidth START ',Value);
+//writeln('TSynBaseCompletion.SetWidth START ',Value);
   FWidth := Value;
   Form.Width := FWidth;
   Form.SetNbLinesInWindow(Form.FNbLinesInWindow);
-writeln('TSynBaseCompletion.SetWidth END ',Value);
+//writeln('TSynBaseCompletion.SetWidth END ',Value);
 end;
 
 procedure TSynBaseCompletion.Deactivate;
@@ -1154,7 +1154,7 @@ var
   i, j, prevspace: integer;
   StartOfBlock: tpoint;
 begin
-Writeln('[TSynAutoComplete.Execute] Token is "',Token,'"');
+//Writeln('[TSynAutoComplete.Execute] Token is "',Token,'"');
   i := AutoCompleteList.IndexOf(token);
   if i <> -1 then begin
     TRecordUsedToStoreEachEditorVars(fEditstuffs[fEditors.IndexOf(aEditor)]^).NoNextKey := true;

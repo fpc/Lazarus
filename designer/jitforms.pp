@@ -20,9 +20,15 @@ unit jitforms;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 interface
 
-uses Classes, SysUtils, CompReg, Forms, Controls, LCLLinux, Dialogs;
+uses
+{$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+{$ENDIF}
+  Classes, SysUtils, CompReg, Forms, Controls, LCLLinux, Dialogs;
 
 type
   //----------------------------------------------------------------------------
@@ -34,7 +40,7 @@ type
     FCurReadClass:TClass;
     FRegCompList:TRegisteredComponentList;
     // jit procedures
-    function CreatevmtCopy(SourceClass:TClass; const NewClassName:ShortString):Pointer;
+    function CreateVMTCopy(SourceClass:TClass; const NewClassName:ShortString):Pointer;
     procedure FreevmtCopy(vmtCopy:Pointer);
     procedure DoAddNewMethod(JITClass:TClass; AName:ShortString; ACode:Pointer);
       // AddNewMethod does not check if method already exists
@@ -76,7 +82,7 @@ type
     procedure AddNewMethod(JITForm:TForm; AName:ShortString);
     procedure RemoveMethod(JITForm:TForm; AName:ShortString);
     procedure RenameMethod(JITForm:TForm; OldName,NewName:ShortString);
-    procedure RenameFormAndClass(JITForm:TForm; NewName:ShortString);
+    procedure RenameFormClass(JITForm:TForm; NewName:ShortString);
     constructor Create;
     destructor Destroy; override;
   published
@@ -197,7 +203,7 @@ begin
   Result:=-1;
   // create new class and an instance
 //writeln('[TJITForms.DoCreateJITForm] Creating new JIT class '''+NewClassName+''' ...');
-  Pointer(FCurReadClass):=CreatevmtCopy(TJITForm,'TJITForm');
+  Pointer(FCurReadClass):=CreateVMTCopy(TJITForm,'TJITForm');
 //writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewClassName+''' ...');
   Instance:=TComponent(FCurReadClass.NewInstance);
 //writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
@@ -336,10 +342,9 @@ begin
   DoRenameMethod(JITForm.ClassType,OldName,NewName);
 end;
 
-procedure TJITForms.RenameFormAndClass(JITForm:TForm; NewName:ShortString);
+procedure TJITForms.RenameFormClass(JITForm:TForm; NewName:ShortString);
 begin
   DoRenameClass(JITForm.ClassType,NewName);
-  JITForm.Name:=NewName;
 end;
 
 //------------------------------------------------------------------------------
@@ -361,13 +366,13 @@ type
    PMethodNameTable =  ^TMethodNameTable;
 
 
-function TJITForms.CreatevmtCopy(SourceClass:TClass;
+function TJITForms.CreateVMTCopy(SourceClass:TClass;
   const NewClassName:ShortString):Pointer;
 const
   vmtSize:integer=2000; //XXX how big is the vmt of class TJITForm ?
 var MethodTable, NewMethodTable : PMethodNameTable;
   MethodTableSize: integer;
-  ClassNamePtr: Pointer;
+  ClassNamePtr, ClassNamePShortString: Pointer;
 begin
 //writeln('[TJITForms.CreatevmtCopy] SourceClass='''+SourceClass.ClassName+''''
 // +' NewClassName='''+NewClassName+'''');
@@ -385,10 +390,11 @@ begin
     PPointer(Result+vmtMethodTable)^:=NewMethodTable;
   end;
   // create pointer to classname
+  // set ClassNamePtr to point to the PShortString of ClassName 
   ClassNamePtr:=Pointer(Result)+vmtClassName;
-  GetMem(Pointer(ClassNamePtr^),SizeOf(Pointer));
-  Pointer(Pointer(ClassNamePtr^)^):=nil;
-  PShortString(ClassNamePtr^)^:=NewClassName;
+  GetMem(ClassNamePShortString,SizeOf(ShortString));
+  Pointer(ClassNamePtr^):=ClassNamePShortString;
+  Move(NewClassName[0],ClassNamePShortString^,SizeOf(ShortString));
 end;
 
 procedure TJITForms.FreevmtCopy(vmtCopy:Pointer);

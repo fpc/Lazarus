@@ -1,0 +1,49 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+#name=lazarus-codetools
+name=lazarus
+version=0.7a
+
+[target]
+units=avl_tree basiccodetools codecache codetoolmanager codetools sourcelog \
+   definetemplates expreval keywordfunclists linkscanner sourcechanger \
+   memcheck
+   
+
+[default]
+            
+[compiler]
+options=-gl  
+unittargetdir=../units
+targetdir=../units
+unitdir=$(COMPILER_UNITTARGETDIR)
+
+[require]
+packages=rtl fcl
+
+[clean]
+
+[install]
+
+[dist]
+zipname=lazarus.codetools.$(ZIPSUFFIX)
+
+[rules]
+.PHONY: cleartarget all makefile makefiles
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
+
+all: cleartarget allcodetoolunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile
+
+# end.

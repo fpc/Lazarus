@@ -282,15 +282,16 @@ var
    Mess: TLMessage;
    Info: PWinWidgetInfo;
 begin
-   Result := True;
-   EventTrace('destroy', data);
-   Mess.msg := LM_DESTROY;
-   Result := DeliverMessage(Data, Mess) = 0;
+  Result := True;
+  EventTrace('destroy', data);
+  Mess.msg := LM_DESTROY;
+  Result := DeliverMessage(Data, Mess) = 0;
+  if longint(widget)=MCaptureHandle then MCaptureHandle:=0;
    
-   // NOTE: if the destroy message is posted
-   // we should post an info destroy message as well
-   Info := GetWidgetInfo(widget, False);
-   if Info <> nil then Dispose(Info);
+  // NOTE: if the destroy message is posted
+  // we should post an info destroy message as well
+  Info := GetWidgetInfo(widget, False);
+  if Info <> nil then Dispose(Info);
 end;
 
 function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent; data : gPointer) : GBoolean; cdecl;
@@ -299,6 +300,7 @@ begin
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
+  if longint(widget)=MCaptureHandle then MCaptureHandle:=0;
 end;
 
 function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1145,6 +1147,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2001/10/09 09:46:58  lazarus
+  MG: added codetools, fixed synedit unindent, fixed MCatureHandle
+
   Revision 1.34  2001/10/03 21:03:02  lazarus
   MG: reduced repaints
 
