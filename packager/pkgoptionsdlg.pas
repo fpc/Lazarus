@@ -667,7 +667,7 @@ begin
   with LinkerOptionsMemo do begin
     Name:='LinkerOptionsMemo';
     Parent:=AddOptionsGroupBox;
-    ScrollBar:=ssAutoVertical;
+    ScrollBars:=ssAutoVertical;
   end;
 
   CustomOptionsLabel:=TLabel.Create(Self);
@@ -681,7 +681,7 @@ begin
   with CustomOptionsMemo do begin
     Name:='CustomOptionsMemo';
     Parent:=AddOptionsGroupBox;
-    ScrollBar:=ssAutoVertical;
+    ScrollBars:=ssAutoVertical;
   end;
 end;
 
