@@ -70,6 +70,7 @@ type
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure SetParent(AParent : TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
+    procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -751,6 +752,9 @@ end.
 
  {
   $Log$
+  Revision 1.69  2003/08/26 14:33:40  mattias
+  implemented component tree for OI
+
   Revision 1.68  2003/08/14 15:31:42  mattias
   started TTabSheet and TPageControl
 

@@ -286,7 +286,7 @@ var
           '');
       {$ENDIF}
     end;
-        
+    
     // set the new bounds
     if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
@@ -1453,6 +1453,8 @@ var
                    )
                    or
                    (
+                    (not (csDesigning in ComponentState))
+                    and
                     (Visible)
                     and
                     (Enabled or AllowDisabled)
@@ -1462,12 +1464,12 @@ var
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
-      {writeln('GetControlAtPos ',Name,
+      writeln('GetControlAtPos ',Name,':',ClassName,
       ' Pos=',Pos.X,',',Pos.Y,
       ' P=',P.X,',',P.Y,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
       ' OnlyCl=',OnlyClientAreas,
-      ' Result=',Result);}
+      ' Result=',Result);
       {$ENDIF}
       if Result then
         LControl := AControl;
@@ -2984,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.164  2003/08/26 14:33:40  mattias
+  implemented component tree for OI
+
   Revision 1.163  2003/08/25 16:18:15  mattias
   fixed background color of TPanel and clicks of TSpeedButton from Micha
 

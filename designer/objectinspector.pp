@@ -330,7 +330,7 @@ type
     ShowOptionsPopupMenuItem: TMenuItem;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
-    procedure NoteBookResize(Sender: TObject);
+    procedure ObjectInspectorResize(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
@@ -364,6 +364,8 @@ type
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetUsePairSplitter(const AValue: boolean);
     procedure CreatePairSplitter;
+    procedure DestroyNoteBook;
+    procedure CreateNoteBook;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -2064,12 +2066,10 @@ begin
                        FEventGridSplitterX);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
                              FDefaultItemHeight,20);
-    {$IFNDEF CompTree}
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
                              FShowComponentTree,true);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Height/Value',
                              FComponentTreeHeight,100);
-    {$ENDIF}
 
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
                              FGridBackgroundColor,clBackground);
@@ -2155,10 +2155,8 @@ begin
   Name := DefaultObjectInspectorName;
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
-  {$IFDEF CompTree}
   FShowComponentTree:=true;
   FUsePairSplitter:=TPairSplitter.IsSupportedByInterface;
-  {$ENDIF}
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);
@@ -2188,9 +2186,6 @@ begin
      ,'ShowComponentTreePopupMenuItem','Show Component Tree',''
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
-  {$IFNDEF CompTree}
-  ShowComponentTreePopupMenuItem.Enabled:=false;
-  {$ENDIF}
   AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
      ,'ShowOptionsPopupMenuItem','Options',''
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
@@ -2229,59 +2224,9 @@ begin
     Visible:=FShowComponentTree;
   end;
 
-  // NoteBook
-  NoteBook:=TNoteBook.Create(Self);
-  with NoteBook do begin
-    Name:='NoteBook';
-    if PairSplitter1<>nil then begin
-      Parent:=PairSplitter1.Sides[1];
-    end else begin
-      Parent:=Self;
-    end;
-    Align:= alClient;
-    if PageCount>0 then
-      Pages.Strings[0]:=oisProperties
-    else
-      Pages.Add(oisProperties);
-    Pages.Add(oisEvents);
-    PageIndex:=0;
-    PopupMenu:=MainPopupMenu;
-    OnResize:=@NoteBookResize;
-  end;
-
-  // property grid
-  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook
-      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
-      , tkSString, tkLString, tkAString, tkWString, tkVariant
-      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-      , tkInt64, tkQWord],
-      FDefaultItemHeight);
-  with PropertyGrid do begin
-    Name:='PropertyGrid';
-    Parent:=NoteBook.Page[0];
-    ValueEdit.Parent:=Parent;
-    ValueComboBox.Parent:=Parent;
-    ValueButton.Parent:=Parent;
-    Selections:=Self.FComponentList;
-    Align:=alClient;
-    PopupMenu:=MainPopupMenu;
-    OnModified:=@OnGridModified;
-  end;
-
-  // event grid
-  EventGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
-                                              [tkMethod],FDefaultItemHeight);
-  with EventGrid do begin
-    Name:='EventGrid';
-    Parent:=NoteBook.Page[1];
-    ValueEdit.Parent:=Parent;
-    ValueComboBox.Parent:=Parent;
-    ValueButton.Parent:=Parent;
-    Selections:=Self.FComponentList;
-    Align:=alClient;
-    PopupMenu:=MainPopupMenu;
-    OnModified:=@OnGridModified;
-  end;
+  CreateNoteBook;
+  
+  OnResize:=@ObjectInspectorResize;
 end;
 
 destructor TObjectInspector.Destroy;
@@ -2509,11 +2454,11 @@ begin
     FOnSelectComponentsInOI(Self);
 end;
 
-procedure TObjectInspector.NoteBookResize(Sender: TObject);
+procedure TObjectInspector.ObjectInspectorResize(Sender: TObject);
 begin
-  {$IFDEF CompTree}
-  writeln('TObjectInspector.NoteBookResize A ',Left,',',Top,',',Width,',',Height);
-  {$ENDIF}
+  if (ComponentTree<>nil) and (ComponentTree.Visible)
+  and (ComponentTree.Parent=Self) then
+    ComponentTree.Height:=ClientHeight div 4;
 end;
 
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
@@ -2557,36 +2502,34 @@ end;
 
 procedure TObjectInspector.SetShowComponentTree(const AValue: boolean);
 begin
-  {$IFNDEF CompTree}
-  exit;
-  {$ENDIF}
   if FShowComponentTree=AValue then exit;
   FShowComponentTree:=AValue;
   BeginUpdate;
   ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
   writeln('TObjectInspector.SetShowComponentTree A ',FShowComponentTree);
-  ComponentTree.Visible:=FShowComponentTree;
-  AvailCompsComboBox.Visible:=not FShowComponentTree;
+  // hide controls while rebuilding
+  if PairSplitter1<>nil then
+    PairSplitter1.Visible:=false;
+  DestroyNoteBook;
+  ComponentTree.Visible:=false;
+  AvailCompsComboBox.Visible:=false;
+  // rebuild controls
   if FUsePairSplitter and FShowComponentTree then begin
     CreatePairSplitter;
     ComponentTree.Parent:=PairSplitter1.Sides[0];
     ComponentTree.Align:=alClient;
-    NoteBook.Parent:=PairSplitter1.Sides[1];
-    NoteBook.Align:=alClient;
-    writeln('TObjectInspector.SetShowComponentTree B ',NoteBook.Parent.Name,':',NoteBook.Parent.ClassName,' ',
-      NoteBook.Visible,' ',NoteBook.Height,' ',NoteBook.Parent.ClientHeight,' ',
-      NoteBook.Parent.Height,' ',
-      PairSplitter1.Height,' ',NoteBook.HandleAllocated);
   end else begin
-    PairSplitter1.Visible:=false;
     ComponentTree.Parent:=Self;
     ComponentTree.Align:=alTop;
     ComponentTree.Height:=ComponentTreeHeight;
-    NoteBook.Parent:=Self;
-    NoteBook.Align:=alClient;
-    PairSplitter1.Free;
-    PairSplitter1:=nil;
+    if PairSplitter1<>nil then begin
+      PairSplitter1.Free;
+      PairSplitter1:=nil;
+    end;
   end;
+  ComponentTree.Visible:=FShowComponentTree;
+  AvailCompsComboBox.Visible:=not FShowComponentTree;
+  CreateNoteBook;
   EndUpdate;
 end;
 
@@ -2608,6 +2551,84 @@ begin
     Position:=ComponentTreeHeight;
     Sides[0].Name:=Name+'Side1';
     Sides[1].Name:=Name+'Side2';
+  end;
+end;
+
+procedure TObjectInspector.DestroyNoteBook;
+begin
+  if NoteBook<>nil then
+    NoteBook.Visible:=false;
+  if PropertyGrid<>nil then begin
+    PropertyGrid.Free;
+    PropertyGrid:=nil;
+  end;
+  if EventGrid<>nil then begin
+    EventGrid.Free;
+    EventGrid:=nil;
+  end;
+  if NoteBook<>nil then begin
+    NoteBook.Free;
+    NoteBook:=nil;
+  end;
+end;
+
+procedure TObjectInspector.CreateNoteBook;
+begin
+  DestroyNoteBook;
+
+  // NoteBook
+  NoteBook:=TNoteBook.Create(Self);
+  with NoteBook do begin
+    Name:='NoteBook';
+    if PairSplitter1<>nil then begin
+      Parent:=PairSplitter1.Sides[1];
+    end else begin
+      Parent:=Self;
+    end;
+    Align:= alClient;
+    if PageCount>0 then
+      Pages.Strings[0]:=oisProperties
+    else
+      Pages.Add(oisProperties);
+    Page[0].Name:='PropertyPage';
+    Pages.Add(oisEvents);
+    Page[1].Name:='EventPage';
+    PageIndex:=0;
+    PopupMenu:=MainPopupMenu;
+  end;
+
+  // property grid
+  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook
+      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
+      , tkSString, tkLString, tkAString, tkWString, tkVariant
+      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
+      , tkInt64, tkQWord],
+      FDefaultItemHeight);
+  with PropertyGrid do begin
+    Name:='PropertyGrid';
+    Parent:=NoteBook.Page[0];
+    ValueEdit.Parent:=Parent;
+    ValueComboBox.Parent:=Parent;
+    ValueButton.Parent:=Parent;
+    Selections:=Self.FComponentList;
+    Align:=alClient;
+    PopupMenu:=MainPopupMenu;
+    OnModified:=@OnGridModified;
+  end;
+
+  // event grid
+  EventGrid:=TOIPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
+                                              [tkMethod],FDefaultItemHeight);
+  with EventGrid do begin
+    Name:='EventGrid';
+    Parent:=NoteBook.Page[1];
+    ValueEdit.Parent:=Parent;
+    ValueComboBox.Parent:=Parent;
+    ValueButton.Parent:=Parent;
+    Selections:=Self.FComponentList;
+    Align:=alClient;
+    PopupMenu:=MainPopupMenu;
+    OnModified:=@OnGridModified;
   end;
 end;
 

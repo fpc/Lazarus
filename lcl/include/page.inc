@@ -100,6 +100,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TPage.CMHitTest(var Message: TLMNCHITTEST);
+ ------------------------------------------------------------------------------}
+procedure TPage.CMHitTest(var Message: TLMNCHITTEST);
+begin
+  if (Parent<>nil) and (Parent is TCustomNotebook)
+  and (TCustomNotebook(Parent).ActivePageComponent<>Self) then
+    Message.Result:=0 // no hit
+  else
+    inherited;
+  {writeln('TPage.CMHitTest A ',Name,' ',(Parent<>nil),' ',
+    (Parent is TCustomNotebook),' ',
+    (TCustomNotebook(Parent).ActivePageComponent<>Self),
+    ' Message.Result=',Message.Result);}
+end;
+
+{------------------------------------------------------------------------------
   TPage Destroy
  ------------------------------------------------------------------------------}
 destructor TPage.Destroy;
@@ -138,6 +154,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.18  2003/08/26 14:33:40  mattias
+  implemented component tree for OI
+
   Revision 1.17  2003/08/14 15:31:42  mattias
   started TTabSheet and TPageControl
 

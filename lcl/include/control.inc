@@ -572,7 +572,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TControl.DoOnResize;
+  procedure TControl.DoOnChangeBounds;
 
   Call events
 ------------------------------------------------------------------------------}
@@ -1768,6 +1768,7 @@ begin
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
+    //if AnsiCompareText('NOTEBOOK',Name)=0 then
     {writeln('[TControl.Resize] ',Name,':',ClassName,
     ' Last=',FLastResizeWidth,',',FLastResizeHeight,
     ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
@@ -2480,6 +2481,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.150  2003/08/26 14:33:40  mattias
+  implemented component tree for OI
+
   Revision 1.149  2003/08/23 11:30:50  mattias
   fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
 

@@ -21,8 +21,6 @@
 constructor TNotebook.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TabPosition := tpTop;
-  ShowTabs := True;
   SetInitialBounds(0,0,200,200);
 end;
 
@@ -36,6 +34,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2003/08/26 14:33:40  mattias
+  implemented component tree for OI
+
   Revision 1.3  2003/08/20 15:06:57  mattias
   implemented Build+Run File
 
