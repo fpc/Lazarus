@@ -283,7 +283,8 @@ resourcestring
   lisLazarusProjectInfoLpiLpiAllFiles = 'Lazarus Project Info (*.lpi)|*.lpi|'
     +'All Files|*.*';
   lisCompilerOptionsForProject = 'Compiler Options for Project: %s';
-  lisChooseDelphiUnit = 'Choose Delphi unit';
+  lisChooseDelphiUnit = 'Choose Delphi unit (*.pas)';
+  lisChooseDelphiProject = 'Choose Delphi project (*.dpr)';
   lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';
   lisLFMFileCorrupt = 'LFM file corrupt';

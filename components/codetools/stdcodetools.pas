@@ -61,6 +61,8 @@ type
     const IdentName: string; var IsDefined: boolean) of object;
 
 
+  { TStandardCodeTool }
+
   TStandardCodeTool = class(TIdentCompletionTool)
   private
     CachedSourceName: string;
@@ -98,6 +100,10 @@ type
           const UpperUnitName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromAllUsesSections(const UpperUnitName: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
+    function FixUnitInFilenameCase(
+          SourceChangeCache: TSourceChangeCache): boolean;
+    function FixUnitInFilenameCaseInUsesSection(UsesNode: TCodeTreeNode;
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnitNames(var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
@@ -597,8 +603,7 @@ begin
   BuildTree(false);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
-    if (SectionNode.Desc in [ctnProgram,ctnInterface,ctnImplementation])
-    and (SectionNode.FirstChild<>nil)
+    if (SectionNode.FirstChild<>nil)
     and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
       if not RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
          SourceChangeCache)
@@ -608,6 +613,109 @@ begin
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FixUnitInFilenameCase(
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  SectionNode: TCodeTreeNode;
+begin
+  debugln('TStandardCodeTool.FixUnitInFilenameCase ',MainFilename);
+  Result:=false;
+  BuildTree(false);
+  SectionNode:=Tree.Root;
+  while (SectionNode<>nil) do begin
+    if (SectionNode.FirstChild<>nil)
+    and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
+      if not FixUnitInFilenameCaseInUsesSection(
+        SectionNode.FirstChild,SourceChangeCache)
+      then begin
+        exit;
+      end;
+    end;
+    SectionNode:=SectionNode.NextBrother;
+  end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FixUnitInFilenameCaseInUsesSection(
+  UsesNode: TCodeTreeNode; SourceChangeCache: TSourceChangeCache): boolean;
+  
+  function FindUnit(const AFilename: string): string;
+  var
+    CurDir: String;
+    MainCodeIsVirtual: Boolean;
+    FileInfo: TSearchRec;
+    CurFilename: String;
+  begin
+    if FilenameIsAbsolute(AFilename) then
+      CurDir:=ExtractFilePath(AFilename)
+    else begin
+      MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
+      if not MainCodeIsVirtual then begin
+        CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
+      end else begin
+        CurDir:='';
+      end;
+    end;
+    CurFilename:=ExtractFilename(AFilename);
+    Result:='';
+    if SysUtils.FindFirst(AppendPathDelim(CurDir)+FileMask,
+                          faAnyFile,FileInfo)=0 then
+    begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        if (SysUtils.CompareText(CurFilename,FileInfo.Name)=0)
+        then begin
+          if (Result='') or (FileInfo.Name=CurFilename) then
+            Result:=FileInfo.Name;
+        end;
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+  end;
+  
+var
+  UnitInFilename: String;
+  Changed: Boolean;
+  RealUnitInFilename: String;
+begin
+  Result:=false;
+  if (UsesNode=nil) then exit;
+  MoveCursorToNodeStart(UsesNode);
+  ReadNextAtom; // read 'uses'
+  Changed:=false;
+  repeat
+    ReadNextAtom; // read name
+    if not AtomIsIdentifier(false) then exit;
+    ReadNextAtom;
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      UnitInFilename:=GetAtom;
+      debugln('TStandardCodeTool.FixUnitInFilenameCaseInUsesSection A UnitInFilename="',UnitInFilename,'"');
+      if (UnitInFilename<>'') and (UnitInFilename[1]='''') then begin
+        UnitInFilename:=copy(UnitInFilename,2,length(UnitInFilename)-2);
+        RealUnitInFilename:=FindUnit(UnitInFilename);
+        debugln('TStandardCodeTool.FixUnitInFilenameCaseInUsesSection B RealUnitInFilename="',RealUnitInFilename,'"');
+        if (RealUnitInFilename<>'')
+        and (RealUnitInFilename<>UnitInFilename) then begin
+          if not Changed then begin
+            SourceChangeCache.MainScanner:=Scanner;
+            Changed:=true;
+          end;
+          debugln('TStandardCodeTool.FixUnitInFilenameCaseInUsesSection C Replacing ...');
+          if not SourceChangeCache.Replace(gtNone,gtNone,
+            CurPos.StartPos,CurPos.EndPos,''''+RealUnitInFilename+'''') then exit;
+        end;
+      end;
+      ReadNextAtom;
+    end;
+    if AtomIsChar(';') then break;
+    if not AtomIsChar(',') then exit;
+  until (CurPos.StartPos>UsesNode.EndPos) or (CurPos.StartPos>SrcLen);
+  if Changed and (not SourceChangeCache.Apply) then exit;
   Result:=true;
 end;
 
@@ -701,9 +809,9 @@ begin
     end else
       AnUnitInFilename:='';
     // find unit file
-    NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
     if AnUnitInFilename<>'' then begin
       // An 'in' unit => Delphi project file
+      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
       if (NewCode=nil) then begin
         // no source found
         MissingInUnits.Add(AnUnitName+' in '+AnUnitInFilename);
@@ -713,6 +821,7 @@ begin
       end;
     end else begin
       // the non 'in' units are 'Forms' or units added by the user
+      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
       NormalUnits.AddObject(AnUnitName,NewCode);
     end;
     // read keyword 'uses' or comma
@@ -2785,6 +2894,7 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
 
   function ConvertUsedUnits: boolean;
   // replace unit 'Windows' with 'LCLIntf' and add 'LResources'
+  // rename 'in' filenames to case sensitive filename
   var
     NamePos, InPos: TAtomPosition;
   begin
@@ -2807,6 +2917,11 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
     if not RemoveUnitFromAllUsesSections('VARIANTS',SourceChangeCache) then
     begin
       debugln('ConvertUsedUnits Unable to remove Variants from all uses sections');
+      exit;
+    end;
+    if not FixUnitInFilenameCase(SourceChangeCache) then
+    begin
+      debugln('ConvertUsedUnits Unable to fix unit filename case sensitivity in all uses sections');
       exit;
     end;
     Result:=true;

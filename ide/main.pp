@@ -2918,8 +2918,9 @@ begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Title:=lisChooseDelphiUnit;
+    OpenDialog.Title:=lisChooseDelphiProject;
     OpenDialog.Options:=OpenDialog.Options;
+    OpenDialog.Filter:='Delphi project (*.dpr)|*.dpr|All files (*.*)|*.*';
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
@@ -7192,7 +7193,7 @@ begin
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-    MainUnitInfo:=TUnitInfo.Create(DPRCode);
+    MainUnitInfo:=TUnitInfo.Create(LPRCode);
     MainUnitInfo.SyntaxHighlighter:=
               ExtensionToLazSyntaxHighlighter(ExtractFileExt(LPRCode.Filename));
     MainUnitInfo.IsPartOfProject:=true;
@@ -11382,6 +11383,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.841  2005/01/28 16:42:30  mattias
+  implemented for delphi unit conversion: auto fixing in filenames
+
   Revision 1.840  2005/01/26 15:56:13  mattias
   fixed add editor file to project
 

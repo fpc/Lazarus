@@ -1418,7 +1418,7 @@ var UnitSrcSearchPath: string;
   CompiledResult: TCodeBuffer;
   UnitSearchPath: string;
   SrcPathInitialized: boolean;
-  
+
   procedure InitSrcPath;
   begin
     if SrcPathInitialized then exit;
@@ -1468,7 +1468,7 @@ begin
     if FilenameIsAbsolute(AnUnitInFilename) then begin
       Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename,true));
     end else begin
-      // file is virtual
+      // file is relative to current unit directory
       // -> search file in current directory
       CurDir:=AppendPathDelim(CurDir);
       if not LoadFile(CurDir+AnUnitInFilename,Result) then begin

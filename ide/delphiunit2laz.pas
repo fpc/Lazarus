@@ -356,6 +356,7 @@ begin
                          [lbfCheckIfText,lbfUpdateFromDisk]);
   if Result<>mrOk then exit;
   CTResult:=CodeToolBoss.ConvertDelphiToLazarusSource(LPRCode,AddLRSCode);
+  debugln('CreateLPRFileForDPRFile: ',LPRCode.Source);
   if not CTResult then begin
     Result:=mrCancel;
     exit;
