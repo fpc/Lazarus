@@ -1150,10 +1150,29 @@ const
   VARIABLE_PITCH = 2;
   MONO_FONT      = 8;
 
+  // font character sets
   ANSI_CHARSET        = 0;
   DEFAULT_CHARSET     = 1;
   SYMBOL_CHARSET      = 2;
-  FCS_ISO_8859_2       = 3;   // added for ISO_8859_2 under gtk
+  // added for ISO_8859_2 under gtk
+  FCS_ISO_10646_1     = 4;  // Unicode;
+  FCS_ISO_8859_1      = 5;  //  ISO Latin-1 (Western Europe);
+  FCS_ISO_8859_2      = 6;  //  ISO Latin-2 (Eastern Europe);
+  FCS_ISO_8859_3      = 7;  //  ISO Latin-3 (Southern Europe);
+  FCS_ISO_8859_4      = 8;  //  ISO Latin-4 (Northern Europe);
+  FCS_ISO_8859_5      = 9;  //  ISO Cyrillic;
+  FCS_ISO_8859_6      = 10; //  ISO Arabic;
+  FCS_ISO_8859_7      = 11; //  ISO Greek;
+  FCS_ISO_8859_8      = 12; //  ISO Hebrew;
+  FCS_ISO_8859_9      = 13; //  ISO Latin-5 (Turkish);
+  FCS_ISO_8859_10     = 14; //  ISO Latin-6 (Nordic);
+  FCS_ISO_8859_15     = 15; //  ISO Latin-9, or Latin-0 (Revised Western-European);
+  //FCS_koi8_r          = 16; //  KOI8 Russian;
+  //FCS_koi8_u          = 17; //  KOI8 Ukrainian (see RFC 2319);
+  //FCS_koi8_ru         = 18; //  KOI8 Russian/Ukrainian
+  //FCS_koi8_uni        = 19; //  KOI8 ``Unified'' (Russian, Ukrainian, and Byelorussian);
+  //FCS_koi8_e          = 20; //  KOI8 ``European,'' ISO-IR-111, or ECMA-Cyrillic;
+  // end of our own additions
   MAC_CHARSET         = 77;
   SHIFTJIS_CHARSET    = 128;
   HANGEUL_CHARSET     = 129;
@@ -2248,6 +2267,9 @@ end.
 
 {
   $Log$
+  Revision 1.70  2004/11/27 13:57:49  mattias
+  added more gtk ISO character sets
+
   Revision 1.69  2004/11/20 11:49:15  mattias
   implemented stopping project on close project
 

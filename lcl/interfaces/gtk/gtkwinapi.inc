@@ -1575,11 +1575,57 @@ begin
       end;
 
       if CharSetCoding =  '*' then begin
-        if lfCharset=fcs_ISO_8859_2 then begin
-          CharSetRegistry:='iso8859';
-          CharSetCoding:='2';
+        case lfCharset of
+        FCS_ISO_10646_1: begin
+            CharSetRegistry:='iso10646';
+            CharSetCoding:='1';
+          end;
+        fcs_ISO_8859_1: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='1';
+          end;
+        fcs_ISO_8859_2: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='2';
+          end;
+        fcs_ISO_8859_3: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='3';
+          end;
+        fcs_ISO_8859_4: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='4';
+          end;
+        fcs_ISO_8859_5: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='5';
+          end;
+        fcs_ISO_8859_6: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='6';
+          end;
+        fcs_ISO_8859_7: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='7';
+          end;
+        fcs_ISO_8859_8: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='8';
+          end;
+        fcs_ISO_8859_9: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='9';
+          end;
+        fcs_ISO_8859_10: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='10';
+          end;
+        fcs_ISO_8859_15: begin
+            CharSetRegistry:='iso8859';
+            CharSetCoding:='15';
+          end;
         end;
-      end; 
+      end;
     end;
      
 
@@ -8740,6 +8786,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.375  2004/11/27 13:57:49  mattias
+  added more gtk ISO character sets
+
   Revision 1.374  2004/11/20 11:49:15  mattias
   implemented stopping project on close project
 
