@@ -50,8 +50,12 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FPCAdds, LCLStrConsts, LResources, vclGlobals, LCLProc,
-  Graphics, GraphType, LCLClasses;
+  SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, vclGlobals,
+  LCLType, LCLProc, Graphics, GraphType, LCLClasses
+  {$IFNDEF DisableFPImage}
+  ,IntfGraphics, FPReadBMP
+  {$ENDIF}
+  ;
 
 type
   TImageIndex = type integer;
@@ -211,6 +215,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.19  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

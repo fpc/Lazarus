@@ -194,6 +194,22 @@ type
                                                    write SetDataDescription;
     property AutoCreateMask: boolean read FAutoCreateMask write SetAutoCreateMask;
   end;
+  
+  
+  { TLazIntfImageMask }
+  
+  TLazIntfImageMask = class(TFPCustomImage)
+  private
+    FImage: TLazIntfImage;
+  protected
+    procedure SetInternalColor(x, y: integer; const Value: TFPColor); override;
+    function GetInternalColor(x, y: integer): TFPColor; override;
+    procedure SetInternalPixel (x,y:integer; Value:integer); override;
+    function GetInternalPixel (x,y:integer) : integer; override;
+  public
+    constructor CreateWithImage(TheImage: TLazIntfImage); virtual;
+    property Image: TLazIntfImage read FImage;
+  end;
 
 
   { TLazAVLPalette }
@@ -988,6 +1004,10 @@ begin
 
     ricfGray:
       begin
+        ChooseRawBitsProc(FDataDescription.BitsPerPixel,
+                          FDataDescription.ByteOrder,
+                          FDataDescription.BitOrder,
+                          FReadRawImageBits, FWriteRawImageBits);
         OnGetInternalColor:=@GetColor_NoPalette_Gray;
         OnSetInternalColor:=@SetColor_NoPalette_Gray;
       end;
@@ -1290,7 +1310,8 @@ begin
   // no alpha -> ignore
 end;
 
-procedure TLazIntfImage.SetColor_NoPalette_Gray(x, y: integer; const Value: TFPColor);
+procedure TLazIntfImage.SetColor_NoPalette_Gray(x, y: integer;
+  const Value: TFPColor);
 var
   Position: TRawImagePosition;
 begin
@@ -3037,6 +3058,45 @@ begin
     IsNumberChar[c]:=c in ['0'..'9'];
     IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
   end;
+end;
+
+{ TLazIntfImageMask }
+
+procedure TLazIntfImageMask.SetInternalColor(x, y: integer;
+  const Value: TFPColor);
+var
+  MaskValue: TFPColor;
+begin
+  MaskValue:=FImage.GetInternalColor(x,y);
+  MaskValue.Alpha:=$FFFF-Value.Red;
+  FImage.SetInternalColor(x, y, MaskValue);
+end;
+
+function TLazIntfImageMask.GetInternalColor(x, y: integer): TFPColor;
+var
+  MaskValue: TFPColor;
+begin
+  MaskValue:=FImage.GetInternalColor(x,y);
+  Result:=FPImage.colBlack;
+  Result.Red:=MaskValue.Alpha;
+  Result.Green:=MaskValue.Alpha;
+  Result.Blue:=MaskValue.Alpha;
+end;
+
+procedure TLazIntfImageMask.SetInternalPixel(x, y: integer; Value: integer);
+begin
+
+end;
+
+function TLazIntfImageMask.GetInternalPixel(x, y: integer): integer;
+begin
+  Result:=0;
+end;
+
+constructor TLazIntfImageMask.CreateWithImage(TheImage: TLazIntfImage);
+begin
+  FImage:=TheImage;
+  inherited Create(FImage.Width,FImage.Height);
 end;
 
 initialization

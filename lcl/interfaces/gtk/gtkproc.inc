@@ -1173,6 +1173,42 @@ begin
   ReleaseDC(HDC(DestWidget),DestDC);
 end;
 
+function CreateGdkBitmap(Window: PGdkWindow;
+  Width, Height: integer): PGdkBitmap;
+var
+  DummyData: Pointer;
+begin
+  // I didn't found a simple gdk_bitmap_new function. So, I create some
+  // dummy data and use gdk_bitmap_create_from_data
+  GetMem(DummyData,(((Width*Height)+7) shr 3)+1);
+  Result:=gdk_bitmap_create_from_data(Window,DummyData,Width,Height);
+  FreeMem(DummyData);
+end;
+
+function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
+var
+  MaxRect: TRect;
+  SourceRect: TRect;
+  SrcWidth: Integer;
+  SrcHeight: Integer;
+  GC: PGdkGC;
+begin
+  Result:=nil;
+  if Bitmap=nil then exit;
+  MaxRect:=Rect(0,0,0,0);
+  gdk_window_get_size(Bitmap,@MaxRect.Right,@MaxRect.Bottom);
+  IntersectRect(SourceRect,SrcRect,MaxRect);
+  SrcWidth:=SourceRect.Right-SourceRect.Left;
+  SrcHeight:=SourceRect.Bottom-SourceRect.Top;
+  writeln('ExtractGdkBitmap ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
+  if (SrcWidth<1) or (SrcHeight<1) then exit;
+  Result:=CreateGdkBitmap(nil,SrcWidth,SrcHeight);
+  GC := GDK_GC_New(Result);
+  gdk_window_copy_area(Result,GC,0,0,Bitmap,
+                       SourceRect.Left,SourceRect.Top,SrcWidth,SrcHeight);
+  GDK_GC_Unref(GC);
+end;
+
 {$IfDef Win32}
 Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; DestX,
   DestY : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
@@ -6703,6 +6739,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.272  2004/03/28 12:49:23  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.271  2004/03/24 01:21:41  marc
   * Simplified signals for gtkwsbutton
 

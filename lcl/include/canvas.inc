@@ -31,7 +31,7 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.Draw --}
 {-----------------------------------------------}
-Procedure TCanvas.Draw(X,Y : Integer; SrcGraphic : TGraphic);
+Procedure TCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
 var
   ARect: TRect;
 begin
@@ -46,8 +46,8 @@ end;
 procedure TCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
 begin
   if not Assigned(SrcGraphic) then exit;
-  RequiredState([csHandleValid]);
   Changing;
+  RequiredState([csHandleValid]);
   SrcGraphic.Draw(Self, DestRect);
   Changed;
 end;
@@ -1258,6 +1258,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.72  2004/03/06 17:12:19  mattias
   fixed CreateBrushIndirect
 

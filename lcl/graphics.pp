@@ -800,10 +800,10 @@ type
     procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor);
-    procedure Chord(x,y,width,height,angle1,angle2 : Integer);
-    procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
+    procedure Chord(x, y, width, height, angle1, angle2: Integer);
+    procedure Chord(x, y, width, height, SX, SY, EX, EY: Integer);
     Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect);
-    Procedure Draw(X,Y: Integer; SrcGraphic : TGraphic);
+    Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic);
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
     procedure Ellipse(const ARect: TRect);
     procedure Ellipse(x1, y1, x2, y2: Integer);
@@ -1015,6 +1015,8 @@ type
     function HandleAllocated: boolean;
     function MaskHandleAllocated: boolean;
     function PaletteAllocated: boolean;
+    procedure CreateFromBitmapHandles(SrcBitmap, SrcMaskBitmap: HBitmap;
+                                      const SrcRect: TRect);
     function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
@@ -1600,6 +1602,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.129  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

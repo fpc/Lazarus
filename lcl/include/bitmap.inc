@@ -98,7 +98,6 @@ begin
   or (Width=0) or (Height=0) then exit;
   HandleNeeded;
   if HandleAllocated then begin
-    //ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
     if Transparent then
       UseMaskHandle:=MaskHandle
     else
@@ -179,6 +178,26 @@ end;
 function TBitmap.PaletteAllocated: boolean;
 begin
   Result:=FPalette<>0;
+end;
+
+procedure TBitmap.CreateFromBitmapHandles(SrcBitmap, SrcMaskBitmap: HBitmap;
+  const SrcRect: TRect);
+var
+  NewRawImage: TRawImage;
+  ImgHandle, ImgMaskHandle: HBitmap;
+begin
+  writeln('TBitmap.CreateFromBitmapHandles A ',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+  if not GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,SrcRect,NewRawImage) then
+    raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Get RawImage');
+  try
+    writeln('TBitmap.CreateFromBitmapHandles A ',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+    if not CreateBitmapFromRawImage(NewRawImage,ImgHandle,ImgMaskHandle,false) then
+      raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Create bitmaps');
+    Handle:=ImgHandle;
+    MaskHandle:=ImgMaskHandle;
+  finally
+    FreeRawImageData(@NewRawImage);
+  end;
 end;
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
@@ -1021,13 +1040,13 @@ begin
   // free old mask handle
   FImage.FreeMaskHandle;
   // combine (depending on the interface we will end with one or two handles)
-  //writeln('TBitmap.SetMaskHandle A FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
-  //  ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
-  //  ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  writeln('TBitmap.SetMaskHandle A FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+    ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
+    ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
   ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
-  //writeln('TBitmap.SetMaskHandle END FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
-  //  ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
-  //  ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  writeln('TBitmap.SetMaskHandle END FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+    ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
+    ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
   Changed(Self);
 end;
 
@@ -1154,6 +1173,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.79  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

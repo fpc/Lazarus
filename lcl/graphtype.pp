@@ -29,7 +29,7 @@ unit GraphType;
 interface
 
 uses
-  Classes, SysUtils, LCLType;
+  Classes, SysUtils, LCLType, LCLProc;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
@@ -161,6 +161,8 @@ const
 
 function RawImageMaskIsEmpty(RawImage: PRawImage; TestPixels: boolean): boolean;
 function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
+procedure FreeRawImageData(RawImage: PRawImage);
+procedure ReleaseRawImageData(RawImage: PRawImage);
 
 procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
                              LineEnd: TRawImageLineEnd;
@@ -168,6 +170,17 @@ procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
 procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
                                    LineEnd: TRawImageLineEnd;
                                    var LineStarts: PRawImagePosition);
+procedure CreateRawImageDescFromMask(SrcRawImageDesc,
+  DestRawImageDesc: PRawImageDescription);
+procedure GetRawImageXYPosition(RawImageDesc: PRawImageDescription;
+                                LineStarts: PRawImagePosition; x, y: cardinal;
+                                var Position: TRawImagePosition);
+procedure ExtractRawImageRect(SrcRawImage: PRawImage; const SrcRect: TRect;
+                              DestRawImage: PRawImage);
+procedure ExtractRawImageDataRect(SrcRawImageDesc: PRawImageDescription;
+  const SrcRect: TRect; SrcData: Pointer;
+  DestRawImageDesc: PRawImageDescription;
+  var DestData: Pointer; var DestDataSize: cardinal);
 function GetBitsPerLine(Width, BitsPerPixel: cardinal;
                         LineEnd: TRawImageLineEnd): cardinal;
 procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
@@ -181,6 +194,39 @@ var
 
 implementation
 
+uses Math;
+
+
+{------------------------------------------------------------------------------
+  Function: IntersectRect
+  Params:  var DestRect: TRect; const SrcRect1, SrcRect2: TRect
+  Returns: Boolean
+
+  Intersects SrcRect1 and SrcRect2 into DestRect.
+  Intersecting means that DestRect will be the overlapping area of SrcRect1 and
+  SrcRect2. If SrcRect1 and SrcRect2 do not overlapp the Result is false, else
+  true.
+ ------------------------------------------------------------------------------}
+function IntersectRect(var DestRect: TRect;
+  const SrcRect1, SrcRect2: TRect): Boolean;
+begin
+  Result := False;
+
+  // test if rectangles intersects
+  Result:=(SrcRect2.Left < SrcRect1.Right)
+      and (SrcRect2.Right > SrcRect1.Left)
+      and (SrcRect2.Top < SrcRect1.Bottom)
+      and (SrcRect2.Bottom > SrcRect1.Top);
+
+  if Result then begin
+    DestRect.Left:=Max(SrcRect1.Left,SrcRect2.Left);
+    DestRect.Top:=Max(SrcRect1.Top,SrcRect2.Top);
+    DestRect.Right:=Min(SrcRect1.Right,SrcRect2.Right);
+    DestRect.Bottom:=Min(SrcRect1.Bottom,SrcRect2.Bottom);
+  end else begin
+    FillChar(DestRect,SizeOf(DestRect),0);
+  end;
+end;
 
 function RawImageMaskIsEmpty(RawImage: PRawImage; TestPixels: boolean): boolean;
 var
@@ -312,6 +358,26 @@ begin
   end;
 end;
 
+procedure FreeRawImageData(RawImage: PRawImage);
+begin
+  ReAllocMem(RawImage^.Data,0);
+  RawImage^.DataSize:=0;
+  ReAllocMem(RawImage^.Mask,0);
+  RawImage^.MaskSize:=0;
+  ReAllocMem(RawImage^.Palette,0);
+  RawImage^.PaletteSize:=0;
+end;
+
+procedure ReleaseRawImageData(RawImage: PRawImage);
+begin
+  RawImage^.Data:=nil;
+  RawImage^.DataSize:=0;
+  RawImage^.Mask:=nil;
+  RawImage^.MaskSize:=0;
+  RawImage^.Palette:=nil;
+  RawImage^.PaletteSize:=0;
+end;
+
 procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
   LineEnd: TRawImageLineEnd; var Data: Pointer; var DataSize: cardinal);
 var
@@ -333,8 +399,180 @@ begin
   FillChar(Data^,DataSize,0);
 end;
 
+procedure CreateRawImageDescFromMask(SrcRawImageDesc,
+  DestRawImageDesc: PRawImageDescription);
+begin
+  if (not SrcRawImageDesc^.AlphaSeparate) then
+    RaiseGDBException('CreateRawImageFromMask Alpha not separate');
+  DestRawImageDesc^:=SrcRawImageDesc^;
+  // set values
+  with DestRawImageDesc^ do begin
+    Format:=ricfGray;
+    HasPalette:=false;
+    Depth:=AlphaBitsPerPixel; // used bits per pixel
+    PaletteColorCount:=0;
+    ColorCount:=0; // entries in color palette. Ignore when no palette.
+    BitsPerPixel:=AlphaBitsPerPixel; // bits per pixel. can be greater than Depth.
+    LineEnd:=AlphaLineEnd;
+    RedPrec:=AlphaPrec; // gray precision. bits for gray
+    RedShift:=AlphaShift;
+    AlphaPrec:=0;
+    AlphaShift:=0;
+    AlphaSeparate:=false; // the alpha is stored as separate Mask
+    // The next values are only valid, if there is a separate alpha mask
+    AlphaBitsPerPixel:=0; // bits per alpha mask pixel.
+    // ToDo: add attributes for palette
+  end;
+end;
+
+procedure GetRawImageXYPosition(RawImageDesc: PRawImageDescription;
+  LineStarts: PRawImagePosition; x, y: cardinal;
+  var Position: TRawImagePosition);
+var
+  BitOffset: cardinal;
+begin
+  if RawImageDesc^.LineOrder=riloBottomToTop then
+    y:=RawImageDesc^.Height-y;
+  Position:=LineStarts[y];
+  BitOffset:=RawImageDesc^.BitsPerPixel*cardinal(x)+Position.Bit;
+  Position.Bit:=(BitOffset and 7);
+  inc(Position.Byte,BitOffset shr 3);
+end;
+
+procedure ExtractRawImageRect(SrcRawImage: PRawImage; const SrcRect: TRect;
+  DestRawImage: PRawImage);
+var
+  SrcMaskDesc, DestMaskDesc: TRawImageDescription;
+begin
+  //writeln('ExtractRawImageRect SrcRawImage=',RawImageDescriptionAsString(@SrcRawImage^.Description),
+  //  ' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+
+  // copy description
+  DestRawImage^:=SrcRawImage^;
+  ReleaseRawImageData(DestRawImage);
+  // extract rectangle from Data
+  ExtractRawImageDataRect(@SrcRawImage^.Description,SrcRect,SrcRawImage^.Data,
+    @DestRawImage^.Description,DestRawImage^.Data,DestRawImage^.DataSize);
+  // extract rectangle from separate Alpha
+  //writeln('ExtractRawImageDataRect data=',HexStr(Cardinal(DestRawImage^.Data),8),' Size=',DestRawImage^.DataSize);
+
+  if SrcRawImage^.Description.AlphaSeparate
+  and (SrcRawImage^.Mask<>nil) then begin
+    CreateRawImageDescFromMask(@SrcRawImage^.Description,@SrcMaskDesc);
+    //writeln('ExtractRawImageRect Mask SrcRawImage=',RawImageDescriptionAsString(@SrcMaskDesc));
+    ExtractRawImageDataRect(@SrcMaskDesc,SrcRect,SrcRawImage^.Mask,
+      @DestMaskDesc,DestRawImage^.Mask,DestRawImage^.MaskSize);
+  end;
+end;
+
+procedure ExtractRawImageDataRect(SrcRawImageDesc: PRawImageDescription;
+  const SrcRect: TRect; SrcData: Pointer;
+  DestRawImageDesc: PRawImageDescription;
+  var DestData: Pointer; var DestDataSize: cardinal);
+var
+  SrcWidth: cardinal;
+  SrcHeight: cardinal;
+  MaxRect, SourceRect: TRect;
+  y: Integer;
+  TotalWidth: cardinal;
+  TotalHeight: cardinal;
+  BitsPerPixel: cardinal;
+  LineEnd: TRawImageLineEnd;
+  SrcLineStarts, DestLineStarts: PRawImagePosition;
+  SrcLineStartPosition, SrcLineEndPosition: TRawImagePosition;
+  DestLineStartPosition: TRawImagePosition;
+  w: Word;
+  Shift: LongWord;
+  SrcPos: PByte;
+  DestPos: PByte;
+  ByteCount: LongWord;
+  x: Integer;
+begin
+  // init
+  DestRawImageDesc^:=SrcRawImageDesc^;
+
+  // intersect SrcRect
+  TotalWidth:=SrcRawImageDesc^.Width;
+  TotalHeight:=SrcRawImageDesc^.Height;
+  BitsPerPixel:=SrcRawImageDesc^.BitsPerPixel;
+  LineEnd:=SrcRawImageDesc^.LineEnd;
+  MaxRect:=Bounds(0,0,TotalWidth,TotalHeight);
+  IntersectRect(SourceRect,MaxRect,SrcRect);
+  if (SourceRect.Right<=SourceRect.Left)
+  or (SourceRect.Bottom<=SourceRect.Top) then exit;
+  SrcWidth:=SourceRect.Right-SourceRect.Left;
+  SrcHeight:=SourceRect.Bottom-SourceRect.Top;
+
+  // allocate Data
+  DestRawImageDesc^.Width:=SrcWidth;
+  DestRawImageDesc^.Height:=SrcHeight;
+  //writeln('ExtractRawImageDataRect Src=',SrcWidth,',',SrcHeight,' DestData=',HexStr(Cardinal(DestData),8));
+  CreateRawImageData(SrcWidth,SrcHeight,BitsPerPixel,LineEnd,
+                     DestData,DestDataSize);
+  //writeln('ExtractRawImageDataRect data=',HexStr(Cardinal(DestData),8),' Size=',DestDataSize);
+  if (SrcWidth=TotalWidth) and (TotalHeight=SrcHeight) then begin
+    // copy whole source
+    System.Move(SrcData^,DestData^,DestDataSize);
+    exit;
+  end;
+
+  // calculate line starts for source
+  SrcLineStarts:=nil;
+  CreateRawImageLineStarts(TotalWidth,TotalHeight,BitsPerPixel,LineEnd,
+                           SrcLineStarts);
+  // calculate line starts for destination
+  DestLineStarts:=nil;
+  CreateRawImageLineStarts(SrcWidth,SrcHeight,BitsPerPixel,LineEnd,
+                           DestLineStarts);
+  // copy
+  for y:=0 to SrcHeight-1 do begin
+    GetRawImageXYPosition(SrcRawImageDesc,SrcLineStarts,
+                          SourceRect.Left,y+SourceRect.Top,
+                          SrcLineStartPosition);
+    GetRawImageXYPosition(SrcRawImageDesc,SrcLineStarts,
+                          SourceRect.Right,y+SourceRect.Top,
+                          SrcLineEndPosition);
+    GetRawImageXYPosition(DestRawImageDesc,DestLineStarts,0,y,
+                          DestLineStartPosition);
+    //writeln('ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
+    //' DestByte=',DestLineStartPosition.Byte,' DestBit=',DestLineStartPosition.Bit);
+    if (SrcLineStartPosition.Bit=0)
+    and (DestLineStartPosition.Bit=0) then begin
+      // copy bytes
+      ByteCount:=SrcLineEndPosition.Byte-SrcLineStartPosition.Byte;
+      if SrcLineEndPosition.Bit>0 then
+        inc(ByteCount);
+      //writeln('ExtractRawImageDataRect B ByteCount=',ByteCount);
+      System.Move(
+        Pointer(Cardinal(SrcData)+SrcLineStartPosition.Byte)^,
+        Pointer(Cardinal(DestData)+DestLineStartPosition.Byte)^,
+        ByteCount);
+    end else if (DestLineStartPosition.Bit=0) then begin
+      // copy and move bits
+      ByteCount:=(SrcWidth*BitsPerPixel+7) shr 3;
+      Shift:=8-SrcLineStartPosition.Bit;
+      SrcPos:=PByte(Cardinal(SrcData)+SrcLineStartPosition.Byte);
+      DestPos:=PByte(Cardinal(DestData)+DestLineStartPosition.Byte);
+      for x:=0 to ByteCount-1 do begin
+        w:=PWord(SrcPos)^;
+        w:=w shr Shift;
+        DestPos^:=byte(w);
+        inc(SrcPos);
+        inc(DestPos);
+      end;
+    end else begin
+      writeln('ToDo: ExtractRawImageRect DestLineStartPosition.Bit>0');
+      break;
+    end;
+  end;
+  // clean up
+  FreeMem(SrcLineStarts);
+  FreeMem(DestLineStarts);
+end;
+
 procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
   LineEnd: TRawImageLineEnd; var LineStarts: PRawImagePosition);
+// LineStarts is recreated, so make sure it is nil or a valid mem
 var
   PixelCount: cardinal;
   BitsPerLine: cardinal;
@@ -529,6 +767,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.27  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

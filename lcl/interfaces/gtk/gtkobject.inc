@@ -2024,6 +2024,8 @@ function TGtkWidgetSet.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
 var
   Visual: PGdkVisual;
   Width, Height: integer;
+  WindowType: TGdkWindowType;
+  IsGdkBitmap: Boolean;
 begin
   Result := false;
   if Desc=nil then begin
@@ -2034,12 +2036,22 @@ begin
   Visual:=nil;
   Width:=0;
   Height:=0;
+  IsGdkBitmap:=false;
 
   If GDKWindow <> nil then begin
     Visual:=gdk_window_get_visual(GDKWindow);
     GDK_Window_Get_Size(GDKWindow,@Width,@Height);
+    if Visual=nil then begin
+      WindowType:=gdk_window_get_type(GDKWindow);
+      if WindowType=GDK_WINDOW_PIXMAP then begin
+        // a pixmap without visual
+        writeln('TGtkWidgetSet.GetWindowRawImageDescription GdkBitmap Type=',WindowType,' ',Width,',',Height,' ',GDK_WINDOW_PIXMAP);
+        // ToDo: find a test: gdkpixmap or gdkbitmap
+        IsGdkBitmap:=true;
+      end;
+    end;
   end;
-  if Visual = nil then begin
+  if Visual=nil then begin
     Visual := GDK_Visual_Get_System;
     if Visual=nil then exit;
   end;
@@ -2047,24 +2059,32 @@ begin
   FillChar(Desc^,SizeOf(TRawImageDescription),0);
 
   // Format
-  case Visual^.thetype of
-  GDK_VISUAL_STATIC_GRAY:  Desc^.Format:=ricfGray;
-  GDK_VISUAL_GRAYSCALE:    Desc^.Format:=ricfGray;
-  GDK_VISUAL_STATIC_COLOR: Desc^.Format:=ricfGray;
-  GDK_VISUAL_PSEUDO_COLOR: Desc^.Format:=ricfGray;
-  GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
-  GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
-  else
-    writeln('TGtkWidgetSet.GetWindowRawImageDescription unknown Visual type ',
-            integer(Visual^.thetype));
-    exit;
+  if IsGdkBitmap then begin
+    Desc^.Format:=ricfGray;
+  end else begin
+    case Visual^.thetype of
+    GDK_VISUAL_STATIC_GRAY:  Desc^.Format:=ricfGray;
+    GDK_VISUAL_GRAYSCALE:    Desc^.Format:=ricfGray;
+    GDK_VISUAL_STATIC_COLOR: Desc^.Format:=ricfGray;
+    GDK_VISUAL_PSEUDO_COLOR: Desc^.Format:=ricfGray;
+    GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
+    GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
+    else
+      writeln('TGtkWidgetSet.GetWindowRawImageDescription unknown Visual type ',
+              integer(Visual^.thetype));
+      exit;
+    end;
   end;
 
   // Palette
-  Desc^.HasPalette:=Visual^.thetype in [GDK_VISUAL_GRAYSCALE,
-                               GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR];
+  Desc^.HasPalette:=(not IsGdkBitmap)
+    and (Visual^.thetype in [GDK_VISUAL_GRAYSCALE,
+                              GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR]);
   // Depth
-  Desc^.Depth:=Visual^.Depth;
+  if IsGdkBitmap then
+    Desc^.Depth:=1
+  else
+    Desc^.Depth:=Visual^.Depth;
   // Width + Height
   Desc^.Width:=cardinal(Width);
   Desc^.Height:=cardinal(Height);
@@ -2099,15 +2119,20 @@ begin
   else    Desc^.LineEnd:=rileQWordBoundary;
   end;
   // Precisions and Shifts
-  Desc^.RedPrec:=Visual^.red_prec;
-  Desc^.RedShift:=Visual^.red_shift;
-  Desc^.GreenPrec:=Visual^.green_prec;
-  Desc^.GreenShift:=Visual^.green_shift;
-  Desc^.BluePrec:=Visual^.blue_prec;
-  Desc^.BlueShift:=Visual^.blue_shift;
-  Desc^.AlphaSeparate:=true;
-  Desc^.AlphaPrec:=1;
-  Desc^.AlphaShift:=0;
+  if IsGdkBitmap then begin
+    Desc^.RedPrec:=1;
+    Desc^.RedShift:=0;
+  end else begin
+    Desc^.RedPrec:=Visual^.red_prec;
+    Desc^.RedShift:=Visual^.red_shift;
+    Desc^.GreenPrec:=Visual^.green_prec;
+    Desc^.GreenShift:=Visual^.green_shift;
+    Desc^.BluePrec:=Visual^.blue_prec;
+    Desc^.BlueShift:=Visual^.blue_shift;
+    Desc^.AlphaSeparate:=true;
+    Desc^.AlphaPrec:=1;
+    Desc^.AlphaShift:=0;
+  end;
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
   Desc^.AlphaLineEnd:=rileByteBoundary;
@@ -2136,7 +2161,7 @@ begin
 
   // get raw image description
   {$IFDEF VerboseRawImage}
-  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow A GdkWindow=',HexStr(Cardinal(GdkWindow),8));
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow Get Desc GdkWindow=',HexStr(Cardinal(GdkWindow),8));
   {$ENDIF}
   if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
     exit;
@@ -2144,22 +2169,24 @@ begin
   // get intersection
   ARect:=SrcRect;
   {$IFDEF VerboseRawImage}
-  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow D ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow Intersect ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
   {$ENDIF}
   MaxRect:=Rect(0,0,NewRawImage.Description.Width,
                     NewRawImage.Description.Height);
   SourceRect:=ARect;
   IntersectRect(SourceRect,ARect,MaxRect);
-  {$IFDEF VerboseRawImage}
-  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow E SourceRect=',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
-  {$ENDIF}
   NewRawImage.Description.Width:=SourceRect.Right-SourceRect.Left;
   NewRawImage.Description.Height:=SourceRect.Bottom-SourceRect.Top;
   {$IFDEF VerboseRawImage}
-  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow F ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+  writeln('TGtkWidgetSet.GetRawImageFromGdkWindow get image ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
   {$ENDIF}
   if (NewRawImage.Description.Width=0) or (NewRawImage.Description.Height=0)
   then exit;
+
+  if NewRawImage.Description.Depth=1 then begin
+    writeln('TGtkWidgetSet.GetRawImageFromGdkWindow get bitmap ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+    exit;
+  end;
 
   // get gdk_image
   AnImage:=gdk_image_get(GDKWindow,SourceRect.Left,SourceRect.Top,
@@ -2172,12 +2199,11 @@ begin
   try
     // consistency checks
     if NewRawImage.Description.Depth<>AnImage^.Depth then
-      RaiseGDBException('NewRawImage.Description.Depth<>AnImage^.Depth');
+      RaiseGDBException('NewRawImage.Description.Depth<>AnImage^.Depth '+IntToStr(NewRawImage.Description.Depth)+'<>'+IntToStr(AnImage^.Depth));
     if NewRawImage.Description.BitsPerPixel<>AnImage^.bpp then
       RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
 
-    NewRawImage.DataSize:=(NewRawImage.Description.BitsPerPixel shr 3)
-                          * AnImage^.Width * AnImage^.Height;
+    NewRawImage.DataSize:=AnImage^.bpl * AnImage^.Height;
     {$IFDEF VerboseRawImage}
     writeln('TGtkWidgetSet.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
     {$ENDIF}
@@ -9265,6 +9291,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.485  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.484  2004/03/24 01:21:41  marc
   * Simplified signals for gtkwsbutton
 

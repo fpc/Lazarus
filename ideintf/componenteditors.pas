@@ -471,7 +471,7 @@ begin
   FFirst := nil;
   FBest := nil;
   try
-    GetPersistentProperties(Component, tkAny, PropertyEditorHook, @CheckEdit, nil);
+    GetPersistentProperties(Component,tkAny,PropertyEditorHook,@CheckEdit,nil);
     if FContinue
     then begin
       if Assigned(FBest) then

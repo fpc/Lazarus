@@ -431,13 +431,12 @@ end;
 procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
   Enabled: Boolean);
 var
-  aBitmap : TBitmap;
+  aBitmap: TBitmap;
 begin
+writeln('TCustomImageList.Draw ',Index,' ',FCount);
   if (FCount = 0) or (Index >= FCount) then Exit;
   aBitmap := TBitmap(FImageList[Index]);
-  // ToDo: Mask
-  Canvas.CopyRect(Rect(X, Y, X + FWidth, Y + FHeight), aBitmap.Canvas,
-                  Rect(0, 0, FWidth, FHeight));
+  Canvas.Draw(X,Y,aBitmap);
 end;
 
 {------------------------------------------------------------------------------
@@ -784,6 +783,7 @@ end;
   Reads the imagelist data from stream
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.ReadData(AStream: TStream);
+
   procedure DoReadLaz1;
   var
     i, NewCount, Size: Integer;
@@ -800,16 +800,88 @@ procedure TCustomImageList.ReadData(AStream: TStream);
       AddDirect(bmp, nil);
     end;
   end;
+  
+  procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
+    NewCount: integer);
+  var
+    RawImage, SubRawImage: TRawImage;
+    ImgHandle, MaskHandle: HBitmap;
+    Img: TBitmap;
+    Row: Integer;
+    Col: Integer;
+    ImgRect: TRect;
+  begin
+    BeginUpdate;
+    IntfImage.GetRawImage(RawImage);
+    FillChar(SubRawImage,SizeOf(SubRawImage),0);
+    try
+      for Row := 0 to (IntfImage.Height div Height) - 1 do
+      begin
+        if NewCount <= 0 then Break;
+        for Col := 0 to (IntfImage.Width div Width) - 1 do
+        begin
+          if NewCount <= 0 then Break;
 
+          ImgRect:=Bounds(Col*Width,Row*Height,Width,Height);
+          ExtractRawImageRect(@RawImage,ImgRect,@SubRawImage);
+          if not CreateBitmapFromRawImage(SubRawImage,ImgHandle,MaskHandle,
+            false)
+          then
+            raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
+          //writeln('CreateImagesFromRawImage A ',HexStr(Cardinal(SubRawImage.Data),8),' ',SubRawImage.DataSize);
+          FreeRawImageData(@SubRawImage);
+          Img := TBitmap.Create;
+          Img.Handle:=ImgHandle;
+          Img.MaskHandle:=MaskHandle;
+
+          AddDirect(Img, nil);
+          //writeln('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
+          Img := nil;
+          Dec(NewCount);
+        end;
+      end;
+    finally
+      FreeRawImageData(@SubRawImage);
+      EndUpdate;
+    end;
+  end;
+  
+  procedure ReadDelphiImageAndMask(HasMask: boolean; NewCount: integer);
+  var
+    IntfImage: TLazIntfImage;
+    ImgReader: TFPReaderBMP;
+    MaskIntfImage: TLazIntfImageMask;
+  begin
+    IntfImage:=nil;
+    MaskIntfImage:=nil;
+    ImgReader:=nil;
+    try
+      IntfImage:=TLazIntfImage.Create(0,0);
+      IntfImage.GetDescriptionFromDevice(0);
+      // read the image bmp stream into the IntfImage
+      ImgReader:=TFPReaderBMP.Create;
+      IntfImage.LoadFromStream(AStream,ImgReader);
+      if HasMask then begin
+        // create the mask bmp directly into the RawImage
+        MaskIntfImage:=TLazIntfImageMask.CreateWithImage(IntfImage);
+        MaskIntfImage.LoadFromStream(AStream,ImgReader);
+      end;
+
+      CreateImagesFromRawImage(IntfImage,NewCount);
+    finally
+      // clean up
+      ImgReader.Free;
+      IntfImage.Free;
+      MaskIntfImage.Free;
+    end;
+  end;
+  
 var
   Signature: array[0..1] of Char;
   StreamPos: TStreamSeekType;
-
-  Image, Img, Mask, Msk: TBitmap;
-  Row, Col, Size, NewCount: Integer;
-  SrcRect: TRect;
   HasMask: Boolean;
-  MskHandle: LongWord;
+  NewCount: Integer;
+  Size: integer;
 begin
   Clear;
   StreamPos := AStream.Position;                // check stream signature
@@ -821,109 +893,31 @@ begin
     Exit;
   end;
 
-  Image := nil;
-  Mask := nil;
-
-  try
-    Image := TBitmap.Create;
-    Mask := TBitmap.Create;
-
-    if Signature = SIG_D3
-    then begin
-      AStream.ReadWord; //Skip ?
-      NewCount := AStream.ReadWord;
-      //writeln('NewCount=',NewCount);
-      AStream.ReadWord; //Skip Capacity
-      AStream.ReadWord; //Skip Grow
-      FWidth := AStream.ReadWord;
-      //writeln('NewWidth=',FWidth);
-      FHeight := AStream.ReadWord;
-      //writeln('NewHeight=',FHeight);
-      FBKColor := TColor(AStream.ReadDWord);
-      HasMask := (AStream.ReadWord and 1) = 1;
-      AStream.ReadDWord; //Skip ?
-      AStream.ReadDWord; //Skip ?
-
-      //writeln('TCustomImageList.ReadData After Header ',FWidth,',',FHeight,' ',AStream.Position,'/',AStream.Size);
-      Image.ReadStream(AStream,false,0);
-      //Image.SaveToFile('output_test.bmp');
-      //writeln('TCustomImageList.ReadData After Image ',Image.Width,',',Image.Height,' Masked=',Image.MaskHandleAllocated,' StreamPos=',AStream.Position,'/',AStream.Size,' HasMask=',HasMask);
-      if HasMask then begin
-        Mask.ReadStream(AStream,false,0);
-        //writeln('TCustomImageList.ReadData After Mask ',Mask.Width,',',Mask.Height,' StreamPos=',AStream.Position,'/',AStream.Size,' ');
-      end;
-    end
-    else begin
-      // D2 has no signature, so restore original position
-      AStream.Position := StreamPos;
-      AStream.ReadBuffer(Size, SizeOf(Size));
-      AStream.ReadBuffer(NewCount, SizeOf(NewCount));
-
-      Image.ReadStream(AStream,false,0);
-      AStream.Position := StreamPos + Size;
-      HasMask := True;
-      if HasMask then
-        Mask.ReadStream(AStream,false,0);
-    end;
-
-
-    // ATM we are creating one image/mask for each icon.
-    // But eventually there should only be one TBitmap.
-    SrcRect := Bounds(0, 0, Width, Height);
+  if Signature = SIG_D3
+  then begin
+    AStream.ReadWord; //Skip ?
+    NewCount := AStream.ReadWord;
+    //writeln('NewCount=',NewCount);
+    AStream.ReadWord; //Skip Capacity
+    AStream.ReadWord; //Skip Grow
+    FWidth := AStream.ReadWord;
+    //writeln('NewWidth=',FWidth);
+    FHeight := AStream.ReadWord;
+    //writeln('NewHeight=',FHeight);
+    FBKColor := TColor(AStream.ReadDWord);
+    HasMask := (AStream.ReadWord and 1) = 1;
+    AStream.ReadDWord; //Skip ?
+    AStream.ReadDWord; //Skip ?
     
-    //writeln('TCustomImageList.ReadData NewCount=',NewCount);
+    ReadDelphiImageAndMask(HasMask,NewCount);
+  end
+  else begin
+    // D2 has no signature, so restore original position
+    AStream.Position := StreamPos;
+    AStream.ReadBuffer(Size, SizeOf(Size));
+    AStream.ReadBuffer(NewCount, SizeOf(NewCount));
 
-    BeginUpdate;
-    try
-      for Row := 0 to (Image.Height div Height) - 1 do
-      begin
-        if NewCount <= 0 then Break;
-        for Col := 0 to (Image.Width div Width) - 1 do
-        begin
-          if NewCount <= 0 then Break;
-          Img := TBitmap.Create;
-          Img.Width := Width;
-          Img.Height := Height;
-          Img.Canvas.CopyRect(SrcRect, Image.Canvas,
-                              Bounds(Col * Width, Row * Height, Width, Height));
-          //Img.Canvas.Brush.Color:=clRed;
-          //Img.Canvas.Fillrect(Rect(3,3,10,8));
-          //Img.SaveToFile('debug_imglist_i'+IntToStr(Count)+'.bmp');
-
-          if Mask<>nil then begin
-            Msk := TBitmap.Create;
-            try
-              Msk.Monochrome := True;
-              Msk.Width := Width;
-              Msk.Height := Height;
-              Msk.Canvas.CopyRect(SrcRect, Mask.Canvas,
-                Bounds(Col * Width, Row * Height, Width, Height));
-              //Msk.SaveToFile('debug_imglist_m'+IntToStr(Count)+'.bmp');
-              // combine image and mask
-              MskHandle:=Msk.Handle;
-              Msk.ReleaseHandle;
-              Img.MaskHandle:=MskHandle;
-            finally
-              Msk.Free;
-              Msk:=nil;
-            end;
-          end else
-            Msk:=nil;
-
-          AddDirect(Img, Msk);
-          Img := nil;
-          Msk := nil;
-          Dec(NewCount);
-        end;
-      end;
-    finally
-      Img.Free;
-      Msk.Free;
-      EndUpdate;
-    end;
-  finally
-    Image.Free;
-    Mask.Free;
+    ReadDelphiImageAndMask(HasMask,NewCount);
   end;
 end;
 
@@ -1180,6 +1174,9 @@ end;
 {
 
   $Log$
+  Revision 1.32  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.31  2004/03/22 19:10:04  mattias
   implemented icons for TPage in gtk, mask for TCustomImageList
 

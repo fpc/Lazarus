@@ -1037,8 +1037,8 @@ end;
   Returns: Boolean
 
   Intersects SrcRect1 and SrcRect2 into DestRect.
-  Intersecting means that DestRect will be the overlapping area of lprcSrc1 and
-  lprcSrc2. If SrcRect1 and SrcRect2 does not overlapp the Result is false, else
+  Intersecting means that DestRect will be the overlapping area of SrcRect1 and
+  SrcRect2. If SrcRect1 and SrcRect2 do not overlapp the Result is false, else
   true.
  ------------------------------------------------------------------------------}
 function IntersectRect(var DestRect: TRect;
@@ -1299,6 +1299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.110  2004/03/06 21:57:14  mattias
   fixed compilation under fpc 1.9.3
 

@@ -360,10 +360,11 @@ function TGtkWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
 var
   ImageGDIObject: PGDIObject;
   NewMaskGDIObject: PGDIObject;
+  MaskDescription: TRawImageDescription;
 begin
   Result:=IsValidGDIObject(Image) and
           ((NewMask=0) or IsValidGDIObject(NewMask));
-  //writeln('TGtkWidgetSet.ReplaceBitmapMask A ',Result);
+  writeln('TGtkWidgetSet.ReplaceBitmapMask A ',Result);
   if not Result then exit;
   
   // free 'Mask'
@@ -377,18 +378,26 @@ begin
   if ImageGDIObject^.GDIBitmapMaskObject<>nil then begin
     gdk_pixmap_unref(ImageGDIObject^.GDIBitmapMaskObject);
     ImageGDIObject^.GDIBitmapMaskObject:=nil;
-    //writeln('TGtkWidgetSet.ReplaceBitmapMask B old Mask deleted');
+    writeln('TGtkWidgetSet.ReplaceBitmapMask B old Mask deleted');
   end;
 
   // move image data from 'NewMask' to mask data of 'Image'
   if NewMask=0 then exit;
   NewMaskGDIObject:=PGDIObject(NewMask);
+  if NewMaskGDIObject^.GDIBitmapType<>gbBitmap then begin
+    RaiseGDBException('TGtkWidgetSet.ReplaceBitmapMask: invalid Mask Depth');
+  end;
   if NewMaskGDIObject^.GDIBitmapObject<>nil then begin
+    if not GetWindowRawImageDescription(NewMaskGDIObject^.GDIBitmapObject,
+                                 @MaskDescription) then exit;
+    if MaskDescription.Depth<>1 then begin
+      RaiseGDBException('TGtkWidgetSet.ReplaceBitmapMask: invalid Mask Depth');
+    end;
     ImageGDIObject^.GDIBitmapMaskObject:=NewMaskGDIObject^.GDIBitmapObject;
     NewMaskGDIObject^.GDIBitmapObject:=nil;
-    //writeln('TGtkWidgetSet.ReplaceBitmapMask C Mask replaced');
+    writeln('TGtkWidgetSet.ReplaceBitmapMask C Mask replaced');
   end;
-  
+
   // delete GDIObject 'NewMask'
   DeleteObject(NewMask);
 end;
@@ -453,6 +462,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/03/28 12:49:22  mattias
+  implemented mask merge and extraction for raw images
+
   Revision 1.23  2004/03/24 01:21:41  marc
   * Simplified signals for gtkwsbutton
 

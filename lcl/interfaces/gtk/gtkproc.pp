@@ -253,6 +253,10 @@ function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 {$EndIf}
 
+// callbacks for menu items
+procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem; Area: PGdkRectangle); cdecl;
+procedure MenuSizeRequest(widget:PGtkWidget; requisition:PGtkRequisition); cdecl;
+
 //==============================================================================
 // functions
 
@@ -573,6 +577,8 @@ procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
 Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC;
   DestX, DestY : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
 {$EndIf}
+function CreateGdkBitmap(Window: PGdkWindow; Width, Height: integer): PGdkBitmap;
+function ExtractGdkBitmap(Bitmap: PGdkBitmap; const SrcRect: TRect): PGdkBitmap;
 
 // menus
 function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
@@ -581,9 +587,6 @@ function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
 function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
 procedure LockRadioGroupOnChange(RadioGroup: PGSList; const ADelta: Integer);
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
-procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem;
-  Area: PGdkRectangle); cdecl;
-procedure MenuSizeRequest(widget:PGtkWidget; requisition:PGtkRequisition); cdecl;
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
 function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
