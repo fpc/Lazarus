@@ -38,7 +38,7 @@
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -50,7 +50,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -62,7 +62,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -74,7 +74,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -86,7 +86,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -98,7 +98,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -110,7 +110,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -122,7 +122,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -133,7 +133,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+function TQtWidgetSet.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -145,7 +145,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -157,7 +157,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -168,7 +168,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+function TQtWidgetSet.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -179,7 +179,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+function TQtWidgetSet.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -191,7 +191,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -203,7 +203,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -215,7 +215,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -227,7 +227,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -239,7 +239,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -251,7 +251,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -263,7 +263,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -274,7 +274,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+function TQtWidgetSet.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
 begin
   // Your code here
 end;
@@ -286,7 +286,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -297,7 +297,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+function TQtWidgetSet.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
 begin
   // Your code here
 end;
@@ -309,7 +309,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -320,7 +320,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+function TQtWidgetSet.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -332,7 +332,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -344,7 +344,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -356,7 +356,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -368,7 +368,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -379,7 +379,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+function TQtWidgetSet.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
 begin
   // Your code here
 end;
@@ -390,7 +390,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+function TQtWidgetSet.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
 begin
   // Your code here
 end;
@@ -401,7 +401,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+function TQtWidgetSet.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -413,7 +413,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -425,7 +425,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -436,7 +436,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+function TQtWidgetSet.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -448,7 +448,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -460,7 +460,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -472,7 +472,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -483,7 +483,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+function TQtWidgetSet.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -495,7 +495,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -507,7 +507,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -519,7 +519,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -531,7 +531,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -543,7 +543,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -555,7 +555,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -567,7 +567,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -579,7 +579,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQTObject.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+function TQtWidgetSet.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;

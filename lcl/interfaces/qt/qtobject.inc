@@ -19,10 +19,10 @@ begin
 end;
 
 
-function TQTObject.GetText(Sender: TControl; var Text: String): Boolean;
+function TQtWidgetSet.GetText(Sender: TControl; var Text: String): Boolean;
 begin
 end;
-procedure TQTObject.SetLabel(Sender : TObject; Data : Pointer);
+procedure TQtWidgetSet.SetLabel(Sender : TObject; Data : Pointer);
 var
 pLabel: pchar;
 lSelf : TWinControl;
@@ -33,7 +33,7 @@ begin
    SetWidgetText(lSelf.Handle,pLabel);
 end;
 
-function  TQTObject.IntSendMessage3(LM_Message : Integer; Sender : TObject;data : pointer) : integer;
+function  TQtWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;data : pointer) : integer;
 var
 lParent: TWinControl;
 lSelf: TWinControl;
@@ -82,7 +82,7 @@ begin
     end;//end case
 end;
 
-procedure TQTObject.CreateComponent(Sender : TObject);
+procedure TQtWidgetSet.CreateComponent(Sender : TObject);
 var
 CompStyle: integer;
 lHandle: integer;
@@ -113,7 +113,7 @@ begin
        TWinControl(Sender).Handle := THandle(lhandle);
 end;
 
-procedure TQTObject.ShowHide(Sender : TObject);
+procedure TQtWidgetSet.ShowHide(Sender : TObject);
 begin
  //put in hide code once the interface supports it
  if TControl(Sender).Visible then
@@ -121,7 +121,7 @@ begin
 end;
 
 
-procedure TQTObject.SetCallback(Msg : LongInt; Sender : TObject);
+procedure TQtWidgetSet.SetCallback(Msg : LongInt; Sender : TObject);
 var
 lHandle : integer;
 begin
@@ -153,23 +153,23 @@ begin
 
 end;
 
-procedure TQTObject.RemoveCallbacks(Sender : TObject);
+procedure TQtWidgetSet.RemoveCallbacks(Sender : TObject);
 begin
 end;
-procedure TQTObject.DoEvents;
+procedure TQtWidgetSet.DoEvents;
 begin
  Assert(False, 'Trace:*******QT ENGINE HAS ENTERED EVENT ITTERATOR*******');
 end;
-procedure TQTObject.HandleEvents;
+procedure TQtWidgetSet.HandleEvents;
 begin
  MainLoop;
 end;
-procedure TQTObject.AppTerminate;
+procedure TQtWidgetSet.AppTerminate;
 begin
 Assert(False, 'Trace:*******APP TERMINATE CALLED*****');
  Shutdown;
 end;
-procedure TQTObject.Init;
+procedure TQtWidgetSet.Init;
 begin
  InitializeEngine;
 end;

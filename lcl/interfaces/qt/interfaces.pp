@@ -42,7 +42,7 @@ uses
 
 initialization
 
-   InterfaceObject := TqtObject.Create;
+   InterfaceObject := TQtWidgetSet.Create;
 
 finalization
 
