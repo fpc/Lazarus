@@ -383,7 +383,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ActivateHint(Rect: TRect; const AHint: String); virtual;
+    procedure ActivateHint(ARect: TRect; const AHint: String); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String; AData: Pointer): TRect; virtual;
     property Color;
     property AutoHide : Boolean read FAutoHide write SetAutoHide;

@@ -25,7 +25,8 @@
 }
 
 constructor THintWindow.Create(AOwner: TComponent);
-var TheTimer: TTimer;
+var
+  TheTimer: TTimer;
 begin
   inherited Create(AOwner);
   fCompStyle := csHintWindow;
@@ -45,27 +46,31 @@ end;
 destructor THintWIndow.Destroy;
 begin
   fAutoHideTimer.Free;
+  fAutoHideTimer:=nil;
   inherited;
 end;
 
 Procedure THintWindow.SetHideInterval(Value : Integer);
 Begin
   FHideInterval := Value;
-  TTimer(FAutoHideTimer).Interval := FHideInterval;
+  if FAutoHideTimer<>nil then
+    TTimer(FAutoHideTimer).Interval := FHideInterval;
 end;
 
 Procedure THintWindow.SetAutoHide(Value : Boolean);
 Begin
   FAutoHide := Value;
-  if not(value) then
-     TTimer(FAutoHideTimer).Enabled := False;
+  if not (value) and (FAutoHideTimer<>nil) then
+    TTimer(FAutoHideTimer).Enabled := False;
 end;
 
 
 Procedure THintWindow.AutoHideHint(Sender : TObject);
 Begin
-  TTimer(FAutoHideTimer).Enabled := False;
-  if Visible then Visible := False;//Hide;
+  if FAutoHideTimer<>nil then
+    TTimer(FAutoHideTimer).Enabled := False;
+  if Visible then
+    Visible := False;//Hide;
 End;
 
 procedure THintWindow.Paint;
@@ -87,24 +92,26 @@ begin
   Canvas.TextRect(Rect, 1, 1, Caption, TS);
 end;
 
-procedure THintWindow.ActivateHint(Rect: TRect; const AHint: String);
+procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
 begin
+  if FActivating then exit;
   FActivating := True;
   try
     Caption := AHint;
-    if Rect.Bottom > Screen.Height then
+    if ARect.Bottom > Screen.Height then
     begin
-      Rect.Top := Screen.Height - (Rect.Bottom - Rect.Top);
-      Rect.Bottom := Screen.Height;
+      ARect.Top := Screen.Height - (ARect.Bottom - ARect.Top);
+      ARect.Bottom := Screen.Height;
     end;
-    if Rect.Right > Screen.Width then
+    if ARect.Right > Screen.Width then
     begin
-      Rect.Left := Screen.Width - (Rect.Right - Rect.Left);
-      Rect.Right := Screen.Width;
+      ARect.Left := Screen.Width - (ARect.Right - ARect.Left);
+      ARect.Right := Screen.Width;
     end;
-    if Rect.Left < 0 then Rect.Left := 0;
-    if Rect.Bottom < 0 then Rect.Bottom := 0;
-    SetBounds(Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top);
+    if ARect.Left < 0 then ARect.Left := 0;
+    if ARect.Top < 0 then ARect.Top := 0;
+    SetBounds(ARect.Left, ARect.Top,
+              ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
     Visible := True;
     TTimer(FAutoHideTimer).Enabled := False;
     TTimer(FAutoHideTimer).Enabled := FAutoHide;
@@ -117,7 +124,7 @@ end;
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
-  Result := Rect(0,0, MaxWidth, Screen.Height - 8);
+  Result := Rect(0,0, MaxWidth, ClientHeight);
   SelectObject(Canvas.Handle, Canvas.Font.Handle);
   DrawText(Canvas.Handle, PChar(AHint), Length(AHint), Result, DT_CalcRect or
     DT_NOPREFIX);
