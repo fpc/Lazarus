@@ -1323,6 +1323,8 @@ Var
   LF: LogFont;
   OpenFile: OpenFileName;
   Ret: Boolean;
+  FName: array[0..Max_path] of char;
+  FFilter: string;
 
   Function GetFlagsFromOptions(Options: TOpenOptions): DWord;
   Begin
@@ -1374,6 +1376,13 @@ Var
     else Result := 0;
   end;
 
+  procedure ReplacePipe(var AFilter:string);
+  var i:integer;
+  begin
+    for i:=1 to length(AFilter) do
+      if AFilter[i]='|' then AFilter[i]:=#0;
+  end;
+
 Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Start');
   Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
@@ -1393,40 +1402,34 @@ Begin
   End
   Else If Sender Is TFileDialog Then
   Begin
-    If Sender Is TSaveDialog Then {must be before TOpenDialog because TSaveDialog IS TOpenDialog}
+    {TODO: set correctly Sender.FileName and Sender.Files when more files are selected}
+    If Sender Is TOpenDialog Then
     Begin
-      OpenFile := LPOpenFileName(@Sender)^;
+      FName[0]:=#0;
+      FFilter := (Sender As TOpenDialog).Filter;
+      ReplacePipe(FFilter);
+      FFilter := FFilter+#0;
       ZeroMemory(@OpenFile, SizeOf(OpenFileName));
       With OpenFile Do
       Begin
         LStructSize := SizeOf(OpenFileName);
         HWndOwner := GetOwnerHandle;
-        LPStrFilter := PChar((Sender As TSaveDialog).Filter);
-        {If (Sender As TSaveDialog).FileName <> '' Then
-          LPStrFile := PChar((Sender As TSaveDialog).FileName);}
-        LPStrFileTitle := PChar((Sender As TSaveDialog).Title);
-        LPStrInitialDir := PChar((Sender As TSaveDialog).InitialDir);
+        LPStrFilter := PChar(FFilter);
+        LPStrFile := @FName;
+        LPStrTitle := PChar((Sender As TOpenDialog).Title);
+        LPStrInitialDir := PChar((Sender As TOpenDialog).InitialDir);
+        NMaxFile := Max_path;
         Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
       End;
-      Ret := GetSaveFileName(@OpenFile);
-    End
-    Else If Sender Is TOpenDialog Then
-    Begin
-      OpenFile := LPOpenFileName(@Sender)^;
-      ZeroMemory(@OpenFile, SizeOf(OpenFileName));
-      With OpenFile Do
+      If Sender Is TSaveDialog Then {must be before TOpenDialog because TSaveDialog IS TOpenDialog}
       Begin
-        LStructSize := SizeOf(OpenFileName);
-        HWndOwner := GetOwnerHandle;
-        LPStrFilter := PChar((Sender As TOpenDialog).Filter);
-        {If (Sender As TOpenDialog).FileName <> '' Then
-          LPStrFile := PChar((Sender As TOpenDialog).FileName);}
-        LPStrFileTitle := PChar((Sender As TOpenDialog).Title);
-        LPStrInitialDir := PChar((Sender As TOpenDialog).InitialDir);
-
-          Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+        Ret := GetSaveFileName(@OpenFile);
+      End
+      Else //TOpenDialog
+      Begin
+        Ret := GetOpenFileName(@OpenFile);
       End;
-      Ret := GetOpenFileName(@OpenFile)
+      If Ret Then (Sender As TOpenDialog).FileName := StrPas(FName);
     End
   End
   Else If Sender Is TFontDialog Then
@@ -2628,6 +2631,9 @@ End;
 
 {
   $Log$
+  Revision 1.47  2003/02/16 00:43:55  mattias
+  fix from Martin Smat for TFileDialogs
+
   Revision 1.46  2003/02/08 10:37:32  mattias
   applied patch from Martin for TFileDialog
 
