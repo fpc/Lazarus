@@ -119,7 +119,8 @@ Type
     procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
-
+    procedure ActiveChange(Sender: TObject);
+    
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -202,6 +203,7 @@ Type
     FDataLink: TFieldDataLink;
 
     procedure DataChange(Sender: TObject);
+    procedure ActiveChange(Sender: TObject);
 
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -1225,7 +1227,7 @@ end;
 }
 procedure TFieldDataLink.Reset;
 begin
-  if Assigned(FOnDataChange) then
+  if active and Assigned(FOnDataChange) then
     FOnDataChange(Self);
 
   IsModified := False;
@@ -1248,6 +1250,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/08/22 22:57:35  mattias
+  added OnActiveChange  from Joost
+
   Revision 1.18  2004/08/15 22:31:51  mattias
   fixed fpc 1.0.10 compilation
 

@@ -32,6 +32,13 @@ begin
     Caption := '';
 end;
 
+procedure TDBText.ActiveChange(Sender: TObject);
+
+begin
+  if FDatalink.Active then datachange(sender)
+    else text := '';
+end;
+
 function TDBText.GetDataField: string;
 begin
   Result := FDataLink.FieldName;
@@ -86,6 +93,7 @@ begin
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
+  FDataLInk.OnActiveChange := @ActiveChange;
 end;
 
 destructor TDBText.Destroy;
@@ -98,6 +106,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/08/22 22:57:35  mattias
+  added OnActiveChange  from Joost
+
   Revision 1.3  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

@@ -45,6 +45,18 @@ begin
   end;
 end;
 
+procedure TDBEdit.ActiveChange(Sender: TObject);
+
+begin
+  if FDatalink.Active then datachange(sender)
+  else
+    begin
+    text := '';
+    FDataLink.reset;
+    end;
+end;
+
+
 procedure TDBEdit.EditingChange(Sender: TObject);
 begin
   //ok to hide the 'real' readonly state we must override it
@@ -210,6 +222,7 @@ begin
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnEditingChange := @EditingChange;
   FDataLink.OnUpdateData := @UpdateData;
+  FDataLInk.OnActiveChange := @ActiveChange;
 
   inherited ReadOnly := True;//start read only
 end;
@@ -224,6 +237,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/08/22 22:57:35  mattias
+  added OnActiveChange  from Joost
+
   Revision 1.7  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 
