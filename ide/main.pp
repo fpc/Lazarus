@@ -1307,6 +1307,10 @@ begin
                     lisLazarusDirectory,nil,[]));
   MacroList.Add(TTransferMacro.Create('LCLWidgetType','',
                     lisLCLWidgetType,nil,[]));
+  MacroList.Add(TTransferMacro.Create('TargetCPU','',
+                    lisTargetCPU,nil,[]));
+  MacroList.Add(TTransferMacro.Create('TargetOS','',
+                    lisTargetOS,nil,[]));
   MacroList.Add(TTransferMacro.Create('Params','',
                     lisCommandLineParamsOfProgram,nil,[]));
   MacroList.Add(TTransferMacro.Create('Prompt','',
@@ -7299,6 +7303,20 @@ begin
     else
       s:='';
     if (s='') or (s='default') then s:=GetDefaultLCLWidgetType;
+  end else if MacroName='targetcpu' then begin
+    Handled:=true;
+    if Project1<>nil then
+      s:=lowercase(Project1.CompilerOptions.TargetCPU)
+    else
+      s:='';
+    if (s='') or (s='default') then s:=GetDefaultTargetCPU;
+  end else if MacroName='targetos' then begin
+    Handled:=true;
+    if Project1<>nil then
+      s:=lowercase(Project1.CompilerOptions.TargetOS)
+    else
+      s:='';
+    if (s='') or (s='default') then s:=GetDefaultTargetOS;
   end else if MacroName='fpcsrcdir' then begin
     Handled:=true;
     s:=EnvironmentOptions.FPCSourceDirectory;
@@ -10229,6 +10247,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.680  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.679  2003/12/16 13:42:02  mattias
   implemented basic Repair broken LFM wizard
 

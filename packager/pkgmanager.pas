@@ -121,6 +121,7 @@ type
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
+                                 Globals: TGlobalCompilerOptions;
                                  Policies: TPackageUpdatePolicies): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
@@ -197,6 +198,7 @@ type
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TLazPackage;
+                              Globals: TGlobalCompilerOptions;
                               Flags: TPkgCompileFlags): TModalResult; override;
     function DoSavePackageMainSource(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
@@ -309,7 +311,7 @@ begin
   Flags:=[];
   if CompileClean then Include(Flags,pcfCleanCompile);
   if CompileRequired then Include(Flags,pcfCompileDependenciesClean);
-  Result:=DoCompilePackage(APackage,Flags);
+  Result:=DoCompilePackage(APackage,nil,Flags);
 end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
@@ -712,7 +714,7 @@ begin
 end;
 
 function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency;
+  FirstDependency: TPkgDependency; Globals: TGlobalCompilerOptions;
   Policies: TPackageUpdatePolicies): TModalResult;
 var
   AutoPackages: TList;
@@ -728,7 +730,7 @@ begin
     try
       i:=0;
       while i<AutoPackages.Count do begin
-        Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),
+        Result:=DoCompilePackage(TLazPackage(AutoPackages[i]),Globals,
                       [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
                        pcfDoNotSaveEditorFiles]);
         if Result<>mrOk then exit;
@@ -1970,6 +1972,7 @@ begin
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
       Result:=CompileRequiredPackages(nil,AProject.FirstRequiredDependency,
+                                      AProject.CompilerOptions.Globals,
                                       [pupAsNeeded]);
       if Result<>mrOk then exit;
     end;
@@ -1981,6 +1984,7 @@ begin
 end;
 
 function TPkgManager.DoCompilePackage(APackage: TLazPackage;
+  Globals: TGlobalCompilerOptions;
   Flags: TPkgCompileFlags): TModalResult;
 var
   PkgCompileTool: TExternalToolOptions;
@@ -2018,13 +2022,13 @@ begin
       CompilePolicies:=[pupAsNeeded];
       if pcfCompileDependenciesClean in Flags then
         Include(CompilePolicies,pupOnRebuildingAll);
-      Result:=CompileRequiredPackages(APackage,nil,[pupAsNeeded]);
+      Result:=CompileRequiredPackages(APackage,nil,Globals,[pupAsNeeded]);
       if Result<>mrOk then exit;
     end;
 
     SrcFilename:=APackage.GetSrcFilename;
     CompilerFilename:=APackage.GetCompilerFilename;
-    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
+    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
                                APackage.CompilerOptions.DefaultMakeOptionsFlags)
                  +' '+CreateRelativePath(SrcFilename,APackage.Directory);
 
@@ -2584,7 +2588,8 @@ begin
     end;
     
     // compile all auto install dependencies
-    Result:=CompileRequiredPackages(nil,FirstAutoInstallDependency,[pupAsNeeded]);
+    Result:=CompileRequiredPackages(nil,FirstAutoInstallDependency,
+                       MiscellaneousOptions.BuildLazOpts.Globals,[pupAsNeeded]);
     if Result<>mrOk then exit;
     
   finally

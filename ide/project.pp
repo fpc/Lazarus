@@ -220,14 +220,22 @@ type
 
   TProjectCompilerOptions = class(TCompilerOptions)
   private
+    FGlobals: TGlobalCompilerOptions;
     FOwnerProject: TProject;
+  protected
+    procedure SetTargetCPU(const AValue: string); override;
+    procedure SetTargetOS(const AValue: string); override;
+    procedure Assign(CompOpts: TBaseCompilerOptions); override;
+    procedure UpdateGlobals; virtual;
   public
     constructor Create(TheProject: TProject);
+    destructor Destroy; override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
   public
     property OwnerProject: TProject read FOwnerProject;
+    property Globals: TGlobalCompilerOptions read FGlobals;
   end;
   
   
@@ -2611,10 +2619,42 @@ end;
 
 { TProjectCompilerOptions }
 
+procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
+begin
+  inherited SetTargetCPU(AValue);
+  FGlobals.TargetCPU:=TargetCPU;
+end;
+
+procedure TProjectCompilerOptions.SetTargetOS(const AValue: string);
+begin
+  inherited SetTargetOS(AValue);
+  FGlobals.TargetOS:=TargetOS;
+end;
+
+procedure TProjectCompilerOptions.Assign(CompOpts: TBaseCompilerOptions);
+begin
+  inherited Assign(CompOpts);
+  UpdateGlobals;
+end;
+
+procedure TProjectCompilerOptions.UpdateGlobals;
+begin
+  FGlobals.TargetCPU:=TargetCPU;
+  FGlobals.TargetOS:=TargetOS;
+end;
+
 constructor TProjectCompilerOptions.Create(TheProject: TProject);
 begin
+  FGlobals:=TGlobalCompilerOptions.Create;
   inherited Create(TheProject);
+  UpdateGlobals;
   fOwnerProject:=TheProject;
+end;
+
+destructor TProjectCompilerOptions.Destroy;
+begin
+  inherited Destroy;
+  FGlobals.Free;
 end;
 
 function TProjectCompilerOptions.GetOwnerName: string;
@@ -2739,6 +2779,9 @@ end.
 
 {
   $Log$
+  Revision 1.142  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.141  2003/11/25 08:59:01  mattias
   fixed a few more black colors
 

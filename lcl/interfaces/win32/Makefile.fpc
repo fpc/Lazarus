@@ -15,16 +15,20 @@ implicitunits=winext win32def win32int
 
 [compiler]
 options=-gl
-unitdir=../../units .
-unittargetdir=../../units/win32
+unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/win32
 
 [clean]
-files=$(wildcard ../../units/win32/*$(OEXT)) $(wildcard ../../units/win32/*$(PPUEXT)) $(wildcard ../../units/win32/*$(STATICLIBEXT))
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(STATICLIBEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [rules]
 cleartarget:
-        -$(DEL) $(wildcard ../../units/win32/interfaces.*) $(wildcard ../../units/interfaces.*)
-#        touch $(wildcard ../../units/*$(OEXT)) $(wildcard ../../units/*$(PPUEXT))
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
 all: cleartarget interfaces$(PPUEXT)
 

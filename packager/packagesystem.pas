@@ -840,7 +840,8 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
     
     // add lazarus registration unit path
-    UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/packager/units');
+    UsageOptions.UnitPath:=SetDirSeparators(
+      '$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)');
 
     // add registering units
     AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,
@@ -851,7 +852,7 @@ begin
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/packager/units/lazaruspackageintf.o');
+      '$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)/lazaruspackageintf.o');
 
     Modified:=false;
   end;
@@ -905,15 +906,17 @@ begin
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(
-      '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)');
+       '$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS);'
+      +'$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/$(LCLWidgetType)');
     UsageOptions.CustomOptions:='-dLCL';
     // add include path
     CompilerOptions.IncludeFiles:=SetDirSeparators(
       '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
 
-    // use the lcl/units/allunits.o file as indicator,
-    // if LCL has been recompiled
-    OutputStateFile:=SetDirSeparators('$(LazarusDir)/lcl/units/allunits.o');
+    // use the lcl/units/$(TargetCPU)/$(TargetOS)/alllclunits.o
+    // file as indicator, if LCL has been recompiled
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/alllclunits.o');
 
     Modified:=false;
   end;
@@ -958,12 +961,13 @@ begin
     AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);
 
     // add unit paths
-    UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/components/units');
+    UsageOptions.UnitPath:=SetDirSeparators(
+                     '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)');
 
     // use the lcl/units/allunits.o file as indicator,
     // if synedit has been recompiled
     OutputStateFile:=SetDirSeparators(
-      '$(LazarusDir)/components/units/allunits.o');
+      '$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/allsyneditunits.o');
 
     Modified:=false;
   end;

@@ -17,9 +17,12 @@ exampledirs=examples
 
 [compiler]
 options=-gl
-unitdir=lcl/units lcl/units/$(LCL_PLATFORM) \
-        components/units components/custom components/mpaslex \
-        designer designer/units debugger packager packager/units .
+unitdir=lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
+        lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) \
+        components/units/$(CPU_TARGET)/$(OS_TARGET) \
+        components/custom components/mpaslex \
+        designer designer/units debugger \
+        packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
 includedir=include include/$(OS_TARGET)
 targetdir=.
 

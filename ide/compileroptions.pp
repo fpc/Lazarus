@@ -47,6 +47,22 @@ uses
   TransferMacros, ShowCompilerOpts;
 
 type
+
+  { TGlobalCompilerOptions - compiler options overrides }
+
+  TGlobalCompilerOptions = class
+  private
+    FTargetCPU: string;
+    FTargetOS: string;
+    procedure SetTargetCPU(const AValue: string);
+    procedure SetTargetOS(const AValue: string);
+  public
+    property TargetCPU: string read FTargetCPU write SetTargetCPU;
+    property TargetOS: string read FTargetOS write SetTargetOS;
+  end;
+
+
+type
   TInheritedCompilerOption = (
     icoUnitPath,
     icoIncludePath,
@@ -64,7 +80,6 @@ const
   icoAllSearchPaths = [icoUnitPath,icoIncludePath,icoObjectPath,icoLibraryPath,
                        icoSrcPath];
   
-
 type
   { TParsedCompilerOptions }
   
@@ -200,6 +215,7 @@ type
     fVerifyObjMethodCall: boolean;
     fGenerate: Integer;
     fTargetProc: Integer;
+    fTargetCPU: string;
     fVarsInReg: Boolean;
     fUncertainOpt: Boolean;
     fOptLevel: Integer;
@@ -260,6 +276,9 @@ type
     procedure SetObjectPath(const AValue: string); virtual;
     procedure SetSrcPath(const AValue: string); virtual;
     procedure SetDebugPath(const AValue: string); virtual;
+    procedure SetTargetCPU(const AValue: string); virtual;
+    procedure SetTargetProc(const AValue: Integer); virtual;
+    procedure SetTargetOS(const AValue: string); virtual;
   protected
     procedure LoadTheCompilerOptions(const Path: string); virtual;
     procedure SaveTheCompilerOptions(const Path: string); virtual;
@@ -279,8 +298,10 @@ type
     procedure Assign(CompOpts: TBaseCompilerOptions); virtual;
     function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     
-    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
+    function MakeOptionsString(Globals: TGlobalCompilerOptions;
+                               Flags: TCompilerCmdLineOptions): String;
     function MakeOptionsString(const MainSourceFileName: string;
+                               Globals: TGlobalCompilerOptions;
                                Flags: TCompilerCmdLineOptions): String; virtual;
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
@@ -353,12 +374,13 @@ type
     property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes
                                           write FEmulatedFloatOpcodes;
     property Generate: Integer read fGenerate write fGenerate;
-    property TargetProcessor: Integer read fTargetProc write fTargetProc;
+    property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
+    property TargetProcessor: Integer read fTargetProc write SetTargetProc; // specific
+    property TargetOS: string read fTargetOS write SetTargetOS;
     property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
     property UncertainOptimizations: Boolean read fUncertainOpt write fUncertainOpt;
     property OptimizationLevel: Integer read fOptLevel write fOptLevel;
-    property TargetOS: string read fTargetOS write fTargetOS;
-    
+
     // linking:
     property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
     property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
@@ -463,7 +485,7 @@ type
     procedure Clear; override;
   end;
   
-
+  
   { Compiler options form }
   
   TfrmCompilerOptions = class(TForm)
@@ -1058,6 +1080,24 @@ begin
   ParsedOpts.SetUnparsedValue(pcosDebugPath,fDebugPath);
 end;
 
+procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
+begin
+  if fTargetCPU=AValue then exit;
+  fTargetCPU:=AValue;
+end;
+
+procedure TBaseCompilerOptions.SetTargetProc(const AValue: Integer);
+begin
+  if fTargetProc=AValue then exit;
+  fTargetProc:=AValue;
+end;
+
+procedure TBaseCompilerOptions.SetTargetOS(const AValue: string);
+begin
+  if fTargetOS=AValue then exit;
+  fTargetOS:=AValue;
+end;
+
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
   if FBaseDirectory=AValue then exit;
@@ -1176,6 +1216,7 @@ begin
   VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
   Generate := XMLConfigFile.GetValue(p+'Generate/Value', 1);
   TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 1);
+  TargetCPU := XMLConfigFile.GetValue(p+'TargetCPU/Value', '');
   VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := XMLConfigFile.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
   OptimizationLevel := XMLConfigFile.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
@@ -1310,6 +1351,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
   XMLConfigFile.SetDeleteValue(p+'Generate/Value', Generate,1);
   XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,1);
+  XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
@@ -1548,18 +1590,21 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions MakeOptionsString
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.MakeOptionsString(Flags: TCompilerCmdLineOptions
-  ): String;
+function TBaseCompilerOptions.MakeOptionsString(Globals: TGlobalCompilerOptions;
+  Flags: TCompilerCmdLineOptions): String;
 begin
-  Result:=MakeOptionsString(GetDefaultMainSourceFileName,Flags);
+  Result:=MakeOptionsString(GetDefaultMainSourceFileName,Globals,Flags);
 end;
 
 {------------------------------------------------------------------------------
   function TBaseCompilerOptions.MakeOptionsString(
-    const MainSourceFilename: string; Flags: TCompilerCmdLineOptions): String;
+    const MainSourceFilename: string;
+    Globals: TGlobalCompilerOptions;
+    Flags: TCompilerCmdLineOptions): String;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString(
-  const MainSourceFilename: string; Flags: TCompilerCmdLineOptions): String;
+  const MainSourceFilename: string; Globals: TGlobalCompilerOptions;
+  Flags: TCompilerCmdLineOptions): String;
 var
   switches, tempsw: String;
   InhLinkerOpts: String;
@@ -1872,7 +1917,9 @@ Processor specific options:
        WIN32 = Windows 32 bit.
        ... }
   { Target OS }
-  if TargetOS<>'' then
+  if (Globals<>nil) and (Globals.TargetOS<>'') then
+    switches := switches + ' -T' + Globals.TargetOS
+  else if (TargetOS<>'') then
     switches := switches + ' -T' + TargetOS;
   { --------------- Linking Tab ------------------- }
   
@@ -2158,6 +2205,7 @@ begin
   fHeapSize := 8000000;
   fGenerate := 1;
   fTargetProc := 1;
+  fTargetCPU := '';
   fVarsInReg := false;
   fUncertainOpt := false;
   fOptLevel := 1;
@@ -2252,6 +2300,7 @@ begin
   fVerifyObjMethodCall := CompOpts.fVerifyObjMethodCall;
   fGenerate := CompOpts.fGenerate;
   fTargetProc := CompOpts.fTargetProc;
+  fTargetCPU := CompOpts.fTargetCPU;
   fVarsInReg := CompOpts.fVarsInReg;
   fUncertainOpt := CompOpts.fUncertainOpt;
   fOptLevel := CompOpts.fOptLevel;
@@ -2342,6 +2391,7 @@ begin
     and (fVerifyObjMethodCall = CompOpts.fVerifyObjMethodCall)
     and (fGenerate = CompOpts.fGenerate)
     and (fTargetProc = CompOpts.fTargetProc)
+    and (fTargetCPU = CompOpts.fTargetCPU)
     and (fVarsInReg = CompOpts.fVarsInReg)
     and (fUncertainOpt = CompOpts.fUncertainOpt)
     and (fOptLevel = CompOpts.fOptLevel)
@@ -2550,7 +2600,7 @@ var
 begin
   // Test MakeOptionsString function
   PutCompilerOptions;
-  CurOptions := CompilerOpts.MakeOptionsString(
+  CurOptions := CompilerOpts.MakeOptionsString(nil,
                                           CompilerOpts.DefaultMakeOptionsFlags);
   WriteLn('CompilerOpts.MakeOptionsString: ' + CurOptions);
   ShowCompilerOptionsDialog(CurOptions);
@@ -3482,7 +3532,7 @@ begin
     Left := 5;
     Height := 16;
     Width := 100;
-    Caption := dlgCOSmaller ;
+    Caption := dlgCOSmaller;
   end;
 
 
@@ -3496,7 +3546,7 @@ begin
     Left := grpGenerate.Left + grpGenerate.Width + 10;
     Height := 90;
     Width := 270;
-    Caption := dlgTargetProc ;
+    Caption := dlgTargetProc;
   end;
 
   radTarget386 := TRadioButton.Create(grpTargetProc);
@@ -4978,6 +5028,20 @@ begin
                            ScanForFPCMessages,false);
   XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
                            ScanForMakeMessages,false);
+end;
+
+{ TGlobalCompilerOptions }
+
+procedure TGlobalCompilerOptions.SetTargetCPU(const AValue: string);
+begin
+  if FTargetCPU=AValue then exit;
+  FTargetCPU:=AValue;
+end;
+
+procedure TGlobalCompilerOptions.SetTargetOS(const AValue: string);
+begin
+  if FTargetOS=AValue then exit;
+  FTargetOS:=AValue;
 end;
 
 initialization

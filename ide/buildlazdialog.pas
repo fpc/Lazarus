@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, LCLType, LCLIntf, Graphics,
   GraphType, StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs, LResources,
   Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs,
-  InputHistory, ExtToolDialog, ExtToolEditDlg;
+  InputHistory, ExtToolDialog, ExtToolEditDlg, CompilerOptions;
 
 type
   { TBuildLazarusItem }
@@ -103,6 +103,7 @@ type
   TBuildLazarusOptions = class
   private
     fCleanAll: boolean;
+    FGlobals: TGlobalCompilerOptions;
     FItemCodeTools: TBuildLazarusItem;
     FItemExamples: TBuildLazarusItem;
     FItemIDE: TBuildLazarusItem;
@@ -121,6 +122,7 @@ type
     function GetCount: integer;
     function GetItems(Index: integer): TBuildLazarusItem;
     procedure SetTargetDirectory(const AValue: string);
+    procedure SetTargetOS(const AValue: string);
     procedure SetWithStaticPackages(const AValue: boolean);
   public
     constructor Create;
@@ -147,7 +149,7 @@ type
     property CleanAll: boolean read fCleanAll write fCleanAll;
     property MakeFilename: string read fMakeFilename write fMakeFilename;
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
-    property TargetOS: string read fTargetOS write fTargetOS;
+    property TargetOS: string read fTargetOS write SetTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
     property StaticAutoInstallPackages: TStringList
                                                 read fStaticAutoInstallPackages;
@@ -155,6 +157,7 @@ type
                                      write SetTargetDirectory;
     property WithStaticPackages: boolean read FWithStaticPackages
                                          write SetWithStaticPackages;
+    property Globals: TGlobalCompilerOptions read FGlobals;
   end;
   
   
@@ -940,7 +943,7 @@ begin
 
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',fCleanAll,true);
   XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExtraOptions,'');
-  XMLConfig.SetDeleteValue(Path+'TargetOS/Value',fTargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',fMakeFilename,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformNames[fLCLPlatform],
@@ -1029,7 +1032,7 @@ begin
   end;
   fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
   fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
-  fTargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
+  TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
   fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value','');
   fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
                                  LCLPlatformNames[lpGtk]));
@@ -1047,6 +1050,13 @@ procedure TBuildLazarusOptions.SetTargetDirectory(const AValue: string);
 begin
   if FTargetDirectory=AValue then exit;
   FTargetDirectory:=AValue;
+end;
+
+procedure TBuildLazarusOptions.SetTargetOS(const AValue: string);
+begin
+  if fTargetOS=AValue then exit;
+  fTargetOS:=AValue;
+  FGlobals.TargetOS:=TargetOS;
 end;
 
 function TBuildLazarusOptions.GetCount: integer;
@@ -1068,6 +1078,7 @@ end;
 constructor TBuildLazarusOptions.Create;
 begin
   inherited Create;
+  FGlobals:=TGlobalCompilerOptions.Create;
   fItems:=TList.Create;
   fStaticAutoInstallPackages:=TStringList.Create;
   Clear;
@@ -1079,6 +1090,7 @@ begin
   Clear;
   fStaticAutoInstallPackages.Free;
   fItems.Free;
+  FGlobals.Free;
   inherited Destroy;
 end;
 
@@ -1090,7 +1102,7 @@ begin
   fMakeFilename:='';
   fExtraOptions:='';
   FTargetDirectory:=DefaultTargetDirectory;
-  fTargetOS:='';
+  TargetOS:='';
   fLCLPlatform:=lpGtk;
 
   // auto install packages

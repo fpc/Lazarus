@@ -229,6 +229,7 @@ type
     xtNone,        // undefined
     xtContext,     // a node
     xtChar,        // char
+    xtWideChar,    // widechar
     xtReal,        // real
     xtSingle,      // single
     xtDouble,      // double
@@ -267,6 +268,7 @@ const
     'None',
     'Context',
     'Char',
+    'WideChar',
     'Real',
     'Single',
     'Double',
@@ -308,6 +310,8 @@ const
                     xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
   xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
+  xtAllWideStringTypes = [xtConstString, xtWideString];
+  xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
   xtAllPointerTypes = [xtPointer, xtNil];
   xtAllIntegerConvertibles = xtAllIntegerTypes;
   xtAllRealConvertibles = xtAllRealTypes+xtAllIntegerTypes;
@@ -724,6 +728,8 @@ begin
     Result:=xtLongBool
   else if CompareIdentifiers(Identifier,'CHAR')=0 then
     Result:=xtChar
+  else if CompareIdentifiers(Identifier,'WIDECHAR')=0 then
+    Result:=xtWideChar
   else if CompareIdentifiers(Identifier,'REAL')=0 then
     Result:=xtReal
   else if CompareIdentifiers(Identifier,'SINGLE')=0 then
@@ -4124,6 +4130,11 @@ var
       ExprType.Context.Node:=nil;
       exit;
     end;
+    if ExprType.Desc in xtAllWideStringTypes then begin
+      ExprType.Desc:=xtWideChar;
+      ExprType.Context.Node:=nil;
+      exit;
+    end;
     case ExprType.Context.Node.Desc of
 
     ctnOpenArrayType,ctnRangedArrayType:
@@ -4185,6 +4196,10 @@ var
         if UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
         or UpAtomIs('SHORTSTRING') then begin
           ExprType.Desc:=xtChar;
+          ExprType.Context.Node:=nil;
+          exit;
+        end else if UpAtomIs('WIDESTRING') then begin
+          ExprType.Desc:=xtWideChar;
           ExprType.Context.Node:=nil;
           exit;
         end else begin
@@ -4437,7 +4452,7 @@ var EndPos, SubStartPos: integer;
       if Result.Desc=xtContext then
         writeln('  Result.Context.Node=',Result.Context.Node.DescAsString);
       {$ENDIF}
-      if not (Result.Desc in [xtConstOrdInteger,xtChar])
+      if not (Result.Desc in [xtConstOrdInteger,xtChar,xtWideChar])
       and ((Result.Desc=xtContext)
         and (Result.Context.Node.Desc<>ctnEnumerationType)) then
       begin
@@ -6023,6 +6038,7 @@ begin
       end;
 
     xtChar,
+    xtWideChar,
     xtReal,
     xtSingle,
     xtDouble,

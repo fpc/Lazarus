@@ -103,6 +103,7 @@ type
     function DoCompileProjectDependencies(AProject: TProject;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoCompilePackage(APackage: TLazPackage;
+                      Globals: TGlobalCompilerOptions;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoSavePackageMainSource(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;

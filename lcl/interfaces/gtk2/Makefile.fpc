@@ -15,13 +15,13 @@ implicitunits=gtk2int
 
 [compiler]
 options=-gl -dgtk2
-unitdir=../../units ../gtk .
-unittargetdir=../../units/gtk2
+unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) ../gtk .
+unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/gtk2
 
 [clean]
-files=$(wildcard ../../units/gtk2/*$(OEXT)) \
-      $(wildcard ../../units/gtk2/*$(PPUEXT)) \
-      $(wildcard ../../units/gtk2/*$(RSTEXT)) \
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 
@@ -29,6 +29,7 @@ files=$(wildcard ../../units/gtk2/*$(OEXT)) \
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) ../../units/gtk2/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
 all: cleartarget interfaces$(PPUEXT)

@@ -133,7 +133,8 @@ begin
     if BuildAll then
       CmdLine := CmdLine+' -B';
     CmdLine := CmdLine
-               + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename,[])
+               + ' '+ AProject.CompilerOptions.MakeOptionsString(
+                                                         ProjectFilename,nil,[])
                + ' '+ PrepareCmdLineOption(ProjectFilename);
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
@@ -190,6 +191,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.41  2003/04/17 18:56:10  mattias
   implemented compilation of dependencies
 

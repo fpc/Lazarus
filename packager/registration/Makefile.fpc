@@ -9,14 +9,17 @@ version=0.9b
 
 [compiler]
 unitdir=.
-unittargetdir=../units
+unittargetdir=../units/$(CPU_TARGET)/$(OS_TARGET)
 options=-gl
 
 [target]
 units=lazaruspackageintf
 
 [clean]
-files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [require]
 packages=fcl

@@ -11,17 +11,17 @@ packages=rtl fcl gtk
 
 [target]
 units=interfaces
-implicitunits=gtkdef gtkint gtkwinapiwindow
+implicitunits=gtkdef gtkglobals gtkint gtkmsgqueue gtkproc gtkwinapiwindow
 
 [compiler]
 options=-gl -dgtk1
-unitdir=../../units .
-unittargetdir=../../units/gtk
+unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) .
+unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/gtk
 
 [clean]
-files=$(wildcard ../../units/gtk/*$(OEXT)) \
-      $(wildcard ../../units/gtk/*$(PPUEXT)) \
-      $(wildcard ../../units/gtk/*$(RSTEXT)) \
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 
@@ -29,6 +29,7 @@ files=$(wildcard ../../units/gtk/*$(OEXT)) \
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) ../../units/gtk/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
 all: cleartarget interfaces$(PPUEXT)

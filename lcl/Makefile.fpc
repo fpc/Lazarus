@@ -10,16 +10,58 @@ version=0.9b
 [target]
 dirs=interfaces
 units=alllclunits
-implicitunits=arrow actnlist buttons calendar clipbrd clistbox comctrls \
-        commctrl controls dialogs dynamicarray  dynhasharray extctrls \
-        extendedstrings filectrl forms graphics graphmath graphtype grids \
-        imglist interfacebase lazlinkedlist lclmemmanager lclintf lclstrconsts \
-        lcltype lmessages lresources maskedit menus messages spin \
-        stdctrls stringhashlist toolwin utrace vclglobals printers \
-        postscriptprinter dbctrls dbgrids
-# and do not add allunits. It is just a dummy unit used for compiling.
+implicitunits= \
+  actnlist \
+  arrow \
+  avglcltree \
+  buttons \
+  calendar \
+  checklst \
+  clipbrd \
+  clistbox \
+  comctrls \
+  commctrl \
+  controls \
+  dbctrls \
+  dbgrids \
+  dialogs \
+  dirsel \
+  dynamicarray \
+  dynhasharray \
+  extctrls \
+  extdlgs \
+  extendedstrings \
+  filectrl \
+  forms \
+  graphics \
+  graphmath \
+  graphtype \
+  grids \
+  imglist \
+  interfacebase \
+  lazlinkedlist \
+  lclintf \
+  lclproc \
+  lclmemmanager \
+  lclstrconsts \
+  lcltype \
+  lmessages \
+  lresources \
+  maskedit \
+  menus \
+  pairsplitter \
+  postscriptprinter \
+  printers \
+  spin \
+  stdctrls \
+  stringhashlist \
+  textstrings \
+  toolwin \
+  utrace \
+  vclglobals
+# DO NOT ADD alllclunits. It is just a dummy unit used for compiling.
 
-rsts=dialogs
+rsts=lclstrconsts
 
 [require]
 packages=fcl
@@ -35,7 +77,7 @@ endif
 
 [compiler]
 options=-gl
-unittargetdir=units
+unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
 unitdir=. $(NONWIN32)
 includedir=include
 
@@ -43,7 +85,9 @@ includedir=include
 buildunit=alllclunits
 
 [clean]
-files=$(wildcard units/*$(OEXT)) $(wildcard units/*$(PPUEXT)) $(wildcard units/*$(RSTEXT))\
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 

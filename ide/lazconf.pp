@@ -86,6 +86,8 @@ uses
   procedure GetDefaultTestBuildDirs(List: TStrings);
   
   function GetDefaultLCLWidgetType: string;
+  function GetDefaultTargetCPU: string;
+  function GetDefaultTargetOS: string;
 
 const
   // ToDo: find the constant in the fpc units.
@@ -96,6 +98,11 @@ const
 implementation
 
 {$I lazconf.inc}
+
+function GetDefaultTargetCPU: string;
+begin
+  Result:='i386';
+end;
 
 function CheckFPCSourceDir(const ADirectory: string): boolean;
 var
@@ -143,6 +150,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.21  2003/11/16 19:28:33  mattias
   build lazarus now uses custom compiler path
 

@@ -42,6 +42,15 @@ const
   
    These values can change from version to version, so DO NOT save them to file!
   
+   To add one static key do the following:
+     1. Add a constant with a unique value in the list below.
+     2. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
+     3. Add it to EditorCommandToDescriptionString to define the description
+     4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the
+        category.
+        
+   IDE experts: They are handled in the IDE interface units.
+             
   }
   ecNone                 = SynEditKeyCmds.ecNone;
   
@@ -223,7 +232,11 @@ const
   ecCutComponents        = ecUserFirst + 1001;
   ecPasteComponents      = ecUserFirst + 1002;
   ecSelectParentComponent= ecUserFirst + 1003;
-  
+
+  // custom tools
+  ecCustomToolFirst      = ecUserFirst + 2000;
+  ecCustomToolLast       = ecUserFirst + 2999;
+
 
 type
   TCommandArea = (caSourceEditor, caDesigner);
@@ -282,6 +295,7 @@ type
   // class for a list of key - command relations
   TKeyCommandRelationList = class
   private
+    FCustomKeyCount: integer;
     fRelations: TList; // list of TKeyCommandRelation, sorted with Command
     fCategories: TList;// list of TKeyCommandCategory
     fExtToolCount: integer;
@@ -295,6 +309,7 @@ type
        Key2:Word; Shift2:TShiftState):integer;
     function AddDefault(Category: TKeyCommandCategory; const Name:shortstring;
        Command:word):integer;
+    procedure SetCustomKeyCount(const NewCount: integer);
     procedure SetExtToolCount(NewCount: integer);
   public
     constructor Create;
@@ -311,14 +326,15 @@ type
                           Areas: TCommandAreas): word;
     function IndexOf(ARelation: TKeyCommandRelation): integer;
     function CommandToShortCut(ACommand: word): TShortCut;
-    function LoadFromXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
-    function SaveToXMLConfig(XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
+    function LoadFromXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
+    function SaveToXMLConfig(XMLConfig:TXMLConfig; const Prefix: String):boolean;
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes;
                        Areas: TCommandAreas);
     procedure Assign(List: TKeyCommandRelationList);
     procedure LoadScheme(const SchemeName: string);
   public
     property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
+    property CustomKeyCount: integer read FCustomKeyCount write SetCustomKeyCount;
     property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
     property Categories[Index: integer]: TKeyCommandCategory read GetCategory;
   end;
@@ -363,7 +379,7 @@ function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
-function EditorCommandToDescriptionString(cmd: word):AnsiString;
+function EditorCommandToDescriptionString(cmd: word): String;
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 function EditorKeyStringToVKCode(const s: string): integer;
@@ -385,6 +401,7 @@ var KeyMappingEditForm: TKeyMappingEditForm;
 
 const
   KeyCategoryToolMenuName = 'ToolMenu';
+  KeyCategoryCustomName = 'Custom';
   UnknownVKPrefix = 'Word(''';
   UnknownVKPostfix = ''')';
 
@@ -993,7 +1010,7 @@ begin
     end;
 end;
 
-function EditorCommandToDescriptionString(cmd: word):AnsiString;
+function EditorCommandToDescriptionString(cmd: word): String;
 begin
   case cmd of
     ecNone                  : Result:= dlgEnvNone;
@@ -1213,10 +1230,12 @@ begin
     ecExtToolSettings       : Result:= srkmecExtToolSettings;
     ecConfigBuildLazarus    : Result:= lismenuconfigurebuildlazarus;
     ecBuildLazarus          : Result:= srkmecBuildLazarus;
-    ecExtToolFirst..
-    ecExtToolLast           : Result:= Format(srkmecExtTool,[cmd-ecExtToolFirst+1]);
+    ecExtToolFirst
+    ..ecExtToolLast         : Result:= Format(srkmecExtTool,[cmd-ecExtToolFirst+1]);
     ecMakeResourceString    : Result:= srkmecMakeResourceString;
     ecDiff                  : Result:= srkmecDiff;
+    ecCustomToolFirst
+    ..ecCustomToolLast      : Result:= Format(srkmecCustomTool,[cmd-ecCustomToolFirst+1]);
 
     // environment menu
     ecEnvironmentOptions    : Result:= srkmecEnvironmentOptions;
@@ -2113,6 +2132,9 @@ begin
   AddDefault(C,'Cut selected Components to clipboard',ecCutComponents);
   AddDefault(C,'Paste Components from clipboard',ecPasteComponents);
   AddDefault(C,'Select parent component',ecSelectParentComponent);
+  
+  // custom keys (for experts, task groups, dynamic menu items, etc)
+  C:=Categories[AddCategory(KeyCategoryCustomName,lisKeyCatCustom,caAll)];
 end;
 
 procedure TKeyCommandRelationList.Clear;
@@ -2163,6 +2185,38 @@ begin
   Result:=Add(Category,Name,Command,Key1,Shift1,Key2,Shift2);
 end;
 
+procedure TKeyCommandRelationList.SetCustomKeyCount(const NewCount: integer);
+var i: integer;
+  CustomCat: TKeyCommandCategory;
+  CustomRelation: TKeyCommandRelation;
+begin
+  if FCustomKeyCount=NewCount then exit;
+  CustomCat:=FindCategoryByName(KeyCategoryCustomName);
+  if NewCount>FCustomKeyCount then begin
+    // increase available custom commands
+    while NewCount>FCustomKeyCount do begin
+      Add(CustomCat,Format(srkmecCustomTool,[FCustomKeyCount]),
+           ecCustomToolFirst+FCustomKeyCount,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      inc(FCustomKeyCount);
+    end;
+  end else begin
+    // decrease available custom commands
+    i:=CustomCat.Count-1;
+    while (i>=0) and (FCustomKeyCount>NewCount) do begin
+      if TObject(CustomCat[i]) is TKeyCommandRelation then begin
+        CustomRelation:=TKeyCommandRelation(CustomCat[i]);
+        if (CustomRelation.Command>=ecCustomToolFirst)
+        and (CustomRelation.Command<=ecCustomToolLast) then begin
+          fRelations.Remove(CustomRelation);
+          CustomCat.Delete(i);
+          dec(FCustomKeyCount);
+        end;
+      end;
+      dec(i);
+    end;
+  end;
+end;
+
 procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
 var i: integer;
   ExtToolCat: TKeyCommandCategory;
@@ -2197,10 +2251,10 @@ begin
 end;
 
 function TKeyCommandRelationList.LoadFromXMLConfig(
-  XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
+  XMLConfig:TXMLConfig; const Prefix: String):boolean;
 var a,b,p:integer;
   Name:ShortString;
-  DefaultStr,NewValue:AnsiString;
+  DefaultStr,NewValue: String;
 
   function ReadNextInt:integer;
   begin
@@ -2250,13 +2304,13 @@ begin
 end;
 
 function TKeyCommandRelationList.SaveToXMLConfig(
-  XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
+  XMLConfig:TXMLConfig; const Prefix: String):boolean;
 var a,b: integer;
   Name: String;
   CurKeyStr: String;
   DefaultKeyStr: string;
-  AKey1:Word; AShift1:TShiftState;
-  AKey2:Word; AShift2:TShiftState;
+  AKey1: Word; AShift1: TShiftState;
+  AKey2: Word; AShift2: TShiftState;
 begin
   XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
   XMLConfig.SetDeleteValue(Prefix+'ExternalToolCount/Value',ExtToolCount,0);

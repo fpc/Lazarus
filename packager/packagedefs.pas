@@ -390,8 +390,8 @@ type
     property IDAsString: string read FIDAsString;
     property IDAsWord: string read FIDAsWord;
   end;
-
-
+  
+  
   { TPublishPackageOptions }
 
   TPublishPackageOptions = class(TPublishModuleOptions)

@@ -33,6 +33,11 @@ var
   PrimaryConfigPath,
   SecondaryConfigPath: string;
 
+function GetDefaultTargetOS: string;
+begin
+  Result:='win32';
+end;
+
 {---------------------------------------------------------------------------
   getPrimaryConfigPath function
  ---------------------------------------------------------------------------}
@@ -182,6 +187,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.18  2003/11/16 19:28:33  mattias
   build lazarus now uses custom compiler path
 

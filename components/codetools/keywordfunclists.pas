@@ -1154,6 +1154,7 @@ begin
     Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WIDECHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1195,6 +1196,7 @@ begin
     Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WIDECHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);

@@ -35,10 +35,18 @@ IFNDEF VER1_0
   linux;
   {$ENDIF}
 
+function GetDefaultTargetOS: string;
+begin
+  Result:='netbsd';
+end;
+
 {$I ../unix/lazbaseconf.inc}
 
 {
   $Log$
+  Revision 1.10  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.9  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x

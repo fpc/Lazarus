@@ -11,7 +11,7 @@ version=1.0
 packages=fcl
 
 [compiler]
-unittargetdir=../units
+unittargetdir=../units/$(CPU_TARGET)/$(OS_TARGET)
 unitdir=.
 options=-gl
 

@@ -14,14 +14,14 @@ units=interfaces
 implicitunits=gnomeint
 
 [compiler]
-options=-gl -dgtk1  -dgnome1
-unitdir=../../units ../gtk .
-unittargetdir=../../units/gnome
+options=-gl -dgtk1 -dgnome1
+unitdir=../../units/$(CPU_TARGET)/$(OS_TARGET) ../gtk .
+unittargetdir=../../units/$(CPU_TARGET)/$(OS_TARGET)/gnome
 
 [clean]
-files=$(wildcard ../../units/gnome/*$(OEXT)) \
-      $(wildcard ../../units/gnome/*$(PPUEXT)) \
-      $(wildcard ../../units/gnome/*$(RSTEXT)) \
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 
@@ -29,6 +29,7 @@ files=$(wildcard ../../units/gnome/*$(OEXT)) \
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) ../../units/gnome/interfaces$(PPUEXT) ../../units/interfaces$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
 
 all: cleartarget interfaces$(PPUEXT)

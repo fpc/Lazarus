@@ -8,8 +8,8 @@ name=synedit
 version=1.0.3
 
 [compiler]
-unittargetdir=../units
-unitdir=../../lcl/units .
+unittargetdir=../units/$(CPU_TARGET)/$(OS_TARGET)
+unitdir=../../lcl/units/$(CPU_TARGET)/$(OS_TARGET) .
 options=-gl
 
 [target]
@@ -21,7 +21,7 @@ implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   synhighlighterposition synhighlighterjava
 
 [require]
-# Adding lcl, adds the source path.
+# Adding lcl does not work, because it adds the source path.
 #packages=lcl
 packages=fcl regexpr
 

@@ -35,10 +35,18 @@ uses
   linux;
   {$ENDIF}
 
+function GetDefaultTargetOS: string;
+begin
+  Result:='freebsd';
+end;
+
 {$I ../unix/lazbaseconf.inc}
 
 {
   $Log$
+  Revision 1.14  2003/12/20 01:20:52  mattias
+  splitted output directories for cross compilation
+
   Revision 1.13  2003/11/04 11:47:37  marco
    * 1.1 fixes
 

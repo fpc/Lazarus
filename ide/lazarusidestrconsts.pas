@@ -74,6 +74,8 @@ resourcestring
   lisFreePascalSourceDirectory = 'Freepascal source directory';
   lisLazarusDirectory = 'Lazarus directory';
   lisLCLWidgetType = 'LCL Widget Type';
+  lisTargetCPU = 'Target CPU';
+  lisTargetOS = 'Target OS';
   lisCommandLineParamsOfProgram = 'Command line parameters of program';
   lisPromptForValue = 'Prompt for value';
   lisProjectFilename = 'Project filename';
@@ -1180,7 +1182,8 @@ resourcestring
   srkmecExtToolSettings           = 'External tools settings';
   srkmecBuildLazarus              = 'Build lazarus';
   srkmecExtTool                   = 'External tool %d';
-  
+  srkmecCustomTool                = 'Custom tool %d';
+
   // environment menu
   srkmecEnvironmentOptions        = 'General environment options';
   srkmecCodeToolsOptions          = 'Codetools options';
@@ -1258,6 +1261,7 @@ resourcestring
   srkmCatEnvMenu        = 'Environment menu commands';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
+  lisKeyCatCustom       = 'Custom commands';
 
   // Languages
   rsLanguageAutomatic   = 'Automatic (or english)';
