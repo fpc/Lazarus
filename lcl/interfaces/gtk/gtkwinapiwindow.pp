@@ -628,10 +628,10 @@ end;
 function GTKAPIWidget_new: PGTKWidget;
 begin
 writeln('(gtkwinapiwindow.pp) GTKAPIWidget_new, ToDo: check parameters, gtk-Critical');
-// ToDo: check these nil parameters
+  // ToDo: check these nil parameters
   Result := gtk_widget_new(
     GTKAPIWidget_GetType,
-    'hadjustment', [nil,  // what are these nils?
+    'hadjustment', [nil,
     'vadjustment', nil,
     nil]
   );
@@ -718,6 +718,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/04/27 15:35:51  lazarus
+  MG: fixed window shrinking
+
   Revision 1.23  2002/03/15 13:15:24  lazarus
   Removed FOCUSIN messages
   Removed Bitbtn created message
