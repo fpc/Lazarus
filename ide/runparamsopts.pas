@@ -48,7 +48,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg;
+  ExtCtrls, LResources, XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg,
+  InputHistory;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -717,6 +718,7 @@ var OpenDialog: TOpenDialog;
 begin
   OpenDialog:=TOpenDialog.Create(Self);
   with OpenDialog do begin
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
     if HostApplicationEdit.Text<>'' then
       OpenDialog.InitialDir:=ExtractFilePath(HostApplicationEdit.Text);
     OpenDialog.Filename:=HostApplicationEdit.Text;
@@ -729,6 +731,7 @@ begin
         HostApplicationEdit.Text:=OpenDialog.Filename;
       end;
     end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
   end;
 end;
 
@@ -778,6 +781,7 @@ var OpenDialog: TOpenDialog;
 begin
   OpenDialog:=TOpenDialog.Create(Self);
   with OpenDialog do begin
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
     if WorkingDirectoryEdit.Text<>'' then
       OpenDialog.InitialDir:=ExtractFilePath(WorkingDirectoryEdit.Text);
     OpenDialog.Filename:=HostApplicationEdit.Text;
@@ -790,6 +794,7 @@ begin
         WorkingDirectoryEdit.Text:=OpenDialog.Filename;
       end;
     end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
   end;
 end;
 

@@ -726,6 +726,7 @@ procedure TMainIDE.FormClose(Sender : TObject; var Action: TCloseAction);
 begin
   SaveEnvironment;
   SaveIncludeLinks;
+  InputHistories.Save;
   if TheControlSelection<>nil then TheControlSelection.Clear;
   if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
 end;
@@ -1743,21 +1744,20 @@ begin
   or (Sender is TSourceNoteBook) then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
+      InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenFile;
-      OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
-      OpenDialog.Options:=[ofAllowMultiSelect];
+      OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
       if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
         For I := 0 to OpenDialog.Files.Count-1 do
           Begin
             AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-            if i=0 then
-              EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
             if DoOpenEditorFile(AFilename,[])=mrOk then begin
-               EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+              EnvironmentOptions.AddToRecentOpenFiles(AFilename);
           end;
         end;
         SaveEnvironment;
       end;
+      InputHistories.StoreFileDialogSettings(OpenDialog);
     finally
       OpenDialog.Free;
     end;
@@ -2021,17 +2021,17 @@ begin
   if Sender=itmProjectOpen then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
+      InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
-      OPenDialog.Filter := '*.lpi';
-      OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
+      OpenDialog.Filter := 'Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*';
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
-        EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
         if DoOpenProjectFile(AFilename)=mrOk then begin
           EnvironmentOptions.AddToRecentProjectFiles(AFilename);
           SaveEnvironment;
         end;
       end;
+      InputHistories.StoreFileDialogSettings(OpenDialog);
     finally
       OpenDialog.Free;
     end;
@@ -2527,9 +2527,9 @@ begin
   SaveDialog:=TSaveDialog.Create(Application);
   try
     // show save dialog
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
-    SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
     if not SaveDialog.Execute then begin
       // user cancels
       Result:=mrCancel;
@@ -2537,10 +2537,9 @@ begin
     end;
     NewFilename:=ExpandFilename(SaveDialog.Filename);
   finally
+    InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;
   end;
-
-  EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
 
   // check unitname
   if FilenameIsPascalUnit(NewFilename) then begin
@@ -3145,6 +3144,7 @@ begin
   
   SaveDialog:=TSaveDialog.Create(Application);
   try
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:='Save Project '+Project1.Title+' (*.lpi)';
     
     // build a nice project info filename suggestion
@@ -3169,14 +3169,12 @@ begin
     repeat
       Result:=mrCancel;
       
-      SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       if not SaveDialog.Execute then begin
         // user cancels
         Result:=mrCancel;
         exit;
       end;
       NewFilename:=ExpandFilename(SaveDialog.Filename);
-      EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
       NewProgramName:=ExtractFileNameOnly(NewFilename);
 
       // check filename
@@ -3246,6 +3244,7 @@ begin
       end;
     until Result<>mrRetry;
   finally
+    InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;
   end;
 
@@ -3895,7 +3894,7 @@ begin
   // search file in path (search especially for pascal files)
   if FindFile(FName,SPath) then begin
     result:=mrOk;
-    EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(FName);
+    InputHistories.FileDialogSettings.InitialDir:=ExtractFilePath(FName);
     if DoOpenEditorFile(FName,[])=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(FName);
       SaveEnvironment;
@@ -4584,6 +4583,9 @@ function TMainIDE.DoSaveAll: TModalResult;
 begin
 writeln('TMainIDE.DoSaveAll');
   Result:=DoSaveProject([]);
+  SaveEnvironment;
+  SaveIncludeLinks;
+  InputHistories.Save;
   // ToDo: save package, cvs settings, ...
 end;
 
@@ -6400,6 +6402,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.302  2002/05/30 14:18:46  lazarus
+  MG: filedialogs now saves size and history
+
   Revision 1.301  2002/05/27 17:58:40  lazarus
   MG: added command line help
 

@@ -31,11 +31,20 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, IDEProcs, XMLCfg, LazConf;
+  Classes, SysUtils, IDEProcs, XMLCfg, LazConf, Dialogs;
 
 type
+  TFileDialogSettings = record
+    InitialDir: string;
+    Width: integer;
+    Height: integer;
+    HistoryList: TStringList;
+    MaxHistory: integer;
+  end;
+
   TInputHistories = class
   private
+    FFileDialogSettings: TFileDialogSettings;
     FFilename: string;
   
     // Find- and replace-history
@@ -68,6 +77,10 @@ type
     function LastFPCUnitLinksValid: boolean;
     function LastFPCUnitLinksNeedsUpdate(const SearchPath: string): boolean;
     procedure SetLastFPCUnitLinks(const FPCPath, SearchPath, UnitLinks: string);
+    
+    // filedialog
+    procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
+    procedure StoreFileDialogSettings(SourceDialog: TFileDialog);
   public
     // Find- and replace-history
     property FindHistory: TStringList read FFindHistory write FFindHistory;
@@ -80,6 +93,10 @@ type
     property LastFPCPath: string read FLastFPCPath write SetLastFPCPath;
     property LastFPCSearchPath: string read FLastFPCSearchPath;
     property LastFPCAge: longint read FLastFPCAge;
+    
+    // filedialogs
+    property FileDialogSettings: TFileDialogSettings
+      read FFileDialogSettings write FFileDialogSettings;
   end;
 
 var InputHistories: TInputHistories;
@@ -115,12 +132,16 @@ begin
   FReplaceHistory:=TStringList.Create;
   FMaxFindHistory:=20;
   
+  FFileDialogSettings.HistoryList:=TStringList.Create;
+  FFileDialogSettings.MaxHistory:=20;
+  
   FFilename:='';
   Clear;
 end;
 
 destructor TInputHistories.Destroy;
 begin
+  FFileDialogSettings.HistoryList.Free;
   FFindHistory.Free;
   FReplaceHistory.Free;
   inherited Destroy;
@@ -130,6 +151,12 @@ procedure TInputHistories.Clear;
 begin
   FFindHistory.Clear;
   FReplaceHistory.Clear;
+  with FFileDialogSettings do begin
+    HistoryList.Clear;
+    Width:=0;
+    Height:=0;
+    InitialDir:='';
+  end;
   FLastFPCPath:='';
 end;
 
@@ -144,6 +171,13 @@ begin
   FLastFPCPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCPath','');
   FLastFPCSearchPath:=XMLConfig.GetValue(Path+'FPCUnitLinks/FPCSearchPath','');
   FLastFPCUnitLinks:=XMLConfig.GetValue(Path+'FPCUnitLinks/UnitLinks','');
+  with FFileDialogSettings do begin
+    Width:=XMLConfig.GetValue(Path+'FileDialog/Width',0);
+    Height:=XMLConfig.GetValue(Path+'FileDialog/Height',0);
+    InitialDir:=XMLConfig.GetValue(Path+'FileDialog/InitialDir','');
+    MaxHistory:=XMLConfig.GetValue(Path+'FileDialog/MaxHistory',20);
+    LoadRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
+  end;
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -157,6 +191,13 @@ begin
   XMLConfig.SetValue(Path+'FPCUnitLinks/FPCPath',FLastFPCPath);
   XMLConfig.SetValue(Path+'FPCUnitLinks/FPCSearchPath',FLastFPCSearchPath);
   XMLConfig.SetValue(Path+'FPCUnitLinks/UnitLinks',FLastFPCUnitLinks);
+  with FFileDialogSettings do begin
+    XMLConfig.SetValue(Path+'FileDialog/Width',Width);
+    XMLConfig.SetValue(Path+'FileDialog/Height',Height);
+    XMLConfig.SetValue(Path+'FileDialog/InitialDir',InitialDir);
+    XMLConfig.SetValue(Path+'FileDialog/MaxHistory',MaxHistory);
+    SaveRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
+  end;
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
@@ -232,6 +273,27 @@ begin
   FLastFPCUnitLinks:=UnitLinks;
   FLastFPCSearchPath:=SearchPath;
   FLastFPCAge:=FileAge(FPCPath);
+end;
+
+procedure TInputHistories.ApplyFileDialogSettings(DestDialog: TFileDialog);
+begin
+  DestDialog.InitialDir:=FFileDialogSettings.InitialDir;
+  DestDialog.Width:=FFileDialogSettings.Width;
+  DestDialog.Height:=FFileDialogSettings.Height;
+  
+  DestDialog.HistoryList:=FFileDialogSettings.HistoryList;
+end;
+
+procedure TInputHistories.StoreFileDialogSettings(SourceDialog: TFileDialog);
+var s: string;
+begin
+  FFileDialogSettings.InitialDir:=SourceDialog.InitialDir;
+  FFileDialogSettings.Width:=SourceDialog.Width;
+  FFileDialogSettings.Height:=SourceDialog.Height;
+  s:=ExtractFilePath(FFileDialogSettings.InitialDir);
+  if s<>'' then
+    AddToRecentList(s,FFileDialogSettings.HistoryList,
+                    FFileDialogSettings.MaxHistory);
 end;
 
 end.

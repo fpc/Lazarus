@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, Buttons, StdCtrls, IDEProcs,
-  LResources, TransferMacros;
+  LResources, TransferMacros, InputHistory;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
@@ -168,8 +168,10 @@ begin
   if FileIndex<0 then exit;
   if OpenDialog=nil then OpenDialog:=TOpenDialog.Create(Self);
   with OpenDialog do begin
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
     Title:='Select '+GetGroupBox(FileIndex).Caption;
     if (not Execute) then exit;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
     AFilename:=Filename;
     if not FilenameIsValidForFileIndex(AFilename,FileIndex) then exit;
     GetInputEdit(FileIndex).Text:=AFilename;

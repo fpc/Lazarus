@@ -39,7 +39,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
   ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs,
-  ExtToolDialog, IDEProcs, IDEOptionDefs;
+  ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory;
 
 const
   EnvOptsVersion: integer = 101;
@@ -123,7 +123,6 @@ type
     FMaxRecentOpenFiles: integer;
     FRecentProjectFiles: TStringList;
     FMaxRecentProjectFiles: integer;
-    FLastOpenDialogDir: string;
     FOpenLastProjectAtStart: boolean;
 
     // backup
@@ -220,9 +219,7 @@ type
     property MaxRecentProjectFiles: integer
        read FMaxRecentProjectFiles write FMaxRecentProjectFiles;
     procedure AddToRecentProjectFiles(const AFilename: string);
-    property LastOpenDialogDir: string
-       read FLastOpenDialogDir write FLastOpenDialogDir;
-    property LastSavedProjectFile: string 
+    property LastSavedProjectFile: string
        read FLastSavedProjectFile write FLastSavedProjectFile;
     property OpenLastProjectAtStart: boolean
        read FOpenLastProjectAtStart write FOpenLastProjectAtStart;
@@ -487,7 +484,6 @@ begin
   FMaxRecentOpenFiles:=10;
   FRecentProjectFiles:=TStringList.Create;
   FMaxRecentProjectFiles:=5;
-  FLastOpenDialogDir:='';
   FOpenLastProjectAtStart:=true;
 
   // backup
@@ -705,9 +701,7 @@ begin
       'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
     LoadRecentList(XMLConfig,FRecentProjectFiles,
       'EnvironmentOptions/Recent/ProjectFiles/');
-    FLastOpenDialogDir:=XMLConfig.GetValue(
-       'EnvironmentOptions/Recent/LastOpenDialogDir/Value',FLastOpenDialogDir);
-       
+
     // external tools
     fExternalTools.Load(XMLConfig,'EnvironmentOptions/ExternalTools/');
     
@@ -841,8 +835,6 @@ begin
       'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
     SaveRecentList(XMLConfig,FRecentProjectFiles,
       'EnvironmentOptions/Recent/ProjectFiles/');
-    XMLConfig.SetValue('EnvironmentOptions/Recent/LastOpenDialogDir/Value'
-        ,FLastOpenDialogDir);
 
     // external tools
     fExternalTools.Save(XMLConfig,'EnvironmentOptions/ExternalTools/');
@@ -2394,6 +2386,7 @@ begin
   SaveDialog:=TSaveDialog.Create(Application);
   try
     try
+      InputHistories.ApplyFileDialogSettings(SaveDialog);
       SaveDialog.Filter:='Lazarus Desktop Settings (*.lds)|*.lds'
            +'|XML files (*.xml)|*.xml'
            +'|All files (*.*)|*.*';
@@ -2409,6 +2402,7 @@ begin
           AnEnvironmentOptions.Free;
         end;
       end;
+      InputHistories.StoreFileDialogSettings(SaveDialog);
     except
       // ToDo
       writeln('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');
@@ -2426,6 +2420,7 @@ begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     try
+      InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Filter:='Lazarus Desktop Settings (*.lds)|*.lds'
            +'|XML files (*.xml)|*.xml'
            +'|All files (*.*)|*.*';
@@ -2441,6 +2436,7 @@ begin
           AnEnvironmentOptions.Free;
         end;
       end;
+      InputHistories.StoreFileDialogSettings(OpenDialog);
     except
       // ToDo
       writeln('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');

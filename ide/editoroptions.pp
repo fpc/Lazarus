@@ -51,7 +51,7 @@ uses
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
-  XMLCfg, CodeTemplateDialog, KeyMapping;
+  XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory;
 
 type
 {$ifdef NEW_EDITOR_SYNEDIT}
@@ -3010,11 +3010,14 @@ var OpenDialog:TOpenDialog;
 begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
     with OpenDialog do begin
-      Filter:='DCI file (*.dci)|*.dci';
+      Title:='Choose code template file (*.dci)';
+      Filter:='DCI file (*.dci)|*.dci|All files|*.*';
       if Execute then
         CodeTemplateFileNameComboBox.Text:=FileName;
     end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
     OpenDialog.Free;
   end;
