@@ -168,6 +168,7 @@ type
         Shift: TShiftState; X,Y: Integer);
     Procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
+    procedure mnuFindDeclarationClicked(Sender : TObject);
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
@@ -236,6 +237,7 @@ type
     Procedure OnSrcNotebookFileSave(Sender : TObject);
     Procedure OnSrcNotebookFileSaveAs(Sender : TObject);
     Procedure OnSrcNotebookFileClose(Sender : TObject);
+    Procedure OnSrcNotebookFindDeclaration(Sender : TObject);
     Procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
     Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
@@ -369,6 +371,7 @@ type
     procedure SaveSourceEditorChangesToCodeCache;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
+    procedure DoFindDeclarationAtCursor;
     procedure DoCompleteCodeAtCursor;
     function DoInitDebugger: TModalResult;
     function DoCheckSyntax: TModalResult;
@@ -648,6 +651,7 @@ begin
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
+  SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
@@ -1552,6 +1556,12 @@ end;
 
 
 {------------------------------------------------------------------------------}
+procedure TMainIDE.mnuFindDeclarationClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoFindDeclarationAtCursor;
+end;
+
 procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
 begin
   DoNewEditorUnit(nuUnit,'');
@@ -1657,6 +1667,11 @@ begin
   mnuSaveAsClicked(Sender);
 end;
 
+Procedure TMainIDE.OnSrcNoteBookFindDeclaration(Sender : TObject);
+begin
+  mnuFindDeclarationClicked(Sender);
+end;
+
 Procedure TMainIDE.OnSrcNotebookSaveAll(Sender : TObject);
 begin
   mnuSaveAllClicked(Sender);
@@ -1719,10 +1734,13 @@ begin
     
    ecFindProcedureDefinition,ecFindProcedureMethod:
       DoJumpToProcedureSection;
+      
+   ecFindDeclaration:
+     DoFindDeclarationAtCursor;
     
    ecCompleteCode:
       DoCompleteCodeAtCursor;
-    
+      
    ecExtToolFirst..ecExtToolLast:
       DoRunExternalTool(Command-ecExtToolFirst);
     
@@ -4830,8 +4848,9 @@ begin
       CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
     end;
     // create compiler macros to simulate the Makefiles of the FPC sources
-    ADefTempl:=CreateFPCSrcTemplate('$('+ExternalMacroStart+'FPCSrcDir)',
-                          CompilerUnitSearchPath);
+    ADefTempl:=CreateFPCSrcTemplate(
+            CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
+            CompilerUnitSearchPath);
     if ADefTempl=nil then begin
       writeln('');
       writeln(
@@ -4956,6 +4975,47 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
       NewSrcEdit:=ActiveSrcEdit;
     end;
 //writeln('[TMainIDE.DoJumpToProcedureSection] ',NewX,',',NewY,',',NewTopLine);
+    with NewSrcEdit.EditorComponent do begin
+      CaretXY:=Point(NewX,NewY);
+      BlockBegin:=CaretXY;
+      BlockEnd:=CaretXY;
+      TopLine:=NewTopLine;
+    end;
+  end else begin
+    // probably a syntax error or just not in a procedure head/body -> ignore
+  end;
+end;
+
+procedure TMainIDE.DoFindDeclarationAtCursor;
+var ActiveSrcEdit, NewSrcEdit: TSourceEditor;
+  ActiveUnitInfo, NewUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
+    ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  SaveSourceEditorChangesToCodeCache;
+  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
+{$ENDIF}
+  if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
+    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.CaretY,
+    NewSource,NewX,NewY,NewTopLine) then
+  begin
+    if NewSource<>ActiveUnitInfo.Source then begin
+      // jump to other file -> open it
+      if DoOpenEditorFile(NewSource.Filename,false)<>mrOk then exit;
+      GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
+        NewUnitInfo);
+    end else begin
+      NewSrcEdit:=ActiveSrcEdit;
+    end;
+//writeln('[TMainIDE.DoFindDeclarationAtCursor] ',NewX,',',NewY,',',NewTopLine);
     with NewSrcEdit.EditorComponent do begin
       CaretXY:=Point(NewX,NewY);
       BlockBegin:=CaretXY;
@@ -5315,6 +5375,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.183  2001/12/16 11:20:26  lazarus
+  MG: find declaration for uses sections
+
   Revision 1.182  2001/12/15 22:58:09  lazarus
   MG: fixed code completion in virtual files
 

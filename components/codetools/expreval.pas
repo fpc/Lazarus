@@ -390,7 +390,7 @@ begin
   end else begin
     s:=UpperCaseStr(Name);
     i:=IndexOfUpperName(s);
-    Result:=(i>=0) and (i<FCount) and (s=Name);
+    Result:=(i>=0) and (i<FCount) and (FNames[i]=s);
   end;
 end;
 
@@ -586,18 +586,24 @@ end;
 function TExpressionEvaluator.AsString: string;
 var TxtLen, i, p: integer;
 begin
-  TxtLen:=FCount*2;
+  TxtLen:=FCount*3;
   for i:=0 to FCount-1 do
-    inc(TxtLen,length(FNames[i])+1+length(FValues[i]));
+    inc(TxtLen,length(FNames[i])+length(FValues[i]));
   Setlength(Result,TxtLen);
   p:=1;
   for i:=0 to FCount-1 do begin
     Move(FNames[i][1],Result[p],length(FNames[i]));
     inc(p,length(FNames[i]));
-    Result[i]:=#13;
-    inc(i);
-    Result[i]:=#10;
-    inc(i);
+    Result[p]:=' ';
+    inc(p);
+    if length(FValues[i])>0 then begin
+      Move(FValues[i][1],Result[p],length(FValues[i]));
+      inc(p,length(FValues[i]));
+    end;
+    Result[p]:=#13;
+    inc(p);
+    Result[p]:=#10;
+    inc(p);
   end;
 end;
 

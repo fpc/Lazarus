@@ -124,8 +124,6 @@ type
     ErrorMsgs : TStrings;
     Procedure ReParent(AParent : TWinControl);
 
-    Procedure OpenAtCursorClicked(Sender : TObject);
-
     Procedure ProcessUserCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure UserCommandProcessed(Sender: TObject;
@@ -236,18 +234,19 @@ type
     FSaveDialog : TSaveDialog;
 
     FOnAddJumpPoint: TOnAddJumpPoint;
-    FOnCloseClicked : TNotifyEvent;
+    FOnCloseClicked: TNotifyEvent;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorVisibleChanged: TNotifyEvent;
-    FOnEditorChanged : TNotifyEvent;
+    FOnEditorChanged: TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
-    FOnNewClicked : TNotifyEvent;
-    FOnOpenClicked : TNotifyEvent;
-    FOnOpenFileAtCursorClicked : TNotifyEvent;
+    FOnNewClicked: TNotifyEvent;
+    FOnOpenClicked: TNotifyEvent;
+    FOnOpenFileAtCursorClicked: TNotifyEvent;
+    FOnFindDeclarationClicked: TNotifyEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
-    FOnSaveAsClicked : TNotifyEvent;
-    FOnSaveAllClicked : TNotifyEvent;
-    FOnSaveClicked : TNotifyEvent;
+    FOnSaveAsClicked: TNotifyEvent;
+    FOnSaveAllClicked: TNotifyEvent;
+    FOnSaveClicked: TNotifyEvent;
     FOnShowUnitInfo: TNotifyEvent;
     FOnToggleFormUnitClicked : TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
@@ -265,6 +264,7 @@ type
     Procedure AddWatchAtCursor(Sender : TObject);
     Procedure ToggleLineNumbersClicked(Sender : TObject);
     Procedure OpenAtCursorClicked(Sender : TObject);
+    Procedure FindDeclarationClicked(Sender : TObject);
     Procedure BookmarkGoTo(Value: Integer);
     Procedure BookMarkToggle(Value : Integer);
   protected
@@ -385,6 +385,8 @@ type
     property OnOpenClicked : TNotifyEvent read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked : TNotifyEvent 
        read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
+    property OnFindDeclarationClicked : TNotifyEvent 
+       read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnSaveAsClicked : TNotifyEvent 
        read FOnSaveAsClicked write FOnSaveAsClicked;
     property OnSaveAllClicked : TNotifyEvent 
@@ -503,88 +505,6 @@ begin
   GotoDialog.Edit1.Text:='';
   if (GotoDialog.ShowModal = mrOK) then
     GotoLine(StrToIntDef(GotoDialog.Edit1.Text,1));
-end;
-
-Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
-{var
-  Texts : String;
-  Found : Boolean;
-  SearchDir : String;
-  AppDIr : String;
-  TempDir : String;
-  Num : Integer;
-  DirDelimiter : Char;}
-Begin
-{  Texts := TextunderCursor;
-  if Length(Texts) <= 1 then Exit;
-
-  Found := False;
-  //check the current directory
-  Found := True;
-  if FileExists(Lowercase(Texts)) then 
-    TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts), True)
-  else
-    if FileExists(Lowercase(Texts)+'.pp') then 
-      TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pp', True)
-    else
-      if FileExists(Lowercase(Texts)+'.pas') then 
-        TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pas', True)
-      else
-        Found := False;
-
-  if not Found then begin
-    // check the default LCL directory if not Found
-    Found := True;
-    AppDir := ExtractFilePath(Application.Exename);
-    if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)) then
-      TSourceNotebook(FAOwner).OpenFile(
-        AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts), True)
-    else
-      if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp') 
-      then
-        TSourceNotebook(FAOwner).OpenFile(
-          AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp', True)
-      else
-        if FileExists(
-          AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas')
-        then
-          TSourceNotebook(FAOwner).OpenFile(
-            AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas', True)
-        else
-          Found := False;
-  end;
-
-  if not Found then begin
-    //Get the search directories
-    DirDelimiter := '/';
-    SearchDir := TSourceNotebook(Owner).SearchPaths;
-    Writeln('Searchdir is '+Searchdir);
-    Num := pos(';',SearchDir);
-    While (not Found) and (SearchDir <> '') do
-    Begin
-      if Num = 0 then Num := Length(SearchDir)+1;
-      TempDir := Copy(SearchDir,1,num-1);
-      Delete(SearchDir,1,Num);
-      if tempDir[Length(TempDir)] <> DirDelimiter then
-        TempDir := TempDir + DirDelimiter;
-      Found := True;
-      if FileExists(TempDir+Lowercase(Texts)) then
-        TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts), True)
-      else
-        if FileExists(TempDir+Lowercase(Texts)+'.pp') then
-          TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pp', True)
-        else
-          if FileExists(TempDir+Lowercase(Texts)+'.pas') then 
-            TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pas', True)
-          else
-            Found := False;
-      Num := pos(';',SearchDir);
-    end; //while
-  end;
-
-  If not Found then
-    Application.MessageBox('File not found','Error',MB_OK);
-}
 end;
 
 procedure TSourceEditor.GetDialogPosition(Width, Height:integer; 
@@ -2121,6 +2041,12 @@ Begin
   SrcPopupMenu.Items.Add(MenuItem);
 
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='FindDeclarationMenuItem';
+  MenuItem.Caption := '&Find Declaration';
+  MenuItem.OnClick := @FindDeclarationClicked;
+  SrcPopupMenu.Items.Add(MenuItem);
+  
+  MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='OpenFileAtCursorMenuItem';
   MenuItem.Caption := '&Open file at cursor';
   MenuItem.OnClick := @OpenAtCursorClicked;
@@ -2572,6 +2498,12 @@ Procedure TSourceNotebook.OpenAtCursorClicked(Sender : TObject);
 begin
   if Assigned(FOnOpenFileAtCursorClicked) then
     FOnOpenFileAtCursorClicked(Sender);
+end;
+
+Procedure TSourceNotebook.FindDeclarationClicked(Sender : TObject);
+begin
+  if Assigned(FOnFindDeclarationClicked) then
+    FOnFindDeclarationClicked(Sender);
 end;
 
 Procedure TSourceNotebook.BookMarkToggle(Value : Integer);

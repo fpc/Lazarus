@@ -168,6 +168,9 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
   function LoadFile(const ExpandedFilename: string;
     var NewCode: TCodeBuffer): boolean;
   begin
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',ExpandedFilename);
+{$ENDIF}
     NewCode:=TCodeBuffer(Scanner.OnLoadSource(Self,ExpandedFilename));
     Result:=NewCode<>nil;
   end;
@@ -228,14 +231,23 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
     UnitLinkStart, UnitLinkEnd: integer;
   begin
     Result:=nil;
-    UnitLinks:=Scanner.Values['$('+ExternalMacroStart+'UnitLinks)'];
+    UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks');
+{$ENDIF}
     UnitLinkStart:=1;
     while UnitLinkStart<=length(UnitLinks) do begin
+      while (UnitLinkStart<=length(UnitLinks))
+      and (UnitLinks[UnitLinkStart] in [#10,#13]) do
+        inc(UnitLinkStart);
       UnitLinkEnd:=UnitLinkStart;
       while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
       do
         inc(UnitLinkEnd);
       if UnitLinkEnd>UnitLinkStart then begin
+{$IFDEF CTDEBUG}
+writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'"');
+{$ENDIF}
         if AnsiCompareText(TheUnitName,
                      copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart))=0
         then begin
@@ -243,17 +255,21 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
           UnitLinkStart:=UnitLinkEnd+1;
           UnitLinkEnd:=UnitLinkStart;
           while (UnitLinkEnd<=length(UnitLinks))
-          and (UnitLinks[UnitLinkEnd]<>#13) do
+          and (not (UnitLinks[UnitLinkEnd] in [#10,#13])) do
             inc(UnitLinkEnd);
           if UnitLinkEnd>UnitLinkStart then begin
             CurFilename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
             LoadFile(CurFilename,Result);
             exit;
           end;
+        end else begin
+          UnitLinkStart:=UnitLinkEnd+1;
+          while (UnitLinkStart<=length(UnitLinks))
+          and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
+            inc(UnitLinkStart);
         end;
       end else
         break;
-      UnitLinkStart:=UnitLinkEnd+1;
     end;
   end;
 
@@ -262,7 +278,7 @@ var CurDir, UnitSrcSearchPath: string;
   MainCodeIsVirtual: boolean;
 begin
 {$IFDEF CTDEBUG}
-writeln('TFindDeclarationTool.FindUnit A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
+writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
 {$ENDIF}
   Result:=nil;
   if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
@@ -272,7 +288,11 @@ writeln('TFindDeclarationTool.FindUnit A AnUnitName=',AnUnitName,' AnUnitInFilen
   if Assigned(OnGetUnitSourceSearchPath) then
     UnitSrcSearchPath:=OnGetUnitSourceSearchPath(Self)
   else
-    UnitSrcSearchPath:=Scanner.Values['$('+ExternalMacroStart+'SrcPath)'];
+    UnitSrcSearchPath:=Scanner.Values[ExternalMacroStart+'SrcPath'];
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindUnitSource UnitSrcSearchPath=',UnitSrcSearchPath);
+{$ENDIF}
+//writeln('>>>>>',Scanner.Values.AsString,'<<<<<');
   if AnUnitInFilename<>'' then begin
     // unitname in 'filename'
     if FilenameIsAbsolute(AnUnitInFilename) then begin
@@ -290,9 +310,15 @@ writeln('TFindDeclarationTool.FindUnit A AnUnitName=',AnUnitName,' AnUnitInFilen
     end else begin
       CurDir:='';
     end;
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindUnitSource Search in current dir=',CurDir);
+{$ENDIF}
     Result:=SearchUnitFileInDir(CurDir,AnUnitName);
     if Result=nil then begin
       // search in search path
+{$IFDEF CTDEBUG}
+writeln('TFindDeclarationTool.FindUnitSource Search in search path=',UnitSrcSearchPath);
+{$ENDIF}
       Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName);
       if Result=nil then begin
         // search in FPC source directory

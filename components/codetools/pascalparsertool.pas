@@ -1595,6 +1595,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
 
     procedure c;
     var d:e;
+      f:g=h;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
@@ -1624,6 +1625,10 @@ begin
       ReadNextAtom;
       TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos);
+      if UpAtomIs('ABSOLUTE') then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end;
       if AtomIsChar('=') then begin
         // read constant
         repeat

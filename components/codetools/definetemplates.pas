@@ -51,7 +51,7 @@ interface
 
 uses
   Classes, SysUtils, ExprEval{$ifdef FPC}, XMLCfg{$endif}, AVL_Tree, Process,
-  KeywordFuncLists;
+  KeywordFuncLists, FileProcs;
 
 const
   ExternalMacroStart: char = '#';
@@ -792,6 +792,8 @@ var
         end else begin
           // Macro variable
           MacroStr:=copy(Result,MacroStart+2,MacroEnd-MacroStart-3);
+//writeln('**** MacroStr=',MacroStr);
+//writeln('DirDef.Values=',DirDef.Values.AsString);
           if DirDef.Values.IsDefined(MacroStr) then
             MacroStr:=DirDef.Values.Variables[MacroStr]
           else if Assigned(FOnReadValue) then begin
@@ -800,6 +802,7 @@ var
             FOnReadValue(Self,MacroParam,MacroStr);
           end else
             MacroStr:='';
+//writeln('**** Result MacroStr=',MacroStr);
         end;
         Result:=copy(Result,1,MacroStart-1)+MacroStr
                +copy(Result,MacroEnd,length(Result)-MacroEnd+1);
@@ -1222,7 +1225,8 @@ function TDefinePool.CreateFPCSrcTemplate(
   const FPCSrcDir, UnitSearchPath: string): TDefineTemplate;
 var DefTempl, MainDir,
   FCLDir, RTLDir, PackagesDir, CompilerDir: TDefineTemplate;
-  Dir, TargetOS, SrcOS, TargetProcessor, UnitLinks, UnitLinkList: string;
+  Dir, TargetOS, SrcOS, TargetProcessor, UnitLinks, UnitLinkList,
+  IncPathMacro: string;
   DS: char;
   UnitTree: TAVLTree; // tree of TUnitNameLink
 
@@ -1340,6 +1344,7 @@ var DefTempl, MainDir,
       SrcOSMakroUsed: boolean;
       i: integer;
     begin
+//  writeln('%%%Browse ',ADirPath);
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=OSDirSeparator) then
         ADirPath:=ADirPath+OSDirSeparator;
@@ -1359,43 +1364,45 @@ var DefTempl, MainDir,
               // pascal unit found
               UnitName:=FileInfo.Name;
               UnitName:=copy(UnitName,1,length(UnitName)-length(Ext));
-              OldUnitLink:=FindUnitLink(UnitName);
-              MakroFileName:=BuildMacroFileName(AFilename,SrcOSMakroUsed);
-              if OldUnitLink=nil then begin
-                // first unit with this name
-                if UnitName<>'' then begin
+              if UnitName<>'' then begin
+                OldUnitLink:=FindUnitLink(UnitName);
+                MakroFileName:=BuildMacroFileName(AFilename,SrcOSMakroUsed);
+                if OldUnitLink=nil then begin
+                  // first unit with this name
                   NewUnitLink:=TUnitNameLink.Create;
                   NewUnitLink.UnitName:=UnitName;
                   NewUnitLink.FileName:=MakroFileName;
                   UnitTree.Add(NewUnitLink);
-                end;
-              end else begin
-                { there is another unit with this name
-                
-                  the decision which filename is the right one is based on a
-                  simple heuristic:
-                    FPC stores a unit many times, if there is different version
-                    for each Operating System or Processor Type. And sometimes
-                    units are stored in a combined OS (e.g. 'unix').
-                    Therefore every occurence of such values is replaced by a
-                    macro. And filenames without macros are always deleted if
-                    there is a filename with a macro.
-                    For example:
-                     classes.pp can be found in several places
-                      <FPCSrcDir>/fcl/os2/classes.pp
-                      <FPCSrcDir>/fcl/linux/classes.pp
-                      <FPCSrcDir>/fcl/win32/classes.pp
-                      <FPCSrcDir>/fcl/go32v2/classes.pp
-                      <FPCSrcDir>/fcl/freebsd/classes.pp
-                      <FPCSrcDir>/fcl/template/classes.pp
-                      
-                     This will result in a single filename:
-                      $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
-                }
-                if (FileNameMacroCount(OldUnitLink.Filename)=0)
-                or (SrcOSMakroUsed) then begin
-                  // old filename has no macros -> build a macro filename
-                  OldUnitLink.Filename:=MakroFileName;
+                end else begin
+                  { there is another unit with this name
+
+                    the decision which filename is the right one is based on a
+                    simple heuristic:
+                     FPC stores a unit many times, if there is different version
+                     for each Operating System or Processor Type. And sometimes
+                     units are stored in a combined OS (e.g. 'unix').
+                     Therefore every occurence of such values is replaced by a
+                     macro. And filenames without macros are always deleted if
+                     there is a filename with a macro. (The filename without
+                     macro is only used by the FPC team as a template source
+                     for the OS specific)
+                     For example:
+                       classes.pp can be found in several places
+                        <FPCSrcDir>/fcl/os2/classes.pp
+                        <FPCSrcDir>/fcl/linux/classes.pp
+                        <FPCSrcDir>/fcl/win32/classes.pp
+                        <FPCSrcDir>/fcl/go32v2/classes.pp
+                        <FPCSrcDir>/fcl/freebsd/classes.pp
+                        <FPCSrcDir>/fcl/template/classes.pp
+
+                       This will result in a single filename:
+                        $(#FPCSrcDir)/fcl/$(#TargetOS)/classes.pp
+                  }
+                  if (FileNameMacroCount(OldUnitLink.Filename)=0)
+                  or (SrcOSMakroUsed) then begin
+                    // old filename has no macros -> take the macro filename
+                    OldUnitLink.Filename:=MakroFileName;
+                  end;
                 end;
               end;
             end;
@@ -1421,8 +1428,9 @@ var DefTempl, MainDir,
     // search
     if AnUnitName='' then exit;
     UnitLink:=FindUnitLink(AnUnitName);
+//writeln('AddFPCSourceLinkForUnit ',AnUnitName,' ',UnitLink<>nil);
     if UnitLink=nil then exit;
-    s:=AnUnitName+' '+UnitLink.Filename+#13;
+    s:=AnUnitName+' '+UnitLink.Filename+EndOfLine;
     UnitLinkList:=UnitLinkList+s;
   end;
 
@@ -1445,11 +1453,13 @@ var DefTempl, MainDir,
         inc(PathEnd);
       if PathEnd>PathStart then begin
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
+//writeln('&&& FindStandardPPUSources ',ADirPath);
         // search all ppu files in this directory
         if FindFirst(ADirPath+'*.ppu',faAnyFile,FileInfo)=0 then begin
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
+//writeln('&&& FindStandardPPUSources B ',UnitName);
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;
@@ -1470,7 +1480,8 @@ begin
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
-  UnitLinks:='$('+ExternalMacroStart+'UnitLinks)';
+  IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
+  UnitLinks:=ExternalMacroStart+'UnitLinks';
   UnitTree:=nil;
 
   Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
@@ -1499,14 +1510,28 @@ begin
      da_Directory);
   MainDir.AddChild(CompilerDir);
 
+  // rtl
+  RTLDir:=TDefineTemplate.Create('RTL','Runtime library','','rtl',da_Directory);
+  MainDir.AddChild(RTLDir);
+  RTLDir.AddChild(TDefineTemplate.Create('Include Path',
+    'include directory objpas, inc, processor specific',
+    ExternalMacroStart+'IncPath',
+    IncPathMacro
+    +';'+Dir+'rtl/objpas/'
+    +';'+Dir+'rtl/inc/'
+    +';'+Dir+'rtl/'+TargetProcessor+'/'
+    ,da_DefineAll));
+
   // fcl
   FCLDir:=TDefineTemplate.Create('FCL','Free Pascal Component Library','','fcl',
       da_Directory);
   MainDir.AddChild(FCLDir);
-
-  // rtl
-  RTLDir:=TDefineTemplate.Create('RTL','Runtime library','','rtl',da_Directory);
-  MainDir.AddChild(RTLDir);
+  FCLDir.AddChild(TDefineTemplate.Create('Include Path',
+    'include directory inc',
+    ExternalMacroStart+'IncPath',
+    IncPathMacro
+    +';'+Dir+'fcl/inc/'
+    ,da_DefineAll));
 
   // packages
   PackagesDir:=TDefineTemplate.Create('Packages','Package directories','',
@@ -1535,11 +1560,11 @@ begin
     'Definitions for the Lazarus Sources','',LazarusSrcDir,da_Directory);
   MainDir.AddChild(TDefineTemplate.Create('LCL path addition',
     'adds lcl to SrcPath',ExternalMacroStart+'SrcPath',
-    'lcl:lcl'+ds+'interfaces'+ds+WidgetType+':'+SrcPath
+    'lcl;lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('Component path addition',
     'adds designer and synedit to SrcPath',ExternalMacroStart+'SrcPath',
-    'components'+ds+'synedit:designer:'+SrcPath
+    'components'+ds+'synedit;designer;'+SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
@@ -1552,7 +1577,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     'adds lcl to SrcPath',
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'lcl:..'+ds+'lcl/interfaces/'+WidgetType+':'+SrcPath
+    '..'+ds+'lcl;..'+ds+'lcl/interfaces/'+WidgetType+':'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
   
@@ -1562,7 +1587,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('WidgetPath',
      'adds widget path to SrcPath'
     ,ExternalMacroStart+'SrcPath',
-    'interfaces'+ds+WidgetType+':'+SrcPath
+    'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('IncludePath',
      'adds include to IncPaty',ExternalMacroStart+'IncPath',
@@ -1574,7 +1599,7 @@ begin
     '','interfaces'+ds+WidgetType,da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('LCL Path',
     'adds lcl to SrcPath','SrcPath',
-    '..'+ds+'..:'+SrcPath,da_Define));
+    '..'+ds+'..;'+SrcPath,da_Define));
   DirTempl.AddChild(SubDirTempl);
   
   // components
@@ -1583,8 +1608,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL Path','adds lcl to SrcPath',
     'SrcPath',
     LazarusSrcDir+ds+'lcl'
-    +':'+LazarusSrcDir+ds+'lcl'+ds+'interfaces'+ds+WidgetType
-    +':'+SrcPath
+    +';'+LazarusSrcDir+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+    +';'+SrcPath
     ,da_DefineAll));
   MainDir.AddChild(DirTempl);
 
@@ -1599,18 +1624,18 @@ begin
     'adds lcl to SrcPath',
     ExternalMacroStart+'SrcPath',
     '..'+ds+'lcl'
-      +':..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
-      +':'+SrcPath
+      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('main path addition',
     'adds lazarus source directory to SrcPath',
     ExternalMacroStart+'SrcPath',
-    '..:'+SrcPath
+    '..;'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('synedit path addition',
     'adds synedit directory to SrcPath',
     ExternalMacroStart+'SrcPath',
-    '../components/synedit:'+SrcPath
+    '../components/synedit;'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
@@ -1639,10 +1664,10 @@ begin
     '',ProjectDir,da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL','adds lcl to SrcPath',
     ExternalMacroStart+'SrcPath',
-    LazarusSrcDir+OSDirSeparator+'lcl:'
+    LazarusSrcDir+OSDirSeparator+'lcl;'
      +LazarusSrcDir+OSDirSeparator+'lcl'+OSDirSeparator+'interfaces'
      +OSDirSeparator+WidgetType
-     +':$('+ExternalMacroStart+'SrcPath)'
+     +';$('+ExternalMacroStart+'SrcPath)'
     ,da_DefineAll));
   Result:=TDefineTemplate.Create(StdDefTemplLCLProject,
        'LCL Project','','',da_Block);
