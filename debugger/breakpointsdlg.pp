@@ -35,6 +35,7 @@ type
   TBreakPointsDlg = class(TDebuggerDlg)
     lvBreakPoints: TListView;
     procedure lvBreakPointsClick(Sender: TObject);
+    procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
     popAddSourceBP: TMenuItem;
@@ -66,7 +67,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Dummy: Boolean; // insert some dummies until fpcbug #1888 is fixed
+    //property Dummy: Boolean; // insert some dummies until fpcbug #1888 is fixed
   end;
 
 
@@ -143,6 +144,10 @@ begin
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
+begin
+end;
+
+procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
 var
   Item: TListItem;
 begin
@@ -263,6 +268,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.4  2002/03/27 00:31:02  lazarus
+  MWE:
+    * activated selection dependent popup
+
   Revision 1.3  2002/03/25 22:38:29  lazarus
   MWE:
     + Added invalidBreakpoint image

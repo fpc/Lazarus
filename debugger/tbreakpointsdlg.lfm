@@ -40,7 +40,9 @@ object BreakpointsDlg: TBreakpointsDlg
       end>
     MultiSelect = True 
     PopupMenu = mnuPopup
-    ViewStyle = vsReport 
+    ViewStyle = vsReport  
+    OnClick = lvBreakPointsClick
+    OnSelectItem = lvBreakPointsSelectItem
   end
   object mnuPopup: TPopupMenu
     Left = 100
