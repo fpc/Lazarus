@@ -3359,6 +3359,11 @@ begin
     SaveDialog.Free;
   end;
 
+  // check file extension
+  if ExtractFileExt(NewFilename)='' then begin
+    NewFilename:=NewFilename+SaveAsFileExt;
+  end;
+
   // check file path
   NewFilePath:=ExtractFilePath(NewFilename);
   if not DirPathExists(NewFilePath) then begin
@@ -3399,11 +3404,6 @@ begin
     end;
   end else begin
     NewUnitName:='';
-  end;
-
-  // check file extension
-  if ExtractFileExt(NewFilename)='' then begin
-    NewFilename:=NewFilename+SaveAsFileExt;
   end;
 
   // check filename
@@ -11375,6 +11375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.832  2005/01/15 03:09:40  mattias
+  fixed checking unitname after adding default unit extension
+
   Revision 1.831  2005/01/14 14:29:51  mattias
   renamed invert attribution to invert assignment tool  from Sergio
 
