@@ -121,6 +121,7 @@ type
     procedure DoClose(var Action: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     Function GetClientRect : TRect ; Override;
     Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;

@@ -30,6 +30,7 @@
       $Path(filename) - equal to ExtractFilePath
       $Name(filename) - equal to ExtractFileName
       $NameOnly(filename) - equal to ExtractFileName but without extension.
+
 }
 unit TransferMacros;
 
@@ -192,7 +193,7 @@ begin
     MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
     if (MacroEnd<length(s)) and (s[MacroEnd] in ['(','{']) then begin
       MacroEnd:=SearchBracketClose(MacroEnd)+1;
-      if MacroEnd>length(s) then exit;
+      if MacroEnd>length(s)+1 then exit;
       MacroStr:=copy(s,MacroStart,MacroEnd-MacroStart);
       // Macro found
       Handled:=false;
@@ -215,8 +216,8 @@ begin
           MacroStr:=AMacro.MacroFunction(MacroStr);
       end else begin
         // Macro variable
-        MacroName:=copy(s,MacroStart+2,MacroEnd-MacroStart-3);
-        AMacro:=FindByName(MacroName);
+        MacroStr:=copy(s,MacroStart+2,MacroEnd-MacroStart-3);
+        AMacro:=FindByName(MacroStr);
         if Assigned(fOnSubstitution) then
           fOnSubstitution(AMacro,MacroStr,Handled,ABort);
         if Abort then begin

@@ -98,7 +98,6 @@ type
     procedure SaveBounds;
   end;
 
-
   TControlSelection = class(TObject)
   private
     FControls: TList;  // list of TSelectedComponent
@@ -174,6 +173,7 @@ type
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     procedure DrawMarker(AComponent:TComponent; DC:HDC);
+    procedure DrawMarkerAt(ACanvas: TCanvas; ALeft, ATop, AWidth, AHeight: integer);
     property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
     property Left:integer read FLeft;
     property Top:integer read FTop;
@@ -182,14 +182,22 @@ type
     property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
     property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
     procedure DrawRubberband(DC: HDC);
+    function OnlyNonVisualComponentsSelected: boolean;
     procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
     property Visible:boolean read FVisible write SetVisible;
   end;
 
 
-var TheControlSelection: TControlSelection;
+const
+  NonVisualCompIconWidth = 23;
+  NonVisualCompBorder = 2;
+  NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
 
 function GetFormRelativeControlTopLeft(Component: TComponent): TPoint;
+
+
+var TheControlSelection: TControlSelection;
+
 
 implementation
 
@@ -210,7 +218,6 @@ const
     [gpLeft, gpBottom], [gpBottom], [gpBottom, gpRight]
   );
 
-
 function GetFormRelativeControlTopLeft(Component: TComponent): TPoint;
 var FormOrigin: TPoint;
 begin
@@ -229,6 +236,21 @@ begin
   end;
 end;
 
+procedure GetComponentBounds(AComponent: TComponent;
+  var Left, Top, Width, Height: integer);
+begin
+  if AComponent is TControl then begin
+    Left:=TControl(AComponent).Left;
+    Top:=TControl(AComponent).Top;
+    Width:=TControl(AComponent).Width;
+    Height:=TControl(AComponent).Height;
+  end else begin
+    Left:=LongRec(AComponent.DesignInfo).Lo;
+    Top:=LongRec(AComponent.DesignInfo).Hi;
+    Width:=NonVisualCompWidth;
+    Height:=Width;
+  end;
+end;
 
 { TGrabber }
 
@@ -281,8 +303,8 @@ begin
   FOldTop:=Top;
   FOldWidth:=Width;
   FOldHeight:=Height;
-writeln('[TSelectedControl.SaveBounds] ',Component.Name,':',Component.ClassName
-  ,'  ',FOldLeft,',',FOldTop);
+//writeln('[TSelectedControl.SaveBounds] ',Component.Name,':',Component.ClassName
+//  ,'  ',FOldLeft,',',FOldTop);
 end;
 
 function TSelectedControl.GetLeft: integer;
@@ -322,7 +344,7 @@ begin
   if FComponent is TControl then
     Result:=TControl(FComponent).Width
   else
-    Result:=20;
+    Result:=NonVisualCompWidth;
 end;
 
 procedure TSelectedControl.SetWidth(AWidth: integer);
@@ -338,7 +360,7 @@ begin
   if FComponent is TControl then
     Result:=TControl(FComponent).Height
   else
-    Result:=20;
+    Result:=NonVisualCompIconWidth+2*NonVisualCompBorder;
 end;
 
 procedure TSelectedControl.SetHeight(AHeight: integer);
@@ -357,7 +379,7 @@ var g:TGrabIndex;
 begin
   inherited;
   FControls:=TList.Create;
-  FGrabberSize:=6;
+  FGrabberSize:=5;
   FGrabberColor:=clBlack;
   FMarkerSize:=5;
   FMarkerColor:=clDkGray;
@@ -513,7 +535,7 @@ var i:integer;
   g:TGrabIndex;
 begin
   if FNotSaveBounds then exit;
-writeln('TControlSelection.SaveBounds');
+//writeln('TControlSelection.SaveBounds');
   for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
   FOldLeft:=FLeft;
@@ -748,8 +770,24 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
 //  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
-procedure TControlSelection.DrawMarker(AComponent:TComponent; DC:HDC);
+procedure TControlSelection.DrawMarkerAt(ACanvas: TCanvas;
+  ALeft, ATop, AWidth, AHeight: integer);
 var OldBrushColor:TColor;
+begin
+  with ACanvas do begin
+    OldBrushColor:=Brush.Color;
+    Brush.Color:=FMarkerColor;
+    FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
+    FillRect(Rect(ALeft,ATop+AHeight-MarkerSize,ALeft+MarkerSize,ATop+AHeight));
+    FillRect(Rect(ALeft+AWidth-MarkerSize,ATop,ALeft+AWidth,ATop+MarkerSize));
+    FillRect(Rect(ALeft+AWidth-MarkerSize,ATop+AHeight-MarkerSize
+                 ,ALeft+AWidth,ATop+AHeight));
+    Brush.Color:=OldbrushColor;
+  end;
+end;
+
+procedure TControlSelection.DrawMarker(AComponent:TComponent; DC:HDC);
+var
   ALeft,ATop:integer;
   AControlOrigin,DCOrigin:TPoint;
   SaveIndex:HDC;
@@ -783,19 +821,7 @@ writeln('DrawMarker A ',FCustomForm.Name
     ,' DC=',Hexstr(FCustomForm.Canvas.Handle,8),' ',HexStr(Cardinal(Pointer(FCustomForm)),8)
     );
 }
-  with FCanvas do begin
-    OldBrushColor:=Brush.Color;
-    Brush.Color:=FMarkerColor;
-    FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
-    FillRect(Rect(ALeft,ATop+AControl.Height-MarkerSize
-             ,ALeft+MarkerSize,ATop+AControl.Height));
-    FillRect(Rect(ALeft+AControl.Width-MarkerSize,ATop
-                 ,ALeft+AControl.Width,ATop+MarkerSize));
-    FillRect(Rect(ALeft+AControl.Width-MarkerSize
-                 ,ATop+AControl.Height-MarkerSize
-                 ,ALeft+AControl.Width,ATop+AControl.Height));
-    Brush.Color:=OldbrushColor;
-  end;
+  DrawMarkerAt(FCanvas,ALeft,ATop,AControl.Width,AControl.Height);
   FCanvas.Handle:=0;
   RestoreDC(DC, SaveIndex);
 end;
@@ -848,29 +874,32 @@ begin
   FormOrigin:=FCustomForm.ClientOrigin;
   Diff.X:=FormOrigin.X-DCOrigin.X;
   Diff.Y:=FormOrigin.Y-DCOrigin.Y;
-//  OldFormHandle:=FCustomForm.Canvas.Handle;
   SaveIndex:=SaveDC(DC);
   FCanvas.Handle:=DC;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left,Top,Right,Bottom);
   FCanvas.Handle:=0;
   RestoreDC(DC,SaveIndex);
-//  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
   ExclusiveOr:boolean);
 var i:integer;
 
-  function ControlInRubberBand(AControl:TControl):boolean;
+  function ControlInRubberBand(AComponent:TComponent):boolean;
   var ALeft,ATop,ARight,ABottom:integer;
     Origin:TPoint;
   begin
-    Origin:=GetFormRelativeControlTopLeft(AControl);
+    Origin:=GetFormRelativeControlTopLeft(AComponent);
     ALeft:=Origin.X;
     ATop:=Origin.Y;
-    ARight:=ALeft+AControl.Width;
-    ABottom:=ATop+AControl.Height;
+    if AComponent is TControl then begin
+      ARight:=ALeft+TControl(AComponent).Width;
+      ABottom:=ATop+TControl(AComponent).Height;
+    end else begin
+      ARight:=ALeft+NonVisualCompWidth;
+      ABottom:=ATop+NonVisualCompWidth;
+    end;
     Result:=(ALeft<FRubberBandBounds.Right)
         and (ATop<FRubberBandBounds.Bottom)
         and (ARight>=FRubberBandBounds.Left)
@@ -879,13 +908,13 @@ var i:integer;
 
 // SelectWithRubberBand
 begin
-  for i:=0 to ACustomForm.ControlCount-1 do
-    if ControlInRubberBand(ACustomForm.Controls[i]) then begin
-      if IndexOf(ACustomForm.Controls[i])>=0 then begin
+  for i:=0 to ACustomForm.ComponentCount-1 do
+    if ControlInRubberBand(ACustomForm.Components[i]) then begin
+      if IndexOf(ACustomForm.Components[i])>=0 then begin
         if ExclusiveOr then
-          Remove(ACustomForm.Controls[i]);
+          Remove(ACustomForm.Components[i]);
       end else begin
-        Add(ACustomForm.Controls[i]);
+        Add(ACustomForm.Components[i]);
       end;
     end;
 end;
@@ -905,6 +934,18 @@ begin
       Top:=Bottom;
       Bottom:=i;
     end;
+  end;
+end;
+
+function TControlSelection.OnlyNonVisualComponentsSelected: boolean;
+var i: integer;
+begin
+  if FControls.Count=0 then begin
+    Result:=false;
+  end else begin
+    Result:=true;
+    for i:=0 to FControls.Count-1 do
+      Result:=Result and (not (Items[i].Component is TControl));
   end;
 end;
 

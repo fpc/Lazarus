@@ -299,6 +299,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomForm.GetChildren
+  Params:   Proc - see fcl/inc/writer.inc
+            Root
+  Returns:  nothing
+
+  Adds component to children list which have no parent.
+    (TWinControl only lists components with parents)
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  I: Integer;
+  OwnedComponent: TComponent;
+begin
+  inherited GetChildren(Proc, Root);
+  if Root = Self then
+    for I := 0 to ComponentCount - 1 do begin
+      OwnedComponent := Components[I];
+      if (not (OwnedComponent is TControl))
+      or (TControl(OwnedComponent).Parent=nil)
+      then Proc(OwnedComponent);
+    end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomForm.GetClientRect
   Params:   none
   Returns:  TRect
@@ -874,6 +898,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/03/31 13:35:23  lazarus
+  MG: added non-visual-component code to IDE and LCL
+
   Revision 1.17  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

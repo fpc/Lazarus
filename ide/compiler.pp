@@ -157,6 +157,14 @@ begin
     FOutputList.Clear;
     SetLength(Buf,BufSize);
     CmdLine := AProject.CompilerOptions.CompilerPath;
+    if Assigned(FOnCmdLineCreate) then begin
+      Abort:=false;
+      FOnCmdLineCreate(CmdLine,Abort);
+      if Abort then begin
+        Result:=mrAbort;
+        exit;
+      end;
+    end;
     // TProcess does not report, if a program can not be executed
     // to get good error messages consider the os
     {$IFDEF linux}
@@ -179,8 +187,7 @@ begin
     end;
     {$ENDIF linux}
     CmdLine := CmdLine + ' '+ AProject.CompilerOptions.MakeOptionsString;
-    CmdLine := CmdLine + ' '+ AProject.ProjectFile;
-    Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+    CmdLine := CmdLine + ' '+ AProject.Units[AProject.MainUnit].Filename;
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
       FOnCmdLineCreate(CmdLine,Abort);
@@ -189,6 +196,7 @@ begin
         exit;
       end;
     end;
+    Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
       TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
@@ -281,6 +289,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2001/03/31 13:35:22  lazarus
+  MG: added non-visual-component code to IDE and LCL
+
   Revision 1.10  2001/03/29 12:38:58  lazarus
   MG: new environment opts, ptApplication bugfixes
 

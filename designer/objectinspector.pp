@@ -1516,6 +1516,8 @@ var a:integer;
   Root:TComponent;
   OldText:AnsiString;
 begin
+//writeln('[TObjectInspector.FillComponentComboBox] A ',FUpdatingAvailComboBox
+//,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   AvailCompsComboBox.Items.BeginUpdate;
@@ -1525,6 +1527,7 @@ begin
   and (FPropertyEditorHook.LookupRoot<>nil) then begin
     Root:=FPropertyEditorHook.LookupRoot;
     AddComponentToAvailComboBox(Root);
+//writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
     for a:=0 to Root.ComponentCount-1 do
       AddComponentToAvailComboBox(Root.Components[a]);
   end;

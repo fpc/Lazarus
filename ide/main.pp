@@ -383,7 +383,7 @@ begin
     RegCompPage := RegCompList.Pages[i];
     if RegCompPage.Name <> '' then
     Begin
-      if (pagecount = 0) then
+      if (PageCount = 0) then
          ComponentNotebook.Pages.Strings[pagecount] := RegCompPage.Name
       else ComponentNotebook.Pages.Add(RegCompPage.Name);
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
@@ -636,6 +636,10 @@ begin
   MacroList.Add(TTransferMacro.Create('SaveAll','',nil));
   MacroList.Add(TTransferMacro.Create('Params','',nil));
   MacroList.Add(TTransferMacro.Create('TargetFile','',nil));
+  MacroList.Add(TTransferMacro.Create('CompPath','',nil));
+  MacroList.Add(TTransferMacro.Create('FPCSrcDir','',nil));
+  MacroList.Add(TTransferMacro.Create('LazarusDir','',nil));
+  MacroList.OnSubstitution:=@OnMacroSubstitution;
 
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
@@ -676,26 +680,20 @@ begin
 end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
-var
-  Form : TCustomForm;
 begin
-  Form := GetParentForm(TControl(AComponent));
-  //not implemented yet
-  TDesigner(Form.Designer).SelectOnlyThisComponent(AComponent);
+  with TheControlSelection do begin
+    BeginUpdate;
+    Clear;
+    Add(AComponent);
+    EndUpdate;
+  end;
+  if AComponent.Owner is TControl then
+    TControl(AComponent.Owner).Invalidate;
 end;
 
 Procedure TMainIDE.ToolButtonClick(Sender : TObject);
 Begin
   Assert(False, 'Trace:TOOL BUTTON CLICK!');
-
-  {if ComboBox1.Parent = Toolbar1 then
-  Begin
-   ComboBox1.Parent := MainIDE;
-   ComboBox1.Left := 25;
-   ComboBox1.top := 25;
-  end
-  else
-   ComboBox1.Parent := Toolbar1;}
 
 end;
 
@@ -1347,6 +1345,7 @@ writeln('[TMainIDE.SetDefaultsforForm] 2');
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnAddComponent:=@OnDesignerAddComponent;
     OnRemoveComponent:=@OnDesignerRemoveComponent;
+    OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
 writeln('[TMainIDE.SetDefaultsforForm] 3');
   end;
 end;
@@ -1839,11 +1838,9 @@ writeln('TMainIDE.DoSaveEditorUnit 1');
       finally
         BinCompStream.Free;
       end;
-writeln('saving lrs A  ',ResourceFileName);
       // save resource file
       Result:=DoBackupFile(ResourceFileName,ActiveUnitInfo.IsPartOfProject);
       if Result=mrAbort then exit;
-writeln('saving lrs B');
       repeat
         try
           FileStream:=TFileStream.Create(ResourceFileName,fmCreate);
@@ -1946,7 +1943,8 @@ writeln('TMainIDE.DoOpenEditorFile');
   Result:=mrCancel;
   if AFileName='' then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
-  if (not ProjectLoading) and ((Ext='.lpi') or (Ext='.lpr')) then begin
+  if (not ProjectLoading) and (ToolStatus=itNone)
+  and ((Ext='.lpi') or (Ext='.lpr')) then begin
     // load program file and project info file
     Result:=DoOpenProjectFile(AFilename);
     exit;
@@ -2265,12 +2263,15 @@ writeln('TMainIDE.DoNewProject 1');
   Project:=TProject.Create(NewProjectType);
   Project.OnFileBackup:=@DoBackupFile;
   Project.Title := 'Project1';
+  Project.CompilerOptions.CompilerPath:='$(CompPath)';
   SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
 
   case NewProjectType of
    ptApplication:
     begin
       // create a first form unit
+      Project.CompilerOptions.OtherUnitFiles:=
+         '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units';
       DoNewEditorUnit(nuForm);
     end;
    ptProgram,ptCustomProgram:
@@ -2936,6 +2937,7 @@ procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
   var Handled, Abort: boolean);
 var MacroName:string;
 begin
+  if TheMacro=nil then exit;
   MacroName:=lowercase(TheMacro.Name);
   if MacroName='save' then begin
     Handled:=true;
@@ -2970,6 +2972,16 @@ begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
       s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
+  end else if MacroName='lazarusdir' then begin
+    Handled:=true;
+    s:=EnvironmentOptions.LazarusDirectory;
+    if s='' then s:=ExtractFilePath(ParamStr(0));
+  end else if MacroName='fpcsrcdir' then begin
+    Handled:=true;
+    s:=EnvironmentOptions.FPCSourceDirectory;
+  end else if MacroName='comppath' then begin
+    Handled:=true;
+    s:=EnvironmentOptions.CompilerFilename;
   end;
   // ToDo:
   //MacroList.Add(TIDEMacro.Create('CurToken','',nil));
@@ -3001,7 +3013,7 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
 
 // TMainIDE.DoJumpToCompilerMessage
 var MaxMessages: integer;
-  Filename: string;
+  Filename, Ext: string;
   CaretXY: TPoint;
   MsgType: TErrorType;
   SrcEdit: TSourceEditor;
@@ -3028,17 +3040,20 @@ begin
       Filename:=ExtractFilePath(Project.ProjectFile)+Filename;
     end;
     // open the file in the source editor
-    Result:=(DoOpenEditorFile(Filename,false)=mrOk);
-    if Result then begin
-      // set caret position
-      SrcEdit:=SourceNoteBook.GetActiveSE;
-      SrcEdit.EditorComponent.CaretXY:=CaretXY;
-      SrcEdit.ErrorLine:=CaretXY.Y;
-      if FocusEditor then begin
+    Ext:=lowercase(ExtractFileExt(Filename));
+    if (Ext<>'.lfm') or (Ext='.lpi') then begin
+      Result:=(DoOpenEditorFile(Filename,false)=mrOk);
+      if Result then begin
+        // set caret position
+        SrcEdit:=SourceNoteBook.GetActiveSE;
+        SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        SrcEdit.ErrorLine:=CaretXY.Y;
+        if FocusEditor then begin
 //writeln('[TMainIDE.DoJumpToCompilerMessage] A');
-        SourceNotebook.BringToFront;
+          SourceNotebook.BringToFront;
 //writeln('[TMainIDE.DoJumpToCompilerMessage] B');
-        SrcEdit.EditorComponent.SetFocus;
+          SrcEdit.EditorComponent.SetFocus;
+        end;
       end;
     end;
   end;
@@ -3212,6 +3227,7 @@ writeln('[TMainIDE.OnControlSelectionChanged]');
   FormEditor1.SelectedComponents:=NewSelectedComponents;
 end;
 
+
 initialization
   {$I images/laz_images.lrs}
 
@@ -3224,6 +3240,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2001/03/31 13:35:22  lazarus
+  MG: added non-visual-component code to IDE and LCL
+
   Revision 1.85  2001/03/29 13:11:33  lazarus
   MG: fixed loading program file bug
 

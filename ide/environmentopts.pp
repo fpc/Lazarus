@@ -1363,7 +1363,7 @@ begin
     Height:=25;
     with Items do begin
       BeginUpdate;
-      Add('');
+      Add(ExtractFilePath(ParamStr(0)));
       EndUpdate;
     end;
     Show;
@@ -1392,6 +1392,7 @@ begin
     with Items do begin
       BeginUpdate;
       Add('/usr/bin/ppc386');
+      Add('/opt/fpc/ppc386');
       EndUpdate;
     end;
     Show;

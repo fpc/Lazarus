@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,
-  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls;
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs;
 
 
 type
@@ -86,6 +86,9 @@ type
       want to find the speedbutton associated with it.}
      function FindCompbyRegComponent(Value : TRegisteredComponent) : TIDEComponent;
 
+     {You can pass the Class and find the @link(TIdeComponent).}
+     function FindCompbyClass(Value: TComponentClass): TIdeComponent;
+
      {This is used to add a @link(TIdeComponent) to the @link(FItems).}
      function Add(Value : TObject) : Integer;
 
@@ -94,6 +97,9 @@ type
 
      {Calls @link(GetCount)}
      property Count : Integer read GetCount;
+
+     procedure OnGetNonVisualCompIconCanvas(Sender: TObject;
+        AComponent: TComponent; var IconCanvas: TCanvas);
    end;
 
    {-------------------------------------------
@@ -107,7 +113,7 @@ var
 
 implementation
 
-uses Project, LResources;
+uses LResources;
 
 
 { TIDECompList }
@@ -145,22 +151,43 @@ var
 Begin
   for I := 0 to Count-1 do
   Begin
-    Result := TIDeComponent(FItems[i]);
+    Result := TIDEComponent(FItems[i]);
     if (Result.SpeedButton = Value) then exit;
   end;
   Result := nil;
 end;
 
-function TIDECompList.FindCompbyRegComponent(Value : TRegisteredComponent) : TIDEComponent;
+function TIDECompList.FindCompbyRegComponent(
+  Value : TRegisteredComponent) : TIDEComponent;
 var
   I : Integer;
 Begin
   for I := 0 to Count-1 do
   Begin
-    Result := TIDeComponent(FItems[i]);
+    Result := TIDEComponent(FItems[i]);
     if (Result.RegisteredComponent = Value) then exit;
   end;
   Result := nil;
+end;
+
+function TIDECompList.FindCompbyClass(Value: TComponentClass): TIdeComponent;
+var i: integer;
+begin
+  for i:=0 to FItems.Count-1 do begin
+    Result := TIDEComponent(FItems[i]);
+    if (Result.RegisteredComponent.ComponentClass = Value) then exit;
+  end;
+  Result := nil;
+end;
+
+procedure TIDECompList.OnGetNonVisualCompIconCanvas(Sender: TObject;
+  AComponent: TComponent; var IconCanvas: TCanvas);
+var AnIDEComp: TIdeComponent;
+begin
+  AnIDEComp:=IDECompList.FindCompbyClass(TComponentClass(AComponent.ClassType));
+  if AnIDEComp<>nil then begin
+    IconCanvas:=TPixmap(AnIDEComp.SpeedButton.Glyph).Canvas;
+  end;
 end;
 
 function TIdeCompList.Add(Value : TObject) : Integer;
@@ -176,12 +203,11 @@ Begin
   if Result then FItems.Delete(i);
 end;
 
-{ TIDECOMPONENT }
+{ TIDEComponent }
 
 constructor TIDEComponent.Create;
 begin
-  inherited create;
-  IDECompList.Add(self);
+  inherited Create;
 end;
 
 destructor TIDEComponent.destroy;
@@ -194,20 +220,20 @@ Function TIDEComponent._Speedbutton(aowner : TComponent; nParent : TWinControl):
 var
   Pixmap1 : TPixmap;
 Begin
-pixmap1 := LoadImageintoPixmap;
+  Pixmap1 := LoadImageintoPixmap;
 
-  FSpeedButton := TSpeedButton.Create(aowner);
+  FSpeedButton := TSpeedButton.Create(AOwner);
   with FSpeedButton do
    Begin
     Parent := nParent;
     Flat := True;
-    SetBounds((FRegisteredComponent.IndexInPage+1)*26,Top,Width,Height);
+    SetBounds((FRegisteredComponent.IndexInPage+1)*27,Top,25,25);
     Enabled := True;
     Glyph := Pixmap1;
     Visible := True;
 
    end;
-result := FSpeedButton;
+  Result := FSpeedButton;
 end;
 
 function TIDEComponent.LoadImageIntoPixmap: TPixmap;
@@ -255,7 +281,8 @@ procedure RegisterStandardComponents(
   procedure RegisterComponents(const Page,UnitName:ShortString;
     ComponentClasses: array of TComponentClass);
   begin
-    ARegisteredComponentList.RegisterComponents(Page,UnitName,ComponentClasses);
+    ARegisteredComponentList.RegisterComponents(
+       Page,UnitName,ComponentClasses);
   end;
 
 begin
@@ -268,11 +295,13 @@ begin
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup]);
-  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TProgressBar
-          ,TToolBar,TToolbutton,TTrackbar]);
+  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView
+          ,TProgressBar,TToolBar,TToolbutton,TTrackbar]);
+  RegisterComponents('System','ExtCtrls',[TTimer]);
+  RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog
+          ,TColorDialog,TFontDialog]);
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
-  RegisterComponents('System','ExtCtrls',[TTimer]);
 
   // unselectable components
   // components that are streamed but not selectable in the IDE

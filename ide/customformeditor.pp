@@ -517,8 +517,15 @@ end;
 procedure TCustomFormEditor.SetSelectedComponents(
   TheSelectedComponents : TComponentSelectionList);
 begin
+  if FSelectedComponents.IsEqual(TheSelectedComponents) then exit;
   FSelectedComponents.Free;
   FSelectedComponents:=TheSelectedComponents;
+  if FSelectedComponents.Count>0 then begin
+    Obj_Inspector.PropertyEditorHook.LookupRoot:=
+       FSelectedComponents[0].Owner;
+  end else begin
+    Obj_Inspector.PropertyEditorHook.LookupRoot:=nil;
+  end;
   Obj_Inspector.Selections := FSelectedComponents;
 end;
 
@@ -614,7 +621,7 @@ Begin
     end;
   end;
 
-  if Assigned(ParentCI) then
+  if Assigned(ParentCI) and (Temp.FControl is TControl) then
     Begin
       if (TComponentInterface(ParentCI).FControl is TWinControl)
       and (csAcceptsControls in
@@ -624,11 +631,10 @@ Begin
           TWinControl(TComponentInterface(ParentCI).FControl);
         writeln('Parent is '''+TWinControl(Temp.FControl).Parent.Name+'''');
       end
-      else
-      begin
-        TWinControl(Temp.FControl).Parent :=
-          TWinControl(TComponentInterface(ParentCI).FControl).Parent;
-        writeln('Parent is '''+TWinControl(Temp.FControl).Parent.Name+'''');
+      else begin
+        TControl(Temp.FControl).Parent :=
+          TControl(TComponentInterface(ParentCI).FControl).Parent;
+        writeln('Parent is '''+TControl(Temp.FControl).Parent.Name+'''');
       end;
     end;
 
@@ -642,10 +648,9 @@ Begin
     While Found do Begin
       Found := False;
       inc(num);
-      for I := 0 to FComponentInterfaceList.Count-1 do
+      for I := 0 to Temp.FControl.Owner.ComponentCount-1 do
       begin
-        DummyComponent:=TComponent(TComponentInterface(
-          FComponentInterfaceList.Items[i]).FControl);
+        DummyComponent:=Temp.FControl.Owner.Components[i];
         if UpCase(DummyComponent.Name)=UpCase(TempName+IntToStr(Num)) then
         begin
           Found := True;
@@ -670,6 +675,11 @@ Begin
     if CompTop<0 then
       CompTop:=(TControl(Temp.FControl).Parent.Height+ CompHeight) div 2;
     TControl(Temp.FControl).SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+  end else begin
+    with LongRec(Temp.FControl.DesignInfo) do begin
+      Lo:=X;
+      Hi:=Y;
+    end;
   end;
 
   FComponentInterfaceList.Add(Temp);

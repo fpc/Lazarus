@@ -25,7 +25,7 @@ unit designer;
 interface
 
 uses
-  Classes, Forms, Controls, LMessages, Graphics, ControlSelection,
+  Classes, LCLLinux, Forms, Controls, LMessages, Graphics, ControlSelection,
   CustomFormEditor, FormEditor, UnitEditor, CompReg;
 
 type
@@ -42,26 +42,31 @@ type
     ComponentClass: TRegisteredComponent) of object;
   TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
      of object;
+  TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
+      AComponent: TComponent; var IconCanvas: TCanvas) of object;
 
   TDesigner = class(TIDesigner)
   private
     FCustomForm: TCustomForm;
     FFormEditor : TFormEditor;
     FSourceEditor : TSourceEditor;
-    FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
-    FOnUnselectComponentClass: TNotifyEvent;
-    FOnSetDesigning: TOnSetDesigning;
-    FOnComponentListChanged: TNotifyEvent;
-    FOnPropertiesChanged: TNotifyEvent;
-    FOnAddComponent: TOnAddComponent;
-    FOnRemoveComponent: TOnRemoveComponent;
     FHasSized: boolean;
     FGridColor: TColor;
+    FDuringPaintControl: boolean;
+    FOnAddComponent: TOnAddComponent;
+    FOnComponentListChanged: TNotifyEvent;
+    FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
+    FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
+    FOnPropertiesChanged: TNotifyEvent;
+    FOnRemoveComponent: TOnRemoveComponent;
+    FOnSetDesigning: TOnSetDesigning;
+    FOnUnselectComponentClass: TNotifyEvent;
 
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
+    procedure InvalidateWithParent(AComponent: TComponent);
   protected
-    MouseDownControl : TObject;
+    MouseDownComponent : TComponent;
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
 
     function PaintControl(Sender: TControl; Message: TLMPaint):boolean;
@@ -106,6 +111,10 @@ type
     property OnAddComponent: TOnAddComponent read FOnAddComponent write FOnAddComponent;
     property OnRemoveComponent: TOnRemoveComponent
        read FOnRemoveComponent write FOnRemoveComponent;
+    function NonVisualComponentAtPos(x,y: integer): TComponent;
+    procedure DrawNonVisualComponents(DC: HDC);
+    property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
+         read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
   end;
 
 
@@ -113,7 +122,7 @@ implementation
 
 
 uses
-  Sysutils, Typinfo, Math, LCLLinux;
+  Sysutils, Typinfo, Math;
 
 
 const
@@ -134,6 +143,7 @@ begin
   ControlSelection:=AControlSelection;
   FHasSized:=false;
   FGridColor:=clGray;
+  FDuringPaintControl:=false;
 end;
 
 destructor TDesigner.Destroy;
@@ -158,6 +168,8 @@ Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
 Begin
   Writeln('[TDesigner.NudgeControl]');
   ControlSelection.MoveSelection(DiffX, DiffY);
+  if ControlSelection.OnlyNonVisualComponentsSelected then
+    FCustomForm.Invalidate;
 end;
 
 Procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
@@ -174,19 +186,38 @@ begin
   ControlSelection.EndUpdate;
 end;
 
+procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
+begin
+  if AComponent is TControl then begin
+    if TControl(AComponent).Parent<>nil then
+      TControl(AComponent).Parent.Invalidate
+    else
+      TControl(AComponent).Invalidate;
+  end else begin
+    FCustomForm.Invalidate;
+  end;
+end;
+
 function TDesigner.PaintControl(Sender: TControl; Message: TLMPaint):boolean;
+var OldDuringPaintControl: boolean;
 begin
   Result:=true;
 //writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+  OldDuringPaintControl:=FDuringPaintControl;
+  FDuringPaintControl:=true;
   Sender.Dispatch(Message);
 //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   if (ControlSelection.IsSelected(Sender)) then begin
     // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
     ControlSelection.DrawMarker(Sender,Message.DC);
   end;
-  ControlSelection.DrawGrabbers(Message.DC);
-  if ControlSelection.RubberBandActive then
-    ControlSelection.DrawRubberBand(Message.DC);
+  //if OldDuringPaintControl=false then begin
+    DrawNonVisualComponents(Message.DC);
+    ControlSelection.DrawGrabbers(Message.DC);
+    if ControlSelection.RubberBandActive then
+      ControlSelection.DrawRubberBand(Message.DC);
+//  end;
+  FDuringPaintControl:=OldDuringPaintControl;
 end;
 
 function TDesigner.SizeControl(Sender: TControl; Message: TLMSize):boolean;
@@ -223,10 +254,11 @@ var i,
   SenderOrigin:TPoint;
   AControlSelection:TControlSelection;
   SelectedCompClass: TRegisteredComponent;
+  NonVisualComp: TComponent;
 Begin
   FHasSized:=false;
-  if (MouseDownControl<>nil) or (getParentForm(Sender)=nil) then exit;
-  MouseDownControl:=Sender;
+  if (MouseDownComponent<>nil) or (getParentForm(Sender)=nil) then exit;
+  MouseDownComponent:=Sender;
 
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   MouseX:=Message.Pos.X+SenderOrigin.X;
@@ -252,7 +284,6 @@ Begin
   else
     Writeln(', No CTRL down');
 
-writeln('HALLLo ',Message.Keys and MK_LButton);
   if (Message.Keys and MK_LButton) > 0 then begin
     ControlSelection.ActiveGrabber:=
       ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y)
@@ -268,7 +299,10 @@ writeln('HALLLo ',Message.Keys and MK_LButton);
     if SelectedCompClass = nil then begin
       // selection mode
       if ControlSelection.ActiveGrabber=nil then begin
-        CompIndex:=ControlSelection.IndexOf(Sender);
+        NonVisualComp:=NonVisualComponentAtPos(
+           MouseDownPos.X,MouseDownPos.Y);
+        if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
+        CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if (Message.Keys and MK_SHIFT)>0 then begin
           // shift key  (multiselection)
           if CompIndex<0 then begin
@@ -276,17 +310,13 @@ writeln('HALLLo ',Message.Keys and MK_LButton);
             // add component to selection
             if (ControlSelection.Count=0)
             or (not (Sender is TCustomForm)) then begin
-              ControlSelection.Add(Sender);
-              Sender.Invalidate;
-              if Sender.Parent<>nil then
-                Sender.Parent.Invalidate;
+              ControlSelection.Add(MouseDownComponent);
+              InvalidateWithParent(MouseDownComponent);
             end;
           end else begin
             // remove from multiselection
             ControlSelection.Delete(CompIndex);
-            Sender.Invalidate;
-            if Sender.Parent<>nil then
-              Sender.Parent.Invalidate;
+            InvalidateWithParent(MouseDownComponent);
           end;
         end else begin
           // no shift key (single selection)
@@ -299,11 +329,9 @@ writeln('HALLLo ',Message.Keys and MK_LButton);
             for i:=0 to AControlSelection.Count-1 do
               if AControlSelection[i].Component is TControl then
                 TControl(AControlSelection[i].Component).Invalidate;
-            ControlSelection.Add(Sender);
+            ControlSelection.Add(MouseDownComponent);
             ControlSelection.EndUpdate;
-            Sender.Invalidate;
-            if Sender.Parent<>nil then
-              Sender.Parent.Invalidate;
+            InvalidateWithParent(MouseDownComponent);
             AControlSelection.Free;
           end;  
         end;
@@ -333,7 +361,7 @@ var
   SelectedCompClass: TRegisteredComponent;
 Begin
   SenderParentForm:=GetParentForm(Sender);
-  if (MouseDownControl=nil) or (SenderParentForm=nil) then exit;
+  if (MouseDownComponent=nil) or (SenderParentForm=nil) then exit;
 
   ControlSelection.ActiveGrabber:=nil;
   RubberBandWasActive:=ControlSelection.RubberBandActive;
@@ -364,24 +392,21 @@ Begin
   else
     SelectedCompClass:=nil;
 
-writeln('UND JETZT ',Message.Keys and MK_LButton);
   if (Message.Keys and MK_LButton) > 0 then begin
     // left mouse button
     if SelectedCompClass = nil then begin
       // selection mode
       if not FHasSized then begin
         ControlSelection.BeginUpdate;
-        if (not (ssShift in Shift)) 
-        or ((ControlSelection.Count=1) 
-         and (ControlSelection[0].Component is TCustomForm)) then
-          ControlSelection.Clear;
         if RubberBandWasActive then begin
+          if (not (ssShift in Shift)) 
+          or ((ControlSelection.Count=1) 
+           and (ControlSelection[0].Component is TCustomForm)) then
+            ControlSelection.Clear;
           ControlSelection.SelectWithRubberBand(SenderParentForm,ssShift in Shift);
           if ControlSelection.Count=0 then
             ControlSelection.Add(SenderParentForm);
           ControlSelection.RubberbandActive:=false;
-        end else begin
-          ControlSelection.Add(Sender);
         end;
         ControlSelection.EndUpdate;
         SenderParentForm.Invalidate;
@@ -389,6 +414,7 @@ writeln('UND JETZT ',Message.Keys and MK_LButton);
     end else begin 
       // add a new control
       ControlSelection.RubberbandActive:=false;
+      ControlSelection.BeginUpdate;
       if Assigned(FOnSetDesigning) then FOnSetDesigning(Self,FCustomForm,False);
       ParentCI:=TComponentInterface(FFormEditor.FindComponent(Sender));
       if (Sender is TWinControl)
@@ -420,19 +446,21 @@ writeln('UND JETZT ',Message.Keys and MK_LButton);
 
         SelectOnlyThisComponent(TComponent(NewCI.Control));
         Writeln('Calling ControlClick with nil from MouseUpOnControl');
-        if not (ssCtrl in Shift) then
+        if not (ssShift in Shift) then
           if Assigned(FOnUnselectComponentClass) then
-            // this resets it to the mouse. (= selection tool)
+            // this resets the component toolbar to the mouse. (= selection tool)
             FOnUnselectComponentClass(Self);
         if Assigned(FOnSetDesigning) then FOnSetDesigning(Self,FCustomForm,True);
         Form.Invalidate;
+writeln('NEW COMPONENT ADDED: ',Form.ComponentCount,'  ',NewCI.Control.Owner.Name);
       end;
+      ControlSelection.EndUpdate;
     end;
   end;
   LastMouseMovePos.X:=-1;
   FHasSized:=false;
 
-  MouseDownControl:=nil;
+  MouseDownComponent:=nil;
 writeln('[TDesigner.MouseUpOnControl] END');
 end;
 
@@ -454,7 +482,7 @@ Begin
     MouseY:=Message.Pos.Y+SenderOrigin.Y;
 //  end;
 
-  if MouseDownControl=nil then exit;
+  if MouseDownComponent=nil then exit;
 
   if true then begin
     Write('MouseMoveOnControl'
@@ -481,7 +509,7 @@ Begin
       if Assigned(FOnPropertiesChanged) then
         FOnPropertiesChanged(Self);
     end else begin
-      if (not (MouseDownControl is TCustomForm)) and (ControlSelection.Count>=1)
+      if (not (MouseDownComponent is TCustomForm)) and (ControlSelection.Count>=1)
       and not (ControlSelection[0].Component is TCustomForm) then begin
         // move selection
         FHasSized:=true;
@@ -659,6 +687,83 @@ end;
 procedure TDesigner.SetIsControl(Value: Boolean);
 Begin
 
+end;
+
+procedure TDesigner.DrawNonVisualComponents(DC: HDC);
+var i, j, ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
+  FormOrigin, DCOrigin, Diff: TPoint;
+  SaveIndex: HDC;
+  IconRect: TRect;
+  IconCanvas: TCanvas;
+begin
+  GetWindowOrgEx(DC, DCOrigin);
+  FormOrigin:=FCustomForm.ClientOrigin;
+  Diff.X:=FormOrigin.X-DCOrigin.X;
+  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
+  SaveIndex:=SaveDC(DC);
+  FCustomForm.Canvas.Handle:=DC;
+  for i:=0 to FCustomForm.ComponentCount-1 do begin
+    if not (FCustomForm.Components[i] is TControl) then begin
+      // non-visual component
+      ItemLeft:=LongRec(FCustomForm.Components[i].DesignInfo).Lo+Diff.X;
+      ItemTop:=LongRec(FCustomForm.Components[i].DesignInfo).Hi+Diff.Y;
+      ItemRight:=ItemLeft+NonVisualCompWidth;
+      ItemBottom:=ItemTop+NonVisualCompWidth;
+      with FCustomForm.Canvas do begin
+        Brush.Color:=clWhite;
+        for j:=0 to NonVisualCompBorder-1 do begin
+          MoveTo(ItemLeft+j,ItemBottom-j);
+          LineTo(ItemLeft+j,ItemTop+j);
+          LineTo(ItemRight-j,ItemTop+j);
+        end;
+        Brush.Color:=clBlack;
+        for j:=0 to NonVisualCompBorder-1 do begin
+          MoveTo(ItemLeft+j,ItemBottom-j);
+          LineTo(ItemRight-j,ItemBottom-j);
+          MoveTo(ItemRight-j,ItemTop+j);
+          LineTo(ItemRight-j,ItemBottom-j+1);
+        end;
+        IconRect:=Rect(ItemLeft+NonVisualCompBorder,ItemTop+NonVisualCompBorder,
+             ItemRight-NonVisualCompBorder,ItemBottom-NonVisualCompBorder);
+        Brush.Color:=clBtnFace;
+        FillRect(Rect(IconRect.Left,IconRect.Top,
+           IconRect.Right+1,IconRect.Bottom+1));
+      end;
+      if Assigned(FOnGetNonVisualCompIconCanvas) then begin
+        IconCanvas:=nil;
+        FOnGetNonVisualCompIconCanvas(Self,FCustomForm.Components[i]
+             ,IconCanvas);
+        if IconCanvas<>nil then
+          FCustomForm.Canvas.CopyRect(IconRect, IconCanvas,
+             Rect(0,0,NonVisualCompIconWidth,NonVisualCompIconWidth));
+      end;
+      if (ControlSelection.Count>1)
+      and (ControlSelection.IsSelected(FCustomForm.Components[i])) then
+        ControlSelection.DrawMarkerAt(FCustomForm.Canvas,
+          ItemLeft,ItemTop,NonVisualCompWidth,NonVisualCompWidth);
+    end;
+  end;
+  FCustomForm.Canvas.Handle:=0;
+  RestoreDC(DC,SaveIndex);
+end;
+
+function TDesigner.NonVisualComponentAtPos(x,y: integer): TComponent;
+var i, ALeft, ATop: integer;
+begin
+  for i:=FCustomForm.ComponentCount-1 downto 0 do begin
+    Result:=FCustomForm.Components[i];
+    if (Result is TControl)=false then begin
+      with Result do begin
+        ALeft:=LongRec(DesignInfo).Lo;
+        ATop:=LongRec(DesignInfo).Hi;
+        if (ALeft<=x) and (ATop<=y)
+        and (ALeft+NonVisualCompWidth>x)
+        and (ATop+NonVisualCompWidth>y) then
+          exit;
+      end;
+    end;
+  end;
+  Result:=nil;
 end;
 
 initialization
