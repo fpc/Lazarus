@@ -2250,6 +2250,7 @@ begin
     OldBitmap := SelectObject(MemDC, MemBitmap);
     try
       DC := BeginPaint(Handle, PS);
+      // ToDo: get rid of this hack (2 times MemDC)
       Perform(LM_ERASEBKGND, MemDC, MemDC);
       Msg.DC := MemDC;
       WMPaint(Msg);
@@ -2380,7 +2381,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin            
-  if {not FDoubleBuffered or} (Message.DC = 0 {Message.Unused}) then
+  if {not FDoubleBuffered or}
+    (Message.DC <>0) and (Message.DC = Message.Unused) // ToDo: get rid of this hack
+  then
     FillRect(Message.DC, ClientRect, FBrush.Handle);
 end;
 
@@ -2873,6 +2876,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.147  2003/06/30 07:05:30  mattias
+  activated EraseBKGND hack
+
   Revision 1.146  2003/06/30 07:00:18  mattias
   activated EraseBckGrd messages in doublebuffer WMPaint section
 
