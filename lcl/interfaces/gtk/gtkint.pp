@@ -91,6 +91,7 @@ type
     Function GetCaption(Sender : TObject) : String; Virtual;
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
     Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
+    function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyLCLControl(Sender : TObject);virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
@@ -268,6 +269,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2002/10/28 18:17:02  lazarus
+  MG: impoved focussing, unfocussing on destroy and fixed unit search
+
   Revision 1.95  2002/10/26 15:15:50  lazarus
   MG: broke LCL<->interface circles
 
