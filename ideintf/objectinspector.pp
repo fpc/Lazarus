@@ -255,6 +255,10 @@ type
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
+    
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    
+    procedure HandleStandardKeys(var Key : Word; Shift : TShiftState);
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;
@@ -841,17 +845,7 @@ end;
 procedure TOIPropertyGrid.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  case Key of
-  VK_UP:
-    if (FItemIndex>0) then ItemIndex:=ItemIndex-1;
-
-  VK_Down:
-    if (FItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
-    
-  VK_RETURN:
-    SetRowValue;
-
-  end;
+  HandleStandardKeys(Key,Shift);
 end;
 
 procedure TOIPropertyGrid.ValueEditExit(Sender: TObject);
@@ -885,12 +879,7 @@ end;
 procedure TOIPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key=VK_UP) and (FItemIndex>0) then begin
-    ItemIndex:=ItemIndex-1;
-  end;
-  if (Key=VK_Down) and (FItemIndex<FRows.Count-1) then begin
-    ItemIndex:=ItemIndex+1;
-  end;
+  HandleStandardKeys(Key,Shift);
 end;
 
 procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
@@ -1255,6 +1244,39 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TOIPropertyGrid.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  HandleStandardKeys(Key,Shift);
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TOIPropertyGrid.HandleStandardKeys(var Key: Word; Shift: TShiftState
+  );
+var
+  Handled: Boolean;
+begin
+  Handled:=true;
+  case Key of
+  
+  VK_UP:
+    if (FItemIndex>0) then ItemIndex:=ItemIndex-1;
+
+  VK_Down:
+    if (FItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+    
+  VK_TAB:
+    // ToDo: implement completion
+    if (FItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
+
+  VK_RETURN:
+    SetRowValue;
+
+  else
+    Handled:=false;
+  end;
+  if Handled then Key:=VK_UNKNOWN;
 end;
 
 procedure TOIPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);

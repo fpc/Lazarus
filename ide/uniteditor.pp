@@ -645,6 +645,7 @@ type
     procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
   public
     constructor Create(AOwner : TComponent); override;
+    procedure DoShow; override;
   end;
 
 
@@ -4536,6 +4537,12 @@ begin
     end;
   end;
   ActiveControl:=Edit1;
+end;
+
+procedure TfrmGoto.DoShow;
+begin
+  Edit1.SelectAll;
+  inherited DoShow;
 end;
 
 procedure TfrmGoto.Edit1KeyDown(Sender: TObject; var Key:Word;
