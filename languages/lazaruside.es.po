@@ -238,6 +238,10 @@ msgstr ""
 msgid "A valid tool needs at least a title and a filename."
 msgstr ""
 
+#: lazarusidestrconsts:lismenuabortbuild
+msgid "Abort Build"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr ""
@@ -626,6 +630,10 @@ msgstr ""
 msgid "Build Examples"
 msgstr ""
 
+#: lazarusidestrconsts:lismenubuildfile
+msgid "Build File"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -730,6 +738,10 @@ msgstr ""
 msgid "Char"
 msgstr ""
 
+#: lazarusidestrconsts:lischaractermap
+msgid "Character Map"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Verificar consistencia"
@@ -768,6 +780,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
+msgstr ""
+
+#: lazarusidestrconsts:lisedoptschoosescheme
+msgid "Choose Scheme"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosetestbuilddir
@@ -942,6 +958,10 @@ msgstr ""
 msgid "Compile everything?"
 msgstr ""
 
+#: lazarusidestrconsts:liscompileidewithoutlinking
+msgid "Compile IDE (without linking)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompilepackage
 msgid "Compile package"
 msgstr ""
@@ -1006,6 +1026,10 @@ msgstr ""
 msgid "Components menu commands"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecconfigbuildfile
+msgid "config build file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr "Archivos de configuración:"
@@ -1017,6 +1041,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
 msgstr "Configurar \"Construir Lazarus\""
+
+#: lazarusidestrconsts:lismenuconfigbuildfile
+msgid "Configure Build+Run File"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components"
@@ -1542,6 +1570,10 @@ msgstr ""
 msgid "Double click line"
 msgstr "Línea de doble clic"
 
+#: lazarusidestrconsts:lisenvdoubleclickonmessagesjumpsotherwisesingleclick
+msgid "Double click on messages jumps (otherwise: single click)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdownword
 msgid "Down"
 msgstr "Abajo"
@@ -1624,6 +1656,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuencloseselection
+msgid "Enclose selection"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_end
@@ -2534,6 +2570,14 @@ msgstr ""
 msgid "Insert Free Pascal Project Template"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuinsertcharacter
+msgid "Insert from Character Map"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcharacter
+msgid "Insert from Charactermap"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
 msgstr ""
@@ -3040,6 +3084,10 @@ msgstr "Menú principal"
 
 #: lazarusidestrconsts:lispckoptsmajor
 msgid "Major"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeexe
+msgid "Make Executable"
 msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
@@ -4258,6 +4306,10 @@ msgstr ""
 msgid "Run"
 msgstr "Ejecutar"
 
+#: lazarusidestrconsts:lismenurunfile
+msgid "Run File"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
 msgstr ""
@@ -5020,6 +5072,10 @@ msgstr "Nombre de archivo de la plantilla"
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
+msgstr ""
+
+#: lazarusidestrconsts:liscomptest
+msgid "Test"
 msgstr ""
 
 #: lazarusidestrconsts:listestdirectory

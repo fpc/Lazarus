@@ -248,6 +248,10 @@ msgstr "Nie znalaz³em wymaganego pakietu. Spójrz na listê pakietów."
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Poprawny wois narzêdzia wymaga przynajmniej nazwy i nazwy pliku."
 
+#: lazarusidestrconsts:lismenuabortbuild
+msgid "Abort Build"
+msgstr ""
+
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
 msgstr "Informacja"
@@ -636,6 +640,10 @@ msgstr "Buduj komponenty (SynEdit, CodeTools)"
 msgid "Build Examples"
 msgstr "Buduj przyk³ady"
 
+#: lazarusidestrconsts:lismenubuildfile
+msgid "Build File"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildide
 msgid "Build IDE"
 msgstr "Buduj IDE"
@@ -740,6 +748,10 @@ msgstr "Zmiananazwy pakietu lub wersji ³amioe zale¿no¶ci. Czy zte zale¿no¶ci pow
 msgid "Char"
 msgstr "Znak"
 
+#: lazarusidestrconsts:lischaractermap
+msgid "Character Map"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Sprawd¼ spójno¶æ"
@@ -779,6 +791,10 @@ msgstr "Wybierz katalog lazarusa"
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Wybierz ¼ród³o programu (*.pp,*.pas,*.lpr)"
+
+#: lazarusidestrconsts:lisedoptschoosescheme
+msgid "Choose Scheme"
+msgstr ""
 
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
@@ -952,6 +968,10 @@ msgstr "Kompiluj"
 msgid "Compile everything?"
 msgstr "Chcesz kompilowaæ wszystko?"
 
+#: lazarusidestrconsts:liscompileidewithoutlinking
+msgid "Compile IDE (without linking)"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditcompilepackage
 msgid "Compile package"
 msgstr "Kompiluj pakiet"
@@ -1016,6 +1036,10 @@ msgstr "Nazwa komponentu %s%s%s nie jest prawid³owym identyfikatorem"
 msgid "Components menu commands"
 msgstr "Menu komponenty"
 
+#: lazarusidestrconsts:srkmecconfigbuildfile
+msgid "config build file"
+msgstr ""
+
 #: lazarusidestrconsts:dlgconfigfiles
 msgid "Config Files:"
 msgstr "Pliki konfiguracyjne:"
@@ -1027,6 +1051,10 @@ msgstr "Konfiguruj %sBuduj Lazarusa%s"
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
 msgstr "Konfiguruj \"Buduj Lazarusa\""
+
+#: lazarusidestrconsts:lismenuconfigbuildfile
+msgid "Configure Build+Run File"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components"
@@ -1552,6 +1580,10 @@ msgstr "Domena"
 msgid "Double click line"
 msgstr "Podwójne klikniêcie zaznacza wiersz"
 
+#: lazarusidestrconsts:lisenvdoubleclickonmessagesjumpsotherwisesingleclick
+msgid "Double click on messages jumps (otherwise: single click)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdownword
 msgid "Down"
 msgstr "Od do³u"
@@ -1635,6 +1667,10 @@ msgstr "Else"
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
 msgstr "ElseIf"
+
+#: lazarusidestrconsts:lismenuencloseselection
+msgid "Enclose selection"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -2544,6 +2580,14 @@ msgstr "Free Pascal CVS Source"
 msgid "Insert Free Pascal Project Template"
 msgstr "Projekt Free Pascal"
 
+#: lazarusidestrconsts:lismenuinsertcharacter
+msgid "Insert from Character Map"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcharacter
+msgid "Insert from Charactermap"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
 msgstr "Wstaw z szablonu..."
@@ -3051,6 +3095,10 @@ msgstr "Menu g³ówne"
 #: lazarusidestrconsts:lispckoptsmajor
 msgid "Major"
 msgstr "Major"
+
+#: lazarusidestrconsts:lismakeexe
+msgid "Make Executable"
+msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
@@ -4268,6 +4316,10 @@ msgstr "Obwódka do rozci±gania"
 msgid "Run"
 msgstr "Uruchom"
 
+#: lazarusidestrconsts:lismenurunfile
+msgid "Run File"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
 msgstr "Menu uruchom"
@@ -5031,6 +5083,10 @@ msgstr "Plik szablonu"
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
 msgstr "Podgl±d szablonu"
+
+#: lazarusidestrconsts:liscomptest
+msgid "Test"
+msgstr ""
 
 #: lazarusidestrconsts:listestdirectory
 msgid "Test directory"

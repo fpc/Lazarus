@@ -130,6 +130,10 @@ msgstr ""
 msgid "Project Src Path"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeexe
+msgid "Make Executable"
+msgstr ""
+
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
 msgstr ""
@@ -270,6 +274,10 @@ msgstr ""
 msgid "Tabs to spaces in selection"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuencloseselection
+msgid "Enclose selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
 msgstr ""
@@ -304,6 +312,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertcharacter
+msgid "Insert from Character Map"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuinserttext
@@ -522,6 +534,10 @@ msgstr ""
 msgid "Build all"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuabortbuild
+msgid "Abort Build"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
 msgstr ""
@@ -556,6 +572,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenubuildfile
+msgid "Build File"
+msgstr ""
+
+#: lazarusidestrconsts:lismenurunfile
+msgid "Run File"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconfigbuildfile
+msgid "Configure Build+Run File"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackage
@@ -1398,6 +1426,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:liscomptest
+msgid "Test"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pfilename2
 msgid "Filename"
 msgstr ""
@@ -1448,6 +1480,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
+msgstr ""
+
+#: lazarusidestrconsts:lisenvdoubleclickonmessagesjumpsotherwisesingleclick
+msgid "Double click on messages jumps (otherwise: single click)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwinpos
@@ -1924,6 +1960,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
+msgstr ""
+
+#: lazarusidestrconsts:lisedoptschoosescheme
+msgid "Choose Scheme"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
@@ -3362,6 +3402,10 @@ msgstr ""
 msgid "Convert tabs to spaces in selection"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecinsertcharacter
+msgid "Insert from Charactermap"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertgplnotice
 msgid "Insert GPL notice"
 msgstr ""
@@ -3546,6 +3590,10 @@ msgstr ""
 msgid "build all files of program/project"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecabortbuild
+msgid "abort build"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecrun
 msgid "run program"
 msgstr ""
@@ -3568,6 +3616,18 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecbuildfile
+msgid "build file"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecrunfile
+msgid "run file"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecconfigbuildfile
+msgid "config build file"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecexttoolsettings
@@ -3884,6 +3944,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
+msgstr ""
+
+#: lazarusidestrconsts:liscompileidewithoutlinking
+msgid "Compile IDE (without linking)"
 msgstr ""
 
 #: lazarusidestrconsts:lisbuildlcl
@@ -6624,5 +6688,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
+msgstr ""
+
+#: lazarusidestrconsts:lischaractermap
+msgid "Character Map"
 msgstr ""
 
