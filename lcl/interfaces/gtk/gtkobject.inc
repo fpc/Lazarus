@@ -2756,8 +2756,8 @@ begin
     LM_ACTIVATE :
     begin
       if (Sender is TCustomForm) then begin
-        ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivate);
-        ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
+        ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
+        ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
       end else if Sender is TMemo then
         ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
       else
@@ -6824,6 +6824,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.313  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.312  2002/12/28 11:29:47  mattias
   xmlcfg deletion, focus fixes
 
