@@ -234,11 +234,14 @@ begin
   and Macros.SubstituteStr(Params) then begin
 writeln('[TExternalToolList.Run] ',Filename,' ',Params);
     try
-      TheProcess := TProcess.Create(nil);
+      TheProcess:=TProcess.Create(Filename+' '+Params,[poRunSuspended,
+        poUsePipes, poNoConsole]);
+      TheProcess.CurrentDirectory:=WorkingDir;
+      {TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := Filename+' '+Params;
       TheProcess.Options:= [poRunSuspended, poUsePipes, poNoConsole];
       TheProcess.ShowWindow := swoNone;
-      TheProcess.CurrentDirectory := WorkingDir;
+      TheProcess.CurrentDirectory := WorkingDir;}
       TheProcess.Execute;
     except
       writeln('[TExternalToolList.Run] Failed to run: ',Filename,' ',Params);

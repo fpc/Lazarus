@@ -3435,15 +3435,14 @@ writeln('[TMainIDE.DoRunProject] A');
   else
       begin
         try
-        
-          { Old
+          
           TheProcess:=TProcess.Create(ProgramFilename,
              [poRunSuspended,poUsePipes,poNoConsole]);
-        }
-          TheProcess := TProcess.Create(nil);
+        
+          {TheProcess := TProcess.Create(nil);
           TheProcess.CommandLine := ProgramFilename;
           TheProcess.Options:= [poRunSuspended, poUsePipes, poNoConsole];
-          TheProcess.ShowWindow := swoNone;
+          TheProcess.ShowWindow := swoNone;}
           TheProcess.Execute;
         except
           on e: Exception do begin
@@ -4551,6 +4550,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2001/11/09 18:39:11  lazarus
+  MG: turned back to stable ground (use old process.pp)
+
   Revision 1.139  2001/11/09 18:15:20  lazarus
   MG: added external tools
 

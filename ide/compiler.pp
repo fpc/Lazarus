@@ -212,14 +212,14 @@ begin
     Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
-      { Old
+      
       TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
            ,poStdErrToOutput]);
-      }
-      TheProcess := TProcess.Create(nil);
+      
+      {TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-      TheProcess.ShowWindow := swoNone;
+      TheProcess.ShowWindow := swoNone;}
       Result:=mrOk;
       try
         TheProcess.CurrentDirectory:=ProjectDir;
@@ -336,6 +336,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2001/11/09 18:39:11  lazarus
+  MG: turned back to stable ground (use old process.pp)
+
   Revision 1.18  2001/11/07 16:14:11  lazarus
   MG: fixes for the new compiler
 
