@@ -5260,6 +5260,8 @@ end;
   with the corresponding GTK-object.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetValue (Sender : TObject; data : pointer) : integer;
+type
+  PCheckBoxState = ^TCheckBoxState;
 var
   Handle    : Pointer;
   Year,Month,Day : Integer;  //used for csCalendar
@@ -5286,8 +5288,8 @@ begin
   csRadiobutton,
   csCheckbox   :
     if gtk_toggle_button_get_active (PGtkToggleButton (handle))
-    then TCheckBoxState (data^) := cbChecked
-    else TCheckBoxState (data^) := cbUnChecked;
+    then PCheckBoxState(data)^ := cbChecked
+    else PCheckBoxState(data)^ := cbUnChecked;
                     
   csCalendar :
     Begin
@@ -6716,6 +6718,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.300  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.299  2002/02/09 02:30:56  mattias
   added patch from Jeroen van Idekinge
 
