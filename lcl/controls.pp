@@ -473,7 +473,7 @@ type
     function GetMouseCapture : Boolean;
     function IsCaptionStored : Boolean;
     procedure DoDragMsg(var Dragmsg : TCMDrag);
-    procedure DoMouseDown(var Message: TLMMouse; Button: TMOuseButton; Shift:TShiftState);
+    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
 
   protected
@@ -1216,6 +1216,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/03/31 23:20:37  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.36  2002/03/29 17:12:52  lazarus
   MG: added Triple and Quad mouse clicks to lcl and synedit
 
