@@ -339,7 +339,8 @@ begin
     +'  end;'+LE
     +LE
     +'var'+LE
-    +'  '+ResourceName+': T'+ResourceName+';'+LE;
+    +'  '+ResourceName+': T'+ResourceName+';'+LE
+    +LE;
 end;
 
 function TFileDescPascalUnitWithResource.GetImplementationSource(
