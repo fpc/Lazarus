@@ -2735,12 +2735,18 @@ end;
   procedure TWinControl.CreateComponent(TheOwner : TComponent);
 ------------------------------------------------------------------------------}
 procedure TWinControl.CreateComponent(TheOwner : TComponent);
+
+  procedure RaiseError(const Msg: string);
+  begin
+    RaiseGDBException('TWinControl.CreateComponent: '+Name+':'+ClassName+' '+Msg);
+  end;
+
 begin
   if HandleAllocated then
-    RaiseGDBException('TWinControl.CreateComponent: Handle already created');
+    RaiseError('Handle already created');
   CNSendMessage(LM_CREATE, Self, nil);
   if not HandleAllocated then
-    RaiseGDBException('TWinControl.CreateComponent: Handle creation failed');
+    RaiseError('Handle creation failed');
 end;
 
 {------------------------------------------------------------------------------
@@ -3109,6 +3115,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.175  2003/10/02 11:33:39  mattias
+  completed compstyles and fixed calendar date parsing from Karl
+
   Revision 1.174  2003/09/26 06:59:59  mattias
   implemented GetBrush
 

@@ -239,16 +239,24 @@ Begin
       Result := 'csPopupMenu';
     csHintWinDow:
       Result := 'csHintWinDow';
-    csCalEndar:
-      Result := 'csCalEndar';
+    csCalendar:
+      Result := 'csCalendar';
     csArrow:
       Result := 'csArrow';
+    csPanel:
+      Result := 'csPanel';
+    csScrollBox:
+      Result := 'csScrollBox';
     csCheckListBox:
       Result := 'csCheckListBox';
     csPairSplitter:
       Result := 'csPairSplitter';
     csPairSplitterSide:
       Result := 'csPairSplitterSide';
+    csPreviewFileControl:
+      Result := 'csPreviewFileControl';
+    csPreviewFileDialog:
+      Result := 'csPreviewFileDialog';
     csNonLCL:
       Result := 'csNonLCL';
     Else

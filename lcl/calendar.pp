@@ -109,7 +109,7 @@ begin
   SetBounds(0,0,250,150);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
-  Date := FormatDateTime('dd-mm-yyyy',Now);
+  Date := FormatDateTime(ShortDateFormat,Now);
 end;
 
 destructor TCalendar.Destroy;
@@ -185,7 +185,7 @@ begin
   if HandleAllocated then
   begin
     CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
-    FDate := FormatDateTime('dd-mm-yyyy',Temp.Date);
+    FDate := FormatDateTime(ShortDateFormat,Temp.Date);
   end;
 end;
 
