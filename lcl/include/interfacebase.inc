@@ -872,7 +872,7 @@ var
   Clip, RRGN : hRGN;
 begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  Clip := CreateRectRGN(0,0,0,0);
+  Clip := CreateRectRgn(0,0,0,0);
   If GetClipRGN(DC, Clip) < 0 then
     Result := ExtSelectClipRGN(DC, RRGN, RGN_COPY)
   else
@@ -1219,6 +1219,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/08/21 10:46:37  lazarus
+  MG: fixed unreleased gdiRegions
+
   Revision 1.40  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
