@@ -49,3 +49,11 @@ tools: lcl components
         $(MAKE) -C tools
 
 all: lcl components ide
+
+# Win32-specific rules
+win32:
+	$(MAKE) lazarus.res
+	$(MAKE) .PHONY LCLPLATFORM=win32 OPT=-dSUPPORTS_RESOURCES
+
+lazarus.res: lazarus.rc
+	windres -i lazarus.rc -o lazarus.res

@@ -24,6 +24,10 @@ program lazarus;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF SUPPORTS_RESOURCES}
+  {$R *.res}
+{$ENDIF}
+
 uses 
   Forms,
   Splash,
@@ -59,6 +63,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2001/08/02 12:58:35  lazarus
+  MG: win32 interface patch from Keith Bowes
+
   Revision 1.19  2001/06/04 07:50:42  lazarus
   MG: close application object in gtkint.pp
 

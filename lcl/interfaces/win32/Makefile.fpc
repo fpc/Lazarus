@@ -1,0 +1,42 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[targets]
+units=interfaces
+
+[require]
+rtl=1
+options=-Or -gl
+packages=fcl gtk
+
+[clean]
+units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
+# not with the lazarusmake.ini
+files=$(wildcard $(UNITTARGETDIR)/*$(OEXT)) $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))
+
+[dirs]
+# target dir needs to be . or a full path otherwise the 
+# unittargetdir will be corrupt
+# not with the lazarusmake.ini
+# targetdir=.
+unittargetdir=../../units/win32
+unitdir=$(UNITTARGETDIR) ../../units 
+incdir=.
+
+[install]
+units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
+packagename=win32interface
+
+[libs]
+
+[presettings]
+
+[defaults]
+
+[rules]
+
+
+all: 
+        $(MAKE) --assume-new=interfaces$(PASEXT) interfaces$(PPUEXT)
