@@ -187,6 +187,9 @@ end.
 
 {
   $Log$
+  Revision 1.1  2003/11/30 18:08:34  mattias
+  renamed obsolete registry.pp, will be deleted in a few days
+
   Revision 1.5  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 
