@@ -234,6 +234,10 @@ msgstr ""
 msgid "A valid tool needs at least a title and a filename."
 msgstr ""
 
+#: lazarusidestrconsts:lismenutemplateabout
+msgid "About"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
 msgstr "О проекте Lazarus"
@@ -1018,6 +1022,10 @@ msgstr "Конфликт "
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Конструктор должен быть 'init' (деструктор - 'done')"
 
+#: lazarusidestrconsts:lismenutemplatecontents
+msgid "Contents"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
 msgstr "Элемент управления"
@@ -1129,6 +1137,10 @@ msgstr "Создать настройки для каталога Lazarus"
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Создать макросы FPC и пути к каталогу проекта FPC"
+
+#: lazarusidestrconsts:lismenueditorcreatesubmenu
+msgid "Create Submenu"
+msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -1276,6 +1288,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdeletefilefailed
 msgid "Delete file failed"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditordeletefromtemplate
+msgid "Delete From Template..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditordeleteitem
+msgid "Delete Item"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecdeletelastchar
@@ -2130,6 +2150,10 @@ msgstr "Ширина поля (лев)"
 msgid "Half Page Scroll"
 msgstr "Половинная прокрутка страницы"
 
+#: lazarusidestrconsts:lismenueditorhandleonclickevent
+msgid "Handle OnCLick Event"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
 msgstr "Hanja"
@@ -2434,6 +2458,10 @@ msgstr "Вставить шаблон исходника CVS FreePascal"
 msgid "Insert Free Pascal Project Template"
 msgstr "Вставить шаблон проекта FreePascal"
 
+#: lazarusidestrconsts:lismenueditorinsertfromtemplate
+msgid "Insert From Template..."
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertgplnotice
 msgid "Insert GPL notice"
 msgstr "Вставить заметку о GPL"
@@ -2449,6 +2477,14 @@ msgstr "Вставить заметку о LGPL"
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Режим вставки"
+
+#: lazarusidestrconsts:lismenueditorinsertnewitemafter
+msgid "Insert New Item (after)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorinsertnewitembefore
+msgid "Insert New Item (before)"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
@@ -2982,6 +3018,10 @@ msgstr ""
 msgid "Menu"
 msgstr "Меню"
 
+#: lazarusidestrconsts:lismenueditormenueditor
+msgid "Menu Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Сообщения..."
@@ -3154,6 +3194,14 @@ msgstr ""
 msgid "Move Up"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditormoveup
+msgid "Move Up(left)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Up(right)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmulti
 msgid "Multi"
 msgstr "Мульти"
@@ -3204,6 +3252,10 @@ msgstr "Создать проект из файла"
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditornewtemplatedescription
+msgid "New Template Description..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenunewunit
@@ -4150,6 +4202,10 @@ msgstr "Сохранить и выйти"
 msgid "Save As"
 msgstr "Сохранить как"
 
+#: lazarusidestrconsts:lismenueditorsaveastemplate
+msgid "Save As Template..."
+msgstr ""
+
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
 msgstr "Сохранить изменения в проект %s?"
@@ -4322,6 +4378,10 @@ msgstr "Выделить конец строки"
 msgid "Select Line Start"
 msgstr "Выделить начало строки"
 
+#: lazarusidestrconsts:lismenueditorselectmenu
+msgid "Select Menu:"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecselpagebottom
 msgid "Select Page Bottom"
 msgstr "Выделить низ страницы"
@@ -4349,6 +4409,10 @@ msgstr "Выделить страницу сверху"
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Выделить абзац"
+
+#: lazarusidestrconsts:lismenueditorselecttemplate
+msgid "Select Template:"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
@@ -4662,6 +4726,18 @@ msgstr "Стека"
 msgid "Standard"
 msgstr "Стандартные"
 
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardeditmenu
+msgid "Standard Edit Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardfilemenu
+msgid "Standard File Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardhelpmenu
+msgid "Standard Help Menu"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr ""
@@ -4809,6 +4885,10 @@ msgstr "Процессор бинарника:"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Имя файла шаблона"
+
+#: lazarusidestrconsts:lismenueditortemplatepreview
+msgid "Template Preview"
+msgstr ""
 
 #: lazarusidestrconsts:listestdirectory
 msgid "Test directory"
@@ -5281,6 +5361,10 @@ msgstr "Совместимость с TP/BP 7.0"
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim Trailing Spaces"
 msgstr "Обрезать хвостовые пробелы"
+
+#: lazarusidestrconsts:lismenutemplatetutorial
+msgid "Tutorial"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvtype
 msgid "Type"

@@ -243,6 +243,10 @@ msgstr "Un paquet requis n'a pas été trouvé. Voir le graph des paquets."
 msgid "A valid tool needs at least a title and a filename."
 msgstr "Un outil a besoin au minimum d'un titre et d'un nom de fichier."
 
+#: lazarusidestrconsts:lismenutemplateabout
+msgid "About"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
 msgstr "A propos de Lazarus"
@@ -1027,6 +1031,10 @@ msgstr "Conflit"
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Le nom du constructeur doit être \"Init\" (le destructeur doit être \"Done\")"
 
+#: lazarusidestrconsts:lismenutemplatecontents
+msgid "Contents"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_control
 msgid "Control"
 msgstr ""
@@ -1138,6 +1146,10 @@ msgstr "Créer les définitions pour le répertoire Lazarus"
 #: lazarusidestrconsts:liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Créer les macros et chemins pour un répertoire projet FPC"
+
+#: lazarusidestrconsts:lismenueditorcreatesubmenu
+msgid "Create Submenu"
+msgstr ""
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
@@ -1286,6 +1298,14 @@ msgstr "Supression échouée"
 #: lazarusidestrconsts:lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Supression de fichier échouée"
+
+#: lazarusidestrconsts:lismenueditordeletefromtemplate
+msgid "Delete From Template..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditordeleteitem
+msgid "Delete Item"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecdeletelastchar
 msgid "Delete Last Char"
@@ -2139,6 +2159,10 @@ msgstr "Largeur de gouttière"
 msgid "Half Page Scroll"
 msgstr "Scroll d'un demie page"
 
+#: lazarusidestrconsts:lismenueditorhandleonclickevent
+msgid "Handle OnCLick Event"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
 msgstr ""
@@ -2443,6 +2467,10 @@ msgstr ""
 msgid "Insert Free Pascal Project Template"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditorinsertfromtemplate
+msgid "Insert From Template..."
+msgstr ""
+
 #: lazarusidestrconsts:srkmecinsertgplnotice
 msgid "Insert GPL notice"
 msgstr "Insert la licence GPL"
@@ -2458,6 +2486,14 @@ msgstr "Insert la licence LGPL"
 #: lazarusidestrconsts:srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Mode insertion"
+
+#: lazarusidestrconsts:lismenueditorinsertnewitemafter
+msgid "Insert New Item (after)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorinsertnewitembefore
+msgid "Insert New Item (before)"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
@@ -2991,6 +3027,10 @@ msgstr "Version maximum :"
 msgid "Menu"
 msgstr "Menu"
 
+#: lazarusidestrconsts:lismenueditormenueditor
+msgid "Menu Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Messages"
@@ -3163,6 +3203,14 @@ msgstr "Déplacer le chemin vers le haut"
 msgid "Move Up"
 msgstr "Déplacer vers le haut"
 
+#: lazarusidestrconsts:lismenueditormoveup
+msgid "Move Up(left)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Up(right)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmulti
 msgid "Multi"
 msgstr "Multi"
@@ -3213,6 +3261,10 @@ msgstr "Nouveau projet depuis le fichier"
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditornewtemplatedescription
+msgid "New Template Description..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenunewunit
@@ -4159,6 +4211,10 @@ msgstr "Enregistrer et sortir"
 msgid "Save As"
 msgstr "Enregistrer sous"
 
+#: lazarusidestrconsts:lismenueditorsaveastemplate
+msgid "Save As Template..."
+msgstr ""
+
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
 msgstr "Enregistrer les modifications du projet %s ?"
@@ -4331,6 +4387,10 @@ msgstr "Sélection de la fin de ligne"
 msgid "Select Line Start"
 msgstr "Sélection du début de ligne"
 
+#: lazarusidestrconsts:lismenueditorselectmenu
+msgid "Select Menu:"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecselpagebottom
 msgid "Select Page Bottom"
 msgstr "Sélection du bas de page"
@@ -4358,6 +4418,10 @@ msgstr "Sélection la page vers le haut"
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Sélectionner le paragraphe"
+
+#: lazarusidestrconsts:lismenueditorselecttemplate
+msgid "Select Template:"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
@@ -4671,6 +4735,18 @@ msgstr "Pile"
 msgid "Standard"
 msgstr "Standard"
 
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardeditmenu
+msgid "Standard Edit Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardfilemenu
+msgid "Standard File Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardhelpmenu
+msgid "Standard Help Menu"
+msgstr ""
+
 #: lazarusidestrconsts:lisoipstate
 msgid "State"
 msgstr "Etat"
@@ -4818,6 +4894,10 @@ msgstr "Processeur de destination"
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
 msgstr "Fichier de modèle"
+
+#: lazarusidestrconsts:lismenueditortemplatepreview
+msgid "Template Preview"
+msgstr ""
 
 #: lazarusidestrconsts:listestdirectory
 msgid "Test directory"
@@ -5290,6 +5370,10 @@ msgstr "Compatibilité TB/BP 7.0"
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim Trailing Spaces"
 msgstr "Supprimer les espaces de fin"
+
+#: lazarusidestrconsts:lismenutemplatetutorial
+msgid "Tutorial"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvtype
 msgid "Type"

@@ -6298,3 +6298,159 @@ msgstr ""
 msgid "Project Inspector - %s"
 msgstr ""
 
+#: lazarusidestrconsts:lismenueditormenueditor
+msgid "Menu Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorselectmenu
+msgid "Select Menu:"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorselecttemplate
+msgid "Select Template:"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditortemplatepreview
+msgid "Template Preview"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditornewtemplatedescription
+msgid "New Template Description..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorcancel
+msgid "Cancel"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorinsertnewitemafter
+msgid "Insert New Item (after)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorinsertnewitembefore
+msgid "Insert New Item (before)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditordeleteitem
+msgid "Delete Item"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorcreatesubmenu
+msgid "Create Submenu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorhandleonclickevent
+msgid "Handle OnCLick Event"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditormoveup
+msgid "Move Up(left)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditormovedown
+msgid "Move Up(right)"
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorinsertfromtemplate
+msgid "Insert From Template..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditorsaveastemplate
+msgid "Save As Template..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenueditordeletefromtemplate
+msgid "Delete From Template..."
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardfilemenu
+msgid "Standard File Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatefile
+msgid "File"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatenew
+msgid "New"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateopen
+msgid "Open"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateopenrecent
+msgid "Open Recent"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatesave
+msgid "Save"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatesaveas
+msgid "Save As"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateclose
+msgid "Close"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateexit
+msgid "Exit"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardeditmenu
+msgid "Standard Edit Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateedit
+msgid "Edit"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateundo
+msgid "Undo"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateredo
+msgid "Redo"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatecut
+msgid "Cut"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatecopy
+msgid "Copy"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatepaste
+msgid "Paste"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatefind
+msgid "Find"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatefindnext
+msgid "Find Next"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatedescriptionstandardhelpmenu
+msgid "Standard Help Menu"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatehelp
+msgid "Help"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatecontents
+msgid "Contents"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplatetutorial
+msgid "Tutorial"
+msgstr ""
+
+#: lazarusidestrconsts:lismenutemplateabout
+msgid "About"
+msgstr ""
+

@@ -2100,7 +2100,61 @@ resourcestring
   lisProjInspRemoveFileFromProject = 'Remove file %s from project?';
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
+  
+  
+  // --------------------------------------------------------//
+  // Menu editor -> form captions, labels and context menu --//
+  // --------------------------------------------------------//
 
+  lisMenuEditorMenuEditor = 'Menu Editor';
+  lisMenuEditorSelectMenu = 'Select Menu:';
+  lisMenuEditorSelectTemplate = 'Select Template:';
+  lisMenuEditorTemplatePreview = 'Template Preview';
+  lisMenuEditorNewTemplateDescription = 'New Template Description...';
+  lisMenuEditorCancel = 'Cancel';
+  lisMenuEditorInsertNewItemAfter = 'Insert New Item (after)';
+  lisMenuEditorInsertNewItemBefore = 'Insert New Item (before)';
+  lisMenuEditorDeleteItem = 'Delete Item';
+  lisMenuEditorCreateSubMenu = 'Create Submenu';
+  lisMenuEditorHandleOnClickEvent = 'Handle OnCLick Event';
+  lisMenuEditorMoveUp = 'Move Up(left)';
+  lisMenuEditorMoveDown = 'Move Up(right)';
+  lisMenuEditorInsertFromTemplate = 'Insert From Template...';
+  lisMenuEditorSaveAsTemplate = 'Save As Template...';
+  lisMenuEditorDeleteFromTemplate = 'Delete From Template...';
+
+  // --------------------------------//
+  // Menu editor -> menu templates --//
+  // --------------------------------//
+
+  //Standard File menu
+  lisMenuTemplateDescriptionStandardFileMenu = 'Standard File Menu';
+  lisMenuTemplateFile = 'File';
+  lisMenuTemplateNew = 'New';
+  lisMenuTemplateOpen = 'Open';
+  lisMenuTemplateOpenRecent = 'Open Recent';
+  lisMenuTemplateSave = 'Save';
+  lisMenuTemplateSaveAs = 'Save As';
+  lisMenuTemplateClose = 'Close';
+  lisMenuTemplateExit = 'Exit';
+
+  //Standard Edit menu
+  lisMenuTemplateDescriptionStandardEditMenu = 'Standard Edit Menu';
+  lisMenuTemplateEdit = 'Edit';
+  lisMenuTemplateUndo = 'Undo';
+  lisMenuTemplateRedo = 'Redo';
+  lisMenuTemplateCut = 'Cut';
+  lisMenuTemplateCopy = 'Copy';
+  lisMenuTemplatePaste = 'Paste';
+  lisMenuTemplateFind = 'Find';
+  lisMenuTemplateFindNext = 'Find Next';
+
+  //Standard Help menu
+  lisMenuTemplateDescriptionStandardHelpMenu = 'Standard Help Menu';
+  lisMenuTemplateHelp = 'Help';
+  lisMenuTemplateContents = 'Contents';
+  lisMenuTemplateTutorial = 'Tutorial';
+  lisMenuTemplateAbout = 'About';
 
 implementation
 end.

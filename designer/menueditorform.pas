@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus, GraphType,
-  ComponentEditors, Designer;
+  ComponentEditors, Designer, LazarusIDEStrConsts;
 
 type
 
@@ -48,8 +48,10 @@ type
     fPanel: TPanel;
     fMenu: TMenu;
     fDesigner: TDesigner;
+    fEditor: TComponentEditor;
     List_menus: TListBox;
     Label_menus: TLabel;
+    //DesignerPopupMenu: TPopupMenu;
   //  fEditor: TComponentEditor;
   public
     constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
@@ -83,28 +85,46 @@ implementation
 constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
 var
   Cmp: TPanel;
+  Cmp2: TScrollBox;
   i: Integer;
 begin
   inherited Create(AOwner);
   
-  Caption:='Menu Editor';
+  Caption:=lisMenuEditorMenuEditor;
   width:=600;
   height:=220;
   position:=poDesktopCenter;
   
   fMenu:=aMenu;
   fDesigner:=aDesigner;
+  fEditor:=aEditor;
+
+  
+  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
+
+  
+  //PopupMenu:=DesignerPopupMenu;
+  
+  Cmp2:=TScrollBox.Create(self);
+  with Cmp2 do
+  begin
+    Parent:=self;
+    Left:=0;
+    Top:=0;
+    Width:=400;
+    Height:=Parent.Height;
+    Autoscroll:=true;
+  end;
   
   Cmp:=TPanel.Create(self);
   with Cmp do
   begin
-   Parent:=self;
+   Parent:=Cmp2;
    Left:=0;
    Top:=0;
+   Width:=200;
    Height:=Parent.Height;
-   Width:=400;
    Bevelouter:=bvnone;
-   Bevelwidth:=0;
   end;
   
   Label_menus:=TLabel.Create(self);
@@ -115,7 +135,8 @@ begin
     Top:=10;
     Width:=180;
     Height:=20;
-    Text:='Select Menu:';
+    // content of "Text" is generated from LazarusIDEStrConsts
+    Text:=lisMenuEditorSelectMenu;
   end;
   
   List_menus:=TListBox.Create(self);
@@ -134,18 +155,20 @@ begin
     if (aDesigner.Form.Components[i] is TMainMenu) or (aDesigner.Form.Components[i] is TPopupMenu) then
     begin
       List_menus.Items.Add(aDesigner.Form.Components[i].Name);
-      if (aMenu.Name = aDesigner.Form.Components[i].Name) then
+    end;
+  end;
+  for i:=0 to List_menus.Items.Count - 1 do
+    begin
+      //writeln(aMenu.Name,' --- ',List_menus.Items[i]);
+      if (aMenu.Name = List_menus.Items[i]) then
       begin
-        writeln('Je to shoda');
-        //List_menus.Selected[i]:=true;
+        List_menus.Selected[i]:=true;
+        //writeln('Mam ho .....');
       end;
     end;
-    //writeln('Jmeno komponenty -> ',aDesigner.Form.Components[i].Name);
-  end;
   
   Panel:=Cmp;
-
-  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, aEditor);
+  
   with DesignerMainMenu do
   begin    
     Parent:=Self;
@@ -164,7 +187,7 @@ procedure TMainMenuEditorForm.SelectMenuClick(Sender: TObject);
 var
   i,j: Integer;
 begin
-  DesignerMainMenu.Clear(DesignerMainMenu.Root);
+  DesignerMainMenu.Free;
   for i:=0 to List_menus.Items.Count - 1 do
   begin
     if (List_menus.Selected[i] = true) then
@@ -177,9 +200,11 @@ begin
           fMenu:=TMenu(fDesigner.Form.Components[j]);
         end;
       end;
+      DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
       with DesignerMainMenu do
       begin
-        SetMenu(fMenu);
+        Parent:=Self;
+        ParentCanvas:=Canvas;
         LoadMainMenu;
         SetCoordinates(10,10,0,DesignerMainMenu.Root);
       end;
@@ -189,8 +214,14 @@ begin
 end;
 
 procedure TMainMenuEditorForm.Paint;
+var
+  temp_coord: TRect;
 begin
   inherited Paint;
+  temp_coord:=DesignerMainMenu.GetMaxCoordinates(DesignerMainMenu.Root, 0, 0);
+  Panel.Width:=temp_coord.Right + 10;
+  Panel.Height:=temp_coord.Bottom + 10;
+  //writeln('Panel Width: ', Panel.width, ' Panel Height: ', Panel.Height);
   DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
 end;
 
