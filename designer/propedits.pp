@@ -1995,12 +1995,12 @@ var
 begin
   FormMethodName := GetValue;
 writeln('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
-  if (FormMethodName = '')
+  if (not IsValidIdent(FormMethodName))
   or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
-    if FormMethodName = '' then
+    if not IsValidIdent(FormMethodName) then
       FormMethodName := GetFormMethodName;
 writeln('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
-    if FormMethodName = '' then begin
+    if not IsValidIdent(FormMethodName) then begin
       {raise EPropertyError.CreateRes(@SCannotCreateName);}
       exit;
     end;
@@ -2058,6 +2058,7 @@ end;
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
 writeln('### TMethodPropertyEditor.GetValues');
+  Proc('(None)');
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
 
@@ -2094,9 +2095,10 @@ var
   NewMethodExists,NewMethodIsCompatible,NewMethodIsPublished,
   NewIdentIsMethod: boolean;
 begin
-writeln('### TMethodPropertyEditor.SetValue A NewValue=',NewValue);
-  CurValue:= GetValue;
-  NewMethodExists:=PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
+  CurValue:=GetValue;
+writeln('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
+  NewMethodExists:=IsValidIdent(NewValue)
+               and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
 writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
   if NewMethodExists then begin
@@ -2127,7 +2129,7 @@ writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,
   end;
   if NewMethodExists and (CurValue=NewValue) then exit;
 writeln('### TMethodPropertyEditor.SetValue C');
-  if (CurValue <> '') and (NewValue <> '')
+  if IsValidIdent(CurValue) and IsValidIdent(NewValue)
   and (CurValue<>NewValue)
   and (not NewMethodExists)
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
@@ -2141,10 +2143,10 @@ writeln('### TMethodPropertyEditor.SetValue D');
   end else
   begin
 writeln('### TMethodPropertyEditor.SetValue E');
-    CreateNewMethod := (NewValue <> '') and not NewMethodExists;
+    CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
     //OldMethod := GetMethodValue;
     SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType));
-writeln('### TMethodPropertyEditor.SetValue F');
+writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
       {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
       then
@@ -2153,7 +2155,7 @@ writeln('### TMethodPropertyEditor.SetValue G');
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
-writeln('### TMethodPropertyEditor.SetValue END');
+writeln('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
 end;
 
 { TComponentPropertyEditor }
@@ -2800,7 +2802,7 @@ end;
 function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
   ATypeInfo:PTypeInfo): TMethod;
 begin
-  if (Name<>'') and (ATypeInfo<>nil) and Assigned(FOnCreateMethod) then
+  if IsValidIdent(Name) and (ATypeInfo<>nil) and Assigned(FOnCreateMethod) then
     Result:=FOnCreateMethod(Name,ATypeInfo)
   else begin
     Result.Code:=nil;
@@ -2838,11 +2840,12 @@ function TPropertyEditorHook.MethodExists(const Name:Shortstring;
   var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean):boolean;
 begin
   // check if a published method with given name exists in LookupRoot
-  if Assigned(FOnMethodExists) then
+  if IsValidIdent(Name) and Assigned(FOnMethodExists) then
     Result:=FOnMethodExists(Name,TypeData,
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod)
   else begin
-    Result:=Assigned(LookupRoot) and (LookupRoot.MethodAddress(Name)<>nil);
+    Result:=IsValidIdent(Name) and Assigned(LookupRoot)
+                               and (LookupRoot.MethodAddress(Name)<>nil);
     MethodIsCompatible:=Result;
     MethodIsPublished:=Result;
     IdentIsMethod:=Result;
