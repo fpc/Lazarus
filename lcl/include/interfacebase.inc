@@ -192,6 +192,12 @@ begin
   Result:=false;
 end;
 
+function TInterfaceBase.ExcludeClipRect(dc: hdc;
+  Left, Top, Right, Bottom : Integer) : Integer;
+begin
+  Result:=SimpleRegion;
+end;
+
 function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := False;
@@ -330,20 +336,25 @@ begin
   Result := 0;
 end;
 
-{$IFDEF ClientRectBugFix}
 Function TInterfaceBase.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 begin
   Result:=false;
 end;
-{$ENDIF}
 
 function TInterfaceBase.HideCaret(hWnd: HWND): Boolean;
 begin
   Result := False;
 end;
 
-Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+function TInterfaceBase.IntersectClipRect(dc: hdc;
+  Left, Top, Right, Bottom: Integer): Integer;
+begin
+  Result:=SimpleRegion;
+end;
+
+Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect;
+  bErase : Boolean) : Boolean;
 begin
   Result := false;
 end;
@@ -415,6 +426,11 @@ end;
 function TInterfaceBase.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
   Result := False;
+end;
+
+function TInterfaceBase.RectVisible(dc : hdc; ARect: TRect) : Boolean;
+begin
+  Result := true;
 end;
 
 Function TInterfaceBase.ReleaseCapture : Boolean;
@@ -583,6 +599,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/06/21 15:41:56  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.31  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 
