@@ -2551,18 +2551,25 @@ begin
   // find end of class
   ReadNextAtom;
   if UpAtomIs('OF') then begin
+    if ChildCreated then CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
     AtomIsIdentifier(true);
+    if ChildCreated then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnIdentifier;
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end;
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       RaiseCharExpectedButAtomFound(';');
-    if ChildCreated then CurNode.Desc:=ctnClassOfType;
   end else if (CurPos.Flag=cafRoundBracketOpen) then begin
     // read inheritage brackets
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
-  CurNode.SubDesc:=ctnsNeedJITParsing; // will not create sub nodes now
+  if ChildCreated and (CurNode.Desc=ctnClass) then
+    CurNode.SubDesc:=ctnsNeedJITParsing; // will not create sub nodes now
   if CurPos.Flag=cafSemicolon then begin
     if ChildCreated and (CurNode.Desc=ctnClass) then begin
       // forward class definition found

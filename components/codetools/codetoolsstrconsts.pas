@@ -102,6 +102,7 @@ ResourceString
      'inherited keyword only allowed in methods';
   ctsCircleInDefinitions = 'circle in definitions';
   ctsForwardClassDefinitionNotResolved = 'Forward class definition not resolved: %s';
+  ctsClassOfDefinitionNotResolved = '"class of" definition not resolved: %s';
   ctsTypeIdentifier = 'type identifier';
   ctsAncestorIsNotProperty = 'ancestor of untyped property is not a property';
   ctsBaseTypeOfNotFound = 'base type of "%s" not found';

@@ -2324,6 +2324,12 @@ function TFindDeclarationTool.FindBaseTypeOfNode(Params: TFindDeclarationParams;
     RaiseExceptionFmt(ctsBaseTypeOfNotFound,[GetIdentifier(Params.Identifier)]);
   end;
   
+  procedure RaiseClassOfWithoutIdentifier;
+  begin
+    RaiseExceptionFmt(ctsBaseTypeOfNotFound+' ("class of")',
+                      [GetIdentifier(Params.Identifier)]);
+  end;
+  
 var
   OldInput: TFindDeclarationInput;
   ClassIdentNode, DummyNode: TCodeTreeNode;
@@ -2338,6 +2344,14 @@ var
             ClassIdentNode.EndPos-ClassIdentNode.StartPos)]);
   end;
   
+  procedure RaiseClassOfNotResolved;
+  begin
+    MoveCursorToNodeStart(ClassIdentNode);
+    RaiseExceptionFmt(ctsClassOfDefinitionNotResolved,
+        [copy(Src,ClassIdentNode.StartPos,
+            ClassIdentNode.EndPos-ClassIdentNode.StartPos)]);
+  end;
+
 begin
   Result.Node:=Node;
   Result.Tool:=Self;
@@ -2400,6 +2414,38 @@ begin
         or (Params.NewCodeTool<>Self) then begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseForwardNotResolved;
+        end;
+        Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+        Params.Load(OldInput);
+        exit;
+      end else
+      if (Result.Node.Desc=ctnClassOfType) then
+      begin
+        // this is a 'class of' type
+        // -> search the real class
+        {$IFDEF ShowTriedBaseContexts}
+        writeln('[TFindDeclarationTool.FindBaseTypeOfNode] "Class Of"');
+        {$ENDIF}
+
+        // ToDo: check for circles in ancestor chain
+
+        ClassIdentNode:=Result.Node.FirstChild;
+        if (ClassIdentNode=nil) or (not (ClassIdentNode.Desc=ctnIdentifier))
+        then begin
+          MoveCursorToCleanPos(Result.Node.StartPos);
+          RaiseClassOfWithoutIdentifier;
+        end;
+        Params.Save(OldInput);
+        Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
+                             @CheckSrcIdentifier);
+        Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                       fdfIgnoreCurContextNode]
+                      +(fdfGlobals*Params.Flags);
+        Params.ContextNode:=Result.Node.Parent;
+        FindIdentifierInContext(Params);
+        if (Params.NewNode.Desc<>ctnTypeDefinition) then begin
+          MoveCursorToCleanPos(Result.Node.StartPos);
+          RaiseClassOfNotResolved;
         end;
         Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
         Params.Load(OldInput);
