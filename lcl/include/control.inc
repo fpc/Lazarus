@@ -859,7 +859,8 @@ begin
 
   if (MinWidth > 0) and (NewWidth < MinWidth) then
   begin
-    if NewLeft <> Left then
+    // right kept position ? interpret as resizing left border
+    if (NewLeft+NewWidth) = (Left+Width) then
     begin
       Dec(NewLeft, MinWidth - NewWidth);
       if NewLeft < Left then
@@ -868,7 +869,7 @@ begin
     NewWidth:= MinWidth
   end else if (MaxWidth > 0) and (NewWidth > MaxWidth) then
   begin
-    if NewLeft <> Left then
+    if (NewLeft+NewWidth) = (Left+Width) then
     begin
       Inc(NewLeft, NewWidth - MaxWidth);
       if NewLeft > Left then
@@ -879,7 +880,8 @@ begin
 
   if (MinHeight > 0) and (NewHeight < MinHeight) then
   begin
-    if NewTop <> Top then
+    // bottom kept position ? interpret as resizing bottom border
+    if (NewTop+NewHeight) = (Top+Height) then
     begin
       Dec(NewTop, MinHeight - NewHeight);
       if NewTop < Top then
@@ -888,7 +890,7 @@ begin
     NewHeight:= MinHeight
   end else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
   begin
-    if NewTop <> Top then
+    if (NewTop+NewHeight) = (Top+Height) then
     begin
       Inc(NewTop, NewHeight - MaxHeight);
       if NewTop > Top then
@@ -3497,6 +3499,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.251  2005/03/18 07:40:18  micha
+  fix combobox placement issue in OI (strengthen condition to check for left or top resizing)
+
   Revision 1.250  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 
