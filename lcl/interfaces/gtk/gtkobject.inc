@@ -757,8 +757,10 @@ begin
 
   FreeGDKCursors;
 
-  gtk_object_unref(PGTKObject(FGTKToolTips));
-  FGTKToolTips := nil;
+  if FGTKToolTips<>nil then begin
+    gtk_object_unref(PGTKObject(FGTKToolTips));
+    FGTKToolTips := nil;
+  end;
    
   FreeStockItems;
   
@@ -6524,6 +6526,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.272  2002/10/30 13:20:11  lazarus
+  MG: fixed example
+
   Revision 1.271  2002/10/30 12:37:25  lazarus
   MG: mouse cursors are now allocated on demand
 
