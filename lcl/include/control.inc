@@ -110,7 +110,7 @@ begin
     FTop:= ATop;
     FWidth:= AWidth;
     FHeight:= AHeight;
-    Invalidate;
+    if SizeChanged then Invalidate;
 //    UpdateAnchorRules;
     BoundsChanged;
     RequestAlign;
@@ -1507,6 +1507,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.36  2002/03/14 18:12:46  lazarus
+  Mouse events fixes.
+
   Revision 1.35  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation
