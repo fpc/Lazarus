@@ -18,7 +18,7 @@
  ***************************************************************************/ 
  } 
  
-unit gtkint;
+unit GtkInt;
  
 {$mode objfpc} 
 {$LONGSTRINGS ON}
@@ -38,8 +38,8 @@ interface
 
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
-  ExtCtrls,Forms,Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
-  gtkDef, DynHashArray, LazQueue, Calendar, Arrow, GraphType,Spin, CommCtrl;
+  Forms, VclGlobals, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
+  GraphType;
 
 type
   TgtkObject = class(TInterfaceBase)
@@ -49,6 +49,9 @@ type
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
     FMessageQueue: TLazQueue;      // queue of PMsg
     FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem 
+    {$IFDEF ClientRectBugFix}
+    FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
+    {$ENDIF}
     FGTKToolTips: PGtkToolTips;
     FAccelGroup: PgtkAccelGroup;
     FTimerData : TList;       // keeps track of timer event structures
@@ -60,8 +63,10 @@ type
     FStockGrayBrush: HBRUSH;
     FStockDkGrayBrush: HBRUSH;
     FStockWhiteBrush: HBRUSH;
+    
     Procedure HookSignals(Sender : TObject);  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);
+    procedure DestroyLCLControl(Sender : TObject);
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
     function  GetLabel(CompStyle: Integer; P : Pointer) : String;
@@ -95,6 +100,14 @@ type
     
     function HashPaintMessage(p: pointer): integer;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
+    
+    {$IFDEF ClientRectBugFix}
+    procedure SetResizeRequest(Widget: PGtkWidget);
+    procedure SaveSizeNotification(Widget: PGtkWidget);
+    procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
+    {$ENDIF}
+    
+    procedure SendCachedLCLMessages;
     procedure SetCallback(Msg : LongInt; Sender : TObject);
     procedure RemoveCallbacks(Sender : TObject);
   protected
@@ -117,7 +130,10 @@ type
     function  GetText(Sender: TControl; var Text: String): Boolean; override;
     procedure SetLabel(Sender : TObject; Data : Pointer);
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
-    procedure DoEvents; override;
+    {$IFDEF ClientRectBugFix}
+    {$ELSE}
+    procedure DoEvents; override; // use HandleEvents instead
+    {$ENDIF}
     procedure HandleEvents; override;
     procedure WaitMessage; override;
     procedure AppTerminate; override;
@@ -133,7 +149,8 @@ type
 implementation
 
 uses 
-  Graphics, Buttons, Menus, GTKWinApiWindow, CListBox, KeyMap;
+  Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
+  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs;
 
 {$I gtklistsl.inc}
 
@@ -160,7 +177,6 @@ var
 
 
 const
-
   KEYMAP_VKUNKNOWN = $10000;
   KEYMAP_TOGGLE    = $20000;
   KEYMAP_EXTENDED  = $40000;
@@ -258,8 +274,15 @@ var
   // lists of supported targets
   ClipboardTargetEntries: array[TClipboardType] of PGtkTargetEntry;
   ClipboardTargetEntryCnt: array[TClipboardType] of integer;
-  //ClipboardIgnoreLossCount: array[TClipboardType] of integer;
 
+  {$IFDEF ClientRectBugFix}
+  // each main widget that was resized by the gtk is stored here
+  // (hasharray of PGtkWidget)
+  FWidgetsResized: TDynHashArray;
+  // each fixed widget that was resized by the gtk is stored here
+  // (hasharray of PGtkWidget)
+  FFixWidgetsResized: TDynHashArray;
+  {$ENDIF}
 
 {$I dragicons.inc}
 {$I gtkproc.inc}
@@ -334,6 +357,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/05/09 12:41:29  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.36  2002/05/06 08:50:36  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 
