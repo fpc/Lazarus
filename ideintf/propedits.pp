@@ -1036,6 +1036,9 @@ procedure UpdateListPropertyEditors(AnObject: TObject);
   editors, the object inspector and the form editor.
 }
 type
+
+  { TPersistentSelectionList }
+
   TPersistentSelectionList = class
   protected
     FUpdateLock: integer;
@@ -1057,6 +1060,7 @@ type
     property Count:integer read GetCount;
     property Capacity:integer read GetCapacity write SetCapacity;
     function Add(APersistent: TPersistent): integer;
+    function Remove(APersistent: TPersistent): integer;
     procedure Assign(SourceSelectionList: TPersistentSelectionList);
     property Items[AIndex: integer]: TPersistent read GetItems write SetItems; default;
   end;
@@ -1169,6 +1173,8 @@ type
     htRefreshPropertyValues
     );
 
+  { TPropertyEditorHook }
+
   TPropertyEditorHook = class
   private
     FHandlers: array[TPropHookType] of TMethodList;
@@ -1213,6 +1219,7 @@ type
     procedure DeletePersistent(var APersistent: TPersistent);
     procedure GetSelection(const ASelection: TPersistentSelectionList);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
+    procedure Unselect(const APersistent: TPersistent);
     procedure SelectOnlyThis(const APersistent: TPersistent);
     // persistent objects
     function GetObject(const Name: ShortString):TPersistent;
@@ -3602,10 +3609,16 @@ end;
 
 procedure TCollectionPropertyEditorForm.PersistentDeleting(
   APersistent: TPersistent);
+var
+  OldCollection: TCollection;
 begin
   //debugln('TCollectionPropertyEditorForm.PersistentDeleting A APersistent=',dbgsName(APersistent),' OwnerPersistent=',dbgsName(OwnerPersistent));
   if APersistent=OwnerPersistent then begin
+    OldCollection:=Collection;
     SetCollection(nil,nil,'');
+    GlobalDesignHook.Unselect(OldCollection);
+    if GlobalDesignHook.LookupRoot=OldCollection then
+      GlobalDesignHook.LookupRoot:=nil;
     Hide;
   end;
 end;
@@ -3635,8 +3648,12 @@ begin
       CollectionListBox.Items[I]:=CurItem;
   end;
   // delete unneeded list items
-  while CollectionListBox.Items.Count>Cnt do begin
-    CollectionListBox.Items.Delete(CollectionListBox.Items.Count-1);
+  if Cnt>0 then begin
+    while CollectionListBox.Items.Count>Cnt do begin
+      CollectionListBox.Items.Delete(CollectionListBox.Items.Count-1);
+    end;
+  end else begin
+    CollectionListBox.Items.Clear;
   end;
   CollectionListBox.Items.EndUpdate;
 
@@ -3730,6 +3747,7 @@ var
   i: Integer;
   NewSelection: TPersistentSelectionList;
 begin
+  if Collection=nil then exit;
   // select in OI
   NewSelection:=TPersistentSelectionList.Create;
   try
@@ -5206,6 +5224,12 @@ begin
   Result:=FPersistentList.Add(APersistent);
 end;
 
+function TPersistentSelectionList.Remove(APersistent: TPersistent): integer;
+begin
+  Result:=IndexOf(APersistent);
+  if Result>=0 then FPersistentList.Remove(APersistent);
+end;
+
 procedure TPersistentSelectionList.Clear;
 begin
   FPersistentList.Clear;
@@ -5608,6 +5632,22 @@ begin
     Handler(ASelection);
   end;
   //writeln('TPropertyEditorHook.SetSelection END ASelection.Count=',ASelection.Count);
+end;
+
+procedure TPropertyEditorHook.Unselect(const APersistent: TPersistent);
+var
+  Selection: TPersistentSelectionList;
+begin
+  Selection:=TPersistentSelectionList.Create;
+  try
+    GetSelection(Selection);
+    if Selection.IndexOf(APersistent)>=0 then begin
+      Selection.Remove(APersistent);
+      SetSelection(Selection);
+    end;
+  finally
+    Selection.Free;
+  end;
 end;
 
 procedure TPropertyEditorHook.SelectOnlyThis(const APersistent: TPersistent);

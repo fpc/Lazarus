@@ -4240,7 +4240,7 @@ begin
   if (AForm=nil) then exit;
   if FLastFormActivated=AForm then
     FLastFormActivated:=nil;
-  // unselect controls
+  // unselect components
   for i:=LookupRoot.ComponentCount-1 downto 0 do
     TheControlSelection.Remove(LookupRoot.Components[i]);
   TheControlSelection.Remove(LookupRoot);
@@ -11457,6 +11457,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.853  2005/03/05 22:31:34  mattias
+  fixed unselecting TCollection
+
   Revision 1.852  2005/03/02 15:59:53  mattias
   accelerated identifier completion
 

@@ -351,10 +351,24 @@ begin
 end;
 
 procedure TDesigner.DeleteFormAndFree;
+var
+  i: Integer;
 begin
   Include(FFlags,dfDestroyingForm);
-  if FLookupRoot is TComponent then
+  if FLookupRoot is TComponent then begin
+    // unselect
+    for i:=FLookupRoot.ComponentCount-1 downto 0 do
+      TheControlSelection.Remove(LookupRoot.Components[i]);
+    TheControlSelection.Remove(LookupRoot);
+    if GlobalDesignHook.LookupRoot=FLookupRoot then
+      GlobalDesignHook.LookupRoot:=nil;
+    // tell hooks about deleting
+    for i:=FLookupRoot.ComponentCount-1 downto 0 do
+      GlobalDesignHook.PersistentDeleting(FLookupRoot.Components[i]);
+    GlobalDesignHook.PersistentDeleting(FLookupRoot);
+    // delete
     TheFormEditor.DeleteComponent(FLookupRoot,true);
+  end;
   Free;
 end;
 
@@ -1643,7 +1657,7 @@ begin
   ControlSelection.Remove(APersistent);
   if (APersistent is TComponent)
   and (TheFormEditor.FindComponent(TComponent(APersistent))=nil) then begin
-    // thsi component is currently in the process of deletion or the component
+    // this component is currently in the process of deletion or the component
     // was not properly created
     // -> do not call handlers and simply get rid of the rubbish
     //writeln('TDesigner.DoDeleteComponent UNKNOWN ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
