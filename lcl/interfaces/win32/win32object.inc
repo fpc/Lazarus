@@ -2614,6 +2614,20 @@ Function TWin32WidgetSet.SetValue(Sender: TObject; Data: Pointer): Integer;
 Var
   Handle: HWnd;
   ST: SystemTime;
+  
+  procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
+  var
+    Parent: TWinControl;
+    Sibling: TControl;
+    i: Integer;
+  begin
+    Parent := RadioButton.Parent;
+    for i:= 0 to Parent.ControlCount - 1 do begin
+      Sibling := Parent.Controls[i];
+      if (Sibling is TRadioButton) and (Sibling<>RadioButton) then
+         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0);
+    end;
+  end;
 
 Begin
   Result := 0;     // default if nobody sets it
@@ -2647,10 +2661,13 @@ Begin
       Assert(False, 'TRACE:Setting the track bar value.');
       Windows.SendMessage(Handle, TBM_SETPOS, Windows.WPARAM(True), Windows.LPARAM(Data^));
     End;
-    csRadiobutton, csCheckbox:
+    csRadioButton, csCheckbox:
     Begin
-      If TCheckBoxState(Data^) = cbChecked Then
-        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_CHECKED), 0)
+      If TCheckBoxState(Data^) = cbChecked Then Begin
+        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_CHECKED), 0);
+        If TControl(Sender).FCompStyle=csRadioButton Then
+          ClearSiblingRadioButtons(TRadioButton(Sender));
+      End
       Else If TCheckboxState(Data^) = cbUnchecked Then
         Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0)
       Else
@@ -2997,6 +3014,9 @@ End;
 
 {
   $Log$
+  Revision 1.199  2004/05/27 15:04:53  vincents
+  checking a radiobutton unchecks its siblibg radiobuttons
+
   Revision 1.198  2004/05/21 11:18:30  micha
   use unsigned integer for control styles; fixes compiler warning
 
