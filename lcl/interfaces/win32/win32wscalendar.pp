@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Calendar,
+  Calendar, SysUtils,
 ////////////////////////////////////////////////////
-  WSCalendar, WSLCLClasses;
+  WSCalendar, WSLCLClasses, Windows, Win32Def;
 
 type
 
@@ -45,17 +45,17 @@ type
   private
   protected
   public
-    class function  GetDateTime(const ACalender: TCustomCalender): TDateTime; override;
+    class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
   end;
 
 
 implementation
 
-function  TWin32WSCalender.GetDateTime(const ACalender: TCustomCalender): TDateTime;
+function  TWin32WSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   ST: SystemTime;
 begin
-  SendMessage(ACalender.Handle, MCM_GETCURSEL, 0, LPARAM(@ST));
+  SendMessage(ACalendar.Handle, MCM_GETCURSEL, 0, LPARAM(@ST));
   with ST do
     Result := EncodeDate(WYear,WMonth,WDay);
 end;
