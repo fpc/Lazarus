@@ -172,7 +172,8 @@ type
     Procedure FocusControl(Control : TWinControl);
     Function ShowModal : Integer;
     property Active : Boolean read FActive;
-    property BorderStyle : TFormBorderStyle read FBorderStyle write SetBorderStyle default bsSizeable;
+    property BorderStyle : TFormBorderStyle
+      read FBorderStyle write SetBorderStyle default bsSizeable;
     property Canvas: TControlCanvas read GetCanvas;
     property Caption stored IsForm;
     property Designer : TIDesigner read FDesigner write SetDesigner;

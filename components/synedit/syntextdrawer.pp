@@ -110,7 +110,8 @@ type
   TheFontsInfoManager = class
   private
     FFontsInfo: TList;
-    function FindFontsInfo(const LF: TLogFont): PheSharedFontsInfo;
+    function FindFontsInfo(const LF: TLogFont
+      {$IFDEF SYN_LAZARUS}; const FontName: string{$ENDIF}): PheSharedFontsInfo;
     function CreateFontsInfo(ABaseFont: TFont;
       const LF: TLogFont): PheSharedFontsInfo;
     procedure DestroyFontHandles(pFontsInfo: PheSharedFontsInfo);
@@ -148,6 +149,9 @@ type
     FpCrntFontData: PheFontData;
     // local font info
     FBaseLF: TLogFont;
+    {$IFDEF SYN_LAZARUS}
+    FBaseFontName: string;
+    {$ENDIF}
     function GetBaseFont: TFont;
     function GetIsDBCSFont: Boolean;
     function GetIsTrueType: Boolean;
@@ -481,14 +485,17 @@ begin
 end;
 
 function TheFontsInfoManager.FindFontsInfo(
-  const LF: TLogFont): PheSharedFontsInfo;
+  const LF: TLogFont
+  {$IFDEF SYN_LAZARUS}; const FontName: string{$ENDIF}): PheSharedFontsInfo;
 var
   i: Integer;
 begin
   for i := 0 to FFontsInfo.Count - 1 do
   begin
     Result := PheSharedFontsInfo(FFontsInfo[i]);
-    if CompareMem(@(Result^.BaseLF), @LF, SizeOf(TLogFont)) then
+    if CompareMem(@(Result^.BaseLF), @LF, SizeOf(TLogFont))
+    {$IFDEF SYN_LAZARUS}and (Result^.BaseFont.Name=FontName){$ENDIF}
+    then
       Exit;
   end;
   Result := nil;
@@ -501,7 +508,7 @@ begin
   ASSERT(Assigned(ABaseFont));
 
   RetrieveLogFontForComparison(ABaseFont, LF);
-  Result := FindFontsInfo(LF);
+  Result := FindFontsInfo(LF{$IFDEF SYN_LAZARUS},ABaseFont.Name{$ENDIF});
   if not Assigned(Result) then
   begin
     Result := CreateFontsInfo(ABaseFont, LF);
@@ -715,7 +722,11 @@ begin
     if fsStrikeOut in AStyle then lfStrikeOut:=1 else lfStrikeOut:=0;
     {$ENDIF}
   end;
+  {$IFDEF SYN_LAZARUS}
+  Result := CreateFontIndirectEx(FBaseLF,FBaseFontName);
+  {$ELSE}
   Result := CreateFontIndirect(FBaseLF);
+  {$ENDIF}
 end;
 
 function TheFontStock.InternalGetDC: HDC;
@@ -785,6 +796,15 @@ begin
       ReleaseFontsInfo;
       FpInfo := pInfo;
       FBaseLF := FpInfo^.BaseLF;
+      {$IFDEF SYN_LAZARUS}
+      FBaseFontName := FpInfo^.BaseFont.Name;
+      if IsFontNameXLogicalFontDesc(FBaseFontName) then begin
+        // clear styles and height
+        FBaseFontName:=ClearXLFDStyle(FBaseFontName);
+        FBaseFontName:=ClearXLFDHeight(FBaseFontName);
+      end;
+      // clear styles
+      {$ENDIF}
       SetStyle(Value.Style);
     end;
   end

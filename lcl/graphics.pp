@@ -178,6 +178,7 @@ type
     procedure Assign(const ALogFont: TLogFont);
     procedure BeginUpdate;
     procedure EndUpdate;
+    function HandleAllocated: boolean;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
     //Function GetWidth(Value : String) : Integer;
@@ -654,7 +655,12 @@ function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
 function GetDefFontCharSet: TFontCharSet;
 function IsFontNameXLogicalFontDesc(const LongFontName: string): boolean;
 function XLFDNameToLogFont(const XLFDName: string): TLogFont;
+function ExtractXLFDItem(const XLFDName: string; Index: integer): string;
 function ExtractFamilyFromXLFDName(const XLFDName: string): string;
+function ClearXLFDItem(const LongFontName: string; Index: integer): string;
+function ClearXLFDHeight(const LongFontName: string): string;
+function ClearXLFDPitch(const LongFontName: string): string;
+function ClearXLFDStyle(const LongFontName: string): string;
 
 var 
   { Stores information about the current screen }
@@ -810,6 +816,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/06/05 12:33:57  lazarus
+  MG: fixed fonts in XLFD format and styles
+
   Revision 1.32  2002/06/04 15:17:21  lazarus
   MG: improved TFont for XLFD font names
 

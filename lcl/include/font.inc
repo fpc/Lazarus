@@ -104,7 +104,64 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  ExtractFamilyFromXLFDName
+  function:  FindXLFDItem
+  Params:  const XLFDName: string; Index: integer;
+           var ItemStart, ItemEnd: integer
+  Returns: boolean
+
+  Searches the XLFD item on position Index. Index starts from 0.
+  Returns true on sucess.
+  ItemStart will be on the first character and ItemEnd after the last character.
+ ------------------------------------------------------------------------------}
+function FindXLFDItem(const XLFDName: string; Index: integer;
+  var ItemStart, ItemEnd: integer): boolean;
+begin
+  if Index<0 then begin
+    Result:=false;
+    exit;
+  end;
+  ItemStart:=1;
+  ItemEnd:=ItemStart;
+  while true do begin
+    if (ItemEnd>length(XLFDName)) then begin
+      dec(Index);
+      break;
+    end;
+    if XLFDName[ItemEnd]='-' then begin
+      dec(Index);
+      if Index<0 then break;
+      ItemStart:=ItemEnd+1;
+    end;
+    inc(ItemEnd);
+  end;
+  Result:=(Index=-1);
+end;
+
+{------------------------------------------------------------------------------
+  function:  ExtractXLFDItem
+  Params:  const XLFDName: string; Index: integer
+  Returns: string
+
+  Parses a font name in XLFD format and extracts one item.
+  (see http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html)
+
+  An XLFD name is
+  FontNameRegistry-Foundry-FamilyName-WeightName-Slant-SetwidthName
+  -AddStyleName-PixelSize-PointSize-ResolutionX-ResolutionY-Spacing
+  -AverageWidth-CharSetRegistry-CharSetCoding
+
+ ------------------------------------------------------------------------------}
+function ExtractXLFDItem(const XLFDName: string; Index: integer): string;
+var StartPos, EndPos: integer;
+begin
+  if FindXLFDItem(XLFDName,Index,StartPos,EndPos) then
+    Result:=copy(XLFDName,StartPos,EndPos-StartPos)
+  else
+    Result:='';
+end;
+
+{------------------------------------------------------------------------------
+  function:  ExtractFamilyFromXLFDName
   Params:  const XLFDName: string
   Returns: string
 
@@ -118,24 +175,12 @@ end;
 
  ------------------------------------------------------------------------------}
 function ExtractFamilyFromXLFDName(const XLFDName: string): string;
-var StartPos, EndPos, i: integer;
+var StartPos, EndPos: integer;
 begin
-  Result:='';
-  StartPos:=1;
-  i:=0;
-  while (StartPos<=length(XLFDName)) do begin
-    if XLFDName[StartPos]='-' then begin
-      inc(i);
-      if i=2 then begin
-        inc(StartPos);
-        EndPos:=StartPos;
-        while (EndPos<=length(XLFDName)) and (XLFDName[EndPos]<>'-') do
-          inc(EndPos);
-        Result:=copy(XLFDName,StartPos,EndPos-StartPos);
-      end;
-    end;
-    inc(StartPos);
-  end;
+  if FindXLFDItem(XLFDName,2,StartPos,EndPos) then
+    Result:=copy(XLFDName,StartPos,EndPos-StartPos)
+  else
+    Result:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -270,12 +315,17 @@ begin
   end;
 
   GetNextItem; // read Spacing
-  // ToDo
   {M       Monospaced (fixed pitch)
    P       Proportional spaced (variable pitch)
    C       Character cell.  The glyphs of the font can be thought of as
            "boxes" of the same width and height that are stacked side by
            side or top to bottom.}
+  if AnsiCompareText(Item,'M')=0 then
+    Result.lfPitchAndFamily:=FIXED_PITCH
+  else if AnsiCompareText(Item,'P')=0 then
+    Result.lfPitchAndFamily:=VARIABLE_PITCH
+  else if AnsiCompareText(Item,'C')=0 then
+    Result.lfPitchAndFamily:=FIXED_PITCH;
 
   GetNextItem; // read AverageWidth
   // ToDo
@@ -289,9 +339,74 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  IsFontNameXLogicalFontDesc
-  Params:  const LongFontName: string
-  Returns: boolean
+  function: ClearXLFDItem
+  Params:   const LongFontName: string; Index: integer
+  Returns:  string
+
+  Replaces an item of a font name in XLFD format with a '*'.
+ ------------------------------------------------------------------------------}
+function ClearXLFDItem(const LongFontName: string; Index: integer): string;
+var ItemStart, ItemEnd: integer;
+begin
+  if FindXLFDItem(LongFontName,Index,ItemStart,ItemEnd)
+  and ((ItemEnd-ItemStart<>1) or (LongFontName[ItemStart]<>'*')) then
+    Result:=LeftStr(LongFontName,ItemStart-1)+'*'
+            +RightStr(LongFontName,length(LongFontName)-ItemEnd+1)
+  else
+    Result:=LongFontName;
+end;
+
+{------------------------------------------------------------------------------
+  function: ClearXLFDHeight
+  Params:   const LongFontName: string
+  Returns:  string
+
+  Replaces the PixelSize, PointSize, ResolutionX, ResolutionY and AverageWidth
+  of a font name in XLFD format with '*'.
+  
+  An XLFD name is
+  FontNameRegistry-Foundry-FamilyName-WeightName-Slant-SetwidthName
+  -AddStyleName-PixelSize-PointSize-ResolutionX-ResolutionY-Spacing
+  -AverageWidth-CharSetRegistry-CharSetCoding
+ ------------------------------------------------------------------------------}
+function ClearXLFDHeight(const LongFontName: string): string;
+begin
+  Result:=ClearXLFDItem(LongFontName,7); // PixelSize
+  Result:=ClearXLFDItem(Result,8);       // PointSize
+  Result:=ClearXLFDItem(Result,9);       // ResolutionX
+  Result:=ClearXLFDItem(Result,10);      // ResolutionY
+  Result:=ClearXLFDItem(Result,12);      // AverageWidth
+end;
+
+{------------------------------------------------------------------------------
+  function: ClearXLFDPitch
+  Params:   const LongFontName: string
+  Returns:  string
+
+  Replaces the spacing a font name in XLFD format with a '*'.
+ ------------------------------------------------------------------------------}
+function ClearXLFDPitch(const LongFontName: string): string;
+begin
+  Result:=ClearXLFDItem(LongFontName,11);
+end;
+
+{------------------------------------------------------------------------------
+  function: ClearXLFDStyle
+  Params:   const LongFontName: string
+  Returns:  string
+
+  Replaces the WeightName, Slant and SetwidthName of a font name in XLFD format
+  with '*'.
+ ------------------------------------------------------------------------------}
+function ClearXLFDStyle(const LongFontName: string): string;
+begin
+  Result:=ClearXLFDItem(ClearXLFDItem(ClearXLFDItem(LongFontName,3),4),5);
+end;
+
+{------------------------------------------------------------------------------
+  function: IsFontNameXLogicalFontDesc
+  Params:   const LongFontName: string
+  Returns:  boolean
 
   Checks if font name is in X Logical Font Description format.
   (see http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html)
@@ -414,6 +529,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TFont.HandleAllocated
+  Params: none
+  Returns: boolean
+
+  Resturns True on handle allocated.
+ ------------------------------------------------------------------------------}
+function TFont.HandleAllocated: boolean;
+begin
+  Result:=FFontData.Handle<>0;
+end;
+
+{------------------------------------------------------------------------------
   Method: TFont.SetSize
   Params: Value: the new value
   Returns:  nothing
@@ -448,9 +575,13 @@ Procedure TFont.SetPitch(Value : TFontPitch);
 Begin
   if FFontData.Pitch <> Value
   then begin
+    BeginUpdate;
     FreeHandle;
     FFontData.Pitch := Value;
+    if IsFontNameXLogicalFontDesc(FFontName) then
+      Name:=ClearXLFDPitch(Name);
     Changed;
+    EndUpdate;
   end;
 end;
 
@@ -465,9 +596,13 @@ procedure TFont.SetHeight(Value: Integer);
 begin
   if FFontData.Height <> Value
   then begin
+    BeginUpdate;
     FreeHandle;
     FFontData.Height := Value;
+    if IsFontNameXLogicalFontDesc(FFontName) then
+      Name:=ClearXLFDHeight(Name);
     Changed;
+    EndUpdate;
   end;
 end;
 
@@ -482,9 +617,13 @@ procedure TFont.SetStyle(value : TFontStyles);
 begin
   if FFontData.Style <> Value 
   then begin
+    BeginUpdate;
     FreeHandle;
     FFontData.Style := Value;
+    if IsFontNameXLogicalFontDesc(Name) then
+      Name:=ClearXLFDStyle(Name);
     Changed;
+    EndUpdate;
   end;
 end;
 
@@ -528,10 +667,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TFont.SetName(const AValue : TFontName);
 begin
-  if FFontData.Name <> AValue
+  if FFontName <> AValue
   then begin
     FreeHandle;
-    FFontData.Name := AValue;
+    FFontData.Name := LeftStr(AValue,SizeOf(FFontData.Name));
     FFontName:=AValue;
     Changed;
   end;
@@ -710,6 +849,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/06/05 12:33:57  lazarus
+  MG: fixed fonts in XLFD format and styles
+
   Revision 1.6  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

@@ -90,9 +90,9 @@ type
 
 
 {---- TSource Editor ---
-  TSourceEditor is the class that controls access for the Editor and the source
-  code. It creates the PopupMenu that appears when you right-click on the
-  editor. It calls the editor functions for bookmarks.
+  TSourceEditor is the class that controls access for the Editor.
+  It creates the PopupMenu that appears when you right-click on the editor.
+  It calls the editor functions for bookmarks.
  ---- TSource Editor ---}
   TSourceEditor = class
   private
@@ -132,7 +132,6 @@ type
     Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    //Function FindFile(const Value: String) : String;
     Function GetWordFromCaret(CaretPos : TPoint) : String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
@@ -171,7 +170,6 @@ type
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ccOnTimer(sender : TObject);
     Procedure ccAddMessage(Texts : String);
-    //Function  ccParse(Texts : String) : TStrings;
 
     Procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
@@ -333,14 +331,17 @@ type
     //Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
     Procedure EditorChanged(sender : TObject);
+    
     Procedure ccExecute(Sender : TObject);
     Procedure ccCancel(Sender : TObject);
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
     function OnSynCompletionPaintItem(AKey: string; ACanvas: TCanvas;
        X, Y: integer): boolean;
     procedure OnSynCompletionSearchPosition(var APosition:integer);
+    procedure DeactivateCompletionForm;
+
     
-//hintwindow stuff
+    //hintwindow stuff
     FHintWindow : THintWindow;
     FHintTimer : TTimer;
     Procedure HintTimer(sender : TObject);
@@ -507,22 +508,26 @@ type
                      ctIdentCompletion);
 
 const        
-  // keep const recognizable IE. not prefixed with T(ype)
-  SRCEDITMARKERIMGINDEX: array[TSrcEditMarkerType] of integer = (
+  SrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
        10,  // active breakpoint
        11,  // inactive breakpoint
-       12  // invalid breakpoint
+       12   // invalid breakpoint
     );
 
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
+  // aCompletion:
+  //   The component controlling the completion form. It is created on demand
+  //   and killed when the IDE ends.
   aCompletion : TSynCompletion;
-  scompl : TSynBaseCompletion;  //used in ccexecute and cccomplete
+  // CurCompletionControl contains aCompletion whenever the completion form is
+  // active
+  CurCompletionControl : TSynBaseCompletion;
   CurrentCompletionType: TCompletionType;
-  GotoDialog : TfrmGoto;
   IdentCompletionTimer : TTimer;
   AWordCompletion : TWordCompletion;
 
+  GotoDialog : TfrmGoto;
 
 
 { TSourceEditor }
@@ -758,10 +763,11 @@ var
   Handled: boolean;
 Begin
   Handled:=true;
+  
   case Command of
   
   ecIdentCompletion :
-    if TCustomSynEdit(Sender).ReadOnly=false then begin
+    if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctIdentCompletion;
       TextS := FEditor.LineText;
       i := FEditor.CaretX - 1;
@@ -1035,129 +1041,6 @@ Begin
   end;
 end;
 
-{Function TSourceEditor.FindFile(const Value : String) : String;
-var
-  Found : Boolean;
-  DirDelimiter : String;
-  SearchDir : String;
-  Num : Integer;
-  tempDir : String;
-Begin
-  Result := '';
-  Found := False;
-  DirDelimiter := '/';
-  SearchDir := TSourceNotebook(Owner).SearchPaths;
-  Writeln('Searchdir is '+Searchdir);
-  Num := pos(';',SearchDir);
-  While (not Found) and (SearchDir <> '') do
-  Begin
-    if Num = 0 then Num := Length(SearchDir)+1;
-    TempDir := Copy(SearchDir,1,num-1);
-    Delete(SearchDir,1,Num);
-    if tempDir[Length(TempDir)] <> DirDelimiter then
-       TempDir := TempDir + DirDelimiter;
-    Found := True;
-
-    if FileExists(TempDir+Value) then
-       Result := TempDir+Value
-       else
-       Found := False;
-  end; //while
-
-End;
-
-Function TSourceEditor.ccParse(Texts : String) : TStrings;
-const
-  symtable = '---Symtable ';
-  Level1 = '  ***';
-
-  kdClass = 1;
-  kdProcedure = 2;
-
-var
-  s : TStrings;
-  I : Integer;
-  Browser : TStringList;
-  UnitStart : Integer;
-  Found : Boolean;
-  tempFile : TStringList;
-  tempFileName : String;
-  TempLine  : String;
-  kind : Integer;
-  num1,num2 : Integer;
-begin
-  TempFile := TStringList.Create;
-  S := TStringList.Create;
-  Result := nil;
-  Browser := TstringList.Create;
-  Browser.LoadFromFile(ExtractFilePath(Application.Exename)+'browser.log');
-
-  For I := 0 to Browser.Count-1 do
-    if Browser.strings[I] = symtable+uppercase(Shortname) then
-       break;
-
-  if I >=Browser.Count-1 then Exit;
-
-  UnitStart := I;
-
-  //remove the period from TEXTS if it's the last character
-  if Texts[length(texts)] = '.' then
-    Begin
-      Texts := Copy(Texts,1,Length(texts)-1);
-      kind := kdClass;
-    end
-    else
-  if Texts[length(texts)] = '(' then
-    Begin
-      Texts := Copy(Texts,1,Length(texts)-1);
-      kind := kdProcedure;
-    end
-    else
-    Exit;
-
-  Texts := uppercase(texts);
-  //find ***TEXTS***
-  Found := False;
-  I := UnitStart+1;
-  While (Browser.strings[I] <> symtable+uppercase(Shortname)) and (not found) do
-     if Browser.Strings[I] = Level1+Texts+'***' then
-        Found := true
-        else
-        inc(i);
-
-  if Found then
-     begin  //determine what it is.
-     //grab the line it's defined on.
-     Writeln('The next line is '+Browser.Strings[i+1]);
-     TempFileName := Copy(trim(Browser.Strings[i+1]),1
-         ,pos('(',trim(Browser.Strings[i+1]))-1);
-     Writeln('TemmpFileName = '+TempFilename);
-     if FileExists('./temp/'+TempFileName) then
-        TempFileName := './temp/'+TempFileName
-        else
-        TempFileName := FindFile(TempFileName);
-
-     if TempFileName = '' then Exit;
-     tempFile.LoadFromFile(TempFileName);
-     //ok, the file is loaded.  Parse it to see what TEXTS is defined as.
-     Num1 := pos('(',Browser.Strings[i+1])+1;
-     Num2 := ((pos(',',Browser.Strings[i+1])-1) - pos('(',Browser.Strings[i+1])+1)-1;
-     tempLine := TempFile.Strings[StrtoInt(Copy(Browser.Strings[i+1],Num1,Num2))-1];
-     writeln('TEMPLINE = '+TempLine);
-     //templine now contains Form1: TForm1;  or something like that
-
-     case Kind of
-       kdClass :  //search for a colon then the name
-               Begin
-
-               end;
-      end;
-   end;
-
-  S.Add('testing');
-  Result := S;
-end;
-}
 Procedure TSourceEditor.ccAddMessage(Texts : String);
 Begin
   ErrorMsgs.Add(Texts);
@@ -1166,7 +1049,6 @@ End;
 Procedure TSourceEditor.ccOnTimer(sender : TObject);
 Begin
   IdentCompletionTimer.Enabled := False;
-//  FEditor.KeyDown(FEditor,word(' '),[ssCtrl]);
 End;
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
@@ -1222,11 +1104,11 @@ begin
     FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
     if (FIgnoreCodeBufferLock<=0) and (not FCodeBuffer.IsEqual(FEditor.Lines))
     then begin
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks');
-writeln('');
-{$ENDIF}
+      {$IFDEF IDE_DEBUG}
+      writeln('');
+      writeln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks');
+      writeln('');
+      {$ENDIF}
       FCodeBuffer.AssignTo(FEditor.Lines);
     end;
   end;
@@ -1416,6 +1298,7 @@ Begin
     FOnBeforeClose(Self);
 
   Visible := False;
+  aCompletion.RemoveEditor(FEditor);
   FEditor.Parent:=nil;
   CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
@@ -1480,9 +1363,9 @@ end;
 Procedure TSourceEditor.EditorMouseMoved(Sender : TObject; 
   Shift : TShiftState; X,Y : Integer);
 begin
-//  Writeln('MOuseMove in Editor',X,',',Y);
+//  Writeln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
-     OnMouseMove(self,Shift,X,Y);
+    OnMouseMove(Self,Shift,X,Y);
 end;
 
 Function TSourceEditor.GetWordAtPosition(Position : TPoint) : String;
@@ -1498,15 +1381,14 @@ Procedure TSourceEditor.EditorMouseDown(Sender : TObject; Button : TMouseButton;
    Shift : TShiftState; X, Y : Integer);
 begin
   if Assigned(OnMouseDown) then
-     OnMouseDown(Sender, Button, Shift, X,Y);
+    OnMouseDown(Sender, Button, Shift, X,Y);
 end;
 
 Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key : Word; Shift :
   TShiftState);
 begin
-  if Assigned(ONKeyDown) then
-     OnKeyDown(Sender, Key, Shift);
-     
+  if Assigned(OnKeyDown) then
+    OnKeyDown(Sender, Key, Shift);
 end;
 
 Function TSourceEditor.GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
@@ -1811,22 +1693,26 @@ function TSourceNotebook.OnSynCompletionPaintItem(AKey: string;
 var i: integer;
 begin
   with ACanvas do begin
-    Font.Name:=EditorOpts.EditorFont;
-    Font.Size:=EditorOpts.EditorFontHeight;
-    Font.Style:=[fsBold];
+    if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
+      Font:=aCompletion.Editor.Font
+    else begin
+      Font.Name:=EditorOpts.EditorFont;
+      Font.Size:=EditorOpts.EditorFontHeight;
+    end;
     Font.Style:=[];
+    //Font.Name:='courier';
     i := 1;
     while i <= Length(AKey) do
       case AKey[i] of
-        #1: begin
+        #1, #2:
+          begin
+          // set color
             Font.Color := (Ord(AKey[i + 3]) shl 8 + Ord(AKey[i + 2])) shl 8 + Ord(AKey[i + 1]);
             inc(i, 4);
           end;
-        #2: begin
-            Font.Color := (Ord(AKey[i + 3]) shl 8 + Ord(AKey[i + 2])) shl 8 + Ord(AKey[i + 1]);
-            inc(i, 4);
-          end;
-        #3: begin
+        #3:
+          begin
+          // set style
             case AKey[i + 1] of
               'B': Font.Style := Font.Style + [fsBold];
               'b': Font.Style := Font.Style - [fsBold];
@@ -1888,18 +1774,18 @@ var i,x:integer;
   CurStr,s:Ansistring;
   SL:TStringList;
 begin
-  if sCompl=nil then exit;
+  if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
 
     ctWordCompletion:
       begin
         // rebuild completion list
         APosition:=0;
-        CurStr:=sCompl.CurrentString;
+        CurStr:=CurCompletionControl.CurrentString;
         SL:=TStringList.Create;
         try
           aWordCompletion.GetWordList(SL, CurStr, false, 30);
-          sCompl.ItemList:=SL;
+          CurCompletionControl.ItemList:=SL;
         finally
           SL.Free;
         end;
@@ -1908,10 +1794,10 @@ begin
     ctIdentCompletion,ctTemplateCompletion:
       begin
         // search CurrentString in bold words (words after #3'B')
-        CurStr:=sCompl.CurrentString;
+        CurStr:=CurCompletionControl.CurrentString;
         i:=0;
-        while i<sCompl.ItemList.Count do begin
-          s:=sCompl.ItemList[i];
+        while i<CurCompletionControl.ItemList.Count do begin
+          s:=CurCompletionControl.ItemList[i];
           x:=1;
           while (x<=length(s)) and (s[x]<>#3) do inc(x);
           if x<length(s) then begin
@@ -1928,12 +1814,19 @@ begin
   end;
 end;
 
+procedure TSourceNotebook.DeactivateCompletionForm;
+begin
+  CurCompletionControl.Deactivate;
+  CurCompletionControl:=nil;
+  CurrentCompletionType:=ctNone;
+end;
+
 procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
 // completion selected -> deactivate completion form
 var
   p1,p2:integer;
 Begin
-  if sCompl=nil then exit;
+  if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
     ctTemplateCompletion, ctIdentCompletion:
       begin
@@ -1950,7 +1843,9 @@ Begin
             Value:=copy(ccSelection,1,p1)+Value;
         end;
       end;
-    ctWordCompletion: ;
+    ctWordCompletion:
+      // the completion is already in Value
+      ;
   end;
 
   ccSelection := '';
@@ -1966,19 +1861,16 @@ Begin
         if Value<>'' then AWordCompletion.AddWord(Value);
       end;
   end;
-  sCompl.Deactivate;
-  sCompl:=nil;
-  CurrentCompletionType:=ctNone;
+  
+  DeactivateCompletionForm;
 End;
 
 Procedure TSourceNotebook.ccCancel(Sender : TObject);
 // user cancels completion form
 var ActSE: TSourceEditor;
 begin
-  if sCompl=nil then exit;
-  sCompl.Deactivate;
-  sCompl:=nil;
-  CurrentCompletionType:=ctNone;
+  if CurCompletionControl=nil then exit;
+  DeactivateCompletionForm;
   ActSE:=GetActiveSE;
   if ActSE<>nil then LCLLinux.ShowCaret(ActSE.EditorComponent.Handle);
 end;
@@ -2005,9 +1897,9 @@ var
 
 Begin
   CompInt := nil;
-  sCompl := TSynBaseCompletion(Sender);
+  CurCompletionControl := TSynBaseCompletion(Sender);
   S := TStringList.Create;
-  Prefix := sCompl.CurrentString;
+  Prefix := CurCompletionControl.CurrentString;
   case CurrentCompletionType of
    ctIdentCompletion:
     begin
@@ -2140,8 +2032,8 @@ Begin
 
   end;
 
-  sCompl.ItemList := S;
-  sCompl.CurrentString:=Prefix;
+  CurCompletionControl.ItemList := S;
+  CurCompletionControl.CurrentString:=Prefix;
 End;
 
 Function TSourceNotebook.CreateNotebook : Boolean;
@@ -3432,7 +3324,7 @@ begin
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     Highlighters[h]:=nil;
   aCompletion:=nil;
-  scompl:=nil;
+  CurCompletionControl:=nil;
   GotoDialog:=nil;
   IdentCompletionTimer:=nil;
   AWordCompletion:=nil;

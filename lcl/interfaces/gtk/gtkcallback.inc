@@ -60,7 +60,9 @@ end;
 function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
   EventTrace('realize', nil);
-  gdk_window_set_events(Widget^.Window, gdk_window_get_events(Widget^.Window) or TGdkEventMask(Data));
+  gdk_window_set_events(Widget^.Window,
+                  gdk_window_get_events(Widget^.Window) or TGdkEventMask(Data));
+                  
   Result := True;
 end;
 
@@ -2027,6 +2029,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2002/06/05 12:33:57  lazarus
+  MG: fixed fonts in XLFD format and styles
+
   Revision 1.78  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

@@ -328,9 +328,9 @@ type
     fBookMarkOpt: TSynBookMarkOpt;
     fBorderStyle: TBorderStyle;
     fHideSelection: boolean;
-{$IFNDEF SYN_LAZARUS}
+    {$IFNDEF SYN_LAZARUS}
     fMouseWheelAccumulator: integer;
-{$ENDIF}
+    {$ENDIF}
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
     fCaretOffset: TPoint;
@@ -1612,15 +1612,15 @@ var
   C: char;
   Cmd: TSynEditorCommand;
 begin
-//writeln('[TCustomSynEdit.KeyDown] ',Key
-//  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+  //writeln('[TCustomSynEdit.KeyDown] ',Key
+  //  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   inherited;
   Data := nil;
   C := #0;
   try
     Cmd := TranslateKeyCode(Key, Shift, Data);
     if Cmd <> ecNone then begin
-//writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
+      //writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
       CommandProcessor(Cmd, C, Data);

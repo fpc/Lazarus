@@ -127,6 +127,8 @@ type
     Form: TSynBaseCompletionForm;
     FOnExecute: TNotifyEvent;
     FWidth: Integer;
+    RFAnsi: boolean;
+    SFAnsi: boolean;
     function GetClSelect: TColor;
     procedure SetClSelect(const Value: TColor);
     function GetCurrentString: string;
@@ -147,8 +149,6 @@ type
     procedure SetOnValidate(const Value: TValidateEvent);
     function GetOnKeyDelete: TNotifyEvent;
     procedure SetOnKeyDelete(const Value: TNotifyEvent);
-    procedure RFAnsi(const Value: boolean);
-    function SFAnsi: boolean;
     procedure SetWidth(Value: Integer);
     {$IFDEF SYN_LAZARUS}
     function GetFontHeight:integer;
@@ -161,6 +161,9 @@ type
     destructor Destroy; override;
     procedure Execute(s: string; x, y: integer);
     procedure Deactivate;
+    {$IFDEF SYN_LAZARUS}
+    function IsActive: boolean;
+    {$ENDIF}
     property OnKeyPress: TKeyPressEvent read GetOnKeyPress write SetOnKeyPress;
     property OnKeyDelete: TNotifyEvent read GetOnKeyDelete write SetOnKeyDelete;
     property OnValidate: TValidateEvent read GetOnValidate write SetOnValidate;
@@ -175,8 +178,8 @@ type
     property NbLinesInWindow: Integer read GetNbLinesInWindow
       write SetNbLinesInWindow;
     {$IFDEF SYN_LAZARUS}
-    property FontHeight:integer read GetFontHeight write SetFontHeight;
-    property OnSearchPosition:TSynBaseCompletionSearchPosition
+    property FontHeight: integer read GetFontHeight write SetFontHeight;
+    property OnSearchPosition: TSynBaseCompletionSearchPosition
       read GetOnSearchPosition write SetOnSearchPosition;
     {$ENDIF}
     property ClSelect: TColor read GetClSelect write SetClSelect;
@@ -578,7 +581,7 @@ end;
 
 destructor TSynBaseCompletion.Destroy;
 begin
-  form.Free;
+  Form.Free;
   inherited Destroy;
 end;
 
@@ -617,7 +620,7 @@ begin
   end;
   
   // ToDo: redirect the Editor input to the form
-  
+
   Form.SetBounds(x,y,Form.Width,Form.Height);
   {$ELSE}
   Form.Left:=x;
@@ -727,16 +730,6 @@ begin
   form.OnKeyDelete := Value;
 end;
 
-procedure TSynBaseCompletion.RFAnsi(const Value: boolean);
-begin
-  form.ffAnsi := value;
-end;
-
-function TSynBaseCompletion.SFAnsi: boolean;
-begin
-  result := form.ffansi;
-end;
-
 procedure TSynBaseCompletion.SetWidth(Value: Integer);
 begin
 //writeln('TSynBaseCompletion.SetWidth START ',Value);
@@ -750,6 +743,13 @@ procedure TSynBaseCompletion.Deactivate;
 begin
   if Assigned(Form) then Form.Deactivate;
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TSynBaseCompletion.IsActive: boolean;
+begin
+  Result:=(Form<>nil) and (Form.Visible);
+end;
+{$ENDIF}
 
 procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 var
@@ -1179,7 +1179,8 @@ begin
 //Writeln('[TSynAutoComplete.Execute] Token is "',Token,'"');
   i := AutoCompleteList.IndexOf(token);
   if i <> -1 then begin
-    TRecordUsedToStoreEachEditorVars(fEditstuffs[fEditors.IndexOf(aEditor)]^).NoNextKey := true;
+    TRecordUsedToStoreEachEditorVars(
+                     fEditstuffs[fEditors.IndexOf(aEditor)]^).NoNextKey := true;
     for j := 1 to length(token) do
       aEditor.CommandProcessor(ecDeleteLastChar, ' ', nil);
     inc(i);

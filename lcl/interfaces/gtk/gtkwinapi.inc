@@ -1078,8 +1078,8 @@ var
        CharSetRegistry, CharSetCoding
       ]);
 
-    //writeln('  Trying "',S,'"');
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
+    //writeln('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
   end;
   
   procedure LoadDefaultFont;
@@ -1099,23 +1099,50 @@ begin
 
   try
     GdiObject^.LogFont := LogFont;
+    
+    // set default values
+    FontNameRegistry := '*';
+    Foundry := '*';
+    FamilyName := '*';
+    WeightName := '*';
+    Slant := '*';
+    SetwidthName := '*';
+    AddStyleName := '*';
+    PixelSize := '*';
+    PointSize := '*';
+    ResolutionX := '*';
+    ResolutionY := '*';
+    Spacing := '*';
+    AverageWidth := '*';
+    CharSetRegistry := '*';
+    CharSetCoding := '*';
+
+    // check if LongFontName is in XLFD format and get nicer defaults
+    // This way, the user can set X fonts that are not supported by TFont.
     //writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
     //' Long="',LongFontName,'" ',IsFontNameXLogicalFontDesc(LongFontName)
     //,' ',ord(LogFont.lfFaceName[0]));
     S:=LongFontName;
     if IsFontNameXLogicalFontDesc(LongFontName) then begin
-      GdiObject^.GDIFontObject := gdk_font_load(PChar(LongFontName));
-      if GdiObject^.GDIFontObject<>nil then begin
-        GdiObject^.LogFont := XLFDNameToLogFont(LongFontName);
-        exit;
-      end;
+      FontNameRegistry := ExtractXLFDItem(LongFontName,0);
+      Foundry          := ExtractXLFDItem(LongFontName,1);
+      FamilyName       := ExtractXLFDItem(LongFontName,2);
+      WeightName       := ExtractXLFDItem(LongFontName,3);
+      Slant            := ExtractXLFDItem(LongFontName,4);
+      SetwidthName     := ExtractXLFDItem(LongFontName,5);
+      AddStyleName     := ExtractXLFDItem(LongFontName,6);
+      PixelSize        := ExtractXLFDItem(LongFontName,7);
+      PointSize        := ExtractXLFDItem(LongFontName,8);
+      ResolutionX      := ExtractXLFDItem(LongFontName,9);
+      ResolutionY      := ExtractXLFDItem(LongFontName,10);
+      Spacing          := ExtractXLFDItem(LongFontName,11);
+      AverageWidth     := ExtractXLFDItem(LongFontName,12);
+      CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
+      CharSetCoding    := ExtractXLFDItem(LongFontName,14);
     end;
     
     with LogFont do
     begin
-
-      FontNameRegistry := '';
-      Foundry := '*';
 
       if lfFaceName[0] = #0
       then begin
@@ -1139,72 +1166,90 @@ begin
       //
       // So in API the offset for normal = 400 and an increase of 300 equals to
       // an offset of 4000
-      case lfWeight of
-        FW_DONTCARE   : WeightName := '*';
-        FW_LIGHT      : WeightName := 'light';
-        FW_NORMAL     : WeightName := 'normal';
-        FW_MEDIUM     : WeightName := 'medium';
-        FW_SEMIBOLD   : WeightName := 'demi bold';
-        FW_BOLD       : WeightName := 'bold';
+      if WeightName='*' then begin
+        case lfWeight of
+          FW_DONTCARE   : WeightName := '*';
+          FW_LIGHT      : WeightName := 'light';
+          FW_NORMAL     : WeightName := 'normal';
+          FW_MEDIUM     : WeightName := 'medium';
+          FW_SEMIBOLD   : WeightName := 'demi bold';
+          FW_BOLD       : WeightName := 'bold';
 
-        else begin
-          n := ((lfWeight - FW_NORMAL) * 4000) div (FW_BOLD - FW_NORMAL);
-          if n = 0
-          then WeightName := 'normal'
-          else if n > 0
-          then WeightName := Format('normal+%d', [n])
-          else WeightName := Format('normal%d', [n]);
+          else begin
+            n := ((lfWeight - FW_NORMAL) * 4000) div (FW_BOLD - FW_NORMAL);
+            if n = 0
+            then WeightName := 'normal'
+            else if n > 0
+            then WeightName := Format('normal+%d', [n])
+            else WeightName := Format('normal%d', [n]);
+          end;
         end;
       end;
 
-      // TODO: find out if escapement has something to do with slant
-      if lfItalic = 0 then Slant := 'r' else Slant := 'i';
-
-      SetwidthName := '*';
-
-      // calculate Style name extentions (=rotation)
-      //        API                 XLFD
-      // --------------------- --------------
-      // Orientation 1/10 deg  1/64 deg
-      if lfOrientation = 0
-      then AddStyleName := '*'
-      else begin
-        n := (lfOrientation * 64) div 10;
-        if n >= 0
-        then AddStyleName := Format('+%d', [n])
-        else AddStyleName := Format('+%d', [n]);
+      if Slant='*' then begin
+        // TODO: find out if escapement has something to do with slant
+        if lfItalic = 0 then Slant := 'r' else Slant := 'i';
       end;
 
-      // TODO: make more accurate (implement the meaning of
-      //       positive and negative heigtht values.
-      PixelSize := IntToStr(Abs(lfHeight));
+      // SetwidthName := '*';
 
-      // Since we use pixelsize, it isn't allowed to give a value here
-      PointSize := '*';
+      if AddStyleName='*' then begin
+        // calculate Style name extentions (=rotation)
+        //        API                 XLFD
+        // --------------------- --------------
+        // Orientation 1/10 deg  1/64 deg
+        if lfOrientation = 0
+        then AddStyleName := '*'
+        else begin
+          n := (lfOrientation * 64) div 10;
+          if n >= 0
+          then AddStyleName := Format('+%d', [n])
+          else AddStyleName := Format('+%d', [n]);
+        end;
+      end;
 
-      // Use the default
-      ResolutionX := '*';
-      ResolutionY := '*';
+      if (PixelSize='*') and (PointSize='*') then begin
+        // TODO: make more accurate (implement the meaning of
+        //       positive and negative heigtht values.
+        PixelSize := IntToStr(Abs(lfHeight));
+        
+        // Since we use pixelsize, it isn't allowed to give a value here
+        PointSize := '*';
 
-      Spacing := '*';
+        // Use the default
+        ResolutionX := '*';
+        ResolutionY := '*';
+      end;
 
-      // calculate AverageWidth
-      //        API                 XLFD
-      // --------------------- --------------
-      // Width pixel             1/10 pixel
-      if lfWidth = 0
-      then AverageWidth := '*'
-      else AverageWidth := InttoStr(lfWidth * 10);
+      if Spacing='*' then begin
+        // spacing
+        if (FIXED_PITCH and lfPitchAndFamily)>0 then
+          Spacing := 'm'   // mono spaced
+        else if (VARIABLE_PITCH and lfPitchAndFamily)>0 then
+          Spacing := 'p'   // proportional spaced
+        else
+          Spacing := '*';
+      end;
 
+      if AverageWidth='*' then begin
+        // calculate AverageWidth
+        //        API                 XLFD
+        // --------------------- --------------
+        // Width pixel             1/10 pixel
+        if lfWidth = 0
+        then AverageWidth := '*'
+        else AverageWidth := InttoStr(lfWidth * 10);
+      end;
 
-      CharSetRegistry := '*';
+      // CharSetRegistry := '*';
 
       // TODO: Match charset.
-      CharSetCoding := '*';
+      // CharSetCoding := '*';
     end;
 
   //write('CreateFontIndirect->');
     LoadFont;
+    
     if GdiObject^.GDIFontObject = nil
     then begin
       if (WeightName='normal') then begin
@@ -1226,7 +1271,25 @@ begin
         LoadFont;
       end;
     end;
+
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      // try instead of mono spaced, character cell spaced
+      if (Spacing='m') then begin
+        Spacing:='c';
+        LoadFont;
+      end;
+    end;
     
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      // try instead of italic  oblique
+      if (Slant='i') then begin
+        Slant := 'o';
+        LoadFont;
+      end;
+    end;
+
     if GdiObject^.GDIFontObject = nil
     then begin
       // try all weights
@@ -1234,47 +1297,45 @@ begin
       LoadFont;
     end;
 
-    // try instead of italic  oblique
     if GdiObject^.GDIFontObject = nil
     then begin
-      if (Slant='i') then begin
-        Slant := 'o';
-        LoadFont;
-      end;
-    end;
-    
-    // try all slant
-    if GdiObject^.GDIFontObject = nil
-    then begin
+      // try all slants
       Slant := '*';
       LoadFont;
     end;
 
-    // try one height lower
     if GdiObject^.GDIFontObject = nil
     then begin
+      // try all spacings
+      Spacing := '*';
+      LoadFont;
+    end;
+
+    if GdiObject^.GDIFontObject = nil
+    then begin
+      // try one height lower
       PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
       LoadFont;
     end;
 
-    // try one height higher
     if GdiObject^.GDIFontObject = nil
     then begin
+      // try one height higher
       PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
       LoadFont;
     end;
 
-    // try all Familys
     if GdiObject^.GDIFontObject = nil
     then begin
+      // try all Familys
       PixelSize := IntToStr(Abs(LogFont.lfHeight));
       FamilyName := '*';
       LoadFont;
     end;
 
-    // try all Foundrys
     if GdiObject^.GDIFontObject = nil
     then begin
+      // try all Foundrys
       Foundry := '*';
       LoadFont;
     end;
@@ -1288,7 +1349,6 @@ begin
       Result := 0;
     end
     else begin
-      GdiObject^.LogFont := LogFont;
       Result := HFONT(GdiObject);
     end;
 
@@ -1903,22 +1963,25 @@ begin
         OldText := StrPas(pStr);
         Num := pos(#10,OldText);
         if Num = 0 then
-        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + 10 {TODO: query font height}, pStr, Count)
+          gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                        X, Y + 10 {TODO: query font height}, pStr, Count)
         else
-          Begin  //write multiple lines
-             while NUm > 0 do
-                begin
-                  NewText := Copy(OldText,1,Num);
-                  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + (Line*10) {TODO: query font height}, pchar(NewText), Length(NewText));
+        Begin  //write multiple lines
+          while Num > 0 do begin
+            NewText := Copy(OldText,1,Num);
+            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                          X, Y + (Line*10) {TODO: query font height},
+                          pchar(NewText), Length(NewText));
 
-                  Delete(OldText,1,Num);
-                  Num := pos(#10,OldText);
-                  inc(line);
-                end;
-                if OldText <> '' then
-                  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + (Line*10) {TODO: query font height}, pchar(OldText), length(OldText));
-
+            Delete(OldText,1,Num);
+            Num := pos(#10,OldText);
+            inc(line);
           end;
+          if OldText <> '' then
+            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                          X, Y + (Line*10) {TODO: query font height},
+                          pchar(OldText), length(OldText));
+        end;
       finally
         StrDispose(pStr);
       end;
@@ -4719,6 +4782,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2002/06/05 12:33:58  lazarus
+  MG: fixed fonts in XLFD format and styles
+
   Revision 1.75  2002/06/04 19:28:17  lazarus
   MG: cursor is now inverted and can be used with twilight color scheme
 
