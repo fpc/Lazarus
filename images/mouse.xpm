@@ -2,7 +2,7 @@
 static char * mouse_xpm[] = {
 "25 25 52 1",
 " 	c None",
-".	c None
+".	c None",
 "+	c #070244",
 "@	c #000030",
 "#	c #00002C",
