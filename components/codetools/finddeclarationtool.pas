@@ -3243,9 +3243,8 @@ begin
   // save result in cache
   if FInterfaceIdentifierCache=nil then
     FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
-  if Result then begin
+  if Result and (Params.NewCodeTool=Self) then begin
     // identifier exists in interface
-    if Params.NewCodeTool<>Self then RaiseWrongContext;
     if (not (fdfDoNotCache in Params.NewFlags))
     and (not (fdfCollect in Params.Flags)) then begin
       FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
