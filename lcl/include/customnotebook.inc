@@ -224,6 +224,7 @@ begin
     Msg.Page := Index;
 
     CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
+    Include(APage.FFlags,pfAdded);
     if fNoteBook.PageIndex = Index then
       fNoteBook.DoSendPageIndex
     else
@@ -317,6 +318,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.CreateWnd;
 begin
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TCustomNotebook.CreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
+  {$ENDIF}
   inherited CreateWnd;
   DoCreateWnd;
 end;
@@ -331,13 +335,22 @@ var
   i: Integer;
   Msg: TLMNotebookEvent;
 begin
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
+  {$ENDIF}
   fAddingPages:=true;
   for i := 0 to FPageList.Count -1 do begin
-    Msg.Parent := Self;
-    Msg.Child := TControl(FPageList[i]);
-    Msg.fCompStyle := FCompStyle;
-    Msg.Page := i;
-    CNSendMessage(LM_ADDPAGE, Self, @Msg);
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' ',Page[i].Caption,' ',not (pfAdded in Page[i].Flags));
+    {$ENDIF}
+    if not (pfAdded in Page[i].Flags) then begin
+      Msg.Parent := Self;
+      Msg.Child := TControl(FPageList[i]);
+      Msg.fCompStyle := FCompStyle;
+      Msg.Page := i;
+      CNSendMessage(LM_ADDPAGE, Self, @Msg);
+      Include(Page[i].FFlags,pfAdded);
+    end;
   end;
   fAddingPages:=false;
 
@@ -666,6 +679,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/10/24 08:56:30  lazarus
+  MG: fixed TnoteBook AddPage and double creation of MeinMenu
+
   Revision 1.22  2002/09/05 13:21:12  lazarus
   MG: fixed removing notebook
 
