@@ -40,24 +40,80 @@ msgstr "%u voci selezionate"
 msgid "&Add"
 msgstr "&Aggiungi"
 
-#: objinspstrconsts:oiscancel
+#: objinspstrconsts:oistdactdatasetcancelheadline
 msgid "&Cancel"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcopyheadline
+msgid "&Copy"
 msgstr ""
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
 msgstr "&Elimina"
 
+#: objinspstrconsts:oistdactdataseteditheadline
+msgid "&Edit"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetfirstheadline
+msgid "&First"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetlastheadline
+msgid "&Last"
+msgstr ""
+
 #: objinspstrconsts:oisload
 msgid "&Load"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetnextheadline
+msgid "&Next"
 msgstr ""
 
 #: objinspstrconsts:oisok
 msgid "&OK"
 msgstr ""
 
+#: objinspstrconsts:oistdactfileopenheadline
+msgid "&Open..."
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteheadline
+msgid "&Paste"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr ""
+
 #: objinspstrconsts:oissave
 msgid "&Save"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoheadline
+msgid "&Undo"
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorallcategory
@@ -76,10 +132,6 @@ msgstr "Azione"
 msgid "Action List Editor"
 msgstr "Editor elenco azioni"
 
-#: objinspstrconsts:oisadd
-msgid "Add"
-msgstr "Aggiungi"
-
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
 msgstr "Aggiungi..."
@@ -96,6 +148,10 @@ msgstr "Tutti i file (*.*)|*.*"
 msgid "Array"
 msgstr "Array"
 
+#: objinspstrconsts:oisstdactionlisteditorclass
+msgid "Available Action Classes:"
+msgstr ""
+
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
 msgstr "Booleano"
@@ -110,6 +166,10 @@ msgstr ""
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetcancel1hint
+msgid "Cancel"
 msgstr ""
 
 #: objinspstrconsts:oiscategory
@@ -128,6 +188,10 @@ msgstr "Classe"
 msgid "Clear"
 msgstr "Cancella"
 
+#: objinspstrconsts:oistdactcolorselecthint
+msgid "Color Select"
+msgstr ""
+
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
 msgstr ""
@@ -136,16 +200,76 @@ msgstr ""
 msgid "Confirme clear all images ?"
 msgstr "Conferma la cancellazione di tutte le immagini?"
 
+#: objinspstrconsts:oistdacteditcopyshorthint
+msgid "Copy"
+msgstr ""
+
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutheadline
+msgid "Cu&t"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutshorthint
+msgid "Cut"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditordatabasecategory
+msgid "Database"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditdeleteshortcut
+msgid "Del"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Elimina"
 
+#: objinspstrconsts:cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr ""
+
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditordialogcategory
+msgid "Dialog"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileexitheadline
+msgid "E&xit"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditoreditcategory
+msgid "Edit"
 msgstr ""
 
 #: objinspstrconsts:oiseditactionlist
@@ -176,9 +300,33 @@ msgstr ""
 msgid "Events"
 msgstr "Eventi"
 
+#: objinspstrconsts:oistdactfileexithint
+msgid "Exit"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorfilecategory
+msgid "File"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetfirsthint
+msgid "First"
+msgstr ""
+
 #: objinspstrconsts:oisfloat
 msgid "Float"
 msgstr "Virgola mobile"
+
+#: objinspstrconsts:oistdactfontedithint
+msgid "Font Select"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorhelpcategory
+msgid "Help"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr ""
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
@@ -208,6 +356,10 @@ msgstr ""
 msgid "Help node %s%s%s has no Help Database"
 msgstr ""
 
+#: objinspstrconsts:oistdacthelphelphelphint
+msgid "Help on help"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr "Indice immagine"
@@ -215,6 +367,10 @@ msgstr "Indice immagine"
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
 msgstr "Editor elenco immagini"
+
+#: objinspstrconsts:oistdactdatasetinserthint
+msgid "Insert"
+msgstr ""
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -232,6 +388,10 @@ msgstr "Interfaccia"
 msgid "Label"
 msgstr "Etichetta"
 
+#: objinspstrconsts:oistdactdatasetlasthint
+msgid "Last"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
 msgstr "Editor elenco viste"
@@ -244,9 +404,29 @@ msgstr ""
 msgid "Method"
 msgstr "Metodo"
 
+#: objinspstrconsts:cactionlisteditormovedownaction
+msgid "Move Down"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditormoveupaction
+msgid "Move Up"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
 msgstr "Nuovo"
+
+#: objinspstrconsts:cactionlisteditornewaction
+msgid "New Action"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetnexthint
+msgid "Next"
+msgstr ""
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
@@ -264,6 +444,30 @@ msgstr "Oggetto"
 msgid "Object Inspector"
 msgstr "Ispettore oggetti"
 
+#: objinspstrconsts:oistdactfileopenhint
+msgid "Open"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteshorthint
+msgid "Paste"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetposthint
+msgid "Post"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetpriorhint
+msgid "Prior"
+msgstr ""
+
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "Proprietà"
@@ -271,6 +475,34 @@ msgstr "Proprietà"
 #: objinspstrconsts:oisrecord
 msgid "Record"
 msgstr "Record"
+
+#: objinspstrconsts:oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr ""
+
+#: objinspstrconsts:oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr ""
+
+#: objinspstrconsts:oistdactfilesaveashint
+msgid "Save As"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallheadline
+msgid "Select &All"
+msgstr ""
+
+#: objinspstrconsts:oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr ""
+
+#: objinspstrconsts:oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr ""
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
@@ -290,6 +522,10 @@ msgstr "Imposta al valore predefinito: %s"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
+msgstr ""
+
+#: objinspstrconsts:oisstdactionlisteditor
+msgid "Standard Action Classes"
 msgstr ""
 
 #: objinspstrconsts:oisstring
@@ -318,6 +554,18 @@ msgstr ""
 
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoshorthint
+msgid "Undo"
 msgstr ""
 
 #: objinspstrconsts:oisunknown

@@ -198,6 +198,30 @@ msgstr ""
 msgid "(Unknown)"
 msgstr ""
 
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditoreditcategory
+msgid "Edit"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorhelpcategory
+msgid "Help"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditordialogcategory
+msgid "Dialog"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorfilecategory
+msgid "File"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditordatabasecategory
+msgid "Database"
+msgstr ""
+
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
 msgstr ""
@@ -206,12 +230,264 @@ msgstr ""
 msgid "Action List Editor"
 msgstr ""
 
-#: objinspstrconsts:oisadd
-msgid "Add"
+#: objinspstrconsts:cactionlisteditornewaction
+msgid "New Action"
 msgstr ""
 
-#: objinspstrconsts:cactionlisteditorallcategory
-msgid "(All)"
+#: objinspstrconsts:cactionlisteditornewstdaction
+msgid "New Standard Action"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditormovedownaction
+msgid "Move Down"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditormoveupaction
+msgid "Move Up"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditordeleteactionhint
+msgid "Delete Action"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditordeleteaction
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorpaneldescrriptions
+msgid "Panel Descriptions"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorpaneltoolbar
+msgid "Toolbar"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutheadline
+msgid "Cu&t"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcopyheadline
+msgid "&Copy"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteheadline
+msgid "&Paste"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallheadline
+msgid "Select &All"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoheadline
+msgid "&Undo"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditdeleteheadline
+msgid "&Delete"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelpcontentsheadline
+msgid "&Contents"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelptopicsearchheadline
+msgid "&Topic Search"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelphelphelpheadline
+msgid "&Help on Help"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenheadline
+msgid "&Open..."
+msgstr ""
+
+#: objinspstrconsts:oistdactfilesaveasheadline
+msgid "Save &As..."
+msgstr ""
+
+#: objinspstrconsts:oistdactfileexitheadline
+msgid "E&xit"
+msgstr ""
+
+#: objinspstrconsts:oistdactcolorselect1headline
+msgid "Select &Color..."
+msgstr ""
+
+#: objinspstrconsts:oistdactfonteditheadline
+msgid "Select &Font..."
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetfirstheadline
+msgid "&First"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetpriorheadline
+msgid "&Prior"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetnextheadline
+msgid "&Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetlastheadline
+msgid "&Last"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetinsertheadline
+msgid "&Insert"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetdeleteheadline
+msgid "&Delete"
+msgstr ""
+
+#: objinspstrconsts:oistdactdataseteditheadline
+msgid "&Edit"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetpostheadline
+msgid "P&ost"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetcancelheadline
+msgid "&Cancel"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetrefreshheadline
+msgid "&Refresh"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutshortcut
+msgid "Ctrl+X"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcopyshortcut
+msgid "Ctrl+C"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteshortcut
+msgid "Ctrl+V"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallshortcut
+msgid "Ctrl+A"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoshortcut
+msgid "Ctrl+Z"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditdeleteshortcut
+msgid "Del"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenshortcut
+msgid "Ctrl+O"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcutshorthint
+msgid "Cut"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditcopyshorthint
+msgid "Copy"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditpasteshorthint
+msgid "Paste"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditselectallshorthint
+msgid "Select All"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditundoshorthint
+msgid "Undo"
+msgstr ""
+
+#: objinspstrconsts:oistdacteditdeleteshorthint
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelpcontentshint
+msgid "Help Contents"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelptopicsearchhint
+msgid "Topic Search"
+msgstr ""
+
+#: objinspstrconsts:oistdacthelphelphelphint
+msgid "Help on help"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileopenhint
+msgid "Open"
+msgstr ""
+
+#: objinspstrconsts:oistdactfilesaveashint
+msgid "Save As"
+msgstr ""
+
+#: objinspstrconsts:oistdactfileexithint
+msgid "Exit"
+msgstr ""
+
+#: objinspstrconsts:oistdactcolorselecthint
+msgid "Color Select"
+msgstr ""
+
+#: objinspstrconsts:oistdactfontedithint
+msgid "Font Select"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetfirsthint
+msgid "First"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetpriorhint
+msgid "Prior"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetnexthint
+msgid "Next"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetlasthint
+msgid "Last"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetinserthint
+msgid "Insert"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetdeletehint
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetedithint
+msgid "Edit"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetposthint
+msgid "Post"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetcancel1hint
+msgid "Cancel"
+msgstr ""
+
+#: objinspstrconsts:oistdactdatasetrefreshhint
+msgid "Refresh"
+msgstr ""
+
+#: objinspstrconsts:oisstdactionlisteditor
+msgid "Standard Action Classes"
+msgstr ""
+
+#: objinspstrconsts:oisstdactionlisteditorclass
+msgid "Available Action Classes:"
 msgstr ""
 
 #: objinspstrconsts:oisselectafile
