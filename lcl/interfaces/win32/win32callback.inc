@@ -72,6 +72,18 @@ Var
       then ShowWindow(PageHandle, SW_SHOW)
       else ShowWindow(PageHandle, SW_HIDE);
   end;
+
+  function GetMenuItemObject: TObject;
+  var MenuInfo: MENUITEMINFO;
+      MainMenuHandle: HMENU;
+  begin
+    MainMenuHandle := GetMenu(Window);
+    MenuInfo.cbSize:=sizeof(MENUITEMINFO);
+    MenuInfo.fMask:=MIIM_DATA;
+    GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo);
+    Result := TObject(MenuInfo.dwItemData);
+  end;
+  
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -134,6 +146,7 @@ Begin
       Case Hi(WParam) Of
         0:
         Begin
+          if LParam=0 then OwnerObject := GetMenuItemObject;
           If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
             CallEvent(OwnerObject, TControl(OwnerObject).OnClick, Nil, etNotify)
           Else If OwnerObject Is TMenuItem Then
@@ -517,6 +530,9 @@ end;
 
 {
   $Log$
+  Revision 1.23  2003/01/19 10:57:46  mattias
+  fix WindowProc now react on menu item click from Martin
+
   Revision 1.22  2002/12/28 09:42:12  mattias
   toolbutton patch from Martin Smat
 

@@ -228,12 +228,7 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
       cbsize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_TYPE;
       fType:=MFT_STRING;
-    end;
-    GetMenuItemInfo(FMenu, integer(MenuHandle), false, @MenuInfo);
-    with MenuInfo do
-    begin
       dwTypeData:=Data;
-      cch:=lstrlen(Data);
     end;
     SetMenuItemInfo(FMenu, integer(MenuHandle), false, @MenuInfo);
     DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
@@ -2548,7 +2543,7 @@ var MenuInfo: MENUITEMINFO;
     Style: integer;
     Mask: integer;
 Begin
-  Mask := MIIM_TYPE or MIIM_ID;
+  Mask := MIIM_TYPE or MIIM_ID or MIIM_DATA;
   if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
   if (Sender as TMenuItem).Caption = '-' then Style := MFT_SEPARATOR
   else Style := MFT_STRING;
@@ -2557,14 +2552,14 @@ Begin
     cbsize:=sizeof(MENUITEMINFO);
     fMask:=Mask;
     fType:=Style;
-    fState:=MFS_ENABLED;
+    {fState:=MFS_ENABLED;} {not needed}
     wID:=integer(MenuHandle);
     hSubmenu:=MenuHandle;
-    hbmpChecked:=0;
-    hbmpUnchecked:=0;
+    {hbmpChecked:=0;
+    hbmpUnchecked:=0;} {not needed}
     dwItemData:=integer(Sender);
     dwTypeData:=LPSTR((Sender as TmenuItem).Caption);
-    cch:=length((Sender as TMenuItem).Caption);
+    {cch:=length((Sender as TMenuItem).Caption);} {not needed}
   end;
   ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
   InsertMenuItem(ParentMenuHandle, 0, false, @MenuInfo);
@@ -2605,6 +2600,9 @@ End;
 
 {
   $Log$
+  Revision 1.43  2003/01/19 10:57:46  mattias
+  fix WindowProc now react on menu item click from Martin
+
   Revision 1.42  2003/01/12 19:09:19  mattias
   patch from Martin Smat for dis/enabling menuitems
 
