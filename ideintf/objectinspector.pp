@@ -1725,30 +1725,22 @@ var
   Index: integer;
   PointedRow:TOIpropertyGridRow;
   TypeKind : TTypeKind;
-  Window :TWinControl;
-  Window2 : TWInControl;
+  Window: TWinControl;
 begin
   FHintTimer.Enabled := False;
   if not ShowHint then exit;
 
   Position := Mouse.CursorPos;
-  Window := FindLCLWindow(Position);
-  if not(Assigned(Window)) then Exit;
-
-  // get the parent until parent is nil
-  While Window.Parent <> nil do
-    Window := Window.Parent;
-
-  Window2 := self;
-  while Window2.Parent <> nil do
-    Window2 := Window2.Parent;
-     
-  if (window <> Window2) then Exit;
 
   Position := ScreenToClient(Position);
   if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
   or (Position.Y >= Height)) then
     Exit;
+
+  Window := FindLCLWindow(Position);
+  if not(Assigned(Window)) then Exit;
+  If (Window<>Self) and (not IsParentOf(Window)) then exit;
+
   AHint := '';
   Index:=MouseToIndex(Position.Y,false);
   if (Index>=0) and (Index<FRows.Count) then
