@@ -339,6 +339,7 @@ type
     FToolStatus: TIDEToolStatus;
     procedure SetToolStatus(const AValue: TIDEToolStatus);
   protected
+    CurrentParsedCompilerOption: TParsedCompilerOptions;
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
     
@@ -357,12 +358,14 @@ type
     
     procedure LoadMenuShortCuts; virtual;
   public
-    CurrentParsedCompilerOption: TParsedCompilerOptions;
     MacroList: TTransferMacroList;
+    HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
+                               // and will be shown when debugged program stops
 
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     procedure UpdateCaption; virtual; abstract;
     procedure HideIDE; virtual; abstract;
+    procedure UnhideIDE; virtual; abstract;
 
     procedure CreateOftenUsedForms; virtual; abstract;
 

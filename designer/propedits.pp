@@ -4822,29 +4822,18 @@ end;
 procedure TPropertyEditorHook.RemoveHandler(HookType: TPropHookType;
   const Handler: TMethod);
 begin
-  if FHandlers[HookType]=nil then exit;
   FHandlers[HookType].Remove(Handler);
 end;
 
 function TPropertyEditorHook.GetHandlerCount(HookType: TPropHookType): integer;
 begin
-  if FHandlers[HookType]<>nil then
-    Result:=FHandlers[HookType].Count
-  else
-    Result:=0;
+  Result:=FHandlers[HookType].Count;
 end;
 
 function TPropertyEditorHook.GetNextHandlerIndex(HookType: TPropHookType;
   var i: integer): boolean;
 begin
-  if FHandlers[HookType]<>nil then begin
-    dec(i);
-    if (i>=FHandlers[HookType].Count) then
-      i:=FHandlers[HookType].Count-1;
-  end else begin
-    i:=-1;
-  end;
-  Result:=(i>=0);
+  Result:=FHandlers[HookType].NextDownIndex(i);
 end;
 
 constructor TPropertyEditorHook.Create;

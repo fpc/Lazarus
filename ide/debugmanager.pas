@@ -227,15 +227,15 @@ procedure TDebugManager.OnDebuggerChangeState(ADebugger: TDebugger;
 const
   // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
-    // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
+    // dsNone, dsIdle, dsStop, dsPause, dsRun,      dsError
     itNone, itNone, itNone, itDebugger, itDebugger, itDebugger
   );
   STATENAME: array[TDBGState] of string = (
     'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsRun', 'dsError'
   );
 begin
-  // Is the next line needed ???
-  if (ADebugger<>FDebugger) or (ADebugger=nil) then exit;
+  if (ADebugger<>FDebugger) or (ADebugger=nil) then
+    RaiseException('TDebugManager.OnDebuggerChangeState');
 
   WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
@@ -265,11 +265,12 @@ begin
   end;
 
   if (FDebugger.State in [dsRun]) then begin
+    // hide IDE during run
     if EnvironmentOptions.HideIDEOnRun then
       MainIDE.HideIDE;
   end else if (OldState in [dsRun]) then begin
-    MainIDE.Show;
-    SourceNotebook.Show;
+    // unhide IDE
+    MainIDE.UnhideIDE;
   end;
 
   case FDebugger.State of 
@@ -935,6 +936,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.24  2003/05/25 12:12:36  mattias
+  added TScreen handlers, implemented TMainIDE.UnHideIDE
+
   Revision 1.23  2003/05/24 17:51:34  marc
   MWE: Added an usersource history
 

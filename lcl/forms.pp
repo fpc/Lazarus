@@ -487,6 +487,19 @@ type
     Index: Integer;
     Handle: HCURSOR;
   end;
+  
+  TScreenFormEvent = procedure(Sender: TObject; Form: TCustomForm) of object;
+  TScreenActiveFormChangedEvent = procedure(Sender: TObject;
+                                            LastForm: TCustomForm) of object;
+  TScreenControlEvent = procedure(Sender: TObject;
+                                  LastControl: TControl) of object;
+
+  TScreenNotification = (
+    snFormAdded,
+    snRemoveForm,
+    snActiveControlChanged,
+    snActiveFormChanged
+    );
 
   TScreen = class(TComponent)
   private
@@ -502,6 +515,7 @@ type
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
     FFormList: TList;
+    FHandlers: array[TScreenNotification] of TMethodList;
     FHintFont : TFont;
     FLastActiveControl: TWinControl;
     FLastActiveCustomForm: TCustomForm;
@@ -526,6 +540,13 @@ type
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(Index: Integer; const AValue: HCURSOR);
     procedure UpdateLastActive;
+    procedure AddHandler(HandlerType: TScreenNotification;
+                         const Handler: TMethod);
+    procedure RemoveHandler(HandlerType: TScreenNotification;
+                            const Handler: TMethod);
+    function GetHandlerCount(HandlerType: TScreenNotification): integer;
+    function GetNextHandlerIndex(HandlerType: TScreenNotification;
+                                 var i: integer): boolean;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
@@ -534,6 +555,19 @@ type
     function CustomFormZIndex(AForm: TCustomForm): integer;
     procedure MoveFormToFocusFront(ACustomForm: TCustomForm);
     procedure MoveFormToZFront(ACustomForm: TCustomForm);
+    // handler
+    procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent);
+    procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
+    procedure AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
+    procedure RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
+    procedure AddHandlerActiveControlChanged(
+                                   OnActiveControlChanged: TScreenControlEvent);
+    procedure RemoveHandlerActiveControlChanged(
+                                   OnActiveControlChanged: TScreenControlEvent);
+    procedure AddHandlerActiveFormChanged(
+                            OnActiveFormChanged: TScreenActiveFormChangedEvent);
+    procedure RemoveHandlerActiveFormChanged(
+                            OnActiveFormChanged: TScreenActiveFormChangedEvent);
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;
@@ -542,7 +576,8 @@ type
     property Cursors[Index: Integer]: HCURSOR read GetCursors write SetCursors;
     property CustomFormCount: Integer read GetCustomFormCount;
     property CustomForms[Index: Integer]: TCustomForm read GetCustomForms;
-    property CustomFormsZOrdered[Index: Integer]: TCustomForm read GetCustomFormsZOrdered;
+    property CustomFormsZOrdered[Index: Integer]: TCustomForm
+                                                    read GetCustomFormsZOrdered;
     property FocusedForm: TCustomForm read FFocusedForm;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
@@ -550,10 +585,10 @@ type
     property Height : Integer read Getheight;
     property HintFont : TFont read FHintFont;
     property Width : Integer read GetWidth;
-    property OnActiveControlChange: TNotifyEvent
-      read FOnActiveControlChange write FOnActiveControlChange;
-    property OnActiveFormChange: TNotifyEvent
-      read FOnActiveFormChange write FOnActiveFormChange;
+    property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange
+                                                 write FOnActiveControlChange;
+    property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange
+                                              write FOnActiveFormChange;
     property PixelsPerInch : integer read FPixelsPerInch;
   end;
 
