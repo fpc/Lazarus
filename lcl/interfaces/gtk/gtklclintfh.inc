@@ -51,15 +51,14 @@ function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
 function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
 
-procedure StatusBarPanelUpdate(StatusBar: TObject; Index: integer); override;
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
-procedure StatusBarUpdate(StatusBar: TObject); override;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/10/23 14:47:44  micha
+  remove old code: statusbar methods in twidgetset
+
   Revision 1.20  2004/09/10 16:28:51  mattias
   implemented very rudimentary TTabControl
 

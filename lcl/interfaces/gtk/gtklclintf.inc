@@ -500,66 +500,14 @@ begin
   DeleteObject(NewMask);
 end;
 
-{------------------------------------------------------------------------------
-  Procedure: StatusBarPanelUpdate
-  Params: StatusBar:
-          index:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.StatusBarPanelUpdate(StatusBar: TObject; Index: integer);
-var
-  AStatusBar: TStatusBar;
-  HBox: PGtkWidget;
-  StatusPanelWidget: PGtkWidget;
-  BoxChild: PGtkBoxChild;
-begin
-  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(StatusBar),8),' Index=',dbgs(Index));
-  AStatusBar:=StatusBar as TStatusBar;
-  if Index>=0 then begin
-    // update one
-    HBox:=PGtkWidget(AStatusBar.Handle);
-    BoxChild:=PGtkBoxChild(g_list_nth_data(PGtkBox(HBox)^.children,Index));
-    if BoxChild=nil then
-      RaiseGDBException('TGtkWidgetSet.StatusBarPanelUpdate Index out of bounds');
-    StatusPanelWidget:=BoxChild^.Widget;
-    UpdateStatusBarPanel(StatusBar,Index,StatusPanelWidget);
-  end else begin
-    // update all
-    UpdateStatusBarPanels(StatusBar,PGtkWidget(AStatusBar.Handle));
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: StatusBarSetText
-  Params: StatusBar:
-          PanelIndex:
-          Text:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
-begin
-  StatusBarPanelUpdate(StatusBar,PanelIndex);
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: StatusBarUpdate
-  Params: StatusBar:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.StatusBarUpdate(StatusBar: TObject);
-begin
-  //DebugLn('TGtkWidgetSet.StatusBarUpdate ',HexStr(Cardinal(StatusBar),8));
-  UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
-end;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.34  2004/10/23 14:47:44  micha
+  remove old code: statusbar methods in twidgetset
+
   Revision 1.33  2004/09/12 18:55:13  mazen
   * Fix font  retreiving from Pango description
 

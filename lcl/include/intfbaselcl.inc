@@ -620,20 +620,6 @@ begin
   Result := false;
 end;
 
-procedure TWidgetSet.StatusBarPanelUpdate(StatusBar: TObject;
-  PanelIndex: integer);
-begin
-end;
-
-procedure TWidgetSet.StatusBarSetText(StatusBar: TObject;
-  PanelIndex: integer);
-begin
-end;
-
-procedure TWidgetSet.StatusBarUpdate(StatusBar: TObject);
-begin
-end;
-
 function TWidgetSet.StretchMaskBlt(DestDC: HDC;
   X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc, SrcWidth, SrcHeight: Integer;
@@ -646,6 +632,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/10/23 14:47:44  micha
+  remove old code: statusbar methods in twidgetset
+
   Revision 1.30  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

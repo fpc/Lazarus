@@ -48,9 +48,7 @@ uses
   ComCtrls, Controls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSExtCtrls, WSStdCtrls,
-  WSToolwin,
-  { TODO: to be removed when statusbar widget methods cleaned }
-  InterfaceBase;
+  WSToolwin;
 
 type
   { TWSStatusBar }
@@ -168,20 +166,14 @@ implementation
 
 procedure TWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
-  { TODO: remove when gtk interface adapted to use widgetset method }
-  InterfaceObject.StatusBarPanelUpdate(AStatusBar, PanelIndex);
 end;
 
 procedure TWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
-  { TODO: remove when gtk interface adapted to use widgetset method }
-  InterfaceObject.StatusBarSetText(AStatusBar, PanelIndex);
 end;
 
 procedure TWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
-  { TODO: remove when gtk interface adapted to use widgetset method }
-  InterfaceObject.StatusBarUpdate(AStatusBar);
 end;
     
 { TWSCustomListView }

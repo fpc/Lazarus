@@ -115,12 +115,6 @@ procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-{$IFDEF IF_BASE_MEMBER}
-{ TODO: remove when gtk widgetset implements the widgetset methods }
-procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); virtual;
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); virtual;
-procedure StatusBarUpdate(StatusBar: TObject); virtual;
-{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //##apiwiz##eps##    // Do not remove
@@ -157,6 +151,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/10/23 14:47:44  micha
+  remove old code: statusbar methods in twidgetset
+
   Revision 1.27  2004/10/16 10:15:45  micha
   cleanup statusbar methods in lcl interfaceobject
   fix statusbar recursive call issue
