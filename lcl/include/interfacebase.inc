@@ -1080,7 +1080,11 @@ end;
 
 type
   TMessageBox = class(TForm)
+    procedure MessageBoxKeyDown(Sender: TObject; var Key: Word;
+          Shift: TShiftState);
   public
+    TheDefaultIndex : Longint;
+
     FImage : TImage;
     FLabel : TLabel;
     MSG : AnsiString;
@@ -1093,8 +1097,15 @@ type
     procedure LayoutDialog;
     procedure Paint; override;
     constructor CreateMessageDialog(const ACaption, aMsg: string;
-      DialogType : longint; TheButtons: Array of Longint);
+      DialogType : longint; TheButtons: Array of Longint; DefaultIndex : Longint);
   end;
+
+procedure TMessageBox.MessageBoxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_Escape) then
+    ModalResult := -1;
+end;
 
 procedure TMessageBox.Paint;
 begin
@@ -1127,10 +1138,12 @@ const
 
 
 constructor TMessageBox.CreateMessageDialog(const ACaption, aMsg: string;
-  DialogType : longint; TheButtons: Array of Longint);
+  DialogType : longint; TheButtons: Array of Longint; DefaultIndex : Longint);
 begin
   inherited Create (Application);
 
+  OnKeyDown :=@MessageBoxKeyDown;
+  
   ControlStyle:= ControlStyle-[csSetCaption];
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
@@ -1154,7 +1167,10 @@ begin
       begin
         FImage.Picture.Bitmap.Handle := LoadStockPixmap(DialogType);
         FImage.Show;
-        Caption := DialogCaption[DialogType];
+        If ACaption <> '' then
+          Caption := ACaption
+        else
+          Caption := DialogCaption[DialogType];
       end;
     else begin
       FImage.Picture.Bitmap.Handle := LoadStockPixmap(idDialogInfo);
@@ -1167,6 +1183,13 @@ begin
   end;
   NumButtons := High(TheButtons) - Low(TheButtons) + 1;
   Buttons := @TheButtons[Low(TheButtons)];
+
+  theDefaultIndex := DefaultIndex - Low(TheButtons);
+  If (TheDefaultIndex >= High(TheButtons) - Low(TheButtons)) or
+    (TheDefaultIndex < 0)
+  then
+    TheDefaultIndex := 0;
+    
   LayoutDialog;
 end;
 
@@ -1274,8 +1297,7 @@ begin
           else
             Kind := DialogButtonKind[Buttons[curBtn]];
         end;
-        if ButtonIndex=0 then Default := true;
-        if Kind in [bkOk, bkYes] then Default := true;
+        if ButtonIndex = TheDefaultIndex then Default := true;
         Visible:=true;
       end;
     end;
@@ -1289,36 +1311,44 @@ begin
   end;
 end;
 
-Procedure TInterfaceBase.NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
+Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint;
+  Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint;
+var
+  theModalResult : longint;
 begin
-  PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK]);
-end;
-
-Procedure TInterfaceBase.NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
-begin
-  PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], X, Y);
-end;
-
-Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint;
-begin
-  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons) do
+  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex) do
     try
-      Result := DialogResult[ShowModal];
+      theModalResult := ShowModal;
+      Case theModalResult of
+        -1 : Result := EscapeResult
+        else
+          Result := DialogResult[theModalResult];
+      end;
     finally
-      Close;
+      Free;
     end;
 end;
 
-Function TInterfaceBase.PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;
+Function TInterfaceBase.PromptUserAtXY(const DialogCaption, DialogMessage : String;
+  DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint;
+  X, Y : Longint) : Longint;
+var
+  theModalResult : longint;
 begin
-  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType, Buttons) do
+  with TMessageBox.CreateMessageDialog (DialogCaption, DialogMessage, DialogType,Buttons, DefaultIndex)
+  do
     try
       Position := poDesigned;
       Left := X;
       Top := Y;
-      Result := DialogResult[ShowModal];
+      theModalResult := ShowModal;
+      Case theModalResult of
+        -1 : Result := EscapeResult
+        else
+          Result := DialogResult[theModalResult];
+      end;
     finally
-      Close;
+      Free;
     end;
 end;
 
@@ -1735,6 +1765,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/10/14 18:36:56  lazarus
+  AJ: Improvements/Fixes to new PromptUser API
+
   Revision 1.55  2002/10/12 16:36:39  lazarus
   AJ: added new QueryUser/NotifyUser
 
