@@ -113,6 +113,7 @@ type
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     Function GetClientRect : TRect ; Override;
+    Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
     Procedure RequestAlign; Override;
     procedure UpdateShowing; override;

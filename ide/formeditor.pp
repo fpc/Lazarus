@@ -34,7 +34,7 @@ type
   private
 
   public
-    constructor Create; override;
+    constructor Create;
     destructor destroy; override;
   end;
 

@@ -70,8 +70,20 @@ begin
   inherited Destroy;
 end;
 
+
 {------------------------------------------------------------------------------
-  Method: TCustomForm.Destroy
+  Method: TCustomForm.Notification
+ ------------------------------------------------------------------------------}
+Procedure TCustomForm.Notification(AComponent : TComponent; Operation : TOperation);
+Begin
+inherited Notification(AComponent,Operation);
+
+if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
+End;
+
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.SetFocus
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFocus;
 Begin
@@ -770,6 +782,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/11/21 17:33:37  lazarus
+  Added TCustomForm.Notification so the TDesigner is notified of actions.
+
+  Added more code for getting info via RTTI
+  Shane
+
   Revision 1.4  2000/08/14 12:31:12  lazarus
   Minor modifications for SynEdit .
   Shane

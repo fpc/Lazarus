@@ -46,10 +46,14 @@ TGetProc = Function : Variant of Object;
         FControl : TComponent;
         FFormEditor : TCustomFormEditor;  //used to call it's functions
       protected
-        Function GetPropbyIndex(Index : Integer) : PPropInfo;
+        Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
+        Function GetPPropInfobyName(Name : String) : PPropInfo;
         MySetProc : TSetPRoc;
         MyGetProc : TGetProc;
       public
+        constructor Create;
+        destructor Destroy; override;
+
         Function GetComponentType    : String; override;
         Function GetComponentHandle  : LongInt; override;
         Function GetParent           : TIComponentInterface; override;
@@ -86,34 +90,80 @@ TCustomFormEditor
 
  TCustomFormEditor = class(TAbstractFormEditor)
   private
-    FControlClass : TControlClass;
-    FMainControl  : TControl;
     FModified     : Boolean;
-    FComponentInterfaceList : TList; //used to track and find controls on the form
-    Function GetMainControl : TControl;
+    FComponentInterfaceList : TList; //used to track and find controls
   protected
 
   public
 
-    constructor Create; virtual;
+    constructor Create;
     destructor Destroy; override;
 
     Function Filename : String; override;
     Function FormModified : Boolean; override;
     Function FindComponent(const Name : String) : TIComponentInterface; override;
+    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+                             X,Y,W,H : Integer): TIComponentInterface; override;
 
-    property ControlClass : TControlClass read FControlClass write FControlClass;
-    property MainControl : TControl read GetMainControl;
   end;
 
 
 implementation
 
 {TComponentInterface}
-Function TComponentInterface.GetPropByIndex(Index:Integer): PPropInfo;
-Begin
 
+constructor TComponentInterface.Create;
+begin
+inherited;
 end;
+
+destructor TComponentInterface.Destroy;
+begin
+inherited;
+end;
+
+Function TComponentInterface.GetPPropInfoByIndex(Index:Integer): PPropInfo;
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+Begin
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  if Index < PT^.PropCount then
+        Result:=PP^[index]
+        else
+        Result := nil;
+
+//does freeing this kill my result?  Check this...
+//   Freemem(PP);
+end;
+
+Function TComponentInterface.GetPPropInfoByName(Name:String): PPropInfo;
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+I  : Longint;
+Begin
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  I := -1;
+  repeat
+   inc(i);
+  until (PP^[i]^.Name = Name) or (i > PT^.PropCount-1);
+
+  if PP^[i]^.Name = Name then
+        Result:=PP^[i]
+        else
+        Result := nil;
+
+//does freeing this kill my result?  Check this...
+//   Freemem(PP);
+end;
+
 
 Function TComponentInterface.GetComponentType    : String;
 Begin
@@ -217,20 +267,13 @@ end;
 
 Function TComponentInterface.GetPropValue(Index : Integer; var Value) : Boolean;
 var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
+
 PRI : PPropInfo;
 J : Longint;
 Num : Integer;
 Begin
-  PT:=GetTypeData(FControl.ClassInfo);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  result := False;
-  if Index < PT^.PropCount then
-      begin
-        pri:=PP^[index];
+PRI := GetPPropInfoByIndex(Index);
+if PRI <> nil then
         with PRI^ do
             Begin
                Result := True;
@@ -238,29 +281,26 @@ Begin
                   begin
                     J:=GetOrdProp(FControl,pri);
                     If PropType^.Kind=tkenumeration then
-                       Value := GetEnumName(Proptype,J)
+                       String(Value) := GetEnumName(Proptype,J)
 	            else
-                       Value := J;
+                       Integer(Value) := J;
                   end
                else
                Case pri^.proptype^.kind of
                   tkfloat :  begin
-                     Value := GetFloatProp(FControl,pri);
+                     Real(Value) := GetFloatProp(FControl,pri);
                      end;
                   tkAstring : begin
-                     Value := GetStrProp(FControl,Pri);
+                     AnsiString(Value) := GetStrProp(FControl,Pri);
                      end;
                    else
                      Begin
-                      Value := -1;
+                      Real(Value) := -1;
                       Result := False;
                      end;
                end;  //end of the CASE
 
             end;  //end of the with PRI^...
-      end;  //end of If Index < PT
-
-  freemem(PP);
 end;
 
 Function TComponentInterface.GetPropValuebyName(Name: String; var Value) : Boolean;
@@ -272,76 +312,71 @@ PRI : PPropInfo;
 I,J : Longint;
 Num : Integer;
 Begin
-  PT:=GetTypeData(FControl.ClassInfo);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  result := -1;
-  I := -1;
-  repeat
-   inc(i);
-  until (PP^[i]^.Name = Name) or (i > PT^.PropCount-1);
 
-  if PP^[i]^.Name = Name then
-      begin
-        pri:=PP^[i];
+PRI := GetPPropInfoByName(Name);
+if PRI <> nil then
         with PRI^ do
             Begin
+               Result := True;
                If (Proptype^.kind in Ordinaltypes) Then
                   begin
                     J:=GetOrdProp(FControl,pri);
                     If PropType^.Kind=tkenumeration then
-                       Result := GetEnumName(Proptype,J)
+                       String(Value) := GetEnumName(Proptype,J)
 	            else
-                       Result := J;
+                       Integer(Value) := J;
                   end
                else
                Case pri^.proptype^.kind of
                   tkfloat :  begin
-                     Result := GetFloatProp(FControl,pri);
+                     Real(Value) := GetFloatProp(FControl,pri);
                      end;
                   tkAstring : begin
-                     Result := GetStrProp(FControl,Pri);
+                     AnsiString(Value) := GetStrProp(FControl,Pri);
+                     end;
+                  else
+                     Begin
+                     Result := False;
+                     Integer(Value) := -1;
                      end;
                end;  //end of the CASE
             end;  //end of the with PRI^...
-      end;  //end of If Index < PT
-
-  freemem(PP);
-
 end;
 
 Function TComponentInterface.SetProp(Index : Integer; const Value) : Boolean;
-
 var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
 PRI : PPropInfo;
-J : Longint;
-Num : Integer;
 Begin
-  PT:=GetTypeData(FControl.ClassInfo);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  result := -1;
-  if Index < PT^.PropCount then
-      begin
-        pri:=PP^[i];
+  Result := False;
+  PRI := GetPPropInfoByIndex(Index);
+  if PRI <> nil then
         with PRI^ do
             Begin
              if SetProc <> nil then
                 Begin  //call the procedure passing Value
-                 MySetProc := SetProc;
+                 MySetProc := TSetProc(SetProc^);
                  MySetProc(Value);
+                 Result := True;
                 end;
             end;
-       end;
-
-  freemem(PP);
 end;
 
 Function TComponentInterface.SetPropbyName(Name : String; const Value) : Boolean;
+var
+PRI : PPropInfo;
 Begin
+  Result := False;
+  PRI := GetPPropInfoByName(Name);
+  if PRI <> nil then
+        with PRI^ do
+            Begin
+             if SetProc <> nil then
+                Begin  //call the procedure passing Value
+                 MySetProc := TSetProc(SetProc^);
+                 MySetProc(Value);
+                 Result := True;
+                end;
+            end;
 
 end;
 
@@ -400,17 +435,6 @@ FComponentInterfaceList.Destroy;
 inherited;
 end;
 
-function TCustomFormEditor.GetMainControl: TControl;
-begin
-if not Assigned(FMainControl) then
-   Begin
-        FMainControl := FControlClass.Create(nil);
-        FMainControl.Parent := nil;
-   end;
-
-result := FMainControl;
-end;
-
 
 Function TCustomFormEditor.Filename : String;
 begin
@@ -434,6 +458,26 @@ Begin
         inc(num);
       end;
 end;
+
+Function TCustomFormEditor.CreateComponent(CI : TIComponentInterface; TypeName : String;
+                             X,Y,W,H : Integer): TIComponentInterface;
+
+Begin
+Result := TIComponentInterface.Create;
+//Result.FControl := TCOntrolClass(TypeName).Create(
+  if Assigned(CI) then
+     Begin
+        if (TComponentInterface(CI).FControl is TWinControl) then
+            begin
+            if (csAcceptsControls in TWinControl(TComponentInterface(CI).FControl).COntrolStyle) then
+                 Begin  //set CI the parent of the new one.
+                 end;
+            end;
+
+     End;
+
+end;
+
 
 
 end.
