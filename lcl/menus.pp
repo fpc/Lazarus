@@ -115,6 +115,7 @@ type
     FOnClick: TNotifyEvent;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
+    function GetMenuIndex: Integer;
     function GetParent: TMenuItem;
     function IsCaptionStored: boolean;
     function IsCheckedStored: boolean;
@@ -125,13 +126,17 @@ type
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
+    procedure SetMenuIndex(AValue: Integer);
     procedure SetRadioItem(const AValue: Boolean);
     procedure ShortcutChanged(const OldValue, Value : TShortcut);
+    procedure SubItemChanged(Sender: TObject; Source: TMenuItem;
+                             Rebuild: Boolean);
     procedure TurnSiblingsOff;
     procedure VerifyGroupIndex(Position: Integer; Value: Byte);
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
+    procedure DestroyHandle; virtual;
     procedure DoClicked(var msg); message LM_ACTIVATE;               //'activate';
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
@@ -139,6 +144,7 @@ type
     procedure SetShortCut(AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
     procedure MenuChanged(Rebuild : Boolean);
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure SetParentComponent(AValue : TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
@@ -157,8 +163,10 @@ type
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
     property Items[Index: Integer]: TMenuItem read GetItem; default;
+    property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
     property Parent: TMenuItem read GetParent;
   published
+    //property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Caption: String read FCaption write SetCaption stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked stored IsCheckedStored default False;
     property Default: Boolean read FDefault write SetDefault default False;
@@ -198,6 +206,8 @@ type
   end;
 
   TMainMenu = class(TMenu)
+  protected
+    procedure ItemChanged;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -401,6 +411,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2002/08/07 09:55:30  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.17  2002/08/06 20:05:38  lazarus
   MG: added stored funcitons
 

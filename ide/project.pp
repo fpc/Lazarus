@@ -79,8 +79,9 @@ type
     fFormName: string; // classname is always T<FormName>
         // this attribute contains the formname even if the unit is not loaded
     fHasResources: boolean; // source has resource file
+    FIgnoreFileDateOnDiskValid: boolean;
+    FIgnoreFileDateOnDisk: longint;
     fIsPartOfProject: boolean;
-    fLastCheckedFileAge: longint;
     fLoaded: Boolean;  // loaded in the source editor
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
@@ -134,8 +135,10 @@ type
     procedure IncreaseAutoRevertLock;
     procedure DecreaseAutoRevertLock;
     function IsAutoRevertLocked: boolean;
-    function ChangedOnDisk: boolean;
+    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
+    procedure IgnoreCurrentFileDateOnDisk;
     function ShortFilename: string;
+    function NeedsSaveToDisk: boolean;
 
     { Properties }
     property Breakpoints: TProjectBreakPointList
@@ -423,8 +426,10 @@ begin
          ,MB_ABORTRETRYIGNORE);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
-    end else
+    end else begin
       Result:=mrOk;
+      FIgnoreFileDateOnDiskValid:=true;
+    end;
   until Result<>mrRetry;
   Result:=mrOk;
 end;
@@ -476,6 +481,7 @@ begin
         exit;
     end else begin
       Source:=NewSource;
+      FIgnoreFileDateOnDiskValid:=true;
       Result:=mrOk;
     end;
   until Result<>mrRetry;
@@ -503,6 +509,7 @@ begin
   fForm := nil;
   fFormName := '';
   fHasResources := false;
+  FIgnoreFileDateOnDiskValid:=false;
   fIsPartOfProject := false;
   Loaded := false;
   fModified := false;
@@ -679,12 +686,22 @@ begin
   Result:=fAutoRevertLockCount>0;
 end;
 
-function TUnitInfo.ChangedOnDisk: boolean;
+function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
 begin
-  Result:=(Source<>nil) and (Source.FileOnDiskHasChanged)
-          and (fLastCheckedFileAge<>Source.FileDateOnDisk);
-  if Result then
-    fLastCheckedFileAge:=Source.FileDateOnDisk;
+  Result:=(Source<>nil) and (Source.FileOnDiskHasChanged);
+  if Result
+  and (not CompareOnlyLoadSaveTime)
+  and FIgnoreFileDateOnDiskValid
+  and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
+    Result:=false;
+end;
+
+procedure TUnitInfo.IgnoreCurrentFileDateOnDisk;
+begin
+  if Source<>nil then begin
+    FIgnoreFileDateOnDiskValid:=true;
+    FIgnoreFileDateOnDisk:=Source.FileDateOnDisk;
+  end
 end;
 
 function TUnitInfo.ShortFilename: string;
@@ -696,12 +713,19 @@ begin
   end;
 end;
 
+function TUnitInfo.NeedsSaveToDisk: boolean;
+begin
+  Result:=IsVirtual or Modified or ChangedOnDisk(true)
+          or (not FileExists(Filename));
+end;
+
 procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
   if fSource=ABuffer then exit;
   if (fSource<>nil) and IsAutoRevertLocked then
     fSource.UnlockAutoDiskRevert;
   fSource:=ABuffer;
+  FIgnoreFileDateOnDiskValid:=false;
   if (fSource<>nil) then begin
     if IsAutoRevertLocked then
       fSource.LockAutoDiskRevert;
@@ -1657,7 +1681,7 @@ begin
   AnUnitList:=nil;
   AnUnitInfo:=fFirstAutoRevertLockedUnit;
   while (AnUnitInfo<>nil) do begin
-    if AnUnitInfo.ChangedOnDisk then begin
+    if AnUnitInfo.ChangedOnDisk(false) then begin
       if AnUnitList=nil then
         AnUnitList:=TList.Create;
       AnUnitList.Add(AnUnitInfo);
@@ -1852,6 +1876,9 @@ end.
 
 {
   $Log$
+  Revision 1.71  2002/08/07 09:55:28  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.70  2002/08/01 14:10:30  lazarus
   MG: started file access monitoring for loaded files
 

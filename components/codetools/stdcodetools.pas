@@ -649,10 +649,9 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin
-    OldPosition.StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-         OldPosition.StartPos,Scanner.NestedComments);
-    OldPosition.EndPos:=FindFirstLineEndAfterInCode(Src,OldPosition.EndPos,
-         Scanner.NestedComments);
+    OldPosition.StartPos:=FindLineEndOrCodeInFrontOfPosition(
+         OldPosition.StartPos);
+    OldPosition.EndPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
     if not SourceChangeCache.Replace(gtNone,gtNone,
       OldPosition.StartPos,OldPosition.EndPos,'') then exit;
   end;
@@ -798,16 +797,13 @@ begin
     if FromPos<1 then exit;
     SourceChangeCache.MainScanner:=Scanner;
     Indent:=GetLineIndent(Src,FromPos);
-    FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,FromPos,
-                    Scanner.NestedComments);
+    FromPos:=FindLineEndOrCodeInFrontOfPosition(FromPos);
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,FromPos,
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
          'Application.CreateForm('+AClassName+','+AVarName+');',Indent));
   end else begin
-    FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,OldPosition.StartPos,
-                                         Scanner.NestedComments);
-    ToPos:=FindFirstLineEndAfterInCode(Src,OldPosition.EndPos,
-                                       Scanner.NestedComments);
+    FromPos:=FindLineEndOrCodeInFrontOfPosition(OldPosition.StartPos);
+    ToPos:=FindFirstLineEndAfterInCode(OldPosition.EndPos);
     SourceChangeCache.MainScanner:=Scanner;
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -824,10 +820,8 @@ begin
   Result:=false;
   if FindCreateFormStatement(-1,'*',UpperVarName,Position)=-1 then
     exit;
-  FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,Position.StartPos,
-                                       Scanner.NestedComments);
-  ToPos:=FindFirstLineEndAfterInCode(Src,Position.EndPos,
-                                     Scanner.NestedComments);
+  FromPos:=FindLineEndOrCodeInFrontOfPosition(Position.StartPos);
+  ToPos:=FindFirstLineEndAfterInCode(Position.EndPos);
   SourceChangeCache.MainScanner:=Scanner;
   SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'');
   Result:=SourceChangeCache.Apply;
@@ -889,11 +883,10 @@ begin
     if FindCreateFormStatement(Position,'*','*',StatementPos)=-1 then
       break;
     Position:=StatementPos.EndPos;
-    StatementPos.StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-       StatementPos.StartPos,Scanner.NestedComments);
+    StatementPos.StartPos:=FindLineEndOrCodeInFrontOfPosition(
+       StatementPos.StartPos);
     InsertPos:=StatementPos.StartPos;
-    StatementPos.EndPos:=FindFirstLineEndAfterInCode(Src,
-       StatementPos.EndPos,Scanner.NestedComments);
+    StatementPos.EndPos:=FindFirstLineEndAfterInCode(StatementPos.EndPos);
     SourceChangeCache.Replace(gtNone,gtNone,
        StatementPos.StartPos,StatementPos.EndPos,'');
   until false;
@@ -984,8 +977,7 @@ begin
     Indent:=GetLineIndent(Src,SectionNode.StartPos)
               +SourceChangeCache.BeautifyCodeOptions.Indent;
   end;
-  InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,SectionNode.EndPos,
-               Scanner.NestedComments);
+  InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos);
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
           SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                      VarName+':'+VarType+';',Indent)
@@ -1018,10 +1010,8 @@ begin
     if VarNode.FirstChild<>nil then begin
       // variable definition has the form  'VarName: VarType;'
       // -> delete whole line
-      FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,VarNode.StartPos,
-                      Scanner.NestedComments);
-      ToPos:=FindFirstLineEndAfterInCode(Src,VarNode.EndPos,
-                      Scanner.NestedComments);
+      FromPos:=FindLineEndOrCodeInFrontOfPosition(VarNode.StartPos);
+      ToPos:=FindFirstLineEndAfterInCode(VarNode.EndPos);
     end else begin
       // variable definition has the form  'VarName, NextVarName: VarType;'
       // -> delete only 'VarName, '

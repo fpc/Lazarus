@@ -17,6 +17,10 @@
  *                                                                           *
  *****************************************************************************
 }
+const
+  SMenuNotFound = 'Sub-menu is not in menu';
+  SMenuIndexError = 'Menu index out of range';
+  SMenuItemIsNil = 'MenuItem is nil';
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.Add
@@ -92,8 +96,19 @@ end;
   Description of the procedure for the class.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Delete(Index: Integer);
+var
+  Cur: TMenuItem;
 begin
-  //TODO: Complete
+  if (Index < 0) or (FItems = nil) or (Index >= GetCount) then
+    raise EMenuError.Create(SMenuIndexError);
+  Cur := TMenuItem(FItems[Index]);
+  if Cur=nil then
+    raise EMenuError.Create(SMenuItemIsNil);
+  FItems.Delete(Index);
+  Cur.FParent := nil;
+  Cur.FOnChange := nil;
+  DestroyHandle;
+  MenuChanged(Count = 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -107,6 +122,7 @@ destructor TMenuItem.Destroy;
 var
   i : integer;
 begin
+  DestroyHandle;
   if assigned (FItems) then begin
     i := FItems.Count-1;
     while i>=0 do begin
@@ -194,6 +210,17 @@ begin
   if FItems = nil then
     raise EMenuError.Create('Menu index out of range');
   Result := TMenuItem(FItems[Index]);
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.GetMenuIndex: Integer;
+
+  Get position of this menuitem in its menu
+ ------------------------------------------------------------------------------}
+function TMenuItem.GetMenuIndex: Integer;
+begin
+  Result := -1;
+  if FParent <> nil then Result := FParent.IndexOf(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -299,10 +326,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.DestroyHandle;
+
+  Free the Handle
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.DestroyHandle;
+var i: integer;
+begin
+  if not HandleAllocated then exit;
+  if assigned (FItems) then begin
+    i := FItems.Count-1;
+    while i>=0 do begin
+      TMenuItem(FItems[i]).DestroyHandle;
+      dec(i);
+    end;
+    InterfaceObject.IntSendMessage3(LM_DESTROY, Self, nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.HasParent
   Params:  
   Returns: True - the item has a parent responsible for streaming
-
 
  ------------------------------------------------------------------------------}
 function TMenuItem.HasParent : Boolean;
@@ -333,12 +378,11 @@ begin
       Item.GroupIndex := TMenuItem(FItems[Index - 1]).GroupIndex;
   VerifyGroupIndex(Index, Item.GroupIndex);
 
-  // check if we are the main menu
-  // mainmenuitems have csMenu style
-//    if FMenu <> nil then Item.FCompStyle := csMenu;
-
   Item.FParent := Self;
+  Item.FOnChange := @SubItemChanged;
   FItems.Insert(Index, Item);
+  
+  if HandleAllocated then Item.HandleNeeded;
   MenuChanged(FItems.Count = 1);
 end;
 
@@ -367,20 +411,34 @@ var
   Source: TMenuItem;
 begin
   if (Parent = nil) and (Owner is TMenu) then
-    Source := nil else
+    Source := nil
+  else
     Source := Self;
   if Assigned(FOnChange) then FOnChange(Self, Source, Rebuild);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TMenuItem.Remove
-  Params:  Item: 
-  Returns: Nothing
+  procedure TMenuItem.SetChildOrder(Child: TComponent; Order: Integer);
+
+  Reposition the MenuItem
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetChildOrder(Child: TComponent; Order: Integer);
+begin
+  (Child as TMenuItem).MenuIndex := Order;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenuItem.Remove(Item: TMenuItem);
+
 
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Remove(Item: TMenuItem);
+var
+  I: Integer;
 begin
-  // ToDo
+  I := IndexOf(Item);
+  if I<0 then raise EMenuError.Create(SMenuNotFound);
+  Delete(I);
 end;
 
 {------------------------------------------------------------------------------
@@ -447,14 +505,57 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TMenuItem.SetMenuIndex(const AValue: Integer);
+
+  Reposition the MenuItem
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetMenuIndex(AValue: Integer);
+var
+  OldParent: TMenuItem;
+  ParentCount: Integer;
+begin
+  if FParent <> nil then
+  begin
+    ParentCount := FParent.Count;
+    if AValue < 0 then AValue := 0;
+    if AValue >= ParentCount then AValue := ParentCount - 1;
+    if AValue <> MenuIndex then
+    begin
+      OldParent := FParent;
+      OldParent.Remove(Self);
+      OldParent.Insert(AValue, Self);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenuItem.SetRadioItem(const AValue: Boolean);
+
+  Sets the 'RadioItem' property of the group of menuitems with the same
+  GroupIndex. If RadioItem is true only one menuitem is checked at a time.
+ ------------------------------------------------------------------------------}
 procedure TMenuItem.SetRadioItem(const AValue: Boolean);
+var
+  i: integer;
+  Item: TMenuItem;
 begin
   if FRadioItem <> AValue then
   begin
     FRadioItem := AValue;
     if FChecked and FRadioItem then
       TurnSiblingsOff;
-    MenuChanged(True);
+    if (GroupIndex<>0) and (FParent<>nil) then begin
+      for I := 0 to FParent.Count - 1 do begin
+        Item := FParent[I];
+        if (Item <> Self)
+        and (Item.GroupIndex = GroupIndex) then
+          Item.FRadioItem:=FRadioItem;
+      end;
+    end;
+    if (FParent <> nil) and not (csReading in ComponentState)
+    and (HandleAllocated) then
+      RadioMenuItemGroup(Handle,FRadioItem);
   end;
 end;
 
@@ -577,11 +678,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.SubItemChanged(Sender: TObject; Source: TMenuItem;
+    Rebuild: Boolean);
+
+  Is Called whenever one of the childs has changed.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SubItemChanged(Sender: TObject; Source: TMenuItem;
+  Rebuild: Boolean);
+begin
+  if Rebuild and HandleAllocated then
+    ; // RebuildHandle;
+  if Parent <> nil then
+    Parent.SubItemChanged(Self, Source, False)
+  else if Owner is TMainMenu then
+    TMainMenu(Owner).ItemChanged;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.TurnSiblingsOff
   Params:  none
   Returns: Nothing
 
   Unchecks all siblings.
+  In contrary to Delphi this will not use SetChecked, because this is up to the
+  interface. This procedure just sets the private variables.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.TurnSiblingsOff;
 var
@@ -627,6 +747,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/08/07 09:55:30  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.18  2002/08/06 20:05:19  lazarus
   MG: added actnlist.pp
 
@@ -709,6 +832,9 @@ end;
 
 
   $Log$
+  Revision 1.19  2002/08/07 09:55:30  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.18  2002/08/06 20:05:19  lazarus
   MG: added actnlist.pp
 

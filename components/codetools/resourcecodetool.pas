@@ -128,10 +128,10 @@ begin
     InsertAtom.StartPos:=ResourceCode.SourceLength+1;
     InsertAtom.EndPos:=ResourceCode.SourceLength+1;
   end;
-  InsertAtom.StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-                                   InsertAtom.StartPos,false)+1;
-  InsertAtom.EndPos:=FindLineEndOrCodeAfterPosition(Src,
-                                   InsertAtom.EndPos,false);
+  InsertAtom.StartPos:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
+                                   InsertAtom.StartPos,1,false)+1;
+  InsertAtom.EndPos:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
+                                   InsertAtom.EndPos,SrcLen,false);
   NewResData:=ResourceData;
   i:=length(NewResData);
   while (i>1) and (NewResData[i] in [' ',#10,#13]) do
@@ -164,7 +164,8 @@ begin
   Result:=true;
   OldAtom:=FindLazarusResource(ResourceCode,ResourceName);
   if (OldAtom.StartPos<1) then exit;
-  OldAtom.EndPos:=FindLineEndOrCodeAfterPosition(Src,OldAtom.EndPos,false);
+  OldAtom.EndPos:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
+                         OldAtom.EndPos,SrcLen,false);
   ResourceCode.Delete(OldAtom.StartPos,OldAtom.EndPos);
 end;
 

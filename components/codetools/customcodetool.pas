@@ -114,6 +114,9 @@ type
         var Caret:TCodeXYPosition; var NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     procedure GetLineInfo(ACleanPos: integer;
         var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
+    function FindLineEndOrCodeAfterPosition(StartPos: integer): integer;
+    function FindLineEndOrCodeInFrontOfPosition(StartPos: integer): integer;
+    function FindFirstLineEndAfterInCode(StartPos: integer): integer;
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
@@ -1589,6 +1592,56 @@ begin
     AFirstAtomStart:=1;
     ALastAtomEnd:=1;
   end;
+end;
+
+function TCustomCodeTool.FindLineEndOrCodeAfterPosition(StartPos: integer
+  ): integer;
+{ Searches a nice position in the cleaned source after StartPos.
+  It will skip any space or comments (not directives) till next
+  line end or compiler directive or code or include file end.
+}
+var
+  LinkIndex, LinkEnd: integer;
+begin
+  LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
+  LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
+  if LinkEnd>StartPos then
+    Result:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
+                        StartPos,LinkEnd-1,Scanner.NestedComments)
+  else
+    Result:=StartPos;
+end;
+
+function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer
+  ): integer;
+{ Searches a nice position in the cleaned source in front of StartPos.
+  It will skip any space or comments (not directives) till next
+  line end or compiler directive or code or include file end.
+}
+var
+  LinkIndex, LinkStart: integer;
+begin
+  LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
+  LinkStart:=Scanner.Links[LinkIndex].CleanedPos;
+  Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
+                        StartPos,LinkStart,Scanner.NestedComments);
+end;
+
+function TCustomCodeTool.FindFirstLineEndAfterInCode(StartPos: integer
+  ): integer;
+{ Searches a line end or code break in the cleaned source after StartPos.
+  It will skip any line ends in comments.
+}
+var
+  LinkIndex, LinkEnd: integer;
+begin
+  LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
+  LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
+  if LinkEnd>StartPos then
+    Result:=BasicCodeTools.FindFirstLineEndAfterInCode(Src,
+                        StartPos,LinkEnd-1,Scanner.NestedComments)
+  else
+    Result:=StartPos;
 end;
 
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;

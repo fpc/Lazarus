@@ -915,14 +915,12 @@ begin
         if InsertNode<>nil then begin
           // insert after InsertNode
           Indent:=GetLineIndent(Src,InsertNode.StartPos);
-          InsertPos:=FindFirstLineEndAfterInCode(Src,InsertNode.EndPos,
-                       Scanner.NestedComments);
+          InsertPos:=FindFirstLineEndAfterInCode(InsertNode.EndPos);
         end else begin
           // insert as first variable/proc
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
-          InsertPos:=FindFirstLineEndAfterInCode(Src,ClassSectionNode.StartPos,
-                       Scanner.NestedComments);
+          InsertPos:=FindFirstLineEndAfterInCode(ClassSectionNode.StartPos);
         end;
       end;
       CurCode:=ANodeExt.ExtTxt1;
@@ -1251,8 +1249,8 @@ var
       or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
         InsertPos:=ImplementationNode.EndPos
       else begin
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-           ImplementationNode.LastChild.StartPos,Scanner.NestedComments);
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(
+           ImplementationNode.LastChild.StartPos);
       end;
     end else begin
       // class is not in interface section
@@ -1386,8 +1384,7 @@ begin
 
       // set default insert position
       Indent:=GetLineIndent(Src,LastExistingProcBody.StartPos);
-      InsertPos:=FindLineEndOrCodeAfterPosition(Src,
-                        LastExistingProcBody.EndPos,Scanner.NestedComments);
+      InsertPos:=FindLineEndOrCodeAfterPosition(LastExistingProcBody.EndPos);
                         
       // check for all defined class methods (MissingNode), if there is a body
       MissingNode:=ClassProcs.FindHighest;
@@ -1415,12 +1412,10 @@ begin
               Indent:=GetLineIndent(Src,ANode.StartPos);
               if cmp>0 then begin
                 // insert behind ExistingNode
-                InsertPos:=FindLineEndOrCodeAfterPosition(Src,
-                            ANode.EndPos,Scanner.NestedComments);
+                InsertPos:=FindLineEndOrCodeAfterPosition(ANode.EndPos);
               end else begin
                 // insert in front of ExistingNode
-                InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-                              ANode.StartPos,Scanner.NestedComments);
+                InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
               end;
             end;
 
@@ -1451,16 +1446,14 @@ begin
                 // see above (note 1) for ANodeExt2.Data
                 ANode:=TCodeTreeNodeExtension(ANodeExt2.Data).Node;
                 Indent:=GetLineIndent(Src,ANode.StartPos);
-                InsertPos:=FindLineEndOrCodeAfterPosition(Src,
-                            ANode.EndPos,Scanner.NestedComments);
+                InsertPos:=FindLineEndOrCodeAfterPosition(ANode.EndPos);
               end else if NextAVLNode<>nil then begin
                 // there is a NextAVLNode behind -> insert in front of body
                 ANodeExt2:=TCodeTreeNodeExtension(NextAVLNode.Data);
                 // see above (note 1) for ANodeExt2.Data
                 ANode:=TCodeTreeNodeExtension(ANodeExt2.Data).Node;
                 Indent:=GetLineIndent(Src,ANode.StartPos);
-                InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-                            ANode.StartPos,Scanner.NestedComments);
+                InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
               end;
             end;
           end;
@@ -1609,12 +1602,11 @@ var CleanCursorPos, Indent, insertPos: integer;
     if (ImplementationNode.LastChild=nil)
     or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
       // insert at end of code
-      InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-         ImplementationNode.EndPos,Scanner.NestedComments)
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(ImplementationNode.EndPos)
     else begin
       // insert in front of main program begin..end.
-      InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-         ImplementationNode.LastChild.StartPos,Scanner.NestedComments);
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(
+                                         ImplementationNode.LastChild.StartPos);
     end;
 
     // build nice proc

@@ -129,13 +129,13 @@ function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function GetLineIndent(const Source: string; Position: integer): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
-    Position: integer; NestedComments: boolean): integer;
+    Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
-    Position: integer; NestedComments: boolean): integer;
+    Position, MaxPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndInFrontOfInCode(const Source: string;
-    Position: integer; NestedComments: boolean): integer;
+    Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
-    Position: integer; NestedComments: boolean): integer;
+    Position, MaxPosition: integer; NestedComments: boolean): integer;
 function ReplacementNeedsLineEnd(const Source: string;
     FromPos, ToPos, NewLength, MaxLineLength: integer): boolean;
 function CountNeededLineEndsToAddForward(const Src: string;
@@ -1159,7 +1159,7 @@ begin
 end;
 
 function FindLineEndOrCodeAfterPosition(const Source: string;
-   Position: integer; NestedComments: boolean): integer;
+   Position, MaxPosition: integer; NestedComments: boolean): integer;
 { search forward for a line end or code
   ignore line ends in comments
   Result is Position of Start of Line End
@@ -1214,6 +1214,7 @@ var SrcLen: integer;
 
 begin
   SrcLen:=length(Source);
+  if SrcLen>MaxPosition then SrcLen:=MaxPosition;
   Result:=Position;
   if Result=0 then exit;
   while (Result<=SrcLen) do begin
@@ -1234,7 +1235,7 @@ begin
 end;
 
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
-   Position: integer; NestedComments: boolean): integer;
+   Position, MinPosition: integer; NestedComments: boolean): integer;
 { search backward for a line end or code
   ignore line ends in comments or at the end of comment lines
    (comment lines are lines without code and at least one comment)
@@ -1264,61 +1265,74 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     2: comment */   |
     3: a:=1;
 }
-  procedure ReadComment(var P: integer);
+var SrcStart: integer;
+
+  function ReadComment(var P: integer): boolean;
+  // false if compiler directive
+  var OldP: integer;
   begin
+    OldP:=P;
     case Source[P] of
       '}':
         begin
           dec(P);
-          while (P>=1) and (Source[P]<>'{') do begin
+          while (P>=SrcStart) and (Source[P]<>'{') do begin
             if NestedComments and (Source[P] in ['}',')']) then
               ReadComment(P)
             else
               dec(P);
           end;
+          Result:=not ((P>=SrcStart) and (Source[P+1]='$'));
           dec(P);
         end;
       ')':
         begin
           dec(P);
-          if (P>=1) and (Source[P]='*') then begin
+          if (P>=SrcStart) and (Source[P]='*') then begin
             dec(P);
-            while (P>1)
+            while (P>SrcStart)
             and ((Source[P-1]<>'(') or (Source[P]<>'*')) do begin
               if NestedComments and (Source[P] in ['}',')']) then
                 ReadComment(P)
               else
                 dec(P);
             end;
+            Result:=not ((P>=SrcStart) and (Source[P+1]='$'));
             dec(P,2);
-          end;
+          end else
+            Result:=true;
         end;
+    else
+      Result:=true;
     end;
+    if not Result then P:=OldP+1;
   end;
 
 var TestPos: integer;
   OnlySpace: boolean;
 begin
-  if Position<=1 then begin
-    Result:=1;
+  SrcStart:=MinPosition;
+  if SrcStart<1 then SrcStart:=1;
+  if Position<=SrcStart then begin
+    Result:=SrcStart;
     exit;
   end;
   Result:=Position-1;
   if Result>length(Source) then Result:=length(Source);
-  while (Result>0) do begin
+  while (Result>=SrcStart) do begin
     case Source[Result] of
       '}',')':
-        ReadComment(Result);
+        if not ReadComment(Result) then exit;
       #10,#13:
         begin
           // line end in code found
-          if (Result>1) and (Source[Result-1] in [#10,#13])
+          if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then dec(Result);
           // test if it is a comment line (a line without code and at least one
           // comment)
           TestPos:=Result-1;
           OnlySpace:=true;
-          while (TestPos>1) do begin
+          while (TestPos>SrcStart) do begin
             if (Source[TestPos]='/') and (Source[TestPos-1]='/') then begin
               // this is a comment line end -> search further
               dec(TestPos);
@@ -1347,10 +1361,11 @@ begin
       end;
     end;
   end;
+  if Result<SrcStart then Result:=SrcStart;
 end;
 
 function FindFirstLineEndAfterInCode(const Source: string;
-  Position: integer; NestedComments: boolean): integer;
+  Position, MaxPosition: integer; NestedComments: boolean): integer;
 { search forward for a line end
   ignore line ends in comments
   Result is Position of Start of Line End
@@ -1405,6 +1420,7 @@ var SrcLen: integer;
 
 begin
   SrcLen:=length(Source);
+  if SrcLen>MaxPosition then SrcLen:=MaxPosition;
   Result:=Position;
   while (Result<=SrcLen) do begin
     case Source[Result] of
@@ -1419,18 +1435,21 @@ begin
 end;
 
 function FindFirstLineEndInFrontOfInCode(const Source: string;
-   Position: integer; NestedComments: boolean): integer;
+   Position, MinPosition: integer; NestedComments: boolean): integer;
 { search backward for a line end
   ignore line ends in comments
   Result will be at the Start of the Line End
 }
+var
+  SrcStart: integer;
+
   procedure ReadComment(var P: integer);
   begin
     case Source[P] of
       '}':
         begin
           dec(P);
-          while (P>=1) and (Source[P]<>'{') do begin
+          while (P>=SrcStart) and (Source[P]<>'{') do begin
             if NestedComments and (Source[P] in ['}',')']) then
               ReadComment(P)
             else
@@ -1441,9 +1460,9 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
       ')':
         begin
           dec(P);
-          if (P>=1) and (Source[P]='*') then begin
+          if (P>=SrcStart) and (Source[P]='*') then begin
             dec(P);
-            while (P>1)
+            while (P>SrcStart)
             and ((Source[P-1]<>'(') or (Source[P]<>'*')) do begin
               if NestedComments and (Source[P] in ['}',')']) then
                 ReadComment(P)
@@ -1459,17 +1478,19 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
 var TestPos: integer;
 begin
   Result:=Position;
-  while (Result>0) do begin
+  SrcStart:=MinPosition;
+  if SrcStart<1 then SrcStart:=1;
+  while (Result>=SrcStart) do begin
     case Source[Result] of
       '}',')':
         ReadComment(Result);
       #10,#13:
         begin
           // test if it is a '//' comment
-          if (Result>1) and (Source[Result-1] in [#10,#13])
+          if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then dec(Result);
           TestPos:=Result-1;
-          while (TestPos>1) do begin
+          while (TestPos>SrcStart) do begin
             if (Source[TestPos]='/') and (Source[TestPos-1]='/') then begin
               // this is a comment line end -> search further
               break;

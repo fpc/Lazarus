@@ -3665,8 +3665,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: RadioMenuItemGroup
+  Params:  hMenu: HMENU; bRadio: Boolean
+  Returns: Nothing
+
+  Change the group of menuitems to 'radio' or to checked.
+ ------------------------------------------------------------------------------}
+function TgtkObject.RadioMenuItemGroup(hMenu: HMENU; bRadio: Boolean): Boolean;
+begin
+  // ToDo
+  Result := false;
+end;
+
+{------------------------------------------------------------------------------
   Function: RealizePalette
-  Params:  none
+  Params:  DC: HDC
   Returns: Nothing
 
 
@@ -3680,7 +3693,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: Rectangle
-  Params:  none
+  Params:  DC: HDC; X1, Y1, X2, Y2: Integer
   Returns: Nothing
 
   The Rectangle function draws a rectangle. The rectangle is outlined by using
@@ -4838,6 +4851,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2002/08/07 09:55:30  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.86  2002/08/05 10:45:06  lazarus
   MG: TMenuItem.Caption can now be set after creation
 

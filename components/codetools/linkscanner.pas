@@ -54,8 +54,8 @@ type
 //----------------------------------------------------------------------------
   TOnGetSource = function(Sender: TObject; Code: Pointer): TSourceLog
                  of object;
-  TOnLoadSource = function(Sender: TObject; const AFilename: string): pointer
-                       of object;
+  TOnLoadSource = function(Sender: TObject; const AFilename: string;
+                       OnlyIfExists: boolean): pointer of object;
   TOnGetSourceStatus = procedure(Sender: TObject; Code: Pointer;
                  var ReadOnly: boolean) of object;
   TOnDeleteSource = procedure(Sender: TObject; Code: Pointer; Pos, Len: integer)
@@ -249,8 +249,10 @@ type
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
     function LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer): integer;
     function LinkSize(Index: integer): integer;
+    function LinkCleanedEndPos(Index: integer): integer;
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
+    //function FindFirstLinkIndexOfCodeInCleanPos
     
     function CleanedSrc: string;
     function CursorToCleanPos(ACursorPos: integer; ACode: pointer;
@@ -259,7 +261,7 @@ type
               // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
         var ACode: Pointer): boolean;
-        
+
     function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer): boolean;
     procedure FindCodeInRange(CleanStartPos, CleanEndPos: integer;
         UniqueSortedCodeList: TList);
@@ -531,15 +533,21 @@ begin
     Result:=CleanedLen-Links[Index].CleanedPos;
 end;
 
-function TLinkScanner.FindFirstSiblingLink(LinkIndex: integer): integer;
-{ find link of the start of the code
-  e.g. The resulting link SrcPos is always 1
-       if LinkIndex is in the main code, the result will be 0
-       if LinkIndex is in an include file, the result will be the first link of
-       the include file. If the include file is included multiple times, it is
-       treated as if they are different files.
+function TLinkScanner.LinkCleanedEndPos(Index: integer): integer;
+begin
+  Result:=Links[Index].CleanedPos+LinkSize(Index);
+end;
 
-  ToDo: if include file include itself, directly or indirectly
+function TLinkScanner.FindFirstSiblingLink(LinkIndex: integer): integer;
+{ find link at the start of the code
+  e.g. The resulting link SrcPos is always 1
+  
+   if LinkIndex is in the main code, the result will be 0
+   if LinkIndex is in an include file, the result will be the first link of
+   the include file. If the include file is included multiple times, it is
+   treated as if they are different files.
+
+  ToDo: if include file includes itself, directly or indirectly
 }
 var
   LastIndex: integer;
@@ -1893,14 +1901,13 @@ begin
   if Path<>'' then Path:=ExpandFilename(Path);
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=nil;
-  if FileExists(Path+FileNameOnly) then
-    Result:=FOnLoadSource(Self,Path+FileNameOnly);
+  Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
   FileNameOnly:=lowercase(FileNameOnly);
-  if (Result=nil) and (FileExists(Path+FileNameOnly)) then
-    Result:=FOnLoadSource(Self,Path+FileNameOnly);
+  if (Result=nil) then
+    Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
   FileNameOnly:=UpperCaseStr(FileNameOnly);
-  if (Result=nil) and (FileExists(Path+FileNameOnly)) then
-    Result:=FOnLoadSource(Self,Path+FileNameOnly);
+  if (Result=nil) then
+    Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
 end;
 
 function TLinkScanner.SearchIncludeFile(const AFilename: string;
@@ -1956,11 +1963,11 @@ begin
     if Result then exit;
   end else begin
     // main source has relative filename (= virtual)
-    NewCode:=FOnLoadSource(Self,AFilename);
+    NewCode:=FOnLoadSource(Self,AFilename,true);
     if NewCode=nil then
-      NewCode:=FOnLoadSource(Self,lowercase(AFilename));
+      NewCode:=FOnLoadSource(Self,lowercase(AFilename),true);
     if NewCode=nil then
-      NewCode:=FOnLoadSource(Self,UpperCaseStr(AFilename));
+      NewCode:=FOnLoadSource(Self,UpperCaseStr(AFilename),true);
     Result:=(NewCode<>nil);
     if Result then exit;
   end;

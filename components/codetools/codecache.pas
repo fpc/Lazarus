@@ -25,7 +25,6 @@
     
     TCodeBuffer is an descendent of TSourceLog and manages a single file.
     
-  ToDo:
 }
 unit CodeCache;
 
@@ -113,7 +112,8 @@ type
     FGlobalWriteLockIsSet: boolean;
     FGlobalWriteLockStep: integer;
     function OnScannerGetSource(Sender: TObject; Code: pointer): TSourceLog;
-    function OnScannerLoadSource(Sender: TObject; const AFilename: string): pointer;
+    function OnScannerLoadSource(Sender: TObject; const AFilename: string;
+                                 OnlyIfExists: boolean): pointer;
     function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
     function OnScannerCheckFileOnDisk(Code: pointer): boolean;
     procedure OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
@@ -379,9 +379,12 @@ begin
 end;
 
 function TCodeCache.OnScannerLoadSource(Sender: TObject;
-  const AFilename: string): pointer;
+  const AFilename: string; OnlyIfExists: boolean): pointer;
 begin
-  Result:=LoadFile(AFilename);
+  if OnlyIfExists and (not FileExists(AFilename)) then
+    Result:=FindFile(AFilename)
+  else
+    Result:=LoadFile(AFilename);
   if Result<>nil then
     OnScannerCheckFileOnDisk(Result);
 end;

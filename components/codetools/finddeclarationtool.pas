@@ -840,7 +840,8 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
     {$IFDEF ShowTriedFiles}
     writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',AFilename);
     {$ENDIF}
-    NewCode:=TCodeBuffer(Scanner.OnLoadSource(Self,ExpandFilename(AFilename)));
+    NewCode:=TCodeBuffer(Scanner.OnLoadSource(
+                                          Self,ExpandFilename(AFilename),true));
     Result:=NewCode<>nil;
   end;
   
@@ -974,7 +975,7 @@ begin
   if AnUnitInFilename<>'' then begin
     // unitname in 'filename'
     if FilenameIsAbsolute(AnUnitInFilename) then begin
-      Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename));
+      Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename,true));
     end else begin
       // search AnUnitInFilename in searchpath
       Result:=SearchFileInPath(UnitSrcSearchPath,AnUnitInFilename);

@@ -3695,7 +3695,7 @@ begin
 
   // if nothing modified then a simple Save can be skipped
   if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
-  and (not ActiveUnitInfo.Modified) then begin
+  and (not ActiveUnitInfo.NeedsSaveToDisk) then begin
     Result:=mrOk;
     exit;
   end;
@@ -5253,10 +5253,11 @@ begin
   Project1.GetUnitsChangedOnDisk(AnUnitList);
   if AnUnitList=nil then exit;
   Result:=ShowDiskDiffsDialog(AnUnitList);
-  if Result in [mrYesToAll] then begin
-    for i:=0 to AnUnitList.Count-1 do begin
-      CurUnit:=TUnitInfo(AnUnitList[i]);
-writeln('AAA1 REVERTING ',CurUnit.Filename);
+  if Result in [mrYesToAll] then
+    Result:=mrOk;
+  for i:=0 to AnUnitList.Count-1 do begin
+    CurUnit:=TUnitInfo(AnUnitList[i]);
+    if Result in [mrYesToAll] then begin
       if CurUnit.EditorIndex>=0 then begin
         Result:=DoOpenEditorFile('',CurUnit.EditorIndex,[ofRevert]);
       end else if CurUnit.IsMainUnit then begin
@@ -5264,6 +5265,8 @@ writeln('AAA1 REVERTING ',CurUnit.Filename);
       end else
         Result:=mrIgnore;
       if Result=mrAbort then exit;
+    end else begin
+      CurUnit.IgnoreCurrentFileDateOnDisk;
     end;
     Result:=mrOk;
   end;
@@ -6858,6 +6861,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.336  2002/08/07 09:55:26  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.335  2002/08/05 08:56:54  lazarus
   MG: TMenuItems can now be enabled and disabled
 

@@ -114,6 +114,7 @@ function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): bo
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean; override;
 
+function RadioMenuItemGroup(hMenu: HMENU; bRadio: Boolean): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; ARect: TRect) : Boolean; override;
@@ -158,6 +159,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/08/07 09:55:31  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.33  2002/08/05 10:45:08  lazarus
   MG: TMenuItem.Caption can now be set after creation
 

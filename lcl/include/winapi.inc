@@ -453,6 +453,11 @@ begin
   Result := InterfaceObject.PostMessage(hWnd, Msg, wParam, lParam);
 end;
 
+function RadioMenuItemGroup(hMenu: HMENU; bRadio: Boolean): Boolean;
+begin
+  Result := InterfaceObject.RadioMenuItemGroup(hMenu,bRadio);
+end;
+
 function RealizePalette(DC: HDC): Cardinal;
 begin
   Result := InterfaceObject.RealizePalette(DC);
@@ -1099,6 +1104,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/08/07 09:55:30  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.34  2002/08/05 10:45:03  lazarus
   MG: TMenuItem.Caption can now be set after creation
 

@@ -1,3 +1,4 @@
+// included by menus.pp
 {******************************************************************************
                                   TMainMenu
  ******************************************************************************
@@ -15,6 +16,21 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{------------------------------------------------------------------------------
+  Method: TMainMenu.ItemChanged
+  Params:  none
+  Returns: Nothing
+
+  Called whenever
+ ------------------------------------------------------------------------------}
+procedure TMainMenu.ItemChanged;
+begin
+  {MenuChanged(nil, nil, False);
+  if FWindowHandle <> 0 then
+    SendMessage(FWindowHandle, CM_MENUCHANGED, 0, 0);}
+end;
+
 {------------------------------------------------------------------------------
   Method: TMainMenu.Create
   Params:  AOwner: the owner of the class
@@ -28,10 +44,14 @@ begin
   FCompStyle := csMainMenu;
 end;
 
+// included by menus.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/08/07 09:55:30  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.3  2002/05/10 06:05:53  lazarus
   MG: changed license to LGPL
 
