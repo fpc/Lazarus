@@ -2231,6 +2231,38 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
     MacroValueChanged:=true;
   end;
   
+  procedure RescanCompilerDefines;
+  begin
+    // rescan compiler defines
+    // ask the compiler for its settings
+    CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
+                EnvironmentOptions.CompilerFilename,CompilerUnitSearchPath);
+    if CompilerTemplate<>nil then begin
+      CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
+      // create compiler macros to simulate the Makefiles of the FPC sources
+      FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
+        CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
+        CompilerUnitSearchPath, false, CompilerUnitLinks);
+      if FPCSrcTemplate<>nil then begin
+        CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
+                                                       FPCSrcTemplate.Name);
+        FPCSrcTemplate.InsertBehind(CompilerTemplate);
+      end else begin
+        MessageDlg(lisFPCSourceDirectoryError,
+          lisPLzCheckTheFPCSourceDirectory,
+          mtError,[mbOk],0);
+      end;
+      // save unitlinks
+      InputHistories.SetLastFPCUnitLinks(
+             EnvironmentOptions.CompilerFilename,
+             CompilerUnitSearchPath,CompilerUnitLinks);
+      InputHistories.Save;
+    end else begin
+      MessageDlg(lisCompilerError,lisPlzCheckTheCmpilerName,
+        mtError,[mbOk],0);
+    end;
+  end;
+  
 Begin
   EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
   try
@@ -2257,29 +2289,7 @@ Begin
       
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then begin
-        // rescan compiler defines
-        // ask the compiler for his settings
-        CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
-                    EnvironmentOptions.CompilerFilename,CompilerUnitSearchPath);
-        if CompilerTemplate<>nil then begin
-          CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
-          // create compiler macros to simulate the Makefiles of the FPC sources
-          FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
-            CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath, false, CompilerUnitLinks);
-          if FPCSrcTemplate<>nil then begin
-            CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
-                                                           FPCSrcTemplate.Name);
-            FPCSrcTemplate.InsertBehind(CompilerTemplate);
-          end else begin
-            MessageDlg(lisFPCSourceDirectoryError,
-              lisPLzCheckTheFPCSourceDirectory,
-              mtError,[mbOk],0);
-          end;
-        end else begin
-          MessageDlg(lisCompilerError,lisPlzCheckTheCmpilerName,
-            mtError,[mbOk],0);
-        end;
+        RescanCompilerDefines;
       end;
         
       // save to disk
@@ -5308,8 +5318,7 @@ begin
     writeln('');
     writeln('NOTE: Compiler Filename not set! (see Environment Options)');
   end;
-  InputHistories.LastFPCPath:=EnvironmentOptions.CompilerFilename;
-  
+
   if (EnvironmentOptions.LazarusDirectory='') then begin
     writeln('');
     writeln(
@@ -5340,6 +5349,7 @@ begin
       'NOTE: Could not create Define Template for Free Pascal Compiler');
       
     // create compiler macros to simulate the Makefiles of the FPC sources
+    InputHistories.LastFPCPath:=EnvironmentOptions.CompilerFilename;
     CompilerUnitLinks:=InputHistories.LastFPCUnitLinks;
     UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate(
                                                         CompilerUnitSearchPath);
@@ -6339,6 +6349,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.294  2002/05/13 06:12:54  lazarus
+  MG: fixed saving unitlinks after changing fpc soure path
+
   Revision 1.293  2002/05/10 06:57:42  lazarus
   MG: updated licenses
 

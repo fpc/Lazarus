@@ -48,14 +48,14 @@
  ------------------------------------------------------------------------------}
 constructor TRadioButton.Create(AOwner : TComponent);
 begin
-   if assigned(AOwner) then
-   begin
-      inherited Create(AOwner);
-      fCompStyle := csRadioButton;
-      Visible := False;
-      Hint := 'Radiobutton';
-      ShowHint := True;
-      fGroup := 0;
+  if assigned(AOwner) then
+  begin
+    inherited Create(AOwner);
+    fCompStyle := csRadioButton;
+    Visible := False;
+    Hint := 'Radiobutton';
+    ShowHint := True;
+    fGroup := 0;
   end;
 end;
 
@@ -153,6 +153,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2002/05/13 06:12:57  lazarus
+  MG: fixed saving unitlinks after changing fpc soure path
+
   Revision 1.3  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

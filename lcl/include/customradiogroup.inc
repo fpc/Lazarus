@@ -272,7 +272,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomRadioGroup.CanModify : boolean;
 begin
-   Result := true;
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -305,6 +305,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2002/05/13 06:12:57  lazarus
+  MG: fixed saving unitlinks after changing fpc soure path
+
   Revision 1.9  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 
