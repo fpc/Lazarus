@@ -33,7 +33,8 @@ uses
   LMessages,      StdCtrls,      Arrow,         Controls,
   Imglist,        Menus,         Toolwin,       Dialogs,
   Messages,       UTrace,        Clistbox,      ActnList,
-  DynamicArray,   Grids,         Printers,      PostScriptPrinter;
+  DynamicArray,   Grids,         Printers,      PostScriptPrinter,
+  MaskEdit;
 
 implementation
 
@@ -42,6 +43,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/04/16 22:59:35  mattias
+  added TMaskEdit from Tony
+
   Revision 1.19  2003/03/25 18:40:56  mattias
   added Tonys printer units
 

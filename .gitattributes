@@ -727,6 +727,7 @@ lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
 lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
+lcl/maskedit.pp svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
 lcl/messages.pp svneol=native#text/pascal
 lcl/postscriptprinter.pas svneol=native#text/pascal
