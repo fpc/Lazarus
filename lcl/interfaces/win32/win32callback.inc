@@ -95,6 +95,19 @@ begin
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
 
+
+//TODO: added temporarily to fix compilation,
+//should probably removed soon, as the LCL does not listen to it.
+type
+  PLMInsertText = ^TLMInsertText;
+  TLMInsertText = record
+    Msg : Cardinal;
+    NewText : String;
+    Length : Integer;
+    Position : Integer;
+    UserData : Pointer;
+  end;
+
 {------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
@@ -1590,6 +1603,9 @@ end;
 
 {
   $Log$
+  Revision 1.189  2005/02/05 20:42:04  vincents
+  added TLMInsertText (temporarily?)
+
   Revision 1.188  2005/02/03 20:19:17  micha
   fix bug 267: reroute menu key to main form if form has no menu
 
