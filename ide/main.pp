@@ -364,6 +364,8 @@ type
     procedure SetDefaultsForForm(aForm : TCustomForm);
     procedure InvalidateAllDesignerForms;
   protected
+    procedure SetToolStatus(const AValue: TIDEToolStatus); override;
+
     procedure ToolButtonClick(Sender: TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
@@ -2166,6 +2168,11 @@ begin
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithForm;
   end;
+end;
+
+procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
+begin
+  inherited SetToolStatus(AValue);
 end;
 
 
@@ -5753,6 +5760,7 @@ function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationTool;
 var
   ProgramFilename, Params: string;
   ExtTool: TExternalToolOptions;
+  Filename: String;
 begin
   if Tool.Command='' then begin
     Result:=mrOk;
@@ -5762,6 +5770,10 @@ begin
   SourceNotebook.ClearErrorLines;
   
   SplitCmdLine(Tool.Command,ProgramFilename,Params);
+  if not FilenameIsAbsolute(ProgramFilename) then begin
+    Filename:=FindProgram(ProgramFilename,WorkingDir,true);
+    if Filename<>'' then ProgramFilename:=Filename;
+  end;
 
   ExtTool:=TExternalToolOptions.Create;
   ExtTool.Filename:=ProgramFilename;
@@ -6354,6 +6366,11 @@ var
   i: Integer;
   AForm: TCustomForm;
 begin
+  // hide hints
+  Application.HideHint;
+  SourceNotebook.HideHint;
+  
+  // hide designer forms
   HideUnmodifiedDesigners;
 
   // collect all windows except the main bar
@@ -9056,6 +9073,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.584  2003/05/26 20:05:21  mattias
+  made compiling gtk2 interface easier
+
   Revision 1.583  2003/05/26 10:34:47  mattias
   implemented search, fixed double loading breakpoints
 
