@@ -4,11 +4,11 @@
 
 <!--
   ====================================================================
-    lMessages
+    LMessages
   ====================================================================
 -->
 
-<module name="lMessages">
+<module name="LMessages">
 <short></short>
 <descr>
 </descr>
@@ -26,17 +26,6 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="vclGlobals">
 <short></short>
 <descr>
 </descr>
@@ -487,17 +476,6 @@
 </element>
 
 <!-- constant Visibility: default -->
-<element name="LM_LOADXPM">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_DRAGINFOCHANGED">
 <short></short>
 <descr>
@@ -828,17 +806,6 @@
 </element>
 
 <!-- constant Visibility: default -->
-<element name="LM_LV_SELECTITEM">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_LV_LAST">
 <short></short>
 <descr>
@@ -961,17 +928,6 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_LB_SETTOPINDEX">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_LB_GETINDEXAT">
 <short></short>
 <descr>
 </descr>
@@ -1653,6 +1609,17 @@
 </element>
 
 <!-- constant Visibility: default -->
+<element name="LM_SETCURSOR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
 <element name="LM_INTERNALPAINT">
 <short></short>
 <descr>
@@ -2039,17 +2006,6 @@
 
 <!-- constant Visibility: default -->
 <element name="LM_CANCELMODE">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_SETCURSOR">
 <short></short>
 <descr>
 </descr>
@@ -2632,6 +2588,17 @@
 </element>
 
 <!-- constant Visibility: default -->
+<element name="LM_PARENTNOTIFY">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
 <element name="LM_CAPTURECHANGED">
 <short></short>
 <descr>
@@ -2654,7 +2621,7 @@
 </element>
 
 <!-- constant Visibility: default -->
-<element name="LM_PARENTNOTIFY">
+<element name="LM_SELCHANGE">
 <short></short>
 <descr>
 </descr>
@@ -2797,40 +2764,62 @@
 </element>
 
 <!-- record type Visibility: default -->
+<element name="TLMMeasureItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLMMeasureItem.Msg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLMMeasureItem.idCtl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLMMeasureItem.MeasureItemStruct">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TLMMeasureItem.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
 <element name="TLMNoParams">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMNoParams.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMNoParams.Unused">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMNoParams.Result">
 <short></short>
 <descr>
 </descr>
@@ -2875,72 +2864,6 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMScreenInit.ColorDepth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMSETCURSOR">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSETCURSOR.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSETCURSOR.CursorWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSETCURSOR.HitText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSETCURSOR.MouseMsg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSETCURSOR.Result">
 <short></short>
 <descr>
 </descr>
@@ -3908,7 +3831,7 @@
 </element>
 
 <!-- variable Visibility: default -->
-<element name="TLMPaint.Unused">
+<element name="TLMPaint.PaintStruct">
 <short></short>
 <descr>
 </descr>
@@ -4536,6 +4459,17 @@
 
 <!-- variable Visibility: default -->
 <element name="TLMSort.IsSorted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PLMSetControlText">
 <short></short>
 <descr>
 </descr>
@@ -5282,63 +5216,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TLMSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSize.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSize.SizeType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSize.Width">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSize.Height">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSize.Result">
 <short></short>
 <descr>
 </descr>
@@ -5381,19 +5260,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TLMessage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMessage.Msg">
 <short></short>
 <descr>
 </descr>
@@ -5425,63 +5293,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TLMScroll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMScroll.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMScroll.ScrollCode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMScroll.Pos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMScroll.ScrollBar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMScroll.Result">
 <short></short>
 <descr>
 </descr>
@@ -5513,7 +5326,7 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TLMShowWindow">
 <short></short>
 <descr>
@@ -5524,96 +5337,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLMShowWindow.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMShowWindow.Show">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMShowWindow.Status">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMShowWindow.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMKILLFOCUS">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKILLFOCUS.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKILLFOCUS.FocusedWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKILLFOCUS.UnUsed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKILLFOCUS.Result">
+<!-- alias type Visibility: default -->
+<element name="TLMKillFocus">
 <short></short>
 <descr>
 </descr>
@@ -5952,6 +5677,6 @@
 <seealso>
 </seealso>
 </element>
-</module> <!-- lMessages -->
+</module> <!-- LMessages -->
 </package>
 </fpdoc-descriptions>

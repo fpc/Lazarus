@@ -4,50 +4,17 @@
 
 <!--
   ====================================================================
-    Toolwin
+    ExtGraphics
   ====================================================================
 -->
 
-<module name="Toolwin">
+<module name="ExtGraphics">
 <short></short>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
 <short></short>
 <descr>
 </descr>
@@ -68,41 +35,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StdCtrls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- enumeration type Visibility: default -->
-<element name="TEdgeBorder">
+<element name="TArrowDirection">
 <short></short>
 <descr>
 </descr>
@@ -113,7 +47,7 @@
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TEdgeBorder.ebLeft">
+<element name="TArrowDirection.atUp">
 <short></short>
 <descr>
 </descr>
@@ -124,7 +58,7 @@
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TEdgeBorder.ebTop">
+<element name="TArrowDirection.atDown">
 <short></short>
 <descr>
 </descr>
@@ -135,7 +69,7 @@
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TEdgeBorder.ebRight">
+<element name="TArrowDirection.atLeft">
 <short></short>
 <descr>
 </descr>
@@ -146,7 +80,7 @@
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TEdgeBorder.ebBottom">
+<element name="TArrowDirection.atRight">
 <short></short>
 <descr>
 </descr>
@@ -156,107 +90,8 @@
 </seealso>
 </element>
 
-<!-- set type Visibility: default -->
-<element name="TEdgeBorders">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TEdgeStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TEdgeStyle.esNone">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TEdgeStyle.esRaised">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TEdgeStyle.esLowered">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TToolWindow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolWindow.FEdgeBorders">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolWindow.FEdgeInner">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolWindow.FEdgeOuter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolWindow.SetEdgeBorders">
+<!-- procedure Visibility: default -->
+<element name="PaintDiamond">
 <short></short>
 <descr>
 </descr>
@@ -267,18 +102,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolWindow.SetEdgeBorders.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolWindow.SetEdgeInner">
+<element name="PaintDiamond.Canvas">
 <short></short>
 <descr>
 </descr>
@@ -289,7 +113,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolWindow.SetEdgeInner.Value">
+<element name="PaintDiamond.PaintRect">
 <short></short>
 <descr>
 </descr>
@@ -299,41 +123,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TToolWindow.SetEdgeOuter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolWindow.SetEdgeOuter.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TToolWindow.Paint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TToolWindow.Create">
+<!-- procedure Visibility: default -->
+<element name="PaintCross">
 <short></short>
 <descr>
 </descr>
@@ -344,18 +135,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolWindow.Create.TheOwner">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TToolWindow.AdjustClientRect">
+<element name="PaintCross.Canvas">
 <short></short>
 <descr>
 </descr>
@@ -366,7 +146,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolWindow.AdjustClientRect.ARect">
+<element name="PaintCross.XLeft">
 <short></short>
 <descr>
 </descr>
@@ -376,8 +156,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TToolWindow.EdgeBorders">
+<!-- argument Visibility: default -->
+<element name="PaintCross.YUp">
 <short></short>
 <descr>
 </descr>
@@ -387,8 +167,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TToolWindow.EdgeInner">
+<!-- argument Visibility: default -->
+<element name="PaintCross.XRight">
 <short></short>
 <descr>
 </descr>
@@ -398,8 +178,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TToolWindow.EdgeOuter">
+<!-- argument Visibility: default -->
+<element name="PaintCross.YLow">
 <short></short>
 <descr>
 </descr>
@@ -408,6 +188,259 @@
 <seealso>
 </seealso>
 </element>
-</module> <!-- Toolwin -->
+
+<!-- argument Visibility: default -->
+<element name="PaintCross.CrossX1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintCross.CrossX2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintCross.CrossY1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintCross.CrossY2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintPlus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintPlus.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintPlus.PaintRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintTriangle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintTriangle.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintTriangle.PaintRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintTriangle.AArrowType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintBoldArrow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintBoldArrow.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintBoldArrow.PaintRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintBoldArrow.AArrowType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintChevronArrow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintChevronArrow.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintChevronArrow.PaintRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintChevronArrow.AArrowType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="PaintVArrow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintVArrow.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintVArrow.PaintRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="PaintVArrow.AArrowType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- ExtGraphics -->
 </package>
 </fpdoc-descriptions>

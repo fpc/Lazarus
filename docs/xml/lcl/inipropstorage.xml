@@ -4,25 +4,14 @@
 
 <!--
   ====================================================================
-    Arrow
+    IniPropStorage
   ====================================================================
 -->
 
-<module name="Arrow">
+<module name="IniPropStorage">
 <short></short>
 <descr>
 </descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Classes">
@@ -36,7 +25,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
+<element name="SysUtils">
 <short></short>
 <descr>
 </descr>
@@ -47,7 +36,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Controls">
+<element name="Forms">
 <short></short>
 <descr>
 </descr>
@@ -58,7 +47,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="lMessages">
+<element name="IniFiles">
 <short></short>
 <descr>
 </descr>
@@ -68,8 +57,8 @@
 </seealso>
 </element>
 
-<!-- enumeration type Visibility: default -->
-<element name="TArrowType">
+<!-- unresolved type reference Visibility: default -->
+<element name="PropertyStorage">
 <short></short>
 <descr>
 </descr>
@@ -79,140 +68,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atLeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TArrowType.atRight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TShadowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stNone">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stIn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stOut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stEtchedIn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShadowType.stEtchedOut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMArrow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMArrow.ArrowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMArrow.ShadowType">
+<!-- "class of" type Visibility: default -->
+<element name="TIniFileClass">
 <short></short>
 <descr>
 </descr>
@@ -223,7 +80,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TArrow">
+<element name="TCustomIniPropStorage">
 <short></short>
 <descr>
 </descr>
@@ -234,7 +91,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TArrow.FArrowType">
+<element name="TCustomIniPropStorage.FCount">
 <short></short>
 <descr>
 </descr>
@@ -245,7 +102,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TArrow.FShadowType">
+<element name="TCustomIniPropStorage.FReadOnly">
 <short></short>
 <descr>
 </descr>
@@ -255,8 +112,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TArrow.GetShadowType">
+<!-- variable Visibility: private -->
+<element name="TCustomIniPropStorage.FIniFile">
 <short></short>
 <descr>
 </descr>
@@ -266,8 +123,8 @@
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
-<element name="TArrow.GetShadowType.Result">
+<!-- variable Visibility: private -->
+<element name="TCustomIniPropStorage.FIniFileName">
 <short></short>
 <descr>
 </descr>
@@ -277,8 +134,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TArrow.SetShadowType">
+<!-- variable Visibility: private -->
+<element name="TCustomIniPropStorage.FIniSection">
 <short></short>
 <descr>
 </descr>
@@ -288,19 +145,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TArrow.SetShadowType.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TArrow.GetArrowType">
+<!-- function Visibility: protected -->
+<element name="TCustomIniPropStorage.IniFileClass">
 <short></short>
 <descr>
 </descr>
@@ -311,40 +157,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TArrow.GetArrowType.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TArrow.SetArrowType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TArrow.SetArrowType.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TArrow.SetProps">
+<element name="TCustomIniPropStorage.IniFileClass.Result">
 <short></short>
 <descr>
 </descr>
@@ -355,18 +168,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TArrow.Paint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TArrow.Create">
+<element name="TCustomIniPropStorage.StorageNeeded">
 <short></short>
 <descr>
 </descr>
@@ -377,7 +179,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TArrow.Create.AOwner">
+<element name="TCustomIniPropStorage.StorageNeeded.ReadOnly">
 <short></short>
 <descr>
 </descr>
@@ -387,8 +189,118 @@
 </seealso>
 </element>
 
-<!-- destructor Visibility: public -->
-<element name="TArrow.Destroy">
+<!-- procedure Visibility: protected -->
+<element name="TCustomIniPropStorage.FreeStorage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomIniPropStorage.GetIniFileName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomIniPropStorage.GetIniFileName.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomIniPropStorage.RootSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomIniPropStorage.RootSection.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomIniPropStorage.IniFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomIniPropStorage.DoReadString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomIniPropStorage.DoReadString.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoReadString.Section">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoReadString.Ident">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoReadString.Default">
 <short></short>
 <descr>
 </descr>
@@ -399,7 +311,40 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TArrow.Loaded">
+<element name="TCustomIniPropStorage.DoWriteString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoWriteString.Section">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoWriteString.Ident">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoWriteString.Value">
 <short></short>
 <descr>
 </descr>
@@ -410,7 +355,51 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TArrow.InitializeWnd">
+<element name="TCustomIniPropStorage.DoEraseSections">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomIniPropStorage.DoEraseSections.ARootSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomIniPropStorage.IniFileName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomIniPropStorage.IniSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TIniPropStorage">
 <short></short>
 <descr>
 </descr>
@@ -421,7 +410,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TArrow.ArrowType">
+<element name="TIniPropStorage.StoredValues">
 <short></short>
 <descr>
 </descr>
@@ -432,7 +421,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TArrow.ShadowType">
+<element name="TIniPropStorage.IniFileName">
 <short></short>
 <descr>
 </descr>
@@ -443,7 +432,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TArrow.Visible">
+<element name="TIniPropStorage.IniSection">
 <short></short>
 <descr>
 </descr>
@@ -454,7 +443,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TArrow.OnClick">
+<element name="TIniPropStorage.Active">
 <short></short>
 <descr>
 </descr>
@@ -465,7 +454,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TArrow.OnMouseMove">
+<element name="TIniPropStorage.OnSaveProperties">
 <short></short>
 <descr>
 </descr>
@@ -476,62 +465,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TArrow.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnMouseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnResize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.OnContextPopup">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TArrow.PopupMenu">
+<element name="TIniPropStorage.OnRestoreProperties">
 <short></short>
 <descr>
 </descr>
@@ -551,6 +485,6 @@
 <seealso>
 </seealso>
 </element>
-</module> <!-- Arrow -->
+</module> <!-- IniPropStorage -->
 </package>
 </fpdoc-descriptions>

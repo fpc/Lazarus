@@ -36,7 +36,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLlinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -81,17 +81,6 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
 <short></short>
 <descr>
 </descr>
@@ -169,6 +158,17 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="StdCtrls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLClasses">
 <short></short>
 <descr>
 </descr>
@@ -585,6 +585,50 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TCommonDialog.SetHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCommonDialog.SetHeight.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCommonDialog.SetWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCommonDialog.SetWidth.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: protected -->
 <element name="TCommonDialog.DoExecute">
 <short></short>
@@ -630,7 +674,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCommonDialog.Create.AOwner">
+<element name="TCommonDialog.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -697,6 +741,28 @@
 
 <!-- procedure Visibility: public -->
 <element name="TCommonDialog.Close">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCommonDialog.DoShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCommonDialog.DoClose">
 <short></short>
 <descr>
 </descr>
@@ -1026,7 +1092,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TFileDialog.Create.AOwner">
+<element name="TFileDialog.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -1082,6 +1148,17 @@
 
 <!-- property Visibility: public -->
 <element name="TFileDialog.HistoryList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TFileDialog.Title">
 <short></short>
 <descr>
 </descr>
@@ -1421,8 +1498,30 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TOpenOption.ofAutoPreview">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- set type Visibility: default -->
 <element name="TOpenOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="DefaultOpenDialogOptions">
 <short></short>
 <descr>
 </descr>
@@ -1476,6 +1575,83 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TOpenDialog.FLastSelectionChangeFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TOpenDialog.DereferenceLinks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TOpenDialog.CheckFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOpenDialog.CheckFile.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOpenDialog.CheckFile.AFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TOpenDialog.CheckAllFiles">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TOpenDialog.CheckAllFiles.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: protected -->
 <element name="TOpenDialog.DoExecute">
 <short></short>
@@ -1510,7 +1686,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOpenDialog.Create.AOwner">
+<element name="TOpenDialog.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TOpenDialog.DoFolderChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TOpenDialog.DoSelectionChange">
 <short></short>
 <descr>
 </descr>
@@ -1597,6 +1795,39 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TSelectDirectoryDialog.CheckFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TSelectDirectoryDialog.CheckFile.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSelectDirectoryDialog.CheckFile.AFilename">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TSelectDirectoryDialog.Create">
 <short></short>
@@ -1653,7 +1884,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TColorDialog.Create.AOwner">
+<element name="TColorDialog.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TColorDialog.Title">
 <short></short>
 <descr>
 </descr>
@@ -2390,6 +2632,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TFontDialog.Title">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TFontDialog.Font">
 <short></short>
 <descr>
@@ -3104,8 +3357,8 @@
 </seealso>
 </element>
 
-<!-- function type Visibility: default -->
-<element name="TSelectDirectoryProc">
+<!-- function Visibility: default -->
+<element name="SelectDirectory">
 <short></short>
 <descr>
 </descr>
@@ -3116,7 +3369,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TSelectDirectoryProc.Result">
+<element name="SelectDirectory.Result">
 <short></short>
 <descr>
 </descr>
@@ -3127,7 +3380,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TSelectDirectoryProc.Caption">
+<element name="SelectDirectory.Caption">
 <short></short>
 <descr>
 </descr>
@@ -3138,7 +3391,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TSelectDirectoryProc.Root">
+<element name="SelectDirectory.InitialDirectory">
 <short></short>
 <descr>
 </descr>
@@ -3149,18 +3402,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TSelectDirectoryProc.Directory">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSelectDirectoryProc.ShowHidden">
+<element name="SelectDirectory.Directory">
 <short></short>
 <descr>
 </descr>
@@ -3204,7 +3446,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="SelectDirectory.Root">
+<element name="SelectDirectory.InitialDirectory">
 <short></short>
 <descr>
 </descr>
@@ -3227,17 +3469,6 @@
 
 <!-- argument Visibility: default -->
 <element name="SelectDirectory.ShowHidden">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="SelectDirectoryProc">
 <short></short>
 <descr>
 </descr>

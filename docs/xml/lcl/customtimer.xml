@@ -58,18 +58,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
+<element name="InterfaceBase">
 <short></short>
 <descr>
 </descr>

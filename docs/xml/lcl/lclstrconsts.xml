@@ -14,6 +14,17 @@
 </descr>
 
 <!-- resource string Visibility: default -->
+<element name="SNoMDIForm">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
 <element name="rsMbYes">
 <short></short>
 <descr>
@@ -267,7 +278,29 @@
 </element>
 
 <!-- resource string Visibility: default -->
+<element name="rsfdDirectoryMustExist">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
 <element name="rsfdFileNotExist">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsfdDirectoryNotExist">
 <short></short>
 <descr>
 </descr>
@@ -971,7 +1004,7 @@
 </element>
 
 <!-- resource string Visibility: default -->
-<element name="rssIndexOutOfBounds">
+<element name="rsIndexOutOfBounds">
 <short></short>
 <descr>
 </descr>
@@ -1082,6 +1115,534 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsResourceNotFound">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsCalculator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsError">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsPickDate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_UNKNOWN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_LBUTTON">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RBUTTON">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CANCEL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_MBUTTON">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_BACK">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_TAB">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CLEAR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RETURN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SHIFT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CONTROL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_MENU">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_PAUSE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CAPITAL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_KANA">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_JUNJA">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_FINAL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_HANJA">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_ESCAPE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_CONVERT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NONCONVERT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_ACCEPT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_MODECHANGE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SPACE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_PRIOR">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NEXT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_END">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_HOME">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_LEFT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_UP">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RIGHT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_DOWN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SELECT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_PRINT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_EXECUTE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SNAPSHOT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_INSERT">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_DELETE">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_HELP">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_LWIN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_RWIN">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_APPS">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NUMPAD">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_NUMLOCK">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="ifsVK_SCROLL">
 <short></short>
 <descr>
 </descr>

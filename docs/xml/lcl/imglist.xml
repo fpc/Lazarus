@@ -36,6 +36,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="FPCAdds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
 <short></short>
 <descr>
@@ -47,7 +58,40 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="vclGlobals">
+<element name="LCLIntf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LResources">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
 <short></short>
 <descr>
 </descr>
@@ -70,6 +114,39 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="GraphType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLClasses">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="IntfGraphics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FPReadBMP">
 <short></short>
 <descr>
 </descr>
@@ -178,8 +255,107 @@
 </seealso>
 </element>
 
+<!-- enumeration type Visibility: default -->
+<element name="TDrawingStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDrawingStyle.dsFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDrawingStyle.dsSelected">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDrawingStyle.dsNormal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TDrawingStyle.dsTransparent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TImageType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TImageType.itImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TImageType.itMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TCustomImageList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomImageList.FDrawingStyle">
 <short></short>
 <descr>
 </descr>
@@ -201,7 +377,29 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomImageList.FMaskList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomImageList.FBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomImageList.FImageType">
 <short></short>
 <descr>
 </descr>
@@ -224,6 +422,28 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomImageList.FHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomImageList.FMasked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomImageList.FShareImages">
 <short></short>
 <descr>
 </descr>
@@ -332,6 +552,17 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TCustomImageList.FChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TCustomImageList.AllocBitmap">
 <short></short>
@@ -388,6 +619,28 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomImageList.SetDrawingStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.SetDrawingStyle.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomImageList.SetHeight">
 <short></short>
 <descr>
@@ -400,6 +653,50 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomImageList.SetHeight.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomImageList.SetMasked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.SetMasked.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomImageList.SetShareImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.SetShareImages.AValue">
 <short></short>
 <descr>
 </descr>
@@ -497,6 +794,17 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: protected -->
+<element name="TCustomImageList.FUpdateCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TCustomImageList.GetImages">
 <short></short>
@@ -574,6 +882,83 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TCustomImageList.SetWidthHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.SetWidthHeight.NewWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.SetWidthHeight.NewHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TCustomImageList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomImageList.AssignTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.AssignTo.Dest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TCustomImageList.Assign">
 <short></short>
@@ -608,7 +993,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomImageList.WriteData.Stream">
+<element name="TCustomImageList.WriteData.AStream">
 <short></short>
 <descr>
 </descr>
@@ -630,7 +1015,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomImageList.ReadData.Stream">
+<element name="TCustomImageList.ReadData.AStream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomImageList.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomImageList.EndUpdate">
 <short></short>
 <descr>
 </descr>
@@ -675,6 +1082,94 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomImageList.Add.Mask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomImageList.AddDirect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomImageList.AddDirect.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.AddDirect.Image">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.AddDirect.Mask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomImageList.AddCopy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomImageList.AddCopy.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.AddCopy.SrcImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.AddCopy.SrcMask">
 <short></short>
 <descr>
 </descr>
@@ -783,6 +1278,39 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TCustomImageList.AddFromLazarusResource">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomImageList.AddFromLazarusResource.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.AddFromLazarusResource.ResourceName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TCustomImageList.Change">
 <short></short>
@@ -796,28 +1324,6 @@
 
 <!-- procedure Visibility: public -->
 <element name="TCustomImageList.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomImageList.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomImageList.Create.AOwner">
 <short></short>
 <descr>
 </descr>
@@ -1027,6 +1533,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomImageList.GetInternalImage.Mask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.GetInternalImage.ImageRect">
 <short></short>
 <descr>
 </descr>
@@ -1268,28 +1785,6 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TCustomImageList.RegisterChanges">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomImageList.RegisterChanges.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
 <element name="TCustomImageList.Replace">
 <short></short>
 <descr>
@@ -1411,6 +1906,28 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TCustomImageList.RegisterChanges">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomImageList.RegisterChanges.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TCustomImageList.UnRegisterChanges">
 <short></short>
 <descr>
@@ -1477,6 +1994,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomImageList.DrawingStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomImageList.Handle">
 <short></short>
 <descr>
@@ -1521,6 +2049,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomImageList.Masked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomImageList.Bitmap">
 <short></short>
 <descr>
@@ -1533,6 +2072,28 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomImageList.MaskBitmap">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomImageList.ShareImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomImageList.ImageType">
 <short></short>
 <descr>
 </descr>

@@ -4,28 +4,17 @@
 
 <!--
   ====================================================================
-    AllUnits
+    XMLPropStorage
   ====================================================================
 -->
 
-<module name="AllUnits">
+<module name="XMLPropStorage">
 <short></short>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LazLinkedList">
+<element name="Classes">
 <short></short>
 <descr>
 </descr>
@@ -36,216 +25,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="DynHashArray">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLMemManager">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="AvgLvlTree">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StringHashList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ExtendedStrings">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="DynamicArray">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="UTrace">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="TextStrings">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphMath">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FileCtrl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="InterfaceBase">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Buttons">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Extctrls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Registry">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Calendar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Clipbrd">
+<element name="SysUtils">
 <short></short>
 <descr>
 </descr>
@@ -267,7 +47,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="PropertyStorage">
 <short></short>
 <descr>
 </descr>
@@ -278,7 +58,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Spin">
+<element name="XMLCfg">
 <short></short>
 <descr>
 </descr>
@@ -289,7 +69,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Comctrls">
+<element name="DOM">
 <short></short>
 <descr>
 </descr>
@@ -299,8 +79,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
+<!-- object Visibility: default -->
+<element name="TPropStorageXMLConfig">
 <short></short>
 <descr>
 </descr>
@@ -310,8 +90,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="StdCtrls">
+<!-- procedure Visibility: public -->
+<element name="TPropStorageXMLConfig.DeleteSubNodes">
 <short></short>
 <descr>
 </descr>
@@ -321,8 +101,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Arrow">
+<!-- argument Visibility: default -->
+<element name="TPropStorageXMLConfig.DeleteSubNodes.ARootNode">
 <short></short>
 <descr>
 </descr>
@@ -332,8 +112,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
+<!-- object Visibility: default -->
+<element name="TCustomXMLPropStorage">
 <short></short>
 <descr>
 </descr>
@@ -343,8 +123,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="ImgList">
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FCount">
 <short></short>
 <descr>
 </descr>
@@ -354,8 +134,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Menus">
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FFileName">
 <short></short>
 <descr>
 </descr>
@@ -365,8 +145,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Toolwin">
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FXML">
 <short></short>
 <descr>
 </descr>
@@ -376,8 +156,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Dialogs">
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FRootNode">
 <short></short>
 <descr>
 </descr>
@@ -387,8 +167,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Messages">
+<!-- variable Visibility: private -->
+<element name="TCustomXMLPropStorage.FRootNodePath">
 <short></short>
 <descr>
 </descr>
@@ -398,8 +178,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Clistbox">
+<!-- procedure Visibility: protected -->
+<element name="TCustomXMLPropStorage.StorageNeeded">
 <short></short>
 <descr>
 </descr>
@@ -409,8 +189,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="ActnList">
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.StorageNeeded.ReadOnly">
 <short></short>
 <descr>
 </descr>
@@ -420,8 +200,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Grids">
+<!-- procedure Visibility: protected -->
+<element name="TCustomXMLPropStorage.FreeStorage">
 <short></short>
 <descr>
 </descr>
@@ -431,8 +211,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="MaskEdit">
+<!-- function Visibility: protected -->
+<element name="TCustomXMLPropStorage.GetXMLFileName">
 <short></short>
 <descr>
 </descr>
@@ -442,8 +222,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Printers">
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.GetXMLFileName.Result">
 <short></short>
 <descr>
 </descr>
@@ -453,8 +233,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="PostScriptPrinter">
+<!-- function Visibility: protected -->
+<element name="TCustomXMLPropStorage.RootSection">
 <short></short>
 <descr>
 </descr>
@@ -464,8 +244,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="CheckLst">
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.RootSection.Result">
 <short></short>
 <descr>
 </descr>
@@ -475,8 +255,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="PairSplitter">
+<!-- function Visibility: protected -->
+<element name="TCustomXMLPropStorage.FixPath">
 <short></short>
 <descr>
 </descr>
@@ -486,8 +266,8 @@
 </seealso>
 </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="DirSel">
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.FixPath.Result">
 <short></short>
 <descr>
 </descr>
@@ -496,6 +276,259 @@
 <seealso>
 </seealso>
 </element>
-</module> <!-- AllUnits -->
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.FixPath.APath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomXMLPropStorage.XMLConfig">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomXMLPropStorage.DoReadString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Section">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Ident">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoReadString.Default">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomXMLPropStorage.DoWriteString">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoWriteString.Section">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoWriteString.Ident">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoWriteString.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomXMLPropStorage.DoEraseSections">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomXMLPropStorage.DoEraseSections.ARootSection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomXMLPropStorage.FileName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomXMLPropStorage.RootNodePath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TXMLPropStorage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.StoredValues">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.FileName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.RootNodePath">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.Active">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.OnSaveProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TXMLPropStorage.OnRestoreProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+</module> <!-- XMLPropStorage -->
 </package>
 </fpdoc-descriptions>

@@ -36,6 +36,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
 <short></short>
 <descr>
@@ -48,17 +59,6 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
 <short></short>
 <descr>
 </descr>
@@ -91,7 +91,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -774,6 +774,39 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomPairSplitter.IsSupportedByInterface.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomPairSplitter.ChildClassAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomPairSplitter.ChildClassAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomPairSplitter.ChildClassAllowed.ChildClass">
 <short></short>
 <descr>
 </descr>

@@ -35,6 +35,17 @@
 </seealso>
 </element>
 
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TDynHashArray">
 <short></short>
@@ -642,6 +653,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TDynHashArray.SaveCacheItem.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDynHashArray.Create">
 <short></short>
 <descr>
 </descr>
@@ -1511,6 +1533,17 @@
 
 <!-- procedure Visibility: public -->
 <element name="TDynHashArrayItemMemManager.WriteDebugReport">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="EDynHashArrayException">
 <short></short>
 <descr>
 </descr>

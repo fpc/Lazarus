@@ -36,6 +36,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="LCLProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="GraphType">
 <short></short>
 <descr>
@@ -69,7 +80,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -1268,7 +1279,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TPostScriptCanvas.clear">
+<element name="TPostScriptCanvas.Clear">
 <short></short>
 <descr>
 </descr>

@@ -36,7 +36,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
+<element name="DynHashArray">
 <short></short>
 <descr>
 </descr>
@@ -47,7 +47,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="vclglobals">
+<element name="LCLStrConsts">
 <short></short>
 <descr>
 </descr>
@@ -113,7 +113,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -157,6 +157,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="PropertyStorage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="Menus">
 <short></short>
 <descr>
@@ -169,6 +180,17 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ActnList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLClasses">
 <short></short>
 <descr>
 </descr>
@@ -1169,6 +1191,17 @@
 </element>
 
 <!-- constant Visibility: default -->
+<element name="CN_SYSKEYUP">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
 <element name="CN_SYSKEYDOWN">
 <short></short>
 <descr>
@@ -1324,6 +1357,17 @@
 
 <!-- constant Visibility: default -->
 <element name="mrLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TCharacter">
 <short></short>
 <descr>
 </descr>
@@ -1773,6 +1817,17 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TFormStyle.fsSplash">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- enumeration type Visibility: default -->
 <element name="TFormBorderStyle">
 <short></short>
@@ -1873,6 +1928,61 @@
 </element>
 
 <!-- enumeration type Visibility: default -->
+<element name="TControlRoleForForm">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlRoleForForm.crffDefault">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlRoleForForm.crffCancel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TControlRolesForForm">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TBevelCut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
 <element name="TMouseButton">
 <short></short>
 <descr>
@@ -1907,6 +2017,17 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TMouseButton.mbMiddle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="fsAllStayOnTop">
 <short></short>
 <descr>
 </descr>
@@ -2435,6 +2556,72 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TControlStyleType.csNoFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlStyleType.csNeedsBorderPaint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlStyleType.csParentBackground">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlStyleType.csDesignNoSmoothResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlStyleType.csDesignFixedBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlStyleType.csHasDefaultAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TControlStyleType.csHasCancelAction">
 <short></short>
 <descr>
 </descr>
@@ -3808,50 +3995,6 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TDragObject.MouseMsg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDragObject.MouseMsg.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDragObject.ReleaseCapture">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDragObject.ReleaseCapture.Handle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: protected -->
 <element name="TDragObject.Finished">
 <short></short>
@@ -3975,6 +4118,259 @@
 
 <!-- function result Visibility: default -->
 <element name="TDragObject.GetDragImages.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDragObject.MouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseMove.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseMove.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseMove.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDragObject.MouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseDown.Button">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseDown.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseDown.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseDown.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDragObject.MouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseUp.Button">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseUp.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseUp.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.MouseUp.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDragObject.CaptureChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.CaptureChanged.OldCaptureControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDragObject.KeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.KeyDown.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.KeyDown.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDragObject.KeyUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.KeyUp.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDragObject.KeyUp.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDragObject.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -4732,6 +5128,72 @@
 </seealso>
 </element>
 
+<!-- procedure type Visibility: default -->
+<element name="TGetSiteInfoEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetSiteInfoEvent.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetSiteInfoEvent.DockClient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetSiteInfoEvent.InfluenceRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetSiteInfoEvent.MousePos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetSiteInfoEvent.CanDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TDragDockObject">
 <short></short>
@@ -5162,7 +5624,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDockManager.GetControlBounds.CtlBounds">
+<element name="TDockManager.GetControlBounds.AControlBounds">
 <short></short>
 <descr>
 </descr>
@@ -5414,6 +5876,72 @@
 </seealso>
 </element>
 
+<!-- enumeration type Visibility: default -->
+<element name="TSizeConstraintsOption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TSizeConstraintsOption.scoAdviceWidthAsMin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TSizeConstraintsOption.scoAdviceWidthAsMax">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TSizeConstraintsOption.scoAdviceHeightAsMin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TSizeConstraintsOption.scoAdviceHeightAsMax">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TSizeConstraintsOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TSizeConstraints">
 <short></short>
@@ -5448,6 +5976,28 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TSizeConstraints.FMaxInterfaceHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TSizeConstraints.FMaxInterfaceWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TSizeConstraints.FMaxWidth">
 <short></short>
 <descr>
@@ -5470,6 +6020,28 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TSizeConstraints.FMinInterfaceHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TSizeConstraints.FMinInterfaceWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TSizeConstraints.FMinWidth">
 <short></short>
 <descr>
@@ -5482,6 +6054,39 @@
 
 <!-- variable Visibility: private -->
 <element name="TSizeConstraints.FOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TSizeConstraints.FOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TSizeConstraints.SetOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSizeConstraints.SetOptions.AValue">
 <short></short>
 <descr>
 </descr>
@@ -5515,17 +6120,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TSizeConstraints.AssignTo.Dest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TSizeConstraints.Control">
 <short></short>
 <descr>
 </descr>
@@ -5645,8 +6239,228 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: public -->
+<element name="TSizeConstraints.UpdateInterfaceConstraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TSizeConstraints.SetInterfaceConstraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSizeConstraints.SetInterfaceConstraints.MinW">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSizeConstraints.SetInterfaceConstraints.MinH">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSizeConstraints.SetInterfaceConstraints.MaxW">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSizeConstraints.SetInterfaceConstraints.MaxH">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TSizeConstraints.EffectiveMinWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TSizeConstraints.EffectiveMinWidth.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TSizeConstraints.EffectiveMinHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TSizeConstraints.EffectiveMinHeight.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TSizeConstraints.EffectiveMaxWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TSizeConstraints.EffectiveMaxWidth.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TSizeConstraints.EffectiveMaxHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TSizeConstraints.EffectiveMaxHeight.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TSizeConstraints.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TSizeConstraints.MaxInterfaceHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TSizeConstraints.MaxInterfaceWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TSizeConstraints.MinInterfaceHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TSizeConstraints.MinInterfaceWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TSizeConstraints.Control">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TSizeConstraints.Options">
 <short></short>
 <descr>
 </descr>
@@ -5767,7 +6581,392 @@
 </element>
 
 <!-- range type Visibility: default -->
-<element name="TTabOrder">
+<element name="TSpacingSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TControlBorderSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FAround">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FBottom">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FLeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlBorderSpacing.FTop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlBorderSpacing.SetAround">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.SetAround.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlBorderSpacing.SetBottom">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.SetBottom.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlBorderSpacing.SetLeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.SetLeft.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlBorderSpacing.SetRight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.SetRight.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlBorderSpacing.SetTop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.SetTop.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControlBorderSpacing.Change">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TControlBorderSpacing.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.Create.OwnerControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControlBorderSpacing.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.Assign.Source">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControlBorderSpacing.AssignTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.AssignTo.Dest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TControlBorderSpacing.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControlBorderSpacing.IsEqual.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlBorderSpacing.IsEqual.Spacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlBorderSpacing.Control">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlBorderSpacing.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlBorderSpacing.Left">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlBorderSpacing.Top">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlBorderSpacing.Right">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlBorderSpacing.Bottom">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlBorderSpacing.Around">
 <short></short>
 <descr>
 </descr>
@@ -6173,6 +7372,17 @@
 </seealso>
 </element>
 
+<!-- range type Visibility: default -->
+<element name="TTabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure type Visibility: default -->
 <element name="TControlShowHintEvent">
 <short></short>
@@ -6305,6 +7515,17 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TControlFlag.cfBoundsRectForNewParentValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- set type Visibility: default -->
 <element name="TControlFlags">
 <short></short>
@@ -6340,17 +7561,6 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TControlHandlerType.chtOnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- set type Visibility: default -->
-<element name="TControlHandlerTypes">
 <short></short>
 <descr>
 </descr>
@@ -6439,6 +7649,28 @@
 
 <!-- variable Visibility: private -->
 <element name="TControl.FBaseParentClientSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControl.FBorderSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControl.FBoundsRectForNewParent">
 <short></short>
 <descr>
 </descr>
@@ -6889,6 +8121,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TControl.FOnEditingDone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TControl.FOnEndDock">
 <short></short>
 <descr>
@@ -7087,6 +8330,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TControl.FSessionProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TControl.FShowHint">
 <short></short>
 <descr>
@@ -7132,17 +8386,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TControl.FTBDockHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TControl.FText">
 <short></short>
 <descr>
 </descr>
@@ -7218,6 +8461,28 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TControl.DoActionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoActionChange.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: private -->
 <element name="TControl.GetBoundsRect">
 <short></short>
@@ -7275,50 +8540,6 @@
 
 <!-- function result Visibility: default -->
 <element name="TControl.GetClientWidth.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TControl.GetFloating">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetFloating.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TControl.GetFloatingDockSiteClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetFloatingDockSiteClass.Result">
 <short></short>
 <descr>
 </descr>
@@ -7417,6 +8638,28 @@
 </element>
 
 <!-- function Visibility: private -->
+<element name="TControl.GetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetText.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
 <element name="TControl.GetUndockHeight">
 <short></short>
 <descr>
@@ -7461,28 +8704,6 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TControl.IsAnchorsStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.IsAnchorsStored.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
 <element name="TControl.IsCaptionStored">
 <short></short>
 <descr>
@@ -7495,6 +8716,94 @@
 
 <!-- function result Visibility: default -->
 <element name="TControl.IsCaptionStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsColorStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsColorStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsEnabledStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsEnabledStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsFontStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsFontStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsHintStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsHintStored.Result">
 <short></short>
 <descr>
 </descr>
@@ -7539,6 +8848,72 @@
 
 <!-- function result Visibility: default -->
 <element name="TControl.IsHelpKeyWordStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsOnClickStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsOnClickStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsShowHintStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsShowHintStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsVisibleStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsVisibleStored.Result">
 <short></short>
 <descr>
 </descr>
@@ -7605,28 +8980,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TControl.DoConstrainedResize.NewHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TControl.DoDragMsg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoDragMsg.Dragmsg">
 <short></short>
 <descr>
 </descr>
@@ -7714,7 +9067,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TControl.SetAlign">
+<element name="TControl.SetBorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -7725,7 +9078,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.SetAlign.Value">
+<element name="TControl.SetBorderSpacing.AValue">
 <short></short>
 <descr>
 </descr>
@@ -7748,6 +9101,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TControl.SetBoundsRect.ARect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControl.SetBoundsRectForNewParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetBoundsRectForNewParent.AValue">
 <short></short>
 <descr>
 </descr>
@@ -7858,6 +9233,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TControl.SetCursor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControl.SetDragCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetDragCursor.AValue">
 <short></short>
 <descr>
 </descr>
@@ -8044,6 +9441,28 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TControl.SetParentColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetParentColor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TControl.SetPopupMenu">
 <short></short>
 <descr>
@@ -8132,6 +9551,28 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TControl.SetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetText.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TControl.SetTop">
 <short></short>
 <descr>
@@ -8198,7 +9639,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TControl.UpdateTaborder">
+<element name="TControl.UpdateTabOrder">
 <short></short>
 <descr>
 </descr>
@@ -8209,18 +9650,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.UpdateTaborder.value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TControl.AutoSizing">
+<element name="TControl.UpdateTabOrder.value">
 <short></short>
 <descr>
 </descr>
@@ -8232,6 +9662,17 @@
 
 <!-- variable Visibility: protected -->
 <element name="TControl.FControlState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TControl.AutoSizing">
 <short></short>
 <descr>
 </descr>
@@ -8254,6 +9695,50 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TControl.DoAutoSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetAlign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAlign.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetAnchors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAnchors.AValue">
 <short></short>
 <descr>
 </descr>
@@ -8319,6 +9804,28 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TControl.DoBorderSpacingChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoBorderSpacingChange.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TControl.SendMoveSizeMessages">
 <short></short>
 <descr>
@@ -8352,7 +9859,557 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.Changed">
+<element name="TControl.ConstrainedResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ConstrainedResize.MinWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ConstrainedResize.MinHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ConstrainedResize.MaxWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ConstrainedResize.MaxHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DoOnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DoOnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.Resize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.RequestAlign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.UpdateBaseBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.UpdateBaseBounds.StoreBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.UpdateBaseBounds.StoreParentClientSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.UpdateBaseBounds.UseLoadedValues">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.LockBaseBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.UnlockBaseBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.UpdateAnchorRules">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.ChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChangeBounds.ALeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChangeBounds.ATop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChangeBounds.AWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChangeBounds.AHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DoSetBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoSetBounds.ALeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoSetBounds.ATop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoSetBounds.AWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoSetBounds.AHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.ChangeScale">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChangeScale.M">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChangeScale.D">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.CanAutoSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.CanAutoSize.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.CanAutoSize.NewWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.CanAutoSize.NewHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetAlignedBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAlignedBounds.aLeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAlignedBounds.aTop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAlignedBounds.aWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAlignedBounds.aHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetClientOrigin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetClientOrigin.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetClientRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetClientRect.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetScrolledClientRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetScrolledClientRect.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetChildsRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetChildsRect.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.GetChildsRect.Scrolled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetClientScrollOffset">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetClientScrollOffset.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetControlOrigin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetControlOrigin.Result">
 <short></short>
 <descr>
 </descr>
@@ -8935,6 +10992,50 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TControl.CMParentColorChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.CMParentColorChanged.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.CMParentShowHintChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.CMParentShowHintChanged.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TControl.CMVisibleChanged">
 <short></short>
 <descr>
@@ -8957,51 +11058,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.ConstrainedResize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ConstrainedResize.MinWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ConstrainedResize.MinHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ConstrainedResize.MaxWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ConstrainedResize.MaxHeight">
+<element name="TControl.CalculateDockSizes">
 <short></short>
 <descr>
 </descr>
@@ -9012,7 +11069,7 @@
 </element>
 
 <!-- function Visibility: protected -->
-<element name="TControl.GetPalette">
+<element name="TControl.CreateFloatingDockSite">
 <short></short>
 <descr>
 </descr>
@@ -9023,73 +11080,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TControl.GetPalette.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.DoOnResize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.DoOnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.Resize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.RequestAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.UpdateBaseBounds">
+<element name="TControl.CreateFloatingDockSite.Result">
 <short></short>
 <descr>
 </descr>
@@ -9100,7 +11091,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.UpdateBaseBounds.StoreBounds">
+<element name="TControl.CreateFloatingDockSite.Bounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetDockEdge">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetDockEdge.Result">
 <short></short>
 <descr>
 </descr>
@@ -9111,7 +11124,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.UpdateBaseBounds.StoreParentClientSize">
+<element name="TControl.GetDockEdge.MousePos">
 <short></short>
 <descr>
 </descr>
@@ -9121,8 +11134,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TControl.UpdateBaseBounds.UseLoadedValues">
+<!-- function Visibility: protected -->
+<element name="TControl.GetFloating">
 <short></short>
 <descr>
 </descr>
@@ -9132,8 +11145,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TControl.LockBaseBounds">
+<!-- function result Visibility: default -->
+<element name="TControl.GetFloating.Result">
 <short></short>
 <descr>
 </descr>
@@ -9143,8 +11156,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TControl.UnlockBaseBounds">
+<!-- function Visibility: protected -->
+<element name="TControl.GetFloatingDockSiteClass">
 <short></short>
 <descr>
 </descr>
@@ -9154,151 +11167,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TControl.UpdateAnchorRules">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.ChangeBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ChangeBounds.ALeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ChangeBounds.ATop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ChangeBounds.AWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ChangeBounds.AHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.DoSetBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoSetBounds.ALeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoSetBounds.ATop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoSetBounds.AWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoSetBounds.AHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.ChangeScale">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ChangeScale.M">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.ChangeScale.D">
+<!-- function result Visibility: default -->
+<element name="TControl.GetFloatingDockSiteClass.Result">
 <short></short>
 <descr>
 </descr>
@@ -9310,6 +11180,138 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TControl.BeginAutoDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DefaultDockImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DefaultDockImage.DragDockObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DefaultDockImage.Erase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DockTrackNoTarget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DockTrackNoTarget.Source">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DockTrackNoTarget.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DockTrackNoTarget.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DoDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoDock.NewDockSite">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoDock.ARect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DoDragMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoDragMsg.DragMsg">
 <short></short>
 <descr>
 </descr>
@@ -9364,7 +11366,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.DoDock">
+<element name="TControl.DoEndDrag">
 <short></short>
 <descr>
 </descr>
@@ -9375,7 +11377,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.DoDock.NewDockSite">
+<element name="TControl.DoEndDrag.Target">
 <short></short>
 <descr>
 </descr>
@@ -9386,7 +11388,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.DoDock.ARect">
+<element name="TControl.DoEndDrag.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DoEndDrag.Y">
 <short></short>
 <descr>
 </descr>
@@ -9418,105 +11431,6 @@
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
-<element name="TControl.GetDockEdge">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetDockEdge.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.GetDockEdge.MousePos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.PositionDockRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.PositionDockRect.DragDockObject">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.Click">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.DblClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.TripleClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.QuadClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: protected -->
 <element name="TControl.DoStartDrag">
 <short></short>
@@ -9530,6 +11444,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TControl.DoStartDrag.DragObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.DragCanceled">
 <short></short>
 <descr>
 </descr>
@@ -9606,7 +11531,18 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.DragCanceled">
+<element name="TControl.DrawDragDockImage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.DrawDragDockImage.DragDockObject">
 <short></short>
 <descr>
 </descr>
@@ -9617,7 +11553,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.DoEndDrag">
+<element name="TControl.EraseDragDockImage">
 <short></short>
 <descr>
 </descr>
@@ -9628,29 +11564,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.DoEndDrag.Target">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoEndDrag.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DoEndDrag.Y">
+<element name="TControl.EraseDragDockImage.DragDockObject">
 <short></short>
 <descr>
 </descr>
@@ -9661,7 +11575,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.InvalidateControl">
+<element name="TControl.PositionDockRect">
 <short></short>
 <descr>
 </descr>
@@ -9672,128 +11586,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.InvalidateControl.IsVisible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.InvalidateControl.IsOpaque">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.InvalidateControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.InvalidateControl.IsVisible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.InvalidateControl.IsOpaque">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.InvalidateControl.IgnoreWinControls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.SendDockNotification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SendDockNotification.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SendDockNotification.WParam">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SendDockNotification.LParam">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetColor.Value">
+<element name="TControl.PositionDockRect.DragDockObject">
 <short></short>
 <descr>
 </descr>
@@ -9826,18 +11619,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.SetEnabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetEnabled.Value">
+<element name="TControl.Click">
 <short></short>
 <descr>
 </descr>
@@ -9848,18 +11630,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.SetHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetHint.Value">
+<element name="TControl.DblClick">
 <short></short>
 <descr>
 </descr>
@@ -9870,18 +11641,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.SetName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetName.Value">
+<element name="TControl.TripleClick">
 <short></short>
 <descr>
 </descr>
@@ -9892,106 +11652,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.SetParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetParent.AParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.SetParentComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetParentComponent.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.GetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetText.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.SetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetText.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TControl.WndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.WndProc.TheMessage">
+<element name="TControl.QuadClick">
 <short></short>
 <descr>
 </descr>
@@ -10156,6 +11817,479 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TControl.MouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.MouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.Changed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetPalette">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetPalette.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.ChildClassAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.ChildClassAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ChildClassAllowed.ChildClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.AssignTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.AssignTo.Dest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.InvalidateControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.InvalidateControl.CtrlIsVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.InvalidateControl.CtrlIsOpaque">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.InvalidateControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.InvalidateControl.CtrlIsVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.InvalidateControl.CtrlIsOpaque">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.InvalidateControl.IgnoreWinControls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.FontChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.FontChanged.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.GetAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetAction.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TControl.RealGetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.RealGetText.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.RealSetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.RealSetText.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetAction.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetColor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetEnabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetEnabled.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetHint.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetName.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetParent.NewParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.SetParentComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetParentComponent.NewParentComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.WndProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.WndProc.TheMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.CaptureChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TControl.Notification">
 <short></short>
 <descr>
@@ -10179,50 +12313,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TControl.Notification.Operation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.CanAutoSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.CanAutoSize.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.CanAutoSize.NewWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.CanAutoSize.NewHeight">
 <short></short>
 <descr>
 </descr>
@@ -10278,127 +12368,6 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TControl.SetFocus">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.GetClientOrigin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetClientOrigin.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.GetClientRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetClientRect.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.GetScrolledClientRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetScrolledClientRect.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.GetChildsRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetChildsRect.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.GetChildsRect.Scrolled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TControl.GetClientScrollOffset">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.GetClientScrollOffset.Result">
 <short></short>
 <descr>
 </descr>
@@ -10508,61 +12477,6 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.SetAlignedBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetAlignedBounds.aLeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetAlignedBounds.aTop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetAlignedBounds.aWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.SetAlignedBounds.aHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
 <element name="TControl.VisibleChanging">
 <short></short>
 <descr>
@@ -10574,7 +12488,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.AddControlHandler">
+<element name="TControl.AddHandler">
 <short></short>
 <descr>
 </descr>
@@ -10585,7 +12499,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.AddControlHandler.HandlerType">
+<element name="TControl.AddHandler.HandlerType">
 <short></short>
 <descr>
 </descr>
@@ -10596,7 +12510,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.AddControlHandler.AMethod">
+<element name="TControl.AddHandler.AMethod">
 <short></short>
 <descr>
 </descr>
@@ -10607,7 +12521,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.AddControlHandler.AsLast">
+<element name="TControl.AddHandler.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -10618,7 +12532,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TControl.RemoveControlHandler">
+<element name="TControl.RemoveHandler">
 <short></short>
 <descr>
 </descr>
@@ -10629,7 +12543,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.RemoveControlHandler.HandlerType">
+<element name="TControl.RemoveHandler.HandlerType">
 <short></short>
 <descr>
 </descr>
@@ -10640,7 +12554,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.RemoveControlHandler.AMethod">
+<element name="TControl.RemoveHandler.AMethod">
 <short></short>
 <descr>
 </descr>
@@ -10683,6 +12597,61 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TControl.GetActionLinkClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetActionLinkClass.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.ActionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ActionChange.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ActionChange.CheckDefaults">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: protected -->
 <element name="TControl.ActionLink">
 <short></short>
@@ -10696,6 +12665,17 @@
 
 <!-- property Visibility: protected -->
 <element name="TControl.AutoSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TControl.Ctl3D">
 <short></short>
 <descr>
 </descr>
@@ -10729,17 +12709,6 @@
 
 <!-- property Visibility: protected -->
 <element name="TControl.DragMode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TControl.IsControl">
 <short></short>
 <descr>
 </descr>
@@ -10784,6 +12753,17 @@
 
 <!-- property Visibility: protected -->
 <element name="TControl.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TControl.SessionProperties">
 <short></short>
 <descr>
 </descr>
@@ -10980,6 +12960,17 @@
 </seealso>
 </element>
 
+<!-- property Visibility: protected -->
+<element name="TControl.OnEditingDone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- variable Visibility: public -->
 <element name="TControl.FCompStyle">
 <short></short>
@@ -10991,41 +12982,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TControl.PerformTab">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.PerformTab.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.PerformTab.ForwardTab">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: public -->
-<element name="TControl.BeginDrag">
+<element name="TControl.DragDrop">
 <short></short>
 <descr>
 </descr>
@@ -11036,7 +12994,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.BeginDrag.Immediate">
+<element name="TControl.DragDrop.Source">
 <short></short>
 <descr>
 </descr>
@@ -11047,18 +13005,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.BeginDrag.Threshold">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TControl.BeginDrag">
+<element name="TControl.DragDrop.X">
 <short></short>
 <descr>
 </descr>
@@ -11069,73 +13016,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.BeginDrag.Immediate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TControl.BringToFront">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TControl.ColorIsStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TControl.ColorIsStored.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TControl.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.Create.AOwner">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TControl.Destroy">
+<element name="TControl.DragDrop.Y">
 <short></short>
 <descr>
 </descr>
@@ -11256,7 +13137,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.ManualFloat.ScreenPos">
+<element name="TControl.ManualFloat.TheScreenRect">
 <short></short>
 <descr>
 </descr>
@@ -11332,6 +13213,193 @@
 </seealso>
 </element>
 
+<!-- constructor Visibility: public -->
+<element name="TControl.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TControl.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TControl.PerformTab">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.PerformTab.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.PerformTab.ForwardTab">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.EditingDone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.ExecuteDefaultAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.ExecuteCancelAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.BeginDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.BeginDrag.Immediate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.BeginDrag.Threshold">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.BeginDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.BeginDrag.Immediate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.BringToFront">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TControl.ColorIsStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.ColorIsStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: public -->
 <element name="TControl.HasParent">
 <short></short>
@@ -11387,6 +13455,28 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TControl.IsVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TControl.Refresh">
 <short></short>
@@ -11431,8 +13521,52 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TControl.CheckChildClassAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.CheckChildClassAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.CheckChildClassAllowed.ChildClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.CheckChildClassAllowed.ExceptionOnInvalid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
-<element name="TControl.DragDrop">
+<element name="TControl.CheckNewParent">
 <short></short>
 <descr>
 </descr>
@@ -11443,29 +13577,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.DragDrop.Source">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DragDrop.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TControl.DragDrop.Y">
+<element name="TControl.CheckNewParent.AParent">
 <short></short>
 <descr>
 </descr>
@@ -11477,6 +13589,39 @@
 
 <!-- procedure Visibility: public -->
 <element name="TControl.SendToBack">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.SetTempCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.SetTempCursor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.UpdateRolesForForm">
 <short></short>
 <descr>
 </descr>
@@ -11706,6 +13851,28 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TControl.GetTextLen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetTextLen.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TControl.SetTextBuf">
 <short></short>
@@ -11806,7 +13973,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.ScreenToClient.Point">
+<element name="TControl.ScreenToClient.APoint">
 <short></short>
 <descr>
 </descr>
@@ -11839,7 +14006,73 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.ClientToScreen.Point">
+<element name="TControl.ClientToScreen.APoint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TControl.ScreenToControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.ScreenToControl.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ScreenToControl.APoint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TControl.ControlToScreen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.ControlToScreen.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.ControlToScreen.APoint">
 <short></short>
 <descr>
 </descr>
@@ -11905,7 +14138,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.SetZOrderPosition.Position">
+<element name="TControl.SetZOrderPosition.NewPosition">
 <short></short>
 <descr>
 </descr>
@@ -11927,7 +14160,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.SetZOrder.Topmost">
+<element name="TControl.SetZOrder.TopMost">
 <short></short>
 <descr>
 </descr>
@@ -11959,8 +14192,52 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TControl.ParentHandlesAllocated">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.ParentHandlesAllocated.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
-<element name="TControl.RemoveAllControlHandlersOfObject">
+<element name="TControl.InitiateAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.MouseEntered">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControl.RemoveAllHandlersOfObject">
 <short></short>
 <descr>
 </descr>
@@ -11971,7 +14248,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TControl.RemoveAllControlHandlersOfObject.AnObject">
+<element name="TControl.RemoveAllHandlersOfObject.AnObject">
 <short></short>
 <descr>
 </descr>
@@ -12103,6 +14380,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TControl.Action">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TControl.Align">
 <short></short>
 <descr>
@@ -12114,7 +14402,29 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TControl.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TControl.BoundsRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.BoundsRectForNewParent">
 <short></short>
 <descr>
 </descr>
@@ -12180,6 +14490,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TControl.ControlOrigin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TControl.Constraints">
 <short></short>
 <descr>
@@ -12224,17 +14545,6 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.Ctl3D">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
 <element name="TControl.Enabled">
 <short></short>
 <descr>
@@ -12247,6 +14557,61 @@
 
 <!-- property Visibility: public -->
 <element name="TControl.Font">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.IsControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.OnClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.OnShowHint">
 <short></short>
 <descr>
 </descr>
@@ -12421,50 +14786,6 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TControl.OnResize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TControl.OnChangeBounds">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TControl.OnClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TControl.OnShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- property Visibility: published -->
 <element name="TControl.Cursor">
 <short></short>
@@ -12564,129 +14885,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TCreateParams">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.Caption">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.Style">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.ExStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.Y">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.Width">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.Height">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.WndParent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.Param">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.WindowClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCreateParams.WinClassName">
 <short></short>
 <descr>
 </descr>
@@ -12729,8 +14929,690 @@
 </seealso>
 </element>
 
+<!-- enumeration type Visibility: default -->
+<element name="TChildControlEnlargeStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlEnlargeStyle.cesAnchorAligning">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlEnlargeStyle.cesScaleChilds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlEnlargeStyle.cesHomogenousChildGrowth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlEnlargeStyle.cesHomogenousSpaceGrowth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TChildControlShrinkStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlShrinkStyle.cssAnchorAligning">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlShrinkStyle.cssScaleChilds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TChildControlShrinkStyle.cssHomogenousChildDecrease">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TControlChildSizing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FEnlargeHorizontal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FEnlargeVertical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FHorizontalSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FLeftRightSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FShrinkHorizontal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FShrinkVertical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FTopBottomSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControlChildSizing.FVerticalSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetEnlargeHorizontal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetEnlargeHorizontal.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetEnlargeVertical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetEnlargeVertical.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetHorizontalSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetHorizontalSpacing.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetLeftRightSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetLeftRightSpacing.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetShrinkHorizontal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetShrinkHorizontal.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetShrinkVertical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetShrinkVertical.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetTopBottomSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetTopBottomSpacing.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TControlChildSizing.SetVerticalSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.SetVerticalSpacing.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControlChildSizing.Change">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TControlChildSizing.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.Create.OwnerControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControlChildSizing.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.Assign.Source">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TControlChildSizing.AssignTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.AssignTo.Dest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TControlChildSizing.IsEqual">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControlChildSizing.IsEqual.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlChildSizing.IsEqual.Sizing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlChildSizing.Control">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlChildSizing.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.LeftRightSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.TopBottomSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.HorizontalSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.VerticalSpacing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.EnlargeHorizontal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.EnlargeVertical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.ShrinkHorizontal">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TControlChildSizing.ShrinkVertical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TWinControlActionLink">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControlActionLink.AssignClient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControlActionLink.AssignClient.AClient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TWinControlActionLink.IsHelpContextLinked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControlActionLink.IsHelpContextLinked.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControlActionLink.SetHelpContext">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControlActionLink.SetHelpContext.Value">
 <short></short>
 <descr>
 </descr>
@@ -12775,6 +15657,17 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TWinControlFlag.wcfColorChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TWinControlFlag.wcfFontChanged">
 <short></short>
 <descr>
 </descr>
@@ -12884,6 +15777,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TWinControl.FBorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TWinControl.FBrush">
 <short></short>
 <descr>
@@ -12906,6 +15810,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TWinControl.FChildSizing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TWinControl.FControls">
 <short></short>
 <descr>
@@ -12918,6 +15833,28 @@
 
 <!-- variable Visibility: private -->
 <element name="TWinControl.FDefWndProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TWinControl.FDockClients">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TWinControl.FDoubleBuffered">
 <short></short>
 <descr>
 </descr>
@@ -12995,6 +15932,17 @@
 
 <!-- variable Visibility: private -->
 <element name="TWinControl.FOnDockOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TWinControl.FOnGetSiteInfo">
 <short></short>
 <descr>
 </descr>
@@ -13159,6 +16107,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TWinControl.FShowingValid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TWinControl.FTabList">
 <short></short>
 <descr>
@@ -13191,6 +16150,17 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TWinControl.FCreatingHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TWinControl.AlignControl">
 <short></short>
@@ -13204,6 +16174,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TWinControl.AlignControl.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TWinControl.GetBrush">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.GetBrush.Result">
 <short></short>
 <descr>
 </descr>
@@ -13412,6 +16404,28 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TWinControl.SetChildSizing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.SetChildSizing.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TWinControl.SetDockSite">
 <short></short>
 <descr>
@@ -13423,7 +16437,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.SetDockSite.AValue">
+<element name="TWinControl.SetDockSite.NewDockSite">
 <short></short>
 <descr>
 </descr>
@@ -13543,6 +16557,127 @@
 </seealso>
 </element>
 
+<!-- function Visibility: private -->
+<element name="TWinControl.WantsKeyBeforeInterface">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.WantsKeyBeforeInterface.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.WantsKeyBeforeInterface.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.WantsKeyBeforeInterface.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.AssignTo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.AssignTo.Dest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.ActionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ActionChange.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ActionChange.CheckDefaults">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TWinControl.GetActionLinkClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.GetActionLinkClass.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TWinControl.AdjustSize">
 <short></short>
@@ -13566,7 +16701,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.AdjustClientRect.Rect">
+<element name="TWinControl.AdjustClientRect.ARect">
 <short></short>
 <descr>
 </descr>
@@ -13610,6 +16745,94 @@
 </element>
 
 <!-- function Visibility: protected -->
+<element name="TWinControl.DoAlignChildControls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.DoAlignChildControls.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.DoAlignChildControls.TheAlign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.DoAlignChildControls.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.DoAlignChildControls.AControlList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.DoAlignChildControls.ARect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DoChildSizingChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.DoChildSizingChange.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
 <element name="TWinControl.CanTab">
 <short></short>
 <descr>
@@ -13622,6 +16845,28 @@
 
 <!-- function result Visibility: default -->
 <element name="TWinControl.CanTab.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DoDragMsg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.DoDragMsg.DragMsg">
 <short></short>
 <descr>
 </descr>
@@ -13697,6 +16942,39 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TWinControl.ContainsControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.ContainsControl.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ContainsControl.Control">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TWinControl.ControlsAligned">
 <short></short>
@@ -13754,28 +17032,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TWinControl.CreateSubClass.ControlClassName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.CreateComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.CreateComponent.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -13917,6 +17173,39 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TWinControl.ChildClassAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.ChildClassAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ChildClassAllowed.ChildClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TWinControl.PaintControls">
 <short></short>
@@ -14018,6 +17307,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TWinControl.CMEnabledChanged.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.CMShowHintChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.CMShowHintChanged.Message">
 <short></short>
 <descr>
 </descr>
@@ -14358,7 +17669,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TWinControl.CreateParams">
+<element name="TWinControl.CNKeyDown">
 <short></short>
 <descr>
 </descr>
@@ -14369,7 +17680,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.CreateParams.Params">
+<element name="TWinControl.CNKeyDown.Message">
 <short></short>
 <descr>
 </descr>
@@ -14380,40 +17691,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TWinControl.DestroyHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.DoEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.DoExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.KeyDown">
+<element name="TWinControl.CNKeyUp">
 <short></short>
 <descr>
 </descr>
@@ -14424,7 +17702,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.KeyDown.Key">
+<element name="TWinControl.CNKeyUp.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.CNChar">
 <short></short>
 <descr>
 </descr>
@@ -14435,282 +17724,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.KeyDown.Shift">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.KeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.KeyPress.Key">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.KeyUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.KeyUp.Key">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.KeyUp.Shift">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.MainWndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.MainWndProc.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.ReAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.ReCreateWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.RemoveFocus">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.RemoveFocus.Removing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.SetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.SetText.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.UpdateControlState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.CreateHandle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.CreateWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.InitializeWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.Loaded">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.DestroyWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.UpdateShowing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.Update">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.ShowControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.ShowControl.AControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.WndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.WndProc.Message">
+<element name="TWinControl.CNChar.Message">
 <short></short>
 <descr>
 </descr>
@@ -15040,6 +18054,50 @@
 </element>
 
 <!-- function Visibility: protected -->
+<element name="TWinControl.CreateDockManager">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.CreateDockManager.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DoEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DoExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
 <element name="TWinControl.DoMouseWheel">
 <short></short>
 <descr>
@@ -15281,6 +18339,193 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.ControlKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ControlKeyDown.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ControlKeyDown.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.KeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyDown.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyDown.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.KeyDownBeforeInterface">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyDownBeforeInterface.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyDownBeforeInterface.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.KeyDownAfterInterface">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyDownAfterInterface.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyDownAfterInterface.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.KeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyPress.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.KeyUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyUp.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.KeyUp.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: protected -->
 <element name="TWinControl.FindNextControl">
 <short></short>
@@ -15424,8 +18669,74 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.FixupTabList">
+<!-- function Visibility: protected -->
+<element name="TWinControl.RealGetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.RealGetText.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TWinControl.GetBorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.GetBorderStyle.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TWinControl.GetChildsRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.GetChildsRect.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.GetChildsRect.Scrolled">
 <short></short>
 <descr>
 </descr>
@@ -15480,7 +18791,7 @@
 </element>
 
 <!-- function Visibility: protected -->
-<element name="TWinControl.GetChildsRect">
+<element name="TWinControl.GetControlOrigin">
 <short></short>
 <descr>
 </descr>
@@ -15491,18 +18802,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TWinControl.GetChildsRect.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.GetChildsRect.Scrolled">
+<element name="TWinControl.GetControlOrigin.Result">
 <short></short>
 <descr>
 </descr>
@@ -15578,8 +18878,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.SetColor">
+<!-- function Visibility: protected -->
+<element name="TWinControl.ParentHandlesAllocated">
 <short></short>
 <descr>
 </descr>
@@ -15589,30 +18889,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TWinControl.SetColor.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TWinControl.SetZOrderPosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.SetZOrderPosition.Position">
+<!-- function result Visibility: default -->
+<element name="TWinControl.ParentHandlesAllocated.Result">
 <short></short>
 <descr>
 </descr>
@@ -15623,7 +18901,18 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TWinControl.SetZOrder">
+<element name="TWinControl.CreateHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.CreateParams">
 <short></short>
 <descr>
 </descr>
@@ -15634,7 +18923,194 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.SetZOrder.Topmost">
+<element name="TWinControl.CreateParams.Params">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.CreateWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DestroyHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DestroyWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.DoFlipChildren">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.FixupTabList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.FontChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.FontChanged.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.InitializeWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.MainWndProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.MainWndProc.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.ParentFormInitializeWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.ReAlign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.RealSetText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.RealSetText.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.RemoveFocus">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.RemoveFocus.Removing">
 <short></short>
 <descr>
 </descr>
@@ -15677,8 +19153,206 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.SetBorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.SetBorderStyle.NewStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.SetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.SetColor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.SetZOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.SetZOrder.Topmost">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.SetZOrderPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.SetZOrderPosition.NewPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.ShowControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.ShowControl.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.Update">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.UpdateControlState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.UpdateShowing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TWinControl.WndProc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.WndProc.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TWinControl.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TWinControl.OnGetSiteInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TWinControl.BorderWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TWinControl.ChildSizing">
 <short></short>
 <descr>
 </descr>
@@ -15733,6 +19407,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TWinControl.DockManager">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TWinControl.DockSite">
 <short></short>
 <descr>
@@ -15744,7 +19429,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TWinControl.DockManager">
+<element name="TWinControl.DoubleBuffered">
 <short></short>
 <descr>
 </descr>
@@ -16063,7 +19748,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TWinControl.DockDrop.Source">
+<element name="TWinControl.DockDrop.DockObject">
 <short></short>
 <descr>
 </descr>
@@ -16370,6 +20055,17 @@
 </seealso>
 </element>
 
+<!-- argument Visibility: default -->
+<element name="TWinControl.InvalidateClientRectCache.WithChildControls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: public -->
 <element name="TWinControl.ClientRectNeedsInterfaceUpdate">
 <short></short>
@@ -16437,6 +20133,28 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TWinControl.NotifyControls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.NotifyControls.Msg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TWinControl.DefaultHandler">
 <short></short>
 <descr>
@@ -16480,30 +20198,30 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TWinControl.GetTextLen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TWinControl.GetTextLen.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TWinControl.Invalidate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TWinControl.RemoveControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.RemoveControl.AControl">
 <short></short>
 <descr>
 </descr>
@@ -16536,6 +20254,61 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TWinControl.InsertControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.InsertControl.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.InsertControl.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TWinControl.RemoveControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.RemoveControl.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TWinControl.Insert">
 <short></short>
 <descr>
@@ -16558,6 +20331,39 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TWinControl.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.Insert.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.Insert.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TWinControl.Remove">
 <short></short>
 <descr>
@@ -16570,6 +20376,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TWinControl.Remove.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TWinControl.ReCreateWnd">
 <short></short>
 <descr>
 </descr>
@@ -16701,6 +20518,28 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TWinControl.FlipChildren">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TWinControl.FlipChildren.AllLevels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TWinControl.GetTabOrderList">
 <short></short>
 <descr>
@@ -16756,7 +20595,7 @@
 </element>
 
 <!-- function Visibility: public -->
-<element name="TWinControl.GetTextBuf">
+<element name="TWinControl.BrushCreated">
 <short></short>
 <descr>
 </descr>
@@ -16767,51 +20606,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TWinControl.GetTextBuf.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.GetTextBuf.Buffer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.GetTextBuf.BufSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TWinControl.SetTextBuf">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TWinControl.SetTextBuf.Buffer">
+<element name="TWinControl.BrushCreated.Result">
 <short></short>
 <descr>
 </descr>
@@ -16933,50 +20728,6 @@
 
 <!-- property Visibility: public -->
 <element name="TWinControl.CachedClientHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TScrolledWindow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TScrolledWindow.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TScrolledWindow.Create.AOwner">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TScrolledWindow.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -17151,8 +20902,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TCustomControl.Paint">
+<!-- procedure Visibility: protected -->
+<element name="TCustomControl.PaintWindow">
 <short></short>
 <descr>
 </descr>
@@ -17162,8 +20913,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TCustomControl.Canvas">
+<!-- argument Visibility: default -->
+<element name="TCustomControl.PaintWindow.DC">
 <short></short>
 <descr>
 </descr>
@@ -17206,8 +20957,63 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: public -->
+<element name="TCustomControl.DestroyComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomControl.Paint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomControl.Canvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomControl.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TImageList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TImageList.BkColor">
 <short></short>
 <descr>
 </descr>
@@ -17229,7 +21035,62 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TImageList.Masked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TImageList.Width">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TImageList.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TControlPropertyStorage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControlPropertyStorage.GetPropertyList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControlPropertyStorage.GetPropertyList.List">
 <short></short>
 <descr>
 </descr>
@@ -18021,17 +21882,6 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TDockTree.FOldWndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
 <element name="TDockTree.FTopZone">
 <short></short>
 <descr>
@@ -18055,28 +21905,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TDockTree.FUpdateCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDockTree.WindowProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDockTree.WindowProc.AMessage">
 <short></short>
 <descr>
 </descr>
@@ -18186,7 +22014,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDockTree.GetControlBounds.CtlBounds">
+<element name="TDockTree.GetControlBounds.ControlBounds">
 <short></short>
 <descr>
 </descr>
@@ -18274,7 +22102,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDockTree.InsertControl.DropCtl">
+<element name="TDockTree.InsertControl.DropControl">
 <short></short>
 <descr>
 </descr>
@@ -18901,7 +22729,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="FindDragTarget.Pos">
+<element name="FindDragTarget.Position">
 <short></short>
 <descr>
 </descr>
@@ -18913,6 +22741,50 @@
 
 <!-- argument Visibility: default -->
 <element name="FindDragTarget.AllowDisabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindControlAtPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindControlAtPosition.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindControlAtPosition.Position">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindControlAtPosition.AllowDisabled">
 <short></short>
 <descr>
 </descr>
@@ -18979,6 +22851,39 @@
 
 <!-- argument Visibility: default -->
 <element name="FindControl.Handle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="FindOwnerControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="FindOwnerControl.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="FindOwnerControl.Handle">
 <short></short>
 <descr>
 </descr>
@@ -19120,6 +23025,17 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: default -->
+<element name="DefaultDockTreeClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: default -->
 <element name="SetCaptureControl">
 <short></short>
@@ -19166,6 +23082,28 @@
 
 <!-- procedure Visibility: default -->
 <element name="CancelDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="DragDone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DragDone.Drop">
 <short></short>
 <descr>
 </descr>

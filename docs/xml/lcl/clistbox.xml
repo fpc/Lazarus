@@ -36,6 +36,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="StdCtrls">
 <short></short>
 <descr>

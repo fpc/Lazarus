@@ -14,17 +14,6 @@
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
 <element name="Classes">
 <short></short>
 <descr>
@@ -80,6 +69,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="Graphics">
 <short></short>
 <descr>
@@ -102,18 +102,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
+<element name="GraphMath">
 <short></short>
 <descr>
 </descr>
@@ -135,7 +124,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -146,7 +135,29 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="GraphMath">
+<element name="ClipBrd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ActnList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
 <short></short>
 <descr>
 </descr>
@@ -938,6 +949,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TScrollBar.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TScrollBar.Ctl3D">
 <short></short>
 <descr>
@@ -1422,6 +1444,50 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TGroupBox.DockSite">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.DragCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.DragKind">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.DragMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TGroupBox.Enabled">
 <short></short>
 <descr>
@@ -1565,6 +1631,72 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TGroupBox.OnDragDrop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnDockDrop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnDockOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnDragOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnEndDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnEndDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TGroupBox.OnEnter">
 <short></short>
 <descr>
@@ -1577,6 +1709,17 @@
 
 <!-- property Visibility: published -->
 <element name="TGroupBox.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnGetSiteInfo">
 <short></short>
 <descr>
 </descr>
@@ -1663,6 +1806,39 @@
 </seealso>
 </element>
 
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnStartDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnStartDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.OnUnDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- enumeration type Visibility: default -->
 <element name="TComboBoxStyle">
 <short></short>
@@ -1720,6 +1896,17 @@
 
 <!-- enumeration value Visibility: default -->
 <element name="TComboBoxStyle.csOwnerDrawVariable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TOwnerDrawState">
 <short></short>
 <descr>
 </descr>
@@ -2302,7 +2489,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomComboBox.DoChange">
+<element name="TCustomComboBox.LMChange">
 <short></short>
 <descr>
 </descr>
@@ -2313,7 +2500,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomComboBox.DoChange.msg">
+<element name="TCustomComboBox.LMChange.msg">
 <short></short>
 <descr>
 </descr>
@@ -2325,17 +2512,6 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomComboBox.Change">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomComboBox.Loaded">
 <short></short>
 <descr>
 </descr>
@@ -2840,6 +3016,28 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TCustomComboBox.KeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomComboBox.KeyPress.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: protected -->
 <element name="TCustomComboBox.DropDownCount">
 <short></short>
@@ -2995,7 +3193,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomComboBox.Create.AOwner">
+<element name="TCustomComboBox.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -3324,6 +3522,17 @@
 </seealso>
 </element>
 
+<!-- property Visibility: published -->
+<element name="TCustomComboBox.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TComboBox">
 <short></short>
@@ -3337,6 +3546,17 @@
 
 <!-- property Visibility: public -->
 <element name="TComboBox.ItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.Align">
 <short></short>
 <descr>
 </descr>
@@ -3435,17 +3655,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TComboBox.ItemWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TComboBox.Items">
 <short></short>
 <descr>
@@ -3457,7 +3666,194 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TComboBox.ItemWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TComboBox.MaxLength">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnCloseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnDrawItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnDropDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnEditingDone">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnKeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnKeyUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.OnSelect">
 <short></short>
 <descr>
 </descr>
@@ -3577,116 +3973,6 @@
 </seealso>
 </element>
 
-<!-- property Visibility: published -->
-<element name="TComboBox.OnChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnCloseUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnDrawItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnDropDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnKeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TComboBox.OnKeyUp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- enumeration type Visibility: default -->
 <element name="TListBoxStyle">
 <short></short>
@@ -3731,6 +4017,39 @@
 </seealso>
 </element>
 
+<!-- procedure type Visibility: default -->
+<element name="TSelectionChangeEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSelectionChangeEvent.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSelectionChangeEvent.User">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TCustomListBox">
 <short></short>
@@ -3743,7 +4062,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomListBox.FBorderStyle">
+<element name="TCustomListBox.FCanvas">
 <short></short>
 <descr>
 </descr>
@@ -3754,7 +4073,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomListBox.FCanvas">
+<element name="TCustomListBox.FClickOnSelChange">
 <short></short>
 <descr>
 </descr>
@@ -3777,6 +4096,17 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomListBox.FMultiSelect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomListBox.FIntegralHeight">
 <short></short>
 <descr>
 </descr>
@@ -3820,7 +4150,40 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomListBox.FLockSelectionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomListBox.FOnDrawItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomListBox.FOnMeasureItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomListBox.FOnSelectionChange">
 <short></short>
 <descr>
 </descr>
@@ -3963,6 +4326,28 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomListBox.LMSelChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.LMSelChange.TheMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomListBox.SendItemSelected">
 <short></short>
 <descr>
@@ -4052,6 +4437,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomListBox.AssignCacheToItemData.AData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListBox.Loaded">
 <short></short>
 <descr>
 </descr>
@@ -4250,28 +4646,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomListBox.GetCachedData.AIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomListBox.SetBorderStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomListBox.SetBorderStyle.Val">
 <short></short>
 <descr>
 </descr>
@@ -4512,6 +4886,50 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TCustomListBox.DoSelectionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.DoSelectionChange.User">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListBox.SendItemIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomListBox.OnMeasureItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TCustomListBox.Create">
 <short></short>
@@ -4524,7 +4942,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomListBox.Create.AOwner">
+<element name="TCustomListBox.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -4578,8 +4996,239 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TCustomListBox.ItemAtPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomListBox.ItemAtPos.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.ItemAtPos.Pos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.ItemAtPos.Existing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomListBox.ItemRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomListBox.ItemRect.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.ItemRect.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomListBox.ItemVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomListBox.ItemVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.ItemVisible.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomListBox.ItemFullyVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomListBox.ItemFullyVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.ItemFullyVisible.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomListBox.MakeCurrentVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomListBox.MeasureItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.MeasureItem.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListBox.MeasureItem.TheHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TCustomListBox.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomListBox.LockSelectionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomListBox.UnlockSelectionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Align">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Anchors">
 <short></short>
 <descr>
 </descr>
@@ -4612,7 +5261,51 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomListBox.ClickOnSelChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomListBox.ExtendedSelect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Font">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.IntegralHeight">
 <short></short>
 <descr>
 </descr>
@@ -4667,7 +5360,238 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomListBox.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnDblClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomListBox.OnDrawItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnKeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnKeyUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseWheel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseWheelDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnMouseWheelUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.OnSelectionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.PopupMenu">
 <short></short>
 <descr>
 </descr>
@@ -4711,6 +5635,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomListBox.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomListBox.Sorted">
 <short></short>
 <descr>
@@ -4733,7 +5668,40 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomListBox.TabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomListBox.TopIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomListBox.Visible">
 <short></short>
 <descr>
 </descr>
@@ -4788,7 +5756,51 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListBox.ClickOnSelChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListBox.ExtendedSelect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.Font">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.IntegralHeight">
 <short></short>
 <descr>
 </descr>
@@ -4822,6 +5834,17 @@
 
 <!-- property Visibility: published -->
 <element name="TListBox.MultiSelect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.OnChangeBounds">
 <short></short>
 <descr>
 </descr>
@@ -4953,6 +5976,61 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListBox.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.OnMouseWheel">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.OnMouseWheelDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.OnMouseWheelUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListBox.OnResize">
 <short></short>
 <descr>
@@ -4964,7 +6042,40 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListBox.OnSelectionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListBox.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListBox.PopupMenu">
 <short></short>
 <descr>
 </descr>
@@ -5602,7 +6713,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomEdit.SetText">
+<element name="TCustomEdit.RealSetText">
 <short></short>
 <descr>
 </descr>
@@ -5613,7 +6724,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomEdit.SetText.Value">
+<element name="TCustomEdit.RealSetText.Value">
 <short></short>
 <descr>
 </descr>
@@ -5623,8 +6734,63 @@
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
-<element name="TCustomEdit.OnChange">
+<!-- function Visibility: protected -->
+<element name="TCustomEdit.ChildClassAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomEdit.ChildClassAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomEdit.ChildClassAllowed.ChildClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomEdit.KeyUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomEdit.KeyUp.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomEdit.KeyUp.Shift">
 <short></short>
 <descr>
 </descr>
@@ -5658,6 +6824,50 @@
 
 <!-- procedure Visibility: public -->
 <element name="TCustomEdit.SelectAll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomEdit.ClearSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomEdit.CopyToClipboard">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomEdit.CutToClipboard">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomEdit.PasteFromClipboard">
 <short></short>
 <descr>
 </descr>
@@ -5768,6 +6978,17 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomEdit.Text">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomEdit.OnChange">
 <short></short>
 <descr>
 </descr>
@@ -5944,17 +7165,6 @@
 
 <!-- object Visibility: default -->
 <element name="TCustomMemo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomMemo.FFont">
 <short></short>
 <descr>
 </descr>
@@ -6173,6 +7383,61 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TCustomMemo.WordWrapIsStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomMemo.WordWrapIsStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomMemo.ControlKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomMemo.ControlKeyDown.Key">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomMemo.ControlKeyDown.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TCustomMemo.Create">
 <short></short>
@@ -6273,17 +7538,6 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TCustomMemo.Font">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
 <element name="TCustomMemo.HorzScrollBar">
 <short></short>
 <descr>
@@ -6307,6 +7561,17 @@
 
 <!-- object Visibility: default -->
 <element name="TEdit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.Action">
 <short></short>
 <descr>
 </descr>
@@ -6350,6 +7615,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TEdit.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TEdit.CharCase">
 <short></short>
 <descr>
@@ -6383,6 +7659,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TEdit.Enabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TEdit.MaxLength">
 <short></short>
 <descr>
@@ -6395,6 +7682,17 @@
 
 <!-- property Visibility: published -->
 <element name="TEdit.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.OnChangeBounds">
 <short></short>
 <descr>
 </descr>
@@ -6471,6 +7769,61 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TEdit.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TEdit.ParentShowHint">
 <short></short>
 <descr>
@@ -6526,6 +7879,28 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TEdit.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEdit.TabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TEdit.Text">
 <short></short>
 <descr>
@@ -6549,28 +7924,6 @@
 
 <!-- object Visibility: default -->
 <element name="TMemo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TMemo.WordWrapIsStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TMemo.WordWrapIsStored.Result">
 <short></short>
 <descr>
 </descr>
@@ -6604,6 +7957,17 @@
 
 <!-- property Visibility: published -->
 <element name="TMemo.Color">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -6713,6 +8077,72 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TMemo.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TMemo.PopupMenu">
 <short></short>
 <descr>
@@ -6746,7 +8176,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TMemo.Tabstop">
+<element name="TMemo.TabStop">
 <short></short>
 <descr>
 </descr>
@@ -6966,6 +8396,17 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomLabel.ParentFormInitializeWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomLabel.Notification">
 <short></short>
 <descr>
@@ -7153,7 +8594,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TLabel.AutoSize">
+<element name="TLabel.Anchors">
 <short></short>
 <descr>
 </descr>
@@ -7164,7 +8605,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TLabel.Anchors">
+<element name="TLabel.AutoSize">
 <short></short>
 <descr>
 </descr>
@@ -7197,6 +8638,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TLabel.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TLabel.FocusControl">
 <short></short>
 <descr>
@@ -7219,17 +8671,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TLabel.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TLabel.Layout">
 <short></short>
 <descr>
@@ -7241,7 +8682,128 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TLabel.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnDblClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TLabel.ShowAccelChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TLabel.Visible">
 <short></short>
 <descr>
 </descr>
@@ -7418,6 +8980,28 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TButtonControl.Click">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TButtonControl.ColorIsStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TButtonControl.ColorIsStored.Result">
 <short></short>
 <descr>
 </descr>
@@ -7636,6 +9220,50 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TCustomCheckBox.DoChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomCheckBox.DoChange.Msg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomCheckBox.RetrieveState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomCheckBox.RetrieveState.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TCustomCheckBox.InitializeWnd">
 <short></short>
@@ -7703,7 +9331,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomCheckBox.SetText">
+<element name="TCustomCheckBox.RealSetText">
 <short></short>
 <descr>
 </descr>
@@ -7714,7 +9342,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomCheckBox.SetText.Value">
+<element name="TCustomCheckBox.RealSetText.Value">
 <short></short>
 <descr>
 </descr>
@@ -7779,6 +9407,39 @@
 </seealso>
 </element>
 
+<!-- property Visibility: public -->
+<element name="TCustomCheckBox.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckBox.UseOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckBox.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TCheckBox">
 <short></short>
@@ -7801,8 +9462,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TCheckBox.SetText">
+<!-- property Visibility: published -->
+<element name="TCheckBox.Action">
 <short></short>
 <descr>
 </descr>
@@ -7812,30 +9473,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TCheckBox.SetText.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCheckBox.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCheckBox.Create.AOwner">
+<!-- property Visibility: published -->
+<element name="TCheckBox.Align">
 <short></short>
 <descr>
 </descr>
@@ -7891,6 +9530,17 @@
 
 <!-- property Visibility: published -->
 <element name="TCheckBox.Checked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckBox.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -7957,6 +9607,17 @@
 
 <!-- property Visibility: published -->
 <element name="TCheckBox.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckBox.OnChangeBounds">
 <short></short>
 <descr>
 </descr>
@@ -8056,6 +9717,17 @@
 
 <!-- property Visibility: published -->
 <element name="TCheckBox.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckBox.OnResize">
 <short></short>
 <descr>
 </descr>
@@ -8242,39 +9914,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TToggleBox.State">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TToggleBox.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TToggleBox.Enabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TToggleBox.DragCursor">
 <short></short>
 <descr>
@@ -8308,6 +9947,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TToggleBox.Enabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TToggleBox.Hint">
 <short></short>
 <descr>
@@ -8319,51 +9969,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TToggleBox.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TToggleBox.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TToggleBox.ShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TToggleBox.TabOrder">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TToggleBox.TabStop">
+<element name="TToggleBox.OnChange">
 <short></short>
 <descr>
 </descr>
@@ -8483,6 +10089,94 @@
 </seealso>
 </element>
 
+<!-- property Visibility: published -->
+<element name="TToggleBox.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.State">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.TabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.UseOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.Visible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TRadioButton">
 <short></short>
@@ -8506,7 +10200,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TRadioButton.SetText">
+<element name="TRadioButton.RealSetText">
 <short></short>
 <descr>
 </descr>
@@ -8517,7 +10211,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TRadioButton.SetText.Value">
+<element name="TRadioButton.RealSetText.Value">
 <short></short>
 <descr>
 </descr>
@@ -8539,7 +10233,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TRadioButton.Create.AnOwner">
+<element name="TRadioButton.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.Align">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.AllowGrayed">
 <short></short>
 <descr>
 </descr>
@@ -8572,17 +10288,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TRadioButton.AllowGrayed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TRadioButton.Caption">
 <short></short>
 <descr>
@@ -8605,29 +10310,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TRadioButton.State">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TRadioButton.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TRadioButton.Enabled">
+<element name="TRadioButton.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -8671,6 +10354,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TRadioButton.Enabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TRadioButton.Hint">
 <short></short>
 <descr>
@@ -8682,7 +10376,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TRadioButton.ParentShowHint">
+<element name="TRadioButton.OnChange">
 <short></short>
 <descr>
 </descr>
@@ -8693,40 +10387,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TRadioButton.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TRadioButton.ShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TRadioButton.TabOrder">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TRadioButton.TabStop">
+<element name="TRadioButton.OnChangeBounds">
 <short></short>
 <descr>
 </descr>
@@ -8814,6 +10475,28 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TRadioButton.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TRadioButton.OnMouseMove">
 <short></short>
 <descr>
@@ -8836,7 +10519,106 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TRadioButton.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TRadioButton.OnStartDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.State">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.TabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.UseOnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.Visible">
 <short></short>
 <descr>
 </descr>
@@ -8913,7 +10695,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomStaticText.FBorderStyle">
+<element name="TCustomStaticText.FStaticBorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -9100,7 +10882,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomStaticText.SetBorderStyle">
+<element name="TCustomStaticText.SetStaticBorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -9111,7 +10893,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomStaticText.SetBorderStyle.Value">
+<element name="TCustomStaticText.SetStaticBorderStyle.Value">
 <short></short>
 <descr>
 </descr>
@@ -9122,7 +10904,7 @@
 </element>
 
 <!-- function Visibility: protected -->
-<element name="TCustomStaticText.GetBorderStyle">
+<element name="TCustomStaticText.GetStaticBorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -9133,7 +10915,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCustomStaticText.GetBorderStyle.Result">
+<element name="TCustomStaticText.GetStaticBorderStyle.Result">
 <short></short>
 <descr>
 </descr>
@@ -9200,6 +10982,28 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomStaticText.GetShowAccelChar.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomStaticText.CanTab">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomStaticText.CanTab.Result">
 <short></short>
 <descr>
 </descr>
@@ -9563,6 +11367,50 @@
 
 <!-- property Visibility: published -->
 <element name="TStaticText.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TStaticText.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TStaticText.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TStaticText.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TStaticText.OnResize">
 <short></short>
 <descr>
 </descr>

@@ -36,6 +36,17 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="LCLType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
 <short></short>
 <descr>
@@ -47,29 +58,18 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="vclGlobals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
 <element name="lMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
 <short></short>
 <descr>
 </descr>
@@ -212,7 +212,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TCalendar">
+<element name="TCustomCalendar">
 <short></short>
 <descr>
 </descr>
@@ -223,7 +223,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FDate">
+<element name="TCustomCalendar.FDateAsString">
 <short></short>
 <descr>
 </descr>
@@ -234,7 +234,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FDisplaySettings">
+<element name="TCustomCalendar.FDate">
 <short></short>
 <descr>
 </descr>
@@ -245,7 +245,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FReadOnly">
+<element name="TCustomCalendar.FDisplaySettings">
 <short></short>
 <descr>
 </descr>
@@ -256,7 +256,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FDayChanged">
+<element name="TCustomCalendar.FOnChange">
 <short></short>
 <descr>
 </descr>
@@ -267,7 +267,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FMonthChanged">
+<element name="TCustomCalendar.FReadOnly">
 <short></short>
 <descr>
 </descr>
@@ -278,7 +278,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FYearChanged">
+<element name="TCustomCalendar.FDayChanged">
 <short></short>
 <descr>
 </descr>
@@ -289,7 +289,29 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCalendar.FPropsChanged">
+<element name="TCustomCalendar.FMonthChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomCalendar.FYearChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomCalendar.FPropsChanged">
 <short></short>
 <descr>
 </descr>
@@ -300,7 +322,7 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TCalendar.ReadOnlyIsStored">
+<element name="TCustomCalendar.GetDateTime">
 <short></short>
 <descr>
 </descr>
@@ -311,51 +333,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCalendar.ReadOnlyIsStored.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalendar.SetReadOnly">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalendar.SetReadOnly.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalendar.GetProps">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalendar.SetProps">
+<element name="TCustomCalendar.GetDateTime.Result">
 <short></short>
 <descr>
 </descr>
@@ -366,7 +344,7 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TCalendar.GetDisplaySettings">
+<element name="TCustomCalendar.ReadOnlyIsStored">
 <short></short>
 <descr>
 </descr>
@@ -377,7 +355,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCalendar.GetDisplaySettings.Result">
+<element name="TCustomCalendar.ReadOnlyIsStored.Result">
 <short></short>
 <descr>
 </descr>
@@ -388,7 +366,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCalendar.SetDisplaySettings">
+<element name="TCustomCalendar.SetDateTime">
 <short></short>
 <descr>
 </descr>
@@ -399,7 +377,51 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCalendar.SetDisplaySettings.AValue">
+<element name="TCustomCalendar.SetDateTime.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCalendar.SetReadOnly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomCalendar.SetReadOnly.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCalendar.GetProps">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCalendar.SetProps">
 <short></short>
 <descr>
 </descr>
@@ -410,7 +432,7 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TCalendar.GetDate">
+<element name="TCustomCalendar.GetDisplaySettings">
 <short></short>
 <descr>
 </descr>
@@ -421,7 +443,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCalendar.GetDate.Result">
+<element name="TCustomCalendar.GetDisplaySettings.Result">
 <short></short>
 <descr>
 </descr>
@@ -432,7 +454,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCalendar.SetDate">
+<element name="TCustomCalendar.SetDisplaySettings">
 <short></short>
 <descr>
 </descr>
@@ -443,7 +465,51 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCalendar.SetDate.AValue">
+<element name="TCustomCalendar.SetDisplaySettings.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomCalendar.GetDate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomCalendar.GetDate.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCalendar.SetDate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomCalendar.SetDate.AValue">
 <short></short>
 <descr>
 </descr>
@@ -454,7 +520,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCalendar.LMMonthChanged">
+<element name="TCustomCalendar.LMMonthChanged">
 <short></short>
 <descr>
 </descr>
@@ -465,7 +531,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCalendar.LMMonthChanged.Message">
+<element name="TCustomCalendar.LMMonthChanged.Message">
 <short></short>
 <descr>
 </descr>
@@ -476,7 +542,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCalendar.LMYearChanged">
+<element name="TCustomCalendar.LMYearChanged">
 <short></short>
 <descr>
 </descr>
@@ -487,7 +553,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCalendar.LMYearChanged.Message">
+<element name="TCustomCalendar.LMYearChanged.Message">
 <short></short>
 <descr>
 </descr>
@@ -498,7 +564,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCalendar.LMDayChanged">
+<element name="TCustomCalendar.LMDayChanged">
 <short></short>
 <descr>
 </descr>
@@ -509,7 +575,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCalendar.LMDayChanged.Message">
+<element name="TCustomCalendar.LMDayChanged.Message">
 <short></short>
 <descr>
 </descr>
@@ -520,7 +586,7 @@
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TCalendar.Create">
+<element name="TCustomCalendar.Create">
 <short></short>
 <descr>
 </descr>
@@ -531,7 +597,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCalendar.Create.TheOwner">
+<element name="TCustomCalendar.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -542,7 +608,7 @@
 </element>
 
 <!-- destructor Visibility: public -->
-<element name="TCalendar.Destroy">
+<element name="TCustomCalendar.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -553,7 +619,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TCalendar.Loaded">
+<element name="TCustomCalendar.Loaded">
 <short></short>
 <descr>
 </descr>
@@ -564,7 +630,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TCalendar.InitializeWnd">
+<element name="TCustomCalendar.InitializeWnd">
 <short></short>
 <descr>
 </descr>
@@ -574,8 +640,129 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TCalendar.AddControl">
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.Date">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.DateTime">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.DisplaySettings">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.ReadOnly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.OnDayChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.OnMonthChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCalendar.OnYearChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TCalendar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.Align">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.Anchors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -597,6 +784,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TCalendar.DateTime">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TCalendar.DisplaySettings">
 <short></short>
 <descr>
@@ -608,7 +806,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TCalendar.ReadOnly">
+<element name="TCalendar.OnChange">
 <short></short>
 <descr>
 </descr>
@@ -619,7 +817,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TCalendar.Visible">
+<element name="TCalendar.OnChangeBounds">
 <short></short>
 <descr>
 </descr>
@@ -641,29 +839,62 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TCalendar.OnMouseMove">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendar.OnMouseDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TCalendar.OnDayChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnKeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnKeyUp">
 <short></short>
 <descr>
 </descr>
@@ -685,7 +916,117 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TCalendar.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TCalendar.OnYearChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.ReadOnly">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.Tabstop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalendar.Visible">
 <short></short>
 <descr>
 </descr>

@@ -25,7 +25,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Controls">
+<element name="SysUtils">
 <short></short>
 <descr>
 </descr>
@@ -37,28 +37,6 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
 <short></short>
 <descr>
 </descr>
@@ -91,7 +69,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -103,6 +81,17 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="InterfaceBase">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LResources">
 <short></short>
 <descr>
 </descr>
@@ -180,6 +169,39 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="ClipBrd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="CustApp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLClasses">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Controls">
 <short></short>
 <descr>
 </descr>
@@ -1455,7 +1477,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollingWinControl.IsUpdating">
+<element name="TScrollingWinControl.FIsUpdating">
 <short></short>
 <descr>
 </descr>
@@ -1828,6 +1850,28 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TScrollingWinControl.HasVisibleScrollbars">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TScrollingWinControl.HasVisibleScrollbars.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TScrollingWinControl.Canvas">
 <short></short>
@@ -1951,6 +1995,17 @@
 
 <!-- property Visibility: published -->
 <element name="TScrollBox.AutoSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TScrollBox.BorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -2808,6 +2863,28 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TFrame.OnDockDrop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TFrame.OnDockOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TFrame.OnDragDrop">
 <short></short>
 <descr>
@@ -2864,6 +2941,17 @@
 
 <!-- property Visibility: published -->
 <element name="TFrame.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TFrame.OnGetSiteInfo">
 <short></short>
 <descr>
 </descr>
@@ -2972,6 +3060,17 @@
 </seealso>
 </element>
 
+<!-- property Visibility: published -->
+<element name="TFrame.OnUnDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TIDesigner">
 <short></short>
@@ -3006,7 +3105,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCloseEvent.Action">
+<element name="TCloseEvent.CloseAction">
 <short></short>
 <descr>
 </descr>
@@ -3192,6 +3291,17 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TFormStateType.fsFirstShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- set type Visibility: default -->
 <element name="TFormState">
 <short></short>
@@ -3205,6 +3315,39 @@
 
 <!-- range type Visibility: default -->
 <element name="TModalResult">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TFormHandlerType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFormHandlerType.fhtFirstShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TFormHandlerType.fhtClose">
 <short></short>
 <descr>
 </descr>
@@ -3248,7 +3391,18 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomForm.FBorderStyle">
+<element name="TCustomForm.FDefaultControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomForm.FCancelControl">
 <short></short>
 <descr>
 </descr>
@@ -3304,6 +3458,17 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomForm.FFormUpdateCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomForm.FFormHandlers">
 <short></short>
 <descr>
 </descr>
@@ -3469,6 +3634,17 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomForm.FOnWindowStateChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomForm.FPixelsPerInch">
 <short></short>
 <descr>
 </descr>
@@ -3710,7 +3886,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomForm.SetBorderStyle">
+<element name="TCustomForm.SetFormBorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -3721,7 +3897,51 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomForm.SetBorderStyle.Value">
+<element name="TCustomForm.SetFormBorderStyle.NewStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomForm.SetCancelControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.SetCancelControl.NewControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomForm.SetDefaultControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.SetDefaultControl.NewControl">
 <short></short>
 <descr>
 </descr>
@@ -4050,6 +4270,94 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TCustomForm.AddHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandler.HandlerType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandler.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomForm.RemoveHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.RemoveHandler.HandlerType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.RemoveHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomForm.FFormBorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- variable Visibility: protected -->
 <element name="TCustomForm.FActionLists">
 <short></short>
@@ -4194,7 +4502,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomForm.DoClose.Action">
+<element name="TCustomForm.DoClose.CloseAction">
 <short></short>
 <descr>
 </descr>
@@ -4272,6 +4580,17 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomForm.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomForm.InitializeWnd">
 <short></short>
 <descr>
 </descr>
@@ -4370,7 +4689,40 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomForm.SetParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.SetParent.NewParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomForm.UpdateShowing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomForm.DoFirstShow">
 <short></short>
 <descr>
 </descr>
@@ -4481,6 +4833,204 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomForm.VisibleIsStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomForm.ColorIsStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomForm.ColorIsStored.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomForm.DoDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.DoDock.NewDockSite">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.DoDock.ARect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomForm.GetFloating">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomForm.GetFloating.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomForm.CMActionExecute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.CMActionExecute.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomForm.CMActionUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.CMActionUpdate.Message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomForm.DoExecuteAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomForm.DoExecuteAction.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.DoExecuteAction.ExeAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomForm.DoUpdateAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomForm.DoUpdateAction.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.DoUpdateAction.TheAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomForm.UpdateActions">
 <short></short>
 <descr>
 </descr>
@@ -4689,6 +5239,39 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TCustomForm.DefocusControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.DefocusControl.Control">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.DefocusControl.Removing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TCustomForm.SetFocus">
 <short></short>
 <descr>
@@ -4776,6 +5359,204 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TCustomForm.GetRolesForControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomForm.GetRolesForControl.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.GetRolesForControl.AControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomForm.RemoveAllHandlersOfObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.RemoveAllHandlersOfObject.AnObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomForm.AddHandlerFirstShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandlerFirstShow.OnFirstShowHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandlerFirstShow.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomForm.RemoveHandlerFirstShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.RemoveHandlerFirstShow.OnFirstShowHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomForm.AddHandlerClose">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandlerClose.OnCloseHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.AddHandlerClose.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomForm.RemoveHandlerClose">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.RemoveHandlerClose.OnCloseHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomForm.Dock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.Dock.NewDockSite">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomForm.Dock.ARect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TCustomForm.Active">
 <short></short>
@@ -4810,7 +5591,40 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomForm.CancelControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomForm.Caption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomForm.Color">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomForm.DefaultControl">
 <short></short>
 <descr>
 </descr>
@@ -5030,6 +5844,17 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomForm.PixelsPerInch">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomForm.Position">
 <short></short>
 <descr>
@@ -5095,8 +5920,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TForm.FDummyPPI">
+<!-- property Visibility: public -->
+<element name="TForm.ClientHandle">
 <short></short>
 <descr>
 </descr>
@@ -5107,7 +5932,18 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TForm.ClientHandle">
+<element name="TForm.DockManager">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.Action">
 <short></short>
 <descr>
 </descr>
@@ -5207,6 +6043,17 @@
 
 <!-- property Visibility: published -->
 <element name="TForm.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.DockSite">
 <short></short>
 <descr>
 </descr>
@@ -5371,6 +6218,50 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TForm.OnDockDrop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.OnDockOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.OnEndDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.OnGetSiteInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TForm.OnHide">
 <short></short>
 <descr>
@@ -5492,6 +6383,28 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TForm.OnStartDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.OnUnDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TForm.ParentFont">
 <short></short>
 <descr>
@@ -5536,6 +6449,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TForm.SessionProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TForm.ShowHint">
 <short></short>
 <descr>
@@ -5548,6 +6472,17 @@
 
 <!-- property Visibility: published -->
 <element name="TForm.TextHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.UseDockManager">
 <short></short>
 <descr>
 </descr>
@@ -5581,6 +6516,204 @@
 
 <!-- "class of" type Visibility: default -->
 <element name="TFormClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TCustomDockForm">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomDockForm.DoAddDockClient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.DoAddDockClient.Client">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.DoAddDockClient.ARect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomDockForm.DoRemoveDockClient">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.DoRemoveDockClient.Client">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomDockForm.GetSiteInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.GetSiteInfo.Client">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.GetSiteInfo.InfluenceRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.GetSiteInfo.MousePos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.GetSiteInfo.CanDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomDockForm.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TCustomDockForm.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDockForm.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomDockForm.AutoScroll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomDockForm.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomDockForm.FormStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomDockForm.PixelsPerInch">
 <short></short>
 <descr>
 </descr>
@@ -6207,6 +7340,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TScreen.FHintFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TScreen.FFocusedForm">
 <short></short>
 <descr>
@@ -6240,18 +7384,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScreen.FHandlers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TScreen.FHintFont">
+<element name="TScreen.FScreenHandlers">
 <short></short>
 <descr>
 </descr>
@@ -6756,6 +7889,17 @@
 </seealso>
 </element>
 
+<!-- argument Visibility: default -->
+<element name="TScreen.AddHandler.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TScreen.RemoveHandler">
 <short></short>
@@ -6789,8 +7933,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TScreen.GetHandlerCount">
+<!-- function Visibility: protected -->
+<element name="TScreen.GetHintFont">
 <short></short>
 <descr>
 </descr>
@@ -6801,62 +7945,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TScreen.GetHandlerCount.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TScreen.GetHandlerCount.HandlerType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TScreen.GetNextHandlerIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TScreen.GetNextHandlerIndex.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TScreen.GetNextHandlerIndex.HandlerType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TScreen.GetNextHandlerIndex.i">
+<element name="TScreen.GetHintFont.Result">
 <short></short>
 <descr>
 </descr>
@@ -7043,6 +8132,17 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TScreen.UpdateScreen">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TScreen.AddHandlerFormAdded">
 <short></short>
 <descr>
@@ -7055,6 +8155,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TScreen.AddHandlerFormAdded.OnFormAdded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TScreen.AddHandlerFormAdded.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -7108,6 +8219,17 @@
 </seealso>
 </element>
 
+<!-- argument Visibility: default -->
+<element name="TScreen.AddHandlerRemoveForm.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TScreen.RemoveHandlerRemoveForm">
 <short></short>
@@ -7152,6 +8274,17 @@
 </seealso>
 </element>
 
+<!-- argument Visibility: default -->
+<element name="TScreen.AddHandlerActiveControlChanged.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TScreen.RemoveHandlerActiveControlChanged">
 <short></short>
@@ -7187,6 +8320,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TScreen.AddHandlerActiveFormChanged.OnActiveFormChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TScreen.AddHandlerActiveFormChanged.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -8010,6 +9154,28 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TApplicationFlag.AppDestroying">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TApplicationFlag.AppDoNotReleaseComponents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- set type Visibility: default -->
 <element name="TApplicationFlags">
 <short></short>
@@ -8021,8 +9187,74 @@
 </seealso>
 </element>
 
+<!-- enumeration type Visibility: default -->
+<element name="TApplicationHandlerType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TApplicationHandlerType.ahtIdle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TApplicationHandlerType.ahtIdleEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TApplicationHandlerType.ahtKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TApplicationHandlerType.ahtUserInput">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TApplication">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplication.FApplicationHandlers">
 <short></short>
 <descr>
 </descr>
@@ -8187,7 +9419,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TApplication.FList">
+<element name="TApplication.FFormList">
 <short></short>
 <descr>
 </descr>
@@ -8231,6 +9463,28 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TApplication.FOnActionExecute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplication.FOnActionUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TApplication.FOnHelp">
 <short></short>
 <descr>
@@ -8264,40 +9518,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TApplication.FOnIdleHandler">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
 <element name="TApplication.FOnIdleEnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TApplication.FOnIdleEndHandler">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TApplication.FOnKeyDownHandler">
 <short></short>
 <descr>
 </descr>
@@ -8330,7 +9551,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TApplication.FOnUserInputHandler">
+<element name="TApplication.FReleaseComponents">
 <short></short>
 <descr>
 </descr>
@@ -8342,50 +9563,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TApplication.FShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TApplication.FHelpFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TApplication.FTerminate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TApplication.FTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TApplication.FOnException">
 <short></short>
 <descr>
 </descr>
@@ -8562,6 +9739,50 @@
 
 <!-- argument Visibility: default -->
 <element name="TApplication.InvokeHelp.Data">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TApplication.GetControlAtMouse">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TApplication.GetControlAtMouse.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TApplication.UpdateMouseControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.UpdateMouseControl.NewMouseControl">
 <short></short>
 <descr>
 </descr>
@@ -8758,6 +9979,149 @@
 </seealso>
 </element>
 
+<!-- function Visibility: private -->
+<element name="TApplication.DispatchAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TApplication.DispatchAction.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.DispatchAction.Msg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.DispatchAction.Action">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TApplication.AddHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddHandler.HandlerType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddHandler.AsLast">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TApplication.RemoveHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.RemoveHandler.HandlerType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.RemoveHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TApplication.GetConsoleApplication">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TApplication.GetConsoleApplication.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TApplication.NotifyIdleHandler">
 <short></short>
@@ -8934,6 +10298,50 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TApplication.DoIdleActions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplication.MenuPopupHandler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.MenuPopupHandler.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplication.DoFreeReleaseComponents">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TApplication.Create">
 <short></short>
@@ -9024,6 +10432,94 @@
 
 <!-- argument Visibility: default -->
 <element name="TApplication.CreateForm.Reference">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TApplication.ReleaseComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.ReleaseComponent.AComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TApplication.ExecuteAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TApplication.ExecuteAction.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.ExecuteAction.ExeAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TApplication.UpdateAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TApplication.UpdateAction.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.UpdateAction.TheAction">
 <short></short>
 <descr>
 </descr>
@@ -9562,7 +11058,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.AddOnIdleHandler.AnOnIdleHandler">
+<element name="TApplication.AddOnIdleHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddOnIdleHandler.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -9584,7 +11091,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.RemoveOnIdleHandler.AnOnIdleHandler">
+<element name="TApplication.RemoveOnIdleHandler.Handler">
 <short></short>
 <descr>
 </descr>
@@ -9606,7 +11113,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.AddOnIdleEndHandler.AnOnIdleEndHandler">
+<element name="TApplication.AddOnIdleEndHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddOnIdleEndHandler.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -9628,7 +11146,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.RemoveOnIdleEndHandler.AnOnIdleEndHandler">
+<element name="TApplication.RemoveOnIdleEndHandler.Handler">
 <short></short>
 <descr>
 </descr>
@@ -9650,7 +11168,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.AddOnUserInputHandler.AnOnUserInputHandler">
+<element name="TApplication.AddOnUserInputHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddOnUserInputHandler.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -9672,7 +11201,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.RemoveOnUserInputHandler.AnOnUserInputHandler">
+<element name="TApplication.RemoveOnUserInputHandler.Handler">
 <short></short>
 <descr>
 </descr>
@@ -9694,7 +11223,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.AddOnKeyDownHandler.AnOnKeyDownHandler">
+<element name="TApplication.AddOnKeyDownHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.AddOnKeyDownHandler.AsLast">
 <short></short>
 <descr>
 </descr>
@@ -9716,7 +11256,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TApplication.RemoveOnKeyDownHandler.AnOnKeyDownHandler">
+<element name="TApplication.RemoveOnKeyDownHandler.Handler">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TApplication.RemoveAllHandlersOfObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplication.RemoveAllHandlersOfObject.AnObject">
 <short></short>
 <descr>
 </descr>
@@ -9848,6 +11410,28 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TApplication.OnActionExecute">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TApplication.OnActionUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TApplication.OnIdle">
 <short></short>
 <descr>
@@ -9935,8 +11519,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TApplication.Exename">
+<!-- object Visibility: default -->
+<element name="TApplicationProperties">
 <short></short>
 <descr>
 </descr>
@@ -9946,8 +11530,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TApplication.HelpFile">
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FCaptureExceptions">
 <short></short>
 <descr>
 </descr>
@@ -9957,8 +11541,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TApplication.Terminated">
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHelpFile">
 <short></short>
 <descr>
 </descr>
@@ -9968,8 +11552,745 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TApplication.OnException">
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHintColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHintHidePause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHintPause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHintShortCuts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FHintShortPause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FTitle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnException">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnIdle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnIdleEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnHelp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TApplicationProperties.FOnUserInput">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetCaptureExceptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetCaptureExceptions.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHelpFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHelpFile.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHint.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHintColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHintColor.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHintHidePause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHintHidePause.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHintPause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHintPause.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHintShortCuts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHintShortCuts.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetHintShortPause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetHintShortPause.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetShowHint.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetTitle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetTitle.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnException">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnException.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnIdle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnIdle.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnIdleEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnIdleEnd.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnHelp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnHelp.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnHint.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnShowHint.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TApplicationProperties.SetOnUserInput">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.SetOnUserInput.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TApplicationProperties.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TApplicationProperties.Create.AOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.CaptureExceptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.HelpFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.Hint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.HintColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.HintHidePause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.HintPause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.HintShortCuts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.HintShortPause">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.Title">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnException">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnIdle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnIdleEnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnHelp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TApplicationProperties.OnUserInput">
 <short></short>
 <descr>
 </descr>
@@ -10201,6 +12522,105 @@
 
 <!-- argument Visibility: default -->
 <element name="TIDesigner.UniqueName.BaseName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TFormPropertyStorage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFormPropertyStorage.FormFirstShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFormPropertyStorage.FormFirstShow.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TFormPropertyStorage.FormClose">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFormPropertyStorage.FormClose.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFormPropertyStorage.FormClose.CloseAction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFormPropertyStorage.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFormPropertyStorage.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFormPropertyStorage.Destroy">
 <short></short>
 <descr>
 </descr>

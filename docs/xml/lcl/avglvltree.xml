@@ -35,6 +35,83 @@
 </seealso>
 </element>
 
+<!-- unresolved type reference Visibility: default -->
+<element name="FPCAdds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TAvgLvlTree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TObjectSortCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TObjectSortCompare.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TObjectSortCompare.Tree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TObjectSortCompare.Data1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TObjectSortCompare.Data2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TAvgLvlTreeNode">
 <short></short>
@@ -134,28 +211,6 @@
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
-<element name="TAvgLvlTreeNode.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TAvgLvlTreeNode.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- pointer type Visibility: default -->
 <element name="PAvgLvlTreeNode">
 <short></short>
@@ -179,6 +234,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TAvgLvlTree.FCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TAvgLvlTree.FOnCompare">
 <short></short>
 <descr>
@@ -190,7 +256,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TAvgLvlTree.FCount">
+<element name="TAvgLvlTree.FOnObjectCompare">
 <short></short>
 <descr>
 </descr>
@@ -299,8 +365,107 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TAvgLvlTree.SetOnObjectCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAvgLvlTree.SetOnObjectCompare.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TAvgLvlTree.SetCompares">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAvgLvlTree.SetCompares.NewCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAvgLvlTree.SetCompares.NewObjectCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- variable Visibility: public -->
 <element name="TAvgLvlTree.Root">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TAvgLvlTree.Compare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TAvgLvlTree.Compare.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAvgLvlTree.Compare.Data1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAvgLvlTree.Compare.Data2">
 <short></short>
 <descr>
 </descr>
@@ -959,6 +1124,17 @@
 </seealso>
 </element>
 
+<!-- property Visibility: public -->
+<element name="TAvgLvlTree.OnObjectCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TAvgLvlTree.Clear">
 <short></short>
@@ -1104,6 +1280,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TAvgLvlTree.Create.OnCompareMethod">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TAvgLvlTree.CreateObjectCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAvgLvlTree.CreateObjectCompare.OnCompareMethod">
 <short></short>
 <descr>
 </descr>

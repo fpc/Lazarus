@@ -37,7 +37,7 @@ usage: $0 [-hpsoimx]
  -x : do not simulate, execute makeskel and overwrite all existing xml files
 
 examples:
-  multi_makeskel.pl -p lcl -s /path/to/lazarus/lcl -o /path/to/lazarus/docs/xml -i '-Fiinclude'
+  multi_makeskel.pl -p lcl -s ../../lcl -o lcl -i '-Fi/path/to/lazarus/lcl/include'
 
 EOF
   exit;

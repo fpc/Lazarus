@@ -168,7 +168,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TArray.Fondestroyitem">
+<element name="TArray.FOnDestroyItem">
 <short></short>
 <descr>
 </descr>

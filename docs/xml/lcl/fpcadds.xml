@@ -4,17 +4,28 @@
 
 <!--
   ====================================================================
-    UTrace
+    FPCAdds
   ====================================================================
 -->
 
-<module name="UTrace">
+<module name="FPCAdds">
 <short></short>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="sysutils">
+<element name="Classes">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="SysUtils">
 <short></short>
 <descr>
 </descr>
@@ -25,7 +36,7 @@
 </element>
 
 <!-- alias type Visibility: default -->
-<element name="TAssertErrorAddrType">
+<element name="TStreamSeekType">
 <short></short>
 <descr>
 </descr>
@@ -35,8 +46,52 @@
 </seealso>
 </element>
 
-<!-- procedure type Visibility: default -->
-<element name="TAssertErrorProc">
+<!-- alias type Visibility: default -->
+<element name="TMemStreamSeekType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TCompareMemSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="StrToWord">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="StrToWord.Result">
 <short></short>
 <descr>
 </descr>
@@ -47,7 +102,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TAssertErrorProc.Msg">
+<element name="StrToWord.s">
 <short></short>
 <descr>
 </descr>
@@ -56,61 +111,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
-<element name="TAssertErrorProc.FN">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAssertErrorProc.LineNo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAssertErrorProc.TheAddr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TraceFileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="OldProcPointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- UTrace -->
+</module> <!-- FPCAdds -->
 </package>
 </fpdoc-descriptions>

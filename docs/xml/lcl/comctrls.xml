@@ -36,6 +36,28 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="Math">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="FPCAdds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="LCLStrConsts">
 <short></short>
 <descr>
@@ -47,7 +69,18 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LResources">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -81,6 +114,72 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="AvgLvlTree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="LMessages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ImgList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="ActnList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="GraphType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Graphics">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
+<element name="Menus">
 <short></short>
 <descr>
 </descr>
@@ -135,72 +234,6 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="vclGlobals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Menus">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ImgList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
 <element name="ToolWin">
 <short></short>
 <descr>
@@ -224,17 +257,6 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="Buttons">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Math">
 <short></short>
 <descr>
 </descr>
@@ -960,7 +982,40 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TStatusBar.FCanvas">
+<element name="TStatusBar.FHandlePanelCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStatusBar.FHandleObjectNeedsUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStatusBar.FHandleUpdatePanelIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TStatusBar.FUpdateLock">
 <short></short>
 <descr>
 </descr>
@@ -1069,8 +1124,41 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TStatusBar.WMPaint">
+<!-- procedure Visibility: protected -->
+<element name="TStatusBar.CreateWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStatusBar.DestroyWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStatusBar.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStatusBar.UpdateHandleObject">
 <short></short>
 <descr>
 </descr>
@@ -1081,62 +1169,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStatusBar.WMPaint.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TStatusBar.DrawDivider">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStatusBar.DrawDivider.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TStatusBar.DrawBevel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStatusBar.DrawBevel.xLeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TStatusBar.DrawBevel.PanelNum">
+<element name="TStatusBar.UpdateHandleObject.PanelIndex">
 <short></short>
 <descr>
 </descr>
@@ -1158,7 +1191,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStatusBar.Create.AOwner">
+<element name="TStatusBar.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -1213,7 +1246,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TStatusBar.GetPanelRect">
+<element name="TStatusBar.BeginUpdate">
 <short></short>
 <descr>
 </descr>
@@ -1223,8 +1256,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TStatusBar.GetPanelRect.PanelIndex">
+<!-- procedure Visibility: public -->
+<element name="TStatusBar.EndUpdate">
 <short></short>
 <descr>
 </descr>
@@ -1234,8 +1267,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TStatusBar.GetPanelRect.ARect">
+<!-- function Visibility: public -->
+<element name="TStatusBar.UpdatingStatusBar">
 <short></short>
 <descr>
 </descr>
@@ -1245,8 +1278,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TStatusBar.Canvas">
+<!-- function result Visibility: default -->
+<element name="TStatusBar.UpdatingStatusBar.Result">
 <short></short>
 <descr>
 </descr>
@@ -1291,6 +1324,1249 @@
 
 <!-- property Visibility: published -->
 <element name="TStatusBar.Visible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TStatusBar.Color">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPageControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TTabStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTabStyle.tsTabs">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTabStyle.tsButtons">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TTabStyle.tsFlatButtons">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TTabChangingEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabChangingEvent.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabChangingEvent.AllowChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TTabGetImageEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabGetImageEvent.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabGetImageEvent.TabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabGetImageEvent.ImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TTabSheet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TTabSheet.FOnHide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TTabSheet.FOnShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TTabSheet.GetPageControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTabSheet.GetPageControl.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TTabSheet.GetTabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTabSheet.GetTabIndex.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TTabSheet.SetPageControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabSheet.SetPageControl.APageControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TTabSheet.SetTabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabSheet.SetTabIndex.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTabSheet.DoHide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TTabSheet.DoShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TTabSheet.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TTabSheet.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TTabSheet.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TTabSheet.PageControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TTabSheet.TabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Caption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.ClientHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.ClientWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Enabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Height">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.ImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Left">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnContextPopup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnHide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.OnShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.PageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.TabVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Top">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Visible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabSheet.Width">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TPageControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPageControl.FOnChanging">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPageControl.GetActivePageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPageControl.GetActivePageIndex.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPageControl.GetActiveTabSheet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPageControl.GetActiveTabSheet.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPageControl.GetTabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPageControl.GetTabIndex.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TPageControl.GetTabSheet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPageControl.GetTabSheet.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.GetTabSheet.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPageControl.SetActivePageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.SetActivePageIndex.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPageControl.SetActiveTabSheet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.SetActiveTabSheet.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TPageControl.SetTabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.SetTabIndex.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TPageControl.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TPageControl.FindNextPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPageControl.FindNextPage.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.FindNextPage.CurPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.FindNextPage.GoForward">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.FindNextPage.CheckTabVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPageControl.SelectNextPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.SelectNextPage.GoForward">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPageControl.SelectNextPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.SelectNextPage.GoForward">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.SelectNextPage.CheckTabVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPageControl.ActivePageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TPageControl.Pages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPageControl.Pages.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.ActivePage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Align">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Anchors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Constraints">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Enabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Font">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Images">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.ParentFont">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.TabIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.TabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.TabPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.Visible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnChanging">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnContextPopup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.OnResize">
 <short></short>
 <descr>
 </descr>
@@ -1597,6 +2873,72 @@
 </seealso>
 </element>
 
+<!-- enumeration type Visibility: default -->
+<element name="TListItemState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TListItemState.lisCut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TListItemState.lisDropTarget">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TListItemState.lisFocused">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TListItemState.lisSelected">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TListItemStates">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TListItem">
 <short></short>
@@ -1675,7 +3017,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TListItem.FState">
+<element name="TListItem.FStates">
 <short></short>
 <descr>
 </descr>
@@ -1708,7 +3050,128 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListItem.GetState.AnIndex">
+<element name="TListItem.GetState.ALisOrd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TListItem.GetIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItem.GetIndex.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TListItem.GetSubItemImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItem.GetSubItemImages.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItem.GetSubItemImages.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TListItem.GetSubItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItem.GetSubItems.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TListItem.IntfUpdateAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItem.IntfUpdateAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListItem.IntfUpdateText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListItem.IntfUpdateImages">
 <short></short>
 <descr>
 </descr>
@@ -1730,7 +3193,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListItem.SetState.AnIndex">
+<element name="TListItem.SetState.ALisOrd">
 <short></short>
 <descr>
 </descr>
@@ -1741,7 +3204,40 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListItem.SetState.AState">
+<element name="TListItem.SetState.AIsSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListItem.SetSubItemImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItem.SetSubItemImages.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItem.SetSubItemImages.AValue">
 <short></short>
 <descr>
 </descr>
@@ -1817,63 +3313,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TListItem.GetIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TListItem.GetIndex.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TListItem.GetSubItemImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TListItem.GetSubItemImages.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItem.GetSubItemImages.AnIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: private -->
-<element name="TListItem.SetSubItemImages">
+<element name="TListItem.SetSubItems">
 <short></short>
 <descr>
 </descr>
@@ -1884,40 +3325,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListItem.SetSubItemImages.AnIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItem.SetSubItemImages.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TListItem.ItemChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItem.ItemChanged.sender">
+<element name="TListItem.SetSubItems.AValue">
 <short></short>
 <descr>
 </descr>
@@ -1950,7 +3358,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListItem.IsEqual.Item">
+<element name="TListItem.IsEqual.AItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListItem.Assign">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItem.Assign.ASource">
 <short></short>
 <descr>
 </descr>
@@ -1995,6 +3425,28 @@
 
 <!-- procedure Visibility: public -->
 <element name="TListItem.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListItem.MakeVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItem.MakeVisible.PartialOK">
 <short></short>
 <descr>
 </descr>
@@ -2126,7 +3578,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListItem.SubItemImages.AnIndex">
+<element name="TListItem.SubItemImages.AIndex">
 <short></short>
 <descr>
 </descr>
@@ -2169,8 +3621,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TListItems.GetCount">
+<!-- variable Visibility: private -->
+<element name="TListItems.FCacheIndex">
 <short></short>
 <descr>
 </descr>
@@ -2180,8 +3632,8 @@
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
-<element name="TListItems.GetCount.Result">
+<!-- variable Visibility: private -->
+<element name="TListItems.FCacheItem">
 <short></short>
 <descr>
 </descr>
@@ -2204,6 +3656,94 @@
 
 <!-- argument Visibility: default -->
 <element name="TListItems.ItemDeleted.AItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListItems.ReadData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.ReadData.Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListItems.WriteData">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.WriteData.Stream">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TListItems.DefineProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.DefineProperties.Filer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TListItems.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItems.GetCount.Result">
 <short></short>
 <descr>
 </descr>
@@ -2246,6 +3786,39 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TListItems.IndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItems.IndexOf.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.IndexOf.AItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TListItems.SetITem">
 <short></short>
@@ -2279,94 +3852,6 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TListItems.ItemChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItems.ItemChanged.sender">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TListItems.DefineProperties">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItems.DefineProperties.Filer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TListItems.ReadData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItems.ReadData.Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TListItems.WriteData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TListItems.WriteData.Stream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- function Visibility: public -->
 <element name="TListItems.Add">
 <short></short>
@@ -2380,6 +3865,28 @@
 
 <!-- function result Visibility: default -->
 <element name="TListItems.Add.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListItems.AddItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.AddItem.AItem">
 <short></short>
 <descr>
 </descr>
@@ -2512,6 +4019,39 @@
 
 <!-- argument Visibility: default -->
 <element name="TListItems.Insert.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListItems.InsertItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.InsertItem.AItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItems.InsertItem.AIndex">
 <short></short>
 <descr>
 </descr>
@@ -2665,6 +4205,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TListColumn.FImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TListColumn.FTag">
 <short></short>
 <descr>
@@ -2688,6 +4239,28 @@
 
 <!-- function result Visibility: default -->
 <element name="TListColumn.GetWidth.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TListColumn.IntfUpdateAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListColumn.IntfUpdateAllowed.Result">
 <short></short>
 <descr>
 </descr>
@@ -2851,6 +4424,72 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TListColumn.SetImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListColumn.SetImageIndex.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TListColumn.SetIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListColumn.SetIndex.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TListColumn.GetDisplayName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListColumn.GetDisplayName.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- constructor Visibility: public -->
 <element name="TListColumn.Create">
 <short></short>
@@ -2940,6 +4579,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListColumn.ImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListColumn.MaxWidth">
 <short></short>
 <descr>
@@ -3007,6 +4657,39 @@
 
 <!-- variable Visibility: private -->
 <element name="TListColumns.FOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListColumns.FUpdateCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListColumns.FItemNeedsUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListColumns.FNeedsUpdate">
 <short></short>
 <descr>
 </descr>
@@ -3116,7 +4799,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TListColumns.Create.AOwner">
+<element name="TListColumns.Create.TheOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TListColumns.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -3139,6 +4833,28 @@
 
 <!-- function result Visibility: default -->
 <element name="TListColumns.Add.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListColumns.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListColumns.EndUpdate">
 <short></short>
 <descr>
 </descr>
@@ -3402,6 +5118,72 @@
 </element>
 
 <!-- procedure type Visibility: default -->
+<element name="TLVCompareEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLVCompareEvent.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLVCompareEvent.Item1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLVCompareEvent.Item2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLVCompareEvent.Data">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLVCompareEvent.Compare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
 <element name="TLVDeletedEvent">
 <short></short>
 <descr>
@@ -3511,6 +5293,17 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TListViewState.lvPropertiesNeedsUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- set type Visibility: default -->
 <element name="TListViewStates">
 <short></short>
@@ -3524,17 +5317,6 @@
 
 <!-- object Visibility: default -->
 <element name="TCustomListView">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomListView.FBorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -3732,6 +5514,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomListView.FOnCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomListView.FOnDeletion">
 <short></short>
 <descr>
@@ -3865,6 +5658,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomListView.SetItems.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomListView.SetItemVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListView.SetItemVisible.Avalue">
 <short></short>
 <descr>
 </descr>
@@ -4073,6 +5888,17 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomListView.Sort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomListView.UpdateScrollbars">
 <short></short>
 <descr>
@@ -4116,8 +5942,74 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
-<element name="TCustomListView.ParentWindow">
+<!-- procedure Visibility: private -->
+<element name="TCustomListView.UpdateProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListView.ItemDeleted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListView.ItemDeleted.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListView.ItemInserted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListView.ItemInserted.AItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomListView.ItemInserted.AIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomListView.ColumnsChanged">
 <short></short>
 <descr>
 </descr>
@@ -4348,61 +6240,6 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomListView.ColumnsChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomListView.ItemChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomListView.ItemChanged.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomListView.ItemDeleted">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomListView.ItemDeleted.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
 <element name="TCustomListView.ImageChanged">
 <short></short>
 <descr>
@@ -4415,17 +6252,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomListView.ImageChanged.Sender">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomListView.ItemAdded">
 <short></short>
 <descr>
 </descr>
@@ -4623,6 +6449,17 @@
 </element>
 
 <!-- property Visibility: protected -->
+<element name="TCustomListView.OnCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
 <element name="TCustomListView.OnDeletion">
 <short></short>
 <descr>
@@ -4635,6 +6472,17 @@
 
 <!-- property Visibility: protected -->
 <element name="TCustomListView.OnSelectItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomListView.BorderStyle">
 <short></short>
 <descr>
 </descr>
@@ -4710,6 +6558,17 @@
 </seealso>
 </element>
 
+<!-- property Visibility: published -->
+<element name="TCustomListView.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TListView">
 <short></short>
@@ -4767,6 +6626,17 @@
 
 <!-- property Visibility: published -->
 <element name="TListView.Columns">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListView.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -4942,6 +6812,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListView.OnCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListView.OnDblClick">
 <short></short>
 <descr>
@@ -4964,7 +6845,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TListView.OnMOuseUp">
+<element name="TListView.OnMouseUp">
 <short></short>
 <descr>
 </descr>
@@ -5525,61 +7406,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TProgressBar.Min">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.Max">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.Position">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.Step">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.Smooth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TProgressBar.Align">
 <short></short>
 <descr>
@@ -5591,62 +7417,18 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TProgressBar.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.Orientation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.Enabled">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.OnEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.OnExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TProgressBar.BorderWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -5690,6 +7472,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TProgressBar.Enabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TProgressBar.Hint">
 <short></short>
 <descr>
@@ -5701,7 +7494,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TProgressBar.ParentShowHint">
+<element name="TProgressBar.Max">
 <short></short>
 <descr>
 </descr>
@@ -5712,40 +7505,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TProgressBar.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.ShowHint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.TabOrder">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TProgressBar.TabStop">
+<element name="TProgressBar.Min">
 <short></short>
 <descr>
 </descr>
@@ -5789,6 +7549,28 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TProgressBar.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TProgressBar.OnMouseDown">
 <short></short>
 <descr>
@@ -5822,7 +7604,128 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TProgressBar.OnStartDock">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TProgressBar.OnStartDrag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Orientation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Position">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Smooth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Step">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.TabOrder">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Visible">
 <short></short>
 <descr>
 </descr>
@@ -6054,17 +7957,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomUpDown.MaxBtn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomUpDown.BTimer">
 <short></short>
 <descr>
 </descr>
@@ -7174,17 +9066,6 @@
 </seealso>
 </element>
 
-<!-- alias type Visibility: default -->
-<element name="HIMAGELIST">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- enumeration type Visibility: default -->
 <element name="TToolButtonStyle">
 <short></short>
@@ -7252,7 +9133,7 @@
 </element>
 
 <!-- enumeration type Visibility: default -->
-<element name="TToolButtonState">
+<element name="TToolButtonFlag">
 <short></short>
 <descr>
 </descr>
@@ -7263,7 +9144,7 @@
 </element>
 
 <!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsChecked">
+<element name="TToolButtonFlag.tbfPressed">
 <short></short>
 <descr>
 </descr>
@@ -7273,8 +9154,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsPressed">
+<!-- set type Visibility: default -->
+<element name="TToolButtonFlags">
 <short></short>
 <descr>
 </descr>
@@ -7284,8 +9165,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsEnabled">
+<!-- object Visibility: default -->
+<element name="TToolButtonActionLink">
 <short></short>
 <descr>
 </descr>
@@ -7295,8 +9176,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsHidden">
+<!-- procedure Visibility: protected -->
+<element name="TToolButtonActionLink.AssignClient">
 <short></short>
 <descr>
 </descr>
@@ -7306,8 +9187,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsIndeterminate">
+<!-- argument Visibility: default -->
+<element name="TToolButtonActionLink.AssignClient.AClient">
 <short></short>
 <descr>
 </descr>
@@ -7317,8 +9198,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsWrap">
+<!-- function Visibility: protected -->
+<element name="TToolButtonActionLink.IsCheckedLinked">
 <short></short>
 <descr>
 </descr>
@@ -7328,8 +9209,8 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsEllipses">
+<!-- function result Visibility: default -->
+<element name="TToolButtonActionLink.IsCheckedLinked.Result">
 <short></short>
 <descr>
 </descr>
@@ -7339,8 +9220,74 @@
 </seealso>
 </element>
 
-<!-- enumeration value Visibility: default -->
-<element name="TToolButtonState.tbsMarked">
+<!-- function Visibility: protected -->
+<element name="TToolButtonActionLink.IsImageIndexLinked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TToolButtonActionLink.IsImageIndexLinked.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButtonActionLink.SetChecked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButtonActionLink.SetChecked.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButtonActionLink.SetImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButtonActionLink.SetImageIndex.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="TToolButtonActionLinkClass">
 <short></short>
 <descr>
 </descr>
@@ -7352,17 +9299,6 @@
 
 <!-- object Visibility: default -->
 <element name="TToolBar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TToolButton">
 <short></short>
 <descr>
 </descr>
@@ -7406,6 +9342,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TToolButton.FDropdownMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TToolButton.FGrouped">
 <short></short>
 <descr>
@@ -7439,6 +9386,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TToolButton.FLastButtonDrawFlags">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TToolButton.FMarked">
 <short></short>
 <descr>
@@ -7461,18 +9419,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TToolButton.FDropdownMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolButton.FWrap">
+<element name="TToolButton.FMouseInControl">
 <short></short>
 <descr>
 </descr>
@@ -7494,6 +9441,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TToolButton.FToolButtonFlags">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TToolButton.FUpdateCount">
 <short></short>
 <descr>
@@ -7504,8 +9462,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TToolButton.GetButtonState">
+<!-- variable Visibility: private -->
+<element name="TToolButton.FWrap">
 <short></short>
 <descr>
 </descr>
@@ -7515,8 +9473,30 @@
 </seealso>
 </element>
 
-<!-- function result Visibility: default -->
-<element name="TToolButton.GetButtonState.Result">
+<!-- procedure Visibility: private -->
+<element name="TToolButton.GetGroupBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.GetGroupBounds.StartIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.GetGroupBounds.EndIndex">
 <short></short>
 <descr>
 </descr>
@@ -7627,28 +9607,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolButton.SetAutoSize.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolButton.SetButtonState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolButton.SetButtonState.State">
 <short></short>
 <descr>
 </descr>
@@ -7857,7 +9815,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolButton.CMEnabledChanged">
+<element name="TToolButton.SetMouseInControl">
 <short></short>
 <descr>
 </descr>
@@ -7868,7 +9826,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.CMEnabledChanged.Message">
+<element name="TToolButton.SetMouseInControl.NewMouseInControl">
 <short></short>
 <descr>
 </descr>
@@ -7900,8 +9858,19 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TToolButton.CMVisibleChanged">
+<!-- variable Visibility: protected -->
+<element name="TToolButton.FToolBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButton.CopyPropertiesFromMenuItem">
 <short></short>
 <descr>
 </descr>
@@ -7912,7 +9881,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.CMVisibleChanged.Message">
+<element name="TToolButton.CopyPropertiesFromMenuItem.Value">
 <short></short>
 <descr>
 </descr>
@@ -7922,8 +9891,52 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: protected -->
-<element name="TToolButton.FToolBar">
+<!-- function Visibility: protected -->
+<element name="TToolButton.GetActionLinkClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TToolButton.GetActionLinkClass.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButton.ActionChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.ActionChange.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.ActionChange.CheckDefaults">
 <short></short>
 <descr>
 </descr>
@@ -8132,6 +10145,28 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TToolButton.MouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButton.MouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TToolButton.Notification">
 <short></short>
 <descr>
@@ -8165,6 +10200,28 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TToolButton.Paint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButton.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TToolButton.RefreshControl">
 <short></short>
 <descr>
@@ -8187,7 +10244,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.SetToolBar.AToolBar">
+<element name="TToolButton.SetToolBar.NewToolBar">
 <short></short>
 <descr>
 </descr>
@@ -8208,8 +10265,30 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TToolButton.GetButtonDrawFlags">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TToolButton.GetButtonDrawFlags.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
-<element name="TToolButton.ValidateContainer">
+<element name="TToolButton.SetParent">
 <short></short>
 <descr>
 </descr>
@@ -8220,7 +10299,95 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.ValidateContainer.AComponent">
+<element name="TToolButton.SetParent.AParent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButton.UpdateVisibleToolbar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TToolButton.GroupAllUpAllowed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TToolButton.GroupAllUpAllowed.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TToolButton.DoSetBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.DoSetBounds.ALeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.DoSetBounds.ATop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.DoSetBounds.AWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolButton.DoSetBounds.AHeight">
 <short></short>
 <descr>
 </descr>
@@ -8242,7 +10409,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.Create.AOwner">
+<element name="TToolButton.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -8275,18 +10442,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TToolButton.Click">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TToolButton.SetBounds">
+<element name="TToolButton.GetCurrentIcon">
 <short></short>
 <descr>
 </descr>
@@ -8297,7 +10453,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.SetBounds.ALeft">
+<element name="TToolButton.GetCurrentIcon.ImageList">
 <short></short>
 <descr>
 </descr>
@@ -8308,29 +10464,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolButton.SetBounds.ATop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolButton.SetBounds.AWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolButton.SetBounds.AHeight">
+<element name="TToolButton.GetCurrentIcon.TheIndex">
 <short></short>
 <descr>
 </descr>
@@ -8342,6 +10476,17 @@
 
 <!-- property Visibility: public -->
 <element name="TToolButton.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToolButton.Action">
 <short></short>
 <descr>
 </descr>
@@ -8605,6 +10750,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TToolButton.OnContextPopup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TToolButton.OnDragDrop">
 <short></short>
 <descr>
@@ -8681,8 +10837,8 @@
 </seealso>
 </element>
 
-<!-- object Visibility: default -->
-<element name="TToolBar">
+<!-- enumeration type Visibility: default -->
+<element name="TToolBarFlag">
 <short></short>
 <descr>
 </descr>
@@ -8692,8 +10848,41 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TToolBar.FButtonWidth">
+<!-- enumeration value Visibility: default -->
+<element name="TToolBarFlag.tbfUpdateVisibleBarNeeded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TToolBarFlag.tbfPlacingControls">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TToolBarFlags">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TToolBar">
 <short></short>
 <descr>
 </descr>
@@ -8715,6 +10904,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TToolBar.FRealizedButtonHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TToolBar.FButtons">
 <short></short>
 <descr>
@@ -8726,7 +10926,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TToolBar.FCaption">
+<element name="TToolBar.FButtonWidth">
 <short></short>
 <descr>
 </descr>
@@ -8737,62 +10937,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TToolBar.FShowCaptions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FFlat">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FTransparent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FWrapable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FImages">
+<element name="TToolBar.FDisabledImageChangeLink">
 <short></short>
 <descr>
 </descr>
@@ -8814,7 +10959,73 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TToolBar.FDropDownWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FDropDownButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FFlat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FHotImageChangeLink">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TToolBar.FHotImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FImageChangeLink">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FImages">
 <short></short>
 <descr>
 </descr>
@@ -8836,6 +11047,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TToolBar.FList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TToolBar.FNewStyle">
 <short></short>
 <descr>
@@ -8847,7 +11069,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TToolBar.FNullBitmap">
+<element name="TToolBar.FRowCount">
 <short></short>
 <descr>
 </descr>
@@ -8858,7 +11080,73 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TToolBar.FOldHandle">
+<element name="TToolBar.FShowCaptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FCurrentMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FCurrentMenuAutoFree">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FSrcMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FSrcMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FToolBarFlags">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TToolBar.FTransparent">
 <short></short>
 <descr>
 </descr>
@@ -8880,150 +11168,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TToolBar.FHeightMargin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FCaptureChangeCancels">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FInMenuLoop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FTempMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FButtonMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FMenuButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TToolBar.FMenuResult">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.ButtonIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.ButtonIndex.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ButtonIndex.OldIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ButtonIndex.ALeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ButtonIndex.ATop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.LoadImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.LoadImages.AImages">
+<element name="TToolBar.FWrapable">
 <short></short>
 <descr>
 </descr>
@@ -9089,7 +11234,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.GetButtonSize">
+<element name="TToolBar.SetButtonHeight">
 <short></short>
 <descr>
 </descr>
@@ -9100,447 +11245,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.GetButtonSize.AWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.GetButtonSize.AHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.GetRowCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.GetRowCount.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetList.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetShowCaptions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetShowCaptions.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetFlat">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetFlat.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetTransparent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetTransparent.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetWrapable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetWrapable.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.InsertButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.InsertButton.Control">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.RemoveButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.RemoveButton.Control">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.RefreshButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.RefreshButton.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.RefreshButton.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.UpdateButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateButton.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.UpdateButtons">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.UpdateButtonState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateButtonState.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.UpdateButtonStates">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.UpdateItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.UpdateItem.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateItem.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateItem.FromIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateItem.ToIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.UpdateItem2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.UpdateItem2.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateItem2.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateItem2.FromIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.UpdateItem2.ToIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.ClearTempMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CreateButtons">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CreateButtons.NewWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CreateButtons.NewHeight">
+<element name="TToolBar.SetButtonHeight.AValue">
 <short></short>
 <descr>
 </descr>
@@ -9562,7 +11267,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.SetButtonWidth.Value">
+<element name="TToolBar.SetButtonWidth.AValue">
 <short></short>
 <descr>
 </descr>
@@ -9573,7 +11278,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.SetButtonHeight">
+<element name="TToolBar.SetDisabledImages">
 <short></short>
 <descr>
 </descr>
@@ -9584,7 +11289,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.SetButtonHeight.Value">
+<element name="TToolBar.SetDisabledImages.AValue">
 <short></short>
 <descr>
 </descr>
@@ -9595,7 +11300,205 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.UpdateImages">
+<element name="TToolBar.SetFlat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetFlat.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetHotImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetHotImages.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetImages.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetIndent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetIndent.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetList">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetList.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetShowCaptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetShowCaptions.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetTransparent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetTransparent.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.SetWrapable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetWrapable.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TToolBar.ToolButtonDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.ToolButtonDown.AButton">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.ToolButtonDown.NewDown">
 <short></short>
 <descr>
 </descr>
@@ -9628,50 +11531,6 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.SetImageList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetImageList.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetImages.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
 <element name="TToolBar.DisabledImageListChange">
 <short></short>
 <descr>
@@ -9684,50 +11543,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolBar.DisabledImageListChange.Sender">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetDisabledImageList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetDisabledImageList.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.SetDisabledImages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetDisabledImages.Value">
 <short></short>
 <descr>
 </descr>
@@ -9760,18 +11575,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.SetHotImageList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.SetHotImageList.Value">
+<element name="TToolBar.UpdateVisibleBar">
 <short></short>
 <descr>
 </descr>
@@ -9782,7 +11586,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.SetHotImages">
+<element name="TToolBar.OnTemporaryPopupMenuClose">
 <short></short>
 <descr>
 </descr>
@@ -9793,7 +11597,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.SetHotImages.Value">
+<element name="TToolBar.OnTemporaryPopupMenuClose.Sender">
 <short></short>
 <descr>
 </descr>
@@ -9804,7 +11608,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.SetIndent">
+<element name="TToolBar.MoveSubMenuItems">
 <short></short>
 <descr>
 </descr>
@@ -9815,7 +11619,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.SetIndent.Value">
+<element name="TToolBar.MoveSubMenuItems.SrcMenuItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.MoveSubMenuItems.DestMenuItem">
 <short></short>
 <descr>
 </descr>
@@ -9826,7 +11641,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.AdjustControl">
+<element name="TToolBar.AddButton">
 <short></short>
 <descr>
 </descr>
@@ -9837,7 +11652,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.AdjustControl.Control">
+<element name="TToolBar.AddButton.Button">
 <short></short>
 <descr>
 </descr>
@@ -9848,84 +11663,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TToolBar.RecreateButtons">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.BeginUpdate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.EndUpdate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.ResizeButtons">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.InternalButtonCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.InternalButtonCount.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TToolBar.ReorderButton">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.ReorderButton.Result">
+<element name="TToolBar.RemoveButton">
 <short></short>
 <descr>
 </descr>
@@ -9936,546 +11674,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.ReorderButton.OldIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ReorderButton.ALeft">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ReorderButton.ATop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMEraseBkgnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMEraseBkgnd.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMGetDlgCode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMGetDlgCode.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMGetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMGetText.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMGetTextLength">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMGetTextLength.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMKeyDown.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMNotifyFormat">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMNotifyFormat.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMSetText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMSetText.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMSize.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMSysChar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMSysChar.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMSysCommand">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMSysCommand.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMWindowPosChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMWindowPosChanged.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.WMWindowPosChanging">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WMWindowPosChanging.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CMColorChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CMColorChanged.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CMControlChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CMControlChange.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CMDialogChar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CMDialogChar.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CMEnabledChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CMEnabledChanged.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CMParentColorChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CMParentColorChanged.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CNChar">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CNChar.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CNSysKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CNSysKeyDown.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CMSysFontChanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CMSysFontChanged.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CNDropDownClosed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CNDropDownClosed.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TToolBar.CNNotify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.CNNotify.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TToolBar.AlignControls">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.AlignControls.AControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.AlignControls.Rect">
+<element name="TToolBar.RemoveButton.Button">
 <short></short>
 <descr>
 </descr>
@@ -10520,50 +11719,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolBar.CanAutoSize.NewHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TToolBar.CancelMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TToolBar.ChangeScale">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ChangeScale.M">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.ChangeScale.D">
 <short></short>
 <descr>
 </descr>
@@ -10661,6 +11816,17 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TToolBar.ControlsAligned">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: protected -->
 <element name="TToolBar.FindButtonFromAccel">
 <short></short>
@@ -10685,61 +11851,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TToolBar.FindButtonFromAccel.Accel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TToolBar.GetChildren">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.GetChildren.Proc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.GetChildren.Root">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TToolBar.InitMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.InitMenu.Button">
 <short></short>
 <descr>
 </descr>
@@ -10837,28 +11948,6 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TToolBar.WndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TToolBar.WndProc.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- function Visibility: protected -->
 <element name="TToolBar.WrapButtons">
 <short></short>
@@ -10915,7 +12004,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.Create.AOwner">
+<element name="TToolBar.Create.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -10936,19 +12025,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TToolBar.TrackMenu">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TToolBar.TrackMenu.Result">
+<!-- procedure Visibility: public -->
+<element name="TToolBar.FlipChildren">
 <short></short>
 <descr>
 </descr>
@@ -10959,7 +12037,73 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TToolBar.TrackMenu.Button">
+<element name="TToolBar.FlipChildren.AllLevels">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TToolBar.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TToolBar.EndUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TToolBar.Paint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TToolBar.SetButtonSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetButtonSize.NewButtonWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TToolBar.SetButtonSize.NewButtonHeight">
 <short></short>
 <descr>
 </descr>
@@ -11081,6 +12225,17 @@
 
 <!-- property Visibility: published -->
 <element name="TToolBar.Caption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToolBar.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -11410,6 +12565,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TToolBar.OnContextPopup">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TToolBar.OnDblClick">
 <short></short>
 <descr>
@@ -11509,7 +12675,40 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TToolBar.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToolBar.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TToolBar.OnResize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToolBar.OnChangeBounds">
 <short></short>
 <descr>
 </descr>
@@ -11707,7 +12906,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TTrackBar">
+<element name="TCustomTrackBar">
 <short></short>
 <descr>
 </descr>
@@ -11718,7 +12917,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FOrientation">
+<element name="TCustomTrackBar.FOrientation">
 <short></short>
 <descr>
 </descr>
@@ -11729,7 +12928,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FTickMarks">
+<element name="TCustomTrackBar.FTickMarks">
 <short></short>
 <descr>
 </descr>
@@ -11740,7 +12939,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FTickStyle">
+<element name="TCustomTrackBar.FTickStyle">
 <short></short>
 <descr>
 </descr>
@@ -11751,7 +12950,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FLineSize">
+<element name="TCustomTrackBar.FLineSize">
 <short></short>
 <descr>
 </descr>
@@ -11762,7 +12961,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FPageSize">
+<element name="TCustomTrackBar.FPageSize">
 <short></short>
 <descr>
 </descr>
@@ -11773,7 +12972,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FMin">
+<element name="TCustomTrackBar.FMin">
 <short></short>
 <descr>
 </descr>
@@ -11784,7 +12983,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FMax">
+<element name="TCustomTrackBar.FMax">
 <short></short>
 <descr>
 </descr>
@@ -11795,7 +12994,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FFrequency">
+<element name="TCustomTrackBar.FFrequency">
 <short></short>
 <descr>
 </descr>
@@ -11806,7 +13005,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FPosition">
+<element name="TCustomTrackBar.FPosition">
 <short></short>
 <descr>
 </descr>
@@ -11817,7 +13016,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FSelStart">
+<element name="TCustomTrackBar.FShowScale">
 <short></short>
 <descr>
 </descr>
@@ -11828,7 +13027,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FSelEnd">
+<element name="TCustomTrackBar.FScalePos">
 <short></short>
 <descr>
 </descr>
@@ -11839,7 +13038,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FShowScale">
+<element name="TCustomTrackBar.FScaleDigits">
 <short></short>
 <descr>
 </descr>
@@ -11850,29 +13049,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TTrackBar.FScalePos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TTrackBar.FScaleDigits">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TTrackBar.FOnChange">
+<element name="TCustomTrackBar.FOnChange">
 <short></short>
 <descr>
 </descr>
@@ -11883,7 +13060,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetOrientation">
+<element name="TCustomTrackBar.SetFrequency">
 <short></short>
 <descr>
 </descr>
@@ -11894,7 +13071,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetOrientation.Value">
+<element name="TCustomTrackBar.SetFrequency.Value">
 <short></short>
 <descr>
 </descr>
@@ -11905,7 +13082,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetParams">
+<element name="TCustomTrackBar.SetLineSize">
 <short></short>
 <descr>
 </descr>
@@ -11916,29 +13093,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetParams.APosition">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TTrackBar.SetParams.AMin">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TTrackBar.SetParams.AMax">
+<element name="TCustomTrackBar.SetLineSize.Value">
 <short></short>
 <descr>
 </descr>
@@ -11949,7 +13104,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetPosition">
+<element name="TCustomTrackBar.SetMax">
 <short></short>
 <descr>
 </descr>
@@ -11960,7 +13115,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetPosition.Value">
+<element name="TCustomTrackBar.SetMax.Value">
 <short></short>
 <descr>
 </descr>
@@ -11971,7 +13126,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetMin">
+<element name="TCustomTrackBar.SetMin">
 <short></short>
 <descr>
 </descr>
@@ -11982,7 +13137,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetMin.Value">
+<element name="TCustomTrackBar.SetMin.Value">
 <short></short>
 <descr>
 </descr>
@@ -11993,7 +13148,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetMax">
+<element name="TCustomTrackBar.SetOrientation">
 <short></short>
 <descr>
 </descr>
@@ -12004,7 +13159,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetMax.Value">
+<element name="TCustomTrackBar.SetOrientation.Value">
 <short></short>
 <descr>
 </descr>
@@ -12015,7 +13170,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetFrequency">
+<element name="TCustomTrackBar.SetPageSize">
 <short></short>
 <descr>
 </descr>
@@ -12026,7 +13181,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetFrequency.Value">
+<element name="TCustomTrackBar.SetPageSize.Value">
 <short></short>
 <descr>
 </descr>
@@ -12037,7 +13192,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetTickStyle">
+<element name="TCustomTrackBar.SetParams">
 <short></short>
 <descr>
 </descr>
@@ -12048,18 +13203,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetTickStyle.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TTrackBar.SetTickMarks">
+<element name="TCustomTrackBar.SetParams.APosition">
 <short></short>
 <descr>
 </descr>
@@ -12070,18 +13214,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetTickMarks.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TTrackBar.SetLineSize">
+<element name="TCustomTrackBar.SetParams.AMin">
 <short></short>
 <descr>
 </descr>
@@ -12092,7 +13225,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetLineSize.Value">
+<element name="TCustomTrackBar.SetParams.AMax">
 <short></short>
 <descr>
 </descr>
@@ -12103,7 +13236,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetPageSize">
+<element name="TCustomTrackBar.SetPosition">
 <short></short>
 <descr>
 </descr>
@@ -12114,7 +13247,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetPageSize.Value">
+<element name="TCustomTrackBar.SetPosition.Value">
 <short></short>
 <descr>
 </descr>
@@ -12125,7 +13258,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetSelStart">
+<element name="TCustomTrackBar.SetScalePos">
 <short></short>
 <descr>
 </descr>
@@ -12136,7 +13269,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetSelStart.Value">
+<element name="TCustomTrackBar.SetScalePos.Value">
 <short></short>
 <descr>
 </descr>
@@ -12147,7 +13280,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetSelEnd">
+<element name="TCustomTrackBar.SetShowScale">
 <short></short>
 <descr>
 </descr>
@@ -12158,7 +13291,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetSelEnd.Value">
+<element name="TCustomTrackBar.SetShowScale.Value">
 <short></short>
 <descr>
 </descr>
@@ -12169,18 +13302,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.UpdateSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TTrackBar.SetShowScale">
+<element name="TCustomTrackBar.SetTickMarks">
 <short></short>
 <descr>
 </descr>
@@ -12191,7 +13313,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetShowScale.Value">
+<element name="TCustomTrackBar.SetTickMarks.Value">
 <short></short>
 <descr>
 </descr>
@@ -12202,7 +13324,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TTrackBar.SetScalePos">
+<element name="TCustomTrackBar.SetTickStyle">
 <short></short>
 <descr>
 </descr>
@@ -12213,7 +13335,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetScalePos.Value">
+<element name="TCustomTrackBar.SetTickStyle.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomTrackBar.UpdateSelection">
 <short></short>
 <descr>
 </descr>
@@ -12224,7 +13357,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TTrackBar.ApplyChanges">
+<element name="TCustomTrackBar.ApplyChanges">
 <short></short>
 <descr>
 </descr>
@@ -12235,7 +13368,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TTrackBar.DoChange">
+<element name="TCustomTrackBar.DoChange">
 <short></short>
 <descr>
 </descr>
@@ -12246,7 +13379,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.DoChange.msg">
+<element name="TCustomTrackBar.DoChange.msg">
 <short></short>
 <descr>
 </descr>
@@ -12257,7 +13390,18 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TTrackBar.InitializeWnd">
+<element name="TCustomTrackBar.InitializeWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTrackBar.Loaded">
 <short></short>
 <descr>
 </descr>
@@ -12268,7 +13412,7 @@
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TTrackBar.Create">
+<element name="TCustomTrackBar.Create">
 <short></short>
 <descr>
 </descr>
@@ -12279,7 +13423,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.Create.AOwner">
+<element name="TCustomTrackBar.Create.AOwner">
 <short></short>
 <descr>
 </descr>
@@ -12290,7 +13434,7 @@
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TTrackBar.SetTick">
+<element name="TCustomTrackBar.SetTick">
 <short></short>
 <descr>
 </descr>
@@ -12301,7 +13445,194 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTrackBar.SetTick.Value">
+<element name="TCustomTrackBar.SetTick.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.Frequency">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.LineSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.Max">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.Min">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.OnChange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.Orientation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.PageSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.Position">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.ScalePos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.ShowScale">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.TabStop">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.TickMarks">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTrackBar.TickStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TTrackBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.Align">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.Anchors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.Constraints">
 <short></short>
 <descr>
 </descr>
@@ -12324,6 +13655,17 @@
 
 <!-- property Visibility: published -->
 <element name="TTrackBar.DragCursor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.DragMode">
 <short></short>
 <descr>
 </descr>
@@ -12422,6 +13764,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TTrackBar.OnClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TTrackBar.OnDragDrop">
 <short></short>
 <descr>
@@ -12467,6 +13820,61 @@
 
 <!-- property Visibility: published -->
 <element name="TTrackBar.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.OnMouseUp">
 <short></short>
 <descr>
 </descr>
@@ -12598,18 +14006,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TTrackBar.SelEnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TTrackBar.SelStart">
+<element name="TTrackBar.ScalePos">
 <short></short>
 <descr>
 </descr>
@@ -12621,6 +14018,17 @@
 
 <!-- property Visibility: published -->
 <element name="TTrackBar.ShowHint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.ShowScale">
 <short></short>
 <descr>
 </descr>
@@ -12676,39 +14084,6 @@
 
 <!-- property Visibility: published -->
 <element name="TTrackBar.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TTrackBar.ShowScale">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TTrackBar.ScalePos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TTrackBar.DragMode">
 <short></short>
 <descr>
 </descr>
@@ -14907,6 +16282,28 @@
 </seealso>
 </element>
 
+<!-- function Visibility: private -->
+<element name="TTreeNode.IsNodeHeightFullVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TTreeNode.IsNodeHeightFullVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TTreeNode.ReadData">
 <short></short>
@@ -16480,19 +17877,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
+<!-- procedure Visibility: public -->
 <element name="TTreeNode.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TTreeNode.ConsistencyCheck.Result">
 <short></short>
 <descr>
 </descr>
@@ -16680,6 +18066,17 @@
 
 <!-- property Visibility: public -->
 <element name="TTreeNode.IsVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TTreeNode.IsFullHeightVisible">
 <short></short>
 <descr>
 </descr>
@@ -18361,19 +19758,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
+<!-- procedure Visibility: public -->
 <element name="TTreeNodes.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TTreeNodes.ConsistencyCheck.Result">
 <short></short>
 <descr>
 </descr>
@@ -18922,6 +20308,17 @@
 </seealso>
 </element>
 
+<!-- constant Visibility: default -->
+<element name="DefaultTreeViewOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- enumeration type Visibility: default -->
 <element name="TTreeViewExpandSignType">
 <short></short>
@@ -19033,29 +20430,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomTreeView.FBorderStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
 <element name="TCustomTreeView.FBottomItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomTreeView.FCanvas">
 <short></short>
 <descr>
 </descr>
@@ -19078,17 +20453,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomTreeView.FExpandSignSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomTreeView.FDefEditProc">
 <short></short>
 <descr>
 </descr>
@@ -19122,17 +20486,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomTreeView.FDragNode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomTreeView.FEditHandle">
 <short></short>
 <descr>
 </descr>
@@ -19703,83 +21056,6 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.EditWndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.EditWndProc.Message">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.DoDragOver">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.DoDragOver.Source">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.DoDragOver.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.DoDragOver.Y">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.DoDragOver.CanDrop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- function Visibility: private -->
 <element name="TCustomTreeView.GetAutoExpand">
 <short></short>
@@ -20233,28 +21509,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomTreeView.SetBackgroundColor.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.SetBorderStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.SetBorderStyle.Value">
 <short></short>
 <descr>
 </descr>
@@ -21013,116 +22267,6 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomTreeView.WMHScroll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.WMHScroll.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.WMVScroll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.WMVScroll.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.WMLButtonDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.WMLButtonDown.AMessage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.WMNotify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.WMNotify.AMessage">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomTreeView.WMSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomTreeView.WMSize.Msg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
 <element name="TCustomTreeView.InternalSelectionChanged">
 <short></short>
 <descr>
@@ -21684,6 +22828,39 @@
 </element>
 
 <!-- function Visibility: protected -->
+<element name="TCustomTreeView.IsNodeHeightFullVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomTreeView.IsNodeHeightFullVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.IsNodeHeightFullVisible.ANode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
 <element name="TCustomTreeView.IsInsertMarkVisible">
 <short></short>
 <descr>
@@ -21860,6 +23037,72 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.DragOver">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.DragOver.Source">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.DragOver.X">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.DragOver.Y">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.DragOver.State">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.DragOver.Accept">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomTreeView.DoPaint">
 <short></short>
 <descr>
@@ -22026,6 +23269,28 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomTreeView.Invalidate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.EraseBackground">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.EraseBackground.DC">
 <short></short>
 <descr>
 </descr>
@@ -22389,6 +23654,116 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomTreeView.DoSelectionChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.WMHScroll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.WMHScroll.Msg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.WMVScroll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.WMVScroll.Msg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.WMLButtonDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.WMLButtonDown.AMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.WMNotify">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.WMNotify.AMessage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomTreeView.WMSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomTreeView.WMSize.Msg">
 <short></short>
 <descr>
 </descr>
@@ -22860,19 +24235,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
+<!-- procedure Visibility: public -->
 <element name="TCustomTreeView.ConsistencyCheck">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomTreeView.ConsistencyCheck.Result">
 <short></short>
 <descr>
 </descr>
@@ -23355,6 +24719,39 @@
 </seealso>
 </element>
 
+<!-- function Visibility: public -->
+<element name="TCustomTreeView.SelectionVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomTreeView.SelectionVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomTreeView.MakeSelectionVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: public -->
 <element name="TCustomTreeView.BackgroundColor">
 <short></short>
@@ -23379,17 +24776,6 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomTreeView.BottomItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCustomTreeView.Canvas">
 <short></short>
 <descr>
 </descr>
@@ -23533,6 +24919,17 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomTreeView.TreeLineColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCustomTreeView.TabStop">
 <short></short>
 <descr>
 </descr>
@@ -23983,6 +25380,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TTreeView.Tag">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TTreeView.ToolTips">
 <short></short>
 <descr>
@@ -24083,6 +25491,17 @@
 
 <!-- property Visibility: published -->
 <element name="TTreeView.OnCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTreeView.OnContextPopup">
 <short></short>
 <descr>
 </descr>

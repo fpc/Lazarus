@@ -4,11 +4,11 @@
 
 <!--
   ====================================================================
-    GraphMath
+    LCLResCache
   ====================================================================
 -->
 
-<module name="GraphMath">
+<module name="LCLResCache">
 <short></short>
 <descr>
 </descr>
@@ -36,7 +36,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="Math">
+<element name="FPCAdds">
 <short></short>
 <descr>
 </descr>
@@ -57,8 +57,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TFloatPoint">
+<!-- unresolved type reference Visibility: default -->
+<element name="AvgLvlTree">
 <short></short>
 <descr>
 </descr>
@@ -68,8 +68,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TFloatPoint.X">
+<!-- object Visibility: default -->
+<element name="TResourceCache">
 <short></short>
 <descr>
 </descr>
@@ -79,8 +79,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TFloatPoint.Y">
+<!-- object Visibility: default -->
+<element name="TResourceCacheDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -90,8 +90,8 @@
 </seealso>
 </element>
 
-<!-- array type Visibility: default -->
-<element name="TBezier">
+<!-- object Visibility: default -->
+<element name="TResourceCacheItem">
 <short></short>
 <descr>
 </descr>
@@ -101,8 +101,8 @@
 </seealso>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PPoint">
+<!-- variable Visibility: private -->
+<element name="TResourceCacheItem.FReferenceCount">
 <short></short>
 <descr>
 </descr>
@@ -112,8 +112,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: default -->
-<element name="Angles2Coords">
+<!-- variable Visibility: public -->
+<element name="TResourceCacheItem.Handle">
 <short></short>
 <descr>
 </descr>
@@ -123,8 +123,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.X">
+<!-- variable Visibility: public -->
+<element name="TResourceCacheItem.Cache">
 <short></short>
 <descr>
 </descr>
@@ -134,8 +134,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.Y">
+<!-- variable Visibility: public -->
+<element name="TResourceCacheItem.FirstDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -145,8 +145,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.Width">
+<!-- variable Visibility: public -->
+<element name="TResourceCacheItem.LastDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -156,8 +156,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.Height">
+<!-- variable Visibility: public -->
+<element name="TResourceCacheItem.Next">
 <short></short>
 <descr>
 </descr>
@@ -167,8 +167,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.Angle1">
+<!-- variable Visibility: public -->
+<element name="TResourceCacheItem.Prev">
 <short></short>
 <descr>
 </descr>
@@ -178,19 +178,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.Angle2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Angles2Coords.SX">
+<!-- constructor Visibility: public -->
+<element name="TResourceCacheItem.Create">
 <short></short>
 <descr>
 </descr>
@@ -201,7 +190,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Angles2Coords.SY">
+<element name="TResourceCacheItem.Create.TheCache">
 <short></short>
 <descr>
 </descr>
@@ -212,7 +201,51 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Angles2Coords.EX">
+<element name="TResourceCacheItem.Create.TheHandle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TResourceCacheItem.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheItem.IncreaseRefCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheItem.DecreaseRefCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheItem.AddToList">
 <short></short>
 <descr>
 </descr>
@@ -223,18 +256,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Angles2Coords.EY">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Arc2Bezier">
+<element name="TResourceCacheItem.AddToList.First">
 <short></short>
 <descr>
 </descr>
@@ -245,7 +267,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.X">
+<element name="TResourceCacheItem.AddToList.Last">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheItem.RemoveFromList">
 <short></short>
 <descr>
 </descr>
@@ -256,7 +289,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Y">
+<element name="TResourceCacheItem.RemoveFromList.First">
 <short></short>
 <descr>
 </descr>
@@ -267,7 +300,106 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Width">
+<element name="TResourceCacheItem.RemoveFromList.Last">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheItem.WarnReferenceHigh">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TResourceCacheItem.ReferenceCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="TResourceCacheItemClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TResourceCacheDescriptor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TResourceCacheDescriptor.Item">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TResourceCacheDescriptor.Cache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TResourceCacheDescriptor.Next">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TResourceCacheDescriptor.Prev">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TResourceCacheDescriptor.Create">
 <short></short>
 <descr>
 </descr>
@@ -278,7 +410,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Height">
+<element name="TResourceCacheDescriptor.Create.TheCache">
 <short></short>
 <descr>
 </descr>
@@ -289,7 +421,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Angle1">
+<element name="TResourceCacheDescriptor.Create.TheItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TResourceCacheDescriptor.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheDescriptor.AddToList">
 <short></short>
 <descr>
 </descr>
@@ -300,7 +454,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Angle2">
+<element name="TResourceCacheDescriptor.AddToList.First">
 <short></short>
 <descr>
 </descr>
@@ -311,7 +465,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Rotation">
+<element name="TResourceCacheDescriptor.AddToList.Last">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCacheDescriptor.RemoveFromList">
 <short></short>
 <descr>
 </descr>
@@ -322,7 +487,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Arc2Bezier.Points">
+<element name="TResourceCacheDescriptor.RemoveFromList.First">
 <short></short>
 <descr>
 </descr>
@@ -332,8 +497,228 @@
 </seealso>
 </element>
 
-<!-- function Visibility: default -->
-<element name="Bezier">
+<!-- argument Visibility: default -->
+<element name="TResourceCacheDescriptor.RemoveFromList.Last">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- "class of" type Visibility: default -->
+<element name="TResourceCacheDescriptorClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TResourceCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FDescriptors">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FDestroying">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FResourceCacheDescriptorClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FResourceCacheItemClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FMaxUnusedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FFirstUnusedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FLastUnusedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TResourceCache.FUnUsedItemCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TResourceCache.RemoveItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TResourceCache.RemoveItem.Item">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TResourceCache.RemoveDescriptor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TResourceCache.RemoveDescriptor.Desc">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TResourceCache.ItemUsed">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TResourceCache.ItemUsed.Item">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TResourceCache.ItemUnused">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TResourceCache.ItemUnused.Item">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TResourceCache.ItemIsUsed">
 <short></short>
 <descr>
 </descr>
@@ -344,7 +729,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="Bezier.Result">
+<element name="TResourceCache.ItemIsUsed.Result">
 <short></short>
 <descr>
 </descr>
@@ -355,7 +740,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Bezier.C1">
+<element name="TResourceCache.ItemIsUsed.Item">
 <short></short>
 <descr>
 </descr>
@@ -365,8 +750,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Bezier.C2">
+<!-- constructor Visibility: public -->
+<element name="TResourceCache.Create">
 <short></short>
 <descr>
 </descr>
@@ -376,8 +761,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Bezier.C3">
+<!-- destructor Visibility: public -->
+<element name="TResourceCache.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -387,19 +772,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Bezier.C4">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Bezier">
+<!-- function Visibility: public -->
+<element name="TResourceCache.CompareItems">
 <short></short>
 <descr>
 </descr>
@@ -410,7 +784,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="Bezier.Result">
+<element name="TResourceCache.CompareItems.Result">
 <short></short>
 <descr>
 </descr>
@@ -421,7 +795,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Bezier.C1">
+<element name="TResourceCache.CompareItems.Tree">
 <short></short>
 <descr>
 </descr>
@@ -432,7 +806,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Bezier.C2">
+<element name="TResourceCache.CompareItems.Item1">
 <short></short>
 <descr>
 </descr>
@@ -443,7 +817,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Bezier.C3">
+<element name="TResourceCache.CompareItems.Item2">
 <short></short>
 <descr>
 </descr>
@@ -453,173 +827,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Bezier.C4">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Bezier2Polyline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Bezier2Polyline.Bezier">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Bezier2Polyline.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Bezier2Polyline.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="BezierArcPoints">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Y">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Width">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Height">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Angle1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Angle2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Rotation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="BezierArcPoints.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="BezierMidPoint">
+<!-- function Visibility: public -->
+<element name="TResourceCache.CompareDescriptors">
 <short></short>
 <descr>
 </descr>
@@ -630,7 +839,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="BezierMidPoint.Result">
+<element name="TResourceCache.CompareDescriptors.Result">
 <short></short>
 <descr>
 </descr>
@@ -641,7 +850,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="BezierMidPoint.Bezier">
+<element name="TResourceCache.CompareDescriptors.Tree">
 <short></short>
 <descr>
 </descr>
@@ -651,8 +860,85 @@
 </seealso>
 </element>
 
-<!-- function Visibility: default -->
-<element name="CenterPoint">
+<!-- argument Visibility: default -->
+<element name="TResourceCache.CompareDescriptors.Desc1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TResourceCache.CompareDescriptors.Desc2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TResourceCache.ConsistencyCheck">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TResourceCache.MaxUnusedItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TResourceCache.ResourceCacheItemClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TResourceCache.ResourceCacheDescriptorClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="THandleResourceCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="THandleResourceCache.FindItem">
 <short></short>
 <descr>
 </descr>
@@ -663,7 +949,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="CenterPoint.Result">
+<element name="THandleResourceCache.FindItem.Result">
 <short></short>
 <descr>
 </descr>
@@ -674,7 +960,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CenterPoint.Rect">
+<element name="THandleResourceCache.FindItem.Handle">
 <short></short>
 <descr>
 </descr>
@@ -684,8 +970,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: default -->
-<element name="Coords2Angles">
+<!-- object Visibility: default -->
+<element name="TBlockResourceCacheDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -695,8 +981,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.X">
+<!-- variable Visibility: public -->
+<element name="TBlockResourceCacheDescriptor.Data">
 <short></short>
 <descr>
 </descr>
@@ -706,8 +992,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.Y">
+<!-- destructor Visibility: public -->
+<element name="TBlockResourceCacheDescriptor.Destroy">
 <short></short>
 <descr>
 </descr>
@@ -717,8 +1003,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.Width">
+<!-- object Visibility: default -->
+<element name="TBlockResourceCache">
 <short></short>
 <descr>
 </descr>
@@ -728,8 +1014,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.Height">
+<!-- variable Visibility: private -->
+<element name="TBlockResourceCache.FDataSize">
 <short></short>
 <descr>
 </descr>
@@ -739,8 +1025,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.SX">
+<!-- variable Visibility: protected -->
+<element name="TBlockResourceCache.FOnCompareDescPtrWithDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -750,19 +1036,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.SY">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.EX">
+<!-- constructor Visibility: public -->
+<element name="TBlockResourceCache.Create">
 <short></short>
 <descr>
 </descr>
@@ -773,7 +1048,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Coords2Angles.EY">
+<element name="TBlockResourceCache.Create.TheDataSize">
 <short></short>
 <descr>
 </descr>
@@ -783,30 +1058,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.Angle1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Coords2Angles.Angle2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Distance">
+<!-- function Visibility: public -->
+<element name="TBlockResourceCache.FindDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -817,7 +1070,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="Distance.Result">
+<element name="TBlockResourceCache.FindDescriptor.Result">
 <short></short>
 <descr>
 </descr>
@@ -828,7 +1081,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Distance.PT1">
+<element name="TBlockResourceCache.FindDescriptor.DescPtr">
 <short></short>
 <descr>
 </descr>
@@ -838,19 +1091,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Distance.Pt2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Distance">
+<!-- function Visibility: public -->
+<element name="TBlockResourceCache.AddResource">
 <short></short>
 <descr>
 </descr>
@@ -861,7 +1103,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="Distance.Result">
+<element name="TBlockResourceCache.AddResource.Result">
 <short></short>
 <descr>
 </descr>
@@ -872,7 +1114,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Distance.Pt">
+<element name="TBlockResourceCache.AddResource.Handle">
 <short></short>
 <descr>
 </descr>
@@ -883,7 +1125,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="Distance.SP">
+<element name="TBlockResourceCache.AddResource.DescPtr">
 <short></short>
 <descr>
 </descr>
@@ -893,19 +1135,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="Distance.EP">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="EccentricAngle">
+<!-- function Visibility: public -->
+<element name="TBlockResourceCache.CompareDescriptors">
 <short></short>
 <descr>
 </descr>
@@ -916,7 +1147,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="EccentricAngle.Result">
+<element name="TBlockResourceCache.CompareDescriptors.Result">
 <short></short>
 <descr>
 </descr>
@@ -927,7 +1158,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="EccentricAngle.PT">
+<element name="TBlockResourceCache.CompareDescriptors.Tree">
 <short></short>
 <descr>
 </descr>
@@ -938,7 +1169,40 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="EccentricAngle.Rect">
+<element name="TBlockResourceCache.CompareDescriptors.Desc1">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TBlockResourceCache.CompareDescriptors.Desc2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TBlockResourceCache.DataSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TBlockResourceCache.OnCompareDescPtrWithDescriptor">
 <short></short>
 <descr>
 </descr>
@@ -949,7 +1213,7 @@
 </element>
 
 <!-- function Visibility: default -->
-<element name="EllipseRadialLength">
+<element name="ComparePHandleWithResourceCacheItem">
 <short></short>
 <descr>
 </descr>
@@ -960,7 +1224,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="EllipseRadialLength.Result">
+<element name="ComparePHandleWithResourceCacheItem.Result">
 <short></short>
 <descr>
 </descr>
@@ -971,7 +1235,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="EllipseRadialLength.Rect">
+<element name="ComparePHandleWithResourceCacheItem.HandlePtr">
 <short></short>
 <descr>
 </descr>
@@ -982,7 +1246,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="EllipseRadialLength.EccentricAngle">
+<element name="ComparePHandleWithResourceCacheItem.Item">
 <short></short>
 <descr>
 </descr>
@@ -993,7 +1257,7 @@
 </element>
 
 <!-- function Visibility: default -->
-<element name="FloatPoint">
+<element name="CompareDescPtrWithBlockResDesc">
 <short></short>
 <descr>
 </descr>
@@ -1004,7 +1268,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="FloatPoint.Result">
+<element name="CompareDescPtrWithBlockResDesc.Result">
 <short></short>
 <descr>
 </descr>
@@ -1015,7 +1279,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="FloatPoint.AX">
+<element name="CompareDescPtrWithBlockResDesc.DescPtr">
 <short></short>
 <descr>
 </descr>
@@ -1026,7 +1290,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="FloatPoint.AY">
+<element name="CompareDescPtrWithBlockResDesc.Item">
 <short></short>
 <descr>
 </descr>
@@ -1035,468 +1299,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- function Visibility: default -->
-<element name="LineEndPoint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LineEndPoint.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LineEndPoint.StartPoint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LineEndPoint.Angle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LineEndPoint.Length">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="PolyBezier2Polyline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Beziers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="PolyBezier2Polyline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Beziers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Continuous">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="PolyBezier2Polyline">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Beziers">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.BCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezier2Polyline.Continuous">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="PolyBezierArcPoints">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.X">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Y">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Width">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Height">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Angle1">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Angle2">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Rotation">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Points">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="PolyBezierArcPoints.Count">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="Quadrant">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="Quadrant.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Quadrant.PT">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="Quadrant.Center">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="RadialPoint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="RadialPoint.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="RadialPoint.EccentricAngle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="RadialPoint.Rect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="SplitBezier">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitBezier.Bezier">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitBezier.Left">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="SplitBezier.Right">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- GraphMath -->
+</module> <!-- LCLResCache -->
 </package>
 </fpdoc-descriptions>

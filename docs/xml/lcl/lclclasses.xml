@@ -4,17 +4,17 @@
 
 <!--
   ====================================================================
-    UTrace
+    LCLClasses
   ====================================================================
 -->
 
-<module name="UTrace">
+<module name="LCLClasses">
 <short></short>
 <descr>
 </descr>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="sysutils">
+<element name="Classes">
 <short></short>
 <descr>
 </descr>
@@ -24,8 +24,8 @@
 </seealso>
 </element>
 
-<!-- alias type Visibility: default -->
-<element name="TAssertErrorAddrType">
+<!-- unresolved type reference Visibility: default -->
+<element name="WSLCLClasses">
 <short></short>
 <descr>
 </descr>
@@ -35,8 +35,74 @@
 </seealso>
 </element>
 
-<!-- procedure type Visibility: default -->
-<element name="TAssertErrorProc">
+<!-- object Visibility: default -->
+<element name="TLCLComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TLCLComponent.FWidgetSetClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TLCLComponent.WidgetSetClass">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLCLComponent.BeforeDestruction">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TLCLComponent.NewInstance">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLCLComponent.NewInstance.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TLCLComponent.RemoveAllHandlersOfObject">
 <short></short>
 <descr>
 </descr>
@@ -47,7 +113,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TAssertErrorProc.Msg">
+<element name="TLCLComponent.RemoveAllHandlersOfObject.AnObject">
 <short></short>
 <descr>
 </descr>
@@ -56,61 +122,6 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
-<element name="TAssertErrorProc.FN">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAssertErrorProc.LineNo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TAssertErrorProc.TheAddr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TraceFileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="OldProcPointer">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- UTrace -->
+</module> <!-- LCLClasses -->
 </package>
 </fpdoc-descriptions>

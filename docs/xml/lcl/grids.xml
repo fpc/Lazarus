@@ -69,7 +69,7 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="LCLLinux">
+<element name="LCLIntf">
 <short></short>
 <descr>
 </descr>
@@ -124,17 +124,6 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
-<element name="VCLGlobals">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
 <element name="DynamicArray">
 <short></short>
 <descr>
@@ -147,17 +136,6 @@
 
 <!-- unresolved type reference Visibility: default -->
 <element name="LMessages">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Messages">
 <short></short>
 <descr>
 </descr>
@@ -268,6 +246,17 @@
 
 <!-- constant Visibility: default -->
 <element name="GM_SELECTALL">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="GM_SETMASK">
 <short></short>
 <descr>
 </descr>
@@ -629,6 +618,17 @@
 </seealso>
 </element>
 
+<!-- set type Visibility: default -->
+<element name="TGridOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- enumeration type Visibility: default -->
 <element name="TGridSaveOptions">
 <short></short>
@@ -685,7 +685,7 @@
 </element>
 
 <!-- set type Visibility: default -->
-<element name="TGridOptions">
+<element name="TSaveOptions">
 <short></short>
 <descr>
 </descr>
@@ -871,17 +871,6 @@
 </seealso>
 </element>
 
-<!-- set type Visibility: default -->
-<element name="TSaveOptions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- enumeration type Visibility: default -->
 <element name="TUpdateOption">
 <short></short>
@@ -959,6 +948,17 @@
 </seealso>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TAutoAdvance.aaLeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- enumeration type Visibility: default -->
 <element name="TGridStatus">
 <short></short>
@@ -1014,8 +1014,8 @@
 </seealso>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PCellFontData">
+<!-- enumeration type Visibility: default -->
+<element name="TItemType">
 <short></short>
 <descr>
 </descr>
@@ -1025,8 +1025,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TCellFontData">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itNormal">
 <short></short>
 <descr>
 </descr>
@@ -1036,8 +1036,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellFontData.Pitch">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itCell">
 <short></short>
 <descr>
 </descr>
@@ -1047,8 +1047,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellFontData.Styles">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itColumn">
 <short></short>
 <descr>
 </descr>
@@ -1058,8 +1058,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellFontData.Size">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itRow">
 <short></short>
 <descr>
 </descr>
@@ -1069,8 +1069,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellFontData.CharSet">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itFixed">
 <short></short>
 <descr>
 </descr>
@@ -1080,8 +1080,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellFontData.Face">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itFixedColumn">
 <short></short>
 <descr>
 </descr>
@@ -1091,8 +1091,8 @@
 </seealso>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PCellAttr">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itFixedRow">
 <short></short>
 <descr>
 </descr>
@@ -1102,8 +1102,8 @@
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TCellAttr">
+<!-- enumeration value Visibility: default -->
+<element name="TItemType.itSelected">
 <short></short>
 <descr>
 </descr>
@@ -1113,8 +1113,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellAttr.Color">
+<!-- constant Visibility: default -->
+<element name="soAll">
 <short></short>
 <descr>
 </descr>
@@ -1124,30 +1124,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TCellAttr.FontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCellAttr.FontData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TCellAttr.TextStyle">
+<!-- object Visibility: default -->
+<element name="TCustomGrid">
 <short></short>
 <descr>
 </descr>
@@ -1258,17 +1236,6 @@
 
 <!-- variable Visibility: default -->
 <element name="TColRowProps.NormalAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCustomGrid">
 <short></short>
 <descr>
 </descr>
@@ -1400,6 +1367,17 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TStringCellEditor.Change">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TStringCellEditor.KeyDown">
 <short></short>
 <descr>
@@ -1423,6 +1401,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringCellEditor.KeyDown.Shift">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStringCellEditor.msg_SetMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringCellEditor.msg_SetMask.Msg">
 <short></short>
 <descr>
 </descr>
@@ -1587,7 +1587,7 @@
 </element>
 
 <!-- procedure type Visibility: default -->
-<element name="TOnCanSelectEvent">
+<element name="TOnSelectCellEvent">
 <short></short>
 <descr>
 </descr>
@@ -1598,7 +1598,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOnCanSelectEvent.Sender">
+<element name="TOnSelectCellEvent.Sender">
 <short></short>
 <descr>
 </descr>
@@ -1609,7 +1609,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOnCanSelectEvent.Col">
+<element name="TOnSelectCellEvent.Col">
 <short></short>
 <descr>
 </descr>
@@ -1620,7 +1620,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOnCanSelectEvent.Row">
+<element name="TOnSelectCellEvent.Row">
 <short></short>
 <descr>
 </descr>
@@ -1631,7 +1631,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TOnCanSelectEvent.CanSelect">
+<element name="TOnSelectCellEvent.CanSelect">
 <short></short>
 <descr>
 </descr>
@@ -1676,72 +1676,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TOnSelectEvent.Row">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure type Visibility: default -->
-<element name="TOnCellAttrEvent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnCellAttrEvent.Sender">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnCellAttrEvent.Col">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnCellAttrEvent.Row">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnCellAttrEvent.State">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOnCellAttrEvent.Attr">
 <short></short>
 <descr>
 </descr>
@@ -1840,7 +1774,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="THdrEvent.Index">
+<element name="THdrEvent.index">
 <short></short>
 <descr>
 </descr>
@@ -1973,6 +1907,61 @@
 
 <!-- argument Visibility: default -->
 <element name="TSelectEditorEvent.Editor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TOnPrepareCanvasEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnPrepareCanvasEvent.sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnPrepareCanvasEvent.Col">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnPrepareCanvasEvent.Row">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TOnPrepareCanvasEvent.aState">
 <short></short>
 <descr>
 </descr>
@@ -2312,50 +2301,6 @@
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
-<element name="TVirtualGrid.GetDefaultCell">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TVirtualGrid.GetDefaultCell.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TVirtualGrid.GetDefaultColRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TVirtualGrid.GetDefaultColRow.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: protected -->
 <element name="TVirtualGrid.doDestroyItem">
 <short></short>
@@ -2489,7 +2434,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TVirtualGrid.DeleteColRow.Index">
+<element name="TVirtualGrid.DeleteColRow.index">
 <short></short>
 <descr>
 </descr>
@@ -2566,7 +2511,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TVirtualGrid.ExchangeColRow.Index">
+<element name="TVirtualGrid.ExchangeColRow.index">
 <short></short>
 <descr>
 </descr>
@@ -2655,6 +2600,50 @@
 
 <!-- procedure Visibility: public -->
 <element name="TVirtualGrid.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TVirtualGrid.GetDefaultCell">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TVirtualGrid.GetDefaultCell.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TVirtualGrid.GetDefaultColRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TVirtualGrid.GetDefaultColRow.Result">
 <short></short>
 <descr>
 </descr>
@@ -2763,7 +2752,7 @@
 </seealso>
 </element>
 
-<!-- "type" alias type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TGridCoord">
 <short></short>
 <descr>
@@ -2774,7 +2763,7 @@
 </seealso>
 </element>
 
-<!-- "type" alias type Visibility: default -->
+<!-- alias type Visibility: default -->
 <element name="TGridRect">
 <short></short>
 <descr>
@@ -2983,6 +2972,17 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: default -->
+<element name="TGridDataCache.MaxTopLeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TCustomGrid">
 <short></short>
@@ -3018,6 +3018,72 @@
 
 <!-- variable Visibility: private -->
 <element name="TCustomGrid.FEditor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FEditorHiding">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FEditorMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FEditorShowing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FEditorKey">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FEditorOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FFlat">
 <short></short>
 <descr>
 </descr>
@@ -3127,6 +3193,17 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomGrid.FOnPrepareCanvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomGrid.FOnSelectEditor">
 <short></short>
 <descr>
@@ -3149,7 +3226,40 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomGrid.FFixedcolor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomGrid.FFocusColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FSelectedColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FFocusRectVisible">
 <short></short>
 <descr>
 </descr>
@@ -3336,17 +3446,6 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomGrid.FOnCanSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
 <element name="TCustomGrid.FOnBeforeSelection">
 <short></short>
 <descr>
@@ -3369,7 +3468,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomGrid.FOnTopLeftChange">
+<element name="TCustomGrid.FOnTopLeftChanged">
 <short></short>
 <descr>
 </descr>
@@ -3380,7 +3479,51 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomGrid.FSkipUnselectable">
+<element name="TCustomGrid.FGSMHBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FGSMVBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FVSbVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FHSbVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FDefaultTextStyle">
 <short></short>
 <descr>
 </descr>
@@ -3425,6 +3568,17 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.AdjustCount.NewValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.CacheVisibleGrid">
 <short></short>
 <descr>
 </descr>
@@ -3490,7 +3644,139 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomGrid.CacheVisibleGrid">
+<element name="TCustomGrid.CheckCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckCount.aNewColCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckCount.aNewRowCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomGrid.CheckTopLeft">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.CheckTopLeft.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckTopLeft.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckTopLeft.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckTopLeft.CheckCols">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckTopLeft.CheckRows">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetFlat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetFlat.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetFocusRectVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetFocusRectVisible.AValue">
 <short></short>
 <descr>
 </descr>
@@ -3676,8 +3962,107 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorGetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorHide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorPos">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorSelectAll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorShowChar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.EditorShowChar.Ch">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorSetMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.EditorSetMode.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorSetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: private -->
-<element name="TCustomGrid.OffsetToColRow">
+<element name="TCustomGrid.EditorShouldEdit">
 <short></short>
 <descr>
 </descr>
@@ -3688,7 +4073,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCustomGrid.OffsetToColRow.Result">
+<element name="TCustomGrid.EditorShouldEdit.Result">
 <short></short>
 <descr>
 </descr>
@@ -3698,118 +4083,8 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.OffsetToColRow.IsCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.OffsetToColRow.Fisical">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.OffsetToColRow.Offset">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.OffsetToColRow.Rest">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomGrid.ColRowToOffset">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.ColRowToOffset.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToOffset.IsCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToOffset.Fisical">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToOffset.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToOffset.Ini">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToOffset.Fin">
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.EditorShow">
 <short></short>
 <descr>
 </descr>
@@ -3842,72 +4117,6 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TCustomGrid.GetTopRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.GetTopRow.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomGrid.GetVisibleColCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.GetVisibleColCount.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCustomGrid.GetVisibleRowCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.GetVisibleRowCount.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
 <element name="TCustomGrid.GetColCount">
 <short></short>
 <descr>
@@ -3920,6 +4129,39 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomGrid.GetColCount.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomGrid.GetColWidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetColWidths.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetColWidths.Acol">
 <short></short>
 <descr>
 </descr>
@@ -4007,7 +4249,7 @@
 </element>
 
 <!-- function Visibility: private -->
-<element name="TCustomGrid.GetColWidths">
+<element name="TCustomGrid.GetSystemMetricsGapSize">
 <short></short>
 <descr>
 </descr>
@@ -4018,7 +4260,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCustomGrid.GetColWidths.Result">
+<element name="TCustomGrid.GetSystemMetricsGapSize.Result">
 <short></short>
 <descr>
 </descr>
@@ -4029,7 +4271,51 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.GetColWidths.Acol">
+<element name="TCustomGrid.GetSystemMetricsGapSize.Index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomGrid.GetTopRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetTopRow.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomGrid.GetVisibleColCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetVisibleColCount.Result">
 <short></short>
 <descr>
 </descr>
@@ -4052,6 +4338,28 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomGrid.GetVisibleGrid.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomGrid.GetVisibleRowCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetVisibleRowCount.Result">
 <short></short>
 <descr>
 </descr>
@@ -4117,7 +4425,51 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.MyTextRect.Ts">
+<element name="TCustomGrid.MyTextRect.Clipping">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.ReadColWidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ReadColWidths.Reader">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.ReadRowHeights">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ReadRowHeights.Reader">
 <short></short>
 <descr>
 </descr>
@@ -4227,6 +4579,127 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetCol.Valor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetColwidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetColwidths.Acol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetColwidths.Avalue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetColCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetColCount.Valor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetDefColWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetDefColWidth.Valor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetDefRowHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetDefRowHeight.Valor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomGrid.SetDefaultDrawing">
 <short></short>
 <descr>
@@ -4261,94 +4734,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.SetEditor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetFocusColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SetFocusColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetGridLineStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SetGridLineStyle.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetSelectActive">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SetSelectActive.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SetSelection.AValue">
 <short></short>
 <descr>
 </descr>
@@ -4403,6 +4788,28 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetFocusColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetFocusColor.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomGrid.SetGridLineColor">
 <short></short>
 <descr>
@@ -4415,6 +4822,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.SetGridLineColor.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetGridLineStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetGridLineStyle.AValue">
 <short></short>
 <descr>
 </descr>
@@ -4491,7 +4920,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetScrollBars">
+<element name="TCustomGrid.SetRow">
 <short></short>
 <descr>
 </descr>
@@ -4502,117 +4931,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.SetScrollBars.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetTopRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SetTopRow.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.Setrowheights">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.Setrowheights.Arow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.Setrowheights.Avalue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.Setcolwidths">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.Setcolwidths.Acol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.Setcolwidths.Avalue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetColCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SetColCount.Valor">
+<element name="TCustomGrid.SetRow.Valor">
 <short></short>
 <descr>
 </descr>
@@ -4645,7 +4964,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetDefColWidth">
+<element name="TCustomGrid.SetRowheights">
 <short></short>
 <descr>
 </descr>
@@ -4656,7 +4975,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.SetDefColWidth.Valor">
+<element name="TCustomGrid.SetRowheights.Arow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetRowheights.Avalue">
 <short></short>
 <descr>
 </descr>
@@ -4667,7 +4997,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetDefRowHeight">
+<element name="TCustomGrid.SetScrollBars">
 <short></short>
 <descr>
 </descr>
@@ -4678,7 +5008,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.SetDefRowHeight.Valor">
+<element name="TCustomGrid.SetScrollBars.AValue">
 <short></short>
 <descr>
 </descr>
@@ -4689,7 +5019,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetCol">
+<element name="TCustomGrid.SetSelectActive">
 <short></short>
 <descr>
 </descr>
@@ -4700,7 +5030,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.SetCol.Valor">
+<element name="TCustomGrid.SetSelectActive.AValue">
 <short></short>
 <descr>
 </descr>
@@ -4711,7 +5041,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TCustomGrid.SetRow">
+<element name="TCustomGrid.SetSelection">
 <short></short>
 <descr>
 </descr>
@@ -4722,7 +5052,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.SetRow.Valor">
+<element name="TCustomGrid.SetSelection.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetTopRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetTopRow.AValue">
 <short></short>
 <descr>
 </descr>
@@ -4788,6 +5140,61 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomGrid.UpdateSelectionRange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.WriteColWidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.WriteColWidths.Writer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.WriteRowHeights">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.WriteRowHeights.Writer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomGrid.WMEraseBkgnd">
 <short></short>
 <descr>
@@ -4799,7 +5206,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.WMEraseBkgnd.Message">
+<element name="TCustomGrid.WMEraseBkgnd.message">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.WMGetDlgCode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.WMGetDlgCode.Msg">
 <short></short>
 <descr>
 </descr>
@@ -4843,7 +5272,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.WMChar.Message">
+<element name="TCustomGrid.WMChar.message">
 <short></short>
 <descr>
 </descr>
@@ -4855,28 +5284,6 @@
 
 <!-- variable Visibility: protected -->
 <element name="TCustomGrid.fGridState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.WndProc">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.WndProc.TheMessage">
 <short></short>
 <descr>
 </descr>
@@ -4908,19 +5315,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: protected -->
-<element name="TCustomGrid.CellRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.CellRect.Result">
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.BeforeMoveSelection">
 <short></short>
 <descr>
 </descr>
@@ -4931,7 +5327,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.CellRect.ACol">
+<element name="TCustomGrid.BeforeMoveSelection.DCol">
 <short></short>
 <descr>
 </descr>
@@ -4942,7 +5338,40 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.CellRect.ARow">
+<element name="TCustomGrid.BeforeMoveSelection.DRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.CheckLimits">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckLimits.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CheckLimits.aRow">
 <short></short>
 <descr>
 </descr>
@@ -4975,7 +5404,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowDeleted.Index">
+<element name="TCustomGrid.ColRowDeleted.index">
 <short></short>
 <descr>
 </descr>
@@ -5008,7 +5437,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowExchanged.Index">
+<element name="TCustomGrid.ColRowExchanged.index">
 <short></short>
 <descr>
 </descr>
@@ -5073,8 +5502,118 @@
 </seealso>
 </element>
 
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.ColRowToOffset">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.ColRowToOffset.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ColRowToOffset.IsCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ColRowToOffset.Fisical">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ColRowToOffset.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ColRowToOffset.Ini">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ColRowToOffset.Fin">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TCustomGrid.ColWidthsChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.CreateWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.CreateParams">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CreateParams.Params">
 <short></short>
 <descr>
 </descr>
@@ -5096,6 +5635,28 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomGrid.DefineProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DefineProperties.Filer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.DestroyHandle">
 <short></short>
 <descr>
@@ -5107,7 +5668,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.doExit">
+<element name="TCustomGrid.DoExit">
 <short></short>
 <descr>
 </descr>
@@ -5118,18 +5679,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.doEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.DrawEdges">
+<element name="TCustomGrid.DoEnter">
 <short></short>
 <descr>
 </descr>
@@ -5151,7 +5701,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.DrawFocused">
+<element name="TCustomGrid.DrawBorder">
 <short></short>
 <descr>
 </descr>
@@ -5162,62 +5712,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.DrawFocusRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawFocusRect.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawFocusRect.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawFocusRect.ARect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawFocusRect.aState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.DrawColRowMoving">
+<element name="TCustomGrid.DrawByRows">
 <short></short>
 <descr>
 </descr>
@@ -5283,7 +5778,117 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.DrawByRows">
+<element name="TCustomGrid.DrawCellGrid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawCellGrid.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawCellGrid.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawCellGrid.aRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawCellGrid.astate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.DrawColRowMoving">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.DrawEdges">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.DrawFocusRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawFocusRect.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawFocusRect.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DrawFocusRect.ARect">
 <short></short>
 <descr>
 </descr>
@@ -5316,6 +5921,204 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomGrid.EditordoGetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.EditordoSetValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.GetFixedcolor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetFixedcolor.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.GetSelectedColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetSelectedColor.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.GetEditMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetEditMask.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetEditMask.ACol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetEditMask.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.GetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.GetEditText.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetEditText.ACol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetEditText.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.SetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetEditText.ACol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetEditText.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetEditText.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.HeaderClick">
 <short></short>
 <descr>
@@ -5338,7 +6141,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.HeaderClick.Index">
+<element name="TCustomGrid.HeaderClick.index">
 <short></short>
 <descr>
 </descr>
@@ -5349,7 +6152,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.InvalidateCol">
+<element name="TCustomGrid.HeaderSized">
 <short></short>
 <descr>
 </descr>
@@ -5360,18 +6163,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.InvalidateCol.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.InvalidateRow">
+<element name="TCustomGrid.HeaderSized.IsColumn">
 <short></short>
 <descr>
 </descr>
@@ -5382,7 +6174,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.InvalidateRow.ARow">
+<element name="TCustomGrid.HeaderSized.index">
 <short></short>
 <descr>
 </descr>
@@ -5470,7 +6262,51 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomGrid.InvalidateCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.InvalidateCol.ACol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.InvalidateGrid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.InvalidateRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.InvalidateRow.ARow">
 <short></short>
 <descr>
 </descr>
@@ -5854,8 +6690,19 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.MoveSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: protected -->
-<element name="TCustomGrid.TryMoveSelection">
+<element name="TCustomGrid.OffsetToColRow">
 <short></short>
 <descr>
 </descr>
@@ -5866,7 +6713,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCustomGrid.TryMoveSelection.Result">
+<element name="TCustomGrid.OffsetToColRow.Result">
 <short></short>
 <descr>
 </descr>
@@ -5877,7 +6724,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.TryMoveSelection.Relative">
+<element name="TCustomGrid.OffsetToColRow.IsCol">
 <short></short>
 <descr>
 </descr>
@@ -5888,7 +6735,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.TryMoveSelection.DCol">
+<element name="TCustomGrid.OffsetToColRow.Fisical">
 <short></short>
 <descr>
 </descr>
@@ -5899,7 +6746,73 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.TryMoveSelection.DRow">
+<element name="TCustomGrid.OffsetToColRow.Offset">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.OffsetToColRow.Rest">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.Paint">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.PrepareCanvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.PrepareCanvas.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.PrepareCanvas.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.PrepareCanvas.aState">
 <short></short>
 <descr>
 </descr>
@@ -5965,160 +6878,6 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TCustomGrid.BeforeMoveSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.BeforeMoveSelection.DCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.BeforeMoveSelection.DRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.MoveSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCustomGrid.CanSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.CanSelect.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.CanSelect.DCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.CanSelect.DRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.DrawCellGrid">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawCellGrid.Rect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawCellGrid.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawCellGrid.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DrawCellGrid.astate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.Paint">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.ResetOffset">
 <short></short>
 <descr>
@@ -6153,6 +6912,204 @@
 
 <!-- procedure Visibility: protected -->
 <element name="TCustomGrid.RowHeightsChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.SaveContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SaveContent.cfg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.ScrollBarRange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarRange.Which">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarRange.aRange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.ScrollBarPosition">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarPosition.Which">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarPosition.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.ScrollBarPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarPage.Which">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarPage.aPage">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.ScrollBarShow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarShow.Which">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarShow.aValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.ScrollBarAutomatic">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.ScrollBarAutomatic.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarAutomatic.Which">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.SelectEditor">
 <short></short>
 <descr>
 </descr>
@@ -6197,6 +7154,72 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.SelectCell.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.SetBorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetBorderStyle.NewStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.SetFixedcolor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetFixedcolor.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.SetSelectedColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetSelectedColor.AValue">
 <short></short>
 <descr>
 </descr>
@@ -6262,7 +7285,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.Sort.Index">
+<element name="TCustomGrid.Sort.index">
 <short></short>
 <descr>
 </descr>
@@ -6305,8 +7328,19 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.SaveContent">
+<!-- function Visibility: protected -->
+<element name="TCustomGrid.TryMoveSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.TryMoveSelection.Result">
 <short></short>
 <descr>
 </descr>
@@ -6317,7 +7351,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.SaveContent.cfg">
+<element name="TCustomGrid.TryMoveSelection.Relative">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.TryMoveSelection.DCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.TryMoveSelection.DRow">
 <short></short>
 <descr>
 </descr>
@@ -6350,7 +7406,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.WMHScroll.Message">
+<element name="TCustomGrid.WMHScroll.message">
 <short></short>
 <descr>
 </descr>
@@ -6372,7 +7428,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.WMVScroll.Message">
+<element name="TCustomGrid.WMVScroll.message">
 <short></short>
 <descr>
 </descr>
@@ -6382,129 +7438,8 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TCustomGrid.FEditorHiding">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomGrid.FEditorShowing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomGrid.FEditorKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCustomGrid.FEditorOptions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorGetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorHide">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorSetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorShow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorReset">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorSelectAll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCustomGrid.EditorShowChar">
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.WndProc">
 <short></short>
 <descr>
 </descr>
@@ -6515,7 +7450,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.EditorShowChar.Ch">
+<element name="TCustomGrid.WndProc.TheMessage">
 <short></short>
 <descr>
 </descr>
@@ -6525,8 +7460,580 @@
 </seealso>
 </element>
 
-<!-- function Visibility: private -->
-<element name="TCustomGrid.ShouldEdit">
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.AutoAdvance">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.Col">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.ColCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.ColWidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ColWidths.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.DefaultColWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.DefaultRowHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.DefaultDrawing">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.DefaultTextStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.DragDx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.Editor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.EditorMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.FixedCols">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.FixedRows">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.FixedColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.Flat">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.FocusColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.FocusRectVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.GCache">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.GridHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.GridLineColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.GridLineStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.GridLineWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.GridWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.LeftCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.Options">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.Row">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.RowCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.RowHeights">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.RowHeights.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.SaveOptions">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.SelectActive">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.SelectedColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.Selection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.ScrollBars">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.TopRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.VisibleColCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.VisibleRowCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnBeforeSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnCompareCells">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnPrepareCanvas">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnDrawCell">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnSelection">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnSelectEditor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.OnTopLeftChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TCustomGrid.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.Create.AOwner">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TCustomGrid.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.Invalidate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.AutoAdjustColumns">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.BeginUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomGrid.CellRect">
 <short></short>
 <descr>
 </descr>
@@ -6537,7 +8044,7 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TCustomGrid.ShouldEdit.Result">
+<element name="TCustomGrid.CellRect.Result">
 <short></short>
 <descr>
 </descr>
@@ -6547,8 +8054,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.EditorCancel">
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CellRect.ACol">
 <short></short>
 <descr>
 </descr>
@@ -6558,8 +8065,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.doEditorGetValue">
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CellRect.ARow">
 <short></short>
 <descr>
 </descr>
@@ -6569,8 +8076,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.doEditorSetValue">
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.Clear">
 <short></short>
 <descr>
 </descr>
@@ -6580,8 +8087,30 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TCustomGrid.SelectEditor">
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.DeleteColRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DeleteColRow.IsColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DeleteColRow.index">
 <short></short>
 <descr>
 </descr>
@@ -6657,732 +8186,6 @@
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.AutoAdvance">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.ColWidths">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColWidths.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.ColCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.Col">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.DefaultColWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.DefaultRowHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.DefaultDrawing">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.DragDx">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.Editor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.FixedCols">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.FixedRows">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.FocusColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.GridLineColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.GridLineStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.GridWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.GridHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.GridLineWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.LeftCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.Options">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.ScrollBars">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.SkipUnselectable">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.RowCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.Row">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.SaveOptions">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.SelectActive">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.Selection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.TopRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.RowHeights">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.RowHeights.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.VisibleColCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.VisibleRowCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnDrawCell">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnCanSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnBeforeSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnSelection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnTopLeftChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnCompareCells">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.OnSelectEditor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomGrid.GCache">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCustomGrid.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.Create.AOwner">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCustomGrid.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.Invalidate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.DeleteColRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DeleteColRow.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.DeleteColRow.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.ExchangeColRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ExchangeColRow.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ExchangeColRow.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ExchangeColRow.WithIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.MoveColRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.MoveColRow.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.MoveColRow.FromIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.MoveColRow.ToIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.SortColRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SortColRow.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SortColRow.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.SortColRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SortColRow.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SortColRow.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SortColRow.FromIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SortColRow.ToIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.BeginUpdate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.AutoAdjustColumns">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.Clear">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: public -->
 <element name="TCustomGrid.EndUpdate">
 <short></short>
@@ -7428,6 +8231,138 @@
 </element>
 
 <!-- procedure Visibility: public -->
+<element name="TCustomGrid.ExchangeColRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ExchangeColRow.IsColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ExchangeColRow.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ExchangeColRow.WithIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomGrid.IscellSelected">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.IscellSelected.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.IscellSelected.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.IscellSelected.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomGrid.IscellVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.IscellVisible.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.IscellVisible.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.IscellVisible.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
 <element name="TCustomGrid.LoadFromFile">
 <short></short>
 <descr>
@@ -7440,72 +8375,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.LoadFromFile.FileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCustomGrid.SaveToFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.SaveToFile.FileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomGrid.ColRowToClientCellRect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.ColRowToClientCellRect.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToClientCellRect.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCustomGrid.ColRowToClientCellRect.aRow">
 <short></short>
 <descr>
 </descr>
@@ -7636,19 +8505,8 @@
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
-<element name="TCustomGrid.IsCellVisible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.IsCellVisible.Result">
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.MoveColRow">
 <short></short>
 <descr>
 </descr>
@@ -7659,7 +8517,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.IsCellVisible.aCol">
+<element name="TCustomGrid.MoveColRow.IsColumn">
 <short></short>
 <descr>
 </descr>
@@ -7670,29 +8528,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.IsCellVisible.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCustomGrid.IscellSelected">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCustomGrid.IscellSelected.Result">
+<element name="TCustomGrid.MoveColRow.FromIndex">
 <short></short>
 <descr>
 </descr>
@@ -7703,7 +8539,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.IscellSelected.aCol">
+<element name="TCustomGrid.MoveColRow.ToIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.SaveToFile">
 <short></short>
 <descr>
 </descr>
@@ -7714,7 +8561,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TCustomGrid.IscellSelected.aRow">
+<element name="TCustomGrid.SaveToFile.FileName">
 <short></short>
 <descr>
 </descr>
@@ -7724,195 +8571,8 @@
 </seealso>
 </element>
 
-<!-- object Visibility: default -->
-<element name="TTextStyleAdapter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TTextStyleAdapter.FTextStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TTextStyleAdapter.TextStyle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.Alignment">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.Layout">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.WordBreak">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.Clipping">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.ExpandTabs">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.ShowPrefix">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.Opaque">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TTextStyleAdapter.SystemFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TGridPropertyAdapter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TGridPropertyAdapter.FGrid">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TGridPropertyAdapter.FFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TGridPropertyAdapter.FColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TGridPropertyAdapter.FAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TGridPropertyAdapter.FTextStyleAdapter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TGridPropertyAdapter.setAlign">
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.SortColRow">
 <short></short>
 <descr>
 </descr>
@@ -7923,18 +8583,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TGridPropertyAdapter.setAlign.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TGridPropertyAdapter.setColor">
+<element name="TCustomGrid.SortColRow.IsColumn">
 <short></short>
 <descr>
 </descr>
@@ -7945,7 +8594,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TGridPropertyAdapter.setColor.AValue">
+<element name="TCustomGrid.SortColRow.index">
 <short></short>
 <descr>
 </descr>
@@ -7955,30 +8604,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
-<element name="TGridPropertyAdapter.setFont">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TGridPropertyAdapter.setFont.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TGridPropertyAdapter.OnFontChange">
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.SortColRow">
 <short></short>
 <descr>
 </descr>
@@ -7989,18 +8616,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TGridPropertyAdapter.OnFontChange.Sender">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TGridPropertyAdapter.setAttr">
+<element name="TCustomGrid.SortColRow.IsColumn">
 <short></short>
 <descr>
 </descr>
@@ -8011,7 +8627,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TGridPropertyAdapter.setAttr.Attr">
+<element name="TCustomGrid.SortColRow.index">
 <short></short>
 <descr>
 </descr>
@@ -8021,8 +8637,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: protected -->
-<element name="TGridPropertyAdapter.Grid">
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SortColRow.FromIndex">
 <short></short>
 <descr>
 </descr>
@@ -8032,8 +8648,8 @@
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
-<element name="TGridPropertyAdapter.create">
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SortColRow.ToIndex">
 <short></short>
 <descr>
 </descr>
@@ -8043,8 +8659,8 @@
 </seealso>
 </element>
 
-<!-- destructor Visibility: public -->
-<element name="TGridPropertyAdapter.destroy">
+<!-- procedure type Visibility: default -->
+<element name="TGetEditEvent">
 <short></short>
 <descr>
 </descr>
@@ -8054,8 +8670,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TGridPropertyAdapter.Color">
+<!-- argument Visibility: default -->
+<element name="TGetEditEvent.Sender">
 <short></short>
 <descr>
 </descr>
@@ -8065,8 +8681,8 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TGridPropertyAdapter.Font">
+<!-- argument Visibility: default -->
+<element name="TGetEditEvent.ACol">
 <short></short>
 <descr>
 </descr>
@@ -8076,8 +8692,74 @@
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TGridPropertyAdapter.Align">
+<!-- argument Visibility: default -->
+<element name="TGetEditEvent.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TGetEditEvent.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TSetEditEvent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSetEditEvent.Sender">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSetEditEvent.ACol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSetEditEvent.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TSetEditEvent.Value">
 <short></short>
 <descr>
 </descr>
@@ -8089,17 +8771,6 @@
 
 <!-- object Visibility: default -->
 <element name="TDrawGrid">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDrawGrid.FCellAttr">
 <short></short>
 <descr>
 </descr>
@@ -8143,6 +8814,28 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TDrawGrid.FOnGetEditMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDrawGrid.FOnGetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TDrawGrid.FOnHeaderClick">
 <short></short>
 <descr>
@@ -8154,1569 +8847,40 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TDrawGrid.FOnHeaderSized">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDrawGrid.FOnSelectCell">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDrawGrid.FOnSetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
 <element name="TDrawGrid.FGrid">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDrawGrid.FDefCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDrawGrid.FdefSelCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDrawGrid.FdefFixedCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TDrawGrid.FOnCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetCellAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetCellAlign.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellAlign.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellAlign.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetCellAttr.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellAttr.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellAttr.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetCellColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetCellColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellColor.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellColor.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetCellFontCOlor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetCellFontCOlor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellFontCOlor.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetCellFontCOlor.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetColAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetColAlign.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetColAlign.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetColAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetColAttr.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetColAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetColColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetColColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetColColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetColFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetColFontColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetColFontColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetFixedColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetFixedColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetRowAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetRowAlign.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetRowAlign.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetRowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetRowAttr.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetRowAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetRowColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetRowColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetRowColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.GetRowFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.GetRowFontColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.GetRowFontColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getFixedColAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getFixedColAlign.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getFixedColAlign.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getFixedColAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getFixedColAttr.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getFixedColAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getfixedColColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getfixedColColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getfixedColColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getFixedColFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getFixedColFontColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getFixedColFontColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getFixedRowAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getFixedRowAlign.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getFixedRowAlign.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getFixedRowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getFixedRowAttr.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getFixedRowAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getfixedRowColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getfixedRowColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getfixedRowColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TDrawGrid.getFixedRowFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TDrawGrid.getFixedRowFontColor.Result">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.getFixedRowFontColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetCellAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellAlign.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellAlign.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellAlign.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellAttr.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellAttr.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetCellColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellColor.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellColor.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetCellFontCOlor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellFontCOlor.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellFontCOlor.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetCellFontCOlor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetColAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColAlign.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColAlign.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetColAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetColColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetColFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColFontColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColFontColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetDefaultCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetDefaultCellAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetFixedColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetFixedColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetRowAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowAlign.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowAlign.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetRowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetRowColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetRowFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowFontColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetRowFontColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedColAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedColAlign.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedColAlign.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedColAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedColAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedColAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setfixedColColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setfixedColColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setfixedColColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedcolFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedcolFontColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedcolFontColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedRowAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowAlign.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowAlign.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedRowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedRowColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.setFixedRowFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowFontColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.setFixedRowFontColor.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetDefFixedCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetDefFixedCellAttr.AValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TDrawGrid.SetDefSelCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetDefSelCellAttr.AValue">
 <short></short>
 <descr>
 </descr>
@@ -9761,6 +8925,149 @@
 
 <!-- argument Visibility: default -->
 <element name="TDrawGrid.CalcCellExtent.aRect">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.ColRowDeleted">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowDeleted.IsColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowDeleted.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.ColRowExchanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowExchanged.IsColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowExchanged.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowExchanged.WithIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.ColRowMoved">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowMoved.IsColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowMoved.FromIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.ColRowMoved.ToIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDrawGrid.CreateVirtualGrid">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDrawGrid.CreateVirtualGrid.Result">
 <short></short>
 <descr>
 </descr>
@@ -9869,138 +9176,6 @@
 </seealso>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.DrawFocusRect.aState">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDrawGrid.ColRowExchanged">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowExchanged.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowExchanged.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowExchanged.WithIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDrawGrid.ColRowDeleted">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowDeleted.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowDeleted.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDrawGrid.ColRowMoved">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowMoved.IsColumn">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowMoved.FromIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColRowMoved.ToIndex">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- procedure Visibility: protected -->
 <element name="TDrawGrid.HeaderClick">
 <short></short>
@@ -10024,7 +9199,238 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TDrawGrid.HeaderClick.Index">
+<element name="TDrawGrid.HeaderClick.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.HeaderSized">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.HeaderSized.IsColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.HeaderSized.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDrawGrid.GetEditMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDrawGrid.GetEditMask.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetEditMask.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetEditMask.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDrawGrid.GetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDrawGrid.GetEditText.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetEditText.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetEditText.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TDrawGrid.SelectCell">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TDrawGrid.SelectCell.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.SelectCell.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.SelectCell.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.SetColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.SetColor.Value">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.SetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.SetEditText.ACol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.SetEditText.ARow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.SetEditText.Value">
 <short></short>
 <descr>
 </descr>
@@ -10058,83 +9464,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TDrawGrid.SizeChanged.OldRowCount">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDrawGrid.SetColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SetColor.Value">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDrawGrid.SaveContent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.SaveContent.cfg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDrawGrid.LoadContent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.LoadContent.Cfg">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.LoadContent.Version">
 <short></short>
 <descr>
 </descr>
@@ -10232,613 +9561,8 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
-<element name="TDrawGrid.RemoveCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RemoveCellAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RemoveCellAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TDrawGrid.RemoveColRowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RemoveColRowAttr.Index">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RemoveColRowAttr.IsCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RemoveColRowAttr.IsFixed">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- property Visibility: public -->
 <element name="TDrawGrid.Canvas">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.ColAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.ColColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.ColFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColFontColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.ColAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.ColAlign.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.RowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RowAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.RowColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RowColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.RowFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RowFontColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.RowAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.RowAlign.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.CellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellAttr.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellAttr.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.CellColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellColor.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellColor.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.CellFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellFontColor.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellFontColor.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.CellAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellAlign.ACol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.CellAlign.ARow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.DefaultCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.SelectedcellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedColAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedColAttr.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedColColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedColColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedColFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedColFontColor.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedColAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedColAlign.aCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedRowAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedRowAttr.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedRowColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedRowColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedRowFontColor">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedRowFontColor.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.FixedRowAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TDrawGrid.FixedRowAlign.aRow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.Editor">
 <short></short>
 <descr>
 </descr>
@@ -10871,62 +9595,51 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TDrawGrid.Editor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.EditorMode">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.FocusColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.FocusRectVisible">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TDrawGrid.GridHeight">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.GridWidth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.LeftCol">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.Selection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.Row">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDrawGrid.RowHeights">
 <short></short>
 <descr>
 </descr>
@@ -10959,7 +9672,40 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TDrawGrid.FocusColor">
+<element name="TDrawGrid.GridWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.LeftCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.Row">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.RowHeights">
 <short></short>
 <descr>
 </descr>
@@ -10981,7 +9727,18 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TDrawGrid.SkipUnselectable">
+<element name="TDrawGrid.SelectedColor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TDrawGrid.Selection">
 <short></short>
 <descr>
 </descr>
@@ -11036,6 +9793,17 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TDrawGrid.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TDrawGrid.Color">
 <short></short>
 <descr>
@@ -11058,17 +9826,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.Ctl3D">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TDrawGrid.DefaultColWidth">
 <short></short>
 <descr>
@@ -11080,7 +9837,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.DefaultRowHeight">
+<element name="TDrawGrid.DefaultDrawing">
 <short></short>
 <descr>
 </descr>
@@ -11091,7 +9848,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.DefaultDrawing">
+<element name="TDrawGrid.DefaultRowHeight">
 <short></short>
 <descr>
 </descr>
@@ -11135,7 +9892,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.RowCount">
+<element name="TDrawGrid.FixedRows">
 <short></short>
 <descr>
 </descr>
@@ -11146,7 +9903,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.FixedRows">
+<element name="TDrawGrid.Flat">
 <short></short>
 <descr>
 </descr>
@@ -11190,17 +9947,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.ParentCtl3D">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TDrawGrid.ParentShowHint">
 <short></short>
 <descr>
@@ -11213,6 +9959,17 @@
 
 <!-- property Visibility: published -->
 <element name="TDrawGrid.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.RowCount">
 <short></short>
 <descr>
 </descr>
@@ -11311,29 +10068,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.OnCanSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TDrawGrid.OnCellAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TDrawGrid.OnCompareCells">
+<element name="TDrawGrid.OnClick">
 <short></short>
 <descr>
 </descr>
@@ -11377,6 +10112,28 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TDrawGrid.OnCompareCells">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnDblClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TDrawGrid.OnDrawCell">
 <short></short>
 <descr>
@@ -11388,7 +10145,139 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TDrawGrid.OnEnter">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnExit">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnGetEditMask">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnGetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TDrawGrid.OnHeaderClick">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnHeaderSized">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnKeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnKeyPress">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnKeyUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnPrepareCanvas">
 <short></short>
 <descr>
 </descr>
@@ -11421,7 +10310,29 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TDrawGrid.OnTopleftChange">
+<element name="TDrawGrid.OnSelectCell">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnSetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.OnTopleftChanged">
 <short></short>
 <descr>
 </descr>
@@ -11520,7 +10431,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.GetCols.Index">
+<element name="TStringGrid.GetCols.index">
 <short></short>
 <descr>
 </descr>
@@ -11597,7 +10508,29 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.GetRows.Index">
+<element name="TStringGrid.GetRows.index">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringGrid.ReadCells">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.ReadCells.Reader">
 <short></short>
 <descr>
 </descr>
@@ -11663,7 +10596,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.SetCols.Index">
+<element name="TStringGrid.SetCols.index">
 <short></short>
 <descr>
 </descr>
@@ -11740,7 +10673,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.SetRows.Index">
+<element name="TStringGrid.SetRows.index">
 <short></short>
 <descr>
 </descr>
@@ -11752,6 +10685,28 @@
 
 <!-- argument Visibility: default -->
 <element name="TStringGrid.SetRows.AValue">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TStringGrid.WriteCells">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.WriteCells.Writer">
 <short></short>
 <descr>
 </descr>
@@ -11828,6 +10783,28 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TStringGrid.DefineProperties">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.DefineProperties.Filer">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TStringGrid.DrawCell">
 <short></short>
 <descr>
@@ -11883,7 +10860,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TStringGrid.doEditorGetValue">
+<element name="TStringGrid.EditordoGetValue">
 <short></short>
 <descr>
 </descr>
@@ -11894,7 +10871,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TStringGrid.doEditorSetValue">
+<element name="TStringGrid.EditordoSetValue">
 <short></short>
 <descr>
 </descr>
@@ -11904,8 +10881,19 @@
 </seealso>
 </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TStringGrid.SaveContent">
+<!-- function Visibility: protected -->
+<element name="TStringGrid.GetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringGrid.GetEditText.Result">
 <short></short>
 <descr>
 </descr>
@@ -11916,7 +10904,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.SaveContent.cfg">
+<element name="TStringGrid.GetEditText.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.GetEditText.aRow">
 <short></short>
 <descr>
 </descr>
@@ -11960,7 +10959,73 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TStringGrid.SaveContent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.SaveContent.cfg">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TStringGrid.SelectEditor">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStringGrid.SetEditText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.SetEditText.aCol">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.SetEditText.aRow">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringGrid.SetEditText.aValue">
 <short></short>
 <descr>
 </descr>
@@ -11994,6 +11059,17 @@
 
 <!-- destructor Visibility: public -->
 <element name="TStringGrid.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TStringGrid.AutoSizeColumns">
 <short></short>
 <descr>
 </descr>
@@ -12048,7 +11124,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.Cols.Index">
+<element name="TStringGrid.Cols.index">
 <short></short>
 <descr>
 </descr>
@@ -12103,7 +11179,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TStringGrid.Rows.Index">
+<element name="TStringGrid.Rows.index">
 <short></short>
 <descr>
 </descr>
@@ -12180,73 +11256,7 @@
 </element>
 
 <!-- procedure Visibility: default -->
-<element name="CellAlignToAttr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CellAlignToAttr.Align">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CellAlignToAttr.Attr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="AttrToCellAlign">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="AttrToCellAlign.Attr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="AttrToCellAlign.Align">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
+<element name="register">
 <short></short>
 <descr>
 </descr>

@@ -68,6 +68,17 @@
 </seealso>
 </element>
 
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLClasses">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- object Visibility: default -->
 <element name="TCustomActionList">
 <short></short>
@@ -1016,6 +1027,72 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomActionList.UpdateAction.Action">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomActionList.IndexOfName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomActionList.IndexOfName.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomActionList.IndexOfName.ActionName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomActionList.ActionByName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomActionList.ActionByName.Result">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomActionList.ActionByName.ActionName">
 <short></short>
 <descr>
 </descr>
@@ -2335,39 +2412,6 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TAction.ShortCut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAction.SecondaryShortCuts">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TAction.Visible">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
 <element name="TAction.OnExecute">
 <short></short>
 <descr>
@@ -2391,6 +2435,39 @@
 
 <!-- property Visibility: published -->
 <element name="TAction.OnUpdate">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAction.SecondaryShortCuts">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAction.ShortCut">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAction.Visible">
 <short></short>
 <descr>
 </descr>
@@ -3072,7 +3149,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="CreateAction.AOwner">
+<element name="CreateAction.TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -3215,7 +3292,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="AOwner">
+<element name="TheOwner">
 <short></short>
 <descr>
 </descr>
@@ -3238,6 +3315,17 @@
 
 <!-- variable Visibility: default -->
 <element name="ApplicationActionComponent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
 <short></short>
 <descr>
 </descr>

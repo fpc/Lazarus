@@ -47,7 +47,7 @@
 </element>
 
 <!-- record type Visibility: default -->
-<element name="TLineRange">
+<element name="TTextLineRange">
 <short></short>
 <descr>
 </descr>
@@ -58,7 +58,7 @@
 </element>
 
 <!-- variable Visibility: default -->
-<element name="TLineRange.StartPos">
+<element name="TTextLineRange.StartPos">
 <short></short>
 <descr>
 </descr>
@@ -69,7 +69,7 @@
 </element>
 
 <!-- variable Visibility: default -->
-<element name="TLineRange.EndPos">
+<element name="TTextLineRange.EndPos">
 <short></short>
 <descr>
 </descr>
@@ -80,7 +80,7 @@
 </element>
 
 <!-- variable Visibility: default -->
-<element name="TLineRange.Line">
+<element name="TTextLineRange.Line">
 <short></short>
 <descr>
 </descr>
@@ -91,7 +91,7 @@
 </element>
 
 <!-- variable Visibility: default -->
-<element name="TLineRange.TheObject">
+<element name="TTextLineRange.TheObject">
 <short></short>
 <descr>
 </descr>
@@ -564,7 +564,7 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTextStrings.Exchange.FromIndex">
+<element name="TTextStrings.Exchange.Index1">
 <short></short>
 <descr>
 </descr>
@@ -575,7 +575,18 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TTextStrings.Exchange.ToIndex">
+<element name="TTextStrings.Exchange.Index2">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TTextStrings.MakeTextBufferUnique">
 <short></short>
 <descr>
 </descr>
