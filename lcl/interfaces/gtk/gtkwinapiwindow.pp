@@ -533,7 +533,7 @@ function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(AWidget),8),' ',event^.thein);
+  DebugLn('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(AWidget),8),' ',dbgs(event^.thein));
   {$ENDIF}
   
   gtk_widget_set_flags(AWidget, GTK_HAS_FOCUS);
@@ -551,7 +551,7 @@ function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(AWidget),8),' ',event^.thein);
+  DebugLn('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(AWidget),8),' ',dbgs(event^.thein));
   {$ENDIF}
   
   gtk_widget_unset_flags(AWidget, GTK_HAS_FOCUS);
@@ -1110,6 +1110,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.63  2004/08/28 10:22:13  mattias
   added hints for long props in OI  from Andrew Haines
 

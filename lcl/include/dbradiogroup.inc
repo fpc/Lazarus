@@ -149,9 +149,10 @@ begin
     DataChange(Self);
 end;
 
-procedure TDBRadioGroup.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBRadioGroup.EditingDone;
 begin
   FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 
 constructor TDBRadioGroup.Create(TheOwner: TComponent);

@@ -140,9 +140,10 @@ begin
     DataChange(Self);
 end;
 
-procedure TDBMemo.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBMemo.EditingDone;
 begin
   FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 
 destructor TDBMemo.Destroy;

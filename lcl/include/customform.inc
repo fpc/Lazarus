@@ -174,7 +174,12 @@ Begin
         //if WindowMenu = AComponent then WindowMenu := nil;
         //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
       end;
-      if FActiveControl=AComponent then FActiveControl:=nil;
+      if FActiveControl=AComponent then begin
+        {$IFDEF VerboseFocus}
+        debugln('TCustomForm.Notification opRemove FActiveControl=',DbgSName(AComponent));
+        {$ENDIF}
+        FActiveControl:=nil;
+      end;
       if AComponent=FDefaultControl then
         FDefaultControl:=nil;
       if AComponent=FCancelControl then
@@ -336,6 +341,7 @@ procedure TCustomForm.SetWindowFocus;
 var
   NewFocusControl: TWinControl;
 begin
+  if [csLoading,csDestroying]*ComponentState<>[] then exit;
   if (FActiveControl <> nil) and (FDesigner = nil) then
     NewFocusControl := FActiveControl
   else
@@ -343,7 +349,7 @@ begin
   {$IFDEF VerboseFocus}
   DebugLn('TCustomForm.SetWindowFocus ',Name,':',Classname ,
     ' NewFocusControl=',NewFocusControl.Name,':',NewFocusControl.ClassName,
-    ' HndAlloc=',NewFocusControl.HandleAllocated);
+    ' HndAlloc=',dbgs(NewFocusControl.HandleAllocated));
   {$ENDIF}
   if (not NewFocusControl.HandleAllocated)
   or (not NewFocusControl.Visible)
@@ -387,9 +393,9 @@ procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
 
 begin
   {$IFDEF VerboseFocus}
-  DbgOut('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show);
+  DbgOut('TCustomForm.WMShowWindow A ',Name,':'+ClassName+' fsShowing='+dbgs(fsShowing in FFormState)+' Msg.Show='+dbgs(Message.Show));
   if FActiveControl<>nil then begin
-    DbgOut(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',FActiveControl.HandleAllocated);
+    DbgOut(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',dbgs(FActiveControl.HandleAllocated));
   end else begin
     DbgOut(' FActiveControl=nil');
   end;
@@ -399,12 +405,17 @@ begin
   Include(FFormState, fsShowing);
   try
     if Message.Show then begin
-      if FActiveControl = nil then
+      if FActiveControl = nil then begin
         FActiveControl := FindFirstControl;
-      if (FActiveControl<>nil) and FActiveControl.HandleAllocated
-      and (FActiveControl.Visible) and (FActiveControl.Enabled) then begin
         {$IFDEF VerboseFocus}
-        DebugLn('TCustomForm.WMShowWindow B ',FActiveControl.Name,':',FActiveControl.ClassName);
+        DebugLn('TCustomForm.WMShowWindow Set FActiveControl := FindFirstControl = ',DbgSName(FActiveControl));
+        {$ENDIF}
+      end;
+      if ([csLoading,csDestroying]*ComponentState=[])
+      and (FActiveControl<>nil) and FActiveControl.HandleAllocated
+      and FActiveControl.Visible and FActiveControl.Enabled then begin
+        {$IFDEF VerboseFocus}
+        DebugLn('TCustomForm.WMShowWindow SetFocus ',DbgSName(FActiveControl));
         {$ENDIF}
         LCLIntf.SetFocus(FActiveControl.Handle);
       end;
@@ -427,7 +438,7 @@ end;
 procedure TCustomForm.WMActivate(var Message : TLMActivate);
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',Message.Active);
+  DebugLn('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',dbgs(Message.Active));
   {$ENDIF}
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active {<> WA_INACTIVE});
@@ -555,8 +566,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DefocusControl(Control: TWinControl; Removing: Boolean);
 begin
-  if Control.ContainsControl(FActiveControl) then
+  if Control.ContainsControl(FActiveControl) then begin
+    {$IFDEF VerboseFocus}
+    debugln('TCustomForm.DefocusControl Control=',DbgSName(Control),' FActiveControl=',DbgSName(FActiveControl));
+    {$ENDIF}
     ActiveControl := nil;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -794,15 +809,20 @@ begin
         if (Msg = LM_SetFocus) and not (csDesigning in ComponentState)
         then begin
           FocusHandle := 0;
+          
           if FormStyle = fsMDIFORM
           then begin
             // ToDo
           end
           else begin
             if (FActiveControl <> nil) and (FActiveControl <> Self)
-            and (FActiveControl.Visible) and (FActiveControl.Enabled)
-            then FocusHandle := FActiveControl.Handle;
+            and FActiveControl.Visible and FActiveControl.Enabled
+            and ([csLoading,csDestroying]*ComponentState=[])
+            then
+              // get or create handle of FActiveControl
+              FocusHandle := FActiveControl.Handle;
           end;
+          
           TheMessage.Result:=0;
           if FocusHandle <> 0
           then begin
@@ -1082,17 +1102,16 @@ Begin
     {$IFDEF VerboseFocus}
     write('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',FActive);
     if FActiveControl<>nil then
-      DebugLn(' OldActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
+      DebugLn(' OldActiveControl=',DbgSName(FActiveControl))
     else
       DebugLn(' OldActiveControl=nil');
     if AWinControl<>nil then
-      DebugLn(' NewActiveControl=',AWinControl.Name,':',AWinControl.ClassName)
+      DebugLn(' NewActiveControl=',DbgSName(AWinControl))
     else
       DebugLn(' NewActiveControl=nil');
     {$ENDIF}
     FActiveControl := AWinControl;
-    if not (csLoading in ComponentState) then
-    begin
+    if ([csLoading,csDestroying]*ComponentState=[]) then begin
       if FActive then SetWindowFocus;
       ActiveChanged;
     end;
@@ -1335,6 +1354,8 @@ end;
 
 {------------------------------------------------------------------------------
   TCustomForm Method SetFocusedControl
+  
+  Switch focus.
 ------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 var
@@ -1350,10 +1371,9 @@ begin
       ParentForm.SetFocusedControl(Control);
     exit;
   end;
-  
 
   // update FActiveControl
-  if FDesigner = nil then
+  if (FDesigner = nil) and (not (csLoading in ComponentState)) then
     if Control <> Self then
       FActiveControl := Control
     else
@@ -1369,8 +1389,8 @@ begin
     Screen.FActiveForm := nil;
 
   {$IFDEF VerboseFocus}
-  DbgOut('TCustomForm.SetFocusedControl Self=',Name,':',ClassName,' ');
-  DbgOut(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',dbgs(Control.HandleAllocated));
+  DbgOut('TCustomForm.SetFocusedControl Self=',DbgSName(Self));
+  DbgOut(' Control=',DbgSName(Control),' Control.HandleAllocated=',dbgs(Control.HandleAllocated));
   DebugLn();
   {$ENDIF}
 
@@ -1490,7 +1510,8 @@ begin
   // activate focus if visible
   if Visible then begin
     if (FActiveControl<>nil) and FActiveControl.HandleAllocated
-    and FActiveControl.Visible and FActiveControl.Enabled then begin
+    and FActiveControl.Visible and FActiveControl.Enabled
+    and ([csLoading,csDestroying]*ComponentState=[]) then begin
       {$IFDEF VerboseFocus}
       DebugLn('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
       {$ENDIF}
@@ -1510,6 +1531,9 @@ begin
   if ActiveControl <> nil then
   begin
     Control := ActiveControl;
+    {$IFDEF VerboseFocus}
+    Debugln('TCustomForm.Loaded Self=',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
+    {$ENDIF}
     FActiveControl := nil;
     if Control.CanFocus then SetActiveControl(Control);
   end;
@@ -1784,6 +1808,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.155  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.154  2004/08/27 08:55:22  micha
   implement tapplication.minimize for win32, stub for gtk
 

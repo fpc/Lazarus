@@ -264,10 +264,8 @@ Type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-
     procedure Click; override;
-
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -343,7 +341,7 @@ Type
     function GetButtonValue(Index: Integer): string;
     procedure UpdateRadioButtonStates; override;
     procedure Loaded; override;
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -397,7 +395,7 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Loaded; override;
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -462,7 +460,7 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -480,7 +478,7 @@ Type
     property Enabled;
     property Font;
     property ItemHeight;
-    property Items write SetItems;
+    property Items;
     property ItemWidth;
     property MaxLength default -1;
     property OnChange;
@@ -531,7 +529,7 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Loaded; override;
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -690,8 +688,7 @@ Type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1250,6 +1247,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.19  2004/08/22 22:57:35  mattias
   added OnActiveChange  from Joost
 

@@ -123,13 +123,10 @@ begin
   end;
 end;
 
-procedure TDBCalendar.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBCalendar.EditingDone;
 begin
-  //I am not sure where else to do this :/
-  //we need to make sure the field is updated
-  //if we leave the control after changes
-
   FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 
 { Public Methods }
@@ -155,6 +152,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.3  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

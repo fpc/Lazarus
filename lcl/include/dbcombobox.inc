@@ -132,9 +132,10 @@ begin
     DataChange(Self);
 end;
 
-procedure TDBComboBox.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBComboBox.EditingDone;
 begin
   FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 
 constructor TDBComboBox.Create(TheOwner: TComponent);

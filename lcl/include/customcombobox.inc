@@ -241,9 +241,10 @@ end;
 
   Returns the selected part of text-field.
  ------------------------------------------------------------------------------}
-function TCustomComboBox.GetSelText : string;
+function TCustomComboBox.GetSelText: string;
 begin
-  if FStyle < csDropDownList then
+  debugln('TCustomComboBox.GetSelText ');
+  if FStyle in [csDropDown, csSimple] then
     Result:= Copy(Text, SelStart, SelLength)
   else
     Result:= '';
@@ -256,11 +257,12 @@ end;
 
   Replace the selected part of text-field with "val".
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.SetSelText(const Val : string);
+procedure TCustomComboBox.SetSelText(const Val: string);
 var
   OldText, NewText: string;
 begin
-  if FStyle < csDropDownList then begin
+  debugln('TCustomComboBox.SetSelText ',Val);
+  if FStyle in [csDropDown, csSimple] then begin
     OldText:=Text;
     NewText:=LeftStr(OldText,SelStart-1)+Val
                +RightStr(OldText,length(OldText)-SelStart-SelLength+1);
@@ -332,10 +334,16 @@ end;
   Select entire text.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SelectAll;
+var
+  CurText: String;
 begin
-  if (FStyle < csDropDownList) and (Text <> '') then begin
-    SetSelStart(0);
-    SetSelLength(Length(Text));
+  debugln('TCustomComboBox.SelectAll ');
+  if (FStyle in [csDropDown, csSimple]) then begin
+    CurText:=Text;
+    if (CurText <> '') then begin
+      SetSelStart(0);
+      SetSelLength(Length(CurText));
+    end;
   end;
 end;
 
@@ -350,7 +358,7 @@ procedure TCustomComboBox.SetStyle(Val : TComboBoxStyle);
 begin
   if Val <> FStyle then begin
     FStyle:= Val;
-    if HandleAllocated and (not (csLoading in ComponentState)) then
+    if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
@@ -359,7 +367,7 @@ procedure TCustomComboBox.SetArrowKeysTraverseList(Value : Boolean);
 begin
   if Value <> FArrowKeysTraverseList then begin
     FArrowKeysTraverseList := Value;
-    if HandleAllocated and (not (csLoading in ComponentState)) then
+    if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
    end;
 end;
@@ -399,21 +407,22 @@ begin
       end;
     end;
   end;
+  
+  if Style=csDropDownList then begin
+    debugln('TCustomComboBox.KeyDown ');
+    // DropDownList: allow only navigation keys
+    if not (Key in [VK_UP,VK_DOWN,VK_END,VK_HOME,VK_PRIOR,VK_NEXT,VK_TAB,
+      VK_RETURN])
+    then begin
+      Key:=0;
+    end;
+  end;
 
   if Skip then
     Key := 0
   else
     inherited KeyDown(Key, Shift);
 end;
-
-procedure TCustomComboBox.KeyPress(var Key : TCharacter);
-begin
-  if (Style=csDropDownList) and (Ord(Key)>31) then
-    Key:=#0
-  else
-    Inherited KeyPress(Key);
-end;
-
 
 {------------------------------------------------------------------------------
   function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
@@ -790,6 +799,9 @@ end;
 
 {
   $Log$
+  Revision 1.43  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.42  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 

@@ -639,6 +639,7 @@ begin
   Result:=HexStr(Cardinal(Widget),8);
   if Widget=nil then exit;
   Result:=Result+'='+GetWidgetClassName(Widget);
+  Result:=Result+' '+WidgetFlagsToString(Widget);
   LCLObject:=GetNearestLCLObject(Widget);
   Result:=Result+' LCLObject='+HexStr(Cardinal(LCLObject),8);
   if LCLObject=nil then exit;
@@ -772,6 +773,8 @@ begin
       Result:=Result+'V';
     if GTK_WIDGET_DRAWABLE(Widget) then
       Result:=Result+'D';
+    if GTK_WIDGET_CAN_FOCUS(Widget) then
+      Result:=Result+'F';
   end;
   Result:=Result+']';
 end;
@@ -7187,6 +7190,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.297  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.296  2004/08/29 10:13:59  mattias
   fixed makefile
 

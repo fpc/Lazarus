@@ -2015,7 +2015,7 @@ var
   Form : TCustomForm;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('[TWinControl.SetFocus] ',Name,':',ClassName,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
+  DebugLn('[TWinControl.SetFocus] ',Name,':',ClassName,' Visible=',dbgs(Visible),' HandleAllocated=',dbgs(HandleAllocated));
   {$ENDIF}
   Form := GetParentForm(Self);
   if Form <> nil then
@@ -3827,6 +3827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.267  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.266  2004/08/26 19:09:34  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 

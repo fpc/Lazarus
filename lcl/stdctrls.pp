@@ -262,7 +262,6 @@ type
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TComboBoxStyle); virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    procedure KeyPress(var Key : TCharacter); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
@@ -1172,6 +1171,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.164  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.163  2004/08/26 19:09:33  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 

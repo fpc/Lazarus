@@ -169,14 +169,10 @@ begin
   FDataLink.Modified;
 end;
 
-
-procedure TDBListBox.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBListBox.EditingDone;
 begin
-  //I am not sure where else to do this :/
-  //we need to make sure the field is updated
-  //if we leave the control after changes
-
   FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 
 { Public Methods }
@@ -200,6 +196,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.5  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 

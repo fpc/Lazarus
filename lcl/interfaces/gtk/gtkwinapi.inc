@@ -7718,12 +7718,8 @@ begin
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
   DebugLn('');
-  write('[TGtkWidgetSet.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
+  write('[TGtkWidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
   LCLObject:=TWinControl(GetLCLObject(Widget));
-  if LCLObject<>nil then
-    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
-  else
-    DebugLn(' LCLObject=nil');
   {$EndIf}
   if hwnd = 0 then begin
     Result:=0;
@@ -7736,22 +7732,15 @@ begin
 
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
-  DbgOut('[TGtkWidgetSet.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
-  DbgOut(' HndVisible=',GTK_WIDGET_VISIBLE(Widget));
-  DbgOut(' HndRealized=',GTK_WIDGET_REALIZED(Widget));
-  DbgOut(' HndMapped=',GTK_WIDGET_MAPPED(Widget));
-  DebugLn(''); DbgOut('   ');
-  DbgOut(' TopLevel=',HexStr(Cardinal(TopLevel),8));
-  DbgOut(' OldFocus=',HexStr(Cardinal(Result),8));
-  AWinControl:=TWinControl(GetNearestLCLObject(PGtkWidget(Result)));
-  if AWinControl<>nil then
-    DbgOut(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
-  else
-    DbgOut(' OldLCLParent=nil');
+  Debugln('[TGtkWidgetSet.SetFocus] B');
+  DbgOut('   TopLevel=',HexStr(Cardinal(TopLevel),8));
+  DbgOut(' OldFocus=',GetWidgetDebugReport(PGtkWidget(Result)));
   DebugLn('');
   if not GTK_WIDGET_VISIBLE(Widget) then
     RaiseException('TGtkWidgetSet.SetFocus: Widget is not visible');
   {$EndIf}
+  
+  if Result=hWnd then exit;
 
   if GtkWidgetIsA(TopLevel, gtk_window_get_type)
   then begin
@@ -7811,7 +7800,7 @@ begin
         {$EndIf}
         gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
         {$IfDef VerboseFocus}
-        DebugLn('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget);
+        DebugLn('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',dbgs(PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget));
         {$EndIf}
       end;
     end;
@@ -8729,6 +8718,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.363  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.362  2004/08/19 18:50:53  mattias
   splitted IDE component owner hierachy to reduce notification time
 

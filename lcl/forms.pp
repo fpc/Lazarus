@@ -45,9 +45,9 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
-  LResources, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
-  ClipBrd, CustApp, LCLClasses, Controls;
+  Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LCLIntf,
+  InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
+  ActnList, ClipBrd, CustApp, LCLClasses, Controls;
 
 type
   TProcedure = procedure;
@@ -1163,9 +1163,7 @@ implementation
 
 
 uses
-  WSForms, // Widgetset uses circle is allowed
-  Buttons,
-  Math;
+  WSForms; // Widgetset uses circle is allowed
 
 var
   FocusMessages: Boolean;

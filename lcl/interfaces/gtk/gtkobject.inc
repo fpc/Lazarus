@@ -7798,8 +7798,7 @@ begin
   then
     Assert(False, Format('Trace:  [TGtkWidgetSet.SetProperties] %s', [Sender.ClassName]))
   else
-    RaiseException('TGtkWidgetSet.SetProperties: '
-                   +' Sender.ClassName='+Sender.ClassName);
+    RaiseException('TGtkWidgetSet.SetProperties: '+DbgSName(Sender));
 
   wHandle:= Pointer(TWinControl(Sender).Handle);
   Widget:= GTK_WIDGET(wHandle);
@@ -7807,17 +7806,21 @@ begin
   case TControl(Sender).fCompStyle of
   csComboBox:
     begin
+      //debugln('TGtkWidgetSet.SetProperties ',DbgSName(Sender),' ',dbgs(TCustomComboBox(Sender).ArrowKeysTraverseList));
       case TCustomComboBox(Sender).Style of
         csDropDownList :
           begin
-            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkTrue, GdkFalse);
+            // do not set ok_if_empty = true, otherwise it can hang focus
+            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkTrue,GdkTrue);
             gtk_combo_set_use_arrows_always(GTK_COMBO(wHandle),GdkTrue);
             gtk_combo_set_case_sensitive(GTK_COMBO(wHandle),GdkFalse);
           end;
         else
           begin
-            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkFalse,GdkFalse);
+            // do not set ok_if_empty = true, otherwise it can hang focus
+            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkFalse,GdkTrue);
             gtk_combo_set_use_arrows_always(GTK_COMBO(wHandle),GdkFalse);
+            gtk_combo_set_case_sensitive(GTK_COMBO(wHandle),GdkTrue);
           end;
       end;
 
@@ -9251,6 +9254,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.536  2004/08/30 10:49:20  mattias
+  fixed focus catch for combobox csDropDownList
+
   Revision 1.535  2004/08/28 10:22:13  mattias
   added hints for long props in OI  from Andrew Haines
 

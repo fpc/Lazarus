@@ -129,6 +129,16 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16: 
 
 procedure DbgOut(const s: string);
 procedure DbgOut(const s1,s2: string);
+procedure DbgOut(const s1,s2,s3: string);
+procedure DbgOut(const s1,s2,s3,s4: string);
+procedure DbgOut(const s1,s2,s3,s4,s5: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
+procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
 
 function DbgS(const c: cardinal): string;
 function DbgS(const i: integer): string;
@@ -137,7 +147,7 @@ function DbgS(const p: TPoint): string;
 function DbgS(const p: pointer): string;
 function DbgS(const e: extended): string;
 function DbgS(const b: boolean): string;
-function DbgSName(const p: TPersistent): string;
+function DbgSName(const p: TObject): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
 
@@ -800,6 +810,57 @@ begin
   DbgOut(s1+s2);
 end;
 
+procedure DbgOut(const s1, s2, s3: string);
+begin
+  DbgOut(s1+s2+s3);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4: string);
+begin
+  DbgOut(s1+s2+s3+s4);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6+s7);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6+s7+s8);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11: string);
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11);
+end;
+
+procedure DbgOut(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12: string
+  );
+begin
+  DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
+end;
+
 function DbgS(const c: cardinal): string;
 begin
   Result:=IntToStr(c);
@@ -836,7 +897,7 @@ begin
   if b then Result:='True' else Result:='False';
 end;
 
-function DbgSName(const p: TPersistent): string;
+function DbgSName(const p: TObject): string;
 begin
   if p=nil then
     Result:='nil'

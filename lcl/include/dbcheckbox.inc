@@ -143,9 +143,10 @@ begin
     DataChange(Self);
 end;
 
-procedure TDBCheckBox.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBCheckBox.EditingDone;
 begin
   FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 
 function TDBCheckBox.ValueEqualsField(const AValue, AFieldText: string
