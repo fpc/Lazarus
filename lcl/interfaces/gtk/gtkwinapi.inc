@@ -6606,7 +6606,7 @@ begin
   if not GTK_WIDGET_VISIBLE(Widget) then
     RaiseException('TgtkObject.SetFocus: Widget is not visible');
   {$EndIf}
-
+  
   if GtkWidgetIsA(TopLevel, gtk_window_get_type)
   then begin
     // TopLevel is a gtkwindow
@@ -6620,15 +6620,6 @@ begin
       write(' LCLParent=nil');
     writeln('');
     {$EndIf}
-    {
-    
-    if GTK_WIDGET_CAN_FOCUS(TopLevel) then begin
-      // TopLevel window can focus
-      gtk_window_set_focus(PGTKWindow(TopLevel), Widget)
-    end
-    else begin
-      // TopLevel window can not focus
-    }
     if (NewFocusWidget=nil)
     and GtkWidgetIsA(Widget, gtk_combo_get_type) then begin
       // handle is a gtk combo
@@ -6677,19 +6668,29 @@ begin
         writeln('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget);
         {$EndIf}
       end;
-      if not gtk_widget_has_focus(NewFocusWidget) then begin
-        {$IfDef VerboseFocus}
-        writeln('  J Grabbing focus');
-        {$EndIf}
-        gtk_widget_grab_focus(NewFocusWidget);
-      end;
     end;
   end
   else begin
-    if GTK_WIDGET_CAN_FOCUS(Widget) then begin
-      gtk_widget_grab_focus(Widget);
+    NewFocusWidget:=Widget;
+  end;
+  
+  if not gtk_widget_has_focus(NewFocusWidget) then begin
+    // grab the focus to the parent window
+    if (Screen<>nil)
+    and (Screen.FocusedForm<>nil)
+    and (fsModal in Screen.FocusedForm.FormState)
+    and (GetParentLCLObject(TopLevel)<>Screen.FocusedForm) then begin
+      {$IFDEF VerboseFocus}
+      writeln('[TgtkObject.SetFocus] there is a modal form -> not grabbing');
+      {$ENDIF}
+    end else begin
+      {$IfDef VerboseFocus}
+      writeln('  J Grabbing focus');
+      {$EndIf}
+      gtk_widget_grab_focus(NewFocusWidget);
     end;
   end;
+
   {$IfDef VerboseFocus}
   write('[TgtkObject.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
   NewFocusWidget:=PGtkWidget(GetFocus);
@@ -7952,6 +7953,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.223  2003/03/26 00:21:25  mattias
+  implemented build lazarus extra options -d
+
   Revision 1.222  2003/03/25 10:45:41  mattias
   reduced focus handling and improved focus setting
 
