@@ -213,11 +213,18 @@ begin
 
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
                       or WinWidgetInfo^.EventMask;
+        {$IFNDEF Gtk1}
+        gtk_widget_add_events(Widget,NewEventMask);
+        {$ENDIF}
         gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
+
         if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
         and (ClientWidget^.Window<>Widget^.Window) then begin
           NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
                         or WinWidgetInfo^.EventMask;
+          {$IFNDEF Gtk1}
+          gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
+          {$ENDIF}
           gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
         //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
@@ -2977,6 +2984,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.276  2005/03/23 09:28:13  mattias
+  fixed gtk2 event flags  from Andrew Haines
+
   Revision 1.275  2005/03/11 15:35:49  mattias
   implemented for gtk intf TFileDialog.FilterIndex  from Jesus
 
