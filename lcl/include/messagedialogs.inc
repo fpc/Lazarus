@@ -361,9 +361,7 @@ begin
   msgbox.theMessage := aMsg;
   msgBox.DialogType := DlgType;
   msgBox.Buttons    := buttons;
-writeln('CreateMessageDialogWithCap A');
   msgBox.Caption    := aCaption;
-writeln('CreateMessageDialogWithCap B');
   msgbox.EndUpdate;
   Result := msgbox;
 end;
@@ -433,8 +431,8 @@ end;
 
 {
    $Log$
-   Revision 1.5  2001/09/30 08:34:49  lazarus
-   MG: fixed mem leaks and fixed range check errors
+   Revision 1.6  2001/10/07 07:35:28  lazarus
+   MG: minor fix
 
    Revision 1.4  2001/07/31 18:40:24  lazarus
    MG: added unit info, arrow xpms, and many changes from jens arm
