@@ -495,7 +495,7 @@ end;
 
 function TEditAction.GetControl(Target: TObject): TCustomEdit;
 begin
-  Result:=nil;
+  Result := TCustomEdit(Target);
 end;
 
 procedure TEditAction.Notification(AComponent: TComponent; Operation: TOperation
@@ -660,8 +660,16 @@ begin
 end;
 
 constructor TCommonDialogAction.Create(TheOwner: TComponent);
+var
+  DlgClass: TCommonDialogClass;
 begin
   inherited Create(TheOwner);
+  DlgClass := GetDialogClass;
+  if Assigned(DlgClass)
+  then FDialog := DlgClass.Create(Self);
+
+  DisableIfNoHandler := False;
+  Enabled := True;
 end;
 
 destructor TCommonDialogAction.Destroy;
@@ -683,24 +691,24 @@ end;
 
 function TFileAction.GetFileName: TFileName;
 begin
-  Result:='ToDo';
+  Result := GetDialog.FileName;
 end;
 
 procedure TFileAction.SetFileName(const AValue: TFileName);
 begin
-
+  GetDialog.FileName := AValue;
 end;
 
 function TFileAction.GetDialog: TOpenDialog;
 begin
-  Result:=nil;
+  Result := TOpenDialog(FDialog);
 end;
 
 { TFileOpen }
 
 function TFileOpen.GetDialog: TOpenDialog;
 begin
-  Result:=nil;
+  Result := TOpenDialog(FDialog);
 end;
 
 function TFileOpen.GetDialogClass: TCommonDialogClass;
@@ -729,7 +737,7 @@ end;
 
 function TFileSaveAs.GetSaveDialog: TSaveDialog;
 begin
-  Result:=nil;
+  Result := TSaveDialog(FDialog);
 end;
 
 function TFileSaveAs.GetDialogClass: TCommonDialogClass;
@@ -796,7 +804,7 @@ end;
 
 function TFontEdit.GetDialog: TFontDialog;
 begin
-  Result:=nil;
+  Result := TFontDialog(FDialog);
 end;
 
 function TFontEdit.GetDialogClass: TCommonDialogClass;
@@ -808,7 +816,7 @@ end;
 
 function TColorSelect.GetDialog: TColorDialog;
 begin
-  Result:=nil;
+  Result := TColorDialog(FDialog);
 end;
 
 function TColorSelect.GetDialogClass: TCommonDialogClass;

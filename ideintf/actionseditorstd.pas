@@ -19,10 +19,12 @@
      
   version:
     0.1 - 10.03.2005 - added to ActionList Editor
+    0.2 - 14.03.2005 - hedadline, hint and shortcut descriptions
     
   ToDo: - multiselect for actions
+        - standard icon
 }
-unit ActionsEditorStd;
+unit actionseditorstd;
 
 {$mode objfpc}{$H+}
 
@@ -30,12 +32,14 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, Buttons, ActnList, StdActns, LCLType;
+  ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType, Contnrs,
+  LCLProc;
 
 type
-  TResultActProc = procedure (const Category: string;
-                   ActionClass: TBasicActionClass; LastItem: Boolean) of object;
-  
+  TActStdPropItem = class;
+  TActStdProp = class;
+  TResultActProc = procedure (const Category: string; ActionClass: TBasicActionClass; ActionProperty: TActStdPropItem; LastItem: Boolean) of object;
+
   { TFormActStandard }
 
   TFormActStandard = class(TForm)
@@ -50,8 +54,10 @@ type
   private
     { private declarations }
     FResultActionProc: TResultActProc;
+    fActStdProperty: TActStdProp;
     procedure EnumAct;
     procedure ResultActionProc;
+    procedure AddStdActProperties;
   public
     { public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -59,9 +65,42 @@ type
     destructor Destroy; override;
   end;
 
+
+  TRecActStdProp = packed record
+    Caption: String;
+    ShortCut: TShortCut;
+    Hint: String;
+  end;
+
+  { TActStdPropItem }
+
+  TActStdPropItem = class
+  private
+    FActProperties: TRecActStdProp;
+    FClassName: String;
+    procedure SetActClassName(const AValue: String);
+    procedure SetActProperties(const AValue: TRecActStdProp);
+  public
+    property ActClassName: String read FClassName write SetActClassName;
+    property ActionProperty: TRecActStdProp read FActProperties write FActProperties;
+  end;
+   
+  { TActStdProp }
+
+  TActStdProp = class
+  private
+    fPropList: TObjectList;
+    procedure Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function IndexOfClass(ActClassName: String): TActStdPropItem;
+  end;
+
 implementation
 
 uses actionseditor, ObjInspStrConsts;
+
 
 { TFormActStandard }
 
@@ -97,11 +136,11 @@ begin
        or (htOnLabel in MyHitTest) then begin
       if (not node.HasChildren) and (node.Parent is TTreeNode)
       then btnOK.Click
-      else begin
+{      else begin
         if node.Expanded
         then node.Collapse(False)
         else node.Expand(False);
-      end;
+      end;  }
     end;
   end;
 end;
@@ -112,11 +151,6 @@ var
   NodeCategory: TTreeNode;
 begin
   tvActStdList.BeginUpdate;
-  with tvActStdList.Items do begin
-    NodeCategory := tvActStdList.Items.Add(nil, cActionListEditorUnknownCategory);
-    AddChild(NodeCategory, TAction.ClassName);
-  end;
-  
   for outer := 0 to RegisteredActions.Count-1 do begin
     with tvActStdList.Items do begin
       NodeCategory := Add(nil, RegisteredActions.Items[outer].Name);
@@ -132,19 +166,47 @@ end;
 procedure TFormActStandard.ResultActionProc;
 var
   Category: String;
-  outer: Integer;
   lastItem: Boolean;  // for multiselect, but now the multiselect property is not implemented in the TTreeView
+  fClass: TBasicActionClass;
 begin
   Category := tvActStdList.Selected.Parent.Text;
 
   lastItem := True;
-  for outer := 0 to RegisteredActions.Count-1 do begin
-    if RegisteredActions.Items[outer].Name = Category then begin
-      FResultActionProc(Category, RegisteredActions.Items[outer].
-                      Items[tvActStdList.Selected.Index].ActionClass, lastItem);
-      Break;
-    end;
-  end;
+  fClass := RegisteredActions.Items[RegisteredActions.IndexOfCategory(Category)].Items[tvActStdList.Selected.Index].ActionClass;
+  FResultActionProc(Category, fClass, fActStdProperty.IndexOfClass(fClass.ClassName), lastItem);
+end;
+
+procedure TFormActStandard.AddStdActProperties;
+begin
+//ActStdResource.Add(TEditCutResource);
+  fActStdProperty.Add(TEditCut, oiStdActEditCutHeadLine, oiStdActEditCutShortCut, oiStdActEditCutShortHint);
+  fActStdProperty.Add(TEditCopy, oiStdActEditCopyHeadLine, oiStdActEditCopyShortCut, oiStdActEditCopyShortHint);
+  fActStdProperty.Add(TEditPaste, oiStdActEditPasteHeadLine, oiStdActEditPasteShortCut, oiStdActEditPasteShortHint);
+  fActStdProperty.Add(TEditSelectAll, oiStdActEditSelectAllHeadLine, oiStdActEditSelectAllShortCut, oiStdActEditSelectAllShortHint);
+  fActStdProperty.Add(TEditUndo, oiStdActEditUndoHeadLine, oiStdActEditUndoShortCut, oiStdActEditUndoShortHint);
+  fActStdProperty.Add(TEditDelete, oiStdActEditDeleteHeadLine, oiStdActEditDeleteShortCut, oiStdActEditDeleteShortHint);
+  
+  fActStdProperty.Add(THelpContents, oiStdActHelpContentsHeadLine, '', oiStdActHelpContentsHint);
+  fActStdProperty.Add(THelpTopicSearch, oiStdActHelpTopicSearchHeadLine, '', oiStdActHelpTopicSearchHint);
+  fActStdProperty.Add(THelpOnHelp, oiStdActHelpHelpHelpHeadLine, '', oiStdActHelpHelpHelpHint);
+
+  fActStdProperty.Add(TFileOpen, oiStdActFileOpenHeadLine, oiStdActFileOpenShortCut, oiStdActFileOpenHint);
+  fActStdProperty.Add(TFileSaveAs, oiStdActFileSaveAsHeadLine, '', oiStdActFileSaveAsHint);
+  fActStdProperty.Add(TFileExit, oiStdActFileExitHeadLine, '', oiStdActFileExitHint);
+
+  fActStdProperty.Add(TColorSelect, oiStdActColorSelect1HeadLine, '', oiStdActColorSelectHint);
+  fActStdProperty.Add(TFontEdit, oiStdActFontEditHeadLine, '', oiStdActFontEditHint);
+
+  fActStdProperty.Add(TDataSetFirst, oiStdActDataSetFirstHeadLine, '', oiStdActDataSetFirstHint);
+  fActStdProperty.Add(TDataSetPrior, oiStdActDataSetPriorHeadLine, '', oiStdActDataSetPriorHint);
+  fActStdProperty.Add(TDataSetNext, oiStdActDataSetNextHeadLine, '', oiStdActDataSetNextHint);
+  fActStdProperty.Add(TDataSetLast, oiStdActDataSetLastHeadLine, '', oiStdActDataSetLastHint);
+  fActStdProperty.Add(TDataSetInsert, oiStdActDataSetInsertHeadLine, '', oiStdActDataSetInsertHint);
+  fActStdProperty.Add(TDataSetDelete, oiStdActDataSetDeleteHeadLine, '', oiStdActDataSetDeleteHint);
+  fActStdProperty.Add(TDataSetEdit, oiStdActDataSetEditHeadLine, '', oiStdActDataSetEditHint);
+  fActStdProperty.Add(TDataSetPost, oiStdActDataSetPostHeadLine, '', oiStdActDataSetPostHint);
+  fActStdProperty.Add(TDataSetCancel, oiStdActDataSetCancelHeadLine, '', oiStdActDataSetCancel1Hint);
+  fActStdProperty.Add(TDataSetRefresh, oiStdActDataSetRefreshHeadLine, '', oiStdActDataSetRefreshHint);
 end;
 
 constructor TFormActStandard.Create(AOwner: TComponent);
@@ -156,14 +218,69 @@ constructor TFormActStandard.CreateEx(AOwner: TComponent; ResultActProc: TResult
 begin
   inherited Create(AOwner);
   FResultActionProc := ResultActProc;
-  Caption := 'Standard Action Classes';
-  LabelHeadLine.Caption := 'Available Action Classes:';
+  Caption := OisStdActionListEditor;
+  LabelHeadLine.Caption := oisStdActionListEditorClass;
   EnumAct;
+  fActStdProperty := TActStdProp.Create;
+  AddStdActProperties;
 end;
 
 destructor TFormActStandard.Destroy;
 begin
+  fActStdProperty.Free;
   inherited Destroy;
+end;
+
+{ TActStdProp }
+
+procedure TActStdProp.Add(ActClassType: TClass; HeadLine, ShortCut, Hint: String);
+var
+  ActItem: TActStdPropItem;
+begin
+  if Assigned(IndexOfClass(ActClassType.ClassName)) then Exit;
+  ActItem := TActStdPropItem.Create;
+  ActItem.ActClassName := ActClassType.ClassName;
+  ActItem.ActionProperty.Caption := HeadLine;
+  ActItem.ActionProperty.ShortCut := TextToShortCut(ShortCut);
+  ActItem.ActionProperty.Hint := Hint;
+  fPropList.Add(ActItem);
+end;
+
+constructor TActStdProp.Create;
+begin
+  fPropList := TObjectList.Create;
+end;
+
+destructor TActStdProp.Destroy;
+begin
+  fPropList.Free;
+  inherited Destroy;
+end;
+
+function TActStdProp.IndexOfClass(ActClassName: String): TActStdPropItem;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i:= 0 to fPropList.Count-1 do begin
+    if TActStdPropItem(fPropList[i]).ActClassName = ActClassName then begin
+      Result := TActStdPropItem(fPropList[i]);
+      Break;
+    end;
+  end;
+end;
+
+{ TActStdPropItem }
+
+procedure TActStdPropItem.SetActClassName(const AValue: String);
+begin
+  if FClassName = AValue then Exit;
+  FClassName := AValue;
+end;
+
+procedure TActStdPropItem.SetActProperties(const AValue: TRecActStdProp);
+begin
+  FActProperties := AValue;
 end;
 
 initialization

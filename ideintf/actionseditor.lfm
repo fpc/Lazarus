@@ -3,8 +3,10 @@ object ActionListEditor: TActionListEditor
   ClientHeight = 300
   ClientWidth = 400
   KeyPreview = True
+  OnClose = ActionListEditorClose
+  OnKeyDown = ActionListEditorKeyDown
   OnKeyPress = ActionListEditorKeyPress
-  PixelsPerInch = 112
+  PixelsPerInch = 120
   Position = poScreenCenter
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
@@ -12,13 +14,14 @@ object ActionListEditor: TActionListEditor
   Height = 300
   Top = 159
   Width = 400
-  object Panel2: TPanel
+  object PanelDescr: TPanel
     Align = alTop
     BorderSpacing.OnChange = nil
     BevelOuter = bvNone
     ClientHeight = 26
     ClientWidth = 400
     FullRepaint = False
+    PopupMenu = PopMenuActions
     TabOrder = 1
     Height = 26
     Top = 26
@@ -55,7 +58,7 @@ object ActionListEditor: TActionListEditor
     Top = 52
     Width = 5
   end
-  object Panel1: TPanel
+  object PanelToolbar: TPanel
     Align = alTop
     BorderSpacing.OnChange = nil
     BevelInner = bvRaised
@@ -74,7 +77,9 @@ object ActionListEditor: TActionListEditor
       Spacing = 0
       ShowHint = True
       ParentShowHint = False
+      Left = 1
       Height = 22
+      Top = 2
       Width = 24
     end
     object btnDelete: TSpeedButton
@@ -147,7 +152,6 @@ object ActionListEditor: TActionListEditor
     OnMouseDown = lstActionNameMouseDown
     PopupMenu = PopMenuActions
     TabOrder = 2
-    TopIndex = -1
     Left = 157
     Height = 248
     Top = 52
@@ -159,13 +163,13 @@ object ActionListEditor: TActionListEditor
     ExtendedSelect = True
     OnClick = lstCategoryClick
     OnMouseDown = lstActionNameMouseDown
+    PopupMenu = PopMenuActions
     TabOrder = 3
-    TopIndex = -1
     Height = 248
     Top = 52
     Width = 152
   end
-  object ActionList1: TActionList
+  object ActionListSelf: TActionList
     top = 240
     object ActDelete: TAction
       OnExecute = ActDeleteExecute
@@ -195,28 +199,23 @@ object ActionListEditor: TActionListEditor
       ShortCut = 16424
       Category = 'MoveUpDown'
     end
-    object ActCreateExecuteEvent: TAction
-      Caption = 'OnExecute'
-      OnExecute = ActCreateExecuteEventExecute
-      OnUpdate = ActCreateExecuteUpdate
-      Category = 'CreateEvents'
+    object ActPanelDescr: TAction
+      AutoCheck = True
+      Caption = 'ActPanelDescr'
+      Checked = True
+      OnExecute = ActPanelDescrExecute
+      Category = 'Panels'
     end
-    object ActCreateHintEvent: TAction
-      Caption = 'OnHint'
-      OnExecute = ActCreateHintExecute
-      OnUpdate = ActCreateExecuteUpdate
-      Category = 'CreateEvents'
-    end
-    object ActCreateUpdateEvent: TAction
-      Caption = 'OnUpdate'
-      OnExecute = ActCreateUpdateExecute
-      OnUpdate = ActCreateExecuteUpdate
-      Category = 'CreateEvents'
+    object ActPanelToolBar: TAction
+      AutoCheck = True
+      Caption = 'ActPanelToolBar'
+      Checked = True
+      OnExecute = ActPanelToolBarExecute
+      Category = 'Panels'
     end
   end
   object PopMenuActions: TPopupMenu
-    OnPopup = PopMenuActionsPopup
-    left = 161
+    left = 160
     top = 261
     object mItemActListNewAction: TMenuItem
       Action = ActNew
@@ -227,30 +226,15 @@ object ActionListEditor: TActionListEditor
       Action = ActNewStd
       OnClick = ActNewStdExecute
     end
-    object MenuItem3: TMenuItem
-      Caption = '-'
-    end
-    object mItemCreateOnExecuteEvent: TMenuItem
-      Action = ActCreateExecuteEvent
-      OnClick = ActCreateExecuteEventExecute
-    end
-    object mItemCreateOnHintEvent: TMenuItem
-      Action = ActCreateHintEvent
-      OnClick = ActCreateHintExecute
-    end
-    object mItemCreateOnUpdateEvent: TMenuItem
-      Action = ActCreateUpdateEvent
-      OnClick = ActCreateUpdateExecute
-    end
     object MenuItem8: TMenuItem
       Caption = '-'
     end
-    object MenuItem4: TMenuItem
+    object mItemActListMoveUpAction: TMenuItem
       Action = ActMoveUp
       Caption = 'Move Up'
       OnClick = ActMoveDownExecute
     end
-    object MenuItem5: TMenuItem
+    object mItemActListMoveDownAction: TMenuItem
       Action = ActMoveDown
       Caption = 'Move Down'
       OnClick = ActMoveDownExecute
@@ -262,6 +246,19 @@ object ActionListEditor: TActionListEditor
       Action = ActDelete
       Caption = 'Delete'
       OnClick = ActDeleteExecute
+    end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object mItemActListPanelDescr: TMenuItem
+      Action = ActPanelDescr
+      AutoCheck = True
+      OnClick = ActPanelDescrExecute
+    end
+    object MenuItem2: TMenuItem
+      Action = ActPanelToolBar
+      AutoCheck = True
+      OnClick = ActPanelToolBarExecute
     end
   end
   object PopMenuToolBarActions: TPopupMenu

@@ -27,15 +27,17 @@
     0.3 - 27.3.2004 - rename action > actualise editor
     0.4 - 29.3.2004 - dblclick generate xxx.OnExecute code to editor
     0.5 - 10.03.2005 - New design
+    0.6 - 14.03.2005 - multilanguage support
 
   TODO:- multiselect for the actions and categories
        - drag & drop for the actions and categories
+       - standard icon for "Standard Action"
        - sometimes click in listbox causes selecting last item
          (it's an strange gtk error. The LCL and the gtk intf do not send any
           change to the gtk. Either it is a bug in the gtk1 or we are doing
           something wrong in the handlers.)
 }
-unit ActionsEditor;
+unit actionseditor;
 
 {$mode objfpc}{$H+}
 
@@ -45,42 +47,41 @@ uses
   Classes, SysUtils, LResources, LCLProc, Forms, Controls, Dialogs,
   ActnList, ExtCtrls, ComCtrls, Buttons, StdCtrls, ObjInspStrConsts,
   ComponentEditors, PropEdits, DBActns, StdActns, LCLIntf, LCLType,
-  Graphics, GraphType, Menus;
+  Graphics, Menus, actionseditorstd;
 
 type
 
+  TActionListComponentEditor = class;
+  
   { TActionListEditor }
 
   TActionListEditor = class(TForm)
     ActDelete: TAction;
-    ActCreateExecuteEvent: TAction;
-    ActCreateHintEvent: TAction;
-    ActCreateUpdateEvent: TAction;
-    Action1: TAction;
+    ActPanelToolBar: TAction;
+    ActPanelDescr: TAction;
     ActMoveUp: TAction;
     ActMoveDown: TAction;
     ActNewStd: TAction;
-    ActionList1: TActionList;
+    ActionListSelf: TActionList;
     ActNew: TAction;
     lblCategory: TLabel;
     lblName: TLabel;
     lstCategory: TListBox;
     lstActionName: TListBox;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    mItemActListPanelDescr: TMenuItem;
     mItemToolBarNewStdAction: TMenuItem;
     mItemToolBarNewAction: TMenuItem;
     mItemActListNewAction: TMenuItem;
-    mItemCreateOnExecuteEvent: TMenuItem;
-    mItemCreateOnHintEvent: TMenuItem;
-    mItemCreateOnUpdateEvent: TMenuItem;
     mItemActListNewStdAction: TMenuItem;
-    MenuItem3: TMenuItem;
-    MenuItem4: TMenuItem;
-    MenuItem5: TMenuItem;
+    mItemActListMoveUpAction: TMenuItem;
+    mItemActListMoveDownAction: TMenuItem;
     MenuItem6: TMenuItem;
     mItemActListDelAction: TMenuItem;
     MenuItem8: TMenuItem;
-    Panel1: TPanel;
-    Panel2: TPanel;
+    PanelToolbar: TPanel;
+    PanelDescr: TPanel;
     btnAdd: TSpeedButton;
     btnDelete: TSpeedButton;
     btnUp: TSpeedButton;
@@ -89,10 +90,6 @@ type
     PopMenuToolBarActions: TPopupMenu;
     SBShowMenuNewActions: TSpeedButton;
     Splitter: TSplitter;
-    procedure ActCreateExecuteEventExecute(Sender: TObject);
-    procedure ActCreateExecuteUpdate(Sender: TObject);
-    procedure ActCreateHintExecute(Sender: TObject);
-    procedure ActCreateUpdateExecute(Sender: TObject);
     procedure ActDeleteExecute(Sender: TObject);
     procedure ActDeleteUpdate(Sender: TObject);
     procedure ActMoveDownExecute(Sender: TObject);
@@ -100,8 +97,13 @@ type
     procedure ActMoveUpUpdate(Sender: TObject);
     procedure ActNewExecute(Sender: TObject);
     procedure ActNewStdExecute(Sender: TObject);
+    procedure ActPanelDescrExecute(Sender: TObject);
+    procedure ActPanelToolBarExecute(Sender: TObject);
+    procedure ActionListEditorClose(Sender: TObject;
+      var CloseAction: TCloseAction);
+    procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
-    procedure PopMenuActionsPopup(Sender: TObject);
     procedure SBShowMenuNewActionsClick(Sender: TObject);
     procedure SplitterCanResize(Sender: TObject; var NewSize: Integer;
       var Accept: Boolean);
@@ -121,8 +123,8 @@ type
     { private declarations }
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
-    procedure ResultStdActProc(const Category: string;
-                             ActionClass: TBasicActionClass; LastItem: Boolean);
+    FComponentEditor: TActionListComponentEditor;
+    procedure ResultStdActProc(const Category: string; ActionClass: TBasicActionClass; ActionProperty: TActStdPropItem; LastItem: Boolean);
   public
     { public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -131,6 +133,7 @@ type
     procedure FillCategories;
     procedure FillActionByCategory(iIndex: Integer);
     property Designer:TComponentEditorDesigner read FDesigner write FDesigner;
+    property ComponentEditor: TActionListComponentEditor write FComponentEditor;
   end; 
 
   { TActionListComponentEditor }
@@ -139,6 +142,8 @@ type
   private
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
+    FActionListEditorForm: TActionListEditor;
+    fWindowClosed: Boolean;
   protected
   public
     constructor Create(AComponent: TComponent;
@@ -149,6 +154,7 @@ type
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
+    procedure EditorWindowClose;
   end;
 
   { Action Registration }
@@ -198,18 +204,12 @@ type
     function Count: Integer;
     property Items[Index: Integer]: TRegisteredActionCategory read GetItems;
   end;
+
+  TNotifyActionListChange = procedure;
   
 var
   RegisteredActions: TRegisteredActionCategories;
-
-type
-  TNotifyActionListChange = procedure;
-
-var
   NotifyActionListChange: TNotifyActionListChange;
-
-var
-  ActionListEditorForm: TActionListEditor;
 
 type
    PCharArray   = Array[0..16+5] of PChar;
@@ -239,7 +239,7 @@ var
    '.....#aaa#......',
    '.....#####......',
    '................');
-   
+
   cImg_Delete: PCharArray =
   ('16 16 5 1',
    '. c None',
@@ -343,13 +343,8 @@ procedure UnRegisterActions(const Classes: array of TBasicActionClass);
 procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
 function CreateAction(TheOwner: TComponent;
                       ActionClass: TBasicActionClass): TBasicAction;
-                      
-procedure ShowActionListEditor(AActionList: TActionList;
-  ADesigner: TComponentEditorDesigner);
 
 implementation
-
-uses actionseditorstd;
 
 procedure RegisterActions(const ACategory: string;
   const AClasses: array of TBasicActionClass; AResource: TComponentClass);
@@ -380,34 +375,41 @@ var
 begin
   Result := ActionClass.Create(TheOwner);
   // find a Resource component registered for this ActionClass
-  ResourceClass:=RegisteredActions.FindResource(ActionClass);
-  if ResourceClass=nil then exit;
-  ResInstance:=ResourceClass.Create(nil);
+  ResourceClass := RegisteredActions.FindResource(ActionClass);
+  if ResourceClass = nil then Exit;
+showmessage(TCustomAction(ResourceClass).Caption);
+  ResInstance := ResourceClass.Create(nil);
   try
     // find an action owned by the Resource component
     Action:=nil;
-    for i:=0 to ResInstance.ComponentCount-1 do begin
-      Component:=ResInstance.Components[i];
-      if (CompareText(Component.ClassName,ActionClass.ClassName)=0)
-      and (Component is TBasicAction) then begin
-        Action:=TBasicAction(Component);
+    for i:= 0 to ResInstance.ComponentCount-1 do begin
+      Component := ResInstance.Components[i];
+      if (CompareText(Component.ClassName, ActionClass.ClassName)=0)
+         and (Component is TBasicAction) then begin
+        Action := TBasicAction(Component);
         Break;
       end;
     end;
-    if Action=nil then exit;
+    if Action = nil then Exit;
 
     // copy TCustomAction properties
     if (Action is TCustomAction) and (Result is TCustomAction) then begin
-      Src:=TCustomAction(Action);
-      Dest:=TCustomAction(Result);
+      Src := TCustomAction(Action);
+      Dest := TCustomAction(Result);
+      Dest.AutoCheck := Src.AutoCheck;
       Dest.Caption:=Src.Caption;
+      Dest.Category := Src.Category;
       Dest.Checked:=Src.Checked;
       Dest.Enabled:=Src.Enabled;
       Dest.HelpContext:=Src.HelpContext;
+      Dest.HelpKeyword := Src.HelpKeyword;
+      Dest.HelpType := Src.HelpType;
       Dest.Hint:=Src.Hint;
       Dest.ImageIndex:=Src.ImageIndex;
+      Dest.SecondaryShortCuts := Src.SecondaryShortCuts;
       Dest.ShortCut:=Src.ShortCut;
       Dest.Visible:=Src.Visible;
+//      Src.AssignTo(Dest);
       if (Dest is TContainedAction) and (Dest.ImageIndex>=0)
       and (Src is TContainedAction) then begin
         // ToDo: copy image
@@ -416,21 +418,6 @@ begin
     end;
   finally
     ResInstance.Free;
-  end;
-end;
-
-procedure ShowActionListEditor(AActionList: TActionList;
-  ADesigner:TComponentEditorDesigner);
-begin
-  if AActionList = nil
-  then Raise Exception.Create('ShowActionListEditor AActionList=nil');
-  if ActionListEditorForm = nil
-  then ActionListEditorForm := TActionListEditor.Create(Application);
-  with ActionListEditorForm do begin
-    lstActionName.ItemIndex := -1;
-    Designer := ADesigner;
-    SetActionList(AActionList);
-    ShowOnTop;
   end;
 end;
 
@@ -447,6 +434,19 @@ procedure TActionListEditor.OnComponentSelection(const OnSetSelection: TPersiste
 var
   CurSelect: TContainedAction;
   tmpCategory: String;
+  function CategoryIndexOf(Name: String): Integer;
+  var
+    i: Integer;
+  begin
+    for i:= lstCategory.Items.Count-1 downto 0 do begin
+      if lstCategory.Items[i] = Name
+      then Break;
+    end;
+    Result := i;
+    if (i = lstCategory.Items.IndexOf(cActionListEditorUnknownCategory))
+       and (i = lstCategory.Items.IndexOf(cActionListEditorAllCategory))
+    then Result := 0;
+  end;
 begin
   // TODO: multiselect
   if Self.Visible
@@ -455,15 +455,22 @@ begin
      and (OnSetSelection.Items[0] is TContainedAction)
      and (TContainedAction(OnSetSelection.Items[0]).ActionList = FActionList) then
     begin
-      if not (GetSelectedAction <> OnSetSelection.Items[0])
+      if GetSelectedAction = OnSetSelection.Items[0]
       then Exit;
       CurSelect := TContainedAction(OnSetSelection.Items[0]);
+      CurSelect.Category := Trim(CurSelect.Category);
       tmpCategory := CurSelect.Category;
-      if tmpCategory = '' then tmpCategory := cActionListEditorUnknownCategory;
+      if (tmpCategory <> '')
+         and (lstCategory.Items.IndexOf(tmpCategory) < 0)
+      then FillCategories;
+      if tmpCategory = ''
+      then tmpCategory := cActionListEditorUnknownCategory;
       if (lstCategory.Items[lstCategory.ItemIndex] <> tmpCategory)
          or ((lstCategory.Items[lstCategory.ItemIndex] = tmpCategory)
               and (lstActionName.Items.IndexOf(CurSelect.Name) < 0)) then begin
-        lstCategory.ItemIndex := lstCategory.Items.IndexOf(tmpCategory);
+        if CurSelect.Category = ''
+        then lstCategory.ItemIndex := lstCategory.Items.IndexOf(tmpCategory)
+        else lstCategory.ItemIndex := CategoryIndexOf(CurSelect.Category);
         lstCategory.Click;
       end;
       lstActionName.ItemIndex := lstActionName.Items.IndexOf(CurSelect.Name);
@@ -482,7 +489,8 @@ procedure TActionListEditor.OnRefreshPropertyValues;
   begin
     Result := True;
     for i:= lstCategory.Items.Count-1 downto 0 do begin
-      if lstCategory.Items[i] = cActionListEditorUnknownCategory
+      if (lstCategory.Items[i] = cActionListEditorUnknownCategory)
+         and (i = lstCategory.Items.IndexOf(cActionListEditorAllCategory))
       then Break;
       bool := False;
       for j:= FActionList.ActionCount-1 downto 0 do begin
@@ -503,13 +511,15 @@ procedure TActionListEditor.OnRefreshPropertyValues;
   begin
     Result := False;
     for i:= lstCategory.Items.Count-1 downto 0 do begin
-      if lstCategory.Items[i] = cActionListEditorUnknownCategory
-      then Break;
       if lstCategory.Items[i] = Category then begin
         Result := True;
         Break;
       end;
     end;
+    if (i >= 0)
+       and ((i = lstCategory.Items.IndexOf(cActionListEditorUnknownCategory))
+            or (i = lstCategory.Items.IndexOf(cActionListEditorAllCategory)))
+    then Result := False;
   end;
 var
   ASelections: TPersistentSelectionList;
@@ -523,9 +533,10 @@ begin
     GlobalDesignHook.GetSelection(ASelections);
     try
       if (ASelections.Count > 0)
-         and (ASelections.Items[0] is TContainedAction {.ClassNameIs(TAction.ClassName})
+         and (ASelections.Items[0] is TContainedAction)
          and (TContainedAction(ASelections.Items[0]).ActionList = FActionList) then begin
         curSelect := TContainedAction(ASelections.Items[0]);
+        CurSelect.Category := Trim(CurSelect.Category);
         oldSelCategory := lstCategory.Items[lstCategory.ItemIndex];
         tmpCategory := CurSelect.Category;
         
@@ -586,23 +597,30 @@ begin
 end;
 
 procedure TActionListEditor.ResultStdActProc(const Category: string;
-  ActionClass: TBasicActionClass; LastItem: Boolean);
+  ActionClass: TBasicActionClass; ActionProperty: TActStdPropItem;
+  LastItem: Boolean);
 var
   NewAction: TContainedAction;
 begin
   NewAction := ActionClass.Create(FActionList.Owner) as TContainedAction;
-  if NewAction.Category <> cActionListEditorUnknownCategory
+//  NewAction := CreateAction(FActionList.Owner, ActionClass) as TContainedAction;
+  if Category <> cActionListEditorUnknownCategory
   then NewAction.Category := Category
   else NewAction.Category := '';
   NewAction.Name := FDesigner.CreateUniqueComponentName(NewAction.ClassName);
-
-  if lstCategory.Items.IndexOf(Category) < 0
-  then lstCategory.Items.Add(NewAction.Category);
+  
+  if Assigned(ActionProperty) then begin
+    TCustomAction(NewAction).Caption := ActionProperty.ActionProperty.Caption;
+    TCustomAction(NewAction).ShortCut := ActionProperty.ActionProperty.ShortCut;
+    TCustomAction(NewAction).Hint := ActionProperty.ActionProperty.Hint;
+  end;
 
   NewAction.ActionList := FActionList;
   FDesigner.PropertyEditorHook.PersistentAdded(NewAction,True);
+
   FDesigner.Modified;
-  FDesigner.SelectOnlyThisComponent(FActionList.ActionByName(NewAction.Name));
+  if LastItem
+  then FDesigner.SelectOnlyThisComponent(FActionList.ActionByName(NewAction.Name));
 end;
 
 procedure TActionListEditor.SplitterCanResize(Sender: TObject;
@@ -617,13 +635,11 @@ begin
   if (ssCtrl in Shift) then begin
      case key of
        VK_UP: if ActMoveUp.Enabled then begin
-//           ActMoveUp.ExecuteAction(ActMoveUp);
            ActMoveUp.OnExecute(ActMoveUp);
            Key := 0;
          end;
          
        VK_DOWN: if ActMoveDown.Enabled then begin
-//           ActMoveDown.ExecuteAction(ActMoveDown);
            ActMoveDown.OnExecute(ActMoveDown);
            Key := 0;
          end;
@@ -645,7 +661,6 @@ begin
     end;
   end;
 end;
-
 
 procedure TActionListEditor.ActDeleteUpdate(Sender: TObject);
 var
@@ -672,8 +687,7 @@ end;
 
 procedure TActionListEditor.ActMoveDownExecute(Sender: TObject);
 var
-  fact0,fAct1,fAct2: TContainedAction;
-  fName: String;
+  fact0,fAct1: TContainedAction;
   lboxIndex: Integer;
   direction: Integer;
 begin
@@ -682,33 +696,14 @@ begin
   else direction := 1;
 
   lboxIndex := lstActionName.ItemIndex;
-  fAct0 := TAction.Create(Self);
-  try
-    fAct1 := GetSelectedAction;
-    fAct2 := FActionList.ActionByName(lstActionName.Items[lboxIndex+direction]);
-    
-    fAct1.AssignTo(fAct0);
-    fName := fAct1.Name;
-    fAct1.Name := 'tN1';
-    fAct0.Name := fName;
+  
+  fact0 := FActionList.ActionByName(lstActionName.Items[lboxIndex]);
+  fact1 := FActionList.ActionByName(lstActionName.Items[lboxIndex+direction]);
+  fact1.Index := fact0.Index;
 
-    fAct2.AssignTo(fAct1);
-    fName := fAct2.Name;
-    fAct2.Name := 'tN2';
-    fAct1.Name := fName;
-
-    fAct0.AssignTo(fAct2);
-    fName := fAct0.Name;
-    fAct0.Name := 'tN1';
-    fAct2.Name := fName;
-  finally
-    fAct0.Free;
-  end;
-  fName := lstActionName.Items[lboxIndex];
-  lstActionName.Items[lboxIndex] := lstActionName.Items[lboxIndex+direction];
-  lstActionName.Items[lboxIndex+direction] := fName;
-  lstActionName.ItemIndex := lstActionName.Items.IndexOf(fName);
-  FDesigner.SelectOnlyThisComponent(FActionList.ActionByName(fName));
+  lstActionName.Items.Move(lboxIndex, lboxIndex+direction);
+  lstActionName.ItemIndex := lboxIndex+direction;
+  FDesigner.Modified;
 end;
 
 procedure TActionListEditor.ActMoveDownUpdate(Sender: TObject);
@@ -766,7 +761,6 @@ var
 begin
   NewAction := TAction.Create(FActionList.Owner);
   NewAction.Name := FDesigner.CreateUniqueComponentName(NewAction.ClassName);
-  DebugLn(NewAction.Name);
 
   if lstCategory.ItemIndex > 1 // ignore first two items (virtual categories)
   then NewAction.Category := lstCategory.Items[lstCategory.ItemIndex]
@@ -783,28 +777,36 @@ begin
   TFormActStandard.CreateEx(Self, @ResultStdActProc).ShowModal;
 end;
 
+procedure TActionListEditor.ActPanelDescrExecute(Sender: TObject);
+begin
+  PanelDescr.Visible := TAction(Sender).Checked;
+end;
+
+procedure TActionListEditor.ActPanelToolBarExecute(Sender: TObject);
+begin
+  PanelToolBar.Visible := TAction(Sender).Checked;
+end;
+
+procedure TActionListEditor.ActionListEditorClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
+end;
+
+procedure TActionListEditor.ActionListEditorKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  MousePoint: TPoint;
+begin
+  MousePoint := Self.ClientToScreen(Point(0,0));
+  if Key = VK_APPS
+  then PopMenuActions.PopUp(MousePoint.X, MousePoint.Y);
+end;
+
 procedure TActionListEditor.ActionListEditorKeyPress(Sender: TObject;
   var Key: char);
 begin
   if Ord(Key) = VK_ESCAPE then Self.Close;
-end;
-
-procedure TActionListEditor.PopMenuActionsPopup(Sender: TObject);
-var
-  CurAction: TContainedAction;
-begin
-  ActCreateExecuteEvent.Caption := 'Create OnExecute Event';
-  ActCreateHintEvent.Caption := 'Create OnHint Event';
-  ActCreateUpdateEvent.Caption := 'Create OnUpdate Event';
-  CurAction := GetSelectedAction;
-  if Assigned(CurAction) then begin
-    if Assigned(CurAction.OnExecute)
-    then ActCreateExecuteEvent.Caption := 'Show OnExecute Event';
-    if Assigned(TAction(CurAction).OnHint)
-    then ActCreateHintEvent.Caption := 'Show OnHint Event';
-    if Assigned(CurAction.OnUpdate)
-    then ActCreateUpdateEvent.Caption := 'Show OnUpdate Event';
-  end;
 end;
 
 procedure TActionListEditor.SBShowMenuNewActionsClick(Sender: TObject);
@@ -837,7 +839,6 @@ begin
   iNameIndex := lstActionName.ItemIndex;
   if iNameIndex < 0 then Exit;
   OldName := lstActionName.Items[iNameIndex];
-  DebugLn('',OldName);
   lstActionName.Items.Delete(iNameIndex);
 
   OldAction := FActionList.ActionByName(OldName);
@@ -874,41 +875,6 @@ begin
   then lstCategory.Items.Delete(lstCategory.Items.IndexOf(OldName));
   if lstActionName.ItemIndex < 0
   then FDesigner.SelectOnlyThisComponent(FActionList);
-end;
-
-procedure TActionListEditor.ActCreateExecuteUpdate(Sender: TObject);
-begin
-  TAction(Sender).Enabled := (lstActionName.ItemIndex >= 0);
-end;
-
-procedure TActionListEditor.ActCreateExecuteEventExecute(Sender: TObject);
-var
-  CurAction: TContainedAction;
-begin
-  CurAction := GetSelectedAction;
-  if CurAction = nil then Exit;
-  // Add OnExecute for this action
-  CreateComponentEvent(CurAction,'OnExecute');
-end;
-
-procedure TActionListEditor.ActCreateHintExecute(Sender: TObject);
-var
-  CurAction: TContainedAction;
-begin
-  CurAction := GetSelectedAction;
-  if CurAction = nil then Exit;
-  // Add OnHint for this action
-  CreateComponentEvent(CurAction,'OnHint');
-end;
-
-procedure TActionListEditor.ActCreateUpdateExecute(Sender: TObject);
-var
-  CurAction: TContainedAction;
-begin
-  CurAction := GetSelectedAction;
-  if CurAction = nil then Exit;
-  // Add OnUpdate for this action
-  CreateComponentEvent(CurAction,'OnUpdate');
 end;
 
 procedure TActionListEditor.lstCategoryClick(Sender: TObject);
@@ -950,15 +916,20 @@ begin
   lblCategory.Caption := oisCategory;
   lblName.Caption := oisAction;
   Splitter.MinSize := lblCategory.Left + lblCategory.Width;
-  ActNew.Hint := 'New Action';
-  ActNewStd.Hint := 'New Standard Action';
-  ActDelete.Hint := 'Delete Action';
-  ActMoveUp.Hint := 'Move Up';
-  ActMoveDown.Hint := 'Move Down';
-  SBShowMenuNewActions.Hint := ActNew.Hint;
-  mItemToolBarNewAction.Caption := ActNew.Hint;
-  mItemToolBarNewStdAction.Caption := ActNewStd.Hint;
-  mItemActListNewStdAction.Caption := ActNewStd.Hint;
+  ActNew.Hint := cActionListEditorNewAction;
+  ActNewStd.Hint := cActionListEditorNewStdAction;
+  ActDelete.Hint := cActionListEditorDeleteActionHint;
+  ActMoveUp.Hint := cActionListEditorMoveUpAction;
+  ActMoveDown.Hint := cActionListEditorMoveDownAction;
+  ActPanelDescr.Caption := cActionListEditorPanelDescrriptions;
+  ActPanelToolBar.Caption := cActionListEditorPanelToolBar;
+  SBShowMenuNewActions.Hint := cActionListEditorNewAction;
+  mItemToolBarNewAction.Caption := cActionListEditorNewAction;
+  mItemToolBarNewStdAction.Caption := cActionListEditorNewStdAction;
+  mItemActListNewStdAction.Caption := cActionListEditorNewStdAction;
+  mItemActListMoveDownAction.Caption := cActionListEditorMoveDownAction;
+  mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
+  mItemActListDelAction.Caption := cActionListEditorDeleteAction;
 
   cImg_Add[3] := aColor;
   bmp := TBitMap.Create;
@@ -993,13 +964,17 @@ destructor TActionListEditor.Destroy;
 begin
   if Assigned(GlobalDesignHook)
   then GlobalDesignHook.RemoveAllHandlersForObject(Self);
+  FComponentEditor.EditorWindowClose;
   inherited Destroy;
 end;
 
 procedure TActionListEditor.SetActionList(AActionList: TActionList);
 begin
-  FActionList := AActionList;
-  FillCategories;
+  if FActionList <> AActionList then begin
+    FActionList := AActionList;
+    FillCategories;
+    FillActionByCategory(-1);
+  end;
 end;
 
 procedure TActionListEditor.FillCategories;
@@ -1020,9 +995,9 @@ begin
     countCategory := lstCategory.Items.Count;
     lstCategory.Clear;
 
-    for i:=0 to FActionList.ActionCount-1 do begin
+    for i := 0 to FActionList.ActionCount-1 do begin
       sCategory := FActionList.Actions[i].Category;
-      if Trim(sCategory) = ''
+      if sCategory = ''
       then Continue;
       xIndex := lstCategory.Items.IndexOf(sCategory);
       if xIndex < 0
@@ -1034,10 +1009,15 @@ begin
     
     xIndex := lstCategory.Items.IndexOf(sOldCategory);
     
-    if lstCategory.Items.Count > 0
-    then lstCategory.Items.Insert(0, cActionListEditorAllCategory);
-    if lstCategory.Items.Count > 0
-    then lstCategory.Items.Insert(1, cActionListEditorUnknownCategory)
+    if lstCategory.Items.Count > 0 then begin
+      lstCategory.Items.Insert(0, cActionListEditorAllCategory);
+      if xIndex > 0 then Inc(xIndex);
+    end;
+    if lstCategory.Items.Count > 0 then
+      begin
+        lstCategory.Items.Insert(1, cActionListEditorUnknownCategory);
+        if xIndex > 0 then Inc(xIndex);
+      end
     else lstCategory.Items.Add(cActionListEditorUnknownCategory);
   finally
     lstCategory.Items.EndUpdate;
@@ -1106,25 +1086,44 @@ end;
 
 { TActionListComponentEditor }
 
+procedure TActionListComponentEditor.EditorWindowClose;
+begin
+  fWindowClosed := True;
+end;
+
 constructor TActionListComponentEditor.Create(AComponent: TComponent;
   ADesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent, ADesigner);
   FDesigner := ADesigner;
+  fWindowClosed := True;
 end;
 
 destructor TActionListComponentEditor.Destroy;
 begin
-  if Assigned(ActionListEditorForm)
-     and (ActionListEditorForm.FActionList = GetComponent)
-  then FreeThenNil(ActionListEditorForm);
+  if not fWindowClosed
+  then FreeThenNil(FActionListEditorForm);
   inherited Destroy;
 end;
 
 procedure TActionListComponentEditor.Edit;
+var
+  AActionList: TActionList;
 begin
-  DebugLn('TActionListComponentEditor.Edit ',GetComponent.Name);
-  ShowActionListEditor(GetComponent as TActionList, FDesigner);
+  AActionList := GetComponent as TActionList;
+  if AActionList = nil
+  then raise Exception.Create('TActionListComponentEditor.Edit AActionList=nil');
+  if fWindowClosed then begin
+    FActionListEditorForm := TActionListEditor.Create(Application);
+    fWindowClosed := False;
+  end;
+  with FActionListEditorForm do begin
+    lstActionName.ItemIndex := -1;
+    Designer := Self.FDesigner;
+    SetActionList(AActionList);
+    ComponentEditor := Self;
+    ShowOnTop;
+  end;
 end;
 
 function TActionListComponentEditor.GetVerbCount: Integer;
@@ -1318,26 +1317,27 @@ begin
   // TODO
   //  - default images for actions
 
+  RegisterActions(cActionListEditorUnknownCategory,[TAction],nil);
   // register edit actions
-  RegisterActions('Edit',[TEditCut,TEditCopy,TEditPaste,TEditSelectAll,
+  RegisterActions(cActionListEditorEditCategory,[TEditCut,TEditCopy,TEditPaste,TEditSelectAll,
    TEditUndo,TEditDelete],nil);
   // register help actions
-  RegisterActions('Help',[THelpAction,THelpContents,THelpTopicSearch,
+  RegisterActions(cActionListEditorHelpCategory,[THelpAction,THelpContents,THelpTopicSearch,
     THelpOnHelp,THelpContextAction],nil);
   // register dialog actions
-  RegisterActions('Dialog',[TFontEdit,TColorSelect],nil);
+  RegisterActions(cActionListEditorDialogCategory,[TColorSelect,TFontEdit],nil);
   // register file actions
-  RegisterActions('File',[TFileOpen,TFileOpenWith,TFileSaveAs,TFileExit],nil);
+  RegisterActions(cActionListEditorFileCategory,[TFileOpen,TFileOpenWith,TFileSaveAs,TFileExit],nil);
   // register database actions
-  RegisterActions('Database',[TDataSetFirst,TDataSetLast,TDataSetNext,
+  RegisterActions(cActionListEditorDatabaseCategory,[TDataSetFirst,TDataSetLast,TDataSetNext,
     TDataSetPrior,TDataSetRefresh,TDataSetCancel,TDataSetDelete,TDataSetEdit,
     TDataSetInsert,TDataSetPost],nil);
 end;
 
 initialization
   {$I actionseditor.lrs}
-  ActionListEditorForm := nil;
   NotifyActionListChange := nil;
+
   RegisteredActions := TRegisteredActionCategories.Create;
   RegisterActionsProc := @RegisterActions;
   UnRegisterActionsProc := @UnregisterActions;

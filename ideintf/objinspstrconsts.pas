@@ -81,11 +81,86 @@ resourcestring
   oisCreateDefaultEvent = 'Create default event';
 
   // Actions Editor
-  cActionListEditorUnknownCategory='(Unknown)';
+  cActionListEditorUnknownCategory = '(Unknown)';
+  cActionListEditorAllCategory = '(All)';
+  cActionListEditorEditCategory = 'Edit';
+  cActionListEditorHelpCategory = 'Help';
+  cActionListEditorDialogCategory = 'Dialog';
+  cActionListEditorFileCategory = 'File';
+  cActionListEditorDatabaseCategory = 'Database';
+  
   oisEditActionList = 'Edit action list...';
   oisActionListEditor = 'Action List Editor';
-  oisAdd = 'Add';
-  cActionListEditorAllCategory='(All)';
+  cActionListEditorNewAction = 'New Action';
+  cActionListEditorNewStdAction = 'New Standard Action';
+  cActionListEditorMoveDownAction = 'Move Down';
+  cActionListEditorMoveUpAction = 'Move Up';
+  cActionListEditorDeleteActionHint = 'Delete Action';
+  cActionListEditorDeleteAction = 'Delete';
+  cActionListEditorPanelDescrriptions = 'Panel Descriptions';
+  cActionListEditorPanelToolBar = 'Toolbar';
+
+  oiStdActEditCutHeadLine = 'Cu&t';
+  oiStdActEditCopyHeadLine = '&Copy';
+  oiStdActEditPasteHeadLine = '&Paste';
+  oiStdActEditSelectAllHeadLine = 'Select &All';
+  oiStdActEditUndoHeadLine = '&Undo';
+  oiStdActEditDeleteHeadLine = '&Delete';
+  oiStdActHelpContentsHeadLine = '&Contents';
+  oiStdActHelpTopicSearchHeadLine = '&Topic Search';
+  oiStdActHelpHelpHelpHeadLine = '&Help on Help';
+  oiStdActFileOpenHeadLine = '&Open...';
+  oiStdActFileSaveAsHeadLine = 'Save &As...';
+  oiStdActFileExitHeadLine = 'E&xit';
+  oiStdActColorSelect1HeadLine = 'Select &Color...';
+  oiStdActFontEditHeadLine = 'Select &Font...';
+
+  oiStdActDataSetFirstHeadLine = '&First';
+  oiStdActDataSetPriorHeadLine = '&Prior';
+  oiStdActDataSetNextHeadLine = '&Next';
+  oiStdActDataSetLastHeadLine = '&Last';
+  oiStdActDataSetInsertHeadLine = '&Insert';
+  oiStdActDataSetDeleteHeadLine = '&Delete';
+  oiStdActDataSetEditHeadLine = '&Edit';
+  oiStdActDataSetPostHeadLine = 'P&ost';
+  oiStdActDataSetCancelHeadLine = '&Cancel';
+  oiStdActDataSetRefreshHeadLine = '&Refresh';
+
+  oiStdActEditCutShortCut = 'Ctrl+X';
+  oiStdActEditCopyShortCut = 'Ctrl+C';
+  oiStdActEditPasteShortCut = 'Ctrl+V';
+  oiStdActEditSelectAllShortCut = 'Ctrl+A';
+  oiStdActEditUndoShortCut = 'Ctrl+Z';
+  oiStdActEditDeleteShortCut = 'Del';
+  oiStdActFileOpenShortCut = 'Ctrl+O';
+  oiStdActEditCutShortHint = 'Cut';
+  oiStdActEditCopyShortHint = 'Copy';
+  oiStdActEditPasteShortHint = 'Paste';
+  oiStdActEditSelectAllShortHint = 'Select All';
+  oiStdActEditUndoShortHint = 'Undo';
+  oiStdActEditDeleteShortHint = 'Delete';
+
+  oiStdActHelpContentsHint = 'Help Contents';
+  oiStdActHelpTopicSearchHint = 'Topic Search';
+  oiStdActHelpHelpHelpHint = 'Help on help';
+  oiStdActFileOpenHint = 'Open';
+  oiStdActFileSaveAsHint = 'Save As';
+  oiStdActFileExitHint = 'Exit';
+  oiStdActColorSelectHint = 'Color Select';
+  oiStdActFontEditHint = 'Font Select';
+  oiStdActDataSetFirstHint = 'First';
+  oiStdActDataSetPriorHint = 'Prior';
+  oiStdActDataSetNextHint = 'Next';
+  oiStdActDataSetLastHint = 'Last';
+  oiStdActDataSetInsertHint = 'Insert';
+  oiStdActDataSetDeleteHint = 'Delete';
+  oiStdActDataSetEditHint = 'Edit';
+  oiStdActDataSetPostHint = 'Post';
+  oiStdActDataSetCancel1Hint = 'Cancel';
+  oiStdActDataSetRefreshHint = 'Refresh';
+  
+  oisStdActionListEditor = 'Standard Action Classes';
+  oisStdActionListEditorClass = 'Available Action Classes:';
 
   // TFileNamePropertyEditor
   oisSelectAFile = 'Select a file';

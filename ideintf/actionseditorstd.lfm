@@ -6,7 +6,7 @@ object FormActStandard: TFormActStandard
   KeyPreview = True
   OnClose = FormActStandardClose
   OnKeyPress = FormActStandardKeyPress
-  PixelsPerInch = 112
+  PixelsPerInch = 120
   Position = poOwnerFormCenter
   HorzScrollBar.Page = 329
   VertScrollBar.Page = 438
@@ -19,14 +19,14 @@ object FormActStandard: TFormActStandard
     Caption = 'LabelHeadLine'
     Color = clNone
     Left = 12
-    Height = 12
+    Height = 17
     Top = 9
-    Width = 85
+    Width = 86
   end
   object tvActStdList: TTreeView
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpand = True
-    DefaultItemHeight = 14
+    DefaultItemHeight = 19
     HideSelection = False
     HotTrack = True
     ReadOnly = True
@@ -42,7 +42,7 @@ object FormActStandard: TFormActStandard
   end
   object btnCancel: TBitBtn
     Anchors = [akRight, akBottom]
-    Caption = 'Cancel'
+    Caption = 'Anuluj'
     Kind = bkCancel
     ModalResult = 2
     TabOrder = 2
