@@ -233,7 +233,7 @@ var
     UsedInNonSelection: Boolean;
   begin
     {$IFDEF CTDebug}
-    DebugLn('AddVariableToTree A IsInSelection=',dbgs(IsInSelection),' IsParameter=',dbgs(IsParameter));
+    DebugLn('AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),' IsInSelection=',dbgs(IsInSelection),' IsParameter=',dbgs(IsParameter));
     {$ENDIF}
     UsedInNonSelection:=(not IsInSelection) or IsParameter;
     if VarTree=nil then
@@ -242,7 +242,7 @@ var
     if AVLNode<>nil then begin
       ProcVar:=TExtractedProcVariable(AVLNode.Data);
       ProcVar.UsedInSelection:=ProcVar.UsedInSelection or IsInSelection;
-      ProcVar.UsedInNonSelection:=ProcVar.UsedInSelection or UsedInNonSelection;
+      ProcVar.UsedInNonSelection:=ProcVar.UsedInNonSelection or UsedInNonSelection;
     end else begin
       NewProcVar:=TExtractedProcVariable.Create;
       NewProcVar.Node:=VarNode;
@@ -280,11 +280,11 @@ var
       // ToDo: Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
       Params.SetIdentifier(Self,@Src[VarStartPos],@CheckSrcIdentifier);
       {$IFDEF CTDebug}
-      DebugLn('AddVariableAtCursor A ',GetIdentifier(Params.Identifier));
+      DebugLn('AddVariableAtCursor Searching ',GetIdentifier(Params.Identifier));
       {$ENDIF}
       if not FindDeclarationOfIdentAtCursor(Params) then begin
         {$IFDEF CTDebug}
-        DebugLn('AddVariableAtCursor B found');
+        DebugLn('AddVariableAtCursor B not found');
         {$ENDIF}
         exit;
       end;
@@ -344,7 +344,7 @@ var
     ChildNode: TCodeTreeNode;
   begin
     {$IFDEF CTDebug}
-    DebugLn('TExtractProcTool.ScanNodesForVariables A ',StartNode.DescAsString);
+    DebugLn('TExtractProcTool.ScanNodesForVariables A Node=',StartNode.DescAsString);
     {$ENDIF}
     Result:=false;
     ChildNode:=StartNode.FirstChild;
@@ -679,11 +679,11 @@ var
           VariableName:=GetIdentifier(@Src[ProcVar.Node.StartPos]);
           VarTypeNode:=FindTypeNodeOfDefinition(ProcVar.Node);
           {$IFDEF CTDebug}
-          DebugLn('AAA1 VarTypeNode=',copy(Src,VarTypeNode.StartPos,VarTypeNode.EndPos-VarTypeNode.StartPos));
+          DebugLn('TExtractProcTool.CreateProcVarSection VarTypeNode=',copy(Src,VarTypeNode.StartPos,VarTypeNode.EndPos-VarTypeNode.StartPos));
           {$ENDIF}
           TypeDefEndPos:=FindLineEndOrCodeAfterPosition(VarTypeNode.EndPos);
           {$IFDEF CTDebug}
-          DebugLn('AAA2 PlusComment=',copy(Src,VarTypeNode.StartPos,TypeDefEndPos-VarTypeNode.StartPos));
+          DebugLn('TExtractProcTool.CreateProcVarSection PlusComment=',copy(Src,VarTypeNode.StartPos,TypeDefEndPos-VarTypeNode.StartPos));
           {$ENDIF}
           VariableTypeCode:=copy(Src,VarTypeNode.StartPos,
                                  TypeDefEndPos-VarTypeNode.StartPos);
