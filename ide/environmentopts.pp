@@ -176,6 +176,9 @@ type
     FShowHintsForComponentPalette: boolean;
     FShowHintsForMainSpeedButtons: boolean;
     
+    // messages
+    fMsgViewDblClickJumps: boolean;
+
     // compiler + debugger + lazarus files
     FLazarusDirectory: string;
     FLazarusDirsHistory: TStringList;
@@ -370,6 +373,10 @@ type
        
     // language
     property Language: TLazarusLanguage read fLanguage write fLanguage;
+    
+    // messages view
+    property MsgViewDblClickJumps: boolean read fMsgViewDblClickJumps
+                                           write fMsgViewDblClickJumps;
   end;
 
   //----------------------------------------------------------------------------
@@ -407,6 +414,9 @@ type
     // hints
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
+    
+    // messages view
+    MsgViewDblClickJumpsCheckBox: TCheckBox;
     
     // window layout
     WindowPositionsGroupBox: TGroupBox;
@@ -784,6 +794,9 @@ begin
   // hints
   FShowHintsForComponentPalette:=true;
   FShowHintsForMainSpeedButtons:=true;
+  
+  // messages view
+  fMsgViewDblClickJumps:=true;
 
   // files
   LazarusDirectory:=IDEProcs.ProgramDirectory;
@@ -1059,15 +1072,6 @@ begin
          'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
       LoadRecentList(XMLConfig,FDebuggerFileHistory,
          'EnvironmentOptions/DebuggerFilename/History/');
-(*
-      // Don't add them here, it's done in the dialog
-      if FDebuggerFileHistory.Count=0 then begin
-        FDebuggerFileHistory.Add(DebuggerName[dtNone]);
-        FDebuggerFileHistory.Add('/usr/bin/gdb');
-        FDebuggerFileHistory.Add('/opt/fpc/gdb');
-        FDebuggerFileHistory.Add('/usr/bin/ssh user@hostname gdb');
-      end;
-*)
     end;
 
     // hints
@@ -1075,6 +1079,10 @@ begin
       'EnvironmentOptions/ShowHintsForComponentPalette/Value',true);
     FShowHintsForMainSpeedButtons:=XMLConfig.GetValue(
       'EnvironmentOptions/ShowHintsForMainSpeedButtons/Value',true);
+      
+    // messages view
+    fMsgViewDblClickJumps:=XMLConfig.GetValue(
+      'EnvironmentOptions/MsgViewDblClickJumps/Value',false);
 
     // recent files and directories
     FMaxRecentOpenFiles:=XMLConfig.GetValue(
@@ -1102,7 +1110,7 @@ begin
     fAmbigiousFileAction:=AmbigiousFileActionNameToType(XMLConfig.GetValue(
       'EnvironmentOptions/AmbigiousFileAction/Value',
         AmbigiousFileActionNames[fAmbigiousFileAction]));
-
+        
     // object inspector
     FObjectInspectorOptions.Load;
     FObjectInspectorOptions.SaveBounds:=false;
@@ -1261,6 +1269,10 @@ begin
       FShowHintsForComponentPalette,true);
     XMLConfig.SetDeleteValue('EnvironmentOptions/ShowHintsForMainSpeedButtons/Value',
       FShowHintsForMainSpeedButtons,true);
+
+    // messages view
+    XMLConfig.SetDeleteValue('EnvironmentOptions/MsgViewDblClickJumps/Value',
+      fMsgViewDblClickJumps,false);
 
     // recent files and directories
     XMLConfig.SetValue(
@@ -1676,6 +1688,14 @@ begin
     Name:='ShowHintsForMainSpeedButtonsCheckBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgSpBHints;
+  end;
+  
+  // messages view
+  MsgViewDblClickJumpsCheckBox:=TCheckBox.Create(Self);
+  with MsgViewDblClickJumpsCheckBox do begin
+    Name:='MsgViewDblClickJumpsCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
   end;
 end;
 
@@ -2634,6 +2654,9 @@ end;
 
 procedure TEnvironmentOptionsDialog.ResizeDesktopPage;
 var MaxX:integer;
+  x: Integer;
+  y: Integer;
+  w: Integer;
 begin
   MaxX:=ClientWidth-5;
 
@@ -2705,19 +2728,23 @@ begin
   end;
 
   // hints
+  x:=DesktopFilesGroupBox.Left;
+  y:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+20;
   with ShowHintsForComponentPaletteCheckBox do begin
-    Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+20;
-    Width:=Max(10,Parent.ClientWidth-Left);
-    Height:=20;
+    w:=Max(10,Parent.ClientWidth-x);
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
   end;
 
   with ShowHintsForMainSpeedButtonsCheckBox do begin
-    Left:=ShowHintsForComponentPaletteCheckBox.Left;
-    Top:=ShowHintsForComponentPaletteCheckBox.Top
-         +ShowHintsForComponentPaletteCheckBox.Height+5;
-    Width:=Max(10,Parent.ClientWidth-Left);
-    Height:=20;
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  // messages view
+  with MsgViewDblClickJumpsCheckBox do begin
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
   end;
 end;
 
@@ -3461,6 +3488,9 @@ begin
       ShowHintsForComponentPalette;
     ShowHintsForMainSpeedButtonsCheckBox.Checked:=
       ShowHintsForMainSpeedButtons;
+      
+    // messages view
+    MsgViewDblClickJumpsCheckBox.Checked:=MsgViewDblClickJumps;
 
     // form editor
     ShowGridCheckBox.Checked:=ShowGrid;
@@ -3585,6 +3615,9 @@ begin
     // hints
     ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
+    
+    // messages view
+    MsgViewDblClickJumps:=MsgViewDblClickJumpsCheckBox.Checked;
 
     // form editor
     ShowGrid:=ShowGridCheckBox.Checked;

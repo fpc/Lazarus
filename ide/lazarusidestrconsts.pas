@@ -566,6 +566,8 @@ resourcestring
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
+  lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick = 'Double click on '
+    +'messages jumps (otherwise: single click)';
   dlgWinPos = 'Window Positions';
   dlgMainMenu = 'Main Menu';
   dlgSrcEdit = 'Source Editor';

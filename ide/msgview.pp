@@ -44,13 +44,14 @@ type
 
   TMessagesView = class(TForm)
     MessageView : TListBox;
+    procedure MessageViewDblClicked(Sender: TObject);
+    Procedure MessageViewClicked(sender : TObject);
   private
     FDirectories: TStringList;
     FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
     function GetDirectory: string;
     Function GetMessage: String;
-    Procedure MessageViewClicked(sender : TObject);
     procedure SetLastLineIsProgress(const AValue: boolean);
   protected
     Function GetSelectedLineIndex: Integer;
@@ -180,6 +181,8 @@ Begin
   FLastLineIsProgress:=false;
   if not Assigned(MessagesView.MessageView.OnClick) then
     MessageView.OnClick := @MessageViewClicked;
+  if not Assigned(MessagesView.MessageView.OnDblClick) then
+    MessageView.OnDblClick :=@MessageViewDblClicked;
 end;
 
 procedure TMessagesView.GetMessageAt(Index: integer;
@@ -208,6 +211,24 @@ Begin
     Result := MessageView.Items.Strings[GetSelectedLineIndex];
 end;
 
+procedure TMessagesView.MessageViewDblClicked(Sender: TObject);
+begin
+  if not EnvironmentOptions.MsgViewDblClickJumps then exit;
+  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then Begin
+    If Assigned(OnSelectionChanged) then
+      OnSelectionChanged(self);
+  end;
+end;
+
+Procedure TMessagesView.MessageViewClicked(sender : TObject);
+begin
+  if EnvironmentOptions.MsgViewDblClickJumps then exit;
+  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then Begin
+    If Assigned(OnSelectionChanged) then
+      OnSelectionChanged(self);
+  end;
+end;
+
 function TMessagesView.GetDirectory: string;
 var
   i: Integer;
@@ -232,14 +253,6 @@ Begin
           Break;
         end;
     end;
-  end;
-end;
-
-Procedure TMessagesView.MessageViewClicked(sender : TObject);
-begin
-  if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then Begin
-    If Assigned(OnSelectionChanged) then
-      OnSelectionChanged(self);
   end;
 end;
 
