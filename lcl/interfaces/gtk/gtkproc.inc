@@ -120,9 +120,11 @@ begin
     begin
       hWnd := SourceDC^.hWnd;
       Drawable := SourceDC^.Drawable;
-      if (SourceDC^.GC = nil) or (Drawable = nil) then
-        GC := nil
-      else begin
+      if GC<>nil then begin
+        gdk_gc_unref(GC);
+        GC:=nil;
+      end;
+      if (SourceDC^.GC <> nil) and (Drawable <> nil) then begin
         gdk_gc_get_values(SourceDC^.GC, @GCValues);
         //GC := gdk_gc_new(Drawable);
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
@@ -2427,6 +2429,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.69  2002/08/22 07:30:16  lazarus
+  MG: freeing more unused GCs
+
   Revision 1.68  2002/08/21 13:35:25  lazarus
   MG: accelerations for synedit
 
