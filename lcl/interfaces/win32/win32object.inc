@@ -330,10 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETFORMICON:
-      Begin
-        SetClassLong(Handle, GCL_HIcon, integer(Data));
-      End;
       LM_GETITEMS :
       Begin
         If (Sender as TControl).fCompStyle = csCListBox
@@ -2239,6 +2235,9 @@ End;
 
 {
   $Log$
+  Revision 1.261  2004/09/15 07:58:00  micha
+  convert LM_SETFORMICON message to interface method
+
   Revision 1.260  2004/09/14 21:30:37  vincents
   replaced writeln by DebugLn
 

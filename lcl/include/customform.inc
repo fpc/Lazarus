@@ -195,7 +195,7 @@ End;
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
   if HandleAllocated then
-    CNSendMessage(LM_SETFORMICON,Self,Pointer(GetIconHandle));
+    TWSCustomForm(WidgetSetClass).SetIcon(Self, GetIconHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1489,7 +1489,7 @@ begin
   inherited CreateWnd;
   
   if Parent=nil then begin
-    CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
     DC:=GetDC(Handle);
     FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
     ReleaseDC(Handle,DC);
@@ -1808,6 +1808,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.157  2004/09/15 07:57:59  micha
+  convert LM_SETFORMICON message to interface method
+
   Revision 1.156  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

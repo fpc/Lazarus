@@ -30,7 +30,7 @@ uses
   {$IFDEF GTK2} Gtk2, Glib2, gdk2, {$ELSE} Gtk, gdk, Glib, {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase, graphics,
   Dialogs, WSDialogs, WSLCLClasses, gtkint, gtkproc, gtkwscontrols,
-  Forms, WSForms, Math;
+  Forms, WSForms, Math, lcltype, gtkdef;
 
 type
 
@@ -74,6 +74,7 @@ type
   public
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
 
@@ -120,6 +121,28 @@ begin
   inherited SetFormBorderStyle(AForm, AFormBorderStyle);
   // the form border style can only be set at creation time.
   // This is Delphi compatible, so no Recreatewnd needed.
+end;
+
+procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+var
+  FormIconGdiObject: PGdiObject;
+  AWindow     : PGdkWindow;
+begin
+  if AForm.Parent = nil then
+  begin
+    if AForm.HandleAllocated and (AIcon <> 0) then begin
+      FormIconGdiObject:=PGdiObject(AIcon);
+      //DebugLn('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
+      if (FormIconGdiObject <> nil) then begin
+        AWindow:=GetControlWindow(PGtkWidget(AForm.Handle));
+        if AWindow<>nil then begin
+          gdk_window_set_icon(AWindow, nil,
+            FormIconGdiObject^.GDIBitmapObject,
+            FormIconGdiObject^.GDIBitmapMaskObject);
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);

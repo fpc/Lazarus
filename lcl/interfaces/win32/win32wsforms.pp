@@ -77,6 +77,7 @@ type
   private
   protected
   public
+    class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
 
@@ -140,6 +141,11 @@ begin
 end;
 
 { TWin32WSCustomForm }
+
+procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+begin
+  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, AIcon);
+end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var

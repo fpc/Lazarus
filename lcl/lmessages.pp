@@ -62,7 +62,6 @@ const
   LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
 
   LM_RECREATEWND    = LM_COMUSER+57;
-  LM_SETFORMICON    = LM_COMUSER+58;
 
   LM_MINIMIZE       = LM_COMUSER+59;
 
@@ -831,7 +830,6 @@ begin
   LM_GETVALUE       :Result:='LM_GETVALUE';
 
   LM_RECREATEWND    :Result:='LM_RECREATEWND';
-  LM_SETFORMICON    :Result:='LM_SETFORMICON';
 
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
@@ -961,6 +959,9 @@ end.
 
 {
   $Log$
+  Revision 1.100  2004/09/15 07:57:59  micha
+  convert LM_SETFORMICON message to interface method
+
   Revision 1.99  2004/09/14 15:48:28  micha
   convert LM_INVALIDATE message to interface method
 

@@ -735,7 +735,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.IconChanged(Sender: TObject);
 begin
-  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+  DebugLn('TApplication.IconChanged - TODO: convert this message...no implementation in gtk or win32');
+  // CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
   // NotifyForms(CM_ICONCHANGED);
 end;
 
@@ -1339,6 +1340,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2004/09/15 07:57:59  micha
+  convert LM_SETFORMICON message to interface method
+
   Revision 1.90  2004/09/11 13:38:37  micha
   convert LM_BRINGTOFRONT message to interface method
   NOTE: was only used for tapplication, not from other controls

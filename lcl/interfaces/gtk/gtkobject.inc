@@ -3064,9 +3064,7 @@ var
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
-  FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   Geometry    : TGdkGeometry;
-  AWindow     : PGdkWindow;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -3117,25 +3115,6 @@ begin
           MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
             TLMNotebookEvent(Data^).Page);
         end;
-
-      LM_SETFORMICON :
-      begin
-        if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then
-        begin
-          if (Handle<>0) and (Data<>nil) then begin
-            FormIconGdiObject:=Data;
-            //DebugLn('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
-            if (FormIconGdiObject<>nil) then begin
-              AWindow:=GetControlWindow(PGtkWidget(Handle));
-              if AWindow<>nil then begin
-                gdk_window_set_icon(AWindow, nil,
-                  FormIconGdiObject^.GDIBitmapObject,
-                  FormIconGdiObject^.GDIBitmapMaskObject);
-              end;
-            end;
-          end;
-        end;
-      end;
 
       LM_SCREENINIT :
       begin
@@ -8211,6 +8190,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.568  2004/09/15 07:57:59  micha
+  convert LM_SETFORMICON message to interface method
+
   Revision 1.567  2004/09/14 15:48:28  micha
   convert LM_INVALIDATE message to interface method
 
