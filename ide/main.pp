@@ -2300,7 +2300,7 @@ writeln('TMainIDE.DoNewProject 1');
   If Project<>nil then begin
     if SomethingOfProjectIsModified then begin
       if Application.MessageBox('Save changes to project?','Project changed'
-          ,MB_OKCANCEL)=mrOK then begin
+          ,MB_YESNO)=mrYES then begin
         if DoSaveProject(false)=mrAbort then begin
           Result:=mrAbort;
           exit;
@@ -3387,6 +3387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2001/04/04 13:58:50  lazarus
+  Added some changes to compreg.pp
+
   Revision 1.89  2001/04/04 13:55:34  lazarus
   MG: finished TComponentPropertyEditor, added OnModified to oi, cfe and designer
 

@@ -85,6 +85,8 @@ const
 procedure RegisterComponents(const Page,UnitName:ShortString;
   ComponentClasses: array of TComponentClass);
 
+var
+  RegCompList:TRegisteredComponentList;
 
 implementation
 
@@ -235,6 +237,14 @@ begin
   end;
   Result:=nil;
 end;
+
+initialization
+  RegCompList := TRegisteredComponentList.Create;
+
+finalization
+  RegCompList.Destroy;
+
+
 
 
 

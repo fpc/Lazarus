@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector ,
-  Forms, IDEComp, JITForms;
+  Forms, IDEComp, JITForms,Compreg;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 

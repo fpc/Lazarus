@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,
-  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs;
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, db;
 
 
 type
@@ -109,7 +109,7 @@ type
 
 var
   IDECompList : TIDECompList;
-  RegCompList:TRegisteredComponentList;
+//shane  RegCompList:TRegisteredComponentList;
 
 implementation
 
@@ -296,16 +296,21 @@ begin
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView
-          ,TProgressBar,TToolBar,TToolbutton,TTrackbar]);
+          ,TProgressBar,TToolBar,TTrackbar]);
   RegisterComponents('System','ExtCtrls',[TTimer]);
   RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog
           ,TColorDialog,TFontDialog]);
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
+  RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
+
+//  RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,TIBQuery,TIBDatabase]);
+
   // unselectable components
   // components that are streamed but not selectable in the IDE
   RegisterComponents('','ExtCtrls',[TPage]);
+  RegisterComponents('','ComCtrls',[TToolbutton]);
 
   RegisterComponentsProc:=nil;
 
@@ -319,12 +324,12 @@ initialization
 
 {$I designer/lazarus_control_images.lrs}
 
-  RegCompList := TRegisteredComponentList.Create;
+//shane  RegCompList := TRegisteredComponentList.Create;
   RegisterStandardComponents(RegCompList);
   IdeCompList := TIDECompList.Create;
 
 finalization
   IdeCompList.Destroy;
-  RegCompList.Destroy;
+//shane  RegCompList.Destroy;
 
 end.
