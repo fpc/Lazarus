@@ -1,10 +1,10 @@
 {  $Id$  }
 {
  /***************************************************************************
-                        compiler.pp  -  Main application unit
+                        compiler.pp  -  Lazarus IDE unit
                         -------------------------------------
                    TCompiler is responsible for configuration and running
-                   the PPC386 compiler.
+                   the Free Pascal Compiler.
 
 
                    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -21,7 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 }
-unit compiler;
+unit Compiler;
 
 {$mode objfpc}
 {$H+}
@@ -30,57 +30,30 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs;
+  IDEProcs, OutputFilter;
 
 type
-  TOnOutputString = procedure (const Value: String) of Object;
-  TErrorType = (etNone, etHint, etWarning, etError, etFatal);
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
       of object;
   
   TCompiler = class(TObject)
   private
-    FOnOutputString : TOnOutputString;
-    FOutputList : TStringList;
     FOnCmdLineCreate : TOnCmdLineCreate;
-    function IsHintForUnusedProjectUnit(const OutputLine, 
-       ProgramSrcFile: string): boolean;
+    FOutputFilter: TOutputFilter;
   public
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject; BuildAll: boolean;
-       const DefaultFilename: string): TModalResult;
-    function GetSourcePosition(const Line: string; var Filename:string;
-       var CaretXY: TPoint; var MsgType: TErrorType): boolean;
-    property OnOutputString : TOnOutputString
-       read FOnOutputString write FOnOutputString;
-    property OutputList : TStringList read FOutputList;
+      const DefaultFilename: string): TModalResult;
     property OnCommandLineCreate: TOnCmdLineCreate
-       read FOnCmdLineCreate write FOnCmdLineCreate;
+      read FOnCmdLineCreate write FOnCmdLineCreate;
+    property OutputFilter: TOutputFilter
+      read FOutputFilter write FOutputFilter;
   end;
-
-const
-  ErrorTypeNames : array[TErrorType] of string = (
-      'None','Hint','Warning','Error','Fatal'
-    );
-
-var
-  Compiler1 : TCompiler;
-
-function ErrorTypeNameToType(const Name:string): TErrorType;
 
 
 implementation
 
-
-function ErrorTypeNameToType(const Name:string): TErrorType;
-var LowName: string;
-begin
-  LowName:=lowercase(Name);
-  for Result:=Low(TErrorType) to High(TErrorType) do
-    if lowercase(ErrorTypeNames[Result])=LowName then exit;
-  Result:=etNone;
-end;
 
 { TCompiler }
 
@@ -90,7 +63,6 @@ end;
 constructor TCompiler.Create;
 begin
   inherited Create;
-  FOutputList := TStringList.Create;
 end;
 
 {------------------------------------------------------------------------------}
@@ -98,7 +70,6 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCompiler.Destroy;
 begin
-  FOutputList.Free;
   inherited Destroy;
 end;
 
@@ -111,56 +82,14 @@ const
   BufSize = 1024;
 var
   CmdLine : String;
-  I, Count, LineStart : longint;
-  OutputLine, Buf : String;
-  WriteMessage, ABort : Boolean;
+  Abort : Boolean;
   OldCurDir, ProjectDir, ProjectFilename: string;
   TheProcess : TProcess;
-
-  procedure ProcessOutputLine;
-  begin
-writeln('[TCompiler.Compile] Output="',OutputLine,'"');
-    FOutputList.Add(OutputLine);
-
-    //determine what type of message it is
-    if (pos(') Hint:',OutputLine) <> 0) then begin
-      WriteMessage := AProject.CompilerOptions.ShowHints
-                   or AProject.CompilerOptions.ShowAll;
-      if (not AProject.CompilerOptions.ShowAll) 
-      and (not AProject.CompilerOptions.ShowHintsForUnusedProjectUnits)
-      and (IsHintForUnusedProjectUnit(OutputLine,ProjectFilename)) then
-        WriteMessage:=false;
-    end else if (pos(') Note:',OutputLine) <> 0) then
-      WriteMessage := AProject.CompilerOptions.ShowNotes
-                   or AProject.CompilerOptions.ShowAll
-    else if (pos(') Error:',OutputLine) <> 0) then begin
-      WriteMessage := AProject.CompilerOptions.ShowErrors
-                   or AProject.CompilerOptions.ShowAll;
-      Result:=mrCancel;
-    end else if (pos(') Warning:',OutputLine) <> 0) then
-      WriteMessage := AProject.CompilerOptions.ShowWarn
-                   or AProject.CompilerOptions.ShowAll
-    else if (copy(OutputLine,1,5)='Panic') or (pos(') Fatal:',OutputLine) <> 0) or (pos('Fatal: ',OutputLine) <> 0)
-    then begin
-      Result:=mrCancel;
-      WriteMessage := true;
-    end else if OutputLine='Closing script ppas.sh' then begin
-      WriteMessage:=true;
-    end;
-    if (WriteMessage) and Assigned(OnOutputString) then
-      OnOutputString(OutputLine);
-    WriteMessage := false;
-
-    Application.ProcessMessages;
-    OutputLine:='';
-  end;
-
-// TCompiler.Compile
 begin
   Result:=mrCancel;
   if AProject.MainUnit<0 then exit;
   OldCurDir:=GetCurrentDir;
-  if Aproject.IsVirtual then
+  if AProject.IsVirtual then
     ProjectFilename:=DefaultFilename
   else
     ProjectFilename:=AProject.Units[AProject.MainUnit].Filename;
@@ -168,8 +97,6 @@ begin
   ProjectDir:=ExtractFilePath(ProjectFilename);
   if not SetCurrentDir(ProjectDir) then exit;
   try
-    FOutputList.Clear;
-    SetLength(Buf,BufSize);
     CmdLine := AProject.CompilerOptions.CompilerPath;
     
     if Assigned(FOnCmdLineCreate) then begin
@@ -184,16 +111,12 @@ begin
       CheckIfFileIsExecutable(CmdLine);
     except
       on E: Exception do begin
-        OutputLine:='Error: invalid compiler: '+E.Message;
-        writeln(OutputLine);
-        if Assigned(OnOutputString) then
-          OnOutputString(OutputLine);
+        if OutputFilter<>nil then
+          OutputFilter.ReadLine('Error: invalid compiler: '+E.Message,true);
         if CmdLine='' then begin
-          OutputLine:='Hint: you can set the compiler path in '
-             +'Environment->General Options->Files->Compiler Path';
-          writeln(OutputLine);
-          if Assigned(OnOutputString) then
-            OnOutputString(OutputLine);
+          if OutputFilter<>nil then
+            OutputFilter.ReadLine('Hint: you can set the compiler path in '
+             +'Environment->General Options->Files->Compiler Path',true);
         end;
         exit;
       end;
@@ -214,7 +137,6 @@ begin
     Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
 
     try
-      
       TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
@@ -222,41 +144,28 @@ begin
       Result:=mrOk;
       try
         TheProcess.CurrentDirectory:=ProjectDir;
-        TheProcess.Execute;
-        Application.ProcessMessages;
-
-        OutputLine:='';
-        repeat
-          if TheProcess.Output<>nil then
-            Count:=TheProcess.Output.Read(Buf[1],length(Buf))
-          else
-            Count:=0;         
-          WriteMessage := False;
-          LineStart:=1;
-          i:=1;
-          while i<=Count do begin
-            if Buf[i] in [#10,#13] then begin
-              OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
-              ProcessOutputLine;
-              if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
-              then
-                inc(i);
-              LineStart:=i+1;
-            end;
-            inc(i);
-          end;
-          OutputLine:=copy(Buf,LineStart,Count-LineStart+1);
-        until Count=0;
-        TheProcess.WaitOnExit;
+        
+        if OutputFilter<>nil then begin
+          OutputFilter.PrgSourceFilename:=ProjectFilename;
+          OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
+          OutputFilter.Project:=AProject;
+          OutputFilter.Execute(TheProcess);
+        end else begin
+          TheProcess.Execute;
+        end;
       finally
+        TheProcess.WaitOnExit;
         TheProcess.Free;
       end;
     except
+      on e: EOutputFilterError do begin
+        Result:=mrCancel;
+        exit;
+      end;
       on e: Exception do begin
         writeln('[TCompiler.Compile] exception "',E.Message,'"');
-        FOutputList.Add(E.Message);
-        if Assigned(OnOutputString) then
-          OnOutputString(E.Message);
+        if OutputFilter<>nil then
+          OutputFilter.ReadLine(E.Message,true);
         Result:=mrCancel;
         exit;
       end;
@@ -267,95 +176,14 @@ begin
   writeln('[TCompiler.Compile] end');
 end;
 
-{--------------------------------------------------------------------------
-            TCompiler IsHintForUnusedProjectUnit
----------------------------------------------------------------------------}
-function TCompiler.IsHintForUnusedProjectUnit(const OutputLine, 
-  ProgramSrcFile: string): boolean;
-{ recognizes hints of the form
-
-  mainprogram.pp(5,35) Hint: Unit UNUSEDUNIT not used in mainprogram
-}
-var Filename: string;
-begin
-  Result:=false;
-  Filename:=ExtractFilename(ProgramSrcFile);
-  if CompareFilenames(Filename,copy(OutputLine,1,length(Filename)))<>0 then
-    exit;
-  if (pos(') Hint: Unit ',OutputLine)<>0)
-  and (pos(' not used in ',OutputLine)<>0) then
-    Result:=true;
-end;
-
-{--------------------------------------------------------------------------
-            TCompiler GetSourcePosition
----------------------------------------------------------------------------}
-function TCompiler.GetSourcePosition(const Line: string; var Filename:string;
-  var CaretXY: TPoint; var MsgType: TErrorType): boolean;
-{ This assumes the line has one of the following formats
-<filename>(123,45) <ErrorType>: <some text>
-<filename>(456) <ErrorType>: <some text> in line (123)
-Fatal: <some text>
-}
-var StartPos, EndPos: integer;
-begin
-  Result:=false;
-  if copy(Line,1,7)='Fatal: ' then begin
-    Result:=true;
-    Filename:='';
-    MsgType:=etFatal;
-    exit;
-  end;
-  StartPos:=1;
-  // find filename
-  EndPos:=StartPos;
-  while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
-  if EndPos>length(Line) then exit;
-  FileName:=copy(Line,StartPos,EndPos-StartPos);
-  // read linenumber
-  StartPos:=EndPos+1;
-  EndPos:=StartPos;
-  while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-  if EndPos>length(Line) then exit;
-  CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-  if Line[EndPos]=',' then begin
-    // format: <filename>(123,45) <ErrorType>: <some text>
-    // read column
-    StartPos:=EndPos+1;
-    EndPos:=StartPos;
-    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    CaretXY.X:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-    // read error type
-    StartPos:=EndPos+2;
-    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
-    Result:=true;
-  end else if Line[EndPos]=')' then begin
-    // <filename>(456) <ErrorType>: <some text> in line (123)
-    // read error type
-    StartPos:=EndPos+2;
-    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
-    // read second linenumber (more useful)
-    while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    StartPos:=EndPos+1;
-    EndPos:=StartPos;
-    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-    if EndPos>length(Line) then exit;
-    CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-    Result:=true;
-  end;
-end;
-
 
 end.
 
 {
   $Log$
+  Revision 1.28  2002/01/23 20:07:20  lazarus
+  MG: added outputfilter
+
   Revision 1.27  2002/01/15 08:49:56  lazarus
   MG: fixed zombie compilers
 

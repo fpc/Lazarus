@@ -39,7 +39,7 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGWatch, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg,ColumnDlg;
+  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter;
 
 const
   Version_String = '0.8.2 alpha';
@@ -300,6 +300,8 @@ type
     FMessagesViewBoundsRectValid: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
     TheDebugger: TDebugger;
+    TheCompiler: TCompiler;
+    TheOutputFilter: TOutputFilter;
 
     Function CreateSeperator : TMenuItem;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
@@ -618,10 +620,14 @@ begin
   ComponentNotebook.OnPageChanged := @ControlClick;
   ComponentNotebook.Show;
 
+  // output filter
+  TheOutputFilter:=TOutputFilter.Create;
+
   // compiler interface
-  Compiler1 := TCompiler.Create;
-  with Compiler1 do begin
+  TheCompiler := TCompiler.Create;
+  with TheCompiler do begin
     OnCommandLineCreate:=@OnCmdLineCreate;
+    OutputFilter:=TheOutputFilter;
   end;
 
   HintTimer1 := TTimer.Create(self);
@@ -797,7 +803,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
   FormEditor1.Free;
   FormEditor1:=nil;
   PropertyEditorHook1.Free;
-  Compiler1.Free;
+  TheCompiler.Free;
+  TheOutputFilter.Free;
   MacroList.Free;
   EditorOpts.Free;
   EditorOpts:=nil;
@@ -3927,8 +3934,8 @@ begin
     MessagesView.Clear;
     DoArrangeSourceEditorAndMessageView;
    
-    Compiler1.OnOutputString:=@MessagesView.Add;
-    Result:=Compiler1.Compile(Project,BuildAll,DefaultFilename);
+    TheOutputFilter.OnOutputString:=@MessagesView.Add;
+    Result:=TheCompiler.Compile(Project,BuildAll,DefaultFilename);
     if Result=mrOk then begin
       MessagesView.MessageView.Items.Add(
         'Project "'+Project.Title+'" successfully built. :)');
@@ -4667,16 +4674,18 @@ begin
     // search relevant message (first error, first fatal)
     Index:=0;
     while (Index<MaxMessages) do begin
-      if (Compiler1.GetSourcePosition(MessagesView.MessageView.Items[Index],
-        Filename,CaretXY,MsgType)) then begin
-        if MsgType in [etError,etFatal] then break;
+      if (TheOutputFilter.GetSourcePosition(
+        MessagesView.MessageView.Items[Index],
+        Filename,CaretXY,MsgType)) then
+      begin
+        if MsgType in [etError,etFatal,etPanic] then break;
       end;
       inc(Index);
     end;
     if Index>=MaxMessages then exit;
     MessagesView.MessageView.ItemIndex:=Index;
   end;
-  if Compiler1.GetSourcePosition(MessagesView.MessageView.Items[Index],
+  if TheOutputFilter.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
     SearchedFilename:=SearchFile(Filename);
     if SearchedFilename<>'' then begin
@@ -5613,6 +5622,9 @@ end.
 =======
 
   $Log$
+  Revision 1.204  2002/01/23 20:07:20  lazarus
+  MG: added outputfilter
+
   Revision 1.203  2002/01/21 14:17:44  lazarus
   MG: added find-block-start and renamed find-block-other-end
 
@@ -5656,6 +5668,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.204  2002/01/23 20:07:20  lazarus
+  MG: added outputfilter
+
   Revision 1.203  2002/01/21 14:17:44  lazarus
   MG: added find-block-start and renamed find-block-other-end
 

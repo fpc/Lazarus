@@ -135,6 +135,7 @@ ide/macropromptdlg.pas svneol=native#text/pascal
 ide/main.pp svneol=native#text/pascal
 ide/msgview.pp svneol=native#text/pascal
 ide/newprojectdlg.pp svneol=native#text/pascal
+ide/outputfilter.pas svneol=native#text/pascal
 ide/project.pp svneol=native#text/pascal
 ide/projectdefs.pas svneol=native#text/pascal
 ide/projectopts.lrs svneol=native#text/pascal

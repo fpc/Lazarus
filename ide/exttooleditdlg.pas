@@ -47,12 +47,14 @@ type
   }
   TExternalToolOptions = class
   private
-    fTitle: string;
-    fFilename: string;
     fCmdLineParams: string;
-    fWorkingDirectory: string;
+    fFilename: string;
     fKey: word;
+    fScanOutputForFPCMessages: boolean;
+    fScanOutputForMakeMessages: boolean;
     fShift: TShiftState;
+    fTitle: string;
+    fWorkingDirectory: string;
   public
     procedure Assign(Source: TExternalToolOptions);
     constructor Create;
@@ -62,13 +64,17 @@ type
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     function ShortDescription: string;
     
-    property Title: string read fTitle write fTitle;
-    property Filename: string read fFilename write fFilename;
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
-    property WorkingDirectory: string
-           read fWorkingDirectory write fWorkingDirectory;
+    property Filename: string read fFilename write fFilename;
     property Key: word read fKey write fKey;
+    property Title: string read fTitle write fTitle;
+    property ScanOutputForFPCMessages: boolean
+      read fScanOutputForFPCMessages write fScanOutputForFPCMessages;
+    property ScanOutputForMakeMessages: boolean
+      read fScanOutputForMakeMessages write fScanOutputForMakeMessages;
     property Shift: TShiftState read fShift write fShift;
+    property WorkingDirectory: string
+      read fWorkingDirectory write fWorkingDirectory;
   end;
 
   {
@@ -83,6 +89,9 @@ type
     ParametersEdit: TEdit;
     WorkingDirLabel: TLabel;
     WorkingDirEdit: TEdit;
+    OptionsGroupBox: TGroupBox;
+    OptionScanOutputForFPCMessagesCheckBox: TCheckBox;
+    OptionScanOutputForMakeMessagesCheckBox: TCheckBox;
     KeyGroupBox: TGroupBox;
     KeyCtrlCheckBox: TCheckBox;
     KeyAltCheckBox: TCheckBox;
@@ -91,14 +100,15 @@ type
     KeyGrabButton: TButton;
     MacrosGroupbox: TGroupbox;
     MacrosListbox: TListbox;
-    MacrosInsert: TButton;
+    MacrosInsertButton: TButton;
     OkButton: TButton;
     CancelButton: TButton;
     procedure CancelButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure KeyGrabButtonClick(Sender: TObject);
-    procedure MacrosInsertClick(Sender: TObject);
+    procedure MacrosInsertButtonClick(Sender: TObject);
+    procedure MacrosListboxClick(Sender: TObject);
   private
     fOptions: TExternalToolOptions; 
     fTransferMacros: TTransferMacroList;
@@ -180,6 +190,8 @@ begin
   fWorkingDirectory:='';
   fKey:=VK_UNKNOWN;
   fShift:=[];
+  fScanOutputForFPCMessages:=false;
+  fScanOutputForMakeMessages:=false;
 end;
 
 function TExternalToolOptions.Load(XMLConfig: TXMLConfig;
@@ -190,8 +202,12 @@ begin
   fFilename:=XMLConfig.GetValue(Path+'Filename/Value',fFilename);
   fCmdLineParams:=XMLConfig.GetValue(Path+'CmdLineParams/Value',fCmdLineParams);
   fWorkingDirectory:=XMLConfig.GetValue(
-                                    Path+'WorkingDirectory/Value',fWorkingDirectory);
-  // key and shift will be saved with the keymapping in the editoroptions
+                               Path+'WorkingDirectory/Value',fWorkingDirectory);
+  fScanOutputForFPCMessages:=XMLConfig.GetValue(
+               Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
+  fScanOutputForMakeMessages:=XMLConfig.GetValue(
+             Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
+  // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
 end;
 
@@ -203,6 +219,11 @@ begin
   XMLConfig.SetValue(Path+'Filename/Value',fFilename);
   XMLConfig.SetValue(Path+'CmdLineParams/Value',fCmdLineParams);
   XMLConfig.SetValue(Path+'WorkingDirectory/Value',fWorkingDirectory);
+  XMLConfig.GetValue(
+               Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
+  XMLConfig.GetValue(
+             Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
+  // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
 end;
 
@@ -305,16 +326,47 @@ begin
       Visible:=true; 
     end;
     
+    OptionsGroupBox:=TGroupBox.Create(Self);
+    with OptionsGroupBox do begin
+      Name:='OptionsGroupBox';
+      Parent:=Self;
+      Caption:='Options:';
+      Left:=5;
+      Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
+      Width:=Self.ClientWidth-Left-Left;
+      Height:=66;
+      Visible:=true; 
+    end;
+    
+    OptionScanOutputForFPCMessagesCheckBox:=TCheckBox.Create(Self);
+    with OptionScanOutputForFPCMessagesCheckBox do begin
+      Name:='OptionScanOutputForFPCMessagesCheckBox';
+      Parent:=OptionsGroupBox;
+      SetBounds(5,2,400,20);
+      Caption:='Scan output for Free Pascal Compiler messages';
+      Visible:=true;
+    end;
+
+    OptionScanOutputForMakeMessagesCheckBox:=TCheckBox.Create(Self);
+    with OptionScanOutputForMakeMessagesCheckBox do begin
+      Name:='OptionScanOutputForMakeMessagesCheckBox';
+      Parent:=OptionsGroupBox;
+      SetBounds(5,OptionScanOutputForFPCMessagesCheckBox.Top
+                +OptionScanOutputForFPCMessagesCheckBox.Height+4,400,20);
+      Caption:='Scan output for make messages';
+      Visible:=true;
+    end;
+
     KeyGroupBox:=TGroupBox.Create(Self);
     with KeyGroupBox do begin
       Name:='KeyGroupBox';
       Parent:=Self;
       Caption:='Key';
       Left:=5;
-      Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
+      Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+12;
       Width:=Self.ClientWidth-Left-Left;
       Height:=50;
-      Visible:=true; 
+      Visible:=true;
     end;
 
     KeyCtrlCheckBox:=TCheckBox.Create(Self);
@@ -403,16 +455,18 @@ begin
       Parent:=MacrosGroupbox;
       SetBounds(5,5,MacrosGroupbox.ClientWidth-120,
                    MacrosGroupbox.ClientHeight-30);
+      OnClick:=@MacrosListboxClick;
       Visible:=true; 
     end;
     
-    MacrosInsert:=TButton.Create(Self);
-    with MacrosInsert do begin
-      Name:='MacrosInsert';
+    MacrosInsertButton:=TButton.Create(Self);
+    with MacrosInsertButton do begin
+      Name:='MacrosInsertButton';
       Parent:=MacrosGroupbox;
       SetBounds(MacrosGroupbox.ClientWidth-90,5,70,25);
       Caption:='Insert';
-      OnClick:=@MacrosInsertClick;
+      OnClick:=@MacrosInsertButtonClick;
+      Enabled:=false;
       Visible:=true; 
     end;
     
@@ -458,6 +512,10 @@ begin
     if KeyAltCheckBox.Checked then include(fOptions.fShift,ssAlt);
     if KeyShiftCheckBox.Checked then include(fOptions.fShift,ssShift);
   end;
+  fOptions.ScanOutputForFPCMessages:=
+    OptionScanOutputForFPCMessagesCheckBox.Checked;
+  fOptions.ScanOutputForMakeMessages:=
+    OptionScanOutputForMakeMessagesCheckBox.Checked;
 end;
 
 procedure TExternalToolOptionDlg.LoadFromOptions;
@@ -470,6 +528,10 @@ begin
   KeyCtrlCheckBox.Checked:=(ssCtrl in fOptions.Shift);
   KeyShiftCheckBox.Checked:=(ssShift in fOptions.Shift);
   KeyAltCheckBox.Checked:=(ssAlt in fOptions.Shift);
+  OptionScanOutputForFPCMessagesCheckBox.Checked:=
+    fOptions.ScanOutputForFPCMessages;
+  OptionScanOutputForMakeMessagesCheckBox.Checked:=
+    fOptions.ScanOutputForMakeMessages;
 end;
 
 procedure TExternalToolOptionDlg.OkButtonClick(Sender: TObject);
@@ -594,7 +656,7 @@ begin
   end;
 end;
 
-procedure TExternalToolOptionDlg.MacrosInsertClick(Sender: TObject);
+procedure TExternalToolOptionDlg.MacrosInsertButtonClick(Sender: TObject);
 var i: integer;
   s: string;
 begin
@@ -605,6 +667,11 @@ begin
   else
     s:='$'+fTransferMacros[i].Name+'()';
   ParametersEdit.Text:=ParametersEdit.Text+s;
+end;
+
+procedure TExternalToolOptionDlg.MacrosListboxClick(Sender: TObject);
+begin
+  MacrosInsertButton.Enabled:=(MacrosListbox.ItemIndex>=0);
 end;
 
 end.
