@@ -1139,11 +1139,11 @@ begin
 
   {$IFDEF VerboseSizeMsg}
   LCLObject:=GetNearestLCLObject(Widget);
-  write('TGtkWidgetSet.RealizeWidgetSize Widget=',HexStr(Cardinal(Widget),8),
-    ' New=',NewWidth,',',NewHeight);
+  DbgOut('TGtkWidgetSet.RealizeWidgetSize Widget='+HexStr(Cardinal(Widget),8),
+    ' New='+dbgs(NewWidth)+','+dbgs(NewHeight));
   if (LCLObject<>nil) and (LCLObject is TControl) then begin
     with TControl(LCLObject) do
-      DebugLn(' LCL=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      DebugLn(' LCL=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
   end else begin
     DebugLn(' LCL=',HexStr(Cardinal(LCLObject),8));
   end;
@@ -5998,7 +5998,8 @@ begin
         gtk_clist_set_column_justification(CListWidget,i,
                  aGTKJUSTIFICATION[Alignment]);
         //set width
-        gtk_clist_set_column_width(CListWidget,i,Width);
+        if Width>0 then
+          gtk_clist_set_column_width(CListWidget,i,Width);
         //set auto sizing
         gtk_clist_set_column_auto_resize(CListWidget,i, AutoSize);
         //set Visible
@@ -9214,6 +9215,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.519  2004/08/09 18:22:08  mattias
+  fixed type of Low(open array) and type of PathDelim
+
   Revision 1.518  2004/07/30 20:55:16  vincents
   updated localization
 

@@ -4501,7 +4501,7 @@ begin
   Result.Context:=CreateFindContext(Self,Node);
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
-  ' Node=',Node.DescAsString);
+  ' Expr=',ExprTypeToString(Result));
   {$ENDIF}
   if Node.Desc=ctnRangeType then begin
     // range type -> convert to special expression type
@@ -4512,6 +4512,27 @@ begin
 
     // ToDo: check for circles
     
+    Params.Save(OldInput);
+    Params.ContextNode:=Node;
+    Result:=ReadOperandTypeAtCursor(Params);
+    Params.Load(OldInput);
+    Result.Context:=CreateFindContext(Self,Node);
+  end else if (Node.Desc=ctnConstDefinition) and (Node.FirstChild=nil) then
+  begin
+    // const -> convert to special expression type
+
+    // ToDo: ppu, ppw, dcu files
+
+    MoveCursorToNodeStart(Node);
+
+    ReadNextAtom;
+    if not AtomIsIdentifier(false) then exit;
+    ReadNextAtom;
+    if not (CurPos.Flag in [cafEqual,cafColon]) then exit;
+    ReadNextAtom;
+
+    // ToDo: check for circles
+
     Params.Save(OldInput);
     Params.ContextNode:=Node;
     Result:=ReadOperandTypeAtCursor(Params);
@@ -4673,9 +4694,15 @@ var
   ParamList: TExprTypeList;
   ParamNode: TCodeTreeNode;
 begin
+
   Result:=CleanExpressionType;
   IdentPos:=@Src[StartPos];
   Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos);
+
+  {$IFDEF ShowExprEval}
+  debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier ',
+    ExpressionTypeDescNames[Result.Desc]);
+  {$ENDIF}
   case Result.Desc of
   xtCompilerFunc:
     begin
@@ -4695,6 +4722,9 @@ begin
       else if (CompareIdentifiers(IdentPos,'LOW')=0)
            or (CompareIdentifiers(IdentPos,'HIGH')=0) then
       begin
+        {$IFDEF ShowExprEval}
+        debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier Ident=',GetIdentifier(IdentPos));
+        {$ENDIF}
         { examples:
            Low(ordinal type)  is the ordinal type
            Low(array)         has type of the array items
@@ -4715,7 +4745,10 @@ begin
         ctnOpenArrayType:
           // array without explicit range -> open array
           // Low(Open array) is ordinal integer
-          Result.Desc:=xtConstOrdInteger;
+          begin
+            Result.Desc:=xtConstOrdInteger;
+            Result.Context:=CleanFindContext;
+          end;
 
         ctnRangedArrayType:
           begin
