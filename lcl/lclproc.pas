@@ -42,13 +42,14 @@ type
     destructor Destroy; override;
     function Count: integer;
     function NextDownIndex(var Index: integer): boolean;
-    function IndexOf(AMethod: TMethod): integer;
+    function IndexOf(const AMethod: TMethod): integer;
     procedure Delete(Index: integer);
-    procedure Remove(AMethod: TMethod);
-    procedure Add(AMethod: TMethod);
-    procedure Insert(Index: integer; AMethod: TMethod);
+    procedure Remove(const AMethod: TMethod);
+    procedure Add(const AMethod: TMethod);
+    procedure Add(const AMethod: TMethod; AsLast: boolean);
+    procedure Insert(Index: integer; const AMethod: TMethod);
     procedure Move(OldIndex, NewIndex: integer);
-    procedure RemoveAllMethodsOfObject(AnObject: TObject);
+    procedure RemoveAllMethodsOfObject(const AnObject: TObject);
   public
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
   end;
@@ -318,7 +319,7 @@ begin
   Result:=(Index>=0);
 end;
 
-function TMethodList.IndexOf(AMethod: TMethod): integer;
+function TMethodList.IndexOf(const AMethod: TMethod): integer;
 begin
   if Self<>nil then begin
     Result:=FCount-1;
@@ -339,7 +340,7 @@ begin
   ReAllocMem(FItems,FCount*SizeOf(TMethod));
 end;
 
-procedure TMethodList.Remove(AMethod: TMethod);
+procedure TMethodList.Remove(const AMethod: TMethod);
 var
   i: integer;
 begin
@@ -349,14 +350,22 @@ begin
   end;
 end;
 
-procedure TMethodList.Add(AMethod: TMethod);
+procedure TMethodList.Add(const AMethod: TMethod);
 begin
   inc(FCount);
   ReAllocMem(FItems,FCount*SizeOf(TMethod));
   FItems[FCount-1]:=AMethod;
 end;
 
-procedure TMethodList.Insert(Index: integer; AMethod: TMethod);
+procedure TMethodList.Add(const AMethod: TMethod; AsLast: boolean);
+begin
+  if AsLast then
+    Add(AMethod)
+  else
+    Insert(0,AMethod);
+end;
+
+procedure TMethodList.Insert(Index: integer; const AMethod: TMethod);
 begin
   if Index<FCount then
     System.Move(FItems[Index],FItems[Index+1],(FCount-Index)*SizeOf(TMethod));
@@ -378,10 +387,11 @@ begin
   FItems[NewIndex]:=MovingMethod;
 end;
 
-procedure TMethodList.RemoveAllMethodsOfObject(AnObject: TObject);
+procedure TMethodList.RemoveAllMethodsOfObject(const AnObject: TObject);
 var
   i: Integer;
 begin
+  if Self=nil then exit;
   i:=FCount-1;
   while i>=0 do begin
     if TObject(FItems[i].Data)=AnObject then Delete(i);
