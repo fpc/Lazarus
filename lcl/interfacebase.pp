@@ -41,7 +41,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, LCLStrConsts, LCLLinux, LCLType, LCLProc, VCLGlobals, Classes,
+  Classes, SysUtils, LCLStrConsts, LCLLinux, LCLType, LCLProc, VCLGlobals,
   LMessages, Controls, GraphType, GraphicsMath;
 
 type
@@ -111,6 +111,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2002/10/26 10:21:01  lazarus
+  MG: broke actnlist <-> menus circle
+
   Revision 1.22  2002/10/25 10:06:34  lazarus
   MG: broke interfacebase uses circles
 
