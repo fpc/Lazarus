@@ -2003,14 +2003,13 @@ var
 begin
   inherited Create(AOwner);
   Visible:=false;
-  Name:=DefaultSourceNoteBookName;
+  Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
   Caption := locwndSrcEditor;
   FProcessingCommand := false;
 
   FMainIDE := AOwner;
 
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                                        ItemByFormID(DefaultSourceNoteBookName);
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
 
