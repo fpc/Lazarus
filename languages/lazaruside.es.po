@@ -613,6 +613,10 @@ msgstr "Copia de seguridad"
 msgid "Backup file failed"
 msgstr "Fallo al realizar la copia de seguridad del archivo"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "Backward search"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "Detrás de los métodos"
@@ -2436,6 +2440,10 @@ msgstr "Formulario"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Formularios..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forward search"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"

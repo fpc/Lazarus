@@ -602,6 +602,10 @@ msgstr "Varmistus"
 msgid "Backup file failed"
 msgstr ""
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "Backward search"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr ""
@@ -2425,6 +2429,10 @@ msgstr "Lomakkeet"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Lomakkeet..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forward search"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"

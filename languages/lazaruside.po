@@ -3246,6 +3246,14 @@ msgstr ""
 msgid "Direction"
 msgstr ""
 
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "Backward search"
+msgstr ""
+
 #: lazarusidestrconsts:dlgupword
 msgid "Up"
 msgstr ""

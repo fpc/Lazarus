@@ -602,6 +602,10 @@ msgstr "Резервирование"
 msgid "Backup file failed"
 msgstr "Резервирование не удалось"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "Backward search"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "После методов"
@@ -2425,6 +2429,10 @@ msgstr "Формы"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Формы..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forward search"
+msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
