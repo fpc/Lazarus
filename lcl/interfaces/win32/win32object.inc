@@ -2337,8 +2337,9 @@ Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
-      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or
-        SWP_SHOWWINDOW or SWP_NOACTIVATE);
+    //  NOTE: for some reason, 1.9.x generates the wrong constant here...
+//      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, $53);
     end else begin
       Windows.ShowWindow(Handle, SW_SHOW);
     end;
@@ -2895,6 +2896,9 @@ End;
 
 {
   $Log$
+  Revision 1.140  2003/12/14 20:49:22  micha
+  hintwindow focus fix
+
   Revision 1.139  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 
