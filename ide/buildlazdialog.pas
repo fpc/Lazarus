@@ -651,8 +651,10 @@ begin
   ButtonHeight:=ButtonWidth;
   for mm:=Low(TMakeMode) to High(TMakeMode) do begin
     // draw button
-    ButtonRect:=Rect(x,ARect.Top+((ARect.Bottom-ARect.Top-ButtonWidth) div 2),
-                     x+ButtonWidth,ButtonHeight);
+    ButtonRect.Left:=x;
+    ButtonRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-ButtonWidth) div 2);
+    ButtonRect.Right:=x+ButtonWidth;
+    ButtonRect.Bottom:=ButtonRect.Top+ButtonHeight;
     ButtonState:=DFCS_BUTTONPUSH;
     if CurItem.MakeMode=mm then
       inc(ButtonState,DFCS_PUSHED);
