@@ -1560,7 +1560,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         // -> find it and jump to
 
         // reparse code
-        BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos);
+        BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
@@ -1938,12 +1938,15 @@ var CleanCursorPos, Indent, insertPos: integer;
     CompleteCode:=true;
   end;
   
+// function CompleteCode(CursorPos: TCodeXYPosition;
+//        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+//        SourceChangeCache: TSourceChangeCache): boolean;
 begin
   Result:=false;
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
   // in a class or in a forward proc?
-  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos);
+  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;

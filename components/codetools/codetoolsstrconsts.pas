@@ -56,7 +56,7 @@ ResourceString
   ctsBracketOpenExpectedButAtomFound = 'bracket open expected, but %s found';
   ctsBracketCloseExpectedButAtomFound = 'bracket close expected, but %s found';
   ctsBracketNotFound = 'bracket %s not found';
-  ctsNoNodeFoundAtCursor = 'no node found at cursor';
+  ctsNoNodeFoundAtCursor = 'no pascal node found at cursor (i.e. in unparsed code)';
   ctsUnknownMainFilename = '(unknown mainfilename)';
   
   // pascal parser
