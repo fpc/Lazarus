@@ -2997,23 +2997,26 @@ var
   Timer: cardinal;
   
 begin
-  Result:=true;
+  Result:=false;
   {$IFDEF DEBUG_CLIPBOARD}
   writeln('[TgtkObject.WaitForClipboardAnswer] A');
   {$ENDIF}
-  if (c^.Data.Selection<>0) then begin
+  if (c^.Data.Selection<>0) or (c^.Waiting) or (c^.Stopping) then begin
     //writeln('[TgtkObject.WaitForClipboardAnswer] B');
+    Result:=(c^.Data.Selection<>0);
     exit;
   end;
+  c^.Waiting:=true;
   DateTimeToSystemTime(Time,StartTime);
   //writeln('[TgtkObject.WaitForClipboardAnswer] C');
   Application.ProcessMessages;
   //writeln('[TgtkObject.WaitForClipboardAnswer] D');
-  if (c^.Data.Selection<>0) then begin
+  if (c^.Data.Selection<>0) or (c^.Stopping) then begin
     //writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+    Result:=(c^.Data.Selection<>0);
     exit;
   end;
-//writeln('[TgtkObject.WaitForClipboardAnswer] F');
+  //writeln('[TgtkObject.WaitForClipboardAnswer] F');
   // start a timer to make sure not waiting forever
   Timer := gtk_timeout_add(500, @WaitForClipbrdAnswerDummyTimer, nil);
   try
@@ -3023,14 +3026,17 @@ begin
       writeln('[TgtkObject.WaitForClipboardAnswer] G');
       {$ENDIF}
       Application.HandleMessage;
-      if (c^.Data.Selection<>0) then begin
+      if (c^.Data.Selection<>0) or (c^.Stopping) then begin
         {$IFDEF DEBUG_CLIPBOARD}
         writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
         {$ENDIF}
+        Result:=(c^.Data.Selection<>0);
         exit;
       end;
       DateTimeToSystemTime(Time,CurTime);
-    until (CurTime.Second-StartTime.Second>1);
+    until (CurTime.Second*1000+CurTime.MilliSecond
+           -StartTime.Second*1000-StartTime.MilliSecond
+           >1000);
   finally
     {$IFDEF DEBUG_CLIPBOARD}
     writeln('[TgtkObject.WaitForClipboardAnswer] H');
@@ -3039,7 +3045,9 @@ begin
     gtk_timeout_remove(Timer);
 //writeln('[TgtkObject.WaitForClipboardAnswer] END');
   end;
-  Result:=false;
+  { $IFDEF DEBUG_CLIPBOARD}
+  writeln('[TgtkObject.WaitForClipboardAnswer] WARNING: no answer received in time');
+  { $ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3061,9 +3069,9 @@ var
   i: integer;
   c: PClipboardEventData;
 begin
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[RequestSelectionData] FormatID=',FormatID);
-{$ENDIF}
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('[RequestSelectionData] FormatID=',FormatID);
+  {$ENDIF}
   FillChar(Result,SizeOf(TGtkSelectionData),0);
   if (ClipboardWidget=nil) or (FormatID=0) 
   or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
@@ -3082,11 +3090,13 @@ writeln('[RequestSelectionData] FormatID=',FormatID);
     c^.TimeID:=TimeID;
     FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[RequestSelectionData] TimeID=',TimeID);
-{$ENDIF}
-    if gtk_selection_convert(ClipboardWidget,
-        ClipboardTypeAtoms[ClipboardType], FormatID, TimeID)<>0 then break;
+    {$IFDEF DEBUG_CLIPBOARD}
+    writeln('[RequestSelectionData] TimeID=',TimeID);
+    {$ENDIF}
+    if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
+                             FormatID, TimeID)<>0
+    then
+      break;
     ClipboardSelectionData.Remove(c);
     Dispose(c);
   until false;
@@ -3948,6 +3958,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.157  2003/01/24 11:58:01  mattias
+  fixed clipboard waiting and kwrite targets
+
   Revision 1.156  2003/01/01 11:11:50  mattias
   fixed testall example
 
