@@ -33,9 +33,9 @@ unit UnitEditor;
 {$mode objfpc}
 {$H+}
 
-{$I ide.inc}
-
 interface
+
+{$I ide.inc}
 
 uses
   {$IFDEF IDE_MEM_CHECK}
