@@ -38,7 +38,7 @@ uses
   {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
-  LCLLinux,
+  LCLIntf,
   Buttons,
   {$ELSE}
   Windows,

@@ -44,7 +44,7 @@ uses
   VCLGlobals,
   LCLType,
   GraphType,
-  LCLLinux,
+  LCLIntf,
   LMessages,
   LCLMemManager,
   {$ELSE}
@@ -15783,7 +15783,7 @@ end;
 procedure TIpHtmlFrame.InvalidateRect(Sender: TIpHtml; const R: TRect);
 begin
   if HyperPanel <> nil then
-    {$IFDEF IP_LAZARUS}LCLLinux.{$ELSE}Windows.{$ENDIF}
+    {$IFDEF IP_LAZARUS}LCLIntF.{$ELSE}Windows.{$ENDIF}
       InvalidateRect(HyperPanel.Handle, @R, False);
 end;
 
@@ -17349,18 +17349,18 @@ end;
 function LazFlatSB_GetScrollInfo(hWnd: HWND; BarFlag: Integer;
   var ScrollInfo: TScrollInfo): BOOL; stdcall;
 begin
-  Result:=LCLLinux.GetScrollInfo(HWnd,BarFlag,ScrollInfo);
+  Result:=LCLIntf.GetScrollInfo(HWnd,BarFlag,ScrollInfo);
 end;
   
 function LazFlatSB_GetScrollPos(hWnd: HWND; nBar: Integer): Integer; stdcall;
 begin
-  Result:=LCLLinux.GetScrollPos(HWnd,nBar);
+  Result:=LCLIntf.GetScrollPos(HWnd,nBar);
 end;
 
 function LazFlatSB_SetScrollPos(hWnd: HWND; nBar, nPos: Integer;
   bRedraw: BOOL): Integer; stdcall;
 begin
-  Result:=LCLLinux.SetScrollPos(HWnd,nBar,nPos,bRedraw);
+  Result:=LCLIntf.SetScrollPos(HWnd,nBar,nPos,bRedraw);
 end;
 
 function LazFlatSB_SetScrollProp(p1: HWND; index: Integer; newValue: Integer;
@@ -17373,7 +17373,7 @@ end;
 function LazFlatSB_SetScrollInfo(hWnd: HWND; BarFlag: Integer;
   const ScrollInfo: TScrollInfo; Redraw: BOOL): Integer; stdcall;
 begin
-  Result:=LCLLinux.SetScrollInfo(HWnd,BarFlag,ScrollInfo,Redraw);
+  Result:=LCLIntf.SetScrollInfo(HWnd,BarFlag,ScrollInfo,Redraw);
 end;
 {$ENDIF}
 
@@ -17582,6 +17582,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.10  2003/11/25 08:51:57  mattias
+  fixed compiling   from Tony
+
   Revision 1.9  2003/06/24 18:08:59  mattias
   fixes for fpc 1.0.x
 
