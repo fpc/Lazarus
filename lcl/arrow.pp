@@ -56,6 +56,7 @@ Type
     procedure SetArrowType(const AValue: TArrowType);
     procedure SetProps;
   protected
+    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -78,6 +79,9 @@ Type
 procedure Register;
   
 implementation
+
+uses
+  InterfaceBase;
 
 procedure Register;
 begin
@@ -105,6 +109,11 @@ procedure TArrow.Loaded;
 begin
   inherited Loaded;
   SetProps;
+end;
+
+procedure TArrow.Paint;
+begin
+  InterfaceObject.DrawArrow(Self, Canvas);
 end;
 
 procedure TArrow.InitializeWnd;

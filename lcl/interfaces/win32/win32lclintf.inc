@@ -28,6 +28,11 @@
 
 //##apiwiz##sps##   // Do not remove
 
+procedure TWin32Object.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+begin
+  Windows.DrawFrameControl(TCanvas(Canvas).Handle, TControl(Arrow).ClientRect, DFC_MENU, DFCS_MENUARROW);
+end;
+
 {------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:
@@ -189,6 +194,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/02/20 19:52:18  micha
+  fixed: tarrow crash in win32
+  added: interface function DrawArrow to draw themed arrow
+
   Revision 1.10  2004/02/05 13:53:38  mattias
   fixed GetConstraints for win32 intf
 

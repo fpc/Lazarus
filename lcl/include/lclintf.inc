@@ -106,6 +106,11 @@ begin
   Result := InterfaceObject.DCClipRegionValid(DC);
 end;
 
+procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+begin
+  InterfaceObject.DrawArrow(Arrow, Canvas);
+end;
+
 function Frame(DC: HDC; const ARect: TRect): Integer;
 begin
   Result:= InterfaceObject.Frame(DC, ARect);
@@ -512,6 +517,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/02/20 19:52:18  micha
+  fixed: tarrow crash in win32
+  added: interface function DrawArrow to draw themed arrow
+
   Revision 1.16  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

@@ -2089,7 +2089,7 @@ Begin
       WindowTitle := StrCaption;
       Flags := Flags Or ES_AUTOHSCROLL;
     End;
-    csFixed:
+    csArrow, csFixed:
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
       pClassName := @ClsName;
@@ -2296,12 +2296,6 @@ Begin
         GetClientRect(Handle, R);
         MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
         Window := Handle;
-      End;
-      csArrow:
-      Begin
-        Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - Figure out what a csArrow is and code it');
-        Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a cursor. This will have to be good enough for now.');
-        Window := LoadCursor(System.HInstance, IDC_UPARROW);
       End;
       csFileDialog, csOpenFileDialog, csSaveFileDialog,
       csColorDialog, csFontDialog:
@@ -3007,6 +3001,10 @@ End;
 
 {
   $Log$
+  Revision 1.170  2004/02/20 19:52:18  micha
+  fixed: tarrow crash in win32
+  added: interface function DrawArrow to draw themed arrow
+
   Revision 1.169  2004/02/19 14:37:20  micha
   fixed: memo eats return key (from vincent)
 

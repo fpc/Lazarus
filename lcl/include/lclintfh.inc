@@ -55,6 +55,7 @@ function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): H
 function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -148,6 +149,10 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/02/20 19:52:18  micha
+  fixed: tarrow crash in win32
+  added: interface function DrawArrow to draw themed arrow
+
   Revision 1.16  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

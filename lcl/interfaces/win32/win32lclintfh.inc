@@ -27,6 +27,8 @@
 }
 
 //##apiwiz##sps##   // Do not remove
+procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
+
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
@@ -42,6 +44,10 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/02/20 19:52:18  micha
+  fixed: tarrow crash in win32
+  added: interface function DrawArrow to draw themed arrow
+
   Revision 1.9  2004/02/05 13:53:38  mattias
   fixed GetConstraints for win32 intf
 

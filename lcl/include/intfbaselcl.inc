@@ -109,6 +109,10 @@ begin
   DeleteObject(Clip);
 end;
 
+procedure TInterfaceBase.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+begin
+end;
+
 function TInterfaceBase.Frame(DC: HDC; const ARect: TRect) : integer;
 begin
   Result:= 0;
@@ -615,6 +619,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/02/20 19:52:18  micha
+  fixed: tarrow crash in win32
+  added: interface function DrawArrow to draw themed arrow
+
   Revision 1.18  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 
