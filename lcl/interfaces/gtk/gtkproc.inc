@@ -3170,7 +3170,10 @@ begin
       Result:=StyleObject^.Style;
       If StyleObject^.Widget <> nil then
         UpdateSysColorMap(StyleObject^.Widget);
-    end;
+    end
+    else
+      If AnsiCompareText(WName,'default')<>0 then
+        Result := GetStyle('default');
     If AnsiCompareText(WName,'tooltip')=0 then
       GTK_Object_Destroy(Tp);
   end else
@@ -3808,6 +3811,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.135  2002/10/21 13:15:24  lazarus
+  AJ:Try and fall back on default style if nil(aka default theme)
+
   Revision 1.134  2002/10/21 03:23:36  lazarus
   AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
 
