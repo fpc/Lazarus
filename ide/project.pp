@@ -80,7 +80,8 @@ type
     fForm: TComponent;
     fFormName: string; { classname is always T<FormName>
          this attribute contains the formname, even if the unit is not loaded,
-         or the designer form is not created }
+         or the designer form is not created.
+         A form can be a TForm or a TDataModule }
     fFormResourceName: string;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
@@ -503,7 +504,7 @@ const
     );
     
   UnitTypeDefaultExt: array[TNewUnitType] of string = (
-      '.pas', '.pas', '.pas', '.txt', '.pas'
+      '.pas', '.pas', '.pas', '.pas', '.txt', '.pas'
     );
 
   DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
@@ -971,7 +972,7 @@ begin
   if fSource=nil then exit;
   NewSource:='';
   LE:=EndOfLine;
-  if NewUnitType in [nuForm,nuUnit] then begin
+  if NewUnitType in [nuForm,nuUnit,nuDataModule] then begin
     fUnitName:=NewUnitName;
     AResourceFilename:=fUnitName+ResourceFileExt;
     NewSource:=Beautified(
@@ -983,6 +984,7 @@ begin
       +LE
       +'uses'+LE);
     case NewUnitType of
+
      nuUnit:
       begin
         NewSource:=NewSource+Beautified(
@@ -990,14 +992,21 @@ begin
           +LE
           +'implementation'+LE);
       end;
-     nuForm:
+
+     nuForm, nuDataModule:
       begin
         NewSource:=NewSource+Beautified(
           '  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs;'+LE
           +LE
-          +'type'+LE
-          +'  T'+fFormName+' = class(TForm)'+LE
-          +'  private'+LE);
+          +'type'+LE);
+        if NewUnitType=nuForm then
+          NewSource:=NewSource+Beautified(
+            +'  T'+fFormName+' = class(TForm)'+LE)
+        else
+          NewSource:=NewSource+Beautified(
+            +'  T'+fFormName+' = class(TDataModule)'+LE);
+        NewSource:=NewSource+Beautified(
+          '  private'+LE);
         NewSource:=NewSource
           +'    { private declarations }'+LE;
         NewSource:=NewSource+Beautified(
@@ -1016,6 +1025,7 @@ begin
         NewSource:=NewSource
           +'  {$I '+AResourceFilename+'}'+LE;
       end;
+
     end;
     NewSource:=NewSource+Beautified(
       +LE
@@ -1687,7 +1697,7 @@ var u:integer;
 begin
   u:=1;
   case NewUnitType of
-    nuForm,nuUnit: Prefix:='unit';
+    nuForm,nuUnit,nuDataModule: Prefix:='unit';
   else Prefix:='text'
   end;
   while (UnitNameExists(Prefix+IntToStr(u))) do inc(u);
@@ -1718,7 +1728,8 @@ var i: integer;
 begin
   i:=1;
   case NewUnitType of
-    nuForm, nuUnit: Prefix:='Form'
+    nuForm, nuUnit: Prefix:='Form';
+    nuDataModule:   Prefix:='DataModule';
   else
     Prefix:='form';
   end;
@@ -1727,7 +1738,7 @@ begin
 end;
 
 function TProject.AddCreateFormToProjectFile(
-  const AClassName,AName:string):boolean;
+  const AClassName, AName: string):boolean;
 begin
   Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
     AClassName,AName);
@@ -2698,6 +2709,9 @@ end.
 
 {
   $Log$
+  Revision 1.123  2003/05/30 16:25:47  mattias
+  started datamodule
+
   Revision 1.122  2003/05/26 21:03:27  mattias
   added README, describing how to create a gtk2 lcl application
 

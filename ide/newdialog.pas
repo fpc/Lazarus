@@ -50,6 +50,7 @@ type
     niiCustom,     // for experts (IDE plugins)
     niiUnit,       // pascal unit
     niiForm,       // pascal unit with lcl form
+    niiDataModule, // pascal nuit with datamodule
     niiText,       // text file
     niiApplication,// Project: Application
     niiFPCProject, // Project: with hidden main file
@@ -499,19 +500,22 @@ begin
     niiForm:
       Result:=lisNewDlgCreateANewUnitWithALCLForm;
 
+    niiDataModule:
+      Result:=lisNewDlgCreateANewUnitWithADataModule;
+
     niiText:
       Result:=lisNewDlgCreateANewEmptyTextFile;
       
     niiApplication:
       Result:=Format(
-        lisNewDlgCreateANewGraphicalApplicationTheProgramFileIsMain, [#13#13]);
+        lisNewDlgCreateANewGraphicalApplication, [#13#13]);
 
     niiFPCProject:
       Result:=Format(
-        lisNewDlgCreateANewProgramTheProgramFileIsMaintainedByLazar, [#13#13]);
+        lisNewDlgCreateANewProgram, [#13#13]);
 
     niiCustomProject:
-      Result:=lisNewDlgCreateANewProgram;
+      Result:=lisNewDlgCreateANewCustomProgram;
 
     niiPackage:
       Result:=Format(
@@ -546,6 +550,10 @@ begin
   Add(NewCategory);
   NewCategory.Add(TNewIDEItemTemplate.Create(niiUnit,'Unit',niifCopy,[]));
   NewCategory.Add(TNewIDEItemTemplate.Create(niiForm,'Form',niifCopy,[]));
+  {$IFDEF EnableDataMods}
+  NewCategory.Add(TNewIDEItemTemplate.Create(niiDataModule,'Data Module',
+                                             niifCopy,[]));
+  {$ENDIF}
   NewCategory.Add(TNewIDEItemTemplate.Create(niiText,'Text',niifCopy,[]));
   
   // category project

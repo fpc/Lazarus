@@ -1535,12 +1535,13 @@ resourcestring
     +'type.';
   lisNewDlgCreateANewPascalUnit = 'Create a new pascal unit.';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
+  lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
-  lisNewDlgCreateANewGraphicalApplicationTheProgramFileIsMain = 'Create a new '
+  lisNewDlgCreateANewGraphicalApplication = 'Create a new '
     +'graphical application.%sThe program file is maintained by Lazarus.';
-  lisNewDlgCreateANewProgramTheProgramFileIsMaintainedByLazar = 'Create a new '
+  lisNewDlgCreateANewProgram = 'Create a new '
     +'program.%sThe program file is maintained by Lazarus.';
-  lisNewDlgCreateANewProgram = 'Create a new program.';
+  lisNewDlgCreateANewCustomProgram = 'Create a new program.';
   lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn = 'Create a new '
     +'standard package.%sA package is a collection of units and components.';
 

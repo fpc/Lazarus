@@ -49,11 +49,12 @@ type
   TProjectWriteFlags = set of TProjectWriteFlag;
 
   TNewUnitType = (
-     nuEmpty,   // no code
-     nuUnit,    // unit
-     nuForm,    // unit with form
-     nuText,
-     nuCustomProgram  // program
+    nuEmpty,      // no code
+    nuUnit,       // unit
+    nuForm,       // unit with form
+    nuDataModule, // unit with data module
+    nuText,
+    nuCustomProgram  // program
    );
 
   TUnitUsage = (uuIsPartOfProject, uuIsLoaded, uuIsModified, uuNotUsed);
@@ -136,39 +137,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
-//-----------------------------------------------------------------------------
 type
-  TProjectWatchType = (pwtDefault, pwtChar, pwtString, pwtDecimal, pwtHex,
-    pwtFloat, pwtPointer, pwtRecord, pwtMemDump);
-const
-  ProjectWatchTypeNames : array[TProjectWatchType] of string = (
-    'Default', 'Character', 'String', 'Decimal', 'Hexadecimal',
-    'Float', 'Pointer', 'Record', 'MemDump');
-
-type
-  TProjectWatch = class
-  private
-    fExpression: string;
-    fRepeatCount: integer;
-    fDigits: integer;
-    fEnabled: boolean;
-    fAllowFunctionCalls: boolean;
-    fTheType: TProjectWatchType;
-  public
-    constructor Create;
-    procedure Clear;
-    destructor Destroy; override; 
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    property Expression: string read fExpression write fExpression;
-    property RepeatCount: integer read fRepeatCount write fRepeatCount;
-    property Digits: integer read fDigits write fDigits;
-    property Enabled: boolean read fEnabled write fEnabled;
-    property AllowFunctionCalls: boolean 
-          read fAllowFunctionCalls write fAllowFunctionCalls;
-    property TheType: TProjectWatchType read fTheType write fTheType;
-  end;
-
 //---------------------------------------------------------------------------
   TProjectJumpHistoryPosition = class
   private
@@ -266,20 +235,8 @@ const
   DefPublProjIncFilter = '*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)';
   DefPublProjExcFilter = '*.(bak|ppu|ppw|o|so);*~;backup';
 
-function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
-
 
 implementation
-
-
-function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
-begin
-  for Result:=Low(TProjectWatchType) to High(TProjectWatchType) do
-    if lowercase(s)=lowercase(ProjectWatchTypeNames[Result]) then exit;
-  Result:=pwtDefault;
-end;
-
-
 
 
 { TProjectBookmark }
@@ -425,53 +382,6 @@ begin
     Add(NewBookmark);
     NewBookmark.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/Mark'+IntToStr(a)+'/');
   end;
-end;
-
-{ TProjectWatch }
-
-constructor TProjectWatch.Create;
-begin
-  inherited Create;
-  Clear;
-end;
-
-procedure TProjectWatch.Clear;
-begin
-  fExpression:='';
-  fRepeatCount:=0;
-  fDigits:=4;
-  fEnabled:=true;
-  fAllowFunctionCalls:=true;
-  fTheType:=pwtDefault;
-end;
-
-destructor TProjectWatch.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TProjectWatch.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  Clear;
-  fExpression:=XMLConfig.GetValue(Path+'Expression',fExpression);
-  fRepeatCount:=XMLConfig.GetValue(Path+'RepeatCount',fRepeatCount);
-  fDigits:=XMLConfig.GetValue(Path+'Digits',fDigits);
-  fEnabled:=XMLConfig.GetValue(Path+'Enabled',fEnabled);
-  fAllowFunctionCalls:=XMLConfig.GetValue(Path+'AllowFunctionCalls',
-    fAllowFunctionCalls);
-  fTheType:=ProjectWatchTypeNameToType(XMLConfig.GetValue(Path+'TheType',''));
-end;
-
-procedure TProjectWatch.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfig.SetValue(Path+'Expression',fExpression);
-  XMLConfig.SetValue(Path+'RepeatCount',fRepeatCount);
-  XMLConfig.SetValue(Path+'Digits',fDigits);
-  XMLConfig.SetValue(Path+'Enabled',fEnabled);
-  XMLConfig.SetValue(Path+'AllowFunctionCalls',fAllowFunctionCalls);
-  XMLConfig.SetValue(Path+'TheType',ProjectWatchTypeNames[fTheType]);
 end;
 
 { TProjectJumpHistoryPosition }
