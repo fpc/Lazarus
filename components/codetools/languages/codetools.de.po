@@ -150,6 +150,10 @@ msgstr ""
 msgid "constant"
 msgstr ""
 
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr ""

@@ -646,6 +646,7 @@ type
     property Align;
     property Anchors;
     property Color;
+    property Constraints;
     property Font;
     property Lines;
     property MaxLength;
@@ -655,9 +656,11 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    Property OnMouseDown;
+    property OnMouseDown;
     property OnMouseUp;
-    Property OnMouseMove;
+    property OnMouseMove;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property ParentFont;
     property PopupMenu;
     property ReadOnly;
@@ -1544,6 +1547,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2004/04/02 19:39:46  mattias
+  fixed checking empty mask raw image
+
   Revision 1.139  2004/03/12 15:48:57  mattias
   fixed 1.0.x compilation
 

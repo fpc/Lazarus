@@ -606,6 +606,10 @@ msgstr ""
 msgid "Packager Units Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
 msgstr ""

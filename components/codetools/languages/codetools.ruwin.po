@@ -150,6 +150,10 @@ msgstr "Каталог компонентов"
 msgid "constant"
 msgstr "константа"
 
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "позиция курсора вне кода"

@@ -2939,10 +2939,6 @@ msgstr "Versione non valida"
 msgid "Irregular "
 msgstr "Extra"
 
-#: lazarusidestrconsts:lispckexplisrequiredby
-msgid "Is required by:"
-msgstr "È richiesto da:"
-
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
 msgstr ""
@@ -4830,6 +4826,10 @@ msgstr "Seleziona la parola a destra"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Seleziona nodo"
+
+#: lazarusidestrconsts:lispckexplisrequiredby
+msgid "Selected package is required by:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"

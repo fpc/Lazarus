@@ -2930,10 +2930,6 @@ msgstr "Неправильная версия"
 msgid "Irregular "
 msgstr "Нерегулярный "
 
-#: lazarusidestrconsts:lispckexplisrequiredby
-msgid "Is required by:"
-msgstr "Требуется:"
-
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
 msgstr "итальянский"
@@ -4821,6 +4817,10 @@ msgstr "Выделить слово справа"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Выделить элемент:"
+
+#: lazarusidestrconsts:lispckexplisrequiredby
+msgid "Selected package is required by:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"

@@ -161,6 +161,10 @@ msgstr "Directorio de los Componentes"
 msgid "constant"
 msgstr "constante"
 
+#: codetoolsstrconsts:ctscpudirectory
+msgid "CPU directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
 msgstr "posición de cursor fuera del código"

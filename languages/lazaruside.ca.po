@@ -2930,10 +2930,6 @@ msgstr ""
 msgid "Irregular "
 msgstr "Irregular"
 
-#: lazarusidestrconsts:lispckexplisrequiredby
-msgid "Is required by:"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
 msgstr ""
@@ -4821,6 +4817,10 @@ msgstr "Seleccionar una paraula a la dreta"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Node seleccionat"
+
+#: lazarusidestrconsts:lispckexplisrequiredby
+msgid "Selected package is required by:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"

@@ -64,6 +64,10 @@ msgstr "Добавить..."
 msgid "All"
 msgstr "Все"
 
+#: objinspstrconsts:oisallfiles
+msgid "All files (*.*)|*.*"
+msgstr ""
+
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr ""
@@ -119,6 +123,10 @@ msgstr "Инспектор объектов"
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr "Свойства"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"

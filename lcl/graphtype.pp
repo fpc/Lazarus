@@ -262,13 +262,13 @@ begin
       BitsPerLine:=GetBitsPerLine(Width,RawImage^.Description.AlphaBitsPerPixel,
                                   RawImage^.Description.AlphaLineEnd);
       UsedBitsPerLine:=Width*RawImage^.Description.AlphaBitsPerPixel;
-      UnusedBitsAtEnd:=BitsPerLine-UsedBitsPerLine;
       if RawImage^.MaskSize<((Height*BitsPerLine+7) shr 3) then
         raise Exception('RawImageMaskIsEmpty Invalid MaskSize');
       if (BitsPerLine and 7)=0 then begin
         // byte boundary
         UsedBytesPerLine:=UsedBitsPerLine shr 3;
-        UnusedByteMask:=(1 shl UnusedBitsAtEnd)-1;
+        UnusedBitsAtEnd:=8-(UsedBitsPerLine and 7);
+        UnusedByteMask:=($ff00 shr UnusedBitsAtEnd) and $ff;
         p:=RawImage^.Mask;
         for y:=0 to Height-1 do begin
           // check fully used bytes in line
@@ -287,7 +287,7 @@ begin
             if (p^ or UnusedByteMask)<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              writeln('RawImageMaskIsEmpty EdgeByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),8));
+              writeln('RawImageMaskIsEmpty EdgeByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',UnusedBitsAtEnd);
               {$ENDIF}
               exit;
             end;
@@ -534,8 +534,8 @@ begin
                           SrcLineEndPosition);
     GetRawImageXYPosition(DestRawImageDesc,DestLineStarts,0,y,
                           DestLineStartPosition);
-    writeln('ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
-    ' DestByte=',DestLineStartPosition.Byte,' DestBit=',DestLineStartPosition.Bit);
+    //writeln('ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
+    //' DestByte=',DestLineStartPosition.Byte,' DestBit=',DestLineStartPosition.Bit);
     if (SrcLineStartPosition.Bit=0)
     and (DestLineStartPosition.Bit=0) then begin
       // copy bytes
@@ -767,6 +767,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/04/02 19:39:46  mattias
+  fixed checking empty mask raw image
+
   Revision 1.29  2004/03/30 17:45:31  mattias
   fixed FindEndOfExpression for bogus statements
 

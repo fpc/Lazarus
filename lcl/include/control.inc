@@ -594,6 +594,7 @@ end;
 Procedure TControl.CMMouseEnter(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
+  //writeln('TControl.CMMouseEnter ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
   if (Message.LParam=0) and (not FMouseEntered) then begin
     FMouseEntered:=true;
     MouseEnter;
@@ -608,6 +609,7 @@ end;
 Procedure TControl.CMMouseLeave(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
+  //writeln('TControl.CMMouseLeave ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
   if (Message.LParam=0) and FMouseEntered then begin
     FMouseEntered:=false;
     MouseLeave;
@@ -2421,11 +2423,13 @@ end;
 
 procedure TControl.MouseEnter;
 begin
+  //writeln('TControl.MouseEnter ',Name,':',ClassName,' ',Assigned(FOnMouseEnter));
   if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
 end;
 
 procedure TControl.MouseLeave;
 begin
+  //writeln('TControl.MouseLeave ',Name,':',ClassName,' ',Assigned(FOnMouseLeave));
   if Assigned(FOnMouseLeave) then FOnMouseLeave(Self);
 end;
 
@@ -2876,6 +2880,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.180  2004/04/02 19:39:46  mattias
+  fixed checking empty mask raw image
+
   Revision 1.179  2004/04/01 18:09:50  mattias
   removed unneeded SendDockNotification
 

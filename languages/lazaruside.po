@@ -6751,7 +6751,7 @@ msgid "Loaded Packages:"
 msgstr ""
 
 #: lazarusidestrconsts:lispckexplisrequiredby
-msgid "Is required by:"
+msgid "Selected package is required by:"
 msgstr ""
 
 #: lazarusidestrconsts:lispckexplpackagenotfound

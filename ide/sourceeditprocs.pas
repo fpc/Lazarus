@@ -84,7 +84,7 @@ var
     FGRed:=(NewColor shr 16) and $ff;
     FGGreen:=(NewColor shr 8) and $ff;
     FGBlue:=NewColor and $ff;
-    if Abs(FGRed-BGRed)+Abs(FGGreen-BGGreen)+Abs(FGBlue-BGBlue)<$180 then
+    if Abs(FGRed-BGRed)+Abs(FGGreen-BGGreen)+Abs(FGBlue-BGBlue)<$140 then
       NewColor:=InvertColor(NewColor);
     ACanvas.Font.Color:=NewColor;
   end;

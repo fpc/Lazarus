@@ -525,6 +525,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnPaint;
     property OnResize;
     property Stretch;
@@ -930,6 +932,9 @@ end.
 
  {
   $Log$
+  Revision 1.101  2004/04/02 19:39:46  mattias
+  fixed checking empty mask raw image
+
   Revision 1.100  2004/03/18 22:14:05  mattias
   published TCheckGroup.Anchors
 

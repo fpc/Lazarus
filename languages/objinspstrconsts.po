@@ -138,3 +138,11 @@ msgstr ""
 msgid "(All)"
 msgstr ""
 
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr ""
+
+#: objinspstrconsts:oisallfiles
+msgid "All files (*.*)|*.*"
+msgstr ""
+
