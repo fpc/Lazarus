@@ -273,6 +273,9 @@ function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 function GetParentForm(Control:TControl): TCustomForm;
 function IsAccel(VK : Word; const Str : String): Boolean;
+function CreateLFM(AForm:TCustomForm):integer;
+function InitResourceComponent(Instance: TComponent; RootAncestor: TClass):Boolean;
+
 
 var
   Application : TApplication;
@@ -284,7 +287,7 @@ implementation
 
 
 uses 
-  buttons,stdctrls,interfaces {,designer};
+  buttons,stdctrls,interfaces,lresources {,designer};
 
 var
   FocusMessages : Boolean; //Should set it to TRUE by defualt but fpc does not handle that yet.
@@ -321,6 +324,123 @@ function IsAccel(VK : Word; const Str : String): Boolean;
 begin
   Result := true;
 end;
+
+
+//==============================================================================
+{
+  This function creates a LFM file from any form.
+  To create the LFC file use the program lazres or the
+  LFMtoLFCfile function.
+}
+function CreateLFM(AForm:TCustomForm):integer;
+// 0 = ok
+// -1 = error while streaming AForm to binary stream
+// -2 = error while streaming binary stream to text file
+var BinStream,TxtMemStream:TMemoryStream;
+  Driver: TAbstractObjectWriter;
+  Writer:TWriter;
+  TxtFileStream:TFileStream;
+begin
+  BinStream:=TMemoryStream.Create;
+  try
+    try
+      Driver:=TBinaryObjectWriter.Create(BinStream,4096);
+      try
+        Writer:=TWriter.Create(Driver);
+        try
+          Writer.WriteDescendent(AForm,nil);
+        finally
+          Writer.Free;
+        end;
+      finally
+        Driver.Free;
+      end;
+    except
+      Result:=-1;
+      exit;
+    end;
+    try
+      // transform binary to text and save LFM file
+      TxtMemStream:=TMemoryStream.Create;
+      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm',fmCreate);
+      try
+        BinStream.Position:=0;
+        ObjectBinaryToText(BinStream,TxtMemStream);
+        TxtMemStream.Position:=0;
+        TxtFileStream.CopyFrom(TxtMemStream,TxtMemStream.Size);
+      finally
+        TxtMemStream.Free;
+        TxtFileStream.Free;
+      end;
+    except
+      Result:=-2;
+      exit;
+    end;
+  finally
+    BinStream.Free;
+  end;
+end;
+
+//==============================================================================
+
+
+//==============================================================================
+
+function InitResourceComponent(Instance: TComponent;
+  RootAncestor: TClass):Boolean;
+
+  function InitComponent(ClassType: TClass): Boolean;
+  var CompResource:LResource;
+    a:integer;
+  begin
+    Result:=false;
+    if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
+    if Assigned(ClassType.ClassParent) then
+      Result:=InitComponent(ClassType.ClassParent);
+    CompResource:=LazarusResources.Find(Instance.ClassName);
+    if (CompResource.Value='') then exit;
+    if (ClassType.InheritsFrom(TForm))
+    and (CompResource.ValueType<>'FORMDATA') then exit;
+    with TMemoryStream.Create do
+      try
+        Write(CompResource.Value[1],length(CompResource.Value));
+        Position:=0;
+        writeln('Signature=',copy(CompResource.Value,1,4));
+        Instance:=ReadComponent(Instance);
+        // MG: workaround til Visible=true is default
+        if Instance is TControl then
+          for a:=0 to Instance.ComponentCount-1 do
+            if Instance.Components[a] is TControl then
+              TControl(Instance.Components[a]).Visible:=true;
+        // MG end of workaround
+      finally
+        Free;
+      end;
+    Result:=true;
+  end;
+
+// InitResourceComponent
+//var LocalizedLoading: Boolean;
+begin
+  //GlobalNameSpace.BeginWrite; // hold lock across all ancestor loads (performance)
+  try
+    //LocalizedLoading:=(Instance.ComponentState * [csInline,csLoading])=[];
+    //if LocalizedLoading then BeginGloabelLoading; // push new loadlist onto stack
+    try
+      Result:=InitComponent(Instance.ClassType);
+      //if LocalizedLoading then NotifyGloablLoading; // call Loaded
+    finally
+      //if LocalizedLoading then EndGloablLoading; // pop loadlist off stack
+    end;
+  finally
+    //GlobalNameSpace.EndWrite;
+  end;
+end;
+
+
+//==============================================================================
+
+
 
 {$I form.inc}
 {$I Customform.inc}

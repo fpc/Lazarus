@@ -794,7 +794,6 @@ begin
 Assert(False, 'Trace:************************************************');
 Assert(False, 'Trace:DRAWFRAMECONTROL');
 Assert(False, 'Trace:************************************************');
-  
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
@@ -3117,6 +3116,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/01/03 18:44:54  lazarus
+  The Speedbutton now has a numglyphs setting.
+  I started the TStringPropertyEditor
+
   Revision 1.9  2000/10/09 22:50:33  lazarus
   MWE:
     * fixed some selection code

@@ -583,6 +583,19 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+{ TStringsPropertyEditor
+  PropertyEditor editor for the TStrings property.  Brings up the dialog for entering test. }
+
+  TStringsPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetValue: string; override;
+    function GetAttributes: TPropertyAttributes; override;
+
+    procedure GetValues(Proc: TGetStringProc);
+    procedure SetValue(const NewValue: string); override;
+
+  end;
 
 //==============================================================================
 
@@ -802,6 +815,7 @@ type
     FPenStyle:TPenStyle;
     FTabOrder:integer;
     FCaption:TCaption;
+    FLines:TStrings;
     function PTypeInfos(const PropName:string):PTypeInfo;
     constructor Create;
     destructor Destroy;  override;
@@ -814,6 +828,7 @@ type
     property PenStyle:TPenStyle read FPenStyle;
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
+    property Lines:TStrings read FLines;
   end;
 
 //==============================================================================
@@ -920,10 +935,8 @@ const
     TBoolPropertyEditor,   // tkBool
     TInt64PropertyEditor,  // tkInt64
     nil                    // tkQWord
-{$IFDEF VER1_1_0}
     ,nil                   // tkDynArray
     ,nil                   // tkInterfaceRaw
-{$ENDIF}
     );
 
 // XXX ToDo: There are bugs in the typinfo.pp. Thus this workaround -------
@@ -2894,6 +2907,137 @@ begin
   Result := [paMultiSelect, paAutoUpdate, paRevertable];
 end;
 
+{ TStringsPropertyEditor }
+
+type
+  TStringsPropEditor = class(TForm)
+    public
+     Memo1 : TMemo;
+     OKButton : TButton;
+     CancelButton : TButton;
+     constructor Create(AOwner : TComponent); override;
+    end;
+
+constructor TStringsPropEditor.Create(AOwner : TComponent);
+Begin
+  inherited;
+  position := poScreenCenter;
+  Height := 200;
+  Width := 300;
+  Memo1 := TMemo.Create(self);
+  Memo1.Parent := Self;
+  Memo1.Left := 0;
+  Memo1.Top := 0;
+  memo1.Height := Height-50;
+  Memo1.Width := Width -1;
+  memo1.Visible := true;
+
+  OKButton := TButton.Create(self);
+  with OKButton do
+      Begin
+        Parent := self;
+        Caption := '&OK';
+        ModalResult := mrOK;
+        Left := self.width div 2;
+        top := self.height -45;
+        Visible := true;
+      end;
+
+  CancelButton := TButton.Create(self);
+  with CancelButton do
+      Begin
+        Parent := self;
+        Caption := '&Cancel';
+        ModalResult := mrCancel;
+        Left := (self.width div 2) + 75;
+        top := self.height -45;
+        Visible := true;
+      end;
+
+end;
+
+
+procedure TStringsPropertyEditor.Edit;
+type
+  TGetStrFunc=function(const StrValue:string):Integer of object;
+var
+  TheDialog: TStringsPropEditor;
+
+  I:Integer;
+  Values:TStringList;
+  AddValue:TGetStrFunc;
+
+  StringsType: PTypeInfo;
+  Count : Integer;
+begin
+Writeln('edit');
+Count := 0;
+  Values:=TStringList.Create;
+  try
+    AddValue:=@Values.Add;
+    GetValues(TGetStringProc(AddValue));
+       writeln('Create the TheDialog');
+       TheDialog:=TStringsPropEditor.Create(Application);
+       writeln('Created the TheDialog');
+       TheDialog.Memo1.Lines.Assign(Values);
+       TheDialog.Caption:='Strings Editor Dialog';
+       try
+         if (TheDialog.ShowModal = mrOK) then
+            begin
+            //what do I do here?
+            end;
+       finally
+        TheDialog.Free;
+       end;
+
+  finally
+    Values.Free;
+  end;
+
+
+
+end;
+
+
+procedure TStringsPropertyEditor.GetValues(Proc: TGetStringProc);
+var
+  I: Integer;
+  StringsType: PTypeInfo;
+begin
+Writeln('GETVALUES');
+//what do I do here?
+  StringsType := GetPropType;
+  with GetTypeData(StringsType)^ do
+    for I := MinValue to MaxValue do Proc(GetStrValueAt(I));
+end;
+
+function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect,paDialog, paRevertable];
+end;
+
+
+function  TStringsPropertyEditor.GetValue: string;
+Begin
+Writeln('GETVALUE');
+Result := '(TStrings)';
+end;
+
+procedure  TStringsPropertyEditor.SetValue(const NewValue: string);
+var
+  I: Integer;
+begin
+Writeln('SETVALUES');
+{  I := GetStrValueA(GetPropType, NewValue);
+  if I < 0 then begin
+    {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
+    exit;
+  end;
+  SetStrValue(I);
+}
+end;
+
+
 
 //==============================================================================
 
@@ -3188,6 +3332,8 @@ initialization
     nil,'',TTabOrderPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
     nil,'',TCaptionPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
+    nil,'Lines',TStringsPropertyEditor);
 
 finalization
   PropertyEditorMapperList.Free;  PropertyEditorMapperList:=nil;

@@ -544,8 +544,12 @@ begin
     begin
       Include(FFormState, fsCreating);
       try
-//        if not InitInheritedComponent(Self, TForm) then
-//          raise EResNotFound.CreateFmt('Resource %s not found', [ClassName]);
+       // *** New
+        if not InitResourceComponent(Self, TForm) then begin
+          writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
+
+        end;
+        // ***
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -820,6 +824,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/01/03 18:44:54  lazarus
+  The Speedbutton now has a numglyphs setting.
+  I started the TStringPropertyEditor
+
   Revision 1.7  2000/12/19 18:43:13  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

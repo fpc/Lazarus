@@ -20,10 +20,14 @@ begin
 
   Inherited Create(AOwner);
   FCompStyle := csSpeedButton;
+
+  FGlyph := TButtonGlyph.Create;
+  FGlyph.OnChange := @GlyphChanged;
+
   SetBounds(0, 0, 23, 22);
   ControlStyle := [csCaptureMouse, csDoubleClicks];
 
-  FGlyph := TButtonGlyph.Create;
+
   {set default alignment}
   Align := alNone;
   FMouseInControl := False;
@@ -117,7 +121,6 @@ end;
 procedure TSpeedButton.SetGlyph(Value : TBitmap);
 begin
   FGlyph.Glyph := Value;
-  //SendMessage(LM_IMAGECHANGED,Self,nil);
   Invalidate;
 end;
 
@@ -137,7 +140,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetGroupIndex
+  Method: TSpeedButton.SetNumGlyphs
+  Params: Value : Integer = Number of glyphs in the file/resource
+  Returns:  nothing
+
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.SetNumGlyphs(Value : Integer);
+Begin
+if Value < 0 then Value := 1;
+if Value > 4 then Value := 4;
+
+if Value <> TButtonGlyph(fGlyph).NumGlyphs then
+   Begin
+    TButtonGlyph(fGlyph).NumGlyphs := Value;
+    Invalidate;
+   end;
+end;
+
+
+{------------------------------------------------------------------------------
+  Method: TSpeedButton.UpdateExclusive
   Params: none
   Returns:  nothing
 
@@ -170,6 +192,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TSpeedButton.GetNumGlyphs
+  Params: none
+  Returns:  The number stored in TButtonGlyph(FGlyph).NumGlyphs
+
+ ------------------------------------------------------------------------------}
+Function TSpeedButton.GetNumGlyphs : Integer;
+Begin
+  Result :=  TButtonGlyph(fGlyph).NumGlyphs;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TSpeedButton.GlyphChanged
+  Params: Sender - The glyph that changed
+  Returns:  zippo
+
+ ------------------------------------------------------------------------------}
+Procedure TSpeedButton.GlyphChanged(Sender : TObject);
+Begin
+  //redraw the button;
+  Invalidate;
+end;
+
+{------------------------------------------------------------------------------
   Method: TSpeedbutton.Paint
   Params: none
   Returns:  nothing
@@ -186,7 +231,7 @@ var
   R : TRect;
   Offset: TPoint;
 begin
-  if not Enabled 
+  if not Enabled
   then begin
     FState := bsDisabled;
     FDragging := False;
@@ -204,15 +249,15 @@ begin
   PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
 
-  if not FFlat then 
+  if not FFlat then
   begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
-    if FState in [bsDown, bsExclusive] 
+    if FState in [bsDown, bsExclusive]
     then DrawFlags := DrawFlags or DFCS_PUSHED;
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else begin   //flat
-    if (FState in [bsDown, bsExclusive]) 
+    if (FState in [bsDown, bsExclusive])
     or (FMouseInControl and (FState <> bsDisabled)) 
     or (csDesigning in ComponentState) 
     then
@@ -229,7 +274,7 @@ begin
     InflateRect(PaintRect, -1, -1);
   end;
   
-  if FState in [bsDown, bsExclusive] 
+  if FState in [bsDown, bsExclusive]
   then begin
     if (FState = bsExclusive)
     and (not FFlat or not FMouseInControl) 
@@ -479,6 +524,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/01/03 18:44:54  lazarus
+  The Speedbutton now has a numglyphs setting.
+  I started the TStringPropertyEditor
+
   Revision 1.1  2000/07/13 10:28:28  michael
   + Initial import
 

@@ -39,6 +39,11 @@ type
   TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
   TButtonState = (bsUp, bsDisabled, bsDown, bsExclusive);
 
+  {TNumGlyphs holds the number of glyphs in an image.  We restrict it to 4 to stay compatable
+   but we don't NEED to.
+   If we change this the code in SetNumGlyphs for @link(TSpeedButton) needs to be changed}
+  TNumGlyphs = 1..4;
+
   TButton = class(TButtonControl)  //TButtoncontrol is declared in stdctrls.pp
   private
     FCancel : Boolean;
@@ -86,7 +91,12 @@ type
   TButtonGlyph = class
   private
     FOriginal : TBitmap;
+    FNumGlyphs : TNumGlyphs;
+
+    FOnChange  : TNotifyEvent;
+
     Procedure SetGlyph(Value : TBitmap);
+    Procedure SetNumGlyphs(Value : TNumGlyphs);
   protected
   public
     constructor Create;
@@ -96,6 +106,9 @@ type
       const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
       State: TButtonState; Transparent: Boolean; BiDiFlags: Longint): TRect;
     property Glyph : TBitmap read FOriginal write SetGlyph;
+    property NumGlyphs : TNumGlyphs read FNumGlyphs write SetNumGlyphs;
+
+    property OnChange : TNotifyEvent read FOnChange write FOnChange;
   end;
 
 
@@ -145,6 +158,7 @@ type
       FSpacing : Integer;
       FTransparent : Boolean;
       Function GetGlyph : TBitmap;
+      Function GetNumGlyphs : Integer;
       Procedure UpdateExclusive;
       Procedure UpdateTracking;
       Procedure SetAllowAllUp(Value : Boolean);
@@ -152,6 +166,7 @@ type
       Procedure SetFlat(Value : Boolean);
       Procedure SetGlyph(value : TBitmap);
       Procedure SetGroupIndex(value : Integer);
+      Procedure SetNumGlyphs(value : Integer);
       //there should be a procedure called settransparent but it's not used at this point
       Procedure CMButtonPressed(var MEssage : TLMessage); message CM_BUTTONPRESSED;
       Procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
@@ -159,6 +174,7 @@ type
       Procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
      protected
       FState : TButtonState;
+      Procedure GlyphChanged(Sender : TObject);
       procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
       procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -177,6 +193,7 @@ type
       property Enabled;
       property Flat : Boolean read FFlat write SetFlat default False;
       property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
+      property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
       property Transparent : Boolean read FTransparent write FTransparent default false;
       property Visible;
      end;
@@ -217,6 +234,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/01/03 18:44:54  lazarus
+  The Speedbutton now has a numglyphs setting.
+  I started the TStringPropertyEditor
+
   Revision 1.5  2000/12/01 18:12:40  lazarus
   Modified Gloabal so TDesignForm isn't included anymore.
   Shane

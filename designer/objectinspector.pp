@@ -286,6 +286,7 @@ begin
     Visible:=false;
     Enabled:=false;
     OnClick:=@ValueButtonClick;
+    Caption := '...';
     Parent:=Self;
   end;
 

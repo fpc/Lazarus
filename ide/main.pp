@@ -276,7 +276,6 @@ begin
   LoadMainMenu;
 
   MouseDownControl:=nil;
-
   Bitmap1 := TBitmap.Create;
   Bitmap1.Handle := CreatePixmapIndirect(@IMGOK_Check, ColorToRGB(clBtnFace));
 
@@ -315,7 +314,6 @@ begin
 
   For I := 0 to RegCompList.PageCount-1 do
       Begin
-        Writeln('I = '+inttostr(i));
         RegCompPage := RegCompList.Pages[i];
           if I = 0 then
              Notebook1.Pages.Strings[i] := RegCompPage.Name
@@ -339,6 +337,7 @@ begin
 
              for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
                  begin
+                  writeln('X = '+inttostr(x));
 		  RegComp := RegCompPage.Items[x];
                   IDEComponent := TIDEComponent.Create;
                   IdeComponent.RegisteredComponent := RegComp;
@@ -489,6 +488,7 @@ begin
     Left := Speedbutton4_2.Left + 13;
     OnClick := @mnuSaveCLicked;
     Glyph := Pixmap1;
+    NumGlyphs := 2;
     Visible := True;
     Flat := true;
     Name := 'Speedbutton5';
@@ -510,6 +510,7 @@ begin
     Left := Speedbutton5.left + 26;
     OnClick := @mnuSaveAllCLicked;
     Glyph := Pixmap1;
+    NumGlyphs := 2;
     Visible := True;
     Flat := true;
     Name := 'Speedbutton6';
@@ -573,6 +574,7 @@ begin
     Left := Speedbutton8.Left + 26;
     //OnClick := @mnuNewFormCLicked;
     Glyph := Pixmap1;
+    NumGlyphs := 2;
     Visible := True;
     Flat := true;
     Name := 'RunSpeedbutton';
@@ -1772,6 +1774,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2001/01/03 18:44:54  lazarus
+  The Speedbutton now has a numglyphs setting.
+  I started the TStringPropertyEditor
+
   Revision 1.29  2000/12/29 20:43:17  lazarus
   I added the run button with an Enable and disable icon
 

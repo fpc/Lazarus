@@ -22,6 +22,8 @@ var
   n, BufIndex: Integer;
   t : String;
 begin
+writeln('Entering');
+
   FreeContext;
 
   // Convert a XPM filedata format to a XPM memory format
@@ -76,11 +78,16 @@ begin
   finally
     S.Free;
   end;
+writeln('leaving');
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/01/03 18:44:54  lazarus
+  The Speedbutton now has a numglyphs setting.
+  I started the TStringPropertyEditor
+
   Revision 1.3  2000/12/29 20:32:33  lazarus
   Speedbuttons can now draw disabled images.
   Shane

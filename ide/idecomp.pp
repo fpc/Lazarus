@@ -33,42 +33,69 @@ uses
 
 type
    {--------------------------------------------
+   Created by Shane Miller
    This class is used for adding controls to the toolbar to be
    dropped onto a form
    ---------------------------------------------}
    TIDEComponent = class(TObject)
    private
+     {The speedbutton that's displayed on the IDE control bar}
      FSpeedButton : TSpeedButton;
+     {This is the @link(TRegisteredComponent) from compreg.pp.}
      FRegisteredComponent : TRegisteredComponent;
    protected
+     {Loads the image (from a resource) into a @link(TPixMap)}
      Function LoadImageintoPixmap : TPixmap;
    public
      constructor Create;
      destructor Destroy; override;
-     Function _Speedbutton(AOwner : TComponent; nParent: TWinControl): TSpeedButton; Virtual;
+     {Public access to create the Speedbutton.}
+     Function _Speedbutton(AOwner : TComponent; nParent: TWinControl): TSpeedButton;
+     {Public access to @link(FSpeedbutton)}
      property SpeedButton : TSpeedButton  read FSpeedButton write FSPeedbutton;
+     {Public access to @link(FRegisteredComponent)}
      property RegisteredComponent : TRegisteredComponent read FRegisteredComponent write FRegisteredComponent;
 
    end;
 
    {-------------------------------------------
+   Created by Shane Miller
    This class keeps a list of TIDeComponents
    --------------------------------------------}
    TIdeCompList = Class(TObject)
    private
+     {The list of @link(TIdeComponent)s used in the IDE.}
      FItems : TList;
+     {The count of @link(TIdeComponent)s used in the IDE.}
      FCount : Integer;
+     {Used to count the @link(TIdeComponent)s used in the IDE.  Checks FItems.Count}
      Function GetCount : Integer;
    public
      constructor Create;
      destructor Destroy; override;
 
+     {You can pass the Speedbutton and find the @link(TIdeComponent).
+      This can be used when the Speedbutton is clicked and you want to find out
+      what the @link(TRegisteredComponent) is.}
      function FindCompbySpeedbutton(Value : TSpeedButton) : TIDEComponent;
+
+     {You can pass the index and find the @link(TIdeComponent).
+      This is used because the tag of the speedbutton stores it's index
+      in this list}
      function FindCompbyIndex(Value : Integer) : TIDEComponent;
+
+     {You can pass the @link(TRegisteredComponent) and it'll return the @link(TIdeComponent).
+      This can be used if you are running through the list of RegisteredComponents and
+      want to find the speedbutton associated with it.}
      function FindCompbyRegComponent(Value : TRegisteredComponent) : TIDEComponent;
 
+     {This is used to add a @link(TIdeComponent) to the @link(FItems).}
      function Add(Value : TObject) : Integer;
+
+     {This is used to delete a @link(TIdeComponent) from the @link(FItems).}
      function Delete(Value : TObject) : Boolean;
+
+     {Calls @link(GetCount)}
      property Count : Integer read GetCount;
    end;
 
