@@ -129,10 +129,13 @@ type
   public
     Index:integer;
     LastPaintedValue:string;
+    function GetBottom:integer;
+    function IsReadOnly: boolean;
+  public
     property Editor:TPropertyEditor read FEditor;
     property Top:integer read FTop write FTop;
     property Height:integer read FHeight write FHeight;
-    function Bottom:integer;
+    property Bottom: integer read GetBottom;
     property Lvl:integer read FLvl;
     property Name:string read FName;
     property Expanded:boolean read FExpanded;
@@ -904,12 +907,14 @@ begin
       ValueComboBox.Items.Text:='';
       ValueComboBox.Items.Clear;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+      ValueComboBox.Enabled:=not NewRow.IsReadOnly;
       NewRow.Editor.GetValues(@AddStringToComboBox);
       ValueComboBox.Text:=NewValue;
       ValueComboBox.Items.EndUpdate;
     end else begin
       FCurrentEdit:=ValueEdit;
-      ValueEdit.ReadOnly:=paReadOnly in NewRow.Editor.GetAttributes;
+      ValueEdit.ReadOnly:=NewRow.IsReadOnly;
+      ValueEdit.Enabled:=true;
       ValueEdit.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueEdit.Text:=NewValue;
     end;
@@ -918,13 +923,14 @@ begin
       if FPropertyEditorHook<>nil then
         FCurrentEditorLookupRoot:=FPropertyEditorHook.LookupRoot;
       FCurrentEdit.Visible:=true;
-      FCurrentEdit.Enabled:=true;
-      if (FDragging=false) and (FCurrentEdit.Showing) then begin
+      if (FDragging=false) and (FCurrentEdit.Showing)
+      and FCurrentEdit.Enabled
+      and (not NewRow.IsReadOnly) then begin
         FCurrentEdit.SetFocus;
       end;
     end;
     if FCurrentButton<>nil then
-      FCurrentButton.Enabled:=true;
+      FCurrentButton.Enabled:=not NewRow.IsReadOnly;
   end;
   Exclude(FStates,pgsChangingItemIndex);
 end;
@@ -1175,6 +1181,7 @@ begin
               ShrinkRow(Index)
             else
               ExpandRow(Index);
+            ItemIndex:=Index;
           end;
         end else begin
           ItemIndex:=Index;
@@ -1873,9 +1880,25 @@ begin
   end;
 end;
 
-function TOIPropertyGridRow.Bottom:integer;
+function TOIPropertyGridRow.GetBottom:integer;
 begin
   Result:=FTop+FHeight;
+end;
+
+function TOIPropertyGridRow.IsReadOnly: boolean;
+var
+  ParentRow: TOIPropertyGridRow;
+begin
+  Result:=Editor.IsReadOnly;
+  if Result then exit;
+  ParentRow:=Parent;
+  while (ParentRow<>nil) do begin
+    if paReadOnlySubProperties in ParentRow.Editor.GetAttributes then begin
+      Result:=true;
+      exit;
+    end;
+    ParentRow:=ParentRow.Parent;
+  end;
 end;
 
 //==============================================================================

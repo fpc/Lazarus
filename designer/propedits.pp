@@ -136,6 +136,7 @@ type
                         rendered the full width of the inspector.
         paVolatileSubProperties: Any change of property value causes any shown
                          subproperties to be recollected.
+        paReadOnlySubProperties: All subproperties are readonly.
         paReference:     Property contains a reference to something else.  When
                          used in conjunction with paSubProperties the referenced
                          object should be displayed as sub properties to this
@@ -248,6 +249,7 @@ type
     paRevertable,
     paFullWidthName,
     paVolatileSubProperties,
+    paReadOnlySubProperties,
     paReference,
     paNotNestable
     );
@@ -311,6 +313,7 @@ type
     function AutoFill: Boolean; virtual;
     procedure Edit; virtual;
     function GetAttributes: TPropertyAttributes; virtual;
+    function IsReadOnly: boolean; virtual;
     function GetComponent(Index: Integer):TPersistent;
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
@@ -441,9 +444,12 @@ type
   should.  This is useful for properties like the TSetElementPropertyEditor. }
 
   TNestedPropertyEditor = class(TPropertyEditor)
+  private
+    FParentEditor: TPropertyEditor;
   public
     constructor Create(Parent: TPropertyEditor); overload;
     destructor Destroy; override;
+    property ParentEditor: TPropertyEditor read FParentEditor;
   end;
 
 { TSetElementPropertyEditor
@@ -1577,8 +1583,7 @@ begin
       for I := 0 to CompCount - 1 do
         TPropInfoList(PropLists[I]).Intersect(Candidates);
       // PropList now has a matrix of PropInfo's.
-      // -> create property editors for each property
-      //    with given each the array of PropInfos
+      // -> create a property editor for each property
       for I := 0 to Candidates.Count - 1 do
       begin
         EdClass := GetEditorClass(Candidates[I], Obj);
@@ -1681,6 +1686,11 @@ end;
 function TPropertyEditor.GetAttributes:TPropertyAttributes;
 begin
   Result:=[paMultiSelect,paRevertable];
+end;
+
+function TPropertyEditor.IsReadOnly: boolean;
+begin
+  Result:=paReadOnly in GetAttributes;
 end;
 
 function TPropertyEditor.GetComponent(Index:Integer):TPersistent;
@@ -2511,6 +2521,7 @@ end;
 
 constructor TNestedPropertyEditor.Create(Parent: TPropertyEditor);
 begin
+  FParentEditor:=Parent;
   FPropertyHook:=Parent.PropertyHook;
   FComponents:=Parent.FComponents;
   FPropList:=Parent.FPropList;
