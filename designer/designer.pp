@@ -183,10 +183,10 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-    writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',Message.DC);
+    // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
     ControlSelection.DrawMarker(Sender,Message.DC);
-    ControlSelection.DrawGrabbers;
   end;
+  ControlSelection.DrawGrabbers(Message.DC);
 end;
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMMouse);
@@ -219,14 +219,14 @@ Begin
     ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y);
 
   if (Message.Keys and MK_Shift) = MK_Shift then
-    Writeln('Shift down')
+    Write(' Shift down')
   else
-    Writeln('No Shift down');
+    Write(' No Shift down');
 
   if (Message.Keys and MK_Control) = MK_Control then
-    Writeln('CTRL down')
+    Writeln(', CTRL down')
   else
-    Writeln('No CTRL down');
+    Writeln(', No CTRL down');
 
   if Assigned(FOnGetSelectedComponentClass) then
     FOnGetSelectedComponentClass(Self,SelectedCompClass)
@@ -341,7 +341,6 @@ Begin
     end;
   end else begin 
     // add a new control
-
     if Assigned(FOnSetDesigning) then FOnSetDesigning(Self,FCustomForm,False);
     ParentCI:=TComponentInterface(FFormEditor.FindComponent(Sender));
     if (Sender is TWinControl)
@@ -378,6 +377,7 @@ Begin
           // this resets it to the mouse. (= selection tool)
           FOnUnselectComponentClass(Self);
       if Assigned(FOnSetDesigning) then FOnSetDesigning(Self,FCustomForm,True);
+      Form.Invalidate;
     end;
   end;
 
@@ -570,7 +570,6 @@ procedure TDesigner.PaintGrid;
 var
   x,y : integer;
 begin
-writeln('PaintGrid DC=',FCustomForm.Canvas.Handle,' ',Cardinal(Pointer(FCustomForm)));
   with FCustomForm.Canvas do begin
     Pen.Color := clGray;
     x := 0;

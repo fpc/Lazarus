@@ -380,8 +380,7 @@ procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient; AX, AY: In
 var
   IsVisible: Boolean;
 begin
-Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos');
-Writeln('ax,ay = '+inttostr(ax)+','+Inttostr(ay));
+//Writeln('[GTKAPIWIDGETCLIENT] SetCaretPos '+inttostr(ax)+','+Inttostr(ay));
 
   if Client = nil 
   then begin
@@ -546,6 +545,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/03/13 15:02:14  lazarus
+  MG: activated GetWindowOrgEx
+
   Revision 1.3  2001/02/16 19:13:31  lazarus
   Added some functions
   Shane

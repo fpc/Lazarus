@@ -332,6 +332,7 @@ Function TWinControl.GetClientOrigin: TPoint;
 Begin
   Result.X := 0;
   Result.Y := 0;
+//writeln('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
   LCLLinux.ClientToScreen(Handle,Result);
   Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
@@ -1328,6 +1329,7 @@ var
   PS : TPaintStruct;
   I : Integer;
 begin
+//writeln('[TWinControl.WMPaint] ',Name,':',ClassName);
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
   if (Msg.DC <> 0) then
   begin
@@ -1934,6 +1936,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/03/13 15:02:13  lazarus
+  MG: activated GetWindowOrgEx
+
   Revision 1.21  2001/03/12 12:17:02  lazarus
   MG: fixed random function results
 

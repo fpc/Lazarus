@@ -686,10 +686,10 @@ begin
     Result:=true;
     exit;
   end;
+  Position:=FormBodyStartPos;
   repeat
     // find a good position to insert the component
     // in front of next section and in front of procedures/functions
-    Position:=FormBodyStartPos;
     Atom:=lowercase(ReadNextPascalAtom(Source,Position,AtomStart));
     if (Atom='procedure') or (Atom='function') or (Atom='end') or (Atom='class')
     or (Atom='constructor') or (Atom='destructor')

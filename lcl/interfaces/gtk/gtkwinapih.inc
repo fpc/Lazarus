@@ -52,7 +52,7 @@ function GetSystemMetrics(nIndex: Integer): Integer;  override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int : Integer): Longint; override;
-Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
+Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
@@ -91,7 +91,7 @@ function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues)
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
-function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
+function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean; override;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; override;
@@ -106,6 +106,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/03/13 15:02:14  lazarus
+  MG: activated GetWindowOrgEx
+
   Revision 1.11  2001/02/16 19:13:31  lazarus
   Added some functions
   Shane

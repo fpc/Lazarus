@@ -144,10 +144,10 @@ end;
 Function TComponentInterface.FSetProp(PRI : PPropInfo;
 const Value) : Boolean;
 Begin
-writeln('Index = '+inttostr(PRI^.index));
+//writeln('Index = '+inttostr(PRI^.index));
   case PRI^.PropType^.Kind of
   tkBool: Begin
-             Writeln('Boolean....');
+             //Writeln('Boolean....');
              SetOrdProp(FControl,PRI,longint(Value));
              Result := True;
              end;
@@ -155,28 +155,28 @@ writeln('Index = '+inttostr(PRI^.index));
   tkLString,
   tkAString,
   tkWString : Begin
-              Writeln('String...');
+              //Writeln('String...');
               SetStrProp(FControl,PRI,ShortString(Value));
               Result := True;
              end;
   tkInteger,
   tkInt64   : Begin
-              Writeln('Int64...');
+              //Writeln('Int64...');
               SetInt64Prop(FControl,PRI,Int64(Value));
               Result := True;
              end;
   tkFloat  : Begin
-              Writeln('Float...');
+              //Writeln('Float...');
               SetFloatProp(FControl,PRI,Extended(Value));
               Result := True;
              end;
   tkVariant  : Begin
-              Writeln('Variant...');
+              //Writeln('Variant...');
               SetVariantProp(FControl,PRI,Variant(Value));
               Result := True;
              end;
   tkMethod  : Begin
-              Writeln('Method...');
+              //Writeln('Method...');
               SetMethodProp(FControl,PRI,TMethod(value));
               Result := True;
              end;
@@ -194,26 +194,26 @@ Result := True;
        tkLString,
        tkAString,
        tkWString : Begin
-                    Writeln('Get String...');
+                    //Writeln('Get String...');
                     ShortString(Value) := GetStrProp(FControl,PRI);
                     Writeln('The string returned is '+String(value));
                     Writeln('*Get String...');
                    end;
        tkInteger,
        tkInt64   : Begin
-                    Writeln('Get Int64...');
+                    //Writeln('Get Int64...');
                     Int64(Value) := GetInt64Prop(FControl,PRI);
                    end;
        tkFloat  : Begin
-                    Writeln('Get Float...');
+                    //Writeln('Get Float...');
                     Extended(Value) := GetFloatProp(FControl,PRI);
                    end;
        tkVariant  : Begin
-                    Writeln('Get Variant...');
+                    //Writeln('Get Variant...');
                     Variant(Value) := GetVariantProp(FControl,PRI);
                    end;
        tkMethod  : Begin
-                    Writeln('Get Method...');
+                    //Writeln('Get Method...');
                     TMethod(Value) := GetMethodProp(FControl,PRI);
                    end;
          else
@@ -439,7 +439,7 @@ Function TComponentInterface.SetPropbyName(Name : ShortString; const Value) : Bo
 var
   PRI : PPropInfo;
 Begin
-  Writeln('SetPropByName Name='''+Name+'''');
+  //Writeln('SetPropByName Name='''+Name+'''');
   Result := False;
 
   PRI := GetPropInfo(FControl.ClassInfo,Name);
@@ -447,12 +447,6 @@ Begin
   Begin
     Result :=FSetProp(PRI,Value);
   end;
-
-if Result = true then
-Writeln('SETPROPBYNAME result = true')
-else
-Writeln('SETPROPBYNAME result = false');
-
 end;
 
 Function TComponentInterface.GetControlCount: Integer;

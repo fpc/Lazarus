@@ -135,7 +135,7 @@ type
       // size all controls depending on ActiveGrabber.
       // if ActiveGrabber=nil then Left,Top
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
-    procedure DrawGrabbers;
+    procedure DrawGrabbers(DC: HDC);
     function GrabberAtPos(X,Y:integer):TGrabber;
     property Grabbers[AGrabIndex:TGrabIndex]:TGrabber read GetGrabbers write SetGrabbers;
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
@@ -215,7 +215,7 @@ begin
   inherited;
   FControls:=TList.Create;
   FGrabberSize:=6;
-  FMarkerSize:=4;
+  FMarkerSize:=5;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     FGrabbers[g]:=TGrabber.Create;
     FGrabbers[g].Positions:=GRAB_POSITIONS[g];
@@ -272,12 +272,15 @@ var i,ALeft,ATop:integer;
     ControlOrigin:=AControl.ClientOrigin;
     ALeft:=ControlOrigin.X-FormOrigin.X;
     ATop:=ControlOrigin.Y-FormOrigin.Y;
+writeln('[AbsoluteLeftTop] ',ControlOrigin.X,',',ControlOrigin.Y
+        ,'  ',FormOrigin.X,',',FormOrigin.Y);
   end;
 
 begin
   if FControls.Count>=1 then begin
     FormOrigin:=FCustomForm.ClientOrigin;
     AbsoluteLeftTop(Items[0].Control,ALeft,ATop);
+writeln('[TControlSelection.AdjustSize] ',ALeft,',',ATop,'  ',Items[0].Control.Name);
     FLeft:=ALeft;
     FTop:=ATop;
     FHeight:=Items[0].Control.Height;
@@ -296,6 +299,7 @@ begin
       FHeight:=Max(FTop+FHeight,ATop+Items[i].Control.Height)-FTop;
     end;
     AdjustGrabber;
+writeln('[TControlSelection.AdjustSize] ',FLeft,',',FTop);
   end;
 end;
 
@@ -490,23 +494,6 @@ begin
   DoChange;
 end;
 
-procedure TControlSelection.DrawGrabbers;
-var OldBrushColor:TColor;
-  g:TGrabIndex;
-begin
-  if (Count=0) or (FCustomForm=nil)
-  or (Items[0].Control is TCustomForm) then exit;
-  with FCustomForm.Canvas do begin
-    OldBrushColor:=Brush.Color;
-    Brush.Color:=clBlack;
-    for g:=Low(TGrabIndex) to High(TGrabIndex) do
-      FillRect(Rect(FGrabbers[g].Left,FGrabbers[g].Top
-        ,FGrabbers[g].Left+FGrabbers[g].Width
-        ,FGrabbers[g].Top+FGrabbers[g].Height));
-    Brush.Color:=OldbrushColor;
-  end;
-end;
-
 function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
 var g:TGrabIndex;
 begin
@@ -522,32 +509,64 @@ begin
   Result:=nil;
 end;
 
+procedure TControlSelection.DrawGrabbers(DC: HDC);
+var OldBrushColor:TColor;
+  g:TGrabIndex;
+  FormOrigin, DCOrigin, Diff: TPoint;
+begin
+  if (Count=0) or (FCustomForm=nil)
+  or (Items[0].Control is TCustomForm) then exit;
+  GetWindowOrgEx(DC, DCOrigin);
+  FormOrigin:=FCustomForm.ClientOrigin;
+  Diff.X:=FormOrigin.X-DCOrigin.X;
+  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
+{
+writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
+   ,' DC=',DCOrigin.X,',',DCOrigin.Y
+   ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top
+   ,' Selection=',FLeft,',',FTop);
+}
+  FCustomForm.Canvas.Handle:=DC;
+  with FCustomForm.Canvas do begin
+    OldBrushColor:=Brush.Color;
+    Brush.Color:=clBlack;
+    for g:=Low(TGrabIndex) to High(TGrabIndex) do
+      FillRect(Rect(
+         Diff.X+FGrabbers[g].Left
+        ,Diff.Y+FGrabbers[g].Top
+        ,Diff.X+FGrabbers[g].Left+FGrabbers[g].Width
+        ,Diff.Y+FGrabbers[g].Top+FGrabbers[g].Height
+      ));
+    Brush.Color:=OldbrushColor;
+  end;
+end;
+
 procedure TControlSelection.DrawMarker(AControl:TControl; DC:HDC);
 var OldBrushColor:TColor;
   ALeft,ATop:integer;
-  FormOrigin,AControlOrigin:TPoint;
+  AControlOrigin,DCOrigin:TPoint;
   SaveIndex:HDC;
 begin
   if (Count<1) or (FCustomForm=nil) or (AControl is TCustomForm)
   or (not IsSelected(AControl)) then exit;
-  FormOrigin:=FCustomForm.ClientOrigin;
   AControlOrigin:=AControl.ClientOrigin;
-  // MoveWindowOrg is currently truned off in the gtk
+  GetWindowOrgEx(DC, DCOrigin);
+  // MoveWindowOrg is currently not functioning in the gtk
   // this is a workaround
-  ALeft:=0; //AControlOrigin.X-FormOrigin.X;
-  ATop:=0; //AControlOrigin.Y-FormOrigin.Y;
+  ALeft:=AControlOrigin.X-DCOrigin.X; //AControlOrigin.X-FormOrigin.X;
+  ATop:=AControlOrigin.Y-DCOrigin.Y; //AControlOrigin.Y-FormOrigin.Y;
   SaveIndex := SaveDC(DC);
-  //MoveWindowOrg(DC, 15,5);
   FCustomForm.Canvas.Handle:=DC;
-writeln('DrawMarker A ',FCustomForm.Name,'='
-    ,FormOrigin.X,',',FormOrigin.Y
+{
+writeln('DrawMarker A ',FCustomForm.Name
     ,' Control=',AControl.Name,',',AControlOrigin.X,',',AControlOrigin.Y
-    ,' DC=',FCustomForm.Canvas.Handle,' ',Cardinal(Pointer(FCustomForm))
-    ,' MS=',MarkerSize);
+    ,' DCxy=',DCOrigin.x,',',DCOrigin.y
+    ,' DC=',Hexstr(FCustomForm.Canvas.Handle,8),' ',HexStr(Cardinal(Pointer(FCustomForm)),8)
+    );
+}
   with FCustomForm.Canvas do begin
     OldBrushColor:=Brush.Color;
     Brush.Color:=clDKGray;
-//FillRect(Rect(0,0,6,500));
     FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
     FillRect(Rect(ALeft,ATop+AControl.Height-MarkerSize
              ,ALeft+MarkerSize,ATop+AControl.Height));

@@ -94,15 +94,15 @@ end;
 
 function gtkdraw(Widget: PGtkWidget; area: PGDKRectangle; data: gPointer) : GBoolean; cdecl;
 var
-   MSG: TLMPaint;
+  MSG: TLMPaint;
 begin
-   Result := True;
-   EventTrace('draw', data);
-   MSG.Msg := LM_PAINT;
-   MSG.DC := GetDC(THandle(Widget));
-   MSG.Unused := 0;
+  Result := True;
+  EventTrace('draw', data);
+  MSG.Msg := LM_PAINT;
+  MSG.DC := GetDC(THandle(Widget));
+  MSG.Unused := 0;
 
-   Result := DeliverPostMessage(Data, MSG);
+  Result := DeliverPostMessage(Data, MSG);
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
@@ -255,7 +255,7 @@ var
    Mess : TLMessage;
 begin
    EventTrace('focus', data);
-   Writeln('Getting Focus...');
+//   Writeln('Getting Focus...');
    //TODO: fill in old focus
    Mess.msg := LM_SETFOCUS;
    Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
@@ -267,7 +267,7 @@ var
    Mess : TLMessage;
 begin
    EventTrace('killfocus', data);
-   Writeln('KIlling Focus...');
+//   Writeln('Killing Focus...');
    Mess.msg := LM_KILLFOCUS;
    //TODO: fill in new focus
    Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
@@ -595,6 +595,7 @@ begin
     Dispose(PosMsg.WindowPos);
   end;
 
+{
 Writeln('***********************');
 Writeln('[gtksize_allocateCB]');
 Writeln(Format('Size is stated as x=%d y=%d width=%d height=%d',[Size^.x,Size^.y,Size^.width, Size^.height]));
@@ -603,6 +604,7 @@ Writeln(Format('PosMsg.Result is %d',[PosMsg.Result]));
 if (TOBject(data) is TWinControl) then
 Writeln('The control name is '+TControl(data).Name);
 Writeln('***********************');
+}
   
   if (PosMsg.Result <> 0 ) then 
   begin
@@ -1089,6 +1091,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2001/03/13 15:02:13  lazarus
+  MG: activated GetWindowOrgEx
+
   Revision 1.23  2001/02/28 13:17:34  lazarus
   Added some debug code for the top,left reporting problem.
   Shane

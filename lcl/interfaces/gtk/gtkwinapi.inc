@@ -2055,15 +2055,12 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 begin
-
-  Assert(False, 'Trace:**********************************');
-  gdk_window_get_deskrelative_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
-  Assert(False, format('Trace:DeskRelative Origin is: %d,%d',[P.x,P.y]));
-  gdk_window_get_root_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
-  Assert(False, format('Trace:Root Origin is: %d,%d',[P.x,P.y]));
+//  gdk_window_get_deskrelative_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
+//write('[TgtkObject.GetWindowOrgEx] ',p.x,' ',p.y);
+//  gdk_window_get_root_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
+//write(' / ',p.x,' ',p.y);
   gdk_window_get_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
-  Assert(False, format('Trace:Standard Origin is: %d,%d',[P.x,P.y]));
-  Assert(False, 'Trace:**********************************');
+//writeln(' / ',p.x,' ',p.y);
   result := 1;
 end;
 
@@ -2908,7 +2905,7 @@ begin
       assert(False, Format('trace:[TgtkObject.SetCapture] 0x%x failed', [Value]));
     end;
 }
- Writeln('SetCapture result is '+inttostr(result));
+// Writeln('SetCapture result is '+inttostr(result));
    if MCaptureHandle <>  0 then
             SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
   end;
@@ -3198,17 +3195,11 @@ end;
 
 Function TgtkObject.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
 begin
-gdk_window_move(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window,Newx,Newy);
-//the following throws an error when compiling
-{
-if lpPoint <> nil then
-   Begin
-     lpPoint.X := NewX;
-     lpPoint.Y := NewY;
-   end;
-}
-
-Result := True;
+//writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
+//  gdk_window_move(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window,Newx,Newy);
+  lpPoint.X := NewX;
+  lpPoint.Y := NewY;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -3405,6 +3396,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2001/03/13 15:02:13  lazarus
+  MG: activated GetWindowOrgEx
+
   Revision 1.22  2001/03/12 12:17:02  lazarus
   MG: fixed random function results
 

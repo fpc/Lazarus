@@ -837,8 +837,9 @@ Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
 var
 P : TPoint;
 Begin
-GetWindowOrgEx(dc, P);
-SetWindowOrgEx(dc,P.x - x, P.y - y, P);
+//writeln('[MoveWindowOrg] ',x,' ',y);
+  GetWindowOrgEx(dc, P);
+  SetWindowOrgEx(dc,P.x - x, P.y - y, P);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1128,6 +1129,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/03/13 15:02:12  lazarus
+  MG: activated GetWindowOrgEx
+
   Revision 1.14  2001/03/12 12:17:01  lazarus
   MG: fixed random function results
 
