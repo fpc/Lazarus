@@ -2654,16 +2654,21 @@ begin
       // Temporary hold the old brush to 
       // replace it with the given brush
       OldCurrentBrush := CurrentBrush;
-      CurrentBrush := PGdiObject(Brush);
-      SelectedColors:=dcscCustom;
+      if PGdiObject(Brush)<>OldCurrentBrush then begin
+        OldCurrentBrush := CurrentBrush;
+        CurrentBrush := PGdiObject(Brush);
+        SelectedColors:=dcscCustom;
+      end;
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_draw_rectangle(Drawable, GC, 1,
                          Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                          Width, Height);
       // Restore current brush
-      SelectedColors:=dcscCustom;
-      CurrentBrush := OldCurrentBrush;
+      if PGdiObject(Brush)<>OldCurrentBrush then begin
+        SelectedColors:=dcscCustom;
+        CurrentBrush := OldCurrentBrush;
+      end;
 
       Result := True;
     end;
@@ -7226,6 +7231,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.149  2002/10/08 14:28:14  lazarus
+  MG: accelerated FillRect
+
   Revision 1.148  2002/10/08 14:10:03  lazarus
   MG: added TDeviceContext.SelectedColors
 
