@@ -4865,7 +4865,15 @@ begin
       SetMainWidget(p, TempWidget);
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
 
-      gtk_widget_show_all(TempWidget);
+      gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(Sender).ReadOnly);
+      {$IfNDef Win32}
+      if TCustomMemo(Sender).WordWrap then
+        gtk_text_set_line_wrap(PGtkText(TempWidget), 1)
+      else
+        gtk_text_set_line_wrap(PGtkText(TempWidget), 0);
+      {$EndIf}
+      gtk_text_set_word_wrap(PGtkText(TempWidget), 1);
+
       gtk_widget_show_all(P);
 
       SetupProps:= true;
@@ -6152,10 +6160,13 @@ begin
       
         gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
         {$IfNDef Win32}
-	gtk_text_set_line_wrap(PGtkText(ImplWidget), Integer((Sender as TCustomMemo).WordWrap));
+        if TCustomMemo(Sender).WordWrap then
+          gtk_text_set_line_wrap(PGtkText(ImplWidget), 1)
+        else
+          gtk_text_set_line_wrap(PGtkText(ImplWidget), 0);
         {$EndIf}
-	gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
-        
+        gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
+
         case (Sender as TCustomMemo).Scrollbars of
           ssHorizontal: gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
           ssVertical:   gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
@@ -7219,6 +7230,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.353  2003/04/15 08:54:27  mattias
+  fixed TMemo.WordWrap
+
   Revision 1.352  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 
