@@ -67,7 +67,6 @@ type
     FImageIndex: integer;
     procedure SetImageIndex(const AValue: integer);
   protected
-    //procedure Paint; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure SetParent(AParent : TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
@@ -82,7 +81,6 @@ type
     property ClientWidth;
     property ClientHeight;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
-    // property TabOrder; This property needs to be created in TWinControl
     property Left stored False;
     property Top stored False;
     property Width stored False;
@@ -753,6 +751,9 @@ end.
 
  {
   $Log$
+  Revision 1.68  2003/08/14 15:31:42  mattias
+  started TTabSheet and TPageControl
+
   Revision 1.67  2003/07/10 15:17:43  mattias
   fixed reading empty stream and TCustomRadioGroup.ItemsChanged
 

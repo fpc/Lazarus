@@ -531,7 +531,8 @@ type
   { TControl }
   
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
-  
+  TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint; var Handled: Boolean) of object;
+
   TControlFlag = (
     cfRequestAlignNeeded,
     cfClientWidthLoaded,
@@ -574,7 +575,7 @@ type
     FHelpContext: THelpContext;
     FHelpKeyword: String;
     FHelpType: THelpType;
-    FHint : String;
+    FHint: String;
     FHostDockSite : TWinControl;
     FIsControl : Boolean;
     fLastAlignedBounds: TRect;
@@ -591,26 +592,27 @@ type
     FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
     FOnConstrainedResize : TConstrainedResizeEvent;
-    FOnDblClick : TNotifyEvent;
-    FOnDragDrop : TDragDropEvent;
-    FOnDragOver : TDragOverEvent;
-    FOnEndDrag : TEndDragEvent;
-    FOnMouseDown : TMouseEvent;
+    FOnContextPopup: TContextPopupEvent;
+    FOnDblClick: TNotifyEvent;
+    FOnDragDrop: TDragDropEvent;
+    FOnDragOver: TDragOverEvent;
+    FOnEndDrag: TEndDragEvent;
+    FOnMouseDown: TMouseEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnMouseMove : TMouseMoveEvent;
+    FOnMouseMove: TMouseMoveEvent;
     FOnMouseUp: TMouseEvent;
-    FOnQuadClick : TNotifyEvent;
+    FOnQuadClick: TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnShowHint: TControlShowHintEvent;
     FOnStartDrag: TStartDragEvent;
-    FOnTripleClick : TNotifyEvent;
+    FOnTripleClick: TNotifyEvent;
     FParent: TWinControl;
-    FParentColor : Boolean;
-    FParentFont : Boolean;
+    FParentColor: Boolean;
+    FParentFont: Boolean;
     FParentShowHint : Boolean;
-    FPopupMenu : TPopupMenu;
-    FShowHint : Boolean;
+    FPopupMenu: TPopupMenu;
+    FShowHint: Boolean;
     FSizeLock: integer;
     FTabOrder: integer;
     FTabStop : Boolean;
@@ -764,6 +766,7 @@ type
                                 AMethod: TMethod; AsLast: boolean);
     procedure RemoveControlHandler(HandlerType: TControlHandlerType;
                                    AMethod: TMethod);
+    procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
   protected
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
@@ -777,6 +780,7 @@ type
     property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize: TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
+    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
     property OnTripleClick: TNotifyEvent read FOnTripleClick write FOnTripleClick;
     property OnQuadClick: TNotifyEvent read FOnQuadClick write FOnQuadClick;
@@ -1632,6 +1636,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2003/08/14 15:31:42  mattias
+  started TTabSheet and TPageControl
+
   Revision 1.139  2003/08/04 08:43:20  mattias
   fixed breaking circle in ChangeBounds
 

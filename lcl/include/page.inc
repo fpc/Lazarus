@@ -24,20 +24,16 @@ begin
   inherited Create(AOwner);
   
   fImageIndex:=-1;
-  
+  fCompStyle := csPage;
+  ControlStyle := ControlStyle + [csAcceptsControls];
+
   // set the default height and width
   if (AOwner<>nil) and (AOwner is TControl) then begin
-    //SetInitialBounds(0,0,
-    //                TControl(AOwner).ClientWidth,TControl(AOwner).ClientHeight);
     Align:=alClient;
   end else begin
     SetInitialBounds(0,0,120,100);
   end;
-
-  fCompStyle := csPage;
-
   Visible := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
   Caption := '';
 end;
 
@@ -131,6 +127,9 @@ begin
     Result:=TCustomNotebook(Parent).PageList.IndexOf(Self);
 end;
 
+{------------------------------------------------------------------------------
+  function TPage.CanTab: boolean;
+ ------------------------------------------------------------------------------}
 function TPage.CanTab: boolean;
 begin
   Result:=false;
@@ -139,6 +138,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.17  2003/08/14 15:31:42  mattias
+  started TTabSheet and TPageControl
+
   Revision 1.16  2003/07/24 06:54:32  mattias
   fixed anti circle mechnism for aligned controls
 

@@ -126,9 +126,208 @@ type
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property Visible;
   end;
+  
+  
+  {$IFDEF UsePageControl}
 
+  { TTabSheet }
 
- { Custom draw }
+  TPageControl = class;
+
+  TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
+  TTabStyle = (tsTabs, tsButtons, tsFlatButtons);
+
+  TTabChangingEvent = procedure(Sender: TObject;
+    var AllowChange: Boolean) of object;
+  TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
+    var ImageIndex: Integer) of object;
+
+  TTabSheet = class(TWinControl)
+  private
+    FImageIndex: TImageIndex;
+    FPageControl: TPageControl;
+    FTabVisible: Boolean;
+    FOnHide: TNotifyEvent;
+    FOnShow: TNotifyEvent;
+    FPageIndex: integer;
+    function GetPageIndex: Integer;
+    function GetTabIndex: Integer;
+    //procedure SetHighlighted(Value: Boolean);
+    procedure SetImageIndex(AValue: TImageIndex);
+    procedure SetPageControl(APageControl: TPageControl);
+    procedure SetPageIndex(Value: Integer);
+    //procedure SetTabShowing(Value: Boolean);
+    procedure SetTabVisible(Value: Boolean);
+    //procedure UpdateTabShowing;
+    //procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    //procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure DoHide; dynamic;
+    procedure DoShow; dynamic;
+    procedure ReadState(Reader: TReader); override;
+    procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property PageControl: TPageControl read FPageControl write SetPageControl;
+    property TabIndex: Integer read GetTabIndex;
+  published
+    property BorderWidth;
+    property Caption;
+    property ClientWidth;
+    property ClientHeight;
+    //property DragMode;
+    property Enabled;
+    //property Font;
+    property Height stored False;
+    //property Highlighted: Boolean read FHighlighted write SetHighlighted default False;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default 0;
+    property Left stored False;
+    //property Constraints;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
+    //property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabVisible: Boolean read FTabVisible write SetTabVisible default True;
+    property Top stored False;
+    property Visible stored False;
+    property Width stored False;
+    property OnChangeBounds;
+    property OnContextPopup;
+    //property OnDragDrop;
+    //property OnDragOver;
+    //property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnHide: TNotifyEvent read FOnHide write FOnHide;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    //property OnStartDrag;
+  end;
+  
+  
+  { TPageControl }
+
+  TPageControl = class(TWinControl)
+  private
+    FImages: TImageList;
+    FOnChange: TNotifyEvent;
+    FOnChanging: TTabChangingEvent;
+    FPages: TList;
+    FActivePage: TTabSheet;
+    procedure ChangeActivePage(Page: TTabSheet);
+    procedure DeleteTab(Page: TTabSheet; Index: Integer);
+    function GetActivePageIndex: Integer;
+    //function GetDockClientFromMousePos(MousePos: TPoint): TControl;
+    function GetPage(Index: Integer): TTabSheet;
+    function GetPageCount: Integer;
+    function GetTabIndex: Integer;
+    procedure InsertPage(Page: TTabSheet);
+    procedure InsertTab(Page: TTabSheet);
+    procedure MoveTab(CurIndex, NewIndex: Integer);
+    procedure RemovePage(Page: TTabSheet);
+    procedure SetActivePage(Page: TTabSheet);
+    procedure SetActivePageIndex(const Value: Integer);
+    procedure SetImages(const AValue: TImageList);
+    procedure SetTabIndex(const AValue: Integer);
+    //procedure UpdateTab(Page: TTabSheet);
+    //procedure UpdateTabHighlights;
+    //procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    //procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
+    //procedure CMDockClient(var Message: TCMDockClient); message CM_DOCKCLIENT;
+    //procedure CMDockNotification(var Message: TCMDockNotification); message CM_DOCKNOTIFICATION;
+    //procedure CMUnDockClient(var Message: TCMUnDockClient); message CM_UNDOCKCLIENT;
+    //procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    //procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+  protected
+    function CanShowTab(TheTabIndex: Integer): Boolean; virtual;
+    procedure Change; virtual;
+    //procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+    //procedure DockOver(Source: TDragDockObject; X, Y: Integer;
+    //  State: TDragState; var Accept: Boolean); override;
+    //procedure DoRemoveDockClient(Client: TControl); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function GetImageIndex(TheTabIndex: Integer): Integer; virtual;
+    //function GetPageFromDockClient(Client: TControl): TTabSheet;
+    //procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
+    //  MousePos: TPoint; var CanDock: Boolean); override;
+    procedure Loaded; override;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
+    procedure ShowControl(AControl: TControl); override;
+    procedure UpdateActivePage; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function FindNextPage(CurPage: TTabSheet;
+      GoForward, CheckTabVisible: Boolean): TTabSheet;
+    procedure SelectNextPage(GoForward: Boolean);
+    procedure SelectNextPage(GoForward: Boolean; CheckTabVisible: Boolean);
+    property ActivePageIndex: Integer read GetActivePageIndex
+      write SetActivePageIndex;
+    property PageCount: Integer read GetPageCount;
+    property Pages[Index: Integer]: TTabSheet read GetPage;
+  published
+    property ActivePage: TTabSheet read FActivePage write SetActivePage;
+    property Align;
+    property Anchors;
+    //property BiDiMode;
+    property Constraints;
+    //property DockSite;
+    //property DragCursor;
+    //property DragKind;
+    //property DragMode;
+    property Enabled;
+    property Font;
+    //property HotTrack;
+    property Images: TImageList read FImages write SetImages;
+    //property MultiLine;
+    //property OwnerDraw;
+    //property ParentBiDiMode;
+    //property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    //property RaggedRight;
+    //property ScrollOpposite;
+    property ShowHint;
+    //property Style;
+    //property TabHeight;
+    property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
+    //property TabOrder;
+    //property TabPosition;
+    //property TabStop;
+    //property TabWidth;
+    property Visible;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
+    property OnContextPopup;
+    //property OnDockDrop;
+    //property OnDockOver;
+    //property OnDragDrop;
+    //property OnDragOver;
+    //property OnDrawTab;
+    //property OnEndDock;
+    //property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    //property OnGetImageIndex;
+    //property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    //property OnStartDock;
+    //property OnStartDrag;
+    //property OnUnDock;
+  end;
+  
+  {$ENDIF UsePageControl}
+
+  { Custom draw }
 
   TCustomDrawTarget = (dtControl, dtItem, dtSubItem);
   TCustomDrawStage = (cdPrePaint, cdPostPaint, cdPreErase, cdPostErase);
@@ -1783,6 +1982,12 @@ end;
 {$I statusbar.inc}
 {$I statuspanel.inc}
 {$I statuspanels.inc}
+
+{$IFDEF UsePageControl}
+{$I tabsheet.inc}
+{$I pagecontrol.inc}
+{$ENDIF UsePageControl}
+
 { $I alignment.inc}
 {$I listcolumns.inc}
 {$I listcolumn.inc}
@@ -1796,11 +2001,15 @@ end;
 {$I trackbar.inc}
 {$I treeview.inc}
 
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/08/14 15:31:42  mattias
+  started TTabSheet and TPageControl
+
   Revision 1.80  2003/06/25 21:02:19  mattias
   reduced TProgressBar setproperties calls
 

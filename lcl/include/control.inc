@@ -275,13 +275,20 @@ end;
 {------------------------------------------------------------------------------
        TControl.CheckMenuPopup
 ------------------------------------------------------------------------------}
-Procedure TControl.CheckMenuPopup(const P : TSmallPoint);
+Procedure TControl.CheckMenuPopup(const P: TSmallPoint);
 var
   Control: TControl;
   TempPopupMenu: TPopupMenu;
-  P2 : Tpoint;
+  P2: TPoint;
+  Handled: Boolean;
 begin
   if csDesigning in ComponentState then Exit;
+  
+  P2 := SmallPointToPoint(P);
+  Handled:=false;
+  DoContextPopup(P2,Handled);
+  if Handled then exit;
+  
   Control := Self;
   while Control <> nil do
   begin
@@ -291,7 +298,6 @@ begin
       if not TempPopupMenu.AutoPopup then Exit;
 //      SendCancelMode(nil);
       TempPopupMenu.PopupComponent := Control;
-      P2 := SmallPointToPoint(P);
       P2 := ClientToScreen(P2);
       TempPopupMenu.Popup(P2.X, P2.Y);
       Exit;
@@ -1002,6 +1008,16 @@ procedure TControl.RemoveControlHandler(HandlerType: TControlHandlerType;
   AMethod: TMethod);
 begin
   FControlHandlers[HandlerType].Remove(AMethod);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.DoContextPopup(const MousePos: TPoint;
+    var Handled: Boolean);
+------------------------------------------------------------------------------}
+procedure TControl.DoContextPopup(const MousePos: TPoint; var Handled: Boolean);
+begin
+  if Assigned(FOnContextPopup) then
+    FOnContextPopup(Self, MousePos, Handled);
 end;
 
 {------------------------------------------------------------------------------
@@ -2456,6 +2472,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.146  2003/08/14 15:31:42  mattias
+  started TTabSheet and TPageControl
+
   Revision 1.145  2003/08/04 08:43:20  mattias
   fixed breaking circle in ChangeBounds
 
