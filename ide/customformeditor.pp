@@ -39,6 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
+  {$IFNDEF Ver1_0}{$IFNDEF VER1_9_4}Variants,{$ENDIF}{$ENDIF}
   Classes, SysUtils, TypInfo, Math, LCLProc, Graphics, Controls, Forms, Menus,
   Dialogs,
   // components
@@ -354,11 +355,13 @@ Begin
               SetFloatProp(FComponent,PRI,Extended(Value));
               Result := True;
              end;
+  {$IFDEF HasVariant}
   tkVariant  : Begin
               //Writeln('Variant...');
               SetVariantProp(FComponent,PRI,Variant(Value));
               Result := True;
              end;
+  {$ENDIF}
   tkMethod  : Begin
               //Writeln('Method...');
               SetMethodProp(FComponent,PRI,TMethod(value));
