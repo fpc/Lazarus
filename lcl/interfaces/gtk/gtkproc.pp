@@ -921,7 +921,7 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-{$ifndef VER1_0}
+{$ifdef USE_SYNCHRONIZE}
 
 var
   threadsync_pipein, threadsync_pipeout: cint;
@@ -971,7 +971,7 @@ begin
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;
 
-{$ifndef VER1_0}
+{$ifdef USE_SYNCHRONIZE}
   { TThread.Synchronize ``glue'' }
   SynchronizeMethodProc := @PrepareSynchronize;
   assignpipe(threadsync_pipein, threadsync_pipeout);
@@ -993,7 +993,7 @@ begin
 
   DoneKeyboardTables;
 
-{$ifndef VER1_0}
+{$ifdef USE_SYNCHRONIZE}
   SynchronizeMethodProc := nil;
 {$endif}
 end;
