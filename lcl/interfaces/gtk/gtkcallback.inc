@@ -198,8 +198,11 @@ begin
 //  Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
 
   Flags := 0;
+
   if Extended then Flags := KF_EXTENDED;
   if SysKey then Flags := Flags or KF_ALTDOWN;
+
+
   Msg.KeyData := $00000000; //TODO: OEM char
   Msg.KeyData := Msg.KeyData or (Flags shl 16);
   
@@ -211,7 +214,10 @@ begin
         if SysKey
         then Msg.msg := LM_SYSKEYUP
         else Msg.msg := LM_KEYUP;
-        Msg.KeyData := Msg.KeyData or 0{TODO: previous keystate} or $0001 {TODO:  repeatcount};
+
+        Flags := KF_UP or KF_REPEAT;
+
+        Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
         Result := DeliverPostMessage(data, msg);
 
       end;
@@ -222,8 +228,7 @@ begin
         then Msg.msg := LM_SYSKEYDOWN
         else Msg.msg := LM_KEYDOWN;
 
-        Flags := KF_UP or KF_REPEAT;
-        Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
+        Msg.KeyData := Msg.KeyData or 0{TODO: previous keystate} or $0001 {TODO:  repeatcount};
         Result := DeliverPostMessage(data, msg);
 
         if KeyCode <> $FFFF
@@ -1095,6 +1100,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/01/10 20:12:29  lazarus
+  Added the Nudge feature to the IDE.
+  Shane
+
   Revision 1.11  2001/01/09 18:23:21  lazarus
   Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
   Shane

@@ -1282,6 +1282,8 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
+      if (sender is TMemo) then
+      Writeln('KEY-PRESS-EVENT for TMEmo');
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
@@ -2703,6 +2705,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.17  2001/01/10 20:12:29  lazarus
+  Added the Nudge feature to the IDE.
+  Shane
+
   Revision 1.16  2001/01/09 18:23:21  lazarus
   Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
   Shane

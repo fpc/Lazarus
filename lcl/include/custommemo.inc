@@ -78,14 +78,18 @@ end;
   and the cached propeties are set. 
   This is the only place where a call to SetCallBack is made.
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.AttachSignals; 
+{procedure TCustomMemo.AttachSignals;
 begin
   inherited AttachSignals;
-end;
+end; }
 
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/01/10 20:12:29  lazarus
+  Added the Nudge feature to the IDE.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

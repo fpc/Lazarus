@@ -184,6 +184,7 @@ type
   protected
     Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
     Procedure Change; dynamic;
+    procedure AttachSignals; override;
 
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
@@ -196,7 +197,6 @@ type
     property Text;
   published
     property TabStop default true;
-    procedure AttachSignals; override;
   end;
 
 
@@ -207,7 +207,7 @@ type
       FScrollBars: TScrollStyle;
       FWordWrap: Boolean;
    protected
-      procedure AttachSignals; override;
+//      procedure AttachSignals; override;
 
       procedure SetLines(Value : TStrings);
       procedure SetWordWrap(Value : Boolean);
@@ -493,6 +493,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/10 20:12:29  lazarus
+  Added the Nudge feature to the IDE.
+  Shane
+
   Revision 1.8  2001/01/05 17:44:37  lazarus
   ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
   There are still a few problems with some controls so I haven't converted all forms.

@@ -44,13 +44,18 @@ type
   protected
     MouseDownControl : TObject;
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
+    CTRLDOWN, SHIFTDOWN : Boolean;
 
     Procedure MouseDownOnControl(Sender : TControl; Message : TLMessage);
     procedure MouseMoveOnControl(Sender : TControl; var Message : TLMessage);
     Procedure MouseUpOnControl(Sender : TControl; Message:TLMessage);
 
     Procedure KeyDown(Sender : TControl; Message:TLMKEY);
+    Procedure KeyUP(Sender : TControl; Message:TLMKEY);
+
     Procedure RemoveControl(Control : TComponent);
+    Procedure NudgeControl(Value1,Value2 : Integer);
+    Procedure NudgeSize(Value1,Value2 : Integer);
 
   public
     ControlSelection : TControlSelection;
@@ -80,6 +85,14 @@ type
 
 uses
   Sysutils, Typinfo,Math;
+
+
+const
+  mk_lbutton = 1;
+  mk_rbutton = 2;
+  mk_shift = 4;
+  mk_control = 8;
+  mk_mbutton = $10;
 
 var
   GridPoints : TGridPoint;
@@ -116,9 +129,21 @@ Procedure TDesigner.RemoveControl(Control : TComponent);
 Begin
     Writeln('RemoveControl called');
     FSourceEditor.RemoveControlCode(Control);
+    FCustomForm.Remove(TCOntrol(Control));  //this send a message to notification and removes it from the controlselection
     Control.Destroy;
 end;
 
+Procedure TDesigner.NudgeControl(Value1,Value2 : Integer);
+Begin
+Writeln('NudgeControl');
+ ControlSelection.MoveSelection(Value1,Value2);
+end;
+
+Procedure TDesigner.NudgeSize(Value1,Value2 : Integer);
+Begin
+  Writeln('NudgeSize');
+  ControlSelection.SizeSelection(Value1,Value2);
+end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
 begin
@@ -133,8 +158,10 @@ end;
 
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMessage);
+var
+SHift : TShiftState;
 Begin
-  if assigned(MouseDownControl) and (MOuseDownControl <> Sender) then Exit;
+//  if assigned(MouseDownControl) and (MOuseDownControl <> Sender) then Exit;
   Writeln('Left is '+Inttostr(TCOntrol(Sender).left));
   Writeln('Top is '+Inttostr(TCOntrol(Sender).Top));
   Writeln('***************************');
@@ -156,24 +183,34 @@ Begin
     inc(MouseDownPos.Y,TControl(Sender).Top);
   end;
 
+    Shift := [];
+  if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
+    Writeln('Shift down')
+    else
+    Writeln('No Shift down');
+
+  if (TLMMouse(Message).keys and MK_Control) = MK_Control then
+    Writeln('CTRL down')
+    else
+    Writeln('No CTRL down');
+
+
+
   MouseDownControl:=Sender;
   LastMouseMovePos:=MouseDownPos;
-
+  Writeln('Sender is '+sender.name);
   if FMainIDE.SelectedComponent = nil then
   Begin //mouse pointer button pressed.
     if not (Sender is TCustomForm) then begin
+    if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
+      ControlSelection.Add(sender)
+      else
       SelectOnlyThisComponent(TComponent(Sender));
     end;
   end;
 End;
 
 procedure TDesigner.MouseUpOnControl(Sender : TControl; Message:TLMessage);
-const
-  mk_lbutton = 1;
-  mk_rbutton = 2;
-  mk_shift = 4;
-  mk_control = 8;
-  mk_mbutton = $10;
 var
   ParentCI, NewCI : TComponentInterface;
   NewLeft, NewTop, NewWidth, NewHeight : Integer;
@@ -240,8 +277,8 @@ Begin
 
   if FMainIDE.SelectedComponent = nil then
   Begin //mouse pointer button pressed.
-    if Sender is TCustomForm then
-      SelectOnlyThisComponent(TComponent(Sender));
+{    if Sender is TCustomForm then
+      SelectOnlyThisComponent(TComponent(Sender));}
   end
   else
   Begin  //add a new control
@@ -370,6 +407,15 @@ with MEssage do
   Writeln('KEYDATA = '+inttostr(KeyData));
   end;
 
+{    CTRLDOWN, SHIFTDOWN : Boolean;
+}
+
+if Message.CharCode = 16 then //SHIFT
+   SHIFTDOWN := True
+else
+if Message.CharCode = 17 then //CTRL
+   CTRLDOWN := True
+else
 if Message.CharCode = 46 then //DEL KEY
    begin
     for  I := 0 to FCustomForm.ComponentCount-1 do
@@ -381,16 +427,74 @@ if Message.CharCode = 46 then //DEL KEY
               RemoveControl(TControl(FCustomForm.Components[i]));
            end;
       end;
-    FFormEditor.ClearSelected;
-  // this will automatically inform the object inspector
-    ControlSelection.Add(FCustomForm);
-    FFormEditor.AddSelected(FCustomForm);
+     SelectOnlythisComponent(FCustomForm);
 
-
+   end
+   else
+if Message.CharCode = 38 then //UP ARROW
+   Begin
+   If CTRLDOWN then
+   NudgeControl(0,-1)
+   else
+   If SHIFTDOWN then
+   NudgeSize(0,-1);
+   end
+   else
+if Message.CharCode = 40 then //DOWN ARROW
+   Begin
+   If CTRLDOWN then
+   NudgeControl(0,1)
+   else
+   If SHIFTDOWN then
+   NudgeSize(0,1);
+   end
+   else
+if Message.CharCode = 39 then //RIGHT ARROW
+   Begin
+   If CTRLDOWN then
+   NudgeControl(1,0)
+   else
+   If SHIFTDOWN then
+   NudgeSize(1,0);
+   end
+   else
+if Message.CharCode = 37 then //LEFT ARROW
+   Begin
+   If CTRLDOWN then
+   NudgeControl(-1,0)
+   else
+   If SHIFTDOWN then
+   NudgeSize(-1,0);
    end;
+
+
+
 
 end;
 
+
+{-----------------------------------------K E Y U P --------------------------------}
+Procedure TDesigner.KeyUp(Sender : TControl; Message:TLMKEY);
+var
+  I : Integer;
+Begin
+Writeln('KEYUp');
+with MEssage do
+  Begin
+  Writeln('CHARCODE = '+inttostr(charcode));
+  Writeln('KEYDATA = '+inttostr(KeyData));
+  end;
+
+{    CTRLDOWN, SHIFTDOWN : Boolean;
+}
+
+if Message.CharCode = 16 then //SHIFT
+   SHIFTDOWN := False
+else
+if Message.CharCode = 17 then //CTRL
+   CTRLDOWN := False
+
+end;
 
 function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
 Begin
@@ -401,7 +505,9 @@ else
 if ((Message.msg >= LM_KeyFIRST) and (Message.msg <= LM_KeyLAST)) then
     Begin
      Writeln('KEY MESSAGE in IsDesignMsg');
-     KeyDown(Sender,TLMKey(Message));
+     if MEssage.MSG = LM_KEYDOWN then KeyDown(Sender,TLMKey(Message))
+     else
+     if MEssage.MSG = LM_KEYUP then KeyUP(Sender,TLMKey(Message));
      Result := true;
     end;
 

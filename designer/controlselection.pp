@@ -91,8 +91,10 @@ type
     function IsSelected(AControl: TControl): Boolean;
     procedure Remove(AControl: TControl);
     procedure MoveSelection(dx, dy: integer);
+    procedure SizeSelection(dx, dy: integer);
     property Visible: Boolean read FVisible write SetVisible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+
   end;
 
   procedure SetCaptureGrabber(AGrabber:TGrabber);
@@ -250,6 +252,7 @@ end;
 procedure TGrabber.PaintWindow(DC: HDC);
 begin
 //  WriteLn(Format('[TGrabber.PaintWindow] 0x%x', [DC]));
+//  if Visible then
   FillRect(DC, Rect(0, 0, Width, Height), GetStockObject(BLACK_BRUSH));
 end;
 
@@ -271,6 +274,23 @@ Writeln('**********');
   end;
 end;
 
+procedure TControlSelection.SizeSelection(dx, dy: integer);
+begin
+{Writeln('**********');
+Writeln('Size Selection');
+Writeln(Format('dx,dy = %d,%d',[dx,dy]));
+Writeln(Format('FLeft,FTop= %d,%d',[FLeft,FTop]));
+Writeln('**********');
+ }
+  if (dx<>0) or (dy<>0) then begin
+    Inc(FWidth,dx);
+    Inc(FHeight,dy);
+    SizeContent;
+    SetGrabbers;
+  end;
+end;
+
+
 procedure TControlSelection.Add(AControl: TControl);
 begin
   if AControl <> nil
@@ -283,8 +303,8 @@ begin
       FControlList.Add(AControl);
     end;
     AdjustSize(Acontrol, FControlList.Count = 1);
-    FVisible:=not (AControl is TCustomForm);
-    SetGrabbers;
+    Visible:=not (AControl is TCustomForm);
+    //This is taken care of in SETVISIBLE    SetGrabbers;
     with TSelectControl(AControl) do
     begin
       {OnMouseDown := @ControlMouseDown;
@@ -367,8 +387,8 @@ begin
   end;
   FWidth := 0;
   FHeight := 0;
-  FVisible := False;
-  //SetGrabbers;
+  Visible := False;
+  //This is set in SETVISIBLE   SetGrabbers;
   DoChange;
 end;
 
@@ -531,6 +551,7 @@ begin
         AdjustSize(TControl(FControlList[n]), n = 0);
     end
     else FVisible := False;
+
     SetGrabbers;
 
     with TSelectControl(AControl) do
@@ -556,6 +577,7 @@ begin
   for GrabPos := Low(TGrabIndex) to High(TGrabIndex) do
   begin
     Grabber := FGrabbers[GrabPos]; 
+
     if FVisible
     then begin
       //Write('[TControlSelection.SetGrabbers] Setting grabber ',Ord(GrabPos),' --> ');
@@ -594,9 +616,10 @@ begin
       end;
       
       Grabber.SetBounds(GrabLeft,GrabTop,GRAB_SIZE,GRAB_SIZE);
+
       //WriteLN(Format('X:%d, Y:%d',  [Grabber.Left, Grabber.Top]));
     end;
-    Grabber.Visible := FVisible;
+      Grabber.Visible := FVisible;
 
   end;
 end;
