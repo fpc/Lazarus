@@ -531,10 +531,14 @@ Begin
       FindReplaceDlg.Options - [ssoReplace, ssoReplaceAll, ssoPrompt];
 
   with EditorComponent do begin
-    if SelAvail and (BlockBegin.Y = BlockEnd.Y) then
-      FindReplaceDlg.FindText := SelText
-    else
-      FindReplaceDlg.FindText := GetWordAtRowCol(CaretXY);
+    if EditorOpts.FindTextAtCursor then begin
+      if SelAvail and (BlockBegin.Y = BlockEnd.Y) then
+        FindReplaceDlg.FindText := SelText
+      else
+        FindReplaceDlg.FindText := GetWordAtRowCol(CaretXY);
+    end else begin
+      FindReplaceDlg.FindText:='';
+    end;
   end;
 
   GetDialogPosition(FindReplaceDlg.Width,FindReplaceDlg.Height,ALeft,ATop);
