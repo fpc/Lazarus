@@ -18,6 +18,10 @@
  ***************************************************************************/
 }
 {$H+}
+{This unit builds the TSourceNotbook that the editors are held on.  It also has
+ a class that controls the editors (TSourceEditor)
+}
+
 //{$DEFINE NEW_EDITOR}
 //{$DEFINE NEW_EDITOR_SYNEDIT}
 unit UnitEditor;
@@ -53,7 +57,8 @@ type
  ---- TSource Editor ---}
   TSourceEditor = class
   private
-    FAOwner : TComponent; //Owned by a TSourceNotebook
+    //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
+    FAOwner : TComponent;
 {$ifdef NEW_EDITOR_SYNEDIT}
     FHighlighter: TSynPasSyn;
     FEditor     : TSynEditor
@@ -64,17 +69,25 @@ type
     //if this is a Form or Datamodule, this is used
     FControl: TComponent;
 
-    //pulled out of the editor by the Function Getxxx
+    //pulled out of the editor by the Function FEditor.CaretX
     FCurrentCursorXLine : Integer;
-    //pulled out of the editor by the Function Getxxx
+
+    //pulled out of the editor by the Function FEditor.CaretY
     FCurrentCursorYLine : Integer;
+
+    //Set during OPEN and Save
     FFileName : String;
+
+    // Used GetModified like this -> Result := FEditor.Modified
     FModified : Boolean;
 
+    //created during the constructor.  This is the popup you see when right-clicking on the editor
     FPopUpMenu : TPopupMenu;
 
     //pulled out of the editor by getting it's TStrings
     FSource : TStringList;
+
+    //set on OPEN/SAVE
     FUnitName : String;
 
     FOnAfterClose : TNotifyEvent;
