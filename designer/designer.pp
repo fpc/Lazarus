@@ -80,6 +80,7 @@ type
     FOnActivated: TNotifyEvent;
     FOnRenameComponent: TOnRenameComponent;
     FPopupMenu: TPopupMenu;
+    FShiftState: TShiftState;
     FAlignMenuItem: TMenuItem;
     FMirrorHorizontalMenuItem: TMenuItem;
     FMirrorVerticalMenuItem: TMenuItem;
@@ -153,7 +154,7 @@ type
     destructor Destroy; override;
 
     procedure Modified; override;
-    Procedure SelectOnlyThisComponent(AComponent:TComponent);
+    Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
     function InvokeComponentEditor(AComponent: TComponent;
       MenuIndex: integer): boolean;
     Procedure RemoveComponent(AComponent: TComponent);
@@ -171,6 +172,7 @@ type
        Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
+    function GetShiftState: TShiftState; override;
     function CreateUniqueComponentName(const AClassName: string): string; override;
 
     procedure PaintGrid; override;
@@ -600,7 +602,14 @@ var
     if (TheMessage.keys and MK_Shift) = MK_Shift then
       Shift := [ssShift];
     if (TheMessage.keys and MK_Control) = MK_Control then
-      Shift := Shift +[ssCtrl];
+      Include(Shift,ssCtrl);
+      
+    case TheMessage.Msg of
+    LM_LBUTTONUP: Include(Shift,ssLeft);
+    LM_MBUTTONUP: Include(Shift,ssMiddle);
+    LM_RBUTTONUP: Include(Shift,ssRight);
+    end;
+    
     if MouseDownClickCount=2 then
       Include(Shift,ssDouble);
     if MouseDownClickCount=3 then
@@ -685,7 +694,9 @@ var
         Form.Invalidate;
       if MouseDownClickCount=2 then begin
         // Double Click -> invoke 'Edit' of the component editor
+        FShiftState:=Shift;
         InvokeComponentEditor(MouseDownComponent,-1);
+        FShiftState:=[];
       end;
     end;
   end;
@@ -1073,6 +1084,11 @@ Begin
     writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
   if Assigned(OnRenameComponent) then
     OnRenameComponent(Self,AComponent,NewName);
+end;
+
+function TDesigner.GetShiftState: TShiftState;
+begin
+  Result:=FShiftState;
 end;
 
 function TDesigner.CreateUniqueComponentName(const AClassName: string): string;
