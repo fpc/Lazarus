@@ -250,7 +250,6 @@ begin
   FHintWindow := THintWindow.Create(nil);
 
   FHIntWindow.Visible := False;
-  FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
   
@@ -789,12 +788,14 @@ Begin
   {$ENDIF}
 end;
 
-Procedure TDesigner.MouseMoveOnControl(Sender: TControl;
+procedure TDesigner.MouseMoveOnControl(Sender: TControl;
   var TheMessage: TLMMouse);
 var
   Shift : TShiftState;
   SenderParentForm:TCustomForm;
   OldMouseMovePos: TPoint;
+  Grabber: TGrabber;
+  ACursor: TCursor;
 begin
   SetCaptureControl(nil);
   if ShowHints then begin
@@ -807,12 +808,21 @@ begin
       FHintWindow.Visible := False;
   end;
 
+  SenderParentForm:= GetParentForm(Sender);
+  if (SenderParentForm = nil) or (SenderParentForm <> Form) then exit;
+
+  OldMouseMovePos:= LastMouseMovePos;
+  LastMouseMovePos:= GetFormRelativeMousePosition(Form);
+
+  Grabber:= ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y);
+  if Grabber = nil then
+    ACursor:= crDefault
+  else begin
+    ACursor:= Grabber.Cursor;
+  end;
+  CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
+
   if MouseDownComponent=nil then exit;
-  SenderParentForm:=GetParentForm(Sender);
-  if (SenderParentForm=nil) or (SenderParentForm<>Form) then exit;
-  
-  OldMouseMovePos:=LastMouseMovePos;
-  LastMouseMovePos:=GetFormRelativeMousePosition(Form);
 
   Shift := [];
   if (TheMessage.keys and MK_Shift) = MK_Shift then
