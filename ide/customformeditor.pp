@@ -671,19 +671,12 @@ begin
 end;
 
 procedure TCustomFormEditor.SetSelectedComponents(
-  TheSelectedComponents : TComponentSelectionList);
+  TheSelectedComponents: TComponentSelectionList);
 begin
   FSelectedComponents.Assign(TheSelectedComponents);
-  if FSelectedComponents.Count>0 then
-  begin
-    if FSelectedComponents[0].Owner<>nil then
-    begin
-      Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0].Owner;
-    end
-    else
-    begin
-      Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0];
-    end;
+  if FSelectedComponents.Count>0 then begin
+    Obj_Inspector.PropertyEditorHook.LookupRoot:=
+      GetLookupRootForComponent(FSelectedComponents[0]);
   end;
   Obj_Inspector.Selections := FSelectedComponents;
 end;

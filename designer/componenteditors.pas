@@ -419,15 +419,19 @@ procedure TDefaultComponentEditor.Edit;
 var
   Components: TComponentSelectionList;
   PropertyEditorHook: TPropertyEditorHook;
+  NewLookupRoot: TComponent;
 begin
   PropertyEditorHook:=nil;
   if not GetHook(PropertyEditorHook) then exit;
-  Components := TComponentSelectionList.Create;
+  NewLookupRoot:=GetLookupRootForComponent(Component);
+  if NewLookupRoot<>PropertyEditorHook.LookupRoot then
+    GetDesigner.SelectOnlyThisComponent(Component);
   FContinue := True;
-  Components.Add(Component);
   FFirst := nil;
   FBest := nil;
+  Components := TComponentSelectionList.Create;
   try
+    Components.Add(Component);
     GetComponentProperties(Components, tkAny, PropertyEditorHook,
                            @CheckEdit, nil);
     if FContinue then

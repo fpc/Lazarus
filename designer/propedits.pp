@@ -1016,7 +1016,7 @@ type
     procedure ShowMethod(const Name:ShortString);
     function MethodFromAncestor(const Method:TMethod):boolean;
     procedure ChainCall(const AMethodName, InstanceName,
-      InstanceMethod:ShortString;  TypeData:PTypeData);
+                        InstanceMethod:ShortString;  TypeData: PTypeData);
     // components
     function GetComponent(const Name: ShortString):TComponent;
     function GetComponentName(AComponent: TComponent):ShortString;
@@ -1125,6 +1125,8 @@ type
     procedure RemoveHandlerRefreshPropertyValues(
                        OnRefreshPropertyValues: TPropHookRefreshPropertyValues);
   end;
+
+function GetLookupRootForComponent(AComponent: TComponent): TComponent;
 
 //==============================================================================
 
@@ -4994,6 +4996,12 @@ var
   DummyClassForPropTypes: TDummyClassForPropTypes;
 
 //******************************************************************************
+
+function GetLookupRootForComponent(AComponent: TComponent): TComponent;
+begin
+  Result:=AComponent;
+  if (Result<>nil) and (Result.Owner<>nil) then Result:=Result.Owner;
+end;
 
 Function ClassTypeInfo(Value: TClass): PTypeInfo;
 begin
