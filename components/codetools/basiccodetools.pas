@@ -123,6 +123,7 @@ procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
     var IdentStart,IdentEnd:integer);
+function GetIdentLen(Identifier: PChar): integer;
 function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
@@ -909,6 +910,13 @@ begin
   while (IdentEnd<=length(Source))
   and (IsIdChar[Source[IdentEnd]]) do
     inc(IdentEnd);
+end;
+
+function GetIdentLen(Identifier: PChar): integer;
+begin
+  Result:=0;
+  if Identifier=nil then exit;
+  while (IsIDChar[Identifier[Result]]) do inc(Result);
 end;
 
 function ReadNextPascalAtom(const Source:string;

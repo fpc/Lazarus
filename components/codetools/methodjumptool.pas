@@ -254,17 +254,16 @@ const
   
 var CursorNode, ClassNode, ProcNode, StartNode, TypeSectionNode,
   ANode: TCodeTreeNode;
-  CleanCursorPos, LineStart, LineEnd, FirstAtomStart, LastAtomEnd,
-  DiffTxtPos: integer;
+  CleanCursorPos, LineStart, LineEnd, FirstAtomStart, LastAtomEnd: integer;
   SearchedClassname, SearchedProcName, SearchedParamList: string;
   SearchForNodes, SearchInNodes: TAVLTree;
-  DiffNode, BodyAVLNode, DefAVLNode: TAVLTreeNode;
+  BodyAVLNode, DefAVLNode: TAVLTreeNode;
 begin
   Result:=false;
   NewPos:=CursorPos;
   // build code tree
   {$IFDEF CTDEBUG}
-  writeln('TMethodJumpingCodeTool.FindJumpPoint A CursorPos=',CursorPos.X,',',CursorPos.Y);
+  writeln('TMethodJumpingCodeTool.FindJumpPoint A  CursorPos=',CursorPos.X,',',CursorPos.Y);
   {$ENDIF}
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos);
   GetLineInfo(CleanCursorPos,LineStart,LineEnd,FirstAtomStart,LastAtomEnd);

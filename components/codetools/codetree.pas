@@ -174,8 +174,10 @@ type
     function Next: TCodeTreeNode;
     function Prior: TCodeTreeNode;
     function HasAsParent(Node: TCodeTreeNode): boolean;
+    function HasAsChild(Node: TCodeTreeNode): boolean;
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetLevel: integer;
     function DescAsString: string;
     procedure Clear;
     constructor Create;
@@ -416,6 +418,13 @@ begin
   end;
 end;
 
+function TCodeTreeNode.HasAsChild(Node: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if Node=nil then exit;
+  Result:=Node.HasAsParent(Self);
+end;
+
 function TCodeTreeNode.HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
 var ANode: TCodeTreeNode;
 begin
@@ -431,6 +440,17 @@ begin
   Result:=Self;
   while (Result<>nil) and (Result.Desc<>ADesc) do
     Result:=Result.Parent;
+end;
+
+function TCodeTreeNode.GetLevel: integer;
+var ANode: TCodeTreeNode;
+begin
+  Result:=0;
+  ANode:=Parent;
+  while ANode<>nil do begin
+    inc(Result);
+    ANode:=ANode.Parent;
+  end;
 end;
 
 function TCodeTreeNode.DescAsString: string;

@@ -328,7 +328,7 @@ type
       Result: TFindContext);
     function GetNodeCache(Node: TCodeTreeNode;
       CreateIfNotExists: boolean): TCodeTreeNodeCache;
-    procedure AddResultToNodeCaches(Identifier: PChar;
+    procedure AddResultToNodeCaches(
       StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
       Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
   protected
@@ -570,8 +570,78 @@ function TFindDeclarationTool.FindDeclaration(CursorPos: TCodeXYPosition;
 var CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
-  SearchAlsoInCurContext: boolean;
-  SearchInAncestors: boolean;
+  DirectSearch: boolean;
+  
+  procedure CheckIfCursorInClassNode;
+  begin
+    ClassNode:=CursorNode.GetNodeOfType(ctnClass);
+    if ClassNode<>nil then begin
+      // cursor is in class/object definition
+      if (ClassNode.SubDesc and ctnsForwardDeclaration)=0 then begin
+        // parse class and build CodeTreeNodes for all properties/methods
+        BuildSubTreeForClass(ClassNode);
+        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+        if (CursorNode.Desc=ctnClass)
+        and (CleanCursorPos<ClassNode.FirstChild.StartPos) then begin
+          // identifier is an ancestor/interface identifier
+          DirectSearch:=true;
+        end;
+      end;
+    end;
+  end;
+  
+  procedure CheckIfCursorInBeginNode;
+  begin
+    if CursorNode.Desc=ctnBeginBlock then begin
+      BuildSubTreeForBeginBlock(CursorNode);
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    end;
+  end;
+  
+  procedure CheckIfCursorInProcNode;
+  var IsMethod: boolean;
+  begin
+    if CursorNode.Desc=ctnProcedureHead then
+      CursorNode:=CursorNode.Parent;
+    if CursorNode.Desc=ctnProcedure then begin
+      BuildSubTreeForProcHead(CursorNode);
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+      // check if cursor on proc name
+      if (CursorNode.Desc=ctnProcedureHead)
+      and (CleanCursorPos>=CursorNode.StartPos) then begin
+        MoveCursorToNodeStart(CursorNode);
+        ReadNextAtom;
+        IsMethod:=false;
+        if AtomIsIdentifier(false) then begin
+          ReadNextAtom;
+          if AtomIsChar('.') then begin
+            ReadNextAtom;
+            ReadNextAtom;
+            IsMethod:=true;
+          end;
+        end;
+        if (CurPos.StartPos>CleanCursorPos) and (not IsMethod) then begin
+          // cursor on proc name
+          // -> ignore proc name and search overloaded identifier
+          DirectSearch:=true;
+        end;
+      end;
+      if CursorNode.Desc=ctnProcedureHead then
+        CursorNode:=CursorNode.Parent;
+    end;
+  end;
+
+  procedure CheckIfCursorInPropertyNode;
+  begin
+    if CursorNode.Desc=ctnProperty then begin
+      MoveCursorToNodeStart(CursorNode);
+      ReadNextAtom; // read 'property'
+      ReadNextAtom; // read property name
+      if CleanCursorPos<CurPos.EndPos then
+        DirectSearch:=true;
+    end;
+  end;
+  
 begin
   Result:=false;
   ActivateGlobalWriteLock;
@@ -602,68 +672,18 @@ begin
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                            NewPos,NewTopLine);
     end else begin
-      SearchAlsoInCurContext:=true;
-      SearchInAncestors:=true;
-      // first test if in a class
-      ClassNode:=CursorNode;
-      while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
-        ClassNode:=ClassNode.Parent;
-      if ClassNode<>nil then begin
-        // cursor is in class/object definition
-        if (ClassNode.SubDesc and ctnsForwardDeclaration)=0 then begin
-          // parse class and build CodeTreeNodes for all properties/methods
-          BuildSubTreeForClass(ClassNode);
-          CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-          if (CursorNode.Desc=ctnClass)
-          and (CleanCursorPos<ClassNode.FirstChild.StartPos) then begin
-            // identifier is an ancestor/interface identifier
-            SearchAlsoInCurContext:=false;
-            SearchInAncestors:=false;
-          end;
-        end;
-      end;
-      if CursorNode.Desc=ctnBeginBlock then begin
-        BuildSubTreeForBeginBlock(CursorNode);
-        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-      end;
-      if CursorNode.Desc=ctnProcedureHead then
-        CursorNode:=CursorNode.Parent;
-      if CursorNode.Desc=ctnProcedure then begin
-        BuildSubTreeForProcHead(CursorNode);
-        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-        // check if cursor on proc name
-        if (CursorNode.Desc=ctnProcedureHead)
-        and (CleanCursorPos>CursorNode.StartPos) then begin
-          MoveCursorToNodeStart(CursorNode);
-          ReadNextAtom;
-          if AtomIsIdentifier(false) then begin
-            ReadNextAtom;
-            if AtomIsChar('.') then begin
-              ReadNextAtom;
-              ReadNextAtom;
-            end;
-          end;
-          if CurPos.StartPos>CleanCursorPos then begin
-            // cursor on proc name
-            // -> ignore proc name and search overloaded identifier
-            SearchAlsoInCurContext:=false;
-          end;
-        end;
-        if CursorNode.Desc=ctnProcedureHead then
-          CursorNode:=CursorNode.Parent;
-      end;
-      if CursorNode.Desc=ctnProperty then begin
-        MoveCursorToNodeStart(CursorNode);
-        ReadNextAtom; // read 'property'
-        ReadNextAtom; // read property name
-        if CleanCursorPos<CurPos.EndPos then
-          SearchAlsoInCurContext:=false;
-      end;
+      DirectSearch:=false;
+      CheckIfCursorInClassNode;
+      CheckIfCursorInBeginNode;
+      CheckIfCursorInProcNode;
+      CheckIfCursorInPropertyNode;
+      // set cursor
       MoveCursorToCleanPos(CleanCursorPos);
       while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
         dec(CurPos.StartPos);
       if (CurPos.StartPos>=1) and (IsIdentStartChar[Src[CurPos.StartPos]]) then
       begin
+        // search identifier
         CurPos.EndPos:=CurPos.StartPos;
         while (CurPos.EndPos<=SrcLen) and IsIdentChar[Src[CurPos.EndPos]] do
           inc(CurPos.EndPos);
@@ -674,12 +694,14 @@ begin
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                          fdfTopLvlResolving];
-          if not SearchAlsoInCurContext then
+          Params.Flags:=Params.Flags
+                        +[fdfSearchInAncestors]+fdfAllClassVisibilities;
+          if not DirectSearch then begin
+            Result:=FindDeclarationOfIdentAtCursor(Params);
+          end else begin
             Include(Params.Flags,fdfIgnoreCurContextNode);
-          if SearchInAncestors then
-            Params.Flags:=Params.Flags
-              +[fdfSearchInAncestors]+fdfAllClassVisibilities;
-          Result:=FindDeclarationOfIdentAtCursor(Params);
+            Result:=FindIdentifierInContext(Params);
+          end;
           if Result then begin
             Params.ConvertResultCleanPosToCaretPos;
             NewPos:=Params.NewPos;
@@ -1115,6 +1137,8 @@ var
               ' StartPos=',ContextNode.StartPos,
               ' EndPos=',ContextNode.EndPos,
               ' Self=',MainFilename);
+      writeln('  LastCacheEntry(Pos=',LastCacheEntry^.CleanStartPos,
+              '-',LastCacheEntry^.CleanEndPos,')');
       if (Params.NewNode<>nil) then
         writeln('   NewTool=',Params.NewCodeTool.MainFilename,
                 ' NewNode=',Params.NewNode.DescAsString)
@@ -1525,15 +1549,16 @@ begin
     if Result and (not (fdfDoNotCache in Params.NewFlags))
     and (FirstSearchedNode<>nil) then begin
       // cache result
-      AddResultToNodeCaches(Params.Identifier,FirstSearchedNode,ContextNode,
+      AddResultToNodeCaches(FirstSearchedNode,ContextNode,
         fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
     end;
   end;
   // if we are here, the identifier was not found
   if FirstSearchedNode<>nil then begin
     // add result to cache
-    AddResultToNodeCaches(Params.Identifier,FirstSearchedNode,LastSearchedNode,
-      fdfSearchForward in Params.Flags,nil,SearchRangeFlags);
+    Params.NewNode:=nil;
+    AddResultToNodeCaches(FirstSearchedNode,LastSearchedNode,
+      fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
   end;
 
   SetResultBeforeExit(false,false);
@@ -3089,6 +3114,7 @@ var
     if not IdentFound then begin
       Params.Save(OldInput);
       try
+        // build new param flags for sub identifiers
         Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                       +fdfAllClassVisibilities
                       +(fdfGlobals*Params.Flags);
@@ -3096,9 +3122,10 @@ var
           // there is no special context -> also search in parent contexts
           Params.Flags:=Params.Flags
                        +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
-        end else
+        end else begin
           // only search in special context
           Params.ContextNode:=CurContext.Node;
+        end;
 
         // check identifier must be checked for overloaded procs
         if IsIdentifierEndOfVariable
@@ -4560,7 +4587,7 @@ begin
   end;
 end;
 
-procedure TFindDeclarationTool.AddResultToNodeCaches(Identifier: PChar;
+procedure TFindDeclarationTool.AddResultToNodeCaches(
   StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
   Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
 var Node: TCodeTreeNode;
@@ -4573,15 +4600,8 @@ var Node: TCodeTreeNode;
   BeVerbose: boolean;
   {$ENDIF}
 begin
-  if (EndNode<>nil) and (EndNode.HasAsParent(StartNode)) then begin
-    // StartNode is parent of EndNode -> swap
-    Node:=StartNode;
-    StartNode:=EndNode;
-    EndNode:=Node;
-  end;
-  Node:=StartNode;
-  LastNodeCache:=nil;
-  if Params<>nil then begin
+  if StartNode=nil then exit;
+  if Params.NewNode<>nil then begin
     // identifier found
     NewNode:=Params.NewNode;
     NewTool:=Params.NewCodeTool;
@@ -4590,32 +4610,35 @@ begin
     // identifier not found
     NewNode:=nil;
     NewTool:=nil;
+    NewCleanPos:=-1;
   end;
-  // calculate search range (StartNode is on same or lower nodelvl than EndNode)
-  CleanStartPos:=StartNode.StartPos;
-  CleanEndPos:=StartNode.EndPos;
+  // calculate search range
   if EndNode<>nil then begin
-    if not SearchedForward then begin
-      if EndNode.StartPos<CleanStartPos then
-        CleanStartPos:=EndNode.StartPos;
+    if SearchedForward then begin
+      CleanStartPos:=StartNode.StartPos;
+      CleanEndPos:=EndNode.EndPos;
     end else begin
-      if EndNode.EndPos>CleanEndPos then
-        CleanEndPos:=EndNode.EndPos;
+      CleanStartPos:=EndNode.StartPos;
+      CleanEndPos:=StartNode.EndPos;
     end;
   end else begin
     // searched till start or end of source
-    if not SearchedForward then
-      CleanStartPos:=1
-    else
+    if not SearchedForward then begin
+      CleanStartPos:=1;
+      CleanEndPos:=StartNode.StartPos;
+    end else begin
+      CleanStartPos:=StartNode.StartPos;
       CleanEndPos:=SrcLen+1;
+    end;
   end;
+
   {$IFDEF ShowNodeCache}
-  beVerbose:=CompareSrcIdentifiers(Identifier,'FONT');
+  beVerbose:=CompareSrcIdentifiers(Params.Identifier,'VISIBLE');
   if beVerbose then begin
     writeln('(((((((((((((((((((((((((((==================');
     
     write('TFindDeclarationTool.AddResultToNodeCaches ',
-    ' Ident=',GetIdentifier(Identifier));
+    ' Ident=',GetIdentifier(Params.Identifier));
     write(' SearchedForward=',SearchedForward);
     write(' Flags=[');
     if ncefSearchedInParents in SearchRangeFlags then write('Parents');
@@ -4631,11 +4654,15 @@ begin
       write(' EndNode=nil');
     writeln('');
     
+    writeln('  StartNode(',StartNode.StartPos,'-',StartNode.EndPos,')');
+    if EndNode<>nil then
+      writeln('  EndNode(',EndNode.StartPos,'-',EndNode.EndPos,')');
+
     writeln('     Self=',MainFilename);
     
-    if Params<>nil then begin
-      writeln('       NewNode=',Params.NewNode.DescAsString,
-                 ' NewTool=',Params.NewCodeTool.MainFilename);
+    if NewNode<>nil then begin
+      writeln('       NewNode=',NewNode.DescAsString,
+                 ' NewTool=',NewTool.MainFilename);
     end else begin
       writeln('       NOT FOUND');
     end;
@@ -4644,6 +4671,19 @@ begin
     writeln('  CleanEndPos=',CleanEndPos,' "',copy(Src,CleanEndPos-70,70),'"');
   end;
   {$ENDIF}
+  LastNodeCache:=nil;
+  // start with parent of deepest node and end parent of highest
+  Node:=StartNode;
+  if (EndNode<>nil) then begin
+    if (EndNode.GetLevel>StartNode.GetLevel) then begin
+      Node:=EndNode;
+      EndNode:=StartNode.Parent;
+    end else begin
+      EndNode:=EndNode.Parent;
+    end;
+  end else
+    EndNode:=StartNode.Parent;
+  Node:=Node.Parent;
   while (Node<>nil) do begin
     if (Node.Desc in AllNodeCacheDescs) then begin
       if (Node.Cache=nil) then
@@ -4656,7 +4696,8 @@ begin
             CurNodeCache.WriteDebugReport('  BEFORE NODECACHE REPORT: ');
           end;
           {$ENDIF}
-          CurNodeCache.Add(Identifier,CleanStartPos,CleanEndPos,
+          CurNodeCache.Add(Params.Identifier,
+                           CleanStartPos,CleanEndPos,
                            NewNode,NewTool,NewCleanPos,SearchRangeFlags);
           {$IFDEF ShowNodeCache}
           if BeVerbose then begin
@@ -4668,7 +4709,7 @@ begin
       end;
     end;
     Node:=Node.Parent;
-    if (EndNode<>nil) and (Node=EndNode.Parent) then break;
+    if (EndNode=Node) then break;
   end;
   {$IFDEF ShowNodeCache}
   if BeVerbose then begin
