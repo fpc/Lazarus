@@ -3109,7 +3109,7 @@ begin
     begin
       // change cursor
       if Sender is TWinControl then
-        gtkproc.SetCursor(TWinControl(Sender), TCursor(Data));
+        gtkproc.SetCursor(TWinControl(Sender), TCursor(cardinal(Data)));
     end;
 
   LM_RECREATEWND : Result := RecreateWnd(sender);
@@ -9197,6 +9197,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.510  2004/06/28 08:54:20  mattias
+  fixed ord ptr conversion hints
+
   Revision 1.509  2004/06/22 23:55:51  marc
   * Fixed RawImage.Description.AlphaLineEnd (it is not always dword based)
 

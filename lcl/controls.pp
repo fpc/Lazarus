@@ -949,6 +949,7 @@ type
     procedure RemoveControlHandler(HandlerType: TControlHandlerType;
                                    AMethod: TMethod);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
+    function GetTextBufWithoutOverride: boolean;
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; dynamic;
@@ -2322,6 +2323,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.213  2004/06/28 08:54:19  mattias
+  fixed ord ptr conversion hints
+
   Revision 1.212  2004/06/24 17:59:18  mattias
   fixed compilation for fpc 1.0.10
 

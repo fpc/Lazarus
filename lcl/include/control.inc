@@ -1301,6 +1301,11 @@ begin
     FOnContextPopup(Self, MousePos, Handled);
 end;
 
+function TControl.GetTextBufWithoutOverride: boolean;
+begin
+  Result:= TMethod(@Self.GetTextBuf).Code=Pointer(@TControl.GetTextBuf);
+end;
+
 procedure TControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
   if Sender is TCustomAction then
@@ -2017,7 +2022,7 @@ var
 begin
   // Check if GetTextBuf is overridden, otherwise
   // we can call RealGetText directly
-  if Integer(@Self.GetTextBuf) = Integer(@TControl.GetTextBuf)
+  if GetTextBufWithoutOverride
   then begin
     Result := RealGetText;
   end
@@ -2968,7 +2973,7 @@ begin
   
   // Check if SetTextBuf is overridden, otherwise
   // we can call RealSetText directly
-  if Integer(@Self.SetTextBuf) = Integer(@TControl.SetTextBuf)
+  if GetTextBufWithoutOverride
   then begin
     RealSetText(Value);
   end
@@ -3190,6 +3195,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.197  2004/06/28 08:54:19  mattias
+  fixed ord ptr conversion hints
+
   Revision 1.196  2004/06/24 17:59:18  mattias
   fixed compilation for fpc 1.0.10
 

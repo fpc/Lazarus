@@ -425,7 +425,11 @@ begin
       // Size is ReadOnly in Delphi 2
       fBuffer.SetSize((SizeNeeded + $1800) and not $FFF); // increment in pages
     Dest := fBuffer.Memory;
-    Inc(Dest, Len);
+    {$IFDEF SYN_LAZARUS}
+    Dest:=Dest+Len;
+    {$ELSE}
+    inc(Dest,Len);
+    {$ENDIF}
     Move(fBuffer.Memory^, Dest^, TCompareMemSize(ToMove));
     fBuffer.Position := 0;
     fBuffer.Write(AText[1], TMemStreamSeekType(Len));
