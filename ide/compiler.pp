@@ -147,7 +147,7 @@ begin
     try
       TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := CmdLine;
-      TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+      TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutput];
       TheProcess.ShowWindow := swoNone;
       Result:=mrOk;
       try
@@ -160,7 +160,6 @@ begin
           OutputFilter.Execute(TheProcess);
         end else begin
           TheProcess.Execute;
-          TheProcess.WaitOnExit;
         end;
       finally
         TheProcess.WaitOnExit;
@@ -190,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2003/01/06 10:51:40  mattias
+  freeing stopped external tools
+
   Revision 1.37  2002/12/27 21:36:30  mattias
   fixed zombies on compile error
 

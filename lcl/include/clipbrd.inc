@@ -54,8 +54,8 @@ function TClipboard.IndexOfCachedFormatID(FormatID: TClipboardFormat;
   CreateIfNotExists: boolean): integer;
 var NewSize: integer;
 begin
-//writeln('[TClipboard.IndexOfCachedFormatID] A ',ClipboardTypeName[ClipboardType]
-//,' Format=',FormatID,' CreateIfNotExists=',CreateIfNotExists);
+  //writeln('[TClipboard.IndexOfCachedFormatID] A ',ClipboardTypeName[ClipboardType]
+  //,' Format=',FormatID,' CreateIfNotExists=',CreateIfNotExists);
   if FormatID=0 then begin
     Result:=-1;
     if CreateIfNotExists then
@@ -82,8 +82,8 @@ begin
         ClipboardTypeName[ClipboardType]);
     end;
   end;
-//writeln('[TClipboard.IndexOfCachedFormatID] END ',ClipboardTypeName[ClipboardType]
-//,' Format=',FormatID,' CreateIfNotExists=',CreateIfNotExists,' Result=',Result);
+  //writeln('[TClipboard.IndexOfCachedFormatID] END ',ClipboardTypeName[ClipboardType]
+  //,' Format=',FormatID,' CreateIfNotExists=',CreateIfNotExists,' Result=',Result);
 end;
 
 function TClipboard.AddFormat(FormatID: TClipboardFormat;
@@ -187,8 +187,8 @@ end;
 procedure TClipboard.InternalOnRequest(const RequestedFormatID: TClipboardFormat;
   AStream: TStream);
 begin
-//writeln('[TClipboard.InternalOnRequest] A ',ClipboardTypeName[ClipboardType]
-//,' RequestedFormatID=',RequestedFormatID,' AStream=',AStream<>nil,' Allocated=',FAllocated);
+  //writeln('[TClipboard.InternalOnRequest] A ',ClipboardTypeName[ClipboardType]
+  //,' RequestedFormatID=',RequestedFormatID,' AStream=',AStream<>nil,' Allocated=',FAllocated);
   if not FAllocated then exit;
   if (RequestedFormatID=0) then begin
     // loosing ownership
@@ -209,14 +209,14 @@ begin
     GetMem(FormatList,SizeOf(TClipboardFormat)*FCount);
     for i:=0 to FCount-1 do
       FormatList[i]:=FData[i].FormatID;
-//writeln('[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
+    //writeln('[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
     FAllocated:=ClipboardGetOwnerShip(ClipboardType,@InternalOnRequest,FCount,
       FormatList);
     FreeMem(FormatList);
     FSupportedFormatsChanged:=false;
   end;
   Result:=FAllocated;
-//writeln('[TClipboard.GetOwnerShip] END ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
+  //writeln('[TClipboard.GetOwnerShip] END ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
 end;
 
 procedure TClipboard.SetOnRequest(AnOnRequest: TClipboardRequestEvent);
@@ -340,20 +340,20 @@ end;
 procedure TClipboard.SetAsText(const Value: string);
 var s: string;
 begin
-//writeln('[TClipboard.SetAsText] A ',ClipboardTypeName[ClipboardType],' "',Value,'"');
+  //writeln('[TClipboard.SetAsText] A ',ClipboardTypeName[ClipboardType],' "',Value,'"');
   if Assigned(FOnRequest) then exit;
   if Value<>'' then
     s:=Value
   else
     s:=#0;
   SetBuffer(PredefinedClipboardFormat(pcfText),s[1],length(Value));
-//writeln('[TClipboard.SetAsText] END ',ClipboardTypeName[ClipboardType],' "',Value,'"');
+  //writeln('[TClipboard.SetAsText] END ',ClipboardTypeName[ClipboardType],' "',Value,'"');
 end;
 
 function TClipboard.GetAsText: string;
 var MemStream: TMemoryStream;
 begin
-//writeln('[TClipboard.GetAsText] A ',ClipboardTypeName[ClipboardType]);
+  //writeln('[TClipboard.GetAsText] A ',ClipboardTypeName[ClipboardType]);
   Result:='';
   MemStream:=TMemoryStream.Create;
   try
@@ -366,14 +366,14 @@ begin
   finally
     MemStream.Free;
   end;
-//writeln('[TClipboard.GetAsText] END ',ClipboardTypeName[ClipboardType],' "',Result,'"');
+  //writeln('[TClipboard.GetAsText] END ',ClipboardTypeName[ClipboardType],' "',Result,'"');
 end;
 
 procedure TClipboard.SupportedFormats(List: TStrings);
 var cnt, i: integer;
   FormatList: PClipboardFormat;
 begin
-//writeln('[TClipboard.SupportedFormats]');
+  //writeln('[TClipboard.SupportedFormats]');
   List.Clear;
   if FAllocated then begin
     for i:=0 to FCount-1 do
@@ -610,6 +610,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2003/01/06 10:51:41  mattias
+  freeing stopped external tools
+
   Revision 1.10  2002/10/24 10:05:51  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 

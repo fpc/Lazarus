@@ -1013,6 +1013,8 @@ begin
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    // only fpc 1.1
+    Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
