@@ -1011,7 +1011,6 @@ var
   BitImage  : TBitmap;
   Geometry  : TGdkGeometry;
   Accel     : integer;
-  decor,Func : Longint;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1423,17 +1422,12 @@ begin
         if Sender is TCommonDialog then
         begin
           // Should be done elsewhere (eg via SetLabel) not here!
-          pStr:= StrAlloc(Length(TCommonDialog(Sender).Title) + 1);
-          try
-            StrPCopy(pStr, TCommonDialog(Sender).Title);
-            gtk_window_set_title(PGtkWindow(handle), pStr);
-          finally
-            StrDispose(pStr);
-          end;
+          gtk_window_set_title(PGtkWindow(handle),
+                               PChar(TCommonDialog(Sender).Title));
+          if Sender is TColorDialog then
+            SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
         end;
-        if Sender is TColorDialog then
-          SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
-          
+
         if (Sender is TCustomForm) then begin
           gtk_window_set_default_size(PgtkWindow(handle),
                                 TControl(Sender).Width,TControl(Sender).Height);
@@ -1444,39 +1438,23 @@ begin
         end;
         UnsetResizeRequest(PGtkWidget(Handle));
 
-        //Try to make all Modal forms transient to the main form
+        // Try to make all Modal forms transient to the main form
         If Sender is TCustomForm then begin
           //If this is a Form, aka GTKWindow, try
           //and keep decoration and Functions -
-          
+
           //apart from none and sizeable, this will
           //only work if WM supports motif flags
           //properly, which very few actually do.
-          
-          Decor := GetWindowDecorations(TCustomForm(Sender));
-          Func := GetWindowFunction(TCustomForm(Sender));
 
-          If Sender <> Application.MainForm then begin
+          If (Sender <> Application.MainForm)
+          and Application.MainForm.HandleAllocated then begin
             gtk_window_set_transient_for(PGtkWindow(handle),
               PGtkWindow(Application.MainForm.handle));
           end;
-          gtk_window_set_modal(PGtkWindow(handle), true);
-          gtk_widget_show(PGtkWidget(handle));
-          gdk_window_hide(PGtkWidget(handle)^.Window);
-          gdk_window_set_decorations(PGtkWidget(handle)^.window, decor);
-          gdk_window_set_functions(PGtkWidget(handle)^.window, func);
-          gdk_window_set_events(PGtkWidget(handle)^.window, GDK_ALL_EVENTS_MASK);
-          gdk_window_show(PGtkWidget(handle)^.Window);
-        end else begin
-          //If not a form, call to GDK to set flag,
-          //as GTK only works on GTKWindows.
-          gtk_window_set_modal(PGtkWindow(handle), true);
-          gtk_widget_show(PGtkWidget(handle));
-          gdk_window_hide(PGtkWidget(handle)^.Window);
-          gdk_window_set_transient_for(PGtkWidget(handle)^.window,
-            PGtkWidget(Application.MainForm.handle)^.Window);
-          gdk_window_show(PGtkWidget(handle)^.Window);
         end;
+        gtk_window_set_modal(PGtkWindow(handle), true);
+        gtk_widget_show(PGtkWidget(handle));
       end;
 
       LM_TB_BUTTONCOUNT:
@@ -3586,8 +3564,8 @@ const
     GTK_WINDOW_TOPLEVEL,// bsSingle
     GTK_WINDOW_TOPLEVEL,// bsSizeable
     GTK_WINDOW_DIALOG,  // bsDialog
-    GTK_WINDOW_DIALOG,   // bsToolWindow
-    GTK_WINDOW_DIALOG    // bsSizeToolWin
+    GTK_WINDOW_DIALOG,  // bsToolWindow
+    GTK_WINDOW_DIALOG   // bsSizeToolWin
   );
   FormResizableMap : array[TFormBorderStyle] of gint = (
     0, // bsNone
@@ -4318,6 +4296,16 @@ begin
       UnsetResizeRequest(SenderWidget);
     end;
 
+    if (Sender is TCustomForm) then
+      If (TCustomForm(Sender).BorderStyle <> bsSizeable) or
+        (TCustomForm(Sender).FormStyle = fsStayOnTop)
+      then begin
+        Decor := GetWindowDecorations(TCustomForm(Sender));
+        Func := GetWindowFunction(TCustomForm(Sender));
+        gtk_widget_realize(SenderWidget);
+        gdk_window_set_decorations(GetControlWindow(SenderWidget), decor);
+        gdk_window_set_functions(GetControlWindow(SenderWidget), func);
+      end;
     gtk_widget_show(SenderWidget);
     SetColor(Sender);
     if (Sender is TCustomForm) and (GetControlWindow(SenderWidget)<>nil) then begin
@@ -4326,14 +4314,6 @@ begin
         gdk_window_set_icon(GetControlWindow(SenderWidget), nil,
                 FormIconGdiObject^.GDIBitmapObject,
                 FormIconGdiObject^.GDIBitmapMaskObject);
-      end;
-      If TCustomForm(Sender).BorderStyle <> bsSizeable then begin
-        Decor := GetWindowDecorations(TCustomForm(Sender));
-        Func := GetWindowFunction(TCustomForm(Sender));
-        gdk_window_hide(GetControlWindow(SenderWidget));
-        gdk_window_set_decorations(GetControlWindow(SenderWidget), decor);
-        gdk_window_set_functions(GetControlWindow(SenderWidget), func);
-        gdk_window_show(GetControlWindow(SenderWidget));
       end;
     end;
   end
@@ -5896,6 +5876,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.223  2002/09/30 20:19:12  lazarus
+  MG: fixed flickering of modal forms
+
   Revision 1.222  2002/09/29 15:08:39  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
