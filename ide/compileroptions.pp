@@ -1,6 +1,6 @@
 { /***************************************************************************
-                          compiler.pp  -  Lazarus IDE unit
-                          --------------------------------
+                      compileroptions.pp  -  Lazarus IDE unit
+                      ---------------------------------------
                    Compiler options form sets the switches for the project
                    file for the PPC386 compiler.
 
@@ -47,6 +47,7 @@ uses
 
 type
   { Compiler Options object used to hold the compiler options }
+
   TCompilerOptions = class(TObject)
   private
     fOptionsString: String;
@@ -875,7 +876,6 @@ begin
 
   { ----------- Code Generation Tab --------------- }
 
-  { Unit Style }
   { UnitStyle   '' = Static     'D' = Dynamic   'X' = smart linked }
   case (UnitStyle) of
     1: ;
@@ -913,14 +913,12 @@ begin
 
   switches := switches + ' -O';
 
-  { Generate }
   { Generate    G = faster g = smaller  }
   case (Generate) of
     1:  switches := switches + 'G';
     2:  switches := switches + 'g';
   end;
 
-  { Optimizations }
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
   case (OptimizationLevel) of
     1:  switches := switches + '1';
@@ -933,7 +931,6 @@ begin
   if (UncertainOptimizations) then
     switches := switches + 'u';
 
-  { Target Processor }
   { TargetProcessor  p1 = 386/486   p2 = Pentium/Pentium MMX  p3 = PentiumPro/PII/K6 }
   case (TargetProcessor) of
     1:  switches := switches + 'p1';

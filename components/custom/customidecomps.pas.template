@@ -29,9 +29,9 @@
        components/custom/customidecomps.pas.
     2. Copy checkbook.pas into the same directory.
     3. Add checkbook to the uses section of the customidecomps.pas (*1).
-    4. Add the line following line to RegisterCustomComponents (*2):
-       RegisterComponents('Extra','CheckBook',[TCheckBook]);
-    5. Add -dUseIDEComps to Tools-> Configure "Build Lazarus" -> Options.
+    4. Add the following line to RegisterCustomComponents (*2):
+       RegisterComponent('Extra','CheckBook',[TCheckBook]);
+    5. Add -dCustomIDEComps to Tools-> Configure "Build Lazarus" -> Options.
        This flag will tell the compiler to use customidecomps.pas.
     6. Rebuild lazarus.
 }
