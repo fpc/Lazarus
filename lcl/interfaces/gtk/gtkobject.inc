@@ -1431,9 +1431,9 @@ begin
 
     LM_SetLabel  : SetLabel(Sender,Data);
 
-    LM_GETVALUE  : Result := GetValue (Sender, data);
+    LM_GETVALUE  : Result := GetValue(Sender, data);
 
-    LM_SETVALUE  : Result := SetValue (Sender, data);
+    LM_SETVALUE  : Result := SetValue(Sender, data);
    
     LM_SETPROPERTIES: Result := SetProperties(Sender);
     
@@ -5423,6 +5423,7 @@ begin
     end;
 
   else
+    writeln('Warning: TgtkObject.GetValue not implemented for ',Sender.ClassName);
     Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
   end;
 end;
@@ -6837,6 +6838,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.320  2003/01/18 19:03:38  mattias
+  fixed TSpinEdit.Value
+
   Revision 1.319  2003/01/06 12:00:16  mattias
   implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
 
