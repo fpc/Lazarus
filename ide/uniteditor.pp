@@ -774,7 +774,7 @@ begin
   FindReplaceDlg.Top:=ATop;
   
   if (FindReplaceDlg.ShowModal = mrCancel) then begin
-    EditorComponent.SetFocus;
+    FEditor.SetFocus;
     exit;
   end;
   
@@ -1544,9 +1544,7 @@ Begin
   end else begin
     FEditor.Parent:=AParent;
   end;
-  FEditor.SetFocus;
 end;
-
 
 procedure TSourceEditor.SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
 begin
@@ -4129,9 +4127,8 @@ begin
       Default:=false;
       Visible := True;
     end;
-
-    Edit1.SetFocus;
   end;
+  ActiveControl:=Edit1;
 end;
 
 procedure TfrmGoto.Edit1KeyDown(Sender: TObject; var Key:Word;
