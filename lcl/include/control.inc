@@ -1167,9 +1167,11 @@ procedure TControl.Repaint;
 var
  DC: HDC;
 begin
-  if (Visible or (csDesigning in ComponentState) and
-    not (csNoDesignVisible in ControlStyle)) and (Parent <> nil) and
-    Parent.HandleAllocated then
+  if (Visible or (csDesigning in ComponentState)
+  and not (csNoDesignVisible in ControlStyle))
+  and (Parent <> nil)
+  and Parent.HandleAllocated
+  then
     if csOpaque in ControlStyle then
     begin
       DC := GetDC(Parent.Handle);
@@ -1748,6 +1750,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.65  2002/08/24 13:41:29  lazarus
+  MG: fixed TSpeedButton.SetDown and Invalidate
+
   Revision 1.64  2002/08/24 12:57:32  lazarus
   MG: reduced output
 
