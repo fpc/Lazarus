@@ -81,7 +81,7 @@ type
     ParsingPage: TPage;
     grpStyle: TRadioGroup;
 
-    grpSymantecChk: TGroupBox;
+    grpSyntaxOptions: TGroupBox;
     chkSymD2Ext: TCheckBox;
     chkSymCOper: TCheckBox;
     chkSymIncludeAssertions: TCheckBox;
@@ -1206,15 +1206,15 @@ begin
 
   yDiff:=22;
 
-  grpSymantecChk := TGroupBox.Create(Self);
-  with grpSymantecChk do
+  grpSyntaxOptions := TGroupBox.Create(Self);
+  with grpSyntaxOptions do
   begin
     Parent := ParsingPage;
     Top := grpStyle.Top+grpStyle.Height+5;
     Left := grpStyle.Left;
     Height := 25+12*yDiff;
     Width := Self.ClientWidth-28;
-    Caption := dlgSymantecChecking;
+    Caption := dlgSyntaxOptions;
   end;
 
   y:=2;
@@ -1222,7 +1222,7 @@ begin
   chkSymD2Ext := TCheckBox.Create(Self);
   with chkSymD2Ext do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgDelphi2Ext+' (-S2)';
     Top := y;
     Left := 5;
@@ -1233,7 +1233,7 @@ begin
   chkSymCOper := TCheckBox.Create(Self);
   with chkSymCOper do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgCOCOps+' (-Sc)';
     Top := y;
     Left := 5;
@@ -1244,7 +1244,7 @@ begin
   chkSymIncludeAssertions := TCheckBox.Create(Self);
   with chkSymIncludeAssertions do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgAssertCode+' (-Sa)';
     Top := y;
     Left := 5;
@@ -1255,7 +1255,7 @@ begin
   chkSymAllowLab := TCheckBox.Create(Self);
   with chkSymAllowLab do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgLabelGoto+' (-Sg)';
     Top := y;
     Left := 5;
@@ -1266,7 +1266,7 @@ begin
   chkSymCPPInline := TCheckBox.Create(Self);
   with chkSymCPPInline do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgCppInline+' (-Si)';
     Top := y;
     Left := 5;
@@ -1277,7 +1277,7 @@ begin
   chkSymCMacros := TCheckBox.Create(Self);
   with chkSymCMacros do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgCMacro+' (-Sm)';
     Top := y;
     Left := 5;
@@ -1288,7 +1288,7 @@ begin
   chkSymTP7Compat := TCheckBox.Create(Self);
   with chkSymTP7Compat do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgBP7Cptb+' (-So)';
     Top := y;
     Left := 5;
@@ -1299,7 +1299,7 @@ begin
   chkSymConstInit := TCheckBox.Create(Self);
   with chkSymConstInit do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgInitDoneOnly+' (-Ss)';
     Top := y;
     Left := 5;
@@ -1310,7 +1310,7 @@ begin
   chkSymStaticKwd := TCheckBox.Create(Self);
   with chkSymStaticKwd do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgStaticKeyword+' (-St)';
     Top := y;
     Left := 5;
@@ -1321,7 +1321,7 @@ begin
   chkSymDelphiCompat := TCheckBox.Create(Self);
   with chkSymDelphiCompat do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgDeplhiComp+' (-Sd)';
     Top := y;
     Left := 5;
@@ -1332,7 +1332,7 @@ begin
   chkSymUseAnsiStrings := TCheckBox.Create(Self);
   with chkSymUseAnsiStrings do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgCOAnsiStr+' (-Sh)';
     Top := y;
     Left := 5;
@@ -1343,7 +1343,7 @@ begin
   chkSymGPCCompat := TCheckBox.Create(Self);
   with chkSymGPCCompat do
   begin
-    Parent := grpSymantecChk;
+    Parent := grpSyntaxOptions;
     Caption := dlgGPCComp+' (-Sp)';
     Top := y;
     Left := 5;

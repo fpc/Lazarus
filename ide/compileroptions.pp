@@ -365,7 +365,7 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 implementation
 
 const
-  CompilerOptionsVersion = 4;
+  CompilerOptionsVersion = 5;
   Config_Filename = 'compileroptions.xml';
   MaxParseStamp = $7fffffff;
   MinParseStamp = -$7fffffff;
@@ -862,18 +862,24 @@ begin
   { Parsing }
   p:=Path+'Parsing/';
   AssemblerStyle := XMLConfigFile.GetValue(p+'Style/Value', 0);
-  D2Extensions := XMLConfigFile.GetValue(p+'SymantecChecking/D2Extensions/Value', true);
-  CStyleOperators := XMLConfigFile.GetValue(p+'SymantecChecking/CStyleOperator/Value', true);
-  IncludeAssertionCode := XMLConfigFile.GetValue(p+'SymantecChecking/IncludeAssertionCode/Value', false);
-  AllowLabel := XMLConfigFile.GetValue(p+'SymantecChecking/AllowLabel/Value', true);
-  CPPInline := XMLConfigFile.GetValue(p+'SymantecChecking/CPPInline/Value', true);
-  CStyleMacros := XMLConfigFile.GetValue(p+'SymantecChecking/CStyleMacros/Value', false);
-  TPCompatible := XMLConfigFile.GetValue(p+'SymantecChecking/TPCompatible/Value', false);
-  InitConstructor := XMLConfigFile.GetValue(p+'SymantecChecking/InitConstructor/Value', false);
-  StaticKeyword := XMLConfigFile.GetValue(p+'SymantecChecking/StaticKeyword/Value', false);
-  DelphiCompat := XMLConfigFile.GetValue(p+'SymantecChecking/DelphiCompat/Value', false);
-  UseAnsiStrings := XMLConfigFile.GetValue(p+'SymantecChecking/UseAnsiStrings/Value', false);
-  GPCCompat := XMLConfigFile.GetValue(p+'SymantecChecking/GPCCompat/Value', false);
+  
+  { Syntax Options }
+  if FileVersion>=5 then
+    p:=Path+'Parsing/SyntaxOptions/'
+  else
+    p:=Path+'SymantecChecking/';
+  D2Extensions := XMLConfigFile.GetValue(p+'D2Extensions/Value', true);
+  CStyleOperators := XMLConfigFile.GetValue(p+'CStyleOperator/Value', true);
+  IncludeAssertionCode := XMLConfigFile.GetValue(p+'IncludeAssertionCode/Value', false);
+  AllowLabel := XMLConfigFile.GetValue(p+'AllowLabel/Value', true);
+  CPPInline := XMLConfigFile.GetValue(p+'CPPInline/Value', true);
+  CStyleMacros := XMLConfigFile.GetValue(p+'CStyleMacros/Value', false);
+  TPCompatible := XMLConfigFile.GetValue(p+'TPCompatible/Value', false);
+  InitConstructor := XMLConfigFile.GetValue(p+'InitConstructor/Value', false);
+  StaticKeyword := XMLConfigFile.GetValue(p+'StaticKeyword/Value', false);
+  DelphiCompat := XMLConfigFile.GetValue(p+'DelphiCompat/Value', false);
+  UseAnsiStrings := XMLConfigFile.GetValue(p+'UseAnsiStrings/Value', false);
+  GPCCompat := XMLConfigFile.GetValue(p+'GPCCompat/Value', false);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
@@ -1003,18 +1009,21 @@ begin
   { Parsing }
   p:=Path+'Parsing/';
   XMLConfigFile.SetDeleteValue(p+'Style/Value', AssemblerStyle,0);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/D2Extensions/Value', D2Extensions,true);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CStyleOperator/Value', CStyleOperators,true);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/IncludeAssertionCode/Value', IncludeAssertionCode,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/AllowLabel/Value', AllowLabel,true);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CPPInline/Value', CPPInline,true);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CStyleMacros/Value', CStyleMacros,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/TPCompatible/Value', TPCompatible,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/InitConstructor/Value', InitConstructor,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/StaticKeyword/Value', StaticKeyword,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/DelphiCompat/Value', DelphiCompat,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings,false);
-  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/GPCCompat/Value', GPCCompat,false);
+  
+  { Syntax Options }
+  p:=Path+'Parsing/SyntaxOptions/';
+  XMLConfigFile.SetDeleteValue(p+'D2Extensions/Value', D2Extensions,true);
+  XMLConfigFile.SetDeleteValue(p+'CStyleOperator/Value', CStyleOperators,true);
+  XMLConfigFile.SetDeleteValue(p+'IncludeAssertionCode/Value', IncludeAssertionCode,false);
+  XMLConfigFile.SetDeleteValue(p+'AllowLabel/Value', AllowLabel,true);
+  XMLConfigFile.SetDeleteValue(p+'CPPInline/Value', CPPInline,true);
+  XMLConfigFile.SetDeleteValue(p+'CStyleMacros/Value', CStyleMacros,false);
+  XMLConfigFile.SetDeleteValue(p+'TPCompatible/Value', TPCompatible,false);
+  XMLConfigFile.SetDeleteValue(p+'InitConstructor/Value', InitConstructor,false);
+  XMLConfigFile.SetDeleteValue(p+'StaticKeyword/Value', StaticKeyword,false);
+  XMLConfigFile.SetDeleteValue(p+'DelphiCompat/Value', DelphiCompat,false);
+  XMLConfigFile.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,false);
+  XMLConfigFile.SetDeleteValue(p+'GPCCompat/Value', GPCCompat,false);
   
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
@@ -1499,9 +1508,8 @@ Processor specific options:
     3: switches := switches + '-Rdirect';
   end;
   
-  { Symantec Checking
+  { Syntax Options
   
-    -S<x>  syntax options:
       -S2        switch some Delphi 2 extensions on
       -Sc        supports operators like C (*=,+=,/= and -=)
       -sa        include assertion code.
@@ -1913,7 +1921,7 @@ begin
   fCMacros := false;
   fTPCompat := false;
   fInitConst := false;
-  fStaticKwd := false;
+  fStaticKeyword := false;
   fDelphiCompat := false;
   fUseAnsiStr := false;
   fGPCCompat := false;
@@ -2014,7 +2022,7 @@ begin
   fCMacros := CompOpts.fCMacros;
   fTPCompat := CompOpts.fTPCompat;
   fInitConst := CompOpts.fInitConst;
-  fStaticKwd := CompOpts.fStaticKwd;
+  fStaticKeyword := CompOpts.fStaticKeyword;
   fDelphiCompat := CompOpts.fDelphiCompat;
   fUseAnsiStr := CompOpts.fUseAnsiStr;
   fGPCCompat := CompOpts.fGPCCompat;
@@ -2106,7 +2114,7 @@ begin
     and (fCMacros = CompOpts.fCMacros)
     and (fTPCompat = CompOpts.fTPCompat)
     and (fInitConst = CompOpts.fInitConst)
-    and (fStaticKwd = CompOpts.fStaticKwd)
+    and (fStaticKeyword = CompOpts.fStaticKeyword)
     and (fDelphiCompat = CompOpts.fDelphiCompat)
     and (fUseAnsiStr = CompOpts.fUseAnsiStr)
     and (fGPCCompat = CompOpts.fGPCCompat)

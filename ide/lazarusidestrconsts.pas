@@ -899,7 +899,7 @@ resourcestring
   lislinkerOptions = 'linker options';
   liscustomOptions = 'custom options';
   dlgCOAsIs = 'As-Is';
-  dlgSymantecChecking = 'Symantec Checking:';
+  dlgSyntaxOptions = 'Syntax options';
   dlgDelphi2Ext = 'Delphi 2 Extensions';
   dlgCOCOps = 'C Style Operators (*=, +=, /= and -=)';
   dlgAssertCode = 'Include Assertion Code';

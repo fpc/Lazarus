@@ -67,7 +67,8 @@ type
     // Parsing:
     // assembler style
     fAssemblerStyle: Integer;
-    // symantec checking
+
+    // syntax options
     fD2Ext: Boolean;
     fCStyleOp: Boolean;
     fIncludeAssertionCode: Boolean;
@@ -79,7 +80,7 @@ type
     fTPCompat: Boolean;
     fGPCCompat: Boolean;
     fInitConst: Boolean;
-    fStaticKwd: Boolean;
+    fStaticKeyword: Boolean;
 
     // Code generation:
     fSmartLinkUnit: Boolean;
@@ -184,7 +185,7 @@ type
     property TPCompatible: Boolean read fTPCompat write fTPCompat;
     property GPCCompat: Boolean read fGPCCompat write fGPCCompat;
     property InitConstructor: Boolean read fInitConst write fInitConst;
-    property StaticKeyword: Boolean read fStaticKwd write fStaticKwd;
+    property StaticKeyword: Boolean read fStaticKeyword write fStaticKeyword;
 
     // code generation:
     property SmartLinkUnit: Boolean read fSmartLinkUnit write fSmartLinkUnit;
