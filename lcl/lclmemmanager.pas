@@ -93,6 +93,14 @@ type
     function NewItem: Pointer;
     procedure EnumerateItems(Method: TLCLEnumItemsMethod);
   end;
+
+
+  { TExtMemoryStream }
+  
+  TExtMemoryStream = class(TMemoryStream)
+  public
+    property Capacity: Longint read FCapacity write SetCapacity;
+  end;
   
 
 implementation

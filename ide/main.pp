@@ -44,11 +44,12 @@ uses
 {$ENDIF}
   // fpc packages
   Classes, SysUtils, Process, TypInfo,
+  // lcl
+  LCLProc, LCLMemManager, LCLType, LCLIntf, LMessages, LResources, StdCtrls,
+  Forms, Buttons, Menus, FileCtrl, Controls, GraphType, Graphics, ExtCtrls,
+  Dialogs,
   // codetools
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
-  // lcl
-  LCLType, LCLIntf, LCLproc, LMessages, LResources, StdCtrls, Forms, Buttons,
-  Menus, FileCtrl, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -3131,11 +3132,13 @@ end;
 
 function TMainIDE.DoSaveFileResources(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+const
+  BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
   ComponentSavingOk: boolean;
-  MemStream,BinCompStream,TxtCompStream:TMemoryStream;
+  MemStream, BinCompStream, TxtCompStream: TExtMemoryStream;
   Driver: TAbstractObjectWriter;
-  Writer:TWriter;
+  Writer: TWriter;
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
 begin
@@ -3158,13 +3161,15 @@ begin
     FormEditor1.SaveHiddenDesignerFormProperties(AnUnitInfo.Component);
 
     // stream component to binary stream
-    BinCompStream:=TMemoryStream.Create;
+    BinCompStream:=TExtMemoryStream.Create;
+    if AnUnitInfo.ComponentLastBinStreamSize>0 then
+      BinCompStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
     try
       Result:=mrOk;
       repeat
         try
           BinCompStream.Position:=0;
-          Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
+          Driver:=TBinaryObjectWriter.Create(BinCompStream,BufSize);
           try
             Writer:=TWriter.Create(Driver);
             try
@@ -3175,6 +3180,7 @@ begin
           finally
             Driver.Free;
           end;
+          AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
         except
           ACaption:=lisStreamingError;
           AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
@@ -3202,11 +3208,14 @@ begin
         if ComponentSavingOk then begin
           // there is no bug in the source, so the resource code should be
           // changed too
-          MemStream:=TMemoryStream.Create;
+          MemStream:=TExtMemoryStream.Create;
+          if AnUnitInfo.ComponentLastLRSStreamSize>0 then
+            MemStream.Capacity:=AnUnitInfo.ComponentLastLRSStreamSize+BufSize;
           try
             BinCompStream.Position:=0;
             BinaryToLazarusResourceCode(BinCompStream,MemStream
               ,'T'+AnUnitInfo.ComponentName,'FORMDATA');
+            AnUnitInfo.ComponentLastLRSStreamSize:=MemStream.Size;
             MemStream.Position:=0;
             SetLength(CompResourceCode,MemStream.Size);
             MemStream.Read(CompResourceCode[1],length(CompResourceCode));
@@ -3218,7 +3227,7 @@ begin
           {$IFDEF IDE_DEBUG}
           writeln('TMainIDE.SaveFileResources E ',CompResourceCode);
           {$ENDIF}
-          // replace lazarus form resource code
+          // replace lazarus form resource code in include file
           if not (sfSaveToTestDir in Flags) then begin
             // if resource name has changed, delete old resource
             if (AnUnitInfo.ComponentName<>AnUnitInfo.ComponentResourceName)
@@ -3275,10 +3284,14 @@ begin
             repeat
               try
                 // transform binary to text
-                TxtCompStream:=TMemoryStream.Create;
+                TxtCompStream:=TExtMemoryStream.Create;
+                if AnUnitInfo.ComponentLastLFMStreamSize>0 then
+                  TxtCompStream.Capacity:=AnUnitInfo.ComponentLastLFMStreamSize
+                                          +BufSize;
                 try
                   BinCompStream.Position:=0;
                   ObjectBinaryToText(BinCompStream,TxtCompStream);
+                  AnUnitInfo.ComponentLastLFMStreamSize:=TxtCompStream.Size;
                   // stream text to file
                   TxtCompStream.Position:=0;
                   LFMCode.LoadFromStream(TxtCompStream);
@@ -3653,11 +3666,13 @@ end;
 
 function TMainIDE.DoLoadLFM(AnUnitInfo: TUnitInfo;
   Flags: TOpenFlags): TModalResult;
+const
+  BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 var
   LFMFilename, ACaption, AText: string;
   LFMBuf: TCodeBuffer;
   ComponentLoadingOk: boolean;
-  TxtLFMStream, BinLFMStream:TMemoryStream;
+  TxtLFMStream, BinLFMStream: TExtMemoryStream;
   CInterface: TComponentInterface;
   NewComponent: TComponent;
   AncestorType: TComponentClass;
@@ -3681,11 +3696,12 @@ begin
 
   ComponentLoadingOk:=true;
 
-  BinLFMStream:=TMemoryStream.Create;
+  BinLFMStream:=TExtMemoryStream.Create;
   try
-    TxtLFMStream:=TMemoryStream.Create;
+    TxtLFMStream:=TExtMemoryStream.Create;
     try
       LFMBuf.SaveToStream(TxtLFMStream);
+      AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
       TxtLFMStream.Position:=0;
 
       // find the classname of the LFM
@@ -3709,7 +3725,10 @@ begin
 
       // convert text to binary format
       try
+        if AnUnitInfo.ComponentLastBinStreamSize>0 then
+          BinLFMStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
         ObjectTextToBinary(TxtLFMStream,BinLFMStream);
+        AnUnitInfo.ComponentLastBinStreamSize:=BinLFMStream.Size;
         BinLFMStream.Position:=0;
         Result:=mrOk;
       except
@@ -10316,6 +10335,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.711  2004/02/17 22:17:39  mattias
+  accelerated conversion from data to lrs
+
   Revision 1.710  2004/02/10 00:45:50  mattias
   changed mbOk to mbYes for asking to add unit to project
 

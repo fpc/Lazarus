@@ -854,7 +854,7 @@ procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;
   Instance: TPersistent; PropInfo: PPropInfo; const TheMethodName: string;
   var Handled: boolean);
 begin
-  writeln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
+  //writeln('TJITComponentList.ReaderSetMethodProperty ',PropInfo^.Name,':=',TheMethodName);
 end;
 {$ENDIF}
 

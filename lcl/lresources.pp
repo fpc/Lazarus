@@ -93,7 +93,22 @@ var LazarusResources:TLResourceList;
 implementation
 
 
-const LineEnd:ShortString= LineEnding;
+const
+  LineEnd: ShortString = LineEnding;
+
+var
+  ByteToStr: array[char] of shortstring;
+  ByteToStrValid: boolean;
+  
+procedure InitByteToStr;
+var
+  c: Char;
+begin
+  if ByteToStrValid then exit;
+  for c:=Low(char) to High(char) do
+    ByteToStr[c]:=IntToStr(ord(c));
+  ByteToStrValid:=true;
+end;
 
 {function UTF8Decode(const S: UTF8String): WideString;
 begin
@@ -108,75 +123,172 @@ procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
     +#83#187#6#78#83
   );
 }
-var s, Indent: ShortString;
-  p, x: integer;
-  c, h: char;
+const
+  ReadBufSize = 4096;
+  WriteBufSize = 4096;
+var
+  s, Indent: string;
+  x: integer;
+  c: char;
   RangeString, NewRangeString: boolean;
   RightMargin, CurLine: integer;
+  WriteBufStart, Writebuf: PChar;
+  WriteBufPos: Integer;
+  ReadBufStart, ReadBuf: PChar;
+  ReadBufPos, ReadBufLen: integer;
+  MinCharCount: Integer;
+  
+  procedure FillReadBuf;
+  begin
+    ReadBuf:=ReadBufStart;
+    ReadBufPos:=0;
+    ReadBufLen:=BinStream.Read(ReadBuf^,ReadBufSize);
+  end;
+  
+  procedure InitReadBuf;
+  begin
+    GetMem(ReadBufStart,ReadBufSize);
+    FillReadBuf;
+  end;
+
+  function ReadChar(var c: char): boolean;
+  begin
+    if ReadBufPos>=ReadBufLen then begin
+      FillReadBuf;
+      if ReadBufLen=0 then begin
+        Result:=false;
+        exit;
+      end;
+    end;
+    c:=ReadBuf^;
+    inc(ReadBuf);
+    inc(ReadBufPos);
+    Result:=true;
+  end;
+
+  procedure InitWriteBuf;
+  begin
+    GetMem(WriteBufStart,WriteBufSize);
+    WriteBuf:=WriteBufStart;
+    WriteBufPos:=0;
+  end;
+
+  procedure FlushWriteBuf;
+  begin
+    if WriteBufPos>0 then begin
+      ResStream.Write(WriteBufStart^,WriteBufPos);
+      WriteBuf:=WriteBufStart;
+      WriteBufPos:=0;
+    end;
+  end;
+  
+  procedure WriteChar(c: char);
+  begin
+    WriteBuf^:=c;
+    inc(WriteBufPos);
+    inc(WriteBuf);
+    if WriteBufPos>=WriteBufSize then
+      FlushWriteBuf;
+  end;
+  
+  procedure WriteString(const s: string);
+  var
+    i: Integer;
+  begin
+    for i:=1 to length(s) do WriteChar(s[i]);
+  end;
+
+  procedure WriteShortString(const s: string);
+  var
+    i: Integer;
+  begin
+    for i:=1 to length(s) do WriteChar(s[i]);
+  end;
+
 begin
   // fpc is not optimized for building a constant string out of thousands of
   // lines. It needs huge amounts of memory and becomes very slow. Therefore big
   // files are split into several strings.
 
+  InitReadBuf;
+  InitWriteBuf;
+  InitByteToStr;
+
   Indent:='';
   s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''',['
     +LineEnd;
-  ResStream.Write(s[1],length(s));
-  p:=0;
+  WriteString(s);
   Indent:='  '+Indent;
-  ResStream.Write(Indent[1],length(Indent));
+  WriteString(Indent);
   x:=length(Indent);
   RangeString:=false;
   CurLine:=1;
   RightMargin:=80;
-  while p<BinStream.Size do begin
-    BinStream.Read(c,1);
+  while ReadChar(c) do begin
     NewRangeString:=(ord(c)>=32) and (ord(c)<=127);
+    // check if new char fits into line or if a new line must be started
     if NewRangeString then begin
       if RangeString then
-        s:=''
-      else begin
-        s:='''';
-      end;
-      s:=s+c;
-      if c='''' then s:=s+'''';
-    end else begin
-      if RangeString then begin
-        s:='''';
-      end else
-        s:='';
-      s:=s+'#'+IntToStr(ord(c));
-    end;
-    inc(x,length(s));
-    if (x>RightMargin) or ((NewRangeString) and (x=RightMargin)) then begin
-      if RangeString then begin
-        h:='''';
-        ResStream.Write(h,1);
-        if NewRangeString then
-          s:=''''+s
-        else begin
-          s:=copy(s,2,length(s)-1);
-        end;
-      end;
-      ResStream.Write(LineEnd[1],length(LineEnd));
-      inc(CurLine);
-      if (CurLine and 63)<>1 then
-        s:=Indent+'+'+s
+        MinCharCount:=2 // char plus '
       else
-        s:=Indent+','+s;
-      x:=length(s);
+        MinCharCount:=3; // ' plus char plus '
+      if c='''' then inc(MinCharCount);
+    end else begin
+      MinCharCount:=1+length(ByteToStr[c]); // # plus number
+      if RangeString then
+        inc(MinCharCount); // plus ' for ending last string constant
     end;
-    ResStream.Write(s[1],length(s));
+    if x+MinCharCount>RightMargin then begin
+      // break line
+      if RangeString then begin
+        // end string constant
+        WriteChar('''');
+      end;
+      // write line ending
+      WriteShortString(LineEnd);
+      x:=0;
+      inc(CurLine);
+      // write indention
+      WriteString(Indent);
+      inc(x,length(Indent));
+      // write operator
+      if (CurLine and 63)<>1 then
+        WriteChar('+')
+      else
+        WriteChar(',');
+      inc(x);
+      RangeString:=false;
+    end;
+    // write converted byte
+    if RangeString<>NewRangeString then begin
+      WriteChar('''');
+      inc(x);
+    end;
+    if NewRangeString then begin
+      WriteChar(c);
+      inc(x);
+      if c='''' then begin
+        WriteChar(c);
+        inc(x);
+      end;
+    end else begin
+      WriteChar('#');
+      inc(x);
+      WriteShortString(ByteToStr[c]);
+      inc(x,length(ByteToStr[c]));
+    end;
+    // next
     RangeString:=NewRangeString;
-    inc(p);
   end;
   if RangeString then begin
-    h:='''';
-    ResStream.Write(h,1);
+    WriteChar('''');
   end;
   Indent:=copy(Indent,3,length(Indent)-2);
   s:=LineEnd+Indent+']);'+LineEnd;
-  ResStream.Write(s[1],length(s));
+  WriteString(s);
+  FlushWriteBuf;
+  FreeMem(ReadBufStart);
+  FreeMem(WriteBufStart);
 end;
 
 function FindLFMClassName(LFMStream:TStream):ansistring;
@@ -1365,8 +1477,14 @@ end;
 
 
 //------------------------------------------------------------------------------
-initialization
+procedure InternalInit;
+begin
   LazarusResources:=TLResourceList.Create;
+  ByteToStrValid:=false;
+end;
+
+initialization
+  InternalInit;
 
 finalization
   LazarusResources.Free;

@@ -81,11 +81,6 @@ type
     fAutoRevertLockCount: integer;
     fBookmarks: TFileBookmarks;
     FBuildFileIfActive: boolean;
-    fCursorPos: TPoint;
-    fCustomHighlighter: boolean; // do not change highlighter on file extension change
-    fEditorIndex: integer;
-    fFileName: string;
-    fFileReadOnly: Boolean;
     fComponent: TComponent;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
@@ -93,6 +88,14 @@ type
          or the designer form is not created.
          A component can be a TForm or a TDataModule }
     fComponentResourceName: string;
+    FComponentLastBinStreamSize: TStreamSeekType;
+    FComponentLastLFMStreamSize: TStreamSeekType;
+    FComponentLastLRSStreamSize: TStreamSeekType;
+    fCursorPos: TPoint;
+    fCustomHighlighter: boolean; // do not change highlighter on file extension change
+    fEditorIndex: integer;
+    fFileName: string;
+    fFileReadOnly: Boolean;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
@@ -185,6 +188,12 @@ type
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
                                            write fComponentResourceName;
+    property ComponentLastBinStreamSize: TStreamSeekType
+             read FComponentLastBinStreamSize write FComponentLastBinStreamSize;
+    property ComponentLastLRSStreamSize: TStreamSeekType
+             read FComponentLastLRSStreamSize write FComponentLastLRSStreamSize;
+    property ComponentLastLFMStreamSize: TStreamSeekType
+             read FComponentLastLFMStreamSize write FComponentLastLFMStreamSize;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
@@ -2815,6 +2824,9 @@ end.
 
 {
   $Log$
+  Revision 1.148  2004/02/17 22:17:39  mattias
+  accelerated conversion from data to lrs
+
   Revision 1.147  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 

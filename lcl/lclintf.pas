@@ -70,6 +70,8 @@ function GetTickCount: DWord; cdecl; external;
 function GetTickCount: DWord;
 {$ENDIF}
 
+function GetTickStep: DWord;
+
 implementation
 
 uses
@@ -84,6 +86,11 @@ var
     array[TPredefinedClipboardFormat] of TClipboardFormat;
   LowerCaseChars: array[char] of char;
   UpperCaseChars: array[char] of char;
+  LastTickValid: boolean;
+  LastTick: DWord;
+  
+//const
+//  MaxTick = 24*60*60*1000;
 
 {$IFNDEF Win32}
 function GetTickCount: DWord;
@@ -94,6 +101,25 @@ begin
   Result:=(((hour*60)+minutes)*60+secs)*1000+msecs;
 end;
 {$ENDIF}
+
+function GetTickStep: DWord;
+var
+  CurTick: DWord;
+begin
+  CurTick:=GetTickCount;
+  if LastTickValid then begin
+    if LastTick<=CurTick then
+      Result:=CurTick-LastTick
+    else begin
+      // tick counter has restarted
+      Result:=CurTick+(DWord($FFFFFFFF)-LastTick+1);
+    end;
+  end else begin
+    Result:=0;
+  end;
+  LastTickValid:=true;
+  LastTick:=CurTick;
+end;
 
 function MakeLong(A,B : Word) : LongInt;
 begin
@@ -141,6 +167,7 @@ begin
     LowerCaseChars[c]:=s[1];
     UpperCaseChars[c]:=upcase(c);
   end;
+  LastTickValid:=false;
 end;
 
 initialization
@@ -151,6 +178,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2004/02/17 22:17:40  mattias
+  accelerated conversion from data to lrs
+
   Revision 1.7  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

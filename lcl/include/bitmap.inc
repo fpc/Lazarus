@@ -858,7 +858,7 @@ var
   IntfImg: TLazIntfImage;
   ImgWriter: TFPCustomImageWriter;
 begin
-  writeln('WriteStreamWithFPImage Self=',HexStr(Cardinal(Self),8),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
+  //writeln('WriteStreamWithFPImage Self=',HexStr(Cardinal(Self),8),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0) then begin
     DoWriteOriginal;
     exit;
@@ -1059,6 +1059,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2004/02/17 22:17:40  mattias
+  accelerated conversion from data to lrs
+
   Revision 1.65  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 
