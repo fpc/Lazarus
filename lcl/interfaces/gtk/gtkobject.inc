@@ -238,14 +238,19 @@ procedure TgtkObject.SendCachedLCLMessages;
         // resize form
         gtk_window_set_default_size(PgtkWindow(Widget),
                                     LCLControl.Width,LCLControl.Height);
+        {$IFDEF VerboseClientRectBugFix}
+        writeln('BBB1 ',Widget^.window<>nil);
+        if (LCLControl is TCustomForm) then
+          writeln('BBB2 SendCachedLCLMessages ',LCLControl.ClassName,' ',LCLControl.Left,',',LCLControl.Top);
+        {$ENDIF}
         if Widget^.window<>nil then begin
-          gdk_window_move_resize(Widget^.window,LCLControl.Left,LCLControl.Top,
-                                 LCLControl.Width, LCLControl.Height);
+          gdk_window_resize(Widget^.window,LCLControl.Width, LCLControl.Height);
+          gdk_window_move(Widget^.window,LCLControl.Left,LCLControl.Top);
         end else begin
           gtk_widget_set_usize(Widget, -1,-1);
           gtk_widget_set_usize(Widget, LCLControl.Width, LCLControl.Height);
+          gtk_widget_set_uposition(Widget, LCLControl.Left, LCLControl.Top);
         end;
-        gtk_widget_set_uposition(Widget, LCLControl.Left, LCLControl.Top);
       end;
 
     end;
@@ -302,16 +307,17 @@ procedure TGtkObject.SendCachedGtkMessages;
     GtkTop:=MainWidget^.Allocation.Y;
     GtkWidth:=MainWidget^.Allocation.Width;
     GtkHeight:=MainWidget^.Allocation.Height;
-
+    
     IsTopLevelWidget:=(LCLControl is TCustomForm)
                       and (LCLControl.Parent=nil);
     if IsTopLevelWidget then begin
-      if MainWidget^.window<>nil then
-        gdk_window_get_root_origin(MainWidget^.window, @GtkLeft, @GtkTop)
-      else begin
+      if MainWidget^.window<>nil then begin
+        gdk_window_get_root_origin(MainWidget^.window, @GtkLeft, @GtkTop);
+      end else begin
         GtkLeft:=LCLControl.Left;
         GtkTop:=LCLControl.Top;
       end;
+      //writeln('SendSizeNotificationToLCL ',LCLControl.ClassName,' ',GtkLeft,',',GtkTop);
     end;
     
     UpdateLCLRect;
@@ -458,6 +464,9 @@ procedure TGtkObject.SendCachedGtkMessages;
     List.Free;
     FWidgetsResized.Clear;
     FFixWidgetsResized.Clear;
+    {$IFDEF VerboseSizeMsg}
+    writeln('HHH4 SendCachedGtkClientResizeNotifications  completed.');
+    {$ENDIF}
   end;
   {$ENDIF}
 
@@ -1115,7 +1124,6 @@ begin
             StrDispose(pStr);
           end;
         end;
-        gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
         if Sender is TColorDialog then
           SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
           
@@ -1125,6 +1133,8 @@ begin
                                 TControl(Sender).Width,TControl(Sender).Height);
           gtk_widget_set_uposition(PgtkWidget(handle),
                                    TControl(Sender).Left, TControl(Sender).Top);
+        end else begin
+          gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
         end;
         {$ENDIF}
         gtk_widget_show(PGtkWidget(handle));
@@ -1554,6 +1564,8 @@ begin
       	      min_aspect:= 0;
       	      max_aspect:= 1;
       	    end;
+           if Sender is TCustomForm then
+             writeln('LM_SETGEOMETRY ',Sender.ClassName);
             gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
                                         GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
           end;
@@ -1634,6 +1646,10 @@ begin
       Widget := pgtkWidget(TWinControl(Sender).Handle);
       {$IFDEF ClientRectBugFix}
       SetResizeRequest(Widget);
+      {$IFDEF VerboseClientRectBugFix}
+      if (Sender is TCustomForm) then
+        writeln(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top);
+      {$ENDIF}
       {$ELSE}
       Parent:= TControl(Sender).Parent;
 
@@ -1697,6 +1713,9 @@ begin
           gtk_widget_set_usize(Widget, -1,-1);
           gtk_widget_set_usize(Widget, Width, Height);
         end;
+        {$IFDEF VerboseClientRectBugFix}
+        writeln('TgtkObject.ResizeChild ',Sender.ClassName,' ',Left,',',Top);
+        {$ENDIF}
         gtk_widget_set_uposition(Widget, Left, Top);
       end;
       {$ENDIF}
@@ -1973,7 +1992,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
   
 
 var
-   gObject, gFixed: PGTKObject;
+  gObject, gFixed: PGTKObject;
 begin
   gObject := ObjectToGTKObject(Sender);
   if gObject = nil then Exit;
@@ -2046,7 +2065,6 @@ begin
     Begin
       ConnectSignal(gObject, 'day-selected', @gtkdaychanged);
       ConnectSignal(gObject, 'day-selected-double-click', @gtkdaychanged);
-
     end;
 
     LM_PAINT :
@@ -2105,17 +2123,6 @@ begin
       ConnectSignal(gObject, 'next-month', @gtkmonthchanged);
     end;
 
-    LM_MOUSEMOVE:
-    begin
-      if (sender is TComboBox) then
-      Begin
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-      end
-      else
-        ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
-    end;
-    
     LM_PRESSED :
     begin
       Assert(False, 'Trace:OBSOLETE: [TGTKObject.SetCallback] LM_PRESSED');
@@ -2130,7 +2137,22 @@ begin
 
     LM_MOVECURSOR :
     begin
-      ConnectSignal(gObject, 'move-cursor', @gtkmovecursorCB);
+      ConnectSignal(gFixed, 'move-cursor', @gtkmovecursorCB);
+    end;
+
+    LM_MOUSEMOVE:
+    begin
+      if (sender is TComboBox) then
+      Begin
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+              'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
+              'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+      end
+      else begin
+        ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
+                      GDK_POINTER_MOTION_MASK)
+      end;
     end;
 
     LM_LBUTTONDOWN,
@@ -2139,15 +2161,19 @@ begin
     LM_MOUSEWHEEL :
     begin
       if (sender is TCustomComboBox) then
-         Begin
-           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
-           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) , 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+      Begin
+        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+              'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
+              'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
 //         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
 //           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
 
-         end
-         else
-           ConnectSignal(gFixed, 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+      end
+      else begin
+        ConnectSignal(gFixed,'button-press-event', @gtkmousebtnpress,
+                      GDK_BUTTON_PRESS_MASK);
+      end;
     end;
 
     LM_LBUTTONUP,
@@ -2155,15 +2181,17 @@ begin
     LM_MBUTTONUP:
     begin
       if (sender is TCustomComboBox) then
-         Begin
-           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
-           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) , 'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+      Begin
+        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+         'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
+         'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
 //         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
 //           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
-
-         end
-         else
-      ConnectSignal(gFixed, 'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+      end
+      else
+        ConnectSignal(gFixed, 'button-release-event', @gtkmousebtnrelease,
+                      GDK_BUTTON_RELEASE_MASK);
     end;
 
     LM_ENTER :
@@ -2804,10 +2832,10 @@ begin
       gtk_window_set_title(pGtkWindow(p), strTemp);
 
       {$IFDEF ClientRectBugFix}
-      gtk_window_set_default_size(PgtkWindow(p),
+      {gtk_window_set_default_size(PgtkWindow(p),
                                   TForm(Sender).Width,TForm(Sender).Height);
       gtk_widget_set_uposition(PgtkWidget(p),
-                               TForm(Sender).Left, TForm(Sender).Top);
+                               TForm(Sender).Left, TForm(Sender).Top);}
       {$ENDIF}
 
       // the clipboard needs a widget
@@ -3218,6 +3246,9 @@ begin
     {$IFDEF ClientRectBugFix}
     if (Sender is TCustomForm) and (not gtk_widget_visible(FormWidget)) then
     begin
+      {$IFDEF VerboseClientRectBugFix}
+      writeln('[TgtkObject.ShowHide] ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',TControl(Sender).Left,',',TControl(Sender).Top);
+      {$ENDIF}
       gtk_window_set_default_size(PgtkWindow(FormWidget),
                                TControl(Sender).Width,TControl(Sender).Height);
       gtk_widget_set_uposition(PgtkWidget(FormWidget),
@@ -4134,6 +4165,7 @@ end;
   TgtkObject SetResizeRequest
   Params: Widget: PGtkWidget
 
+  Send a ResizeRequest to the gtk.
   When the LCL resizes a control the new bounds will not be set directly, but
   cached. This is needed, because it is common behaviour to set the bounds step
   by step. For example: Left:=10; Top:=10; Width:=100; Height:=50; results in
@@ -4311,6 +4343,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.126  2002/05/24 07:16:32  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.125  2002/05/16 15:42:54  lazarus
   MG: fixed TForm ShowHide repositioning
 
