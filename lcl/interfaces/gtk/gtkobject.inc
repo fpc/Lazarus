@@ -6732,8 +6732,8 @@ end;
   Lines will be one memory block so that you can free the list and all lines
   with FreeMem(Lines).
 ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
-  var Lines: PPChar; var LineCount: integer);
+procedure TGtkWidgetSet.WordWrap(DC: HDC; AText: PChar;
+  MaxWidthInPixel: integer; var Lines: PPChar; var LineCount: integer);
 var
   {$IfDef GTK2}
   UseFontDesc : PPangoFontDescription;
@@ -6891,6 +6891,7 @@ begin
     inc(i,2);
   end;
   GetMem(Lines,TotalSize);
+  FillChar(Lines^,TotalSize,0);
 
   // create Lines
   CurLineEntry:=Lines;
@@ -7015,6 +7016,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.621  2005/01/28 17:55:48  mattias
+  fixed mem leak
+
   Revision 1.620  2005/01/22 22:26:16  mattias
   added sprite example
 

@@ -2878,63 +2878,62 @@ begin
       TempDC := -1;
       TempPen := -1;
       TempBrush := -1;
+      try
+        Count := Min(StrLen(Str), Count);
 
-      Count := Min(StrLen(Str), Count);
+        GetTextMetrics(DC, TM);
 
-      GetTextMetrics(DC, TM);
+        DoCalcRect;
 
-      DoCalcRect;
-
-      If (Flags and DT_CalcRect) = DT_CalcRect then begin
-        CopyRect(Rect, theRect);
-        Result := 1;
-        exit;
-      end else begin
-        TempDC := SaveDC(DC);
-      end;
-
-      If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
-        If theRect.Right > Rect.Right then
-          theRect.Right := Rect.Right;
-        If theRect.Bottom > Rect.Bottom then
-          theRect.Bottom := Rect.Bottom;
-        IntersectClipRect(DC, theRect.Left, theRect.Top,
-          theRect.Right, theRect.Bottom);
-      end;
-
-      If (Flags and DT_SingleLine) = DT_SingleLine then begin
-        DrawLine(Str, Count, theRect.Top);
-        Result := 1;
-      end
-      else If (Lines <> nil) and (NumLines <> 0) then begin
-        For I := 0 to NumLines - 1 do begin
-          if I>0 then
-            Inc(theRect.Top, TM.tmDescent);// space between lines
-
-          If (((Flags and DT_EditControl) = DT_EditControl) and
-            (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
-            (theRect.Top > theRect.Bottom)
-          then
-            break;
-
-          If Lines[I] <> nil then
-            DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
-
-          Inc(theRect.Top, TM.tmHeight);
+        If (Flags and DT_CalcRect) = DT_CalcRect then begin
+          CopyRect(Rect, theRect);
+          Result := 1;
+          exit;
+        end else begin
+          TempDC := SaveDC(DC);
         end;
-        Result := 1;
+
+        If (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
+          If theRect.Right > Rect.Right then
+            theRect.Right := Rect.Right;
+          If theRect.Bottom > Rect.Bottom then
+            theRect.Bottom := Rect.Bottom;
+          IntersectClipRect(DC, theRect.Left, theRect.Top,
+            theRect.Right, theRect.Bottom);
+        end;
+
+        If (Flags and DT_SingleLine) = DT_SingleLine then begin
+          DrawLine(Str, Count, theRect.Top);
+          Result := 1;
+        end
+        else If (Lines <> nil) and (NumLines <> 0) then begin
+          For I := 0 to NumLines - 1 do begin
+            if I>0 then
+              Inc(theRect.Top, TM.tmDescent);// space between lines
+
+            If (((Flags and DT_EditControl) = DT_EditControl) and
+              (tm.tmHeight > (theRect.Bottom - theRect.Top))) or
+              (theRect.Top > theRect.Bottom)
+            then
+              break;
+
+            If Lines[I] <> nil then
+              DrawLine(Lines[I], StrLen(Lines[I]), theRect.Top);
+
+            Inc(theRect.Top, TM.tmHeight);
+          end;
+          Result := 1;
+        end;
+
+      finally
+        Reallocmem(Lines, 0);
+        If TempBrush <> -1 then
+          SelectObject(DC, TempBrush);
+        If TempPen <> -1 then
+          DeleteObject(SelectObject(DC, TempPen));
+        If TempDC <> -1 then
+          RestoreDC(DC, TempDC);
       end;
-
-      Reallocmem(Lines, 0);
-
-      If TempBrush <> -1 then
-        SelectObject(DC, TempBrush);
-
-      If TempPen <> -1 then
-        DeleteObject(SelectObject(DC, TempPen));
-
-      If TempDC <> -1 then
-        RestoreDC(DC, TempDC);
     end;
   end;
   Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
@@ -8863,6 +8862,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.390  2005/01/28 17:55:48  mattias
+  fixed mem leak
+
   Revision 1.389  2005/01/27 19:03:51  mattias
   added QuestionDlg - a MessageDlg with custom buttons
 
