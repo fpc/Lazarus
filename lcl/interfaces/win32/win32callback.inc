@@ -26,8 +26,8 @@
 
 procedure PrepareSynchronize;
 begin
-  // wake up GUI thread by sending a message to it, postmessage does not wake thread!
-  Windows.SendMessage(TWin32WidgetSet(InterfaceObject).AppHandle, WM_NULL, 0, 0);
+  // wake up GUI thread by sending a message to it
+  Windows.PostMessage(TWin32WidgetSet(InterfaceObject).AppHandle, WM_NULL, 0, 0);
 end;
 
 { addition XP messages }
@@ -1594,6 +1594,9 @@ end;
 
 {
   $Log$
+  Revision 1.192  2005/02/07 19:10:31  micha
+  revert unwanted commit
+
   Revision 1.191  2005/02/07 18:53:35  micha
   implement size constraints for calendar (it is not resizeable)
 
