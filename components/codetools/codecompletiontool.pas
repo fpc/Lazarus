@@ -1442,7 +1442,7 @@ begin
     and (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
       ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
                       phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
-                      phpWithResultType]);
+                      phpWithResultType,phpWithCallingSpecs]);
       ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
                                    phpWithParameterNames,phpWithoutParamTypes]);
       for i:=1 to length(ProcCall)-1 do
@@ -1503,8 +1503,8 @@ var
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
         ProcCode:=ExtractProcHead(ANode,[phpWithStart,
-             phpWithoutClassKeyword,phpAddClassname,
-             phpWithParameterNames,phpWithResultType,phpWithVarModifiers]);
+             phpWithoutClassKeyword,phpAddClassname,phpWithVarModifiers,
+             phpWithParameterNames,phpWithResultType,phpWithCallingSpecs]);
         TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,true);
       end;
@@ -1967,7 +1967,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     // build nice proc
     ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
                 phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                phpWithComments]);
+                phpWithComments,phpWithCallingSpecs]);
     if ProcCode='' then
       RaiseException('unable to reparse proc node');
     ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
