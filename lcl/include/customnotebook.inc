@@ -310,13 +310,13 @@ begin
     Msg.Parent := Self;
     Msg.fCompStyle := fCompStyle;
     Msg.Page := Value;
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.SetPageIndex] A');
-{$ENDIF}
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('[TCustomNotebook.SetPageIndex] A');
+    {$ENDIF}
     CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.SetPageIndex] B');
-{$ENDIF}
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('[TCustomNotebook.SetPageIndex] B');
+    {$ENDIF}
   end;
 end;
 
@@ -377,13 +377,13 @@ begin
     Msg.Parent := Self;
     Msg.fCompStyle := fCompStyle;
     Msg.ShowTabs := fShowTabs;
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.SetShowTabs] A');
-{$ENDIF}
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('[TCustomNotebook.SetShowTabs] A');
+    {$ENDIF}
     CNSendMessage(LM_SHOWTABS, Self, @Msg);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.SetShowTabs] B');
-{$ENDIF}
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('[TCustomNotebook.SetShowTabs] B');
+    {$ENDIF}
   end;
 end;
 
@@ -520,6 +520,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/05/24 07:16:31  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.16  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

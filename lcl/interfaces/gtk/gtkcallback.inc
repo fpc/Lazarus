@@ -347,75 +347,45 @@ begin
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
+{-------------------------------------------------------------------------------
+  GTKMotionNotify
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+  
+
+-------------------------------------------------------------------------------}
 function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion;
-  data: gPointer):GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
   parWindow : PgdkWindow;  //the Parent's GDKWindow
-  ShowDebugging : Boolean;
-  
 begin
-  ShowDebugging := False;
-  if ShowDebugging then
-  Begin
-  writeln('_______________');
-  Writeln('Motion Notify');
-  Writeln('Control = ',TControl(data).Name);
-  Writeln('Handle = ',Longint(TWinControl(data).Handle));
-  Writeln('Widget = ',LongInt(widget));
-  Writeln('Window = ',Longint(Event^.Window));
-  Writeln('Coords = ',trunc(Event^.x),',',trunc(Event^.Y));
-  Writeln('Send Event',Event^.send_Event);
-  Writeln('Event Type',Event^.thetype);
-  Writeln('Coords root = ',trunc(Event^.x_root),',',trunc(Event^.Y_root));
-  Writeln('State = ',event^.state);
-  Writeln('TGtkWidget^.Window is ',Longint(Widget^.Window));
-  parWindow := gtk_widget_get_parent_window(widget);
-  Writeln('Parwindow is ',LongInt(parwindow));
-  Writeln('_______________');
-  end;
+  Result:=true;
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[gtkmovecursorCB] ',TControl(Data).Name,':',TControl(Data).ClassName);
+  {$ENDIF}
 
-  //work around
-  //if the gdkwindow is the same as the parent's gdkwindow, then adjust the x,y relative to the cotnrol.
+  // stop the signal, so that it is not sent to the parent widgets
+  //gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+
+  // work around:
+  // if the gdkwindow is the same as the parent's gdkwindow,
+  // then adjust the x,y relative to the control.
   parWindow := gtk_widget_get_parent_window(widget);
   if (ParWindow = Event^.Window) then
-     Begin
-         if ShowDebugging then
-         Begin
-           Writeln('***********************');
-           Writeln('Calculating new X and Y');
-           Writeln('TWincontrol(data).left and Top = ',TWinControl(data).Left,',',TWinControl(data).Top);
-           Writeln('Event^.X and Y = ',Event^.X,',',Event^.Y);
-         end;
-         Event^.X := Event^.X - TWinControl(data).left;
-         Event^.Y := Event^.Y - TWinControl(data).Top;
-         if ShowDebugging then
-         Begin
-           Writeln('CAlculated...');
-           Writeln('TWincontrol(data).left and Top = ',TWinControl(data).Left,',',TWinControl(data).Top);
-           Writeln('Event^.X and Y = ',Event^.X,',',Event^.Y);
-           Writeln('***********************');
-         end;
-     end;
+  Begin
+    Event^.X := Event^.X - TWinControl(data).Left;
+    Event^.Y := Event^.Y - TWinControl(data).Top;
+  end;
        
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
   begin
     Msg := LM_MouseMove;
-    if ShowDebugging then
-    Begin
-       Writeln('re-calcing XPos and YPos');
-       Writeln('Event X and Y :',Event^.X,',',Event^.y);
-    end;
-    
-    XPos := trunc(Event^.X);//Round(Event^.X);
-    YPos := trunc(Event^.Y); //Round(Event^.Y);
-    if ShowDebugging then
-    Begin
-      Writeln('Done...');
-      Writeln('XPos,mYPos :',XPos,',',YPos);
-    end;
+
+    XPos := trunc(Event^.X);
+    YPos := trunc(Event^.Y);
 
     Keys := 0;
     if ssShift in ShiftState then Keys := Keys or MK_SHIFT;
@@ -424,13 +394,20 @@ begin
     if ssRight in ShiftState then Keys := Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
   end;
-  Result := DeliverPostMessage(Data, Msg);
 
-  //if ssLeft in ShiftState then WriteLN(Format('[GTKMotionNotify] widget: 0x%p', [widget]));
-  
+  DeliverPostMessage(Data, Msg);
+
   if (Pointer(MCaptureHandle) <> widget)
   and (MCaptureHandle <> 0)
-  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [MCaptureHandle, widget]));
+  then begin
+    // capture differs. => gtk forgot to tell, that the capturing ended
+    // -> end capturing
+    
+    // ToDo: end capturing
+    
+    WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p',
+      [MCaptureHandle, widget]));
+  end;
 end;
 
 function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
@@ -441,15 +418,22 @@ var
   MessI : TLMMouse;
   MessE : TLMMouseEvent;
   ShiftState: TShiftState;
-  ShowDebugging : Boolean;
-  parWindow : PgdkWindow;  //the Parent's GDKWindow
+  //ShowDebugging : Boolean;
+  //parWindow : PgdkWindow;  //the Parent's GDKWindow
 begin
-//writeln('[gtkMouseBtnPress] ',ToBject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+  Result:=true;
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[gtkMouseBtnPress] ',TControl(Data).Name,':',TObject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+  {$ENDIF}
+
+  // stop the signal, so that it is not sent to the parent widgets
+  //gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+  
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
   ShiftState := GTKEventState2ShiftState(Event^.State);
   
-  ShowDebugging := False;
+  {ShowDebugging := False;
   if ShowDebugging then
   Begin
   writeln('_______________');
@@ -466,148 +450,196 @@ begin
   parWindow := gtk_widget_get_parent_window(widget);
   Writeln('Parwindow is ',LongInt(parwindow));
   Writeln('_______________');
-  end;
+  end;}
 
   
-  if event^.Button in [4,5]
-  then begin
+  if event^.Button in [4,5] then begin
+    // this is a mouse wheel event
     MessE.Msg := LM_MOUSEWHEEL;
     MessE.WheelDelta := WHEEL_DELTA[event^.Button = 4];
     MessE.X := Trunc(Event^.X);
     MessE.Y := trunc(Event^.Y);
     MessE.State := ShiftState;
     MessE.UserData := Data;
-    Result := DeliverPostMessage(Data, MessE);
+    DeliverPostMessage(Data, MessE);
   end
   else begin
+    // a normal mouse button is pressed
     MessI.Keys := 0;
     case event^.Button of
-     1 : begin
-           if (LMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
-           MessI.Keys := MessI.Keys or MK_LBUTTON;
-           if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
-              Event^.theType := gdk_2Button_press;
-           LLastClick := Now;
+    
+    1:begin
+       if (LMouseButtonDown) and
+         (not ((Event^.theType = gdk_2button_press)
+            or (Event^.theType = gdk_3button_press)))
+       then
+         Exit;
+       MessI.Keys := MessI.Keys or MK_LBUTTON;
+       if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000)))
+       and (not (Event^.theType = gdk_3button_press))
+       then
+         Event^.theType := gdk_2Button_press;
+       LLastClick := Now;
 
-           if event^.thetype = gdk_button_press then
-             MessI.Msg := LM_LBUTTONDOWN
-            else
-           if event^.thetype = gdk_2button_press then
-               begin
-                 MessI.Msg := LM_LBUTTONDBLCLK;
-                 LLastClick := -1;
-               end
-            else
-           if event^.thetype = gdk_3button_press then
-               begin
-                 MessI.Msg := LM_LBUTTONTRIPLECLK;
-                 LLastClick := -1;
-               end;
+       if event^.thetype = gdk_button_press then
+         MessI.Msg := LM_LBUTTONDOWN
+       else
+       if event^.thetype = gdk_2button_press then
+       begin
+         MessI.Msg := LM_LBUTTONDBLCLK;
+         LLastClick := -1;
+       end
+       else
+       if event^.thetype = gdk_3button_press then
+       begin
+         MessI.Msg := LM_LBUTTONTRIPLECLK;
+         LLastClick := -1;
+       end;
 
-         LMouseButtonDown := True;
+       LMouseButtonDown := True;
+     end;
+     
+    2:begin
+       if (MMouseButtonDown)
+       and (not ((Event^.theType = gdk_2button_press)
+         or (Event^.theType = gdk_3button_press)))
+       then
+         Exit;
 
-         end;
-     2 : begin
-           if (MMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
+       MessI.Keys := MessI.Keys or MK_MBUTTON;
 
-           MessI.Keys := MessI.Keys or MK_MBUTTON;
+       if ((now - MLastClick) <= ((1/86400)*(DblClickTime/1000)))
+       and (not (Event^.theType = gdk_3button_press))
+       then
+         Event^.theType := gdk_2Button_press;
+       MLastClick := Now;
 
-           if ((now - MLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
-              Event^.theType := gdk_2Button_press;
-           MLastClick := Now;
+       if event^.thetype = gdk_button_press then
+         MessI.Msg := LM_MBUTTONDOWN
+       else
+       if event^.thetype = gdk_2button_press then
+       Begin
+         MessI.Msg := LM_MBUTTONDBLCLK;
+         MLastClick := -1;
+       end
+       else
+       if event^.thetype = gdk_3button_press then
+       begin
+         MessI.Msg := LM_MBUTTONTRIPLECLK;
+         LLastClick := -1;
+       end;
+       
+       MMouseButtonDown := True;
+     end;
+     
+     3:begin
+       if (RMouseButtonDown)
+       and (not ((Event^.theType = gdk_2button_press)
+         or (Event^.theType = gdk_3button_press)))
+       then Exit;
+       MessI.Keys := MessI.Keys or MK_RBUTTON;
 
-           if event^.thetype = gdk_button_press then
-             MessI.Msg := LM_MBUTTONDOWN
-           else
-           if event^.thetype = gdk_2button_press then
-             Begin
-               MessI.Msg := LM_MBUTTONDBLCLK;
-               MLastClick := -1;
-               end
-            else
-           if event^.thetype = gdk_3button_press then
-               begin
-                 MessI.Msg := LM_MBUTTONTRIPLECLK;
-                 LLastClick := -1;
-             end;
-           MMouseButtonDown := True;
-         end;
-     3 : begin
-           if (RMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
-           MessI.Keys := MessI.Keys or MK_RBUTTON;
+       if ((now - RLastClick) <= ((1/86400)*(DblClickTime/1000)))
+       and (not (Event^.theType = gdk_3button_press))
+       then
+         Event^.theType := gdk_2Button_press;
+       RLastClick := Now;
 
-           if ((now - RLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
-              Event^.theType := gdk_2Button_press;
-           RLastClick := Now;
-
-           if event^.thetype = gdk_button_press then
-             MessI.Msg := LM_RBUTTONDOWN
-           else
-           if event^.thetype = gdk_2button_press then
-             Begin
-               MessI.Msg := LM_RBUTTONDBLCLK;
-               RLastClick := -1;
-               end
-            else
-           if event^.thetype = gdk_3button_press then
-               begin
-                 MessI.Msg := LM_RBUTTONTRIPLECLK;
-                 LLastClick := -1;
-             end;
-           RMouseButtonDown := True;
-         end;
-     else MessI.Msg := LM_NULL;
-    end; //case
+       if event^.thetype = gdk_button_press then
+         MessI.Msg := LM_RBUTTONDOWN
+       else
+       if event^.thetype = gdk_2button_press then
+       Begin
+         MessI.Msg := LM_RBUTTONDBLCLK;
+         RLastClick := -1;
+       end
+       else
+       if event^.thetype = gdk_3button_press then
+       begin
+         MessI.Msg := LM_RBUTTONTRIPLECLK;
+         LLastClick := -1;
+       end;
+       
+       RMouseButtonDown := True;
+     end;
+     
+    else
+      begin
+        MessI.Msg := LM_NULL;
+        exit;
+      end;
+    end; // case
 
     MessI.XPos := Trunc(Event^.X);
     MessI.YPos := Trunc(Event^.Y);
+
     if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
     if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
     if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
-    if MessI.Msg <> LM_NULL then Result := DeliverPostMessage(Data, MessI)
-    else Result:= false;
+    
+    DeliverPostMessage(Data, MessI);
   end;
+  Result:=true;
 end;
 
-function gtkMouseBtnRelease( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
+function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; cdecl;
 var
   MessI : TLMMouse;
   ShiftState: TShiftState;
 begin
-  EventTrace('Mouse button release', data);
+  Result:=true;
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[gtkMouseBtnRelease] ',TControl(Data).Name,':',TObject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+  {$ENDIF}
 
+  // stop the signal, so that it is not sent to the parent widgets
+  //gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+  
+  EventTrace('Mouse button release', data);
   Assert(False, Format('Trace:[gtkMouseBtnRelease] ', []));
 
-  ShiftState := gtkeventstate2shiftstate(Event^.State);
-
   case event^.Button of
-    1 : if not(LMouseButtonDown) then
- Exit
-        else
- begin
-          MessI.Msg := LM_LBUTTONUP;
-          LMouseButtonDown := False;
-        end;
-    2 : if not(MMouseButtonDown) then
- Exit
-        else
- begin
-          MessI.Msg := LM_MBUTTONUP;
-          MMouseButtonDown := False;
-        end;
-    3 : if not(RMouseButtonDown) then
- Exit
-        else
- begin
-          MessI.Msg := LM_RBUTTONUP;
-          RMouseButtonDown := False;
-        end
-    else MessI.Msg := LM_NULL;
+  1:
+    if not(LMouseButtonDown) then
+      Exit
+    else
+    begin
+      MessI.Msg := LM_LBUTTONUP;
+      LMouseButtonDown := False;
+    end;
+    
+  2:
+    if not(MMouseButtonDown) then
+      Exit
+    else
+    begin
+      MessI.Msg := LM_MBUTTONUP;
+      MMouseButtonDown := False;
+    end;
+
+  3:
+    if not(RMouseButtonDown) then
+      Exit
+    else
+    begin
+      MessI.Msg := LM_RBUTTONUP;
+      RMouseButtonDown := False;
+    end;
+
+  else
+    begin
+      MessI.Msg := LM_NULL;
+      exit;
+    end;
   end;
+  
   MessI.XPos := Trunc(Event^.X);
   MessI.YPos := Trunc(Event^.Y);
+  
+  ShiftState := gtkeventstate2shiftstate(Event^.State);
   MessI.Keys := 0;
   if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
   if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
@@ -615,16 +647,16 @@ begin
   if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
   if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
 
-  if MessI.Msg <> LM_NULL 
-then Result := DeliverPostMessage(Data, MessI)
-  else Result := false;
+  if MessI.Msg <> LM_NULL then
+    DeliverPostMessage(Data, MessI);
+  Result:=true;
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
-//writeln('[gtkclickedCB] ',TObject(Data).ClassName);
+  //writeln('[gtkclickedCB] ',TObject(Data).ClassName);
   EventTrace('clicked', data);
   Assert(False, Format('Trace:OBSOLETE: [gtkclickedCB] ', []));
   Mess.Msg := LM_CLICKED;
@@ -822,14 +854,14 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkmovecursorCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkmovecursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
   Result := True;
   EventTrace('move-cursor', data);
   Mess.msg := LM_MOVECURSOR;
-  Result := DeliverMessage(Data, Mess) = 0;
+  DeliverMessage(Data, Mess);
 end;
 
 function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
@@ -874,6 +906,12 @@ begin
     ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
     ' OldPos=',TControl(Data).Left,',',TControl(Data).Top,',',TControl(Data).Width,',',TControl(Data).Height);
   {$ENDIF}
+  {$IFDEF VerboseClientRectBugFix}
+  if TControl(Data) is TCustomForm then
+    writeln('gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
+  {$ENDIF}
+  //if TControl(Data) is TCustomForm then
+  //  writeln('gtksize_allocateCB: ',TControl(Data).Name,':',TControl(Data).ClassName);
   SaveSizeNotification(Widget);
   Result:=true;
   exit;
@@ -1714,6 +1752,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/05/24 07:16:32  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.74  2002/05/13 14:47:01  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 

@@ -2931,7 +2931,8 @@ begin
       else
         break;
     end;
-  end;
+  end else
+    Result:=nil;
 end;
 
 function TCustomTreeView.GetNodeAtY(Y: Integer): TTreeNode;
@@ -4027,7 +4028,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   CursorNode:=GetNodeAt(X,Y);
   bStartDrag := false;
-  if Button = mbLeft then begin
+  if (Button = mbLeft) and (CursorNode<>nil) then begin
     Exclude(fStates,tvsWaitForDragging);
     if CursorNode.HasChildren
     and (x>=CursorNode.DisplayExpandSignLeft)

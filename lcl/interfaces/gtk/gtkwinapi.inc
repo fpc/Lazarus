@@ -1927,68 +1927,99 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetClientBounds
+  Params: handle:
+          Result:
+  Returns: true on success
+
+  Returns the client bounds of a control. The client bounds is the rectangle of
+  the inner area of a control, where the child controls are visible. The
+  coordinates are relative to the control's left and top.
+ ------------------------------------------------------------------------------}
+Function TGTKObject.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+var
+  Widget, ClientWidget: PGtkWidget;
+  ParentOrigin, ClientOrigin: TPoint;
+begin
+  Result := False;
+  if Handle = 0 then Exit;
+  Widget := pgtkwidget(Handle);
+  ClientWidget := GetFixedWidget(Widget);
+  if (ClientWidget <> nil) and (ClientWidget^.Window<>nil) then begin
+
+    gdk_window_get_origin(Widget^.Window,@ParentOrigin.X,@ParentOrigin.Y);
+    gdk_window_get_origin(ClientWidget^.Window,@ClientOrigin.X,@ClientOrigin.Y);
+    ARect.Left:=ClientOrigin.X-ParentOrigin.X;
+    ARect.Top:=ClientOrigin.Y-ParentOrigin.Y;
+    ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
+    ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
+    {$IFDEF VerboseMouseBugfix}
+    writeln('EEE ',ClientWidget^.Allocation.Y,' ',Widget^.Allocation.Y,
+    ' ',ParentOrigin.Y,' ',ClientOrigin.Y,
+    ' '
+    );
+    {$ENDIF}
+  end else begin
+    with Widget^.Allocation do
+      ARect := Rect(0,0,Width,Height);
+  end;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetClientRect
   Params: handle:
           Result:
   Returns: true on success
 
-  Returns the client rectangle of a Handle object. Left and Top are always 0.
-  The client rectangle is the rectangle, where a child object is visible.
+  Returns the client rectangle of a control. Left and Top are always 0.
+  The client rectangle is the size of the inner area of a control, where the
+  child controls are visible.
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
 begin
-  Result := False;
+  Result := false;
   if Handle = 0 then Exit;
-  Try
-    ARect.Left := 0;
-    ARect.Top := 0;
-    ClientWidget := GetFixedWidget(pgtkwidget(Handle));
-    if (ClientWidget <> nil) then begin
-      Widget := ClientWidget;
-    end else begin
-      Widget := pgtkwidget(Handle);
-    end;
-    {$IFDEF ClientRectBugFix}
-    if (Widget <> nil) then begin
-      ARect.Right:=Widget^.Allocation.Width;
-      ARect.Bottom:=Widget^.Allocation.Height;
-    end else begin
-      ARect.Right:=0;
-      ARect.Bottom:=0;
-    end;
-    {$ELSE}
-    if (Widget <> nil) and (Widget^.Window<>nil) then begin
-      gdk_window_get_size(Widget^.Window, @ARect.Right, @ARect.Bottom);
-    end else begin
-      ARect.Bottom:=0;
-      ARect.Right:=0;
-    end;
-    {$ENDIF}
-    {$IFDEF VerboseGetClientRect}
-    if ClientWidget<>nil then begin
-      writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
-         ' Client=',HexStr(Cardinal(ClientWidget),8),
-         ' WindowSize=',ARect.Right,',',ARect.Bottom,
-         ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
-         );
-    end else begin
-      writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
-         ' Client=',HexStr(Cardinal(ClientWidget),8),
-         ' WindowSize=',ARect.Right,',',ARect.Bottom,
-         ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
-         );
-    end;
-    {$ENDIF}
-//   Writeln('Width / Height = '+Inttostr(REct.Right)+'/'+Inttostr(Rect.Bottom));
-  except
-    on E: Exception do begin
-      writeln('TGTKObject.GetClientRect: ',E.Message);
-      Result := False;
-    end;
+  ARect.Left := 0;
+  ARect.Top := 0;
+  Widget := pgtkwidget(Handle);
+  ClientWidget := GetFixedWidget(Widget);
+  if (ClientWidget <> nil) then
+    Widget := ClientWidget;
+  {$IFDEF ClientRectBugFix}
+  if (Widget <> nil) then begin
+    ARect.Right:=Widget^.Allocation.Width;
+    ARect.Bottom:=Widget^.Allocation.Height;
+  end else begin
+    ARect.Right:=0;
+    ARect.Bottom:=0;
   end;
-
+  {$ELSE}
+  if (Widget <> nil) and (Widget^.Window<>nil) then begin
+    gdk_window_get_size(Widget^.Window, @ARect.Right, @ARect.Bottom);
+  end else begin
+    ARect.Bottom:=0;
+    ARect.Right:=0;
+  end;
+  {$ENDIF}
+  {$IFDEF VerboseGetClientRect}
+  if ClientWidget<>nil then begin
+    writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
+       ' Client=',HexStr(Cardinal(ClientWidget),8),
+       ' WindowSize=',ARect.Right,',',ARect.Bottom,
+       ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
+       );
+  end else begin
+    writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
+       ' Client=',HexStr(Cardinal(ClientWidget),8),
+       ' WindowSize=',ARect.Right,',',ARect.Bottom,
+       ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
+       );
+  end;
+  {$ENDIF}
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -2191,10 +2222,10 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetParent(Handle : HWND): HWND;
 var
-p : pgtkwidget;
+  p : pgtkwidget;
 begin
-p := (pgtkWidget(Handle)^.parent);
-   result := longint(p);
+  p := (pgtkWidget(Handle)^.parent);
+  Result := longint(p);
 end;
 
 
@@ -2754,25 +2785,24 @@ end;
   Params:  none
   Returns: 0
   
-  After the call, Rect will be the Handle object area in screen coordinates.
+  After the call, Rect will be the control area in screen coordinates.
   That means, Left and Top will be the screen coordinate of the TopLeft pixel
   of the Handle object and Right and Bottom will be the screen coordinate of
   the BottomRight pixel.
  ------------------------------------------------------------------------------}
-function TgtkObject.GetWindowRect(Handle: hwnd; var Rect: TRect): Integer;
+function TgtkObject.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   X, Y, W, H: Integer;
   Widget: PGTKWidget;
 begin
   //Writeln('GetWindowRect');
-  result := 0; //default
+  Result := 0; //default
   if Handle <> 0 then
   begin
     Widget := pgtkwidget(Handle);
     if Widget^.Window <> nil then Begin
       gdk_window_get_origin(Widget^.Window, @X, @Y);
       gdk_window_get_size(Widget^.Window, @W, @H);
-      writeln('[TgtkObject.GetWindowRect] ',x,',',y,',',w,',',h);
     end
     else
     Begin
@@ -2782,9 +2812,8 @@ begin
       Y := 200;
     end;
 
-    SetRect(Rect, X, Y, X + W, Y + H);
+    ARect:=Rect(X,Y,X+W,Y+H);
   end;
-  Writeln('GetWindowRect DONE');
 end;
 
 {$IFDEF ClientRectBugFix}
@@ -4456,6 +4485,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/05/24 07:16:34  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.70  2002/05/17 10:45:23  lazarus
   MG: finddeclaration for stupid things like var a:a;
 

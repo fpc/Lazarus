@@ -70,6 +70,7 @@ Function GetActiveWindow : HWND; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
+Function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 Function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetFocus: HWND; override;
@@ -85,7 +86,7 @@ function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
 Function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer;  override;
-Function GetWindowRect(Handle : hwnd; var Rect: TRect): Integer; override;
+Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 {$IFDEF ClientRectBugFix}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 {$ENDIF}
@@ -151,6 +152,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/05/24 07:16:35  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.28  2002/05/10 06:05:58  lazarus
   MG: changed license to LGPL
 

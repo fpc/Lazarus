@@ -10,12 +10,13 @@ version=0.8a
 [target]
 dirs=interfaces
 units=allunits
-implicitunits=arrow buttons calendar clipbrd clistbox comctrls controls \
-        dialogs dynhasharray extctrls filectrl forms graphics \
-        imglist interfacebase lazqueue lcllinux lmessages lresources \
-        menus messages registry spin stdctrls toolwin utrace \
+implicitunits=arrow buttons calendar clipbrd clistbox comctrls commctrl \
+        controls dialogs dynhasharray extctrls filectrl forms graphics \
+        graphtype imglist interfacebase lazqueue lcllinux lcltype lmessages \
+        lresources menus messages registry spin stdctrls toolwin utrace \
         vclglobals
 # !!! do not add interfaces. interfaces.ppu belongs to the interface(s).
+# do not add allunits. It is just a dummy unit.
 
 rsts=dialogs
 

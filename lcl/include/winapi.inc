@@ -219,6 +219,31 @@ begin
   Result := InterfaceObject.GetCaretPos(lpPoint);
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetClientBounds
+  Params: handle:
+          Result:
+  Returns: true on success
+
+  Returns the client bounds of a control. The client bounds is the rectangle of
+  the inner area of a control, where the child controls are visible. The
+  coordinates are relative to the control's left and top.
+ ------------------------------------------------------------------------------}
+Function GetClientBounds(handle : HWND; var Rect : TRect) : Boolean;
+begin
+  Result := InterfaceObject.GetClientBounds(handle, Rect);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClientRect
+  Params: handle:
+          Result:
+  Returns: true on success
+
+  Returns the client rectangle of a control. Left and Top are always 0.
+  The client rectangle is the size of the inner area of a control, where the
+  child controls are visible.
+ ------------------------------------------------------------------------------}
 Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
   Result := InterfaceObject.GetClientRect(handle, Rect);
@@ -229,7 +254,7 @@ Begin
   Result := InterfaceObject.GetCaretPos(lpPoint);
 end;
 
-function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; //pbd
+function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
 begin
   Result := InterfaceObject.GetCharABCWidths(DC, p2, p3, ABCStructs);
 end;
@@ -949,12 +974,11 @@ end;
  ------------------------------------------------------------------------------}
 Function PtInRect(Rect : TRect; Point : TPoint) : Boolean;
 Begin
-  Result := not (
-    (Point.X < Rect.Left) or
-    (Point.X >= Rect.Right) or
-    (Point.Y < Rect.Top) or
-    (Point.Y >= Rect.Bottom)
-  );
+  Result := ((Point.X >= Rect.Left) and
+             (Point.X < Rect.Right) and
+             (Point.Y >= Rect.Top)  and
+             (Point.Y < Rect.Bottom)
+          );
 end;
 
 {------------------------------------------------------------------------------
@@ -1092,6 +1116,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/05/24 07:16:32  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.29  2002/05/12 04:56:20  lazarus
   MG: client rect bugs nearly completed
 
