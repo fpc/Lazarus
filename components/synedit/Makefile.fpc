@@ -6,8 +6,7 @@
 [package]
 #name=lazarus-synedit
 name=lazarus
-version=0.8
-a
+version=0.8a
 
 [target]
 units=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
