@@ -4298,16 +4298,28 @@ procedure TSourceNotebook.KeyDown(var Key: Word; Shift: TShiftState);
 var i, Command: integer;
 Begin
   inherited KeyDown(Key,Shift);
-
   i := FKeyStrokes.FindKeycode(Key, Shift);
   if i>=0 then begin
     Command:=FKeyStrokes[i].Command;
     case Command of
-      ecClose:
-        begin
-          CloseClicked(Self);
-          Key:=0;
-        end;
+
+    ecGotoMarker0..ecGotoMarker9:
+      begin
+	  BookMarkGoto(Command - ecGotoMarker0);
+        Key:=0;
+      end;
+
+    ecSetMarker0..ecSetMarker9:
+      begin
+	  BookMarkSet(Command - ecSetMarker0);
+        Key:=0;
+      end;
+
+    ecClose:
+      begin
+        CloseClicked(Self);
+        Key:=0;
+      end;
     end;
   end;
 end;

@@ -1675,6 +1675,7 @@ end;
 procedure TKeyMappingEditForm.DeactivateGrabbing;
 var i: integer;
 begin
+  KeyPreview:=false;
   if GrabbingKey=0 then exit;
   // enable all components
   for i:=0 to ComponentCount-1 do
@@ -1686,7 +1687,7 @@ begin
   if GrabbingKey=1 then
     Key1GrabButton.Caption:=srkmGrabKey
   else if GrabbingKey=2 then
-           Key2GrabButton.Caption:=srkmGrabKey;
+    Key2GrabButton.Caption:=srkmGrabKey;
   GrabbingKey:=0;
 end;
 
@@ -1709,6 +1710,7 @@ begin
   if GrabbingKey>0 then exit;
   GrabbingKey:=AGrabbingKey;
   if GrabbingKey=0 then exit;
+  KeyPreview:=true;
   // disable all components
   for i:=0 to ComponentCount-1 do
   begin
@@ -1724,7 +1726,7 @@ begin
   if GrabbingKey=1 then
     Key1GrabButton.Caption:=srkmPressKey
   else if GrabbingKey=2 then
-           Key2GrabButton.Caption:=srkmPressKey;
+    Key2GrabButton.Caption:=srkmPressKey;
 end;
 
 procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1733,9 +1735,8 @@ begin
   {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
      ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
      ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key,Shift),
-     ' LCL-Name=',ShortCutToText(ShortCut(Key,Shift))
-     );}
-  if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
+     '');}
+  if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROL,
              VK_LSHIFT, VK_RSHIFT] then exit;
   if (GrabbingKey in [1,2]) then
   begin
