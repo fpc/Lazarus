@@ -697,6 +697,7 @@ function TWinControl.IsControlMouseMsg(var Message : TLMMouse) : Boolean;
 var
   Control : TControl;
   P : TPoint;
+  ClientBounds: TRect;
 begin
   if GetCapture = Handle
   then begin
@@ -705,13 +706,29 @@ begin
     and (CaptureControl.Parent = Self) 
     then Control := CaptureControl;
   end
-  else Control := ControlAtPos(SmallPointtoPoint(Message.Pos),False);
+  else Control := ControlAtPos(SmallPointtoPoint(Message.Pos),False,True,False);
 
   Result := False;
   if Control <> nil then
   begin
+    // map mouse coordinates to control
     P.X := Message.XPos - Control.Left;
     P.Y := Message.YPos - Control.Top;
+    if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
+    begin
+      // map coordinates to client area of control
+      LCLLinux.GetClientBounds(TWinControl(Control).Handle,ClientBounds);
+      dec(P.X,ClientBounds.Left);
+      dec(P.Y,ClientBounds.Top);
+      {$IFDEF VerboseMouseBugfix}
+      writeln('TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
+      ' MsgPos=',Message.Pos.X,',',Message.Pos.Y,
+      ' Control=',Control.Left,',',Control.Top,
+      ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,
+      ' P=',P.X,',',P.Y
+      );
+      {$ENDIF}
+    end;
     Control.Perform(Message.Msg, Message.Keys, LongInt(PointtoSmallPoint(P)));
     Result := True;
   end;
@@ -822,47 +839,118 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{  TWinControl ControlAtPos                                                      }
-{------------------------------------------------------------------------------}
-Function TWinControl.ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
-var
-  I : Integer;
-  P : TPoint;
-Begin
-//  Assert(False, Format('Trace:[TWinControl.ControlAtPos] %s(%s) --> Pos: (%d, %d)', [ClassName, Name, Pos.X, Pos.Y]));
-  Result :=  nil;
-  if FControls <> nil 
-  then
-    for I := FControls.Count-1 downto 0 do
-    begin
-      Result := TControl(FControls.Items[I]);
-      with Result do
-      begin
-        P := Point(Pos.X - Left, Pos.Y - Top);
+{------------------------------------------------------------------------------
+  TWinControl ControlAtPos
+  Params: const Pos : TPoint
+          AllowDisabled: Boolean
+  Results: TControl
 
-        //MWE: rewrote it a bit to get it more readable
-        if  PtInRect(ClientRect,P) 
-        and (   
-             (
-              (csDesigning in ComponentState) 
-              and 
-              (Visible or not (csNoDesignVisible in ControlStyle))
-             )
-             or
-             (
-              (Visible)
-              and 
-              (Enabled or AllowDisabled) 
-              and 
-              (Perform(CM_HITTEST, 0, LongInt(PointtoSmallPoint(P))) <> 0)
-             )
-            ) 
-        then Exit;
-      end;
-      Result :=  nil;
+  Searches a child (not grand child) control, which client area contains Pos.
+  Pos is relative to the ClientOrigin.
+------------------------------------------------------------------------------}
+Function TWinControl.ControlAtPos(const Pos : TPoint;
+  AllowDisabled : Boolean): TControl;
+Begin
+  Result := ControlAtPos(Pos,AllowDisabled,false,true);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl ControlAtPos
+  Params: const Pos : TPoint
+          AllowDisabled, AllowWinControls: Boolean
+  Results: TControl
+  
+  Searches a child (not grand child) control, which client area contains Pos.
+  Pos is relative to the ClientOrigin.
+------------------------------------------------------------------------------}
+Function TWinControl.ControlAtPos(const Pos : TPoint;
+  AllowDisabled, AllowWinControls: Boolean): TControl;
+begin
+  Result := ControlAtPos(Pos,AllowDisabled,AllowWinControls,true);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl ControlAtPos
+  Params: const Pos : TPoint
+          AllowDisabled, AllowWinControls: Boolean
+  Results: TControl
+
+  Searches a child (not grand child) control, which contains Pos.
+  Pos is relative to the ClientOrigin.
+  If AllowDisabled is true it will also search in disabled controls.
+  If AllowWinControls is true it will also search in the child wincontrols.
+  If OnlyClientAreas is true then the only the client areas are compared.
+------------------------------------------------------------------------------}
+function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled,
+  AllowWinControls, OnlyClientAreas: Boolean): TControl;
+var
+  I: Integer;
+  P: TPoint;
+  LControl: TControl;
+
+  function GetControlAtPos(AControl: TControl): Boolean;
+  var ClientBounds: TRect;
+  begin
+    with AControl do
+    begin
+      P := Point(Pos.X - Left, Pos.Y - Top);
+
+      if OnlyClientAreas then begin
+        // MG: Delphi checks for PtInRect(ClientRect,P). But the client area is
+        //     not always at 0,0, so I guess this is a bug in the VCL.
+        if (AControl is TWinControl) and (TWinControl(AControl)).HandleAllocated
+        then
+          LCLLinux.GetClientBounds(TWinControl(AControl).Handle,ClientBounds)
+        else
+          ClientBounds:=ClientRect;
+        Result:=PtInRect(ClientBounds,P)
+      end else
+        Result:=(P.X>=0) and (P.Y>=0) and (P.X<Width) and (P.Y<Height);
+      //MWE: rewrote it a bit to get it more readable
+      Result:= Result
+              and (
+                   (
+                    (csDesigning in ComponentState)
+                    and
+                    (Visible or not (csNoDesignVisible in ControlStyle))
+                   )
+                   or
+                   (
+                    (Visible)
+                    and
+                    (Enabled or AllowDisabled)
+                    and
+                    (Perform(CM_HITTEST, 0, LongInt(PointtoSmallPoint(P))) <> 0)
+                   )
+                  );
+      {$IFDEF VerboseMouseBugfix}
+      writeln('BBB GetControlAtPos ',Name,
+      ' Pos=',Pos.X,',',Pos.Y,
+      ' P=',P.X,',',P.Y,
+      ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
+      ' OnlyCl=',OnlyClientAreas,
+      ' Result=',Result);
+      {$ENDIF}
+      if Result then
+        LControl := AControl;
     end;
-  //endif
+  end;
+
+begin
+  LControl := nil;
+  // check wincontrols
+  if AllowWinControls and
+     (FWinControls <> nil) then
+    for I := FWinControls.Count - 1 downto 0 do
+      if GetControlAtPos(TControl(FWinControls[I])) then
+        Break;
+  // check controls
+  if (FControls <> nil) and
+     (LControl = nil) then
+    for I := FControls.Count - 1 downto 0 do
+      if GetControlAtPos(TControl(FControls[I])) then
+        Break;
+  Result := LControl;
 end;
 
 {------------------------------------------------------------------------------}
@@ -919,7 +1007,16 @@ Begin
         Exit;
       end;
     LM_MOUSEFIRST..LM_MOUSELAST:
-       if IsControlMouseMSG(TLMMOUSE(Message)) then Exit;
+       begin
+         {$IFDEF VerboseMouseBugfix}
+         writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
+         {$ENDIF}
+         if IsControlMouseMSG(TLMMOUSE(Message)) then
+           Exit;
+         {$IFDEF VerboseMouseBugfix}
+         writeln('TWinControl.WndPRoc B ',Name,':',ClassName);
+         {$ENDIF}
+       end;
     LM_KEYFIRST..LM_KEYLAST:
       if Dragging then Exit;
     LM_CANCELMODE:
@@ -2191,6 +2288,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/05/24 07:16:32  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.67  2002/05/13 14:47:00  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 
