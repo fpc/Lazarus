@@ -173,11 +173,11 @@ type
     function ReadTilProcedureHeadEnd(ParseAttr: TParseProcHeadAttributes;
         var HasForwardModifier: boolean): boolean;
     function ReadConstant(ExceptionOnError, Extract: boolean;
-        Attr: TProcHeadAttributes): boolean;
+        const Attr: TProcHeadAttributes): boolean;
     function ReadParamType(ExceptionOnError, Extract: boolean;
-        Attr: TProcHeadAttributes): boolean;
+        const Attr: TProcHeadAttributes): boolean;
     function ReadParamList(ExceptionOnError, Extract: boolean;
-        Attr: TProcHeadAttributes): boolean;
+        const Attr: TProcHeadAttributes): boolean;
     function ReadUsesSection(ExceptionOnError: boolean): boolean;
     function ReadSubRange(ExceptionOnError: boolean): boolean;
     function ReadTilBlockEnd(StopOnBlockMiddlePart,
@@ -948,7 +948,7 @@ begin
 end;
 
 function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
-  Attr: TProcHeadAttributes): boolean;
+  const Attr: TProcHeadAttributes): boolean;
 var CloseBracket: char;
   Desc: TCodeTreeNodeDesc;
   Node: TCodeTreeNode;
@@ -1091,7 +1091,7 @@ begin
 end;
 
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
-  Attr: TProcHeadAttributes): boolean;
+  const Attr: TProcHeadAttributes): boolean;
 var
   copying: boolean;
 begin
@@ -1370,7 +1370,7 @@ begin
 end;
 
 function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
-  Attr: TProcHeadAttributes): boolean;
+  const Attr: TProcHeadAttributes): boolean;
 // after reading, the CurPos will be on the atom after the constant
 var
   BracketType: TCommonAtomFlag;
@@ -3423,7 +3423,7 @@ begin
   CurNode.Desc:=ctnClassGUID;
   // read GUID
   ReadNextAtom;
-  if not AtomIsStringConstant then
+  if (not AtomIsStringConstant) and (not AtomIsIdentifier(false)) then
     RaiseStringConstantExpected;
   ReadNextAtom;
   if CurPos.Flag<>cafEdgedBracketClose then
