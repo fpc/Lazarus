@@ -114,7 +114,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(NewValue: String; LineNumber:Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
     {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
@@ -205,7 +205,7 @@ begin
   MakeMethodTables;
 end;  { Create }
 
-procedure TSynTeXSyn.SetLine(NewValue: String; LineNumber:Integer);
+procedure TSynTeXSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer);
 begin
   fLine       := PChar(NewValue);
   Run         := 0;

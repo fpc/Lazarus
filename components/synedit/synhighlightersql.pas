@@ -184,7 +184,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; override;              // DJLP 2000-08-09
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine(NewValue: string; LineNumber: Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
   published
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
@@ -1105,7 +1105,7 @@ begin
     SQLDialect := TSynSQLSyn(Source).SQLDialect;
 end;
 
-procedure TSynSQLSyn.SetLine(NewValue: string; LineNumber: Integer);
+procedure TSynSQLSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber: Integer);
 begin
   fLine := PChar(NewValue);
   Run := 0;

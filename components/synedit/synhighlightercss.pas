@@ -249,7 +249,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(NewValue: String; LineNumber: Integer); override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer); override;
     function GetToken: string; override;
     {$IFDEF SYN_LAZARUS}
     procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
@@ -1471,7 +1471,7 @@ begin
   fRange := rsUnknown;
 end;
 
-procedure TSynCssSyn.SetLine(NewValue: String; LineNumber: Integer);
+procedure TSynCssSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
 begin
   fLine := PChar(NewValue);
   Run := 0;
