@@ -62,12 +62,8 @@ type
     FCancel : Boolean;
     FDefault : Boolean;
     FModalResult : TModalResult;
-    //fOwner: TControl;
-    //FOnPressed: TNotifyEvent;
-    //FOnReleased: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
-    //FOnResize: TNotifyEvent;
     FShortCut : TLMShortcut;
     Procedure SetDefault(Value : Boolean);
     procedure CMMouseEnter(var Message: TLMessage); message CM_MOUSEENTER;
@@ -75,7 +71,6 @@ type
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
-    //TODO: make this compatible
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
 
@@ -88,10 +83,11 @@ type
   published
     property Anchors;
     property Align;
+    property Constraints;
     property Default : Boolean read FDefault write SetDefault default false;
     property Enabled;
-    property ModalResult : TModalResult read FModalResult write FModalResult default mrNone;
-    property Cancel : Boolean read FCancel write FCancel default False;
+    property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
+    property Cancel: Boolean read FCancel write FCancel default False;
     property Caption;
     property Font;
     property TabStop default true;
@@ -306,6 +302,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/02/02 11:07:43  mattias
+  constraints and aligning now work together
+
   Revision 1.54  2004/01/21 10:19:15  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

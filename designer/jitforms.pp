@@ -102,7 +102,7 @@ type
     // TReader events
     procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
       var Address: Pointer; var Error: Boolean);
-    {$IFDEF Reader2}
+    {$IFNDEF VER1_0}
     procedure ReaderSetMethodProperty(Reader: TReader; Instance: TPersistent;
       PropInfo: PPropInfo; const TheMethodName: string; var Handled: boolean);
     procedure ReaderPropertyNotFound(Reader: TReader; Instance: TPersistent;
@@ -402,7 +402,7 @@ begin
   // connect TReader events
   Reader.OnError:=@ReaderError;
   Reader.OnFindMethod:=@ReaderFindMethod;
-  {$IFDEF Reader2}
+  {$IFNDEF VER1_0}
   Reader.OnPropertyNotFound:=@ReaderPropertyNotFound;
   Reader.OnSetMethodProperty:=@ReaderSetMethodProperty;
   {$ENDIF}
@@ -842,7 +842,7 @@ begin
   end;
 end;
 
-{$IFDEF Reader2}
+{$IFNDEF VER1_0}
 procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);

@@ -81,7 +81,7 @@ var
       Result := False;
     end;
   end;
-
+  
   procedure DoPosition(Control: TControl; AAlign: TAlign);
   var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
@@ -89,6 +89,26 @@ var
     CurBaseBounds: TRect;
     NewRight: Integer;
     NewBottom: Integer;
+  var
+    MinWidth: Integer;
+    MaxWidth: Integer;
+    MinHeight: Integer;
+    MaxHeight: Integer;
+
+    function ConstraintWidth(NewWidth: integer): integer;
+    begin
+      Result:=NewWidth;
+      if (MaxWidth>MinWidth) and (Result>MaxWidth) then Result:=MaxWidth;
+      if Result<MinWidth then Result:=MinWidth;
+    end;
+
+    function ConstraintHeight(NewHeight: integer): integer;
+    begin
+      Result:=NewHeight;
+      if (MaxHeight>MinHeight) and (Result>MaxHeight) then Result:=MaxHeight;
+      if Result<MinHeight then Result:=MinHeight;
+    end;
+
   begin
     {$IFDEF CHECK_POSITION}
     if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
@@ -96,15 +116,23 @@ var
       writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
 
-    // get default bounds
-    with Control do
-    begin
+
+    with Control do begin
+      // get constraints
+      MinWidth:=Constraints.MinWidth;
+      if MinWidth<0 then MinWidth:=0;
+      MaxWidth:=Constraints.MaxWidth;
+      MinHeight:=Constraints.MinHeight;
+      if MinHeight<0 then MinHeight:=0;
+      MaxHeight:=Constraints.MaxHeight;
+
+      // get default bounds
       NewLeft:=Left;
       NewTop:=Top;
-      NewWidth:=Width;
-      NewHeight:=Height;
+      NewWidth:=ConstraintWidth(Width);
+      NewHeight:=ConstraintHeight(Height);
     end;
-
+    
     { Recalculate the anchors
 
       Use Anchors to ensure that a control maintains its current position
@@ -122,97 +150,90 @@ var
     }
     if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
     begin
-      with Control do
-      begin
-        // Get the base bounds. The base bounds are the user defined bounds
-        // without automatic aligning and/or anchoring
+      // Get the base bounds. The base bounds are the user defined bounds
+      // without automatic aligning and/or anchoring
 
-        // get base size of parents client area
-        ParentBaseClientSize:=FBaseParentClientSize;
-        if (ParentBaseClientSize.X=0)
-        and (ParentBaseClientSize.Y=0) then
-          ParentBaseClientSize:=Point(Parent.ClientWidth,Parent.ClientHeight);
+      // get base size of parents client area
+      ParentBaseClientSize:=Control.FBaseParentClientSize;
+      if (ParentBaseClientSize.X=0)
+      and (ParentBaseClientSize.Y=0) then
+        ParentBaseClientSize:=Point(Control.Parent.ClientWidth,
+                                    Control.Parent.ClientHeight);
 
-        // get base bounds of Control
-        CurBaseBounds:=FBaseBounds;
-        if (CurBaseBounds.Right=CurBaseBounds.Left)
-        and (CurBaseBounds.Bottom=CurBaseBounds.Top) then
-          CurBaseBounds:=BoundsRect;
+      // get base bounds of Control
+      CurBaseBounds:=Control.FBaseBounds;
+      if (CurBaseBounds.Right=CurBaseBounds.Left)
+      and (CurBaseBounds.Bottom=CurBaseBounds.Top) then
+        CurBaseBounds:=Control.BoundsRect;
 
-        {$IFDEF CHECK_POSITION}
-        //if csDesigning in ComponentState then
-        if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
-        writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
-          ' ',Name,':',ClassName,
-          ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
-          ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
-          ' ParClient=',Parent.ClientWidth,',',Parent.ClientHeight,
-          ' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
-          '');
-        {$ENDIF}
+      {$IFDEF CHECK_POSITION}
+      //if csDesigning in ComponentState then
+      if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
+      writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
+        ' ',Name,':',ClassName,
+        ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
+        ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
+        ' ParClient=',Control.Parent.ClientWidth,',',Control.Parent.ClientHeight,
+        ' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
+        '');
+      {$ENDIF}
 
-        if akLeft in Anchors then begin
-          // keep distance to left side of parent
-          NewLeft:=CurBaseBounds.Left;
-          if akRight in Anchors then begin
-            // keep distance to right side of parent
-            // -> change the width
-            NewWidth:=Parent.ClientWidth
-                      -(ParentBaseClientSize.X-CurBaseBounds.Right)
-                      -NewLeft;
-          end else begin
-            // do not anchor to the right
-            // -> keep new width
-            NewWidth:=Width;
-          end;
+      if akLeft in Control.Anchors then begin
+        // keep distance to left side of parent
+        NewLeft:=CurBaseBounds.Left;
+        if akRight in Control.Anchors then begin
+          // keep distance to right side of parent
+          // -> change the width
+          NewWidth:=Control.Parent.ClientWidth
+                    -(ParentBaseClientSize.X-CurBaseBounds.Right)
+                    -NewLeft;
+          NewWidth:=ConstraintWidth(NewWidth);
         end else begin
-          // do not anchor to the left
-          if akRight in Anchors then begin
-            // keep distance to right side of parent
-            // and keep new width
-            NewWidth:=Width;
-            NewLeft:=Parent.ClientWidth
-                      -(ParentBaseClientSize.X-CurBaseBounds.Right)
-                      -NewWidth;
-          end else begin
-            // do not anchor to the right
-            // -> keep new width and center horizontally
-            NewWidth:=Width;
-            NewLeft:=(Parent.ClientWidth-NewWidth) div 2;
-          end;
+          // do not anchor to the right
+          // -> keep new width
         end;
-
-        if akTop in Anchors then begin
-          // keep distance to top side of parent
-          NewTop:=CurBaseBounds.Top;
-          if akBottom in Anchors then begin
-            // keep distance to bottom side of parent
-            // -> change the height
-            NewHeight:=Parent.ClientHeight
-                      -(ParentBaseClientSize.Y-CurBaseBounds.Bottom)
-                      -NewTop;
-          end else begin
-            // do not anchor to the bottom
-            // -> keep new height
-            NewHeight:=Height;
-          end;
+      end else begin
+        // do not anchor to the left
+        if akRight in Control.Anchors then begin
+          // keep distance to right side of parent
+          // and keep new width
+          NewLeft:=Control.Parent.ClientWidth
+                    -(ParentBaseClientSize.X-CurBaseBounds.Right)
+                    -NewWidth;
         end else begin
-          // do not anchor to the top
-          if akBottom in Anchors then begin
-            // keep distance to bottom side of parent
-            // and keep new height
-            NewHeight:=Height;
-            NewTop:=Parent.ClientHeight
-                      -(ParentBaseClientSize.Y-CurBaseBounds.Bottom)
-                      -NewHeight;
-          end else begin
-            // do not anchor to the bottom
-            // -> keep new height and center vertically
-            NewHeight:=Height;
-            NewTop:=(Parent.ClientHeight-NewHeight) div 2;
-          end;
+          // do not anchor to the right
+          // -> keep new width and center horizontally
+          NewLeft:=(Control.Parent.ClientWidth-NewWidth) div 2;
         end;
+      end;
 
+      if akTop in Control.Anchors then begin
+        // keep distance to top side of parent
+        NewTop:=CurBaseBounds.Top;
+        if akBottom in Control.Anchors then begin
+          // keep distance to bottom side of parent
+          // -> change the height
+          NewHeight:=Control.Parent.ClientHeight
+                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom)
+                    -NewTop;
+          NewHeight:=ConstraintHeight(NewHeight);
+        end else begin
+          // do not anchor to the bottom
+          // -> keep new height
+        end;
+      end else begin
+        // do not anchor to the top
+        if akBottom in Control.Anchors then begin
+          // keep distance to bottom side of parent
+          // and keep new height
+          NewTop:=Control.Parent.ClientHeight
+                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom)
+                    -NewHeight;
+        end else begin
+          // do not anchor to the bottom
+          // -> keep new height and center vertically
+          NewTop:=(Control.Parent.ClientHeight-NewHeight) div 2;
+        end;
       end;
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
@@ -228,7 +249,10 @@ var
       {$ENDIF}
     end;
 
-    // set min size
+    // set min size to stop circling (this should not be needed. But if someone
+    // plays/fixes the above code, new bugs can enter and there are far too many
+    // combinations to test, and so the LCL can loop for some applications.
+    // Prevent this, so the users can at least report a bug.)
     if NewWidth<0 then NewWidth:=0;
     if NewHeight<0 then NewHeight:=0;
 
@@ -245,35 +269,72 @@ var
       NewBottom:=NewTop+NewHeight;
       {$IFDEF CHECK_POSITION}
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
-        writeln(' AAA1 akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
+        writeln(' Before aligning  akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
                 ' akLeft in Control.Anchors=',akLeft in Control.Anchors,
                 ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
                 ' New=',NewLeft,',',NewTop,',',NewRight,',',NewBottom);
       {$ENDIF}
       if akLeft in AnchorAlign[AAlign] then begin
-        if not (akRight in Control.Anchors) then
+        if (akRight in (Control.Anchors+AnchorAlign[AAlign])) then begin
+          // left align and keep right border
+          NewLeft:=ARect.Left;
+          NewRight:=NewLeft+ConstraintWidth(NewRight-NewLeft);
+        end else begin
+          // left align and right border free to move (-> keep width)
           dec(NewRight,NewLeft-ARect.Left);
-        NewLeft:=ARect.Left;
+          NewLeft:=ARect.Left;
+        end;
       end;
       if akTop in AnchorAlign[AAlign] then begin
-        if not (akBottom in Control.Anchors) then
+        if (akBottom in (Control.Anchors+AnchorAlign[AAlign])) then begin
+          // top align and keep bottom border
+          NewTop:=ARect.Top;
+          NewBottom:=NewTop+ConstraintHeight(NewBottom-NewTop);
+        end else begin
+          // top align and bottom border is free to move (-> keep height)
           dec(NewBottom,NewTop-ARect.Top);
-        NewTop:=ARect.Top;
+          NewTop:=ARect.Top;
+        end;
       end;
       if akRight in AnchorAlign[AAlign] then begin
-        if not (akLeft in Control.Anchors)
-        and not (akLeft in AnchorAlign[AAlign]) then
+        if (akLeft in (Control.Anchors+AnchorAlign[AAlign])) then begin
+          // right align and keep left border
+          NewWidth:=ConstraintWidth(ARect.Right-NewLeft);
+          if AAlign=alRight then begin
+            // align to right (this overrides the keeping of left border)
+            NewRight:=ARect.Right;
+            NewLeft:=NewRight-NewWidth;
+          end else begin
+            // keep left border overrides keeping right border
+            NewRight:=NewLeft+NewWidth;
+          end;
+        end else begin
+          // right align and left border free to move (-> keep width)
           inc(NewLeft,ARect.Right-NewRight);
-        NewRight:=ARect.Right;
+          NewRight:=ARect.Right;
+        end;
       end;
       if akBottom in AnchorAlign[AAlign] then begin
-        if not (akTop in Control.Anchors)
-        and not (akTop in AnchorAlign[AAlign]) then
+        if (akTop in (Control.Anchors+AnchorAlign[AAlign])) then begin
+          // bottom align and keep top border
+          NewHeight:=ConstraintHeight(ARect.Bottom-NewTop);
+          if AAlign=alBottom then begin
+            // align to bottom (this overrides the keeping of top border)
+            NewBottom:=ARect.Bottom;
+            NewTop:=NewBottom-NewHeight;
+          end else begin
+            // keeping top border overrides keeping bottom border
+            NewBottom:=NewTop+NewHeight;
+          end;
+        end else begin
+          // bottom align and top border free to move (-> keep height)
           inc(NewTop,ARect.Bottom-NewBottom);
-        NewBottom:=ARect.Bottom;
+          NewBottom:=ARect.Bottom;
+        end;
       end;
       NewWidth:=Max(0,NewRight-NewLeft);
       NewHeight:=Max(0,NewBottom-NewTop);
+      
       {$IFDEF CHECK_POSITION}
       //if csDesigning in Control.ComponentState then
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
@@ -3205,6 +3266,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.194  2004/02/02 11:07:43  mattias
+  constraints and aligning now work together
+
   Revision 1.193  2004/02/02 00:41:06  mattias
   TScrollBar now automatically checks Align and Anchors for useful values
 

@@ -50,7 +50,7 @@ begin
     FMaxWidth:= Value;
     if (FMinWidth > 0) and (FMaxWidth < FMinWidth) then FMinWidth:= FMaxWidth;
     Change;
-    if Value = 0 then FControl.RequestAlign;
+    FControl.RequestAlign;
   end;
 end;
 
@@ -67,7 +67,7 @@ begin
     FMaxHeight:= Value;
     if (FMinHeight > 0) and (FMaxHeight < FMinHeight) then FMinHeight:= FMaxHeight;
     Change;
-    if Value = 0 then FControl.RequestAlign;
+    FControl.RequestAlign;
   end;
 end;
 
@@ -84,7 +84,7 @@ begin
     FMinWidth:= Value;
     if (FMaxWidth > 0) and (FMinWidth > FMaxWidth) then FMaxWidth:= FMinWidth;
     Change;
-    if Value = 0 then FControl.RequestAlign;
+    FControl.RequestAlign;
   end;
 end;
 
@@ -101,7 +101,7 @@ begin
     FMinHeight:= Value;
     if (FMaxHeight > 0) and (FMinHeight > FMaxHeight) then FMaxHeight:= FMinHeight;
     Change;
-    if Value = 0 then FControl.RequestAlign;
+    FControl.RequestAlign;
   end;
 end;
 

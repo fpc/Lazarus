@@ -505,10 +505,10 @@ type
     procedure Change; dynamic;
     procedure AssignTo(Dest: TPersistent); override;
     property Control: TControl read FControl;
-    procedure SetMaxHeight(Value : TConstraintSize); virtual;
-    procedure SetMaxWidth(Value : TConstraintSize); virtual;
-    procedure SetMinHeight(Value : TConstraintSize); virtual;
-    procedure SetMinWidth(Value : TConstraintSize); virtual;
+    procedure SetMaxHeight(Value: TConstraintSize); virtual;
+    procedure SetMaxWidth(Value: TConstraintSize); virtual;
+    procedure SetMinHeight(Value: TConstraintSize); virtual;
+    procedure SetMinWidth(Value: TConstraintSize); virtual;
   public
     constructor Create(AControl: TControl); virtual;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -778,9 +778,9 @@ type
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var TheMessage: TLMessage); virtual;
-    Procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
-    Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Dynamic;
-    Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); Dynamic;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
     Function CanTab: Boolean; virtual;
@@ -1862,6 +1862,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.170  2004/02/02 11:07:43  mattias
+  constraints and aligning now work together
+
   Revision 1.169  2004/02/02 00:41:06  mattias
   TScrollBar now automatically checks Align and Anchors for useful values
 
