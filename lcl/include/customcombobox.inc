@@ -83,6 +83,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomComboBox.DestroyHandle
+  Params: ---
+  Returns: Nothing
+
+  Initialize window after it has been created.
+ ------------------------------------------------------------------------------}
+
+procedure TCustomComboBox.InitializeWnd;
+var ASelStart, ASelLength : integer;
+begin
+  inherited InitializeWnd;
+  if FSelStart <> FSelLength then begin
+    ASelStart:= FSelStart;
+    ASelLength:= FSelLength;
+    SelStart:= ASelStart;
+    SelLength:= ASelLength;
+  end;    
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomComboBox.SetSorted
   Params: val - true means "sort" the combo
   Returns: Nothing
@@ -229,7 +249,7 @@ procedure TCustomComboBox.SetSelText(const Val : string);
 var
   OldText, NewText: string;
 begin
-  if FStyle <> csDropDownList then begin
+  if FStyle < csDropDownList then begin
     OldText:=Text;
     NewText:=LeftStr(OldText,SelStart-1)+Val
                +RightStr(OldText,length(OldText)-SelStart-SelLength+1);
@@ -291,6 +311,21 @@ begin
   fSelLength:=Val;
   if HandleAllocated then
     CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomComboBox.SelectAll
+  Params: -
+  Returns: nothing
+
+  Select entire text.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.SelectAll;
+begin
+  if (FStyle < csDropDownList) and (Text <> '') then begin
+    SetSelStart(0);
+    SetSelLength(Length(Text));
+  end;    
 end;
 
 {------------------------------------------------------------------------------
@@ -488,8 +523,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
-  if FItemIndex=Val then exit;
-  FItemIndex:=Val;
+  if FItemIndex = Val then exit;
+  FItemIndex:= Val;
   if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
     Text:=FItems[FItemIndex];
   if HandleAllocated then
@@ -510,6 +545,13 @@ end;
 
 {
   $Log$
+  Revision 1.11  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.10  2002/08/29 00:07:01  lazarus
   MG: fixed TComboBox and InvalidateControl
 

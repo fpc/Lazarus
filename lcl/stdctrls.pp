@@ -134,6 +134,8 @@ type
                                                                                                    
   TGroupBox = class(TCustomGroupBox)
   published
+    property Align;
+    property Anchors;
     property Caption;
     property Visible;
   end;
@@ -167,8 +169,8 @@ type
     FOnDropDown: TNotifyEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
-    fSelLength: integer;
-    fSelStart: integer;
+    FSelLength: integer;
+    FSelStart: integer;
     FSorted : boolean;
     FStyle : TComboBoxStyle;
     procedure SetItems(Value : TStrings);
@@ -184,22 +186,23 @@ type
     procedure Select; dynamic;
     procedure DropDown; dynamic;
     procedure CloseUp; dynamic;
-    function SelectItem(const AnItem: String): Boolean;
-    function GetItemCount: Integer; //override;
 
+    function GetItemCount: Integer; //override;
     function GetItemHeight: Integer; virtual;
-    procedure SetDropDownCount(const AValue: Integer); virtual;
-    procedure SetItemHeight(const AValue: Integer); virtual;
-    function GetSelLength : integer;
-    function GetSelStart : integer;
-    function GetSelText : string;
+    function GetSelLength : integer; virtual;
+    function GetSelStart : integer; virtual;
+    function GetSelText : string; virtual;
     function GetItemIndex : integer; virtual;
     function GetMaxLength : integer; virtual;
+    procedure InitializeWnd; override;
+    function SelectItem(const AnItem: String): Boolean;
+    procedure SetDropDownCount(const AValue: Integer); virtual;
+    procedure SetItemHeight(const AValue: Integer); virtual;
     procedure SetItemIndex(Val : integer); virtual;
     procedure SetMaxLength(Val : integer); virtual;
-    procedure SetSelLength(Val : integer);
-    procedure SetSelStart(Val : integer);
-    procedure SetSelText(const Val : string);
+    procedure SetSelLength(Val : integer); virtual;
+    procedure SetSelStart(Val : integer); virtual;
+    procedure SetSelText(const Val : string); virtual;
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TComboBoxStyle); virtual;
 
@@ -219,12 +222,13 @@ type
     property Sorted: boolean read FSorted write SetSorted;
     property Style: TComboBoxStyle read FStyle write SetStyle;
   public
-    constructor Create(AOwner : TComponent); Override;
+    constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure AddItem(const Item: String; AObject: TObject); //override;
     procedure Clear; //override;
     procedure ClearSelection; //override;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
+    procedure SelectAll;
     property AutoDropDown: Boolean
       read FAutoDropDown write FAutoDropDown default False;
     property SelLength: integer read GetSelLength write SetSelLength;
@@ -239,6 +243,7 @@ type
   public
     property ItemIndex;
   published
+    property Anchors;
     property Enabled;
     property Items;
     property MaxLength;
@@ -300,6 +305,7 @@ type
     property ItemIndex;
   published
     property Align;
+    property Anchors;
     property BorderStyle;
     property ExtendedSelect;
     property Items;
@@ -327,20 +333,33 @@ type
     FReadOnly : Boolean;
     FCharCase : TEditCharCase;
     FOnChange : TNotifyEvent;
-    Function GetModified : Boolean;
-    Procedure SetCharCase(Value : TEditCharCase);
-    Procedure SetMaxLength(Value : Integer);
-    Procedure SetModified(Value : Boolean);
-    Procedure SetReadOnly(Value : Boolean);
+    FSelLength : integer;
+    FSelStart : integer;
+    function GetModified : Boolean;
+    procedure SetCharCase(Value : TEditCharCase);
+    procedure SetMaxLength(Value : Integer);
+    procedure SetModified(Value : Boolean);
+    procedure SetReadOnly(Value : Boolean);
   protected
-    Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
-    Procedure Change; dynamic;
+    procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
+    procedure Change; dynamic;
+    function GetSelLength : integer; virtual;
+    function GetSelStart : integer; virtual;
+    function GetSelText : string; virtual;
+    procedure InitializeWnd; override;
+    procedure SetSelLength(Val : integer); virtual;
+    procedure SetSelStart(Val : integer); virtual;
+    procedure SetSelText(const Val : string); virtual;
 
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
+    procedure SelectAll;
     property CharCase : TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property MaxLength : Integer read FMaxLength write SetMaxLength default 0;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly default false;
+    property SelLength: integer read GetSelLength write SetSelLength;
+    property SelStart: integer read GetSelStart write SetSelStart;
+    property SelText: String read GetSelText write SetSelText;
 
     constructor Create(AOwner: TComponent); override;
     property Modified : Boolean read GetModified write SetModified;
@@ -350,55 +369,52 @@ type
   end;
 
 
-   TCustomMemo = class(TCustomEdit)
-   private
-      FFont : TFont;
-      FLines: TStrings;
-      FScrollBars: TScrollStyle;
-      FWordWrap: Boolean;
-   protected
-      procedure SetLines(Value : TStrings);
-      procedure SetWordWrap(Value : Boolean);
-   public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      procedure Append(Value : String);
-      property Lines: TStrings read FLines write SetLines;
-      property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
-      property WordWrap: Boolean read FWordWrap write SetWordWrap;
-      property Font : TFont read FFont write FFont;
-   end;
+  TCustomMemo = class(TCustomEdit)
+  private
+    FFont : TFont;
+    FLines: TStrings;
+    FScrollBars: TScrollStyle;
+    FWordWrap: Boolean;
+  protected
+    procedure SetLines(Value : TStrings);
+    procedure SetWordWrap(Value : Boolean);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Append(Value : String);
+    property Lines: TStrings read FLines write SetLines;
+    property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap;
+    property Font : TFont read FFont write FFont;
+  end;
 
-   TEdit = class(TCustomEdit)
-   published
-      property Align;
-      property OnChange;
-      property OnClick;
-      property CharCase;
-      property DragMode;
-      property MaxLength;
-      property PopupMenu;
-      property ReadOnly;
-      property Text;
-      property Visible;
-   end;
+  TEdit = class(TCustomEdit)
+  published
+    property Anchors;
+    property OnChange;
+    property OnClick;
+    property CharCase;
+    property DragMode;
+    property MaxLength;
+    property PopupMenu;
+    property ReadOnly;
+    property Text;
+    property Visible;
+  end;
 
-
-   TMemo = class(TCustomMemo)
-   private
-   public
-   published
-      property Align;
-      property Color;
-      property Font;
-      property Lines;
-      property PopupMenu;
-      property ReadOnly;
-      property Tabstop;
-      property Visible;
-      property OnChange;
-   end;
-
+  TMemo = class(TCustomMemo)
+  published
+    property Align;
+    property Anchors;
+    property Color;
+    property Font;
+    property Lines;
+    property PopupMenu;
+    property ReadOnly;
+    property Tabstop;
+    property Visible;
+    property OnChange;
+  end;
 
   { TCustomLabel }
 
@@ -424,7 +440,9 @@ type
 
   TLabel = class(TCustomLabel)
   published
+    property Align;
     property Alignment;
+    property Anchors;
     property Caption;
     property Color;
     property Font;
@@ -485,8 +503,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    Property AutoSize : Boolean read FAutoSize write SetAutoSize;
+    property AutoSize : Boolean read FAutoSize write SetAutoSize;
     property AllowGrayed;
+    property Anchors;
     property Caption;
     property Checked;
     property State;
@@ -513,84 +532,84 @@ type
     property OnStartDrag;
   end;
 
+  TToggleBox = class(TCustomCheckBox)
+  private
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AllowGrayed;
+    property Anchors;
+    property Caption;
+    property Checked;
+    property State;
+    property Visible;
+    property Enabled;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Hint;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+  end;
 
-
-   TToggleBox = class(TCustomCheckBox)
-   private
-   public
-      constructor Create(AOwner: TComponent); override;
-   published
-      property AllowGrayed;
-      property Caption;
-      property Checked;
-      property State;
-      property Visible;
-      property Enabled;
-      property DragCursor;
-      property DragKind;
-      property DragMode;
-      property Hint;
-      property ParentShowHint;
-      property PopupMenu;
-      property ShowHint;
-      property TabOrder;
-      property TabStop;
-      property OnClick;
-      property OnDragDrop;
-      property OnDragOver;
-      property OnEndDrag;
-      property OnEnter;
-      property OnExit;
-      property OnMouseDown;
-      property OnMouseMove;
-      property OnMouseUp;
-      property OnStartDrag;
-   end;
-
-   {TRadioButton}
+  {TRadioButton}
    
-   TRadioButton = class(TCustomCheckBox)
-   private
-     fGroup : THandle; // handle to the previous button in the group this button belongs to
-     FAutoSize : Boolean;
-     procedure SetGroup (Value : THandle);
-     function GetGroup : THandle;
-     procedure SetAutoSize(Value : Boolean);
-   protected
-     procedure CreateWnd; override;
-     procedure DestroyWnd; override;
-     procedure SetText(const Value: TCaption); Override;
-   public
-     constructor Create (AOwner: TComponent); override;
-     property group : THandle read GetGroup write SetGroup;
-   published
-     Property AutoSize : Boolean read FAutoSize write SetAutoSize;
-     property AllowGrayed;
-     property Caption;
-     property Checked;
-     property State;
-     property Visible;
-     property Enabled;
-     property DragCursor;
-     property DragKind;
-     property DragMode;
-     property Hint;
-     property ParentShowHint;
-     property PopupMenu;
-     property ShowHint;
-     property TabOrder;
-     property TabStop;
-     property OnClick;
-     property OnDragDrop;
-     property OnDragOver;
-     property OnEndDrag;
-     property OnEnter;
-     property OnExit;
-     property OnMouseDown;
-     property OnMouseMove;
-     property OnMouseUp;
-     property OnStartDrag;
-   end;
+  TRadioButton = class(TCustomCheckBox)
+  private
+    fGroup : THandle; // handle to the previous button in the group this button belongs to
+    FAutoSize : Boolean;
+    procedure SetGroup (Value : THandle);
+    function GetGroup : THandle;
+    procedure SetAutoSize(Value : Boolean);
+  protected
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
+    procedure SetText(const Value: TCaption); Override;
+  public
+    constructor Create (AOwner: TComponent); override;
+    property group : THandle read GetGroup write SetGroup;
+  published
+    property Anchors;
+    property AutoSize : Boolean read FAutoSize write SetAutoSize;
+    property AllowGrayed;
+    property Caption;
+    property Checked;
+    property State;
+    property Visible;
+    property Enabled;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Hint;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+  end;
 
 Function DeleteAmpersands(var Str : String) : Longint;
 
@@ -695,6 +714,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.37  2002/08/27 18:45:13  lazarus
   MG: propedits text improvements from Andrew, uncapturing, improved comobobox
 
