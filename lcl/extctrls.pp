@@ -364,7 +364,7 @@ type
     procedure DoAutoSize; Override;
     Procedure Paint; Override;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   published
     Property Align;
@@ -756,6 +756,9 @@ end.
 
  {
   $Log$
+  Revision 1.71  2003/09/04 11:10:18  mattias
+  added csClickEvents to TImage
+
   Revision 1.70  2003/09/03 08:53:39  mattias
   implemented TImage.Proportional
 

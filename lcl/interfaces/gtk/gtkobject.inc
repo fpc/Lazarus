@@ -5619,7 +5619,7 @@ begin
 
   csGTKTable  :
     begin
-       P := gtk_table_new(2,2,False);
+      P := gtk_table_new(2,2,False);
     end;
 
   csHintWindow :
@@ -8122,6 +8122,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.405  2003/09/04 11:10:18  mattias
+  added csClickEvents to TImage
+
   Revision 1.404  2003/09/04 10:51:30  mattias
   fixed default size of preview widget
 
