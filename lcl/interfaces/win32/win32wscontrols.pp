@@ -214,6 +214,8 @@ begin
   begin
     if Window <> HWND(Nil) then
     begin
+      // some controls (combobox) immediately send a message upon setting font
+      AWinControl.Handle := Window;
       Windows.SetProp(Window, 'Wincontrol', dword(AWinControl));
       if SubClassWndProc <> nil then
         Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
