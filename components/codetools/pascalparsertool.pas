@@ -1938,7 +1938,7 @@ begin
       end else
         break;
     until false;
-    if CurPos.Flag=cafPoint then
+    if (CurPos.Flag=cafPoint) or UpAtomIs('AS') then
       ReadNextAtom
     else
       break;
