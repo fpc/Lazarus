@@ -225,7 +225,13 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
     with MenuInfo do
     begin
       cbsize:=sizeof(MENUITEMINFO);
-      fMask:=MIIM_TYPE;
+      {In Win32 Menu items that are created without a initial caption default to disabled,
+       the next three lines are to counter that.}
+      fMask:=MIIM_STATE;
+      GetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle), false, @MenuInfo);
+      if (Sender as TMenuItem).Enabled then fState := fState and (not (MFS_DISABLED or MFS_GRAYED));
+      
+      fMask:=MIIM_TYPE or MIIM_STATE;
       fType:=Style;
       dwTypeData:=Data;
     end;
@@ -2612,6 +2618,9 @@ End;
 
 {
   $Log$
+  Revision 1.45  2003/02/01 12:56:10  lazarus
+  Keith: My brother fixed the problem where menu items default to disbaled.
+
   Revision 1.44  2003/01/27 11:25:40  mattias
   menu accelerator patch from Martin Smat
 
