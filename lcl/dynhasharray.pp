@@ -64,9 +64,9 @@ type
     IsOverflow: boolean;
   end; 
   
-  TDynHashArrayOption = (dhaoCachingEnabled);
+  TDynHashArrayOption = (dhaoCachingEnabled, dhaoCacheContains);
   TDynHashArrayOptions = set of TDynHashArrayOption;
-
+  
   TDynHashArray = class
   private
     FItems: ^PDynHashArrayItem;
@@ -83,6 +83,7 @@ type
     FOnGetKeyForHashItem: TOnGetKeyForHashItem;
     FOptions: TDynHashArrayOptions;
     FOwnerHashFunction: TOwnerHashFunction;
+    FContainsCache: TObject;
     function NewHashItem: PDynHashArrayItem;
     procedure DisposeHashItem(ADynHashArrayItem: PDynHashArrayItem);
     procedure ComputeWaterMarks;
@@ -95,6 +96,8 @@ type
     procedure RebuildItems;
     procedure SaveCacheItem(Item: Pointer; Index: integer);
   public
+    constructor Create(InitialMinCapacity: integer);
+    destructor Destroy; override;
     procedure Add(Item: Pointer);
     function Contains(Item: Pointer): boolean;
     function ContainsKey(Key: Pointer): boolean;
@@ -111,7 +114,12 @@ type
     function GetHashItem(HashIndex: integer): PDynHashArrayItem;
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
     procedure AssignTo(List: TList);
-    
+
+    function SlowAlternativeHashMethod(Sender: TDynHashArray;
+       Item: Pointer): integer;
+    function ConsistencyCheck: integer;
+    procedure WriteDebugReport;
+
     property FirstHashItem: PDynHashArrayItem read FFirstItem;
     property MinCapacity: integer read FMinCapacity write FMinCapacity;
     property MaxCapacity: integer read FMaxCapacity write FMaxCapacity;
@@ -123,12 +131,6 @@ type
     property OnGetKeyForHashItem: TOnGetKeyForHashItem
        read FOnGetKeyForHashItem write SetOnGetKeyForHashItem;
     property Options: TDynHashArrayOptions read FOptions write SetOptions;
-    constructor Create(InitialMinCapacity: integer);
-    destructor Destroy; override;
-    function SlowAlternativeHashMethod(Sender: TDynHashArray;
-       Item: Pointer): integer;
-    function ConsistencyCheck: integer;
-    procedure WriteDebugReport;
   end;
 
   TDynHashArrayItemMemManager = class
@@ -169,6 +171,114 @@ end;
 
 const
   PrimeNumber: integer = 5364329;
+  
+  
+type
+  TRecentListEntry = record
+    Item: Pointer;
+    Data: Pointer;
+  end;
+  PRecentListEntry = ^TRecentListEntry;
+
+  TRecentList = class
+  private
+    FCapacity: integer;
+    FCount: integer;
+    FItems: PRecentListEntry;
+    procedure FreeItems;
+    procedure SetCapacity(NewCapacity: integer);
+  public
+    constructor Create(TheCapacity: integer);
+    destructor Destroy; override;
+    function Contains(Item: Pointer): boolean;
+    procedure Add(Item, Data: Pointer);
+    procedure Remove(Item: Pointer);
+    function IndexOf(Item: Pointer): integer;
+    procedure Clear;
+    function ConsistencyCheck: integer;
+    property Cacpacity: integer read FCapacity;
+    property Count: integer read FCount;
+  end;
+
+{ TRecentList }
+
+procedure TRecentList.FreeItems;
+begin
+  if FItems<>nil then begin
+    FreeMem(FItems);
+    FItems:=nil;
+  end;
+end;
+
+procedure TRecentList.SetCapacity(NewCapacity: integer);
+begin
+  if NewCapacity=FCapacity then exit;
+  if NewCapacity>0 then
+    ReAllocMem(FItems,NewCapacity*SizeOf(TRecentListEntry))
+  else
+    FreeItems;
+  FCapacity:=NewCapacity;
+  if FCount>FCapacity then FCount:=FCapacity;
+end;
+
+constructor TRecentList.Create(TheCapacity: integer);
+begin
+  inherited Create;
+  if TheCapacity<1 then FCapacity:=1;
+  SetCapacity(TheCapacity);
+end;
+
+destructor TRecentList.Destroy;
+begin
+  FreeItems;
+  inherited Destroy;
+end;
+
+function TRecentList.Contains(Item: Pointer): boolean;
+begin
+  Result:=IndexOf(Item)>=0;
+end;
+
+procedure TRecentList.Add(Item, Data: Pointer);
+begin
+  if FCount=FCapacity then begin
+    if FCount>1 then
+      Move(FItems[1],FItems[0],SizeOf(TRecentListEntry)*(FCount-1));
+  end else begin
+    inc(FCount);
+  end;
+  FItems[FCount-1].Item:=Item;
+  FItems[FCount-1].Data:=Data;
+end;
+
+procedure TRecentList.Remove(Item: Pointer);
+var i: integer;
+begin
+  i:=IndexOf(Item);
+  if i<0 then exit;
+  if i<FCount-1 then
+    Move(FItems[i+1],FItems[i],SizeOf(TRecentListEntry)*(FCount-i-1));
+  dec(FCount);
+end;
+
+function TRecentList.IndexOf(Item: Pointer): integer;
+begin
+  Result:=FCount-1;
+  while (Result>=0) and (FItems[Result].Item<>Item) do dec(Result);
+end;
+
+procedure TRecentList.Clear;
+begin
+  FCount:=0;
+end;
+
+function TRecentList.ConsistencyCheck: integer;
+begin
+  if FCount>FCapacity then exit(-1);
+  if FCapacity=0 then exit(-2);
+  if FItems=nil then exit(-3);
+  Result:=0;
+end;
 
 { TDynHashArray }
 
@@ -223,6 +333,7 @@ destructor TDynHashArray.Destroy;
 begin
   Clear;
   FreeMem(FItems);
+  FContainsCache.Free;
   inherited Destroy;
 end;
 
@@ -287,6 +398,15 @@ begin
     if FHashCacheIndex<>OldCacheIndex then exit(-16);
     FHashCacheItem:=OldCacheItem;
   end;
+  // check ContainsCache
+  if (FContainsCache<>nil) xor (dhaoCacheContains in Options) then exit(-17);
+  if (FContainsCache<>nil) then begin
+    Result:=TRecentList(FContainsCache).ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,100);
+      exit;
+    end;
+  end;
   Result:=0;
 end;
 
@@ -340,6 +460,7 @@ end;
 procedure TDynHashArray.ClearCache;
 begin
   FHashCacheIndex:=-1;
+  if FContainsCache<>nil then TRecentList(FContainsCache).Clear;
 end;
 
 procedure TDynHashArray.Add(Item: Pointer);
@@ -370,6 +491,7 @@ begin
   end;
   inc(FCount);
   SaveCacheItem(Item,Index);
+  if FContainsCache<>nil then TRecentList(FContainsCache).Clear;
 end;
 
 function TDynHashArray.SlowAlternativeHashMethod(Sender: TDynHashArray;
@@ -460,7 +582,13 @@ end;
 
 function TDynHashArray.Contains(Item: Pointer): boolean;
 begin
-  Result:=FindHashItem(Item)<>nil;
+  if (FContainsCache=nil) or (not TRecentList(FContainsCache).Contains(Item))
+  then begin
+    Result:=FindHashItem(Item)<>nil;
+    if Result and (FContainsCache<>nil) then
+      TRecentList(FContainsCache).Add(Item,nil);
+  end else
+    Result:=true;
 end;
 
 function TDynHashArray.ContainsKey(Key: Pointer): boolean;
@@ -637,7 +765,16 @@ end;
 
 procedure TDynHashArray.SetOptions(const AValue: TDynHashArrayOptions);
 begin
+  if FOptions=AValue then exit;
   FOptions:=AValue;
+  if (FContainsCache<>nil) xor (dhaoCacheContains in Options) then begin
+    if FContainsCache=nil then begin
+      FContainsCache:=TRecentList.Create(5);
+    end else begin
+      FContainsCache.Free;
+      FContainsCache:=nil;
+    end;
+  end;
 end;
 
 { TDynHashArrayItemMemManager }
