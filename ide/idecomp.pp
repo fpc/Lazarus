@@ -320,7 +320,7 @@ end;
 
 initialization
 
-{$I designer/lazarus_control_images.lrs}
+{$I images/components_images.lrs}
 
   RegisterStandardComponents(RegCompList);
   IdeCompList := TIDECompList.Create;
