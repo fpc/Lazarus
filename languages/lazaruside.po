@@ -362,6 +362,10 @@ msgstr ""
 msgid "Find Identifier References"
 msgstr ""
 
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuinsertgplnotice
 msgid "GPL notice"
 msgstr ""
@@ -3122,6 +3126,26 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
+#: lazarusidestrconsts:lisfriincurrentunit
+msgid "in current unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinmainproject
+msgid "in main project"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinprojectpackageowningcurrentunit
+msgid "in project/package owning current unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinallopenpackagesandprojects
+msgid "in all open packages and projects"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameallreferences
+msgid "Rename all References"
+msgstr ""
+
 #: lazarusidestrconsts:dlgglobal
 msgid "Global"
 msgstr ""
@@ -3268,10 +3292,6 @@ msgstr ""
 
 #: lazarusidestrconsts:uemextractproc
 msgid "Extract Procedure"
-msgstr ""
-
-#: lazarusidestrconsts:uemfindidentifierreferences
-msgid "Find Identifier References"
 msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
@@ -3959,7 +3979,11 @@ msgid "Extract procedure"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfindidentifierrefs
-msgid "FInd identifier references"
+msgid "Find identifier references"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecrenameidentifier
+msgid "Rename identifier"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecsyntaxcheck
@@ -4568,6 +4592,34 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
+msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrifindreferences
+msgid "Find References"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinvalididentifier
+msgid "Invalid Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameto
+msgid "Rename to"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirename
+msgid "Rename"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrisearchincommentstoo
+msgid "Search in comments too"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrisearchwhere
+msgid "Search where"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptscolon
@@ -5328,6 +5380,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
+msgstr ""
+
+#: lazarusidestrconsts:lisfriidentifier
+msgid "Identifier: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lissvuooverridesystemvariable
@@ -7548,5 +7604,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pfilename2
 msgid "Filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrifindorrenameidentifier
+msgid "Find or Rename Identifier"
 msgstr ""
 

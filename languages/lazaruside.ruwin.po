@@ -382,6 +382,10 @@ msgstr "Дополнительные"
 msgid "Additional compiler options inherited from packages"
 msgstr "Дополнительные параметры компилятора, унаследованные от пакетов"
 
+#: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
+msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Дополнительные пути исходников для всех проектов (.pp;.pas)"
@@ -2238,6 +2242,10 @@ msgstr "Найти в файлах"
 msgid "Find next"
 msgstr "Найти далее"
 
+#: lazarusidestrconsts:lisfrifindorrenameidentifier
+msgid "Find or Rename Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
 msgstr "Найти другой конец блока кода"
@@ -2253,6 +2261,10 @@ msgstr "Найти описание процедуры"
 #: lazarusidestrconsts:srkmecfindproceduremethod
 msgid "Find procedure method"
 msgstr "Найти метод процедуры"
+
+#: lazarusidestrconsts:lisfrifindreferences
+msgid "Find References"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfind
 msgid "Find text"
@@ -2618,6 +2630,10 @@ msgstr "Политика идентификаторов"
 msgid "Identifier Prefix:"
 msgstr "Префикс идентификатора:"
 
+#: lazarusidestrconsts:lisfriidentifier
+msgid "Identifier: %s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
 msgstr "If"
@@ -2674,9 +2690,25 @@ msgstr "Игнорировать пробелы в начале строки"
 msgid "Ime Str"
 msgstr ""
 
+#: lazarusidestrconsts:lisfriinallopenpackagesandprojects
+msgid "in all open packages and projects"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriincurrentunit
+msgid "in current unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
 msgstr "Перед методами"
+
+#: lazarusidestrconsts:lisfriinmainproject
+msgid "in main project"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinprojectpackageowningcurrentunit
+msgid "in project/package owning current unit"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
@@ -3021,6 +3053,10 @@ msgstr "Неправильное имя файла"
 #: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
 msgstr "Неправильный каталог исходников FPC"
+
+#: lazarusidestrconsts:lisfriinvalididentifier
+msgid "Invalid Identifier"
+msgstr ""
 
 #: lazarusidestrconsts:lispublprojinvalidincludefilter
 msgid "Invalid Include filter"
@@ -4686,6 +4722,14 @@ msgstr "Удалены требуемые пакеты"
 msgid "Removed required packages (these entries are not saved to the lpk file)"
 msgstr "Удалены требуемые пакеты (они не сохранятся в lpk-файле)"
 
+#: lazarusidestrconsts:lisfrirename
+msgid "Rename"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameallreferences
+msgid "Rename all References"
+msgstr ""
+
 #: lazarusidestrconsts:lisrenamefilefailed
 msgid "Rename file failed"
 msgstr "Не удалось переименовать файл"
@@ -4701,6 +4745,14 @@ msgstr "Переименовать файл в нижн.рег-ре?"
 #: lazarusidestrconsts:lisrenamefile
 msgid "Rename file?"
 msgstr "Переименовать файл?"
+
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameto
+msgid "Rename to"
+msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -5006,6 +5058,10 @@ msgstr "поиск во всех файлах проекта"
 msgid "search all open files"
 msgstr "поиск во всех открытых файлах"
 
+#: lazarusidestrconsts:lisfrisearchincommentstoo
+msgid "Search in comments too"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
 msgstr "поиск в каталогах"
@@ -5025,6 +5081,10 @@ msgstr "Строка поиска '%s' не найдена!"
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
 msgstr "Поиск прерван пользователем."
+
+#: lazarusidestrconsts:lisfrisearchwhere
+msgid "Search where"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."

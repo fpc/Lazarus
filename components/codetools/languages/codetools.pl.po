@@ -561,6 +561,10 @@ msgstr "katalog rejestracyjny packagera"
 msgid "Packager Units Directory"
 msgstr "katalog modułów packagera"
 
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr ""
+
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
 msgstr "procedura lub funkcja"

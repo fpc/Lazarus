@@ -288,7 +288,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
-msgstr ""
+msgstr "Salli etsintäoperandit (mm * ja ?)"
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
@@ -380,6 +380,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
+msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
@@ -504,7 +508,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
-msgstr ""
+msgstr "Varmistetaan vielä erikseen että korvataanko kyseinen kohta"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1736,7 +1740,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
-msgstr ""
+msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -2238,6 +2242,10 @@ msgstr "Etsi tiedostoista"
 msgid "Find next"
 msgstr ""
 
+#: lazarusidestrconsts:lisfrifindorrenameidentifier
+msgid "Find or Rename Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
 msgstr ""
@@ -2252,6 +2260,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindproceduremethod
 msgid "Find procedure method"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrifindreferences
+msgid "Find References"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecfind
@@ -2618,6 +2630,10 @@ msgstr ""
 msgid "Identifier Prefix:"
 msgstr ""
 
+#: lazarusidestrconsts:lisfriidentifier
+msgid "Identifier: %s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
 msgstr ""
@@ -2674,8 +2690,24 @@ msgstr "Jätä huomiotta välilyönnit rivin alussa"
 msgid "Ime Str"
 msgstr ""
 
+#: lazarusidestrconsts:lisfriinallopenpackagesandprojects
+msgid "in all open packages and projects"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriincurrentunit
+msgid "in current unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinmainproject
+msgid "in main project"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinprojectpackageowningcurrentunit
+msgid "in project/package owning current unit"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
@@ -3020,6 +3052,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinvalididentifier
+msgid "Invalid Identifier"
 msgstr ""
 
 #: lazarusidestrconsts:lispublprojinvalidincludefilter
@@ -3948,7 +3984,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
-msgstr ""
+msgstr "Esittävä sana ei voi olla osa toista sanaa"
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"
@@ -4348,7 +4384,7 @@ msgstr "puola (ISO 8859-2)"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
-msgstr ""
+msgstr "Esikatselu"
 
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
@@ -4686,6 +4722,14 @@ msgstr ""
 msgid "Removed required packages (these entries are not saved to the lpk file)"
 msgstr ""
 
+#: lazarusidestrconsts:lisfrirename
+msgid "Rename"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameallreferences
+msgid "Rename all References"
+msgstr ""
+
 #: lazarusidestrconsts:lisrenamefilefailed
 msgid "Rename file failed"
 msgstr ""
@@ -4700,6 +4744,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrenamefile
 msgid "Rename file?"
+msgstr ""
+
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameto
+msgid "Rename to"
 msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
@@ -5006,6 +5058,10 @@ msgstr "Hae projektin kaikista tiedostoista"
 msgid "search all open files"
 msgstr "Hae kaikista avoinna olevista tiedostoista"
 
+#: lazarusidestrconsts:lisfrisearchincommentstoo
+msgid "Search in comments too"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
 msgstr ""
@@ -5024,6 +5080,10 @@ msgstr "Etsittyä merkkijonoa '%s' ei löydetty!"
 
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
+msgstr ""
+
+#: lazarusidestrconsts:lisfrisearchwhere
+msgid "Search where"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
@@ -5415,7 +5475,7 @@ msgid "Sorry, this type is not yet implemented"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusortselection
-msgid "Sort selection"
+msgid "Sort Selection"
 msgstr "Lajittele lohko"
 
 #: lazarusidestrconsts:lissourcedirectorydoesnotexists

@@ -560,6 +560,10 @@ msgstr "Directory di registrazione del Packager"
 msgid "Packager Units Directory"
 msgstr "Directory delle units del packager"
 
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr ""
+
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
 msgstr "procedura o funzione"

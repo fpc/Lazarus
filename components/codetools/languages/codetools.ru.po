@@ -550,6 +550,10 @@ msgstr "Каталог регистрации менеджера пакетов"
 msgid "Packager Units Directory"
 msgstr "Каталог модулей менеджера пакетов"
 
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr ""
+
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
 msgstr "процедура или функция"

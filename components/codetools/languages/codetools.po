@@ -54,6 +54,10 @@ msgstr ""
 msgid "%s expected, but %s found"
 msgstr ""
 
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinvalidclassname
 msgid "invalid class name=%s%s%s"
 msgstr ""

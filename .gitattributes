@@ -771,6 +771,7 @@ images/components/tactionlist.xpm -text svneol=native#image/x-xpixmap
 images/components/tapplicationproperties.xpm -text svneol=native#image/x-xpixmap
 images/components/tarrow.ico -text svneol=unset#image/x-icon
 images/components/tarrow.xpm -text svneol=native#image/x-xpixmap
+images/components/tbarchart.xpm -text svneol=native#image/x-xpixmap
 images/components/tbevel.ico -text svneol=unset#image/x-icon
 images/components/tbevel.xpm -text svneol=native#image/x-xpixmap
 images/components/tbitbtn.ico -text svneol=unset#image/x-icon

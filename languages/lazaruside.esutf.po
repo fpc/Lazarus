@@ -393,6 +393,10 @@ msgstr "Adicional"
 msgid "Additional compiler options inherited from packages"
 msgstr ""
 
+#: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
+msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Ruta adicional de código fuente para todos los proyectos (.pp;.pas)"
@@ -2249,6 +2253,10 @@ msgstr "Buscar en archivos"
 msgid "Find next"
 msgstr "Buscar siguiente"
 
+#: lazarusidestrconsts:lisfrifindorrenameidentifier
+msgid "Find or Rename Identifier"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
 msgstr "Buscar otro final del bloque de código"
@@ -2264,6 +2272,10 @@ msgstr "Buscar definición de procedimiento"
 #: lazarusidestrconsts:srkmecfindproceduremethod
 msgid "Find procedure method"
 msgstr "Buscar método de procedimiento"
+
+#: lazarusidestrconsts:lisfrifindreferences
+msgid "Find References"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecfind
 msgid "Find text"
@@ -2629,6 +2641,10 @@ msgstr "Política de Identificador"
 msgid "Identifier Prefix:"
 msgstr "Prefijo de Identificador:"
 
+#: lazarusidestrconsts:lisfriidentifier
+msgid "Identifier: %s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
 msgstr "If"
@@ -2685,9 +2701,25 @@ msgstr "Ignorar espacios a principio de línea"
 msgid "Ime Str"
 msgstr "Ime Str"
 
+#: lazarusidestrconsts:lisfriinallopenpackagesandprojects
+msgid "in all open packages and projects"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriincurrentunit
+msgid "in current unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
 msgstr "Delante de métodos"
+
+#: lazarusidestrconsts:lisfriinmainproject
+msgid "in main project"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinprojectpackageowningcurrentunit
+msgid "in project/package owning current unit"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
@@ -3031,6 +3063,10 @@ msgstr "Nombre de archivo inválido"
 
 #: lazarusidestrconsts:lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
+msgstr ""
+
+#: lazarusidestrconsts:lisfriinvalididentifier
+msgid "Invalid Identifier"
 msgstr ""
 
 #: lazarusidestrconsts:lispublprojinvalidincludefilter
@@ -4697,6 +4733,14 @@ msgstr "Paquetes requeridos eliminados"
 msgid "Removed required packages (these entries are not saved to the lpk file)"
 msgstr "Paquete requeridos eliminados (estas entradas no se guardan en el archivo lpk)"
 
+#: lazarusidestrconsts:lisfrirename
+msgid "Rename"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameallreferences
+msgid "Rename all References"
+msgstr ""
+
 #: lazarusidestrconsts:lisrenamefilefailed
 msgid "Rename file failed"
 msgstr "Fallo al renombrar archivo"
@@ -4712,6 +4756,14 @@ msgstr "¿Renombrar archivo a minúsculas?"
 #: lazarusidestrconsts:lisrenamefile
 msgid "Rename file?"
 msgstr "¿Renombrar archivo?"
+
+#: lazarusidestrconsts:lismenurenameidentifier
+msgid "Rename Identifier"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrirenameto
+msgid "Rename to"
+msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -5017,6 +5069,10 @@ msgstr "buscar todos los archivos en el proyecto"
 msgid "search all open files"
 msgstr "buscar todos los archivos abiertos"
 
+#: lazarusidestrconsts:lisfrisearchincommentstoo
+msgid "Search in comments too"
+msgstr ""
+
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
 msgstr "buscar en directorios"
@@ -5036,6 +5092,10 @@ msgstr "¡Cadena de búsqueda '%s' no encontrada!"
 #: lazarusidestrconsts:dlgsearchabort
 msgid "Search terminated by user."
 msgstr "Búsqueda terminada por el usuario"
+
+#: lazarusidestrconsts:lisfrisearchwhere
+msgid "Search where"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."

@@ -550,6 +550,10 @@ msgstr "Directori de registrador d'empaquetador"
 msgid "Packager Units Directory"
 msgstr "Directori d'unitats d'empaquetador"
 
+#: codetoolsstrconsts:ctspositionnotinsource
+msgid "Position not in source"
+msgstr ""
+
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
 msgstr "Procediment o funció"

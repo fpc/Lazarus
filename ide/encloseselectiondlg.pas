@@ -147,7 +147,7 @@ begin
   estWith:
     Template:='with | do begin'+LineEnding
              +'  <selection>'+LineEnding
-             +'until;'+LineEnding;
+             +'end;'+LineEnding;
 
   estPascalComment:
     Template:='{'+LineEnding
