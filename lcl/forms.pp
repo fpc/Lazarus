@@ -1252,11 +1252,11 @@ Begin
     DebugLn('  Sender=',Sender.ClassName);
     if Sender is Exception then begin
       DebugLn('  Exception=',Exception(Sender).Message);
-{$IFNDEF ExceptionHasNoFrames}
+      {$IFNDEF ExceptionHasNoFrames}
       DebugLn('  Stack trace:');
       for FrameNumber := 0 to FrameCount-1 do
         DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
-{$ENDIF}
+      {$ENDIF}
     end;
   end else
     DebugLn('  Sender=nil');

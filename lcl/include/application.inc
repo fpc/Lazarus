@@ -1063,7 +1063,8 @@ begin
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
   if (not Terminated)
   and (Self<>nil) then begin
-    MsgResult:=MessageBox(PChar(Msg),PChar(GetTitle),
+    MsgResult:=MessageBox(PChar(Msg+#13#13'Press Ok to ignore.'
+       +#13'Press Cancel to stop the program.'),PChar(GetTitle),
                           MB_OKCANCEL + MB_ICONERROR);
     if MsgResult<>mrOk then begin
       Include(FFlags,AppNoExceptionMessages);
@@ -1356,6 +1357,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2005/02/17 18:48:24  mattias
+  extented error message of TApplication
+
   Revision 1.97  2005/02/05 16:09:52  marc
   * first 64bit changes
 
