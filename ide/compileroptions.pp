@@ -316,6 +316,7 @@ type
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function GetSrcPath(RelativeToBaseDir: boolean): string;
     function GetLibraryPath(RelativeToBaseDir: boolean): string;
+    function GetUnitOutPath(RelativeToBaseDir: boolean): string;
     function GetParsedPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean): string;
@@ -1442,8 +1443,8 @@ function TBaseCompilerOptions.CreateTargetFilename(
   var
     Ext: String;
   begin
-    if ExtractFileExt(fTargetOS)<>'' then exit;
-    if CompareText(fTargetOS, 'win32') = 0 then begin
+    if (ExtractFileName(Result)='') or (ExtractFileExt(Result)<>'') then exit;
+    if AnsiCompareText(fTargetOS, 'win32') = 0 then begin
       Result:=Result+'.exe';
       exit;
     end;
@@ -1454,19 +1455,24 @@ function TBaseCompilerOptions.CreateTargetFilename(
     end;
   end;
   
+var
+  UnitOutDir: String;
+  OutFilename: String;
 begin
-  if (TargetFilename <> '') then begin
-    Result:=ExtractFilePath(MainSourceFileName)+TargetFilename;
-    AppendDefaultExt;
+  // first case: fully specific target filename
+  if (TargetFilename <> '') and FilenameIsAbsolute(TargetFilename) then begin
+    Result:=TargetFilename;
   end else begin
+    // calculate output directory
+    UnitOutDir:=GetUnitOutPath(false);
+    if UnitOutDir='' then
+      UnitOutDir:=ExtractFilePath(MainSourceFileName);
     // fpc creates lowercase executables as default
-    Result:=lowercase(ExtractFileNameOnly(MainSourceFileName));
-    if Result<>'' then begin
-      Result:=ExtractFilePath(MainSourceFileName)+Result;
-      AppendDefaultExt;
-    end else
-      Result:='';
+    OutFilename:=lowercase(ExtractFileNameOnly(MainSourceFileName));
+    Result:=AppendPathDelim(UnitOutDir)+OutFilename;
   end;
+  Result:=TrimFilename(Result);
+  AppendDefaultExt;
 end;
 
 procedure TBaseCompilerOptions.GetInheritedCompilerOptions(
@@ -1543,6 +1549,14 @@ function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean
   ): string;
 begin
   Result:=GetParsedPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir);
+end;
+
+function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean
+  ): string;
+begin
+  Result:=ParsedOpts.GetParsedValue(pcosOutputDir);
+  if (not RelativeToBaseDir) then
+    CreateAbsolutePath(Result,BaseDirectory);
 end;
 
 function TBaseCompilerOptions.GetParsedPath(Option: TParsedCompilerOptString;
