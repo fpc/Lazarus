@@ -1254,11 +1254,14 @@ end;
 procedure TSourceEditor.SortSelection;
 var
   SortSelectionDialog: TSortSelectionDialog;
+  OldSelText: string;
 begin
+  OldSelText:=EditorComponent.SelText;
+  if OldSelText='' then exit;
   SortSelectionDialog:=TSortSelectionDialog.Create(Application);
   SortSelectionDialog.PreviewSynEdit.Highlighter:=EditorComponent.Highlighter;
   EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
-  SortSelectionDialog.TheText:=EditorComponent.SelText;
+  SortSelectionDialog.TheText:=OldSelText;
   if SortSelectionDialog.ShowModal=mrOk then
     EditorComponent.SelText:=SortSelectionDialog.SortedText;
   SortSelectionDialog.Free;
