@@ -91,6 +91,7 @@ function GetCursorPos(var LPPoint: TPoint): Boolean; override;
 Function GetDC(HWnd: HWND): HDC; Override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
+function GetDesignerDC(WindowHandle: HWND): HDC; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 Function GetFocus: HWND; Override;
@@ -180,6 +181,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/11/04 13:18:22  micha
+  Implement GetDesignerDC
+
   Revision 1.35  2003/10/31 11:49:30  micha
   fix win32 designer: grid, non-windowed components, selectiongrabbers
 

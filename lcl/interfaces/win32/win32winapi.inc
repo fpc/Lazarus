@@ -818,7 +818,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: Cardinal): Boolean;
 Begin
-  Result := Windows.DrawFrameControl(DC, @Rect, UType, UState);
+  // flat button border: ignore
+  if (UType <> DFC_BUTTON) or ((UState and DFCS_FLAT) = 0) then
+    Result := Windows.DrawFrameControl(DC, @Rect, UType, UState);
 End;
 
 {------------------------------------------------------------------------------
@@ -1267,6 +1269,11 @@ End;
 function TWin32Object.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
   Result := Windows.GetDeviceCaps(DC, Index);
+end;
+
+function TWin32Object.GetDesignerDC(WindowHandle: HWND): HDC;
+begin
+  Result := Windows.GetDC(0);
 end;
 
 function TWin32Object.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
@@ -2516,6 +2523,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2003/11/04 13:18:21  micha
+  Implement GetDesignerDC
+
   Revision 1.66  2003/10/31 11:49:30  micha
   fix win32 designer: grid, non-windowed components, selectiongrabbers
 
