@@ -61,6 +61,7 @@ type
     // source name  e.g. 'unit UnitName;'
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function GetSourceName: string;
+    function GetCachedSourceName: string;
     function RenameSource(const NewName: string;
         SourceChangeCache: TSourceChangeCache): boolean;
         
@@ -185,7 +186,7 @@ begin
   ReadNextAtom; // read source type 'program', 'unit' ...
   ReadNextAtom; // read name
   NamePos:=CurPos;
-  Result:=(NamePos.StartPos<SrcLen);
+  Result:=(NamePos.StartPos<=SrcLen);
 end;
 
 function TStandardCodeTool.GetSourceName: string;
@@ -194,6 +195,27 @@ begin
   Result:='';
   if not GetSourceNamePos(NamePos) then exit;
   Result:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
+end;
+
+{-------------------------------------------------------------------------------
+  function TStandardCodeTool.GetCachedSourceName: string;
+  Params: none
+  Result: the source name (= e.g. the identifier behind 'program'/'unit' keyword)
+
+  This function does neither check if source needs reparsing, nor does it check
+  for errors in code. It simple checks if there is a first node, which is
+  typically the source type and name.
+  This function can therefore be used as a fast GetSourceName function.
+-------------------------------------------------------------------------------}
+function TStandardCodeTool.GetCachedSourceName: string;
+begin
+  Result:='';
+  if Tree.Root=nil then exit;
+  MoveCursorToNodeStart(Tree.Root);
+  ReadNextAtom; // read source type 'program', 'unit' ...
+  ReadNextAtom; // read name
+  if (CurPos.StartPos<=SrcLen) then
+    Result:=GetAtom;
 end;
 
 function TStandardCodeTool.RenameSource(const NewName: string;

@@ -393,6 +393,7 @@ type
       ActiveUnitInfo: TUnitInfo;
       NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
       AddJumpPoint: boolean): TModalResult;
+    procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer);
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
@@ -3606,6 +3607,10 @@ begin
   if (not (sfSaveToTestDir in Flags)) and (ActiveUnitInfo.IsVirtual) then
     Include(Flags,sfSaveAs);
 
+  // update source notebook page names
+  if (not (sfProjectSaving in Flags)) then
+    UpdateSourceNames;
+
   // if file is readonly then a simple Save is skipped
   ActiveUnitInfo.ReadOnly:=ActiveSrcEdit.ReadOnly;
   if (ActiveUnitInfo.ReadOnly) and ([sfSaveToTestDir,sfSaveAs]*Flags=[]) then
@@ -4199,6 +4204,9 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
     Project1.ActiveEditorIndexAtStart:=-1
   else
     Project1.ActiveEditorIndexAtStart:=SourceNotebook.Notebook.PageIndex;
+
+  // update source notebook page names
+  UpdateSourceNames;
 
   // find mainunit
   GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
@@ -5762,7 +5770,34 @@ begin
     SetFocus;
   end;
   BringWindowToTop(SourceNoteBook.Handle);
+  UpdateSourceNames;
   Result:=mrOk;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.UpdateSourceNames
+  Params: none
+
+  Check every unit in sourceeditor if the source name has changed and updates
+  the notebook page names.
+-------------------------------------------------------------------------------}
+procedure TMainIDE.UpdateSourceNames;
+var
+  PageIndex: integer;
+  AnUnitInfo: TUnitInfo;
+  SourceName, PageName: string;
+begin
+  if SourceNotebook.NoteBook=nil then exit;
+  for PageIndex:=0 to SourceNotebook.NoteBook.PageCount-1 do begin
+    AnUnitInfo:=Project1.UnitWithEditorIndex(PageIndex);
+    if AnUnitInfo=nil then continue;
+    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+      SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source)
+    else
+      SourceName:='';
+    PageName:=CreateSrcEditPageName(SourceName,AnUnitInfo.Filename,PageIndex);
+    SourceNotebook.NoteBook.Pages[PageIndex]:=PageName;
+  end;
 end;
 
 procedure TMainIDE.ApplyCodeToolChanges;
@@ -5799,7 +5834,10 @@ var
   ActiveSrcEdit:TSourceEditor;
   ErrorCaret: TPoint;
 begin
-  if CodeToolBoss.ErrorMessage='' then exit;
+  if CodeToolBoss.ErrorMessage='' then begin
+    UpdateSourceNames;
+    exit;
+  end;
   // syntax error -> show error and jump
   // show error in message view
   DoArrangeSourceEditorAndMessageView;
@@ -5834,6 +5872,7 @@ begin
       BringWindowToTop(SourceNoteBook.Handle);
     end;
   end;
+  UpdateSourceNames;
 end;
 
 procedure TMainIDE.DoFindDeclarationAtCursor;
@@ -6665,6 +6704,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.327  2002/07/29 13:26:54  lazarus
+  MG: source notebook pagenames are now updated more often
+
   Revision 1.326  2002/07/22 18:25:10  lazarus
   MG: reduced output
 

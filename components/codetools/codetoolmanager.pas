@@ -230,6 +230,7 @@ type
 
     // source name  e.g. 'unit UnitName;'
     function GetSourceName(Code: TCodeBuffer; SearchMainCode: boolean): string;
+    function GetCachedSourceName(Code: TCodeBuffer): string;
     function RenameSource(Code: TCodeBuffer; const NewName: string): boolean;
     function GetSourceType(Code: TCodeBuffer; SearchMainCode: boolean): string;
 
@@ -957,6 +958,32 @@ begin
   end;
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.GetSourceName B ',Code.Filename,' ',Code.SourceLength);
+  {$IFDEF MEM_CHECK}
+  CheckHeap(IntToStr(GetMem_Cnt));
+  {$ENDIF}
+  writeln('SourceName=',Result);
+  {$ENDIF}
+end;
+
+function TCodeToolManager.GetCachedSourceName(Code: TCodeBuffer): string;
+begin
+  Result:='';
+  if (Code=nil)
+  or (Code.LastIncludedByFile<>'') then exit;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetCachedSourceName A ',Code.Filename,' ',Code.SourceLength);
+  {$ENDIF}
+  {$IFDEF MEM_CHECK}
+  CheckHeap(IntToStr(GetMem_Cnt));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.GetCachedSourceName;
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetCachedSourceName B ',Code.Filename,' ',Code.SourceLength);
   {$IFDEF MEM_CHECK}
   CheckHeap(IntToStr(GetMem_Cnt));
   {$ENDIF}

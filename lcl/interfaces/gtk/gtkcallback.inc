@@ -209,7 +209,9 @@ var
 begin
   EventTrace('activate', data);
   Mess.Msg := LM_ACTIVATE;
+  Mess.Result := 0;
   Result := DeliverMessage(Data, Mess) = 0;
+//writeln('gtkactivateCB ',Result);
 end;
 
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2155,6 +2157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2002/07/29 13:26:57  lazarus
+  MG: source notebook pagenames are now updated more often
+
   Revision 1.92  2002/07/23 07:40:51  lazarus
   MG: fixed get widget position for inherited gdkwindows
 
