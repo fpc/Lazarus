@@ -547,7 +547,7 @@ end;
 { TWin32WSCustomComboBox }
 
 const
-  ComboBoxStyles: array[TComboBoxStyle] of DWORD = (
+  ComboBoxStyles: array[TComboBoxStyle] of Integer = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
@@ -984,7 +984,10 @@ begin
   begin
     pClassName := 'BUTTON';
     WindowTitle := StrCaption;
-    Flags := Flags Or BS_AUTOCHECKBOX;
+    if TCustomCheckBox(AWinControl).AllowGrayed then
+      Flags := Flags Or BS_AUTO3STATE
+    else
+      Flags := Flags Or BS_AUTOCHECKBOX;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
