@@ -363,8 +363,6 @@ begin
                length(ParamStr(i))));
     end;
   end;
-writeln('PRIMARYCONFIGPATH=',GetPrimaryConfigPath);  
-writeln('SECONDARYCONFIGPATH=',GetSecondaryConfigPath);  
 
   // load environment and editor options
   CreatePrimaryConfigPath;
@@ -532,15 +530,22 @@ writeln('SECONDARYCONFIGPATH=',GetSecondaryConfigPath);
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
 
-  // load last project or create a new project
-  if (not FileExists(EnvironmentOptions.LastSavedProjectFile))
-  or (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)<>mrOk) then
+  // load command line project or last project or create a new project
+  if (ParamCount>0) and (ParamStr(ParamCount)[1]<>'-')
+  and (ExtractFileExt(ParamStr(ParamCount))='.lpi')
+  and (DoOpenProjectFile(ParamStr(ParamCount))=mrOk) then
+    // command line project loaded
+  else if (FileExists(EnvironmentOptions.LastSavedProjectFile)) 
+  and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)=mrOk) then
+    // last project loaded
+  else
+    // create new project
     DoNewProject(ptProgram);
 end;
 
 destructor TMainIDE.Destroy;
 begin
-writeln('[TMainIDE.Destroy] 1');
+writeln('[TMainIDE.Destroy] A');
   if Project<>nil then begin
     Project.Free;
     Project:=nil;
@@ -548,7 +553,6 @@ writeln('[TMainIDE.Destroy] 1');
   TheControlSelection.OnChange:=nil;
   TheControlSelection.Free;
   TheControlSelection:=nil;
-writeln('[TMainIDE.Destroy] 2');
   FormEditor1.Free;
   FormEditor1:=nil;
   PropertyEditorHook1.Free;
@@ -558,7 +562,7 @@ writeln('[TMainIDE.Destroy] 2');
   EditorOpts:=nil;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
-writeln('[TMainIDE.Destroy] 3');
+writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   inherited Destroy;
 writeln('[TMainIDE.Destroy] END');
 end;
@@ -3354,6 +3358,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2001/05/28 10:00:54  lazarus
+  MG: removed unused code. fixed editor name bug.
+
   Revision 1.96  2001/05/27 11:52:00  lazarus
   MG: added --primary-config-path=<filename> cmd line option
 
