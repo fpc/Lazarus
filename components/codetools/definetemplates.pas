@@ -1740,7 +1740,8 @@ end;
 
 function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType: string): TDefineTemplate;
-const ds: char = PathDelim;
+const
+  ds: char = PathDelim;
 var MainDir, DirTempl, SubDirTempl: TDefineTemplate;
   TargetOS, SrcPath: string;
 begin
@@ -1790,12 +1791,12 @@ begin
     +'include',da_Define));
   MainDir.AddChild(DirTempl);
 
-  // Widget Directory
+  // lcl/interfaces
   SubDirTempl:=TDefineTemplate.Create('Widget Directory','Widget Directory',
-    '','interfaces'+ds+WidgetType,da_Directory);
+    '','interfaces',da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('LCL Path',
-    'adds lcl to SrcPath','SrcPath',
-    '..'+ds+'..;'+SrcPath,da_Define));
+    'adds lcl to SrcPath',ExternalMacroStart+'SrcPath',
+    LazarusSrcDir+ds+'lcl;'+SrcPath,da_DefineAll));
   DirTempl.AddChild(SubDirTempl);
   
   // components

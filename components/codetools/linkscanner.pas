@@ -1279,7 +1279,7 @@ var
         ExpFilename:=APath+AFilename;
       if not FilenameIsAbsolute(ExpFilename) then
         ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
-      NewCode:=LoadSourceCaseSensitive(ExpFilename);
+      NewCode:=LoadSourceCaseSensitive(ExpandFilename(ExpFilename));
       Result:=NewCode<>nil;
     end;
 
@@ -1300,7 +1300,8 @@ var
     // filename is relative
     // first search file in the directory of the main source
     if FilenameIsAbsolute(FMainSourceFilename) then begin
-      ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
+      ExpFilename:=
+        ExpandFilename(ExtractFilePath(FMainSourceFilename)+AFilename);
       NewCode:=LoadSourceCaseSensitive(ExpFilename);
       if NewCode<>nil then exit;
     end;

@@ -41,7 +41,7 @@ interface
 
 { $DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
-{ $DEFINE ShowTriedFiles}
+{$DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
