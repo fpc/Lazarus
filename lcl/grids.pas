@@ -298,7 +298,6 @@ type
     FOnBeforeSelection: TOnSelectEvent;
     FOnSelection: TOnSelectEvent;
     FOnTopLeftChanged: TNotifyEvent;
-    FSkipUnselectable: Boolean;
     FGSMHBar, FGSMVBar: Integer; // Scrollbar's metrics
     FVSbVisible, FHSbVisible: boolean;
 
@@ -436,6 +435,7 @@ type
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; virtual;
     procedure SelectEditor; virtual;
     function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetFixedcolor(const AValue: TColor); virtual;
     procedure SetSelectedColor(const AValue: TColor); virtual;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); dynamic;
@@ -443,7 +443,6 @@ type
     procedure TopLeftChanged; dynamic;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
     procedure VisualChange; virtual;
-    procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure WMHScroll(var message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
@@ -481,7 +480,6 @@ type
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
-    property SkipUnselectable: Boolean read FSkipUnselectable write FSkipUnselectable;
     property TopRow: Integer read GetTopRow write SetTopRow;
     property VisibleColCount: Integer read GetVisibleColCount;
     property VisibleRowCount: Integer read GetVisibleRowCount;
@@ -576,7 +574,6 @@ type
     property SaveOptions;
     property SelectedColor;
     property Selection;
-    property SkipUnselectable;
     //property TabStops;
     property TopRow;
   published
@@ -2116,7 +2113,9 @@ var
   Ch: Char;
 begin
   Ch:=Char(message.CharCode);
+  {$Ifdef GridTraceMsg}
   DebugLn(ClassName,'.WMchar CharCode= ', IntToStr(message.CharCode));
+  {$Endif}
   if (goEditing in Options) and (Ch in [^H, #32..#255]) then
     EditorShowChar(Ch)
   else
@@ -2766,11 +2765,11 @@ begin
       end;
     gsColSizing:
       begin
-        debugln('Col Sizing ENDED');
+        HeaderSized( True, FSplitter.X);
       end;
     gsRowSizing:
       begin
-        debugLn('Row Sizing ENDED');
+        HeaderSized( False, FSplitter.Y);
       end;
   end;
   fGridState:=gsNormal;
@@ -3704,9 +3703,7 @@ begin
   FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + 3;
   //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
-  //AutoScroll:=False;
   FFocusRectVisible := True;
-  BorderStyle := bsSingle;
   FDefaultDrawing := True;
   FOptions:=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
@@ -3720,22 +3717,16 @@ begin
   fFocusColor:=clRed;
   FFixedColor:=clBtnFace;
   FSelectedColor:= clBlack;
-  FSkipUnSelectable:=True;
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
-
   SetBounds(0,0,200,100);
   ColCount:=5;
   RowCount:=5;
   FixedCols:=1;
   FixedRows:=1;
   Editor:=nil;
-
-  //DebugLn('Setting color');
-  Color:=clWindow;
-  //DebugLn('Color', IntToHex(color, 4), ColorToString(Color));
+  BorderStyle := bsSingle;
   Color:=clWhite;
-  //DebugLn('Color', IntToHex(Color, 4), ColorToString(Color));
 end;
 
 destructor TCustomGrid.Destroy;
@@ -4235,7 +4226,7 @@ end;
 
 function TDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
-  Result:=true;
+  Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
   if Assigned(OnSelectCell) then OnSelectCell(Self, aCol, aRow, Result);
 end;
 
