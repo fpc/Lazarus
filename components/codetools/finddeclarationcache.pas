@@ -37,8 +37,9 @@ interface
 { $DEFINE HardExceptions}
 
 uses
-  Classes, SysUtils, FileProcs, BasicCodeTools, OldAvLTree, CodeTree, LinkScanner,
-  PascalParserTool, CodeToolMemManager;
+  Classes, SysUtils, FileProcs, BasicCodeTools, CodeTree, LinkScanner,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, PascalParserTool,
+  CodeToolMemManager;
 
 type
   {

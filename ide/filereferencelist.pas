@@ -39,7 +39,8 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, OldAvLTree, FileUtil, IDEProcs;
+  Classes, SysUtils, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, FileUtil,
+  IDEProcs;
   
 type
   { TFileReference }

@@ -54,7 +54,8 @@ unit DefineTemplates;
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, ExprEval, Laz_XMLCfg, OldAvLTree,
+  Classes, SysUtils, CodeToolsStrConsts, ExprEval,
+  {$IFNDEF VER1_0}XMLCfg, AVL_Tree{$ELSE}Laz_XMLCfg, OldAvLTree{$ENDIF},
   Process, KeywordFuncLists, FileProcs;
 
 const

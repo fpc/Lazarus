@@ -31,8 +31,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr,
-  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros;
+  StdCtrls, FileUtil, LCLProc, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  SynRegExpr, LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros;
 
 type
   TCleanDirectoryDialog = class(TForm)

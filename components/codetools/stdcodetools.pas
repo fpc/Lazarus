@@ -50,8 +50,9 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, OldAvLTree, LFMTrees,
-  SourceChanger, CustomCodeTool, CodeToolsStructs;
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, LFMTrees, SourceChanger,
+  CustomCodeTool, CodeToolsStructs;
 
 type
   TOnFindDefinePropertyForContext = procedure(Sender: TObject;

@@ -44,8 +44,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, OldAvLTree, TypInfo, SourceChanger, FindDeclarationTool,
-  ExtractProcTool;
+  LinkScanner, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, TypInfo,
+  SourceChanger, FindDeclarationTool, ExtractProcTool;
 
 type
   TGetStringProc = procedure(const s: string) of object;

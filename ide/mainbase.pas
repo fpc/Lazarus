@@ -58,7 +58,7 @@ uses
 {$ENDIF}
   Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
   Controls, Graphics, ExtCtrls, Dialogs, FileUtil, Forms, CodeToolManager,
-  CodeCache, OldAvLTree, SynEditKeyCmds,
+  CodeCache, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, SynEditKeyCmds,
   // IDE
   LazConf, LazarusIDEStrConsts, SrcEditorIntf,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler, LazIDEIntf,

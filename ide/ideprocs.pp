@@ -30,8 +30,8 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, FileUtil, FileProcs, SynRegExpr,
-  LazConf;
+  Classes, SysUtils, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, FileUtil,
+  FileProcs, SynRegExpr, LazConf;
 
 type
   // comments

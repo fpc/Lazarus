@@ -40,7 +40,8 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileUtil, LCLProc,
-  Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
   Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
@@ -1943,6 +1944,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.82  2005/01/15 13:44:03  vincents
+  use xml units from fpc, if not compiling with fpc 1.0
+
   Revision 1.81  2004/12/18 10:20:17  mattias
   updatepofiles is now case sensitive,
   replaced many places, where Application was needlessly Owner

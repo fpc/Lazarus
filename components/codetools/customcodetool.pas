@@ -43,7 +43,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, OldAvLTree;
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF};
 
 const
   CodeToolPhaseNone  = 0;

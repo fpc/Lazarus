@@ -40,7 +40,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Laz_XMLCfg, Project, SourceMarks, Debugger;
+  Classes, SysUtils, Forms, Project, SourceMarks, Debugger,
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF};
 
 type
   { TBaseDebugManager }
@@ -170,6 +171,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.24  2005/01/15 13:44:03  vincents
+  use xml units from fpc, if not compiling with fpc 1.0
+
   Revision 1.23  2004/11/23 11:01:10  mattias
   added key handling for debug manager
 

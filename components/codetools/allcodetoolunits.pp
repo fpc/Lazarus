@@ -19,10 +19,13 @@ uses
   FindDeclarationTool, StdCodeTools, MethodJumpTool, EventCodeTool,
   CodeCompletionTool, LinkScanner, FindDeclarationCache, BasicCodeTools,
   CodeTree, CodeAtom, SourceChanger, CodeToolMemManager, CodeCache,
-  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, OldAvLTree,
-  CodeToolsStrConsts, MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs,
-  // fast xml units
-  laz_dom, laz_xmlcfg, laz_xmlread, laz_xmlwrite;
+  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, CodeToolsStrConsts,
+  MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs
+  {$IFDEF VER1_0}
+  // fast xml units, changes not merged in ver 1.0
+  ,OldAvLTree, laz_dom, laz_xmlcfg, laz_xmlread, laz_xmlwrite
+  {$ENDIF}
+  ;
 
 
 implementation
@@ -32,6 +35,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2005/01/15 13:44:03  vincents
+  use xml units from fpc, if not compiling with fpc 1.0
+
   Revision 1.16  2004/11/06 19:49:11  mattias
   renamed avl_tree.pas to oldavltree.pas for new fpc 1.9.5
 

@@ -40,8 +40,8 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
   Dialogs, FileUtil, ComCtrls, LazarusIDEStrConsts, IDEOptionDefs, InputHistory,
-  OldAvLTree, CodeToolManager, IDEDefs, IDEProcs, EnvironmentOpts, PackageSystem,
-  PackageDefs, ComponentReg;
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, CodeToolManager, IDEDefs,
+  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg;
   
 type
   TAddToPkgType = (

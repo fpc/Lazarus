@@ -36,8 +36,9 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, Forms, Controls, LCLType, LCLIntf,
   Graphics, GraphType, StdCtrls, ExtCtrls, Buttons, FileUtil, Dialogs,
-  LResources, Laz_XMLCfg, LazarusIDEStrConsts, TransferMacros, LazConf,
-  IDEProcs, DialogProcs, InputHistory, ExtToolDialog, ExtToolEditDlg,
+  LResources, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
+  InputHistory, ExtToolDialog, ExtToolEditDlg,
   CompilerOptions;
 
 type

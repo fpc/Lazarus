@@ -40,9 +40,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, LCLProc, Controls, Forms, Buttons, StdCtrls,
-  ComCtrls, Dialogs, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
-  IDECommands, KeyMapping, TransferMacros, IDEProcs, CompilerOptions,
-  OutputFilter, FileUtil, LazarusIDEStrConsts;
+  ComCtrls, Dialogs, LResources, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  ExtToolEditDlg, Process, IDECommands, KeyMapping, TransferMacros, IDEProcs,
+  CompilerOptions, OutputFilter, FileUtil, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;

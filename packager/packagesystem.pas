@@ -45,10 +45,11 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, OldAvLTree, Laz_XMLCfg, FileUtil, LCLProc, Forms, Controls,
-  Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions,
-  PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg, RegisterFCL,
-  RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
+  Classes, SysUtils, FileUtil,
+  {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF},
+  LCLProc, Forms, Controls, Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf,
+  CompilerOptions, PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg,
+  RegisterFCL, RegisterLCL, RegisterSynEdit, RegisterIDEIntf;
   
 type
   TFindPackageFlag = (

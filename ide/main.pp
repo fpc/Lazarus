@@ -66,7 +66,7 @@ uses
   Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
   Dialogs, InterfaceBase, {SetDesigning}
   // codetools
-  OldAvLTree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
+  {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF}, CodeToolsStructs, CodeToolManager, CodeCache,
   DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands, SrcEditorIntf,
@@ -11375,6 +11375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.833  2005/01/15 13:44:03  vincents
+  use xml units from fpc, if not compiling with fpc 1.0
+
   Revision 1.832  2005/01/15 03:09:40  mattias
   fixed checking unitname after adding default unit extension
 

@@ -53,7 +53,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, OldAvLTree, CodeToolMemManager,
+  KeywordFuncLists, BasicCodeTools, LinkScanner,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, CodeToolMemManager,
   SourceChanger, FindDeclarationTool, PascalParserTool;
   
 

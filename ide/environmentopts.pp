@@ -37,7 +37,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
   Graphics, ExtCtrls, StdCtrls, Spin, FileUtil, LResources, Dialogs,
-  Laz_XMLCfg, ObjectInspector,
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, ObjectInspector,
   LazarusIDEStrConsts, LazConf, ExtToolDialog, IDEProcs, IDEOptionDefs,
   InputHistory, EditorOptions, Translations;
 

@@ -82,9 +82,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, OldAvLTree,
-  PascalParserTool, PascalReaderTool, FileProcs, DefineTemplates,
-  FindDeclarationCache;
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, PascalParserTool,
+  PascalReaderTool, FileProcs, DefineTemplates, FindDeclarationCache;
 
 type
   TFindDeclarationTool = class;

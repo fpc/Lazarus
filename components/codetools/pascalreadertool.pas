@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, OldAvLTree;
+  LinkScanner, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF};
 
 type
   TPascalReaderTool = class(TPascalParserTool)

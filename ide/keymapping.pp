@@ -34,8 +34,8 @@ interface
 uses
   LCLIntf, LCLType, LCLProc,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
-  SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList,
-  LazarusIDEStrConsts, IDECommands;
+  SynEdit, SynEditKeyCmds, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  Dialogs, StringHashList, LazarusIDEStrConsts, IDECommands;
 
 const
   { editor commands constants. see syneditkeycmds.pp for more

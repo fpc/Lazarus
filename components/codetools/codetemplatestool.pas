@@ -39,8 +39,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeTree, CodeAtom, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, OldAvLTree, SourceChanger, CustomCodeTool, CodeToolsStructs,
-  StdCodeTools;
+  LinkScanner, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, SourceChanger,
+  CustomCodeTool, CodeToolsStructs, StdCodeTools;
 
 type
   TCodeTemplateSyntax = (

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, FileUtil, CodeCache,
-  CodeToolManager, OldAvLTree,
+  CodeToolManager, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
   IDEProcs, LazarusIDEStrConsts;
 
 type

@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls,
-  OldAvLTree, CodeAtom, CodeCache, CodeToolManager,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, CodeAtom, CodeCache,
+  CodeToolManager,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, MiscOptions, DialogProcs,
   InputHistory, SearchResultView;
 

@@ -47,8 +47,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
-  Forms, Controls, Dialogs, FileUtil,
+  Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Forms, Controls,
+  Dialogs, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, LazConf, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
   EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
   EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
@@ -3169,6 +3169,9 @@ end.
 
 {
   $Log$
+  Revision 1.177  2005/01/15 13:44:03  vincents
+  use xml units from fpc, if not compiling with fpc 1.0
+
   Revision 1.176  2005/01/13 19:54:58  mattias
   added loading/saving project pathdelim  from Vincent
 

@@ -78,7 +78,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, MethodJumpTool, FindDeclarationTool, KeywordFuncLists,
-  CodeToolsStructs, BasicCodeTools, LinkScanner, OldAvLTree, SourceChanger;
+  CodeToolsStructs, BasicCodeTools, LinkScanner, SourceChanger,
+  {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF};
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,

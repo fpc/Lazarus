@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LazarusIDEStrConsts, Dialogs, OldAvLTree, FileUtil, IDEProcs, IDEOptionDefs,
-  ComponentReg, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, Dialogs, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  FileUtil, IDEProcs, IDEOptionDefs, ComponentReg, PackageDefs, PackageSystem;
   
 type
   TAddFileToAPackageDlg = class(TForm)

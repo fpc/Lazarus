@@ -35,9 +35,9 @@ unit CodeToolsOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConf, LResources, Forms, Controls, Buttons, LclProc,
-  ExtCtrls, StdCtrls, ComCtrls, Dialogs, Laz_XMLCfg, CodeToolManager,
-  DefineTemplates, SourceChanger, SynEdit,
+  Classes, SysUtils, LazConf, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  LResources, Forms, Controls, Buttons, LclProc, ExtCtrls, StdCtrls, ComCtrls,
+  Dialogs, CodeToolManager, DefineTemplates, SourceChanger, SynEdit,
   IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts;
 
 type

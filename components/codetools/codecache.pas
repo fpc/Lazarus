@@ -38,7 +38,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, LinkScanner, OldAvLTree, FileProcs, Laz_XMLCfg;
+  Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
+  {$IFNDEF VER1_0}Avl_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF};
 
 type
   TCodeCache = class;

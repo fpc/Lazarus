@@ -53,7 +53,7 @@ interface
 
 uses
   Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons,
-  Laz_XMLCfg, SysUtils, Classes;
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, SysUtils, Classes;
 
 type
   TCondForm = class(TForm)

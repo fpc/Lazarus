@@ -40,8 +40,8 @@ uses
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterJava,
-  SynHighlighterPython,
-  SynHighlighterUNIXShellScript, Laz_XMLCfg,
+  SynHighlighterPython, SynHighlighterUNIXShellScript,
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
   IDECommands, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
   LazarusIDEStrConsts, KeymapSchemeDlg;
 

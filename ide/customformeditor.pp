@@ -39,11 +39,11 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  {$IFNDEF Ver1_0}Variants,{$ENDIF}
-  Classes, SysUtils, TypInfo, Math, LCLProc, Graphics, Controls, Forms, Menus,
-  Dialogs,
+  Classes, SysUtils, TypInfo, Math,
+  {$IFNDEF Ver1_0}AVL_Tree{$ELSE}Variants, OldAvLTree{$ENDIF},
+  LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // components
-  OldAvLTree, PropEdits, ObjectInspector, IDECommands,
+  PropEdits, ObjectInspector, IDECommands,
   // IDE
   LazarusIDEStrConsts, JITForms, NonControlForms, FormEditingIntf, ComponentReg,
   IDEProcs, ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;

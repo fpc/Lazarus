@@ -43,7 +43,8 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  LinkScanner, OldAvLTree, KeywordFuncLists;
+  LinkScanner, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
+  KeywordFuncLists;
   
 type
   { TBeautifyCodeOptions }

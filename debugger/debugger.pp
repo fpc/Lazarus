@@ -37,7 +37,8 @@ unit Debugger;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Laz_XMLCfg, IDEProcs, DBGUtils;
+  Classes, SysUtils, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
+  LCLProc, IDEProcs, DBGUtils;
 
 type
   // datatype pointing to data on the target
@@ -3575,6 +3576,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.67  2005/01/15 13:44:03  vincents
+  use xml units from fpc, if not compiling with fpc 1.0
+
   Revision 1.66  2004/12/03 14:35:30  vincents
   implemented TIDEExceptions.LoadFromXMLConfig and SaveToXMLConfig
 

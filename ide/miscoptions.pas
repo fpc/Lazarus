@@ -30,8 +30,9 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, Laz_XMLCfg,
-  TextTools, LazConf, LazarusIDEStrConsts, IDEProcs;
+  Classes, SysUtils, LCLProc, BuildLazDialog, CodeToolsStructs, TextTools,
+  {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF}, LazConf, LazarusIDEStrConsts,
+  IDEProcs;
 
 type
   { TFindRenameIdentifierOptions }

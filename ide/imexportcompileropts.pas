@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, FileUtil, Laz_XMLCfg,
+  Buttons, FileUtil, {$IFNDEF VER1_0}XMLCfg{$ELSE}Laz_XMLCfg{$ENDIF},
   LazarusIDEStrConsts, InputHistory, CompilerOptions, CompilerOptionsDlg;
 
 type

@@ -39,7 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, OldAvLTree, FileUtil, Laz_XMLCfg,
+  StdCtrls, Buttons, FileUtil,
+  {$IFNDEF VER1_0}AVL_Tree, XMLCfg{$ELSE}OldAvLTree, Laz_XMLCfg{$ENDIF},
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf,
   PackageDefs, PackageSystem;
 

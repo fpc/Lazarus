@@ -44,7 +44,8 @@ interface
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, OldAvLTree, SourceChanger, FindDeclarationTool;
+  LinkScanner, {$IFNDEF VER1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF}, SourceChanger,
+  FindDeclarationTool;
   
 type
   { TExtractProcTool }
