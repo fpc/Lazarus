@@ -221,7 +221,9 @@ var
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
   SignalID: Guint;
+{$IFDEF VER1_1}
   AdjustParams: TAdjustParams;
+{$ENDIF}
 begin
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
@@ -633,6 +635,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/10/25 13:21:06  lazarus
+  Added an IFDEF for VER1_1
+  Shane
+
   Revision 1.14  2001/10/24 09:28:03  lazarus
   MG: workaround for fpc1.1 in GTKAPIWidgetClient_ClassInit
 
@@ -733,3 +739,4 @@ end.
 
 
 }
+
