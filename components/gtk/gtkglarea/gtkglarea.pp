@@ -26,8 +26,8 @@ unit gtkglarea;
 interface
 
 uses
-  Classes, SysUtils, VCLGlobals, LCLLinux, glib, gdk, gtk, gtkglarea_int, gl,
-  Controls, gtkint, gtkwinapiwindow, LMessages;
+  Classes, SysUtils, VCLGlobals, LCLLinux, LCLType, glib, gdk, gtk,
+  gtkglarea_int, gl, Controls, gtkint, gtkwinapiwindow, LMessages;
   
 type
   TCustomGTKGLAreaControl = class(TWinControl)
