@@ -60,8 +60,11 @@ type
   TSourceNoteBook = class;
   // --------------------------------------------------------------------------
 
-  TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint,
-                        semInvalidBreakPoint);
+  TSrcEditMarkerType = (
+    semActiveBreakPoint,
+    semInactiveBreakPoint,
+    semInvalidBreakPoint
+    );
   TSrcEditMarkerTypes = set of TSrcEditMarkerType;
 
   // --------------------------------------------------------------------------
@@ -285,21 +288,23 @@ type
     property FileName: AnsiString read GetFileName;
     property InsertMode: Boolean read GetInsertmode;
     property Modified: Boolean read GetModified write SetModified;
-    property OnAfterClose : TNotifyEvent read FOnAfterClose write FOnAfterClose;
-    property OnBeforeClose : TNotifyEvent read FOnBeforeClose write FOnBeforeClose;
-    property OnAfterOpen : TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
-    property OnBeforeOpen : TNotifyEvent read FOnBeforeOpen write FOnBeforeOpen;
-    property OnAfterSave : TNotifyEvent read FOnAfterSave write FOnAfterSave;
-    property OnBeforeSave : TNotifyEvent read FOnBeforeSave write FOnBeforeSave;
-    property OnEditorChange: TNotifyEvent read FOnEditorChange write FOnEditorChange;
+    property OnAfterClose: TNotifyEvent read FOnAfterClose write FOnAfterClose;
+    property OnBeforeClose: TNotifyEvent read FOnBeforeClose
+                                          write FOnBeforeClose;
+    property OnAfterOpen: TNotifyEvent read FOnAfterOpen write FOnAfterOpen;
+    property OnBeforeOpen: TNotifyEvent read FOnBeforeOpen write FOnBeforeOpen;
+    property OnAfterSave: TNotifyEvent read FOnAfterSave write FOnAfterSave;
+    property OnBeforeSave: TNotifyEvent read FOnBeforeSave write FOnBeforeSave;
+    property OnEditorChange: TNotifyEvent read FOnEditorChange
+                                          write FOnEditorChange;
     property OnCreateBreakPoint: TOnCreateDeleteBreakPoint
-       read FOnCreateBreakPoint write FOnCreateBreakPoint;
+                             read FOnCreateBreakPoint write FOnCreateBreakPoint;
     property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
-       read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
-    property OnMouseMove : TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
-    property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
-    property OnMouseUp : TMouseEvent read FOnMouseUp write FOnMouseUp;
-    property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
+                             read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
+    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property Owner: TComponent read FAOwner;
     property PageName: string read FPageName write SetPageName;
     property PopupMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
@@ -555,61 +560,59 @@ type
     SetBookmarkMenuItem : TMenuItem;
     GotoBookmarkMenuItem : TMenuItem;
     property OnAddJumpPoint: TOnAddJumpPoint
-       read FOnAddJumpPoint write FOnAddJumpPoint;
+                                     read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked : TNotifyEvent
-       read FOnCloseClicked write FOnCloseClicked;
+                                     read FOnCloseClicked write FOnCloseClicked;
     property OnCtrlMouseUp: TMouseEvent
-       read FOnCtrlMouseUp write FOnCtrlMouseUp;
+                                       read FOnCtrlMouseUp write FOnCtrlMouseUp;
     property OnDeleteLastJumpPoint: TNotifyEvent
-       read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
+                       read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
-       read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
+                     read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
     property OnEditorChanged: TNotifyEvent
-       read FOnEditorChanged write FOnEditorChanged;
+                                   read FOnEditorChanged write FOnEditorChanged;
     property OnEditorPropertiesClicked: TNotifyEvent
-       read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
+               read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
     property OnFindDeclarationClicked : TNotifyEvent
-       read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
+                 read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
-       read FOnInitIdentCompletion write FOnInitIdentCompletion;
+                       read FOnInitIdentCompletion write FOnInitIdentCompletion;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
-       read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
-    property OnMovingPage: TOnMovingPage
-       read FOnMovingPage write FOnMovingPage;
-    property OnNewClicked : TNotifyEvent
-       read FOnNewClicked write FOnNewClicked;
-    property OnOpenClicked : TNotifyEvent
-       read FOnOPenClicked write FOnOpenClicked;
+                         read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
+    property OnMovingPage: TOnMovingPage read FOnMovingPage write FOnMovingPage;
+    property OnNewClicked: TNotifyEvent read FOnNewClicked write FOnNewClicked;
+    property OnOpenClicked: TNotifyEvent
+                                       read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked : TNotifyEvent 
-       read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
+               read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
     property OnReadOnlyChanged: TNotifyEvent
-       read fOnReadOnlyChanged write fOnReadOnlyChanged;
-    property OnSaveAsClicked : TNotifyEvent
-       read FOnSaveAsClicked write FOnSaveAsClicked;
-    property OnSaveAllClicked : TNotifyEvent 
-       read FOnSaveAllClicked write FOnSaveAllClicked;
-    property OnSaveClicked : TNotifyEvent
-       read FOnSaveClicked write FOnSaveClicked;
+                               read fOnReadOnlyChanged write fOnReadOnlyChanged;
+    property OnSaveAsClicked: TNotifyEvent
+                                   read FOnSaveAsClicked write FOnSaveAsClicked;
+    property OnSaveAllClicked: TNotifyEvent
+                                 read FOnSaveAllClicked write FOnSaveAllClicked;
+    property OnSaveClicked: TNotifyEvent
+                                       read FOnSaveClicked write FOnSaveClicked;
     property OnShowHintForSource: TOnShowHintForSource
-       read FOnShowHintForSource write FOnShowHintForSource;
+                           read FOnShowHintForSource write FOnShowHintForSource;
     property OnShowUnitInfo: TNotifyEvent 
-       read FOnShowUnitInfo write FOnShowUnitInfo;
+                                     read FOnShowUnitInfo write FOnShowUnitInfo;
     property OnToggleFormUnitClicked : TNotifyEvent 
-       read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
+                   read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
     property OnToggleObjectInspClicked : TNotifyEvent
-       read FOnToggleObjectInspClicked write FOnToggleObjectInspClicked;   
+               read FOnToggleObjectInspClicked write FOnToggleObjectInspClicked;
     property OnProcessUserCommand: TOnProcessUserCommand
-       read FOnProcessUserCommand write FOnProcessUserCommand;
+                         read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnUserCommandProcessed: TOnUserCommandProcessed
-       read FOnUserCommandProcessed write FOnUserCommandProcessed;
+                     read FOnUserCommandProcessed write FOnUserCommandProcessed;
     property OnViewJumpHistory: TNotifyEvent
-       read FOnViewJumpHistory write FOnViewJumpHistory;
+                               read FOnViewJumpHistory write FOnViewJumpHistory;
     property OnAddWatchAtCursor: TNotifyEvent
-       read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
+                             read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
     property OnCreateBreakPoint: TOnCreateDeleteBreakPoint
-       read FOnCreateBreakPoint write FOnCreateBreakPoint;
+                             read FOnCreateBreakPoint write FOnCreateBreakPoint;
     property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
-       read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
+                             read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
   end;
  
   //=============================================================================
@@ -1176,8 +1179,7 @@ begin
   for n := 1 to maxMarks do 
   begin         
     Result := AllMarks[n];
-    if  IsBreakPointMark(Result)
-    then Exit;
+    if IsBreakPointMark(Result) then Exit;
   end;
   Result := nil;
 end;
@@ -1197,7 +1199,6 @@ begin
   end;
   BreakPtMark.Visible := True;
   BreakPtMark.ImageIndex := SRCEDITMARKERIMGINDEX[AType];
-  FModified:=true;
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ALine: Integer);
@@ -3991,13 +3992,13 @@ end;
 Procedure TSourceNotebook.BreakPointCreated(Sender : TObject; Line : Integer);
 begin
   if Assigned(OnCreateBreakPoint) then
-      OnCreateBreakPoint(self,Line);
+    OnCreateBreakPoint(self,Line);
 end;
 
 Procedure TSourceNotebook.BreakPointDeleted(Sender : TObject; Line : Integer);
 begin
   if Assigned(OnDeleteBreakPoint) then
-      OnDeleteBreakPoint(self,Line);
+    OnDeleteBreakPoint(self,Line);
 end;
 
 procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
