@@ -45,6 +45,7 @@ uses
   LCLType,
   GraphType,
   LCLIntf,
+  LResources,
   LMessages,
   LCLMemManager,
   {$ELSE}
@@ -17583,9 +17584,15 @@ begin
 end;
 
 initialization
+{$IFDEF IP_LAZARUS}
+{$I iphtml.lrs}
+{$ENDIF}
   InitScrollProcs;
 {
   $Log$
+  Revision 1.13  2004/05/25 20:18:00  mattias
+  icon added
+
   Revision 1.12  2004/02/04 22:17:59  mattias
   TipHtmlPanel can now show fpdoc html output
 
