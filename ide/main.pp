@@ -39,7 +39,8 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGWatch, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter;
+  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
+  BuildLazDialog, MiscOptions;
 
 const
   Version_String = '0.8.2 alpha';
@@ -147,6 +148,8 @@ type
     itmToolConfigure: TMenuItem;
     itmToolSyntaxCheck: TMenuItem;
     itmToolGuessUnclosedBlockCheck: TMenuItem;
+    itmToolBuildLazarus: TMenuItem;
+    itmToolConfigureBuildLazarus: TMenuItem;
 
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
@@ -217,6 +220,8 @@ type
     procedure mnuToolConfigureClicked(Sender : TObject);
     procedure mnuToolSyntaxCheckClicked(Sender : TObject);
     procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
+    procedure mnuToolBuildLazarusClicked(Sender : TObject);
+    procedure mnuToolConfigBuildLazClicked(Sender : TObject);
 
     // enironment menu
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
@@ -292,8 +297,10 @@ type
     
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
-                      var Abort: boolean);
-    
+                                         var Abort: boolean);
+    procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
+                                        ErrorOccurred: boolean);
+
   private
     FHintSender : TObject;
     FCodeLastActivated : Boolean; //used for toggling between code and forms
@@ -357,6 +364,7 @@ type
     
     // external tools
     function DoRunExternalTool(Index: integer): TModalResult;
+    function DoBuildLazarus: TModalResult;
 
     // useful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
@@ -518,7 +526,7 @@ begin
     end;
   end;
 
-  // load environment and editor options
+  // load environment, miscellaneous and editor options
   CreatePrimaryConfigPath;
 
   EnvironmentOptions:=TEnvironmentOptions.Create;
@@ -527,6 +535,8 @@ begin
     Load(false);
     if EnvironmentOptions.CompilerFilename='' then
       EnvironmentOptions.CompilerFilename:=FindDefaultCompilerPath;
+    ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
+    ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
   end;
   UpdateDefaultPascalFileExtensions;
 
@@ -534,6 +544,9 @@ begin
   EditorOpts.Load;
   
   EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
+  
+  MiscellaneousOptions:=TMiscellaneousOptions.Create;
+  MiscellaneousOptions.Load;
 
   // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
@@ -810,6 +823,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
   TheCompiler.Free;
   TheOutputFilter.Free;
   MacroList.Free;
+  MiscellaneousOptions.Free;
+  MiscellaneousOptions:=nil;
   EditorOpts.Free;
   EditorOpts:=nil;
   EnvironmentOptions.Free;
@@ -1424,6 +1439,17 @@ begin
   itmToolGuessUnclosedBlockCheck.OnClick := @mnuToolGuessUnclosedBlockClicked;
   mnuTools.Add(itmToolGuessUnclosedBlockCheck);
 
+  itmToolBuildLazarus := TMenuItem.Create(Self);
+  itmToolBuildLazarus.Name:='itmToolBuildLazarus';
+  itmToolBuildLazarus.Caption := 'Build Lazarus';
+  itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
+  mnuTools.Add(itmToolBuildLazarus);
+
+  itmToolConfigureBuildLazarus := TMenuItem.Create(Self);
+  itmToolConfigureBuildLazarus.Name:='itmToolConfigureBuildLazarus';
+  itmToolConfigureBuildLazarus.Caption := 'Configure "Build Lazarus"';
+  itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
+  mnuTools.Add(itmToolConfigureBuildLazarus);
 
 //--------------
 // Environment
@@ -1803,6 +1829,9 @@ begin
    ecGuessUnclosedBlock:
      DoJumpToGuessedUnclosedBlock(true);
     
+   ecBuildLazarus:
+     DoBuildLazarus;
+    
   else
     Handled:=false;
   end;
@@ -2135,6 +2164,17 @@ end;
 procedure TMainIDE.mnuToolGuessUnclosedBlockClicked(Sender : TObject);
 begin
   DoJumpToGuessedUnclosedBlock(true);
+end;
+
+procedure TMainIDE.mnuToolBuildLazarusClicked(Sender : TObject);
+begin
+  DoBuildLazarus;
+end;
+
+procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender : TObject);
+begin
+  if ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts)=mrOk then
+    MiscellaneousOptions.Save;
 end;
 
 //------------------------------------------------------------------------------
@@ -4204,21 +4244,14 @@ end;
 //-----------------------------------------------------------------------------
 
 function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
-var OldToolStatus: TIDEToolStatus;
 begin
-  OldToolStatus:=ToolStatus;
-  try
-    EnvironmentOptions.ExternalTools.OnNeedsOutputFilter:=
-      @OnExtToolNeedsOutputFilter;
-    Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
-  except
-    on e: EOutputFilterError do begin
-      DoJumpToCompilerMessage(-1,true);
-      Result:=mrCancel;
-    end;
-  end;
-  if (OldToolStatus=itNone) and (ToolStatus=itBuilder) then
-    ToolStatus:=itNone;
+  Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+end;
+
+function TMainIDE.DoBuildLazarus: TModalResult;
+begin
+  Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+                       EnvironmentOptions.ExternalTools,MacroList);
 end;
 
 function TMainIDE.DoCheckSyntax: TModalResult;
@@ -5648,6 +5681,16 @@ begin
   TheOutputFilter.OnOutputString:=@MessagesView.Add;
 end;
 
+procedure TMainIDE.OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
+  ErrorOccurred: boolean);
+begin
+  if ToolStatus=itBuilder then
+    ToolStatus:=itNone;
+  if ErrorOccurred then
+    DoJumpToCompilerMessage(-1,true);
+end;
+
+
 //-----------------------------------------------------------------------------
 
 initialization
@@ -5664,6 +5707,9 @@ end.
 =======
 
   $Log$
+  Revision 1.206  2002/01/24 14:12:52  lazarus
+  MG: added build lazarus feature and config dialog
+
   Revision 1.205  2002/01/23 22:12:54  lazarus
   MG: external tool output parsing for fpc and make messages
 
@@ -5713,6 +5759,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.206  2002/01/24 14:12:52  lazarus
+  MG: added build lazarus feature and config dialog
+
   Revision 1.205  2002/01/23 22:12:54  lazarus
   MG: external tool output parsing for fpc and make messages
 

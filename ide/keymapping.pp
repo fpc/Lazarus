@@ -30,29 +30,29 @@ uses
 
 const
   // editor commands constants. see syneditkeycmds.pp for more
-  ecFind                = ecUserFirst + 1;
-  ecFindAgain           = ecUserFirst + 2;
-  ecFindNext            = ecFindAgain;
-  ecReplace             = ecUserFirst + 3;
+  ecFind               = ecUserFirst + 1;
+  ecFindAgain          = ecUserFirst + 2;
+  ecFindNext           = ecFindAgain;
+  ecReplace            = ecUserFirst + 3;
   ecFindProcedureDefinition = ecUserFirst + 4;
   ecFindProcedureMethod = ecUserFirst + 5;
-  ecGotoLineNumber      = ecUserFirst + 6;
+  ecGotoLineNumber     = ecUserFirst + 6;
 
-  ecNextEditor          = ecUserFirst + 7;
-  ecPrevEditor          = ecUserFirst + 8;
+  ecNextEditor         = ecUserFirst + 7;
+  ecPrevEditor         = ecUserFirst + 8;
 
-  ecPeriod              = ecUserFirst + 9;
+  ecPeriod             = ecUserFirst + 9;
 
-  ecFindPrevious        = ecUserFirst + 10;
-  ecFindInFiles         = ecUserFirst + 11;
-  ecJumpBack            = ecUserFirst + 12;
-  ecJumpForward         = ecUserFirst + 13;
-  ecAddJumpPoint        = ecUserFirst + 14;
-  ecViewJumpHistory     = ecUserFirst + 15;
+  ecFindPrevious       = ecUserFirst + 10;
+  ecFindInFiles        = ecUserFirst + 11;
+  ecJumpBack           = ecUserFirst + 12;
+  ecJumpForward        = ecUserFirst + 13;
+  ecAddJumpPoint       = ecUserFirst + 14;
+  ecViewJumpHistory    = ecUserFirst + 15;
 
-  ecFindDeclaration     = ecUserFirst + 20;
-  ecFindBlockOtherEnd   = ecUserFirst + 21;
-  ecFindBlockStart      = ecUserFirst + 22;
+  ecFindDeclaration    = ecUserFirst + 20;
+  ecFindBlockOtherEnd  = ecUserFirst + 21;
+  ecFindBlockStart     = ecUserFirst + 22;
 
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
@@ -66,17 +66,18 @@ const
   ecBuild              = ecClose     + 1;
   ecRun                = ecBuild     + 1;
   ecPause              = ecRun       + 1;
-  ecStepInto          = ecPause     + 1;
-  ecStepOver          = ecStepInto  + 1;
-  ecRunToCursor      = ecStepOver  + 1;
-  ecStopProgram      = ecRunToCursor + 1;
-  ecBuildAll          = ecStopProgram + 1;
+  ecStepInto           = ecPause     + 1;
+  ecStepOver           = ecStepInto  + 1;
+  ecRunToCursor        = ecStepOver  + 1;
+  ecStopProgram        = ecRunToCursor + 1;
+  ecBuildAll           = ecStopProgram + 1;
+  ecBuildLazarus       = ecBuildAll  + 1;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
   
-  ecExtToolFirst      = ecUserFirst + 400;
-  ecExtToolLast       = ecUserFirst + 499;
+  ecExtToolFirst       = ecUserFirst + 400;
+  ecExtToolLast        = ecUserFirst + 499;
 
   ecGotoEditor1        = ecUserFirst + 2000;
   ecGotoEditor2        = ecGotoEditor1 + 1;
@@ -362,6 +363,7 @@ begin
     ecClose: Result:= 'close';
     ecBuild: Result:= 'build program/project';
     ecBuildAll: Result:= 'build all files of program/project';
+    ecBuildLazarus: Result:= 'build lazarus';
     ecRun: Result:= 'run program';
     ecPause: Result:= 'pause program';
     ecStepInto: Result:= 'step into';
@@ -955,6 +957,7 @@ begin
   Add('Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
   Add('Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
   Add('Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
   Add('Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);

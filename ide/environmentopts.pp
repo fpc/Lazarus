@@ -483,7 +483,7 @@ begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
   CopySecondaryConfigFile(EnvOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    writeln('environment config file not found');
+    writeln('Note: environment config file not found - using defaults');
   end;
   FFilename:=ConfFilename;
 end;

@@ -39,12 +39,15 @@ const
 type
   TOnNeedsOutputFilter = procedure(var OutputFilter: TOutputFilter;
                            var Abort: boolean) of object;
+  TOnFreeOutputFilter = procedure(OutputFilter: TOutputFilter;
+                           ErrorOccurred: boolean) of object;
 
   {
     the storage object for all external tools
   }
   TExternalToolList = class(TList)
   private
+    fOnFreeOutputFilter: TOnFreeOutputFilter;
     fOnNeedsOutputFilter: TOnNeedsOutputFilter;
     fRunningTools: TList; // list of TProcess
     function GetToolOpts(Index: integer): TExternalToolOptions;
@@ -69,6 +72,8 @@ type
     
     property Items[Index: integer]: TExternalToolOptions
       read GetToolOpts write SetToolOpts; default;
+    property OnFreeOutputFilter: TOnFreeOutputFilter
+      read fOnFreeOutputFilter write fOnFreeOutputFilter;
     property OnNeedsOutputFilter: TOnNeedsOutputFilter
       read fOnNeedsOutputFilter write fOnNeedsOutputFilter;
   end;
@@ -245,7 +250,7 @@ function TExternalToolList.Run(ExtTool: TExternalToolOptions;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
   TheProcess: TProcess;
   TheOutputFilter: TOutputFilter;
-  Abort: boolean;
+  Abort, ErrorOccurred: boolean;
 begin
   Result:=mrCancel;
   if ExtTool=nil then exit;
@@ -276,34 +281,39 @@ writeln('[TExternalToolList.Run] ',CmdLine);
           Result:=mrAbort;
           exit;
         end;
-      end else
-        TheOutputFilter:=nil;
-      if (TheOutputFilter<>nil) then begin
-        TheOutputFilter.PrgSourceFilename:='';
-        TheOutputFilter.Options:=[ofoExceptionOnError,ofoMakeFilenamesAbsolute];
-        if ExtTool.ScanOutputForFPCMessages then
-          TheOutputFilter.Options:=TheOutputFilter.Options
-                                   +[ofoSearchForFPCMessages];
-        if ExtTool.ScanOutputForMakeMessages then
-          TheOutputFilter.Options:=TheOutputFilter.Options
-                                   +[ofoSearchForMakeMessages];
+        ErrorOccurred:=false;
         try
-          if TheOutputFilter.IsParsing then begin
-            TheOutputFilter.Execute(TheProcess);
-            TheOutputFilter.ReadLine('"'+Title+'" successfully runned :)',true);
-          end else
-            TheProcess.Execute;
+          TheOutputFilter.PrgSourceFilename:='';
+          TheOutputFilter.Options:=[ofoExceptionOnError,
+                                    ofoMakeFilenamesAbsolute];
+          if ExtTool.ScanOutputForFPCMessages then
+            TheOutputFilter.Options:=TheOutputFilter.Options
+                                     +[ofoSearchForFPCMessages];
+          if ExtTool.ScanOutputForMakeMessages then
+            TheOutputFilter.Options:=TheOutputFilter.Options
+                                     +[ofoSearchForMakeMessages];
+          try
+            try
+              TheOutputFilter.Execute(TheProcess);
+              TheOutputFilter.ReadLine('"'+Title+'" successfully runned :)',
+                                       true);
+            finally
+              TheProcess.WaitOnExit;
+              TheProcess.Free;
+            end;
+          except
+            on e: EOutputFilterError do begin
+              ErrorOccurred:=true;
+            end;
+          end;
         finally
-          TheProcess.WaitOnExit;
-          TheProcess.Free;
+          if Assigned(OnFreeOutputFilter) then
+            OnFreeOutputFilter(TheOutputFilter,ErrorOccurred);
         end;
       end else begin
         AddRunningTool(TheProcess,true);
       end;
     except
-      on e: EOutputFilterError do begin
-        raise;
-      end;
       on e: Exception do
         MessageDlg('Failed to run tool',
           'Unable to run the tool "'+Title+'":'#13+e.Message,mtError,[mbOk],0);
