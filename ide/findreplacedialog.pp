@@ -178,7 +178,7 @@ begin
       AutoSize := True;
       Left:=8;
       Top:=6;
-      Width:=OptionsGroupBox.Width-10;
+      Width:=OptionsGroupBox.Width-16;
       Caption:=dlgCaseSensitive;
       Hint:=lisDistinguishBigAndSmallLettersEGAAndA;
       ShowHint:=true;
@@ -299,6 +299,7 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:= Self;
+      Default:=true;
       Left:= 90;
       Top:= 268;
       Width:=80;
@@ -321,6 +322,7 @@ begin
     with CancelButton do begin
       Name:='CancelButton';
       Parent:= Self;
+      Cancel:=true;
       Left:= ReplaceAllButton.Left+ReplaceAllButton.Width+10;
       Top:= OkButton.Top;
       Width:=80;
