@@ -29,7 +29,7 @@
 {------------------------------------------------------------------------------
   function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 
-  Tets if Destruction Mark is set.
+  Tests if Destruction Mark is set.
  ------------------------------------------------------------------------------}
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 begin
@@ -141,7 +141,6 @@ begin
   Result:=-1;
 end;
 
-
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 
@@ -155,6 +154,27 @@ begin
     and (PGtkTypeObject(Widget)^.klass<>nil)
     and gtk_type_is_a(PGtkTypeClass(PGtkTypeObject(Widget)^.klass)^.thetype,
                       AType);
+end;
+
+{------------------------------------------------------------------------------
+  function GetDCOffset(DC: PDeviceContext): TPoint;
+
+  Returns the DC offset for the DC Origin.
+ ------------------------------------------------------------------------------}
+function GetDCOffset(DC: PDeviceContext): TPoint;
+begin
+  if (DC<>nil) then begin
+    Result:=DC^.Origin;
+    if (DC^.SpecialOrigin) and (DC^.hWnd<>0) then begin
+      if GtkWidgetIsA(PGtkWidget(DC^.hWnd),GTK_LAYOUT_GET_TYPE) then begin
+        // ToDo: add code to offset scrolled left, top
+        
+      end;
+    end;
+  end else begin
+    Result.X:=0;
+    Result.Y:=0;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -225,6 +245,7 @@ begin
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
       end;
       Origin := SourceDC^.Origin;
+      SpecialOrigin := SourceDC^.SpecialOrigin;
       PenPos := SourceDC^.PenPos;
       CurrentBitmap := SourceDC^.CurrentBitmap;
       CurrentFont := SourceDC^.CurrentFont;
@@ -248,6 +269,7 @@ end;
 Procedure SelectGDIRegion(const DC: HDC);
 var
   Region: PGdiObject;
+  DCOrigin: TPoint;
 begin
   with PDeviceContext(DC)^ do
   begin
@@ -255,11 +277,12 @@ begin
     gdk_gc_set_clip_rectangle (gc,  nil);
     If ClipRegion <> 0 then begin
       Region:=PGDIObject(ClipRegion);
-      if (Origin.X<>0) or (Origin.X<>0) then
-        gdk_region_offset(Region^.GDIRegionObject,Origin.X,Origin.Y);
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      if (DCOrigin.X<>0) or (DCOrigin.X<>0) then
+        gdk_region_offset(Region^.GDIRegionObject,DCOrigin.X,DCOrigin.Y);
       gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
-      if (Origin.X<>0) or (Origin.X<>0) then
-        gdk_region_offset(Region^.GDIRegionObject,-Origin.X,-Origin.Y);
+      if (DCOrigin.X<>0) or (DCOrigin.X<>0) then
+        gdk_region_offset(Region^.GDIRegionObject,-DCOrigin.X,-DCOrigin.Y);
     end;
   end;
 end;
@@ -2734,6 +2757,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.90  2002/09/06 16:38:25  lazarus
+  MG: added GetDCOffset
+
   Revision 1.89  2002/09/06 15:57:36  lazarus
   MG: fixed notebook client area, send messages and minor bugs
 
