@@ -1990,9 +1990,15 @@ begin
   TimerInfo:=PGtkITimerinfo(Data);
 
   if (FTimerData=nil) or (FTimerData.IndexOf(Data)<0) then begin
+    {$IFDEF VerboseTimer}
+    writeln('gtkTimerCB Timer was killed: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    {$ENDIF}
     // timer was killed
     Result:=0; // stop timer
   end else begin
+    {$IFDEF VerboseTimer}
+    writeln('gtkTimerCB Timer Event: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    {$ENDIF}
     if TimerInfo^.TimerFunc <> nil
     then begin
       // Call users timer function
@@ -2025,6 +2031,9 @@ begin
   end;
 
   if Result=0 then begin
+    {$IFDEF VerboseTimer}
+    writeln('gtkTimerCB Timer was STOPPED: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    {$ENDIF}
     // timer will be stopped
     // -> free timer data, if not already done
     if (FTimerData.IndexOf(Data)>=0)
@@ -2496,6 +2505,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.148  2002/10/15 16:01:36  lazarus
+  MG: fixed timers
+
   Revision 1.147  2002/10/15 07:01:29  lazarus
   MG: fixed timer checking
 
