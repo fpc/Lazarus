@@ -504,7 +504,7 @@ type
     procedure ShowCurCodeTemplate;
     procedure SaveCurCodeTemplate;
   public
-    constructor Create(AnOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -741,8 +741,8 @@ begin
   // create info for pascal
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshFreePascal];
-    DefaultCommentType:=DefaultCommentTypes[lshFreePascal];
+    TheType:=lshFreePascal;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
     SampleSource:=
@@ -784,8 +784,8 @@ begin
   // create info for html
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshHTML];
-    DefaultCommentType:=DefaultCommentTypes[lshHTML];
+    TheType:=lshHTML;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='htm;html';
     SampleSource:=
@@ -815,8 +815,8 @@ begin
   // create info for cpp
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshCPP];
-    DefaultCommentType:=DefaultCommentTypes[lshCPP];
+    TheType:=lshCPP;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='c;cc;cpp;h;hpp';
     SampleSource:=
@@ -853,8 +853,8 @@ begin
   // create info for XML
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshXML];
-    DefaultCommentType:=DefaultCommentTypes[lshXML];
+    TheType:=lshXML;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='xml;xsd;xsl;xslt;dtd';
     SampleSource:=
@@ -883,8 +883,8 @@ begin
   // create info for LFM
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshLFM];
-    DefaultCommentType:=DefaultCommentTypes[lshLFM];
+    TheType:=lshLFM;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='lfm;dfm;xfm';
     SampleSource:=
@@ -915,8 +915,8 @@ begin
   // create info for Perl
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshPerl];
-    DefaultCommentType:=DefaultCommentTypes[lshPerl];
+    TheType:=lshPerl;
+    DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='pl;pm;cgi';
     SampleSource:=
@@ -947,7 +947,7 @@ begin
   // create info for Java
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshJava];
+    TheType:=lshJava;
     DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='java';
@@ -983,7 +983,7 @@ begin
   // create info for Bash
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshBash];
+    TheType:=lshBash;
     DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='sh';
@@ -1016,7 +1016,7 @@ begin
   // create info for Python
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
-    TheType:=CompatibleLazSyntaxHilighter[lshPython];
+    TheType:=lshPython;
     DefaultCommentType:=DefaultCommentTypes[TheType];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='py';
@@ -1044,9 +1044,6 @@ begin
       Add('Symbol=Symbol');
     end;
   end;
-  Add(NewInfo);
-
-
   Add(NewInfo);
 end;
 
@@ -2065,7 +2062,7 @@ end;
 
 { TEditorOptionsForm }
 
-constructor TEditorOptionsForm.Create(AnOwner:TComponent);
+constructor TEditorOptionsForm.Create(TheOwner:TComponent);
 
   procedure AddResImg(const ResName: string);
   var Pixmap: TPixmap;
@@ -2079,7 +2076,7 @@ constructor TEditorOptionsForm.Create(AnOwner:TComponent);
 var a:integer;
   s:Ansistring;
 begin
-  inherited Create(AnOwner);
+  inherited Create(TheOwner);
   FormCreating:=true;
   Caption:=lismenueditoroptions;
     
@@ -4473,8 +4470,10 @@ begin
     begin
       BeginUpdate;
       for a:=0 to EditorOpts.HighlighterList.Count-1 do
-        Add(TCustomSynClass(
-          EditorOpts.HighlighterList[a].SynClass).GetLanguageName);
+        Add(EditorOpts.HighlighterList[a].SynClass.GetLanguageName);
+      //for a:=0 to EditorOpts.HighlighterList.Count-1 do
+      //  writeln('TEditorOptionsForm.SetupColorPage ',a,' ',EditorOpts.HighlighterList[a].SynClass.GetLanguageName
+      //  ,' ',EditorOpts.HighlighterList[a].SynClass.ClassName);
       EndUpdate;
     end;
     OnChange:=@ComboBoxOnChange;
