@@ -188,7 +188,7 @@ type
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
 
-    // designer
+    // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
       var RegisteredComponent: TRegisteredComponent);
     procedure OnDesignerUnselectComponentClass(Sender: TObject);
@@ -243,6 +243,7 @@ type
     function CreateSeperator : TMenuItem;
     procedure SetDefaultsForForm(aForm : TCustomForm);
 
+    procedure InvalidateAllDesignerForms;
   protected
     procedure ToolButtonClick(Sender : TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
@@ -1970,6 +1971,23 @@ Begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.InvalidateAllDesignerForms
+  Params: none
+  Result: none
+  
+  Calls 'Invalidate' in all designer forms.
+-------------------------------------------------------------------------------}
+procedure TMainIDE.InvalidateAllDesignerForms;
+var i: integer;
+begin
+  for i:=0 to Project1.UnitCount-1 do begin
+    if (Project1.Units[i].Form<>nil)
+    and (Project1.Units[i].Form is TControl) then
+      TControl(Project1.Units[i].Form).Invalidate;
+  end;
+end;
+
 
 {------------------------------------------------------------------------------}
 
@@ -2332,6 +2350,9 @@ Begin
         
       // save to disk
       EnvironmentOptions.Save(false);
+      
+      // update designer
+      InvalidateAllDesignerForms;
     end;
   finally
     EnvironmentOptionsDialog.Free;
@@ -6412,6 +6433,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.309  2002/06/11 15:40:27  lazarus
+  MG: implemented GridSizeX, GridSizeY and DisplayGrid
+
   Revision 1.308  2002/06/09 07:08:41  lazarus
   MG: fixed window jumping
 

@@ -1713,7 +1713,6 @@ begin
     Width:=200;
     Height:=23;
     Caption:='Display grid';
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1726,7 +1725,6 @@ begin
     Width:=DisplayGridCheckBox.Width;
     Height:=DisplayGridCheckBox.Height;
     Caption:='Snap to grid';
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1739,7 +1737,6 @@ begin
     Width:=DisplayGridCheckBox.Width;
     Height:=DisplayGridCheckBox.Height;
     Caption:='Show component captions';
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1764,7 +1761,6 @@ begin
     Width:=DisplayGridCheckBox.Width;
     Height:=DisplayGridCheckBox.Height;
     Caption:='Auto create forms';
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1777,7 +1773,6 @@ begin
     Width:=80;
     Height:=20;
     Caption:='Grid size X';
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1797,7 +1792,6 @@ begin
       Add('10');
       EndUpdate;
     end;
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1810,7 +1804,6 @@ begin
     Width:=GridSizeXLabel.Width;
     Height:=20;
     Caption:='Grid size Y';
-    Enabled:=false;
     Visible:=true;
   end;
 
@@ -1830,7 +1823,6 @@ begin
       Add('10');
       EndUpdate;
     end;
-    Enabled:=false;
     Visible:=true;
   end;
 end;

@@ -35,7 +35,7 @@ interface
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, Graphics,
   ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus,
-  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls;
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts;
 
 type
   TDesigner = class;
@@ -85,7 +85,13 @@ type
     //hint stuff
     FHintTimer : TTimer;
     FHintWIndow : THintWindow;
+    function GetDisplayGrid: boolean;
+    function GetGridSizeX: integer;
+    function GetGridSizeY: integer;
     function GetIsControl: Boolean;
+    procedure SetDisplayGrid(const AValue: boolean);
+    procedure SetGridSizeX(const AValue: integer);
+    procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
     procedure InvalidateWithParent(AComponent: TComponent);
     Procedure HintTimer(sender : TObject);
@@ -128,11 +134,17 @@ type
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
+    function NonVisualComponentAtPos(x,y: integer): TComponent;
+    procedure DrawNonVisualComponents(DC: HDC);
 
-    property IsControl: Boolean read GetIsControl write SetIsControl;
+    property DisplayGrid: boolean read GetDisplayGrid write SetDisplayGrid;
     property Form: TCustomForm read FCustomForm write FCustomForm;
-    property FormEditor : TFormEditor read FFormEditor write FFormEditor;
-    property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
+    property FormEditor: TFormEditor read FFormEditor write FFormEditor;
+    property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
+    property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
+    property IsControl: Boolean read GetIsControl write SetIsControl;
+    property OnActivated: TNotifyEvent
+       read FOnActivated write FOnActivated;
     property OnAddComponent: TOnAddComponent read FOnAddComponent write FOnAddComponent;
     property OnComponentListChanged: TNotifyEvent
        read FOnComponentListChanged write FOnComponentListChanged;
@@ -143,22 +155,18 @@ type
        read FOnPropertiesChanged write FOnPropertiesChanged;
     property OnRemoveComponent: TOnRemoveComponent
        read FOnRemoveComponent write FOnRemoveComponent;
+    property OnRenameComponent: TOnRenameComponent
+       read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
     property OnUnselectComponentClass: TNotifyEvent
        read FOnUnselectComponentClass write FOnUnselectComponentClass;
-    property OnActivated: TNotifyEvent
-       read FOnActivated write FOnActivated;
-    property OnRenameComponent: TOnRenameComponent
-       read FOnRenameComponent write FOnRenameComponent;
-    function NonVisualComponentAtPos(x,y: integer): TComponent;
-    procedure DrawNonVisualComponents(DC: HDC);
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
        read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
     property ShowHints: boolean read FShowHints write FShowHints;
+    property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
   end;
 
 
-var GridSizeX, GridSizeY: integer;
 
 
 implementation
@@ -796,22 +804,23 @@ end;
 
 procedure TDesigner.PaintGrid;
 var
-  x,y : integer;
+  x,y, StepX, StepY : integer;
 begin
+  if not DisplayGrid then exit;
+  StepX:=GridSizeX;
+  StepY:=GridSizeY;
   with FCustomForm.Canvas do begin
     Pen.Color := FGridColor;
     x := 0;
     while x <= FCustomForm.Width do begin
       y := 0;
       while y <= FCustomForm.Height do begin
-
          MoveTo(x,y);
          LineTo(x+1,y);
 //         Pixels[X,Y]:=FGridColor;
-
-         Inc(y, GridSizeY);
+         Inc(y, StepY);
       end;
-      Inc(x, GridSizeX);
+      Inc(x, StepX);
     end;
   end;
 end;
@@ -832,9 +841,45 @@ Begin
     OnRenameComponent(Self,AComponent,NewName);
 end;
 
+function TDesigner.GetDisplayGrid: boolean;
+begin
+  Result:=EnvironmentOptions.DisplayGrid;
+end;
+
+function TDesigner.GetGridSizeX: integer;
+begin
+  Result:=EnvironmentOptions.GridSizeX;
+  if Result<2 then Result:=2;
+end;
+
+function TDesigner.GetGridSizeY: integer;
+begin
+  Result:=EnvironmentOptions.GridSizeY;
+  if Result<2 then Result:=2;
+end;
+
 function TDesigner.GetIsControl: Boolean;
 Begin
   Result := True;
+end;
+
+procedure TDesigner.SetDisplayGrid(const AValue: boolean);
+begin
+  if DisplayGrid=AValue then exit;
+  EnvironmentOptions.DisplayGrid:=AValue;
+  Form.Invalidate;
+end;
+
+procedure TDesigner.SetGridSizeX(const AValue: integer);
+begin
+  if GridSizeX=AValue then exit;
+  EnvironmentOptions.GridSizeX:=AValue;
+end;
+
+procedure TDesigner.SetGridSizeY(const AValue: integer);
+begin
+  if GridSizeY=AValue then exit;
+  EnvironmentOptions.GridSizeY:=AValue;
 end;
 
 procedure TDesigner.SetIsControl(Value: Boolean);
@@ -935,7 +980,7 @@ begin
 
   FPopupMenu:=TPopupMenu.Create(nil);
 
-  FAlignMenuItem := TMenuItem.Create(nil);
+  FAlignMenuItem := TMenuItem.Create(FPopupMenu);
   with FAlignMenuItem do begin
     Caption := 'Align';
     OnClick := @OnAlignPopupMenuClick;
@@ -943,7 +988,7 @@ begin
   end;
   FPopupMenu.Items.Add(FAlignMenuItem);
 
-  FMirrorHorizontalMenuItem := TMenuItem.Create(nil);
+  FMirrorHorizontalMenuItem := TMenuItem.Create(FPopupMenu);
   with FMirrorHorizontalMenuItem do begin
     Caption := 'Mirror horizontal';
     OnClick := @OnMirrorHorizontalPopupMenuClick;
@@ -951,7 +996,7 @@ begin
   end;
   FPopupMenu.Items.Add(FMirrorHorizontalMenuItem);
 
-  FMirrorVerticalMenuItem := TMenuItem.Create(nil);
+  FMirrorVerticalMenuItem := TMenuItem.Create(FPopupMenu);
   with FMirrorVerticalMenuItem do begin
     Caption := 'Mirror vertical';
     OnClick := @OnMirrorVerticalPopupMenuClick;
@@ -959,7 +1004,7 @@ begin
   end;
   FPopupMenu.Items.Add(FMirrorVerticalMenuItem);
 
-  FScaleMenuItem := TMenuItem.Create(nil);
+  FScaleMenuItem := TMenuItem.Create(FPopupMenu);
   with FScaleMenuItem do begin
     Caption := 'Scale';
     OnClick := @OnScalePopupMenuClick;
@@ -967,7 +1012,7 @@ begin
   end;
   FPopupMenu.Items.Add(FScaleMenuItem);
 
-  FSizeMenuItem := TMenuItem.Create(nil);
+  FSizeMenuItem := TMenuItem.Create(FPopupMenu);
   with FSizeMenuItem do begin
     Caption := 'Size';
     OnClick := @OnSizePopupMenuClick;
@@ -975,7 +1020,7 @@ begin
   end;
   FPopupMenu.Items.Add(FSizeMenuItem);
   
-  FBringToFrontMenuItem := TMenuItem.Create(nil);
+  FBringToFrontMenuItem := TMenuItem.Create(FPopupMenu);
   with FBringToFrontMenuItem do begin
     Caption:= 'Bring to front';
     OnClick:= @OnBringToFrontMenuClick;
@@ -983,14 +1028,13 @@ begin
   end;
   FPopupMenu.Items.Add(FBringToFrontMenuItem);
   
-  FSendToBackMenuItem:= TMenuItem.Create(nil);
+  FSendToBackMenuItem:= TMenuItem.Create(FPopupMenu);
   with FSendToBackMenuItem do begin
     Caption:= 'Send to back';
     OnClick:= @OnSendToBackMenuClick;
     Enabled:= CompsAreSelected;
   end;
   FPopupMenu.Items.Add(FSendToBackMenuItem);
-  
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
@@ -1145,9 +1189,6 @@ begin
 end;
 
 
-initialization
-  GridSizex := 10;
-  GridSizeY := 10;
 
 end.
 
