@@ -499,6 +499,12 @@ begin
   else
     TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, RealIndex);
   APage.FTabVisible := AValue;
+  if not AValue and (AIndex = PageIndex) then
+    if RealIndex > 0 then
+      PageIndex := AIndex-1
+    else
+    if AIndex < (PageCount-1) then
+      PageIndex := AIndex+1;
 end;
 
 procedure TCustomNotebook.RemovePage(Index: Integer);
@@ -792,6 +798,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2005/03/26 15:13:55  micha
+  when setting tabvisible to false of showing page, switch to another page
+
   Revision 1.69  2005/01/09 23:28:18  mattias
   fixed loading no unit at start
 
