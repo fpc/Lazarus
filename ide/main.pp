@@ -23,7 +23,7 @@
                    top level functions of the IDE.
 
 
-                 Initial Revision  : Sun Mar 28 23:15:32 CST 1999
+                 Initial Revision : Sun Mar 28 23:15:32 CST 1999
 
 
  ***************************************************************************/
@@ -115,31 +115,31 @@ type
   TMainIDE = class(TMainIDEBase)
     // event handlers
 
-    //procedure FormShow(Sender : TObject);
-    procedure MainIDEFormClose(Sender : TObject; var CloseAction: TCloseAction);
-    procedure MainIDEFormCloseQuery(Sender : TObject; var CanClose: boolean);
-    //procedure FormPaint(Sender : TObject);
+    //procedure FormShow(Sender: TObject);
+    procedure MainIDEFormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
+    //procedure FormPaint(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 
     // file menu
-    procedure mnuNewUnitClicked(Sender : TObject);
-    procedure mnuNewFormClicked(Sender : TObject);
-    procedure mnuNewOtherClicked(Sender : TObject);
-    procedure mnuOpenClicked(Sender : TObject);
-    procedure mnuOpenRecentClicked(Sender : TObject);
-    procedure mnuRevertClicked(Sender : TObject);
-    procedure mnuSaveClicked(Sender : TObject);
-    procedure mnuSaveAsClicked(Sender : TObject);
-    procedure mnuSaveAllClicked(Sender : TObject);
-    procedure mnuCloseClicked(Sender : TObject);
-    procedure mnuCloseAllClicked(Sender : TObject);
-    procedure mnuCleanDirectoryClicked(Sender : TObject);
+    procedure mnuNewUnitClicked(Sender: TObject);
+    procedure mnuNewFormClicked(Sender: TObject);
+    procedure mnuNewOtherClicked(Sender: TObject);
+    procedure mnuOpenClicked(Sender: TObject);
+    procedure mnuOpenRecentClicked(Sender: TObject);
+    procedure mnuRevertClicked(Sender: TObject);
+    procedure mnuSaveClicked(Sender: TObject);
+    procedure mnuSaveAsClicked(Sender: TObject);
+    procedure mnuSaveAllClicked(Sender: TObject);
+    procedure mnuCloseClicked(Sender: TObject);
+    procedure mnuCloseAllClicked(Sender: TObject);
+    procedure mnuCleanDirectoryClicked(Sender: TObject);
     {$IFDEF UseStartLazarus}
-    procedure mnuRestartClicked(Sender : TObject);
+    procedure mnuRestartClicked(Sender: TObject);
     {$ENDIF}
-    procedure mnuQuitClicked(Sender : TObject);
+    procedure mnuQuitClicked(Sender: TObject);
 
     // edit menu
     procedure mnuEditUndoClicked(Sender: TObject);
@@ -191,83 +191,84 @@ type
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
-    procedure mnuFindDeclarationClicked(Sender : TObject);
-    procedure mnuOpenFileAtCursorClicked(Sender : TObject);
-    procedure mnuGotoIncludeDirectiveClicked(Sender : TObject);
+    procedure mnuFindDeclarationClicked(Sender: TObject);
+    procedure mnuOpenFileAtCursorClicked(Sender: TObject);
+    procedure mnuGotoIncludeDirectiveClicked(Sender: TObject);
 
     // view menu
-    procedure mnuViewInspectorClicked(Sender : TObject);
-    procedure mnuViewSourceEditorClicked(Sender : TObject);
-    procedure mnuViewUnitsClicked(Sender : TObject);
-    procedure mnuViewFormsClicked(Sender : TObject);
-    procedure mnuViewUnitDependenciesClicked(Sender : TObject);
-    procedure mnuViewUnitInfoClicked(Sender : TObject);
-    procedure mnuViewCodeExplorerClick(Sender : TObject);
-    procedure mnuViewMessagesClick(Sender : TObject);
-    procedure mnuViewSearchResultsClick(Sender : TObject);
-    procedure mnuToggleFormUnitClicked(Sender : TObject);
+    procedure mnuViewInspectorClicked(Sender: TObject);
+    procedure mnuViewSourceEditorClicked(Sender: TObject);
+    procedure mnuViewUnitsClicked(Sender: TObject);
+    procedure mnuViewFormsClicked(Sender: TObject);
+    procedure mnuViewUnitDependenciesClicked(Sender: TObject);
+    procedure mnuViewUnitInfoClicked(Sender: TObject);
+    procedure mnuViewCodeExplorerClick(Sender: TObject);
+    procedure mnuViewMessagesClick(Sender: TObject);
+    procedure mnuViewSearchResultsClick(Sender: TObject);
+    procedure mnuToggleFormUnitClicked(Sender: TObject);
 
     // project menu
-    procedure mnuNewProjectClicked(Sender : TObject);
-    procedure mnuNewProjectFromFileClicked(Sender : TObject);
-    procedure mnuOpenProjectClicked(Sender : TObject);
-    procedure mnuSaveProjectClicked(Sender : TObject);
-    procedure mnuSaveProjectAsClicked(Sender : TObject);
-    procedure mnuPublishProjectClicked(Sender : TObject);
-    procedure mnuProjectInspectorClicked(Sender : TObject);
-    procedure mnuAddToProjectClicked(Sender : TObject);
-    procedure mnuRemoveFromProjectClicked(Sender : TObject);
-    procedure mnuViewProjectSourceClicked(Sender : TObject);
-    procedure mnuViewProjectTodosClicked(Sender : TObject);
-    procedure mnuProjectOptionsClicked(Sender : TObject);
+    procedure mnuNewProjectClicked(Sender: TObject);
+    procedure mnuNewProjectFromFileClicked(Sender: TObject);
+    procedure mnuOpenProjectClicked(Sender: TObject);
+    procedure mnuSaveProjectClicked(Sender: TObject);
+    procedure mnuSaveProjectAsClicked(Sender: TObject);
+    procedure mnuPublishProjectClicked(Sender: TObject);
+    procedure mnuProjectInspectorClicked(Sender: TObject);
+    procedure mnuAddToProjectClicked(Sender: TObject);
+    procedure mnuRemoveFromProjectClicked(Sender: TObject);
+    procedure mnuViewProjectSourceClicked(Sender: TObject);
+    procedure mnuViewProjectTodosClicked(Sender: TObject);
+    procedure mnuProjectOptionsClicked(Sender: TObject);
 
     // run menu
-    procedure mnuBuildProjectClicked(Sender : TObject);
-    procedure mnuBuildAllProjectClicked(Sender : TObject);
-    procedure mnuAbortBuildProjectClicked(Sender : TObject);
-    procedure mnuRunProjectClicked(Sender : TObject);
-    procedure mnuPauseProjectClicked(Sender : TObject);
-    procedure mnuStepIntoProjectClicked(Sender : TObject);
-    procedure mnuStepOverProjectClicked(Sender : TObject);
-    procedure mnuRunToCursorProjectClicked(Sender : TObject);
-    procedure mnuStopProjectClicked(Sender : TObject);
-    procedure mnuRunParametersClicked(Sender : TObject);
-    procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
-    procedure mnuBuildFileClicked(Sender : TObject);
-    procedure mnuRunFileClicked(Sender : TObject);
-    procedure mnuConfigBuildFileClicked(Sender : TObject);
+    procedure mnuBuildProjectClicked(Sender: TObject);
+    procedure mnuBuildAllProjectClicked(Sender: TObject);
+    procedure mnuAbortBuildProjectClicked(Sender: TObject);
+    procedure mnuRunProjectClicked(Sender: TObject);
+    procedure mnuPauseProjectClicked(Sender: TObject);
+    procedure mnuStepIntoProjectClicked(Sender: TObject);
+    procedure mnuStepOverProjectClicked(Sender: TObject);
+    procedure mnuRunToCursorProjectClicked(Sender: TObject);
+    procedure mnuStopProjectClicked(Sender: TObject);
+    procedure mnuRunParametersClicked(Sender: TObject);
+    procedure mnuProjectCompilerSettingsClicked(Sender: TObject);
+    procedure mnuBuildFileClicked(Sender: TObject);
+    procedure mnuRunFileClicked(Sender: TObject);
+    procedure mnuConfigBuildFileClicked(Sender: TObject);
 
     // components menu
+    // see pkgmanager.pas
 
     // tools menu
-    procedure mnuToolConfigureClicked(Sender : TObject);
-    procedure mnuToolSyntaxCheckClicked(Sender : TObject);
-    procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
-    procedure mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
-    procedure mnuToolMakeResourceStringClicked(Sender : TObject);
-    procedure mnuToolDiffClicked(Sender : TObject);
-    procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
+    procedure mnuToolConfigureClicked(Sender: TObject);
+    procedure mnuToolSyntaxCheckClicked(Sender: TObject);
+    procedure mnuToolGuessUnclosedBlockClicked(Sender: TObject);
+    procedure mnuToolGuessMisplacedIFDEFClicked(Sender: TObject);
+    procedure mnuToolMakeResourceStringClicked(Sender: TObject);
+    procedure mnuToolDiffClicked(Sender: TObject);
+    procedure mnuToolConvertDFMtoLFMClicked(Sender: TObject);
     procedure mnuToolCheckLFMClicked(Sender: TObject);
     procedure mnuToolConvertDelphiUnitClicked(Sender: TObject);
     procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
-    procedure mnuToolBuildLazarusClicked(Sender : TObject);
-    procedure mnuToolConfigBuildLazClicked(Sender : TObject);
-    procedure mnuCustomExtToolClick(Sender : TObject);
+    procedure mnuToolBuildLazarusClicked(Sender: TObject);
+    procedure mnuToolConfigBuildLazClicked(Sender: TObject);
+    procedure mnuCustomExtToolClick(Sender: TObject);
 
     // environment menu
-    procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
-    procedure mnuEnvEditorOptionsClicked(Sender : TObject);
-    procedure mnuEnvCodeToolsOptionsClicked(Sender : TObject);
-    procedure mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
-    procedure mnuEnvRescanFPCSrcDirClicked(Sender : TObject);
+    procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
+    procedure mnuEnvEditorOptionsClicked(Sender: TObject);
+    procedure mnuEnvCodeToolsOptionsClicked(Sender: TObject);
+    procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
+    procedure mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 
     // windows menu
 
     // help menu
-    // see HelpManager.pas
+    // see helpmanager.pas
     
-    procedure OpenFileDownArrowClicked(Sender : TObject);
-    procedure mnuOpenFilePopupClick(Sender : TObject);
+    procedure OpenFileDownArrowClicked(Sender: TObject);
+    procedure mnuOpenFilePopupClick(Sender: TObject);
 
   public
     // Global IDE events
@@ -284,31 +285,31 @@ type
     procedure DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
 
     // SourceNotebook events
-    procedure OnSrcNoteBookActivated(Sender : TObject);
+    procedure OnSrcNoteBookActivated(Sender: TObject);
     procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
       APageIndex: integer; DeleteForwardHistory: boolean);
-    procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
-      Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
+    procedure OnSrcNoteBookCtrlMouseUp(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftstate; X, Y: Integer);
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
-    procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
-    procedure OnSrcNotebookEditorChanged(Sender : TObject);
-    procedure OnSrcNotebookFileNew(Sender : TObject);
-    procedure OnSrcNotebookFileOpen(Sender : TObject);
-    procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
-    procedure OnSrcNotebookFileSave(Sender : TObject);
-    procedure OnSrcNotebookFileSaveAs(Sender : TObject);
-    procedure OnSrcNotebookFileClose(Sender : TObject);
-    procedure OnSrcNotebookFindDeclaration(Sender : TObject);
+    procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
+    procedure OnSrcNotebookEditorChanged(Sender: TObject);
+    procedure OnSrcNotebookFileNew(Sender: TObject);
+    procedure OnSrcNotebookFileOpen(Sender: TObject);
+    procedure OnSrcNotebookFileOpenAtCursor(Sender: TObject);
+    procedure OnSrcNotebookFileSave(Sender: TObject);
+    procedure OnSrcNotebookFileSaveAs(Sender: TObject);
+    procedure OnSrcNotebookFileClose(Sender: TObject);
+    procedure OnSrcNotebookFindDeclaration(Sender: TObject);
     procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
       var Handled, Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; JumpAction: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
       OldPageIndex, NewPageIndex: integer);
-    procedure OnSrcNotebookReadOnlyChanged(Sender : TObject);
-    procedure OnSrcNotebookSaveAll(Sender : TObject);
+    procedure OnSrcNotebookReadOnlyChanged(Sender: TObject);
+    procedure OnSrcNotebookSaveAll(Sender: TObject);
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
-          ClientPos: TPoint; CaretPos: TPoint);
+                                           ClientPos: TPoint; CaretPos: TPoint);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     procedure OnSrcNotebookToggleFormUnit(Sender: TObject);
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
@@ -322,8 +323,9 @@ type
        Shift: TShiftState);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
-       TypeData: PTypeData;
-       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
+                                    TypeData: PTypeData;
+                                    var MethodIsCompatible, MethodIsPublished,
+                                        IdentIsMethod: boolean): boolean;
     function OnPropHookCreateMethod(const AMethodName:ShortString;
                                     ATypeInfo:PTypeInfo): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
@@ -338,7 +340,7 @@ type
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
-      var RegisteredComponent: TRegisteredComponent);
+                                 var RegisteredComponent: TRegisteredComponent);
     procedure OnDesignerUnselectComponentClass(Sender: TObject);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
                                      Value: boolean);
@@ -363,14 +365,14 @@ type
     procedure OnControlSelectionChanged(Sender: TObject);
     procedure OnControlSelectionPropsChanged(Sender: TObject);
     procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
-          NewForm: TCustomForm);
+                                            NewForm: TCustomForm);
 
     // project inspector
     procedure ProjInspectorOpen(Sender: TObject);
     function ProjInspectorAddUnitToProject(Sender: TObject;
-      AnUnitInfo: TUnitInfo): TModalresult;
+                                           AnUnitInfo: TUnitInfo): TModalresult;
     function ProjInspectorRemoveFile(Sender: TObject;
-      AnUnitInfo: TUnitInfo): TModalresult;
+                                     AnUnitInfo: TUnitInfo): TModalresult;
 
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
@@ -379,9 +381,9 @@ type
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
     function UnitDependenciesViewGetProjectMainFilename(
-      Sender: TObject): string;
+        Sender: TObject): string;
     procedure UnitDependenciesViewOpenFile(Sender: TObject;
-      const Filename: string);
+        const Filename: string);
 
     // code explorer events
     procedure OnCodeExplorerGetCodeTree(Sender: TObject;
@@ -413,10 +415,10 @@ type
     procedure OnCompilerGraphStampIncreased;
 
     // MessagesView events
-    procedure MessagesViewSelectionChanged(sender : TObject);
+    procedure MessagesViewSelectionChanged(sender: TObject);
 
     //SearchResultsView events
-    procedure SearchResultsViewSelectionChanged(sender : TObject);
+    procedure SearchResultsViewSelectionChanged(sender: TObject);
 
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -424,9 +426,9 @@ type
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
   private
-    FDisplayState : TDisplayState;
-    FLastFormActivated : TCustomForm;// used to find the last form so you can
-                                     // display the correct tab
+    FDisplayState: TDisplayState;
+    FLastFormActivated: TCustomForm;// used to find the last form so you can
+                                    // display the correct tab
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
@@ -523,9 +525,9 @@ type
 
     // methods for publish project
     procedure OnCopyFile(const Filename: string; var Copy: boolean;
-      Data: TObject);
+        Data: TObject);
     procedure OnCopyError(const ErrorData: TCopyErrorData;
-      var Handled: boolean; Data: TObject);
+        var Handled: boolean; Data: TObject);
 
   public
     CustomExtToolMenuSeparator: TMenuItem;
@@ -746,7 +748,7 @@ type
     procedure DoBringToFrontFormOrInspector;
     procedure DoShowDesignerFormOfCurrentSrc;
     procedure DoShowSourceOfActiveDesignerForm;
-    procedure SetDesigning(AComponent: TComponent; Value : Boolean);
+    procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure CreateDesignerForComponent(AComponent: TComponent);
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
@@ -1112,14 +1114,14 @@ begin
   end;
 end;
 
-Procedure TMainIDE.ToolButtonClick(Sender : TObject);
+Procedure TMainIDE.ToolButtonClick(Sender: TObject);
 Begin
   Assert(False, 'Trace:TOOL BUTTON CLICK!');
 
 end;
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.MainIDEFormClose(Sender : TObject;
+procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   SaveEnvironment;
@@ -1130,7 +1132,7 @@ begin
   if SourceNoteBook<>nil then SourceNoteBook.ClearUnUsedEditorComponents(true);
 end;
 
-procedure TMainIDE.MainIDEFormCloseQuery(Sender : TObject;
+procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
   var CanClose: boolean);
 var
   MsgResult: integer;
@@ -1179,7 +1181,7 @@ procedure TMainIDE.SetupSpeedButtons;
 
   function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
     var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
-    const AOnClick: TNotifyEvent; const AHint : String): TSpeedButton;
+    const AOnClick: TNotifyEvent; const AHint: String): TSpeedButton;
   begin
     Result := TSpeedButton.Create(OwningComponent);
     with Result do
@@ -1786,30 +1788,30 @@ end;
 
 {------------------------------------------------------------------------------}
 
-procedure TMainIDE.mnuToggleFormUnitClicked(Sender : TObject);
+procedure TMainIDE.mnuToggleFormUnitClicked(Sender: TObject);
 begin
   DoBringToFrontFormOrUnit;
 end;
 
-Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value : Boolean);
+Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
 Begin
   AComponent.SetDesigning(Value);
   if Value then InterfaceObject.SetDesigning(AComponent);
 end;
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.mnuFindDeclarationClicked(Sender : TObject);
+procedure TMainIDE.mnuFindDeclarationClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoFindDeclarationAtCursor;
 end;
 
-procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
+procedure TMainIDE.mnuNewUnitClicked(Sender: TObject);
 begin
   DoNewEditorFile(FileDescriptorUnit,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
-procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
+procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
 begin
   DoNewEditorFile(FileDescriptorForm,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
@@ -1819,7 +1821,7 @@ begin
   DoNewOther;
 end;
 
-procedure TMainIDE.mnuOpenClicked(Sender : TObject);
+procedure TMainIDE.mnuOpenClicked(Sender: TObject);
 
   procedure UpdateEnvironment;
   begin
@@ -1885,42 +1887,42 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuRevertClicked(Sender : TObject);
+procedure TMainIDE.mnuRevertClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoOpenEditorFile('',SourceNoteBook.NoteBook.PageIndex,[ofRevert]);
 end;
 
-procedure TMainIDE.mnuOpenFileAtCursorClicked(Sender : TObject);
+procedure TMainIDE.mnuOpenFileAtCursorClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoOpenFileAtCursor(Sender);
 end;
 
-procedure TMainIDE.mnuGotoIncludeDirectiveClicked(Sender : TObject);
+procedure TMainIDE.mnuGotoIncludeDirectiveClicked(Sender: TObject);
 begin
   DoGotoIncludeDirective;
 end;
 
-procedure TMainIDE.mnuSaveClicked(Sender : TObject);
+procedure TMainIDE.mnuSaveClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfCheckAmbigiousFiles]);
 end;
 
-procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
+procedure TMainIDE.mnuSaveAsClicked(Sender: TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
                    [sfSaveAs,sfCheckAmbigiousFiles]);
 end;
 
-procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
+procedure TMainIDE.mnuSaveAllClicked(Sender: TObject);
 begin
   DoSaveAll([sfCheckAmbigiousFiles]);
 end;
 
-procedure TMainIDE.mnuCloseClicked(Sender : TObject);
+procedure TMainIDE.mnuCloseClicked(Sender: TObject);
 var PageIndex: integer;
 begin
   if SourceNoteBook.NoteBook=nil then exit;
@@ -1934,7 +1936,7 @@ begin
   DoCloseEditorFile(PageIndex,[cfSaveFirst]);
 end;
 
-procedure TMainIDE.mnuCloseAllClicked(Sender : TObject);
+procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
 begin
   DoSaveAll([]);
   while (SourceNoteBook.NoteBook<>nil)
@@ -1947,37 +1949,37 @@ begin
   ShowCleanDirectoryDialog(Project1.ProjectDirectory,MacroList);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileNew(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookFileNew(Sender: TObject);
 begin
   mnuNewFormClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileClose(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject);
 begin
   mnuCloseClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileOpen(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookFileOpen(Sender: TObject);
 begin
   mnuOpenClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNoteBookFileOpenAtCursor(Sender : TObject);
+Procedure TMainIDE.OnSrcNoteBookFileOpenAtCursor(Sender: TObject);
 begin
   mnuOpenFileAtCursorClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileSave(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookFileSave(Sender: TObject);
 begin
   mnuSaveClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileSaveAs(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookFileSaveAs(Sender: TObject);
 begin
   mnuSaveAsClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNoteBookFindDeclaration(Sender : TObject);
+Procedure TMainIDE.OnSrcNoteBookFindDeclaration(Sender: TObject);
 begin
   mnuFindDeclarationClicked(Sender);
 end;
@@ -1989,12 +1991,12 @@ begin
   Abort:=not DoInitIdentCompletion;
 end;
 
-Procedure TMainIDE.OnSrcNotebookSaveAll(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookSaveAll(Sender: TObject);
 begin
   mnuSaveAllClicked(Sender);
 end;
 
-procedure TMainIDE.OnSrcNotebookToggleFormUnit(Sender : TObject);
+procedure TMainIDE.OnSrcNotebookToggleFormUnit(Sender: TObject);
 begin
   mnuToggleFormUnitClicked(Sender);
 end;
@@ -2179,7 +2181,7 @@ end;
 
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.OpenFileDownArrowClicked(Sender : TObject);
+Procedure TMainIDE.OpenFileDownArrowClicked(Sender: TObject);
 var
   CurIndex: integer;
   PopupPos: TPoint;
@@ -2382,7 +2384,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TMainIDE.mnuQuitClicked(Sender : TObject);
+procedure TMainIDE.mnuQuitClicked(Sender: TObject);
 var CanClose: boolean;
 begin
   CanClose:=true;
@@ -2397,7 +2399,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.mnuViewInspectorClicked(Sender : TObject);
+procedure TMainIDE.mnuViewInspectorClicked(Sender: TObject);
 begin
   DoBringToFrontFormOrInspector;
 end;
@@ -2409,17 +2411,17 @@ end;
 
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewUnitsClicked(Sender: TObject);
 begin
   DoViewUnitsAndForms(false);
 end;
 
-Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewFormsClicked(Sender: TObject);
 Begin
   DoViewUnitsAndForms(true);
 end;
 
-Procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender: TObject);
 begin
   DoViewUnitDependencies;
 end;
@@ -2429,17 +2431,17 @@ begin
   DoViewUnitInfo;
 end;
 
-Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
+Procedure TMainIDE.mnuViewCodeExplorerClick(Sender: TObject);
 begin
   DoShowCodeExplorer;
 end;
 
-Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
+Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
 Begin
   MessagesView.ShowOnTop;
 End;
 
-Procedure TMainIDE.mnuViewSearchResultsClick(Sender : TObject);
+Procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
   CreateSearchResultWindow;
   SearchResultsView.ShowOnTop;
@@ -2449,7 +2451,7 @@ End;
 
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
 var
   NewProjectDesc: TProjectDescriptor;
 Begin
@@ -2491,7 +2493,7 @@ Begin
   end;
 end;
 
-Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuOpenProjectClicked(Sender: TObject);
 var
   OpenDialog:TOpenDialog;
   AFileName: string;
@@ -2524,12 +2526,12 @@ begin
   end;
 end;
 
-Procedure TMainIDE.mnuSaveProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuSaveProjectClicked(Sender: TObject);
 Begin
   DoSaveProject([]);
 end;
 
-procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
+procedure TMainIDE.mnuSaveProjectAsClicked(Sender: TObject);
 begin
   DoSaveProject([sfSaveAs]);
 end;
@@ -2544,17 +2546,17 @@ begin
   DoShowProjectInspector;
 end;
 
-procedure TMainIDE.mnuAddToProjectClicked(Sender : TObject);
+procedure TMainIDE.mnuAddToProjectClicked(Sender: TObject);
 begin
   DoAddActiveUnitToProject;
 end;
 
-procedure TMainIDE.mnuRemoveFromProjectClicked(Sender : TObject);
+procedure TMainIDE.mnuRemoveFromProjectClicked(Sender: TObject);
 begin
   DoRemoveFromProjectDialog;
 end;
 
-procedure TMainIDE.mnuViewProjectSourceClicked(Sender : TObject);
+procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
 begin
   DoOpenMainUnit(false);
 end;
@@ -2564,7 +2566,7 @@ begin
   DoShowToDoList;
 end;
 
-procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
+procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -2575,52 +2577,52 @@ begin
   end;
 end;
 
-Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
   DoBuildProject(crCompile);
 end;
 
-Procedure TMainIDE.mnuBuildAllProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuBuildAllProjectClicked(Sender: TObject);
 Begin
   DoBuildProject(crBuild);
 end;
 
-Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
 Begin
   DoAbortBuild;
 end;
 
-Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
 begin
   DoRunProject;
 end;
 
-Procedure TMainIDE.mnuPauseProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuPauseProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoPauseProject;
 end;
 
-Procedure TMainIDE.mnuStepIntoProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuStepIntoProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStepIntoProject;
 end;
 
-Procedure TMainIDE.mnuStepOverProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuStepOverProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStepOverProject;
 end;
 
-Procedure TMainIDE.mnuRunToCursorProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuRunToCursorProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoRunToCursor;
 end;
 
-Procedure TMainIDE.mnuStopProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStopProject;
 end;
 
-procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
+procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender: TObject);
 var
   frmCompilerOptions: TfrmCompilerOptions;
   NewCaption: String;
@@ -2660,14 +2662,14 @@ begin
   DoConfigBuildFile;
 end;
 
-procedure TMainIDE.mnuRunParametersClicked(Sender : TObject);
+procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
 begin
   ShowRunParamsOptsDlg(Project1.RunParameterOptions);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TMainIDE.mnuToolConfigureClicked(Sender : TObject);
+procedure TMainIDE.mnuToolConfigureClicked(Sender: TObject);
 begin
   if ShowExtToolDialog(EnvironmentOptions.ExternalTools,MacroList)=mrOk then
   begin
@@ -2682,32 +2684,32 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuToolSyntaxCheckClicked(Sender : TObject);
+procedure TMainIDE.mnuToolSyntaxCheckClicked(Sender: TObject);
 begin
   DoCheckSyntax;
 end;
 
-procedure TMainIDE.mnuToolGuessUnclosedBlockClicked(Sender : TObject);
+procedure TMainIDE.mnuToolGuessUnclosedBlockClicked(Sender: TObject);
 begin
   DoJumpToGuessedUnclosedBlock(true);
 end;
 
-procedure TMainIDE.mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
+procedure TMainIDE.mnuToolGuessMisplacedIFDEFClicked(Sender: TObject);
 begin
   DoJumpToGuessedMisplacedIFDEF(true);
 end;
 
-procedure TMainIDE.mnuToolMakeResourceStringClicked(Sender : TObject);
+procedure TMainIDE.mnuToolMakeResourceStringClicked(Sender: TObject);
 begin
   DoMakeResourceString;
 end;
 
-procedure TMainIDE.mnuToolDiffClicked(Sender : TObject);
+procedure TMainIDE.mnuToolDiffClicked(Sender: TObject);
 begin
   DoDiff;
 end;
 
-procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender : TObject);
+procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
 begin
   DoConvertDFMtoLFM;
 end;
@@ -2779,12 +2781,12 @@ begin
   end;
 end;
 
-procedure TMainIDE.mnuToolBuildLazarusClicked(Sender : TObject);
+procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
 begin
   DoBuildLazarus([]);
 end;
 
-procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender : TObject);
+procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender: TObject);
 var
   CmdLineDefines: TDefineTemplate;
   LazSrcTemplate: TDefineTemplate;
@@ -2976,7 +2978,7 @@ Begin
   end;
 End;
 
-procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender : TObject);
+procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);
 var EditorOptionsForm: TEditorOptionsForm;
 Begin
   EditorOptionsForm:=TEditorOptionsForm.Create(Application);
@@ -2990,12 +2992,12 @@ Begin
   end;
 End;
 
-procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender : TObject);
+procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender: TObject);
 begin
   ShowCodeToolsOptions(CodeToolsOpts,@SourceNoteBook.GetSynEditPreviewSettings);
 end;
 
-procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
+procedure TMainIDE.mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
 begin
   ShowCodeToolsDefinesEditor(CodeToolBoss,CodeToolsOpts,MacroList);
 end;
@@ -3049,7 +3051,7 @@ end;
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
   AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
 var
-  CInterface : TComponentInterface;
+  CInterface: TComponentInterface;
   NewComponent: TComponent;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
@@ -5353,6 +5355,7 @@ Begin
     ProjectDesc.CreateStartFiles(Project1);
 
     // rebuild codetools defines
+    RescanCompilerDefines(true);
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
     Project1.DefineTemplates.AllChanged;
@@ -9856,19 +9859,19 @@ end;
 
 //-----------------------------------------------------------------------------
 
-procedure TMainIDE.MessagesViewSelectionChanged(sender : TObject);
+procedure TMainIDE.MessagesViewSelectionChanged(sender: TObject);
 begin
   DoJumpToCompilerMessage(TMessagesView(Sender).SelectedMessageIndex,True);
 end;
 
-procedure TMainIDE.SearchResultsViewSelectionChanged(sender : TObject);
+procedure TMainIDE.SearchResultsViewSelectionChanged(sender: TObject);
 begin
   DoJumpToSearchResult(True);
 end;
 
-Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender: TObject);
 var
-  ActiveUnitInfo : TUnitInfo;
+  ActiveUnitInfo: TUnitInfo;
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
@@ -9882,7 +9885,7 @@ begin
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
-Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
 begin
   if SourceNotebook.Notebook = nil then Exit;
   MainIDEBar.SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
@@ -9949,13 +9952,13 @@ begin
     SrcEdit.ActivateHint(ClientPos,SmartHintStr);
 end;
 
-procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
+procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);
 begin
   FDisplayState:= dsSource;
   DoCheckFilesOnDisk;
 end;
 
-Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
+Procedure TMainIDE.OnDesignerActivated(Sender: TObject);
 begin
   FDisplayState:= dsForm;
   FLastFormActivated := TDesigner(Sender).Form;
@@ -10246,7 +10249,7 @@ begin
   ActiveUnitInfo.UserReadOnly:=ActiveSourceEditor.ReadOnly;
 end;
 
-Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
+Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
 begin
   // ToDo
   MessageDlg(ueNotImplCap, lisSorryNotImplementedYet, mtInformation,
@@ -10962,6 +10965,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.798  2004/11/24 08:18:13  mattias
+  TTextStrings improvements (Exchange, Put), clean ups
+
   Revision 1.797  2004/11/23 11:01:10  mattias
   added key handling for debug manager
 

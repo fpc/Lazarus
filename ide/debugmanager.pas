@@ -1753,7 +1753,7 @@ end;
 
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
 begin
-  debugln('TDebugManager.ProcessCommand ',dbgs(Command));
+  //debugln('TDebugManager.ProcessCommand ',dbgs(Command));
   Handled:=true;
   case Command of
   ecPause:       DoPauseProject;
@@ -1941,6 +1941,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.79  2004/11/24 08:18:13  mattias
+  TTextStrings improvements (Exchange, Put), clean ups
+
   Revision 1.78  2004/11/23 11:01:10  mattias
   added key handling for debug manager
 
