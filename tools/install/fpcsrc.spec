@@ -1,7 +1,7 @@
 Name: fpcsrc
 Version: LAZVERSION
 Release: LAZRELEASE
-Copyright: GPL
+Copyright: LGPL2
 Group: Development/Languages
 Source: %{name}-%{version}-%{release}.tgz
 Summary: FreePascal sources
@@ -10,6 +10,7 @@ URL: http://www.freepascal.org/
 BuildRoot: %{_tmppath}/fpcsrc-build%{version}
 
 %define fpcsrcdir %{_datadir}/fpcsrc
+%define destdir %{buildroot}%{fpcsrcdir}/
 
 %description
 The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 32bit
@@ -31,8 +32,10 @@ bindings and many more.
 if [ %{buildroot} != "/" ]; then
   rm -rf %{buildroot}
 fi
-mkdir -p %{buildroot}%{fpcsrcdir}
-cp -a fpc/* %{buildroot}%{fpcsrcdir}/
+mkdir -p %{destdir}
+cp -a fpc/* %{destdir}/
+# the palmos libcrt.a archive is making trouble
+rm %{destdir}/rtl/palmos/libcrt.a
 
 %clean
 if [ %{buildroot} != "/" ]; then
