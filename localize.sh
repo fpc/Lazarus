@@ -66,7 +66,7 @@ done
 # LCL
 rstconv -i lcl/units/lclstrconsts.rst -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in de es fr ru pl; do
+for lang in de es fr ru pl it; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo
 done
 
