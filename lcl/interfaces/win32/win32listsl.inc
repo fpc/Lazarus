@@ -276,15 +276,21 @@ End;
 
 { TWin32CheckListBoxStrings }
 
+constructor TWin32CheckListBoxStrings.Create(List : HWND; TheOwner: TWinControl);
+begin
+  inherited Create(List, TheOwner);
+  with FDefaultItem do begin
+    Checked := false;
+    TheObject := nil;
+  end;
+end;
+
 function TWin32CheckListBoxStrings.GetChecked(const Index: Integer): Boolean;
 var
   Data: PWin32CheckListBoxItemRecord;
 begin
   Data := GetItemRecord(Index, false);
-  if Data <> nil then
-    Result := Data^.Checked
-  else
-    Result := false;
+  Result := Data^.Checked
 end;
 
 procedure TWin32CheckListBoxStrings.SetChecked(const Index: Integer;
@@ -301,10 +307,12 @@ function TWin32CheckListBoxStrings.GetItemRecord(const Index: Integer;
   const CreateNew: boolean): PWin32CheckListBoxItemRecord;
 begin
   Result := PWin32CheckListBoxItemRecord(Windows.SendMessage(FWin32List, LB_GETITEMDATA, Index, 0));
-  if (not Assigned(Result)) and CreateNew then begin
-    Result := new(PWin32CheckListBoxItemRecord);
-    Result^.Checked := false;
-    Result^.TheObject := nil;
+  if (not Assigned(Result)) then begin
+    if CreateNew then begin
+      Result := new(PWin32CheckListBoxItemRecord);
+      Result^ := FDefaultItem;
+    end
+    else Result := @FDefaultItem;
   end;
 end;
 
@@ -527,6 +535,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2003/12/21 11:50:39  micha
+  fix AV when retrieving object (from vincent)
+
   Revision 1.24  2003/12/15 22:04:05  micha
   nil check
 

@@ -68,6 +68,7 @@ Type
 
   TWin32CheckListBoxStrings = class(TWin32ListStringList)
   private
+    FDefaultItem: TWin32CheckListBoxItemRecord;
     function GetChecked(const Index: Integer): Boolean;
     procedure SetChecked(const Index: Integer; const AValue: Boolean);
     function GetItemRecord(const Index: Integer; const CreateNew: boolean): PWin32CheckListBoxItemRecord;
@@ -76,6 +77,7 @@ Type
     function GetObject(Index: Integer): TObject; override;
     procedure PutObject(Index: Integer; AObject: TObject); override;
   public
+    constructor Create(List : HWND; TheOwner: TWinControl);
     class procedure DeleteItemRecords(const List: HWND);
     class procedure DeleteItemRecord(const List: HWND; const Index: integer);
     procedure Clear; override;
@@ -113,6 +115,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/12/21 11:50:39  micha
+  fix AV when retrieving object (from vincent)
+
   Revision 1.12  2003/12/15 21:57:16  micha
   checklistbox, implement object+checked; from vincent
 
