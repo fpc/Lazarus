@@ -596,31 +596,6 @@ Begin
   LCLControlSizeNeedsUpdate(Sender,False);
 End;
 
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetText
-  Params:  Child - Window to add the text
-           Data  - The text to add
-  Returns: Nothing
-
-  Sets the text of a control.
-
-  WARNING: This should possibly be merged with the SetLabel method!
-           It's only left in here for TStatusBar right now cause it
-           may be nice to use it with different panels.
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetText(Window: HWND; Data: Pointer);
-Begin
-  Case PLMSetControlText(Data)^.FCompStyle Of
-    csStatusBar:
-    Begin
-      Windows.SendMessage(Window, SB_SETTEXT, Windows.WParam(PLMSetControlText(Data)^.Panel),
-        Windows.LParam(LPSTR(PLMSetControlText(Data)^.UserData)));
-    End
-    Else
-      AssertEx('STOPPOK: [TWin32WidgetSet.SetText] Possible superfluous use of SetText, use SetLabel instead!', False, 2);
-  End;
-End;
-
  {------------------------------------------------------------------------------
   Function: TWin32WidgetSet.CreateComponent
   Params:   Sender - object for which to create visual representation
@@ -736,6 +711,9 @@ end;
 
 {
   $Log$
+  Revision 1.299  2004/11/04 16:57:32  micha
+  remove obsolete and unused method twin32widgetset.settext
+
   Revision 1.298  2004/11/04 15:12:35  micha
   remove usage of fcompstyle in twin32liststringlist by using descendent class for combobox specific things
 

@@ -126,8 +126,6 @@ Type
 
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
-    Procedure SetText(Window: HWND; Data: Pointer);
-
     Procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
     procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
@@ -274,6 +272,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.128  2004/11/04 16:57:31  micha
+  remove obsolete and unused method twin32widgetset.settext
+
   Revision 1.127  2004/10/29 09:52:08  micha
   fix crash on showing tabpage
   fix painting of radiobutton in groupbox (non-tabpage-parent)
