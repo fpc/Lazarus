@@ -101,6 +101,7 @@ type
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
   end;
@@ -392,6 +393,34 @@ begin
     raise Exception.Create('TGtkWSCustomListBox.GetStrings');
   end;
   {$endif}
+end;
+
+procedure TGtkWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+var
+  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
+  Handle: HWND;
+begin
+  {$IFdef GTK2}
+  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETSEL');
+  {$Else}
+  Handle := ACustomListBox.Handle;
+  case ACustomListBox.fCompStyle of
+    csListBox, csCheckListBox:
+      begin
+        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+        if ASelected
+        then gtk_list_select_item(PGtkList(Widget), AIndex)
+        else gtk_list_unselect_item(PGtkList(Widget), AIndex);
+      end;
+    csCListBox:
+      begin
+        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+        if ASelected
+        then gtk_clist_select_row(PGtkCList(Widget), AIndex, 0)
+        else gtk_clist_unselect_row(PGtkCList(Widget), AIndex, 0);
+      end;
+  end;
+  {$Endif}
 end;
 
 procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);

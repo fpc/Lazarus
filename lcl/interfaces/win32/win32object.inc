@@ -330,19 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETSEL:
-      Begin
-        If (Sender is TControl) And (TControl(Sender).FCompStyle In [csListBox, csCListBox]) And Assigned(Data) Then
-        Begin
-          If TControl(Sender).FCompStyle = csListBox Then
-          Begin
-            If TLMSetSel(Data^).Selected Then
-              Windows.SendMessage(Handle, LB_SELITEMRANGE, Windows.WParam(True), Windows.LPARAM(MakeLParam(0, 0)))
-            Else
-              Windows.SendMessage(Handle, LB_SELITEMRANGE, Windows.WParam(False), Windows.LPARAM(MakeLParam(0, 0)));
-          End
-        End;
-      End;
       LM_SETSELMODE:
       Begin
       If Sender Is TCustomListBox Then
@@ -2117,6 +2104,9 @@ End;
 
 {
   $Log$
+  Revision 1.268  2004/09/16 13:57:30  micha
+  convert LM_SETSEL message to interface method
+
   Revision 1.267  2004/09/16 13:30:48  micha
   convert LM_SORT message to interface method
 

@@ -3124,34 +3124,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_SETSEL:
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SETSEL');
-      end;
-      {$Else}
-      begin
-        if (Sender is TControl)
-        and Assigned (data)
-        then case TControl(Sender).fCompStyle of
-          csListBox, csCheckListBox:
-            begin
-              Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-              if TLMSetSel(Data^).Selected
-              then gtk_list_select_item(PGtkList(Widget), TLMSetSel(Data^).Index)
-              else gtk_list_unselect_item(PGtkList(Widget), TLMSetSel(Data^).Index);
-            end;
-          csCListBox:
-            begin
-              Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-              if TLMSetSel(Data^).Selected
-              then gtk_clist_select_row(PGtkCList(Widget), TLMSetSel(Data^).Index, 0)
-              else gtk_clist_unselect_row(PGtkCList(Widget), TLMSetSel(Data^).Index, 0);
-            end;
-        end;
-      end;
-      {$Endif}
-
       LM_SETSELMODE:
         if Data<>nil then
           SetSelectionMode(Sender,PGtkWidget(Handle),
@@ -7990,6 +7962,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.575  2004/09/16 13:57:30  micha
+  convert LM_SETSEL message to interface method
+
   Revision 1.574  2004/09/16 13:30:48  micha
   convert LM_SORT message to interface method
 

@@ -217,14 +217,10 @@ end;
   Tell the interface whether an item is selected.
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
-var
-  Msg : TLMSetSel;
 begin
   if HandleAllocated then begin
     LockSelectionChange;
-    Msg.Index:= Index;
-    Msg.Selected:= IsSelected;
-    CNSendMessage(LM_SETSEL, Self, @Msg);
+    TWSCustomListBox(WidgetSetClass).SelectItem(Self, Index, IsSelected);
     UnlockSelectionChange;
   end;
 end;

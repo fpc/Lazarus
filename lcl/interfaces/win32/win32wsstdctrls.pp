@@ -101,6 +101,7 @@ type
     class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
@@ -290,6 +291,12 @@ begin
   else
     Result := TWin32ListStringList.Create(Handle, ACustomListBox);
   Windows.SetProp(Handle, 'List', dword(Result));
+end;
+
+procedure TWin32WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+begin
+  if ACustomListBox.FCompStyle = csListBox then
+    Windows.SendMessage(ACustomListBox.Handle, LB_SELITEMRANGE, Windows.WParam(ASelected), Windows.LParam(MakeLParam(AIndex, AIndex)))
 end;
 
 procedure TWin32WSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
