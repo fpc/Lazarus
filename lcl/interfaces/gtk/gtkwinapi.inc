@@ -598,9 +598,6 @@ writeln('  AddTargetEntry ',FormatName);
     inc(Index);
   end;
 
-type
-  TAddedFormats = array[TGtkClipboardFormat] of boolean;
-
 {function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;}
@@ -818,7 +815,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 const
-  HATCH_NULL      : array[0..7] of Byte = ($00, $00, $00, $00, $00, $00, $00, $00);
+  //HATCH_NULL      : array[0..7] of Byte = ($00, $00, $00, $00, $00, $00, $00, $00);
   HATCH_BDIAGONAL : array[0..7] of Byte = ($80, $40, $20, $10, $08, $04, $02, $01);
   HATCH_CROSS     : array[0..7] of Byte = ($08, $08, $08, $FF, $08, $08, $08, $08);
   {This is too fine for a Cross Hatch ($22, $22, $FF, $22, $22, $22, $FF, $22);}
@@ -2020,10 +2017,10 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.DrawFrameControl(DC: HDC; var Rect : TRect;
   uType, uState : Cardinal) : Boolean;
-const
+{const
   ADJUST_FLAG: array[Boolean] of Integer = (0, BF_ADJUST);
   PUSH_EDGE_FLAG: array[Boolean] of Integer = (EDGE_RAISED, EDGE_SUNKEN);
-  PUSH_EDGE_FLAG2: array[Boolean] of Integer = (0, BF_FLAT);
+  PUSH_EDGE_FLAG2: array[Boolean] of Integer = (0, BF_FLAT);}
 var
   Widget: PGtkWidget;
 
@@ -6813,8 +6810,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
-const
-  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+{const
+  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);}
 begin
   Assert(False, 'trace:[TgtkObject.ShowScrollBar]');
   Result:=false;
@@ -7243,11 +7240,11 @@ var
       Result := Unsupported;
   end;
 
-const //                 FROM     TO
+{const //                 FROM     TO
   DRAWABLE_MATRIX: array[Boolean, Boolean] of TBltFunction = (
     (@NoDrawableToNoDrawable, @NoDrawableToDrawable),
     (@DrawableToNoDrawable, @DrawableToDrawable)
-  );
+  );}
 
 var DCOrigin: TPoint;
 begin
@@ -7592,6 +7589,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.189  2002/11/12 10:16:20  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.188  2002/11/09 18:13:36  lazarus
   MG: fixed gdkwindow checks
 
