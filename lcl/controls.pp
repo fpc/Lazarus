@@ -1825,9 +1825,12 @@ type
     property Width: Integer read GetWidth;
     property ZoneLimit: Integer read GetZoneLimit write SetZoneLimit;
   end;
+  TDockZoneClass = class of TDockZone;
 
 
   { TDockTree - a tree of TDockZones - Every docked window has one tree
+  
+    This is an abstract class. The real implementation is in ldocktree.pas
 
     Docking means here: Combining several windows to one. A window can here be
     a TCustomForm or a floating control (undocked) or a TDockForm.
@@ -1854,9 +1857,9 @@ type
        |+---+|+----+|
        +------------+
 
-      If "A" or "B" were floating controls, the floating dock sites are kept ???.
-      If "A" or "B" were forms, they loose there decorations (title bars and
-      borders) ???.
+      If "A" or "B" were floating controls, the floating dock sites are freed.
+      If "A" or "B" were forms, their decorations (title bars and borders) are
+      replaced by docked decorations.
       If "A" had a TDockTree, it is freed and its child dockzones are merged to
       the docktree of "B".
       
@@ -1882,9 +1885,9 @@ type
        +-------+
 
     Every DockZone has siblings and childs. Siblings can either be
-    horizontally (left to right, splitter),
-    vertically (top to bottom, splitter)
-    or upon each other (as pages, left to right).
+    - horizontally (left to right, splitter),
+    - vertically (top to bottom, splitter)
+    - or upon each other (as pages, left to right).
   }
 
   TForEachZoneProc = procedure(Zone: TDockZone) of object;
@@ -1896,10 +1899,13 @@ type
     );
   TDockTreeFlags = set of TDockTreeFlag;
 
+  { TDockTree }
+
   TDockTree = class(TDockManager)
   private
     FBorderWidth: Integer;
     FDockSite: TWinControl;
+    FDockZoneClass: TDockZoneClass;
     FGrabberSize: Integer;
     FGrabbersOnTop: Boolean;
     FFlags: TDockTreeFlags;
@@ -1930,6 +1936,7 @@ type
     constructor Create(TheDockSite: TWinControl); virtual;
     destructor Destroy; override;
     procedure PaintSite(DC: HDC); override;
+    property DockZoneClass: TDockZoneClass read FDockZoneClass;
   end;
 
 
@@ -2982,6 +2989,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.287  2005/03/05 19:45:22  mattias
+  made New Dialog buttons context sensitive
+
   Revision 1.286  2005/03/04 17:55:34  micha
   fix bug 605: resizing upward or leftward should not move control
 

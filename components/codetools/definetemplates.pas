@@ -2946,7 +2946,7 @@ var
           for i:=Low(FPCOperatingSystemNames) to High(FPCOperatingSystemNames)
           do
             if FPCOperatingSystemNames[i]=DirName then begin
-              if AnsiCompareText(DirName,DefaultTargetOS)=0 then
+              if CompareText(DirName,DefaultTargetOS)=0 then
                 inc(DefaultMacroCount);
               Result:=copy(Result,1,DirStart-1)+TargetOS+
                       copy(Result,DirEnd,length(Result)-DirEnd+1);
@@ -2959,7 +2959,7 @@ var
               to High(FPCOperatingSystemAlternativeNames)
           do
             if FPCOperatingSystemAlternativeNames[i]=DirName then begin
-              if AnsiCompareText(DirName,DefaultSrcOS)=0 then
+              if CompareText(DirName,DefaultSrcOS)=0 then
                 inc(DefaultMacroCount);
               Result:=copy(Result,1,DirStart-1)+SrcOS+
                       copy(Result,DirEnd,length(Result)-DirEnd+1);
@@ -2970,7 +2970,7 @@ var
           // replace processor type
           for i:=Low(FPCProcessorNames) to High(FPCProcessorNames) do
             if FPCProcessorNames[i]=DirName then begin
-              if AnsiCompareText(DirName,DefaultProcessorName)=0 then
+              if CompareText(DirName,DefaultProcessorName)=0 then
                 inc(DefaultMacroCount);
               Result:=copy(Result,1,DirStart-1)+TargetProcessor+
                       copy(Result,DirEnd,length(Result)-DirEnd+1);

@@ -133,6 +133,7 @@ type
     CancelButton: TButton;
     procedure ItemsTreeViewClick(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
+    procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure NewOtherDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
@@ -253,6 +254,12 @@ begin
   OkButtonClick(Self);
 end;
 
+procedure TNewOtherDialog.ItemsTreeViewSelectionChanged(Sender: TObject);
+begin
+  OkButton.Enabled:=(ItemsTreeView.Selected<>nil)
+              and (TObject(ItemsTreeView.Selected.Data) is TNewIDEItemTemplate);
+end;
+
 procedure TNewOtherDialog.SetupComponents;
 begin
   ItemsTreeView:=TTreeView.Create(Self);
@@ -263,6 +270,7 @@ begin
     Top:=5;
     OnClick:=@ItemsTreeViewClick;
     OnDblClick:=@ItemsTreeViewDblClick;
+    OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
   end;
   
   DescriptionGroupBox:=TGroupBox.Create(Self);
@@ -291,6 +299,7 @@ begin
     Top:=100;
     Caption:=lisLazBuildOk;
     OnClick:=@OkButtonClick;
+    Enabled:=false;
   end;
   
   CancelButton:=TButton.Create(Self);
@@ -302,6 +311,8 @@ begin
     Caption:=dlgCancel;
     ModalResult := mrCancel;
   end;
+  
+  DefaultControl:=OkButton;
   CancelControl:=CancelButton;
 end;
 

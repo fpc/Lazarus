@@ -120,12 +120,13 @@ constructor TDockTree.Create(TheDockSite: TWinControl);
 var
   i: Integer;
 begin
+  FDockZoneClass:=TDockZone;
   inherited Create;
   FBorderWidth:=4;
   FDockSite:=TheDockSite;
   FGrabberSize:=DefaultDockGrabberSize;
   FGrabbersOnTop:=(FDockSite.Align <> alTop) and (FDockSite.Align <> alBottom);
-  FTopZone:=TDockZone.Create(Self);
+  FTopZone:=FDockZoneClass.Create(Self);
   // insert existing controls into tree
   BeginUpdate;
   try
@@ -145,7 +146,7 @@ end;
 
 procedure TDockTree.PaintSite(DC: HDC);
 begin
-
+  // TODO
 end;
 
 // included by controls.pp

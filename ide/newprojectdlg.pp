@@ -38,7 +38,7 @@ type
 
 { TNewProjectDialog }
 
-TNewProjectDialog = class(TForm)
+  TNewProjectDialog = class(TForm)
     CreateButton: TButton;
     CancelButton: TButton;
     ListBox: TListBox;
