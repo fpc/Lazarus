@@ -765,6 +765,7 @@ begin
   Result:=false;
   SkipChecks:=false;
   ActivateGlobalWriteLock;
+  IgnoreAfterCodeXY:=CursorPos;
   try
     // build code tree
     {$IFDEF CTDEBUG}
@@ -846,6 +847,7 @@ begin
       end;
     end;
   finally
+    ClearIgnoreAfterPosition;
     DeactivateGlobalWriteLock;
   end;
 end;

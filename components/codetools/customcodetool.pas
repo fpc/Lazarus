@@ -57,6 +57,7 @@ type
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
   protected
+    FIgnoreAfterCodeXY: TCodeXYPosition;
     KeyWordFuncList: TKeyWordFunctionList;
     FForceUpdateNeeded: boolean;
     function DefaultKeyWordFunc: boolean;
@@ -66,6 +67,7 @@ type
     procedure RaiseIdentExpectedButAtomFound;
     procedure RaiseBracketOpenExpectedButAtomFound;
     procedure RaiseBracketCloseExpectedButAtomFound;
+    procedure SetIgnoreAfterCodeXY(const AValue: TCodeXYPosition); virtual;
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
@@ -122,6 +124,7 @@ type
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
         StopAtDirectives: boolean): integer;
     function FindFirstLineEndAfterInCode(StartPos: integer): integer;
+    procedure ClearIgnoreAfterPosition;
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
@@ -181,6 +184,8 @@ type
       read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
     property OnSetGlobalWriteLock: TOnSetWriteLock
       read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
+      
+    property IgnoreAfterCodeXY: TCodeXYPosition read FIgnoreAfterCodeXY write SetIgnoreAfterCodeXY;
 
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
@@ -1482,6 +1487,14 @@ begin
     Result:=true;
 end;
 
+procedure TCustomCodeTool.SetIgnoreAfterCodeXY(const AValue: TCodeXYPosition);
+begin
+  if (FIgnoreAfterCodeXY.Code=AValue.Code)
+  and (FIgnoreAfterCodeXY.X=AValue.X)
+  and (FIgnoreAfterCodeXY.Y=AValue.Y) then exit;
+  FIgnoreAfterCodeXY:=AValue;
+end;
+
 function TCustomCodeTool.DefaultKeyWordFunc: boolean;
 begin
   Result:=true;
@@ -1520,14 +1533,14 @@ procedure TCustomCodeTool.WriteDebugTreeReport;
         WriteSrcSubString(StartPos,5);
         write(' End=',EndPos,' ');
         WriteSrcSubString(EndPos-5,5);
-{$ifdef fpc}
+        {$ifdef fpc}
         write(' Self=',HexStr(Cardinal(RootNode),8));
         write(' P=',HexStr(Cardinal(Parent),8));
         write(' NB=',HexStr(Cardinal(NextBrother),8));
         //write(' PB=',HexStr(Cardinal(PriorBrother),8));
         //write(' FC=',HexStr(Cardinal(FirstChild),8));
         //write(' LC=',HexStr(Cardinal(LastChild),8));
-{$endif}
+        {$endif}
       end;
       writeln('');
       WriteSubTree(RootNode.FirstChild,Indent+'  ');
@@ -1714,6 +1727,11 @@ begin
                         StartPos,LinkEnd-1,Scanner.NestedComments)
   else
     Result:=StartPos;
+end;
+
+procedure TCustomCodeTool.ClearIgnoreAfterPosition;
+begin
+  FIgnoreAfterCodeXY.Code:=nil;
 end;
 
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
