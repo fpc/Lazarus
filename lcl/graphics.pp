@@ -550,14 +550,14 @@ type
                          Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
     procedure PolyBezier(const Points: array of TPoint);
     procedure Polygon(const Points: array of TPoint;
-                      Winding: Boolean{$IFDEF VER1_1} = False{$ENDIF};
+                      Winding: Boolean;
                       StartIndex: Integer{$IFDEF VER1_1} = 0{$ENDIF};
                       NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
     Procedure Polygon(const Points: array of TPoint);
     procedure Polyline(const Points: array of TPoint;
-                       StartIndex: Integer {$IFDEF VER1_1} = 0{$ENDIF};
+                       StartIndex: Integer;
                        NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Polyline(const Points: array of TPoint);
@@ -955,6 +955,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/12/28 17:43:43  mattias
+  fixed FindControl and searching overloaded procs
+
   Revision 1.57  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 
