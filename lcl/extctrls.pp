@@ -469,13 +469,15 @@ type
     FItems      : TStrings;
     FColumns    : integer;
     FOnItemClick: TCheckGroupClicked;
-    procedure UpdateItems;
     function GetChecked(Index: integer): boolean;
-    procedure ItemsChanged (Sender : TObject);
-    procedure DoPositionButtons;
-    procedure SetChecked(Index: integer; const AValue: boolean);
+    function GetCheckEnabled(Index: integer): boolean;
     procedure Clicked(Sender: TObject);
     procedure DoClick(Index: integer);
+    procedure DoPositionButtons;
+    procedure ItemsChanged (Sender : TObject);
+    procedure SetChecked(Index: integer; const AValue: boolean);
+    procedure SetCheckEnabled(Index: integer; const AValue: boolean);
+    procedure UpdateItems;
   protected
     procedure SetItems(Value: TStrings);
     procedure SetColumns(Value: integer);
@@ -492,6 +494,7 @@ type
   public
     property Items: TStrings read FItems write SetItems;
     property Checked[Index: integer]: boolean read GetChecked write SetChecked;
+    property CheckEnabled[Index: integer]: boolean read GetCheckEnabled write SetCheckEnabled;
     property Columns: integer read FColumns write SetColumns default 1;
     property OnItemClick: TCheckGroupClicked read FOnItemClick write FOnItemClick;
   end;
@@ -621,6 +624,9 @@ end.
 
  {
   $Log$
+  Revision 1.54  2003/03/18 00:00:05  mattias
+  added TCheckGroup.CheckEnabled
+
   Revision 1.53  2003/03/17 23:39:30  mattias
   added TCheckGroup
 
