@@ -1458,7 +1458,7 @@ begin
     // create 'overlay' window
     Windows.GetClientRect(WindowHandle, @ARect);
     OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
-        'BUTTON', '', WS_CHILD or WS_VISIBLE or BS_OWNERDRAW,
+        @ClsName, '', WS_CHILD or WS_VISIBLE,
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
         WindowHandle, HMENU(nil), HInstance, nil);
     OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
@@ -3067,6 +3067,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.133  2005/01/21 22:07:10  micha
+  simpler overlay window
+
   Revision 1.132  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

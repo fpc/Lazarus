@@ -1378,7 +1378,7 @@ begin
       DisposeWindowInfo(Window);
     end;
   else
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
   end;
 end;
 
@@ -1527,6 +1527,9 @@ end;
 
 {
   $Log$
+  Revision 1.185  2005/01/21 22:07:10  micha
+  simpler overlay window
+
   Revision 1.184  2005/01/15 10:09:23  micha
   fix bug 558: title bar redraw (win32)
   USE_SYNCHRONIZE enabled per default for 1.9.x
