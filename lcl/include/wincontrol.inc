@@ -988,26 +988,28 @@ begin
     List := TList.Create;
     GetTabOrderList(List);
     If List.Count > 0 then begin
-      J := List.IndexOf(CurrentControl) + 1;
-      If J >= List.Count then
-        J := -1
-      else
-        Dec(J);
+      J := List.IndexOf(CurrentControl);
+      if J<0 then exit;
       I := J;
       Repeat
-        If GoForward then
+        If GoForward then begin
           Inc(I);
-        If (I < List.Count) and (List[I] <> nil) then begin
-          Next := TControl(List[I]);
-          If ((Not CheckTabStop or Next.TabStop) and
-            (not CheckParent or (Next.Parent = Self)))
-            and (Next.Enabled and Next.Visible)
-          then begin
-            if not OnlyWinControls or (Next is TWinControl) then
-              Result := Next;
-          end;
+          if I>=List.Count then
+            I:=0;
+        end else begin
+          Dec(I);
+          if I<0 then
+            I:=List.Count-1;
         end;
-      until (Result <> nil) or (I = J) or (I >= List.Count);
+        if I=J then exit;
+          
+        Next := TControl(List[I]);
+        If (((Not CheckTabStop) or Next.TabStop)
+        and ((not CheckParent) or (Next.Parent = Self)))
+        and (Next.Enabled and Next.Visible)
+        and ((not OnlyWinControls) or (Next is TWinControl)) then
+          Result := Next;
+      until (Result <> nil);
     end;
   finally
     List.Free;
@@ -1023,6 +1025,35 @@ function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
 begin
   Result:=TWinControl(FindNextControl(CurrentControl,
                                       GoForward,CheckTabStop,CheckParent,true));
+end;
+
+procedure TWinControl.FixupTabList;
+var
+  Count, I, J: Integer;
+  List: TList;
+  Control: TWinControl;
+begin
+  if FWinControls <> nil then
+  begin
+    List := TList.Create;
+    try
+      Count := FWinControls.Count;
+      List.Count := Count;
+      for I := 0 to Count - 1 do
+      begin
+        Control := TWinControl(FWinControls[I]);
+        J := Control.FTabOrder;
+        if (J >= 0) and (J < Count) then List[J] := Control;
+      end;
+      for I := 0 to Count - 1 do
+      begin
+        Control := TWinControl(List[I]);
+        if Control <> nil then Control.UpdateTabOrder(I);
+      end;
+    finally
+      List.Free;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1536,6 +1567,25 @@ Begin
     Begin
       //Sendmessage to do something?
     End;
+  end;
+end;
+
+procedure TWinControl.UpdateTabOrder(NewTabValue: TTabOrder);
+var
+  CurIndex, Count: Integer;
+begin
+  if FParent=nil then exit;
+  CurIndex := GetTabOrder;
+  if CurIndex >= 0 then
+  begin
+    if NewTabValue < 0 then NewTabValue := 0;
+    Count := FParent.FTabList.Count;
+    if NewTabValue >= Count then NewTabValue := Count - 1;
+    if NewTabValue <> CurIndex then
+    begin
+      FParent.FTabList.Delete(CurIndex);
+      FParent.FTabList.Insert(NewTabValue, Self);
+    end;
   end;
 end;
 
@@ -2467,6 +2517,7 @@ end;
 procedure TWinControl.Loaded;
 begin
   inherited Loaded;
+  FixupTabList;
   if wcfColorChanged in FFlags then begin
     CNSendMessage(LM_SETCOLOR, Self, nil);
     Exclude(FFlags,wcfColorChanged);
@@ -2589,6 +2640,14 @@ end;
 function TWinControl.GetIsResizing: boolean;
 begin
   Result:=BoundsLockCount>0;
+end;
+
+function TWinControl.GetTabOrder: TTabOrder;
+begin
+  if FParent <> nil then
+    Result := FParent.FTabList.IndexOf(Self)
+  else
+    Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -2737,6 +2796,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.134  2003/06/10 17:23:35  mattias
+  implemented tabstop
+
   Revision 1.133  2003/06/10 12:28:23  mattias
   fixed anchoring controls
 
