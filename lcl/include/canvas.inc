@@ -102,7 +102,8 @@ begin
 //writeln('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
 // ,'  Brush=',HexStr(Cardinal(Pointer(Brush)),8));
   OldHandle:=SelectObject(FHandle, Brush.Handle);
-  if OldHandle<>Brush.Handle then FSavedBrushHandle:=OldHandle;
+  if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
+    FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
 //  SetBkColor(FHandle, not ColorToRGB(Brush.Color));
 //  SetBkMode(FHandle, TRANSPARENT);
@@ -117,8 +118,11 @@ end;
 procedure TCanvas.CreatePen;
 var OldHandle: HPEN;
 begin
+//writeln('[TCanvas.CreatePen] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
+// ,'  Pen=',HexStr(Cardinal(Pointer(Pen)),8));
   OldHandle:=SelectObject(FHandle, Pen.Handle);
-  if OldHandle<>Pen.Handle then FSavedPenHandle:=OldHandle;
+  if (OldHandle<>Pen.Handle) and (FSavedPenHandle=0) then
+    FSavedPenHandle:=OldHandle;
   Include(FState, csPenValid);
 //  SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
@@ -133,7 +137,8 @@ procedure TCanvas.CreateFont;
 var OldHandle: HPEN;
 begin
   OldHandle:=SelectObject(FHandle, Font.Handle);
-  if OldHandle<>Font.Handle then FSavedFontHandle:=OldHandle;
+  if (OldHandle<>Font.Handle) and (FSavedFontHandle=0) then
+    FSavedFontHandle:=OldHandle;
   Include(FState, csFontValid);
   SetTextColor(FHandle, ColorToRGB(Font.Color));
 end;
@@ -226,8 +231,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.FillRect(const Rect : TRect);
 begin
+writeln('[TCanvas.FillRect] 1');
   RequiredState([csHandleValid, csBrushValid]);
+writeln('[TCanvas.FillRect] 2');
   LCLLinux.FillRect(FHandle, Rect, Brush.Handle);
+writeln('[TCanvas.FillRect] 3');
 end;
 
 {------------------------------------------------------------------------------
@@ -522,6 +530,7 @@ begin
   Needed := ReqState - FState;
   if Needed <> [] then
   begin
+writeln('[TCanvas.RequiredState] 1');
     if csHandleValid in Needed then
     begin
       CreateHandle;
@@ -529,13 +538,16 @@ begin
       then raise EInvalidOperation.Create('Canvas does not allow drawing');
       Include(FState, csHandleValid);
     end;
+writeln('[TCanvas.RequiredState] 2');
     if csFontValid in Needed then CreateFont;
+writeln('[TCanvas.RequiredState] 3');
     if csPenValid in Needed then
     begin
       CreatePen;
       if Pen.Style in [psDash, psDot, psDashDot, psDashDotDot]
       then Include(Needed, csBrushValid);
     end;
+writeln('[TCanvas.RequiredState] 4');
     if csBrushValid in Needed then CreateBrush;
   end;
 end;
@@ -591,8 +603,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.5  2001/03/20 16:59:15  lazarus
-  MG: fixed many bugs (mem leaks, canvas)
+  Revision 1.6  2001/03/22 22:39:02  lazarus
+  MG: fixed unreleased handle bug
 
   Revision 1.4  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
