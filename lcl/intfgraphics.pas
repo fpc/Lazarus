@@ -100,6 +100,15 @@ type
   TOnSetLazIntfImagePixel = procedure(x, y: integer; const Color: TFPColor)
                             of object;
 
+  PReadRawImageBits = procedure(TheData: PByte;
+    const Position: TRawImagePosition;
+    Prec, Shift: cardinal; var Bits: word);
+
+  PWriteRawImageBits = procedure(TheData: PByte;
+    const Position: TRawImagePosition;
+    Prec, Shift: cardinal; Bits: word);
+
+
   TLazIntfImage = class(TFPCustomImage)
   private
     FAutoCreateMask: boolean;
@@ -112,6 +121,10 @@ type
     FMaskLineStarts: PRawImagePosition;
     FUpdateCount: integer;
     fCreateAllDataNeeded: boolean;
+    FReadRawImageBits: PReadRawImageBits;
+    FWriteRawImageBits: PWriteRawImageBits;
+    FAlphaReadRawImageBits: PReadRawImageBits;
+    FAlphaWriteRawImageBits: PWriteRawImageBits;
     procedure SetAutoCreateMask(const AValue: boolean);
   protected
     OnGetInternalColor: TOnGetLazIntfImagePixel;
@@ -132,8 +145,19 @@ type
                                       TheLineEnd: TRawImageLineEnd); virtual;
     procedure SetDataDescription(const NewDescription: TRawImageDescription); virtual;
     procedure ChooseGetSetColorFunctions; virtual;
-    procedure GenericGetColor(x, y: integer; var Value: TFPColor);
-    procedure GenericSetColor(x, y: integer; const Value: TFPColor);
+    procedure ChooseRawBitsProc(BitsPerPixel: cardinal; BitOrder: TRawImageBitOrder;
+      var ProcReadRawImageBits: PReadRawImageBits; var ProcWriteRawImageBits: PWriteRawImageBits);
+    procedure GetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; var Value: TFPColor);
+    procedure GetColor_NoPalette_RGBA_Alpha_Sep_NoMask(x, y: integer; var Value: TFPColor);
+    procedure GetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; var Value: TFPColor);
+    procedure GetColor_NoPalette_RGBA_NoAlpha(x, y: integer; var Value: TFPColor);
+    procedure GetColor_NoPalette_Gray(x, y: integer; var Value: TFPColor);
+    procedure GetColor_NULL(x, y: integer; var Value: TFPColor);
+    procedure SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; const Value: TFPColor);
+    procedure SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; const Value: TFPColor);
+    procedure SetColor_NoPalette_RGBA_NoAlpha(x, y: integer; const Value: TFPColor);
+    procedure SetColor_NoPalette_Gray(x, y: integer; const Value: TFPColor);
+    procedure SetColor_NULL(x, y: integer; const Value: TFPColor);
   public
     constructor Create(AWidth, AHeight: integer); override;
     destructor Destroy; override;
@@ -278,12 +302,6 @@ function GetBitsPerLine(Width, BitsPerPixel: cardinal;
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
 procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
                                      StartSize: integer);
-procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
-                       BitsPerPixel, Prec, Shift: cardinal;
-                       BitOrder: TRawImageBitOrder; var Bits: word);
-procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
-                       BitsPerPixel, Prec, Shift: cardinal;
-                       BitOrder: TRawImageBitOrder; Bits: word);
 
 implementation
 
@@ -413,43 +431,21 @@ begin
   end;
 end;
 
-procedure ReadRawImageBits(TheData: PByte;
+procedure ReadRawImageBits_1_2_4_BIO(TheData: PByte;
   const Position: TRawImagePosition;
-  BitsPerPixel, Prec, Shift: cardinal; BitOrder: TRawImageBitOrder;
+  Prec, Shift: cardinal;
   var Bits: word);
 var
   P: PByte;
   PrecMask: Cardinal;
   OneByte: Byte;
-  TwoBytes: Word;
-  FourBytes: Cardinal;
 begin
   PrecMask:=(Cardinal(1) shl Prec)-1;
   P:=@(TheData[Position.Byte]);
-  case BitsPerPixel of
-  1,2,4:
-      begin
-        OneByte:=P^;
-        if BitOrder=riboBitsInOrder then
-          Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask)
-        else
-          Bits:=Word(cardinal(OneByte shr (Shift+7-Position.Bit)) and PrecMask);
-      end;
-  8:  begin
-        OneByte:=P^;
-        Bits:=Word(cardinal(OneByte shr Shift) and PrecMask);
-      end;
-  16: begin
-        TwoBytes:=PWord(P)^;
-        Bits:=Word(cardinal(TwoBytes shr Shift) and PrecMask);
-      end;
-  32: begin
-        FourBytes:=PDWord(P)^;
-        Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
-      end;
-  else
-    Bits:=0;
-  end;
+
+  OneByte:=P^;
+  Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask);
+
   if Prec<16 then begin
     // add missing bits
     Bits:=(Bits shl (16-Prec));
@@ -457,64 +453,211 @@ begin
   end;
 end;
 
-procedure WriteRawImageBits(TheData: PByte;
+procedure ReadRawImageBits_1_2_4_BNIO(TheData: PByte;
   const Position: TRawImagePosition;
-  BitsPerPixel, Prec, Shift: cardinal; BitOrder: TRawImageBitOrder; Bits: word);
+  Prec, Shift: cardinal;
+  var Bits: word);
 var
   P: PByte;
   PrecMask: Cardinal;
   OneByte: Byte;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+  OneByte:=P^;
+  Bits:=Word(cardinal(OneByte shr (Shift+7-Position.Bit)) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure ReadRawImageBits_8(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  OneByte: Byte;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+  OneByte:=P^;
+  Bits:=Word(cardinal(OneByte shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure ReadRawImageBits_16(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
   TwoBytes: Word;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+  TwoBytes:=PWord(P)^;
+  Bits:=Word(cardinal(TwoBytes shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure ReadRawImageBits_32(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
   FourBytes: Cardinal;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+
+  FourBytes:=PDWord(P)^;
+  Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure WriteRawImageBits_1_2_4_BIO(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  OneByte: Byte;
   ShiftLeft: Integer;
 begin
   P:=@(TheData[Position.Byte]);
   PrecMask:=(Cardinal(1) shl Prec)-1;
   Bits:=Bits shr (16-Prec);
-  {writeln('TLazIntfImage.WriteDataBits WRITE Position=',Position.Byte,'/',Position.Bit,
-    ' Shift=',Shift,' Prec=',Prec,' BitsPerPixel=',BitsPerPixel,
-    ' PrecMask=',HexStr(Cardinal(PrecMask),4),
-    ' Bits=',HexStr(Cardinal(Bits),4),
-    '');}
-  case BitsPerPixel of
-  1,2,4:
-      begin
-        OneByte:=P^;
-        if BitOrder=riboBitsInOrder then
-          ShiftLeft:=Shift+Position.Bit
-        else
-          ShiftLeft:=Shift+7-Position.Bit;
-        PrecMask:=not (PrecMask shl ShiftLeft);
-        OneByte:=OneByte and PrecMask; // clear old
-        OneByte:=OneByte or (Bits shl ShiftLeft); // set new
-        P^:=OneByte;
-        //writeln('TLazIntfImage.WriteDataBits 1,2,4 Result=',HexStr(Cardinal(OneByte),2));
-      end;
-  8:  begin
-        OneByte:=P^;
-        PrecMask:=not (PrecMask shl Shift);
-        OneByte:=OneByte and PrecMask; // clear old
-        OneByte:=OneByte or (Bits shl Shift); // set new
-        P^:=OneByte;
-        //writeln('TLazIntfImage.WriteDataBits 8 Result=',HexStr(Cardinal(OneByte),2));
-      end;
-  16: begin
-        TwoBytes:=PWord(P)^;
-        PrecMask:=not (PrecMask shl Shift);
-        TwoBytes:=TwoBytes and PrecMask; // clear old
-        TwoBytes:=TwoBytes or (Bits shl Shift); // set new
-        PWord(P)^:=TwoBytes;
-        //writeln('TLazIntfImage.WriteDataBits 16 Result=',HexStr(Cardinal(TwoBytes),4));
-      end;
-  32: begin
-        FourBytes:=PDWord(P)^;
-        PrecMask:=not (PrecMask shl Shift);
-        FourBytes:=FourBytes and PrecMask; // clear old
-        FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
-        PDWord(P)^:=FourBytes;
-        //writeln('TLazIntfImage.WriteDataBits 32 Result=',HexStr(Cardinal(FourBytes),8));
-      end;
+
+  OneByte:=P^;
+  ShiftLeft:=Shift+Position.Bit;
+  PrecMask:=not (PrecMask shl ShiftLeft);
+  OneByte:=OneByte and PrecMask; // clear old
+  OneByte:=OneByte or (Bits shl ShiftLeft); // set new
+  P^:=OneByte;
+end;
+
+procedure WriteRawImageBits_1_2_4_BNIO(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  OneByte: Byte;
+  ShiftLeft: Integer;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+  OneByte:=P^;
+  ShiftLeft:=Shift+7-Position.Bit;
+  PrecMask:=not (PrecMask shl ShiftLeft);
+  OneByte:=OneByte and PrecMask; // clear old
+  OneByte:=OneByte or (Bits shl ShiftLeft); // set new
+  P^:=OneByte;
+end;
+
+procedure WriteRawImageBits_8(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  OneByte: Byte;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+  OneByte:=P^;
+  PrecMask:=not (PrecMask shl Shift);
+  OneByte:=OneByte and PrecMask; // clear old
+  OneByte:=OneByte or (Bits shl Shift); // set new
+  P^:=OneByte;
+end;
+
+procedure WriteRawImageBits_16(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  TwoBytes: Word;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+  TwoBytes:=PWord(P)^;
+  PrecMask:=not (PrecMask shl Shift);
+  TwoBytes:=TwoBytes and PrecMask; // clear old
+  TwoBytes:=TwoBytes or (Bits shl Shift); // set new
+  PWord(P)^:=TwoBytes;
+end;
+
+procedure WriteRawImageBits_32(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  FourBytes: Cardinal;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+
+  FourBytes:=PDWord(P)^;
+  PrecMask:=not (PrecMask shl Shift);
+  FourBytes:=FourBytes and PrecMask; // clear old
+  FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+  PDWord(P)^:=FourBytes;
+end;
+
+procedure ReadRawImageBits_NULL(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal;
+  var Bits: word);
+begin
+  Bits:=0;
+
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
   end;
+end;
+
+procedure WriteRawImageBits_NULL(TheData: PByte;
+  const Position: TRawImagePosition;
+  Prec, Shift: cardinal; Bits: word);
+begin
 end;
 
 { TLazIntfImage }
@@ -538,132 +681,275 @@ begin
   end;
 end;
 
+procedure TLazIntfImage.ChooseRawBitsProc(BitsPerPixel: cardinal; BitOrder: TRawImageBitOrder;
+  var ProcReadRawImageBits: PReadRawImageBits; var ProcWriteRawImageBits: PWriteRawImageBits);
+begin
+  case BitsPerPixel of
+  1,2,4:
+  begin
+    if BitOrder = riboBitsInOrder then
+    begin
+      ProcReadRawImageBits  := @ReadRawImageBits_1_2_4_BIO;
+      ProcWriteRawImageBits := @WriteRawImageBits_1_2_4_BIO;
+    end else begin
+      ProcReadRawImageBits  := @ReadRawImageBits_1_2_4_BNIO;
+      ProcWriteRawImageBits := @WriteRawImageBits_1_2_4_BNIO;
+    end;
+  end;
+  8:
+  begin
+    ProcReadRawImageBits  := @ReadRawImageBits_8;
+    ProcWriteRawImageBits := @WriteRawImageBits_8;
+  end;
+  16:
+  begin
+    ProcReadRawImageBits  := @ReadRawImageBits_16;
+    ProcWriteRawImageBits := @WriteRawImageBits_16;
+  end;
+  32:
+  begin
+    ProcReadRawImageBits  := @ReadRawImageBits_32;
+    ProcWriteRawImageBits := @WriteRawImageBits_32;
+  end;
+  else
+    ProcReadRawImageBits  := @ReadRawImageBits_NULL;
+    ProcWriteRawImageBits := @WriteRawImageBits_NULL;
+  end;
+end;
+
 procedure TLazIntfImage.ChooseGetSetColorFunctions;
 begin
   // Default: use the generic functions, that can handle all kinds of RawImages
-  OnGetInternalColor:=@GenericGetColor;
-  OnSetInternalColor:=@GenericSetColor;
+  if not FDataDescription.HasPalette then
+  begin
+    case FDataDescription.Format of
+      ricfRGBA:
+      begin
+        ChooseRawBitsProc(FDataDescription.BitsPerPixel, FDataDescription.BitOrder,
+          FReadRawImageBits, FWriteRawImageBits);
+
+        if FDataDescription.AlphaPrec>0 then
+        begin
+          if FDataDescription.AlphaSeparate then
+          begin
+            if (FMaskData<>nil) then
+            begin
+              OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_Mask;
+              OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_Sep_Mask;
+            end else begin
+              OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_Sep_NoMask;
+              OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
+            end;
+            ChooseRawBitsProc(FDataDescription.AlphaBitsPerPixel,
+              FDataDescription.AlphaBitOrder,
+              FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
+          end else begin
+            OnGetInternalColor:=@GetColor_NoPalette_RGBA_Alpha_NoSep;
+            OnSetInternalColor:=@SetColor_NoPalette_RGBA_Alpha_NoSep;
+            ChooseRawBitsProc(FDataDescription.BitsPerPixel,
+              FDataDescription.AlphaBitOrder,
+              FAlphaReadRawImageBits, FAlphaWriteRawImageBits);
+          end;
+        end else begin
+          OnGetInternalColor:=@GetColor_NoPalette_RGBA_NoAlpha;
+          OnSetInternalColor:=@SetColor_NoPalette_RGBA_NoAlpha;
+        end;
+      end;
+      ricfGray:
+      begin
+        OnGetInternalColor:=@GetColor_NoPalette_Gray;
+        OnSetInternalColor:=@SetColor_NoPalette_Gray;
+      end;
+    else
+      OnGetInternalColor:=@GetColor_NULL;
+      OnSetInternalColor:=@SetColor_NULL;
+    end;
+  end else begin
+    OnGetInternalColor:=@GetColor_NULL;
+    OnSetInternalColor:=@SetColor_NULL;
+  end;
 end;
 
-procedure TLazIntfImage.GenericGetColor(x, y: integer; var Value: TFPColor);
+procedure TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; var Value: TFPColor);
 var
   Position: TRawImagePosition;
   MaskPosition: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  if not FDataDescription.HasPalette then begin
-    case FDataDescription.Format of
-    ricfRGBA:
-      begin
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,FDataDescription.RedShift,
-                     FDataDescription.BitOrder,Value.Red);
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                     FDataDescription.BitOrder,Value.Green);
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.BluePrec,FDataDescription.BlueShift,
-                     FDataDescription.BitOrder,Value.Blue);
-        if FDataDescription.AlphaPrec>0 then begin
-          if FDataDescription.AlphaSeparate then begin
-            if (FMaskData<>nil) then begin
-              GetXYMaskPostion(x,y,MaskPosition);
-              ReadRawImageBits(FMaskData,MaskPosition,
-                           FDataDescription.AlphaBitsPerPixel,
-                           FDataDescription.AlphaPrec,
-                           FDataDescription.AlphaShift,
-                           FDataDescription.AlphaBitOrder,Value.Alpha);
-            end else begin
-              // no alpha mask -> set opaque
-              Value.Alpha:=high(Value.Alpha);
-            end;
-          end else
-            ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                         FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
-                         FDataDescription.AlphaBitOrder,Value.Alpha)
-        end else begin
-          // no alpha -> set opaque
-          Value.Alpha:=high(Value.Alpha);
-        end;
-      end;
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.RedPrec,FDataDescription.RedShift,
+               Value.Red);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.GreenPrec,FDataDescription.GreenShift,
+               Value.Green);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.BluePrec,FDataDescription.BlueShift,
+               Value.Blue);
 
-    ricfGray:
-      begin
-        ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                     FDataDescription.RedPrec,FDataDescription.RedShift,
-                     FDataDescription.BitOrder,Value.Red);
-        Value.Green:=Value.Red;
-        Value.Blue:=Value.Red;
-      end;
+  GetXYMaskPostion(x,y,MaskPosition);
+  FAlphaReadRawImageBits(FMaskData,MaskPosition,
 
-    else
-      Value.Red:=0;
-      Value.Green:=0;
-      Value.Blue:=0;
-      Value.Alpha:=0;
-    end;
-  end else begin
-    // ToDo: read index, then palette
-    Value.Red:=0;
-    Value.Green:=0;
-    Value.Blue:=0;
-    Value.Alpha:=0;
-  end;
+               FDataDescription.AlphaPrec,
+               FDataDescription.AlphaShift,
+               Value.Alpha);
 end;
 
-procedure TLazIntfImage.GenericSetColor(x, y: integer; const Value: TFPColor);
+procedure TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_Sep_NoMask(x, y: integer; var Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.RedPrec,FDataDescription.RedShift,
+               Value.Red);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.GreenPrec,FDataDescription.GreenShift,
+               Value.Green);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.BluePrec,FDataDescription.BlueShift,
+               Value.Blue);
+
+  // no alpha mask -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; var Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.RedPrec,FDataDescription.RedShift,
+               Value.Red);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.GreenPrec,FDataDescription.GreenShift,
+               Value.Green);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.BluePrec,FDataDescription.BlueShift,
+               Value.Blue);
+
+  FAlphaReadRawImageBits(FPixelData,Position,
+               FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
+               Value.Alpha)
+end;
+
+procedure TLazIntfImage.GetColor_NoPalette_RGBA_NoAlpha(x, y: integer; var Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.RedPrec,FDataDescription.RedShift,
+               Value.Red);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.GreenPrec,FDataDescription.GreenShift,
+               Value.Green);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.BluePrec,FDataDescription.BlueShift,
+               Value.Blue);
+
+  // no alpha -> set opaque
+  Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_NoPalette_Gray(x, y: integer; var Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FReadRawImageBits(FPixelData,Position,
+               FDataDescription.RedPrec,FDataDescription.RedShift,
+               Value.Red);
+  Value.Green:=Value.Red;
+  Value.Blue:=Value.Red;
+end;
+
+procedure TLazIntfImage.GetColor_NULL(x, y: integer; var Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  Value.Red:=0;
+  Value.Green:=0;
+  Value.Blue:=0;
+  Value.Alpha:=0;
+end;
+
+procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_Sep_Mask(x, y: integer; const Value: TFPColor);
 var
   Position: TRawImagePosition;
   MaskPosition: TRawImagePosition;
 begin
   GetXYDataPostion(x,y,Position);
-  if not FDataDescription.HasPalette then begin
-    case FDataDescription.Format of
-    ricfRGBA:
-      begin
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.RedPrec,FDataDescription.RedShift,
-                      FDataDescription.BitOrder,Value.Red);
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                      FDataDescription.BitOrder,Value.Green);
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.BluePrec,FDataDescription.BlueShift,
-                      FDataDescription.BitOrder,Value.Blue);
-        if FDataDescription.AlphaPrec>0 then begin
-          if FDataDescription.AlphaSeparate then begin
-            if (FMaskData<>nil) then begin
-              GetXYMaskPostion(x,y,MaskPosition);
-              WriteRawImageBits(FMaskData,MaskPosition,
-                            FDataDescription.AlphaBitsPerPixel,
-                            FDataDescription.AlphaPrec,
-                            FDataDescription.AlphaShift,
-                            FDataDescription.AlphaBitOrder,Value.Alpha);
-            end else begin
-              // no alpha mask
-            end;
-          end else
-            WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                          FDataDescription.AlphaPrec,
-                          FDataDescription.AlphaShift,
-                          FDataDescription.AlphaBitOrder,Value.Alpha)
-        end else begin
-          // no alpha
-        end;
-      end;
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.RedPrec,FDataDescription.RedShift,
+                Value.Red);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.GreenPrec,FDataDescription.GreenShift,
+                Value.Green);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.BluePrec,FDataDescription.BlueShift,
+                Value.Blue);
 
-    ricfGray:
-      begin
-        WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
-                      FDataDescription.RedPrec,FDataDescription.RedShift,
-                      FDataDescription.BitOrder,Value.Red);
-      end;
+  GetXYMaskPostion(x,y,MaskPosition);
+  FAlphaWriteRawImageBits(FMaskData,MaskPosition,
+                FDataDescription.AlphaPrec,
+                FDataDescription.AlphaShift,
+                Value.Alpha);
+end;
 
-    else
-    end;
-  end else begin
-    // ToDo:
-  end;
+procedure TLazIntfImage.SetColor_NoPalette_RGBA_Alpha_NoSep(x, y: integer; const Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.RedPrec,FDataDescription.RedShift,
+                Value.Red);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.GreenPrec,FDataDescription.GreenShift,
+                Value.Green);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.BluePrec,FDataDescription.BlueShift,
+                Value.Blue);
+
+  FAlphaWriteRawImageBits(FPixelData,Position,
+                FDataDescription.AlphaPrec,
+                FDataDescription.AlphaShift,
+                Value.Alpha)
+end;
+
+procedure TLazIntfImage.SetColor_NoPalette_RGBA_NoAlpha(x, y: integer; const Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.RedPrec,FDataDescription.RedShift,
+                Value.Red);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.GreenPrec,FDataDescription.GreenShift,
+                Value.Green);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.BluePrec,FDataDescription.BlueShift,
+                Value.Blue);
+
+  // no alpha
+end;
+
+procedure TLazIntfImage.SetColor_NoPalette_Gray(x, y: integer; const Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPostion(x,y,Position);
+  FWriteRawImageBits(FPixelData,Position,
+                FDataDescription.RedPrec,FDataDescription.RedShift,
+                Value.Red);
+end;
+
+procedure TLazIntfImage.SetColor_NULL(x, y: integer; const Value: TFPColor);
+begin
+  // NULL, not implemented
 end;
 
 procedure TLazIntfImage.SetAutoCreateMask(const AValue: boolean);
@@ -761,8 +1047,8 @@ end;
 constructor TLazIntfImage.Create(AWidth, AHeight: integer);
 begin
   FAutoCreateMask:=true;
-  OnGetInternalColor:=@GenericGetColor;
-  OnSetInternalColor:=@GenericSetColor;
+  OnGetInternalColor:=@GetColor_NULL;
+  OnSetInternalColor:=@SetColor_NULL;
   inherited Create(AWidth, AHeight);
 end;
 
