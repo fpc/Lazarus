@@ -66,6 +66,7 @@ type
     procedure DoEvents; virtual; abstract;
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
+    procedure SendCachedLCLMessages; virtual;
     procedure Init; virtual; abstract;
     function GetText(Sender: TControl; var Text: String): Boolean; virtual; abstract;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
@@ -84,6 +85,11 @@ implementation
 Uses
   StdCtrls;
 
+procedure TInterfaceBase.SendCachedLCLMessages;
+begin
+
+end;
+
 {$I interfacebase.inc}
 
 
@@ -95,6 +101,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2002/10/01 10:12:34  lazarus
+  MG: added SendCachedLCLMessages to interfacebase for wysiwyg
+
   Revision 1.13  2002/09/19 16:45:54  lazarus
   MG: fixed Menu.Free and gdkwindow=nil bug
 
