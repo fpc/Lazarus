@@ -59,6 +59,8 @@ function HideCaret(hWnd: HWND): Boolean; override;
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 
+function KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean; override;
+
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
@@ -90,6 +92,7 @@ function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
+function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
@@ -108,6 +111,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/04/06 22:25:15  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.13  2001/03/26 14:58:32  lazarus
   MG: setwindowpos + bugfixes
 

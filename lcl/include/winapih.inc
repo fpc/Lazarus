@@ -13,7 +13,6 @@
   !! if needed 
  ******************************************************************************)
 
-
 {******************************************************************************
   Platform specific stuff
  ******************************************************************************}
@@ -84,6 +83,8 @@ Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolea
 //function IsCharAlphaNumeric --> independent
 //function IsRectEmpty --> independent
 
+function KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -123,6 +124,7 @@ function SetScrollInfo(Handle: HWND; SBStyle : Integer; ScrollInfo: TScrollInfo;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var Point : TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
@@ -167,6 +169,7 @@ type
   WPARAM = longint;
   LPARAM = LongInt;
   LRESULT = LongInt;
+
 
 //##apiwiz##spi##    // Do not remove
 
@@ -223,6 +226,9 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.9  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

@@ -26,6 +26,7 @@ begin
   FGDIObjects := TDynHashArray.Create(-1);
   FMessageQueue := TList.Create;
   FAccelGroup := gtk_accel_group_new();
+  FTimerData  := TList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -42,6 +43,7 @@ const
 var
   n: Integer;
   p: PMsg;
+  pTimerInfo  : PGtkITimerinfo;
   GDITypeCount: array[TGDIType] of Integer;
   GDIType: TGDIType;
   HashItem: PDynHashArrayItem;
@@ -113,10 +115,24 @@ begin
     end;
   end;
 
+  n := FTimerData.Count;
+  if (n > 0) then
+  begin
+    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    while (n > 0) do
+    begin
+      dec (n);
+      pTimerInfo := PGtkITimerinfo (FTimerData.Items[n]);
+      Dispose (pTimerInfo);
+      FTimerData.Delete (n);
+    end;
+  end;
+
   FMessageQueue.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
+  FTimerData.Free;
   gtk_accel_group_unref(FAccelGroup);
 
   inherited Destroy;
@@ -390,11 +406,8 @@ begin
 
       LM_DESTROY :
       begin
-         if (Sender is TTimer) then begin
-           Assert(False, 'Trace:removing timer!!!');
-           gtk_timeout_remove((Sender as TTimer).TimerID);
-         end
-         else if (Sender is TWinControl) or (Sender is TCommonDialog) then begin
+         if (Sender is TWinControl) or (Sender is TCommonDialog) then 
+         begin
            if Handle<>0 then
              gtk_widget_destroy(PGtkWidget(Handle));
          end
@@ -1642,8 +1655,8 @@ begin
       then CompStyle := TMenu(Sender).FCompStyle
    else if (Sender is TCommonDialog)
       then CompStyle := TCommonDialog(Sender).FCompStyle
-   else if (Sender is TTimer) 
-      then CompStyle := csTimer;
+   else
+      ;
 
    // the following is for debug only
    if caption = '' then caption := Sender.ClassName;
@@ -2075,13 +2088,6 @@ begin
          SetFixedWidget(p, TempWidget);
          SetMainWidget(p, TempWidget);
          gtk_widget_show (P);
-      end;
-
-      csTimer:
-      begin
-         Assert(False, 'Trace:Creating a timer in CreateComponent');
-         with (Sender as TTimer) do
-            TimerID := gtk_timeout_add (Interval, @gtkTimerCB, Sender);
       end;
 
       csPage:    // TPage - Notebook page 
@@ -2817,6 +2823,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.43  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.42  2001/03/27 21:12:54  lazarus
   MWE:
     + Turned on longstrings

@@ -43,6 +43,7 @@ type
       FMessageQueue: TList;
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
+      FTimerData : TList;       // keeps track of timer evenet structures
 
       FStockNullBrush: HBRUSH;
       FStockBlackBrush: HBRUSH;
@@ -203,6 +204,14 @@ type
     destroy_func:     TGtkSignalDestroy;
   end;
 
+  { lazarus GtkInterface definition for additional timer data, not in gtk }
+  PGtkITimerInfo = ^TGtkITimerinfo;
+  TGtkITimerInfo = record
+    Handle   : hWND;
+    IDEvent  : Integer;
+    TimerFunc: TFNTimerProc;
+  end;
+  
 var
   Event : TGDKEVENTCONFIGURE;
   gtk_handler_quark: TGQuark;
@@ -249,6 +258,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.12  2001/03/27 21:12:54  lazarus
   MWE:
     + Turned on longstrings

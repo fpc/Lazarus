@@ -251,6 +251,11 @@ begin
   Result := InterfaceObject.InvalidateRect(aHandle, Rect, bErase);
 end;
 
+function KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
+begin
+  Result := InterfaceObject.KillTimer(hWnd, uIDEvent);
+end;
+
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := InterfaceObject.LineTo(DC, X, Y);
@@ -384,6 +389,11 @@ end;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := InterfaceObject.SetTextColor(DC, Color);
+end;
+
+function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer;
+begin
+  Result := InterfaceObject.SetTimer(hWnd, nIDEvent, uElapse, lpTimerFunc);
 end;
 
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
@@ -971,6 +981,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.12  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

@@ -4,23 +4,35 @@
 {
   TTimer Delphi compatibility:
 
-    In contrast to the Delphi timer there are some more public
-    properties and functions, because the GTK interface needs
-    access to them. To avoid invalid access to them, there's a
-    new private variable "AllowIDAccess" which controls access
-    to the timerID property which is vital for the class.
-    I'm not sure if this approach is thread safe but it works
-    for the moment. Just keep in mind not to modify the TimerID
-    from your application.
+    nearly 100% compatible, only WndProc is missing
 
-    The procedure Timer is also public now, because the gtk-
-    implementation of the timer makes this neccessary (as far as
-    I know now)
+  TODO: -
 
+  Possible improvements: -
+
+  Bugs: unknown
 }
 
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }
+
+{------------------------------------------------------------------------------
+  Method:  TimerCBProc
+  Params:  handle  - handle (self) of the TTimer instance
+           message - should be LM_Timer, currently unused (s. Win32 API)
+           IDEvent - currently unused (s. Win32 API)
+           Time    - currently unused (s. Win32 API)
+  Returns: Nothing
+
+  Callback for a timer which will call TTimer.Timer. This proc will be used
+  if the InterfaceObject uses a callback instead of delivering a LM_Timer 
+  message.
+ ------------------------------------------------------------------------------}
+procedure TimerCBProc(Handle: HWND; message : cardinal; IDEvent: Integer; Time: Cardinal);
+begin
+   // Cast Handle back to timer
+  TTimer(Handle).Timer (message);
+end;
 
 {------------------------------------------------------------------------------
   Method: TTimer.Create
@@ -35,7 +47,6 @@ begin
   FInterval := 1000;
   FTimerID  := cIdNoTimer;
   FEnabled  := true;
-  AllowIdAccess := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -52,18 +63,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TTimer.SetTimerID
-  Params:  Value - a timer id
-  Returns: Nothing
-
-  Sets an id for the timer if access to the id is currently allowed.
- ------------------------------------------------------------------------------}
-procedure TTimer.SetTimerID  (Value : integer);
-begin
-  if AllowIdAccess then FTimerID := value;
-end;
-
-{------------------------------------------------------------------------------
   Method: TTimer.KillTimer
   Params:  Nothing
   Returns: Nothing
@@ -72,8 +71,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TTimer.KillTimer;
 begin
+  Assert(False, 'Trace:In TTimer.KillTimer');
   if FTimerID <> cIdNoTimer then
-    CNSendMessage(LM_DESTROY, Self, nil);
+  begin
+     FEnabled := false;
+     InterfaceObject.KillTimer (integer(Self), FTimerID);
+  end;
   FTimerID := cIdNoTimer;
 end;
 
@@ -87,12 +90,8 @@ end;
 procedure TTimer.UpdateTimer;
 begin
   KillTimer;
-  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then
-  begin
-     AllowIdAccess := true;
-     CNSendMessage(LM_CREATE, Self, nil);
-     AllowIdAccess := false;
- end;
+  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) 
+    then FTimerID := InterfaceObject.SetTimer(Integer(Self), 0, FInterval, @TimerCBProc);
 end;
 
 {------------------------------------------------------------------------------
@@ -104,7 +103,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TTimer.Timer (var msg);
 begin
-  Assert(False, 'Trace:Timer received a message -TIMER');
+  Assert(false, 'Trace:Timer received a message -TIMER');
   if Assigned (FOnTimer) and (FEnabled) and (FInterval > 0) then
       FOnTimer(Self);
 end;
@@ -159,6 +158,9 @@ end;
 
  {
   $Log$
+  Revision 1.2  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.1  2000/07/13 10:28:28  michael
   + Initial import
 

@@ -2217,6 +2217,38 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: KillTimer
+  Params: hWnd:
+          nIDEvent:
+  Returns:
+
+  WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
+           thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB). 
+ ------------------------------------------------------------------------------}
+function TGTKObject.KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
+var
+   n : integer;
+   p : PGtkITimerinfo;
+begin
+   Assert(False, 'Trace:removing timer!!!');
+   n := FTimerData.Count;
+   while (n > 0) do
+   begin
+     dec (n);
+     p := PGtkITimerinfo (FTimerData.Items[n]);
+     if ((pointer (hWnd) <> nil) and (hWnd = p^.Handle)) or
+        ((pointer(hWnd) = nil)  and (uIDEvent = p^.IDEvent)) then
+     begin
+        gtk_timeout_remove (uIDEvent);
+        FTimerData.Delete (n);
+        pointer (p^.Handle) := nil;     // mark as invalid
+        p^.TimerFunc        := nil;
+//        Dispose (p);                  // this will be done in gtkTimerCB!
+     end;
+   end;
+end;
+
+{------------------------------------------------------------------------------
   Function: LineTo
   Params:  none
   Returns: Nothing
@@ -3180,6 +3212,42 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SetTimer
+  Params: hWnd:
+          nIDEvent:
+          uElapse:
+          lpTimerFunc:
+  Returns: a GTK-timer id
+
+  This function will create a GTK timer object and associate a callback to it.
+
+  Design: Currently only a callback to the TTimer class is implemented.
+ ------------------------------------------------------------------------------}
+function TGTKObject.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer;
+var
+  PTimerInfo: PGtkITimerinfo;
+begin
+  if ((hWnd = 0) and (lpTimerFunc = nil))
+     then Result := 0
+  else begin
+     New (PTimerInfo);
+     PTimerInfo^.Handle    := hWND;
+     PTimerInfo^.IDEvent   := nIDEvent;
+     PTimerInfo^.TimerFunc := lpTimerFunc;
+     gtk_timeout_add(uElapse, @gtkTimerCB, PTimerInfo);
+     FTimerData.Add (PTimerInfo);
+  end;
+end;
+(*begin
+  if (hWnd <> 0) 
+     then Result := gtk_timeout_add(uElapse, @gtkTimerCB, Pointer (hWnd))
+  else if (lpTimerFunc <> nil)
+     then Result := gtk_timeout_add(uElapse, @gtkTimerCBDirect, Pointer (hWnd))
+  else 
+     Result := 0
+end;*)
+
+{------------------------------------------------------------------------------
   Procedure: SetWindowLong
   Params:  none
   Returns: Nothing
@@ -3446,6 +3514,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.31  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

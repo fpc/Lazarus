@@ -897,19 +897,43 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-{ Directly call the Timer function of the TTimer object.
-  (As far as I know this can't be dispatched like it's done in the other callbacks!) }
-  
-// MWE: Post a LM_Timer message !!!  
+{------------------------------------------------------------------------------
+  Method: gtkTimerCB
+  Params:  Data - pointer TGtkITimerInfo structure
+  Returns: 1    - 1 tells gtk to restart the timer
+           0    - 0 will stop the gtk timer
 
-function gtkTimerCB (data : gpointer) : gint; cdecl;
+  Callback for gtk timer. Depending on "data" either user-callback function
+  will be called or a timer message will be delivered.
+
+  WARNING: There seems to be a bug in gtk-1.2.x which breaks 
+           gtk_timeout_remove so we have to dispose data here & return 0
+           (s.a. KillTimer).
+ ------------------------------------------------------------------------------}
+function gtkTimerCB(Data: gPointer): gint; cdecl;
 var
-   P : ^TTimer;
+  Mess : TLMessage;
 begin
-  EventTrace('timer', data);
-  P := @data;
-  P^.Timer(TTimer(data));
-  result := 1;                  { returning 0 would stop the timer, 1 will restart it }
+  EventTrace ('TimerCB', data);
+  Result := 1;  // assume: timer will continue
+  if PGtkITimerinfo(Data)^.TimerFunc <> nil
+  then begin    // Call users timer function
+    PGtkITimerinfo(Data)^.TimerFunc(PGtkITimerinfo(Data)^.Handle, 
+                        LM_TIMER,
+                        PGtkITimerinfo(Data)^.IDEvent, 
+                        0{WARN: should be: GetTickCount});
+  end
+  else if (pointer (PGtkITimerinfo(Data)^.Handle) <> nil)
+  then begin    // Handle through default message handler
+    Mess.msg    := LM_TIMER;
+    Mess.WParam := PGtkITimerinfo(Data)^.IDEvent;
+    Mess.LParam := LongInt (PGtkITimerinfo(Data)^.TimerFunc);
+    DeliverMessage (Pointer (PGtkITimerinfo(Data)^.Handle), Mess);
+  end
+  else begin
+     result := 0;       // stop timer
+     dispose (PGtkITimerinfo(Data));     // free memory with timer data
+  end;
 end;
 
 function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent; data : gpointer) : GBoolean; cdecl;
@@ -1116,6 +1140,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.29  2001/03/27 11:11:13  lazarus
   MG: fixed mouse msg, added filedialog initialdir
 

@@ -248,6 +248,11 @@ begin
   Result := false;
 end;
 
+function TInterfaceBase.KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
+begin
+  Result := false; 
+end;
+
 function TInterfaceBase.LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := False;
@@ -386,6 +391,11 @@ begin
   Result := CLR_INVALID;
 end;
 
+function TInterfaceBase.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer;
+begin
+  Result := 0; 
+end;
+
 function TInterfacebase.SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
 begin
   Result := -1;
@@ -438,6 +448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/04/06 22:25:14  lazarus
+  * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
+
   Revision 1.13  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 
