@@ -82,7 +82,7 @@ type
 implementation
 
 Uses
-  Dialogs, LCLStrConsts, Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
+  LCLStrConsts, Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
 
 
 {$I interfacebase.inc}
@@ -96,6 +96,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2002/10/24 22:10:39  lazarus
+  AJ: More changes for better code reuse between gnome & gtk interfaces
+
   Revision 1.19  2002/10/16 16:58:22  lazarus
   MG: moved SendCachedLCLMessages
 
