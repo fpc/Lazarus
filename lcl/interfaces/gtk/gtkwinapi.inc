@@ -3198,7 +3198,7 @@ begin
     If Not IsValidGDIObject(ClipRegion) then begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_window_get_size(Drawable, @X, @Y);
-      lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X, Y);
+      lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X-DCOrigin.X, Y-DCOrigin.Y);
       Result := SIMPLEREGION;
     end
     else begin
@@ -7533,6 +7533,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.182  2002/10/31 22:14:16  lazarus
+  MG: fixed GetClipBox when clipping region invalid
+
   Revision 1.181  2002/10/31 21:29:47  lazarus
   MG: implemented TControlScrollBar.Size
 
