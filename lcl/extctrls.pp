@@ -369,7 +369,7 @@ type
 //    property DragCursor;
 //    property DragKind;
 //    property DragMode;
-//    property Enabled;
+    property Enabled;
     property Font;
     property Hint;
     property ParentColor;
@@ -378,6 +378,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Visible;
+    property OnChangeBounds;
     property OnClick;
     property OnDblClick;
 //    property OnDragDrop;
@@ -388,6 +389,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    property OnResize;
 //    property OnStartDock;
 //    property OnStartDrag;
   end;
@@ -834,6 +836,9 @@ end.
 
  {
   $Log$
+  Revision 1.85  2003/12/28 12:49:18  mattias
+  published TPaintBox.Enabled
+
   Revision 1.84  2003/12/26 10:59:25  mattias
   fixed color coversion range check
 
