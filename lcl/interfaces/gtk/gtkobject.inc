@@ -5497,6 +5497,53 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: TGTKObject.SelectGDKPenProps
+  Params:  DC: a (LCL)devicecontext
+  Returns: Nothing
+
+  Sets the forecolor and fill according to the pen
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.SelectGDKPenProps(DC: HDC);
+begin
+  if IsValidGDIObject(HGDIOBJ(TDeviceContext(DC).CurrentPen)) then begin
+    with TDeviceContext(DC), CurrentPen^ do begin
+      EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
+      EnsureGCColor(DC, GC, GDIPenColor, False, False);//Pen Color
+    end;
+  
+    if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
+      Exclude(TDeviceContext(DC).DCFlags,dcfPenInvalid);
+      if TDeviceContext(DC).GC<>nil then begin
+        with TDeviceContext(DC), CurrentPen^ do
+        begin
+          IsNullPen := GDIPenStyle = PS_NULL;
+          if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
+          then begin
+            gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, 0, 0)
+          end
+          else begin
+            gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,0,0);
+            case GDIPenStyle of
+              PS_DASH:       gdk_gc_set_dashes(GC, 0, [4,4], 2);
+              PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
+              PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
+              PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
+             {This is DEADLY!!!}
+              //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
+            end;
+          end;
+        end;
+        Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
+      end;
+    end;
+  end else begin
+    // pen invalid
+    Include(TDeviceContext(DC).DCFlags,dcfPenInvalid);
+    writeln('WARNING: SelectGDKPenProps Pen invalid');
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: NewDC
   Params:  none
   Returns: a gtkwinapi DeviceContext
@@ -5897,6 +5944,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.235  2002/10/07 20:50:58  lazarus
+  MG: accelerated SelectGDKPenProps
+
   Revision 1.234  2002/10/06 20:24:27  lazarus
   MG: fixed stopping keypress event if handled by LCL
 
