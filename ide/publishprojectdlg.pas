@@ -131,17 +131,17 @@ end;
 
 procedure TPublishProjectDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  SelectDirDialog: TSelectDirectoryDialog;
   NewDir: String;
 begin
-  OpenDialog:=TOpenDialog.Create(Self);
-  InputHistories.ApplyFileDialogSettings(OpenDialog);
-  OpenDialog.Title:=lisChooseDirectory;
-  if OpenDialog.Execute then begin
-    NewDir:=ExpandFilename(OpenDialog.Filename);
+  SelectDirDialog:=TSelectDirectoryDialog.Create(Self);
+  InputHistories.ApplyFileDialogSettings(SelectDirDialog);
+  SelectDirDialog.Title:=lisChooseDirectory;
+  if SelectDirDialog.Execute then begin
+    NewDir:=ExpandFilename(SelectDirDialog.Filename);
     SetComboBox(DestDirComboBox,NewDir,20);
   end;
-  OpenDialog.Free;
+  SelectDirDialog.Free;
 end;
 
 procedure TPublishProjectDialog.ExcludeFilterGroupboxRESIZE(Sender: TObject);
