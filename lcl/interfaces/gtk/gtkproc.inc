@@ -665,12 +665,25 @@ end;
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
 begin
   if (Widget <> nil) then
-  gtk_object_set_data(Widget, 'Class', Pointer(AnObject));
+    gtk_object_set_data(Widget, 'Class', Pointer(AnObject));
 end;
 
 function GetLCLObject(const Widget: Pointer): TObject;
 begin
   Result := TObject(gtk_object_get_data(Widget, 'Class'));
+  {$IFDEF VerboseClientRectBugFix}
+  if Result=nil then begin
+    writeln('TTT1 GetLCLObject ERROR Widget=',HexStr(Cardinal(Widget),8),' Result=nil');
+  end else begin
+    if Result is TRadioButton then
+      write('TTT2 GetLCLObject Widget=',HexStr(Cardinal(Widget),8),
+        ' Result=',HexStr(Cardinal(Result),8),' ',Result.ClassName);
+    if TControl(Result).Parent<>nil then
+      writeln(' Parent=',TControl(Result).Parent.Name,':',TControl(Result).Parent.ClassName)
+    else
+      writeln(' Parent=nil');
+  end;
+  {$ENDIF}
 end;
 
 // ----------------------------------------------------------------------
@@ -819,7 +832,7 @@ var
   LCLControl: TControl;
   LevelCounts: PInteger;
 begin
-  writeln(' KKK0');
+  //writeln(' KKK0');
   Result:=TList.Create;
   if HashArray.Count=0 then exit;
   
@@ -828,10 +841,10 @@ begin
   HashItem:=HashArray.FirstHashItem;
   i:=0;
   MaxLevel:=0;
-  writeln(' KKK1 HashArray.Count=',HashArray.Count);
+  //writeln(' KKK1 HashArray.Count=',HashArray.Count);
   while HashItem<>nil do begin
     TopologicalList[i].Widget:=HashItem^.Item;
-    writeln(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    //writeln(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
     LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
     if (LCLControl=nil) or (not (LCLControl is TControl)) then
       raise Exception.Create('CreateTopologicalSortedWidgets: '
@@ -840,7 +853,7 @@ begin
     TopologicalList[i].ParentLevel:=Lvl;
     if MaxLevel<Lvl then
       MaxLevel:=Lvl;
-    writeln(' KKK2 i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
+    //writeln(' KKK2 i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
     inc(i);
     HashItem:=HashItem^.Next;
   end;
@@ -865,8 +878,8 @@ begin
   for i:=0 to HashArray.Count-1 do begin
     Lvl:=TopologicalList[i].ParentLevel;
     dec(LevelCounts[Lvl]);
-    writeln(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
-    ' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    //writeln(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
+    //  ' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
     Result[LevelCounts[Lvl]]:=TopologicalList[i].Widget;
   end;
   
@@ -1092,6 +1105,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.38  2002/05/13 14:47:02  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.37  2002/05/12 04:56:21  lazarus
   MG: client rect bugs nearly completed
 
