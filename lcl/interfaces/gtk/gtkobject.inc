@@ -4920,7 +4920,7 @@ end;
 function TgtkObject.NewDC: PDeviceContext;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewDC]', []));
-  New(Result);
+  Result:=GtkDef.NewPDeviceContext;
   with Result^ do
   begin
     hWnd := 0;
@@ -4940,6 +4940,19 @@ begin
   FDeviceContexts.Add(Result);
 //writeln('[TgtkObject.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
 //  Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.DisposeDC(DC: PDeviceContext);
+
+  Disposes DC
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.DisposeDC(pDC: PDeviceContext);
+begin
+  if FDeviceContexts.Contains(pDC) then begin
+    FDeviceContexts.Remove(pDC);
+    GtkDef.DisposePDeviceContext(pDC);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5298,6 +5311,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.171  2002/08/21 14:06:40  lazarus
+  MG: added TDeviceContextMemManager
+
   Revision 1.170  2002/08/21 11:42:52  lazarus
   MG: reduced output
 
