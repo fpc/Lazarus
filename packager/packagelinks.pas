@@ -608,18 +608,18 @@ var
 begin
   BeginUpdate;
   // remove from user links
-  ANode:=FUserLinks.Find(APackageID);
+  ANode:=FUserLinks.FindKey(APackageID,@ComparePackageIDAndLink);
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
-    FUserLinks.Remove(ANode);
+    FUserLinks.Delete(ANode);
     OldLink.Free;
     Modified:=true;
   end;
   // remove from global links
-  ANode:=FGlobalLinks.Find(APackageID);
+  ANode:=FGlobalLinks.FindKey(APackageID,@ComparePackageIDAndLink);
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
-    FGlobalLinks.Remove(ANode);
+    FGlobalLinks.Delete(ANode);
     OldLink.Free;
     Modified:=true;
   end;

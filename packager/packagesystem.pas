@@ -330,11 +330,13 @@ begin
     if not NewPackage.MakeSense then exit;
     if PkgLink.Compare(NewPackage)<>0 then exit;
     // ok
+    Result:=true;
     AddPackage(NewPackage);
   finally
+    if not Result then
+      NewPackage.Free;
     EndUpdate;
   end;
-  Result:=true;
 end;
 
 constructor TLazPackageGraph.Create;
@@ -356,6 +358,7 @@ begin
   if OnGetAllRequiredPackages=@GetAllRequiredPackages then
     OnGetAllRequiredPackages:=nil;
   Clear;
+  FLazarusBasePackages.Free;
   FItems.Free;
   FTree.Free;
   inherited Destroy;

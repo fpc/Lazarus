@@ -1257,7 +1257,15 @@ begin
 end;
 
 destructor TPkgManager.Destroy;
+var
+  Dependency: TPkgDependency;
 begin
+  while FirstAutoInstallDependency<>nil do begin
+    Dependency:=FirstAutoInstallDependency;
+    Dependency.RequiredPackage:=nil;
+    Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+    Dependency.Free;
+  end;
   FreeThenNil(PackageGraphExplorer);
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);

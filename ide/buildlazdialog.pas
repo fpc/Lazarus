@@ -862,6 +862,7 @@ destructor TBuildLazarusOptions.Destroy;
 begin
   Clear;
   fStaticAutoInstallPackages.Free;
+  fItems.Free;
   inherited Destroy;
 end;
 
