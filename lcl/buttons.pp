@@ -41,6 +41,8 @@ uses StdCtrls, VCLGlobals, Classes, LCLType, LCLLinux,
   GraphType, Graphics, SysUtils, Controls, lMessages, Forms, Messages;
 
 type
+  { TButton }
+
   TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
   TButtonState = (bsUp, bsDisabled, bsDown, bsExclusive);
 
@@ -111,6 +113,7 @@ type
     procedure SetGlyph(Value : TBitmap);
     procedure SetNumGlyphs(Value : TNumGlyphs);
   protected
+    procedure GlyphChanged(Sender : TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -144,12 +147,13 @@ type
     Procedure SetSpacing(Value : Integer);
   protected
     Procedure Click; override;
+    procedure GlyphChanged(Sender : TObject);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
-    property Glyph : TBitmap read GetGlyph write SetGlyph;
   published
     property Default stored IsCustom;
+    property Glyph : TBitmap read GetGlyph write SetGlyph;
     property Kind : TBitBtnKind read FKind write SetKind;
     property Layout: TButtonLayout read FLayout write SetLayout;
     property ModalResult stored IsCustom;
@@ -209,18 +213,18 @@ type
     destructor Destroy; override;
     procedure Click; override;
   published
-    property AllowAllUp : Boolean read FAllowAllUp write SetAllowAllUp default false;
+    property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Caption;
-    property Down : Boolean read FDown write SetDown default false;
+    property Down: Boolean read FDown write SetDown default false;
     property Enabled;
-    property Flat : Boolean read FFlat write SetFlat default false;
-    property Glyph : TBitmap read GetGlyph write SetGlyph;
-    property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
-    property Layout : TButtonLayout read FLayout write SetLayout default blGlyphLeft;
-    property Margin : integer read FMargin write SetMargin default -1;
-    property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
-    property Spacing : integer read FSpacing write SetSpacing default 4;
-    property Transparent : Boolean read FTransparent write SetTransparent default false;
+    property Flat: Boolean read FFlat write SetFlat default false;
+    property Glyph: TBitmap read GetGlyph write SetGlyph;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
+    property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
+    property Margin: integer read FMargin write SetMargin default -1;
+    property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
+    property Spacing: integer read FSpacing write SetSpacing default 4;
+    property Transparent: Boolean read FTransparent write SetTransparent default false;
     property Visible;
     property OnClick;
   end;
@@ -231,9 +235,11 @@ type
 implementation
 
 const
-  BitBtnModalResults : Array[TBitBtnKind] of TModalResult = (0,mrOK,mrCAncel,0,mryes,mrNo,
-                                                            0,mrAbort,mrRetry, mrIgnore, mrAll);
-  BitbtnCaption : Array[TBitBtnKind] of String = ('','OK','Cancel','Help','','','Close','','','','All');
+  BitBtnModalResults : Array[TBitBtnKind] of TModalResult = (
+    0,mrOK,mrCAncel,0,mryes,mrNo,
+    0,mrAbort,mrRetry, mrIgnore, mrAll);
+  BitbtnCaption : Array[TBitBtnKind] of String = (
+    '','OK','Cancel','Help','','','Close','','','','All');
 
 
 var
@@ -261,6 +267,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/09/03 08:07:17  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.21  2002/09/01 16:11:21  lazarus
   MG: double, triple and quad clicks now works
 
