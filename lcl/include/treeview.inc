@@ -3495,11 +3495,11 @@ begin
       if (fScrollBars in [ssAutoBoth, ssAutoHorizontal])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
         FLastHorzScrollInfo.cbSize:=0;
-        ShowScrollBar(Handle,SB_HORZ,false);
+        ShowScrollBar(Handle, SB_HORZ, false);
       end else begin
         FLastHorzScrollInfo:=ScrollInfo;
-        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-        ShowScrollBar(Handle,SB_HORZ,True);
+        ShowScrollBar(Handle, SB_HORZ, true);
+        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, true);
       end;
     end;
     //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
@@ -3528,11 +3528,11 @@ begin
       if (fScrollBars in [ssAutoBoth, ssAutoVertical])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
         FLastVertScrollInfo.cbSize:=0;
-        ShowScrollBar(Handle,SB_VERT,false);
+        ShowScrollBar(Handle, SB_VERT, false);
       end else begin
         FLastVertScrollInfo:=ScrollInfo;
-        SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-        ShowScrollBar(Handle,SB_VERT,True);
+        ShowScrollBar(Handle, SB_VERT, true);
+        SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
       end;
     end;
     //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',ScrollInfo.nMin,
