@@ -2530,7 +2530,6 @@ var
   Width, Height: Integer;
   AY, Num : Integer;
   TXTPt : TPoint;
-  TM  : TTextMetric;
   //ADC : hDC;
   UseFont : PGDKFont;
   UnRef : Boolean;
@@ -2586,12 +2585,12 @@ begin
       end;
       Num := FindChar(#10,Str,Count);
       AY := Y;
-      GetTextMetrics(DC, TM);
+      UpdateDCTextMetric(TDeviceContext(DC));
       TxtPt.X := X;
       {$IfDef Win32}
-      TxtPt.Y := AY + TM.tmHeight div 2;
+      TxtPt.Y := AY + DCTextMetric.TextMetric.tmHeight div 2;
       {$Else}
-      TxtPt.Y := AY + TM.tmAscent;
+      TxtPt.Y := AY + DCTextMetric.TextMetric.tmAscent;
       {$EndIf}
       SelectGDKTextProps(DC);
       if Num < 0 then begin
@@ -2609,9 +2608,9 @@ begin
                           TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, LineStart, Num);
           AY := TxtPt.Y;
           {$IfDef Win32}
-            TxtPt.Y := AY + TM.tmHeight div 2;
+            TxtPt.Y := AY + DCTextMetric.TextMetric.tmHeight div 2;
           {$Else}
-            TxtPt.Y := AY + TM.tmAscent;
+            TxtPt.Y := AY + DCTextMetric.TextMetric.tmAscent;
           {$EndIf}
           LineStart:=LineEnd+1; // skip #10
           if (LineStart<StrEnd) and (LineStart^=#13) then
@@ -3958,51 +3957,15 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-const
-  TestString = '{Am|g_}';
-  AVGBuffer : Pchar =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
-var
-  XT : TSize;
-  lbearing, rbearing, dummy: LongInt;
-  UseFont : PGDKFont;
-  UnRef : Boolean;
 begin
   Assert(False, Format('Trace:> TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 
   Result := IsValidDC(DC);
-  if Result then
-    with TDeviceContext(DC) do begin
-      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
-      then begin
-        UseFont := GetDefaultFont;
-        UnRef := True;
-      end
-      else begin
-        UseFont := CurrentFont^.GDIFontObject;
-        UnRef := False;
-      end;
-      If UseFont = nil then
-        WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font')
-      else begin
-        with TM do begin
-          FillChar(TM, SizeOf(TM), 0);
-          gdk_text_extents(UseFont, TestString,
-            length(TestString), @lbearing, @rBearing, @dummy,
-            @tmAscent, @tmDescent);
-          GetTextExtentPoint(DC, AVGBuffer, StrLen(AVGBuffer), XT);
-          XT.cX := XT.cX div StrLen(AVGBuffer);
-          tmHeight := XT.cY;
-          tmAscent := tmHeight - tmDescent;
-          tmAveCharWidth :=  XT.cX;
-          if tmAveCharWidth<2 then tmAveCharWidth:=2;
-          tmMaxCharWidth := gdk_char_width(UseFont, 'W'); // temp hack
-          if tmMaxCharWidth<2 then tmMaxCharWidth:=2;
-          If UnRef then
-            GDK_Font_UnRef(UseFont);
-        end;
-      end;
-    end;
+  if Result then begin
+    UpdateDCTextMetric(TDeviceContext(DC));
+    TM:=TDeviceContext(DC).DCTextMetric.TextMetric;
+  end;
+
   Assert(False, Format('Trace:< TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
@@ -5637,6 +5600,7 @@ begin
           then begin
             gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
           end;
+          Exclude(DCFlags,dcfTextMetricsValid);
           SelectedColors := dcscCustom;
         end;
       gdiPen:
@@ -6970,7 +6934,6 @@ var
   aRect : TRect;
   txtpt : TPoint;
   sz : TSize;
-  TM : TTextMetric;
   UseFont : PGDKFont;
   UnRef : Boolean;
   DCOrigin: TPoint;
@@ -7000,12 +6963,12 @@ begin
         GetTextExtentPoint(DC, Str, Count, Sz);
         aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
         FillRect(DC,aRect,hBrush(CurrentBrush));
-        GetTextMetrics(DC, TM);
+        UpdateDCTextMetric(TDeviceContext(DC));
         TxtPt.X := X;
         {$IfDef Win32}
-          TxtPt.Y := Y + TM.tmHeight div 2;
+          TxtPt.Y := Y + DCTextMetric.TextMetric.tmHeight div 2;
         {$Else}
-          TxtPt.Y := Y + TM.tmAscent;
+          TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
         {$EndIf}
         SelectGDKTextProps(DC);
         gdk_draw_text(Drawable, UseFont,
@@ -7199,6 +7162,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.154  2002/10/10 19:43:17  lazarus
+  MG: accelerated GetTextMetrics
+
   Revision 1.153  2002/10/10 08:51:15  lazarus
   MG: added paint messages for some gtk internal widgets
 
