@@ -263,7 +263,7 @@ Begin
     DragObject.DragTarget := TargetControl;
     if TargetControl is TWinControl then
       DragObject.DragHandle := TWinControl(TargetControl).Handle
-    else
+    else if (TargetControl<>nil) and (TargetControl.Parent<>nil) then
       DragObject.DragHandle := TargetControl.Parent.Handle;
     DragObject.DragPos := Position;
     SendDragOver(dmDragEnter);
@@ -362,6 +362,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.7  2005/01/13 00:13:36  mattias
+  fixed dragging over nil
+
   Revision 1.6  2004/09/20 20:22:12  mattias
   implemented Refactoring Tool: Find Identfier References
 
