@@ -259,11 +259,14 @@ begin
     if (FState in [bsDown, bsExclusive])
     or (FMouseInControl and (FState <> bsDisabled)) 
     or (csDesigning in ComponentState) 
-    then
+    then begin
+      Canvas.Brush.Color := clbtnface;//color;
+      // Fillrect doesnt paint the outer right and bottom border
+      Canvas.FillRect(PaintRect);
       DrawEdge(Canvas.Handle, PaintRect, 
         DOWNSTYLES[FState in [bsDown, bsExclusive]],
         FILLSTYLES[Transparent] or BF_RECT)
-    else 
+    end else 
       if not Transparent 
       then begin
         Canvas.Brush.Color := clbtnface;//color;
@@ -530,6 +533,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/11/22 14:33:26  lazarus
+  MG: fixed painting background of flat speedbuttons
+
   Revision 1.10  2001/10/18 13:01:33  lazarus
   MG: fixed speedbuttons numglyphs>1 and started IDE debugging
 
