@@ -72,9 +72,9 @@ type
     ProcedureInsertPolicy: TProcedureInsertPolicy;
     KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
-    DoNotSplitLineBefore: TAtomTypes;
+    DoNotSplitLineInFront: TAtomTypes;
     DoNotSplitLineAfter: TAtomTypes;
-    DoInsertSpaceBefore: TAtomTypes;
+    DoInsertSpaceInFront: TAtomTypes;
     DoInsertSpaceAfter: TAtomTypes;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
@@ -188,10 +188,10 @@ const
       'Alphabetically', 'Last', 'ClassOrder'
     );
     
-  DefaultDoNotSplitLineBefore: TAtomTypes =
+  DefaultDoNotSplitLineInFront: TAtomTypes =
     [atColon,atComma,atSemicolon,atPoint];
   DefaultDoNotSplitLineAfter: TAtomTypes = [atColon,atAt,atPoint,atKeyWord];
-  DefaultDoInsertSpaceBefore: TAtomTypes = [];
+  DefaultDoInsertSpaceInFront: TAtomTypes = [];
   DefaultDoInsertSpaceAfter: TAtomTypes = [atColon,atComma,atSemicolon];
 
 function AtomTypeNameToType(const s: string): TAtomType;
@@ -655,9 +655,9 @@ begin
   ProcedureInsertPolicy:=pipClassOrder;
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
-  DoNotSplitLineBefore:=DefaultDoNotSplitLineBefore;
+  DoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
   DoNotSplitLineAfter:=DefaultDoNotSplitLineAfter;
-  DoInsertSpaceBefore:=DefaultDoInsertSpaceBefore;
+  DoInsertSpaceInFront:=DefaultDoInsertSpaceInFront;
   DoInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
   PropertyReadIdentPrefix:='Get';
   PropertyWriteIdentPrefix:='Set';
@@ -874,10 +874,10 @@ begin
         break;
     until false;
     if ((Result='') or (Result[length(Result)]<>' '))
-    and ((CurAtomType in DoInsertSpaceBefore)
+    and ((CurAtomType in DoInsertSpaceInFront)
     or (LastAtomType in DoInsertSpaceAfter)) then
       AddAtom(Result,' ');
-    if (not (CurAtomType in DoNotSplitLineBefore))
+    if (not (CurAtomType in DoNotSplitLineInFront))
     and (not (LastAtomType in DoNotSplitLineAfter)) then
       LastSplitPos:=length(Result)+1;
 {writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,

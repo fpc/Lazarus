@@ -46,9 +46,9 @@ type
     FProcedureInsertPolicy: TProcedureInsertPolicy;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
-    FDoNotSplitLineBefore: TAtomTypes;
+    FDoNotSplitLineInFront: TAtomTypes;
     FDoNotSplitLineAfter: TAtomTypes;
-    FDoInsertSpaceBefore: TAtomTypes;
+    FDoInsertSpaceInFront: TAtomTypes;
     FDoInsertSpaceAfter: TAtomTypes;
     FPropertyReadIdentPrefix: string;
     FPropertyWriteIdentPrefix: string;
@@ -88,12 +88,12 @@ type
       read FKeyWordPolicy write FKeyWordPolicy;
     property IdentifierPolicy: TWordPolicy
       read FIdentifierPolicy write FIdentifierPolicy;
-    property DoNotSplitLineBefore: TAtomTypes
-      read FDoNotSplitLineBefore write FDoNotSplitLineBefore;
+    property DoNotSplitLineInFront: TAtomTypes
+      read FDoNotSplitLineInFront write FDoNotSplitLineInFront;
     property DoNotSplitLineAfter: TAtomTypes
       read FDoNotSplitLineAfter write FDoNotSplitLineAfter;
-    property DoInsertSpaceBefore: TAtomTypes
-      read FDoInsertSpaceBefore write FDoInsertSpaceBefore;
+    property DoInsertSpaceInFront: TAtomTypes
+      read FDoInsertSpaceInFront write FDoInsertSpaceInFront;
     property DoInsertSpaceAfter: TAtomTypes
       read FDoInsertSpaceAfter write FDoInsertSpaceAfter;
     property PropertyReadIdentPrefix: string
@@ -139,13 +139,13 @@ type
     // Line Splitting
     LineLengthLabel: TLabel;
     LineLengthEdit: TEdit;
-    DoNotSplitLineBeforeGroupBox: TGroupBox;
+    DoNotSplitLineInFrontGroupBox: TGroupBox;
     DoNotSplitLineAfterGroupBox: TGroupBox;
     SplitPreviewGroupBox: TGroupBox;
     SplitPreviewSynEdit: TSynEdit;
     
     // Space
-    DoInsertSpaceBeforeGroupBox: TGroupBox;
+    DoInsertSpaceInFrontGroupBox: TGroupBox;
     DoInsertSpaceAfterGroupBox: TGroupBox;
     SpacePreviewGroupBox: TGroupBox;
     SpacePreviewSynEdit: TSynEdit;
@@ -320,12 +320,12 @@ begin
       'CodeToolsOptions/KeyWordPolicy/Value','LowerCase'));
     FIdentifierPolicy:=WordPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierPolicy/Value','None'));
-    FDoNotSplitLineBefore:=ReadAtomTypesFromXML(XMLConfig,
-      'CodeToolsOptions/DoNotSplitLineBefore/',DefaultDoNotSplitLineBefore);
+    FDoNotSplitLineInFront:=ReadAtomTypesFromXML(XMLConfig,
+      'CodeToolsOptions/DoNotSplitLineInFront/',DefaultDoNotSplitLineInFront);
     FDoNotSplitLineAfter:=ReadAtomTypesFromXML(XMLConfig,
       'CodeToolsOptions/DoNotSplitLineAfter/',DefaultDoNotSplitLineAfter);
-    FDoInsertSpaceBefore:=ReadAtomTypesFromXML(XMLConfig,
-      'CodeToolsOptions/DoInsertSpaceBefore/',DefaultDoInsertSpaceBefore);
+    FDoInsertSpaceInFront:=ReadAtomTypesFromXML(XMLConfig,
+      'CodeToolsOptions/DoInsertSpaceInFront/',DefaultDoInsertSpaceInFront);
     FDoInsertSpaceAfter:=ReadAtomTypesFromXML(XMLConfig,
       'CodeToolsOptions/DoInsertSpaceAfter/',DefaultDoInsertSpaceAfter);
     FPropertyReadIdentPrefix:=ReadIdentifier(XMLConfig.GetValue(
@@ -375,12 +375,12 @@ begin
       WordPolicyNames[FKeyWordPolicy]);
     XMLConfig.SetValue('CodeToolsOptions/IdentifierPolicy/Value',
       WordPolicyNames[FIdentifierPolicy]);
-    WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineBefore/',
-      FDoNotSplitLineBefore);
+    WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineInFront/',
+      FDoNotSplitLineInFront);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineAfter/',
       FDoNotSplitLineAfter);
-    WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoInsertSpaceBefore/',
-      FDoInsertSpaceBefore);
+    WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoInsertSpaceInFront/',
+      FDoInsertSpaceInFront);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoInsertSpaceAfter/',
       FDoInsertSpaceAfter);
     XMLConfig.SetValue('CodeToolsOptions/PropertyReadIdentPrefix/Value',
@@ -435,9 +435,9 @@ begin
     FProcedureInsertPolicy:=CodeToolsOpts.FProcedureInsertPolicy;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
-    FDoNotSplitLineBefore:=CodeToolsOpts.FDoNotSplitLineBefore;
+    FDoNotSplitLineInFront:=CodeToolsOpts.FDoNotSplitLineInFront;
     FDoNotSplitLineAfter:=CodeToolsOpts.FDoNotSplitLineAfter;
-    FDoInsertSpaceBefore:=CodeToolsOpts.FDoInsertSpaceBefore;
+    FDoInsertSpaceInFront:=CodeToolsOpts.FDoInsertSpaceInFront;
     FDoInsertSpaceAfter:=CodeToolsOpts.FDoInsertSpaceAfter;
     FPropertyReadIdentPrefix:=CodeToolsOpts.FPropertyReadIdentPrefix;
     FPropertyWriteIdentPrefix:=CodeToolsOpts.FPropertyWriteIdentPrefix;
@@ -464,9 +464,9 @@ begin
   FProcedureInsertPolicy:=pipClassOrder;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
-  FDoNotSplitLineBefore:=DefaultDoNotSplitLineBefore;
+  FDoNotSplitLineInFront:=DefaultDoNotSplitLineInFront;
   FDoNotSplitLineAfter:=DefaultDoNotSplitLineAfter;
-  FDoInsertSpaceBefore:=DefaultDoInsertSpaceBefore;
+  FDoInsertSpaceInFront:=DefaultDoInsertSpaceInFront;
   FDoInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
   FPropertyReadIdentPrefix:='Get';
   FPropertyWriteIdentPrefix:='Set';
@@ -490,9 +490,9 @@ begin
     and (FProcedureInsertPolicy=CodeToolsOpts.FProcedureInsertPolicy)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
-    and (FDoNotSplitLineBefore=CodeToolsOpts.FDoNotSplitLineBefore)
+    and (FDoNotSplitLineInFront=CodeToolsOpts.FDoNotSplitLineInFront)
     and (FDoNotSplitLineAfter=CodeToolsOpts.FDoNotSplitLineAfter)
-    and (FDoInsertSpaceBefore=CodeToolsOpts.FDoInsertSpaceBefore)
+    and (FDoInsertSpaceInFront=CodeToolsOpts.FDoInsertSpaceInFront)
     and (FDoInsertSpaceAfter=CodeToolsOpts.FDoInsertSpaceAfter)
     and (FPropertyReadIdentPrefix=CodeToolsOpts.FPropertyReadIdentPrefix)
     and (FPropertyWriteIdentPrefix=CodeToolsOpts.FPropertyWriteIdentPrefix)
@@ -524,9 +524,9 @@ begin
     BeautifyCodeOptions.ProcedureInsertPolicy:=ProcedureInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
     BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;
-    BeautifyCodeOptions.DoNotSplitLineBefore:=DoNotSplitLineBefore;
+    BeautifyCodeOptions.DoNotSplitLineInFront:=DoNotSplitLineInFront;
     BeautifyCodeOptions.DoNotSplitLineAfter:=DoNotSplitLineAfter;
-    BeautifyCodeOptions.DoInsertSpaceBefore:=DoInsertSpaceBefore;
+    BeautifyCodeOptions.DoInsertSpaceInFront:=DoInsertSpaceInFront;
     BeautifyCodeOptions.DoInsertSpaceAfter:=DoInsertSpaceAfter;
     BeautifyCodeOptions.PropertyReadIdentPrefix:=PropertyReadIdentPrefix;
     BeautifyCodeOptions.PropertyWriteIdentPrefix:=PropertyWriteIdentPrefix;
@@ -880,14 +880,14 @@ begin
     Visible:=true;
   end;
 
-  DoNotSplitLineBeforeGroupBox:=TGroupBox.Create(Self);
-  with DoNotSplitLineBeforeGroupBox do begin
-    Name:='DoNotSplitLineBeforeGroupBox';
+  DoNotSplitLineInFrontGroupBox:=TGroupBox.Create(Self);
+  with DoNotSplitLineInFrontGroupBox do begin
+    Name:='DoNotSplitLineInFrontGroupBox';
     Parent:=NoteBook.Page[2];
     SetBounds(6,LineLengthLabel.Top+LineLengthLabel.Height+7,
       (Self.ClientWidth-24) div 2,150);
-    Caption:='Do not split line before:';
-    CreateAtomCheckBoxes(DoNotSplitLineBeforeGroupBox,DoNotSplitAtoms,2);
+    Caption:='Do not split line In front of:';
+    CreateAtomCheckBoxes(DoNotSplitLineInFrontGroupBox,DoNotSplitAtoms,2);
     OnClick:=@UpdateExamples;
     Visible:=true;
   end;
@@ -896,10 +896,10 @@ begin
   with DoNotSplitLineAfterGroupBox do begin
     Name:='DoNotSplitLineAfterGroupBox';
     Parent:=NoteBook.Page[2];
-    SetBounds(DoNotSplitLineBeforeGroupBox.Left,
-      DoNotSplitLineBeforeGroupBox.Top+DoNotSplitLineBeforeGroupBox.Height+7,
-      DoNotSplitLineBeforeGroupBox.Width,
-      DoNotSplitLineBeforeGroupBox.Height);
+    SetBounds(DoNotSplitLineInFrontGroupBox.Left,
+      DoNotSplitLineInFrontGroupBox.Top+DoNotSplitLineInFrontGroupBox.Height+7,
+      DoNotSplitLineInFrontGroupBox.Width,
+      DoNotSplitLineInFrontGroupBox.Height);
     Caption:='Do not split line after:';
     CreateAtomCheckBoxes(DoNotSplitLineAfterGroupBox,DoNotSplitAtoms,2);
     OnClick:=@UpdateExamples;
@@ -910,7 +910,8 @@ begin
   with SplitPreviewGroupBox do begin
     Name:='SplitPreviewGroupBox';
     Parent:=NoteBook.Page[2];
-    Left:=DoNotSplitLineBeforeGroupBox.Left+DoNotSplitLineBeforeGroupBox.Width+8;
+    Left:=DoNotSplitLineInFrontGroupBox.Left
+          +DoNotSplitLineInFrontGroupBox.Width+8;
     Top:=LineLengthLabel.Top;
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
@@ -929,14 +930,14 @@ end;
 
 procedure TCodeToolsOptsDlg.SetupSpacePage;
 begin
-  DoInsertSpaceBeforeGroupBox:=TGroupBox.Create(Self);
-  with DoInsertSpaceBeforeGroupBox do begin
-    Name:='DoInsertSpaceBeforeGroupBox';
+  DoInsertSpaceInFrontGroupBox:=TGroupBox.Create(Self);
+  with DoInsertSpaceInFrontGroupBox do begin
+    Name:='DoInsertSpaceInFrontGroupBox';
     Parent:=NoteBook.Page[3];
     SetBounds(6,6,
       (Self.ClientWidth-24) div 2,150);
-    Caption:='Insert space before';
-    CreateAtomCheckBoxes(DoInsertSpaceBeforeGroupBox,DoInsertSpaceAtoms,2);
+    Caption:='Insert space in front of';
+    CreateAtomCheckBoxes(DoInsertSpaceInFrontGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
     Visible:=true;
   end;
@@ -945,11 +946,11 @@ begin
   with DoInsertSpaceAfterGroupBox do begin
     Name:='DoInsertSpaceAfterGroupBox';
     Parent:=NoteBook.Page[3];
-    SetBounds(DoInsertSpaceBeforeGroupBox.Left
-      +DoInsertSpaceBeforeGroupBox.Width+8,
-      DoInsertSpaceBeforeGroupBox.Top,
-      DoInsertSpaceBeforeGroupBox.Width,
-      DoInsertSpaceBeforeGroupBox.Height);
+    SetBounds(DoInsertSpaceInFrontGroupBox.Left
+      +DoInsertSpaceInFrontGroupBox.Width+8,
+      DoInsertSpaceInFrontGroupBox.Top,
+      DoInsertSpaceInFrontGroupBox.Width,
+      DoInsertSpaceInFrontGroupBox.Height);
     Caption:='Insert space after';
     CreateAtomCheckBoxes(DoInsertSpaceAfterGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
@@ -960,8 +961,8 @@ begin
   with SpacePreviewGroupBox do begin
     Name:='SpacePreviewGroupBox';
     Parent:=NoteBook.Page[3];
-    Left:=DoInsertSpaceBeforeGroupBox.Left;
-    Top:=DoInsertSpaceBeforeGroupBox.Top+DoInsertSpaceBeforeGroupBox.Height+7;
+    Left:=DoInsertSpaceInFrontGroupBox.Left;
+    Top:=DoInsertSpaceInFrontGroupBox.Top+DoInsertSpaceInFrontGroupBox.Height+7;
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
     Caption:='Preview';
@@ -1088,9 +1089,9 @@ begin
     // wpNone
     IdentifierPolicyRadioGroup.ItemIndex:=0;
   end;
-  SetAtomCheckBoxes(Options.DoNotSplitLineBefore,DoNotSplitLineBeforeGroupBox);
+  SetAtomCheckBoxes(Options.DoNotSplitLineInFront,DoNotSplitLineInFrontGroupBox);
   SetAtomCheckBoxes(Options.DoNotSplitLineAfter,DoNotSplitLineAfterGroupBox);
-  SetAtomCheckBoxes(Options.DoInsertSpaceBefore,DoInsertSpaceBeforeGroupBox);
+  SetAtomCheckBoxes(Options.DoInsertSpaceInFront,DoInsertSpaceInFrontGroupBox);
   SetAtomCheckBoxes(Options.DoInsertSpaceAfter,DoInsertSpaceAfterGroupBox);
   PropertyReadIdentPrefixEdit.Text:=Options.PropertyReadIdentPrefix;
   PropertyWriteIdentPrefixEdit.Text:=Options.PropertyWriteIdentPrefix;
@@ -1132,9 +1133,9 @@ begin
   2: Options.IdentifierPolicy:=wpUpperCase;
   3: Options.IdentifierPolicy:=wpLowerCaseFirstLetterUp;
   end;
-  Options.DoNotSplitLineBefore:=ReadAtomCheckBoxes(DoNotSplitLineBeforeGroupBox);
+  Options.DoNotSplitLineInFront:=ReadAtomCheckBoxes(DoNotSplitLineInFrontGroupBox);
   Options.DoNotSplitLineAfter:=ReadAtomCheckBoxes(DoNotSplitLineAfterGroupBox);
-  Options.DoInsertSpaceBefore:=ReadAtomCheckBoxes(DoInsertSpaceBeforeGroupBox);
+  Options.DoInsertSpaceInFront:=ReadAtomCheckBoxes(DoInsertSpaceInFrontGroupBox);
   Options.DoInsertSpaceAfter:=ReadAtomCheckBoxes(DoInsertSpaceAfterGroupBox);
   Options.PropertyReadIdentPrefix:=
     ReadIdentifier(PropertyReadIdentPrefixEdit.Text,'Get');
@@ -1234,9 +1235,9 @@ begin
   2: Options.IdentifierPolicy:=wpUpperCase;
   3: Options.IdentifierPolicy:=wpLowerCaseFirstLetterUp;
   end;
-  Options.DoNotSplitLineBefore:=ReadAtomCheckBoxes(DoNotSplitLineBeforeGroupBox);
+  Options.DoNotSplitLineInFront:=ReadAtomCheckBoxes(DoNotSplitLineInFrontGroupBox);
   Options.DoNotSplitLineAfter:=ReadAtomCheckBoxes(DoNotSplitLineAfterGroupBox);
-  Options.DoInsertSpaceBefore:=ReadAtomCheckBoxes(DoInsertSpaceBeforeGroupBox);
+  Options.DoInsertSpaceInFront:=ReadAtomCheckBoxes(DoInsertSpaceInFrontGroupBox);
   Options.DoInsertSpaceAfter:=ReadAtomCheckBoxes(DoInsertSpaceAfterGroupBox);
   Options.PropertyReadIdentPrefix:=
     ReadIdentifier(PropertyReadIdentPrefixEdit.Text,'Get');
