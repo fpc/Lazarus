@@ -199,11 +199,16 @@ const
 
 var
   Identifiers: array[#0..#255] of ByteBool;
+  {$IFNDEF SYN_LAZARUS}
   mHashTable: array[#0..#255] of Integer;
+  {$ENDIF}
 
 procedure MakeIdentTable;
 var
-  I, J: Char;
+  I: Char;
+  {$IFNDEF SYN_LAZARUS}
+  K: Char;
+  {$ENDIF}
 begin
   for I := #0 to #255 do
   begin
@@ -213,11 +218,13 @@ begin
       else
         Identifiers[I] := False;
     end;
+    {$IFNDEF SYN_LAZARUS}
     J := UpCase(I);
     case I in ['_', 'a'..'z', 'A'..'Z'] of
       True: mHashTable[I] := Ord(J) - 64
       else mHashTable[I] := 0;
     end;
+    {$ENDIF}
   end;
 end;
 
