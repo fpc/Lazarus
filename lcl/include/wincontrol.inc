@@ -1244,6 +1244,15 @@ begin
   Result := FHandle;
 end;
 
+{------------------------------------------------------------------------------
+  TWinControl SetHandle
+  Params:  NewHandle
+  Returns: Nothing
+-------------------------------------------------------------------------------}
+procedure Twincontrol.SetHandle(NewHandle: HWND);
+begin
+  FHandle:=NewHandle;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.Create
@@ -1444,6 +1453,41 @@ begin
   // Our widget/window doesn't exist anymore
   FHandle := 0;
 end;                          
+
+{------------------------------------------------------------------------------
+  Method: TWinControl.WMMove
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.WMMove(var Message: TLMMove);
+begin
+  if Message.MoveType=Move_SourceIsInterface then begin
+    // interface widget has moved
+    FBoundsRealized:=Bounds(Message.XPos,Message.YPos,
+                            FBoundsRealized.Right-FBoundsRealized.Left,
+                            FBoundsRealized.Bottom-FBoundsRealized.Top);
+  end;
+  inherited WMMove(Message);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWinControl.WMSize
+  Params:   Msg: The message
+  Returns:  nothing
+
+  event handler.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.WMSize(var Message: TLMSize);
+begin
+  if Message.SizeType=Size_SourceIsInterface then begin
+    // interface widget has resized
+    FBoundsRealized.Right:=FBoundsRealized.Left+Message.Width;
+    FBoundsRealized.Bottom:=FBoundsRealized.Top+Message.Height;
+  end;
+  inherited WMSize(Message);
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMNofity
@@ -1671,6 +1715,7 @@ begin
   
   R:= Rect(Left, Top, Width, Height);
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  FBoundsRealized:=Bounds(Left, Top, Width, Height);
   CNSendMessage(LM_SETSIZE, Self, @R);
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
@@ -1783,6 +1828,46 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TControl.BeginUpdateBounds
+  Params:  None
+  Returns: Nothing
+
+  increases the BoundsLockCount
+ ------------------------------------------------------------------------------}
+procedure TWinControl.BeginUpdateBounds;
+begin
+  inc(FBoundsLockCount);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.EndUpdateBounds
+  Params:  None
+  Returns: Nothing
+
+  decreases the BoundsLockCount
+ ------------------------------------------------------------------------------}
+procedure TWinControl.EndUpdateBounds;
+begin
+  if BoundsLockCount<=0 then exit;
+  dec(FBoundsLockCount);
+  if BoundsLockCount=0 then begin
+    SetBounds(Left,Top,Width,Height);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.GetIsResizing
+  Params:  None
+  Returns: Nothing
+
+  decreases the BoundsLockCount
+ ------------------------------------------------------------------------------}
+function TWinControl.GetIsResizing: boolean;
+begin
+  Result:=BoundsLockCount>0;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TWinControl.SetBounds
   Params:  aLeft, aTop, aWidth, aHeight
   Returns: Nothing
@@ -1791,28 +1876,81 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
 var
-  R : TRect;
+  NewBounds, OldBounds, R : TRect;
+  
+  function CompareRect(R1, R2: PRect): Boolean;
+  begin
+    Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
+            (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
+    {if not Result then begin
+      writeln(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
+        ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
+    end;}
+  end;
+
 begin
-  { Ignore the request if in the middle of resizing }
-  { Does not have effect if resize messages are queued and not processed immediately }
-  if FResizeLock or ((ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)) then Exit;
-
-  FResizeLock:= true;
-  try
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight);
+{writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
+' Old=',Left,',',Top,',',Width,',',Height,
+' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
+' BLC=',BoundsLockCount,
+' Realized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
+',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top
+);}
 {$ENDIF}
-    inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-
+  OldBounds:=BoundsRect;
+  NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
+  if CompareRect(@NewBounds,@OldBounds) then begin
+    // LCL bounds are already up2date -> check realized bounds
     if HandleAllocated
- then begin
-      R:= Rect(Left, Top, Width, Height);
-      CNSendMessage(LM_SetSize, Self, @R);
-    end;    
-  finally
-    FResizeLock:= false;
-  end
-;
+    and (BoundsLockCount=0)
+    and (not CompareRect(@NewBounds,@FBoundsRealized)) then begin
+      // the bounds were not yet send to the InterfaceObject -> send them
+      BeginUpdateBounds;
+      try
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.SetBounds] RealizeBounds A ',Name,':',ClassName,
+' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+{$ENDIF}
+        FBoundsRealized:=NewBounds;
+        R:=Rect(Left,Top,Width,Height);
+        CNSendMessage(LM_SetSize, Self, @R);
+      finally
+        EndUpdateBounds;
+      end;
+    end;
+  end else begin
+    if BoundsLockCount=0 then begin
+      // LCL bounds are not up2date -> process new bounds
+      BeginUpdateBounds;
+      try
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
+' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
+' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
+{$ENDIF}
+        inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+        NewBounds:=Bounds(Left, Top, Width, Height);
+
+        if HandleAllocated
+        and (not CompareRect(@NewBounds,@FBoundsRealized)) then
+        begin
+          // the bounds were not yet send to the InterfaceObject -> send them
+{$IFDEF CHECK_POSITION}
+writeln('[TWinControl.SetBounds] RealizeBounds B ',Name,':',ClassName,
+' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+{$ENDIF}
+          FBoundsRealized:=NewBounds;
+          R:=Rect(Left,Top,Width,Height);
+          CNSendMessage(LM_SetSize, Self, @R);
+        end;
+      finally
+        EndUpdateBounds;
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1940,6 +2078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/03/16 21:40:55  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.51  2002/03/14 23:25:52  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 
