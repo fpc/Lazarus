@@ -654,6 +654,19 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+{ TCursorPropertyEditor
+  PropertyEditor editor for the TCursor properties.
+  Displays cursor as constant name if exists, otherwise an integer. }
+
+  TCursorPropertyEditor = class(TIntegerPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: ansistring; override;
+    procedure GetValues(Proc: TGetStringProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+
 //==============================================================================
 
 { RegisterPropertyEditor
@@ -910,6 +923,7 @@ type
     FCount:integer;
     FComponent:TComponent;
     FComponentName:TComponentName;
+    FCursor: TCursor;
     FShortCut: TShortCut;
     FTabOrder:integer;
     FCaption: TCaption;
@@ -927,6 +941,7 @@ type
     property DummyName:TComponentName read FComponentName;
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
+    property Cursor: TCursor read FCursor;
     property Lines:TStrings read FLines;
     property Columns:TListColumns read FColumns;
     property ModalResult:TModalResult read FModalResult;
@@ -1702,10 +1717,14 @@ end;
 function TIntegerPropertyEditor.GetValue: ansistring;
 begin
   with GetTypeData(GetPropType)^ do
-    if OrdType = otULong then // unsigned
-      Result := IntToStr(Cardinal(GetOrdValue))
-    else
-      Result := IntToStr(GetOrdValue);
+    case OrdType of
+      otSByte : Result:= IntToStr(ShortInt(GetOrdValue));
+      otUByte : Result:= IntToStr(Byte(GetOrdValue));
+      otSWord : Result:= IntToStr(SmallInt(GetOrdValue));
+      otUWord : Result:= IntToStr(Word(GetOrdValue));
+      otULong : Result:= IntToStr(Cardinal(GetOrdValue));
+      else Result := IntToStr(GetOrdValue);
+    end;
 end;
 
 procedure TIntegerPropertyEditor.SetValue(const NewValue: AnsiString);
@@ -3071,6 +3090,34 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
+//==============================================================================
+
+{ TCursorPropertyEditor }
+
+function TCursorPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paSortList, paValueList, paRevertable];
+end;
+
+function TCursorPropertyEditor.GetValue: ansistring;
+begin
+  Result := CursorToString(TCursor(GetOrdValue));
+end;
+
+procedure TCursorPropertyEditor.GetValues(Proc: TGetStringProc);
+begin
+  GetCursorValues(Proc);
+end;
+
+procedure TCursorPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  CValue: Longint;
+begin
+  if IdentToCursor(NewValue, CValue) then
+    SetOrdValue(CValue)
+  else
+    inherited SetValue(NewValue);
+end;
 
 //==============================================================================
 
@@ -3439,6 +3486,8 @@ begin
     nil,'',TShortCutPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
     nil,'',TShortCutPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TCursor'),
+    nil,'Cursor',TCursorPropertyEditor);
   
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomLabel, 'Caption', TCaptionMultilinePropertyEditor);
