@@ -339,6 +339,7 @@ type
     ViewCallStackMenuItem: TMenuItem;
     EditorPropertiesMenuItem: TMenuItem;
     Procedure AddBreakpointClicked(Sender: TObject);
+    Procedure DeleteBreakpointClicked(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     Procedure AddWatchAtCursor(Sender: TObject);
@@ -979,7 +980,7 @@ end;
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 var
-  Y,I: Integer;
+  I: Integer;
   P: TPoint;
   Texts, Texts2: String;
   Handled: boolean;
@@ -1047,20 +1048,6 @@ Begin
 
   ecGotoLineNumber :
     ShowGotoLineDialog;
-
-  ecPeriod :
-    Begin
-      Y := CurrentCursorYLine;
-      Texts := Lowercase(Source.Strings[Y-1]);
-      if InsertMode then
-        Texts := Copy(Texts,1,CurrentCursorXLine)+'.'
-              +Copy(Texts,CurrentCursorXLine+1,Length(Texts))
-      else
-        Texts[CurrentCursorXLine] := '.';
-      Source.Strings[Y-1] := Texts;
-      IdentCompletionTimer.OnTimer := @CCOnTimer;
-      IdentCompletionTimer.Enabled := True;
-    end;
 
   ecSelectionEnclose:
     EncloseSelection;
@@ -3811,6 +3798,16 @@ begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
   DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,
+                               ASrcEdit.EditorComponent.CaretY);
+end;
+
+procedure TSourceNotebook.DeleteBreakpointClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  DebugBoss.DoDeleteBreakPoint(ASrcEdit.Filename,
                                ASrcEdit.EditorComponent.CaretY);
 end;
 

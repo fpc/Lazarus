@@ -79,14 +79,6 @@ const
   ecOpenFileAtCursor     = ecUserFirst + 23;
   ecGotoIncludeDirective = ecUserFirst + 24;
 
-  // source notebook
-  ecNextEditor           = ecUserFirst + 30;
-  ecPrevEditor           = ecUserFirst + 31;
-  ecMoveEditorLeft       = ecUserFirst + 32;
-  ecMoveEditorRight      = ecUserFirst + 33;
-
-  ecPeriod               = ecUserFirst + 40;
-
   // edit selection
   ecSelectionUpperCase   = ecUserFirst + 50;
   ecSelectionLowerCase   = ecUserFirst + 51;
@@ -163,6 +155,12 @@ const
   ecToggleSearchResults  = ecUserFirst + 314;
 
   // sourcenotebook commands
+  ecNextEditor           = ecUserFirst + 330;
+  ecPrevEditor           = ecUserFirst + 331;
+  ecMoveEditorLeft       = ecUserFirst + 332;
+  ecMoveEditorRight      = ecUserFirst + 333;
+  ecAddBreakPoint        = ecUserFirst + 334;
+  ecRemoveBreakPoint     = ecUserFirst + 335;
   ecGotoEditor1          = ecUserFirst + 350;
   ecGotoEditor2          = ecGotoEditor1 + 1;
   ecGotoEditor3          = ecGotoEditor2 + 1;
@@ -572,6 +570,10 @@ begin
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   ecPrevEditor: SetResult(VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
+  ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBreakPoint: SetResult(VK_F5,[],VK_UNKNOWN,[]);
+  ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[]);
@@ -582,8 +584,6 @@ begin
   ecGotoEditor8: SetResult(VK_8,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[]);
-  ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
-  ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
 
   // file menu
   ecNew: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -640,7 +640,7 @@ begin
   ecStepOver: SetResult(VK_F8,[],VK_UNKNOWN,[]);
   ecRunToCursor: SetResult(VK_F4,[],VK_UNKNOWN,[]);
   ecStopProgram: SetResult(VK_F2,[SSCtrl],VK_UNKNOWN,[]);
-  ecResetDebugger: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecRemoveBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecCompilerOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRunParameters: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1051,7 +1051,6 @@ begin
     ecGotoMarker9           : Result:= Format(srkmecGotoMarker,[cmd-ecGotoMarker0]);
     ecSetMarker0 ..
     ecSetMarker9            : Result:= Format(srkmecSetMarker,[cmd-ecSetMarker0]);
-    ecPeriod                : Result:= srkmecPeriod;
 
     // sourcenotebook
     ecJumpToEditor          : Result:= srkmecJumpToEditor;
@@ -1059,6 +1058,8 @@ begin
     ecPrevEditor            : Result:= srkmecPrevEditor;
     ecMoveEditorLeft        : Result:= srkmecMoveEditorLeft;
     ecMoveEditorRight       : Result:= srkmecMoveEditorRight;
+    ecAddBreakPoint         : Result:= srkmecAddBreakPoint;
+    ecRemoveBreakPoint      : Result:= srkmecRemoveBreakPoint;
     ecGotoEditor1..
     ecGotoEditor0           : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
 
@@ -1940,6 +1941,10 @@ begin
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caAll)];
   AddDefault(C,'Go to next editor',ecNextEditor);
   AddDefault(C,'Go to prior editor',ecPrevEditor);
+  AddDefault(C,'Add break point',ecAddBreakPoint);
+  AddDefault(C,'Remove break point',ecRemoveBreakPoint);
+  AddDefault(C,'Move editor left',ecMoveEditorLeft);
+  AddDefault(C,'Move editor right',ecMoveEditorRight);
   AddDefault(C,'Go to source editor 1',ecGotoEditor1);
   AddDefault(C,'Go to source editor 2',ecGotoEditor2);
   AddDefault(C,'Go to source editor 3',ecGotoEditor3);
@@ -1950,8 +1955,6 @@ begin
   AddDefault(C,'Go to source editor 8',ecGotoEditor8);
   AddDefault(C,'Go to source editor 9',ecGotoEditor9);
   AddDefault(C,'Go to source editor 10',ecGotoEditor0);
-  AddDefault(C,'Move editor left',ecMoveEditorLeft);
-  AddDefault(C,'Move editor right',ecMoveEditorRight);
 
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,caAll)];

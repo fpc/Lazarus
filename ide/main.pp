@@ -2021,6 +2021,12 @@ begin
 
   ecAboutLazarus:
     mnuHelpAboutLazarusClicked(Self);
+    
+  ecAddBreakPoint:
+    SourceNotebook.AddBreakpointClicked(Self);
+
+  ecRemoveBreakPoint:
+    SourceNotebook.DeleteBreakpointClicked(Self);
 
   else
     Handled:=false;
@@ -10414,6 +10420,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.728  2004/05/29 18:56:05  mattias
+  added keys for adding/deleting breakpoints
+
   Revision 1.727  2004/05/29 17:20:05  mattias
   implemented handling keys in IDE windows
 

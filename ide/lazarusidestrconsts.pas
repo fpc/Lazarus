@@ -1103,7 +1103,6 @@ resourcestring
   srkmecUserFirst             = 'User First';
   srkmecGotoMarker            = 'Go to Marker %d';
   srkmecSetMarker             = 'Set Marker %d';
-  srkmecPeriod                = 'period';
 
   // sourcenotebook
   srkmecJumpToEditor          = 'Focus to source editor';
@@ -1185,6 +1184,8 @@ resourcestring
   srkmecPause                     = 'pause program';
   srkmecStopProgram               = 'stop program';
   srkmecResetDebugger             = 'reset debugger';
+  srkmecAddBreakPoint             = 'add break point';
+  srkmecRemoveBreakPoint          = 'remove break point';
   srkmecRunParameters             = 'run parameters';
   srkmecCompilerOptions           = 'compiler options';
   srkmecBuildFile                 = 'build file';
