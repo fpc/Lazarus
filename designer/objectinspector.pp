@@ -328,12 +328,6 @@ constructor TOIPropertyGrid.Create(AnOwner:TComponent;
   APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
 begin
   inherited Create(AnOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds(1,1,200,300);
-    ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
-    BorderWidth:=1;
-  end;
-    
   FComponentList:=TComponentSelectionList.Create;
   FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
@@ -344,6 +338,12 @@ begin
   FDragging:=false;
   FExpandedProperties:=TStringList.Create;
 
+  if LazarusResources.Find(ClassName)=nil then begin
+    SetBounds(1,1,200,300);
+    ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
+    BorderWidth:=1;
+  end;
+    
   // visible values
   FTopY:=0;
   FSplitterX:=100;
