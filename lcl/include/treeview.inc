@@ -2554,6 +2554,7 @@ begin
     if Node <> nil then FSaveIndex := Node.AbsoluteIndex;
   end;}
   inherited DestroyWnd;
+  TControlCanvas(Canvas).FreeHandle;
 end;
 
 procedure TCustomTreeView.EditWndProc(var Message: TLMessage);
@@ -2713,8 +2714,8 @@ procedure TCustomTreeView.SetScrollBars(const Value: TScrollStyle);
 begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
-    RecreateWnd;
     Include(FStates,tvsScrollbarChanged);
+    RecreateWnd;
     UpdateScrollBars;
   end;
 end;

@@ -33,9 +33,9 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, GraphPropEdits,
-  TypInfo, Messages, LResources, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
-  listviewpropedit;
+  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
+  LResources, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
+  PropEdits, GraphPropEdits, ListViewPropEdit;
 
 
 type
