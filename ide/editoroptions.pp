@@ -3846,7 +3846,6 @@ begin
     Height:=AutoCodeCompletionCheckBox.Height;
     Caption:='Tooltip symbol Tools';
     Checked:=EditorOpts.AutoToolTipSymbTools;
-    Enabled:=false;
     Show;
   end;
 

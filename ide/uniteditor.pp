@@ -3023,14 +3023,17 @@ Begin
   end;
 end;
 
-Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
+  X,Y : Integer);
 begin
 //writeln('MOUSEMOVE');
     if FHintWIndow.Visible then
      FHintWindow.Visible := False;
 
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := not ((ssLeft in Shift) or (ssRight in Shift) or (ssMiddle in Shift));
+  FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools
+         and (not ((ssLeft in Shift) or (ssRight in Shift) 
+                                     or (ssMiddle in Shift)));
 end;
 
 Procedure TSourceNotebook.HintTimer(sender : TObject);
@@ -3057,8 +3060,8 @@ begin
   
   cPosition := ScreenToClient(cPosition);
   //Check to see if we are in the windows bounds
-  if ((cPosition.X <=EditorOpts.GutterWidth) or (cPosition.X >= Width) or (cPosition.Y <= 25)
-  or (cPosition.Y >= Height)) then
+  if ((cPosition.X <=EditorOpts.GutterWidth) or (cPosition.X >= Width) 
+  or (cPosition.Y <= 25) or (cPosition.Y >= Height)) then
     Exit;
 
   //Get the active SourceEditor
@@ -3097,8 +3100,8 @@ begin
 
 end;
 
-Procedure TSourceNotebook.EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X, Y
-   : Integer);
+Procedure TSourceNotebook.EditorMouseDown(Sender : TObject; 
+  Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
 begin
   if FHIntWindow.Visible then
      FHintWindow.Visible := False;
