@@ -24,6 +24,11 @@ rsts=dialogs
 [require]
 packages=fcl
 
+[prerules]
+ifneq ($(OS_TARGET),win32)
+override COMPILER_UNITDIR+=lcl/nonwin32
+endif
+
 [compiler]
 options=-gl
 unittargetdir=units
