@@ -49,7 +49,7 @@ uses
   LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs,
   InputHistory, IDEDefs, UComponentManMain, Project, ComponentReg,
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
-  OpenInstalledPkgDlg, PkgGraphExporer, BrokenDependenciesDlg,
+  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   BasePkgManager, MainBar;
 
 type
@@ -721,7 +721,7 @@ begin
                'Package "'+APackage.IDAsString+'" changed. Save?',
                mtConfirmation,[mbYes,mbNo,mbAbort],0);
     if (Result=mrNo) then Result:=mrIgnore;
-    if Result<>mrOk then exit;
+    if Result<>mrYes then exit;
   end;
 
   // save editor files to codetools
@@ -817,6 +817,7 @@ begin
         if CurPackage.Modified and (not CurPackage.ReadOnly)
         and (not (lpfSkipSaving in CurPackage.Flags)) then begin
           Result:=DoSavePackage(CurPackage,Flags);
+writeln('TPkgManager.DoSaveAllPackages A ',CurPackage.IDAsString,' ',Result=mrOk);
           if Result=mrIgnore then
             CurPackage.Flags:=CurPackage.Flags+[lpfSkipSaving];
           if Result<>mrOk then exit;

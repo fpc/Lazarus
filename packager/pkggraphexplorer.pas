@@ -31,7 +31,7 @@
   Abstract:
     TPkgGraphExplorer is the IDE window showing the whole package graph.
 }
-unit PkgGraphExporer;
+unit PkgGraphExplorer;
 
 {$mode objfpc}{$H+}
 
@@ -52,7 +52,7 @@ type
     PkgListBox: TListBox;
     InfoMemo: TMemo;
     procedure PackageGraphBeginUpdate(Sender: TObject);
-    procedure PkgGraphExplorerEndUpdate(Sender: TObject);
+    procedure PkgGraphExplorerEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgListBoxClick(Sender: TObject);
@@ -144,8 +144,10 @@ begin
   BeginUpdate;
 end;
 
-procedure TPkgGraphExplorer.PkgGraphExplorerEndUpdate(Sender: TObject);
+procedure TPkgGraphExplorer.PkgGraphExplorerEndUpdate(Sender: TObject;
+  GraphChanged: boolean);
 begin
+  if GraphChanged then UpdateAll;
   EndUpdate;
 end;
 
@@ -436,6 +438,7 @@ begin
     exit;
   end;
   FChangedDuringLock:=false;
+  if not Visible then exit;
   UpdateTree;
   UpdateList;
   UpdateInfo;

@@ -404,6 +404,7 @@ type
     procedure AddUsedByDependency(Dependency: TPkgDependency);
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
+    procedure UpdateEditorRect;
   public
     property AddDependCompilerOptions: TAdditionalCompilerOptions
                                                  read FAddDependCompilerOptions;
@@ -1502,6 +1503,7 @@ begin
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
   FAddDependCompilerOptions.LoadFromXMLConfig(
                                     XMLConfig,Path+'AddDependCompilerOptions/');
+  LoadRect(XMLConfig,Path+'EditorRect/',fEditorRect);
   UnlockModified;
 end;
 
@@ -1544,6 +1546,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   end;
 
 begin
+  UpdateEditorRect;
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
   FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
@@ -1560,6 +1563,7 @@ begin
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
   FAddDependCompilerOptions.SaveToXMLConfig(
                                     XMLConfig,Path+'AddDependCompilerOptions/');
+  SaveRect(XMLConfig,Path+'EditorRect/',fEditorRect);
   Modified:=false;
 end;
 
@@ -1846,6 +1850,13 @@ procedure TLazPackage.ChangeID(const NewName: string; NewVersion: TPkgVersion);
 begin
   Version.Assign(NewVersion);
   Name:=NewName;
+end;
+
+procedure TLazPackage.UpdateEditorRect;
+begin
+  if Editor=nil then exit;
+  EditorRect:=Rect(Editor.Left,Editor.Top,
+                   Editor.Left+Editor.Width,Editor.Top+Editor.Height);
 end;
 
 { TPkgComponent }

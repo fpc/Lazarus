@@ -655,10 +655,8 @@ begin
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency=nil) or Removed then exit;
   
-  // ToDo: consistency check
-  
-  CurDependency.Assign(NewDependency);
-  
+  PackageGraph.ChangeDependency(CurDependency,NewDependency);
+
   NewDependency.Free;
 end;
 
@@ -720,6 +718,7 @@ begin
   FLazPackage.Editor:=Self;
   // find a nice position for the editor
   ARect:=FLazPackage.EditorRect;
+writeln('');
   if (ARect.Bottom<ARect.Top+50) or (ARect.Right<ARect.Left+50) then
     ARect:=CreateNiceWindowPosition(500,400);
   SetBounds(ARect.Left,ARect.Top,
