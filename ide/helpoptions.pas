@@ -324,24 +324,30 @@ var
 begin
   try
     XMLConfig:=TXMLConfig.CreateClean(FFileName);
-    Storage:=nil;
     try
       XMLConfig.SetValue('HelpOptions/Version/Value',HelpOptionsVersion);
 
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');
-        HelpViewers.Save(Storage);
+        try
+          HelpViewers.Save(Storage);
+        finally
+          FreeAndNil(Storage);
+        end;
       end;
 
       if HelpDatabases<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Databases');
-        HelpDatabases.Save(Storage);
+        try
+          HelpDatabases.Save(Storage);
+        finally
+          FreeAndNil(Storage);
+        end;
       end;
 
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
-      Storage.Free;
     end;
   except
     on E: Exception do begin
