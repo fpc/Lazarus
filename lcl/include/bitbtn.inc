@@ -1,3 +1,5 @@
+// included by buttons.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -36,8 +38,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TBitbtn.Destroy;
 Begin
-  FCanvas.Free;
-  FGlyph.Free;
+  FreeThenNil(FCanvas);
+  FreeThenNil(FGlyph);
   inherited Destroy;
 end;
 
@@ -47,12 +49,12 @@ var
 Begin
   if FKind = bkClose then Begin
     Form := GetParentForm(Self);
-    if Form <> nil then Form.Close
-    else
-      inherited click;
-  end
-  else
-    inherited Click;
+    if Form <> nil then begin
+      Form.Close;
+      exit;
+    end;
+  end;
+  inherited Click;
 End;
 
 Function TBitbtn.GetGlyph : TBitmap;
@@ -102,11 +104,8 @@ Begin
 
   Caption := BitBtnCaption[fKind];
   ModalResult := BitBtnModalResults[Value];
-
-  if (FKind = bkOK) or (FKind = bkYes) then
-    Default := True
-  else
-    Default := False;
+  if not (csLoading in ComponentState) then
+    Default := FKind in [bkOk,bkYes];
 end;
 
 Procedure TBitBtn.SetLayout(Value : TButtonLayout);
@@ -117,7 +116,6 @@ Begin
     CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 
-
 Procedure TBitBtn.SetSpacing(Value : Integer);
 Begin
   if (FSpacing = Value) or (Value < 0) then Exit;
@@ -127,5 +125,5 @@ Begin
     CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
 end;
 
-
+// included by buttons.pp
 

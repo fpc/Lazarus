@@ -48,24 +48,39 @@ end;
 procedure TButton.CreateWnd;
 begin
   inherited CreateWnd;
-  If HandleAllocated then
-    SetText(Caption);//To ensure shortcut is set
+  SetText(Caption);//To ensure shortcut is set
+  DoSendBtnDefault;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TButton.DoSendBtnDefault;
+ ------------------------------------------------------------------------------}
+procedure TButton.DoSendBtnDefault;
+begin
+  if HandleAllocated then
+    CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TButton.SetParent(AParent: TWinControl);
+ ------------------------------------------------------------------------------}
+procedure TButton.SetParent(AParent: TWinControl);
+begin
+  if Parent=AParent then exit;
+  inherited SetParent(AParent);
+  DoSendBtnDefault;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TButton.SetDefault
   Params:  Value
   Returns: Nothing
-
-  
  ------------------------------------------------------------------------------}
 procedure TButton.SetDefault(Value : Boolean);
 begin
   if FDefault = Value then Exit;
-
   FDefault := Value;
-  if HandleAllocated then
-    CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
+  DoSendBtnDefault;
 End;
 
 {------------------------------------------------------------------------------
@@ -150,6 +165,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/12/25 11:53:47  mattias
+  Button.Default now sets focus
+
   Revision 1.10  2002/09/06 15:57:34  lazarus
   MG: fixed notebook client area, send messages and minor bugs
 

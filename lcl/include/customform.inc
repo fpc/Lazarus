@@ -255,13 +255,19 @@ procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
 const
   SHOW_TEXT: array[Boolean] of string = ('Hide', 'Show');
 begin
+  if (fsShowing in FFormState) then exit;
   Assert(False, Format('Trace: [TCustomForm.LMShowWindow] %s %s', [SHOW_TEXT[Message.Show], ClassName]));
-
   Include(FFormState, fsShowing);
   try
-    if Message.Show 
-    then DoShow
-    else DoHide;
+    if Message.Show then begin
+      if FActiveControl<>nil then begin
+        //writeln('TCustomForm.WMShowWindow ',FActiveControl.Name,':',FActiveControl.ClassName);
+        LCLLinux.SetFocus(FActiveControl.Handle);
+      end;
+      DoShow;
+    end else begin
+      DoHide;
+    end;
   finally
     Exclude(FFormState, fsShowing);
   end;
@@ -1177,6 +1183,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/12/25 11:53:47  mattias
+  Button.Default now sets focus
+
   Revision 1.76  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 
