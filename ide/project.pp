@@ -2280,7 +2280,7 @@ begin
   end else begin
     {$IFDEF Win32}
     // PathDelim changed from '/' to '\'
-    FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName)
+    FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName);
     {$ELSE}
     // PathDelim changed from '\' to '/'
     FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
@@ -3170,6 +3170,9 @@ end.
 
 {
   $Log$
+  Revision 1.179  2005/01/20 13:10:58  mattias
+  fixed win compilation
+
   Revision 1.178  2005/01/20 11:37:24  mattias
   fixed Escape key in dialogs: run params, new, compiler opts
 
