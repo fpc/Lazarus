@@ -123,6 +123,15 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.CreateFontIndirectEx(const LogFont: TLogFont;
+  const LongFontName: string): HFONT;
+begin
+  // this functions is needed, because the fontname in TLogFont is limited to
+  // 32 characters. If the interface does not support long font names, it can
+  // simple omitt this function
+  Result := CreateFontIndirect(LogFont);
+end;
+
 function TInterfaceBase.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
   Result := 0;
@@ -574,6 +583,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/06/04 15:17:22  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.30  2002/05/27 17:58:41  lazarus
   MG: added command line help
 
