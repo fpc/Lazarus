@@ -34,7 +34,7 @@ interface
 
 uses
   gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager,
-  DynHashArray;
+  DynHashArray, GraphType;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
@@ -59,7 +59,7 @@ type
   TGDIColorFlags = set of TGDIColorFlag;
   
   TGDIColor = record
-    ColorRef : TColorRef;    //Color passed - can be a SYSCOLOR or RGB
+    ColorRef : TColor;    //Color passed - can be a SYSCOLOR or RGB
     ColorFlags: TGDIColorFlags;
     Color : TGDKColor;       //Actual GDK Color(If any) for use with GC's
     Colormap : PGDKColormap; //Colormap GDKColor was allocated with
@@ -427,6 +427,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/10/20 21:54:03  lazarus
+  MG: fixes for 1.1
+
   Revision 1.27  2002/10/20 19:03:56  lazarus
   AJ: minor fixes for FPC 1.1
 
