@@ -2638,7 +2638,7 @@ var
     NewDefTempl:=FindSymbol(SymbolName);
     if NewDefTempl=nil then begin
       NewDefTempl:=TDefineTemplate.Create('Define '+SymbolName,
-           ctsDefaultppc386Symbol,SymbolName,'',da_DefineRecurse);
+           ctsDefaultppc386Symbol,SymbolName,SymbolValue,da_DefineRecurse);
       AddTemplate(NewDefTempl);
     end else begin
       NewDefTempl.Value:=SymbolValue;
