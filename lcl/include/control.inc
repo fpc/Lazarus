@@ -2421,8 +2421,6 @@ procedure TControl.SetDragMode(Value: TDragMode);
 begin
   if FDragMode = Value then exit;
   FDragMode := Value;
-  // for Delphi compatibility send LM_DRAGINFOCHANGED message
-  CNSendMessage(LM_DRAGINFOCHANGED,Self,Nil);
 end;
 
 procedure TControl.DrawDragDockImage(DragDockObject: TDragDockObject);
@@ -3275,6 +3273,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.216  2004/09/12 13:21:37  micha
+  remove obsolete message LM_DRAGINFOCHANGED
+
   Revision 1.215  2004/09/11 13:06:48  micha
   convert LM_ADDCHILD message to interface method
 

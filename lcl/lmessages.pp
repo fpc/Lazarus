@@ -72,8 +72,6 @@ const
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
   LM_DELETETOOLBUTTON = LM_ComUser+47;
 
-  LM_DRAGINFOCHANGED = LM_COMUSER+53;
-
   LM_RECREATEWND    = LM_COMUSER+57;
   LM_SETFORMICON    = LM_COMUSER+58;
 
@@ -856,8 +854,6 @@ begin
   LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
   LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
 
-  LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
-
   LM_RECREATEWND    :Result:='LM_RECREATEWND';
   LM_SETFORMICON    :Result:='LM_SETFORMICON';
 
@@ -990,6 +986,9 @@ end.
 
 {
   $Log$
+  Revision 1.90  2004/09/12 13:21:37  micha
+  remove obsolete message LM_DRAGINFOCHANGED
+
   Revision 1.89  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 

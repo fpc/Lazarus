@@ -3162,54 +3162,6 @@ begin
       LM_DESTROY :
         DestroyLCLComponent(Sender);
 
-      LM_DRAGINFOCHANGED :
-      Begin
-        (*
-        if ((Sender is TEdit) and((Sender as TEdit).DragMode = dmAutoMatic)) then
-           Begin
-           //drag and drop
-           gtk_drag_dest_set (p,
-                     GTK_DEST_DEFAULT_ALL,
-                     target_table, TargetEntrys - 1,
-                     GDK_ACTION_COPY or GDK_ACTION_MOVE);
-            g_signal_connect( PgtkObject(p), 'drag_data_received',
-                      TGTKSignalFunc( @edit_drag_data_received), Sender);
-
-            gtk_drag_source_set (p, GDK_BUTTON1_MASK,
-                       target_table, TargetEntrys,
-                       GDK_ACTION_COPY or GDK_ACTION_MOVE);
-            gtk_drag_source_set_icon (p,
-                            gtk_widget_get_colormap (pgtkwidget(p)),
-                            drag_icon, drag_mask);
-            g_signal_connect (GTK_OBJECT (p), 'drag_data_get',
-                      GTK_SIGNAL_FUNC (@Edit_source_drag_data_get), Sender);
-            gtk_signal_connect (GTK_OBJECT (p), 'drag_data_delete',
-                      GTK_SIGNAL_FUNC (@Edit_source_drag_data_delete), Sender);
-            end
-            else
-           Begin
-           //drag and drop
-           gtk_drag_dest_set (p,
-                     GTK_DEST_DEFAULT_ALL,
-                     target_table, TargetEntrys - 1,
-                     GDK_ACTION_COPY or GDK_ACTION_MOVE);
-            g_signal_connect( PgtkObject(p), 'drag_data_received',
-                      TGTKSignalFunc( @edit_drag_data_received), Sender);
-
-            gtk_drag_source_set (p, GDK_BUTTON1_MASK,
-                       target_table, TargetEntrys,
-                       GDK_ACTION_COPY or GDK_ACTION_MOVE);
-            gtk_drag_source_set_icon (p,
-                            gtk_widget_get_colormap (pgtkwidget(p)),
-                            drag_icon, drag_mask);
-            g_signal_connect (GTK_OBJECT (p), 'drag_data_get',
-                      GTK_SIGNAL_FUNC (@Edit_source_drag_data_get), Sender);
-            g_signal_connect (GTK_OBJECT (p), 'drag_data_delete',
-                      GTK_SIGNAL_FUNC (@Edit_source_drag_data_delete), Sender);
-            end;
-          *)
-      end;
-
       LM_SETFOCUS:
       begin
         //DebugLn('[TGtkWidgetSet.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
@@ -8569,6 +8521,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.556  2004/09/12 13:21:37  micha
+  remove obsolete message LM_DRAGINFOCHANGED
+
   Revision 1.555  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 

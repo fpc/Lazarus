@@ -336,20 +336,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_DRAGINFOCHANGED:
-      Begin
-      End;
-{Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
-and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters.
-The default menu positioning function will position the menu at the current pointer position.
-menu :  a GtkMenu.
-parent_menu_shell :     the menu shell containing the triggering menu item.
-parent_menu_item :      the menu item whose activation triggered the popup.
-func :  a user supplied function used to position the menu.
-data :  user supplied data to be passed to func.
-button :        the button which was pressed to initiate the event.
-activate_time : the time at which the activation event occurred.
-}
       LM_SETFOCUS:
       Begin
         If Handle <> 0 Then
@@ -2518,6 +2504,9 @@ End;
 
 {
   $Log$
+  Revision 1.248  2004/09/12 13:21:37  micha
+  remove obsolete message LM_DRAGINFOCHANGED
+
   Revision 1.247  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 
