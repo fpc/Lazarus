@@ -17,3 +17,9 @@ implicitunits=winext win32def win32int
 options=-gl -S2 -Sh
 unitdir=../../units
 unittargetdir=../../units/win32
+
+[rules]
+cleartarget:
+        $(DEL) $(wildcard ../../units/interfaces.*)
+
+all: cleartarget interfaces$(PPUEXT)
