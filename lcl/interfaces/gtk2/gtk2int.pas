@@ -75,6 +75,7 @@ type
 
   TGtkListStoreStringList = class(TStrings)
   private
+    FColumnIndex : Integer;
     FGtkListStore : PGtkListStore;
     FOwner: TWinControl;
     FSorted : boolean;
@@ -95,7 +96,7 @@ type
     procedure RemoveAllCallbacks; virtual;
     procedure UpdateItemCache;
   public
-    constructor Create(ListStore : PGtkListStore; TheOwner: TWinControl);
+    constructor Create(ListStore : PGtkListStore; ColumnIndex : Integer; TheOwner: TWinControl);
     destructor Destroy; override;
     function Add(const S: string): Integer; override;
     procedure Assign(Source : TPersistent); override;
@@ -144,12 +145,19 @@ const
   Returns:
 
  ------------------------------------------------------------------------------}
-constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore; TheOwner: TWinControl);
+constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore; ColumnIndex : Integer; TheOwner: TWinControl);
 begin
   inherited Create;
   if ListStore = nil then RaiseException(
     'TGtkListStoreStringList.Create Unspecified list store');
   FGtkListStore:= ListStore;
+
+  if (ColumnIndex < 0) or
+    (ColumnIndex >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(ListStore)))
+  then
+    RaiseException('TGtkListStoreStringList.Create Invalid Column Index');
+  FColumnIndex:=ColumnIndex;
+
   if TheOwner = nil then RaiseException(
     'TGtkListStoreStringList.Create Unspecified owner');
   FOwner:=TheOwner;
@@ -398,7 +406,7 @@ begin
     ListItem:=FCachedItems[Index];
 
     Item := nil;
-    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem, [0, @Item, -1]);
+    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem, [FColumnIndex, @Item, -1]);
     if (Item <> nil) then begin
       Result:= StrPas(Item);
       g_free(Item);
@@ -536,7 +544,7 @@ begin
       'TGtkListStoreStringList.Insert Unspecified owner');
 
     gtk_list_store_insert(FGtkListStore, @li, Index);
-    gtk_list_store_set(FGtkListStore, @li, [0, PChar(S), -1]);
+    gtk_list_store_set(FGtkListStore, @li, [FColumnIndex, PChar(S), -1]);
 
     ConnectItemCallbacks(li);
 
@@ -551,6 +559,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2003/09/24 17:23:54  ajgenius
+  more work toward GTK2 - partly fix CheckListBox, & MenuItems
+
   Revision 1.21  2003/09/22 20:08:56  ajgenius
   break GTK2 object and winapi into includes like the GTK interface
 

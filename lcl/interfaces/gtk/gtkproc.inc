@@ -3141,7 +3141,10 @@ begin
   end;
   {$IFDEF Gtk2}
   // Gtk2ToDo
-  writeln('ToDo: MenuSizeRequest ');
+  if CheckMenuItem<>nil then begin
+    gtk_menu_item_toggle_size_allocate(GTK_MENU_ITEM(CheckMenuItem),MaxToggleSize);
+    GTK_MENU_ITEM(CheckMenuItem)^.toggle_size := MaxToggleSize;
+  end;
   {$ELSE}
   if CheckMenuItem<>nil then
     MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
@@ -3310,7 +3313,10 @@ begin
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItemWidget),
       LCLMenuItem.Checked);
     {$ifdef GTK2}
-      writeln('TODO: CreateMenuItem, get old toggle size');
+    if (OldCheckMenuItemToggleSize=0) then begin
+      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(MenuItemWidget), @OldCheckMenuItemToggleSize);
+      OldCheckMenuItemToggleSize := GTK_MENU_ITEM(MenuItemWidget)^.toggle_size;
+    end;
     {$else}
     if (OldCheckMenuItemToggleSize=0) then
       OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
@@ -4810,6 +4816,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.211  2003/09/24 17:23:54  ajgenius
+  more work toward GTK2 - partly fix CheckListBox, & MenuItems
+
   Revision 1.210  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

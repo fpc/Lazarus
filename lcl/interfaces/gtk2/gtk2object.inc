@@ -22,6 +22,26 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+Procedure gtk_clb_toggle_row_activated(treeview : PGtkTreeView; arg1 : PGtkTreePath;
+                                  arg2 : PGtkTreeViewColumn; data : gpointer); cdecl;
+var
+  aTreeModel : PGtkTreeModel;
+  aTreeIter : TGtkTreeIter;
+  value : boolean;
+begin
+  aTreeModel := gtk_tree_view_get_model (treeview);
+  if (gtk_tree_model_get_iter (aTreeModel, @aTreeIter, arg1)) then begin
+    gtk_tree_model_get (aTreeModel, @aTreeIter, [0, @value, -1]);
+
+    If value then
+      value := False
+    else
+      value := True;
+      
+    gtk_list_store_set (GTK_LIST_STORE (aTreeModel), @aTreeIter, [0, value, -1]);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure Tgtk2Object.AppendText(Sender: TObject; Str: PChar);
  ------------------------------------------------------------------------------}
@@ -102,28 +122,31 @@ begin
       if (CompStyle = csListBox) then
         liststore := gtk_list_store_new (1, [G_TYPE_STRING, nil])
       else
-        liststore := gtk_list_store_new (1, [G_TYPE_BOOLEAN, nil]);
+        liststore := gtk_list_store_new (2, [G_TYPE_BOOLEAN, G_TYPE_STRING, nil]);
 
       TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
       g_object_unref (G_OBJECT (liststore));
 
-      if (CompStyle = csListBox) then begin
-        renderer := gtk_cell_renderer_text_new();
-        column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', 0, nil]);
-      end
-      else begin
+      TempInt := 0;
+      if (CompStyle = csCheckListBox) then begin
         renderer := gtk_cell_renderer_toggle_new();
-        column := gtk_tree_view_column_new_with_attributes ('CHECKLISTITEMS', renderer, ['active', 0, nil]);
+        column := gtk_tree_view_column_new_with_attributes('', renderer, ['active', 0, nil]);
+        gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+        gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+        g_signal_connect (GTK_TREE_VIEW (TempWidget), 'row_activated',
+					  G_CALLBACK (@gtk_clb_toggle_row_activated),
+					  nil);
+        TempInt := 1;
       end;
 
+      renderer := gtk_cell_renderer_text_new();
+      column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', TempInt, nil]);
       gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+      gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+
       gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TempWidget), False);
 
-      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
-      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
-                   gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-                   gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
+      gtk_container_add(GTK_CONTAINER(p), TempWidget);
       gtk_widget_show(TempWidget);
 
       SetMainWidget(p, TempWidget);
@@ -219,15 +242,20 @@ begin
 
 	csMemo:
 	begin
-          SetCallback(LM_CHANGED, Sender);
-          SetCallback(LM_ACTIVATE, Sender);
+         // SetCallback(LM_CHANGED, Sender);
+          //SetCallback(LM_ACTIVATE, Sender);
           SetCallback(LM_CUTTOCLIP, Sender);
           SetCallback(LM_COPYTOCLIP, Sender);
           SetCallback(LM_PASTEFROMCLIP, Sender);
-	  SetCallback(LM_INSERTTEXT, Sender);
+	  //SetCallback(LM_INSERTTEXT, Sender);
 	end;
       end; //case
-    end;
+    end
+    else
+    If (Sender is TMenuItem) then
+      Begin
+        SetCallback(LM_ACTIVATE,Sender);
+      end;
 end;
 
 {------------------------------------------------------------------------------
@@ -252,7 +280,11 @@ var
   aTextIter1  : TGtkTextIter;
   aTextIter2  : TGtkTextIter;
   aTextBuffer : PGtkTextBuffer;
-  Pos         : Integer;
+  aTreeSelect : PGtkTreeSelection;
+  aTreeModel  : PGtkTreeModel;
+  aTreeIter   : TGtkTreeIter;
+  TempInt     : Integer;
+  TempBool    : Boolean;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -271,27 +303,60 @@ begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
 
+      LM_CLB_GETCHECKED :
+      begin
+        Result := 0;
+        if Assigned(Data)
+        and (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csCheckListBox)
+        then begin
+          { Get the child in question of that index }
+          Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+          aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
+
+          if (aTreeModel <> nil) and
+             (gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, Integer(Data^)))
+          then begin
+             gtk_tree_model_get (aTreeModel, @aTreeIter, [0, @TempBool, -1]);
+             if TempBool then
+               result := 1;
+          end;
+        end;
+      end;
+
+      LM_CLB_SETCHECKED :
+      begin
+        if Assigned(Data)
+        and (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csCheckListBox)
+        then begin
+          { Get the child in question of that index }
+          Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+          aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
+
+          if (aTreeModel <> nil) and
+             (gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, Integer(Data^)))
+          then
+              gtk_list_store_set(GTK_LIST_STORE(aTreeModel), @aTreeIter, [0, TLMSetChecked(Data^).Checked, -1]);
+        end;
+      end;
+
       LM_GETITEMS :
       begin
         case TControl(Sender).fCompStyle of
           csComboBox:
             Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
 
-         { csCListBox:
-            begin
-              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-
-              Data := TGtkCListStringList.Create(PGtkCList(Widget));
-              if Sender is TCustomListBox then
-                TGtkCListStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
-              Result := integer(Data);
-            end;}
-
           csCheckListBox, csListBox:
             begin
+              if TControl(Sender).fCompStyle = csCheckListBox then
+                TempInt := 1
+              else
+                TempInt := 0;
               Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-              Data:= TGtkListStoreStringList.Create(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Widget))),
-                     TWinControl(Sender));
+              aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
+              Data:= TGtkListStoreStringList.Create(GTK_LIST_STORE(aTreeModel),
+                     TempInt, TWinControl(Sender));
               if Sender is TCustomListBox then
                 TGtkListStoreStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
               Result:= Integer(Data);
@@ -299,6 +364,32 @@ begin
         else
           raise Exception.Create('Message LM_GETITEMS - Not implemented');
         end;
+      end;
+
+      LM_GETSEL :
+      begin
+        Result := 0;      { assume: nothing found }
+        if (Sender is TControl)
+        and Assigned (data)
+        then case TControl(Sender).fCompStyle of
+          csListBox, csCheckListBox:
+            begin
+              { Get the child in question of that index }
+              Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
+              aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
+
+              if (aTreeModel <> nil) and (aTreeSelect <> nil) and
+                 (gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, Integer(Data^))) and
+                 (gtk_tree_selection_iter_is_selected(aTreeSelect, @aTreeIter))
+              then
+                result := 1;
+            end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+          end;
       end;
 
       LM_GETSELSTART :
@@ -342,8 +433,8 @@ begin
             csEdit:
               begin
     	        Widget:= GTK_WIDGET(Pointer(Handle));
-                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@result, @Pos) then
-                   result := Pos - Result
+                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@result, @TempInt) then
+                   result := TempInt - Result
                 else
                   result := 0;
               end;
@@ -357,18 +448,72 @@ begin
 
       LM_SETBORDER:
       begin
-        if (Sender is TControl) then
+        if (Sender is TWinControl) then
         begin
           if (TControl(Sender).fCompStyle in [csListBox, csCListBox, csCheckListBox]) then
             begin
-              {Widget:= PGtkWidget(Handle);
+              Widget:= PGtkWidget(TWinControl(Sender).Handle);
               if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
               then
                 gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(Widget), GTK_SHADOW_IN)
-              else}
+              else
                 gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(Widget), GTK_SHADOW_NONE);
             end
          end;
+      end;
+
+      LM_SETITEMINDEX:
+        if Handle<>0 then begin
+          case TControl(Sender).fCompStyle of
+
+            csListBox, csCheckListBox:
+            begin
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
+              aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
+
+              if (aTreeModel <> nil) and (aTreeSelect <> nil) then begin
+                if (Integer(Data)>=0) and
+                  (gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, Integer(Data)))
+                then
+                  gtk_tree_selection_select_iter(aTreeSelect, @aTreeIter)
+                else
+                  gtk_tree_selection_unselect_all(aTreeSelect);
+              end;
+            end;
+            
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+          end;
+        end;
+
+      LM_SETSEL:
+      begin
+        if (Sender is TControl)
+        and Assigned (data)
+        then case TControl(Sender).fCompStyle of
+          csListBox, csCheckListBox:
+            begin
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
+              aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
+
+              if (aTreeModel <> nil) and (aTreeSelect <> nil) and
+                 (gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, TLMSetSel(Data^).Index))
+              then
+                if TLMSetSel(Data^).Selected then
+                  gtk_tree_selection_select_iter(aTreeSelect, @aTreeIter)
+                else
+                  if gtk_tree_selection_iter_is_selected(aTreeSelect, @aTreeIter) then
+                    gtk_tree_selection_unselect_iter(aTreeSelect, @aTreeIter);
+            end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+        end;
       end;
 
       LM_SETSELSTART:
@@ -387,9 +532,9 @@ begin
             csEdit:
               begin
     	        Widget:= GTK_WIDGET(Pointer(Handle));
-                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),nil, @Pos) then
-                  If (Integer(Data) >= 0) and (Integer(Data)<=Pos) then
-                    gtk_editable_select_region(GTK_EDITABLE(Widget), Integer(Data), Pos+1);
+                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),nil, @TempInt) then
+                  If (Integer(Data) >= 0) and (Integer(Data)<=TempInt) then
+                    gtk_editable_select_region(GTK_EDITABLE(Widget), Integer(Data), TempInt+1);
               end;
 
             else begin
@@ -418,8 +563,8 @@ begin
             csEdit:
               begin
     	        Widget:= GTK_WIDGET(Pointer(Handle));
-                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@Pos, nil) then
-                  gtk_editable_select_region(GTK_EDITABLE(Widget), Pos, Pos+Integer(Data)+1)
+                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@TempInt, nil) then
+                  gtk_editable_select_region(GTK_EDITABLE(Widget), TempInt, TempInt+Integer(Data)+1)
                 else
                   gtk_editable_select_region(GTK_EDITABLE(Widget), gtk_editable_get_position(GTK_EDITABLE(Widget)),
                     gtk_editable_get_position(GTK_EDITABLE(Widget)) + Integer(Data)+1)
@@ -433,6 +578,23 @@ begin
         end;
       end;
 
+      LM_SORT:
+      begin
+        if  (Sender is TControl) and assigned (data) then
+        begin
+          case TControl(Sender).fCompStyle of
+            csListBox,
+            csCheckListBox
+                     : TGtkListStoreStringList(TLMSort(Data^).List).Sorted:=
+                              TLMSort(Data^).IsSorted;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
+          end
+        end
+      end;
+      
       else begin
         result := inherited  IntSendMessage3(LM_Message, Sender, data);
         exit;
@@ -665,13 +827,10 @@ begin
     (AControl.fCompStyle in [csListBox, csCheckListBox, csCListBox]) then
   begin
     if MultiSelect then
-    begin
-       if ExtendedSelect
-          then SelectionMode:= GTK_SELECTION_EXTENDED
-          else SelectionMode:= GTK_SELECTION_MULTIPLE;
-    end
+      SelectionMode:= GTK_SELECTION_MULTIPLE
     else
-      SelectionMode:= GTK_SELECTION_BROWSE;
+      SelectionMode:= GTK_SELECTION_SINGLE;
+      
     case AControl.fCompStyle of
 
     csListBox, csCheckListBox:
@@ -819,6 +978,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.2  2003/09/24 17:23:54  ajgenius
+  more work toward GTK2 - partly fix CheckListBox, & MenuItems
+
   Revision 1.1  2003/09/22 20:08:56  ajgenius
   break GTK2 object and winapi into includes like the GTK interface
 

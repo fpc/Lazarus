@@ -3291,6 +3291,11 @@ begin
       {$EndIf}
 
       LM_CLB_GETCHECKED :
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_CLB_GETCHECKED');
+      end;
+      {$Else}
       begin
         Result := 0;
         if Assigned(Data)
@@ -3309,8 +3314,14 @@ begin
           end;
         end;
       end;
+      {$EndIf}
 
       LM_CLB_SETCHECKED :
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_CLB_SETCHECKED');
+      end;
+      {$Else}
       begin
         if Assigned(Data)
         and (Sender is TControl)
@@ -3328,6 +3339,7 @@ begin
           end;
         end;
       end;
+      {$EndIf}
 
       LM_SETLIMITTEXT :
       begin
@@ -8386,6 +8398,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.427  2003/09/24 17:23:54  ajgenius
+  more work toward GTK2 - partly fix CheckListBox, & MenuItems
+
   Revision 1.426  2003/09/23 17:52:04  mattias
   added SetAnchors
 

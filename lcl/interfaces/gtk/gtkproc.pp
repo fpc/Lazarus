@@ -366,7 +366,7 @@ type
   TDesignSignalMask = longint;
 
 const
-  DesignSignalNames: array[TDesignSignalType] of PChar = (
+    DesignSignalNames: array[TDesignSignalType] of PChar = (
     '',
     'button-press-event',
     'motion-notify-event',
