@@ -3243,6 +3243,7 @@ begin
   l:=IndexOfStyle(WName);
   If l < 0 then begin
     StyleObject := NewStyleObject;
+    Tp:=nil;
     If AnsiCompareText(WName,'button')=0 then
       StyleObject^.Widget := GTK_BUTTON_NEW
     else
@@ -3300,7 +3301,7 @@ begin
     else
       If AnsiCompareText(WName,'default')<>0 then
         Result := GetStyle('default');
-    If AnsiCompareText(WName,'tooltip')=0 then
+    If Tp<>nil then
       GTK_Object_Destroy(Tp);
   end else
     Result := PStyleObject(Styles.Objects[l])^.Style;
@@ -3948,6 +3949,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.154  2002/12/22 23:13:31  mattias
+  fixed mem leak of tooltips in GetStyle
+
   Revision 1.153  2002/12/22 22:42:55  mattias
   custom controls now support child wincontrols
 
