@@ -654,7 +654,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.ColorIsStored: boolean;
 begin
-  Result:=(Color<>clBtnFace);
+  Result:=(Color<>clWindow);
 end;
 
 {------------------------------------------------------------------------------
@@ -2561,6 +2561,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.154  2003/09/13 10:04:35  mattias
+  fixed ColorIsStored
+
   Revision 1.153  2003/09/13 10:02:18  mattias
   set default color to clWindow
 

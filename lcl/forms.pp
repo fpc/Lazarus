@@ -418,6 +418,7 @@ type
     procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
+    function ColorIsStored: boolean; override;
   public
     // properties
   public

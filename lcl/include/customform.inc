@@ -803,6 +803,11 @@ begin
   Result:=Visible;
 end;
 
+function TCustomForm.ColorIsStored: boolean;
+begin
+  Result:=(Color<>clBtnFace);
+end;
+
 
 {------------------------------------------------------------------------------}
 {       TCustomForm SetMenu                                                      }
@@ -1430,6 +1435,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.114  2003/09/13 10:04:35  mattias
+  fixed ColorIsStored
+
   Revision 1.113  2003/09/06 18:38:06  mattias
   fixed recreating handle after showmodal
 

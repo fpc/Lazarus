@@ -113,6 +113,8 @@ type
     Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     Procedure DrawDivider(X : Integer);
     Procedure DrawBevel(xLeft, PanelNum : Integer);
+  protected
+    function ColorIsStored: boolean; override;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -2037,6 +2039,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/09/13 10:06:53  mattias
+  fixed ColorIsStored
+
   Revision 1.85  2003/08/30 18:53:07  mattias
   using default colors, when theme does not define them
 
