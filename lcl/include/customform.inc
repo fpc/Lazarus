@@ -823,6 +823,120 @@ begin
   Result:=(Color<>clBtnFace);
 end;
 
+procedure TCustomForm.CMActionExecute(var Message: TLMessage);
+begin
+  if DoExecuteAction(TBasicAction(Message.LParam)) then
+    Message.Result := 1;
+end;
+
+procedure TCustomForm.CMActionUpdate(var Message: TLMessage);
+begin
+  if DoUpdateAction(TBasicAction(Message.LParam)) then
+    Message.Result := 1;
+end;
+
+function TCustomForm.DoExecuteAction(ExeAction: TBasicAction): boolean;
+
+  function ProcessExecute(Control: TControl): Boolean;
+  begin
+    Result := (Control <> nil) and
+      Control.ExecuteAction(ExeAction);
+  end;
+
+  function TraverseClients(Container: TWinControl): Boolean;
+  var
+    I: Integer;
+    Control: TControl;
+  begin
+    if Container.Showing then
+      for I := 0 to Container.ControlCount - 1 do
+      begin
+        Control := Container.Controls[I];
+        if Control.Visible and ProcessExecute(Control)
+        or (Control is TWinControl) and TraverseClients(TWinControl(Control))
+        then begin
+          Result := True;
+          exit;
+        end;
+      end;
+    Result := False;
+  end;
+
+begin
+  Result := false;
+  if (csDesigning in ComponentState) or (not Showing) then exit;
+  if ProcessExecute(ActiveControl) or ProcessExecute(Self)
+  or TraverseClients(Self) then
+    Result := true;
+end;
+
+function TCustomForm.DoUpdateAction(TheAction: TBasicAction): boolean;
+
+  function ProcessUpdate(Control: TControl): Boolean;
+  begin
+    Result := (Control <> nil) and
+      Control.UpdateAction(TheAction);
+  end;
+
+  function TraverseClients(Container: TWinControl): Boolean;
+  var
+    I: Integer;
+    Control: TControl;
+  begin
+    if Container.Showing then
+      for I := 0 to Container.ControlCount - 1 do
+      begin
+        Control := Container.Controls[I];
+        if Control.Visible and ProcessUpdate(Control)
+        or (Control is TWinControl) and TraverseClients(TWinControl(Control))
+        then begin
+          Result := True;
+          exit;
+        end;
+      end;
+    Result := False;
+  end;
+
+begin
+  Result:=false;
+  if (csDesigning in ComponentState) or not Showing then exit;
+  { Find a target for given Command (Message.LParam). }
+  if ProcessUpdate(ActiveControl) or ProcessUpdate(Self)
+  or TraverseClients(Self) then
+    Result:=true;
+end;
+
+procedure TCustomForm.UpdateActions;
+
+  procedure TraverseClients(Container: TWinControl);
+  var
+    I: Integer;
+    Control: TControl;
+  begin
+    if Container.Showing then
+      for I := 0 to Container.ControlCount - 1 do begin
+        Control := Container.Controls[I];
+        if (csActionClient in Control.ControlStyle) and Control.Visible then
+          Control.InitiateAction;
+        if Control is TWinControl then
+          TraverseClients(TWinControl(Control));
+      end;
+  end;
+
+var
+  I: Integer;
+begin
+  if (csDesigning in ComponentState) or (not Showing) then exit;
+  // update this form
+  InitiateAction;
+  // update main menu's top-most items
+  if Menu <> nil then
+    for I := 0 to Menu.Items.Count - 1 do
+      with Menu.Items[I] do
+        if Visible then InitiateAction;
+  // update all controls
+  TraverseClients(Self);
+end;
 
 {------------------------------------------------------------------------------}
 {       TCustomForm SetMenu                                                      }
@@ -1467,6 +1581,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.125  2004/02/02 17:39:10  mattias
+  added TActionList - actions need testing
+
   Revision 1.124  2004/02/02 16:59:28  mattias
   more Actions  TAction, TBasicAction, ...
 

@@ -290,6 +290,8 @@ var
   ApplicationActionComponent: TComponent;
 
 
+procedure Register;
+
 implementation
 
 
@@ -297,21 +299,24 @@ procedure RegisterActions(const CategoryName: string;
   const AClasses: array of TBasicActionClass; Resource: TComponentClass);
 begin
   if Assigned(RegisterActionsProc) then
-    RegisterActionsProc(CategoryName, AClasses, Resource) else
+    RegisterActionsProc(CategoryName, AClasses, Resource)
+  else
     raise Exception.Create(SInvalidActionRegistration);
 end;
 
 procedure UnRegisterActions(const AClasses: array of TBasicActionClass);
 begin
   if Assigned(UnRegisterActionsProc) then
-    UnRegisterActionsProc(AClasses) else
+    UnRegisterActionsProc(AClasses)
+  else
     raise Exception.Create(SInvalidActionUnregistration);
 end;
 
 procedure EnumRegisteredActions(Proc: TEnumActionProc; Info: Pointer);
 begin
   if Assigned(EnumRegisteredActionsProc) then
-    EnumRegisteredActionsProc(Proc, Info) else
+    EnumRegisteredActionsProc(Proc, Info)
+  else
     raise Exception.Create(SInvalidActionEnumeration);
 end;
 
@@ -319,8 +324,14 @@ function CreateAction(AOwner: TComponent;
   ActionClass: TBasicActionClass): TBasicAction;
 begin
   if Assigned(CreateActionProc) then
-    Result := CreateActionProc(AOwner, ActionClass) else
+    Result := CreateActionProc(AOwner, ActionClass)
+  else
     raise Exception.Create(SInvalidActionCreation);
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Standard',[TActionList]);
 end;
 
 {$I containedaction.inc}

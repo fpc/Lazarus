@@ -418,6 +418,11 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
+    procedure CMActionExecute(var Message: TLMessage); message CM_ACTIONEXECUTE;
+    procedure CMActionUpdate(var Message: TLMessage); message CM_ACTIONUPDATE;
+    function DoExecuteAction(ExeAction: TBasicAction): boolean;
+    function DoUpdateAction(TheAction: TBasicAction): boolean;
+    procedure UpdateActions; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
@@ -485,6 +490,7 @@ type
   public
     property ClientHandle: HWND read FClientHandle;
   published
+    property Action;
     property ActiveControl;
     property Align;
     property AutoSize;
@@ -751,6 +757,8 @@ type
     FMainForm : TForm;
     FMouseControl: TControl;
     FOldExceptProc: TExceptProc;
+    FOnActionExecute: TActionEvent;
+    FOnActionUpdate: TActionEvent;
     FOnHelp: THelpEvent;
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
@@ -779,6 +787,7 @@ type
     procedure StopHintTimer;
     function  ValidateHelpSystem: Boolean;
     procedure WndProc(var AMessage : TLMessage);
+    function DispatchAction(Msg: Longint; Action: TBasicAction): Boolean;
   protected
     Function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler;
@@ -790,12 +799,15 @@ type
     procedure SetTitle(const AValue: String); override;
     procedure StartHintTimer(Interval: integer; TimerType: TAppHintTimerType);
     procedure UpdateVisible;
+    procedure DoActionIdle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ControlDestroyed(AControl: TControl);
     Procedure BringToFront;
     procedure CreateForm(InstanceClass: TComponentClass; var Reference);
+    function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
+    function UpdateAction(TheAction: TBasicAction): Boolean; override;
     function HandleAllocated: boolean;
     procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
@@ -840,6 +852,8 @@ type
     property HintShortCuts: Boolean read FHintShortCuts write FHintShortCuts;
     property HintShortPause: Integer read FHintShortPause write FHintShortPause;
     property MainForm: TForm read FMainForm;
+    property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
+    property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;

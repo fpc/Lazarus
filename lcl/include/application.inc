@@ -635,6 +635,18 @@ begin
 
 end;
 
+procedure TApplication.DoActionIdle;
+var
+  i: Integer;
+  CurForm: TCustomForm;
+begin
+  for i := 0 to Screen.CustomFormCount - 1 do begin
+    CurForm:=Screen.CustomForms[I];
+    if CurForm.HandleAllocated and CurForm.Visible and CurForm.Enabled then
+      CurForm.UpdateActions;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TApplication.IconChanged
  ------------------------------------------------------------------------------}
@@ -861,6 +873,25 @@ end;
 procedure TApplication.WndProc(var AMessage : TLMessage);
 begin
 
+end;
+
+function TApplication.DispatchAction(Msg: Longint; Action: TBasicAction
+  ): Boolean;
+var
+  Form: TCustomForm;
+begin
+  Form := Screen.ActiveForm;
+  if (Form<>nil) and (Form.Perform(Msg, 0, Longint(Action)) = 1) then
+    Result:=true
+  else if (MainForm<>Form) and (MainForm<>nil)
+    and (MainForm.Perform(Msg, 0, Longint(Action)) = 1)
+  then
+    Result:=true;
+  // Disable action if no "user" handler is available
+  if (not Result) and (Action is TCustomAction)
+  and TCustomAction(Action).Enabled
+  and TCustomAction(Action).DisableIfNoHandler then
+    TCustomAction(Action).Enabled := Assigned(Action.OnExecute);
 end;
 
 function TApplication.GetConsoleApplication: boolean;
@@ -1104,6 +1135,18 @@ begin
   end;
 end;
 
+function TApplication.ExecuteAction(ExeAction: TBasicAction): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnActionExecute) then FOnActionExecute(ExeAction, Result);
+end;
+
+function TApplication.UpdateAction(TheAction: TBasicAction): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction,Result);
+end;
+
 {------------------------------------------------------------------------------
   function TApplication.HandleAllocated: boolean;
 
@@ -1117,6 +1160,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2004/02/02 17:39:10  mattias
+  added TActionList - actions need testing
+
   Revision 1.69  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 
