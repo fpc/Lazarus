@@ -35,7 +35,7 @@ unit StdCtrls;
 
 interface
 
-{ $DEFINE ClientRectBugFix}
+{$DEFINE ClientRectBugFix}
 
 uses
   VCLGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls,
@@ -593,6 +593,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/05/20 14:19:03  lazarus
+  MG: activated the clientrect bugfixes
+
   Revision 1.29  2002/05/13 14:47:00  lazarus
   MG: fixed client rectangles, TRadioGroup, RecreateWnd
 

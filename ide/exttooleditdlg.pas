@@ -116,6 +116,7 @@ type
     CancelButton: TButton;
     procedure CancelButtonClick(Sender: TObject);
     procedure ExternalToolOptionDlgResize(Sender: TObject);
+    procedure MacrosGroupboxResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure KeyGrabButtonClick(Sender: TObject);
@@ -266,9 +267,7 @@ begin
     Height:=450;
     Caption:='Edit Tool';
     Position:=poScreenCenter;
-    OnResize:=@ExternalToolOptionDlgResize;
-    OnKeyUp:=@FormKeyUp;
-  
+
     TitleLabel:=TLabel.Create(Self);
     with TitleLabel do begin
       Name:='TitleLabel';
@@ -467,6 +466,7 @@ begin
       Width:=KeyGroupBox.Width;
       Height:=Self.ClientHeight-50-Top;
       Caption:='Macros';
+      OnResize:=@MacrosGroupboxResize;
       Visible:=true; 
     end;
     
@@ -510,6 +510,9 @@ begin
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
+    
+    OnResize:=@ExternalToolOptionDlgResize;
+    OnKeyUp:=@FormKeyUp;
   end;
   fOptions:=TExternalToolOptions.Create;
   ExternalToolOptionDlgResize(nil);
@@ -681,21 +684,24 @@ begin
     Height:=Self.ClientHeight-50-Top;
   end;
 
-  with MacrosListbox do begin
-    SetBounds(5,5,MacrosGroupbox.ClientWidth-120,
-                 MacrosGroupbox.ClientHeight-30);
-  end;
-
-  with MacrosInsertButton do begin
-    SetBounds(MacrosGroupbox.ClientWidth-90,5,70,25);
-  end;
-
   with OkButton do begin
     SetBounds(270,Self.ClientHeight-40,100,25);
   end;
 
   with CancelButton do begin
     SetBounds(390,OkButton.Top,100,25);
+  end;
+end;
+
+procedure TExternalToolOptionDlg.MacrosGroupboxResize(Sender: TObject);
+begin
+  with MacrosInsertButton do begin
+    SetBounds(MacrosGroupbox.ClientWidth-75,5,70,MacrosInsertButton.Height);
+  end;
+  
+  with MacrosListbox do begin
+    SetBounds(2,2,MacrosInsertButton.Left-5,
+                 MacrosGroupbox.ClientHeight-4);
   end;
 end;
 

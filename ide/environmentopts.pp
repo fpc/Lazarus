@@ -253,10 +253,6 @@ type
 
   { form for environment options }
   TEnvironmentOptionsDialog = class(TForm)
-  private
-    FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
-    FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
-  published
     NoteBook: TNoteBook;
     
     // auto save
@@ -346,14 +342,13 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
-    property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
-      read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
-    property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
-      read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
     procedure WindowPositionsListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure EnvironmentOptionsDialogResize(Sender: TObject);
+    procedure WindowPositionsGroupBoxResize(Sender: TObject);
   private
+    FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
+    FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
     FLayouts: TIDEWindowLayoutList;
     procedure SetupDesktopPage(Page: integer);
     procedure SetupFormEditorPage(Page: integer);
@@ -371,6 +366,11 @@ type
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
                               MaxCount: integer);
     procedure SetWindowPositionsItem(Index: integer);
+  published
+    property OnSaveEnvironmentSettings: TOnSaveEnvironmentSettings
+      read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
+    property OnLoadEnvironmentSettings: TOnLoadEnvironmentSettings
+      read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
   public
     procedure ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
     procedure WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
@@ -1158,6 +1158,7 @@ begin
     Parent:=NoteBook.Page[Page];
     Caption:='Window Positions';
     SetBounds(MaxX div 2,AutoSaveGroupBox.Top,(MaxX div 2)-5,290);
+    OnResize:=@WindowPositionsGroupBoxResize;
     Visible:=true;
   end;
   
@@ -1960,17 +1961,6 @@ begin
   with WindowPositionsGroupBox do begin
     SetBounds(MaxX div 2,AutoSaveGroupBox.Top,(MaxX div 2)-5,290);
   end;
-
-  with WindowPositionsListBox do begin
-    SetBounds(5,5,Parent.ClientWidth-15,60);
-  end;
-
-  with WindowPositionsBox do begin
-    Left:=5;
-    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
-    Width:=WindowPositionsListBox.Width;
-    Height:=Parent.ClientHeight-Top-20;
-  end;
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
@@ -2351,6 +2341,21 @@ begin
     Height:=CancelButton.Height;
     Left:=CancelButton.Left-15-Width;
     Top:=CancelButton.Top;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.WindowPositionsGroupBoxResize(
+  Sender: TObject);
+begin
+  with WindowPositionsListBox do begin
+    SetBounds(2,2,Parent.ClientWidth-2*2,Parent.Height div 4);
+  end;
+
+  with WindowPositionsBox do begin
+    Left:=2;
+    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
+    Width:=WindowPositionsListBox.Width;
+    Height:=Parent.ClientHeight-Top-2;
   end;
 end;
 

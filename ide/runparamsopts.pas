@@ -111,7 +111,7 @@ type
     CmdLineParametersEdit: TEdit;
     UseLaunchingApplicationBevel: TBevel;
     UseLaunchingApplicationCheckBox: TCheckBox;
-    UseLaunchingApplicationEdit: TEdit;
+    UseLaunchingApplicationComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
     WorkingDirectoryEdit: TEdit;
     WorkingDirectoryBtn: TBitBtn;
@@ -131,6 +131,7 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure RunParamsOptsDlgResize(Sender: TObject);
+    procedure UserOverridesGroupBoxResize(Sender: TObject);
     procedure WorkingDirectoryBtnClick(Sender: TObject);
     procedure UserOverridesAddButtonClick(Sender: TObject);
     procedure UserOverridesEditButtonClick(Sender: TObject);
@@ -148,6 +149,7 @@ type
     procedure FillUserOverridesListView;
     procedure SaveToOptions;
     procedure SaveUserOverrides;
+    procedure SetComboBoxText(AComboBox:TComboBox;AText:AnsiString);
   public
     constructor Create(AnOwner: TComponent); override;
     property Options: TRunParamsOptions read fOptions write SetOptions;
@@ -420,20 +422,28 @@ begin
     Name:='UseLaunchingApplicationCheckBox';
     Parent:=NoteBook.Page[0];
     SetBounds(15,
-      CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,250,25);
+      CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,245,25);
     Caption:='Use launching application';
     Checked:=false;
     Visible:=true;
   end;
   
-  UseLaunchingApplicationEdit:=TEdit.Create(Self);
-  with UseLaunchingApplicationEdit do begin
-    Name:='UseLaunchingApplicationEdit';
+  UseLaunchingApplicationComboBox:=TComboBox.Create(Self);
+  with UseLaunchingApplicationComboBox do begin
+    Name:='UseLaunchingApplicationComboBox';
     Parent:=NoteBook.Page[0];
     SetBounds(UseLaunchingApplicationCheckBox.Left,
                  UseLaunchingApplicationCheckBox.Top
                  +UseLaunchingApplicationCheckBox.Height+2,w-15,25);
-    Caption:='';
+    with Items do begin
+      BeginUpdate;
+      Items.Add(DefaultLauncherApplication);
+      {$IFNDEF win32}
+      Items.Add('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
+               +' -x bash -i -c ''$(TargetCmdLine)''');
+      {$ENDIF}
+      EndUpdate;
+    end;
     Visible:=true;
   end;
   
@@ -441,8 +451,8 @@ begin
   with WorkingDirectoryGroupBox do begin
     Name:='WorkingDirectoryGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(5,UseLaunchingApplicationEdit.Top
-                   +UseLaunchingApplicationEdit.Height+15,w,60);
+    SetBounds(5,UseLaunchingApplicationComboBox.Top
+                   +UseLaunchingApplicationComboBox.Height+15,w,60);
     Caption:='Working directory';
     Visible:=true;
   end;
@@ -504,10 +514,6 @@ begin
   with SystemVariablesListView do begin
     Name:='SystemVariablesListView';
     Parent:=SystemVariablesGroupBox;
-    Left:=5;
-    Top:=5;
-    Width:=Parent.ClientWidth-17;
-    Height:=Parent.ClientHeight-28;
     Columns.BeginUpdate;
     Columns.Clear;
     Columns.Add;
@@ -518,6 +524,7 @@ begin
     Columns.EndUpdate;
     ViewStyle := vsReport;
     SortType := stText;
+    Align:=alClient;
     Visible:=true;
   end;
   
@@ -528,6 +535,7 @@ begin
     SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
                  w,150);
     Caption:='User overrides';
+    OnResize:=@UserOverridesGroupBoxResize;
     Visible:=true;
   end;
   
@@ -645,15 +653,15 @@ begin
       CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,250,25);
   end;
 
-  with UseLaunchingApplicationEdit do begin
+  with UseLaunchingApplicationComboBox do begin
     SetBounds(UseLaunchingApplicationCheckBox.Left,
                  UseLaunchingApplicationCheckBox.Top
                  +UseLaunchingApplicationCheckBox.Height+2,w-15,25);
   end;
 
   with WorkingDirectoryGroupBox do begin
-    SetBounds(5,UseLaunchingApplicationEdit.Top
-                   +UseLaunchingApplicationEdit.Height+15,w,60);
+    SetBounds(5,UseLaunchingApplicationComboBox.Top
+                   +UseLaunchingApplicationComboBox.Height+15,w,60);
   end;
 
   with WorkingDirectoryEdit do begin
@@ -683,41 +691,9 @@ begin
     SetBounds(5,5,w,150);
   end;
 
-  with SystemVariablesListView do begin
-    Left:=5;
-    Top:=5;
-    Width:=Parent.ClientWidth-17;
-    Height:=Parent.ClientHeight-28;
-  end;
-
   with UserOverridesGroupBox do begin
     SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
                  w,150);
-  end;
-
-  with UserOverridesListView do begin
-    Left:=5;
-    Top:=5;
-    Width:=Parent.ClientWidth-17;
-    Height:=Parent.ClientHeight-68;
-  end;
-
-  with UserOverridesAddButton do begin
-    Left:=5;
-    Top:=Parent.ClientHeight-Height-28;
-    Width:=100;
-  end;
-
-  with UserOverridesEditButton do begin
-    Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
-    Top:=UserOverridesAddButton.Top;
-    Width:=100;
-  end;
-
-  with UserOverridesDeleteButton do begin
-    Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
-    Top:=UserOverridesEditButton.Top;
-    Width:=100;
   end;
 
   with IncludeSystemVariablesCheckBox do begin
@@ -766,6 +742,34 @@ begin
 
   with CancelButton do begin
     SetBounds(390,OkButton.Top,100,25);
+  end;
+end;
+
+procedure TRunParamsOptsDlg.UserOverridesGroupBoxResize(Sender: TObject);
+begin
+  with UserOverridesAddButton do begin
+    Left:=5;
+    Top:=Parent.ClientHeight-Height-5;
+    Width:=100;
+  end;
+
+  with UserOverridesEditButton do begin
+    Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
+    Top:=UserOverridesAddButton.Top;
+    Width:=100;
+  end;
+
+  with UserOverridesDeleteButton do begin
+    Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
+    Top:=UserOverridesEditButton.Top;
+    Width:=100;
+  end;
+
+  with UserOverridesListView do begin
+    Left:=0;
+    Top:=0;
+    Width:=Parent.ClientWidth-2*Left;
+    Height:=UserOverridesAddButton.Top-Top-5;
   end;
 end;
 
@@ -848,7 +852,7 @@ begin
   fOptions.CmdLineParams:=Trim(CmdLineParametersEdit.Text);
   fOptions.UseLaunchingApplication:=UseLaunchingApplicationCheckBox.Checked;
   fOptions.LaunchingApplicationPathPlusParams:=
-                                      Trim(UseLaunchingApplicationEdit.Text);
+                                     Trim(UseLaunchingApplicationComboBox.Text);
   fOptions.WorkingDirectory:=Trim(WorkingDirectoryEdit.Text);
   fOptions.Display:=Trim(DisplayEdit.Text);
   
@@ -868,6 +872,19 @@ begin
   end;
 end;
 
+procedure TRunParamsOptsDlg.SetComboBoxText(AComboBox: TComboBox;
+  AText: AnsiString);
+var a:integer;
+begin
+  a:=AComboBox.Items.IndexOf(AText);
+  if a>=0 then
+    AComboBox.ItemIndex:=a
+  else begin
+    AComboBox.Items.Add(AText);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+  end;
+end;
+
 procedure TRunParamsOptsDlg.SetOptions(NewOptions: TRunParamsOptions);
 begin
   fOptions:=NewOptions;
@@ -876,7 +893,8 @@ begin
   HostApplicationEdit.Text:=fOptions.HostApplicationFilename;
   CmdLineParametersEdit.Text:=fOptions.CmdLineParams;
   UseLaunchingApplicationCheckBox.Checked:=fOptions.UseLaunchingApplication;
-  UseLaunchingApplicationEdit.Text:=fOptions.LaunchingApplicationPathPlusParams;
+  SetComboBoxText(UseLaunchingApplicationComboBox,
+                  fOptions.LaunchingApplicationPathPlusParams);
   WorkingDirectoryEdit.Text:=fOptions.WorkingDirectory;
   DisplayEdit.Text:=fOptions.Display;
   

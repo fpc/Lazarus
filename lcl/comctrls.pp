@@ -34,7 +34,7 @@ unit ComCtrls;
 {$mode objfpc}
 {$H+}
 
-{ $DEFINE ClientRectBugFix}
+{$DEFINE ClientRectBugFix}
 
 interface
 
@@ -1559,6 +1559,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/05/20 14:19:03  lazarus
+  MG: activated the clientrect bugfixes
+
   Revision 1.34  2002/05/10 06:05:48  lazarus
   MG: changed license to LGPL
 

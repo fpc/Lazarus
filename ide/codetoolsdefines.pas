@@ -152,6 +152,8 @@ type
 
     // misc
     procedure FormResize(Sender: TObject);
+    procedure SelectedItemGroupBoxResize(Sender: TObject);
+    procedure ValueNoteBookResize(Sender: TObject);
     procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
                                     Shift: TShiftState;  X,Y: integer);
     procedure ProjectSpecificCheckBoxClick(Sender: TObject);
@@ -160,7 +162,7 @@ type
     // exit menu
     procedure SaveAndExitMenuItemClick(Sender: TObject);
     procedure DontSaveAndExitMenuItemClick(Sender: TObject);
-    
+
     // value notebook
     procedure ValueNoteBookPageChanged(Sender: TObject);
     procedure MoveFilePathUpBitBtnClick(Sender: TObject);
@@ -378,31 +380,11 @@ begin
   ModalResult:=mrCancel;
 end;
 
-procedure TCodeToolsDefinesEditor.FormResize(Sender: TObject);
-var MaxX, MaxY, SelGrpBoxTop, SelItemMaxX, SelItemMaxY,
-  ValNoteBookMaxX, ValNoteBookMaxY: integer;
+procedure TCodeToolsDefinesEditor.SelectedItemGroupBoxResize(Sender: TObject);
+var SelItemMaxX, SelItemMaxY: integer;
 begin
-  MaxX:=ClientWidth;
-  MaxY:=ClientHeight-25;
-  SelGrpBoxTop:=MaxY-310;
-
-  // define tree ---------------------------------------------------------------
-  with DefineTreeView do begin
-    Left:=3;
-    Top:=3;
-    Width:=MaxX-2*Left;
-    Height:=SelGrpBoxTop-2*Top;
-  end;
-
-  // selected item -------------------------------------------------------------
-  with SelectedItemGroupBox do begin
-    Left:=DefineTreeView.Left;
-    Top:=SelGrpBoxTop;
-    Width:=MaxX-2*Left;
-    Height:=MaxY-Top-Left;
-  end;
-  SelItemMaxX:=SelectedItemGroupBox.ClientWidth-6;
-  SelItemMaxY:=SelectedItemGroupBox.ClientHeight-27;
+  SelItemMaxX:=SelectedItemGroupBox.ClientWidth;
+  SelItemMaxY:=SelectedItemGroupBox.ClientHeight;
   with TypeLabel do begin
     Left:=5;
     Top:=3;
@@ -449,39 +431,29 @@ begin
     Width:=SelItemMaxX;
     Height:=SelItemMaxY-Top;
   end;
-  ValNoteBookMaxX:=ValueNoteBook.ClientWidth-10;//ValueAsTextSynEdit.Parent.ClientWidth;
-  ValNoteBookMaxY:=ValueNoteBook.ClientHeight-30;//ValueAsTextSynEdit.Parent.ClientHeight;
-  with ValueAsTextSynEdit do begin
-    Left:=0;
-    Top:=0;
-    Width:=ValNoteBookMaxX;
-    Height:=ValNoteBookMaxY;
+end;
+
+procedure TCodeToolsDefinesEditor.FormResize(Sender: TObject);
+var MaxX, MaxY, SelGrpBoxTop: integer;
+begin
+  MaxX:=ClientWidth;
+  MaxY:=ClientHeight;
+  SelGrpBoxTop:=MaxY-310;
+
+  // define tree ---------------------------------------------------------------
+  with DefineTreeView do begin
+    Left:=3;
+    Top:=3;
+    Width:=MaxX-2*Left;
+    Height:=SelGrpBoxTop-2*Top;
   end;
-  with ValueAsFilePathsSynEdit do begin
-    Left:=0;
-    Top:=0;
-    Width:=ValNoteBookMaxX-80;
-    Height:=ValNoteBookMaxY;
-  end;
-  with MoveFilePathUpBitBtn do begin
-    Left:=ValNoteBookMaxX-75;
-    Top:=1;
-    Width:=ValNoteBookMaxX-Left-5;
-  end;
-  with MoveFilePathDownBitBtn do begin
-    Left:=MoveFilePathUpBitBtn.Left;
-    Top:=MoveFilePathUpBitBtn.Top+MoveFilePathUpBitBtn.Height+5;
-    Width:=MoveFilePathUpBitBtn.Width;
-  end;
-  with DeleteFilePathBitBtn do begin
-    Left:=MoveFilePathUpBitBtn.Left;
-    Top:=MoveFilePathDownBitBtn.Top+MoveFilePathDownBitBtn.Height+5;
-    Width:=MoveFilePathUpBitBtn.Width;
-  end;
-  with InsertFilePathBitBtn do begin
-    Left:=MoveFilePathUpBitBtn.Left;
-    Top:=DeleteFilePathBitBtn.Top+DeleteFilePathBitBtn.Height+5;
-    Width:=MoveFilePathUpBitBtn.Width;
+
+  // selected item -------------------------------------------------------------
+  with SelectedItemGroupBox do begin
+    Left:=DefineTreeView.Left;
+    Top:=SelGrpBoxTop;
+    Width:=MaxX-2*Left;
+    Height:=MaxY-Top-Left;
   end;
 end;
 
@@ -1049,6 +1021,47 @@ begin
   end;
 end;
 
+procedure TCodeToolsDefinesEditor.ValueNoteBookResize(Sender: TObject);
+var ValNoteBookMaxX, ValNoteBookMaxY: integer;
+begin
+  //ValNoteBookMaxX:=ValueNoteBook.ClientWidth-10;//ValueAsTextSynEdit.Parent.ClientWidth;
+  //ValNoteBookMaxY:=ValueNoteBook.ClientHeight-30;//ValueAsTextSynEdit.Parent.ClientHeight;
+  ValNoteBookMaxX:=ValueAsTextSynEdit.Parent.ClientWidth;
+  ValNoteBookMaxY:=ValueAsTextSynEdit.Parent.ClientHeight;
+  with ValueAsTextSynEdit do begin
+    Left:=0;
+    Top:=0;
+    Width:=ValNoteBookMaxX;
+    Height:=ValNoteBookMaxY;
+  end;
+  with ValueAsFilePathsSynEdit do begin
+    Left:=0;
+    Top:=0;
+    Width:=ValNoteBookMaxX-80;
+    Height:=ValNoteBookMaxY;
+  end;
+  with MoveFilePathUpBitBtn do begin
+    Left:=ValNoteBookMaxX-75;
+    Top:=1;
+    Width:=ValNoteBookMaxX-Left-5;
+  end;
+  with MoveFilePathDownBitBtn do begin
+    Left:=MoveFilePathUpBitBtn.Left;
+    Top:=MoveFilePathUpBitBtn.Top+MoveFilePathUpBitBtn.Height+5;
+    Width:=MoveFilePathUpBitBtn.Width;
+  end;
+  with DeleteFilePathBitBtn do begin
+    Left:=MoveFilePathUpBitBtn.Left;
+    Top:=MoveFilePathDownBitBtn.Top+MoveFilePathDownBitBtn.Height+5;
+    Width:=MoveFilePathUpBitBtn.Width;
+  end;
+  with InsertFilePathBitBtn do begin
+    Left:=MoveFilePathUpBitBtn.Left;
+    Top:=DeleteFilePathBitBtn.Top+DeleteFilePathBitBtn.Height+5;
+    Width:=MoveFilePathUpBitBtn.Width;
+  end;
+end;
+
 procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
 var
   SelTreeNode: TTreeNode;
@@ -1401,6 +1414,7 @@ begin
   // selected item
   CreateWinControl(SelectedItemGroupBox,TGroupBox,'SelectedItemGroupBox',Self);
   SelectedItemGroupBox.Caption:='Selected Node:';
+  SelectedItemGroupBox.OnResize:=@SelectedItemGroupBoxResize;
   
   CreateWinControl(TypeLabel,TLabel,'TypeLabel',SelectedItemGroupBox);
   
@@ -1433,6 +1447,7 @@ begin
     Pages[0]:='Value as Text';
     Pages.Add('Value as File Paths');
     OnPageChanged:=@ValueNoteBookPageChanged;
+    OnResize:=@ValueNoteBookResize;
   end;
                    
   CreateWinControl(ValueAsTextSynEdit,TSynEdit,'ValueAsTextSynEdit',
@@ -1441,6 +1456,7 @@ begin
     eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol,
     eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
   ValueAsTextSynEdit.Gutter.Visible:=false;
+  ValueAsTextSynEdit.Align:=alClient;
 
   CreateWinControl(ValueAsFilePathsSynEdit,TSynEdit,'ValueAsFilePathsSynEdit',
                    ValueNoteBook.Page[1]);

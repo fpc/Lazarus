@@ -183,6 +183,7 @@ type
     fOnApplyWindowPos: TOnApplyWindowPos;
     fLayout: TIDEWindowLayout;
     fUpdateRadioButtons: boolean;
+  protected
     function GetLayout: TIDEWindowLayout;
     procedure SetLayout(const AValue: TIDEWindowLayout);
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement
@@ -190,6 +191,7 @@ type
     procedure SetPlacementRadioButtons(APlacement: TIDEWindowPlacement;
       const AValue: TRadioButton);
     procedure LoadFrom(AnLayout: TIDEWindowLayout);
+    procedure BoundsChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Save;
@@ -591,13 +593,20 @@ end;
 
 { TIDEWindowSetupLayoutComponent }
 
+
+procedure TIDEWindowSetupLayoutComponent.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  LoadFrom(fLayout);
+end;
+
 procedure TIDEWindowSetupLayoutComponent.LoadFrom(AnLayout: TIDEWindowLayout);
 var
   CurY: integer;
   APlacement: TIDEWindowPlacement;
-
-  procedure SetLabelAndEdit(var ALabel: TLabel; var AnEdit: TEdit;
-    const ACaption: string; x, y: integer);
+  
+  procedure SetLabelAndEdit(var ALabel: TLabel;
+    var AnEdit: TEdit;  const ACaption: string; x, y: integer);
   begin
     if iwpCustomPosition in AnLayout.WindowPlacementsAllowed then begin
       if ALabel=nil then ALabel:=TLabel.Create(Self);
@@ -619,7 +628,7 @@ var
       FreeAndNil(AnEdit);
     end;
   end;
-  
+
 const
   RadioBtnCaptions: array[TIDEWindowPlacement] of string = (
       'Use windowmanager setting',
@@ -637,7 +646,7 @@ begin
         PlacementRadioButtons[APlacement]:=TRadioButton.Create(Self);
       with PlacementRadioButtons[APlacement] do begin
         Parent:=Self;
-        SetBounds(5,CurY,Self.ClientWidth-10,Height);
+        SetBounds(5,CurY,Self.ClientWidth-Left,Height);
         inc(CurY,Height+2);
         OnClick:=@RadioButtonClick;
         Caption:=RadioBtnCaptions[APlacement];

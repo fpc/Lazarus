@@ -36,6 +36,7 @@ the Delphi Windows unit. This is only done for compatibiltiy.
 }
 
 unit LCLLinux;
+
 {$mode objfpc}{$H+}
 
 interface
@@ -45,6 +46,7 @@ uses Classes, LCLType, VCLGlobals, GraphType;
 {$ifdef Trace}
   {$ASSERTIONS ON}
 {$endif}
+{$DEFINE ClientRectBugFix}
 
 // All winapi related stuff
 {$I winapih.inc}
@@ -73,6 +75,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2002/05/20 14:19:03  lazarus
+  MG: activated the clientrect bugfixes
+
   Revision 1.17  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

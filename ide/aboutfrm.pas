@@ -33,6 +33,7 @@ type
     Memo1: TMEMO;
     Button1: TBUTTON;
     Label1: TLABEL;
+    procedure AboutFormResize(Sender: TObject);
   private
     { private declarations }
     FPixmap : TPixmap;
@@ -55,6 +56,8 @@ begin
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Label1.Caption := 'Version #: 0.8.3a';
+  
+  OnResize:=@AboutFormResize;
 end;
 
 
@@ -66,6 +69,15 @@ begin
   inherited Destroy;
 end;
 
+procedure TAboutForm.AboutFormResize(Sender: TObject);
+begin
+  with Memo1 do begin
+    Left:=225;
+    Top:=10;
+    Width:=Self.ClientWidth-Left-Top;
+    Height:=Self.ClientHeight-2*Top;
+  end;
+end;
 
 procedure TAboutForm.Paint;
 begin

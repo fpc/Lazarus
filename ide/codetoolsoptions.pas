@@ -967,7 +967,7 @@ begin
   with SplitPreviewSynEdit do begin
     Name:='SplitPreviewSynEdit';
     Parent:=SplitPreviewGroupBox;
-    SetBounds(2,2,Parent.ClientWidth-8,Parent.ClientHeight-25);
+    Align:=alClient;
     Visible:=true;
   end;
 end;
@@ -1017,7 +1017,7 @@ begin
   with SpacePreviewSynEdit do begin
     Name:='SpacePreviewSynEdit';
     Parent:=SpacePreviewGroupBox;
-    SetBounds(2,2,Parent.ClientWidth-8,Parent.ClientHeight-25);
+    Align:=alClient;
     Visible:=true;
   end;
 end;

@@ -64,7 +64,7 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
-  { $DEFINE ClientRectBugFix}
+  {$DEFINE ClientRectBugFix}
   LCLLinux,
   LCLType, GraphType,
 {$ELSE}

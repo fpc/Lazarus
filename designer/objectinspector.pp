@@ -43,7 +43,7 @@ uses
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo,
   Messages, LResources, XMLCfg, Menus, Dialogs;
 
-{ $DEFINE ClientRectBugFix}
+{$DEFINE ClientRectBugFix}
 
 type
   EObjectInspectorException = class(Exception);
@@ -771,6 +771,7 @@ begin
   if CurRow<>nil then begin
     ItemIndex:=CurRow.Index;
   end;
+  FTopY:=0;
   UpdateScrollBar;
   Invalidate;
 end;
@@ -1192,7 +1193,7 @@ begin
       end;
       // draw unused space below rows
       SpaceRect:=Rect(BorderWidth,BorderWidth,
-                      ClientWidth-BorderWidth,ClientHeight-BorderWidth);
+                      ClientWidth-BorderWidth+1,ClientHeight-BorderWidth+1);
       if FRows.Count>0 then
         SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
 // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);

@@ -428,6 +428,7 @@ type
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure CodeTemplateFileNameButtonClick(Sender:TObject);
     procedure CodeTemplateButtonClick(Sender:TObject);
+    procedure CodeTemplatesGroupBoxResize(Sender: TObject);
 
     // buttons at bottom
     procedure OkButtonClick(Sender:TObject);
@@ -1962,6 +1963,83 @@ end;
 
 
 // general
+
+procedure TEditorOptionsForm.CodeTemplatesGroupBoxResize(Sender: TObject);
+begin
+  with CodeTemplateFileNameLabel do begin
+    Top:=5;
+    Left:=7;
+    Width:=110;
+  end;
+
+  with CodeTemplateFileNameComboBox do begin
+    Top:=3;
+    Left:=CodeTemplateFileNameLabel.Left+CodeTemplateFileNameLabel.Width+2;
+    Width:=CodeTemplatesGroupBox.Width-12-Left-Height;
+  end;
+
+  with CodeTemplateFileNameButton do begin
+    Top:=CodeTemplateFileNameComboBox.Top+2;
+    Width:=CodeTemplateFileNameComboBox.Height-5;
+    Left:=CodeTemplatesGroupBox.Width-9-Width;
+    Height:=Width;
+  end;
+
+  with CodeTemplateAddButton do begin
+    Top:=CodeTemplateFileNameComboBox.Top+CodeTemplateFileNameComboBox.Height+10;
+    Width:=50;
+    Left:=CodeTemplateFileNameLabel.Left;
+    Height:=23;
+  end;
+
+  with CodeTemplateEditButton do begin
+    Top:=CodeTemplateAddButton.Top+CodeTemplateAddButton.Height+5;
+    Left:=CodeTemplateAddButton.Left;
+    Width:=CodeTemplateAddButton.Width;
+    Height:=CodeTemplateAddButton.Height;
+  end;
+
+  with CodeTemplateDeleteButton do begin
+    Top:=CodeTemplateEditButton.Top+CodeTemplateEditButton.Height+5;
+    Left:=CodeTemplateAddButton.Left;
+    Width:=CodeTemplateAddButton.Width;
+    Height:=CodeTemplateAddButton.Height;
+  end;
+
+  with CodeTemplatesLabel do begin
+    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
+    Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
+    Width:=60;
+  end;
+
+  with CodeTemplateListBox do begin
+    Top:=CodeTemplatesLabel.Top;
+    Left:=CodeTemplatesLabel.Left+CodeTemplatesLabel.Width+5;
+    Width:=Parent.ClientWidth-8-Left;
+    Height:=80;
+  end;
+
+  with CodeTemplateCodeLabel do begin
+    Top:=CodeTemplateListBox.Top+CodeTemplateListBox.Height+5;
+    Left:=CodeTemplatesLabel.Left;
+    Width:=CodeTemplatesLabel.Width;
+    Height:=CodeTemplatesLabel.Height;
+  end;
+
+  with CodeTemplateCodePreview do begin
+    Top:=CodeTemplateCodeLabel.Top;
+    Left:=CodeTemplateCodeLabel.Left+CodeTemplateCodeLabel.Width+5;
+    Width:=CodeTemplateListBox.Width;
+    Height:=CodeTemplatesGroupBox.ClientHeight-Top;
+  end;
+
+  with CodeTemplateIndentTypeRadioGroup do begin
+    Left:=CodeTemplateAddButton.Left;
+    Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
+    Width:=CodeTemplateCodePreview.Left-Left-8;
+    Height:=70;
+  end;
+end;
 
 procedure TEditorOptionsForm.EditorOptionsFormResize(Sender: TObject);
 begin
@@ -4699,6 +4777,7 @@ begin
     Width:=AutomaticFeaturesGroupBox.Width;
     Height:=250;
     Caption:='Code templates';
+    OnResize:=@CodeTemplatesGroupBoxResize;
     Visible:=true;
   end;
 
@@ -4923,80 +5002,6 @@ begin
     Left:=AutomaticFeaturesGroupBox.Left;
     Width:=AutomaticFeaturesGroupBox.Width;
     Height:=MaxY-Top-10;
-  end;
-
-  with CodeTemplateFileNameLabel do begin
-    Top:=5;
-    Left:=7;
-    Width:=110;
-  end;
-
-  with CodeTemplateFileNameComboBox do begin
-    Top:=3;
-    Left:=CodeTemplateFileNameLabel.Left+CodeTemplateFileNameLabel.Width+2;
-    Width:=CodeTemplatesGroupBox.Width-12-Left-Height;
-  end;
-
-  with CodeTemplateFileNameButton do begin
-    Top:=CodeTemplateFileNameComboBox.Top+2;
-    Width:=CodeTemplateFileNameComboBox.Height-5;
-    Left:=CodeTemplatesGroupBox.Width-9-Width;
-    Height:=Width;
-  end;
-
-  with CodeTemplateAddButton do begin
-    Top:=CodeTemplateFileNameComboBox.Top+CodeTemplateFileNameComboBox.Height+10;
-    Width:=50;
-    Left:=CodeTemplateFileNameLabel.Left;
-    Height:=23;
-  end;
-
-  with CodeTemplateEditButton do begin
-    Top:=CodeTemplateAddButton.Top+CodeTemplateAddButton.Height+5;
-    Left:=CodeTemplateAddButton.Left;
-    Width:=CodeTemplateAddButton.Width;
-    Height:=CodeTemplateAddButton.Height;
-  end;
-
-  with CodeTemplateDeleteButton do begin
-    Top:=CodeTemplateEditButton.Top+CodeTemplateEditButton.Height+5;
-    Left:=CodeTemplateAddButton.Left;
-    Width:=CodeTemplateAddButton.Width;
-    Height:=CodeTemplateAddButton.Height;
-  end;
-
-  with CodeTemplatesLabel do begin
-    Top:=CodeTemplateFileNameLabel.Top+CodeTemplateFileNameLabel.Height+12;
-    Left:=CodeTemplateAddButton.Left+CodeTemplateAddButton.Width+5;
-    Width:=60;
-  end;
-
-  with CodeTemplateListBox do begin
-    Top:=CodeTemplatesLabel.Top;
-    Left:=CodeTemplatesLabel.Left+CodeTemplatesLabel.Width+5;
-    Width:=Parent.ClientWidth-8-Left;
-    Height:=80;
-  end;
-
-  with CodeTemplateCodeLabel do begin
-    Top:=CodeTemplateListBox.Top+CodeTemplateListBox.Height+5;
-    Left:=CodeTemplatesLabel.Left;
-    Width:=CodeTemplatesLabel.Width;
-    Height:=CodeTemplatesLabel.Height;
-  end;
-
-  with CodeTemplateCodePreview do begin
-    Top:=CodeTemplateCodeLabel.Top;
-    Left:=CodeTemplateCodeLabel.Left+CodeTemplateCodeLabel.Width+5;
-    Width:=CodeTemplateListBox.Width;
-    Height:=CodeTemplatesGroupBox.ClientHeight-20-Top;
-  end;
-
-  with CodeTemplateIndentTypeRadioGroup do begin
-    Left:=CodeTemplateAddButton.Left;
-    Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
-    Width:=CodeTemplateCodePreview.Left-Left-8;
-    Height:=70;
   end;
 end;
 
