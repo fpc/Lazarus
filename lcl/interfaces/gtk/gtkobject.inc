@@ -1784,32 +1784,39 @@ begin
       LM_GETSELCOUNT :
       begin
         case (Sender as TControl).fCompStyle of
-          csListBox : Result:= g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection);
-          csCListBox: Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection);
+          csListBox :
+            Result:=g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
+                               True)^.ImplementationWidget)^.selection);
+          csCListBox:
+            Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle),
+                               True)^.ImplementationWidget)^.selection);
         end;
       end;
   
       LM_GETSEL :
       begin
-         if (Sender as TWinControl).fCompStyle = csListBox then
-         begin
-           { Get the child in question of that index }
-           ListItem:= g_list_nth_data(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.children, Integer(Data^));
-           Result:= g_list_index(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection, ListItem);
-         end
-         else if (Sender as TControl).fCompStyle = csCListBox then
-         begin
-           { Get the selections }
-           GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
-           Result := -1;      { assume: nothing found }
-           while Assigned(GList) do begin
-             if integer(GList^.data) = integer(Data^) then begin
-               Result:= 0;
-               Break;
-             end else
-               GList := GList^.Next;
-           end;
-         end;
+        if (Sender as TWinControl).fCompStyle = csListBox then
+        begin
+          { Get the child in question of that index }
+          ListItem:= g_list_nth_data(PGtkList(GetWidgetInfo(Pointer(Handle),
+                       True)^.ImplementationWidget)^.children, Integer(Data^));
+          Result:= g_list_index(PGtkList(GetWidgetInfo(Pointer(Handle),
+                            True)^.ImplementationWidget)^.selection, ListItem);
+        end
+        else if (Sender as TControl).fCompStyle = csCListBox then
+        begin
+          { Get the selections }
+          GList:= PGtkCList(GetWidgetInfo(Pointer(Handle),
+                                       True)^.ImplementationWidget)^.selection;
+          Result := -1;      { assume: nothing found }
+          while Assigned(GList) do begin
+            if integer(GList^.data) = integer(Data^) then begin
+              Result:= 0;
+              Break;
+            end else
+              GList := GList^.Next;
+          end;
+        end;
       end;
   
       LM_SETLIMITTEXT :
@@ -5900,6 +5907,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.230  2002/10/04 14:24:15  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.229  2002/10/04 07:28:14  lazarus
   MG: fixed showmodal without Application.MainForm
 
