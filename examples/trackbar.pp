@@ -60,7 +60,6 @@ type
           itmFileQuit: TMenuItem;
           constructor Create(AOwner: TComponent); override;	
           procedure LoadMainMenu;
-	  Procedure FormKill(Sender : TObject);
 	  procedure mnuQuitClicked(Sender : TObject);
 	protected
 	  procedure Button1CLick(Sender : TObject);
@@ -160,18 +159,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-
-procedure TForm1.FormKill(Sender : TObject);
-Begin
-  Application.terminate;
-End;
-
-{------------------------------------------------------------------------------}
 procedure TForm1.LoadMainMenu;
 
 begin
-	OnDestroy := @FormKill;
-
 	{ set the height and width }
 	Height := 350;
 	Width := 700;
@@ -310,6 +300,9 @@ begin
 end.
 {
   $Log$
+  Revision 1.6  2002/10/30 12:37:25  lazarus
+  MG: mouse cursors are now allocated on demand
+
   Revision 1.5  2002/10/29 08:22:33  lazarus
   MG: added interfaces unit
 
