@@ -678,11 +678,16 @@ type
   UNDER CONSTRUCTION by Mattias}
   TListPropertyEditor = class;
 
-  TListElementPropertyEditor = class(TPropertyEditor)
-  protected
-
+  TListElementPropertyEditor = class(TNestedPropertyEditor)
+  private
+    FIndex: integer;
+    FList: TListPropertyEditor;
   public
-
+    constructor Create(Parent: TListPropertyEditor; AnIndex: integer);
+    destructor Destroy; override;
+    function GetAttributes: TPropertyAttributes; override;
+    property List: TListPropertyEditor read FList;
+    property TheIndex: integer read FIndex;
   end;
 
 { TListPropertyEditor
@@ -708,6 +713,7 @@ type
     function CreateElementPropEditor(Index: integer): TListElementPropertyEditor; virtual;
     procedure DoSaveElements; virtual;
     procedure FreeElementPropertyEditors; virtual;
+    function GetElementAttributes(AnIndex: integer): TPropertyAttributes; virtual;
   public
     constructor Create(Hook:TPropertyEditorHook;
       ComponentList: TComponentSelectionList;  APropCount:Integer); override;
@@ -2198,6 +2204,26 @@ begin
   Result := Result + ']';
 end;
 
+{ TListElementPropertyEditor }
+
+constructor TListElementPropertyEditor.Create(Parent: TListPropertyEditor;
+  AnIndex: integer);
+begin
+  inherited Create(Parent);
+  FList:=Parent;
+  FIndex:=AnIndex;
+end;
+
+destructor TListElementPropertyEditor.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TListElementPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=List.GetElementAttributes(TheIndex);
+end;
+
 { TListPropertyEditor }
 
 function TListPropertyEditor.GetElementCount: integer;
@@ -2277,8 +2303,7 @@ end;
 function TListPropertyEditor.CreateElementPropEditor(Index: integer
   ): TListElementPropertyEditor;
 begin
-  // ToDo
-  Result:=nil;//  Result:=TListElementPropertyEditor.Create;
+  Result:=TListElementPropertyEditor.Create(Self,Index);
 end;
 
 procedure TListPropertyEditor.BeginSaveElement;
@@ -2314,6 +2339,12 @@ begin
   for i:=0 to SavedPropertyEditors.Count do
     TObject(SavedPropertyEditors[i]).Free;
   SavedPropertyEditors.Clear;
+end;
+
+function TListPropertyEditor.GetElementAttributes(AnIndex: integer
+  ): TPropertyAttributes;
+begin
+  Result:= [paReadOnly];
 end;
 
 function TListPropertyEditor.IsSaving: boolean;
