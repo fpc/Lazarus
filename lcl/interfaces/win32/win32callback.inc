@@ -848,8 +848,8 @@ Begin
         Status := LParam;
       End;
 
-      if (assigned(Application.MainForm) and
-        (Application.MainForm.Handle=Window)) then begin
+      if assigned(OwnerObject) and
+        (OwnerObject=Application.MainForm) then begin
         if WParam=0 then
           Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle,
             SW_HIDE)
@@ -1315,6 +1315,9 @@ end;
 
 {
   $Log$
+  Revision 1.137  2004/08/29 12:35:07  vincents
+  Don't use handles in test if form is MainForm
+
   Revision 1.136  2004/08/27 19:06:40  micha
   select all text upon entry in edit control
 
