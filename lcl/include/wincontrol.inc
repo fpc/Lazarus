@@ -1290,7 +1290,7 @@ end;
   Params:  NewHandle
   Returns: Nothing
 -------------------------------------------------------------------------------}
-procedure Twincontrol.SetHandle(NewHandle: HWND);
+procedure TWincontrol.SetHandle(NewHandle: HWND);
 begin
   FHandle:=NewHandle;
 end;
@@ -2072,6 +2072,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/04/28 14:10:31  lazarus
+  MG: fixes for saving resource files
+
   Revision 1.61  2002/04/27 15:35:50  lazarus
   MG: fixed window shrinking
 
