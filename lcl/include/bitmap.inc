@@ -73,7 +73,10 @@ begin
     SrcFPImage:=TFPCustomImage(Source);
     IntfImage:=TLazIntfImage.Create(0,0);
     try
-      IntfImage.GetDescriptionFromBitmap(Handle);
+      if HandleAllocated then
+        IntfImage.GetDescriptionFromBitmap(Handle)
+      else
+        IntfImage.GetDescriptionFromDevice(0);
       IntfImage.Assign(SrcFPImage);
       IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
       Handle:=ImgHandle;
@@ -229,7 +232,7 @@ procedure TBitmap.Changing(Sender: TObject);
 // -> make sure the handle is unshared (otherwise the modifications will also
 //    modify all copies)
 begin
-  UnshareImage;
+  UnshareImage(true);
   FImage.FDIB.dsbmih.biClrUsed := 0;
   FImage.FDIB.dsbmih.biClrImportant := 0;
   FreeSaveStream;
@@ -366,7 +369,7 @@ begin
   // ToDo
 end;
 
-procedure TBitmap.UnshareImage;
+procedure TBitmap.UnshareImage(CopyContent: boolean);
 var
   NewImage: TBitmapImage;
   OldImage: TBitmapImage;
@@ -380,7 +383,8 @@ begin
     NewImage:=TBitmapImage.Create;
     try
       NewImage.Reference;
-      if FImage.HandleAllocated and (Width>0) and (Height>0) then begin
+      if CopyContent and FImage.HandleAllocated
+      and (Width>0) and (Height>0) then begin
         // copy content
         {$IFNDEF DisableFPImage}
         IntfImage:=TLazIntfImage.Create(0,0);
@@ -569,7 +573,7 @@ var
   end;
   
 begin
-  UnshareImage;
+  UnshareImage(false);
 
   if Size = 0 then begin
     CreateEmptyBitmap;
@@ -807,7 +811,7 @@ var
   ImgHandle, ImgMaskHandle: HBitmap;
   NewSaveStream: TMemoryStream;
 begin
-  UnshareImage;
+  UnshareImage(false);
   if Size = 0 then begin
     Width:=0;
     Height:=0;
@@ -927,14 +931,12 @@ end;
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
   if FImage.FHandle = Value then exit;
-  if FImage.FHandle<>0 then begin
-    // free old handles
-    FreeCanvasContext;
-    UnshareImage;
-  end;
-  // TODO: get the properties from new bitmap
+  // free old handles
+  FreeCanvasContext;
+  UnshareImage(false);
   with FImage do begin
     FreeHandle;
+    // get the properties from new bitmap
     FHandle:=Value;
     FillChar(FDIB, SizeOf(FDIB), 0);
     if FHandle <> 0 then
@@ -956,10 +958,10 @@ begin
   end;
 end;
 
-// creates handle and remove all references to give up ownership
+// release handles without freeing them
 Function TBitmap.ReleaseHandle: HBITMAP;
 Begin
-  HandleNeeded;
+  //HandleNeeded; Delphi creates a handle. Why?
   FreeCanvasContext;
   Result := FImage.ReleaseHandle;
 end;
@@ -1064,6 +1066,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2004/02/21 01:01:03  mattias
+  added uninstall popupmenuitem to package graph explorer
+
   Revision 1.68  2004/02/19 05:07:16  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

@@ -87,6 +87,8 @@ type
     // package graph
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function PackageGraphExplorerUninstallPackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
     procedure PackageGraphBeginUpdate(Sender: TObject);
     procedure PackageGraphChangePackageName(APackage: TLazPackage;
@@ -495,6 +497,12 @@ procedure TPkgManager.PackageGraphFindFPCUnit(const UnitName,
   Directory: string; var Filename: string);
 begin
   Filename:=CodeToolBoss.DefineTree.FindUnitInUnitLinks(UnitName,Directory,true);
+end;
+
+function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoUninstallPackage(APackage);
 end;
 
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
@@ -1927,6 +1935,7 @@ begin
   if PackageGraphExplorer=nil then begin
     PackageGraphExplorer:=TPkgGraphExplorer.Create(Application);
     PackageGraphExplorer.OnOpenPackage:=@PackageGraphExplorerOpenPackage;
+    PackageGraphExplorer.OnUninstallPackage:=@PackageGraphExplorerUninstallPackage;
   end;
   PackageGraphExplorer.ShowOnTop;
   Result:=mrOk;

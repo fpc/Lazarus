@@ -51,14 +51,19 @@ type
     PkgListLabel: TLabel;
     PkgListBox: TListBox;
     InfoMemo: TMemo;
+    PkgPopupMenu: TPopupMenu;
+    UninstallMenuItem: TMenuItem;
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgListBoxClick(Sender: TObject);
+    procedure PkgPopupMenuPopup(Sender: TObject);
     procedure PkgTreeViewDblClick(Sender: TObject);
     procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
+    procedure UninstallMenuItemClick(Sender: TObject);
   private
+    FOnUninstallPackage: TOnUninstallPackage;
     ImgIndexPackage: integer;
     ImgIndexInstallPackage: integer;
     ImgIndexInstalledPackage: integer;
@@ -94,6 +99,8 @@ type
     procedure ShowPath(PathList: TList);
   public
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
+    property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
+                                                    write FOnUninstallPackage;
   end;
   
 var
@@ -153,6 +160,18 @@ begin
   if Dependency.Owner is TLazPackage then begin
     SelectPackage(TLazPackage(Dependency.Owner));
   end;
+end;
+
+procedure TPkgGraphExplorer.PkgPopupMenuPopup(Sender: TObject);
+var
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
+writeln('TPkgGraphExplorer.PkgPopupMenuPopup ',UninstallMenuItem.Visible);
+  if UninstallMenuItem.Visible then
+    UninstallMenuItem.Caption:='Uninstall package '+Pkg.IDAsString;
 end;
 
 procedure TPkgGraphExplorer.PkgTreeViewDblClick(Sender: TObject);
@@ -231,6 +250,17 @@ begin
   UpdateList;
 end;
 
+procedure TPkgGraphExplorer.UninstallMenuItemClick(Sender: TObject);
+var
+  Pkg: TLazPackage;
+  Dependency: TPkgDependency;
+begin
+  GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  if Pkg<>nil then begin
+    if Assigned(OnUninstallPackage) then OnUninstallPackage(Self,Pkg);
+  end;
+end;
+
 procedure TPkgGraphExplorer.SetupComponents;
 
   procedure AddResImg(const ResName: string);
@@ -261,6 +291,21 @@ begin
     ImgIndexMissingPackage:=Count;
     AddResImg('pkg_conflict');
   end;
+
+  // popupmenu
+  PkgPopupMenu:=TPopupMenu.Create(Self);
+  with PkgPopupMenu do begin
+    Name:='PkgPopupMenu';
+    OnPopup:=@PkgPopupMenuPopup;
+  end;
+  
+  UninstallMenuItem:=TMenuItem.Create(Self);
+  with UninstallMenuItem do begin
+    Name:='UninstallMenuItem';
+    OnClick:=@UninstallMenuItemClick;
+  end;
+  PkgPopupMenu.Items.Add(UninstallMenuItem);
+  
   
   PkgTreeLabel:=TLabel.Create(Self);
   with PkgTreeLabel do begin
@@ -275,6 +320,7 @@ begin
     Parent:=Self;
     Options:=Options+[tvoRightClickSelect];
     Images:=Self.ImageList;
+    PopupMenu:=PkgPopupMenu;
     OnExpanding:=@PkgTreeViewExpanding;
     OnSelectionChanged:=@PkgTreeViewSelectionChanged;
     OnDblClick:=@PkgTreeViewDblClick;

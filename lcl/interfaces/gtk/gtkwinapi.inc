@@ -4726,7 +4726,7 @@ begin
       exit;
     end;
     {$IFDEF VerboseRawImage}
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8));
+    writeln('TgtkObject.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
     {$ENDIF}
     if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),SrcRect,NewRawImage)
     then exit;
@@ -4746,32 +4746,37 @@ begin
       writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid MaskBitmap');
       exit;
     end;
-    if not GetRawImageFromGdkWindow(PGdkWindow(GdkMaskBitmap),SrcRect,
-                                    MaskRawImage)
-    then exit;
+    {$IFDEF VerboseRawImage}
+    writeln('TgtkObject.GetRawImageFromBitmap GdkMaskBitmap=',HexStr(Cardinal(GdkMaskBitmap),8));
+    {$ENDIF}
+    if GdkMaskBitmap<>nil then begin
+      if not GetRawImageFromGdkWindow(PGdkWindow(GdkMaskBitmap),SrcRect,
+                                      MaskRawImage)
+      then exit;
 
-    // check if mask is compatible
-    if (MaskRawImage.Description.Width<>NewRawImage.Description.Width)
-    or (MaskRawImage.Description.Height<>NewRawImage.Description.Height) then begin
-      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
-      exit;
-    end;
-    if (MaskRawImage.Description.Depth<>1) then begin
-      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap Depth<>1');
-      exit;
-    end;
-    if (MaskRawImage.Description.HasPalette) then begin
-      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap HasPalette');
-      exit;
-    end;
+      // check if mask is compatible
+      if (MaskRawImage.Description.Width<>NewRawImage.Description.Width)
+      or (MaskRawImage.Description.Height<>NewRawImage.Description.Height) then begin
+        writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
+        exit;
+      end;
+      if (MaskRawImage.Description.Depth<>1) then begin
+        writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap Depth<>1');
+        exit;
+      end;
+      if (MaskRawImage.Description.HasPalette) then begin
+        writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap HasPalette');
+        exit;
+      end;
 
-    // merge mask
-    if NewRawImage.Mask<>nil then FreeMem(NewRawImage.Mask);
-    NewRawImage.Mask:=MaskRawImage.Data;
-    NewRawImage.MaskSize:=MaskRawImage.DataSize;
-    NewRawImage.Description.AlphaSeparate:=true;
-    NewRawImage.Description.AlphaPrec:=MaskRawImage.Description.Depth;
-    NewRawImage.Description.AlphaShift:=0;
+      // merge mask
+      if NewRawImage.Mask<>nil then FreeMem(NewRawImage.Mask);
+      NewRawImage.Mask:=MaskRawImage.Data;
+      NewRawImage.MaskSize:=MaskRawImage.DataSize;
+      NewRawImage.Description.AlphaSeparate:=true;
+      NewRawImage.Description.AlphaPrec:=MaskRawImage.Description.Depth;
+      NewRawImage.Description.AlphaShift:=0;
+    end;
 
     Result:=true;
   finally
@@ -8740,6 +8745,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.332  2004/02/21 01:01:03  mattias
+  added uninstall popupmenuitem to package graph explorer
+
   Revision 1.331  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

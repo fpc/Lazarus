@@ -2009,7 +2009,7 @@ var
 begin
   Result := false;
   if Desc=nil then begin
-    RaiseGDBException('TgtkObject.GetWindowDeviceRawImageDescription');
+    RaiseGDBException('TgtkObject.GetWindowRawImageDescription');
     exit;
   end;
 
@@ -2037,7 +2037,7 @@ begin
   GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
   GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
   else
-    writeln('TgtkObject.GetDeviceRawImageDescription unknown Visual type ',
+    writeln('TgtkObject.GetWindowRawImageDescription unknown Visual type ',
             integer(Visual^.thetype));
     exit;
   end;
@@ -2097,7 +2097,7 @@ begin
   Desc^.AlphaByteOrder:=riboLSBFirst;
 
   {$IFDEF VerboseRawImage}
-  writeln('TgtkObject.GetDeviceRawImageDescription A ',RawImageDescriptionAsString(Desc));
+  writeln('TgtkObject.GetWindowRawImageDescription A ',RawImageDescriptionAsString(Desc));
   {$ENDIF}
 
   Result:=true;
@@ -2110,10 +2110,6 @@ var
   MaxRect: TRect;
   SourceRect: TRect;
   AnImage: PGdkImage;
-  {y: Integer;
-  x: Integer;
-  AColor: guint;
-  i: Integer;}
 begin
   Result:=false;
   FillChar(NewRawImage,SizeOf(NewRawImage),0);
@@ -2148,11 +2144,9 @@ begin
   then exit;
 
   // get gdk_image
-  BeginGDKErrorTrap;
   AnImage:=gdk_image_get(GDKWindow,SourceRect.Left,SourceRect.Top,
                          NewRawImage.Description.Width,
                          NewRawImage.Description.Height);
-  EndGDKErrorTrap;
   if AnImage=nil then begin
     writeln('WARNING: TgtkObject.GetRawImageFromGdkWindow gdk_image_get failed');
     exit;
@@ -2165,21 +2159,18 @@ begin
       RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
 
     NewRawImage.DataSize:=(NewRawImage.Description.BitsPerPixel shr 3)
-                          *AnImage^.Width*AnImage^.Height;
+                          * AnImage^.Width * AnImage^.Height;
     {$IFDEF VerboseRawImage}
     writeln('TgtkObject.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
     {$ENDIF}
-    if NewRawImage.DataSize<>cardinal(AnImage^.bpl)*AnImage^.Height then
+    if NewRawImage.DataSize<>cardinal(AnImage^.bpl) * AnImage^.Height then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
     // copy data
     NewRawImage.Description.Width:=AnImage^.Width;
     NewRawImage.Description.Height:=AnImage^.Height;
 
-    {NewRawImage.Description.BitsPerPixel:=SizeOf(GUInt)*8;
-    NewRawImage.DataSize:=AnImage^.Width*AnImage^.Height*SizeOf(GUInt);
-    ReAllocMem(NewRawImage.Data,NewRawImage.DataSize);
-    i:=0;
+    { i:=0;
     for y:=0 to AnImage^.Height-1 do begin
       for x:=0 to AnImage^.Width-1 do begin
         AColor:=gdk_image_get_pixel(AnImage,x,y);
@@ -2201,11 +2192,7 @@ begin
       ' DataSize=',NewRawImage.DataSize);
     {$ENDIF}
   finally
-    begin
-      BeginGDKErrorTrap;
-      gdk_image_destroy(AnImage);
-      EndGDKErrorTrap;
-    end;
+    gdk_image_destroy(AnImage);
   end;
 
   Result:=true;
@@ -2225,20 +2212,21 @@ end;
   Returns: True if succesful
 
   The StretchBlt function copies a bitmap from a source rectangle into a
-  destination rectangle using the specified raster operation. If needed it
+  destination rectangle using the specified raster operation. If needed, it
   resizes the bitmap to fit the dimensions of the destination rectangle.
   Sizing is done according to the stretching mode currently set in the
   destination device context.
   If SrcDC contains a mask the pixmap will be copied with this transparency.
 
-  ToDo: Mirroring, extended NonDrawable support (Image, Bitmap, etc)
+  ToDo:
+    Mirroring
+    Extended NonDrawable support (Image, Bitmap, etc)
+    Scale mask
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer;
   Rop: Cardinal): Boolean;
-//type
-//  TBltFunction = function: Boolean;
 var
   fGC: PGDKGC;
   SrcDevContext, DestDevContext: TDeviceContext;
@@ -7447,10 +7435,11 @@ var
   Y: Integer;
   DCOrigin: TPoint;
   MaxX, MaxY: integer;
+  Pixel: LongWord;
 begin
   TLMSetGetPixel(data^).PixColor := clNone;
-  
-  aDC := TDeviceContext(TCanvas(Sender).Handle);
+
+  aDC := TDeviceContext((Sender as TCanvas).Handle);
   if (aDC = nil) or (aDC.Drawable = nil) then exit;
 
   X:=TLMSetGetPixel(data^).X;
@@ -7459,7 +7448,6 @@ begin
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
-  BeginGDKErrorTrap;
   gdk_drawable_get_size(aDC.Drawable, @MaxX, @MaxY);
   if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
 
@@ -7474,12 +7462,13 @@ begin
   if colormap = nil then
     colormap := gdk_colormap_get_system;
 
-  gdk_colormap_query_color(colormap, gdk_image_get_pixel(Image,0,0), @GDKColor);
+  Pixel:=gdk_image_get_pixel(Image,0,0);
+  FillChar(GDKColor,SizeOf(GDKColor),0);
+  // does not work with TBitmap.Canvas
+  gdk_colormap_query_color(colormap, Pixel, @GDKColor);
 
   gdk_image_unref(Image);
 
-  EndGDKErrorTrap;
-  
   TLMSetGetPixel(data^).PixColor := TGDKColorToTColor(GDKColor);
 end;
 
@@ -9201,6 +9190,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.469  2004/02/21 01:01:03  mattias
+  added uninstall popupmenuitem to package graph explorer
+
   Revision 1.468  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

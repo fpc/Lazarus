@@ -25,6 +25,8 @@ procedure TSharedImage.Release;
 begin
   if Pointer(Self) <> nil then begin
     Dec(FRefCount);
+    if FRefCount<0 then
+      RaiseGDBException('');
     if FRefCount = 0 then begin
       FreeHandle;
       Free;

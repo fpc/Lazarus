@@ -982,7 +982,7 @@ type
     procedure HandleNeeded;
     procedure MaskHandleNeeded;
     procedure PaletteNeeded;
-    procedure UnshareImage;
+    procedure UnshareImage(CopyContent: boolean);
     procedure FreeSaveStream;
     procedure ReadData(Stream: TStream); override;
     procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
@@ -1449,6 +1449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.116  2004/02/21 01:01:03  mattias
+  added uninstall popupmenuitem to package graph explorer
+
   Revision 1.115  2004/02/19 05:07:16  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

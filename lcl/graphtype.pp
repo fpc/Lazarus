@@ -200,8 +200,12 @@ begin
   // quick test
   if (RawImage^.Mask=nil) or (RawImage^.MaskSize=0)
   or (RawImage^.Description.Width=0) or (RawImage^.Description.Height=0)
-  or (RawImage^.Description.AlphaPrec=0) then
+  or (RawImage^.Description.AlphaPrec=0) then begin
+    {$IFDEF VerboseRawImage}
+    writeln('RawImageMaskIsEmpty Quicktest: empty');
+    {$ENDIF}
     exit;
+  end;
   Result:=false;
   
   // slow test
@@ -225,7 +229,9 @@ begin
           for x:=0 to UsedBytesPerLine-1 do begin
             if p^<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
-              //writeln('RawImageMaskIsEmpty y=',y,' x=',x,' ',HexStr(Cardinal(p^),2));
+              {$IFDEF VerboseRawImage}
+              writeln('RawImageMaskIsEmpty FullByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2));
+              {$ENDIF}
               exit;
             end;
             inc(p);
@@ -234,7 +240,9 @@ begin
           if UnusedBitsAtEnd>0 then begin
             if (p^ or UnusedByteMask)<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
-              //writeln('RawImageMaskIsEmpty y=',y,' x=',x,' ',HexStr(Cardinal(p^),2),' ',HexStr(Cardinal(UnusedByteMask),8));
+              {$IFDEF VerboseRawImage}
+              writeln('RawImageMaskIsEmpty EdgeByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),8));
+              {$ENDIF}
               exit;
             end;
             inc(p);
@@ -242,15 +250,23 @@ begin
         end;
       end else begin
         // ToDo: AlphaSeparate and rileTight
+        {$IFDEF VerboseRawImage}
+        writeln('RawImageMaskIsEmpty TODO');
+        {$ENDIF}
         exit;
       end;
     end else begin
-      // ToDo: Alpha not Separate
+      {$IFDEF VerboseRawImage}
+      writeln('RawImageMaskIsEmpty TODO');
+      {$ENDIF}
       exit;
     end;
     // no pixel is transparent
     Result:=true;
   end;
+  {$IFDEF VerboseRawImage}
+  writeln('RawImageMaskIsEmpty Empty=',Result);
+  {$ENDIF}
 end;
 
 function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
@@ -513,6 +529,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/02/21 01:01:03  mattias
+  added uninstall popupmenuitem to package graph explorer
+
   Revision 1.25  2004/02/19 05:07:16  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

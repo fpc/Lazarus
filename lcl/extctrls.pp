@@ -495,9 +495,9 @@ type
   public
     Property Align;
     property AutoSize;
-    property Center : Boolean read FCenter write SetCenter;
+    property Center: Boolean read FCenter write SetCenter;
     property Constraints;
-    property Picture : TPicture read FPicture write SetPicture;
+    property Picture: TPicture read FPicture write SetPicture;
     property Visible;
     property OnClick;
     property OnMouseDown;
@@ -925,6 +925,9 @@ end.
 
  {
   $Log$
+  Revision 1.97  2004/02/21 01:01:03  mattias
+  added uninstall popupmenuitem to package graph explorer
+
   Revision 1.96  2004/02/10 10:13:08  mattias
   added diamonds to TShape
 
