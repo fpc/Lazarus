@@ -53,13 +53,6 @@ type
     Currently maintained by Marc Weustink <weus@quicknet.nl>
   }
   TInterfaceBase = Class(TObject)
-  private
-//    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
-//    procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
-  protected
-    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
-    procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
-    function RecreateWnd(Sender: TObject): Integer; virtual; abstract;
   public
     constructor Create;
     destructor Destroy; override;
@@ -67,9 +60,7 @@ type
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
     procedure Init; virtual; abstract;
-    function GetText(Sender: TComponent; var Text: String): Boolean; virtual; abstract;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
-    function UpdateHint(Sender: TObject): Integer; virtual; abstract;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; virtual; abstract;
     function DestroyTimer(TimerHandle: integer) : boolean; virtual; abstract;
@@ -116,6 +107,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2002/12/04 20:39:14  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.26  2002/12/03 09:11:36  mattias
   cleaned up
 

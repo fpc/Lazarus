@@ -1383,7 +1383,7 @@ begin
   if (Self is TWinControl)
   and TWinControl(Self).HandleAllocated
   and (not (csLoading in ComponentState))
-  and InterfaceObject.GetText(Self, Result)
+  and boolean(CNSendMessage(LM_GETTEXT, Self, @Result))
   then Assert(False, Format('Trace:[TControl.GetText] %s got: "%s"', [ClassName, Result]))
   else Result := FCaption;
 
@@ -2082,6 +2082,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.107  2002/12/04 20:39:14  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.106  2002/11/29 15:14:47  mattias
   replaced many invalidates by invalidaterect
 

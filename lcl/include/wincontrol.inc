@@ -2402,22 +2402,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.SetHint
-  Params:  Value: the text of the hint to be set
-  Returns: Nothing
-
-  Sets the hint text of a control
- ------------------------------------------------------------------------------}
-procedure TWinControl.SetHint(const Value: String);
-begin
-  if FHint <> Value then
-  begin
-    inherited SetHint(Value);
-    if HandleAllocated then InterfaceObject.UpdateHint(Self);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TWinControl.GetDeviceContext
   Params:  WindowHandle: the windowhandle of this control
   Returns: a Devicecontext
@@ -2467,18 +2451,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.CMShowHintChanged
-  Params:  Message : not used
-  Returns: nothing
-
-  Notifies that the hint visibility has changed
- ------------------------------------------------------------------------------}
-procedure TWinControl.CMShowHintChanged(var Message: TLMessage);
-begin
-  if HandleAllocated then InterfaceObject.UpdateHint(Self);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TWinControl.CMShowingChanged
   Params:  Message : not used
   Returns: nothing
@@ -2511,6 +2483,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2002/12/04 20:39:15  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.105  2002/12/03 09:28:31  mattias
   cleaned up
 

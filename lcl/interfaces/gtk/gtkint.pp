@@ -151,7 +151,7 @@ type
     procedure ListViewAddItem(TheListView: TObject);
     procedure BringFormToFront(Sender: TObject);
 
-    function  GetText(Sender: TComponent; var Text: String): Boolean; override;
+    function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     procedure SetColor(Sender : TObject);virtual;
@@ -174,11 +174,11 @@ type
 
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
-    procedure RemoveCallbacks(Sender : TObject); override;
-    function  RecreateWnd(Sender: TObject): Integer; override;
-  public
+    procedure RemoveCallbacks(Sender : TObject); virtual;
+    function  RecreateWnd(Sender: TObject): Integer; virtual;
+//  public
     // for gtk specific components:
-    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
+    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
@@ -195,7 +195,6 @@ type
     procedure SendCachedLCLMessages; override;
     procedure AppTerminate; override;
     procedure Init; override;
-    function  UpdateHint(Sender: TObject): Integer; override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -306,6 +305,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.110  2002/12/04 20:39:15  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.109  2002/12/03 09:20:53  mattias
   cleaned up
 

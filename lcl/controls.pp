@@ -800,7 +800,6 @@ type
     procedure BoundsChanged; override;
     Function CanTab: Boolean; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
-    procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
@@ -840,7 +839,6 @@ type
     procedure ReAlign;
     procedure ReCreateWnd;
     procedure RemoveFocus(Removing: Boolean);
-    procedure SetHint(const Value: String); override;
     procedure SetText(const Value: TCaption); override;
     procedure UpdateControlState;
     procedure CreateHandle; virtual;
@@ -1449,6 +1447,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2002/12/04 20:39:14  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.92  2002/11/29 15:14:47  mattias
   replaced many invalidates by invalidaterect
 

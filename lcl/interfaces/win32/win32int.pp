@@ -75,7 +75,9 @@ Type
     FStockWhiteBrush: HBRUSH;
 
     Procedure CreateComponent(Sender: TObject);
-    Function RecreateWnd(Sender: TObject): Integer; Override;
+    Function RecreateWnd(Sender: TObject): Integer; virtual;
+    Function  GetText(Sender: TComponent; var Data: String): Boolean; virtual;
+    Procedure SetLabel(Sender: TObject; Data: Pointer);
     Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
@@ -104,13 +106,10 @@ Type
     Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TCommonDialog);
 
-  Public
-    { for win32 specific components }
-
     { Creates a callback of Lazarus message Msg for Sender }
-    Procedure SetCallback(Msg: LongInt; Sender: TObject); Override;
+    Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
-    Procedure RemoveCallbacks(Sender: TObject); Override;
+    Procedure RemoveCallbacks(Sender: TObject); virtual;
 
   Public
     { Constructor of the class }
@@ -119,20 +118,10 @@ Type
     Destructor Destroy; Override;
     { Initialize the API }
     Procedure Init; Override;
-    { Get the text from control Sender and store it in variable Data }
-    Function  GetText(Sender: TComponent; var Data: String): Boolean; override;
-    { Set Label of control Sender to Data }
-    Procedure SetLabel(Sender: TObject; Data: Pointer);
-    { Process Lazarus message LM_Message and return an integer result }
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
-    { Processes all events (Window messages) in the queue }
     Procedure HandleEvents; Override;
-    { Wait until a message is received }
     Procedure WaitMessage; Override;
-    { Abruptly halt execution of the program }
     Procedure AppTerminate; Override;
-    { Update a hint (tool tip) }
-    Function UpdateHint(Sender: TObject): Integer; Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
@@ -198,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/12/04 20:39:16  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.22  2002/12/03 09:15:15  mattias
   cleaned up
 
