@@ -778,6 +778,7 @@ resourcestring
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
+  dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgBlockIndent = 'Block indent:';
   dlgUndoLimit = 'Undo limit:';
   dlgTabWidths = 'Tab widths:';

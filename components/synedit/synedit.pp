@@ -164,7 +164,7 @@ type
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
     eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
     eoDropFiles,               //TODO Allows the editor accept file drops
-    eoEnhanceHomeKey,          //TODO enhances home key positioning, similar to visual studio
+    eoEnhanceHomeKey,          // home key jumps to line start if nearer, similar to visual studio
     eoGroupUndo,               //TODO When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
     eoHalfPageScroll,          // When scrolling with page-up and page-down commands, only scroll a half page at a time
     eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
@@ -9122,38 +9122,40 @@ var
   OldPos: TPoint;
   NewPos: TPoint;
 begin
+  OldPos:=LogicalCaretXY;
+  NewPos:=OldPos;
+
   if not (eoEnhanceHomeKey in fOptions) and (CaretX>1) then begin
     // not at start of line -> jump to start of line
-    CaretX:=1;
-    exit;
-  end;
-  
-  // calculate line start position
-  FirstNonBlank:=-1;
-  if CaretY<=Lines.Count then begin
-    s:=fLines[CaretXY.Y-1];
-
-    // search first non blank char pos
-    FirstNonBlank:=1;
-    while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [#32, #9]) do
-      inc(FirstNonBlank);
-    if FirstNonBlank>length(s) then
-      FirstNonBlank:=-1;
-  end else
-    s:='';
-  if FirstNonBlank>=1 then begin
-    // this line is not blank
-    LineStart:=FirstNonBlank;
-  end else begin
-    // this line is blank
-    // -> use automatic line indent
-    LineStart:=GetLineIndentProposal(CaretY,true);
-  end;
-
-  OldPos:=LogicalCaretXY;
-  NewPos:=Point(LineStart,OldPos.Y);
-  if (eoEnhanceHomeKey in fOptions) and (OldPos.X<NewPos.X) then begin
     NewPos.X:=1;
+  end else begin
+    // calculate line start position
+    FirstNonBlank:=-1;
+    if CaretY<=Lines.Count then begin
+      s:=fLines[CaretXY.Y-1];
+
+      // search first non blank char pos
+      FirstNonBlank:=1;
+      while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [#32, #9]) do
+        inc(FirstNonBlank);
+      if FirstNonBlank>length(s) then
+        FirstNonBlank:=-1;
+    end else
+      s:='';
+    if FirstNonBlank>=1 then begin
+      // this line is not blank
+      LineStart:=FirstNonBlank;
+    end else begin
+      // this line is blank
+      // -> use automatic line indent
+      LineStart:=GetLineIndentProposal(CaretY,true);
+    end;
+
+    NewPos.X:=LineStart;
+    if (eoEnhanceHomeKey in fOptions) and (OldPos.X>1) and (OldPos.X<=NewPos.X)
+    then begin
+      NewPos.X:=1;
+    end;
   end;
   
   MoveCaretAndSelection(OldPos, NewPos, Selection);

@@ -313,6 +313,7 @@ type
     FindTextAtCursorCheckBox:TCheckBox;
     UseSyntaxHighlightCheckBox:TCheckBox;
     CopyWordAtCursorOnCopyNoneCheckBox:TCheckBox;
+    EnhanceHomeKeyCheckBox:TCheckBox;
     ShowGutterHintsCheckBox:TCheckBox;
     MouseLinksCheckBox: TCheckBox;
     BlockIndentComboBox:TComboBox;
@@ -1191,6 +1192,7 @@ begin
         eoDoubleClickSelectsLine:SynEditOptName:='DoubleClickSelectsLine';
         eoDragDropEditing:SynEditOptName:='DragDropEditing';
         eoDropFiles:SynEditOptName:='DropFiles';
+        eoEnhanceHomeKey:SynEditOptName:='EnhanceHomeKey';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
         eoKeepCaretX:SynEditOptName:='KeepCaretX';
         eoPersistentCaret:SynEditOptName:='PersistentCaret';
@@ -1317,6 +1319,7 @@ begin
         eoDoubleClickSelectsLine:SynEditOptName:='DoubleClickSelectsLine';
         eoDragDropEditing:SynEditOptName:='DragDropEditing';
         eoDropFiles:SynEditOptName:='DropFiles';
+        eoEnhanceHomeKey:SynEditOptName:='EnhanceHomeKey';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
         eoKeepCaretX:SynEditOptName:='KeepCaretX';
         eoPersistentCaret:SynEditOptName:='PersistentCaret';
@@ -2411,6 +2414,7 @@ begin
   SetOption(DoubleClickLineCheckBox,eoDoubleClickSelectsLine);
   SetOption(DragDropEditingCheckBox,eoDragDropEditing);
   SetOption(DropFilesCheckBox,eoDropFiles);
+  SetOption(EnhanceHomeKeyCheckBox,eoEnhanceHomeKey);
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
   SetOption(KeepCaretXCheckBox,eoKeepCaretX);
   SetOption(PersistentCaretCheckBox,eoPersistentCaret);
@@ -3679,6 +3683,17 @@ begin
   end;
   inc(y,ChkBoxH);
 
+  EnhanceHomeKeyCheckBox:=TCheckBox.Create(Self);
+  with EnhanceHomeKeyCheckBox do begin
+    Name:='EnhanceHomeKeyCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    SetBounds(x,y,ChkBoxW,Height);
+    Caption:=dlgHomeKeyJumpsToNearestStart;
+    Checked:=eoEnhanceHomeKey in EditorOpts.SynEditOptions;
+    OnClick:=@GeneralCheckBoxOnClick;
+  end;
+  inc(y,ChkBoxH);
+
   //
 
   BlockIndentComboBox:=TComboBox.Create(Self);
@@ -3915,6 +3930,11 @@ begin
   inc(y,ChkBoxH);
 
   with CopyWordAtCursorOnCopyNoneCheckBox do begin
+    SetBounds(x,y,ChkBoxW,Height);
+  end;
+  inc(y,ChkBoxH);
+
+  with EnhanceHomeKeyCheckBox do begin
     SetBounds(x,y,ChkBoxW,Height);
   end;
   inc(y,ChkBoxH);
