@@ -211,17 +211,28 @@ end;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl;
 // theClass: PGTKAPIWidgetClientClass
+{$IFDEF VER1_1}
+type
+  TAdjustParams = packed record
+    Param1, Param2: TGtkType;
+  end;
+{$ENDIF}
 var 
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
   SignalID: Guint;
-  AdjustType: TGtkType;
+  AdjustParams: TAdjustParams;
 begin
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
   
-  AdjustType := gtk_adjustment_get_type;
+  {$IFDEF VER1_1}
+  AdjustParams.Param1 := gtk_adjustment_get_type;
+  AdjustParams.Param2 := AdjustParams.Param1;
+  SignalID := gtk_signal_newv(
+  {$ELSE}
   SignalID := gtk_signal_new(
+  {$ENDIF}
     'set_scroll_adjustments',
     GTK_RUN_FIRST,
     ObjectClass^.thetype,
@@ -229,7 +240,11 @@ begin
     @gtk_marshal_NONE__POINTER_POINTER,
     GTK_TYPE_NONE,
     2, 
-    [AdjustType, AdjustType]
+    {$IFDEF VER1_1}
+    @AdjustParams
+    {$ELSE}
+    [gtk_adjustment_get_type, gtk_adjustment_get_type]
+    {$ENDIF}
   );
 
   with WidgetClass^ do
@@ -618,6 +633,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/10/24 09:28:03  lazarus
+  MG: workaround for fpc1.1 in GTKAPIWidgetClient_ClassInit
+
   Revision 1.13  2001/10/24 00:35:55  lazarus
   MG: fixes for fpc 1.1: range check errors
 
