@@ -294,6 +294,10 @@ type
     destructor Destroy; override;
   end;
 
+const
+  DefaultObjectInspectorName: string = 'ObjectInspector';
+
+
 //******************************************************************************
 
 
@@ -1635,7 +1639,7 @@ begin
   FPropertyEditorHook:=nil;
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
-  Name := 'ObjectInspector';
+  Name := DefaultObjectInspectorName;
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);

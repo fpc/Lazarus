@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
   ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs,
-  ExtToolDialog, IDEProcs;
+  ExtToolDialog, IDEProcs, IDEOptionDefs;
 
 const
   EnvOptsVersion: integer = 101;
@@ -65,20 +65,24 @@ type
   TEnvironmentOptions = class
   private
     FFilename: string;
-    
+    FOnApplyWindowLayout: TOnApplyIDEWindowLayout;
+
     // auto save
     FAutoSaveEditorFiles: boolean;
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
     FLastSavedProjectFile: string;
     
-    // windows
+    // window layout
+    FIDEWindowLayoutList: TIDEWindowLayoutList;
+      // ToDo
     FSaveWindowPositions: boolean;
     FWindowPositionsValid: boolean; // = the following values are valid
     FMainWindowBounds: TRect;
     FSourceEditorBounds: TRect;
     FMessagesViewBoundsValid: boolean;
     FMessagesViewBounds: TRect;
+
     
     // form editor
     FDisplayGrid: boolean;
@@ -126,8 +130,11 @@ type
     
     // naming conventions
     fPascalFileExtension: TPascalExtType;
+    procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
 
     procedure SetFileName(const NewFilename: string);
+    procedure InitLayoutList;
+    procedure InternOnApplyWindowLayout(ALayout: TIDEWindowLayout);
   public
     constructor Create;
     destructor Destroy; override;
@@ -135,6 +142,8 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
+    property OnApplyWindowLayout: TOnApplyIDEWindowLayout
+       read FOnApplyWindowLayout write SetOnApplyWindowLayout;
     
     // auto save
     property AutoSaveEditorFiles: boolean
@@ -145,6 +154,9 @@ type
        read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
 
     // windows
+    property IDEWindowLayoutList: TIDEWindowLayoutList
+        read FIDEWindowLayoutList write FIDEWindowLayoutList;
+ // ToDo
     property SaveWindowPositions: boolean
        read FSaveWindowPositions write FSaveWindowPositions;
     property WindowPositionsValid: boolean
@@ -157,6 +169,7 @@ type
        read FMessagesViewBoundsValid write FMessagesViewBoundsValid;
     property MessagesViewBounds: TRect
        read FMessagesViewBounds write FMessagesViewBounds;
+
 
     // form editor
     property DisplayGrid: boolean read FDisplayGrid write FDisplayGrid;
@@ -246,14 +259,6 @@ type
   private
     FOnLoadEnvironmentSettings: TOnLoadEnvironmentSettings;
     FOnSaveEnvironmentSettings: TOnSaveEnvironmentSettings;
-    procedure SetupDesktopPage;
-    procedure SetupBackupPage;
-    procedure SetupFilesPage;
-    procedure SetupNamingPage;
-    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
-    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString; 
-      MaxCount: integer);
-
   published
     NoteBook: TNoteBook;
     
@@ -263,18 +268,22 @@ type
     AutoSaveProjectCheckBox: TCheckBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveIntervalInSecsComboBox: TComboBox;
-
-    // windows
-    WindowsGroupBox: TGroupBox;
-    SaveWindowPositionsCheckBox: TCheckBox;
-
+    
     // desktop files
     DesktopFilesGroupBox: TGroupBox;
     SaveDesktopSettingsToFileButton: TButton;
     LoadDesktopSettingsFromFileButton: TButton;
     
+    // hints
+    ShowHintsForComponentPaletteCheckBox: TCheckBox;
+    ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
+    
+    // window positions
+    WindowPositionsGroupBox: TGroupBox;
+    WindowPositionsListBox: TListBox;
+    WindowPositionsBox: TIDEWindowSetupLayoutComponent;
+
     // form editor
-    FormEditorGroupBox: TGroupBox;
     DisplayGridCheckBox: TCheckBox;
     SnapToGridCheckBox: TCheckBox;
     ShowComponentCaptionsCheckBox: TCheckBox;
@@ -289,10 +298,6 @@ type
     ObjectInspectorGroupBox: TGroupBox;
     OIBackgroundColorLabel: TLabel;
     OIBackgroundColorButton: TColorButton;
-    
-    // hints
-    ShowHintsForComponentPaletteCheckBox: TCheckBox;
-    ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
 
     // Files
     MaxRecentOpenFilesLabel: TLabel;
@@ -347,7 +352,20 @@ type
       read FOnSaveEnvironmentSettings write FOnSaveEnvironmentSettings;
     property OnLoadEnvironmentSettings:TOnLoadEnvironmentSettings
       read FOnLoadEnvironmentSettings write FOnLoadEnvironmentSettings;
-
+    procedure WindowPositionsListBoxMouseUp(Sender:TObject;
+       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+  private
+    FLayouts: TIDEWindowLayoutList;
+    procedure SetupDesktopPage(Page: integer);
+    procedure SetupFormEditorPage(Page: integer);
+    procedure SetupObjectInspectorPage(Page: integer);
+    procedure SetupFilesPage(Page: integer);
+    procedure SetupBackupPage(Page: integer);
+    procedure SetupNamingPage(Page: integer);
+    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
+    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
+                              MaxCount: integer);
+    procedure SetWindowPositionsItem(Index: integer);
   public
     procedure ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
     procedure WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
@@ -403,6 +421,8 @@ begin
   FLastSavedProjectFile:='';
 
   // windows
+  InitLayoutList;
+  // ToDo
   FSaveWindowPositions:=true;
   FWindowPositionsValid:=false;
   FMainWindowBounds:=Bounds(0,0,600,100);
@@ -478,6 +498,7 @@ begin
   FFPCSourceDirHistory.Free;
   FDebuggerFileHistory.Free;
   FTestBuildDirHistory.Free;
+  fIDEWindowLayoutList.Free;
   inherited Destroy;
 end;
 
@@ -565,6 +586,9 @@ begin
        FOpenLastProjectAtStart);
 
     // windows
+    FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
+      'EnvironmentOptions/Desktop/');
+    // ToDo:
     FSaveWindowPositions:=XMLConfig.GetValue(
        'EnvironmentOptions/Desktop/SaveWindowPositions',FSaveWindowPositions);
     FWindowPositionsValid:=XMLConfig.GetValue(
@@ -689,6 +713,7 @@ begin
     // object inspector
     FObjectInspectorOptions.Filename:=FFilename;
     FObjectInspectorOptions.Load;
+    FObjectInspectorOptions.SaveBounds:=false;
   except
     // ToDo
     writeln('[TEnvironmentOptions.Load]  error reading "',FFilename,'"');
@@ -747,6 +772,9 @@ begin
        FOpenLastProjectAtStart);
 
     // windows
+    FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,
+      'EnvironmentOptions/Desktop/');
+    // ToDo
     XMLConfig.SetValue('EnvironmentOptions/Desktop/SaveWindowPositions'
        ,FSaveWindowPositions);
     XMLConfig.SetValue('EnvironmentOptions/Desktop/WindowPositionsValid'
@@ -856,6 +884,67 @@ begin
   AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles);
 end;
 
+procedure TEnvironmentOptions.InitLayoutList;
+var
+  NewLayout: TIDEWindowLayout;
+  i: integer;
+begin
+  fIDEWindowLayoutList:=TIDEWindowLayoutList.Create;
+
+  // Main IDE bar
+  NewLayout:=TIDEWindowLayout.Create;
+  with NewLayout do begin
+    FormID:=DefaultMainIDEName;
+    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
+       iwpCustomPosition,iwpUseWindowManagerSetting];
+  end;
+  IDEWindowLayoutList.Add(NewLayout);
+
+  // object inspector
+  NewLayout:=TIDEWindowLayout.Create;
+  with NewLayout do begin
+    FormID:=DefaultObjectInspectorName;
+    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
+       iwpCustomPosition,iwpUseWindowManagerSetting];
+  end;
+  IDEWindowLayoutList.Add(NewLayout);
+
+  // source editor
+  NewLayout:=TIDEWindowLayout.Create;
+  with NewLayout do begin
+    FormID:=DefaultSourceNoteBookName;
+    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
+       iwpCustomPosition,iwpUseWindowManagerSetting];
+  end;
+  IDEWindowLayoutList.Add(NewLayout);
+
+  // messages view
+  NewLayout:=TIDEWindowLayout.Create;
+  with NewLayout do begin
+    FormID:=DefaultMessagesViewName;
+    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
+       iwpCustomPosition,iwpUseWindowManagerSetting];
+  end;
+  IDEWindowLayoutList.Add(NewLayout);
+  
+  for i:=0 to fIDEWindowLayoutList.Count-1 do begin
+    IDEWindowLayoutList[i].OnApply:=@InternOnApplyWindowLayout;
+    IDEWindowLayoutList[i].DefaultWindowPlacement:=iwpRestoreWindowGeometry;
+  end;
+end;
+
+procedure TEnvironmentOptions.InternOnApplyWindowLayout(
+  ALayout: TIDEWindowLayout);
+begin
+  if Assigned(OnApplyWindowLayout) then OnApplyWindowLayout(ALayout);
+end;
+
+procedure TEnvironmentOptions.SetOnApplyWindowLayout(
+  const AValue: TOnApplyIDEWindowLayout);
+begin
+  FOnApplyWindowLayout:=AValue;
+end;
+
 //==============================================================================
 
 { TEnvironmentOptionsDialog }
@@ -873,15 +962,19 @@ begin
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       Pages[0]:='Desktop';
+      Pages.Add('Form Editor');
+      Pages.Add('Object Inspector');
       Pages.Add('Files');
       Pages.Add('Backup');
       Pages.Add('Naming');
     end;
 
-    SetupDesktopPage;
-    SetupFilesPage;
-    SetupBackupPage;
-    SetupNamingPage;
+    SetupDesktopPage(0);
+    SetupFormEditorPage(1);
+    SetupObjectInspectorPage(2);
+    SetupFilesPage(3);
+    SetupBackupPage(4);
+    SetupNamingPage(5);
     
     NoteBook.Show;
 
@@ -912,16 +1005,14 @@ begin
     end;
 
   end;
-  
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
 begin
-
   inherited Destroy;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupDesktopPage;
+procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
 var MaxX:integer;
 begin
   MaxX:=ClientWidth-5;
@@ -930,7 +1021,7 @@ begin
   AutoSaveGroupBox:=TGroupBox.Create(Self);
   with AutoSaveGroupBox do begin
     Name:='AutoSaveGroupBox';
-    Parent:=NoteBook.Page[0];
+    Parent:=NoteBook.Page[Page];
     Left:=8;
     Top:=2;
     Width:=(MaxX div 2) - 15;
@@ -998,40 +1089,14 @@ begin
     Visible:=true;
   end;
 
-
-  // windows
-  WindowsGroupBox:=TGroupBox.Create(Self);
-  with WindowsGroupBox do begin
-    Name:='WindowsGroupBox';
-    Parent:=NoteBook.Page[0];
-    Left:=AutoSaveGroupBox.Left;
-    Top:=AutoSaveGroupBox.Top+AutoSaveGroupBox.Height+5;
-    Width:=AutoSaveGroupBox.Width;
-    Height:=50;
-    Caption:='Windows';
-    Visible:=true;
-  end;
-  
-  SaveWindowPositionsCheckBox:=TCheckBox.Create(Self);
-  with SaveWindowPositionsCheckBox do begin
-    Name:='SaveWindowPositionsCheckBox';
-    Parent:=WindowsGroupBox;
-    Left:=2;
-    Top:=2;
-    Width:=WindowsGroupBox.ClientWidth-2*Left;
-    Height:=23;
-    Caption:='Save window positions';
-    Visible:=true;
-  end;
-
   // desktop files
   DesktopFilesGroupBox:=TGroupBox.Create(Self);
   with DesktopFilesGroupBox do begin
     Name:='DesktopFilesGroupBox';
-    Parent:=NoteBook.Page[0];
-    Left:=WindowsGroupBox.Left;
-    Top:=WindowsGroupBox.Top+WindowsGroupBox.Height+5;
-    Width:=WindowsGroupBox.Width;
+    Parent:=NoteBook.Page[Page];
+    Left:=AutoSaveGroupBox.Left;
+    Top:=AutoSaveGroupBox.Top+AutoSaveGroupBox.Height+5;
+    Width:=AutoSaveGroupBox.Width;
     Height:=90;
     Caption:='Desktop files';
     Visible:=true;
@@ -1062,196 +1127,14 @@ begin
     OnClick:=@LoadDesktopSettingsFromFileButtonClick;
     Visible:=true;
   end;
-  
-
-  // form editor
-  FormEditorGroupBox:=TGroupBox.Create(Self);
-  with FormEditorGroupBox do begin
-    Name:='FormEditorGroupBox';
-    Parent:=NoteBook.Page[0];
-    Left:=AutoSaveGroupBox.Left+AutoSaveGroupBox.Width+10;
-    Top:=AutoSaveGroupBox.Top;
-    Width:=AutoSaveGroupBox.Width;
-    Height:=203;
-    Caption:='Form editor';
-    Visible:=true;
-  end;
-  
-  DisplayGridCheckBox:=TCheckBox.Create(Self);
-  with DisplayGridCheckBox do begin
-    Name:='DisplayGridCheckBox';
-    Parent:=FormEditorGroupBox;
-    Left:=2;
-    Top:=2;
-    Width:=FormEditorGroupBox.ClientWidth-2*Left;
-    Height:=23;
-    Caption:='Display grid';
-    Enabled:=false;
-    Visible:=true;
-  end;
-  
-  SnapToGridCheckBox:=TCheckBox.Create(Self);
-  with SnapToGridCheckBox do begin
-    Name:='SnapToGridCheckBox';
-    Parent:=FormEditorGroupBox;
-    Left:=2;
-    Top:=27;
-    Width:=FormEditorGroupBox.ClientWidth-2*Left;
-    Height:=23;
-    Caption:='Snap to grid';
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
-  with ShowComponentCaptionsCheckBox do begin
-    Name:='ShowComponentCaptionsCheckBox';
-    Parent:=FormEditorGroupBox;
-    Left:=2;
-    Top:=52;
-    Width:=FormEditorGroupBox.ClientWidth-2*Left;
-    Height:=23;
-    Caption:='Show component captions';
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
-  with ShowEditorHintsCheckBox do begin
-    Name:='ShowEditorHintsCheckBox';
-    Parent:=FormEditorGroupBox;
-    Left:=2;
-    Top:=77;
-    Width:=FormEditorGroupBox.ClientWidth-2*Left;
-    Height:=23;
-    Caption:='Show editor hints';
-    Visible:=true;
-  end;
-
-  AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
-  with AutoCreateFormsCheckBox do begin
-    Name:='AutoCreateFormsCheckBox';
-    Parent:=FormEditorGroupBox;
-    Left:=2;
-    Top:=102;
-    Width:=FormEditorGroupBox.ClientWidth-2*Left;
-    Height:=23;
-    Caption:='Auto create forms';
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  GridSizeXLabel:=TLabel.Create(Self);
-  with GridSizeXLabel do begin
-    Name:='GridSizeXLabel';
-    Parent:=FormEditorGroupBox;
-    Left:=5;
-    Top:=129;
-    Width:=80;
-    Height:=20;
-    Caption:='Grid size X';
-    Enabled:=false;
-    Visible:=true;
-  end;
-  
-  GridSizeXComboBox:=TComboBox.Create(Self);
-  with GridSizeXComboBox do begin
-    Name:='GridSizeXComboBox';
-    Parent:=FormEditorGroupBox;
-    Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
-    Top:=GridSizeXLabel.Top+2;
-    Width:=FormEditorGroupBox.ClientWidth-Left-10;
-    Height:=23;
-    with Items do begin
-      BeginUpdate;
-      Add('2');
-      Add('5');
-      Add('8');
-      Add('10');
-      EndUpdate;
-    end;
-    Enabled:=false;
-    Visible:=true;
-  end;
-  
-  GridSizeYLabel:=TLabel.Create(Self);
-  with GridSizeYLabel do begin
-    Name:='GridSizeYLabel';
-    Parent:=FormEditorGroupBox;
-    Left:=5;
-    Top:=154;
-    Width:=GridSizeXLabel.Width;
-    Height:=20;
-    Caption:='Grid size Y';
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-  GridSizeYComboBox:=TComboBox.Create(Self);
-  with GridSizeYComboBox do begin
-    Name:='GridSizeYComboBox';
-    Parent:=FormEditorGroupBox;
-    Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
-    Top:=GridSizeYLabel.Top+2;
-    Width:=FormEditorGroupBox.ClientWidth-Left-10;
-    Height:=23;
-    with Items do begin
-      BeginUpdate;
-      Add('2');
-      Add('5');
-      Add('8');
-      Add('10');
-      EndUpdate;
-    end;
-    Enabled:=false;
-    Visible:=true;
-  end;
-
-
-  // object inspector
-  ObjectInspectorGroupBox:=TGroupBox.Create(Self);
-  with ObjectInspectorGroupBox do begin
-    Name:='ObjectInspectorGroupBox';
-    Parent:=NoteBook.Page[0];
-    Left:=FormEditorGroupBox.Left;
-    Top:=FormEditorGroupBox.Top+FormEditorGroupBox.Height+5;
-    Width:=FormEditorGroupBox.Width;
-    Height:=50;
-    Caption:='Object inspector';
-    Visible:=true;
-  end;
-
-  OIBackgroundColorButton:=TColorButton.Create(Self);
-  with OIBackgroundColorButton do begin
-    Name:='OIBackgroundColorButton';
-    Parent:=ObjectInspectorGroupBox;
-    Left:=5;
-    Top:=2;
-    Width:=50;
-    Height:=25;
-    Visible:=true;
-  end;
-
-  OIBackgroundColorLabel:=TLabel.Create(Self);
-  with OIBackgroundColorLabel do begin
-    Name:='OIBackgroundColorLabel';
-    Parent:=ObjectInspectorGroupBox;
-    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
-    Top:=OIBackgroundColorButton.Top;
-    Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
-    Height:=23;
-    Caption:='Background color';
-    Visible:=true;
-  end;
-
 
   // hints
   ShowHintsForComponentPaletteCheckBox:=TCheckBox.Create(Self);
   with ShowHintsForComponentPaletteCheckBox do begin
     Name:='ShowHintsForComponentPaletteCheckBox';
-    Parent:=NoteBook.Page[0];
+    Parent:=NoteBook.Page[Page];
     Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+5;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+100;
     Width:=250;
     Height:=20;
     Caption:='Hints for component palette';
@@ -1261,7 +1144,7 @@ begin
   ShowHintsForMainSpeedButtonsCheckBox:=TCheckBox.Create(Self);
   with ShowHintsForMainSpeedButtonsCheckBox do begin
     Name:='ShowHintsForMainSpeedButtonsCheckBox';
-    Parent:=NoteBook.Page[0];
+    Parent:=NoteBook.Page[Page];
     Left:=ShowHintsForComponentPaletteCheckBox.Left;
     Top:=ShowHintsForComponentPaletteCheckBox.Top
          +ShowHintsForComponentPaletteCheckBox.Height+5;
@@ -1270,9 +1153,47 @@ begin
     Caption:='Hints for main speed buttons (open, save, ...)';
     Visible:=true;
   end;
+
+  // Window Positions
+  WindowPositionsGroupBox:=TGroupBox.Create(Self);
+  with WindowPositionsGroupBox do begin
+    Name:='WindowPositionsGroupBox';
+    Parent:=NoteBook.Page[Page];
+    Caption:='Window Positions';
+    SetBounds(MaxX div 2,AutoSaveGroupBox.Top,(MaxX div 2)-5,290);
+    Visible:=true;
+  end;
+  
+  WindowPositionsListBox:=TListBox.Create(Self);
+  with WindowPositionsListBox do begin
+    Name:='WindowPositionsListBox';
+    Parent:=WindowPositionsGroupBox;
+    SetBounds(5,5,Parent.ClientWidth-15,60);
+    with Items do begin
+      BeginUpdate;
+      Add('Main Menu');
+      Add('Source Editor');
+      Add('Messages');
+      Add('Object Inspector');
+      EndUpdate;
+    end;
+    OnMouseUp:=@WindowPositionsListBoxMouseUp;
+    Visible:=true;
+  end;
+
+  WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
+  with WindowPositionsBox do begin
+    Name:='WindowPositionsBox';
+    Parent:=WindowPositionsGroupBox;
+    Left:=5;
+    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
+    Width:=WindowPositionsListBox.Width;
+    Height:=Parent.ClientHeight-Top-20;
+    Visible:=true;
+  end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupBackupPage;
+procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
 var MaxX:integer;
 begin
   MaxX:=ClientWidth-5;
@@ -1280,7 +1201,7 @@ begin
   BackupHelpLabel:=TLabel.Create(Self);
   with BackupHelpLabel do begin
     Name:='BackupHelpLabel';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[Page];
     Left:=5;
     Top:=2;
     Width:=MaxX-Left*2;
@@ -1292,7 +1213,7 @@ begin
   BackupProjectGroupBox:=TGroupBox.Create(Self);
   with BackupProjectGroupBox do begin
     Name:='BackupProjectGroupBox';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[Page];
     Left:=4;
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
     Width:=(MaxX div 2) - 11;
@@ -1418,7 +1339,7 @@ begin
   BackupOtherGroupBox:=TGroupBox.Create(Self);
   with BackupOtherGroupBox do begin
     Name:='BackupOtherGroupBox';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[Page];
     Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
     Width:=(MaxX div 2) - 11;
@@ -1542,7 +1463,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupFilesPage;
+procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 var MaxX:integer;
   ADebuggerType: TDebuggerType;
 begin
@@ -1551,7 +1472,7 @@ begin
   MaxRecentOpenFilesLabel:=TLabel.Create(Self);
   with MaxRecentOpenFilesLabel do begin
     Name:='MaxRecentOpenFilesLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=4;
     Top:=4;
     Width:=150;
@@ -1563,7 +1484,7 @@ begin
   MaxRecentOpenFilesComboBox:=TComboBox.Create(Self);
   with MaxRecentOpenFilesComboBox do begin
     Name:='MaxRecentOpenFilesComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
     Top:=MaxRecentOpenFilesLabel.Top;
     Width:=60;
@@ -1584,7 +1505,7 @@ begin
   MaxRecentProjectFilesLabel:=TLabel.Create(Self);
   with MaxRecentProjectFilesLabel do begin
     Name:='MaxRecentProjectFilesLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=MaxRecentOpenFilesLabel.Left;
     Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
     Width:=MaxRecentOpenFilesLabel.Width;
@@ -1596,7 +1517,7 @@ begin
   MaxRecentProjectFilesComboBox:=TComboBox.Create(Self);
   with MaxRecentProjectFilesComboBox do begin
     Name:='MaxRecentProjectFilesComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
     Top:=MaxRecentProjectFilesLabel.Top;
     Width:=60;
@@ -1617,7 +1538,7 @@ begin
   OpenLastProjectAtStartCheckBox:=TCheckBox.Create(Self);
   with OpenLastProjectAtStartCheckBox do begin
     Name:='OpenLastProjectAtStartCheckBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=4;
     Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
     Width:=MaxX-10;
@@ -1629,7 +1550,7 @@ begin
   LazarusDirLabel:=TLabel.Create(Self);
   with LazarusDirLabel do begin
     Name:='LazarusDirLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=4;
     Top:=OpenLastProjectAtStartCheckBox.Top
         +OpenLastProjectAtStartCheckBox.Height+5;
@@ -1642,7 +1563,7 @@ begin
   LazarusDirComboBox:=TComboBox.Create(Self);
   with LazarusDirComboBox do begin
     Name:='LazarusDirComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=LazarusDirLabel.Top+LazarusDirLabel.Height+2;
     Width:=LazarusDirLabel.Width;
@@ -1658,7 +1579,7 @@ begin
   CompilerPathLabel:=TLabel.Create(Self);
   with CompilerPathLabel do begin
     Name:='CompilerPathLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=LazarusDirComboBox.Top+LazarusDirComboBox.Height;
     Width:=LazarusDirLabel.Width;
@@ -1670,7 +1591,7 @@ begin
   CompilerPathComboBox:=TComboBox.Create(Self);
   with CompilerPathComboBox do begin
     Name:='CompilerPathComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=CompilerPathLabel.Top+CompilerPathLabel.Height+2;
     Width:=LazarusDirLabel.Width;
@@ -1687,7 +1608,7 @@ begin
   FPCSourceDirLabel:=TLabel.Create(Self);
   with FPCSourceDirLabel do begin
     Name:='FPCSourceDirLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=CompilerPathComboBox.Top+CompilerPathComboBox.Height;
     Width:=LazarusDirLabel.Width;
@@ -1699,7 +1620,7 @@ begin
   FPCSourceDirComboBox:=TComboBox.Create(Self);
   with FPCSourceDirComboBox do begin
     Name:='FPCSourceDirComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=FPCSourceDirLabel.Top+FPCSourceDirLabel.Height+2;
     Width:=LazarusDirLabel.Width;
@@ -1715,7 +1636,7 @@ begin
   DebuggerPathLabel:=TLabel.Create(Self);
   with DebuggerPathLabel do begin
     Name:='DebuggerPathLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=FPCSourceDirComboBox.Top+FPCSourceDirComboBox.Height;
     Width:=FPCSourceDirLabel.Width;
@@ -1727,7 +1648,7 @@ begin
   DebuggerTypeComboBox:=TComboBox.Create(Self);
   with DebuggerTypeComboBox do begin
     Name:='DebuggerTypeComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=FPCSourceDirLabel.Left;
     Top:=DebuggerPathLabel.Top+DebuggerPathLabel.Height+2;
     Width:=LazarusDirLabel.Width div 2;
@@ -1744,7 +1665,7 @@ begin
   DebuggerPathComboBox:=TComboBox.Create(Self);
   with DebuggerPathComboBox do begin
     Name:='DebuggerPathComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=DebuggerTypeComboBox.Left+DebuggerTypeComboBox.Width+10;
     Top:=DebuggerTypeComboBox.Top;
     Width:=LazarusDirLabel.Width-DebuggerTypeComboBox.Width-10;
@@ -1761,7 +1682,7 @@ begin
   TestBuildDirLabel:=TLabel.Create(Self);
   with TestBuildDirLabel do begin
     Name:='TestBuildDirLabel';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=DebuggerTypeComboBox.Top+DebuggerTypeComboBox.Height;
     Width:=LazarusDirLabel.Width;
@@ -1773,7 +1694,7 @@ begin
   TestBuildDirComboBox:=TComboBox.Create(Self);
   with TestBuildDirComboBox do begin
     Name:='TestBuildDirComboBox';
-    Parent:=NoteBook.Page[1];
+    Parent:=NoteBook.Page[Page];
     Left:=LazarusDirLabel.Left;
     Top:=TestBuildDirLabel.Top+TestBuildDirLabel.Height+2;
     Width:=LazarusDirLabel.Width;
@@ -1790,7 +1711,141 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupNamingPage;
+procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
+begin
+  // form editor
+  DisplayGridCheckBox:=TCheckBox.Create(Self);
+  with DisplayGridCheckBox do begin
+    Name:='DisplayGridCheckBox';
+    Parent:=Notebook.Page[Page];
+    Left:=6;
+    Top:=2;
+    Width:=200;
+    Height:=23;
+    Caption:='Display grid';
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  SnapToGridCheckBox:=TCheckBox.Create(Self);
+  with SnapToGridCheckBox do begin
+    Name:='SnapToGridCheckBox';
+    Parent:=Notebook.Page[Page];
+    Top:=27;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+    Caption:='Snap to grid';
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
+  with ShowComponentCaptionsCheckBox do begin
+    Name:='ShowComponentCaptionsCheckBox';
+    Parent:=Notebook.Page[Page];
+    Top:=52;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+    Caption:='Show component captions';
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
+  with ShowEditorHintsCheckBox do begin
+    Name:='ShowEditorHintsCheckBox';
+    Parent:=Notebook.Page[Page];
+    Top:=77;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+    Caption:='Show editor hints';
+    Visible:=true;
+  end;
+
+  AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
+  with AutoCreateFormsCheckBox do begin
+    Name:='AutoCreateFormsCheckBox';
+    Parent:=Notebook.Page[Page];
+    Top:=102;
+    Left:=DisplayGridCheckBox.Left;
+    Width:=DisplayGridCheckBox.Width;
+    Height:=DisplayGridCheckBox.Height;
+    Caption:='Auto create forms';
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  GridSizeXLabel:=TLabel.Create(Self);
+  with GridSizeXLabel do begin
+    Name:='GridSizeXLabel';
+    Parent:=Notebook.Page[Page];
+    Left:=6;
+    Top:=129;
+    Width:=80;
+    Height:=20;
+    Caption:='Grid size X';
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  GridSizeXComboBox:=TComboBox.Create(Self);
+  with GridSizeXComboBox do begin
+    Name:='GridSizeXComboBox';
+    Parent:=Notebook.Page[Page];
+    Left:=GridSizeXLabel.Left+GridSizeXLabel.Width+5;
+    Top:=GridSizeXLabel.Top+2;
+    Width:=60;
+    Height:=23;
+    with Items do begin
+      BeginUpdate;
+      Add('2');
+      Add('5');
+      Add('8');
+      Add('10');
+      EndUpdate;
+    end;
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  GridSizeYLabel:=TLabel.Create(Self);
+  with GridSizeYLabel do begin
+    Name:='GridSizeYLabel';
+    Parent:=Notebook.Page[Page];
+    Left:=6;
+    Top:=154;
+    Width:=GridSizeXLabel.Width;
+    Height:=20;
+    Caption:='Grid size Y';
+    Enabled:=false;
+    Visible:=true;
+  end;
+
+  GridSizeYComboBox:=TComboBox.Create(Self);
+  with GridSizeYComboBox do begin
+    Name:='GridSizeYComboBox';
+    Parent:=Notebook.Page[Page];
+    Left:=GridSizeYLabel.Left+GridSizeYLabel.Width+5;
+    Top:=GridSizeYLabel.Top+2;
+    Width:=60;
+    Height:=23;
+    with Items do begin
+      BeginUpdate;
+      Add('2');
+      Add('5');
+      Add('8');
+      Add('10');
+      EndUpdate;
+    end;
+    Enabled:=false;
+    Visible:=true;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
 var //MaxX:integer;
   pe: TPascalExtType;
 begin
@@ -1799,7 +1854,7 @@ begin
   PascalFileExtRadiogroup:=TRadioGroup.Create(Self);
   with PascalFileExtRadiogroup do begin
     Name:='PascalFileExtRadiogroup';
-    Parent:=NoteBook.Page[3];
+    Parent:=NoteBook.Page[Page];
     Left:=5;
     Top:=4;
     Width:=150;
@@ -1920,7 +1975,8 @@ begin
        ,IntToStr(AutoSaveIntervalInSecs));
 
     // desktop
-    SaveWindowPositionsCheckBox.Checked:=SaveWindowPositions;
+    FLayouts:=IDEWindowLayoutList;
+    SetWindowPositionsItem(0);
 
     // object inspector
     OIBackgroundColorButton.ButtonColor:=
@@ -2019,11 +2075,12 @@ begin
       AutoSaveIntervalInSecsComboBox.Text,AutoSaveIntervalInSecs);
 
     // desktop
-    SaveWindowPositions:=SaveWindowPositionsCheckBox.Checked;
+    WindowPositionsBox.Save;
 
     // object inspector
     ObjectInspectorOptions.GridBackgroundColor:=
        OIBackgroundColorButton.ButtonColor;
+
     // hints
     ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
     ShowHintsForMainSpeedButtons:=ShowHintsForMainSpeedButtonsCheckBox.Checked;
@@ -2133,6 +2190,69 @@ begin
     while AComboBox.Items.Count>MaxCount do
       AComboBox.Items.Delete(AComboBox.Items.Count-1);
   end;
+end;
+
+procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
+var MaxX: integer;
+begin
+  MaxX:=ClientWidth-5;
+  
+  // object inspector
+  ObjectInspectorGroupBox:=TGroupBox.Create(Self);
+  with ObjectInspectorGroupBox do begin
+    Name:='ObjectInspectorGroupBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=6;
+    Top:=2;
+    Width:=(MaxX div 2) - 15;
+    Height:=55;
+    Caption:='Colors';
+    Visible:=true;
+  end;
+
+  OIBackgroundColorButton:=TColorButton.Create(Self);
+  with OIBackgroundColorButton do begin
+    Name:='OIBackgroundColorButton';
+    Parent:=ObjectInspectorGroupBox;
+    Left:=6;
+    Top:=6;
+    Width:=50;
+    Height:=25;
+    Visible:=true;
+  end;
+
+  OIBackgroundColorLabel:=TLabel.Create(Self);
+  with OIBackgroundColorLabel do begin
+    Name:='OIBackgroundColorLabel';
+    Parent:=ObjectInspectorGroupBox;
+    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
+    Top:=OIBackgroundColorButton.Top;
+    Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
+    Height:=23;
+    Caption:='Background color';
+    Visible:=true;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.WindowPositionsListBoxMouseUp(
+  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
+end;
+
+procedure TEnvironmentOptionsDialog.SetWindowPositionsItem(Index: integer);
+begin
+  if WindowPositionsBox.Layout<>nil then
+    WindowPositionsBox.Save;
+  WindowPositionsListBox.ItemIndex:=Index;
+  case Index of
+  0: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultMainIDEName);
+  1: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultSourceNoteBookName);
+  2: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultMessagesViewName);
+  3: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultObjectInspectorName);
+  end;
+  if Index>=0 then
+    WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
 end;
 
 end.

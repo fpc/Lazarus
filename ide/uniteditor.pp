@@ -36,7 +36,7 @@ uses
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, GraphType, Graphics, Extctrls, Menus, Splash,
-  FindInFilesDlg, LMessages, IDEProcs;
+  FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs;
 
 type
   // --------------------------------------------------------------------------
@@ -456,7 +456,9 @@ type
      constructor Create(AOwner : TComponent); override;
    end;
 
+
 implementation
+
 
 uses
   LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts, UnitInfoDlg;
@@ -648,6 +650,8 @@ procedure TSourceEditor.OnReplace(Sender: TObject; const ASearch, AReplace:
 var a,x,y:integer;
   AText:AnsiString;
 begin
+  if FAOwner<>nil then
+    TSourceNotebook(FAOwner).UpdateStatusBar;
   AText:='Replace this occurrence of '''+ASearch+''' with '''+AReplace+'''?';
 
   GetDialogPosition(300,150,X,Y);
@@ -1532,13 +1536,20 @@ constructor TSourceNotebook.Create(AOwner: TComponent);
 var
   Pixmap1 : TPixmap;
   I : Integer;
+  ALayout: TIDEWindowLayout;
 begin
   inherited Create(AOwner);
-  Name:='SourceNotebook';
+  Name:=DefaultSourceNoteBookName;
   Caption := 'Lazarus Source Editor';
   FProcessingCommand := false;
 
-  if (EnvironmentOptions.SaveWindowPositions) 
+  FMainIDE := AOwner;
+
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByFormID(DefaultSourceNoteBookName);
+  ALayout.Form:=TForm(Self);
+  ALayout.Apply;
+  {if (EnvironmentOptions.SaveWindowPositions)
   and (EnvironmentOptions.WindowPositionsValid) then begin
     BoundsRect:=EnvironmentOptions.SourceEditorBounds;
   end else begin
@@ -1546,9 +1557,7 @@ begin
     Top := 150;
     Width := 400;
     Height := 400;
-  end;
-
-  FMainIDE := AOwner;
+  end;}
 
   FSourceEditorList := TList.Create;
   FUnUsedEditorComponents := TList.Create;
@@ -1752,7 +1761,7 @@ procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index:integer);
 var P:TPoint;
 begin
-writeln('RRRRRRRRRRR ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
+//writeln('RRRRRRRRRRR ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and (CurrentCompletionType=ctNone) then begin
     CurrentCompletionType:=ctTemplateCompletion;
     with AnEditor do

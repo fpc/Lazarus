@@ -42,7 +42,7 @@ uses
   Debugger, DBGOutputForm, GDBDebugger, RunParamsOpts, ExtToolDialog,
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo;
+  TypInfo, IDEOptionDefs;
 
 const
   Version_String = '0.8.2 alpha';
@@ -249,7 +249,6 @@ type
     procedure ControlClick(Sender : TObject);
     procedure mnuFindDeclarationClicked(Sender : TObject);
     
-
     // SourceNotebook events
     Procedure OnSrcNoteBookActivated(Sender : TObject);
     Procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
@@ -349,6 +348,7 @@ type
   protected
     procedure ToolButtonClick(Sender : TObject);
     Procedure AddWatch(const AnExpression : String);
+    procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
   public
     ToolStatus: TIDEToolStatus;
  
@@ -474,8 +474,8 @@ type
 
     // editor and environment options
     procedure SaveEnvironment;
-    procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+    procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
 
 
@@ -543,6 +543,7 @@ var
   RegCompPage : TRegisteredComponentPage;
   IDEComponent : TIdeComponent;
   SelectionPointerPixmap: TPixmap;
+  ALayout: TIDEWindowLayout;
 begin
   inherited Create(AOwner);
 
@@ -571,6 +572,7 @@ begin
       EnvironmentOptions.CompilerFilename:=FindDefaultCompilerPath;
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
+    OnApplyWindowLayout:=@Self.OnApplyWindowLayout;
   end;
   UpdateDefaultPascalFileExtensions;
 
@@ -595,18 +597,11 @@ begin
   InitCodeToolBoss;
 
   // build and position the MainIDE form
-  Name := 'MainIDE';
-  if (EnvironmentOptions.SaveWindowPositions) 
-  and (EnvironmentOptions.WindowPositionsValid) 
-  then begin
-    BoundsRect := EnvironmentOptions.MainWindowBounds;
-  end 
-  else begin
-    Left := 0;
-    Top := 0;
-    Width := Screen.Width - 10;
-    Height := 125;
-  end;
+  Name := DefaultMainIDEName;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByFormID(DefaultMainIDEName);
+  ALayout.Form:=TForm(Self);
+  ALayout.Apply;
   Position:= poDesigned;
 
   if LazarusResources.Find(ClassName)=nil then begin
@@ -713,14 +708,9 @@ begin
   OnKeyDown := @MainKeyDown;
   // object inspector
   ObjectInspector1 := TObjectInspector.Create(Self);
-  if (EnvironmentOptions.SaveWindowPositions) 
-  and (EnvironmentOptions.WindowPositionsValid) then begin
-    with EnvironmentOptions.ObjectInspectorOptions do
-      ObjectInspector1.SetBounds(Left,Top,Width,Height);
-  end else begin
-    ObjectInspector1.SetBounds(
-      0,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
-  end;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByFormID(DefaultObjectInspectorName);
+  ALayout.Form:=TForm(ObjectInspector1);
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
   PropertyEditorHook1:=TPropertyEditorHook.Create;
@@ -732,6 +722,7 @@ begin
   PropertyEditorHook1.OnRenameMethod:=@OnPropHookRenameMethod;
   {$ENDIF}
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
+  ALayout.Apply;
   ObjectInspector1.Show;
 
   // create formeditor
@@ -811,12 +802,12 @@ begin
                     'Target filename of project',nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   
-  //twatcheslgd
+  // TWatchesDlg
   Watches_Dlg := TWatchesDlg.Create(Self);
   Watches_Dlg.OnWatchAddedEvent := @OnWatchAdded;
 
 
-  //TBreakPointsDlg
+  // TBreakPointsDlg
   BreakPoints_Dlg := TBreakPointsDlg.Create(Self);
 
   FDebugger := nil;
@@ -860,40 +851,29 @@ writeln('[TMainIDE.Destroy] A');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
-  if FDebugger <> nil
-  then FDebugger.Done;
-  
-  if Project<>nil then begin
-    Project.Free;
-    Project:=nil;
-  end;
-  FBreakPoints.Free;
-  FBreakPoints:=nil;
+  if FDebugger <> nil then FDebugger.Done;
+
+  if Project<>nil then
+    FreeAndNil(fProject);
+  FreeAndNil(FBreakPoints);
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
-    TheControlSelection.Free;
-    TheControlSelection:=nil;
+    FreeAndNil(TheControlSelection);
   end;
-  FormEditor1.Free;
-  FormEditor1:=nil;
-  PropertyEditorHook1.Free;
-  TheCompiler.Free;
-  TheOutputFilter.Free;
-  MacroList.Free;
-  CodeToolsOpts.Free;
-  CodeToolsOpts:=nil;
-  MiscellaneousOptions.Free;
-  MiscellaneousOptions:=nil;
-  EditorOpts.Free;
-  EditorOpts:=nil;
-  EnvironmentOptions.Free;
-  EnvironmentOptions:=nil;
-  HIntTimer1.Free;
-  HintWindow1.Free;
-  Watches_Dlg.Free;
-  FDebugger.Free;
-  FDebugger := nil;
-  
+  FreeAndNil(FormEditor1);
+  FreeAndNil(PropertyEditorHook1);
+  FreeAndNil(TheCompiler);
+  FreeAndNil(TheOutputFilter);
+  FreeAndNil(MacroList);
+  FreeAndNil(CodeToolsOpts);
+  FreeAndNil(MiscellaneousOptions);
+  FreeAndNil(EditorOpts);
+  FreeAndNil(EnvironmentOptions);
+  FreeAndNil(HintTimer1);
+  FreeAndNil(HintWindow1);
+  FreeAndNil(Watches_Dlg);
+  FreeAndNil(FDebugger);
+
 writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
@@ -2198,16 +2178,7 @@ procedure TMainIDE.LoadDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
   with TheEnvironmentOptions do begin
-    if WindowPositionsValid then begin
-      // set window positions
-      BoundsRect:=MainWindowBounds;
-      SourceNoteBook.BoundsRect:=SourceEditorBounds;
-      if MessagesViewBoundsValid then begin
-        MessagesView.BoundsRect:=MessagesViewBounds;
-        FMessagesViewBoundsRectValid:=true;
-      end;
-      ObjectInspectorOptions.AssignTo(ObjectInspector1);
-    end;
+    ObjectInspectorOptions.AssignTo(ObjectInspector1);
   end;
 end;
 
@@ -4881,9 +4852,12 @@ begin
 end;
 
 procedure TMainIDE.DoShowMessagesView;
-var WasVisible: boolean;
+var
+  WasVisible: boolean;
+  ALayout: TIDEWindowLayout;
 begin
-  if (EnvironmentOptions.SaveWindowPositions) 
+  {
+  if (EnvironmentOptions.SaveWindowPositions)
   and (EnvironmentOptions.MessagesViewBoundsValid) then begin
     MessagesView.BoundsRect:=EnvironmentOptions.MessagesViewBounds;
   end else begin
@@ -4893,14 +4867,18 @@ begin
     MessagesView.Width := SourceNotebook.Width;
   end;
   FMessagesViewBoundsRectValid:=true;
+  }
   WasVisible:=MessagesView.Visible;
   MessagesView.Show;
+  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
+    ItemByFormID(DefaultMessagesViewName);
+  ALayout.Apply;
   if not WasVisible then
-     bringWindowToTop(SourceNotebook.Handle);  //sxm changed 2001-11-14
+    BringWindowToTop(SourceNotebook.Handle);
 
-//set the event here for the selectionchanged event
+  //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
-     MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
+    MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
 end;
 
 procedure TMainIDE.DoArrangeSourceEditorAndMessageView;
@@ -6008,6 +5986,37 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
+begin
+  if (ALayout=nil) or (ALayout.Form=nil) then exit;
+//writeln('********8 TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
+  if (ALayout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
+  and (ALayout.CustomCoordinatesAreValid) then begin
+    // explicit position
+    ALayout.Form.SetBounds(
+      ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height)
+  end else
+  if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
+  then begin
+    // default position
+    if ALayout.Form=TForm(ObjectInspector1) then begin
+      ALayout.Form.SetBounds(
+        Left,Top+Height+30,230,Max(Screen.Height-Top-Height-120,50));
+    end else
+    if ALayout.Form=TForm(Self) then begin
+      ALayout.Form.SetBounds(0,0,Screen.Width-10,105);
+    end else
+    if ALayout.Form=TForm(SourceNotebook) then begin
+      ALayout.Form.SetBounds(260,Top+Height+30,Screen.Width-300,
+        Screen.Height-100-Top-Height);
+    end else
+    if ALayout.Form=TForm(MessagesView) then begin
+      ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
+        Screen.Width-300,80);
+    end;
+  end;
+end;
+
 
 //-----------------------------------------------------------------------------
 
@@ -6022,6 +6031,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.232  2002/02/25 16:48:10  lazarus
+  MG: new IDE window layout system
+
   Revision 1.231  2002/02/24 20:51:22  lazarus
   Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
   Added PageCount to TNotebook
