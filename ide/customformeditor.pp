@@ -635,7 +635,6 @@ var
   AForm: TCustomForm;
 Begin
   Temp := TComponentInterface(FindComponent(Value));
-writeln('TCustomFormEditor.DeleteControl ',HexStr(Cardinal(Temp),8),' ',HexStr(Cardinal(Value),8),' ',Value.Name,':',Value.ClassName);
   if Temp <> nil then
   begin
     RemoveFromComponentInterfaceList(Temp);
