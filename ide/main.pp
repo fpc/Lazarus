@@ -538,6 +538,7 @@ var i: integer;
 begin
   if (ParamCount>0)
   and ((AnsiCompareText(ParamStr(1),'--help')=0)
+    or (AnsiCompareText(ParamStr(1),'-help')=0)
     or (AnsiCompareText(ParamStr(1),'-?')=0)) then
   begin
     writeln('lazarus [options] <project-filename>');
@@ -546,11 +547,13 @@ begin
     writeln('');
     writeln('--help or -?             this help message');
     writeln('');
-    writeln('--primary-config-path    primary config directory, where Lazarus');
+    writeln('--primary-config-path <path>');
+    writeln('                         primary config directory, where Lazarus');
     writeln('                         stores its config files. Default is ');
     writeln('                         ',GetPrimaryConfigPath);
     writeln('');
-    writeln('--secondary-config-path  secondary config directory, where Lazarus');
+    writeln('--secondary-config-path <path>');
+    writeln('                         secondary config directory, where Lazarus');
     writeln('                         searches for config template files.');
     writeln('                         Default is ',GetSecondaryConfigPath);
     writeln('');
@@ -618,7 +621,6 @@ begin
   inherited Create(TheOwner);
 
   // load options
-  ParseCmdLineOptions;
   CreatePrimaryConfigPath;
   LoadGlobalOptions;
   
@@ -6559,6 +6561,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.318  2002/07/04 10:22:46  lazarus
+  MG: fixed double parsing of command line
+
   Revision 1.317  2002/06/28 06:34:54  lazarus
   MG: added Tabs To Spaces in Selection
 
