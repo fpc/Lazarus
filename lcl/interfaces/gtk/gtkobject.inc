@@ -3212,8 +3212,8 @@ begin
 
     LM_DAYCHANGED :  //calendar
     Begin
-      ConnectSenderSignal(gObject, 'day-selected', @gtkdaychanged);
-      ConnectSenderSignal(gObject, 'day-selected-double-click', @gtkdaychanged);
+      ConnectSenderSignal(gCore, 'day-selected', @gtkdaychanged);
+      ConnectSenderSignal(gCore, 'day-selected-double-click', @gtkdaychanged);
     end;
 
     LM_PAINT :
@@ -3259,9 +3259,9 @@ begin
 
     LM_MONTHCHANGED:  //calendar
     Begin
-      ConnectSenderSignal(gObject, 'month-changed', @gtkmonthchanged);
-      ConnectSenderSignal(gObject, 'prev-month', @gtkmonthchanged);
-      ConnectSenderSignal(gObject, 'next-month', @gtkmonthchanged);
+      ConnectSenderSignal(gCore, 'month-changed', @gtkmonthchanged);
+      ConnectSenderSignal(gCore, 'prev-month', @gtkmonthchanged);
+      ConnectSenderSignal(gCore, 'next-month', @gtkmonthchanged);
     end;
 
     LM_PRESSED:
@@ -3540,8 +3540,8 @@ begin
 
     LM_YEARCHANGED :  //calendar
     Begin
-      ConnectSenderSignal(gObject, 'prev-year', @gtkyearchanged);
-      ConnectSenderSignal(gObject, 'next-year', @gtkyearchanged);
+      ConnectSenderSignal(gCore, 'prev-year', @gtkyearchanged);
+      ConnectSenderSignal(gCore, 'next-year', @gtkyearchanged);
     end;
 
     // Listview & Header control
@@ -4934,7 +4934,12 @@ begin
 
   csCalendar :
     begin
-      p := gtk_calendar_new();
+      p := gtk_frame_new(nil);
+      TempWidget := gtk_calendar_new();
+      gtk_container_add(GTK_CONTAINER(p), TempWidget);
+      SetMainWidget(p, TempWidget);
+      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
+      gtk_widget_show_all(p);
     end;
 
   csCheckbox :
@@ -6900,6 +6905,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.644  2005/03/18 14:43:53  mattias
+  creating gtk_calendar in a gtk_frame - calendar seems to need a parent window
+
   Revision 1.643  2005/03/11 15:35:49  mattias
   implemented for gtk intf TFileDialog.FilterIndex  from Jesus
 

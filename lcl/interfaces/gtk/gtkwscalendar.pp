@@ -33,7 +33,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  Calendar, WSCalendar, WSLCLClasses;
+  GtkProc, GtkDef, Calendar, WSCalendar, WSLCLClasses;
 
 type
 
@@ -50,14 +50,26 @@ type
     class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
+function GetGtkCalendar(const ACalendar: TCustomCalendar): PGtkCalendar;
 
 implementation
+
+function GetGtkCalendar(const ACalendar: TCustomCalendar): PGtkCalendar;
+var
+  WinWidgetInfo: PWidgetInfo;
+begin
+  Result:=nil;
+  if (ACalendar=nil) or (not ACalendar.HandleAllocated) then exit;
+  WinWidgetInfo:=GetWidgetInfo(PGtkWidget(ACalendar.Handle), False);
+  if WinWidgetInfo=nil then exit;
+  Result:=PGtkCalendar(WinWidgetInfo^.CoreWidget);
+end;
 
 function  TGtkWSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   Year, Month, Day: word;  //used for csCalendar
 begin
-  gtk_calendar_get_date(PGtkCalendar(ACalendar.Handle), @Year, @Month, @Day);
+  gtk_calendar_get_date(GetGtkCalendar(ACalendar), @Year, @Month, @Day);
   //For some reason, the month is zero based.
   Result := EncodeDate(Year,Month+1,Day);
 end;
@@ -67,7 +79,7 @@ var
   Year, Month, Day: string;
   GtkCalendar: PGtkCalendar;
 begin
-  GtkCalendar := PGtkCalendar(ACalendar.Handle);
+  GtkCalendar := GetGtkCalendar(ACalendar);
   Year := FormatDateTime('yyyy', ADateTime);
   Month := FormatDateTime('mm', ADateTime);
   Day := FormatDateTime('dd', ADateTime);
@@ -98,14 +110,15 @@ begin
      num := Num  + (1 shl 4);
 
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
-  gtk_Calendar_Display_options(PGtkCalendar(ACalendar.Handle), gtkCalendarDisplayOptions);
+  gtk_Calendar_Display_options(GetGtkCalendar(ACalendar), gtkCalendarDisplayOptions);
 end;
 
-procedure TGtkWSCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);
+procedure TGtkWSCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
+  const AReadOnly: boolean);
 var
   GtkCalendar: PGtkCalendar;
 begin
-  GtkCalendar := PGtkCalendar(ACalendar.Handle);
+  GtkCalendar := GetGtkCalendar(ACalendar);
   if AReadOnly then
     gtk_calendar_freeze(GtkCalendar)
   else
