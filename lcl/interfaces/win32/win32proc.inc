@@ -209,8 +209,8 @@ Begin
   $003D: Result := 'WM_GETOBJECT';
   $0041: Result := 'WM_COMPACTING';
   $0044: Result := 'WM_COMMNOTIfY { obsolete in Win32}';
-  $0046: Result := 'WM_WINDoWPOSCHANGING';
-  $0047: Result := 'WM_WINDoWPOSCHANGED';
+  $0046: Result := 'WM_WINDOWPOSCHANGING';
+  $0047: Result := 'WM_WINDOWPOSCHANGED';
   $0048: Result := 'WM_POWER';
   $004A: Result := 'WM_COPYDATA';
   $004B: Result := 'WM_CANCELJOURNAL';
@@ -235,26 +235,26 @@ Begin
   $0086: Result := 'WM_NCACTIVATE';
   $0087: Result := 'WM_GETDLGCODE';
   $00A0: Result := 'WM_NCMOUSEMOVE';
-  $00A1: Result := 'WM_NCLBUTTONDoWN';
+  $00A1: Result := 'WM_NCLBUTTONDOWN';
   $00A2: Result := 'WM_NCLBUTTONUP';
   $00A3: Result := 'WM_NCLBUTTONDBLCLK';
-  $00A4: Result := 'WM_NCRBUTTONDoWN';
+  $00A4: Result := 'WM_NCRBUTTONDOWN';
   $00A5: Result := 'WM_NCRBUTTONUP';
   $00A6: Result := 'WM_NCRBUTTONDBLCLK';
-  $00A7: Result := 'WM_NCMBUTTONDoWN';
+  $00A7: Result := 'WM_NCMBUTTONDOWN';
   $00A8: Result := 'WM_NCMBUTTONUP';
   $00A9: Result := 'WM_NCMBUTTONDBLCLK';
-  $0100: Result := 'WM_KEYFIRST or WM_KEYDoWN';
+  $0100: Result := 'WM_KEYFIRST or WM_KEYDOWN';
   $0101: Result := 'WM_KEYUP';
   $0102: Result := 'WM_CHAR';
   $0103: Result := 'WM_DEADCHAR';
-  $0104: Result := 'WM_SYSKEYDoWN';
+  $0104: Result := 'WM_SYSKEYDOWN';
   $0105: Result := 'WM_SYSKEYUP';
   $0106: Result := 'WM_SYSCHAR';
   $0107: Result := 'WM_SYSDEADCHAR';
   $0108: Result := 'WM_KEYLAST';
   $010D: Result := 'WM_IME_STARTCOMPOSITION';
-  $010E: Result := 'WM_IME_EndCOMPOSITION';
+  $010E: Result := 'WM_IME_ENDCOMPOSITION';
   $010F: Result := 'WM_IME_COMPOSITION or WM_IME_KEYLAST';
   $0110: Result := 'WM_INITDIALOG';
   $0111: Result := 'WM_COMMAND';
@@ -280,17 +280,17 @@ Begin
   $0137: Result := 'WM_CTLCOLORSCROLLBAR';
   $0138: Result := 'WM_CTLCOLORSTATIC';
   $0200: Result := 'WM_MOUSEFIRST or WM_MOUSEMOVE';
-  $0201: Result := 'WM_LBUTTONDoWN';
+  $0201: Result := 'WM_LBUTTONDOWN';
   $0202: Result := 'WM_LBUTTONUP';
   $0203: Result := 'WM_LBUTTONDBLCLK';
-  $0204: Result := 'WM_RBUTTONDoWN';
+  $0204: Result := 'WM_RBUTTONDOWN';
   $0205: Result := 'WM_RBUTTONUP';
   $0206: Result := 'WM_RBUTTONDBLCLK';
-  $0207: Result := 'WM_MBUTTONDoWN';
+  $0207: Result := 'WM_MBUTTONDOWN';
   $0208: Result := 'WM_MBUTTONUP';
   $0209: Result := 'WM_MBUTTONDBLCLK';
   $020A: Result := 'WM_MOUSEWHEEL or WM_MOUSELAST';
-  $0210: Result := 'WM_PARENTNOTIfY';
+  $0210: Result := 'WM_PARENTNOTIFY';
   $0211: Result := 'WM_ENTERMENULOOP';
   $0212: Result := 'WM_EXITMENULOOP';
   $0213: Result := 'WM_NEXTMENU';
@@ -315,13 +315,13 @@ Begin
   $0233: Result := 'WM_DROPFILES';
   $0234: Result := 'WM_MDIREFRESHMENU';
   $0281: Result := 'WM_IME_SETCONTEXT';
-  $0282: Result := 'WM_IME_NOTIfY';
+  $0282: Result := 'WM_IME_NOTIFY';
   $0283: Result := 'WM_IME_CONTROL';
   $0284: Result := 'WM_IME_COMPOSITIONFULL';
   $0285: Result := 'WM_IME_SELECT';
   $0286: Result := 'WM_IME_CHAR';
   $0288: Result := 'WM_IME_REQUEST';
-  $0290: Result := 'WM_IME_KEYDoWN';
+  $0290: Result := 'WM_IME_KEYDOWN';
   $0291: Result := 'WM_IME_KEYUP';
   $02A1: Result := 'WM_MOUSEHOVER';
   $02A3: Result := 'WM_MOUSELEAVE';
@@ -329,9 +329,9 @@ Begin
   $0301: Result := 'WM_COPY';
   $0302: Result := 'WM_PASTE';
   $0303: Result := 'WM_CLEAR';
-  $0304: Result := 'WM_UNDo';
-  $0305: Result := 'WM_REndERFORMAT';
-  $0306: Result := 'WM_REndERALLFORMATS';
+  $0304: Result := 'WM_UNDO';
+  $0305: Result := 'WM_RENDERFORMAT';
+  $0306: Result := 'WM_RENDERALLFORMATS';
   $0307: Result := 'WM_DESTROYCLIPBOARD';
   $0308: Result := 'WM_DRAWCLIPBOARD';
   $0309: Result := 'WM_PAINTCLIPBOARD';
@@ -610,7 +610,7 @@ End;
 Function Win32KeyState2ShiftState(KeyState: Word): TShiftState;
 Begin
   Assert(False, 'TRACE:Using Function Win32KeyState2ShiftState which isn''t implemented yet');
-  GetShiftState;
+  Result := GetShiftState;
 End;
 
 
@@ -899,6 +899,10 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.4  2002/01/17 03:17:44  lazarus
+  Keith: Fixed TPage creation
+
+
   Revision 1.3  2002/01/05 13:16:10  lazarus
   MG: win32 interface update from Keith Bowes
 

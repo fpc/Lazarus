@@ -1,6 +1,6 @@
 { 
   Extra Win32 code that's not in the RTL.
-  Copyright (C) 2001 Keith Bowes.
+  Copyright (C) 2001, 2002 Keith Bowes.
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -14,6 +14,10 @@
 }
 
 Unit WinExt;
+
+{$IFDEF TRACE}
+  {$ASSERTIONS ON}
+{$ENDIF}
 
 {$PACKRECORDS C}
 {$SMARTLINK ON}
@@ -173,7 +177,8 @@ Try
   StrDispose(TmpStr);
   TmpStr := Nil;
 Except
-  Exception.Create('Tried to deallocate a nil string');
+  On E: Exception Do
+    Assert(False, Format('Trace:Could not deallocate string --> %S', [E.Message]));
 End;
 
 End.

@@ -34,11 +34,11 @@ Function CreateFontIndirect(Const LogFont: TLogFont): HFONT; Override;
 Function CreatePenIndirect(Const LogPen: TLogPen): HPEN; Override;
 { Creates a bitmap from raw pixmap data }
 Function CreatePixmapIndirect(Const Data: Pointer; Const TransColor: LongInt): HBITMAP; Override;
-Function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
+Function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; Override;
 
 Function DeleteDC(HDC: HDC): Boolean; Override;
 Function DeleteObject(GDIObject: HGDIOBJ): Boolean; Override;
-Function DestroyCaret(Handle: HWND): Boolean;
+Function DestroyCaret(Handle: HWND): Boolean; Override;
 Function DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: Cardinal): Boolean; Override;
 Function DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; Override;
 
@@ -84,10 +84,10 @@ Function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YS
 Function MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer; Override;
 Function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; Override;
 
-Function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean; Override;
+Function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
 Function Pie(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
-Function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean;
-Function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean;
+Function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
+Function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
 Function PostMessage(HWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean; Override;
 
 Function RealizePalette(DC: HDC): Cardinal; Override;
@@ -115,7 +115,7 @@ Function SetSysColors(CElements: Integer; Const LPAElements; Const LPARgbValues)
 Function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; Override;
 Function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; Override;
 Function SetTimer(HWnd: HWND; NIDEvent, uElapse: Integer; LPTimerFunc: TFNTimerProc): Integer; Override;
-Function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: LongInt): LongInt;
+Function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: LongInt): LongInt; Override;
 Function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; Var Point: TPoint): Boolean; Override;
 Function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; Override;
 Function ShowCaret(HWnd: HWND): Boolean; Override;
@@ -131,6 +131,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/01/17 03:17:44  lazarus
+  Keith: Fixed TPage creation
+
   Revision 1.1  2002/01/06 23:09:53  lazarus
   MG: added missing files
 

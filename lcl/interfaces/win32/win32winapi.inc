@@ -48,7 +48,6 @@ Const
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
   Zero degrees is at the 3'o clock position. 
-
  ------------------------------------------------------------------------------}
 Function TWin32Object.Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
 Begin
@@ -138,12 +137,9 @@ End;
   Returns: the corresponding mime type as string
  ------------------------------------------------------------------------------}
 Function TWin32Object.ClipboardFormatToMimeType(FormatID: TClipboardFormat): String;
-Var
-  GFN: PChar;
 Begin
   Assert(False, 'Trace:TWin32Object.ClipboardFormatToMimeType - Start');
-  Windows.GetClipboardFormatName(FormatID, GFN, MAX_PATH);
-  Result := StrPas(GFN);
+  Windows.GetClipboardFormatName(FormatID, @Result, MAX_PATH);
   Assert(False, 'Trace:TWin32Object.ClipboardFormatToMimeType - Exit');
 End;
 
@@ -216,13 +212,18 @@ Var
   I: Integer;
   P: PChar;
 Begin
+  Result := True;
   If GetClipboardOwner <> HWND(Nil) Then
     OnRequestProc(0, Nil);
   GetMem(Formats, FormatCount * SizeOf(TClipboardFormat));
-  For I := 0 To FormatCount Do
-  Begin
-    GetClipboardFormatName(Formats[I], @P, MAX_PATH);
-    RegisterClipboardFormat(@P);
+  Try
+    For I := 0 To FormatCount Do
+    Begin
+      GetClipboardFormatName(Formats[I], @P, MAX_PATH);
+      RegisterClipboardFormat(@P);
+    End;
+  Except
+    Result := False;
   End;
   FreeMem(Formats);
 End;
@@ -1422,10 +1423,32 @@ End;
 
   Adds a new entry or changes an existing entry in the property list of the
   specified window.
+
+  NOTE: LCLLinux has no RemoveProp function but Windows API requires all set
+  properties to be removed, so I'm keeping a list of windows with properties
+  for a properties-enumeration function that's called when the program is quit.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
+Var
+  C: Cardinal;
+  WndListed: Boolean;
 Begin
+  Assert(False, 'Trace:TWin32Object.SetProp - Start');
+  WndListed := False;
+
+  If WndList.Count > 0 Then
+    For C := 0 To WndList.Count - 1 Do
+      If HWND(WndList[C]) = Handle Then
+        WndListed := True;
+
+  If Not WndListed Then
+  Begin
+    WndList.Capacity := WndList.Count;
+    WndList.Add(Pointer(Handle));
+  End;
+
   Result := Windows.SetProp(Handle, Str, Integer(Data));
+  Assert(False, Format('Trace:TWin32Object.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Window was previously in list: %S, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[WndListed], BOOL_RESULT[Result]]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1686,8 +1709,8 @@ End;
 { =============================================================================
 
   $Log$
-  Revision 1.1  2002/01/06 23:09:53  lazarus
-  MG: added missing files
+  Revision 1.2  2002/01/17 03:17:44  lazarus
+  Keith: Fixed TPage creation
 
 
 }

@@ -103,28 +103,29 @@ Var
   Ctrl: TNotebook;
   TCI: TC_ITEM;
 Begin
-  Assert(False, 'Trace:TWin32Object.GetText - Start');
+  Assert(False, Format('Trace:TWin32Object.GetText - Start --> %S', [Sender.ClassName]));
   Data := '';
   Result := True;
   Case Sender.FCompStyle Of
     csComboBox, csEdit, csMemo:
     Begin
       CapLen := GetWindowTextLength((Sender As TWinControl).Handle);
-      GetWindowText((Sender As TWinControl).Handle, Caption, CapLen + 1);
+      GetWindowText((Sender As TWinControl).Handle, @Caption, CapLen + 1);
+      Data := StrPas(PChar(@Caption));
     End;
     csPage:
     Begin 
       Assert(False, 'Trace:TWin32Object.GetText - csPage: Start');
-      Ctrl := (TNotebook(Sender));
+      Ctrl := ((Sender As TPage).Parent As TNotebook);
       Try
         Assert(False, 'Trace:TWin32Object.GetText - Filling TC_ITEM');
         TCI.mask := TCIF_TEXT;
         TCI.cchTextMax := MAX_PATH;
         TCI.pszText := StrAlloc(MAX_PATH);
         Assert(False, 'Trace:TWin32Object.GetText - Getting the text');
-        TabCtrl_GetItem(Ctrl.Handle, PLMNotebookEvent(@Sender)^.Page, TCI);
-        Assert(False, 'Trace:TWin32Object.GetText - Returning the text');
+        TabCtrl_GetItem(Ctrl.Handle, Ctrl.PageIndex, TCI);
         Data := String(TCI.pszText);
+        Assert(False, Format('Trace:TWin32Object.GetText - Returning the text --> %S', [Data]));
       Except
         StrDispose(TCI.pszText);
       End;
@@ -133,7 +134,7 @@ Begin
     Else
       Result := False;
   End;
-  Data := StrPas(Caption);
+  // Result := Data <> '';
 End;
 
 {------------------------------------------------------------------------------
@@ -358,7 +359,7 @@ Begin
     LM_SETPROPERTIES:
       Result := SetProperties(Sender);
     LM_SETDESIGNING:
-      EnableWindow(Handle, False);
+      EnableWindow((Sender As TWinControl).Handle, False);
     LM_RECREATEWND:
       Result := RecreateWnd(Sender);
     LM_ATTACHMENU:
@@ -1492,6 +1493,7 @@ Begin
 
   If (Sender Is TWinControl) And ((Sender As TWinControl).Parent <> Nil) Then
   Begin
+    Assert(False, Format('Trace: %S parent --> %S', [Sender.ClassName, TWinControl(Sender).Parent.ClassName]));
     Parent := (Sender As TWinControl).Parent.Handle;
     Assert(False, 'Trace:Setting parent');
   End
@@ -1582,7 +1584,7 @@ Begin
       Assert(False, 'Trace:CreateComponent - Button Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:CreateComponent - Creating a Button - SetProp');
       If Window <> HWND(Nil) Then
-        SetProp(Window, 'Lazarus', @Sender);
+        SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
     csCalendar:
@@ -1614,10 +1616,12 @@ Begin
     End;
     csImage:
     Begin
+      DC := GetDC(Handle);
       With TImage(Sender).Picture.Bitmap Do
         Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
       SetOwner(Window, Sender);
       SetName(Window, StrTemp);
+      ReleaseDC(Handle, DC);
     End;
     csListBox:
     Begin
@@ -1673,13 +1677,13 @@ Begin
       Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       If Sender Is TForm Then
         OldClipboardViewer := SetClipboardViewer(Window);
-      If FMainForm = Nil Then
+      If (FMainForm = Nil) And (Application.MainForm = Nil) Then
         FMainForm := TForm(Sender);
       FParentWindow := Window;
       Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - SetProp');
       //SetProp(Window, 'Lazarus', @Sender);
-      SetProp(Window, 'Lazarus', Pointer(Sender));
+      SetProp(Window, 'Lazarus', Sender);
       If Window = 0 then
       Begin
         MessageBox(0, 'csForm CreateWindow Failed', nil, mb_Ok);
@@ -1862,30 +1866,48 @@ Begin
     // TPage - Notebook page 
     csPage:
     Begin
-      Assert(False, 'Trace:TODO:Create a csPage component.');
+      Assert(False, 'Trace:TODO: Create a csPage component.');
       Assert(False, 'Trace:Going to try it here.  I''m guaranteeing nothing.');
-      With TCI Do
-      Begin
-        Mask := TCIF_TEXT;
-        PSzText := StrTemp;
-      End;
       Assert(False, 'Trace:csPage - class name is ' + Sender.ClassName);
-      //Assert(False, Format('Trace:[TWin32Object.CreateComponent] csPage: Tab index=%D', [PLMNotebookEvent(@Sender)^.Page]));
-      Try
-        Window := TabCtrl_InsertItem((Sender As TWinControl).Parent.Handle, PLMNotebookEvent(@Sender)^.Page, TCI);
-      Except
-        Assert(False, 'Trace:csPage - Could not insert page');
-        Exit;
+      With ((Sender As TPage).Parent As TNotebook) Do
+      Begin
+        StrDispose(StrTemp);
+        Try
+          Assert(False, Format('Trace:Page caption --> %S', [Page[PageIndex].Caption]));
+          StrTemp := StrAlloc(Length(Page[PageIndex].Caption) + 1);
+          StrPCopy(StrTemp, Page[PageIndex].Caption);
+        Except
+          On E: Exception Do
+          Begin
+            Assert(False, Format('Trace:TWin32Object.CreateComponent - could not create in csPage --> %S', [E.Message]));
+            //Exit;
+          End;
+        End;
+        With TCI Do
+        Begin
+          Mask := TCIF_TEXT;
+          PSzText := StrTemp;
+        End;
+        Try
+          Assert(False, Format('Trace:Number of pages: %D, current page: %D', [Pages.Count, PageIndex]));
+          Window := TabCtrl_InsertItem(Handle, PageIndex, TCI);
+        Except
+          Assert(False, 'Trace:csPage - Could not insert page');
+          Exit;
+        End;
+        If PageIndex >= Pages.Count - 1 Then
+          TabCtrl_DeleteItem(Handle, Pages.Count);
+        PageIndex := PageIndex + 1;
+        SetProp(Handle, 'Lazarus', @Sender);
+        Self.SetName(Handle, StrTemp);
       End;
-      SetProp(Window, 'Lazarus', @Sender);
-      SetName(Window, strTemp);
     End;
     csPopupMenu:
     Begin
       Window := CreatePopupMenu;
       FSubMenu := Window;
       SetProp(Window, 'Lazarus', @Sender);
-      SetName(Window, strTemp);
+      SetName(Window, StrTemp);
     End;
     csProgressBar:
     Begin
@@ -1898,7 +1920,7 @@ Begin
       Assert(False, 'TRACE:CreateComponent - Creating a Track Bar (if we''re lucky)');
       Window := CreateWindow(TRACKBAR_CLASS, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', @Sender);
-      SetName(Window, strTemp);
+      SetName(Window, StrTemp);
     End;
   End; {Case}
  
@@ -1919,29 +1941,34 @@ Begin
     If (Sender Is TControl) Then
     Begin
       Assert(False, 'Trace:CreateComponent - Assigning window to TControl');
-      (Sender as TWinControl).Handle := Window;
+      (Sender As TWinControl).Handle := Window;
     End
     Else
       If (Sender Is TControlCanvas) Then
       Begin
         Assert(False, 'Trace:CreateComponent - Assigning window to TControlCanvas');
-        (Sender as TControlCanvas).Handle := Window;
+        (Sender As TControlCanvas).Handle := Window;
       End
       Else If (Sender Is TFont) Then
       Begin
         Assert(False, 'Trace:CreateComponent - Assigning P to TFont');
-        (Sender as TFont).Handle := Window;
+        (Sender As TFont).Handle := Window;
       End;
   End;
 
   SetLCLObject(Window, Sender);
+
   If Window = HWnd(Nil) Then
   Begin
     SetProp(Window, 'Style', Pointer(GetWindowLong(Window, GWL_Style)));
     SetProp(Window, 'ExStyle', Pointer(GetWindowLong(Window, GWL_ExStyle)));
   End;
 
-  StrDispose(StrTemp);
+  Try
+    StrDispose(StrTemp);
+  Except
+    Assert(False, 'Trace:Warning: Tried to dispose a string that was not allocated');
+  End;
 
   Assert(False, 'Trace:Leaving CreateComponent');
 End;
@@ -2023,9 +2050,9 @@ Var
   TCI: TC_ITEM;
 Begin
   Assert(False, 'Trace:TWin32Object.AddNBPage - Start');
-  Assert(False, Format('Trace:Adding notebook page %N', [Index]));
+  Assert(False, Format('Trace:Adding notebook page %D', [Index]));
 
-  PStr := StrAlloc(Length(TPage(Child).Caption) + 1);
+  {PStr := StrAlloc(Length(TPage(Child).Caption) + 1);
   Try
     StrPCopy(PStr, TPage(Child).Caption);
     With TCI Do
@@ -2042,7 +2069,7 @@ Begin
   End;
 
   PTabInfo(@Child)^.Caption := PChar(TPage(Child).Caption);
-  PTabInfo(@Child)^.Index := Index;
+  PTabInfo(@Child)^.Index := Index;}
   Assert(False, 'Trace:TWin32Object.AddNBPage - Exit');
 End;
 
@@ -2689,26 +2716,7 @@ End;
   Assigns a name to a window
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetName(Window: HWND; Value: PChar);
-Var
-  I: Integer;
-  WndListed: Boolean;
 Begin
-  WndListed := False;
-
-  For I := 0 To WndList.Count - 1 Do
-  Begin
-    If HWND(WndList[I]) = Window Then
-    Begin
-      WndListed := True;
-    End;
-  End;
-
-  If Not WndListed Then
-  Begin
-    WndList.Capacity := WndList.Count;
-    WndList.Add(Pointer(Window));
-  End;
-
   SetProp(Window, 'Name', Value);
 End;
 
@@ -2721,27 +2729,8 @@ End;
   Assigns an owner object to a window
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetOwner(Window: HWND; Owner: TObject);
-Var
-  I: Integer;
-  WndListed: Boolean;
 Begin
-  WndListed := False;
-
-  For I := 0 To WndList.Count - 1 Do
-  Begin
-    If HWND(WndList[I]^) = Window Then
-    Begin
-      WndListed := True;
-    End;
-  End;
-
-  If Not WndListed Then
-  Begin
-    WndList.Capacity := WndList.Count;
-    WndList.Add(@Window);
-  End;
-
-  SetProp(Window, 'Lazarus', Pointer(Owner));
+  SetProp(Window, 'Lazarus', Owner);
   SetProp(Window, 'MsgList', Nil);
 End;
 
@@ -2896,9 +2885,10 @@ Begin
 End;
 
 {
+  $Log$
+  Revision 1.6  2002/01/17 03:17:44  lazarus
+  Keith: Fixed TPage creation
 
-  Revision 1.5  2002/01/12 22:49:02 lazarus
-  Keith: Fixed compilation problem and some bugs
   
   Revision 1.4  2002/01/05 13:16:09  lazarus
   MG: win32 interface update from Keith Bowes

@@ -43,7 +43,7 @@ Var
   FormClassName: PChar;
 
 Const
-  ClsName = 'MainWinClass';
+  ClsName = 'LazarusForm';
 
 Type
   { Virtual alignment-control record }
@@ -65,7 +65,7 @@ Type
     FMessageQueue: TList;
     FToolTipWindow: HWND;
     FAccelGroup: HACCEL;
-    FTimerData : TList;       // Keeps track of timer event structures
+    FTimerData: TList;       // Keeps track of timer event structures
 
     FAlignment: TAlignment; // Tracks alignment
     FControlIndex: Cardinal; // Win32-API control index
@@ -88,7 +88,7 @@ Type
 
     Procedure CreateComponent(Sender: TObject);
     Procedure AddChild(Parent, Child: HWND; Left, Top: Integer);
-    Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
+    Procedure ResizeChild(Window: HWND; Left, Top, Width, Height: Integer);
     Function GetLabel(CompStyle: Integer; Window: HWnd): String;
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
@@ -111,8 +111,8 @@ Type
     Procedure SetColor(Sender : TObject);
     Procedure SetPixel(Sender: TObject; Data: Pointer);
     Procedure GetPixel(Sender: TObject; Data: Pointer);
-    Function GetValue (Sender: TObject; Data: pointer): Integer;
-    Function SetValue (Sender: TObject; Data: pointer): Integer;
+    Function GetValue (Sender: TObject; Data: Pointer): Integer;
+    Function SetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetProperties (Sender: TObject): Integer;
     Procedure AttachMenu(Sender: TObject);
 
@@ -129,6 +129,7 @@ Type
     Procedure DrawText(Child: TObject; Data: Pointer);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
+    Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TObject);
   Public
     { Constructor of the class }
@@ -155,7 +156,7 @@ Type
     Procedure DoEvents; Override;
     { Handle all events (Window messages) }
     Procedure HandleEvents; Override;
-    { Halt until a message is received }
+    { Wait until a message is received }
     Procedure WaitMessage; Override;
     { Abruptly halt execution of the program }
     Procedure AppTerminate; Override;
@@ -242,9 +243,7 @@ Type
     WParam: WPARAM;
     Win32Control: PWin32Control;
     Event: Pointer;
-    Draw: Record
-      X, Y: Integer;
-    End;
+    Draw: TPoint;
     ExtData: Pointer;
     Reserved: Pointer;
   End;
@@ -326,6 +325,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/01/17 03:17:44  lazarus
+  Keith: Fixed TPage creation
+
   Revision 1.5  2002/01/05 13:16:09  lazarus
   MG: win32 interface update from Keith Bowes
 

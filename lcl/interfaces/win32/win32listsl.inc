@@ -19,8 +19,8 @@ Function DefaultCompareFunc(A, B: HWND): Integer; CDecl;
 Var
   AStr, BStr: PChar;
 Begin
-  GetWindowText(A, AStr, GetWindowTextLength(A) + 1);
-  GetWindowText(B, BStr, GetWindowTextLength(B) + 1);
+  GetWindowText(A, @AStr, GetWindowTextLength(A) + 1);
+  GetWindowText(B, @BStr, GetWindowTextLength(B) + 1);
   Result := StrComp(AStr, BStr);
 end;
 
@@ -106,7 +106,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    SendMessage(FWin32List, CB_GETLBTEXT, Index, LPARAM(Item));  
+    SendMessage(FWin32List, CB_GETLBTEXT, Index, LPARAM(@Item));  
   End;      
   Result := StrPas(Item);
 End;
@@ -262,7 +262,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    SendMessage(FWin32CList, CB_GETLBTEXT, Index, LPARAM(Item));
+    SendMessage(FWin32CList, CB_GETLBTEXT, Index, LPARAM(@Item));
     Result := StrPas(Item);
   End;
 End;
@@ -329,8 +329,10 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/01/17 03:17:44  lazarus
+  Keith: Fixed TPage creation
+
   Revision 1.1  2002/01/06 23:09:52  lazarus
   MG: added missing files
-
 
 }
