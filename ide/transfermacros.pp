@@ -46,14 +46,16 @@ type
   TOnSubstitution = procedure(TheMacro: TTransferMacro; var s:string;
     var Handled, Abort: boolean) of object;
 
-  TMacroFunction = function(s:string):string of object;
+  TMacroFunction = function(const s:string; var Abort: boolean):string of object;
 
   TTransferMacro = class
   public
     Name: string;
     Value: string;
+    Description: string;
     MacroFunction: TMacroFunction;
-    constructor Create(AName, AValue:string; AMacroFunction: TMacroFunction);
+    constructor Create(AName, AValue, ADescription:string;
+      AMacroFunction: TMacroFunction);
   end;
 
   TTransferMacroList = class
@@ -63,15 +65,15 @@ type
     function GetItems(Index: integer): TTransferMacro;
     procedure SetItems(Index: integer; NewMacro: TTransferMacro);
   protected
-    function MF_Ext(Filename:string):string; virtual;
-    function MF_Path(Filename:string):string; virtual;
-    function MF_Name(Filename:string):string; virtual;
-    function MF_NameOnly(Filename:string):string; virtual;
+    function MF_Ext(const Filename:string; var Abort: boolean):string; virtual;
+    function MF_Path(const Filename:string; var Abort: boolean):string; virtual;
+    function MF_Name(const Filename:string; var Abort: boolean):string; virtual;
+    function MF_NameOnly(const Filename:string; var Abort: boolean):string; virtual;
   public
     constructor Create;
     destructor Destroy; override;
     property Items[Index: integer]: TTransferMacro read GetItems write SetItems; default;
-    procedure SetValue(MacroName, NewValue: string);
+    procedure SetValue(const MacroName, NewValue: string);
     function Count: integer;
     procedure Clear;
     procedure Delete(Index: integer);
@@ -88,11 +90,12 @@ implementation
 
 { TTransferMacro }
 
-constructor TTransferMacro.Create(AName, AValue:string;
+constructor TTransferMacro.Create(AName, AValue, ADescription:string;
   AMacroFunction: TMacroFunction);
 begin
   Name:=AName;
   Value:=AValue;
+  Description:=ADescription;
   MacroFunction:=AMacroFunction;
 end;
 
@@ -102,10 +105,12 @@ constructor TTransferMacroList.Create;
 begin
   inherited Create;
   fItems:=TList.Create;
-  Add(TTransferMacro.Create('Ext','',@MF_Ext));
-  Add(TTransferMacro.Create('Path','',@MF_Path));
-  Add(TTransferMacro.Create('Name','',@MF_Name));
-  Add(TTransferMacro.Create('NameOnly','',@MF_NameOnly));
+  Add(TTransferMacro.Create('Ext','','Function: extract file extension',@MF_Ext));
+  Add(TTransferMacro.Create('Path','','Function: extract file path',@MF_Path));
+  Add(TTransferMacro.Create('Name','','Function: extract file name+extension',
+                                    @MF_Name));
+  Add(TTransferMacro.Create('NameOnly','','Function: extract file name only',
+                                    @MF_NameOnly));
 end;
 
 destructor TTransferMacroList.Destroy;
@@ -126,7 +131,7 @@ begin
   fItems[Index]:=NewMacro;
 end;
 
-procedure TTransferMacroList.SetValue(MacroName, NewValue: string);
+procedure TTransferMacroList.SetValue(const MacroName, NewValue: string);
 var AMacro:TTransferMacro;
 begin
   AMacro:=FindByName(MacroName);
@@ -166,7 +171,7 @@ var MacroStart,MacroEnd: integer;
   var BracketClose:char;
   begin
     if s[Position]='(' then BracketClose:=')'
-    else BracketClose:='{';
+    else BracketClose:='}';
     inc(Position);
     while (Position<=length(s)) and (s[Position]<>BracketClose) do begin
       if s[Position]='\' then
@@ -182,9 +187,16 @@ begin
   Result:=true;
   MacroStart:=1;
   repeat
-    while (MacroStart<=length(s))
-    and ((s[MacroStart]<>'$') or ((MacroStart>1) and (s[MacroStart-1]='\'))) do
-      inc(MacroStart);
+    while (MacroStart<=length(s)) do begin
+      if s[MacroStart]='$' then begin
+        if (MacroStart>1) and (s[MacroStart-1]='\') then begin
+          System.Delete(s,MacroStart-1,1);  
+        end else begin
+          break;
+        end;
+      end else
+        inc(MacroStart);
+    end;
     if MacroStart>length(s) then exit;
     MacroEnd:=MacroStart+1;
     while (MacroEnd<=length(s)) 
@@ -202,9 +214,11 @@ begin
         // Macro function -> substitute macro parameter first
         MacroParam:=copy(MacroStr,length(MacroName)+3
             ,length(MacroStr)-length(MacroName)-3);
-        SubstituteStr(MacroParam);
-        MacroStr:=copy(MacroStr,1,length(MacroName)+2)+MacroParam
-            +copy(MacroStr,length(MacroStr),1);
+        if not SubstituteStr(MacroParam) then begin
+          Result:=false;
+          exit;
+        end;
+        MacroStr:=MacroParam;
         AMacro:=FindByName(MacroName);
         if Assigned(fOnSubstitution) then
           fOnSubstitution(AMacro,MacroStr,Handled,Abort);
@@ -213,7 +227,13 @@ begin
           exit;
         end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction)) then
-          MacroStr:=AMacro.MacroFunction(MacroStr);
+        begin
+          MacroStr:=AMacro.MacroFunction(MacroStr,Abort);
+          if Abort then begin
+            Result:=false;
+            exit;
+          end;
+        end;  
       end else begin
         // Macro variable
         MacroStr:=copy(s,MacroStart+2,MacroEnd-MacroStart-3);
@@ -246,22 +266,26 @@ begin
   Result:=nil;
 end;
 
-function TTransferMacroList.MF_Ext(Filename:string):string;
+function TTransferMacroList.MF_Ext(const Filename:string;
+  var Abort: boolean):string;
 begin
   Result:=ExtractFileExt(Filename);
 end;
 
-function TTransferMacroList.MF_Path(Filename:string):string;
+function TTransferMacroList.MF_Path(const Filename:string; 
+ var Abort: boolean):string;
 begin
   Result:=ExtractFilePath(Filename);
 end;
 
-function TTransferMacroList.MF_Name(Filename:string):string;
+function TTransferMacroList.MF_Name(const Filename:string; 
+  var Abort: boolean):string;
 begin
   Result:=ExtractFilename(Filename);
 end;
 
-function TTransferMacroList.MF_NameOnly(Filename:string):string;
+function TTransferMacroList.MF_NameOnly(const Filename:string;
+  var Abort: boolean):string;
 var Ext:string;
 begin
   Result:=ExtractFileName(Filename);

@@ -1,4 +1,13 @@
 {
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
   Author: Mattias Gaertner
   
   Abstract:
@@ -16,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
-  ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs;
+  ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs, ExtToolDialog;
 
 const
   EnvOptsVersion: integer = 101;
@@ -61,7 +70,7 @@ type
     
     // windows
     FSaveWindowPositions: boolean;
-    FWindowPositionsValid: boolean; // the following values are valid
+    FWindowPositionsValid: boolean; // = the following values are valid
     FMainWindowBounds: TRect;
     FSourceEditorBounds: TRect;
     FMessagesViewBoundsValid: boolean;
@@ -98,6 +107,9 @@ type
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
     FBackupInfoOtherFiles: TBackupInfo;
+    
+    // external tools
+    fExternalTools: TExternalToolList;
 
     procedure SetFileName(const NewFilename: string);
     procedure AddToRecentList(const AFilename: string; RecentList: TStringList;
@@ -183,6 +195,10 @@ type
        read FBackupInfoProjectFiles write FBackupInfoProjectFiles;
     property BackupInfoOtherFiles: TBackupInfo
        read FBackupInfoOtherFiles write FBackupInfoOtherFiles;
+       
+    // external tools
+    property ExternalTools: TExternalToolList
+       read fExternalTools write fExternalTools;
   end;
 
   //----------------------------------------------------------------------------
@@ -238,6 +254,24 @@ type
     BackgroundColorLabel: TLabel;
     BackgroundColorButton: TColorButton;
 
+    // Files
+    MaxRecentOpenFilesLabel: TLabel;
+    MaxRecentOpenFilesComboBox: TComboBox;
+    MaxRecentProjectFilesLabel: TLabel;
+    MaxRecentProjectFilesComboBox: TComboBox;
+    OpenLastProjectAtStartCheckBox: TCheckBox;
+    LazarusDirLabel: TLabel;
+    LazarusDirComboBox: TComboBox;
+    CompilerPathLabel: TLabel;
+    CompilerPathComboBox: TComboBox;
+    FPCSourceDirLabel: TLabel;
+    FPCSourceDirComboBox: TComboBox;
+    DebuggerPathLabel: TLabel;
+    DebuggerPathComboBox: TComboBox;
+    DebuggerTypeComboBox: TComboBox;
+    TestBuildDirLabel: TLabel;
+    TestBuildDirComboBox: TComboBox;
+
     // backup
     BackupHelpLabel: TLabel;
     BackupProjectGroupBox: TGroupBox;
@@ -256,24 +290,6 @@ type
     BakOtherMaxCounterComboBox: TComboBox;
     BakOtherSubDirLabel: TLabel;
     BakOtherSubDirComboBox: TComboBox;
-
-    // Files
-    MaxRecentOpenFilesLabel: TLabel;
-    MaxRecentOpenFilesComboBox: TComboBox;
-    MaxRecentProjectFilesLabel: TLabel;
-    MaxRecentProjectFilesComboBox: TComboBox;
-    OpenLastProjectAtStartCheckBox: TCheckBox;
-    LazarusDirLabel: TLabel;
-    LazarusDirComboBox: TComboBox;
-    CompilerPathLabel: TLabel;
-    CompilerPathComboBox: TComboBox;
-    FPCSourceDirLabel: TLabel;
-    FPCSourceDirComboBox: TComboBox;
-    DebuggerPathLabel: TLabel;
-    DebuggerPathComboBox: TComboBox;
-    DebuggerTypeComboBox: TComboBox;
-    TestBuildDirLabel: TLabel;
-    TestBuildDirComboBox: TComboBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -381,10 +397,14 @@ begin
     MaxCounter:=3;               // for bakCounter
     SubDirectory:='';
   end;
+  
+  // external tools
+  fExternalTools:=TExternalToolList.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
 begin
+  fExternalTools.Free;
   FRecentOpenFiles.Free;
   FRecentProjectFiles.Free;
   FObjectInspectorOptions.Free;
@@ -549,6 +569,9 @@ begin
     LoadRecentList(FRecentProjectFiles,'EnvironmentOptions/Recent/ProjectFiles/');
     FLastOpenDialogDir:=XMLConfig.GetValue(
        'EnvironmentOptions/Recent/LastOpenDialogDir/Value',FLastOpenDialogDir);
+       
+    // external tools
+    fExternalTools.Load(XMLConfig,'EnvironmentOptions/ExternalTools/');
 
     XMLConfig.Free;
 
@@ -687,6 +710,9 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/Recent/LastOpenDialogDir/Value'
         ,FLastOpenDialogDir);
 
+    // external tools
+    fExternalTools.Save(XMLConfig,'EnvironmentOptions/ExternalTools/');
+
     XMLConfig.Flush;
     XMLConfig.Free;
 
@@ -695,9 +721,10 @@ begin
     FObjectInspectorOptions.SaveBounds:=
       FSaveWindowPositions and FWindowPositionsValid;
     FObjectInspectorOptions.Save;
+    
   except
     // ToDo
-    writeln('[TEnvironmentOptions.Load]  error writing "',FFilename,'"');
+    writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'"');
   end;
 end;
 

@@ -39,12 +39,20 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, RunParamsOpts;
+  UnitInfoDlg, Debugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg;
 
 const
   Version_String = '0.8 alpha';
 
 type
+  {
+    The IDE is at anytime in a specific state:
+    
+    itNone: The default mode. All editing allowed.
+    itBuilder: compiling the project. Loading/Saving/Debugging is not allowed.
+    itDebugger: debugging the project. Loading/Saving/Compiling is not allowed.
+    itCustom: this state is not used yet.
+  }
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
 
   TMainIDE = class(TForm)
@@ -62,16 +70,8 @@ type
     StepIntoSpeedButton     : TSpeedButton;
     StepOverSpeedButton     : TSpeedButton;
     OpenFilePopUpMenu : TPopupMenu;
-    Toolbutton1  : TToolButton;
-    Toolbutton2  : TToolButton;
-    Toolbutton3  : TToolButton;
-    Toolbutton4  : TToolButton;
     GlobalMouseSpeedButton : TSpeedButton;
 
-    ComboBox1 : TComboBox;
-    Edit1: TEdit;
-    SpinEdit1 : TSpinEdit;
-    ListBox1 : TListBox;
     mnuMain: TMainMenu;
 
     mnuFile: TMenuItem;
@@ -80,6 +80,7 @@ type
     mnuView: TMenuItem; 
     mnuProject: TMenuItem; 
     mnuRun: TMenuItem; 
+    mnuTools: TMenuItem; 
     mnuEnvironment:TMenuItem;
 
     itmSeperator: TMenuItem;
@@ -93,27 +94,6 @@ type
     itmFileSaveAll: TMenuItem; 
     itmFileClose: TMenuItem; 
     itmFileQuit: TMenuItem; 
-
-    itmProjectNew: TMenuItem;
-    itmProjectOpen: TMenuItem;
-    itmProjectRecentOpen: TMenuItem;
-    itmProjectSave: TMenuItem;
-    itmProjectSaveAs: TMenuItem;
-    itmProjectAddTo: TMenuItem;
-    itmProjectRemoveFrom: TMenuItem;
-    itmProjectViewSource: TMenuItem;
-    itmProjectOptions: TMenuItem;
-    
-    itmProjectBuild: TMenuItem;
-    itmProjectBuildAll: TMenuItem;
-    itmProjectRun: TMenuItem;
-    itmProjectPause: TMenuItem;
-    itmProjectStepInto: TMenuItem;
-    itmProjectStepOver: TMenuItem;
-    itmProjectRunToCursor: TMenuItem;
-    itmProjectStop: TMenuItem;
-    itmProjectCompilerSettings: TMenuItem;
-    itmProjectRunParameters: TMenuItem;
 
     itmEditUndo: TMenuItem; 
     itmEditRedo: TMenuItem; 
@@ -136,14 +116,33 @@ type
     itmViewFile : TMenuItem;
     itmViewMessage : TMenuItem;
 
+    itmProjectNew: TMenuItem;
+    itmProjectOpen: TMenuItem;
+    itmProjectRecentOpen: TMenuItem;
+    itmProjectSave: TMenuItem;
+    itmProjectSaveAs: TMenuItem;
+    itmProjectAddTo: TMenuItem;
+    itmProjectRemoveFrom: TMenuItem;
+    itmProjectViewSource: TMenuItem;
+    itmProjectOptions: TMenuItem;
+    
+    itmProjectBuild: TMenuItem;
+    itmProjectBuildAll: TMenuItem;
+    itmProjectRun: TMenuItem;
+    itmProjectPause: TMenuItem;
+    itmProjectStepInto: TMenuItem;
+    itmProjectStepOver: TMenuItem;
+    itmProjectRunToCursor: TMenuItem;
+    itmProjectStop: TMenuItem;
+    itmProjectCompilerSettings: TMenuItem;
+    itmProjectRunParameters: TMenuItem;
+    
+    itmToolConfigure: TMenuItem;
+
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
     
-    CheckBox1 : TCheckBox; 
     ComponentNotebook : TNotebook;
-    cmdTest: TButton;
-    cmdTest2: TButton;
-    Label2 : TLabel;
 
     // event handlers
     procedure FormShow(Sender : TObject);
@@ -164,6 +163,9 @@ type
     procedure mnuViewInspectorClicked(Sender : TObject);
     Procedure mnuViewUnitsClicked(Sender : TObject);
     Procedure mnuViewFormsClicked(Sender : TObject);
+    procedure mnuViewCodeExplorerClick(Sender : TObject);
+    procedure mnuViewMessagesClick(Sender : TObject);
+    procedure MessageViewDblClick(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
     
@@ -187,9 +189,7 @@ type
     procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
 
-    procedure mnuViewCodeExplorerClick(Sender : TObject);
-    procedure mnuViewMessagesClick(Sender : TObject);
-    procedure MessageViewDblClick(Sender : TObject);
+    procedure mnuToolConfigureClicked(Sender : TObject);
 
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
@@ -286,6 +286,9 @@ type
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
+    
+    // external tools
+    function DoRunExternalTool(Index: integer): TModalResult;
 
     // useful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
@@ -306,10 +309,12 @@ type
     procedure DoBringToFrontFormOrUnit;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
+    function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
+    function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
     procedure SaveSourceEditorChangesToCodeCache;
@@ -436,6 +441,8 @@ begin
 
   EditorOpts:=TEditorOptions.Create;
   EditorOpts.Load;
+  
+  EnvironmentOptions.ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
 
   // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
@@ -576,19 +583,34 @@ begin
 
   // macros
   MacroList:=TTransferMacroList.Create;
-  MacroList.Add(TTransferMacro.Create('Col','',nil));
-  MacroList.Add(TTransferMacro.Create('Row','',nil));
-  MacroList.Add(TTransferMacro.Create('EdFile','',nil));
-  MacroList.Add(TTransferMacro.Create('CurToken','',nil));
-  MacroList.Add(TTransferMacro.Create('ProjFile','',nil));
-  MacroList.Add(TTransferMacro.Create('ProjPath','',nil));
-  MacroList.Add(TTransferMacro.Create('Save','',nil));
-  MacroList.Add(TTransferMacro.Create('SaveAll','',nil));
-  MacroList.Add(TTransferMacro.Create('Params','',nil));
-  MacroList.Add(TTransferMacro.Create('TargetFile','',nil));
-  MacroList.Add(TTransferMacro.Create('CompPath','',nil));
-  MacroList.Add(TTransferMacro.Create('FPCSrcDir','',nil));
-  MacroList.Add(TTransferMacro.Create('LazarusDir','',nil));
+  MacroList.Add(TTransferMacro.Create('Col','',
+                    'Cursor column in current editor',nil));
+  MacroList.Add(TTransferMacro.Create('Row','',
+                    'Cursor row in current editor',nil));
+  MacroList.Add(TTransferMacro.Create('CompPath','',
+                    'Compiler filename',nil));
+  MacroList.Add(TTransferMacro.Create('CurToken','',
+                    'Word at cursor in current editor',nil));
+  MacroList.Add(TTransferMacro.Create('EdFile','',
+                    'Expanded filename of current editor file',nil));
+  MacroList.Add(TTransferMacro.Create('FPCSrcDir','',
+                    'Freepascal source directory',nil));
+  MacroList.Add(TTransferMacro.Create('LazarusDir','',
+                    'Lazarus directory',nil));
+  MacroList.Add(TTransferMacro.Create('Params','',
+                    'Command line parameters of program',nil));
+  MacroList.Add(TTransferMacro.Create('Prompt','',
+                    'Prompt for value',@OnMacroPromptFunction));
+  MacroList.Add(TTransferMacro.Create('ProjFile','',
+                    'Project filename',nil));
+  MacroList.Add(TTransferMacro.Create('ProjPath','',
+                    'Project directory',nil));
+  MacroList.Add(TTransferMacro.Create('Save','',
+                    'save current editor file',nil));
+  MacroList.Add(TTransferMacro.Create('SaveAll','',
+                    'save all modified files',nil));
+  MacroList.Add(TTransferMacro.Create('TargetFile','',
+                    'Target filename of project',nil));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
 
   // control selection (selected components on edited form)
@@ -866,6 +888,11 @@ begin
   mnuRun.Name:='mnuRun';
   mnuRun.Caption := '&Run';
   mnuMain.Items.Add(mnuRun);
+
+  mnuTools := TMenuItem.Create(Self);
+  mnuTools.Name:='mnuTools';
+  mnuTools.Caption := '&Tools';
+  mnuMain.Items.Add(mnuTools);
 
   mnuEnvironment := TMenuItem.Create(Self);
   mnuEnvironment.Name:='mnuEnvironment';
@@ -1179,6 +1206,17 @@ begin
   mnuRun.Add(itmProjectRunParameters);
 
 //--------------
+// Tools
+//--------------
+
+  itmToolConfigure := TMenuItem.Create(Self);
+  itmToolConfigure.Name:='itmToolConfigure ';
+  itmToolConfigure.Caption := 'Settings ...';
+  itmToolConfigure.OnClick := @mnuToolConfigureClicked;
+  mnuTools.Add(itmToolConfigure);
+
+
+//--------------
 // Environment
 //--------------
 
@@ -1462,6 +1500,7 @@ begin
     begin
       DoBuildProject(Command=ecBuildAll);
     end;
+    
    ecRun:
     begin
       if ToolStatus=itNone then
@@ -1471,10 +1510,12 @@ begin
         end;
       DoRunProject;
     end;
+    
    ecPause:
     begin
       DoPauseProject;
     end;
+    
    ecStepInto:
     begin
       if ToolStatus=itNone then
@@ -1484,6 +1525,7 @@ begin
         end;
       DoStepIntoProject;
     end;
+    
    ecStepOver:
     begin
       if ToolStatus=itNone then
@@ -1493,6 +1535,7 @@ begin
         end;
       DoStepOverProject;
     end;
+    
    ecRunToCursor:
     begin
       if ToolStatus=itNone then
@@ -1502,18 +1545,27 @@ begin
         end;
       DoRunToCursor;
     end;
+    
    ecStopProgram:
     begin
       DoStopProject;
     end;
+    
    ecFindProcedureDefinition,ecFindProcedureMethod:
     begin
       DoJumpToProcedureSection;
     end;
+    
    ecCompleteCode:
     begin
       DoCompleteCodeAtCursor;
     end;
+    
+   ecExtToolFirst..ecExtToolLast:
+    begin
+      DoRunExternalTool(Command-ecExtToolFirst);
+    end;
+    
   else
     Handled:=false;
   end;
@@ -1813,7 +1865,23 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
 
+procedure TMainIDE.mnuToolConfigureClicked(Sender : TObject);
+begin
+  if ShowExtToolDialog(EnvironmentOptions.ExternalTools,MacroList)=mrOk then
+  begin
+    // save to enviroment options
+    SaveDesktopSettings(EnvironmentOptions);
+    EnvironmentOptions.Save(false);
+    // save shortcuts to editor options
+    EnvironmentOptions.ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
+    EditorOpts.Save;
+    SourceNotebook.ReloadEditorOptions;
+    // ToDo: update menu
+    
+  end;
+end;
 
 //------------------------------------------------------------------------------
 
@@ -1849,8 +1917,12 @@ begin
   with CodeToolBoss.GlobalValues do begin
     Variables[ExternalMacroStart+'LazarusSrcDir']:=
       TheEnvironmentOptions.LazarusDirectory;
+    // ToDo: rebuild define template if changed
+    
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       TheEnvironmentOptions.FPCSourceDirectory;
+    // ToDo: rebuild define template if changed
+    
   end;
 end;
 
@@ -1871,13 +1943,17 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
 Begin
   EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
   try
+    // update EnvironmentOptions (save current window positions)
+    SaveDesktopSettings(EnvironmentOptions);
     with EnvironmentOptionsDialog do begin
-      SaveDesktopSettings(EnvironmentOptions);
       OnLoadEnvironmentSettings:=@Self.OnLoadEnvironmentSettings;
       OnSaveEnvironmentSettings:=@Self.OnSaveEnvironmentSettings;
+      // load settings from EnvironmentOptions to EnvironmentOptionsDialog
       ReadSettings(EnvironmentOptions);
       if ShowModal=mrOk then begin
+        // load settings from EnvironmentOptionsDialog to EnvironmentOptions
         WriteSettings(EnvironmentOptions);
+        // save to disk
         EnvironmentOptions.Save(false);
       end;
     end;
@@ -3325,7 +3401,6 @@ function TMainIDE.DoRunProject: TModalResult;
 var
   TheProcess : TProcess;
   ProgramFilename, AText : String;
-  MainUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
 writeln('[TMainIDE.DoRunProject] A');
@@ -3337,14 +3412,8 @@ writeln('[TMainIDE.DoRunProject] A');
   or (Project.MainUnit<0) then
     exit;
 
-  MainUnitInfo:=Project.Units[Project.MainUnit];
-  if Project.IsVirtual then
-    ProgramFilename:=GetTestProjectFilename
-  else begin
-    ProgramFilename:=
-      Project.CompilerOptions.CreateTargetFilename(MainUnitInfo.Filename);
-    
-  end;
+  //MainUnitInfo:=Project.Units[Project.MainUnit];
+  ProgramFilename:=GetProjectTargetFilename;
 
   if not FileExists(ProgramFilename) then begin
     AText:='No program file "'+ProgramFilename+'" found!';
@@ -3467,7 +3536,7 @@ end;
 
 function TMainIDE.DoInitDebugger: TModalResult;
 var ProgramFilename: string;
-  MainUnitInfo: TUnitInfo;
+//  MainUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
   if Project.MainUnit<0 then exit;
@@ -3497,11 +3566,8 @@ begin
       exit;
     end;
   end;
-  MainUnitInfo:=Project.Units[Project.MainUnit];
-  if MainUnitInfo.IsVirtual then
-    ProgramFilename:=GetTestProjectFilename
-  else
-    ProgramFilename:=ChangeFileExt(MainUnitInfo.Filename,Project.TargetFileExt);
+  //MainUnitInfo:=Project.Units[Project.MainUnit];
+  ProgramFilename:=GetProjectTargetFilename;
   TheDebugger.Filename:=ProgramFilename;
   TheDebugger.OnState:=@OnDebuggerChangeState;
   TheDebugger.OnCurrent:=@OnDebuggerCurrentLine;
@@ -3576,6 +3642,15 @@ writeln('TMainIDE.DoSaveAll');
   Result:=DoSaveProject(false,false);
   // ToDo: save package, cvs settings, ...
 end;
+
+//-----------------------------------------------------------------------------
+
+function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
+begin
+  Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+end;
+
+//-----------------------------------------------------------------------------
 
 procedure TMainIDE.GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo);
@@ -3902,7 +3977,8 @@ begin
   end else if MacroName='curtoken' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
+      s:=SourceNoteBook.GetActiveSE.EditorComponent.GetWordAtRowCol(
+           SourceNoteBook.GetActiveSE.EditorComponent.CaretXY);
   end else if MacroName='lazarusdir' then begin
     Handled:=true;
     s:=EnvironmentOptions.LazarusDirectory;
@@ -3913,12 +3989,20 @@ begin
   end else if MacroName='comppath' then begin
     Handled:=true;
     s:=EnvironmentOptions.CompilerFilename;
+  end else if MacroName='params' then begin
+    Handled:=true;
+    s:=Project.RunParameterOptions.CmdLineParams;
+  end else if MacroName='targetfile' then begin
+    Handled:=true;
+    s:=GetProjectTargetFilename;
   end;
-  // ToDo:
-  //MacroList.Add(TIDEMacro.Create('CurToken','',nil));
-  //MacroList.Add(TIDEMacro.Create('Params','',nil));
-  //MacroList.Add(TIDEMacro.Create('TargetFile','',nil));
+end;
 
+function TMainIDE.OnMacroPromptFunction(const s:string;
+  var Abort: boolean):string;
+begin
+  Result:=s;
+  Abort:=(ShowMacroPromptDialog(Result)<>mrOk);
 end;
 
 procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
@@ -4060,6 +4144,21 @@ begin
 //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
      MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
+end;
+
+function TMainIDE.GetProjectTargetFilename: string;
+begin
+  Result:='';
+  if Project=nil then exit;
+  if Project.IsVirtual then
+    Result:=GetTestProjectFilename
+  else begin
+    if Project.MainUnit>=0 then begin
+      Result:=
+        Project.CompilerOptions.CreateTargetFilename(
+            Project.Units[Project.MainUnit].Filename)
+    end;
+  end;
 end;
 
 function TMainIDE.GetTestProjectFilename: string;
@@ -4429,7 +4528,7 @@ writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
   end else begin
     // error: probably a syntax error or just not in a procedure head/body
     // or not in a class
-    // -> there are enough events to handle everything, so it is ignored here
+    // -> there are enough events to handle everything, so it can be ignored here
     ApplyCodeToolChanges;
   end;
   FOpenEditorsOnCodeToolChange:=false;
@@ -4452,6 +4551,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.139  2001/11/09 18:15:20  lazarus
+  MG: added external tools
+
   Revision 1.138  2001/11/07 16:14:11  lazarus
   MG: fixes for the new compiler
 

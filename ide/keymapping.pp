@@ -1,4 +1,13 @@
 {
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
   Author: Mattias Gaertner
 
   Abstract:
@@ -55,6 +64,9 @@ const
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
+  
+  ecExtToolFirst      = ecUserFirst + 400;
+  ecExtToolLast       = ecUserFirst + 499;
 
   ecGotoEditor1        = ecUserFirst + 2000;
   ecGotoEditor2        = ecGotoEditor1 + 1;
@@ -88,14 +100,15 @@ type
   // class for a list of key - command relations
   TKeyCommandRelationList = class
   private
-    FRelations:TList;
+    fRelations:TList;
+    fExtToolCount: integer;
     function GetRelation(Index:integer):TKeyCommandRelation;
     function Add(Name:shortstring;Command:TSynEditorCommand;
        Key1:Word; Shift1:TShiftState; 
        Key2:Word; Shift2:TShiftState):integer;
     function ShiftStateToStr(Shift:TShiftState):AnsiString;
+    procedure SetExtToolCount(NewCount: integer);
   public
-    property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
     function Count:integer;
     function Find(AKey:Word; AShiftState:TShiftState):TKeyCommandRelation;
     function FindByCommand(ACommand:TSynEditorCommand):TKeyCommandRelation;
@@ -104,6 +117,8 @@ type
     procedure AssignTo(ASynEditKeyStrokes:TSynEditKeyStrokes);
     constructor Create;
     destructor Destroy; override;
+    property ExtToolCount: integer read fExtToolCount write SetExtToolCount;
+    property Relations[Index:integer]:TKeyCommandRelation read GetRelation;
   end;
 
   //---------------------------------------------------------------------------
@@ -146,12 +161,25 @@ function ShowKeyMappingEditForm(Index:integer;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 function EditorCommandToDescriptionString(cmd: TSynEditorCommand):AnsiString;
+function StrToVKCode(s: string): integer;
 
-var KeyMappingEditForm:TKeyMappingEditForm;
+var KeyMappingEditForm: TKeyMappingEditForm;
 
 
 implementation
 
+function StrToVKCode(s: string): integer;
+var i: integer;
+begin
+  if copy(s,1,6)='Word(''' then
+    Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
+  else if s<>'none' then begin
+    for i:=1 to 200 do
+      if KeyAndShiftStateToStr(i,[])=s then
+        Result:=i;
+  end else
+    Result:=VK_UNKNOWN;
+end;
 
 function ShowKeyMappingEditForm(Index:integer;
   AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
@@ -323,16 +351,18 @@ begin
     ecStopProgram: Result:= 'stop program';
     ecJumpToEditor: Result:='jump to editor';
     ecToggleFormUnit: Result:='toggle between form and unit';
-    ecGotoEditor1: Result:= 'goto editor 1';
-    ecGotoEditor2: Result:= 'goto editor 2';
-    ecGotoEditor3: Result:= 'goto editor 3';
-    ecGotoEditor4: Result:= 'goto editor 4';
-    ecGotoEditor5: Result:= 'goto editor 5';
-    ecGotoEditor6: Result:= 'goto editor 6';
-    ecGotoEditor7: Result:= 'goto editor 7';
-    ecGotoEditor8: Result:= 'goto editor 8';
-    ecGotoEditor9: Result:= 'goto editor 9';
-    ecGotoEditor0: Result:= 'goto editor 10';
+    ecGotoEditor1: Result:='goto editor 1';
+    ecGotoEditor2: Result:='goto editor 2';
+    ecGotoEditor3: Result:='goto editor 3';
+    ecGotoEditor4: Result:='goto editor 4';
+    ecGotoEditor5: Result:='goto editor 5';
+    ecGotoEditor6: Result:='goto editor 6';
+    ecGotoEditor7: Result:='goto editor 7';
+    ecGotoEditor8: Result:='goto editor 8';
+    ecGotoEditor9: Result:='goto editor 9';
+    ecGotoEditor0: Result:='goto editor 10';
+    ecExtToolFirst..ecExtToolLast: 
+              Result:='external tool '+IntToStr(cmd-ecExtToolFirst+1);
     
     else
       Result:='unknown editor command';
@@ -671,20 +701,6 @@ var NewKey1,NewKey2:integer;
   NewShiftState1,NewShiftState2:TShiftState;
   ACaption,AText:AnsiString;
   DummyRelation:TKeyCommandRelation;
-  
-  function StrToVKCode(s: string): integer;
-  var i: integer;
-  begin
-    if copy(s,1,6)='Word(''' then
-      Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
-    else if s<>'none' then begin
-      for i:=1 to 200 do
-        if KeyAndShiftStateToStr(i,[])=s then
-          Result:=i;
-    end else
-      Result:=VK_UNKNOWN;
-  end;
-  
 begin
   NewKey1:=VK_UNKNOWN;
   NewShiftState1:=[];
@@ -850,6 +866,7 @@ constructor TKeyCommandRelationList.Create;
 begin
   inherited Create;
   FRelations:=TList.Create;
+  fExtToolCount:=0;
 
   // normal synedit commands
   Add('Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -964,11 +981,36 @@ begin
       ,Key1,Shift1,Key2,Shift2));
 end;
 
+procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
+var i: integer;
+begin
+  if NewCount=fExtToolCount then exit;
+  if NewCount>fExtToolCount then begin
+    // increase available external tool commands
+    while NewCount>fExtToolCount do begin
+      Add('External tool '+IntToStr(fExtToolCount),
+           ecExtToolFirst+fExtToolCount,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+      inc(fExtToolCount);
+    end;
+  end else begin
+    // decrease available external tool commands
+    i:=Count-1;
+    while (i>=0) and (fExtToolCount>NewCount) do begin
+      if (Relations[i].Command>=ecExtToolFirst)
+      and (Relations[i].Command<=ecExtToolLast) then begin
+        fRelations.Delete(i);
+        dec(fExtToolCount);
+      end;
+      dec(i);
+    end;
+  end;
+end;
+
 function TKeyCommandRelationList.LoadFromXMLConfig(
   XMLConfig:TXMLConfig; Prefix:AnsiString):boolean;
 var a,b,p:integer;
   Name:ShortString;
-  Default,NewValue:AnsiString;
+  DefaultStr,NewValue:AnsiString;
 
   function ReadNextInt:integer;
   begin
@@ -992,14 +1034,15 @@ var a,b,p:integer;
 
 // LoadFromXMLConfig
 begin
+  ExtToolCount:=XMLConfig.GetValue(Prefix+'ExternalToolCount/Value',0);
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
       if Name[b]=' ' then Name[b]:='_';
     with Relations[a] do 
-      Default:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
+      DefaultStr:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
               +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
-    NewValue:=XMLConfig.GetValue(Prefix+Name,Default);
+    NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr);
     p:=1;
     with Relations[a] do begin
       Key1:=ReadNextInt;
@@ -1017,6 +1060,7 @@ var a,b:integer;
   Name:ShortString;
   s:AnsiString;
 begin
+  XMLConfig.SetValue(Prefix+'ExternalToolCount/Value',ExtToolCount);
   for a:=0 to FRelations.Count-1 do begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
