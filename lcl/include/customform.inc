@@ -257,7 +257,6 @@ begin
   
   // First set FHandle to 0, the window doesn't exist anymore.
   inherited WMDestroy(Message);
-  Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -1198,6 +1197,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/11/30 08:35:42  mattias
+  TCustomForm.WMDestroy does not Free anymore
+
   Revision 1.72  2002/11/29 15:14:47  mattias
   replaced many invalidates by invalidaterect
 
