@@ -222,6 +222,7 @@ implementation
 
 var
   InterfaceFinalizationHandlers: TList;
+  DebugTextAlloced: boolean;
   DebugText: ^Text;
 
 
@@ -813,6 +814,7 @@ begin
     (DirectoryExists(ExtractFileDir(DebugFileName))) then begin
 
     new(DebugText);
+    DebugTextAlloced := true;
     Assign(DebugText^, DebugFileName);
     if FileExists(DebugFileName) then
       Append(DebugText^)
@@ -825,14 +827,16 @@ begin
       DebugText := nil
     else
       DebugText := @Output;
+    DebugTextAlloced := false;
   end;
 end;
 
 procedure FinalizeDebugOutput;
 begin
-  if Assigned(DebugText) and (DebugText<>@Output) then begin
+  if DebugTextAlloced then begin
     Close(DebugText^);
     Dispose(DebugText);
+    DebugTextAlloced := false;
   end;
 end;
 
