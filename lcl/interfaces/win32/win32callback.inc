@@ -237,24 +237,28 @@ Var
       PushEraseBkgndCommand(ecNoMsg);
     end;
 
-    // if this is a groupbox in a tab, then the next erasebackground is for
-    // drawing the background of the caption, send paint message then
-    if hasTabParent and ((GetWindowLong(Window, GWL_STYLE) and BS_GROUPBOX) = BS_GROUPBOX)
-        and (WParam = 0) and CompareMem(@winClassName, @ButtonClsName, High(ButtonClsName)+1) then
+    // paint optimizations for controls on a tabpage
+    if hasTabParent and (WParam = 0) and not isTabPage then
     begin
-{$ifdef MSG_DEBUG}
-      writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to send paint message');
-{$endif}
-      PushEraseBkgndCommand(ecPaint);
-    end;
-      
-    // if need to start paint, paint by calling parent, and we have no 
-    // controls, is a native control, use default win32 painting to avoid flicker
-    if hasTabParent and (WParam = 0) and (AWinControl.ControlCount = 0) and
-        not CompareMem(@winClassName, @ClsName, High(ClsName)+1) then
-    begin
-      // optimization: no child controls -> default painting
-      exit;
+      // if this is a groupbox in a tab, then the next erasebackground is for
+      // drawing the background of the caption, send paint message then
+      if ((GetWindowLong(Window, GWL_STYLE) and BS_GROUPBOX) = BS_GROUPBOX)
+          and CompareMem(@winClassName, @ButtonClsName, High(ButtonClsName)+1) then
+      begin
+  {$ifdef MSG_DEBUG}
+        writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to send paint message');
+  {$endif}
+        PushEraseBkgndCommand(ecPaint);
+      end;
+        
+      // if need to start paint, paint by calling parent, and we have no 
+      // controls, is a native control, use default win32 painting to avoid flicker
+      if (AWinControl.ControlCount = 0) 
+          and not CompareMem(@winClassName, @ClsName, High(ClsName)+1) then
+      begin
+        // optimization: no child controls -> default painting
+        exit;
+      end;
     end;
 
     // check if double buffering is requested
@@ -1402,6 +1406,9 @@ end;
 
 {
   $Log$
+  Revision 1.146  2004/10/28 07:43:29  micha
+  experiment: use CS_SAVEBITS class style on tabpages to reduce flickering
+
   Revision 1.145  2004/10/27 20:58:58  micha
   fix winxp theming for tabcontrols (shaded background)
 

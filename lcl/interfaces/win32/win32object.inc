@@ -454,6 +454,14 @@ Begin
     LPSzClassName := @ClsName;
   End;
   Result := Windows.RegisterClass(@WindowClass) <> 0;
+  
+  // register the window class that saves it's contents
+  with WindowClass do
+  begin
+    Style := WindowClass.Style or CS_SAVEBITS;
+    lpSzClassName := @ClsNameSave;
+  end;
+  Result := Result and (Windows.RegisterClass(@WindowClass) <> 0);
   Assert(False, 'Trace:WinRegister - Exit');
 End;
 
@@ -732,6 +740,9 @@ end;
 
 {
   $Log$
+  Revision 1.293  2004/10/28 07:43:29  micha
+  experiment: use CS_SAVEBITS class style on tabpages to reduce flickering
+
   Revision 1.292  2004/10/16 10:17:21  micha
   remove statusbar helper methods from general widgetset object
 

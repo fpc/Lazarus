@@ -186,6 +186,7 @@ Type
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName: array[0..6] of char = 'Window'#0;
+  ClsNameSave: array[0..10] of char = 'WindowSave'#0;
   ButtonClsName: array[0..6] of char = 'Button'#0;
   ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
   TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
@@ -280,6 +281,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2004/10/28 07:43:29  micha
+  experiment: use CS_SAVEBITS class style on tabpages to reduce flickering
+
   Revision 1.123  2004/10/27 20:58:58  micha
   fix winxp theming for tabcontrols (shaded background)
 
