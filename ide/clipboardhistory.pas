@@ -27,8 +27,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    The TClipBoardHistory form a front end for clipboard history, which stores
-    the texts of the last copy to clipboard actions.
+    The TClipBoardHistory form is a frontend for the clipboard history, which
+    stores the texts of the last "copy to clipboard" actions.
 
   ToDo:
     Everything.

@@ -16,6 +16,36 @@ This code is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+VERSION: 0.8.3
+---------------
+CHANGES   - Better Editor Support
+            Renamed Editor functions
+            Editors uses .Dispatch instead of .Perform
+            Introduced EditorOptions:
+            EO_AUTOSIZE  = Let the grid automatically resize the editor
+            EO_HOOKKEYS  = Let the grid process known keydows first
+            EO_HOOKEXIT  = Let the grid handle the focus
+            EO_SELECTALL = Editor wants to receive SelectAll msg on Key RETURN
+            EO_WANTCHAR  = Editor wants to Preview Keys on the grid (soon)
+            EO_GETSETVAL = Editor wants to receive GetValue,SetValue msgs (soon)
+            This Options should be set in GM_SETGRID message (msg.Options:= ..)
+
+          - Deleted Scr1 Conditional
+          
+FIXES     Painting and Crashes at desing time
+
+TODOS     Better editor Support
+          TCustomgrid Inherited from TCustomControl to get rid of
+            - published VertScrollBar
+            - published HorzScrollBar
+            - published AutoScroll
+            - translucid look at design time?
+          Detect ReadOnly grid in editors
+          Detect changes in the grid.
+          Column Resizing at design time
+          ...
+
+
 VERSION: 0.8.2
 ---------------
 CHANGES		Demo Program
@@ -185,9 +215,11 @@ Const
   GRIDFILEVERSION = 2; // Introduced goSmoothScroll
 
 Const
-  GM_SETVALUE = LM_USER + 100;
-  GM_GETVALUE = LM_USER + 101;
-  GM_SETGRID  = LM_USER + 102;
+  GM_SETVALUE   = LM_USER + 100;
+  GM_GETVALUE   = LM_USER + 101;
+  GM_SETGRID    = LM_USER + 102;
+  GM_SETPOS     = LM_USER + 103;
+  GM_SELECTALL  = LM_USER + 104;
 
 Const
   CA_LEFT     =   $1;
@@ -196,7 +228,14 @@ Const
   CL_TOP      =   $8;
   CL_CENTER   =   $10;
   CL_BOTTOM   =   $20;
-
+  
+Const
+  EO_AUTOSIZE   =   $1;
+  EO_HOOKKEYS   =   $2;
+  EO_HOOKEXIT   =   $4;
+  EO_SELECTALL  =   $8;
+  EO_WANTCHAR   =   $10;
+  
 Type
   EGridException = class(Exception);
 
@@ -263,9 +302,12 @@ Type
       
   PGridMessage=^TGridMessage;
   TGridMessage=Record
+    MsgID: Cardinal;
     Grid: TCustomGrid;
     Col,Row: Integer;
     Value: String;
+    CellRect: TRect;
+    Options: Integer;
   End;
 
   { Default cell editor for TStringGrid }
@@ -273,11 +315,11 @@ Type
   Private
     FGrid: TCustomGrid;
   Protected
-    Procedure doExit; Override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); Override;
-    Procedure msg_SetValue(Var Msg: TLMessage); Message GM_SETVALUE;
-    Procedure msg_GetValue(Var Msg: TLMessage); Message GM_GETVALUE;
-    Procedure msg_SetGrid(Var Msg: TLMessage); Message GM_SETGRID;
+    Procedure msg_SetValue(Var Msg: TGridMessage); Message GM_SETVALUE;
+    Procedure msg_GetValue(Var Msg: TGridMessage); Message GM_GETVALUE;
+    Procedure msg_SetGrid(Var Msg: TGridMessage); Message GM_SETGRID;
+    Procedure msg_SelectAll(Var Msg: TGridMessage); MEssage GM_SELECTALL;
   End;
   
 
@@ -386,6 +428,7 @@ Type
     
     FUpdateCount: Integer;
     FUpdateScrollBarsCount: Integer;
+    FFocusing: Boolean;
 
     
     // Cached Values
@@ -487,6 +530,7 @@ Type
     procedure KeyDown(var Key : Word; Shift : TShiftState); Override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); Override;
     Procedure LoadContent(cfg: TXMLConfig); Virtual;
+    procedure Loaded; override;
     Procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Override;
     Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -506,16 +550,22 @@ Type
   Protected
     FEditorHiding: Boolean;
     FEditorKey: Boolean;
-    Procedure CancelEditor; Virtual;
-    Procedure GetEditorValue; Virtual;
-    Procedure HideEditor;
-    Procedure SetEditorValue; Virtual;
-    Procedure ShowEditor;
-    Procedure PosEditor;
-    Procedure ExitEditor(Sender: TWinControl);
-    procedure EditorKeyDown(var Key : Word; Shift : TShiftState);
+    FEditorOptions: Integer;
+    Procedure EditorCancel; Virtual;
+    Procedure EditorGetValue;
+    Procedure EditorHide;
+    Procedure EditorSetValue;
+    Procedure EditorShow;
+    Procedure EditorPos;
+    Procedure EditorReset;
+    Procedure EditorSelectAll;
+    Procedure doEditorGetValue; Virtual;
+    Procedure doEditorSetValue; Virtual;
+  Public
+    Procedure EditorExit(Sender: TObject);
+    procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
 
-    
+  Protected
     Property AutoAdvance: TAutoAdvance Read FAutoAdvance Write FAutoAdvance default aaRight;
     Property ColWidths[aCol: Integer]: Integer Read GetColWidths Write SetColWidths;
     Property ColCount: Integer Read GetColCount Write SetColCount;
@@ -657,6 +707,8 @@ Type
     Property CellFontCOlor[ACol,ARow:Integer]: TColor read GetCellFontCOlor write SetCellFontCOlor;
     Property CellAlign[ACol,ARow: Integer]: Integer read GetCellAlign write SetCellAlign;
     Property DefaultCellAttr: TCellAttr read fDefCellAttr write SetDefaultCellAttr;
+    
+    Property Editor;
 
     property Col;
     property ColWidths;
@@ -737,8 +789,8 @@ Type
       Procedure AutoAdjustColumn(aCol: Integer); Override;
       Procedure CalcCellExtent(acol, aRow: Integer; Var aRect: TRect); Override;
       Procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); Override;
-      Procedure GetEditorValue; Override;
-      Procedure SetEditorValue; Override;
+      Procedure doEditorGetValue; Override;
+      Procedure doEditorSetValue; Override;
       Procedure SaveContent(cfg: TXMLConfig); Override;
       Procedure LoadContent(cfg: TXMLConfig); Override;
       Procedure DrawInteriorCells; Override;
@@ -943,11 +995,32 @@ Begin
 End;
 
 procedure TCustomGrid.SetEditor(const AValue: TWinControl);
+Var
+  Msg: TGridMessage;
 begin
-  if FEditor=AValue then exit;
+  if Not(goEditing in Options) or (FEditor=AValue) then exit;
   FEditor:=AValue;
   if FEditor<>nil Then Begin
-    FEditor.Perform(GM_SETGRID, LongInt(Self), 0);
+    Msg.MsgID:=GM_SETGRID;
+    Msg.Grid:=Self;
+    Msg.Options:=0;
+    FEditor.Dispatch(Msg);
+    FEditorOptions:=Msg.Options;
+    If Msg.Options And EO_HOOKKEYS = EO_HOOKKEYS Then begin
+      FEditor.OnKeyDown:=@EditorKeyDown;
+    End;
+    If Msg.Options And EO_HOOKEXIT = EO_HOOKEXIT Then begin
+      FEditor.OnExit:=@EditorExit;
+    End;
+    {$IfDef EditorDbg}
+    Write('SetEditor-> Editor=',FEditor.Name,' ');
+    If FEditorOptions And EO_AUTOSIZE = EO_AUTOSIZE Then Write('EO_AUTOSIZE ');
+    If FEditorOptions And EO_HOOKKEYS = EO_HOOKKEYS Then Write('EO_HOOKKEYS ');
+    If FEditorOptions And EO_HOOKEXIT = EO_HOOKEXIT Then Write('EO_HOOKEXIT ');
+    if FEditorOptions And EO_SELECTALL= EO_SELECTALL Then Write('EO_SELECTALL ');
+    if FEditorOptions And EO_WANTCHAR = EO_WANTCHAR Then Write('EO_WANTCHAR ');
+    WriteLn;
+    {$Endif}
   End;
 end;
 
@@ -992,6 +1065,11 @@ begin
     FOptions:=FOptions - [goAlwaysShowEditor];
   End
   Else                           FRange:=Rect(FCol,FRow,FCol,FRow);
+  If goAlwaysShowEditor in Options Then begin
+    EditorShow;
+  End Else begin
+    EditorHide;
+  End;
   VisualChange;
 end;
 
@@ -1399,7 +1477,8 @@ end;
 
 procedure TCustomGrid.TopLeftChanged;
 begin
-  If Assigned(OnTopLeftChange) Then OnTopLeftChange(Self);
+  If Assigned(OnTopLeftChange) And Not (csDesigning in ComponentState) Then
+    OnTopLeftChange(Self);
 end;
 
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; Index: Integer);
@@ -1587,8 +1666,13 @@ begin
       If (ARow=FRow) And
          (IsCellVisible(FCol,ARow) Or (Rs And (ARow>=Top) And (ARow<=Bottom)))
       Then Begin
-        ColRowToOffset(True, True, FCol, R.Left, R.Right);
-        DrawFocusRect(FCol,FRow, R{ColRowToClienTCellRect(FCol,FRow)}, [gdFocused]);
+        If (goEditing in Options)And(goAlwaysShowEditor in Options)And
+           (Editor<>nil) Then begin
+           //WriteLn('No Draw Focus Rect');
+        End Else begin
+          ColRowToOffset(True, True, FCol, R.Left, R.Right);
+          DrawFocusRect(FCol,FRow, R{ColRowToClienTCellRect(FCol,FRow)}, [gdFocused]);
+        End;
       End;
     End; // Else Begin
 
@@ -1747,19 +1831,6 @@ end;
 // NOTE: WMHScroll and VMHScroll
 // This methods are used to pre-calculate the scroll position
 //
-{$IFDEF Scr1}
-  {
-    -- This is the original 'row' scroll method
-    -- in WMHScroll.Pos arrives a value from 0 .. [Max TopLeft Column]-FixedCols
-    -- in WMVScroll.Pos arrives a value from 0 .. [Max TopLeft Row   ]-FixedRows
-    -- Scrollbar sizes are not proportional :(
-  }
-{$ELSE}
-  {
-    -- This is the new 'not so pixel' scroll method,
-   }
-{$Endif}
-
 procedure TCustomGrid.WMHScroll(var Message: TLMHScroll);
 Var
   C,Tl: Integer;
@@ -1775,47 +1846,36 @@ begin
   WriteLn('HSCROLL: Code=',Message.ScrollCode,' Position=', Message.Pos);
   {$Endif}
   
+  If FGCache.HScrDiv<=0 Then Exit;
+  If FEditor<>nil then EditorGetValue;
 
-  {$IfDef Scr1}
-    TL:=FFixedCols+ Message.Pos;
-    If FEditor<>nil then getEditorValue;
-    Inc(FUpdateScrollBarsCount);
-    TryScrollTo(Tl, FTopLeft.Y);
-    Dec(FUpdateScrollBarsCount);
-    Message.Result:=1;
-  {$Else}
-  
-    If FGCache.HScrDiv<=0 Then Exit;
-    If FEditor<>nil then getEditorValue;
-    
-    If goThumbTracking in Options Then Begin
-      C:=FFixedCols + Round( Message.Pos * FGCache.HScrDiv );
-      If (FCol<>C) Then begin
-        Inc(FUpdateScrollBarsCount);
-        MoveExtend(False, C, FRow);
-        Dec(FUpdateScrollBarsCount);
-      End;
-    End Else begin
-    
-      C:=Message.Pos+FGCache.FixedWidth;
-      TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
-      {$Ifdef dbgScroll}
-      WriteLn('---- Offset=',C, ' TL=',TL, ' TLColOFf=', FGCache.TLColOff);
-      {$Endif}
-      If Not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
-      
-      If TL<>FTopLeft.X Then begin
-        Inc(FUpdateScrollBarsCount);
-        TryScrollTo(Tl, FTopLeft.Y);
-        Dec(FUpdateScrollBarsCount);
-      End Else
-      If goSmoothScroll in Options Then begin
-        CacheVisibleGrid;
-        Invalidate;
-      End;
-      
+  If goThumbTracking in Options Then Begin
+    C:=FFixedCols + Round( Message.Pos * FGCache.HScrDiv );
+    If (FCol<>C) Then begin
+      Inc(FUpdateScrollBarsCount);
+      MoveExtend(False, C, FRow);
+      Dec(FUpdateScrollBarsCount);
     End;
-  {$Endif}
+  End Else begin
+
+    C:=Message.Pos+FGCache.FixedWidth;
+    TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
+    {$Ifdef dbgScroll}
+    WriteLn('---- Offset=',C, ' TL=',TL, ' TLColOFf=', FGCache.TLColOff);
+    {$Endif}
+    If Not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
+
+    If TL<>FTopLeft.X Then begin
+      Inc(FUpdateScrollBarsCount);
+      TryScrollTo(Tl, FTopLeft.Y);
+      Dec(FUpdateScrollBarsCount);
+    End Else
+    If goSmoothScroll in Options Then begin
+      CacheVisibleGrid;
+      Invalidate;
+    End;
+
+  End;
 end;
 
 procedure TCustomGrid.WMVScroll(var Message: TLMVScroll);
@@ -1834,43 +1894,34 @@ begin
   WriteLn('VSCROLL: Code=',Message.ScrollCode,' Position=', Message.Pos);
   {$Endif}
 
-
-  {$IfDef Scr1}
-    TL:= Message.pos+FFixedRows;
-    If FEditor<>nil then getEditorValue;
-    Inc(FUpdateScrollBarsCount);
-    TryScrollTo(FtopLeft.x, TL);
-    Dec(FUpdateScrollBarsCount);
-  {$Else}
-    If FGCache.VScrDiv<=0 Then Exit;
-    If FEditor<>nil then getEditorValue;
-    If goThumbTracking in Options Then begin
-      C:=FFixedRows + Round( Message.Pos * FGCache.VScrDiv );
-      If (C<>FRow) Then begin
-        Inc(FUpdateScrollBarsCount);
-        MoveExtend(False, FCol, C);
-        Dec(FUpdateScrollBarsCount);
-      End;
-    End Else begin
-      C:=Message.Pos+FGCache.Fixedheight;
-      TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
-
-      {$Ifdef dbgScroll}
-      WriteLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
-      {$Endif}
-      If Not (goSmoothScroll in Options) Then FGCache.TLRowOff:=0;
-
-      If TL<>FTopLeft.Y Then begin
-        Inc(FUpdateScrollBarsCount);
-        TryScrollTo(FTopLeft.X, Tl);
-        Dec(FUpdateScrollBarsCount);
-      End Else
-      If goSmoothScroll in Options Then begin
-        CacheVisibleGrid;
-        Invalidate;
-      End;
+  If FGCache.VScrDiv<=0 Then Exit;
+  If FEditor<>nil then EditorGetValue;
+  If goThumbTracking in Options Then begin
+    C:=FFixedRows + Round( Message.Pos * FGCache.VScrDiv );
+    If (C<>FRow) Then begin
+      Inc(FUpdateScrollBarsCount);
+      MoveExtend(False, FCol, C);
+      Dec(FUpdateScrollBarsCount);
     End;
-  {$Endif}
+  End Else begin
+    C:=Message.Pos+FGCache.Fixedheight;
+    TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
+
+    {$Ifdef dbgScroll}
+    WriteLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
+    {$Endif}
+    If Not (goSmoothScroll in Options) Then FGCache.TLRowOff:=0;
+
+    If TL<>FTopLeft.Y Then begin
+      Inc(FUpdateScrollBarsCount);
+      TryScrollTo(FTopLeft.X, Tl);
+      Dec(FUpdateScrollBarsCount);
+    End Else
+    If goSmoothScroll in Options Then begin
+      CacheVisibleGrid;
+      Invalidate;
+    End;
+  End;
 end;
 
 procedure TCustomGrid.WMSize(var Msg: TWMSize);
@@ -1903,47 +1954,26 @@ end;
 procedure TCustomGrid.UpdateScrollbarPos(Which: TControlScrollbar);
 begin
   // Adjust ScrollBar Positions
-  {$IfDef Scr1}
-    Write('UptateScrollbarPos: Scr1 - ');
-    If (FScrollBars in [ssAutoHorizontal, ssAutoBoth]) And
-        HorzScrolLBar.Visible Then begin
-          I:=fTopLeft.X-FFixedCols;
-          {$IfDef dbgScroll}
-          Write('HorzScrollBar Pos=', I);
-          {$Endif}
-          HorzScrolLBar.Position:=I;
-        End;
-    If (FScrolLBars in [ssAutoVertical, ssAutoBoth]) And
-        VertScrolLBar.Visible Then Begin
-          I:=fTopLeft.Y-FFixedRows;
-          {$IfDef dbgScroll}
-          Write('  VertScrollBar Pos=', I);
-          {$Endif}
-          VertScrolLBar.Position:=I;
-        End;
-    WriteLn(' Done');
-  {$Else Scr1}
-    // Special condition only When scrolling by draging
-    // the scrollbars see: WMHScroll and WVHScroll
-    If FUpdateScrollBarsCount=0 Then begin
-    
-      if (Which=HorzScrollBar)or(Which=nil) Then
-        If (FScrollBars in [ssAutoHorizontal, ssAutoBoth]) And
-            HorzScrolLBar.Visible Then begin
-            With FGCache do
-              HorzScrollBar.Position:=
-                Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth;
-        End;
+  // Special condition only When scrolling by draging
+  // the scrollbars see: WMHScroll and WVHScroll
+  If FUpdateScrollBarsCount=0 Then begin
+  
+    if (Which=HorzScrollBar)or(Which=nil) Then
+      If (FScrollBars in [ssAutoHorizontal, ssAutoBoth]) And
+          HorzScrolLBar.Visible Then begin
+          With FGCache do
+            HorzScrollBar.Position:=
+              Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth;
+      End;
 
-      If (Which=VertScrollBar)Or(Which=nil) Then
-        If (FScrolLBars in [ssAutoVertical, ssAutoBoth]) And
-            VertScrolLBar.Visible Then begin
-            With FGCache do
-              VertScrollBar.Position:=
-                Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight;
-        End;
-    End; {If FUpd...}
-  {$Endif}
+    If (Which=VertScrollBar)Or(Which=nil) Then
+      If (FScrolLBars in [ssAutoVertical, ssAutoBoth]) And
+          VertScrolLBar.Visible Then begin
+          With FGCache do
+            VertScrollBar.Position:=
+              Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight;
+      End;
+  End; {If FUpd...}
 end;
 
 procedure TCustomGrid.CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -2382,8 +2412,10 @@ begin
   Case fGridState of
     gsSelecting:
       begin
-        P:=MouseToLogcell(Point(X,Y));
-        MoveExtend(False, P.x, P.y);
+        If Not (goEditing in Options) Then begin
+          P:=MouseToLogcell(Point(X,Y));
+          MoveExtend(False, P.x, P.y);
+        End;
       End;
     gsColMoving: If goColMoving in Options Then doColMoving(X,Y);
     gsRowMoving: If goRowMoving in Options Then doRowMoving(X,Y);
@@ -2403,7 +2435,6 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   If Not FGCache.ValidGrid Then Exit;
   Cur:=MouseToCell(Point(x,y));
-
   Case fGridState of
     gsSelecting:
       Begin
@@ -2458,17 +2489,28 @@ end;
 procedure TCustomGrid.doEnter;
 begin
   inherited doEnter;
-  //If (goEditing in Options)And(goAlwaysShowEditor in Options) Then ShowEditor;
+  If FEditorHiding Then begin
+    // Self generated doEnter
+  End Else begin
+    // Got the focus for some other reason
+    Invalidate; // redraw the focused cell
+    // Handle click on focused cell, still needs to show the editor
+    // when focusing from other way than mouse clicks
+    FFocusing:=True;
+  End;
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
+Var
+  Sh: Boolean;
+  
   Procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
   begin
     // Always reset Offset in kerboard Events
-    FGCache.TLColOff:=0;
-    FGCache.TLRowOff:=0;
-    SelectActive:=(ssShift in Shift);
-    If MoveExtend(Rel, aCol, aRow) Then Key:=0;
+    FGCache.TLColOff:=0; FGCache.TLRowOff:=0;
+    SelectActive:=Sh;
+    MoveExtend(Rel,aCol,aRow);
+    Key:=0;
   End;
 Var
   R: TRect;
@@ -2476,8 +2518,19 @@ Var
 begin
   inherited KeyDown(Key, Shift);
   If Not FGCache.ValidGrid Then Exit;
-  
+  Sh:=(ssShift in Shift);
   Relaxed:=Not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
+  
+  If (Key=Vk_TAB)And(goTabs in Options) Then begin
+    Case FAutoAdvance of
+      aaRight:
+        If Sh Then Key:=VK_LEFT
+        Else       Key:=VK_RIGHT;
+      aaDown:
+        If Sh Then Key:=VK_UP
+        Else       Key:=VK_DOWN;
+    End;
+  End;
   
   Case Key of
     VK_LEFT:
@@ -2522,11 +2575,13 @@ begin
           if Relaxed Then MoveSel(False, ColCount-1, FRow)
           Else            MoveSel(False, FCol, RowCount-1);
       End;
-    VK_F2:
+    VK_F2, VK_RETURN:
       begin
-        ShowEditor;
+        EditorShow;
+        If Key=VK_RETURN Then EditorSelectAll;
         Key:=0;
       End;
+
     {$IfDef Dbg}
     Else WriteLn('KeyDown: ', Key);
     {$Endif}
@@ -2644,14 +2699,24 @@ begin
   If dRow>RowCount-1 Then dRow:=RowCount-1;
 
   // Change on Focused cell?
-  If (Dcol=FCol)And(DRow=FRow) Then Exit;
+  If (Dcol=FCol)And(DRow=FRow) Then begin
+    If FFocusing
+      And(goEditing in Options)
+      And(goAlwaysShowEditor In Options)
+      And(EDitor<>nil) Then Begin
+        EditorShow;
+    End;
+    FFocusing:=False;
+    Exit;
+  End;
 
+  FFocusing:=False;
   Result:=True;
   if Assigned(OnBeforeSelection) Then OnBeforeSelection(Self, DCol, DRow, Result);
   If Not Result Then Exit;
   
   // Going to change selection, get editor value before that
-  GetEditorValue;
+  EditorGetValue;
   
   // default range
   If goRowSelect in Options Then FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
@@ -2687,7 +2752,7 @@ begin
   if //Not SelectActive And
     (goEditing in Options) And
     (goAlwaysShowEditor in Options) And
-    Not(goRowSelect in Options) Then ShowEditor;
+    Not(goRowSelect in Options) Then EditorShow;
 end;
 
 procedure TCustomGrid.MoveSelection;
@@ -2746,20 +2811,23 @@ begin
     inherited Invalidate;
 end;
 
-procedure TCustomGrid.GetEditorValue;
+procedure TCustomGrid.EditorGetValue;
 begin
   If Not (csDesigning in ComponentState) Then begin
-    HideEditor;
+    EditorHide;
+    doEditorGetValue;
   End;
 end;
 
-procedure TCustomGrid.SetEditorValue;
+procedure TCustomGrid.EditorSetValue;
 begin
-  If Not (csDesigning in ComponentState) Then
-    PosEditor;
+  If Not (csDesigning in ComponentState) Then begin
+    EditorPos;
+    doEditorSetValue;
+  End;
 end;
 
-procedure TCustomGrid.HideEditor;
+procedure TCustomGrid.EditorHide;
 begin
   if (Editor<>nil) And Editor.HandleAllocated And Editor.Visible Then begin
     If Not FEditorHiding Then begin
@@ -2772,36 +2840,71 @@ begin
   End;
 end;
 
-procedure TCustomGrid.ShowEditor;
+procedure TCustomGrid.EditorShow;
 begin
   If Not (csDesigning in ComponentState)And(goEditing in Options) Then
     If (Editor<>nil) And Not Editor.Visible Then Begin
       ResetOffset(True, True);
-      Editor.Parent:=Self;
-      SetEditorValue;
-      Editor.Visible:=True;
+      EditorReset;
       LCLLinux.SetFocus(Editor.Handle);
     End;
 end;
 
-procedure TCustomGrid.PosEditor;
+procedure TCustomGrid.EditorPos;
 Var
-  R: TRect;
+  msg: TGridMessage;
 begin
-  If fEditor<>nil Then begin
-    R:=ColRowToClientCellRect(FCol,FRow);
-    FEditor.SetBounds(R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top);
+  if FEditor<>nil Then begin
+    Msg.CellRect:=ColRowToClientCellRect(FCol,FRow);
+    If FEditorOptions And EO_AUTOSIZE = EO_AUTOSIZE Then begin
+      With Msg.CellRect do
+        FEditor.SetBounds(Left, Top, Right-Left, Bottom-Top);
+    End Else Begin
+      Msg.MsgID:=GM_SETPOS;
+      Msg.Grid:=Self;
+      Msg.Col:=FCol;
+      Msg.Row:=FRow;
+      FEditor.Dispatch(Msg);
+    End;
   End;
 end;
 
-procedure TCustomGrid.ExitEditor(Sender: TWinControl);
+procedure TCustomGrid.EditorReset;
+begin
+  Editor.Parent:=Self;
+  EditorSetValue;
+  Editor.Visible:=True;
+end;
+
+procedure TCustomGrid.EditorSelectAll;
+Var
+  Msg: TGridMessage;
+begin
+  If FEditor<>nil Then
+    If FEditorOptions And EO_SELECTALL = EO_SELECTALL Then begin
+      Msg.MsgID:=GM_SELECTALL;
+      FEditor.Dispatch(Msg);
+    End;
+end;
+
+procedure TCustomGrid.doEditorGetValue;
+begin
+  //
+end;
+
+procedure TCustomGrid.doEditorSetValue;
+begin
+  //
+end;
+
+procedure TCustomGrid.EditorExit(Sender: TObject);
 begin
   //WriteLn('Editor is losing the focus..');
   If Not FEditorHiding Then begin
     // Editor losing focus for any reason
     //WriteLn('Hey, What is happening here?');
     FEditorHiding:=True;
-    GetEditorValue;
+    EditorGetValue;
     If Editor<>nil Then Begin
       Editor.Visible:=False;
       Editor.Parent:=nil;
@@ -2810,7 +2913,7 @@ begin
   End;
 end;
 
-procedure TCustomGrid.EditorKeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomGrid.EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
 begin
   FEditorKey:=True; // Just a flag to see from where the event comes
   Case Key of
@@ -2831,8 +2934,8 @@ begin
         aaDown : Key:=VK_DOWN * Integer( FRow<RowCount-1 );
       End;
       If Key=0 Then begin
-        GetEditorValue;
-        ShowEditor;
+        EditorGetValue;
+        EditorShow;
         // Select All !
       End Else KeyDown(Key, Shift);
     End;
@@ -2840,9 +2943,9 @@ begin
   FEditorKey:=False;
 end;
 
-procedure TCustomGrid.CancelEditor;
+procedure TCustomGrid.EditorCancel;
 begin
-  HideEditor;
+  EditorHide;
   SetFocus;
 end;
 
@@ -3021,6 +3124,12 @@ begin
       End;
     End;
   end;
+end;
+
+procedure TCustomGrid.Loaded;
+begin
+  inherited Loaded;
+  VisualChange;
 end;
 
 constructor TCustomGrid.Create(AOwner: TComponent);
@@ -3329,42 +3438,37 @@ begin
 end;
 
 { TStringCellEditor }
-
-procedure TStringCellEditor.doExit;
-begin
-  inherited doExit;
-  FGrid.ExitEditor(Self);
-end;
-
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   {$IfDef dbg}
   WriteLn('INI: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
-  If FGrid<>nil then Fgrid.EditorKeyDown(Key, Shift);
+  If FGrid<>nil then Fgrid.EditorKeyDown(Self, Key, Shift);
   {$IfDef dbg}
   WriteLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TStringCellEditor.msg_SetValue(var Msg: TLMessage);
+procedure TStringCellEditor.msg_SetValue(var Msg: TGridMessage);
 begin
-  With PGridMessage(Msg.LParam)^  do begin
-    Text:= Value;
-  End;
+  Text:=Msg.Value;
 end;
 
-procedure TStringCellEditor.msg_GetValue(var Msg: TLMessage);
+procedure TStringCellEditor.msg_GetValue(var Msg: TGridMessage);
 begin
-  With PGridMessage(Msg.LParam)^  do begin
-    Value:=Text;
-  End;
+  Msg.Value:=Text;
 end;
 
-procedure TStringCellEditor.msg_SetGrid(var Msg: TLMessage);
+procedure TStringCellEditor.msg_SetGrid(var Msg: TGridMessage);
 begin
-  FGrid:=TCustomGrid(Msg.WParam);
+  FGrid:=Msg.Grid;
+  Msg.Options:=EO_AUTOSIZE or EO_HOOKEXIT or EO_SELECTALL;
+end;
+
+procedure TStringCellEditor.msg_SelectAll(var Msg: TGridMessage);
+begin
+  SelectAll;
 end;
 
 { TDrawGrid }
@@ -3616,8 +3720,10 @@ end;
 procedure TDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
   aState:TGridDrawState);
 Begin
-  If Assigned(OnDrawCell) Then OnDrawCell(Self,aCol,aRow,aRect,aState)
-  Else                          DefaultDrawCell(aCol,aRow,aRect,aState);
+  If Assigned(OnDrawCell) And Not(CsDesigning in ComponentState) Then
+    OnDrawCell(Self,aCol,aRow,aRect,aState)
+  Else
+    DefaultDrawCell(aCol,aRow,aRect,aState);
   Inherited DrawCellGrid(aRect,aCol,aRow,aState); // Draw the grid
 End;
 
@@ -3815,8 +3921,9 @@ Var
    c: PcellProps;
 begin
   // Set draw Cell Attributes
-  if DefaultDrawing then Begin
-    fCellAttr.Color:=Self.Color;
+  if DefaultDrawing or (csDesigning in ComponentState) then Begin
+    if gdFixed in aState Then FCellAttr.Color:=clBtnFace
+    Else fCellAttr.Color:=Self.Color;
     FCellAttr.FontColor:=Self.Font.Color;
     FCellAttr.TextStyle.Clipping:=False;
   End Else begin
@@ -3990,33 +4097,36 @@ begin
   End;
 end;
 
-procedure TStringGrid.GetEditorValue;
+procedure TStringGrid.doEditorGetValue;
 Var
   msg: TGridMessage;
 begin
   If (FEditor<>nil) And FEditor.Visible Then Begin
+    Msg.MsgID:=GM_GETVALUE;
     Msg.grid:=Self;
     Msg.Col:=FCol;
     msg.Row:=FRow;
-    msg.Value:='';
-    FEditor.Perform(GM_GETVALUE, Integer(Self), Integer(@Msg));
+    msg.Value:=Cells[FCol,FRow];
+    FEditor.Dispatch(Msg);
     Cells[FCol,FRow]:=msg.Value;
+    //FEditor.Perform(GM_GETVALUE, Integer(Self), Integer(@Msg));
   End;
-  inherited GetEditorValue;
+  //inherited EditorGetValue;
 end;
 
-procedure TStringGrid.SetEditorValue;
+procedure TStringGrid.doEditorSetValue;
 Var
   msg: TGridMessage;
 begin
   if FEditor<>nil Then begin
+    Msg.MsgID:=GM_SETVALUE;
     Msg.Grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
     Msg.Value:=Cells[FCol,FRow];
-    FEditor.Perform(GM_SETVALUE, Integer(Self), Integer(@msg));
+    FEditor.Dispatch(Msg);
   End;
-  inherited SetEditorValue;
+  //inherited EditorSetValue;
 end;
 
 procedure TStringGrid.SaveContent(cfg: TXMLConfig);
