@@ -34,7 +34,10 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses classes, controls, vclglobals, sysutils, GraphType, Graphics, Menus,
+{$DEFINE ClientRectBugFix}
+
+uses
+  Classes, Controls, VCLGlobals, SysUtils, GraphType, Graphics, Menus,
   LCLLinux, LCLType, LMessages;
 
 type
@@ -123,7 +126,12 @@ type
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    {$IFDEF ClientRectBugFix}
+    // Delphi needed GetClientRect for window specific things
+    // Function GetClientRect : TRect ; Override;
+    {$ELSE}
     Function GetClientRect : TRect ; Override;
+    {$ENDIF}
     Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
     Procedure PaintWindow(dc : Hdc); override;

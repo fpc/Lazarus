@@ -68,9 +68,12 @@ function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSystemMetrics(nIndex: Integer): Integer;  override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
-Function GetWindowLong(Handle : hwnd; int : Integer): Longint; override;
-Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;  override;
-Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; override;
+Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
+Function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer;  override;
+Function GetWindowRect(Handle : hwnd; var Rect: TRect): Integer; override;
+{$IFDEF ClientRectBugFix}
+Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
+{$ENDIF}
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
@@ -133,6 +136,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/05/09 12:41:32  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.26  2002/04/22 13:07:46  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 

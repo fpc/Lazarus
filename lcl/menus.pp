@@ -120,12 +120,12 @@ type
     procedure CreateHandle; virtual;
     function GetHandle: HMENU; virtual;
   public
-    FCompStyle : LongInt;
+    FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function FindItem(value : Integer; Kind :TFindItemKind) : TMenuItem;
-    function HandleAllocated : Boolean;
-    Function IsRighttoLeft : Boolean;
+    function FindItem(Value: Integer; Kind: TFindItemKind) : TMenuItem;
+    function HandleAllocated: Boolean;
+    Function IsRightToLeft: Boolean;
     procedure HandleNeeded;
     property Handle: HMenu read GetHandle;
   published
@@ -201,6 +201,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.8  2002/03/25 17:59:19  lazarus
   GTK Cleanup
   Shane

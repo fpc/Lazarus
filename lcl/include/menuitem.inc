@@ -1,3 +1,5 @@
+// included by menus.pp
+
 {******************************************************************************
                                   TMenuItem
  ******************************************************************************}
@@ -46,11 +48,11 @@ procedure TMenuItem.CreateHandle;
 var
   n: Integer;
 begin
-  if Parent <> nil 
-  then begin
+  if Parent <> nil then
+  begin
     Parent.HandleNeeded;
-    if Parent.HandleAllocated 
-    then InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil); 
+    if Parent.HandleAllocated then
+      InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil);
     if FHandle <> 0 then
     begin
       if ShortCut <> 0 then ShortcutChanged(0, Shortcut);
@@ -86,7 +88,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenuItem.Destroy;
 var
-   i : integer;
+  i : integer;
 begin
   if assigned (FItems) then begin
     i := FItems.Count-1;
@@ -111,9 +113,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.DoClicked(var msg); 
 begin
-   Assert(False, 'Trace:Menu received a message - CLICKED');
-   if Assigned (FOnClick) then
-      FOnClick(Self);
+  Assert(False, 'Trace:Menu received a message - CLICKED');
+  if Assigned (FOnClick) then
+    FOnClick(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -125,9 +127,10 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.GetCount: Integer;
 begin
-  if FItems = nil 
-  then Result := 0
-  else Result := FItems.Count;
+  if FItems = nil then
+    Result := 0
+  else
+    Result := FItems.Count;
 end;
 
 {------------------------------------------------------------------------------
@@ -152,8 +155,8 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.GetItem(Index: Integer): TMenuItem;
 begin
-  if FItems = nil 
-  then raise EMenuError.Create('Menu index out of range');
+  if FItems = nil then
+    raise EMenuError.Create('Menu index out of range');
   Result := TMenuItem(FItems[Index]);
 end;
 
@@ -194,7 +197,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.HandleAllocated : Boolean;
 begin
-   HandleAllocated := (FHandle <> 0);
+  HandleAllocated := (FHandle <> 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -206,8 +209,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.HandleNeeded;
 begin
-  if not HandleAllocated 
-  then CreateHandle;
+  if not HandleAllocated then CreateHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -220,10 +222,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Insert(Index: Integer; Item: TMenuItem);
 begin
-  if (Item <> nil)
-  then begin
-    if Item.Parent <> nil 
-    then raise EMenuError.Create('Menu inserted twice');
+  if (Item <> nil) then
+  begin
+    if Item.Parent <> nil then
+      raise EMenuError.Create('Menu inserted twice');
     
     // create items if needed;
     if FItems = nil then FItems := TList.Create;
@@ -257,11 +259,10 @@ end;
   Params:  AOwner: the owner of the class
   Returns: Nothing
 
-  Description of the procedure for the class.
  ------------------------------------------------------------------------------}
 Procedure TMenuItem.MenuChanged(Rebuild : Boolean);
 Begin
-//Use send message to re-create the menu if REBUILD is true.
+  //Use send message to re-create the menu if REBUILD is true.
 end;
 
 {------------------------------------------------------------------------------
@@ -269,10 +270,10 @@ end;
   Params:  Item: 
   Returns: Nothing
 
-  Description of the procedure for the class.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Remove(Item: TMenuItem);
 begin
+  // ToDo
 end;
 
 {------------------------------------------------------------------------------
@@ -405,10 +406,15 @@ begin
   InterfaceObject.IntSendMessage3(LM_SETSHORTCUT, Self, @Msg);
 end;
 
+// included by menus.pp
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.10  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane
@@ -466,6 +472,9 @@ end;
 
 
   $Log$
+  Revision 1.11  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.10  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

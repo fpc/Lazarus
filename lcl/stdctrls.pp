@@ -27,13 +27,14 @@ Detailed description of the Unit.
 
 unit StdCtrls;
 
-{$mode objfpc}
-{$LONGSTRINGS ON}
+{$mode objfpc}{$H+}
 
 interface
 
+{ $DEFINE ClientRectBugFix}
+
 uses
-  VclGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls,
+  VCLGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls,
   Forms;
 
 
@@ -117,7 +118,10 @@ type
 
   TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
   protected
+    {$IFDEF ClientRectBugFix}
+    {$ELSE}
     procedure AdjustClientRect(var Rect: TRect); override;
+    {$ENDIF}
   public
     constructor Create(AOwner : TComponent); Override;
   end;
@@ -586,6 +590,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.26  2002/04/22 13:07:45  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 

@@ -322,7 +322,7 @@ begin
 end;
 
 
-function gtkmonthchanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
 begin
@@ -333,7 +333,8 @@ begin
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
-function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion; data: gPointer):GBoolean; cdecl;
+function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion;
+  data: gPointer):GBoolean; cdecl;
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
@@ -467,81 +468,81 @@ begin
   else begin
     MessI.Keys := 0;
     case event^.Button of
-         1 : begin
-               if (LMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
-               MessI.Keys := MessI.Keys or MK_LBUTTON;
-               if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
-                  Event^.theType := gdk_2Button_press;
-               LLastClick := Now;
+     1 : begin
+           if (LMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
+           MessI.Keys := MessI.Keys or MK_LBUTTON;
+           if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
+              Event^.theType := gdk_2Button_press;
+           LLastClick := Now;
 
-               if event^.thetype = gdk_button_press then
-                 MessI.Msg := LM_LBUTTONDOWN
-                else
-               if event^.thetype = gdk_2button_press then
-                   begin
-                     MessI.Msg := LM_LBUTTONDBLCLK;
-                     LLastClick := -1;
-                   end
-                else
-               if event^.thetype = gdk_3button_press then
-                   begin
-                     MessI.Msg := LM_LBUTTONTRIPLECLK;
-                     LLastClick := -1;
-                   end;
+           if event^.thetype = gdk_button_press then
+             MessI.Msg := LM_LBUTTONDOWN
+            else
+           if event^.thetype = gdk_2button_press then
+               begin
+                 MessI.Msg := LM_LBUTTONDBLCLK;
+                 LLastClick := -1;
+               end
+            else
+           if event^.thetype = gdk_3button_press then
+               begin
+                 MessI.Msg := LM_LBUTTONTRIPLECLK;
+                 LLastClick := -1;
+               end;
 
-             LMouseButtonDown := True;
+         LMouseButtonDown := True;
 
+         end;
+     2 : begin
+           if (MMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
+
+           MessI.Keys := MessI.Keys or MK_MBUTTON;
+
+           if ((now - MLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
+              Event^.theType := gdk_2Button_press;
+           MLastClick := Now;
+
+           if event^.thetype = gdk_button_press then
+             MessI.Msg := LM_MBUTTONDOWN
+           else
+           if event^.thetype = gdk_2button_press then
+             Begin
+               MessI.Msg := LM_MBUTTONDBLCLK;
+               MLastClick := -1;
+               end
+            else
+           if event^.thetype = gdk_3button_press then
+               begin
+                 MessI.Msg := LM_MBUTTONTRIPLECLK;
+                 LLastClick := -1;
              end;
-         2 : begin
-               if (MMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
+           MMouseButtonDown := True;
+         end;
+     3 : begin
+           if (RMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
+           MessI.Keys := MessI.Keys or MK_RBUTTON;
 
-               MessI.Keys := MessI.Keys or MK_MBUTTON;
-               
-               if ((now - MLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
-                  Event^.theType := gdk_2Button_press;
-               MLastClick := Now;
+           if ((now - RLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
+              Event^.theType := gdk_2Button_press;
+           RLastClick := Now;
 
-               if event^.thetype = gdk_button_press then
-                 MessI.Msg := LM_MBUTTONDOWN
-               else
-               if event^.thetype = gdk_2button_press then
-                 Begin
-                   MessI.Msg := LM_MBUTTONDBLCLK;
-                   MLastClick := -1;
-                   end
-                else
-               if event^.thetype = gdk_3button_press then
-                   begin
-                     MessI.Msg := LM_MBUTTONTRIPLECLK;
-                     LLastClick := -1;
-                 end;
-               MMouseButtonDown := True;
+           if event^.thetype = gdk_button_press then
+             MessI.Msg := LM_RBUTTONDOWN
+           else
+           if event^.thetype = gdk_2button_press then
+             Begin
+               MessI.Msg := LM_RBUTTONDBLCLK;
+               RLastClick := -1;
+               end
+            else
+           if event^.thetype = gdk_3button_press then
+               begin
+                 MessI.Msg := LM_RBUTTONTRIPLECLK;
+                 LLastClick := -1;
              end;
-         3 : begin
-               if (RMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
-               MessI.Keys := MessI.Keys or MK_RBUTTON;
-
-               if ((now - RLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
-                  Event^.theType := gdk_2Button_press;
-               RLastClick := Now;
-
-               if event^.thetype = gdk_button_press then
-                 MessI.Msg := LM_RBUTTONDOWN
-               else
-               if event^.thetype = gdk_2button_press then
-                 Begin
-                   MessI.Msg := LM_RBUTTONDBLCLK;
-                   RLastClick := -1;
-                   end
-                else
-               if event^.thetype = gdk_3button_press then
-                   begin
-                     MessI.Msg := LM_RBUTTONTRIPLECLK;
-                     LLastClick := -1;
-                 end;
-               RMouseButtonDown := True;
-             end;
-         else MessI.Msg := LM_NULL;
+           RMouseButtonDown := True;
+         end;
+     else MessI.Msg := LM_NULL;
     end; //case
 
     MessI.XPos := Trunc(Event^.X);
@@ -618,12 +619,13 @@ begin
   Result := True;
 end;
 
-function gtkOpenDialogRowSelectCB( widget : PGtkWidget; row : gint; column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
+function gtkOpenDialogRowSelectCB( widget : PGtkWidget; row : gint;
+  column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
 var
-   ShiftState: TShiftState;
-   loop : gint;
-   startRow : gint;
-   endRow : gint;
+  ShiftState: TShiftState;
+  loop : gint;
+  startRow : gint;
+  endRow : gint;
 begin
    // only process the callback if there is event data. If there isn't any
    // event data that means it was called due to a direct function call of the
@@ -658,7 +660,8 @@ begin
    Result := True;
 end;
 
-function gtkDialogOKclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkDialogOKclickedCB( widget: PGtkWidget;
+  data: gPointer) : GBoolean; cdecl;
 var
    theDialog : TCommonDialog;
    Fpointer : Pointer;
@@ -826,6 +829,7 @@ function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
     ParentWidget: PGtkWidget;
   begin
     if AParent=nil then exit;
+    AParent.InvalidateClientRectCache;
     UpdateParentSizes(AParent.Parent);
     if (not AParent.HandleAllocated) then exit;
     
@@ -886,6 +890,17 @@ begin
     many resizes in the LCL.
     The next lines repairs this, by updating the parents first
   }
+  {$IFDEF VerboseSizeMsg}
+  writeln('gtksize_allocateCB: ',
+    TControl(Data).Name,':',TControl(Data).ClassName,
+    ' widget=',HexStr(Cardinal(Widget),8),
+    ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
+    ' OldPos=',TControl(Data).Left,',',TControl(Data).Top,',',TControl(Data).Width,',',TControl(Data).Height);
+  {$ENDIF}
+  SaveSizeNotification(Widget);
+  Result:=true;
+  exit;
+  
   UpdateParentSizes(TControl(Data).Parent);
   {$ENDIF}
 
@@ -893,13 +908,6 @@ begin
   OldTop:=TControl(Data).Top;
   OldWidth:=TControl(Data).Width;
   OldHeight:=TControl(Data).Height;
-  {$IFDEF VerboseSizeMsg}
-  writeln('gtksize_allocateCB: ',
-    TControl(Data).Name,':',TControl(Data).ClassName,
-    ' widget=',HexStr(Cardinal(Widget),8),
-    ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
-    ' OldPos=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight);
-  {$ENDIF}
 
 
   PosMsg.msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
@@ -1017,8 +1025,9 @@ end;
 {$IFDEF ClientRectBugFix}
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
+var AWinControl: TWinControl;
 begin
-  if (TObject(Data) is TControl) then begin
+  if (TObject(Data) is TWinControl) then begin
     {$IFDEF VerboseSizeMsg}
     writeln('gtksize_allocate_client: ',
       TControl(Data).Name,':',TControl(Data).ClassName,
@@ -1029,14 +1038,27 @@ begin
       );
     {$ENDIF}
   end else begin
-    // owner is not TControl -> ignore
-    writeln('WARNING: gtksize_allocate_client: Data is not TControl. Data=',
+    // owner is not TWinControl -> ignore
+    writeln('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
             HexStr(Cardinal(Data),8));
     exit;
   end;
   
-  if (TObject(Data) is TWinControl) then
-    TWinControl(Data).DoAdjustClientRectChange;
+  SaveClientSizeNotification(Widget);
+  Result:=true;
+  exit;
+
+  // the gtk has resized this fixed widget, that means all parent widgets are
+  // also valid
+  // -> Update LCL parents.
+  AWinControl:=TWinControl(Data);
+  while AWinControl<>nil do begin
+    AWinControl.InvalidateClientRectCache;
+    AWinControl:=AWinControl.Parent;
+  end;
+  AWinControl:=TWinControl(Data);
+  AWinControl.DoAdjustClientRectChange;
+  
   Result:=true;
 end;
 {$ENDIF}
@@ -1061,7 +1083,7 @@ end;
 
 function gtkconfigureevent( widget: PGtkWidget; event : PgdkEventConfigure;
   data: gPointer) : GBoolean; cdecl;
-var 
+var
   Allocation : PGtkAllocation;
 begin
 
@@ -1101,20 +1123,20 @@ var
    Msg : TLMInsertText;
    I : Integer;
 begin
-   Result := True;
-   EventTrace('Insert Text', data);
+  Result := True;
+  EventTrace('Insert Text', data);
 
-   Msg.Msg := LM_INSERTTEXT;
+  Msg.Msg := LM_INSERTTEXT;
    
-   Msg.NewText := '';
-   For I := 0 to NewTextLength - 1 do
-        Msg.NewText := Msg.Newtext+Char[i];
+  Msg.NewText := '';
+  For I := 0 to NewTextLength - 1 do
+    Msg.NewText := Msg.Newtext+Char[i];
 
-   //Msg.NewText := String(Char);
-   Msg.Length := NewTextLength;
-   Msg.Position := Position^;
-   Msg.Userdata := data;
-   Result:= DeliverMessage(Data, Msg) = 0;
+  //Msg.NewText := String(Char);
+  Msg.Length := NewTextLength;
+  Msg.Position := Position^;
+  Msg.Userdata := data;
+  Result:= DeliverMessage(Data, Msg) = 0;
 end;
 
 function gtkDeleteText( widget: PGtkWidget; Startpos, EndPos : Integer; data: gPointer) : GBoolean; cdecl;
@@ -1245,7 +1267,7 @@ begin
 end;
 *)
 
-function gtkvaluechanged ( widget: PGtkWidget; data : gPointer) : GBoolean; cdecl;
+function gtkValueChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
@@ -1294,7 +1316,8 @@ begin
   end;
 end;
 
-function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent; data : gpointer) : GBoolean; cdecl;
+function gtkFocusInNotifyCB (widget : PGtkWidget; event : PGdkEvent;
+  data : gpointer) : GBoolean; cdecl;
 var
   MessI : TLMEnter;
 begin
@@ -1304,7 +1327,8 @@ begin
   Result:= DeliverMessage(Data, MessI) = 0;
 end;
 
-function gtkFocusOutNotifyCB (widget : PGtkWidget; event : PGdkEvent; data : gpointer) : GBoolean; cdecl;
+function gtkFocusOutNotifyCB (widget : PGtkWidget; event : PGdkEvent;
+  data : gpointer) : GBoolean; cdecl;
 var
   MessI : TLMExit;
 begin
@@ -1335,7 +1359,8 @@ begin
   Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [Round(Adjustment^.Value)]));
 
   OldValue := Integer(gtk_object_get_data(PGTKObject(Adjustment), 'OldValue'));
-  gtk_object_set_data(PGTKObject(Adjustment), 'OldValue', Pointer(Round(Adjustment^.Value)));
+  gtk_object_set_data(PGTKObject(Adjustment), 'OldValue',
+                      Pointer(Round(Adjustment^.Value)));
   Scroll := gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar');
 
   // Get rounded values
@@ -1376,7 +1401,8 @@ begin
   Result := DeliverMessage(Data, Msg) = 0;
 end;
 
-function GTKVScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cdecl;
+function GTKVScrollCB(Adjustment: PGTKAdjustment;
+  data: GPointer): GBoolean; cdecl;
 var
   Msg: TLMVScroll;
   OldValue,
@@ -1389,7 +1415,8 @@ begin
   Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [Round(Adjustment^.Value)]));
 
   OldValue := Integer(gtk_object_get_data(PGTKObject(Adjustment), 'OldValue'));
-  gtk_object_set_data(PGTKObject(Adjustment), 'OldValue', Pointer(Round(Adjustment^.Value)));
+  gtk_object_set_data(PGTKObject(Adjustment), 'OldValue',
+                      Pointer(Round(Adjustment^.Value)));
   Scroll := gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar');
 
   // Get rounded values
@@ -1440,7 +1467,8 @@ end;
   Keeps track of which keys are pressed. The keycode is casted to a pointer and
   if it exists in the KeyStateList, it is pressed.
  ------------------------------------------------------------------------------}
-function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey; FuncData: gPointer): gInt; cdecl;
+function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
+  FuncData: gPointer): gInt; cdecl;
 type
   PList = ^TList;
 var
@@ -1535,16 +1563,16 @@ var TempBuf: Pointer;
   i: integer;
 begin
   // at any time there can be several requests
-  // find the request with the correct TimID
+  // find the request with the correct TimeID
   i:=ClipboardSelectionData.Count-1;
   while (i>=0) do begin
     c:=PClipboardEventData(ClipboardSelectionData[i]);
     if c^.TimeID=TimeID then break;
     dec(i);
   end;
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[ClipboardSelectionReceivedHandler] TimeID=',TimeID,' ',i>=0);
-{$ENDIF}
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('[ClipboardSelectionReceivedHandler] TimeID=',TimeID,' ',i>=0);
+  {$ENDIF}
   if i<0 then exit;
   // free old data
   if (c^.Data.Data<>nil) then FreeMem(c^.Data.Data);
@@ -1557,9 +1585,9 @@ writeln('[ClipboardSelectionReceivedHandler] TimeID=',TimeID,' ',i>=0);
     GetMem(TempBuf,c^.Data.Length);
     Move(c^.Data.Data^,TempBuf^,c^.Data.Length);
     c^.Data.Data:=TempBuf;
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[ClipboardSelectionReceivedHandler] ',ord(PChar(c^.Data.Data)[0]));
-{$ENDIF}
+    {$IFDEF DEBUG_CLIPBOARD}
+    writeln('[ClipboardSelectionReceivedHandler] ',ord(PChar(c^.Data.Data)[0]));
+    {$ENDIF}
   end else
     c^.Data.Data:=nil;
 end;
@@ -1583,22 +1611,21 @@ var ClipboardType: TClipboardType;
   BufLength: integer;
   P: PChar;
   BitCount: integer;
-  //s: string;
 begin
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('*** [ClipboardSelectionRequestHandler] START');
-{$ENDIF}
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('*** [ClipboardSelectionRequestHandler] START');
+  {$ENDIF}
   if SelectionData^.Target=0 then exit;
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if SelectionData^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
       if Assigned(ClipboardHandler[ClipboardType]) then begin
         // handler found for this of clipboard
         // now create a stream and find a supported format
-{$IFDEF DEBUG_CLIPBOARD}
-p:=gdk_atom_name(SelectionData^.Target);
-writeln('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',p,' ID=',SelectionData^.Target);
-g_free(p);
-{$ENDIF}
+        {$IFDEF DEBUG_CLIPBOARD}
+        p:=gdk_atom_name(SelectionData^.Target);
+        writeln('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',p,' ID=',SelectionData^.Target);
+        g_free(p);
+        {$ENDIF}
         MemStream:=TMemoryStream.Create;
         try
           // the gtk-interface provides autiomatically some formats, that the lcl
@@ -1613,9 +1640,9 @@ g_free(p);
           then
             FormatID:=gdk_atom_intern('text/plain',0);
             
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
-{$ENDIF}
+          {$IFDEF DEBUG_CLIPBOARD}
+          writeln('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
+          {$ENDIF}
           // get the requested data by calling the handler for this clipboard type
           ClipboardHandler[ClipboardType](FormatID,MemStream);
           MemStream.Position:=0;
@@ -1643,9 +1670,9 @@ writeln('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText='
             end;
           end;
           if Buffer=nil then begin
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
-{$ENDIF}
+            {$IFDEF DEBUG_CLIPBOARD}
+            writeln('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
+            {$ENDIF}
             BufLength:=MemStream.Size;
             if MemStream.Size>0 then begin
               GetMem(Buffer,MemStream.Size);
@@ -1656,9 +1683,9 @@ writeln('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.S
               writeln(' >>> "',s,'"');}
             end;
           end;
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[ClipboardSelectionRequestHandler] Len=',BufLength);
-{$ENDIF}
+          {$IFDEF DEBUG_CLIPBOARD}
+          writeln('[ClipboardSelectionRequestHandler] Len=',BufLength);
+          {$ENDIF}
           gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
             Buffer,BufLength);
           if Buffer<>nil then
@@ -1680,20 +1707,20 @@ function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
   EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
 var ClipboardType: TClipboardType;
 begin
-//writeln('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
+  //writeln('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if EventSelection^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('*** [ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
-{$ENDIF}
+      {$IFDEF DEBUG_CLIPBOARD}
+      writeln('*** [ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
+      {$ENDIF}
       if (ClipboardWidget<>nil)
       and (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType])
         <> ClipboardWidget^.window)
       and Assigned(ClipboardHandler[ClipboardType]) then begin
         // handler found for this type of clipboard
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
-{$ENDIF}
+        {$IFDEF DEBUG_CLIPBOARD}
+        writeln('[ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
+        {$ENDIF}
         ClipboardHandler[ClipboardType](0,nil);
         ClipboardHandler[ClipboardType]:=nil;
       end;
@@ -1716,6 +1743,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/05/09 12:41:29  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.71  2002/05/06 08:50:36  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 

@@ -223,6 +223,8 @@ function LoadCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
 
 implementation
 
+uses
+  Math;
 
 type
   TWinControlClass = class of TWinControl;
@@ -371,7 +373,7 @@ var MaxX, MaxY, SelGrpBoxTop, SelItemMaxX, SelItemMaxY,
   ValNoteBookMaxX, ValNoteBookMaxY: integer;
 begin
   MaxX:=ClientWidth;
-  MaxY:=ClientHeight;
+  MaxY:=ClientHeight-25;
   SelGrpBoxTop:=MaxY-310;
 
   // define tree ---------------------------------------------------------------
@@ -387,10 +389,11 @@ begin
     Left:=DefineTreeView.Left;
     Top:=SelGrpBoxTop;
     Width:=MaxX-2*Left;
-    Height:=MaxY-Top-30;
+writeln('AAA1 SelectedItemGroupBox=',Left,',',Top,',',Width,'  MaxX=',MaxX,' MaxY=',MaxY);
+    Height:=MaxY-Top-Left;
   end;
-  SelItemMaxX:=SelectedItemGroupBox.ClientWidth-8;
-  SelItemMaxY:=SelectedItemGroupBox.ClientHeight-18;
+  SelItemMaxX:=SelectedItemGroupBox.ClientWidth-6;
+  SelItemMaxY:=SelectedItemGroupBox.ClientHeight-27;
   with TypeLabel do begin
     Left:=5;
     Top:=3;
@@ -435,10 +438,10 @@ begin
     Left:=0;
     Top:=VariableLabel.Top+VariableLabel.Height+8;
     Width:=SelItemMaxX;
-    Height:=SelItemMaxY-Top-5;
+    Height:=SelItemMaxY-Top;
   end;
-  ValNoteBookMaxX:=ValueNoteBook.ClientWidth-7;//ValueAsTextSynEdit.Parent.ClientWidth;
-  ValNoteBookMaxY:=ValueNoteBook.ClientHeight-32;//ValueAsTextSynEdit.Parent.ClientHeight;
+  ValNoteBookMaxX:=ValueNoteBook.ClientWidth-10;//ValueAsTextSynEdit.Parent.ClientWidth;
+  ValNoteBookMaxY:=ValueNoteBook.ClientHeight-30;//ValueAsTextSynEdit.Parent.ClientHeight;
   with ValueAsTextSynEdit do begin
     Left:=0;
     Top:=0;

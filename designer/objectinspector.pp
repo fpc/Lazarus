@@ -32,8 +32,9 @@ uses
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo,
   Messages, LResources, XMLCfg, Menus, Dialogs;
 
-type
+{ $DEFINE ClientRectBugFix}
 
+type
   EObjectInspectorException = class(Exception);
   
   TObjectInspector = class;
@@ -305,6 +306,13 @@ const
 
 implementation
 
+const
+  {$IFDEF ClientRectBugFix}
+  ScrollBarWidth=0;
+  {$ELSE}
+  // workaround till clientwidth/height is working correctly with scrollbars
+  ScrollBarWidth=19;
+  {$ENDIF}
 
 { TOIPropertyGrid }
 
@@ -1172,7 +1180,8 @@ begin
         PaintRow(a);
       end;
       // draw unused space below rows
-      SpaceRect:=Rect(BorderWidth,BorderWidth,ClientWidth,Height-BorderWidth);
+      SpaceRect:=Rect(BorderWidth,BorderWidth,
+                      ClientWidth-BorderWidth,ClientHeight-BorderWidth);
       if FRows.Count>0 then
         SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
 // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
@@ -1217,7 +1226,7 @@ function TOIPropertyGrid.RowRect(ARow:integer):TRect;
 begin
   Result.Left:=BorderWidth;
   Result.Top:=Rows[ARow].Top-FTopY+BorderWidth;
-  Result.Right:=ClientWidth-15;
+  Result.Right:=ClientWidth-ScrollBarWidth;
   Result.Bottom:=Rows[ARow].Bottom-FTopY+BorderWidth;
 end;
 

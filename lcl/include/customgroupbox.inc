@@ -1,5 +1,7 @@
 // included by stdctrls.pp
 
+{$IFDEF ClientRectBugFix}
+{$ELSE}
 {------------------------------------------------------------------------------}
 {  function TCustomGroupBox.AdjustClientRect                                   }
 {------------------------------------------------------------------------------}
@@ -10,6 +12,7 @@ begin
   else
     inherited;
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {  function TCustomGroupBox.Create                                             }
@@ -25,6 +28,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.4  2002/04/22 13:07:45  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 

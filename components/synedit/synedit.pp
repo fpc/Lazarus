@@ -64,8 +64,9 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
+  { $DEFINE ClientRectBugFix}
   LCLLinux,
- LCLType, GraphType,
+  LCLType, GraphType,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -85,8 +86,12 @@ const
   ALPHA_LC = ['a'..'z'];
 
 {$IFDEF SYN_LAZARUS}
+{$IFDEF ClientRectBugFix}
+ScrollBarWidth=0;
+{$ELSE}
 // workaround till clientwidth/height is working correctly with scrollbars
 ScrollBarWidth=18;
+{$ENDIF}
 {$ENDIF}
 
 {$IFNDEF SYN_COMPILER_3_UP}                                           
@@ -3657,9 +3662,18 @@ begin
         {$IFDEF SYN_LAZARUS}
         ShowScrollBar(Handle,SB_HORZ,True);
         {$ENDIF}
+        //writeln('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,
+        //' ClientW=',ClientWidth
+        //);
+      end else begin
+
+        // ToDo: tell interface to remove horizontal scrollbar
+
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
-        nMaxScroll := Lines.Count;
+        nMaxScroll := Lines.Count{$IFDEF SYN_LAZARUS}+1{$ENDIF};
         if (eoScrollPastEof in Options) then                               
           Inc(nMaxScroll, LinesInWindow - 1);
         if nMaxScroll <= MAX_SCROLL then begin
@@ -6351,7 +6365,7 @@ begin
     {$IFDEF SYN_LAZARUS}
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
-    fLinesInWindow := Max(0,ClientHeight -13) div Max(1,fTextHeight);
+    fLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
     {$ELSE}
     fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
                                    - ScrollBarWidth) div Max(1,fCharWidth)));

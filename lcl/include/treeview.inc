@@ -1073,7 +1073,7 @@ begin
 end;
 
 function TTreeNode.GetLevel: Integer;
-// root is on level 1
+// root is on level 0
 var
   ANode: TTreeNode;
 begin
@@ -1155,12 +1155,9 @@ end;
 
 function TTreeNode.DisplayIconLeft: integer;
 begin
-  if Parent<>nil then begin
-    Result:=DisplayExpandSignLeft;
-    if TreeView<>nil then
-      inc(Result,TreeView.Indent);
-  end else
-    Result:=0;
+  Result:=DisplayExpandSignLeft;
+  if (TreeView<>nil) then
+    inc(Result,TreeView.Indent);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
@@ -2890,7 +2887,7 @@ end;
 function TCustomTreeView.GetMaxScrollLeft: integer;
 begin
   UpdateMaxRight;
-  Result:=FMaxRight-(ClientWidth-ScrollBarWidth)+2*BorderWidth;
+  Result:=FMaxRight-(ClientWidth-ScrollBarWidth-2*BorderWidth);
   if Result<0 then Result:=0;
 end;
 
@@ -3137,9 +3134,16 @@ begin
           SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
           ShowScrollBar(Handle,SB_HORZ,True);
         end;
-//writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
-//' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-//' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
+        //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
+        //' ClientW=',ClientWidth,
+        //' MaxRight=',FMaxRight
+        //);
+      end else begin
+      
+        // ToDo: tell interface to remove horizontal scrollbar
+      
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
         // vertical scrollbar
@@ -3156,6 +3160,13 @@ begin
           SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
           ShowScrollBar(Handle,SB_VERT,True);
         end;
+        //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
+        //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
+      end else begin
+
+        // ToDo: tell interface to remove vertical scrollbar
+
       end;
     end;
   end;
@@ -4282,7 +4293,8 @@ end;
 
 procedure TCustomTreeView.WMSize(var Msg: TLMSize);
 begin
-  FStates:=FStates+[tvsScrollbarChanged,tvsBottomItemNeedsUpdate];
+  FStates:=FStates+[tvsScrollbarChanged,
+                    tvsBottomItemNeedsUpdate];
   inherited;
 end;
 

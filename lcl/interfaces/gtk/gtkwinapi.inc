@@ -287,7 +287,7 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Function TgtkObject.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
+Function TgtkObject.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 var
   X, Y: Integer;
   Widget: PGTKWidget;
@@ -359,13 +359,13 @@ var FormatAtom, FormatTry: Cardinal;
       Result:=false;
       AllID:=gdk_atom_intern('TARGETS',0);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
-{writeln('BBB2.2 ',HexStr(Cardinal(SelData.Selection),8),
-' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
-' SelData.Target=',SelData.Target,' AllID=',AllID,
-' SelData.TheType=',SelData.TheType,' ',gdk_atom_intern('ATOM',0),
-' SelData.Length=',SelData.Length,
-' SelData.Format=',SelData.Format
-);}
+      {writeln('BBB2.2 ',HexStr(Cardinal(SelData.Selection),8),
+      ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
+      ' SelData.Target=',SelData.Target,' AllID=',AllID,
+      ' SelData.TheType=',SelData.TheType,' ',gdk_atom_intern('ATOM',0),
+      ' SelData.Length=',SelData.Length,
+      ' SelData.Format=',SelData.Format
+      );}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>AllID)
       or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then begin
@@ -381,9 +381,9 @@ var FormatAtom, FormatTry: Cardinal;
   end;
 
 begin
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID));
-{$ENDIF}
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID));
+  {$ENDIF}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
   if not (ClipboardType in [ctPrimarySelection,ctSecondarySelection,ctClipboard])
@@ -428,17 +428,17 @@ writeln('[TgtkObject.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(Clipb
         FormatAtom:=FormatTry;
     end;
 
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom));
-{$ENDIF}
+    {$IFDEF DEBUG_CLIPBOARD}
+    writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom));
+    {$ENDIF}
     if FormatAtom=0 then exit;
    
     // request data from owner
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
     try
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length);
-{$ENDIF}
+      {$IFDEF DEBUG_CLIPBOARD}
+      writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length);
+      {$ENDIF}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>FormatAtom) then
         exit;
@@ -451,9 +451,9 @@ writeln('[TgtkObject.ClipboardGetData] C  Length=',SelData.Length);
           if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',1) then begin
             CompoundTextCount:=gdk_text_property_to_text_list(SelData.theType,
               SelData.Format,SelData.Data,SelData.Length,@CompoundTextList);
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount);
-{$ENDIF}
+            {$IFDEF DEBUG_CLIPBOARD}
+            writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount);
+            {$ENDIF}
             for i:=0 to CompoundTextCount-1 do
               if (CompoundTextList[i]<>nil) then
                 Stream.Write(CompoundTextList[i]^,StrLen(CompoundTextList[i]));
@@ -465,9 +465,9 @@ writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount)
         end;
       end;
       
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetData] END');
-{$ENDIF}
+      {$IFDEF DEBUG_CLIPBOARD}
+      writeln('[TgtkObject.ClipboardGetData] END');
+      {$ENDIF}
     finally
       if SelData.Data<>nil then FreeMem(SelData.Data);
     end;
@@ -1916,17 +1916,17 @@ end;
   Function: GetClientRect
   Params: handle:
           Result:
-  Returns:
+  Returns: true on success
 
+  Returns the client rectangle of a Handle object. Left and Top are always 0.
+  The client rectangle is the rectangle, where a child object is visible.
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
-//  requisition : TgtkRequisition;
   Widget, ClientWidget: PGtkWidget;
 begin
-  result := False;
-  if Handle = 0 then Exit;
   Result := False;
+  if Handle = 0 then Exit;
   Try
     ARect.Left := 0;
     ARect.Top := 0;
@@ -1936,21 +1936,34 @@ begin
     end else begin
       Widget := pgtkwidget(Handle);
     end;
+    {$IFDEF ClientRectBugFix}
+    if (Widget <> nil) then begin
+      ARect.Right:=Widget^.Allocation.Width;
+      ARect.Bottom:=Widget^.Allocation.Height;
+    end else begin
+      ARect.Right:=0;
+      ARect.Bottom:=0;
+    end;
+    {$ELSE}
     if (Widget <> nil) and (Widget^.Window<>nil) then begin
       gdk_window_get_size(Widget^.Window, @ARect.Right, @ARect.Bottom);
-      //gtk_Widget_size_request(PgtkWidget(handle),@requisition);
-      //ARect.Right := requisition.width;
-      //ARect.Bottom := requisition.Height;
     end else begin
       ARect.Bottom:=0;
       ARect.Right:=0;
     end;
+    {$ENDIF}
     {$IFDEF VerboseGetClientRect}
     if ClientWidget<>nil then begin
       writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
          ' Client=',HexStr(Cardinal(ClientWidget),8),
          ' WindowSize=',ARect.Right,',',ARect.Bottom,
          ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
+         );
+    end else begin
+      writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
+         ' Client=',HexStr(Cardinal(ClientWidget),8),
+         ' WindowSize=',ARect.Right,',',ARect.Bottom,
+         ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
          );
     end;
     {$ENDIF}
@@ -2725,62 +2738,60 @@ end;
 {------------------------------------------------------------------------------
   Function: GetWindowRect
   Params:  none
-  Returns: Nothing
+  Returns: 0
+  
+  After the call, Rect will be the Handle object area in screen coordinates.
+  That means, Left and Top will be the screen coordinate of the TopLeft pixel
+  of the Handle object and Right and Bottom will be the screen coordinate of
+  the BottomRight pixel.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowRect(Handle: hwnd; var Rect: TRect): Integer;
 var
   X, Y, W, H: Integer;
   Widget: PGTKWidget;
-  Sender : TObject;
 begin
-//Writeln('GetWindowRect');
+  //Writeln('GetWindowRect');
   result := 0; //default
   if Handle <> 0 then
   begin
-    Widget := GetFixedWidget(pgtkwidget(Handle));
-    if (Widget = nil) then Widget := pgtkwidget(Handle);
-    if Widget <> nil then
-       begin
-        try
-         if Widget^.Window <> nil then
-         Begin
-           gdk_window_get_origin(Widget^.Window, @X, @Y);
-           gdk_window_get_size(Widget^.Window, @W, @H);
-writeln('[TgtkObject.GetWindowRect] ',x,',',y,',',w,',',h);
-         end
-         else
-         Begin
-          sender := TObject(Gtk_Object_Get_Data(pGTKObject(widget),'Sender'));
-          if (sender is TControl) then
-               begin
-                 writeln('****************SENDER IS TCONTROL********************');
-                 X := TControl(sender).Left;
-                 Y := TControl(sender).Top;
-                 W := TControl(sender).Width;
-                 Y := TControl(sender).Height;
-               end
-               else
-                Begin
-                 X := 0;
-                 Y := 0;
-                 W := 100;
-                 Y := 200;
-                end;
-         end;
+    Widget := pgtkwidget(Handle);
+    if Widget^.Window <> nil then Begin
+      gdk_window_get_origin(Widget^.Window, @X, @Y);
+      gdk_window_get_size(Widget^.Window, @W, @H);
+      writeln('[TgtkObject.GetWindowRect] ',x,',',y,',',w,',',h);
+    end
+    else
+    Begin
+      X := 0;
+      Y := 0;
+      W := 100;
+      Y := 200;
+    end;
 
-Writeln('SetRect');
-         SetRect(Rect, X, Y, X + W, Y + H);
-Writeln('SetRect Done');
-         result := -1;
-        except
-        end;
-       end
-       else
-        Result := 0;
+    SetRect(Rect, X, Y, X + W, Y + H);
   end;
-Writeln('GetWindowRect DONE');
+  Writeln('GetWindowRect DONE');
 end;
 
+{$IFDEF ClientRectBugFix}
+{------------------------------------------------------------------------------
+  Function: GetWindowSize
+  Params:  Handle : hwnd;
+  Returns: true on success
+
+  returns the current widget Width and Height
+ ------------------------------------------------------------------------------}
+Function TgtkObject.GetWindowSize(Handle : hwnd;
+  var Width, Height: integer): boolean;
+begin
+  if Handle<>0 then begin
+    Result:=true;
+    Width:=PGtkWidget(Handle)^.Allocation.Width;
+    Height:=PGtkWidget(Handle)^.Allocation.Height;
+  end else
+    Result:=false;
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: HideCaret
@@ -2823,11 +2834,14 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
+function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect;
+  bErase : Boolean) : Boolean;
 var
   gdkRect : TGDKRectangle;
+  {$IFDEF ClientRectBugFix}
+  Widget: PGtkWidget;
+  {$ENDIF}
 begin
-  // Todo: Erase  before invalidating if bErase is true
 //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Result := True;
   try
@@ -2835,11 +2849,23 @@ begin
     gdkRect.Y := Rect^.Top;
     gdkRect.Width := (Rect^.Right - Rect^.Left);
     gdkRect.Height := (Rect^.Bottom - Rect^.Top);
-
-  if bErase then
-    gdk_window_clear_area(PgtkWidget(aHandle)^.Window,gdkREct.X,gdkRect.y,gdkRect.Width,gdkRect.Height);
     
-    gtk_widget_draw(PgtkWidget(aHandle), @gdkRect);
+    {$IFDEF ClientRectBugFix}
+    Widget:=GetFixedWidget(PGtkWidget(aHandle));
+    if Widget=nil then Widget:=PgtkWidget(aHandle);
+
+    if bErase then
+      gdk_window_clear_area(Widget^.Window,
+                            gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+
+    gtk_widget_draw(Widget, @gdkRect);
+    {$ELSE}
+    if bErase then
+      gdk_window_clear_area(PGtkWidget(aHandle)^.Window,
+                            gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+
+    gtk_widget_draw(PGtkWidget(aHandle), @gdkRect);
+    {$ENDIF}
   except
     on E: Exception do begin
       writeln('TGTKObject.InvalidateRect: ',E.Message);
@@ -4416,6 +4442,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/05/09 12:41:30  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.66  2002/05/06 08:50:37  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 

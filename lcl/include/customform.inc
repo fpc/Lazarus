@@ -387,6 +387,8 @@ begin
     end;
 end;
 
+{$IFDEF ClientRectBugFix}
+{$ELSE}
 {------------------------------------------------------------------------------
   Method: TCustomForm.GetClientRect
   Params:   none
@@ -398,11 +400,11 @@ Function TCustomForm.GetClientRect :TRect;
 Begin
   SetRect(Result,0,0,0,0);
   AdjustWindowRectEx(Result,GetWindowLong(Handle,GWL_STYLE),Menu <> nil
-      ,GetWIndowLong(Handle,GWL_EXSTYLE));
+      ,GetWindowLong(Handle,GWL_EXSTYLE));
   SetRect(Result,0,0, Width - Result.Right + Result.Left
       , Height - Result.Bottom + Result.Top);
 end;
-
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.Paint
@@ -1015,6 +1017,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.42  2002/04/27 18:56:50  lazarus
   MG: started component renaming
 
