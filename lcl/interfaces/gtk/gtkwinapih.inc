@@ -3,6 +3,21 @@
 
   !! Keep this alphabetical !!
  ******************************************************************************)
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
+
 //##apiwiz##sps##   // Do not remove
 
 function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
@@ -136,6 +151,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/05/10 06:05:58  lazarus
+  MG: changed license to LGPL
+
   Revision 1.27  2002/05/09 12:41:32  lazarus
   MG: further clientrect bugfixes
 

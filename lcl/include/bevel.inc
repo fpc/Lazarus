@@ -1,5 +1,18 @@
 // included by extctrls.pp
-
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 Constructor TBevel.Create(AOwner:TComponent);
 Begin
   Inherited Create(AOwner);
@@ -231,6 +244,9 @@ End;
 
 {
   $Log$
+  Revision 1.5  2002/05/10 06:05:51  lazarus
+  MG: changed license to LGPL
+
   Revision 1.4  2002/03/14 23:25:51  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 

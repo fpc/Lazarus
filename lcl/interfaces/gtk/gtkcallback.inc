@@ -1,3 +1,17 @@
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 {$IFOPT C-}
 // Uncomment for local trace
 //  {$C+}
@@ -1743,6 +1757,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/05/10 06:05:56  lazarus
+  MG: changed license to LGPL
+
   Revision 1.72  2002/05/09 12:41:29  lazarus
   MG: further clientrect bugfixes
 

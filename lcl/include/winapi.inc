@@ -8,6 +8,19 @@
   to be implementerd here
 
   !! Keep this alphabetical !!
+  
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
  ******************************************************************************)
 
 {******************************************************************************
@@ -1072,6 +1085,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/05/10 06:05:56  lazarus
+  MG: changed license to LGPL
+
   Revision 1.27  2002/04/04 12:25:01  lazarus
   MG: changed except statements to more verbosity
 

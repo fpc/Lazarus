@@ -1,21 +1,25 @@
 {  $Id$  }
 {
  /***************************************************************************
-                                Graphics.pp
-                             -------------------
+                                graphics.pp
+                                -----------
                              Graphic Controls
                    Initial Revision  : Mon Jul 26 0:02:58 1999
 
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 unit Graphics;
 
@@ -761,6 +765,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/05/10 06:05:50  lazarus
+  MG: changed license to LGPL
+
   Revision 1.29  2002/03/14 23:25:51  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 

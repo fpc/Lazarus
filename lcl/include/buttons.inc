@@ -1,6 +1,20 @@
-(******************************************************************************
+{******************************************************************************
                                    TButton
- ******************************************************************************)
+ ******************************************************************************
+ 
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 {------------------------------------------------------------------------------}
 {       TButton Constructor                                                    }
@@ -110,6 +124,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/05/10 06:05:51  lazarus
+  MG: changed license to LGPL
+
   Revision 1.7  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

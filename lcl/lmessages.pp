@@ -1,22 +1,26 @@
 {  $Id$  }
  {
  /***************************************************************************
-                          lMessages.pp  -
-                             -------------------
+                               lMessages.pp
+                               ------------
 
                    Initial Revision  : Wed Jun 30 CST 1999
                 Shane Miller
 
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 
 unit lMessages;
@@ -29,116 +33,116 @@ uses Classes, vclGlobals, LCLType;
 
 const
 
-//-------------
-// Commands SENT TO the interface units
-// add also a description to a message at the end of this unit
-// here are no defines of messages send to the interface
-// These are declared in a later section
-//-------------
-LM_ComUser       = $1000;
-LM_Create        = LM_ComUser+1;
-LM_SetLabel      = LM_ComUser+2;
-LM_SetLeft       = LM_ComUser+3;
-LM_SetTop        = LM_ComUser+4;
-LM_SetWidth      = LM_ComUser+5;
-LM_SetHeight     = LM_ComUser+6;
-LM_AddChild      = LM_ComUser+7;
-LM_Setsize       = LM_ComUser+8;
-LM_GetLabel      = LM_ComUser+9;
-LM_AssignEvent   = LM_ComUser+10;
-LM_AssignSelf    = LM_ComUser+11;
-LM_SetName       = LM_ComUser+12;
-LM_RESIZECHILDREN = LM_ComUser+13;
-LM_ShowHide      = LM_ComUser+14;
-LM_AddPage       = LM_ComUser+15;
-LM_GetLineCount  = LM_ComUser+16;
-LM_SETTEXT       = LM_ComUser+17;
-LM_GETTEXT       = LM_ComUser+18;
-LM_CANVASCREATE  = LM_ComUser+19;
-LM_ReDraw        = LM_ComUser+26;
-LM_SetColor      = LM_ComUser+27;
-LM_RemovePage    = LM_ComUser+28;
-LM_ShowTabs      = LM_ComUser+29;
-LM_SetTabPosition = LM_ComUser+30;
-LM_Invalidate    = LM_ComUser+32;
-LM_SetPixel      = LM_ComUser+34;
-LM_GetPixel      = LM_ComUser+35;
+  //-------------
+  // Commands SENT TO the interface units
+  // add also a description to a message at the end of this unit
+  // here are no defines of messages send to the interface
+  // These are declared in a later section
+  //-------------
+  LM_ComUser       = $1000;
+  LM_Create        = LM_ComUser+1;
+  LM_SetLabel      = LM_ComUser+2;
+  LM_SetLeft       = LM_ComUser+3;
+  LM_SetTop        = LM_ComUser+4;
+  LM_SetWidth      = LM_ComUser+5;
+  LM_SetHeight     = LM_ComUser+6;
+  LM_AddChild      = LM_ComUser+7;
+  LM_Setsize       = LM_ComUser+8;
+  LM_GetLabel      = LM_ComUser+9;
+  LM_AssignEvent   = LM_ComUser+10;
+  LM_AssignSelf    = LM_ComUser+11;
+  LM_SetName       = LM_ComUser+12;
+  LM_RESIZECHILDREN = LM_ComUser+13;
+  LM_ShowHide      = LM_ComUser+14;
+  LM_AddPage       = LM_ComUser+15;
+  LM_GetLineCount  = LM_ComUser+16;
+  LM_SETTEXT       = LM_ComUser+17;
+  LM_GETTEXT       = LM_ComUser+18;
+  LM_CANVASCREATE  = LM_ComUser+19;
+  LM_ReDraw        = LM_ComUser+26;
+  LM_SetColor      = LM_ComUser+27;
+  LM_RemovePage    = LM_ComUser+28;
+  LM_ShowTabs      = LM_ComUser+29;
+  LM_SetTabPosition = LM_ComUser+30;
+  LM_Invalidate    = LM_ComUser+32;
+  LM_SetPixel      = LM_ComUser+34;
+  LM_GetPixel      = LM_ComUser+35;
 
-LM_SETPROPERTIES = LM_ComUser+39;         // update object to reflect current properties 
-LM_SETVALUE      = LM_ComUser+40;         // set actual value of object to visual object
-LM_GETVALUE      = LM_ComUser+41;         // get actual value from visual object
-LM_ATTACHMENU    = LM_ComUser+42;
+  LM_SETPROPERTIES = LM_ComUser+39;         // update object to reflect current properties
+  LM_SETVALUE      = LM_ComUser+40;         // set actual value of object to visual object
+  LM_GETVALUE      = LM_ComUser+41;         // get actual value from visual object
+  LM_ATTACHMENU    = LM_ComUser+42;
 
-LM_TB_BUTTONCOUNT = LM_ComUser+45;
-LM_INSERTTOOLBUTTON = LM_ComUser+46;
-LM_DELETETOOLBUTTON = LM_ComUser+47;
+  LM_TB_BUTTONCOUNT = LM_ComUser+45;
+  LM_INSERTTOOLBUTTON = LM_ComUser+46;
+  LM_DELETETOOLBUTTON = LM_ComUser+47;
 
-//LM_SetCursor = LM_ComUser+48;  We define this later for Windows compatability.
+  //LM_SetCursor = LM_ComUser+48;  We define this later for Windows compatability.
 
-LM_IMAGECHANGED = LM_ComUser+49;
-LM_LAYOUTCHANGED = LM_ComUser+50;
-LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
+  LM_IMAGECHANGED = LM_ComUser+49;
+  LM_LAYOUTCHANGED = LM_ComUser+50;
+  LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
 
-LM_LOADXPM = LM_ComUser+52;
+  LM_LOADXPM = LM_ComUser+52;
 
-LM_DRAGINFOCHANGED = LM_COMUSER+53;
+  LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
-//LM_SETENABLED = LM_COMUSER+54;
-LM_BRINGTOFRONT = LM_COMUSER+55;
-LM_POPUPSHOW = LM_COMUSER+56;
-
-
-LM_RECREATEWND = LM_COMUSER+57;
-LM_SETFORMICON = LM_COMUSER+58;
-
-LM_MINIMIZE = LM_COMUSER+59;
-
-LM_SETDESIGNING = LM_COMUSER+60;
-
-LM_SETSHORTCUT = LM_COMUSER+61;
-
-LM_SETGEOMETRY = LM_COMUSER+62;
-
-LM_GETITEMS      = LM_COMUSER+63;
-LM_GETITEMINDEX  = LM_COMUSER+64;
-LM_SETITEMINDEX  = LM_COMUSER+65;
-LM_GETSELTEXT    = LM_COMUSER+66;
-LM_SETSELTEXT    = LM_COMUSER+67;
-LM_GETSELSTART   = LM_COMUSER+68;
-LM_SETSELSTART   = LM_COMUSER+69;
-LM_GETSELLEN     = LM_COMUSER+70;
-LM_SETSELLEN     = LM_COMUSER+71;
-LM_GETLIMITTEXT  = LM_COMUSER+72;
-LM_SETLIMITTEXT  = LM_COMUSER+73;
-LM_SORT          = LM_COMUSER+74;
-LM_GETSELCOUNT   = LM_COMUSER+75;
-LM_GETSEL        = LM_COMUSER+76;
-LM_SETSEL        = LM_COMUSER+77;
-LM_SETSELMODE    = LM_COMUSER+78;
-LM_SETBORDER     = LM_COMUSER+79;
-
-// TListView
-LM_LV_FIRST      = LM_COMUSER+80;
-LM_LV_ADDITEM    = LM_LV_FIRST+1;
-LM_LV_CHANGEITEM = LM_LV_FIRST+2;
-LM_LV_DELETEITEM = LM_LV_FIRST+3;
-LM_LV_LAST       = LM_LV_FIRST+9; // LM_COMUSER+89
-
-// TComboBox
-LM_CB_FIRST      = LM_LV_LAST+1;  // LM_COMUSER+90
-LM_CB_GETCOUNT   = LM_CB_FIRST+1;
-LM_CB_GETTEXT    = LM_CB_FIRST+2;
-LM_CB_ADDTEXT    = LM_CB_FIRST+3;
-LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
-
-//-------------
-//end of messages that are sent to the interface
-//-------------
+  //LM_SETENABLED = LM_COMUSER+54;
+  LM_BRINGTOFRONT = LM_COMUSER+55;
+  LM_POPUPSHOW = LM_COMUSER+56;
 
 
-//-------------
-// Windows Compatability}
-//-------------
+  LM_RECREATEWND = LM_COMUSER+57;
+  LM_SETFORMICON = LM_COMUSER+58;
+
+  LM_MINIMIZE = LM_COMUSER+59;
+
+  LM_SETDESIGNING = LM_COMUSER+60;
+
+  LM_SETSHORTCUT = LM_COMUSER+61;
+
+  LM_SETGEOMETRY = LM_COMUSER+62;
+
+  LM_GETITEMS      = LM_COMUSER+63;
+  LM_GETITEMINDEX  = LM_COMUSER+64;
+  LM_SETITEMINDEX  = LM_COMUSER+65;
+  LM_GETSELTEXT    = LM_COMUSER+66;
+  LM_SETSELTEXT    = LM_COMUSER+67;
+  LM_GETSELSTART   = LM_COMUSER+68;
+  LM_SETSELSTART   = LM_COMUSER+69;
+  LM_GETSELLEN     = LM_COMUSER+70;
+  LM_SETSELLEN     = LM_COMUSER+71;
+  LM_GETLIMITTEXT  = LM_COMUSER+72;
+  LM_SETLIMITTEXT  = LM_COMUSER+73;
+  LM_SORT          = LM_COMUSER+74;
+  LM_GETSELCOUNT   = LM_COMUSER+75;
+  LM_GETSEL        = LM_COMUSER+76;
+  LM_SETSEL        = LM_COMUSER+77;
+  LM_SETSELMODE    = LM_COMUSER+78;
+  LM_SETBORDER     = LM_COMUSER+79;
+
+  // TListView
+  LM_LV_FIRST      = LM_COMUSER+80;
+  LM_LV_ADDITEM    = LM_LV_FIRST+1;
+  LM_LV_CHANGEITEM = LM_LV_FIRST+2;
+  LM_LV_DELETEITEM = LM_LV_FIRST+3;
+  LM_LV_LAST       = LM_LV_FIRST+9; // LM_COMUSER+89
+
+  // TComboBox
+  LM_CB_FIRST      = LM_LV_LAST+1;  // LM_COMUSER+90
+  LM_CB_GETCOUNT   = LM_CB_FIRST+1;
+  LM_CB_GETTEXT    = LM_CB_FIRST+2;
+  LM_CB_ADDTEXT    = LM_CB_FIRST+3;
+  LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
+
+  //-------------
+  //end of messages that are sent to the interface
+  //-------------
+
+
+  //-------------
+  // Windows Compatability}
+  //-------------
  { System Menu Commands }
   SC_SIZE = 61440;
   SC_MOVE = 61456;
@@ -162,324 +166,324 @@ LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
   SC_SEPARATOR = 61455;
   
 
-//-------------
-// Messages
-//-------------
+  //-------------
+  // Messages
+  //-------------
 
-LM_NULL = $0000;
-// not yet these are defined as messages to the interface
-//LM_CREATE = $0001;
-//LM_DESTROY = $0002;
-LM_MOVE = $0003;
+  LM_NULL = $0000;
+  // not yet these are defined as messages to the interface
+  //LM_CREATE = $0001;
+  //LM_DESTROY = $0002;
+  LM_MOVE = $0003;
 
-LM_SIZE = $0005;
-LM_ACTIVATE = $0006;
-LM_SETFOCUS = $0007;
-LM_KILLFOCUS = $0008;
-LM_ENABLE = $000A;
-LM_GETTEXTLENGTH = $000E;
-LM_ERASEBKGND = $0014;
+  LM_SIZE = $0005;
+  LM_ACTIVATE = $0006;
+  LM_SETFOCUS = $0007;
+  LM_KILLFOCUS = $0008;
+  LM_ENABLE = $000A;
+  LM_GETTEXTLENGTH = $000E;
+  LM_ERASEBKGND = $0014;
 
-LM_SHOWWINDOW   = $0018;
+  LM_SHOWWINDOW   = $0018;
 
-LM_CANCELMODE   = $001F;
-LM_SETCURSOR = $0020;
-LM_DRAWITEM     = $002B;
-LM_MEASUREITEM  = $002C;
-LM_DELETEITEM   = $002D;
-LM_VKEYTOITEM   = $002E;
-LM_CHARTOITEM   = $002F;
-LM_SETFONT      = $0030;
+  LM_CANCELMODE   = $001F;
+  LM_SETCURSOR = $0020;
+  LM_DRAWITEM     = $002B;
+  LM_MEASUREITEM  = $002C;
+  LM_DELETEITEM   = $002D;
+  LM_VKEYTOITEM   = $002E;
+  LM_CHARTOITEM   = $002F;
+  LM_SETFONT      = $0030;
 
-LM_COMPAREITEM = $0039;
-LM_WINDOWPOSCHANGING = $0046;
-LM_WINDOWPOSCHANGED = $0047;
-LM_NOTIFY  = $004E;
-LM_NOTIFYFORMAT = $0055;
+  LM_COMPAREITEM = $0039;
+  LM_WINDOWPOSCHANGING = $0046;
+  LM_WINDOWPOSCHANGED = $0047;
+  LM_NOTIFY  = $004E;
+  LM_NOTIFYFORMAT = $0055;
 
-LM_NCCALCSIZE = $0083;
-LM_NCHITTEST = $0084;
-LM_NCPAINT = $0085;
-LM_NCACTIVATE = $0086;
-LM_GETDLGCODE = $0087;
-LM_NCMOUSEMOVE = $00A0;
-LM_NCLBUTTONDOWN = $00A1;
-LM_NCLBUTTONUP = $00A2;
-LM_NCLBUTTONDBLCLK  = $00A3;
+  LM_NCCALCSIZE = $0083;
+  LM_NCHITTEST = $0084;
+  LM_NCPAINT = $0085;
+  LM_NCACTIVATE = $0086;
+  LM_GETDLGCODE = $0087;
+  LM_NCMOUSEMOVE = $00A0;
+  LM_NCLBUTTONDOWN = $00A1;
+  LM_NCLBUTTONUP = $00A2;
+  LM_NCLBUTTONDBLCLK  = $00A3;
 
-LM_KEYFIRST = $0100;
-LM_KEYDOWN = $0100;
-LM_KEYUP = $0101;
-LM_CHAR = $0102;
+  LM_KEYFIRST = $0100;
+  LM_KEYDOWN = $0100;
+  LM_KEYUP = $0101;
+  LM_CHAR = $0102;
 
-LM_SYSKEYDOWN = $0104;
-LM_SYSKEYUP = $0105;
-LM_SYSCHAR = $0106;
+  LM_SYSKEYDOWN = $0104;
+  LM_SYSKEYUP = $0105;
+  LM_SYSCHAR = $0106;
 
-LM_KEYLAST = $0108;
+  LM_KEYLAST = $0108;
 
-LM_COMMAND = $0111;
-LM_SYSCOMMAND = $0112;
+  LM_COMMAND = $0111;
+  LM_SYSCOMMAND = $0112;
 
-LM_HSCROLL = $0114;
-LM_VSCROLL = $0115;
-LM_CTLCOLORMSGBOX   = $0132;
-LM_CTLCOLOREDIT     = $0133;
-LM_CTLCOLORLISTBOX  = $0134;
-LM_CTLCOLORBTN      = $0135;
-LM_CTLCOLORDLG      = $0136;
-LM_CTLCOLORSCROLLBAR= $0137;
-LM_CTLCOLORSTATIC   = $0138;
+  LM_HSCROLL = $0114;
+  LM_VSCROLL = $0115;
+  LM_CTLCOLORMSGBOX   = $0132;
+  LM_CTLCOLOREDIT     = $0133;
+  LM_CTLCOLORLISTBOX  = $0134;
+  LM_CTLCOLORBTN      = $0135;
+  LM_CTLCOLORDLG      = $0136;
+  LM_CTLCOLORSCROLLBAR= $0137;
+  LM_CTLCOLORSTATIC   = $0138;
 
-LM_MOUSEFIRST = $0200;
-LM_MOUSEMOVE = $0200;
-LM_LBUTTONDOWN = $0201;
-LM_LBUTTONUP = $0202;
-LM_LBUTTONDBLCLK = $0203;
-LM_RBUTTONDOWN = $0204;
-LM_RBUTTONUP = $0205;
-LM_RBUTTONDBLCLK = $0206;
-LM_MButtonDown = $0207;
-LM_MBUTTONUP = $0208;
-LM_MBUTTONDBLCLK = $0209;
-LM_MOUSEWHEEL = $020A;
-LM_MOUSELAST = $020A;
-// for triple and quad clicks see below
+  LM_MOUSEFIRST = $0200;
+  LM_MOUSEMOVE = $0200;
+  LM_LBUTTONDOWN = $0201;
+  LM_LBUTTONUP = $0202;
+  LM_LBUTTONDBLCLK = $0203;
+  LM_RBUTTONDOWN = $0204;
+  LM_RBUTTONUP = $0205;
+  LM_RBUTTONDBLCLK = $0206;
+  LM_MButtonDown = $0207;
+  LM_MBUTTONUP = $0208;
+  LM_MBUTTONDBLCLK = $0209;
+  LM_MOUSEWHEEL = $020A;
+  LM_MOUSELAST = $020A;
+  // for triple and quad clicks see below
 
-LM_CAPTURECHANGED = $0215;
-LM_DROPFILES = $0233;
+  LM_CAPTURECHANGED = $0215;
+  LM_DROPFILES = $0233;
 
-LM_PARENTNOTIFY  = $0210;
+  LM_PARENTNOTIFY  = $0210;
 
-//-------------
-// End of Windows Compatability and messages
-//-------------
+  //-------------
+  // End of Windows Compatability and messages
+  //-------------
 
 
-//-------------
-// lcl messages
-//
-// This should be a list of LCL specific messages 
-// RECEIVED from the interface, here are no defines
-// of messages send to the interface
-//-------------
-LM_USER = $400; // MWE: changed from $100 to $400 since they were in the windows range
-WM_USER = LM_USER;
-LM_DESTROY = LM_User+2;
-LM_ACTIVATEITEM = LM_User+4;
-LM_CHANGED = LM_User+5;
-LM_FOCUS = LM_User+6;
-LM_CLICKED = LM_User+7;
-LM_PRESSED = LM_User+8;
-LM_RELEASED = LM_User+9;
-LM_MOVECURSOR = LM_User+10;
-LM_ENTER = LM_User+11;
-LM_LEAVE = LM_User+12;
-//LM_SIZEALLOCATE = LM_User+13;
-LM_CHECKRESIZE = LM_User+14;
-//LM_SHOW = LM_User+15; // Windows Compatability
-LM_INSERTTEXT = LM_User+16;
-LM_DELETETEXT = LM_User+17;
-LM_SETEDITABLE = LM_User+18;
-LM_MOVEWORD = LM_User+19;
-LM_MOVEPAGE = LM_User+20;
-LM_MOVETOROW = LM_User+21;
-LM_MOVETOCOLUMN = LM_User+22;
-LM_KILLCHAR = LM_User+23;
-LM_KILLWORD = LM_User+24;
-LM_KILLLINE = LM_User+25;
-LM_CUTTOCLIP = LM_User+26;
-LM_COPYTOCLIP = LM_User+27;
-LM_PASTEFROMCLIP = LM_User+28;
-//LM_MOVERESIZE = LM_User+29;
-LM_EXPOSEEVENT = LM_User+30;
-LM_CONFIGUREEVENT = LM_User+31;
-//LM_DRAW = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
-LM_PAINT = LM_User+32;
-LM_SHOWMODAL = LM_USER+33;
-LM_SETFILTER = LM_USER+34;
-LM_SETFILENAME = LM_USER+35;
-LM_OK_CLICKED = LM_USER+36;
-LM_CANCEL_CLICKED = LM_USER+37;
-//LM_KEYDOWN = LM_User+38; // Windows Compatability
-//LM_KEYUP = LM_USER+39;  // Windows Compatability
-LM_TIMER  = LM_USER+40;
-//LM_MOUSEBTNPRESS  = LM_USER+41;
-//LM_MOUSEBTNRELEASE  = LM_USER+42;
-LM_EXIT	   = LM_USER+60;	
-LM_SCREENINIT = LM_USER+61;
-LM_CLOSEQUERY = LM_USER+62;
-LM_DRAGSTART = LM_USER+63;
-LM_DEACTIVATE = LM_USER+64;  //used when a form is no longer in front
+  //-------------
+  // lcl messages
+  //
+  // This should be a list of LCL specific messages
+  // RECEIVED from the interface, here are no defines
+  // of messages send to the interface
+  //-------------
+  LM_USER = $400; // MWE: changed from $100 to $400 since they were in the windows range
+  WM_USER = LM_USER;
+  LM_DESTROY = LM_User+2;
+  LM_ACTIVATEITEM = LM_User+4;
+  LM_CHANGED = LM_User+5;
+  LM_FOCUS = LM_User+6;
+  LM_CLICKED = LM_User+7;
+  LM_PRESSED = LM_User+8;
+  LM_RELEASED = LM_User+9;
+  LM_MOVECURSOR = LM_User+10;
+  LM_ENTER = LM_User+11;
+  LM_LEAVE = LM_User+12;
+  //LM_SIZEALLOCATE = LM_User+13;
+  LM_CHECKRESIZE = LM_User+14;
+  //LM_SHOW = LM_User+15; // Windows Compatability
+  LM_INSERTTEXT = LM_User+16;
+  LM_DELETETEXT = LM_User+17;
+  LM_SETEDITABLE = LM_User+18;
+  LM_MOVEWORD = LM_User+19;
+  LM_MOVEPAGE = LM_User+20;
+  LM_MOVETOROW = LM_User+21;
+  LM_MOVETOCOLUMN = LM_User+22;
+  LM_KILLCHAR = LM_User+23;
+  LM_KILLWORD = LM_User+24;
+  LM_KILLLINE = LM_User+25;
+  LM_CUTTOCLIP = LM_User+26;
+  LM_COPYTOCLIP = LM_User+27;
+  LM_PASTEFROMCLIP = LM_User+28;
+  //LM_MOVERESIZE = LM_User+29;
+  LM_EXPOSEEVENT = LM_User+30;
+  LM_CONFIGUREEVENT = LM_User+31;
+  //LM_DRAW = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
+  LM_PAINT = LM_User+32;
+  LM_SHOWMODAL = LM_USER+33;
+  LM_SETFILTER = LM_USER+34;
+  LM_SETFILENAME = LM_USER+35;
+  LM_OK_CLICKED = LM_USER+36;
+  LM_CANCEL_CLICKED = LM_USER+37;
+  //LM_KEYDOWN = LM_User+38; // Windows Compatability
+  //LM_KEYUP = LM_USER+39;  // Windows Compatability
+  LM_TIMER  = LM_USER+40;
+  //LM_MOUSEBTNPRESS  = LM_USER+41;
+  //LM_MOUSEBTNRELEASE  = LM_USER+42;
+  LM_EXIT	   = LM_USER+60;
+  LM_SCREENINIT = LM_USER+61;
+  LM_CLOSEQUERY = LM_USER+62;
+  LM_DRAGSTART = LM_USER+63;
+  LM_DEACTIVATE = LM_USER+64;  //used when a form is no longer in front
 
-LM_MONTHCHANGED = LM_USER+65;
-LM_YEARCHANGED = LM_USER+66;
-LM_DAYCHANGED = LM_USER+67;
+  LM_MONTHCHANGED = LM_USER+65;
+  LM_YEARCHANGED = LM_USER+66;
+  LM_DAYCHANGED = LM_USER+67;
 
-LM_LBUTTONTRIPLECLK = LM_USER+68;
-LM_LBUTTONQUADCLK = LM_USER+69;
-LM_MBUTTONTRIPLECLK = LM_USER+70;
-LM_MBUTTONQUADCLK = LM_USER+71;
-LM_RBUTTONTRIPLECLK = LM_USER+72;
-LM_RBUTTONQUADCLK = LM_USER+73;
+  LM_LBUTTONTRIPLECLK = LM_USER+68;
+  LM_LBUTTONQUADCLK = LM_USER+69;
+  LM_MBUTTONTRIPLECLK = LM_USER+70;
+  LM_MBUTTONQUADCLK = LM_USER+71;
+  LM_RBUTTONTRIPLECLK = LM_USER+72;
+  LM_RBUTTONQUADCLK = LM_USER+73;
 
-LM_UNKNOWN = LM_User+99;
+  LM_UNKNOWN = LM_User+99;
 
 
 type
 
-TColor = LongInt;  //Also defined in graphics.pp
-UINT = LongWord;
-BOOL = Boolean;
+  TColor = LongInt;  //Also defined in graphics.pp
+  UINT = LongWord;
+  BOOL = Boolean;
 
 
-{Linux Messages}
+  {Linux Messages}
 
-TLMDrawItems = record
-  Msg: Cardinal;
-  Ctl : HWND;
-  DrawItemStruct : PDrawItemStruct;
-  Result : LongInt;
-end;
-
-TLMNoParams = record
+  TLMDrawItems = record
     Msg: Cardinal;
-    Unused: array[0..3] of Word;
+    Ctl : HWND;
+    DrawItemStruct : PDrawItemStruct;
+    Result : LongInt;
+  end;
+
+  TLMNoParams = record
+      Msg: Cardinal;
+      Unused: array[0..3] of Word;
+      Result: Longint;
+    end;
+
+  TLMScreenInit = record
+    PixelsPerInchX : Integer;
+    PixelsPerInchY : Integer;
+    ColorDepth : Integer;
+  end;
+
+  TLMSETCURSOR = record
+    Msg : Cardinal;
+    CursorWnd : HWND;
+    HitText : Word;
+    MOuseMsg : Word;
+    Result : Longint;
+  end;
+
+  PLMScreenInit = ^TLMScreenInit;
+
+  TLMCanvasCreate = Record
+     pparent : Pointer;
+     pCanvas : Pointer;
+    end;
+
+  pTLMCanvasCreate = ^TLMCanvasCreate;
+
+  PLMCanvasDrawRect = ^TLMCanvasDrawRect;
+  TLMCanvasDrawRect = Record
+     R : TRect;
+     ReDraw : Boolean;
+     PenColor : TColor;
+    end;
+
+  PLMCanvasDrawLine = ^TLMCanvasDrawLine;
+  TLMCanvasDrawLine = Record
+     x1 : Integer;
+     y1 : Integer;
+     x2 : Integer;
+     y2 : Integer;
+     PenColor : TColor;
+     ReDraw : Boolean;
+    end;
+
+  PLMCanvasDrawText = ^TLMCanvasDrawText;
+  TLMCanvasDrawText = Record
+     x1 : Integer;
+     y1 : Integer;
+     Str : String;
+     Font : TObject;
+     PenColor : TColor;
+     ReDraw : Boolean;
+    end;
+
+  TLMEraseBkgnd = record
+      Msg: Cardinal;
+      DC: HDC;
+      Unused: Longint;
+      Result: Longint;
+    end;
+
+  TLMGetText = record
+      Msg: Cardinal;
+      TextMax: Integer;
+      Text: PChar;
+      Result: Longint;
+    end;
+
+  TLMGetTextLength = TLMNoParams;
+
+  PLMInsertText = ^TLMInsertText;
+  TLMInsertText = record
+    Msg : Cardinal;
+    NewText : String;
+    Length : Integer;
+    Position : Integer;
+    UserData : Pointer;
+  end;
+
+
+
+
+  TLMKey = record
+    Msg: Cardinal;
+    CharCode: Word;
+    Unused: Word;
+    KeyData: Longint;
     Result: Longint;
   end;
 
-TLMScreenInit = record
-  PixelsPerInchX : Integer;
-  PixelsPerInchY : Integer;
-  ColorDepth : Integer;
-end;
+  TLMChar = TLMKey;
+  TLMKeyDown = TLMKey;
+  TLMKeyUp = TLMKey;
+  TLMSysChar = TLMKey;
+  TLMSysKeyDown = TLMKey;
+  TLMSysKeyUp = TLMKey;
 
-TLMSETCURSOR = record
-  Msg : Cardinal;
-  CursorWnd : HWND;
-  HitText : Word;
-  MOuseMsg : Word;
-  Result : Longint;
-end;
 
-PLMScreenInit = ^TLMScreenInit;
 
-TLMCanvasCreate = Record
-   pparent : Pointer;
-   pCanvas : Pointer;
-  end;
+  TLMMouse = packed record
+     Msg : Cardinal;
+     Keys : LongInt;
+     case Integer of
+     0: (
+        XPos: SmallInt;
+        YPos: SmallInt);
+     1: (
+        Pos : TSmallPoint;
+        Result : LongInt);
+     end;
 
-pTLMCanvasCreate = ^TLMCanvasCreate;
 
-PLMCanvasDrawRect = ^TLMCanvasDrawRect;
-TLMCanvasDrawRect = Record
-   R : TRect;
-   ReDraw : Boolean;
-   PenColor : TColor;
-  end;
+  TLMMouseMove = TLMMOuse;
 
-PLMCanvasDrawLine = ^TLMCanvasDrawLine;
-TLMCanvasDrawLine = Record
-   x1 : Integer;
-   y1 : Integer;
-   x2 : Integer;
-   y2 : Integer;
-   PenColor : TColor;
-   ReDraw : Boolean;
-  end;
-
-PLMCanvasDrawText = ^TLMCanvasDrawText;
-TLMCanvasDrawText = Record
-   x1 : Integer;
-   y1 : Integer;
-   Str : String;
-   Font : TObject;
-   PenColor : TColor;
-   ReDraw : Boolean;
-  end;
-
-TLMEraseBkgnd = record
+  TLMMove = record
     Msg: Cardinal;
-    DC: HDC;
-    Unused: Longint;
-    Result: Longint;
+    MoveType: Integer; // 0 = update, 1 = force RequestAlign,
+                       // 128 = Source is Interface (Widget has moved)
+    case Integer of
+      0: (
+        XPos: Smallint;
+        YPos: Smallint);
+      1: (
+        Pos: TSmallPoint;
+        Result: Longint);
   end;
 
-TLMGetText = record
-    Msg: Cardinal;
-    TextMax: Integer;
-    Text: PChar;
-    Result: Longint;
-  end;
+  TLMActivate = record
+      Msg: Cardinal;
+      Active: BOOL;
+      Minimized : WordBool;
+      ActiveWindow : HWND;
+      Result: Longint;
+    end;
 
-TLMGetTextLength = TLMNoParams;
-
-PLMInsertText = ^TLMInsertText;
-TLMInsertText = record
-  Msg : Cardinal;
-  NewText : String;
-  Length : Integer;
-  Position : Integer;
-  UserData : Pointer;
-end;
-
-
-
-
-TLMKey = record
-  Msg: Cardinal;
-  CharCode: Word;
-  Unused: Word;
-  KeyData: Longint;
-  Result: Longint;
-end;
-
-TLMChar = TLMKey;
-TLMKeyDown = TLMKey;
-TLMKeyUp = TLMKey;
-TLMSysChar = TLMKey;
-TLMSysKeyDown = TLMKey;
-TLMSysKeyUp = TLMKey;
-
-
-
-TLMMouse = packed record
-   Msg : Cardinal;
-   Keys : LongInt;
-   case Integer of
-   0: ( 
-      XPos: SmallInt;
-      YPos: SmallInt);
-   1: (
-      Pos : TSmallPoint;
-      Result : LongInt);
-   end;
-
-
-TLMMouseMove = TLMMOuse;
-
-TLMMove = record
-  Msg: Cardinal;
-  MoveType: Integer; // 0 = update, 1 = force RequestAlign,
-                     // 128 = Source is Interface (Widget has moved)
-  case Integer of
-    0: (
-      XPos: Smallint;
-      YPos: Smallint);
-    1: (
-      Pos: TSmallPoint;
-      Result: Longint);
-end;
-
-TLMActivate = record
-    Msg: Cardinal;
-    Active: BOOL;
-    Minimized : WordBool;
-    ActiveWindow : HWND;
-    Result: Longint;
-  end;
-
-TLMNCActivate = record
+  TLMNCActivate = record
     Msg: Cardinal;
     Active: BOOL;
     Unused: Longint;
@@ -507,16 +511,16 @@ TLMNCActivate = record
     Result: Longint;
   end;
 
-TLMResize = record
-  Msg : Cardinal;
-  Left  : Integer;
-  Top : Integer;
-  Width : Integer;
-  Height : Integer;
-  UserData : Pointer;
-end;
+  TLMResize = record
+    Msg : Cardinal;
+    Left  : Integer;
+    Top : Integer;
+    Width : Integer;
+    Height : Integer;
+    UserData : Pointer;
+  end;
 
-TLMMoveResize = TLMResize;
+  TLMMoveResize = TLMResize;
 
   PWindowPos = ^TWindowPos;
   tagWINDOWPOS = packed record
@@ -558,9 +562,9 @@ TLMMoveResize = TLMResize;
     Result: Longint;
   end;
 
-TLMSysColorChange = TLMNoParams;
+  TLMSysColorChange = TLMNoParams;
 
-TLMSysCommand = record
+  TLMSysCommand = record
     Msg: Cardinal;
     case CmdType: Longint of
       SC_HOTKEY: (
@@ -575,7 +579,7 @@ TLMSysCommand = record
         Result: Longint);
   end;
 
-TLMSysDeadChar = record
+  TLMSysDeadChar = record
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
@@ -584,117 +588,117 @@ TLMSysDeadChar = record
   end;
 
 
-TLMSystemError = record
+  TLMSystemError = record
     Msg: Cardinal;
     ErrSpec: Word;
     Unused: Longint;
     Result: Longint;
   end;
 
-TLMTimeChange = TLMNoParams;
+  TLMTimeChange = TLMNoParams;
 
-TLMSort = record
-  Msg : Cardinal;
-  List : TObject;
-  IsSorted : boolean;
-end;
-
-//Used to set the statusbar's text
-TLMSetControlText = record 
-  fCompStyle : Longint;
-  Panel : Integer;
-  Userdata : PChar;
-end;
-
-TLMSetText = packed record 
-  Msg : cardinal;
-  Unused : Longint;
-  Text : PChar;
-  Result : Longint;
-end;
-
-  
-TLMKeyEvent = Record
-  Msg : Cardinal;
-  KeyChar : Char;
-  Key : Word;
-  State : TShiftState;
-  Length : Integer;
-  Str : PChar;
-  UserData : Pointer;
- end;
-
-PLMMouseEvent = ^TLMMouseEvent;
-TLMMouseEvent = Record
-  Msg : Cardinal;
-  Button : LongInt;
-  WheelDelta : Longint; { -1 for up, 1 for down }
-  State : TShiftState;
-  X     : Integer;
-  Y    : Integer;
-  UserData : Pointer;
-
+  TLMSort = record
+    Msg : Cardinal;
+    List : TObject;
+    IsSorted : boolean;
   end;
 
-TLMLButtonDown = TLMMouse;
-TLMRButtonDown = TLMMouse;
-TLMMButtonDown = TLMMouse;
-TLMLButtonDblClk = TLMMouse;
-TLMRButtonDblClk = TLMMouse;
-TLMMButtonDblClk = TLMMouse;
-TLMLButtonTripleClk = TLMMouse;
-TLMRButtonTripleClk = TLMMouse;
-TLMMButtonTripleClk = TLMMouse;
-TLMLButtonQuadClk = TLMMouse;
-TLMRButtonQuadClk = TLMMouse;
-TLMMButtonQuadClk = TLMMouse;
-TLMLButtonUp = TLMMouse;
-TLMRButtonUp = TLMMouse;
-TLMMButtonUp = TLMMouse;
+  //Used to set the statusbar's text
+  TLMSetControlText = record
+    fCompStyle : Longint;
+    Panel : Integer;
+    Userdata : PChar;
+  end;
 
-TLMNotebookEvent = record
-  Parent: TObject;
-  Child: TObject;
-  fCompStyle: Integer;
-  Str: String;
-  Page: Integer;
-  ShowTabs: Boolean;
-  TabPosition: Pointer;
-end;
+  TLMSetText = packed record
+    Msg : cardinal;
+    Unused : Longint;
+    Text : PChar;
+    Result : Longint;
+  end;
 
-TLMSetSel = record
-  Index : integer;
-  Selected : boolean;
-end;
 
-TLMSetSelMode = record
-  MultiSelect : boolean;
-  ExtendedSelect : boolean;
-end;
+  TLMKeyEvent = Record
+    Msg : Cardinal;
+    KeyChar : Char;
+    Key : Word;
+    State : TShiftState;
+    Length : Integer;
+    Str : PChar;
+    UserData : Pointer;
+   end;
 
-TLMSetFocus = packed record
-  Msg: Cardinal;
-  FocusedWnd: HWND;
-  Unused: LongInt;
-  Result : LongInt;
-End;
+  PLMMouseEvent = ^TLMMouseEvent;
+  TLMMouseEvent = Record
+    Msg : Cardinal;
+    Button : LongInt;
+    WheelDelta : Longint; { -1 for up, 1 for down }
+    State : TShiftState;
+    X     : Integer;
+    Y    : Integer;
+    UserData : Pointer;
 
-TLMSetGetPixel = record
-  X,Y : Integer;
-  PixColor : TColor;
-end;
+    end;
 
-TLMSize = packed record
-  Msg: Cardinal;
-  SizeType: LongInt; // see LCLType.pp (e.g. Size_Restored)
-  Width : Word;
-  Height : Word;
-  Result : LongInt;
-End;
+  TLMLButtonDown = TLMMouse;
+  TLMRButtonDown = TLMMouse;
+  TLMMButtonDown = TLMMouse;
+  TLMLButtonDblClk = TLMMouse;
+  TLMRButtonDblClk = TLMMouse;
+  TLMMButtonDblClk = TLMMouse;
+  TLMLButtonTripleClk = TLMMouse;
+  TLMRButtonTripleClk = TLMMouse;
+  TLMMButtonTripleClk = TLMMouse;
+  TLMLButtonQuadClk = TLMMouse;
+  TLMRButtonQuadClk = TLMMouse;
+  TLMMButtonQuadClk = TLMMouse;
+  TLMLButtonUp = TLMMouse;
+  TLMRButtonUp = TLMMouse;
+  TLMMButtonUp = TLMMouse;
 
-TLMNoPara = packed record
-  Msg : Cardinal;
-end;
+  TLMNotebookEvent = record
+    Parent: TObject;
+    Child: TObject;
+    fCompStyle: Integer;
+    Str: String;
+    Page: Integer;
+    ShowTabs: Boolean;
+    TabPosition: Pointer;
+  end;
+
+  TLMSetSel = record
+    Index : integer;
+    Selected : boolean;
+  end;
+
+  TLMSetSelMode = record
+    MultiSelect : boolean;
+    ExtendedSelect : boolean;
+  end;
+
+  TLMSetFocus = packed record
+    Msg: Cardinal;
+    FocusedWnd: HWND;
+    Unused: LongInt;
+    Result : LongInt;
+  End;
+
+  TLMSetGetPixel = record
+    X,Y : Integer;
+    PixColor : TColor;
+  end;
+
+  TLMSize = packed record
+    Msg: Cardinal;
+    SizeType: LongInt; // see LCLType.pp (e.g. Size_Restored)
+    Width : Word;
+    Height : Word;
+    Result : LongInt;
+  End;
+
+  TLMNoPara = packed record
+    Msg : Cardinal;
+  end;
 
   PLMessage = ^TLMessage;
   TLMessage = packed record
@@ -714,52 +718,52 @@ end;
     end;
 
 
-TLMScroll = record
-  Msg : Cardinal;
-  ScrollCode : SmallInt;
-  Pos : SmallInt;
-  ScrollBar : HWND;
-  Result : LongInt;
-end;
+  TLMScroll = record
+    Msg : Cardinal;
+    ScrollCode : SmallInt;
+    Pos : SmallInt;
+    ScrollBar : HWND;
+    Result : LongInt;
+  end;
 
-TLMHScroll = TLMScroll;
-TLMVScroll = TLMScroll;
+  TLMHScroll = TLMScroll;
+  TLMVScroll = TLMScroll;
 
-TLMShowWindow = record
-  Msg: Cardinal;
-  Show: LongBool;
-  Status: Longint;
-  Result: Longint;
-end;
+  TLMShowWindow = record
+    Msg: Cardinal;
+    Show: LongBool;
+    Status: Longint;
+    Result: Longint;
+  end;
 
-TLMKILLFOCUS = packed Record
-   Msg : Cardinal;
-   FocusedWnd: HWND;
-   UnUsed : LongInt;
-   Result : LongInt;
-  End;
+  TLMKILLFOCUS = packed Record
+     Msg : Cardinal;
+     FocusedWnd: HWND;
+     UnUsed : LongInt;
+     Result : LongInt;
+    End;
 
-TLMNCHITTEST = packed record
-  Msg : cardinal;
-  Unused : LongInt;
-  case Integer of
-    0 : (
-         XPos : SmallInt;
-         YPos : SmallInt);
-    1 : (
-         Pos : TSmallPoint;
-         Result : LongInt);
-end;
+  TLMNCHITTEST = packed record
+    Msg : cardinal;
+    Unused : LongInt;
+    case Integer of
+      0 : (
+           XPos : SmallInt;
+           YPos : SmallInt);
+      1 : (
+           Pos : TSmallPoint;
+           Result : LongInt);
+  end;
 
-TLMDestroy = TLMNoParams;
+  TLMDestroy = TLMNoParams;
 
-TLMShortCut = packed record
-  Handle : HWND;
-  OldKey : Word;
-  OldModifier : TShiftState;
-  NewKey : Word;
-  NewModifier : TShiftState;
-end;
+  TLMShortCut = packed record
+    Handle : HWND;
+    OldKey : Word;
+    OldModifier : TShiftState;
+    NewKey : Word;
+    NewModifier : TShiftState;
+  end;
 
         
         
@@ -831,6 +835,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2002/05/10 06:05:50  lazarus
+  MG: changed license to LGPL
+
   Revision 1.24  2002/03/29 17:12:52  lazarus
   MG: added Triple and Quad mouse clicks to lcl and synedit
 

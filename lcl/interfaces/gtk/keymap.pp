@@ -1,4 +1,18 @@
-unit keymap;
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
+unit KeyMap;
 
 {$mode objfpc}
 
@@ -7,9 +21,11 @@ interface
 function VK2GDK(const Key : word) : word;
 function GDK2VK(const Key : word) : word;
 
+
 implementation
 
-uses lcltype, gdk;
+
+uses LCLType, gdk;
 
 function VK2GDK(const Key : word) : word;
 begin

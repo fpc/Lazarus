@@ -1,4 +1,18 @@
-{ $Id$}
+{ $Id$
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 {------------------------------------------------------------------------------}
 {   TListColumns                                                               }
@@ -35,6 +49,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/05/10 06:05:53  lazarus
+  MG: changed license to LGPL
+
   Revision 1.2  2002/03/23 15:49:22  lazarus
   MWE: Fixed more compatebility issues (Sort, SelectedItem)
 

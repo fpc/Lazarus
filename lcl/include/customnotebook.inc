@@ -2,7 +2,21 @@
 
 {******************************************************************************
                                    TNBPages
- ******************************************************************************}
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 { $DEFINE NOTEBOOK_DEBUG}
 
@@ -506,6 +520,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/05/10 06:05:52  lazarus
+  MG: changed license to LGPL
+
   Revision 1.15  2002/03/31 23:20:38  lazarus
   MG: fixed initial size of TPage
 

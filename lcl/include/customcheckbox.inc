@@ -2,8 +2,21 @@
 
 {******************************************************************************
                                TCustomCheckbox
- ******************************************************************************}
-{
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
   current design flaws:
 
   - To always get the real state of the component we should have a
@@ -155,6 +168,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2002/05/10 06:05:51  lazarus
+  MG: changed license to LGPL
+
   Revision 1.3  2002/04/02 16:44:41  lazarus
   MG: bugfixes, finddeclaration cache dependencies
 

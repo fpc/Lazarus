@@ -8,17 +8,19 @@
  
  ***************************************************************************/ 
  
-/*************************************************************************** 
- *                                                                         * 
- *   This program is free software; you can redistribute it and/or modify  * 
- *   it under the terms of the GNU General Public License as published by  * 
- *   the Free Software Foundation; either version 2 of the License, or     * 
- *   (at your option) any later version.                                   * 
- *                                                                         * 
- ***************************************************************************/ 
- } 
-
-
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 unit Interfaces;
  
 {$mode objfpc}{$H+} 
@@ -26,25 +28,24 @@ unit Interfaces;
 interface
 
 uses 
-   InterfaceBase;
+  InterfaceBase;
 
 var
-   InterfaceObject : TInterfaceBase;
+  InterfaceObject : TInterfaceBase;
 
 implementation
 
 uses 
-   GTKInt, Clipbrd, SysUtils,
-   Forms;  // MG: GTKInt uses forms, so the application object is destroyed
-           //   in the forms finalization section AFTER this finalization
-           //   section. But the lcl objects need the gtk to close clean.
-           //   Therefore the application object is freed here before the
-           //   InterfaceObject.
-           //   Probably this is the case for all interfaces, so this should be
-           //   moved to forms.pp.
+  GTKInt, Clipbrd, SysUtils,
+  Forms;  // MG: GTKInt uses forms, so the application object is destroyed
+          //   in the forms finalization section AFTER this finalization
+          //   section. But the lcl objects need the gtk to close cleanly.
+          //   Therefore the application object is freed here before the
+          //   InterfaceObject.
+          //   Probably this is the case for all interfaces, so this should be
+          //   moved to forms.pp.
 
 initialization
-
   InterfaceObject := TgtkObject.Create;
 
 finalization

@@ -1,6 +1,19 @@
 {
   Author: Mattias Gaertner
 
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
   Abstract:
     This unit maintains and stores all lazarus resources in the global list
     named LazarusResources.
@@ -9,11 +22,9 @@
     Lazarus resources are normally included via an include directive in the
     initialization part of a unit. To create such include files use the
     BinaryToLazarusResourceCode procedure.
-    To create a LFC file from an LFM file use the LFMtoLFCfile function which
+    To create a LRS file from an LFM file use the LFMtoLRSfile function which
     transforms the LFM text to binary format and stores it as Lazarus resource
     include file.
-
-  ToDo:
 
 }
 unit LResources;
@@ -51,9 +62,9 @@ type
 
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
   ResourceName, ResourceType:AnsiString);
-function LFMtoLFCfile(LFMfilename:ansistring):boolean;
+function LFMtoLRSfile(LFMfilename:ansistring):boolean;
  // returns true if successful
-function LFMtoLFCstream(LFMStream,LFCStream:TStream):boolean;
+function LFMtoLRSstream(LFMStream,LFCStream:TStream):boolean;
  // returns true if successful
 function FindLFMClassName(LFMStream:TStream):AnsiString;
 
@@ -163,7 +174,7 @@ begin
   LFMStream.Position:=0;
 end;
 
-function LFMtoLFCfile(LFMfilename:ansistring):boolean;
+function LFMtoLRSfile(LFMfilename:ansistring):boolean;
 // returns true if successful
 var
   LFMFileStream,LFCFileStream:TFileStream;
@@ -181,7 +192,7 @@ begin
       LFMfilenameExt:=ExtractFileExt(LFMfilename);
       LFCfilename:=copy(LFMfilename,1,
                     length(LFMfilename)-length(LFMfilenameExt))+'.lfc';
-      Result:=LFMtoLFCstream(LFMMemStream,LFCMemStream);
+      Result:=LFMtoLRSstream(LFMMemStream,LFCMemStream);
       if not Result then exit;
       LFCMemStream.Position:=0;
       LFCFileStream:=TFileStream.Create(LFCfilename,fmCreate);
@@ -197,13 +208,13 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('LFMtoLFCfile ',E.Message);
+      writeln('LFMtoLRSfile ',E.Message);
       Result:=false;
     end;
   end;
 end;
 
-function LFMtoLFCstream(LFMStream,LFCStream:TStream):boolean;
+function LFMtoLRSstream(LFMStream,LFCStream:TStream):boolean;
 // returns true if successful
 var FormClassName:ansistring;
   BinStream:TMemoryStream;

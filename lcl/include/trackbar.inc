@@ -2,8 +2,21 @@
 
 {******************************************************************************
                                   TTrackBar
- ******************************************************************************}
-{ 
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+ 
   current design flaws:
 
   - I decided to support some gtk-specific properties in this class. This
@@ -367,6 +380,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2002/05/10 06:05:56  lazarus
+  MG: changed license to LGPL
+
   Revision 1.4  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

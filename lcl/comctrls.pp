@@ -2,21 +2,25 @@
 {
  /***************************************************************************
                                ComCtrls.pp
-                             -------------------
+                               -----------
                              Component Library Common Controls
                    Initial Revision  : Sat Apr 10 22:49:32 CST 1999
 
 
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 {
 @abstract(Just a try to provide the same objects as the Delphi comctrls unit)
@@ -1555,6 +1559,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/05/10 06:05:48  lazarus
+  MG: changed license to LGPL
+
   Revision 1.33  2002/05/06 08:50:36  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 

@@ -1,4 +1,4 @@
-(******************************************************************************
+{******************************************************************************
                          All GTK Winapi implementations.
                    Initial Revision  : Sat Nov 13 12:53:53 1999
 
@@ -9,8 +9,21 @@
 
  ******************************************************************************
  Implementation
- ******************************************************************************)
+ ******************************************************************************
 
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 {$IFOPT C-}
 // Uncomment for local trace
 //  {$C+}
@@ -4442,6 +4455,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/05/10 06:05:57  lazarus
+  MG: changed license to LGPL
+
   Revision 1.67  2002/05/09 12:41:30  lazarus
   MG: further clientrect bugfixes
 

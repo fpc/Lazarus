@@ -11,6 +11,20 @@
 
   !! Keep this alphabetical and place a pointer to the independent part 
   !! if needed 
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
  ******************************************************************************)
 
 {******************************************************************************
@@ -252,6 +266,9 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/05/10 06:05:56  lazarus
+  MG: changed license to LGPL
+
   Revision 1.23  2002/05/09 12:41:28  lazarus
   MG: further clientrect bugfixes
 

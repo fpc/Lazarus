@@ -1,21 +1,25 @@
 {
  /***************************************************************************
-                               menus.pp
-                             -------------------
+                                     menus.pp
+                                     --------
                 Component Library TMenu, TMenuItem, TMenuBar Controls
                    Initial Revision  : Mon Jul 26 0:10:12 1999
 
 
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 
 {
@@ -40,7 +44,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses vclglobals, classes, sysutils, LMessages;
+uses
+  VCLGlobals, Classes, SysUtils, LMessages;
 
 
 type
@@ -201,6 +206,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2002/05/10 06:05:50  lazarus
+  MG: changed license to LGPL
+
   Revision 1.9  2002/05/09 12:41:28  lazarus
   MG: further clientrect bugfixes
 

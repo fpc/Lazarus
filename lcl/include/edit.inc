@@ -1,15 +1,32 @@
 // included by stdctrls.pp
 
-(******************************************************************************
+{******************************************************************************
                                      TEdit
                                 base found in stdctrls.pp
- ******************************************************************************)
+ ******************************************************************************
+ 
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 // included by stdctrls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/05/10 06:05:52  lazarus
+  MG: changed license to LGPL
+
   Revision 1.2  2002/04/18 08:09:03  lazarus
   MG: added include comments
 
