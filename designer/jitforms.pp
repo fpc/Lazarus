@@ -256,15 +256,34 @@ type
     // Fields: array[Word] of TFieldInfo;  Elements have variant size!
   end;
 
+function GetVMTSize(AClass: TClass): integer;
+var
+  p: PPointer;
+begin
+  Result:=10000;
+  if AClass=nil then exit;
+  p:=PPointer(pointer(AClass)+vmtMethodStart);
+  Result:=vmtMethodStart;
+  while (p^<>nil) and (Result<10000) do begin
+    inc(p);
+    inc(Result,SizeOf(Pointer));
+  end;
+end;
+
 function FindVMTMethodOffset(AClass: TClass; MethodPointer: Pointer): integer;
 var
   i: Integer;
+  p: Pointer;
 begin
-  for i:=0 to 1000 do begin
-    if PPointer(pointer(AClass))[i]=MethodPointer then begin
+  i:=vmtMethodStart div SizeOf(Pointer);
+  while i<=10000 do begin
+    p:=PPointer(pointer(AClass))[i];
+    if p=nil then break;
+    if p=MethodPointer then begin
       Result:=i*SizeOf(Pointer);
       exit;
     end;
+    inc(i);
   end;
   Result:=0;
 end;
@@ -901,10 +920,6 @@ function TJITComponentList.CreateNewJITClass(ParentClass: TClass;
 // Create a new class (vmt, virtual method table, field table and typeinfo)
 // that descends from ParentClass.
 // The new class will have no new variables, now new methods and no new fields.
-const
-  vmtTailSize = 1000; // I don't know, how big the vmt must be,
-                      // just make sure it is big enough.
-  vmtSize = vmtMethodStart+vmtTailSize;
 var
   NewVMT: Pointer;
   ClassNamePShortString: Pointer;
@@ -915,6 +930,8 @@ var
   TypeInfoSize: Integer;
   TypeDataSize: Integer;
   AddedPropCount: PWord;
+  vmtSize: Integer;
+  vmtTailSize: Integer;
 begin
   if ParentClass=nil then
     raise Exception.Create('CreateNewClass ParentClass=nil');
@@ -929,6 +946,8 @@ begin
   Result:=nil;
 
   // create vmt
+  vmtSize:=GetVMTSize(ParentClass);
+  vmtTailSize:=vmtSize-vmtMethodStart;
   GetMem(NewVMT,vmtSize);
   FillChar(NewVMT^,vmtSize,0);
 
