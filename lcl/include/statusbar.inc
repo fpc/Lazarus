@@ -27,8 +27,9 @@ begin
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   Color := clBtnFace;
-  Height:=20;
+  Anchors:=[akLeft,akRight,akBottom];
   Align := alBottom;
+  Height:=20;
 end;
 
 

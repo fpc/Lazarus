@@ -946,7 +946,6 @@ begin
   itmViewCodeExplorer := TMenuItem.Create(Self);
   itmViewCodeExplorer.Name:='itmViewCodeExplorer';
   itmViewCodeExplorer.Caption := lisMenuViewCodeExplorer;
-  itmViewCodeExplorer.Enabled := false;
   mnuView.Add(itmViewCodeExplorer);
 
   mnuView.Add(CreateMenuSeparator);

@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TFindDeclarationTool enhances the TPascalParserTool with the ability
+    TFindDeclarationTool enhances the TPascalReaderTool with the ability
     to find the source position or code tree node of a declaration.
 
 
@@ -78,7 +78,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, PascalParserTool, FileProcs, DefineTemplates, FindDeclarationCache;
+  TypInfo, PascalParserTool, PascalReaderTool, FileProcs, DefineTemplates,
+  FindDeclarationCache;
 
 type
   TFindDeclarationTool = class;
@@ -459,7 +460,7 @@ type
 
   { TFindDeclarationTool }
 
-  TFindDeclarationTool = class(TPascalParserTool)
+  TFindDeclarationTool = class(TPascalReaderTool)
   private
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     FOnFindUsedUnit: TOnFindUsedUnit;

@@ -212,11 +212,13 @@ type
     function GetUnitLinksForDirectory(const Directory: string): string;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    // syntax checking  (true on syntax is ok)
+    
+    // code exploring
+    function Explore(Code: TCodeBuffer; var ACodeTool: TCodeTool;
+          WithStatements: boolean): boolean;
     function CheckSyntax(Code: TCodeBuffer; var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer; var ErrorMsg: string): boolean;
-          
+
     // compiler directives
     function GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
@@ -240,7 +242,7 @@ type
     function GuessUnclosedBlock(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
-
+          
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
@@ -258,7 +260,7 @@ type
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
           var Identifier: string): boolean;
 
-    // resource string sections
+    // resourcestring sections
     function GatherResourceStringSections(
           Code: TCodeBuffer; X,Y: integer;
           CodePositions: TCodeXYPositions): boolean;
@@ -739,6 +741,22 @@ begin
   Result:=Evaluator[ExternalMacroStart+'UnitLinks'];
 end;
 
+function TCodeToolManager.Explore(Code: TCodeBuffer;
+  var ACodeTool: TCodeTool; WithStatements: boolean): boolean;
+begin
+  Result:=false;
+  ACodeTool:=nil;
+  try
+    if InitCurCodeTool(Code) then begin
+      ACodeTool:=FCurCodeTool;
+      FCurCodeTool.Explore(WithStatements);
+      Result:=true;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
 function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
 var MainCode: TCodeBuffer;
 begin
@@ -839,16 +857,10 @@ function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
   var ErrorMsg: string): boolean;
 // returns true on syntax correct
+var
+  ACodeTool: TCodeTool;
 begin
-  Result:=false;
-  try
-    if InitCurCodeTool(Code) then begin
-      FCurCodeTool.BuildTree(false);
-      Result:=true;
-    end;
-  except
-    on e: Exception do Result:=HandleException(e);
-  end;
+  Result:=Explore(Code,ACodeTool,true);
   NewCode:=ErrorCode;
   NewX:=ErrorColumn;
   NewY:=ErrorLine;

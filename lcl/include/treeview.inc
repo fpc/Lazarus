@@ -38,7 +38,25 @@ const
   // maximum scroll range
   //MAX_SCROLL = 32767;
 
+function CompareExpandedNodes(Data1, Data2: Pointer): integer;
+var
+  Node1: TTreeNodeExpandedState;
+  Node2: TTreeNodeExpandedState;
+begin
+  Node1:=TTreeNodeExpandedState(Data1);
+  Node2:=TTreeNodeExpandedState(Data2);
+  Result:=AnsiCompareText(Node1.NodeText,Node2.NodeText);
+end;
 
+function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
+var
+  NodeText: String;
+  Node: TTreeNodeExpandedState;
+begin
+  NodeText:=String(Key);
+  Node:=TTreeNodeExpandedState(Data);
+  Result:=AnsiCompareText(NodeText,Node.NodeText);
+end;
 
 procedure TreeViewError(const Msg: string);
 begin
@@ -81,6 +99,75 @@ begin
   Result:=-1;
 end;
 
+{ TTreeNodeExpandedState }
+
+constructor TTreeNodeExpandedState.Create(FirstTreeNode: TTreeNode);
+begin
+  CreateChildNodes(FirstTreeNode);
+end;
+
+constructor TTreeNodeExpandedState.Create(TreeView: TCustomTreeView);
+begin
+  CreateChildNodes(TreeView.Items.GetFirstNode);
+end;
+
+destructor TTreeNodeExpandedState.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TTreeNodeExpandedState.Clear;
+begin
+  if Childs<>nil then begin
+    Childs.FreeAndClear;
+    FreeThenNil(Childs);
+  end;
+end;
+
+procedure TTreeNodeExpandedState.CreateChildNodes(FirstTreeNode: TTreeNode);
+var
+  ChildNode: TTreeNode;
+  NewExpandedNode: TTreeNodeExpandedState;
+begin
+  if (FirstTreeNode<>nil) and (FirstTreeNode.Parent<>nil) then
+    NodeText:=FirstTreeNode.Parent.Text
+  else
+    NodeText:='';
+  Clear;
+  ChildNode:=FirstTreeNode;
+  while ChildNode<>nil do begin
+    if ChildNode.Expanded then begin
+      if Childs=nil then Childs:=TAvgLvlTree.Create(@CompareExpandedNodes);
+      NewExpandedNode:=TTreeNodeExpandedState.Create(ChildNode.GetFirstChild);
+      Childs.Add(NewExpandedNode);
+    end;
+    ChildNode:=ChildNode.GetNextSibling;
+  end;
+end;
+
+procedure TTreeNodeExpandedState.Apply(FirstTreeNode: TTreeNode);
+var
+  ChildNode: TTreeNode;
+  ANode: TAvgLvlTreeNode;
+  ChildNodeText: String;
+begin
+  if Childs=nil then exit;
+  ChildNode:=FirstTreeNode;
+  while ChildNode<>nil do begin
+    ChildNodeText:=ChildNode.Text;
+    ANode:=Childs.FindKey(PChar(ChildNodeText),@CompareTextWithExpandedNode);
+    ChildNode.Expanded:=ANode<>nil;
+    if ANode<>nil then
+      TTreeNodeExpandedState(ANode.Data).Apply(ChildNode.GetFirstChild);
+    ChildNode:=ChildNode.GetNextSibling;
+  end;
+end;
+
+procedure TTreeNodeExpandedState.Apply(TreeView: TCustomTreeView);
+begin
+  Apply(TreeView.Items.GetFirstNode);
+end;
 
 { TTreeNode }
 

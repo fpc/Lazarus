@@ -38,9 +38,9 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, LCLStrConsts, Controls, Forms, LclLinux, LCLType, LCLProc,
-  StdCtrls, ExtCtrls, vclGlobals, lMessages, Menus, ImgList, GraphType,
-  Graphics, ToolWin, CommCtrl, Buttons, Math;
+  SysUtils, Classes, LCLStrConsts, LCLLinux, LCLType, LCLProc, AvgLvlTree,
+  Controls, Forms, StdCtrls, ExtCtrls, vclGlobals, LMessages, Menus, ImgList,
+  GraphType, Graphics, ToolWin, CommCtrl, Buttons, Math;
 
 type
   TStatusPanelStyle = (psText, psOwnerDraw);
@@ -599,6 +599,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
+
 
 { TToolBar }
 
@@ -1206,7 +1207,8 @@ type
     property Top: integer read GetTop;
   end;
 
-{ TTreeNodes }
+
+  { TTreeNodes }
 
   PNodeCache = ^TNodeCache;
   TNodeCache = record
@@ -1296,7 +1298,7 @@ type
       read GetTopLvlItems write SetTopLvlItems;
   end;
 
-{ TCustomTreeView }
+  { TCustomTreeView }
 
   TTreeViewState = (
     tvsScrollbarChanged,
@@ -1699,6 +1701,35 @@ type
     property OnStartDrag;
     property Items;
   end;
+  
+
+  { TTreeNodeExpandedState }
+  { class to store and restore the expanded state of a TTreeView
+    The nodes are identified by their Text property.
+    
+    Usage example:
+      // save old expanded state
+      OldExpanded:=TTreeNodeExpandedState.Create(ATreeView);
+      ... change a lot of nodes ...
+      // restore old expanded state
+      OldExpanded.Apply(ATreeView);
+      OldExpanded.Free;
+   }
+
+  TTreeNodeExpandedState = class
+    NodeText: string;
+    Childs: TAvgLvlTree;
+    constructor Create(FirstTreeNode: TTreeNode);
+    constructor Create(TreeView: TCustomTreeView);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure CreateChildNodes(FirstTreeNode: TTreeNode);
+    procedure Apply(FirstTreeNode: TTreeNode);
+    procedure Apply(TreeView: TCustomTreeView);
+  end;
+
+function CompareExpandedNodes(Data1, Data2: Pointer): integer;
+function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
 
 function InitCommonControl(CC: Integer): Boolean;
 procedure CheckCommonControl(CC: Integer);
@@ -1769,6 +1800,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/06/19 16:36:35  mattias
+  started codeexplorer
+
   Revision 1.78  2003/06/18 11:21:06  mattias
   fixed taborder=0, implemented TabOrder Editor
 

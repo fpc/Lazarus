@@ -15,12 +15,12 @@ interface
 
 uses
   MemCheck,
-  CodeToolManager, CustomCodeTool, PascalParserTool, FindDeclarationTool,
-  StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
-  FindDeclarationCache, BasicCodeTools, CodeTree, CodeAtom, SourceChanger,
-  CodeToolMemManager, CodeCache, KeywordFuncLists, SourceLog, ExprEval,
-  DefineTemplates, FileProcs, AVL_Tree, CodeToolsStrConsts,
-  MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs;
+  CodeToolManager, CustomCodeTool, PascalParserTool, PascalReaderTool,
+  FindDeclarationTool, StdCodeTools, MethodJumpTool, EventCodeTool,
+  CodeCompletionTool, LinkScanner, FindDeclarationCache, BasicCodeTools,
+  CodeTree, CodeAtom, SourceChanger, CodeToolMemManager, CodeCache,
+  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, AVL_Tree,
+  CodeToolsStrConsts, MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs;
 
 
 implementation
@@ -30,6 +30,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/06/19 16:36:35  mattias
+  started codeexplorer
+
   Revision 1.13  2003/03/02 09:04:02  mattias
   added make resourcestring dialog, not finished
 

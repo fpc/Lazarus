@@ -46,9 +46,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
-  IdentCompletionTool, PascalParserTool, SourceLog, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger,
-  CustomCodeTool, CodeToolsStructs;
+  IdentCompletionTool, PascalReaderTool, PascalParserTool, SourceLog,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
+  SourceChanger, CustomCodeTool, CodeToolsStructs;
 
 type
   TStandardCodeTool = class(TIdentCompletionTool)
@@ -59,12 +59,14 @@ type
     function ReadForwardTilAnyBracketClose: boolean;
     function ReadBackwardTilAnyBracketClose: boolean;
   public
+    // explore the code
+    function Explore(WithStatements: boolean): boolean;
+  
     // source name  e.g. 'unit UnitName;'
-    function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function GetSourceName: string;
     function GetCachedSourceName: string;
     function RenameSource(const NewName: string;
-        SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
         
     // uses sections
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
@@ -234,24 +236,11 @@ end;
 
 { TStandardCodeTool }
 
-function TStandardCodeTool.GetSourceNamePos(
-  var NamePos: TAtomPosition): boolean;
-begin
-  Result:=false;
-  BuildTree(true);
-  NamePos.StartPos:=-1;
-  if Tree.Root=nil then exit;
-  MoveCursorToNodeStart(Tree.Root);
-  ReadNextAtom; // read source type 'program', 'unit' ...
-  ReadNextAtom; // read name
-  NamePos:=CurPos;
-  Result:=(NamePos.StartPos<=SrcLen);
-end;
-
 function TStandardCodeTool.GetSourceName: string;
 var NamePos: TAtomPosition;
 begin
   Result:='';
+  BuildTree(true);
   if not GetSourceNamePos(NamePos) then exit;
   CachedSourceName:=copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos);
   Result:=CachedSourceName;
@@ -284,6 +273,7 @@ function TStandardCodeTool.RenameSource(const NewName: string;
 var NamePos: TAtomPosition;
 begin
   Result:=false;
+  BuildTree(true);
   if (not GetSourceNamePos(NamePos)) or (NamePos.StartPos<1) or (NewName='')
   or (Length(NewName)>255) then exit;
   SourceChangeCache.MainScanner:=Scanner;
@@ -1486,7 +1476,7 @@ function TStandardCodeTool.GatherResourceStringSections(
   function SearchInUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
     InAtom, UnitNameAtom: TAtomPosition;
-    NewCodeTool: TPascalParserTool;
+    NewCodeTool: TPascalReaderTool;
     ANode: TCodeTreeNode;
     NewCaret: TCodeXYPosition;
   begin
@@ -2579,6 +2569,30 @@ begin
   end else if OpenBracket=']' then begin
     Result:=ReadBackTilBracketOpen(false);
   end;
+end;
+
+function TStandardCodeTool.Explore(WithStatements: boolean): boolean;
+
+  procedure ExploreNode(ANode: TCodeTreeNode);
+  begin
+    if ANode=nil then exit;
+    case ANode.Desc of
+    ctnClass,ctnClassInterface:
+      BuildSubTreeForClass(ANode);
+    ctnProcedure,ctnProcedureHead:
+      BuildSubTreeForProcHead(ANode);
+    ctnBeginBlock:
+      if WithStatements then
+        BuildSubTreeForBeginBlock(ANode);
+    end;
+    ExploreNode(ANode.FirstChild);
+    ExploreNode(ANode.NextBrother);
+  end;
+
+begin
+  Result:=true;
+  BuildTree(false);
+  ExploreNode(Tree.Root);
 end;
 
 

@@ -103,97 +103,6 @@ implementation
 
 uses Math;
 
-type
-  TExpandedNode = class
-    NodeText: string;
-    Childs: TAVLTree;
-    constructor Create(FirstTreeNode: TTreeNode);
-    destructor Destroy; override;
-    procedure Clear;
-    procedure CreateChildNodes(FirstTreeNode: TTreeNode);
-    procedure Apply(FirstTreeNode: TTreeNode);
-  end;
-
-function CompareExpandedNodes(Data1, Data2: Pointer): integer;
-var
-  Node1: TExpandedNode;
-  Node2: TExpandedNode;
-begin
-  Node1:=TExpandedNode(Data1);
-  Node2:=TExpandedNode(Data2);
-  Result:=AnsiCompareText(Node1.NodeText,Node2.NodeText);
-end;
-
-function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
-var
-  NodeText: String;
-  Node: TExpandedNode;
-begin
-  NodeText:=String(Key);
-  Node:=TExpandedNode(Data);
-  Result:=AnsiCompareText(NodeText,Node.NodeText);
-end;
-
-{ TExpandedNode }
-
-constructor TExpandedNode.Create(FirstTreeNode: TTreeNode);
-begin
-  CreateChildNodes(FirstTreeNode);
-end;
-
-destructor TExpandedNode.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-procedure TExpandedNode.Clear;
-begin
-  if Childs<>nil then begin
-    Childs.FreeAndClear;
-    FreeThenNil(Childs);
-  end;
-end;
-
-procedure TExpandedNode.CreateChildNodes(FirstTreeNode: TTreeNode);
-var
-  ChildNode: TTreeNode;
-  NewExpandedNode: TExpandedNode;
-begin
-  if (FirstTreeNode<>nil) and (FirstTreeNode.Parent<>nil) then
-    NodeText:=FirstTreeNode.Parent.Text
-  else
-    NodeText:='';
-  Clear;
-  ChildNode:=FirstTreeNode;
-  while ChildNode<>nil do begin
-    if ChildNode.Expanded then begin
-      if Childs=nil then Childs:=TAVLTree.Create(@CompareExpandedNodes);
-      NewExpandedNode:=TExpandedNode.Create(ChildNode.GetFirstChild);
-      Childs.Add(NewExpandedNode);
-    end;
-    ChildNode:=ChildNode.GetNextSibling;
-  end;
-end;
-
-procedure TExpandedNode.Apply(FirstTreeNode: TTreeNode);
-var
-  ChildNode: TTreeNode;
-  ANode: TAVLTreeNode;
-  ChildNodeText: String;
-begin
-  if Childs=nil then exit;
-  ChildNode:=FirstTreeNode;
-  while ChildNode<>nil do begin
-    ChildNodeText:=ChildNode.Text;
-    ANode:=Childs.FindKey(PChar(ChildNodeText),@CompareTextWithExpandedNode);
-    ChildNode.Expanded:=ANode<>nil;
-    if ANode<>nil then
-      TExpandedNode(ANode.Data).Apply(ChildNode.GetFirstChild);
-    ChildNode:=ChildNode.GetNextSibling;
-  end;
-end;
-
 { TPkgGraphExplorer }
 
 procedure TPkgGraphExplorer.PkgGraphExplorerResize(Sender: TObject);
@@ -534,7 +443,7 @@ var
   NextViewNode: TTreeNode;
   HiddenNode: TAVLTreeNode;
   CurPkg: TLazPackage;
-  OldExpanded: TExpandedNode;
+  OldExpanded: TTreeNodeExpandedState;
 begin
   // rebuild internal sorted packages
   fSortedPackages.Clear;
@@ -544,7 +453,7 @@ begin
   // rebuild the TreeView
   PkgTreeView.BeginUpdate;
   // save old expanded state
-  OldExpanded:=TExpandedNode.Create(PkgTreeView.Items.GetFirstNode);
+  OldExpanded:=TTreeNodeExpandedState.Create(PkgTreeView);
   // create first level
   CurIndex:=0;
   HiddenNode:=fSortedPackages.FindLowest;
@@ -569,7 +478,7 @@ begin
     ViewNode:=NextViewNode;
   end;
   // restore old expanded state
-  OldExpanded.Apply(PkgTreeView.Items.GetFirstNode);
+  OldExpanded.Apply(PkgTreeView);
   OldExpanded.Free;
   // completed
   PkgTreeView.EndUpdate;
