@@ -1968,7 +1968,7 @@ begin
 
   {$IFDEF VerboseKeyboard}
   DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
-    ' ',dbgs(Event^.theType),' Widget=',GetWidgetClassName(Widget),
+    ' ',dbgs(Event^.{$IFDEF GTK1}theType{$ELSE}_Type{$ENDIF}),' Widget=',GetWidgetClassName(Widget),
     ' Before=',dbgs(BeforeEvent),' HandledByLCL=',dbgs(HandledByLCL));
   {$ENDIF}
 
@@ -2100,7 +2100,10 @@ begin
         StopKeyEvent('key_press_event');
       end;
 
-      if (not EventStopped) and (not BeforeEvent) and CanSendChar
+      if EventStopped or BeforeEvent
+      then
+        Exit(EventStopped);
+      if CanSendChar
       then begin
         EventTrace('char', data);
 
@@ -2157,31 +2160,28 @@ begin
         
       end;
 
-      if (not EventStopped) and (not BeforeEvent) then begin
-        // send the UTF8 keypress
-        // try to get the UTF8 representation of the key
-        Character:='';
-        if (Event^.length>0) and (Event^.length<7) then begin
-          SetLength(Character,Event^.length);
-          System.Move(Event^.thestring^,Character[1],length(Character));
-        end else begin
-          {$IFDEF Gtk2}
-          Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
-          {$ENDIF}
-        end;
-        {$IFDEF VerboseKeyboard}
-        debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
-        {$ENDIF}
-        if Character<>'' then begin
-          LCLObject:=GetNearestLCLObject(TargetWidget);
-          if LCLObject is TWinControl then begin
-            Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1);
-            if Result or (Character='') then
-              StopKeyEvent('key_press_event');
-          end;
+      // send the UTF8 keypress
+      // try to get the UTF8 representation of the key
+{$IFDEF GTK1}
+      Character:='';
+      if (Event^.length>0) and (Event^.length<7) then begin
+        SetLength(Character,Event^.length);
+        System.Move(Event^.thestring^,Character[1],length(Character));
+      end
+{$ELSE GTK1}
+      Character := UnicodeToUTF8(gdk_keyval_to_unicode(Event^.KeyVal));
+{$ENDIF GTK1}
+      {$IFDEF VerboseKeyboard}
+      debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
+      {$ENDIF}
+      if Character<>'' then begin
+        LCLObject:=GetNearestLCLObject(TargetWidget);
+        if LCLObject is TWinControl then begin
+          Result:=TWinControl(LCLObject).IntfUTF8KeyPress(Character,1);
+          if Result or (Character='') then
+            StopKeyEvent('key_press_event');
         end;
       end;
-      
     end;
   end;
 //DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
@@ -7235,6 +7235,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.300  2004/09/02 14:58:14  mazen
+  * fixed theType/_Type related to GTK1/GTK2 difference
+  * fix return error which causes GTK2 not to call AfterEvent
+  * Test on BeforeEvent and EventStopped now exists directly
+    in key press, as no more things are done.
+  * _string/theString field are depreciated, please don't use
+    them with GTK2
+
   Revision 1.299  2004/09/02 09:17:00  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 
