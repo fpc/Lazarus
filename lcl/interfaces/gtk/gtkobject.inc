@@ -4539,8 +4539,8 @@ begin
     end;
 
   csPanel:
-    with (TPanel(Sender)) do
     begin
+      // create a fixed widget in a horizontal box
       p := gtk_hbox_new(false,0);
       TempWidget := gtk_fixed_new();
       gtk_container_add(GTK_CONTAINER(P), TempWidget);
@@ -6827,6 +6827,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.317  2003/01/01 12:38:53  mattias
+  clean ups
+
   Revision 1.316  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 
