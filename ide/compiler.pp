@@ -172,19 +172,20 @@ begin
       end;
     end;
     try
-      try
-        CheckIfFileIsExecutable(CmdLine);
-      except
-        writeln('BBBBBBBB');
-      end;
+      CheckIfFileIsExecutable(CmdLine);
     except
       on E: Exception do begin
-writeln('********** A ');
-writeln('********** B ',E<>nil);
-        OutputLine:='Error: '+E.Message;
-writeln('********** ',OutputLine);
+        OutputLine:='Error: invalid compiler: '+E.Message;
+        writeln(OutputLine);
         if Assigned(OnOutputString) then
           OnOutputString(OutputLine);
+        if CmdLine='' then begin
+          OutputLine:='Hint: you can set the compiler path in '
+             +'Environment->General Options->Files->Compiler Path';
+          writeln(OutputLine);
+          if Assigned(OnOutputString) then
+            OnOutputString(OutputLine);
+        end;
         exit;
       end;
     end;
@@ -328,6 +329,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2001/12/10 08:19:52  lazarus
+  MG: added hint for unset compiler path
+
   Revision 1.23  2001/12/10 07:47:00  lazarus
   MG: minor fixes
 
