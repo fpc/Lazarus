@@ -152,6 +152,8 @@ type
     procedure SetPages(Value: TStrings);
     procedure SetShowTabs(AValue: Boolean);
     procedure SetTabPosition(tabPos: TTabPosition);
+    procedure UpdateAllDesignerFlags;
+    procedure UpdateDesignerFlags(APageIndex: integer);
   protected
     procedure CreateParams(var Params: TCreateParams);override;
     procedure CreateWnd; override;
@@ -557,6 +559,9 @@ end.
 
  {
   $Log$
+  Revision 1.46  2002/11/18 17:06:29  mattias
+  improved designer rubberband
+
   Revision 1.45  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
