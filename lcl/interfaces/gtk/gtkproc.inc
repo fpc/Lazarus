@@ -3790,9 +3790,21 @@ Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 var
   NewStr : PChar;
+  i: integer;
 begin
-  NewStr := RemoveAmpersands(Str, LineLength);
-  gdk_text_extents(Font, NewStr, StrLen(NewStr), lbearing, rBearing, width, ascent, descent);
+  NewStr:=Str;
+  // first check if Str contains an ampersand:
+  if (Str<>nil) then begin
+    i:=0;
+    while (not (Str[i] in [#0,'&'])) do inc(i);
+    if Str[i]='&' then begin
+      NewStr := RemoveAmpersands(Str, LineLength);
+    end;
+  end;
+  gdk_text_extents(Font, NewStr, StrLen(NewStr),
+                   lbearing, rBearing, width, ascent, descent);
+  if NewStr<>Str then
+    StrDispose(NewStr);
 end;
 
 {------------------------------------------------------------------------------
@@ -3974,6 +3986,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.142  2002/10/27 11:51:35  lazarus
+  MG: fixed memleaks
+
   Revision 1.141  2002/10/25 15:27:03  lazarus
   AJ: Moved form contents creation to gtkproc for code
       reuse between GNOME and GTK, and to make GNOME MDI
