@@ -1,467 +1,1109 @@
 //******************************************************************************
-//				TestTools.inc
+//                              TestTools.inc
 //******************************************************************************
+Const
 
-//------------------------------------------------------------------------------
-//				LoadTestTools is a procedure
-//				that loads all test components
-//------------------------------------------------------------------------------
-procedure TForm1.LoadTestTools;
+Info : Array[0..5] of PChar = ('        Do not exist yet...       ',
+                               ' This component is completed !  '+#10#13+' Minor errors could be at presence, '+#10#13+'report them to the Lazarus team.',
+                               ' Almost completed, some procedures '+#10#13+' are missing in consideration to '+#10#13+' Delphi5 compatibility and some minor '+#10#13+' errors are at presence',
+                               ' Basic code completed, finalization '+#10#13+' and cleanup is necessary. '+#10#13+' Errors are at presence.  ',
+                               ' A few procedures are completed, many errors are at presence. ',
+                               ' Could crash/freeze your system! It will be created when you push this button. Try it on your own risk!');
+FileN : Array[0..8] of String =('bitbtn.xpm','listbox.xpm','newform.xpm','newunit.xpm',
+                                'notebook.xpm','memo.xpm','mouse.xpm','checkbox.xpm','viewunits.xpm');
+//-----------------------------------------------------------------------------------
+//                              CreateTestTools is a procedure
+//                              that loads all test components
+//                              and procedures
+//-----------------------------------------------------------------------------------
+procedure TForm1.CreateTestTools;
+var
+i : Integer;
 begin
-AWidth := TEdit.Create(Self);		//Sets the width to Button2 when OK is pressed
-   with AWidth do
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TApplication Tools +++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+rdbOk               := TRadioButton.Create(Self); //RadioButton OK
+   FBoxStyle        := 0;
+   With rdbOk do
    begin
-     OnChange := @ButtonSizeChange;
-     Parent := NoteBook1.Page[1];
-     Top := 10;
-     Left := 90;
-     width := 40;
-     Text := IntToStr(Button2.Width);
-     Visible := true;
+     Checked        := True;
+     Parent         := BenchForm[1];
+     OnClick        := @BoxStyle;
+     Top            := 10;
+     Left           := 130;
+     Height         := 20;
+     Width          := 130;
+     Tag            := 0;
+     Show;
+     Caption        := 'OK';
    end;
-AHeight := TEdit.Create(Self);		//Sets the height to Button2 when OK is pressed
-   with AHeight do
+rdbOkCancel         := TRadioButton.Create(Self); //RadioButton OkCancel
+   With rdbOkCancel do
    begin
-     OnChange := @ButtonSizeChange;
-     Parent := NoteBook1.Page[1];
-     Top := 10;
-     Left := 135;
-     width := 40;
-     Text := IntToStr(Button2.Height);
-     Visible := true;
+     Parent         := BenchForm[1];
+     OnClick        := @BoxStyle;
+     Top            := 30;
+     Left           := 130;
+     Checked        := False;
+     Height         := 20;
+     Width          := 130;
+     Tag            := 1;
+     Show;
+     Caption        := 'OK,Cancel';
    end;
-btnOK := TBitBtn.Create(Self);		//The "ChangeSize Button2" OK button
-   with btnOK do
+rdbAbortRetryIgnore := TRadioButton.Create(Self); //RadioButton AbortRetryIgnore
+   With rdbAbortRetryIgnore do
    begin
-     OnClick := @ButtonSizeChange;
-     Parent := NoteBook1.Page[1];
-     Top := 10;
-     Left:= 185;
-     Width := 29;
-     Kind := bkCustom;
-     Caption := 'OK';
-     Hint := 'Change Size on Button2';
-     ShowHint := True;
-     Visible := True;
+     Parent         := BenchForm[1];
+     OnClick        := @BoxStyle;
+     Top            := 50;
+     Left           := 130;
+     Checked        := False;
+     Height         := 20;
+     Width          := 130;
+     Tag            := 2;
+     Show;
+     Caption        := 'Abort,Retry,Ignore';
    end;
-ChangeFont := TBitBtn.Create(Self);	//The BitBtn change font button
-   with ChangeFont do
+rdbYesNoCancel      := TRadioButton.Create(Self); //RadioButton YesNoCancel
+   With rdbYesNoCancel do
    begin
-     OnClick := @ChangeFontClick;
-     Parent := NoteBook1.Page[0];
-     Top := 43;
-     Left := 100;
-     Width := 90;
-     Height := 28;
-     Kind := bkCustom;
-     Caption := 'Change Font';
-     Hint := 'Execute FontDialog1...'+#10#13+'(Don´t work)';
-     ShowHint := True;
+     Parent         := BenchForm[1];
+     OnClick        := @BoxStyle;
+     Top            := 70;
+     Left           := 130;
+     Checked        := False;
+     Height         := 20;
+     Width          := 130;
+     Tag := 2;
+     Show;
+     Caption        := 'Yes,No,Cancel';
+   end;
+rdbYesNo            := TRadioButton.Create(Self); //RadioButton YesNo
+   With rdbYesNo do
+   begin
+     Parent         := BenchForm[1];
+     OnClick        := @BoxStyle;
+     Top            := 90;
+     Left           := 130;
+     Checked        := False;
+     Height         := 20;
+     Width          := 130;
+     Tag            := 2;
+     Show;
+     Caption        := 'Yes,No';
+   end;
+rdbRetryCancel      := TRadioButton.Create(Self); //RadioButton RetryCancel
+   With rdbRetryCancel do
+   begin
+     Parent         := BenchForm[1];
+     OnClick        := @BoxStyle;
+     Top            := 110;
+     Left           := 130;
+     Checked        := False;
+     Height         := 20;
+     Width          := 130;
+     Tag            := 2;
+     Show;
+     Caption        := 'Retry,Cancel';
+   end;
+btnShowBox          := TBitBtn.Create(Self); //MessageBox show button
+   with btnShowBox do
+   begin
+     OnClick        := @ShowBox;
+     Parent         := BenchForm[1];
+     Top            := 10;
+     Left           := 10;
+     Width          := 85;
+     Height         := 21;
+     Kind           := bkCustom;
+     Caption        := 'MessageBox';
+     Hint           := 'Show MessageBox style';
+     ShowHint       := True;
+     Visible        := True;
+   end;
+lblExeName          := TLabel.Create(Self); //Label showing Application.ExeName
+   With lblExeName do
+   begin
+     Parent         := BenchForm[1];
+     Top            := 130;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
+     Show;
+     Caption        := 'ExeName: '+Application.ExeName;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TBevel Tools +++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TBitBtn Tools ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cbbKind       := TComboBox.Create(Self);
+   with cbbKind do
+   begin
+     OnChange := @KindComboChange;
+     Parent   := BenchForm[3];
+     Top      := 10;
+     Left     := 110;
+     Width    := 105;
+     Height   := 28;
+     Items.Add('bkOK');
+     Items.Add('bkCancel');
+     Items.Add('bkHelp');
+     Items.Add('bkClose');
+     Items.Add('bkAll');
+     Items.Add('bkCustom');
      Show;
    end;
-LoadGlyph := TBitBtn.Create(Self);	//The BitBtn Load Glyph button
-   with LoadGlyph do
+cbbAlign      := TComboBox.Create(Self);
+   with cbbAlign do
    begin
-     OnClick := @LoadGlyphClick;
-     Parent := NoteBook1.Page[0];
-     Top := 10;
-     Left := 100;
-     Width := 90;
-     Height := 28;
-     Kind := bkCustom;
-     Caption := 'Load Glyph';
-     Hint := 'Execute OpenDialog1...'+#10#13+'(Don´t work)';
-     ShowHint := True;
-     Show;
-   end;
-ChangeStyleCombo := TComboBox.Create(Self);//The change style combobox
-   with ChangeStyleCombo do
-   begin
-     OnChange := @StyleComboChange;
-     Parent := NoteBook1.Page[0];
-     Top := 172;
-     Left := 100;
-     Width := 110;
-     Height := 28;
-     Items.Add('blGlyphLeft');
+     OnChange := @AlignComboChange;
+     Parent   := BenchForm[3];
+     Top      := 38;
+     Left     := 110;
+     Width    := 105;
+     Height   := 28;
      Items.Add('blGlyphTop');
      Items.Add('blGlyphBottom');
      Items.Add('blGlyphRight');
+     Items.Add('blGlyphLeft');
      Show;
    end;
-lblProp := TLabel.Create(Self);		//The ListBox "Properties" Label
-   with lblProp do
+btnGlyph      := TBitBtn.Create(Self);
+   with btnGlyph do
    begin
-     Parent := NoteBook1.Page[SaveIni.ReadInteger('TestAllSettings','Pageshow',0)];
+     OnClick  := @LoadGlyph;
+     Parent   := BenchForm[3];
+     Top      := 70;
+     Left     := 110;
+     Width    := 45;
+     Height   := 25;
+     Kind     := bkCustom;
+     Caption  := 'Glyph';
+     Hint     := 'Pick a Glyph (ONLY .xpm FILES)';
+     ShowHint := True;
+     Visible  := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TButton Tools ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+btnClrLotto   := TBitBtn.Create(Self); //Reset Lotto
+   with btnClrLotto do
+   begin
+     OnClick  := @LottoClear;
+     Parent   := BenchForm[4];
+     Top      := 140;  
+     Left     := 30;
+     Width    := 45;
+     Height   := 21;
+     Kind     := bkCustom;
+     Caption  := 'Again';
+     Hint     := 'Clear the Buttons';
+     ShowHint := True;
+     Visible  := True;
+   end;
+lblLResult    := TLabel.Create(Self); //Label Result
+   With lblLResult do
+   begin
+     Parent   := BenchForm[4];
+     Top      := 3;
+     Left     := 30;
+     Width    := 400;
+     Height   := 23;
+     Show;
+     Caption  := 'Result: ';
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TCanvas Tools ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cbbPaintType  := TComboBox.Create(Self); //What to paint
+   with cbbPaintType do
+   begin
+     Parent   := BenchForm[5];
+     Top      := 260;
+     Left     := 10;
+     Width    := 90;
+     Height   := 28;
+     Items.Add('Rectangle');
+     Items.Add('LineTo');
+     Show;
+   end;
+lblPaintWhat  := TLabel.Create(Self); //Label Paint what
+   With lblPaintWhat do
+   begin
+     Parent   := BenchForm[5];
+     Top      := 240;
+     Left     := 10;
+     Width    := 200;
+     Height   := 23;
+     Show;
+     Caption  := 'Paint what';
+   end;
+cbbBrushStyle := TComboBox.Create(Self); //Canvas.BrushStyle
+   with cbbBrushStyle do
+   begin
+     OnChange := @StyleSelect;
+     Parent   := BenchForm[5];
+     Top      := 260;
+     Left     := 105;
+     Width    := 100;
+     Height   := 28;
+     Items.Add('bsBDiagonal');
+     Items.Add('bsClear');
+     Items.Add('bsCross');
+     Items.Add('bsDiagCross');
+     Items.Add('bsFDiagonal');
+     Items.Add('bsHorizontal');
+     Items.Add('bsVertical');
+     Items.Add('bsSolid');
+     Show;
+   end;
+
+lblBrushStyle := TLabel.Create(Self); //Label Brush style
+   With lblBrushStyle do
+   begin
+     Parent   := BenchForm[5];
+     Top      := 240;
+     Left     := 105;
+     Width    := 200;
+     Height   := 23;
+     Show;
+     Caption  := 'Brush style';
+   end;
+
+cbbPenStyle := TComboBox.Create(Self); //Canvas.PenStyle
+   with cbbPenStyle do
+   begin
+     OnChange := @PenStyleSelect;
+     Parent   := BenchForm[5];
+     Top      := 220;
+     Left     := 10;
+     Width    := 110;
+     Height   := 28;
+     Items.Add('psClear');
+     Items.Add('psDash');
+     Items.Add('psDashDot');
+     Items.Add('psDashDotDot');
+     Items.Add('psDot');
+     Items.Add('psInsideFrame');
+     Items.Add('psSolid');
+     Show;
+   end;
+
+lblPenStyle := TLabel.Create(Self); //Label Pen style
+   With lblPenStyle do
+   begin
+     Parent   := BenchForm[5];
+     Top      := 200;
+     Left     := 10;
+     Width    := 200;
+     Height   := 23;
+     Show;
+     Caption  := 'Pen style';
+   end;
+
+btnPenColor   := TBitBtn.Create(Self); //PenColor select ColorDialog
+   with btnPenColor do
+   begin
+     OnClick  := @ColorSelect;
+     Parent   := BenchForm[5];
+     Top      := 263;
+     Left     := 210;
+     Width    := 45;
+     Height   := 21;
+     Kind     := bkCustom;
+     Caption  := 'Pen';
+     Hint     := 'Pen Color';
+     ShowHint := True;
+     Visible  := True;
+   end;
+
+btnBrushColor := TBitBtn.Create(Self); //BrushColor select ColorDialog
+   with btnBrushColor do
+   begin
+     OnClick  := @ColorSelect;
+     Parent   := BenchForm[5];
+     Top      := 263;
+     Left     := 260;
+     Width    := 45;
+     Height   := 21;
+     Kind     := bkCustom;
+     Caption  := 'Brush';
+     Hint     := 'Brush Color';
+     ShowHint := True;
+     Visible  := True;
+   end;
+
+btnGrad       := TBitBtn.Create(Self); //Gradient Canvas
+   with btnGrad do
+   begin
+     OnClick  := @GradCanvas;
+     Parent   := BenchForm[5];
+     Top      := 263;
+     Left     := 310;
+     Width    := 45;
+     Height   := 21;
+     Kind     := bkCustom;
+     Caption  := 'Grad';
+     Hint     := 'Gradient Canvas';
+     ShowHint := True;
+     Visible  := True;
+   end;
+
+btnCanvasClear := TBitBtn.Create(Self); //Clear Canvas
+   with btnCanvasClear do
+   begin
+     OnClick   := @ClearCanvas;
+     Parent    := BenchForm[5];
+     Top       := 5;  
+     Left      := 345;
+     Width     := 45;
+     Height    := 21;
+     Kind      := bkCustom;
+     Caption   := 'Clear';
+     Hint      := 'Clear the Canvas';
+     ShowHint  := True;
+     Visible   := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TCheckBox Tools ++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lblPick := Tlabel.Create(Self); //Label Pick a number
+   With lblPick do
+   begin
+     Parent := BenchForm[6];
+     Top := 3;
+     Left := 25;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'Pick a number !';
+   end;
+lblCount := Tlabel.Create(Self); //Label Count picks
+   With lblCount do
+   begin
+     Parent := BenchForm[6];
+     Top := 165;
+     Left := 25;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'Counter: '+IntToStr(CHCount);
+   end;
+btnAgain := TBitBtn.Create(Self);
+   with btnAgain do
+   begin
+     OnClick := @AgainClick;
+     Parent := BenchForm[6];
+     Top := 3;
+     Left:= 150;
+     Width := 45;
+     Height := 20;
+     Kind := bkCustom;
+     Caption := 'Again';
+     Hint := 'Play one more time !';
+     ShowHint := True;
+     Visible := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TClipboard Tools +++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD Clipboard CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TCListBox Tools ++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD CListBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TColorDialog Tool ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+btnColorSelect := TBitBtn.Create(Self);
+   with btnColorSelect do
+   begin
+     OnClick := @SelectedColor;
+     Parent := BenchForm[9];
+     Top := 10;
+     Left:= 10;
+     Width := 45;
+     Height := 20;
+     Kind := bkCustom;
+     Caption := 'Color';
+     Hint := 'Color Dialog (Some repaint problem, move the form to se the effect !!)';
+     ShowHint := True;
+     Visible := True;
+   end;
+lblColorInt := Tlabel.Create(Self); //Label The Color in Integer;
+   With lblColorInt do
+   begin
+     Parent := BenchForm[9];
      Top := 8;
-     Left := 295;
-     Width := 232;
-     Caption := 'Component Properties';
+     Left := 65;
+     Width := 200;
+     Height := 20;
      Show;
+     Caption := 'Integer Color: ';
    end;
-CoProp := TListBox.Create(Self);	//Component Properties ListBox
-   with CoProp do
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TComboBox Tools ++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+btnCbbAdd := TButton.Create(Self);
+   with btnCbbAdd do
    begin
-     Parent := NoteBook1.Page[SaveIni.ReadInteger('TestAllSettings','Pageshow',0)];
-     Top := 28;
-     Left := 295;
-     Width := 232;
-     Height := 100;
-     Visible := True;   
-   end;
-   CoProperties(BitBtn1);		//Load the CoProp at startup with BitBtn1
-lblEvent := TLabel.Create(Self);	//The Event Log Label
-   with lblEvent do
-   begin
-     Parent := Notebook1.Page[SaveIni.ReadInteger('TestAllSettings','Pageshow',0)];
-     top := 135;
-     Left := 295;
-     Width := 150;
-     Caption := 'Event Log';
-     Show;
-   end;
-ClearEvents := TBitBtn.Create(Self);	//The Clear button wich clears the Event Log
-   with ClearEvents do
-   begin
-     OnClick := @ClearEventLog;
-     Parent := NoteBook1.Page[SaveIni.ReadInteger('TestAllSettings','Pageshow',0)];
-     Top := 131;
-     Left := 485;
-     Width := 42;
-     Height := 22;
-     Kind := bkCustom;
-     Caption := 'Clear';
-     Hint := 'Clear Event Log';
-     ShowHint := True;
-     Show;
-   end;
-CoEvent := TListBox.Create(Self);	//Component Event Log ListBox
-   with CoEvent do
-   begin
-     Parent := NoteBook1.Page[SaveIni.ReadInteger('TestAllSettings','Pageshow',0)];
-     Top := 155;
-     Left := 295;
-     Height := 100;
-     Width := 232;
-     Show;
-   end;
-lblPages := TLabel.Create(Self);	//Pages count
-   with lblPages do
-   begin
-     Parent := Self;
-     Caption := IntToStr(NoteBook1.Pages.Count)+' Pages';
-     Top := 2;
-     Left := 480;
-     Width := 100;
-     Show;
-   end;
-btnPrev := TBitBtn.Create(Self);	//Slides the NoteBook to the right
-   with btnPrev do
-   begin
-     OnClick := @PrevClick;
-     Parent := Self;
-     Width := 25;
-     Caption := '<';
-     Name := 'btnPrev';
-     Top := 52;
-     Left := 488;
-     Kind := bkCustom;
-     layout := blGlyphLeft;
-     Height := 25;
-     Hint := 'Previous Page';
-     ShowHint := True;
-     Show;
-   end;
-btnNext := TBitBtn.Create(Self);	//Slides the NoteBook to the left
-   with btnNext do
-   begin
-     OnClick := @NextClick;
-     Parent := Self;
-     Width := 25;
-     Caption := '>';
-     Name := 'btnNext';
-     Top := 52;
-     Left := 513;
-     Kind := bkCustom;
-     layout := blGlyphRight;
-     Height := 25;
-     Hint := 'Next Page';
-     ShowHint := True;
-     Show;
-   end;
-SaveSettings := TCheckBox.Create(Self);		//If checked the lastpage setting is saved
-   with SaveSettings do
-   begin
-     OnClick := @SaveSettingsClick;
-     Checked := SaveIni.ReadBool('TestAllSettings','SaveSettings',False);
-     Parent := Self;
-     Width := 82;
-     Caption := 'Save View';
-     Left := 455;
-     Top := 20;
+     OnClick := @AddToCbb;
+     Height := 20;
+     Width := 55;
+     Parent := BenchForm[10];
+     Top := 16;
+     Left:= 178;
+     Cursor := crDefault;
      Enabled := True;
-     Hint := 'Save this view';
+     Hint := 'Add this to ComboBox1';
      ShowHint := True;
-     Show;
-   end;
-btnColor := TBitBtn.Create(Self);	//ColorDialog button
-   with btnColor do
-   begin
-     OnClick := @Speed4Click;
-     Parent := NoteBook1.Page[3];
-     Width := 80;
-     Caption := 'ColorDialog';
-     Name := 'btnColor';
-     Top := 10;
-     Left := 10;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Runs the ColorDialog';
-     ShowHint := True;
-     Show;
-   end;
-btnFont := TBitBtn.Create(Self);	//FontDialog button
-   with btnFont do
-   begin
-     OnClick := @Speed3Click;
-     Parent := NoteBook1.Page[7];
-     Width := 80;
-     Caption := 'FontDialog';
-     Name := 'btnFont';
-     Top := 10;
-     Left := 10;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Runs the FontDialog';
-     ShowHint := True;
-     Show;
-   end;
-btnOpen := TBitBtn.Create(Self);	//OpenDialog button
-   with btnOpen do
-   begin
-     OnClick := @Speed1Click;
-     Parent := NoteBook1.Page[13];
-     Width := 80;
-     Caption := 'OpenDialog';
-     Name := 'btnOpen';
-     Top := 10;
-     Left := 10;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Runs the OpenDialog';
-     ShowHint := True;
-     Show;
-   end;
-btnSave := TBitBtn.Create(Self);	//SaveDialog button
-   with btnOpen do
-   begin
-     OnClick := @Speed2Click;
-     Parent := NoteBook1.Page[17];
-     Width := 80;
-     Caption := 'SaveDialog';
-     Name := 'btnSave';
-     Top := 10;
-     Left := 10;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Runs the SaveDialog';
-     ShowHint := True;
-     Show;
-   end;
-//**	**	**	**	**	**	**	**	**	**	
-//*********************************** Ini test *********************************
-TestIni := TInifile.Create('TestIni.ini');
-TestIni.WriteTime('TestAll Application','Application StartTime',Now);
-TestIni.WriteDate('TestAll Application','Today',Now);
-lblSection := TLabel.Create(Self);
-   with lblSection do
-   begin
-     Parent := NoteBook1.Page[8];
-     Width := 50;
-     Caption := 'Section';
-     Name := 'lblSection';
-     Top := 10;
-     Left := 10;
-     Show;
-   end;
-edtSection := TEdit.Create(Self);
-   with edtSection do
-   begin
-     Parent := NoteBook1.Page[8];
-     Top := 28;
-     Left := 10;
-     Width := 200;
-     Height := 21;
-     Text := 'TestAll Application';
-     Name := 'edtSection';
+     Caption := 'Add >';
+     Name := 'btnCbbAdd';
+     PopupMenu := PopupMenu1;
      Visible := True;
    end;
-lblIdent := TLabel.Create(Self);
-   with lblIdent do
+edtCbbAdd := TEdit.Create(Self);
+   with edtCbbAdd do
    begin
-     Parent := NoteBook1.Page[8];
-     Width := 50;
-     Caption := 'Ident';
-     Name := 'lblIdent';
-     Top := 53;
-     Left := 10;
+     Parent := BenchForm[10];
+     Caption := '';
+     Width := 145;
+     Height := 20;
+     Left := 240;
+     Top := 16;
      Show;
    end;
-edtIdent := TEdit.Create(Self);
-   with edtIdent do
+btnCbbRemove := TBitBtn.Create(Self);
+   with btnCbbRemove do
    begin
-     Parent := NoteBook1.Page[8];
-     Top := 71;
-     Left := 10;
-     Width := 200;
-     Height := 21;
-     Text := 'Author';
-     Name := 'edtIdent';
+     OnClick := @RemoveCbb;
+     Parent := BenchForm[10];
+     Top := 45;
+     Left:= 178;
+     Width := 55;
+     Height := 20;
+     Caption := 'Remove';
      Visible := True;
    end;
-lblValue := TLabel.Create(Self);
-   with lblValue do
+lblRemoved := Tlabel.Create(Self); //Label ComboBox Removed
+   With lblRemoved do
    begin
-     Parent := NoteBook1.Page[8];
-     Width := 50;
-     Caption := 'Value';
-     Name := 'lblIValue';
-     Top := 96;
+     Parent := BenchForm[10];
+     Top := 275;
      Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := ' ';
+   end;
+lblIndex := Tlabel.Create(Self); //Label ItemIndex
+   With lblIndex do
+   begin
+     Parent := BenchForm[10];
+     Top := 255;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'ItemIndex: ';
+   end;
+lblSelLength := Tlabel.Create(Self); //Label ItemIndex
+   With lblSelLength do
+   begin
+     Parent := BenchForm[10];
+     Top := 235;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'SelLength: ';
+   end;
+lblSelStart := Tlabel.Create(Self); //Label ItemIndex
+   With lblSelStart do
+   begin
+     Parent := BenchForm[10];
+     Top := 215;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'SelStart: ';
+   end;
+lblSelText := Tlabel.Create(Self); //Label ItemIndex
+   With lblSelText do
+   begin
+     Parent := BenchForm[10];
+     Top := 195;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'SelText: ';
+   end;
+cbbMoveTo := TComboBox.Create(Self);
+   with cbbMoveTo do
+   begin
+     OnChange := @EventOnChange;
+     Parent := BenchForm[10];
+     Top := 70;
+     Left := 10;
+     Width := 160;
+     Height := 28;
      Show;
    end;
-edtValue := TEdit.Create(Self);
-   with edtValue do
+btnMoveTo := TBitBtn.Create(Self);
+   with btnMoveTo do
    begin
-     Parent := NoteBook1.Page[8];
-     Top := 114;
-     Left := 10;
-     Width := 200;
-     Height := 21;
-     Text := TestIni.ReadString('TestAll Application','Author','ERROR');
-     Name := 'edtValue';
+     OnClick := @MoveToCbb;
+     Parent := BenchForm[10];
+     Top := 45;
+     Left:= 10;
+     Width := 130;
+     Height := 20;
+     Caption := 'Copy Sel to Combo2';
      Visible := True;
    end;
-rbString := TRadioButton.Create(Self);
-   with rbString do
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TDirectoryListBox Tools ++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD DirectoryListBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TDrawGrid Tools ++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD DrawGrid CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TDriveComboBox Tools +++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD DriveComboBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TEdit Tools ++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TFileListBox Tools +++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD FileListBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TFilterComboBox Tools ++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD FilterComboBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TFindDialog Tools ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD FindDialog CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TFontDialog Tools ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+btnShowFont          := TBitBtn.Create(Self); //FontDialog show button
+   with btnShowFont do
    begin
-     OnClick := @IniType;
-     Parent := NoteBook1.Page[8];
-     Top := 28;
-     Left := 220;
-     width := 70;
-     Height := 18;
-     Caption := 'String';
-     Checked := True;
-     Name := 'rbString';
-     Visible := true;
+     OnClick        := @SelectFont;
+     Parent         := BenchForm[18];
+     Top            := 10;
+     Left           := 10;
+     Width          := 50;
+     Height         := 21;
+     Kind           := bkCustom;
+     Caption        := 'Select';
+     Hint           := 'Select Font';
+     ShowHint       := True;
+     Visible        := True;
    end;
-rbFloat := TRadioButton.Create(Self);
-   with rbFloat do
+lblWhatFont          := TLabel.Create(Self); //Label showing Application.ExeName
+   With lblWhatFont do
    begin
-     OnClick := @IniType;
-     Parent := NoteBook1.Page[8];
-     Top := 46;
-     Left := 220;
-     width := 70;
-     Height := 18;
-     Caption := 'Float';
-     Checked := False;
-     Name := 'rbFloat';
-     Visible := true;
+     Parent         := BenchForm[18];
+     Top            := 265;
+     Left           := 10;
+     Width          := 350;
+     Height         := 23;
+     Show;
+     Caption        := 'Font.Name:';
    end;
-rbInteger := TRadioButton.Create(Self);
-   with rbInteger do
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TForm Tools ++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lblWidth := Tlabel.Create(Self); //Label Form.Width
+   With lblWidth do
    begin
-     OnClick := @IniType;
-     Parent := NoteBook1.Page[8];
-     Top := 64;
-     Left := 220;
-     width := 70;
-     Height := 18;
-     Caption := 'Integer';
-     Checked := False;
-     Name := 'rbInteger';
-     Visible := true;
+     Parent := BenchForm[19];
+     Top := 10;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'Width: '+IntToStr(BenchForm[19].Width);
+   end; 
+lblHeight := Tlabel.Create(Self); //Label Form.Heigt
+   With lblHeight do
+   begin
+     Parent := BenchForm[19];
+     Top := 30;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'Height: '+IntToStr(BenchForm[19].Height);
+   end; 
+lblCWidth := Tlabel.Create(Self); //Label Form.Width
+   With lblCWidth do
+   begin
+     Parent := BenchForm[19];
+     Top := 50;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'ClientWidth: '+IntToStr(BenchForm[19].ClientWidth);
+   end; 
+lblCHeight := Tlabel.Create(Self); //Label Form.Heigt
+   With lblCHeight do
+   begin
+     Parent := BenchForm[19];
+     Top := 70;
+     Left := 10;
+     Width := 200;
+     Height := 20;
+     Show;
+     Caption := 'ClientHeight: '+IntToStr(BenchForm[19].ClientHeight);
    end;
-rbBool := TRadioButton.Create(Self);
-   with rbBool do
+cbbBorder := TComboBox.Create(Self);
+   with cbbBorder do
    begin
-     OnClick := @IniType;
-     Parent := NoteBook1.Page[8];
-     Top := 82;
-     Left := 220;
-     width := 70;
-     Height := 18;
-     Caption := 'Boolean';
-     Checked := False;
-     Name := 'rbBool';
-     Visible := true;
+     OnChange := @FormBorder;
+     Parent := BenchForm[19];
+     Top := 260;
+     Left := 10;
+     Width := 106;
+     Height := 28;
+     Items.Add('bsNone');
+     Items.Add('bsSingle');
+     Items.Add('bsDialog');
+     Items.Add('bsToolWindow');
+     Items.Add('bsSizeable');
+     Show;
    end;
-rbTime := TRadioButton.Create(Self);
-   with rbTime do
+cbbPosition := TComboBox.Create(Self);
+   with cbbPosition do
    begin
-     OnClick := @IniType;
-     Parent := NoteBook1.Page[8];
+     OnChange := @FormPosition;
+     Parent := BenchForm[19];
+     Top := 260;
+     Left := 126;
+     Width := 140;
+     Height := 28;
+     Items.Add('poOwnerFormCenter');
+     Items.Add('poMainFormCenter');
+     Items.Add('poDesktopCenter');
+     Items.Add('poDefaultSizeOnly');
+     Items.Add('poDefaultPosOnly');
+     Items.Add('poDefault');
+     Items.Add('poDesigned');
+     Items.Add('poScreenCenter');
+     Show;
+   end;
+btnKeyDown := TBitBtn.Create(Self); //"keyDown" button
+   with btnKeyDown do
+   begin
+     Parent := BenchForm[19];
+     Top := 10;
+     Left:= 325;
+     Width := 65;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := 'KeyDown';
+     Hint := 'For KeyDown to work';
+     ShowHint := True;
+     Visible := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TGroupBox Tools ++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TImage Tools +++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD Image CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ TIniFile Tools +++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+If IniFile1.ReadString('INFORMATION','Project','NODATA')='NODATA' then
+begin
+With IniFile1 do
+  begin
+    WriteString('INFORMATION','Project','Lazarus');
+    WriteFloat('INFORMATION','Version',0.5);
+    WriteInteger('INFORMATION','Integer',1234567);
+    WriteDate('INFORMATION','Today',Now);
+    WriteTime('INFORMATION','AppStart',Now);
+  end;
+end;
+
+edtString := TEdit.Create(Self);
+   with edtString do
+   begin
+     Parent := BenchForm[22];
+     Caption := Inifile1.ReadString('INFORMATION','Project','NODATA');
+     Width := 150;
+     Height := 20;
+     Left := 50;
+     Top := 10;
+     Show;
+   end;
+
+lblString           := TLabel.Create(Self);
+   With lblString do
+   begin
+     Parent         := BenchForm[22];
+     Top            := 10;
+     Left           := 5;
+     Width          := 200;
+     Height         := 17;
+     Show;
+     Caption        := 'String';
+   end;
+
+edtFloat := TEdit.Create(Self);
+   with edtFloat do
+   begin
+     Parent := BenchForm[22];
+     Caption := Inifile1.ReadString('INFORMATION','Version','NODATA');
+     Width := 150;
+     Height := 20;
+     Left := 50;
+     Top := 50;
+     Show;
+   end;
+
+lblFloat           := TLabel.Create(Self);
+   With lblFloat do
+   begin
+     Parent         := BenchForm[22];
+     Top            := 50;
+     Left           := 5;
+     Width          := 200;
+     Height         := 17;
+     Show;
+     Caption        := 'Float';
+   end;
+
+edtInteger := TEdit.Create(Self);
+   with edtInteger do
+   begin
+     Parent := BenchForm[22];
+     Caption := Inifile1.ReadString('INFORMATION','Integer','NODATA');
+     Width := 150;
+     Height := 20;
+     Left := 50;
+     Top := 90;
+     Show;
+   end;
+
+lblInteger          := TLabel.Create(Self);
+   With lblInteger do
+   begin
+     Parent         := BenchForm[22];
+     Top            := 90;
+     Left           := 5;
+     Width          := 200;
+     Height         := 17;
+     Show;
+     Caption        := 'Integer';
+   end;
+
+edtDate := TEdit.Create(Self);
+   with edtDate do
+   begin
+     Parent := BenchForm[22];
+     Caption := Inifile1.ReadString('INFORMATION','Today','NODATA');
+     Width := 150;
+     Height := 20;
+     Left := 50;
+     Top := 130;
+     Show;
+   end;
+
+lblDate            := TLabel.Create(Self);
+   With lblDate do
+   begin
+     Parent         := BenchForm[22];
+     Top            := 130;
+     Left           := 5;
+     Width          := 200;
+     Height         := 17;
+     Show;
+     Caption        := 'Date';
+   end;
+
+edtTime := TEdit.Create(Self);
+   with edtTime do
+   begin
+     Parent := BenchForm[22];
+     Caption := Inifile1.ReadString('INFORMATION','Appstart','NODATA');
+     Width := 150;
+     Height := 20;
+     Left := 50;
+     Top := 170;
+     Show;
+   end;
+
+lblTime            := TLabel.Create(Self);
+   With lblTime do
+   begin
+     Parent         := BenchForm[22];
+     Top            := 170;
+     Left           := 5;
+     Width          := 200;
+     Height         := 17;
+     Show;
+     Caption        := 'Time';
+   end;
+
+btnUpdate := TBitBtn.Create(Self); //"Update" button
+   with btnUpdate do
+   begin
+     OnClick := @IniUpdate;
+     Parent := BenchForm[22];
+     Top := 200;
+     Left:= 50;
+     Width := 55;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := 'Update';
+     Hint := 'Adding your data';
+     ShowHint := True;
+     Visible := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TLabel ++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+cbbAlignment  := TComboBox.Create(Self);
+   with cbbAlignment do
+   begin
+     OnChange := @SelectAlignment;
+     Parent   := BenchForm[23];
+     Top      := 10;
+     Left     := 170;
+     Width    := 105;
+     Height   := 28;
+     Items.Add('taRightJustify');
+     Items.Add('taCenter');
+     Items.Add('taLeftJustify');
+     Show;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TListBox ++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+btnRight := TBitBtn.Create(Self); //Button >>>>>
+   with btnRight do
+   begin
+     OnClick := @ListBoxMove;
+     Parent := BenchForm[24];
+     Top := 60;
+     Left:= 173;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := '   >> ';
+     Hint := 'Move from ListBox1 to ListBox2';
+     ShowHint := True;
+     Visible := True;
+   end;
+btnLeft := TBitBtn.Create(Self); //Button <<<<<
+   with btnLeft do
+   begin
+     OnClick := @ListBoxMove;
+     Parent := BenchForm[24];
      Top := 100;
-     Left := 220;
-     width := 70;
-     Height := 18;
-     Caption := 'Time';
-     Checked := False;
-     Name := 'rbTime';
-     Visible := true;
+     Left:= 173;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := '   << ';
+     Hint := 'Move from ListBox2 to ListBox1';
+     ShowHint := True;
+     Visible := True;
    end;
-rbDate := TRadioButton.Create(Self);
-   with rbDate do
+btnAdd := TBitBtn.Create(Self); //Button Add
+   with btnAdd do
    begin
-     OnClick := @IniType;
-     Parent := NoteBook1.Page[8];
-     Top := 118;
-     Left := 220;
-     width := 70;
-     Height := 18;
-     Caption := 'Date';
-     Checked := False;
-     Name := 'rbDate';
-     Visible := true;
+     OnClick := @ListBoxMove;
+     Parent := BenchForm[24];
+     Top := 10;
+     Left:= 173;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := '  Add ';
+     Hint := '^   Add to the ListBox   ^';
+     ShowHint := True;
+     Visible := True;
    end;
-btnReadIni := TBitBtn.Create(Self);	//Read from IniFile
-   with btnReadIni do
+btnCopyToMem := TBitBtn.Create(Self); //Button Add
+   with btnCopyToMem do
    begin
-     OnClick := @ReadInifile;
-     Parent := NoteBook1.Page[8];
-     Width := 43;
-     Caption := 'Read';
-     Name := 'btnReadIni';
-     Top := 150;
+     OnClick := @CopyToMem;
+     Parent := BenchForm[24];
+     Top := 200;
+     Left:= 173;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := ' Copy ';
+     Hint := 'Copy ListBox1 to Memo';
+     ShowHint := True;
+     Visible := True;
+   end;
+btnSaveFile := TBitBtn.Create(Self); //Button Add
+   with btnSaveFile do
+   begin
+     OnClick := @SaveFile;
+     Parent := BenchForm[24];
+     Top := 162;
+     Left:= 173;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := ' Save ';
+     Hint := 'Save ListBox1 to file ./List.txt';
+     ShowHint := True;
+     Visible := True;
+   end;
+memAddTo := TMemo.Create(Self);
+   with memAddTo do
+   begin
+     Parent := BenchForm[24];
+     Top := 200;
      Left := 10;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Reads from TestIni.ini';
-     ShowHint := True;
+     Width := 150;
+     Height := 85;
+     ScrollBars	   := ssBoth;
+     Lines.Text := ' ';
      Show;
    end;
-btnWriteIni := TBitBtn.Create(Self);	//Write to IniFile
-   with btnWriteIni do
+edtAddLis1 := TEdit.Create(Self);
+   with edtAddLis1 do
    begin
-     OnClick := @WriteIniFile;
-     OnMouseEnter := @GivesAHint;
-     OnMouseLeave := @MLeave;
-     Parent := NoteBook1.Page[8];
-     Width := 43;
-     Caption := 'Write';
-     Name := 'btnWriteIni';
-     Top := 150;
-     Left := 167;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Write to TestIni.ini';
-     ShowHint := True;
+     Parent := BenchForm[24];
+     Caption := '';
+     Width := 150;
+     Height := 20;
+     Left := 10;
+     Top := 10;
      Show;
    end;
-//******************************************************************************
-//********************************* ProgressBar ********************************
+edtAddLis2 := TEdit.Create(Self);
+   with edtAddLis2 do
+   begin
+     Parent := BenchForm[24];
+     Caption := '';
+     Width := 150;
+     Height := 20;
+     Left := 235;
+     Top := 10;
+     Show;
+   end;
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TMaskEdit +++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD MaskEdit CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TMediaPlayer ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD MediaPlayer CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TMemo Tools +++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+btnNew := TBitBtn.Create(Self); //Button New
+   with btnNew do
+   begin
+     OnClick := @NewMemo;
+     Parent := BenchForm[27];
+     Top := 260;
+     Left:= 19;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := '  New ';
+     Hint := 'New Memo document';
+     ShowHint := True;
+     Visible := True;
+   end;
+btnSave := TBitBtn.Create(Self); //Button Save
+   with btnSave do
+   begin
+     OnClick := @SaveMemoAs;
+     Parent := BenchForm[27];
+     Top := 260;
+     Left:= 70;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := ' Save ';
+     Hint := 'Save Memo as...';
+     ShowHint := True;
+     Visible := True;
+   end;
+btnOpen := TBitBtn.Create(Self); //Button Open
+   with btnOpen do
+   begin
+     OnClick := @OpenMemo;
+     Parent := BenchForm[27];
+     Top := 260;
+     Left:= 121;
+     Width := 50;
+     Height := 21;
+     Kind := bkCustom;
+     Caption := ' Open ';
+     Hint := 'Open File...';
+     ShowHint := True;
+     Visible := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TMessageDialog Tools ++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD MessageDialog CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TNoteBook Tools +++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD NoteBook CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TOpenDialog Tools +++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TPageControl Tools ++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD PageControl CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TPaintBox Tools +++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD PaintBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TPanel Tools ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD Panel CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TPopupMenu Tools ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD PopupMenu CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TPrintDialog Tools ++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD PrinDialog CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TPrinterSetupDialog Tools +++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD PrinterSetupDialog CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TProgressBar Tools ++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ProgTime := TTimer.Create(Self);
   with ProgTime do
   begin
@@ -470,681 +1112,1564 @@ ProgTime := TTimer.Create(Self);
     Interval := 50;
     Name := 'ProgTime';
   end;
-ProgEnable := TCheckBox.Create(Self);
-  with ProgEnable do
+chbProgEnable := TCheckBox.Create(Self);
+  with chbProgEnable do
   begin
      OnClick := @ProgSettings;
-     Parent := NoteBook1.Page[14];
+     Parent := BenchForm[37];
      Top := 28;
      Left := 220;
      Height := 20;
      Width := 70;
      Caption := 'Run';
-     Checked := False;
-     Enabled := True;
+     Cursor := crHandPoint;
      Hint := 'Run the ProgressBar';
      ShowHint := True;
      Visible := True;
   End;
-ProgOrient := TCheckBox.Create(Self);
-  with ProgOrient do
+chbProgOrient := TCheckBox.Create(Self);
+  with chbProgOrient do
   begin
      OnClick := @ProgSettings;
-     Parent := NoteBook1.Page[14];
+     Parent := BenchForm[37];
      Top := 48;
      Left := 220;
      Height := 20;
      Width := 70;
      Caption := 'Vertical';
-     Checked := False;
-     Enabled := True;
+     Cursor := crHandPoint;
      Hint := 'Change orientation';
      ShowHint := True;
      Visible := True;
   End;
-ProgDirect := TCheckBox.Create(Self);
-  with ProgDirect do
+chbProgDirect := TCheckBox.Create(Self);
+  with chbProgDirect do
   begin
      OnClick := @ProgSettings;
-     Parent := NoteBook1.Page[14];
+     Parent := BenchForm[37];
      Top := 68;
      Left := 220;
      Height := 20;
      Width := 70;
      Caption := 'Direction';
-     Checked := False;
-     Enabled := True;
+     Cursor := crHandPoint;
      Hint := 'Change direction';
      ShowHint := True;
      Visible := True;
   End;
-ProgText := TCheckBox.Create(Self);
-  with ProgText do
+chbProgText := TCheckBox.Create(Self);
+  with chbProgText do
   begin
      OnClick := @ProgSettings;
-     Parent := NoteBook1.Page[14];
+     Parent := BenchForm[37];
      Top := 88;
      Left := 220;
      Height := 20;
      Width := 70;
      Caption := 'Text';
-     Checked := False;
-     Enabled := True;
+     Cursor := crHandPoint;
      Hint := 'Show progress text';
      ShowHint := True;
      Visible := True;
   End;
-
-TrackMemo := TMemo.Create(Self);
-   with TrackMemo do
-   begin
-     Parent := NoteBook1.Page[23];
-     Top := 25;
-     Left := 50;
-     Height := 1;
-     Width := 1;
-     Name := 'TrackMemo';
-     Text := 'Well, it´s something to test the OnChange event anyway...';
-     Show;
-   end;
-lblTimer := TLabel.Create(Self);
-   with lblTimer do
-   begin
-     Parent:=NoteBook1.Page[21];
-     Top:=10;
-     Left:=10;
-     width:=150;
-     Caption := 'Time: 00:00:00';
-     Name := 'lblTimer';
-     Show;
-   end;
-btnForm2Show := TBitBtn.Create(self);
-   with btnForm2Show do
-   begin
-     OnClick := @Form2Show;
-     Parent := NoteBook1.Page[6];
-     Width := 45;
-     Caption := 'Show';
-     Name := 'btnForm2Show';
-     Top := 10;
-     Left := 10;
-     Kind := bkCustom;
-     Height := 25;
-     Hint := 'Show Form2 and gives it your settings';
+chbSmooth := TCheckBox.Create(Self);
+  with chbSmooth do
+  begin
+     OnClick := @ProgSettings;
+     Parent := BenchForm[37];
+     Top := 108;
+     Left := 220;
+     Height := 20;
+     Width := 70;
+     Caption := 'Smooth';
+     Cursor := crHandPoint;
+     Hint := 'Show progress NOT smooth';
      ShowHint := True;
-     Show;
-   end;
-lblForm2 := TLabel.Create(Self);
-   with lblForm2 do
+     Visible := True;
+  End;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TRadioButton Tools ++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD RadioButton CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TRadioGroup Tools +++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD RadioGroup CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TReplaceDialog Tools ++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD ReplaceDialog CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TRichEdit Tools +++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD RichEdit CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TSaveDialog Tools +++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD SaveDialog CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TScreen Tools +++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lblScreenWidth      := TLabel.Create(Self); //Label showing Screen.Width
+   With lblScreenWidth do
    begin
-     Parent:= Form2;
-     Top:=10;
-     Left:=10;
-     width:=150;
-     Caption := 'That´s it !!!';
-     Name := 'lblForm2';
+     Parent         := BenchForm[43];
+     Top            := 10;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
      Show;
+     Caption        := 'ScreenWidth: '+IntToStr(Screen.Width);
    end;
-end;
-//------------------------------------------------------------------------------
-//				NoteBook Change Page: the procedure
-//				that contol what will be shown on
-//				the NoteBook all pages
-//------------------------------------------------------------------------------
-procedure TForm1.NoteBookChangePage(Sender : TObject);
-begin
-  CoProp.Clear;
-    CoProp.Parent := NoteBook1.Page[NoteBook1.PageIndex];
-    CoEvent.Parent := NoteBook1.Page[NoteBook1.PageIndex]; 
-    lblEvent.Parent := NoteBook1.Page[NoteBook1.PageIndex];
-    lblProp.Parent := NoteBook1.Page[NoteBook1.PageIndex];
-    ClearEvents.Parent := NoteBook1.Page[NoteBook1.PageIndex];
-end;
-//------------------------------------------------------------------------------
-//				Component Properties
-//				The common properties from TControl
-//------------------------------------------------------------------------------
-procedure TForm1.CoProperties(Sender : TControl);
-begin
-with CoProp.Items do
+lblScreenHeight     := TLabel.Create(Self); //Label showing Screen.Height
+   With lblScreenHeight do
    begin
-     If Sender.Anchors=Sender.Anchors + [akTop] then
-       Add(Sender.Name+'.Anchors:=akTop');		// Anchors
-       Add(Sender.Name+'.Caption:='+Sender.Caption);	// Caption
-     If Sender.Cursor=crDefault then
-       Add(Sender.Name+'.Cursor:=crDefault')		//All, insert more cursors
-     else If Sender.Cursor=crNone then
-       Add(Sender.Name+'.Cursor:=crNone')
-     else If Sender.Cursor=crArrow then
-       Add(Sender.Name+'.Cursor:=crArrow')
-     else If Sender.Cursor=crHandPoint then
-       Add(Sender.Name+'.Cursor:=crHandPoint')
-     else If Sender.Cursor=crCross then
-       Add(Sender.Name+'.Cursor:=crCross')
-     else
-       Add(Sender.Name+'.Cursor:=crDefault');
-
-     If Sender.DragCursor=crDrag then
-       Add(Sender.Name+'.DragCursor:=crDrag'); // All, insert more cursors
+     Parent         := BenchForm[43];
+     Top            := 35;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
+     Show;
+     Caption        := 'ScreenHeight: '+IntToStr(Screen.Height);
    end;
-   If Sender.DragKind=dkDock then
-      CoProp.Items.Add(Sender.Name+'.DragKind:=dkDock')
-   else CoProp.Items.Add(Sender.Name+'.DragKind:=dkDrag'); // All...
-
-   If Sender.DragMode=dmManual then
-     CoProp.Items.Add(Sender.Name+'.DragMode:=dmManual'); // All, insert more dmXXXXX 
-
-   If Sender.Enabled=True then
-     CoProp.Items.Add(Sender.Name+'.Enabled:=True')
-   else CoProp.Items.Add(Sender.Name+'.Enabled:=False');
-
-   //If Sender.Font.Charset=DEFAULT_CHARSET then
-   //   CoProp.Items.Add(Sender.Name+'.Font.Charset:=DEFAULT_CHARSET');
-   CoProp.Items.Add(Sender.Name+'.Font.Color:='+IntToStr(Sender.Font.Color));// All in Int..
-   CoProp.Items.Add(Sender.Name+'.Font.Height:='+IntToStr(Sender.Font.Height)); // All...
-   CoProp.Items.Add(Sender.Name+'.Font.Name:='+Sender.Font.Name);// All...
-   If Sender.Font.Pitch=fpDefault then
-     CoProp.Items.Add(Sender.Name+'.Font.Pitch:=fpDefault'); //All...
-
-   CoProp.Items.Add(Sender.Name+'.Font.Size:='+IntToStr(Sender.Font.Size));
-
-   If Sender.Font.Style=Sender.Font.Style+[fsBold] then
-     CoProp.Items.Add(Sender.Name+'.Font.Style:=fsBold');// All   
-
-   CoProp.Items.Add(Sender.Name+'.Height:='+IntToStr(Sender.Height)); // All..
-   CoProp.Items.Add(Sender.Name+'.Hint:='+Sender.Hint); // All..
-
-  If Sender=BitBtn1 then begin
-     BitBtnProp(BitBtn1);
-     ButtonProp(BitBtn1);
-  end else if Sender=BitBtn2 then begin
-     BitBtnProp(BitBtn2);
-     ButtonProp(BitBtn2);
-  end else if Sender=BitBtn4 then begin
-     BitBtnProp(BitBtn4);
-     ButtonProp(BitBtn4);
-  end else if Sender=BitBtn6 then begin
-     BitBtnProp(BitBtn6);
-     ButtonProp(BitBtn6);
-  end else if Sender=Button1 then
-     ButtonProp(Button1)
-  else if Sender=CheckBox1 then
-     CheckProp(CheckBox1)
-  else if Sender=CheckBox2 then
-     CheckProp(CheckBox2);
-
-   CoProp.Items.Add(Sender.Name+'.Left:='+IntToStr(Sender.Left));// All...
-
-   CoProp.Items.Add(Sender.Name+'.Name:='+Sender.Name);// All... 
-
-   If Sender.ParentFont=True then
-     CoProp.Items.Add(Sender.Name+'.ParentFont:=True')
-   else 
-     CoProp.Items.Add(Sender.Name+'.ParentFont:=False');// All...
-   If Sender.ParentShowHint=True then
-     CoProp.Items.Add(Sender.Name+'.ParentShowHint:=True')
-   else 
-     CoProp.Items.Add(Sender.Name+'.ParentShowHint:=False');// All..
-   CoProp.Items.Add(Sender.Name+'.PopupMenu:='+Sender.PopupMenu.Name); // PopupMenu
-   If Sender.ShowHint=True then
-     CoProp.Items.Add(Sender.Name+'.ShowHint:=True')
-   else 
-     CoProp.Items.Add(Sender.Name+'.ShowHint:=False'); // All
-   CoProp.Items.Add(Sender.Name+'.Spacing:='+IntToStr(BitBtn1.Spacing)); // BitBtn
-   CoProp.Items.Add(Sender.Name+'.TabOrder:='+IntToStr(BitBtn1.TabOrder));// Buttons OK
-   If BitBtn1.TabStop=True then
-     CoProp.Items.Add(Sender.Name+'.TabStop:=True')
-   else 
-     CoProp.Items.Add(Sender.Name+'.TabStop:=False');
-   CoProp.Items.Add(Sender.Name+'.Tag:='+IntToStr(Sender.Tag));
-   CoProp.Items.Add(Sender.Name+'.Top:='+IntToStr(Sender.Top));
-   If Sender.Visible=True then
-     CoProp.Items.Add(Sender.Name+'.Visible:=True')
-   else 
-     CoProp.Items.Add(Sender.Name+'.Visible:=False');
-   CoProp.Items.Add(Sender.Name+'.Width:='+IntToStr(Sender.Width));
-   lblProp.Caption := 'Component Properetties' + '  '+IntToStr(CoProp.Items.Count);
-end;
-//------------------------------------------------------------------------------
-//				BitBtn Properties
-//------------------------------------------------------------------------------
-procedure TForm1.BitBtnProp(Sender : TBitBtn);
+lblPixels           := TLabel.Create(Self); //Label showing Screen.PixelsPerInch
+   With lblPixels do
+   begin
+     Parent         := BenchForm[43];
+     Top            := 60;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
+     Show;
+     Caption        := 'PixelsPerInch: '+IntToStr(Screen.PixelsPerInch);
+   end;
+lblFormCount        := TLabel.Create(Self); //Label showing Screen.PixelsPerInch
+   With lblFormCount do
+   begin
+     Parent         := BenchForm[43];
+     Top            := 85;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
+     Show;
+     Caption        := 'FormCount: '+IntToStr(Screen.FormCount);
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TScrollBar Tools ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD ScrollBar CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TScrollBox Tools ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD ScrollBox CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TShape Tools ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD Shape CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TSpeedButton Tools ++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+FLeft := 10;
+For i:= 0 to 8 do
 begin
-   CoProp.Items.Add(Sender.Name+'.Glyph:=BitMap1');
-
-   If Sender.Kind=bkCustom then
-     CoProp.Items.Add(Sender.Name+'.Kind:=bkCustom')
-   Else If Sender.Kind=bkOK then
-     CoProp.Items.Add(Sender.Name+'.Kind:=bkOK')
-   Else If Sender.Kind=bkHelp then
-     CoProp.Items.Add(Sender.Name+'.Kind:=bkHelp')
-   Else If Sender.Kind=bkAll then
-     CoProp.Items.Add(Sender.Name+'.Kind:=bkAll');
-
-   If Sender.Layout=blGlyphLeft then
-     CoProp.Items.Add(Sender.Name+'.Layout:=blGlyphLeft')
-   else if Sender.Layout=blGlyphTop then
-     CoProp.Items.Add(Sender.Name+'.Layout:=blGlyphTop')    
-   else if Sender.Layout=blGlyphRight then
-     CoProp.Items.Add(Sender.Name+'.Layout:=blGlyphRight')
-   else if Sender.Layout=blGlyphBottom then
-     CoProp.Items.Add(Sender.Name+'.Layout:=blGlyphBottom');
+  S := TFileStream.Create('../images/'+FileN[i], fmOpenRead);
+  try
+    Pixmap1 := TPixmap.Create;
+    Pixmap1.TransparentColor := clBtnFace;
+    Pixmap1.LoadFromStream(S);
+  finally
+    S.Free;
+  end;
+  SpeedB[i]     := TSpeedButton.Create(Self);
+  with SpeedB[i] do
+  begin
+    Parent      := BenchForm[47];
+    OnClick     := @EventOnClick;
+    OnMouseDown := @EventOnMouseDown;
+    OnMouseUp   := @EventOnMouseUp;
+    Case i of
+      0: Left   := SpeedButton1.Left;
+      1: Left   := SpeedButton1.Left + 23;
+      2: Left   := SpeedButton1.Left + 46;
+      3: Left   := SpeedButton1.Left + 69;
+      4: Left   := SpeedButton1.Left + 92;
+      5: Left   := SpeedButton1.Left + 115;
+      6: Left   := SpeedButton1.Left + 138;
+      7: Left   := SpeedButton1.Left + 161;
+      8: Left   := SpeedButton1.Left + 184;
+    end;
+    Top         := 20;
+    If i>4 then
+      Flat      := True;
+    Color       := clBtnFace;
+    Glyph       := Pixmap1;
+    Enabled     := True;
+    Visible     := True;
+  end;
 end;
-//------------------------------------------------------------------------------
-//				Button Properties
-//------------------------------------------------------------------------------
-procedure TForm1.ButtonProp(Sender : TButton);
+    
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TSpinButton Tools +++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD SpinButton CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TSpinEdit Tools +++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lblOnChange         := TLabel.Create(Self); //Label showing Screen.Width
+   With lblOnChange do
+   begin
+     Parent         := BenchForm[49];
+     Top            := 50;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
+     Show;
+     Caption        := 'Value: ';//+IntToStr(SpinEdit1.Value);
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TStatusBar Tools ++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD StatusBar CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TStringGrid +++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD StringGrid CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TTabbedNoteBook +++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD TabbedNoteBook CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TTabControl +++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD TabControl CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++ TThread +++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD Thread CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++ TTimer Tools +++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lblTimeNow     := TLabel.Create(Self); //Label showing TimeNow
+   With lblTimeNow do
+   begin
+     Parent         := BenchForm[55];
+     Top            := 10;
+     Left           := 10;
+     Width          := 200;
+     Height         := 23;
+     Show;
+     Caption        := 'TimeNow: '+TimeToStr(Now);
+   end;
+lblHourMinSec       := TLabel.Create(Self); //Label showing Hour Min Sec
+   With lblHourMinSec  do
+   begin
+     Parent         := BenchForm[55];
+     Top            := 35;
+     Left           := 10;
+     Width          := 85;
+     Height         := 23;
+     Show;
+     Caption        := 'Track: 00:00:00';
+   end;
+lblMSec             := TLabel.Create(Self); //Label showing Milli Seconds
+   With lblMSec  do
+   begin
+     Parent         := BenchForm[55];
+     Top            := 35;
+     Left           := 96;
+     Width          := 20;
+     Height         := 23;
+     Show;
+     Caption        := ':00';
+   end;
+btnStart            := TBitBtn.Create(Self); //Start Timetrack button
+   with btnStart do
+   begin
+     OnClick        := @TimeTrack;
+     Parent         := BenchForm[55];
+     Top            := 65;
+     Left           := 10;
+     Width          := 40;
+     Height         := 21;
+     Kind           := bkCustom;
+     Caption        := 'Start';
+     Hint           := 'Start/Stop timetrack';
+     ShowHint       := True;
+     Visible        := True;
+   end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++ TToggleBox Tools +++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+lblChecked := TLabel.Create(Self);
+  with lblChecked do
+  begin
+    Parent := BenchForm[56];
+    Left := 10;
+    Top := 275;
+    Width := 100;
+    Height := 20;
+    Caption := 'Checked= ';
+    Show;
+  end;
+lblState := TLabel.Create(Self);
+  with lblState do
+  begin
+    Parent := BenchForm[56];
+    Left := 10;
+    Top := 255;
+    Width := 120;
+    Height := 20;
+    Caption := 'State= ';
+    Show;
+  end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++ TToolBar Tools +++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD ToolBar CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++ TTrackBar Tools ++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD TrackBar CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++ TUpDown Tools ++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             ADD UpDown CompTools HERE !!!!!!!!!
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++ Universal TestTools ++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+AboutForm := TForm.Create(Self);
+  With AboutForm do
+  begin
+    Parent := Self;           //+++++++++++++++++++++++++
+    OnClose := @TestFormClose;//+++++ ABOUT +++++++++++++
+    Height := 300;            //+++++++++++++++++++++++++
+    Width := 420;
+    Caption := 'About';
+    BorderStyle := bsDialog;
+    Left := Screen.Width div 2 - (AboutForm.Width div 2);
+    Top := 10;
+  end;
+//++++++++++++++++++++++++++++++ EVENT SNOOPER +++++++++
+EventForm := TForm.Create(Self);
+    With EventForm do
+    Begin
+      Parent := Self;
+      Height := 294;
+      Width := 255;
+      Caption := 'Events';
+      BorderStyle := bsDialog;
+      Left := 45;
+      Top := 100;
+      Show;
+    end;
+lbEvents := TListBox.Create(Self);  // The Event ListBox
+  with lbEvents do
+  begin
+    Parent := EventForm;
+    Align := alClient;
+    Show;
+  end;
+//++++++++++++++++++++++++++++++++ About Comps ++++++++++
+gbAbout := TGroupBox.Create(Self);
+  with gbAbout do
+  begin
+    Parent := AboutForm;
+    Left := 5;
+    Top := 5;
+    Width := 407;
+    Height := 160;
+    Ctl3D := False;
+    Caption := ' About this application ';
+    Visible := True;
+  end;
+btnBigOk := TBitBtn.Create(Self); //Button Ok
+   with btnBigOk do
+   begin
+     OnClick := @CloseAbout;
+     Parent := AboutForm;
+     Top := 172;
+     Left:= 5;
+     Width :=406;
+     Height := 117;
+     Kind := bkCustom;
+     Caption := '                                             OK';
+     Hint := 'Well....ehem... OK !';
+     ShowHint := True;
+     Visible := True;
+   end;
+lblAbout := TMemo.Create(Self);
+  with lblAbout do
+  begin
+    Parent := AboutForm;
+    Width := 386;
+    Height := 80;
+    Left := 15;
+    Top := 30;
+    Caption := 'This program is free software; you can redistribute it and/or modify it'+
+               ' under the terms of the GNU General Public License as published '+
+               'by the Free Software Foundation; either version 2 of the License, or'+#10#13+
+               '(at your option) any later version.';
+    ReadOnly := True;
+    Visible := True;
+    WordWrap := True;
+   end;
+lblAuthor := TMemo.Create(Self);
+  with lblAuthor do
+  begin
+    Parent := AboutForm;
+    Width := 386;
+    Height := 20;
+    Left := 15;
+    Top := 130;
+    Caption := 'Key-Pusher: christer.t.johansson@se.abb.com  "Chris"';
+    ReadOnly := True;
+    Visible := True;
+    WordWrap := True;
+   end;
+END;
+//++++++++++++++++++++++++++++++ Create TestTools END +++++++++++++++++++++++++++++++
+//***********************************************************************************
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//                              TApplication Procedures
+//...................................................................................
+procedure TForm1.BoxStyle(Sender : TObject);
+Begin
+  If Sender=rdbOk then
+  begin
+    FBoxStyle := 0;
+    lbEvents.Items.Add('MessageBox.[OK]');
+    Assert(False, 'Trace: MessageBox.[OK]');
+  End Else if Sender = rdbOkCancel then
+  begin
+    FBoxStyle := 1;
+    lbEvents.Items.Add('MessageBox.[OK,Cancel]');
+    Assert(False, 'Trace: MessageBox.[OK,Cancel]');
+  End Else if Sender = rdbAbortRetryIgnore then
+  begin
+    FBoxStyle := 2;
+    lbEvents.Items.Add('MessageBox.[Abort,Retry,Ignore]');
+    Assert(False, 'Trace: MessageBox.[Abort,Retry,Ignore]');
+  End Else if Sender = rdbYesNoCancel then
+  begin
+    FBoxStyle := 3;
+    lbEvents.Items.Add('MessageBox.[Yes,No,Cancel]');
+    Assert(False, 'Trace: MessageBox.[Yes,No,Cancel]');
+  End Else if Sender = rdbYesNo then
+  begin
+    FBoxStyle := 4;
+    lbEvents.Items.Add('MessageBox.[Yes,No]');
+    Assert(False, 'Trace: MessageBox.[Yes,No]');
+  End Else If Sender = rdbRetryCancel then
+  begin
+    FBoxStyle := 5;
+    lbEvents.Items.Add('MessageBox.[Retry,Cancel]');
+    Assert(False, 'Trace: MessageBox.[Retry,Cancel]');
+  End; 
+  EventWatch;
+end;
+procedure TForm1.ShowBox(Sender : TObject);
 begin
+  Assert(False, 'Trace: >>>>>> MessageBoxShow');
+  Assert(False, 'Trace: ^^^^^^^^^^^^^^^^^^^^^');
+  Case Application.MessageBox('     User information.............     ','MessageBox',FBoxStyle) of
+    1: lbEvents.Items.Add('MessageBoxClick.<OK>');
+    2: lbEvents.Items.Add('MessageBoxClick.<Cancel>');
+    3: lbEvents.Items.Add('MessageBoxClick.<Abort>');
+    4: lbEvents.Items.Add('MessageBoxClick.<Retry>');
+    5: lbEvents.Items.Add('MessageBoxClick.<Ignore>');
+    6: lbEvents.Items.Add('MessageBoxClick.<Yes>');
+    7: lbEvents.Items.Add('MessageBoxClick.<No>');
+  End;
+  EventWatch;
+end;
+//++++++++++++++++++++++++++++++++++ TBitBtn ++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.KindComboChange(Sender : TObject);
+begin
+  If cbbKind.Text='bkOK' then
+  begin
+    BitBtn1.Kind := bkOK;
+    lbEvents.Items.Add('BitBtn1.Kind:=bkOk');
+  end else if cbbKind.Text='bkCancel' then
+  begin
+    BitBtn1.Kind := bkCancel;
+    lbEvents.Items.Add('BitBtn1.Kind:=bkCancel');
+  end else if cbbKind.Text='bkHelp' then
+  begin
+    BitBtn1.Kind := bkHelp;
+    lbEvents.Items.Add('BitBtn1.Kind:=bkHelp');
+  end else if cbbKind.Text='bkClose' then
+  begin
+    BitBtn1.Kind := bkClose;
+    lbEvents.Items.Add('BitBtn1.Kind:=bkClose');
+  end else if cbbKind.Text='bkAll' then
+  begin
+    BitBtn1.Kind := bkAll;
+    lbEvents.Items.Add('BitBtn1.Kind:=bkAll');
+  end else if cbbKind.Text='bkCustom' then
+  begin
+    BitBtn1.Kind := bkCustom;
+    lbEvents.Items.Add('BitBtn1.Kind:=bkCustom');
+  end;
+  EventWatch;
+end;
+procedure TForm1.AlignComboChange(Sender : TObject);
+begin
+  If cbbAlign.Text='blGlyphLeft' then
+  begin
+    BitBtn1.Layout := blGlyphLeft;
+    lbEvents.Items.Add('BitBtn1.Layout:=blGlyphLeft');
+  end else If cbbAlign.Text='blGlyphTop' then
+  begin
+    BitBtn1.Layout := blGlyphTop;
+    lbEvents.Items.Add('BitBtn1.Layout:=blGlyphTop');
+  end else If cbbAlign.Text='blGlyphBottom' then
+  begin
+    BitBtn1.Layout := blGlyphBottom;
+    lbEvents.Items.Add('BitBtn1.Layout:=blGlyphBottom');
+  end else If cbbAlign.Text='blGlyphRight' then
+  begin
+    BitBtn1.Layout := blGlyphRight;
+    lbEvents.Items.Add('BitBtn1.Layout:=blGlyphRight');
+  end;
+  EventWatch;
+end;
+procedure TForm1.LoadGlyph(Sender : TObject);// This thing don't work
+var
+FileName : String;
+begin
+  lbEvents.Items.Add('TBITBTN.OpenDialog');
+  EventWatch;
+  lbEvents.Items.Add('Select a 16X16 .xpm file');
+  EventWatch;
 
-   If Sender.Default=True then
-     CoProp.Items.Add(Sender.Name+'.Default:=True')
-   else CoProp.Items.Add(Sender.Name+'.Default:=False');
+  //OpenDialog1 := TOpenDialog.Create(Self);
+  If OpenDialog1.Execute then
+    FileName := OpenDialog1.FileName;
 
-   If Sender.ModalResult=mrNone then
-     CoProp.Items.Add(Sender.Name+'.ModalResult:=mrNone')
-   Else If Sender.ModalResult=mrOK then
-     CoProp.Items.Add(Sender.Name+'.ModalResult:=mrOK')
-   Else If Sender.ModalResult=mrAll then
-     CoProp.Items.Add(Sender.Name+'.ModalResult:=mrAll')
-   Else CoProp.Items.Add(Sender.Name+'.ModalResult:=0');
-end;
-//------------------------------------------------------------------------------
-//				CheckBox Properties
-//------------------------------------------------------------------------------
-procedure TForm1.CheckProp(Sender : TCheckBox);
-begin
-   If Sender.AllowGrayed=False then
-     CoProp.Items.Add(Sender.Name+'.AllowGrayed:=False')
-   else CoProp.Items.Add(Sender.Name+'.AllowGrayed:=True');
+  if FileName <> '' then
+  begin
+    lbEvents.Items.Add(FileName+' selected');
+    EventWatch;
 
-   If Sender.Checked=False then
-     CoProp.Items.Add(Sender.Name+'.Checked:=False')
-   else CoProp.Items.Add(Sender.Name+'.Checked:=True');
+    S := TFileStream.Create(FileName, fmOpenRead);
+    try
+      PixMap1 := TPixMap.Create;
+      Pixmap1.TransparentColor := clBtnFace;
+      PixMap1.LoadFromStream(S);
+    finally
+      S.Free;
+    end;
+    BitBtn1.Glyph := PixMap1;
+  end;
 
-   If Sender.State=cbChecked then
-     CoProp.Items.Add(Sender.Name+'.State:=cbChecked')
-   else If Sender.State=cbUnchecked then
-     CoProp.Items.Add(Sender.Name+'.State:=cbUnchecked')
-   else If Sender.State=cbGrayed then
-     CoProp.Items.Add(Sender.Name+'.State:=cbGrayed');
+  lbEvents.Items.Add('<<< WORKS WITH STREAM.PIXMAPS >>>');
+  EventWatch;
 end;
-//------------------------------------------------------------------------------
-//				ComboBox that set the Layout
-//				of BitBtn All.
-//------------------------------------------------------------------------------
-procedure TForm1.StyleComboChange(Sender : TObject);
+//++++++++++++++++++++++++++++++++ TButton ++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.Button1Click(Sender : TObject);
+var
+i : Integer;
 begin
-  if ChangeStyleCombo.Text='blGlyphTop' then
-    BitBtn6.Layout := blGlyphTop
-  else if ChangeStyleCombo.Text='blGlyphLeft' then
-    BitBtn6.Layout := blGlyphLeft
-  else if ChangeStyleCombo.Text='blGlyphBottom' then
-    BitBtn6.Layout := blGlyphBottom
-  else if ChangeStyleCombo.Text='blGlyphRight' then
-    BitBtn6.Layout := blGlyphRight;
-end;
-//------------------------------------------------------------------------------
-//				EventWatch is a procedure
-//				that delete all "old" events
-//				and keep the CoEvent "short".
-//------------------------------------------------------------------------------
-procedure TForm1.EventWatch;
-begin
-  If CoEvent.Items.Count>6 then
-    CoEvent.Items.Delete(0);
-end;
-//------------------------------------------------------------------------------
-//				The OK button on TButton page
-//				that accept the resize and .......
-//------------------------------------------------------------------------------
-procedure TForm1.ButtonSizeChange(Sender : TObject);
-begin
-  If StrToInt(AHeight.Text) > 190 then
-    AHeight.Text := '190';
-  If StrToInt(AWidth.Text) > 208 then
-    AWidth.Text := '208';
-  Button2.Height := StrToInt(AHeight.Text);
-  Button2.Width := StrToInt(AWidth.Text);
-end;
-//------------------------------------------------------------------------------
-//				The Clear button on TBitBtn page
-//				It will clear the Event Log...
-//------------------------------------------------------------------------------
-procedure TForm1.ClearEventLog(Sender : TObject);
-begin
-  CoEvent.Clear;
-end;
-//------------------------------------------------------------------------------
-//            ***************   THIS IS THE EVENTS   ***************
-//				Mouse Enter
-//------------------------------------------------------------------------------
-procedure TForm1.MEnter(Sender : TObject);
-begin
-
-{  If Sender = BitBtn1 then
-    CoEvent.Items.Add(F+'BitBtn1.OnMouseEnter')
-  Else If Sender = BitBtn2 then
-    CoEvent.Items.Add(F+'BitBtn2.OnMouseEnter')
-  Else If Sender = BitBtn3 then
-    CoEvent.Items.Add(F+'BitBtn3.OnMouseEnter')
-  Else If Sender = BitBtn4 then
-    CoEvent.Items.Add(F+'BitBtn4.OnMouseEnter')
-  Else If Sender = BitBtn5 then
-    CoEvent.Items.Add(F+'BitBtn5.OnMouseEnter')
-  Else If Sender = BitBtn6 then
-    CoEvent.Items.Add(F+'BitBtn6.OnMouseEnter')
-  Else If Sender = Button1 then
-    CoEvent.Items.Add(F+'Button1.OnMouseEnter')
-  Else If Sender = btnWriteIni then
-    CoEvent.Items.Add(F+'btnWriteIni.OnMouseEnter');
-}
-  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseEnter');
+  for i := 0 to 15 do
+    If Sender=Button1[i] then
+    begin
+      lbEvents.Items.Add('Button1['+IntToStr(i)+'].Click');
+      ButtonTag(i);
+    end;
 
   EventWatch;
 end;
-//------------------------------------------------------------------------------
-//				Mouse Leave
-//------------------------------------------------------------------------------
-procedure TForm1.MLeave(Sender : TObject);
+
+procedure TForm1.ButtonTag(Sender : Integer);
 begin
-{  If Sender = BitBtn1 then
-    CoEvent.Items.Add(F+'BitBtn1.OnMouseLeave')
-  Else If Sender = BitBtn2 then
-    CoEvent.Items.Add(F+'BitBtn2.OnMouseLeave')
-  Else If Sender = BitBtn3 then
-    CoEvent.Items.Add(F+'BitBtn3.OnMouseLeave')
-  Else If Sender = BitBtn4 then
-    CoEvent.Items.Add(F+'BitBtn4.OnMouseLeave')
-  Else If Sender = BitBtn5 then
-    CoEvent.Items.Add(F+'BitBtn5.OnMouseLeave')
-  Else If Sender = BitBtn6 then
-    CoEvent.Items.Add(F+'BitBtn6.OnMouseLeave')
-  Else If Sender = Button1 then
-    CoEvent.Items.Add(F+'Button1.OnMouseLeave')
-  Else If Sender = btnWriteIni then
-    CoEvent.Items.Add(F+'btnWriteIni.OnMouseLeave');}
+  If Button1[Sender].Caption = ' ' then
+  begin
+    Button1[Sender].Caption := IntToStr(Random(100));
+    Button1[Sender].Hint := 'Lotto# '+Button1[Sender].Caption;
+    lbEvents.Items.Add('Button1['+IntToStr(Sender)+'].Random '+Button1[Sender].Caption);
+    EventWatch;
+    lblLResult.Caption := lblLResult.Caption+Button1[Sender].Caption;
+    Inc(LCount);
+    If LCount<16 then
+      lblLResult.Caption := lblLResult.Caption+','
+    Else If LCount=16 then
+      lblLResult.Caption := lblLResult.Caption+'.'
+  End;
+end;
+procedure TForm1.LottoClear(Sender : TObject);
+var
+i : Integer;
+begin
+   For i := 0 to 15 do
+   Begin
+     Button1[i].Caption := ' ';
+     lblLResult.Caption := 'Result: ';
+     LCount := 0;
+   End;
+end;
+//++++++++++++++++++++++++++++++++ TCanvas ++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.DrawRect(X1,Y1,X2,Y2 : Integer);
+begin
+    BenchForm[5].Canvas.Rectangle(X1,Y1,X2,Y2);
+end;
 
-  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseLeave');
+procedure TForm1.StyleSelect(Sender : TObject);
+begin
+  If cbbBrushStyle.Text = 'bsBDiagonal' then
+    BenchForm[5].Canvas.Brush.Style := bsBDiagonal
+  Else If cbbBrushStyle.Text = 'bsClear' then
+    BenchForm[5].Canvas.Brush.Style := bsClear
+  Else If cbbBrushStyle.Text = 'bsCross' then
+    BenchForm[5].Canvas.Brush.Style := bsCross
+  Else If cbbBrushStyle.Text = 'bsDiagCross' then
+    BenchForm[5].Canvas.Brush.Style := bsDiagCross
+  Else If cbbBrushStyle.Text = 'bsFDiagonal' then
+    BenchForm[5].Canvas.Brush.Style := bsFDiagonal
+  Else If cbbBrushStyle.Text = 'bsHorizontal' then
+    BenchForm[5].Canvas.Brush.Style := bsHorizontal
+  Else If cbbBrushStyle.Text = 'bsVertical' then
+    BenchForm[5].Canvas.Brush.Style := bsVertical
+  Else If cbbBrushStyle.Text = 'bsSolid' then
+    BenchForm[5].Canvas.Brush.Style := bsSolid;
 
+    Assert(False, 'Trace:CANVAS.BRUSH.STYLE='+cbbBrushStyle.Text);
+end;
+procedure TForm1.ClearCanvas(Sender : TObject);
+begin
+  BenchForm[5].Close;
+  BenchForm[5].Show;
+end;
+
+procedure TForm1.GradCanvas(Sender : TObject); //Gradient Canvas
+var
+FColor, i : Integer;
+begin
+  FColor := clBlack;
+  For i := 0 to 300 do
+  Begin
+    BenchForm[5].Canvas.Pen.Color := FColor;
+    BenchForm[5].Canvas.LineTo(400,i);
+    BenchForm[5].Canvas.MoveTo(0,i);
+    If i > 40 then
+      FColor := FColor + 1;
+  End;
+end;
+procedure TForm1.PenStyleSelect(Sender : TObject);
+begin
+  If cbbPenStyle.Text = 'psClear' then
+    BenchForm[5].Canvas.Pen.Style := psClear
+  Else If cbbPenStyle.Text = 'psDash' then
+    BenchForm[5].Canvas.Pen.Style := psDash
+  Else If cbbPenStyle.Text = 'psDashDot' then
+    BenchForm[5].Canvas.Pen.Style := psDashDot
+  Else If cbbPenStyle.Text = 'psDashDotDot' then
+    BenchForm[5].Canvas.Pen.Style := psDashDotDot
+  Else If cbbPenStyle.Text = 'psDot' then
+    BenchForm[5].Canvas.Pen.Style := psDot
+  Else If cbbPenStyle.Text = 'psInsideFrame' then
+    BenchForm[5].Canvas.Pen.Style := psInsideFrame
+  Else If cbbPenStyle.Text = 'psSolid' then
+    BenchForm[5].Canvas.Pen.Style := psSolid;
+
+    Assert(False, 'Trace:CANVAS.PEN.STYLE='+cbbPenStyle.Text);
+end;
+//++++++++++++++++++++++++++++++++ TCheckBox ++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.CheckClick(Sender : TObject);
+var
+i : Integer;
+begin
+  For i:= 1 to 35 do
+  begin
+    If Sender=CheckBox1[i] then
+    begin
+      lbEvents.Items.Add('CheckBox1['+IntToStr(i)+'].Click');
+      EventWatch;
+      Assert(False, 'Trace: CheckBox1['+IntToStr(i)+']Clicked');
+      If i = RandCh then
+      begin
+        lblPick.Caption := 'That´s the one !!';
+        CheckBox1[i].Hint := 'That´s the one !!';
+        lbEvents.Items.Add('VICTORY !!');
+        EventWatch;
+        Assert(False, 'Trace: VICTORY !!');
+      End Else
+      begin
+        lblPick.Caption := 'Nop, try again !!';
+        CheckBox1[i].Hint := 'Already picked';
+        lbEvents.Items.Add('NOP !!');
+        EventWatch;
+        Assert(False, 'Trace: NOP !!');
+      end;
+      CHCount := CHCount + 1;
+      lblCount.Caption := 'Counter: '+IntToStr(CHCount);
+    end;
+  end;
+end;
+procedure TForm1.AgainClick(Sender : Tobject);
+var
+i : Integer;
+begin
+  RandCH := 0;
+  While RandCH < 1 do
+    RandCH := Random(35);
+  For i := 1 to 35 do
+    If CheckBox1[i].Checked = True then
+    begin
+      CheckBox1[i].Checked:= not CheckBox1[i].Checked;
+      CheckBox1[i].Hint := 'Maybe this one';
+    end;
+
+  CHCount := 0;
+  lblCount.Caption := 'Counter: '+IntToStr(CHCount);
+  lblPick.Caption := 'Better luck this time !!';
+  lbEvents.Items.Add('Don´t look, but it´s #'+IntToStr(RandCH));
   EventWatch;
 end;
-//------------------------------------------------------------------------------
-//				Mouse Down
-//------------------------------------------------------------------------------
-procedure TForm1.MDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
+//++++++++++++++++++++++++++++++++ TColorDialog +++++++++++++++++++++++++++++++++++++
+procedure TForm1.ColorSelect(Sender : TObject);
 begin
-{  If Sender = BitBtn1 then
-    CoEvent.Items.Add(F+'BitBtn1.OnMouseDown')
-  else if Sender = BitBtn2 then
-    CoEvent.Items.Add(F+'BitBtn2.OnMouseDown')
-  else if Sender = BitBtn4 then
-    CoEvent.Items.Add(F+'BitBtn4.OnMouseDown')
-  else if Sender = BitBtn6 then
-    CoEvent.Items.Add(F+'BitBtn6.OnMouseDown')
-  else if Sender = Button1 then
-    CoEvent.Items.Add(F+'Button1.OnMouseDown');
-}
-  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseDown');
-
+  If ColorDialog1.Execute then
+    If Sender=btnPenColor then
+    Begin
+      BenchForm[5].Canvas.Pen.Color := ColorDialog1.Color;
+      Assert(False, 'Trace: CANVAS.PEN.COLOR='+IntToStr(ColorDialog1.Color));
+    End Else If Sender=btnBrushColor then
+    Begin
+      BenchForm[5].Canvas.Brush.Color := ColorDialog1.Color;
+    End Else If Sender=btnColorSelect then
+    Begin
+      BenchForm[9].Canvas.Brush.Color := ColorDialog1.Color;
+      BenchForm[9].Canvas.Pen.Color := ColorDialog1.Color;
+      lblColorInt.Caption := 'Integer Color: '+IntToStr(ColorDialog1.Color);
+    End; 
+  lbEvents.Items.Add('TCOLOR.Selected='+IntToStr(ColorDialog1.Color));
   EventWatch;
-end;
-//------------------------------------------------------------------------------
-//				Mouse Move
-//------------------------------------------------------------------------------
-procedure TForm1.MMove(Sender : TObject; Shift : TShiftState; X,Y : Integer);
-begin
-//  lblCords.Caption := IntToStr(X)+','+IntToStr(Y);
-end;
-//------------------------------------------------------------------------------
-//				Mouse Up
-//------------------------------------------------------------------------------
-procedure TForm1.MUp(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
-begin
-{  If Sender = BitBtn1 then
-    CoEvent.Items.Add(F+'BitBtn1.OnMouseUp')
-  else if Sender = BitBtn2 then
-    CoEvent.Items.Add(F+'BitBtn2.OnMouseUp')
-  else if Sender = BitBtn4 then
-    CoEvent.Items.Add(F+'BitBtn4.OnMouseUp')
-  else if Sender = BitBtn6 then
-    CoEvent.Items.Add(F+'BitBtn6.OnMouseUp')
-  else if Sender = Button1 then
-   CoEvent.Items.Add(F+'Button1.OnMouseUp');
-}
-  CoEvent.Items.Add(F+TControl(Sender).name+'.OnMouseUp');
+End;
 
-  EventWatch;
+procedure TForm1.SelectedColor(Sender : TObject);
+begin
+  ColorSelect(Sender);
+  BenchForm[9].Canvas.Rectangle(10,35,53,70);
+End;
+//++++++++++++++++++++++++++++++++ TCombpoBox +++++++++++++++++++++++++++++++++++++++
+procedure TForm1.AddToCbb(Sender : TObject);
+begin
+  If edtCbbAdd.Text <> '' then
+  begin
+    ComboBox1.Items.Add(edtCbbAdd.Text);
+    lbEvents.Items.Add('TCOMBOBOX.Items.Add('+edtCbbAdd.Text+')');
+    EventWatch;
+    Assert(False, 'Trace: TCOMBOBOX.Item.Add('+edtCbbAdd.Text+')');
+    lblRemoved.Caption := edtCbbAdd.Text+' Added';
+    edtCbbAdd.Text := '';
+  end;
 end;
 
-procedure TForm1.ChangeFontClick(Sender : TObject);//Change fontdialog create
+procedure TForm1.RemoveCbb(Sender : TObject);
 begin
-   FontDialog1 := TFontDialog.Create(Self);
+  If ComboBox1.Items.Count>0 then
+  Begin
+    lblRemoved.Caption := ComboBox1.Items.Strings[ComboBox1.Items.Count-1]+' Removed';
+    ComboBox1.Items.Delete(ComboBox1.Items.Count - 1);
+  end else
+    lblRemoved.Caption := ' ';
+end;
+
+procedure TForm1.MoveToCbb(Sender : TObject);
+begin
+  cbbMoveTo.Items.Add(ComboBox1.SelText);
+end;
+//++++++++++++++++++++++++++++++++ TFontDialog ++++++++++++++++++++++++++++++++++++++
+procedure TForm1.SelectFont(Sender : TObject);
+begin
   If FontDialog1.Execute then
   begin
-    BitBtn2.Font.Name := FontDialog1.FontName;
-    //BitBtn2.Font.Size := FontDialog1.Font.Size;
-    //BitBtn2.Font.Color := FontDialog1.Font.Color;
-    //BitBtn2.Font.Style := FontDialog1.Font.Style;
+    lblWhatFont.Caption := 'Font.Name: '+FontDialog1.FontName;
   end;
-  FontDialog1.Free;
 end;
-
-procedure TForm1.LoadGlyphClick(Sender : TObject);//Change GlyphDialog Create
+//++++++++++++++++++++++++++++++++ TForm ++++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.FormBorder(Sender : TObject);
 begin
-   OpenDialog1 := TOpenDialog.Create(Self);
-   OpenDialog1.Filter := '*.xpm';
-   If OpenDialog1.Execute then
-   begin
-     BitMap1.LoadFromXPMFile('OpenDialog1.FileName');
-   end;
-   OpenDialog1.Free; 
-end;
-
-procedure TForm1.WhenClick(Sender : TObject);
-begin
-  CoProp.Clear;
-  If (Sender is TBitBtn) or (Sender is TButton) or (Sender is TCheckBox) then
-     CoProperties(TControl(Sender));
+  If cbbBorder.Text='bsNone' then
+    BenchForm[19].BorderStyle := bsNone
+  else if cbbBorder.Text='bsSingle' then
+    BenchForm[19].BorderStyle := bsSingle
+  else if cbbBorder.Text='bsDialog' then
+    BenchForm[19].BorderStyle := bsDialog
+  else if cbbBorder.Text='bsToolWindow' then
+    BenchForm[19].BorderStyle := bsToolWindow
+  else if cbbBorder.Text='bsSizeable' then
+    BenchForm[19].BorderStyle := bsSizeable;
 
 end;
+procedure TForm1.FormPosition(Sender : TObject);
+begin
+  If cbbPosition.Text='poDesigned' then
+    BenchForm[19].Position := poDesigned
+  else if cbbPosition.Text='poDefault' then
+    BenchForm[19].Position := poDesigned
+  else if cbbPosition.Text='poDefaultPosOnly' then
+    BenchForm[19].Position := poDefaultPosOnly
+  else if cbbPosition.Text='poDefaultSizeOnly' then
+    BenchForm[19].Position := poDefaultSizeOnly
+  else if cbbPosition.Text='poScreenCenter' then
+    BenchForm[19].Position := poScreenCenter
+  else if cbbPosition.Text='poDesktopCenter' then
+    BenchForm[19].Position := poDesktopCenter
+  else if cbbPosition.Text='poMainFormCenter' then
+    BenchForm[19].Position := poMainFormCenter
+  else if cbbPosition.Text='poOwnerFormCenter' then
+    BenchForm[19].Position := poOwnerFormCenter;
 
-procedure TForm1.NextClick(Sender : TObject);
-begin
-  Inc(FTabLeft);
-  If FTabLeft > 17 then
-    FTabLeft := 17;
-  SlidePage(FTabLeft);
 end;
-procedure TForm1.PrevClick(Sender : TObject);
+//++++++++++++++++++++++++++++++++ TIniFile +++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.IniUpdate(Sender : TObject);
 begin
-  Dec(FTabLeft);
-  If FTabLeft < 0 then
-    FTabLeft := 0;
-  SlidePage(FTabLeft);
+  with IniFile1 do
+  begin
+    WriteString('INFORMATION','Project',edtString.Text);
+    WriteFloat('INFORMATION','Version',StrToFloat(edtFloat.Text));
+    WriteInteger('INFORMATION','Integer',StrToInt(edtInteger.Text));
+    WriteDate('INFORMATION','Today',StrToDate(edtDate.Text));
+    WriteTime('INFORMATION','Appstart',StrToTime(edtTime.Text));
+  end;
 end;
-procedure TForm1.SlidePage(i : Integer);
+//++++++++++++++++++++++++++++++++ TLalel +++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.SelectAlignment(Sender : TObject);
 begin
-  NoteBook1.Left := 0 - TabLeft[i];
-  BitBtn1.Left := 10 + TabLeft[i];
-  BitBtn2.Left := 10 + TabLeft[i];
-  BitBtn3.Left := 10 + TabLeft[i];
-  BitBtn4.Left := 10 + TabLeft[i];
-  BitBtn5.Left := 10 + TabLeft[i];
-  BitBtn6.Left := 10 + TabLeft[i];
-  ProgressBar1.Left := 10 + TabLeft[i];
-  LoadGlyph.Left := 100 + TabLeft[i];
-  ChangeFont.Left := 100 + TabLeft[i];
-  ChangeStyleCombo.Left := 100 + TabLeft[i];
-  lblProp.Left := 295 + TabLeft[i];
-  CoProp.Left := 295 + TabLeft[i];
-  lblEvent.Left := 295 + TabLeft[i];
-  CoEvent.Left := 295 + TabLeft[i];
-  ClearEvents.Left := 485 + TabLeft[i];
-  Button1.Left := 10 + TabLeft[i];
-  Button2.Left := 10 + TabLeft[i];
-  btnOk.Left := 185 + TabLeft[i];
-  AWidth.Left := 90 + TabLeft[i];
-  AHeight.Left := 135 + TabLeft[i];
-  Memo1.Left := 10 + TabLeft[i];
-  ListBox1.Left := 10 + TabLeft[i];
-  CheckBox1.Left := 10 + TabLeft[i];
-  CheckBox2.Left := 10 + TabLeft[i];
-  ComboBox1.Left := 10 + TabLeft[i];
-  NoteBook2.Left := 10 + TabLeft[i];
-  btnColor.Left := 10 + TabLeft[i];
-  btnFont.Left := 10 + TabLeft[i];
-  btnOpen.Left := 10 + TabLeft[i];
-  btnSave.Left := 10 + TabLeft[i];
-  lblSection.Left := 10 + TabLeft[i];
-  edtSection.Left := 10 + TabLeft[i];
-  lblIdent.Left := 10 + TabLeft[i];
-  edtIdent.Left := 10 + TabLeft[i];
-  lblValue.Left := 10 + TabLeft[i];
-  edtValue.Left := 10 + TabLeft[i];
-  rbString.Left := 220 + TabLeft[i];
-  rbFloat.Left := 220 + TabLeft[i];
-  rbInteger.Left := 220 + TabLeft[i];
-  rbTime.Left := 220 + TabLeft[i];
-  rbDate.Left := 220 + TabLeft[i];
-  rbBool.Left := 220 + TabLeft[i];
-  btnReadIni.Left := 10 + TabLeft[i];
-  btnwriteIni.Left := 167 + TabLeft[i];
-  ProgEnable.Left := 220 + TabLeft[i];
-  ProgOrient.Left := 220 + TabLeft[i];
-  ProgDirect.Left := 220 + TabLeft[i];
-  ProgText.Left := 220 + TabLeft[i];
-  TrackBar1.Left := 20 + TabLeft[i];
-  TrackBar2.Left := 50 + TabLeft[i];
-  TrackMemo.Left := 50 + TabLeft[i];
-  lblTimer.Left := 10 + TabLeft[i];
-  btnForm2Show.Left := 10 + TabLeft[i];
+  If cbbAlignment.Text='taLeftJustify' then
+    Label1.Alignment := taLeftJustify
+  else if cbbAlignment.Text='taCenter' then
+    Label1.Alignment := taCenter
+  else if cbbAlignment.Text='taRightJustify' then
+    Label1.Alignment := taRightJustify;
 end;
-
-procedure TForm1.SaveSettingsClick(Sender : TObject);
+//++++++++++++++++++++++++++++++++ TListBox +++++++++++++++++++++++++++++++++++++++++
+Function TForm1.AddNotDub(AList: TCustomListBox; nText: String):Boolean;
 begin
-  If SaveSettings.State=cbChecked then
-  Begin
-    SaveIni.WriteBool('TestAllSettings','SaveSettings',True);
-    SaveIni.WriteInteger('TestAllSettings','Pageshow',NoteBook1.PageIndex);
-    SaveIni.WriteInteger('TestAllSettings','TabIndex',FTabLeft);
-  End Else If SaveSettings.State=cbUnchecked then
-  Begin
-    SaveIni.WriteBool('TestAllSettings','SaveSettings',False);
-    SaveIni.WriteInteger('TestAllSettings','Pageshow',0);
-    SaveIni.WriteInteger('TestAllSettings','TabIndex',0);
-  End;
+  Result := AList.Items.IndexOf(nText)<0;
+  If Result then
+    AList.Items.Add(nText);
+end;
+procedure TForm1.ListBoxMove(Sender : TObject);
+var
+nItem : Integer;
+begin
+  If Sender=btnRight then    //Move from ListBox1 to ListBox2
+    For nItem:=ListBox1.Items.Count-1 downto 0 do
+      If ListBox1.Selected[nItem] then
+        If AddNotDub(ListBox2,ListBox1.Items[nItem]) then  //Check if exists
+          ListBox1.Items.Delete(nItem)
+        else
+          Application.MessageBox('    Do allready exist    ','No',0);
+  If Sender=btnLEft then    //Move from ListBox2 to ListBox1
+    For nItem:=ListBox2.Items.Count-1 downto 0 do
+      If ListBox2.Selected[nItem] then
+        If AddNotDub(ListBox1,ListBox2.Items[nItem]) then  //Check if exists
+          ListBox2.Items.Delete(nItem)
+        else
+          Application.MessageBox('    Do allready exist    ','No',0);
+  If Sender=btnAdd then     //Add from the Edits
+    begin
+      If edtAddLis1.Text<>'' then
+        If AddNotDub(ListBox1,edtAddLis1.Text) then        //Check if exists
+          edtAddLis1.text := ''
+        else
+          Application.MessageBox('    Do allready exist    ','No',0);
+      If edtAddLis2.Text<>'' then
+        If AddNotDub(ListBox2,edtAddLis2.Text) then        //Check if exists
+          edtAddLis2.text := ''
+        else
+          Application.MessageBox('    Do allready exist    ','No',0);
+    end;
+end;
+procedure TForm1.CopyToMem(Sender : TObject);
+begin
+  memAddTo.Lines := ListBox1.Items;
 end;
 
-procedure TForm1.ReadInifile(Sender : TObject);
+procedure TForm1.SaveFile(Sender : TObject);
 begin
-  If rbString.Checked=True then
-    edtValue.Text := TestIni.ReadString(edtSection.Text,edtIdent.Text,'ERROR');
-  If rbFloat.Checked=True then
-    edtValue.Text := FloatToStr(TestIni.ReadFloat(edtSection.Text,edtIdent.Text,0));
-  If rbInteger.Checked=True then
-    edtValue.Text := IntToStr(TestIni.ReadInteger(edtSection.Text,edtIdent.Text,0));
+  ListBox1.Items.SaveToFile('./List.txt');
 end;
-
-procedure TForm1.WriteIniFile(Sender : TObject);
+//++++++++++++++++++++++++++++++++ TMemo ++++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.NewMemo(Sender : TObject);
 begin
-   TestIni.WriteString(edtSection.Text,edtIdent.Text,edtValue.Text);
+  Memo1.Lines.Clear;
 end;
-
-procedure TForm1.IniType(Sender : TObject);
+procedure TForm1.SaveMemoAs(Sender : TObject);
 begin
-  If Sender=rbString then begin
-    edtSection.Text := 'TestAll Application';
-    edtIdent.Text := 'Author';
-    edtValue.Text := TestIni.ReadString('TestAll Application','Author','ERROR');
-  End Else If Sender=rbFloat then begin
-    edtSection.Text := 'TestAll Application';
-    edtIdent.Text := 'Pi';
-    edtValue.Text := FloatToStr(TestIni.ReadFloat('TestAll Application','Pi',0));
-  End Else If Sender=rbInteger then begin
-    edtSection.Text := 'TestAll Application';
-    edtIdent.Text := 'Number';
-    edtValue.Text := IntToStr(TestIni.ReadInteger('TestAll Application','Number',0));
-  End Else If Sender=rbBool then begin
-    edtSection.Text := 'TestAll Application';
-    edtIdent.Text := 'Life is good';
-    If TestIni.ReadBool('TestAll Application','Life is good',False)=False then
-      edtValue.Text:='False'
-    else edtValue.Text:='True';
-  End Else If Sender=rbTime then begin
-    edtSection.Text := 'TestAll Application';
-    edtIdent.Text := 'Application StartTime';
-    edtValue.Text := TimeToStr(TestIni.ReadTime('TestAll Application','Application StartTime',0));
-  End Else If Sender=rbDate then begin
-    edtSection.Text := 'TestAll Application';
-    edtIdent.Text := 'Today';
-    edtValue.Text := DateToStr(TestIni.ReadDate('TestAll Application','Today',0));
-  End;
-end;
+  SaveDialog1.FileName := 'Untitled.txt';
+  SaveDialog1.Filter := 'TextFiles|*.txt';
+  If SaveDialog1.Execute then
+    Memo1.Lines.SaveToFile(SaveDialog1.FileName);
 
+end;
+procedure TForm1.OpenMemo(Sender : TObject);
+begin
+  OpenDialog1.Filter := 'TextFile|*.txt';
+  If OpenDialog1.Execute then
+    Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
+
+end;
+//++++++++++++++++++++++++++++++++ TProgressBar +++++++++++++++++++++++++++++++++++++
 procedure TForm1.UpdateProgressBar(Sender : TObject);
 begin
   If ProgressBar1.Position > 99 then 
      ProgressBar1.Position := 0;
   ProgressBar1.Position := ProgressBar1.Position + 1;
-end;
 
+end;
 procedure TForm1.ProgSettings(Sender : TObject);
 begin
-  If ProgEnable.State = cbChecked then
+  If chbSmooth.State = cbChecked then
+     ProgressBar1.Smooth := False
+  Else ProgressBar1.Smooth := True;
+
+  If chbProgEnable.State = cbChecked then
      ProgTime.Enabled := True
-  Else If ProgEnable.State = cbUnchecked then
-     ProgTime.Enabled := False;
+  Else ProgTime.Enabled := False;
 
-  If ProgOrient.State = cbChecked then
+  If chbProgOrient.State = cbChecked then
      ProgressBar1.Orientation := pbVertical
-  Else If ProgOrient.State = cbUnchecked then
-     ProgressBar1.Orientation := pbHorizontal;
+  Else ProgressBar1.Orientation := pbHorizontal;
 
-  If (ProgOrient.State = cbChecked) and (ProgDirect.State = cbChecked) then
+  If (chbProgOrient.State = cbChecked) and (chbProgDirect.State = cbChecked) then
      ProgressBar1.Orientation := pbTopDown
-  Else If (ProgOrient.State = cbUnchecked) and (ProgDirect.State = cbChecked) then
+  Else If (chbProgOrient.State = cbUnchecked) and (chbProgDirect.State = cbChecked) then
      ProgressBar1.Orientation := pbRightToLeft;
 
-  If ProgText.State = cbChecked then
+  If chbProgText.State = cbChecked then
      ProgressBar1.BarShowText := True
-  Else If ProgText.State = cbUnchecked then
-     ProgressBar1.BarShowText := False;
+  Else ProgressBar1.BarShowText := False;
+
+end;
+//+++++++++++++++++++++++++++++++++ TRadioGroup +++++++++++++++++++++++++++++++++++++
+procedure TForm1.RadioGroupClick(Sender : TObject);
+begin
+  RadioGroup1.Caption := ' Radio '+IntToStr(RadioGroup1.ItemIndex)+' Checked';
+end;
+//+++++++++++++++++++++++++++++++++ TTimer ++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.Timer1OnTimer(Sender : TObject);
+begin
+lblTimeNow.Caption := 'TimeNow: '+TimeToStr(Now);
+  If FTrack = True then
+  begin
+    MSec:=MSec+1;
+    If MSec>10 then
+    begin
+       Sec := Sec+1;
+       If Sec>59 then
+       begin
+         Min := Min+1;
+         lblHourMinSec.Caption:='Track: 00:0'+IntToStr(Min)+':00';
+         Sec := 0;
+       end;
+       If Sec<10 then
+         lblHourMinSec.Caption:='Track: 00:0'+IntToStr(Min)+':0'+IntToStr(Sec)
+       else lblHourMinSec.Caption:='Track: 00:0'+IntToStr(Min)+':'+IntToStr(Sec);      
+       MSec := 0;
+    end;
+    If MSec<10 then
+      lblMSec.Caption := ':0'+IntToStr(MSec)
+    Else lblMSec.Caption := ':'+IntToStr(MSec);
+  end;
+end;
+procedure TForm1.TimeTrack(Sender : TObject);
+begin
+Hour := 0;
+Min  := 0;
+Sec  := 0;
+MSec := 0;
+  If FTrack = false then
+  begin
+    FTrack := True;
+    btnStart.Caption := 'Stop';
+  end else
+  begin
+    FTrack := False;
+    btnStart.Caption := 'Start';
+    lblHourMinSec.Caption := 'Track: 00:00:00';
+  end;
+end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++ Universal Tools ++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.ShowTestForm(Sender : TObject);
+begin
+  AboutForm.Show;
+end;
+//++++++++++++++++++++++++++++++++++++++++++++++++++ EVENTS ++++++++++++++++++
+procedure TForm1.EventFormShow(Sender : TObject);
+begin
+  EventForm.Show;
+  Assert(False, 'Trace: EventFormShow');
 end;
 
-procedure TForm1.GivesAHint(Sender : TObject);
+procedure TForm1.EventOnMouseDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
 begin
-  btnWriteIni.Hint := 'Write '+edtValue.Text+' to TestIni.ini';
-  MEnter(Sender);
+  lbEvents.Items.Add(Sender.ClassName+'.MouseDown '+IntToStr(X)+','+IntToStr(Y));
+  EventWatch;
+  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnMouseDown');
+  If Sender = BenchForm[5] then
+  Begin
+    Assert(False, 'Trace: CANVAS.PaintWhat='+cbbPaintType.Text);
+    If cbbPaintType.Text = 'LineTo' then
+    Begin
+      BenchForm[5].Canvas.MoveTo(X,Y);
+      lbEvents.Items.Add('TFORM.CANVAS.MoveTo: '+IntToStr(X)+','+IntToStr(Y));
+      EventWatch;
+    End Else
+    Begin
+      Start1 := X;
+      Start2 := Y;
+      lbEvents.Items.Add('TFORM.CANVAS.RectStartPos: '+IntToStr(X)+','+IntToStr(Y));
+      EventWatch;
+    end;
+    FPaint := True;
+  End;
 end;
 
-procedure TForm1.TrackBarChange(Sender : TObject);
+procedure TForm1.EventOnMouseUp(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
 begin
-  If Sender=TrackBar1 then
-     TrackMemo.Height := TrackBar1.Position;
+  lbEvents.Items.Add(Sender.ClassName+'.MouseUp '+IntToStr(X)+','+IntToStr(Y));
+  EventWatch;
+  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnMouseUp');
+//+++++++ TCanvas ++++++++++++++++++++++++
+  If Sender = BenchForm[5] then
+    FPaint := False;
+  If Sender = ComboBox1 then
+  Begin
+    lblSelLength.Caption := 'SelLength: '+IntToStr(ComboBox1.SelLength);
+    lblSelStart.Caption := 'SelStart: '+IntToStr(ComboBox1.SelStart);
+    lblSelText.Caption := 'SelText: '+ComboBox1.SelText;
+  end;
+  If Sender=SpinEdit1 then
+    lblOnChange.Caption := 'Value: '+FloatToStr(SpinEdit1.Value);
+end;
+
+procedure TForm1.EventOnMouseMove(Sender : TObject; Shift : TShiftState; X,Y : Integer);
+var
+Nothing : TMouseButton;
+begin
+  If Sender = BenchForm[5] then
+  Begin
+     If FPaint = True then
+     begin
+       If cbbPaintType.Text='LineTo' then
+       begin
+         BenchForm[5].Canvas.LineTo(X,Y);
+         lbEvents.Items.Add('TFORM.CANVAS.LineTo: '+IntToStr(X)+','+IntToStr(Y));
+         EventWatch;
+       End else
+       begin
+         DrawRect(Start1,Start2,X,Y);
+         lbEvents.Items.Add('TFORM.CANVAS.Rectangle: '+IntToStr(X)+','+IntToStr(Y));
+         EventWatch;
+       end;
+     end;
+  End Else
+  begin
+    lbEvents.Items.Add(Sender.ClassName+'.MouseMove '+IntToStr(X)+','+IntToStr(Y));
+    EventWatch;
+  end;
+end;
+
+procedure TForm1.EventOnMouseEnter(Sender : TObject);
+begin
+ 
+end;
+
+procedure TForm1.EventOnMouseLeave(Sender : TObject);
+begin
+
+end;
+
+procedure TForm1.EventOnClick(Sender : TObject);
+begin
+  lbEvents.Items.Add(Sender.ClassName+'.Click');
+  EventWatch;
+  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnClick');
+  If Sender.ClassName='TBUTTON' then
+    Button1Click(Sender);
+  If Sender.ClassName='TRADIOGROUP' then
+    RadioGroupClick(Sender);
+  If Sender.ClassName='TCHECKBOX' then
+    CheckClick(Sender);
+  If Sender=ToggleBox1 then
+  Begin
+    If ToggleBox1.Checked = true then
+      lblChecked.Caption := 'Checked= True'
+    Else lblChecked.Caption := 'Checked= False';
+    If ToggleBox1.State= cbChecked then
+      lblState.Caption := 'State= cbChecked'
+    Else lblState.Caption := 'State= cbUnchecked';
+  end;
+end;
+
+procedure TForm1.EventOnDblClick(Sender : TObject);
+begin
+  lbEvents.Items.Add(Sender.ClassName+'.DoubleClick');
+  EventWatch;
+  Assert(False, 'Trace: EventOnDblClick');
+end;
+
+procedure TForm1.EventOnResize(Sender : TObject);
+begin
+  lbEvents.Items.Add('TFORM.Width: '+IntToStr(BenchForm[19].Width));
+  lbEvents.Items.Add('TFORM.Height: '+IntToStr(BenchForm[19].Height));
+  EventWatch;
+  Assert(False, 'Trace: EventOnReSize');
+  lblWidth.Caption := 'Width: '+IntToStr(BenchForm[19].Width);
+  lblWidth.Caption := 'Height: '+IntToStr(BenchForm[19].Height);
+end;
+
+procedure TForm1.EventOnShow(Sender : TObject);
+var
+i : Integer;
+begin
+  For i:=1 to 59 do
+  begin
+    If Sender=BenchForm[i] then
+    begin
+      lbEvents.Items.Add('TESTFORM['+IntToStr(i)+'].EventOnShow '+TimeToStr(Now));
+      EventWatch;
+      Assert(False, 'Trace:TESTFORM['+IntToStr(i)+'].EventOnShow');
+    end;
+  end;
+end;
+
+procedure TForm1.EventOnChange(Sender : TObject);
+begin
+  lbEvents.Items.Add(Sender.ClassName+'.Change');
+  EventWatch;
+  Assert(False, 'Trace: EventOnChange');
+  If Sender=ComboBox1 then
+  begin
+    lblIndex.Caption := 'ItemIndex: '+IntToStr(ComboBox1.ItemIndex);
+    lbEvents.Items.Add('ComboBox1.ItemIndex='+IntToStr(ComboBox1.ItemIndex));
+    EventWatch;
+    Assert(False, 'Trace: ComboBox1.ItemIndex='+IntToStr(ComboBox1.ItemIndex));
+  end;
   If Sender=TrackBar2 then
-     TrackMemo.Width := TrackBar2.Position;
+  begin
+    TrackBar1.PageSize := TrackBar1.PageSize + 1;
+  end;
 end;
 
-procedure TForm1.Form2Show(Sender : TObject);
+procedure TForm1.EventOnKeyDown(Sender : TObject; var Key : Word; Shift : TShiftState);
 begin
-  Form2.Show;
+  If Sender=Edit1 then
+  begin
+    lbEvents.Items.Add(Sender.ClassName+'.Text='+Edit1.Text);
+    EventWatch;
+    //If Edit1.Modified = True then  //To get Edit1.OnChange event
+      //EventOnChange(Sender);
+  end;
+
+  lbEvents.Items.Add(Sender.ClassName+'.EventKeyDown');
+  EventWatch;
+  Assert(False, 'Trace:'+Sender.ClassName+'.EventKeyDown '+IntToStr(Key));
 end;
 
-Procedure TForm1.DestroyForm(Sender : TObject);
+procedure TForm1.EventOnKeyUp(Sender : TObject; var Key : Word; Shift : TShiftState);
 begin
-  SaveIni.Free;
-  TestIni.Free;
+
+end;
+//+++++++++++++++++++++ Virtual MouseEnter/Leave ++++++++++++++++++++++++++++++++++++
+procedure TForm1.ApplicationIdle(Sender: TObject; var Done: Boolean); 
+var 
+CurControl: TControl;  
+P: TPoint; 
+begin 
+  GetCursorPos(P);  
+  CurControl := FindDragTarget(P, True);  
+  if FFocusControl <> CurControl then  
+    begin  
+    if FFocusControl <> nil then  
+      VirOnLeave(FFocusControl);  
+    FFocusControl := CurControl;  
+    if FFocusControl <> nil then  
+      VirOnEnter(FFocusControl);  
+  end; 
+end; 
+procedure TForm1.VirOnEnter(Sender: TObject); 
+begin 
+  lbEvents.Items.Add(Sender.ClassName+'.MouseEnter');
+  EventWatch;
+   Assert(False, 'Trace:'+Sender.ClassName+'.EventOnEnter');
+end; 
+procedure TForm1.VirOnLeave(Sender: TObject); 
+begin 
+  lbEvents.Items.Add(Sender.ClassName+'.MouseLeave');
+  EventWatch;
+  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnLeave');
+end;
+//++++++++++++++++++++++ Event Watch ++++++++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.EventWatch;
+begin
+  If lbEvents.Items.Count>18 then
+    lbEvents.Items.Delete(0);
+end;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+procedure TForm1.TestFormClose(Sender : TObject; var Action : TCloseAction);
+var
+i : Integer;
+begin
+  For i:=1 to 59 do
+  begin
+    If Sender=BenchForm[i] then
+    begin
+      lbEvents.Items.Add('TESTFORM['+IntToStr(i)+'].EventOnClose '+TimeToStr(Now));
+      EventWatch;
+      Assert(False, 'Trace:TESTFORM['+IntToStr(i)+'].EventOnClose');
+    End;
+  End;
+
+  Form1.Visible := True;
+   //Form1.WindowState := wsNormal;
+   //Memo1.Parent:=Self;
+   Comps1.Enabled := True;
+   EventForm.Caption := 'Events';
+   //Timer1.Enabled := False;
+end;
+
+procedure TForm1.ShowMessage0(Sender : TObject);
+begin
+  AppliCation.MessageBox(Info[0],'Status Information',0); //For future components
+end;
+
+procedure TForm1.ShowMessage1(Sender : TObject);
+begin
+  If Sender=TAppl then
+  begin
+    BenchForm[1].Show;
+    EventForm.Caption := EventForm.Caption+' TApplication';
+    Assert(False, 'Trace: >>> TApplication TEST');
+  end;
+  If Sender=TBev then
+  begin
+    BenchForm[2].Show;
+    EventForm.Caption := EventForm.Caption+' TBevel';
+    Assert(False, 'Trace: >>> TBevel TEST');
+  end;
+  If Sender=TBit then
+  Begin
+    BenchForm[3].Show;
+    EventForm.Caption := EventForm.Caption+' BitBtn1';
+    Assert(False, 'Trace: >>> TBitBtn TEST');
+  end;
+  If Sender=TBut then
+  begin
+    BenchForm[4].Show;
+    EventForm.Caption := EventForm.Caption+' Button1[0..15]';
+    Assert(False, 'Trace: >>> TButton TEST');
+  end;
+  If Sender=TCan then
+  begin
+    BenchForm[5].Show;
+    EventForm.Caption := EventForm.Caption+' TCanvas';
+    Assert(False, 'Trace: >>> TCanvas TEST');
+  end;
+  If Sender=TChe then
+  begin
+    BenchForm[6].Show;
+    EventForm.Caption := EventForm.Caption+' CheckBox1[1..35]';
+    Assert(False, 'Trace: >>> TCheckBox TEST');
+  end;
+  If Sender=TClip then
+  begin
+    BenchForm[7].Show;
+    EventForm.Caption := EventForm.Caption+' ClipBoard1';
+    Assert(False, 'Trace: >>> TClipBoard TEST');
+  end;
+  If Sender=TCLis then
+  begin
+    BenchForm[8].Show;
+    EventForm.Caption := EventForm.Caption+' CListBox1';
+    Assert(False, 'Trace: >>> TCListBox TEST');
+  end;
+  If Sender=TCol then
+  begin
+    BenchForm[9].Caption := BenchForm[9].Caption+' ++Move the form to se the Color-Selected <^>';
+    BenchForm[9].Show;
+    EventForm.Caption := EventForm.Caption+' TColorDialog';
+    Assert(False, 'Trace: >>> TColorDialog TEST');
+    Assert(False, 'Trace: **********************************');
+    Assert(False, 'Trace: ******** MOVE THE FORM TO ********');
+    Assert(False, 'Trace: ******** TO SE THE COLOR  ********');
+    Assert(False, 'Trace: ******** SELECTED !!!     ********');
+    Assert(False, 'Trace: **********************************');
+  end;
+  If Sender=TCom then
+  begin
+    BenchForm[10].Show;
+    EventForm.Caption := EventForm.Caption+' TComboBox';
+    Assert(False, 'Trace: >>> TComboBox TEST');
+  end;
+  If Sender=TDir then
+  begin
+    BenchForm[11].Show;
+    EventForm.Caption := EventForm.Caption+' TDirectoryListBox';
+    Assert(False, 'Trace: >>> TDirectoryListBox TEST');
+  end;
+  If Sender=TDra then
+  begin
+    BenchForm[12].Show;
+    EventForm.Caption := EventForm.Caption+' TDrawGrid';
+    Assert(False, 'Trace: >>> TDrawGrid TEST');
+  end;
+  If Sender=TDri then
+  begin
+    BenchForm[13].Show;
+    EventForm.Caption := EventForm.Caption+' TDriveComboBox';
+    Assert(False, 'Trace: >>> TDriveComboBox TEST');
+  end;
+  If Sender=TEdi then
+  begin
+    BenchForm[14].Show;
+    EventForm.Caption := EventForm.Caption+' TEdit';
+    Assert(False, 'Trace: >>> TEdit TEST');
+  end;
+  If Sender=TFile then
+  begin
+    BenchForm[15].Show;
+    EventForm.Caption := EventForm.Caption+' TFileListBox';
+    Assert(False, 'Trace: >>> TFileListBox TEST');
+  end;
+  If Sender=TFilt then
+  begin
+    BenchForm[16].Show;
+    EventForm.Caption := EventForm.Caption+' TFilterComboBox';
+    Assert(False, 'Trace: >>> TFilterComboBox TEST');
+  end;
+  If Sender=TFin then
+  begin
+    BenchForm[17].Show;
+    EventForm.Caption := EventForm.Caption+' TFindDialog';
+    Assert(False, 'Trace: >>> TFindDialog TEST');
+  end;
+  If Sender=TFon then
+  begin
+    BenchForm[18].Show;
+    EventForm.Caption := EventForm.Caption+' TFontDialog';
+    Assert(False, 'Trace: >>> TFontDialog TEST');
+  end;
+  If Sender=TFor then
+  begin
+    BenchForm[19].Show;
+    EventForm.Caption := EventForm.Caption+' TForm';
+    Assert(False, 'Trace: >>> TForm TEST');
+  end;
+  If Sender=TGro then
+  begin
+    BenchForm[20].Show;
+    EventForm.Caption := EventForm.Caption+' TGroupBox';
+    Assert(False, 'Trace: >>> TGoup TEST');
+  end;
+  If Sender=TIma then
+  begin
+    BenchForm[21].Show;
+    EventForm.Caption := EventForm.Caption+' TImage';
+    Assert(False, 'Trace: >>> TImage TEST');
+  end;
+  If Sender=TIni then
+  begin
+    BenchForm[22].Show;
+    EventForm.Caption := EventForm.Caption+' TIniFile';
+    Assert(False, 'Trace: >>> TIniFile TEST');
+  end;
+  If Sender=TLab then
+  begin
+    BenchForm[23].Show;
+    EventForm.Caption := EventForm.Caption+' TLabel';
+    Assert(False, 'Trace: >>> TLabel TEST');
+  end;
+  If Sender=TLis then
+  begin
+    BenchForm[24].Show;
+    EventForm.Caption := EventForm.Caption+' TListBox';
+    Assert(False, 'Trace: >>> TListBox TEST');
+  end;
+  If Sender=TMas then
+  begin
+    BenchForm[25].Show;
+    EventForm.Caption := EventForm.Caption+' TMaskEdit';
+    Assert(False, 'Trace: >>> TMaskEdit TEST');
+  end;
+  If Sender=TMed then
+  begin
+    BenchForm[26].Show;
+    EventForm.Caption := EventForm.Caption+' TMediaPlayer';
+    Assert(False, 'Trace: >>> TMediaPlayer TEST');
+  end;
+  If Sender=TMem then
+  begin
+    Memo1.Parent := BenchForm[27];
+    Memo1.Lines.Clear;
+    BenchForm[27].Show;
+    EventForm.Caption := EventForm.Caption+' TMemo';
+    Assert(False, 'Trace: >>> TMemo TEST');
+  end;
+  If Sender=TMes then
+  begin
+    BenchForm[28].Show;
+    EventForm.Caption := EventForm.Caption+' TMessageDialog';
+    Assert(False, 'Trace: >>> TMessageDialog TEST');
+  end;
+  If Sender=TNot then
+  begin
+    BenchForm[29].Show;
+    EventForm.Caption := EventForm.Caption+' TNoteBook';
+    Assert(False, 'Trace: >>> TNoteBook TEST');
+  end;
+  If Sender=TOpe then
+  begin
+    BenchForm[30].Show;
+    EventForm.Caption := EventForm.Caption+' TOpenDialog';
+    Assert(False, 'Trace: >>> TOpenDialog TEST');
+  end;
+  If Sender=TPag then
+  begin
+    BenchForm[31].Show;
+    EventForm.Caption := EventForm.Caption+' TPageControl';
+    Assert(False, 'Trace: >>> TPageControl TEST');
+  end;
+  If Sender=TPai then
+  begin
+    BenchForm[32].Show;
+    EventForm.Caption := EventForm.Caption+' TPaintBox';
+    Assert(False, 'Trace: >>> TPaintBox TEST');
+  end;
+  If Sender=TPop then
+  begin
+    BenchForm[34].Show;
+    EventForm.Caption := EventForm.Caption+' TPopupMenu';
+    Assert(False, 'Trace: >>> TPopupMenu TEST');
+  end;
+  If Sender=TPro then
+  begin
+    BenchForm[37].Show;
+    EventForm.Caption := EventForm.Caption+' TProgressBar';
+    Assert(False, 'Trace: >>> TProgressBar TEST');
+  end;
+  If Sender=TRadB then
+  begin
+    BenchForm[38].Show;
+    EventForm.Caption := EventForm.Caption+' TRadioButton';
+    Assert(False, 'Trace: >>> TRadioButton TEST');
+  end;
+  If Sender=TRadG then
+  begin
+    BenchForm[39].Show;
+    EventForm.Caption := EventForm.Caption+' TRadioGroup';
+    Assert(False, 'Trace: >>> TRadioGroup TEST');
+  end;
+  If Sender=TSav then
+  begin
+    BenchForm[42].Show;
+    EventForm.Caption := EventForm.Caption+' TSaveDialog';
+    Assert(False, 'Trace: >>> TSaveDialog TEST');
+  end;
+  If Sender=TScre then
+  begin
+    BenchForm[43].Show;
+    EventForm.Caption := EventForm.Caption+' TScreen';
+    Assert(False, 'Trace: >>> TScreen TEST');
+  end;
+  If Sender=TScroBa then
+  begin
+    BenchForm[44].Show;
+    EventForm.Caption := EventForm.Caption+' TScrollBar';
+    Assert(False, 'Trace: >>> TScrollBar TEST');
+  end;
+  If Sender=TSha then
+  begin
+    BenchForm[46].Show;
+    //AppliCation.MessageBox(Info[3],'Status Information',0);
+    EventForm.Caption := EventForm.Caption+' TShape';
+    Assert(False, 'Trace: >>> TShape TEST');
+  end;
+  If Sender=TSpee then
+  begin
+    BenchForm[47].Show;
+    //AppliCation.MessageBox(Info[3],'Status Information',0);
+    EventForm.Caption := EventForm.Caption+' TSpeedButton';
+    Assert(False, 'Trace: >>> TSpeedButton TEST');
+  end;
+  If Sender=TSPinE then
+  begin
+    BenchForm[49].Show;
+    //AppliCation.MessageBox(Info[3],'Status Information',0);
+    EventForm.Caption := EventForm.Caption+' TSpinEdit';
+    Assert(False, 'Trace: >>> TSpinEdit TEST');
+  end;
+  If Sender=TStat then
+  begin
+    BenchForm[50].Show;
+    //AppliCation.MessageBox(Info[3],'Status Information',0);
+    EventForm.Caption := EventForm.Caption+' TStatusBar';
+    Assert(False, 'Trace: >>> TStatusBar TEST');
+  end;
+  If Sender=TThre then
+  begin
+    BenchForm[54].Show;
+    Timer1.Enabled := True;
+    EventForm.Caption := EventForm.Caption+' TThread';
+    Assert(False, 'Trace: >>> TThread TEST');
+  end;
+  If Sender=TTim then
+  begin
+    BenchForm[55].Show;
+    Timer1.Enabled := True;
+    EventForm.Caption := EventForm.Caption+' TTimer';
+    Assert(False, 'Trace: >>> TTimer TEST');
+  end;
+  If Sender=TTog then
+  begin
+    BenchForm[56].Show;
+    //AppliCation.MessageBox(Info[2],'Status Information',0);
+  end;
+  If Sender=TToo then
+  begin
+    BenchForm[57].Show;
+    EventForm.Caption := EventForm.Caption+' TToolBar';
+    Assert(False, 'Trace: >>> TToolBar TEST');
+  end;
+  If Sender=TTrac then
+  begin
+    BenchForm[58].Show;
+    EventForm.Caption := EventForm.Caption+' TTrackBar';
+    Assert(False, 'Trace: >>> TTrackBar TEST');
+  end;
+  //Comps1.Enabled := False;
+  Form1.Visible := False;
+end;
+
+procedure TForm1.CloseAbout(Sender : TObject);
+begin
+  AboutForm.Close;
+end;
+
+procedure TForm1.QuitClick(Sender : TObject);
+begin
+  Application.Terminate;
+end;
+
+Destructor TForm1.Destroy;
+begin
+  inherited Destroy;
 end;
 {
   $Log$
-  Revision 1.2  2000/08/07 13:17:35  lazarus
-  Cleaned up the Testtools.inc file a bit.  Used Sender.name instead of checking each one in the Mouseup event, Mouse down, leave and enter.
-  Also changed the WhenClick procedure.
-
-  Shane
+  Revision 1.3  2000/09/22 20:22:03  lazarus
+  +Rebuilt from beginning to V0.2
+  +Prepared for non existent components (total 60 components).
+  (Changes by Christer, commited by stoppok)
 
   Revision 1.1  2000/07/31 20:33:33  lazarus
   + added "testall" demo provided by <christer.t.johansson@se.abb.com>
   stoppok
 
 }
+
