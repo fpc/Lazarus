@@ -4,10 +4,10 @@ set -x
 set -e
 
 LazSrcDir=$1
-OutFile=lazarus-0.9.1-5.tgz
+OutputFile=$2
 
 if [ "x$LazSrcDir" = "x" ]; then
-  echo "Usage: $0 <lazarus_source_directory>"
+  echo "Usage: $0 <lazarus_source_directory> <output-file>"
   exit
 fi
 if [ ! -d $LazSrcDir/designer ]; then
@@ -15,18 +15,26 @@ if [ ! -d $LazSrcDir/designer ]; then
   exit
 fi
 
-echo "remove /tmp/lazarus ..."
-cd /tmp
-rm -rf /tmp/lazarus
-cd -
-sh create_clean_lazarus_directory.sh $LazSrcDir /tmp/lazarus
+if [ "x$OutputFile" = "x" ]; then
+  echo "Usage: $0 <lazarus_source_directory> <output-file>"
+  exit -1
+fi
+
+
+TmpBaseDir=/tmp
+TmpDir=$TmpBaseDir/lazarus
+
+ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
+echo "extracting Lazarus from local cvs ..."
+rm -rf $TmpDir
+./cvsexportlocal $LazSrcDir $TmpDir
 
 # pack
 echo "packing ..."
-cd /tmp/
+cd /tmp
 tar cvzf lazarus.tgz lazarus
 cd -
-mv /tmp/lazarus.tgz $OutFile
+mv /tmp/lazarus.tgz $OutputFile
 rm -rf /tmp/lazarus
 
 echo ""

@@ -37,9 +37,7 @@ TmpDir=$TmpBaseDir/fpc
 
 ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
 echo "extracting FPC from local cvs ..."
-cd $TmpBaseDir
 rm -rf $TmpDir
-cd -
 ./cvsexportlocal $FPCSrcDir $TmpDir
 
 if [ $RenameSmart = "yes" ]; then

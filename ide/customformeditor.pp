@@ -1782,6 +1782,7 @@ begin
         if (NewParent is TWinControl)
         and (csAcceptsControls in TWinControl(NewParent).ControlStyle) then
           break;
+        NewParent:=TControl(NewParent).Parent;
       end;
     end else begin
       // New TypeClass is not a TControl => Root component as parent
@@ -1790,7 +1791,8 @@ begin
         NewParent:=TComponent(Root);
     end;
   end;
-  Result:=FindComponent(NewParent);
+  if NewParent<>nil then
+    Result:=FindComponent(NewParent);
 end;
 
 function TCustomFormEditor.GetDefaultComponentPosition(
