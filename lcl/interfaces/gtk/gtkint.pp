@@ -68,7 +68,6 @@ type
     FRCFileAge: integer;
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
-    FDefaultFont : PGdkFont;
     FNoteBookCloseBtnPixmapImg: PGdkPixmap;
     FNoteBookCloseBtnPixmapMask: PGdkPixmap;
 
@@ -83,6 +82,7 @@ type
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
     
+    FDefaultFont : PGdkFont;
     FStockSystemFont : HFONT;
 
     Function CreateSystemFont : hFont;
@@ -303,6 +303,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.107  2002/11/25 11:37:19  mattias
+  applied patch from Vasily
+
   Revision 1.106  2002/11/23 13:50:04  mattias
   removed unused variable
 
