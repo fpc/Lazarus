@@ -387,14 +387,14 @@ begin
     Visible:=true;
   end;
   
-{  UseLaunchingApplicationBevel:=TBevel.Create(Self);
+  UseLaunchingApplicationBevel:=TBevel.Create(Self);
   with UseLaunchingApplicationBevel do begin
     Name:='UseLaunchingApplicationBevel';
     Parent:=NoteBook.Page[0];
     SetBounds(
       5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
     Visible:=true;
-  end;}
+  end;
   
   UseLaunchingApplicationCheckBox:=TCheckBox.Create(Self);
   with UseLaunchingApplicationCheckBox do begin
@@ -532,7 +532,6 @@ begin
     Sorted := true;
     Visible:=true;
   end;
-  FreeAndNil(UserOverridesListView);
 
   UserOverridesAddButton:=TButton.Create(Self);
   with UserOverridesAddButton do begin

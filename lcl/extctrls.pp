@@ -258,9 +258,11 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
-  TBevelStyle=(bsLowered, bsRaised);
+  
+  TBevelStyle = (bsLowered, bsRaised);
   TBevelShape=(bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
-  TBevel=Class(TGraphicControl)
+  
+  TBevel = Class(TGraphicControl)
   private
      FStyle:TBevelStyle;
      FShape:TBevelShape;
@@ -435,6 +437,9 @@ end.
 
  {
   $Log$
+  Revision 1.20  2002/03/14 23:25:51  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.19  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation

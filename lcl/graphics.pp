@@ -477,6 +477,7 @@ type
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
     Procedure Polygon(const Points: array of TPoint);
+    function HandleAllocated: boolean;
     property ClipRect: TRect read GetCanvasClipRect;
     property PenPos: TPoint read GetPenPos write SetPenPos;
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
@@ -760,6 +761,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/03/14 23:25:51  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.28  2002/03/11 23:22:46  lazarus
   MG: added TPicture clipboard support
 

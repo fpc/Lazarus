@@ -1,3 +1,4 @@
+// included by comctrls.pp
 
 {------------------------------------------------------------------------------}
 {   TCustomListView Constructor                                                           }
@@ -25,7 +26,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ColumnsChanged;
 Begin
-//TODO: Optimize implementation by invoking individual upadates instead of 
+  if csDestroying in Componentstate Then Exit;
+//TODO: Optimize implementation by invoking individual upadates instead of
 //      recreating window
   //notify the interface....
   RecreateWnd;
@@ -37,6 +39,7 @@ End;
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ItemChanged(Index : Integer);  //called by TListItems
 Begin
+  if csDestroying in Componentstate Then Exit;
   //notify the interface....
   CNSendMessage(LM_LV_CHANGEITEM,self,@Index);
 End;
@@ -120,9 +123,6 @@ begin
   FSortColumn := Value;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
-
-
-
 
 {------------------------------------------------------------------------------}
 {   TCustomListView Destructor                                                 }
@@ -313,9 +313,14 @@ begin
 
 end;
 
+// included by comctrls.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/03/14 23:25:52  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.13  2002/03/12 23:55:37  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

@@ -506,6 +506,11 @@ begin
 
 end;
 
+function TCanvas.HandleAllocated: boolean;
+begin
+  Result:=(FHandle<>0);
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.MoveTo
   Params:   X1,Y1
@@ -823,6 +828,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/03/14 23:25:51  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.16  2002/03/08 16:16:55  lazarus
   MG: fixed parser of end blocks in initialization section added label sections
 
