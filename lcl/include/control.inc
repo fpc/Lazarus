@@ -26,13 +26,15 @@
 
 { $DEFINE CHECK_POSITION}
 
-{------------------------------------------------------------------------------}
-{       TControl.AdjustSize
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.AdjustSize
+
+------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
-  if not (csLoading in ComponentState) then SetBounds(Left, Top, Width, Height);
+  if not (csLoading in ComponentState) then begin
+    SetBoundsKeepBase(Left,Top,Width,Height,Parent<>nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -124,6 +126,9 @@ var
   ARight: Integer;
   ABottom: Integer;
 begin
+  // constraint the size
+  DoConstrainedResize(AWidth, AHeight);
+
   // check, if we are already processing this bound change
   ARight:=ALeft+AWidth;
   ABottom:=ATop+AHeight;
@@ -134,38 +139,34 @@ begin
   then exit;
   FLastChangeboundRect:=Rect(ALeft,ATop,AWidth,AHeight);
 
-  // constraint the size
-  DoConstrainedResize(AWidth, AHeight);
-  
   // check if something would change
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
-  if SizeChanged or PosChanged then begin
+  if (not SizeChanged) and (not PosChanged) then exit;
 
-    {If AutoSize and not AutoSizing then begin
-      If SizeChanged then begin
-        DoAutoSize;
-        AutoSizing := True;
-        If PosChanged then
-          ChangeBounds(ALeft, ATop, Width, Height);
-        AutoSizing := False;
-        exit;
-      end;
-    end;}
+  {If AutoSize and not AutoSizing then begin
+    If SizeChanged then begin
+      DoAutoSize;
+      AutoSizing := True;
+      If PosChanged then
+        ChangeBounds(ALeft, ATop, Width, Height);
+      AutoSizing := False;
+      exit;
+    end;
+  end;}
 
-    FLastResize.X:= AWidth - FWidth;
-    FLastResize.Y:= AHeight - FHeight;
+  //FLastResize.X:= AWidth - FWidth;
+  //FLastResize.Y:= AHeight - FHeight;
 
-    //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
-    if (not (csLoading in ComponentState)) then
-      InvalidateControl(Visible, False, true);
-    //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
-    DoSetBounds(ALeft,ATop,AWidth,AHeight);
+  //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
+  if (not (csLoading in ComponentState)) then
+    InvalidateControl(Visible, False, true);
+  //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
+  DoSetBounds(ALeft,ATop,AWidth,AHeight);
 
-    if SizeChanged
-    and (not (csLoading in ComponentState)) then
-      Invalidate;
-//    UpdateAnchorRules;
+  UpdateAnchorRules;
+  LockBaseBounds;
+  try
     BoundsChanged;
     //if csDesigning in ComponentState then
     //  writeln('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
@@ -176,6 +177,11 @@ begin
     end;
     If Parent <> nil then
       Parent.DoAutoSize;
+    if SizeChanged
+    and (not (csLoading in ComponentState)) then
+      Invalidate;
+  finally
+    UnlockBaseBounds;
   end;
 end;
 
@@ -269,6 +275,11 @@ end;
 function TControl.GetClientWidth: Integer;
 begin
   Result := ClientRect.Right;
+end;
+
+function TControl.IsAnchorsStored: boolean;
+begin
+  Result:=Anchors=[akLeft,akTop];
 end;
 
 {------------------------------------------------------------------------------
@@ -805,6 +816,28 @@ begin
     OnShowHint(Self,HintInfo);
 end;
 
+procedure TControl.SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer);
+{ try to set the automatic changed bounds
+  If the interface does not like our bounds, it sends a message with the real
+  bounds, which invokes the automatic realigning of the control, .. a circle.
+  To break the circle, only bounds that are different from the last try will
+  be sent.
+}
+begin
+  if (fLastAlignedBounds.Left=aLeft)
+  and (fLastAlignedBounds.Top=aTop)
+  and (fLastAlignedBounds.Right=aLeft+aWidth)
+  and (fLastAlignedBounds.Bottom=aTop+aHeight)
+  then
+    exit;
+  fLastAlignedBounds.Left:=aLeft;
+  fLastAlignedBounds.Top:=aTop;
+  fLastAlignedBounds.Right:=aLeft+aWidth;
+  fLastAlignedBounds.Bottom:=aTop+aHeight;
+
+  SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight, true);
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.VisibleChanging;
 ------------------------------------------------------------------------------}
@@ -1273,12 +1306,12 @@ end;
 {------------------------------------------------------------------------------
        TControl SetBoundsRect
 ------------------------------------------------------------------------------}
-Procedure TControl.SetBoundsRect(const Rect : TRect);
+Procedure TControl.SetBoundsRect(const ARect : TRect);
 Begin
   {$IFDEF CHECK_POSITION}
   writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
   {$ENDIF}
-  with Rect do
+  with ARect do
     SetBounds(Left,Top,Right - Left, Bottom - Top);
 end;
 
@@ -1586,6 +1619,48 @@ begin
   if (Parent <> nil) then begin
     Parent.AlignControl(Self);
   end;
+end;
+
+procedure TControl.UpdateBaseBounds;
+var
+  NewBaseBounds: TRect;
+  NewBaseParentClientSize: TPoint;
+begin
+  if (csLoading in ComponentState) or (fBaseBoundsLock>0) then exit;
+  NewBaseBounds:=BoundsRect;
+  if Parent<>nil then
+    NewBaseParentClientSize:=Point(Parent.ClientWidth,Parent.ClientHeight)
+  else
+    NewBaseParentClientSize:=Point(0,0);
+  if CompareRect(@NewBaseBounds,@FBaseBounds)
+  and (NewBaseParentClientSize.X=FBaseParentClientSize.X)
+  and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
+  then exit;
+  {writeln('TControl.UpdateBaseBounds ',Name,':',ClassName,
+    ' OldBounds=',FBaseBounds.Left,',',FBaseBounds.Top,',',FBaseBounds.Right-FBaseBounds.Left,',',FBaseBounds.Bottom-FBaseBounds.Top,
+    ' OldClientSize=',FBaseParentClientSize.X,',',FBaseParentClientSize.Y,
+    ' NewBounds=',NewBaseBounds.Left,',',NewBaseBounds.Top,',',NewBaseBounds.Right-NewBaseBounds.Left,',',NewBaseBounds.Bottom-NewBaseBounds.Top,
+    ' NewClientSize=',NewBaseParentClientSize.X,',',NewBaseParentClientSize.Y,
+    '');}
+  FBaseBounds:=NewBaseBounds;
+  FBaseParentClientSize:=NewBaseParentClientSize;
+  fLastAlignedBounds:=Rect(0,0,0,0);
+end;
+
+procedure TControl.LockBaseBounds;
+begin
+  inc(fBaseBoundsLock);
+end;
+
+procedure TControl.UnlockBaseBounds;
+begin
+  dec(fBaseBoundsLock);
+  if fBaseBoundsLock<0 then RaiseGDBException('TControl.UnlockBaseBounds');
+end;
+
+procedure TControl.UpdateAnchorRules;
+begin
+  UpdateBaseBounds;
 end;
 
 {------------------------------------------------------------------------------
@@ -2056,6 +2131,17 @@ begin
   SetBounds(aLeft,aTop,aWidth,aHeight);
 end;
 
+procedure TControl.SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
+  Lock: boolean);
+begin
+  if Lock then LockBaseBounds;
+  try
+    SetBounds(aLeft, aTop, aWidth, aHeight);
+  finally
+    if Lock then UnlockBaseBounds;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.WMWindowPosChanged
   Params:   Msg: The message
@@ -2089,6 +2175,8 @@ end;
   a ReAlign.
  ------------------------------------------------------------------------------}
 procedure TControl.WMSize(Var Message : TLMSize);
+var
+  Locked: boolean;
 begin
   if (Message.SizeType = Size_Restored)
     and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
@@ -2098,8 +2186,14 @@ begin
   {$ENDIF}
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
-  SetBounds(Left, Top, Message.Width, Message.Height);
-  if not (csLoading in ComponentState) then Resize;
+  Locked:=Parent<>nil;
+  if Locked then LockBaseBounds;
+  try
+    SetBounds(Left, Top, Message.Width, Message.Height);
+    if not (csLoading in ComponentState) then Resize;
+  finally
+    if Locked then UnlockBaseBounds;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2120,7 +2214,7 @@ begin
   writeln('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
   {$ENDIF}
   { Just sync the coordinates }
-  SetBounds(Message.XPos, Message.YPos, Width, Height);
+  SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height,Parent<>nil);
 end;
 
 
@@ -2133,6 +2227,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.128  2003/06/10 12:28:23  mattias
+  fixed anchoring controls
+
   Revision 1.127  2003/06/10 00:46:16  mattias
   fixed aligning controls
 
