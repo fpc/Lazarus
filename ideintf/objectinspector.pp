@@ -248,6 +248,7 @@ type
     procedure UpdateScrollBar;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
 
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
@@ -628,6 +629,13 @@ begin
     {$R+}
     ExStyle := ExStyle or WS_EX_CLIENTEDGE;
   end;
+end;
+
+procedure TOICustomPropertyGrid.CreateWnd;
+begin
+  inherited CreateWnd;
+  // handle just created, set scrollbar
+  UpdateScrollBar;
 end;
 
 procedure TOICustomPropertyGrid.WMVScroll(var Msg: TWMScroll);
