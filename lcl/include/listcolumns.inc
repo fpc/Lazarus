@@ -1,3 +1,5 @@
+{ $Id$}
+
 {------------------------------------------------------------------------------}
 {   TListColumns                                                               }
 {------------------------------------------------------------------------------}
@@ -33,6 +35,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/03/23 15:49:22  lazarus
+  MWE: Fixed more compatebility issues (Sort, SelectedItem)
+
   Revision 1.1  2002/03/12 23:55:37  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

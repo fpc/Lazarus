@@ -1,3 +1,4 @@
+{ $Id$}
 {
  /***************************************************************************
                                ComCtrls.pp
@@ -72,7 +73,7 @@ uses
 {Not used yet, but soon}
   TBCDRF_NOEDGES              = $00010000;  // Don't draw the button edges
   TBCDRF_HILITEHOTTRACK       = $00020000;  // Use color of the button bk when hottracked
-  TBCDRF_NOOFFSET             = $00040000;  // Don't offset the button if pressed 
+  TBCDRF_NOOFFSET             = $00040000;  // Don't offset the button if pressed
   TBCDRF_NOMARK               = $00080000;  // Don't draw the default highlight of the image/text for TBSTATE_MARKED
   TBCDRF_NOETCHEDEFFECT       = $00100000;  // Don't draw the etched effect for disabled items
 
@@ -116,7 +117,7 @@ uses
   TB_SETIMAGELIST         = WM_USER + 48;
   TB_GETIMAGELIST         = WM_USER + 49;
   TB_LOADIMAGES           = WM_USER + 50;
-  TB_GETRECT              = WM_USER + 51; 
+  TB_GETRECT              = WM_USER + 51;
   TB_SETHOTIMAGELIST      = WM_USER + 52;
   TB_GETHOTIMAGELIST      = WM_USER + 53;
   TB_SETDISABLEDIMAGELIST = WM_USER + 54;
@@ -277,18 +278,18 @@ const
   CCS_RIGHT               = (CCS_VERT or CCS_BOTTOM);
   CCS_NOMOVEX             = (CCS_VERT or CCS_NOMOVEY);
 
-  ICC_LISTVIEW_CLASSES   = $00000001; 
-  ICC_TREEVIEW_CLASSES   = $00000002; 
-  ICC_BAR_CLASSES        = $00000004; 
-  ICC_TAB_CLASSES        = $00000008; 
-  ICC_UPDOWN_CLASS       = $00000010; 
-  ICC_PROGRESS_CLASS     = $00000020; 
-  ICC_HOTKEY_CLASS       = $00000040; 
-  ICC_ANIMATE_CLASS      = $00000080; 
+  ICC_LISTVIEW_CLASSES   = $00000001;
+  ICC_TREEVIEW_CLASSES   = $00000002;
+  ICC_BAR_CLASSES        = $00000004;
+  ICC_TAB_CLASSES        = $00000008;
+  ICC_UPDOWN_CLASS       = $00000010;
+  ICC_PROGRESS_CLASS     = $00000020;
+  ICC_HOTKEY_CLASS       = $00000040;
+  ICC_ANIMATE_CLASS      = $00000080;
   ICC_WIN95_CLASSES      = $000000FF;
-  ICC_DATE_CLASSES       = $00000100; 
-  ICC_USEREX_CLASSES     = $00000200; 
-  ICC_COOL_CLASSES       = $00000400; 
+  ICC_DATE_CLASSES       = $00000100;
+  ICC_USEREX_CLASSES     = $00000200;
+  ICC_COOL_CLASSES       = $00000400;
   ICC_INTERNET_CLASSES   = $00000800;
   ICC_PAGESCROLLER_CLASS = $00001000;
   ICC_NATIVEFNTCTL_CLASS = $00002000;
@@ -383,16 +384,21 @@ type
 
   TListItems = class;  //forward declaration!
   TCustomListView = class;  //forward declaration!
+  TSortType = (stNone, stData, stText, stBoth);
 
   TListItem = class(TPersistent)
   private
-    FOwner : TListItems;
+    FOwner: TListItems;
     FSubItems: TStrings;
     //FIndex   : Integer;
-    FCaption : String;
+    FCaption: String;
+    FData: Pointer;
     FImageIndex: Integer;
+    FDestroying: Boolean;
+
+    procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
-    Procedure SetCaption(const Value : String);
+    procedure SetCaption(const AValue : String);
 //    Procedure SetSubItems(Value : TStrings);
     Function GetIndex : Integer;
   protected
@@ -403,6 +409,7 @@ type
     destructor Destroy; override;
     procedure Delete;
     property Caption : String read FCaption write SetCaption;
+    property Data: Pointer read FData write SetData;
     property Index : Integer read GetIndex;
     property Owner : TListItems read FOwner;
     property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
@@ -415,80 +422,21 @@ type
     FItems : TList;
     Function GetCount : Integer;
   protected
-    Function GetItem(Index : Integer): TListItem;
-    procedure SetITem(Index : Integer; Value : TListItem);
-    Procedure ItemChanged(sender : TObject);  //called by TListItem in response to SubItems changing
+    function GetItem(const AIndex: Integer): TListItem;
+    procedure SetITem(const AIndex: Integer; const AValue: TListItem);
+    procedure ItemChanged(sender : TObject);  //called by TListItem in response to SubItems changing
   public
+    function Add: TListItem;
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
-    function Add:TListItem;
-    Procedure Delete(Index : Integer);
-    function Insert(Index : Integer) : TListItem;
-    property Count : Integer read GetCount;
-    property Item[Index : Integer]: TListItem read GetItem write SetItem; default;
+    procedure Delete(const AIndex : Integer);
+    function FindData(const AData: Pointer): TListItem;
+    function Insert(const AIndex: Integer) : TListItem;
+    property Count: Integer read GetCount;
+    property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;
   end;
 
-
-(* 
- TViewColumn = class(TPersistent)
-   private
-     FCaption: String;
-     FAlignment: TColumnAlignment;
-     FOnChange: TNotifyEvent;
-     FWidth: Integer;
-     FMinWidth: Integer;
-     FMaxWidth: Integer;
-     FAutoSize: Boolean;
-     FVisible: Boolean;
-     procedure SetVisible(const AValue: Boolean);
-     procedure SetAutoSize(const AValue: Boolean);
-     procedure SetMinWidth(const AValue: Integer);
-     procedure SetMaxWidth(const AValue: Integer);
-     procedure SetWidth(const AValue: Integer);
-     procedure SetCaption(const AValue: String);
-   
-     procedure SetAlignment(const AValue: TColumnAlignment);
-   public
-     constructor Create;
-     destructor Destroy; override;
-     Property Caption : String read FCaption write SetCaption;
-     Property Width  : Integer read FWidth write SetWidth;
-     property MinWidth : Integer read FMinWidth write SetMinWidth;
-     property MaxWidth : Integer read FMaxWidth write SetMaxWidth;
-     property Alignment : TColumnAlignment read FAlignment write SetAlignment;
-     Property AutoSize : Boolean read FAutoSize write SetAutoSize;
-     Property Visible : Boolean read FVisible write SetVisible;
-     property OnChange : TNotifyEvent read FOnChange write FOnChange;
-
- end;
-*)
-
-(*
- TViewColumns = class(TPersistent)
-   private
-     FItems : TList;
-     FOnChange : TNotifyEvent;
-     Listview : TCustomListView;
-     FUpdating: Boolean;
-     procedure SetUpdating(const AValue: Boolean);
-     function GetCount: Integer;
-     function GetItem(Index : Integer): TViewColumn;
-   protected
-     procedure ColumnChanged(Sender : TObject);
-   public
-     constructor Create(Aowner : TCustomListView);
-     Destructor Destroy; override;
-     Function Add(const S : String): Integer;
-     Procedure Delete(Index : Integer);
-     Procedure Clear; //deletes all columns
-     property Count : Integer read GetCount;
-     property Item[Index : Integer]: TViewColumn read GetItem; default;
-     property OnChange : TNotifyEvent read FOnChange write FOnChange;
-     property Updating : Boolean read FUpdating write SetUpdating;
- end;
-*)
- 
   TWidth = 0..MaxInt;
 
   TListColumn = class(TCollectionItem)
@@ -541,10 +489,10 @@ type
     property Owner: TCustomListView read FOwner;
     property Items[const AIndex: Integer]: TListColumn read GetItem write SetItem; default;
   end;
- 
- 
+
+
   TViewStyle = (vsList,vsReport);
- 
+
   TCustomListView = class(TWinControl)
   private
     //FReadOnly : Boolean;
@@ -554,7 +502,7 @@ type
     FListItems : TListItems;
     FColumns : TListColumns;
     FViewStyle : TViewStyle;
-    FSorted    : Boolean;
+    FSortType: TSortType;
     FSortColumn : Integer;
     FMultiSelect: Boolean;
     FImageChangeLink : TChangeLink;
@@ -563,14 +511,19 @@ type
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
-    procedure SetColumns(Value: TListColumns);
+    function GetSelection: TListItem;
+    procedure SetColumns(const AValue: TListColumns);
     procedure SetDefaultItemHeight(AValue: integer);
-    procedure SetItems(Value : TListItems);
+    procedure SetItems(const AValue : TListItems);
     procedure SetMultiSelect(const AValue: Boolean);
     procedure SetSmallImages(const AValue: TCustomImageList);
     procedure SetScrollBars(const Value: TScrollStyle);
-    procedure SetScrolledLeft(AValue: integer);
-    procedure SetScrolledTop(AValue: integer);
+    procedure SetScrolledLeft(AValue: Integer);
+    procedure SetScrolledTop(AValue: Integer);
+    procedure SetSelection(const AValue: TListItem);
+    procedure SetSortColumn(const AValue: Integer);
+    procedure SetSortType(const AValue: TSortType);
+    procedure SetViewStyle (const Avalue: TViewStyle);
     procedure UpdateScrollbars;
   protected
     ParentWindow : TScrolledWindow;
@@ -578,9 +531,6 @@ type
     procedure InsertItem(Item : TListItem);
     function GetMaxScrolledLeft : Integer;
     function GetMaxScrolledTop : Integer;
-    procedure SetViewStyle (value : TViewStyle);
-    procedure SetSortColumn(Value : Integer);
-    procedure SetSorted(Value : Boolean);
     procedure ColumnsChanged; //called by TListColumns
     procedure ItemChanged(Index : Integer);  //called by TListItems
     procedure ItemDeleted(Index : Integer);  //called by TListItems
@@ -601,16 +551,17 @@ type
     property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property SmallImages: TCustomImageList read FSmallImages write SetSmallImages;
-    property Sorted: Boolean read FSorted write SetSorted;
+    property SortType: TSortType read FSortType write SetSortType;
     property SortColumn: Integer read FSortColumn write SetSortColumn;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
+    property Selected: TListItem read GetSelection write SetSelection;
   end;
 
  TListView = class(TCustomListView)
-  published   
+  published
     property Align;
     property Anchors;
 //    property BorderStyle;
@@ -624,6 +575,7 @@ type
 //    property HideSelection;
     property Items;
     property MultiSelect;
+    property PopupMenu;
 //    property ReadOnly default False;
 //    property RowSelect;
     property ScrollBars;
@@ -642,7 +594,7 @@ type
   end;
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
-  
+
   { TProgressBar }
   {
     @abstract(Simple progressbar.)
@@ -672,7 +624,7 @@ type
     procedure SetOrientation (Value : TProgressBarOrientation);
   protected
     procedure ApplyChanges;
-    procedure AttachSignals; override; 
+    procedure AttachSignals; override;
     procedure InitializeWnd; override;
 {    procedure SetBarTextFormat; }
   public
@@ -708,19 +660,19 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-{ ... to be implemented for Delphi compatibility 
+{ ... to be implemented for Delphi compatibility
 //    property Anchors;
 //  property Constraints;
 //  property OnStartDock;
 //  property OnEndDock;
 }
- published { additional functionality } 
+ published { additional functionality }
     property BarShowText : boolean read FBarShowText write SetBarShowText;
 {   property BarTextFormat : string read FBarTextFormat write SetBarTextFormat; }
  end;
 
 
-  
+
 { TToolBar }
 
 const
@@ -1037,17 +989,17 @@ type
   protected
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
-    procedure AttachSignals; override; 
+    procedure AttachSignals; override;
     procedure InitializeWnd; override;
 { ... what about these?
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
-}    
+}
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetTick(Value: Integer);
   published
-    property Ctl3D; 
+    property Ctl3D;
     property LineSize: Integer read FLineSize write SetLineSize default 1;
     property Max: Integer read FMax write SetMax default 10;
     property Min: Integer read FMin write SetMin default 0;
@@ -1059,7 +1011,7 @@ type
     property SelStart: Integer read FSelStart write SetSelStart;
     property TickMarks: TTickMark read FTickMarks write SetTickMarks;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle;
-    property Visible; 
+    property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnEnter;
     property OnExit;
@@ -1075,13 +1027,13 @@ type
     property OnEndDrag;
     property PopupMenu;
     property ShowHint;
-    property TabOrder; 
-    property TabStop default True; 
+    property TabOrder;
+    property TabStop default True;
     property OnStartDrag;
   published { additional functionality }
     property ShowScale : boolean read FShowScale write SetShowScale;
-    property ScalePos : TTrackBarScalePos read FScalePos write SetScalePos; 
-    property DragMode; 
+    property ScalePos : TTrackBarScalePos read FScalePos write SetScalePos;
+    property DragMode;
   end;
 
 
@@ -1098,8 +1050,6 @@ type
   TNodeAttachMode = (naAdd, naAddFirst, naAddChild, naAddChildFirst, naInsert);
 
   TAddMode = (taAddFirst, taAdd, taInsert);
-
-  TSortType = (stNone, stData, stText, stBoth);
 
   TTreeNodeArray = ^TTreeNode;
 
@@ -1598,7 +1548,7 @@ type
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetOptions(NewOptions: TTreeViewOptions);
     procedure WndProc(var Message: TLMessage); override;
-    
+
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle: TBorderStyle
       read FBorderStyle write SetBorderStyle default bsSingle;
@@ -1832,6 +1782,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/03/23 15:51:17  lazarus
+  MWE: Fixed more compatebility issues (Sort, SelectedItem)
+
   Revision 1.27  2002/03/12 23:55:36  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

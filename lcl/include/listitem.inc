@@ -1,3 +1,5 @@
+{ $Id$}
+
 {------------------------------------------------------------------------------}
 {   TListItem Constructor                                                           }
 {------------------------------------------------------------------------------}
@@ -5,17 +7,27 @@ constructor TListItem.Create(AOwner : TListItems);
 begin
   Inherited Create;
   FOwner := AOwner;
-  SubItems := TStringList.Create;
-  TStringList(SubItems).OnChange := @ItemChanged;
+  FSubItems := TStringList.Create;
+  TStringList(FSubItems).OnChange := @ItemChanged;
+  FDestroying := False;
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItem SetCaption                                                       }
 {------------------------------------------------------------------------------}
-procedure TListItem.SetCaption(const Value : String);
+procedure TListItem.SetCaption(const AValue : String);
 begin
-  FCaption := Value;
+  FCaption := AValue;
   FOwner.ItemChanged(self);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem SetData                                                       }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetData(const AValue: Pointer);
+begin
+  FData := AValue;
+  // TODO: Sort
 end;
 
 {------------------------------------------------------------------------------}
@@ -23,10 +35,9 @@ end;
 {------------------------------------------------------------------------------}
 function TListItem.GetIndex : Integer;
 begin
-  if Assigned(FOwner) then
-    Result := FOwner.FItems.IndexOf(self)
-    else
-    Result := -1;
+  if Assigned(FOwner) 
+  then Result := FOwner.FItems.IndexOf(self)
+  else Result := -1;
 end;
 
 {------------------------------------------------------------------------------}
@@ -43,7 +54,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItem.Delete;
 begin
-  free;
+  if not FDestroying then Free;
 end;
 
 {------------------------------------------------------------------------------}
@@ -59,8 +70,12 @@ end;
 {------------------------------------------------------------------------------}
 destructor TListItem.Destroy;
 begin
- SubItems.Free;
- Inherited Destroy;
+  FDestroying := True;
+  if FOwner <> nil
+  then FOwner.Delete(Index);
+  
+  SubItems.Free;    
+  inherited Destroy;
 end;
 
 procedure TListItem.SetImageIndex(const AValue: Integer);
@@ -72,4 +87,10 @@ begin
     end;
 end;
 
+{ =============================================================================
 
+  $Log$
+  Revision 1.7  2002/03/23 15:49:22  lazarus
+  MWE: Fixed more compatebility issues (Sort, SelectedItem)
+
+}

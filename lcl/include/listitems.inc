@@ -1,3 +1,5 @@
+{ $Id$}
+
 {------------------------------------------------------------------------------}
 {   TListItems Constructor                                                     }
 {------------------------------------------------------------------------------}
@@ -19,21 +21,21 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItems GetItem                                                         }
 {------------------------------------------------------------------------------}
-function TListItems.GetItem(Index : Integer): TListItem;
+function TListItems.GetItem(const AIndex: Integer): TListItem;
 begin
   Result:=nil;
-  if (FItems.Count-1 <Index) then Exit;
-  Result := TListItem(FItems.Items[Index]);
+  if (FItems.Count-1 < AIndex) then Exit;
+  Result := TListItem(FItems.Items[AIndex]);
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems SetItem                                                         }
 {------------------------------------------------------------------------------}
-procedure TListItems.SetItem(Index : Integer; Value : TListItem);
+procedure TListItems.SetItem(const AIndex: Integer; const AValue: TListItem);
 begin
-  if FItems.Count-1 < Index then Exit;
-  FItems.Items[Index] := Value;
-  FOwner.ItemChanged(Index);
+  if FItems.Count-1 < AIndex then Exit;
+  FItems.Items[AIndex] := AValue;
+  FOwner.ItemChanged(AIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -50,23 +52,18 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItems Delete                                                          }
 {------------------------------------------------------------------------------}
-procedure TListItems.Delete(Index : Integer);
+procedure TListItems.Delete(const AIndex: Integer);
 begin
-//  Writeln('--------');
-  if (FItems.Items[index] <> nil) then
-  Item[Index].Delete;
-  FItems.Delete(index);
-//  if (FItems.Items[index] <> nil) then
-//  TListItem(FItems.Items[Index]).Delete;
-  Writeln('--------');
-  FOwner.ItemDeleted(Index);
-//  Writeln('--Item Deleted Called------');
+  if (FItems.Items[Aindex] <> nil) 
+  then Item[AIndex].Delete;
+  FItems.Delete(AIndex);
+  FOwner.ItemDeleted(AIndex);
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems Insert                                                          }
 {------------------------------------------------------------------------------}
-function TListItems.Insert(Index : Integer) : TListItem;
+function TListItems.Insert(const AIndex: Integer): TListItem;
 begin
   // ToDo
   Result:=nil;
@@ -79,6 +76,22 @@ destructor TListItems.Destroy;
 begin
   FItems.Free;
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems FindData                                                     }
+{------------------------------------------------------------------------------}
+function TListItems.FindData(const AData: Pointer): TListItem;
+var
+  n: Integer;
+begin
+  for n := 0 to FItems.Count - 1 do
+  begin
+    Result := TListItem(FItems[n]);
+    if Result.Data = AData then Exit;
+  end;          
+  
+  Result := nil;
 end;
 
 {------------------------------------------------------------------------------}
@@ -95,3 +108,10 @@ begin
   FOwner.ItemChanged(Index);
 end;
 
+{ =============================================================================
+
+  $Log$
+  Revision 1.9  2002/03/23 15:49:22  lazarus
+  MWE: Fixed more compatebility issues (Sort, SelectedItem)
+
+}

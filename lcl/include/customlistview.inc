@@ -7,14 +7,14 @@ constructor TCustomListView.Create(Aowner: TComponent);
 begin
   inherited Create(AOwner);
   FColumns := TListColumns.Create(self);
-  FListItems := TListITems.Create(self);
+  FListItems := TListItems.Create(self);
   FBorderStyle := bsSingle;
-  FScrollBars:=ssBoth;
+  FScrollBars := ssBoth;
   FSmallImages := nil;
-  fCompStyle := csListView;
-  fViewStyle := vsList;
-  fSorted := False;
-  fSortColumn := 0;
+  FCompStyle := csListView;
+  FViewStyle := vsList;
+  FSortType := stNone;
+  FSortColumn := 0;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
   Setbounds(2,2,300,300);
@@ -67,7 +67,7 @@ End;
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItems                                                   }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetItems(Value : TListItems);
+procedure TCustomListView.SetItems(const AValue : TListItems);
 begin
 end;
 
@@ -88,39 +88,39 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView SetColumns                                                 }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetColumns(Value: TListColumns);
+procedure TCustomListView.SetColumns(const AValue: TListColumns);
 begin
-  FColumns.Assign(Value);
+  FColumns.Assign(AValue);
 end;
          
 {------------------------------------------------------------------------------}
 {   TCustomListView SetViewStyle                                               }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetViewStyle(Value : TViewStyle);
+procedure TCustomListView.SetViewStyle(const AValue: TViewStyle);
 begin
-  if FViewStyle = Value then Exit;
-  FViewStyle := Value;
+  if FViewStyle = AValue then Exit;
+  FViewStyle := AValue;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
 
 
 {------------------------------------------------------------------------------}
-{   TCustomListView SetSorted                                                  }
+{   TCustomListView SetSortType                                                  }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetSorted(Value : Boolean);
+procedure TCustomListView.SetSortType(const AValue: TSortType);
 begin
-  if FSorted = Value then Exit;
-  FSorted := Value;
+  if FSortType = AValue then Exit;
+  FSortType := AValue;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView SetSortColumn                                              }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.SetSortColumn(Value : Integer);
+procedure TCustomListView.SetSortColumn(const AValue : Integer);
 begin
-  if FSortColumn = Value then Exit;
-  FSortColumn := Value;
+  if FSortColumn = AValue then Exit;
+  FSortColumn := AValue;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
 
@@ -133,6 +133,21 @@ begin
   FImageChangeLink.Free;
   FListItems.Free;
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView GetSelection                                                 }
+{------------------------------------------------------------------------------}
+function TCustomListView.GetSelection: TListItem;
+begin
+  Result := nil;
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView SetSelection                                                 }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetSelection(const AValue: TListItem);
+begin
 end;
 
 procedure TCustomListView.SetMultiSelect(const AValue: Boolean);
@@ -318,6 +333,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/03/23 15:49:22  lazarus
+  MWE: Fixed more compatebility issues (Sort, SelectedItem)
+
   Revision 1.14  2002/03/14 23:25:52  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 
