@@ -276,7 +276,7 @@ type
     procedure SetVarValue(const NewValue:Variant);
     procedure Modified;
   public
-    constructor Create(PropertyEditorFilter:TPropertyEditorHook;
+    constructor Create(Hook:TPropertyEditorHook;
       ComponentList:TComponentSelectionList;  APropCount:Integer); virtual;
     destructor Destroy; override;
     procedure Activate; virtual;
@@ -1118,9 +1118,12 @@ begin
          (P^.PropertyType^.Kind=tkClass) and
          GetTypeData(PropType)^.ClassType.InheritsFrom(
            GetTypeData(P^.PropertyType)^.ClassType)
-       ) then
+       )
+    then
       if ((P^.ComponentClass=nil) or (Obj.InheritsFrom(P^.ComponentClass))) and
-         ((P^.PropertyName='') or (CompareText(PropInfo^.Name,P^.PropertyName)=0)) then
+         ((P^.PropertyName='')
+         or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
+      then
         if (C=nil) or   // see if P is better match than C
            ((C^.ComponentClass=nil) and (P^.ComponentClass<>nil)) or
            ((C^.PropertyName='') and (P^.PropertyName<>''))
@@ -1135,13 +1138,20 @@ begin
            or // P's component class is more specific than C's component class
            ((P^.ComponentClass<>nil) and (C^.ComponentClass<>nil) and
             (P^.ComponentClass<>C^.ComponentClass) and
-            (P^.ComponentClass.InheritsFrom(C^.ComponentClass))) then
+            (P^.ComponentClass.InheritsFrom(C^.ComponentClass)))
+        then
           C:=P;
     Inc(I);
   end;
   if C<>nil then
-    Result:=C^.EditorClass else
-    Result:=PropClassMap[PropType^.Kind];
+    Result:=C^.EditorClass
+  else begin
+    if (PropType^.Kind<>tkClass)
+    or (GetTypeData(PropType)^.ClassType.InheritsFrom(TPersistent)) then
+      Result:=PropClassMap[PropType^.Kind]
+    else
+      Result:=nil;
+  end;
 end;
 
 procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
@@ -1234,11 +1244,10 @@ end;
 
 { TPropertyEditor }
 
-constructor TPropertyEditor.Create(
-  PropertyEditorFilter:TPropertyEditorHook;
-  ComponentList:TComponentSelectionList;  APropCount:Integer);
+constructor TPropertyEditor.Create(Hook: TPropertyEditorHook;
+  ComponentList: TComponentSelectionList;  APropCount:Integer);
 begin
-  FPropertyHook:=PropertyEditorFilter;
+  FPropertyHook:=Hook;
   FComponents:=ComponentList;
   GetMem(FPropList,APropCount * SizeOf(TInstProp));
   FPropCount:=APropCount;
@@ -1524,13 +1533,13 @@ end;
   override the two measure procedures if the default width or height don't
   need to be changed. }
 procedure TPropertyEditor.ListMeasureHeight(const NewValue:ansistring;
-Index:integer;  ACanvas:TCanvas;  var AHeight:Integer);
+  Index:integer;  ACanvas:TCanvas;  var AHeight:Integer);
 begin
   //
 end;
 
-procedure TPropertyEditor.ListMeasureWidth(const NewValue:ansistring; Index:integer;
-  ACanvas:TCanvas;  var AWidth:Integer);
+procedure TPropertyEditor.ListMeasureWidth(const NewValue:ansistring;
+  Index:integer; ACanvas:TCanvas; var AWidth:Integer);
 begin
   //
 end;
@@ -1542,7 +1551,6 @@ begin
   TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
   if ACanvas.Brush.Color<>clNone then
     ACanvas.FillRect(ARect);
-  // XXX Todo: clipping
   ACanvas.TextOut(ARect.Left+2,TextY,NewValue);
 end;
 
@@ -1560,7 +1568,6 @@ procedure TPropertyEditor.PropDrawName(ACanvas:TCanvas; const ARect:TRect;
 var TextY:integer;
 begin
   TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
-  // XXX Todo: clipping
   ACanvas.TextOut(ARect.Left+2,TextY,GetName);
 end;
 
@@ -1569,7 +1576,6 @@ procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
 var TextY:integer;
 begin
   TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
-  // XXX Todo: clipping
   ACanvas.TextOut(ARect.Left+3,TextY,GetVisualValue)
 end;
 
@@ -1960,6 +1966,9 @@ end;
 function TClassPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paReadOnly];
+  if (PropCount>0) then begin
+  
+  end;
 end;
 
 procedure TClassPropertyEditor.GetProperties(Proc: TGetPropEditProc);
@@ -2009,14 +2018,14 @@ var
   FormMethodName: shortstring;
 begin
   FormMethodName := GetValue;
-writeln('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
+  writeln('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
   if (not IsValidIdent(FormMethodName))
   or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
     if not IsValidIdent(FormMethodName) then
       FormMethodName := GetFormMethodName;
-writeln('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
+    writeln('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
     if not IsValidIdent(FormMethodName) then begin
-      {raise EPropertyError.CreateRes(@SCannotCreateName);}
+      raise EPropertyError.Create('Method name must be an identifier'{@SCannotCreateName});
       exit;
     end;
     SetValue(FormMethodName);
