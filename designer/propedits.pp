@@ -4,7 +4,7 @@ unit propedits;
 
   Abstract:
     This units defines the property editors used by the object inspector.
-    A Property Editor is the the interface between a row of the object inspector
+    A Property Editor is the interface between a row of the object inspector
     and a property in the RTTI.
     For more information see the big comment part below.
 
@@ -793,7 +793,7 @@ const
     nil                    // tkQWord
     );
 
-// XXX ToDo: There is a big in the typinfo.pp. Thus this workaround -------
+// XXX ToDo: There are bugs in the typinfo.pp. Thus this workaround -------
 
 Procedure SetIndexValues (P: PPRopInfo; Var Index,IValue : Longint);
 begin
@@ -804,44 +804,141 @@ begin
     IValue:=0;
 end;
 
+function CallIntegerFunc(s: Pointer; Address: Pointer; Index, IValue: LongInt): Int64; assembler;
+asm
+  movl S,%esi
+  movl Address,%edi
+  // ? Indexed function
+  movl Index,%eax
+  testl %eax,%eax
+  je .LINoPush
+  movl IValue,%eax
+  pushl %eax
+.LINoPush:
+  push %esi
+  call %edi
+  // now the result is in EDX:EAX
+end;
+
+Procedure CallSStringFunc(s : Pointer;Address : Pointer; INdex,IValue : Longint;
+                        Var Res: Shortstring);assembler;
+asm
+  movl S,%esi
+  movl Address,%edi
+  // ? Indexed function
+  movl Index,%eax
+  testl %eax,%eax
+  jnz .LSSNoPush
+  movl IValue,%eax
+  pushl %eax
+  // the result is stored in an invisible parameter
+  pushl Res
+.LSSNoPush:
+  push %esi
+  call %edi
+end;
+
+Function GetAStrProp(Instance : TObject;PropInfo : PPropInfo):Pointer;
+{
+Dirty trick based on fact that AnsiString is just a pointer,
+hence can be treated like an integer type.
+}
+var
+  value : Pointer;
+  Index,Ivalue : Longint;
+begin
+  SetIndexValues(PropInfo,Index,IValue);
+  case (PropInfo^.PropProcs) and 3 of
+    ptfield:
+      Value:=Pointer(PLongint(Pointer(Instance)+Longint(PropInfo^.GetProc))^);
+    ptstatic:
+      Value:=Pointer(LongInt(
+        CallIntegerFunc(Instance,PropInfo^.GetProc,Index,IValue)));
+    ptvirtual:
+      Value:=Pointer(LongInt(CallIntegerFunc(Instance,
+        PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
+        Index,IValue)));
+  end;
+  GetAStrProp:=Value;
+end;
+
+Function GetSStrProp(Instance : TObject;PropInfo : PPropInfo):ShortString;
+var
+  value : ShortString;
+  Index,IValue : Longint;
+begin
+  SetIndexValues(PropInfo,Index,IValue);
+  case (PropInfo^.PropProcs) and 3 of
+    ptfield:
+      Value:=PShortString(Pointer(Instance)+Longint(PropInfo^.GetProc))^;
+    ptstatic:
+     CallSStringFunc(Instance,PropInfo^.GetProc,Index,IValue,Value);
+    ptvirtual:
+     CallSSTringFunc(Instance,
+       PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^,
+       Index,Ivalue,Value);
+  end;
+  GetSStrProp:=Value;
+end;
+
+function GetStrProp(Instance : TObject;PropInfo : PPropInfo) : Ansistring;
+var s:Ansistring;
+begin
+  Case Propinfo^.PropType^.Kind of
+    tkSString : Result:=GetSStrProp(Instance,PropInfo);
+    tkAString :
+      { Dirty trick which is necessary to increase the reference
+       counter of Result... }
+      begin
+        Pointer(Result):=GetAStrProp(Instance,Propinfo);
+        s:=Result;
+        Pointer(s):=nil;
+      end;
+  else
+    Result:='';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function CallIntegerProc(s : Pointer;Address : Pointer;Value : Integer;
 Index,IValue : Longint) : Integer;  assembler;
 asm
-   movl S,%esi
-   movl Address,%edi
-   // Push value to set
-   movl Value,%eax
-   pushl %eax
-   // ? Indexed procedure
-   movl Index,%eax
-   testl %eax,%eax
-   je .LIPNoPush
-   movl IValue,%eax
-   pushl %eax
+  movl S,%esi
+  movl Address,%edi
+  // Push value to set
+  movl Value,%eax
+  pushl %eax
+  // ? Indexed procedure
+  movl Index,%eax
+  testl %eax,%eax
+  je .LIPNoPush
+  movl IValue,%eax
+  pushl %eax
 .LIPNoPush:
-   pushl %esi
-   call %edi
+  pushl %esi
+  call %edi
 end;
 
 procedure CallSStringProc(s : Pointer;Address : Pointer;
   const Value : ShortString; Index,IVAlue : Longint);  assembler;
 asm
-   movl S,%esi
-   movl Address,%edi
-   // Push value to set
-   movl Value,%eax
-   pushl %eax
-   // ? Indexed procedure
-   movl Index,%eax
-   testl %eax,%eax
-   // MG: here was a bug (jnz)
-   je .LSSPNoPush
-   movl IValue,%eax
-   pushl %eax
+  movl S,%esi
+  movl Address,%edi
+  // Push value to set
+  movl Value,%eax
+  pushl %eax
+  // ? Indexed procedure
+  movl Index,%eax
+  testl %eax,%eax
+  // MG: here was a bug (jnz)
+  je .LSSPNoPush
+  movl IValue,%eax
+  pushl %eax
 .LSSPNoPush:
-   // MG: and here was a bug too (push)
-   pushl %esi
-   call %edi
+  // MG: and here was a bug too (push)
+  pushl %esi
+  call %edi
 end;
 
 procedure SetAStrProp(Instance : TObject;PropInfo : PPropInfo;
@@ -2199,7 +2296,7 @@ end;
 
 function TComponentPropertyEditor.GetEditLimit: Integer;
 begin
-  Result := 127;
+  Result := MaxIdentLength;
 end;
 
 function TComponentPropertyEditor.GetValue: string;

@@ -28,7 +28,7 @@ interface
 {$endif}
  
 uses Windows, Strings, sysutils, lmessages, Classes, Controls, dialogs, vclGlobals, forms,
-     extctrls;
+     extctrls,InterfaceBase;
  
 const
    csAlignment = 1;

@@ -43,9 +43,10 @@ type
     FControlSelection : TControlSelection;
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
+    FSource : TStringList;
   protected
     ControlSelection : TControlSelection;
-
+    Function NewModuleSource(nmUnitName, nmForm, nmAncestor: String) : Boolean;
   public
     constructor Create(customform : TCustomform);
     destructor Destroy; override;
@@ -64,27 +65,70 @@ type
 
  implementation
 
+uses
+  Sysutils, Typinfo;
 var
 GridPoints : TGridPoint;
 
+
 constructor TDesigner.Create(CustomForm : TCustomForm);
+var
+    PT : PTypeData;
+    PI : PTypeInfo;
+    nmForm,nmAncestor : String;
+    I : Integer;
 begin
-inherited Create;
+  inherited Create;
 
 
-FCustomForm := CustomForm;
-//The controlselection should NOT be owned by the form.  When it is it shows up in the OI
-ControlSelection := TControlSelection.Create(CustomForm);
+  FCustomForm := CustomForm;
+  FSource := TStringList.Create;
+  //create the code for the unit
+  PI := CustomForm.ClassInfo;
+
+  nmForm := PI^.Name;
+  Delete(nmForm,1,1);
+
+  PT:=GetTypeData(PI);
+  //DumpMem(PByte(PI));
+  If PT^.ParentInfo <> Nil then
+     Begin
+       nmAncestor := PT^.ParentInfo^.Name;
+       delete(nmAncestor,1,1);
+     end
+     else
+       nmAncestor := 'Object';
+
+  NewModuleSource('Unit1',nmForm,nmAncestor);
+
+  //The controlselection should NOT be owned by the form.  When it is it shows up in the OI
+  ControlSelection := TControlSelection.Create(CustomForm);
+
+try
+  Writeln('**********************************************');
+  for I := 1 to FSource.Count do
+  writeln(FSource.Strings[i-1]);
+  Writeln('**********************************************');
+except
+  Application.Messagebox('error','error',0);
+end;
 end;
 
 destructor TDesigner.Destroy;
 Begin
-Inherited;
 ControlSelection.free;
+FSource.Free;
+
+Inherited;
 end;
 
 procedure TDesigner.CreateNew(FileName : string);
 begin
+
+end;
+
+function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
+Begin
 
 end;
 
@@ -93,16 +137,45 @@ begin
 
 end;
 
-
-function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
-Begin
-
-end;
-
 procedure TDesigner.Modified;
 Begin
 
 end;
+
+Function TDesigner.NewModuleSource(nmUnitName, nmForm, nmAncestor: String): Boolean;
+Var
+I : Integer;
+Begin
+FSource.Clear;
+Result := True;
+with FSource do
+     try
+       Add(Format('unit %s;', [nmUnitname]));
+       Add('');
+       Add('interface');
+       Add('');
+       Add('uses Classes, Graphics, Controls, Forms, Dialogs;');
+       Add('');
+       Add('type');
+       Add(Format('     T%s = class(T%s)', [nmForm,nmAncestor]));
+       Add('     private');
+       Add('     { private declarations}');
+       Add('     public');
+       Add('     { public declarations }');
+       Add('     end;');
+       Add('');
+       Add('var');
+       Add(Format('     %s: T%0:s;', [nmForm]));
+       Add('');
+       Add('implementation');
+       Add('');
+       Add('end.');
+     except
+       Result := False;
+     end;
+end;
+
+
 
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
