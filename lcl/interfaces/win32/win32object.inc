@@ -2331,9 +2331,8 @@ Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
-    //  NOTE: for some reason, 1.9.x generates the wrong constant here...
-//      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, $53);
+      //  NOTE: for some reason, 1.9.x generates the wrong constant here...
+      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
     end else begin
       Windows.ShowWindow(Handle, SW_SHOW);
     end;
@@ -2888,6 +2887,9 @@ End;
 
 {
   $Log$
+  Revision 1.147  2003/12/19 18:18:17  micha
+  fix window activation z-order
+
   Revision 1.146  2003/12/18 10:59:51  micha
   fix notebook page out of bounds while destroying
 

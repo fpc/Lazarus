@@ -131,6 +131,8 @@ Type
 
     {$I win32winapih.inc}
     {$I win32lclintfh.inc}
+
+    property AppHandle: HWND read FAppHandle;
   End;
 
   {$I win32listslh.inc}
@@ -185,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/12/19 18:18:17  micha
+  fix window activation z-order
+
   Revision 1.62  2003/12/18 10:17:00  micha
   remove non-useful variable wndlist (thx vincent)
 

@@ -252,6 +252,38 @@ Begin
   End; {Case}
 End;
 
+function WindowPosFlagsToString(Flags: UINT): string;
+var
+  FlagsStr: string;
+begin
+  if (Flags and SWP_DRAWFRAME) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_DRAWFRAME';
+  if (Flags and SWP_HIDEWINDOW) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_HIDEWINDOW';
+  if (Flags and SWP_NOACTIVATE) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOACTIVATE';
+  if (Flags and SWP_NOCOPYBITS) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOCOPYBITS';
+  if (Flags and SWP_NOMOVE) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOMOVE';
+  if (Flags and SWP_NOOWNERZORDER) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOOWNERZORDER';
+  if (Flags and SWP_NOREDRAW) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOREDRAW';
+  if (Flags and SWP_NOSENDCHANGING) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOSENDCHANGING';
+  if (Flags and SWP_NOSIZE) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOSIZE';
+  if (Flags and SWP_NOZORDER) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_NOZORDER';
+  if (Flags and SWP_SHOWWINDOW) <> 0 then
+    FlagsStr := FlagsStr + '|SWP_SHOWWINDOW';
+  if Length(FlagsStr) > 0 then
+    FlagsStr := Copy(FlagsStr, 2, Length(FlagsStr)-1);
+  Result := FlagsStr;
+end;
+
+
 {------------------------------------------------------------------------------
   Procedure: EventTrace
   Params: Message - Event name
@@ -716,6 +748,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.32  2003/12/19 18:18:17  micha
+  fix window activation z-order
+
   Revision 1.31  2003/12/18 08:51:01  micha
   fix accelerators: now registered per window
 

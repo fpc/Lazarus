@@ -258,7 +258,7 @@ Begin
     WM_ACTIVATE:
     Begin
       Case Lo(WParam) Of
-        WA_ACTIVE:
+        WA_ACTIVE, WA_CLICKACTIVE:
         Begin
           LMessage.Msg := LM_ACTIVATE;
         End;
@@ -271,8 +271,8 @@ Begin
     WM_ACTIVATEAPP:
     Begin
       if WParam <> 0 then
-        if Windows.IsWindowVisible(Window) then
-          Windows.SetWindowPos(Window, HWND_TOP, 0, 0, 0, 0, $53);
+        if Window = TWin32Object(InterfaceObject).AppHandle then
+          Windows.SetWindowPos(TWin32Object(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -906,6 +906,9 @@ end;
 
 {
   $Log$
+  Revision 1.77  2003/12/19 18:18:17  micha
+  fix window activation z-order
+
   Revision 1.76  2003/12/17 16:06:43  micha
   bring windows to top on application activation
 
