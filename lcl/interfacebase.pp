@@ -53,6 +53,7 @@ type
     procedure AppTerminate; virtual; abstract;
     procedure DoEvents; virtual; abstract;
     procedure HandleEvents; virtual; abstract;
+    procedure WaitMessage; virtual; abstract;
     procedure Init; virtual; abstract;
     function GetText(Sender: TControl; var Text: String): Boolean; virtual; abstract;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
@@ -81,6 +82,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2001/07/01 23:33:13  lazarus
+  MG: added WaitMessage and HandleEvents is now non blocking
+
   Revision 1.3  2001/03/27 21:12:53  lazarus
   MWE:
     + Turned on longstrings

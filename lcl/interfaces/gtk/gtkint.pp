@@ -108,13 +108,13 @@ type
       procedure RemoveCallbacks(Sender : TObject); override;
       procedure DoEvents; override;
       procedure HandleEvents; override;
+      procedure WaitMessage; override;
       procedure AppTerminate; override;
       procedure Init; override;
       function  UpdateHint(Sender: TObject): Integer; override;
       function  RecreateWnd(Sender: TObject): Integer; override;
 
       {$I gtkwinapih.inc}
-
    end;
 
 {$I gtklistslh.inc}
@@ -256,6 +256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/07/01 23:33:13  lazarus
+  MG: added WaitMessage and HandleEvents is now non blocking
+
   Revision 1.17  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

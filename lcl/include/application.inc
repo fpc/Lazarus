@@ -77,11 +77,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TApplication.MouseIdle
+  Method: TApplication.ControlDestroyed
   Params: None
   Returns:  Nothing
 
-  Handles mouse Idle  
+  
  ------------------------------------------------------------------------------}
 procedure TApplication.ControlDestroyed(AControl: TControl);
 begin
@@ -107,9 +107,9 @@ end;
 {------------------------------------------------------------------------------}
 {       TApplication ProcesssMessages  "Enter the messageloop and process until empty"     }
 {------------------------------------------------------------------------------}
-procedure TApplication.Processmessages;
+procedure TApplication.ProcessMessages;
 begin
-  InterfaceObject.HandleEvents;  
+  InterfaceObject.HandleEvents;
 end;
 
 {------------------------------------------------------------------------------}
@@ -189,6 +189,9 @@ begin
   
   Done := True;
   if Assigned(FOnIdle) then FOnIdle(Self, Done);
+  if Done then
+    // wait till something happens
+    InterfaceObject.WaitMessage;
 end;
 
 {------------------------------------------------------------------------------
@@ -234,7 +237,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleMessage;
 begin
-  InterfaceObject.HandleEvents; // waits for events
+  InterfaceObject.HandleEvents; // process all events
   Idle;
 end;
 
@@ -300,6 +303,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/07/01 23:33:13  lazarus
+  MG: added WaitMessage and HandleEvents is now non blocking
+
   Revision 1.6  2001/06/28 18:15:03  lazarus
   MG: bugfixes for destroying controls
 

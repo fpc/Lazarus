@@ -2483,7 +2483,6 @@ function TGTKObject.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt;
   lParam: LongInt): Boolean;
 var
   Message, OldMessage: PMsg;
-  Target: TObject;
   OldPaintMessage: PLazQueueItem;
 begin
   New(Message);
@@ -3560,6 +3559,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2001/07/01 23:33:13  lazarus
+  MG: added WaitMessage and HandleEvents is now non blocking
+
   Revision 1.39  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

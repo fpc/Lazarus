@@ -153,11 +153,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkObject,HandleEvents
+  Method: TGtkObject.HandleEvents
   Params:  None
   Returns: Nothing
 
-  *Note: Passes execution control to the GTK engine
+  *Note: Handle all pending messages of the GTK engine
  ------------------------------------------------------------------------------}
 procedure TgtkObject.HandleEvents;
 var
@@ -165,9 +165,11 @@ var
   p: pMsg;
 begin
   //gtk_main;
-  gtk_main_iteration_do(True);
+  // first let gtk handle all its messages
+  while gtk_events_pending<>0 do
+    gtk_main_iteration_do(False);
 
-  //Should we handle this ???
+  // then handle our own messages
   with FMessageQueue do
     while First<>nil do
     begin
@@ -184,6 +186,18 @@ begin
       end;
       Dispose(p);
     end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkObject.WaitMessage
+  Params:  None
+  Returns: Nothing
+
+  *Note: Passes execution control to the GTK engine
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.WaitMessage;
+begin
+  gtk_main_iteration_do(True);
 end;
 
 {------------------------------------------------------------------------------
@@ -1083,6 +1097,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.ResizeChild
+
   Params:  sender - the object which invoked this function
            Left,Top,Width,Height - new dimensions for the control
   Returns: Nothing
@@ -1102,6 +1117,7 @@ begin
   if not (Sender is TSpeedButton) then
   begin
     pWidget := pgtkWidget(TWinControl(Sender).Handle);
+//if Sender is TCustomForm then
 //writeln('[TgtkObject.ResizeChild] ',Sender.ClassName,' ',Width,',',Height);
     if Sender is TCustomForm then
       //gdk_window_resize(pWidget^.Window, Width,Height);
@@ -1935,8 +1951,9 @@ begin
 // it's right and bottom don't visible.
 //Nagy Zsolt 2001/03/27
 //         gtk_container_set_border_width(GTK_CONTAINER(P), 2);
-         TempInt:= FormSizeableMap[TForm(Sender).BorderStyle];
-         gtk_window_set_policy (GTK_WINDOW (p), TempInt, TempInt, 0);
+         //TempInt:= FormSizeableMap[TForm(Sender).BorderStyle];
+         //gtk_window_set_policy (GTK_WINDOW (p), TempInt, TempInt, 0);
+         gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
          gtk_window_set_title(pGtkWindow(p), strTemp);
         
          // Create the VBox, we need that to place controls outside 
@@ -2967,6 +2984,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.54  2001/07/01 23:33:13  lazarus
+  MG: added WaitMessage and HandleEvents is now non blocking
+
   Revision 1.53  2001/06/28 18:15:04  lazarus
   MG: bugfixes for destroying controls
 
