@@ -264,30 +264,7 @@ begin
     Result:= GetAbsolutePath(TV.Selected);
 end;//SelectedDir
 
-function InternalSelectDirectory(const Caption: String;
-  const Root: string; var Directory: string; ShowHidden: Boolean): Boolean;
-var
-  Dlg: TDirSelDlg;
-begin
-  Dlg := TDirSelDlg.Create(Application);
-  if Dlg <> nil then
-  begin
-    try
-      Dlg.ShowHidden := ShowHidden;
-      Dlg.RootDirectory := Root;
-      Dlg.Directory := Directory;
-      Dlg.Caption := Caption;
-      Result := Dlg.ShowModal = mrOK;
-      if Result then Directory := Dlg.SelectedDir;
-    finally
-      Dlg.Free;
-    end;
-  end;//if
-end;
-
-
 initialization
   {$I dirsel.lrs}
-  SelectDirectoryProc:=@InternalSelectDirectory;
 
 end.

@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, FileCtrl, LazarusIDEStrConsts, DirSel, Dialogs, SynEditTypes;
+  LResources, FileCtrl, LazarusIDEStrConsts, Dialogs, SynEditTypes;
 
 type
   TLazFindInFileSearchOption = (fifMatchCase, fifWholeWord, fifRegExpr,
@@ -46,6 +46,7 @@ type
     DirectoryLabel: TLabel;
     DirectoryComboBox: TComboBox;
     DirectoryBrowse: TBitBtn;
+    SelectDirectoryDialog: TSelectDirectoryDialog;
     FileMaskLabel: TLabel;
     FileMaskComboBox: TComboBox;
     IncludeSubDirsCheckBox: TCheckBox;
@@ -200,6 +201,10 @@ begin
       OnClick:=@DirectoryBrowseClick;
     end;
     
+    SelectDirectoryDialog := TSelectDirectoryDialog.Create(Self);
+    with SelectDirectoryDialog do
+      Options:= Options + [ofPathMustExist];
+
     FileMaskLabel:=TLabel.Create(Self);
     with FileMaskLabel do begin
       Name:='FileMaskLabel';
@@ -356,16 +361,10 @@ begin
 end;//WhereRaidoGroupClick
 
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
-var
-  TheDirectory: string; //Starting Directory and
-                        //Directory Returned from Function
-  TheRootDir: string;   //The root directory on the current dirve
 begin
-  TheDirectory:= GetCurrentDir;
-  TheRootDir:= ExtractFileDrive(TheDirectory);
-  TheRootDir:= FileCtrl.AppendPathDelim(TheRootDir);
-  if SelectDirectory('Select A Directory', TheRootDir, TheDirectory, false) then
-    DirectoryComboBox.Text:= TheDirectory;
+  SelectDirectoryDialog.InitialDir:= GetCurrentDir;
+  if SelectDirectoryDialog.Execute then
+    DirectoryComboBox.Text:= SelectDirectoryDialog.FileName;
 end;//DirectoryBrowseClick
 
 procedure TLazFindInFilesDialog.SetOptions(

@@ -787,22 +787,14 @@ Var
   B : Boolean;
   
 begin
-  If Assigned(SelectDirectoryProc) then
-    begin
-    D:=Text;
-    B:=SelectDirectory(DialogTitle,RootDir,D,ShowHidden);
-    end
-  else
-    begin
-    Dlg:=CreateDialog;
-    Try
-      B:=Dlg.Execute;
-      If B then
-        D:=GetDialogResult(Dlg);
-    Finally
-      Dlg.Free;
-    end;
-    end;
+  Dlg:=CreateDialog;
+  Try
+    B:=Dlg.Execute;
+    If B then
+      D:=GetDialogResult(Dlg);
+  Finally
+    Dlg.Free;
+  end;
   If B then
     begin
     If Assigned(FOnAcceptDir) then

@@ -313,18 +313,7 @@ type
   Function InputBox(const ACaption, APrompt, ADefault : String) : String;
   Function PasswordBox(const ACaption, APrompt : String) : String;
   
-  { Directory Selection }
-type
-  TSelectDirectoryProc = function(const Caption: String; const Root: string;
-                           var Directory: string; ShowHidden: Boolean): Boolean;
-       
-  function SelectDirectory(const Caption: String; const Root: string;
-                           var Directory: string; ShowHidden: Boolean): Boolean;
 
-var
-  SelectDirectoryProc: TSelectDirectoryProc;
-
-  
 procedure Register;
 
 implementation
@@ -392,14 +381,6 @@ begin
   Result := MessageDlg(Caption,Text,DlgType,Buttons,0);
 end;
 
-function SelectDirectory(const Caption: String; const Root: string;
-  var Directory: string; ShowHidden: Boolean): Boolean;
-begin
-  Result:=false;
-  if Assigned(SelectDirectoryProc) then
-    Result:=SelectDirectoryProc(Caption,Root,Directory,ShowHidden);
-end;
-
 
 {$I colordialog.inc}
 {$I commondialog.inc}
@@ -414,7 +395,6 @@ initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
   InterfaceBase.InputDialogFunction:=@ShowInputDialog;
   InterfaceBase.PromptDialogFunction:=@ShowPromptDialog;
-  SelectDirectoryProc:=nil;
 
 finalization
 
@@ -423,6 +403,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2004/01/24 11:42:53  micha
+  findinfiles uses tselectdirectorydialog; remove global SelectDirectory function (from vincent)
+
   Revision 1.40  2004/01/13 16:39:01  mattias
   changed consistency stops during var renaming to errors
 
