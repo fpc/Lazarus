@@ -244,6 +244,7 @@ procedure WriteLRS10BytesReversed(s: TStream; p: Pointer);
 procedure WriteLRSNull(s: TStream; Count: integer);
 procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
   PPCDouble: PByte);
+procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 
 
 implementation
@@ -1829,6 +1830,18 @@ begin
   for i:=0 to 9 do
     a[i]:=PChar(p)[9-i];
   s.Write(a[0],10);
+end;
+
+procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
+var
+  w: Word;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    w:=PWord(P)[i];
+    w:=(w shr 8) or ((w and $ff) shl 8);
+    s.Write(w,2);
+  end;
 end;
 
 procedure WriteLRSNull(s: TStream; Count: integer);
