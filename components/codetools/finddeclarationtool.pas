@@ -151,6 +151,8 @@ type
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
+    function FindExpressionResultType(Params: TFindDeclarationParams;
+      StartPos, EndPos: integer): TCodeTreeNode;
   public
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -605,13 +607,6 @@ if (ContextNode.Desc=ctnClass) then
               ContextNode:=ContextNode.FirstChild;
           end;
           
-        ctnProcedureHead:
-          begin
-            BuildSubTreeForProcHead(ContextNode);
-            if ContextNode.FirstChild<>nil then
-              ContextNode:=ContextNode.FirstChild;
-          end;
-
         ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition, ctnEnumType:
           begin
             if CompareSrcIdentifiers(Params.IdentifierStartPos,
@@ -637,6 +632,13 @@ writeln('  Definition Identifier found=',copy(Src,ContextNode.StartPos,Params.Id
             if Result then exit;
           end;
 
+        ctnProcedureHead:
+          begin
+            BuildSubTreeForProcHead(ContextNode);
+            if ContextNode.FirstChild<>nil then
+              ContextNode:=ContextNode.FirstChild;
+          end;
+
         ctnProgram, ctnPackage, ctnLibrary, ctnUnit:
           begin
             MoveCursorToNodeStart(ContextNode);
@@ -645,6 +647,9 @@ writeln('  Definition Identifier found=',copy(Src,ContextNode.StartPos,Params.Id
             if CompareSrcIdentifiers(Params.IdentifierStartPos,CurPos.StartPos)
             then begin
               // identifier found
+{$IFDEF CTDEBUG}
+writeln('  Source Name Identifier found=',copy(Src,CurPos.StartPos,Params.IdentifierEndPos-Params.IdentifierStartPos));
+{$ENDIF}
               Result:=true;
               Params.SetResult(Self,ContextNode,CurPos.StartPos);
               exit;
@@ -660,6 +665,13 @@ writeln('  Definition Identifier found=',copy(Src,ContextNode.StartPos,Params.Id
               if CompareSrcIdentifiers(Params.IdentifierStartPos,CurPos.StartPos)
               then begin
                 // identifier found
+                
+                // ToDo: identifiers after 'read', 'write' are procs with
+                //       special parameter lists
+                
+{$IFDEF CTDEBUG}
+writeln('  Property Identifier found=',copy(Src,CurPos.StartPos,Params.IdentifierEndPos-Params.IdentifierStartPos));
+{$ENDIF}
                 Result:=true;
                 Params.SetResult(Self,ContextNode,CurPos.StartPos);
                 exit;
@@ -693,7 +705,6 @@ writeln('  Definition Identifier found=',copy(Src,ContextNode.StartPos,Params.Id
             Result:=FindForwardIdentifier(Params,IsForward);
             exit;
           end;
-
 
         end;
       end else begin
@@ -915,10 +926,19 @@ begin
   ReadPriorAtom;
   CurAtom:=CurPos;
   CurAtomType:=GetCurrentAtomType;
-  if CurAtomType in [atNone,atSpace,atINHERITED,atRoundBracketOpen,
-    atEdgedBracketOpen,atRoundBracketClose] then begin
+  if not (CurAtomType in [atIdentifier,atPoint,atUp,atAs,atEdgedBracketClose,
+    atRoundBracketClose])
+  then begin
     // no special context found -> the context node is the deepest node at
     // cursor, and this should already be in Params.ContextNode
+    if (not (NextAtomType in [atSpace,atIdentifier,atRoundBracketOpen,
+      atEdgedBracketOpen])) then
+    begin
+      MoveCursorToCleanPos(NextAtom.StartPos);
+      ReadNextAtom;
+      RaiseException('syntax error: identifier expected, but '
+                      +GetAtom+' found');
+    end;
     Result:=Params.ContextNode;
     exit;
   end;
@@ -926,7 +946,10 @@ begin
     ReadBackTilBracketClose(true);
     CurAtom.StartPos:=CurPos.StartPos;
   end;
-  Result:=FindContextNodeAtCursor(Params);
+  if CurAtomType<>atAS then
+    Result:=FindContextNodeAtCursor(Params)
+  else
+    Result:=Params.ContextNode;
   if Result=nil then exit;
   
   // coming back the left side has been parsed and
@@ -949,9 +972,10 @@ writeln('');
     begin
       // for example  'AnObject[3]'
       if not (NextAtomType in [atSpace,atPoint,atUp,atAS,atRoundBracketOpen,
-        atEdgedBracketOpen]) then
+        atRoundBracketClose,atEdgedBracketOpen,atEdgedBracketClose]) then
       begin
         MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
         RaiseException('syntax error: "'+GetAtom+'" found');
       end;
       if (Result=Params.ContextNode) then begin
@@ -978,13 +1002,9 @@ writeln('');
               MoveCursorToNodeStart(ProcNode);
               ReadNextAtom;
               if UpAtomIs('CLASS') then ReadNextAtom;
-              if UpAtomIs('FUNCTION') then begin;
+              if UpAtomIs('FUNCTION') then begin
                 // in a function -> find the result type
-                BuildSubTreeForProcHead(ProcNode);
-                ProcNode:=ProcNode.FirstChild.FirstChild;
-                if Result.Desc=ctnParameterList then
-                  Result:=Result.NextBrother;
-                FindBaseTypeOfNode(Params,Result);
+                Result:=FindBaseTypeOfNode(Params,ProcNode);
                 exit;
               end;
             end;
@@ -1020,6 +1040,7 @@ writeln('');
       // for example 'A.B'
       if (not (NextAtomType in [atSpace,atIdentifier])) then begin
         MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
         RaiseException('syntax error: identifier expected, but '
                         +GetAtom+' found');
       end;
@@ -1032,12 +1053,12 @@ writeln('');
       // for example 'A as B'
       if (not (NextAtomType in [atSpace,atIdentifier])) then begin
         MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
         RaiseException('syntax error: identifier expected, but '
                         +GetAtom+' found');
       end;
       // 'as' is a type cast, so the left side is irrelevant
       // -> context is default context
-      Result:=Params.ContextNode;
     end;
 
   atUP:
@@ -1045,11 +1066,19 @@ writeln('');
       // for example:
       //   1. 'PInt = ^integer'  pointer type
       //   2. a^  dereferencing
+      if not (NextAtomType in [atSpace,atPoint,atUp,atAS,atEdgedBracketClose,
+        atEdgedBracketOpen,atRoundBracketClose]) then
+      begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
+        RaiseException('syntax error: "'+GetAtom+'" found');
+      end;
       if Result<>Params.ContextNode then begin
         // left side of expression has defined a special context
         // => this '^' is a dereference
         if (not (NextAtomType in [atSpace,atPoint,atAS,atUP])) then begin
           MoveCursorToCleanPos(NextAtom.StartPos);
+          ReadNextAtom;
           RaiseException('syntax error: . expected, but '+GetAtom+' found');
         end;
         if Result.Desc<>ctnPointerType then begin
@@ -1071,6 +1100,13 @@ writeln('');
       //     2. dynamic array
       //     3. indexed pointer
       //     4. default property
+      if not (NextAtomType in [atSpace,atPoint,atAs,atUp,atRoundBracketClose,
+        atRoundBracketOpen,atEdgedBracketClose,atEdgedBracketOpen]) then
+      begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
+        RaiseException('syntax error: illegal qualifier');
+      end;
       if Result<>Params.ContextNode then begin
         case Result.Desc of
         
@@ -1102,6 +1138,32 @@ writeln('');
       end;
     end;
 
+  atRoundBracketClose:
+    begin
+      { for example:
+          (a+b)   expression bracket: the type is the result type of the
+                                      expression.
+          a()     typecast or function
+      }
+      if not (NextAtomType in [atSpace,atPoint,atAs,atUp,atRoundBracketClose,
+        atRoundBracketOpen,atEdgedBracketClose,atEdgedBracketOpen]) then
+      begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
+        RaiseException('syntax error: illegal qualifier');
+      end;
+      if Result<>Params.ContextNode then begin
+        // typecast or function
+        
+        // ToDo
+        
+      end else begin
+        // expression
+        Result:=FindExpressionResultType(Params,CurAtom.StartPos+1,
+                                         CurAtom.EndPos-1);
+      end;
+    end;
+
   // ToDo: atINHERITED, atRoundBracketClose
 
   else
@@ -1111,6 +1173,7 @@ writeln('');
         atEdgedBracketOpen])) then
       begin
         MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
         RaiseException('syntax error: identifier expected, but '
                         +GetAtom+' found');
       end;
@@ -1134,6 +1197,12 @@ var OldInput: TFindDeclarationInput;
 begin
   Result:=Node;
   while (Result<>nil) do begin
+  
+    // ToDo: check for circles
+  
+{$IFDEF CTDEBUG}
+//writeln('[TFindDeclarationTool.FindBaseTypeOfNode] A Result=',Result.DescAsString);
+{$ENDIF}
     if (Result.Desc in AllIdentifierDefinitions) then begin
       // instead of variable/const/type definition, return the type
       Result:=FindTypeNodeOfDefinition(Result);
@@ -1179,11 +1248,12 @@ begin
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                       +(fdfGlobals*Params.Flags);
         Params.ContextNode:=Result.Parent;
+        if Params.ContextNode.Desc=ctnParameterList then
+          Params.ContextNode:=Params.ContextNode.Parent;
+        if Params.ContextNode.Desc=ctnProcedureHead then
+          Params.ContextNode:=Params.ContextNode.Parent;
         FindIdentifierInContext(Params);
-        if Result.HasAsParent(Params.NewNode) then
-          break
-        else
-          Result:=Params.NewNode;
+        Result:=Params.NewNode;
       finally
         Params.Load(OldInput);
       end;
@@ -1206,6 +1276,21 @@ begin
       finally
         Params.Load(OldInput);
       end;
+    end else
+    if (Result.Desc in [ctnProcedure,ctnProcedureHead]) then begin
+      // a proc -> if this is a function return the result type
+      if Result.Desc=ctnProcedureHead then Result:=Result.Parent;
+      MoveCursorToNodeStart(Result);
+      ReadNextAtom;
+      if UpAtomIs('CLASS') then ReadNextAtom;
+      if UpAtomIs('FUNCTION') then begin
+        // in a function -> find the result type
+        BuildSubTreeForProcHead(Result);
+        Result:=Result.FirstChild.FirstChild;
+        if Result.Desc=ctnParameterList then
+          Result:=Result.NextBrother;
+      end else
+        break;
     end else
     if (Result.Desc=ctnTypeType) then begin
       // a TypeType is for example 'MyInt = type integer;'
@@ -1291,12 +1376,14 @@ writeln('  searching identifier in class of method');
     end;
   end else begin
     // proc is not a method
-    if CompareSrcIdentifiers(ClassNameAtom.StartPos,
-      Params.IdentifierStartPos) then
-    begin
+    if CompareSrcIdentifiers(Params.IdentifierStartPos,ClassNameAtom.StartPos)
+    then begin
       // proc identifier found
+{$IFDEF CTDEBUG}
+writeln('  Proc Identifier found=',copy(Src,ClassNameAtom.StartPos,Params.IdentifierEndPos-Params.IdentifierStartPos));
+{$ENDIF}
       Result:=true;
-      Params.SetResult(Self,ProcContextNode);
+      Params.SetResult(Self,ProcContextNode,ClassNameAtom.StartPos);
       exit;
     end else begin
       // proceed the search normally ...
@@ -1492,6 +1579,19 @@ begin
   DebugPrefix:=DebugPrefix+'  ';
 end;
 {$ENDIF}
+
+function TFindDeclarationTool.FindExpressionResultType(
+  Params: TFindDeclarationParams; StartPos, EndPos: integer): TCodeTreeNode;
+begin
+
+  // ToDo: operators
+  // ToDo: operator overloading
+
+  // This is a quick hack: Just return the type of the last variable.
+  MoveCursorToCleanPos(EndPos);
+  Result:=FindContextNodeAtCursor(Params);
+end;
+
 
 
 { TFindDeclarationParams }
