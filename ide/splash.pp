@@ -30,6 +30,7 @@ uses
 
 type
   TSplashForm = class(TForm)
+    procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
   private
     FBitmap : TBitmap;
     FTimer : TTimer;
@@ -328,6 +329,8 @@ begin
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
+
+  Application.OnIdle:=@ApplicationOnIdle;
 end;
 
 destructor TSplashForm.Destroy;
@@ -336,6 +339,8 @@ begin
   FBitmap:=nil;
   FTimer.Free;
   FTimer:=nil;
+  if Application.OnIdle=@ApplicationOnIdle then
+    Application.OnIdle:=nil;
   inherited Destroy;
 end;
 
@@ -350,6 +355,11 @@ begin
     FBitmap.Free;
     FBitmap:=nil;
   end;
+end;
+
+procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: Boolean);
+begin
+  Hide;
 end;
 
 procedure TSplashForm.HideFormTimer(Sender : TObject);
@@ -376,6 +386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/03/30 21:09:07  lazarus
+  MG: hide splash screen on message
+
   Revision 1.9  2002/03/30 07:29:15  lazarus
   MG: fixed splash screen, fixed parser of resource strings
 
