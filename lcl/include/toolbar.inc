@@ -1,4 +1,4 @@
-{%MainUnit ../comtrls.pp}
+{%MainUnit ../comctrls.pp}
 
 {******************************************************************************
                                   TToolbar
@@ -2094,6 +2094,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/05/10 07:01:51  micha
+  fix mainunit typo
+
   Revision 1.25  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
