@@ -691,8 +691,7 @@ begin
       Params.ContextNode:=CursorNode;
       Params.SetIdentifier(Self,nil,nil);
       Params.Flags:=[fdfExceptionOnNotFound,
-                     fdfSearchInParentNodes,fdfSearchInAncestors]
-                    +fdfAllClassVisibilities;
+                     fdfSearchInParentNodes,fdfSearchInAncestors];
       ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
                                              Params);
       if (ExprType.Desc=xtContext) then
@@ -709,8 +708,7 @@ begin
       Params.ContextNode:=GatherContext.Node;
       Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                     fdfCollect,fdfFindVariable]
-                    +fdfAllClassVisibilities;
+                     fdfCollect,fdfFindVariable];
       if Params.ContextNode.Desc in [ctnClass,ctnClassInterface] then
         Exclude(Params.Flags,fdfSearchInParentNodes);
       {$IFDEF CTDEBUG}

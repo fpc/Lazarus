@@ -145,11 +145,7 @@ type
                             // is an predefined exception
                             
     fdfIgnoreClassVisibility,//find inaccessible private+protected fields
-    fdfClassPublished,
-    fdfClassPublic,
-    fdfClassProtected,
-    fdfClassPrivate,
-    
+
     fdfIgnoreMissingParams, // found proc fits, even if parameters are missing
     fdfOnlyCompatibleProc,  // incompatible procs are ignored
     fdfIgnoreOverloadedProcs,// ignore param lists and take the first proc found
@@ -175,10 +171,6 @@ const
     'fdfExceptionOnNotFound',
     'fdfExceptionOnPredefinedIdent',
     'fdfIgnoreClassVisibility',
-    'fdfClassPublished',
-    'fdfClassPublic',
-    'fdfClassProtected',
-    'fdfClassPrivate',
     'fdfIgnoreMissingParams',
     'fdfOnlyCompatibleProc',
     'fdfIgnoreOverloadedProcs',
@@ -622,15 +614,12 @@ type
   end;
 
 const
-  fdfAllClassVisibilities = [fdfClassPublished,fdfClassPublic,fdfClassProtected,
-                             fdfClassPrivate];
   fdfGlobals = [fdfExceptionOnNotFound, fdfIgnoreUsedUnits, fdfTopLvlResolving];
   fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
                 fdfIgnoreMissingParams,
-                fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect]
-                +fdfAllClassVisibilities;
+                fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
-                              fdfExceptionOnNotFound]+fdfAllClassVisibilities;
+                              fdfExceptionOnNotFound];
 
 function ExprTypeToString(const ExprType: TExpressionType): string;
 function CreateFindContext(NewTool: TFindDeclarationTool;
@@ -961,8 +950,7 @@ begin
         Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                        fdfExceptionOnPredefinedIdent,
-                       fdfTopLvlResolving,fdfSearchInAncestors]
-                      +fdfAllClassVisibilities;
+                       fdfTopLvlResolving,fdfSearchInAncestors];
         if not DirectSearch then begin
           Result:=FindDeclarationOfIdentAtCursor(Params);
         end else begin
@@ -1467,8 +1455,7 @@ begin
   Params.ContextNode:=ContextNode;
   Params.SetIdentifier(Self,@Src[IdentAtom.StartPos],nil);
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                 fdfTopLvlResolving,fdfFindVariable,fdfIgnoreCurContextNode]
-                +fdfAllClassVisibilities;
+                 fdfTopLvlResolving,fdfFindVariable,fdfIgnoreCurContextNode];
   Result:=FindIdentifierInContext(Params);
 end;
 
@@ -1827,10 +1814,10 @@ var
 
         // -> test if class visibility valid
         case ContextNode.Desc of
-        ctnClassPublished:if (fdfClassPublished in Params.Flags) then break;
-        ctnClassPublic:   if (fdfClassPublic    in Params.Flags) then break;
-        ctnClassProtected:if (fdfClassProtected in Params.Flags) then break;
-        ctnClassPrivate:  if (fdfClassPrivate   in Params.Flags) then break;
+        ctnClassPublished: break;
+        ctnClassPublic:    break;
+        ctnClassProtected: break;
+        ctnClassPrivate:   break;
         ctnWithVariable:
           begin
             // check if StartContextNode is covered by the ContextNode
@@ -2508,7 +2495,7 @@ begin
         // class context found
         // 2. -> search identifier in class
         Params.Load(OldInput);
-        Params.Flags:=[fdfSearchInAncestors]+fdfAllClassVisibilities
+        Params.Flags:=[fdfSearchInAncestors]
                       +(fdfGlobalsSameIdent*Params.Flags)
                       -[fdfExceptionOnNotFound];
         Params.ContextNode:=ClassContext.Node;
@@ -3744,7 +3731,6 @@ var
 
       // build new param flags for sub identifiers
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                    +fdfAllClassVisibilities
                     +(fdfGlobals*Params.Flags);
       if ExprType.Context.Node=StartContext.Node then begin
         // there is no special context -> also search in parent contexts
@@ -3929,8 +3915,7 @@ var
           // search default property in class
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                        +fdfGlobals*Params.Flags
-                        +fdfAllClassVisibilities*Params.Flags;
+                        +fdfGlobals*Params.Flags;
           // special identifier for default property
           Params.SetIdentifier(ExprType.Context.Tool,@Src[CurAtom.StartPos],nil);
           Params.ContextNode:=ExprType.Context.Node;
@@ -4053,8 +4038,7 @@ var
 
     // find class ancestor
     Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                  +fdfGlobals*Params.Flags
-                  +fdfAllClassVisibilities*Params.Flags;
+                  +fdfGlobals*Params.Flags;
     ClassOfMethodContext.Tool.FindAncestorOfClass(ClassOfMethodContext.Node,
                                                   Params,true);
 
@@ -5591,8 +5575,7 @@ begin
   Result:='';
   Params.ContextNode:=CursorNode;
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                 fdfTopLvlResolving,fdfFunctionResult]
-                +fdfAllClassVisibilities;
+                 fdfTopLvlResolving,fdfFunctionResult];
   ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
   {$IFDEF CTDEBUG}
   writeln('TCodeCompletionCodeTool.FindTermTypeAsString ExprTypeToString=',
@@ -5613,8 +5596,7 @@ begin
             FindContext.Node:=FindContext.Node.Parent;
           end else begin
             Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                           fdfTopLvlResolving,fdfFunctionResult]
-                          +fdfAllClassVisibilities;
+                           fdfTopLvlResolving,fdfFunctionResult];
             FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                                          ExprType.Context.Node);
           end;

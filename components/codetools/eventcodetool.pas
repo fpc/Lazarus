@@ -240,7 +240,7 @@ begin
         // 2. search all compatible published procs
         GetCompatibleMethodsProc:=Proc;
         Params.ContextNode:=ClassNode;
-        Params.Flags:=[fdfCollect,fdfSearchInAncestors,fdfClassPublished];
+        Params.Flags:=[fdfCollect,fdfSearchInAncestors];
         Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
         {$IFDEF CTDEBUG}
         writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] E Searching ...');
@@ -277,9 +277,11 @@ begin
     try
       Params.ContextNode:=ClassNode;
       Params.SetIdentifier(Self,@UpperMethodName[1],nil);
-      Params.Flags:=[fdfSearchInAncestors,fdfClassPublished];
+      Params.Flags:=[fdfSearchInAncestors];
       if FindIdentifierInContext(Params)
-      and (Params.NewNode.Desc=ctnProcedure) then begin
+      and (Params.NewNode.Desc=ctnProcedure)
+      and (Params.NewNode.Parent<>nil)
+      and (Params.NewNode.Parent.Desc=ctnClassPublished) then begin
         Result:=CreateFindContext(Params);
       end;
     finally
@@ -409,7 +411,7 @@ begin
       // first search a published method definition with same name
       Params.ContextNode:=ClassNode;
       Params.SetIdentifier(Self,@UpperMethodName[1],nil);
-      Params.Flags:=[fdfSearchInAncestors,fdfClassPublished];
+      Params.Flags:=[fdfSearchInAncestors];
       if FindIdentifierInContext(Params) then begin
         IdentIsmethod:=(Params.NewNode.Desc=ctnProcedure);
         MethodIsPublished:=(Params.NewNode.Parent.Desc=ctnClassPublished);
@@ -642,10 +644,9 @@ begin
       Params.Save(OldInput);
       Params.SetIdentifier(Self,@CurTypeIdentifier[1],nil);
       Params.Flags:=[fdfSearchInParentNodes,
-                     fdfIgnoreCurContextNode,fdfClassPublished]
+                     fdfIgnoreCurContextNode]
                      +(fdfGlobals*Params.Flags)
-                     -[fdfSearchInAncestors,
-                       fdfClassPublic,fdfClassProtected,fdfClassPrivate];
+                     -[fdfSearchInAncestors];
       CurExprType:=GetExpressionTypeOfTypeIdentifier(Params);
       {$IFDEF CTDEBUG}
       writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
@@ -672,7 +673,9 @@ var
   ParamCompatibility: TTypeCompatibility;
   FirstParameterNode: TCodeTreeNode;
 begin
-  if (FoundContext.Node.Desc=ctnProcedure) then begin
+  if (FoundContext.Node.Desc=ctnProcedure)
+  and (FoundContext.Node.Parent<>nil)
+  and (FoundContext.Node.Parent.Desc=ctnClassPublished) then begin
     {$IFDEF ShowAllProcs}
     writeln('');
     writeln('[TEventsCodeTool.CollectPublishedMethods] A ',

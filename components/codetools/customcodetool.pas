@@ -552,7 +552,7 @@ begin
   if (i<=SrcLen) and (IsNumberChar[Src[i]]) then begin
     while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
       inc(i);
-    if (i<=SrcLen) and (Src[i]='.') then
+    if (i<SrcLen) and (Src[i]='.') and (IsNumberChar[Src[i+1]]) then
       Result:=true;
   end;
 end;
