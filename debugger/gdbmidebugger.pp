@@ -394,6 +394,9 @@ function ConvertToGDBPath(APath: string): string;
 // GDB wants forward slashes in its filenames, even on win32.
 begin
   Result := APath;
+  // no need to process empty filename
+  if Result='' then exit;
+  
   if DirectorySeparator <> '/' then
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   Result := '"' + Result + '"';
@@ -2646,6 +2649,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.59  2005/01/18 21:22:44  vincents
+  fixed unlocking executable after debugging
+
   Revision 1.58  2005/01/16 19:02:02  micha
   fix bug 506: pass quoted files and paths to gdb that possibly contain spaces
 
