@@ -702,7 +702,7 @@ Var
   ParentComponent: TComponent;
 Begin
   writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent A '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
   Temp := TComponentInterface.Create;
 
   OwnerComponent:=nil;
@@ -724,7 +724,7 @@ Begin
       exit;
     end;
   end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent C '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent C ');{$ENDIF}
 
   if Assigned(ParentCI) and (Temp.Component is TControl) then
     Begin
@@ -743,7 +743,7 @@ Begin
       end;
     end;
 
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent D '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
   Temp.Component.Name := CreateUniqueComponentName(Temp.Component);
 
   if (Temp.Component is TControl) then
@@ -766,7 +766,7 @@ Begin
     end;
   end;
 
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TCustomFormEditor.CreateComponent F '+IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
   FComponentInterfaceList.Add(Temp);
 
   Result := Temp;

@@ -3,27 +3,29 @@
  *                                                                         *
  * This unit is an altered heaptrc.pp from the fpc sources                 *
  *                                                                         *
- * The only change are the 2 procs CheckHeap                               *
- *                                                                         *
  ***************************************************************************
 }
+{
+    $Id$
+    This file is part of the Free Pascal run time library.
+    Copyright (c) 1999-2000 by the Free Pascal development team.
+
+    Heap tracer
+
+    See the file COPYING.FPC, included in this distribution,
+    for details about the copyright.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+ **********************************************************************}
 unit MemCheck;
 
-{$mode objfpc}{$H+}
-
-{off $DEFINE UseHeapTrc}
-{$DEFINE EXTRA}
+{$goto on}
 
 interface
 
-{ $IFDEF UseHeapTrc}
-uses HeapTrc;
-{ $ENDIF}
-
-procedure CheckHeap;
-procedure CheckHeap(const txt: string);
-
-{$IFNDEF UseHeapTrc}
 Procedure DumpHeap;
 Procedure MarkHeap;
 
@@ -57,50 +59,33 @@ const
   { set this to true if you suspect that memory
     is freed several times }
 {$ifdef EXTRA}
-  keepreleased : boolean=false;
+  keepreleased : boolean=true;
   add_tail : boolean = true;
 {$else EXTRA}
   keepreleased : boolean=false;
-  add_tail : boolean = true;  // MG changed to true
+  add_tail : boolean = false;
 {$endif EXTRA}
   { put crc in sig
     this allows to test for writing into that part }
   usecrc : boolean = true;
-  
-  MaxDumpCnt : integer = 10;
 
-var
-  getmem_cnt,
-  freemem_cnt   : longint;
-  getmem_size,
-  freemem_size   : longint;
-  getmem8_size,
-  freemem8_size   : longint;
+// StartAddition for CodeTools
+procedure CheckHeap;
+procedure CheckHeap(const txt: ansistring);
+procedure CheckHeapWrtMemCnt(const txt: ansistring);
 
-{$ENDIF}
+function MemCheck_getmem_cnt: longint;
+function MemCheck_freemem_cnt: longint;
+function MemCheck_getmem_size: longint;
+function MemCheck_freemem_size: longint;
+function MemCheck_getmem8_size: longint;
+function MemCheck_freemem8_size: longint;
+
+// Addition for CodeTools
+
 implementation
 
-procedure CheckHeap;
-var p: pointer;
-begin
-  writeln('>>> memcheck.pp - CheckHeap');
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=true;
-end;
 
-procedure CheckHeap(const txt: string);
-var p: pointer;
-begin
-  writeln('>>> memcheck.pp - CheckHeap "',txt,'"');
-  QuickTrace:=false;
-  GetMem(p,4);
-  FreeMem(p);
-  QuickTrace:=true;
-end;
-
-{$IFNDEF UseHeapTrc}
 type
    plongint = ^longint;
 
@@ -145,7 +130,111 @@ var
   heap_valid_last : pheap_mem_info;
 {$endif EXTRA}
   heap_mem_root : pheap_mem_info;
+  getmem_cnt,
+  freemem_cnt   : longint;
+  getmem_size,
+  freemem_size   : longint;
+  getmem8_size,
+  freemem8_size   : longint;
 
+// StartAddition for CodeTools
+procedure CheckHeap;
+var p: pointer;
+begin
+  writeln('>>> memcheck.pp - CheckHeap');
+  QuickTrace:=false;
+  GetMem(p,4);
+  FreeMem(p);
+  QuickTrace:=true;
+end;
+
+procedure CheckHeap(const txt: ansistring);
+var p: pointer;
+begin
+  writeln('>>> memcheck.pp - CheckHeap "',txt,'"');
+  QuickTrace:=false;
+  GetMem(p,4);
+  FreeMem(p);
+  QuickTrace:=true;
+end;
+
+function IntToStr(i: longint): string;
+var
+  NewLen, p: integer;
+  Negated: boolean;
+  j: integer;
+begin
+  if i<>0 then begin
+    NewLen:=0;
+    if i<0 then begin
+      Negated:=true;
+      i:=-i;
+      inc(NewLen);
+    end else begin
+      Negated:=false;
+    end;
+    j:=i;
+    while (j>0) do begin
+      j:=j div 10;
+      inc(NewLen);
+    end;
+    SetLength(IntToStr,NewLen);
+    p:=1;
+    if Negated then begin
+      IntToStr[p]:='-';
+      inc(p);
+    end;
+    j:=i;
+    while (j>0) do begin
+      IntToStr[p]:=chr(ord('0')+(j mod 10));
+      j:=j div 10;
+      inc(p);
+    end;
+  end else begin
+    IntToStr:='0';
+  end;
+end;
+
+procedure CheckHeapWrtMemCnt(const txt: ansistring);
+var p: pointer;
+begin
+  writeln('>>> memcheck.pp - CheckHeap "',txt,'" ',IntToStr(MemCheck_getmem_cnt));
+  QuickTrace:=false;
+  GetMem(p,4);
+  FreeMem(p);
+  QuickTrace:=true;
+end;
+
+function MemCheck_getmem_cnt: longint;
+begin
+  MemCheck_getmem_cnt:=getmem_cnt;
+end;
+
+function MemCheck_freemem_cnt: longint;
+begin
+  MemCheck_freemem_cnt:=freemem_cnt;
+end;
+
+function MemCheck_getmem_size: longint;
+begin
+  MemCheck_getmem_size:=getmem_size;
+end;
+
+function MemCheck_freemem_size: longint;
+begin
+  MemCheck_freemem_size:=freemem_size;
+end;
+
+function MemCheck_getmem8_size: longint;
+begin
+  MemCheck_getmem8_size:=getmem8_size;
+end;
+
+function MemCheck_freemem8_size: longint;
+begin
+  MemCheck_freemem8_size:=freemem8_size;
+end;
+// Addition for CodeTools
 
 {*****************************************************************************
                                    Crc 32
@@ -172,7 +261,7 @@ begin
      crc:=i;
      for n:=1 to 8 do
       if odd(crc) then
-       crc:=(crc shr 1) xor integer($edb88320)
+       crc:=(crc shr 1) xor $edb88320
       else
        crc:=crc shr 1;
      Crc32Tbl[i]:=crc;
@@ -205,7 +294,7 @@ var
    crc : longint;
    pl : plongint;
 begin
-   crc:=integer($ffffffff);
+   crc:=$ffffffff;
    crc:=UpdateCrc32(crc,p^.size,sizeof(longint));
    crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(longint));
    if extra_info_size>0 then
@@ -225,7 +314,7 @@ var
    crc : longint;
    pl : plongint;
 begin
-   crc:=integer($ffffffff);
+   crc:=$ffffffff;
    crc:=UpdateCrc32(crc,p^.size,sizeof(longint));
    crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(longint));
    if extra_info_size>0 then
@@ -339,9 +428,9 @@ begin
   i:=0;
   while pp<>nil do
    begin
-     if ((pp^.sig<>integer($DEADBEEF)) or usecrc) and
+     if ((pp^.sig<>$DEADBEEF) or usecrc) and
         ((pp^.sig<>calculate_sig(pp)) or not usecrc) and
-        (pp^.sig <> integer($AAAAAAAA)) then
+        (pp^.sig <> $AAAAAAAA) then
       begin
         writeln(ptext^,'error in linked list of heap_mem_info');
         RunError(204);
@@ -374,12 +463,12 @@ begin
     inc(bp,sizeof(longint));
   p:=SysGetMem(bp);
 { Create the info block }
-  pheap_mem_info(p)^.sig:=integer($DEADBEEF);
+  pheap_mem_info(p)^.sig:=$DEADBEEF;
   pheap_mem_info(p)^.size:=size;
   if add_tail then
     begin
       pl:=pointer(p)+bp-sizeof(longint);
-      pl^:=integer($DEADBEEF);
+      pl^:=$DEADBEEF;
     end;
   bp:=get_caller_frame(get_frame);
   for i:=1 to tracesize do
@@ -438,13 +527,13 @@ begin
   pp:=pheap_mem_info(p);
   if not quicktrace and not(is_in_getmem_list(pp)) then
     RunError(204);
-  if (pp^.sig=integer($AAAAAAAA)) and not usecrc then
+  if (pp^.sig=$AAAAAAAA) and not usecrc then
     begin
        error_in_heap:=true;
        dump_already_free(pp,ptext^);
        if haltonerror then halt(1);
     end
-  else if ((pp^.sig<>integer($DEADBEEF)) or usecrc) and
+  else if ((pp^.sig<>$DEADBEEF) or usecrc) and
         ((pp^.sig<>calculate_sig(pp)) or not usecrc) then
     begin
        error_in_heap:=true;
@@ -468,7 +557,7 @@ begin
        exit;
     end;
   { now it is released !! }
-  pp^.sig:=integer($AAAAAAAA);
+  pp^.sig:=$AAAAAAAA;
   if not keepreleased then
     begin
        if pp^.next<>nil then
@@ -593,7 +682,7 @@ begin
   dec(p,sizeof(theap_mem_info)+extra_info_size);
   pp:=pheap_mem_info(p);
   { test block }
-  if ((pp^.sig<>integer($DEADBEEF)) or usecrc) and
+  if ((pp^.sig<>$DEADBEEF) or usecrc) and
      ((pp^.sig<>calculate_sig(pp)) or not usecrc) then
    begin
      error_in_heap:=true;
@@ -634,12 +723,12 @@ begin
   inc(getmem_size,size);
   inc(getmem8_size,((size+7) div 8)*8);
 { Create the info block }
-  pp^.sig:=integer($DEADBEEF);
+  pp^.sig:=$DEADBEEF;
   pp^.size:=size;
   if add_tail then
     begin
       pl:=pointer(p)+bp-sizeof(longint);
-      pl^:=integer($DEADBEEF);
+      pl^:=$DEADBEEF;
     end;
   bp:=get_caller_frame(get_frame);
   for i:=1 to tracesize do
@@ -657,12 +746,8 @@ begin
 end;
 
 
-
-{*****************************************************************************
-                              Check pointer
-*****************************************************************************}
-
-{$ifndef linux}
+{***************************************************************************** Check pointer *****************************************************************************}
+{$ifndef unix}
   {$S-}
 {$endif}
 
@@ -684,17 +769,24 @@ var
    data_end : cardinal;external name '__data_end__';
 {$endif}
 
+{$ifdef unix}
+const
+  global_stack_top : cardinal = 0;
+
+procedure _start; cdecl; external;
+{$endif unix}
+
 procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOINTER'];
 var
   i  : longint;
   pp : pheap_mem_info;
-  {$ifdef win32}get_ebp: cardinal;{$endif}
-  {$ifdef go32v2}
-  stack_top : cardinal;
+  get_ebp,stack_top : cardinal;
   data_end : cardinal;
-  {$endif}
+label
+  _exit;
 begin
-  if p=nil then exit;
+  if p=nil then
+    goto _exit;
 
   i:=0;
 
@@ -708,23 +800,86 @@ begin
   end;
   stack_top:=__stkbottom+__stklen;
   { allow all between start of code and end of data }
-  if cardinal(p)<=data_end then exit;
+  if cardinal(p)<=data_end then
+    goto _exit;
   { .bss section }
-  if cardinal(p)<=cardinal(heap_at_init) then exit;
+  if cardinal(p)<=cardinal(heap_at_init) then
+    goto _exit;
   { stack can be above heap !! }
 
-  if (cardinal(p)>=get_ebp) and (cardinal(p)<=stack_top) then exit;
+  if (cardinal(p)>=get_ebp) and (cardinal(p)<=stack_top) then
+    goto _exit;
 {$endif go32v2}
+
+{$ifdef unix}
+  if (cardinal(p)>=cardinal(@_start)) and
+     (cardinal(p)<=cardinal(heaporg)) then exit;
+{$ifdef cpui386}
+  asm
+    movl %ebp, get_ebp
+  end;
+{$endif cpui386}
+{$ifdef cpu68k}
+  asm
+    move.l a6, get_ebp
+  end;
+{$endif cpu86}
+  if cardinal (p) > cardinal (get_ebp) then
+    begin
+      if (global_stack_top = 0) then
+        begin
+{$ifdef cpui386}
+          asm
+            movl %ebp,%eax
+	    movl %eax,%ebx
+          .Lnext:
+            orl  %eax,%eax
+            je   .Ltopfound
+            movl (%eax),%eax
+            cmpl %eax,%ebx
+            jae  .Ltopfound
+            movl %eax,%ebx
+            jmp  .Lnext
+          .Ltopfound:
+            movl %ebx,global_stack_top
+          end;
+{$endif cpui386}
+{$ifdef cpu68k}
+          asm
+            move.l a6,d0
+	    move.l d0,d1
+          @Lnext:
+            or.l  d0,d0
+            beq   @Ltopfound
+            move.l d0,a0
+            move.l (a0),d0
+            cmp.l a0,a1
+            bgt  @Ltopfound
+            move.l a0,a1
+            bra  @Lnext
+          @Ltopfound:
+            move.l a1,global_stack_top
+          end;
+{$endif cpu86}
+          { argv and argc are above this value :( }
+          global_stack_top := global_stack_top or $fffff;
+        end;
+      if cardinal(p) <= global_stack_top then
+        exit;
+    end;
+{$endif unix}
 
   { I don't know where the stack is in other OS !! }
 {$ifdef win32}
-  if (cardinal(p)>=$40000) and (p<=HeapOrg) then exit;
+  if (cardinal(p)>=$40000) and (p<=HeapOrg) then
+    goto _exit;
   { inside stack ? }
   asm
      movl %ebp,get_ebp
   end;
   if (cardinal(p)>get_ebp) and
-     (cardinal(p)<Win32StackTop) then exit;
+     (cardinal(p)<Win32StackTop) then
+    goto _exit;
 {$endif win32}
 
   if p>=heapptr then
@@ -738,15 +893,15 @@ begin
      { inside this valid block ! }
      { we can be changing the extrainfo !! }
      if (cardinal(p)>=cardinal(pp)+sizeof(theap_mem_info){+extra_info_size}) and
-        (cardinal(p)<=cardinal(pp)+sizeof(theap_mem_info)
-                      +Cardinal(extra_info_size)+Cardinal(pp^.size)) then
+        (cardinal(p)<=cardinal(pp)+sizeof(theap_mem_info)+extra_info_size+pp^.size) then
        begin
           { check allocated block }
-          if ((pp^.sig=integer($DEADBEEF)) and not usecrc) or
+          if ((pp^.sig=$DEADBEEF) and not usecrc) or
              ((pp^.sig=calculate_sig(pp)) and usecrc) or
           { special case of the fill_extra_info call }
-             ((pp=heap_valid_last) and usecrc and (pp^.sig=integer($DEADBEEF))
-              and inside_trace_getmem) then exit
+             ((pp=heap_valid_last) and usecrc and (pp^.sig=$DEADBEEF)
+              and inside_trace_getmem) then
+            goto _exit
           else
             begin
               writeln(ptext^,'corrupted heap_mem_info');
@@ -772,9 +927,9 @@ begin
      if (cardinal(p)>=cardinal(pp)+sizeof(theap_mem_info)+cardinal(extra_info_size)) and
         (cardinal(p)<=cardinal(pp)+sizeof(theap_mem_info)+cardinal(extra_info_size)+cardinal(pp^.size)) then
         { allocated block }
-       if ((pp^.sig=integer($DEADBEEF)) and not usecrc) or
+       if ((pp^.sig=$DEADBEEF) and not usecrc) or
           ((pp^.sig=calculate_sig(pp)) and usecrc) then
-         exit
+          goto _exit
        else
          begin
             writeln(ptext^,'pointer $',hexstr(longint(p),8),' points into invalid memory block');
@@ -791,6 +946,7 @@ begin
    end;
   writeln(ptext^,'pointer $',hexstr(longint(p),8),' does not point to valid memory block');
   runerror(204);
+_exit:
 end;
 
 {*****************************************************************************
@@ -800,11 +956,14 @@ end;
 procedure dumpheap;
 var
   pp : pheap_mem_info;
-  i, WrittenCnt : longint;
+  i : longint;
   ExpectedMemAvail : longint;
 begin
   pp:=heap_mem_root;
-  Writeln(ptext^,'Heap dump by memcheck unit');
+  Writeln(ptext^,'Heap dump by heaptrc unit');
+{$ifdef EXTRA}
+  Writeln(ptext^,'compiled with EXTRA features');
+{$endif EXTRA}
   Writeln(ptext^,getmem_cnt, ' memory blocks allocated : ',getmem_size,'/',getmem8_size);
   Writeln(ptext^,freemem_cnt,' memory blocks freed     : ',freemem_size,'/',freemem8_size);
   Writeln(ptext^,getmem_cnt-freemem_cnt,' unfreed memory blocks : ',getmem_size-freemem_size);
@@ -819,7 +978,6 @@ begin
   If ExpectedMemAvail<>MemAvail then
     Writeln(ptext^,'Should be : ',ExpectedMemAvail);
   i:=getmem_cnt-freemem_cnt;
-  WrittenCnt:=0;
   while pp<>nil do
    begin
      if i<0 then
@@ -828,7 +986,7 @@ begin
           Writeln(ptext^,'More memory blocks than expected');
           exit;
        end;
-     if ((pp^.sig=integer($DEADBEEF)) and not usecrc) or
+     if ((pp^.sig=$DEADBEEF) and not usecrc) or
         ((pp^.sig=calculate_sig(pp)) and usecrc) then
        begin
           { this one was not released !! }
@@ -836,7 +994,7 @@ begin
             call_stack(pp,ptext^);
           dec(i);
        end
-     else if pp^.sig<>integer($AAAAAAAA) then
+     else if pp^.sig<>$AAAAAAAA then
        begin
           dump_error(pp,ptext^);
 {$ifdef EXTRA}
@@ -850,10 +1008,9 @@ begin
           dump_change_after(pp,ptext^);
           dump_change_after(pp,error_file);
           error_in_heap:=true;
-       end;
+       end
 {$endif EXTRA}
-     inc(WrittenCnt);
-     if WrittenCnt>=MaxDumpCnt then break;
+       ;
      pp:=pp^.previous;
    end;
 end;
@@ -866,7 +1023,7 @@ begin
   pp:=heap_mem_root;
   while pp<>nil do
    begin
-     pp^.sig:=integer($AAAAAAAA);
+     pp^.sig:=$AAAAAAAA;
      pp:=pp^.previous;
    end;
 end;
@@ -927,7 +1084,7 @@ begin
   ioresult;
   if (exitcode<>0) and (erroraddr<>nil) then
     begin
-       Writeln(ptext^,'No heap dump by memcheck unit');
+       Writeln(ptext^,'No heap dump by heaptrc unit');
        Writeln(ptext^,'Exitcode = ',exitcode);
        if ptext<>@stderr then
          begin
@@ -1005,6 +1162,122 @@ Initialization
 {$endif}
 finalization
   TraceExit;
-  
-{$ENDIF}
 end.
+{
+  $Log$
+  Revision 1.8  2002/09/13 07:01:20  lazarus
+  MG: fixed memcheck
+
+  Revision 1.1.2.10  2002/07/16 13:52:59  pierre
+   * fix compilation for m68k linux
+
+  Revision 1.1.2.9  2002/06/19 13:56:09  pierre
+   * try to fix handling for unix
+
+  Revision 1.1.2.8  2002/05/31 11:18:20  marco
+   * Rename fest for 1.0.x step one. Compiler and RTL
+
+  Revision 1.1.2.7  2001/09/22 04:48:42  carl
+  - remove unused define
+
+  Revision 1.1.2.6  2001/07/24 09:11:38  pierre
+   * added goto on to avoid need of -Sg option
+
+  Revision 1.1.2.5  2001/06/06 14:27:14  jonas
+    * fixed wrong typed constant procvars in preparation of my fix which will
+      disallow them in FPC mode
+
+  Revision 1.1.2.4  2001/04/22 00:38:47  carl
+  + make it portable
+
+  Revision 1.1.2.3  2001/04/16 20:31:31  carl
+  * 386DX bugfix with popal
+
+  Revision 1.1.2.2  2000/12/15 13:02:30  jonas
+    * added some typecasts so some expressiosn aren't evaluated anymore in
+      64bit when rangechecking is on
+
+  Revision 1.1.2.1  2000/08/24 08:59:35  jonas
+    * clear inoutres in traceexit before writing anything (to avoid an RTE
+      when writing the heaptrc output when a program didn't handle ioresult)
+
+  Revision 1.1  2000/07/13 06:30:47  michael
+  + Initial import
+
+  Revision 1.43  2000/05/18 17:03:27  peter
+    * fixed reallocmem with double removing from heap_mem_root list
+    * fixed reallocmem getmem/freemem count, now both are increased and
+      the _size8 counts are also increased
+
+  Revision 1.42  2000/04/27 15:35:50  pierre
+   * fix for bug report 929
+
+  Revision 1.41  2000/02/10 13:59:35  peter
+    * fixed bug with reallocmem to use the wrong size when copying the
+      data to the new allocated pointer
+
+  Revision 1.40  2000/02/09 16:59:30  peter
+    * truncated log
+
+  Revision 1.39  2000/02/07 10:42:44  peter
+    * use backtracestrfunc()
+
+  Revision 1.38  2000/02/02 11:13:15  peter
+    * fixed tracereallocmem which supplied the wrong size for tryresize
+
+  Revision 1.37  2000/01/31 23:41:30  peter
+    * reallocmem fixed for freemem() call when size=0
+
+  Revision 1.36  2000/01/20 14:25:51  jonas
+    * finally fixed tracereallocmem completely
+
+  Revision 1.35  2000/01/20 13:17:11  jonas
+    * another problme with realloc fixed (one left)
+
+  Revision 1.34  2000/01/20 12:35:35  jonas
+    * fixed problem with reallocmem and heaptrc
+
+  Revision 1.33  2000/01/07 16:41:34  daniel
+    * copyright 2000
+
+  Revision 1.32  2000/01/07 16:32:24  daniel
+    * copyright 2000 added
+
+  Revision 1.31  2000/01/05 13:56:55  jonas
+    * fixed traceReallocMem with nil pointer (simply calls traceGetMem now in
+      such a case)
+
+  Revision 1.30  2000/01/03 19:37:52  peter
+    * fixed reallocmem with p=nil
+
+  Revision 1.29  1999/11/14 21:35:04  peter
+    * removed warnings
+
+  Revision 1.28  1999/11/09 22:32:23  pierre
+   * several extra_size_info fixes
+
+  Revision 1.27  1999/11/06 14:35:38  peter
+    * truncated log
+
+  Revision 1.26  1999/11/01 13:56:50  peter
+    * freemem,reallocmem now get var argument
+
+  Revision 1.25  1999/10/30 17:39:05  peter
+    * memorymanager expanded with allocmem/reallocmem
+
+  Revision 1.24  1999/09/17 17:14:12  peter
+    + new heap manager supporting delphi freemem(pointer)
+
+  Revision 1.23  1999/09/10 17:13:41  peter
+    * fixed missing var
+
+  Revision 1.22  1999/09/08 16:14:41  peter
+    * pointer fixes
+
+  Revision 1.21  1999/08/18 12:03:16  peter
+    * objfpc mode for 0.99.12
+
+  Revision 1.20  1999/08/17 14:56:03  michael
+  Removed the mode for objpas
+
+}
