@@ -4385,7 +4385,7 @@ begin
     inc(y,Height+5);
   end;
 
-  edtUnitOutputDir := TEdit.Create(grpCompiler);
+  edtUnitOutputDir := TEdit.Create(Self);
   with edtUnitOutputDir do
   begin
     Parent := grpUnitOutputDir;

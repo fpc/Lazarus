@@ -326,14 +326,24 @@ end;
 
 procedure TTextStrings.Exchange(FromIndex, ToIndex: Integer);
 var
-  CurLineLen: Integer;
+  MovingLineLen: Integer;
+  TxtLen: Integer;
 begin
   if FromIndex=ToIndex then exit;
   if not FArraysValid then BuildArrays;
-  CurLineLen:=GetLineLen(FromIndex,true);
+  MovingLineLen:=GetLineLen(FromIndex,true);
   // adjust text
-  if CurLineLen>0 then begin
+  if MovingLineLen>0 then begin
+    // make string unique (refcount=1) and allocate moving mem
+    TxtLen:=length(FText);
+    SetLength(FText,TxtLen+MovingLineLen);
+    // save moving line
+    Move(FText[FLineRanges[FromIndex].StartPos],FText[TxtLen+1],MovingLineLen);
+    if FromIndex<ToIndex then begin
 
+    end else begin
+
+    end;
   end;
 end;
 
