@@ -101,6 +101,7 @@ type
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditCommentBlockClicked(Sender: TObject);
     procedure mnuEditUncommentBlockClicked(Sender: TObject);
+    procedure mnuEditSortBlockClicked(Sender: TObject);
     procedure mnuEditSelectAllClick(Sender: TObject);
     procedure mnuEditSelectCodeBlockClick(Sender: TObject);
     procedure mnuEditSelectToBraceClick(Sender: TObject);
@@ -1340,6 +1341,7 @@ begin
   itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
   itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
   itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
+  itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
   itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
   itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
   itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
@@ -7373,6 +7375,11 @@ begin
   DoEditMenuCommand(ecSelectionUncomment);
 end;
 
+procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionSort);
+end;
+
 procedure TMainIDE.mnuEditSelectAllClick(Sender: TObject);
 begin
   DoEditMenuCommand(ecSelectAll);
@@ -7556,6 +7563,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.448  2003/01/03 12:27:48  mattias
+  added sort selection
+
   Revision 1.447  2003/01/02 04:33:55  mattias
   implemented incremental find and unit usage counts
 
