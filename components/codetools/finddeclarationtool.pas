@@ -46,7 +46,7 @@ interface
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
-{ $DEFINE ShowCachedIdentifiers}
+{ $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
 
@@ -269,6 +269,8 @@ type
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
+  protected
+    function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
   protected
     procedure DoDeleteNodes; override;
     procedure ClearNodeCaches(Force: boolean);
@@ -923,6 +925,7 @@ var
   LastNodeCache: TCodeTreeNodeCache;
   LastCacheEntry: PCodeTreeNodeCacheEntry;
   SearchRangeFlags: TNodeCacheEntryFlags;
+  NodeCacheEntryFlags: TNodeCacheEntryFlags;
 
   function FindInNodeCache: boolean;
   var
@@ -934,7 +937,7 @@ var
       // NodeCache changed -> search nearest cache entry for the identifier
       LastNodeCache:=NodeCache;
       if NodeCache<>nil then begin
-        LastCacheEntry:=NodeCache.FindNearest(Params.identifier,
+        LastCacheEntry:=NodeCache.FindNearest(Params.Identifier,
                     ContextNode.StartPos,ContextNode.EndPos,
                     not (fdfSearchForward in Params.Flags));
       end else
@@ -943,19 +946,33 @@ var
     if (LastCacheEntry<>nil)
     and (LastCacheEntry^.CleanStartPos<ContextNode.EndPos)
     and (LastCacheEntry^.CleanEndPos>ContextNode.StartPos)
+    and ((NodeCacheEntryFlags-LastCacheEntry^.Flags)=[])
     then begin
       // cached result found
       Params.SetResult(LastCacheEntry);
       {$IFDEF ShowNodeCache}
       writeln(':::: TFindDeclarationTool.FindIdentifierInContext.FindInNodeCache');
-      writeln('  Ident=',GetIdentifier(Params.Identifier),
+      writeln('   Ident=',GetIdentifier(Params.Identifier),
               ' ContextNode=',ContextNode.DescAsString,
               ' Self=',MainFilename);
       if (Params.NewNode<>nil) then
-        writeln('  NewTool=',Params.NewCodeTool.MainFilename,
-                ' NewNode=',Params.NewNode.DescAsString);
+        writeln('   NewTool=',Params.NewCodeTool.MainFilename,
+                ' NewNode=',Params.NewNode.DescAsString)
+      else
+        writeln('   cache says: identifier NOT FOUND');
       {$ENDIF}
       Result:=true;
+    end;
+  end;
+  
+  procedure SetResultBeforeExit(NewResult: boolean);
+  begin
+    FindIdentifierInContext:=NewResult;
+    if not NewResult and (fdfExceptionOnNotFound in Params.Flags) then begin
+      if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
+        Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+      Params.IdentifierTool.RaiseException('Identifier not found '
+        +'"'+GetIdentifier(Params.Identifier)+'"');
     end;
   end;
   
@@ -977,22 +994,32 @@ begin
   try
     LastNodeCache:=nil;
     LastCacheEntry:=nil;
-    repeat
+    NodeCacheEntryFlags:=[];
+    if fdfSearchInParentNodes in Params.Flags then
+      Include(NodeCacheEntryFlags,ncefSearchedInParents);
+    if fdfSearchInAncestors in Params.Flags then
+      Include(NodeCacheEntryFlags,ncefSearchedInAncestors);
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
 '"',GetIdentifier(Params.Identifier),'"',
 ' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
 ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
 );
-if (ContextNode.Desc=ctnClass) then
-  writeln('  ContextNode.LastChild=',ContextNode.LastChild<>nil);
+{$ENDIF}
+    repeat
+{$IFDEF ShowTriedIdentifiers}
+writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
+'"',GetIdentifier(Params.Identifier),'"',
+' Context="',ContextNode.DescAsString,'" "',copy(Src,ContextNode.StartPos,20),'"',
+' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+);
 {$ENDIF}
       // search identifier in current context
       LastContextNode:=ContextNode;
       if not (fdfIgnoreCurContextNode in Params.Flags) then begin
         // search in cache
         if FindInNodeCache then begin
-          Result:=(Params.NewNode<>nil);
+          SetResultBeforeExit(Params.NewNode<>nil);
           exit;
         end;
         if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
@@ -1065,7 +1092,7 @@ writeln('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
             end else begin
               IdentifierFoundResult:=DoOnIdentifierFound(Params,ContextNode);
               if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-                Result:=(IdentifierFoundResult=ifrSuccess);
+                SetResultBeforeExit(IdentifierFoundResult=ifrSuccess);
                 exit;
               end;
             end;
@@ -1080,7 +1107,7 @@ writeln('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
             IdentifierFoundResult:=
               FindIdentifierInProcContext(ContextNode,Params);
             if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-              Result:=(IdentifierFoundResult=ifrSuccess);
+              SetResultBeforeExit(IdentifierFoundResult=ifrSuccess);
               exit;
             end;
           end;
@@ -1111,7 +1138,7 @@ writeln('  Source Name Identifier found="',GetIdentifier(Params.Identifier),'"')
             end else begin
               IdentifierFoundResult:=DoOnIdentifierFound(Params,ContextNode);
               if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-                Result:=(IdentifierFoundResult=ifrSuccess);
+                SetResultBeforeExit(IdentifierFoundResult=ifrSuccess);
                 exit;
               end;
             end;
@@ -1148,7 +1175,7 @@ writeln('  Property Identifier found="',GetIdentifier(Params.Identifier),'"');
             end else begin
               IdentifierFoundResult:=DoOnIdentifierFound(Params,ContextNode);
               if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-                Result:=(IdentifierFoundResult=ifrSuccess);
+                SetResultBeforeExit(IdentifierFoundResult=ifrSuccess);
                 exit;
               end;
             end;
@@ -1170,7 +1197,7 @@ writeln('  Property Identifier found="',GetIdentifier(Params.Identifier),'"');
           begin
             // pointer types can be forward definitions
             Params.ContextNode:=ContextNode.Parent;
-            Result:=FindForwardIdentifier(Params,IsForward);
+            SetResultBeforeExit(FindForwardIdentifier(Params,IsForward));
             exit;
           end;
 
@@ -1195,14 +1222,15 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext');
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible   ContextNode=',ContextNode.DescAsString);
 {$ENDIF}
-              exit;
+              ContextNode:=nil;
+              break;
             end;
           end;
         end;
 
         repeat
           // search for prior node
-{$IFDEF ShowTriedContexts}
+{$IFDEF ShowTriedIdentifiers}
 //writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching prior node of ',ContextNode.DescAsString);
 {$ENDIF}
           LastSearchedNode:=ContextNode;
@@ -1230,7 +1258,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible
               ContextNode:=ContextNode.PriorBrother
             else
               ContextNode:=ContextNode.NextBrother;
-{$IFDEF ShowTriedContexts}
+{$IFDEF ShowTriedIdentifiers}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in PriorBrother  ContextNode=',ContextNode.DescAsString);
 {$ENDIF}
             // it is not always allowed to search in every node on the same lvl:
@@ -1250,7 +1278,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in PriorBrothe
           begin
             // search next in parent
             ContextNode:=ContextNode.Parent;
-{$IFDEF ShowTriedContexts}
+{$IFDEF ShowTriedIdentifiers}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  ContextNode=',ContextNode.DescAsString);
 {$ENDIF}
             case ContextNode.Desc of
@@ -1290,7 +1318,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
   finally
     if Result and (not (fdfDoNotCache in Params.NewFlags))
     and (FirstSearchedNode<>nil) then begin
-      // add result to caches
+      // cache result
       AddResultToNodeCaches(Params.Identifier,FirstSearchedNode,ContextNode,
         fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
     end;
@@ -1302,12 +1330,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
       fdfSearchForward in Params.Flags,nil,SearchRangeFlags);
   end;
 
-  if fdfExceptionOnNotFound in Params.Flags then begin
-    if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
-      Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-    Params.IdentifierTool.RaiseException('Identifier not found '
-      +'"'+GetIdentifier(Params.Identifier)+'"');
-  end;
+  SetResultBeforeExit(false);
 end;
 
 function TFindDeclarationTool.FindEnumInContext(
@@ -1535,6 +1558,22 @@ writeln('');
           end;
         end;
       end;
+      { ToDo: check, if this is needed for Delphi:
+
+      if (NextAtomType in [atSpace])
+      and CompareSrcIdentifier(CurAtom.StartPos,'FREE')
+      and ((Result.Node.Desc=ctnClass) or NodeIsInAMethod(Result.Node)) then
+      begin
+        // FREE calls the destructor of an object
+        Params.Save(OldInput);
+        Params.SetIdentifier(Self,'DESTRUCTOR',nil);
+        Exclude(Params.Flags,fdfExceptionOnNotFound);
+        if Result.Tool.FindIdentifierInContext(Params) then begin
+          Result:=CreateFindContext(Params);
+          exit;
+        end;
+        Params.Load(OldInput);
+      end;}
       // find sub identifier
       Params.Save(OldInput);
       try
@@ -2016,10 +2055,9 @@ var
   NameAtom: TAtomPosition;
 begin
   Result:=ifrProceedSearch;
-  // if proc is a method, search in class
+  // if proc is a method body, search in class
   // -> find class name
-  MoveCursorToNodeStart(ProcContextNode);
-  ReadNextAtom; // read keyword
+  MoveCursorToNodeStart(ProcContextNode.FirstChild);
   ReadNextAtom; // read name
   NameAtom:=CurPos;
   ReadNextAtom;
@@ -2722,7 +2760,7 @@ writeln(DebugPrefix,'TFindDeclarationTool.FindIdentifierInInterface',
     CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
     if CacheEntry<>nil then begin
       // identifier in cache found
-{$IFDEF ShowCachedIdentifiers}
+{$IFDEF ShowInterfaceCache}
 writeln('[TFindDeclarationTool.FindIdentifierInInterface] Ident already in cache:',
 ' Exists=',CacheEntry^.Node<>nil);
 {$ENDIF}
@@ -2861,6 +2899,25 @@ writeln('[TFindDeclarationTool.FindIdentifierInUsedUnit] ',
       exit
     else
       Params.Load(OldInput);
+  end;
+end;
+
+function TFindDeclarationTool.NodeIsInAMethod(Node: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  while (Node<>nil) do begin
+    if (Node.Desc=ctnProcedure) then begin
+    
+      // ToDo: ppu, ppw, dcu
+    
+      MoveCursorToNodeStart(Node.FirstChild); // ctnProcedureHead
+      ReadNextAtom;
+      if not AtomIsIdentifier(false) then continue;
+      ReadNextAtom;
+      if not AtomIsChar('.') then continue;
+      Result:=true;
+      exit;
+    end;
   end;
 end;
 
@@ -3882,22 +3939,28 @@ var Node: TCodeTreeNode;
   NewCleanPos: integer;
 begin
 {$IFDEF ShowNodeCache}
+//if CompareSrcIdentifiers(Identifier,'TDefineTree') then writeln('=================================');
 write('TFindDeclarationTool.AddResultToNodeCaches ',
-' Ident=',GetIdentifier(Identifier),
-' StartNode=',StartNode.DescAsString,'="',copy(Src,StartNode.StartPos-10,10),'|',copy(Src,StartNode.StartPos,15),'"');
+' Ident=',GetIdentifier(Identifier));
+write(' SearchedForward=',SearchedForward);
+write(' Flags=[');
+if ncefSearchedInParents in SearchRangeFlags then write('Parents');
+if ncefSearchedInAncestors in SearchRangeFlags then write(',Ancestors');
+writeln(']');
+write('     StartNode=',StartNode.DescAsString,'="',copy(Src,StartNode.StartPos-10,10),'|',copy(Src,StartNode.StartPos,15),'"');
 if EndNode<>nil then
   write(' EndNode=',EndNode.DescAsString,'="',copy(Src,EndNode.StartPos,25),'"')
 else
   write(' EndNode=nil');
-write(' SearchedForward=',SearchedForward);
 writeln('');
-writeln('    Self=',MainFilename);
+writeln('     Self=',MainFilename);
 if Params<>nil then begin
-  writeln('    NewNode=',Params.NewNode.DescAsString,
+  writeln('       NewNode=',Params.NewNode.DescAsString,
              ' NewTool=',Params.NewCodeTool.MainFilename);
 end else begin
-  writeln('    NOT FOUND');
+  writeln('       NOT FOUND');
 end;
+//if CompareSrcIdentifiers(Identifier,'TDefineTree') then writeln('=================================');
 {$ENDIF}
   Node:=StartNode;
   LastNodeCache:=nil;
