@@ -89,7 +89,7 @@ begin
     if TObject(Data) is TCustomForm then begin
       if TCustomForm(Data).BorderStyle=bsNone then begin
         // remove window decorations
-        gdk_window_set_decorations(Widget^.Window,0);
+        gdk_window_set_decorations(GetControlWindow(Widget),0);
       end;
     end;
   end;
@@ -140,14 +140,14 @@ begin
       //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
       //writeln(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
       if (TheWinControl<>nil) then begin
-        NewEventMask:=gdk_window_get_events(Widget^.Window)
+        NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
                       or WinWidgetInfo^.EventMask;
-        gdk_window_set_events(Widget^.Window,NewEventMask);
-        if (ClientWidget<>nil) and (ClientWidget^.Window<>nil)
+        gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
+        if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
         and (ClientWidget^.Window<>Widget^.Window) then begin
-          NewEventMask:=gdk_window_get_events(ClientWidget^.Window)
+          NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
                         or WinWidgetInfo^.EventMask;
-          gdk_window_set_events(ClientWidget^.Window,NewEventMask);
+          gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
         //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
       end;
@@ -1332,7 +1332,7 @@ end;
 -------------------------------------------------------------------------------}
 function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
-  gdk_window_set_events(Widget^.Window, gdk_window_get_events(Widget^.Window)
+  gdk_window_set_events(GetControlWindow(Widget), gdk_window_get_events(GetControlWindow(Widget))
     or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
   Result:=true;
 end;
@@ -1864,7 +1864,7 @@ begin
   
   // get keystates
   if Scroll <> nil 
-  then gdk_window_get_pointer(PGTKWidget(Scroll)^.Window, @X, @Y, @Mask);
+  then gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
 
   with Msg do
   begin
@@ -1920,7 +1920,7 @@ begin
   
   // get keystates
   if Scroll <> nil then
-    gdk_window_get_pointer(PGTKWidget(Scroll)^.Window, @X, @Y, @Mask)
+    gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask)
   else
     Mask:=0;
 
@@ -2204,7 +2204,7 @@ begin
       {$ENDIF}
       if (ClipboardWidget<>nil)
       and (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType])
-        <> ClipboardWidget^.window)
+        <> GetControlWindow(ClipboardWidget))
       and Assigned(ClipboardHandler[ClipboardType]) then begin
         // handler found for this type of clipboard
         {$IFDEF DEBUG_CLIPBOARD}
@@ -2255,6 +2255,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.127  2002/09/10 06:49:19  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.126  2002/09/09 17:41:19  lazarus
   MG: added multiselection to TTreeView
 
