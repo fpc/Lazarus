@@ -42,11 +42,13 @@ uses
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
-  AddToPackageDlg, PackageSystem;
+  AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;
   
 type
   TOnOpenFile =
     function(Sender: TObject; const Filename: string): TModalResult of object;
+  TOnOpenPkgFile =
+    function(Sender: TObject; PkgFile: TPkgFile): TModalResult of object;
   TOnOpenPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnSavePackage =
@@ -123,22 +125,23 @@ type
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
     procedure CompileAllCleanClick(Sender: TObject);
-    procedure CompileCleanClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
+    procedure CompileCleanClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
+    procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallBitBtnClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
     procedure MoreBitBtnClick(Sender: TObject);
-    procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
-    procedure MoveFileUpMenuItemClick(Sender: TObject);
+    procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveFileDownMenuItemClick(Sender: TObject);
+    procedure MoveFileUpMenuItemClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -149,14 +152,15 @@ type
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
                                         ARect: TRect; State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
+    procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure RevertClick(Sender: TObject);
-    procedure SaveBitBtnClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
+    procedure SaveBitBtnClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
-    procedure ViewPkgSourceClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxClick(Sender: TObject);
     procedure UseMinVersionCheckBoxClick(Sender: TObject);
+    procedure ViewPkgSourceClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
     FilesNode: TTreeNode;
@@ -183,12 +187,15 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DoSave(SaveAs: boolean);
     procedure DoCompile(CompileClean, CompileRequired: boolean);
-    procedure DoRevert;
-    procedure DoPublishProject;
+    procedure DoFixFilesCase;
     procedure DoMoveCurrentFile(Offset: integer);
+    procedure DoPublishProject;
+    procedure DoEditVirtualUnit;
+    procedure DoRevert;
+    procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
+    procedure DoOpenPkgFile(PkgFile: TPkgFile);
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -210,6 +217,7 @@ type
     FOnInstallPackage: TOnInstallPackage;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
+    FOnOpenPkgFile: TOnOpenPkgFile;
     FOnPublishPackage: TOnPublishPackage;
     FOnRevertPackage: TOnRevertPackage;
     FOnSavePackage: TOnSavePackage;
@@ -231,6 +239,7 @@ type
     function FindEditor(Pkg: TLazPackage): TPackageEditorForm;
     function OpenEditor(Pkg: TLazPackage): TPackageEditorForm;
     function OpenFile(Sender: TObject; const Filename: string): TModalResult;
+    function OpenPkgFile(Sender: TObject; PkgFile: TPkgFile): TModalResult;
     function OpenDependency(Sender: TObject;
                             Dependency: TPkgDependency): TModalResult;
     procedure DoFreeEditor(Pkg: TLazPackage);
@@ -251,6 +260,8 @@ type
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
                                                   write FOnCreateNewFile;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
+    property OnOpenPkgFile: TOnOpenPkgFile read FOnOpenPkgFile
+                                           write FOnOpenPkgFile;
     property OnOpenPackage: TOnOpenPackage read FOnOpenPackage
                                            write FOnOpenPackage;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
@@ -490,14 +501,19 @@ begin
       AddPopupMenuItem('Move file down', @MoveFileDownMenuItemClick,
                        (FileIndex<LazPackage.FileCount-1) and Writable);
       AddFileTypeMenuItem;
+      if CurFile.FileType=pftVirtualUnit then
+        AddPopupMenuItem('Edit Virtual Unit',@EditVirtualUnitMenuItemClick,
+                         Writable);
     end else begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
       AddPopupMenuItem(lisPckEditReAddFile, @ReAddMenuItemClick,
                        AddBitBtn.Enabled);
     end;
   end;
-  if LazPackage.FileCount>1 then
+  if LazPackage.FileCount>1 then begin
     AddPopupMenuItem('Sort files', @SortFilesMenuItemClick, Writable);
+    AddPopupMenuItem('Fix Files Case', @FixFilesCaseMenuItemClick, Writable);
+  end;
 
   if CurDependency<>nil then begin
     if (not Removed) then begin
@@ -644,13 +660,13 @@ begin
   if CurNode.Parent<>nil then begin
     if CurNode.Parent=FilesNode then begin
       CurFile:=LazPackage.Files[NodeIndex];
-      PackageEditors.OpenFile(Self,CurFile.Filename);
+      DoOpenPkgFile(CurFile);
     end else if CurNode.Parent=RequiredPackagesNode then begin
       CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
       PackageEditors.OpenDependency(Self,CurDependency);
     end else if CurNode.Parent=RemovedFilesNode then begin
       CurFile:=LazPackage.RemovedFiles[NodeIndex];
-      PackageEditors.OpenFile(Self,CurFile.Filename);
+      DoOpenPkgFile(CurFile);
     end else if CurNode.Parent=RemovedRequiredNode then begin
       CurDependency:=LazPackage.RemovedDepByIndex(NodeIndex);
       PackageEditors.OpenDependency(Self,CurDependency);
@@ -778,6 +794,11 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.EditVirtualUnitMenuItemClick(Sender: TObject);
+begin
+  DoEditVirtualUnit;
+end;
+
 procedure TPackageEditorForm.RevertClick(Sender: TObject);
 begin
   DoRevert;
@@ -796,6 +817,11 @@ end;
 procedure TPackageEditorForm.SortFilesMenuItemClick(Sender: TObject);
 begin
   DoSortFiles;
+end;
+
+procedure TPackageEditorForm.FixFilesCaseMenuItemClick(Sender: TObject);
+begin
+  DoFixFilesCase;
 end;
 
 procedure TPackageEditorForm.UninstallClick(Sender: TObject);
@@ -1808,6 +1834,17 @@ begin
   UpdateAll;
 end;
 
+procedure TPackageEditorForm.DoEditVirtualUnit;
+var
+  Removed: boolean;
+  CurFile: TPkgFile;
+begin
+  CurFile:=GetCurrentFile(Removed);
+  if (CurFile=nil) or Removed then exit;
+  if ShowEditVirtualPackageDialog(CurFile)=mrOk then
+    UpdateAll;
+end;
+
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
 var
   Removed: boolean;
@@ -1837,6 +1874,17 @@ begin
   LazPackage.SortFiles;
   UpdateAll;
   ApplyTreeSelection(TreeSelection,true);
+end;
+
+procedure TPackageEditorForm.DoOpenPkgFile(PkgFile: TPkgFile);
+begin
+  PackageEditors.OpenPkgFile(Self,PkgFile);
+end;
+
+procedure TPackageEditorForm.DoFixFilesCase;
+begin
+  LazPackage.FixFilesCaseSensitivity;
+  UpdateFiles;
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
@@ -2055,6 +2103,15 @@ function TPackageEditors.OpenFile(Sender: TObject; const Filename: string
 begin
   if Assigned(OnOpenFile) then
     Result:=OnOpenFile(Sender,Filename)
+  else
+    Result:=mrCancel;
+end;
+
+function TPackageEditors.OpenPkgFile(Sender: TObject; PkgFile: TPkgFile
+  ): TModalResult;
+begin
+  if Assigned(OnOpenPkgFile) then
+    Result:=OnOpenPkgFile(Sender,PkgFile)
   else
     Result:=mrCancel;
 end;

@@ -4,9 +4,13 @@
     <Name Value="DBFLaz"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
+      <Version Value="2"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/"/>
       </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>

@@ -624,7 +624,10 @@ type
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
                          ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
+    function FindUnit(const TheUnitName: string): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
+    function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean;
+                      IgnorePkgFile: TPkgFile): TPkgFile;
     function FindRemovedPkgFile(const AFilename: string): TPkgFile;
     function AddFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
@@ -637,6 +640,7 @@ type
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
+    procedure FixFilesCaseSensitivity;
     // required dependencies (plus removed required dependencies)
     function FindDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -2409,8 +2413,19 @@ begin
   Result:=nil;
 end;
 
+function TLazPackage.FindUnit(const TheUnitName: string): TPkgFile;
+begin
+  Result:=FindUnit(TheUnitName,true);
+end;
+
 function TLazPackage.FindUnit(const TheUnitName: string;
   IgnoreRemoved: boolean): TPkgFile;
+begin
+  Result:=FindUnit(TheUnitName,IgnoreRemoved,nil);
+end;
+
+function TLazPackage.FindUnit(const TheUnitName: string;
+  IgnoreRemoved: boolean; IgnorePkgFile: TPkgFile): TPkgFile;
 var
   Cnt: Integer;
   i: Integer;
@@ -2419,12 +2434,14 @@ begin
     Cnt:=FileCount;
     for i:=0 to Cnt-1 do begin
       Result:=Files[i];
+      if IgnorePkgFile=Result then continue;
       if AnsiCompareText(Result.UnitName,TheUnitName)=0 then exit;
     end;
     if not IgnoreRemoved then begin
       Cnt:=RemovedFilesCount;
       for i:=0 to Cnt-1 do begin
         Result:=RemovedFiles[i];
+        if IgnorePkgFile=Result then continue;
         if AnsiCompareText(Result.UnitName,TheUnitName)=0 then exit;
       end;
     end;
@@ -2566,6 +2583,97 @@ begin
     Modified:=true;
   finally
     NewList.Free;
+  end;
+end;
+
+procedure TLazPackage.FixFilesCaseSensitivity;
+var
+  SrcDirs: TStringList;
+  
+  function IndexOfFileInStringList(List: TStringList;
+    const Filename: string; OnlyExact: boolean): integer;
+  begin
+    // first search for exact match
+    Result:=List.Count-1;
+    while (Result>=0) do begin
+      if (Filename=List[Result]) then exit;
+      dec(Result);
+    end;
+    if OnlyExact then exit;
+    // then search for case insensitive match
+    Result:=List.Count-1;
+    while (Result>=0) and (AnsiCompareText(Filename,List[Result])<>0) do
+      dec(Result);
+  end;
+
+  function AddDirectoryListing(const ADirectory: string): TStringList;
+  var
+    SrcDirID: Integer;
+    FileInfo: TSearchRec;
+  begin
+    if SrcDirs=nil then
+      SrcDirs:=TStringList.Create;
+    // search directory listing
+    SrcDirID:=IndexOfFileInStringList(SrcDirs,ADirectory,true);
+    if SrcDirID>=0 then begin
+      Result:=TStringList(SrcDirs.Objects[SrcDirID]);
+      exit;
+    end;
+    // create new directory listing
+    Result:=TStringList.Create;
+    if SysUtils.FindFirst(AppendPathDelim(ADirectory)+GetAllFilesMask,
+                          faAnyFile,FileInfo)=0
+    then begin
+      repeat
+        // check if special file
+        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        Result.Add(FileInfo.Name);
+        //debugln('AddDirectoryListing ',FileInfo.Name);
+      until SysUtils.FindNext(FileInfo)<>0;
+    end;
+    SysUtils.FindClose(FileInfo);
+    SrcDirs.AddObject(ADirectory,Result);
+  end;
+
+var
+  Cnt: Integer;
+  i: Integer;
+  CurFile: TPkgFile;
+  CurShortFilename: String;
+  DirListID: LongInt;
+  DirListing: TStringList;
+  NewShortFilename: string;
+  NewFilename: String;
+  CurDir: String;
+begin
+  Cnt:=FileCount;
+  SrcDirs:=nil;
+  try
+    for i:=0 to Cnt-1 do begin
+      CurFile:=Files[i];
+      CurDir:=CurFile.Directory;
+      //debugln('TLazPackage.FixFilesCaseSensitivity A ',dbgs(i),' CurFile.Filename=',CurFile.Filename);
+      DirListing:=AddDirectoryListing(CurDir);
+      CurShortFilename:=ExtractFilename(CurFile.Filename);
+      DirListID:=IndexOfFileInStringList(DirListing,CurShortFilename,false);
+      //debugln('TLazPackage.FixFilesCaseSensitivity B ',dbgs(i),' CurShortFilename=',CurShortFilename,' DirListID=',dbgs(DirListID));
+      if DirListID<0 then continue;
+      NewShortFilename:=DirListing[DirListID];
+      //debugln('TLazPackage.FixFilesCaseSensitivity New ',dbgs(i),' NewShortFilename=',NewShortFilename);
+      if CurShortFilename<>NewShortFilename then begin
+        // case changes
+        NewFilename:=
+            AppendPathDelim(ExtractFilePath(CurFile.Filename))+NewShortFilename;
+        //debugln('TLazPackage.FixFilesCaseSensitivity New ',dbgs(i),' NewFilename=',NewFilename);
+        CurFile.Filename:=NewFilename;
+      end;
+    end;
+  finally
+    if SrcDirs<>nil then begin
+      for i:=0 to SrcDirs.Count-1 do
+        SrcDirs.Objects[i].Free;
+      SrcDirs.Free;
+    end;
   end;
 end;
 

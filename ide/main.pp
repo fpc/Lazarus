@@ -4904,7 +4904,9 @@ function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
 var MainUnitInfo: TUnitInfo;
   OpenFlags: TOpenFlags;
 begin
+  {$IFDEF IDE_VERBOSE}
   debugln('[TMainIDE.DoOpenMainUnit] A ProjectLoading=',BoolToStr(ProjectLoading),' MainUnitID=',IntToStr(Project1.MainUnitID));
+  {$ENDIF}
   Result:=mrCancel;
   if Project1.MainUnitID<0 then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
@@ -4923,7 +4925,6 @@ begin
   Result:=DoOpenFileInSourceNoteBook(MainUnitInfo,-1,OpenFlags);
   if Result<>mrOk then exit;
 
-  // build a nice pagename for the sourcenotebook
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoOpenMainUnit] END');
@@ -8226,6 +8227,9 @@ var
   SearchPath: String;
   SearchFile: String;
 begin
+  {$IFDEF VerboseFindSourceFile}
+  writeln('TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"');
+  {$ENDIF}
   if FilenameIsAbsolute(AFilename) then begin
     if FileExists(AFilename) then
       Result:=AFilename
@@ -10809,6 +10813,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.776  2004/09/22 12:43:17  mattias
+  implemented searching and editing virtual units
+
   Revision 1.775  2004/09/21 10:05:26  mattias
   fixed disable at designtime and bounding TProgressBar position
 

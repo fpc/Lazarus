@@ -1,0 +1,65 @@
+object EditVirtualUnitDialog: TEditVirtualUnitDialog
+  Caption = 'EditVirtualUnitDialog'
+  ClientHeight = 131
+  ClientWidth = 450
+  OnCreate = EditVirtualUnitDialogCreate
+  PixelsPerInch = 90
+  Position = poScreenCenter
+  HorzScrollBar.Page = 451
+  VertScrollBar.Page = 132
+  Left = 346
+  Height = 131
+  Top = 254
+  Width = 450
+  object OkButton: TButton
+    Caption = 'OkButton'
+    OnClick = OkButtonClick
+    TabOrder = 0
+    Left = 200
+    Height = 25
+    Top = 96
+    Width = 101
+  end
+  object CancelButton: TButton
+    Caption = 'CancelButton'
+    ModalResult = 2
+    TabOrder = 1
+    Left = 332
+    Height = 25
+    Top = 96
+    Width = 101
+  end
+  object FilenameLabel: TLabel
+    Caption = 'FilenameLabel'
+    Left = 8
+    Height = 17
+    Top = 24
+    Width = 89
+  end
+  object UnitnameLabel: TLabel
+    Caption = 'UnitnameLabel'
+    Left = 8
+    Height = 17
+    Top = 64
+    Width = 89
+  end
+  object FilenameEdit: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+    Text = 'FilenameEdit'
+    TabOrder = 4
+    Left = 96
+    Height = 23
+    Top = 18
+    Width = 344
+  end
+  object UnitnameEdit: TEdit
+    TabOrder = 5
+    Text = 'UnitnameEdit'
+    TabOrder = 5
+    Left = 96
+    Height = 23
+    Top = 58
+    Width = 128
+  end
+end

@@ -1145,6 +1145,9 @@ var
   StartNode: TCodeTreeNode;
   SectionNode: TCodeTreeNode;
   Node: TCodeTreeNode;
+  BestNodeIsForwardDecaration: Boolean;
+  CurNodeIsForwardDeclaration: Boolean;
+  BestNode: TCodeTreeNode;
 begin
   Result:=false;
   if Identifier='' then exit;
@@ -1153,14 +1156,19 @@ begin
   if StartNode=nil then exit;
   SectionNode:=StartNode.FirstChild;
   if SectionNode=nil then exit;
+  BestNode:=nil;
+  BestNodeIsForwardDecaration:=false;
   while SectionNode<>nil do begin
     if SectionNode.Desc in AllDefinitionSections then begin
       Node:=SectionNode.FirstChild;
       while Node<>nil do begin
         if Node.Desc in AllIdentifierDefinitions then begin
           if CompareSrcIdentifiers(Node.StartPos,PChar(Identifier)) then begin
-            Result:=JumpToNode(Node,NewPos,NewTopLine,false);
-            exit;
+            CurNodeIsForwardDeclaration:=NodeIsForwardDeclaration(Node);
+            if (BestNode=nil) or BestNodeIsForwardDecaration then begin
+              BestNode:=Node;
+              BestNodeIsForwardDecaration:=CurNodeIsForwardDeclaration;
+            end;
           end;
         end;
         Node:=Node.NextBrother;
@@ -1168,6 +1176,8 @@ begin
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
+  if BestNode<>nil then
+    Result:=JumpToNode(BestNode,NewPos,NewTopLine,false);
 end;
 
 function TFindDeclarationTool.FindDeclarationInUsesSection(

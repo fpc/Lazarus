@@ -78,6 +78,8 @@ type
       ): TModalResult;
     function OnPackageEditorUninstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function OnPackageEditorOpenPkgFile(Sender: TObject; PkgFile: TPkgFile
+                                        ): TModalResult;
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
@@ -183,6 +185,8 @@ type
                          var List: TObjectArray): TModalResult;
     function GetOwnersOfUnit(const UnitFilename: string): TList; override;
     function GetSourceFilesOfOwners(OwnerList: TList): TStrings; override;
+    function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
+    function FindVirtualUnitSource(PkgFile: TPkgFile): string;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -293,15 +297,23 @@ end;
 procedure TPkgManager.IDEComponentPaletteOpenUnit(Sender: TObject);
 var
   PkgComponent: TPkgComponent;
+  PkgFile: TPkgFile;
+  Filename: String;
 begin
   if (Sender=nil) then exit;
   if (Sender is TPkgFile) then
-    MainIDE.DoOpenMacroFile(Self,TPkgFile(Sender).Filename)
+    DoOpenPkgFile(TPkgFile(Sender))
   else if (Sender is TPkgComponent) then begin
     PkgComponent:=TPkgComponent(Sender);
-    if PkgComponent.PkgFile=nil then exit;
+    PkgFile:=PkgComponent.PkgFile;
+    if PkgFile=nil then exit;
+    Filename:='';
+    if PkgFile.FileType=pftVirtualUnit then
+      Filename:=FindVirtualUnitSource(PkgFile);
+    if Filename='' then
+      Filename:=PkgFile.Filename;
     MainIDE.DoOpenFileAndJumpToIdentifier(
-      PkgComponent.PkgFile.Filename,PkgComponent.ComponentClass.ClassName,
+      Filename,PkgComponent.ComponentClass.ClassName,
       -1, // open page somewhere
       [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
   end;
@@ -451,6 +463,12 @@ function TPkgManager.OnPackageEditorUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoUninstallPackage(APackage);
+end;
+
+function TPkgManager.OnPackageEditorOpenPkgFile(Sender: TObject;
+  PkgFile: TPkgFile): TModalResult;
+begin
+  Result:=DoOpenPkgFile(PkgFile);
 end;
 
 procedure TPkgManager.OnPackageEditorFreeEditor(APackage: TLazPackage);
@@ -1517,6 +1535,7 @@ begin
   // package editors
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
+  PackageEditors.OnOpenPkgFile:=@OnPackageEditorOpenPkgFile;
   PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;
   PackageEditors.OnCreateNewFile:=@OnPackageEditorCreateFile;
   PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
@@ -2832,6 +2851,32 @@ begin
         CurUnit:=CurUnit.NextPartOfProject;
       end;
     end;
+  end;
+end;
+
+function TPkgManager.DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
+var
+  Filename: String;
+begin
+  if (PkgFile.FileType=pftVirtualUnit) then begin
+    Filename:=FindVirtualUnitSource(PkgFile);
+    if Filename<>'' then begin
+      Result:=MainIDE.DoOpenEditorFile(Filename,-1,
+                                  [ofOnlyIfExists,ofAddToRecent,ofRegularFile]);
+      exit;
+    end;
+  end;
+  Result:=MainIDE.DoOpenMacroFile(Self,PkgFile.Filename);
+end;
+
+function TPkgManager.FindVirtualUnitSource(PkgFile: TPkgFile): string;
+begin
+  Result:='';
+  if (PkgFile.FileType=pftVirtualUnit)
+  and (PkgFile.LazPackage<>nil)
+  and (not FileExists(PkgFile.Filename)) then begin
+    Result:=MainIDE.FindSourceFile(PkgFile.GetShortFilename(false),
+                                     PkgFile.LazPackage.Directory,[]);
   end;
 end;
 
