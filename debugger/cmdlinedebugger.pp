@@ -173,7 +173,7 @@ begin
     FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
     FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
     FDbgProcess.ShowWindow := swoNone;
-    //FDbgProcess.Environment:=Environment;
+    FDbgProcess.Environment:=Environment;
   end;
   if not FDbgProcess.Running 
   then begin
@@ -362,6 +362,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.13  2002/08/28 11:41:52  lazarus
+  MG: activated environment opts in debugger
+
   Revision 1.12  2002/08/28 10:44:44  lazarus
   MG: implemented run param environment variables
 
