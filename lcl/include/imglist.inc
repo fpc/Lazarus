@@ -273,14 +273,19 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TCustomImageList.Destroy;
-var i: integer;
+var
+  i: integer;
 begin
   FBitmap.Free;
+  FBitmap:=nil;
   FMaskBitmap.Free;
-  FChangeLinkList.Free;
+  FMaskBitmap:=nil;
   for i:=0 to FImageList.Count-1 do TObject(FImageList[i]).Free;
   FImageList.Free;  //shane
+  FImageList:=nil;
   inherited Destroy;
+  FChangeLinkList.Free;
+  FChangeLinkList:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -940,7 +945,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.UnRegisterChanges(Value: TChangeLink);
 begin
-  FChangeLinkList.Remove(Value);
+  if (FChangeLinkList<>nil) and (Value.Sender=Self) then
+    FChangeLinkList.Remove(Value);
+  Value.Sender:=nil;
 end;
 
 {******************************************************************************
@@ -978,6 +985,9 @@ end;
 {
 
   $Log$
+  Revision 1.18  2003/11/08 23:42:24  mattias
+  fixed unregistering imageslink
+
   Revision 1.17  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

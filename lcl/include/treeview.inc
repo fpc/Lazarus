@@ -2613,16 +2613,16 @@ end;
 
 destructor TCustomTreeView.Destroy;
 begin
-  FTreeNodes.Free;
-  FTreeNodes:=nil;
-  FChangeTimer.Free;
-  FSaveItems.Free;
-  FDragImage.Free;
+  Images:=nil;
+  FreeThenNil(FTreeNodes);
+  FreeThenNil(FChangeTimer);
+  FreeThenNil(FSaveItems);
+  FreeThenNil(FDragImage);
   //FMemStream.Free;
   //FreeObjectInstance(FEditInstance);
-  FImageChangeLink.Free;
-  FStateChangeLink.Free;
-  FCanvas.Free;
+  FreeThenNil(FImageChangeLink);
+  FreeThenNil(FStateChangeLink);
+  FreeThenNil(FCanvas);
   inherited Destroy;
 end;
 
