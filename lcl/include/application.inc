@@ -397,13 +397,20 @@ var
   HintInfo: THintInfo;
   CanShow: Boolean;
   HintWinRect: TRect;
+  CurHeight: Integer;
 begin
   if not FShowHint then exit;
   FHintControl:=Info.Control;
 
+  CurHeight:=GetCursorHeightMargin;
   HintInfo.HintControl := FHintControl;
   HintInfo.HintPos := Info.MousePos;
-  Inc(HintInfo.HintPos.Y, GetCursorHeightMargin);
+  
+  // to reduce flicker
+  HintInfo.HintPos.X:=HintInfo.HintPos.X and (not $F);
+  HintInfo.HintPos.Y:=HintInfo.HintPos.Y and (not $F);
+  
+  Inc(HintInfo.HintPos.Y, CurHeight);
   HintInfo.HintMaxWidth := Screen.Width;
   HintInfo.HintColor := FHintColor;
   HintInfo.CursorRect := FHintControl.BoundsRect;
@@ -836,6 +843,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/12/17 12:04:30  mattias
+  reduced flickering of hints
+
   Revision 1.42  2002/12/17 11:56:09  mattias
   fixed find declaration of non comment pos
 
