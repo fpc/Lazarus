@@ -26,6 +26,20 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+
+{------------------------------------------------------------------------------
+  function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+
+  Converts a LM_GtkPaint message to a LM_PAINT message
+ ------------------------------------------------------------------------------}
+function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+begin
+  Result.Msg:=LM_PAINT;
+  Result.DC:=GetDC(THandle(GtkPaintMsg.Widget));
+  Result.Unused:=0;
+  Result.Result:=0;
+end;
+
 {------------------------------------------------------------------------------
   Function: FindChar
   Params:  Width, Height: Size of the image
@@ -648,22 +662,22 @@ end;
   Params:    Message: the message to process
   Returns:   True if handled
 
-  Generic function whih calls the WindowProc if defined, otherwise the 
+  Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-function DeliverMessage(const Target: Pointer; var Message): Integer;
+function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
   if Target=nil then writeln('[DeliverMessage] Target = nil');
   if TObject(Target) is TControl then
   begin
-    TControl(Target).WindowProc(TLMessage(Message));
+    TControl(Target).WindowProc(TLMessage(AMessage));
   end
   else
   begin
-    TObject(Target).Dispatch(TLMessage(Message));
+    TObject(Target).Dispatch(TLMessage(AMessage));
   end;
   
-  Result := TLMessage(Message).Result;
+  Result := TLMessage(AMessage).Result;
 end;
 
 
@@ -1107,29 +1121,47 @@ type
     dstUnknown,
     dstMousePress,
     dstMouseMotion,
-    dstMouseRelease
+    dstMouseRelease,
+    dstDrawAfter,
+    dstExposeAfter
     );
   TDesignSignalTypes = set of TDesignSignalType;
   
   TDesignSignalMask = longint;
   
 const
-  DesignSignalAfter: array[TDesignSignalType] of boolean =
-    (false,false,false,false);
   DesignSignalNames: array[TDesignSignalType] of PChar = (
     '',
     'button-press-event',
     'motion-notify-event',
-    'button-release-event'
+    'button-release-event',
+    'draw',
+    'expose-event'
     );
+    
+  DesignSignalAfter: array[TDesignSignalType] of boolean =
+    (false,false,false,false,true,true);
+    
   DesignSignalFuncs: array[TDesignSignalType] of Pointer = (
     nil,
     @gtkMouseBtnPress,
-    @GTKMotionNotify,
-    @gtkMouseBtnRelease
+    @gtkMotionNotify,
+    @gtkMouseBtnRelease,
+    @gtkDrawAfter,
+    @gtkExposeEventAfter
     );
-  DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask =
-    (0,1,2,4);
+    
+var
+  DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
+
+procedure InitDesignSignalMasks;
+var
+  SignalType: TDesignSignalType;
+begin
+  DesignSignalMasks[dstUnknown]:=0;
+  for SignalType:=Low(TDesignSignalType) to High(TDesignSignalType) do
+    DesignSignalMasks[SignalType]:=1 shl ord(SignalType);
+end;
 
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
 begin
@@ -1381,111 +1413,6 @@ begin
   if (AWinControl=nil) or (AWidget=nil)
   or (not (csDesigning in AWinControl.ComponentState)) then exit;
   ConnectSignals(AWidget);
-end;
-
-{-------------------------------------------------------------------------------
-  procedure SetEventMaskForDesigning(MainWidget: PGtkWidget);
-  
-  Sets the event mask for all gtk internal gdkwindows to prevent gtk automatic
-  reaction to mouse and keyboard events.
--------------------------------------------------------------------------------}
-procedure SetEventMaskForDesigning(MainWidget: PGtkWidget);
-var
-  TheWinControl: TWinControl;
-  PreparedWindows: TList;
-
-  function WindowIsPrepared(AWindow: PGdkWindow): boolean;
-  begin
-    Result:=(AWindow<>nil)
-           and (PreparedWindows<>nil) and (PreparedWindows.IndexOf(AWindow)>=0);
-  end;
-
-  procedure AddWindow(AWindow: PGdkWindow);
-  begin
-    if AWindow=nil then exit;
-    if WindowIsPrepared(AWindow) then exit;
-    if PreparedWindows=nil then
-      PreparedWindows:=TList.Create;
-    PreparedWindows.Add(AWindow);
-  end;
-  
-  procedure AddWidgetWindow(AWidget: PGtkWidget);
-  begin
-    if (AWidget<>nil) then AddWindow(AWidget^.Window);
-  end;
-  
-  procedure AddStandardWindows;
-  var
-    i: integer;
-    AWinControl: TWinControl;
-    ClientWidget, CoreChildWidget: PGtkWidget;
-  begin
-    AddWidgetWindow(MainWidget);
-    ClientWidget:=GetFixedWidget(MainWidget);
-    AddWidgetWindow(ClientWidget);
-    CoreChildWidget:=GetCoreChildWidget(MainWidget);
-    AddWidgetWindow(CoreChildWidget);
-    for i:=0 to TheWinControl.ComponentCount-1 do begin
-      if TheWinControl.Components[i] is TWinControl then begin
-        AWinControl:=TWinControl(TheWinControl.Components[i]);
-        if AWinControl.HandleAllocated then begin
-          AddWidgetWindow(PGtkWidget(AWinControl.Handle));
-        end;
-      end;
-    end;
-  end;
-
-  procedure PrepareWindow(AWindow: PGdkWindow);
-  var
-    NewEventMask: TGdkEventMask;
-  begin
-    if AWindow=nil then exit;
-    if WindowIsPrepared(AWindow) then exit;
-writeln('AAA1 SetEventMaskForDesigning ',TheWinControl.Name,':',TheWinControl.ClassName,
-' Window=',HexStr(Cardinal(AWindow),8));
-    NewEventMask:=gdk_window_get_events(AWindow)
-                  -GDK_BUTTON_PRESS_MASK
-                  -GDK_POINTER_MOTION_MASK
-                  -GDK_BUTTON_RELEASE_MASK;
-    gdk_window_set_events(AWindow,NewEventMask);
-    AddWindow(AWindow);
-  end;
-
-  procedure PrepareChildWindows(AWindow: PGdkWindow);
-  var
-    ChildWindows, ListEntry: PGList;
-  begin
-    if AWindow=nil then exit;
-    PrepareWindow(AWindow);
-
-    ChildWindows:=gdk_window_get_children(AWindow);
-    ListEntry:=ChildWindows;
-    while ListEntry<>nil do begin
-      PrepareChildWindows(PGdkWindow(ListEntry^.Data));
-      ListEntry:=ListEntry^.Next;
-    end;
-    g_list_free(ChildWindows);
-  end;
-
-var
-  AWidget: PGtkWidget;
-begin
-  TheWinControl:=TWinControl(GetLCLObject(MainWidget));
-  AWidget:=GetMainWidget(MainWidget);
-  if (AWidget<>nil) and (AWidget<>MainWidget) then
-    raise Exception.Create(
-      'SetEventMaskForDesigning Widget '+HexStr(Cardinal(MainWidget),8)
-        +' is not the MainWidget '+HexStr(Cardinal(AWidget),8));
-  if (TheWinControl=nil) then
-    raise Exception.Create(
-      'SetEventMaskForDesigning MainWidget has no LCL Object');
-  {if not (csDesigning in TheWinControl.ComponentState) then
-    raise Exception.Create(
-      'SetEventMaskForDesigning MainWidget is not in Design mode');}
-  PreparedWindows:=nil;
-  AddStandardWindows;
-  PrepareChildWindows(MainWidget^.Window);
-  PreparedWindows.Free;
 end;
 
 // ----------------------------------------------------------------------
@@ -2630,6 +2557,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.78  2002/08/28 09:40:50  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.77  2002/08/27 18:45:14  lazarus
   MG: propedits text improvements from Andrew, uncapturing, improved comobobox
 
