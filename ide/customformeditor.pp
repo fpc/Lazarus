@@ -750,8 +750,10 @@ destructor TCustomFormEditor.Destroy;
 begin
   FormEditingHook:=nil;
   DesignerMenuItemClick:=nil;
-  FDefineProperties.FreeAndClear;
-  FreeAndNil(FDefineProperties);
+  if FDefineProperties<>nil then begin
+    FDefineProperties.FreeAndClear;
+    FreeAndNil(FDefineProperties);
+  end;
   FreeAndNil(JITFormList);
   FreeAndNil(JITDataModuleList);
   FreeAndNil(FComponentInterfaces);

@@ -9865,12 +9865,17 @@ begin
 end;
 
 procedure TMainIDE.OnApplicationIdle(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
 begin
   UpdateWindowsMenu;
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
   FormEditor1.PaintAllDesignerItems;
+  SrcEdit:=SourceNotebook.GetActiveSe;
+  MainIDEBar.SaveSpeedBtn.Enabled := (SrcEdit<>nil)
+                                        and SourceNotebook.GetActiveSe.Modified;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
@@ -10543,6 +10548,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.750  2004/08/09 18:28:16  mattias
+  IDE save toolbutton is now updated on Idle
+
   Revision 1.749  2004/08/09 15:46:34  mattias
   implemented getting define properties for Repair broken LFM wizard
 
