@@ -665,16 +665,17 @@ activate_time :	the time at which the activation event occurred.
             If TheWinControl.FCompStyle = csForm Then
             begin
               // the LCL defines the size of a form without border, win32 with.
-              // -> adjust size
-              //writeln('win32 LM_SETSIZE before adjusting form: ',
-              //  ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);
+              // -> adjust size according to BorderStyle
               R:=NewRect;
-              Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
-              //                         (Sender as TCustomForm).Menu<>nil);
+              Case TCustomForm(Sender).BorderStyle of
+              bsSizeable,bsSingle,bsDialog:
+                Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
+              bsToolWindow,bsSizeToolWin:
+                Windows.AdjustWindowRectEx(@R,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
+              //bsNone: -> Do Nothing
+              End;
               NewRect.Right:=NewRect.Left+(R.Right-R.Left);
               NewRect.Bottom:=NewRect.Top+(R.Bottom-R.Top);
-              //writeln('win32 LM_SETSIZE after adjusting form: ',
-              //  ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);
             end
             else if TheWinControl.FCompStyle = csPage then
             begin
@@ -703,17 +704,8 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SHOWMODAL:
         Begin
-          If Sender Is TCommonDialog Then
-          Begin
-            // Should be done elsewhere (eg via SetLabel) not here!
-            PStr := StrAlloc(Length(TCommonDialog(Sender).Title) + 1);
-            Try
-              StrPCopy(PStr, TCommonDialog(Sender).Title);
-              LPOpenFileName(@Sender)^.LPStrTitle := PStr;
-            Finally
-               StrDispose(PStr);
-            End;
-          End
+          If Sender Is TCommonDialog Then 
+            Exit
           Else begin          
             EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@DisableWindowsProc, Handle);
             ShowWindow(Handle, SW_Show);
@@ -1984,7 +1976,8 @@ Begin
         Flags:= Flags and (not WS_THICKFRAME);
       bsDialog:
         Flags:= Flags and (not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
-      bsNone:;// Need to find how to implement this
+      bsNone:
+        Flags:= WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
       bsToolWindow:
       Begin
         FlagsEx:=WS_EX_TOOLWINDOW;
@@ -1993,7 +1986,8 @@ Begin
       bsSizeToolWin:
         FlagsEx:=WS_EX_TOOLWINDOW;
       End;//case
-      
+      If TCustomForm(Sender).FormStyle = fsStayOnTop Then
+        FlagsEx:= FlagsEx or WS_EX_TOPMOST;
       try
         Window := CreateWindowEx(FlagsEx,ClsName, StrTemp,Flags, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       except
@@ -2828,6 +2822,9 @@ End;
 
 {
   $Log$
+  Revision 1.100  2003/08/28 08:14:10  mattias
+  implementation of win32 intf borderstyle from Karl
+
   Revision 1.99  2003/08/27 15:15:42  mattias
   improved setprop from Micha
 
