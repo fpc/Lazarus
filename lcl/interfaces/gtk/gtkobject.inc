@@ -187,6 +187,7 @@ end;
 procedure TgtkObject.SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
 begin
+if AWinControl is TButton then writeln('NANU? ');
   gtk_window_set_default_size(Window,AWinControl.Width,AWinControl.Height);
   gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
   gtk_widget_set_usize(PGtkWidget(Window),AWinControl.Width,AWinControl.Height);
@@ -3877,24 +3878,52 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
 var FormIconGdiObject: PGDIObject;
-  SenderWidget: PGTKWidget;
+  SenderWidget, ParentFixed, ParentWidget: PGTKWidget;
+  LCLControl: TWinControl;
 begin
-  SenderWidget:=PgtkWidget(TWinControl(Sender).Handle);
+  LCLControl:=TWinControl(Sender);
+  SenderWidget:=PgtkWidget(LCLControl.Handle);
   //if Sender is TForm then
   //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
-  if TControl(Sender).Visible then begin
-    if (Sender is TCustomForm) and (not gtk_widget_visible(SenderWidget)) then
-    begin
-      {$IFDEF VerboseFormPositioning}
-      writeln('VFP [TgtkObject.ShowHide] A set bounds ',
-        TControl(Sender).Name,':',TControl(Sender).ClassName,
-        ' Window=',SenderWidget^.Window<>nil,
-        ' ',TControl(Sender).Left,',',TControl(Sender).Top,
-        ',',TControl(Sender).Width,',',TControl(Sender).Height);
-      {$ENDIF}
-      SetWindowSizeAndPosition(PgtkWindow(SenderWidget),TWinControl(Sender));
-      UnsetResizeRequest(PgtkWidget(Sender));
+  if LCLControl.Visible
+  or ((csDesigning in LCLControl.ComponentState)
+    and not (csNoDesignVisible in LCLControl.ControlStyle)) then
+  begin
+    if gtk_widget_visible(SenderWidget) then
+      exit;
+      
+    // before making the widget visible, set the position and size
+    if FWidgetsWithResizeRequest.Contains(SenderWidget) then begin
+      if (LCLControl is TCustomForm) and (LCLControl.Parent=nil) then begin
+        // top level control (a form without parent)
+        {$IFDEF VerboseFormPositioning}
+        writeln('VFP [TgtkObject.ShowHide] A set bounds ',
+          LCLControl.Name,':',LCLControl.ClassName,
+          ' Window=',SenderWidget^.Window<>nil,
+          ' ',TControl(Sender).Left,',',TControl(Sender).Top,
+          ',',TControl(Sender).Width,',',TControl(Sender).Height);
+        {$ENDIF}
+        SetWindowSizeAndPosition(PgtkWindow(SenderWidget),TWinControl(Sender));
+      end else if (LCLControl.Parent<>nil) then begin
+        // resize widget
+        gtk_widget_set_usize(SenderWidget,LCLControl.Width,LCLControl.Height);
+        // move widget on the fixed widget of parent control
+        ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
+        ParentFixed := GetFixedWidget(ParentWidget);
+        if ParentFixed <> nil then begin
+          gtk_fixed_move(PGtkFixed(ParentFixed), SenderWidget,
+                         LCLControl.Left, LCLControl.Top);
+        end else begin
+          if not (LCLControl.Parent is TNoteBook) then begin
+            writeln('WARNING: TgtkObject.ShowHide - no Fixed Widget found');
+            writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
+          end;
+          Assert(False, 'WARNING: TgtkObject.ShowHide - no Fixed Widget found');
+        end;
+      end;
     end;
+    UnsetResizeRequest(SenderWidget);
+    
     gtk_widget_show(SenderWidget);
     if (Sender is TCustomForm) and (SenderWidget^.Window<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
@@ -5309,6 +5338,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.142  2002/06/19 19:46:09  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.141  2002/06/11 13:41:10  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 
