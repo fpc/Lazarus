@@ -361,6 +361,7 @@ var
   KeyCode: Word;
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
+  Control : TControl;
 begin
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
   // Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
@@ -385,7 +386,22 @@ begin
         Flags := Flags or KF_UP or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
-        Result := DeliverPostMessage(Data, Msg);
+        Code := Msg.CharCode;
+
+        TObject(Data).Dispatch(Msg);//Result := DeliverPostMessage(Data, Msg);
+
+        If Msg.CharCode <> Code then begin
+          If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
+            {$IfNDef Win32}
+            If Event^.theString <> nil then
+              Event^.theString[0] := Char(Msg.CharCode);
+            {$EndIf}
+            Event^.KeyVal := Msg.CharCode;
+          end else begin
+            Event^.KeyVal := 0;
+          end;
+        end;
+        Result := LongBool(Msg.Result);
       end;
     GDK_KEY_PRESS:
       begin
@@ -450,6 +466,19 @@ begin
               Event^.KeyVal := Msg.CharCode;
             end;
         end;
+        //This is disabled on account of the
+        //strange behaviour in TSynEdit
+        (*If Msg.CharCode = VK_TAB then
+          If TObject(Data) is TControl then begin
+            Control := TControl(Data);
+            Result := Control.PerformTab;
+            If Result then begin
+              {$IfNDef Win32}
+              Event^.theString[0] := #0;
+              {$EndIf}
+              Event^.KeyVal := 0;
+            end;
+          end; *)
       end;
   end;
 end;
@@ -2366,6 +2395,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.133  2002/09/29 15:08:39  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.132  2002/09/27 20:52:23  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
