@@ -648,7 +648,7 @@ begin
    EventTrace('resize', data);
 //   Mess.msg := LM_RESIZE;
 //   TControl(data).WindowProc(TLMessage(Mess));
- Assert(False, 'Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
+  Assert(False, 'Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
 //TObject(data).Dispatch(Mess);
 end;
 
@@ -2542,6 +2542,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.166  2003/02/04 11:44:13  mattias
+  fixed modified and loading xpms for button glyphs
+
   Revision 1.165  2003/02/03 22:28:08  mattias
   small bugfixes and fixed non checked menu items activate
 
