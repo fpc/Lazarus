@@ -5745,6 +5745,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TgtkObject.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
+  Result := 0;
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR then
@@ -7478,6 +7479,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.173  2002/10/28 23:25:36  lazarus
+  AJ: initialize SelectClipRgn Result
+
   Revision 1.172  2002/10/28 18:17:04  lazarus
   MG: impoved focussing, unfocussing on destroy and fixed unit search
 
