@@ -911,6 +911,8 @@ begin
     end;
     if AComponent is TControl then begin
       AComponent:=TControl(AComponent).Parent;
+    end else if (AComponent.Owner<>nil) then begin
+      AComponent:=AComponent.Owner;
     end else begin
       exit;
     end;
