@@ -55,18 +55,9 @@ begin
   Invalidate;
 end;
 
-procedure TColorButton.SetBorderWidth(const AValue: integer);
+procedure TColorButton.ShowColorDialog;
+var NewColor: TColor;
 begin
-  if FBorderWidth=AValue then exit;
-  FBorderWidth:=AValue;
-  Invalidate;
-end;
-
-procedure TColorButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var NewColor:TColor;
-begin
-  inherited MouseUp(Button,Shift,X,Y);
   if FColorDialog<>nil then exit;
   if not Enabled then exit;
   NewColor:=ButtonColor;
@@ -80,6 +71,19 @@ begin
     FColorDialog:=nil;
   end;
   ButtonColor:=NewColor;
+end;
+
+procedure TColorButton.SetBorderWidth(const AValue: integer);
+begin
+  if FBorderWidth=AValue then exit;
+  FBorderWidth:=AValue;
+  Invalidate;
+end;
+
+procedure TColorButton.Click;
+begin
+  inherited Click;
+  ShowColorDialog;
 end;
 
 // included by buttons.pp

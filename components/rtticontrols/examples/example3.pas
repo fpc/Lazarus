@@ -49,7 +49,7 @@ type
   
   TBallPropertyEditor = class(TIntegerPropertyEditor)
   public
-    procedure SetValue(const NewValue: ansistring);  override;
+    procedure SetValue(const NewValue: string);  override;
   end;
 
   
@@ -116,7 +116,7 @@ end;
 
 { TBallPropertyEditor }
 
-procedure TBallPropertyEditor.SetValue(const NewValue: ansistring);
+procedure TBallPropertyEditor.SetValue(const NewValue: string);
 var
   L: integer;
   Ball: TBall;

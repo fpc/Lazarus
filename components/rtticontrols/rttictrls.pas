@@ -242,6 +242,41 @@ Type
     function CreateDlg(s: TStrings): TStringsPropEditorDlg; override;
   end;
   
+  
+  { TMultiPropertyLink
+    A component to switch the TIObjects of multiple RTTI controls at once. }
+  
+  TMultiPropertyLink = class(TComponent)
+  private
+    FTIObject: TPersistent;
+    FMaintainGrandChilds: boolean;
+    FMaintainSiblings: boolean;
+    FOnSetTIObject: TNotifyEvent;
+    FParentControl: TWinControl;
+    FRootComponent: TComponent;
+    procedure SetTIObject(const AValue: TPersistent);
+    procedure SetMaintainGrandChilds(const AValue: boolean);
+    procedure SetMaintainSiblings(const AValue: boolean);
+    procedure SetParentControl(const AValue: TWinControl);
+    procedure SetRootComponent(const AValue: TComponent);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    procedure SetLinks;
+    procedure SetLinksForChildControls(AParent: TWinControl;
+                                       WithGrandChilds: boolean);
+    procedure SetLinksForChildComponents(AComponent: TComponent);
+    procedure Loaded; override;
+  published
+    property TIObject: TPersistent read FTIObject write SetTIObject;
+    property OnSetTIObject: TNotifyEvent Read FOnSetTIObject Write FOnSetTIObject;
+    property ParentControl: TWinControl read FParentControl write SetParentControl;
+    property RootComponent: TComponent read FRootComponent write SetRootComponent;
+    property MaintainGrandChilds: boolean read FMaintainGrandChilds
+                                          write SetMaintainGrandChilds;
+    property MaintainSiblings: boolean read FMaintainSiblings
+                                       write SetMaintainSiblings default true;
+  end;
+
 
   { TTICustomEdit }
 
@@ -1158,6 +1193,49 @@ Type
   end;
   
 
+  { TTICustomColorButton }
+
+  TTICustomColorButton = class(TColorButton)
+  private
+    FLink: TPropertyLink;
+    procedure SetLink(const AValue: TPropertyLink);
+  protected
+    procedure LinkLoadFromProperty(Sender: TObject); virtual;
+    procedure LinkSaveToProperty(Sender: TObject); virtual;
+    function LinkTestEditor(const ATestEditor: TPropertyEditor): Boolean;
+    procedure ShowColorDialog; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Loaded; override;
+    procedure EditingDone; override;
+    property Link: TPropertyLink read FLink write SetLink;
+  end;
+
+
+  { TTIColorButton }
+
+  TTIColorButton = class(TTICustomColorButton)
+  published
+    property Align;
+    property Anchors;
+    property BorderWidth;
+    property ButtonColor;
+    property Hint;
+    property OnChangeBounds;
+    property OnColorChanged;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint;
+    property OnResize;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
+  end;
+
+
   { TTICustomPropertyGrid }
 
   TTICustomPropertyGrid = class(TCustomPropertiesGrid)
@@ -1199,7 +1277,9 @@ Type
     property ValueFont;
     property Visible;
   end;
-
+  
+function GetPropertyLinkOfComponent(AComponent: TComponent
+  ): TCustomPropertyLink;
 
 procedure Register;
 
@@ -1207,12 +1287,24 @@ procedure Register;
 implementation
 
 
+function GetPropertyLinkOfComponent(AComponent: TComponent
+  ): TCustomPropertyLink;
+begin
+  Result:=nil;
+  if AComponent=nil then exit;
+  try
+    Result:=TCustomPropertyLink(GetObjectProp(AComponent,'Link',
+                                              TCustomPropertyLink));
+  except
+  end;
+end;
+
 procedure Register;
 begin
   RegisterComponents('RTTI',[TTIEdit,TTIComboBox,TTIButton,TTICheckBox,
     TTILabel,TTIGroupBox,TTIRadioGroup,TTICheckGroup,TTICheckListBox,
     TTIListBox,TTIMemo,TTICalendar,TTIImage,TTISpinEdit,TTITrackBar,
-    TTIMaskEdit,TTIPropertyGrid]);
+    TTIMaskEdit,TTIColorButton,TTIPropertyGrid,TMultiPropertyLink]);
 end;
 
 { TAliasStrings }
@@ -3142,6 +3234,171 @@ begin
   FLink:=TheLink;
 end;
 
+{ TTICustomColorButton }
+
+procedure TTICustomColorButton.SetLink(const AValue: TPropertyLink);
+begin
+  if FLink=AValue then exit;
+  FLink.Assign(AValue);
+end;
+
+procedure TTICustomColorButton.LinkLoadFromProperty(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if (FLink.Editor=nil) then exit;
+  ButtonColor:=TColor(FLink.GetAsInt);
+end;
+
+procedure TTICustomColorButton.LinkSaveToProperty(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if (FLink.Editor=nil) then exit;
+  FLink.SetAsInt(ButtonColor);
+end;
+
+function TTICustomColorButton.LinkTestEditor(const ATestEditor: TPropertyEditor
+  ): Boolean;
+begin
+  Result:=(ATestEditor is TColorPropertyEditor)
+          and (paDialog in ATestEditor.GetAttributes);
+end;
+
+procedure TTICustomColorButton.ShowColorDialog;
+begin
+  if Link.Editor<>nil then
+    Link.Editor.Edit;
+  FLink.LoadFromProperty;
+end;
+
+constructor TTICustomColorButton.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FLink:=TPropertyLink.Create(Self);
+  FLink.Filter:=[{tkUnknown,}tkInteger{,tkChar,tkEnumeration,
+                 tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,
+                 tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
+  FLink.OnSaveToProperty:=@LinkSaveToProperty;
+  FLink.OnTestEditor:=@LinkTestEditor;
+end;
+
+destructor TTICustomColorButton.Destroy;
+begin
+  FreeThenNil(FLink);
+  inherited Destroy;
+end;
+
+procedure TTICustomColorButton.Loaded;
+begin
+  inherited Loaded;
+  FLink.LoadFromProperty;
+end;
+
+procedure TTICustomColorButton.EditingDone;
+begin
+  inherited EditingDone;
+  FLink.EditingDone;
+end;
+
+{ TMultiPropertyLink }
+
+procedure TMultiPropertyLink.SetTIObject(const AValue: TPersistent);
+begin
+  if FTIObject=AValue then exit;
+  FTIObject:=AValue;
+  if Assigned(OnSetTIObject) then OnSetTIObject(Self);
+  SetLinks;
+end;
+
+procedure TMultiPropertyLink.SetMaintainGrandChilds(const AValue: boolean);
+begin
+  if FMaintainGrandChilds=AValue then exit;
+  FMaintainGrandChilds:=AValue;
+  if FMaintainGrandChilds then SetLinks;
+end;
+
+procedure TMultiPropertyLink.SetMaintainSiblings(const AValue: boolean);
+begin
+  if FMaintainSiblings=AValue then exit;
+  FMaintainSiblings:=AValue;
+  if FMaintainSiblings then SetLinks;
+end;
+
+procedure TMultiPropertyLink.SetParentControl(const AValue: TWinControl);
+begin
+  if FParentControl=AValue then exit;
+  FParentControl:=AValue;
+  if FParentControl<>nil then SetLinks;
+end;
+
+procedure TMultiPropertyLink.SetRootComponent(const AValue: TComponent);
+begin
+  if FRootComponent=AValue then exit;
+  FRootComponent:=AValue;
+  if FRootComponent<>nil then SetLinks;
+end;
+
+constructor TMultiPropertyLink.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FMaintainSiblings:=true;
+end;
+
+procedure TMultiPropertyLink.SetLinks;
+begin
+  if [csLoading,csDestroying]*ComponentState<>[] then exit;
+  if RootComponent<>nil then
+    SetLinksForChildComponents(RootComponent);
+  if ParentControl<>nil then
+    SetLinksForChildControls(ParentControl,MaintainGrandChilds);
+  if MaintainSiblings and (Owner<>nil) then
+    SetLinksForChildComponents(Owner);
+end;
+
+procedure TMultiPropertyLink.SetLinksForChildControls(AParent: TWinControl;
+  WithGrandChilds: boolean);
+var
+  i: Integer;
+  CurControl: TControl;
+  CurLink: TCustomPropertyLink;
+begin
+  if AParent<>nil then begin
+    for i:=0 to AParent.ControlCount-1 do begin
+      CurControl:=AParent.Controls[i];
+      CurLink:=GetPropertyLinkOfComponent(CurControl);
+      if CurLink<>nil then
+        CurLink.TIObject:=TIObject;
+      if WithGrandChilds and (CurControl is TWinControl) then
+        SetLinksForChildControls(TWinControl(CurControl),true);
+    end;
+  end;
+end;
+
+procedure TMultiPropertyLink.SetLinksForChildComponents(AComponent: TComponent
+  );
+var
+  i: Integer;
+  CurComponent: TComponent;
+  CurLink: TCustomPropertyLink;
+begin
+  if AComponent<>nil then begin
+    for i:=0 to AComponent.ComponentCount-1 do begin
+      CurComponent:=AComponent.Components[i];
+      CurLink:=GetPropertyLinkOfComponent(CurComponent);
+      if CurLink<>nil then
+        CurLink.TIObject:=TIObject;
+    end;
+  end;
+end;
+
+procedure TMultiPropertyLink.Loaded;
+begin
+  inherited Loaded;
+  SetLinks;
+end;
+
 initialization
   {$I rttictrls.lrs}
   // TPropertyLink
@@ -3159,5 +3416,8 @@ initialization
   // property editor for TTICustomPropertyGrid.TIObject
   RegisterPropertyEditor(ClassTypeInfo(TPersistent),
     TTICustomPropertyGrid, 'TIObject', TTIObjectPropertyEditor);
+  // property editor for TMultiPropertyLink.TIObject
+  RegisterPropertyEditor(ClassTypeInfo(TPersistent),
+    TMultiPropertyLink, 'TIObject', TTIObjectPropertyEditor);
 
 end.

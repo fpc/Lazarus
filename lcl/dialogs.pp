@@ -241,10 +241,10 @@ type
     FOnColorChanged: TNotifyEvent;
     procedure SetBorderWidth(const AValue: integer);
   protected
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-                      X, Y: Integer); override;
+    procedure Click; override;
     procedure Paint; override;
     procedure SetButtonColor(Value: TColor);
+    procedure ShowColorDialog; virtual;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; Override;
@@ -420,6 +420,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/12/13 21:30:21  mattias
+  implemented TMultiPropertyLink
+
   Revision 1.54  2004/09/27 21:45:44  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 
