@@ -199,12 +199,8 @@ msgid "Ask"
 msgstr "Спросить"
 
 #: lazarusidestrconsts:dlgautoform
-msgid "Auto create forms"
-msgstr "Автосоздание форм"
-
-#: lazarusidestrconsts:dlgautocreatenewforms
-msgid "Auto create new forms"
-msgstr "Создавать автоматически новые формы"
+msgid "Auto create form when opening unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgautodel
 msgid "Auto delete file"
@@ -2406,6 +2402,10 @@ msgstr "Ничего (только ошибки)"
 msgid "Show Options"
 msgstr "Показать опции"
 
+#: lazarusidestrconsts:fdmshowoptions
+msgid "Show Options for form editing"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
 msgstr "Показать подсказки прокрутки"
@@ -2929,6 +2929,10 @@ msgstr "Предупреждать при компиляции"
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
 msgstr "Окно наблюдений"
+
+#: lazarusidestrconsts:dlgautocreatenewforms
+msgid "When creating new forms, add them to auto-created forms"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"

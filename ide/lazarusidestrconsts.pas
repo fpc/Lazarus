@@ -358,7 +358,7 @@ resourcestring
   dlgRightBottomClr = 'color for right, bottom';
   dlgShowCaps = 'Show component captions';
   dlgShowEdrHints = 'Show editor hints';
-  dlgAutoForm = 'Auto create forms';
+  dlgAutoForm = 'Auto create form when opening unit';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
   dlgEnvGrid = 'Grid';
@@ -620,7 +620,7 @@ resourcestring
   dlgPOTargetFileName = 'Target file name:';
   dlgAutoCreateForms = 'Auto-create forms:';
   dlgAvailableForms = 'Available forms:';
-  dlgAutoCreateNewForms = 'Auto create new forms';
+  dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';
   dlgSaveEditorInfo = 'Save editor info for closed files';
   dlgSaveEditorInfoProject = 'Save editor info only for project files';
   dlgRunParameters = 'Run parameters';
@@ -716,6 +716,7 @@ resourcestring
   fdmDeleteSelection='Delete selection';
   fdmSnapToGridOption='Option: Snap to grid';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
+  fdmShowOptions='Show Options for form editing';
 
   //-----------------------
   // keyMapping

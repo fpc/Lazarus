@@ -77,7 +77,6 @@ type
       
   TUnitInfo = class(TObject)
   private
-    { Variables }
     fAutoRevertLockCount: integer;
     fBookmarks: TFileBookmarks;
     fBreakpoints: TProjectBreakPointList;
@@ -178,33 +177,33 @@ type
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
     property Breakpoints: TProjectBreakPointList
-          read fBreakpoints write fBreakpoints;
+                                           read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
-          read fCustomHighlighter write fCustomHighlighter;
+                               read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex:integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property Form: TComponent read fForm write SetForm;
     property FormName: string read fFormName write fFormName;
     property FormResourceName: string
-          read fFormResourceName write fFormResourceName;
+                                 read fFormResourceName write fFormResourceName;
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
-          read fIsPartOfProject write SetIsPartOfProject;
+                                 read fIsPartOfProject write SetIsPartOfProject;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
-          read fOnLoadSaveFilename write fOnLoadSaveFilename;
+                             read fOnLoadSaveFilename write fOnLoadSaveFilename;
     property OnUnitNameChange: TOnUnitNameChange
-          read fOnUnitNameChange write fOnUnitNameChange;
+                                 read fOnUnitNameChange write fOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
     property ResourceFileName: string
-          read FResourceFilename write FResourceFilename;
+                                 read FResourceFilename write FResourceFilename;
     property Source: TCodeBuffer read fSource write SetSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
-          read fSyntaxHighlighter write fSyntaxHighlighter;
+                               read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
     property UnitName: String read fUnitName write SetUnitName;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
@@ -231,13 +230,14 @@ type
 
     { Variables }
     fActiveEditorIndexAtStart: integer;
+    FAutoCreateForms: boolean;
     fBookmarks: TProjectBookmarkList;
     fCompilerOptions: TCompilerOptions;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
     fLastReadLPIFilename: string;
     fLastReadLPIFileDate: TDateTime;
-    fMainUnit: Integer;  // only for ptApplication
+    fMainUnitID: Integer;  // only for ptApplication
     fModified: boolean;
     fOnFileBackup: TOnFileBackup;
     fOutputDirectory: String;
@@ -256,7 +256,7 @@ type
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
     procedure SetFlags(const AValue: TProjectFlags);
-    procedure SetMainUnit(const AValue: Integer);
+    procedure SetMainUnitID(const AValue: Integer);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
@@ -264,10 +264,10 @@ type
     function OnUnitFileBackup(const Filename: string;
                               IsPartOfProject:boolean): TModalResult;
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
-       const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
-       var Allowed: boolean);
+                               const OldUnitName, NewUnitName: string;
+                               CheckIfAllowed: boolean; var Allowed: boolean);
     function JumpHistoryCheckPosition(
-       APosition:TProjectJumpHistoryPosition): boolean;
+                                APosition:TProjectJumpHistoryPosition): boolean;
     procedure SetSrcPath(const NewSrcPath: string);
   protected
     procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
@@ -286,7 +286,7 @@ type
 
     function ReadProject(const LPIFilename: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
-      const OverrideProjectInfoFile: string): TModalResult;
+                           const OverrideProjectInfoFile: string): TModalResult;
 
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
     function UnitCount:integer;
@@ -296,11 +296,11 @@ type
     procedure RemoveUnit(Index: integer);
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
-       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+                      OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfUnitWithForm(AForm: TComponent;
-       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+                      OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfUnitWithFormName(const AFormName: string;
-       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+                      OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
@@ -322,7 +322,7 @@ type
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
     function RemoveCreateFormFromProjectFile(const AClassName,
-       AName: string):boolean;
+                                                         AName: string):boolean;
     function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
     
     // uses section
@@ -344,11 +344,13 @@ type
     procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);
     procedure MergeBookmarks(AnUnitInfo: TUnitInfo);
   public
-    property ActiveEditorIndexAtStart: integer 
-       read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
+    property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
+                                               write fActiveEditorIndexAtStart;
+    property AutoCreateForms: boolean
+                                   read FAutoCreateForms write FAutoCreateForms;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TCompilerOptions 
-       read fCompilerOptions write fCompilerOptions;
+                                   read fCompilerOptions write fCompilerOptions;
     property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
     property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
@@ -358,27 +360,26 @@ type
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
-       read fJumpHistory write fJumpHistory;
-    property MainUnit: Integer //this is the unit index of the program file
-       read fMainUnit write SetMainUnit;
+                                           read fJumpHistory write fJumpHistory;
+    property MainUnitID: Integer read fMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
     property MainFilename: String read GetMainFilename;
     property ProjectInfoFile: string
-       read GetProjectInfoFile write SetProjectInfoFile;
+                               read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
     property PublishOptions: TPublishProjectOptions
-       read fPublishOptions write fPublishOptions;
+                                     read fPublishOptions write fPublishOptions;
     property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
     property SrcPath: string read fSrcPath write fSrcPath;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property TargetFilename: string
-       read GetTargetFilename write SetTargetFilename;
+                                 read GetTargetFilename write SetTargetFilename;
     property Title: String read fTitle write fTitle;
     property UnitOutputDirectory: String
-       read fUnitOutputDirectory write fUnitOutputDirectory;
+                           read fUnitOutputDirectory write fUnitOutputDirectory;
   end;
 
 const
@@ -426,7 +427,9 @@ const
 function ProjectTypeNameToType(const s:string): TProjectType;
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 
+
 implementation
+
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 var f: TProjectFlag;
@@ -1047,7 +1050,7 @@ begin
   fJumpHistory:=TProjectJumpHistory.Create;
   fJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
   fJumpHistory.OnLoadSaveFilename:=@OnLoadSaveFilename;
-  fMainUnit := -1;
+  fMainUnitID := -1;
   fModified := false;
   fOutputDirectory := '.';
   fProjectInfoFile := '';
@@ -1071,7 +1074,7 @@ begin
       PrgUnitInfo.SyntaxHighlighter:=
         ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[fProjectType]);
       AddUnit(PrgUnitInfo,false);
-      MainUnit:=0;
+      MainUnitID:=0;
       with NewSource do begin
         Add('program Project1;');
         Add('');
@@ -1217,9 +1220,11 @@ begin
       xmlconfig.SetDeleteValue('ProjectOptions/General/ProjectType/Value',
           ProjectTypeNames[ProjectType],'');
       SaveFlags;
-      xmlconfig.SetDeleteValue('ProjectOptions/General/MainUnit/Value', MainUnit,-1);
+      xmlconfig.SetDeleteValue('ProjectOptions/General/MainUnit/Value', MainUnitID,-1);
       xmlconfig.SetDeleteValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
           ,ActiveEditorIndexAtStart,-1);
+      xmlconfig.SetDeleteValue('ProjectOptions/General/AutoCreateForms/Value'
+          ,AutoCreateForms,true);
       xmlconfig.SetDeleteValue('ProjectOptions/General/IconPath/Value',
            IconPath,'');
       xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
@@ -1307,9 +1312,11 @@ begin
     ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
        'ProjectOptions/General/ProjectType/Value', ''));
     LoadFlags;
-    MainUnit := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
+    MainUnitID := xmlconfig.GetValue('ProjectOptions/General/MainUnit/Value', -1);
     ActiveEditorIndexAtStart := xmlconfig.GetValue(
        'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
+    AutoCreateForms := xmlconfig.GetValue(
+       'ProjectOptions/General/AutoCreateForms/Value', true);
     IconPath := xmlconfig.GetValue('ProjectOptions/General/IconPath/Value', './');
     TargetFileExt := xmlconfig.GetValue(
        'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
@@ -1373,10 +1380,10 @@ begin
   AUnit.OnUnitNameChange:=@OnUnitNameChange;
   
   // check if this is the new Main Unit
-  if MainUnit=NewIndex then
+  if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
 
-  if AddToProjectFile and (MainUnit>=0) and (MainUnit<>NewIndex) then begin
+  if AddToProjectFile and (MainUnitID>=0) and (MainUnitID<>NewIndex) then begin
     // add unit to uses section
     ShortUnitName:=AUnit.UnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then
@@ -1396,20 +1403,20 @@ begin
   if (Index<0) or (Index>=UnitCount) then begin
     raise Exception.Create('ERROR: TProject.RemoveUnit index out of bounds');
   end;
-  if (Index=MainUnit) then begin
+  if (Index=MainUnitID) then begin
     raise Exception.Create('ERROR: TProject.RemoveUnit index = MainUnit');
   end;
   OldUnitInfo:=Units[Index];
   Modified:=true;
 
-  if (MainUnit>=0) then begin
+  if (MainUnitID>=0) then begin
     // remove unit from uses section and from createforms in program file
     if (OldUnitInfo.IsPartOfProject) then begin
       if (OldUnitInfo.UnitName<>'') then
-        CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnit].Source,
+        CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnitID].Source,
           OldUnitInfo.UnitName);
       if (OldUnitInfo.FormName<>'') then
-        CodeToolBoss.RemoveCreateFormStatement(Units[MainUnit].Source,
+        CodeToolBoss.RemoveCreateFormStatement(Units[MainUnitID].Source,
           OldUnitInfo.FormName);
     end;
   end;
@@ -1419,7 +1426,7 @@ begin
     Bookmarks.DeleteAllWithEditorIndex(OldUnitInfo.EditorIndex);
 
   // adjust MainUnit
-  if MainUnit>=Index then dec(fMainUnit);
+  if MainUnitID>=Index then dec(fMainUnitID);
 
   // delete unitinfo instance
   OldUnitInfo.Free;
@@ -1445,7 +1452,7 @@ begin
   fCompilerOptions.Clear;
   fIconPath := '';
   fJumpHistory.Clear;
-  fMainUnit := -1;
+  fMainUnitID := -1;
   fModified := false;
   fOutputDirectory := '.';
   fProjectInfoFile := '';
@@ -1466,14 +1473,14 @@ begin
   FFlags:=AValue;
 end;
 
-procedure TProject.SetMainUnit(const AValue: Integer);
+procedure TProject.SetMainUnitID(const AValue: Integer);
 begin
-  if fMainUnit=AValue then exit;
-  if (fMainUnit>=0) and (fMainUnit<UnitCount) then begin
+  if fMainUnitID=AValue then exit;
+  if (fMainUnitID>=0) and (fMainUnitID<UnitCount) then begin
     MainUnitInfo.DecreaseAutoRevertLock;
   end;
-  fMainUnit:=AValue;
-  if (fMainUnit>=0) and (fMainUnit<UnitCount) then begin
+  fMainUnitID:=AValue;
+  if (fMainUnitID>=0) and (fMainUnitID<UnitCount) then begin
     MainUnitInfo.IncreaseAutoRevertLock;
   end;
 end;
@@ -1561,7 +1568,7 @@ end;
 function TProject.AddCreateFormToProjectFile(
   const AClassName,AName:string):boolean;
 begin
-  Result:=CodeToolBoss.AddCreateFormStatement(Units[MainUnit].Source,
+  Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
     AClassName,AName);
   if Result then Modified:=true;
 end;
@@ -1569,7 +1576,7 @@ end;
 function TProject.RemoveCreateFormFromProjectFile(
   const AClassName,AName:string):boolean;
 begin
-  Result:=CodeToolBoss.RemoveCreateFormStatement(Units[MainUnit].Source,
+  Result:=CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
               AName);
   if Result then Modified:=true;
 end;
@@ -1578,7 +1585,7 @@ function TProject.FormIsCreatedInProjectFile(
   const AClassname,AName:string):boolean;
 var p: integer;
 begin
-  Result:=(CodeToolBoss.FindCreateFormStatement(Units[MainUnit].Source,
+  Result:=(CodeToolBoss.FindCreateFormStatement(MainUnitInfo.Source,
                1,AClassName,AName,p)=0);
 end;
 
@@ -1641,7 +1648,7 @@ end;
 function TProject.UnitIsUsed(const ShortUnitName:string):boolean;
 var NamePos, InPos: integer;
 begin
-  Result:=CodeToolBoss.FindUnitInAllUsesSections(Units[MainUnit].Source,
+  Result:=CodeToolBoss.FindUnitInAllUsesSections(MainUnitInfo.Source,
               ShortUnitName,NamePos,InPos);
 end;
 
@@ -1701,7 +1708,7 @@ end;
 
 function TProject.IsVirtual: boolean;
 begin
-  Result:=(MainUnit>=0) and Units[MainUnit].IsVirtual;
+  Result:=(MainUnitID>=0) and MainUnitInfo.IsVirtual;
 end;
 
 function TProject.IndexOf(AUnitInfo: TUnitInfo):integer;
@@ -1861,14 +1868,14 @@ end;
 
 function TProject.GetMainFilename: String;
 begin
-  if MainUnit>=0 then Result:=Units[MainUnit].Filename
+  if MainUnitID>=0 then Result:=MainUnitInfo.Filename
   else Result:='';
 end;
 
 function TProject.GetMainUnitInfo: TUnitInfo;
 begin
-  if (MainUnit>=0) and (MainUnit<UnitCount) then
-    Result:=Units[MainUnit]
+  if (MainUnitID>=0) and (MainUnitID<UnitCount) then
+    Result:=Units[MainUnitID]
   else
     Result:=nil;
 end;
@@ -2031,7 +2038,7 @@ begin
     if (OldUnitName<>'') and (ProjectType in [ptProgram, ptApplication]) then
     begin
       // rename unit in program uses section
-      CodeToolBoss.RenameUsedUnit(Units[MainUnit].Source
+      CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
         ,OldUnitName,NewUnitName,'');
     end;
   end;
@@ -2245,6 +2252,9 @@ end.
 
 {
   $Log$
+  Revision 1.98  2003/03/11 09:57:51  mattias
+  implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
+
   Revision 1.97  2003/03/08 21:51:57  mattias
   make resource string dialog nearly complete
 

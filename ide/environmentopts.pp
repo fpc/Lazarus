@@ -470,9 +470,23 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     
+    procedure BackupOtherGroupBoxResize(Sender: TObject);
+    procedure BackupProjectGroupBoxResize(Sender: TObject);
     procedure BakTypeRadioGroupClick(Sender: TObject);
+    procedure FormEditMiscGroupBoxResize(Sender: TObject);
+    procedure GridGroupBoxResize(Sender: TObject);
+    procedure GuideLinesGroupBoxResize(Sender: TObject);
+    procedure OIMiscGroupBoxResize(Sender: TObject);
+    procedure ObjectInspectorColorsGroupBoxResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure OnBackupPageResize(Sender: TObject);
+    procedure OnDesktopPageResize(Sender: TObject);
+    procedure OnFilesPageResize(Sender: TObject);
+    procedure OnFormEditorPageResize(Sender: TObject);
+    procedure OnNamingPageResize(Sender: TObject);
+    procedure OnObjectInspectorPageResize(Sender: TObject);
+    procedure RubberbandGroupBoxResize(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
     procedure WindowPositionsListBoxMouseUp(Sender:TObject;
@@ -1316,6 +1330,8 @@ procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
 var MaxX:integer;
   l: TLazarusLanguage;
 begin
+  NoteBook.Page[Page].OnResize:=@OnDesktopPageResize;
+
   MaxX:=ClientWidth-5;
 
   // language
@@ -1350,7 +1366,6 @@ begin
       end;
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   // auto save
@@ -1412,7 +1427,6 @@ begin
     Left:=AutoSaveIntervalInSecsLabel.Left+AutoSaveIntervalInSecsLabel.Width+5;
     Top:=AutoSaveIntervalInSecsLabel.Top+2;
     Width:=AutoSaveGroupBox.ClientWidth-Left-10;
-    Height:=23;
     with Items do begin
       BeginUpdate;
       Add('1200');
@@ -1422,7 +1436,6 @@ begin
       EndUpdate;
     end;
     Enabled:=false;
-    Visible:=true;
   end;
 
   // desktop files
@@ -1546,6 +1559,8 @@ end;
 procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
 var MaxX:integer;
 begin
+  NoteBook.Page[Page].OnResize:=@OnBackupPageResize;
+
   MaxX:=ClientWidth-5;
 
   BackupHelpLabel:=TLabel.Create(Self);
@@ -1557,7 +1572,6 @@ begin
     Width:=MaxX-Left*2;
     Height:=23;
     Caption:=dlgEnvBackupHelpNote;
-    Visible:=true;
   end;
 
   BackupProjectGroupBox:=TGroupBox.Create(Self);
@@ -1569,7 +1583,7 @@ begin
     Width:=(MaxX div 2) - 11;
     Height:=260;
     Caption:=dlgProjFiles;
-    Visible:=true;
+    OnResize:=@BackupProjectGroupBoxResize;
   end;
 
   BakProjTypeRadioGroup:=TRadioGroup.Create(Self);
@@ -1614,14 +1628,12 @@ begin
     Left:=BakProjAddExtLabel.Left+BakProjAddExtLabel.Width+2;
     Top:=BakProjAddExtLabel.Top;
     Width:=60;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('bak');
       Add('old');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   BakProjMaxCounterLabel:=TLabel.Create(Self);
@@ -1643,7 +1655,6 @@ begin
     Left:=BakProjMaxCounterLabel.Left+BakProjMaxCounterLabel.Width+2;
     Top:=BakProjMaxCounterLabel.Top;
     Width:=100;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('1');
@@ -1654,7 +1665,6 @@ begin
       Add(BakMaxCounterInfiniteTxt);
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   BakProjSubDirLabel:=TLabel.Create(Self);
@@ -1676,14 +1686,12 @@ begin
     Left:=BakProjSubDirLabel.Left+BakProjSubDirLabel.Width+2;
     Top:=BakProjSubDirLabel.Top;
     Width:=100;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add(BakNoSubDirTxt);
       Add('backup');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   BackupOtherGroupBox:=TGroupBox.Create(Self);
@@ -1695,7 +1703,7 @@ begin
     Width:=(MaxX div 2) - 11;
     Height:=260;
     Caption:=dlgEnvOtherFiles;
-    Visible:=true;
+    OnResize:=@BackupOtherGroupBoxResize;
   end;
 
   BakOtherTypeRadioGroup:=TRadioGroup.Create(Self);
@@ -1740,14 +1748,12 @@ begin
     Left:=BakOtherAddExtLabel.Left+BakOtherAddExtLabel.Width+2;
     Top:=BakOtherAddExtLabel.Top;
     Width:=60;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('bak');
       Add('old');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   BakOtherMaxCounterLabel:=TLabel.Create(Self);
@@ -1769,7 +1775,6 @@ begin
     Left:=BakOtherMaxCounterLabel.Left+BakOtherMaxCounterLabel.Width+2;
     Top:=BakOtherMaxCounterLabel.Top;
     Width:=100;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('1');
@@ -1780,7 +1785,6 @@ begin
       Add(BakMaxCounterInfiniteTxt);
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   BakOtherSubDirLabel:=TLabel.Create(Self);
@@ -1802,14 +1806,12 @@ begin
     Left:=BakOtherSubDirLabel.Left+BakOtherSubDirLabel.Width+2;
     Top:=BakOtherSubDirLabel.Top;
     Width:=100;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add(dlgBakDirectory);
       Add('backup');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 end;
 
@@ -1817,6 +1819,8 @@ procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 var MaxX:integer;
   ADebuggerType: TDebuggerType;
 begin
+  NoteBook.Page[Page].OnResize:=@OnFilesPageResize;
+
   MaxX:=ClientWidth-5;
 
   MaxRecentOpenFilesLabel:=TLabel.Create(Self);
@@ -1838,7 +1842,6 @@ begin
     Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
     Top:=MaxRecentOpenFilesLabel.Top;
     Width:=60;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('5');
@@ -1849,7 +1852,6 @@ begin
       Add('30');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   MaxRecentProjectFilesLabel:=TLabel.Create(Self);
@@ -1871,7 +1873,6 @@ begin
     Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
     Top:=MaxRecentProjectFilesLabel.Top;
     Width:=60;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('5');
@@ -1882,7 +1883,6 @@ begin
       Add('30');
       EndUpdate;
     end;
-    Visible:=true;
   end;
   
   OpenLastProjectAtStartCheckBox:=TCheckBox.Create(Self);
@@ -1917,13 +1917,11 @@ begin
     Left:=LazarusDirLabel.Left;
     Top:=LazarusDirLabel.Top+LazarusDirLabel.Height+2;
     Width:=LazarusDirLabel.Width;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add(ProgramDirectory);
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   CompilerPathLabel:=TLabel.Create(Self);
@@ -1945,14 +1943,12 @@ begin
     Left:=LazarusDirLabel.Left;
     Top:=CompilerPathLabel.Top+CompilerPathLabel.Height+2;
     Width:=LazarusDirLabel.Width;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('/usr/bin/ppc386');
       Add('/opt/fpc/ppc386');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   FPCSourceDirLabel:=TLabel.Create(Self);
@@ -1974,13 +1970,11 @@ begin
     Left:=LazarusDirLabel.Left;
     Top:=FPCSourceDirLabel.Top+FPCSourceDirLabel.Height+2;
     Width:=LazarusDirLabel.Width;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('');
       EndUpdate;
     end;
-    Visible:=true;
   end;
   
   DebuggerPathLabel:=TLabel.Create(Self);
@@ -2002,14 +1996,12 @@ begin
     Left:=FPCSourceDirLabel.Left;
     Top:=DebuggerPathLabel.Top+DebuggerPathLabel.Height+2;
     Width:=LazarusDirLabel.Width div 2;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       for ADebuggerType:=Low(TDebuggerType) to High(TDebuggerType) do
         Add(DebuggerName[ADebuggerType]);
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   DebuggerPathComboBox:=TComboBox.Create(Self);
@@ -2019,14 +2011,12 @@ begin
     Left:=DebuggerTypeComboBox.Left+DebuggerTypeComboBox.Width+10;
     Top:=DebuggerTypeComboBox.Top;
     Width:=LazarusDirLabel.Width-DebuggerTypeComboBox.Width-10;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add(DebuggerName[dtNone]);
       Add('/opt/fpc/gdb');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 
   TestBuildDirLabel:=TLabel.Create(Self);
@@ -2048,7 +2038,6 @@ begin
     Left:=LazarusDirLabel.Left;
     Top:=TestBuildDirLabel.Top+TestBuildDirLabel.Height+2;
     Width:=LazarusDirLabel.Width;
-    Height:=25;
     with Items do begin
       BeginUpdate;
       Add('/tmp');
@@ -2057,7 +2046,6 @@ begin
       Add('c:/windows/temp');
       EndUpdate;
     end;
-    Visible:=true;
   end;
 end;
 
@@ -2160,7 +2148,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Name:='GridSizeYLabel';
       Parent:=GridGroupBox;
       Left:=GridSizeXLabel.Left;
-      Top:=GridSizeXComboBox.Top+GridSizeXComboBox.Height+3;
+      Top:=GridSizeXComboBox.Top+GridSizeXComboBox.Height+5;
       Width:=GridSizeXLabel.Width;
       Caption:=dlgGridY;
     end;
@@ -2294,7 +2282,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     with GrabberColorButton do begin
       Name:='GrabberColorButton';
       Parent:=FormEditMiscGroupBox;
-      Left:=200;
+      Left:=250;
       Top:=0;
       Width:=50;
       Height:=25;
@@ -2305,7 +2293,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Name:='GrabberColorLabel';
       Parent:=FormEditMiscGroupBox;
       Left:=GrabberColorButton.Left+GrabberColorButton.Width+5;
-      Top:=GrabberColorButton.Top+2;
+      Top:=GrabberColorButton.Top+5;
       Width:=110;
       Caption:=dlgGrabberColor;
     end;
@@ -2325,7 +2313,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Name:='MarkerColorLabel';
       Parent:=FormEditMiscGroupBox;
       Left:=MarkerColorButton.Left+MarkerColorButton.Width+5;
-      Top:=MarkerColorButton.Top+2;
+      Top:=MarkerColorButton.Top+5;
       Width:=110;
       Caption:=dlgMarkerColor;
     end;
@@ -2386,6 +2374,8 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
 
 begin
   // form editor page
+  NoteBook.Page[Page].OnResize:=@OnFormEditorPageResize;
+
   GridGroupBox:=TGroupBox.Create(Self);
   with GridGroupBox do begin
     Name:='GridGroupBox';
@@ -2394,7 +2384,8 @@ begin
     Top:=5;
     Width:=((Parent.ClientWidth-3*Left) div 2);
     Height:=170;
-    Caption:=dlgEnvGrid ;
+    Caption:=dlgEnvGrid;
+    OnResize:=@GridGroupBoxResize;
   end;
   
   SetupGridGroupBox;
@@ -2408,6 +2399,7 @@ begin
     Width:=GridGroupBox.Width;
     Height:=GridGroupBox.Height;
     Caption:=dlgEnvLGuideLines;
+    OnResize:=@GuideLinesGroupBoxResize;
   end;
   
   SetupGuideLinesGroupBox;
@@ -2421,6 +2413,7 @@ begin
     Width:=Parent.ClientWidth-2*Left;
     Height:=100;
     Caption:=dlgEnvMisc;
+    OnResize:=@FormEditMiscGroupBoxResize;
   end;
   
   SetupMiscGroupBox;
@@ -2434,6 +2427,7 @@ begin
     Width:=GridGroupBox.Width;
     Height:=120;
     Caption:=dlgRubberBandGroup;
+    OnResize:=@RubberbandGroupBoxResize;
   end;
 
   SetupRubberbandBox;
@@ -2443,6 +2437,8 @@ procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
 var
   pe: TPascalExtType;
 begin
+  NoteBook.Page[Page].OnResize:=@OnNamingPageResize;
+
   PascalFileExtRadiogroup:=TRadioGroup.Create(Self);
   with PascalFileExtRadiogroup do begin
     Name:='PascalFileExtRadiogroup';
@@ -2598,126 +2594,19 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
-
-  procedure SetupGridGroupBox;
-  begin
-    with ShowGridCheckBox do begin
-      SetBounds(6,2,200,Height);
-    end;
-
-    with GridColorButton do begin
-      SetBounds(ShowGridCheckBox.Left,
-                ShowGridCheckBox.Top+ShowGridCheckBox.Height+5,
-                50,25);
-    end;
-
-    with GridColorLabel do begin
-      SetBounds(GridColorButton.Left+GridColorButton.Width+5,
-             GridColorButton.Top+2,80,Height);
-    end;
-
-    with SnapToGridCheckBox do begin
-      SetBounds(ShowGridCheckBox.Left,
-                GridColorLabel.Top+GridColorLabel.Height+10,
-                ShowGridCheckBox.Width,
-                ShowGridCheckBox.Height);
-    end;
-
-    with GridSizeXLabel do begin
-      SetBounds(ShowGridCheckBox.Left,
-                SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,80,Height);
-    end;
-
-    with GridSizeXComboBox do begin
-      SetBounds(GridSizeXLabel.Left+GridSizeXLabel.Width+5,
-                GridSizeXLabel.Top-2,60,Height);
-    end;
-
-    with GridSizeYLabel do begin
-      SetBounds(GridSizeXLabel.Left,
-                GridSizeXLabel.Top+GridSizeXLabel.Height+5,
-                GridSizeXLabel.Width,Height);
-    end;
-
-    with GridSizeYComboBox do begin
-      SetBounds(GridSizeYLabel.Left+GridSizeYLabel.Width+5,
-                GridSizeYLabel.Top-2,
-                GridSizeXComboBox.Width,Height);
-    end;
-  end;
-
-  procedure SetupGuideLinesGroupBox;
-  begin
-    with ShowGuideLinesCheckBox do begin
-      SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
-    end;
-
-    with SnapToGuideLinesCheckBox do begin
-      SetBounds(ShowGuideLinesCheckBox.Left,
-                ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5,
-                ShowGuideLinesCheckBox.Width,Height);
-    end;
-
-    with GuideLineColorLeftTopButton do begin
-      SetBounds(SnapToGuideLinesCheckBox.Left,
-                SnapToGuideLinesCheckBox.Top+SnapToGuideLinesCheckBox.Height+5,
-                50,25);
-    end;
-
-    with GuideLineColorLeftTopLabel do begin
-      SetBounds(GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5,
-                GuideLineColorLeftTopButton.Top+2,150,Height);
-    end;
-
-    with GuideLineColorRightBottomButton do begin
-      SetBounds(GuideLineColorLeftTopButton.Left,
-                GuideLineColorLeftTopButton.Top
-                  +GuideLineColorLeftTopButton.Height+5,50,25);
-    end;
-
-    with GuideLineColorRightBottomLabel do begin
-      SetBounds(GuideLineColorLeftTopLabel.Left,
-                GuideLineColorRightBottomButton.Top+2,
-                GuideLineColorLeftTopLabel.Width,Height);
-    end;
-  end;
-
-  procedure SetupMiscGroupBox;
-  begin
-    with ShowComponentCaptionsCheckBox do begin
-      SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
-    end;
-
-    with ShowEditorHintsCheckBox do begin
-      SetBounds(ShowComponentCaptionsCheckBox.Left,
-                ShowComponentCaptionsCheckBox.Top
-                 +ShowComponentCaptionsCheckBox.Height+5,
-                ShowComponentCaptionsCheckBox.Width,Height);
-    end;
-
-    with AutoCreateFormsCheckBox do begin
-      SetBounds(ShowEditorHintsCheckBox.Left,
-                ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
-                ShowEditorHintsCheckBox.Width,Height);
-    end;
-  end;
-
 begin
   // form editor page
   with GridGroupBox do begin
     SetBounds(5,5,((Parent.ClientWidth-3*Left) div 2),170);
   end;
-  SetupGridGroupBox;
   with GuideLinesGroupBox do begin
     SetBounds(GridGroupBox.Left+GridGroupBox.Width+5,GridGroupBox.Top,
               GridGroupBox.Width,GridGroupBox.Height);
   end;
-  SetupGuideLinesGroupBox;
   with FormEditMiscGroupBox do begin
     SetBounds(5,GridGroupBox.Top+GridGroupBox.Height+5,
               Max(Parent.ClientWidth-2*Left,10),100);
   end;
-  SetupMiscGroupBox;
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeObjectInspectorPage;
@@ -2730,37 +2619,11 @@ begin
     Height:=55;
   end;
 
-  with OIBackgroundColorButton do begin
-    Left:=6;
-    Top:=6;
-    Width:=50;
-    Height:=25;
-  end;
-
-  with OIBackgroundColorLabel do begin
-    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
-    Top:=OIBackgroundColorButton.Top;
-    Width:=Max(ObjectInspectorColorsGroupBox.ClientWidth-Left-5,10);
-    Height:=23;
-  end;
-
   with OIMiscGroupBox do begin
     Left:=ObjectInspectorColorsGroupBox.Left;
     Top:=ObjectInspectorColorsGroupBox.Top+ObjectInspectorColorsGroupBox.Height+5;
     Width:=200;
     Height:=55;
-  end;
-
-  with OIDefaultItemHeightSpinEdit do begin
-    Left:=6;
-    Top:=4;
-    Width:=50;
-  end;
-
-  with OIDefaultItemHeightLabel do begin
-    Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
-    Top:=OIDefaultItemHeightSpinEdit.Top+2;
-    Width:=OIMiscGroupBox.ClientWidth-Left-5;
   end;
 end;
 
@@ -2902,6 +2765,94 @@ begin
     Height:=260;
   end;
 
+  with BackupOtherGroupBox do begin
+    Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
+    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
+    Width:=Max(10,(MaxX div 2) - 11);
+    Height:=260;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeNamingPage;
+begin
+  with PascalFileExtRadiogroup do begin
+    Left:=5;
+    Top:=4;
+    Width:=200;
+    Height:=80;
+  end;
+
+  with PascalFileLowercaseCheckBox do begin
+    Left:=PascalFileExtRadiogroup.Left;
+    Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
+    Width:=300;
+  end;
+
+  with AmbigiousFileActionRadioGroup do begin
+    Left:=PascalFileLowercaseCheckBox.Left;
+    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
+    Width:=200;
+    Height:=130;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
+  Sender: TObject);
+begin
+  with NoteBook do begin
+    SetBounds(0,0,Max(100,Self.ClientWidth),Max(100,Self.ClientHeight-50));
+  end;
+
+  with CancelButton do begin
+    Width:=70;
+    Height:=23;
+    Left:=Max(0,Self.ClientWidth-Width-15);
+    Top:=Max(0,Self.ClientHeight-Height-15);
+  end;
+
+  with OkButton do begin
+    Width:=CancelButton.Width;
+    Height:=CancelButton.Height;
+    Left:=Max(0,CancelButton.Left-15-Width);
+    Top:=CancelButton.Top;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.WindowPositionsGroupBoxResize(
+  Sender: TObject);
+begin
+  with WindowPositionsListBox do begin
+    SetBounds(2,2,Max(Parent.ClientWidth-2*2,100),Max(100,Parent.Height div 4));
+  end;
+
+  with WindowPositionsBox do begin
+    Left:=2;
+    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
+    Width:=WindowPositionsListBox.Width;
+    Height:=Parent.ClientHeight-Top-2;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
+var i: integer;
+begin
+  i:=TRadioGroup(Sender).ItemIndex;
+  if Sender=BakProjTypeRadioGroup then begin
+    BakProjAddExtComboBox.Enabled:=(i=4);
+    BakProjAddExtLabel.Enabled:=BakProjAddExtComboBox.Enabled;
+    BakProjMaxCounterComboBox.Enabled:=(i=3);
+    BakProjMaxCounterLabel.EnableD:=BakProjMaxCounterComboBox.Enabled;
+  end else begin
+    BakOtherAddExtComboBox.Enabled:=(i=4);
+    BakOtherAddExtLabel.Enabled:=BakOtherAddExtComboBox.Enabled;
+    BakOtherMaxCounterComboBox.Enabled:=(i=3);
+    BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.BackupProjectGroupBoxResize(Sender: TObject
+  );
+begin
   with BakProjTypeRadioGroup do begin
     Left:=5;
     Top:=4;
@@ -2950,14 +2901,10 @@ begin
     Width:=100;
     Height:=25;
   end;
+end;
 
-  with BackupOtherGroupBox do begin
-    Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
-    Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
-    Width:=Max(10,(MaxX div 2) - 11);
-    Height:=260;
-  end;
-
+procedure TEnvironmentOptionsDialog.BackupOtherGroupBoxResize(Sender: TObject);
+begin
   with BakOtherTypeRadioGroup do begin
     Left:=5;
     Top:=4;
@@ -3008,87 +2955,139 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.ResizeNamingPage;
+procedure TEnvironmentOptionsDialog.FormEditMiscGroupBoxResize(Sender: TObject);
 begin
-  with PascalFileExtRadiogroup do begin
-    Left:=5;
+  with ShowComponentCaptionsCheckBox do begin
+    SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
+  end;
+
+  with ShowEditorHintsCheckBox do begin
+    SetBounds(ShowComponentCaptionsCheckBox.Left,
+              ShowComponentCaptionsCheckBox.Top
+               +ShowComponentCaptionsCheckBox.Height+5,
+              ShowComponentCaptionsCheckBox.Width,Height);
+  end;
+
+  with AutoCreateFormsCheckBox do begin
+    SetBounds(ShowEditorHintsCheckBox.Left,
+              ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
+              ShowEditorHintsCheckBox.Width,Height);
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.GridGroupBoxResize(Sender: TObject);
+begin
+  with ShowGridCheckBox do begin
+    SetBounds(6,2,200,Height);
+  end;
+
+  with GridColorButton do begin
+    SetBounds(ShowGridCheckBox.Left,
+              ShowGridCheckBox.Top+ShowGridCheckBox.Height+5,
+              50,25);
+  end;
+
+  with GridColorLabel do begin
+    SetBounds(GridColorButton.Left+GridColorButton.Width+5,
+           GridColorButton.Top+2,80,Height);
+  end;
+
+  with SnapToGridCheckBox do begin
+    SetBounds(ShowGridCheckBox.Left,
+              GridColorLabel.Top+GridColorLabel.Height+10,
+              ShowGridCheckBox.Width,
+              ShowGridCheckBox.Height);
+  end;
+
+  with GridSizeXLabel do begin
+    SetBounds(ShowGridCheckBox.Left,
+              SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,80,Height);
+  end;
+
+  with GridSizeXComboBox do begin
+    SetBounds(GridSizeXLabel.Left+GridSizeXLabel.Width+5,
+              GridSizeXLabel.Top-2,60,Height);
+  end;
+
+  with GridSizeYLabel do begin
+    SetBounds(GridSizeXLabel.Left,
+              GridSizeXComboBox.Top+GridSizeXComboBox.Height+5,
+              GridSizeXLabel.Width,Height);
+  end;
+
+  with GridSizeYComboBox do begin
+    SetBounds(GridSizeYLabel.Left+GridSizeYLabel.Width+5,
+              GridSizeYLabel.Top-2,
+              GridSizeXComboBox.Width,Height);
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.GuideLinesGroupBoxResize(Sender: TObject);
+begin
+  with ShowGuideLinesCheckBox do begin
+    SetBounds(5,5,Parent.ClientWidth-2*Left,Height);
+  end;
+
+  with SnapToGuideLinesCheckBox do begin
+    SetBounds(ShowGuideLinesCheckBox.Left,
+              ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5,
+              ShowGuideLinesCheckBox.Width,Height);
+  end;
+
+  with GuideLineColorLeftTopButton do begin
+    SetBounds(SnapToGuideLinesCheckBox.Left,
+              SnapToGuideLinesCheckBox.Top+SnapToGuideLinesCheckBox.Height+5,
+              50,25);
+  end;
+
+  with GuideLineColorLeftTopLabel do begin
+    SetBounds(GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5,
+              GuideLineColorLeftTopButton.Top+2,150,Height);
+  end;
+
+  with GuideLineColorRightBottomButton do begin
+    SetBounds(GuideLineColorLeftTopButton.Left,
+              GuideLineColorLeftTopButton.Top
+                +GuideLineColorLeftTopButton.Height+5,50,25);
+  end;
+
+  with GuideLineColorRightBottomLabel do begin
+    SetBounds(GuideLineColorLeftTopLabel.Left,
+              GuideLineColorRightBottomButton.Top+2,
+              GuideLineColorLeftTopLabel.Width,Height);
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.OIMiscGroupBoxResize(Sender: TObject);
+begin
+  with OIDefaultItemHeightSpinEdit do begin
+    Left:=6;
     Top:=4;
-    Width:=200;
-    Height:=80;
+    Width:=50;
   end;
 
-  with PascalFileLowercaseCheckBox do begin
-    Left:=PascalFileExtRadiogroup.Left;
-    Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
-    Width:=300;
-  end;
-
-  with AmbigiousFileActionRadioGroup do begin
-    Left:=PascalFileLowercaseCheckBox.Left;
-    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
-    Width:=200;
-    Height:=130;
+  with OIDefaultItemHeightLabel do begin
+    Left:=OIDefaultItemHeightSpinEdit.Left+OIDefaultItemHeightSpinEdit.Width+5;
+    Top:=OIDefaultItemHeightSpinEdit.Top+2;
+    Width:=OIMiscGroupBox.ClientWidth-Left-5;
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
+procedure TEnvironmentOptionsDialog.ObjectInspectorColorsGroupBoxResize(
   Sender: TObject);
 begin
-  with NoteBook do begin
-    SetBounds(0,0,Max(100,Self.ClientWidth),Max(100,Self.ClientHeight-50));
+  with OIBackgroundColorButton do begin
+    Left:=6;
+    Top:=6;
+    Width:=50;
+    Height:=25;
   end;
 
-  ResizeDesktopPage;
-  ResizeFormEditorPage;
-  ResizeObjectInspectorPage;
-  ResizeFilesPage;
-  ResizeBackupPage;
-  ResizeNamingPage;
-
-  with CancelButton do begin
-    Width:=70;
+  with OIBackgroundColorLabel do begin
+    Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
+    Top:=OIBackgroundColorButton.Top;
+    Width:=Max(ObjectInspectorColorsGroupBox.ClientWidth-Left-5,10);
     Height:=23;
-    Left:=Max(0,Self.ClientWidth-Width-15);
-    Top:=Max(0,Self.ClientHeight-Height-15);
-  end;
-
-  with OkButton do begin
-    Width:=CancelButton.Width;
-    Height:=CancelButton.Height;
-    Left:=Max(0,CancelButton.Left-15-Width);
-    Top:=CancelButton.Top;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.WindowPositionsGroupBoxResize(
-  Sender: TObject);
-begin
-  with WindowPositionsListBox do begin
-    SetBounds(2,2,Max(Parent.ClientWidth-2*2,100),Max(100,Parent.Height div 4));
-  end;
-
-  with WindowPositionsBox do begin
-    Left:=2;
-    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
-    Width:=WindowPositionsListBox.Width;
-    Height:=Parent.ClientHeight-Top-2;
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
-var i: integer;
-begin
-  i:=TRadioGroup(Sender).ItemIndex;
-  if Sender=BakProjTypeRadioGroup then begin
-    BakProjAddExtComboBox.Enabled:=(i=4);
-    BakProjAddExtLabel.Enabled:=BakProjAddExtComboBox.Enabled;
-    BakProjMaxCounterComboBox.Enabled:=(i=3);
-    BakProjMaxCounterLabel.EnableD:=BakProjMaxCounterComboBox.Enabled;
-  end else begin
-    BakOtherAddExtComboBox.Enabled:=(i=4);
-    BakOtherAddExtLabel.Enabled:=BakOtherAddExtComboBox.Enabled;
-    BakOtherMaxCounterComboBox.Enabled:=(i=3);
-    BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
   end;
 end;
 
@@ -3103,6 +3102,42 @@ procedure TEnvironmentOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
+end;
+
+procedure TEnvironmentOptionsDialog.OnBackupPageResize(Sender: TObject);
+begin
+  ResizeBackupPage;
+end;
+
+procedure TEnvironmentOptionsDialog.OnDesktopPageResize(Sender: TObject);
+begin
+  ResizeDesktopPage;
+end;
+
+procedure TEnvironmentOptionsDialog.OnFilesPageResize(Sender: TObject);
+begin
+  ResizeFilesPage;
+end;
+
+procedure TEnvironmentOptionsDialog.OnFormEditorPageResize(Sender: TObject);
+begin
+  ResizeFormEditorPage;
+end;
+
+procedure TEnvironmentOptionsDialog.OnNamingPageResize(Sender: TObject);
+begin
+  ResizeNamingPage;
+end;
+
+procedure TEnvironmentOptionsDialog.OnObjectInspectorPageResize(Sender: TObject
+  );
+begin
+  ResizeObjectInspectorPage;
+end;
+
+procedure TEnvironmentOptionsDialog.RubberbandGroupBoxResize(Sender: TObject);
+begin
+
 end;
 
 procedure TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick(
@@ -3455,6 +3490,8 @@ end;
 procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
 var MaxX: integer;
 begin
+  NoteBook.Page[Page].OnResize:=@OnObjectInspectorPageResize;
+
   MaxX:=ClientWidth-5;
   
   // object inspector
@@ -3467,6 +3504,7 @@ begin
     Width:=(MaxX div 2) - 15;
     Height:=55;
     Caption:=dlgEnvColors;
+    OnResize:=@ObjectInspectorColorsGroupBoxResize;
   end;
 
   OIBackgroundColorButton:=TColorButton.Create(Self);
@@ -3499,6 +3537,7 @@ begin
     Width:=200;
     Height:=55;
     Caption:=dlgOIMiscellaneous;
+    OnResize:=@OIMiscGroupBoxResize;
   end;
   
   OIDefaultItemHeightSpinEdit:=TSpinEdit.Create(Self);
@@ -3508,6 +3547,7 @@ begin
     Left:=6;
     Top:=4;
     Width:=50;
+    Height:=25;
     Decimal_Places:=0;
     MinValue:=0;
     MaxValue:=100;

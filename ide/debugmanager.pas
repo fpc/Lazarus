@@ -463,7 +463,7 @@ begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
 
   Result:=mrCancel;
-  if Project1.MainUnit < 0 then Exit;
+  if Project1.MainUnitID < 0 then Exit;
 
   LaunchingCmdLine:=MainIDE.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
@@ -671,6 +671,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.11  2003/03/11 09:57:51  mattias
+  implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
+
   Revision 1.10  2002/12/09 16:48:34  mattias
   added basic file handling functions to filectrl
 

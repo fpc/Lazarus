@@ -208,12 +208,8 @@ msgid "Ask"
 msgstr "Demander"
 
 #: lazarusidestrconsts:dlgautoform
-msgid "Auto create forms"
-msgstr "Création auto des fiches"
-
-#: lazarusidestrconsts:dlgautocreatenewforms
-msgid "Auto create new forms"
-msgstr "Auto créer les nouvelles fiches"
+msgid "Auto create form when opening unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgautodel
 msgid "Auto delete file"
@@ -2415,6 +2411,10 @@ msgstr "Affiche rien (sauf les erreurs)"
 msgid "Show Options"
 msgstr "Voir les options"
 
+#: lazarusidestrconsts:fdmshowoptions
+msgid "Show Options for form editing"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
 msgstr "Afficher les scroll de conseils"
@@ -2938,6 +2938,10 @@ msgstr "Erreur de compilation"
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
 msgstr "Points de suivi"
+
+#: lazarusidestrconsts:dlgautocreatenewforms
+msgid "When creating new forms, add them to auto-created forms"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"

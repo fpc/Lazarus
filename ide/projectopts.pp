@@ -335,10 +335,9 @@ begin
     Parent:=NoteBook.Page[1];
     Left:=FormsAutoCreatedListBox.Left+5;
     Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
-    Width:=200;
+    Width:=300;
     Height:=25;
-    Caption:=dlgAutoCreateNewForms ;
-    Enabled:= false;
+    Caption:=dlgAutoCreateNewForms;
   end;
 end;
 
@@ -425,7 +424,7 @@ begin
   with FormsAutoCreateNewFormsCheckBox do begin
     Left:=FormsMoveAutoCreatedFormUpBtn.Left;
     Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
-    Width:=200;
+    Width:=300;
     Height:=25;
   end;
 end;
@@ -445,6 +444,7 @@ begin
   SaveClosedUnitInfoCheckBox.Checked:=(pfSaveClosedUnits in AProject.Flags);
   SaveOnlyProjectUnitInfoCheckBox.Checked:=
     (pfSaveOnlyProjectUnits in AProject.Flags);
+  FormsAutoCreateNewFormsCheckBox.Checked:=Project.AutoCreateForms;
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject; var Action: TCloseAction);
@@ -469,6 +469,8 @@ begin
       Exclude(NewFlags,pfSaveOnlyProjectUnits);
     Project.Flags:=NewFlags;
     
+    Project.AutoCreateForms:=FormsAutoCreateNewFormsCheckBox.Checked;
+    
     SetAutoCreateForms;
   end;
     
@@ -478,7 +480,7 @@ end;
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
 var i, j: integer;
 begin
-  if (FProject<>nil) and (FProject.MainUnit>=0) then begin
+  if (FProject<>nil) and (FProject.MainUnitID>=0) then begin
     Result:=CodeToolBoss.ListAllCreateFormStatements(
          FProject.MainUnitInfo.Source);
     if Result<>nil then begin
@@ -675,7 +677,7 @@ procedure TProjectOptionsDialog.SetAutoCreateForms;
 var i: integer;
     OldList: TStrings;
 begin
-  if (Project.MainUnit < 0) or (Project.ProjectType in [ptCustomProgram]) then
+  if (Project.MainUnitID < 0) or (Project.ProjectType in [ptCustomProgram]) then
     exit;
   OldList:= GetAutoCreatedFormsList;
   if (OldList = nil) then exit;
@@ -691,7 +693,7 @@ begin
     end;
 
     if not CodeToolBoss.SetAllCreateFromStatements(
-      Project.Units[Project.MainUnit].Source, FormsAutoCreatedListBox.Items) then
+      Project.MainUnitInfo.Source, FormsAutoCreatedListBox.Items) then
     begin
       MessageDlg('Error',
         'Unable to change the auto create form list in the program source.' + LineEnding +

@@ -919,7 +919,7 @@ msgid "Show editor hints"
 msgstr ""
 
 #: lazarusidestrconsts:dlgautoform
-msgid "Auto create forms"
+msgid "Auto create form when opening unit"
 msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
@@ -1907,7 +1907,7 @@ msgid "Available forms:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgautocreatenewforms
-msgid "Auto create new forms"
+msgid "When creating new forms, add them to auto-created forms"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsaveeditorinfo
@@ -2252,6 +2252,10 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptoguidelinesoption
 msgid "Option: Snap to guide lines"
+msgstr ""
+
+#: lazarusidestrconsts:fdmshowoptions
+msgid "Show Options for form editing"
 msgstr ""
 
 #: lazarusidestrconsts:srkmeditkeys

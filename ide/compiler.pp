@@ -95,7 +95,7 @@ var
   TheProcess : TProcess;
 begin
   Result:=mrCancel;
-  if AProject.MainUnit<0 then exit;
+  if AProject.MainUnitID<0 then exit;
   OldCurDir:=GetCurrentDir;
   if AProject.IsVirtual then
     ProjectFilename:=DefaultFilename
@@ -189,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2003/03/11 09:57:51  mattias
+  implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
+
   Revision 1.38  2003/01/06 10:51:40  mattias
   freeing stopped external tools
 

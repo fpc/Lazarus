@@ -199,11 +199,7 @@ msgid "Ask"
 msgstr ""
 
 #: lazarusidestrconsts:dlgautoform
-msgid "Auto create forms"
-msgstr ""
-
-#: lazarusidestrconsts:dlgautocreatenewforms
-msgid "Auto create new forms"
+msgid "Auto create form when opening unit"
 msgstr ""
 
 #: lazarusidestrconsts:dlgautodel
@@ -2406,6 +2402,10 @@ msgstr ""
 msgid "Show Options"
 msgstr ""
 
+#: lazarusidestrconsts:fdmshowoptions
+msgid "Show Options for form editing"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
 msgstr ""
@@ -2929,6 +2929,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
 msgstr "Watches"
+
+#: lazarusidestrconsts:dlgautocreatenewforms
+msgid "When creating new forms, add them to auto-created forms"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"
