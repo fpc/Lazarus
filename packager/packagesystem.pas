@@ -610,8 +610,7 @@ begin
   end;
   // iterate in package links
   if (fpfSearchInPkgLinks in Flags) then begin
-    // ToDo
-    //PkgLinks.IteratePackageNames();
+    PkgLinks.IteratePackages(Event);
   end;
 end;
 

@@ -89,6 +89,8 @@ type
       const PkgName: string): TPackageLink;
     function FindLinkWithDependencyInTree(LinkTree: TAVLTree;
       Dependency: TPkgDependency): TPackageLink;
+    procedure IteratePackagesInTree(LinkTree: TAVLTree;
+      Event: TIteratePackagesEvent);
   public
     constructor Create;
     destructor Destroy; override;
@@ -100,6 +102,7 @@ type
     procedure EndUpdate;
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
+    procedure IteratePackages(Event: TIteratePackagesEvent);
   end;
   
 var
@@ -418,6 +421,18 @@ begin
   end;
 end;
 
+procedure TPackageLinks.IteratePackagesInTree(LinkTree: TAVLTree;
+  Event: TIteratePackagesEvent);
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=LinkTree.FindLowest;
+  while ANode<>nil do begin
+    Event(TPackageLink(ANode.Data));
+    ANode:=LinkTree.FindSuccessor(ANode);
+  end;
+end;
+
 function TPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
 begin
   Result:=FindLinkWithPkgNameInTree(FUserLinks,PkgName);
@@ -431,6 +446,12 @@ begin
   Result:=FindLinkWithDependencyInTree(FUserLinks,Dependency);
   if Result=nil then
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
+end;
+
+procedure TPackageLinks.IteratePackages(Event: TIteratePackagesEvent);
+begin
+  IteratePackagesInTree(FUserLinks,Event);
+  IteratePackagesInTree(FGlobalLinks,Event);
 end;
 
 

@@ -130,9 +130,22 @@ begin
 end;
 
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
+var
+  AFilename: String;
 begin
-  // ToDo
-  ShowMessage('Not implemented yet');
+  AFilename:=CleanAndExpandFilename(AddUnitFilenameEdit.Text);
+  if not FileExists(AFilename) then begin
+    MessageDlg('File not found',
+      'File "'+AFilename+'" not found.',mtError,[mbCancel],0);
+    exit;
+  end;
+  if not FilenameIsPascalUnit(AFilename) then begin
+    if MessageDlg('File not unit',
+      'The file "'+AFilename+'"'#13
+      +'does not look like a pascal unit (.pp or .pas).',
+      mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+  end;
+  ModalResult:=mrOk;
 end;
 
 procedure TAddToPackageDlg.AddUnitFileBrowseButtonClick(Sender: TObject);
