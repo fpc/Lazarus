@@ -7840,9 +7840,6 @@ var
 begin
   //DebugLn('TMainIDE.DoPublishModule A');
   Result:=mrCancel;
-  
-  Application.Minimize;
-  exit;
 
   // to not delete project files
   DestDir:=TrimFilename(AppendPathDelim(DestDirectory));
@@ -11486,6 +11483,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.857  2005/03/08 00:30:37  mattias
+  removed debugging
+
   Revision 1.856  2005/03/08 00:28:03  mattias
   implemented gtk2 AppMinimize
 
