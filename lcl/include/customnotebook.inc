@@ -585,6 +585,8 @@ Begin
             if FPageIndex>=PageCount then
               FPageIndex:=-1;
             Change;
+            if csDesigning in ComponentState then
+              OwnerFormDesignerModified(Self);
           end;
         end;
     else
@@ -679,6 +681,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/10/26 15:56:45  lazarus
+  MG: fixed changing notebook pageindex at designtime
+
   Revision 1.23  2002/10/24 08:56:30  lazarus
   MG: fixed TnoteBook AddPage and double creation of MeinMenu
 
