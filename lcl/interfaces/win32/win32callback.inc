@@ -272,7 +272,7 @@ Begin
     Begin
       if WParam <> 0 then
         if Window = TWin32Object(InterfaceObject).AppHandle then
-          Windows.SetWindowPos(TWin32Object(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+          Windows.SetWindowPos(TWin32Object(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, $13{SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE});
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -906,6 +906,9 @@ end;
 
 {
   $Log$
+  Revision 1.78  2003/12/19 21:34:53  micha
+  fix compiler problem; wrong code for constants
+
   Revision 1.77  2003/12/19 18:18:17  micha
   fix window activation z-order
 

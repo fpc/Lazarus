@@ -2331,7 +2331,8 @@ Begin
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
       //  NOTE: for some reason, 1.9.x generates the wrong constant here...
-      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
+      //  NOTE: same for 1.0.11 (FIXES_1_0_0 branch), 1.0.10 does seem to work
+      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, $253{SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER});
     end else begin
       Windows.ShowWindow(Handle, SW_SHOW);
     end;
@@ -2886,6 +2887,9 @@ End;
 
 {
   $Log$
+  Revision 1.149  2003/12/19 21:34:53  micha
+  fix compiler problem; wrong code for constants
+
   Revision 1.148  2003/12/19 18:20:02  micha
   delay property removal until wm_destroy (thx vincent)
 
