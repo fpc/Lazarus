@@ -6207,7 +6207,6 @@ begin
          gtk_progress_set_show_text (GTK_PROGRESS (Handle), 0);
       Widget := PGtkWidget( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
       gtk_progress_set_adjustment (GTK_PROGRESS (Handle), PGtkAdjustment (Widget));
-      writeln('SetProperties A ',Position);
       gtk_progress_set_value (GTK_PROGRESS (Handle), Position);
     end;
 
@@ -7475,6 +7474,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.383  2003/06/26 18:18:25  mattias
+  fixed recaching
+
   Revision 1.382  2003/06/26 17:00:00  mattias
   fixed result on searching proc in interface
 

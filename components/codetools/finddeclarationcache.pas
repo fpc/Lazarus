@@ -32,6 +32,10 @@ interface
 
 {$I codetools.inc}
 
+
+// for debugging
+{ $DEFINE HardExceptions}
+
 uses
   Classes, SysUtils, BasicCodeTools, AVL_Tree, CodeTree, LinkScanner,
   PascalParserTool, CodeToolMemManager;
@@ -642,59 +646,74 @@ var
   OldEntry: PCodeTreeNodeCacheEntry;
   OldNode: TAVLTreeNode;
   NewSearchRangeFlags: TNodeCacheEntryFlags;
-
-  procedure RaiseConflictException;
+  
+  function ParamsDebugReport: string;
   var
     s: string;
   begin
-    s:='[TCodeTreeNodeCache.Add] internal error:'
-        +' conflicting cache nodes: Ident='+GetIdentifier(Identifier);
-    if Owner<>nil then
-    s:=s+' Owner='+Owner.DescAsString;
-    s:=s+' OwnerPos='+IntToStr(Owner.StartPos);
-    s:=s+' Old: Range='+IntToStr(OldEntry^.CleanStartPos)
-             +'-'+IntToStr(OldEntry^.CleanEndPos);
-    if OldEntry^.NewNode<>nil then begin
-      s:=s+' Node='+OldEntry^.NewNode.DescAsString
-          +' Pos='+IntToStr(OldEntry^.NewNode.StartPos);
-    end else
-      s:=s+' Node=nil';
-    if OldEntry^.NewTool<>nil then begin
-      s:=s+' Tool='+OldEntry^.NewTool.MainFilename;
-      if OldEntry^.NewNode<>nil then
-        s:=s+' Src="'
-          +StringToPascalConst(
-          copy(OldEntry^.NewTool.Src,OldEntry^.NewNode.StartPos,50))+'"';
-    end;
+    s:=' Ident='+GetIdentifier(Identifier);
     s:=s+' New: Range='+IntToStr(CleanStartPos)
              +'-'+IntToStr(CleanEndPos);
+    if Owner<>nil then begin
+      s:=s+' Owner='+Owner.DescAsString;
+      s:=s+' OwnerPos='+IntToStr(Owner.StartPos);
+    end;
+    if OldEntry<>nil then begin
+      s:=s+' Old: Range='+IntToStr(OldEntry^.CleanStartPos)
+               +'-'+IntToStr(OldEntry^.CleanEndPos);
+      if OldEntry^.NewNode<>nil then begin
+        s:=s+' Node='+OldEntry^.NewNode.DescAsString
+            +' Pos='+IntToStr(OldEntry^.NewNode.StartPos);
+      end else
+        s:=s+' Node=nil';
+      if OldEntry^.NewTool<>nil then begin
+        s:=s+' Tool='+ExtractFilename(OldEntry^.NewTool.MainFilename);
+        if OldEntry^.NewNode<>nil then
+          s:=s+' Src="'
+            +StringToPascalConst(
+            copy(OldEntry^.NewTool.Src,OldEntry^.NewNode.StartPos,50))+'"';
+      end;
+    end;
     if NewNode<>nil then begin
       s:=s+' Node='+NewNode.DescAsString
           +' Pos='+IntToStr(NewNode.StartPos);
     end else
       s:=s+' Node=nil';
     if NewTool<>nil then begin
-      s:=s+' Tool='+NewTool.MainFilename;
+      s:=s+' Tool='+ExtractFileName(NewTool.MainFilename);
       if NewNode<>nil then
         s:=s+' Src="'
           +StringToPascalConst(copy(NewTool.Src,NewNode.StartPos,50))+'"';
     end;
+    Result:=s;
+  end;
+  
+  procedure RaiseConflictException(const Msg: string);
+  var
+    s: string;
+  begin
+    s:='[TCodeTreeNodeCache.Add] internal error:'+Msg+ParamsDebugReport;
+    {$IFDEF HardExceptions}
+    writeln(s);
+    RaiseCatchableException('TCodeTreeNodeCache.Add A');
+    {$ELSE}
     raise Exception.Create(s);
+    {$ENDIF}
   end;
 
 begin
+  OldEntry:=nil;
   if CleanStartPos>=CleanEndPos then
-    raise Exception.Create('[TCodeTreeNodeCache.Add] internal error:'
-      +' CleanStartPos>=CleanEndPos');
-{if GetIdentifier(Identifier)='TDefineAction' then begin
-  writeln('[[[[======================================================');
-  writeln('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
-     ' CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos,
-     ' Flags=[',NodeCacheEntryFlagsAsString(Flags),']',
-     ' NewNode=',NewNode<>nil
-     );
-  writeln('======================================================]]]]');
-end;}
+    RaiseConflictException('CleanStartPos>=CleanEndPos');
+  {if GetIdentifier(Identifier)='TDefineAction' then begin
+    writeln('[[[[======================================================');
+    writeln('[TCodeTreeNodeCache.Add] Ident=',GetIdentifier(Identifier),
+       ' CleanStartPos=',CleanStartPos,' CleanEndPos=',CleanEndPos,
+       ' Flags=[',NodeCacheEntryFlagsAsString(Flags),']',
+       ' NewNode=',NewNode<>nil
+       );
+    writeln('======================================================]]]]');
+  end;}
   if FItems=nil then
     FItems:=TAVLTree.Create(@CompareTCodeTreeNodeCacheEntry);
   // if identifier already exists, try to combine them
@@ -719,7 +738,7 @@ end;}
       OldEntry^.Flags:=NewSearchRangeFlags;
     end else begin
       // different FindContext with overlapping search ranges
-      RaiseConflictException;
+      RaiseConflictException('conflicting cache nodes');
     end;
   end;
 end;

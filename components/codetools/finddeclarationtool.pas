@@ -1679,7 +1679,6 @@ var
         NodeCache.WriteDebugReport('NANUNANA: ');
       end;
       {$ENDIF}
-      ContextNode:=Params.NewNode;
       Result:=true;
     end;
   end;
@@ -5531,6 +5530,23 @@ var Node: TCodeTreeNode;
   NewCleanPos: integer;
   {$IFDEF ShowNodeCache}
   BeVerbose: boolean;
+  NodeOwner: TObject;
+  
+  function WriteSrcPos(t: TPascalParserTool; p: integer): string;
+  begin
+    Result:=StringToPascalConst(copy(t.Src,p-10,10)+'|'+copy(t.Src,p,15)+'"');
+  end;
+  
+  function NodeOwnerAsString(ANodeOwner: TObject): string;
+  begin
+    if ANodeOwner=nil then
+      Result:='nil'
+    else if ANodeOwner is TPascalParserTool then
+      Result:=ExtractFileName(TPascalParserTool(ANodeOwner).MainFilename)
+    else
+      Result:='?'+ANodeOwner.ClassName+'?';
+  end;
+  
   {$ENDIF}
 begin
   if StartNode=nil then exit;
@@ -5566,7 +5582,7 @@ begin
   end;
 
   {$IFDEF ShowNodeCache}
-  beVerbose:=CompareSrcIdentifiers(Params.Identifier,'VISIBLE');
+  beVerbose:=CompareSrcIdentifiers(Params.Identifier,'TOBJECT');
   if beVerbose then begin
     writeln('(((((((((((((((((((((((((((==================');
     
@@ -5578,30 +5594,36 @@ begin
     if ncefSearchedInAncestors in SearchRangeFlags then write(',Ancestors');
     writeln(']');
     
-    writeln('  Tool=',MainFilename);
-    
-    write('     StartNode=',StartNode.DescAsString,'="',copy(Src,StartNode.StartPos-10,10),'|',copy(Src,StartNode.StartPos,15),'"');
-    if EndNode<>nil then
-      write(' EndNode=',EndNode.DescAsString,'="',copy(Src,EndNode.StartPos,25),'"')
-    else
-      write(' EndNode=nil');
+    write('     StartNode=',StartNode.DescAsString,
+      '(',StartNode.StartPos,'-',StartNode.EndPos,')=',
+      WriteSrcPos(Self,StartNode.StartPos));
+    NodeOwner:=FindOwnerOfCodeTreeNode(StartNode);
+    if NodeOwner<>Self then write(' StartNodeOwner=',NodeOwnerAsString(NodeOwner));
     writeln('');
     
-    writeln('  StartNode(',StartNode.StartPos,'-',StartNode.EndPos,')');
     if EndNode<>nil then
-      writeln('  EndNode(',EndNode.StartPos,'-',EndNode.EndPos,')');
+      write(' EndNode=',EndNode.DescAsString,
+        '(',EndNode.StartPos,'-',EndNode.EndPos,')=',
+        WriteSrcPos(Self,EndNode.StartPos))
+    else
+      write(' EndNode=nil');
+    NodeOwner:=FindOwnerOfCodeTreeNode(EndNode);
+    if NodeOwner<>Self then write(' EndNodeOwner=',NodeOwnerAsString(NodeOwner));
+    writeln('');
 
-    writeln('     Self=',MainFilename);
+    writeln('     Self=',ExtractFileName(MainFilename));
     
     if NewNode<>nil then begin
       writeln('       NewNode=',NewNode.DescAsString,
-                 ' NewTool=',NewTool.MainFilename);
+              '(',NewNode.StartPos,'-',NewNode.EndPos,')=',
+              WriteSrcPos(NewTool,NewNode.StartPos),
+                 ' NewTool=',ExtractFileName(NewTool.MainFilename));
     end else begin
       writeln('       NOT FOUND');
     end;
     
-    writeln('  CleanStartPos=',CleanStartPos,' "',copy(Src,CleanStartPos,70),'"');
-    writeln('  CleanEndPos=',CleanEndPos,' "',copy(Src,CleanEndPos-70,70),'"');
+    writeln('  CleanStartPos=',CleanStartPos,' ',WriteSrcPos(Self,CleanStartPos));
+    writeln('  CleanEndPos=',CleanEndPos,' ',WriteSrcPos(Self,CleanEndPos));
   end;
   {$ENDIF}
   LastNodeCache:=nil;
