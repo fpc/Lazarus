@@ -1824,8 +1824,8 @@ begin
 
   with Message do
   begin
+    if CharCode = VK_UNKNOWN then Exit;
     ShiftState := KeyDataToShiftState(KeyData);
-    //ShiftState := [];
     if not (csNoStdEvents in ControlStyle)
     then begin
       KeyDown(CharCode, ShiftState);
@@ -3136,6 +3136,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.179  2003/11/23 00:28:51  mattias
+  fixed closing IDE while debugging
+
   Revision 1.178  2003/10/31 11:49:30  micha
   fix win32 designer: grid, non-windowed components, selectiongrabbers
 

@@ -1374,6 +1374,8 @@ var
 begin
   if Self=nil then raise
     EInvalidOperation.Create('TCustomForm.ShowModal Self=nil');
+  if Application.Terminated then
+    ModalResult:=0;
   // cancel drags
   CancelDrag;
   // close popupmenus
@@ -1409,8 +1411,8 @@ begin
           a better way: }
         InterfaceObject.HandleEvents; // process all events
         if Application.Terminated then
-          ModalResult := mrCancel
-        else if ModalResult <> 0 then begin
+          ModalResult := mrCancel;
+        if ModalResult <> 0 then begin
           CloseModal;
           if ModalResult<>0 then break;
         end;
@@ -1444,6 +1446,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2003/11/23 00:28:51  mattias
+  fixed closing IDE while debugging
+
   Revision 1.117  2003/11/17 23:09:39  mattias
   started PixelsPerInch
 
