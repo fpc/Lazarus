@@ -1579,7 +1579,10 @@ end;
 {$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.RealGetText: string;
 begin
-  Result := Lines.Text;
+  if fLines<>nil then
+    Result := Lines.Text
+  else
+    Result := '';
 end;                                                    
 {$ENDIF}
 

@@ -665,14 +665,14 @@ type
  * exchange text between widgets and VCL. This means a lot of 
  * (unnecesary) text copies.
  * The LCL uses strings for exchanging text (more efficient).
- * To maintain VCL compatebility, the virtual RealGet/SetText is 
+ * To maintain VCL compatibility, the virtual RealGet/SetText is
  * introduced. These functions interface with the LCLInterface. The
  * default Get/SetTextbuf implementation calls the RealGet/SetText.
  * As long as the Get/SetTextBuf isn't overridden Get/SetText 
  * calls RealGet/SetText to avoid PChar copiing.
  * To keep things optimal, LCL implementations should always 
  * override RealGet/SetText. Get/SetTextBuf is only kept for
- * compatebility.
+ * compatibility.
  *)  
 
   TControl = class(TLCLComponent)
@@ -1469,7 +1469,7 @@ type
     procedure Hide;
     procedure Repaint; override;
     Procedure SetFocus; override;
-    Function FindChildControl(ControlName : String) : TControl;
+    Function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
     Procedure GetTabOrderList(List : TList);
     function HandleAllocated: Boolean;
@@ -2260,6 +2260,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.198  2004/04/26 10:01:27  mattias
+  fixed TSynEdit.RealGetText
+
   Revision 1.197  2004/04/20 23:39:01  marc
   * Fixed setting of TWincontrol.Text during load
 

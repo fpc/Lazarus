@@ -1155,7 +1155,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl FindChildControl                                                }
 {------------------------------------------------------------------------------}
-function TWinControl.FindChildControl(ControlName: string): TControl;
+function TWinControl.FindChildControl(const ControlName: string): TControl;
 var
   I: Integer;
 begin
@@ -2088,7 +2088,7 @@ begin
   FillChar(Params, SizeOf(Params),0);
   with Params do
   begin
-    Caption := @FCaption;
+    Caption := PChar(FCaption);
     Style := WS_CHILD or WS_CLIPSIBLINGS;
     if (Parent <> nil) then WndParent := Parent.Handle;
   end;
@@ -3081,8 +3081,9 @@ begin
 
   EnableWindow(Handle, Enabled);
   
-  // Delay the setting of text until it is complete loaded
+  // Delay the setting of text until it is completely loaded
   if not (csLoading in ComponentState) 
+  and TWSWinControlClass(WidgetSetClass).HasText(Self)
   then TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
 
   SetProp(Handle,'WinControl',TWinControl(Self));
@@ -3129,7 +3130,8 @@ begin
   if HandleAllocated
   then begin              
     // Set cached caption
-    TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+    if TWSWinControlClass(WidgetSetClass).HasText(Self) then
+      TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
   
     if [wcfColorChanged,wcfFontChanged]*FFlags<>[] then
     begin
@@ -3156,7 +3158,8 @@ begin
   if HandleAllocated 
   then begin    
     // make sure our text is saved
-    FCaption := GetText;
+    if TWSWinControlClass(WidgetSetClass).HasText(Self) then
+      FCaption := GetText;
     DestroyComponent;
     Handle := 0;
   end;
@@ -3331,7 +3334,8 @@ function TWinControl.RealGetText: TCaption;
 begin
   if not HandleAllocated 
   or (csLoading in ComponentState) 
-  or not TWSWinControlClass(WidgetSetClass).GetText(Self, Result)
+  or (not TWSWinControlClass(WidgetSetClass).HasText(Self))
+  or (not TWSWinControlClass(WidgetSetClass).GetText(Self, Result))
   then Result := inherited RealGetText;
 end;
 
@@ -3346,6 +3350,7 @@ function TWinControl.GetTextLen: Integer;
 begin
   if not HandleAllocated 
   or (csLoading in ComponentState) 
+  or (not TWSWinControlClass(WidgetSetClass).HasText(Self))
   or not TWSWinControlClass(WidgetSetClass).GetTextLen(Self, Result)
   then Result := inherited GetTextLen;
 end;
@@ -3360,7 +3365,8 @@ end;
 procedure TWinControl.RealSetText(const Value: TCaption);
 begin
   if HandleAllocated 
-  and (not (csLoading in ComponentState)) 
+  and (not (csLoading in ComponentState))
+  and TWSWinControlClass(WidgetSetClass).HasText(Self)
   then TWSWinControlClass(WidgetSetClass).SetText(Self, Value);
   inherited;
 end;
@@ -3478,6 +3484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.222  2004/04/26 10:01:27  mattias
+  fixed TSynEdit.RealGetText
+
   Revision 1.221  2004/04/23 11:18:28  mattias
   fixed unsetting csFocusing
 

@@ -60,16 +60,17 @@ type
 
   { TWSWinControl }
 
-  TWSWinControlClass = class of TWSWinControl;
   TWSWinControl = class(TWSControl)
   private
   protected
   public    
+    class function  HasText(const AWinControl: TWinControl): Boolean; virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
   end;       
+  TWSWinControlClass = class of TWSWinControl;
 
   { TWSGraphicControl }
 
@@ -109,6 +110,11 @@ end;
 
 { TWSWinControl }
 
+function TWSWinControl.HasText(const AWinControl: TWinControl): Boolean;
+begin
+  Result := true;
+end;
+
 function TWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
 begin
   Result := CNSendMessage(LM_GETTEXT, AWinControl, @AText) <> 0;
@@ -133,7 +139,6 @@ begin
   CNSendMessage(LM_SetLabel, AWinControl, PChar(AText));
 end;
 
-
 initialization
 
 ////////////////////////////////////////////////////
@@ -145,7 +150,6 @@ initialization
 //  RegisterWSComponent(TDragImageList, TWSDragImageList);
   RegisterWSComponent(TControl, TWSControl);
   RegisterWSComponent(TWinControl, TWSWinControl);
-//  RegisterWSComponent(TWinControl, TWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TWSCustomControl);
 //  RegisterWSComponent(TImageList, TWSImageList);
