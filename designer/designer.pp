@@ -183,28 +183,37 @@ var
   I : Integer;
   NewSource : String;
 begin
-
+  //get the control name
   PI := Control.ClassInfo;
-
   nmControlType := PI^.Name;
+
 //find the place in the code to add this now.
 //Anyone have good method sfor parsing the source to find spots like this?
-
+//here I look for the Name of the customform, the word "Class", and it's ancestor on the same line
+//not very good because it could be a comment or just a description of the class.
+//but for now I'll use it.
 For I := 0 to FSource.Count-1 do
-    if (pos(FormAncestor,FSource.Strings[i]) <> 0) and (pos(FCustomForm.Name,FSource.Strings[i]) <> 0) then
+    if (pos(FormAncestor,FSource.Strings[i]) <> 0) and (pos(FCustomForm.Name,FSource.Strings[i]) <> 0) and (pos('CLASS',Uppercase(FSource.Strings[i])) <> 0) then
         Break;
 
+
+
+  //if I => FSource.Count then I didn't find the line...
   If I < FSource.Count then
      Begin
        //alphabetical
        inc(i);
        NewSource := Control.Name+' : '+nmControlType+';';
+
+       //  Here I decide if I need to try and insert the control's text code in any certain order.
+       //if there's no controls then I just insert it, otherwise...
        if TWincontrol(Control.Owner).ControlCount > 0 then
        while NewSource > (trim(FSource.Strings[i])) do
          inc(i);
 
           FSource.Insert(i,'       '+NewSource);
      end;
+//debugging
   try
     Writeln('**********************************************');
     for I := 1 to FSource.Count do
@@ -213,6 +222,7 @@ For I := 0 to FSource.Count-1 do
   except
     Application.MessageBox('error','error',0);
   end;
+//debugging end
 
 
 end;
