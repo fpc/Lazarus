@@ -1757,15 +1757,15 @@ var
   R : TRect;
 begin
   if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height) then Exit;
+  FLeft := aLeft;
+  FTop := aTop;
+  FWidth := aWidth;
+  FHeight := aHeight;
 
   if HandleAllocated
   then begin
     R:= Rect(ALeft, ATop, AWidth, AHeight);
     CNSendMessage(LM_SetSize, Self, @R);
-    FLeft := aLeft;
-    FTop := aTop;
-    FWidth := aWidth;
-    FHeight := aHeight;
   end
   else inherited SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
@@ -1895,6 +1895,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/01/18 13:27:31  lazarus
+  Minor changees
+  Shane
+
   Revision 1.9  2001/01/15 18:25:51  lazarus
   Fixed a stupid error I caused by using a variable as an index in main.pp and this variable sometimes caused an exception because the index was out of range.
   Shane

@@ -1165,7 +1165,9 @@ end;
 
 Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
 Begin
+Writeln('Setting designing');
 Control.SetDesigning(Value);
+Writeln('Set');
 end;
 
 
@@ -1295,141 +1297,7 @@ begin
 end;
  }
 
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{
-          Used when we click on a control that was created.
-                  This can be used to detect when
-                 a control is dropped onto a form
-}
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{------------------------------------------------------------------------------}
-{procedure TMainIDE.MouseDownOnControl(Sender : TObject; Button: TMouseButton;
-Shift : TShiftState; X, Y: Integer);
-Begin
-  if GetCaptureGrabber<>nil then exit;
 
-  MouseDownPos.X := X;
-  MouseDownPos.Y := Y;
-  if not (Sender is TCustomForm) then begin
-    inc(MouseDownPos.X,TControl(Sender).Left);
-    inc(MouseDownPos.Y,TControl(Sender).Top);
-  end;
-  MouseDownControl:=Sender;
-  LastMouseMovePos:=MouseDownPos;
-  Writeln(TComponent(Sender).Name+'.OnMouseDown at '+inttostr(MouseDownPos.x)
-    +','+inttostr(MouseDownPos.Y)+' x='+IntToStr(x));
-
-  if SelectedComponent = nil then
-  Begin //mouse pointer button pressed.
-    if not (Sender is TCustomForm) then begin
-      SelectOnlyThisComponent(TComponent(Sender));
-    end;
-  end;
-End;
-
-procedure TMainIDE.MouseMoveOnControl(Sender : TObject;
-Shift : TShiftState; X, Y: Integer);
-var
-  CurDesigner: TDesigner;
-  CaptureGrabber:TGrabber;
-Begin
-  CaptureGrabber:=GetCaptureGrabber;
-  if CaptureGrabber<>nil then begin
-    CaptureGrabber.CaptureMouseMove(TControl(Sender),Shift,X,Y);
-  end else begin
-    CurDesigner:=FindDesigner(TComponent(Sender));
-    if Assigned(MouseDownControl) then begin
-      if SelectedComponent = nil then begin
-        // mouse pointer button pressed
-        if not (Sender is TCustomForm) then begin
-          // move selection
-          if Assigned(CurDesigner) then begin
-            CurDesigner.ControlSelection.MoveSelection(
-              X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
-            LastMouseMovePos:=Point(X,Y);
-          end;
-        end;
-      end;
-    end;
-  end;
-End;
-
-procedure TMainIDE.MouseUpOnControl(Sender : TObject; Button: TMouseButton;
-Shift : TShiftState; X, Y: Integer);
-// We clicked on the form.  Let's see what the active selection is in the IDE
-// control bar. If it's the pointer, then we set the
-// FormEditor1.SelectedComponents to Sender,
-// otherwise we drop a control and call the CreateComponent function.
-var
-  ParentCI, NewCI : TComponentInterface;
-  NewLeft, NewTop, NewWidth, NewHeight : Integer;
-//  CInterface : TComponentInterface;
-  CaptureGrabber:TGrabber;
-Begin
-  CaptureGrabber:=GetCaptureGrabber;
-  if CaptureGrabber<>nil then begin
-    CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,X,Y);
-    exit;
-  end;
-
-  MouseUpPos.X := X;
-  MouseUpPos.Y := Y;
-  if not (Sender is TCustomForm) then begin
-    inc(MouseUpPos.X,TControl(Sender).Left);
-    inc(MouseUpPos.Y,TControl(Sender).Top);
-  end;
-  Writeln(TComponent(Sender).Name+'.OnMouseUp at '+inttostr(x)+','+inttostr(y));
-
-  if SelectedComponent = nil then
-  Begin //mouse pointer button pressed.
-    if Sender is TCustomForm then
-      SelectOnlyThisComponent(TComponent(Sender));
-  end
-  else
-  Begin  //add a new control
-    ParentCI:=TComponentInterface(FormEditor1.FindComponent(TComponent(Sender)));
-    if (TComponent(Sender) is TWinControl)
-      and (not (csAcceptsControls in TWinControl(Sender).ControlStyle)) then
-    begin
-      ParentCI:=TComponentInterface(
-        FormEditor1.FindComponent(TWinControl(Sender).Parent));
-    end;
-    if Assigned(ParentCI) then begin
-      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
-      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
-      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
-      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
-      if Abs(NewWidth+NewHeight)<7 then begin
-        // this very small component is probably only a wag, take default size
-        NewWidth:=0;
-        NewHeight:=0;
-      end;
-      NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,SelectedComponent.ComponentClass
-        ,NewLeft,NewTop,NewWidth,NewHeight));
-      NewCI.SetPropByName('Visible',True); //Control).Visible := True;
-
-      ObjectInspector1.FillComponentComboBox;
-      TDesigner(TForm(NewCI.Control.Owner).Designer).AddControlCode(NewCI.Control);
-
-      if NewCI.Control is TControl then begin
-        // set the OnMouseDown and OnMouseUp event so we know when the control
-        // is selected or a new control is dropped
-writeln('NewComponent is TControl');
-        NewCI.Control.SetDesigning(True);
-//        NewCI.SetPropByName('OnMouseUp',@MouseUpOnControl);
-//        NewCI.SetPropByName('OnMouseDown',@MouseDownOnControl);
-//        NewCI.SetPropByName('OnMouseMove',@MouseMoveOnControl);
-        SelectOnlyThisComponent(TComponent(NewCI.Control));
-      end;
-    end;
-  end;
-
-  MouseDownControl:=nil;
-  ControlClick(Notebook1);  //this resets it to the mouse.
-end;
- }
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 var
@@ -1456,7 +1324,6 @@ begin
   SetDefaultsForForm(TempForm);
   TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TForm(TempForm));
   TempForm.Show;
-
   SetDesigning(TempForm,True);
 
   PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
@@ -1927,6 +1794,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2001/01/18 13:27:30  lazarus
+  Minor changees
+  Shane
+
   Revision 1.48  2001/01/16 23:30:45  lazarus
   trying to determine what's crashing LAzarus on load.
   Shane

@@ -204,6 +204,7 @@ writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
   TComponent(FCurReadForm):=Instance;
   try
     Instance.Create(Application);
+    Writeln('New form name is '+NewFormName);
     if NewFormName<>'' then
       Instance.Name:=NewFormName;
     DoRenameClass(FCurReadClass,NewClassName);

@@ -650,6 +650,7 @@ begin
   PI := _Control.ClassInfo;
   nmControlType := PI^.Name;
   Ancestor := GetAncestor;
+  Ancestor := 'TFORM';
 
 //find the place in the code to add this now.
 //Anyone have good method sfor parsing the source to find spots like this?
@@ -657,9 +658,13 @@ begin
 //not very good because it could be a comment or just a description of the class.
 //but for now I'll use it.
 For I := 0 to TempSource.Count-1 do
-    if (pos(Ancestor,TempSource.Strings[i]) <> 0) and (pos(TWinControl(_Control.Owner).Name,TempSource.Strings[i]) <> 0) and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
+    begin
+    Writeln('Ancestor is '+Ancestor);
+    Writeln('TWinControl(_Control.Owner).Name is '+TWinControl(_Control.Owner).Name);
+    Writeln('Line is '+TempSource.Strings[i]);
+    if (pos(Ancestor,TempSource.Strings[i]) <> 0) and (pos(lowercase(TWinControl(_Control.Owner).Name),lowercase(TempSource.Strings[i])) <> 0) and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
         Break;
-
+    end;
 
 
   //if I => FSource.Count then I didn't find the line...
@@ -828,7 +833,7 @@ Begin
      Add('uses Classes, Graphics, Controls, Forms, Dialogs;');
      Add('');
      Add('type');
-     Add(Format('     T%s = class(T%s)', [nmForm,nmAncestor]));
+     Add(Format('     T%s = class(T%s)', [nmForm,'FORM']));
      Add('     private');
      Add('     { private declarations }');
      Add('     public');

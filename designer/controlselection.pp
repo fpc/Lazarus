@@ -413,7 +413,7 @@ Writeln('ControlMOuseMove in TCOntrolSelection');
     SetGrabbers;
     Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
     Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
-   // MoveContent(X - FStart.x, Y - FStart.Y);
+    MoveContent(X - FStart.x, Y - FStart.Y);
   end;
 end;
 
@@ -425,7 +425,7 @@ Writeln('TCOntrolSelection.ControlMOuseUp');
     FDragging := False;
     Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
     Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
-    //MoveContent(X - FStart.X, Y - FStart.Y);
+    MoveContent(X - FStart.X, Y - FStart.Y);
   end;
 end;
 

@@ -175,15 +175,19 @@ Begin
 
   if GetCaptureGrabber<>nil then exit;
 
-  MouseDownPos.X := TLMMOuse(Message).pos.X;
-  MouseDownPos.Y := TLMMOuse(Message).pos.Y;
-
-
-  //adjust X and Y by adding the Control corners.
-  if not (Sender is TCustomForm) then begin
-    inc(MouseDownPos.X,TControl(Sender).Left);
-    inc(MouseDownPos.Y,TControl(Sender).Top);
-  end;
+  if not assigned(MouseDownControl) then
+     Begin
+       MouseDownPos.X := TLMMOuse(Message).pos.X;
+       MouseDownPos.Y := TLMMOuse(Message).pos.Y;
+       //adjust X and Y by adding the Control corners.
+       MouseDownControl:=Sender;
+       if not (Sender is TCustomForm) then
+         begin
+         inc(MouseDownPos.X,TControl(Sender).Left);
+         inc(MouseDownPos.Y,TControl(Sender).Top);
+         end;
+       LastMouseMovePos:=MouseDownPos;
+     end;
 
     Shift := [];
   if (TLMMouse(Message).keys and MK_Shift) = MK_Shift then
@@ -198,8 +202,7 @@ Begin
 
 
 
-  MouseDownControl:=Sender;
-  LastMouseMovePos:=MouseDownPos;
+
   Writeln('Sender is '+sender.name);
   if FMainIDE.SelectedComponent = nil then
   Begin //mouse pointer button pressed.
@@ -250,25 +253,18 @@ Begin
     exit;
   end;
 
-  if   ((not (Sender is TCustomForm))
+ { if   ((not (Sender is TCustomForm))
         or (( X < TControl(sender).left) or ( X > (TControl(sender).left+TControl(sender).Width)))
         or (( Y < TControl(sender).Top) or ( Y > (TControl(sender).Top+TControl(sender).Height)))) then begin
     inc(X,TControl(Sender).Left);
     inc(Y,TControl(Sender).Top);
     end;
+}
 
-
-  if MouseDownControl = Sender then
-    Begin
-    Writeln('***************');
-    Writeln(Format('MouseLAstPos.X,Y= %d,%d',[LastMOuseMovePos.X,LastMouseMovePos.Y]));
-    Writeln(Format('MouseDownPos.X,Y= %d,%d',[MOuseDownPos.X,MouseDownPos.Y]));
-
-    ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
+//    ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
     //do something like ControlSelection.Sizecontent but move x and y from where
     // the grabber started to where it finished.
-    ControlSelection.MoveContent(X-MouseDownPos.X,Y-MouseDownPos.Y);
-    end;
+//    ControlSelection.MoveContent(X-MouseDownPos.X,Y-MouseDownPos.Y);
 
   MouseUpPos.X := TLMMouse(Message).pos.X;
   MouseUpPos.Y := TLMMouse(Message).pos.Y;
@@ -305,12 +301,11 @@ Begin
       end;
       NewCI := TComponentInterface(FFormEditor.CreateComponent(ParentCI,FMainIDE.SelectedComponent.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
-      NewCI.SetPropByName('Visible',True); //Control).Visible := True;
-{      if (NewCI.Control is TCOntrol) then Begin
-          Writeln('Setting visbile 2');
-          TCOntrol(NewCI.Control).Visible := True;
-          end;
-}      ObjectInspector1.FillComponentComboBox;
+      NewCI.SetPropByName('Visible',True);
+      NewCI.SetPropByName('Designing',True);
+      FMainIDE.SetDesigning(NewCI.Control,True);
+
+      ObjectInspector1.FillComponentComboBox;
       AddControlCode(NewCI.Control);
 
         SelectOnlyThisComponent(TComponent(NewCI.Control));
@@ -375,7 +370,7 @@ Begin
     if Assigned(MouseDownControl) then begin
       if FMainIDE.SelectedComponent = nil then begin
         // mouse pointer button pressed
-        if not (Sender is TCustomForm) then begin
+       { if not (Sender is TCustomForm) then} begin
           // move selection
              Writeln('moving stuff');
             {  if not(X in ([0 ..(TControl(sender).Width)])) or
