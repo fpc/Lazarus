@@ -36,26 +36,29 @@ interface
 uses
   Classes, SysUtils; 
   
-ResourceString
+resourcestring
   // command line help
-  lisCmdLineHlpHeader = 'lazarus [options] <project-filename>'#13#10
-              +#13#10
-              +'IDE Options:'#13#10
-              +#13#10
-              +'--help or -?             this help message'#13#10
-              +#13#10;
+  lisCmdLineHlpHeader = 'lazarus [options] <project-filename>' + LineEnding
+              + LineEnding
+              + 'IDE Options:' + LineEnding
+              + LineEnding
+              + '--help or -?             this help message' + LineEnding
+              + LineEnding;
+
   lisCmdLinePrimaryConfigPathDesc =
-     '--primary-config-path <path>'#13#10
-    +'                         primary config directory, where Lazarus'#13#10
-    +'                         stores its config files. Default is '#13#10
-    +'                         %s'#13#10
-    +#13#10;
+     '--primary-config-path <path>' + LineEnding
+    +'                         primary config directory, where Lazarus' + LineEnding
+    +'                         stores its config files. Default is ' + LineEnding
+    +'                         %s' + LineEnding
+    + LineEnding;
+    
   lisCmdLineSecondaryConfigPathDesc =
-     '--secondary-config-path <path>'#13#10
-    +'                         secondary config directory, where Lazarus'#13#10
-    +'                         searches for config template files.'#13#10
-    +'                         Default is %s'#13#10
-    +#13#10;
+     '--secondary-config-path <path>' + LineEnding
+    +'                         secondary config directory, where Lazarus' + LineEnding
+    +'                         searches for config template files.' + LineEnding
+    +'                         Default is %s' + LineEnding
+    + LineEnding;
+    
   lisCmdLineLCLInterfaceSpecificOptions =
     'LCL Interface specific options:';
 
@@ -219,21 +222,21 @@ ResourceString
   lisAboutLazarus = 'About Lazarus';
   lisAboutLazarusMsg =
      'License: GPL/LGPL'
-    +#13
-    +'Lazarus are the class libraries for Free Pascal that emulate Delphi.'#13
-    +'Free Pascal is a (L)GPL''ed compiler that runs on Linux,'#13
-    +'Win32, OS/2, 68K and more. Free Pascal is designed to be able to'#13
-    +'understand and compile Delphi syntax, which is of course OOP.'#13
-    +'Lazarus is the missing part of the puzzle that will allow you to'#13
-    +'develop Delphi like programs in all of the above platforms.'#13
-    +'The IDE will eventually become a RAD tool like Delphi.'#13
-    +#13
-    +'As Lazarus is growing we need more developers.'#13
+    + LineEnding
+    +'Lazarus are the class libraries for Free Pascal that emulate Delphi.' + LineEnding
+    +'Free Pascal is a (L)GPL''ed compiler that runs on Linux,' + LineEnding
+    +'Win32, OS/2, 68K and more. Free Pascal is designed to be able to' + LineEnding
+    +'understand and compile Delphi syntax, which is of course OOP.' + LineEnding
+    +'Lazarus is the missing part of the puzzle that will allow you to' + LineEnding
+    +'develop Delphi like programs in all of the above platforms.' + LineEnding
+    +'The IDE will eventually become a RAD tool like Delphi.' + LineEnding
+    + LineEnding
+    +'As Lazarus is growing we need more developers.' + LineEnding
     +'For example: Write a nicer about dialog with a logo.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
-  lisUnitNameAlreadyExistsText = 'The unit "%s" already exists.'#13
-       +'Ignore will force the renaming,'#13
-       +'Cancel will cancel the saving of this source and'#13
+  lisUnitNameAlreadyExistsText = 'The unit "%s" already exists.' + LineEnding
+       +'Ignore will force the renaming,' + LineEnding
+       +'Cancel will cancel the saving of this source and' + LineEnding
        +'Abort will abort the whole saving.';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
   lisInvalidPascalIdentifierText =
@@ -268,6 +271,9 @@ ResourceString
    +'along with this program; if not, write to the Free Software '
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. ';
 
+  // component editors commands
+  liscAdd = '&Add';
+  liscDelete = '&Delete';
   
 implementation
 

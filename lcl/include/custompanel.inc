@@ -102,7 +102,7 @@ begin
 
   if BevelInner <> bvNone then begin
     if BorderWidth > 0 then InflateRect(ARect, -BorderWidth, -BorderWidth);
-    Canvas.Frame3d(ARect, BorderWidth, BevelInner);
+    Canvas.Frame3d(ARect, BevelWidth, BevelInner);
   end;
 
   if Caption <> '' then begin

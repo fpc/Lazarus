@@ -54,16 +54,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGraphicControl.WMPaint(var Message: TLMPaint);
 begin
-  // tspeedbutton is buggy: this is a workaround
-  if AnsiCompareText(Classname,'tspeedbutton')=0 then begin
-    Paint;
-    exit;
-  end;
-  // end of workaround
-
   if Message.DC <> 0 then
   begin
-//    Canvas.Lock;
+    Canvas.Lock;
     try
       Canvas.Handle := Message.DC;
       try
@@ -72,7 +65,7 @@ begin
         Canvas.Handle := 0;
       end;
     finally
-//      Canvas.Unlock;
+      Canvas.Unlock;
     end;
   end;
 end;
@@ -92,6 +85,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/09/13 11:49:47  lazarus
+  Cleanups, extended TStatusBar, graphic control cleanups.
+
   Revision 1.4  2002/08/26 17:28:21  lazarus
   MG: fixed speedbutton in designmode
 

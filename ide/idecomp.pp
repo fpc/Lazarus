@@ -319,10 +319,10 @@ begin
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox,
           TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
-  RegisterComponents('Standard', 'ExtCtrls',[TPanel]);
+  RegisterComponents('Standard', 'ExtCtrls',[TRadioGroup,TPanel]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox,
-          TBevel,TRadioGroup,TImage]);
+          TBevel,TImage]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView,
           TProgressBar,TToolBar,TTrackbar,TScrollBox]);
   RegisterComponents('Additional','ImgList',[TImageList]);
