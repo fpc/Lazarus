@@ -1607,6 +1607,7 @@ begin
   if CollectValues then FetchValues;
   if ((FEditor<>nil) or OldEditorExisted) and Assigned(OnEditorChanged) then
     OnEditorChanged(Self);
+  UpdateIdleHandler;
 end;
 
 procedure TCustomPropertyLink.FetchValues;
@@ -1634,6 +1635,7 @@ begin
       FIdleHandlerConnected:=false;
       Application.RemoveOnIdleHandler(@OnApplicationIdle);
     end;
+    //debugln('TCustomPropertyLink.UpdateIdleHandler ploReadOnIdle=',dbgs(ploReadOnIdle in Options));
   end;
 end;
 
@@ -2103,10 +2105,10 @@ end;
 procedure TTICustomEdit.LinkLoadFromProperty(Sender: TObject);
 begin
   if Sender=nil then ;
+  if (FLink.Editor=nil) then exit;
   //writeln('TTICustomEdit.LinkLoadFromProperty A ',Name,
   //  ' FLink.GetAsText=',FLink.GetAsText,' Text=',Text,
   //  ' PropName=',FLink.TIPropertyName);
-  if (FLink.Editor=nil) then exit;
   Text:=FLink.GetAsText;
 end;
 
@@ -2114,6 +2116,9 @@ procedure TTICustomEdit.LinkSaveToProperty(Sender: TObject);
 begin
   if Sender=nil then ;
   if FLink.Editor=nil then exit;
+  //writeln('TTICustomEdit.LinkSaveToProperty A ',Name,
+  //  ' FLink.GetAsText=',FLink.GetAsText,' Text=',Text,
+  //  ' PropName=',FLink.TIPropertyName);
   FLink.SetAsText(Text);
 end;
 

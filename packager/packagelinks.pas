@@ -664,8 +664,8 @@ begin
       break;
     end;
     CurNode:=LinkTree.FindSuccessor(CurNode);
-    if AnsiCompareText(TPackageLink(CurNode.Data).Name,Dependency.PackageName)
-    <>0
+    if CurNode=nil then break;
+    if CompareText(TPackageLink(CurNode.Data).Name,Dependency.PackageName)<>0
     then begin
       CurNode:=nil;
       break;
