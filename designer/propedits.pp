@@ -2653,6 +2653,8 @@ begin
          X := ColumnDlg.Add(ViewColumns.Item[i].Caption);
          ColumnDlg.Item[x].Width :=ViewColumns.Item[i].Width;
          ColumnDlg.Item[x].Alignment :=ViewColumns.Item[i].Alignment;
+         ColumnDlg.Item[x].Visible :=ViewColumns.Item[i].Visible;
+         ColumnDlg.Item[x].AutoSize :=ViewColumns.Item[i].AutoSize;
        end;
        
     if ColumnDlg.ShowModal = mrOK then
@@ -2664,6 +2666,8 @@ begin
              X := ViewColumns.Add(Column.Caption);
              ViewColumns.Item[x].Width := Column.Width;
              ViewColumns.Item[x].Alignment := Column.Alignment;
+             ViewColumns.Item[x].Visible := Column.Visible;
+             ViewColumns.Item[x].AutoSize := Column.AutoSize;
            End;
         end;
   finally

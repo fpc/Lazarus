@@ -12,10 +12,13 @@ begin
   Columns := TViewColumns.Create(self);
   Columns.OnChange := @ColumnsChanged;
   FListItems := TListITems.Create(self);
+  FImages := NIL;
   fCompStyle := csListView;
   fViewStyle := vsList;
   fSorted := False;
   fSortColumn := 0;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageChanged;
   Setbounds(2,2,300,300);
 end;
 
@@ -120,6 +123,7 @@ end;
 destructor TCustomListView.Destroy;
 begin
   Columns.Free;
+  FImageChangeLink.Free;
  inherited Destroy;
 end;
 
@@ -133,11 +137,29 @@ begin
      
 end;
 
-procedure TCustomListView.SetImageList(const AValue: TImageList);
+procedure TCustomListView.SetImages(const AValue: TCustomImageList);
 begin
-  if AValue <> FImageList then
+    if AValue <> FImages then
      Begin
-        FImageList := AValue;
+        if FImages <> nil then
+           FImages.UnregisterChanges(FImageChangeLink);
+
+           FImages := AValue;
+
+        if FImages <> nil then
+           FImages.RegisterChanges(FImageChangeLink);
+           FImages.FreeNotification(self);
+
         CNSendMessage(LM_SETPROPERTIES,self,nil);
      end;
 end;
+
+Procedure TCustomListView.ImageChanged(Sender : TObject);
+begin
+Writeln('IMAGE CHANGED!!!!');
+  //image changed so redraw it all....
+        CNSendMessage(LM_SETPROPERTIES,self,nil);
+end;
+
+
+

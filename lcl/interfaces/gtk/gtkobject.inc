@@ -382,6 +382,7 @@ var
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
   Titles    : Array [0..255] of PChar;
+  BitImage : TBitmap;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -491,7 +492,24 @@ begin
           pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
           StrPCopy(pStr, AddItemListItem.Caption);
           gtk_clist_set_text(PgtkCList(Handle),num,0,pStr);
+          if (TCustomListView(sender).Images <> nil) and (TListItem(TCustomListView(sender).Items[Num]).ImageIndex > -1) then
+              Begin
+              Writeln('Checking images');
+              if (TListItem(TCustomListView(sender).Items[Num]).ImageIndex < TCustomListView(sender).Images.Count) then
+                   begin
+                   //draw image
+                     Writeln('drawing image');
+                     Writeln('TListItem(TCustomListView(sender).Items[i]).ImageIndex is ',TListItem(TCustomListView(sender).Items[Num]).ImageIndex);
+                     BitImage := TBitmap.Create;
+                     TCustomListView(sender).Images.GetBitmap(TListItem(TCustomListView(sender).Items[Num]).ImageIndex,BitImage);
+
+                     gtk_clist_set_pixtext(Pgtkclist(handle),Num,0,pStr,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                     end;
+
+              end;
           StrDispose(pStr);
+
+
           for count := 0 to AddItemListItem.SubItems.Count-1 do
              Begin
                pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count]) + 1);
@@ -3026,7 +3044,7 @@ var
    pColName : PChar;
    pRowText : PChar;
    Image : PgdkImage;
-
+   BitImage : TBitMap;
 begin
    result := 0;     // default if nobody sets it
 
@@ -3182,8 +3200,33 @@ begin
                    GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).Caption)+1);
                    pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).Caption);
                    gtk_clist_set_text(Pgtkclist(Handle),0,I+1,pRowText);
+
+                   //do image if one is assigned....
+                   Writeln('Starting image section');
+                   if (TCustomListView(sender).Images <> nil) and (TListItem(TCustomListView(sender).Items[i]).ImageIndex > -1) then
+                      Begin
+                        Writeln('Checking images');
+                        if (TListItem(TCustomListView(sender).Items[i]).ImageIndex < TCustomListView(sender).Images.Count) then
+                           begin
+                           //draw image
+                           Writeln('drawing image');
+                           Writeln('TListItem(TCustomListView(sender).Items[i]).ImageIndex is ',TListItem(TCustomListView(sender).Items[i]).ImageIndex);
+                           
+                             BitImage := TBitmap.Create;
+                             TCustomListView(sender).Images.GetBitmap(TListItem(TCustomListView(sender).Items[i]).ImageIndex,BitImage);
+                             
+                             gtk_clist_set_pixmap(Pgtkclist(handle),I,0,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                             gtk_clist_set_pixtext(Pgtkclist(handle),I,0,pRowText,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+//                             bitimage.Free;
+
+                           end;
+                      
+                      end;
                    freemem(pRowText);
 
+                   
+                   //
+                   
                    if (TCustomListView(sender).ViewStyle = vsReport) then //columns showing
                    For X := 1 to Columns.Count-1 do
                       begin
@@ -3666,6 +3709,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.100  2002/01/04 20:29:04  lazarus
+  Added images to TListView.
+  Shane
+
   Revision 1.99  2002/01/03 21:17:08  lazarus
   added column visible and autosize settings.
   Shane

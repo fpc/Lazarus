@@ -482,14 +482,15 @@ type
  TCustomListView = class(TWinControl)
   private
     //FReadOnly : Boolean;
+    FImages : TCustomImageList;
     FListItems : TListItems;
     FColumns : TViewColumns;
     FViewStyle : TViewStyle;
     FSorted    : Boolean;
     FSortColumn : Integer;
     FMultiSelect: Boolean;
-    FImageList: TImageList;
-    procedure SetImageList(const AValue: TImageList);
+    FImageChangeLink : TChangeLink;
+    procedure SetImages(const AValue: TCustomImageList);
     procedure SetMultiSElect(const AValue: Boolean);
     procedure SetItems(Value : TListItems);
   protected
@@ -502,6 +503,7 @@ type
     Procedure ItemChanged(Index : Integer);  //called by TListItems
     Procedure ItemDeleted(Index : Integer);  //called by TListItems
     Procedure ColumnsChanged(Sender : TObject); //called by TViewColumns
+    Procedure ImageChanged(Sender : TObject);
     Procedure ItemAdded;  //called by TListItems
   public
     constructor Create(Aowner: TComponent); override;
@@ -512,13 +514,14 @@ type
     property Sorted : Boolean read FSorted write SetSorted;
     property SortColumn : Integer read FSortColumn write SetSortColumn;
     property MultiSelect : Boolean read FMultiSelect write SetMultiSelect default False;
-    property ImageList : TImageList read FImageList write SetImageList;
+    property Images : TCustomImageList read FImages write SetImages;
   end;
 
  TListView = class(TCustomListView)
   published
     property Columns;
     property Items;
+    property Images;
     property Visible;
     property ViewStyle;
     property OnMOuseMOve;
@@ -1034,6 +1037,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/01/04 20:29:04  lazarus
+  Added images to TListView.
+  Shane
+
   Revision 1.13  2002/01/03 21:17:08  lazarus
   added column visible and autosize settings.
   Shane
