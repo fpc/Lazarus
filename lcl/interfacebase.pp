@@ -41,8 +41,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, LCLLinux, LCLType, VCLGlobals, Classes, LMessages, Controls,
-  GraphType, GraphicsMath;
+  SysUtils, LCLStrConsts, LCLLinux, LCLType, LCLProc, VCLGlobals, Classes,
+  LMessages, Controls, GraphType, GraphicsMath;
 
 type
 
@@ -79,23 +79,35 @@ type
 {$I defaultbitbtnimages.inc}
 {$I messagedialogpixmaps.inc}
 
+type
+  TInputDialogFunction = Function (const InputCaption, InputPrompt : String;
+                             MaskInput : Boolean; var Value : String) : Boolean;
+
+var
+  InputDialogFunction: TInputDialogFunction;
+
 implementation
 
 Uses
-  LCLStrConsts, Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
+  Forms, StdCtrls, Graphics, Buttons;
 
 
 {$I interfacebase.inc}
 
 
 initialization
+  InputDialogFunction:=nil;
 
 finalization
+  InputDialogFunction:=nil;
 
 end.
 
 {
   $Log$
+  Revision 1.21  2002/10/25 09:47:37  lazarus
+  MG: added inputdialog.inc
+
   Revision 1.20  2002/10/24 22:10:39  lazarus
   AJ: More changes for better code reuse between gnome & gtk interfaces
 
