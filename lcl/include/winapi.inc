@@ -614,6 +614,11 @@ begin
   Result := InterfaceObject.ReleaseDC(hWnd, DC);
 end;
 
+Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
+begin
+  Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
+end;
+
 function RightJustifyMenuItem(HndMenu: HMenu;
   bRightJustify: boolean): boolean;
 begin
@@ -1304,6 +1309,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/10/11 16:00:39  lazarus
+  AJ: made InputQuery Interface Dependant
+
   Revision 1.53  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 
