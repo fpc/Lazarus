@@ -103,6 +103,7 @@ type
     procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
     procedure AddNBPage(ANoteBook, APage: TObject; Index: Integer);
     procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);
+    
     procedure SetText(Child,Data : Pointer);
     procedure SetColor(Sender : TObject);
     Procedure SetPixel(Sender : TObject; Data : Pointer);
@@ -396,6 +397,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/08/05 10:45:04  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.53  2002/07/20 13:47:03  lazarus
   MG: fixed eventmask for realized windows
 
