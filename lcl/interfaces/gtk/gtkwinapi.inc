@@ -2249,6 +2249,12 @@ var
 
     // use the gtk paint functions to draw a widget style dependent button
 
+    //writeln('DrawButtonPush ',
+    //  ' DFCS_BUTTONPUSH=',uState and DFCS_BUTTONPUSH,
+    //  ' DFCS_PUSHED=',uState and DFCS_PUSHED,
+    //  ' DFCS_INACTIVE=',uState and DFCS_INACTIVE,
+    //  ' DFCS_FLAT=',uState and DFCS_FLAT,
+    //  '');
     // set State (the interior filling style)
     if (DFCS_INACTIVE and uState)<>0 then begin
       // button disabled
@@ -2302,7 +2308,7 @@ var
     end;
 
     if aStyle<>nil then begin
-      If (DFCS_FLAT and uState)<>0 then
+      If (Shadow=GTK_SHADOW_NONE) then
         gtk_paint_flat_box(aStyle,aDC.Drawable,
            State,
            Shadow,
@@ -8701,6 +8707,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.355  2004/06/28 20:03:33  mattias
+  fixed TGtkWidgetSet.DrawFrameControl
+
   Revision 1.354  2004/06/28 17:03:37  mattias
   clean up
 

@@ -254,7 +254,7 @@ begin
     Result:=DFCS_BUTTONPUSH;
     if FState in [bsDown, bsExclusive] then 
       inc(Result,DFCS_PUSHED);
-    if not Enabled then 
+    if not Enabled then
       inc(Result,DFCS_INACTIVE);
     if FFlat then
       inc(Result,DFCS_FLAT);
@@ -382,6 +382,12 @@ begin
   if FLastDrawFlags <> 0 then
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       PaintRect, DFC_BUTTON, FLastDrawFlags);
+  //writeln('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
+  //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,
+  //  ' DFCS_PUSHED=',FLastDrawFlags and DFCS_PUSHED,
+  //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
+  //  ' DFCS_FLAT=',FLastDrawFlags and DFCS_FLAT,
+  //  '');
 
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -780,6 +786,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/06/28 20:03:33  mattias
+  fixed TGtkWidgetSet.DrawFrameControl
+
   Revision 1.56  2004/06/28 18:57:55  mattias
   fixed GetControlAtPos for non designing
 
