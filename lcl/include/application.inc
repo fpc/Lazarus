@@ -29,7 +29,7 @@ begin
   FList := nil;
   FOnIdle := nil;
   FIcon := nil;
-   
+
   inherited Create(AOwner);
   // MG: if you prefer message boxes instead of terminal error messages uncomment
   // the following line
@@ -411,6 +411,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/05/28 19:39:45  lazarus
+  MG: added gtk rc file support and started stule dependent syscolors
+
   Revision 1.23  2002/05/24 07:16:31  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 
