@@ -444,6 +444,9 @@ begin
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOW',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HIGH',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsKeyWord:=TKeyWordFunctionList.Create;
   with WordIsKeyWord do begin

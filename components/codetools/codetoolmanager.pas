@@ -61,7 +61,6 @@ type
     FCursorBeyondEOL: boolean;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
-    FLastException: Exception;
     FCatchExceptions: boolean;
     FWriteExceptions: boolean;
     function OnScannerGetInitValues(Code: Pointer): TExpressionEvaluator;
@@ -100,7 +99,6 @@ type
     function FilenameHasSourceExt(const ExpandedFilename: string): boolean;
     
     // exception handling
-    property LastException: Exception read FLastException write FLastException;
     property CatchExceptions: boolean
           read FCatchExceptions write FCatchExceptions;
     property WriteExceptions: boolean
@@ -121,6 +119,10 @@ type
           read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
     property OnAfterApplyChanges: TOnAfterApplyChanges
           read FOnAfterApplyChanges write FOnAfterApplyChanges;
+
+    // syntax checking  (true on syntax is ok)
+    function CheckSyntax(Code: TCodeBuffer; var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer; var ErrorMsg: string): boolean;
 
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
@@ -229,7 +231,6 @@ begin
   SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
   GlobalValues:=TExpressionEvaluator.Create;
   FSourceExtensions:='.pp;.pas;.lpr;.dpr;.dpk';
-  FLastException:=nil;
   FCatchExceptions:=true;
   FWriteExceptions:=true;
   FIndentSize:=2;
@@ -400,20 +401,19 @@ var
   ACode: TCodeBuffer;
   Line, Column: integer;
 begin
-  FLastException:=AnException;
-  if FWriteExceptions then begin
-    if (AnException is ELinkScannerError)
-    and (FCodeTool<>nil) and (FCodeTool.Scanner<>nil)
-    and (FCodeTool.Scanner.Code<>nil)
-    and (FCodeTool.Scanner.LinkCount>0) then begin
-      ACode:=TCodeBuffer(FCodeTool.Scanner.Code);
-      ACode.AbsoluteToLineCol(FCodeTool.Scanner.SrcPos,Line,Column);
-      if Line>=0 then begin
-        AnException.Message:='"'+ACode.Filename+'"'
-          +' at Y:'+IntToStr(Line)+',X:'+IntToStr(Column)
-          +' '+AnException.Message;
-      end;
+  if (AnException is ELinkScannerError)
+  and (FCodeTool<>nil) and (FCodeTool.Scanner<>nil)
+  and (FCodeTool.Scanner.Code<>nil)
+  and (FCodeTool.Scanner.LinkCount>0) then begin
+    ACode:=TCodeBuffer(FCodeTool.Scanner.Code);
+    ACode.AbsoluteToLineCol(FCodeTool.Scanner.SrcPos,Line,Column);
+    if Line>=0 then begin
+      AnException.Message:='"'+ACode.Filename+'"'
+        +' at Line '+IntToStr(Line)+', Column'+IntToStr(Column)
+        +' '+AnException.Message;
     end;
+  end;
+  if FWriteExceptions then begin
 {$IFDEF CTDEBUG}
 WriteDebugReport(true,false,false,false,false);
 {$ENDIF}
@@ -421,6 +421,42 @@ WriteDebugReport(true,false,false,false,false);
   end;
   if not FCatchExceptions then raise AnException;
   Result:=false;
+end;
+
+function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
+  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+  var ErrorMsg: string): boolean;
+var OldCatchExceptions: boolean;
+begin
+  Result:=false;
+  NewCode:=nil;
+  OldCatchExceptions:=FCatchExceptions;
+  FCatchExceptions:=false;
+  try
+    try
+      ErrorMsg:='init code tool failed';
+      if not InitCodeTool(Code) then exit;
+      FCodeTool.ErrorPosition.Code:=nil;
+      ErrorMsg:='internal build code tree error';
+      FCodeTool.BuildTree(false);
+    except
+      on e: Exception do begin
+        ErrorMsg:=e.Message;
+        if FCodeTool<>nil then begin
+          NewCode:=FCodeTool.ErrorPosition.Code;
+          NewX:=FCodeTool.ErrorPosition.X;
+          NewY:=FCodeTool.ErrorPosition.Y;
+          NewTopLine:=NewY;
+          if JumpCentered then begin
+            dec(NewTopLine,VisibleEditorLines div 2);
+            if NewTopLine<1 then NewTopLine:=1;
+          end;
+        end;
+      end;
+    end;
+  finally
+    FCatchExceptions:=OldCatchExceptions;
+  end;
 end;
 
 function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;
@@ -441,7 +477,6 @@ writeln('TCodeToolManager.JumpToMethod A ',Code.Filename,' x=',x,' y=',y);
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.JumpToMethod B ',FCodeTool.Scanner<>nil);
 {$ENDIF}
-  FLastException:=nil;
   try
     Result:=FCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine);
     if Result then begin
@@ -464,7 +499,6 @@ begin
 writeln('TCodeToolManager.GetCompatibleMethods A ',Code.Filename,' Classname=',AClassname);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     FCodeTool.GetCompatiblePublishedMethods(UpperCaseStr(AClassName),
        TypeData,Proc);
@@ -481,7 +515,6 @@ writeln('TCodeToolManager.MethodExists A ',Code.Filename,' ',AClassName,':',AMet
 {$ENDIF}
   Result:=InitCodeTool(Code);
   if not Result then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.PublishedMethodExists(UpperCaseStr(AClassName),
               UpperCaseStr(AMethodName),TypeData);
@@ -500,7 +533,6 @@ writeln('TCodeToolManager.JumpToMethodBody A ',Code.Filename,' ',AClassName,':',
 {$ENDIF}
   Result:=InitCodeTool(Code);
   if not Result then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.JumpToPublishedMethodBody(UpperCaseStr(AClassName),
               UpperCaseStr(AMethodName),TypeData,NewPos,NewTopLine);
@@ -522,7 +554,6 @@ writeln('TCodeToolManager.RenameMethod A');
 {$ENDIF}
   Result:=InitCodeTool(Code);
   if not Result then exit;
-  FLastException:=nil;
   try
     SourceChangeCache.Clear;
     Result:=FCodeTool.RenamePublishedMethod(UpperCaseStr(AClassName),
@@ -541,7 +572,6 @@ writeln('TCodeToolManager.CreateMethod A');
 {$ENDIF}
   Result:=InitCodeTool(Code);
   if not Result then exit;
-  FLastException:=nil;
   try
     SourceChangeCache.Clear;
     Result:=FCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
@@ -565,7 +595,6 @@ writeln('TCodeToolManager.CompleteCode A ',Code.Filename,' x=',x,' y=',y);
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
-  FLastException:=nil;
   try
     Result:=FCodeTool.CompleteCode(CursorPos,NewPos,NewTopLine,SourceChangeCache);
     if Result then begin
@@ -588,7 +617,6 @@ writeln('TCodeToolManager.GetSourceName A ',Code.Filename,' ',Code.SourceLength)
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.GetSourceName;
   except
@@ -610,7 +638,6 @@ begin
 writeln('TCodeToolManager.GetSourceType A ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     // GetSourceType does not parse the code -> parse it with GetSourceName
     FCodeTool.GetSourceName;
@@ -642,7 +669,6 @@ begin
 writeln('TCodeToolManager.RenameSource A ',Code.Filename,' NewName=',NewName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.RenameSource(NewName,SourceChangeCache);
   except
@@ -663,7 +689,6 @@ writeln('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
 {$ENDIF}
-  FLastException:=nil;
   try
     Result:=FCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
                 NameAtomPos, InAtomPos);
@@ -684,7 +709,6 @@ begin
 writeln('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.RenameUsedUnit(UpperCaseStr(OldUnitName),NewUnitName,
                   NewUnitInFile,SourceChangeCache);
@@ -701,7 +725,6 @@ begin
 writeln('TCodeToolManager.AddUnitToMainUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
                     SourceChangeCache);
@@ -718,7 +741,6 @@ begin
 writeln('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AnUnitName),
                 SourceChangeCache);
@@ -737,7 +759,6 @@ begin
 writeln('TCodeToolManager.FindLFMFileName A ',Code.Filename);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     LinkIndex:=-1;
     CurCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
@@ -763,7 +784,6 @@ begin
 writeln('TCodeToolManager.FindNextResourceFile A ',Code.Filename);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
   except
@@ -779,7 +799,6 @@ begin
 writeln('TCodeToolManager.FindLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.FindLazarusResource(ResourceName);
   except
@@ -800,7 +819,6 @@ writeln('TCodeToolManager.AddLazarusResource A ',Code.Filename,' ResourceName=',
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.AddLazarusResource B ');
 {$ENDIF}
-  FLastException:=nil;
   try
     LinkIndex:=-1;
     ResCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
@@ -822,7 +840,6 @@ begin
 writeln('TCodeToolManager.RemoveLazarusResource A ',Code.Filename,' ResourceName=',ResourceName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     LinkIndex:=-1;
     ResCode:=FCodeTool.FindNextIncludeInInitialization(LinkIndex);
@@ -843,7 +860,6 @@ begin
 writeln('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     LinkIndex:=-1;
     if FCodeTool.FindNextIncludeInInitialization(LinkIndex)=nil then exit;
@@ -866,7 +882,6 @@ begin
 writeln('TCodeToolManager.FindCreateFormStatement A ',Code.Filename,' StartPos=',StartPos,' ',AClassName,':',AVarName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.FindCreateFormStatement(StartPos,UpperCaseStr(AClassName),
                  UpperCaseStr(AVarName),PosAtom);
@@ -885,7 +900,6 @@ begin
 writeln('TCodeToolManager.AddCreateFormStatement A ',Code.Filename,' ',AClassName,':',AVarName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.AddCreateFormStatement(AClassName,AVarName,
                     SourceChangeCache);
@@ -902,7 +916,6 @@ begin
 writeln('TCodeToolManager.RemoveCreateFormStatement A ',Code.Filename,' ',AVarName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.RemoveCreateFormStatement(UpperCaseStr(AVarName),
                     SourceChangeCache);
@@ -919,7 +932,6 @@ begin
 writeln('TCodeToolManager.ListAllCreateFormStatements A ',Code.Filename);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.ListAllCreateFormStatements;
   except
@@ -935,7 +947,6 @@ begin
 writeln('TCodeToolManager.SetAllCreateFromStatements A ',Code.Filename);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
   except
@@ -951,7 +962,6 @@ begin
 writeln('TCodeToolManager.PublishedVariableExists A ',Code.Filename,' ',AClassName,':',AVarName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.FindPublishedVariable(UpperCaseStr(AClassName),
                  UpperCaseStr(AVarName))<>nil;
@@ -968,7 +978,6 @@ begin
 writeln('TCodeToolManager.AddPublishedVariable A ',Code.Filename,' ',AClassName,':',VarName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.AddPublishedVariable(UpperCaseStr(AClassName),
                       VarName,VarType,SourceChangeCache);
@@ -985,7 +994,6 @@ begin
 writeln('TCodeToolManager.RemovePublishedVariable A ',Code.Filename,' ',AClassName,':',AVarName);
 {$ENDIF}
   if not InitCodeTool(Code) then exit;
-  FLastException:=nil;
   try
     Result:=FCodeTool.RemovePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(AVarName),SourceChangeCache);

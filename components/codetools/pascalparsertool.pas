@@ -75,8 +75,10 @@ type
       phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
       phpWithDefaultValues, phpWithResultType, phpWithComments, phpInUpperCase,
       phpWithoutBrackets, phpIgnoreForwards, phpIgnoreProcsWithBody,
-      phpOnlyWithClassname, phpFindCleanPosition);
+      phpOnlyWithClassname, phpFindCleanPosition, phpWithoutParamList);
   TProcHeadAttributes = set of TProcHeadAttribute;
+  
+  TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList);
 
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
@@ -89,6 +91,7 @@ type
     ExtractMemStream: TMemoryStream;
     ExtractSearchPos: integer;
     ExtractFoundPos: integer;
+    ExtractProcHeadPos: TProcHeadExtractPos;
     procedure InitExtraction;
     function GetExtraction: string;
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
@@ -167,7 +170,7 @@ type
     function ExtractClassName(ClassNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode): string;
-    function FindProcNode(StartNode: TCodeTreeNode; const ProcName: string;
+    function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function FindVarNode(StartNode: TCodeTreeNode;
@@ -873,11 +876,17 @@ begin
       if not AtomIsChar(',') then
         break
       else
-        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        if not Extract then
+          ReadNextAtom
+        else
+          ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
     until false;
     // read type
     if (AtomIsChar(':')) then begin
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      if not Extract then
+        ReadNextAtom
+      else
+        ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
       if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
       if AtomIsChar('=') then begin
         // read default value
@@ -901,7 +910,10 @@ begin
         RaiseException(
           'syntax error: '+CloseBracket+' expected, but '+GetAtom+' found')
       else exit;
-    if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    if not Extract then
+      ReadNextAtom
+    else
+      ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
   until false;
   if (CloseBracket<>#0) then begin
     if Src[CurPos.StartPos]<>CloseBracket then
@@ -930,13 +942,19 @@ begin
         else exit;
       ReadNextAtom;
       if UpAtomIs('CONST') then begin
-        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        if not Extract then
+          ReadNextAtom
+        else
+          ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
         Result:=true;
         exit;
       end;
     end;
     if not AtomIsIdentifier(ExceptionOnError) then exit;
-    if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    if not Extract then
+      ReadNextAtom
+    else
+      ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
   end else begin
     if ExceptionOnError then
       RaiseException(
@@ -1337,8 +1355,15 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncEnd: boolean;
-// end  (parse end of block, e.g. begin..end)
+// keyword 'end'  (parse end of block, e.g. begin..end)
 begin
+  if LastAtomIs(0,'@') then
+    RaiseException('syntax error: identifer expected but keyword end found');
+  if LastAtomIs(0,'@@') then begin
+    // for Delphi compatibility @@end is allowed
+    Result:=true;
+    exit;
+  end;
   if CurNode.Desc in [ctnImplementation,ctnInterface] then
     CurNode.EndPos:=CurPos.StartPos
   else
@@ -1416,9 +1441,70 @@ end;
 
 function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 // Keyword: begin, asm
+
+  procedure ReadTilBlockEnd;
+  type
+    TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat);
+    TTryType = (ttNone, ttFinally, ttExcept);
+  var BlockType: TEndBlockType;
+    TryType: TTryType;
+  begin
+    TryType:=ttNone;
+    if UpAtomIs('BEGIN') then
+      BlockType:=ebtBegin
+    else if UpAtomIs('REPEAT') then
+      BlockType:=ebtRepeat
+    else if UpAtomIs('TRY') then
+      BlockType:=ebtTry
+    else if UpAtomIs('CASE') then
+      BlockType:=ebtCase
+    else if UpAtomIs('ASM') then
+      BlockType:=ebtAsm
+    else
+      RaiseException('internal codetool error in '
+        +'TPascalParserTool.KeyWordFuncBeginEnd: unkown block type');
+    repeat
+      ReadNextAtom;
+      if (CurPos.StartPos>SrcLen) then begin
+        RaiseException('syntax error: "end" not found.')
+      end else if (UpAtomIs('END')) then begin
+        if BlockType=ebtRepeat then
+          RaiseException(
+            'syntax error: ''until'' expected, but "'+GetAtom+'" found');
+        if (BlockType=ebtTry) and (TryType=ttNone) then
+          RaiseException(
+            'syntax error: ''finally'' expected, but "'+GetAtom+'" found');
+        break;
+      end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+          CurPos.EndPos-CurPos.StartPos)
+        or UpAtomIs('REPEAT') then
+      begin
+        if BlockType=ebtAsm then
+          RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
+        ReadTilBlockEnd;
+      end else if UpAtomIs('UNTIL') then begin
+        if BlockType=ebtRepeat then
+          break;
+        RaiseException(
+          'syntax error: ''end'' expected, but "'+GetAtom+'" found');
+      end else if UpAtomIs('FINALLY') then begin
+        if (BlockType=ebtTry) and (TryType=ttNone) then
+          TryType:=ttFinally
+        else
+          RaiseException(
+            'syntax error: "end" expected, but "'+GetAtom+'" found');
+      end else if UpAtomIs('EXCEPT') then begin
+        if (BlockType=ebtTry) and (TryType=ttNone) then
+          TryType:=ttExcept
+        else
+          RaiseException(
+            'syntax error: "end" expected, but "'+GetAtom+'" found');
+      end;
+    until false;
+  end;
+
 var BeginKeyWord: shortstring;
   ChildNodeCreated: boolean;
-  Level: integer;
 begin
   BeginKeyWord:=GetUpAtom;
   ChildNodeCreated:=(BeginKeyWord='BEGIN') or (BeginKeyWord='ASM');
@@ -1430,18 +1516,7 @@ begin
       CurNode.Desc:=ctnAsmBlock;
   end;
   // search "end"
-  Level:=1;
-  repeat
-    ReadNextAtom;
-    if (CurPos.StartPos>SrcLen) then begin
-      RaiseException('syntax error: "end" not found.')
-    end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then begin
-      inc(Level);
-    end else if (UpAtomIs('END')) then begin
-      dec(Level);
-    end;
-  until Level<=0;
+  ReadTilBlockEnd;
   // close node
   if ChildNodeCreated then begin
     CurNode.EndPos:=CurPos.EndPos;
@@ -2222,6 +2297,7 @@ begin
     end else if (CurPos.StartPos>LastAtomEndPos) 
     and (ExtractMemStream.Position>0) then begin
       ExtractMemStream.Write(' ',1);
+      LastStreamPos:=ExtractMemStream.Position;
     end;
   end;
   if AddAtom then begin
@@ -2251,6 +2327,7 @@ var
 //   Attr: TProcHeadAttributes): string;
 begin
   Result:='';
+  ExtractProcHeadPos:=phepNone;
   if (ProcNode=nil) or (ProcNode.StartPos<1) then exit;
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
@@ -2283,6 +2360,7 @@ begin
     ExtractNextAtom(phpWithStart in Attr,Attr)
   else
     exit;
+  ExtractProcHeadPos:=phepStart;
   // read name
   if (not AtomIsWord) or AtomIsKeyWord then exit;
   ReadNextAtom;
@@ -2310,9 +2388,11 @@ begin
       ExtractMemStream.Write(s[1],length(s));
     end;
   end;
+  ExtractProcHeadPos:=phepName;
   // read parameter list
   if AtomIsChar('(') then
     ReadParamList(false,true,Attr);
+  ExtractProcHeadPos:=phepParamList;
   // read result type
   while not AtomIsChar(';') do
     ExtractNextAtom(phpWithResultType in Attr,Attr);
@@ -2348,26 +2428,26 @@ begin
 end;
 
 function TPascalParserTool.FindProcNode(StartNode: TCodeTreeNode;
-  const ProcName: string; Attr: TProcHeadAttributes): TCodeTreeNode;
+  const AProcHead: string; Attr: TProcHeadAttributes): TCodeTreeNode;
 // search in all next brothers for a Procedure Node with the Name ProcName
 // if there are no further brothers and the parent is a section node
 // ( e.g. 'interface', 'implementation', ...) or a class visibility node
 // (e.g. 'public', 'private', ...) then the search will continue in the next
 // section
-var CurProcName: string;
+var CurProcHead: string;
 begin
   Result:=StartNode;
   while (Result<>nil) do begin
-//writeln('TPascalParserTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
+writeln('TPascalParserTool.FindProcNode A "',NodeDescriptionAsString(Result.Desc),'"');
     if Result.Desc=ctnProcedure then begin
       if (not ((phpIgnoreForwards in Attr)
                and (Result.SubDesc=ctnsForwardDeclaration)))
       and (not ((phpIgnoreProcsWithBody in Attr)
             and (FindProcBody(Result)<>nil))) then begin
-        CurProcName:=ExtractProcHead(Result,Attr);
-//writeln('TPascalParserTool.FindProcNode B "',CurProcName,'" =? "',ProcName,'"');
-        if (CurProcName<>'')
-        and (CompareTextIgnoringSpace(CurProcName,ProcName,false)=0) then
+        CurProcHead:=ExtractProcHead(Result,Attr);
+writeln('TPascalParserTool.FindProcNode B "',CurProcHead,'" =? "',AProcHead,'"');
+        if (CurProcHead<>'')
+        and (CompareTextIgnoringSpace(CurProcHead,AProcHead,false)=0) then
           exit;
       end;
     end;

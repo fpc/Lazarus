@@ -72,6 +72,8 @@ type
     JumpCentered: boolean;
     CursorBeyondEOL: boolean;
     
+    ErrorPosition: TCodeXYPosition;
+    
     property Scanner: TLinkScanner read FScanner write SetScanner;
     
     function FindDeepestNodeAtPos(P: integer): TCodeTreeNode;
@@ -170,14 +172,19 @@ end;
 procedure TCustomCodeTool.RaiseException(const AMessage: string);
 var CaretXY: TCodeXYPosition;
 begin
+  ErrorPosition.Code:=nil;
   if (CleanPosToCaret(CurPos.StartPos,CaretXY))
   and (CaretXY.Code<>nil) then begin
+    ErrorPosition:=CaretXY;
     raise ECodeToolError.Create('"'+CaretXY.Code.Filename+'"'
-      +' at Y:'+IntToStr(CaretXY.Y)+',X:'+IntToStr(CaretXY.X)+' '+AMessage);
-  end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then
+      +' at Line '+IntToStr(CaretXY.Y)+', Column'+IntToStr(CaretXY.X)
+      +' '+AMessage);
+  end else if (Scanner<>nil) and (Scanner.MainCode<>nil) then begin
+    ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
+    ErrorPosition.Y:=-1;
     raise ECodeToolError.Create('"'+TCodeBuffer(Scanner.MainCode).Filename+'" '
       +AMessage)
-  else
+  end else
     raise ECodeToolError.Create(AMessage);
 end;
 
@@ -629,6 +636,7 @@ begin
         or ((c1='>') and (c2='<'))
         or ((c1='.') and (c2='.'))
         or ((c1='*') and (c2='*'))
+        or ((c1='@') and (c2='@'))
         then inc(CurPos.EndPos);
       end;
   end;
